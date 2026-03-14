@@ -10,6 +10,7 @@
 | 4 | 2026-03-14 | Relationship graph + meeting prep | Investor relationship graph (co-investment + warm path), 9th scoring dimension (Network Effect), keystone investor detection, cross-investor meeting prep API, aggregated competitive intel | db.ts, scoring.ts, context-bus.ts, meeting-brief/route.ts, meetings/prep/route.ts, investors/[id]/score/route.ts |
 | 5 | 2026-03-14 | Self-calibration + timing intelligence | Auto-weight calibration from resolved predictions, cross-investor timing correlation (competitive tension / engagement gaps / DD sync), document auto-strengthening from question convergence, automatic relationship graph rebuild, timing signals in context bus | stress-test/route.ts, momentum/route.ts, documents/strengthen/route.ts, investors/route.ts, context-bus.ts, db.ts |
 | 6 | 2026-03-14 | Monte Carlo + narrative drift + co-investor detection + verification | Monte Carlo confidence intervals (P10/P50/P90), narrative drift consumption in momentum (anomaly/alert enrichment), market deal co-investor detection in relationship graph, intelligence flow verification endpoint, Monte Carlo in context bus | stress-test/route.ts, momentum/route.ts, db.ts, context-bus.ts, intelligence/verify/route.ts |
+| 7 | 2026-03-14 | Intelligence Synthesis | 6-instruction reasoning framework for workspace AI (pattern synthesis, strategic prioritization, conviction arcs, contradiction detection, predictive reasoning, phase awareness), intelligence briefing layer in pulse dashboard (8 insight generators, typed/sorted/capped), synthesis section in context bus system prompt (6 cross-source reasoning aids) | workspace/route.ts, pulse/route.ts, context-bus.ts |
 
 ## Intelligence Capabilities (Existing)
 
@@ -37,6 +38,13 @@
 - [x] **Keystone investor identification — "closing one unlocks others" (NEW cycle 4)**
 - [x] **Timing signals type definition + system prompt serialization (NEW cycle 5)**
 - [x] **Monte Carlo field in FullContext (populated by stress test, null by default) + system prompt serialization (NEW cycle 6)**
+- [x] **Intelligence Synthesis section in system prompt — cross-source reasoning aids (NEW cycle 7)**:
+  - [x] Narrative weakness → pending follow-up urgency linking
+  - [x] Keystone investor priority surfacing
+  - [x] Prediction calibration → confidence language adjustment
+  - [x] Pipeline health synthesis (overdue follow-ups, thin pipeline)
+  - [x] Narrative drift → affected investor identification
+  - [x] Contradiction detection (high enthusiasm + no progression)
 
 ### C. Prediction Engine (stress-test/route.ts)
 - [x] Status-weighted base probabilities
@@ -69,7 +77,13 @@
 - [x] **Now receives narrative weakness signals, proven responses, narrative drift, calibration (NEW cycle 3)**
 - [x] **Now receives keystone investor data for network-aware recommendations (NEW cycle 4)**
 - [x] **Now receives timing signals in system prompt when present (NEW cycle 5)**
-- [ ] **GAP: No explicit reasoning framework for pattern synthesis**
+- [x] **16 instruction categories with 6 new reasoning framework instructions (NEW cycle 7)**:
+  - [x] Pattern synthesis: cross-reference weaknesses with documents, investor types, proven responses
+  - [x] Strategic prioritization: keystone-first, declining-urgent, timing-leverage weighting
+  - [x] Conviction arc reasoning: accelerating/steady/decelerating/stalled → action mapping
+  - [x] Contradiction detection: enthusiasm vs engagement, meetings vs progression, responses vs lift
+  - [x] Predictive reasoning: trajectory extrapolation, cascade prediction, showstopper forecasting
+  - [x] Fundraise phase awareness: discovery/outreach/presentations/DD/negotiation context switching
 
 ### F. Meeting Intelligence (db.ts + meeting-brief)
 - [x] AI-extracted structured data: questions, objections, engagement signals, competitive intel
@@ -131,6 +145,21 @@
 - [x] Emits context change events for each flag created
 - [x] Returns convergence patterns and flags created
 
+### M. Intelligence Synthesis (NEW cycle 7)
+- [x] Workspace AI reasoning framework: 6 structured instructions (11-16) teaching HOW to synthesize data
+- [x] Pulse dashboard intelligence briefing: programmatic insight generation from 8 sources
+  - [x] Narrative weakness insights with proven-response cross-reference
+  - [x] Keystone investor cascade opportunity insights
+  - [x] Timing signal insights (competitive tension, engagement gaps, DD sync)
+  - [x] Conviction trajectory alerts for declining investors
+  - [x] Pipeline health insights (thin pipeline, overdue follow-ups)
+  - [x] Prediction calibration insights (over/under-confident trends)
+  - [x] Contradiction detection (high enthusiasm + no progression)
+  - [x] Narrative drift insights for struggling investor types
+- [x] Context bus synthesis section: 6 cross-source reasoning aids in system prompt
+- [x] Typed insight model: critical/opportunity/risk/trend with title, detail, action, dataSource
+- [x] Sorted by severity (critical first), capped at 7 insights for actionability
+
 ## Intelligence Gaps (Prioritized for Next Cycle)
 
 ### P1 — Semantic Objection Matching
@@ -141,9 +170,13 @@
 - Auto-create tailored document versions per investor type based on narrative drift signals
 - Compounds with: narrative intelligence, document flags, workspace AI
 
-### P3 — Explicit Reasoning Framework for Pattern Synthesis
-- Workspace AI should have structured pattern recognition across all intelligence signals
-- Compounds with: context bus, narrative drift, Monte Carlo, timing signals
+### P4 — Investor Communication Templates
+- Auto-generate follow-up emails, meeting summaries, and pitch customizations per investor
+- Compounds with: narrative drift, proven responses, meeting intelligence
+
+### P5 — Real-Time Deal Room Analytics
+- Track document views, time spent, section engagement from data room
+- Compounds with: conviction trajectory, contradiction detection, timing signals
 
 ### L. Intelligence Flow Verification (NEW cycle 6)
 - [x] GET `/api/intelligence/verify` endpoint
@@ -154,7 +187,8 @@
 - [x] Tests supporting functions are callable (getQuestionPatterns, getCalibrationData, computeNarrativeSignals, getKeystoneInvestors)
 - [x] Returns health report: healthy/degraded/unhealthy with per-check pass/warn/fail
 
-### CLOSED (Cycle 6):
-- ~~Monte Carlo Confidence Intervals~~ — implemented in stress-test/route.ts
-- ~~Narrative Drift Consumption in Momentum~~ — implemented in momentum/route.ts
-- ~~Market Deal Co-Investor Detection~~ — implemented in db.ts + buildRelationshipGraph()
+### CLOSED (Cycle 7):
+- ~~Explicit Reasoning Framework for Pattern Synthesis (P3)~~ — implemented in workspace/route.ts (instructions 11-16), pulse/route.ts (intelligenceBriefing), context-bus.ts (synthesis section)
+- ~~Monte Carlo Confidence Intervals~~ — implemented in stress-test/route.ts (cycle 6)
+- ~~Narrative Drift Consumption in Momentum~~ — implemented in momentum/route.ts (cycle 6)
+- ~~Market Deal Co-Investor Detection~~ — implemented in db.ts + buildRelationshipGraph() (cycle 6)

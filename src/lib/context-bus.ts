@@ -617,5 +617,74 @@ export function contextToSystemPrompt(ctx: FullContext): string {
     lines.push('');
   }
 
+  // =========================================================================
+  // INTELLIGENCE SYNTHESIS (reasoning aids — connect the dots between sources)
+  // =========================================================================
+  const synthesisLines: string[] = [];
+
+  // Connect narrative weaknesses to investors with pending follow-ups
+  if (ctx.narrativeWeaknesses.length > 0 && ctx.investors.length > 0) {
+    for (const nw of ctx.narrativeWeaknesses) {
+      const affectedInvestors = ctx.investors.filter(inv =>
+        nw.investorNames.includes(inv.name)
+      );
+      if (affectedInvestors.length > 0) {
+        const nextMeetings = affectedInvestors.filter(inv => inv.pendingFollowups > 0);
+        if (nextMeetings.length > 0) {
+          synthesisLines.push(`URGENT: "${nw.topic}" weakness affects investors with pending follow-ups: ${nextMeetings.map(i => i.name).join(', ')} — address BEFORE next contact`);
+        }
+      }
+    }
+  }
+
+  // Connect keystone investors to pipeline value
+  if (ctx.keystoneInvestors.length > 0) {
+    const topKeystone = ctx.keystoneInvestors[0];
+    if (topKeystone) {
+      synthesisLines.push(`KEYSTONE PRIORITY: Closing ${topKeystone.name} (${topKeystone.connectionCount} connections) should be top priority — cascade value: ${topKeystone.cascadeValue}`);
+    }
+  }
+
+  // Connect prediction calibration to confidence language
+  if (ctx.predictionCalibration.resolvedCount >= 5 && ctx.predictionCalibration.biasDirection === 'over_confident') {
+    synthesisLines.push(`CALIBRATION WARNING: Reduce confidence in probability statements by ~${Math.round(ctx.predictionCalibration.brierScore * 100)}% based on track record`);
+  }
+
+  // Pipeline health synthesis
+  if (ctx.pipelineHealth.overdueFollowups > 3) {
+    synthesisLines.push(`PROCESS HEALTH: ${ctx.pipelineHealth.overdueFollowups} overdue follow-ups — this signals execution breakdown, not pipeline quality`);
+  }
+  if (ctx.pipelineHealth.totalActive < 5) {
+    synthesisLines.push(`PIPELINE THIN: Only ${ctx.pipelineHealth.totalActive} active investors — diversification risk. Consider adding 3-5 new leads.`);
+  }
+
+  // Connect narrative drift to upcoming interactions
+  const strugglingTypes = ctx.narrativeDrift.filter(nd => nd.status === 'struggling');
+  if (strugglingTypes.length > 0) {
+    const struggleNames = strugglingTypes.map(s => s.investorType);
+    const affectedInvestors = ctx.investors.filter(inv => struggleNames.includes(inv.type));
+    if (affectedInvestors.length > 0) {
+      synthesisLines.push(`NARRATIVE RISK: ${affectedInvestors.length} active investors are types where narrative is struggling (${struggleNames.join(', ')}). Tailor pitch before next contact with: ${affectedInvestors.slice(0, 5).map(i => i.name).join(', ')}`);
+    }
+  }
+
+  // Contradiction detection: investors with high enthusiasm but no progression
+  for (const inv of ctx.investors) {
+    if (inv.meetingCount >= 3 && inv.enthusiasm >= 4) {
+      const earlyStatuses = ['identified', 'contacted', 'nda_signed', 'meeting_scheduled', 'met'];
+      if (earlyStatuses.includes(inv.status)) {
+        synthesisLines.push(`CONTRADICTION: ${inv.name} has enthusiasm ${inv.enthusiasm}/5 after ${inv.meetingCount} meetings but still at "${inv.status}" — possible politeness signal, probe for real conviction`);
+      }
+    }
+  }
+
+  if (synthesisLines.length > 0) {
+    lines.push('=== INTELLIGENCE SYNTHESIS (reasoning aids) ===');
+    for (const sl of synthesisLines) {
+      lines.push(sl);
+    }
+    lines.push('');
+  }
+
   return lines.join('\n');
 }

@@ -3,6 +3,7 @@ import { createClient } from '@libsql/client';
 import { computeInvestorScore, computeMomentumScore, computeConvictionTrajectory } from '@/lib/scoring';
 import type { ScoreSnapshot } from '@/lib/db';
 import type { Investor, Meeting, InvestorPortfolioCo, Objection } from '@/lib/types';
+import { getFullContext } from '@/lib/context-bus';
 
 function getClient() {
   return createClient({
@@ -34,6 +35,23 @@ const STATUS_PROGRESSION: Record<string, number> = {
 };
 
 const ACTIVE_STAGES = ['engaged', 'in_dd', 'term_sheet'];
+
+// ---------------------------------------------------------------------------
+// Intelligence Briefing types + builder
+// ---------------------------------------------------------------------------
+
+interface InsightItem {
+  type: 'critical' | 'opportunity' | 'risk' | 'trend';
+  title: string;
+  detail: string;
+  action: string;
+  dataSource: string;
+}
+
+interface IntelligenceBriefing {
+  insights: InsightItem[];
+  generatedAt: string;
+}
 
 // ---------------------------------------------------------------------------
 // Layer 1: Overnight Changes (24h deltas)
@@ -705,6 +723,197 @@ async function computeProcessHealth(
 }
 
 // ---------------------------------------------------------------------------
+// Layer 5: Intelligence Briefing — synthesizes ALL signals into actionable insights
+// ---------------------------------------------------------------------------
+
+async function computeIntelligenceBriefing(
+  investors: Investor[],
+  allMeetings: Meeting[],
+  criticalPath: CriticalPath,
+  convictionPulse: ConvictionPulse,
+  processHealth: ProcessHealth,
+): Promise<IntelligenceBriefing> {
+  const insights: InsightItem[] = [];
+
+  // Fetch full context for narrative weaknesses, keystones, calibration, timing
+  let fullCtx;
+  try {
+    fullCtx = await getFullContext();
+  } catch {
+    // Context bus unavailable — return empty briefing
+    return { insights: [], generatedAt: new Date().toISOString() };
+  }
+
+  // 1. Narrative weaknesses → "X investors questioning [topic] — strengthen section Y"
+  for (const nw of fullCtx.narrativeWeaknesses) {
+    const hasResponse = fullCtx.provenResponses.some(pr => pr.topic === nw.topic);
+    const severity = nw.investorCount >= 3 ? 'critical' : 'risk';
+    insights.push({
+      type: severity as 'critical' | 'risk',
+      title: `"${nw.topic}" questioned by ${nw.investorCount} investors`,
+      detail: `Investors: ${nw.investorNames.join(', ')}. ${nw.questionCount} total questions on this topic.${hasResponse ? ' A proven response exists in the playbook.' : ' No proven response yet.'}`,
+      action: hasResponse
+        ? `Use proven response for "${nw.topic}" in next meetings with ${nw.investorNames.join(', ')}. Also update documents to preemptively address this.`
+        : `Develop a strong response for "${nw.topic}" BEFORE next contact with ${nw.investorNames.join(', ')}. This is a narrative gap.`,
+      dataSource: 'narrative_weaknesses',
+    });
+  }
+
+  // 2. Keystone investors → "Closing [investor] would unlock [N] connected investors"
+  for (const ki of fullCtx.keystoneInvestors.slice(0, 2)) {
+    const keystoneInv = investors.find(i => i.id === ki.id);
+    if (!keystoneInv) continue;
+    const isAdvanced = ['engaged', 'in_dd', 'term_sheet'].includes(keystoneInv.status);
+    insights.push({
+      type: 'opportunity',
+      title: `Keystone: closing ${ki.name} unlocks ${ki.connectionCount} connected investors`,
+      detail: `Cascade value: ${ki.cascadeValue}. Current status: ${keystoneInv.status}.${isAdvanced ? ' Already in advanced stage — prioritize closing.' : ' Needs advancement — invest disproportionate time.'}`,
+      action: isAdvanced
+        ? `Prioritize ${ki.name} above all other investors this week. Their commitment creates cascade effects worth ${ki.cascadeValue}.`
+        : `Accelerate ${ki.name} to next stage. Their network position makes them the highest-leverage investor in the pipeline.`,
+      dataSource: 'keystone_investors',
+    });
+  }
+
+  // 3. Timing signals → competitive tension, engagement gaps, DD sync
+  for (const ts of fullCtx.timingSignals) {
+    if (ts.type === 'competitive_tension') {
+      insights.push({
+        type: 'opportunity',
+        title: `Competitive tension: ${ts.investorNames.length} investors active simultaneously`,
+        detail: ts.description,
+        action: `Leverage competitive tension in conversations. Mention (factually) that multiple investors are in advanced discussions. This creates urgency without pressure.`,
+        dataSource: 'timing_signals',
+      });
+    } else if (ts.type === 'engagement_gap') {
+      insights.push({
+        type: 'risk',
+        title: `Engagement gap: ${ts.investorNames.join(', ')} going silent`,
+        detail: ts.description,
+        action: `Re-engage ${ts.investorNames.join(', ')} within 48 hours with a value-add update (new data point, competitive intel, or milestone achieved).`,
+        dataSource: 'timing_signals',
+      });
+    } else if (ts.type === 'dd_synchronization') {
+      insights.push({
+        type: 'opportunity',
+        title: `DD synchronization: ${ts.investorNames.length} investors entering DD together`,
+        detail: ts.description,
+        action: `Synchronize DD timelines to create term sheet competition. Share (with permission) that multiple investors are in DD simultaneously.`,
+        dataSource: 'timing_signals',
+      });
+    }
+  }
+
+  // 4. Trajectory alerts → declining investors need intervention
+  for (const alert of convictionPulse.alerts) {
+    const inv = investors.find(i => i.id === alert.investorId);
+    if (!inv) continue;
+    const isHighValue = inv.tier <= 2;
+    insights.push({
+      type: isHighValue ? 'critical' : 'risk',
+      title: `${alert.investorName} enthusiasm dropping: ${alert.previousScore} → ${alert.currentScore}`,
+      detail: `Drop of ${alert.drop} points.${isHighValue ? ' This is a Tier ' + inv.tier + ' investor — losing them would be significant.' : ''}`,
+      action: `Diagnose the cause: check recent objections, competitive intel, or internal politics. Schedule a direct call with ${inv.partner || alert.investorName} to address concerns.`,
+      dataSource: 'conviction_pulse',
+    });
+  }
+
+  // 5. Pipeline health → funnel thin, overdue follow-ups, process breakdown
+  if (processHealth.activeInvestors < 5) {
+    insights.push({
+      type: 'critical',
+      title: `Pipeline thin: only ${processHealth.activeInvestors} active investors`,
+      detail: `Diversification risk is high. A single pass from a key investor could significantly impact the raise.`,
+      action: `Add 3-5 new investor leads this week. Focus on investors with thesis fit and warm paths to accelerate pipeline fill.`,
+      dataSource: 'pipeline_health',
+    });
+  }
+
+  if (processHealth.overdueFollowups > 3) {
+    insights.push({
+      type: 'risk',
+      title: `Execution breakdown: ${processHealth.overdueFollowups} overdue follow-ups`,
+      detail: `This signals process issues, not pipeline quality. Overdue follow-ups erode investor confidence.`,
+      action: `Block 2 hours today to clear all overdue follow-ups. Each day of delay reduces close probability.`,
+      dataSource: 'pipeline_health',
+    });
+  }
+
+  // 6. Prediction calibration → adjust confidence language
+  if (fullCtx.predictionCalibration.resolvedCount >= 5) {
+    if (fullCtx.predictionCalibration.biasDirection === 'over_confident') {
+      insights.push({
+        type: 'trend',
+        title: `Predictions have been over-confident — adjust expectations`,
+        detail: `Brier score: ${fullCtx.predictionCalibration.brierScore.toFixed(3)}. Based on ${fullCtx.predictionCalibration.resolvedCount} resolved predictions. Actual outcomes have been worse than predicted.`,
+        action: `Reduce confidence in probability estimates by ~${Math.round(fullCtx.predictionCalibration.brierScore * 100)}%. Plan for lower conversion rates in pipeline forecasts.`,
+        dataSource: 'prediction_calibration',
+      });
+    } else if (fullCtx.predictionCalibration.biasDirection === 'under_confident') {
+      insights.push({
+        type: 'trend',
+        title: `Predictions have been conservative — actual outcomes are better`,
+        detail: `Brier score: ${fullCtx.predictionCalibration.brierScore.toFixed(3)}. Based on ${fullCtx.predictionCalibration.resolvedCount} resolved predictions.`,
+        action: `Consider being more aggressive with timeline estimates and conversion expectations.`,
+        dataSource: 'prediction_calibration',
+      });
+    }
+  }
+
+  // 7. Contradiction detection: high enthusiasm + no progression
+  const meetingsByInvestor: Record<string, Meeting[]> = {};
+  allMeetings.forEach(m => {
+    if (!meetingsByInvestor[m.investor_id]) meetingsByInvestor[m.investor_id] = [];
+    meetingsByInvestor[m.investor_id].push(m);
+  });
+
+  for (const inv of investors) {
+    if (['passed', 'dropped', 'closed'].includes(inv.status)) continue;
+    const meetings = meetingsByInvestor[inv.id] || [];
+    if (meetings.length < 3) continue;
+
+    const sorted = [...meetings].sort((a, b) => b.date.localeCompare(a.date));
+    const latestEnth = sorted[0]?.enthusiasm_score ?? 0;
+    const statusIdx = STATUS_PROGRESSION[inv.status] ?? 0;
+
+    // High enthusiasm (4+) but stuck in early stage (met or earlier) after 3+ meetings
+    if (latestEnth >= 4 && statusIdx <= 4 && meetings.length >= 3) {
+      insights.push({
+        type: 'risk',
+        title: `Contradiction: ${inv.name} shows high enthusiasm (${latestEnth}/5) but stuck at "${inv.status}" after ${meetings.length} meetings`,
+        detail: `This pattern often indicates politeness without conviction, or an internal blocker the investor hasn't surfaced. ${meetings.length} meetings without progression is a red flag.`,
+        action: `Directly ask ${inv.partner || inv.name}: "What would need to be true for you to move to DD this month?" If they can't answer specifically, deprioritize.`,
+        dataSource: 'contradiction_detection',
+      });
+    }
+  }
+
+  // 8. Narrative drift — struggling investor types
+  const struggling = fullCtx.narrativeDrift.filter(nd => nd.status === 'struggling');
+  if (struggling.length > 0) {
+    insights.push({
+      type: 'risk',
+      title: `Narrative not landing with: ${struggling.map(s => s.investorType).join(', ')}`,
+      detail: struggling.map(s =>
+        `${s.investorType}: avg enthusiasm ${s.avgEnthusiasm}/5, conversion ${s.conversionRate}%, top objection "${s.topObjection}" (n=${s.sampleSize})`
+      ).join('. '),
+      action: `Consider creating tailored pitch variants for ${struggling.map(s => s.investorType).join(', ')}. Address their specific objections upfront in presentations.`,
+      dataSource: 'narrative_drift',
+    });
+  }
+
+  // Sort: critical first, then opportunity, then risk, then trend
+  const typeOrder: Record<string, number> = { critical: 0, opportunity: 1, risk: 2, trend: 3 };
+  insights.sort((a, b) => (typeOrder[a.type] ?? 3) - (typeOrder[b.type] ?? 3));
+
+  // Cap at 7 insights to keep it actionable
+  return {
+    insights: insights.slice(0, 7),
+    generatedAt: new Date().toISOString(),
+  };
+}
+
+// ---------------------------------------------------------------------------
 // Main GET handler
 // ---------------------------------------------------------------------------
 
@@ -742,11 +951,17 @@ export async function GET() {
 
     const convictionPulse = computeConvictionPulse(investors, allMeetings);
 
+    // Layer 5: Intelligence Briefing — synthesize all signals into actionable insights
+    const intelligenceBriefing = await computeIntelligenceBriefing(
+      investors, allMeetings, criticalPath, convictionPulse, processHealth,
+    );
+
     return NextResponse.json({
       overnight,
       criticalPath,
       convictionPulse,
       processHealth,
+      intelligenceBriefing,
       generatedAt: new Date().toISOString(),
     });
   } catch (error) {
