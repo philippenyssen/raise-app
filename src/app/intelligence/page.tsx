@@ -16,14 +16,14 @@ type Tab = 'deals' | 'competitors' | 'briefs';
 const THREAT_STYLES: Record<string, { background: string; color: string }> = {
   critical: { background: 'var(--danger-muted)', color: 'var(--danger)' },
   high: { background: 'var(--warning-muted)', color: 'var(--warning)' },
-  medium: { background: 'rgba(245, 158, 11, 0.08)', color: '#fbbf24' },
+  medium: { background: 'rgba(240, 176, 96, 0.08)', color: '#f5c88a' },
   low: { background: 'var(--success-muted)', color: 'var(--success)' },
 };
 
 const BRIEF_TYPE_STYLES: Record<string, { background: string; color: string }> = {
   investor: { background: 'var(--accent-muted)', color: 'var(--accent)' },
   competitor: { background: 'var(--warning-muted)', color: 'var(--warning)' },
-  market: { background: 'rgba(168, 85, 247, 0.12)', color: '#c084fc' },
+  market: { background: 'rgba(167, 139, 250, 0.12)', color: '#c4b5fd' },
 };
 
 export default function IntelligencePage() {
@@ -486,7 +486,7 @@ export default function IntelligencePage() {
                               fontSize: '10px', fontWeight: 600, padding: '2px 6px',
                               borderRadius: 'var(--radius-sm)', textDecoration: 'none',
                               background: 'var(--accent-muted)', color: 'var(--accent)',
-                              border: '1px solid rgba(59,130,246,0.2)',
+                              border: '1px solid rgba(124,110,240,0.2)',
                             }}
                           >
                             Schedule
@@ -653,7 +653,7 @@ function RecentResearchSection({ briefs }: { briefs: IntelligenceBrief[] }) {
                         style={{
                           padding: '2px 8px', borderRadius: 'var(--radius-sm)',
                           background: 'var(--accent-muted)', color: 'var(--accent)',
-                          border: '1px solid rgba(59,130,246,0.2)', textDecoration: 'none',
+                          border: '1px solid rgba(124,110,240,0.2)', textDecoration: 'none',
                           fontWeight: 600,
                         }}
                       >

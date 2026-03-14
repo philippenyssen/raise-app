@@ -59,12 +59,12 @@ interface AccelerationData {
 // ---------------------------------------------------------------------------
 
 const TYPE_STYLES: Record<string, React.CSSProperties> = {
-  vc: { background: 'var(--accent-muted)', color: '#60a5fa', border: '1px solid rgba(59,130,246,0.25)' },
-  growth: { background: 'rgba(168,85,247,0.12)', color: '#c084fc', border: '1px solid rgba(168,85,247,0.25)' },
-  sovereign: { background: 'var(--warning-muted)', color: '#fbbf24', border: '1px solid rgba(245,158,11,0.25)' },
-  strategic: { background: 'rgba(20,184,166,0.12)', color: '#2dd4bf', border: '1px solid rgba(20,184,166,0.25)' },
+  vc: { background: 'var(--accent-muted)', color: '#9b8ffa', border: '1px solid rgba(124,110,240,0.25)' },
+  growth: { background: 'rgba(167,139,250,0.12)', color: '#c4b5fd', border: '1px solid rgba(167,139,250,0.25)' },
+  sovereign: { background: 'var(--warning-muted)', color: '#f5c88a', border: '1px solid rgba(240,176,96,0.25)' },
+  strategic: { background: 'rgba(45,212,191,0.12)', color: '#2dd4bf', border: '1px solid rgba(45,212,191,0.25)' },
   debt: { background: 'var(--surface-2)', color: 'var(--text-secondary)', border: '1px solid var(--border-default)' },
-  family_office: { background: 'rgba(244,63,94,0.12)', color: '#fb7185', border: '1px solid rgba(244,63,94,0.25)' },
+  family_office: { background: 'rgba(240,96,112,0.12)', color: '#f5909a', border: '1px solid rgba(240,96,112,0.25)' },
 };
 
 const TYPE_LABELS: Record<string, string> = {
@@ -81,12 +81,12 @@ const STATUS_LABELS: Record<string, string> = {
 const STATUS_STYLES: Record<string, React.CSSProperties> = {
   identified: { background: 'var(--surface-2)', color: 'var(--text-tertiary)', border: '1px solid var(--border-default)' },
   contacted: { background: 'var(--surface-2)', color: 'var(--text-secondary)', border: '1px solid var(--border-strong)' },
-  nda_signed: { background: 'var(--accent-muted)', color: '#60a5fa', border: '1px solid rgba(59,130,246,0.25)' },
-  meeting_scheduled: { background: 'var(--accent-muted)', color: '#93c5fd', border: '1px solid rgba(59,130,246,0.25)' },
-  met: { background: 'rgba(168,85,247,0.12)', color: '#c084fc', border: '1px solid rgba(168,85,247,0.25)' },
-  engaged: { background: 'rgba(168,85,247,0.12)', color: '#d8b4fe', border: '1px solid rgba(168,85,247,0.2)' },
-  in_dd: { background: 'var(--warning-muted)', color: '#fb923c', border: '1px solid rgba(245,158,11,0.25)' },
-  term_sheet: { background: 'var(--success-muted)', color: '#4ade80', border: '1px solid rgba(34,197,94,0.25)' },
+  nda_signed: { background: 'var(--accent-muted)', color: '#9b8ffa', border: '1px solid rgba(124,110,240,0.25)' },
+  meeting_scheduled: { background: 'var(--accent-muted)', color: '#b4a8fc', border: '1px solid rgba(124,110,240,0.25)' },
+  met: { background: 'rgba(167,139,250,0.12)', color: '#c4b5fd', border: '1px solid rgba(167,139,250,0.25)' },
+  engaged: { background: 'rgba(167,139,250,0.12)', color: '#d5c8fd', border: '1px solid rgba(167,139,250,0.2)' },
+  in_dd: { background: 'var(--warning-muted)', color: '#f5b08a', border: '1px solid rgba(240,176,96,0.25)' },
+  term_sheet: { background: 'var(--success-muted)', color: '#5ee8b7', border: '1px solid rgba(52,211,153,0.25)' },
 };
 
 const MOMENTUM_STYLE: Record<string, React.CSSProperties> = {
@@ -104,12 +104,12 @@ const MOMENTUM_LABELS: Record<string, string> = {
 };
 
 const TRIGGER_STYLES: Record<string, React.CSSProperties> = {
-  momentum_cliff: { background: 'rgba(249,115,22,0.12)', color: '#fb923c', border: '1px solid rgba(249,115,22,0.25)' },
-  stall_risk: { background: 'var(--danger-muted)', color: '#f87171', border: '1px solid rgba(239,68,68,0.25)' },
-  window_closing: { background: 'var(--warning-muted)', color: '#fbbf24', border: '1px solid rgba(245,158,11,0.25)' },
-  catalyst_match: { background: 'var(--accent-muted)', color: '#60a5fa', border: '1px solid rgba(59,130,246,0.25)' },
-  competitive_pressure: { background: 'rgba(168,85,247,0.12)', color: '#c084fc', border: '1px solid rgba(168,85,247,0.25)' },
-  term_sheet_ready: { background: 'var(--success-muted)', color: '#4ade80', border: '1px solid rgba(34,197,94,0.25)' },
+  momentum_cliff: { background: 'rgba(249,115,22,0.12)', color: '#f5b08a', border: '1px solid rgba(249,115,22,0.25)' },
+  stall_risk: { background: 'var(--danger-muted)', color: '#f5909a', border: '1px solid rgba(240,96,112,0.25)' },
+  window_closing: { background: 'var(--warning-muted)', color: '#f5c88a', border: '1px solid rgba(240,176,96,0.25)' },
+  catalyst_match: { background: 'var(--accent-muted)', color: '#9b8ffa', border: '1px solid rgba(124,110,240,0.25)' },
+  competitive_pressure: { background: 'rgba(167,139,250,0.12)', color: '#c4b5fd', border: '1px solid rgba(167,139,250,0.25)' },
+  term_sheet_ready: { background: 'var(--success-muted)', color: '#5ee8b7', border: '1px solid rgba(52,211,153,0.25)' },
 };
 
 const TRIGGER_LABELS: Record<string, string> = {
@@ -122,14 +122,14 @@ const TRIGGER_LABELS: Record<string, string> = {
 };
 
 const CONFIDENCE_STYLES: Record<string, React.CSSProperties> = {
-  high: { background: 'var(--success-muted)', color: '#4ade80', border: '1px solid rgba(34,197,94,0.25)' },
-  medium: { background: 'var(--warning-muted)', color: '#fbbf24', border: '1px solid rgba(245,158,11,0.25)' },
+  high: { background: 'var(--success-muted)', color: '#5ee8b7', border: '1px solid rgba(52,211,153,0.25)' },
+  medium: { background: 'var(--warning-muted)', color: '#f5c88a', border: '1px solid rgba(240,176,96,0.25)' },
   low: { background: 'var(--surface-2)', color: 'var(--text-tertiary)', border: '1px solid var(--border-default)' },
 };
 
 const URGENCY_STYLE: Record<string, React.CSSProperties> = {
   immediate: { color: 'var(--danger)' },
-  '48h': { color: '#f97316' },
+  '48h': { color: '#f59e6b' },
   this_week: { color: 'var(--warning)' },
   next_week: { color: 'var(--text-tertiary)' },
 };
@@ -285,7 +285,7 @@ function ActionCard({
                 fontSize: 'var(--font-size-sm)',
                 fontWeight: 500,
                 ...(isExecuted
-                  ? { background: 'var(--success-muted)', color: 'var(--success)', border: '1px solid rgba(34,197,94,0.2)' }
+                  ? { background: 'var(--success-muted)', color: 'var(--success)', border: '1px solid rgba(52,211,153,0.2)' }
                   : { background: 'var(--surface-2)', color: 'var(--text-muted)', border: '1px solid var(--border-default)' }
                 ),
               }}
@@ -301,7 +301,7 @@ function ActionCard({
                 className="flex items-center gap-1.5 transition-colors"
                 style={{
                   padding: '8px 12px',
-                  background: execHovered ? 'rgba(59,130,246,0.8)' : 'var(--accent)',
+                  background: execHovered ? 'rgba(124,110,240,0.8)' : 'var(--accent)',
                   borderRadius: 'var(--radius-md)',
                   fontSize: 'var(--font-size-sm)',
                   fontWeight: 500,
@@ -343,7 +343,7 @@ function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
   return (
     <div
       style={{
-        border: '1px solid rgba(34,197,94,0.15)',
+        border: '1px solid rgba(52,211,153,0.15)',
         background: 'var(--success-muted)',
         borderRadius: 'var(--radius-lg)',
         padding: '16px',
@@ -383,15 +383,15 @@ function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
         className="inline-flex items-center gap-1.5 transition-colors"
         style={{
           padding: '6px 12px',
-          background: 'rgba(34,197,94,0.15)',
-          border: '1px solid rgba(34,197,94,0.2)',
+          background: 'rgba(52,211,153,0.15)',
+          border: '1px solid rgba(52,211,153,0.2)',
           borderRadius: 'var(--radius-md)',
           fontSize: 'var(--font-size-sm)',
-          color: '#86efac',
+          color: '#86efce',
           fontWeight: 500,
         }}
-        onMouseEnter={e => (e.currentTarget.style.background = 'rgba(34,197,94,0.25)')}
-        onMouseLeave={e => (e.currentTarget.style.background = 'rgba(34,197,94,0.15)')}
+        onMouseEnter={e => (e.currentTarget.style.background = 'rgba(52,211,153,0.25)')}
+        onMouseLeave={e => (e.currentTarget.style.background = 'rgba(52,211,153,0.15)')}
       >
         <Rocket className="w-3 h-3" />
         Push for Term Sheet
@@ -411,7 +411,7 @@ function AtRiskCard({ investor }: { investor: InvestorSummary }) {
       }}
     >
       <div className="flex items-center gap-2 mb-2">
-        <Shield className="w-3.5 h-3.5" style={{ color: '#f97316' }} />
+        <Shield className="w-3.5 h-3.5" style={{ color: '#f59e6b' }} />
         <Link
           href={`/investors/${investor.investorId}`}
           className="transition-colors"
@@ -428,7 +428,7 @@ function AtRiskCard({ investor }: { investor: InvestorSummary }) {
       </div>
       <div className="flex items-center gap-3 mb-2">
         <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-          Score: <span style={{ color: '#f97316', fontWeight: 700 }}>{investor.score}</span>/100
+          Score: <span style={{ color: '#f59e6b', fontWeight: 700 }}>{investor.score}</span>/100
         </span>
         <span style={{ fontSize: '11px', ...(MOMENTUM_STYLE[investor.momentum] ?? {}) }}>
           {investor.momentum === 'decelerating' || investor.momentum === 'stalled'
@@ -617,7 +617,7 @@ export default function AccelerationPage() {
             className="inline-flex items-center gap-2 rounded-lg transition-colors"
             style={{
               padding: '8px 16px',
-              background: retryHovered ? 'rgba(59,130,246,0.8)' : 'var(--accent)',
+              background: retryHovered ? 'rgba(124,110,240,0.8)' : 'var(--accent)',
               color: 'white',
               fontSize: 'var(--font-size-sm)',
               border: 'none',
@@ -686,7 +686,7 @@ export default function AccelerationPage() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div
           className="rounded-xl p-4"
-          style={{ border: '1px solid rgba(239,68,68,0.15)', background: 'var(--danger-muted)' }}
+          style={{ border: '1px solid rgba(240,96,112,0.15)', background: 'var(--danger-muted)' }}
         >
           <div className="flex items-center gap-2 mb-1" style={{ color: 'var(--danger)', fontSize: 'var(--font-size-sm)' }}>
             <AlertTriangle className="w-3.5 h-3.5" /> Immediate
@@ -696,7 +696,7 @@ export default function AccelerationPage() {
         </div>
         <div
           className="rounded-xl p-4"
-          style={{ border: '1px solid rgba(245,158,11,0.15)', background: 'var(--warning-muted)' }}
+          style={{ border: '1px solid rgba(240,176,96,0.15)', background: 'var(--warning-muted)' }}
         >
           <div className="flex items-center gap-2 mb-1" style={{ color: 'var(--warning)', fontSize: 'var(--font-size-sm)' }}>
             <Clock className="w-3.5 h-3.5" /> This Week
@@ -706,7 +706,7 @@ export default function AccelerationPage() {
         </div>
         <div
           className="rounded-xl p-4"
-          style={{ border: '1px solid rgba(34,197,94,0.15)', background: 'var(--success-muted)' }}
+          style={{ border: '1px solid rgba(52,211,153,0.15)', background: 'var(--success-muted)' }}
         >
           <div className="flex items-center gap-2 mb-1" style={{ color: 'var(--success)', fontSize: 'var(--font-size-sm)' }}>
             <Rocket className="w-3.5 h-3.5" /> Term Sheet Ready
@@ -751,7 +751,7 @@ export default function AccelerationPage() {
                   padding: '2px 6px',
                   fontSize: '10px',
                   background: activeTab === tab.key ? 'var(--accent-muted)' : 'var(--surface-2)',
-                  color: activeTab === tab.key ? '#93c5fd' : 'var(--text-muted)',
+                  color: activeTab === tab.key ? '#b4a8fc' : 'var(--text-muted)',
                 }}
               >
                 {tab.count}
@@ -767,7 +767,7 @@ export default function AccelerationPage() {
           <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--success)', textTransform: 'uppercase' as const, letterSpacing: '0.05em' }}>
             <CheckCircle className="w-3.5 h-3.5" /> Term Sheet Ready ({data.termSheetReady.length})
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3" style={{ borderLeft: '3px solid rgba(34,197,94,0.4)', paddingLeft: '12px' }}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3" style={{ borderLeft: '3px solid rgba(52,211,153,0.4)', paddingLeft: '12px' }}>
             {data.termSheetReady.map(inv => (
               <TermSheetReadyCard key={inv.investorId} investor={inv} />
             ))}
@@ -781,7 +781,7 @@ export default function AccelerationPage() {
           <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--danger)', textTransform: 'uppercase' as const, letterSpacing: '0.05em' }}>
             <AlertTriangle className="w-3.5 h-3.5" /> Immediate Actions ({immediateActions.length})
           </h2>
-          <div className="space-y-2" style={{ borderLeft: '3px solid rgba(239,68,68,0.4)', paddingLeft: '12px' }}>
+          <div className="space-y-2" style={{ borderLeft: '3px solid rgba(240,96,112,0.4)', paddingLeft: '12px' }}>
             {immediateActions.map(item => (
               <ActionCard
                 key={item.id}
@@ -820,7 +820,7 @@ export default function AccelerationPage() {
       {/* At Risk */}
       {data.atRisk.length > 0 && (activeTab === 'all' || activeTab === 'pending') && (
         <div>
-          <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: '#f97316', textTransform: 'uppercase' as const, letterSpacing: '0.05em' }}>
+          <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: '#f59e6b', textTransform: 'uppercase' as const, letterSpacing: '0.05em' }}>
             <Shield className="w-3.5 h-3.5" /> At Risk ({data.atRisk.length})
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3" style={{ borderLeft: '3px solid rgba(249,115,22,0.4)', paddingLeft: '12px' }}>

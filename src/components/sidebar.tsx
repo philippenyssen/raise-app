@@ -258,7 +258,7 @@ export function Sidebar() {
                               height: '7px',
                               borderRadius: '50%',
                               background: 'var(--danger)',
-                              boxShadow: '0 0 4px rgba(239, 68, 68, 0.5)',
+                              boxShadow: '0 0 4px rgba(240, 96, 112, 0.5)',
                             }}
                           />
                         )}
@@ -272,7 +272,7 @@ export function Sidebar() {
                               height: '7px',
                               borderRadius: '50%',
                               background: 'var(--accent)',
-                              boxShadow: '0 0 4px rgba(59, 130, 246, 0.5)',
+                              boxShadow: '0 0 4px rgba(124, 110, 240, 0.5)',
                             }}
                           />
                         )}
@@ -289,7 +289,7 @@ export function Sidebar() {
                                 height: '6px',
                                 borderRadius: '50%',
                                 background: 'var(--danger)',
-                                boxShadow: '0 0 6px rgba(239, 68, 68, 0.4)',
+                                boxShadow: '0 0 6px rgba(240, 96, 112, 0.4)',
                               }}
                             />
                           )}

@@ -33,7 +33,7 @@ export class ErrorBoundary extends Component<Props, State> {
         <div
           className="text-center"
           style={{
-            border: '1px solid rgba(239, 68, 68, 0.2)',
+            border: '1px solid rgba(240, 96, 112, 0.2)',
             background: 'var(--danger-muted)',
             borderRadius: 'var(--radius-lg)',
             padding: 'var(--space-8)',

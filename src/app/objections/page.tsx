@@ -101,24 +101,24 @@ type Tab = 'playbook' | 'effectiveness';
 const TOPIC_COLORS: Record<string, { bg: React.CSSProperties; text: React.CSSProperties; border: React.CSSProperties; dotColor: string; textColor: string }> = {
   valuation: {
     bg: { background: 'rgba(147, 51, 234, 0.15)' },
-    text: { color: '#c084fc' },
+    text: { color: '#c4b5fd' },
     border: { borderColor: 'rgba(126, 34, 206, 0.35)' },
-    dotColor: '#c084fc',
-    textColor: '#c084fc',
+    dotColor: '#c4b5fd',
+    textColor: '#c4b5fd',
   },
   competition: {
     bg: { background: 'rgba(234, 88, 12, 0.15)' },
-    text: { color: '#fb923c' },
+    text: { color: '#f5b08a' },
     border: { borderColor: 'rgba(194, 65, 12, 0.35)' },
-    dotColor: '#fb923c',
-    textColor: '#fb923c',
+    dotColor: '#f5b08a',
+    textColor: '#f5b08a',
   },
   team: {
     bg: { background: 'rgba(6, 182, 212, 0.15)' },
-    text: { color: '#22d3ee' },
+    text: { color: '#2dd4bf' },
     border: { borderColor: 'rgba(14, 116, 144, 0.35)' },
-    dotColor: '#22d3ee',
-    textColor: '#22d3ee',
+    dotColor: '#2dd4bf',
+    textColor: '#2dd4bf',
   },
   execution: {
     bg: { background: 'rgba(202, 138, 4, 0.15)' },
@@ -129,17 +129,17 @@ const TOPIC_COLORS: Record<string, { bg: React.CSSProperties; text: React.CSSPro
   },
   financial: {
     bg: { background: 'rgba(22, 163, 74, 0.15)' },
-    text: { color: '#4ade80' },
+    text: { color: '#5ee8b7' },
     border: { borderColor: 'rgba(21, 128, 61, 0.35)' },
-    dotColor: '#4ade80',
-    textColor: '#4ade80',
+    dotColor: '#5ee8b7',
+    textColor: '#5ee8b7',
   },
   market: {
     bg: { background: 'rgba(37, 99, 235, 0.15)' },
-    text: { color: '#60a5fa' },
+    text: { color: '#9b8ffa' },
     border: { borderColor: 'rgba(30, 64, 175, 0.35)' },
-    dotColor: '#60a5fa',
-    textColor: '#60a5fa',
+    dotColor: '#9b8ffa',
+    textColor: '#9b8ffa',
   },
   technical: {
     bg: { background: 'rgba(79, 70, 229, 0.15)' },
@@ -150,17 +150,17 @@ const TOPIC_COLORS: Record<string, { bg: React.CSSProperties; text: React.CSSPro
   },
   risk: {
     bg: { background: 'rgba(220, 38, 38, 0.15)' },
-    text: { color: '#f87171' },
+    text: { color: '#f5909a' },
     border: { borderColor: 'rgba(153, 27, 27, 0.35)' },
-    dotColor: '#f87171',
-    textColor: '#f87171',
+    dotColor: '#f5909a',
+    textColor: '#f5909a',
   },
   timing: {
     bg: { background: 'rgba(217, 119, 6, 0.15)' },
-    text: { color: '#fbbf24' },
+    text: { color: '#f5c88a' },
     border: { borderColor: 'rgba(146, 64, 14, 0.35)' },
-    dotColor: '#fbbf24',
-    textColor: '#fbbf24',
+    dotColor: '#f5c88a',
+    textColor: '#f5c88a',
   },
   structure: {
     bg: { background: 'rgba(13, 148, 136, 0.15)' },
@@ -224,7 +224,7 @@ function CopyButton({ text }: { text: string }) {
 
 function BestResponseCard({ response }: { response: ObjectionRecord }) {
   return (
-    <div className="mx-4 mt-3 p-3 rounded-lg" style={{ background: 'var(--success-muted)', border: '1px solid rgba(34, 197, 94, 0.2)' }}>
+    <div className="mx-4 mt-3 p-3 rounded-lg" style={{ background: 'var(--success-muted)', border: '1px solid rgba(52, 211, 153, 0.2)' }}>
       <div className="flex items-center justify-between mb-1">
         <div className="flex items-center gap-2">
           <CheckCircle2 className="w-3.5 h-3.5" style={{ color: 'var(--success)' }} />
@@ -723,7 +723,7 @@ export default function ObjectionsPage() {
             {/* Meeting Prep */}
             <div className="rounded-xl p-4 space-y-3" style={{ border: '1px solid var(--border-subtle)' }}>
               <div className="flex items-center gap-2">
-                <Target className="w-4 h-4" style={{ color: '#8b5cf6' }} />
+                <Target className="w-4 h-4" style={{ color: '#7c6ef0' }} />
                 <h3 className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--text-tertiary)' }}>Meeting Prep</h3>
               </div>
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Select an investor to see their objection history and what worked with similar investors.</p>
@@ -769,7 +769,7 @@ export default function ObjectionsPage() {
                           borderRadius: 'var(--radius-sm)',
                           background: 'var(--accent-muted)',
                         }}
-                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(59,130,246,0.2)'; }}
+                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(124,110,240,0.2)'; }}
                         onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--accent-muted)'; }}
                       >
                         <Calendar className="w-3 h-3" />
@@ -842,7 +842,7 @@ export default function ObjectionsPage() {
                         {bestFromPlaybook.map(({ topic, response }) => {
                           const color = getTopicColor(topic);
                           return (
-                            <div key={topic} className="p-2 rounded-lg space-y-1" style={{ background: 'var(--success-muted)', border: '1px solid rgba(34, 197, 94, 0.15)' }}>
+                            <div key={topic} className="p-2 rounded-lg space-y-1" style={{ background: 'var(--success-muted)', border: '1px solid rgba(52, 211, 153, 0.15)' }}>
                               <span
                                 className="px-1 py-0.5 rounded"
                                 style={{ fontSize: '10px', ...color.bg, ...color.text }}
@@ -1072,7 +1072,7 @@ function EffectivenessTab({
 
                       {/* Best / worst response */}
                       {te.best_response && (
-                        <div className="p-2 rounded-lg" style={{ background: 'var(--success-muted)', border: '1px solid rgba(34, 197, 94, 0.15)' }}>
+                        <div className="p-2 rounded-lg" style={{ background: 'var(--success-muted)', border: '1px solid rgba(52, 211, 153, 0.15)' }}>
                           <div className="flex items-center gap-1 mb-1">
                             <ThumbsUp className="w-3 h-3" style={{ color: 'var(--success)' }} />
                             <span className="text-xs font-medium" style={{ color: 'var(--success)' }}>Best response</span>
@@ -1081,7 +1081,7 @@ function EffectivenessTab({
                         </div>
                       )}
                       {te.worst_response && (
-                        <div className="p-2 rounded-lg" style={{ background: 'var(--danger-muted)', border: '1px solid rgba(239, 68, 68, 0.15)' }}>
+                        <div className="p-2 rounded-lg" style={{ background: 'var(--danger-muted)', border: '1px solid rgba(240, 96, 112, 0.15)' }}>
                           <div className="flex items-center gap-1 mb-1">
                             <ThumbsDown className="w-3 h-3" style={{ color: 'var(--danger)' }} />
                             <span className="text-xs font-medium" style={{ color: 'var(--danger)' }}>Worst response</span>

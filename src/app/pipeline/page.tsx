@@ -40,28 +40,28 @@ const COLUMN_COLORS: Record<InvestorStatus, {
   badge: React.CSSProperties;
 }> = {
   identified: {
-    header: { background: 'rgba(113, 113, 122, 0.15)' },
+    header: { background: 'rgba(255, 255, 255, 0.15)' },
     border: { borderColor: 'var(--border-subtle)' },
-    bg: { background: 'rgba(113, 113, 122, 0.04)' },
-    badge: { background: 'rgba(113, 113, 122, 0.25)', color: 'var(--text-secondary)' },
+    bg: { background: 'rgba(255, 255, 255, 0.04)' },
+    badge: { background: 'rgba(255, 255, 255, 0.25)', color: 'var(--text-secondary)' },
   },
   contacted: {
-    header: { background: 'rgba(59, 130, 246, 0.1)' },
-    border: { borderColor: 'rgba(59, 130, 246, 0.2)' },
-    bg: { background: 'rgba(59, 130, 246, 0.03)' },
-    badge: { background: 'rgba(59, 130, 246, 0.25)', color: '#60a5fa' },
+    header: { background: 'rgba(124, 110, 240, 0.1)' },
+    border: { borderColor: 'rgba(124, 110, 240, 0.2)' },
+    bg: { background: 'rgba(124, 110, 240, 0.03)' },
+    badge: { background: 'rgba(124, 110, 240, 0.25)', color: '#9b8ffa' },
   },
   nda_signed: {
-    header: { background: 'rgba(59, 130, 246, 0.15)' },
-    border: { borderColor: 'rgba(59, 130, 246, 0.25)' },
-    bg: { background: 'rgba(59, 130, 246, 0.04)' },
-    badge: { background: 'rgba(59, 130, 246, 0.3)', color: '#93bbfd' },
+    header: { background: 'rgba(124, 110, 240, 0.15)' },
+    border: { borderColor: 'rgba(124, 110, 240, 0.25)' },
+    bg: { background: 'rgba(124, 110, 240, 0.04)' },
+    badge: { background: 'rgba(124, 110, 240, 0.3)', color: '#b4a8fc' },
   },
   meeting_scheduled: {
     header: { background: 'rgba(99, 102, 241, 0.12)' },
     border: { borderColor: 'rgba(99, 102, 241, 0.25)' },
     bg: { background: 'rgba(99, 102, 241, 0.03)' },
-    badge: { background: 'rgba(99, 102, 241, 0.3)', color: '#a5b4fc' },
+    badge: { background: 'rgba(99, 102, 241, 0.3)', color: '#c4b5fd' },
   },
   met: {
     header: { background: 'rgba(139, 92, 246, 0.12)' },
@@ -70,48 +70,48 @@ const COLUMN_COLORS: Record<InvestorStatus, {
     badge: { background: 'rgba(139, 92, 246, 0.3)', color: '#c4b5fd' },
   },
   engaged: {
-    header: { background: 'rgba(168, 85, 247, 0.12)' },
-    border: { borderColor: 'rgba(168, 85, 247, 0.25)' },
-    bg: { background: 'rgba(168, 85, 247, 0.03)' },
-    badge: { background: 'rgba(168, 85, 247, 0.3)', color: '#d8b4fe' },
+    header: { background: 'rgba(167, 139, 250, 0.12)' },
+    border: { borderColor: 'rgba(167, 139, 250, 0.25)' },
+    bg: { background: 'rgba(167, 139, 250, 0.03)' },
+    badge: { background: 'rgba(167, 139, 250, 0.3)', color: '#d5c8fd' },
   },
   in_dd: {
-    header: { background: 'rgba(245, 158, 11, 0.12)' },
-    border: { borderColor: 'rgba(245, 158, 11, 0.25)' },
-    bg: { background: 'rgba(245, 158, 11, 0.03)' },
-    badge: { background: 'rgba(245, 158, 11, 0.3)', color: '#fbbf24' },
+    header: { background: 'rgba(240, 176, 96, 0.12)' },
+    border: { borderColor: 'rgba(240, 176, 96, 0.25)' },
+    bg: { background: 'rgba(240, 176, 96, 0.03)' },
+    badge: { background: 'rgba(240, 176, 96, 0.3)', color: '#f5c88a' },
   },
   term_sheet: {
-    header: { background: 'rgba(34, 197, 94, 0.1)' },
-    border: { borderColor: 'rgba(34, 197, 94, 0.25)' },
-    bg: { background: 'rgba(34, 197, 94, 0.03)' },
-    badge: { background: 'rgba(34, 197, 94, 0.3)', color: '#4ade80' },
+    header: { background: 'rgba(52, 211, 153, 0.1)' },
+    border: { borderColor: 'rgba(52, 211, 153, 0.25)' },
+    bg: { background: 'rgba(52, 211, 153, 0.03)' },
+    badge: { background: 'rgba(52, 211, 153, 0.3)', color: '#5ee8b7' },
   },
   closed: {
-    header: { background: 'rgba(34, 197, 94, 0.15)' },
-    border: { borderColor: 'rgba(34, 197, 94, 0.3)' },
-    bg: { background: 'rgba(34, 197, 94, 0.05)' },
-    badge: { background: 'rgba(34, 197, 94, 0.35)', color: '#86efac' },
+    header: { background: 'rgba(52, 211, 153, 0.15)' },
+    border: { borderColor: 'rgba(52, 211, 153, 0.3)' },
+    bg: { background: 'rgba(52, 211, 153, 0.05)' },
+    badge: { background: 'rgba(52, 211, 153, 0.35)', color: '#86efce' },
   },
   passed: {
-    header: { background: 'rgba(239, 68, 68, 0.08)' },
-    border: { borderColor: 'rgba(239, 68, 68, 0.2)' },
-    bg: { background: 'rgba(239, 68, 68, 0.03)' },
-    badge: { background: 'rgba(239, 68, 68, 0.25)', color: '#f87171' },
+    header: { background: 'rgba(240, 96, 112, 0.08)' },
+    border: { borderColor: 'rgba(240, 96, 112, 0.2)' },
+    bg: { background: 'rgba(240, 96, 112, 0.03)' },
+    badge: { background: 'rgba(240, 96, 112, 0.25)', color: '#f5909a' },
   },
   dropped: {
-    header: { background: 'rgba(113, 113, 122, 0.1)' },
+    header: { background: 'rgba(255, 255, 255, 0.1)' },
     border: { borderColor: 'var(--border-subtle)' },
-    bg: { background: 'rgba(113, 113, 122, 0.03)' },
-    badge: { background: 'rgba(113, 113, 122, 0.2)', color: 'var(--text-tertiary)' },
+    bg: { background: 'rgba(255, 255, 255, 0.03)' },
+    badge: { background: 'rgba(255, 255, 255, 0.2)', color: 'var(--text-tertiary)' },
   },
 };
 
 const TIER_STYLES: Record<number, React.CSSProperties> = {
-  1: { background: 'var(--accent-muted)', color: '#60a5fa', borderColor: 'rgba(59, 130, 246, 0.3)' },
-  2: { background: 'rgba(168, 85, 247, 0.12)', color: '#c084fc', borderColor: 'rgba(168, 85, 247, 0.3)' },
-  3: { background: 'rgba(113, 113, 122, 0.12)', color: 'var(--text-secondary)', borderColor: 'var(--border-default)' },
-  4: { background: 'rgba(113, 113, 122, 0.08)', color: 'var(--text-muted)', borderColor: 'var(--border-subtle)' },
+  1: { background: 'var(--accent-muted)', color: '#9b8ffa', borderColor: 'rgba(124, 110, 240, 0.3)' },
+  2: { background: 'rgba(167, 139, 250, 0.12)', color: '#c4b5fd', borderColor: 'rgba(167, 139, 250, 0.3)' },
+  3: { background: 'rgba(255, 255, 255, 0.12)', color: 'var(--text-secondary)', borderColor: 'var(--border-default)' },
+  4: { background: 'rgba(255, 255, 255, 0.08)', color: 'var(--text-muted)', borderColor: 'var(--border-subtle)' },
 };
 
 const TYPE_LABELS: Record<InvestorType, string> = {
@@ -133,12 +133,12 @@ const TYPE_ICONS: Record<InvestorType, React.ComponentType<{ className?: string 
 };
 
 const TYPE_STYLES: Record<InvestorType, React.CSSProperties> = {
-  vc: { background: 'var(--accent-muted)', color: '#60a5fa', borderColor: 'rgba(59, 130, 246, 0.3)' },
-  growth: { background: 'rgba(168, 85, 247, 0.12)', color: '#c084fc', borderColor: 'rgba(168, 85, 247, 0.3)' },
-  sovereign: { background: 'var(--warning-muted)', color: '#fbbf24', borderColor: 'rgba(245, 158, 11, 0.3)' },
-  strategic: { background: 'var(--success-muted)', color: '#4ade80', borderColor: 'rgba(34, 197, 94, 0.3)' },
-  debt: { background: 'rgba(249, 115, 22, 0.12)', color: '#fb923c', borderColor: 'rgba(249, 115, 22, 0.3)' },
-  family_office: { background: 'rgba(244, 63, 94, 0.12)', color: '#fb7185', borderColor: 'rgba(244, 63, 94, 0.3)' },
+  vc: { background: 'var(--accent-muted)', color: '#9b8ffa', borderColor: 'rgba(124, 110, 240, 0.3)' },
+  growth: { background: 'rgba(167, 139, 250, 0.12)', color: '#c4b5fd', borderColor: 'rgba(167, 139, 250, 0.3)' },
+  sovereign: { background: 'var(--warning-muted)', color: '#f5c88a', borderColor: 'rgba(240, 176, 96, 0.3)' },
+  strategic: { background: 'var(--success-muted)', color: '#5ee8b7', borderColor: 'rgba(52, 211, 153, 0.3)' },
+  debt: { background: 'rgba(249, 115, 22, 0.12)', color: '#f5b08a', borderColor: 'rgba(249, 115, 22, 0.3)' },
+  family_office: { background: 'rgba(240, 96, 112, 0.12)', color: '#f5909a', borderColor: 'rgba(240, 96, 112, 0.3)' },
 };
 
 // ── Pipeline velocity stage weights ──────────────────────────────────
@@ -151,7 +151,7 @@ const STAGE_WEIGHTS: Record<InvestorStatus, number> = {
 // ── Stat icon color map ──────────────────────────────────────────────
 const STAT_ICON_COLORS: Record<string, string> = {
   blue: 'var(--accent)',
-  purple: '#a855f7',
+  purple: '#a78bfa',
   amber: 'var(--warning)',
   emerald: 'var(--success)',
 };
@@ -503,8 +503,8 @@ export default function PipelinePage() {
                   ...colors.border,
                   transition: 'all 150ms ease',
                   ...(isOver ? {
-                    boxShadow: '0 0 0 2px rgba(59, 130, 246, 0.4)',
-                    borderColor: 'rgba(59, 130, 246, 0.5)',
+                    boxShadow: '0 0 0 2px rgba(124, 110, 240, 0.4)',
+                    borderColor: 'rgba(124, 110, 240, 0.5)',
                   } : {}),
                 }}
                 onDragOver={e => handleDragOver(e, status)}
@@ -596,8 +596,8 @@ export default function PipelinePage() {
                     ...colors.border,
                     transition: 'all 150ms ease',
                     ...(isOver ? {
-                      boxShadow: '0 0 0 2px rgba(59, 130, 246, 0.4)',
-                      borderColor: 'rgba(59, 130, 246, 0.5)',
+                      boxShadow: '0 0 0 2px rgba(124, 110, 240, 0.4)',
+                      borderColor: 'rgba(124, 110, 240, 0.5)',
                     } : {}),
                   }}
                   onDragOver={e => handleDragOver(e, status)}
@@ -699,8 +699,8 @@ function FilterButton({
         ...(active
           ? {
               background: 'var(--accent-muted)',
-              borderColor: 'rgba(59, 130, 246, 0.4)',
-              color: '#60a5fa',
+              borderColor: 'rgba(124, 110, 240, 0.4)',
+              color: '#9b8ffa',
             }
           : {
               background: 'var(--surface-1)',

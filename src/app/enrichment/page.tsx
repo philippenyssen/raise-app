@@ -71,9 +71,9 @@ interface EnrichResult {
 // ---------------------------------------------------------------------------
 
 const SOURCE_TYPE_STYLES: Record<string, { bg: string; color: string; border: string }> = {
-  free: { bg: 'var(--success-muted)', color: 'var(--success)', border: 'rgba(34, 197, 94, 0.2)' },
-  freemium: { bg: 'var(--accent-muted)', color: 'var(--accent)', border: 'rgba(59, 130, 246, 0.2)' },
-  paid: { bg: 'var(--warning-muted)', color: 'var(--warning)', border: 'rgba(245, 158, 11, 0.2)' },
+  free: { bg: 'var(--success-muted)', color: 'var(--success)', border: 'rgba(52, 211, 153, 0.2)' },
+  freemium: { bg: 'var(--accent-muted)', color: 'var(--accent)', border: 'rgba(124, 110, 240, 0.2)' },
+  paid: { bg: 'var(--warning-muted)', color: 'var(--warning)', border: 'rgba(240, 176, 96, 0.2)' },
 };
 
 const CATEGORY_ICONS: Record<string, React.ComponentType<{ style?: React.CSSProperties }>> = {
@@ -276,7 +276,7 @@ export default function EnrichmentPage() {
       {lastResult && (
         <div className="card" style={{
           background: lastResult.status === 'completed' ? 'var(--success-muted)' : lastResult.status === 'partial' ? 'var(--warning-muted)' : 'var(--danger-muted)',
-          border: `1px solid ${lastResult.status === 'completed' ? 'rgba(34,197,94,0.2)' : lastResult.status === 'partial' ? 'rgba(245,158,11,0.2)' : 'rgba(239,68,68,0.2)'}`,
+          border: `1px solid ${lastResult.status === 'completed' ? 'rgba(52,211,153,0.2)' : lastResult.status === 'partial' ? 'rgba(240,176,96,0.2)' : 'rgba(240,96,112,0.2)'}`,
           padding: 'var(--space-3) var(--space-4)',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -343,7 +343,7 @@ export default function EnrichmentPage() {
                       style={{
                         background: 'var(--accent-muted)',
                         color: 'var(--accent)',
-                        border: '1px solid rgba(59,130,246,0.2)',
+                        border: '1px solid rgba(124,110,240,0.2)',
                         opacity: enriching === inv.id || bulkEnriching ? 0.4 : 1,
                         fontSize: 'var(--font-size-xs)',
                         padding: '4px 10px',
@@ -457,7 +457,7 @@ export default function EnrichmentPage() {
                         marginTop: 'var(--space-3)',
                         padding: 'var(--space-2) var(--space-3)',
                         background: 'var(--warning-muted)',
-                        border: '1px solid rgba(245,158,11,0.2)',
+                        border: '1px solid rgba(240,176,96,0.2)',
                         borderRadius: 'var(--radius-md)',
                         fontSize: 'var(--font-size-xs)',
                         color: 'var(--warning)',

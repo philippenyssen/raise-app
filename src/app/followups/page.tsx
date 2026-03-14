@@ -73,8 +73,8 @@ const ACTION_TYPE_CONFIG: Record<string, {
   data_share: {
     label: 'Share Materials',
     icon: FolderOpen,
-    color: '#c084fc',
-    bgColor: 'rgba(168, 85, 247, 0.12)',
+    color: '#c4b5fd',
+    bgColor: 'rgba(167, 139, 250, 0.12)',
   },
   schedule_followup: {
     label: 'Schedule Meeting',
@@ -91,7 +91,7 @@ const ACTION_TYPE_CONFIG: Record<string, {
   milestone_update: {
     label: 'Milestone Update',
     icon: Milestone,
-    color: '#fb923c',
+    color: '#f5b08a',
     bgColor: 'rgba(251, 146, 60, 0.12)',
   },
 };
@@ -280,9 +280,9 @@ function FollowupsContent() {
         className="card"
         style={{
           padding: 0,
-          borderColor: showOverdueIndicator || isOverdue ? 'rgba(239,68,68,0.35)' : undefined,
-          background: showOverdueIndicator || isOverdue ? 'rgba(239,68,68,0.06)' : undefined,
-          boxShadow: showOverdueIndicator || isOverdue ? '0 0 0 1px rgba(239,68,68,0.15)' : undefined,
+          borderColor: showOverdueIndicator || isOverdue ? 'rgba(240,96,112,0.35)' : undefined,
+          background: showOverdueIndicator || isOverdue ? 'rgba(240,96,112,0.06)' : undefined,
+          boxShadow: showOverdueIndicator || isOverdue ? '0 0 0 1px rgba(240,96,112,0.15)' : undefined,
         }}
       >
         <div style={{ padding: 'var(--space-4)' }}>
@@ -307,7 +307,7 @@ function FollowupsContent() {
                     fontSize: '10px',
                     textTransform: 'uppercase',
                     background: isOverdue ? 'var(--danger-muted)' : config.bgColor,
-                    color: isOverdue ? '#fca5a5' : config.color,
+                    color: isOverdue ? '#f5b0b8' : config.color,
                   }}
                 >
                   {config.label}
@@ -315,7 +315,7 @@ function FollowupsContent() {
                 <Link
                   href={`/investors/${item.investor_id}`}
                   style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}
-                  onMouseEnter={e => { e.currentTarget.style.color = '#60a5fa'; }}
+                  onMouseEnter={e => { e.currentTarget.style.color = '#9b8ffa'; }}
                   onMouseLeave={e => { e.currentTarget.style.color = 'var(--accent)'; }}
                 >
                   {item.investor_name}
@@ -490,8 +490,8 @@ function FollowupsContent() {
                   className="p-1.5"
                   style={{
                     borderRadius: 'var(--radius-md)',
-                    color: hoveredActionBtn === `draft-${item.id}` || draftingId === item.id ? '#c084fc' : 'var(--text-muted)',
-                    background: hoveredActionBtn === `draft-${item.id}` || draftingId === item.id ? 'rgba(168,85,247,0.12)' : 'transparent',
+                    color: hoveredActionBtn === `draft-${item.id}` || draftingId === item.id ? '#c4b5fd' : 'var(--text-muted)',
+                    background: hoveredActionBtn === `draft-${item.id}` || draftingId === item.id ? 'rgba(167,139,250,0.12)' : 'transparent',
                     transition: 'all 150ms ease',
                   }}
                   onMouseEnter={() => setHoveredActionBtn(`draft-${item.id}`)}
@@ -652,13 +652,13 @@ function FollowupsContent() {
                     width: '16px',
                     height: '16px',
                     borderRadius: '50%',
-                    background: 'rgba(168, 85, 247, 0.12)',
+                    background: 'rgba(167, 139, 250, 0.12)',
                   }}
                 >
-                  <Network className="w-2.5 h-2.5" style={{ color: '#c084fc' }} />
+                  <Network className="w-2.5 h-2.5" style={{ color: '#c4b5fd' }} />
                 </span>
                 <span style={{ color: 'var(--text-muted)' }}>Cascade</span>
-                <span style={{ color: '#c084fc', fontWeight: 600 }}>
+                <span style={{ color: '#c4b5fd', fontWeight: 600 }}>
                   {item.cascade.cascadeChainLength} investor{item.cascade.cascadeChainLength !== 1 ? 's' : ''}
                 </span>
               </div>
@@ -672,13 +672,13 @@ function FollowupsContent() {
           return (
             <div
               style={{
-                borderTop: '1px solid rgba(168,85,247,0.15)',
-                background: 'rgba(168,85,247,0.04)',
+                borderTop: '1px solid rgba(167,139,250,0.15)',
+                background: 'rgba(167,139,250,0.04)',
                 padding: 'var(--space-4)',
               }}
             >
               <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-3)' }}>
-                <span className="flex items-center gap-1.5" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: '#c084fc' }}>
+                <span className="flex items-center gap-1.5" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: '#c4b5fd' }}>
                   <PenLine className="w-3.5 h-3.5" />
                   Draft Message
                 </span>
@@ -777,19 +777,19 @@ function FollowupsContent() {
                 }}
                 className="btn btn-sm mt-3"
                 style={{
-                  background: copiedField === `all-${item.id}` ? 'var(--success)' : 'rgba(168,85,247,0.15)',
-                  color: copiedField === `all-${item.id}` ? 'white' : '#c084fc',
+                  background: copiedField === `all-${item.id}` ? 'var(--success)' : 'rgba(167,139,250,0.15)',
+                  color: copiedField === `all-${item.id}` ? 'white' : '#c4b5fd',
                   border: 'none',
                   transition: 'all 150ms ease',
                 }}
                 onMouseEnter={e => {
                   if (copiedField !== `all-${item.id}`) {
-                    e.currentTarget.style.background = 'rgba(168,85,247,0.25)';
+                    e.currentTarget.style.background = 'rgba(167,139,250,0.25)';
                   }
                 }}
                 onMouseLeave={e => {
                   if (copiedField !== `all-${item.id}`) {
-                    e.currentTarget.style.background = 'rgba(168,85,247,0.15)';
+                    e.currentTarget.style.background = 'rgba(167,139,250,0.15)';
                   }
                 }}
               >
@@ -805,7 +805,7 @@ function FollowupsContent() {
           className="flex items-center justify-between"
           style={{
             padding: '0.5rem var(--space-4)',
-            borderTop: isOverdue ? '1px solid rgba(239,68,68,0.15)' : '1px solid var(--border-subtle)',
+            borderTop: isOverdue ? '1px solid rgba(240,96,112,0.15)' : '1px solid var(--border-subtle)',
             fontSize: '10px',
             color: 'var(--text-muted)',
           }}
@@ -855,7 +855,7 @@ function FollowupsContent() {
                 padding: '0.125rem 0.375rem',
                 borderRadius: '9999px',
                 background: accent === 'red' ? 'var(--danger-muted)' : 'var(--surface-3)',
-                color: accent === 'red' ? '#fca5a5' : 'var(--text-secondary)',
+                color: accent === 'red' ? '#f5b0b8' : 'var(--text-secondary)',
               }}
             >
               {items.length}
@@ -889,7 +889,7 @@ function FollowupsContent() {
           </p>
           {investorFilter && followups.length > 0 && (
             <div className="flex items-center gap-2 mt-2">
-              <span className="text-xs px-2 py-1 rounded-md" style={{ background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(59,130,246,0.25)' }}>
+              <span className="text-xs px-2 py-1 rounded-md" style={{ background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(124,110,240,0.25)' }}>
                 Filtered: {followups[0]?.investor_name || 'Selected investor'}
               </span>
               <Link href="/followups" className="text-xs" style={{ color: 'var(--text-muted)', textDecoration: 'underline' }}>
@@ -1036,7 +1036,7 @@ function FollowupsContent() {
             <Link
               href="/meetings/new"
               style={{ color: 'var(--accent)' }}
-              onMouseEnter={e => { e.currentTarget.style.color = '#60a5fa'; }}
+              onMouseEnter={e => { e.currentTarget.style.color = '#9b8ffa'; }}
               onMouseLeave={e => { e.currentTarget.style.color = 'var(--accent)'; }}
             >
               Log a meeting
@@ -1080,13 +1080,13 @@ function FollowupsContent() {
         >
           <div
             style={{
-              background: 'linear-gradient(to right, rgba(168, 85, 247, 0.08), var(--accent-muted))',
+              background: 'linear-gradient(to right, rgba(167, 139, 250, 0.08), var(--accent-muted))',
               borderBottom: '1px solid var(--border-subtle)',
               padding: 'var(--space-4) var(--space-5)',
             }}
           >
             <h2 className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 700 }}>
-              <Users className="w-4 h-4" style={{ color: '#c084fc' }} />
+              <Users className="w-4 h-4" style={{ color: '#c4b5fd' }} />
               Follow-up Effectiveness
             </h2>
             <p style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: 'var(--space-1)' }}>

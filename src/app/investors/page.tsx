@@ -17,14 +17,14 @@ const STATUS_LABELS: Record<InvestorStatus, string> = {
 const STATUS_STYLES: Record<string, { background: string; color: string }> = {
   identified: { background: 'var(--surface-3)', color: 'var(--text-secondary)' },
   contacted: { background: 'var(--border-strong)', color: 'var(--text-primary)' },
-  nda_signed: { background: 'var(--accent-muted)', color: '#60a5fa' },
-  meeting_scheduled: { background: 'rgba(59, 130, 246, 0.25)', color: '#60a5fa' },
-  met: { background: 'rgba(59, 130, 246, 0.35)', color: '#93bbfd' },
-  engaged: { background: 'rgba(168, 85, 247, 0.25)', color: '#c084fc' },
-  in_dd: { background: 'var(--warning-muted)', color: '#fbbf24' },
-  term_sheet: { background: 'var(--success-muted)', color: '#4ade80' },
+  nda_signed: { background: 'var(--accent-muted)', color: '#9b8ffa' },
+  meeting_scheduled: { background: 'rgba(124, 110, 240, 0.25)', color: '#9b8ffa' },
+  met: { background: 'rgba(124, 110, 240, 0.35)', color: '#b4a8fc' },
+  engaged: { background: 'rgba(167, 139, 250, 0.25)', color: '#c4b5fd' },
+  in_dd: { background: 'var(--warning-muted)', color: '#f5c88a' },
+  term_sheet: { background: 'var(--success-muted)', color: '#5ee8b7' },
   closed: { background: 'rgba(16, 185, 129, 0.25)', color: '#34d399' },
-  passed: { background: 'var(--danger-muted)', color: '#f87171' },
+  passed: { background: 'var(--danger-muted)', color: '#f5909a' },
   dropped: { background: 'var(--surface-2)', color: 'var(--text-muted)' },
 };
 
@@ -285,12 +285,12 @@ export default function InvestorsPage() {
           className="flex items-center gap-3"
           style={{
             background: 'var(--accent-muted)',
-            border: '1px solid rgba(59, 130, 246, 0.2)',
+            border: '1px solid rgba(124, 110, 240, 0.2)',
             borderRadius: 'var(--radius-lg)',
             padding: 'var(--space-2) var(--space-4)',
           }}
         >
-          <span style={{ fontSize: 'var(--font-size-sm)', color: '#60a5fa', fontWeight: 500 }}>
+          <span style={{ fontSize: 'var(--font-size-sm)', color: '#9b8ffa', fontWeight: 500 }}>
             {selected.size} selected
           </span>
           <select

@@ -266,9 +266,9 @@ function NewMeetingContent() {
                 style={{
                   background: 'var(--accent-muted)',
                   color: 'var(--accent)',
-                  border: '1px solid rgba(59,130,246,0.25)',
+                  border: '1px solid rgba(124,110,240,0.25)',
                 }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(59,130,246,0.2)'; }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(124,110,240,0.2)'; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--accent-muted)'; }}
               >
                 View {selectedInvestor?.name || 'Investor'}

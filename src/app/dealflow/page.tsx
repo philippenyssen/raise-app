@@ -43,11 +43,11 @@ type HeatFilter = 'all' | 'hot' | 'warm' | 'cool' | 'cold' | 'frozen';
 // ── Config ────────────────────────────────────────────────────────────
 
 const HEAT_CONFIG: Record<string, { bg: string; border: string; text: string; glow: string; label: string }> = {
-  hot:    { bg: 'rgba(239, 68, 68, 0.15)', border: 'rgba(239, 68, 68, 0.5)',  text: '#ef4444', glow: '0 0 20px rgba(239, 68, 68, 0.3)', label: 'HOT' },
-  warm:   { bg: 'rgba(234, 179, 8, 0.12)',  border: 'rgba(234, 179, 8, 0.4)',  text: '#eab308', glow: '0 0 12px rgba(234, 179, 8, 0.2)', label: 'WARM' },
-  cool:   { bg: 'rgba(59, 130, 246, 0.10)', border: 'rgba(59, 130, 246, 0.35)', text: '#3b82f6', glow: 'none', label: 'COOL' },
-  cold:   { bg: 'rgba(148, 163, 184, 0.10)', border: 'rgba(148, 163, 184, 0.3)', text: '#94a3b8', glow: 'none', label: 'COLD' },
-  frozen: { bg: 'rgba(100, 116, 139, 0.08)', border: 'rgba(100, 116, 139, 0.25)', text: '#64748b', glow: 'none', label: 'FROZEN' },
+  hot:    { bg: 'rgba(240, 96, 112, 0.15)', border: 'rgba(240, 96, 112, 0.5)',  text: '#f06070', glow: '0 0 20px rgba(240, 96, 112, 0.3)', label: 'HOT' },
+  warm:   { bg: 'rgba(234, 179, 8, 0.12)',  border: 'rgba(234, 179, 8, 0.4)',  text: '#f0b060', glow: '0 0 12px rgba(234, 179, 8, 0.2)', label: 'WARM' },
+  cool:   { bg: 'rgba(124, 110, 240, 0.10)', border: 'rgba(124, 110, 240, 0.35)', text: '#7c6ef0', glow: 'none', label: 'COOL' },
+  cold:   { bg: 'rgba(148, 163, 184, 0.10)', border: 'rgba(148, 163, 184, 0.3)', text: '#8b8fa3', glow: 'none', label: 'COLD' },
+  frozen: { bg: 'rgba(100, 116, 139, 0.08)', border: 'rgba(100, 116, 139, 0.25)', text: '#5c6178', glow: 'none', label: 'FROZEN' },
 };
 
 const TYPE_LABELS: Record<string, string> = {
@@ -458,7 +458,7 @@ export default function DealflowPage() {
                       }
                       className="inline-flex items-center gap-1"
                       style={{ color: 'var(--warning)', textDecoration: 'none' }}
-                      onMouseEnter={e => { e.currentTarget.style.color = '#fbbf24'; }}
+                      onMouseEnter={e => { e.currentTarget.style.color = '#f5c88a'; }}
                       onMouseLeave={e => { e.currentTarget.style.color = 'var(--warning)'; }}
                     >
                       <span className="truncate">{inv.bottleneck}</span>

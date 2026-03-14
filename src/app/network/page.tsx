@@ -263,9 +263,9 @@ export default function NetworkPage() {
               <Link
                 href={`/dealflow?search=${encodeURIComponent(bottleneckAlert.bottleneckName)}`}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors"
-                style={{ background: 'rgba(245,158,11,0.2)', color: 'var(--warning)', border: '1px solid rgba(245,158,11,0.3)' }}
-                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(245,158,11,0.3)'; }}
-                onMouseLeave={e => { e.currentTarget.style.background = 'rgba(245,158,11,0.2)'; }}
+                style={{ background: 'rgba(240,176,96,0.2)', color: 'var(--warning)', border: '1px solid rgba(240,176,96,0.3)' }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(240,176,96,0.3)'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'rgba(240,176,96,0.2)'; }}
               >
                 <Calendar className="w-3 h-3" />
                 Engage {bottleneckAlert.bottleneckName}
@@ -564,9 +564,9 @@ export default function NetworkPage() {
                         <Link
                           href={`/investors/${cascade.networkBottleneck.investorId}`}
                           className="inline-flex items-center gap-1 mt-2 px-2.5 py-1 rounded text-[11px] font-medium transition-colors"
-                          style={{ background: 'rgba(245,158,11,0.15)', color: 'var(--warning)', border: '1px solid rgba(245,158,11,0.25)' }}
-                          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(245,158,11,0.25)'; }}
-                          onMouseLeave={e => { e.currentTarget.style.background = 'rgba(245,158,11,0.15)'; }}
+                          style={{ background: 'rgba(240,176,96,0.15)', color: 'var(--warning)', border: '1px solid rgba(240,176,96,0.25)' }}
+                          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(240,176,96,0.25)'; }}
+                          onMouseLeave={e => { e.currentTarget.style.background = 'rgba(240,176,96,0.15)'; }}
                         >
                           Prioritize Engagement
                           <ArrowRight className="w-3 h-3" />

@@ -74,32 +74,32 @@ const CATEGORY_ICONS: Record<string, React.ComponentType<{ className?: string }>
 };
 
 const CATEGORY_COLORS: Record<string, string> = {
-  followup: '#60a5fa',
-  outreach: '#c084fc',
+  followup: '#9b8ffa',
+  outreach: '#c4b5fd',
   preparation: '#2dd4bf',
-  escalation: '#f87171',
-  meeting: '#fbbf24',
+  escalation: '#f5909a',
+  meeting: '#f5c88a',
 };
 
 const CATEGORY_BG: Record<string, string> = {
   followup: 'var(--accent-muted)',
-  outreach: 'rgba(168,85,247,0.12)',
-  preparation: 'rgba(20,184,166,0.12)',
+  outreach: 'rgba(167,139,250,0.12)',
+  preparation: 'rgba(45,212,191,0.12)',
   escalation: 'var(--danger-muted)',
   meeting: 'var(--warning-muted)',
 };
 
 const ALERT_STYLES: Record<string, { bg: string; border: string; color: string; icon: React.ComponentType<{ className?: string }> }> = {
-  warning: { bg: 'var(--warning-muted)', border: 'rgba(245,158,11,0.25)', color: '#fbbf24', icon: AlertTriangle },
-  opportunity: { bg: 'var(--success-muted)', border: 'rgba(34,197,94,0.25)', color: '#4ade80', icon: Zap },
-  risk: { bg: 'var(--danger-muted)', border: 'rgba(239,68,68,0.25)', color: '#f87171', icon: Shield },
+  warning: { bg: 'var(--warning-muted)', border: 'rgba(240,176,96,0.25)', color: '#f5c88a', icon: AlertTriangle },
+  opportunity: { bg: 'var(--success-muted)', border: 'rgba(52,211,153,0.25)', color: '#5ee8b7', icon: Zap },
+  risk: { bg: 'var(--danger-muted)', border: 'rgba(240,96,112,0.25)', color: '#f5909a', icon: Shield },
 };
 
 const MOMENTUM_CONFIG: Record<string, { color: string; bg: string; border: string; icon: React.ComponentType<{ className?: string }>; label: string }> = {
-  accelerating: { color: 'var(--success)', bg: 'var(--success-muted)', border: 'rgba(34,197,94,0.25)', icon: TrendingUp, label: 'Accelerating' },
+  accelerating: { color: 'var(--success)', bg: 'var(--success-muted)', border: 'rgba(52,211,153,0.25)', icon: TrendingUp, label: 'Accelerating' },
   steady: { color: 'var(--text-secondary)', bg: 'var(--surface-2)', border: 'var(--border-default)', icon: Minus, label: 'Steady' },
-  decelerating: { color: 'var(--warning)', bg: 'var(--warning-muted)', border: 'rgba(245,158,11,0.25)', icon: TrendingDown, label: 'Decelerating' },
-  stalled: { color: 'var(--danger)', bg: 'var(--danger-muted)', border: 'rgba(239,68,68,0.25)', icon: TrendingDown, label: 'Stalled' },
+  decelerating: { color: 'var(--warning)', bg: 'var(--warning-muted)', border: 'rgba(240,176,96,0.25)', icon: TrendingDown, label: 'Decelerating' },
+  stalled: { color: 'var(--danger)', bg: 'var(--danger-muted)', border: 'rgba(240,96,112,0.25)', icon: TrendingDown, label: 'Stalled' },
 };
 
 // ---------------------------------------------------------------------------
@@ -537,7 +537,7 @@ export default function TodayPage() {
         <div
           className="text-center"
           style={{
-            border: '1px solid rgba(239,68,68,0.15)',
+            border: '1px solid rgba(240,96,112,0.15)',
             background: 'var(--danger-muted)',
             borderRadius: 'var(--radius-lg)',
             padding: 'var(--space-10)',
@@ -596,11 +596,11 @@ export default function TodayPage() {
                 width: '40px',
                 height: '40px',
                 borderRadius: '50%',
-                background: 'linear-gradient(135deg, rgba(245,158,11,0.2), rgba(251,191,36,0.1))',
-                border: '1px solid rgba(245,158,11,0.2)',
+                background: 'linear-gradient(135deg, rgba(240,176,96,0.2), rgba(251,191,36,0.1))',
+                border: '1px solid rgba(240,176,96,0.2)',
               }}
             >
-              <span style={{ color: '#fbbf24', display: 'flex' }}>
+              <span style={{ color: '#f5c88a', display: 'flex' }}>
                 <Sunrise className="w-5 h-5" />
               </span>
             </div>
@@ -685,7 +685,7 @@ export default function TodayPage() {
             padding: 'var(--space-3) var(--space-4)',
             borderRadius: 'var(--radius-lg)',
             background: 'var(--surface-1)',
-            border: `1px solid ${raiseProgress.isOver ? 'rgba(239,68,68,0.25)' : raiseProgress.pct >= 75 ? 'rgba(245,158,11,0.25)' : 'var(--border-subtle)'}`,
+            border: `1px solid ${raiseProgress.isOver ? 'rgba(240,96,112,0.25)' : raiseProgress.pct >= 75 ? 'rgba(240,176,96,0.25)' : 'var(--border-subtle)'}`,
           }}
         >
           <div className="flex items-center gap-2 shrink-0">
@@ -745,8 +745,8 @@ export default function TodayPage() {
               borderBottom: '1px solid var(--border-subtle)',
             }}
           >
-            <Zap className="w-3.5 h-3.5" style={{ color: '#c084fc' }} />
-            <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: '#c084fc', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Since Yesterday</span>
+            <Zap className="w-3.5 h-3.5" style={{ color: '#c4b5fd' }} />
+            <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: '#c4b5fd', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Since Yesterday</span>
           </div>
           <div className="flex items-center gap-4 flex-wrap" style={{ padding: 'var(--space-3) var(--space-4)' }}>
             {overnight.statusChanges.map((sc, i) => (
@@ -872,10 +872,10 @@ export default function TodayPage() {
               const typeConfig: Record<string, { label: string; color: string; bg: string }> = {
                 thank_you: { label: 'Thank You', color: 'var(--accent)', bg: 'var(--accent-muted)' },
                 objection_response: { label: 'Objection', color: 'var(--danger)', bg: 'var(--danger-muted)' },
-                data_share: { label: 'Share Docs', color: '#c084fc', bg: 'rgba(168,85,247,0.12)' },
+                data_share: { label: 'Share Docs', color: '#c4b5fd', bg: 'rgba(167,139,250,0.12)' },
                 schedule_followup: { label: 'Schedule', color: 'var(--success)', bg: 'var(--success-muted)' },
                 warm_reengagement: { label: 'Re-engage', color: 'var(--warning)', bg: 'var(--warning-muted)' },
-                milestone_update: { label: 'Update', color: '#fb923c', bg: 'rgba(251,146,60,0.12)' },
+                milestone_update: { label: 'Update', color: '#f5b08a', bg: 'rgba(251,146,60,0.12)' },
               };
               const tc = typeConfig[fu.action_type] || { label: fu.action_type, color: 'var(--text-tertiary)', bg: 'var(--surface-2)' };
               const isProcessing = completingFollowupId === fu.id;
@@ -903,7 +903,7 @@ export default function TodayPage() {
                         onClick={() => handleQuickComplete(fu.id)}
                         disabled={isProcessing}
                         className="btn btn-sm"
-                        style={{ background: 'var(--success-muted)', color: 'var(--success)', border: '1px solid rgba(34,197,94,0.25)', fontSize: '11px', padding: '3px 10px' }}
+                        style={{ background: 'var(--success-muted)', color: 'var(--success)', border: '1px solid rgba(52,211,153,0.25)', fontSize: '11px', padding: '3px 10px' }}
                       >
                         Done
                       </button>
@@ -1076,8 +1076,8 @@ export default function TodayPage() {
       {insight && (
         <div
           style={{
-            background: 'rgba(168,85,247,0.08)',
-            border: '1px solid rgba(168,85,247,0.2)',
+            background: 'rgba(167,139,250,0.08)',
+            border: '1px solid rgba(167,139,250,0.2)',
             borderRadius: 'var(--radius-lg)',
             padding: 'var(--space-4)',
           }}
@@ -1089,17 +1089,17 @@ export default function TodayPage() {
                 width: '32px',
                 height: '32px',
                 borderRadius: 'var(--radius-md)',
-                background: 'rgba(168,85,247,0.15)',
+                background: 'rgba(167,139,250,0.15)',
               }}
             >
-              <span style={{ color: 'rgba(168,85,247,0.9)', display: 'flex' }}>
+              <span style={{ color: 'rgba(167,139,250,0.9)', display: 'flex' }}>
                 <Sparkles className="w-4 h-4" />
               </span>
             </div>
 
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2" style={{ marginBottom: '4px' }}>
-                <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'rgba(168,85,247,0.9)', textTransform: 'uppercase' as const, letterSpacing: '0.05em' }}>
+                <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'rgba(167,139,250,0.9)', textTransform: 'uppercase' as const, letterSpacing: '0.05em' }}>
                   AI Insight
                 </span>
               </div>
@@ -1114,9 +1114,9 @@ export default function TodayPage() {
             <Link
               href="/intelligence"
               className="btn btn-ghost btn-sm shrink-0"
-              style={{ color: 'rgba(168,85,247,0.8)' }}
-              onMouseEnter={e => (e.currentTarget.style.color = 'rgba(168,85,247,1)')}
-              onMouseLeave={e => (e.currentTarget.style.color = 'rgba(168,85,247,0.8)')}
+              style={{ color: 'rgba(167,139,250,0.8)' }}
+              onMouseEnter={e => (e.currentTarget.style.color = 'rgba(167,139,250,1)')}
+              onMouseLeave={e => (e.currentTarget.style.color = 'rgba(167,139,250,0.8)')}
             >
               See more
               <span style={{ display: 'flex' }}><ChevronRight className="w-3.5 h-3.5" /></span>

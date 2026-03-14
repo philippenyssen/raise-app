@@ -99,12 +99,12 @@ const TYPE_LABELS: Record<string, string> = {
 };
 
 const TYPE_COLORS: Record<string, { bg: string; color: string; border: string }> = {
-  vc:            { bg: 'rgba(59,130,246,0.15)',  color: 'rgba(96,165,250,1)',   border: 'rgba(29,78,216,0.4)' },
+  vc:            { bg: 'rgba(124,110,240,0.15)',  color: 'rgba(96,165,250,1)',   border: 'rgba(29,78,216,0.4)' },
   growth:        { bg: 'rgba(147,51,234,0.15)',  color: 'rgba(192,132,252,1)',  border: 'rgba(126,34,206,0.4)' },
   sovereign:     { bg: 'rgba(217,119,6,0.15)',   color: 'rgba(251,191,36,1)',   border: 'rgba(180,83,9,0.4)' },
   strategic:     { bg: 'rgba(16,185,129,0.15)',  color: 'rgba(52,211,153,1)',   border: 'rgba(4,120,87,0.4)' },
   debt:          { bg: 'rgba(249,115,22,0.15)',  color: 'rgba(251,146,60,1)',   border: 'rgba(194,65,12,0.4)' },
-  family_office: { bg: 'rgba(244,63,94,0.15)',   color: 'rgba(251,113,133,1)',  border: 'rgba(190,18,60,0.4)' },
+  family_office: { bg: 'rgba(240,96,112,0.15)',   color: 'rgba(251,113,133,1)',  border: 'rgba(190,18,60,0.4)' },
 };
 
 function scoreColorStyle(score: number): React.CSSProperties {
@@ -118,16 +118,16 @@ function scoreColorStyle(score: number): React.CSSProperties {
 function scoreBorderStyle(score: number): React.CSSProperties {
   if (score >= 71) return { borderColor: 'rgba(52,211,153,1)' };
   if (score >= 51) return { borderColor: 'rgba(5,150,105,1)' };
-  if (score >= 31) return { borderColor: 'rgba(245,158,11,1)' };
-  if (score >= 1)  return { borderColor: 'rgba(239,68,68,1)' };
+  if (score >= 31) return { borderColor: 'rgba(240,176,96,1)' };
+  if (score >= 1)  return { borderColor: 'rgba(240,96,112,1)' };
   return { borderColor: 'rgba(63,63,70,1)' };
 }
 
 function trendBarBg(score: number): string {
   if (score >= 50) return 'rgba(16,185,129,1)';
-  if (score >= 30) return 'rgba(245,158,11,1)';
+  if (score >= 30) return 'rgba(240,176,96,1)';
   if (score >= 10) return 'rgba(249,115,22,1)';
-  return 'rgba(239,68,68,1)';
+  return 'rgba(240,96,112,1)';
 }
 
 function formatWeekLabel(w: string): string {
@@ -245,7 +245,7 @@ export default function MomentumPage() {
           <div className="flex items-center gap-4">
             <div
               className="w-10 h-10 rounded-lg flex items-center justify-center"
-              style={{ background: 'var(--accent-muted, rgba(59,130,246,0.2))' }}
+              style={{ background: 'var(--accent-muted, rgba(124,110,240,0.2))' }}
             >
               <Activity className="w-5 h-5" style={{ color: 'var(--accent)' }} />
             </div>
@@ -372,9 +372,9 @@ export default function MomentumPage() {
                       <Link
                         href={`/meetings/new?investor=${alert.investorId}`}
                         className="px-2.5 py-1 rounded text-[11px] font-medium transition-colors"
-                        style={{ background: 'rgba(59,130,246,0.15)', color: '#60a5fa', border: '1px solid rgba(59,130,246,0.25)' }}
-                        onMouseEnter={e => { e.currentTarget.style.background = 'rgba(59,130,246,0.3)'; }}
-                        onMouseLeave={e => { e.currentTarget.style.background = 'rgba(59,130,246,0.15)'; }}
+                        style={{ background: 'rgba(124,110,240,0.15)', color: '#9b8ffa', border: '1px solid rgba(124,110,240,0.25)' }}
+                        onMouseEnter={e => { e.currentTarget.style.background = 'rgba(124,110,240,0.3)'; }}
+                        onMouseLeave={e => { e.currentTarget.style.background = 'rgba(124,110,240,0.15)'; }}
                       >
                         Schedule
                       </Link>

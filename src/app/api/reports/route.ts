@@ -99,11 +99,11 @@ const BASE_STYLES = `
   .enth-high { background: #dcfce7; color: #166534; }
   .enth-mid { background: #fef3c7; color: #92400e; }
   .enth-low { background: #fee2e2; color: #991b1b; }
-  .risk-item { padding: 8px 12px; background: #fef2f2; border-left: 3px solid #ef4444; border-radius: 0 4px 4px 0; margin-bottom: 8px; font-size: 13px; }
-  .action-item { padding: 8px 12px; background: #eff6ff; border-left: 3px solid #3b82f6; border-radius: 0 4px 4px 0; margin-bottom: 8px; font-size: 13px; }
-  .gap-item { padding: 6px 10px; background: #fefce8; border-left: 3px solid #eab308; border-radius: 0 4px 4px 0; margin-bottom: 6px; font-size: 12px; }
+  .risk-item { padding: 8px 12px; background: #fef2f2; border-left: 3px solid #f06070; border-radius: 0 4px 4px 0; margin-bottom: 8px; font-size: 13px; }
+  .action-item { padding: 8px 12px; background: #eff6ff; border-left: 3px solid #7c6ef0; border-radius: 0 4px 4px 0; margin-bottom: 8px; font-size: 13px; }
+  .gap-item { padding: 6px 10px; background: #fefce8; border-left: 3px solid #f0b060; border-radius: 0 4px 4px 0; margin-bottom: 6px; font-size: 12px; }
   .conviction-up { color: #16a34a; }
-  .conviction-down { color: #dc2626; }
+  .conviction-down { color: #d04050; }
   .conviction-steady { color: #ca8a04; }
   .funnel-bar { height: 18px; border-radius: 3px; display: inline-block; vertical-align: middle; }
   .score-bar { height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; display: inline-block; width: 80px; vertical-align: middle; margin-left: 6px; }
@@ -114,7 +114,7 @@ const BASE_STYLES = `
   .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 24px; font-size: 13px; margin-bottom: 20px; padding: 14px; background: #f8fafc; border-radius: 8px; }
   .profile-label { color: #888; font-size: 11px; text-transform: uppercase; letter-spacing: 0.3px; }
   .profile-value { font-weight: 500; margin-top: 1px; }
-  .recommendation-box { padding: 16px; border: 2px solid #3b82f6; border-radius: 8px; background: #eff6ff; margin-top: 20px; }
+  .recommendation-box { padding: 16px; border: 2px solid #7c6ef0; border-radius: 8px; background: #eff6ff; margin-top: 20px; }
   .recommendation-box h3 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; color: #1e40af; margin-bottom: 8px; }
   .recommendation-box p { font-size: 13px; line-height: 1.6; }
 </style>
@@ -254,8 +254,8 @@ async function generateBoardUpdate(): Promise<string> {
         <td>
           <div class="funnel-bar" style="width:${Math.max(4, count * 12)}px; background:${
             stage === 'term_sheet' || stage === 'closed' ? '#16a34a' :
-            stage === 'in_dd' ? '#2563eb' :
-            stage === 'engaged' ? '#ca8a04' : '#94a3b8'
+            stage === 'in_dd' ? '#6a5bdf' :
+            stage === 'engaged' ? '#ca8a04' : '#8b8fa3'
           };"></div>
         </td>
       </tr>`;
@@ -433,7 +433,7 @@ async function generateWeeklyAgenda(): Promise<string> {
     return `<tr>
       <td style="font-weight:600;">${f.investor_name}</td>
       <td>${f.description.length > 60 ? f.description.substring(0, 60) + '...' : f.description}</td>
-      <td style="color:#dc2626;font-weight:600;">${daysOverdue}d overdue</td>
+      <td style="color:#d04050;font-weight:600;">${daysOverdue}d overdue</td>
     </tr>`;
   }).join('');
 
@@ -643,7 +643,7 @@ async function generateInvestorBrief(investorId: string): Promise<string> {
   // Score dimensions
   const dimRows = score.dimensions.map(d => {
     const pct = Math.round(d.score);
-    const color = pct >= 70 ? '#16a34a' : pct >= 40 ? '#ca8a04' : '#dc2626';
+    const color = pct >= 70 ? '#16a34a' : pct >= 40 ? '#ca8a04' : '#d04050';
     return `<tr>
       <td>${d.name}</td>
       <td style="font-weight:600;">${pct}/100</td>
