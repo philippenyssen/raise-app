@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useToast } from '@/components/toast';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
 import Link from 'next/link';
-import { Scale } from 'lucide-react';
+import { Scale, Calendar, ExternalLink } from 'lucide-react';
 
 interface TermSheet {
   id: string;
@@ -285,6 +285,40 @@ export default function TermsPage() {
                   );
                 })}
                 <td className="px-4 py-3 text-xs" style={{ color: 'var(--text-muted)' }}>Benchmark</td>
+              </tr>
+              {/* Action Row */}
+              <tr style={{ background: 'var(--surface-0)', borderTop: '1px solid var(--border-subtle)' }}>
+                <td className="px-4 py-3 text-xs font-medium" style={{ color: 'var(--text-tertiary)' }}>ACTION</td>
+                {sheets.map(ts => {
+                  const { score, flags } = scoreSheet(ts);
+                  const action = score >= 70
+                    ? { label: 'Accept & Close', color: 'var(--success)', bg: 'var(--success-muted)', advice: 'Strong terms. Move to closing.' }
+                    : score >= 50
+                    ? { label: 'Negotiate', color: 'var(--warning)', bg: 'var(--warning-muted)', advice: flags.length > 0 ? `Address: ${flags[0].split(' - ')[0]}` : 'Push for better terms on weak points.' }
+                    : { label: 'Push Back', color: 'var(--danger)', bg: 'var(--danger-muted)', advice: `${flags.length} red flag${flags.length !== 1 ? 's' : ''} — counter-propose standard terms.` };
+                  return (
+                    <td key={ts.id} className="px-4 py-3">
+                      <span
+                        style={{
+                          display: 'inline-block',
+                          fontSize: '10px',
+                          fontWeight: 600,
+                          padding: '2px 8px',
+                          borderRadius: 'var(--radius-sm)',
+                          background: action.bg,
+                          color: action.color,
+                          marginBottom: '4px',
+                        }}
+                      >
+                        {action.label}
+                      </span>
+                      <div style={{ fontSize: '10px', color: 'var(--text-muted)', lineHeight: 1.4 }}>
+                        {action.advice}
+                      </div>
+                    </td>
+                  );
+                })}
+                <td className="px-4 py-3 text-xs" style={{ color: 'var(--text-muted)' }}>—</td>
               </tr>
             </tbody>
           </table>
