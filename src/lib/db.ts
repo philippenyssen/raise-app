@@ -314,6 +314,22 @@ async function ensureInitialized() {
       executed_at TEXT,
       created_at TEXT DEFAULT (datetime('now'))
     )`,
+    `CREATE TABLE IF NOT EXISTS revenue_commitments (
+      id TEXT PRIMARY KEY,
+      customer TEXT NOT NULL,
+      program TEXT NOT NULL DEFAULT '',
+      contract_type TEXT NOT NULL DEFAULT 'firm',
+      amount_eur REAL NOT NULL,
+      start_date TEXT,
+      end_date TEXT,
+      annual_amount REAL,
+      confidence REAL NOT NULL DEFAULT 0.8,
+      status TEXT NOT NULL DEFAULT 'active',
+      source_doc TEXT DEFAULT '',
+      notes TEXT DEFAULT '',
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+    )`,
   ], 'write');
 
   initialized = true;
@@ -2185,4 +2201,64 @@ export async function generateFollowupChoreography(
   }));
 
   return results;
+}
+
+// Revenue Commitments
+export async function getRevenueCommitments(filters?: { status?: string; confidence_min?: number }): Promise<unknown[]> {
+  await ensureInitialized();
+  let sql = 'SELECT * FROM revenue_commitments';
+  const conditions: string[] = [];
+  const args: InValue[] = [];
+  if (filters?.status) { conditions.push('status = ?'); args.push(filters.status); }
+  if (filters?.confidence_min) { conditions.push('confidence >= ?'); args.push(filters.confidence_min); }
+  if (conditions.length > 0) sql += ' WHERE ' + conditions.join(' AND ');
+  sql += ' ORDER BY amount_eur DESC';
+  const result = await getClient().execute({ sql, args });
+  return result.rows as unknown[];
+}
+
+export async function createRevenueCommitment(commitment: {
+  customer: string;
+  program: string;
+  contract_type: string;
+  amount_eur: number;
+  start_date?: string;
+  end_date?: string;
+  annual_amount?: number;
+  confidence: number;
+  status?: string;
+  source_doc?: string;
+  notes?: string;
+}): Promise<unknown> {
+  await ensureInitialized();
+  const id = crypto.randomUUID();
+  await getClient().execute({
+    sql: `INSERT INTO revenue_commitments (id, customer, program, contract_type, amount_eur, start_date, end_date, annual_amount, confidence, status, source_doc, notes)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    args: [id, commitment.customer, commitment.program || '', commitment.contract_type || 'firm',
+           commitment.amount_eur, commitment.start_date || null, commitment.end_date || null,
+           commitment.annual_amount || null, commitment.confidence, commitment.status || 'active',
+           commitment.source_doc || '', commitment.notes || ''],
+  });
+  const result = await getClient().execute({ sql: 'SELECT * FROM revenue_commitments WHERE id = ?', args: [id] });
+  return result.rows[0];
+}
+
+export async function updateRevenueCommitment(id: string, updates: Record<string, unknown>): Promise<void> {
+  await ensureInitialized();
+  const allowed = ['customer', 'program', 'contract_type', 'amount_eur', 'start_date', 'end_date', 'annual_amount', 'confidence', 'status', 'source_doc', 'notes'];
+  const sets: string[] = [];
+  const args: InValue[] = [];
+  for (const [k, v] of Object.entries(updates)) {
+    if (allowed.includes(k)) { sets.push(`${k} = ?`); args.push(v as InValue); }
+  }
+  if (sets.length === 0) return;
+  sets.push("updated_at = datetime('now')");
+  args.push(id);
+  await getClient().execute({ sql: `UPDATE revenue_commitments SET ${sets.join(', ')} WHERE id = ?`, args });
+}
+
+export async function deleteRevenueCommitment(id: string): Promise<void> {
+  await ensureInitialized();
+  await getClient().execute({ sql: 'DELETE FROM revenue_commitments WHERE id = ?', args: [id] });
 }

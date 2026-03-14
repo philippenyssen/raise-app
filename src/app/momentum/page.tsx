@@ -45,11 +45,23 @@ interface CrossSignal {
   affectedInvestors: string[];
 }
 
+interface TrajectoryAlert {
+  investorId: string;
+  investorName: string;
+  type: 'critical_warning' | 'early_warning' | 'term_sheet_signal';
+  currentScore: number;
+  predictedScore21d: number;
+  slopePerWeek: number;
+  daysToThreshold: number | null;
+  recommendedAction: string;
+}
+
 interface MomentumData {
   matrix: InvestorMomentum[];
   cohorts: Cohort[];
   anomalies: Anomaly[];
   crossSignals: CrossSignal[];
+  trajectoryAlerts: TrajectoryAlert[];
   overallTrend: WeekScore[];
   overallDirection: 'accelerating' | 'stable' | 'decelerating';
   weeks: string[];
@@ -259,6 +271,49 @@ export default function MomentumPage() {
             })}
           </div>
         </div>
+
+        {/* ── Trajectory Early Warning ──────────────────────────────── */}
+        {data.trajectoryAlerts && data.trajectoryAlerts.length > 0 && (
+          <div className="space-y-2">
+            <h3 className="text-sm font-medium text-zinc-300 flex items-center gap-2">
+              Trajectory Alerts
+              <span className="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-500">{data.trajectoryAlerts.length}</span>
+            </h3>
+            {data.trajectoryAlerts.map((alert, i) => {
+              const colors = {
+                critical_warning: 'border-red-800/50 bg-red-900/10 text-red-400',
+                early_warning: 'border-orange-800/50 bg-orange-900/10 text-orange-400',
+                term_sheet_signal: 'border-green-800/50 bg-green-900/10 text-green-400',
+              };
+              const labels = {
+                critical_warning: 'CRITICAL',
+                early_warning: 'WARNING',
+                term_sheet_signal: 'OPPORTUNITY',
+              };
+              return (
+                <div key={i} className={`border rounded-lg p-3 ${colors[alert.type]}`}>
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-bold uppercase">{labels[alert.type]}</span>
+                      <span className="text-sm font-medium text-zinc-200">{alert.investorName}</span>
+                    </div>
+                    <div className="flex items-center gap-3 text-xs">
+                      <span>Score: {alert.currentScore}</span>
+                      <span>&rarr; {alert.predictedScore21d} (21d)</span>
+                      <span className={alert.slopePerWeek >= 0 ? 'text-green-400' : 'text-red-400'}>
+                        {alert.slopePerWeek >= 0 ? '+' : ''}{alert.slopePerWeek}/wk
+                      </span>
+                      {alert.daysToThreshold && (
+                        <span className="font-medium">~{alert.daysToThreshold}d to threshold</span>
+                      )}
+                    </div>
+                  </div>
+                  <p className="text-xs text-zinc-400 mt-1">{alert.recommendedAction}</p>
+                </div>
+              );
+            })}
+          </div>
+        )}
 
         {/* ── Heatmap Table ───────────────────────────────────────────── */}
         <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl overflow-hidden">

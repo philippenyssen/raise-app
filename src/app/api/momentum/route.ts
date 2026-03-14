@@ -585,11 +585,120 @@ export async function GET() {
     if (overallDiff > 3) overallDirection = 'accelerating';
     else if (overallDiff < -3) overallDirection = 'decelerating';
 
+    // ═══════════════════════════════════════════════════════════════════
+    // 6. TRAJECTORY EARLY WARNING SYSTEM
+    // ═══════════════════════════════════════════════════════════════════
+
+    interface TrajectoryAlert {
+      investorId: string;
+      investorName: string;
+      type: 'critical_warning' | 'early_warning' | 'term_sheet_signal';
+      currentScore: number;
+      predictedScore21d: number;
+      slopePerWeek: number;
+      daysToThreshold: number | null;
+      recommendedAction: string;
+    }
+
+    const trajectoryAlerts: TrajectoryAlert[] = [];
+
+    for (const inv of matrix) {
+      const scores = inv.weeklyScores.filter(ws => ws.score > 0);
+      if (scores.length < 3) continue;
+
+      // Linear regression on weekly scores
+      const n = scores.length;
+      let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
+      for (let i = 0; i < n; i++) {
+        sumX += i;
+        sumY += scores[i].score;
+        sumXY += i * scores[i].score;
+        sumX2 += i * i;
+      }
+      const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+      const intercept = (sumY - slope * sumX) / n;
+
+      const currentScore = scores[scores.length - 1].score;
+      const weeksTo21d = 3; // ~21 days
+      const predictedScore21d = Math.max(0, Math.min(100, Math.round(intercept + slope * (n - 1 + weeksTo21d))));
+      const slopePerWeek = Math.round(slope * 10) / 10;
+
+      // Calculate days to pass threshold (score < 20)
+      let daysToPassThreshold: number | null = null;
+      if (slope < 0 && currentScore > 20) {
+        const weeksToPass = (20 - currentScore) / slope;
+        if (weeksToPass > 0) daysToPassThreshold = Math.round(weeksToPass * 7);
+      }
+
+      // Calculate days to term sheet threshold (score > 70)
+      let daysToTermSheet: number | null = null;
+      if (slope > 0 && currentScore < 70) {
+        const weeksToTS = (70 - currentScore) / slope;
+        if (weeksToTS > 0) daysToTermSheet = Math.round(weeksToTS * 7);
+      }
+
+      if (daysToPassThreshold !== null && daysToPassThreshold <= 7) {
+        trajectoryAlerts.push({
+          investorId: inv.investorId,
+          investorName: inv.investorName,
+          type: 'critical_warning',
+          currentScore,
+          predictedScore21d,
+          slopePerWeek,
+          daysToThreshold: daysToPassThreshold,
+          recommendedAction: `CRITICAL: ${inv.investorName} heading to pass in ~${daysToPassThreshold} days (${slopePerWeek} pts/wk). Immediate CEO call or site visit needed. Consider: (1) Address top unresolved objection, (2) Share new milestone/catalyst, (3) Escalate through warm path.`,
+        });
+
+        // Auto-create critical acceleration action
+        try {
+          await createAccelerationAction({
+            investor_id: inv.investorId,
+            investor_name: inv.investorName,
+            trigger_type: 'momentum_cliff',
+            action_type: 'escalation',
+            description: `CRITICAL: Trajectory predicts pass in ${daysToPassThreshold} days. Slope: ${slopePerWeek} pts/wk. Immediate intervention required.`,
+            expected_lift: 15,
+            confidence: 'high',
+            status: 'pending',
+            actual_lift: null,
+            executed_at: null,
+          });
+        } catch { /* non-blocking */ }
+      } else if (daysToPassThreshold !== null && daysToPassThreshold <= 21) {
+        trajectoryAlerts.push({
+          investorId: inv.investorId,
+          investorName: inv.investorName,
+          type: 'early_warning',
+          currentScore,
+          predictedScore21d,
+          slopePerWeek,
+          daysToThreshold: daysToPassThreshold,
+          recommendedAction: `WARNING: ${inv.investorName} declining at ${slopePerWeek} pts/wk. At this rate, will reach pass threshold in ~${daysToPassThreshold} days. Schedule deep dive or share milestone update within 5 days.`,
+        });
+      } else if (daysToTermSheet !== null && daysToTermSheet <= 14) {
+        trajectoryAlerts.push({
+          investorId: inv.investorId,
+          investorName: inv.investorName,
+          type: 'term_sheet_signal',
+          currentScore,
+          predictedScore21d,
+          slopePerWeek,
+          daysToThreshold: daysToTermSheet,
+          recommendedAction: `OPPORTUNITY: ${inv.investorName} accelerating at +${slopePerWeek} pts/wk. Predicted to reach term sheet readiness in ~${daysToTermSheet} days. Prepare: (1) term sheet framework, (2) board materials, (3) reference calls.`,
+        });
+      }
+    }
+
+    // Sort: critical first, then early_warning, then term_sheet_signal
+    const alertOrder = { critical_warning: 0, early_warning: 1, term_sheet_signal: 2 };
+    trajectoryAlerts.sort((a, b) => (alertOrder[a.type] ?? 9) - (alertOrder[b.type] ?? 9));
+
     return NextResponse.json({
       matrix,
       cohorts,
       anomalies,
       crossSignals,
+      trajectoryAlerts,
       overallTrend,
       overallDirection,
       weeks: weekLabels,
