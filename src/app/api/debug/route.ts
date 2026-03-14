@@ -7,7 +7,8 @@ export async function GET() {
   const tokenLen = process.env.TURSO_AUTH_TOKEN?.length ?? 0;
 
   const result: Record<string, unknown> = {
-    dbUrl: dbUrl ? `${dbUrl.substring(0, 30)}...` : 'NOT SET',
+    dbUrl: dbUrl || 'NOT SET',
+    dbUrlProtocol: dbUrl ? dbUrl.split('://')[0] : 'N/A',
     hasToken,
     tokenLen,
     nodeEnv: process.env.NODE_ENV,
