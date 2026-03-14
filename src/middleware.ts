@@ -1,16 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server';
-import crypto from 'crypto';
 
 // --- AUTH ---
 // Set RAISE_APP_PASSWORD env var to enable auth protection
 // Cookie stores HMAC(password, secret) — never the raw password
 const AUTH_COOKIE = 'raise_auth';
 
-function makeExpectedToken(password: string): string {
-  return crypto.createHmac('sha256', password).update(password + ':raise-session').digest('hex');
+async function makeExpectedToken(password: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    'raw',
+    encoder.encode(password),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  );
+  const sig = await crypto.subtle.sign('HMAC', key, encoder.encode(password + ':raise-session'));
+  return Array.from(new Uint8Array(sig)).map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-function checkAuth(req: NextRequest): boolean {
+function constantTimeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let result = 0;
+  for (let i = 0; i < a.length; i++) {
+    result |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  return result === 0;
+}
+
+async function checkAuth(req: NextRequest): Promise<boolean> {
   const password = process.env.RAISE_APP_PASSWORD;
   if (!password) return true;
 
@@ -21,13 +38,9 @@ function checkAuth(req: NextRequest): boolean {
   const cookie = req.cookies.get(AUTH_COOKIE);
   if (!cookie) return false;
 
-  // Verify HMAC session token (constant-time comparison)
   try {
-    const expected = makeExpectedToken(password);
-    return crypto.timingSafeEqual(
-      Buffer.from(cookie.value),
-      Buffer.from(expected)
-    );
+    const expected = await makeExpectedToken(password);
+    return constantTimeEqual(cookie.value, expected);
   } catch {
     return false;
   }
@@ -66,7 +79,7 @@ function blockSeedInProd(req: NextRequest): boolean {
   return false;
 }
 
-export function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest) {
   // Block /api/seed in production
   if (blockSeedInProd(req)) {
     return NextResponse.json(
@@ -76,7 +89,7 @@ export function middleware(req: NextRequest) {
   }
 
   // Auth check
-  if (!checkAuth(req)) {
+  if (!(await checkAuth(req))) {
     // For API routes, return 401
     if (req.nextUrl.pathname.startsWith('/api/')) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

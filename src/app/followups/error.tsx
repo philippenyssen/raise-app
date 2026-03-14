@@ -22,7 +22,7 @@ export default function FollowupsError({ error, reset }: { error: Error & { dige
         <button onClick={reset} className="btn btn-primary flex items-center gap-2">
           <RefreshCw size={16} /> Try again
         </button>
-        <Link href="/" className="btn" style={{ color: 'var(--text-secondary)', border: '1px solid var(--border-subtle)' }}>
+        <Link href="/" className="btn btn-secondary">
           Go to Dashboard
         </Link>
       </div>

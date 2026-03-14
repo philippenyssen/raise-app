@@ -17,7 +17,7 @@ export default function TermsError({ error, reset }: { error: Error & { digest?:
       </p>
       <div className="flex gap-3">
         <button onClick={reset} className="btn btn-primary">Try again</button>
-        <Link href="/" className="btn" style={{ background: 'var(--surface-2)', color: 'var(--text-secondary)', border: '1px solid var(--border-default)' }}>
+        <Link href="/" className="btn btn-secondary">
           Go to Dashboard
         </Link>
       </div>
