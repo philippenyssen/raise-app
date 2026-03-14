@@ -481,11 +481,11 @@ export default function MeetingsPage() {
             {avgEnthusiasm}<span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>/5</span>
           </div>
         </div>
-        <div className="card-metric metric-warning">
+        <div className="card-metric">
           <div className="metric-label">Objections</div>
           <div className="metric-value" style={{ marginTop: '2px', color: 'var(--text-tertiary)' }}>{totalObjections}</div>
         </div>
-        <div className="card-metric metric-success">
+        <div className="card-metric">
           <div className="metric-label">Unique Investors</div>
           <div className="metric-value" style={{ marginTop: '2px' }}>{uniqueInvestors}</div>
         </div>

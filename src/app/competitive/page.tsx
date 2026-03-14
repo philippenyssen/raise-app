@@ -62,7 +62,7 @@ export default function CompetitivePage() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 card-stagger">
-        <div className="card-metric metric-danger" style={{ padding: 'var(--space-3)' }}>
+        <div className="card-metric" style={{ padding: 'var(--space-3)' }}>
           <div className="metric-label">Total Mentions</div>
           <div className="metric-value" style={{ marginTop: '2px' }}>{totalMentions}</div>
         </div>
@@ -70,7 +70,7 @@ export default function CompetitivePage() {
           <div className="metric-label">Unique Competitors</div>
           <div className="metric-value" style={{ marginTop: '2px' }}>{uniqueCompetitors}</div>
         </div>
-        <div className="card-metric metric-warning" style={{ padding: 'var(--space-3)' }}>
+        <div className="card-metric" style={{ padding: 'var(--space-3)' }}>
           <div className="metric-label">Top Competitor</div>
           <div className="metric-value" style={{ marginTop: '2px', fontSize: 'var(--font-size-lg)' }}>{topCompetitor}</div>
         </div>

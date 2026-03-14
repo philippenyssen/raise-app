@@ -1244,14 +1244,14 @@ export default function FocusPage() {
           <div className="metric-value">{weeklyBudget.meetingsRecommended}</div>
           <div className="metric-label" style={{ marginTop: '2px' }}>calls & meetings</div>
         </div>
-        <div className="card-metric metric-success" style={{ padding: 'var(--space-4)' }}>
+        <div className="card-metric" style={{ padding: 'var(--space-4)' }}>
           <div className="flex items-center gap-2 mb-1" style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>
             <CheckCircle className="w-3.5 h-3.5" /> Follow-ups
           </div>
           <div className="metric-value">{weeklyBudget.followUpsRecommended}</div>
           <div className="metric-label" style={{ marginTop: '2px' }}>prep & outreach</div>
         </div>
-        <div className="card-metric metric-warning" style={{ padding: 'var(--space-4)' }}>
+        <div className="card-metric" style={{ padding: 'var(--space-4)' }}>
           <div className="flex items-center gap-2 mb-1" style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>
             <Rocket className="w-3.5 h-3.5" /> Acceleration
           </div>

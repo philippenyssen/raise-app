@@ -181,9 +181,9 @@ export default function WinLossPage() {
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3 card-stagger">
         {[
           { label: 'Total Pipeline', value: summary.totalInvestors, sub: `${summary.active} active`, variant: '' },
-          { label: 'Closed', value: summary.closed, sub: `${summary.overallCloseRate}% rate`, variant: 'metric-success' },
-          { label: 'Passed', value: summary.passed, sub: null, variant: 'metric-warning' },
-          { label: 'Dropped', value: summary.dropped, sub: null, variant: 'metric-danger' },
+          { label: 'Closed', value: summary.closed, sub: `${summary.overallCloseRate}% rate` },
+          { label: 'Passed', value: summary.passed, sub: null },
+          { label: 'Dropped', value: summary.dropped, sub: null },
           { label: 'Avg Days to Close', value: timing.avgDaysToClose, sub: `Median: ${timing.medianDaysToClose}d`, variant: '' },
         ].map(s => (
           <div

@@ -899,7 +899,7 @@ function FollowupsContent() {
 
       {/* Stats row */}
       <div className="grid grid-cols-3 md:grid-cols-5 gap-3 card-stagger">
-        <div className="card-metric metric-danger" style={{ padding: 'var(--space-3)' }}>
+        <div className="card-metric" style={{ padding: 'var(--space-3)' }}>
           <div className="metric-label">Overdue</div>
           <div
             className="metric-value mt-1"
@@ -908,7 +908,7 @@ function FollowupsContent() {
             {overdue.length}
           </div>
         </div>
-        <div className="card-metric metric-warning" style={{ padding: 'var(--space-3)' }}>
+        <div className="card-metric" style={{ padding: 'var(--space-3)' }}>
           <div className="metric-label">Due Today</div>
           <div
             className="metric-value mt-1"
@@ -917,7 +917,7 @@ function FollowupsContent() {
             {dueToday.length}
           </div>
         </div>
-        <div className="card-metric metric-success" style={{ padding: 'var(--space-3)' }}>
+        <div className="card-metric" style={{ padding: 'var(--space-3)' }}>
           <div className="metric-label">Completed</div>
           <div className="metric-value mt-1" style={{ color: 'var(--text-secondary)' }}>{completed.length}</div>
         </div>
