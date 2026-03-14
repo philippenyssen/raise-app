@@ -46,9 +46,11 @@ export function Sidebar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [overdueCount, setOverdueCount] = useState(0);
+  const [todayMeetingCount, setTodayMeetingCount] = useState(0);
 
   useEffect(() => {
-    function fetchOverdue() {
+    function fetchBadges() {
+      // Overdue follow-ups
       fetch('/api/followups?status=pending')
         .then(r => r.ok ? r.json() : [])
         .then(data => {
@@ -60,9 +62,21 @@ export function Sidebar() {
           setOverdueCount(overdue.length);
         })
         .catch(() => {});
+      // Today's meetings
+      fetch('/api/meetings')
+        .then(r => r.ok ? r.json() : [])
+        .then(data => {
+          if (!Array.isArray(data)) return;
+          const today = new Date().toISOString().split('T')[0];
+          const todayMeetings = data.filter((m: { date: string }) =>
+            m.date?.split('T')[0] === today
+          );
+          setTodayMeetingCount(todayMeetings.length);
+        })
+        .catch(() => {});
     }
-    fetchOverdue();
-    const interval = setInterval(fetchOverdue, 3 * 60 * 1000);
+    fetchBadges();
+    const interval = setInterval(fetchBadges, 3 * 60 * 1000);
     return () => clearInterval(interval);
   }, []);
 
@@ -232,8 +246,36 @@ export function Sidebar() {
                         />
                       )}
 
-                      <span className="shrink-0 flex items-center justify-center" style={{ width: '16px', height: '16px', color: active ? 'var(--accent)' : 'inherit' }}>
+                      <span className="shrink-0 flex items-center justify-center relative" style={{ width: '16px', height: '16px', color: active ? 'var(--accent)' : 'inherit' }}>
                         <Icon className="w-4 h-4" />
+                        {collapsed && item.href === '/followups' && overdueCount > 0 && (
+                          <span
+                            className="absolute"
+                            style={{
+                              top: '-3px',
+                              right: '-4px',
+                              width: '7px',
+                              height: '7px',
+                              borderRadius: '50%',
+                              background: 'var(--danger)',
+                              boxShadow: '0 0 4px rgba(239, 68, 68, 0.5)',
+                            }}
+                          />
+                        )}
+                        {collapsed && item.href === '/meetings' && todayMeetingCount > 0 && (
+                          <span
+                            className="absolute"
+                            style={{
+                              top: '-3px',
+                              right: '-4px',
+                              width: '7px',
+                              height: '7px',
+                              borderRadius: '50%',
+                              background: 'var(--accent)',
+                              boxShadow: '0 0 4px rgba(59, 130, 246, 0.5)',
+                            }}
+                          />
+                        )}
                       </span>
 
                       {!collapsed && (
@@ -267,6 +309,24 @@ export function Sidebar() {
                               }}
                             >
                               {overdueCount > 9 ? '9+' : overdueCount}
+                            </span>
+                          )}
+                          {item.href === '/meetings' && todayMeetingCount > 0 && (
+                            <span
+                              className="ml-auto shrink-0 flex items-center justify-center"
+                              style={{
+                                minWidth: '18px',
+                                height: '18px',
+                                borderRadius: '9px',
+                                background: 'var(--accent)',
+                                color: 'white',
+                                fontSize: '10px',
+                                fontWeight: 700,
+                                padding: '0 5px',
+                                lineHeight: 1,
+                              }}
+                            >
+                              {todayMeetingCount > 9 ? '9+' : todayMeetingCount}
                             </span>
                           )}
                         </>
