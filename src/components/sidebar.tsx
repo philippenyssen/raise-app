@@ -7,7 +7,7 @@ import {
   LayoutDashboard, Users, Calendar, Brain, HeartPulse, FileText,
   Sparkles, FolderOpen, BookOpen, Table, Globe, ClipboardList, Settings,
   Columns3, GitCompare, BarChart3, MessageCircleWarning, Target,
-  SendHorizonal, Menu, X, LogOut
+  SendHorizonal, Menu, X, LogOut, FileBarChart
 } from 'lucide-react';
 
 interface NavItem {
@@ -40,6 +40,7 @@ const nav: NavItem[] = [
   { href: '/analytics', label: 'Analytics', icon: BarChart3, section: 'PROCESS' },
   { href: '/analysis', label: 'Analysis', icon: Brain, section: 'PROCESS' },
   { href: '/health', label: 'Health', icon: HeartPulse, section: 'PROCESS' },
+  { href: '/reports', label: 'Reports', icon: FileBarChart, section: 'PROCESS' },
   { href: '/terms', label: 'Terms', icon: FileText, section: 'PROCESS' },
   // Settings
   { href: '/settings', label: 'Settings', icon: Settings, section: 'SETTINGS' },
