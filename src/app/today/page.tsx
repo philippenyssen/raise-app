@@ -166,12 +166,21 @@ function MeetingCard({ meeting }: { meeting: BriefingMeeting }) {
           </p>
         </div>
 
-        <Link
-          href={meeting.prepLink}
-          className="btn btn-secondary btn-sm shrink-0"
-        >
-          Prep
-        </Link>
+        <div className="flex gap-1.5 shrink-0">
+          <Link
+            href={meeting.prepLink}
+            className="btn btn-secondary btn-sm"
+          >
+            Prep
+          </Link>
+          <Link
+            href="/meetings/capture"
+            className="btn btn-ghost btn-sm"
+            style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}
+          >
+            Capture
+          </Link>
+        </div>
       </div>
     </div>
   );
@@ -655,7 +664,7 @@ export default function TodayPage() {
           </div>
 
           <Link
-            href="/momentum"
+            href="/dealflow"
             className="btn btn-ghost btn-sm shrink-0"
             style={{ color: 'var(--text-tertiary)' }}
             onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-primary)')}

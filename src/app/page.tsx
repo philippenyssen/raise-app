@@ -1057,7 +1057,7 @@ export default function Dashboard() {
                   <Zap className="w-4 h-4" /> Acceleration Alerts
                 </h2>
                 <Link
-                  href="/acceleration"
+                  href="/focus"
                   className="flex items-center gap-1"
                   style={{ fontSize: 'var(--font-size-xs)', color: 'var(--warning)' }}
                   onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#fbbf24'; }}
@@ -1144,7 +1144,7 @@ export default function Dashboard() {
                   <Flame className="w-4 h-4" /> Hot Deals
                 </h2>
                 <Link
-                  href="/deal-heat"
+                  href="/dealflow"
                   className="flex items-center gap-1"
                   style={{ fontSize: 'var(--font-size-xs)', color: '#f97316' }}
                   onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#fb923c'; }}
@@ -1510,7 +1510,7 @@ export default function Dashboard() {
               <div className="mt-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Update statuses</div>
             </Link>
             <Link
-              href="/analysis"
+              href="/intelligence"
               className="rounded-xl p-4 text-center transition-colors"
               style={{ border: '1px solid var(--border-default)' }}
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-strong)'; }}
@@ -1650,7 +1650,7 @@ function VelocityStrip({ velocity }: { velocity: VelocityResponse }) {
             <Gauge className="w-4 h-4" /> Pipeline Velocity
           </h2>
           <Link
-            href="/velocity"
+            href="/dealflow"
             className="flex items-center gap-1 transition-opacity"
             style={{
               fontSize: 'var(--font-size-xs)',
