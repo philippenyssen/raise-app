@@ -15,6 +15,7 @@ import {
   getAggregatedCompetitiveIntel,
   getInvestorRelationships,
   getScoreSnapshots,
+  computeRaiseForecast,
 } from '@/lib/db';
 import { computeAdvancedTrajectory } from '@/lib/scoring';
 import { getNarrativeProfile, getAnticipatedQuestions } from '@/lib/investor-narratives';
@@ -92,6 +93,24 @@ export async function POST(req: NextRequest) {
       }
     } catch { /* non-blocking — trajectory is supplementary */ }
 
+    // 3c. Compute forecast context for this investor (cycle 20)
+    let forecastContext = '';
+    try {
+      const forecastData = await computeRaiseForecast();
+      const investorForecast = forecastData.forecasts.find(f => f.investorId === investor_id);
+      const isCriticalPath = forecastData.criticalPathInvestors.includes(investor.name);
+      if (investorForecast) {
+        forecastContext = `This investor is predicted to close in ~${investorForecast.predictedDaysToClose} days (${investorForecast.predictedCloseDate}), confidence: ${investorForecast.confidence}.`;
+        if (isCriticalPath) {
+          forecastContext += ` CRITICAL PATH: This investor is on the critical path for the entire raise. Delays here push the raise timeline. Prioritize acceleration.`;
+        }
+        if (investorForecast.confidence === 'low') {
+          forecastContext += ` Low confidence suggests this investor needs to be pushed to the next stage to improve predictability.`;
+        }
+        forecastContext += ` Overall raise expected close: ${forecastData.expectedCloseDate} (${forecastData.confidence} confidence).`;
+      }
+    } catch { /* non-blocking */ }
+
     // 4. Extract historical questions from meetings
     const historicalQuestions: string[] = [];
     const historicalObjections: { text: string; severity: string; topic: string; addressed: boolean; response_effectiveness: string; meetingDate: string }[] = [];
@@ -161,6 +180,7 @@ export async function POST(req: NextRequest) {
       aggregatedCompetitiveIntel,
       investorRelationships,
       trajectoryContext,
+      forecastContext,
     });
 
     const response = await getAIClient().messages.create({
@@ -323,6 +343,7 @@ function buildAIContext(ctx: {
   aggregatedCompetitiveIntel?: { competitor: string; mentionCount: number; investors: string[]; context: string[] }[];
   investorRelationships?: { investor_a_id: string; investor_b_id: string; investor_a_name?: string; investor_b_name?: string; investor_a_status?: string; investor_b_status?: string; relationship_type: string }[];
   trajectoryContext?: string;
+  forecastContext?: string;
 }): string {
   const meetingHistory = ctx.meetings.slice(0, 5).map(m =>
     `Date: ${m.date} | Type: ${m.type} | Enthusiasm: ${m.enthusiasm_score}/5\nAnalysis: ${m.ai_analysis}\nNext Steps: ${m.next_steps}`
@@ -404,6 +425,9 @@ Use these connections strategically — mention shared portfolio companies or co
 ${ctx.trajectoryContext ? `CONVICTION TRAJECTORY ANALYSIS:
 ${ctx.trajectoryContext}
 Factor this into your recommendations — if declining, focus on re-engagement; if plateaued, suggest pattern-breaking actions; if accelerating, push for commitment.` : ''}
+
+${ctx.forecastContext ? `RAISE FORECAST CONTEXT:
+${ctx.forecastContext}` : ''}
 
 Generate a JSON meeting brief (no markdown, pure JSON):
 {
