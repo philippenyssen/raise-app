@@ -30,7 +30,9 @@ import {
   computeObjectionEvolution,
   computePipelineFlow,
   detectCompoundSignals,
+  computeTemporalTrends,
 } from './db';
+import type { TemporalTrends } from './db';
 
 // ---------------------------------------------------------------------------
 // Context version — monotonically increasing counter
@@ -254,6 +256,9 @@ export interface FullContext {
     confidence: string;
     recommendation: string;
   }[];
+
+  // Temporal intelligence — health trend analysis (cycle 14)
+  temporalTrends: TemporalTrends | null;
 }
 
 const recentChanges: ContextChange[] = [];
@@ -290,6 +295,7 @@ export async function getFullContext(): Promise<FullContext> {
     objectionEvolutionData,
     pipelineFlowData,
     compoundSignalsData,
+    temporalTrendsData,
   ] = await Promise.all([
     getRaiseConfig().catch(() => null),
     getAllDocuments().catch(() => []),
@@ -311,6 +317,7 @@ export async function getFullContext(): Promise<FullContext> {
     computeObjectionEvolution().catch(() => null),
     computePipelineFlow().catch(() => null),
     detectCompoundSignals().catch(() => []),
+    computeTemporalTrends().catch(() => null),
   ]);
 
   // Build investor snapshots enriched with meeting/task/followup data
@@ -532,6 +539,9 @@ export async function getFullContext(): Promise<FullContext> {
         confidence: cs.confidence,
         recommendation: cs.recommendation,
       })),
+
+    // Temporal intelligence — health trend analysis (cycle 14)
+    temporalTrends: (temporalTrendsData as TemporalTrends | null),
 
     // Pipeline flow — bottleneck and velocity intelligence (cycle 10)
     pipelineFlow: pipelineFlowData ? {
@@ -765,6 +775,22 @@ export function contextToSystemPrompt(ctx: FullContext): string {
     lines.push('');
   }
 
+  // Temporal intelligence — health trends over time (cycle 14)
+  if (ctx.temporalTrends && ctx.temporalTrends.trends.length > 0) {
+    const tt = ctx.temporalTrends;
+    lines.push(`TEMPORAL TRENDS (${tt.daysOfData} days of data, overall: ${tt.overallDirection}):`);
+    for (const trend of tt.trends) {
+      const dirIcon = trend.direction === 'improving' ? '\u2191' : trend.direction === 'declining' ? '\u2193' : '\u2192';
+      let line = `- ${dirIcon} ${trend.metric}: ${trend.current} (7d avg: ${trend.avg7d}, ${trend.delta7d > 0 ? '+' : ''}${trend.delta7d}% | 30d avg: ${trend.avg30d}, ${trend.delta30d > 0 ? '+' : ''}${trend.delta30d}%)`;
+      if (trend.streak >= 2) line += ` [${trend.streak}-day streak]`;
+      lines.push(line);
+      if (trend.alert) {
+        lines.push(`  ALERT: ${trend.alert}`);
+      }
+    }
+    lines.push('');
+  }
+
   // =========================================================================
   // INTELLIGENCE SYNTHESIS (reasoning aids — connect the dots between sources)
   // =========================================================================
@@ -813,6 +839,28 @@ export function contextToSystemPrompt(ctx: FullContext): string {
     const affectedInvestors = ctx.investors.filter(inv => struggleNames.includes(inv.type));
     if (affectedInvestors.length > 0) {
       synthesisLines.push(`NARRATIVE RISK: ${affectedInvestors.length} active investors are types where narrative is struggling (${struggleNames.join(', ')}). Tailor pitch before next contact with: ${affectedInvestors.slice(0, 5).map(i => i.name).join(', ')}`);
+    }
+  }
+
+  // Temporal trend synthesis: declining metrics feed urgency
+  if (ctx.temporalTrends) {
+    const declining = ctx.temporalTrends.trends.filter(t => t.direction === 'declining');
+    if (declining.length >= 3) {
+      synthesisLines.push(`TRAJECTORY WARNING: ${declining.length}/5 key metrics are declining — the raise is losing momentum across multiple dimensions. Immediate course correction needed.`);
+    } else if (declining.length >= 2) {
+      synthesisLines.push(`WATCH: ${declining.map(t => t.metric).join(' and ')} are both declining — monitor closely for compound deterioration.`);
+    }
+
+    // Specific: declining narrative + emerging objections = narrative crisis escalation
+    const narrativeDecline = ctx.temporalTrends.trends.find(t => t.metric === 'Narrative Strength' && t.direction === 'declining');
+    if (narrativeDecline && ctx.objectionEvolution && ctx.objectionEvolution.emerging.length > 0) {
+      synthesisLines.push(`COMPOUND RISK: Narrative score declining (${narrativeDecline.delta7d}% over 7d) while new objections are emerging (${ctx.objectionEvolution.emerging.join(', ')}) — narrative overhaul urgently needed`);
+    }
+
+    // Positive: improving trends + accelerating velocity = momentum confirmation
+    const improving = ctx.temporalTrends.trends.filter(t => t.direction === 'improving');
+    if (improving.length >= 3) {
+      synthesisLines.push(`MOMENTUM CONFIRMED: ${improving.length}/5 metrics are improving — capitalize on current momentum with accelerated investor engagement`);
     }
   }
 

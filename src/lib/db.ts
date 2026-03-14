@@ -3633,9 +3633,60 @@ export async function generateAutoActions(): Promise<AutoActionResult> {
     }
   } catch { /* non-blocking */ }
 
+  // --- Rule 8: temporal_decline (3+ metrics declining simultaneously) ---
+  try {
+    if (!shouldSkipRule('catalyst_match', 'escalation')) {
+      const temporalData = await computeTemporalTrends();
+      const decliningMetrics = temporalData.trends.filter(t => t.direction === 'declining');
+      if (decliningMetrics.length >= 3) {
+        patternsDetected++;
+        const syntheticId = `temporal_decline_${new Date().toISOString().split('T')[0]}`;
+        if (!(await hasDuplicateAction(syntheticId, 'escalation'))) {
+          const metricNames = decliningMetrics.map(t => t.metric).join(', ');
+          const action = await createAccelerationAction({
+            investor_id: syntheticId,
+            investor_name: null,
+            trigger_type: 'catalyst_match',
+            action_type: 'escalation',
+            description: `[AUTO-TEMPORAL] Multiple health metrics declining: ${metricNames}. Raise momentum is deteriorating — immediate strategic review required.`,
+            expected_lift: 12,
+            confidence: 'high',
+            status: 'pending',
+            actual_lift: null,
+            executed_at: null,
+          });
+          actionsCreated.push(action);
+        } else { skippedDuplicate++; }
+      }
+
+      // Also flag individual metrics with long decline streaks
+      for (const trend of temporalData.trends) {
+        if (trend.alert && trend.streak >= 4) {
+          patternsDetected++;
+          const trendId = `temporal_${trend.metric.replace(/\s/g, '_').toLowerCase()}_streak`;
+          if (!(await hasDuplicateAction(trendId, 'escalation'))) {
+            const action = await createAccelerationAction({
+              investor_id: trendId,
+              investor_name: null,
+              trigger_type: 'catalyst_match',
+              action_type: 'escalation',
+              description: `[AUTO-TEMPORAL] ${trend.alert}`,
+              expected_lift: 8,
+              confidence: 'medium',
+              status: 'pending',
+              actual_lift: null,
+              executed_at: null,
+            });
+            actionsCreated.push(action);
+          } else { skippedDuplicate++; }
+        }
+      }
+    }
+  } catch { /* non-blocking */ }
+
   return {
     actionsCreated,
-    rulesEvaluated: AUTO_ACTION_RULES.length + 2, // +1 for Rule 6 (pipeline bottleneck), +1 for Rule 7 (compound signals)
+    rulesEvaluated: AUTO_ACTION_RULES.length + 3, // +1 Rule 6 (bottleneck), +1 Rule 7 (compound), +1 Rule 8 (temporal)
     patternsDetected,
     skippedDuplicate,
     skippedIneffective,
@@ -4780,4 +4831,132 @@ export async function getHealthSnapshots(limit: number = 30): Promise<HealthSnap
     args: [limit],
   });
   return result.rows as unknown as HealthSnapshot[];
+}
+
+// ---------------------------------------------------------------------------
+// Temporal Intelligence — Health Trend Analysis (cycle 14)
+// ---------------------------------------------------------------------------
+
+export interface TemporalTrend {
+  metric: string;
+  current: number;
+  avg7d: number;
+  avg30d: number;
+  delta7d: number;     // percentage change vs 7d avg
+  delta30d: number;    // percentage change vs 30d avg
+  direction: 'improving' | 'declining' | 'stable';
+  streak: number;      // consecutive snapshots in same direction
+  alert: string | null; // non-null if trend warrants attention
+}
+
+export interface TemporalTrends {
+  trends: TemporalTrend[];
+  overallDirection: 'improving' | 'declining' | 'mixed' | 'stable';
+  daysOfData: number;
+  alertCount: number;
+}
+
+export async function computeTemporalTrends(): Promise<TemporalTrends> {
+  await ensureInitialized();
+  const db = getClient();
+
+  // Get snapshots ordered most recent first
+  const result = await db.execute({
+    sql: `SELECT * FROM health_snapshots ORDER BY snapshot_date DESC, created_at DESC LIMIT 60`,
+    args: [],
+  });
+
+  const snapshots = result.rows as unknown as HealthSnapshot[];
+
+  if (snapshots.length < 2) {
+    return { trends: [], overallDirection: 'stable', daysOfData: snapshots.length, alertCount: 0 };
+  }
+
+  // Deduplicate by date (keep most recent per date)
+  const byDate = new Map<string, HealthSnapshot>();
+  for (const s of snapshots) {
+    if (!byDate.has(s.snapshot_date)) {
+      byDate.set(s.snapshot_date, s);
+    }
+  }
+
+  const sorted = [...byDate.values()].sort((a, b) => b.snapshot_date.localeCompare(a.snapshot_date));
+  const current = sorted[0];
+  const daysOfData = sorted.length;
+
+  // Windows: last 7 and last 30 snapshots (by date, most recent first)
+  const last7 = sorted.slice(0, Math.min(7, sorted.length));
+  const last30 = sorted.slice(0, Math.min(30, sorted.length));
+
+  function computeTrend(
+    metricName: string,
+    field: keyof HealthSnapshot,
+  ): TemporalTrend {
+    const currentVal = Number(current[field] || 0);
+    const values7d = last7.map(s => Number(s[field] || 0));
+    const values30d = last30.map(s => Number(s[field] || 0));
+
+    const avg7 = values7d.length > 0 ? values7d.reduce((s, v) => s + v, 0) / values7d.length : currentVal;
+    const avg30 = values30d.length > 0 ? values30d.reduce((s, v) => s + v, 0) / values30d.length : currentVal;
+
+    const delta7 = avg7 > 0 ? Math.round(((currentVal - avg7) / avg7) * 100) : 0;
+    const delta30 = avg30 > 0 ? Math.round(((currentVal - avg30) / avg30) * 100) : 0;
+
+    // Direction from 7d delta
+    let direction: 'improving' | 'declining' | 'stable' = 'stable';
+    if (delta7 > 5) direction = 'improving';
+    else if (delta7 < -5) direction = 'declining';
+
+    // Streak: count consecutive snapshots moving in same direction
+    // values7d[0] is today (most recent), values7d[1] is yesterday, etc.
+    let streak = 0;
+    if (values7d.length >= 2) {
+      for (let i = 0; i < values7d.length - 1; i++) {
+        if (direction === 'improving' && values7d[i] >= values7d[i + 1]) streak++;
+        else if (direction === 'declining' && values7d[i] <= values7d[i + 1]) streak++;
+        else break;
+      }
+    }
+
+    // Generate alert for concerning trends
+    let alert: string | null = null;
+    if (direction === 'declining' && streak >= 3) {
+      alert = `${metricName} declining for ${streak} consecutive days (current: ${currentVal}, 7d avg: ${Math.round(avg7 * 10) / 10})`;
+    } else if (direction === 'declining' && delta30 < -15) {
+      alert = `${metricName} is ${Math.abs(delta30)}% below 30-day average — significant deterioration`;
+    }
+
+    return {
+      metric: metricName,
+      current: currentVal,
+      avg7d: Math.round(avg7 * 10) / 10,
+      avg30d: Math.round(avg30 * 10) / 10,
+      delta7d: delta7,
+      delta30d: delta30,
+      direction,
+      streak,
+      alert,
+    };
+  }
+
+  const trends: TemporalTrend[] = [
+    computeTrend('Pipeline Health', 'pipeline_score'),
+    computeTrend('Narrative Strength', 'narrative_score'),
+    computeTrend('Fundraise Readiness', 'readiness_score'),
+    computeTrend('Raise Velocity', 'velocity'),
+    computeTrend('Active Investors', 'active_investors'),
+  ];
+
+  // Overall direction
+  const improving = trends.filter(t => t.direction === 'improving').length;
+  const declining = trends.filter(t => t.direction === 'declining').length;
+  let overallDirection: 'improving' | 'declining' | 'mixed' | 'stable';
+  if (improving >= 3 && declining === 0) overallDirection = 'improving';
+  else if (declining >= 3 && improving === 0) overallDirection = 'declining';
+  else if (improving > 0 && declining > 0) overallDirection = 'mixed';
+  else overallDirection = 'stable';
+
+  const alertCount = trends.filter(t => t.alert !== null).length;
+
+  return { trends, overallDirection, daysOfData, alertCount };
 }

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@libsql/client';
 import { computeInvestorScore, computeMomentumScore, computeConvictionTrajectory } from '@/lib/scoring';
 import type { ScoreSnapshot } from '@/lib/db';
-import { generateAutoActions, measureActionEffectiveness, saveHealthSnapshot, getHealthSnapshots } from '@/lib/db';
+import { generateAutoActions, measureActionEffectiveness, saveHealthSnapshot, getHealthSnapshots, computeTemporalTrends } from '@/lib/db';
 import type { Investor, Meeting, InvestorPortfolioCo, Objection } from '@/lib/types';
 import { getFullContext } from '@/lib/context-bus';
 
@@ -903,13 +903,53 @@ async function computeIntelligenceBriefing(
     });
   }
 
+  // 9. Temporal trends — multi-metric decline or improvement (cycle 14)
+  try {
+    const temporalData = await computeTemporalTrends();
+    if (temporalData.trends.length > 0) {
+      const declining = temporalData.trends.filter(t => t.direction === 'declining');
+      const improving = temporalData.trends.filter(t => t.direction === 'improving');
+
+      if (declining.length >= 3) {
+        insights.push({
+          type: 'critical',
+          title: `Raise momentum deteriorating: ${declining.length}/5 metrics declining`,
+          detail: declining.map(t => `${t.metric}: ${t.delta7d > 0 ? '+' : ''}${t.delta7d}% (7d)`).join(', '),
+          action: `Multiple metrics declining simultaneously indicates systemic issues. Conduct strategic review immediately — is this a pipeline problem, narrative fatigue, or execution gap?`,
+          dataSource: 'temporal_trends',
+        });
+      } else if (improving.length >= 3) {
+        insights.push({
+          type: 'opportunity',
+          title: `Momentum building: ${improving.length}/5 metrics improving`,
+          detail: improving.map(t => `${t.metric}: +${t.delta7d}% (7d)`).join(', '),
+          action: `Capitalize on current momentum — accelerate engagement with advanced-stage investors and push for term sheet discussions.`,
+          dataSource: 'temporal_trends',
+        });
+      }
+
+      // Alert on long decline streaks
+      for (const trend of temporalData.trends) {
+        if (trend.alert && trend.streak >= 4) {
+          insights.push({
+            type: 'risk',
+            title: `${trend.metric} declining ${trend.streak} consecutive days`,
+            detail: trend.alert,
+            action: `Investigate root cause of sustained ${trend.metric.toLowerCase()} decline. Check if triggered by a specific event and address structurally.`,
+            dataSource: 'temporal_trends',
+          });
+        }
+      }
+    }
+  } catch { /* non-blocking */ }
+
   // Sort: critical first, then opportunity, then risk, then trend
   const typeOrder: Record<string, number> = { critical: 0, opportunity: 1, risk: 2, trend: 3 };
   insights.sort((a, b) => (typeOrder[a.type] ?? 3) - (typeOrder[b.type] ?? 3));
 
-  // Cap at 7 insights to keep it actionable
+  // Cap at 8 insights to keep it actionable
   return {
-    insights: insights.slice(0, 7),
+    insights: insights.slice(0, 8),
     generatedAt: new Date().toISOString(),
   };
 }

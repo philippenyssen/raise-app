@@ -17,6 +17,7 @@
 | 11 | 2026-03-14 | Strategic Intelligence Consolidation | Strategic assessment API (CEO brief, raise velocity, narrative health score, pipeline concentration Herfindahl, readiness score, ranked recommendations), health snapshot storage + trend tracking, pulse auto-snapshots, meeting brief trajectory integration (plateau/decline/acceleration detection), context bus strategicHealth field | intelligence/strategic/route.ts, db.ts, context-bus.ts, pulse/route.ts, meeting-brief/route.ts |
 | 12 | 2026-03-14 | Frontline Intelligence Consumption | Strategic Dashboard page (CEO brief, 4 gauge cards, recommendations, health trend sparklines), Strategic in sidebar, Stress Test Monte Carlo + Calibration display, Momentum timing signals + narrative health by type display, Health page intelligence verification status, all frontline pages now consume deep intelligence | strategic/page.tsx, sidebar.tsx, stress-test/page.tsx, momentum/page.tsx, health/page.tsx |
 | 13 | 2026-03-14 | Compound Intelligence | Cross-signal correlation engine (4 compound signal detectors: convergent decline, ready to close, narrative crisis, competitive window), post-meeting intelligence cascade (narrative re-check + compound signal auto-actions), pipeline bottleneck auto-actions (Rule 6), compound signal auto-actions (Rule 7), compoundSignals field in context bus + system prompt | db.ts, context-bus.ts |
+| 14 | 2026-03-14 | Temporal Intelligence | Health trend analysis from stored snapshots (7d/30d averages, deltas, streaks, alerts), temporal trends in context bus + system prompt with AI synthesis, temporal-aware auto-actions (Rule 8: multi-metric decline + long streak alerts), strategic dashboard temporal intelligence UI (5-metric trend cards with direction/delta/alerts), temporal-aware strategic recommendations, pulse temporal trend insights | db.ts, context-bus.ts, intelligence/strategic/route.ts, pulse/route.ts, strategic/page.tsx |
 
 ## Intelligence Capabilities (Existing)
 
@@ -339,6 +340,36 @@
 - [x] Compound signal auto-actions (Rule 7): very_high compound signals → escalation actions with expected_lift 15 and confidence 'high'
 - [x] `compoundSignals` field in FullContext (context-bus.ts): fetched via detectCompoundSignals() in Promise.all
 - [x] System prompt serialization: COMPOUND INTELLIGENCE SIGNALS section with confidence tags and recommendations
+
+### V. Temporal Intelligence Engine (NEW cycle 14)
+- [x] `computeTemporalTrends()`: analyzes health_snapshots table to compute 7d/30d trends
+  - [x] 5 tracked metrics: Pipeline Health, Narrative Strength, Fundraise Readiness, Raise Velocity, Active Investors
+  - [x] Per-metric: current value, 7d average, 30d average, 7d delta %, 30d delta %, direction, streak length
+  - [x] Direction classification: improving (>5% above 7d avg), declining (<-5%), stable (within range)
+  - [x] Streak detection: consecutive snapshots moving in same direction
+  - [x] Alert generation: 3+ day declining streak OR 15%+ below 30d average
+  - [x] Overall direction: improving (3+ up, 0 down), declining (3+ down, 0 up), mixed, stable
+- [x] `temporalTrends` field in FullContext (context-bus.ts): fetched via computeTemporalTrends() in Promise.all
+- [x] System prompt TEMPORAL TRENDS section: direction icons, delta percentages, streak badges, alerts
+- [x] Temporal intelligence synthesis in context bus:
+  - [x] Multi-metric decline warning (3+ declining → trajectory warning)
+  - [x] Compound risk: declining narrative + emerging objections → narrative crisis escalation
+  - [x] Momentum confirmation: 3+ metrics improving → capitalize signal
+- [x] Temporal auto-actions (Rule 8 in generateAutoActions):
+  - [x] Multi-metric decline (3+ declining simultaneously) → escalation with expected_lift 12
+  - [x] Individual long decline streaks (4+ days) → escalation with expected_lift 8
+- [x] Strategic route temporal integration:
+  - [x] computeTemporalTrends() called in GET handler
+  - [x] temporalTrends included in StrategicAssessment response
+  - [x] Temporal-aware recommendations: multi-metric decline (P1), long streak decline (P2)
+- [x] Pulse endpoint temporal insights:
+  - [x] Multi-metric decline → critical insight
+  - [x] Multi-metric improving → opportunity insight
+  - [x] Long streak alerts → risk insight
+- [x] Strategic dashboard UI:
+  - [x] Temporal Intelligence panel with overall direction badge
+  - [x] 5-metric trend cards: direction icon, current value, 7d/30d delta %, streak indicator, alerts
+  - [x] Color-coded: green=improving, red=declining, neutral=stable
 
 ### CLOSED (Cycle 9):
 - ~~Learning Intelligence / Action Outcome Measurement~~ — implemented in db.ts (measureActionEffectiveness, getAutoActionEffectiveness), self-improving generateAutoActions, context-bus.ts (actionEffectiveness field + system prompt), workspace/route.ts (instruction 17), pulse/route.ts (measurement trigger)

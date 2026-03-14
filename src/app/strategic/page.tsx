@@ -30,6 +30,25 @@ interface HealthSnapshotPoint {
   activeInvestors: number;
 }
 
+interface TemporalTrend {
+  metric: string;
+  current: number;
+  avg7d: number;
+  avg30d: number;
+  delta7d: number;
+  delta30d: number;
+  direction: 'improving' | 'declining' | 'stable';
+  streak: number;
+  alert: string | null;
+}
+
+interface TemporalTrends {
+  trends: TemporalTrend[];
+  overallDirection: 'improving' | 'declining' | 'mixed' | 'stable';
+  daysOfData: number;
+  alertCount: number;
+}
+
 interface StrategicData {
   ceoBrief: string;
   raiseVelocity: {
@@ -49,6 +68,7 @@ interface StrategicData {
     activeInvestors: number;
   };
   historicalSnapshots: HealthSnapshotPoint[];
+  temporalTrends: TemporalTrends | null;
   generatedAt: string;
 }
 
@@ -287,6 +307,76 @@ export default function StrategicPage() {
               dates={data.historicalSnapshots.map(s => s.date)}
               color="blue"
             />
+          </div>
+        </div>
+      )}
+
+      {/* ================================================================ */}
+      {/* TEMPORAL TRENDS (cycle 14)                                        */}
+      {/* ================================================================ */}
+      {data.temporalTrends && data.temporalTrends.trends.length > 0 && (
+        <div className="border border-zinc-800 rounded-xl p-5">
+          <div className="flex items-center gap-2 mb-4">
+            <Activity className="w-4 h-4 text-blue-400" />
+            <span className="text-sm font-medium text-zinc-400 uppercase">Temporal Intelligence</span>
+            <span className={`ml-2 text-[10px] px-2 py-0.5 rounded-full border font-medium ${
+              data.temporalTrends.overallDirection === 'improving' ? 'bg-emerald-900/30 text-emerald-400 border-emerald-700/40' :
+              data.temporalTrends.overallDirection === 'declining' ? 'bg-red-900/30 text-red-400 border-red-700/40' :
+              data.temporalTrends.overallDirection === 'mixed' ? 'bg-amber-900/30 text-amber-400 border-amber-700/40' :
+              'bg-zinc-800 text-zinc-400 border-zinc-700'
+            }`}>
+              {data.temporalTrends.overallDirection}
+            </span>
+            <span className="text-xs text-zinc-600 ml-auto">{data.temporalTrends.daysOfData} days of data</span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+            {data.temporalTrends.trends.map((trend) => (
+              <div key={trend.metric} className={`rounded-lg p-3 border ${
+                trend.direction === 'improving' ? 'border-emerald-800/30 bg-emerald-900/10' :
+                trend.direction === 'declining' ? 'border-red-800/30 bg-red-900/10' :
+                'border-zinc-800 bg-zinc-900/30'
+              }`}>
+                <div className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">{trend.metric}</div>
+                <div className="flex items-center gap-1.5">
+                  {trend.direction === 'improving' ? (
+                    <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
+                  ) : trend.direction === 'declining' ? (
+                    <TrendingDown className="w-3.5 h-3.5 text-red-400" />
+                  ) : (
+                    <Minus className="w-3.5 h-3.5 text-zinc-500" />
+                  )}
+                  <span className={`text-lg font-bold tabular-nums ${
+                    trend.direction === 'improving' ? 'text-emerald-400' :
+                    trend.direction === 'declining' ? 'text-red-400' :
+                    'text-zinc-300'
+                  }`}>{trend.current}</span>
+                </div>
+                <div className="mt-1 space-y-0.5">
+                  <div className="flex justify-between text-[10px]">
+                    <span className="text-zinc-600">7d</span>
+                    <span className={trend.delta7d > 0 ? 'text-emerald-500' : trend.delta7d < 0 ? 'text-red-500' : 'text-zinc-500'}>
+                      {trend.delta7d > 0 ? '+' : ''}{trend.delta7d}%
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-[10px]">
+                    <span className="text-zinc-600">30d</span>
+                    <span className={trend.delta30d > 0 ? 'text-emerald-500' : trend.delta30d < 0 ? 'text-red-500' : 'text-zinc-500'}>
+                      {trend.delta30d > 0 ? '+' : ''}{trend.delta30d}%
+                    </span>
+                  </div>
+                  {trend.streak >= 2 && (
+                    <div className="text-[10px] text-amber-500 mt-0.5">{trend.streak}-day streak</div>
+                  )}
+                </div>
+                {trend.alert && (
+                  <div className="mt-1.5 flex items-start gap-1">
+                    <AlertTriangle className="w-2.5 h-2.5 text-red-400 shrink-0 mt-0.5" />
+                    <span className="text-[9px] text-red-400 leading-tight">{trend.alert}</span>
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         </div>
       )}

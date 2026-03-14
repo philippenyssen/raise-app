@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getFullContext } from '@/lib/context-bus';
-import { saveHealthSnapshot, getHealthSnapshots } from '@/lib/db';
+import { saveHealthSnapshot, getHealthSnapshots, computeTemporalTrends } from '@/lib/db';
+import type { TemporalTrends } from '@/lib/db';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -42,6 +43,7 @@ interface StrategicAssessment {
     velocity: number;
     activeInvestors: number;
   }[];
+  temporalTrends: TemporalTrends | null;
   generatedAt: string;
 }
 
@@ -339,6 +341,36 @@ function generateRecommendations(
     });
   }
 
+  // 8. Temporal trend deterioration (cycle 14)
+  if (ctx.temporalTrends && ctx.temporalTrends.trends.length > 0) {
+    const declining = ctx.temporalTrends.trends.filter(t => t.direction === 'declining');
+    if (declining.length >= 3) {
+      recs.push({
+        priority: 1,
+        category: 'risk',
+        title: `${declining.length}/5 health metrics are declining`,
+        rationale: `Declining: ${declining.map(t => `${t.metric} (${t.delta7d}% over 7d)`).join(', ')}. Multiple simultaneous declines indicate systemic momentum loss, not isolated issues.`,
+        action: 'Conduct a strategic review today. Identify the root cause (market timing? execution gaps? narrative fatigue?) and implement a course correction within 48 hours.',
+        expectedImpact: 'Early intervention on multi-metric decline prevents cascading deterioration that becomes irrecoverable.',
+        deadline: 'Today',
+      });
+    }
+
+    // Alert on individual long streaks
+    const longStreaks = ctx.temporalTrends.trends.filter(t => t.direction === 'declining' && t.streak >= 4);
+    for (const ls of longStreaks.slice(0, 1)) {
+      recs.push({
+        priority: 2,
+        category: ls.metric.includes('Narrative') ? 'narrative' : ls.metric.includes('Pipeline') ? 'pipeline' : 'execution',
+        title: `${ls.metric} declining for ${ls.streak} consecutive days`,
+        rationale: `Current: ${ls.current}, was ${ls.avg7d} (7d avg). This sustained decline suggests a structural issue, not random fluctuation.`,
+        action: `Investigate why ${ls.metric.toLowerCase()} keeps deteriorating. Check if a specific event triggered the decline and address the root cause.`,
+        expectedImpact: `Reversing a ${ls.streak}-day decline requires targeted intervention, not more of the same.`,
+        deadline: 'This week',
+      });
+    }
+  }
+
   // Sort by priority
   recs.sort((a, b) => a.priority - b.priority);
 
@@ -430,6 +462,12 @@ export async function GET() {
       }));
     } catch { /* non-blocking */ }
 
+    // Compute temporal trends (cycle 14)
+    let temporalTrends: TemporalTrends | null = null;
+    try {
+      temporalTrends = await computeTemporalTrends();
+    } catch { /* non-blocking */ }
+
     // Non-blocking: store today's snapshot if not already stored
     try {
       const recentSnapshots = await getHealthSnapshots(1);
@@ -461,6 +499,7 @@ export async function GET() {
         activeInvestors: ctx.pipelineHealth.totalActive,
       },
       historicalSnapshots,
+      temporalTrends,
       generatedAt: new Date().toISOString(),
     };
 
