@@ -43,6 +43,12 @@ export interface Meeting {
   status_after: string;
   ai_analysis: string;
   created_at: string;
+  // Post-meeting outcome feedback
+  outcome_rating: number | null; // 1-5
+  objections_addressed: string; // JSON array of strings
+  competitive_mentions: string; // JSON array of strings
+  key_takeaway: string;
+  prep_usefulness: number | null; // 1-5
 }
 
 export interface Objection {

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getMeetings, createMeeting, updateMeeting, getInvestor, processPostMeetingIntelligence, logActivity, createObjectionRecord, updateObjectionEnthusiasmDelta, generateFollowupChoreography, extractAndStoreQuestionPatterns } from '@/lib/db';
+import { getMeetings, getMeeting, createMeeting, updateMeeting, getInvestor, processPostMeetingIntelligence, logActivity, createObjectionRecord, updateObjectionEnthusiasmDelta, generateFollowupChoreography, extractAndStoreQuestionPatterns } from '@/lib/db';
 import { analyzeMeetingNotes } from '@/lib/ai';
 import { emitContextChange } from '@/lib/context-bus';
 
@@ -128,6 +128,8 @@ const ALLOWED_MEETING_FIELDS = new Set([
   'date', 'type', 'attendees', 'duration_minutes', 'raw_notes',
   'questions_asked', 'objections', 'engagement_signals', 'competitive_intel',
   'next_steps', 'enthusiasm_score', 'status_after', 'ai_analysis',
+  'outcome_rating', 'objections_addressed', 'competitive_mentions',
+  'key_takeaway', 'prep_usefulness',
 ]);
 
 export async function PUT(req: NextRequest) {
@@ -143,5 +145,46 @@ export async function PUT(req: NextRequest) {
   }
   await updateMeeting(id, updates);
   emitContextChange('meeting_updated', `Meeting ${id} updated`);
+  return NextResponse.json({ ok: true });
+}
+
+export async function PATCH(req: NextRequest) {
+  const body = await req.json();
+  const { meeting_id, outcome_rating, objections_addressed, competitive_mentions, key_takeaway, prep_usefulness } = body;
+
+  if (!meeting_id) {
+    return NextResponse.json({ error: 'meeting_id required' }, { status: 400 });
+  }
+
+  const meeting = await getMeeting(meeting_id);
+  if (!meeting) {
+    return NextResponse.json({ error: 'meeting not found' }, { status: 404 });
+  }
+
+  const updates: Record<string, unknown> = {};
+  if (outcome_rating !== undefined) updates.outcome_rating = outcome_rating;
+  if (objections_addressed !== undefined) updates.objections_addressed = JSON.stringify(objections_addressed);
+  if (competitive_mentions !== undefined) updates.competitive_mentions = JSON.stringify(competitive_mentions);
+  if (key_takeaway !== undefined) updates.key_takeaway = key_takeaway;
+  if (prep_usefulness !== undefined) updates.prep_usefulness = prep_usefulness;
+
+  if (Object.keys(updates).length === 0) {
+    return NextResponse.json({ error: 'no outcome fields provided' }, { status: 400 });
+  }
+
+  await updateMeeting(meeting_id, updates);
+
+  try {
+    await logActivity({
+      event_type: 'meeting_logged',
+      subject: `Outcome recorded for meeting with ${meeting.investor_name}`,
+      detail: key_takeaway || '',
+      investor_id: meeting.investor_id,
+      investor_name: meeting.investor_name,
+    });
+  } catch { /* non-blocking */ }
+
+  emitContextChange('meeting_updated', `Meeting outcome recorded for ${meeting.investor_name}`);
+
   return NextResponse.json({ ok: true });
 }

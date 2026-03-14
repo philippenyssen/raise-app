@@ -76,6 +76,11 @@ async function ensureInitialized() {
       status_after TEXT DEFAULT 'met',
       ai_analysis TEXT DEFAULT '',
       created_at TEXT DEFAULT (datetime('now')),
+      outcome_rating INTEGER DEFAULT NULL,
+      objections_addressed TEXT DEFAULT '[]',
+      competitive_mentions TEXT DEFAULT '[]',
+      key_takeaway TEXT DEFAULT '',
+      prep_usefulness INTEGER DEFAULT NULL,
       FOREIGN KEY (investor_id) REFERENCES investors(id)
     )`,
     `CREATE TABLE IF NOT EXISTS convergence (
@@ -476,6 +481,13 @@ async function ensureInitialized() {
       created_at TEXT DEFAULT (datetime('now'))
     )`);
   } catch { /* already exists */ }
+
+  // Migration: add meeting outcome feedback columns
+  try { await db.execute(`ALTER TABLE meetings ADD COLUMN outcome_rating INTEGER DEFAULT NULL`); } catch { /* column already exists */ }
+  try { await db.execute(`ALTER TABLE meetings ADD COLUMN objections_addressed TEXT DEFAULT '[]'`); } catch { /* column already exists */ }
+  try { await db.execute(`ALTER TABLE meetings ADD COLUMN competitive_mentions TEXT DEFAULT '[]'`); } catch { /* column already exists */ }
+  try { await db.execute(`ALTER TABLE meetings ADD COLUMN key_takeaway TEXT DEFAULT ''`); } catch { /* column already exists */ }
+  try { await db.execute(`ALTER TABLE meetings ADD COLUMN prep_usefulness INTEGER DEFAULT NULL`); } catch { /* column already exists */ }
 
   initialized = true;
 }
