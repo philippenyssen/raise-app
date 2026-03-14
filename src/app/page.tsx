@@ -8,7 +8,8 @@ import {
   Activity, Download, Columns3, Target, Timer, ShieldCheck,
   RefreshCw, Zap, TrendingUp, TrendingDown, Minus, AlertTriangle,
   ChevronRight, Clock, ArrowUpRight, ArrowDownRight, ShieldAlert,
-  UserMinus, CalendarClock,
+  UserMinus, CalendarClock, Flame, Gauge, CheckCircle2, Mail,
+  Calendar, MessageSquare, UserPlus, ArrowUp,
 } from 'lucide-react';
 
 // ---------------------------------------------------------------------------
@@ -93,6 +94,60 @@ interface StaleInvestorItem {
 interface AtRiskData {
   scoreReversals: ScoreReversalItem[];
   staleInvestors: StaleInvestorItem[];
+}
+
+interface DealHeatInvestor {
+  id: string;
+  name: string;
+  type: string;
+  tier: number;
+  status: string;
+  dealHeat: { heat: number; label: 'hot' | 'warm' | 'cool' | 'cold' | 'frozen'; drivers: string[] };
+  enthusiasm: number;
+  lastMeeting: string | null;
+}
+
+interface DealHeatResponse {
+  investors: DealHeatInvestor[];
+  counts: { hot: number; warm: number; cool: number; cold: number; frozen: number; total: number };
+  generated_at: string;
+}
+
+interface FollowupItem {
+  id: string;
+  meeting_id: string;
+  investor_id: string;
+  investor_name: string;
+  action_type: string;
+  description: string;
+  due_at: string;
+  status: string;
+  completed_at: string | null;
+}
+
+interface VelocityInvestor {
+  investor_id: string;
+  investor_name: string;
+  status: string;
+  days_in_process: number;
+  meetings_per_week: number;
+  velocity_score: number;
+  tracking_status: 'on_track' | 'behind' | 'at_risk';
+}
+
+interface VelocityResponse {
+  investors: VelocityInvestor[];
+  summary: {
+    total_active: number;
+    on_track: number;
+    behind: number;
+    at_risk: number;
+    avg_velocity_score: number;
+    avg_days_in_process: number;
+    raise_days_elapsed: number;
+    raise_target_days: number;
+  };
+  generated_at: string;
 }
 
 interface HealthData {
@@ -194,6 +249,9 @@ export default function Dashboard() {
   const [dataQuality, setDataQuality] = useState<DataQualityData | null>(null);
   const [stressTest, setStressTest] = useState<StressTestSummary | null>(null);
   const [atRisk, setAtRisk] = useState<AtRiskData | null>(null);
+  const [dealHeat, setDealHeat] = useState<DealHeatResponse | null>(null);
+  const [pendingFollowups, setPendingFollowups] = useState<FollowupItem[]>([]);
+  const [velocity, setVelocity] = useState<VelocityResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [seeding, setSeeding] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -203,16 +261,19 @@ export default function Dashboard() {
     if (!silent) setLoading(true);
     else setRefreshing(true);
     try {
-      const [healthRes, pulseRes, docsRes, drRes, tasksRes, actRes, dqRes, stRes, arRes] = await Promise.all([
+      const [healthRes, pulseRes, docsRes, drRes, tasksRes, actRes, dqRes, stRes, arRes, dhRes, fuRes, velRes] = await Promise.all([
         fetch('/api/health'),
         fetch('/api/pulse'),
         fetch('/api/documents'),
         fetch('/api/data-room'),
         fetch('/api/tasks?type=upcoming&limit=5'),
-        fetch('/api/tasks?type=activity&limit=5'),
+        fetch('/api/tasks?type=activity&limit=10'),
         fetch('/api/data-quality'),
         fetch('/api/stress-test'),
         fetch('/api/at-risk'),
+        fetch('/api/deal-heat'),
+        fetch('/api/followups?view=pending'),
+        fetch('/api/velocity'),
       ]);
       if (healthRes.ok) setData(await healthRes.json());
       if (pulseRes.ok) setPulse(await pulseRes.json());
@@ -223,6 +284,9 @@ export default function Dashboard() {
       if (dqRes.ok) setDataQuality(await dqRes.json());
       if (stRes.ok) setStressTest(await stRes.json());
       if (arRes.ok) setAtRisk(await arRes.json());
+      if (dhRes.ok) setDealHeat(await dhRes.json());
+      if (fuRes.ok) setPendingFollowups(await fuRes.json());
+      if (velRes.ok) setVelocity(await velRes.json());
       setLastRefresh(new Date());
     } catch {
       if (!silent) toast('Failed to load dashboard data', 'error');
@@ -457,6 +521,13 @@ export default function Dashboard() {
               }
             />
           </div>
+
+          {/* ================================================================ */}
+          {/* PIPELINE VELOCITY STRIP                                          */}
+          {/* ================================================================ */}
+          {velocity && (
+            <VelocityStrip velocity={velocity} />
+          )}
 
           {/* ================================================================ */}
           {/* CLOSE FORECAST WIDGET                                            */}
@@ -1060,6 +1131,71 @@ export default function Dashboard() {
           )}
 
           {/* ================================================================ */}
+          {/* HOT DEALS + UPCOMING FOLLOW-UPS (side by side)                   */}
+          {/* ================================================================ */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Hot Deals */}
+            <div className="rounded-xl p-5" style={{ border: '1px solid rgba(249,115,22,0.2)', background: 'rgba(249,115,22,0.02)' }}>
+              <div className="flex items-center justify-between mb-3">
+                <h2
+                  className="uppercase flex items-center gap-2"
+                  style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: '#f97316' }}
+                >
+                  <Flame className="w-4 h-4" /> Hot Deals
+                </h2>
+                <Link
+                  href="/deal-heat"
+                  className="flex items-center gap-1"
+                  style={{ fontSize: 'var(--font-size-xs)', color: '#f97316' }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#fb923c'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = '#f97316'; }}
+                >
+                  All deals <ArrowRight className="w-3 h-3" />
+                </Link>
+              </div>
+              {dealHeat && dealHeat.investors.length > 0 ? (
+                <div className="space-y-1.5">
+                  {dealHeat.investors.slice(0, 5).map((inv) => (
+                    <HotDealRow key={inv.id} investor={inv} />
+                  ))}
+                </div>
+              ) : (
+                <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>No active deals scored yet</p>
+              )}
+            </div>
+
+            {/* Upcoming Follow-ups */}
+            <div className="rounded-xl p-5" style={{ border: '1px solid rgba(59,130,246,0.2)', background: 'rgba(59,130,246,0.02)' }}>
+              <div className="flex items-center justify-between mb-3">
+                <h2
+                  className="uppercase flex items-center gap-2"
+                  style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--accent)' }}
+                >
+                  <CheckCircle2 className="w-4 h-4" /> Upcoming Follow-ups
+                </h2>
+                <Link
+                  href="/followups"
+                  className="flex items-center gap-1"
+                  style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#60a5fa'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
+                >
+                  All follow-ups <ArrowRight className="w-3 h-3" />
+                </Link>
+              </div>
+              {pendingFollowups.length > 0 ? (
+                <div className="space-y-1.5">
+                  {pendingFollowups.slice(0, 5).map((fu) => (
+                    <FollowupRow key={fu.id} followup={fu} />
+                  ))}
+                </div>
+              ) : (
+                <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>No pending follow-ups</p>
+              )}
+            </div>
+          </div>
+
+          {/* ================================================================ */}
           {/* PIPELINE FUNNEL (compact)                                        */}
           {/* ================================================================ */}
           <div className="rounded-xl p-5" style={{ border: '1px solid var(--border-default)' }}>
@@ -1340,20 +1476,9 @@ export default function Dashboard() {
               {activity.length === 0 ? (
                 <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>No activity recorded yet</p>
               ) : (
-                <div className="space-y-2">
-                  {activity.map(a => (
-                    <div
-                      key={a.id}
-                      className="py-1.5 px-2 rounded"
-                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-3)'; }}
-                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
-                    >
-                      <div className="truncate" style={{ fontSize: 'var(--font-size-sm)' }}>{a.subject}</div>
-                      <div className="flex items-center gap-2" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
-                        <span>{a.event_type.replace(/_/g, ' ')}</span>
-                        <span>{new Date(a.created_at).toLocaleString()}</span>
-                      </div>
-                    </div>
+                <div className="space-y-1">
+                  {activity.slice(0, 10).map(a => (
+                    <ActivityRow key={a.id} activity={a} />
                   ))}
                 </div>
               )}
@@ -1486,4 +1611,372 @@ function formatStage(stage: string): string {
     passed: 'Passed', dropped: 'Dropped',
   };
   return labels[stage] || stage.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+}
+
+function VelocityStrip({ velocity }: { velocity: VelocityResponse }) {
+  const s = velocity.summary;
+  const progressPct = Math.min(100, Math.round((s.raise_days_elapsed / s.raise_target_days) * 100));
+  const daysRemaining = Math.max(0, s.raise_target_days - s.raise_days_elapsed);
+  const isOverTarget = s.raise_days_elapsed > s.raise_target_days;
+
+  const totalMeetings = velocity.investors.reduce((sum, inv) => {
+    const mpw = inv.meetings_per_week;
+    return sum + mpw;
+  }, 0);
+  const avgMeetingsPerWeek = velocity.investors.length > 0
+    ? Math.round((totalMeetings / velocity.investors.length) * 10) / 10
+    : 0;
+
+  const trendUp = s.avg_velocity_score >= 50;
+
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <div
+      className="rounded-xl overflow-hidden transition-all"
+      style={{
+        border: `1px solid ${isOverTarget ? 'rgba(239,68,68,0.25)' : 'rgba(59,130,246,0.2)'}`,
+        background: isOverTarget ? 'rgba(239,68,68,0.03)' : 'rgba(59,130,246,0.02)',
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <div className="px-5 pt-4 pb-2">
+        <div className="flex items-center justify-between mb-3">
+          <h2
+            className="uppercase flex items-center gap-2"
+            style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)' }}
+          >
+            <Gauge className="w-4 h-4" /> Pipeline Velocity
+          </h2>
+          <Link
+            href="/velocity"
+            className="flex items-center gap-1 transition-opacity"
+            style={{
+              fontSize: 'var(--font-size-xs)',
+              color: 'var(--accent)',
+              opacity: hovered ? 1 : 0,
+            }}
+          >
+            Details <ArrowRight className="w-3 h-3" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-3">
+          <div>
+            <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Days Elapsed</div>
+            <div
+              className="tabular-nums mt-0.5"
+              style={{
+                fontSize: 'var(--font-size-xl)',
+                fontWeight: 700,
+                color: isOverTarget ? 'var(--danger)' : 'var(--text-primary)',
+              }}
+            >
+              {s.raise_days_elapsed}
+              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', fontWeight: 400 }}>
+                /{s.raise_target_days}d
+              </span>
+            </div>
+          </div>
+          <div>
+            <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Avg Mtgs/Week</div>
+            <div className="flex items-center gap-1.5 mt-0.5">
+              <span
+                className="tabular-nums"
+                style={{ fontSize: 'var(--font-size-xl)', fontWeight: 700, color: 'var(--text-primary)' }}
+              >
+                {avgMeetingsPerWeek}
+              </span>
+              <span style={{ color: trendUp ? 'var(--success)' : 'var(--danger)' }}>
+                {trendUp ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
+              </span>
+            </div>
+          </div>
+          <div>
+            <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Velocity Score</div>
+            <div
+              className="tabular-nums mt-0.5"
+              style={{
+                fontSize: 'var(--font-size-xl)',
+                fontWeight: 700,
+                color: s.avg_velocity_score >= 60 ? 'var(--success)' : s.avg_velocity_score >= 40 ? 'var(--warning)' : 'var(--danger)',
+              }}
+            >
+              {s.avg_velocity_score}
+              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', fontWeight: 400 }}>/100</span>
+            </div>
+          </div>
+          <div>
+            <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+              {isOverTarget ? 'Over Target By' : 'Days Remaining'}
+            </div>
+            <div
+              className="tabular-nums mt-0.5"
+              style={{
+                fontSize: 'var(--font-size-xl)',
+                fontWeight: 700,
+                color: isOverTarget ? 'var(--danger)' : daysRemaining <= 14 ? 'var(--warning)' : 'var(--success)',
+              }}
+            >
+              {isOverTarget ? `+${s.raise_days_elapsed - s.raise_target_days}` : daysRemaining}d
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Progress bar */}
+      <div style={{ height: '4px', background: 'var(--surface-3)' }}>
+        <div
+          className="h-full transition-all duration-700"
+          style={{
+            width: `${progressPct}%`,
+            background: isOverTarget
+              ? 'var(--danger)'
+              : progressPct >= 75
+              ? 'var(--warning)'
+              : 'var(--accent)',
+            borderRadius: progressPct < 100 ? '0 2px 2px 0' : undefined,
+          }}
+        />
+      </div>
+
+      {/* Tracking breakdown mini bar */}
+      <div className="px-5 py-2 flex items-center gap-3" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+        <span className="flex items-center gap-1" style={{ fontSize: '10px', color: 'var(--success)' }}>
+          <span style={{ fontWeight: 700 }}>{s.on_track}</span> on track
+        </span>
+        <span className="flex items-center gap-1" style={{ fontSize: '10px', color: 'var(--warning)' }}>
+          <span style={{ fontWeight: 700 }}>{s.behind}</span> behind
+        </span>
+        <span className="flex items-center gap-1" style={{ fontSize: '10px', color: 'var(--danger)' }}>
+          <span style={{ fontWeight: 700 }}>{s.at_risk}</span> at risk
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function HotDealRow({ investor }: { investor: DealHeatInvestor }) {
+  const [hovered, setHovered] = useState(false);
+
+  const heatColor =
+    investor.dealHeat.label === 'hot' ? '#ef4444' :
+    investor.dealHeat.label === 'warm' ? '#f97316' :
+    investor.dealHeat.label === 'cool' ? 'var(--accent)' :
+    investor.dealHeat.label === 'cold' ? 'var(--text-tertiary)' : 'var(--text-muted)';
+
+  const heatBg =
+    investor.dealHeat.label === 'hot' ? 'rgba(239,68,68,0.12)' :
+    investor.dealHeat.label === 'warm' ? 'rgba(249,115,22,0.12)' :
+    investor.dealHeat.label === 'cool' ? 'rgba(59,130,246,0.12)' :
+    'var(--surface-3)';
+
+  const heatBorder =
+    investor.dealHeat.label === 'hot' ? 'rgba(239,68,68,0.3)' :
+    investor.dealHeat.label === 'warm' ? 'rgba(249,115,22,0.3)' :
+    investor.dealHeat.label === 'cool' ? 'rgba(59,130,246,0.3)' :
+    'var(--border-subtle)';
+
+  return (
+    <div
+      className="flex items-center gap-3 py-2 px-3 rounded-lg transition-colors"
+      style={{ background: hovered ? 'var(--surface-3)' : 'transparent' }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2">
+          <Link
+            href={`/investors/${investor.id}`}
+            className="truncate transition-colors"
+            style={{
+              fontSize: 'var(--font-size-sm)',
+              fontWeight: 500,
+              color: hovered ? 'var(--accent)' : 'var(--text-primary)',
+            }}
+          >
+            {investor.name}
+          </Link>
+          <span style={{ fontSize: '9px', color: investor.tier === 1 ? '#fbbf24' : 'var(--text-muted)' }}>
+            T{investor.tier}
+          </span>
+        </div>
+        <div className="mt-0.5" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+          {formatStage(investor.status)}
+        </div>
+      </div>
+      <div className="flex items-center gap-2 shrink-0">
+        <span
+          className="tabular-nums"
+          style={{ fontSize: 'var(--font-size-sm)', fontWeight: 700, color: heatColor }}
+        >
+          {investor.dealHeat.heat}
+        </span>
+        <span
+          className="px-1.5 py-0.5 rounded uppercase"
+          style={{
+            fontSize: '9px',
+            fontWeight: 600,
+            background: heatBg,
+            color: heatColor,
+            border: `1px solid ${heatBorder}`,
+          }}
+        >
+          {investor.dealHeat.label}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function FollowupRow({ followup }: { followup: FollowupItem }) {
+  const [hovered, setHovered] = useState(false);
+
+  const now = new Date();
+  const dueDate = new Date(followup.due_at);
+  const isOverdue = dueDate < now;
+  const daysUntil = Math.round((dueDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+
+  const actionLabel: Record<string, string> = {
+    thank_you: 'Thank You',
+    objection_response: 'Objection Response',
+    data_share: 'Data Share',
+    schedule_followup: 'Schedule Follow-up',
+    warm_reengagement: 'Re-engagement',
+    milestone_update: 'Milestone Update',
+  };
+
+  const ActionIcon =
+    followup.action_type === 'thank_you' ? Mail :
+    followup.action_type === 'schedule_followup' ? Calendar :
+    followup.action_type === 'data_share' ? FileText :
+    MessageSquare;
+
+  return (
+    <div
+      className="flex items-center gap-3 py-2 px-3 rounded-lg transition-colors"
+      style={{ background: hovered ? 'var(--surface-3)' : 'transparent' }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <span className="shrink-0" style={{ color: isOverdue ? 'var(--danger)' : 'var(--accent)' }}>
+        <ActionIcon className="w-4 h-4" />
+      </span>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2">
+          <Link
+            href={`/investors/${followup.investor_id}`}
+            className="truncate transition-colors"
+            style={{
+              fontSize: 'var(--font-size-sm)',
+              fontWeight: 500,
+              color: hovered ? 'var(--accent)' : 'var(--text-primary)',
+            }}
+          >
+            {followup.investor_name || 'Unknown'}
+          </Link>
+          <span
+            className="px-1.5 py-0.5 rounded shrink-0"
+            style={{
+              fontSize: '9px',
+              background: 'var(--surface-3)',
+              color: 'var(--text-secondary)',
+              border: '1px solid var(--border-subtle)',
+            }}
+          >
+            {actionLabel[followup.action_type] || followup.action_type.replace(/_/g, ' ')}
+          </span>
+        </div>
+        <p className="truncate mt-0.5" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
+          {followup.description}
+        </p>
+      </div>
+      <div className="shrink-0 text-right">
+        <div
+          className="tabular-nums"
+          style={{
+            fontSize: 'var(--font-size-xs)',
+            fontWeight: 500,
+            color: isOverdue ? 'var(--danger)' : daysUntil <= 1 ? 'var(--warning)' : 'var(--text-muted)',
+          }}
+        >
+          {isOverdue
+            ? `${Math.abs(daysUntil)}d overdue`
+            : daysUntil === 0
+            ? 'Today'
+            : daysUntil === 1
+            ? 'Tomorrow'
+            : `${daysUntil}d`}
+        </div>
+        <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+          {dueDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ActivityRow({ activity }: { activity: ActivityItem }) {
+  const [hovered, setHovered] = useState(false);
+
+  const eventIcons: Record<string, typeof Activity> = {
+    meeting_logged: Calendar,
+    status_changed: ArrowUp,
+    followup_completed: CheckCircle2,
+    investor_added: UserPlus,
+    followup_created: Mail,
+    meeting_created: Calendar,
+  };
+
+  const eventColors: Record<string, string> = {
+    meeting_logged: 'var(--accent)',
+    status_changed: 'var(--success)',
+    followup_completed: 'var(--success)',
+    investor_added: '#a855f7',
+    followup_created: 'var(--warning)',
+    meeting_created: 'var(--accent)',
+  };
+
+  const Icon = eventIcons[activity.event_type] || Activity;
+  const iconColor = eventColors[activity.event_type] || 'var(--text-muted)';
+
+  const timeAgo = formatTimeAgo(activity.created_at);
+
+  return (
+    <div
+      className="flex items-start gap-2.5 py-1.5 px-2 rounded transition-colors"
+      style={{ background: hovered ? 'var(--surface-3)' : 'transparent' }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <span className="mt-0.5 shrink-0" style={{ color: iconColor }}>
+        <Icon className="w-3.5 h-3.5" />
+      </span>
+      <div className="flex-1 min-w-0">
+        <div className="truncate" style={{ fontSize: 'var(--font-size-sm)' }}>{activity.subject}</div>
+        <div className="flex items-center gap-2" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+          {activity.investor_name && (
+            <span style={{ color: 'var(--text-secondary)' }}>{activity.investor_name}</span>
+          )}
+          <span>{activity.event_type.replace(/_/g, ' ')}</span>
+          <span>{timeAgo}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function formatTimeAgo(dateStr: string): string {
+  const now = new Date();
+  const date = new Date(dateStr);
+  const diffMs = now.getTime() - date.getTime();
+  const diffMins = Math.round(diffMs / 60000);
+  if (diffMins < 1) return 'just now';
+  if (diffMins < 60) return `${diffMins}m ago`;
+  const diffHrs = Math.round(diffMins / 60);
+  if (diffHrs < 24) return `${diffHrs}h ago`;
+  const diffDays = Math.round(diffHrs / 24);
+  if (diffDays < 7) return `${diffDays}d ago`;
+  return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
 }
