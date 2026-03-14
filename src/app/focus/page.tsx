@@ -492,7 +492,11 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
     : { background: 'var(--surface-2)', color: 'var(--text-tertiary)' };
 
   return (
-    <div style={cardStyle}>
+    <div
+      style={cardStyle}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
       <div
         className="p-4 cursor-pointer"
         onClick={() => setExpanded(!expanded)}
@@ -627,21 +631,48 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
             )}
           </div>
 
-          {/* Focus score */}
-          <div
-            className="flex flex-col items-center shrink-0 px-3 py-2"
-            style={{
-              ...focusScoreBgStyle(item.focusScore),
-              borderRadius: 'var(--radius-md)',
-            }}
-          >
-            <span
-              className="tabular-nums"
-              style={{ fontSize: 'var(--font-size-xl)', fontWeight: 700, color: focusScoreColor(item.focusScore) }}
+          {/* Focus score + quick actions */}
+          <div className="flex flex-col items-center gap-2 shrink-0">
+            <div
+              className="flex flex-col items-center px-3 py-2"
+              style={{
+                ...focusScoreBgStyle(item.focusScore),
+                borderRadius: 'var(--radius-md)',
+              }}
             >
-              {item.focusScore}
-            </span>
-            <span style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Focus</span>
+              <span
+                className="tabular-nums"
+                style={{ fontSize: 'var(--font-size-xl)', fontWeight: 700, color: focusScoreColor(item.focusScore) }}
+              >
+                {item.focusScore}
+              </span>
+              <span style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Focus</span>
+            </div>
+            {/* Quick action buttons — always visible for top 3, on hover for rest */}
+            {(rank <= 3 || hovered) && (
+              <div className="flex items-center gap-1" onClick={e => e.stopPropagation()}>
+                <Link
+                  href={`/meetings/new?investor=${item.investorId}`}
+                  title="Schedule meeting"
+                  className="flex items-center justify-center"
+                  style={{ width: '28px', height: '28px', borderRadius: 'var(--radius-md)', background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(59,130,246,0.2)', transition: 'all 150ms ease' }}
+                  onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent)'; e.currentTarget.style.color = 'white'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'var(--accent-muted)'; e.currentTarget.style.color = 'var(--accent)'; }}
+                >
+                  <Calendar className="w-3.5 h-3.5" />
+                </Link>
+                <Link
+                  href={`/meetings/prep?investor=${item.investorId}`}
+                  title="Prep meeting"
+                  className="flex items-center justify-center"
+                  style={{ width: '28px', height: '28px', borderRadius: 'var(--radius-md)', background: 'var(--surface-2)', color: 'var(--text-secondary)', border: '1px solid var(--border-default)', transition: 'all 150ms ease' }}
+                  onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent-muted)'; e.currentTarget.style.color = 'var(--accent)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'var(--surface-2)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}
+                >
+                  <Zap className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            )}
           </div>
         </div>
 
@@ -749,13 +780,31 @@ function QuickWinCard({ item }: { item: FocusItem }) {
           <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>{item.recommendedAction.substring(0, 120)}</p>
         </>
       )}
-      <div className="flex items-center gap-2" style={{ marginTop: '12px' }}>
-        <span className="flex items-center gap-1" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
-          <Timer className="w-3 h-3" /> {item.timeEstimate}
-        </span>
-        <span style={{ fontSize: '10px', color: focusScoreColor(item.focusScore) }}>
-          Score: {item.focusScore}
-        </span>
+      <div className="flex items-center justify-between" style={{ marginTop: '12px' }}>
+        <div className="flex items-center gap-2">
+          <span className="flex items-center gap-1" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+            <Timer className="w-3 h-3" /> {item.timeEstimate}
+          </span>
+          <span style={{ fontSize: '10px', color: focusScoreColor(item.focusScore) }}>
+            Score: {item.focusScore}
+          </span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <Link
+            href={`/meetings/new?investor=${item.investorId}`}
+            className="btn btn-primary"
+            style={{ fontSize: '10px', padding: '2px 8px', borderRadius: 'var(--radius-sm)' }}
+          >
+            Schedule
+          </Link>
+          <Link
+            href={`/investors/${item.investorId}`}
+            className="btn btn-secondary"
+            style={{ fontSize: '10px', padding: '2px 8px', borderRadius: 'var(--radius-sm)' }}
+          >
+            Open
+          </Link>
+        </div>
       </div>
     </div>
   );
@@ -923,6 +972,22 @@ function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
         <EnthusiasmDots value={investor.enthusiasm} />
       </div>
       <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>{investor.reason}</p>
+      <div className="flex items-center gap-2" style={{ marginTop: '10px' }}>
+        <Link
+          href={`/meetings/prep?investor=${investor.investorId}`}
+          className="btn btn-primary btn-sm flex-1"
+          style={{ fontSize: '11px' }}
+        >
+          Prep Meeting
+        </Link>
+        <Link
+          href={`/investors/${investor.investorId}`}
+          className="btn btn-secondary btn-sm flex-1"
+          style={{ fontSize: '11px' }}
+        >
+          View Deal
+        </Link>
+      </div>
     </div>
   );
 }
@@ -960,6 +1025,22 @@ function AtRiskCard({ investor }: { investor: InvestorSummary }) {
         <EnthusiasmDots value={investor.enthusiasm} />
       </div>
       <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>{investor.reason}</p>
+      <div className="flex items-center gap-2" style={{ marginTop: '10px' }}>
+        <Link
+          href={`/meetings/new?investor=${investor.investorId}`}
+          className="btn btn-sm flex-1 flex items-center justify-center gap-1"
+          style={{ fontSize: '11px', background: 'rgba(239,68,68,0.15)', color: '#f87171', border: '1px solid rgba(239,68,68,0.25)' }}
+        >
+          Re-engage
+        </Link>
+        <Link
+          href={`/investors/${investor.investorId}`}
+          className="btn btn-secondary btn-sm flex-1"
+          style={{ fontSize: '11px' }}
+        >
+          View Deal
+        </Link>
+      </div>
     </div>
   );
 }
