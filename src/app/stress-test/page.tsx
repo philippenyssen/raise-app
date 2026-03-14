@@ -7,6 +7,7 @@ import {
   ShieldAlert, TrendingUp, TrendingDown, ArrowRight,
   RefreshCw, AlertTriangle, CheckCircle2, Target,
   Clock, ChevronDown, ChevronUp, Zap, ArrowUpRight,
+  BarChart3,
 } from 'lucide-react';
 
 // ---------------------------------------------------------------------------
@@ -48,6 +49,21 @@ interface RiskItem {
   mitigation: string;
 }
 
+interface MonteCarloData {
+  p10: number;
+  p50: number;
+  p90: number;
+  probOfTarget: number;
+  runs: number;
+}
+
+interface CalibrationData {
+  enabled: boolean;
+  resolvedCount: number;
+  adjustments: Record<string, number> | null;
+  note: string;
+}
+
 interface StressTestData {
   target: number;
   targetCloseDate: string | null;
@@ -69,6 +85,8 @@ interface StressTestData {
     avgCloseProbability: number;
     medianExpectedCheck: number;
   };
+  monteCarlo?: MonteCarloData;
+  calibration?: CalibrationData;
   generatedAt: string;
 }
 
@@ -575,6 +593,114 @@ export default function StressTestPage() {
           <SummaryCard label="Passed/Dropped" value={data.summary.totalPassed} />
           <SummaryCard label="Median Check" value={data.summary.medianExpectedCheck > 0 ? `EUR ${Math.round(data.summary.medianExpectedCheck)}M` : '--'} />
         </div>
+      </div>
+
+      {/* ================================================================ */}
+      {/* MONTE CARLO + CALIBRATION                                        */}
+      {/* ================================================================ */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* Monte Carlo Confidence Intervals */}
+        {data.monteCarlo && (
+          <div className="border border-zinc-800 rounded-xl p-5">
+            <h2 className="text-sm font-medium text-zinc-400 uppercase flex items-center gap-2 mb-4">
+              <BarChart3 className="w-4 h-4" /> Monte Carlo Simulation
+            </h2>
+            <p className="text-xs text-zinc-500 mb-4">
+              {data.monteCarlo.runs.toLocaleString()} simulation runs of probabilistic close outcomes
+            </p>
+
+            {/* P10 / P50 / P90 bars */}
+            <div className="space-y-3 mb-4">
+              {[
+                { label: 'P10 (Pessimistic)', value: data.monteCarlo.p10, color: 'bg-red-500' },
+                { label: 'P50 (Median)', value: data.monteCarlo.p50, color: 'bg-yellow-500' },
+                { label: 'P90 (Optimistic)', value: data.monteCarlo.p90, color: 'bg-green-500' },
+              ].map(({ label, value, color }) => {
+                const pct = data.target > 0 ? Math.min(100, (value / data.target) * 100) : 0;
+                return (
+                  <div key={label}>
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-xs text-zinc-500">{label}</span>
+                      <span className="text-sm font-semibold text-zinc-200 tabular-nums">
+                        EUR {formatEuro(value)}
+                      </span>
+                    </div>
+                    <div className="relative h-3 bg-zinc-800 rounded-full overflow-hidden">
+                      <div
+                        className={`h-full rounded-full transition-all duration-700 ${color}`}
+                        style={{ width: `${pct}%` }}
+                      />
+                      {/* Target marker */}
+                      <div
+                        className="absolute top-0 bottom-0 w-0.5 bg-white/40"
+                        style={{ left: '100%' }}
+                        title={`Target: EUR ${formatEuro(data.target)}`}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Probability of reaching target */}
+            <div className="border-t border-zinc-800 pt-3 flex items-center justify-between">
+              <span className="text-xs text-zinc-500">Probability of reaching EUR {formatEuro(data.target)}</span>
+              <span className={`text-lg font-bold tabular-nums ${probColor(data.monteCarlo.probOfTarget)}`}>
+                {data.monteCarlo.probOfTarget}%
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* Calibration Status */}
+        {data.calibration && (
+          <div className="border border-zinc-800 rounded-xl p-5">
+            <h2 className="text-sm font-medium text-zinc-400 uppercase flex items-center gap-2 mb-4">
+              <Target className="w-4 h-4" /> Weight Calibration
+            </h2>
+
+            <div className="flex items-center gap-3 mb-4">
+              <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                data.calibration.enabled ? 'bg-green-900/30' : 'bg-zinc-800'
+              }`}>
+                {data.calibration.enabled ? (
+                  <CheckCircle2 className="w-4 h-4 text-green-400" />
+                ) : (
+                  <AlertTriangle className="w-4 h-4 text-zinc-500" />
+                )}
+              </div>
+              <div>
+                <div className={`text-sm font-medium ${data.calibration.enabled ? 'text-green-400' : 'text-zinc-400'}`}>
+                  {data.calibration.enabled ? 'Auto-Calibrated' : 'Hardcoded Weights'}
+                </div>
+                <div className="text-xs text-zinc-500">
+                  {data.calibration.resolvedCount} resolved prediction{data.calibration.resolvedCount !== 1 ? 's' : ''}
+                </div>
+              </div>
+            </div>
+
+            <p className="text-xs text-zinc-500 mb-4">{data.calibration.note}</p>
+
+            {/* Per-status adjustments if calibrated */}
+            {data.calibration.enabled && data.calibration.adjustments && (
+              <div className="border-t border-zinc-800 pt-3">
+                <span className="text-[10px] text-zinc-600 uppercase tracking-wider">Status Adjustments</span>
+                <div className="grid grid-cols-2 gap-2 mt-2">
+                  {Object.entries(data.calibration.adjustments).map(([status, adj]) => (
+                    <div key={status} className="flex items-center justify-between px-2 py-1.5 bg-zinc-800/30 rounded text-xs">
+                      <span className="text-zinc-400">{status.replace(/_/g, ' ')}</span>
+                      <span className={`font-mono tabular-nums ${
+                        (adj as number) > 0 ? 'text-green-400' : (adj as number) < 0 ? 'text-red-400' : 'text-zinc-500'
+                      }`}>
+                        {(adj as number) > 0 ? '+' : ''}{((adj as number) * 100).toFixed(1)}%
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Footer */}

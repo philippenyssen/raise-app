@@ -1,6 +1,25 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import {
+  CheckCircle2, AlertTriangle, XCircle, Shield, RefreshCw,
+} from 'lucide-react';
+
+interface IntelligenceCheck {
+  name: string;
+  status: 'pass' | 'fail' | 'warn';
+  detail: string;
+}
+
+interface IntelligenceVerification {
+  status: 'healthy' | 'degraded' | 'unhealthy';
+  summary: string;
+  checks: IntelligenceCheck[];
+  tableCounts: Record<string, number>;
+  contextVersion: number | null;
+  contextBuildTimestamp: string | null;
+  verifiedAt: string;
+}
 
 interface HealthData {
   funnel: {
@@ -33,9 +52,16 @@ const convergenceDimensions = [
 export default function HealthPage() {
   const [data, setData] = useState<HealthData | null>(null);
   const [convergence, setConvergence] = useState<Record<string, boolean>>({});
+  const [intelVerify, setIntelVerify] = useState<IntelligenceVerification | null>(null);
+  const [intelLoading, setIntelLoading] = useState(true);
 
   useEffect(() => {
     fetch('/api/health').then(r => r.json()).then(setData);
+    fetch('/api/intelligence/verify')
+      .then(r => r.json())
+      .then(setIntelVerify)
+      .catch(() => {})
+      .finally(() => setIntelLoading(false));
   }, []);
 
   const score = Object.values(convergence).filter(Boolean).length;
@@ -139,6 +165,73 @@ export default function HealthPage() {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Intelligence Verification Status */}
+      <div className="border border-zinc-800 rounded-xl p-6">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Shield className="w-4 h-4 text-blue-400" />
+            <h2 className="text-sm font-medium text-zinc-400">INTELLIGENCE HEALTH</h2>
+          </div>
+          {intelVerify && (
+            <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${
+              intelVerify.status === 'healthy'
+                ? 'bg-green-900/20 text-green-400 border-green-700/40'
+                : intelVerify.status === 'degraded'
+                ? 'bg-yellow-900/20 text-yellow-400 border-yellow-700/40'
+                : 'bg-red-900/20 text-red-400 border-red-700/40'
+            }`}>
+              {intelVerify.status === 'healthy' && <CheckCircle2 className="w-3 h-3" />}
+              {intelVerify.status === 'degraded' && <AlertTriangle className="w-3 h-3" />}
+              {intelVerify.status === 'unhealthy' && <XCircle className="w-3 h-3" />}
+              {intelVerify.status.charAt(0).toUpperCase() + intelVerify.status.slice(1)}
+            </div>
+          )}
+        </div>
+
+        {intelLoading ? (
+          <div className="flex items-center gap-2 py-4">
+            <RefreshCw className="w-4 h-4 text-zinc-500 animate-spin" />
+            <span className="text-sm text-zinc-500">Verifying intelligence systems...</span>
+          </div>
+        ) : intelVerify ? (
+          <div>
+            <p className="text-xs text-zinc-500 mb-3">{intelVerify.summary}</p>
+            <div className="space-y-1.5">
+              {intelVerify.checks.map((check, i) => {
+                const statusIcon = check.status === 'pass'
+                  ? <CheckCircle2 className="w-3.5 h-3.5 text-green-400 shrink-0" />
+                  : check.status === 'warn'
+                  ? <AlertTriangle className="w-3.5 h-3.5 text-yellow-400 shrink-0" />
+                  : <XCircle className="w-3.5 h-3.5 text-red-400 shrink-0" />;
+
+                return (
+                  <div key={i} className="flex items-start gap-2 py-1.5 px-3 rounded-lg bg-zinc-900/50">
+                    {statusIcon}
+                    <div className="flex-1 min-w-0">
+                      <span className="text-xs text-zinc-300 font-medium">
+                        {check.name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                      </span>
+                      <p className="text-[10px] text-zinc-500 truncate">{check.detail}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            {intelVerify.contextVersion && (
+              <div className="mt-3 pt-3 border-t border-zinc-800 flex items-center gap-4 text-[10px] text-zinc-600">
+                <span>Context v{intelVerify.contextVersion}</span>
+                {intelVerify.contextBuildTimestamp && (
+                  <span>Built {new Date(intelVerify.contextBuildTimestamp).toLocaleString()}</span>
+                )}
+                <span>Verified {new Date(intelVerify.verifiedAt).toLocaleString()}</span>
+              </div>
+            )}
+          </div>
+        ) : (
+          <p className="text-sm text-zinc-600">Intelligence verification unavailable.</p>
+        )}
       </div>
 
       {/* Key Metrics Summary */}

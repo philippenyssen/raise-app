@@ -8,7 +8,7 @@ import {
   Sparkles, FolderOpen, BookOpen, Table, Globe, Settings,
   Columns3, GitCompare, BarChart3, MessageCircleWarning, Target,
   SendHorizonal, Menu, X, LogOut, FileBarChart, Zap, ShieldAlert, Activity,
-  DollarSign
+  DollarSign, Compass
 } from 'lucide-react';
 
 interface NavItem {
@@ -36,6 +36,7 @@ const nav: NavItem[] = [
   { href: '/momentum', label: 'Momentum', icon: Activity, section: 'INTELLIGENCE' },
   { href: '/objections', label: 'Objections', icon: MessageCircleWarning, section: 'INTELLIGENCE' },
   { href: '/analytics', label: 'Analytics', icon: BarChart3, section: 'INTELLIGENCE' },
+  { href: '/strategic', label: 'Strategic', icon: Compass, section: 'INTELLIGENCE' },
   // Deliverables
   { href: '/workspace', label: 'Workspace', icon: Sparkles, section: 'DELIVERABLES' },
   { href: '/documents', label: 'Documents', icon: BookOpen, section: 'DELIVERABLES' },

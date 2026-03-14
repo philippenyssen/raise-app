@@ -5,7 +5,7 @@ import Link from 'next/link';
 import {
   Activity, TrendingUp, TrendingDown, Minus, AlertTriangle,
   RefreshCw, Users, ArrowUpRight, ArrowDownRight, Flame,
-  Zap, Eye,
+  Zap, Eye, Clock, MessageSquare,
 } from 'lucide-react';
 
 // ── Types ─────────────────────────────────────────────────────────────
@@ -56,12 +56,31 @@ interface TrajectoryAlert {
   recommendedAction: string;
 }
 
+interface TimingSignal {
+  type: 'competitive_tension' | 'engagement_gap' | 'dd_synchronization';
+  description: string;
+  investorNames: string[];
+  urgency: 'high' | 'medium' | 'low';
+}
+
+interface NarrativeHealthEntry {
+  investorType: string;
+  avgEnthusiasm: number;
+  conversionRate: number;
+  topObjection: string;
+  topQuestionTopic: string;
+  sampleSize: number;
+  status: 'effective' | 'struggling' | 'insufficient_data';
+}
+
 interface MomentumData {
   matrix: InvestorMomentum[];
   cohorts: Cohort[];
   anomalies: Anomaly[];
   crossSignals: CrossSignal[];
   trajectoryAlerts: TrajectoryAlert[];
+  timingSignals?: TimingSignal[];
+  narrativeHealth?: NarrativeHealthEntry[];
   overallTrend: WeekScore[];
   overallDirection: 'accelerating' | 'stable' | 'decelerating';
   weeks: string[];
@@ -603,6 +622,118 @@ export default function MomentumPage() {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* ── Timing Signals ─────────────────────────────────────────── */}
+        {data.timingSignals && data.timingSignals.length > 0 && (
+          <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <Clock className="w-4 h-4 text-amber-400" />
+              <h2 className="text-sm font-semibold text-zinc-300 uppercase tracking-wider">Timing Signals</h2>
+              <span className="ml-auto px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-900/40 text-amber-400 border border-amber-700/40">
+                {data.timingSignals.length}
+              </span>
+            </div>
+            <div className="space-y-2">
+              {data.timingSignals.map((signal, i) => {
+                const urgencyColors: Record<string, string> = {
+                  high: 'bg-red-900/20 border-red-800/40 text-red-400',
+                  medium: 'bg-yellow-900/20 border-yellow-800/40 text-yellow-400',
+                  low: 'bg-zinc-800/40 border-zinc-700/40 text-zinc-400',
+                };
+                const typeLabels: Record<string, string> = {
+                  competitive_tension: 'Competitive Tension',
+                  engagement_gap: 'Engagement Gap',
+                  dd_synchronization: 'DD Synchronization',
+                };
+                const typeIcons: Record<string, string> = {
+                  competitive_tension: 'text-red-400',
+                  engagement_gap: 'text-orange-400',
+                  dd_synchronization: 'text-emerald-400',
+                };
+
+                return (
+                  <div key={i} className={`rounded-lg p-3 border ${urgencyColors[signal.urgency] || urgencyColors.low}`}>
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <span className={`text-[10px] font-bold uppercase ${typeIcons[signal.type] || 'text-zinc-400'}`}>
+                        {typeLabels[signal.type] || signal.type}
+                      </span>
+                      <span className={`text-[9px] px-1.5 py-0.5 rounded border font-semibold ${urgencyColors[signal.urgency] || urgencyColors.low}`}>
+                        {signal.urgency.toUpperCase()}
+                      </span>
+                    </div>
+                    <p className="text-xs text-zinc-400 mb-2">{signal.description}</p>
+                    <div className="flex flex-wrap gap-1">
+                      {signal.investorNames.map(name => (
+                        <span key={name} className="px-2 py-0.5 rounded bg-zinc-800 text-[10px] text-zinc-400 border border-zinc-700">
+                          {name}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* ── Narrative Health by Investor Type ─────────────────────── */}
+        {data.narrativeHealth && data.narrativeHealth.length > 0 && (
+          <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <MessageSquare className="w-4 h-4 text-purple-400" />
+              <h2 className="text-sm font-semibold text-zinc-300 uppercase tracking-wider">Narrative Health by Type</h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+              {data.narrativeHealth.map((nh) => {
+                const tc = TYPE_COLORS[nh.investorType] || TYPE_COLORS.vc;
+                const statusColors: Record<string, { bg: string; text: string; label: string }> = {
+                  effective: { bg: 'bg-emerald-900/20', text: 'text-emerald-400', label: 'Effective' },
+                  struggling: { bg: 'bg-red-900/20', text: 'text-red-400', label: 'Struggling' },
+                  insufficient_data: { bg: 'bg-zinc-800/40', text: 'text-zinc-500', label: 'Low data' },
+                };
+                const sc = statusColors[nh.status] || statusColors.insufficient_data;
+
+                return (
+                  <div key={nh.investorType} className={`rounded-lg p-4 border border-zinc-800 ${sc.bg}`}>
+                    <div className="flex items-center justify-between mb-3">
+                      <span className={`px-2 py-0.5 rounded text-xs font-semibold border ${tc.bg} ${tc.text} ${tc.border}`}>
+                        {TYPE_LABELS[nh.investorType] || nh.investorType}
+                      </span>
+                      <span className={`text-[10px] font-bold uppercase ${sc.text}`}>{sc.label}</span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div>
+                        <span className="text-zinc-600">Enthusiasm</span>
+                        <div className={`font-semibold tabular-nums ${nh.avgEnthusiasm >= 3 ? 'text-emerald-400' : 'text-red-400'}`}>
+                          {nh.avgEnthusiasm.toFixed(1)}/5
+                        </div>
+                      </div>
+                      <div>
+                        <span className="text-zinc-600">Conversion</span>
+                        <div className={`font-semibold tabular-nums ${nh.conversionRate >= 20 ? 'text-emerald-400' : 'text-red-400'}`}>
+                          {nh.conversionRate}%
+                        </div>
+                      </div>
+                    </div>
+                    {nh.topObjection && (
+                      <div className="mt-2 text-[10px] text-zinc-500">
+                        Top objection: <span className="text-zinc-400">{nh.topObjection}</span>
+                      </div>
+                    )}
+                    {nh.topQuestionTopic && (
+                      <div className="text-[10px] text-zinc-500">
+                        Top question: <span className="text-zinc-400">{nh.topQuestionTopic}</span>
+                      </div>
+                    )}
+                    <div className="mt-1 text-[9px] text-zinc-600">
+                      {nh.sampleSize} investor{nh.sampleSize !== 1 ? 's' : ''}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}

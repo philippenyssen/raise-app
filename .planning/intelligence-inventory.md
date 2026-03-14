@@ -15,6 +15,7 @@
 | 9 | 2026-03-14 | Learning Intelligence | Action outcome measurement (enthusiasm delta + status progression + engagement increase), rule effectiveness aggregation (by trigger_type × action_type), self-improving auto-actions (skip ineffective rules, boost proven ones), action effectiveness in context bus + system prompt, evidence-based AI instructions, pulse-triggered measurement | db.ts, context-bus.ts, workspace/route.ts, pulse/route.ts |
 | 10 | 2026-03-14 | Depth: Trajectory + Objections + Pipeline | Advanced conviction trajectory (inflection detection, acceleration/2nd derivative, plateau detection, risk classification), objection evolution (emerging/resolved/persistent temporal tracking, heat map), pipeline flow intelligence (stage dwell time, bottleneck detection, conversion rates, velocity trend), all wired to context bus + system prompt | scoring.ts, db.ts, context-bus.ts |
 | 11 | 2026-03-14 | Strategic Intelligence Consolidation | Strategic assessment API (CEO brief, raise velocity, narrative health score, pipeline concentration Herfindahl, readiness score, ranked recommendations), health snapshot storage + trend tracking, pulse auto-snapshots, meeting brief trajectory integration (plateau/decline/acceleration detection), context bus strategicHealth field | intelligence/strategic/route.ts, db.ts, context-bus.ts, pulse/route.ts, meeting-brief/route.ts |
+| 12 | 2026-03-14 | Frontline Intelligence Consumption | Strategic Dashboard page (CEO brief, 4 gauge cards, recommendations, health trend sparklines), Strategic in sidebar, Stress Test Monte Carlo + Calibration display, Momentum timing signals + narrative health by type display, Health page intelligence verification status, all frontline pages now consume deep intelligence | strategic/page.tsx, sidebar.tsx, stress-test/page.tsx, momentum/page.tsx, health/page.tsx |
 
 ## Intelligence Capabilities (Existing)
 
@@ -308,6 +309,13 @@
 - [x] Verifies context bus includes all expected fields (narrativeWeaknesses, predictionCalibration, narrativeDrift, provenResponses, keystoneInvestors)
 - [x] Tests supporting functions are callable (getQuestionPatterns, getCalibrationData, computeNarrativeSignals, getKeystoneInvestors)
 - [x] Returns health report: healthy/degraded/unhealthy with per-check pass/warn/fail
+
+### T. Frontline Intelligence Consumption (NEW cycle 12)
+- [x] Strategic Dashboard page (`/strategic`): fetches `/api/intelligence/strategic`, renders CEO brief, 4 gauge cards (readiness, narrative health, pipeline concentration, raise velocity), strategic recommendations with priority/category badges, health trend sparklines from historical snapshots
+- [x] Sidebar entry: Strategic added to INTELLIGENCE section with Compass icon
+- [x] Stress Test page: Monte Carlo section (P10/P50/P90 bars with target markers, probability of reaching target), calibration status section (auto-calibrated vs hardcoded, resolved prediction count, per-status adjustments)
+- [x] Momentum page: Timing signals section (competitive tension/engagement gap/DD synchronization with urgency-colored badges), narrative health by investor type (effective/struggling/insufficient_data with enthusiasm, conversion, top objection/question)
+- [x] Health page: Intelligence verification section fetches `/api/intelligence/verify`, displays per-check pass/warn/fail indicators, context version, build timestamp, overall health status badge
 
 ### CLOSED (Cycle 9):
 - ~~Learning Intelligence / Action Outcome Measurement~~ — implemented in db.ts (measureActionEffectiveness, getAutoActionEffectiveness), self-improving generateAutoActions, context-bus.ts (actionEffectiveness field + system prompt), workspace/route.ts (instruction 17), pulse/route.ts (measurement trigger)
