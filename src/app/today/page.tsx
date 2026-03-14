@@ -90,16 +90,16 @@ const CATEGORY_BG: Record<string, string> = {
 };
 
 const ALERT_STYLES: Record<string, { bg: string; border: string; color: string; icon: React.ComponentType<{ className?: string }> }> = {
-  warning: { bg: 'var(--warning-muted)', border: 'rgba(26, 26, 46, 0.05)', color: 'var(--warning)', icon: AlertTriangle },
-  opportunity: { bg: 'var(--success-muted)', border: 'rgba(27, 42, 74, 0.08)', color: 'var(--success)', icon: Zap },
-  risk: { bg: 'var(--danger-muted)', border: 'rgba(26, 26, 46, 0.06)', color: 'var(--danger)', icon: Shield },
+  warning: { bg: 'var(--warning-muted)', border: 'rgba(26, 26, 46, 0.05)', color: 'var(--text-tertiary)', icon: AlertTriangle },
+  opportunity: { bg: 'var(--success-muted)', border: 'rgba(27, 42, 74, 0.08)', color: 'var(--text-secondary)', icon: Zap },
+  risk: { bg: 'var(--danger-muted)', border: 'rgba(26, 26, 46, 0.06)', color: 'var(--text-primary)', icon: Shield },
 };
 
 const MOMENTUM_CONFIG: Record<string, { color: string; bg: string; border: string; icon: React.ComponentType<{ className?: string }>; label: string }> = {
-  accelerating: { color: 'var(--success)', bg: 'var(--success-muted)', border: 'rgba(27, 42, 74, 0.08)', icon: TrendingUp, label: 'Accelerating' },
+  accelerating: { color: 'var(--text-secondary)', bg: 'var(--success-muted)', border: 'rgba(27, 42, 74, 0.08)', icon: TrendingUp, label: 'Accelerating' },
   steady: { color: 'var(--text-secondary)', bg: 'var(--surface-2)', border: 'var(--border-default)', icon: Minus, label: 'Steady' },
-  decelerating: { color: 'var(--warning)', bg: 'var(--warning-muted)', border: 'rgba(26, 26, 46, 0.05)', icon: TrendingDown, label: 'Decelerating' },
-  stalled: { color: 'var(--danger)', bg: 'var(--danger-muted)', border: 'rgba(26, 26, 46, 0.06)', icon: TrendingDown, label: 'Stalled' },
+  decelerating: { color: 'var(--text-tertiary)', bg: 'var(--warning-muted)', border: 'rgba(26, 26, 46, 0.05)', icon: TrendingDown, label: 'Decelerating' },
+  stalled: { color: 'var(--text-primary)', bg: 'var(--danger-muted)', border: 'rgba(26, 26, 46, 0.06)', icon: TrendingDown, label: 'Stalled' },
 };
 
 // ---------------------------------------------------------------------------
@@ -614,7 +614,7 @@ export default function TodayPage() {
                 border: '1px solid rgba(26, 26, 46, 0.05)',
               }}
             >
-              <span style={{ color: 'var(--warning)', display: 'flex' }}>
+              <span style={{ color: 'var(--text-tertiary)', display: 'flex' }}>
                 <Sunrise className="w-5 h-5" />
               </span>
             </div>
@@ -765,7 +765,7 @@ export default function TodayPage() {
           <div className="flex items-center gap-4 flex-wrap" style={{ padding: 'var(--space-3) var(--space-4)' }}>
             {overnight.statusChanges.map((sc, i) => (
               <div key={i} className="flex items-center gap-1.5" style={{ fontSize: 'var(--font-size-xs)' }}>
-                <ArrowUpRight className="w-3 h-3" style={{ color: 'var(--success)' }} />
+                <ArrowUpRight className="w-3 h-3" style={{ color: 'var(--text-secondary)' }} />
                 <Link
                   href={`/investors/${sc.investorId}`}
                   style={{ color: 'var(--accent)', fontWeight: 500, textDecoration: 'none' }}
@@ -785,7 +785,7 @@ export default function TodayPage() {
             )}
             {overnight.tasksCompleted > 0 && (
               <div className="flex items-center gap-1.5" style={{ fontSize: 'var(--font-size-xs)' }}>
-                <CheckCircle className="w-3 h-3" style={{ color: 'var(--success)' }} />
+                <CheckCircle className="w-3 h-3" style={{ color: 'var(--text-secondary)' }} />
                 <span style={{ color: 'var(--text-secondary)' }}>{overnight.tasksCompleted} task{overnight.tasksCompleted > 1 ? 's' : ''} completed</span>
               </div>
             )}
@@ -855,7 +855,7 @@ export default function TodayPage() {
             }}
           >
             <span style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--space-3)' }}>
-              <CheckCircle className="w-8 h-8" style={{ color: 'var(--success)' }} />
+              <CheckCircle className="w-8 h-8" style={{ color: 'var(--text-secondary)' }} />
             </span>
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', fontWeight: 500 }}>
               All caught up!
@@ -885,11 +885,11 @@ export default function TodayPage() {
               const isOverdue = fu.due_at?.split('T')[0] < new Date().toISOString().split('T')[0];
               const typeConfig: Record<string, { label: string; color: string; bg: string }> = {
                 thank_you: { label: 'Thank You', color: 'var(--accent)', bg: 'var(--accent-muted)' },
-                objection_response: { label: 'Objection', color: 'var(--danger)', bg: 'var(--danger-muted)' },
+                objection_response: { label: 'Objection', color: 'var(--text-primary)', bg: 'var(--danger-muted)' },
                 data_share: { label: 'Share Docs', color: 'var(--chart-4)', bg: 'var(--cat-purple-muted)' },
-                schedule_followup: { label: 'Schedule', color: 'var(--success)', bg: 'var(--success-muted)' },
-                warm_reengagement: { label: 'Re-engage', color: 'var(--warning)', bg: 'var(--warning-muted)' },
-                milestone_update: { label: 'Update', color: 'var(--warning)', bg: 'rgba(251,146,60,0.12)' },
+                schedule_followup: { label: 'Schedule', color: 'var(--text-secondary)', bg: 'var(--success-muted)' },
+                warm_reengagement: { label: 'Re-engage', color: 'var(--text-tertiary)', bg: 'var(--warning-muted)' },
+                milestone_update: { label: 'Update', color: 'var(--text-tertiary)', bg: 'rgba(251,146,60,0.12)' },
               };
               const tc = typeConfig[fu.action_type] || { label: fu.action_type, color: 'var(--text-tertiary)', bg: 'var(--surface-2)' };
               const isProcessing = completingFollowupId === fu.id;
@@ -908,7 +908,7 @@ export default function TodayPage() {
                           {fu.investor_name}
                         </Link>
                         {isOverdue && (
-                          <span style={{ fontSize: '10px', color: 'var(--danger)', fontWeight: 600 }}>OVERDUE</span>
+                          <span style={{ fontSize: '10px', color: 'var(--text-primary)', fontWeight: 600 }}>OVERDUE</span>
                         )}
                       </div>
                     </div>
@@ -917,7 +917,7 @@ export default function TodayPage() {
                         onClick={() => handleQuickComplete(fu.id)}
                         disabled={isProcessing}
                         className="btn btn-sm"
-                        style={{ background: 'var(--success-muted)', color: 'var(--success)', border: '1px solid rgba(27, 42, 74, 0.08)', fontSize: '11px', padding: '3px 10px' }}
+                        style={{ background: 'var(--success-muted)', color: 'var(--text-secondary)', border: '1px solid rgba(27, 42, 74, 0.08)', fontSize: '11px', padding: '3px 10px' }}
                       >
                         Done
                       </button>

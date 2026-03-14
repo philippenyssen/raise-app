@@ -108,7 +108,7 @@ const TOPIC_COLORS: Record<string, { bg: React.CSSProperties; text: React.CSSPro
   },
   competition: {
     bg: { background: 'rgba(234, 88, 12, 0.15)' },
-    text: { color: 'var(--warning)' },
+    text: { color: 'var(--text-tertiary)' },
     border: { borderColor: 'rgba(194, 65, 12, 0.35)' },
     dotColor: 'var(--warning)',
     textColor: 'var(--warning)',
@@ -129,7 +129,7 @@ const TOPIC_COLORS: Record<string, { bg: React.CSSProperties; text: React.CSSPro
   },
   financial: {
     bg: { background: 'rgba(22, 163, 74, 0.15)' },
-    text: { color: 'var(--success)' },
+    text: { color: 'var(--text-secondary)' },
     border: { borderColor: 'rgba(21, 128, 61, 0.35)' },
     dotColor: 'var(--success)',
     textColor: 'var(--success)',
@@ -150,14 +150,14 @@ const TOPIC_COLORS: Record<string, { bg: React.CSSProperties; text: React.CSSPro
   },
   risk: {
     bg: { background: 'rgba(220, 38, 38, 0.15)' },
-    text: { color: 'var(--danger)' },
+    text: { color: 'var(--text-primary)' },
     border: { borderColor: 'rgba(153, 27, 27, 0.35)' },
     dotColor: 'var(--danger)',
     textColor: 'var(--danger)',
   },
   timing: {
     bg: { background: 'rgba(217, 119, 6, 0.15)' },
-    text: { color: 'var(--warning)' },
+    text: { color: 'var(--text-tertiary)' },
     border: { borderColor: 'rgba(146, 64, 14, 0.35)' },
     dotColor: 'var(--warning)',
     textColor: 'var(--warning)',
@@ -180,9 +180,9 @@ const DEFAULT_TOPIC_COLOR = {
 };
 
 const EFFECTIVENESS_BADGE: Record<string, { style: React.CSSProperties; label: string }> = {
-  effective: { style: { background: 'var(--success-muted)', color: 'var(--success)' }, label: 'Effective' },
-  partially_effective: { style: { background: 'var(--warning-muted)', color: 'var(--warning)' }, label: 'Partial' },
-  ineffective: { style: { background: 'var(--danger-muted)', color: 'var(--danger)' }, label: 'Ineffective' },
+  effective: { style: { background: 'var(--success-muted)', color: 'var(--text-secondary)' }, label: 'Effective' },
+  partially_effective: { style: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' }, label: 'Partial' },
+  ineffective: { style: { background: 'var(--danger-muted)', color: 'var(--text-primary)' }, label: 'Ineffective' },
   unknown: { style: { background: 'var(--surface-2)', color: 'var(--text-muted)' }, label: 'Unknown' },
 };
 
@@ -227,8 +227,8 @@ function BestResponseCard({ response }: { response: ObjectionRecord }) {
     <div className="mx-4 mt-3 p-3 rounded-lg" style={{ background: 'var(--success-muted)', border: '1px solid rgba(74, 158, 110, 0.2)' }}>
       <div className="flex items-center justify-between mb-1">
         <div className="flex items-center gap-2">
-          <CheckCircle2 className="w-3.5 h-3.5" style={{ color: 'var(--success)' }} />
-          <span className="text-xs font-medium" style={{ color: 'var(--success)' }}>Best Response</span>
+          <CheckCircle2 className="w-3.5 h-3.5" style={{ color: 'var(--text-secondary)' }} />
+          <span className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>Best Response</span>
           {response.investor_name && (
             <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
               (worked with {response.investor_name})
@@ -355,8 +355,8 @@ export default function ObjectionsPage() {
   }
 
   function DeltaIcon({ delta }: { delta: number }) {
-    if (delta > 0) return <TrendingUp className="w-3 h-3" style={{ color: 'var(--success)' }} />;
-    if (delta < 0) return <TrendingDown className="w-3 h-3" style={{ color: 'var(--danger)' }} />;
+    if (delta > 0) return <TrendingUp className="w-3 h-3" style={{ color: 'var(--text-secondary)' }} />;
+    if (delta < 0) return <TrendingDown className="w-3 h-3" style={{ color: 'var(--text-primary)' }} />;
     return <Minus className="w-3 h-3" style={{ color: 'var(--text-muted)' }} />;
   }
 
@@ -372,8 +372,8 @@ export default function ObjectionsPage() {
 
   function TrendBadge({ trend }: { trend: 'improving' | 'declining' | 'stable' }) {
     const config = {
-      improving: { icon: ArrowUpRight, color: 'var(--success)', bg: 'var(--success-muted)', label: 'Improving' },
-      declining: { icon: ArrowDownRight, color: 'var(--danger)', bg: 'var(--danger-muted)', label: 'Declining' },
+      improving: { icon: ArrowUpRight, color: 'var(--text-secondary)', bg: 'var(--success-muted)', label: 'Improving' },
+      declining: { icon: ArrowDownRight, color: 'var(--text-primary)', bg: 'var(--danger-muted)', label: 'Declining' },
       stable: { icon: Minus, color: 'var(--text-muted)', bg: 'var(--surface-2)', label: 'Stable' },
     }[trend];
     const Icon = config.icon;
@@ -637,7 +637,7 @@ export default function ObjectionsPage() {
             {/* Top Unresolved */}
             <div className="rounded-xl p-4 space-y-3" style={{ border: '1px solid var(--border-subtle)' }}>
               <div className="flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4" style={{ color: 'var(--warning)' }} />
+                <AlertTriangle className="w-4 h-4" style={{ color: 'var(--text-tertiary)' }} />
                 <h3 className="text-xs font-semibold  tracking-wide" style={{ color: 'var(--text-tertiary)' }}>Top Unresolved</h3>
               </div>
               {unresolved.length === 0 ? (
@@ -836,7 +836,7 @@ export default function ObjectionsPage() {
                     return (
                       <div className="mt-3 pt-3 space-y-2" style={{ borderTop: '1px solid var(--border-subtle)' }}>
                         <p className=" tracking-wide flex items-center gap-1" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
-                          <CheckCircle2 className="w-3 h-3" style={{ color: 'var(--success)' }} />
+                          <CheckCircle2 className="w-3 h-3" style={{ color: 'var(--text-secondary)' }} />
                           What worked with similar investors
                         </p>
                         {bestFromPlaybook.map(({ topic, response }) => {
@@ -959,7 +959,7 @@ function EffectivenessTab({
         <div className="rounded-xl p-4" style={{ background: 'var(--surface-1)', border: '1px solid var(--border-subtle)' }}>
           <div className="flex items-center gap-2 mb-2">
             <span className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: 'var(--success-muted)' }}>
-              <CheckCircle2 className="w-3.5 h-3.5" style={{ color: 'var(--success)' }} />
+              <CheckCircle2 className="w-3.5 h-3.5" style={{ color: 'var(--text-secondary)' }} />
             </span>
             <p className="text-xs  tracking-wide" style={{ color: 'var(--text-muted)' }}>Resolution Rate</p>
           </div>
@@ -970,22 +970,22 @@ function EffectivenessTab({
         <div className="rounded-xl p-4" style={{ background: 'var(--surface-1)', border: '1px solid var(--border-subtle)' }}>
           <div className="flex items-center gap-2 mb-2">
             <span className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: 'var(--success-muted)' }}>
-              <ThumbsUp className="w-3.5 h-3.5" style={{ color: 'var(--success)' }} />
+              <ThumbsUp className="w-3.5 h-3.5" style={{ color: 'var(--text-secondary)' }} />
             </span>
             <p className="text-xs  tracking-wide" style={{ color: 'var(--text-muted)' }}>Effective</p>
           </div>
-          <p className="text-2xl font-bold" style={{ color: 'var(--success)' }}>{summary.total_effective}</p>
+          <p className="text-2xl font-bold" style={{ color: 'var(--text-secondary)' }}>{summary.total_effective}</p>
           <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>{summary.overall_effectiveness_rate}% of all objections</p>
         </div>
 
         <div className="rounded-xl p-4" style={{ background: 'var(--surface-1)', border: '1px solid var(--border-subtle)' }}>
           <div className="flex items-center gap-2 mb-2">
             <span className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: 'var(--danger-muted)' }}>
-              <ThumbsDown className="w-3.5 h-3.5" style={{ color: 'var(--danger)' }} />
+              <ThumbsDown className="w-3.5 h-3.5" style={{ color: 'var(--text-primary)' }} />
             </span>
             <p className="text-xs  tracking-wide" style={{ color: 'var(--text-muted)' }}>Ineffective</p>
           </div>
-          <p className="text-2xl font-bold" style={{ color: 'var(--danger)' }}>{summary.total_ineffective}</p>
+          <p className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>{summary.total_ineffective}</p>
           <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>Responses that need rework</p>
         </div>
       </div>
@@ -1074,8 +1074,8 @@ function EffectivenessTab({
                       {te.best_response && (
                         <div className="p-2 rounded-lg" style={{ background: 'var(--success-muted)', border: '1px solid rgba(74, 158, 110, 0.15)' }}>
                           <div className="flex items-center gap-1 mb-1">
-                            <ThumbsUp className="w-3 h-3" style={{ color: 'var(--success)' }} />
-                            <span className="text-xs font-medium" style={{ color: 'var(--success)' }}>Best response</span>
+                            <ThumbsUp className="w-3 h-3" style={{ color: 'var(--text-secondary)' }} />
+                            <span className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>Best response</span>
                           </div>
                           <p className="text-xs leading-relaxed line-clamp-2" style={{ color: 'var(--text-secondary)' }}>{te.best_response}</p>
                         </div>
@@ -1083,8 +1083,8 @@ function EffectivenessTab({
                       {te.worst_response && (
                         <div className="p-2 rounded-lg" style={{ background: 'var(--danger-muted)', border: '1px solid rgba(27, 42, 74, 0.08)' }}>
                           <div className="flex items-center gap-1 mb-1">
-                            <ThumbsDown className="w-3 h-3" style={{ color: 'var(--danger)' }} />
-                            <span className="text-xs font-medium" style={{ color: 'var(--danger)' }}>Worst response</span>
+                            <ThumbsDown className="w-3 h-3" style={{ color: 'var(--text-primary)' }} />
+                            <span className="text-xs font-medium" style={{ color: 'var(--text-primary)' }}>Worst response</span>
                           </div>
                           <p className="text-xs leading-relaxed line-clamp-2" style={{ color: 'var(--text-secondary)' }}>{te.worst_response}</p>
                         </div>
@@ -1099,7 +1099,7 @@ function EffectivenessTab({
           {/* Response Leaderboard */}
           <div className="rounded-xl overflow-hidden" style={{ border: '1px solid var(--border-subtle)' }}>
             <div className="p-4 flex items-center gap-2" style={{ background: 'var(--surface-1)', borderBottom: '1px solid var(--border-subtle)' }}>
-              <Zap className="w-4 h-4" style={{ color: 'var(--success)' }} />
+              <Zap className="w-4 h-4" style={{ color: 'var(--text-secondary)' }} />
               <h3 className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>Top Performing Responses</h3>
               <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: 'var(--surface-2)', color: 'var(--text-muted)' }}>
                 {response_leaderboard.length}
@@ -1209,7 +1209,7 @@ function EffectivenessTab({
           {worst_responses.length > 0 && worst_responses.some(r => r.effectiveness_score < 50) && (
             <div className="rounded-xl overflow-hidden" style={{ border: '1px solid var(--border-subtle)' }}>
               <div className="p-4 flex items-center gap-2" style={{ background: 'var(--danger-muted)', borderBottom: '1px solid var(--border-subtle)' }}>
-                <AlertTriangle className="w-4 h-4" style={{ color: 'var(--danger)' }} />
+                <AlertTriangle className="w-4 h-4" style={{ color: 'var(--text-primary)' }} />
                 <h3 className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>Responses Needing Rework</h3>
               </div>
               <div>
@@ -1234,13 +1234,13 @@ function EffectivenessTab({
                           </span>
                           <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Used {entry.times_used}x</span>
                         </div>
-                        <span className="text-sm font-semibold" style={{ color: 'var(--danger)' }}>
+                        <span className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
                           {entry.effectiveness_score}%
                         </span>
                       </div>
                       <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Objection: {entry.objection_text}</p>
                       <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>{entry.response_text}</p>
-                      <div className="flex items-center gap-1 text-xs" style={{ color: 'var(--danger)' }}>
+                      <div className="flex items-center gap-1 text-xs" style={{ color: 'var(--text-primary)' }}>
                         <TrendingDown className="w-3 h-3" />
                         <span>Avg delta: {entry.avg_enthusiasm_delta >= 0 ? '+' : ''}{entry.avg_enthusiasm_delta}</span>
                       </div>
@@ -1258,7 +1258,7 @@ function EffectivenessTab({
           {evolution.emergingObjections.length > 0 && (
             <div className="rounded-xl p-4 space-y-3" style={{ border: '1px solid var(--border-subtle)' }}>
               <div className="flex items-center gap-2">
-                <TrendingUp className="w-4 h-4" style={{ color: 'var(--warning)' }} />
+                <TrendingUp className="w-4 h-4" style={{ color: 'var(--text-tertiary)' }} />
                 <h3 className="text-xs font-semibold  tracking-wide" style={{ color: 'var(--text-tertiary)' }}>Emerging</h3>
               </div>
               <div className="space-y-2">
@@ -1270,7 +1270,7 @@ function EffectivenessTab({
                         <span className="px-1.5 py-0.5 rounded" style={{ fontSize: '10px', ...color.bg, ...color.text }}>
                           {obj.topic}
                         </span>
-                        <span className="text-xs font-medium" style={{ color: 'var(--warning)' }}>
+                        <span className="text-xs font-medium" style={{ color: 'var(--text-tertiary)' }}>
                           {obj.currentCount}x
                         </span>
                       </div>
@@ -1288,7 +1288,7 @@ function EffectivenessTab({
           {evolution.resolvedObjections.length > 0 && (
             <div className="rounded-xl p-4 space-y-3" style={{ border: '1px solid var(--border-subtle)' }}>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4" style={{ color: 'var(--success)' }} />
+                <CheckCircle2 className="w-4 h-4" style={{ color: 'var(--text-secondary)' }} />
                 <h3 className="text-xs font-semibold  tracking-wide" style={{ color: 'var(--text-tertiary)' }}>Resolved</h3>
               </div>
               <div className="space-y-2">
@@ -1300,7 +1300,7 @@ function EffectivenessTab({
                         <span className="px-1.5 py-0.5 rounded" style={{ fontSize: '10px', ...color.bg, ...color.text }}>
                           {obj.topic}
                         </span>
-                        <span className="text-xs" style={{ color: 'var(--success)' }}>
+                        <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>
                           Resolved
                         </span>
                       </div>
@@ -1323,7 +1323,7 @@ function EffectivenessTab({
           {evolution.persistentObjections.length > 0 && (
             <div className="rounded-xl p-4 space-y-3" style={{ border: '1px solid var(--border-subtle)' }}>
               <div className="flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4" style={{ color: 'var(--danger)' }} />
+                <AlertTriangle className="w-4 h-4" style={{ color: 'var(--text-primary)' }} />
                 <h3 className="text-xs font-semibold  tracking-wide" style={{ color: 'var(--text-tertiary)' }}>Persistent</h3>
               </div>
               <div className="space-y-2">
@@ -1335,12 +1335,12 @@ function EffectivenessTab({
                         <span className="px-1.5 py-0.5 rounded" style={{ fontSize: '10px', ...color.bg, ...color.text }}>
                           {obj.topic}
                         </span>
-                        <span className="text-xs font-medium" style={{ color: 'var(--danger)' }}>
+                        <span className="text-xs font-medium" style={{ color: 'var(--text-primary)' }}>
                           {obj.count}x over {Math.round(obj.duration)}wk
                         </span>
                       </div>
                       {obj.avgEnthusiasmImpact > 0 && (
-                        <p className="text-xs" style={{ color: 'var(--danger)' }}>
+                        <p className="text-xs" style={{ color: 'var(--text-primary)' }}>
                           Enthusiasm impact: -{obj.avgEnthusiasmImpact}
                         </p>
                       )}

@@ -145,7 +145,7 @@ export default function WinLossPage() {
       <div className="space-y-4">
         <h1 className="page-title">Win/Loss Analysis</h1>
         <div className="card" style={{ padding: 'var(--space-6)', textAlign: 'center' }}>
-          <span style={{ color: 'var(--danger)' }}>Failed to load: {error}</span>
+          <span style={{ color: 'var(--text-primary)' }}>Failed to load: {error}</span>
           <div style={{ marginTop: 'var(--space-3)' }}>
             <button onClick={fetchData} className="btn btn-secondary btn-sm">Retry</button>
           </div>
@@ -240,7 +240,7 @@ export default function WinLossPage() {
                       </span>
                     )}
                     {stage.dropOff > 0 && (
-                      <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)' }}>
+                      <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)' }}>
                         {stage.dropOff}% drop-off
                       </span>
                     )}
@@ -289,7 +289,7 @@ export default function WinLossPage() {
           }}
         >
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
-            <span style={{ color: 'var(--success)' }}><CheckCircle className="w-4 h-4" /></span>
+            <span style={{ color: 'var(--text-secondary)' }}><CheckCircle className="w-4 h-4" /></span>
             <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 600, color: 'var(--text-primary)' }}>
               Winner Profile
             </h2>
@@ -329,7 +329,7 @@ export default function WinLossPage() {
           }}
         >
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
-            <span style={{ color: 'var(--danger)' }}><XCircle className="w-4 h-4" /></span>
+            <span style={{ color: 'var(--text-primary)' }}><XCircle className="w-4 h-4" /></span>
             <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 600, color: 'var(--text-primary)' }}>
               Passer Profile
             </h2>
@@ -366,7 +366,7 @@ export default function WinLossPage() {
         {/* Pass Reasons */}
         <div className="card" style={{ padding: 'var(--space-4)' }}>
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
-            <span style={{ color: 'var(--warning)' }}><AlertTriangle className="w-4 h-4" /></span>
+            <span style={{ color: 'var(--text-tertiary)' }}><AlertTriangle className="w-4 h-4" /></span>
             <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 600, color: 'var(--text-primary)' }}>
               Pass Reasons
             </h2>
@@ -529,7 +529,7 @@ export default function WinLossPage() {
                     <td style={{
                       padding: 'var(--space-2) var(--space-3)',
                       fontSize: 'var(--font-size-sm)',
-                      color: 'var(--success)',
+                      color: 'var(--text-secondary)',
                       textAlign: 'right',
                       fontVariantNumeric: 'tabular-nums',
                       borderBottom: '1px solid var(--border-subtle)',
@@ -539,7 +539,7 @@ export default function WinLossPage() {
                     <td style={{
                       padding: 'var(--space-2) var(--space-3)',
                       fontSize: 'var(--font-size-sm)',
-                      color: 'var(--danger)',
+                      color: 'var(--text-primary)',
                       textAlign: 'right',
                       fontVariantNumeric: 'tabular-nums',
                       borderBottom: '1px solid var(--border-subtle)',
@@ -605,7 +605,7 @@ export default function WinLossPage() {
                 <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '4px' }}>
                   Avg Days to Close
                 </div>
-                <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 700, color: 'var(--success)' }}>
+                <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 700, color: 'var(--text-secondary)' }}>
                   {timing.avgDaysToClose}
                 </div>
                 <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
@@ -621,7 +621,7 @@ export default function WinLossPage() {
                 <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '4px' }}>
                   Avg Days to Pass
                 </div>
-                <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 700, color: 'var(--danger)' }}>
+                <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 700, color: 'var(--text-primary)' }}>
                   {timing.avgDaysToPass}
                 </div>
                 <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
@@ -638,7 +638,7 @@ export default function WinLossPage() {
                 <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
                   Avg Meetings (Winners)
                 </span>
-                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--success)', fontWeight: 600 }}>
+                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', fontWeight: 600 }}>
                   {summary.avgClosedMeetings}
                 </span>
               </div>
@@ -646,7 +646,7 @@ export default function WinLossPage() {
                 <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
                   Avg Meetings (Passers)
                 </span>
-                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--danger)', fontWeight: 600 }}>
+                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 600 }}>
                   {summary.avgPassedMeetings}
                 </span>
               </div>
@@ -654,7 +654,7 @@ export default function WinLossPage() {
                 <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
                   Avg Enthusiasm (Winners)
                 </span>
-                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--success)', fontWeight: 600 }}>
+                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', fontWeight: 600 }}>
                   {summary.avgClosedEnthusiasm}/5
                 </span>
               </div>
@@ -662,7 +662,7 @@ export default function WinLossPage() {
                 <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
                   Avg Enthusiasm (Passers)
                 </span>
-                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--danger)', fontWeight: 600 }}>
+                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 600 }}>
                   {summary.avgPassedEnthusiasm}/5
                 </span>
               </div>
@@ -702,14 +702,14 @@ export default function WinLossPage() {
                   </div>
                   <div className="flex items-center gap-3">
                     <div className="flex items-center gap-1">
-                      <span style={{ color: 'var(--success)' }}><TrendingUp className="w-3 h-3" /></span>
-                      <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--success)', fontWeight: 600 }}>
+                      <span style={{ color: 'var(--text-secondary)' }}><TrendingUp className="w-3 h-3" /></span>
+                      <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', fontWeight: 600 }}>
                         {tp.closeRate}% close
                       </span>
                     </div>
                     <div className="flex items-center gap-1">
-                      <span style={{ color: 'var(--danger)' }}><TrendingDown className="w-3 h-3" /></span>
-                      <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)', fontWeight: 600 }}>
+                      <span style={{ color: 'var(--text-primary)' }}><TrendingDown className="w-3 h-3" /></span>
+                      <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', fontWeight: 600 }}>
                         {tp.passRate}% pass
                       </span>
                     </div>
@@ -762,7 +762,7 @@ export default function WinLossPage() {
         {/* Recommendations */}
         <div className="card" style={{ padding: 'var(--space-4)' }}>
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
-            <span style={{ color: 'var(--warning)' }}><Lightbulb className="w-4 h-4" /></span>
+            <span style={{ color: 'var(--text-tertiary)' }}><Lightbulb className="w-4 h-4" /></span>
             <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 600, color: 'var(--text-primary)' }}>
               Recommendations
             </h2>

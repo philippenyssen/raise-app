@@ -90,15 +90,15 @@ interface StrategicData {
 const CATEGORY_CONFIG: Record<string, { label: string; color: string; bg: string; border: string; icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }> }> = {
   pipeline:  { label: 'Pipeline',  color: 'var(--accent)',    bg: 'var(--accent-muted)',    border: 'var(--border-default)',    icon: Users },
   narrative: { label: 'Narrative', color: 'var(--chart-4)',          bg: 'rgba(106, 111, 165, 0.12)', border: 'rgba(106, 111, 165, 0.4)', icon: MessageCircleWarning },
-  execution: { label: 'Execution', color: 'var(--success)',   bg: 'var(--success-muted)',   border: 'rgba(74, 158, 110, 0.4)',   icon: Zap },
-  timing:    { label: 'Timing',    color: 'var(--warning)',   bg: 'var(--warning-muted)',   border: 'rgba(196, 163, 90, 0.4)',  icon: Clock },
-  risk:      { label: 'Risk',      color: 'var(--danger)',    bg: 'var(--danger-muted)',    border: 'rgba(27, 42, 74, 0.08)',   icon: Shield },
+  execution: { label: 'Execution', color: 'var(--text-secondary)',   bg: 'var(--success-muted)',   border: 'rgba(74, 158, 110, 0.4)',   icon: Zap },
+  timing:    { label: 'Timing',    color: 'var(--text-tertiary)',   bg: 'var(--warning-muted)',   border: 'rgba(196, 163, 90, 0.4)',  icon: Clock },
+  risk:      { label: 'Risk',      color: 'var(--text-primary)',    bg: 'var(--danger-muted)',    border: 'rgba(27, 42, 74, 0.08)',   icon: Shield },
 };
 
 const TREND_CONFIG = {
-  accelerating: { label: 'Accelerating', icon: TrendingUp,    color: 'var(--success)',  bg: 'var(--success-muted)',  border: 'rgba(74, 158, 110, 0.4)' },
-  steady:       { label: 'Steady',       icon: Minus,          color: 'var(--warning)',  bg: 'var(--warning-muted)',  border: 'rgba(196, 163, 90, 0.4)' },
-  decelerating: { label: 'Decelerating', icon: TrendingDown,   color: 'var(--danger)',   bg: 'var(--danger-muted)',   border: 'rgba(27, 42, 74, 0.08)' },
+  accelerating: { label: 'Accelerating', icon: TrendingUp,    color: 'var(--text-secondary)',  bg: 'var(--success-muted)',  border: 'rgba(74, 158, 110, 0.4)' },
+  steady:       { label: 'Steady',       icon: Minus,          color: 'var(--text-tertiary)',  bg: 'var(--warning-muted)',  border: 'rgba(196, 163, 90, 0.4)' },
+  decelerating: { label: 'Decelerating', icon: TrendingDown,   color: 'var(--text-primary)',   bg: 'var(--danger-muted)',   border: 'rgba(27, 42, 74, 0.08)' },
 };
 
 function gaugeColor(score: number, invert = false): string {
@@ -124,23 +124,23 @@ function gaugeBarColor(score: number, invert = false): string {
 }
 
 function priorityStyle(p: number): React.CSSProperties {
-  if (p === 1) return { background: 'var(--danger-muted)', color: 'var(--danger)', borderColor: 'rgba(27, 42, 74, 0.08)' };
-  if (p === 2) return { background: 'rgba(196, 163, 90, 0.12)', color: 'var(--warning)', borderColor: 'rgba(196, 163, 90, 0.4)' };
-  if (p === 3) return { background: 'var(--warning-muted)', color: 'var(--warning)', borderColor: 'rgba(196, 163, 90, 0.4)' };
+  if (p === 1) return { background: 'var(--danger-muted)', color: 'var(--text-primary)', borderColor: 'rgba(27, 42, 74, 0.08)' };
+  if (p === 2) return { background: 'rgba(196, 163, 90, 0.12)', color: 'var(--text-tertiary)', borderColor: 'rgba(196, 163, 90, 0.4)' };
+  if (p === 3) return { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', borderColor: 'rgba(196, 163, 90, 0.4)' };
   return { background: 'var(--surface-2)', color: 'var(--text-tertiary)', borderColor: 'var(--border-default)' };
 }
 
 function directionStyle(direction: string): React.CSSProperties {
-  if (direction === 'improving') return { background: 'var(--success-muted)', color: 'var(--success)', borderColor: 'rgba(74, 158, 110, 0.4)' };
-  if (direction === 'declining') return { background: 'var(--danger-muted)', color: 'var(--danger)', borderColor: 'rgba(27, 42, 74, 0.08)' };
-  if (direction === 'mixed') return { background: 'var(--warning-muted)', color: 'var(--warning)', borderColor: 'rgba(196, 163, 90, 0.4)' };
+  if (direction === 'improving') return { background: 'var(--success-muted)', color: 'var(--text-secondary)', borderColor: 'rgba(74, 158, 110, 0.4)' };
+  if (direction === 'declining') return { background: 'var(--danger-muted)', color: 'var(--text-primary)', borderColor: 'rgba(27, 42, 74, 0.08)' };
+  if (direction === 'mixed') return { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', borderColor: 'rgba(196, 163, 90, 0.4)' };
   return { background: 'var(--surface-2)', color: 'var(--text-tertiary)', borderColor: 'var(--border-default)' };
 }
 
 function confidenceStyle(confidence: string): React.CSSProperties {
-  if (confidence === 'high') return { background: 'var(--success-muted)', color: 'var(--success)', borderColor: 'rgba(74, 158, 110, 0.4)' };
-  if (confidence === 'medium') return { background: 'var(--warning-muted)', color: 'var(--warning)', borderColor: 'rgba(196, 163, 90, 0.4)' };
-  return { background: 'var(--danger-muted)', color: 'var(--danger)', borderColor: 'rgba(27, 42, 74, 0.08)' };
+  if (confidence === 'high') return { background: 'var(--success-muted)', color: 'var(--text-secondary)', borderColor: 'rgba(74, 158, 110, 0.4)' };
+  if (confidence === 'medium') return { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', borderColor: 'rgba(196, 163, 90, 0.4)' };
+  return { background: 'var(--danger-muted)', color: 'var(--text-primary)', borderColor: 'rgba(27, 42, 74, 0.08)' };
 }
 
 function deltaColor(delta: number): string {
@@ -209,7 +209,7 @@ export default function StrategicPage() {
           }}
           className="text-center space-y-3"
         >
-          <AlertTriangle className="w-8 h-8 mx-auto" style={{ color: 'var(--danger)' }} />
+          <AlertTriangle className="w-8 h-8 mx-auto" style={{ color: 'var(--text-primary)' }} />
           <p style={{ color: 'var(--text-tertiary)' }}>{error || 'Could not load strategic data.'}</p>
           <button
             onClick={() => fetchData()}
@@ -421,9 +421,9 @@ export default function StrategicPage() {
                 <div className="metric-label" style={{ marginBottom: 'var(--space-1)' }}>{trend.metric}</div>
                 <div className="flex items-center gap-1.5">
                   {trend.direction === 'improving' ? (
-                    <TrendingUp className="w-3.5 h-3.5" style={{ color: 'var(--success)' }} />
+                    <TrendingUp className="w-3.5 h-3.5" style={{ color: 'var(--text-secondary)' }} />
                   ) : trend.direction === 'declining' ? (
-                    <TrendingDown className="w-3.5 h-3.5" style={{ color: 'var(--danger)' }} />
+                    <TrendingDown className="w-3.5 h-3.5" style={{ color: 'var(--text-primary)' }} />
                   ) : (
                     <Minus className="w-3.5 h-3.5" style={{ color: 'var(--text-muted)' }} />
                   )}
@@ -451,13 +451,13 @@ export default function StrategicPage() {
                     </span>
                   </div>
                   {trend.streak >= 2 && (
-                    <div style={{ fontSize: '10px', color: 'var(--warning)', marginTop: '2px' }}>{trend.streak}-day streak</div>
+                    <div style={{ fontSize: '10px', color: 'var(--text-tertiary)', marginTop: '2px' }}>{trend.streak}-day streak</div>
                   )}
                 </div>
                 {trend.alert && (
                   <div className="flex items-start gap-1" style={{ marginTop: 'var(--space-1)' }}>
-                    <AlertTriangle className="w-2.5 h-2.5 shrink-0 mt-0.5" style={{ color: 'var(--danger)' }} />
-                    <span style={{ fontSize: '9px', color: 'var(--danger)', lineHeight: 1.3 }}>{trend.alert}</span>
+                    <AlertTriangle className="w-2.5 h-2.5 shrink-0 mt-0.5" style={{ color: 'var(--text-primary)' }} />
+                    <span style={{ fontSize: '9px', color: 'var(--text-primary)', lineHeight: 1.3 }}>{trend.alert}</span>
                   </div>
                 )}
               </div>
@@ -575,8 +575,8 @@ export default function StrategicPage() {
             <div className="space-y-1" style={{ marginTop: 'var(--space-3)' }}>
               {data.raiseForecast.riskFactors.map((rf, i) => (
                 <div key={i} className="flex items-start gap-1.5">
-                  <AlertTriangle className="w-3 h-3 shrink-0 mt-0.5" style={{ color: 'var(--warning)' }} />
-                  <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--warning)', opacity: 0.8 }}>{rf}</span>
+                  <AlertTriangle className="w-3 h-3 shrink-0 mt-0.5" style={{ color: 'var(--text-tertiary)' }} />
+                  <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', opacity: 0.8 }}>{rf}</span>
                 </div>
               ))}
             </div>
@@ -608,7 +608,7 @@ export default function StrategicPage() {
 
         {data.recommendations.length === 0 ? (
           <div className="text-center" style={{ padding: 'var(--space-8)' }}>
-            <CheckCircle2 className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--success)' }} />
+            <CheckCircle2 className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--text-secondary)' }} />
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' }}>No critical recommendations at this time. Process is on track.</p>
           </div>
         ) : (

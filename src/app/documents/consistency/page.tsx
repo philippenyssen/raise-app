@@ -105,8 +105,8 @@ export default function ConsistencyPage() {
       {/* Error */}
       {error && !loading && (
         <div className="rounded-xl p-6 text-center" style={{ border: '1px solid var(--danger-muted)', background: 'var(--danger-muted)' }}>
-          <AlertTriangle className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--danger)' }} />
-          <p className="font-medium" style={{ color: 'var(--danger)' }}>{error}</p>
+          <AlertTriangle className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--text-primary)' }} />
+          <p className="font-medium" style={{ color: 'var(--text-primary)' }}>{error}</p>
           <button
             onClick={fetchConsistency}
             className="mt-3 text-sm underline"
@@ -131,9 +131,9 @@ export default function ConsistencyPage() {
             }}
           >
             {result.consistent ? (
-              <CheckCircle className="w-6 h-6 shrink-0" style={{ color: 'var(--success)' }} />
+              <CheckCircle className="w-6 h-6 shrink-0" style={{ color: 'var(--text-secondary)' }} />
             ) : (
-              <AlertTriangle className="w-6 h-6 shrink-0" style={{ color: 'var(--danger)' }} />
+              <AlertTriangle className="w-6 h-6 shrink-0" style={{ color: 'var(--text-primary)' }} />
             )}
             <div className="flex-1">
               <p className="font-medium" style={{ color: result.consistent ? 'var(--success)' : 'var(--danger)' }}>
@@ -173,9 +173,9 @@ export default function ConsistencyPage() {
               >
                 <div className="flex items-center gap-2 mb-3">
                   {check.status === 'match' ? (
-                    <CheckCircle className="w-4 h-4 shrink-0" style={{ color: 'var(--success)' }} />
+                    <CheckCircle className="w-4 h-4 shrink-0" style={{ color: 'var(--text-secondary)' }} />
                   ) : (
-                    <AlertTriangle className="w-4 h-4 shrink-0" style={{ color: 'var(--danger)' }} />
+                    <AlertTriangle className="w-4 h-4 shrink-0" style={{ color: 'var(--text-primary)' }} />
                   )}
                   <span className="font-medium text-sm" style={{ color: 'var(--text-primary)' }}>{check.metric}</span>
                   <span

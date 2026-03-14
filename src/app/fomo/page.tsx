@@ -87,15 +87,15 @@ const TYPE_LABELS: Record<string, string> = {
 const TYPE_STYLES: Record<string, React.CSSProperties> = {
   vc: { background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(74,111,165,0.25)' },
   growth: { background: 'var(--cat-purple-muted)', color: 'var(--chart-4)', border: '1px solid rgba(74,74,138,0.15)' },
-  sovereign: { background: 'var(--warning-muted)', color: 'var(--warning)', border: '1px solid rgba(26, 26, 46, 0.05)' },
+  sovereign: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: '1px solid rgba(26, 26, 46, 0.05)' },
   strategic: { background: 'var(--cat-teal-muted)', color: 'var(--cat-teal)', border: '1px solid rgba(45,122,106,0.15)' },
   debt: { background: 'var(--surface-2)', color: 'var(--text-secondary)', border: '1px solid var(--border-default)' },
-  family_office: { background: 'rgba(26, 26, 46, 0.06)', color: 'var(--danger)', border: '1px solid rgba(26, 26, 46, 0.06)' },
+  family_office: { background: 'rgba(26, 26, 46, 0.06)', color: 'var(--text-primary)', border: '1px solid rgba(26, 26, 46, 0.06)' },
 };
 
 const IMPACT_STYLES: Record<string, React.CSSProperties> = {
-  high: { background: 'var(--danger-muted)', color: 'var(--danger)', border: '1px solid rgba(26, 26, 46, 0.06)' },
-  medium: { background: 'var(--warning-muted)', color: 'var(--warning)', border: '1px solid rgba(26, 26, 46, 0.05)' },
+  high: { background: 'var(--danger-muted)', color: 'var(--text-primary)', border: '1px solid rgba(26, 26, 46, 0.06)' },
+  medium: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: '1px solid rgba(26, 26, 46, 0.05)' },
   low: { background: 'var(--surface-2)', color: 'var(--text-tertiary)', border: '1px solid var(--border-default)' },
 };
 
@@ -248,10 +248,10 @@ function IntensityMeter({ intensity, description }: { intensity: number; descrip
 
 function StatsRow({ stats, meetingDensity }: { stats: FomoData['stats']; meetingDensity: FomoData['meetingDensity'] }) {
   const items = [
-    { label: 'Advancing (14d)', value: stats.advancingCount, icon: TrendingUp, color: 'var(--success)' },
+    { label: 'Advancing (14d)', value: stats.advancingCount, icon: TrendingUp, color: 'var(--text-secondary)' },
     { label: 'Recent Meetings', value: stats.recentMeetingCount, icon: Activity, color: 'var(--accent)' },
-    { label: 'High FOMO', value: stats.highFomoCount, icon: Flame, color: 'var(--danger)' },
-    { label: 'Meetings/Week', value: meetingDensity.avgPerWeek, icon: Clock, color: 'var(--warning)' },
+    { label: 'High FOMO', value: stats.highFomoCount, icon: Flame, color: 'var(--text-primary)' },
+    { label: 'Meetings/Week', value: meetingDensity.avgPerWeek, icon: Clock, color: 'var(--text-tertiary)' },
   ];
 
   return (
@@ -392,8 +392,8 @@ function PressureCard({ inv }: { inv: InvestorFomo }) {
         />
       </div>
       <div className="flex gap-4 mt-1">
-        <span style={{ fontSize: '10px', color: 'var(--danger)' }}>Advancing {inv.advancingScore}</span>
-        <span style={{ fontSize: '10px', color: 'var(--warning)' }}>Density {inv.densityScore}</span>
+        <span style={{ fontSize: '10px', color: 'var(--text-primary)' }}>Advancing {inv.advancingScore}</span>
+        <span style={{ fontSize: '10px', color: 'var(--text-tertiary)' }}>Density {inv.densityScore}</span>
         <span style={{ fontSize: '10px', color: 'var(--accent)' }}>Network {inv.connectionScore}</span>
       </div>
 
@@ -620,8 +620,8 @@ export default function FomoPage() {
     return (
       <div className="flex-1 flex items-center justify-center" style={{ minHeight: '60vh' }}>
         <div className="flex flex-col items-center gap-3">
-          <AlertTriangle className="w-6 h-6" style={{ color: 'var(--danger)' }} />
-          <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--danger)' }}>{error}</span>
+          <AlertTriangle className="w-6 h-6" style={{ color: 'var(--text-primary)' }} />
+          <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)' }}>{error}</span>
           <button
             className="btn btn-secondary"
             onClick={fetchData}

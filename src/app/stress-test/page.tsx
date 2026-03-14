@@ -107,9 +107,9 @@ function formatEuro(n: number): string {
 }
 
 function probColorStyle(p: number): React.CSSProperties {
-  if (p >= 60) return { color: 'var(--success)' };
-  if (p >= 30) return { color: 'var(--warning)' };
-  return { color: 'var(--danger)' };
+  if (p >= 60) return { color: 'var(--text-secondary)' };
+  if (p >= 30) return { color: 'var(--text-tertiary)' };
+  return { color: 'var(--text-primary)' };
 }
 
 function probBgStyle(p: number): React.CSSProperties {
@@ -120,7 +120,7 @@ function probBgStyle(p: number): React.CSSProperties {
 
 function tierBadgeStyle(tier: number): React.CSSProperties {
   const styles: Record<number, React.CSSProperties> = {
-    1: { color: 'var(--warning)', background: 'var(--warning-muted)', borderColor: 'rgba(196, 163, 90, 0.3)' },
+    1: { color: 'var(--text-tertiary)', background: 'var(--warning-muted)', borderColor: 'rgba(196, 163, 90, 0.3)' },
     2: { color: 'var(--accent)', background: 'var(--accent-muted)', borderColor: 'var(--accent-muted)' },
     3: { color: 'var(--text-secondary)', background: 'rgba(255, 255, 255, 0.1)', borderColor: 'var(--border-subtle)' },
     4: { color: 'var(--text-muted)', background: 'rgba(255, 255, 255, 0.1)', borderColor: 'var(--border-subtle)' },
@@ -217,14 +217,14 @@ export default function StressTestPage() {
     red: { borderColor: 'rgba(27, 42, 74, 0.10)', background: 'var(--danger-muted)' },
   };
   const bannerTextStyles: Record<string, React.CSSProperties> = {
-    green: { color: 'var(--success)' },
-    yellow: { color: 'var(--warning)' },
-    red: { color: 'var(--danger)' },
+    green: { color: 'var(--text-secondary)' },
+    yellow: { color: 'var(--text-tertiary)' },
+    red: { color: 'var(--text-primary)' },
   };
   const bannerIcon = {
-    green: <CheckCircle2 className="w-5 h-5 shrink-0" style={{ color: 'var(--success)' }} />,
-    yellow: <AlertTriangle className="w-5 h-5 shrink-0" style={{ color: 'var(--warning)' }} />,
-    red: <ShieldAlert className="w-5 h-5 shrink-0" style={{ color: 'var(--danger)' }} />,
+    green: <CheckCircle2 className="w-5 h-5 shrink-0" style={{ color: 'var(--text-secondary)' }} />,
+    yellow: <AlertTriangle className="w-5 h-5 shrink-0" style={{ color: 'var(--text-tertiary)' }} />,
+    red: <ShieldAlert className="w-5 h-5 shrink-0" style={{ color: 'var(--text-primary)' }} />,
   };
 
   return (
@@ -335,8 +335,8 @@ export default function StressTestPage() {
           style={{ border: '2px solid rgba(27, 42, 74, 0.08)', background: 'rgba(27, 42, 74, 0.08)' }}
         >
           <div className="flex items-center gap-2 mb-4">
-            <Target className="w-5 h-5" style={{ color: 'var(--danger)' }} />
-            <h2 className="text-sm font-semibold " style={{ color: 'var(--danger)' }}>
+            <Target className="w-5 h-5" style={{ color: 'var(--text-primary)' }} />
+            <h2 className="text-sm font-semibold " style={{ color: 'var(--text-primary)' }}>
               Gap Analysis — EUR {formatEuro(data.shortfall)} Shortfall
             </h2>
           </div>
@@ -357,7 +357,7 @@ export default function StressTestPage() {
               >
                 <span
                   className="w-6 h-6 rounded flex items-center justify-center text-xs font-bold shrink-0 mt-0.5"
-                  style={{ background: 'var(--danger-muted)', color: 'var(--danger)' }}
+                  style={{ background: 'var(--danger-muted)', color: 'var(--text-primary)' }}
                 >
                   {i + 1}
                 </span>
@@ -378,11 +378,11 @@ export default function StressTestPage() {
                   <div className="flex items-center gap-3 mt-1.5" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
                     <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {gap.timeCost}</span>
                     <span>Current: EUR {Math.round(gap.currentExpected)}M</span>
-                    <span style={{ color: 'var(--success)' }}>+EUR {Math.round(gap.impactDelta)}M if accelerated</span>
+                    <span style={{ color: 'var(--text-secondary)' }}>+EUR {Math.round(gap.impactDelta)}M if accelerated</span>
                   </div>
                 </div>
                 <div className="text-right shrink-0">
-                  <div className="text-lg font-bold tabular-nums flex items-center gap-1" style={{ color: 'var(--success)' }}>
+                  <div className="text-lg font-bold tabular-nums flex items-center gap-1" style={{ color: 'var(--text-secondary)' }}>
                     <ArrowUpRight className="w-4 h-4" />
                     {Math.round(gap.impactDelta)}M
                   </div>
@@ -438,18 +438,18 @@ export default function StressTestPage() {
                   : f.momentum === 'decelerating' ? TrendingDown
                   : null;
                 const momentumStyle: React.CSSProperties = f.momentum === 'accelerating'
-                  ? { color: 'var(--success)' }
+                  ? { color: 'var(--text-secondary)' }
                   : f.momentum === 'decelerating'
-                  ? { color: 'var(--warning)' }
+                  ? { color: 'var(--text-tertiary)' }
                   : f.momentum === 'stalled'
-                  ? { color: 'var(--danger)' }
+                  ? { color: 'var(--text-primary)' }
                   : { color: 'var(--text-muted)' };
 
                 const enthStyle: React.CSSProperties = f.enthusiasm >= 4
-                  ? { color: 'var(--success)' }
+                  ? { color: 'var(--text-secondary)' }
                   : f.enthusiasm >= 3
-                  ? { color: 'var(--warning)' }
-                  : { color: 'var(--danger)' };
+                  ? { color: 'var(--text-tertiary)' }
+                  : { color: 'var(--text-primary)' };
 
                 return (
                   <tr
@@ -557,9 +557,9 @@ export default function StressTestPage() {
               {data.risks.map((risk, i) => {
                 const isExpanded = expandedRisks.includes(i);
                 const riskBadgeStyle: React.CSSProperties = risk.probability === 'High'
-                  ? { color: 'var(--danger)', background: 'var(--danger-muted)', borderColor: 'rgba(27, 42, 74, 0.10)' }
+                  ? { color: 'var(--text-primary)', background: 'var(--danger-muted)', borderColor: 'rgba(27, 42, 74, 0.10)' }
                   : risk.probability === 'Medium'
-                  ? { color: 'var(--warning)', background: 'var(--warning-muted)', borderColor: 'rgba(196, 163, 90, 0.3)' }
+                  ? { color: 'var(--text-tertiary)', background: 'var(--warning-muted)', borderColor: 'rgba(196, 163, 90, 0.3)' }
                   : { color: 'var(--text-secondary)', background: 'rgba(255, 255, 255, 0.1)', borderColor: 'var(--border-subtle)' };
                 return (
                   <div key={i} className="rounded-lg overflow-hidden" style={{ border: '1px solid var(--border-subtle)' }}>
@@ -662,7 +662,7 @@ export default function StressTestPage() {
             </span>
           </div>
           {data.criticalPath.totalIfAllClose < data.target && (
-            <div className="mt-2 text-xs rounded-lg p-2.5" style={{ color: 'var(--danger)', background: 'var(--danger-muted)', border: '1px solid rgba(27, 42, 74, 0.10)' }}>
+            <div className="mt-2 text-xs rounded-lg p-2.5" style={{ color: 'var(--text-primary)', background: 'var(--danger-muted)', border: '1px solid rgba(27, 42, 74, 0.10)' }}>
               Even the minimum viable set falls short. Need to add more investors or increase check sizes.
             </div>
           )}
@@ -751,7 +751,7 @@ export default function StressTestPage() {
                 style={{ background: data.calibration.enabled ? 'var(--success-muted)' : 'var(--surface-2)' }}
               >
                 {data.calibration.enabled ? (
-                  <CheckCircle2 className="w-4 h-4" style={{ color: 'var(--success)' }} />
+                  <CheckCircle2 className="w-4 h-4" style={{ color: 'var(--text-secondary)' }} />
                 ) : (
                   <AlertTriangle className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
                 )}

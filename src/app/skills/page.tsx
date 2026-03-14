@@ -147,10 +147,10 @@ export default function SkillsPage() {
                     <div className="flex items-center gap-4">
                       <div className="flex items-center gap-1.5">
                         {skill.success_rate >= 90
-                          ? <CheckCircle2 className="w-3.5 h-3.5" style={{ color: 'var(--success)' }} />
+                          ? <CheckCircle2 className="w-3.5 h-3.5" style={{ color: 'var(--text-secondary)' }} />
                           : skill.success_rate >= 70
-                          ? <AlertTriangle className="w-3.5 h-3.5" style={{ color: 'var(--warning)' }} />
-                          : <XCircle className="w-3.5 h-3.5" style={{ color: 'var(--danger)' }} />
+                          ? <AlertTriangle className="w-3.5 h-3.5" style={{ color: 'var(--text-tertiary)' }} />
+                          : <XCircle className="w-3.5 h-3.5" style={{ color: 'var(--text-primary)' }} />
                         }
                         <span
                           className="text-xs font-semibold px-2 py-0.5 rounded-full"

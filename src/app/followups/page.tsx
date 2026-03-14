@@ -67,7 +67,7 @@ const ACTION_TYPE_CONFIG: Record<string, {
   objection_response: {
     label: 'Objection Response',
     icon: MessageSquare,
-    color: 'var(--danger)',
+    color: 'var(--text-primary)',
     bgColor: 'var(--danger-muted)',
   },
   data_share: {
@@ -79,19 +79,19 @@ const ACTION_TYPE_CONFIG: Record<string, {
   schedule_followup: {
     label: 'Schedule Meeting',
     icon: CalendarPlus,
-    color: 'var(--success)',
+    color: 'var(--text-secondary)',
     bgColor: 'var(--success-muted)',
   },
   warm_reengagement: {
     label: 'Re-engagement',
     icon: RefreshCw,
-    color: 'var(--warning)',
+    color: 'var(--text-tertiary)',
     bgColor: 'var(--warning-muted)',
   },
   milestone_update: {
     label: 'Milestone Update',
     icon: Milestone,
-    color: 'var(--warning)',
+    color: 'var(--text-tertiary)',
     bgColor: 'rgba(251, 146, 60, 0.12)',
   },
 };
@@ -549,7 +549,7 @@ function FollowupsContent() {
             )}
 
             {item.status === 'completed' && (
-              <span className="flex items-center gap-1 shrink-0" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--success)' }}>
+              <span className="flex items-center gap-1 shrink-0" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
                 <CheckCircle2 className="w-3.5 h-3.5" />
               </span>
             )}
@@ -603,11 +603,11 @@ function FollowupsContent() {
             {/* Engagement velocity */}
             {item.velocity && (() => {
               const velConfig: Record<string, { color: string; bg: string; icon: typeof ArrowUpRight; label: string }> = {
-                accelerating: { color: 'var(--success)', bg: 'var(--success-muted)', icon: ArrowUpRight, label: 'Rising' },
-                decelerating: { color: 'var(--danger)', bg: 'var(--danger-muted)', icon: ArrowDownRight, label: 'Falling' },
+                accelerating: { color: 'var(--text-secondary)', bg: 'var(--success-muted)', icon: ArrowUpRight, label: 'Rising' },
+                decelerating: { color: 'var(--text-primary)', bg: 'var(--danger-muted)', icon: ArrowDownRight, label: 'Falling' },
                 stable: { color: 'var(--text-muted)', bg: 'var(--surface-3)', icon: Activity, label: 'Stable' },
-                new: { color: 'var(--warning)', bg: 'var(--warning-muted)', icon: Zap, label: 'New' },
-                gone_silent: { color: 'var(--danger)', bg: 'var(--danger-muted)', icon: AlertTriangle, label: 'Silent' },
+                new: { color: 'var(--text-tertiary)', bg: 'var(--warning-muted)', icon: Zap, label: 'New' },
+                gone_silent: { color: 'var(--text-primary)', bg: 'var(--danger-muted)', icon: AlertTriangle, label: 'Silent' },
               };
               const vc = velConfig[item.velocity!.acceleration] || velConfig.stable;
               const VelIcon = vc.icon;
@@ -811,7 +811,7 @@ function FollowupsContent() {
           }}
         >
           {isOverdue ? (
-            <span style={{ color: 'var(--danger)', fontWeight: 600 }}>
+            <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>
               {formatRelativeTime(item.due_at)} — was due {formatDate(item.due_at)}
             </span>
           ) : (
@@ -847,7 +847,7 @@ function FollowupsContent() {
           className="w-full flex items-center justify-between mb-3"
         >
           <div className="flex items-center gap-2">
-            {accent === 'red' && <AlertTriangle className="w-4 h-4" style={{ color: 'var(--danger)' }} />}
+            {accent === 'red' && <AlertTriangle className="w-4 h-4" style={{ color: 'var(--text-primary)' }} />}
             <h2 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: accentColorMap[accent] }}>{title}</h2>
             <span
               style={{
@@ -922,7 +922,7 @@ function FollowupsContent() {
         </div>
         <div className="card-metric metric-success" style={{ padding: 'var(--space-3)' }}>
           <div className="metric-label">Completed</div>
-          <div className="metric-value mt-1" style={{ color: 'var(--success)' }}>{completed.length}</div>
+          <div className="metric-value mt-1" style={{ color: 'var(--text-secondary)' }}>{completed.length}</div>
         </div>
         <div className="card-metric" style={{ padding: 'var(--space-3)' }}>
           <div className="metric-label">Avg Conviction Change</div>

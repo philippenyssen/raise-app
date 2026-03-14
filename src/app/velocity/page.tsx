@@ -57,14 +57,14 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 const STATUS_COLORS: Record<string, string> = {
-  contacted: 'var(--accent)',
-  nda_signed: 'var(--accent)',
-  meeting_scheduled: 'var(--text-tertiary)',
-  met: 'var(--text-tertiary)',
-  engaged: 'var(--accent)',
-  in_dd: 'var(--warning)',
-  term_sheet: 'var(--success)',
-  closed: 'var(--success)',
+  contacted: 'var(--text-tertiary)',
+  nda_signed: 'var(--text-tertiary)',
+  meeting_scheduled: 'var(--text-secondary)',
+  met: 'var(--text-secondary)',
+  engaged: 'var(--text-primary)',
+  in_dd: 'var(--text-primary)',
+  term_sheet: 'var(--accent)',
+  closed: 'var(--accent)',
 };
 
 const TYPE_LABELS: Record<string, string> = {
@@ -76,22 +76,16 @@ const TYPE_LABELS: Record<string, string> = {
   family_office: 'Family Office',
 };
 
-function velocityColor(score: number): string {
-  if (score >= 70) return 'var(--success)';
-  if (score >= 40) return 'var(--warning)';
-  return 'var(--danger)';
+function velocityColor(_score: number): string {
+  return 'var(--text-primary)';
 }
 
-function trackingColor(status: string): string {
-  if (status === 'on_track') return 'var(--success)';
-  if (status === 'behind') return 'var(--warning)';
-  return 'var(--danger)';
+function trackingColor(_status: string): string {
+  return 'var(--text-secondary)';
 }
 
-function trackingBg(status: string): string {
-  if (status === 'on_track') return 'var(--success-muted)';
-  if (status === 'behind') return 'var(--warning-muted)';
-  return 'var(--danger-muted)';
+function trackingBg(_status: string): string {
+  return 'var(--surface-2)';
 }
 
 export default function VelocityPage() {
@@ -130,7 +124,7 @@ export default function VelocityPage() {
     return (
       <div className="flex-1 p-6" style={{ maxWidth: '1400px', margin: '0 auto' }}>
         <div className="card" style={{ textAlign: 'center', padding: 'var(--space-12)' }}>
-          <span style={{ color: 'var(--danger)', fontSize: 'var(--font-size-lg)' }}>
+          <span style={{ color: 'var(--text-primary)', fontSize: 'var(--font-size-lg)' }}>
             {error || 'Failed to load velocity data'}
           </span>
         </div>
@@ -194,11 +188,7 @@ export default function VelocityPage() {
             className="progress-fill"
             style={{
               width: `${raiseProgress}%`,
-              background: raiseProgress > 80
-                ? 'var(--danger)'
-                : raiseProgress > 50
-                  ? 'var(--warning)'
-                  : 'var(--accent)',
+              background: 'var(--accent)',
               borderRadius: '4px',
             }}
           />
@@ -220,27 +210,27 @@ export default function VelocityPage() {
       <div className="grid grid-cols-2 gap-4 card-stagger" style={{ marginBottom: 'var(--space-6)' }}>
         <div className="grid grid-cols-2 gap-4">
           {/* On Track */}
-          <div className="card-metric metric-success" style={{ padding: 'var(--space-4)' }}>
+          <div className="card-metric" style={{ padding: 'var(--space-4)' }}>
             <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-2)' }}>
-              <span style={{ color: 'var(--success)' }}>
+              <span style={{ color: 'var(--text-tertiary)' }}>
                 <CheckCircle2 className="w-4 h-4" />
               </span>
               <span className="metric-label">On Track</span>
             </div>
-            <div className="metric-value" style={{ color: 'var(--success)' }}>
+            <div className="metric-value">
               {summary.on_track}
             </div>
           </div>
 
           {/* Behind */}
-          <div className="card-metric metric-warning" style={{ padding: 'var(--space-4)' }}>
+          <div className="card-metric" style={{ padding: 'var(--space-4)' }}>
             <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-2)' }}>
-              <span style={{ color: 'var(--warning)' }}>
+              <span style={{ color: 'var(--text-tertiary)' }}>
                 <AlertTriangle className="w-4 h-4" />
               </span>
               <span className="metric-label">Behind</span>
             </div>
-            <div className="metric-value" style={{ color: 'var(--warning)' }}>
+            <div className="metric-value">
               {summary.behind}
             </div>
           </div>
@@ -248,14 +238,14 @@ export default function VelocityPage() {
 
         <div className="grid grid-cols-2 gap-4">
           {/* At Risk */}
-          <div className="card-metric metric-danger" style={{ padding: 'var(--space-4)' }}>
+          <div className="card-metric" style={{ padding: 'var(--space-4)' }}>
             <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-2)' }}>
-              <span style={{ color: 'var(--danger)' }}>
+              <span style={{ color: 'var(--text-tertiary)' }}>
                 <XCircle className="w-4 h-4" />
               </span>
               <span className="metric-label">At Risk</span>
             </div>
-            <div className="metric-value" style={{ color: 'var(--danger)' }}>
+            <div className="metric-value">
               {summary.at_risk}
             </div>
           </div>
@@ -263,12 +253,12 @@ export default function VelocityPage() {
           {/* Avg Velocity */}
           <div className="card-metric" style={{ padding: 'var(--space-4)' }}>
             <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-2)' }}>
-              <span style={{ color: velocityColor(summary.avg_velocity_score) }}>
+              <span style={{ color: 'var(--text-tertiary)' }}>
                 <TrendingUp className="w-4 h-4" />
               </span>
               <span className="metric-label">Avg Velocity</span>
             </div>
-            <div className="metric-value" style={{ color: velocityColor(summary.avg_velocity_score) }}>
+            <div className="metric-value">
               {summary.avg_velocity_score}
             </div>
           </div>
@@ -510,7 +500,7 @@ export default function VelocityPage() {
                           onClick={e => e.stopPropagation()}
                           style={{
                             background: 'var(--danger-muted)',
-                            color: 'var(--danger)',
+                            color: 'var(--text-primary)',
                             border: '1px solid rgba(26, 26, 46, 0.06)',
                             fontSize: '11px',
                             padding: '3px 8px',
@@ -528,7 +518,7 @@ export default function VelocityPage() {
                           onClick={e => e.stopPropagation()}
                           style={{
                             background: 'var(--warning-muted)',
-                            color: 'var(--warning)',
+                            color: 'var(--text-tertiary)',
                             border: '1px solid rgba(26, 26, 46, 0.05)',
                             fontSize: '11px',
                             padding: '3px 8px',

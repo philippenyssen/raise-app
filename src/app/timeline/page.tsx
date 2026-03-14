@@ -30,8 +30,8 @@ const STATUS_ICONS: Record<TaskStatus, React.ComponentType<{ className?: string;
 };
 
 const PRIORITY_STYLES: Record<TaskPriority, React.CSSProperties> = {
-  critical: { backgroundColor: 'color-mix(in srgb, var(--danger) 20%, transparent)', color: 'var(--danger)' },
-  high: { backgroundColor: 'color-mix(in srgb, var(--warning) 20%, transparent)', color: 'var(--warning)' },
+  critical: { backgroundColor: 'color-mix(in srgb, var(--danger) 20%, transparent)', color: 'var(--text-primary)' },
+  high: { backgroundColor: 'color-mix(in srgb, var(--warning) 20%, transparent)', color: 'var(--text-tertiary)' },
   medium: { backgroundColor: 'color-mix(in srgb, var(--accent) 20%, transparent)', color: 'var(--accent)' },
   low: { backgroundColor: 'var(--surface-2)', color: 'var(--text-muted)' },
 };

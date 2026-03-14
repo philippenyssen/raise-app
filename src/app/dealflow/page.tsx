@@ -65,21 +65,17 @@ const HEAT_ORDER: Record<string, number> = { hot: 0, warm: 1, cool: 2, cold: 3, 
 
 // ── Helpers ───────────────────────────────────────────────────────────
 
-function velocityColor(score: number): string {
-  if (score >= 70) return 'var(--success)';
-  if (score >= 40) return 'var(--warning)';
-  return 'var(--danger)';
+function velocityColor(_score: number): string {
+  return 'var(--text-primary)';
 }
 
-function trackingColor(status: string): string {
-  if (status === 'on_track') return 'var(--success)';
-  if (status === 'behind') return 'var(--warning)';
-  return 'var(--danger)';
+function trackingColor(_status: string): string {
+  return 'var(--text-secondary)';
 }
 
 function TrendIcon({ trend }: { trend: string }) {
-  if (trend === 'up') return <span style={{ color: 'var(--success)' }}><TrendingUp className="w-4 h-4" /></span>;
-  if (trend === 'down') return <span style={{ color: 'var(--danger)' }}><TrendingDown className="w-4 h-4" /></span>;
+  if (trend === 'up') return <span style={{ color: 'var(--text-secondary)' }}><TrendingUp className="w-4 h-4" /></span>;
+  if (trend === 'down') return <span style={{ color: 'var(--text-muted)' }}><TrendingDown className="w-4 h-4" /></span>;
   return <span style={{ color: 'var(--text-muted)' }}><Minus className="w-4 h-4" /></span>;
 }
 
@@ -260,8 +256,8 @@ export default function DealflowPage() {
           { label: 'Cool', count: counts.cool, color: HEAT_CONFIG.cool.text, icon: Flame },
           { label: 'Cold', count: counts.cold, color: HEAT_CONFIG.cold.text, icon: Flame },
           { label: 'Frozen', count: counts.frozen, color: HEAT_CONFIG.frozen.text, icon: Flame },
-          { label: 'On Track', count: counts.onTrack, color: 'var(--success)', icon: Gauge },
-          { label: 'At Risk', count: counts.atRisk, color: 'var(--danger)', icon: AlertTriangle },
+          { label: 'On Track', count: counts.onTrack, color: 'var(--text-secondary)', icon: Gauge },
+          { label: 'At Risk', count: counts.atRisk, color: 'var(--text-primary)', icon: AlertTriangle },
         ].map(({ label, count, color, icon: Icon }) => (
           <div
             key={label}
@@ -317,7 +313,7 @@ export default function DealflowPage() {
 
       {/* Error state */}
       {error && (
-        <div className="rounded-lg p-4 mb-4" style={{ background: 'var(--danger-muted)', border: '1px solid var(--danger)', color: 'var(--danger)' }}>
+        <div className="rounded-lg p-4 mb-4" style={{ background: 'var(--danger-muted)', border: '1px solid var(--danger)', color: 'var(--text-primary)' }}>
           {error}
         </div>
       )}
@@ -457,7 +453,7 @@ export default function DealflowPage() {
                         `/investors/${inv.id}`
                       }
                       className="inline-flex items-center gap-1"
-                      style={{ color: 'var(--warning)', textDecoration: 'none' }}
+                      style={{ color: 'var(--text-tertiary)', textDecoration: 'none' }}
                       onMouseEnter={e => { e.currentTarget.style.color = 'var(--warning)'; }}
                       onMouseLeave={e => { e.currentTarget.style.color = 'var(--warning)'; }}
                     >

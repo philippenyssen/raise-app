@@ -153,7 +153,7 @@ function QuickCaptureInner() {
             width: '40px', height: '40px', borderRadius: '50%',
             background: 'var(--success-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
-            <span style={{ color: 'var(--success)' }}><CheckCircle2 className="w-5 h-5" /></span>
+            <span style={{ color: 'var(--text-secondary)' }}><CheckCircle2 className="w-5 h-5" /></span>
           </div>
           <div>
             <h1 className="page-title" style={{ fontSize: 'var(--font-size-xl)' }}>Captured & Processed</h1>

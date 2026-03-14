@@ -456,7 +456,7 @@ export default function ComparePage() {
                         <div className="flex items-center gap-2">
                           <InvestorNameLink investor={p.investor} />
                           {p.investor.id === winnerId && (
-                            <Trophy className="w-4 h-4 shrink-0" style={{ color: 'var(--warning)' }} />
+                            <Trophy className="w-4 h-4 shrink-0" style={{ color: 'var(--text-tertiary)' }} />
                           )}
                         </div>
                       </th>
@@ -508,7 +508,7 @@ export default function ComparePage() {
                           </span>
                           <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>/100</span>
                           {p.investor.id === winnerId && (
-                            <Trophy className="w-3.5 h-3.5" style={{ color: 'var(--warning)' }} />
+                            <Trophy className="w-3.5 h-3.5" style={{ color: 'var(--text-tertiary)' }} />
                           )}
                         </div>
                       </td>
@@ -542,7 +542,7 @@ export default function ComparePage() {
                             </span>
                           )}
                           {p.convictionTrajectory.predictedTermSheetDate === 'now' && (
-                            <span style={{ fontSize: '10px', color: 'var(--success)' }}>Ready for term sheet</span>
+                            <span style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>Ready for term sheet</span>
                           )}
                           <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
                             30d prediction: {p.convictionTrajectory.predictedScoreIn30Days}
@@ -644,17 +644,17 @@ export default function ComparePage() {
                       <td key={p.investor.id} style={{ padding: 'var(--space-3) var(--space-4)' }}>
                         <div className="flex items-center gap-3" style={{ fontSize: 'var(--font-size-xs)' }}>
                           {p.followupStatus.pendingCount > 0 && (
-                            <span style={{ color: 'var(--warning)' }}>
+                            <span style={{ color: 'var(--text-tertiary)' }}>
                               {p.followupStatus.pendingCount} pending
                             </span>
                           )}
                           {p.followupStatus.overdueCount > 0 && (
-                            <span style={{ color: 'var(--danger)', fontWeight: 500 }}>
+                            <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>
                               {p.followupStatus.overdueCount} overdue
                             </span>
                           )}
                           {p.followupStatus.completedCount > 0 && (
-                            <span style={{ color: 'var(--success)' }}>
+                            <span style={{ color: 'var(--text-secondary)' }}>
                               {p.followupStatus.completedCount} done
                             </span>
                           )}
@@ -1118,10 +1118,10 @@ function RecommendationBanner({ recommendation }: { recommendation: ComparisonRe
 }
 
 function MomentumIcon({ momentum }: { momentum: string }) {
-  if (momentum === 'accelerating') return <TrendingUp className="w-3.5 h-3.5" style={{ color: 'var(--success)' }} />;
-  if (momentum === 'decelerating') return <TrendingDown className="w-3.5 h-3.5" style={{ color: 'var(--danger)' }} />;
-  if (momentum === 'stalled') return <AlertTriangle className="w-3.5 h-3.5" style={{ color: 'var(--danger)' }} />;
-  if (momentum === 'steady') return <Minus className="w-3.5 h-3.5" style={{ color: 'var(--warning)' }} />;
+  if (momentum === 'accelerating') return <TrendingUp className="w-3.5 h-3.5" style={{ color: 'var(--text-secondary)' }} />;
+  if (momentum === 'decelerating') return <TrendingDown className="w-3.5 h-3.5" style={{ color: 'var(--text-primary)' }} />;
+  if (momentum === 'stalled') return <AlertTriangle className="w-3.5 h-3.5" style={{ color: 'var(--text-primary)' }} />;
+  if (momentum === 'steady') return <Minus className="w-3.5 h-3.5" style={{ color: 'var(--text-tertiary)' }} />;
   return <Minus className="w-3.5 h-3.5" style={{ color: 'var(--text-muted)' }} />;
 }
 
@@ -1156,9 +1156,9 @@ function EnthusiasmTrendDots({ trend }: { trend: number[] }) {
       {dots.length >= 2 && (
         <div className="ml-1">
           {dots[dots.length - 1] > dots[0] ? (
-            <ArrowUpRight className="w-3 h-3" style={{ color: 'var(--success)' }} />
+            <ArrowUpRight className="w-3 h-3" style={{ color: 'var(--text-secondary)' }} />
           ) : dots[dots.length - 1] < dots[0] ? (
-            <ArrowDownRight className="w-3 h-3" style={{ color: 'var(--danger)' }} />
+            <ArrowDownRight className="w-3 h-3" style={{ color: 'var(--text-primary)' }} />
           ) : (
             <Minus className="w-3 h-3" style={{ color: 'var(--text-muted)' }} />
           )}
@@ -1173,7 +1173,7 @@ function AccelerationBadge({ status }: { status: AccelerationStatusData }) {
     'Term Sheet Ready': {
       bg: 'var(--success-muted)',
       border: 'rgba(74, 158, 110, 0.3)',
-      color: 'var(--success)',
+      color: 'var(--text-secondary)',
       icon: <CheckCircle className="w-3 h-3" />,
     },
     'Active': {
@@ -1185,13 +1185,13 @@ function AccelerationBadge({ status }: { status: AccelerationStatusData }) {
     'At Risk': {
       bg: 'var(--warning-muted)',
       border: 'rgba(196, 163, 90, 0.3)',
-      color: 'var(--warning)',
+      color: 'var(--text-tertiary)',
       icon: <AlertTriangle className="w-3 h-3" />,
     },
     'Stalled': {
       bg: 'var(--danger-muted)',
       border: 'rgba(27, 42, 74, 0.10)',
-      color: 'var(--danger)',
+      color: 'var(--text-primary)',
       icon: <Clock className="w-3 h-3" />,
     },
   };
@@ -1393,25 +1393,25 @@ function tierStyle(tier: number): React.CSSProperties {
 }
 
 function statusStyle(status: string): React.CSSProperties {
-  if (status === 'term_sheet' || status === 'closed') return { color: 'var(--success)', fontWeight: 600 };
+  if (status === 'term_sheet' || status === 'closed') return { color: 'var(--text-secondary)', fontWeight: 600 };
   if (status === 'in_dd') return { color: 'var(--accent)', fontWeight: 500 };
   if (status === 'engaged') return { color: 'var(--cat-teal)' };
-  if (status === 'passed' || status === 'dropped') return { color: 'var(--danger)' };
+  if (status === 'passed' || status === 'dropped') return { color: 'var(--text-primary)' };
   return { color: 'var(--text-secondary)' };
 }
 
 function scoreStyle(score: number): React.CSSProperties {
-  if (score >= 75) return { color: 'var(--success)' };
+  if (score >= 75) return { color: 'var(--text-secondary)' };
   if (score >= 55) return { color: 'var(--accent)' };
-  if (score >= 35) return { color: 'var(--warning)' };
-  return { color: 'var(--danger)' };
+  if (score >= 35) return { color: 'var(--text-tertiary)' };
+  return { color: 'var(--text-primary)' };
 }
 
 function momentumStyle(momentum: string): React.CSSProperties {
-  if (momentum === 'accelerating') return { color: 'var(--success)' };
-  if (momentum === 'steady') return { color: 'var(--warning)' };
-  if (momentum === 'decelerating') return { color: 'var(--danger)' };
-  if (momentum === 'stalled') return { color: 'var(--danger)' };
+  if (momentum === 'accelerating') return { color: 'var(--text-secondary)' };
+  if (momentum === 'steady') return { color: 'var(--text-tertiary)' };
+  if (momentum === 'decelerating') return { color: 'var(--text-primary)' };
+  if (momentum === 'stalled') return { color: 'var(--text-primary)' };
   return { color: 'var(--text-muted)' };
 }
 

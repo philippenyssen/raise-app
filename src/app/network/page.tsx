@@ -139,7 +139,7 @@ export default function NetworkPage() {
     return (
       <div className="p-6">
         <div className="card p-6 flex items-center gap-3" style={{ border: '1px solid var(--danger-muted)' }}>
-          <AlertTriangle className="w-5 h-5 shrink-0" style={{ color: 'var(--danger)' }} />
+          <AlertTriangle className="w-5 h-5 shrink-0" style={{ color: 'var(--text-primary)' }} />
           <div>
             <p style={{ color: 'var(--text-primary)', fontWeight: 500 }}>Failed to load network data</p>
             <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>{error}</p>
@@ -245,7 +245,7 @@ export default function NetworkPage() {
             background: 'var(--warning-muted)',
           }}
         >
-          <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" style={{ color: 'var(--warning)' }} />
+          <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" style={{ color: 'var(--text-tertiary)' }} />
           <div className="flex-1">
             <p style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: 'var(--font-size-sm)' }}>
               Bottleneck Alert
@@ -263,7 +263,7 @@ export default function NetworkPage() {
               <Link
                 href={`/dealflow?search=${encodeURIComponent(bottleneckAlert.bottleneckName)}`}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors"
-                style={{ background: 'rgba(26, 26, 46, 0.05)', color: 'var(--warning)', border: '1px solid rgba(26, 26, 46, 0.05)' }}
+                style={{ background: 'rgba(26, 26, 46, 0.05)', color: 'var(--text-tertiary)', border: '1px solid rgba(26, 26, 46, 0.05)' }}
                 onMouseEnter={e => { e.currentTarget.style.background = 'rgba(26, 26, 46, 0.05)'; }}
                 onMouseLeave={e => { e.currentTarget.style.background = 'rgba(26, 26, 46, 0.05)'; }}
               >
@@ -482,7 +482,7 @@ export default function NetworkPage() {
                                         padding: '0 4px',
                                         borderRadius: 'var(--radius-sm)',
                                         background: 'var(--warning-muted)',
-                                        color: 'var(--warning)',
+                                        color: 'var(--text-tertiary)',
                                         fontWeight: 600,
                                       }}>
                                         BOTTLENECK
@@ -555,7 +555,7 @@ export default function NetworkPage() {
                         border: '1px solid var(--warning)',
                       }}
                     >
-                      <AlertTriangle className="w-3.5 h-3.5 shrink-0 mt-0.5" style={{ color: 'var(--warning)' }} />
+                      <AlertTriangle className="w-3.5 h-3.5 shrink-0 mt-0.5" style={{ color: 'var(--text-tertiary)' }} />
                       <div className="flex-1">
                         <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
                           <strong>{cascade.networkBottleneck.investorName}</strong> is the bottleneck.{' '}
@@ -564,7 +564,7 @@ export default function NetworkPage() {
                         <Link
                           href={`/investors/${cascade.networkBottleneck.investorId}`}
                           className="inline-flex items-center gap-1 mt-2 px-2.5 py-1 rounded text-[11px] font-medium transition-colors"
-                          style={{ background: 'rgba(26, 26, 46, 0.05)', color: 'var(--warning)', border: '1px solid rgba(26, 26, 46, 0.05)' }}
+                          style={{ background: 'rgba(26, 26, 46, 0.05)', color: 'var(--text-tertiary)', border: '1px solid rgba(26, 26, 46, 0.05)' }}
                           onMouseEnter={e => { e.currentTarget.style.background = 'rgba(26, 26, 46, 0.05)'; }}
                           onMouseLeave={e => { e.currentTarget.style.background = 'rgba(26, 26, 46, 0.05)'; }}
                         >

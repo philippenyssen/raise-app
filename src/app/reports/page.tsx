@@ -103,7 +103,7 @@ export default function ReportsPage() {
         <div className="rounded-xl p-5" style={{ border: '1px solid var(--border-subtle)', backgroundColor: 'color-mix(in srgb, var(--surface-1) 50%, transparent)' }}>
           <div className="flex items-center gap-3 mb-3">
             <span className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'var(--success-muted)' }}>
-              <BarChart3 className="w-4 h-4" style={{ color: 'var(--success)' }} />
+              <BarChart3 className="w-4 h-4" style={{ color: 'var(--text-secondary)' }} />
             </span>
             <h2 className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>Board Update</h2>
           </div>
@@ -199,7 +199,7 @@ export default function ReportsPage() {
 
       {/* Error */}
       {error && (
-        <div className="rounded-lg p-4 text-sm" style={{ border: '1px solid var(--danger)', backgroundColor: 'var(--danger-muted)', color: 'var(--danger)' }}>
+        <div className="rounded-lg p-4 text-sm" style={{ border: '1px solid var(--danger)', backgroundColor: 'var(--danger-muted)', color: 'var(--text-primary)' }}>
           {error}
         </div>
       )}

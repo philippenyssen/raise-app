@@ -14,15 +14,15 @@ import Link from 'next/link';
 type Tab = 'deals' | 'competitors' | 'briefs';
 
 const THREAT_STYLES: Record<string, { background: string; color: string }> = {
-  critical: { background: 'var(--danger-muted)', color: 'var(--danger)' },
-  high: { background: 'var(--warning-muted)', color: 'var(--warning)' },
-  medium: { background: 'rgba(196, 163, 90, 0.08)', color: 'var(--warning)' },
-  low: { background: 'var(--success-muted)', color: 'var(--success)' },
+  critical: { background: 'var(--danger-muted)', color: 'var(--text-primary)' },
+  high: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
+  medium: { background: 'rgba(196, 163, 90, 0.08)', color: 'var(--text-tertiary)' },
+  low: { background: 'var(--success-muted)', color: 'var(--text-secondary)' },
 };
 
 const BRIEF_TYPE_STYLES: Record<string, { background: string; color: string }> = {
   investor: { background: 'var(--accent-muted)', color: 'var(--accent)' },
-  competitor: { background: 'var(--warning-muted)', color: 'var(--warning)' },
+  competitor: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
   market: { background: 'rgba(106, 111, 165, 0.12)', color: 'var(--chart-4)' },
 };
 
@@ -307,7 +307,7 @@ export default function IntelligencePage() {
                     >
                       <td style={{ fontWeight: 500, color: 'var(--text-primary)' }}>{d.company}</td>
                       <td style={{ color: 'var(--text-tertiary)' }}>{d.round}</td>
-                      <td style={{ color: 'var(--success)', fontWeight: 500 }}>{d.amount}</td>
+                      <td style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>{d.amount}</td>
                       <td style={{ color: 'var(--accent)' }}>{d.valuation}</td>
                       <td className="max-w-40 truncate" style={{ color: 'var(--text-tertiary)' }}>{d.lead_investors}</td>
                       <td style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>{d.date}</td>
@@ -432,7 +432,7 @@ export default function IntelligencePage() {
                     {c.positioning && <p className="text-xs mt-2 line-clamp-2" style={{ color: 'var(--text-muted)' }}>{c.positioning}</p>}
                     {c.our_advantage && (
                       <div className="mt-2 text-xs">
-                        <span className="font-medium" style={{ color: 'var(--success)' }}>Our advantage:</span>
+                        <span className="font-medium" style={{ color: 'var(--text-secondary)' }}>Our advantage:</span>
                         <span className="ml-1" style={{ color: 'var(--text-tertiary)' }}>{c.our_advantage}</span>
                       </div>
                     )}

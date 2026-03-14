@@ -37,9 +37,9 @@ const TYPE_LABELS: Record<string, string> = {
 };
 
 const CONFIDENCE_COLORS: Record<string, React.CSSProperties> = {
-  high: { background: 'var(--success-muted)', color: 'var(--success)' },
-  medium: { background: 'var(--warning-muted)', color: 'var(--warning)' },
-  low: { background: 'var(--danger-muted)', color: 'var(--danger)' },
+  high: { background: 'var(--success-muted)', color: 'var(--text-secondary)' },
+  medium: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
+  low: { background: 'var(--danger-muted)', color: 'var(--text-primary)' },
 };
 
 function formatEur(n: number): string {
@@ -151,7 +151,7 @@ export default function BacklogPage() {
           </div>
           <div className="rounded-lg p-4" style={{ background: 'var(--surface-1)', border: '1px solid var(--border-subtle)' }}>
             <div className="text-[10px]  font-medium flex items-center gap-1" style={{ color: 'var(--text-muted)' }}><ShieldCheck className="w-3 h-3" /> Probability-Weighted</div>
-            <div className="text-2xl font-bold mt-1" style={{ color: 'var(--success)' }}>{formatEur(summary.probability_weighted_eur)}</div>
+            <div className="text-2xl font-bold mt-1" style={{ color: 'var(--text-secondary)' }}>{formatEur(summary.probability_weighted_eur)}</div>
           </div>
           <div className="rounded-lg p-4" style={{ background: 'var(--surface-1)', border: '1px solid var(--border-subtle)' }}>
             <div className="text-[10px]  font-medium flex items-center gap-1" style={{ color: 'var(--text-muted)' }}><TrendingUp className="w-3 h-3" /> Firm Contracts</div>
@@ -159,7 +159,7 @@ export default function BacklogPage() {
           </div>
           <div className="rounded-lg p-4" style={{ background: 'var(--surface-1)', border: '1px solid var(--border-subtle)' }}>
             <div className="text-[10px]  font-medium flex items-center gap-1" style={{ color: 'var(--text-muted)' }}><AlertTriangle className="w-3 h-3" /> Pipeline (Unsigned)</div>
-            <div className="text-2xl font-bold mt-1" style={{ color: 'var(--warning)' }}>{formatEur(summary.by_type?.pipeline || 0)}</div>
+            <div className="text-2xl font-bold mt-1" style={{ color: 'var(--text-tertiary)' }}>{formatEur(summary.by_type?.pipeline || 0)}</div>
           </div>
         </div>
       )}

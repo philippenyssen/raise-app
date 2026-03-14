@@ -221,8 +221,8 @@ export default function MomentumPage() {
     return (
       <div className="flex-1 flex items-center justify-center min-h-screen" style={{ background: 'var(--surface-0)' }}>
         <div className="text-center space-y-3">
-          <AlertTriangle className="w-8 h-8 mx-auto" style={{ color: 'var(--danger)' }} />
-          <p className="text-sm" style={{ color: 'var(--danger)' }}>{error || 'No data available'}</p>
+          <AlertTriangle className="w-8 h-8 mx-auto" style={{ color: 'var(--text-primary)' }} />
+          <p className="text-sm" style={{ color: 'var(--text-primary)' }}>{error || 'No data available'}</p>
           <button onClick={fetchData} className="text-xs" style={{ color: 'var(--text-secondary)' }}>Retry</button>
         </div>
       </div>
@@ -485,7 +485,7 @@ export default function MomentumPage() {
                             {TYPE_LABELS[inv.type] || inv.type}
                           </span>
                           {isAnomaly && (
-                            <span title="Anomaly detected"><Zap className="w-3 h-3 flex-shrink-0" style={{ color: 'var(--warning)' }} /></span>
+                            <span title="Anomaly detected"><Zap className="w-3 h-3 flex-shrink-0" style={{ color: 'var(--text-tertiary)' }} /></span>
                           )}
                         </div>
                       </td>
@@ -685,14 +685,14 @@ export default function MomentumPage() {
             }}
           >
             <div className="flex items-center gap-2 mb-4">
-              <Zap className="w-4 h-4" style={{ color: 'var(--warning)' }} />
+              <Zap className="w-4 h-4" style={{ color: 'var(--text-tertiary)' }} />
               <h2 className="text-sm font-semibold  tracking-wider" style={{ color: 'var(--text-secondary)' }}>Momentum Anomalies</h2>
               {data.anomalies.length > 0 && (
                 <span
                   className="ml-auto px-2 py-0.5 rounded-full text-xs font-semibold"
                   style={{
                     background: 'var(--warning-muted, rgba(120,53,15,0.4))',
-                    color: 'var(--warning)',
+                    color: 'var(--text-tertiary)',
                     borderWidth: '1px',
                     borderStyle: 'solid',
                     borderColor: 'rgba(180,83,9,0.4)',
@@ -731,9 +731,9 @@ export default function MomentumPage() {
                           style={{ background: isAbove ? 'rgba(6,78,59,0.4)' : 'rgba(127,29,29,0.4)' }}
                         >
                           {isAbove ? (
-                            <ArrowUpRight className="w-4 h-4" style={{ color: 'var(--success)' }} />
+                            <ArrowUpRight className="w-4 h-4" style={{ color: 'var(--text-secondary)' }} />
                           ) : (
-                            <ArrowDownRight className="w-4 h-4" style={{ color: 'var(--danger)' }} />
+                            <ArrowDownRight className="w-4 h-4" style={{ color: 'var(--text-primary)' }} />
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
@@ -802,13 +802,13 @@ export default function MomentumPage() {
             }}
           >
             <div className="flex items-center gap-2 mb-4">
-              <AlertTriangle className="w-4 h-4" style={{ color: 'var(--danger)' }} />
+              <AlertTriangle className="w-4 h-4" style={{ color: 'var(--text-primary)' }} />
               <h2 className="text-sm font-semibold  tracking-wider" style={{ color: 'var(--text-secondary)' }}>Cross-Investor Signals</h2>
               <span
                 className="ml-auto px-2 py-0.5 rounded-full text-xs font-semibold"
                 style={{
                   background: 'var(--danger-muted, rgba(127,29,29,0.4))',
-                  color: 'var(--danger)',
+                  color: 'var(--text-primary)',
                   borderWidth: '1px',
                   borderStyle: 'solid',
                   borderColor: 'rgba(185,28,28,0.4)',
@@ -872,13 +872,13 @@ export default function MomentumPage() {
             }}
           >
             <div className="flex items-center gap-2 mb-4">
-              <Clock className="w-4 h-4" style={{ color: 'var(--warning)' }} />
+              <Clock className="w-4 h-4" style={{ color: 'var(--text-tertiary)' }} />
               <h2 className="text-sm font-semibold  tracking-wider" style={{ color: 'var(--text-secondary)' }}>Timing Signals</h2>
               <span
                 className="ml-auto px-2 py-0.5 rounded-full text-xs font-semibold"
                 style={{
                   background: 'var(--warning-muted, rgba(120,53,15,0.4))',
-                  color: 'var(--warning)',
+                  color: 'var(--text-tertiary)',
                   borderWidth: '1px',
                   borderStyle: 'solid',
                   borderColor: 'rgba(180,83,9,0.4)',

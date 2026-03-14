@@ -366,12 +366,12 @@ export default function InvestorDetailPage() {
             className="flex items-start gap-3 rounded-xl px-4 py-3"
             style={{ border: '1px solid var(--warning-muted)', background: 'var(--warning-muted)' }}
           >
-            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" style={{ color: 'var(--warning)' }} />
+            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" style={{ color: 'var(--text-tertiary)' }} />
             <div className="min-w-0">
-              <div className="text-sm font-medium" style={{ color: 'var(--warning)' }}>
+              <div className="text-sm font-medium" style={{ color: 'var(--text-tertiary)' }}>
                 Profile {completeness}% complete — fill missing fields to improve scoring accuracy
               </div>
-              <div className="text-xs mt-0.5" style={{ color: 'var(--warning)', opacity: 0.7 }}>
+              <div className="text-xs mt-0.5" style={{ color: 'var(--text-tertiary)', opacity: 0.7 }}>
                 Missing: {missing.map(f => f.label).join(', ')}
               </div>
             </div>
@@ -447,7 +447,7 @@ export default function InvestorDetailPage() {
           {dealIntel.bottleneck && (
             <>
               <span style={{ color: 'var(--border-default)' }}>|</span>
-              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--warning)', fontStyle: 'italic' }}>
+              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', fontStyle: 'italic' }}>
                 {dealIntel.bottleneck}
               </span>
             </>
@@ -462,7 +462,7 @@ export default function InvestorDetailPage() {
                 style={{
                   fontSize: '11px', fontWeight: 600, padding: '3px 10px',
                   borderRadius: 'var(--radius-sm)', textDecoration: 'none',
-                  background: 'var(--danger-muted)', color: 'var(--danger)',
+                  background: 'var(--danger-muted)', color: 'var(--text-primary)',
                   border: '1px solid rgba(26, 26, 46, 0.06)',
                 }}
               >
@@ -475,7 +475,7 @@ export default function InvestorDetailPage() {
                 style={{
                   fontSize: '11px', fontWeight: 600, padding: '3px 10px',
                   borderRadius: 'var(--radius-sm)', textDecoration: 'none',
-                  background: 'var(--warning-muted)', color: 'var(--warning)',
+                  background: 'var(--warning-muted)', color: 'var(--text-tertiary)',
                   border: '1px solid rgba(26, 26, 46, 0.05)',
                 }}
               >
@@ -907,7 +907,7 @@ export default function InvestorDetailPage() {
                           <td className="px-4 py-2 font-medium" style={{ color: 'var(--text-primary)' }}>{co.company}</td>
                           <td className="px-4 py-2 text-xs" style={{ color: 'var(--text-tertiary)' }}>{co.sector}</td>
                           <td className="px-4 py-2 text-xs" style={{ color: 'var(--text-tertiary)' }}>{co.stage_invested}</td>
-                          <td className="px-4 py-2 text-xs" style={{ color: 'var(--success)' }}>{co.amount}</td>
+                          <td className="px-4 py-2 text-xs" style={{ color: 'var(--text-secondary)' }}>{co.amount}</td>
                           <td className="px-4 py-2 text-xs" style={{ color: 'var(--text-muted)' }}>{co.date}</td>
                           <td className="px-4 py-2">
                             <span
@@ -1099,17 +1099,17 @@ function StatCard({ icon: Icon, label, value, sub, highlight }: { icon: React.Co
 // ---------------------------------------------------------------------------
 
 const OUTCOME_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
-  likely_close: { label: 'Likely Close', color: 'var(--success)', bg: 'var(--success-muted)' },
+  likely_close: { label: 'Likely Close', color: 'var(--text-secondary)', bg: 'var(--success-muted)' },
   possible: { label: 'Possible', color: 'var(--accent)', bg: 'var(--accent-muted)' },
-  long_shot: { label: 'Long Shot', color: 'var(--warning)', bg: 'var(--warning-muted)' },
-  unlikely: { label: 'Unlikely', color: 'var(--danger)', bg: 'var(--danger-muted)' },
+  long_shot: { label: 'Long Shot', color: 'var(--text-tertiary)', bg: 'var(--warning-muted)' },
+  unlikely: { label: 'Unlikely', color: 'var(--text-primary)', bg: 'var(--danger-muted)' },
 };
 
 const MOMENTUM_CONFIG: Record<string, { label: string; icon: React.ComponentType<{ className?: string }>; color: string }> = {
-  accelerating: { label: 'Accelerating', icon: ArrowUpRight, color: 'var(--success)' },
+  accelerating: { label: 'Accelerating', icon: ArrowUpRight, color: 'var(--text-secondary)' },
   steady: { label: 'Steady', icon: ArrowRight, color: 'var(--accent)' },
-  decelerating: { label: 'Decelerating', icon: ArrowDownRight, color: 'var(--warning)' },
-  stalled: { label: 'Stalled', icon: Minus, color: 'var(--danger)' },
+  decelerating: { label: 'Decelerating', icon: ArrowDownRight, color: 'var(--text-tertiary)' },
+  stalled: { label: 'Stalled', icon: Minus, color: 'var(--text-primary)' },
 };
 
 function scoreColor(score: number): string {
@@ -1135,9 +1135,9 @@ function scoreBorderColor(score: number): string {
 
 function signalBadge(sig: 'strong' | 'moderate' | 'weak' | 'unknown'): { bg: string; color: string } {
   const config = {
-    strong: { bg: 'var(--success-muted)', color: 'var(--success)' },
+    strong: { bg: 'var(--success-muted)', color: 'var(--text-secondary)' },
     moderate: { bg: 'var(--accent-muted)', color: 'var(--accent)' },
-    weak: { bg: 'var(--warning-muted)', color: 'var(--warning)' },
+    weak: { bg: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
     unknown: { bg: 'var(--surface-2)', color: 'var(--text-muted)' },
   };
   return config[sig];
@@ -1199,7 +1199,7 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
           {/* Next best action */}
           <div className="flex-[2] min-w-0">
             <div className="flex items-start gap-2">
-              <Lightbulb className="w-3.5 h-3.5 shrink-0 mt-0.5" style={{ color: 'var(--warning)' }} />
+              <Lightbulb className="w-3.5 h-3.5 shrink-0 mt-0.5" style={{ color: 'var(--text-tertiary)' }} />
               <div className="flex-1 min-w-0">
                 <div className="text-[10px] font-medium  mb-0.5" style={{ color: 'var(--text-muted)' }}>Next Action</div>
                 <div className="flex items-center gap-2">
@@ -1264,7 +1264,7 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
       {score.risks.length > 0 && (
         <div className="p-5" style={{ borderTop: '1px solid var(--border-default)' }}>
           <div className="flex items-center gap-2 mb-3">
-            <ShieldAlert className="w-3.5 h-3.5" style={{ color: 'var(--danger)' }} />
+            <ShieldAlert className="w-3.5 h-3.5" style={{ color: 'var(--text-primary)' }} />
             <h3 className="text-xs font-medium " style={{ color: 'var(--text-tertiary)' }}>Identified Risks</h3>
           </div>
           <div className="space-y-1.5">
@@ -1286,9 +1286,9 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
 // ---------------------------------------------------------------------------
 
 const TREND_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
-  accelerating: { label: 'Accelerating', color: 'var(--success)', bg: 'var(--success-muted)' },
+  accelerating: { label: 'Accelerating', color: 'var(--text-secondary)', bg: 'var(--success-muted)' },
   steady: { label: 'Steady', color: 'var(--accent)', bg: 'var(--accent-muted)' },
-  decelerating: { label: 'Decelerating', color: 'var(--warning)', bg: 'var(--warning-muted)' },
+  decelerating: { label: 'Decelerating', color: 'var(--text-tertiary)', bg: 'var(--warning-muted)' },
   insufficient_data: { label: 'Insufficient Data', color: 'var(--text-tertiary)', bg: 'var(--surface-2)' },
 };
 
@@ -1413,7 +1413,7 @@ function ConvictionTrajectoryPanel({ trajectory }: { trajectory: ConvictionTraje
             {trajectory.predictedTermSheetDate && (
               <div className="text-xs">
                 {trajectory.predictedTermSheetDate === 'now' ? (
-                  <span style={{ color: 'var(--success)' }}>Term sheet range reached</span>
+                  <span style={{ color: 'var(--text-secondary)' }}>Term sheet range reached</span>
                 ) : (
                   <span style={{ color: 'var(--accent)' }}>
                     Term sheet by ~{new Date(trajectory.predictedTermSheetDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
@@ -1453,13 +1453,13 @@ const CATEGORY_LABELS: Record<string, string> = {
 
 const CATEGORY_COLORS: Record<string, { bg: string; color: string }> = {
   identity: { bg: 'var(--surface-2)', color: 'var(--text-tertiary)' },
-  financials: { bg: 'var(--success-muted)', color: 'var(--success)' },
+  financials: { bg: 'var(--success-muted)', color: 'var(--text-secondary)' },
   strategy: { bg: 'var(--accent-muted)', color: 'var(--accent)' },
   people: { bg: 'rgba(106, 111, 165, 0.12)', color: 'var(--chart-4)' },
-  portfolio: { bg: 'var(--warning-muted)', color: 'var(--warning)' },
+  portfolio: { bg: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
   process: { bg: 'var(--accent-muted)', color: 'var(--accent)' },
   contact: { bg: 'var(--surface-2)', color: 'var(--text-tertiary)' },
-  regulatory: { bg: 'var(--danger-muted)', color: 'var(--danger)' },
+  regulatory: { bg: 'var(--danger-muted)', color: 'var(--text-primary)' },
   corporate: { bg: 'var(--surface-2)', color: 'var(--text-tertiary)' },
   media: { bg: 'rgba(106, 111, 165, 0.12)', color: 'var(--chart-4)' },
   relationships: { bg: 'var(--accent-muted)', color: 'var(--accent)' },

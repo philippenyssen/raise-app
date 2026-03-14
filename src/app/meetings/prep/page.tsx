@@ -89,9 +89,9 @@ const TYPE_LABELS: Record<string, string> = {
 };
 
 const SPEED_STYLE: Record<string, React.CSSProperties> = {
-  fast: { color: 'var(--success)' },
-  medium: { color: 'var(--warning)' },
-  slow: { color: 'var(--danger)' },
+  fast: { color: 'var(--text-secondary)' },
+  medium: { color: 'var(--text-tertiary)' },
+  slow: { color: 'var(--text-primary)' },
 };
 
 // ---------- main page ----------
@@ -578,10 +578,10 @@ function MeetingPrepContent() {
                         </div>
                       </div>
                       <div>
-                        <h3 className="text-xs font-medium  tracking-wider mb-2" style={{ color: 'var(--danger)' }}>Avoid</h3>
+                        <h3 className="text-xs font-medium  tracking-wider mb-2" style={{ color: 'var(--text-primary)' }}>Avoid</h3>
                         <div className="flex flex-wrap gap-1.5">
                           {meetingBrief.narrative_profile.avoid_topics.map((t, i) => (
-                            <span key={i} className="text-xs px-2 py-1 rounded-md" style={{ background: 'var(--danger-muted)', color: 'var(--danger)' }}>{t}</span>
+                            <span key={i} className="text-xs px-2 py-1 rounded-md" style={{ background: 'var(--danger-muted)', color: 'var(--text-primary)' }}>{t}</span>
                           ))}
                         </div>
                       </div>
@@ -684,11 +684,11 @@ function MeetingPrepContent() {
 
                     {meetingBrief.brief.unresolved_items.length > 0 && (
                       <div>
-                        <h3 className="text-xs font-medium  tracking-wider mb-2" style={{ color: 'var(--warning)' }}>Unresolved Items</h3>
+                        <h3 className="text-xs font-medium  tracking-wider mb-2" style={{ color: 'var(--text-tertiary)' }}>Unresolved Items</h3>
                         <div className="space-y-1.5">
                           {meetingBrief.brief.unresolved_items.map((item, i) => (
                             <div key={i} className="flex items-start gap-2 text-sm">
-                              <span className="shrink-0 mt-0.5" style={{ color: 'var(--warning)' }}>
+                              <span className="shrink-0 mt-0.5" style={{ color: 'var(--text-tertiary)' }}>
                                 <AlertTriangle className="w-3.5 h-3.5" />
                               </span>
                               <span style={{ color: 'var(--text-secondary)' }}>{item}</span>
@@ -701,11 +701,11 @@ function MeetingPrepContent() {
                     {/* Risks to Watch */}
                     {meetingBrief.brief.risks_to_watch.length > 0 && (
                       <div>
-                        <h3 className="text-xs font-medium  tracking-wider mb-2" style={{ color: 'var(--danger)' }}>Risks to Watch</h3>
+                        <h3 className="text-xs font-medium  tracking-wider mb-2" style={{ color: 'var(--text-primary)' }}>Risks to Watch</h3>
                         <div className="space-y-1.5">
                           {meetingBrief.brief.risks_to_watch.map((risk, i) => (
                             <div key={i} className="flex items-start gap-2 text-sm">
-                              <span className="shrink-0 mt-0.5" style={{ color: 'var(--danger)' }}>
+                              <span className="shrink-0 mt-0.5" style={{ color: 'var(--text-primary)' }}>
                                 <Shield className="w-3.5 h-3.5" />
                               </span>
                               <span style={{ color: 'var(--text-tertiary)' }}>{risk}</span>
@@ -717,7 +717,7 @@ function MeetingPrepContent() {
 
                     {/* Recommended Ask */}
                     <div className="pt-4" style={{ borderTop: '1px solid var(--border-subtle)' }}>
-                      <h3 className="text-xs font-medium  tracking-wider mb-2" style={{ color: 'var(--success)' }}>Recommended Ask</h3>
+                      <h3 className="text-xs font-medium  tracking-wider mb-2" style={{ color: 'var(--text-secondary)' }}>Recommended Ask</h3>
                       <p className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>{meetingBrief.brief.recommended_ask}</p>
                     </div>
 
@@ -806,7 +806,7 @@ function MeetingPrepContent() {
               {investor.portfolio_conflicts && (
                 <div className="mt-2">
                   <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Portfolio Conflicts: </span>
-                  <span className="text-sm" style={{ color: 'var(--danger)' }}>{investor.portfolio_conflicts}</span>
+                  <span className="text-sm" style={{ color: 'var(--text-primary)' }}>{investor.portfolio_conflicts}</span>
                 </div>
               )}
               {investor.notes && (
@@ -821,7 +821,7 @@ function MeetingPrepContent() {
             {talkingPoints.length > 0 && (
               <section className="rounded-xl p-5 print-card" style={{ border: '1px solid var(--border-default)' }}>
                 <h2 className="text-sm font-semibold  tracking-wider mb-4 flex items-center gap-2 print-section-title" style={{ color: 'var(--text-tertiary)' }}>
-                  <span style={{ color: 'var(--warning)' }}><Zap className="w-4 h-4" /></span>
+                  <span style={{ color: 'var(--text-tertiary)' }}><Zap className="w-4 h-4" /></span>
                   Suggested Talking Points
                 </h2>
                 <div className="space-y-2.5">
@@ -840,14 +840,14 @@ function MeetingPrepContent() {
                       <div className="flex-1">
                         <span className="text-xs font-medium px-1.5 py-0.5 rounded mr-2" style={
                           tp.category === 'Follow-up' ? { background: 'var(--accent-muted)', color: 'var(--accent)' } :
-                          tp.category === 'Objection to preempt' ? { background: 'var(--danger-muted)', color: 'var(--danger)' } :
-                          tp.category === 'Positive signal' ? { background: 'var(--success-muted)', color: 'var(--success)' } :
-                          tp.category === 'Build on strength' ? { background: 'var(--success-muted)', color: 'var(--success)' } :
-                          tp.category === 'Improve delivery' ? { background: 'var(--warning-muted)', color: 'var(--warning)' } :
+                          tp.category === 'Objection to preempt' ? { background: 'var(--danger-muted)', color: 'var(--text-primary)' } :
+                          tp.category === 'Positive signal' ? { background: 'var(--success-muted)', color: 'var(--text-secondary)' } :
+                          tp.category === 'Build on strength' ? { background: 'var(--success-muted)', color: 'var(--text-secondary)' } :
+                          tp.category === 'Improve delivery' ? { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' } :
                           tp.category === 'Competitive intel' ? { background: 'var(--accent-muted)', color: 'var(--accent)' } :
-                          tp.category === 'Risk' ? { background: 'var(--danger-muted)', color: 'var(--danger)' } :
-                          tp.category === 'Warning' ? { background: 'var(--danger-muted)', color: 'var(--danger)' } :
-                          tp.category === 'Momentum' ? { background: 'var(--success-muted)', color: 'var(--success)' } :
+                          tp.category === 'Risk' ? { background: 'var(--danger-muted)', color: 'var(--text-primary)' } :
+                          tp.category === 'Warning' ? { background: 'var(--danger-muted)', color: 'var(--text-primary)' } :
+                          tp.category === 'Momentum' ? { background: 'var(--success-muted)', color: 'var(--text-secondary)' } :
                           { background: 'var(--surface-2)', color: 'var(--text-tertiary)' }
                         }>{tp.category}</span>
                         <span style={{ color: 'var(--text-secondary)' }}>{tp.text}</span>
@@ -861,14 +861,14 @@ function MeetingPrepContent() {
             {/* ============ KEY RISKS ============ */}
             {(portfolioConflicts.length > 0 || unresolvedObjections.length > 0 || investor.portfolio_conflicts || enthusiasmTrend === 'declining') && (
               <section className="rounded-xl p-5 print-card" style={{ border: '1px solid var(--danger-muted)', background: 'var(--danger-muted)' }}>
-                <h2 className="text-sm font-semibold  tracking-wider mb-4 flex items-center gap-2 print-section-title" style={{ color: 'var(--danger)' }}>
+                <h2 className="text-sm font-semibold  tracking-wider mb-4 flex items-center gap-2 print-section-title" style={{ color: 'var(--text-primary)' }}>
                   <AlertTriangle className="w-4 h-4" />
                   Key Risks to Address
                 </h2>
                 <div className="space-y-3">
                   {investor.portfolio_conflicts && (
                     <div className="flex items-start gap-2 text-sm">
-                      <span className="shrink-0 mt-0.5" style={{ color: 'var(--danger)' }}>
+                      <span className="shrink-0 mt-0.5" style={{ color: 'var(--text-primary)' }}>
                         <Shield className="w-4 h-4" />
                       </span>
                       <div>
@@ -879,7 +879,7 @@ function MeetingPrepContent() {
                   )}
                   {portfolioConflicts.map((pc, i) => (
                     <div key={i} className="flex items-start gap-2 text-sm">
-                      <span className="shrink-0 mt-0.5" style={{ color: 'var(--warning)' }}>
+                      <span className="shrink-0 mt-0.5" style={{ color: 'var(--text-tertiary)' }}>
                         <Shield className="w-4 h-4" />
                       </span>
                       <div>
@@ -909,7 +909,7 @@ function MeetingPrepContent() {
                   ))}
                   {enthusiasmTrend === 'declining' && (
                     <div className="flex items-start gap-2 text-sm">
-                      <span className="shrink-0 mt-0.5 rotate-180" style={{ color: 'var(--danger)' }}>
+                      <span className="shrink-0 mt-0.5 rotate-180" style={{ color: 'var(--text-primary)' }}>
                         <TrendingUp className="w-4 h-4" />
                       </span>
                       <div>
@@ -963,7 +963,7 @@ function MeetingPrepContent() {
                           <summary className="flex items-center gap-2 px-3 py-2 cursor-pointer text-sm">
                             <span className="text-xs px-1.5 py-0.5 rounded font-medium" style={
                               b.brief_type === 'investor' ? { background: 'var(--accent-muted)', color: 'var(--accent)' } :
-                              b.brief_type === 'competitor' ? { background: 'var(--warning-muted)', color: 'var(--warning)' } :
+                              b.brief_type === 'competitor' ? { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' } :
                               { background: 'var(--surface-2)', color: 'var(--text-tertiary)' }
                             }>{b.brief_type}</span>
                             <span style={{ color: 'var(--text-secondary)' }}>{b.subject}</span>
@@ -1036,7 +1036,7 @@ function MeetingPrepContent() {
             {/* ============ OPEN TASKS ============ */}
             <section className="rounded-xl p-5 print-card" style={{ border: '1px solid var(--border-default)' }}>
               <h2 className="text-sm font-semibold  tracking-wider mb-4 flex items-center gap-2 print-section-title" style={{ color: 'var(--text-tertiary)' }}>
-                <span style={{ color: 'var(--success)' }}><CheckCircle className="w-4 h-4" /></span>
+                <span style={{ color: 'var(--text-secondary)' }}><CheckCircle className="w-4 h-4" /></span>
                 Open Tasks
                 <span className="text-xs font-normal ml-1" style={{ color: 'var(--text-muted)' }}>
                   ({pendingTasks.length} pending)
@@ -1061,8 +1061,8 @@ function MeetingPrepContent() {
                             t.status === 'in_progress' ? { background: 'var(--accent-muted)', color: 'var(--accent)' } : { background: 'var(--surface-2)', color: 'var(--text-muted)' }
                           }>{t.status === 'in_progress' ? 'In Progress' : 'Pending'}</span>
                           <span className="text-xs px-1.5 py-0.5 rounded" style={
-                            t.priority === 'critical' ? { background: 'var(--danger-muted)', color: 'var(--danger)' } :
-                            t.priority === 'high' ? { background: 'var(--warning-muted)', color: 'var(--warning)' } :
+                            t.priority === 'critical' ? { background: 'var(--danger-muted)', color: 'var(--text-primary)' } :
+                            t.priority === 'high' ? { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' } :
                             { background: 'var(--surface-2)', color: 'var(--text-muted)' }
                           }>{t.priority}</span>
                         </div>
@@ -1218,9 +1218,9 @@ function MeetingCard({ meeting: m, objs }: { meeting: Meeting; objs: Objection[]
           </div>
           <span className="text-xs px-2 py-0.5 rounded" style={
             m.status_after === 'engaged' ? { background: 'var(--accent-muted)', color: 'var(--accent)' } :
-            m.status_after === 'in_dd' ? { background: 'var(--warning-muted)', color: 'var(--warning)' } :
-            m.status_after === 'term_sheet' ? { background: 'var(--success-muted)', color: 'var(--success)' } :
-            m.status_after === 'passed' ? { background: 'var(--danger-muted)', color: 'var(--danger)' } :
+            m.status_after === 'in_dd' ? { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' } :
+            m.status_after === 'term_sheet' ? { background: 'var(--success-muted)', color: 'var(--text-secondary)' } :
+            m.status_after === 'passed' ? { background: 'var(--danger-muted)', color: 'var(--text-primary)' } :
             { background: 'var(--surface-2)', color: 'var(--text-tertiary)' }
           }>{STATUS_LABELS[m.status_after] || m.status_after}</span>
         </div>
@@ -1236,8 +1236,8 @@ function MeetingCard({ meeting: m, objs }: { meeting: Meeting; objs: Objection[]
           <div className="flex flex-wrap gap-1 mt-1">
             {objs.map((o, i) => (
               <span key={i} className="text-xs px-2 py-0.5 rounded" style={
-                o.severity === 'showstopper' ? { background: 'var(--danger-muted)', color: 'var(--danger)' } :
-                o.severity === 'significant' ? { background: 'var(--warning-muted)', color: 'var(--warning)' } :
+                o.severity === 'showstopper' ? { background: 'var(--danger-muted)', color: 'var(--text-primary)' } :
+                o.severity === 'significant' ? { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' } :
                 { background: 'var(--surface-2)', color: 'var(--text-muted)' }
               }>
                 {o.text.length > 60 ? o.text.slice(0, 60) + '...' : o.text}

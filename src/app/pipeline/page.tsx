@@ -79,25 +79,25 @@ const COLUMN_COLORS: Record<InvestorStatus, {
     header: { background: 'rgba(196, 163, 90, 0.12)' },
     border: { borderColor: 'rgba(196, 163, 90, 0.25)' },
     bg: { background: 'rgba(196, 163, 90, 0.03)' },
-    badge: { background: 'rgba(196, 163, 90, 0.3)', color: 'var(--warning)' },
+    badge: { background: 'rgba(196, 163, 90, 0.3)', color: 'var(--text-tertiary)' },
   },
   term_sheet: {
     header: { background: 'rgba(74, 158, 110, 0.1)' },
     border: { borderColor: 'rgba(74, 158, 110, 0.25)' },
     bg: { background: 'rgba(74, 158, 110, 0.03)' },
-    badge: { background: 'rgba(74, 158, 110, 0.3)', color: 'var(--success)' },
+    badge: { background: 'rgba(74, 158, 110, 0.3)', color: 'var(--text-secondary)' },
   },
   closed: {
     header: { background: 'rgba(74, 158, 110, 0.15)' },
     border: { borderColor: 'rgba(74, 158, 110, 0.3)' },
     bg: { background: 'rgba(74, 158, 110, 0.05)' },
-    badge: { background: 'rgba(74, 158, 110, 0.35)', color: 'var(--success)' },
+    badge: { background: 'rgba(74, 158, 110, 0.35)', color: 'var(--text-secondary)' },
   },
   passed: {
     header: { background: 'rgba(27, 42, 74, 0.08)' },
     border: { borderColor: 'rgba(27, 42, 74, 0.08)' },
     bg: { background: 'rgba(27, 42, 74, 0.08)' },
-    badge: { background: 'rgba(27, 42, 74, 0.08)', color: 'var(--danger)' },
+    badge: { background: 'rgba(27, 42, 74, 0.08)', color: 'var(--text-primary)' },
   },
   dropped: {
     header: { background: 'rgba(255, 255, 255, 0.1)' },
@@ -135,10 +135,10 @@ const TYPE_ICONS: Record<InvestorType, React.ComponentType<{ className?: string 
 const TYPE_STYLES: Record<InvestorType, React.CSSProperties> = {
   vc: { background: 'var(--accent-muted)', color: 'var(--accent)', borderColor: 'var(--accent-muted)' },
   growth: { background: 'rgba(106, 111, 165, 0.12)', color: 'var(--chart-4)', borderColor: 'var(--cat-purple-muted)' },
-  sovereign: { background: 'var(--warning-muted)', color: 'var(--warning)', borderColor: 'rgba(196, 163, 90, 0.3)' },
-  strategic: { background: 'var(--success-muted)', color: 'var(--success)', borderColor: 'rgba(74, 158, 110, 0.3)' },
-  debt: { background: 'rgba(196, 163, 90, 0.12)', color: 'var(--warning)', borderColor: 'rgba(196, 163, 90, 0.3)' },
-  family_office: { background: 'rgba(27, 42, 74, 0.08)', color: 'var(--danger)', borderColor: 'rgba(27, 42, 74, 0.10)' },
+  sovereign: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', borderColor: 'rgba(196, 163, 90, 0.3)' },
+  strategic: { background: 'var(--success-muted)', color: 'var(--text-secondary)', borderColor: 'rgba(74, 158, 110, 0.3)' },
+  debt: { background: 'rgba(196, 163, 90, 0.12)', color: 'var(--text-tertiary)', borderColor: 'rgba(196, 163, 90, 0.3)' },
+  family_office: { background: 'rgba(27, 42, 74, 0.08)', color: 'var(--text-primary)', borderColor: 'rgba(27, 42, 74, 0.10)' },
 };
 
 // ── Pipeline velocity stage weights ──────────────────────────────────
@@ -453,7 +453,7 @@ export default function PipelinePage() {
           { label: 'Active', value: String(activeCount) },
           { label: 'In DD', value: String(inDdCount) },
           { label: 'Term Sheets', value: String(termSheetCount) },
-          { label: 'Closed', value: String(closedCount), color: 'var(--success)' },
+          { label: 'Closed', value: String(closedCount), color: 'var(--text-secondary)' },
           { label: 'Pass Rate', value: `${passRate}%`, color: passedCount > 0 ? 'var(--danger)' : undefined },
           { label: 'Conversion', value: `${conversionRate}%`, color: closedCount > 0 ? 'var(--success)' : undefined },
         ];

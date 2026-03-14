@@ -29,19 +29,19 @@ function getHealthStyles(health: string): { border: string; background: string; 
       return {
         border: '1px solid var(--success)',
         background: 'var(--success-muted)',
-        color: 'var(--success)',
+        color: 'var(--text-secondary)',
       };
     case 'red':
       return {
         border: '1px solid var(--danger)',
         background: 'var(--danger-muted)',
-        color: 'var(--danger)',
+        color: 'var(--text-primary)',
       };
     default:
       return {
         border: '1px solid var(--warning)',
         background: 'var(--warning-muted)',
-        color: 'var(--warning)',
+        color: 'var(--text-tertiary)',
       };
   }
 }
@@ -49,11 +49,11 @@ function getHealthStyles(health: string): { border: string; background: string; 
 function getPriorityStyles(priority: string): React.CSSProperties {
   switch (priority) {
     case 'critical':
-      return { background: 'var(--danger-muted)', color: 'var(--danger)' };
+      return { background: 'var(--danger-muted)', color: 'var(--text-primary)' };
     case 'high':
-      return { background: 'var(--warning-muted)', color: 'var(--warning)' };
+      return { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' };
     case 'medium':
-      return { background: 'var(--warning-muted)', color: 'var(--warning)' };
+      return { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' };
     default:
       return { background: 'var(--surface-2)', color: 'var(--text-muted)' };
   }
@@ -120,7 +120,7 @@ export default function AnalysisPage() {
               style={{
                 background: 'var(--danger-muted)',
                 border: '1px solid var(--danger)',
-                color: 'var(--danger)',
+                color: 'var(--text-primary)',
               }}
             >
               {data.error}
@@ -184,7 +184,7 @@ export default function AnalysisPage() {
               {/* Story Effectiveness */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="rounded-xl p-5" style={{ border: '1px solid var(--border-default)' }}>
-                  <h3 className="text-xs font-medium mb-3" style={{ color: 'var(--success)' }}>
+                  <h3 className="text-xs font-medium mb-3" style={{ color: 'var(--text-secondary)' }}>
                     LANDING WELL
                   </h3>
                   <ul className="space-y-1.5">
@@ -197,7 +197,7 @@ export default function AnalysisPage() {
                   </ul>
                 </div>
                 <div className="rounded-xl p-5" style={{ border: '1px solid var(--border-default)' }}>
-                  <h3 className="text-xs font-medium mb-3" style={{ color: 'var(--warning)' }}>
+                  <h3 className="text-xs font-medium mb-3" style={{ color: 'var(--text-tertiary)' }}>
                     GENERATING EXCITEMENT
                   </h3>
                   <ul className="space-y-1.5">
@@ -207,7 +207,7 @@ export default function AnalysisPage() {
                   </ul>
                 </div>
                 <div className="rounded-xl p-5" style={{ border: '1px solid var(--border-default)' }}>
-                  <h3 className="text-xs font-medium mb-3" style={{ color: 'var(--danger)' }}>
+                  <h3 className="text-xs font-medium mb-3" style={{ color: 'var(--text-primary)' }}>
                     FALLING FLAT
                   </h3>
                   <ul className="space-y-1.5">
@@ -239,7 +239,7 @@ export default function AnalysisPage() {
                             className="text-xs px-1.5 py-0.5 rounded"
                             style={{
                               background: 'var(--danger-muted)',
-                              color: 'var(--danger)',
+                              color: 'var(--text-primary)',
                             }}
                           >
                             {obj.count}x
@@ -286,13 +286,13 @@ export default function AnalysisPage() {
                     background: 'var(--success-muted)',
                   }}
                 >
-                  <h2 className="text-sm font-medium mb-3" style={{ color: 'var(--success)' }}>
+                  <h2 className="text-sm font-medium mb-3" style={{ color: 'var(--text-secondary)' }}>
                     CONVERGENCE SIGNALS
                   </h2>
                   <ul className="space-y-1.5">
                     {data.patterns.convergence_signals.map((s, i) => (
                       <li key={i} className="text-sm flex gap-2" style={{ color: 'var(--text-secondary)' }}>
-                        <span className="shrink-0" style={{ color: 'var(--success)' }}>+</span> {s}
+                        <span className="shrink-0" style={{ color: 'var(--text-secondary)' }}>+</span> {s}
                       </li>
                     ))}
                   </ul>
@@ -333,7 +333,7 @@ export default function AnalysisPage() {
                       </span>
                       <span
                         className="text-xs font-medium"
-                        style={{ color: 'var(--danger)' }}
+                        style={{ color: 'var(--text-primary)' }}
                       >
                         {obj.count}x
                       </span>

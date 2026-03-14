@@ -121,8 +121,8 @@ function rateLowerIsBetter(val: number, allVals: number[]): CellRating {
 }
 
 function cellStyle(rating: CellRating): React.CSSProperties {
-  if (rating === 'good') return { color: 'var(--success)' };
-  if (rating === 'bad') return { color: 'var(--danger)' };
+  if (rating === 'good') return { color: 'var(--text-secondary)' };
+  if (rating === 'bad') return { color: 'var(--text-primary)' };
   return { color: 'var(--text-secondary)' };
 }
 
@@ -498,7 +498,7 @@ export default function TermComparePage() {
           {/* Recommendations */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <RecoCard
-              icon={<ShieldCheck className="w-5 h-5" style={{ color: 'var(--success)' }} />}
+              icon={<ShieldCheck className="w-5 h-5" style={{ color: 'var(--text-secondary)' }} />}
               label="Best for Founders"
               value={results.recommendations.best_for_founders}
               bg="var(--success-muted)"
@@ -512,7 +512,7 @@ export default function TermComparePage() {
               border="var(--accent-muted)"
             />
             <RecoCard
-              icon={<Trophy className="w-5 h-5" style={{ color: 'var(--warning)' }} />}
+              icon={<Trophy className="w-5 h-5" style={{ color: 'var(--text-tertiary)' }} />}
               label="Highest Effective Valuation"
               value={results.recommendations.highest_effective_valuation}
               bg="var(--warning-muted)"
@@ -649,7 +649,7 @@ export default function TermComparePage() {
                           return (
                             <div key={ni} className="flex items-start gap-2 text-xs" style={{ color: 'var(--text-secondary)' }}>
                               {isWarning ? (
-                                <AlertTriangle className="w-3 h-3 shrink-0 mt-0.5" style={{ color: 'var(--warning)' }} />
+                                <AlertTriangle className="w-3 h-3 shrink-0 mt-0.5" style={{ color: 'var(--text-tertiary)' }} />
                               ) : (
                                 <span className="w-1 h-1 rounded-full shrink-0 mt-1.5" style={{ background: 'var(--text-muted)' }} />
                               )}
@@ -714,7 +714,7 @@ export default function TermComparePage() {
                         style={{
                           width: `${r.ownership_percentage}%`,
                           background: 'var(--warning-muted)',
-                          color: 'var(--warning)',
+                          color: 'var(--text-tertiary)',
                           minWidth: r.ownership_percentage > 5 ? 'auto' : '0',
                         }}
                       >
@@ -766,7 +766,7 @@ function FormField({ label, children, required }: { label: string; children: Rea
   return (
     <div>
       <label className="label block mb-1" style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>
-        {label}{required && <span style={{ color: 'var(--danger)' }}> *</span>}
+        {label}{required && <span style={{ color: 'var(--text-primary)' }}> *</span>}
       </label>
       {children}
     </div>

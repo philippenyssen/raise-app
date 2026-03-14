@@ -279,7 +279,7 @@ export default function TermsPage() {
                         {score}/100
                       </div>
                       {flags.map((f, i) => (
-                        <div key={i} className="text-xs mt-1" style={{ color: 'var(--danger)' }}>{f}</div>
+                        <div key={i} className="text-xs mt-1" style={{ color: 'var(--text-primary)' }}>{f}</div>
                       ))}
                     </td>
                   );
@@ -292,10 +292,10 @@ export default function TermsPage() {
                 {sheets.map(ts => {
                   const { score, flags } = scoreSheet(ts);
                   const action = score >= 70
-                    ? { label: 'Accept & Close', color: 'var(--success)', bg: 'var(--success-muted)', advice: 'Strong terms. Move to closing.' }
+                    ? { label: 'Accept & Close', color: 'var(--text-secondary)', bg: 'var(--success-muted)', advice: 'Strong terms. Move to closing.' }
                     : score >= 50
-                    ? { label: 'Negotiate', color: 'var(--warning)', bg: 'var(--warning-muted)', advice: flags.length > 0 ? `Address: ${flags[0].split(' - ')[0]}` : 'Push for better terms on weak points.' }
-                    : { label: 'Push Back', color: 'var(--danger)', bg: 'var(--danger-muted)', advice: `${flags.length} red flag${flags.length !== 1 ? 's' : ''} — counter-propose standard terms.` };
+                    ? { label: 'Negotiate', color: 'var(--text-tertiary)', bg: 'var(--warning-muted)', advice: flags.length > 0 ? `Address: ${flags[0].split(' - ')[0]}` : 'Push for better terms on weak points.' }
+                    : { label: 'Push Back', color: 'var(--text-primary)', bg: 'var(--danger-muted)', advice: `${flags.length} red flag${flags.length !== 1 ? 's' : ''} — counter-propose standard terms.` };
                   return (
                     <td key={ts.id} className="px-4 py-3">
                       <span

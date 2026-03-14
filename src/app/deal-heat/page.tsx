@@ -111,7 +111,7 @@ export default function DealHeatPage() {
     return (
       <div className="flex-1 p-6" style={{ maxWidth: '1400px', margin: '0 auto' }}>
         <div className="card" style={{ textAlign: 'center', padding: 'var(--space-12)' }}>
-          <span style={{ color: 'var(--danger)', fontSize: 'var(--font-size-lg)' }}>
+          <span style={{ color: 'var(--text-primary)', fontSize: 'var(--font-size-lg)' }}>
             {error || 'Failed to load deal heat data'}
           </span>
         </div>

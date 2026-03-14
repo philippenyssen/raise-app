@@ -297,10 +297,10 @@ export default function SettingsPage() {
   const weightBalanced = Math.abs(weightTotal - 100) <= 1;
 
   const statusIcon = keyTest?.status === 'ok'
-    ? <CheckCircle className="w-5 h-5" style={{ color: 'var(--success)' }} />
+    ? <CheckCircle className="w-5 h-5" style={{ color: 'var(--text-secondary)' }} />
     : keyTest?.status === 'credits_issue'
-    ? <AlertTriangle className="w-5 h-5" style={{ color: 'var(--warning)' }} />
-    : <XCircle className="w-5 h-5" style={{ color: 'var(--danger)' }} />;
+    ? <AlertTriangle className="w-5 h-5" style={{ color: 'var(--text-tertiary)' }} />
+    : <XCircle className="w-5 h-5" style={{ color: 'var(--text-primary)' }} />;
 
   const statusStyle: React.CSSProperties = keyTest?.status === 'ok'
     ? { borderColor: 'color-mix(in srgb, var(--success) 40%, transparent)', background: 'var(--success-muted)' }
@@ -837,7 +837,7 @@ export default function SettingsPage() {
             {keyTest.error && (
               <div style={{
                 fontSize: 'var(--font-size-xs)',
-                color: 'var(--danger)',
+                color: 'var(--text-primary)',
                 background: 'var(--danger-muted)',
                 borderRadius: 'var(--radius-md)',
                 padding: 'var(--space-3)',
@@ -885,7 +885,7 @@ export default function SettingsPage() {
             <li><strong style={{ color: 'var(--text-secondary)' }}>claude.ai</strong> --- subscription credits for the chatbot (Claude Pro/Team)</li>
             <li><strong style={{ color: 'var(--text-secondary)' }}>console.anthropic.com</strong> --- API credits for programmatic access (what this app uses)</li>
           </ul>
-          <p>Credits on claude.ai do <strong style={{ color: 'var(--danger)' }}>NOT</strong> apply to API usage. You need credits specifically on <strong style={{ color: 'var(--text-secondary)' }}>console.anthropic.com/settings/billing</strong>.</p>
+          <p>Credits on claude.ai do <strong style={{ color: 'var(--text-primary)' }}>NOT</strong> apply to API usage. You need credits specifically on <strong style={{ color: 'var(--text-secondary)' }}>console.anthropic.com/settings/billing</strong>.</p>
           <p style={{ marginTop: 'var(--space-3)' }}>If the test above shows a credits issue:</p>
           <ol className="list-decimal list-inside space-y-1 ml-2">
             <li>Go to <strong style={{ color: 'var(--text-secondary)' }}>console.anthropic.com/settings/billing</strong></li>

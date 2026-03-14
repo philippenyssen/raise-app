@@ -71,9 +71,9 @@ interface EnrichResult {
 // ---------------------------------------------------------------------------
 
 const SOURCE_TYPE_STYLES: Record<string, { bg: string; color: string; border: string }> = {
-  free: { bg: 'var(--success-muted)', color: 'var(--success)', border: 'rgba(74, 158, 110, 0.2)' },
+  free: { bg: 'var(--success-muted)', color: 'var(--text-secondary)', border: 'rgba(74, 158, 110, 0.2)' },
   freemium: { bg: 'var(--accent-muted)', color: 'var(--accent)', border: 'rgba(27, 42, 74, 0.05)' },
-  paid: { bg: 'var(--warning-muted)', color: 'var(--warning)', border: 'rgba(196, 163, 90, 0.2)' },
+  paid: { bg: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: 'rgba(196, 163, 90, 0.2)' },
 };
 
 const CATEGORY_ICONS: Record<string, React.ComponentType<{ style?: React.CSSProperties }>> = {
@@ -281,9 +281,9 @@ export default function EnrichmentPage() {
         }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-              {lastResult.status === 'completed' ? <CheckCircle2 style={{ width: '16px', height: '16px', color: 'var(--success)' }} /> :
-               lastResult.status === 'partial' ? <AlertTriangle style={{ width: '16px', height: '16px', color: 'var(--warning)' }} /> :
-               <XCircle style={{ width: '16px', height: '16px', color: 'var(--danger)' }} />}
+              {lastResult.status === 'completed' ? <CheckCircle2 style={{ width: '16px', height: '16px', color: 'var(--text-secondary)' }} /> :
+               lastResult.status === 'partial' ? <AlertTriangle style={{ width: '16px', height: '16px', color: 'var(--text-tertiary)' }} /> :
+               <XCircle style={{ width: '16px', height: '16px', color: 'var(--text-primary)' }} />}
               <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 500 }}>
                 {lastResult.total_fields} fields enriched from {lastResult.sources_succeeded} sources
               </span>
@@ -402,7 +402,7 @@ export default function EnrichmentPage() {
                           {provider.type}
                         </span>
                         {provider.configured ? (
-                          <CheckCircle2 style={{ width: '12px', height: '12px', color: 'var(--success)' }} />
+                          <CheckCircle2 style={{ width: '12px', height: '12px', color: 'var(--text-secondary)' }} />
                         ) : (
                           <XCircle style={{ width: '12px', height: '12px', color: 'var(--text-muted)' }} />
                         )}
@@ -460,7 +460,7 @@ export default function EnrichmentPage() {
                         border: '1px solid rgba(26, 26, 46, 0.05)',
                         borderRadius: 'var(--radius-md)',
                         fontSize: 'var(--font-size-xs)',
-                        color: 'var(--warning)',
+                        color: 'var(--text-tertiary)',
                       }}>
                         Requires API key: set <code style={{ background: 'var(--surface-3)', padding: '0 4px', borderRadius: '3px' }}>{provider.api_key_env}</code> in your environment
                       </div>
@@ -491,10 +491,10 @@ export default function EnrichmentPage() {
                 <div key={job.id} className="card" style={{ padding: 'var(--space-3) var(--space-4)' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
-                      {job.status === 'completed' ? <CheckCircle2 style={{ width: '14px', height: '14px', color: 'var(--success)' }} /> :
+                      {job.status === 'completed' ? <CheckCircle2 style={{ width: '14px', height: '14px', color: 'var(--text-secondary)' }} /> :
                        job.status === 'running' ? <Loader2 style={{ width: '14px', height: '14px', color: 'var(--accent)' }} className="animate-spin" /> :
-                       job.status === 'failed' ? <XCircle style={{ width: '14px', height: '14px', color: 'var(--danger)' }} /> :
-                       <AlertTriangle style={{ width: '14px', height: '14px', color: 'var(--warning)' }} />}
+                       job.status === 'failed' ? <XCircle style={{ width: '14px', height: '14px', color: 'var(--text-primary)' }} /> :
+                       <AlertTriangle style={{ width: '14px', height: '14px', color: 'var(--text-tertiary)' }} />}
                       <div>
                         <Link
                           href={`/investors/${job.investor_id}`}
@@ -512,7 +512,7 @@ export default function EnrichmentPage() {
                         {job.completed_at ? new Date(job.completed_at).toLocaleString() : 'Running...'}
                       </span>
                       {errors.length > 0 && (
-                        <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)', marginTop: '2px' }}>
+                        <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', marginTop: '2px' }}>
                           {errors.length} error{errors.length !== 1 ? 's' : ''}
                         </div>
                       )}

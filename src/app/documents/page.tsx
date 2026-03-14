@@ -48,9 +48,9 @@ function formatTypeLabel(type: string): string {
 }
 
 const STATUS_STYLES: Record<string, React.CSSProperties> = {
-  draft: { backgroundColor: 'var(--warning-muted)', color: 'var(--warning)' },
+  draft: { backgroundColor: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
   review: { backgroundColor: 'color-mix(in srgb, var(--accent) 20%, transparent)', color: 'var(--accent)' },
-  final: { backgroundColor: 'var(--success-muted)', color: 'var(--success)' },
+  final: { backgroundColor: 'var(--success-muted)', color: 'var(--text-secondary)' },
 };
 
 const FLAG_TYPE_LABELS: Record<string, string> = {
@@ -60,8 +60,8 @@ const FLAG_TYPE_LABELS: Record<string, string> = {
 };
 
 const FLAG_TYPE_STYLE_MAP: Record<string, React.CSSProperties> = {
-  objection_response: { backgroundColor: 'color-mix(in srgb, var(--danger) 20%, transparent)', color: 'var(--danger)' },
-  number_update: { backgroundColor: 'var(--warning-muted)', color: 'var(--warning)' },
+  objection_response: { backgroundColor: 'color-mix(in srgb, var(--danger) 20%, transparent)', color: 'var(--text-primary)' },
+  number_update: { backgroundColor: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
   section_improvement: { backgroundColor: 'color-mix(in srgb, var(--accent) 20%, transparent)', color: 'var(--accent)' },
 };
 
@@ -177,7 +177,7 @@ export default function DocumentsPage() {
           <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
             {docs.length} documents
             {flags.length > 0 && (
-              <span style={{ color: 'var(--warning)', marginLeft: '0.5rem' }}>
+              <span style={{ color: 'var(--text-tertiary)', marginLeft: '0.5rem' }}>
                 {flags.length} open flag{flags.length !== 1 ? 's' : ''}
               </span>
             )}
@@ -189,7 +189,7 @@ export default function DocumentsPage() {
               onClick={() => setShowFlags(!showFlags)}
               className="px-3 py-2 rounded-lg text-sm transition-colors flex items-center gap-2"
               style={showFlags
-                ? { backgroundColor: 'var(--warning-muted)', color: 'var(--warning)', border: '1px solid color-mix(in srgb, var(--warning) 30%, transparent)' }
+                ? { backgroundColor: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: '1px solid color-mix(in srgb, var(--warning) 30%, transparent)' }
                 : { backgroundColor: hoverStates['flagsBtn'] ? 'var(--surface-3)' : 'var(--surface-2)', color: 'var(--text-tertiary)', border: '1px solid transparent' }
               }
               onMouseEnter={() => setHover('flagsBtn', true)}
@@ -222,7 +222,7 @@ export default function DocumentsPage() {
       {/* Document Flags Banner */}
       {showFlags && flags.length > 0 && (
         <div className="rounded-xl p-4 space-y-3" style={{ border: '1px solid color-mix(in srgb, var(--warning) 20%, transparent)', backgroundColor: 'color-mix(in srgb, var(--warning) 5%, transparent)' }}>
-          <h3 className="text-sm font-medium flex items-center gap-2" style={{ color: 'var(--warning)' }}>
+          <h3 className="text-sm font-medium flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
             <AlertTriangle className="w-4 h-4" />
             Open Document Flags from Meetings
           </h3>
@@ -340,7 +340,7 @@ export default function DocumentsPage() {
                             <div className="flex items-center gap-2">
                               <h3 className="font-medium truncate" style={{ color: 'var(--text-primary)' }}>{doc.title}</h3>
                               {docFlags.length > 0 && (
-                                <span className="text-[10px] px-1.5 py-0.5 rounded font-medium shrink-0" style={{ backgroundColor: 'var(--warning-muted)', color: 'var(--warning)' }}>
+                                <span className="text-[10px] px-1.5 py-0.5 rounded font-medium shrink-0" style={{ backgroundColor: 'var(--warning-muted)', color: 'var(--text-tertiary)' }}>
                                   {docFlags.length} flag{docFlags.length !== 1 ? 's' : ''}
                                 </span>
                               )}
@@ -389,7 +389,7 @@ export default function DocumentsPage() {
           {/* General flags (not tied to a specific document) */}
           {showFlags && generalFlags.length > 0 && (
             <div>
-              <h2 className="text-xs font-medium mb-3  flex items-center gap-2" style={{ color: 'var(--warning)' }}>
+              <h2 className="text-xs font-medium mb-3  flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
                 <AlertTriangle className="w-3 h-3" /> Unmatched Flags ({generalFlags.length})
               </h2>
               <p className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>

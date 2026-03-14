@@ -560,7 +560,7 @@ function AccessIntelligenceSection({ intelligence, files, expandedInvestor, onTo
       {intelligence.unreached_investors.length > 0 && (
         <div className="card" style={{ padding: 'var(--space-4)' }}>
           <div className="flex items-center gap-2 mb-3">
-            <span style={{ color: 'var(--warning)' }}>
+            <span style={{ color: 'var(--text-tertiary)' }}>
               <AlertCircle className="w-4 h-4" />
             </span>
             <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>
@@ -757,7 +757,7 @@ function InvestorAccessRow({ investor, expanded, onToggle, onLogAccess, files }:
                     key={doc.document_id}
                     style={{
                       fontSize: 'var(--font-size-xs)',
-                      color: 'var(--success)',
+                      color: 'var(--text-secondary)',
                       background: 'var(--success-muted)',
                       padding: '0.125rem var(--space-2)',
                       borderRadius: 'var(--radius-sm)',
@@ -901,7 +901,7 @@ function UnreachedInvestorRow({ investor }: {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <span style={{ color: 'var(--warning)' }}>
+      <span style={{ color: 'var(--text-tertiary)' }}>
         <AlertCircle className="w-3.5 h-3.5" />
       </span>
       <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-primary)' }}>

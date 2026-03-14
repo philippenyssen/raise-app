@@ -347,7 +347,7 @@ export default function DocumentEditorPage() {
                     className="w-full px-3 py-1.5 rounded-lg text-xs font-medium"
                     style={{
                       background: applyHovered ? 'var(--success-muted)' : 'var(--success-muted)',
-                      color: 'var(--success)',
+                      color: 'var(--text-secondary)',
                       border: '1px solid var(--success)',
                     }}
                     onMouseEnter={() => setApplyHovered(true)}
@@ -362,7 +362,7 @@ export default function DocumentEditorPage() {
                 <div className="space-y-2">
                   {((aiResult.data as { weaknesses: { claim: string; issue: string; suggestion: string }[] }).weaknesses || []).map((w, i) => (
                     <div key={i} className="text-xs pl-2" style={{ borderLeft: '2px solid var(--border-default)' }}>
-                      <p className="font-medium" style={{ color: 'var(--warning)' }}>{w.claim}</p>
+                      <p className="font-medium" style={{ color: 'var(--text-tertiary)' }}>{w.claim}</p>
                       <p className="mt-0.5" style={{ color: 'var(--text-muted)' }}>{w.issue}</p>
                       <p className="mt-0.5" style={{ color: 'var(--text-tertiary)' }}>{w.suggestion}</p>
                     </div>
@@ -373,13 +373,13 @@ export default function DocumentEditorPage() {
               {aiResult.type === 'consistency' && (
                 <div className="space-y-2">
                   {((aiResult.data as { discrepancies: { location: string; issue: string; suggestion: string }[] }).discrepancies || []).length === 0 ? (
-                    <p className="text-xs flex items-center gap-1" style={{ color: 'var(--success)' }}>
+                    <p className="text-xs flex items-center gap-1" style={{ color: 'var(--text-secondary)' }}>
                       <CheckCircle className="w-3 h-3" /> No discrepancies found
                     </p>
                   ) : (
                     ((aiResult.data as { discrepancies: { location: string; issue: string; suggestion: string }[] }).discrepancies || []).map((d, i) => (
                       <div key={i} className="text-xs pl-2" style={{ borderLeft: '2px solid var(--border-default)' }}>
-                        <p className="font-medium flex items-center gap-1" style={{ color: 'var(--danger)' }}>
+                        <p className="font-medium flex items-center gap-1" style={{ color: 'var(--text-primary)' }}>
                           <AlertTriangle className="w-3 h-3" /> {d.location}
                         </p>
                         <p className="mt-0.5" style={{ color: 'var(--text-muted)' }}>{d.issue}</p>

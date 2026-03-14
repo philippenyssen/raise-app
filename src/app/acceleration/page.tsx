@@ -61,10 +61,10 @@ interface AccelerationData {
 const TYPE_STYLES: Record<string, React.CSSProperties> = {
   vc: { background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(74,111,165,0.25)' },
   growth: { background: 'var(--cat-purple-muted)', color: 'var(--chart-4)', border: '1px solid rgba(74,74,138,0.15)' },
-  sovereign: { background: 'var(--warning-muted)', color: 'var(--warning)', border: '1px solid rgba(26, 26, 46, 0.05)' },
+  sovereign: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: '1px solid rgba(26, 26, 46, 0.05)' },
   strategic: { background: 'var(--cat-teal-muted)', color: 'var(--cat-teal)', border: '1px solid rgba(45,122,106,0.15)' },
   debt: { background: 'var(--surface-2)', color: 'var(--text-secondary)', border: '1px solid var(--border-default)' },
-  family_office: { background: 'rgba(26, 26, 46, 0.06)', color: 'var(--danger)', border: '1px solid rgba(26, 26, 46, 0.06)' },
+  family_office: { background: 'rgba(26, 26, 46, 0.06)', color: 'var(--text-primary)', border: '1px solid rgba(26, 26, 46, 0.06)' },
 };
 
 const TYPE_LABELS: Record<string, string> = {
@@ -85,15 +85,15 @@ const STATUS_STYLES: Record<string, React.CSSProperties> = {
   meeting_scheduled: { background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(74,111,165,0.25)' },
   met: { background: 'var(--cat-purple-muted)', color: 'var(--chart-4)', border: '1px solid rgba(74,74,138,0.15)' },
   engaged: { background: 'var(--cat-purple-muted)', color: 'var(--cat-purple)', border: '1px solid rgba(74,74,138,0.12)' },
-  in_dd: { background: 'var(--warning-muted)', color: 'var(--warning)', border: '1px solid rgba(26, 26, 46, 0.05)' },
-  term_sheet: { background: 'var(--success-muted)', color: 'var(--success)', border: '1px solid rgba(27, 42, 74, 0.08)' },
+  in_dd: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: '1px solid rgba(26, 26, 46, 0.05)' },
+  term_sheet: { background: 'var(--success-muted)', color: 'var(--text-secondary)', border: '1px solid rgba(27, 42, 74, 0.08)' },
 };
 
 const MOMENTUM_STYLE: Record<string, React.CSSProperties> = {
-  accelerating: { color: 'var(--success)' },
+  accelerating: { color: 'var(--text-secondary)' },
   steady: { color: 'var(--text-tertiary)' },
-  decelerating: { color: 'var(--warning)' },
-  stalled: { color: 'var(--danger)' },
+  decelerating: { color: 'var(--text-tertiary)' },
+  stalled: { color: 'var(--text-primary)' },
 };
 
 const MOMENTUM_LABELS: Record<string, string> = {
@@ -104,12 +104,12 @@ const MOMENTUM_LABELS: Record<string, string> = {
 };
 
 const TRIGGER_STYLES: Record<string, React.CSSProperties> = {
-  momentum_cliff: { background: 'var(--warning-muted)', color: 'var(--warning)', border: '1px solid rgba(26, 26, 46, 0.05)' },
-  stall_risk: { background: 'var(--danger-muted)', color: 'var(--danger)', border: '1px solid rgba(26, 26, 46, 0.06)' },
-  window_closing: { background: 'var(--warning-muted)', color: 'var(--warning)', border: '1px solid rgba(26, 26, 46, 0.05)' },
+  momentum_cliff: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: '1px solid rgba(26, 26, 46, 0.05)' },
+  stall_risk: { background: 'var(--danger-muted)', color: 'var(--text-primary)', border: '1px solid rgba(26, 26, 46, 0.06)' },
+  window_closing: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: '1px solid rgba(26, 26, 46, 0.05)' },
   catalyst_match: { background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(74,111,165,0.25)' },
   competitive_pressure: { background: 'var(--cat-purple-muted)', color: 'var(--chart-4)', border: '1px solid rgba(74,74,138,0.15)' },
-  term_sheet_ready: { background: 'var(--success-muted)', color: 'var(--success)', border: '1px solid rgba(27, 42, 74, 0.08)' },
+  term_sheet_ready: { background: 'var(--success-muted)', color: 'var(--text-secondary)', border: '1px solid rgba(27, 42, 74, 0.08)' },
 };
 
 const TRIGGER_LABELS: Record<string, string> = {
@@ -122,15 +122,15 @@ const TRIGGER_LABELS: Record<string, string> = {
 };
 
 const CONFIDENCE_STYLES: Record<string, React.CSSProperties> = {
-  high: { background: 'var(--success-muted)', color: 'var(--success)', border: '1px solid rgba(27, 42, 74, 0.08)' },
-  medium: { background: 'var(--warning-muted)', color: 'var(--warning)', border: '1px solid rgba(26, 26, 46, 0.05)' },
+  high: { background: 'var(--success-muted)', color: 'var(--text-secondary)', border: '1px solid rgba(27, 42, 74, 0.08)' },
+  medium: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: '1px solid rgba(26, 26, 46, 0.05)' },
   low: { background: 'var(--surface-2)', color: 'var(--text-tertiary)', border: '1px solid var(--border-default)' },
 };
 
 const URGENCY_STYLE: Record<string, React.CSSProperties> = {
-  immediate: { color: 'var(--danger)' },
+  immediate: { color: 'var(--text-primary)' },
   '48h': { color: 'var(--text-secondary)' },
-  this_week: { color: 'var(--warning)' },
+  this_week: { color: 'var(--text-tertiary)' },
   next_week: { color: 'var(--text-tertiary)' },
 };
 
@@ -262,7 +262,7 @@ function ActionCard({
               <Timer className="w-3 h-3" />
               {item.timeEstimate}
             </span>
-            <span style={{ fontSize: '11px', color: 'var(--success)', opacity: 0.8 }}>
+            <span style={{ fontSize: '11px', color: 'var(--text-secondary)', opacity: 0.8 }}>
               +{item.expectedLift} pts expected
             </span>
             <span style={{ fontSize: '11px', fontWeight: 500, ...(URGENCY_STYLE[item.urgency] ?? { color: 'var(--text-tertiary)' }) }}>
@@ -285,7 +285,7 @@ function ActionCard({
                 fontSize: 'var(--font-size-sm)',
                 fontWeight: 500,
                 ...(isExecuted
-                  ? { background: 'var(--success-muted)', color: 'var(--success)', border: '1px solid rgba(27, 42, 74, 0.06)' }
+                  ? { background: 'var(--success-muted)', color: 'var(--text-secondary)', border: '1px solid rgba(27, 42, 74, 0.06)' }
                   : { background: 'var(--surface-2)', color: 'var(--text-muted)', border: '1px solid var(--border-default)' }
                 ),
               }}
@@ -350,7 +350,7 @@ function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
       }}
     >
       <div className="flex items-center gap-2 mb-2">
-        <Rocket className="w-3.5 h-3.5" style={{ color: 'var(--success)' }} />
+        <Rocket className="w-3.5 h-3.5" style={{ color: 'var(--text-secondary)' }} />
         <Link
           href={`/investors/${investor.investorId}`}
           className="transition-colors"
@@ -370,7 +370,7 @@ function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
       </div>
       <div className="flex items-center gap-3 mb-2">
         <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-          Score: <span style={{ color: 'var(--success)', fontWeight: 700 }}>{investor.score}</span>/100
+          Score: <span style={{ color: 'var(--text-secondary)', fontWeight: 700 }}>{investor.score}</span>/100
         </span>
         <span style={{ fontSize: '11px', ...(MOMENTUM_STYLE[investor.momentum] ?? {}) }}>
           {MOMENTUM_LABELS[investor.momentum]}
@@ -387,7 +387,7 @@ function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
           border: '1px solid rgba(27, 42, 74, 0.06)',
           borderRadius: 'var(--radius-md)',
           fontSize: 'var(--font-size-sm)',
-          color: 'var(--success)',
+          color: 'var(--text-secondary)',
           fontWeight: 500,
         }}
         onMouseEnter={e => (e.currentTarget.style.background = 'rgba(27, 42, 74, 0.08)')}
@@ -606,7 +606,7 @@ export default function AccelerationPage() {
     return (
       <div className="space-y-6">
         <h1 className="text-2xl font-bold tracking-tight flex items-center gap-3">
-          <Zap className="w-6 h-6" style={{ color: 'var(--warning)' }} /> Deal Acceleration
+          <Zap className="w-6 h-6" style={{ color: 'var(--text-tertiary)' }} /> Deal Acceleration
         </h1>
         <div className="rounded-xl p-8 text-center space-y-3" style={{ border: '1px solid var(--border-subtle)' }}>
           <p style={{ color: 'var(--text-tertiary)' }}>Unable to load acceleration data.</p>
@@ -649,18 +649,18 @@ export default function AccelerationPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight flex items-center gap-3">
-            <Zap className="w-6 h-6" style={{ color: 'var(--warning)' }} /> Deal Acceleration
+            <Zap className="w-6 h-6" style={{ color: 'var(--text-tertiary)' }} /> Deal Acceleration
           </h1>
           <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', marginTop: '4px' }}>
             {data.summary.total} action{data.summary.total !== 1 ? 's' : ''} detected
             {data.summary.immediate > 0 && (
-              <> &middot; <span style={{ color: 'var(--danger)', fontWeight: 500 }}>{data.summary.immediate} immediate</span></>
+              <> &middot; <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{data.summary.immediate} immediate</span></>
             )}
             {data.summary.this_week > 0 && (
-              <> &middot; <span style={{ color: 'var(--warning)' }}>{data.summary.this_week} this week</span></>
+              <> &middot; <span style={{ color: 'var(--text-tertiary)' }}>{data.summary.this_week} this week</span></>
             )}
             {data.termSheetReady.length > 0 && (
-              <> &middot; <span style={{ color: 'var(--success)', fontWeight: 500 }}>{data.termSheetReady.length} term sheet ready</span></>
+              <> &middot; <span style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>{data.termSheetReady.length} term sheet ready</span></>
             )}
           </p>
         </div>
@@ -688,30 +688,30 @@ export default function AccelerationPage() {
           className="rounded-xl p-4"
           style={{ border: '1px solid rgba(26, 26, 46, 0.06)', background: 'var(--danger-muted)' }}
         >
-          <div className="flex items-center gap-2 mb-1" style={{ color: 'var(--danger)', fontSize: 'var(--font-size-sm)' }}>
+          <div className="flex items-center gap-2 mb-1" style={{ color: 'var(--text-primary)', fontSize: 'var(--font-size-sm)' }}>
             <AlertTriangle className="w-3.5 h-3.5" /> Immediate
           </div>
-          <div className="text-2xl font-bold" style={{ color: 'var(--danger)' }}>{data.summary.immediate}</div>
+          <div className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>{data.summary.immediate}</div>
           <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>need same-day attention</div>
         </div>
         <div
           className="rounded-xl p-4"
           style={{ border: '1px solid rgba(26, 26, 46, 0.05)', background: 'var(--warning-muted)' }}
         >
-          <div className="flex items-center gap-2 mb-1" style={{ color: 'var(--warning)', fontSize: 'var(--font-size-sm)' }}>
+          <div className="flex items-center gap-2 mb-1" style={{ color: 'var(--text-tertiary)', fontSize: 'var(--font-size-sm)' }}>
             <Clock className="w-3.5 h-3.5" /> This Week
           </div>
-          <div className="text-2xl font-bold" style={{ color: 'var(--warning)' }}>{data.summary.this_week}</div>
+          <div className="text-2xl font-bold" style={{ color: 'var(--text-tertiary)' }}>{data.summary.this_week}</div>
           <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>actions for next 7 days</div>
         </div>
         <div
           className="rounded-xl p-4"
           style={{ border: '1px solid rgba(27, 42, 74, 0.06)', background: 'var(--success-muted)' }}
         >
-          <div className="flex items-center gap-2 mb-1" style={{ color: 'var(--success)', fontSize: 'var(--font-size-sm)' }}>
+          <div className="flex items-center gap-2 mb-1" style={{ color: 'var(--text-secondary)', fontSize: 'var(--font-size-sm)' }}>
             <Rocket className="w-3.5 h-3.5" /> Term Sheet Ready
           </div>
-          <div className="text-2xl font-bold" style={{ color: 'var(--success)' }}>{data.termSheetReady.length}</div>
+          <div className="text-2xl font-bold" style={{ color: 'var(--text-secondary)' }}>{data.termSheetReady.length}</div>
           <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>ready for the push</div>
         </div>
       </div>
@@ -764,7 +764,7 @@ export default function AccelerationPage() {
       {/* Term Sheet Ready */}
       {data.termSheetReady.length > 0 && (activeTab === 'all' || activeTab === 'pending') && (
         <div>
-          <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--success)', textTransform: 'none' as const, letterSpacing: '0.05em' }}>
+          <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)', textTransform: 'none' as const, letterSpacing: '0.05em' }}>
             <CheckCircle className="w-3.5 h-3.5" /> Term Sheet Ready ({data.termSheetReady.length})
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3" style={{ borderLeft: '3px solid rgba(27, 42, 74, 0.06)', paddingLeft: '12px' }}>
@@ -778,7 +778,7 @@ export default function AccelerationPage() {
       {/* Immediate Actions */}
       {immediateActions.length > 0 && (
         <div>
-          <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--danger)', textTransform: 'none' as const, letterSpacing: '0.05em' }}>
+          <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-primary)', textTransform: 'none' as const, letterSpacing: '0.05em' }}>
             <AlertTriangle className="w-3.5 h-3.5" /> Immediate Actions ({immediateActions.length})
           </h2>
           <div className="space-y-2" style={{ borderLeft: '3px solid rgba(26, 26, 46, 0.06)', paddingLeft: '12px' }}>
@@ -799,7 +799,7 @@ export default function AccelerationPage() {
       {/* This Week */}
       {thisWeekActions.length > 0 && (
         <div>
-          <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--warning)', textTransform: 'none' as const, letterSpacing: '0.05em' }}>
+          <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-tertiary)', textTransform: 'none' as const, letterSpacing: '0.05em' }}>
             <Clock className="w-3.5 h-3.5" /> This Week ({thisWeekActions.length})
           </h2>
           <div className="space-y-2" style={{ borderLeft: '3px solid rgba(26, 26, 46, 0.05)', paddingLeft: '12px' }}>
@@ -839,7 +839,7 @@ export default function AccelerationPage() {
       {/* Empty state for filtered views */}
       {allFiltered.length === 0 && data.termSheetReady.length === 0 && data.atRisk.length === 0 && data.deprioritize.length === 0 && (
         <div className="rounded-xl p-8 text-center space-y-3" style={{ border: '1px solid var(--border-subtle)' }}>
-          <CheckCircle className="w-8 h-8 mx-auto" style={{ color: 'var(--success)' }} />
+          <CheckCircle className="w-8 h-8 mx-auto" style={{ color: 'var(--text-secondary)' }} />
           <p style={{ color: 'var(--text-tertiary)' }}>No acceleration actions detected.</p>
           <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>All investors are progressing normally. Check back when new meetings are logged.</p>
         </div>

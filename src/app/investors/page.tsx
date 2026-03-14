@@ -21,10 +21,10 @@ const STATUS_STYLES: Record<string, { background: string; color: string }> = {
   meeting_scheduled: { background: 'var(--accent-muted)', color: 'var(--accent)' },
   met: { background: 'rgba(27, 42, 74, 0.10)', color: 'var(--accent)' },
   engaged: { background: 'rgba(106, 111, 165, 0.25)', color: 'var(--chart-4)' },
-  in_dd: { background: 'var(--warning-muted)', color: 'var(--warning)' },
-  term_sheet: { background: 'var(--success-muted)', color: 'var(--success)' },
+  in_dd: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
+  term_sheet: { background: 'var(--success-muted)', color: 'var(--text-secondary)' },
   closed: { background: 'rgba(16, 185, 129, 0.25)', color: '#4a9e6e' },
-  passed: { background: 'var(--danger-muted)', color: 'var(--danger)' },
+  passed: { background: 'var(--danger-muted)', color: 'var(--text-primary)' },
   dropped: { background: 'var(--surface-2)', color: 'var(--text-muted)' },
 };
 
@@ -45,10 +45,10 @@ function daysSince(dateStr: string | null | undefined): number | null {
 
 function stalenessStyle(days: number | null): { color: string; label: string } {
   if (days === null) return { color: 'var(--text-muted)', label: 'Never' };
-  if (days <= 3) return { color: 'var(--success)', label: days === 0 ? 'Today' : days === 1 ? '1d ago' : `${days}d ago` };
+  if (days <= 3) return { color: 'var(--text-secondary)', label: days === 0 ? 'Today' : days === 1 ? '1d ago' : `${days}d ago` };
   if (days <= 7) return { color: 'var(--text-secondary)', label: `${days}d ago` };
-  if (days <= 14) return { color: 'var(--warning)', label: `${days}d ago` };
-  return { color: 'var(--danger)', label: `${days}d ago` };
+  if (days <= 14) return { color: 'var(--text-tertiary)', label: `${days}d ago` };
+  return { color: 'var(--text-primary)', label: `${days}d ago` };
 }
 
 function computeCompleteness(inv: Investor): number {

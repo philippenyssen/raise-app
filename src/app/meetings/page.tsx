@@ -21,9 +21,9 @@ function getStatusBadgeClass(status: string): string {
 function getObjectionStyle(severity: string): React.CSSProperties {
   switch (severity) {
     case 'showstopper':
-      return { background: 'var(--danger-muted)', color: 'var(--danger)' };
+      return { background: 'var(--danger-muted)', color: 'var(--text-primary)' };
     case 'significant':
-      return { background: 'var(--warning-muted)', color: 'var(--warning)' };
+      return { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' };
     default:
       return { background: 'var(--surface-3)', color: 'var(--text-tertiary)' };
   }
@@ -169,7 +169,7 @@ function MeetingOutcomeSection({
         }}
       >
         <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--success)' }}>
+          <div className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-secondary)' }}>
             <CheckCircle2 className="w-3.5 h-3.5" />
             Outcome Recorded
           </div>
@@ -215,7 +215,7 @@ function MeetingOutcomeSection({
             <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '4px' }}>Objections Addressed</div>
             <div className="flex flex-wrap gap-1">
               {existingObjections.map((o: string, i: number) => (
-                <span key={i} style={{ fontSize: 'var(--font-size-xs)', padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--success-muted)', color: 'var(--success)' }}>
+                <span key={i} style={{ fontSize: 'var(--font-size-xs)', padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--success-muted)', color: 'var(--text-secondary)' }}>
                   {o}
                 </span>
               ))}
@@ -228,7 +228,7 @@ function MeetingOutcomeSection({
             <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '4px' }}>Competitors Mentioned</div>
             <div className="flex flex-wrap gap-1">
               {existingMentions.map((c: string, i: number) => (
-                <span key={i} style={{ fontSize: 'var(--font-size-xs)', padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--warning-muted)', color: 'var(--warning)' }}>
+                <span key={i} style={{ fontSize: 'var(--font-size-xs)', padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--warning-muted)', color: 'var(--text-tertiary)' }}>
                   {c}
                 </span>
               ))}
@@ -286,7 +286,7 @@ function MeetingOutcomeSection({
             <span
               key={i}
               className="flex items-center gap-1"
-              style={{ fontSize: 'var(--font-size-xs)', padding: '2px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--success-muted)', color: 'var(--success)' }}
+              style={{ fontSize: 'var(--font-size-xs)', padding: '2px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--success-muted)', color: 'var(--text-secondary)' }}
             >
               {o}
               <button
@@ -321,7 +321,7 @@ function MeetingOutcomeSection({
             <span
               key={i}
               className="flex items-center gap-1"
-              style={{ fontSize: 'var(--font-size-xs)', padding: '2px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--warning-muted)', color: 'var(--warning)' }}
+              style={{ fontSize: 'var(--font-size-xs)', padding: '2px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--warning-muted)', color: 'var(--text-tertiary)' }}
             >
               {c}
               <button
@@ -483,7 +483,7 @@ export default function MeetingsPage() {
         </div>
         <div className="card-metric metric-warning">
           <div className="metric-label">Objections</div>
-          <div className="metric-value" style={{ marginTop: '2px', color: 'var(--warning)' }}>{totalObjections}</div>
+          <div className="metric-value" style={{ marginTop: '2px', color: 'var(--text-tertiary)' }}>{totalObjections}</div>
         </div>
         <div className="card-metric metric-success">
           <div className="metric-label">Unique Investors</div>
@@ -559,8 +559,8 @@ export default function MeetingsPage() {
             const hasOutcome = m.outcome_rating !== null && m.outcome_rating !== undefined;
             const stats = investorStats[m.investor_id];
             const trendConfig = {
-              up: { icon: TrendingUp, color: 'var(--success)', label: 'Rising' },
-              down: { icon: TrendingDown, color: 'var(--danger)', label: 'Falling' },
+              up: { icon: TrendingUp, color: 'var(--text-secondary)', label: 'Rising' },
+              down: { icon: TrendingDown, color: 'var(--text-primary)', label: 'Falling' },
               flat: { icon: Minus, color: 'var(--text-muted)', label: 'Flat' },
               new: { icon: Hash, color: 'var(--text-muted)', label: 'First' },
             };
@@ -642,10 +642,10 @@ export default function MeetingsPage() {
                     <span style={{ color: 'var(--text-tertiary)' }}>{questions.length} questions</span>
                   )}
                   {objections.length > 0 && (
-                    <span style={{ color: 'var(--danger)', opacity: 0.7 }}>{objections.length} objections</span>
+                    <span style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{objections.length} objections</span>
                   )}
                   {m.competitive_intel && (
-                    <span style={{ color: 'var(--warning)', opacity: 0.7 }}>Intel captured</span>
+                    <span style={{ color: 'var(--text-tertiary)', opacity: 0.7 }}>Intel captured</span>
                   )}
                   {m.next_steps && (
                     <span style={{ color: 'var(--accent)', opacity: 0.7 }}>Next steps defined</span>

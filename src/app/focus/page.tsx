@@ -112,10 +112,10 @@ interface AccelerationData {
 const TYPE_STYLES: Record<string, React.CSSProperties> = {
   vc: { background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(74,111,165,0.25)' },
   growth: { background: 'var(--cat-purple-muted)', color: 'var(--chart-4)', border: '1px solid rgba(74,74,138,0.15)' },
-  sovereign: { background: 'var(--warning-muted)', color: 'var(--warning)', border: '1px solid rgba(26, 26, 46, 0.05)' },
+  sovereign: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: '1px solid rgba(26, 26, 46, 0.05)' },
   strategic: { background: 'var(--cat-teal-muted)', color: 'var(--cat-teal)', border: '1px solid rgba(45,122,106,0.15)' },
   debt: { background: 'var(--surface-2)', color: 'var(--text-secondary)', border: '1px solid var(--border-default)' },
-  family_office: { background: 'rgba(26, 26, 46, 0.06)', color: 'var(--danger)', border: '1px solid rgba(26, 26, 46, 0.06)' },
+  family_office: { background: 'rgba(26, 26, 46, 0.06)', color: 'var(--text-primary)', border: '1px solid rgba(26, 26, 46, 0.06)' },
 };
 
 const TYPE_LABELS: Record<string, string> = {
@@ -136,15 +136,15 @@ const STATUS_STYLES: Record<string, React.CSSProperties> = {
   meeting_scheduled: { background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(74,111,165,0.25)' },
   met: { background: 'var(--cat-purple-muted)', color: 'var(--chart-4)', border: '1px solid rgba(74,74,138,0.15)' },
   engaged: { background: 'var(--cat-purple-muted)', color: 'var(--cat-purple)', border: '1px solid rgba(74,74,138,0.12)' },
-  in_dd: { background: 'var(--warning-muted)', color: 'var(--warning)', border: '1px solid rgba(26, 26, 46, 0.05)' },
-  term_sheet: { background: 'var(--success-muted)', color: 'var(--success)', border: '1px solid rgba(27, 42, 74, 0.08)' },
+  in_dd: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: '1px solid rgba(26, 26, 46, 0.05)' },
+  term_sheet: { background: 'var(--success-muted)', color: 'var(--text-secondary)', border: '1px solid rgba(27, 42, 74, 0.08)' },
 };
 
 const MOMENTUM_STYLE: Record<string, React.CSSProperties> = {
-  accelerating: { color: 'var(--success)' },
+  accelerating: { color: 'var(--text-secondary)' },
   steady: { color: 'var(--text-tertiary)' },
-  decelerating: { color: 'var(--warning)' },
-  stalled: { color: 'var(--danger)' },
+  decelerating: { color: 'var(--text-tertiary)' },
+  stalled: { color: 'var(--text-primary)' },
 };
 
 const MOMENTUM_LABELS: Record<string, string> = {
@@ -155,12 +155,12 @@ const MOMENTUM_LABELS: Record<string, string> = {
 };
 
 const TRIGGER_STYLES: Record<string, React.CSSProperties> = {
-  momentum_cliff: { background: 'var(--warning-muted)', color: 'var(--warning)', border: '1px solid rgba(26, 26, 46, 0.05)' },
-  stall_risk: { background: 'var(--danger-muted)', color: 'var(--danger)', border: '1px solid rgba(26, 26, 46, 0.06)' },
-  window_closing: { background: 'var(--warning-muted)', color: 'var(--warning)', border: '1px solid rgba(26, 26, 46, 0.05)' },
+  momentum_cliff: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: '1px solid rgba(26, 26, 46, 0.05)' },
+  stall_risk: { background: 'var(--danger-muted)', color: 'var(--text-primary)', border: '1px solid rgba(26, 26, 46, 0.06)' },
+  window_closing: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: '1px solid rgba(26, 26, 46, 0.05)' },
   catalyst_match: { background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(74,111,165,0.25)' },
   competitive_pressure: { background: 'var(--cat-purple-muted)', color: 'var(--chart-4)', border: '1px solid rgba(74,74,138,0.15)' },
-  term_sheet_ready: { background: 'var(--success-muted)', color: 'var(--success)', border: '1px solid rgba(27, 42, 74, 0.08)' },
+  term_sheet_ready: { background: 'var(--success-muted)', color: 'var(--text-secondary)', border: '1px solid rgba(27, 42, 74, 0.08)' },
 };
 
 const TRIGGER_LABELS: Record<string, string> = {
@@ -173,15 +173,15 @@ const TRIGGER_LABELS: Record<string, string> = {
 };
 
 const CONFIDENCE_STYLES: Record<string, React.CSSProperties> = {
-  high: { background: 'var(--success-muted)', color: 'var(--success)', border: '1px solid rgba(27, 42, 74, 0.08)' },
-  medium: { background: 'var(--warning-muted)', color: 'var(--warning)', border: '1px solid rgba(26, 26, 46, 0.05)' },
+  high: { background: 'var(--success-muted)', color: 'var(--text-secondary)', border: '1px solid rgba(27, 42, 74, 0.08)' },
+  medium: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: '1px solid rgba(26, 26, 46, 0.05)' },
   low: { background: 'var(--surface-2)', color: 'var(--text-tertiary)', border: '1px solid var(--border-default)' },
 };
 
 const URGENCY_STYLE: Record<string, React.CSSProperties> = {
-  immediate: { color: 'var(--danger)' },
+  immediate: { color: 'var(--text-primary)' },
   '48h': { color: 'var(--text-secondary)' },
-  this_week: { color: 'var(--warning)' },
+  this_week: { color: 'var(--text-tertiary)' },
   next_week: { color: 'var(--text-tertiary)' },
 };
 
@@ -420,7 +420,7 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimensionData[] }) 
           {topDimensions.length > 0 && (
             <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 'var(--space-2)' }}>
               <div className="flex items-center gap-1 mb-1">
-                <span style={{ color: 'var(--success)' }}><Star className="w-3 h-3" /></span>
+                <span style={{ color: 'var(--text-secondary)' }}><Star className="w-3 h-3" /></span>
                 <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'none', letterSpacing: '0.06em' }}>
                   Strengths
                 </span>
@@ -447,7 +447,7 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimensionData[] }) 
           {weakest && weakest.score < 70 && (
             <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 'var(--space-2)' }}>
               <div className="flex items-center gap-1 mb-1">
-                <span style={{ color: 'var(--warning)' }}><Eye className="w-3 h-3" /></span>
+                <span style={{ color: 'var(--text-tertiary)' }}><Eye className="w-3 h-3" /></span>
                 <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'none', letterSpacing: '0.06em' }}>
                   Needs Attention
                 </span>
@@ -595,7 +595,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
 
               {/* Pending tasks */}
               {item.pendingTaskCount > 0 && (
-                <span className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--warning)' }}>
+                <span className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
                   <AlertTriangle className="w-3 h-3" />
                   {item.pendingTaskCount} task{item.pendingTaskCount !== 1 ? 's' : ''}
                 </span>
@@ -603,7 +603,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
 
               {/* Open flags */}
               {item.openFlagCount > 0 && (
-                <span className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)' }}>
+                <span className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)' }}>
                   <Flag className="w-3 h-3" />
                   {item.openFlagCount} flag{item.openFlagCount !== 1 ? 's' : ''}
                 </span>
@@ -613,10 +613,10 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
             {/* Top objection — the #1 blocker for this deal */}
             {item.topObjectionTopic && (
               <div className="flex items-center gap-1.5" style={{ marginTop: '6px' }}>
-                <span style={{ color: 'var(--warning)' }}><MessageSquare className="w-3 h-3" /></span>
+                <span style={{ color: 'var(--text-tertiary)' }}><MessageSquare className="w-3 h-3" /></span>
                 <span style={{
                   fontSize: '11px',
-                  color: 'var(--warning)',
+                  color: 'var(--text-tertiary)',
                   fontWeight: 500,
                   fontStyle: 'italic',
                 }}>
@@ -678,10 +678,10 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
 
         {/* Impact + Risk row */}
         <div className="flex items-start gap-4 ml-11" style={{ marginTop: '10px' }}>
-          <p className="flex-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--success)', opacity: 0.85, lineHeight: 1.6 }}>
+          <p className="flex-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', opacity: 0.85, lineHeight: 1.6 }}>
             {item.expectedImpact}
           </p>
-          <p className="flex-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)', opacity: 0.75, lineHeight: 1.6 }}>
+          <p className="flex-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', opacity: 0.75, lineHeight: 1.6 }}>
             {item.riskIfIgnored}
           </p>
         </div>
@@ -716,7 +716,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
               <p style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'none', letterSpacing: '0.08em', marginBottom: '4px' }}>Unresolved Objections</p>
               <div className="space-y-1">
                 {item.unresolvedObjections.map((obj, i) => (
-                  <div key={i} className="flex items-start gap-1.5" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)', opacity: 0.85 }}>
+                  <div key={i} className="flex items-start gap-1.5" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', opacity: 0.85 }}>
                     <AlertTriangle className="w-3 h-3 shrink-0 mt-0.5" />
                     {obj}
                   </div>
@@ -755,7 +755,7 @@ function QuickWinCard({ item }: { item: FocusItem }) {
       style={{ padding: 'var(--space-4)' }}
     >
       <div className="flex items-center gap-2 mb-2">
-        <Zap className="w-3.5 h-3.5" style={{ color: 'var(--warning)' }} />
+        <Zap className="w-3.5 h-3.5" style={{ color: 'var(--text-tertiary)' }} />
         <Link
           href={`/investors/${item.investorId}`}
           className="transition-colors"
@@ -770,9 +770,9 @@ function QuickWinCard({ item }: { item: FocusItem }) {
       {item.unresolvedObjections.length > 0 ? (
         <>
           <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '4px' }}>Blocker:</p>
-          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)', opacity: 0.85, marginBottom: '8px' }}>{item.unresolvedObjections[0]}</p>
+          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', opacity: 0.85, marginBottom: '8px' }}>{item.unresolvedObjections[0]}</p>
           <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '4px' }}>Resolution:</p>
-          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--success)', opacity: 0.85 }}>{item.recommendedAction.substring(0, 120)}</p>
+          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', opacity: 0.85 }}>{item.recommendedAction.substring(0, 120)}</p>
         </>
       ) : (
         <>
@@ -822,7 +822,7 @@ function StaleAlertCard({ item, onReengage }: { item: FocusItem; onReengage: (it
     >
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          <AlertTriangle className="w-3.5 h-3.5" style={{ color: 'var(--danger)' }} />
+          <AlertTriangle className="w-3.5 h-3.5" style={{ color: 'var(--text-primary)' }} />
           <Link
             href={`/investors/${item.investorId}`}
             className="transition-colors"
@@ -836,7 +836,7 @@ function StaleAlertCard({ item, onReengage }: { item: FocusItem; onReengage: (it
             {STATUS_LABELS[item.status]}
           </span>
         </div>
-        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)', fontWeight: 700 }}>
+        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', fontWeight: 700 }}>
           {item.daysSinceLastMeeting !== null ? `${item.daysSinceLastMeeting}d` : '--'}
         </span>
       </div>
@@ -909,7 +909,7 @@ function AccelerationCard({
               <Timer className="w-3 h-3" />
               {item.timeEstimate}
             </span>
-            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--success)', opacity: 0.85 }}>
+            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', opacity: 0.85 }}>
               +{item.expectedLift} pts expected
             </span>
             <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, ...(URGENCY_STYLE[item.urgency] ?? { color: 'var(--text-tertiary)' }) }}>
@@ -947,7 +947,7 @@ function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
       }}
     >
       <div className="flex items-center gap-2 mb-2">
-        <Rocket className="w-3.5 h-3.5" style={{ color: 'var(--success)' }} />
+        <Rocket className="w-3.5 h-3.5" style={{ color: 'var(--text-secondary)' }} />
         <Link
           href={`/investors/${investor.investorId}`}
           className="transition-colors"
@@ -964,7 +964,7 @@ function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
       </div>
       <div className="flex items-center gap-3 mb-2">
         <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-          Score: <span style={{ color: 'var(--success)', fontWeight: 700 }}>{investor.score}</span>/100
+          Score: <span style={{ color: 'var(--text-secondary)', fontWeight: 700 }}>{investor.score}</span>/100
         </span>
         <span style={{ fontSize: 'var(--font-size-xs)', ...(MOMENTUM_STYLE[investor.momentum] ?? {}) }}>
           {MOMENTUM_LABELS[investor.momentum]}
@@ -1003,7 +1003,7 @@ function AtRiskCard({ investor }: { investor: InvestorSummary }) {
       }}
     >
       <div className="flex items-center gap-2 mb-2">
-        <Shield className="w-3.5 h-3.5" style={{ color: 'var(--danger)' }} />
+        <Shield className="w-3.5 h-3.5" style={{ color: 'var(--text-primary)' }} />
         <Link
           href={`/investors/${investor.investorId}`}
           className="transition-colors"
@@ -1017,7 +1017,7 @@ function AtRiskCard({ investor }: { investor: InvestorSummary }) {
       </div>
       <div className="flex items-center gap-3 mb-2">
         <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-          Score: <span style={{ color: 'var(--danger)', fontWeight: 700 }}>{investor.score}</span>/100
+          Score: <span style={{ color: 'var(--text-primary)', fontWeight: 700 }}>{investor.score}</span>/100
         </span>
         <span style={{ fontSize: 'var(--font-size-xs)', ...(MOMENTUM_STYLE[investor.momentum] ?? {}) }}>
           {MOMENTUM_LABELS[investor.momentum]}
@@ -1029,7 +1029,7 @@ function AtRiskCard({ investor }: { investor: InvestorSummary }) {
         <Link
           href={`/meetings/new?investor=${investor.investorId}`}
           className="btn btn-sm flex-1 flex items-center justify-center gap-1"
-          style={{ fontSize: '11px', background: 'rgba(26, 26, 46, 0.06)', color: 'var(--danger)', border: '1px solid rgba(26, 26, 46, 0.06)' }}
+          style={{ fontSize: '11px', background: 'rgba(26, 26, 46, 0.06)', color: 'var(--text-primary)', border: '1px solid rgba(26, 26, 46, 0.06)' }}
         >
           Re-engage
         </Link>
@@ -1276,7 +1276,7 @@ export default function FocusPage() {
           {/* Term Sheet Ready */}
           {accelData.termSheetReady.length > 0 && (
             <div>
-              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--success)', textTransform: 'none', letterSpacing: '0.08em' }}>
+              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-secondary)', textTransform: 'none', letterSpacing: '0.08em' }}>
                 <CheckCircle className="w-3.5 h-3.5" /> Term Sheet Ready ({accelData.termSheetReady.length})
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -1290,7 +1290,7 @@ export default function FocusPage() {
           {/* Immediate Actions */}
           {immediateActions.length > 0 && (
             <div>
-              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--danger)', textTransform: 'none', letterSpacing: '0.08em' }}>
+              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-primary)', textTransform: 'none', letterSpacing: '0.08em' }}>
                 <AlertTriangle className="w-3.5 h-3.5" /> Immediate ({immediateActions.length})
               </h3>
               <div className="space-y-2">
@@ -1309,7 +1309,7 @@ export default function FocusPage() {
           {/* This Week Actions */}
           {thisWeekActions.length > 0 && (
             <div>
-              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--warning)', textTransform: 'none', letterSpacing: '0.08em' }}>
+              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-tertiary)', textTransform: 'none', letterSpacing: '0.08em' }}>
                 <Clock className="w-3.5 h-3.5" /> This Week ({thisWeekActions.length})
               </h3>
               <div className="space-y-2">
@@ -1328,7 +1328,7 @@ export default function FocusPage() {
           {/* At Risk */}
           {accelData.atRisk.length > 0 && (
             <div>
-              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--danger)', textTransform: 'none', letterSpacing: '0.08em' }}>
+              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-primary)', textTransform: 'none', letterSpacing: '0.08em' }}>
                 <Shield className="w-3.5 h-3.5" /> At Risk ({accelData.atRisk.length})
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -1364,7 +1364,7 @@ export default function FocusPage() {
           {quickWins.length > 0 && (
             <div>
               <h2 className="section-title flex items-center gap-2 mb-3">
-                <Zap className="w-4 h-4" style={{ color: 'var(--warning)' }} /> Quick Wins
+                <Zap className="w-4 h-4" style={{ color: 'var(--text-tertiary)' }} /> Quick Wins
               </h2>
               <div className="space-y-2">
                 {quickWins.map(item => (
@@ -1377,7 +1377,7 @@ export default function FocusPage() {
           {/* Stale Alerts */}
           {staleAlerts.length > 0 && (
             <div>
-              <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--danger)', textTransform: 'none', letterSpacing: '0.08em' }}>
+              <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-primary)', textTransform: 'none', letterSpacing: '0.08em' }}>
                 <AlertTriangle className="w-4 h-4" /> Stale Alerts
               </h2>
               <div className="space-y-2">
@@ -1391,7 +1391,7 @@ export default function FocusPage() {
           {/* If no quick wins or stale alerts */}
           {quickWins.length === 0 && staleAlerts.length === 0 && (
             <div className="card" style={{ padding: 'var(--space-6)', textAlign: 'center' }}>
-              <CheckCircle className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--success)' }} />
+              <CheckCircle className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--text-secondary)' }} />
               <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' }}>All caught up</p>
               <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '4px' }}>No quick wins or stale conversations to flag right now.</p>
             </div>

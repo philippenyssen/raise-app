@@ -179,7 +179,7 @@ export default function ForecastPage() {
     return (
       <div className="flex-1 p-6" style={{ maxWidth: '1400px', margin: '0 auto' }}>
         <div className="card" style={{ textAlign: 'center', padding: 'var(--space-12)' }}>
-          <span style={{ color: 'var(--danger)', fontSize: 'var(--font-size-lg)' }}>
+          <span style={{ color: 'var(--text-primary)', fontSize: 'var(--font-size-lg)' }}>
             {error || 'Failed to load forecast data'}
           </span>
         </div>
@@ -335,7 +335,7 @@ export default function ForecastPage() {
           </div>
           {hasExclusions && whatIf && (
             <div className="flex items-center gap-2">
-              <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'var(--danger)', fontVariantNumeric: 'tabular-nums' }}>
+              <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>
                 -{formatAmount(whatIf.excludedCapital, currency)} ({whatIf.excludedCount} excluded)
               </span>
             </div>
@@ -422,9 +422,9 @@ export default function ForecastPage() {
             </span>
           </div>
           {[
-            { label: 'High', count: distribution.high, color: 'var(--success)', bg: 'var(--success-muted)' },
-            { label: 'Medium', count: distribution.medium, color: 'var(--warning)', bg: 'var(--warning-muted)' },
-            { label: 'Low', count: distribution.low, color: 'var(--danger)', bg: 'var(--danger-muted)' },
+            { label: 'High', count: distribution.high, color: 'var(--text-secondary)', bg: 'var(--success-muted)' },
+            { label: 'Medium', count: distribution.medium, color: 'var(--text-tertiary)', bg: 'var(--warning-muted)' },
+            { label: 'Low', count: distribution.low, color: 'var(--text-primary)', bg: 'var(--danger-muted)' },
           ].map(({ label, count, color, bg }) => (
             <div key={label} style={{ marginBottom: 'var(--space-3)' }}>
               <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-1)' }}>
@@ -452,7 +452,7 @@ export default function ForecastPage() {
         {/* Critical Path */}
         <div className="card" style={{ padding: 'var(--space-5)' }}>
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-4)' }}>
-            <span style={{ color: 'var(--warning)' }}>
+            <span style={{ color: 'var(--text-tertiary)' }}>
               <Zap className="w-4 h-4" />
             </span>
             <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>
@@ -487,7 +487,7 @@ export default function ForecastPage() {
                         height: '18px',
                         borderRadius: '50%',
                         background: 'var(--warning-muted)',
-                        color: 'var(--warning)',
+                        color: 'var(--text-tertiary)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -523,7 +523,7 @@ export default function ForecastPage() {
                           height: '24px',
                           borderRadius: 'var(--radius-sm)',
                           background: 'var(--warning-muted)',
-                          color: 'var(--warning)',
+                          color: 'var(--text-tertiary)',
                           textDecoration: 'none',
                         }}
                         onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(26, 26, 46, 0.05)'; }}
@@ -542,7 +542,7 @@ export default function ForecastPage() {
         {/* Risk Factors */}
         <div className="card" style={{ padding: 'var(--space-5)' }}>
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-4)' }}>
-            <span style={{ color: 'var(--danger)' }}>
+            <span style={{ color: 'var(--text-primary)' }}>
               <AlertTriangle className="w-4 h-4" />
             </span>
             <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>
@@ -551,10 +551,10 @@ export default function ForecastPage() {
           </div>
           {forecast.riskFactors.length === 0 ? (
             <div className="flex items-center gap-2" style={{ padding: 'var(--space-3)', background: 'var(--success-muted)', borderRadius: 'var(--radius-sm)' }}>
-              <span style={{ color: 'var(--success)' }}>
+              <span style={{ color: 'var(--text-secondary)' }}>
                 <CheckCircle2 className="w-3.5 h-3.5" />
               </span>
-              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--success)' }}>
+              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
                 No significant risks identified
               </span>
             </div>
@@ -585,13 +585,13 @@ export default function ForecastPage() {
                     onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(26, 26, 46, 0.06)'; }}
                     onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--danger-muted)'; }}
                   >
-                    <span style={{ color: 'var(--danger)', marginTop: '2px', flexShrink: 0 }}>
+                    <span style={{ color: 'var(--text-primary)', marginTop: '2px', flexShrink: 0 }}>
                       <AlertTriangle className="w-3 h-3" />
                     </span>
-                    <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)', lineHeight: 1.5, flex: 1 }}>
+                    <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', lineHeight: 1.5, flex: 1 }}>
                       {risk}
                     </span>
-                    <span style={{ color: 'var(--danger)', marginTop: '2px', flexShrink: 0, opacity: 0.6 }}>
+                    <span style={{ color: 'var(--text-primary)', marginTop: '2px', flexShrink: 0, opacity: 0.6 }}>
                       <ExternalLink className="w-3 h-3" />
                     </span>
                   </Link>
@@ -726,7 +726,7 @@ export default function ForecastPage() {
                                   {inv.investorName}
                                 </span>
                                 {isCritical && (
-                                  <span style={{ color: 'var(--warning)' }}>
+                                  <span style={{ color: 'var(--text-tertiary)' }}>
                                     <Zap className="w-3 h-3" />
                                   </span>
                                 )}
@@ -867,9 +867,9 @@ export default function ForecastPage() {
       {/* Confidence Groups */}
       <div className="grid grid-cols-3 gap-4" style={{ marginBottom: 'var(--space-6)' }}>
         {[
-          { label: 'High Confidence', investors: highConfInvestors, color: 'var(--success)', bg: 'var(--success-muted)', icon: CheckCircle2 },
-          { label: 'Medium Confidence', investors: medConfInvestors, color: 'var(--warning)', bg: 'var(--warning-muted)', icon: Clock },
-          { label: 'Low Confidence', investors: lowConfInvestors, color: 'var(--danger)', bg: 'var(--danger-muted)', icon: AlertTriangle },
+          { label: 'High Confidence', investors: highConfInvestors, color: 'var(--text-secondary)', bg: 'var(--success-muted)', icon: CheckCircle2 },
+          { label: 'Medium Confidence', investors: medConfInvestors, color: 'var(--text-tertiary)', bg: 'var(--warning-muted)', icon: Clock },
+          { label: 'Low Confidence', investors: lowConfInvestors, color: 'var(--text-primary)', bg: 'var(--danger-muted)', icon: AlertTriangle },
         ].map(({ label, investors, color, bg, icon: Icon }) => (
           <div key={label} className="card" style={{ padding: 'var(--space-4)' }}>
             <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
