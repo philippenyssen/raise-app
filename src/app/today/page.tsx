@@ -7,7 +7,7 @@ import {
   Sunrise, Calendar, Clock, ArrowRight, ChevronRight, RefreshCw,
   Mail, UserPlus, FileText, AlertTriangle, Zap, TrendingUp,
   TrendingDown, Minus, Users, Shield,
-  CheckCircle, ExternalLink,
+  CheckCircle, ExternalLink, Sparkles,
 } from 'lucide-react';
 
 // ---------------------------------------------------------------------------
@@ -298,6 +298,7 @@ function AlertCard({ alert }: { alert: BriefingAlert }) {
 export default function TodayPage() {
   const { toast } = useToast();
   const [data, setData] = useState<BriefingData | null>(null);
+  const [insight, setInsight] = useState<{ title: string; detail: string; priority: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [stalenessMinutes, setStalenessMinutes] = useState(0);
@@ -317,6 +318,20 @@ export default function TodayPage() {
       }
     } catch {
       if (!silent) toast('Failed to load briefing', 'error');
+    }
+
+    // Non-blocking: fetch top strategic insight
+    try {
+      const stratRes = await fetch('/api/intelligence/strategic');
+      if (stratRes.ok) {
+        const stratData = await stratRes.json();
+        const rec = stratData.recommendations?.[0];
+        if (rec) {
+          setInsight({ title: rec.title, detail: rec.rationale ?? rec.action, priority: String(rec.priority) });
+        }
+      }
+    } catch {
+      // Non-blocking — don't surface errors for insight fetch
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -729,6 +744,61 @@ export default function TodayPage() {
           </Link>
         </div>
       </div>
+
+      {/* ----------------------------------------------------------------- */}
+      {/* 7. AI Insight                                                      */}
+      {/* ----------------------------------------------------------------- */}
+      {insight && (
+        <div
+          style={{
+            background: 'rgba(168,85,247,0.08)',
+            border: '1px solid rgba(168,85,247,0.2)',
+            borderRadius: 'var(--radius-lg)',
+            padding: 'var(--space-4)',
+          }}
+        >
+          <div className="flex items-start gap-3">
+            <div
+              className="flex items-center justify-center shrink-0"
+              style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: 'var(--radius-md)',
+                background: 'rgba(168,85,247,0.15)',
+              }}
+            >
+              <span style={{ color: 'rgba(168,85,247,0.9)', display: 'flex' }}>
+                <Sparkles className="w-4 h-4" />
+              </span>
+            </div>
+
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2" style={{ marginBottom: '4px' }}>
+                <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'rgba(168,85,247,0.9)', textTransform: 'uppercase' as const, letterSpacing: '0.05em' }}>
+                  AI Insight
+                </span>
+              </div>
+              <p style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.4 }}>
+                {insight.title}
+              </p>
+              <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', marginTop: '4px', lineHeight: 1.5 }}>
+                {insight.detail}
+              </p>
+            </div>
+
+            <Link
+              href="/intelligence"
+              className="btn btn-ghost btn-sm shrink-0"
+              style={{ color: 'rgba(168,85,247,0.8)' }}
+              onMouseEnter={e => (e.currentTarget.style.color = 'rgba(168,85,247,1)')}
+              onMouseLeave={e => (e.currentTarget.style.color = 'rgba(168,85,247,0.8)')}
+            >
+              See more
+              <span style={{ display: 'flex' }}><ChevronRight className="w-3.5 h-3.5" /></span>
+            </Link>
+          </div>
+        </div>
+      )}
 
       {/* Footer spacer */}
       <div style={{ height: 'var(--space-4)' }} />

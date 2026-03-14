@@ -531,20 +531,36 @@ export default function Dashboard() {
                     </span>
                   </div>
 
-                  <div style={{
-                    height: '8px',
-                    borderRadius: '4px',
-                    background: 'var(--surface-3)',
-                    overflow: 'hidden',
-                    marginBottom: 'var(--space-5)',
-                  }}>
+                  <div className="flex items-center gap-3" style={{ marginBottom: 'var(--space-5)' }}>
                     <div style={{
-                      width: `${pct}%`,
-                      height: '100%',
+                      flex: 1,
+                      height: '8px',
                       borderRadius: '4px',
-                      background: amountColor,
-                      transition: 'width 0.4s ease',
-                    }} />
+                      background: 'var(--surface-3)',
+                      overflow: 'hidden',
+                    }}>
+                      <div style={{
+                        width: `${pct}%`,
+                        height: '100%',
+                        borderRadius: '4px',
+                        background: amountColor,
+                        transition: 'width 0.4s ease',
+                      }} />
+                    </div>
+                    {velocity?.summary?.raise_days_elapsed != null && velocity?.summary?.raise_target_days != null && (
+                      <span style={{
+                        fontSize: 'var(--font-size-xs)',
+                        color: 'var(--text-muted)',
+                        whiteSpace: 'nowrap',
+                        fontWeight: 500,
+                        padding: '2px 8px',
+                        borderRadius: 'var(--radius-sm)',
+                        background: 'var(--surface-2)',
+                        border: '1px solid var(--border-subtle)',
+                      }}>
+                        Day {velocity.summary.raise_days_elapsed} of {velocity.summary.raise_target_days}
+                      </span>
+                    )}
                   </div>
 
                   <div className="grid grid-cols-3 gap-4">
