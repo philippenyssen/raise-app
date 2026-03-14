@@ -8,7 +8,7 @@ import {
   Sparkles, FolderOpen, BookOpen, Table, Globe, Settings,
   Columns3, GitCompare, BarChart3, MessageCircleWarning, Target,
   SendHorizonal, Menu, X, LogOut, FileBarChart, Zap, ShieldAlert, Activity,
-  DollarSign, Compass, ChevronLeft, ChevronRight, Database, Sun, Mic
+  DollarSign, Compass, ChevronLeft, ChevronRight, Database, Sun, Mic, Shield, Gauge
 } from 'lucide-react';
 
 interface NavItem {
@@ -25,6 +25,7 @@ const nav: NavItem[] = [
   { href: '/', label: 'Dashboard', icon: LayoutDashboard, section: 'CORE' },
   { href: '/focus', label: 'Focus', icon: Target, section: 'CORE' },
   { href: '/pipeline', label: 'Pipeline', icon: Columns3, section: 'CORE' },
+  { href: '/velocity', label: 'Velocity', icon: Gauge, section: 'CORE', badge: 'hot' },
   { href: '/workspace', label: 'Workspace', icon: Sparkles, section: 'CORE' },
   // CRM
   { href: '/investors', label: 'Investors', icon: Users, section: 'CRM' },
@@ -40,6 +41,7 @@ const nav: NavItem[] = [
   { href: '/objections', label: 'Objections', icon: MessageCircleWarning, section: 'INTEL' },
   { href: '/stress-test', label: 'Stress Test', icon: ShieldAlert, section: 'INTEL' },
   { href: '/acceleration', label: 'Acceleration', icon: Zap, section: 'INTEL' },
+  { href: '/competitive', label: 'Competitive', icon: Shield, section: 'INTEL', badge: 'new' },
   { href: '/enrichment', label: 'Enrichment', icon: Database, section: 'INTEL', badge: 'new' },
   // Deliverables
   { href: '/documents', label: 'Documents', icon: BookOpen, section: 'DOCS' },

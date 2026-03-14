@@ -3,7 +3,8 @@
 import { useEffect, useState, useCallback } from 'react';
 import {
   Globe, TrendingUp, Shield, Search, Plus, Trash2, RefreshCw,
-  Building2, DollarSign, Target, ChevronDown, ChevronRight, Loader2, BookOpen
+  Building2, DollarSign, Target, ChevronDown, ChevronRight, Loader2, BookOpen,
+  Users, Radar, BarChart3
 } from 'lucide-react';
 import type { MarketDeal, Competitor, IntelligenceBrief } from '@/lib/types';
 import { useToast } from '@/components/toast';
@@ -201,6 +202,9 @@ export default function IntelligencePage() {
           AI will generate a comprehensive research dossier and auto-populate relevant data tables.
         </p>
       </div>
+
+      {/* Recent Research Section */}
+      <RecentResearchSection briefs={briefs} />
 
       {/* Tabs */}
       <div className="flex gap-1" style={{ borderBottom: '1px solid var(--border-default)' }}>
@@ -531,6 +535,114 @@ export default function IntelligencePage() {
         onConfirm={handleDelete}
         onCancel={() => setDeleteTarget(null)}
       />
+    </div>
+  );
+}
+
+const RECENT_BRIEF_ICONS: Record<string, React.ComponentType<{ className?: string; style?: React.CSSProperties }>> = {
+  investor: Users,
+  competitor: Shield,
+  market: BarChart3,
+  company: Building2,
+  deal: DollarSign,
+};
+
+function RecentResearchSection({ briefs }: { briefs: IntelligenceBrief[] }) {
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
+
+  const recentBriefs = briefs.slice(0, 10);
+
+  if (recentBriefs.length === 0) return null;
+
+  return (
+    <div
+      className="rounded-xl overflow-hidden"
+      style={{ border: '1px solid var(--border-default)' }}
+    >
+      <div className="px-4 py-3 flex items-center gap-2" style={{ background: 'var(--surface-1)', borderBottom: '1px solid var(--border-default)' }}>
+        <Radar className="w-4 h-4" style={{ color: 'var(--accent)' }} />
+        <h2 className="text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--text-tertiary)' }}>
+          Recent Research
+        </h2>
+        <span
+          className="text-xs px-1.5 py-0.5 rounded ml-1"
+          style={{ background: 'var(--surface-2)', color: 'var(--text-muted)' }}
+        >
+          {recentBriefs.length}
+        </span>
+      </div>
+      <div>
+        {recentBriefs.map(brief => {
+          const Icon = RECENT_BRIEF_ICONS[brief.brief_type] || Globe;
+          const briefTypeStyle = BRIEF_TYPE_STYLES[brief.brief_type] || { background: 'var(--surface-2)', color: 'var(--text-tertiary)' };
+          const isExpanded = expandedId === brief.id;
+          const snippet = brief.content.length > 120 ? brief.content.slice(0, 120) + '...' : brief.content;
+
+          return (
+            <div key={brief.id} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+              <button
+                onClick={() => setExpandedId(isExpanded ? null : brief.id)}
+                className="w-full flex items-center gap-3 px-4 py-2.5 text-left"
+                style={{
+                  background: hoveredId === brief.id ? 'var(--surface-1)' : 'transparent',
+                  transition: 'background 150ms ease',
+                }}
+                onMouseEnter={() => setHoveredId(brief.id)}
+                onMouseLeave={() => setHoveredId(null)}
+              >
+                <span style={{ color: briefTypeStyle.color }}>
+                  <Icon className="w-4 h-4" />
+                </span>
+                <span
+                  className="text-[10px] px-1.5 py-0.5 rounded font-medium shrink-0"
+                  style={{ background: briefTypeStyle.background, color: briefTypeStyle.color }}
+                >
+                  {brief.brief_type}
+                </span>
+                <span className="text-sm font-medium truncate" style={{ color: 'var(--text-primary)' }}>
+                  {brief.subject}
+                </span>
+                <span className="text-xs shrink-0 ml-auto" style={{ color: 'var(--text-muted)' }}>
+                  {brief.updated_at ? brief.updated_at.split('T')[0] : ''}
+                </span>
+                {!isExpanded && (
+                  <span className="text-xs truncate max-w-xs hidden md:inline" style={{ color: 'var(--text-muted)' }}>
+                    {snippet}
+                  </span>
+                )}
+                <span style={{ color: 'var(--text-muted)' }}>
+                  {isExpanded
+                    ? <ChevronDown className="w-3.5 h-3.5" />
+                    : <ChevronRight className="w-3.5 h-3.5" />
+                  }
+                </span>
+              </button>
+              {isExpanded && (
+                <div className="px-4 pb-4 pt-1" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                  <div
+                    className="text-sm leading-relaxed whitespace-pre-wrap"
+                    style={{ color: 'var(--text-secondary)' }}
+                  >
+                    {brief.content}
+                  </div>
+                  {brief.investor_id && (
+                    <div className="mt-2">
+                      <Link
+                        href={`/investors/${brief.investor_id}`}
+                        className="text-xs flex items-center gap-1"
+                        style={{ color: 'var(--accent)' }}
+                      >
+                        View Investor Profile
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
