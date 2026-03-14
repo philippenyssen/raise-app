@@ -372,7 +372,7 @@ export default function MomentumPage() {
                       <Link
                         href={`/meetings/new?investor=${alert.investorId}`}
                         className="px-2.5 py-1 rounded text-[11px] font-medium transition-colors"
-                        style={{ background: 'rgba(74,111,165,0.15)', color: '#6a8fc0', border: '1px solid rgba(74,111,165,0.25)' }}
+                        style={{ background: 'rgba(74,111,165,0.15)', color: 'var(--accent)', border: '1px solid rgba(74,111,165,0.25)' }}
                         onMouseEnter={e => { e.currentTarget.style.background = 'rgba(74,111,165,0.3)'; }}
                         onMouseLeave={e => { e.currentTarget.style.background = 'rgba(74,111,165,0.15)'; }}
                       >

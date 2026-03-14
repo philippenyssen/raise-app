@@ -98,7 +98,7 @@ const STAGE_COLORS: Record<string, string> = {
   meeting_scheduled: '#4f46e5',
   met: '#7c3aed',
   engaged: '#8b6ef5',
-  in_dd: '#d97706',
+  in_dd: 'var(--warning)',
   term_sheet: '#a58a5a',
   closed: '#4a9e6e',
 };

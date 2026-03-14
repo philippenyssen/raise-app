@@ -85,17 +85,17 @@ const TYPE_LABELS: Record<string, string> = {
 };
 
 const TYPE_STYLES: Record<string, React.CSSProperties> = {
-  vc: { background: 'var(--accent-muted)', color: '#6a8fc0', border: '1px solid rgba(74,111,165,0.25)' },
-  growth: { background: 'rgba(167,139,250,0.12)', color: '#8ab0d0', border: '1px solid rgba(167,139,250,0.25)' },
-  sovereign: { background: 'var(--warning-muted)', color: '#d4be82', border: '1px solid rgba(196,163,90,0.25)' },
-  strategic: { background: 'rgba(45,212,191,0.12)', color: '#4a9e8a', border: '1px solid rgba(45,212,191,0.25)' },
+  vc: { background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(74,111,165,0.25)' },
+  growth: { background: 'var(--cat-purple-muted)', color: 'var(--chart-4)', border: '1px solid rgba(74,74,138,0.15)' },
+  sovereign: { background: 'var(--warning-muted)', color: 'var(--warning)', border: '1px solid rgba(176,138,46,0.15)' },
+  strategic: { background: 'var(--cat-teal-muted)', color: 'var(--cat-teal)', border: '1px solid rgba(45,122,106,0.15)' },
   debt: { background: 'var(--surface-2)', color: 'var(--text-secondary)', border: '1px solid var(--border-default)' },
-  family_office: { background: 'rgba(196,90,90,0.12)', color: '#d48080', border: '1px solid rgba(196,90,90,0.25)' },
+  family_office: { background: 'rgba(196,90,90,0.12)', color: 'var(--danger)', border: '1px solid rgba(196,90,90,0.25)' },
 };
 
 const IMPACT_STYLES: Record<string, React.CSSProperties> = {
   high: { background: 'var(--danger-muted)', color: 'var(--danger)', border: '1px solid rgba(196,90,90,0.25)' },
-  medium: { background: 'var(--warning-muted)', color: 'var(--warning)', border: '1px solid rgba(196,163,90,0.25)' },
+  medium: { background: 'var(--warning-muted)', color: 'var(--warning)', border: '1px solid rgba(176,138,46,0.15)' },
   low: { background: 'var(--surface-2)', color: 'var(--text-tertiary)', border: '1px solid var(--border-default)' },
 };
 
@@ -534,7 +534,7 @@ function StrategyCardComponent({ card }: { card: StrategyCard }) {
           <span style={inlineBadgeStyle({
             background: card.priority === 'high' ? 'var(--danger-muted)' : card.priority === 'medium' ? 'var(--warning-muted)' : 'var(--surface-2)',
             color: card.priority === 'high' ? 'var(--danger)' : card.priority === 'medium' ? 'var(--warning)' : 'var(--text-tertiary)',
-            border: `1px solid ${card.priority === 'high' ? 'rgba(196,90,90,0.25)' : card.priority === 'medium' ? 'rgba(196,163,90,0.25)' : 'var(--border-default)'}`,
+            border: `1px solid ${card.priority === 'high' ? 'rgba(196,90,90,0.25)' : card.priority === 'medium' ? 'rgba(176,138,46,0.15)' : 'var(--border-default)'}`,
             marginTop: '4px',
             display: 'inline-block',
           })}>

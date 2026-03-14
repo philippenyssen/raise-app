@@ -242,7 +242,7 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
                 fontSize: 'var(--font-size-sm)',
                 lineHeight: 1.6,
                 background: msg.role === 'user' ? 'var(--accent-muted)' : 'var(--surface-1)',
-                color: msg.role === 'user' ? '#7a9ec5' : 'var(--text-secondary)',
+                color: msg.role === 'user' ? 'var(--accent)' : 'var(--text-secondary)',
                 border: `1px solid ${msg.role === 'user' ? 'rgba(74, 111, 165, 0.15)' : 'var(--border-subtle)'}`,
               }}
             >
@@ -303,7 +303,7 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
           }}
         >
           <div className="flex items-center justify-between">
-            <span style={{ fontSize: 'var(--font-size-sm)', color: '#7a9ec5' }}>AI has proposed edits — review before applying</span>
+            <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--accent)' }}>AI has proposed edits — review before applying</span>
             <div className="flex" style={{ gap: 'var(--space-2)' }}>
               <button onClick={() => setPendingChange(null)} className="btn btn-ghost btn-sm">
                 <XCircle style={{ width: '14px', height: '14px' }} /> Discard

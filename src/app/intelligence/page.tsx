@@ -16,14 +16,14 @@ type Tab = 'deals' | 'competitors' | 'briefs';
 const THREAT_STYLES: Record<string, { background: string; color: string }> = {
   critical: { background: 'var(--danger-muted)', color: 'var(--danger)' },
   high: { background: 'var(--warning-muted)', color: 'var(--warning)' },
-  medium: { background: 'rgba(196, 163, 90, 0.08)', color: '#d4be82' },
+  medium: { background: 'rgba(196, 163, 90, 0.08)', color: 'var(--warning)' },
   low: { background: 'var(--success-muted)', color: 'var(--success)' },
 };
 
 const BRIEF_TYPE_STYLES: Record<string, { background: string; color: string }> = {
   investor: { background: 'var(--accent-muted)', color: 'var(--accent)' },
   competitor: { background: 'var(--warning-muted)', color: 'var(--warning)' },
-  market: { background: 'rgba(106, 111, 165, 0.12)', color: '#8ab0d0' },
+  market: { background: 'rgba(106, 111, 165, 0.12)', color: 'var(--chart-4)' },
 };
 
 export default function IntelligencePage() {

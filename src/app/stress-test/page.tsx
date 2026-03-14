@@ -121,7 +121,7 @@ function probBgStyle(p: number): React.CSSProperties {
 function tierBadgeStyle(tier: number): React.CSSProperties {
   const styles: Record<number, React.CSSProperties> = {
     1: { color: 'var(--warning)', background: 'var(--warning-muted)', borderColor: 'rgba(196, 163, 90, 0.3)' },
-    2: { color: 'var(--accent)', background: 'var(--accent-muted)', borderColor: 'rgba(74, 111, 165, 0.3)' },
+    2: { color: 'var(--accent)', background: 'var(--accent-muted)', borderColor: 'var(--accent-muted)' },
     3: { color: 'var(--text-secondary)', background: 'rgba(255, 255, 255, 0.1)', borderColor: 'var(--border-subtle)' },
     4: { color: 'var(--text-muted)', background: 'rgba(255, 255, 255, 0.1)', borderColor: 'var(--border-subtle)' },
   };
@@ -529,7 +529,7 @@ export default function StressTestPage() {
               onMouseEnter={() => setShowAllHover(true)}
               onMouseLeave={() => setShowAllHover(false)}
               className="text-xs flex items-center gap-1 mx-auto"
-              style={{ color: showAllHover ? '#7a9ec5' : 'var(--accent)' }}
+              style={{ color: showAllHover ? 'var(--accent)' : 'var(--accent)' }}
             >
               {showAllInvestors ? (
                 <>Show less <ChevronUp className="w-3 h-3" /></>

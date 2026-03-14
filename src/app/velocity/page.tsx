@@ -61,7 +61,7 @@ const STATUS_COLORS: Record<string, string> = {
   nda_signed: 'var(--accent)',
   meeting_scheduled: '#4a6fa5',
   met: '#4a6fa5',
-  engaged: '#6a8fc0',
+  engaged: 'var(--accent)',
   in_dd: 'var(--warning)',
   term_sheet: 'var(--success)',
   closed: 'var(--success)',
@@ -529,7 +529,7 @@ export default function VelocityPage() {
                           style={{
                             background: 'var(--warning-muted)',
                             color: 'var(--warning)',
-                            border: '1px solid rgba(196,163,90,0.25)',
+                            border: '1px solid rgba(176,138,46,0.15)',
                             fontSize: '11px',
                             padding: '3px 8px',
                             gap: '4px',

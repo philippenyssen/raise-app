@@ -892,7 +892,7 @@ function DropdownItem({
           ...(investor.tier === 1
             ? { background: 'var(--accent-muted)', color: 'var(--accent)' }
             : investor.tier === 2
-            ? { background: 'rgba(106, 111, 165, 0.12)', color: '#8ab0d0' }
+            ? { background: 'rgba(106, 111, 165, 0.12)', color: 'var(--chart-4)' }
             : { background: 'var(--surface-2)', color: 'var(--text-muted)' }),
         }}
       >
@@ -1079,7 +1079,7 @@ function RecommendationBanner({ recommendation }: { recommendation: ComparisonRe
     },
     competitive: {
       bg: 'var(--accent-muted)',
-      border: 'rgba(74, 111, 165, 0.3)',
+      border: 'var(--accent-muted)',
       iconColor: 'var(--accent)',
     },
     none_ready: {
@@ -1178,7 +1178,7 @@ function AccelerationBadge({ status }: { status: AccelerationStatusData }) {
     },
     'Active': {
       bg: 'var(--accent-muted)',
-      border: 'rgba(74, 111, 165, 0.3)',
+      border: 'var(--accent-muted)',
       color: 'var(--accent)',
       icon: <Zap className="w-3 h-3" />,
     },
@@ -1327,13 +1327,13 @@ function VerdictCard({
     },
     accent: {
       bg: 'var(--accent-muted)',
-      border: 'rgba(74, 111, 165, 0.25)',
+      border: 'var(--accent-muted)',
       iconColor: 'var(--accent)',
     },
     purple: {
       bg: 'rgba(106, 111, 165, 0.1)',
       border: 'rgba(106, 111, 165, 0.25)',
-      iconColor: '#8ab0d0',
+      iconColor: 'var(--chart-4)',
     },
     warning: {
       bg: 'var(--warning-muted)',
@@ -1343,7 +1343,7 @@ function VerdictCard({
     cyan: {
       bg: 'rgba(6, 182, 212, 0.1)',
       border: 'rgba(6, 182, 212, 0.25)',
-      iconColor: '#4a9e8a',
+      iconColor: 'var(--cat-teal)',
     },
   };
 
@@ -1387,7 +1387,7 @@ function VerdictCard({
 function tierStyle(tier: number): React.CSSProperties {
   switch (tier) {
     case 1: return { color: 'var(--accent)', fontWeight: 600 };
-    case 2: return { color: '#8ab0d0', fontWeight: 600 };
+    case 2: return { color: 'var(--chart-4)', fontWeight: 600 };
     default: return { color: 'var(--text-muted)' };
   }
 }
@@ -1395,7 +1395,7 @@ function tierStyle(tier: number): React.CSSProperties {
 function statusStyle(status: string): React.CSSProperties {
   if (status === 'term_sheet' || status === 'closed') return { color: 'var(--success)', fontWeight: 600 };
   if (status === 'in_dd') return { color: 'var(--accent)', fontWeight: 500 };
-  if (status === 'engaged') return { color: '#4a9e8a' };
+  if (status === 'engaged') return { color: 'var(--cat-teal)' };
   if (status === 'passed' || status === 'dropped') return { color: 'var(--danger)' };
   return { color: 'var(--text-secondary)' };
 }

@@ -509,7 +509,7 @@ export default function TermComparePage() {
               label="Most Capital"
               value={results.recommendations.most_capital}
               bg="var(--accent-muted)"
-              border="rgba(74, 111, 165, 0.25)"
+              border="var(--accent-muted)"
             />
             <RecoCard
               icon={<Trophy className="w-5 h-5" style={{ color: 'var(--warning)' }} />}

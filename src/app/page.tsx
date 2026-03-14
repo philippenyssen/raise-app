@@ -389,10 +389,10 @@ export default function Dashboard() {
     { label: 'Identified', value: identifiedCount > 0 ? identifiedCount : 0, bg: 'var(--text-muted)' },
     { label: 'Contacted', value: data.funnel.contacted, bg: 'var(--text-tertiary)' },
     { label: 'Meetings', value: data.funnel.meetings, bg: 'var(--accent)' },
-    { label: 'Engaged', value: data.funnel.engaged, bg: '#8b6ef5' },
-    { label: 'In DD', value: data.funnel.in_dd, bg: '#e08050' },
+    { label: 'Engaged', value: data.funnel.engaged, bg: 'var(--cat-purple)' },
+    { label: 'In DD', value: data.funnel.in_dd, bg: 'var(--warning)' },
     { label: 'Term Sheets', value: data.funnel.term_sheets, bg: 'var(--success)' },
-    { label: 'Closed', value: data.funnel.closed, bg: '#4a9e6e' },
+    { label: 'Closed', value: data.funnel.closed, bg: 'var(--success)' },
   ];
 
   return (
@@ -678,9 +678,9 @@ export default function Dashboard() {
                 style={{
                   border: `1px solid ${
                     stressTest.healthStatus === 'green'
-                      ? 'rgba(74,158,110,0.25)'
+                      ? 'rgba(45,122,79,0.15)'
                       : stressTest.healthStatus === 'yellow'
-                      ? 'rgba(196,163,90,0.25)'
+                      ? 'rgba(176,138,46,0.15)'
                       : 'rgba(196,90,90,0.25)'
                   }`,
                   background: stressTest.healthStatus === 'green'
@@ -699,9 +699,9 @@ export default function Dashboard() {
                 }}
                 onMouseLeave={e => {
                   const borderColor = stressTest.healthStatus === 'green'
-                    ? 'rgba(74,158,110,0.25)'
+                    ? 'rgba(45,122,79,0.15)'
                     : stressTest.healthStatus === 'yellow'
-                    ? 'rgba(196,163,90,0.25)'
+                    ? 'rgba(176,138,46,0.15)'
                     : 'rgba(196,90,90,0.25)';
                   (e.currentTarget as HTMLElement).style.borderColor = borderColor;
                 }}
@@ -915,7 +915,7 @@ export default function Dashboard() {
                           >
                             {inv.investorName}
                           </Link>
-                          <span style={{ fontSize: '9px', color: inv.tier === 1 ? '#d4be82' : 'var(--text-muted)' }}>T{inv.tier}</span>
+                          <span style={{ fontSize: '9px', color: inv.tier === 1 ? 'var(--warning)' : 'var(--text-muted)' }}>T{inv.tier}</span>
                           <span
                             className="px-1.5 py-0.5 rounded shrink-0"
                             style={{
@@ -979,7 +979,7 @@ export default function Dashboard() {
                   href="/focus"
                   className="flex items-center gap-1"
                   style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#6a8fc0'; }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
                 >
                   Full priority queue <ArrowRight className="w-3 h-3" />
@@ -988,7 +988,7 @@ export default function Dashboard() {
               <div className="space-y-2">
                 {cp.topFocus.map((item, i) => {
                   const scoreColor = item.focusScore >= 70 ? 'var(--success)' : item.focusScore >= 50 ? 'var(--warning)' : 'var(--danger)';
-                  const tierColor = item.tier === 1 ? '#d4be82' : 'var(--text-muted)';
+                  const tierColor = item.tier === 1 ? 'var(--warning)' : 'var(--text-muted)';
                   const MomentumIcon = item.momentum === 'accelerating' ? TrendingUp
                     : item.momentum === 'decelerating' ? TrendingDown
                     : item.momentum === 'stalled' ? ArrowDownRight
@@ -1199,7 +1199,7 @@ export default function Dashboard() {
                   href="/focus"
                   className="flex items-center gap-1"
                   style={{ fontSize: 'var(--font-size-xs)', color: 'var(--warning)' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#d4be82'; }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--warning)'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--warning)'; }}
                 >
                   All actions <ArrowRight className="w-3 h-3" />
@@ -1210,7 +1210,7 @@ export default function Dashboard() {
                   const urgencyStyles = accel.urgency === 'immediate'
                     ? { background: 'var(--danger-muted)', color: 'var(--danger)', borderColor: 'rgba(196,90,90,0.3)' }
                     : accel.urgency === '48h'
-                    ? { background: 'rgba(249,115,22,0.12)', color: '#a58a5a', borderColor: 'rgba(249,115,22,0.3)' }
+                    ? { background: 'var(--warning-muted)', color: '#a58a5a', borderColor: 'var(--border-default)' }
                     : { background: 'var(--warning-muted)', color: 'var(--warning)', borderColor: 'rgba(196,163,90,0.3)' };
                   const triggerLabel = accel.triggerType.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
                   return (
@@ -1254,10 +1254,10 @@ export default function Dashboard() {
                           fontSize: '10px',
                           fontWeight: 500,
                           background: 'rgba(196,163,90,0.12)',
-                          color: '#d4be82',
+                          color: 'var(--warning)',
                           border: '1px solid rgba(196,163,90,0.2)',
                         }}
-                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(196,163,90,0.25)'; }}
+                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(176,138,46,0.15)'; }}
                         onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(196,163,90,0.12)'; }}
                       >
                         Execute <ChevronRight className="w-3 h-3" />
@@ -1286,7 +1286,7 @@ export default function Dashboard() {
                   href="/dealflow"
                   className="flex items-center gap-1"
                   style={{ fontSize: 'var(--font-size-xs)', color: '#a58a5a' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#d4be82'; }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--warning)'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = '#a58a5a'; }}
                 >
                   All deals <ArrowRight className="w-3 h-3" />
@@ -1319,7 +1319,7 @@ export default function Dashboard() {
                   href="/followups"
                   className="flex items-center gap-1"
                   style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#6a8fc0'; }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
                 >
                   All follow-ups <ArrowRight className="w-3 h-3" />
@@ -1353,7 +1353,7 @@ export default function Dashboard() {
                 href="/pipeline"
                 className="flex items-center gap-1"
                 style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#6a8fc0'; }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
               >
                 Pipeline view <Columns3 className="w-3 h-3" />
@@ -1418,7 +1418,7 @@ export default function Dashboard() {
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(74,111,165,0.3)'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
             >
-              <FolderOpen className="w-5 h-5 mb-2" style={{ color: '#6a8fc0' }} />
+              <FolderOpen className="w-5 h-5 mb-2" style={{ color: 'var(--accent)' }} />
               <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500 }}>Data Room</div>
               <div className="mt-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
                 {dataRoomCount > 0 ? `${dataRoomCount} file${dataRoomCount !== 1 ? 's' : ''} uploaded` : 'Upload source materials'}
@@ -1475,7 +1475,7 @@ export default function Dashboard() {
                   href="/investors"
                   className="flex items-center gap-1"
                   style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#6a8fc0'; }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
                 >
                   Fix gaps <ArrowRight className="w-3 h-3" />
@@ -1564,7 +1564,7 @@ export default function Dashboard() {
                   href="/timeline"
                   className="flex items-center gap-1"
                   style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#6a8fc0'; }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
                 >
                   All tasks <ArrowRight className="w-3 h-3" />
@@ -1618,7 +1618,7 @@ export default function Dashboard() {
                   href="/timeline"
                   className="flex items-center gap-1"
                   style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#6a8fc0'; }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
                 >
                   Full log <ArrowRight className="w-3 h-3" />
@@ -1937,20 +1937,20 @@ function HotDealRow({ investor }: { investor: DealHeatInvestor }) {
   const [hovered, setHovered] = useState(false);
 
   const heatColor =
-    investor.dealHeat.label === 'hot' ? '#c45a5a' :
+    investor.dealHeat.label === 'hot' ? 'var(--danger)' :
     investor.dealHeat.label === 'warm' ? '#a58a5a' :
     investor.dealHeat.label === 'cool' ? 'var(--accent)' :
     investor.dealHeat.label === 'cold' ? 'var(--text-tertiary)' : 'var(--text-muted)';
 
   const heatBg =
     investor.dealHeat.label === 'hot' ? 'rgba(196,90,90,0.12)' :
-    investor.dealHeat.label === 'warm' ? 'rgba(249,115,22,0.12)' :
+    investor.dealHeat.label === 'warm' ? 'var(--warning-muted)' :
     investor.dealHeat.label === 'cool' ? 'rgba(74,111,165,0.12)' :
     'var(--surface-3)';
 
   const heatBorder =
     investor.dealHeat.label === 'hot' ? 'rgba(196,90,90,0.3)' :
-    investor.dealHeat.label === 'warm' ? 'rgba(249,115,22,0.3)' :
+    investor.dealHeat.label === 'warm' ? 'var(--border-default)' :
     investor.dealHeat.label === 'cool' ? 'rgba(74,111,165,0.3)' :
     'var(--border-subtle)';
 
@@ -1974,7 +1974,7 @@ function HotDealRow({ investor }: { investor: DealHeatInvestor }) {
           >
             {investor.name}
           </Link>
-          <span style={{ fontSize: '9px', color: investor.tier === 1 ? '#d4be82' : 'var(--text-muted)' }}>
+          <span style={{ fontSize: '9px', color: investor.tier === 1 ? 'var(--warning)' : 'var(--text-muted)' }}>
             T{investor.tier}
           </span>
         </div>
@@ -2146,7 +2146,7 @@ function ActivityRow({ activity }: { activity: ActivityItem }) {
     meeting_logged: 'var(--accent)',
     status_changed: 'var(--success)',
     followup_completed: 'var(--success)',
-    investor_added: '#6a8fc0',
+    investor_added: 'var(--accent)',
     followup_created: 'var(--warning)',
     meeting_created: 'var(--accent)',
   };

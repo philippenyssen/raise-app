@@ -526,7 +526,7 @@ export default function ForecastPage() {
                           color: 'var(--warning)',
                           textDecoration: 'none',
                         }}
-                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(196,163,90,0.25)'; }}
+                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(176,138,46,0.15)'; }}
                         onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--warning-muted)'; }}
                       >
                         <Calendar className="w-3 h-3" />

@@ -458,7 +458,7 @@ export default function DealflowPage() {
                       }
                       className="inline-flex items-center gap-1"
                       style={{ color: 'var(--warning)', textDecoration: 'none' }}
-                      onMouseEnter={e => { e.currentTarget.style.color = '#d4be82'; }}
+                      onMouseEnter={e => { e.currentTarget.style.color = 'var(--warning)'; }}
                       onMouseLeave={e => { e.currentTarget.style.color = 'var(--warning)'; }}
                     >
                       <span className="truncate">{inv.bottleneck}</span>

@@ -89,7 +89,7 @@ interface StrategicData {
 
 const CATEGORY_CONFIG: Record<string, { label: string; color: string; bg: string; border: string; icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }> }> = {
   pipeline:  { label: 'Pipeline',  color: 'var(--accent)',    bg: 'var(--accent-muted)',    border: 'var(--border-default)',    icon: Users },
-  narrative: { label: 'Narrative', color: '#8ab0d0',          bg: 'rgba(106, 111, 165, 0.12)', border: 'rgba(106, 111, 165, 0.4)', icon: MessageCircleWarning },
+  narrative: { label: 'Narrative', color: 'var(--chart-4)',          bg: 'rgba(106, 111, 165, 0.12)', border: 'rgba(106, 111, 165, 0.4)', icon: MessageCircleWarning },
   execution: { label: 'Execution', color: 'var(--success)',   bg: 'var(--success-muted)',   border: 'rgba(74, 158, 110, 0.4)',   icon: Zap },
   timing:    { label: 'Timing',    color: 'var(--warning)',   bg: 'var(--warning-muted)',   border: 'rgba(196, 163, 90, 0.4)',  icon: Clock },
   risk:      { label: 'Risk',      color: 'var(--danger)',    bg: 'var(--danger-muted)',    border: 'rgba(196, 90, 90, 0.4)',   icon: Shield },
@@ -125,7 +125,7 @@ function gaugeBarColor(score: number, invert = false): string {
 
 function priorityStyle(p: number): React.CSSProperties {
   if (p === 1) return { background: 'var(--danger-muted)', color: 'var(--danger)', borderColor: 'rgba(196, 90, 90, 0.4)' };
-  if (p === 2) return { background: 'rgba(196, 163, 90, 0.12)', color: '#d4be82', borderColor: 'rgba(196, 163, 90, 0.4)' };
+  if (p === 2) return { background: 'rgba(196, 163, 90, 0.12)', color: 'var(--warning)', borderColor: 'rgba(196, 163, 90, 0.4)' };
   if (p === 3) return { background: 'var(--warning-muted)', color: 'var(--warning)', borderColor: 'rgba(196, 163, 90, 0.4)' };
   return { background: 'var(--surface-2)', color: 'var(--text-tertiary)', borderColor: 'var(--border-default)' };
 }
@@ -472,7 +472,7 @@ export default function StrategicPage() {
       {data.raiseForecast && (
         <div className="card">
           <div className="flex items-center gap-2 mb-4">
-            <Clock className="w-4 h-4" style={{ color: '#8ab0d0' }} />
+            <Clock className="w-4 h-4" style={{ color: 'var(--chart-4)' }} />
             <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-tertiary)', textTransform: 'uppercase' as const }}>Raise Forecast</span>
             <span
               className="badge ml-2"
@@ -498,7 +498,7 @@ export default function StrategicPage() {
               }}
             >
               <div className="metric-label" style={{ marginBottom: 'var(--space-1)' }}>Expected Close</div>
-              <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 700, color: '#8ab0d0', fontVariantNumeric: 'tabular-nums' }}>{data.raiseForecast.expectedCloseDate}</div>
+              <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 700, color: 'var(--chart-4)', fontVariantNumeric: 'tabular-nums' }}>{data.raiseForecast.expectedCloseDate}</div>
             </div>
             {/* Nearest close */}
             {data.raiseForecast.nearestClose && (
@@ -511,7 +511,7 @@ export default function StrategicPage() {
                 }}
               >
                 <div className="metric-label" style={{ marginBottom: 'var(--space-1)' }}>Nearest Close</div>
-                <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 700, color: '#6a8fc0', fontVariantNumeric: 'tabular-nums' }}>~{data.raiseForecast.nearestClose.days}d</div>
+                <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 700, color: 'var(--accent)', fontVariantNumeric: 'tabular-nums' }}>~{data.raiseForecast.nearestClose.days}d</div>
                 <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '2px' }}>{data.raiseForecast.nearestClose.name} ({data.raiseForecast.nearestClose.stage})</div>
               </div>
             )}
@@ -750,7 +750,7 @@ function RecommendationRow({ rec, isLast }: { rec: StrategicRecommendation; isLa
                 borderRadius: 'var(--radius-sm)',
                 background: btnHover ? 'var(--accent)' : 'var(--accent-muted)',
                 color: btnHover ? '#fff' : 'var(--accent)',
-                border: '1px solid rgba(74, 111, 165, 0.25)',
+                border: '1px solid var(--accent-muted)',
                 transition: 'all 150ms ease',
                 textDecoration: 'none',
               }}
@@ -817,12 +817,12 @@ function SparklineRow({ label, values, dates, color }: {
 
   const barColors: Record<string, string> = {
     success: 'var(--success)',
-    purple: '#6a8fc0',
+    purple: 'var(--accent)',
     accent: 'var(--accent)',
   };
   const textColors: Record<string, string> = {
     success: 'var(--success)',
-    purple: '#8ab0d0',
+    purple: 'var(--chart-4)',
     accent: 'var(--accent)',
   };
 

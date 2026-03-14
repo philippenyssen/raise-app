@@ -476,7 +476,7 @@ export default function InvestorDetailPage() {
                   fontSize: '11px', fontWeight: 600, padding: '3px 10px',
                   borderRadius: 'var(--radius-sm)', textDecoration: 'none',
                   background: 'var(--warning-muted)', color: 'var(--warning)',
-                  border: '1px solid rgba(196,163,90,0.25)',
+                  border: '1px solid rgba(176,138,46,0.15)',
                 }}
               >
                 <Mail className="w-3 h-3" /> Nudge
@@ -1321,7 +1321,7 @@ function ConvictionTrajectoryPanel({ trajectory }: { trajectory: ConvictionTraje
   });
 
   const trendLineColor = trajectory.trend === 'accelerating' ? '#4a9e6e' :
-    trajectory.trend === 'decelerating' ? '#d4be82' : '#6a8fc0';
+    trajectory.trend === 'decelerating' ? 'var(--warning)' : 'var(--accent)';
 
   return (
     <div className="rounded-xl overflow-hidden" style={{ border: '1px solid var(--border-default)' }}>
@@ -1455,13 +1455,13 @@ const CATEGORY_COLORS: Record<string, { bg: string; color: string }> = {
   identity: { bg: 'var(--surface-2)', color: 'var(--text-tertiary)' },
   financials: { bg: 'var(--success-muted)', color: 'var(--success)' },
   strategy: { bg: 'var(--accent-muted)', color: 'var(--accent)' },
-  people: { bg: 'rgba(106, 111, 165, 0.12)', color: '#8ab0d0' },
+  people: { bg: 'rgba(106, 111, 165, 0.12)', color: 'var(--chart-4)' },
   portfolio: { bg: 'var(--warning-muted)', color: 'var(--warning)' },
   process: { bg: 'var(--accent-muted)', color: 'var(--accent)' },
   contact: { bg: 'var(--surface-2)', color: 'var(--text-tertiary)' },
   regulatory: { bg: 'var(--danger-muted)', color: 'var(--danger)' },
   corporate: { bg: 'var(--surface-2)', color: 'var(--text-tertiary)' },
-  media: { bg: 'rgba(106, 111, 165, 0.12)', color: '#8ab0d0' },
+  media: { bg: 'rgba(106, 111, 165, 0.12)', color: 'var(--chart-4)' },
   relationships: { bg: 'var(--accent-muted)', color: 'var(--accent)' },
 };
 

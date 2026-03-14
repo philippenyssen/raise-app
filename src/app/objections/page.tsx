@@ -101,24 +101,24 @@ type Tab = 'playbook' | 'effectiveness';
 const TOPIC_COLORS: Record<string, { bg: React.CSSProperties; text: React.CSSProperties; border: React.CSSProperties; dotColor: string; textColor: string }> = {
   valuation: {
     bg: { background: 'rgba(147, 51, 234, 0.15)' },
-    text: { color: '#8ab0d0' },
+    text: { color: 'var(--chart-4)' },
     border: { borderColor: 'rgba(126, 34, 206, 0.35)' },
-    dotColor: '#8ab0d0',
-    textColor: '#8ab0d0',
+    dotColor: 'var(--chart-4)',
+    textColor: 'var(--chart-4)',
   },
   competition: {
     bg: { background: 'rgba(234, 88, 12, 0.15)' },
-    text: { color: '#d4be82' },
+    text: { color: 'var(--warning)' },
     border: { borderColor: 'rgba(194, 65, 12, 0.35)' },
-    dotColor: '#d4be82',
-    textColor: '#d4be82',
+    dotColor: 'var(--warning)',
+    textColor: 'var(--warning)',
   },
   team: {
     bg: { background: 'rgba(6, 182, 212, 0.15)' },
-    text: { color: '#4a9e8a' },
+    text: { color: 'var(--cat-teal)' },
     border: { borderColor: 'rgba(14, 116, 144, 0.35)' },
-    dotColor: '#4a9e8a',
-    textColor: '#4a9e8a',
+    dotColor: 'var(--cat-teal)',
+    textColor: 'var(--cat-teal)',
   },
   execution: {
     bg: { background: 'rgba(202, 138, 4, 0.15)' },
@@ -129,17 +129,17 @@ const TOPIC_COLORS: Record<string, { bg: React.CSSProperties; text: React.CSSPro
   },
   financial: {
     bg: { background: 'rgba(22, 163, 74, 0.15)' },
-    text: { color: '#6ab88a' },
+    text: { color: 'var(--success)' },
     border: { borderColor: 'rgba(21, 128, 61, 0.35)' },
-    dotColor: '#6ab88a',
-    textColor: '#6ab88a',
+    dotColor: 'var(--success)',
+    textColor: 'var(--success)',
   },
   market: {
     bg: { background: 'rgba(37, 99, 235, 0.15)' },
-    text: { color: '#6a8fc0' },
+    text: { color: 'var(--accent)' },
     border: { borderColor: 'rgba(30, 64, 175, 0.35)' },
-    dotColor: '#6a8fc0',
-    textColor: '#6a8fc0',
+    dotColor: 'var(--accent)',
+    textColor: 'var(--accent)',
   },
   technical: {
     bg: { background: 'rgba(79, 70, 229, 0.15)' },
@@ -150,24 +150,24 @@ const TOPIC_COLORS: Record<string, { bg: React.CSSProperties; text: React.CSSPro
   },
   risk: {
     bg: { background: 'rgba(220, 38, 38, 0.15)' },
-    text: { color: '#d48080' },
+    text: { color: 'var(--danger)' },
     border: { borderColor: 'rgba(153, 27, 27, 0.35)' },
-    dotColor: '#d48080',
-    textColor: '#d48080',
+    dotColor: 'var(--danger)',
+    textColor: 'var(--danger)',
   },
   timing: {
     bg: { background: 'rgba(217, 119, 6, 0.15)' },
-    text: { color: '#d4be82' },
+    text: { color: 'var(--warning)' },
     border: { borderColor: 'rgba(146, 64, 14, 0.35)' },
-    dotColor: '#d4be82',
-    textColor: '#d4be82',
+    dotColor: 'var(--warning)',
+    textColor: 'var(--warning)',
   },
   structure: {
     bg: { background: 'rgba(13, 148, 136, 0.15)' },
-    text: { color: '#4a9e8a' },
+    text: { color: 'var(--cat-teal)' },
     border: { borderColor: 'rgba(15, 118, 110, 0.35)' },
-    dotColor: '#4a9e8a',
-    textColor: '#4a9e8a',
+    dotColor: 'var(--cat-teal)',
+    textColor: 'var(--cat-teal)',
   },
 };
 
@@ -411,7 +411,7 @@ export default function ObjectionsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight flex items-center gap-3" style={{ color: 'var(--text-primary)' }}>
-            <span className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: '#d97706' }}>
+            <span className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'var(--warning)' }}>
               <MessageCircleWarning className="w-4.5 h-4.5" style={{ color: '#ffffff' }} />
             </span>
             Objection Playbook

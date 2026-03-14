@@ -564,8 +564,8 @@ export default function NetworkPage() {
                         <Link
                           href={`/investors/${cascade.networkBottleneck.investorId}`}
                           className="inline-flex items-center gap-1 mt-2 px-2.5 py-1 rounded text-[11px] font-medium transition-colors"
-                          style={{ background: 'rgba(196,163,90,0.15)', color: 'var(--warning)', border: '1px solid rgba(196,163,90,0.25)' }}
-                          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(196,163,90,0.25)'; }}
+                          style={{ background: 'rgba(196,163,90,0.15)', color: 'var(--warning)', border: '1px solid rgba(176,138,46,0.15)' }}
+                          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(176,138,46,0.15)'; }}
                           onMouseLeave={e => { e.currentTarget.style.background = 'rgba(196,163,90,0.15)'; }}
                         >
                           Prioritize Engagement

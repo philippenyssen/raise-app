@@ -17,14 +17,14 @@ const STATUS_LABELS: Record<InvestorStatus, string> = {
 const STATUS_STYLES: Record<string, { background: string; color: string }> = {
   identified: { background: 'var(--surface-3)', color: 'var(--text-secondary)' },
   contacted: { background: 'var(--border-strong)', color: 'var(--text-primary)' },
-  nda_signed: { background: 'var(--accent-muted)', color: '#6a8fc0' },
-  meeting_scheduled: { background: 'rgba(74, 111, 165, 0.25)', color: '#6a8fc0' },
-  met: { background: 'rgba(74, 111, 165, 0.35)', color: '#7a9ec5' },
-  engaged: { background: 'rgba(106, 111, 165, 0.25)', color: '#8ab0d0' },
-  in_dd: { background: 'var(--warning-muted)', color: '#d4be82' },
-  term_sheet: { background: 'var(--success-muted)', color: '#6ab88a' },
+  nda_signed: { background: 'var(--accent-muted)', color: 'var(--accent)' },
+  meeting_scheduled: { background: 'var(--accent-muted)', color: 'var(--accent)' },
+  met: { background: 'rgba(74, 111, 165, 0.35)', color: 'var(--accent)' },
+  engaged: { background: 'rgba(106, 111, 165, 0.25)', color: 'var(--chart-4)' },
+  in_dd: { background: 'var(--warning-muted)', color: 'var(--warning)' },
+  term_sheet: { background: 'var(--success-muted)', color: 'var(--success)' },
   closed: { background: 'rgba(16, 185, 129, 0.25)', color: '#4a9e6e' },
-  passed: { background: 'var(--danger-muted)', color: '#d48080' },
+  passed: { background: 'var(--danger-muted)', color: 'var(--danger)' },
   dropped: { background: 'var(--surface-2)', color: 'var(--text-muted)' },
 };
 
@@ -290,7 +290,7 @@ export default function InvestorsPage() {
             padding: 'var(--space-2) var(--space-4)',
           }}
         >
-          <span style={{ fontSize: 'var(--font-size-sm)', color: '#6a8fc0', fontWeight: 500 }}>
+          <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--accent)', fontWeight: 500 }}>
             {selected.size} selected
           </span>
           <select

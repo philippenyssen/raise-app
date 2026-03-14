@@ -27,25 +27,25 @@ const typeStyles: Record<ToastType, { bg: string; border: string; color: string;
   success: {
     bg: 'var(--success-muted)',
     border: 'rgba(74, 158, 110, 0.2)',
-    color: '#6ab88a',
+    color: 'var(--success)',
     icon: 'var(--success)',
   },
   error: {
     bg: 'var(--danger-muted)',
     border: 'rgba(196, 90, 90, 0.2)',
-    color: '#d48080',
+    color: 'var(--danger)',
     icon: 'var(--danger)',
   },
   warning: {
     bg: 'var(--warning-muted)',
     border: 'rgba(196, 163, 90, 0.2)',
-    color: '#d4be82',
+    color: 'var(--warning)',
     icon: 'var(--warning)',
   },
   info: {
     bg: 'var(--accent-muted)',
     border: 'rgba(74, 111, 165, 0.2)',
-    color: '#6a8fc0',
+    color: 'var(--accent)',
     icon: 'var(--accent)',
   },
 };
