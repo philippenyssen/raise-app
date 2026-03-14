@@ -4,10 +4,10 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import {
-  LayoutDashboard, Users, Calendar, Brain, HeartPulse, FileText,
-  Sparkles, FolderOpen, BookOpen, Table, Globe, ClipboardList, Settings,
+  LayoutDashboard, Users, Calendar, FileText,
+  Sparkles, FolderOpen, BookOpen, Table, Globe, Settings,
   Columns3, GitCompare, BarChart3, MessageCircleWarning, Target,
-  SendHorizonal, Menu, X, LogOut, FileBarChart
+  SendHorizonal, Menu, X, LogOut, FileBarChart, Zap
 } from 'lucide-react';
 
 interface NavItem {
@@ -18,30 +18,28 @@ interface NavItem {
 }
 
 const nav: NavItem[] = [
-  // Focus — top priority
-  { href: '/focus', label: 'Focus', icon: Target, section: 'FOCUS' },
+  // Command Center
+  { href: '/focus', label: 'Focus', icon: Target, section: 'COMMAND CENTER' },
+  { href: '/', label: 'Dashboard', icon: LayoutDashboard, section: 'COMMAND CENTER' },
+  { href: '/acceleration', label: 'Acceleration', icon: Zap, section: 'COMMAND CENTER' },
+  // CRM & Pipeline
+  { href: '/pipeline', label: 'Pipeline', icon: Columns3, section: 'CRM & PIPELINE' },
+  { href: '/investors', label: 'Investors', icon: Users, section: 'CRM & PIPELINE' },
+  { href: '/compare', label: 'Compare', icon: GitCompare, section: 'CRM & PIPELINE' },
+  { href: '/meetings', label: 'Meetings', icon: Calendar, section: 'CRM & PIPELINE' },
+  { href: '/followups', label: 'Follow-ups', icon: SendHorizonal, section: 'CRM & PIPELINE' },
+  // Intelligence
+  { href: '/intelligence', label: 'Intelligence', icon: Globe, section: 'INTELLIGENCE' },
+  { href: '/objections', label: 'Objections', icon: MessageCircleWarning, section: 'INTELLIGENCE' },
+  { href: '/analytics', label: 'Analytics', icon: BarChart3, section: 'INTELLIGENCE' },
   // Deliverables
   { href: '/workspace', label: 'Workspace', icon: Sparkles, section: 'DELIVERABLES' },
   { href: '/documents', label: 'Documents', icon: BookOpen, section: 'DELIVERABLES' },
   { href: '/data-room', label: 'Data Room', icon: FolderOpen, section: 'DELIVERABLES' },
   { href: '/model', label: 'Model', icon: Table, section: 'DELIVERABLES' },
-  // Intelligence
-  { href: '/intelligence', label: 'Intelligence', icon: Globe, section: 'INTELLIGENCE' },
-  { href: '/objections', label: 'Objections', icon: MessageCircleWarning, section: 'INTELLIGENCE' },
-  // Workflow
-  { href: '/timeline', label: 'Timeline', icon: ClipboardList, section: 'WORKFLOW' },
-  // Process
-  { href: '/', label: 'Dashboard', icon: LayoutDashboard, section: 'PROCESS' },
-  { href: '/pipeline', label: 'Pipeline', icon: Columns3, section: 'PROCESS' },
-  { href: '/investors', label: 'Investors', icon: Users, section: 'PROCESS' },
-  { href: '/compare', label: 'Compare', icon: GitCompare, section: 'PROCESS' },
-  { href: '/meetings', label: 'Meetings', icon: Calendar, section: 'PROCESS' },
-  { href: '/followups', label: 'Follow-ups', icon: SendHorizonal, section: 'PROCESS' },
-  { href: '/analytics', label: 'Analytics', icon: BarChart3, section: 'PROCESS' },
-  { href: '/analysis', label: 'Analysis', icon: Brain, section: 'PROCESS' },
-  { href: '/health', label: 'Health', icon: HeartPulse, section: 'PROCESS' },
-  { href: '/reports', label: 'Reports', icon: FileBarChart, section: 'PROCESS' },
-  { href: '/terms', label: 'Terms', icon: FileText, section: 'PROCESS' },
+  // Output
+  { href: '/reports', label: 'Reports', icon: FileBarChart, section: 'OUTPUT' },
+  { href: '/terms', label: 'Terms', icon: FileText, section: 'OUTPUT' },
   // Settings
   { href: '/settings', label: 'Settings', icon: Settings, section: 'SETTINGS' },
 ];
