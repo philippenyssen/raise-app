@@ -5,7 +5,7 @@ import Link from 'next/link';
 import type { Investor, InvestorStatus, InvestorTier, InvestorType } from '@/lib/types';
 import { useToast } from '@/components/toast';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
-import { Search, Download, GitCompare, Columns3, Clock } from 'lucide-react';
+import { Search, Download, GitCompare, Columns3, Clock, Pencil, Trash2 } from 'lucide-react';
 
 const STATUS_LABELS: Record<InvestorStatus, string> = {
   identified: 'Identified', contacted: 'Contacted', nda_signed: 'NDA Signed',
@@ -477,32 +477,36 @@ export default function InvestorsPage() {
                     ) : <span style={{ color: 'var(--text-muted)' }}>---</span>}
                   </td>
                   <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
-                    <div className="flex gap-1">
+                    <div className="flex gap-1" style={{ opacity: isHovered ? 1 : 0.4, transition: 'opacity 150ms' }}>
                       <button
                         onClick={() => startEdit(inv)}
                         className="btn btn-ghost btn-sm"
+                        title="Edit investor"
                         style={{
                           fontSize: 'var(--font-size-xs)',
-                          padding: '0.25rem 0.5rem',
-                          color: hoveredBtn === `edit-${inv.id}` ? 'var(--text-primary)' : 'var(--text-muted)',
+                          padding: '0.3rem 0.5rem',
+                          color: hoveredBtn === `edit-${inv.id}` ? 'var(--accent)' : 'var(--text-muted)',
+                          borderRadius: 'var(--radius-sm)',
                         }}
                         onMouseEnter={() => setHoveredBtn(`edit-${inv.id}`)}
                         onMouseLeave={() => setHoveredBtn(null)}
                       >
-                        Edit
+                        <Pencil className="w-3 h-3" />
                       </button>
                       <button
                         onClick={() => setDeleteTarget({ id: inv.id, name: inv.name })}
                         className="btn btn-ghost btn-sm"
+                        title="Delete investor"
                         style={{
                           fontSize: 'var(--font-size-xs)',
-                          padding: '0.25rem 0.5rem',
+                          padding: '0.3rem 0.5rem',
                           color: hoveredBtn === `del-${inv.id}` ? 'var(--danger)' : 'var(--text-muted)',
+                          borderRadius: 'var(--radius-sm)',
                         }}
                         onMouseEnter={() => setHoveredBtn(`del-${inv.id}`)}
                         onMouseLeave={() => setHoveredBtn(null)}
                       >
-                        Del
+                        <Trash2 className="w-3 h-3" />
                       </button>
                     </div>
                   </td>
