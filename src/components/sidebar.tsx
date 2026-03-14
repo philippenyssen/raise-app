@@ -7,7 +7,7 @@ import {
   LayoutDashboard, Users, Calendar, Brain, HeartPulse, FileText,
   Sparkles, FolderOpen, BookOpen, Table, Globe, ClipboardList, Settings,
   Columns3, GitCompare, BarChart3, MessageCircleWarning, Target,
-  Menu, X, LogOut
+  SendHorizonal, Menu, X, LogOut
 } from 'lucide-react';
 
 interface NavItem {
@@ -36,6 +36,7 @@ const nav: NavItem[] = [
   { href: '/investors', label: 'Investors', icon: Users, section: 'PROCESS' },
   { href: '/compare', label: 'Compare', icon: GitCompare, section: 'PROCESS' },
   { href: '/meetings', label: 'Meetings', icon: Calendar, section: 'PROCESS' },
+  { href: '/followups', label: 'Follow-ups', icon: SendHorizonal, section: 'PROCESS' },
   { href: '/analytics', label: 'Analytics', icon: BarChart3, section: 'PROCESS' },
   { href: '/analysis', label: 'Analysis', icon: Brain, section: 'PROCESS' },
   { href: '/health', label: 'Health', icon: HeartPulse, section: 'PROCESS' },

@@ -6,6 +6,7 @@ import { useToast } from '@/components/toast';
 import {
   Target, Clock, AlertTriangle, Zap, ChevronRight, RefreshCw,
   Calendar, CheckCircle, ArrowUpRight, TrendingDown, Timer, Users,
+  Rocket, Shield, XCircle, ChevronDown, Play, Ban,
 } from 'lucide-react';
 
 // ---------------------------------------------------------------------------
@@ -51,6 +52,47 @@ interface FocusData {
     followUpsRecommended: number;
     investorCount: number;
   };
+  generatedAt: string;
+}
+
+interface AccelerationItem {
+  id: string;
+  investorId: string;
+  investorName: string;
+  investorTier: number;
+  investorType: string;
+  status: string;
+  enthusiasm: number;
+  score: number;
+  momentum: string;
+  triggerType: string;
+  actionType: string;
+  description: string;
+  expectedLift: number;
+  confidence: string;
+  timeEstimate: string;
+  urgency: string;
+  triggerEvidence: string;
+}
+
+interface InvestorSummary {
+  investorId: string;
+  investorName: string;
+  investorTier: number;
+  investorType: string;
+  status: string;
+  enthusiasm: number;
+  score: number;
+  momentum: string;
+  reason: string;
+}
+
+interface AccelerationData {
+  summary: { immediate: number; this_week: number; total: number };
+  accelerations: AccelerationItem[];
+  termSheetReady: InvestorSummary[];
+  atRisk: InvestorSummary[];
+  deprioritize: InvestorSummary[];
   generatedAt: string;
 }
 
@@ -103,6 +145,37 @@ const MOMENTUM_LABELS: Record<string, string> = {
   stalled: 'Stalled',
 };
 
+const TRIGGER_COLORS: Record<string, string> = {
+  momentum_cliff: 'bg-orange-900/40 text-orange-300 border-orange-800',
+  stall_risk: 'bg-red-900/40 text-red-300 border-red-800',
+  window_closing: 'bg-yellow-900/40 text-yellow-300 border-yellow-800',
+  catalyst_match: 'bg-blue-900/40 text-blue-300 border-blue-800',
+  competitive_pressure: 'bg-purple-900/40 text-purple-300 border-purple-800',
+  term_sheet_ready: 'bg-green-900/40 text-green-300 border-green-800',
+};
+
+const TRIGGER_LABELS: Record<string, string> = {
+  momentum_cliff: 'Momentum Cliff',
+  stall_risk: 'Stall Risk',
+  window_closing: 'Window Closing',
+  catalyst_match: 'Catalyst Match',
+  competitive_pressure: 'Competitive Pressure',
+  term_sheet_ready: 'Term Sheet Ready',
+};
+
+const CONFIDENCE_COLORS: Record<string, string> = {
+  high: 'bg-green-900/30 text-green-400 border-green-800',
+  medium: 'bg-yellow-900/30 text-yellow-400 border-yellow-800',
+  low: 'bg-zinc-800 text-zinc-400 border-zinc-700',
+};
+
+const URGENCY_COLORS: Record<string, string> = {
+  immediate: 'text-red-400',
+  '48h': 'text-orange-400',
+  this_week: 'text-yellow-400',
+  next_week: 'text-zinc-400',
+};
+
 function focusScoreColor(score: number): string {
   if (score >= 70) return 'text-green-400';
   if (score >= 50) return 'text-yellow-400';
@@ -147,7 +220,7 @@ function TierBadge({ tier }: { tier: number }) {
 }
 
 // ---------------------------------------------------------------------------
-// Components
+// Focus Components (existing)
 // ---------------------------------------------------------------------------
 
 function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
@@ -393,25 +466,202 @@ function StaleAlertCard({ item, onReengage }: { item: FocusItem; onReengage: (it
 }
 
 // ---------------------------------------------------------------------------
+// Acceleration Components
+// ---------------------------------------------------------------------------
+
+function AccelerationCard({
+  item,
+  onExecute,
+  executing,
+}: {
+  item: AccelerationItem;
+  onExecute: (item: AccelerationItem) => void;
+  executing: boolean;
+}) {
+  return (
+    <div className="border border-zinc-800 rounded-xl p-4 hover:border-zinc-700 transition-colors bg-zinc-900/60">
+      <div className="flex items-start gap-3">
+        <div className="flex-1 min-w-0">
+          {/* Header: investor name + badges */}
+          <div className="flex items-center gap-2 flex-wrap mb-1.5">
+            <Link
+              href={`/investors/${item.investorId}`}
+              className="text-sm font-semibold hover:text-blue-400 transition-colors"
+            >
+              {item.investorName}
+            </Link>
+            <TierBadge tier={item.investorTier} />
+            <span className={`text-[9px] px-1.5 py-0.5 rounded border ${TRIGGER_COLORS[item.triggerType] ?? TRIGGER_COLORS.stall_risk}`}>
+              {TRIGGER_LABELS[item.triggerType] ?? item.triggerType}
+            </span>
+            <span className={`text-[9px] px-1.5 py-0.5 rounded border ${CONFIDENCE_COLORS[item.confidence] ?? CONFIDENCE_COLORS.medium}`}>
+              {item.confidence} confidence
+            </span>
+          </div>
+
+          {/* Description */}
+          <p className="text-xs text-zinc-300 leading-relaxed mb-2">
+            {item.description}
+          </p>
+
+          {/* Meta row */}
+          <div className="flex items-center gap-4 flex-wrap">
+            <span className="flex items-center gap-1 text-[11px] text-zinc-500">
+              <Timer className="w-3 h-3" />
+              {item.timeEstimate}
+            </span>
+            <span className="text-[11px] text-green-400/80">
+              +{item.expectedLift} pts expected
+            </span>
+            <span className={`text-[11px] font-medium ${URGENCY_COLORS[item.urgency] ?? 'text-zinc-400'}`}>
+              {item.urgency === 'immediate' ? 'Act now' : item.urgency === '48h' ? 'Within 48h' : item.urgency === 'this_week' ? 'This week' : 'Next week'}
+            </span>
+            <span className="text-[10px] text-zinc-600">
+              {item.triggerEvidence}
+            </span>
+          </div>
+        </div>
+
+        {/* Execute button */}
+        <button
+          onClick={() => onExecute(item)}
+          disabled={executing}
+          className="shrink-0 px-3 py-2 bg-blue-600 hover:bg-blue-500 disabled:bg-zinc-700 disabled:text-zinc-500 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5"
+        >
+          <Play className="w-3 h-3" />
+          {executing ? 'Done' : 'Execute'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
+  return (
+    <div className="border border-green-800/40 bg-green-900/10 rounded-xl p-4">
+      <div className="flex items-center gap-2 mb-2">
+        <Rocket className="w-3.5 h-3.5 text-green-400" />
+        <Link
+          href={`/investors/${investor.investorId}`}
+          className="text-sm font-semibold hover:text-blue-400 transition-colors"
+        >
+          {investor.investorName}
+        </Link>
+        <TierBadge tier={investor.investorTier} />
+        <span className={`text-[9px] px-1.5 py-0.5 rounded border ${STATUS_COLORS[investor.status] ?? ''}`}>
+          {STATUS_LABELS[investor.status] ?? investor.status}
+        </span>
+      </div>
+      <div className="flex items-center gap-3 mb-2">
+        <span className="text-[11px] text-zinc-500">Score: <span className="text-green-400 font-bold">{investor.score}</span>/100</span>
+        <span className={`text-[11px] ${MOMENTUM_COLORS[investor.momentum]}`}>
+          {MOMENTUM_LABELS[investor.momentum]}
+        </span>
+        <EnthusiasmDots value={investor.enthusiasm} />
+      </div>
+      <p className="text-[11px] text-zinc-400">{investor.reason}</p>
+    </div>
+  );
+}
+
+function AtRiskCard({ investor }: { investor: InvestorSummary }) {
+  return (
+    <div className="border border-red-800/40 bg-red-900/10 rounded-xl p-4">
+      <div className="flex items-center gap-2 mb-2">
+        <Shield className="w-3.5 h-3.5 text-red-400" />
+        <Link
+          href={`/investors/${investor.investorId}`}
+          className="text-sm font-semibold hover:text-blue-400 transition-colors"
+        >
+          {investor.investorName}
+        </Link>
+        <TierBadge tier={investor.investorTier} />
+      </div>
+      <div className="flex items-center gap-3 mb-2">
+        <span className="text-[11px] text-zinc-500">Score: <span className="text-red-400 font-bold">{investor.score}</span>/100</span>
+        <span className={`text-[11px] ${MOMENTUM_COLORS[investor.momentum]}`}>
+          {MOMENTUM_LABELS[investor.momentum]}
+        </span>
+        <EnthusiasmDots value={investor.enthusiasm} />
+      </div>
+      <p className="text-[11px] text-zinc-400">{investor.reason}</p>
+    </div>
+  );
+}
+
+function DeprioritizeSection({ investors }: { investors: InvestorSummary[] }) {
+  const [expanded, setExpanded] = useState(false);
+
+  if (investors.length === 0) return null;
+
+  return (
+    <div className="border border-zinc-800/50 rounded-xl overflow-hidden">
+      <button
+        onClick={() => setExpanded(!expanded)}
+        className="w-full flex items-center justify-between p-3 text-left hover:bg-zinc-800/30 transition-colors"
+      >
+        <div className="flex items-center gap-2">
+          <Ban className="w-3.5 h-3.5 text-zinc-500" />
+          <span className="text-xs text-zinc-500 font-medium uppercase tracking-wider">
+            Deprioritize ({investors.length})
+          </span>
+        </div>
+        <ChevronDown className={`w-4 h-4 text-zinc-600 transition-transform ${expanded ? 'rotate-180' : ''}`} />
+      </button>
+      {expanded && (
+        <div className="border-t border-zinc-800/50 p-3 space-y-2">
+          {investors.map(inv => (
+            <div key={inv.investorId} className="flex items-center justify-between py-1.5">
+              <div className="flex items-center gap-2">
+                <XCircle className="w-3 h-3 text-zinc-600" />
+                <Link
+                  href={`/investors/${inv.investorId}`}
+                  className="text-xs text-zinc-400 hover:text-blue-400 transition-colors"
+                >
+                  {inv.investorName}
+                </Link>
+                <TierBadge tier={inv.investorTier} />
+              </div>
+              <span className="text-[10px] text-zinc-600">{inv.reason}</span>
+            </div>
+          ))}
+          <p className="text-[10px] text-zinc-600 mt-2 pt-2 border-t border-zinc-800/50">
+            Stop allocating active time to these investors. Move effort to higher-conviction targets.
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Page
 // ---------------------------------------------------------------------------
 
 export default function FocusPage() {
   const { toast } = useToast();
   const [data, setData] = useState<FocusData | null>(null);
+  const [accelData, setAccelData] = useState<AccelerationData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [accelLoading, setAccelLoading] = useState(true);
+  const [executedIds, setExecutedIds] = useState<Set<string>>(new Set());
 
   const fetchData = useCallback(async () => {
     setLoading(true);
+    setAccelLoading(true);
     try {
-      const res = await fetch('/api/focus');
-      if (!res.ok) throw new Error(`Server error (${res.status})`);
-      setData(await res.json());
+      const [focusRes, accelRes] = await Promise.all([
+        fetch('/api/focus'),
+        fetch('/api/acceleration'),
+      ]);
+      if (focusRes.ok) setData(await focusRes.json());
+      if (accelRes.ok) setAccelData(await accelRes.json());
     } catch (err) {
       toast('Failed to load focus data', 'error');
       console.error(err);
     } finally {
       setLoading(false);
+      setAccelLoading(false);
     }
   }, [toast]);
 
@@ -439,6 +689,24 @@ export default function FocusPage() {
       toast(`Re-engagement task created for ${item.investorName}`);
     } catch {
       toast('Failed to create task', 'error');
+    }
+  }
+
+  async function handleExecuteAcceleration(item: AccelerationItem) {
+    try {
+      const res = await fetch('/api/acceleration', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: item.id,
+          status: 'executed',
+        }),
+      });
+      if (!res.ok) throw new Error('Failed to mark action as executed');
+      setExecutedIds(prev => new Set(prev).add(item.id));
+      toast(`Action executed for ${item.investorName}`);
+    } catch {
+      toast('Failed to update action', 'error');
     }
   }
 
@@ -476,6 +744,11 @@ export default function FocusPage() {
   }
 
   const { priorityQueue, quickWins, staleAlerts, weeklyBudget } = data;
+
+  // Group acceleration items by urgency
+  const immediateActions = accelData?.accelerations.filter(a => a.urgency === 'immediate' && !executedIds.has(a.id)) ?? [];
+  const thisWeekActions = accelData?.accelerations.filter(a => (a.urgency === '48h' || a.urgency === 'this_week') && !executedIds.has(a.id)) ?? [];
+  const hasAccelerationData = accelData && accelData.accelerations.length > 0;
 
   return (
     <div className="space-y-6">
@@ -522,12 +795,92 @@ export default function FocusPage() {
         </div>
         <div className="border border-zinc-800 rounded-xl p-4">
           <div className="flex items-center gap-2 text-zinc-500 text-xs mb-1">
-            <Users className="w-3.5 h-3.5" /> Active Pipeline
+            <Rocket className="w-3.5 h-3.5" /> Acceleration
           </div>
-          <div className="text-2xl font-bold">{priorityQueue.length}</div>
-          <div className="text-xs text-zinc-600">investors requiring attention</div>
+          <div className="text-2xl font-bold">{accelData?.summary.total ?? 0}</div>
+          <div className="text-xs text-zinc-600">
+            {accelData?.summary.immediate ?? 0} immediate
+          </div>
         </div>
       </div>
+
+      {/* Deal Acceleration Engine */}
+      {hasAccelerationData && (
+        <div className="space-y-4">
+          <h2 className="text-sm font-medium text-zinc-400 uppercase tracking-wider flex items-center gap-2">
+            <Rocket className="w-4 h-4 text-blue-400" /> Deal Acceleration Engine
+          </h2>
+
+          {/* Term Sheet Ready */}
+          {accelData.termSheetReady.length > 0 && (
+            <div>
+              <h3 className="text-xs font-medium text-green-400 uppercase tracking-wider flex items-center gap-2 mb-2">
+                <CheckCircle className="w-3.5 h-3.5" /> Term Sheet Ready ({accelData.termSheetReady.length})
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                {accelData.termSheetReady.map(inv => (
+                  <TermSheetReadyCard key={inv.investorId} investor={inv} />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Immediate Actions */}
+          {immediateActions.length > 0 && (
+            <div>
+              <h3 className="text-xs font-medium text-red-400 uppercase tracking-wider flex items-center gap-2 mb-2">
+                <AlertTriangle className="w-3.5 h-3.5" /> Immediate ({immediateActions.length})
+              </h3>
+              <div className="space-y-2">
+                {immediateActions.map(item => (
+                  <AccelerationCard
+                    key={item.id}
+                    item={item}
+                    onExecute={handleExecuteAcceleration}
+                    executing={executedIds.has(item.id)}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* This Week Actions */}
+          {thisWeekActions.length > 0 && (
+            <div>
+              <h3 className="text-xs font-medium text-yellow-400 uppercase tracking-wider flex items-center gap-2 mb-2">
+                <Clock className="w-3.5 h-3.5" /> This Week ({thisWeekActions.length})
+              </h3>
+              <div className="space-y-2">
+                {thisWeekActions.map(item => (
+                  <AccelerationCard
+                    key={item.id}
+                    item={item}
+                    onExecute={handleExecuteAcceleration}
+                    executing={executedIds.has(item.id)}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* At Risk */}
+          {accelData.atRisk.length > 0 && (
+            <div>
+              <h3 className="text-xs font-medium text-red-400 uppercase tracking-wider flex items-center gap-2 mb-2">
+                <Shield className="w-3.5 h-3.5" /> At Risk ({accelData.atRisk.length})
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                {accelData.atRisk.map(inv => (
+                  <AtRiskCard key={inv.investorId} investor={inv} />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Deprioritize */}
+          <DeprioritizeSection investors={accelData.deprioritize} />
+        </div>
+      )}
 
       {/* Main content: Priority Queue + Sidebar */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

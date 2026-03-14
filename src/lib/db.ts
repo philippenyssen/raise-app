@@ -1,5 +1,21 @@
 import { createClient, type Client, type InValue } from '@libsql/client';
-import { Investor, Meeting, RaiseConfig, MarketDeal, InvestorPartner, InvestorPortfolioCo, Competitor, IntelligenceBrief, Task, ActivityEvent, type RaisePhase, type TaskPriority } from './types';
+import { Investor, Meeting, RaiseConfig, MarketDeal, InvestorPartner, InvestorPortfolioCo, Competitor, IntelligenceBrief, Task, ActivityEvent, type RaisePhase, type TaskPriority, type FollowupAction, type FollowupActionType, type FollowupStatus } from './types';
+
+// Acceleration Action types
+export interface AccelerationAction {
+  id: string;
+  investor_id: string;
+  investor_name: string | null;
+  trigger_type: 'momentum_cliff' | 'stall_risk' | 'window_closing' | 'catalyst_match' | 'competitive_pressure' | 'term_sheet_ready';
+  action_type: 'milestone_share' | 'expert_call' | 'site_visit' | 'competitive_signal' | 'warm_reintro' | 'data_update' | 'escalation';
+  description: string;
+  expected_lift: number;
+  confidence: 'high' | 'medium' | 'low';
+  status: 'pending' | 'executed' | 'skipped';
+  actual_lift: number | null;
+  executed_at: string | null;
+  created_at: string;
+}
 
 let client: Client;
 let initialized = false;
@@ -266,6 +282,34 @@ async function ensureInitialized() {
       meeting_count INTEGER,
       predicted_outcome TEXT,
       snapshot_date TEXT DEFAULT (date('now')),
+      created_at TEXT DEFAULT (datetime('now'))
+    )`,
+    `CREATE TABLE IF NOT EXISTS followup_actions (
+      id TEXT PRIMARY KEY,
+      meeting_id TEXT NOT NULL,
+      investor_id TEXT NOT NULL,
+      investor_name TEXT,
+      action_type TEXT NOT NULL,
+      description TEXT NOT NULL,
+      due_at TEXT NOT NULL,
+      status TEXT DEFAULT 'pending',
+      outcome TEXT DEFAULT '',
+      conviction_delta INTEGER DEFAULT 0,
+      created_at TEXT DEFAULT (datetime('now')),
+      completed_at TEXT
+    )`,
+    `CREATE TABLE IF NOT EXISTS acceleration_actions (
+      id TEXT PRIMARY KEY,
+      investor_id TEXT NOT NULL,
+      investor_name TEXT,
+      trigger_type TEXT NOT NULL,
+      action_type TEXT NOT NULL,
+      description TEXT NOT NULL,
+      expected_lift INTEGER DEFAULT 0,
+      confidence TEXT DEFAULT 'medium',
+      status TEXT DEFAULT 'pending',
+      actual_lift INTEGER,
+      executed_at TEXT,
       created_at TEXT DEFAULT (datetime('now'))
     )`,
   ], 'write');
@@ -1788,4 +1832,263 @@ export async function getScoreSnapshots(investorId: string, limit: number = 90):
     args: [investorId, limit],
   });
   return result.rows as unknown as ScoreSnapshot[];
+}
+
+// ---------------------------------------------------------------------------
+// Acceleration Actions
+// ---------------------------------------------------------------------------
+
+export async function createAccelerationAction(action: Omit<AccelerationAction, 'id' | 'created_at'>): Promise<AccelerationAction> {
+  await ensureInitialized();
+  const id = crypto.randomUUID();
+  await getClient().execute({
+    sql: `INSERT INTO acceleration_actions (id, investor_id, investor_name, trigger_type, action_type, description, expected_lift, confidence, status, actual_lift, executed_at, created_at)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
+    args: [
+      id,
+      action.investor_id,
+      action.investor_name ?? null,
+      action.trigger_type,
+      action.action_type,
+      action.description,
+      action.expected_lift,
+      action.confidence,
+      action.status,
+      action.actual_lift ?? null,
+      action.executed_at ?? null,
+    ] as InValue[],
+  });
+  const result = await getClient().execute({ sql: 'SELECT * FROM acceleration_actions WHERE id = ?', args: [id] });
+  return result.rows[0] as unknown as AccelerationAction;
+}
+
+export async function getAccelerationActions(filters?: { investor_id?: string; status?: string; trigger_type?: string }): Promise<AccelerationAction[]> {
+  await ensureInitialized();
+  let sql = 'SELECT * FROM acceleration_actions';
+  const args: InValue[] = [];
+  const conditions: string[] = [];
+  if (filters?.investor_id) { conditions.push('investor_id = ?'); args.push(filters.investor_id); }
+  if (filters?.status) { conditions.push('status = ?'); args.push(filters.status); }
+  if (filters?.trigger_type) { conditions.push('trigger_type = ?'); args.push(filters.trigger_type); }
+  if (conditions.length > 0) sql += ' WHERE ' + conditions.join(' AND ');
+  sql += ' ORDER BY created_at DESC';
+  const result = await getClient().execute({ sql, args });
+  return result.rows as unknown as AccelerationAction[];
+}
+
+export async function updateAccelerationAction(id: string, updates: { status?: string; actual_lift?: number; executed_at?: string }): Promise<void> {
+  await ensureInitialized();
+  const sets: string[] = [];
+  const values: InValue[] = [];
+  if (updates.status !== undefined) { sets.push('status = ?'); values.push(updates.status); }
+  if (updates.actual_lift !== undefined) { sets.push('actual_lift = ?'); values.push(updates.actual_lift); }
+  if (updates.executed_at !== undefined) { sets.push('executed_at = ?'); values.push(updates.executed_at); }
+  if (sets.length === 0) return;
+  values.push(id);
+  await getClient().execute({ sql: `UPDATE acceleration_actions SET ${sets.join(', ')} WHERE id = ?`, args: values });
+}
+
+export async function getAccelerationHistory(investorId: string): Promise<AccelerationAction[]> {
+  await ensureInitialized();
+  const result = await getClient().execute({
+    sql: 'SELECT * FROM acceleration_actions WHERE investor_id = ? ORDER BY created_at DESC',
+    args: [investorId],
+  });
+  return result.rows as unknown as AccelerationAction[];
+}
+
+// ---------------------------------------------------------------------------
+// Follow-up Actions
+// ---------------------------------------------------------------------------
+
+export async function createFollowup(followup: {
+  meeting_id: string;
+  investor_id: string;
+  investor_name: string;
+  action_type: FollowupActionType;
+  description: string;
+  due_at: string;
+}): Promise<FollowupAction> {
+  await ensureInitialized();
+  const id = crypto.randomUUID();
+  await getClient().execute({
+    sql: `INSERT INTO followup_actions (id, meeting_id, investor_id, investor_name, action_type, description, due_at, status, outcome, conviction_delta, created_at, completed_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', '', 0, datetime('now'), NULL)`,
+    args: [id, followup.meeting_id, followup.investor_id, followup.investor_name, followup.action_type, followup.description, followup.due_at],
+  });
+  const result = await getClient().execute({ sql: 'SELECT * FROM followup_actions WHERE id = ?', args: [id] });
+  return result.rows[0] as unknown as FollowupAction;
+}
+
+export async function getFollowups(filters?: {
+  status?: FollowupStatus;
+  investor_id?: string;
+  meeting_id?: string;
+}): Promise<FollowupAction[]> {
+  await ensureInitialized();
+  let sql = 'SELECT * FROM followup_actions';
+  const args: InValue[] = [];
+  const conditions: string[] = [];
+  if (filters?.status) { conditions.push('status = ?'); args.push(filters.status); }
+  if (filters?.investor_id) { conditions.push('investor_id = ?'); args.push(filters.investor_id); }
+  if (filters?.meeting_id) { conditions.push('meeting_id = ?'); args.push(filters.meeting_id); }
+  if (conditions.length > 0) sql += ' WHERE ' + conditions.join(' AND ');
+  sql += ' ORDER BY due_at ASC';
+  const result = await getClient().execute({ sql, args });
+  return result.rows as unknown as FollowupAction[];
+}
+
+export async function updateFollowup(id: string, updates: {
+  status?: FollowupStatus;
+  outcome?: string;
+  conviction_delta?: number;
+  completed_at?: string;
+}): Promise<void> {
+  await ensureInitialized();
+  const sets: string[] = [];
+  const values: InValue[] = [];
+  if (updates.status !== undefined) { sets.push('status = ?'); values.push(updates.status); }
+  if (updates.outcome !== undefined) { sets.push('outcome = ?'); values.push(updates.outcome); }
+  if (updates.conviction_delta !== undefined) { sets.push('conviction_delta = ?'); values.push(updates.conviction_delta); }
+  if (updates.completed_at !== undefined) { sets.push('completed_at = ?'); values.push(updates.completed_at); }
+  if (sets.length === 0) return;
+  values.push(id);
+  await getClient().execute({ sql: `UPDATE followup_actions SET ${sets.join(', ')} WHERE id = ?`, args: values });
+}
+
+export async function getPendingFollowups(): Promise<FollowupAction[]> {
+  await ensureInitialized();
+  const result = await getClient().execute({
+    sql: `SELECT * FROM followup_actions WHERE status = 'pending' ORDER BY due_at ASC`,
+    args: [],
+  });
+  return result.rows as unknown as FollowupAction[];
+}
+
+export async function getOverdueFollowups(): Promise<FollowupAction[]> {
+  await ensureInitialized();
+  const now = new Date().toISOString();
+  const result = await getClient().execute({
+    sql: `SELECT * FROM followup_actions WHERE status = 'pending' AND due_at < ? ORDER BY due_at ASC`,
+    args: [now],
+  });
+  return result.rows as unknown as FollowupAction[];
+}
+
+export async function deleteFollowup(id: string): Promise<void> {
+  await ensureInitialized();
+  await getClient().execute({ sql: 'DELETE FROM followup_actions WHERE id = ?', args: [id] });
+}
+
+// Generate follow-up choreography after a meeting
+export async function generateFollowupChoreography(
+  meeting: Meeting,
+  aiData: Record<string, unknown>,
+  investorTier: number,
+): Promise<FollowupAction[]> {
+  const results: FollowupAction[] = [];
+  const meetingDate = new Date(meeting.date + 'T12:00:00Z');
+  const enthusiasm = (aiData.enthusiasm_score as number) || meeting.enthusiasm_score || 3;
+  const suggestedStatus = (aiData.suggested_status as string) || meeting.status_after || 'met';
+
+  // Tier 1 gets faster cadence
+  const tierMultiplier = investorTier === 1 ? 0.75 : investorTier === 2 ? 1 : 1.5;
+
+  // Parse objections
+  let objections: { text: string; severity: string; topic: string }[] = [];
+  try {
+    objections = JSON.parse(meeting.objections || '[]');
+  } catch { /* skip */ }
+  const hasShowstopper = objections.some(o => o.severity === 'showstopper');
+  const hasSignificant = objections.some(o => o.severity === 'showstopper' || o.severity === 'significant');
+
+  // T+0h: Thank-you note
+  const thankYouDue = new Date(meetingDate.getTime() + Math.round(2 * tierMultiplier) * 60 * 60 * 1000);
+  const nextSteps = meeting.next_steps || (aiData.next_steps as string) || '';
+  const thankYouDesc = `Send personalized thank-you note to ${meeting.investor_name}.` +
+    (nextSteps ? `\n\nReference next steps discussed: ${nextSteps}` : '') +
+    `\n\nMeeting was a ${meeting.type.replace(/_/g, ' ')} on ${meeting.date}. Enthusiasm level: ${enthusiasm}/5.`;
+  results.push(await createFollowup({
+    meeting_id: meeting.id,
+    investor_id: meeting.investor_id,
+    investor_name: meeting.investor_name,
+    action_type: 'thank_you',
+    description: thankYouDesc,
+    due_at: thankYouDue.toISOString(),
+  }));
+
+  // T+24h: If unresolved showstopper/significant objection, send targeted response
+  if (hasSignificant) {
+    const objResponseDue = new Date(meetingDate.getTime() + Math.round(24 * tierMultiplier) * 60 * 60 * 1000);
+    const criticalObjs = objections.filter(o => o.severity === 'showstopper' || o.severity === 'significant');
+    const objDesc = `Send targeted response to ${criticalObjs.length} unresolved objection${criticalObjs.length > 1 ? 's' : ''} from ${meeting.investor_name}:\n\n` +
+      criticalObjs.map(o => `- [${o.severity.toUpperCase()}] ${o.text} (topic: ${o.topic})`).join('\n') +
+      `\n\nUse the objection playbook best answers. ${hasShowstopper ? 'SHOWSTOPPER present — this is blocking.' : 'Address before next meeting.'}`;
+    results.push(await createFollowup({
+      meeting_id: meeting.id,
+      investor_id: meeting.investor_id,
+      investor_name: meeting.investor_name,
+      action_type: 'objection_response',
+      description: objDesc,
+      due_at: objResponseDue.toISOString(),
+    }));
+  }
+
+  // T+48h: If enthusiasm >= 4, schedule next meeting / DD session
+  if (enthusiasm >= 4) {
+    const scheduleDue = new Date(meetingDate.getTime() + Math.round(48 * tierMultiplier) * 60 * 60 * 1000);
+    const nextMeetingType = suggestedStatus === 'in_dd' ? 'DD session' :
+      suggestedStatus === 'engaged' ? 'deep dive' :
+      suggestedStatus === 'term_sheet' ? 'term sheet discussion' : 'follow-up meeting';
+    results.push(await createFollowup({
+      meeting_id: meeting.id,
+      investor_id: meeting.investor_id,
+      investor_name: meeting.investor_name,
+      action_type: 'schedule_followup',
+      description: `Schedule ${nextMeetingType} with ${meeting.investor_name}. Enthusiasm at ${enthusiasm}/5 — capitalize on momentum.\n\nSuggested status: ${suggestedStatus}. ${investorTier === 1 ? 'Tier 1 — prioritize for earliest available slot.' : ''}`,
+      due_at: scheduleDue.toISOString(),
+    }));
+  }
+
+  // Stage-specific: data share after management presentation or deep dive
+  if (['management_presentation', 'deep_dive', 'dd_session'].includes(meeting.type)) {
+    const dataShareDue = new Date(meetingDate.getTime() + Math.round(24 * tierMultiplier) * 60 * 60 * 1000);
+    const materials = suggestedStatus === 'in_dd'
+      ? 'data room access, financial model, management reference list, and DD request list'
+      : suggestedStatus === 'engaged'
+      ? 'executive brief, one-pager, and requested supplementary materials'
+      : 'deck and one-pager';
+    results.push(await createFollowup({
+      meeting_id: meeting.id,
+      investor_id: meeting.investor_id,
+      investor_name: meeting.investor_name,
+      action_type: 'data_share',
+      description: `Share materials with ${meeting.investor_name}: ${materials}.\n\nThis is a ${meeting.type.replace(/_/g, ' ')} follow-up. Send within 24h to maintain momentum.`,
+      due_at: dataShareDue.toISOString(),
+    }));
+  }
+
+  // T+5d: Warm re-engagement
+  const reengageDue = new Date(meetingDate.getTime() + Math.round(5 * 24 * tierMultiplier) * 60 * 60 * 1000);
+  results.push(await createFollowup({
+    meeting_id: meeting.id,
+    investor_id: meeting.investor_id,
+    investor_name: meeting.investor_name,
+    action_type: 'warm_reengagement',
+    description: `Check in with ${meeting.investor_name} if no response received. Share a relevant new data point (milestone, market intel, or comparable deal).\n\n${investorTier === 1 ? 'Tier 1 investor — consider reaching through warm path if direct channel is silent.' : 'Standard re-engagement.'}`,
+    due_at: reengageDue.toISOString(),
+  }));
+
+  // T+10d: Escalation via warm path
+  const escalateDue = new Date(meetingDate.getTime() + Math.round(10 * 24 * tierMultiplier) * 60 * 60 * 1000);
+  results.push(await createFollowup({
+    meeting_id: meeting.id,
+    investor_id: meeting.investor_id,
+    investor_name: meeting.investor_name,
+    action_type: 'milestone_update',
+    description: `If still no response from ${meeting.investor_name}, escalate via warm path or share a milestone update.\n\n${enthusiasm <= 2 ? 'Low enthusiasm — consider whether to persist or reallocate effort.' : 'Maintain engagement — this investor showed interest.'}`,
+    due_at: escalateDue.toISOString(),
+  }));
+
+  return results;
 }

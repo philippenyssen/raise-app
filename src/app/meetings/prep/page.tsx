@@ -1,18 +1,62 @@
 'use client';
 
-import { useEffect, useState, useMemo, useRef } from 'react';
+import { useEffect, useState, useMemo, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import {
   Users, Calendar, AlertTriangle, CheckCircle, MessageSquare,
   ChevronDown, Printer, Briefcase, Target, Shield, Clock,
   TrendingUp, Star, FileText, Loader2, BookOpen, Building2,
-  ArrowLeft, Zap, CircleDot, ExternalLink,
+  ArrowLeft, Zap, CircleDot, ExternalLink, Sparkles,
+  ListChecks, MessageCircleQuestion, FolderOpen, ChevronRight,
 } from 'lucide-react';
 import type {
   Investor, Meeting, Task, Objection, EngagementSignal,
   IntelligenceBrief, InvestorPartner, InvestorPortfolioCo,
 } from '@/lib/types';
 import { useToast } from '@/components/toast';
+
+// ---------- types for the meeting brief ----------
+
+interface MeetingBrief {
+  investor: {
+    id: string;
+    name: string;
+    type: string;
+    tier: number;
+    status: string;
+    enthusiasm: number;
+    partner: string;
+    fund_size: string;
+    check_size_range: string;
+    sector_thesis: string;
+  };
+  narrative_profile: {
+    opening_hook: string;
+    emphasis: string[];
+    tone_guidance: string;
+    avoid_topics: string[];
+  };
+  brief: {
+    personalized_opening: string;
+    key_talking_points: string[];
+    metrics_to_highlight: { metric: string; value: string; why: string }[];
+    anticipated_questions_with_answers: { question: string; suggested_answer: string }[];
+    previous_meeting_summary: string | null;
+    unresolved_items: string[];
+    risks_to_watch: string[];
+    recommended_ask: string;
+  };
+  data_room_priority: { category: string; documents: { id: string; title: string; type: string }[] }[];
+  playbook_insights: { topic: string; count: number; bestResponse: string | null }[];
+  meeting_history: {
+    total_meetings: number;
+    latest_meeting: { date: string; type: string; enthusiasm: number; next_steps: string; ai_analysis: string } | null;
+    unresolved_objections: { text: string; severity: string; topic: string; from_date: string }[];
+    enthusiasm_trajectory: { date: string; score: number }[];
+  };
+  partners: { name: string; title: string; focus_areas: string; relevance: string }[];
+  generated_at: string;
+}
 
 // ---------- helpers ----------
 
@@ -63,6 +107,11 @@ export default function MeetingPrepPage() {
   const [partners, setPartners] = useState<InvestorPartner[]>([]);
   const [portfolio, setPortfolio] = useState<InvestorPortfolioCo[]>([]);
 
+  // meeting brief state
+  const [meetingBrief, setMeetingBrief] = useState<MeetingBrief | null>(null);
+  const [generatingBrief, setGeneratingBrief] = useState(false);
+  const [briefExpanded, setBriefExpanded] = useState(true);
+
   // ui state
   const [loading, setLoading] = useState(true);
   const [loadingPrep, setLoadingPrep] = useState(false);
@@ -90,10 +139,12 @@ export default function MeetingPrepPage() {
       setPartners([]);
       setPortfolio([]);
       setNotes('');
+      setMeetingBrief(null);
       return;
     }
 
     setLoadingPrep(true);
+    setMeetingBrief(null);
 
     const safeFetch = (url: string) => fetch(url).then(r => r.ok ? r.json() : []).catch(() => []);
     Promise.all([
@@ -117,6 +168,31 @@ export default function MeetingPrepPage() {
 
   const investor = useMemo(() => investors.find(i => i.id === selectedId), [investors, selectedId]);
 
+  // ---- generate meeting brief ----
+  const generateBrief = useCallback(async () => {
+    if (!selectedId) return;
+    setGeneratingBrief(true);
+    try {
+      const res = await fetch('/api/meeting-brief', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ investor_id: selectedId }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || 'Failed to generate brief');
+      }
+      const brief: MeetingBrief = await res.json();
+      setMeetingBrief(brief);
+      setBriefExpanded(true);
+      toast('Meeting brief generated');
+    } catch (err) {
+      toast(err instanceof Error ? err.message : 'Failed to generate brief', 'error');
+    } finally {
+      setGeneratingBrief(false);
+    }
+  }, [selectedId, toast]);
+
   // ---- derived intelligence ----
   const allObjections = useMemo(() => {
     const out: (Objection & { meetingDate: string })[] = [];
@@ -130,11 +206,6 @@ export default function MeetingPrepPage() {
   const unresolvedObjections = useMemo(
     () => allObjections.filter(o => o.response_effectiveness !== 'resolved'),
     [allObjections],
-  );
-
-  const allNextSteps = useMemo(
-    () => meetings.filter(m => m.next_steps).map(m => ({ date: m.date, steps: m.next_steps })),
-    [meetings],
   );
 
   const latestMeeting = useMemo(() => meetings[0] ?? null, [meetings]);
@@ -168,7 +239,6 @@ export default function MeetingPrepPage() {
   const talkingPoints = useMemo(() => {
     const points: { category: string; text: string; priority: 'high' | 'medium' | 'low' }[] = [];
 
-    // Follow up on previous next steps
     if (latestMeeting?.next_steps) {
       points.push({
         category: 'Follow-up',
@@ -177,7 +247,6 @@ export default function MeetingPrepPage() {
       });
     }
 
-    // Preempt unresolved objections
     unresolvedObjections.forEach(o => {
       points.push({
         category: 'Objection to preempt',
@@ -186,7 +255,6 @@ export default function MeetingPrepPage() {
       });
     });
 
-    // Build on excitement signals
     if (engagementSignals) {
       if (engagementSignals.asked_about_process) {
         points.push({ category: 'Positive signal', text: 'They asked about our process/timeline — they are tracking the deal. Reinforce urgency.', priority: 'medium' });
@@ -216,7 +284,6 @@ export default function MeetingPrepPage() {
       }
     }
 
-    // Portfolio conflicts
     if (portfolioConflicts.length > 0) {
       points.push({
         category: 'Risk',
@@ -225,7 +292,6 @@ export default function MeetingPrepPage() {
       });
     }
 
-    // Pending tasks
     if (pendingTasks.length > 0) {
       points.push({
         category: 'Open items',
@@ -234,7 +300,6 @@ export default function MeetingPrepPage() {
       });
     }
 
-    // Enthusiasm trend
     if (enthusiasmTrend === 'declining') {
       points.push({
         category: 'Warning',
@@ -249,7 +314,6 @@ export default function MeetingPrepPage() {
       });
     }
 
-    // IC process awareness
     if (investor?.ic_process) {
       points.push({
         category: 'Process',
@@ -315,15 +379,31 @@ export default function MeetingPrepPage() {
               <p className="text-zinc-500 text-sm mt-0.5">Prepare for your next investor meeting</p>
             </div>
           </div>
-          {investor && (
-            <button
-              onClick={handlePrint}
-              className="no-print px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
-            >
-              <Printer className="w-4 h-4" />
-              Print Prep Sheet
-            </button>
-          )}
+          <div className="flex items-center gap-2">
+            {investor && (
+              <>
+                <button
+                  onClick={generateBrief}
+                  disabled={generatingBrief}
+                  className="no-print px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:bg-blue-600/50 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+                >
+                  {generatingBrief ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Sparkles className="w-4 h-4" />
+                  )}
+                  {generatingBrief ? 'Generating...' : 'Generate Brief'}
+                </button>
+                <button
+                  onClick={handlePrint}
+                  className="no-print px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+                >
+                  <Printer className="w-4 h-4" />
+                  Print
+                </button>
+              </>
+            )}
+          </div>
         </div>
 
         {/* Investor selector */}
@@ -338,7 +418,7 @@ export default function MeetingPrepPage() {
               <option value="">Choose an investor...</option>
               {investors.map(inv => (
                 <option key={inv.id} value={inv.id}>
-                  {inv.name} — {TYPE_LABELS[inv.type] || inv.type} (T{inv.tier})
+                  {inv.name} -- {TYPE_LABELS[inv.type] || inv.type} (T{inv.tier})
                 </option>
               ))}
             </select>
@@ -366,6 +446,217 @@ export default function MeetingPrepPage() {
         {/* Prep content */}
         {investor && !loadingPrep && (
           <div className="space-y-5">
+
+            {/* ============ CUSTOMIZED MEETING BRIEF (AI-generated) ============ */}
+            {meetingBrief && (
+              <section className="border border-blue-800/40 rounded-xl bg-blue-950/10 print-card overflow-hidden">
+                <button
+                  onClick={() => setBriefExpanded(!briefExpanded)}
+                  className="w-full p-5 flex items-center justify-between no-print"
+                >
+                  <h2 className="text-sm font-semibold text-blue-400 uppercase tracking-wider flex items-center gap-2 print-section-title">
+                    <Sparkles className="w-4 h-4" />
+                    Customized Brief for {investor.name} ({TYPE_LABELS[investor.type] || investor.type})
+                  </h2>
+                  <ChevronRight className={`w-4 h-4 text-blue-400 transition-transform ${briefExpanded ? 'rotate-90' : ''}`} />
+                </button>
+                {/* Print-only static header */}
+                <div className="hidden print:block p-5 pb-0">
+                  <h2 className="text-sm font-semibold uppercase tracking-wider flex items-center gap-2 print-section-title">
+                    Customized Brief for {investor.name} ({TYPE_LABELS[investor.type] || investor.type})
+                  </h2>
+                </div>
+
+                {briefExpanded && (
+                  <div className="px-5 pb-5 space-y-5">
+                    {/* Opening Hook */}
+                    <div>
+                      <h3 className="text-xs font-medium text-blue-400/70 uppercase tracking-wider mb-2">Opening</h3>
+                      <p className="text-sm text-zinc-200 leading-relaxed">{meetingBrief.brief.personalized_opening}</p>
+                    </div>
+
+                    {/* Narrative Profile */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <h3 className="text-xs font-medium text-blue-400/70 uppercase tracking-wider mb-2">Emphasize</h3>
+                        <div className="flex flex-wrap gap-1.5">
+                          {meetingBrief.narrative_profile.emphasis.map((e, i) => (
+                            <span key={i} className="text-xs px-2 py-1 rounded-md bg-blue-900/30 text-blue-300">{e}</span>
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <h3 className="text-xs font-medium text-red-400/70 uppercase tracking-wider mb-2">Avoid</h3>
+                        <div className="flex flex-wrap gap-1.5">
+                          {meetingBrief.narrative_profile.avoid_topics.map((t, i) => (
+                            <span key={i} className="text-xs px-2 py-1 rounded-md bg-red-900/20 text-red-400/80">{t}</span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Key Talking Points */}
+                    <div>
+                      <h3 className="text-xs font-medium text-blue-400/70 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                        <ListChecks className="w-3.5 h-3.5" />
+                        Key Talking Points
+                      </h3>
+                      <div className="space-y-2">
+                        {meetingBrief.brief.key_talking_points.map((point, i) => (
+                          <div key={i} className="flex items-start gap-2.5 text-sm">
+                            <span className="shrink-0 mt-1.5 w-1.5 h-1.5 rounded-full bg-blue-400" />
+                            <span className="text-zinc-300">{point}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Key Metrics */}
+                    {meetingBrief.brief.metrics_to_highlight.length > 0 && (
+                      <div>
+                        <h3 className="text-xs font-medium text-blue-400/70 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                          <Target className="w-3.5 h-3.5" />
+                          Key Metrics
+                        </h3>
+                        <div className="border border-zinc-800/50 rounded-lg overflow-hidden">
+                          <table className="w-full text-xs">
+                            <thead className="bg-zinc-900/30 border-b border-zinc-800/50">
+                              <tr>
+                                <th className="text-left px-3 py-2 text-zinc-500 font-medium">Metric</th>
+                                <th className="text-left px-3 py-2 text-zinc-500 font-medium">Value</th>
+                                <th className="text-left px-3 py-2 text-zinc-500 font-medium">Why It Matters</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-zinc-800/30">
+                              {meetingBrief.brief.metrics_to_highlight.map((m, i) => (
+                                <tr key={i}>
+                                  <td className="px-3 py-2 text-zinc-200 font-medium">{m.metric}</td>
+                                  <td className="px-3 py-2 text-blue-400 font-mono">{m.value}</td>
+                                  <td className="px-3 py-2 text-zinc-400">{m.why}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Anticipated Questions with Answers */}
+                    {meetingBrief.brief.anticipated_questions_with_answers.length > 0 && (
+                      <div>
+                        <h3 className="text-xs font-medium text-blue-400/70 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                          <MessageCircleQuestion className="w-3.5 h-3.5" />
+                          Anticipated Questions + Suggested Answers
+                        </h3>
+                        <div className="space-y-3">
+                          {meetingBrief.brief.anticipated_questions_with_answers.map((qa, i) => (
+                            <div key={i} className="border border-zinc-800/40 rounded-lg p-3">
+                              <p className="text-sm font-medium text-zinc-200 mb-1.5">Q: {qa.question}</p>
+                              <p className="text-xs text-zinc-400 leading-relaxed">A: {qa.suggested_answer}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Data Room Priority */}
+                    {meetingBrief.data_room_priority.length > 0 && (
+                      <div>
+                        <h3 className="text-xs font-medium text-blue-400/70 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                          <FolderOpen className="w-3.5 h-3.5" />
+                          Data Room Priority
+                        </h3>
+                        <div className="space-y-1.5">
+                          {meetingBrief.data_room_priority.map((dr, i) => (
+                            <div key={i} className="flex items-center gap-2 text-sm">
+                              <span className="text-xs font-mono text-zinc-500 w-4">{i + 1}.</span>
+                              <span className="text-zinc-300">{dr.category}</span>
+                              {dr.documents.length > 0 && (
+                                <span className="text-xs text-zinc-600">
+                                  ({dr.documents.map(d => d.title).join(', ')})
+                                </span>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Previous Meeting + Unresolved Items */}
+                    {meetingBrief.brief.previous_meeting_summary && (
+                      <div className="border-t border-zinc-800/30 pt-4">
+                        <h3 className="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-2">Previous Meeting</h3>
+                        <p className="text-sm text-zinc-400">{meetingBrief.brief.previous_meeting_summary}</p>
+                      </div>
+                    )}
+
+                    {meetingBrief.brief.unresolved_items.length > 0 && (
+                      <div>
+                        <h3 className="text-xs font-medium text-orange-400/70 uppercase tracking-wider mb-2">Unresolved Items</h3>
+                        <div className="space-y-1.5">
+                          {meetingBrief.brief.unresolved_items.map((item, i) => (
+                            <div key={i} className="flex items-start gap-2 text-sm">
+                              <AlertTriangle className="w-3.5 h-3.5 text-orange-400 shrink-0 mt-0.5" />
+                              <span className="text-zinc-300">{item}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Risks to Watch */}
+                    {meetingBrief.brief.risks_to_watch.length > 0 && (
+                      <div>
+                        <h3 className="text-xs font-medium text-red-400/70 uppercase tracking-wider mb-2">Risks to Watch</h3>
+                        <div className="space-y-1.5">
+                          {meetingBrief.brief.risks_to_watch.map((risk, i) => (
+                            <div key={i} className="flex items-start gap-2 text-sm">
+                              <Shield className="w-3.5 h-3.5 text-red-400/70 shrink-0 mt-0.5" />
+                              <span className="text-zinc-400">{risk}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Recommended Ask */}
+                    <div className="border-t border-zinc-800/30 pt-4">
+                      <h3 className="text-xs font-medium text-green-400/70 uppercase tracking-wider mb-2">Recommended Ask</h3>
+                      <p className="text-sm text-zinc-200 font-medium">{meetingBrief.brief.recommended_ask}</p>
+                    </div>
+
+                    {/* Playbook Insights */}
+                    {meetingBrief.playbook_insights.length > 0 && (
+                      <div className="border-t border-zinc-800/30 pt-4">
+                        <h3 className="text-xs font-medium text-purple-400/70 uppercase tracking-wider mb-2">Playbook Insights</h3>
+                        <div className="space-y-2">
+                          {meetingBrief.playbook_insights.map((pi, i) => (
+                            <div key={i} className="text-sm">
+                              <span className="text-xs px-1.5 py-0.5 rounded bg-purple-900/30 text-purple-400 mr-2">
+                                {pi.topic} ({pi.count}x)
+                              </span>
+                              {pi.bestResponse && (
+                                <span className="text-zinc-400 text-xs">Best response: {pi.bestResponse}</span>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Tone Guidance */}
+                    <div className="border-t border-zinc-800/30 pt-4">
+                      <h3 className="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-2">Tone Guidance</h3>
+                      <p className="text-xs text-zinc-500 italic">{meetingBrief.narrative_profile.tone_guidance}</p>
+                    </div>
+
+                    <div className="text-xs text-zinc-600 text-right">
+                      Generated {new Date(meetingBrief.generated_at).toLocaleString('en-GB')}
+                    </div>
+                  </div>
+                )}
+              </section>
+            )}
 
             {/* ============ INVESTOR PROFILE ============ */}
             <section className="border border-zinc-800 rounded-xl p-5 print-card">
@@ -493,7 +784,7 @@ export default function MeetingPrepPage() {
                       <Shield className="w-4 h-4 text-orange-400 shrink-0 mt-0.5" />
                       <div>
                         <span className="text-zinc-300 font-medium">Portfolio company overlap: </span>
-                        <span className="text-zinc-400">{pc.company} ({pc.sector}) — {pc.relevance}</span>
+                        <span className="text-zinc-400">{pc.company} ({pc.sector}) -- {pc.relevance}</span>
                       </div>
                     </div>
                   ))}

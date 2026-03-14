@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getMeetings, createMeeting, updateMeeting, getInvestor, processPostMeetingIntelligence, logActivity, createObjectionRecord, updateObjectionEnthusiasmDelta } from '@/lib/db';
+import { getMeetings, createMeeting, updateMeeting, getInvestor, processPostMeetingIntelligence, logActivity, createObjectionRecord, updateObjectionEnthusiasmDelta, generateFollowupChoreography } from '@/lib/db';
 import { analyzeMeetingNotes } from '@/lib/ai';
 
 export async function GET(req: NextRequest) {
@@ -61,6 +61,16 @@ export async function POST(req: NextRequest) {
     });
   } catch { /* non-blocking */ }
 
+  // Generate follow-up choreography
+  let followupPlan = null;
+  try {
+    const investor = await getInvestor(investor_id);
+    const tier = investor?.tier ?? 2;
+    followupPlan = await generateFollowupChoreography(meeting, aiData, tier);
+  } catch (err) {
+    console.error('Follow-up choreography generation failed:', err);
+  }
+
   // Auto-populate objection_responses from extracted objections
   try {
     const objections = (aiData.objections || []) as { text: string; severity: string; topic: string }[];
@@ -94,6 +104,7 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({
     ...meeting,
     post_meeting_actions: postMeetingActions,
+    followup_plan: followupPlan,
   }, { status: 201 });
 }
 

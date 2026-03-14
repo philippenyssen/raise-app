@@ -233,6 +233,24 @@ export interface IntelligenceBrief {
   updated_at: string;
 }
 
+export type FollowupActionType = 'thank_you' | 'objection_response' | 'data_share' | 'schedule_followup' | 'warm_reengagement' | 'milestone_update';
+export type FollowupStatus = 'pending' | 'completed' | 'skipped';
+
+export interface FollowupAction {
+  id: string;
+  meeting_id: string;
+  investor_id: string;
+  investor_name: string;
+  action_type: FollowupActionType;
+  description: string;
+  due_at: string;
+  status: FollowupStatus;
+  outcome: string;
+  conviction_delta: number;
+  created_at: string;
+  completed_at: string | null;
+}
+
 export type DocumentFlagType = 'objection_response' | 'number_update' | 'section_improvement';
 export type DocumentFlagStatus = 'open' | 'addressed' | 'dismissed';
 

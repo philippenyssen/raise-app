@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { Investor } from '@/lib/types';
 import PostMeetingActions from '@/components/post-meeting-actions';
+import FollowupPlan from '@/components/followup-plan';
 
 export default function NewMeetingPage() {
   const router = useRouter();
@@ -251,6 +252,17 @@ The AI will extract structured data from your free-form notes.`}
         <PostMeetingActions
           data={postMeetingActions}
           meetingId={result.id as string}
+        />
+      )}
+
+      {/* Follow-up Plan */}
+      {result && Array.isArray((result as Record<string, unknown>).followup_plan) && (
+        <FollowupPlan
+          followups={(result as Record<string, unknown>).followup_plan as {
+            id: string; meeting_id: string; investor_id: string; investor_name: string;
+            action_type: string; description: string; due_at: string; status: string;
+            outcome: string; conviction_delta: number; created_at: string; completed_at: string | null;
+          }[]}
         />
       )}
     </div>
