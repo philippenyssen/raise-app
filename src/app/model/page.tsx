@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { SplitPane } from '@/components/workspace/split-pane';
-import { ExcelViewer, type CellData } from '@/components/workspace/excel-viewer';
+import { ExcelViewer, type CellData, type SheetData } from '@/components/workspace/excel-viewer';
 import { AIChat } from '@/components/workspace/ai-chat';
 import { useToast } from '@/components/toast';
 import { ConfirmModal, InputModal } from '@/components/ui/confirm-modal';
@@ -272,6 +272,15 @@ export default function ModelPage() {
 
   const activeSheet = sheets.find(s => s.id === activeSheetId);
 
+  // Build allSheets data for cross-sheet formula resolution in HyperFormula
+  const allSheetsData: SheetData[] = useMemo(() => {
+    return sheets.map(s => {
+      let sheetCells: Record<string, CellData> = {};
+      try { sheetCells = JSON.parse(s.data); } catch { /* empty */ }
+      return { name: s.sheet_name, cells: sheetCells };
+    });
+  }, [sheets]);
+
   // Build a structured representation of the active sheet for AI context
   const modelContext = activeSheet
     ? `Sheet: ${activeSheet.sheet_name}\nCells (ref: value [formula] [type]):\n${Object.entries(localCells).map(([ref, cell]) => {
@@ -369,6 +378,8 @@ export default function ModelPage() {
                 onCellChange={handleCellChange}
                 rows={40}
                 cols={12}
+                allSheets={allSheetsData}
+                activeSheetName={activeSheet.sheet_name}
               />
             }
             right={

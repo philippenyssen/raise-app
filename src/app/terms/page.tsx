@@ -1,6 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useToast } from '@/components/toast';
+import { ConfirmModal } from '@/components/ui/confirm-modal';
 
 interface TermSheet {
   id: string;
@@ -16,9 +18,11 @@ interface TermSheet {
   exclusivity: string;
   strategic_value: number;
   notes: string;
+  created_at: string;
+  updated_at: string;
 }
 
-const EMPTY_TS: Omit<TermSheet, 'id'> = {
+const EMPTY_TS = {
   investor: '', valuation: '', amount: '', liq_pref: '1x non-participating',
   anti_dilution: 'Broad-based weighted average', board_seats: '1 + observer',
   dividends: 'None', protective_provisions: 'Standard', option_pool: '',
@@ -35,35 +39,99 @@ const MARKET_STANDARDS: Record<string, string> = {
 };
 
 export default function TermsPage() {
+  const { toast } = useToast();
   const [sheets, setSheets] = useState<TermSheet[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState<Omit<TermSheet, 'id'>>(EMPTY_TS);
+  const [editId, setEditId] = useState<string | null>(null);
+  const [form, setForm] = useState(EMPTY_TS);
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; investor: string } | null>(null);
 
-  function addSheet(e: React.FormEvent) {
-    e.preventDefault();
-    setSheets(s => [...s, { ...form, id: crypto.randomUUID() }]);
-    setForm(EMPTY_TS);
-    setShowForm(false);
+  useEffect(() => { fetchSheets(); }, []);
+
+  async function fetchSheets() {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/term-sheets');
+      setSheets(await res.json());
+    } catch {
+      toast('Failed to load term sheets', 'error');
+    } finally {
+      setLoading(false);
+    }
   }
 
-  function removeSheet(id: string) {
-    setSheets(s => s.filter(ts => ts.id !== id));
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    try {
+      if (editId) {
+        await fetch('/api/term-sheets', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: editId, ...form }),
+        });
+        toast(`${form.investor} updated`);
+      } else {
+        await fetch('/api/term-sheets', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(form),
+        });
+        toast(`${form.investor} term sheet added`);
+      }
+      setShowForm(false);
+      setEditId(null);
+      setForm(EMPTY_TS);
+      fetchSheets();
+    } catch {
+      toast('Failed to save term sheet', 'error');
+    }
+  }
+
+  async function handleDelete() {
+    if (!deleteTarget) return;
+    try {
+      await fetch(`/api/term-sheets?id=${deleteTarget.id}`, { method: 'DELETE' });
+      toast('Term sheet deleted', 'warning');
+      setDeleteTarget(null);
+      fetchSheets();
+    } catch {
+      toast('Failed to delete term sheet', 'error');
+    }
+  }
+
+  function startEdit(ts: TermSheet) {
+    setForm({
+      investor: ts.investor, valuation: ts.valuation, amount: ts.amount,
+      liq_pref: ts.liq_pref, anti_dilution: ts.anti_dilution,
+      board_seats: ts.board_seats, dividends: ts.dividends,
+      protective_provisions: ts.protective_provisions, option_pool: ts.option_pool,
+      exclusivity: ts.exclusivity, strategic_value: ts.strategic_value, notes: ts.notes,
+    });
+    setEditId(ts.id);
+    setShowForm(true);
   }
 
   function scoreSheet(ts: TermSheet): { score: number; flags: string[] } {
     const flags: string[] = [];
-    let score = 50; // base
-
-    // Valuation scoring (simplified)
+    let score = 50;
     if (ts.liq_pref.toLowerCase().includes('participating')) { flags.push('Participating preferred - RED FLAG'); score -= 15; }
     if (ts.anti_dilution.toLowerCase().includes('full ratchet')) { flags.push('Full ratchet anti-dilution - RED FLAG'); score -= 15; }
     if (ts.board_seats.includes('2') || ts.board_seats.includes('3')) { flags.push('Multiple board seats - overreach'); score -= 10; }
     if (ts.dividends.toLowerCase().includes('cumulative')) { flags.push('Cumulative dividends - hidden cost'); score -= 10; }
     if (ts.liq_pref === '1x non-participating') score += 10;
     if (ts.anti_dilution === 'Broad-based weighted average') score += 10;
-    score += ts.strategic_value * 6; // 0-30 points for strategic value
-
+    score += ts.strategic_value * 6;
     return { score: Math.max(0, Math.min(100, score)), flags };
+  }
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="h-8 w-48 bg-zinc-800 rounded animate-pulse" />
+        <div className="h-20 bg-zinc-800/50 rounded-xl animate-pulse" />
+      </div>
+    );
   }
 
   return (
@@ -76,7 +144,7 @@ export default function TermsPage() {
           </p>
         </div>
         <button
-          onClick={() => setShowForm(!showForm)}
+          onClick={() => { setShowForm(!showForm); setEditId(null); setForm(EMPTY_TS); }}
           className="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm font-medium transition-colors"
         >
           + Add Term Sheet
@@ -96,10 +164,10 @@ export default function TermsPage() {
         </div>
       </div>
 
-      {/* Add Form */}
+      {/* Add/Edit Form */}
       {showForm && (
-        <form onSubmit={addSheet} className="border border-zinc-800 rounded-xl p-6 space-y-4">
-          <h3 className="text-sm font-medium text-zinc-400">ADD TERM SHEET</h3>
+        <form onSubmit={handleSubmit} className="border border-zinc-800 rounded-xl p-6 space-y-4">
+          <h3 className="text-sm font-medium text-zinc-400">{editId ? 'EDIT' : 'ADD'} TERM SHEET</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <TsInput label="Investor" value={form.investor} onChange={v => setForm(f => ({ ...f, investor: v }))} required />
             <TsInput label="Pre-Money Valuation" value={form.valuation} onChange={v => setForm(f => ({ ...f, valuation: v }))} placeholder="e.g., 2.0Bn" />
@@ -121,13 +189,17 @@ export default function TermsPage() {
           </div>
           <TsInput label="Notes" value={form.notes} onChange={v => setForm(f => ({ ...f, notes: v }))} />
           <div className="flex gap-2">
-            <button type="submit" className="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm font-medium">Add</button>
-            <button type="button" onClick={() => setShowForm(false)} className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm">Cancel</button>
+            <button type="submit" className="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm font-medium">
+              {editId ? 'Update' : 'Add'}
+            </button>
+            <button type="button" onClick={() => { setShowForm(false); setEditId(null); }} className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm">
+              Cancel
+            </button>
           </div>
         </form>
       )}
 
-      {/* Comparison */}
+      {/* Comparison Table */}
       {sheets.length > 0 && (
         <div className="border border-zinc-800 rounded-xl overflow-x-auto">
           <table className="w-full text-sm">
@@ -136,9 +208,12 @@ export default function TermsPage() {
                 <th className="text-left px-4 py-3 text-xs text-zinc-500 font-medium w-40">Term</th>
                 {sheets.map(ts => (
                   <th key={ts.id} className="text-left px-4 py-3 text-xs text-zinc-300 font-medium min-w-48">
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between gap-2">
                       {ts.investor}
-                      <button onClick={() => removeSheet(ts.id)} className="text-zinc-600 hover:text-red-400 ml-2">&times;</button>
+                      <div className="flex gap-1 shrink-0">
+                        <button onClick={() => startEdit(ts)} className="text-zinc-600 hover:text-zinc-300 text-[10px]">Edit</button>
+                        <button onClick={() => setDeleteTarget({ id: ts.id, investor: ts.investor })} className="text-zinc-600 hover:text-red-400 text-[10px]">Del</button>
+                      </div>
                     </div>
                   </th>
                 ))}
@@ -146,7 +221,7 @@ export default function TermsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-800/50">
-              {[
+              {([
                 ['Valuation', 'valuation'],
                 ['Amount', 'amount'],
                 ['Liq. Pref', 'liq_pref'],
@@ -156,20 +231,20 @@ export default function TermsPage() {
                 ['Protective Provisions', 'protective_provisions'],
                 ['Option Pool', 'option_pool'],
                 ['Exclusivity', 'exclusivity'],
-              ].map(([label, key]) => (
+              ] as const).map(([label, key]) => (
                 <tr key={key} className="hover:bg-zinc-900/30">
                   <td className="px-4 py-2.5 text-zinc-500 text-xs">{label}</td>
                   {sheets.map(ts => {
-                    const val = (ts as unknown as Record<string, unknown>)[key] as string;
+                    const val = ts[key as keyof TermSheet] as string;
                     const standard = MARKET_STANDARDS[key];
                     const isStandard = standard && val.toLowerCase() === standard.toLowerCase();
                     return (
                       <td key={ts.id} className={`px-4 py-2.5 text-xs ${isStandard ? 'text-green-400' : 'text-zinc-300'}`}>
-                        {val || '—'}
+                        {val || '\u2014'}
                       </td>
                     );
                   })}
-                  <td className="px-4 py-2.5 text-xs text-zinc-600">{MARKET_STANDARDS[key] || '—'}</td>
+                  <td className="px-4 py-2.5 text-xs text-zinc-600">{MARKET_STANDARDS[key] || '\u2014'}</td>
                 </tr>
               ))}
               {/* Score Row */}
@@ -200,6 +275,16 @@ export default function TermsPage() {
           No term sheets yet. Add them as they come in for side-by-side comparison.
         </div>
       )}
+
+      <ConfirmModal
+        open={!!deleteTarget}
+        title="Delete term sheet"
+        message={`Delete the term sheet from "${deleteTarget?.investor}"? This cannot be undone.`}
+        confirmLabel="Delete"
+        variant="danger"
+        onConfirm={handleDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }

@@ -115,6 +115,23 @@ async function ensureInitialized() {
       created_at TEXT DEFAULT (datetime('now')),
       updated_at TEXT DEFAULT (datetime('now'))
     )`,
+    `CREATE TABLE IF NOT EXISTS term_sheets (
+      id TEXT PRIMARY KEY,
+      investor TEXT NOT NULL,
+      valuation TEXT DEFAULT '',
+      amount TEXT DEFAULT '',
+      liq_pref TEXT DEFAULT '1x non-participating',
+      anti_dilution TEXT DEFAULT 'Broad-based weighted average',
+      board_seats TEXT DEFAULT '1 + observer',
+      dividends TEXT DEFAULT 'None',
+      protective_provisions TEXT DEFAULT 'Standard',
+      option_pool TEXT DEFAULT '',
+      exclusivity TEXT DEFAULT '',
+      strategic_value INTEGER DEFAULT 3,
+      notes TEXT DEFAULT '',
+      created_at TEXT DEFAULT (datetime('now')),
+      updated_at TEXT DEFAULT (datetime('now'))
+    )`,
   ], 'write');
 
   initialized = true;
@@ -619,4 +636,67 @@ export async function updateModelSheet(id: string, updates: { sheet_name?: strin
 export async function deleteModelSheet(id: string) {
   await ensureInitialized();
   await getClient().execute({ sql: 'DELETE FROM model_sheets WHERE id = ?', args: [id] });
+}
+
+// Term Sheets
+export interface TermSheet {
+  id: string;
+  investor: string;
+  valuation: string;
+  amount: string;
+  liq_pref: string;
+  anti_dilution: string;
+  board_seats: string;
+  dividends: string;
+  protective_provisions: string;
+  option_pool: string;
+  exclusivity: string;
+  strategic_value: number;
+  notes: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export async function getAllTermSheets(): Promise<TermSheet[]> {
+  await ensureInitialized();
+  const result = await getClient().execute('SELECT * FROM term_sheets ORDER BY created_at DESC');
+  return result.rows as unknown as TermSheet[];
+}
+
+export async function getTermSheet(id: string): Promise<TermSheet | null> {
+  await ensureInitialized();
+  const result = await getClient().execute({
+    sql: 'SELECT * FROM term_sheets WHERE id = ?',
+    args: [id],
+  });
+  return result.rows.length > 0 ? (result.rows[0] as unknown as TermSheet) : null;
+}
+
+export async function createTermSheet(ts: Omit<TermSheet, 'id' | 'created_at' | 'updated_at'>): Promise<TermSheet> {
+  await ensureInitialized();
+  const id = crypto.randomUUID();
+  const now = new Date().toISOString();
+  await getClient().execute({
+    sql: `INSERT INTO term_sheets (id, investor, valuation, amount, liq_pref, anti_dilution, board_seats, dividends, protective_provisions, option_pool, exclusivity, strategic_value, notes, created_at, updated_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    args: [id, ts.investor, ts.valuation, ts.amount, ts.liq_pref, ts.anti_dilution, ts.board_seats, ts.dividends, ts.protective_provisions, ts.option_pool, ts.exclusivity, ts.strategic_value, ts.notes, now, now],
+  });
+  return (await getTermSheet(id))!;
+}
+
+export async function updateTermSheet(id: string, updates: Partial<Omit<TermSheet, 'id' | 'created_at'>>) {
+  await ensureInitialized();
+  const fields = Object.keys(updates).filter(k => k !== 'updated_at');
+  if (fields.length === 0) return;
+  const sets = fields.map(f => `${f} = ?`).join(', ');
+  const values = fields.map(f => (updates as Record<string, unknown>)[f] as InValue);
+  await getClient().execute({
+    sql: `UPDATE term_sheets SET ${sets}, updated_at = datetime('now') WHERE id = ?`,
+    args: [...values, id],
+  });
+}
+
+export async function deleteTermSheet(id: string) {
+  await ensureInitialized();
+  await getClient().execute({ sql: 'DELETE FROM term_sheets WHERE id = ?', args: [id] });
 }

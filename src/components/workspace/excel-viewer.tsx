@@ -12,11 +12,18 @@ export interface CellData {
   bg?: string;         // background color class
 }
 
+export interface SheetData {
+  name: string;
+  cells: Record<string, CellData>;
+}
+
 interface ExcelViewerProps {
   cells: Record<string, CellData>;
   onCellChange: (cellRef: string, value: string, formula?: string) => void;
   rows?: number;
   cols?: number;
+  allSheets?: SheetData[];       // All sheets for cross-sheet formula resolution
+  activeSheetName?: string;      // Current sheet name (used to identify which sheet to display)
 }
 
 function colLabel(idx: number): string {
@@ -47,56 +54,75 @@ function parseCellRef(ref: string): { row: number; col: number } | null {
   return { col: colIndex(match[1]), row: parseInt(match[2]) - 1 };
 }
 
-export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15 }: ExcelViewerProps) {
+export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allSheets, activeSheetName }: ExcelViewerProps) {
   const [selectedCell, setSelectedCell] = useState<string | null>(null);
   const [editingCell, setEditingCell] = useState<string | null>(null);
   const [editValue, setEditValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 
-  // Build HyperFormula engine from cells
+  // Determine the display sheet name
+  const displaySheetName = activeSheetName || 'Sheet1';
+
+  // Build HyperFormula engine from ALL sheets (enables cross-sheet references)
   const hf = useMemo(() => {
     const engine = HyperFormula.buildEmpty({ licenseKey: 'gpl-v3' });
-    engine.addSheet('Sheet1');
-    const sheetId = engine.getSheetId('Sheet1');
-    if (sheetId === undefined) return engine;
 
-    // Populate cells
-    Object.entries(cells).forEach(([ref, cell]) => {
-      const parsed = parseCellRef(ref);
-      if (!parsed) return;
-      const { row, col } = parsed;
+    const populateSheet = (sheetName: string, sheetCells: Record<string, CellData>) => {
+      const sheetId = engine.getSheetId(sheetName);
+      if (sheetId === undefined) return;
 
-      // Ensure the sheet is big enough
-      const currentRows = engine.getSheetDimensions(sheetId).height;
-      const currentCols = engine.getSheetDimensions(sheetId).width;
-      if (row >= currentRows) {
-        engine.addRows(sheetId, [currentRows, row - currentRows + 1]);
-      }
-      if (col >= currentCols) {
-        engine.addColumns(sheetId, [currentCols, col - currentCols + 1]);
-      }
+      Object.entries(sheetCells).forEach(([ref, cell]) => {
+        const parsed = parseCellRef(ref);
+        if (!parsed) return;
+        const { row, col } = parsed;
 
-      try {
-        if (cell.f) {
-          engine.setCellContents({ sheet: sheetId, row, col }, cell.f);
-        } else if (cell.v !== undefined && cell.v !== '') {
-          engine.setCellContents({ sheet: sheetId, row, col }, cell.v);
+        const currentRows = engine.getSheetDimensions(sheetId).height;
+        const currentCols = engine.getSheetDimensions(sheetId).width;
+        if (row >= currentRows) {
+          engine.addRows(sheetId, [currentRows, row - currentRows + 1]);
         }
-      } catch {
-        // Skip cells that cause errors (e.g., invalid formulas)
-      }
-    });
+        if (col >= currentCols) {
+          engine.addColumns(sheetId, [currentCols, col - currentCols + 1]);
+        }
+
+        try {
+          if (cell.f) {
+            engine.setCellContents({ sheet: sheetId, row, col }, cell.f);
+          } else if (cell.v !== undefined && cell.v !== '') {
+            engine.setCellContents({ sheet: sheetId, row, col }, cell.v);
+          }
+        } catch {
+          // Skip cells that cause errors
+        }
+      });
+    };
+
+    if (allSheets && allSheets.length > 0) {
+      // Load all sheets for cross-sheet formula resolution
+      allSheets.forEach(sheet => {
+        engine.addSheet(sheet.name);
+      });
+      allSheets.forEach(sheet => {
+        // For the active sheet, use localCells (may have unsaved edits)
+        const sheetCells = sheet.name === displaySheetName ? cells : sheet.cells;
+        populateSheet(sheet.name, sheetCells);
+      });
+    } else {
+      // Fallback: single sheet mode
+      engine.addSheet(displaySheetName);
+      populateSheet(displaySheetName, cells);
+    }
 
     return engine;
-  }, [cells]);
+  }, [cells, allSheets, displaySheetName]);
 
-  // Get computed value for a cell
+  // Get computed value for a cell (from the active/display sheet)
   const getComputedValue = useCallback((ref: string): string | number | null => {
     const parsed = parseCellRef(ref);
     if (!parsed) return null;
     try {
-      const sheetId = hf.getSheetId('Sheet1');
+      const sheetId = hf.getSheetId(displaySheetName);
       if (sheetId === undefined) return null;
       const val = hf.getCellValue({ sheet: sheetId, row: parsed.row, col: parsed.col });
       if (val === null || val === undefined) return null;
@@ -105,7 +131,7 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15 }: Excel
     } catch {
       return null;
     }
-  }, [hf]);
+  }, [hf, displaySheetName]);
 
   useEffect(() => {
     if (editingCell && inputRef.current) {
