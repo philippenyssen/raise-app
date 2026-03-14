@@ -16,6 +16,7 @@
 | 10 | 2026-03-14 | Depth: Trajectory + Objections + Pipeline | Advanced conviction trajectory (inflection detection, acceleration/2nd derivative, plateau detection, risk classification), objection evolution (emerging/resolved/persistent temporal tracking, heat map), pipeline flow intelligence (stage dwell time, bottleneck detection, conversion rates, velocity trend), all wired to context bus + system prompt | scoring.ts, db.ts, context-bus.ts |
 | 11 | 2026-03-14 | Strategic Intelligence Consolidation | Strategic assessment API (CEO brief, raise velocity, narrative health score, pipeline concentration Herfindahl, readiness score, ranked recommendations), health snapshot storage + trend tracking, pulse auto-snapshots, meeting brief trajectory integration (plateau/decline/acceleration detection), context bus strategicHealth field | intelligence/strategic/route.ts, db.ts, context-bus.ts, pulse/route.ts, meeting-brief/route.ts |
 | 12 | 2026-03-14 | Frontline Intelligence Consumption | Strategic Dashboard page (CEO brief, 4 gauge cards, recommendations, health trend sparklines), Strategic in sidebar, Stress Test Monte Carlo + Calibration display, Momentum timing signals + narrative health by type display, Health page intelligence verification status, all frontline pages now consume deep intelligence | strategic/page.tsx, sidebar.tsx, stress-test/page.tsx, momentum/page.tsx, health/page.tsx |
+| 13 | 2026-03-14 | Compound Intelligence | Cross-signal correlation engine (4 compound signal detectors: convergent decline, ready to close, narrative crisis, competitive window), post-meeting intelligence cascade (narrative re-check + compound signal auto-actions), pipeline bottleneck auto-actions (Rule 6), compound signal auto-actions (Rule 7), compoundSignals field in context bus + system prompt | db.ts, context-bus.ts |
 
 ## Intelligence Capabilities (Existing)
 
@@ -54,6 +55,7 @@
 - [x] **Action effectiveness field in FullContext (populated by getAutoActionEffectiveness(), null if no data) + system prompt serialization (NEW cycle 9)**
 - [x] **Objection evolution field in FullContext (emerging/persistent/resolved) + system prompt serialization (NEW cycle 10)**
 - [x] **Pipeline flow field in FullContext (bottleneck stage/velocity trend/avg days) + system prompt serialization (NEW cycle 10)**
+- [x] **Compound signals field in FullContext (cross-signal correlation: convergent decline, ready to close, narrative crisis, competitive window) + system prompt serialization (NEW cycle 13)**
 - [x] **Intelligence Synthesis section in system prompt — cross-source reasoning aids (NEW cycle 7)**:
   - [x] Narrative weakness → pending follow-up urgency linking
   - [x] Keystone investor priority surfacing
@@ -132,6 +134,10 @@
 - [x] **Keystone investor uncommitted → auto escalation action (NEW cycle 8)**
 - [x] **Pulse dashboard viewed → measureActionEffectiveness() non-blocking (NEW cycle 9)**
 - [x] **Action executed → outcome measured → rule effectiveness updated → future actions adjusted (NEW cycle 9)**
+- [x] **Meeting logged → narrative re-check → auto-action if investor type struggling (NEW cycle 13)**
+- [x] **Meeting logged → compound signal detection → auto-action for very_high signals (NEW cycle 13)**
+- [x] **Pipeline bottleneck detected → auto-escalation for stuck investors (NEW cycle 13)**
+- [x] **Compound signals (very_high) detected → auto-escalation actions with high expected_lift (NEW cycle 13)**
 
 ### H. Narrative Intelligence (NEW cycle 3)
 - [x] Per-investor-type narrative effectiveness (enthusiasm × conversion × top objection)
@@ -185,13 +191,15 @@
 - [x] Typed insight model: critical/opportunity/risk/trend with title, detail, action, dataSource
 - [x] Sorted by severity (critical first), capped at 7 insights for actionability
 
-### N. Autonomous Intelligence Engine (NEW cycle 8, extended cycle 9)
-- [x] `generateAutoActions()`: 5-rule engine that detects patterns and creates acceleration_actions
+### N. Autonomous Intelligence Engine (NEW cycle 8, extended cycle 9, extended cycle 13)
+- [x] `generateAutoActions()`: 7-rule engine that detects patterns and creates acceleration_actions
   - [x] Rule 1: `narrative_weakness_critical` — 3+ investors questioning same topic → data_update action
   - [x] Rule 2: `engagement_gap` — 21+ days no contact for active investors → milestone_share action
   - [x] Rule 3: `declining_trajectory` — score declining >2 pts/week → expert_call action
   - [x] Rule 4: `keystone_uncommitted` — keystone investor not at engaged+ → escalation action
   - [x] Rule 5: `narrative_struggling_type` — investor type with avg enthusiasm < 2.5 → data_update action
+  - [x] **Rule 6: `pipeline_bottleneck` — investors stuck at bottleneck stage >21 days → escalation action (up to 3 investors) (NEW cycle 13)**
+  - [x] **Rule 7: `compound_signal` — very_high confidence compound signals → escalation action with expected_lift 15 (NEW cycle 13)**
 - [x] Duplicate prevention: checks for same investor_id + trigger_type within last 7 days before creating
 - [x] All auto-actions prefixed with `[AUTO]` for identification
 - [x] POST `/api/intelligence/auto-actions` — triggers engine, emits context changes
@@ -316,6 +324,21 @@
 - [x] Stress Test page: Monte Carlo section (P10/P50/P90 bars with target markers, probability of reaching target), calibration status section (auto-calibrated vs hardcoded, resolved prediction count, per-status adjustments)
 - [x] Momentum page: Timing signals section (competitive tension/engagement gap/DD synchronization with urgency-colored badges), narrative health by investor type (effective/struggling/insufficient_data with enthusiasm, conversion, top objection/question)
 - [x] Health page: Intelligence verification section fetches `/api/intelligence/verify`, displays per-check pass/warn/fail indicators, context version, build timestamp, overall health status badge
+
+### U. Compound Intelligence Engine (NEW cycle 13)
+- [x] `detectCompoundSignals()`: cross-signal correlation engine that detects situations where multiple intelligence signals converge
+  - [x] Signal 1: **Convergent Decline** — declining trajectory + engagement gap (21+ days) + unresolved objections (2+) → very high confidence of pass
+  - [x] Signal 2: **Ready to Close** — accelerating trajectory + high enthusiasm (4+) + advanced stage (in_dd/term_sheet) + no unresolved objections → very high confidence of close
+  - [x] Signal 3: **Narrative Crisis** — 3+ investors questioning same topic + low overall enthusiasm (<3.0) + objection resolution rate <50% → urgent pitch overhaul
+  - [x] Signal 4: **Competitive Window** — DD synchronization (2+ in DD) + keystone investor advancing + increasing meeting density → optimal term sheet push moment
+  - [x] 2-source matches → 'high' confidence; 3+ source matches → 'very_high' confidence
+  - [x] Each signal includes actionable recommendation
+- [x] Post-meeting intelligence cascade: after every meeting, re-checks narrative health for the investor's type and auto-creates actions if struggling
+- [x] Post-meeting compound signal detection: after every meeting, runs detectCompoundSignals() and creates escalation actions for very_high signals
+- [x] Pipeline bottleneck auto-actions (Rule 6): when bottleneck stage has avg dwell >21 days, auto-creates escalation for up to 3 stuck investors
+- [x] Compound signal auto-actions (Rule 7): very_high compound signals → escalation actions with expected_lift 15 and confidence 'high'
+- [x] `compoundSignals` field in FullContext (context-bus.ts): fetched via detectCompoundSignals() in Promise.all
+- [x] System prompt serialization: COMPOUND INTELLIGENCE SIGNALS section with confidence tags and recommendations
 
 ### CLOSED (Cycle 9):
 - ~~Learning Intelligence / Action Outcome Measurement~~ — implemented in db.ts (measureActionEffectiveness, getAutoActionEffectiveness), self-improving generateAutoActions, context-bus.ts (actionEffectiveness field + system prompt), workspace/route.ts (instruction 17), pulse/route.ts (measurement trigger)

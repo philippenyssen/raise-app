@@ -1676,6 +1676,58 @@ export async function processPostMeetingIntelligence(
     await measureFollowupEfficacy(meeting.investor_id);
   } catch { /* non-blocking */ }
 
+  // --- Compound cascade: meeting intelligence feeds into broader analysis (cycle 13) ---
+  try {
+    // Re-check narrative health after new data point
+    const narrativeSignals = await computeNarrativeSignals();
+    const investorType = investor?.type || 'vc';
+    const typeSignal = narrativeSignals.find(s => s.investorType === investorType);
+
+    // If this investor type is struggling, auto-create action
+    if (typeSignal && typeSignal.avgEnthusiasm < 2.5) {
+      const existingActions = await getAccelerationActions();
+      const hasTypeAction = existingActions.some(a =>
+        a.description.includes(investorType) && a.status === 'pending'
+      );
+      if (!hasTypeAction) {
+        await createAccelerationAction({
+          investor_id: `narrative_${investorType}`,
+          investor_name: null,
+          trigger_type: 'catalyst_match',
+          action_type: 'data_update',
+          description: `[AUTO] "${investorType}" investors averaging ${typeSignal.avgEnthusiasm.toFixed(1)}/5 enthusiasm after latest meeting — adapt pitch for this investor type`,
+          expected_lift: 7,
+          confidence: 'medium',
+          status: 'pending',
+          actual_lift: null,
+          executed_at: null,
+        });
+      }
+    }
+  } catch { /* non-blocking */ }
+
+  // --- Compound cascade: detect compound signals and auto-create high-confidence actions (cycle 13) ---
+  try {
+    const compoundSignals = await detectCompoundSignals();
+    const veryHighSignals = compoundSignals.filter(s => s.confidence === 'very_high');
+    for (const cs of veryHighSignals.slice(0, 3)) {
+      // Extract investor name from signal for dedup
+      const syntheticId = `compound_${cs.sources.join('_')}_${Date.now()}`;
+      await createAccelerationAction({
+        investor_id: syntheticId,
+        investor_name: null,
+        trigger_type: 'catalyst_match',
+        action_type: 'escalation',
+        description: `[AUTO-COMPOUND] ${cs.recommendation}`,
+        expected_lift: 15,
+        confidence: 'high',
+        status: 'pending',
+        actual_lift: null,
+        executed_at: null,
+      });
+    }
+  } catch { /* non-blocking */ }
+
   return results;
 }
 
@@ -3517,14 +3569,352 @@ export async function generateAutoActions(): Promise<AutoActionResult> {
     }
   } catch { /* non-blocking */ }
 
+  // --- Rule 6: pipeline_bottleneck (stuck at bottleneck stage > 21 days) ---
+  try {
+    if (!shouldSkipRule('stall_risk', 'escalation')) {
+      const pipelineFlow = await computePipelineFlow();
+      if (pipelineFlow.bottleneckStage && pipelineFlow.bottleneckAvgDays > 21) {
+        // Find investors currently stuck at the bottleneck stage
+        const investorsResult = await db.execute({
+          sql: `SELECT id, name, status FROM investors WHERE status = ? AND status NOT IN ('passed', 'dropped')`,
+          args: [pipelineFlow.bottleneckStage],
+        });
+        const stuckInvestors = investorsResult.rows as unknown as Array<{ id: string; name: string; status: string }>;
+
+        for (const inv of stuckInvestors.slice(0, 3)) {
+          patternsDetected++;
+          if (await hasDuplicateAction(inv.id, 'stall_risk')) {
+            skippedDuplicate++;
+            continue;
+          }
+          const action = await createAccelerationAction({
+            investor_id: inv.id,
+            investor_name: inv.name,
+            trigger_type: 'stall_risk',
+            action_type: 'escalation',
+            description: `[AUTO] ${inv.name} stuck at "${pipelineFlow.bottleneckStage}" (bottleneck stage, avg ${Math.round(pipelineFlow.bottleneckAvgDays)} days) — escalate to unblock`,
+            expected_lift: adjustExpectedLift('stall_risk', 'escalation', 10),
+            confidence: 'medium',
+            status: 'pending',
+            actual_lift: null,
+            executed_at: null,
+          });
+          actionsCreated.push(action);
+        }
+      }
+    }
+  } catch { /* non-blocking */ }
+
+  // --- Rule 7: compound_signal (very_high confidence compound signals → high-lift actions) ---
+  try {
+    const compoundSignals = await detectCompoundSignals();
+    const veryHighSignals = compoundSignals.filter(s => s.confidence === 'very_high');
+    for (const cs of veryHighSignals.slice(0, 3)) {
+      patternsDetected++;
+      // Build a stable synthetic ID from the signal sources for dedup
+      const syntheticId = `compound_${cs.sources.sort().join('_')}`;
+      if (await hasDuplicateAction(syntheticId, 'catalyst_match')) {
+        skippedDuplicate++;
+        continue;
+      }
+      const action = await createAccelerationAction({
+        investor_id: syntheticId,
+        investor_name: null,
+        trigger_type: 'catalyst_match',
+        action_type: 'escalation',
+        description: `[AUTO-COMPOUND] ${cs.recommendation}`,
+        expected_lift: 15,
+        confidence: 'high',
+        status: 'pending',
+        actual_lift: null,
+        executed_at: null,
+      });
+      actionsCreated.push(action);
+    }
+  } catch { /* non-blocking */ }
+
   return {
     actionsCreated,
-    rulesEvaluated: AUTO_ACTION_RULES.length,
+    rulesEvaluated: AUTO_ACTION_RULES.length + 2, // +1 for Rule 6 (pipeline bottleneck), +1 for Rule 7 (compound signals)
     patternsDetected,
     skippedDuplicate,
     skippedIneffective,
     boostedRules,
   };
+}
+
+// ---------------------------------------------------------------------------
+// Compound Signal Detection — Cross-signal correlation engine (cycle 13)
+// ---------------------------------------------------------------------------
+
+export async function detectCompoundSignals(): Promise<{
+  signal: string;
+  sources: string[];
+  confidence: 'high' | 'very_high';
+  recommendation: string;
+}[]> {
+  await ensureInitialized();
+  const db = getClient();
+  const signals: {
+    signal: string;
+    sources: string[];
+    confidence: 'high' | 'very_high';
+    recommendation: string;
+  }[] = [];
+
+  // --- Signal 1: Convergent Decline ---
+  // Investor has declining trajectory + engagement gap + unresolved objections → very high confidence they will pass
+  try {
+    const investorsResult = await db.execute(
+      `SELECT id, name, status FROM investors WHERE status NOT IN ('passed', 'dropped', 'closed', 'identified')`
+    );
+    const activeInvestors = investorsResult.rows as unknown as Array<{ id: string; name: string; status: string }>;
+    const now = Date.now();
+
+    for (const inv of activeInvestors) {
+      const convergentSources: string[] = [];
+
+      // Check declining trajectory
+      const snapsResult = await db.execute({
+        sql: `SELECT overall_score, snapshot_date FROM score_snapshots WHERE investor_id = ? AND snapshot_date >= date('now', '-21 days') ORDER BY snapshot_date ASC`,
+        args: [inv.id],
+      });
+      const snaps = snapsResult.rows as unknown as Array<{ overall_score: number; snapshot_date: string }>;
+      if (snaps.length >= 2) {
+        const first = snaps[0];
+        const last = snaps[snaps.length - 1];
+        const daysDiff = (new Date(last.snapshot_date).getTime() - new Date(first.snapshot_date).getTime()) / (1000 * 60 * 60 * 24);
+        if (daysDiff >= 3) {
+          const weeksDiff = daysDiff / 7;
+          const velocity = (last.overall_score - first.overall_score) / weeksDiff;
+          if (velocity < -1.5) {
+            convergentSources.push('declining_trajectory');
+          }
+        }
+      }
+
+      // Check engagement gap (21+ days since last meeting)
+      const lastMeetingResult = await db.execute({
+        sql: `SELECT MAX(date) as last_date FROM meetings WHERE investor_id = ?`,
+        args: [inv.id],
+      });
+      const lastDate = (lastMeetingResult.rows[0] as unknown as { last_date: string | null }).last_date;
+      if (lastDate) {
+        const daysSince = Math.round((now - new Date(lastDate).getTime()) / (1000 * 60 * 60 * 24));
+        if (daysSince >= 21) {
+          convergentSources.push('engagement_gap');
+        }
+      }
+
+      // Check unresolved objections
+      const objResult = await db.execute({
+        sql: `SELECT COUNT(*) as count FROM objection_responses WHERE investor_id = ? AND (effectiveness IS NULL OR effectiveness = 'unknown' OR effectiveness = 'ineffective')`,
+        args: [inv.id],
+      });
+      const unresolvedCount = Number((objResult.rows[0] as unknown as { count: number }).count);
+      if (unresolvedCount >= 2) {
+        convergentSources.push('unresolved_objections');
+      }
+
+      if (convergentSources.length >= 3) {
+        signals.push({
+          signal: `${inv.name}: convergent decline detected — declining trajectory + engagement gap + unresolved objections all point to likely pass`,
+          sources: convergentSources,
+          confidence: 'very_high',
+          recommendation: `Schedule direct call with ${inv.name}'s partner immediately — if no progress in 7 days, reallocate effort to higher-probability investors`,
+        });
+      } else if (convergentSources.length === 2) {
+        signals.push({
+          signal: `${inv.name}: early decline warning — ${convergentSources.join(' + ')} detected`,
+          sources: convergentSources,
+          confidence: 'high',
+          recommendation: `Proactively reach out to ${inv.name} before full disengagement — address the ${convergentSources.includes('unresolved_objections') ? 'unresolved objections' : 'communication gap'} first`,
+        });
+      }
+    }
+  } catch { /* non-blocking */ }
+
+  // --- Signal 2: Ready to Close ---
+  // Investor has accelerating trajectory + high enthusiasm + process signals + no objections → ready to close
+  try {
+    const investorsResult = await db.execute(
+      `SELECT id, name, status, enthusiasm FROM investors WHERE status IN ('engaged', 'in_dd', 'term_sheet')`
+    );
+    const advancedInvestors = investorsResult.rows as unknown as Array<{ id: string; name: string; status: string; enthusiasm: number }>;
+
+    for (const inv of advancedInvestors) {
+      const closeSources: string[] = [];
+
+      // Check accelerating or positive trajectory
+      const snapsResult = await db.execute({
+        sql: `SELECT overall_score, snapshot_date FROM score_snapshots WHERE investor_id = ? AND snapshot_date >= date('now', '-21 days') ORDER BY snapshot_date ASC`,
+        args: [inv.id],
+      });
+      const snaps = snapsResult.rows as unknown as Array<{ overall_score: number; snapshot_date: string }>;
+      if (snaps.length >= 2) {
+        const first = snaps[0];
+        const last = snaps[snaps.length - 1];
+        const daysDiff = (new Date(last.snapshot_date).getTime() - new Date(first.snapshot_date).getTime()) / (1000 * 60 * 60 * 24);
+        if (daysDiff >= 3) {
+          const weeksDiff = daysDiff / 7;
+          const velocity = (last.overall_score - first.overall_score) / weeksDiff;
+          if (velocity > 1) {
+            closeSources.push('accelerating_trajectory');
+          }
+        }
+      }
+
+      // High enthusiasm
+      if (inv.enthusiasm >= 4) {
+        closeSources.push('high_enthusiasm');
+      }
+
+      // Process signals (DD or term sheet stage)
+      if (['in_dd', 'term_sheet'].includes(inv.status)) {
+        closeSources.push('advanced_stage');
+      }
+
+      // No unresolved objections
+      const objResult = await db.execute({
+        sql: `SELECT COUNT(*) as count FROM objection_responses WHERE investor_id = ? AND (effectiveness IS NULL OR effectiveness = 'unknown' OR effectiveness = 'ineffective')`,
+        args: [inv.id],
+      });
+      const unresolvedCount = Number((objResult.rows[0] as unknown as { count: number }).count);
+      if (unresolvedCount === 0) {
+        closeSources.push('no_objections');
+      }
+
+      if (closeSources.length >= 4) {
+        signals.push({
+          signal: `${inv.name}: all signals point to READY TO CLOSE — accelerating trajectory, high enthusiasm, advanced stage, no objections`,
+          sources: closeSources,
+          confidence: 'very_high',
+          recommendation: `Push for term sheet / commitment with ${inv.name} NOW — all indicators aligned. Delay risks losing momentum.`,
+        });
+      } else if (closeSources.length >= 3) {
+        signals.push({
+          signal: `${inv.name}: strong close indicators — ${closeSources.join(', ')}`,
+          sources: closeSources,
+          confidence: 'high',
+          recommendation: `Prioritize ${inv.name} for close — address any remaining gap (${['accelerating_trajectory', 'high_enthusiasm', 'advanced_stage', 'no_objections'].filter(s => !closeSources.includes(s)).join(', ') || 'none'}) to accelerate`,
+        });
+      }
+    }
+  } catch { /* non-blocking */ }
+
+  // --- Signal 3: Narrative Crisis ---
+  // 3+ investors questioning same topic + declining overall enthusiasm + objection resolution rate < 50%
+  try {
+    const narrativeSources: string[] = [];
+
+    // Check question convergence
+    const patterns = await getQuestionPatterns();
+    const criticalTopics = patterns.filter(p => p.investorCount >= 3);
+    if (criticalTopics.length >= 1) {
+      narrativeSources.push('question_convergence');
+    }
+
+    // Check overall enthusiasm trend
+    const narrativeSignals = await computeNarrativeSignals();
+    const totalSignals = narrativeSignals.filter(ns => ns.sampleSize >= 2);
+    if (totalSignals.length > 0) {
+      const avgEnthusiasm = totalSignals.reduce((sum, ns) => sum + ns.avgEnthusiasm, 0) / totalSignals.length;
+      if (avgEnthusiasm < 3.0) {
+        narrativeSources.push('low_overall_enthusiasm');
+      }
+    }
+
+    // Check objection resolution rate
+    const objEvolution = await computeObjectionEvolution();
+    const totalObjTopics = objEvolution.emergingObjections.length + objEvolution.persistentObjections.length + objEvolution.resolvedObjections.length;
+    if (totalObjTopics > 0) {
+      const resolutionRate = objEvolution.resolvedObjections.length / totalObjTopics;
+      if (resolutionRate < 0.5) {
+        narrativeSources.push('low_objection_resolution');
+      }
+    }
+
+    if (narrativeSources.length >= 3) {
+      signals.push({
+        signal: `NARRATIVE CRISIS: question convergence + low enthusiasm + poor objection resolution all indicate pitch is not landing`,
+        sources: narrativeSources,
+        confidence: 'very_high',
+        recommendation: `Urgent pitch overhaul needed — focus on the ${criticalTopics.length} topic(s) investors keep questioning (${criticalTopics.map(t => t.topic).join(', ')}). Consider external pitch coaching or investor advisory board feedback.`,
+      });
+    } else if (narrativeSources.length === 2) {
+      signals.push({
+        signal: `Narrative weakening: ${narrativeSources.join(' + ')} detected — pitch may need adjustment`,
+        sources: narrativeSources,
+        confidence: 'high',
+        recommendation: `Review pitch materials against recent investor feedback — preemptively strengthen before next round of meetings`,
+      });
+    }
+  } catch { /* non-blocking */ }
+
+  // --- Signal 4: Competitive Window ---
+  // DD synchronization + keystone investor advancing + declining time-between-meetings → optimal moment for term sheet push
+  try {
+    const windowSources: string[] = [];
+
+    // Check DD synchronization (2+ investors in DD)
+    const ddInvestors = await db.execute(
+      `SELECT COUNT(*) as count FROM investors WHERE status = 'in_dd' AND status NOT IN ('passed', 'dropped')`
+    );
+    const ddCount = Number((ddInvestors.rows[0] as unknown as { count: number }).count);
+    if (ddCount >= 2) {
+      windowSources.push('dd_synchronization');
+    }
+
+    // Check if keystone investor is advancing
+    const keystones = await getKeystoneInvestors();
+    for (const ks of keystones) {
+      if (ks.cascadeValue !== 'minimal') {
+        const invResult = await db.execute({ sql: `SELECT status FROM investors WHERE id = ?`, args: [ks.id] });
+        if (invResult.rows.length > 0) {
+          const status = (invResult.rows[0] as unknown as { status: string }).status;
+          if (['engaged', 'in_dd', 'term_sheet'].includes(status)) {
+            windowSources.push('keystone_advancing');
+            break;
+          }
+        }
+      }
+    }
+
+    // Check meeting density (declining time between meetings = increasing urgency)
+    const recentMeetings = await db.execute(
+      `SELECT date FROM meetings ORDER BY date DESC LIMIT 10`
+    );
+    const meetingDates = (recentMeetings.rows as unknown as Array<{ date: string }>).map(r => new Date(r.date).getTime());
+    if (meetingDates.length >= 4) {
+      const gaps: number[] = [];
+      for (let i = 0; i < meetingDates.length - 1; i++) {
+        gaps.push((meetingDates[i] - meetingDates[i + 1]) / (1000 * 60 * 60 * 24));
+      }
+      const recentAvgGap = gaps.slice(0, Math.floor(gaps.length / 2)).reduce((a, b) => a + b, 0) / Math.floor(gaps.length / 2);
+      const olderAvgGap = gaps.slice(Math.floor(gaps.length / 2)).reduce((a, b) => a + b, 0) / (gaps.length - Math.floor(gaps.length / 2));
+      if (recentAvgGap < olderAvgGap * 0.7) {
+        windowSources.push('meeting_density_increasing');
+      }
+    }
+
+    if (windowSources.length >= 3) {
+      signals.push({
+        signal: `COMPETITIVE WINDOW OPEN: DD sync + keystone advancing + accelerating meeting pace — optimal moment for term sheet push`,
+        sources: windowSources,
+        confidence: 'very_high',
+        recommendation: `This is the optimal window to push for commitments — competitive tension is real, keystone investor is advancing, and momentum is building. Present term sheet to most advanced investors.`,
+      });
+    } else if (windowSources.length === 2) {
+      signals.push({
+        signal: `Competitive window forming: ${windowSources.join(' + ')}`,
+        sources: windowSources,
+        confidence: 'high',
+        recommendation: `Prepare term sheet materials — window for competitive tension leverage is approaching`,
+      });
+    }
+  } catch { /* non-blocking */ }
+
+  return signals;
 }
 
 // ---------------------------------------------------------------------------

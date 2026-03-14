@@ -29,6 +29,7 @@ import {
   getAutoActionEffectiveness,
   computeObjectionEvolution,
   computePipelineFlow,
+  detectCompoundSignals,
 } from './db';
 
 // ---------------------------------------------------------------------------
@@ -245,6 +246,14 @@ export interface FullContext {
     pipelineConcentration: number; // 0=diversified, 1=concentrated
     velocityTrend: string;
   } | null;
+
+  // Compound intelligence signals — cross-signal correlation (cycle 13)
+  compoundSignals: {
+    signal: string;
+    sources: string[];
+    confidence: string;
+    recommendation: string;
+  }[];
 }
 
 const recentChanges: ContextChange[] = [];
@@ -280,6 +289,7 @@ export async function getFullContext(): Promise<FullContext> {
     actionEffectivenessData,
     objectionEvolutionData,
     pipelineFlowData,
+    compoundSignalsData,
   ] = await Promise.all([
     getRaiseConfig().catch(() => null),
     getAllDocuments().catch(() => []),
@@ -300,6 +310,7 @@ export async function getFullContext(): Promise<FullContext> {
     getAutoActionEffectiveness().catch(() => null),
     computeObjectionEvolution().catch(() => null),
     computePipelineFlow().catch(() => null),
+    detectCompoundSignals().catch(() => []),
   ]);
 
   // Build investor snapshots enriched with meeting/task/followup data
@@ -512,6 +523,15 @@ export async function getFullContext(): Promise<FullContext> {
 
     // Strategic health — populated by strategic assessment route, not fetched in bus (cycle 11)
     strategicHealth: null,
+
+    // Compound intelligence signals — cross-signal correlation (cycle 13)
+    compoundSignals: (compoundSignalsData as Array<{ signal: string; sources: string[]; confidence: string; recommendation: string }>)
+      .map(cs => ({
+        signal: cs.signal,
+        sources: cs.sources,
+        confidence: cs.confidence,
+        recommendation: cs.recommendation,
+      })),
 
     // Pipeline flow — bottleneck and velocity intelligence (cycle 10)
     pipelineFlow: pipelineFlowData ? {
@@ -732,6 +752,16 @@ export function contextToSystemPrompt(ctx: FullContext): string {
   // Strategic health (consolidated fundraise assessment)
   if (ctx.strategicHealth) {
     lines.push(`STRATEGIC HEALTH: Readiness ${ctx.strategicHealth.readinessScore}/100 | Narrative ${ctx.strategicHealth.narrativeScore}/100 | Concentration ${Math.round(ctx.strategicHealth.pipelineConcentration * 100)}% | Velocity: ${ctx.strategicHealth.velocityTrend}`);
+    lines.push('');
+  }
+
+  // Compound intelligence signals (cross-signal correlation)
+  if (ctx.compoundSignals && ctx.compoundSignals.length > 0) {
+    lines.push('COMPOUND INTELLIGENCE SIGNALS (multiple sources converging):');
+    for (const cs of ctx.compoundSignals) {
+      const confTag = cs.confidence === 'very_high' ? 'VERY HIGH' : 'HIGH';
+      lines.push(`- [${confTag}] ${cs.signal} (sources: ${cs.sources.join(', ')}) → ${cs.recommendation}`);
+    }
     lines.push('');
   }
 
