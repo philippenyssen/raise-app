@@ -125,6 +125,13 @@ function buildQueryFocus(
       }
       if (inv.pendingTasks > 0) lines.push(`- ${inv.pendingTasks} pending tasks`);
       if (inv.pendingFollowups > 0) lines.push(`- ${inv.pendingFollowups} pending follow-ups`);
+      // Lifecycle intelligence (cycle 16)
+      if (inv.daysInCurrentStage > 0) {
+        lines.push(`- Stage lifecycle: ${inv.daysInCurrentStage} days in "${inv.status}" — health: ${inv.stageHealth.toUpperCase()}`);
+      }
+      if (inv.daysSinceLastContact !== null) {
+        lines.push(`- Days since last contact: ${inv.daysSinceLastContact}`);
+      }
 
       // Check compound signals involving this investor
       const relevantSignals = ctx.compoundSignals.filter(cs =>

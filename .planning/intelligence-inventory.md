@@ -19,6 +19,7 @@
 | 13 | 2026-03-14 | Compound Intelligence | Cross-signal correlation engine (4 compound signal detectors: convergent decline, ready to close, narrative crisis, competitive window), post-meeting intelligence cascade (narrative re-check + compound signal auto-actions), pipeline bottleneck auto-actions (Rule 6), compound signal auto-actions (Rule 7), compoundSignals field in context bus + system prompt | db.ts, context-bus.ts |
 | 14 | 2026-03-14 | Temporal Intelligence | Health trend analysis from stored snapshots (7d/30d averages, deltas, streaks, alerts), temporal trends in context bus + system prompt with AI synthesis, temporal-aware auto-actions (Rule 8: multi-metric decline + long streak alerts), strategic dashboard temporal intelligence UI (5-metric trend cards with direction/delta/alerts), temporal-aware strategic recommendations, pulse temporal trend insights | db.ts, context-bus.ts, intelligence/strategic/route.ts, pulse/route.ts, strategic/page.tsx |
 | 15 | 2026-03-14 | Intelligent Context Steering | Query intent detection (5 types: investor-specific, strategy, objection, document, general), dynamic QUERY FOCUS prefix for workspace AI (targeted context per investor, compound signals, narrative drift, keystone status), instruction 18 (temporal awareness in AI reasoning) | workspace/route.ts |
+| 16 | 2026-03-14 | Investor Lifecycle Intelligence | Per-investor lifecycle fields (daysInCurrentStage, stageHealth, daysSinceLastContact), stage health thresholds (on_track/slow/stalled), lifecycle tags in system prompt, lifecycle synthesis (stalled high-value, lifecycle contradictions), workspace AI lifecycle-aware context steering | context-bus.ts, workspace/route.ts |
 
 ## Intelligence Capabilities (Existing)
 
@@ -386,6 +387,19 @@
   - [x] Document: points AI to narrative health, proven responses, cross-reference accuracy
 - [x] Instruction 18 added: Temporal Awareness in AI reasoning (incorporate trends, streaks, validate improvements)
 - [x] Query focus prepended to system prompt BEFORE role description and full context — steers attention without changing context
+
+### X. Investor Lifecycle Intelligence (NEW cycle 16)
+- [x] InvestorSnapshot extended with 3 lifecycle fields:
+  - [x] `daysInCurrentStage`: computed from investor's `updated_at` timestamp
+  - [x] `stageHealth`: 'on_track' | 'slow' | 'stalled' based on per-stage thresholds
+  - [x] `daysSinceLastContact`: days since most recent meeting
+- [x] Stage thresholds: identified (14/30d), contacted (10/21d), nda_signed (7/14d), meeting_scheduled (14/28d), met (14/30d), engaged (21/45d), in_dd (30/60d), term_sheet (21/45d)
+- [x] System prompt KEY INVESTORS enriched: "[STALLED]" / "[SLOW]" tags, days in stage, days since contact
+- [x] LIFECYCLE summary line: count of stalled + slow investors with intervention guidance
+- [x] Intelligence synthesis additions:
+  - [x] Stalled high-value investor alert (tier 1-2 + stalled → escalate or deprioritize)
+  - [x] Lifecycle contradiction detection (high enthusiasm + stalled = internal blockers or politeness)
+- [x] Workspace AI context steering: lifecycle data included in investor-specific QUERY FOCUS
 
 ### CLOSED (Cycle 9):
 - ~~Learning Intelligence / Action Outcome Measurement~~ — implemented in db.ts (measureActionEffectiveness, getAutoActionEffectiveness), self-improving generateAutoActions, context-bus.ts (actionEffectiveness field + system prompt), workspace/route.ts (instruction 17), pulse/route.ts (measurement trigger)

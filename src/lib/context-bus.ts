@@ -113,6 +113,10 @@ interface InvestorSnapshot {
   unresolvedObjections: string[];
   pendingTasks: number;
   pendingFollowups: number;
+  // Lifecycle intelligence (cycle 16)
+  daysInCurrentStage: number;
+  stageHealth: 'on_track' | 'slow' | 'stalled';
+  daysSinceLastContact: number | null;
 }
 
 export interface FullContext {
@@ -342,7 +346,19 @@ export async function getFullContext(): Promise<FullContext> {
     }
   }
 
-  type InvRow = { id: string; name: string; type: string; tier: number; status: string; enthusiasm: number; partner: string };
+  // Stage health thresholds: expected max days in each stage before it's "slow" or "stalled"
+  const stageThresholds: Record<string, { slow: number; stalled: number }> = {
+    identified: { slow: 14, stalled: 30 },
+    contacted: { slow: 10, stalled: 21 },
+    nda_signed: { slow: 7, stalled: 14 },
+    meeting_scheduled: { slow: 14, stalled: 28 },
+    met: { slow: 14, stalled: 30 },
+    engaged: { slow: 21, stalled: 45 },
+    in_dd: { slow: 30, stalled: 60 },
+    term_sheet: { slow: 21, stalled: 45 },
+  };
+
+  type InvRow = { id: string; name: string; type: string; tier: number; status: string; enthusiasm: number; partner: string; updated_at?: string; created_at?: string };
   const investorSnapshots: InvestorSnapshot[] = (investors as InvRow[])
     .filter(i => !['passed', 'dropped'].includes(i.status))
     .map(inv => {
@@ -361,6 +377,23 @@ export async function getFullContext(): Promise<FullContext> {
         } catch { /* skip */ }
       }
 
+      // Lifecycle intelligence (cycle 16)
+      const now = Date.now();
+      const msPerDay = 1000 * 60 * 60 * 24;
+
+      // Days in current stage: use updated_at as proxy for when they entered current stage
+      const stageEntryDate = inv.updated_at || inv.created_at || new Date().toISOString();
+      const daysInCurrentStage = Math.max(0, Math.round((now - new Date(stageEntryDate).getTime()) / msPerDay));
+
+      // Stage health: compare days in stage to thresholds
+      const thresholds = stageThresholds[inv.status] || { slow: 21, stalled: 45 };
+      let stageHealth: 'on_track' | 'slow' | 'stalled' = 'on_track';
+      if (daysInCurrentStage >= thresholds.stalled) stageHealth = 'stalled';
+      else if (daysInCurrentStage >= thresholds.slow) stageHealth = 'slow';
+
+      // Days since last contact
+      const daysSinceLastContact = latest ? Math.round((now - new Date(latest.date).getTime()) / msPerDay) : null;
+
       return {
         id: inv.id,
         name: inv.name,
@@ -375,6 +408,9 @@ export async function getFullContext(): Promise<FullContext> {
         unresolvedObjections: objections.slice(0, 3), // top 3
         pendingTasks: tasksByInvestor[inv.id] || 0,
         pendingFollowups: followupsByInvestor[inv.id] || 0,
+        daysInCurrentStage,
+        stageHealth,
+        daysSinceLastContact,
       };
     })
     .sort((a, b) => {
@@ -602,9 +638,24 @@ export function contextToSystemPrompt(ctx: FullContext): string {
     if (inv.partner) line += ` — partner: ${inv.partner}`;
     if (inv.meetingCount > 0) line += ` — ${inv.meetingCount} meetings`;
     if (inv.lastMeetingDate) line += `, last: ${inv.lastMeetingDate}`;
+    // Lifecycle intelligence (cycle 16)
+    if (inv.daysInCurrentStage > 0) {
+      line += ` — ${inv.daysInCurrentStage}d in stage`;
+      if (inv.stageHealth === 'stalled') line += ' [STALLED]';
+      else if (inv.stageHealth === 'slow') line += ' [SLOW]';
+    }
+    if (inv.daysSinceLastContact !== null && inv.daysSinceLastContact > 14) {
+      line += ` — ${inv.daysSinceLastContact}d since contact`;
+    }
     if (inv.pendingTasks > 0) line += ` — ${inv.pendingTasks} pending tasks`;
     if (inv.unresolvedObjections.length > 0) line += ` — OBJECTIONS: ${inv.unresolvedObjections.join('; ')}`;
     lines.push(line);
+  }
+  // Lifecycle summary
+  const stalledCount = ctx.investors.filter(i => i.stageHealth === 'stalled').length;
+  const slowCount = ctx.investors.filter(i => i.stageHealth === 'slow').length;
+  if (stalledCount > 0 || slowCount > 0) {
+    lines.push(`LIFECYCLE: ${stalledCount} stalled, ${slowCount} slow — these investors need intervention or deprioritization`);
   }
   lines.push('');
 
@@ -839,6 +890,19 @@ export function contextToSystemPrompt(ctx: FullContext): string {
     const affectedInvestors = ctx.investors.filter(inv => struggleNames.includes(inv.type));
     if (affectedInvestors.length > 0) {
       synthesisLines.push(`NARRATIVE RISK: ${affectedInvestors.length} active investors are types where narrative is struggling (${struggleNames.join(', ')}). Tailor pitch before next contact with: ${affectedInvestors.slice(0, 5).map(i => i.name).join(', ')}`);
+    }
+  }
+
+  // Lifecycle synthesis: stalled high-value investors need attention (cycle 16)
+  const stalledHighValue = ctx.investors.filter(i => i.stageHealth === 'stalled' && i.tier <= 2);
+  if (stalledHighValue.length > 0) {
+    synthesisLines.push(`STALLED HIGH-VALUE: ${stalledHighValue.map(i => `${i.name} (T${i.tier}, ${i.daysInCurrentStage}d at "${i.status}")`).join(', ')} — these investors have been stuck too long. Either escalate or deprioritize.`);
+  }
+
+  // Contradiction: enthusiastic but stalled lifecycle
+  for (const inv of ctx.investors) {
+    if (inv.enthusiasm >= 4 && inv.stageHealth === 'stalled' && inv.tier <= 2) {
+      synthesisLines.push(`LIFECYCLE CONTRADICTION: ${inv.name} has enthusiasm ${inv.enthusiasm}/5 but has been at "${inv.status}" for ${inv.daysInCurrentStage} days — high enthusiasm without progression suggests internal blockers or politeness`);
     }
   }
 
