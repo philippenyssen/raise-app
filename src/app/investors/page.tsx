@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import type { Investor, InvestorStatus, InvestorTier, InvestorType } from '@/lib/types';
 import { useToast } from '@/components/toast';
+import { ConfirmModal } from '@/components/ui/confirm-modal';
 
 const STATUS_LABELS: Record<InvestorStatus, string> = {
   identified: 'Identified', contacted: 'Contacted', nda_signed: 'NDA Signed',
@@ -31,6 +32,7 @@ export default function InvestorsPage() {
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [filter, setFilter] = useState<{ tier?: number; status?: string; type?: string }>({});
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null);
   const [form, setForm] = useState({
     name: '', type: 'vc' as InvestorType, tier: 2 as InvestorTier, partner: '',
     fund_size: '', check_size_range: '', sector_thesis: '', warm_path: '',
@@ -68,10 +70,11 @@ export default function InvestorsPage() {
     fetchInvestors();
   }
 
-  async function handleDelete(id: string) {
-    if (!confirm('Delete this investor and all their meetings?')) return;
-    await fetch(`/api/investors?id=${id}`, { method: 'DELETE' });
+  async function handleDelete() {
+    if (!deleteTarget) return;
+    await fetch(`/api/investors?id=${deleteTarget.id}`, { method: 'DELETE' });
     toast('Investor deleted', 'warning');
+    setDeleteTarget(null);
     fetchInvestors();
   }
 
@@ -224,7 +227,7 @@ export default function InvestorsPage() {
                 <td className="px-4 py-3">
                   <div className="flex gap-1">
                     <button onClick={() => startEdit(inv)} className="text-xs text-zinc-500 hover:text-zinc-300 px-2 py-1 rounded hover:bg-zinc-800">Edit</button>
-                    <button onClick={() => handleDelete(inv.id)} className="text-xs text-zinc-500 hover:text-red-400 px-2 py-1 rounded hover:bg-zinc-800">Del</button>
+                    <button onClick={() => setDeleteTarget({ id: inv.id, name: inv.name })} className="text-xs text-zinc-500 hover:text-red-400 px-2 py-1 rounded hover:bg-zinc-800">Del</button>
                   </div>
                 </td>
               </tr>
@@ -235,6 +238,16 @@ export default function InvestorsPage() {
           <div className="p-8 text-center text-zinc-600 text-sm">No investors match filters</div>
         )}
       </div>
+
+      <ConfirmModal
+        open={!!deleteTarget}
+        title="Delete investor"
+        message={`Delete "${deleteTarget?.name}" and all their meetings? This cannot be undone.`}
+        confirmLabel="Delete"
+        variant="danger"
+        onConfirm={handleDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }
