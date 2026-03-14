@@ -391,7 +391,7 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="space-y-6 page-content">
+    <div className="space-y-8 page-content">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>

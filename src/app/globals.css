@@ -149,7 +149,7 @@ body {
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   padding: var(--space-5);
-  transition: border-color 200ms ease;
+  transition: border-color 250ms ease, box-shadow 250ms ease;
 }
 
 .card-elevated {
@@ -161,16 +161,20 @@ body {
 
 .card:hover, .card-interactive:hover {
   border-color: var(--border-default);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
 }
 
 .card-metric {
   background: var(--surface-1);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
-  padding: var(--space-4) var(--space-5);
-  transition: border-color 200ms ease;
+  padding: var(--space-5) var(--space-5);
+  transition: border-color 250ms ease, box-shadow 250ms ease;
 }
-.card-metric:hover { border-color: var(--border-default); }
+.card-metric:hover {
+  border-color: var(--border-default);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+}
 
 .card-interactive {
   background: var(--surface-1);

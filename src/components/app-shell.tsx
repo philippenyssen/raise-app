@@ -24,9 +24,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div
             className="mx-auto w-full"
             style={{
-              maxWidth: '1400px',
-              padding: 'var(--space-6) var(--space-6)',
-              paddingLeft: 'max(var(--space-6), 3.5rem)',
+              maxWidth: '1200px',
+              padding: 'var(--space-8) var(--space-8)',
+              paddingLeft: 'max(var(--space-8), 3.5rem)',
             }}
           >
             <ErrorBoundary>
