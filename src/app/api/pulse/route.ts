@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@libsql/client';
 import { computeInvestorScore, computeMomentumScore, computeConvictionTrajectory } from '@/lib/scoring';
 import type { ScoreSnapshot } from '@/lib/db';
-import { generateAutoActions, measureActionEffectiveness, saveHealthSnapshot, getHealthSnapshots, computeTemporalTrends, computeRaiseForecast, logForecastPredictions, detectScoreReversals } from '@/lib/db';
+import { generateAutoActions, measureActionEffectiveness, saveHealthSnapshot, getHealthSnapshots, computeTemporalTrends, computeRaiseForecast, logForecastPredictions, detectScoreReversals, computeEngagementVelocity, computeNetworkCascades, getPipelineRankings, detectFomoDynamics, computeMeetingDensity, computeWinLossPatterns } from '@/lib/db';
 import type { Investor, Meeting, InvestorPortfolioCo, Objection } from '@/lib/types';
 import { getFullContext } from '@/lib/context-bus';
 
@@ -1039,6 +1039,55 @@ export async function GET() {
       investors, allMeetings, criticalPath, convictionPulse, processHealth,
     );
 
+    // Layer 6: Real-time intelligence signals (cycle 34)
+    const [velocityData, cascadeData, rankingData, fomoData, densityData, winLossData] = await Promise.all([
+      computeEngagementVelocity().catch(() => []),
+      computeNetworkCascades().catch(() => []),
+      getPipelineRankings().catch(() => []),
+      detectFomoDynamics().catch(() => []),
+      computeMeetingDensity().catch(() => null),
+      computeWinLossPatterns().catch(() => null),
+    ]);
+
+    const realTimeSignals = {
+      investorMomentum: {
+        accelerating: velocityData.filter(v => v.acceleration === 'accelerating').slice(0, 5).map(v => ({ name: v.investorName, tier: v.tier, recentMeetings: v.recentMeetings, signal: v.signal })),
+        decelerating: velocityData.filter(v => v.acceleration === 'decelerating').slice(0, 3).map(v => ({ name: v.investorName, tier: v.tier, signal: v.signal })),
+        goneSilent: velocityData.filter(v => v.acceleration === 'gone_silent').slice(0, 3).map(v => ({ name: v.investorName, tier: v.tier, daysSilent: v.daysSinceLastMeeting })),
+      },
+      networkCascades: cascadeData.slice(0, 3).map(nc => ({
+        keystoneName: nc.keystoneName,
+        chainLength: nc.cascadeChain.length,
+        topChain: nc.cascadeChain.slice(0, 3).map(c => ({ name: c.investorName, probability: Math.round(c.probability * 100) })),
+        bottleneck: nc.networkBottleneck ? { name: nc.networkBottleneck.investorName, impact: nc.networkBottleneck.impactIfPass } : null,
+        signal: nc.signal,
+      })),
+      pipelineMovement: {
+        rising: rankingData.filter(r => r.rankChange >= 2).slice(0, 3).map(r => ({ name: r.investorName, rank: r.rank, change: r.rankChange, score: r.score })),
+        falling: rankingData.filter(r => r.rankChange <= -2).slice(0, 3).map(r => ({ name: r.investorName, rank: r.rank, change: r.rankChange, score: r.score })),
+      },
+      fomoOpportunities: fomoData.slice(0, 3).map(f => ({
+        trigger: f.advancingInvestor,
+        advancingTo: f.advancingTo,
+        intensity: f.fomoIntensity,
+        affectedCount: f.affectedInvestors.length,
+        recommendation: f.recommendation,
+      })),
+      meetingHealth: densityData ? {
+        densityScore: densityData.densityScore,
+        currentWeek: densityData.currentWeekCount,
+        avgPerWeek: densityData.avgPerWeek,
+        gapWeeks: densityData.gapWeeks?.length || 0,
+        insight: densityData.insight,
+      } : null,
+      winLossInsight: winLossData ? {
+        closedCount: winLossData.closedCount,
+        passedCount: winLossData.passedCount,
+        keyPredictors: winLossData.distinguishingFactors.filter(f => f.significance === 'high').map(f => f.factor),
+        insights: winLossData.insights.slice(0, 3),
+      } : null,
+    };
+
     // Non-blocking intelligence refresh: trigger auto-action generation + measurement
     // This makes the pulse dashboard the "heartbeat" — every view refreshes intelligence
     try { generateAutoActions().catch(() => {}); } catch { /* non-blocking */ }
@@ -1074,6 +1123,7 @@ export async function GET() {
       convictionPulse,
       processHealth,
       intelligenceBriefing,
+      realTimeSignals,
       generatedAt: new Date().toISOString(),
     });
   } catch (error) {

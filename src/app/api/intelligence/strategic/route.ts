@@ -406,11 +406,58 @@ function generateRecommendations(
     }
   }
 
+  // 10. Engagement velocity deterioration (cycle 34)
+  const deceleratingT1T2 = ctx.engagementVelocity.filter(v => (v.acceleration === 'decelerating' || v.acceleration === 'gone_silent') && v.tier <= 2);
+  if (deceleratingT1T2.length >= 2) {
+    recs.push({
+      priority: 1,
+      category: 'pipeline',
+      title: `${deceleratingT1T2.length} high-tier investors losing engagement momentum`,
+      rationale: `${deceleratingT1T2.map(v => `${v.investorName} (T${v.tier}, ${v.acceleration})`).join(', ')} — meeting frequency is dropping for priority investors. This is an early warning of conversion failure.`,
+      action: `Schedule direct re-engagement with each decelerating T1-2 investor within 48 hours. Bring new information or milestone to restart cadence.`,
+      expectedImpact: 'Re-engaging within 48 hours of deceleration detection recovers 60-80% of at-risk deals.',
+      deadline: 'This week',
+    });
+  }
+
+  // 11. Network cascade bottleneck risk (cycle 34)
+  if (ctx.networkCascades.length > 0) {
+    const topCascade = ctx.networkCascades[0];
+    if (topCascade.networkBottleneck) {
+      const bottleneckInv = ctx.investors.find(i => i.id === topCascade.networkBottleneck!.investorId);
+      if (bottleneckInv && bottleneckInv.stageHealth !== 'on_track') {
+        recs.push({
+          priority: 2,
+          category: 'risk',
+          title: `Network bottleneck at risk: ${topCascade.networkBottleneck.investorName}`,
+          rationale: `${topCascade.networkBottleneck.investorName} is the bottleneck in ${topCascade.keystoneName}'s cascade chain (${topCascade.cascadeChain.length} downstream investors). Currently ${bottleneckInv.stageHealth}. If this investor passes, the cascade collapses.`,
+          action: `Prioritize ${topCascade.networkBottleneck.investorName} above all others. Allocate CEO time directly. Remove blockers.`,
+          expectedImpact: `Securing this bottleneck unlocks ${topCascade.cascadeChain.length} downstream closes through network effects.`,
+          deadline: 'This week',
+        });
+      }
+    }
+  }
+
+  // 12. FOMO opportunity window (cycle 34)
+  const highFomo = ctx.fomoDynamics.filter(f => f.fomoIntensity === 'high');
+  if (highFomo.length > 0) {
+    recs.push({
+      priority: 2,
+      category: 'timing',
+      title: `FOMO window open: ${highFomo.length} high-intensity competitive trigger(s)`,
+      rationale: `${highFomo.map(f => `${f.advancingInvestor} advancing to ${f.advancingTo}, affecting ${f.affectedInvestors.length} investors`).join('; ')}. Competitive pressure is at peak — this is a time-limited opportunity.`,
+      action: `Contact affected investors within 24 hours with process update: "we're seeing strong momentum in the process." Don't name names but signal urgency.`,
+      expectedImpact: 'FOMO-driven engagement typically compresses decision timelines by 40-60%.',
+      deadline: 'Today',
+    });
+  }
+
   // Sort by priority
   recs.sort((a, b) => a.priority - b.priority);
 
-  // Cap at 5
-  return recs.slice(0, 5);
+  // Cap at 7 (was 5, expanded for richer intelligence — cycle 34)
+  return recs.slice(0, 7);
 }
 
 /**
