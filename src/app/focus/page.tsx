@@ -112,10 +112,10 @@ interface AccelerationData {
 const TYPE_STYLES: Record<string, React.CSSProperties> = {
   vc: { background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(74,111,165,0.25)' },
   growth: { background: 'var(--cat-purple-muted)', color: 'var(--chart-4)', border: '1px solid rgba(74,74,138,0.15)' },
-  sovereign: { background: 'var(--warning-muted)', color: 'var(--warning)', border: '1px solid rgba(176,138,46,0.15)' },
+  sovereign: { background: 'var(--warning-muted)', color: 'var(--warning)', border: '1px solid rgba(26, 26, 46, 0.05)' },
   strategic: { background: 'var(--cat-teal-muted)', color: 'var(--cat-teal)', border: '1px solid rgba(45,122,106,0.15)' },
   debt: { background: 'var(--surface-2)', color: 'var(--text-secondary)', border: '1px solid var(--border-default)' },
-  family_office: { background: 'rgba(196,90,90,0.12)', color: 'var(--danger)', border: '1px solid rgba(196,90,90,0.25)' },
+  family_office: { background: 'rgba(26, 26, 46, 0.06)', color: 'var(--danger)', border: '1px solid rgba(26, 26, 46, 0.06)' },
 };
 
 const TYPE_LABELS: Record<string, string> = {
@@ -136,8 +136,8 @@ const STATUS_STYLES: Record<string, React.CSSProperties> = {
   meeting_scheduled: { background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(74,111,165,0.25)' },
   met: { background: 'var(--cat-purple-muted)', color: 'var(--chart-4)', border: '1px solid rgba(74,74,138,0.15)' },
   engaged: { background: 'var(--cat-purple-muted)', color: 'var(--cat-purple)', border: '1px solid rgba(74,74,138,0.12)' },
-  in_dd: { background: 'var(--warning-muted)', color: 'var(--warning)', border: '1px solid rgba(176,138,46,0.15)' },
-  term_sheet: { background: 'var(--success-muted)', color: 'var(--success)', border: '1px solid rgba(45,122,79,0.15)' },
+  in_dd: { background: 'var(--warning-muted)', color: 'var(--warning)', border: '1px solid rgba(26, 26, 46, 0.05)' },
+  term_sheet: { background: 'var(--success-muted)', color: 'var(--success)', border: '1px solid rgba(27, 42, 74, 0.08)' },
 };
 
 const MOMENTUM_STYLE: Record<string, React.CSSProperties> = {
@@ -155,12 +155,12 @@ const MOMENTUM_LABELS: Record<string, string> = {
 };
 
 const TRIGGER_STYLES: Record<string, React.CSSProperties> = {
-  momentum_cliff: { background: 'var(--warning-muted)', color: 'var(--warning)', border: '1px solid rgba(176,138,46,0.15)' },
-  stall_risk: { background: 'var(--danger-muted)', color: 'var(--danger)', border: '1px solid rgba(196,90,90,0.25)' },
-  window_closing: { background: 'var(--warning-muted)', color: 'var(--warning)', border: '1px solid rgba(176,138,46,0.15)' },
+  momentum_cliff: { background: 'var(--warning-muted)', color: 'var(--warning)', border: '1px solid rgba(26, 26, 46, 0.05)' },
+  stall_risk: { background: 'var(--danger-muted)', color: 'var(--danger)', border: '1px solid rgba(26, 26, 46, 0.06)' },
+  window_closing: { background: 'var(--warning-muted)', color: 'var(--warning)', border: '1px solid rgba(26, 26, 46, 0.05)' },
   catalyst_match: { background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(74,111,165,0.25)' },
   competitive_pressure: { background: 'var(--cat-purple-muted)', color: 'var(--chart-4)', border: '1px solid rgba(74,74,138,0.15)' },
-  term_sheet_ready: { background: 'var(--success-muted)', color: 'var(--success)', border: '1px solid rgba(45,122,79,0.15)' },
+  term_sheet_ready: { background: 'var(--success-muted)', color: 'var(--success)', border: '1px solid rgba(27, 42, 74, 0.08)' },
 };
 
 const TRIGGER_LABELS: Record<string, string> = {
@@ -173,14 +173,14 @@ const TRIGGER_LABELS: Record<string, string> = {
 };
 
 const CONFIDENCE_STYLES: Record<string, React.CSSProperties> = {
-  high: { background: 'var(--success-muted)', color: 'var(--success)', border: '1px solid rgba(45,122,79,0.15)' },
-  medium: { background: 'var(--warning-muted)', color: 'var(--warning)', border: '1px solid rgba(176,138,46,0.15)' },
+  high: { background: 'var(--success-muted)', color: 'var(--success)', border: '1px solid rgba(27, 42, 74, 0.08)' },
+  medium: { background: 'var(--warning-muted)', color: 'var(--warning)', border: '1px solid rgba(26, 26, 46, 0.05)' },
   low: { background: 'var(--surface-2)', color: 'var(--text-tertiary)', border: '1px solid var(--border-default)' },
 };
 
 const URGENCY_STYLE: Record<string, React.CSSProperties> = {
   immediate: { color: 'var(--danger)' },
-  '48h': { color: '#a58a5a' },
+  '48h': { color: 'var(--text-secondary)' },
   this_week: { color: 'var(--warning)' },
   next_week: { color: 'var(--text-tertiary)' },
 };
@@ -192,9 +192,9 @@ function focusScoreColor(score: number): string {
 }
 
 function focusScoreBgStyle(score: number): React.CSSProperties {
-  if (score >= 70) return { background: 'var(--success-muted)', border: '1px solid rgba(74,158,110,0.2)' };
-  if (score >= 50) return { background: 'var(--warning-muted)', border: '1px solid rgba(196,163,90,0.2)' };
-  return { background: 'var(--danger-muted)', border: '1px solid rgba(196,90,90,0.2)' };
+  if (score >= 70) return { background: 'var(--success-muted)', border: '1px solid rgba(27, 42, 74, 0.06)' };
+  if (score >= 50) return { background: 'var(--warning-muted)', border: '1px solid rgba(26, 26, 46, 0.05)' };
+  return { background: 'var(--danger-muted)', border: '1px solid rgba(26, 26, 46, 0.06)' };
 }
 
 function EnthusiasmDots({ value }: { value: number }) {
@@ -380,7 +380,7 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimensionData[] }) 
             {dimensions.map(d => (
               <div key={d.name}>
                 <div className="flex items-center justify-between mb-0.5">
-                  <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                  <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 500, textTransform: 'none', letterSpacing: '0.04em' }}>
                     {d.name}
                   </span>
                   <span
@@ -421,7 +421,7 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimensionData[] }) 
             <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 'var(--space-2)' }}>
               <div className="flex items-center gap-1 mb-1">
                 <span style={{ color: 'var(--success)' }}><Star className="w-3 h-3" /></span>
-                <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'none', letterSpacing: '0.06em' }}>
                   Strengths
                 </span>
               </div>
@@ -448,7 +448,7 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimensionData[] }) 
             <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 'var(--space-2)' }}>
               <div className="flex items-center gap-1 mb-1">
                 <span style={{ color: 'var(--warning)' }}><Eye className="w-3 h-3" /></span>
-                <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'none', letterSpacing: '0.06em' }}>
                   Needs Attention
                 </span>
               </div>
@@ -646,7 +646,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
               >
                 {item.focusScore}
               </span>
-              <span style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Focus</span>
+              <span style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'none', letterSpacing: '0.08em' }}>Focus</span>
             </div>
             {/* Quick action buttons — always visible for top 3, on hover for rest */}
             {(rank <= 3 || hovered) && (
@@ -692,7 +692,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
         <div className="px-4 py-3 ml-11 space-y-3" style={{ borderTop: '1px solid var(--border-subtle)' }}>
           {/* Score breakdown */}
           <div>
-            <p style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>Score Breakdown</p>
+            <p style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'none', letterSpacing: '0.08em', marginBottom: '8px' }}>Score Breakdown</p>
             <div className="grid grid-cols-5 gap-2">
               {[
                 { label: 'Investor Score', value: item.components.investorScore, weight: '30%' },
@@ -713,7 +713,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
           {/* Unresolved objections */}
           {item.unresolvedObjections.length > 0 && (
             <div>
-              <p style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px' }}>Unresolved Objections</p>
+              <p style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'none', letterSpacing: '0.08em', marginBottom: '4px' }}>Unresolved Objections</p>
               <div className="space-y-1">
                 {item.unresolvedObjections.map((obj, i) => (
                   <div key={i} className="flex items-start gap-1.5" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)', opacity: 0.85 }}>
@@ -814,7 +814,7 @@ function StaleAlertCard({ item, onReengage }: { item: FocusItem; onReengage: (it
   return (
     <div
       style={{
-        border: '1px solid rgba(196,90,90,0.25)',
+        border: '1px solid rgba(26, 26, 46, 0.06)',
         background: 'var(--danger-muted)',
         borderRadius: 'var(--radius-lg)',
         padding: 'var(--space-4)',
@@ -940,7 +940,7 @@ function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
   return (
     <div
       style={{
-        border: '1px solid rgba(45,122,79,0.15)',
+        border: '1px solid rgba(27, 42, 74, 0.08)',
         background: 'var(--success-muted)',
         borderRadius: 'var(--radius-lg)',
         padding: 'var(--space-4)',
@@ -996,7 +996,7 @@ function AtRiskCard({ investor }: { investor: InvestorSummary }) {
   return (
     <div
       style={{
-        border: '1px solid rgba(196,90,90,0.25)',
+        border: '1px solid rgba(26, 26, 46, 0.06)',
         background: 'var(--danger-muted)',
         borderRadius: 'var(--radius-lg)',
         padding: 'var(--space-4)',
@@ -1029,7 +1029,7 @@ function AtRiskCard({ investor }: { investor: InvestorSummary }) {
         <Link
           href={`/meetings/new?investor=${investor.investorId}`}
           className="btn btn-sm flex-1 flex items-center justify-center gap-1"
-          style={{ fontSize: '11px', background: 'rgba(196,90,90,0.15)', color: 'var(--danger)', border: '1px solid rgba(196,90,90,0.25)' }}
+          style={{ fontSize: '11px', background: 'rgba(26, 26, 46, 0.06)', color: 'var(--danger)', border: '1px solid rgba(26, 26, 46, 0.06)' }}
         >
           Re-engage
         </Link>
@@ -1061,7 +1061,7 @@ function DeprioritizeSection({ investors }: { investors: InvestorSummary[] }) {
       >
         <div className="flex items-center gap-2">
           <Ban className="w-3.5 h-3.5" style={{ color: 'var(--text-muted)' }} />
-          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontWeight: 500, textTransform: 'none', letterSpacing: '0.08em' }}>
             Deprioritize ({investors.length})
           </span>
         </div>
@@ -1276,7 +1276,7 @@ export default function FocusPage() {
           {/* Term Sheet Ready */}
           {accelData.termSheetReady.length > 0 && (
             <div>
-              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--success)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--success)', textTransform: 'none', letterSpacing: '0.08em' }}>
                 <CheckCircle className="w-3.5 h-3.5" /> Term Sheet Ready ({accelData.termSheetReady.length})
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -1290,7 +1290,7 @@ export default function FocusPage() {
           {/* Immediate Actions */}
           {immediateActions.length > 0 && (
             <div>
-              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--danger)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--danger)', textTransform: 'none', letterSpacing: '0.08em' }}>
                 <AlertTriangle className="w-3.5 h-3.5" /> Immediate ({immediateActions.length})
               </h3>
               <div className="space-y-2">
@@ -1309,7 +1309,7 @@ export default function FocusPage() {
           {/* This Week Actions */}
           {thisWeekActions.length > 0 && (
             <div>
-              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--warning)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--warning)', textTransform: 'none', letterSpacing: '0.08em' }}>
                 <Clock className="w-3.5 h-3.5" /> This Week ({thisWeekActions.length})
               </h3>
               <div className="space-y-2">
@@ -1328,7 +1328,7 @@ export default function FocusPage() {
           {/* At Risk */}
           {accelData.atRisk.length > 0 && (
             <div>
-              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--danger)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--danger)', textTransform: 'none', letterSpacing: '0.08em' }}>
                 <Shield className="w-3.5 h-3.5" /> At Risk ({accelData.atRisk.length})
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -1377,7 +1377,7 @@ export default function FocusPage() {
           {/* Stale Alerts */}
           {staleAlerts.length > 0 && (
             <div>
-              <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--danger)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+              <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--danger)', textTransform: 'none', letterSpacing: '0.08em' }}>
                 <AlertTriangle className="w-4 h-4" /> Stale Alerts
               </h2>
               <div className="space-y-2">

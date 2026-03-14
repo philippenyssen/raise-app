@@ -225,7 +225,7 @@ export default function NetworkPage() {
           <div key={stat.label} className="card p-4" style={{ border: '1px solid var(--border-subtle)' }}>
             <div className="flex items-center gap-2 mb-1">
               <span style={{ color: 'var(--text-muted)' }}><stat.icon className="w-3.5 h-3.5" /></span>
-              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', textTransform: 'none', letterSpacing: '0.05em' }}>
                 {stat.label}
               </span>
             </div>
@@ -263,9 +263,9 @@ export default function NetworkPage() {
               <Link
                 href={`/dealflow?search=${encodeURIComponent(bottleneckAlert.bottleneckName)}`}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors"
-                style={{ background: 'rgba(196,163,90,0.2)', color: 'var(--warning)', border: '1px solid rgba(196,163,90,0.3)' }}
-                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(196,163,90,0.3)'; }}
-                onMouseLeave={e => { e.currentTarget.style.background = 'rgba(196,163,90,0.2)'; }}
+                style={{ background: 'rgba(26, 26, 46, 0.05)', color: 'var(--warning)', border: '1px solid rgba(26, 26, 46, 0.05)' }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(26, 26, 46, 0.05)'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'rgba(26, 26, 46, 0.05)'; }}
               >
                 <Calendar className="w-3 h-3" />
                 Engage {bottleneckAlert.bottleneckName}
@@ -498,7 +498,7 @@ export default function NetworkPage() {
                               </div>
                               <div className="flex items-center gap-4 shrink-0">
                                 <div style={{ textAlign: 'right' }}>
-                                  <p style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Prob</p>
+                                  <p style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'none' }}>Prob</p>
                                   <p style={{
                                     fontSize: 'var(--font-size-sm)',
                                     fontWeight: 600,
@@ -510,7 +510,7 @@ export default function NetworkPage() {
                                 </div>
                                 {link.capitalM > 0 && (
                                   <div style={{ textAlign: 'right' }}>
-                                    <p style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Expected</p>
+                                    <p style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'none' }}>Expected</p>
                                     <p style={{
                                       fontSize: 'var(--font-size-sm)',
                                       fontWeight: 600,
@@ -523,7 +523,7 @@ export default function NetworkPage() {
                                 )}
                                 {idx < cascade.cascadeChain.length - 1 && (
                                   <div style={{ textAlign: 'right' }}>
-                                    <p style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Cumulative</p>
+                                    <p style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'none' }}>Cumulative</p>
                                     <p style={{
                                       fontSize: 'var(--font-size-sm)',
                                       fontWeight: 500,
@@ -564,9 +564,9 @@ export default function NetworkPage() {
                         <Link
                           href={`/investors/${cascade.networkBottleneck.investorId}`}
                           className="inline-flex items-center gap-1 mt-2 px-2.5 py-1 rounded text-[11px] font-medium transition-colors"
-                          style={{ background: 'rgba(196,163,90,0.15)', color: 'var(--warning)', border: '1px solid rgba(176,138,46,0.15)' }}
-                          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(176,138,46,0.15)'; }}
-                          onMouseLeave={e => { e.currentTarget.style.background = 'rgba(196,163,90,0.15)'; }}
+                          style={{ background: 'rgba(26, 26, 46, 0.05)', color: 'var(--warning)', border: '1px solid rgba(26, 26, 46, 0.05)' }}
+                          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(26, 26, 46, 0.05)'; }}
+                          onMouseLeave={e => { e.currentTarget.style.background = 'rgba(26, 26, 46, 0.05)'; }}
                         >
                           Prioritize Engagement
                           <ArrowRight className="w-3 h-3" />
@@ -594,7 +594,7 @@ export default function NetworkPage() {
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           <div>
-            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', textTransform: 'none', letterSpacing: '0.05em' }}>
               Strongest Chain
             </p>
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 500, marginTop: '2px' }}>
@@ -604,7 +604,7 @@ export default function NetworkPage() {
             </p>
           </div>
           <div>
-            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', textTransform: 'none', letterSpacing: '0.05em' }}>
               Weakest Chain
             </p>
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 500, marginTop: '2px' }}>
@@ -614,7 +614,7 @@ export default function NetworkPage() {
             </p>
           </div>
           <div>
-            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', textTransform: 'none', letterSpacing: '0.05em' }}>
               Total Raise Forecast
             </p>
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--accent)', fontWeight: 600, marginTop: '2px' }}>

@@ -87,21 +87,21 @@ const TYPE_LABELS: Record<string, string> = {
 const TYPE_STYLES: Record<string, React.CSSProperties> = {
   vc: { background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(74,111,165,0.25)' },
   growth: { background: 'var(--cat-purple-muted)', color: 'var(--chart-4)', border: '1px solid rgba(74,74,138,0.15)' },
-  sovereign: { background: 'var(--warning-muted)', color: 'var(--warning)', border: '1px solid rgba(176,138,46,0.15)' },
+  sovereign: { background: 'var(--warning-muted)', color: 'var(--warning)', border: '1px solid rgba(26, 26, 46, 0.05)' },
   strategic: { background: 'var(--cat-teal-muted)', color: 'var(--cat-teal)', border: '1px solid rgba(45,122,106,0.15)' },
   debt: { background: 'var(--surface-2)', color: 'var(--text-secondary)', border: '1px solid var(--border-default)' },
-  family_office: { background: 'rgba(196,90,90,0.12)', color: 'var(--danger)', border: '1px solid rgba(196,90,90,0.25)' },
+  family_office: { background: 'rgba(26, 26, 46, 0.06)', color: 'var(--danger)', border: '1px solid rgba(26, 26, 46, 0.06)' },
 };
 
 const IMPACT_STYLES: Record<string, React.CSSProperties> = {
-  high: { background: 'var(--danger-muted)', color: 'var(--danger)', border: '1px solid rgba(196,90,90,0.25)' },
-  medium: { background: 'var(--warning-muted)', color: 'var(--warning)', border: '1px solid rgba(176,138,46,0.15)' },
+  high: { background: 'var(--danger-muted)', color: 'var(--danger)', border: '1px solid rgba(26, 26, 46, 0.06)' },
+  medium: { background: 'var(--warning-muted)', color: 'var(--warning)', border: '1px solid rgba(26, 26, 46, 0.05)' },
   low: { background: 'var(--surface-2)', color: 'var(--text-tertiary)', border: '1px solid var(--border-default)' },
 };
 
 const PRIORITY_STYLES: Record<string, React.CSSProperties> = {
-  high: { borderLeft: '3px solid var(--danger)' },
-  medium: { borderLeft: '3px solid var(--warning)' },
+  high: { borderLeft: '2px solid var(--border-default)' },
+  medium: { borderLeft: '2px solid var(--border-default)' },
   low: { borderLeft: '3px solid var(--border-default)' },
 };
 
@@ -403,7 +403,7 @@ function PressureCard({ inv }: { inv: InvestorFomo }) {
           {/* Trigger investors */}
           {inv.triggerInvestors.length > 0 && (
             <div style={{ marginBottom: 'var(--space-3)' }}>
-              <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.06em' }}>
+              <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'none' as const, letterSpacing: '0.06em' }}>
                 Creating pressure
               </span>
               <div className="flex flex-wrap gap-1.5 mt-1.5">
@@ -534,7 +534,7 @@ function StrategyCardComponent({ card }: { card: StrategyCard }) {
           <span style={inlineBadgeStyle({
             background: card.priority === 'high' ? 'var(--danger-muted)' : card.priority === 'medium' ? 'var(--warning-muted)' : 'var(--surface-2)',
             color: card.priority === 'high' ? 'var(--danger)' : card.priority === 'medium' ? 'var(--warning)' : 'var(--text-tertiary)',
-            border: `1px solid ${card.priority === 'high' ? 'rgba(196,90,90,0.25)' : card.priority === 'medium' ? 'rgba(176,138,46,0.15)' : 'var(--border-default)'}`,
+            border: `1px solid ${card.priority === 'high' ? 'rgba(26, 26, 46, 0.06)' : card.priority === 'medium' ? 'rgba(26, 26, 46, 0.05)' : 'var(--border-default)'}`,
             marginTop: '4px',
             display: 'inline-block',
           })}>
@@ -549,7 +549,7 @@ function StrategyCardComponent({ card }: { card: StrategyCard }) {
 
       {card.targetInvestors.length > 0 && (
         <div>
-          <span style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.06em' }}>
+          <span style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'none' as const, letterSpacing: '0.06em' }}>
             Target
           </span>
           <div className="flex flex-wrap gap-1 mt-1">

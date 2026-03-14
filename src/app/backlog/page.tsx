@@ -146,19 +146,19 @@ export default function BacklogPage() {
       {summary && (
         <div className="grid grid-cols-4 gap-3">
           <div className="rounded-lg p-4" style={{ background: 'var(--surface-1)', border: '1px solid var(--border-subtle)' }}>
-            <div className="text-[10px] uppercase font-medium flex items-center gap-1" style={{ color: 'var(--text-muted)' }}><DollarSign className="w-3 h-3" /> Total Committed</div>
+            <div className="text-[10px]  font-medium flex items-center gap-1" style={{ color: 'var(--text-muted)' }}><DollarSign className="w-3 h-3" /> Total Committed</div>
             <div className="text-2xl font-bold mt-1" style={{ color: 'var(--text-primary)' }}>{formatEur(summary.total_committed_eur)}</div>
           </div>
           <div className="rounded-lg p-4" style={{ background: 'var(--surface-1)', border: '1px solid var(--border-subtle)' }}>
-            <div className="text-[10px] uppercase font-medium flex items-center gap-1" style={{ color: 'var(--text-muted)' }}><ShieldCheck className="w-3 h-3" /> Probability-Weighted</div>
+            <div className="text-[10px]  font-medium flex items-center gap-1" style={{ color: 'var(--text-muted)' }}><ShieldCheck className="w-3 h-3" /> Probability-Weighted</div>
             <div className="text-2xl font-bold mt-1" style={{ color: 'var(--success)' }}>{formatEur(summary.probability_weighted_eur)}</div>
           </div>
           <div className="rounded-lg p-4" style={{ background: 'var(--surface-1)', border: '1px solid var(--border-subtle)' }}>
-            <div className="text-[10px] uppercase font-medium flex items-center gap-1" style={{ color: 'var(--text-muted)' }}><TrendingUp className="w-3 h-3" /> Firm Contracts</div>
+            <div className="text-[10px]  font-medium flex items-center gap-1" style={{ color: 'var(--text-muted)' }}><TrendingUp className="w-3 h-3" /> Firm Contracts</div>
             <div className="text-2xl font-bold mt-1" style={{ color: 'var(--accent)' }}>{formatEur(summary.by_type?.firm || 0)}</div>
           </div>
           <div className="rounded-lg p-4" style={{ background: 'var(--surface-1)', border: '1px solid var(--border-subtle)' }}>
-            <div className="text-[10px] uppercase font-medium flex items-center gap-1" style={{ color: 'var(--text-muted)' }}><AlertTriangle className="w-3 h-3" /> Pipeline (Unsigned)</div>
+            <div className="text-[10px]  font-medium flex items-center gap-1" style={{ color: 'var(--text-muted)' }}><AlertTriangle className="w-3 h-3" /> Pipeline (Unsigned)</div>
             <div className="text-2xl font-bold mt-1" style={{ color: 'var(--warning)' }}>{formatEur(summary.by_type?.pipeline || 0)}</div>
           </div>
         </div>

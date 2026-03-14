@@ -385,12 +385,12 @@ export default function InvestorDetailPage() {
           className="flex items-center gap-4 flex-wrap rounded-xl px-4 py-3"
           style={{
             border: `1px solid ${
-              dealIntel.heatLabel === 'hot' ? 'rgba(196,90,90,0.2)' :
-              dealIntel.heatLabel === 'warm' ? 'rgba(234,179,8,0.2)' :
+              dealIntel.heatLabel === 'hot' ? 'rgba(26, 26, 46, 0.06)' :
+              dealIntel.heatLabel === 'warm' ? 'rgba(26, 26, 46, 0.05)' :
               'var(--border-subtle)'
             }`,
-            background: dealIntel.heatLabel === 'hot' ? 'rgba(196,90,90,0.03)' :
-              dealIntel.heatLabel === 'warm' ? 'rgba(234,179,8,0.03)' :
+            background: dealIntel.heatLabel === 'hot' ? 'rgba(26, 26, 46, 0.06)' :
+              dealIntel.heatLabel === 'warm' ? 'rgba(26, 26, 46, 0.05)' :
               'var(--surface-1)',
           }}
         >
@@ -410,7 +410,7 @@ export default function InvestorDetailPage() {
               {dealIntel.heat}
             </span>
             <span style={{
-              fontSize: '9px', fontWeight: 600, textTransform: 'uppercase',
+              fontSize: '9px', fontWeight: 600, textTransform: 'none',
               color: dealIntel.heatLabel === 'hot' ? '#c45a5a' :
                 dealIntel.heatLabel === 'warm' ? '#c4a35a' :
                 'var(--text-muted)'
@@ -463,7 +463,7 @@ export default function InvestorDetailPage() {
                   fontSize: '11px', fontWeight: 600, padding: '3px 10px',
                   borderRadius: 'var(--radius-sm)', textDecoration: 'none',
                   background: 'var(--danger-muted)', color: 'var(--danger)',
-                  border: '1px solid rgba(196,90,90,0.25)',
+                  border: '1px solid rgba(26, 26, 46, 0.06)',
                 }}
               >
                 <Phone className="w-3 h-3" /> Rescue
@@ -476,7 +476,7 @@ export default function InvestorDetailPage() {
                   fontSize: '11px', fontWeight: 600, padding: '3px 10px',
                   borderRadius: 'var(--radius-sm)', textDecoration: 'none',
                   background: 'var(--warning-muted)', color: 'var(--warning)',
-                  border: '1px solid rgba(176,138,46,0.15)',
+                  border: '1px solid rgba(26, 26, 46, 0.05)',
                 }}
               >
                 <Mail className="w-3 h-3" /> Nudge
@@ -515,8 +515,8 @@ export default function InvestorDetailPage() {
           <div
             className="rounded-xl overflow-hidden"
             style={{
-              border: overdueItems.length > 0 ? '1px solid rgba(196,90,90,0.25)' : '1px solid var(--border-default)',
-              background: overdueItems.length > 0 ? 'rgba(196,90,90,0.02)' : undefined,
+              border: overdueItems.length > 0 ? '1px solid rgba(26, 26, 46, 0.06)' : '1px solid var(--border-default)',
+              background: overdueItems.length > 0 ? 'rgba(26, 26, 46, 0.06)' : undefined,
             }}
           >
             <div
@@ -528,7 +528,7 @@ export default function InvestorDetailPage() {
             >
               <div className="flex items-center gap-2">
                 <SendHorizonal className="w-3.5 h-3.5" style={{ color: overdueItems.length > 0 ? 'var(--danger)' : 'var(--accent)' }} />
-                <span className="text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--text-tertiary)' }}>
+                <span className="text-xs font-medium  tracking-wider" style={{ color: 'var(--text-tertiary)' }}>
                   Pending Actions
                 </span>
                 {overdueItems.length > 0 && (
@@ -1083,7 +1083,7 @@ function Row({ label, value }: { label: string; value: string }) {
 
 function StatCard({ icon: Icon, label, value, sub, highlight }: { icon: React.ComponentType<{ className?: string }>; label: string; value: string | number; sub: string; highlight?: boolean }) {
   return (
-    <div className="rounded-xl p-4" style={{ border: highlight ? '1px solid rgba(196,90,90,0.3)' : '1px solid var(--border-default)', background: highlight ? 'rgba(196,90,90,0.03)' : undefined }}>
+    <div className="rounded-xl p-4" style={{ border: highlight ? '1px solid rgba(26, 26, 46, 0.06)' : '1px solid var(--border-default)', background: highlight ? 'rgba(26, 26, 46, 0.06)' : undefined }}>
       <div className="flex items-center gap-2 mb-1">
         <span style={{ color: highlight ? 'var(--danger)' : 'var(--text-muted)' }}><Icon className="w-3.5 h-3.5" /></span>
         <span className="text-xs truncate" style={{ color: highlight ? 'var(--danger)' : 'var(--text-muted)' }}>{label}</span>
@@ -1155,7 +1155,7 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-2">
             <Gauge className="w-4 h-4" style={{ color: 'var(--text-tertiary)' }} />
-            <h2 className="text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--text-tertiary)' }}>Intelligence Score</h2>
+            <h2 className="text-xs font-medium  tracking-wider" style={{ color: 'var(--text-tertiary)' }}>Intelligence Score</h2>
           </div>
           <button
             onClick={onRefresh}
@@ -1201,7 +1201,7 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
             <div className="flex items-start gap-2">
               <Lightbulb className="w-3.5 h-3.5 shrink-0 mt-0.5" style={{ color: 'var(--warning)' }} />
               <div className="flex-1 min-w-0">
-                <div className="text-[10px] font-medium uppercase mb-0.5" style={{ color: 'var(--text-muted)' }}>Next Action</div>
+                <div className="text-[10px] font-medium  mb-0.5" style={{ color: 'var(--text-muted)' }}>Next Action</div>
                 <div className="flex items-center gap-2">
                   <p className="text-sm leading-snug flex-1" style={{ color: 'var(--text-secondary)' }}>{score.nextBestAction}</p>
                   <Link
@@ -1265,7 +1265,7 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
         <div className="p-5" style={{ borderTop: '1px solid var(--border-default)' }}>
           <div className="flex items-center gap-2 mb-3">
             <ShieldAlert className="w-3.5 h-3.5" style={{ color: 'var(--danger)' }} />
-            <h3 className="text-xs font-medium uppercase" style={{ color: 'var(--text-tertiary)' }}>Identified Risks</h3>
+            <h3 className="text-xs font-medium " style={{ color: 'var(--text-tertiary)' }}>Identified Risks</h3>
           </div>
           <div className="space-y-1.5">
             {score.risks.map((risk, i) => (
@@ -1328,7 +1328,7 @@ function ConvictionTrajectoryPanel({ trajectory }: { trajectory: ConvictionTraje
       <div className="p-5" style={{ background: 'var(--surface-1)' }}>
         <div className="flex items-center gap-2 mb-4">
           <Activity className="w-4 h-4" style={{ color: 'var(--text-tertiary)' }} />
-          <h2 className="text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--text-tertiary)' }}>Conviction Trajectory</h2>
+          <h2 className="text-xs font-medium  tracking-wider" style={{ color: 'var(--text-tertiary)' }}>Conviction Trajectory</h2>
         </div>
 
         <div className="flex items-center gap-6 flex-wrap">
@@ -1403,7 +1403,7 @@ function ConvictionTrajectoryPanel({ trajectory }: { trajectory: ConvictionTraje
 
           {/* Prediction */}
           <div className="space-y-1.5 min-w-0">
-            <div className="text-[10px] font-medium uppercase" style={{ color: 'var(--text-muted)' }}>30-Day Prediction</div>
+            <div className="text-[10px] font-medium " style={{ color: 'var(--text-muted)' }}>30-Day Prediction</div>
             <div className="flex items-baseline gap-1">
               <span className="text-lg font-bold tabular-nums" style={{ color: scoreColor(trajectory.predictedScoreIn30Days) }}>
                 {trajectory.predictedScoreIn30Days}
@@ -1542,7 +1542,7 @@ function EnrichmentPanel({
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <Database className="w-3.5 h-3.5" style={{ color: 'var(--text-tertiary)' }} />
-          <span className="text-xs font-medium uppercase" style={{ color: 'var(--text-tertiary)' }}>
+          <span className="text-xs font-medium " style={{ color: 'var(--text-tertiary)' }}>
             {records.length} enriched fields across {sortedCategories.length} categories
           </span>
         </div>

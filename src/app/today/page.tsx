@@ -90,16 +90,16 @@ const CATEGORY_BG: Record<string, string> = {
 };
 
 const ALERT_STYLES: Record<string, { bg: string; border: string; color: string; icon: React.ComponentType<{ className?: string }> }> = {
-  warning: { bg: 'var(--warning-muted)', border: 'rgba(176,138,46,0.15)', color: 'var(--warning)', icon: AlertTriangle },
-  opportunity: { bg: 'var(--success-muted)', border: 'rgba(45,122,79,0.15)', color: 'var(--success)', icon: Zap },
-  risk: { bg: 'var(--danger-muted)', border: 'rgba(196,90,90,0.25)', color: 'var(--danger)', icon: Shield },
+  warning: { bg: 'var(--warning-muted)', border: 'rgba(26, 26, 46, 0.05)', color: 'var(--warning)', icon: AlertTriangle },
+  opportunity: { bg: 'var(--success-muted)', border: 'rgba(27, 42, 74, 0.08)', color: 'var(--success)', icon: Zap },
+  risk: { bg: 'var(--danger-muted)', border: 'rgba(26, 26, 46, 0.06)', color: 'var(--danger)', icon: Shield },
 };
 
 const MOMENTUM_CONFIG: Record<string, { color: string; bg: string; border: string; icon: React.ComponentType<{ className?: string }>; label: string }> = {
-  accelerating: { color: 'var(--success)', bg: 'var(--success-muted)', border: 'rgba(45,122,79,0.15)', icon: TrendingUp, label: 'Accelerating' },
+  accelerating: { color: 'var(--success)', bg: 'var(--success-muted)', border: 'rgba(27, 42, 74, 0.08)', icon: TrendingUp, label: 'Accelerating' },
   steady: { color: 'var(--text-secondary)', bg: 'var(--surface-2)', border: 'var(--border-default)', icon: Minus, label: 'Steady' },
-  decelerating: { color: 'var(--warning)', bg: 'var(--warning-muted)', border: 'rgba(176,138,46,0.15)', icon: TrendingDown, label: 'Decelerating' },
-  stalled: { color: 'var(--danger)', bg: 'var(--danger-muted)', border: 'rgba(196,90,90,0.25)', icon: TrendingDown, label: 'Stalled' },
+  decelerating: { color: 'var(--warning)', bg: 'var(--warning-muted)', border: 'rgba(26, 26, 46, 0.05)', icon: TrendingDown, label: 'Decelerating' },
+  stalled: { color: 'var(--danger)', bg: 'var(--danger-muted)', border: 'rgba(26, 26, 46, 0.06)', icon: TrendingDown, label: 'Stalled' },
 };
 
 // ---------------------------------------------------------------------------
@@ -551,7 +551,7 @@ export default function TodayPage() {
         <div
           className="text-center"
           style={{
-            border: '1px solid rgba(196,90,90,0.15)',
+            border: '1px solid rgba(26, 26, 46, 0.06)',
             background: 'var(--danger-muted)',
             borderRadius: 'var(--radius-lg)',
             padding: 'var(--space-10)',
@@ -611,7 +611,7 @@ export default function TodayPage() {
                 height: '40px',
                 borderRadius: '50%',
                 background: 'var(--surface-2)',
-                border: '1px solid rgba(196,163,90,0.2)',
+                border: '1px solid rgba(26, 26, 46, 0.05)',
               }}
             >
               <span style={{ color: 'var(--warning)', display: 'flex' }}>
@@ -699,7 +699,7 @@ export default function TodayPage() {
             padding: 'var(--space-3) var(--space-4)',
             borderRadius: 'var(--radius-lg)',
             background: 'var(--surface-1)',
-            border: `1px solid ${raiseProgress.isOver ? 'rgba(196,90,90,0.25)' : raiseProgress.pct >= 75 ? 'rgba(176,138,46,0.15)' : 'var(--border-subtle)'}`,
+            border: `1px solid ${raiseProgress.isOver ? 'rgba(26, 26, 46, 0.06)' : raiseProgress.pct >= 75 ? 'rgba(26, 26, 46, 0.05)' : 'var(--border-subtle)'}`,
           }}
         >
           <div className="flex items-center gap-2 shrink-0">
@@ -760,7 +760,7 @@ export default function TodayPage() {
             }}
           >
             <Zap className="w-3.5 h-3.5" style={{ color: 'var(--chart-4)' }} />
-            <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--chart-4)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Since Yesterday</span>
+            <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--chart-4)', textTransform: 'none', letterSpacing: '0.05em' }}>Since Yesterday</span>
           </div>
           <div className="flex items-center gap-4 flex-wrap" style={{ padding: 'var(--space-3) var(--space-4)' }}>
             {overnight.statusChanges.map((sc, i) => (
@@ -917,7 +917,7 @@ export default function TodayPage() {
                         onClick={() => handleQuickComplete(fu.id)}
                         disabled={isProcessing}
                         className="btn btn-sm"
-                        style={{ background: 'var(--success-muted)', color: 'var(--success)', border: '1px solid rgba(45,122,79,0.15)', fontSize: '11px', padding: '3px 10px' }}
+                        style={{ background: 'var(--success-muted)', color: 'var(--success)', border: '1px solid rgba(27, 42, 74, 0.08)', fontSize: '11px', padding: '3px 10px' }}
                       >
                         Done
                       </button>
@@ -1113,7 +1113,7 @@ export default function TodayPage() {
 
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2" style={{ marginBottom: '4px' }}>
-                <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'rgba(167,139,250,0.9)', textTransform: 'uppercase' as const, letterSpacing: '0.05em' }}>
+                <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'rgba(167,139,250,0.9)', textTransform: 'none' as const, letterSpacing: '0.05em' }}>
                   AI Insight
                 </span>
               </div>

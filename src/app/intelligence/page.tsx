@@ -574,7 +574,7 @@ function RecentResearchSection({ briefs }: { briefs: IntelligenceBrief[] }) {
     >
       <div className="px-4 py-3 flex items-center gap-2" style={{ background: 'var(--surface-1)', borderBottom: '1px solid var(--border-default)' }}>
         <Radar className="w-4 h-4" style={{ color: 'var(--accent)' }} />
-        <h2 className="text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--text-tertiary)' }}>
+        <h2 className="text-xs font-medium  tracking-wider" style={{ color: 'var(--text-tertiary)' }}>
           Recent Research
         </h2>
         <span

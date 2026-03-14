@@ -218,7 +218,7 @@ export default function WorkspacePage() {
             }}
           >
             <span
-              className="uppercase"
+              className=""
               style={{
                 fontSize: 'var(--font-size-xs)',
                 fontWeight: 500,
@@ -251,7 +251,7 @@ export default function WorkspacePage() {
             {Object.entries(grouped).map(([type, typeDocs]) => (
               <div key={type}>
                 <div
-                  className="uppercase"
+                  className=""
                   style={{
                     fontSize: '10px',
                     fontWeight: 500,
@@ -320,7 +320,7 @@ export default function WorkspacePage() {
             }}
           >
             <div
-              className="uppercase"
+              className=""
               style={{
                 fontSize: '10px',
                 fontWeight: 500,

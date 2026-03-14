@@ -304,7 +304,7 @@ export default function DocumentsPage() {
                 fontWeight: 600,
                 color: 'var(--text-tertiary)',
                 letterSpacing: '0.05em',
-                textTransform: 'uppercase' as const,
+                textTransform: 'none' as const,
               }}>
                 {formatTypeLabel(type)} ({typeDocs.length})
               </h2>
@@ -389,7 +389,7 @@ export default function DocumentsPage() {
           {/* General flags (not tied to a specific document) */}
           {showFlags && generalFlags.length > 0 && (
             <div>
-              <h2 className="text-xs font-medium mb-3 uppercase flex items-center gap-2" style={{ color: 'var(--warning)' }}>
+              <h2 className="text-xs font-medium mb-3  flex items-center gap-2" style={{ color: 'var(--warning)' }}>
                 <AlertTriangle className="w-3 h-3" /> Unmatched Flags ({generalFlags.length})
               </h2>
               <p className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>

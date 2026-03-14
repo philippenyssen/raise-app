@@ -304,7 +304,7 @@ export default function TermComparePage() {
       {/* Scenario Input Forms */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--text-tertiary)' }}>
+          <h2 className="text-xs font-medium  tracking-wider" style={{ color: 'var(--text-tertiary)' }}>
             Scenarios ({scenarios.length}/5)
           </h2>
           <div className="flex items-center gap-2">
@@ -525,7 +525,7 @@ export default function TermComparePage() {
             className="rounded-xl p-5"
             style={{ border: '1px solid var(--border-default)', background: 'var(--surface-0)' }}
           >
-            <h3 className="text-xs font-medium uppercase tracking-wider mb-4" style={{ color: 'var(--text-tertiary)' }}>
+            <h3 className="text-xs font-medium  tracking-wider mb-4" style={{ color: 'var(--text-tertiary)' }}>
               Founder-Friendly Score
             </h3>
             <div className="space-y-3">
@@ -627,7 +627,7 @@ export default function TermComparePage() {
               className="rounded-xl p-5"
               style={{ border: '1px solid var(--border-default)', background: 'var(--surface-0)' }}
             >
-              <h3 className="text-xs font-medium uppercase tracking-wider mb-4" style={{ color: 'var(--text-tertiary)' }}>
+              <h3 className="text-xs font-medium  tracking-wider mb-4" style={{ color: 'var(--text-tertiary)' }}>
                 Key Observations
               </h3>
               <div className="space-y-3">
@@ -681,7 +681,7 @@ export default function TermComparePage() {
             className="rounded-xl p-5"
             style={{ border: '1px solid var(--border-default)', background: 'var(--surface-0)' }}
           >
-            <h3 className="text-xs font-medium uppercase tracking-wider mb-4" style={{ color: 'var(--text-tertiary)' }}>
+            <h3 className="text-xs font-medium  tracking-wider mb-4" style={{ color: 'var(--text-tertiary)' }}>
               Ownership Waterfall
             </h3>
             <div className="space-y-4">

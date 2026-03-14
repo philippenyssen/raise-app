@@ -159,7 +159,7 @@ export function Sidebar() {
                 fontSize: '13px',
                 fontWeight: 300,
                 fontFamily: 'var(--font-cormorant), Georgia, serif',
-                textTransform: 'uppercase' as const,
+                textTransform: 'none' as const,
               }}>
                 RAISE
               </h1>
@@ -215,7 +215,7 @@ export function Sidebar() {
                     fontSize: '10px',
                     fontWeight: 400,
                     color: SB.sectionLabel,
-                    textTransform: 'uppercase',
+                    textTransform: 'none',
                     letterSpacing: '0.14em',
                     padding: '0 var(--space-3)',
                     marginBottom: 'var(--space-1)',

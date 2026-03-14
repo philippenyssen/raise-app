@@ -137,7 +137,7 @@ export default function AnalysisPage() {
               >
                 <div className="flex items-center gap-3 mb-3">
                   <span
-                    className="text-lg font-bold uppercase"
+                    className="text-lg font-bold "
                     style={{ color: hs.color }}
                   >
                     {data.health.health}
@@ -229,7 +229,7 @@ export default function AnalysisPage() {
                       <div
                         key={i}
                         className="pl-4"
-                        style={{ borderLeft: '2px solid var(--danger)' }}
+                        style={{ borderLeft: '2px solid var(--border-default)' }}
                       >
                         <div className="flex items-center gap-2 mb-1">
                           <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>

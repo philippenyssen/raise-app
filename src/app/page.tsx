@@ -298,7 +298,6 @@ export default function Dashboard() {
 
   useEffect(() => {
     fetchData();
-    // Auto-refresh every 5 minutes
     const interval = setInterval(() => fetchData(true), 5 * 60 * 1000);
     return () => clearInterval(interval);
   }, [fetchData]);
@@ -350,10 +349,6 @@ export default function Dashboard() {
           ))}
         </div>
         <div className="skeleton" style={{ height: '140px', borderRadius: 'var(--radius-lg)' }} />
-        <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: 'var(--space-4)' }}>
-          <div className="skeleton" style={{ height: '120px', borderRadius: 'var(--radius-lg)' }} />
-          <div className="skeleton" style={{ height: '120px', borderRadius: 'var(--radius-lg)' }} />
-        </div>
       </div>
     );
   }
@@ -364,8 +359,8 @@ export default function Dashboard() {
       <div
         className="text-center"
         style={{
-          border: '1px solid rgba(196,90,90,0.15)',
-          background: 'var(--danger-muted)',
+          border: '1px solid var(--border-default)',
+          background: 'var(--surface-1)',
           borderRadius: 'var(--radius-lg)',
           padding: 'var(--space-10)',
         }}
@@ -386,20 +381,18 @@ export default function Dashboard() {
 
   const identifiedCount = data.totalInvestors - data.funnel.contacted - (data.funnel.passed ?? 0);
   const funnelStages = [
-    { label: 'Identified', value: identifiedCount > 0 ? identifiedCount : 0, bg: 'var(--text-muted)' },
-    { label: 'Contacted', value: data.funnel.contacted, bg: 'var(--text-tertiary)' },
-    { label: 'Meetings', value: data.funnel.meetings, bg: 'var(--accent)' },
-    { label: 'Engaged', value: data.funnel.engaged, bg: 'var(--cat-purple)' },
-    { label: 'In DD', value: data.funnel.in_dd, bg: 'var(--warning)' },
-    { label: 'Term Sheets', value: data.funnel.term_sheets, bg: 'var(--success)' },
-    { label: 'Closed', value: data.funnel.closed, bg: 'var(--success)' },
+    { label: 'Identified', value: identifiedCount > 0 ? identifiedCount : 0 },
+    { label: 'Contacted', value: data.funnel.contacted },
+    { label: 'Meetings', value: data.funnel.meetings },
+    { label: 'Engaged', value: data.funnel.engaged },
+    { label: 'In DD', value: data.funnel.in_dd },
+    { label: 'Term Sheets', value: data.funnel.term_sheets },
+    { label: 'Closed', value: data.funnel.closed },
   ];
 
   return (
     <div className="space-y-6 page-content">
-      {/* ================================================================ */}
-      {/* HEADER                                                           */}
-      {/* ================================================================ */}
+      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="page-title">Dashboard</h1>
@@ -429,7 +422,7 @@ export default function Dashboard() {
               className="absolute right-0 mt-1 py-1 hidden group-hover:block z-10"
               style={{
                 width: '176px',
-                background: 'var(--surface-2)',
+                background: 'var(--surface-1)',
                 border: '1px solid var(--border-default)',
                 borderRadius: 'var(--radius-md)',
                 boxShadow: 'var(--shadow-lg)',
@@ -446,7 +439,7 @@ export default function Dashboard() {
                     fontSize: 'var(--font-size-xs)',
                     color: 'var(--text-secondary)',
                   }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-3)'; (e.currentTarget as HTMLElement).style.color = 'var(--text-primary)'; }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; (e.currentTarget as HTMLElement).style.color = 'var(--text-primary)'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; }}
                 >
                   {t} CSV
@@ -457,9 +450,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* ================================================================ */}
-      {/* EMPTY STATE                                                      */}
-      {/* ================================================================ */}
+      {/* Empty State */}
       {data.totalInvestors === 0 && (
         <div
           className="text-center"
@@ -470,7 +461,7 @@ export default function Dashboard() {
             background: 'var(--surface-1)',
           }}
         >
-          <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 600, color: 'var(--text-primary)' }}>Initialize Your Fundraise</h2>
+          <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 400, color: 'var(--text-primary)' }}>Initialize Your Fundraise</h2>
           <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', maxWidth: '28rem', margin: 'var(--space-3) auto var(--space-6)' }}>
             Seed the database with ASL Series C investor targets and configuration, or add investors manually.
           </p>
@@ -491,55 +482,37 @@ export default function Dashboard() {
 
       {data.totalInvestors > 0 && (
         <>
-          {/* ================================================================ */}
-          {/* RAISE PROGRESS HERO                                              */}
-          {/* ================================================================ */}
+          {/* Raise Progress */}
           {stressTest ? (() => {
             const pct = Math.min(100, Math.round((stressTest.forecast.base / stressTest.target) * 100));
-            const amountColor = stressTest.healthStatus === 'green'
-              ? 'var(--success)'
-              : stressTest.healthStatus === 'yellow'
-                ? 'var(--warning)'
-                : 'var(--danger)';
             return (
               <Link href="/stress-test" style={{ textDecoration: 'none', display: 'block' }}>
                 <div
                   style={{
                     background: 'var(--surface-1)',
-                    border: '1px solid var(--border-default)',
+                    border: '1px solid var(--border-subtle)',
                     borderRadius: 'var(--radius-xl)',
                     padding: 'var(--space-6)',
                     cursor: 'pointer',
-                    transition: 'border-color 0.15s ease, box-shadow 0.15s ease',
-                    position: 'relative',
-                    overflow: 'hidden',
+                    transition: 'border-color 0.2s ease',
                   }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--accent)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 0 20px rgba(74, 111, 165, 0.08)'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; (e.currentTarget as HTMLElement).style.boxShadow = 'none'; }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-subtle)'; }}
                 >
-                  {/* Top accent gradient line */}
-                  <div style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    height: '3px',
-                    background: `linear-gradient(90deg, ${amountColor} 0%, transparent ${Math.max(pct, 5)}%, transparent 100%)`,
-                    borderRadius: 'var(--radius-xl) var(--radius-xl) 0 0',
-                  }} />
                   <div className="flex items-baseline gap-3" style={{ marginBottom: 'var(--space-4)' }}>
                     <span style={{
                       fontSize: 'var(--font-size-3xl)',
-                      fontWeight: 700,
-                      color: amountColor,
+                      fontWeight: 300,
+                      color: 'var(--text-primary)',
                       lineHeight: 1,
                       letterSpacing: '-0.02em',
+                      fontFamily: 'var(--font-cormorant), Georgia, serif',
                     }}>
                       €{Math.round(stressTest.forecast.base)}M
                     </span>
                     <span style={{
                       fontSize: 'var(--font-size-sm)',
-                      color: 'var(--text-muted)',
+                      color: 'var(--text-tertiary)',
                     }}>
                       of €{stressTest.target}M target
                     </span>
@@ -548,30 +521,25 @@ export default function Dashboard() {
                   <div className="flex items-center gap-3" style={{ marginBottom: 'var(--space-5)' }}>
                     <div style={{
                       flex: 1,
-                      height: '8px',
-                      borderRadius: '4px',
+                      height: '4px',
+                      borderRadius: '2px',
                       background: 'var(--surface-3)',
                       overflow: 'hidden',
                     }}>
                       <div style={{
                         width: `${pct}%`,
                         height: '100%',
-                        borderRadius: '4px',
-                        background: amountColor,
+                        borderRadius: '2px',
+                        background: 'var(--accent)',
                         transition: 'width 0.4s ease',
-                        boxShadow: 'none',
                       }} />
                     </div>
                     {velocity?.summary?.raise_days_elapsed != null && velocity?.summary?.raise_target_days != null && (
                       <span style={{
                         fontSize: 'var(--font-size-xs)',
-                        color: 'var(--text-muted)',
+                        color: 'var(--text-tertiary)',
                         whiteSpace: 'nowrap',
-                        fontWeight: 500,
-                        padding: '2px 8px',
-                        borderRadius: 'var(--radius-sm)',
-                        background: 'var(--surface-2)',
-                        border: '1px solid var(--border-subtle)',
+                        fontWeight: 400,
                       }}>
                         Day {velocity.summary.raise_days_elapsed} of {velocity.summary.raise_target_days}
                       </span>
@@ -580,31 +548,27 @@ export default function Dashboard() {
 
                   <div className="grid grid-cols-3 gap-4">
                     <div>
-                      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-1)' }}>
-                        Best Case
+                      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginBottom: '4px' }}>
+                        Best case
                       </div>
-                      <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 600, color: 'var(--text-primary)' }}>
+                      <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 300, color: 'var(--text-primary)' }}>
                         €{Math.round(stressTest.forecast.best)}M
                       </div>
                     </div>
                     <div>
-                      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-1)' }}>
-                        Close Probability
+                      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginBottom: '4px' }}>
+                        Close probability
                       </div>
-                      <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 600, color: 'var(--text-primary)' }}>
+                      <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 300, color: 'var(--text-primary)' }}>
                         {stressTest.closeProbability}%
                       </div>
                     </div>
                     <div>
-                      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-1)' }}>
-                        On Track Status
+                      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginBottom: '4px' }}>
+                        Status
                       </div>
-                      <div style={{
-                        fontSize: 'var(--font-size-lg)',
-                        fontWeight: 600,
-                        color: stressTest.onTrack ? 'var(--success)' : 'var(--danger)',
-                      }}>
-                        {stressTest.onTrack ? 'On Track' : 'Off Track'}
+                      <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 300, color: 'var(--text-primary)' }}>
+                        {stressTest.onTrack ? 'On track' : 'Needs attention'}
                       </div>
                     </div>
                   </div>
@@ -614,12 +578,12 @@ export default function Dashboard() {
           })() : (
             <div style={{
               background: 'var(--surface-1)',
-              border: '1px solid var(--border-default)',
+              border: '1px solid var(--border-subtle)',
               borderRadius: 'var(--radius-xl)',
               padding: 'var(--space-6)',
             }}>
               <div className="skeleton" style={{ height: '48px', width: '220px', marginBottom: 'var(--space-4)', borderRadius: 'var(--radius-md)' }} />
-              <div className="skeleton" style={{ height: '8px', width: '100%', marginBottom: 'var(--space-5)', borderRadius: '4px' }} />
+              <div className="skeleton" style={{ height: '4px', width: '100%', marginBottom: 'var(--space-5)', borderRadius: '2px' }} />
               <div className="grid grid-cols-3 gap-4">
                 <div className="skeleton" style={{ height: '40px', borderRadius: 'var(--radius-md)' }} />
                 <div className="skeleton" style={{ height: '40px', borderRadius: 'var(--radius-md)' }} />
@@ -628,90 +592,38 @@ export default function Dashboard() {
             </div>
           )}
 
-          {/* ================================================================ */}
-          {/* PULSE STRIP - 4 compact metric cards                             */}
-          {/* ================================================================ */}
+          {/* Pulse Strip */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 card-stagger">
-            <PulseCard
-              label="Active Investors"
-              value={ph?.activeInvestors ?? data.totalInvestors}
-              sub={`${data.totalInvestors} total`}
-              color="blue"
-            />
-            <PulseCard
-              label="This Week"
-              value={ph?.meetingsThisWeek ?? 0}
-              sub="meetings"
-              color={ph?.meetingsThisWeek && ph.meetingsThisWeek > 0 ? 'green' : 'zinc'}
-            />
-            <PulseCard
-              label="Follow-ups Due"
-              value={ph?.overdueFollowups ?? 0}
-              sub="overdue"
-              color={ph && ph.overdueFollowups > 2 ? 'red' : ph && ph.overdueFollowups > 0 ? 'yellow' : 'green'}
-            />
-            <PulseCard
-              label="Data Quality"
-              value={`${ph?.dataQualityPct ?? dataQuality?.overallCompleteness ?? 0}%`}
-              sub="completeness"
-              color={
-                (ph?.dataQualityPct ?? 0) >= 80 ? 'green' :
-                (ph?.dataQualityPct ?? 0) >= 50 ? 'yellow' : 'red'
-              }
-            />
+            <PulseCard label="Active investors" value={ph?.activeInvestors ?? data.totalInvestors} sub={`${data.totalInvestors} total`} />
+            <PulseCard label="This week" value={ph?.meetingsThisWeek ?? 0} sub="meetings" />
+            <PulseCard label="Follow-ups due" value={ph?.overdueFollowups ?? 0} sub="overdue" />
+            <PulseCard label="Data quality" value={`${ph?.dataQualityPct ?? dataQuality?.overallCompleteness ?? 0}%`} sub="completeness" />
           </div>
 
-          {/* ================================================================ */}
-          {/* PIPELINE VELOCITY STRIP                                          */}
-          {/* ================================================================ */}
+          {/* Pipeline Velocity */}
           {velocity && (
             <VelocityStrip velocity={velocity} />
           )}
 
-          {/* ================================================================ */}
-          {/* CLOSE FORECAST WIDGET                                            */}
-          {/* ================================================================ */}
+          {/* Close Forecast */}
           {stressTest && (
             <Link href="/stress-test" className="block group">
               <div
-                className="rounded-xl p-5 transition-colors"
                 style={{
-                  border: `1px solid ${
-                    stressTest.healthStatus === 'green'
-                      ? 'rgba(45,122,79,0.15)'
-                      : stressTest.healthStatus === 'yellow'
-                      ? 'rgba(176,138,46,0.15)'
-                      : 'rgba(196,90,90,0.25)'
-                  }`,
-                  background: stressTest.healthStatus === 'green'
-                    ? 'rgba(74,158,110,0.03)'
-                    : stressTest.healthStatus === 'yellow'
-                    ? 'rgba(196,163,90,0.03)'
-                    : 'rgba(196,90,90,0.03)',
+                  border: '1px solid var(--border-subtle)',
+                  borderRadius: 'var(--radius-xl)',
+                  padding: 'var(--space-5)',
+                  transition: 'border-color 0.2s ease',
                 }}
-                onMouseEnter={e => {
-                  const borderColor = stressTest.healthStatus === 'green'
-                    ? 'rgba(74,158,110,0.4)'
-                    : stressTest.healthStatus === 'yellow'
-                    ? 'rgba(196,163,90,0.4)'
-                    : 'rgba(196,90,90,0.4)';
-                  (e.currentTarget as HTMLElement).style.borderColor = borderColor;
-                }}
-                onMouseLeave={e => {
-                  const borderColor = stressTest.healthStatus === 'green'
-                    ? 'rgba(45,122,79,0.15)'
-                    : stressTest.healthStatus === 'yellow'
-                    ? 'rgba(176,138,46,0.15)'
-                    : 'rgba(196,90,90,0.25)';
-                  (e.currentTarget as HTMLElement).style.borderColor = borderColor;
-                }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-subtle)'; }}
               >
                 <div className="flex items-center justify-between mb-3">
                   <h2
-                    className="uppercase flex items-center gap-2"
-                    style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)' }}
+                    className="flex items-center gap-2"
+                    style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}
                   >
-                    <ShieldAlert className="w-4 h-4" /> Close Forecast
+                    <ShieldAlert className="w-4 h-4" /> Close forecast
                   </h2>
                   <span
                     className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
@@ -722,71 +634,27 @@ export default function Dashboard() {
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div>
-                    <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Target</div>
-                    <div
-                      className="tabular-nums mt-0.5"
-                      style={{ fontSize: 'var(--font-size-xl)', fontWeight: 700, color: 'var(--text-primary)' }}
-                    >
+                    <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>Target</div>
+                    <div className="tabular-nums mt-0.5" style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>
                       EUR {stressTest.target >= 1000 ? `${(stressTest.target / 1000).toFixed(1).replace(/\.0$/, '')}Bn` : `${stressTest.target}M`}
                     </div>
                   </div>
                   <div>
-                    <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Forecast (Base)</div>
-                    <div
-                      className="tabular-nums mt-0.5"
-                      style={{
-                        fontSize: 'var(--font-size-xl)',
-                        fontWeight: 700,
-                        color: stressTest.forecast.base >= stressTest.target ? 'var(--success)' : 'var(--warning)',
-                      }}
-                    >
+                    <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>Forecast (base)</div>
+                    <div className="tabular-nums mt-0.5" style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>
                       EUR {stressTest.forecast.base >= 1000 ? `${(stressTest.forecast.base / 1000).toFixed(1).replace(/\.0$/, '')}Bn` : `${Math.round(stressTest.forecast.base)}M`}
                     </div>
                   </div>
                   <div>
-                    <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Probability</div>
-                    <div
-                      className="tabular-nums mt-0.5"
-                      style={{
-                        fontSize: 'var(--font-size-xl)',
-                        fontWeight: 700,
-                        color: stressTest.closeProbability >= 60
-                          ? 'var(--success)'
-                          : stressTest.closeProbability >= 30
-                          ? 'var(--warning)'
-                          : 'var(--danger)',
-                      }}
-                    >
+                    <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>Probability</div>
+                    <div className="tabular-nums mt-0.5" style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>
                       {stressTest.closeProbability}%
                     </div>
                   </div>
                   <div>
-                    <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Status</div>
-                    <div
-                      className="rounded-md inline-block mt-1 px-2.5 py-1"
-                      style={{
-                        fontSize: 'var(--font-size-sm)',
-                        fontWeight: 600,
-                        background: stressTest.healthStatus === 'green'
-                          ? 'var(--success-muted)'
-                          : stressTest.healthStatus === 'yellow'
-                          ? 'var(--warning-muted)'
-                          : 'var(--danger-muted)',
-                        color: stressTest.healthStatus === 'green'
-                          ? 'var(--success)'
-                          : stressTest.healthStatus === 'yellow'
-                          ? 'var(--warning)'
-                          : 'var(--danger)',
-                        border: `1px solid ${
-                          stressTest.healthStatus === 'green'
-                            ? 'rgba(74,158,110,0.2)'
-                            : stressTest.healthStatus === 'yellow'
-                            ? 'rgba(196,163,90,0.2)'
-                            : 'rgba(196,90,90,0.2)'
-                        }`,
-                      }}
-                    >
-                      {stressTest.onTrack ? 'On Track' : stressTest.healthStatus === 'red' ? 'Critical' : 'At Risk'}
+                    <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>Status</div>
+                    <div className="mt-1" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
+                      {stressTest.onTrack ? 'On track' : stressTest.healthStatus === 'red' ? 'Needs attention' : 'Monitor'}
                     </div>
                   </div>
                 </div>
@@ -794,223 +662,136 @@ export default function Dashboard() {
             </Link>
           )}
 
-          {/* ================================================================ */}
-          {/* AT RISK DEALS                                                     */}
-          {/* ================================================================ */}
+          {/* At Risk Deals */}
           {atRisk && (atRisk.scoreReversals.length > 0 || atRisk.staleInvestors.length > 0) && (
-            <div
-              className="rounded-xl p-5"
-              style={{ border: '1px solid rgba(196,90,90,0.2)', background: 'rgba(196,90,90,0.03)' }}
-            >
+            <div style={{ border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
               <div className="flex items-center justify-between mb-3">
-                <h2
-                  className="uppercase flex items-center gap-2"
-                  style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--danger)' }}
-                >
-                  <ShieldAlert className="w-4 h-4" /> At Risk
+                <h2 className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
+                  <ShieldAlert className="w-4 h-4" /> At risk
                 </h2>
-                <span
-                  className="px-2 py-0.5 rounded-md tabular-nums"
-                  style={{
-                    fontSize: '10px',
-                    fontWeight: 600,
-                    background: 'var(--danger-muted)',
-                    color: 'var(--danger)',
-                    border: '1px solid rgba(196,90,90,0.2)',
-                  }}
-                >
+                <span className="tabular-nums" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
                   {atRisk.scoreReversals.length + atRisk.staleInvestors.length} deal{atRisk.scoreReversals.length + atRisk.staleInvestors.length !== 1 ? 's' : ''}
                 </span>
               </div>
 
               <div className="space-y-2">
-                {/* Score Reversals */}
-                {atRisk.scoreReversals.map((rev) => {
-                  const isCritical = rev.severity === 'critical';
-                  const sevLabel = rev.severity === 'critical' ? 'CRITICAL' : rev.severity === 'warning' ? 'WARNING' : 'NOTABLE';
-                  const sevBg = isCritical ? 'var(--danger-muted)' : 'var(--warning-muted)';
-                  const sevColor = isCritical ? 'var(--danger)' : 'var(--warning)';
-                  const sevBorder = isCritical ? 'rgba(196,90,90,0.3)' : 'rgba(196,163,90,0.3)';
-                  return (
-                    <div
-                      key={`rev-${rev.investorId}`}
-                      className="flex items-start gap-3 py-2.5 px-3 rounded-lg transition-colors"
-                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-3)'; }}
-                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
-                    >
-                      <span className="mt-0.5 shrink-0" style={{ color: sevColor }}>
-                        <TrendingDown className="w-4 h-4" />
-                      </span>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-0.5">
-                          <Link
-                            href={`/investors/${rev.investorId}`}
-                            className="transition-colors truncate"
-                            style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500 }}
-                            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
-                            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = ''; }}
-                          >
-                            {rev.investorName}
-                          </Link>
-                          <span
-                            className="px-1.5 py-0.5 rounded shrink-0"
-                            style={{
-                              fontSize: '9px',
-                              background: sevBg,
-                              color: sevColor,
-                              border: `1px solid ${sevBorder}`,
-                            }}
-                          >
-                            {sevLabel}
-                          </span>
-                        </div>
-                        <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
-                          Score dropped{' '}
-                          <span className="tabular-nums" style={{ fontWeight: 600, color: 'var(--danger)' }}>
-                            {rev.previousScore} {'\u2192'} {rev.currentScore}
-                          </span>
-                          <span style={{ color: 'var(--danger)', marginLeft: '4px' }}>({rev.delta})</span>
-                        </p>
+                {atRisk.scoreReversals.map((rev) => (
+                  <div
+                    key={`rev-${rev.investorId}`}
+                    className="flex items-start gap-3 py-2.5 px-3 rounded-lg transition-colors"
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+                  >
+                    <span className="mt-0.5 shrink-0" style={{ color: 'var(--text-tertiary)' }}>
+                      <TrendingDown className="w-4 h-4" />
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <Link
+                          href={`/investors/${rev.investorId}`}
+                          className="transition-colors truncate"
+                          style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}
+                          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
+                          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = ''; }}
+                        >
+                          {rev.investorName}
+                        </Link>
+                        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
+                          {rev.severity}
+                        </span>
                       </div>
-                      <Link
-                        href={`/investors/${rev.investorId}`}
-                        className="shrink-0 px-3 py-1.5 rounded-md transition-colors flex items-center gap-1"
-                        style={{
-                          fontSize: '10px',
-                          fontWeight: 500,
-                          background: 'var(--danger-muted)',
-                          color: 'var(--danger)',
-                          border: '1px solid rgba(196,90,90,0.2)',
-                        }}
-                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(196,90,90,0.2)'; }}
-                        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--danger-muted)'; }}
-                      >
-                        Schedule follow-up <ChevronRight className="w-3 h-3" />
-                      </Link>
+                      <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
+                        Score {rev.previousScore} → {rev.currentScore} ({rev.delta})
+                      </p>
                     </div>
-                  );
-                })}
+                    <Link
+                      href={`/investors/${rev.investorId}`}
+                      className="shrink-0 btn btn-secondary btn-sm flex items-center gap-1"
+                    >
+                      Follow up <ChevronRight className="w-3 h-3" />
+                    </Link>
+                  </div>
+                ))}
 
-                {/* Stale T1/T2 Investors */}
-                {atRisk.staleInvestors.map((inv) => {
-                  const isSilent = inv.acceleration === 'gone_silent';
-                  return (
-                    <div
-                      key={`stale-${inv.investorId}`}
-                      className="flex items-start gap-3 py-2.5 px-3 rounded-lg transition-colors"
-                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-3)'; }}
-                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
-                    >
-                      <span className="mt-0.5 shrink-0" style={{ color: isSilent ? 'var(--danger)' : 'var(--warning)' }}>
-                        {isSilent ? <UserMinus className="w-4 h-4" /> : <CalendarClock className="w-4 h-4" />}
-                      </span>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-0.5">
-                          <Link
-                            href={`/investors/${inv.investorId}`}
-                            className="transition-colors truncate"
-                            style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500 }}
-                            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
-                            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = ''; }}
-                          >
-                            {inv.investorName}
-                          </Link>
-                          <span style={{ fontSize: '9px', color: inv.tier === 1 ? 'var(--warning)' : 'var(--text-muted)' }}>T{inv.tier}</span>
-                          <span
-                            className="px-1.5 py-0.5 rounded shrink-0"
-                            style={{
-                              fontSize: '9px',
-                              background: isSilent ? 'var(--danger-muted)' : 'var(--warning-muted)',
-                              color: isSilent ? 'var(--danger)' : 'var(--warning)',
-                              border: `1px solid ${isSilent ? 'rgba(196,90,90,0.3)' : 'rgba(196,163,90,0.3)'}`,
-                            }}
-                          >
-                            {isSilent ? 'SILENT' : 'SLOWING'}
-                          </span>
-                        </div>
-                        <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
-                          {inv.daysSinceLastMeeting !== null
-                            ? `No contact in ${inv.daysSinceLastMeeting} days`
-                            : inv.signal}
-                        </p>
+                {atRisk.staleInvestors.map((inv) => (
+                  <div
+                    key={`stale-${inv.investorId}`}
+                    className="flex items-start gap-3 py-2.5 px-3 rounded-lg transition-colors"
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+                  >
+                    <span className="mt-0.5 shrink-0" style={{ color: 'var(--text-tertiary)' }}>
+                      {inv.acceleration === 'gone_silent' ? <UserMinus className="w-4 h-4" /> : <CalendarClock className="w-4 h-4" />}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <Link
+                          href={`/investors/${inv.investorId}`}
+                          className="transition-colors truncate"
+                          style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}
+                          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
+                          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = ''; }}
+                        >
+                          {inv.investorName}
+                        </Link>
+                        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>T{inv.tier}</span>
+                        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
+                          {inv.acceleration === 'gone_silent' ? 'Silent' : 'Slowing'}
+                        </span>
                       </div>
-                      <Link
-                        href={`/investors/${inv.investorId}`}
-                        className="shrink-0 px-3 py-1.5 rounded-md transition-colors flex items-center gap-1"
-                        style={{
-                          fontSize: '10px',
-                          fontWeight: 500,
-                          background: isSilent ? 'var(--danger-muted)' : 'var(--warning-muted)',
-                          color: isSilent ? 'var(--danger)' : 'var(--warning)',
-                          border: `1px solid ${isSilent ? 'rgba(196,90,90,0.2)' : 'rgba(196,163,90,0.2)'}`,
-                        }}
-                        onMouseEnter={e => {
-                          (e.currentTarget as HTMLElement).style.background = isSilent ? 'rgba(196,90,90,0.2)' : 'rgba(196,163,90,0.2)';
-                        }}
-                        onMouseLeave={e => {
-                          (e.currentTarget as HTMLElement).style.background = isSilent ? 'var(--danger-muted)' : 'var(--warning-muted)';
-                        }}
-                      >
-                        Schedule follow-up <ChevronRight className="w-3 h-3" />
-                      </Link>
+                      <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
+                        {inv.daysSinceLastMeeting !== null
+                          ? `No contact in ${inv.daysSinceLastMeeting} days`
+                          : inv.signal}
+                      </p>
                     </div>
-                  );
-                })}
+                    <Link
+                      href={`/investors/${inv.investorId}`}
+                      className="shrink-0 btn btn-secondary btn-sm flex items-center gap-1"
+                    >
+                      Follow up <ChevronRight className="w-3 h-3" />
+                    </Link>
+                  </div>
+                ))}
               </div>
             </div>
           )}
 
-          {/* ================================================================ */}
-          {/* TOP FOCUS TODAY                                                   */}
-          {/* ================================================================ */}
+          {/* Top Focus Today */}
           {cp && cp.topFocus.length > 0 && (
-            <div
-              className="rounded-xl p-5"
-              style={{ border: '1px solid rgba(74,111,165,0.2)', background: 'rgba(74,111,165,0.03)' }}
-            >
+            <div style={{ border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
               <div className="flex items-center justify-between mb-3">
-                <h2
-                  className="uppercase flex items-center gap-2"
-                  style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--accent)' }}
-                >
-                  <Target className="w-4 h-4" /> Top Focus Today
+                <h2 className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
+                  <Target className="w-4 h-4" /> Top focus today
                 </h2>
                 <Link
                   href="/focus"
                   className="flex items-center gap-1"
                   style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
                 >
                   Full priority queue <ArrowRight className="w-3 h-3" />
                 </Link>
               </div>
               <div className="space-y-2">
                 {cp.topFocus.map((item, i) => {
-                  const scoreColor = item.focusScore >= 70 ? 'var(--success)' : item.focusScore >= 50 ? 'var(--warning)' : 'var(--danger)';
-                  const tierColor = item.tier === 1 ? 'var(--warning)' : 'var(--text-muted)';
                   const MomentumIcon = item.momentum === 'accelerating' ? TrendingUp
                     : item.momentum === 'decelerating' ? TrendingDown
                     : item.momentum === 'stalled' ? ArrowDownRight
                     : Minus;
-                  const momentumColor = item.momentum === 'accelerating' ? 'var(--success)'
-                    : item.momentum === 'decelerating' ? '#a58a5a'
-                    : item.momentum === 'stalled' ? 'var(--danger)'
-                    : 'var(--text-muted)';
                   return (
                     <div
                       key={item.investorId}
                       className="flex items-center gap-3 py-2 px-3 rounded-lg transition-colors"
-                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-3)'; }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}
                       onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
                     >
                       <span
                         className="w-6 h-6 rounded flex items-center justify-center"
                         style={{
                           fontSize: 'var(--font-size-xs)',
-                          fontWeight: 700,
+                          fontWeight: 500,
                           background: i === 0 ? 'var(--accent)' : 'var(--surface-3)',
-                          color: i === 0 ? 'var(--text-primary)' : 'var(--text-secondary)',
+                          color: i === 0 ? '#fafaf8' : 'var(--text-secondary)',
                         }}
                       >{i + 1}</span>
                       <div className="flex-1 min-w-0">
@@ -1018,33 +799,22 @@ export default function Dashboard() {
                           <Link
                             href={`/investors/${item.investorId}`}
                             className="truncate transition-colors"
-                            style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500 }}
+                            style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}
                             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
                             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = ''; }}
                           >
                             {item.investorName}
                           </Link>
-                          <span style={{ fontSize: '9px', color: tierColor }}>T{item.tier}</span>
-                          <MomentumIcon className="w-3.5 h-3.5" style={{ color: momentumColor }} />
+                          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>T{item.tier}</span>
+                          <MomentumIcon className="w-3.5 h-3.5" style={{ color: 'var(--text-tertiary)' }} />
                         </div>
                         <p className="truncate mt-0.5" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>{item.recommendedAction}</p>
-                        {item.trajectoryNote && (
-                          <p
-                            className="mt-0.5"
-                            style={{
-                              fontSize: '10px',
-                              color: item.trajectoryNote.includes('Accelerating') ? 'var(--success)' : '#a58a5a',
-                            }}
-                          >
-                            {item.trajectoryNote}
-                          </p>
-                        )}
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
-                        <span className="flex items-center gap-1" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                        <span className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
                           <Timer className="w-3 h-3" /> {item.timeEstimate}
                         </span>
-                        <span className="tabular-nums" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 700, color: scoreColor }}>{item.focusScore}</span>
+                        <span className="tabular-nums" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>{item.focusScore}</span>
                       </div>
                     </div>
                   );
@@ -1053,35 +823,29 @@ export default function Dashboard() {
             </div>
           )}
 
-          {/* ================================================================ */}
-          {/* OVERNIGHT + CONVICTION (side by side)                            */}
-          {/* ================================================================ */}
+          {/* Overnight + Conviction */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Overnight Activity */}
-            <div className="rounded-xl p-5" style={{ border: '1px solid var(--border-default)' }}>
-              <h2
-                className="uppercase flex items-center gap-2 mb-3"
-                style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)' }}
-              >
-                <Clock className="w-4 h-4" /> Last 24 Hours
+            <div style={{ border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
+              <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
+                <Clock className="w-4 h-4" /> Last 24 hours
               </h2>
               {ov ? (
                 <div className="space-y-2.5">
                   {ov.activityFeed.map((item, i) => (
                     <div key={i} className="flex items-start gap-2.5">
-                      <span className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0" style={{ background: 'var(--accent)' }} />
+                      <span className="w-1 h-1 rounded-full mt-2 shrink-0" style={{ background: 'var(--accent)' }} />
                       <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)' }}>{item}</span>
                     </div>
                   ))}
                   {ov.statusChanges.length > 0 && (
                     <div className="mt-3 pt-3" style={{ borderTop: '1px solid var(--border-subtle)' }}>
-                      <div className="mb-1.5" style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Stage Movements</div>
+                      <div className="mb-1.5" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>Stage movements</div>
                       {ov.statusChanges.slice(0, 3).map((sc, i) => (
                         <div key={i} className="flex items-center gap-2 py-1">
-                          <ArrowUpRight className="w-3 h-3 shrink-0" style={{ color: 'var(--success)' }} />
+                          <ArrowUpRight className="w-3 h-3 shrink-0" style={{ color: 'var(--accent)' }} />
                           <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
-                            <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{sc.investorName}</span>
-                            {' '}{sc.from !== 'unknown' ? `${formatStage(sc.from)} \u2192 ` : ''}{formatStage(sc.to)}
+                            <span style={{ color: 'var(--text-primary)', fontWeight: 400 }}>{sc.investorName}</span>
+                            {' '}{sc.from !== 'unknown' ? `${formatStage(sc.from)} → ` : ''}{formatStage(sc.to)}
                           </span>
                         </div>
                       ))}
@@ -1089,7 +853,7 @@ export default function Dashboard() {
                   )}
                   {ov.meetingNames.length > 0 && (
                     <div className="mt-2 pt-2" style={{ borderTop: '1px solid var(--border-subtle)' }}>
-                      <div className="mb-1" style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Meetings Logged</div>
+                      <div className="mb-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>Meetings logged</div>
                       <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>{ov.meetingNames.join(', ')}</div>
                     </div>
                   )}
@@ -1099,61 +863,42 @@ export default function Dashboard() {
               )}
             </div>
 
-            {/* Conviction Radar */}
-            <div className="rounded-xl p-5" style={{ border: '1px solid var(--border-default)' }}>
-              <h2
-                className="uppercase flex items-center gap-2 mb-3"
-                style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)' }}
-              >
-                <Activity className="w-4 h-4" /> Conviction Radar
+            <div style={{ border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
+              <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
+                <Activity className="w-4 h-4" /> Conviction radar
               </h2>
               {cv ? (
                 <div className="space-y-4">
-                  {/* Avg enthusiasm */}
                   <div className="flex items-center gap-4">
                     <div>
-                      <div className="tabular-nums" style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 700 }}>
+                      <div className="tabular-nums" style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 300, color: 'var(--text-primary)' }}>
                         {cv.avgEnthusiasm.toFixed(1)}
-                        <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', fontWeight: 400 }}>/5</span>
+                        <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', fontWeight: 300 }}>/5</span>
                       </div>
-                      <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Avg Enthusiasm</div>
+                      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>Avg enthusiasm</div>
                     </div>
                   </div>
 
-                  {/* Momentum distribution bar */}
                   <div>
-                    <div className="mb-1.5" style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Momentum Distribution</div>
-                    <div className="flex gap-0.5 h-6 rounded-md overflow-hidden">
-                      {cv.accelerating > 0 && (
-                        <MomentumBar count={cv.accelerating} total={cv.accelerating + cv.steady + cv.decelerating + cv.stalled}
-                          bg="var(--success)" label="Accelerating" />
-                      )}
-                      {cv.steady > 0 && (
-                        <MomentumBar count={cv.steady} total={cv.accelerating + cv.steady + cv.decelerating + cv.stalled}
-                          bg="var(--accent)" label="Steady" />
-                      )}
-                      {cv.decelerating > 0 && (
-                        <MomentumBar count={cv.decelerating} total={cv.accelerating + cv.steady + cv.decelerating + cv.stalled}
-                          bg="#a58a5a" label="Decelerating" />
-                      )}
-                      {cv.stalled > 0 && (
-                        <MomentumBar count={cv.stalled} total={cv.accelerating + cv.steady + cv.decelerating + cv.stalled}
-                          bg="var(--danger)" label="Stalled" />
-                      )}
+                    <div className="mb-1.5" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>Momentum distribution</div>
+                    <div className="flex gap-0.5 h-5 rounded overflow-hidden">
+                      {cv.accelerating > 0 && <MomentumBar count={cv.accelerating} total={cv.accelerating + cv.steady + cv.decelerating + cv.stalled} opacity={1} label="Accelerating" />}
+                      {cv.steady > 0 && <MomentumBar count={cv.steady} total={cv.accelerating + cv.steady + cv.decelerating + cv.stalled} opacity={0.6} label="Steady" />}
+                      {cv.decelerating > 0 && <MomentumBar count={cv.decelerating} total={cv.accelerating + cv.steady + cv.decelerating + cv.stalled} opacity={0.35} label="Decelerating" />}
+                      {cv.stalled > 0 && <MomentumBar count={cv.stalled} total={cv.accelerating + cv.steady + cv.decelerating + cv.stalled} opacity={0.15} label="Stalled" />}
                     </div>
                     <div className="flex gap-3 mt-1.5 flex-wrap">
-                      {cv.accelerating > 0 && <MomentumLabel count={cv.accelerating} label="Accelerating" color="var(--success)" />}
-                      {cv.steady > 0 && <MomentumLabel count={cv.steady} label="Steady" color="var(--accent)" />}
-                      {cv.decelerating > 0 && <MomentumLabel count={cv.decelerating} label="Decelerating" color="#a58a5a" />}
-                      {cv.stalled > 0 && <MomentumLabel count={cv.stalled} label="Stalled" color="var(--danger)" />}
+                      {cv.accelerating > 0 && <MomentumLabel count={cv.accelerating} label="Accelerating" />}
+                      {cv.steady > 0 && <MomentumLabel count={cv.steady} label="Steady" />}
+                      {cv.decelerating > 0 && <MomentumLabel count={cv.decelerating} label="Decelerating" />}
+                      {cv.stalled > 0 && <MomentumLabel count={cv.stalled} label="Stalled" />}
                     </div>
                   </div>
 
-                  {/* Alerts */}
                   {cv.alerts.length > 0 && (
                     <div className="mt-2 pt-2" style={{ borderTop: '1px solid var(--border-subtle)' }}>
-                      <div className="mb-1.5 flex items-center gap-1" style={{ fontSize: '10px', color: 'var(--danger)', textTransform: 'uppercase' }}>
-                        <AlertTriangle className="w-3 h-3" /> Enthusiasm Drops
+                      <div className="mb-1.5 flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
+                        <AlertTriangle className="w-3 h-3" /> Enthusiasm drops
                       </div>
                       {cv.alerts.map((alert, i) => (
                         <div key={i} className="flex items-center justify-between py-1">
@@ -1165,9 +910,8 @@ export default function Dashboard() {
                           >
                             {alert.investorName}
                           </Link>
-                          <span className="tabular-nums" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)', fontWeight: 500 }}>
-                            {alert.previousScore} {'\u2192'} {alert.currentScore}
-                            <span style={{ color: 'var(--danger)', marginLeft: '4px' }}>(-{alert.drop})</span>
+                          <span className="tabular-nums" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
+                            {alert.previousScore} → {alert.currentScore} ({-alert.drop})
                           </span>
                         </div>
                       ))}
@@ -1180,85 +924,49 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* ================================================================ */}
-          {/* ACCELERATION ALERTS                                              */}
-          {/* ================================================================ */}
+          {/* Acceleration Alerts */}
           {cp && cp.topAccelerations.length > 0 && (
-            <div
-              className="rounded-xl p-5"
-              style={{ border: '1px solid rgba(196,163,90,0.2)', background: 'rgba(196,163,90,0.03)' }}
-            >
+            <div style={{ border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
               <div className="flex items-center justify-between mb-3">
-                <h2
-                  className="uppercase flex items-center gap-2"
-                  style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--warning)' }}
-                >
-                  <Zap className="w-4 h-4" /> Acceleration Alerts
+                <h2 className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
+                  <Zap className="w-4 h-4" /> Acceleration alerts
                 </h2>
-                <Link
-                  href="/focus"
-                  className="flex items-center gap-1"
-                  style={{ fontSize: 'var(--font-size-xs)', color: 'var(--warning)' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--warning)'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--warning)'; }}
-                >
+                <Link href="/focus" className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}>
                   All actions <ArrowRight className="w-3 h-3" />
                 </Link>
               </div>
               <div className="space-y-2">
                 {cp.topAccelerations.map((accel) => {
-                  const urgencyStyles = accel.urgency === 'immediate'
-                    ? { background: 'var(--danger-muted)', color: 'var(--danger)', borderColor: 'rgba(196,90,90,0.3)' }
-                    : accel.urgency === '48h'
-                    ? { background: 'var(--warning-muted)', color: '#a58a5a', borderColor: 'var(--border-default)' }
-                    : { background: 'var(--warning-muted)', color: 'var(--warning)', borderColor: 'rgba(196,163,90,0.3)' };
                   const triggerLabel = accel.triggerType.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
                   return (
                     <div
                       key={accel.id}
                       className="flex items-start gap-3 py-2.5 px-3 rounded-lg transition-colors"
-                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-3)'; }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}
                       onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
                     >
-                      <Zap className="w-4 h-4 shrink-0 mt-0.5" style={{ color: 'var(--warning)' }} />
+                      <Zap className="w-4 h-4 shrink-0 mt-0.5" style={{ color: 'var(--text-tertiary)' }} />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-0.5">
                           <Link
                             href={`/investors/${accel.investorId}`}
                             className="transition-colors"
-                            style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500 }}
+                            style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}
                             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
                             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = ''; }}
                           >
                             {accel.investorName}
                           </Link>
-                          <span
-                            className="px-1.5 py-0.5 rounded"
-                            style={{
-                              fontSize: '9px',
-                              background: urgencyStyles.background,
-                              color: urgencyStyles.color,
-                              border: `1px solid ${urgencyStyles.borderColor}`,
-                            }}
-                          >
-                            {accel.urgency === 'immediate' ? 'NOW' : accel.urgency.toUpperCase()}
+                          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
+                            {accel.urgency === 'immediate' ? 'Now' : accel.urgency}
                           </span>
-                          <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>{triggerLabel}</span>
+                          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{triggerLabel}</span>
                         </div>
                         <p className="leading-relaxed" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>{accel.description}</p>
                       </div>
                       <button
                         onClick={() => executeAcceleration(accel.id)}
-                        className="shrink-0 px-3 py-1.5 rounded-md transition-colors flex items-center gap-1"
-                        style={{
-                          fontSize: '10px',
-                          fontWeight: 500,
-                          background: 'rgba(196,163,90,0.12)',
-                          color: 'var(--warning)',
-                          border: '1px solid rgba(196,163,90,0.2)',
-                        }}
-                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(176,138,46,0.15)'; }}
-                        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(196,163,90,0.12)'; }}
+                        className="shrink-0 btn btn-secondary btn-sm flex items-center gap-1"
                       >
                         Execute <ChevronRight className="w-3 h-3" />
                       </button>
@@ -1269,26 +977,14 @@ export default function Dashboard() {
             </div>
           )}
 
-          {/* ================================================================ */}
-          {/* HOT DEALS + UPCOMING FOLLOW-UPS (side by side)                   */}
-          {/* ================================================================ */}
+          {/* Hot Deals + Follow-ups */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Hot Deals */}
-            <div className="rounded-xl p-5" style={{ border: '1px solid rgba(249,115,22,0.2)', background: 'rgba(249,115,22,0.02)' }}>
+            <div style={{ border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
               <div className="flex items-center justify-between mb-3">
-                <h2
-                  className="uppercase flex items-center gap-2"
-                  style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: '#a58a5a' }}
-                >
-                  <Flame className="w-4 h-4" /> Hot Deals
+                <h2 className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
+                  <Flame className="w-4 h-4" /> Hot deals
                 </h2>
-                <Link
-                  href="/dealflow"
-                  className="flex items-center gap-1"
-                  style={{ fontSize: 'var(--font-size-xs)', color: '#a58a5a' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--warning)'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = '#a58a5a'; }}
-                >
+                <Link href="/dealflow" className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}>
                   All deals <ArrowRight className="w-3 h-3" />
                 </Link>
               </div>
@@ -1306,22 +1002,12 @@ export default function Dashboard() {
               )}
             </div>
 
-            {/* Upcoming Follow-ups */}
-            <div className="rounded-xl p-5" style={{ border: '1px solid rgba(74,111,165,0.2)', background: 'rgba(74,111,165,0.02)' }}>
+            <div style={{ border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
               <div className="flex items-center justify-between mb-3">
-                <h2
-                  className="uppercase flex items-center gap-2"
-                  style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--accent)' }}
-                >
-                  <CheckCircle2 className="w-4 h-4" /> Upcoming Follow-ups
+                <h2 className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
+                  <CheckCircle2 className="w-4 h-4" /> Upcoming follow-ups
                 </h2>
-                <Link
-                  href="/followups"
-                  className="flex items-center gap-1"
-                  style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
-                >
+                <Link href="/followups" className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}>
                   All follow-ups <ArrowRight className="w-3 h-3" />
                 </Link>
               </div>
@@ -1343,141 +1029,75 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* ================================================================ */}
-          {/* PIPELINE FUNNEL (compact)                                        */}
-          {/* ================================================================ */}
-          <div className="rounded-xl p-5" style={{ border: '1px solid var(--border-default)' }}>
+          {/* Pipeline */}
+          <div style={{ border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="uppercase" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)' }}>Pipeline</h2>
-              <Link
-                href="/pipeline"
-                className="flex items-center gap-1"
-                style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
-              >
+              <h2 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>Pipeline</h2>
+              <Link href="/pipeline" className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}>
                 Pipeline view <Columns3 className="w-3 h-3" />
               </Link>
             </div>
             <div className="flex flex-col items-center space-y-1.5">
               {funnelStages.map((stage, i) => {
                 const widthPct = Math.max(100 - (i * 13), 25);
+                const opacity = 1 - (i * 0.08);
                 return (
                   <div key={stage.label} className="w-full flex items-center justify-center" style={{ maxWidth: `${widthPct}%` }}>
                     <div
-                      className="w-full rounded-md h-9 flex items-center justify-between px-4 transition-all duration-500"
-                      style={{ background: stage.bg }}
+                      className="w-full rounded-md h-9 flex items-center justify-between px-4"
+                      style={{ background: `rgba(27, 42, 74, ${Math.max(opacity * 0.12, 0.04)})` }}
                     >
-                      <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'rgba(0,0,0,0.70)' }}>{stage.label}</span>
-                      <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 700, color: 'var(--text-primary)' }}>{stage.value}</span>
+                      <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-secondary)' }}>{stage.label}</span>
+                      <span className="tabular-nums" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>{stage.value}</span>
                     </div>
                   </div>
                 );
               })}
               {data.funnel.passed > 0 && (
-                <div className="w-full flex items-center justify-center mt-2 pt-2" style={{ maxWidth: '50%', borderTop: '1px solid var(--border-default)' }}>
-                  <div
-                    className="w-full rounded-md h-7 flex items-center justify-between px-4"
-                    style={{
-                      background: 'var(--danger-muted)',
-                      border: '1px solid rgba(196,90,90,0.3)',
-                    }}
-                  >
-                    <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)' }}>Passed</span>
-                    <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 700, color: 'var(--danger)' }}>{data.funnel.passed}</span>
+                <div className="w-full flex items-center justify-center mt-2 pt-2" style={{ maxWidth: '50%', borderTop: '1px solid var(--border-subtle)' }}>
+                  <div className="w-full rounded-md h-7 flex items-center justify-between px-4" style={{ background: 'var(--surface-2)' }}>
+                    <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>Passed</span>
+                    <span className="tabular-nums" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>{data.funnel.passed}</span>
                   </div>
                 </div>
               )}
             </div>
           </div>
 
-          {/* ================================================================ */}
-          {/* DELIVERABLES QUICK ACCESS                                        */}
-          {/* ================================================================ */}
+          {/* Deliverables */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            <Link
-              href="/workspace"
-              className="group rounded-xl p-4 transition-colors"
-              style={{ border: '1px solid var(--border-default)' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(74,111,165,0.3)'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
-            >
-              <Sparkles className="w-5 h-5 mb-2" style={{ color: 'var(--accent)' }} />
-              <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500 }}>Workspace</div>
-              <div className="mt-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-                {docs.length > 0 ? `${docs.length} document${docs.length !== 1 ? 's' : ''}` : 'Create deliverables'}
-              </div>
-              <div className="mt-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}>
-                Open <ArrowRight className="w-3 h-3" />
-              </div>
-            </Link>
-            <Link
-              href="/data-room"
-              className="group rounded-xl p-4 transition-colors"
-              style={{ border: '1px solid var(--border-default)' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(74,111,165,0.3)'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
-            >
-              <FolderOpen className="w-5 h-5 mb-2" style={{ color: 'var(--accent)' }} />
-              <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500 }}>Data Room</div>
-              <div className="mt-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-                {dataRoomCount > 0 ? `${dataRoomCount} file${dataRoomCount !== 1 ? 's' : ''} uploaded` : 'Upload source materials'}
-              </div>
-              <div className="mt-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}>
-                Open <ArrowRight className="w-3 h-3" />
-              </div>
-            </Link>
-            <Link
-              href="/model"
-              className="group rounded-xl p-4 transition-colors"
-              style={{ border: '1px solid var(--border-default)' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(74,111,165,0.3)'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
-            >
-              <Table className="w-5 h-5 mb-2" style={{ color: 'var(--success)' }} />
-              <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500 }}>Financial Model</div>
-              <div className="mt-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Build & refine with AI</div>
-              <div className="mt-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}>
-                Open <ArrowRight className="w-3 h-3" />
-              </div>
-            </Link>
-            <Link
-              href="/documents"
-              className="group rounded-xl p-4 transition-colors"
-              style={{ border: '1px solid var(--border-default)' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(74,111,165,0.3)'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
-            >
-              <FileText className="w-5 h-5 mb-2" style={{ color: '#a58a5a' }} />
-              <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500 }}>Documents</div>
-              <div className="mt-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-                {docs.length > 0 ? `${docs.filter(d => d.status === 'draft').length} drafts` : 'Version history'}
-              </div>
-              <div className="mt-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}>
-                Open <ArrowRight className="w-3 h-3" />
-              </div>
-            </Link>
+            {[
+              { href: '/workspace', Icon: Sparkles, label: 'Workspace', sub: docs.length > 0 ? `${docs.length} document${docs.length !== 1 ? 's' : ''}` : 'Create deliverables' },
+              { href: '/data-room', Icon: FolderOpen, label: 'Data Room', sub: dataRoomCount > 0 ? `${dataRoomCount} file${dataRoomCount !== 1 ? 's' : ''} uploaded` : 'Upload source materials' },
+              { href: '/model', Icon: Table, label: 'Financial Model', sub: 'Build & refine with AI' },
+              { href: '/documents', Icon: FileText, label: 'Documents', sub: docs.length > 0 ? `${docs.filter(d => d.status === 'draft').length} drafts` : 'Version history' },
+            ].map(({ href, Icon, label, sub }) => (
+              <Link
+                key={href}
+                href={href}
+                className="group rounded-xl p-4 transition-colors"
+                style={{ border: '1px solid var(--border-subtle)' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-subtle)'; }}
+              >
+                <Icon className="w-5 h-5 mb-2" style={{ color: 'var(--text-tertiary)' }} />
+                <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>{label}</div>
+                <div className="mt-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{sub}</div>
+                <div className="mt-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}>
+                  Open <ArrowRight className="w-3 h-3" />
+                </div>
+              </Link>
+            ))}
           </div>
 
-          {/* ================================================================ */}
-          {/* DATA QUALITY (compact)                                           */}
-          {/* ================================================================ */}
+          {/* Data Quality */}
           {dataQuality && (
-            <div className="rounded-xl p-5" style={{ border: '1px solid var(--border-default)' }}>
+            <div style={{ border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
               <div className="flex items-center justify-between mb-3">
-                <h2
-                  className="uppercase flex items-center gap-2"
-                  style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)' }}
-                >
-                  <ShieldCheck className="w-4 h-4" /> Data Quality
+                <h2 className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
+                  <ShieldCheck className="w-4 h-4" /> Data quality
                 </h2>
-                <Link
-                  href="/investors"
-                  className="flex items-center gap-1"
-                  style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
-                >
+                <Link href="/investors" className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}>
                   Fix gaps <ArrowRight className="w-3 h-3" />
                 </Link>
               </div>
@@ -1485,62 +1105,41 @@ export default function Dashboard() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                 <div className="space-y-2">
                   <div>
-                    <div className="mb-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Overall Completeness</div>
-                    <div
-                      className="tabular-nums"
-                      style={{
-                        fontSize: 'var(--font-size-2xl)',
-                        fontWeight: 700,
-                        color: dataQuality.overallCompleteness >= 80 ? 'var(--success)'
-                          : dataQuality.overallCompleteness >= 50 ? 'var(--warning)' : 'var(--danger)',
-                      }}
-                    >{dataQuality.overallCompleteness}%</div>
+                    <div className="mb-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>Overall completeness</div>
+                    <div className="tabular-nums" style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 300, color: 'var(--text-primary)' }}>{dataQuality.overallCompleteness}%</div>
                   </div>
                   <div>
-                    <div className="mb-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Intelligence Readiness</div>
+                    <div className="mb-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>Intelligence readiness</div>
                     <div className="flex items-center gap-2">
-                      <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ background: 'var(--surface-3)' }}>
-                        <div
-                          className="h-full rounded-full transition-all duration-500"
-                          style={{
-                            width: `${dataQuality.intelligenceReadiness}%`,
-                            background: dataQuality.intelligenceReadiness >= 80 ? 'var(--success)'
-                              : dataQuality.intelligenceReadiness >= 50 ? 'var(--warning)' : 'var(--danger)',
-                          }}
-                        />
+                      <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--surface-3)' }}>
+                        <div className="h-full rounded-full transition-all duration-500" style={{ width: `${dataQuality.intelligenceReadiness}%`, background: 'var(--accent)' }} />
                       </div>
-                      <span className="tabular-nums" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-secondary)' }}>{dataQuality.intelligenceReadiness}%</span>
+                      <span className="tabular-nums" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-secondary)' }}>{dataQuality.intelligenceReadiness}%</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="space-y-1.5">
-                  <div className="mb-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Field Coverage</div>
+                  <div className="mb-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>Field coverage</div>
                   {dataQuality.fieldCompleteness
                     .filter(f => f.field !== 'name' && f.field !== 'type' && f.field !== 'tier' && f.field !== 'status')
                     .map(f => (
                     <div key={f.field} className="flex items-center gap-2">
-                      <span className="w-20 truncate" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{f.field.replace(/_/g, ' ')}</span>
-                      <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--surface-3)' }}>
-                        <div
-                          className="h-full rounded-full"
-                          style={{
-                            width: `${f.pct}%`,
-                            background: f.pct >= 80 ? 'var(--success)' : f.pct >= 50 ? 'var(--warning)' : 'var(--danger)',
-                          }}
-                        />
+                      <span className="w-20 truncate" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{f.field.replace(/_/g, ' ')}</span>
+                      <div className="flex-1 h-1 rounded-full overflow-hidden" style={{ background: 'var(--surface-3)' }}>
+                        <div className="h-full rounded-full" style={{ width: `${f.pct}%`, background: 'var(--accent)' }} />
                       </div>
-                      <span className="tabular-nums w-8 text-right" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{f.pct}%</span>
+                      <span className="tabular-nums w-8 text-right" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{f.pct}%</span>
                     </div>
                   ))}
                 </div>
 
                 <div className="space-y-1.5">
-                  <div className="mb-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Recommendations</div>
+                  <div className="mb-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>Recommendations</div>
                   {dataQuality.recommendations.slice(0, 3).map((rec, i) => (
                     <div key={i} className="flex items-start gap-1.5">
                       <span className="w-1 h-1 rounded-full mt-1.5 shrink-0" style={{ background: 'var(--accent)' }} />
-                      <span className="leading-snug" style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{rec}</span>
+                      <span className="leading-snug" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>{rec}</span>
                     </div>
                   ))}
                 </div>
@@ -1548,53 +1147,40 @@ export default function Dashboard() {
             </div>
           )}
 
-          {/* ================================================================ */}
-          {/* UPCOMING TASKS + RECENT ACTIVITY                                 */}
-          {/* ================================================================ */}
+          {/* Tasks + Activity */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="rounded-xl p-5" style={{ border: '1px solid var(--border-default)' }}>
+            <div style={{ border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
               <div className="flex items-center justify-between mb-3">
-                <h2
-                  className="uppercase flex items-center gap-2"
-                  style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)' }}
-                >
-                  <ClipboardList className="w-4 h-4" /> Upcoming Tasks
+                <h2 className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
+                  <ClipboardList className="w-4 h-4" /> Upcoming tasks
                 </h2>
-                <Link
-                  href="/timeline"
-                  className="flex items-center gap-1"
-                  style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
-                >
+                <Link href="/timeline" className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}>
                   All tasks <ArrowRight className="w-3 h-3" />
                 </Link>
               </div>
               {tasks.length === 0 ? (
                 <div style={{ padding: 'var(--space-2) 0' }}>
                   <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>No upcoming tasks</p>
-                  <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 'var(--space-1)', opacity: 0.7 }}>Tasks are generated from meetings and AI analysis</p>
                 </div>
               ) : (
                 <div className="space-y-2">
                   {tasks.map(t => {
                     const overdue = t.due_date && new Date(t.due_date) < new Date();
-                    const prioColor = { critical: 'var(--danger)', high: '#a58a5a', medium: 'var(--warning)', low: 'var(--text-muted)' }[t.priority] || 'var(--text-muted)';
                     return (
                       <div
                         key={t.id}
-                        className="flex items-center justify-between py-1.5 px-2 rounded"
-                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-3)'; }}
+                        className="flex items-center justify-between py-1.5 px-2 rounded transition-colors"
+                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}
                         onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
                       >
                         <div className="min-w-0">
-                          <div className="truncate" style={{ fontSize: 'var(--font-size-sm)' }}>{t.title}</div>
+                          <div className="truncate" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)' }}>{t.title}</div>
                           {t.investor_name && <div className="truncate" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{t.investor_name}</div>}
                         </div>
                         <div className="flex items-center gap-2 shrink-0">
-                          <span style={{ fontSize: '10px', color: prioColor }}>{t.priority}</span>
+                          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>{t.priority}</span>
                           {t.due_date && (
-                            <span style={{ fontSize: '10px', color: overdue ? 'var(--danger)' : 'var(--text-muted)' }}>
+                            <span style={{ fontSize: 'var(--font-size-xs)', color: overdue ? 'var(--text-primary)' : 'var(--text-muted)', fontWeight: overdue ? 400 : 300 }}>
                               {new Date(t.due_date).toLocaleDateString()}
                             </span>
                           )}
@@ -1606,28 +1192,18 @@ export default function Dashboard() {
               )}
             </div>
 
-            <div className="rounded-xl p-5" style={{ border: '1px solid var(--border-default)' }}>
+            <div style={{ border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
               <div className="flex items-center justify-between mb-3">
-                <h2
-                  className="uppercase flex items-center gap-2"
-                  style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)' }}
-                >
-                  <Activity className="w-4 h-4" /> Recent Activity
+                <h2 className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
+                  <Activity className="w-4 h-4" /> Recent activity
                 </h2>
-                <Link
-                  href="/timeline"
-                  className="flex items-center gap-1"
-                  style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
-                >
+                <Link href="/timeline" className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}>
                   Full log <ArrowRight className="w-3 h-3" />
                 </Link>
               </div>
               {activity.length === 0 ? (
                 <div style={{ padding: 'var(--space-2) 0' }}>
                   <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>No activity recorded yet</p>
-                  <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 'var(--space-1)', opacity: 0.7 }}>Activity logs from meetings, status changes, and tasks</p>
                 </div>
               ) : (
                 <div className="space-y-1">
@@ -1639,9 +1215,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* ================================================================ */}
-          {/* CONTEXTUAL QUICK ACTIONS                                         */}
-          {/* ================================================================ */}
+          {/* Quick Actions */}
           {(() => {
             const overdueFollowups = pendingFollowups.filter(f => {
               const dueDate = f.due_at?.split('T')[0];
@@ -1654,26 +1228,24 @@ export default function Dashboard() {
             });
             const completeness = dataQuality?.overallCompleteness ?? 100;
 
-            const actions: { href: string; label: string; sub: string; color: string; borderColor: string; count?: number }[] = [];
+            const actions: { href: string; label: string; sub: string; count?: number }[] = [];
 
             if (overdueFollowups.length > 0) {
-              actions.push({ href: '/followups', label: 'Overdue Follow-ups', sub: `${overdueFollowups.length} past due — respond today`, color: 'var(--danger)', borderColor: 'rgba(196,90,90,0.3)', count: overdueFollowups.length });
+              actions.push({ href: '/followups', label: 'Overdue follow-ups', sub: `${overdueFollowups.length} past due`, count: overdueFollowups.length });
             }
             if (atRiskCount > 0) {
-              actions.push({ href: '/dealflow', label: 'At-Risk Investors', sub: `${atRiskCount} losing momentum — intervene now`, color: 'var(--warning)', borderColor: 'rgba(196,163,90,0.3)', count: atRiskCount });
+              actions.push({ href: '/dealflow', label: 'At-risk investors', sub: `${atRiskCount} losing momentum`, count: atRiskCount });
             }
             if (overdueTasks.length > 0) {
-              actions.push({ href: '/focus', label: 'Blocked Tasks', sub: `${overdueTasks.length} overdue — unblock pipeline`, color: 'var(--danger)', borderColor: 'rgba(196,90,90,0.2)', count: overdueTasks.length });
+              actions.push({ href: '/focus', label: 'Blocked tasks', sub: `${overdueTasks.length} overdue`, count: overdueTasks.length });
             }
             if (completeness < 70) {
-              actions.push({ href: '/investors', label: 'Data Gaps', sub: `CRM ${completeness}% complete — fill key fields`, color: 'var(--accent)', borderColor: 'rgba(74,111,165,0.2)' });
+              actions.push({ href: '/investors', label: 'Data gaps', sub: `CRM ${completeness}% complete` });
             }
-
-            // Always include core quick nav (fill to 4)
-            if (actions.length < 4) actions.push({ href: '/meetings/new', label: 'Log Meeting', sub: 'Capture a debrief', color: 'var(--text-secondary)', borderColor: 'var(--border-default)' });
-            if (actions.length < 4) actions.push({ href: '/pipeline', label: 'Pipeline', sub: 'Kanban board', color: 'var(--text-secondary)', borderColor: 'var(--border-default)' });
-            if (actions.length < 4) actions.push({ href: '/intelligence', label: 'AI Analysis', sub: 'Pattern detection', color: 'var(--text-secondary)', borderColor: 'var(--border-default)' });
-            if (actions.length < 4) actions.push({ href: '/investors', label: 'Manage CRM', sub: 'Update statuses', color: 'var(--text-secondary)', borderColor: 'var(--border-default)' });
+            if (actions.length < 4) actions.push({ href: '/meetings/new', label: 'Log meeting', sub: 'Capture a debrief' });
+            if (actions.length < 4) actions.push({ href: '/pipeline', label: 'Pipeline', sub: 'Kanban board' });
+            if (actions.length < 4) actions.push({ href: '/intelligence', label: 'AI analysis', sub: 'Pattern detection' });
+            if (actions.length < 4) actions.push({ href: '/investors', label: 'Manage CRM', sub: 'Update statuses' });
 
             return (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -1681,20 +1253,15 @@ export default function Dashboard() {
                   <Link
                     key={a.href + a.label}
                     href={a.href}
-                    className="rounded-xl p-4 transition-colors relative"
-                    style={{ border: `1px solid ${a.borderColor}`, textDecoration: 'none' }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-strong)'; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = a.borderColor; }}
+                    className="rounded-xl p-4 transition-colors"
+                    style={{ border: '1px solid var(--border-subtle)', textDecoration: 'none' }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-subtle)'; }}
                   >
                     <div className="flex items-center gap-2">
-                      <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: a.color }}>{a.label}</span>
+                      <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>{a.label}</span>
                       {a.count && (
-                        <span style={{
-                          fontSize: '10px', fontWeight: 700,
-                          background: a.color === 'var(--danger)' ? 'var(--danger-muted)' : 'var(--warning-muted)',
-                          color: a.color,
-                          padding: '1px 6px', borderRadius: '9px',
-                        }}>
+                        <span className="tabular-nums" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
                           {a.count}
                         </span>
                       )}
@@ -1712,55 +1279,48 @@ export default function Dashboard() {
 }
 
 // ---------------------------------------------------------------------------
-// Sub-components
+// Sub-components — monochrome
 // ---------------------------------------------------------------------------
 
-function PulseCard({ label, value, sub, color }: {
+function PulseCard({ label, value, sub }: {
   label: string;
   value: string | number;
   sub: string;
-  color: 'blue' | 'green' | 'yellow' | 'red' | 'zinc';
+  color?: string;
 }) {
-  const accentColor = {
-    blue: 'var(--accent)',
-    green: 'var(--success)',
-    yellow: 'var(--warning)',
-    red: 'var(--danger)',
-    zinc: 'var(--text-tertiary)',
-  }[color];
-
   return (
     <div
-      className="transition-all duration-150"
       style={{
         background: 'var(--surface-1)',
         border: '1px solid var(--border-subtle)',
-        borderLeft: `3px solid ${accentColor}`,
         borderRadius: 'var(--radius-lg)',
         padding: 'var(--space-4) var(--space-5)',
+        transition: 'border-color 0.2s ease',
       }}
+      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
+      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-subtle)'; }}
     >
-      <div className="metric-label">{label}</div>
-      <div className="metric-value" style={{ color: 'var(--text-primary)', marginTop: 'var(--space-1)' }}>{value}</div>
-      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 'var(--space-1)' }}>{sub}</div>
+      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', marginBottom: 'var(--space-1)' }}>{label}</div>
+      <div style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 300, color: 'var(--text-primary)', letterSpacing: '-0.02em', fontVariantNumeric: 'tabular-nums' }}>{value}</div>
+      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginTop: '2px' }}>{sub}</div>
     </div>
   );
 }
 
-function MomentumBar({ count, total, bg, label }: {
-  count: number; total: number; bg: string; label: string;
+function MomentumBar({ count, total, opacity, label }: {
+  count: number; total: number; opacity: number; label: string;
 }) {
   const pct = total > 0 ? Math.max((count / total) * 100, 4) : 0;
   return (
     <div
-      className="relative group cursor-default transition-all"
-      style={{ width: `${pct}%`, background: bg }}
+      className="relative group cursor-default"
+      style={{ width: `${pct}%`, background: `rgba(27, 42, 74, ${opacity})`, borderRadius: '2px' }}
       title={`${label}: ${count}`}
     >
       {pct >= 15 && (
         <span
           className="absolute inset-0 flex items-center justify-center"
-          style={{ fontSize: '9px', fontWeight: 700, color: 'rgba(0,0,0,0.60)' }}
+          style={{ fontSize: '9px', fontWeight: 500, color: opacity > 0.5 ? '#fafaf8' : 'var(--text-secondary)' }}
         >
           {count}
         </span>
@@ -1769,12 +1329,12 @@ function MomentumBar({ count, total, bg, label }: {
   );
 }
 
-function MomentumLabel({ count, label, color }: {
-  count: number; label: string; color: string;
+function MomentumLabel({ count, label }: {
+  count: number; label: string;
 }) {
   return (
-    <span className="flex items-center gap-1" style={{ fontSize: '10px', color }}>
-      <span style={{ fontWeight: 700 }}>{count}</span> {label}
+    <span className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
+      <span style={{ fontWeight: 500 }}>{count}</span> {label}
     </span>
   );
 }
@@ -1795,44 +1355,30 @@ function VelocityStrip({ velocity }: { velocity: VelocityResponse }) {
   const daysRemaining = Math.max(0, s.raise_target_days - s.raise_days_elapsed);
   const isOverTarget = s.raise_days_elapsed > s.raise_target_days;
 
-  const totalMeetings = velocity.investors.reduce((sum, inv) => {
-    const mpw = inv.meetings_per_week;
-    return sum + mpw;
-  }, 0);
+  const totalMeetings = velocity.investors.reduce((sum, inv) => sum + inv.meetings_per_week, 0);
   const avgMeetingsPerWeek = velocity.investors.length > 0
     ? Math.round((totalMeetings / velocity.investors.length) * 10) / 10
     : 0;
 
   const trendUp = s.avg_velocity_score >= 50;
-
   const [hovered, setHovered] = useState(false);
 
   return (
     <div
       className="rounded-xl overflow-hidden transition-all"
-      style={{
-        border: `1px solid ${isOverTarget ? 'rgba(196,90,90,0.25)' : 'rgba(74,111,165,0.2)'}`,
-        background: isOverTarget ? 'rgba(196,90,90,0.03)' : 'rgba(74,111,165,0.02)',
-      }}
+      style={{ border: '1px solid var(--border-subtle)' }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
       <div className="px-5 pt-4 pb-2">
         <div className="flex items-center justify-between mb-3">
-          <h2
-            className="uppercase flex items-center gap-2"
-            style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)' }}
-          >
-            <Gauge className="w-4 h-4" /> Pipeline Velocity
+          <h2 className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
+            <Gauge className="w-4 h-4" /> Pipeline velocity
           </h2>
           <Link
             href="/dealflow"
             className="flex items-center gap-1 transition-opacity"
-            style={{
-              fontSize: 'var(--font-size-xs)',
-              color: 'var(--accent)',
-              opacity: hovered ? 1 : 0,
-            }}
+            style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)', opacity: hovered ? 1 : 0 }}
           >
             Details <ArrowRight className="w-3 h-3" />
           </Link>
@@ -1840,93 +1386,59 @@ function VelocityStrip({ velocity }: { velocity: VelocityResponse }) {
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-3">
           <div>
-            <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Days Elapsed</div>
-            <div
-              className="tabular-nums mt-0.5"
-              style={{
-                fontSize: 'var(--font-size-xl)',
-                fontWeight: 700,
-                color: isOverTarget ? 'var(--danger)' : 'var(--text-primary)',
-              }}
-            >
+            <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>Days elapsed</div>
+            <div className="tabular-nums mt-0.5" style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>
               {s.raise_days_elapsed}
-              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', fontWeight: 400 }}>
-                /{s.raise_target_days}d
-              </span>
+              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', fontWeight: 300 }}>/{s.raise_target_days}d</span>
             </div>
           </div>
           <div>
-            <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Avg Mtgs/Week</div>
+            <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>Avg mtgs/week</div>
             <div className="flex items-center gap-1.5 mt-0.5">
-              <span
-                className="tabular-nums"
-                style={{ fontSize: 'var(--font-size-xl)', fontWeight: 700, color: 'var(--text-primary)' }}
-              >
-                {avgMeetingsPerWeek}
-              </span>
-              <span style={{ color: trendUp ? 'var(--success)' : 'var(--danger)' }}>
+              <span className="tabular-nums" style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>{avgMeetingsPerWeek}</span>
+              <span style={{ color: 'var(--text-tertiary)' }}>
                 {trendUp ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
               </span>
             </div>
           </div>
           <div>
-            <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Velocity Score</div>
-            <div
-              className="tabular-nums mt-0.5"
-              style={{
-                fontSize: 'var(--font-size-xl)',
-                fontWeight: 700,
-                color: s.avg_velocity_score >= 60 ? 'var(--success)' : s.avg_velocity_score >= 40 ? 'var(--warning)' : 'var(--danger)',
-              }}
-            >
+            <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>Velocity score</div>
+            <div className="tabular-nums mt-0.5" style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>
               {s.avg_velocity_score}
-              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', fontWeight: 400 }}>/100</span>
+              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', fontWeight: 300 }}>/100</span>
             </div>
           </div>
           <div>
-            <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-              {isOverTarget ? 'Over Target By' : 'Days Remaining'}
+            <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
+              {isOverTarget ? 'Over target by' : 'Days remaining'}
             </div>
-            <div
-              className="tabular-nums mt-0.5"
-              style={{
-                fontSize: 'var(--font-size-xl)',
-                fontWeight: 700,
-                color: isOverTarget ? 'var(--danger)' : daysRemaining <= 14 ? 'var(--warning)' : 'var(--success)',
-              }}
-            >
+            <div className="tabular-nums mt-0.5" style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>
               {isOverTarget ? `+${s.raise_days_elapsed - s.raise_target_days}` : daysRemaining}d
             </div>
           </div>
         </div>
       </div>
 
-      {/* Progress bar */}
-      <div style={{ height: '4px', background: 'var(--surface-3)' }}>
+      <div style={{ height: '3px', background: 'var(--surface-3)' }}>
         <div
           className="h-full transition-all duration-700"
           style={{
             width: `${progressPct}%`,
-            background: isOverTarget
-              ? 'var(--danger)'
-              : progressPct >= 75
-              ? 'var(--warning)'
-              : 'var(--accent)',
-            borderRadius: progressPct < 100 ? '0 2px 2px 0' : undefined,
+            background: 'var(--accent)',
+            borderRadius: progressPct < 100 ? '0 1px 1px 0' : undefined,
           }}
         />
       </div>
 
-      {/* Tracking breakdown mini bar */}
-      <div className="px-5 py-2 flex items-center gap-3" style={{ borderTop: '1px solid var(--border-subtle)' }}>
-        <span className="flex items-center gap-1" style={{ fontSize: '10px', color: 'var(--success)' }}>
-          <span style={{ fontWeight: 700 }}>{s.on_track}</span> on track
+      <div className="px-5 py-2 flex items-center gap-4" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+        <span className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
+          <span style={{ fontWeight: 500 }}>{s.on_track}</span> on track
         </span>
-        <span className="flex items-center gap-1" style={{ fontSize: '10px', color: 'var(--warning)' }}>
-          <span style={{ fontWeight: 700 }}>{s.behind}</span> behind
+        <span className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
+          <span style={{ fontWeight: 500 }}>{s.behind}</span> behind
         </span>
-        <span className="flex items-center gap-1" style={{ fontSize: '10px', color: 'var(--danger)' }}>
-          <span style={{ fontWeight: 700 }}>{s.at_risk}</span> at risk
+        <span className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+          <span style={{ fontWeight: 500 }}>{s.at_risk}</span> at risk
         </span>
       </div>
     </div>
@@ -1936,28 +1448,10 @@ function VelocityStrip({ velocity }: { velocity: VelocityResponse }) {
 function HotDealRow({ investor }: { investor: DealHeatInvestor }) {
   const [hovered, setHovered] = useState(false);
 
-  const heatColor =
-    investor.dealHeat.label === 'hot' ? 'var(--danger)' :
-    investor.dealHeat.label === 'warm' ? '#a58a5a' :
-    investor.dealHeat.label === 'cool' ? 'var(--accent)' :
-    investor.dealHeat.label === 'cold' ? 'var(--text-tertiary)' : 'var(--text-muted)';
-
-  const heatBg =
-    investor.dealHeat.label === 'hot' ? 'rgba(196,90,90,0.12)' :
-    investor.dealHeat.label === 'warm' ? 'var(--warning-muted)' :
-    investor.dealHeat.label === 'cool' ? 'rgba(74,111,165,0.12)' :
-    'var(--surface-3)';
-
-  const heatBorder =
-    investor.dealHeat.label === 'hot' ? 'rgba(196,90,90,0.3)' :
-    investor.dealHeat.label === 'warm' ? 'var(--border-default)' :
-    investor.dealHeat.label === 'cool' ? 'rgba(74,111,165,0.3)' :
-    'var(--border-subtle)';
-
   return (
     <div
       className="flex items-center gap-3 py-2 px-3 rounded-lg transition-colors"
-      style={{ background: hovered ? 'var(--surface-3)' : 'transparent' }}
+      style={{ background: hovered ? 'var(--surface-2)' : 'transparent' }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -1968,40 +1462,27 @@ function HotDealRow({ investor }: { investor: DealHeatInvestor }) {
             className="truncate transition-colors"
             style={{
               fontSize: 'var(--font-size-sm)',
-              fontWeight: 500,
+              fontWeight: 400,
               color: hovered ? 'var(--accent)' : 'var(--text-primary)',
             }}
           >
             {investor.name}
           </Link>
-          <span style={{ fontSize: '9px', color: investor.tier === 1 ? 'var(--warning)' : 'var(--text-muted)' }}>
-            T{investor.tier}
-          </span>
+          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>T{investor.tier}</span>
         </div>
         <div className="mt-0.5" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
           {formatStage(investor.status)}
         </div>
       </div>
       <div className="flex items-center gap-2 shrink-0">
-        <span
-          className="tabular-nums"
-          style={{ fontSize: 'var(--font-size-sm)', fontWeight: 700, color: heatColor }}
-        >
+        <span className="tabular-nums" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
           {investor.dealHeat.heat}
         </span>
         <Link
           href={`/meetings/new?investor=${investor.id}`}
           onClick={e => e.stopPropagation()}
-          style={{
-            fontSize: '10px',
-            fontWeight: 600,
-            padding: '2px 8px',
-            borderRadius: 'var(--radius-sm)',
-            background: heatBg,
-            color: heatColor,
-            border: `1px solid ${heatBorder}`,
-            textDecoration: 'none',
-          }}
+          className="btn btn-secondary btn-sm"
+          style={{ textDecoration: 'none', fontSize: 'var(--font-size-xs)' }}
         >
           Schedule
         </Link>
@@ -2037,7 +1518,7 @@ function FollowupRow({ followup, onComplete }: { followup: FollowupItem; onCompl
   return (
     <div
       className="flex items-center gap-3 py-2 px-3 rounded-lg transition-colors"
-      style={{ background: hovered ? 'var(--surface-3)' : 'transparent', opacity: completing ? 0.5 : 1, transition: 'all 150ms ease' }}
+      style={{ background: hovered ? 'var(--surface-2)' : 'transparent', opacity: completing ? 0.5 : 1 }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -2046,19 +1527,19 @@ function FollowupRow({ followup, onComplete }: { followup: FollowupItem; onCompl
           onClick={() => { setCompleting(true); onComplete(followup.id); }}
           className="w-5 h-5 rounded flex items-center justify-center shrink-0"
           style={{
-            border: '2px solid var(--border-default)',
+            border: '1.5px solid var(--border-default)',
             background: 'transparent',
             cursor: 'pointer',
             transition: 'all 150ms ease',
           }}
-          onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--success)'; e.currentTarget.style.background = 'var(--success-muted)'; }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.background = 'var(--accent-muted)'; }}
           onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border-default)'; e.currentTarget.style.background = 'transparent'; }}
           title="Mark done"
         >
-          {completing && <CheckCircle2 className="w-3 h-3" style={{ color: 'var(--success)' }} />}
+          {completing && <CheckCircle2 className="w-3 h-3" style={{ color: 'var(--accent)' }} />}
         </button>
       )}
-      <span className="shrink-0" style={{ color: isOverdue ? 'var(--danger)' : 'var(--accent)' }}>
+      <span className="shrink-0" style={{ color: 'var(--text-tertiary)' }}>
         <ActionIcon className="w-4 h-4" />
       </span>
       <div className="flex-1 min-w-0">
@@ -2066,23 +1547,11 @@ function FollowupRow({ followup, onComplete }: { followup: FollowupItem; onCompl
           <Link
             href={`/investors/${followup.investor_id}`}
             className="truncate transition-colors"
-            style={{
-              fontSize: 'var(--font-size-sm)',
-              fontWeight: 500,
-              color: hovered ? 'var(--accent)' : 'var(--text-primary)',
-            }}
+            style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: hovered ? 'var(--accent)' : 'var(--text-primary)' }}
           >
             {followup.investor_name || 'Unknown'}
           </Link>
-          <span
-            className="px-1.5 py-0.5 rounded shrink-0"
-            style={{
-              fontSize: '9px',
-              background: 'var(--surface-3)',
-              color: 'var(--text-secondary)',
-              border: '1px solid var(--border-subtle)',
-            }}
-          >
+          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
             {actionLabel[followup.action_type] || followup.action_type.replace(/_/g, ' ')}
           </span>
         </div>
@@ -2092,14 +1561,7 @@ function FollowupRow({ followup, onComplete }: { followup: FollowupItem; onCompl
       </div>
       <div className="shrink-0 flex items-center gap-2">
         <div className="text-right">
-          <div
-            className="tabular-nums"
-            style={{
-              fontSize: 'var(--font-size-xs)',
-              fontWeight: 500,
-              color: isOverdue ? 'var(--danger)' : daysUntil <= 1 ? 'var(--warning)' : 'var(--text-muted)',
-            }}
-          >
+          <div className="tabular-nums" style={{ fontSize: 'var(--font-size-xs)', color: isOverdue ? 'var(--text-primary)' : 'var(--text-muted)', fontWeight: isOverdue ? 400 : 300 }}>
             {isOverdue
               ? `${Math.abs(daysUntil)}d overdue`
               : daysUntil === 0
@@ -2112,16 +1574,8 @@ function FollowupRow({ followup, onComplete }: { followup: FollowupItem; onCompl
         <Link
           href={`/followups?investor=${followup.investor_id}`}
           onClick={e => e.stopPropagation()}
-          style={{
-            fontSize: '10px',
-            fontWeight: 600,
-            padding: '2px 8px',
-            borderRadius: 'var(--radius-sm)',
-            background: isOverdue ? 'var(--danger-muted)' : 'var(--accent-muted)',
-            color: isOverdue ? 'var(--danger)' : 'var(--accent)',
-            border: `1px solid ${isOverdue ? 'rgba(196,90,90,0.25)' : 'rgba(74,111,165,0.25)'}`,
-            textDecoration: 'none',
-          }}
+          className="btn btn-secondary btn-sm"
+          style={{ textDecoration: 'none', fontSize: 'var(--font-size-xs)' }}
         >
           Act
         </Link>
@@ -2142,33 +1596,22 @@ function ActivityRow({ activity }: { activity: ActivityItem }) {
     meeting_created: Calendar,
   };
 
-  const eventColors: Record<string, string> = {
-    meeting_logged: 'var(--accent)',
-    status_changed: 'var(--success)',
-    followup_completed: 'var(--success)',
-    investor_added: 'var(--accent)',
-    followup_created: 'var(--warning)',
-    meeting_created: 'var(--accent)',
-  };
-
   const Icon = eventIcons[activity.event_type] || Activity;
-  const iconColor = eventColors[activity.event_type] || 'var(--text-muted)';
-
   const timeAgo = formatTimeAgo(activity.created_at);
 
   return (
     <div
       className="flex items-start gap-2.5 py-1.5 px-2 rounded transition-colors"
-      style={{ background: hovered ? 'var(--surface-3)' : 'transparent' }}
+      style={{ background: hovered ? 'var(--surface-2)' : 'transparent' }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <span className="mt-0.5 shrink-0" style={{ color: iconColor }}>
+      <span className="mt-0.5 shrink-0" style={{ color: 'var(--text-tertiary)' }}>
         <Icon className="w-3.5 h-3.5" />
       </span>
       <div className="flex-1 min-w-0">
-        <div className="truncate" style={{ fontSize: 'var(--font-size-sm)' }}>{activity.subject}</div>
-        <div className="flex items-center gap-2" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+        <div className="truncate" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)' }}>{activity.subject}</div>
+        <div className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
           {activity.investor_name && (
             <span style={{ color: 'var(--text-secondary)' }}>{activity.investor_name}</span>
           )}

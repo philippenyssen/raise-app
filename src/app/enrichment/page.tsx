@@ -276,7 +276,7 @@ export default function EnrichmentPage() {
       {lastResult && (
         <div className="card" style={{
           background: lastResult.status === 'completed' ? 'var(--success-muted)' : lastResult.status === 'partial' ? 'var(--warning-muted)' : 'var(--danger-muted)',
-          border: `1px solid ${lastResult.status === 'completed' ? 'rgba(74,158,110,0.2)' : lastResult.status === 'partial' ? 'rgba(196,163,90,0.2)' : 'rgba(196,90,90,0.2)'}`,
+          border: `1px solid ${lastResult.status === 'completed' ? 'rgba(27, 42, 74, 0.06)' : lastResult.status === 'partial' ? 'rgba(26, 26, 46, 0.05)' : 'rgba(26, 26, 46, 0.06)'}`,
           padding: 'var(--space-3) var(--space-4)',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -457,7 +457,7 @@ export default function EnrichmentPage() {
                         marginTop: 'var(--space-3)',
                         padding: 'var(--space-2) var(--space-3)',
                         background: 'var(--warning-muted)',
-                        border: '1px solid rgba(196,163,90,0.2)',
+                        border: '1px solid rgba(26, 26, 46, 0.05)',
                         borderRadius: 'var(--radius-md)',
                         fontSize: 'var(--font-size-xs)',
                         color: 'var(--warning)',

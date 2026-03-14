@@ -343,7 +343,7 @@ export default function DealflowPage() {
               fontSize: 'var(--font-size-xs)',
               color: 'var(--text-muted)',
               fontWeight: 500,
-              textTransform: 'uppercase',
+              textTransform: 'none',
               letterSpacing: '0.05em',
             }}
           >

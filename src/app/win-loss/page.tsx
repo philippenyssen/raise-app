@@ -285,7 +285,7 @@ export default function WinLossPage() {
           className="card"
           style={{
             padding: 'var(--space-4)',
-            borderLeft: '3px solid var(--success)',
+            borderLeft: '2px solid var(--border-default)',
           }}
         >
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
@@ -325,7 +325,7 @@ export default function WinLossPage() {
           className="card"
           style={{
             padding: 'var(--space-4)',
-            borderLeft: '3px solid var(--danger)',
+            borderLeft: '2px solid var(--border-default)',
           }}
         >
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
@@ -455,7 +455,7 @@ export default function WinLossPage() {
                   <span style={{
                     fontSize: 'var(--font-size-xs)',
                     color: strengthColor(p.strength),
-                    textTransform: 'uppercase',
+                    textTransform: 'none',
                     fontWeight: 600,
                     letterSpacing: '0.04em',
                   }}>
@@ -496,7 +496,7 @@ export default function WinLossPage() {
                         fontSize: 'var(--font-size-xs)',
                         fontWeight: 500,
                         color: 'var(--text-muted)',
-                        textTransform: 'uppercase',
+                        textTransform: 'none',
                         letterSpacing: '0.04em',
                         borderBottom: '1px solid var(--border-subtle)',
                       }}
@@ -566,7 +566,7 @@ export default function WinLossPage() {
                         fontSize: 'var(--font-size-xs)',
                         fontWeight: 600,
                         color: strengthColor(f.significance),
-                        textTransform: 'uppercase',
+                        textTransform: 'none',
                         letterSpacing: '0.04em',
                       }}>
                         {f.significance}
@@ -778,7 +778,7 @@ export default function WinLossPage() {
                     background: hoveredRow === `rec-${i}` ? 'var(--surface-2)' : 'var(--surface-1)',
                     fontSize: 'var(--font-size-sm)',
                     color: 'var(--text-secondary)',
-                    borderLeft: '3px solid var(--warning)',
+                    borderLeft: '2px solid var(--border-default)',
                     transition: 'background 0.15s',
                   }}
                   onMouseEnter={() => setHoveredRow(`rec-${i}`)}

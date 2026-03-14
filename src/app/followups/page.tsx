@@ -280,9 +280,9 @@ function FollowupsContent() {
         className="card"
         style={{
           padding: 0,
-          borderColor: showOverdueIndicator || isOverdue ? 'rgba(196,90,90,0.35)' : undefined,
-          background: showOverdueIndicator || isOverdue ? 'rgba(196,90,90,0.06)' : undefined,
-          boxShadow: showOverdueIndicator || isOverdue ? '0 0 0 1px rgba(196,90,90,0.15)' : undefined,
+          borderColor: showOverdueIndicator || isOverdue ? 'rgba(26, 26, 46, 0.06)' : undefined,
+          background: showOverdueIndicator || isOverdue ? 'rgba(26, 26, 46, 0.06)' : undefined,
+          boxShadow: showOverdueIndicator || isOverdue ? '0 0 0 1px rgba(26, 26, 46, 0.06)' : undefined,
         }}
       >
         <div style={{ padding: 'var(--space-4)' }}>
@@ -305,7 +305,7 @@ function FollowupsContent() {
                   className="badge"
                   style={{
                     fontSize: '10px',
-                    textTransform: 'uppercase',
+                    textTransform: 'none',
                     background: isOverdue ? 'var(--danger-muted)' : config.bgColor,
                     color: isOverdue ? '#f5b0b8' : config.color,
                   }}
@@ -690,7 +690,7 @@ function FollowupsContent() {
               {/* Subject */}
               <div style={{ marginBottom: 'var(--space-2)' }}>
                 <div className="flex items-center justify-between" style={{ marginBottom: '4px' }}>
-                  <span style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.05em' }}>Subject</span>
+                  <span style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'none' as const, letterSpacing: '0.05em' }}>Subject</span>
                   <button
                     onClick={() => {
                       navigator.clipboard.writeText(draft.subject);
@@ -730,7 +730,7 @@ function FollowupsContent() {
               {/* Body */}
               <div>
                 <div className="flex items-center justify-between" style={{ marginBottom: '4px' }}>
-                  <span style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.05em' }}>Body</span>
+                  <span style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'none' as const, letterSpacing: '0.05em' }}>Body</span>
                   <button
                     onClick={() => {
                       navigator.clipboard.writeText(draft.body);
@@ -805,7 +805,7 @@ function FollowupsContent() {
           className="flex items-center justify-between"
           style={{
             padding: '0.5rem var(--space-4)',
-            borderTop: isOverdue ? '1px solid rgba(196,90,90,0.15)' : '1px solid var(--border-subtle)',
+            borderTop: isOverdue ? '1px solid rgba(26, 26, 46, 0.06)' : '1px solid var(--border-subtle)',
             fontSize: '10px',
             color: 'var(--text-muted)',
           }}

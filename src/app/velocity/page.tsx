@@ -161,7 +161,7 @@ export default function VelocityPage() {
                   background: 'var(--danger)',
                   color: 'var(--text-primary)',
                   letterSpacing: '0.04em',
-                  textTransform: 'uppercase',
+                  textTransform: 'none',
                 }}
               >
                 HOT
@@ -511,7 +511,7 @@ export default function VelocityPage() {
                           style={{
                             background: 'var(--danger-muted)',
                             color: 'var(--danger)',
-                            border: '1px solid rgba(196,90,90,0.25)',
+                            border: '1px solid rgba(26, 26, 46, 0.06)',
                             fontSize: '11px',
                             padding: '3px 8px',
                             gap: '4px',
@@ -529,7 +529,7 @@ export default function VelocityPage() {
                           style={{
                             background: 'var(--warning-muted)',
                             color: 'var(--warning)',
-                            border: '1px solid rgba(176,138,46,0.15)',
+                            border: '1px solid rgba(26, 26, 46, 0.05)',
                             fontSize: '11px',
                             padding: '3px 8px',
                             gap: '4px',

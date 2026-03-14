@@ -239,7 +239,7 @@ export default function PostMeetingActions({
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1">
                             <span
-                              className="text-[10px] px-1.5 py-0.5 rounded font-medium uppercase"
+                              className="text-[10px] px-1.5 py-0.5 rounded font-medium "
                               style={{
                                 backgroundColor: pStyle.bg,
                                 color: pStyle.color,

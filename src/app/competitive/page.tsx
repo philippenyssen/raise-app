@@ -145,7 +145,7 @@ export default function CompetitivePage() {
               fontSize: 'var(--font-size-xs)',
               fontWeight: 500,
               color: 'var(--text-muted)',
-              textTransform: 'uppercase',
+              textTransform: 'none',
               letterSpacing: '0.05em',
             }}
           >
@@ -231,7 +231,7 @@ export default function CompetitivePage() {
                       borderBottom: '1px solid var(--border-subtle)',
                     }}
                   >
-                    <div style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-muted)', marginBottom: 'var(--space-2)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    <div style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-muted)', marginBottom: 'var(--space-2)', textTransform: 'none', letterSpacing: '0.05em' }}>
                       Meeting Context
                     </div>
                     <div className="space-y-2">

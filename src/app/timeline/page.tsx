@@ -314,7 +314,7 @@ export default function TimelinePage() {
           ) : (
             Object.entries(tasksByPhase).map(([phase, phaseTasks]) => (
               <div key={phase}>
-                <div className="text-xs font-semibold uppercase tracking-wider px-1 mb-2" style={{ color: 'var(--text-muted)' }}>
+                <div className="text-xs font-semibold  tracking-wider px-1 mb-2" style={{ color: 'var(--text-muted)' }}>
                   {PHASE_LABELS[phase as RaisePhase]}
                 </div>
                 <div className="space-y-1">
