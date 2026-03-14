@@ -11,6 +11,7 @@ import {
   detectCompoundSignals,
   computeTemporalTrends,
   computeRaiseForecast,
+  getForecastCalibration,
 } from '@/lib/db';
 import { createClient } from '@libsql/client';
 
@@ -75,7 +76,7 @@ export async function GET() {
   const tables = [
     'question_patterns', 'prediction_log', 'investor_relationships',
     'narrative_signals', 'acceleration_actions', 'health_snapshots',
-    'score_snapshots',
+    'score_snapshots', 'forecast_log',
   ];
 
   for (const table of tables) {
@@ -121,6 +122,7 @@ export async function GET() {
       { field: 'compoundSignals', cycle: 13 },
       { field: 'temporalTrends', cycle: 14 },
       { field: 'raiseForecast', cycle: 18 },
+      { field: 'forecastCalibration', cycle: 23 },
     ];
 
     for (const { field, cycle } of expectedFields) {
@@ -128,7 +130,7 @@ export async function GET() {
       const present = value !== undefined && value !== null;
       checks.push({
         name: `context_field_${field}`,
-        status: present ? 'pass' : field === 'actionEffectiveness' || field === 'objectionEvolution' || field === 'pipelineFlow' || field === 'temporalTrends' || field === 'raiseForecast' ? 'warn' : 'fail',
+        status: present ? 'pass' : field === 'actionEffectiveness' || field === 'objectionEvolution' || field === 'pipelineFlow' || field === 'temporalTrends' || field === 'raiseForecast' || field === 'forecastCalibration' ? 'warn' : 'fail',
         detail: present
           ? `${field}: present (${Array.isArray(value) ? value.length + ' items' : typeof value}) [cycle ${cycle}]`
           : `${field}: null — may indicate no data yet [cycle ${cycle}]`,
@@ -152,6 +154,7 @@ export async function GET() {
     { name: 'detectCompoundSignals', fn: () => detectCompoundSignals(), cycle: 13 },
     { name: 'computeTemporalTrends', fn: () => computeTemporalTrends(), cycle: 14 },
     { name: 'computeRaiseForecast', fn: () => computeRaiseForecast(), cycle: 18 },
+    { name: 'getForecastCalibration', fn: () => getForecastCalibration(), cycle: 23 },
   ];
 
   for (const fc of functionChecks) {
@@ -207,13 +210,24 @@ export async function GET() {
       });
     }
 
+    // Forecast calibration quality (cycle 23)
+    if (ctx.forecastCalibration) {
+      const fc = ctx.forecastCalibration;
+      checks.push({
+        name: 'forecast_calibration',
+        status: fc.biasDirection !== 'insufficient_data' ? 'pass' : fc.totalPredictions > 0 ? 'warn' : 'warn',
+        detail: `${fc.totalPredictions} predictions logged, ${fc.resolvedPredictions} resolved, bias: ${fc.biasDirection}${fc.biasDirection !== 'insufficient_data' ? ` (avg ${fc.avgAccuracyDelta}d off)` : ''} [cycle 23]`,
+        category: 'quality',
+      });
+    }
+
     // System prompt serialization check
     try {
       const { contextToSystemPrompt } = await import('@/lib/context-bus');
       const prompt = contextToSystemPrompt(ctx);
       const sections = [
         'PIPELINE:', 'KEY INVESTORS', 'RAISE FORECAST', 'TEMPORAL TRENDS',
-        'COMPOUND INTELLIGENCE', 'INTELLIGENCE SYNTHESIS',
+        'COMPOUND INTELLIGENCE', 'INTELLIGENCE SYNTHESIS', 'FORECAST CALIBRATION',
       ];
       const found = sections.filter(s => prompt.includes(s));
       checks.push({

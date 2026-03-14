@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@libsql/client';
 import { computeInvestorScore, computeMomentumScore, computeConvictionTrajectory } from '@/lib/scoring';
 import type { ScoreSnapshot } from '@/lib/db';
-import { generateAutoActions, measureActionEffectiveness, saveHealthSnapshot, getHealthSnapshots, computeTemporalTrends, computeRaiseForecast } from '@/lib/db';
+import { generateAutoActions, measureActionEffectiveness, saveHealthSnapshot, getHealthSnapshots, computeTemporalTrends, computeRaiseForecast, logForecastPredictions } from '@/lib/db';
 import type { Investor, Meeting, InvestorPortfolioCo, Objection } from '@/lib/types';
 import { getFullContext } from '@/lib/context-bus';
 
@@ -1028,6 +1028,8 @@ export async function GET() {
     // This makes the pulse dashboard the "heartbeat" — every view refreshes intelligence
     try { generateAutoActions().catch(() => {}); } catch { /* non-blocking */ }
     try { measureActionEffectiveness().catch(() => {}); } catch { /* non-blocking */ }
+    // Non-blocking: log forecast predictions for calibration learning (cycle 23)
+    try { logForecastPredictions().catch(() => {}); } catch { /* non-blocking */ }
 
     // Non-blocking: store daily health snapshot if not stored today (cycle 11)
     try {

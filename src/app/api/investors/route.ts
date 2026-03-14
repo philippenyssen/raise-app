@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAllInvestors, getInvestor, createInvestor, updateInvestor, deleteInvestor, resolvePrediction, buildRelationshipGraph } from '@/lib/db';
+import { getAllInvestors, getInvestor, createInvestor, updateInvestor, deleteInvestor, resolvePrediction, resolveForecastPredictions, buildRelationshipGraph } from '@/lib/db';
 import { emitContextChange } from '@/lib/context-bus';
 
 // Allowlisted fields that can be updated via API
@@ -58,6 +58,8 @@ export async function PUT(req: NextRequest) {
     try {
       const outcome = updates.status as 'closed' | 'passed' | 'dropped';
       await resolvePrediction(id, outcome, outcome === 'closed' ? new Date().toISOString().split('T')[0] : undefined);
+      // Also resolve forecast predictions for calibration learning (cycle 23)
+      await resolveForecastPredictions(id, outcome);
     } catch { /* non-blocking */ }
   }
 

@@ -26,6 +26,7 @@
 | 20 | 2026-03-14 | Verification + Meeting Brief Forecast | Intelligence verification expanded from 13 to 35+ checks across 5 categories (infrastructure, database, context bus, functions, quality). Meeting brief enriched with forecast context (critical path, predicted close date). System prompt section verification. | intelligence/verify/route.ts, meeting-brief/route.ts |
 | 21 | 2026-03-14 | Scoring: Forecast Dimension | 10th scoring dimension "Forecast Alignment" — scores predicted days to close, confidence, critical path membership, path probability. Phase-dynamic weights updated (2% in discovery → 10% in negotiation). Investor score API enriched with forecast data from computeRaiseForecast(). | scoring.ts, investors/[id]/score/route.ts |
 | 22 | 2026-03-14 | Cross-System Contradiction Detection | 4 new synthesis rules: forecast-enthusiasm contradiction, stalled-critical-path vs improving-metrics signal mismatch, dormant T1-2 investor detection. Auto-action Rule 10: dormant high-tier investors (zero meetings, 14+ days). | context-bus.ts, db.ts |
+| 23 | 2026-03-14 | Forecast Calibration | Learning from outcomes — forecast predictions logged weekly, resolved on terminal state, accuracy delta computed, bias direction tracked (optimistic/pessimistic/calibrated). Calibration in context bus + system prompt + synthesis. Verification endpoint updated (8 tables, 11 functions, 17 context fields). | db.ts, context-bus.ts, investors/route.ts, pulse/route.ts, intelligence/verify/route.ts |
 
 ## Intelligence Capabilities (Existing)
 
@@ -442,6 +443,22 @@
   - [x] Investor-specific focus: forecast data + critical path membership
   - [x] Proactive intelligence: low confidence (urgency 8) + 3+ risk factors (urgency 7)
   - [x] Instruction 20: forecast-aware reasoning guidance
+
+### AA. Forecast Calibration Engine (NEW cycle 23)
+- [x] `forecast_log` table: stores weekly predictions per investor (predicted_days, confidence, stage_at_prediction)
+- [x] `logForecastPredictions()`: snapshots current forecast for all active investors, max 1/investor/week
+- [x] `resolveForecastPredictions()`: resolves predictions when investor reaches terminal state (closed/passed/dropped)
+  - [x] Computes accuracy_delta for closed predictions (actual days vs predicted days)
+  - [x] Wired into investor PUT handler alongside existing `resolvePrediction()`
+- [x] `getForecastCalibration()`: computes calibration metrics from resolved predictions
+  - [x] avgAccuracyDelta, biasDirection (optimistic/pessimistic/calibrated/insufficient_data)
+  - [x] Breakdown by confidence level and by stage at prediction
+- [x] `forecastCalibration` field in FullContext (context-bus.ts)
+  - [x] Populated via `getForecastCalibration()` in Promise.all (23rd data source)
+  - [x] Serialized to system prompt as FORECAST CALIBRATION section
+  - [x] Calibration-aware synthesis rule: adjusts trust in close date predictions based on track record
+- [x] Pulse-triggered prediction logging: `logForecastPredictions()` runs non-blocking on every pulse view
+- [x] Verification: forecast_log table check, getForecastCalibration function check, forecastCalibration context field check, calibration quality check
 
 ### CLOSED (Cycle 9):
 - ~~Learning Intelligence / Action Outcome Measurement~~ — implemented in db.ts (measureActionEffectiveness, getAutoActionEffectiveness), self-improving generateAutoActions, context-bus.ts (actionEffectiveness field + system prompt), workspace/route.ts (instruction 17), pulse/route.ts (measurement trigger)

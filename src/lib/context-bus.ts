@@ -32,8 +32,9 @@ import {
   detectCompoundSignals,
   computeTemporalTrends,
   computeRaiseForecast,
+  getForecastCalibration,
 } from './db';
-import type { TemporalTrends, RaiseForecast } from './db';
+import type { TemporalTrends, RaiseForecast, ForecastCalibration } from './db';
 
 // ---------------------------------------------------------------------------
 // Context version — monotonically increasing counter
@@ -273,6 +274,9 @@ export interface FullContext {
     riskFactors: string[];
     nearestClose: { name: string; days: number; stage: string } | null;
   } | null;
+
+  // Forecast calibration — learning from outcomes (cycle 23)
+  forecastCalibration: ForecastCalibration | null;
 }
 
 const recentChanges: ContextChange[] = [];
@@ -311,6 +315,7 @@ export async function getFullContext(): Promise<FullContext> {
     compoundSignalsData,
     temporalTrendsData,
     raiseForecastData,
+    forecastCalibrationData,
   ] = await Promise.all([
     getRaiseConfig().catch(() => null),
     getAllDocuments().catch(() => []),
@@ -334,6 +339,7 @@ export async function getFullContext(): Promise<FullContext> {
     detectCompoundSignals().catch(() => []),
     computeTemporalTrends().catch(() => null),
     computeRaiseForecast().catch(() => null),
+    getForecastCalibration().catch(() => null),
   ]);
 
   // Build investor snapshots enriched with meeting/task/followup data
@@ -616,6 +622,9 @@ export async function getFullContext(): Promise<FullContext> {
         nearestClose: nearest ? { name: nearest.investorName, days: nearest.predictedDaysToClose, stage: nearest.currentStage } : null,
       };
     })() : null,
+
+    // Forecast calibration — learning from outcomes (cycle 23)
+    forecastCalibration: (forecastCalibrationData as ForecastCalibration | null),
   };
 
   cachedContext = context;
@@ -885,6 +894,29 @@ export function contextToSystemPrompt(ctx: FullContext): string {
     lines.push('');
   }
 
+  // Forecast calibration — learning from outcomes (cycle 23)
+  if (ctx.forecastCalibration && ctx.forecastCalibration.totalPredictions > 0) {
+    const fc = ctx.forecastCalibration;
+    lines.push(`FORECAST CALIBRATION (${fc.totalPredictions} predictions, ${fc.resolvedPredictions} resolved, ${fc.closedPredictions} closed):`);
+    if (fc.biasDirection !== 'insufficient_data') {
+      lines.push(`- Bias: ${fc.biasDirection} (avg ${fc.avgAccuracyDelta > 0 ? '+' : ''}${fc.avgAccuracyDelta} days off)`);
+      if (fc.biasDirection === 'optimistic') {
+        lines.push(`  → Forecasts have been too aggressive — add ~${Math.abs(fc.avgAccuracyDelta)} days to predicted close dates`);
+      } else if (fc.biasDirection === 'pessimistic') {
+        lines.push(`  → Forecasts have been too conservative — investors are closing faster than predicted`);
+      }
+      if (fc.byConfidence.length > 0) {
+        lines.push(`- By confidence: ${fc.byConfidence.map(c => `${c.confidence}: avg ${c.avgDelta > 0 ? '+' : ''}${c.avgDelta}d (n=${c.count})`).join(', ')}`);
+      }
+      if (fc.byStage.length > 0) {
+        lines.push(`- By stage at prediction: ${fc.byStage.map(s => `${s.stage}: avg ${s.avgDelta > 0 ? '+' : ''}${s.avgDelta}d (n=${s.count})`).join(', ')}`);
+      }
+    } else {
+      lines.push(`- Insufficient resolved predictions for calibration — treat forecast as rough estimate`);
+    }
+    lines.push('');
+  }
+
   // =========================================================================
   // INTELLIGENCE SYNTHESIS (reasoning aids — connect the dots between sources)
   // =========================================================================
@@ -1011,6 +1043,14 @@ export function contextToSystemPrompt(ctx: FullContext): string {
       if (stalledCritical.length > 0) {
         synthesisLines.push(`SIGNAL MISMATCH: Health metrics are improving but critical path investor${stalledCritical.length > 1 ? 's' : ''} ${stalledCritical.map(i => i.name).join(', ')} ${stalledCritical.length > 1 ? 'are' : 'is'} stalled — improving averages may mask that the most important investors aren't progressing`);
       }
+    }
+  }
+
+  // Forecast calibration synthesis: adjust trust in forecast based on track record (cycle 23)
+  if (ctx.forecastCalibration && ctx.forecastCalibration.biasDirection !== 'insufficient_data') {
+    const fc = ctx.forecastCalibration;
+    if (fc.biasDirection === 'optimistic' && Math.abs(fc.avgAccuracyDelta) > 14 && ctx.raiseForecast) {
+      synthesisLines.push(`CALIBRATION ADJUSTMENT: Forecasts have been optimistic by ~${fc.avgAccuracyDelta} days on average — the predicted close date of ${ctx.raiseForecast.expectedCloseDate} should be pushed back by ~${Math.round(fc.avgAccuracyDelta * 0.7)} days based on track record`);
     }
   }
 

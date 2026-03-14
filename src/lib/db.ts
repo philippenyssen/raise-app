@@ -393,6 +393,24 @@ async function ensureInitialized() {
     )`);
   } catch { /* already exists */ }
 
+  // Forecast log — tracks forecast predictions for calibration (cycle 23)
+  try {
+    await db.execute(`CREATE TABLE IF NOT EXISTS forecast_log (
+      id TEXT PRIMARY KEY,
+      investor_id TEXT NOT NULL,
+      investor_name TEXT,
+      predicted_days_to_close INTEGER,
+      predicted_close_date TEXT,
+      confidence TEXT,
+      stage_at_prediction TEXT,
+      actual_outcome TEXT,
+      actual_days_to_outcome INTEGER,
+      accuracy_delta INTEGER,
+      logged_at TEXT DEFAULT (datetime('now')),
+      resolved_at TEXT
+    )`);
+  } catch { /* already exists */ }
+
   initialized = true;
 }
 
@@ -5061,6 +5079,156 @@ export async function computeRaiseForecast(): Promise<RaiseForecast> {
     confidence: overallConfidence,
     criticalPathInvestors,
     riskFactors,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Forecast Calibration — Learning from Outcomes (cycle 23)
+// ---------------------------------------------------------------------------
+
+/**
+ * Log forecast predictions for later calibration.
+ * Called periodically (e.g., weekly) to snapshot current forecasts.
+ */
+export async function logForecastPredictions(): Promise<number> {
+  await ensureInitialized();
+  const db = getClient();
+
+  const forecast = await computeRaiseForecast();
+  let logged = 0;
+
+  for (const f of forecast.forecasts) {
+    const today = new Date().toISOString().split('T')[0];
+    // Only log one prediction per investor per week
+    const existing = await db.execute({
+      sql: `SELECT id FROM forecast_log WHERE investor_id = ? AND logged_at >= datetime('now', '-7 days') AND actual_outcome IS NULL`,
+      args: [f.investorId],
+    });
+    if (existing.rows.length > 0) continue;
+
+    const id = `fl_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    await db.execute({
+      sql: `INSERT INTO forecast_log (id, investor_id, investor_name, predicted_days_to_close, predicted_close_date, confidence, stage_at_prediction)
+            VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      args: [id, f.investorId, f.investorName, f.predictedDaysToClose, f.predictedCloseDate, f.confidence, f.currentStage],
+    });
+    logged++;
+  }
+
+  return logged;
+}
+
+/**
+ * Resolve forecast predictions when an investor reaches a terminal state.
+ * Called when investor status changes to closed/passed/dropped.
+ */
+export async function resolveForecastPredictions(investorId: string, outcome: 'closed' | 'passed' | 'dropped'): Promise<number> {
+  await ensureInitialized();
+  const db = getClient();
+
+  const unresolved = await db.execute({
+    sql: `SELECT * FROM forecast_log WHERE investor_id = ? AND actual_outcome IS NULL ORDER BY logged_at ASC`,
+    args: [investorId],
+  });
+
+  let resolved = 0;
+  const now = Date.now();
+  const msPerDay = 1000 * 60 * 60 * 24;
+
+  for (const row of unresolved.rows) {
+    const loggedAt = new Date(row.logged_at as string).getTime();
+    const actualDays = Math.round((now - loggedAt) / msPerDay);
+    const predictedDays = row.predicted_days_to_close as number;
+
+    // Accuracy delta: positive = took longer than predicted, negative = faster
+    const accuracyDelta = outcome === 'closed'
+      ? actualDays - predictedDays // meaningful comparison only for closures
+      : null; // for passes/drops, we can't meaningfully compare
+
+    await db.execute({
+      sql: `UPDATE forecast_log SET actual_outcome = ?, actual_days_to_outcome = ?, accuracy_delta = ?, resolved_at = datetime('now') WHERE id = ?`,
+      args: [outcome, actualDays, accuracyDelta, row.id as string],
+    });
+    resolved++;
+  }
+
+  return resolved;
+}
+
+/**
+ * Compute forecast calibration metrics — how accurate have our forecasts been?
+ */
+export interface ForecastCalibration {
+  totalPredictions: number;
+  resolvedPredictions: number;
+  closedPredictions: number;
+  avgAccuracyDelta: number; // avg days off for closed predictions
+  biasDirection: 'optimistic' | 'pessimistic' | 'calibrated' | 'insufficient_data';
+  byConfidence: { confidence: string; count: number; avgDelta: number }[];
+  byStage: { stage: string; count: number; avgDelta: number }[];
+}
+
+export async function getForecastCalibration(): Promise<ForecastCalibration> {
+  await ensureInitialized();
+  const db = getClient();
+
+  const all = await db.execute(`SELECT * FROM forecast_log`);
+  const resolved = all.rows.filter(r => r.actual_outcome !== null);
+  const closed = resolved.filter(r => r.actual_outcome === 'closed' && r.accuracy_delta !== null);
+
+  if (closed.length < 3) {
+    return {
+      totalPredictions: all.rows.length,
+      resolvedPredictions: resolved.length,
+      closedPredictions: closed.length,
+      avgAccuracyDelta: 0,
+      biasDirection: 'insufficient_data',
+      byConfidence: [],
+      byStage: [],
+    };
+  }
+
+  const deltas = closed.map(r => r.accuracy_delta as number);
+  const avgDelta = deltas.reduce((s, d) => s + d, 0) / deltas.length;
+
+  // Bias: avg delta > 7 days = optimistic (predicted faster than reality)
+  // avg delta < -7 days = pessimistic (predicted slower)
+  const biasDirection = avgDelta > 7 ? 'optimistic' : avgDelta < -7 ? 'pessimistic' : 'calibrated';
+
+  // By confidence level
+  const confGroups: Record<string, number[]> = {};
+  for (const r of closed) {
+    const conf = r.confidence as string;
+    if (!confGroups[conf]) confGroups[conf] = [];
+    confGroups[conf].push(r.accuracy_delta as number);
+  }
+  const byConfidence = Object.entries(confGroups).map(([confidence, ds]) => ({
+    confidence,
+    count: ds.length,
+    avgDelta: Math.round(ds.reduce((s, d) => s + d, 0) / ds.length),
+  }));
+
+  // By stage at prediction
+  const stageGroups: Record<string, number[]> = {};
+  for (const r of closed) {
+    const stage = r.stage_at_prediction as string;
+    if (!stageGroups[stage]) stageGroups[stage] = [];
+    stageGroups[stage].push(r.accuracy_delta as number);
+  }
+  const byStage = Object.entries(stageGroups).map(([stage, ds]) => ({
+    stage,
+    count: ds.length,
+    avgDelta: Math.round(ds.reduce((s, d) => s + d, 0) / ds.length),
+  }));
+
+  return {
+    totalPredictions: all.rows.length,
+    resolvedPredictions: resolved.length,
+    closedPredictions: closed.length,
+    avgAccuracyDelta: Math.round(avgDelta),
+    biasDirection,
+    byConfidence,
+    byStage,
   };
 }
 
