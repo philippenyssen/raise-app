@@ -27,6 +27,7 @@
 | 21 | 2026-03-14 | Scoring: Forecast Dimension | 10th scoring dimension "Forecast Alignment" — scores predicted days to close, confidence, critical path membership, path probability. Phase-dynamic weights updated (2% in discovery → 10% in negotiation). Investor score API enriched with forecast data from computeRaiseForecast(). | scoring.ts, investors/[id]/score/route.ts |
 | 22 | 2026-03-14 | Cross-System Contradiction Detection | 4 new synthesis rules: forecast-enthusiasm contradiction, stalled-critical-path vs improving-metrics signal mismatch, dormant T1-2 investor detection. Auto-action Rule 10: dormant high-tier investors (zero meetings, 14+ days). | context-bus.ts, db.ts |
 | 23 | 2026-03-14 | Forecast Calibration | Learning from outcomes — forecast predictions logged weekly, resolved on terminal state, accuracy delta computed, bias direction tracked (optimistic/pessimistic/calibrated). Calibration in context bus + system prompt + synthesis. Verification endpoint updated (8 tables, 11 functions, 17 context fields). | db.ts, context-bus.ts, investors/route.ts, pulse/route.ts, intelligence/verify/route.ts |
+| 24 | 2026-03-14 | Self-Correcting Forecasts | computeRaiseForecast() now applies calibration-learned bias correction — if forecasts have been systematically optimistic/pessimistic, adjusts predicted days by up to ±30% based on historical accuracy delta. Closes the full learning loop: predict → log → resolve → measure → correct. | db.ts |
 
 ## Intelligence Capabilities (Existing)
 
@@ -443,6 +444,7 @@
   - [x] Investor-specific focus: forecast data + critical path membership
   - [x] Proactive intelligence: low confidence (urgency 8) + 3+ risk factors (urgency 7)
   - [x] Instruction 20: forecast-aware reasoning guidance
+- [x] **Self-correcting forecasts (cycle 24)**: calibration-learned bias multiplier applied to predicted days (capped ±30%, conservative 50% correction factor)
 
 ### AA. Forecast Calibration Engine (NEW cycle 23)
 - [x] `forecast_log` table: stores weekly predictions per investor (predicted_days, confidence, stage_at_prediction)

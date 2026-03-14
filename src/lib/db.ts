@@ -4972,6 +4972,21 @@ export async function computeRaiseForecast(): Promise<RaiseForecast> {
   const avgDaysPerStage = pipelineFlowData.avgDaysPerStage;
   const conversionByStage = pipelineFlowData.conversionByStage;
 
+  // Calibration-aware bias correction (cycle 24): learn from past forecast accuracy
+  let calibrationMultiplier = 1.0;
+  try {
+    const calibration = await getForecastCalibration();
+    if (calibration.biasDirection !== 'insufficient_data' && calibration.closedPredictions >= 3) {
+      // If forecasts have been optimistic (predicted faster than reality), increase predicted days
+      // If pessimistic (predicted slower), decrease predicted days
+      // Scale: avgDelta of 14 days on a ~60 day average → ~23% adjustment
+      // Use conservative 50% of raw delta as adjustment to avoid overcorrection
+      const avgTotalPredicted = 60; // rough baseline for normalization
+      const adjustmentFactor = (calibration.avgAccuracyDelta * 0.5) / avgTotalPredicted;
+      calibrationMultiplier = 1.0 + Math.max(-0.3, Math.min(0.3, adjustmentFactor)); // cap at ±30%
+    }
+  } catch { /* non-blocking — use default 1.0 */ }
+
   // Fallback averages if no data
   const defaultDays: Record<string, number> = {
     identified: 7, contacted: 5, nda_signed: 3, meeting_scheduled: 7,
@@ -5014,6 +5029,9 @@ export async function computeRaiseForecast(): Promise<RaiseForecast> {
     // Enthusiasm adjustment: high enthusiasm = faster progression
     if (inv.enthusiasm >= 4) totalDaysRemaining = Math.round(totalDaysRemaining * 0.85);
     else if (inv.enthusiasm <= 2) totalDaysRemaining = Math.round(totalDaysRemaining * 1.3);
+
+    // Calibration adjustment: apply learned bias correction from historical accuracy (cycle 24)
+    totalDaysRemaining = Math.round(totalDaysRemaining * calibrationMultiplier);
 
     const predictedCloseDate = new Date(now + totalDaysRemaining * msPerDay).toISOString().split('T')[0];
 
