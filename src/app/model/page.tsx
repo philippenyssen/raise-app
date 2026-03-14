@@ -193,15 +193,21 @@ export default function ModelPage() {
   const handleSave = useCallback(async () => {
     if (!activeSheetId || !dirty) return;
     setSaving(true);
-    await fetch('/api/model', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: activeSheetId, data: JSON.stringify(localCells) }),
-    });
-    setDirty(false);
-    setSaving(false);
-    toast('Sheet saved');
-    fetchSheets();
+    try {
+      const res = await fetch('/api/model', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: activeSheetId, data: JSON.stringify(localCells) }),
+      });
+      if (!res.ok) throw new Error('Save failed');
+      setDirty(false);
+      toast('Sheet saved');
+      fetchSheets();
+    } catch {
+      toast('Failed to save sheet', 'error');
+    } finally {
+      setSaving(false);
+    }
   }, [activeSheetId, dirty, localCells, toast, fetchSheets]);
 
   const initializeDefaultSheets = useCallback(async () => {
@@ -266,10 +272,30 @@ export default function ModelPage() {
 
   const activeSheet = sheets.find(s => s.id === activeSheetId);
 
-  // Build a string representation of the active sheet for AI context
+  // Build a structured representation of the active sheet for AI context
   const modelContext = activeSheet
-    ? `Sheet: ${activeSheet.sheet_name}\nCells:\n${Object.entries(localCells).map(([ref, cell]) => `${ref}: ${cell.f || cell.v}`).join('\n')}`
+    ? `Sheet: ${activeSheet.sheet_name}\nCells (ref: value [formula] [type]):\n${Object.entries(localCells).map(([ref, cell]) => {
+        let line = `${ref}: ${cell.v}`;
+        if (cell.f) line += ` [formula: ${cell.f}]`;
+        if (cell.bold) line += ' [bold]';
+        if (cell.fmt) line += ` [fmt: ${cell.fmt}]`;
+        return line;
+      }).join('\n')}\n\nWhen suggesting cell changes, wrap them in <cell_updates>[{"ref":"A1","value":"new value","formula":"=B1+C1"}]</cell_updates> tags. The formula field is optional.`
     : 'No sheet selected';
+
+  const handleApplyModelChange = useCallback((responseText: string) => {
+    const match = responseText.match(/<cell_updates>([\s\S]*?)<\/cell_updates>/);
+    if (!match) return;
+    try {
+      const updates = JSON.parse(match[1]) as Array<{ ref: string; value: string | number; formula?: string }>;
+      updates.forEach(({ ref, value, formula }) => {
+        handleCellChange(ref, String(value), formula || undefined);
+      });
+      toast(`Applied ${updates.length} cell change${updates.length !== 1 ? 's' : ''}`);
+    } catch {
+      toast('Could not parse AI cell updates', 'error');
+    }
+  }, [handleCellChange, toast]);
 
   if (loading) {
     return (
@@ -350,6 +376,7 @@ export default function ModelPage() {
                 documentId={activeSheet.id}
                 documentContent={modelContext}
                 documentTitle={`Financial Model — ${activeSheet.sheet_name}`}
+                onApplyChange={handleApplyModelChange}
               />
             }
             defaultSplit={65}

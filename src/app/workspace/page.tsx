@@ -78,17 +78,23 @@ export default function WorkspacePage() {
   const handleSave = useCallback(async () => {
     if (!selectedDoc || !dirty) return;
     setSaving(true);
-    await fetch(`/api/documents/${selectedDoc.id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ content: editedContent, change_summary: 'Updated via workspace' }),
-    });
-    const updated = { ...selectedDoc, content: editedContent, updated_at: new Date().toISOString() };
-    setSelectedDoc(updated);
-    setDirty(false);
-    setSaving(false);
-    toast('Document saved');
-    fetchDocs();
+    try {
+      const res = await fetch(`/api/documents/${selectedDoc.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: editedContent, change_summary: 'Updated via workspace' }),
+      });
+      if (!res.ok) throw new Error('Save failed');
+      const updated = { ...selectedDoc, content: editedContent, updated_at: new Date().toISOString() };
+      setSelectedDoc(updated);
+      setDirty(false);
+      toast('Document saved');
+      fetchDocs();
+    } catch {
+      toast('Failed to save document', 'error');
+    } finally {
+      setSaving(false);
+    }
   }, [selectedDoc, dirty, editedContent, toast, fetchDocs]);
 
   const handleApplyAIChange = useCallback((newContent: string) => {

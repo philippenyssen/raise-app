@@ -261,7 +261,7 @@ CREATE TABLE IF NOT EXISTS model_versions (
 );
 ```
 
-### Phase 5: Deliverable Generation `[ ]`
+### Phase 5: Deliverable Generation `[x]`
 
 **What it builds:** AI-powered generation of all 5 deliverables from data room context. The user uploads their source material, and the AI produces draft deliverables that the user then refines in the workspace.
 
