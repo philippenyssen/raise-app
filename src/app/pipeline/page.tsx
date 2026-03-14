@@ -7,6 +7,7 @@ import { useToast } from '@/components/toast';
 import {
   Users, TrendingUp, Zap, Filter, X, GripVertical,
   Building2, Landmark, Shield, Banknote, Home, Rocket,
+  Calendar, SendHorizonal, ClipboardList,
 } from 'lucide-react';
 
 // ── Pipeline column order ────────────────────────────────────────────
@@ -971,7 +972,7 @@ function InvestorCard({
           )}
         </div>
 
-        {/* Enthusiasm + days in stage row */}
+        {/* Enthusiasm + last contact row */}
         <div className="flex items-center justify-between">
           {investor.enthusiasm > 0 ? (
             <div className="flex items-center gap-1.5">
@@ -996,9 +997,11 @@ function InvestorCard({
             </div>
           ) : <div />}
           {(() => {
-            const daysInStage = Math.floor((Date.now() - new Date(investor.updated_at).getTime()) / (1000 * 60 * 60 * 24));
-            const isStale = daysInStage >= 14;
-            const isWarning = daysInStage >= 7 && daysInStage < 14;
+            const lastDate = investor.last_meeting_date;
+            if (!lastDate) return <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>No meetings</span>;
+            const days = Math.floor((Date.now() - new Date(lastDate).getTime()) / (1000 * 60 * 60 * 24));
+            const isStale = days >= 14;
+            const isWarning = days >= 7 && days < 14;
             return (
               <span
                 style={{
@@ -1006,14 +1009,68 @@ function InvestorCard({
                   color: isStale ? 'var(--danger)' : isWarning ? 'var(--warning)' : 'var(--text-muted)',
                   fontWeight: isStale ? 600 : 400,
                 }}
-                title={`Last updated ${daysInStage}d ago`}
+                title={`Last meeting: ${new Date(lastDate).toLocaleDateString()}`}
               >
-                {daysInStage}d
+                {days === 0 ? 'Today' : `${days}d ago`}
               </span>
             );
           })()}
         </div>
       </Link>
+
+      {/* Quick actions on hover */}
+      {hovered && (
+        <div
+          className="flex items-center gap-1 pt-2 mt-2"
+          style={{ borderTop: '1px solid var(--border-subtle)' }}
+        >
+          <Link
+            href={`/meetings/prep?investor=${investor.id}`}
+            onClick={e => e.stopPropagation()}
+            draggable={false}
+            className="flex items-center gap-1 flex-1 justify-center"
+            style={{
+              fontSize: '10px', color: 'var(--text-muted)',
+              padding: '2px 0', borderRadius: 'var(--radius-sm)',
+              textDecoration: 'none',
+            }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; (e.currentTarget as HTMLElement).style.background = 'var(--accent-muted)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+          >
+            <ClipboardList className="w-3 h-3" /> Prep
+          </Link>
+          <Link
+            href={`/meetings/new?investor=${investor.id}`}
+            onClick={e => e.stopPropagation()}
+            draggable={false}
+            className="flex items-center gap-1 flex-1 justify-center"
+            style={{
+              fontSize: '10px', color: 'var(--text-muted)',
+              padding: '2px 0', borderRadius: 'var(--radius-sm)',
+              textDecoration: 'none',
+            }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; (e.currentTarget as HTMLElement).style.background = 'var(--accent-muted)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+          >
+            <Calendar className="w-3 h-3" /> Log
+          </Link>
+          <Link
+            href={`/followups?investor=${investor.id}`}
+            onClick={e => e.stopPropagation()}
+            draggable={false}
+            className="flex items-center gap-1 flex-1 justify-center"
+            style={{
+              fontSize: '10px', color: 'var(--text-muted)',
+              padding: '2px 0', borderRadius: 'var(--radius-sm)',
+              textDecoration: 'none',
+            }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; (e.currentTarget as HTMLElement).style.background = 'var(--accent-muted)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+          >
+            <SendHorizonal className="w-3 h-3" /> Follow up
+          </Link>
+        </div>
+      )}
     </div>
   );
 }
