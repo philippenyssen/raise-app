@@ -653,7 +653,7 @@ export default function FomoPage() {
   ];
 
   return (
-    <div className="flex-1 overflow-y-auto" style={{ padding: 'var(--space-6)' }}>
+    <div className="flex-1 overflow-y-auto page-content" style={{ padding: 'var(--space-6)' }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
         {/* Header */}
         <div className="flex items-center justify-between mb-6">

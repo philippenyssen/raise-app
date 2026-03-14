@@ -176,7 +176,7 @@ export default function NetworkPage() {
   const { cascades, summary, bottleneckAlert } = data;
 
   return (
-    <div className="p-6" style={{ maxWidth: '1200px' }}>
+    <div className="p-6 page-content" style={{ maxWidth: '1200px' }}>
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>

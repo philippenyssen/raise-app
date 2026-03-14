@@ -133,7 +133,7 @@ export default function DealHeatPage() {
   ];
 
   return (
-    <div className="flex-1 p-6" style={{ maxWidth: '1400px', margin: '0 auto' }}>
+    <div className="flex-1 p-6 page-content" style={{ maxWidth: '1400px', margin: '0 auto' }}>
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-4" style={{ marginBottom: 'var(--space-6)' }}>
         <div>

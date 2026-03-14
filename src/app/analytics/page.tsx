@@ -202,7 +202,7 @@ export default function AnalyticsPage() {
   const { funnel, velocity, engagement, risks, winLoss, summary } = data;
 
   return (
-    <div className="space-y-6 pb-12">
+    <div className="space-y-6 pb-12 page-content">
       {/* ── Header ──────────────────────────────────────────────── */}
       <div className="flex items-center justify-between">
         <div>

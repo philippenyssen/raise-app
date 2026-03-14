@@ -72,7 +72,7 @@ export default function SkillsPage() {
   if (loading) return <div className="animate-pulse" style={{ color: 'var(--text-muted)' }}>Loading skill health...</div>;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 page-content">
       <div>
         <h1 className="page-title">Skill Health</h1>
         <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>

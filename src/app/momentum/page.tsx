@@ -237,7 +237,7 @@ export default function MomentumPage() {
   const anomalyInvestorIds = new Set(data.anomalies.map(a => a.investorId));
 
   return (
-    <div className="flex-1 overflow-y-auto" style={{ background: 'var(--surface-0)' }}>
+    <div className="flex-1 overflow-y-auto page-content" style={{ background: 'var(--surface-0)' }}>
       <div className="max-w-[1600px] mx-auto px-6 py-8 space-y-8">
 
         {/* ── Header ─────────────────────────────────────────────────── */}

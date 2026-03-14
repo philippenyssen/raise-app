@@ -83,7 +83,7 @@ export default function ReportsPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 page-content">
       {/* Header */}
       <div>
         <h1 className="page-title">Reports</h1>

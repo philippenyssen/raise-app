@@ -69,7 +69,7 @@ export default function HealthPage() {
   if (!data) return <div className="animate-pulse" style={{ color: 'var(--text-muted)' }}>Loading...</div>;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 page-content">
       <div>
         <h1 className="page-title">Process Health</h1>
         <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>Convergence tracking and process verification</p>
