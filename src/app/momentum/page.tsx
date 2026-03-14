@@ -5,7 +5,7 @@ import Link from 'next/link';
 import {
   Activity, TrendingUp, TrendingDown, Minus, AlertTriangle,
   RefreshCw, Users, ArrowUpRight, ArrowDownRight, Flame,
-  Zap, Eye, Clock, MessageSquare,
+  Zap, Eye, Clock, MessageSquare, ChevronRight,
 } from 'lucide-react';
 
 // ── Types ─────────────────────────────────────────────────────────────
@@ -366,7 +366,29 @@ export default function MomentumPage() {
                       )}
                     </div>
                   </div>
-                  <p className="text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>{alert.recommendedAction}</p>
+                  <div className="flex items-center justify-between mt-1.5">
+                    <p className="text-xs flex-1" style={{ color: 'var(--text-secondary)' }}>{alert.recommendedAction}</p>
+                    <div className="flex items-center gap-2 ml-4 shrink-0">
+                      <Link
+                        href={`/meetings/new?investor=${alert.investorId}`}
+                        className="px-2.5 py-1 rounded text-[11px] font-medium transition-colors"
+                        style={{ background: 'rgba(59,130,246,0.15)', color: '#60a5fa', border: '1px solid rgba(59,130,246,0.25)' }}
+                        onMouseEnter={e => { e.currentTarget.style.background = 'rgba(59,130,246,0.3)'; }}
+                        onMouseLeave={e => { e.currentTarget.style.background = 'rgba(59,130,246,0.15)'; }}
+                      >
+                        Schedule
+                      </Link>
+                      <Link
+                        href={`/investors/${alert.investorId}`}
+                        className="px-2.5 py-1 rounded text-[11px] font-medium transition-colors"
+                        style={{ background: 'var(--surface-2)', color: 'var(--text-secondary)', border: '1px solid var(--border-default)' }}
+                        onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-3)'; }}
+                        onMouseLeave={e => { e.currentTarget.style.background = 'var(--surface-2)'; }}
+                      >
+                        Open
+                      </Link>
+                    </div>
+                  </div>
                 </div>
               );
             })}
@@ -409,12 +431,14 @@ export default function MomentumPage() {
                   <th className="px-3 py-3 font-medium text-xs text-center min-w-[60px]" style={{ color: 'var(--text-muted)' }}>
                     &Delta;
                   </th>
+                  <th className="px-2 py-3 font-medium text-xs text-center min-w-[40px]" style={{ color: 'var(--text-muted)' }}>
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {data.matrix.length === 0 ? (
                   <tr>
-                    <td colSpan={data.weeks.length + 2} className="px-4 py-12 text-center" style={{ color: 'var(--text-muted)' }}>
+                    <td colSpan={data.weeks.length + 3} className="px-4 py-12 text-center" style={{ color: 'var(--text-muted)' }}>
                       No active investors found. Add investors and log meetings to see momentum data.
                     </td>
                   </tr>
@@ -509,6 +533,19 @@ export default function MomentumPage() {
                           ) : null}
                           {delta > 0 ? `+${delta}` : delta}
                         </div>
+                      </td>
+                      {/* Quick action */}
+                      <td className="px-2 py-2.5 text-center">
+                        <Link
+                          href={delta < -5 ? `/meetings/new?investor=${inv.investorId}` : `/investors/${inv.investorId}`}
+                          title={delta < -5 ? 'Schedule meeting — momentum dropping' : 'View investor'}
+                          className="inline-flex items-center justify-center w-6 h-6 rounded transition-colors"
+                          style={{ background: 'transparent', color: 'var(--text-muted)' }}
+                          onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-2)'; e.currentTarget.style.color = 'var(--accent)'; }}
+                          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text-muted)'; }}
+                        >
+                          <ChevronRight className="w-3.5 h-3.5" />
+                        </Link>
                       </td>
                     </tr>
                   );
@@ -727,7 +764,22 @@ export default function MomentumPage() {
                               {anomaly.deviation > 0 ? '+' : ''}{anomaly.deviation}pts
                             </span>
                           </div>
-                          <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{anomaly.message}</p>
+                          <div className="flex items-center justify-between mt-1">
+                            <p className="text-xs flex-1" style={{ color: 'var(--text-muted)' }}>{anomaly.message}</p>
+                            <Link
+                              href={isAbove ? `/meetings/prep?investor=${anomaly.investorId}` : `/meetings/new?investor=${anomaly.investorId}`}
+                              className="ml-3 px-2 py-0.5 rounded text-[10px] font-medium shrink-0 transition-colors"
+                              style={{
+                                background: isAbove ? 'rgba(6,78,59,0.3)' : 'rgba(127,29,29,0.3)',
+                                color: isAbove ? 'var(--success)' : 'var(--danger)',
+                                border: `1px solid ${isAbove ? 'rgba(6,95,70,0.4)' : 'rgba(153,27,27,0.4)'}`,
+                              }}
+                              onMouseEnter={e => { e.currentTarget.style.opacity = '0.8'; }}
+                              onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}
+                            >
+                              {isAbove ? 'Prep Meeting' : 'Re-engage'}
+                            </Link>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -983,8 +1035,19 @@ export default function MomentumPage() {
                       </div>
                     </div>
                     {nh.topObjection && (
-                      <div className="mt-2 text-[10px]" style={{ color: 'var(--text-muted)' }}>
-                        Top objection: <span style={{ color: 'var(--text-secondary)' }}>{nh.topObjection}</span>
+                      <div className="mt-2 flex items-center justify-between">
+                        <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
+                          Top objection: <span style={{ color: 'var(--text-secondary)' }}>{nh.topObjection}</span>
+                        </div>
+                        <Link
+                          href="/objections"
+                          className="text-[10px] font-medium shrink-0 ml-2 transition-colors"
+                          style={{ color: 'var(--accent)' }}
+                          onMouseEnter={e => { e.currentTarget.style.opacity = '0.7'; }}
+                          onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}
+                        >
+                          View &rarr;
+                        </Link>
                       </div>
                     )}
                     {nh.topQuestionTopic && (
