@@ -5,6 +5,7 @@ import { SplitPane } from '@/components/workspace/split-pane';
 import { DocumentViewer } from '@/components/workspace/document-viewer';
 import { AIChat } from '@/components/workspace/ai-chat';
 import { useToast } from '@/components/toast';
+import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { FileText, Plus, ChevronRight, Wand2, Loader2 } from 'lucide-react';
 
 interface Doc {
@@ -40,6 +41,7 @@ export default function WorkspacePage() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [generating, setGenerating] = useState<string | null>(null);
   const [contentHistory, setContentHistory] = useState<string[]>([]);
+  const [pendingDoc, setPendingDoc] = useState<Doc | null>(null);
 
   const fetchDocs = useCallback(async () => {
     const res = await fetch('/api/documents');
@@ -50,14 +52,20 @@ export default function WorkspacePage() {
 
   useEffect(() => { fetchDocs(); }, [fetchDocs]);
 
-  const selectDoc = useCallback((doc: Doc) => {
-    if (dirty && selectedDoc) {
-      if (!confirm('You have unsaved changes. Discard them?')) return;
-    }
+  const doSelectDoc = useCallback((doc: Doc) => {
     setSelectedDoc(doc);
     setEditedContent(doc.content);
     setDirty(false);
-  }, [dirty, selectedDoc]);
+    setPendingDoc(null);
+  }, []);
+
+  const selectDoc = useCallback((doc: Doc) => {
+    if (dirty && selectedDoc) {
+      setPendingDoc(doc);
+      return;
+    }
+    doSelectDoc(doc);
+  }, [dirty, selectedDoc, doSelectDoc]);
 
   const handleContentChange = useCallback((content: string) => {
     setEditedContent(content);
@@ -271,6 +279,16 @@ export default function WorkspacePage() {
           defaultSplit={58}
         />
       </div>
+
+      <ConfirmModal
+        open={!!pendingDoc}
+        title="Unsaved changes"
+        message="You have unsaved changes. Discard them?"
+        confirmLabel="Discard"
+        variant="danger"
+        onConfirm={() => { if (pendingDoc) doSelectDoc(pendingDoc); }}
+        onCancel={() => setPendingDoc(null)}
+      />
     </div>
   );
 }

@@ -5,6 +5,7 @@ import { SplitPane } from '@/components/workspace/split-pane';
 import { ExcelViewer, type CellData } from '@/components/workspace/excel-viewer';
 import { AIChat } from '@/components/workspace/ai-chat';
 import { useToast } from '@/components/toast';
+import { ConfirmModal, InputModal } from '@/components/ui/confirm-modal';
 import { Plus, Save, Table, Trash2 } from 'lucide-react';
 
 interface ModelSheet {
@@ -175,6 +176,8 @@ export default function ModelPage() {
   const [saving, setSaving] = useState(false);
   const [dirty, setDirty] = useState(false);
   const [localCells, setLocalCells] = useState<Record<string, CellData>>({});
+  const [confirmState, setConfirmState] = useState<{ type: 'discard' | 'delete'; target?: ModelSheet } | null>(null);
+  const [showAddSheet, setShowAddSheet] = useState(false);
 
   const fetchSheets = useCallback(async () => {
     const res = await fetch('/api/model');
@@ -189,14 +192,20 @@ export default function ModelPage() {
 
   useEffect(() => { fetchSheets(); }, [fetchSheets]);
 
-  const selectSheet = useCallback((sheet: ModelSheet) => {
-    if (dirty) {
-      if (!confirm('Unsaved changes. Discard?')) return;
-    }
+  const doSelectSheet = useCallback((sheet: ModelSheet) => {
     setActiveSheetId(sheet.id);
     try { setLocalCells(JSON.parse(sheet.data)); } catch { setLocalCells({}); }
     setDirty(false);
-  }, [dirty]);
+    setConfirmState(null);
+  }, []);
+
+  const selectSheet = useCallback((sheet: ModelSheet) => {
+    if (dirty) {
+      setConfirmState({ type: 'discard', target: sheet });
+      return;
+    }
+    doSelectSheet(sheet);
+  }, [dirty, doSelectSheet]);
 
   const handleCellChange = useCallback((cellRef: string, value: string, formula?: string) => {
     setLocalCells(prev => ({
@@ -240,9 +249,7 @@ export default function ModelPage() {
     await fetchSheets();
   }, [toast, fetchSheets]);
 
-  const addSheet = useCallback(async () => {
-    const name = prompt('Sheet name:');
-    if (!name) return;
+  const addSheet = useCallback(async (name: string) => {
     await fetch('/api/model', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -253,19 +260,26 @@ export default function ModelPage() {
       }),
     });
     toast(`Added sheet "${name}"`);
+    setShowAddSheet(false);
     fetchSheets();
   }, [sheets.length, toast, fetchSheets]);
 
-  const deleteSheet = useCallback(async (id: string, name: string) => {
-    if (!confirm(`Delete sheet "${name}"?`)) return;
+  const deleteSheet = useCallback(async (sheet: ModelSheet) => {
+    setConfirmState({ type: 'delete', target: sheet });
+  }, []);
+
+  const doDeleteSheet = useCallback(async () => {
+    if (!confirmState?.target) return;
+    const { id, sheet_name } = confirmState.target;
     await fetch(`/api/model?id=${id}`, { method: 'DELETE' });
     if (activeSheetId === id) {
       setActiveSheetId(null);
       setLocalCells({});
     }
-    toast(`Deleted "${name}"`, 'warning');
+    toast(`Deleted "${sheet_name}"`, 'warning');
+    setConfirmState(null);
     fetchSheets();
-  }, [activeSheetId, toast, fetchSheets]);
+  }, [confirmState, activeSheetId, toast, fetchSheets]);
 
   // Cmd/Ctrl+S
   useEffect(() => {
@@ -311,7 +325,7 @@ export default function ModelPage() {
             >
               <span className="truncate max-w-[120px]">{sheet.sheet_name}</span>
               <button
-                onClick={e => { e.stopPropagation(); deleteSheet(sheet.id, sheet.sheet_name); }}
+                onClick={e => { e.stopPropagation(); deleteSheet(sheet); }}
                 className="hidden group-hover:block text-zinc-600 hover:text-red-400 ml-1"
               >
                 <Trash2 className="w-3 h-3" />
@@ -319,7 +333,7 @@ export default function ModelPage() {
             </div>
           ))}
           <button
-            onClick={addSheet}
+            onClick={() => setShowAddSheet(true)}
             className="px-3 py-2 text-zinc-600 hover:text-zinc-400 transition-colors"
             title="Add sheet"
           >
@@ -378,6 +392,34 @@ export default function ModelPage() {
           </div>
         )}
       </div>
+
+      {/* Modals */}
+      <ConfirmModal
+        open={confirmState?.type === 'discard'}
+        title="Unsaved changes"
+        message="You have unsaved changes on this sheet. Discard them?"
+        confirmLabel="Discard"
+        variant="danger"
+        onConfirm={() => { if (confirmState?.target) doSelectSheet(confirmState.target); }}
+        onCancel={() => setConfirmState(null)}
+      />
+      <ConfirmModal
+        open={confirmState?.type === 'delete'}
+        title="Delete sheet"
+        message={`Delete "${confirmState?.target?.sheet_name}"? This cannot be undone.`}
+        confirmLabel="Delete"
+        variant="danger"
+        onConfirm={doDeleteSheet}
+        onCancel={() => setConfirmState(null)}
+      />
+      <InputModal
+        open={showAddSheet}
+        title="New sheet name"
+        placeholder="e.g., SOTP, Cap Table, Scenarios..."
+        confirmLabel="Add Sheet"
+        onConfirm={addSheet}
+        onCancel={() => setShowAddSheet(false)}
+      />
     </div>
   );
 }

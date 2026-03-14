@@ -158,7 +158,19 @@ export function DocumentViewer({ document, onContentChange, onSave, saving, dirt
             <Save className="w-3.5 h-3.5" />
             {saving ? 'Saving...' : dirty ? 'Save' : 'Saved'}
           </button>
-          <button className="p-1.5 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 rounded transition-colors" title="Export">
+          <button
+            onClick={() => {
+              const blob = new Blob([document.content], { type: 'text/markdown' });
+              const url = URL.createObjectURL(blob);
+              const a = window.document.createElement('a');
+              a.href = url;
+              a.download = `${document.title.replace(/[^a-zA-Z0-9_-]/g, '_')}.md`;
+              a.click();
+              URL.revokeObjectURL(url);
+            }}
+            className="p-1.5 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 rounded transition-colors"
+            title="Export as Markdown"
+          >
             <Download className="w-4 h-4" />
           </button>
         </div>

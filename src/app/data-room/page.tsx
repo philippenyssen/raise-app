@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useToast } from '@/components/toast';
+import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { FolderOpen, Upload, FileText, Table, Image, Trash2, ChevronDown, ChevronRight, Search } from 'lucide-react';
 
 interface DataRoomFile {
@@ -35,6 +36,7 @@ export default function DataRoomPage() {
   const [pasteCategory, setPasteCategory] = useState('other');
   const [pasteContent, setPasteContent] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; filename: string } | null>(null);
 
   const fetchFiles = useCallback(async () => {
     const res = await fetch('/api/data-room');
@@ -47,9 +49,44 @@ export default function DataRoomPage() {
   async function handleFileUpload(fileList: FileList) {
     setUploading(true);
     for (const file of Array.from(fileList)) {
-      // Read file as text
-      const text = await file.text();
       const category = inferCategory(file.name);
+      let text = '';
+
+      // For text-based files, read as text
+      const textTypes = ['.txt', '.md', '.csv', '.json', '.xml', '.html', '.rtf', '.tsv'];
+      const isTextFile = textTypes.some(ext => file.name.toLowerCase().endsWith(ext));
+
+      if (isTextFile) {
+        text = await file.text();
+      } else {
+        // For binary files (PDF, DOCX, XLSX, etc.), store metadata
+        // and upload as base64 for server-side extraction
+        const buffer = await file.arrayBuffer();
+        const bytes = new Uint8Array(buffer);
+        let binary = '';
+        for (let i = 0; i < bytes.length; i++) {
+          binary += String.fromCharCode(bytes[i]);
+        }
+        const base64 = btoa(binary);
+
+        try {
+          const extractRes = await fetch('/api/data-room/extract', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              filename: file.name,
+              mime_type: file.type,
+              base64_content: base64.substring(0, 2000000), // ~1.5MB limit
+            }),
+          });
+          if (extractRes.ok) {
+            const extracted = await extractRes.json();
+            text = extracted.text || '';
+          }
+        } catch {
+          text = `[Binary file: ${file.name} (${file.type}, ${file.size} bytes). Text extraction not available — upload the text content separately via Paste.]`;
+        }
+      }
 
       await fetch('/api/data-room', {
         method: 'POST',
@@ -57,9 +94,9 @@ export default function DataRoomPage() {
         body: JSON.stringify({
           filename: file.name,
           category,
-          mime_type: file.type,
+          mime_type: file.type || 'application/octet-stream',
           size_bytes: file.size,
-          extracted_text: text.substring(0, 50000), // Limit to 50KB of text
+          extracted_text: text.substring(0, 50000),
         }),
       });
       toast(`Uploaded "${file.name}"`);
@@ -91,10 +128,11 @@ export default function DataRoomPage() {
     fetchFiles();
   }
 
-  async function handleDelete(id: string, filename: string) {
-    if (!confirm(`Delete "${filename}"?`)) return;
-    await fetch(`/api/data-room?id=${id}`, { method: 'DELETE' });
-    toast(`Deleted "${filename}"`, 'warning');
+  async function handleDelete() {
+    if (!deleteTarget) return;
+    await fetch(`/api/data-room?id=${deleteTarget.id}`, { method: 'DELETE' });
+    toast(`Deleted "${deleteTarget.filename}"`, 'warning');
+    setDeleteTarget(null);
     fetchFiles();
   }
 
@@ -151,7 +189,7 @@ export default function DataRoomPage() {
             <input
               type="file"
               multiple
-              accept=".txt,.md,.csv,.json,.xml,.html"
+              accept=".txt,.md,.csv,.json,.xml,.html,.pdf,.doc,.docx,.xls,.xlsx,.pptx,.rtf,.tsv"
               className="hidden"
               onChange={e => e.target.files && handleFileUpload(e.target.files)}
               disabled={uploading}
@@ -222,7 +260,7 @@ export default function DataRoomPage() {
               file={file}
               expanded={expandedFile === file.id}
               onToggle={() => setExpandedFile(expandedFile === file.id ? null : file.id)}
-              onDelete={() => handleDelete(file.id, file.filename)}
+              onDelete={() => setDeleteTarget({ id: file.id, filename: file.filename })}
             />
           ))}
           {filteredFiles.length === 0 && (
@@ -252,7 +290,7 @@ export default function DataRoomPage() {
                         file={file}
                         expanded={expandedFile === file.id}
                         onToggle={() => setExpandedFile(expandedFile === file.id ? null : file.id)}
-                        onDelete={() => handleDelete(file.id, file.filename)}
+                        onDelete={() => setDeleteTarget({ id: file.id, filename: file.filename })}
                       />
                     ))}
                   </div>
@@ -266,6 +304,16 @@ export default function DataRoomPage() {
           })}
         </div>
       )}
+
+      <ConfirmModal
+        open={!!deleteTarget}
+        title="Delete file"
+        message={`Delete "${deleteTarget?.filename}"? This cannot be undone.`}
+        confirmLabel="Delete"
+        variant="danger"
+        onConfirm={handleDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }
