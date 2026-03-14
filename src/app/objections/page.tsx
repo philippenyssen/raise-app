@@ -43,34 +43,102 @@ interface PlaybookData {
   topics_count: number;
 }
 
-const TOPIC_COLORS: Record<string, { bg: string; text: string; border: string }> = {
-  valuation: { bg: 'bg-purple-900/30', text: 'text-purple-400', border: 'border-purple-800/50' },
-  competition: { bg: 'bg-orange-900/30', text: 'text-orange-400', border: 'border-orange-800/50' },
-  team: { bg: 'bg-cyan-900/30', text: 'text-cyan-400', border: 'border-cyan-800/50' },
-  execution: { bg: 'bg-yellow-900/30', text: 'text-yellow-400', border: 'border-yellow-800/50' },
-  financial: { bg: 'bg-green-900/30', text: 'text-green-400', border: 'border-green-800/50' },
-  market: { bg: 'bg-blue-900/30', text: 'text-blue-400', border: 'border-blue-800/50' },
-  technical: { bg: 'bg-indigo-900/30', text: 'text-indigo-400', border: 'border-indigo-800/50' },
-  risk: { bg: 'bg-red-900/30', text: 'text-red-400', border: 'border-red-800/50' },
-  timing: { bg: 'bg-amber-900/30', text: 'text-amber-400', border: 'border-amber-800/50' },
-  structure: { bg: 'bg-teal-900/30', text: 'text-teal-400', border: 'border-teal-800/50' },
+const TOPIC_COLORS: Record<string, { bg: React.CSSProperties; text: React.CSSProperties; border: React.CSSProperties; dotColor: string; textColor: string }> = {
+  valuation: {
+    bg: { background: 'rgba(147, 51, 234, 0.15)' },
+    text: { color: '#c084fc' },
+    border: { borderColor: 'rgba(126, 34, 206, 0.35)' },
+    dotColor: '#c084fc',
+    textColor: '#c084fc',
+  },
+  competition: {
+    bg: { background: 'rgba(234, 88, 12, 0.15)' },
+    text: { color: '#fb923c' },
+    border: { borderColor: 'rgba(194, 65, 12, 0.35)' },
+    dotColor: '#fb923c',
+    textColor: '#fb923c',
+  },
+  team: {
+    bg: { background: 'rgba(6, 182, 212, 0.15)' },
+    text: { color: '#22d3ee' },
+    border: { borderColor: 'rgba(14, 116, 144, 0.35)' },
+    dotColor: '#22d3ee',
+    textColor: '#22d3ee',
+  },
+  execution: {
+    bg: { background: 'rgba(202, 138, 4, 0.15)' },
+    text: { color: '#facc15' },
+    border: { borderColor: 'rgba(161, 98, 7, 0.35)' },
+    dotColor: '#facc15',
+    textColor: '#facc15',
+  },
+  financial: {
+    bg: { background: 'rgba(22, 163, 74, 0.15)' },
+    text: { color: '#4ade80' },
+    border: { borderColor: 'rgba(21, 128, 61, 0.35)' },
+    dotColor: '#4ade80',
+    textColor: '#4ade80',
+  },
+  market: {
+    bg: { background: 'rgba(37, 99, 235, 0.15)' },
+    text: { color: '#60a5fa' },
+    border: { borderColor: 'rgba(30, 64, 175, 0.35)' },
+    dotColor: '#60a5fa',
+    textColor: '#60a5fa',
+  },
+  technical: {
+    bg: { background: 'rgba(79, 70, 229, 0.15)' },
+    text: { color: '#818cf8' },
+    border: { borderColor: 'rgba(55, 48, 163, 0.35)' },
+    dotColor: '#818cf8',
+    textColor: '#818cf8',
+  },
+  risk: {
+    bg: { background: 'rgba(220, 38, 38, 0.15)' },
+    text: { color: '#f87171' },
+    border: { borderColor: 'rgba(153, 27, 27, 0.35)' },
+    dotColor: '#f87171',
+    textColor: '#f87171',
+  },
+  timing: {
+    bg: { background: 'rgba(217, 119, 6, 0.15)' },
+    text: { color: '#fbbf24' },
+    border: { borderColor: 'rgba(146, 64, 14, 0.35)' },
+    dotColor: '#fbbf24',
+    textColor: '#fbbf24',
+  },
+  structure: {
+    bg: { background: 'rgba(13, 148, 136, 0.15)' },
+    text: { color: '#2dd4bf' },
+    border: { borderColor: 'rgba(15, 118, 110, 0.35)' },
+    dotColor: '#2dd4bf',
+    textColor: '#2dd4bf',
+  },
 };
 
-const SEVERITY_BADGE: Record<string, { bg: string; text: string }> = {
-  showstopper: { bg: 'bg-red-900/50', text: 'text-red-400' },
-  significant: { bg: 'bg-yellow-900/50', text: 'text-yellow-400' },
-  minor: { bg: 'bg-zinc-800', text: 'text-zinc-500' },
+const DEFAULT_TOPIC_COLOR = {
+  bg: { background: 'var(--surface-2)' } as React.CSSProperties,
+  text: { color: 'var(--text-secondary)' } as React.CSSProperties,
+  border: { borderColor: 'var(--border-default)' } as React.CSSProperties,
+  dotColor: 'var(--text-secondary)',
+  textColor: 'var(--text-secondary)',
 };
 
-const EFFECTIVENESS_BADGE: Record<string, { bg: string; text: string; label: string }> = {
-  effective: { bg: 'bg-green-900/50', text: 'text-green-400', label: 'Effective' },
-  partially_effective: { bg: 'bg-yellow-900/50', text: 'text-yellow-400', label: 'Partial' },
-  ineffective: { bg: 'bg-red-900/50', text: 'text-red-400', label: 'Ineffective' },
-  unknown: { bg: 'bg-zinc-800', text: 'text-zinc-500', label: 'Unknown' },
+const SEVERITY_BADGE: Record<string, React.CSSProperties> = {
+  showstopper: { background: 'var(--danger-muted)', color: 'var(--danger)' },
+  significant: { background: 'var(--warning-muted)', color: 'var(--warning)' },
+  minor: { background: 'var(--surface-2)', color: 'var(--text-muted)' },
+};
+
+const EFFECTIVENESS_BADGE: Record<string, { style: React.CSSProperties; label: string }> = {
+  effective: { style: { background: 'var(--success-muted)', color: 'var(--success)' }, label: 'Effective' },
+  partially_effective: { style: { background: 'var(--warning-muted)', color: 'var(--warning)' }, label: 'Partial' },
+  ineffective: { style: { background: 'var(--danger-muted)', color: 'var(--danger)' }, label: 'Ineffective' },
+  unknown: { style: { background: 'var(--surface-2)', color: 'var(--text-muted)' }, label: 'Unknown' },
 };
 
 function getTopicColor(topic: string) {
-  return TOPIC_COLORS[topic] || { bg: 'bg-zinc-800/50', text: 'text-zinc-400', border: 'border-zinc-700/50' };
+  return TOPIC_COLORS[topic] || DEFAULT_TOPIC_COLOR;
 }
 
 export default function ObjectionsPage() {
@@ -138,42 +206,42 @@ export default function ObjectionsPage() {
 
   function EffectivenessBar({ dist }: { dist: TopicGroup['effectiveness_distribution'] }) {
     const total = dist.effective + dist.partially_effective + dist.ineffective + dist.unknown;
-    if (total === 0) return <div className="h-2 bg-zinc-800 rounded-full" />;
+    if (total === 0) return <div className="h-2 rounded-full" style={{ background: 'var(--surface-2)' }} />;
     const pct = (n: number) => Math.round((n / total) * 100);
     return (
-      <div className="flex h-2 rounded-full overflow-hidden bg-zinc-800">
+      <div className="flex h-2 rounded-full overflow-hidden" style={{ background: 'var(--surface-2)' }}>
         {dist.effective > 0 && (
-          <div className="bg-green-500" style={{ width: `${pct(dist.effective)}%` }} />
+          <div style={{ width: `${pct(dist.effective)}%`, background: 'var(--success)' }} />
         )}
         {dist.partially_effective > 0 && (
-          <div className="bg-yellow-500" style={{ width: `${pct(dist.partially_effective)}%` }} />
+          <div style={{ width: `${pct(dist.partially_effective)}%`, background: 'var(--warning)' }} />
         )}
         {dist.ineffective > 0 && (
-          <div className="bg-red-500" style={{ width: `${pct(dist.ineffective)}%` }} />
+          <div style={{ width: `${pct(dist.ineffective)}%`, background: 'var(--danger)' }} />
         )}
         {dist.unknown > 0 && (
-          <div className="bg-zinc-600" style={{ width: `${pct(dist.unknown)}%` }} />
+          <div style={{ width: `${pct(dist.unknown)}%`, background: 'var(--text-muted)' }} />
         )}
       </div>
     );
   }
 
   function DeltaIcon({ delta }: { delta: number }) {
-    if (delta > 0) return <TrendingUp className="w-3 h-3 text-green-400" />;
-    if (delta < 0) return <TrendingDown className="w-3 h-3 text-red-400" />;
-    return <Minus className="w-3 h-3 text-zinc-600" />;
+    if (delta > 0) return <TrendingUp className="w-3 h-3" style={{ color: 'var(--success)' }} />;
+    if (delta < 0) return <TrendingDown className="w-3 h-3" style={{ color: 'var(--danger)' }} />;
+    return <Minus className="w-3 h-3" style={{ color: 'var(--text-muted)' }} />;
   }
 
   if (loading) {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Objection Playbook</h1>
-          <p className="text-zinc-500 text-sm mt-1">Loading...</p>
+          <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>Objection Playbook</h1>
+          <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>Loading...</p>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {[1, 2, 3].map(i => (
-            <div key={i} className="h-32 bg-zinc-900/50 border border-zinc-800 rounded-xl animate-pulse" />
+            <div key={i} className="h-32 rounded-xl animate-pulse" style={{ background: 'var(--surface-1)', border: '1px solid var(--border-subtle)' }} />
           ))}
         </div>
       </div>
@@ -189,19 +257,19 @@ export default function ObjectionsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight flex items-center gap-3">
-            <span className="w-8 h-8 bg-amber-600 rounded-lg flex items-center justify-center">
-              <MessageCircleWarning className="w-4.5 h-4.5 text-white" />
+          <h1 className="text-2xl font-bold tracking-tight flex items-center gap-3" style={{ color: 'var(--text-primary)' }}>
+            <span className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: '#d97706' }}>
+              <MessageCircleWarning className="w-4.5 h-4.5" style={{ color: '#ffffff' }} />
             </span>
             Objection Playbook
           </h1>
-          <p className="text-zinc-500 text-sm mt-1">
+          <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
             {total_objections} objection{total_objections !== 1 ? 's' : ''} tracked across {playbook.length} topic{playbook.length !== 1 ? 's' : ''}
           </p>
         </div>
         <button
           onClick={loadData}
-          className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm font-medium transition-colors"
+          className="btn btn-secondary btn-sm"
         >
           Refresh
         </button>
@@ -211,10 +279,10 @@ export default function ObjectionsPage() {
         {/* Main content — 3 cols */}
         <div className="xl:col-span-3 space-y-4">
           {playbook.length === 0 ? (
-            <div className="border border-zinc-800 rounded-xl p-12 text-center space-y-3">
-              <MessageCircleWarning className="w-10 h-10 text-zinc-700 mx-auto" />
-              <p className="text-zinc-500">No objections tracked yet.</p>
-              <p className="text-zinc-600 text-xs">
+            <div className="rounded-xl p-12 text-center space-y-3" style={{ border: '1px solid var(--border-subtle)', background: 'var(--surface-0)' }}>
+              <MessageCircleWarning className="w-10 h-10 mx-auto" style={{ color: 'var(--border-default)' }} />
+              <p style={{ color: 'var(--text-muted)' }}>No objections tracked yet.</p>
+              <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
                 Log meetings with AI analysis enabled to automatically capture investor objections.
               </p>
             </div>
@@ -224,22 +292,23 @@ export default function ObjectionsPage() {
               const isExpanded = expandedTopics.has(group.topic);
 
               return (
-                <div key={group.topic} className={`border ${color.border} rounded-xl overflow-hidden`}>
+                <div key={group.topic} className="rounded-xl overflow-hidden" style={{ border: '1px solid', ...color.border }}>
                   {/* Topic header */}
                   <button
                     onClick={() => toggleTopic(group.topic)}
-                    className={`w-full flex items-center justify-between p-4 ${color.bg} hover:brightness-110 transition-all`}
+                    className="w-full flex items-center justify-between p-4 transition-all"
+                    style={{ ...color.bg }}
                   >
                     <div className="flex items-center gap-3">
                       {isExpanded ? (
-                        <ChevronDown className={`w-4 h-4 ${color.text}`} />
+                        <ChevronDown className="w-4 h-4" style={color.text} />
                       ) : (
-                        <ChevronRight className={`w-4 h-4 ${color.text}`} />
+                        <ChevronRight className="w-4 h-4" style={color.text} />
                       )}
-                      <span className={`text-sm font-semibold uppercase tracking-wide ${color.text}`}>
+                      <span className="text-sm font-semibold uppercase tracking-wide" style={color.text}>
                         {group.topic}
                       </span>
-                      <span className="text-xs text-zinc-500 bg-zinc-800/80 px-2 py-0.5 rounded-full">
+                      <span className="text-xs px-2 py-0.5 rounded-full" style={{ color: 'var(--text-muted)', background: 'rgba(24, 24, 28, 0.8)' }}>
                         {group.count} objection{group.count !== 1 ? 's' : ''}
                       </span>
                     </div>
@@ -247,21 +316,21 @@ export default function ObjectionsPage() {
                       <div className="w-32">
                         <EffectivenessBar dist={group.effectiveness_distribution} />
                       </div>
-                      <div className="flex gap-2 text-[10px] text-zinc-500">
+                      <div className="flex gap-2" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
                         <span className="flex items-center gap-1">
-                          <span className="w-2 h-2 rounded-full bg-green-500" />
+                          <span className="w-2 h-2 rounded-full" style={{ background: 'var(--success)' }} />
                           {group.effectiveness_distribution.effective}
                         </span>
                         <span className="flex items-center gap-1">
-                          <span className="w-2 h-2 rounded-full bg-yellow-500" />
+                          <span className="w-2 h-2 rounded-full" style={{ background: 'var(--warning)' }} />
                           {group.effectiveness_distribution.partially_effective}
                         </span>
                         <span className="flex items-center gap-1">
-                          <span className="w-2 h-2 rounded-full bg-red-500" />
+                          <span className="w-2 h-2 rounded-full" style={{ background: 'var(--danger)' }} />
                           {group.effectiveness_distribution.ineffective}
                         </span>
                         <span className="flex items-center gap-1">
-                          <span className="w-2 h-2 rounded-full bg-zinc-600" />
+                          <span className="w-2 h-2 rounded-full" style={{ background: 'var(--text-muted)' }} />
                           {group.effectiveness_distribution.unknown}
                         </span>
                       </div>
@@ -270,17 +339,17 @@ export default function ObjectionsPage() {
 
                   {/* Best response highlight */}
                   {isExpanded && group.best_response && (
-                    <div className="mx-4 mt-3 p-3 bg-green-900/10 border border-green-800/30 rounded-lg">
+                    <div className="mx-4 mt-3 p-3 rounded-lg" style={{ background: 'var(--success-muted)', border: '1px solid rgba(34, 197, 94, 0.2)' }}>
                       <div className="flex items-center gap-2 mb-1">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-green-400" />
-                        <span className="text-xs font-medium text-green-400">Best Response</span>
+                        <CheckCircle2 className="w-3.5 h-3.5" style={{ color: 'var(--success)' }} />
+                        <span className="text-xs font-medium" style={{ color: 'var(--success)' }}>Best Response</span>
                         {group.best_response.investor_name && (
-                          <span className="text-xs text-zinc-500">
+                          <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
                             (worked with {group.best_response.investor_name})
                           </span>
                         )}
                       </div>
-                      <p className="text-sm text-zinc-300 leading-relaxed">
+                      <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
                         {group.best_response.response_text}
                       </p>
                     </div>
@@ -290,27 +359,30 @@ export default function ObjectionsPage() {
                   {isExpanded && (
                     <div className="p-4 space-y-3">
                       {group.objections.map((obj) => (
-                        <div key={obj.id} className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-3 space-y-2">
+                        <div key={obj.id} className="rounded-lg p-3 space-y-2" style={{ background: 'var(--surface-1)', border: '1px solid var(--border-subtle)' }}>
                           <div className="flex items-start justify-between gap-3">
                             <div className="flex-1 space-y-1">
-                              <p className="text-sm text-zinc-200">{obj.objection_text}</p>
+                              <p className="text-sm" style={{ color: 'var(--text-primary)' }}>{obj.objection_text}</p>
                               <div className="flex items-center gap-2 flex-wrap">
                                 {obj.investor_name && (
-                                  <span className="flex items-center gap-1 text-xs text-zinc-500">
+                                  <span className="flex items-center gap-1 text-xs" style={{ color: 'var(--text-muted)' }}>
                                     <User className="w-3 h-3" />
                                     {obj.investor_name}
                                   </span>
                                 )}
-                                <span className="text-xs text-zinc-600">
+                                <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
                                   {new Date(obj.created_at).toLocaleDateString()}
                                 </span>
-                                <span className={`text-xs px-1.5 py-0.5 rounded ${EFFECTIVENESS_BADGE[obj.effectiveness]?.bg} ${EFFECTIVENESS_BADGE[obj.effectiveness]?.text}`}>
+                                <span
+                                  className="text-xs px-1.5 py-0.5 rounded"
+                                  style={EFFECTIVENESS_BADGE[obj.effectiveness]?.style}
+                                >
                                   {EFFECTIVENESS_BADGE[obj.effectiveness]?.label}
                                 </span>
                                 {obj.next_meeting_enthusiasm_delta !== 0 && (
                                   <span className="flex items-center gap-1 text-xs">
                                     <DeltaIcon delta={obj.next_meeting_enthusiasm_delta} />
-                                    <span className={obj.next_meeting_enthusiasm_delta > 0 ? 'text-green-400' : 'text-red-400'}>
+                                    <span style={{ color: obj.next_meeting_enthusiasm_delta > 0 ? 'var(--success)' : 'var(--danger)' }}>
                                       {obj.next_meeting_enthusiasm_delta > 0 ? '+' : ''}{obj.next_meeting_enthusiasm_delta}
                                     </span>
                                   </span>
@@ -320,7 +392,8 @@ export default function ObjectionsPage() {
                             {editingId !== obj.id && (
                               <button
                                 onClick={() => startEdit(obj)}
-                                className="p-1.5 text-zinc-600 hover:text-zinc-300 hover:bg-zinc-800 rounded transition-colors shrink-0"
+                                className="p-1.5 rounded transition-colors shrink-0"
+                                style={{ color: 'var(--text-muted)' }}
                                 title="Edit response"
                               >
                                 <Edit3 className="w-3.5 h-3.5" />
@@ -336,13 +409,14 @@ export default function ObjectionsPage() {
                                 onChange={e => setEditResponse(e.target.value)}
                                 rows={3}
                                 placeholder="What response worked or would work for this objection?"
-                                className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-blue-600"
+                                className="input"
                               />
                               <div className="flex items-center gap-3">
                                 <select
                                   value={editEffectiveness}
                                   onChange={e => setEditEffectiveness(e.target.value)}
-                                  className="bg-zinc-900 border border-zinc-700 rounded-lg px-2 py-1.5 text-xs text-zinc-200"
+                                  className="input"
+                                  style={{ width: 'auto', fontSize: 'var(--font-size-xs)', padding: '0.375rem 0.5rem' }}
                                 >
                                   <option value="unknown">Unknown</option>
                                   <option value="effective">Effective</option>
@@ -352,23 +426,23 @@ export default function ObjectionsPage() {
                                 <button
                                   onClick={() => saveEdit(obj.id)}
                                   disabled={saving}
-                                  className="flex items-center gap-1 px-3 py-1.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 rounded-lg text-xs font-medium transition-colors"
+                                  className="btn btn-primary btn-sm"
                                 >
                                   <Save className="w-3 h-3" />
                                   {saving ? 'Saving...' : 'Save'}
                                 </button>
                                 <button
                                   onClick={() => setEditingId(null)}
-                                  className="p-1.5 text-zinc-500 hover:text-zinc-300 rounded transition-colors"
+                                  className="btn btn-ghost btn-sm"
                                 >
                                   <X className="w-3.5 h-3.5" />
                                 </button>
                               </div>
                             </div>
                           ) : obj.response_text ? (
-                            <div className="pt-1 border-t border-zinc-800/50">
-                              <p className="text-xs text-zinc-500 mb-0.5">Response:</p>
-                              <p className="text-sm text-zinc-400 leading-relaxed">{obj.response_text}</p>
+                            <div className="pt-1" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                              <p className="text-xs mb-0.5" style={{ color: 'var(--text-muted)' }}>Response:</p>
+                              <p className="text-sm leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>{obj.response_text}</p>
                             </div>
                           ) : null}
                         </div>
@@ -384,38 +458,44 @@ export default function ObjectionsPage() {
         {/* Sidebar — 1 col */}
         <div className="space-y-4">
           {/* Top Unresolved */}
-          <div className="border border-zinc-800 rounded-xl p-4 space-y-3">
+          <div className="rounded-xl p-4 space-y-3" style={{ border: '1px solid var(--border-subtle)' }}>
             <div className="flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 text-amber-400" />
-              <h3 className="text-xs font-semibold text-zinc-400 uppercase tracking-wide">Top Unresolved</h3>
+              <AlertTriangle className="w-4 h-4" style={{ color: 'var(--warning)' }} />
+              <h3 className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--text-tertiary)' }}>Top Unresolved</h3>
             </div>
             {unresolved.length === 0 ? (
-              <p className="text-xs text-zinc-600">All objections have effective responses.</p>
+              <p className="text-xs" style={{ color: 'var(--text-muted)' }}>All objections have effective responses.</p>
             ) : (
               <div className="space-y-2">
-                {unresolved.map((obj, i) => (
-                  <div key={i} className="p-2 bg-zinc-900/50 rounded-lg space-y-1">
-                    <p className="text-xs text-zinc-300 line-clamp-2">{obj.objection_text}</p>
-                    <div className="flex items-center gap-2">
-                      <span className={`text-[10px] px-1.5 py-0.5 rounded ${getTopicColor(obj.objection_topic).bg} ${getTopicColor(obj.objection_topic).text}`}>
-                        {obj.objection_topic}
-                      </span>
-                      <span className="text-[10px] text-zinc-600">{obj.count}x raised</span>
+                {unresolved.map((obj, i) => {
+                  const color = getTopicColor(obj.objection_topic);
+                  return (
+                    <div key={i} className="p-2 rounded-lg space-y-1" style={{ background: 'var(--surface-1)' }}>
+                      <p className="text-xs line-clamp-2" style={{ color: 'var(--text-secondary)' }}>{obj.objection_text}</p>
+                      <div className="flex items-center gap-2">
+                        <span
+                          className="px-1.5 py-0.5 rounded"
+                          style={{ fontSize: '10px', ...color.bg, ...color.text }}
+                        >
+                          {obj.objection_topic}
+                        </span>
+                        <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{obj.count}x raised</span>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
 
           {/* Effectiveness summary */}
-          <div className="border border-zinc-800 rounded-xl p-4 space-y-3">
+          <div className="rounded-xl p-4 space-y-3" style={{ border: '1px solid var(--border-subtle)' }}>
             <div className="flex items-center gap-2">
-              <Shield className="w-4 h-4 text-blue-400" />
-              <h3 className="text-xs font-semibold text-zinc-400 uppercase tracking-wide">Coverage</h3>
+              <Shield className="w-4 h-4" style={{ color: 'var(--accent)' }} />
+              <h3 className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--text-tertiary)' }}>Coverage</h3>
             </div>
             {playbook.length === 0 ? (
-              <p className="text-xs text-zinc-600">No data yet.</p>
+              <p className="text-xs" style={{ color: 'var(--text-muted)' }}>No data yet.</p>
             ) : (
               <div className="space-y-2">
                 {playbook.map((group) => {
@@ -423,16 +503,16 @@ export default function ObjectionsPage() {
                   const resolved = group.effectiveness_distribution.effective + group.effectiveness_distribution.partially_effective;
                   const pct = total > 0 ? Math.round((resolved / total) * 100) : 0;
                   const color = getTopicColor(group.topic);
+                  const barColor = pct >= 75 ? 'var(--success)' : pct >= 50 ? 'var(--warning)' : 'var(--danger)';
                   return (
                     <div key={group.topic} className="flex items-center gap-2">
-                      <span className={`text-[10px] w-20 truncate ${color.text}`}>{group.topic}</span>
-                      <div className="flex-1 h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+                      <span className="w-20 truncate" style={{ fontSize: '10px', ...color.text }}>{group.topic}</span>
+                      <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--surface-2)' }}>
                         <div
-                          className={pct >= 75 ? 'bg-green-500' : pct >= 50 ? 'bg-yellow-500' : 'bg-red-500'}
-                          style={{ width: `${pct}%` }}
+                          style={{ width: `${pct}%`, background: barColor, height: '100%' }}
                         />
                       </div>
-                      <span className="text-[10px] text-zinc-600 w-8 text-right">{pct}%</span>
+                      <span className="w-8 text-right" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{pct}%</span>
                     </div>
                   );
                 })}
@@ -441,19 +521,20 @@ export default function ObjectionsPage() {
           </div>
 
           {/* Meeting Prep */}
-          <div className="border border-zinc-800 rounded-xl p-4 space-y-3">
+          <div className="rounded-xl p-4 space-y-3" style={{ border: '1px solid var(--border-subtle)' }}>
             <div className="flex items-center gap-2">
-              <Target className="w-4 h-4 text-violet-400" />
-              <h3 className="text-xs font-semibold text-zinc-400 uppercase tracking-wide">Meeting Prep</h3>
+              <Target className="w-4 h-4" style={{ color: '#8b5cf6' }} />
+              <h3 className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--text-tertiary)' }}>Meeting Prep</h3>
             </div>
-            <p className="text-xs text-zinc-600">Select an investor to see their objection history and what worked with similar investors.</p>
+            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Select an investor to see their objection history and what worked with similar investors.</p>
             <select
               value={selectedInvestor}
               onChange={e => {
                 setSelectedInvestor(e.target.value);
                 loadInvestorObjections(e.target.value);
               }}
-              className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-2 py-1.5 text-xs text-zinc-200"
+              className="input"
+              style={{ fontSize: 'var(--font-size-xs)', padding: '0.375rem 0.5rem' }}
             >
               <option value="">Select investor...</option>
               {investors.map(inv => (
@@ -462,34 +543,40 @@ export default function ObjectionsPage() {
             </select>
 
             {loadingInvestor && (
-              <p className="text-xs text-zinc-500">Loading...</p>
+              <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Loading...</p>
             )}
 
             {selectedInvestor && !loadingInvestor && investorObjections.length === 0 && (
-              <p className="text-xs text-zinc-600">No objections recorded for this investor.</p>
+              <p className="text-xs" style={{ color: 'var(--text-muted)' }}>No objections recorded for this investor.</p>
             )}
 
             {selectedInvestor && !loadingInvestor && investorObjections.length > 0 && (
               <div className="space-y-2">
-                <p className="text-[10px] text-zinc-500 uppercase tracking-wide">
+                <p className="uppercase tracking-wide" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
                   {investorObjections.length} objection{investorObjections.length !== 1 ? 's' : ''} from this investor
                 </p>
                 {investorObjections.map((obj) => {
                   const color = getTopicColor(obj.objection_topic);
                   const effBadge = EFFECTIVENESS_BADGE[obj.effectiveness];
                   return (
-                    <div key={obj.id} className="p-2 bg-zinc-900/50 rounded-lg space-y-1">
-                      <p className="text-xs text-zinc-300 line-clamp-2">{obj.objection_text}</p>
+                    <div key={obj.id} className="p-2 rounded-lg space-y-1" style={{ background: 'var(--surface-1)' }}>
+                      <p className="text-xs line-clamp-2" style={{ color: 'var(--text-secondary)' }}>{obj.objection_text}</p>
                       <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className={`text-[10px] px-1 py-0.5 rounded ${color.bg} ${color.text}`}>
+                        <span
+                          className="px-1 py-0.5 rounded"
+                          style={{ fontSize: '10px', ...color.bg, ...color.text }}
+                        >
                           {obj.objection_topic}
                         </span>
-                        <span className={`text-[10px] px-1 py-0.5 rounded ${effBadge.bg} ${effBadge.text}`}>
+                        <span
+                          className="px-1 py-0.5 rounded"
+                          style={{ fontSize: '10px', ...effBadge.style }}
+                        >
                           {effBadge.label}
                         </span>
                       </div>
                       {obj.response_text && (
-                        <p className="text-[10px] text-zinc-500 leading-relaxed mt-1">
+                        <p className="leading-relaxed mt-1" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
                           Response: {obj.response_text}
                         </p>
                       )}
@@ -507,21 +594,24 @@ export default function ObjectionsPage() {
                   if (bestFromPlaybook.length === 0) return null;
 
                   return (
-                    <div className="mt-3 pt-3 border-t border-zinc-800/50 space-y-2">
-                      <p className="text-[10px] text-zinc-500 uppercase tracking-wide flex items-center gap-1">
-                        <CheckCircle2 className="w-3 h-3 text-green-500" />
+                    <div className="mt-3 pt-3 space-y-2" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                      <p className="uppercase tracking-wide flex items-center gap-1" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                        <CheckCircle2 className="w-3 h-3" style={{ color: 'var(--success)' }} />
                         What worked with similar investors
                       </p>
                       {bestFromPlaybook.map(({ topic, response }) => {
                         const color = getTopicColor(topic);
                         return (
-                          <div key={topic} className="p-2 bg-green-900/5 border border-green-800/20 rounded-lg space-y-1">
-                            <span className={`text-[10px] px-1 py-0.5 rounded ${color.bg} ${color.text}`}>
+                          <div key={topic} className="p-2 rounded-lg space-y-1" style={{ background: 'var(--success-muted)', border: '1px solid rgba(34, 197, 94, 0.15)' }}>
+                            <span
+                              className="px-1 py-0.5 rounded"
+                              style={{ fontSize: '10px', ...color.bg, ...color.text }}
+                            >
                               {topic}
                             </span>
-                            <p className="text-xs text-zinc-400 leading-relaxed">{response.response_text}</p>
+                            <p className="text-xs leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>{response.response_text}</p>
                             {response.investor_name && (
-                              <p className="text-[10px] text-zinc-600">
+                              <p style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
                                 Worked with {response.investor_name}
                               </p>
                             )}

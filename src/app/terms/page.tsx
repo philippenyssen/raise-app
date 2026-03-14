@@ -125,11 +125,17 @@ export default function TermsPage() {
     return { score: Math.max(0, Math.min(100, score)), flags };
   }
 
+  function getScoreColor(score: number): string {
+    if (score >= 70) return 'var(--success)';
+    if (score >= 50) return 'var(--warning)';
+    return 'var(--danger)';
+  }
+
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="h-8 w-48 bg-zinc-800 rounded animate-pulse" />
-        <div className="h-20 bg-zinc-800/50 rounded-xl animate-pulse" />
+        <div className="h-8 w-48 rounded animate-pulse" style={{ background: 'var(--surface-2)' }} />
+        <div className="h-20 rounded-xl animate-pulse" style={{ background: 'var(--surface-1)' }} />
       </div>
     );
   }
@@ -138,27 +144,27 @@ export default function TermsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Term Sheet Comparison</h1>
-          <p className="text-zinc-500 text-sm mt-1">
+          <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>Term Sheet Comparison</h1>
+          <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
             Compare and score term sheets side-by-side. {sheets.length} received.
           </p>
         </div>
         <button
           onClick={() => { setShowForm(!showForm); setEditId(null); setForm(EMPTY_TS); }}
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm font-medium transition-colors"
+          className="btn btn-primary btn-md text-sm font-medium"
         >
           + Add Term Sheet
         </button>
       </div>
 
       {/* Market Standards Reference */}
-      <div className="border border-zinc-800 rounded-xl p-5">
-        <h3 className="text-xs font-medium text-zinc-400 mb-3">MARKET STANDARDS (Series C)</h3>
+      <div className="rounded-xl p-5" style={{ border: '1px solid var(--border-default)', background: 'var(--surface-0)' }}>
+        <h3 className="text-xs font-medium mb-3" style={{ color: 'var(--text-tertiary)' }}>MARKET STANDARDS (Series C)</h3>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-xs">
           {Object.entries(MARKET_STANDARDS).map(([key, val]) => (
             <div key={key}>
-              <span className="text-zinc-500">{key.replace(/_/g, ' ')}:</span>
-              <span className="text-zinc-300 ml-1">{val}</span>
+              <span style={{ color: 'var(--text-muted)' }}>{key.replace(/_/g, ' ')}:</span>
+              <span className="ml-1" style={{ color: 'var(--text-secondary)' }}>{val}</span>
             </div>
           ))}
         </div>
@@ -166,8 +172,8 @@ export default function TermsPage() {
 
       {/* Add/Edit Form */}
       {showForm && (
-        <form onSubmit={handleSubmit} className="border border-zinc-800 rounded-xl p-6 space-y-4">
-          <h3 className="text-sm font-medium text-zinc-400">{editId ? 'EDIT' : 'ADD'} TERM SHEET</h3>
+        <form onSubmit={handleSubmit} className="rounded-xl p-6 space-y-4" style={{ border: '1px solid var(--border-default)', background: 'var(--surface-0)' }}>
+          <h3 className="text-sm font-medium" style={{ color: 'var(--text-tertiary)' }}>{editId ? 'EDIT' : 'ADD'} TERM SHEET</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <TsInput label="Investor" value={form.investor} onChange={v => setForm(f => ({ ...f, investor: v }))} required />
             <TsInput label="Pre-Money Valuation" value={form.valuation} onChange={v => setForm(f => ({ ...f, valuation: v }))} placeholder="e.g., 2.0Bn" />
@@ -180,19 +186,19 @@ export default function TermsPage() {
             <TsInput label="Option Pool" value={form.option_pool} onChange={v => setForm(f => ({ ...f, option_pool: v }))} placeholder="e.g., 12%" />
             <TsInput label="Exclusivity" value={form.exclusivity} onChange={v => setForm(f => ({ ...f, exclusivity: v }))} placeholder="e.g., 14 days" />
             <div>
-              <label className="text-xs text-zinc-500 block mb-1">Strategic Value (1-5)</label>
+              <label className="label block mb-1" style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>Strategic Value (1-5)</label>
               <input type="range" min="1" max="5" value={form.strategic_value}
                 onChange={e => setForm(f => ({ ...f, strategic_value: Number(e.target.value) }))}
                 className="w-full" />
-              <div className="text-xs text-zinc-500 text-center">{form.strategic_value}/5</div>
+              <div className="text-xs text-center" style={{ color: 'var(--text-muted)' }}>{form.strategic_value}/5</div>
             </div>
           </div>
           <TsInput label="Notes" value={form.notes} onChange={v => setForm(f => ({ ...f, notes: v }))} />
           <div className="flex gap-2">
-            <button type="submit" className="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm font-medium">
+            <button type="submit" className="btn btn-primary btn-md text-sm font-medium">
               {editId ? 'Update' : 'Add'}
             </button>
-            <button type="button" onClick={() => { setShowForm(false); setEditId(null); }} className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm">
+            <button type="button" onClick={() => { setShowForm(false); setEditId(null); }} className="btn btn-secondary btn-md text-sm">
               Cancel
             </button>
           </div>
@@ -201,26 +207,30 @@ export default function TermsPage() {
 
       {/* Comparison Table */}
       {sheets.length > 0 && (
-        <div className="border border-zinc-800 rounded-xl overflow-x-auto">
+        <div className="rounded-xl overflow-x-auto" style={{ border: '1px solid var(--border-default)' }}>
           <table className="w-full text-sm">
-            <thead className="bg-zinc-900/50 border-b border-zinc-800">
+            <thead className="table-header">
               <tr>
-                <th className="text-left px-4 py-3 text-xs text-zinc-500 font-medium w-40">Term</th>
+                <th className="text-left px-4 py-3 text-xs font-medium w-40" style={{ color: 'var(--text-muted)' }}>Term</th>
                 {sheets.map(ts => (
-                  <th key={ts.id} className="text-left px-4 py-3 text-xs text-zinc-300 font-medium min-w-48">
+                  <th key={ts.id} className="text-left px-4 py-3 text-xs font-medium min-w-48" style={{ color: 'var(--text-secondary)' }}>
                     <div className="flex items-center justify-between gap-2">
                       {ts.investor}
                       <div className="flex gap-1 shrink-0">
-                        <button onClick={() => startEdit(ts)} className="text-zinc-600 hover:text-zinc-300 text-[10px]">Edit</button>
-                        <button onClick={() => setDeleteTarget({ id: ts.id, investor: ts.investor })} className="text-zinc-600 hover:text-red-400 text-[10px]">Del</button>
+                        <button onClick={() => startEdit(ts)} className="text-[10px]" style={{ color: 'var(--text-muted)' }}
+                          onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
+                          onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}>Edit</button>
+                        <button onClick={() => setDeleteTarget({ id: ts.id, investor: ts.investor })} className="text-[10px]" style={{ color: 'var(--text-muted)' }}
+                          onMouseEnter={e => (e.currentTarget.style.color = 'var(--danger)')}
+                          onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}>Del</button>
                       </div>
                     </div>
                   </th>
                 ))}
-                <th className="text-left px-4 py-3 text-xs text-zinc-500 font-medium">Market Standard</th>
+                <th className="text-left px-4 py-3 text-xs font-medium" style={{ color: 'var(--text-muted)' }}>Market Standard</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-800/50">
+            <tbody>
               {([
                 ['Valuation', 'valuation'],
                 ['Amount', 'amount'],
@@ -232,38 +242,38 @@ export default function TermsPage() {
                 ['Option Pool', 'option_pool'],
                 ['Exclusivity', 'exclusivity'],
               ] as const).map(([label, key]) => (
-                <tr key={key} className="hover:bg-zinc-900/30">
-                  <td className="px-4 py-2.5 text-zinc-500 text-xs">{label}</td>
+                <tr key={key} className="table-row">
+                  <td className="px-4 py-2.5 text-xs" style={{ color: 'var(--text-muted)' }}>{label}</td>
                   {sheets.map(ts => {
                     const val = ts[key as keyof TermSheet] as string;
                     const standard = MARKET_STANDARDS[key];
                     const isStandard = standard && val.toLowerCase() === standard.toLowerCase();
                     return (
-                      <td key={ts.id} className={`px-4 py-2.5 text-xs ${isStandard ? 'text-green-400' : 'text-zinc-300'}`}>
+                      <td key={ts.id} className="px-4 py-2.5 text-xs" style={{ color: isStandard ? 'var(--success)' : 'var(--text-secondary)' }}>
                         {val || '\u2014'}
                       </td>
                     );
                   })}
-                  <td className="px-4 py-2.5 text-xs text-zinc-600">{MARKET_STANDARDS[key] || '\u2014'}</td>
+                  <td className="px-4 py-2.5 text-xs" style={{ color: 'var(--text-muted)' }}>{MARKET_STANDARDS[key] || '\u2014'}</td>
                 </tr>
               ))}
               {/* Score Row */}
-              <tr className="bg-zinc-900/30 border-t-2 border-zinc-700">
-                <td className="px-4 py-3 text-xs font-medium text-zinc-400">SCORE</td>
+              <tr style={{ background: 'var(--surface-1)', borderTop: '2px solid var(--border-strong)' }}>
+                <td className="px-4 py-3 text-xs font-medium" style={{ color: 'var(--text-tertiary)' }}>SCORE</td>
                 {sheets.map(ts => {
                   const { score, flags } = scoreSheet(ts);
                   return (
                     <td key={ts.id} className="px-4 py-3">
-                      <div className={`text-lg font-bold ${score >= 70 ? 'text-green-400' : score >= 50 ? 'text-yellow-400' : 'text-red-400'}`}>
+                      <div className="text-lg font-bold" style={{ color: getScoreColor(score) }}>
                         {score}/100
                       </div>
                       {flags.map((f, i) => (
-                        <div key={i} className="text-xs text-red-400 mt-1">{f}</div>
+                        <div key={i} className="text-xs mt-1" style={{ color: 'var(--danger)' }}>{f}</div>
                       ))}
                     </td>
                   );
                 })}
-                <td className="px-4 py-3 text-xs text-zinc-600">Benchmark</td>
+                <td className="px-4 py-3 text-xs" style={{ color: 'var(--text-muted)' }}>Benchmark</td>
               </tr>
             </tbody>
           </table>
@@ -271,7 +281,7 @@ export default function TermsPage() {
       )}
 
       {sheets.length === 0 && !showForm && (
-        <div className="border border-zinc-800 rounded-xl p-8 text-center text-zinc-600 text-sm">
+        <div className="rounded-xl p-8 text-center text-sm" style={{ border: '1px solid var(--border-default)', color: 'var(--text-muted)' }}>
           No term sheets yet. Add them as they come in for side-by-side comparison.
         </div>
       )}
@@ -294,9 +304,9 @@ function TsInput({ label, value, onChange, required, placeholder }: {
 }) {
   return (
     <div>
-      <label className="text-xs text-zinc-500 block mb-1">{label}</label>
+      <label className="label block mb-1" style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>{label}</label>
       <input value={value} onChange={e => onChange(e.target.value)} required={required} placeholder={placeholder}
-        className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-600 text-zinc-200" />
+        className="input" />
     </div>
   );
 }

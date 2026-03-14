@@ -42,11 +42,11 @@ interface PostMeetingActionsData {
   investor_updates: InvestorUpdate;
 }
 
-const PRIORITY_STYLES: Record<string, string> = {
-  critical: 'bg-red-900/40 text-red-300 border-red-800/50',
-  high: 'bg-orange-900/40 text-orange-300 border-orange-800/50',
-  medium: 'bg-blue-900/40 text-blue-300 border-blue-800/50',
-  low: 'bg-zinc-800 text-zinc-400 border-zinc-700',
+const PRIORITY_STYLES: Record<string, { bg: string; color: string; border: string }> = {
+  critical: { bg: 'var(--danger-muted)', color: 'var(--danger)', border: 'color-mix(in srgb, var(--danger) 50%, transparent)' },
+  high: { bg: 'var(--warning-muted)', color: 'var(--warning)', border: 'color-mix(in srgb, var(--warning) 50%, transparent)' },
+  medium: { bg: 'var(--accent-muted)', color: 'var(--accent)', border: 'color-mix(in srgb, var(--accent) 50%, transparent)' },
+  low: { bg: 'var(--surface-2)', color: 'var(--text-secondary)', border: 'var(--border-subtle)' },
 };
 
 const FLAG_TYPE_LABELS: Record<string, string> = {
@@ -55,10 +55,10 @@ const FLAG_TYPE_LABELS: Record<string, string> = {
   section_improvement: 'Section Improvement',
 };
 
-const FLAG_TYPE_STYLES: Record<string, string> = {
-  objection_response: 'bg-red-900/30 text-red-400',
-  number_update: 'bg-yellow-900/30 text-yellow-400',
-  section_improvement: 'bg-blue-900/30 text-blue-400',
+const FLAG_TYPE_STYLES: Record<string, { bg: string; color: string }> = {
+  objection_response: { bg: 'var(--danger-muted)', color: 'var(--danger)' },
+  number_update: { bg: 'var(--warning-muted)', color: 'var(--warning)' },
+  section_improvement: { bg: 'var(--accent-muted)', color: 'var(--accent)' },
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -90,6 +90,12 @@ export default function PostMeetingActions({
   const [dismissedFlags, setDismissedFlags] = useState<Set<string>>(new Set());
   const [acceptedTasks, setAcceptedTasks] = useState<Set<string>>(new Set());
   const [acceptedFlags, setAcceptedFlags] = useState<Set<string>>(new Set());
+  const [hoveredAcceptTask, setHoveredAcceptTask] = useState<string | null>(null);
+  const [hoveredDismissTask, setHoveredDismissTask] = useState<string | null>(null);
+  const [hoveredAcceptFlag, setHoveredAcceptFlag] = useState<string | null>(null);
+  const [hoveredDismissFlag, setHoveredDismissFlag] = useState<string | null>(null);
+  const [hoveredViewTasks, setHoveredViewTasks] = useState(false);
+  const [hoveredViewDocs, setHoveredViewDocs] = useState(false);
 
   const hasActions = data.tasks.length > 0 || data.document_flags.length > 0;
 
@@ -137,41 +143,59 @@ export default function PostMeetingActions({
   const visibleTasks = data.tasks.filter(t => !dismissedTasks.has(t.id));
   const visibleFlags = data.document_flags.filter(f => !dismissedFlags.has(f.id));
 
+  const enthusiasmColor = data.investor_updates.enthusiasm >= 4
+    ? 'var(--success)'
+    : data.investor_updates.enthusiasm >= 3
+      ? 'var(--accent)'
+      : 'var(--warning)';
+
   return (
-    <div className="border border-zinc-800 rounded-xl overflow-hidden">
+    <div className="rounded-xl overflow-hidden" style={{ border: '1px solid var(--border-subtle)' }}>
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-900/20 to-purple-900/20 border-b border-zinc-800 px-5 py-4">
-        <h2 className="text-lg font-bold flex items-center gap-2">
-          <ClipboardList className="w-5 h-5 text-blue-400" />
+      <div
+        className="px-5 py-4"
+        style={{
+          background: 'linear-gradient(to right, var(--accent-muted), color-mix(in srgb, var(--accent-muted) 60%, var(--surface-0)))',
+          borderBottom: '1px solid var(--border-subtle)',
+        }}
+      >
+        <h2 className="text-lg font-bold flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
+          <ClipboardList className="w-5 h-5" style={{ color: 'var(--accent)' }} />
           Post-Meeting Actions
         </h2>
-        <p className="text-xs text-zinc-500 mt-1">
+        <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
           {visibleTasks.length} task{visibleTasks.length !== 1 ? 's' : ''} generated, {visibleFlags.length} document flag{visibleFlags.length !== 1 ? 's' : ''}
         </p>
       </div>
 
-      <div className="divide-y divide-zinc-800/50">
+      <div>
         {/* Investor Profile Updates */}
         {(statusChanged || enthusiasmChanged) && (
-          <div className="px-5 py-4">
-            <h3 className="text-xs font-medium text-zinc-400 mb-3 flex items-center gap-2">
+          <div className="px-5 py-4" style={{ borderBottom: '1px solid color-mix(in srgb, var(--border-subtle) 50%, transparent)' }}>
+            <h3 className="text-xs font-medium mb-3 flex items-center gap-2" style={{ color: 'var(--text-secondary)' }}>
               <UserCheck className="w-3.5 h-3.5" /> INVESTOR PROFILE UPDATED
             </h3>
             <div className="flex flex-wrap gap-3">
               {statusChanged && (
-                <div className="flex items-center gap-2 bg-zinc-900 rounded-lg px-3 py-2 text-sm">
-                  <span className="text-zinc-500">Status:</span>
-                  <span className="text-zinc-400">{STATUS_LABELS[data.investor_updates.previous_status!] || data.investor_updates.previous_status}</span>
-                  <ArrowRight className="w-3 h-3 text-zinc-600" />
-                  <span className="text-blue-400 font-medium">{STATUS_LABELS[data.investor_updates.suggested_status] || data.investor_updates.suggested_status}</span>
+                <div
+                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm"
+                  style={{ backgroundColor: 'var(--surface-1)' }}
+                >
+                  <span style={{ color: 'var(--text-muted)' }}>Status:</span>
+                  <span style={{ color: 'var(--text-secondary)' }}>{STATUS_LABELS[data.investor_updates.previous_status!] || data.investor_updates.previous_status}</span>
+                  <ArrowRight className="w-3 h-3" style={{ color: 'var(--text-muted)' }} />
+                  <span style={{ color: 'var(--accent)', fontWeight: 500 }}>{STATUS_LABELS[data.investor_updates.suggested_status] || data.investor_updates.suggested_status}</span>
                 </div>
               )}
               {enthusiasmChanged && (
-                <div className="flex items-center gap-2 bg-zinc-900 rounded-lg px-3 py-2 text-sm">
-                  <span className="text-zinc-500">Enthusiasm:</span>
-                  <span className="text-zinc-400">{data.investor_updates.previous_enthusiasm}/5</span>
-                  <ArrowRight className="w-3 h-3 text-zinc-600" />
-                  <span className={`font-medium ${data.investor_updates.enthusiasm >= 4 ? 'text-green-400' : data.investor_updates.enthusiasm >= 3 ? 'text-blue-400' : 'text-orange-400'}`}>
+                <div
+                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm"
+                  style={{ backgroundColor: 'var(--surface-1)' }}
+                >
+                  <span style={{ color: 'var(--text-muted)' }}>Enthusiasm:</span>
+                  <span style={{ color: 'var(--text-secondary)' }}>{data.investor_updates.previous_enthusiasm}/5</span>
+                  <ArrowRight className="w-3 h-3" style={{ color: 'var(--text-muted)' }} />
+                  <span style={{ color: enthusiasmColor, fontWeight: 500 }}>
                     {data.investor_updates.enthusiasm}/5
                   </span>
                 </div>
@@ -182,10 +206,11 @@ export default function PostMeetingActions({
 
         {/* Generated Tasks */}
         {visibleTasks.length > 0 && (
-          <div className="px-5 py-4">
+          <div className="px-5 py-4" style={{ borderBottom: '1px solid color-mix(in srgb, var(--border-subtle) 50%, transparent)' }}>
             <button
               onClick={() => setTasksExpanded(!tasksExpanded)}
-              className="w-full flex items-center justify-between text-xs font-medium text-zinc-400 mb-3"
+              className="w-full flex items-center justify-between text-xs font-medium mb-3"
+              style={{ color: 'var(--text-secondary)' }}
             >
               <span className="flex items-center gap-2">
                 <ClipboardList className="w-3.5 h-3.5" /> GENERATED TASKS ({visibleTasks.length})
@@ -196,27 +221,38 @@ export default function PostMeetingActions({
               <div className="space-y-2">
                 {visibleTasks.map(task => {
                   const isAccepted = acceptedTasks.has(task.id);
+                  const pStyle = PRIORITY_STYLES[task.priority] || PRIORITY_STYLES.medium;
                   return (
                     <div
                       key={task.id}
-                      className={`rounded-lg border p-3 transition-all ${
-                        isAccepted
-                          ? 'border-green-800/50 bg-green-900/10'
-                          : 'border-zinc-800 bg-zinc-900/50 hover:border-zinc-700'
-                      }`}
+                      className="rounded-lg p-3 transition-all"
+                      style={{
+                        border: isAccepted
+                          ? '1px solid color-mix(in srgb, var(--success) 50%, transparent)'
+                          : '1px solid var(--border-subtle)',
+                        backgroundColor: isAccepted
+                          ? 'color-mix(in srgb, var(--success) 10%, transparent)'
+                          : 'var(--surface-1)',
+                      }}
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1">
-                            <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium uppercase ${PRIORITY_STYLES[task.priority] || PRIORITY_STYLES.medium}`}>
+                            <span
+                              className="text-[10px] px-1.5 py-0.5 rounded font-medium uppercase"
+                              style={{
+                                backgroundColor: pStyle.bg,
+                                color: pStyle.color,
+                              }}
+                            >
                               {task.priority}
                             </span>
-                            <span className="text-sm font-medium text-zinc-200 truncate">{task.title}</span>
+                            <span className="text-sm font-medium truncate" style={{ color: 'var(--text-primary)' }}>{task.title}</span>
                           </div>
                           {task.description && (
-                            <p className="text-xs text-zinc-500 mt-1 line-clamp-2">{task.description.split('\n')[0]}</p>
+                            <p className="text-xs mt-1 line-clamp-2" style={{ color: 'var(--text-muted)' }}>{task.description.split('\n')[0]}</p>
                           )}
-                          <div className="flex items-center gap-3 mt-2 text-[11px] text-zinc-600">
+                          <div className="flex items-center gap-3 mt-2 text-[11px]" style={{ color: 'var(--text-muted)' }}>
                             <span className="flex items-center gap-1">
                               <Clock className="w-3 h-3" /> Due: {task.due_date}
                             </span>
@@ -227,14 +263,26 @@ export default function PostMeetingActions({
                           <div className="flex gap-1 shrink-0">
                             <button
                               onClick={() => handleTaskAction(task.id, 'accept')}
-                              className="p-1.5 rounded-md hover:bg-green-900/30 text-zinc-500 hover:text-green-400 transition-colors"
+                              onMouseEnter={() => setHoveredAcceptTask(task.id)}
+                              onMouseLeave={() => setHoveredAcceptTask(null)}
+                              className="p-1.5 rounded-md transition-colors"
+                              style={{
+                                color: hoveredAcceptTask === task.id ? 'var(--success)' : 'var(--text-muted)',
+                                backgroundColor: hoveredAcceptTask === task.id ? 'var(--success-muted)' : 'transparent',
+                              }}
                               title="Accept task"
                             >
                               <CheckCircle2 className="w-4 h-4" />
                             </button>
                             <button
                               onClick={() => handleTaskAction(task.id, 'dismiss')}
-                              className="p-1.5 rounded-md hover:bg-red-900/30 text-zinc-500 hover:text-red-400 transition-colors"
+                              onMouseEnter={() => setHoveredDismissTask(task.id)}
+                              onMouseLeave={() => setHoveredDismissTask(null)}
+                              className="p-1.5 rounded-md transition-colors"
+                              style={{
+                                color: hoveredDismissTask === task.id ? 'var(--danger)' : 'var(--text-muted)',
+                                backgroundColor: hoveredDismissTask === task.id ? 'var(--danger-muted)' : 'transparent',
+                              }}
                               title="Dismiss task"
                             >
                               <XCircle className="w-4 h-4" />
@@ -242,7 +290,7 @@ export default function PostMeetingActions({
                           </div>
                         )}
                         {isAccepted && (
-                          <span className="text-xs text-green-500 flex items-center gap-1 shrink-0">
+                          <span className="text-xs flex items-center gap-1 shrink-0" style={{ color: 'var(--success)' }}>
                             <CheckCircle2 className="w-3.5 h-3.5" /> Accepted
                           </span>
                         )}
@@ -257,10 +305,11 @@ export default function PostMeetingActions({
 
         {/* Document Flags */}
         {visibleFlags.length > 0 && (
-          <div className="px-5 py-4">
+          <div className="px-5 py-4" style={{ borderBottom: '1px solid color-mix(in srgb, var(--border-subtle) 50%, transparent)' }}>
             <button
               onClick={() => setFlagsExpanded(!flagsExpanded)}
-              className="w-full flex items-center justify-between text-xs font-medium text-zinc-400 mb-3"
+              className="w-full flex items-center justify-between text-xs font-medium mb-3"
+              style={{ color: 'var(--text-secondary)' }}
             >
               <span className="flex items-center gap-2">
                 <FileWarning className="w-3.5 h-3.5" /> DOCUMENT FLAGS ({visibleFlags.length})
@@ -271,30 +320,41 @@ export default function PostMeetingActions({
               <div className="space-y-2">
                 {visibleFlags.map(flag => {
                   const isAccepted = acceptedFlags.has(flag.id);
+                  const fStyle = FLAG_TYPE_STYLES[flag.flag_type] || { bg: 'var(--surface-2)', color: 'var(--text-secondary)' };
                   return (
                     <div
                       key={flag.id}
-                      className={`rounded-lg border p-3 transition-all ${
-                        isAccepted
-                          ? 'border-green-800/50 bg-green-900/10'
-                          : 'border-zinc-800 bg-zinc-900/50 hover:border-zinc-700'
-                      }`}
+                      className="rounded-lg p-3 transition-all"
+                      style={{
+                        border: isAccepted
+                          ? '1px solid color-mix(in srgb, var(--success) 50%, transparent)'
+                          : '1px solid var(--border-subtle)',
+                        backgroundColor: isAccepted
+                          ? 'color-mix(in srgb, var(--success) 10%, transparent)'
+                          : 'var(--surface-1)',
+                      }}
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1">
-                            <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${FLAG_TYPE_STYLES[flag.flag_type] || 'bg-zinc-800 text-zinc-400'}`}>
+                            <span
+                              className="text-[10px] px-1.5 py-0.5 rounded font-medium"
+                              style={{ backgroundColor: fStyle.bg, color: fStyle.color }}
+                            >
                               {FLAG_TYPE_LABELS[flag.flag_type] || flag.flag_type}
                             </span>
-                            <AlertTriangle className="w-3 h-3 text-yellow-500/70" />
+                            <AlertTriangle className="w-3 h-3" style={{ color: 'color-mix(in srgb, var(--warning) 70%, transparent)' }} />
                           </div>
-                          <p className="text-xs text-zinc-400 mt-1">{flag.description}</p>
-                          <div className="flex items-center gap-3 mt-2 text-[11px] text-zinc-600">
+                          <p className="text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>{flag.description}</p>
+                          <div className="flex items-center gap-3 mt-2 text-[11px]" style={{ color: 'var(--text-muted)' }}>
                             <span>Section: {flag.section_hint}</span>
                             {flag.document_id && (
                               <Link
                                 href={`/documents/${flag.document_id}`}
-                                className="text-blue-500 hover:text-blue-400 underline"
+                                className="underline"
+                                style={{ color: 'var(--accent)' }}
+                                onMouseEnter={(e) => { (e.target as HTMLElement).style.opacity = '0.8'; }}
+                                onMouseLeave={(e) => { (e.target as HTMLElement).style.opacity = '1'; }}
                               >
                                 Open document
                               </Link>
@@ -305,14 +365,26 @@ export default function PostMeetingActions({
                           <div className="flex gap-1 shrink-0">
                             <button
                               onClick={() => handleFlagAction(flag.id, 'accept')}
-                              className="p-1.5 rounded-md hover:bg-green-900/30 text-zinc-500 hover:text-green-400 transition-colors"
+                              onMouseEnter={() => setHoveredAcceptFlag(flag.id)}
+                              onMouseLeave={() => setHoveredAcceptFlag(null)}
+                              className="p-1.5 rounded-md transition-colors"
+                              style={{
+                                color: hoveredAcceptFlag === flag.id ? 'var(--success)' : 'var(--text-muted)',
+                                backgroundColor: hoveredAcceptFlag === flag.id ? 'var(--success-muted)' : 'transparent',
+                              }}
                               title="Acknowledge flag"
                             >
                               <CheckCircle2 className="w-4 h-4" />
                             </button>
                             <button
                               onClick={() => handleFlagAction(flag.id, 'dismiss')}
-                              className="p-1.5 rounded-md hover:bg-red-900/30 text-zinc-500 hover:text-red-400 transition-colors"
+                              onMouseEnter={() => setHoveredDismissFlag(flag.id)}
+                              onMouseLeave={() => setHoveredDismissFlag(null)}
+                              className="p-1.5 rounded-md transition-colors"
+                              style={{
+                                color: hoveredDismissFlag === flag.id ? 'var(--danger)' : 'var(--text-muted)',
+                                backgroundColor: hoveredDismissFlag === flag.id ? 'var(--danger-muted)' : 'transparent',
+                              }}
                               title="Dismiss flag"
                             >
                               <XCircle className="w-4 h-4" />
@@ -320,7 +392,7 @@ export default function PostMeetingActions({
                           </div>
                         )}
                         {isAccepted && (
-                          <span className="text-xs text-green-500 flex items-center gap-1 shrink-0">
+                          <span className="text-xs flex items-center gap-1 shrink-0" style={{ color: 'var(--success)' }}>
                             <CheckCircle2 className="w-3.5 h-3.5" /> Noted
                           </span>
                         )}
@@ -334,20 +406,29 @@ export default function PostMeetingActions({
         )}
 
         {/* Actions summary footer */}
-        <div className="px-5 py-3 bg-zinc-900/30 flex items-center justify-between">
-          <span className="text-xs text-zinc-600">
+        <div
+          className="px-5 py-3 flex items-center justify-between"
+          style={{ backgroundColor: 'var(--surface-1)' }}
+        >
+          <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
             Tasks and flags are saved automatically. View all in Timeline &amp; Tasks.
           </span>
           <div className="flex gap-2">
             <Link
               href="/timeline"
-              className="text-xs text-blue-500 hover:text-blue-400"
+              className="text-xs"
+              style={{ color: hoveredViewTasks ? 'color-mix(in srgb, var(--accent) 80%, var(--text-primary))' : 'var(--accent)' }}
+              onMouseEnter={() => setHoveredViewTasks(true)}
+              onMouseLeave={() => setHoveredViewTasks(false)}
             >
               View Tasks
             </Link>
             <Link
               href="/documents"
-              className="text-xs text-blue-500 hover:text-blue-400"
+              className="text-xs"
+              style={{ color: hoveredViewDocs ? 'color-mix(in srgb, var(--accent) 80%, var(--text-primary))' : 'var(--accent)' }}
+              onMouseEnter={() => setHoveredViewDocs(true)}
+              onMouseLeave={() => setHoveredViewDocs(false)}
             >
               View Documents
             </Link>

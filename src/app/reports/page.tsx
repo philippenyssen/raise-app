@@ -19,6 +19,9 @@ export default function ReportsPage() {
   const [generatedAt, setGeneratedAt] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [hoverStates, setHoverStates] = useState<Record<string, boolean>>({});
+
+  const setHover = (key: string, val: boolean) => setHoverStates(prev => ({ ...prev, [key]: val }));
 
   useEffect(() => {
     fetch('/api/investors')
@@ -84,12 +87,12 @@ export default function ReportsPage() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold tracking-tight flex items-center gap-3">
-          <span className="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center">
-            <FileBarChart className="w-5 h-5 text-white" />
+          <span className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'var(--accent)' }}>
+            <FileBarChart className="w-5 h-5" style={{ color: 'var(--surface-0)' }} />
           </span>
           Reports
         </h1>
-        <p className="text-zinc-500 text-sm mt-1">
+        <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
           Generate structured reports from your fundraise data
         </p>
       </div>
@@ -97,20 +100,27 @@ export default function ReportsPage() {
       {/* Report Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Board Update */}
-        <div className="border border-zinc-800 rounded-xl p-5 bg-zinc-900/50">
+        <div className="rounded-xl p-5" style={{ border: '1px solid var(--border-subtle)', backgroundColor: 'color-mix(in srgb, var(--surface-1) 50%, transparent)' }}>
           <div className="flex items-center gap-3 mb-3">
-            <span className="w-8 h-8 rounded-lg bg-emerald-900/50 flex items-center justify-center">
-              <BarChart3 className="w-4 h-4 text-emerald-400" />
+            <span className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'var(--success-muted)' }}>
+              <BarChart3 className="w-4 h-4" style={{ color: 'var(--success)' }} />
             </span>
-            <h2 className="font-semibold text-sm">Board Update</h2>
+            <h2 className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>Board Update</h2>
           </div>
-          <p className="text-zinc-500 text-xs leading-relaxed mb-4">
+          <p className="text-xs leading-relaxed mb-4" style={{ color: 'var(--text-muted)' }}>
             Generate a 1-page board update summarizing process health, pipeline funnel, top focus investors, conviction trends, and key risks.
           </p>
           <button
             onClick={() => generateReport('board')}
             disabled={loading !== null}
-            className="w-full px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 disabled:bg-zinc-700 disabled:text-zinc-500 text-white text-sm font-medium transition-colors flex items-center justify-center gap-2"
+            className="w-full px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
+            style={{
+              backgroundColor: loading !== null ? 'var(--surface-2)' : (hoverStates['boardBtn'] ? 'var(--success)' : 'var(--success)'),
+              color: loading !== null ? 'var(--text-muted)' : 'var(--surface-0)',
+              opacity: hoverStates['boardBtn'] && loading === null ? 0.85 : 1,
+            }}
+            onMouseEnter={() => setHover('boardBtn', true)}
+            onMouseLeave={() => setHover('boardBtn', false)}
           >
             {loading === 'board' ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
             {loading === 'board' ? 'Generating...' : 'Generate'}
@@ -118,20 +128,27 @@ export default function ReportsPage() {
         </div>
 
         {/* Weekly Agenda */}
-        <div className="border border-zinc-800 rounded-xl p-5 bg-zinc-900/50">
+        <div className="rounded-xl p-5" style={{ border: '1px solid var(--border-subtle)', backgroundColor: 'color-mix(in srgb, var(--surface-1) 50%, transparent)' }}>
           <div className="flex items-center gap-3 mb-3">
-            <span className="w-8 h-8 rounded-lg bg-blue-900/50 flex items-center justify-center">
-              <ClipboardList className="w-4 h-4 text-blue-400" />
+            <span className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'color-mix(in srgb, var(--accent) 20%, transparent)' }}>
+              <ClipboardList className="w-4 h-4" style={{ color: 'var(--accent)' }} />
             </span>
-            <h2 className="font-semibold text-sm">Weekly Agenda</h2>
+            <h2 className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>Weekly Agenda</h2>
           </div>
-          <p className="text-zinc-500 text-xs leading-relaxed mb-4">
+          <p className="text-xs leading-relaxed mb-4" style={{ color: 'var(--text-muted)' }}>
             Generate team priorities and action items for this week, including overdue follow-ups, top objections, and tasks due.
           </p>
           <button
             onClick={() => generateReport('team')}
             disabled={loading !== null}
-            className="w-full px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 disabled:bg-zinc-700 disabled:text-zinc-500 text-white text-sm font-medium transition-colors flex items-center justify-center gap-2"
+            className="w-full px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
+            style={{
+              backgroundColor: loading !== null ? 'var(--surface-2)' : 'var(--accent)',
+              color: loading !== null ? 'var(--text-muted)' : 'var(--surface-0)',
+              opacity: hoverStates['teamBtn'] && loading === null ? 0.85 : 1,
+            }}
+            onMouseEnter={() => setHover('teamBtn', true)}
+            onMouseLeave={() => setHover('teamBtn', false)}
           >
             {loading === 'team' ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
             {loading === 'team' ? 'Generating...' : 'Generate'}
@@ -139,20 +156,21 @@ export default function ReportsPage() {
         </div>
 
         {/* Investor Brief */}
-        <div className="border border-zinc-800 rounded-xl p-5 bg-zinc-900/50">
+        <div className="rounded-xl p-5" style={{ border: '1px solid var(--border-subtle)', backgroundColor: 'color-mix(in srgb, var(--surface-1) 50%, transparent)' }}>
           <div className="flex items-center gap-3 mb-3">
-            <span className="w-8 h-8 rounded-lg bg-violet-900/50 flex items-center justify-center">
-              <Users2 className="w-4 h-4 text-violet-400" />
+            <span className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'color-mix(in srgb, var(--accent-muted) 20%, transparent)' }}>
+              <Users2 className="w-4 h-4" style={{ color: 'var(--accent-muted)' }} />
             </span>
-            <h2 className="font-semibold text-sm">Investor Brief</h2>
+            <h2 className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>Investor Brief</h2>
           </div>
-          <p className="text-zinc-500 text-xs leading-relaxed mb-3">
+          <p className="text-xs leading-relaxed mb-3" style={{ color: 'var(--text-muted)' }}>
             Generate a detailed brief for a specific investor with profile, score, meetings, objections, and assessment.
           </p>
           <select
             value={selectedInvestor}
             onChange={e => setSelectedInvestor(e.target.value)}
-            className="w-full px-3 py-2 rounded-lg bg-zinc-800 border border-zinc-700 text-sm text-zinc-200 mb-3 focus:outline-none focus:border-violet-500"
+            className="w-full px-3 py-2 rounded-lg text-sm mb-3 focus:outline-none"
+            style={{ backgroundColor: 'var(--surface-2)', border: '1px solid var(--border-default)', color: 'var(--text-secondary)' }}
           >
             <option value="">Select investor...</option>
             {investors.map(inv => (
@@ -164,7 +182,14 @@ export default function ReportsPage() {
           <button
             onClick={() => generateReport('investor_brief')}
             disabled={loading !== null || !selectedInvestor}
-            className="w-full px-4 py-2 rounded-lg bg-violet-600 hover:bg-violet-500 disabled:bg-zinc-700 disabled:text-zinc-500 text-white text-sm font-medium transition-colors flex items-center justify-center gap-2"
+            className="w-full px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
+            style={{
+              backgroundColor: (loading !== null || !selectedInvestor) ? 'var(--surface-2)' : 'var(--accent-muted)',
+              color: (loading !== null || !selectedInvestor) ? 'var(--text-muted)' : 'var(--surface-0)',
+              opacity: hoverStates['invBtn'] && loading === null && selectedInvestor ? 0.85 : 1,
+            }}
+            onMouseEnter={() => setHover('invBtn', true)}
+            onMouseLeave={() => setHover('invBtn', false)}
           >
             {loading === 'investor_brief' ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
             {loading === 'investor_brief' ? 'Generating...' : 'Generate'}
@@ -174,29 +199,32 @@ export default function ReportsPage() {
 
       {/* Error */}
       {error && (
-        <div className="border border-red-800 bg-red-900/20 rounded-lg p-4 text-red-300 text-sm">
+        <div className="rounded-lg p-4 text-sm" style={{ border: '1px solid var(--danger)', backgroundColor: 'var(--danger-muted)', color: 'var(--danger)' }}>
           {error}
         </div>
       )}
 
       {/* Report Display */}
       {reportHtml && (
-        <div className="border border-zinc-800 rounded-xl overflow-hidden bg-zinc-900/50">
+        <div className="rounded-xl overflow-hidden" style={{ border: '1px solid var(--border-subtle)', backgroundColor: 'color-mix(in srgb, var(--surface-1) 50%, transparent)' }}>
           {/* Report toolbar */}
-          <div className="flex items-center justify-between px-5 py-3 border-b border-zinc-800">
+          <div className="flex items-center justify-between px-5 py-3" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
             <div className="flex items-center gap-3">
-              <span className="text-sm font-semibold text-zinc-300">
+              <span className="text-sm font-semibold" style={{ color: 'var(--text-secondary)' }}>
                 {reportTypeLabels[reportType || ''] || 'Report'}
               </span>
               {generatedAt && (
-                <span className="text-xs text-zinc-600">
+                <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
                   Generated {generatedAt}
                 </span>
               )}
             </div>
             <button
               onClick={handlePrint}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-medium transition-colors"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
+              style={{ backgroundColor: hoverStates['printBtn'] ? 'var(--surface-3)' : 'var(--surface-2)', color: 'var(--text-secondary)' }}
+              onMouseEnter={() => setHover('printBtn', true)}
+              onMouseLeave={() => setHover('printBtn', false)}
             >
               <Printer className="w-3.5 h-3.5" />
               Print / Save as PDF
@@ -207,8 +235,8 @@ export default function ReportsPage() {
           <iframe
             ref={iframeRef}
             srcDoc={reportHtml}
-            className="w-full bg-white"
-            style={{ minHeight: '800px', border: 'none' }}
+            className="w-full"
+            style={{ minHeight: '800px', border: 'none', backgroundColor: 'var(--surface-0)' }}
             title="Report Preview"
             onLoad={() => {
               // Auto-resize iframe to fit content

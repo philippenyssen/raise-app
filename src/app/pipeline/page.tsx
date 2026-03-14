@@ -31,26 +31,86 @@ const STATUS_LABELS: Record<InvestorStatus, string> = {
   dropped: 'Dropped',
 };
 
-// Color gradient: cool (early) → warm (late)
-const COLUMN_COLORS: Record<InvestorStatus, { header: string; border: string; bg: string; badge: string }> = {
-  identified:        { header: 'bg-slate-800/60',   border: 'border-slate-700/50',  bg: 'bg-slate-900/20',  badge: 'bg-slate-700 text-slate-300' },
-  contacted:         { header: 'bg-blue-900/40',    border: 'border-blue-800/40',   bg: 'bg-blue-950/10',   badge: 'bg-blue-800 text-blue-300' },
-  nda_signed:        { header: 'bg-blue-800/40',    border: 'border-blue-700/40',   bg: 'bg-blue-950/15',   badge: 'bg-blue-700 text-blue-200' },
-  meeting_scheduled: { header: 'bg-indigo-900/40',  border: 'border-indigo-700/40', bg: 'bg-indigo-950/10', badge: 'bg-indigo-700 text-indigo-200' },
-  met:               { header: 'bg-violet-900/40',  border: 'border-violet-700/40', bg: 'bg-violet-950/10', badge: 'bg-violet-700 text-violet-200' },
-  engaged:           { header: 'bg-purple-900/40',  border: 'border-purple-700/40', bg: 'bg-purple-950/10', badge: 'bg-purple-700 text-purple-200' },
-  in_dd:             { header: 'bg-amber-900/40',   border: 'border-amber-700/40',  bg: 'bg-amber-950/10',  badge: 'bg-amber-700 text-amber-200' },
-  term_sheet:        { header: 'bg-orange-900/40',  border: 'border-orange-700/40', bg: 'bg-orange-950/10', badge: 'bg-orange-700 text-orange-200' },
-  closed:            { header: 'bg-emerald-900/40', border: 'border-emerald-700/40',bg: 'bg-emerald-950/10',badge: 'bg-emerald-700 text-emerald-200' },
-  passed:            { header: 'bg-red-900/30',     border: 'border-red-800/40',    bg: 'bg-red-950/10',    badge: 'bg-red-800 text-red-300' },
-  dropped:           { header: 'bg-zinc-800/40',    border: 'border-zinc-700/40',   bg: 'bg-zinc-900/20',   badge: 'bg-zinc-700 text-zinc-400' },
+// Color gradient using design tokens: cool (early) → warm (late)
+const COLUMN_COLORS: Record<InvestorStatus, {
+  header: React.CSSProperties;
+  border: React.CSSProperties;
+  bg: React.CSSProperties;
+  badge: React.CSSProperties;
+}> = {
+  identified: {
+    header: { background: 'rgba(113, 113, 122, 0.15)' },
+    border: { borderColor: 'var(--border-subtle)' },
+    bg: { background: 'rgba(113, 113, 122, 0.04)' },
+    badge: { background: 'rgba(113, 113, 122, 0.25)', color: 'var(--text-secondary)' },
+  },
+  contacted: {
+    header: { background: 'rgba(59, 130, 246, 0.1)' },
+    border: { borderColor: 'rgba(59, 130, 246, 0.2)' },
+    bg: { background: 'rgba(59, 130, 246, 0.03)' },
+    badge: { background: 'rgba(59, 130, 246, 0.25)', color: '#60a5fa' },
+  },
+  nda_signed: {
+    header: { background: 'rgba(59, 130, 246, 0.15)' },
+    border: { borderColor: 'rgba(59, 130, 246, 0.25)' },
+    bg: { background: 'rgba(59, 130, 246, 0.04)' },
+    badge: { background: 'rgba(59, 130, 246, 0.3)', color: '#93bbfd' },
+  },
+  meeting_scheduled: {
+    header: { background: 'rgba(99, 102, 241, 0.12)' },
+    border: { borderColor: 'rgba(99, 102, 241, 0.25)' },
+    bg: { background: 'rgba(99, 102, 241, 0.03)' },
+    badge: { background: 'rgba(99, 102, 241, 0.3)', color: '#a5b4fc' },
+  },
+  met: {
+    header: { background: 'rgba(139, 92, 246, 0.12)' },
+    border: { borderColor: 'rgba(139, 92, 246, 0.25)' },
+    bg: { background: 'rgba(139, 92, 246, 0.03)' },
+    badge: { background: 'rgba(139, 92, 246, 0.3)', color: '#c4b5fd' },
+  },
+  engaged: {
+    header: { background: 'rgba(168, 85, 247, 0.12)' },
+    border: { borderColor: 'rgba(168, 85, 247, 0.25)' },
+    bg: { background: 'rgba(168, 85, 247, 0.03)' },
+    badge: { background: 'rgba(168, 85, 247, 0.3)', color: '#d8b4fe' },
+  },
+  in_dd: {
+    header: { background: 'rgba(245, 158, 11, 0.12)' },
+    border: { borderColor: 'rgba(245, 158, 11, 0.25)' },
+    bg: { background: 'rgba(245, 158, 11, 0.03)' },
+    badge: { background: 'rgba(245, 158, 11, 0.3)', color: '#fbbf24' },
+  },
+  term_sheet: {
+    header: { background: 'rgba(34, 197, 94, 0.1)' },
+    border: { borderColor: 'rgba(34, 197, 94, 0.25)' },
+    bg: { background: 'rgba(34, 197, 94, 0.03)' },
+    badge: { background: 'rgba(34, 197, 94, 0.3)', color: '#4ade80' },
+  },
+  closed: {
+    header: { background: 'rgba(34, 197, 94, 0.15)' },
+    border: { borderColor: 'rgba(34, 197, 94, 0.3)' },
+    bg: { background: 'rgba(34, 197, 94, 0.05)' },
+    badge: { background: 'rgba(34, 197, 94, 0.35)', color: '#86efac' },
+  },
+  passed: {
+    header: { background: 'rgba(239, 68, 68, 0.08)' },
+    border: { borderColor: 'rgba(239, 68, 68, 0.2)' },
+    bg: { background: 'rgba(239, 68, 68, 0.03)' },
+    badge: { background: 'rgba(239, 68, 68, 0.25)', color: '#f87171' },
+  },
+  dropped: {
+    header: { background: 'rgba(113, 113, 122, 0.1)' },
+    border: { borderColor: 'var(--border-subtle)' },
+    bg: { background: 'rgba(113, 113, 122, 0.03)' },
+    badge: { background: 'rgba(113, 113, 122, 0.2)', color: 'var(--text-tertiary)' },
+  },
 };
 
-const TIER_COLORS: Record<number, string> = {
-  1: 'bg-blue-600/20 text-blue-400 border-blue-600/30',
-  2: 'bg-purple-600/20 text-purple-400 border-purple-600/30',
-  3: 'bg-zinc-600/20 text-zinc-400 border-zinc-600/30',
-  4: 'bg-zinc-800/50 text-zinc-500 border-zinc-700/30',
+const TIER_STYLES: Record<number, React.CSSProperties> = {
+  1: { background: 'var(--accent-muted)', color: '#60a5fa', borderColor: 'rgba(59, 130, 246, 0.3)' },
+  2: { background: 'rgba(168, 85, 247, 0.12)', color: '#c084fc', borderColor: 'rgba(168, 85, 247, 0.3)' },
+  3: { background: 'rgba(113, 113, 122, 0.12)', color: 'var(--text-secondary)', borderColor: 'var(--border-default)' },
+  4: { background: 'rgba(113, 113, 122, 0.08)', color: 'var(--text-muted)', borderColor: 'var(--border-subtle)' },
 };
 
 const TYPE_LABELS: Record<InvestorType, string> = {
@@ -71,13 +131,13 @@ const TYPE_ICONS: Record<InvestorType, React.ComponentType<{ className?: string 
   family_office: Home,
 };
 
-const TYPE_COLORS: Record<InvestorType, string> = {
-  vc: 'bg-blue-900/30 text-blue-400 border-blue-700/30',
-  growth: 'bg-purple-900/30 text-purple-400 border-purple-700/30',
-  sovereign: 'bg-amber-900/30 text-amber-400 border-amber-700/30',
-  strategic: 'bg-emerald-900/30 text-emerald-400 border-emerald-700/30',
-  debt: 'bg-orange-900/30 text-orange-400 border-orange-700/30',
-  family_office: 'bg-rose-900/30 text-rose-400 border-rose-700/30',
+const TYPE_STYLES: Record<InvestorType, React.CSSProperties> = {
+  vc: { background: 'var(--accent-muted)', color: '#60a5fa', borderColor: 'rgba(59, 130, 246, 0.3)' },
+  growth: { background: 'rgba(168, 85, 247, 0.12)', color: '#c084fc', borderColor: 'rgba(168, 85, 247, 0.3)' },
+  sovereign: { background: 'var(--warning-muted)', color: '#fbbf24', borderColor: 'rgba(245, 158, 11, 0.3)' },
+  strategic: { background: 'var(--success-muted)', color: '#4ade80', borderColor: 'rgba(34, 197, 94, 0.3)' },
+  debt: { background: 'rgba(249, 115, 22, 0.12)', color: '#fb923c', borderColor: 'rgba(249, 115, 22, 0.3)' },
+  family_office: { background: 'rgba(244, 63, 94, 0.12)', color: '#fb7185', borderColor: 'rgba(244, 63, 94, 0.3)' },
 };
 
 // ── Pipeline velocity stage weights ──────────────────────────────────
@@ -85,6 +145,14 @@ const STAGE_WEIGHTS: Record<InvestorStatus, number> = {
   identified: 0, contacted: 1, nda_signed: 2, meeting_scheduled: 3,
   met: 4, engaged: 5, in_dd: 6, term_sheet: 8, closed: 10,
   passed: 0, dropped: 0,
+};
+
+// ── Stat icon color map ──────────────────────────────────────────────
+const STAT_ICON_COLORS: Record<string, string> = {
+  blue: 'var(--accent)',
+  purple: '#a855f7',
+  amber: 'var(--warning)',
+  emerald: 'var(--success)',
 };
 
 export default function PipelinePage() {
@@ -229,18 +297,18 @@ export default function PipelinePage() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="h-8 w-64 bg-zinc-800 rounded animate-pulse" />
+        <div className="skeleton" style={{ height: '2rem', width: '16rem' }} />
         <div className="flex gap-3">
           {[...Array(3)].map((_, i) => (
-            <div key={i} className="h-20 w-36 bg-zinc-800/50 rounded-lg animate-pulse" />
+            <div key={i} className="skeleton" style={{ height: '5rem', width: '9rem', borderRadius: 'var(--radius-lg)' }} />
           ))}
         </div>
         <div className="flex gap-4 overflow-hidden">
           {[...Array(5)].map((_, i) => (
-            <div key={i} className="min-w-[260px] space-y-3">
-              <div className="h-10 bg-zinc-800/50 rounded-lg animate-pulse" />
+            <div key={i} className="space-y-3" style={{ minWidth: '260px' }}>
+              <div className="skeleton" style={{ height: '2.5rem', borderRadius: 'var(--radius-lg)' }} />
               {[...Array(Math.max(0, 3 - i))].map((_, j) => (
-                <div key={j} className="h-28 bg-zinc-800/30 rounded-lg animate-pulse" />
+                <div key={j} className="skeleton" style={{ height: '7rem', borderRadius: 'var(--radius-lg)' }} />
               ))}
             </div>
           ))}
@@ -254,31 +322,20 @@ export default function PipelinePage() {
       {/* ── Header ──────────────────────────────────────────────── */}
       <div className="flex items-center justify-between flex-shrink-0">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Investor Pipeline</h1>
-          <p className="text-zinc-500 text-sm mt-1">
+          <h1 className="page-title" style={{ fontSize: 'var(--font-size-xl)' }}>Investor Pipeline</h1>
+          <p className="page-subtitle" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', marginTop: 'var(--space-1)' }}>
             Drag investors across stages to update status
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <button
+          <FilterButton
+            active={hasActiveFilters}
+            count={filters.tiers.size + filters.types.size}
             onClick={() => setShowFilters(!showFilters)}
-            className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors border ${
-              hasActiveFilters
-                ? 'bg-blue-600/20 border-blue-600/40 text-blue-400'
-                : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:border-zinc-700'
-            }`}
-          >
-            <Filter className="w-3.5 h-3.5" />
-            Filters
-            {hasActiveFilters && (
-              <span className="bg-blue-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
-                {filters.tiers.size + filters.types.size}
-              </span>
-            )}
-          </button>
+          />
           <Link
             href="/investors"
-            className="px-3 py-2 bg-zinc-900 border border-zinc-800 rounded-lg text-sm text-zinc-400 hover:text-zinc-200 hover:border-zinc-700 transition-colors"
+            className="btn btn-secondary btn-sm"
           >
             Table View
           </Link>
@@ -292,40 +349,55 @@ export default function PipelinePage() {
           label="Total Investors"
           value={String(totalCount)}
           sub={`${activeInvestors.length} active`}
-          color="text-blue-400"
+          iconColor={STAT_ICON_COLORS.blue}
         />
         <StatCard
           icon={<TrendingUp className="w-4 h-4" />}
           label="Avg Enthusiasm"
           value={avgEnthusiasm > 0 ? avgEnthusiasm.toFixed(1) : '---'}
           sub="out of 5"
-          color="text-purple-400"
+          iconColor={STAT_ICON_COLORS.purple}
         />
         <StatCard
           icon={<Zap className="w-4 h-4" />}
           label="Pipeline Velocity"
           value={pipelineVelocity > 0 ? pipelineVelocity.toFixed(1) : '---'}
           sub="weighted stage avg"
-          color="text-amber-400"
+          iconColor={STAT_ICON_COLORS.amber}
         />
         <StatCard
           icon={<Building2 className="w-4 h-4" />}
           label="In DD+"
           value={String(filtered.filter(i => ['in_dd', 'term_sheet', 'closed'].includes(i.status)).length)}
           sub="advanced stage"
-          color="text-emerald-400"
+          iconColor={STAT_ICON_COLORS.emerald}
         />
       </div>
 
       {/* ── Filter Bar ──────────────────────────────────────────── */}
       {showFilters && (
-        <div className="border border-zinc-800 rounded-xl p-4 space-y-3 flex-shrink-0">
+        <div
+          className="flex-shrink-0 space-y-3"
+          style={{
+            border: '1px solid var(--border-default)',
+            borderRadius: 'var(--radius-xl)',
+            padding: 'var(--space-4)',
+          }}
+        >
           <div className="flex items-center justify-between">
-            <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Filters</h3>
+            <h3
+              className="section-title"
+              style={{ marginBottom: 0 }}
+            >
+              Filters
+            </h3>
             {hasActiveFilters && (
               <button
                 onClick={clearFilters}
-                className="text-xs text-zinc-500 hover:text-zinc-300 flex items-center gap-1"
+                className="flex items-center gap-1"
+                style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}
               >
                 <X className="w-3 h-3" /> Clear all
               </button>
@@ -333,38 +405,29 @@ export default function PipelinePage() {
           </div>
           <div className="flex flex-wrap gap-4">
             <div>
-              <span className="text-xs text-zinc-600 block mb-1.5">Tier</span>
+              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', display: 'block', marginBottom: '0.375rem' }}>Tier</span>
               <div className="flex gap-1.5">
                 {[1, 2, 3, 4].map(tier => (
-                  <button
+                  <TierFilterButton
                     key={tier}
+                    tier={tier}
+                    active={filters.tiers.has(tier)}
                     onClick={() => toggleTier(tier)}
-                    className={`px-2.5 py-1 rounded text-xs font-medium transition-colors border ${
-                      filters.tiers.has(tier)
-                        ? TIER_COLORS[tier]
-                        : 'bg-zinc-900 border-zinc-800 text-zinc-500 hover:text-zinc-300 hover:border-zinc-700'
-                    }`}
-                  >
-                    T{tier}
-                  </button>
+                  />
                 ))}
               </div>
             </div>
             <div>
-              <span className="text-xs text-zinc-600 block mb-1.5">Type</span>
+              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', display: 'block', marginBottom: '0.375rem' }}>Type</span>
               <div className="flex gap-1.5 flex-wrap">
                 {(Object.entries(TYPE_LABELS) as [InvestorType, string][]).map(([key, label]) => (
-                  <button
+                  <TypeFilterButton
                     key={key}
+                    type={key}
+                    label={label}
+                    active={filters.types.has(key)}
                     onClick={() => toggleType(key)}
-                    className={`px-2.5 py-1 rounded text-xs font-medium transition-colors border ${
-                      filters.types.has(key)
-                        ? TYPE_COLORS[key]
-                        : 'bg-zinc-900 border-zinc-800 text-zinc-500 hover:text-zinc-300 hover:border-zinc-700'
-                    }`}
-                  >
-                    {label}
-                  </button>
+                  />
                 ))}
               </div>
             </div>
@@ -386,27 +449,60 @@ export default function PipelinePage() {
             return (
               <div
                 key={status}
-                className={`w-[260px] flex flex-col rounded-xl border transition-colors ${colors.border} ${
-                  isOver ? 'ring-2 ring-blue-500/40 border-blue-600/50' : ''
-                }`}
+                className="w-[260px] flex flex-col"
+                style={{
+                  borderRadius: 'var(--radius-xl)',
+                  border: '1px solid',
+                  ...colors.border,
+                  transition: 'all 150ms ease',
+                  ...(isOver ? {
+                    boxShadow: '0 0 0 2px rgba(59, 130, 246, 0.4)',
+                    borderColor: 'rgba(59, 130, 246, 0.5)',
+                  } : {}),
+                }}
                 onDragOver={e => handleDragOver(e, status)}
                 onDragLeave={handleDragLeave}
                 onDrop={e => handleDrop(e, status)}
               >
                 {/* Column header */}
-                <div className={`px-3 py-2.5 rounded-t-xl ${colors.header} border-b ${colors.border}`}>
+                <div
+                  style={{
+                    padding: '0.625rem 0.75rem',
+                    borderTopLeftRadius: 'var(--radius-xl)',
+                    borderTopRightRadius: 'var(--radius-xl)',
+                    borderBottom: '1px solid',
+                    ...colors.border,
+                    ...colors.header,
+                  }}
+                >
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold text-zinc-200 tracking-wide">
+                    <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '0.04em' }}>
                       {STATUS_LABELS[status]}
                     </span>
-                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${colors.badge}`}>
+                    <span
+                      style={{
+                        fontSize: '10px',
+                        fontWeight: 700,
+                        padding: '0.125rem 0.375rem',
+                        borderRadius: '9999px',
+                        ...colors.badge,
+                      }}
+                    >
                       {cards.length}
                     </span>
                   </div>
                 </div>
 
                 {/* Cards container */}
-                <div className={`flex-1 overflow-y-auto p-2 space-y-2 ${colors.bg} rounded-b-xl min-h-[120px]`}>
+                <div
+                  className="flex-1 overflow-y-auto p-2 space-y-2"
+                  style={{
+                    ...colors.bg,
+                    borderBottomLeftRadius: 'var(--radius-xl)',
+                    borderBottomRightRadius: 'var(--radius-xl)',
+                    minHeight: '120px',
+                  }}
+                >
                   {cards.map(inv => (
                     <InvestorCard
                       key={inv.id}
@@ -417,7 +513,10 @@ export default function PipelinePage() {
                     />
                   ))}
                   {cards.length === 0 && (
-                    <div className="flex items-center justify-center h-20 text-zinc-700 text-xs">
+                    <div
+                      className="flex items-center justify-center"
+                      style={{ height: '5rem', color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}
+                    >
                       Drop here
                     </div>
                   )}
@@ -430,7 +529,10 @@ export default function PipelinePage() {
 
       {/* ── Exit Row (Passed / Dropped) ─────────────────────────── */}
       {EXIT_STATUSES.some(s => investorsInStatus(s).length > 0 || dragId) && (
-        <div className="flex-shrink-0 border-t border-zinc-800 pt-4">
+        <div
+          className="flex-shrink-0 pt-4"
+          style={{ borderTop: '1px solid var(--border-default)' }}
+        >
           <div className="flex gap-4">
             {EXIT_STATUSES.map(status => {
               const cards = investorsInStatus(status);
@@ -440,24 +542,56 @@ export default function PipelinePage() {
               return (
                 <div
                   key={status}
-                  className={`flex-1 rounded-xl border transition-colors ${colors.border} ${
-                    isOver ? 'ring-2 ring-blue-500/40 border-blue-600/50' : ''
-                  }`}
+                  className="flex-1"
+                  style={{
+                    borderRadius: 'var(--radius-xl)',
+                    border: '1px solid',
+                    ...colors.border,
+                    transition: 'all 150ms ease',
+                    ...(isOver ? {
+                      boxShadow: '0 0 0 2px rgba(59, 130, 246, 0.4)',
+                      borderColor: 'rgba(59, 130, 246, 0.5)',
+                    } : {}),
+                  }}
                   onDragOver={e => handleDragOver(e, status)}
                   onDragLeave={handleDragLeave}
                   onDrop={e => handleDrop(e, status)}
                 >
-                  <div className={`px-3 py-2 rounded-t-xl ${colors.header} border-b ${colors.border}`}>
+                  <div
+                    style={{
+                      padding: '0.5rem 0.75rem',
+                      borderTopLeftRadius: 'var(--radius-xl)',
+                      borderTopRightRadius: 'var(--radius-xl)',
+                      borderBottom: '1px solid',
+                      ...colors.border,
+                      ...colors.header,
+                    }}
+                  >
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-semibold text-zinc-300 tracking-wide">
+                      <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'var(--text-secondary)', letterSpacing: '0.04em' }}>
                         {STATUS_LABELS[status]}
                       </span>
-                      <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${colors.badge}`}>
+                      <span
+                        style={{
+                          fontSize: '10px',
+                          fontWeight: 700,
+                          padding: '0.125rem 0.375rem',
+                          borderRadius: '9999px',
+                          ...colors.badge,
+                        }}
+                      >
                         {cards.length}
                       </span>
                     </div>
                   </div>
-                  <div className={`p-2 ${colors.bg} rounded-b-xl`}>
+                  <div
+                    className="p-2"
+                    style={{
+                      ...colors.bg,
+                      borderBottomLeftRadius: 'var(--radius-xl)',
+                      borderBottomRightRadius: 'var(--radius-xl)',
+                    }}
+                  >
                     {cards.length > 0 ? (
                       <div className="flex flex-wrap gap-2">
                         {cards.map(inv => (
@@ -472,7 +606,10 @@ export default function PipelinePage() {
                         ))}
                       </div>
                     ) : (
-                      <div className="flex items-center justify-center h-12 text-zinc-700 text-xs">
+                      <div
+                        className="flex items-center justify-center"
+                        style={{ height: '3rem', color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}
+                      >
                         {dragId ? 'Drop here' : 'None'}
                       </div>
                     )}
@@ -487,25 +624,166 @@ export default function PipelinePage() {
   );
 }
 
+// ── Filter Button Component ──────────────────────────────────────────
+function FilterButton({
+  active,
+  count,
+  onClick,
+}: {
+  active: boolean;
+  count: number;
+  onClick: () => void;
+}) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <button
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      className="flex items-center gap-2"
+      style={{
+        padding: '0.5rem 0.75rem',
+        borderRadius: 'var(--radius-lg)',
+        fontSize: 'var(--font-size-sm)',
+        fontWeight: 500,
+        transition: 'all 150ms ease',
+        border: '1px solid',
+        ...(active
+          ? {
+              background: 'var(--accent-muted)',
+              borderColor: 'rgba(59, 130, 246, 0.4)',
+              color: '#60a5fa',
+            }
+          : {
+              background: 'var(--surface-1)',
+              borderColor: hovered ? 'var(--border-strong)' : 'var(--border-default)',
+              color: hovered ? 'var(--text-secondary)' : 'var(--text-tertiary)',
+            }),
+      }}
+    >
+      <Filter className="w-3.5 h-3.5" />
+      Filters
+      {active && (
+        <span
+          style={{
+            background: 'var(--accent)',
+            color: 'white',
+            fontSize: '10px',
+            fontWeight: 700,
+            padding: '0.125rem 0.375rem',
+            borderRadius: '9999px',
+          }}
+        >
+          {count}
+        </span>
+      )}
+    </button>
+  );
+}
+
+// ── Tier Filter Button Component ──────────────────────────────────────
+function TierFilterButton({
+  tier,
+  active,
+  onClick,
+}: {
+  tier: number;
+  active: boolean;
+  onClick: () => void;
+}) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <button
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        padding: '0.25rem 0.625rem',
+        borderRadius: 'var(--radius-sm)',
+        fontSize: 'var(--font-size-xs)',
+        fontWeight: 500,
+        transition: 'all 150ms ease',
+        border: '1px solid',
+        ...(active
+          ? TIER_STYLES[tier]
+          : {
+              background: 'var(--surface-1)',
+              borderColor: hovered ? 'var(--border-strong)' : 'var(--border-default)',
+              color: hovered ? 'var(--text-secondary)' : 'var(--text-muted)',
+            }),
+      }}
+    >
+      T{tier}
+    </button>
+  );
+}
+
+// ── Type Filter Button Component ──────────────────────────────────────
+function TypeFilterButton({
+  type,
+  label,
+  active,
+  onClick,
+}: {
+  type: InvestorType;
+  label: string;
+  active: boolean;
+  onClick: () => void;
+}) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <button
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        padding: '0.25rem 0.625rem',
+        borderRadius: 'var(--radius-sm)',
+        fontSize: 'var(--font-size-xs)',
+        fontWeight: 500,
+        transition: 'all 150ms ease',
+        border: '1px solid',
+        ...(active
+          ? TYPE_STYLES[type]
+          : {
+              background: 'var(--surface-1)',
+              borderColor: hovered ? 'var(--border-strong)' : 'var(--border-default)',
+              color: hovered ? 'var(--text-secondary)' : 'var(--text-muted)',
+            }),
+      }}
+    >
+      {label}
+    </button>
+  );
+}
+
 // ── Stat Card Component ──────────────────────────────────────────────
 function StatCard({
-  icon, label, value, sub, color,
+  icon, label, value, sub, iconColor,
 }: {
   icon: React.ReactNode;
   label: string;
   value: string;
   sub: string;
-  color: string;
+  iconColor: string;
 }) {
   return (
-    <div className="border border-zinc-800 rounded-xl px-4 py-3 bg-zinc-900/30">
-      <div className="flex items-center gap-2 mb-1">
-        <span className={color}>{icon}</span>
-        <span className="text-[10px] font-medium text-zinc-500 uppercase tracking-wider">{label}</span>
+    <div
+      className="card"
+      style={{
+        padding: 'var(--space-3) var(--space-4)',
+      }}
+    >
+      <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-1)' }}>
+        <span style={{ color: iconColor }}>{icon}</span>
+        <span className="metric-label">{label}</span>
       </div>
       <div className="flex items-baseline gap-1.5">
-        <span className="text-xl font-bold text-zinc-100">{value}</span>
-        <span className="text-[10px] text-zinc-600">{sub}</span>
+        <span style={{ fontSize: 'var(--font-size-xl)', fontWeight: 700, color: 'var(--text-primary)' }}>{value}</span>
+        <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{sub}</span>
       </div>
     </div>
   );
@@ -525,7 +803,18 @@ function InvestorCard({
   onDragStart: (e: React.DragEvent, id: string) => void;
   onDragEnd: (e: React.DragEvent) => void;
 }) {
+  const [hovered, setHovered] = useState(false);
   const TypeIcon = TYPE_ICONS[investor.type as InvestorType] || Building2;
+
+  const cardBaseStyle: React.CSSProperties = {
+    background: hovered ? 'var(--surface-2)' : 'var(--surface-1)',
+    border: '1px solid',
+    borderColor: hovered ? 'var(--border-strong)' : 'var(--border-default)',
+    borderRadius: 'var(--radius-lg)',
+    cursor: 'grab',
+    transition: 'all 150ms ease',
+    ...(isDragging ? { opacity: 0.5, transform: 'scale(0.95)' } : {}),
+  };
 
   if (compact) {
     return (
@@ -533,14 +822,26 @@ function InvestorCard({
         draggable
         onDragStart={e => onDragStart(e, investor.id)}
         onDragEnd={onDragEnd}
-        className={`group bg-zinc-900/80 border border-zinc-800 rounded-lg px-3 py-2 cursor-grab active:cursor-grabbing transition-all hover:border-zinc-700 ${
-          isDragging ? 'opacity-50 scale-95' : ''
-        }`}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        style={{
+          ...cardBaseStyle,
+          padding: '0.5rem 0.75rem',
+        }}
       >
         <Link href={`/investors/${investor.id}`} className="flex items-center gap-2">
-          <GripVertical className="w-3 h-3 text-zinc-700 group-hover:text-zinc-500 flex-shrink-0" />
-          <span className="text-xs font-medium text-zinc-300 truncate">{investor.name}</span>
-          <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium border ${TIER_COLORS[investor.tier]}`}>
+          <GripVertical className="w-3 h-3 flex-shrink-0" style={{ color: hovered ? 'var(--text-muted)' : 'var(--border-strong)' }} />
+          <span className="truncate" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-secondary)' }}>{investor.name}</span>
+          <span
+            style={{
+              padding: '0.125rem 0.375rem',
+              borderRadius: 'var(--radius-sm)',
+              fontSize: '10px',
+              fontWeight: 500,
+              border: '1px solid',
+              ...TIER_STYLES[investor.tier],
+            }}
+          >
             T{investor.tier}
           </span>
         </Link>
@@ -553,26 +854,59 @@ function InvestorCard({
       draggable
       onDragStart={e => onDragStart(e, investor.id)}
       onDragEnd={onDragEnd}
-      className={`group bg-zinc-900/80 border border-zinc-800 rounded-lg p-3 cursor-grab active:cursor-grabbing transition-all hover:border-zinc-700 hover:bg-zinc-900 ${
-        isDragging ? 'opacity-50 scale-95' : ''
-      }`}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        ...cardBaseStyle,
+        padding: 'var(--space-3)',
+      }}
     >
       <Link href={`/investors/${investor.id}`} className="block space-y-2.5" draggable={false}>
         {/* Top row: name + drag handle */}
         <div className="flex items-start justify-between gap-1">
-          <span className="text-sm font-medium text-zinc-200 leading-tight group-hover:text-white transition-colors">
+          <span
+            style={{
+              fontSize: 'var(--font-size-sm)',
+              fontWeight: 500,
+              color: hovered ? 'var(--text-primary)' : 'var(--text-secondary)',
+              lineHeight: 1.3,
+              transition: 'color 150ms ease',
+            }}
+          >
             {investor.name}
           </span>
-          <GripVertical className="w-3.5 h-3.5 text-zinc-700 group-hover:text-zinc-500 flex-shrink-0 mt-0.5" />
+          <GripVertical
+            className="w-3.5 h-3.5 flex-shrink-0 mt-0.5"
+            style={{ color: hovered ? 'var(--text-muted)' : 'var(--border-strong)' }}
+          />
         </div>
 
         {/* Badges row: type + tier */}
         <div className="flex items-center gap-1.5">
-          <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium border ${TYPE_COLORS[investor.type as InvestorType]}`}>
+          <span
+            className="inline-flex items-center gap-1"
+            style={{
+              padding: '0.125rem 0.375rem',
+              borderRadius: 'var(--radius-sm)',
+              fontSize: '10px',
+              fontWeight: 500,
+              border: '1px solid',
+              ...TYPE_STYLES[investor.type as InvestorType],
+            }}
+          >
             <TypeIcon className="w-2.5 h-2.5" />
             {TYPE_LABELS[investor.type as InvestorType] ?? investor.type}
           </span>
-          <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium border ${TIER_COLORS[investor.tier]}`}>
+          <span
+            style={{
+              padding: '0.125rem 0.375rem',
+              borderRadius: 'var(--radius-sm)',
+              fontSize: '10px',
+              fontWeight: 500,
+              border: '1px solid',
+              ...TIER_STYLES[investor.tier],
+            }}
+          >
             T{investor.tier}
           </span>
         </div>
@@ -580,13 +914,13 @@ function InvestorCard({
         {/* Details */}
         <div className="space-y-1">
           {investor.partner && (
-            <div className="text-[11px] text-zinc-500 truncate">
-              <span className="text-zinc-600">Partner:</span> {investor.partner}
+            <div className="truncate" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+              <span style={{ color: 'var(--text-muted)' }}>Partner:</span> {investor.partner}
             </div>
           )}
           {investor.fund_size && (
-            <div className="text-[11px] text-zinc-500 truncate">
-              <span className="text-zinc-600">Fund:</span> {investor.fund_size}
+            <div className="truncate" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+              <span style={{ color: 'var(--text-muted)' }}>Fund:</span> {investor.fund_size}
             </div>
           )}
         </div>
@@ -594,20 +928,21 @@ function InvestorCard({
         {/* Enthusiasm dots */}
         {investor.enthusiasm > 0 && (
           <div className="flex items-center gap-1.5">
-            <span className="text-[10px] text-zinc-600">Signal</span>
-            <div className="flex gap-0.5">
+            <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Signal</span>
+            <div className="enthusiasm-dots">
               {[1, 2, 3, 4, 5].map(n => (
                 <div
                   key={n}
-                  className={`w-1.5 h-1.5 rounded-full ${
-                    n <= investor.enthusiasm
+                  className="enthusiasm-dot"
+                  style={{
+                    background: n <= investor.enthusiasm
                       ? investor.enthusiasm >= 4
-                        ? 'bg-emerald-500'
+                        ? 'var(--success)'
                         : investor.enthusiasm >= 3
-                        ? 'bg-blue-500'
-                        : 'bg-zinc-500'
-                      : 'bg-zinc-800'
-                  }`}
+                        ? 'var(--accent)'
+                        : 'var(--text-muted)'
+                      : 'var(--border-default)',
+                  }}
                 />
               ))}
             </div>

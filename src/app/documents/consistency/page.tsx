@@ -25,6 +25,9 @@ export default function ConsistencyPage() {
   const [result, setResult] = useState<ConsistencyResult | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [backHovered, setBackHovered] = useState(false);
+  const [recheckHovered, setRecheckHovered] = useState(false);
+  const [retryHovered, setRetryHovered] = useState(false);
 
   const fetchConsistency = useCallback(async () => {
     setLoading(true);
@@ -56,13 +59,19 @@ export default function ConsistencyPage() {
         <div className="flex items-center gap-4">
           <Link
             href="/documents"
-            className="p-2 rounded-lg hover:bg-zinc-800 transition-colors text-zinc-400 hover:text-zinc-200"
+            className="p-2 rounded-lg transition-colors"
+            style={{
+              color: backHovered ? 'var(--text-secondary)' : 'var(--text-tertiary)',
+              background: backHovered ? 'var(--surface-2)' : 'transparent',
+            }}
+            onMouseEnter={() => setBackHovered(true)}
+            onMouseLeave={() => setBackHovered(false)}
           >
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">Consistency Check</h1>
-            <p className="text-zinc-500 text-sm mt-1">
+            <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>Consistency Check</h1>
+            <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
               Cross-document metric comparison
             </p>
           </div>
@@ -70,7 +79,13 @@ export default function ConsistencyPage() {
         <button
           onClick={fetchConsistency}
           disabled={loading}
-          className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 disabled:opacity-50 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+          className="px-4 py-2 disabled:opacity-50 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+          style={{
+            background: recheckHovered ? 'var(--surface-3)' : 'var(--surface-2)',
+            color: 'var(--text-primary)',
+          }}
+          onMouseEnter={() => setRecheckHovered(true)}
+          onMouseLeave={() => setRecheckHovered(false)}
         >
           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           Re-check
@@ -80,21 +95,24 @@ export default function ConsistencyPage() {
       {/* Loading skeleton */}
       {loading && (
         <div className="space-y-4">
-          <div className="h-16 bg-zinc-800/50 rounded-xl animate-pulse" />
+          <div className="h-16 rounded-xl animate-pulse" style={{ background: 'var(--surface-2)' }} />
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-32 bg-zinc-800/50 rounded-xl animate-pulse" />
+            <div key={i} className="h-32 rounded-xl animate-pulse" style={{ background: 'var(--surface-2)' }} />
           ))}
         </div>
       )}
 
       {/* Error */}
       {error && !loading && (
-        <div className="border border-red-900/50 bg-red-950/30 rounded-xl p-6 text-center">
-          <AlertTriangle className="w-8 h-8 text-red-400 mx-auto mb-2" />
-          <p className="text-red-400 font-medium">{error}</p>
+        <div className="rounded-xl p-6 text-center" style={{ border: '1px solid var(--danger-muted)', background: 'var(--danger-muted)' }}>
+          <AlertTriangle className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--danger)' }} />
+          <p className="font-medium" style={{ color: 'var(--danger)' }}>{error}</p>
           <button
             onClick={fetchConsistency}
-            className="mt-3 text-sm text-zinc-400 hover:text-zinc-200 underline"
+            className="mt-3 text-sm underline"
+            style={{ color: retryHovered ? 'var(--text-secondary)' : 'var(--text-tertiary)' }}
+            onMouseEnter={() => setRetryHovered(true)}
+            onMouseLeave={() => setRetryHovered(false)}
           >
             Try again
           </button>
@@ -106,24 +124,24 @@ export default function ConsistencyPage() {
         <>
           {/* Summary banner */}
           <div
-            className={`rounded-xl p-4 flex items-center gap-3 border ${
-              result.consistent
-                ? 'border-green-900/50 bg-green-950/20'
-                : 'border-red-900/50 bg-red-950/20'
-            }`}
+            className="rounded-xl p-4 flex items-center gap-3"
+            style={{
+              border: `1px solid ${result.consistent ? 'var(--success-muted)' : 'var(--danger-muted)'}`,
+              background: result.consistent ? 'var(--success-muted)' : 'var(--danger-muted)',
+            }}
           >
             {result.consistent ? (
-              <CheckCircle className="w-6 h-6 text-green-400 shrink-0" />
+              <CheckCircle className="w-6 h-6 shrink-0" style={{ color: 'var(--success)' }} />
             ) : (
-              <AlertTriangle className="w-6 h-6 text-red-400 shrink-0" />
+              <AlertTriangle className="w-6 h-6 shrink-0" style={{ color: 'var(--danger)' }} />
             )}
             <div className="flex-1">
-              <p className={`font-medium ${result.consistent ? 'text-green-300' : 'text-red-300'}`}>
+              <p className="font-medium" style={{ color: result.consistent ? 'var(--success)' : 'var(--danger)' }}>
                 {result.consistent
                   ? 'All metrics consistent across documents'
                   : `${mismatchCount} inconsistenc${mismatchCount === 1 ? 'y' : 'ies'} found`}
               </p>
-              <p className="text-xs text-zinc-500 mt-0.5">
+              <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
                 {result.checks.length} metric{result.checks.length !== 1 ? 's' : ''} compared
                 {matchCount > 0 && ` \u00b7 ${matchCount} matching`}
                 {mismatchCount > 0 && ` \u00b7 ${mismatchCount} mismatched`}
@@ -135,8 +153,8 @@ export default function ConsistencyPage() {
 
           {/* No checks */}
           {result.checks.length === 0 && (
-            <div className="border border-zinc-800 rounded-xl p-8 text-center">
-              <p className="text-zinc-500">
+            <div className="rounded-xl p-8 text-center" style={{ border: '1px solid var(--border-default)' }}>
+              <p style={{ color: 'var(--text-muted)' }}>
                 No shared metrics found across documents. Add at least 2 documents with overlapping metrics to compare.
               </p>
             </div>
@@ -147,25 +165,25 @@ export default function ConsistencyPage() {
             {result.checks.map((check, i) => (
               <div
                 key={i}
-                className={`border rounded-xl p-4 ${
-                  check.status === 'match'
-                    ? 'border-zinc-800 bg-zinc-900/30'
-                    : 'border-red-900/50 bg-red-950/10'
-                }`}
+                className="rounded-xl p-4"
+                style={{
+                  border: `1px solid ${check.status === 'match' ? 'var(--border-default)' : 'var(--danger-muted)'}`,
+                  background: check.status === 'match' ? 'var(--surface-1)' : 'var(--danger-muted)',
+                }}
               >
                 <div className="flex items-center gap-2 mb-3">
                   {check.status === 'match' ? (
-                    <CheckCircle className="w-4 h-4 text-green-500 shrink-0" />
+                    <CheckCircle className="w-4 h-4 shrink-0" style={{ color: 'var(--success)' }} />
                   ) : (
-                    <AlertTriangle className="w-4 h-4 text-red-400 shrink-0" />
+                    <AlertTriangle className="w-4 h-4 shrink-0" style={{ color: 'var(--danger)' }} />
                   )}
-                  <span className="font-medium text-sm">{check.metric}</span>
+                  <span className="font-medium text-sm" style={{ color: 'var(--text-primary)' }}>{check.metric}</span>
                   <span
-                    className={`text-xs px-2 py-0.5 rounded ml-auto ${
-                      check.status === 'match'
-                        ? 'bg-green-900/30 text-green-400'
-                        : 'bg-red-900/30 text-red-400'
-                    }`}
+                    className="text-xs px-2 py-0.5 rounded ml-auto"
+                    style={{
+                      background: check.status === 'match' ? 'var(--success-muted)' : 'var(--danger-muted)',
+                      color: check.status === 'match' ? 'var(--success)' : 'var(--danger)',
+                    }}
                   >
                     {check.status}
                   </span>
@@ -174,13 +192,13 @@ export default function ConsistencyPage() {
                   {check.values.map((v, j) => (
                     <div
                       key={j}
-                      className="flex items-center justify-between text-sm px-3 py-2 rounded-lg bg-zinc-800/40"
+                      className="flex items-center justify-between text-sm px-3 py-2 rounded-lg"
+                      style={{ background: 'var(--surface-2)' }}
                     >
-                      <span className="text-zinc-400 truncate mr-3">{v.document}</span>
+                      <span className="truncate mr-3" style={{ color: 'var(--text-tertiary)' }}>{v.document}</span>
                       <span
-                        className={`font-mono shrink-0 ${
-                          check.status === 'mismatch' ? 'text-red-300' : 'text-zinc-200'
-                        }`}
+                        className="font-mono shrink-0"
+                        style={{ color: check.status === 'mismatch' ? 'var(--danger)' : 'var(--text-secondary)' }}
                       >
                         {v.value}
                       </span>

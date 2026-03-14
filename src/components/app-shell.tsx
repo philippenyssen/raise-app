@@ -6,12 +6,19 @@ import { ErrorBoundary } from './ui/error-boundary';
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen overflow-hidden" style={{ background: 'var(--surface-0)' }}>
       <Sidebar />
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
         <TopBar />
         <main className="flex-1 overflow-y-auto">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 py-6 sm:py-8 pl-14 md:pl-6">
+          <div
+            className="mx-auto w-full"
+            style={{
+              maxWidth: '1400px',
+              padding: 'var(--space-6) var(--space-6)',
+              paddingLeft: 'max(var(--space-6), 3.5rem)',
+            }}
+          >
             <ErrorBoundary>
               {children}
             </ErrorBoundary>

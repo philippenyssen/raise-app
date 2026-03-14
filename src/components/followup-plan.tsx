@@ -21,13 +21,20 @@ interface FollowupItem {
   completed_at: string | null;
 }
 
-const ACTION_TYPE_CONFIG: Record<string, { label: string; icon: typeof Mail; color: string; bgColor: string }> = {
-  thank_you: { label: 'Thank-You Note', icon: Mail, color: 'text-blue-400', bgColor: 'bg-blue-900/30' },
-  objection_response: { label: 'Objection Response', icon: MessageSquare, color: 'text-red-400', bgColor: 'bg-red-900/30' },
-  data_share: { label: 'Share Materials', icon: FolderOpen, color: 'text-purple-400', bgColor: 'bg-purple-900/30' },
-  schedule_followup: { label: 'Schedule Meeting', icon: CalendarPlus, color: 'text-green-400', bgColor: 'bg-green-900/30' },
-  warm_reengagement: { label: 'Re-engagement', icon: RefreshCw, color: 'text-yellow-400', bgColor: 'bg-yellow-900/30' },
-  milestone_update: { label: 'Milestone Update', icon: Milestone, color: 'text-orange-400', bgColor: 'bg-orange-900/30' },
+interface ActionTypeConfig {
+  label: string;
+  icon: typeof Mail;
+  color: string;
+  bgColor: string;
+}
+
+const ACTION_TYPE_CONFIG: Record<string, ActionTypeConfig> = {
+  thank_you: { label: 'Thank-You Note', icon: Mail, color: 'var(--accent)', bgColor: 'var(--accent-muted)' },
+  objection_response: { label: 'Objection Response', icon: MessageSquare, color: 'var(--danger)', bgColor: 'var(--danger-muted)' },
+  data_share: { label: 'Share Materials', icon: FolderOpen, color: 'var(--accent)', bgColor: 'var(--accent-muted)' },
+  schedule_followup: { label: 'Schedule Meeting', icon: CalendarPlus, color: 'var(--success)', bgColor: 'var(--success-muted)' },
+  warm_reengagement: { label: 'Re-engagement', icon: RefreshCw, color: 'var(--warning)', bgColor: 'var(--warning-muted)' },
+  milestone_update: { label: 'Milestone Update', icon: Milestone, color: 'var(--warning)', bgColor: 'var(--warning-muted)' },
 };
 
 function formatRelativeTime(dateStr: string): string {
@@ -58,6 +65,8 @@ export default function FollowupPlan({
   const [expanded, setExpanded] = useState(true);
   const [completedIds, setCompletedIds] = useState<Set<string>>(new Set());
   const [skippedIds, setSkippedIds] = useState<Set<string>>(new Set());
+  const [hoveredDone, setHoveredDone] = useState<string | null>(null);
+  const [hoveredSkip, setHoveredSkip] = useState<string | null>(null);
 
   if (!followups || followups.length === 0) return null;
 
@@ -80,22 +89,32 @@ export default function FollowupPlan({
   }
 
   return (
-    <div className="border border-zinc-800 rounded-xl overflow-hidden">
+    <div
+      className="rounded-xl overflow-hidden"
+      style={{ border: '1px solid var(--border-subtle)' }}
+    >
       {/* Header */}
       <button
         onClick={() => setExpanded(!expanded)}
-        className="w-full bg-gradient-to-r from-indigo-900/20 to-blue-900/20 border-b border-zinc-800 px-5 py-4 flex items-center justify-between"
+        className="w-full px-5 py-4 flex items-center justify-between"
+        style={{
+          background: 'linear-gradient(to right, var(--accent-muted), var(--accent-muted))',
+          borderBottom: '1px solid var(--border-subtle)',
+        }}
       >
         <div className="flex items-center gap-2">
-          <SendHorizonal className="w-5 h-5 text-indigo-400" />
-          <h2 className="text-lg font-bold">Follow-up Plan</h2>
-          <span className="text-xs text-zinc-500 ml-2">{pending.length} pending</span>
+          <SendHorizonal className="w-5 h-5" style={{ color: 'var(--accent)' }} />
+          <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>Follow-up Plan</h2>
+          <span className="text-xs ml-2" style={{ color: 'var(--text-muted)' }}>{pending.length} pending</span>
         </div>
-        {expanded ? <ChevronUp className="w-4 h-4 text-zinc-500" /> : <ChevronDown className="w-4 h-4 text-zinc-500" />}
+        {expanded
+          ? <ChevronUp className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
+          : <ChevronDown className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
+        }
       </button>
 
       {expanded && (
-        <div className="divide-y divide-zinc-800/50">
+        <div>
           {/* Timeline */}
           <div className="px-5 py-4">
             <div className="space-y-3">
@@ -115,41 +134,67 @@ export default function FollowupPlan({
                   >
                     {/* Timeline line */}
                     {idx < followups.length - 1 && (
-                      <div className="absolute left-[15px] top-[32px] bottom-[-12px] w-px bg-zinc-800" />
+                      <div
+                        className="absolute left-[15px] top-[32px] bottom-[-12px] w-px"
+                        style={{ backgroundColor: 'var(--border-subtle)' }}
+                      />
                     )}
 
                     {/* Icon */}
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-                      isDone ? 'bg-zinc-800' : isOverdue ? 'bg-red-900/40' : config.bgColor
-                    }`}>
+                    <div
+                      className="w-8 h-8 rounded-full flex items-center justify-center shrink-0"
+                      style={{
+                        backgroundColor: isDone
+                          ? 'var(--surface-2)'
+                          : isOverdue
+                            ? 'var(--danger-muted)'
+                            : config.bgColor,
+                      }}
+                    >
                       {isCompleted ? (
-                        <CheckCircle2 className="w-4 h-4 text-green-500" />
+                        <CheckCircle2 className="w-4 h-4" style={{ color: 'var(--success)' }} />
                       ) : isSkipped ? (
-                        <XCircle className="w-4 h-4 text-zinc-500" />
+                        <XCircle className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
                       ) : (
-                        <Icon className={`w-4 h-4 ${isOverdue ? 'text-red-400' : config.color}`} />
+                        <Icon className="w-4 h-4" style={{ color: isOverdue ? 'var(--danger)' : config.color }} />
                       )}
                     </div>
 
                     {/* Content */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-0.5">
-                        <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium uppercase ${
-                          isDone ? 'bg-zinc-800 text-zinc-500' : isOverdue ? 'bg-red-900/40 text-red-300' : `${config.bgColor} ${config.color}`
-                        }`}>
+                        <span
+                          className="text-[10px] px-1.5 py-0.5 rounded font-medium uppercase"
+                          style={{
+                            backgroundColor: isDone
+                              ? 'var(--surface-2)'
+                              : isOverdue
+                                ? 'var(--danger-muted)'
+                                : config.bgColor,
+                            color: isDone
+                              ? 'var(--text-muted)'
+                              : isOverdue
+                                ? 'var(--danger)'
+                                : config.color,
+                          }}
+                        >
                           {config.label}
                         </span>
-                        <span className={`text-[10px] flex items-center gap-1 ${
-                          isOverdue ? 'text-red-400 font-medium' : 'text-zinc-500'
-                        }`}>
+                        <span
+                          className="text-[10px] flex items-center gap-1"
+                          style={{
+                            color: isOverdue ? 'var(--danger)' : 'var(--text-muted)',
+                            fontWeight: isOverdue ? 500 : 400,
+                          }}
+                        >
                           <Clock className="w-3 h-3" />
                           {timeLabel}
                         </span>
                         {showInvestorName && (
-                          <span className="text-[10px] text-zinc-600">{item.investor_name}</span>
+                          <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{item.investor_name}</span>
                         )}
                       </div>
-                      <p className="text-xs text-zinc-400 line-clamp-2 whitespace-pre-line">
+                      <p className="text-xs line-clamp-2 whitespace-pre-line" style={{ color: 'var(--text-secondary)' }}>
                         {item.description.split('\n')[0]}
                       </p>
 
@@ -158,13 +203,27 @@ export default function FollowupPlan({
                         <div className="flex gap-1.5 mt-2">
                           <button
                             onClick={() => handleAction(item.id, 'completed')}
-                            className="flex items-center gap-1 px-2 py-1 rounded text-[10px] font-medium bg-green-900/20 text-green-400 hover:bg-green-900/40 transition-colors"
+                            onMouseEnter={() => setHoveredDone(item.id)}
+                            onMouseLeave={() => setHoveredDone(null)}
+                            className="flex items-center gap-1 px-2 py-1 rounded text-[10px] font-medium transition-colors"
+                            style={{
+                              backgroundColor: hoveredDone === item.id
+                                ? 'color-mix(in srgb, var(--success) 30%, transparent)'
+                                : 'var(--success-muted)',
+                              color: 'var(--success)',
+                            }}
                           >
                             <CheckCircle2 className="w-3 h-3" /> Done
                           </button>
                           <button
                             onClick={() => handleAction(item.id, 'skipped')}
-                            className="flex items-center gap-1 px-2 py-1 rounded text-[10px] font-medium bg-zinc-800 text-zinc-500 hover:bg-zinc-700 transition-colors"
+                            onMouseEnter={() => setHoveredSkip(item.id)}
+                            onMouseLeave={() => setHoveredSkip(null)}
+                            className="flex items-center gap-1 px-2 py-1 rounded text-[10px] font-medium transition-colors"
+                            style={{
+                              backgroundColor: hoveredSkip === item.id ? 'var(--surface-3)' : 'var(--surface-2)',
+                              color: 'var(--text-muted)',
+                            }}
                           >
                             <XCircle className="w-3 h-3" /> Skip
                           </button>
@@ -178,8 +237,14 @@ export default function FollowupPlan({
           </div>
 
           {/* Summary footer */}
-          <div className="px-5 py-3 bg-zinc-900/30">
-            <span className="text-xs text-zinc-600">
+          <div
+            className="px-5 py-3"
+            style={{
+              backgroundColor: 'var(--surface-1)',
+              borderTop: '1px solid color-mix(in srgb, var(--border-subtle) 50%, transparent)',
+            }}
+          >
+            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
               {pending.length} follow-up{pending.length !== 1 ? 's' : ''} pending
               {handled.length > 0 && ` · ${handled.length} completed/skipped`}
             </span>

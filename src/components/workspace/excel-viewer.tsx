@@ -61,10 +61,8 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
   const inputRef = useRef<HTMLInputElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 
-  // Determine the display sheet name
   const displaySheetName = activeSheetName || 'Sheet1';
 
-  // Build HyperFormula engine from ALL sheets (enables cross-sheet references)
   const hf = useMemo(() => {
     const engine = HyperFormula.buildEmpty({ licenseKey: 'gpl-v3' });
 
@@ -99,17 +97,14 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
     };
 
     if (allSheets && allSheets.length > 0) {
-      // Load all sheets for cross-sheet formula resolution
       allSheets.forEach(sheet => {
         engine.addSheet(sheet.name);
       });
       allSheets.forEach(sheet => {
-        // For the active sheet, use localCells (may have unsaved edits)
         const sheetCells = sheet.name === displaySheetName ? cells : sheet.cells;
         populateSheet(sheet.name, sheetCells);
       });
     } else {
-      // Fallback: single sheet mode
       engine.addSheet(displaySheetName);
       populateSheet(displaySheetName, cells);
     }
@@ -117,7 +112,6 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
     return engine;
   }, [cells, allSheets, displaySheetName]);
 
-  // Get computed value for a cell (from the active/display sheet)
   const getComputedValue = useCallback((ref: string): string | number | null => {
     const parsed = parseCellRef(ref);
     if (!parsed) return null;
@@ -187,7 +181,6 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
   }, [editingCell, selectedCell, handleEditComplete, handleCellDoubleClick]);
 
   const formatValue = (cell: CellData | undefined, ref: string): string => {
-    // First check if HyperFormula has a computed value (for formulas)
     if (cell?.f) {
       const computed = getComputedValue(ref);
       if (computed !== null) {
@@ -220,14 +213,35 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
   const selectedCellData = selectedCell ? cells[selectedCell] : null;
 
   return (
-    <div className="h-full flex flex-col bg-zinc-950" onKeyDown={handleKeyDown} tabIndex={0}>
+    <div
+      className="h-full flex flex-col"
+      style={{ backgroundColor: 'var(--surface-0)' }}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+    >
       {/* Formula bar */}
-      <div className="shrink-0 border-b border-zinc-800 px-2 py-1.5 flex items-center gap-2 bg-zinc-900/50">
-        <div className="w-16 text-center text-xs font-mono text-zinc-400 bg-zinc-800 rounded px-2 py-1 shrink-0">
+      <div
+        className="shrink-0 px-2 py-1.5 flex items-center gap-2"
+        style={{
+          borderBottom: '1px solid var(--border-subtle)',
+          backgroundColor: 'var(--surface-1)',
+        }}
+      >
+        <div
+          className="w-16 text-center text-xs font-mono rounded px-2 py-1 shrink-0"
+          style={{ color: 'var(--text-secondary)', backgroundColor: 'var(--surface-2)' }}
+        >
           {selectedCell || ''}
         </div>
-        <div className="text-xs text-zinc-600 px-1">fx</div>
-        <div className="flex-1 text-sm font-mono text-zinc-300 bg-zinc-900 border border-zinc-800 rounded px-2 py-1 min-h-[28px]">
+        <div className="text-xs px-1" style={{ color: 'var(--text-muted)' }}>fx</div>
+        <div
+          className="flex-1 text-sm font-mono rounded px-2 py-1 min-h-[28px]"
+          style={{
+            color: 'var(--text-secondary)',
+            backgroundColor: 'var(--surface-1)',
+            border: '1px solid var(--border-subtle)',
+          }}
+        >
           {selectedCellData?.f || (selectedCellData ? String(selectedCellData.v ?? '') : '')}
         </div>
       </div>
@@ -237,11 +251,23 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
         <table className="border-collapse text-xs">
           <thead className="sticky top-0 z-10">
             <tr>
-              <th className="w-10 min-w-[40px] bg-zinc-900 border border-zinc-800 text-zinc-600 text-center py-1 sticky left-0 z-20" />
+              <th
+                className="w-10 min-w-[40px] text-center py-1 sticky left-0 z-20"
+                style={{
+                  backgroundColor: 'var(--surface-1)',
+                  border: '1px solid var(--border-subtle)',
+                  color: 'var(--text-muted)',
+                }}
+              />
               {Array.from({ length: cols }, (_, ci) => (
                 <th
                   key={ci}
-                  className="min-w-[90px] bg-zinc-900 border border-zinc-800 text-zinc-500 text-center py-1 font-normal"
+                  className="min-w-[90px] text-center py-1 font-normal"
+                  style={{
+                    backgroundColor: 'var(--surface-1)',
+                    border: '1px solid var(--border-subtle)',
+                    color: 'var(--text-muted)',
+                  }}
                 >
                   {colLabel(ci)}
                 </th>
@@ -251,7 +277,14 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
           <tbody>
             {Array.from({ length: rows }, (_, ri) => (
               <tr key={ri}>
-                <td className="bg-zinc-900 border border-zinc-800 text-zinc-600 text-center py-0.5 font-normal sticky left-0 z-10 text-[10px]">
+                <td
+                  className="text-center py-0.5 font-normal sticky left-0 z-10 text-[10px]"
+                  style={{
+                    backgroundColor: 'var(--surface-1)',
+                    border: '1px solid var(--border-subtle)',
+                    color: 'var(--text-muted)',
+                  }}
+                >
                   {ri + 1}
                 </td>
                 {Array.from({ length: cols }, (_, ci) => {
@@ -260,19 +293,31 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
                   const isSelected = ref === selectedCell;
                   const isEditing = ref === editingCell;
 
+                  const cellColor = !cell
+                    ? 'var(--text-muted)'
+                    : cell.f
+                      ? 'var(--accent)'
+                      : 'var(--text-secondary)';
+
                   return (
                     <td
                       key={ci}
                       onClick={() => handleCellClick(ref)}
                       onDoubleClick={() => handleCellDoubleClick(ref)}
-                      className={`border border-zinc-800/50 px-1.5 py-0.5 cursor-cell transition-colors
-                        ${isSelected ? 'ring-2 ring-blue-500 ring-inset bg-zinc-800/30' : ''}
-                        ${cell?.bg || ''}
+                      className={`px-1.5 py-0.5 cursor-cell transition-colors
+                        ${isSelected ? 'ring-2 ring-inset' : ''}
                         ${cell?.bold ? 'font-semibold' : ''}
                         ${cell?.t === 'n' || (cell?.f && typeof getComputedValue(ref) === 'number') ? 'text-right' : 'text-left'}
-                        ${cell?.f ? 'text-blue-300' : 'text-zinc-300'}
-                        ${!cell ? 'text-zinc-700' : ''}
                       `}
+                      style={{
+                        border: '1px solid color-mix(in srgb, var(--border-subtle) 50%, transparent)',
+                        color: cellColor,
+                        ...(isSelected ? {
+                          ringColor: 'var(--accent)',
+                          boxShadow: 'inset 0 0 0 2px var(--accent)',
+                          backgroundColor: 'color-mix(in srgb, var(--surface-2) 30%, transparent)',
+                        } : {}),
+                      }}
                     >
                       {isEditing ? (
                         <input
@@ -280,7 +325,8 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
                           value={editValue}
                           onChange={e => setEditValue(e.target.value)}
                           onBlur={handleEditComplete}
-                          className="w-full bg-transparent outline-none text-zinc-100 font-mono"
+                          className="w-full bg-transparent outline-none font-mono"
+                          style={{ color: 'var(--text-primary)' }}
                         />
                       ) : (
                         <span className="block truncate">{formatValue(cell, ref)}</span>

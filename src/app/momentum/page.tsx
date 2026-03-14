@@ -98,36 +98,36 @@ const TYPE_LABELS: Record<string, string> = {
   family_office: 'Family',
 };
 
-const TYPE_COLORS: Record<string, { bg: string; text: string; border: string }> = {
-  vc:            { bg: 'bg-blue-900/30',    text: 'text-blue-400',    border: 'border-blue-700/40' },
-  growth:        { bg: 'bg-purple-900/30',  text: 'text-purple-400',  border: 'border-purple-700/40' },
-  sovereign:     { bg: 'bg-amber-900/30',   text: 'text-amber-400',   border: 'border-amber-700/40' },
-  strategic:     { bg: 'bg-emerald-900/30', text: 'text-emerald-400', border: 'border-emerald-700/40' },
-  debt:          { bg: 'bg-orange-900/30',  text: 'text-orange-400',  border: 'border-orange-700/40' },
-  family_office: { bg: 'bg-rose-900/30',    text: 'text-rose-400',    border: 'border-rose-700/40' },
+const TYPE_COLORS: Record<string, { bg: string; color: string; border: string }> = {
+  vc:            { bg: 'rgba(59,130,246,0.15)',  color: 'rgba(96,165,250,1)',   border: 'rgba(29,78,216,0.4)' },
+  growth:        { bg: 'rgba(147,51,234,0.15)',  color: 'rgba(192,132,252,1)',  border: 'rgba(126,34,206,0.4)' },
+  sovereign:     { bg: 'rgba(217,119,6,0.15)',   color: 'rgba(251,191,36,1)',   border: 'rgba(180,83,9,0.4)' },
+  strategic:     { bg: 'rgba(16,185,129,0.15)',  color: 'rgba(52,211,153,1)',   border: 'rgba(4,120,87,0.4)' },
+  debt:          { bg: 'rgba(249,115,22,0.15)',  color: 'rgba(251,146,60,1)',   border: 'rgba(194,65,12,0.4)' },
+  family_office: { bg: 'rgba(244,63,94,0.15)',   color: 'rgba(251,113,133,1)',  border: 'rgba(190,18,60,0.4)' },
 };
 
-function scoreColor(score: number): string {
-  if (score >= 71) return 'bg-emerald-600/80 text-emerald-50';
-  if (score >= 51) return 'bg-emerald-800/60 text-emerald-200';
-  if (score >= 31) return 'bg-amber-700/60 text-amber-100';
-  if (score >= 1)  return 'bg-red-800/60 text-red-200';
-  return 'bg-zinc-800/60 text-zinc-500';
+function scoreColorStyle(score: number): React.CSSProperties {
+  if (score >= 71) return { background: 'rgba(5,150,105,0.8)',  color: 'rgba(236,253,245,1)' };
+  if (score >= 51) return { background: 'rgba(6,95,70,0.6)',    color: 'rgba(167,243,208,1)' };
+  if (score >= 31) return { background: 'rgba(180,83,9,0.6)',   color: 'rgba(254,243,199,1)' };
+  if (score >= 1)  return { background: 'rgba(153,27,27,0.6)',  color: 'rgba(254,202,202,1)' };
+  return { background: 'rgba(39,39,42,0.6)', color: 'rgba(113,113,122,1)' };
 }
 
-function scoreBorderColor(score: number): string {
-  if (score >= 71) return 'border-emerald-400';
-  if (score >= 51) return 'border-emerald-600';
-  if (score >= 31) return 'border-amber-500';
-  if (score >= 1)  return 'border-red-500';
-  return 'border-zinc-700';
+function scoreBorderStyle(score: number): React.CSSProperties {
+  if (score >= 71) return { borderColor: 'rgba(52,211,153,1)' };
+  if (score >= 51) return { borderColor: 'rgba(5,150,105,1)' };
+  if (score >= 31) return { borderColor: 'rgba(245,158,11,1)' };
+  if (score >= 1)  return { borderColor: 'rgba(239,68,68,1)' };
+  return { borderColor: 'rgba(63,63,70,1)' };
 }
 
-function trendBarColor(score: number): string {
-  if (score >= 50) return 'bg-emerald-500';
-  if (score >= 30) return 'bg-amber-500';
-  if (score >= 10) return 'bg-orange-500';
-  return 'bg-red-500';
+function trendBarBg(score: number): string {
+  if (score >= 50) return 'rgba(16,185,129,1)';
+  if (score >= 30) return 'rgba(245,158,11,1)';
+  if (score >= 10) return 'rgba(249,115,22,1)';
+  return 'rgba(239,68,68,1)';
 }
 
 function formatWeekLabel(w: string): string {
@@ -141,23 +141,23 @@ const DIRECTION_CONFIG = {
   accelerating: {
     label: 'Accelerating',
     icon: TrendingUp,
-    bg: 'bg-emerald-900/40',
-    text: 'text-emerald-400',
-    border: 'border-emerald-700/50',
+    bg: 'rgba(6,78,59,0.4)',
+    color: 'var(--success, rgba(52,211,153,1))',
+    border: 'rgba(4,120,87,0.5)',
   },
   stable: {
     label: 'Stable',
     icon: Minus,
-    bg: 'bg-amber-900/40',
-    text: 'text-amber-400',
-    border: 'border-amber-700/50',
+    bg: 'rgba(120,53,15,0.4)',
+    color: 'var(--warning, rgba(251,191,36,1))',
+    border: 'rgba(180,83,9,0.5)',
   },
   decelerating: {
     label: 'Decelerating',
     icon: TrendingDown,
-    bg: 'bg-red-900/40',
-    text: 'text-red-400',
-    border: 'border-red-700/50',
+    bg: 'rgba(127,29,29,0.4)',
+    color: 'var(--danger, rgba(248,113,113,1))',
+    border: 'rgba(185,28,28,0.5)',
   },
 };
 
@@ -165,20 +165,20 @@ const TREND_CONFIG = {
   heating: {
     label: 'Heating up',
     icon: TrendingUp,
-    color: 'text-emerald-400',
-    bg: 'bg-emerald-900/30',
+    color: 'var(--success, rgba(52,211,153,1))',
+    bg: 'rgba(6,78,59,0.3)',
   },
   cooling: {
     label: 'Cooling down',
     icon: TrendingDown,
-    color: 'text-red-400',
-    bg: 'bg-red-900/30',
+    color: 'var(--danger, rgba(248,113,113,1))',
+    bg: 'rgba(127,29,29,0.3)',
   },
   stable: {
     label: 'Stable',
     icon: Minus,
-    color: 'text-zinc-400',
-    bg: 'bg-zinc-800/30',
+    color: 'var(--text-secondary, rgba(161,161,170,1))',
+    bg: 'rgba(39,39,42,0.3)',
   },
 };
 
@@ -208,10 +208,10 @@ export default function MomentumPage() {
 
   if (loading) {
     return (
-      <div className="flex-1 flex items-center justify-center min-h-screen bg-zinc-950">
+      <div className="flex-1 flex items-center justify-center min-h-screen" style={{ background: 'var(--surface-0)' }}>
         <div className="text-center space-y-3">
-          <Activity className="w-8 h-8 text-blue-500 animate-pulse mx-auto" />
-          <p className="text-zinc-400 text-sm">Computing momentum signals...</p>
+          <Activity className="w-8 h-8 animate-pulse mx-auto" style={{ color: 'var(--accent)' }} />
+          <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>Computing momentum signals...</p>
         </div>
       </div>
     );
@@ -219,11 +219,11 @@ export default function MomentumPage() {
 
   if (error || !data) {
     return (
-      <div className="flex-1 flex items-center justify-center min-h-screen bg-zinc-950">
+      <div className="flex-1 flex items-center justify-center min-h-screen" style={{ background: 'var(--surface-0)' }}>
         <div className="text-center space-y-3">
-          <AlertTriangle className="w-8 h-8 text-red-500 mx-auto" />
-          <p className="text-red-400 text-sm">{error || 'No data available'}</p>
-          <button onClick={fetchData} className="text-xs text-zinc-400 hover:text-white">Retry</button>
+          <AlertTriangle className="w-8 h-8 mx-auto" style={{ color: 'var(--danger)' }} />
+          <p className="text-sm" style={{ color: 'var(--danger)' }}>{error || 'No data available'}</p>
+          <button onClick={fetchData} className="text-xs" style={{ color: 'var(--text-secondary)' }}>Retry</button>
         </div>
       </div>
     );
@@ -237,29 +237,41 @@ export default function MomentumPage() {
   const anomalyInvestorIds = new Set(data.anomalies.map(a => a.investorId));
 
   return (
-    <div className="flex-1 overflow-y-auto bg-zinc-950">
+    <div className="flex-1 overflow-y-auto" style={{ background: 'var(--surface-0)' }}>
       <div className="max-w-[1600px] mx-auto px-6 py-8 space-y-8">
 
         {/* ── Header ─────────────────────────────────────────────────── */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="w-10 h-10 rounded-lg bg-blue-600/20 flex items-center justify-center">
-              <Activity className="w-5 h-5 text-blue-400" />
+            <div
+              className="w-10 h-10 rounded-lg flex items-center justify-center"
+              style={{ background: 'var(--accent-muted, rgba(59,130,246,0.2))' }}
+            >
+              <Activity className="w-5 h-5" style={{ color: 'var(--accent)' }} />
             </div>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight">Deal Momentum</h1>
-              <p className="text-sm text-zinc-500 mt-0.5">
+              <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>Deal Momentum</h1>
+              <p className="text-sm mt-0.5" style={{ color: 'var(--text-muted)' }}>
                 Investor behavior patterns &middot; Last 8 weeks
               </p>
             </div>
-            <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border ${dirConfig.bg} ${dirConfig.border}`}>
-              <DirIcon className={`w-4 h-4 ${dirConfig.text}`} />
-              <span className={`text-sm font-medium ${dirConfig.text}`}>{dirConfig.label}</span>
+            <div
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
+              style={{
+                background: dirConfig.bg,
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                borderColor: dirConfig.border,
+              }}
+            >
+              <DirIcon className="w-4 h-4" style={{ color: dirConfig.color }} />
+              <span className="text-sm font-medium" style={{ color: dirConfig.color }}>{dirConfig.label}</span>
             </div>
           </div>
           <button
             onClick={fetchData}
-            className="flex items-center gap-2 px-3 py-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-sm transition-colors"
+            className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors"
+            style={{ background: 'var(--surface-2)', color: 'var(--text-secondary)' }}
           >
             <RefreshCw className="w-4 h-4" />
             Refresh
@@ -267,24 +279,35 @@ export default function MomentumPage() {
         </div>
 
         {/* ── Overall Trend Line ──────────────────────────────────────── */}
-        <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
+        <div
+          className="rounded-xl p-6"
+          style={{
+            background: 'var(--surface-1)',
+            borderWidth: '1px',
+            borderStyle: 'solid',
+            borderColor: 'var(--border-default)',
+          }}
+        >
           <div className="flex items-center gap-2 mb-4">
-            <Flame className="w-4 h-4 text-orange-400" />
-            <h2 className="text-sm font-semibold text-zinc-300 uppercase tracking-wider">Pipeline Momentum &mdash; 8 Week Trend</h2>
+            <Flame className="w-4 h-4" style={{ color: 'rgba(251,146,60,1)' }} />
+            <h2 className="text-sm font-semibold uppercase tracking-wider" style={{ color: 'var(--text-secondary)' }}>Pipeline Momentum &mdash; 8 Week Trend</h2>
           </div>
           <div className="flex items-end gap-2 h-32">
             {data.overallTrend.map((t, i) => {
               const height = maxOverall > 0 ? (t.score / maxOverall) * 100 : 0;
               return (
                 <div key={t.week} className="flex-1 flex flex-col items-center gap-1">
-                  <span className="text-xs font-mono text-zinc-400">{t.score}</span>
+                  <span className="text-xs font-mono" style={{ color: 'var(--text-secondary)' }}>{t.score}</span>
                   <div className="w-full relative" style={{ height: '100px' }}>
                     <div
-                      className={`absolute bottom-0 w-full rounded-t ${trendBarColor(t.score)} transition-all duration-500`}
-                      style={{ height: `${Math.max(height, 3)}%` }}
+                      className="absolute bottom-0 w-full rounded-t transition-all duration-500"
+                      style={{
+                        height: `${Math.max(height, 3)}%`,
+                        background: trendBarBg(t.score),
+                      }}
                     />
                   </div>
-                  <span className="text-[10px] text-zinc-600 font-mono">{formatWeekLabel(t.week)}</span>
+                  <span className="text-[10px] font-mono" style={{ color: 'var(--text-muted)' }}>{formatWeekLabel(t.week)}</span>
                 </div>
               );
             })}
@@ -294,32 +317,48 @@ export default function MomentumPage() {
         {/* ── Trajectory Early Warning ──────────────────────────────── */}
         {data.trajectoryAlerts && data.trajectoryAlerts.length > 0 && (
           <div className="space-y-2">
-            <h3 className="text-sm font-medium text-zinc-300 flex items-center gap-2">
+            <h3 className="text-sm font-medium flex items-center gap-2" style={{ color: 'var(--text-secondary)' }}>
               Trajectory Alerts
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-500">{data.trajectoryAlerts.length}</span>
+              <span
+                className="text-[10px] px-1.5 py-0.5 rounded"
+                style={{ background: 'var(--surface-2)', color: 'var(--text-muted)' }}
+              >
+                {data.trajectoryAlerts.length}
+              </span>
             </h3>
             {data.trajectoryAlerts.map((alert, i) => {
-              const colors = {
-                critical_warning: 'border-red-800/50 bg-red-900/10 text-red-400',
-                early_warning: 'border-orange-800/50 bg-orange-900/10 text-orange-400',
-                term_sheet_signal: 'border-green-800/50 bg-green-900/10 text-green-400',
+              const colors: Record<string, { bg: string; border: string; color: string }> = {
+                critical_warning:  { border: 'rgba(153,27,27,0.5)',  bg: 'rgba(127,29,29,0.1)',  color: 'var(--danger, rgba(248,113,113,1))' },
+                early_warning:     { border: 'rgba(154,52,18,0.5)',  bg: 'rgba(124,45,18,0.1)',  color: 'rgba(251,146,60,1)' },
+                term_sheet_signal: { border: 'rgba(22,101,52,0.5)',  bg: 'rgba(20,83,45,0.1)',   color: 'var(--success, rgba(74,222,128,1))' },
               };
-              const labels = {
+              const labels: Record<string, string> = {
                 critical_warning: 'CRITICAL',
                 early_warning: 'WARNING',
                 term_sheet_signal: 'OPPORTUNITY',
               };
+              const c = colors[alert.type] || colors.early_warning;
               return (
-                <div key={i} className={`border rounded-lg p-3 ${colors[alert.type]}`}>
+                <div
+                  key={i}
+                  className="rounded-lg p-3"
+                  style={{
+                    borderWidth: '1px',
+                    borderStyle: 'solid',
+                    borderColor: c.border,
+                    background: c.bg,
+                    color: c.color,
+                  }}
+                >
                   <div className="flex items-center justify-between mb-1">
                     <div className="flex items-center gap-2">
                       <span className="text-[10px] font-bold uppercase">{labels[alert.type]}</span>
-                      <span className="text-sm font-medium text-zinc-200">{alert.investorName}</span>
+                      <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{alert.investorName}</span>
                     </div>
                     <div className="flex items-center gap-3 text-xs">
                       <span>Score: {alert.currentScore}</span>
                       <span>&rarr; {alert.predictedScore21d} (21d)</span>
-                      <span className={alert.slopePerWeek >= 0 ? 'text-green-400' : 'text-red-400'}>
+                      <span style={{ color: alert.slopePerWeek >= 0 ? 'var(--success, rgba(74,222,128,1))' : 'var(--danger, rgba(248,113,113,1))' }}>
                         {alert.slopePerWeek >= 0 ? '+' : ''}{alert.slopePerWeek}/wk
                       </span>
                       {alert.daysToThreshold && (
@@ -327,7 +366,7 @@ export default function MomentumPage() {
                       )}
                     </div>
                   </div>
-                  <p className="text-xs text-zinc-400 mt-1">{alert.recommendedAction}</p>
+                  <p className="text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>{alert.recommendedAction}</p>
                 </div>
               );
             })}
@@ -335,33 +374,47 @@ export default function MomentumPage() {
         )}
 
         {/* ── Heatmap Table ───────────────────────────────────────────── */}
-        <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl overflow-hidden">
-          <div className="flex items-center gap-2 px-6 py-4 border-b border-zinc-800">
-            <Eye className="w-4 h-4 text-blue-400" />
-            <h2 className="text-sm font-semibold text-zinc-300 uppercase tracking-wider">Investor Momentum Heatmap</h2>
-            <span className="ml-auto text-xs text-zinc-600">{data.matrix.length} active investors &middot; Score 0-100</span>
+        <div
+          className="rounded-xl overflow-hidden"
+          style={{
+            background: 'var(--surface-1)',
+            borderWidth: '1px',
+            borderStyle: 'solid',
+            borderColor: 'var(--border-default)',
+          }}
+        >
+          <div
+            className="flex items-center gap-2 px-6 py-4"
+            style={{ borderBottom: '1px solid var(--border-default)' }}
+          >
+            <Eye className="w-4 h-4" style={{ color: 'var(--accent)' }} />
+            <h2 className="text-sm font-semibold uppercase tracking-wider" style={{ color: 'var(--text-secondary)' }}>Investor Momentum Heatmap</h2>
+            <span className="ml-auto text-xs" style={{ color: 'var(--text-muted)' }}>{data.matrix.length} active investors &middot; Score 0-100</span>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-zinc-900">
-                  <th className="sticky left-0 bg-zinc-900 z-10 text-left px-4 py-3 text-zinc-500 font-medium text-xs uppercase tracking-wider min-w-[200px]">
+                <tr style={{ background: 'var(--surface-1)' }}>
+                  <th
+                    className="sticky left-0 z-10 text-left px-4 py-3 font-medium text-xs uppercase tracking-wider min-w-[200px]"
+                    style={{ background: 'var(--surface-1)', color: 'var(--text-muted)' }}
+                  >
                     Investor
                   </th>
                   {data.weeks.map(w => (
-                    <th key={w} className="px-2 py-3 text-zinc-500 font-medium text-xs text-center min-w-[72px]">
+                    <th key={w} className="px-2 py-3 font-medium text-xs text-center min-w-[72px]" style={{ color: 'var(--text-muted)' }}>
                       {formatWeekLabel(w)}
                     </th>
                   ))}
-                  <th className="px-3 py-3 text-zinc-500 font-medium text-xs text-center min-w-[60px]">
+                  <th className="px-3 py-3 font-medium text-xs text-center min-w-[60px]" style={{ color: 'var(--text-muted)' }}>
                     &Delta;
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-800/50">
+              <tbody>
                 {data.matrix.length === 0 ? (
                   <tr>
-                    <td colSpan={data.weeks.length + 2} className="px-4 py-12 text-center text-zinc-600">
+                    <td colSpan={data.weeks.length + 2} className="px-4 py-12 text-center" style={{ color: 'var(--text-muted)' }}>
                       No active investors found. Add investors and log meetings to see momentum data.
                     </td>
                   </tr>
@@ -376,22 +429,39 @@ export default function MomentumPage() {
                   return (
                     <tr
                       key={inv.investorId}
-                      className={`hover:bg-zinc-800/30 transition-colors ${isAnomaly ? 'bg-zinc-800/20' : ''}`}
+                      className="transition-colors"
+                      style={{
+                        borderBottom: '1px solid var(--border-subtle)',
+                        background: isAnomaly ? 'rgba(39,39,42,0.2)' : undefined,
+                      }}
                     >
                       {/* Investor name + type badge */}
-                      <td className="sticky left-0 bg-zinc-900/95 backdrop-blur z-10 px-4 py-2.5">
+                      <td
+                        className="sticky left-0 backdrop-blur z-10 px-4 py-2.5"
+                        style={{ background: 'rgba(24,24,27,0.95)' }}
+                      >
                         <div className="flex items-center gap-2">
                           <Link
                             href={`/investors/${inv.investorId}`}
-                            className="text-zinc-200 hover:text-white font-medium truncate max-w-[120px]"
+                            className="font-medium truncate max-w-[120px]"
+                            style={{ color: 'var(--text-primary)' }}
                           >
                             {inv.investorName}
                           </Link>
-                          <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold border ${tc.bg} ${tc.text} ${tc.border}`}>
+                          <span
+                            className="px-1.5 py-0.5 rounded text-[10px] font-semibold"
+                            style={{
+                              background: tc.bg,
+                              color: tc.color,
+                              borderWidth: '1px',
+                              borderStyle: 'solid',
+                              borderColor: tc.border,
+                            }}
+                          >
                             {TYPE_LABELS[inv.type] || inv.type}
                           </span>
                           {isAnomaly && (
-                            <span title="Anomaly detected"><Zap className="w-3 h-3 text-amber-400 flex-shrink-0" /></span>
+                            <span title="Anomaly detected"><Zap className="w-3 h-3 flex-shrink-0" style={{ color: 'var(--warning)' }} /></span>
                           )}
                         </div>
                       </td>
@@ -406,13 +476,13 @@ export default function MomentumPage() {
                         return (
                           <td key={ws.week} className="px-1 py-1.5 text-center">
                             <div
-                              className={`
-                                inline-flex items-center justify-center
-                                w-14 h-8 rounded font-mono text-xs font-semibold
-                                ${scoreColor(ws.score)}
-                                ${isAnomalyCell ? `ring-2 ${anomalyForWeek.direction === 'above' ? 'ring-emerald-400' : 'ring-red-400'}` : ''}
-                                transition-all
-                              `}
+                              className="inline-flex items-center justify-center w-14 h-8 rounded font-mono text-xs font-semibold transition-all"
+                              style={{
+                                ...scoreColorStyle(ws.score),
+                                ...(isAnomalyCell ? {
+                                  boxShadow: `0 0 0 2px ${anomalyForWeek.direction === 'above' ? 'rgba(52,211,153,1)' : 'rgba(248,113,113,1)'}`,
+                                } : {}),
+                              }}
                             >
                               {ws.score}
                             </div>
@@ -422,9 +492,16 @@ export default function MomentumPage() {
 
                       {/* Delta column */}
                       <td className="px-3 py-2.5 text-center">
-                        <div className={`inline-flex items-center gap-0.5 text-xs font-mono font-semibold ${
-                          delta > 0 ? 'text-emerald-400' : delta < 0 ? 'text-red-400' : 'text-zinc-600'
-                        }`}>
+                        <div
+                          className="inline-flex items-center gap-0.5 text-xs font-mono font-semibold"
+                          style={{
+                            color: delta > 0
+                              ? 'var(--success, rgba(52,211,153,1))'
+                              : delta < 0
+                                ? 'var(--danger, rgba(248,113,113,1))'
+                                : 'var(--text-muted)',
+                          }}
+                        >
                           {delta > 0 ? (
                             <ArrowUpRight className="w-3 h-3" />
                           ) : delta < 0 ? (
@@ -441,27 +518,33 @@ export default function MomentumPage() {
           </div>
 
           {/* Legend */}
-          <div className="flex items-center gap-4 px-6 py-3 border-t border-zinc-800 bg-zinc-900/80">
-            <span className="text-[10px] text-zinc-600 uppercase tracking-wider">Score</span>
+          <div
+            className="flex items-center gap-4 px-6 py-3"
+            style={{
+              borderTop: '1px solid var(--border-default)',
+              background: 'var(--surface-1)',
+            }}
+          >
+            <span className="text-[10px] uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Score</span>
             <div className="flex items-center gap-1.5">
-              <div className="w-4 h-3 rounded bg-red-800/60" /><span className="text-[10px] text-zinc-500">1-30</span>
+              <div className="w-4 h-3 rounded" style={{ background: 'rgba(153,27,27,0.6)' }} /><span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>1-30</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <div className="w-4 h-3 rounded bg-amber-700/60" /><span className="text-[10px] text-zinc-500">31-50</span>
+              <div className="w-4 h-3 rounded" style={{ background: 'rgba(180,83,9,0.6)' }} /><span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>31-50</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <div className="w-4 h-3 rounded bg-emerald-800/60" /><span className="text-[10px] text-zinc-500">51-70</span>
+              <div className="w-4 h-3 rounded" style={{ background: 'rgba(6,95,70,0.6)' }} /><span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>51-70</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <div className="w-4 h-3 rounded bg-emerald-600/80" /><span className="text-[10px] text-zinc-500">71-100</span>
+              <div className="w-4 h-3 rounded" style={{ background: 'rgba(5,150,105,0.8)' }} /><span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>71-100</span>
             </div>
             <div className="ml-4 flex items-center gap-1.5">
-              <div className="w-4 h-3 rounded ring-2 ring-emerald-400 bg-zinc-800" />
-              <span className="text-[10px] text-zinc-500">Above cohort</span>
+              <div className="w-4 h-3 rounded" style={{ background: 'var(--surface-2)', boxShadow: '0 0 0 2px rgba(52,211,153,1)' }} />
+              <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Above cohort</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <div className="w-4 h-3 rounded ring-2 ring-red-400 bg-zinc-800" />
-              <span className="text-[10px] text-zinc-500">Below cohort</span>
+              <div className="w-4 h-3 rounded" style={{ background: 'var(--surface-2)', boxShadow: '0 0 0 2px rgba(248,113,113,1)' }} />
+              <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Below cohort</span>
             </div>
           </div>
         </div>
@@ -470,13 +553,21 @@ export default function MomentumPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
           {/* Cohort Summary */}
-          <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
+          <div
+            className="rounded-xl p-6"
+            style={{
+              background: 'var(--surface-1)',
+              borderWidth: '1px',
+              borderStyle: 'solid',
+              borderColor: 'var(--border-default)',
+            }}
+          >
             <div className="flex items-center gap-2 mb-4">
-              <Users className="w-4 h-4 text-purple-400" />
-              <h2 className="text-sm font-semibold text-zinc-300 uppercase tracking-wider">Cohort Momentum</h2>
+              <Users className="w-4 h-4" style={{ color: 'rgba(192,132,252,1)' }} />
+              <h2 className="text-sm font-semibold uppercase tracking-wider" style={{ color: 'var(--text-secondary)' }}>Cohort Momentum</h2>
             </div>
             {data.cohorts.length === 0 ? (
-              <p className="text-zinc-600 text-sm">No cohort data available.</p>
+              <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No cohort data available.</p>
             ) : (
               <div className="space-y-3">
                 {data.cohorts.map(cohort => {
@@ -486,15 +577,27 @@ export default function MomentumPage() {
                   const maxCohortScore = Math.max(...cohort.weeklyAvg.map(w => w.score), 1);
 
                   return (
-                    <div key={cohort.type} className="bg-zinc-800/30 rounded-lg p-4">
+                    <div key={cohort.type} className="rounded-lg p-4" style={{ background: 'var(--surface-2)' }}>
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-2">
-                          <span className={`px-2 py-0.5 rounded text-xs font-semibold border ${tc.bg} ${tc.text} ${tc.border}`}>
+                          <span
+                            className="px-2 py-0.5 rounded text-xs font-semibold"
+                            style={{
+                              background: tc.bg,
+                              color: tc.color,
+                              borderWidth: '1px',
+                              borderStyle: 'solid',
+                              borderColor: tc.border,
+                            }}
+                          >
                             {TYPE_LABELS[cohort.type] || cohort.type}
                           </span>
-                          <span className="text-xs text-zinc-600">{cohort.memberCount} investors</span>
+                          <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{cohort.memberCount} investors</span>
                         </div>
-                        <div className={`flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium ${trendCfg.bg} ${trendCfg.color}`}>
+                        <div
+                          className="flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium"
+                          style={{ background: trendCfg.bg, color: trendCfg.color }}
+                        >
                           <TrendIcon className="w-3 h-3" />
                           {trendCfg.label}
                         </div>
@@ -507,8 +610,12 @@ export default function MomentumPage() {
                           return (
                             <div key={ws.week} className="flex-1 relative" style={{ height: '100%' }}>
                               <div
-                                className={`absolute bottom-0 w-full rounded-t ${trendBarColor(ws.score)} opacity-70`}
-                                style={{ height: `${Math.max(h, 5)}%` }}
+                                className="absolute bottom-0 w-full rounded-t"
+                                style={{
+                                  height: `${Math.max(h, 5)}%`,
+                                  background: trendBarBg(ws.score),
+                                  opacity: 0.7,
+                                }}
                               />
                             </div>
                           );
@@ -519,7 +626,7 @@ export default function MomentumPage() {
                       <div className="flex gap-1 mt-1">
                         {cohort.weeklyAvg.map((ws) => (
                           <div key={ws.week} className="flex-1 text-center">
-                            <span className="text-[9px] font-mono text-zinc-600">{ws.score}</span>
+                            <span className="text-[9px] font-mono" style={{ color: 'var(--text-muted)' }}>{ws.score}</span>
                           </div>
                         ))}
                       </div>
@@ -531,21 +638,38 @@ export default function MomentumPage() {
           </div>
 
           {/* Anomalies */}
-          <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
+          <div
+            className="rounded-xl p-6"
+            style={{
+              background: 'var(--surface-1)',
+              borderWidth: '1px',
+              borderStyle: 'solid',
+              borderColor: 'var(--border-default)',
+            }}
+          >
             <div className="flex items-center gap-2 mb-4">
-              <Zap className="w-4 h-4 text-amber-400" />
-              <h2 className="text-sm font-semibold text-zinc-300 uppercase tracking-wider">Momentum Anomalies</h2>
+              <Zap className="w-4 h-4" style={{ color: 'var(--warning)' }} />
+              <h2 className="text-sm font-semibold uppercase tracking-wider" style={{ color: 'var(--text-secondary)' }}>Momentum Anomalies</h2>
               {data.anomalies.length > 0 && (
-                <span className="ml-auto px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-900/40 text-amber-400 border border-amber-700/40">
+                <span
+                  className="ml-auto px-2 py-0.5 rounded-full text-xs font-semibold"
+                  style={{
+                    background: 'var(--warning-muted, rgba(120,53,15,0.4))',
+                    color: 'var(--warning)',
+                    borderWidth: '1px',
+                    borderStyle: 'solid',
+                    borderColor: 'rgba(180,83,9,0.4)',
+                  }}
+                >
                   {data.anomalies.length}
                 </span>
               )}
             </div>
             {data.anomalies.length === 0 ? (
               <div className="text-center py-8">
-                <Activity className="w-6 h-6 text-zinc-700 mx-auto mb-2" />
-                <p className="text-zinc-600 text-sm">No anomalies detected.</p>
-                <p className="text-zinc-700 text-xs mt-1">All investors are tracking near their cohort averages.</p>
+                <Activity className="w-6 h-6 mx-auto mb-2" style={{ color: 'var(--text-muted)' }} />
+                <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No anomalies detected.</p>
+                <p className="text-xs mt-1" style={{ color: 'var(--text-tertiary, rgba(63,63,70,1))' }}>All investors are tracking near their cohort averages.</p>
               </div>
             ) : (
               <div className="space-y-2">
@@ -556,32 +680,54 @@ export default function MomentumPage() {
                   return (
                     <div
                       key={i}
-                      className={`rounded-lg p-3 border ${isAbove ? 'bg-emerald-950/20 border-emerald-800/30' : 'bg-red-950/20 border-red-800/30'}`}
+                      className="rounded-lg p-3"
+                      style={{
+                        background: isAbove ? 'rgba(6,78,59,0.2)' : 'rgba(127,29,29,0.2)',
+                        borderWidth: '1px',
+                        borderStyle: 'solid',
+                        borderColor: isAbove ? 'rgba(6,95,70,0.3)' : 'rgba(153,27,27,0.3)',
+                      }}
                     >
                       <div className="flex items-start gap-3">
-                        <div className={`w-8 h-8 rounded flex items-center justify-center flex-shrink-0 ${isAbove ? 'bg-emerald-900/40' : 'bg-red-900/40'}`}>
+                        <div
+                          className="w-8 h-8 rounded flex items-center justify-center flex-shrink-0"
+                          style={{ background: isAbove ? 'rgba(6,78,59,0.4)' : 'rgba(127,29,29,0.4)' }}
+                        >
                           {isAbove ? (
-                            <ArrowUpRight className="w-4 h-4 text-emerald-400" />
+                            <ArrowUpRight className="w-4 h-4" style={{ color: 'var(--success)' }} />
                           ) : (
-                            <ArrowDownRight className="w-4 h-4 text-red-400" />
+                            <ArrowDownRight className="w-4 h-4" style={{ color: 'var(--danger)' }} />
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1">
                             <Link
                               href={`/investors/${anomaly.investorId}`}
-                              className="text-sm font-medium text-zinc-200 hover:text-white"
+                              className="text-sm font-medium"
+                              style={{ color: 'var(--text-primary)' }}
                             >
                               {anomaly.investorName}
                             </Link>
-                            <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold border ${tc.bg} ${tc.text} ${tc.border}`}>
+                            <span
+                              className="px-1.5 py-0.5 rounded text-[10px] font-semibold"
+                              style={{
+                                background: tc.bg,
+                                color: tc.color,
+                                borderWidth: '1px',
+                                borderStyle: 'solid',
+                                borderColor: tc.border,
+                              }}
+                            >
                               {TYPE_LABELS[anomaly.type] || anomaly.type}
                             </span>
-                            <span className={`text-xs font-mono font-semibold ${isAbove ? 'text-emerald-400' : 'text-red-400'}`}>
+                            <span
+                              className="text-xs font-mono font-semibold"
+                              style={{ color: isAbove ? 'var(--success)' : 'var(--danger)' }}
+                            >
                               {anomaly.deviation > 0 ? '+' : ''}{anomaly.deviation}pts
                             </span>
                           </div>
-                          <p className="text-xs text-zinc-500">{anomaly.message}</p>
+                          <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{anomaly.message}</p>
                         </div>
                       </div>
                     </div>
@@ -594,26 +740,62 @@ export default function MomentumPage() {
 
         {/* ── Cross-Investor Signals ──────────────────────────────────── */}
         {data.crossSignals.length > 0 && (
-          <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
+          <div
+            className="rounded-xl p-6"
+            style={{
+              background: 'var(--surface-1)',
+              borderWidth: '1px',
+              borderStyle: 'solid',
+              borderColor: 'var(--border-default)',
+            }}
+          >
             <div className="flex items-center gap-2 mb-4">
-              <AlertTriangle className="w-4 h-4 text-red-400" />
-              <h2 className="text-sm font-semibold text-zinc-300 uppercase tracking-wider">Cross-Investor Signals</h2>
-              <span className="ml-auto px-2 py-0.5 rounded-full text-xs font-semibold bg-red-900/40 text-red-400 border border-red-700/40">
+              <AlertTriangle className="w-4 h-4" style={{ color: 'var(--danger)' }} />
+              <h2 className="text-sm font-semibold uppercase tracking-wider" style={{ color: 'var(--text-secondary)' }}>Cross-Investor Signals</h2>
+              <span
+                className="ml-auto px-2 py-0.5 rounded-full text-xs font-semibold"
+                style={{
+                  background: 'var(--danger-muted, rgba(127,29,29,0.4))',
+                  color: 'var(--danger)',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  borderColor: 'rgba(185,28,28,0.4)',
+                }}
+              >
                 {data.crossSignals.length}
               </span>
             </div>
             <div className="space-y-3">
               {data.crossSignals.map((signal, i) => (
-                <div key={i} className="bg-zinc-800/30 rounded-lg p-4 border border-zinc-700/30">
+                <div
+                  key={i}
+                  className="rounded-lg p-4"
+                  style={{
+                    background: 'var(--surface-2)',
+                    borderWidth: '1px',
+                    borderStyle: 'solid',
+                    borderColor: 'var(--border-subtle)',
+                  }}
+                >
                   <div className="flex items-start gap-3">
                     <div className="w-16 flex-shrink-0">
-                      <span className="text-xs font-mono text-zinc-500">{formatWeekLabel(signal.week)}</span>
+                      <span className="text-xs font-mono" style={{ color: 'var(--text-muted)' }}>{formatWeekLabel(signal.week)}</span>
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm text-zinc-300 mb-2">{signal.description}</p>
+                      <p className="text-sm mb-2" style={{ color: 'var(--text-secondary)' }}>{signal.description}</p>
                       <div className="flex flex-wrap gap-1">
                         {signal.affectedInvestors.map(name => (
-                          <span key={name} className="px-2 py-0.5 rounded bg-zinc-800 text-[10px] text-zinc-400 border border-zinc-700">
+                          <span
+                            key={name}
+                            className="px-2 py-0.5 rounded text-[10px]"
+                            style={{
+                              background: 'var(--surface-2)',
+                              color: 'var(--text-secondary)',
+                              borderWidth: '1px',
+                              borderStyle: 'solid',
+                              borderColor: 'var(--border-default)',
+                            }}
+                          >
                             {name}
                           </span>
                         ))}
@@ -628,46 +810,96 @@ export default function MomentumPage() {
 
         {/* ── Timing Signals ─────────────────────────────────────────── */}
         {data.timingSignals && data.timingSignals.length > 0 && (
-          <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
+          <div
+            className="rounded-xl p-6"
+            style={{
+              background: 'var(--surface-1)',
+              borderWidth: '1px',
+              borderStyle: 'solid',
+              borderColor: 'var(--border-default)',
+            }}
+          >
             <div className="flex items-center gap-2 mb-4">
-              <Clock className="w-4 h-4 text-amber-400" />
-              <h2 className="text-sm font-semibold text-zinc-300 uppercase tracking-wider">Timing Signals</h2>
-              <span className="ml-auto px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-900/40 text-amber-400 border border-amber-700/40">
+              <Clock className="w-4 h-4" style={{ color: 'var(--warning)' }} />
+              <h2 className="text-sm font-semibold uppercase tracking-wider" style={{ color: 'var(--text-secondary)' }}>Timing Signals</h2>
+              <span
+                className="ml-auto px-2 py-0.5 rounded-full text-xs font-semibold"
+                style={{
+                  background: 'var(--warning-muted, rgba(120,53,15,0.4))',
+                  color: 'var(--warning)',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  borderColor: 'rgba(180,83,9,0.4)',
+                }}
+              >
                 {data.timingSignals.length}
               </span>
             </div>
             <div className="space-y-2">
               {data.timingSignals.map((signal, i) => {
-                const urgencyColors: Record<string, string> = {
-                  high: 'bg-red-900/20 border-red-800/40 text-red-400',
-                  medium: 'bg-yellow-900/20 border-yellow-800/40 text-yellow-400',
-                  low: 'bg-zinc-800/40 border-zinc-700/40 text-zinc-400',
+                const urgencyStyles: Record<string, { bg: string; border: string; color: string }> = {
+                  high:   { bg: 'rgba(127,29,29,0.2)',  border: 'rgba(153,27,27,0.4)',  color: 'var(--danger, rgba(248,113,113,1))' },
+                  medium: { bg: 'rgba(113,63,18,0.2)',  border: 'rgba(133,77,14,0.4)',  color: 'var(--warning, rgba(250,204,21,1))' },
+                  low:    { bg: 'rgba(39,39,42,0.4)',   border: 'rgba(63,63,70,0.4)',   color: 'var(--text-secondary)' },
                 };
                 const typeLabels: Record<string, string> = {
                   competitive_tension: 'Competitive Tension',
                   engagement_gap: 'Engagement Gap',
                   dd_synchronization: 'DD Synchronization',
                 };
-                const typeIcons: Record<string, string> = {
-                  competitive_tension: 'text-red-400',
-                  engagement_gap: 'text-orange-400',
-                  dd_synchronization: 'text-emerald-400',
+                const typeIconColors: Record<string, string> = {
+                  competitive_tension: 'var(--danger, rgba(248,113,113,1))',
+                  engagement_gap: 'rgba(251,146,60,1)',
+                  dd_synchronization: 'var(--success, rgba(52,211,153,1))',
                 };
+                const us = urgencyStyles[signal.urgency] || urgencyStyles.low;
 
                 return (
-                  <div key={i} className={`rounded-lg p-3 border ${urgencyColors[signal.urgency] || urgencyColors.low}`}>
+                  <div
+                    key={i}
+                    className="rounded-lg p-3"
+                    style={{
+                      background: us.bg,
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                      borderColor: us.border,
+                      color: us.color,
+                    }}
+                  >
                     <div className="flex items-center gap-2 mb-1.5">
-                      <span className={`text-[10px] font-bold uppercase ${typeIcons[signal.type] || 'text-zinc-400'}`}>
+                      <span
+                        className="text-[10px] font-bold uppercase"
+                        style={{ color: typeIconColors[signal.type] || 'var(--text-secondary)' }}
+                      >
                         {typeLabels[signal.type] || signal.type}
                       </span>
-                      <span className={`text-[9px] px-1.5 py-0.5 rounded border font-semibold ${urgencyColors[signal.urgency] || urgencyColors.low}`}>
+                      <span
+                        className="text-[9px] px-1.5 py-0.5 rounded font-semibold"
+                        style={{
+                          background: us.bg,
+                          color: us.color,
+                          borderWidth: '1px',
+                          borderStyle: 'solid',
+                          borderColor: us.border,
+                        }}
+                      >
                         {signal.urgency.toUpperCase()}
                       </span>
                     </div>
-                    <p className="text-xs text-zinc-400 mb-2">{signal.description}</p>
+                    <p className="text-xs mb-2" style={{ color: 'var(--text-secondary)' }}>{signal.description}</p>
                     <div className="flex flex-wrap gap-1">
                       {signal.investorNames.map(name => (
-                        <span key={name} className="px-2 py-0.5 rounded bg-zinc-800 text-[10px] text-zinc-400 border border-zinc-700">
+                        <span
+                          key={name}
+                          className="px-2 py-0.5 rounded text-[10px]"
+                          style={{
+                            background: 'var(--surface-2)',
+                            color: 'var(--text-secondary)',
+                            borderWidth: '1px',
+                            borderStyle: 'solid',
+                            borderColor: 'var(--border-default)',
+                          }}
+                        >
                           {name}
                         </span>
                       ))}
@@ -681,54 +913,86 @@ export default function MomentumPage() {
 
         {/* ── Narrative Health by Investor Type ─────────────────────── */}
         {data.narrativeHealth && data.narrativeHealth.length > 0 && (
-          <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
+          <div
+            className="rounded-xl p-6"
+            style={{
+              background: 'var(--surface-1)',
+              borderWidth: '1px',
+              borderStyle: 'solid',
+              borderColor: 'var(--border-default)',
+            }}
+          >
             <div className="flex items-center gap-2 mb-4">
-              <MessageSquare className="w-4 h-4 text-purple-400" />
-              <h2 className="text-sm font-semibold text-zinc-300 uppercase tracking-wider">Narrative Health by Type</h2>
+              <MessageSquare className="w-4 h-4" style={{ color: 'rgba(192,132,252,1)' }} />
+              <h2 className="text-sm font-semibold uppercase tracking-wider" style={{ color: 'var(--text-secondary)' }}>Narrative Health by Type</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
               {data.narrativeHealth.map((nh) => {
                 const tc = TYPE_COLORS[nh.investorType] || TYPE_COLORS.vc;
-                const statusColors: Record<string, { bg: string; text: string; label: string }> = {
-                  effective: { bg: 'bg-emerald-900/20', text: 'text-emerald-400', label: 'Effective' },
-                  struggling: { bg: 'bg-red-900/20', text: 'text-red-400', label: 'Struggling' },
-                  insufficient_data: { bg: 'bg-zinc-800/40', text: 'text-zinc-500', label: 'Low data' },
+                const statusStyles: Record<string, { bg: string; color: string; label: string }> = {
+                  effective:         { bg: 'rgba(6,78,59,0.2)',   color: 'var(--success, rgba(52,211,153,1))',  label: 'Effective' },
+                  struggling:        { bg: 'rgba(127,29,29,0.2)', color: 'var(--danger, rgba(248,113,113,1))',  label: 'Struggling' },
+                  insufficient_data: { bg: 'rgba(39,39,42,0.4)',  color: 'var(--text-muted)',                   label: 'Low data' },
                 };
-                const sc = statusColors[nh.status] || statusColors.insufficient_data;
+                const sc = statusStyles[nh.status] || statusStyles.insufficient_data;
 
                 return (
-                  <div key={nh.investorType} className={`rounded-lg p-4 border border-zinc-800 ${sc.bg}`}>
+                  <div
+                    key={nh.investorType}
+                    className="rounded-lg p-4"
+                    style={{
+                      background: sc.bg,
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                      borderColor: 'var(--border-default)',
+                    }}
+                  >
                     <div className="flex items-center justify-between mb-3">
-                      <span className={`px-2 py-0.5 rounded text-xs font-semibold border ${tc.bg} ${tc.text} ${tc.border}`}>
+                      <span
+                        className="px-2 py-0.5 rounded text-xs font-semibold"
+                        style={{
+                          background: tc.bg,
+                          color: tc.color,
+                          borderWidth: '1px',
+                          borderStyle: 'solid',
+                          borderColor: tc.border,
+                        }}
+                      >
                         {TYPE_LABELS[nh.investorType] || nh.investorType}
                       </span>
-                      <span className={`text-[10px] font-bold uppercase ${sc.text}`}>{sc.label}</span>
+                      <span className="text-[10px] font-bold uppercase" style={{ color: sc.color }}>{sc.label}</span>
                     </div>
                     <div className="grid grid-cols-2 gap-2 text-xs">
                       <div>
-                        <span className="text-zinc-600">Enthusiasm</span>
-                        <div className={`font-semibold tabular-nums ${nh.avgEnthusiasm >= 3 ? 'text-emerald-400' : 'text-red-400'}`}>
+                        <span style={{ color: 'var(--text-muted)' }}>Enthusiasm</span>
+                        <div
+                          className="font-semibold tabular-nums"
+                          style={{ color: nh.avgEnthusiasm >= 3 ? 'var(--success, rgba(52,211,153,1))' : 'var(--danger, rgba(248,113,113,1))' }}
+                        >
                           {nh.avgEnthusiasm.toFixed(1)}/5
                         </div>
                       </div>
                       <div>
-                        <span className="text-zinc-600">Conversion</span>
-                        <div className={`font-semibold tabular-nums ${nh.conversionRate >= 20 ? 'text-emerald-400' : 'text-red-400'}`}>
+                        <span style={{ color: 'var(--text-muted)' }}>Conversion</span>
+                        <div
+                          className="font-semibold tabular-nums"
+                          style={{ color: nh.conversionRate >= 20 ? 'var(--success, rgba(52,211,153,1))' : 'var(--danger, rgba(248,113,113,1))' }}
+                        >
                           {nh.conversionRate}%
                         </div>
                       </div>
                     </div>
                     {nh.topObjection && (
-                      <div className="mt-2 text-[10px] text-zinc-500">
-                        Top objection: <span className="text-zinc-400">{nh.topObjection}</span>
+                      <div className="mt-2 text-[10px]" style={{ color: 'var(--text-muted)' }}>
+                        Top objection: <span style={{ color: 'var(--text-secondary)' }}>{nh.topObjection}</span>
                       </div>
                     )}
                     {nh.topQuestionTopic && (
-                      <div className="text-[10px] text-zinc-500">
-                        Top question: <span className="text-zinc-400">{nh.topQuestionTopic}</span>
+                      <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
+                        Top question: <span style={{ color: 'var(--text-secondary)' }}>{nh.topQuestionTopic}</span>
                       </div>
                     )}
-                    <div className="mt-1 text-[9px] text-zinc-600">
+                    <div className="mt-1 text-[9px]" style={{ color: 'var(--text-muted)' }}>
                       {nh.sampleSize} investor{nh.sampleSize !== 1 ? 's' : ''}
                     </div>
                   </div>
@@ -740,7 +1004,7 @@ export default function MomentumPage() {
 
         {/* ── Footer ─────────────────────────────────────────────────── */}
         <div className="text-center pb-4">
-          <p className="text-xs text-zinc-700">
+          <p className="text-xs" style={{ color: 'var(--text-tertiary, rgba(63,63,70,1))' }}>
             Generated {data.generatedAt ? new Date(data.generatedAt).toLocaleString() : 'just now'}
             &nbsp;&middot;&nbsp; Momentum = meetings + status changes + enthusiasm shifts + tasks + follow-ups
           </p>

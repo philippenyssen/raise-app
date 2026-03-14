@@ -2,7 +2,7 @@
 
 import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Lock, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 
 function LoginForm() {
   const router = useRouter();
@@ -37,7 +37,7 @@ function LoginForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
       <div>
         <input
           type="password"
@@ -45,20 +45,31 @@ function LoginForm() {
           onChange={e => setPassword(e.target.value)}
           placeholder="Enter password"
           autoFocus
-          className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-blue-600/50"
+          className="input"
+          style={{
+            padding: 'var(--space-3) var(--space-4)',
+            borderRadius: 'var(--radius-lg)',
+            fontSize: 'var(--font-size-sm)',
+          }}
         />
       </div>
 
       {error && (
-        <p className="text-red-400 text-sm text-center">{error}</p>
+        <p style={{ color: 'var(--danger)', fontSize: 'var(--font-size-sm)', textAlign: 'center' }}>{error}</p>
       )}
 
       <button
         type="submit"
         disabled={!password || loading}
-        className="w-full bg-blue-600 hover:bg-blue-500 disabled:bg-zinc-800 disabled:text-zinc-600 rounded-xl py-3 text-sm font-medium transition-colors flex items-center justify-center gap-2"
+        className="btn btn-primary btn-lg"
+        style={{
+          width: '100%',
+          borderRadius: 'var(--radius-lg)',
+          padding: 'var(--space-3)',
+          opacity: !password || loading ? 0.4 : 1,
+        }}
       >
-        {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+        {loading ? <Loader2 style={{ width: '16px', height: '16px' }} className="animate-spin" /> : null}
         {loading ? 'Authenticating...' : 'Sign In'}
       </button>
     </form>
@@ -67,17 +78,33 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen bg-zinc-950 flex items-center justify-center px-4">
+    <div
+      className="min-h-screen flex items-center justify-center px-4"
+      style={{ background: 'var(--surface-0)' }}
+    >
       <div className="w-full max-w-sm">
-        <div className="text-center mb-8">
-          <div className="w-12 h-12 bg-blue-600/20 rounded-xl flex items-center justify-center mx-auto mb-4">
-            <Lock className="w-6 h-6 text-blue-400" />
+        <div className="text-center" style={{ marginBottom: 'var(--space-8)' }}>
+          <div
+            className="flex items-center justify-center mx-auto"
+            style={{
+              width: '48px',
+              height: '48px',
+              background: 'var(--accent-muted)',
+              borderRadius: 'var(--radius-lg)',
+              marginBottom: 'var(--space-4)',
+            }}
+          >
+            <span style={{ fontSize: 'var(--font-size-xl)', fontWeight: 700, color: 'var(--accent)', letterSpacing: '0.05em' }}>R</span>
           </div>
-          <h1 className="text-xl font-bold">Raise</h1>
-          <p className="text-zinc-500 text-sm mt-1">Series C Execution Platform</p>
+          <h1 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
+            Raise
+          </h1>
+          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', marginTop: 'var(--space-1)' }}>
+            Series C Execution Platform
+          </p>
         </div>
 
-        <Suspense fallback={<div className="text-zinc-600 text-center text-sm">Loading...</div>}>
+        <Suspense fallback={<div style={{ color: 'var(--text-muted)', textAlign: 'center', fontSize: 'var(--font-size-sm)' }}>Loading...</div>}>
           <LoginForm />
         </Suspense>
       </div>

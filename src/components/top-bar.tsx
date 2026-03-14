@@ -21,6 +21,19 @@ interface ActivityItem {
   created_at: string;
 }
 
+function timeAgo(dateStr: string): string {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return 'just now';
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  if (days === 1) return 'yesterday';
+  if (days < 7) return `${days}d ago`;
+  return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
 export function TopBar() {
   const [tasks, setTasks] = useState<UpcomingTask[]>([]);
   const [activity, setActivity] = useState<ActivityItem[]>([]);
@@ -57,38 +70,86 @@ export function TopBar() {
   const upcoming = tasks.filter(t => !overdue.includes(t)).slice(0, 5);
 
   return (
-    <div className="flex items-center justify-end px-4 py-2 border-b border-zinc-800/50 bg-zinc-950/80 backdrop-blur-sm sticky top-0 z-30">
+    <div
+      className="flex items-center justify-end shrink-0 sticky top-0 z-30"
+      style={{
+        padding: 'var(--space-2) var(--space-4)',
+        borderBottom: '1px solid var(--border-subtle)',
+        background: 'var(--surface-0)',
+      }}
+    >
       <div ref={ref} className="relative">
         <button
           onClick={() => setOpen(!open)}
-          className="relative p-2 text-zinc-500 hover:text-zinc-300 transition-colors"
+          className="relative flex items-center justify-center rounded-md transition-colors"
+          style={{
+            width: '32px',
+            height: '32px',
+            color: 'var(--text-tertiary)',
+          }}
+          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}
+          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-tertiary)'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
         >
-          <Bell className="w-4.5 h-4.5" />
+          <Bell style={{ width: '16px', height: '16px' }} />
           {overdue.length > 0 && (
-            <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">
+            <span
+              className="absolute flex items-center justify-center rounded-full"
+              style={{
+                top: '2px',
+                right: '2px',
+                width: '14px',
+                height: '14px',
+                background: 'var(--danger)',
+                color: 'white',
+                fontSize: '9px',
+                fontWeight: 700,
+              }}
+            >
               {overdue.length}
             </span>
           )}
         </button>
 
         {open && (
-          <div className="absolute right-0 top-full mt-1 w-80 bg-zinc-900 border border-zinc-700 rounded-xl shadow-2xl overflow-hidden z-50">
+          <div
+            className="absolute right-0 top-full mt-2 overflow-hidden animate-slide-down"
+            style={{
+              width: '340px',
+              background: 'var(--surface-2)',
+              border: '1px solid var(--border-default)',
+              borderRadius: 'var(--radius-lg)',
+              boxShadow: 'var(--shadow-xl)',
+            }}
+          >
             {/* Overdue */}
             {overdue.length > 0 && (
-              <div className="p-3 border-b border-zinc-800">
-                <div className="flex items-center gap-2 text-xs font-medium text-red-400 mb-2">
-                  <AlertTriangle className="w-3.5 h-3.5" /> OVERDUE ({overdue.length})
+              <div style={{ padding: 'var(--space-3)', borderBottom: '1px solid var(--border-subtle)' }}>
+                <div className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'var(--danger)' }}>
+                  <AlertTriangle style={{ width: '13px', height: '13px' }} />
+                  OVERDUE ({overdue.length})
                 </div>
                 {overdue.slice(0, 3).map(t => {
                   const days = Math.ceil((now.getTime() - new Date(t.due_date).getTime()) / 86400000);
                   return (
-                    <Link key={t.id} href="/timeline" onClick={() => setOpen(false)}
-                      className="block py-1.5 px-2 rounded hover:bg-zinc-800 text-sm">
+                    <Link
+                      key={t.id}
+                      href="/timeline"
+                      onClick={() => setOpen(false)}
+                      className="block rounded-md transition-colors"
+                      style={{
+                        padding: 'var(--space-2)',
+                        fontSize: 'var(--font-size-sm)',
+                      }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-3)'; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+                    >
                       <div className="flex items-center justify-between">
-                        <span className="truncate text-zinc-300">{t.title}</span>
-                        <span className="text-red-400 text-xs shrink-0 ml-2">{days}d overdue</span>
+                        <span className="truncate" style={{ color: 'var(--text-primary)' }}>{t.title}</span>
+                        <span className="shrink-0 ml-2" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)' }}>{days}d overdue</span>
                       </div>
-                      {t.investor_name && <div className="text-xs text-zinc-600">{t.investor_name}</div>}
+                      {t.investor_name && (
+                        <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '2px' }}>{t.investor_name}</div>
+                      )}
                     </Link>
                   );
                 })}
@@ -96,19 +157,34 @@ export function TopBar() {
             )}
 
             {/* Upcoming */}
-            <div className="p-3 border-b border-zinc-800">
-              <div className="flex items-center gap-2 text-xs font-medium text-zinc-400 mb-2">
-                <Clock className="w-3.5 h-3.5" /> UPCOMING
+            <div style={{ padding: 'var(--space-3)', borderBottom: '1px solid var(--border-subtle)' }}>
+              <div className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'var(--text-tertiary)' }}>
+                <Clock style={{ width: '13px', height: '13px' }} />
+                UPCOMING
               </div>
               {upcoming.length === 0 ? (
-                <p className="text-xs text-zinc-600 py-1">No upcoming tasks</p>
+                <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', padding: 'var(--space-1) 0' }}>No upcoming tasks</p>
               ) : (
                 upcoming.map(t => (
-                  <Link key={t.id} href="/timeline" onClick={() => setOpen(false)}
-                    className="block py-1.5 px-2 rounded hover:bg-zinc-800 text-sm">
+                  <Link
+                    key={t.id}
+                    href="/timeline"
+                    onClick={() => setOpen(false)}
+                    className="block rounded-md transition-colors"
+                    style={{
+                      padding: 'var(--space-2)',
+                      fontSize: 'var(--font-size-sm)',
+                    }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-3)'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+                  >
                     <div className="flex items-center justify-between">
-                      <span className="truncate text-zinc-300">{t.title}</span>
-                      {t.due_date && <span className="text-zinc-500 text-xs shrink-0 ml-2">{t.due_date}</span>}
+                      <span className="truncate" style={{ color: 'var(--text-secondary)' }}>{t.title}</span>
+                      {t.due_date && (
+                        <span className="shrink-0 ml-2" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                          {timeAgo(t.due_date)}
+                        </span>
+                      )}
                     </div>
                   </Link>
                 ))
@@ -116,24 +192,39 @@ export function TopBar() {
             </div>
 
             {/* Activity */}
-            <div className="p-3">
-              <div className="flex items-center gap-2 text-xs font-medium text-zinc-400 mb-2">
-                <Activity className="w-3.5 h-3.5" /> RECENT
+            <div style={{ padding: 'var(--space-3)' }}>
+              <div className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'var(--text-tertiary)' }}>
+                <Activity style={{ width: '13px', height: '13px' }} />
+                RECENT
               </div>
               {activity.length === 0 ? (
-                <p className="text-xs text-zinc-600 py-1">No recent activity</p>
+                <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', padding: 'var(--space-1) 0' }}>No recent activity</p>
               ) : (
                 activity.map(a => (
-                  <div key={a.id} className="py-1.5 px-2 text-xs">
-                    <div className="text-zinc-400 truncate">{a.subject}</div>
-                    <div className="text-zinc-600">{new Date(a.created_at).toLocaleDateString()}</div>
+                  <div
+                    key={a.id}
+                    style={{ padding: 'var(--space-2)', fontSize: 'var(--font-size-xs)' }}
+                  >
+                    <div className="truncate" style={{ color: 'var(--text-secondary)' }}>{a.subject}</div>
+                    <div style={{ color: 'var(--text-muted)', marginTop: '1px' }}>{timeAgo(a.created_at)}</div>
                   </div>
                 ))
               )}
             </div>
 
-            <Link href="/timeline" onClick={() => setOpen(false)}
-              className="block text-center py-2 text-xs text-blue-400 hover:text-blue-300 border-t border-zinc-800">
+            <Link
+              href="/timeline"
+              onClick={() => setOpen(false)}
+              className="block text-center transition-colors"
+              style={{
+                padding: 'var(--space-2)',
+                fontSize: 'var(--font-size-xs)',
+                color: 'var(--accent)',
+                borderTop: '1px solid var(--border-subtle)',
+              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-3)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+            >
               View all tasks & activity
             </Link>
           </div>

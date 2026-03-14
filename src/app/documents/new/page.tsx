@@ -160,6 +160,8 @@ export default function NewDocumentPage() {
   const [customTitle, setCustomTitle] = useState('');
   const [importContent, setImportContent] = useState('');
   const [showImport, setShowImport] = useState(false);
+  const [hoveredButton, setHoveredButton] = useState<string | null>(null);
+  const [hoveredCreate, setHoveredCreate] = useState<string | null>(null);
 
   async function createFromTemplate(template: typeof TEMPLATES[0]) {
     setCreating(true);
@@ -179,31 +181,45 @@ export default function NewDocumentPage() {
   return (
     <div className="max-w-3xl space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">New Document</h1>
-        <p className="text-zinc-500 text-sm mt-1">Choose a template or start blank</p>
+        <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>New Document</h1>
+        <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>Choose a template or start blank</p>
       </div>
 
       {/* Import Toggle */}
       <div className="flex gap-3">
         <button
           onClick={() => setShowImport(!showImport)}
-          className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-colors ${
-            showImport ? 'bg-blue-600/20 text-blue-400 border border-blue-600/30' : 'bg-zinc-800 text-zinc-400 border border-zinc-700'
-          }`}
+          className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-colors"
+          style={showImport ? {
+            background: 'var(--accent-muted)',
+            color: 'var(--accent)',
+            border: '1px solid var(--accent)',
+          } : {
+            background: 'var(--surface-2)',
+            color: 'var(--text-tertiary)',
+            border: '1px solid var(--border-default)',
+          }}
         >
           <Upload className="w-3.5 h-3.5" /> Import Markdown
         </button>
       </div>
 
       {showImport && (
-        <div className="border border-zinc-800 rounded-xl p-4">
-          <label className="text-xs text-zinc-500 block mb-2">Paste markdown content (will replace template content)</label>
+        <div className="rounded-xl p-4" style={{ border: '1px solid var(--border-default)' }}>
+          <label className="text-xs block mb-2" style={{ color: 'var(--text-muted)' }}>Paste markdown content (will replace template content)</label>
           <textarea
             value={importContent}
             onChange={e => setImportContent(e.target.value)}
             rows={8}
             placeholder="Paste your markdown here..."
-            className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-3 text-sm text-zinc-200 font-mono focus:outline-none focus:border-blue-600"
+            className="w-full rounded-lg px-4 py-3 text-sm font-mono focus:outline-none"
+            style={{
+              background: 'var(--surface-1)',
+              border: '1px solid var(--border-default)',
+              color: 'var(--text-secondary)',
+            }}
+            onFocus={e => { e.target.style.borderColor = 'var(--accent)'; }}
+            onBlur={e => { e.target.style.borderColor = 'var(--border-default)'; }}
           />
         </div>
       )}
@@ -211,19 +227,34 @@ export default function NewDocumentPage() {
       {/* Templates */}
       <div className="space-y-3">
         {TEMPLATES.map((template) => (
-          <div key={template.type} className="border border-zinc-800 rounded-xl p-5 hover:border-zinc-700 transition-colors">
+          <div
+            key={template.type}
+            className="rounded-xl p-5 transition-colors"
+            style={{
+              border: `1px solid ${hoveredButton === template.type ? 'var(--border-strong)' : 'var(--border-default)'}`,
+            }}
+            onMouseEnter={() => setHoveredButton(template.type)}
+            onMouseLeave={() => setHoveredButton(null)}
+          >
             <div className="flex items-start justify-between">
               <div className="flex items-start gap-3">
-                <FileText className="w-5 h-5 text-zinc-500 mt-0.5 shrink-0" />
+                <FileText className="w-5 h-5 mt-0.5 shrink-0" style={{ color: 'var(--text-muted)' }} />
                 <div>
-                  <h3 className="font-medium">{template.title}</h3>
-                  <p className="text-sm text-zinc-500 mt-0.5">{template.description}</p>
+                  <h3 className="font-medium" style={{ color: 'var(--text-primary)' }}>{template.title}</h3>
+                  <p className="text-sm mt-0.5" style={{ color: 'var(--text-muted)' }}>{template.description}</p>
                   {template.type === 'custom' && (
                     <input
                       value={customTitle}
                       onChange={e => setCustomTitle(e.target.value)}
                       placeholder="Document title..."
-                      className="mt-2 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1.5 text-sm text-zinc-200 focus:outline-none focus:border-blue-600 w-64"
+                      className="mt-2 rounded-lg px-3 py-1.5 text-sm focus:outline-none w-64"
+                      style={{
+                        background: 'var(--surface-1)',
+                        border: '1px solid var(--border-default)',
+                        color: 'var(--text-secondary)',
+                      }}
+                      onFocus={e => { e.target.style.borderColor = 'var(--accent)'; }}
+                      onBlur={e => { e.target.style.borderColor = 'var(--border-default)'; }}
                     />
                   )}
                 </div>
@@ -231,7 +262,13 @@ export default function NewDocumentPage() {
               <button
                 onClick={() => createFromTemplate(template)}
                 disabled={creating}
-                className="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm transition-colors disabled:opacity-50 shrink-0"
+                className="px-3 py-1.5 rounded-lg text-sm transition-colors disabled:opacity-50 shrink-0"
+                style={{
+                  background: hoveredCreate === template.type ? 'var(--surface-3)' : 'var(--surface-2)',
+                  color: 'var(--text-primary)',
+                }}
+                onMouseEnter={() => setHoveredCreate(template.type)}
+                onMouseLeave={() => setHoveredCreate(null)}
               >
                 {creating ? 'Creating...' : 'Create'}
               </button>

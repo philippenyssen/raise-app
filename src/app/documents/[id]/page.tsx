@@ -48,6 +48,11 @@ export default function DocumentEditorPage() {
   const [aiLoading, setAiLoading] = useState(false);
   const [aiResult, setAiResult] = useState<{ type: string; data: unknown } | null>(null);
   const [selectedText, setSelectedText] = useState('');
+  const [previewHovered, setPreviewHovered] = useState(false);
+  const [historyHovered, setHistoryHovered] = useState(false);
+  const [dismissHovered, setDismissHovered] = useState(false);
+  const [closeModalHovered, setCloseModalHovered] = useState(false);
+  const [applyHovered, setApplyHovered] = useState(false);
 
   useEffect(() => {
     fetch(`/api/documents/${id}`).then(r => {
@@ -162,8 +167,8 @@ export default function DocumentEditorPage() {
   if (loading) {
     return (
       <div className="space-y-4">
-        <div className="h-8 w-64 bg-zinc-800 rounded animate-pulse" />
-        <div className="h-[60vh] bg-zinc-800/50 rounded-xl animate-pulse" />
+        <div className="h-8 w-64 rounded animate-pulse" style={{ background: 'var(--surface-2)' }} />
+        <div className="h-[60vh] rounded-xl animate-pulse" style={{ background: 'var(--surface-2)' }} />
       </div>
     );
   }
@@ -171,8 +176,8 @@ export default function DocumentEditorPage() {
   if (!doc) {
     return (
       <div className="text-center py-12">
-        <p className="text-zinc-500">Document not found</p>
-        <Link href="/documents" className="text-blue-400 text-sm mt-2 block">Back to documents</Link>
+        <p style={{ color: 'var(--text-muted)' }}>Document not found</p>
+        <Link href="/documents" className="text-sm mt-2 block" style={{ color: 'var(--accent)' }}>Back to documents</Link>
       </div>
     );
   }
@@ -182,20 +187,26 @@ export default function DocumentEditorPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Link href="/documents" className="text-zinc-500 hover:text-zinc-300">
+          <Link href="/documents" style={{ color: 'var(--text-muted)' }}>
             <ArrowLeft className="w-4 h-4" />
           </Link>
           <input
             value={title}
             onChange={e => { setTitle(e.target.value); setDirty(true); }}
-            className="text-xl font-bold bg-transparent border-none focus:outline-none focus:ring-0 text-white"
+            className="text-xl font-bold bg-transparent border-none focus:outline-none focus:ring-0"
+            style={{ color: 'var(--text-primary)' }}
           />
         </div>
         <div className="flex items-center gap-2">
           <select
             value={doc.status}
             onChange={e => updateStatus(e.target.value)}
-            className="bg-zinc-900 border border-zinc-800 rounded-lg px-2 py-1 text-xs text-zinc-300"
+            className="rounded-lg px-2 py-1 text-xs"
+            style={{
+              background: 'var(--surface-1)',
+              border: '1px solid var(--border-default)',
+              color: 'var(--text-secondary)',
+            }}
           >
             <option value="draft">Draft</option>
             <option value="review">Review</option>
@@ -203,22 +214,41 @@ export default function DocumentEditorPage() {
           </select>
           <button
             onClick={() => setPreview(!preview)}
-            className={`p-2 rounded-lg text-sm transition-colors ${preview ? 'bg-blue-600/20 text-blue-400' : 'bg-zinc-800 text-zinc-400'}`}
+            className="p-2 rounded-lg text-sm transition-colors"
             title={preview ? 'Edit mode' : 'Preview mode'}
+            style={preview ? {
+              background: 'var(--accent-muted)',
+              color: 'var(--accent)',
+            } : {
+              background: previewHovered ? 'var(--surface-3)' : 'var(--surface-2)',
+              color: 'var(--text-tertiary)',
+            }}
+            onMouseEnter={() => setPreviewHovered(true)}
+            onMouseLeave={() => setPreviewHovered(false)}
           >
             {preview ? <Edit3 className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
           </button>
           <button
             onClick={loadVersions}
-            className="p-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-zinc-400"
+            className="p-2 rounded-lg"
             title="Version history"
+            style={{
+              background: historyHovered ? 'var(--surface-3)' : 'var(--surface-2)',
+              color: 'var(--text-tertiary)',
+            }}
+            onMouseEnter={() => setHistoryHovered(true)}
+            onMouseLeave={() => setHistoryHovered(false)}
           >
             <History className="w-4 h-4" />
           </button>
           <button
             onClick={() => save()}
             disabled={saving || !dirty}
-            className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 rounded-lg text-sm font-medium flex items-center gap-1.5"
+            className="px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-1.5 disabled:opacity-50"
+            style={{
+              background: 'var(--accent)',
+              color: 'var(--surface-0)',
+            }}
           >
             <Save className="w-3.5 h-3.5" />
             {saving ? 'Saving...' : dirty ? 'Save' : 'Saved'}
@@ -231,7 +261,7 @@ export default function DocumentEditorPage() {
         {/* Editor */}
         <div className="flex-1 min-w-0">
           {preview ? (
-            <div className="border border-zinc-800 rounded-xl p-6 min-h-[60vh] prose prose-invert prose-sm max-w-none">
+            <div className="rounded-xl p-6 min-h-[60vh] prose prose-invert prose-sm max-w-none" style={{ border: '1px solid var(--border-default)' }}>
               <MarkdownPreview content={content} />
             </div>
           ) : (
@@ -243,11 +273,18 @@ export default function DocumentEditorPage() {
                 const selected = target.value.substring(target.selectionStart, target.selectionEnd);
                 setSelectedText(selected);
               }}
-              className="w-full min-h-[60vh] bg-zinc-900 border border-zinc-800 rounded-xl px-6 py-4 text-sm text-zinc-200 font-mono leading-relaxed focus:outline-none focus:border-blue-600 resize-y"
+              className="w-full min-h-[60vh] rounded-xl px-6 py-4 text-sm font-mono leading-relaxed focus:outline-none resize-y"
               placeholder="Start writing..."
+              style={{
+                background: 'var(--surface-1)',
+                border: '1px solid var(--border-default)',
+                color: 'var(--text-secondary)',
+              }}
+              onFocus={e => { e.target.style.borderColor = 'var(--accent)'; }}
+              onBlur={e => { e.target.style.borderColor = 'var(--border-default)'; }}
             />
           )}
-          <div className="flex items-center justify-between mt-2 text-xs text-zinc-600">
+          <div className="flex items-center justify-between mt-2 text-xs" style={{ color: 'var(--text-muted)' }}>
             <span>{content.length.toLocaleString()} characters</span>
             <span className="flex items-center gap-1">
               <Clock className="w-3 h-3" />
@@ -258,12 +295,12 @@ export default function DocumentEditorPage() {
 
         {/* AI Panel */}
         <div className="w-72 shrink-0 space-y-3">
-          <div className="border border-zinc-800 rounded-xl p-4">
-            <h3 className="text-xs font-medium text-zinc-400 mb-3 flex items-center gap-2">
+          <div className="rounded-xl p-4" style={{ border: '1px solid var(--border-default)' }}>
+            <h3 className="text-xs font-medium mb-3 flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
               <Sparkles className="w-3.5 h-3.5" /> AI OPERATIONS
             </h3>
             {selectedText && (
-              <div className="text-xs text-blue-400 mb-3 p-2 bg-blue-900/10 rounded border border-blue-800/20">
+              <div className="text-xs mb-3 p-2 rounded" style={{ color: 'var(--accent)', background: 'var(--accent-muted)', border: '1px solid var(--accent)' }}>
                 {selectedText.length} chars selected — AI will operate on selection
               </div>
             )}
@@ -297,17 +334,24 @@ export default function DocumentEditorPage() {
 
           {/* AI Result */}
           {aiResult && (
-            <div className="border border-zinc-800 rounded-xl p-4 max-h-96 overflow-y-auto">
-              <h3 className="text-xs font-medium text-zinc-400 mb-3">AI RESULT</h3>
+            <div className="rounded-xl p-4 max-h-96 overflow-y-auto" style={{ border: '1px solid var(--border-default)' }}>
+              <h3 className="text-xs font-medium mb-3" style={{ color: 'var(--text-tertiary)' }}>AI RESULT</h3>
 
               {(aiResult.type === 'improve' || aiResult.type === 'goldman') && (
                 <>
-                  <pre className="text-xs text-zinc-300 whitespace-pre-wrap mb-3 max-h-48 overflow-y-auto">
+                  <pre className="text-xs whitespace-pre-wrap mb-3 max-h-48 overflow-y-auto" style={{ color: 'var(--text-secondary)' }}>
                     {aiResult.data as string}
                   </pre>
                   <button
                     onClick={applyAIResult}
-                    className="w-full px-3 py-1.5 bg-green-600/20 text-green-400 border border-green-600/30 rounded-lg text-xs font-medium hover:bg-green-600/30"
+                    className="w-full px-3 py-1.5 rounded-lg text-xs font-medium"
+                    style={{
+                      background: applyHovered ? 'var(--success-muted)' : 'var(--success-muted)',
+                      color: 'var(--success)',
+                      border: '1px solid var(--success)',
+                    }}
+                    onMouseEnter={() => setApplyHovered(true)}
+                    onMouseLeave={() => setApplyHovered(false)}
                   >
                     <CheckCircle className="w-3 h-3 inline mr-1" /> Apply Changes
                   </button>
@@ -317,10 +361,10 @@ export default function DocumentEditorPage() {
               {aiResult.type === 'weak_arguments' && (
                 <div className="space-y-2">
                   {((aiResult.data as { weaknesses: { claim: string; issue: string; suggestion: string }[] }).weaknesses || []).map((w, i) => (
-                    <div key={i} className="text-xs border-l-2 border-yellow-700 pl-2">
-                      <p className="text-yellow-400 font-medium">{w.claim}</p>
-                      <p className="text-zinc-500 mt-0.5">{w.issue}</p>
-                      <p className="text-zinc-400 mt-0.5">{w.suggestion}</p>
+                    <div key={i} className="text-xs pl-2" style={{ borderLeft: '2px solid var(--warning)' }}>
+                      <p className="font-medium" style={{ color: 'var(--warning)' }}>{w.claim}</p>
+                      <p className="mt-0.5" style={{ color: 'var(--text-muted)' }}>{w.issue}</p>
+                      <p className="mt-0.5" style={{ color: 'var(--text-tertiary)' }}>{w.suggestion}</p>
                     </div>
                   ))}
                 </div>
@@ -329,17 +373,17 @@ export default function DocumentEditorPage() {
               {aiResult.type === 'consistency' && (
                 <div className="space-y-2">
                   {((aiResult.data as { discrepancies: { location: string; issue: string; suggestion: string }[] }).discrepancies || []).length === 0 ? (
-                    <p className="text-xs text-green-400 flex items-center gap-1">
+                    <p className="text-xs flex items-center gap-1" style={{ color: 'var(--success)' }}>
                       <CheckCircle className="w-3 h-3" /> No discrepancies found
                     </p>
                   ) : (
                     ((aiResult.data as { discrepancies: { location: string; issue: string; suggestion: string }[] }).discrepancies || []).map((d, i) => (
-                      <div key={i} className="text-xs border-l-2 border-red-700 pl-2">
-                        <p className="text-red-400 font-medium flex items-center gap-1">
+                      <div key={i} className="text-xs pl-2" style={{ borderLeft: '2px solid var(--danger)' }}>
+                        <p className="font-medium flex items-center gap-1" style={{ color: 'var(--danger)' }}>
                           <AlertTriangle className="w-3 h-3" /> {d.location}
                         </p>
-                        <p className="text-zinc-500 mt-0.5">{d.issue}</p>
-                        <p className="text-zinc-400 mt-0.5">{d.suggestion}</p>
+                        <p className="mt-0.5" style={{ color: 'var(--text-muted)' }}>{d.issue}</p>
+                        <p className="mt-0.5" style={{ color: 'var(--text-tertiary)' }}>{d.suggestion}</p>
                       </div>
                     ))
                   )}
@@ -348,7 +392,10 @@ export default function DocumentEditorPage() {
 
               <button
                 onClick={() => setAiResult(null)}
-                className="w-full mt-3 px-3 py-1 text-xs text-zinc-500 hover:text-zinc-300"
+                className="w-full mt-3 px-3 py-1 text-xs"
+                style={{ color: dismissHovered ? 'var(--text-secondary)' : 'var(--text-muted)' }}
+                onMouseEnter={() => setDismissHovered(true)}
+                onMouseLeave={() => setDismissHovered(false)}
               >
                 Dismiss
               </button>
@@ -359,39 +406,29 @@ export default function DocumentEditorPage() {
 
       {/* Version History Modal */}
       {showVersions && (
-        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={() => setShowVersions(false)}>
-          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 max-w-lg w-full max-h-[70vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
-            <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.6)' }} onClick={() => setShowVersions(false)}>
+          <div className="rounded-xl p-6 max-w-lg w-full max-h-[70vh] overflow-y-auto" style={{ background: 'var(--surface-1)', border: '1px solid var(--border-default)' }} onClick={e => e.stopPropagation()}>
+            <h2 className="text-lg font-bold mb-4 flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
               <History className="w-5 h-5" /> Version History
             </h2>
             {versions.length === 0 ? (
-              <p className="text-sm text-zinc-500">No versions yet</p>
+              <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No versions yet</p>
             ) : (
               <div className="space-y-2">
                 {versions.map(v => (
-                  <div key={v.id} className="flex items-center justify-between p-3 border border-zinc-800 rounded-lg hover:border-zinc-700">
-                    <div>
-                      <span className="text-sm font-medium">v{v.version_number}</span>
-                      {v.change_summary && (
-                        <span className="text-xs text-zinc-500 ml-2">{v.change_summary}</span>
-                      )}
-                      <div className="text-xs text-zinc-600 mt-0.5">
-                        {new Date(v.created_at).toLocaleString()} - {v.content.length.toLocaleString()} chars
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => restoreVersion(v)}
-                      className="text-xs text-blue-400 hover:text-blue-300 px-2 py-1 rounded hover:bg-zinc-800"
-                    >
-                      Restore
-                    </button>
-                  </div>
+                  <VersionRow key={v.id} version={v} onRestore={restoreVersion} />
                 ))}
               </div>
             )}
             <button
               onClick={() => setShowVersions(false)}
-              className="mt-4 w-full px-3 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm"
+              className="mt-4 w-full px-3 py-2 rounded-lg text-sm"
+              style={{
+                background: closeModalHovered ? 'var(--surface-3)' : 'var(--surface-2)',
+                color: 'var(--text-primary)',
+              }}
+              onMouseEnter={() => setCloseModalHovered(true)}
+              onMouseLeave={() => setCloseModalHovered(false)}
             >
               Close
             </button>
@@ -402,21 +439,64 @@ export default function DocumentEditorPage() {
   );
 }
 
+function VersionRow({ version: v, onRestore }: { version: Version; onRestore: (v: Version) => void }) {
+  const [hovered, setHovered] = useState(false);
+  const [restoreHovered, setRestoreHovered] = useState(false);
+  return (
+    <div
+      className="flex items-center justify-between p-3 rounded-lg"
+      style={{
+        border: `1px solid ${hovered ? 'var(--border-strong)' : 'var(--border-default)'}`,
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <div>
+        <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>v{v.version_number}</span>
+        {v.change_summary && (
+          <span className="text-xs ml-2" style={{ color: 'var(--text-muted)' }}>{v.change_summary}</span>
+        )}
+        <div className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
+          {new Date(v.created_at).toLocaleString()} - {v.content.length.toLocaleString()} chars
+        </div>
+      </div>
+      <button
+        onClick={() => onRestore(v)}
+        className="text-xs px-2 py-1 rounded"
+        style={{
+          color: 'var(--accent)',
+          background: restoreHovered ? 'var(--surface-2)' : 'transparent',
+        }}
+        onMouseEnter={() => setRestoreHovered(true)}
+        onMouseLeave={() => setRestoreHovered(false)}
+      >
+        Restore
+      </button>
+    </div>
+  );
+}
+
 function AIButton({ label, desc, loading, onClick }: { label: string; desc: string; loading: boolean; onClick: () => void }) {
+  const [hovered, setHovered] = useState(false);
   return (
     <button
       onClick={onClick}
       disabled={loading}
-      className="w-full text-left px-3 py-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-lg transition-colors disabled:opacity-50"
+      className="w-full text-left px-3 py-2 rounded-lg transition-colors disabled:opacity-50"
+      style={{
+        background: hovered ? 'var(--surface-2)' : 'var(--surface-1)',
+        border: '1px solid var(--border-default)',
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
-      <div className="text-xs font-medium text-zinc-300">{label}</div>
-      <div className="text-[10px] text-zinc-600">{desc}</div>
+      <div className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>{label}</div>
+      <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{desc}</div>
     </button>
   );
 }
 
 function MarkdownPreview({ content }: { content: string }) {
-  // Simple markdown rendering — headers, bold, italic, lists, tables
   const lines = content.split('\n');
   const elements: React.ReactNode[] = [];
   let inTable = false;
@@ -432,23 +512,22 @@ function MarkdownPreview({ content }: { content: string }) {
   lines.forEach((line, i) => {
     const trimmed = line.trim();
 
-    // Table detection
     if (trimmed.startsWith('|')) {
       if (!inTable) { inTable = true; tableRows = []; }
-      if (!trimmed.match(/^\|[\s-|]+$/)) { // Skip separator rows
+      if (!trimmed.match(/^\|[\s-|]+$/)) {
         tableRows.push(trimmed.split('|').filter(Boolean).map(c => c.trim()));
       }
       return;
     } else if (inTable) {
       inTable = false;
       elements.push(
-        <table key={`table-${i}`} className="w-full text-sm border-collapse my-2">
+        <table key={`table-${i}`} className="w-full text-sm my-2" style={{ borderCollapse: 'collapse' }}>
           <thead>
-            <tr>{tableRows[0]?.map((h, j) => <th key={j} className="border border-zinc-700 px-2 py-1 text-left text-zinc-400 text-xs">{h}</th>)}</tr>
+            <tr>{tableRows[0]?.map((h, j) => <th key={j} className="px-2 py-1 text-left text-xs" style={{ border: '1px solid var(--border-strong)', color: 'var(--text-tertiary)' }}>{h}</th>)}</tr>
           </thead>
           <tbody>
             {tableRows.slice(1).map((row, ri) => (
-              <tr key={ri}>{row.map((cell, ci) => <td key={ci} className="border border-zinc-800 px-2 py-1 text-xs">{cell}</td>)}</tr>
+              <tr key={ri}>{row.map((cell, ci) => <td key={ci} className="px-2 py-1 text-xs" style={{ border: '1px solid var(--border-default)' }}>{cell}</td>)}</tr>
             ))}
           </tbody>
         </table>
@@ -457,24 +536,24 @@ function MarkdownPreview({ content }: { content: string }) {
     }
 
     if (trimmed.startsWith('# ')) {
-      elements.push(<h1 key={i} className="text-xl font-bold mt-6 mb-2">{trimmed.slice(2)}</h1>);
+      elements.push(<h1 key={i} className="text-xl font-bold mt-6 mb-2" style={{ color: 'var(--text-primary)' }}>{trimmed.slice(2)}</h1>);
     } else if (trimmed.startsWith('## ')) {
-      elements.push(<h2 key={i} className="text-lg font-bold mt-5 mb-2 text-zinc-200">{trimmed.slice(3)}</h2>);
+      elements.push(<h2 key={i} className="text-lg font-bold mt-5 mb-2" style={{ color: 'var(--text-secondary)' }}>{trimmed.slice(3)}</h2>);
     } else if (trimmed.startsWith('### ')) {
-      elements.push(<h3 key={i} className="text-base font-semibold mt-4 mb-1 text-zinc-300">{trimmed.slice(4)}</h3>);
+      elements.push(<h3 key={i} className="text-base font-semibold mt-4 mb-1" style={{ color: 'var(--text-secondary)' }}>{trimmed.slice(4)}</h3>);
     } else if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
       elements.push(
-        <li key={i} className="text-sm text-zinc-300 ml-4 list-disc" dangerouslySetInnerHTML={{ __html: renderInline(trimmed.slice(2)) as string }} />
+        <li key={i} className="text-sm ml-4 list-disc" style={{ color: 'var(--text-secondary)' }} dangerouslySetInnerHTML={{ __html: renderInline(trimmed.slice(2)) as string }} />
       );
     } else if (/^\d+\.\s/.test(trimmed)) {
       elements.push(
-        <li key={i} className="text-sm text-zinc-300 ml-4 list-decimal" dangerouslySetInnerHTML={{ __html: renderInline(trimmed.replace(/^\d+\.\s/, '')) as string }} />
+        <li key={i} className="text-sm ml-4 list-decimal" style={{ color: 'var(--text-secondary)' }} dangerouslySetInnerHTML={{ __html: renderInline(trimmed.replace(/^\d+\.\s/, '')) as string }} />
       );
     } else if (trimmed === '') {
       elements.push(<div key={i} className="h-3" />);
     } else {
       elements.push(
-        <p key={i} className="text-sm text-zinc-300 leading-relaxed" dangerouslySetInnerHTML={{ __html: renderInline(trimmed) as string }} />
+        <p key={i} className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }} dangerouslySetInnerHTML={{ __html: renderInline(trimmed) as string }} />
       );
     }
   });

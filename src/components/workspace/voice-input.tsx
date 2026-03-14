@@ -11,6 +11,7 @@ interface VoiceInputProps {
 export function VoiceInput({ onTranscript, disabled }: VoiceInputProps) {
   const [listening, setListening] = useState(false);
   const [supported, setSupported] = useState(true);
+  const [hovered, setHovered] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const recognitionRef = useRef<any>(null);
 
@@ -69,15 +70,27 @@ export function VoiceInput({ onTranscript, disabled }: VoiceInputProps) {
 
   if (!supported) return null;
 
+  const listeningStyle: React.CSSProperties = {
+    backgroundColor: 'color-mix(in srgb, var(--danger) 20%, transparent)',
+    color: 'var(--danger)',
+    borderWidth: '1px',
+    borderStyle: 'solid',
+    borderColor: 'color-mix(in srgb, var(--danger) 30%, transparent)',
+  };
+
+  const idleStyle: React.CSSProperties = {
+    color: hovered ? 'var(--text-secondary)' : 'var(--text-muted)',
+    backgroundColor: hovered ? 'var(--surface-2)' : 'transparent',
+  };
+
   return (
     <button
       onClick={toggleListening}
       disabled={disabled}
-      className={`p-2 rounded-lg transition-all ${
-        listening
-          ? 'bg-red-600/20 text-red-400 border border-red-600/30 animate-pulse'
-          : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800'
-      } disabled:opacity-50`}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      className={`p-2 rounded-lg transition-all ${listening ? 'animate-pulse' : ''} disabled:opacity-50`}
+      style={listening ? listeningStyle : idleStyle}
       title={listening ? 'Stop listening' : 'Voice input'}
     >
       {listening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}

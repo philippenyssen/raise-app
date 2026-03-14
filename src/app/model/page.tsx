@@ -24,13 +24,13 @@ const DEFAULT_SHEETS = [
   {
     name: 'Assumptions',
     cells: {
-      'A1': { v: 'ASSUMPTIONS', bold: true, bg: 'bg-zinc-800' },
-      'B1': { v: '2025A', bold: true, bg: 'bg-zinc-800' },
-      'C1': { v: '2026E', bold: true, bg: 'bg-zinc-800' },
-      'D1': { v: '2027E', bold: true, bg: 'bg-zinc-800' },
-      'E1': { v: '2028E', bold: true, bg: 'bg-zinc-800' },
-      'F1': { v: '2029E', bold: true, bg: 'bg-zinc-800' },
-      'G1': { v: '2030E', bold: true, bg: 'bg-zinc-800' },
+      'A1': { v: 'ASSUMPTIONS', bold: true, bg: 'var(--surface-2)' },
+      'B1': { v: '2025A', bold: true, bg: 'var(--surface-2)' },
+      'C1': { v: '2026E', bold: true, bg: 'var(--surface-2)' },
+      'D1': { v: '2027E', bold: true, bg: 'var(--surface-2)' },
+      'E1': { v: '2028E', bold: true, bg: 'var(--surface-2)' },
+      'F1': { v: '2029E', bold: true, bg: 'var(--surface-2)' },
+      'G1': { v: '2030E', bold: true, bg: 'var(--surface-2)' },
       // Revenue inputs
       'A3': { v: 'Segment 1: Core Product', bold: true },
       'A4': { v: '  Units', t: 's' }, 'B4': { v: 10, t: 'n' }, 'C4': { v: 20, t: 'n' }, 'D4': { v: 35, t: 'n' }, 'E4': { v: 55, t: 'n' }, 'F4': { v: 80, t: 'n' }, 'G4': { v: 100, t: 'n' },
@@ -68,13 +68,13 @@ const DEFAULT_SHEETS = [
   {
     name: 'P&L',
     cells: {
-      'A1': { v: 'PROFIT & LOSS (€M)', bold: true, bg: 'bg-zinc-800' },
-      'B1': { v: '2025A', bold: true, bg: 'bg-zinc-800' },
-      'C1': { v: '2026E', bold: true, bg: 'bg-zinc-800' },
-      'D1': { v: '2027E', bold: true, bg: 'bg-zinc-800' },
-      'E1': { v: '2028E', bold: true, bg: 'bg-zinc-800' },
-      'F1': { v: '2029E', bold: true, bg: 'bg-zinc-800' },
-      'G1': { v: '2030E', bold: true, bg: 'bg-zinc-800' },
+      'A1': { v: 'PROFIT & LOSS (€M)', bold: true, bg: 'var(--surface-2)' },
+      'B1': { v: '2025A', bold: true, bg: 'var(--surface-2)' },
+      'C1': { v: '2026E', bold: true, bg: 'var(--surface-2)' },
+      'D1': { v: '2027E', bold: true, bg: 'var(--surface-2)' },
+      'E1': { v: '2028E', bold: true, bg: 'var(--surface-2)' },
+      'F1': { v: '2029E', bold: true, bg: 'var(--surface-2)' },
+      'G1': { v: '2030E', bold: true, bg: 'var(--surface-2)' },
       'A3': { v: 'Revenue', bold: true, t: 's' },
       'B3': { v: 30.5, t: 'n' }, 'C3': { v: 59, t: 'n' }, 'D3': { v: 98, t: 'n' }, 'E3': { v: 155, t: 'n' }, 'F3': { v: 228, t: 'n' }, 'G3': { v: 301, t: 'n' },
       'A4': { v: 'COGS', t: 's' },
@@ -98,16 +98,16 @@ const DEFAULT_SHEETS = [
   {
     name: 'Returns',
     cells: {
-      'A1': { v: 'INVESTOR RETURNS', bold: true, bg: 'bg-zinc-800' },
+      'A1': { v: 'INVESTOR RETURNS', bold: true, bg: 'var(--surface-2)' },
       'A3': { v: 'Entry', bold: true },
       'A4': { v: 'Pre-Money (€M)' }, 'B4': { v: 500, t: 'n' },
       'A5': { v: 'Investment (€M)' }, 'B5': { v: 100, t: 'n' },
       'A6': { v: 'Post-Money (€M)', bold: true }, 'B6': { v: 600, f: '=B4+B5', t: 'n' },
       'A7': { v: 'Ownership %' }, 'B7': { v: 0.167, f: '=B5/B6', t: 'n', fmt: '%' },
       'A9': { v: 'Exit Scenarios', bold: true },
-      'B9': { v: 'Bear', bold: true, bg: 'bg-red-900/20' },
-      'C9': { v: 'Base', bold: true, bg: 'bg-zinc-800' },
-      'D9': { v: 'Bull', bold: true, bg: 'bg-green-900/20' },
+      'B9': { v: 'Bear', bold: true, bg: 'var(--danger-muted)' },
+      'C9': { v: 'Base', bold: true, bg: 'var(--surface-2)' },
+      'D9': { v: 'Bull', bold: true, bg: 'var(--success-muted)' },
       'A10': { v: 'Exit Year' }, 'B10': { v: 2030, t: 'n' }, 'C10': { v: 2030, t: 'n' }, 'D10': { v: 2030, t: 'n' },
       'A11': { v: 'Revenue at Exit (€M)' }, 'B11': { v: 180, t: 'n' }, 'C11': { v: 301, t: 'n' }, 'D11': { v: 500, t: 'n' },
       'A12': { v: 'Exit Multiple (EV/Rev)' }, 'B12': { v: 5, t: 'n' }, 'C12': { v: 8, t: 'n' }, 'D12': { v: 12, t: 'n' },
@@ -122,10 +122,10 @@ const DEFAULT_SHEETS = [
   {
     name: 'Scenarios',
     cells: {
-      'A1': { v: 'SCENARIO ANALYSIS', bold: true, bg: 'bg-zinc-800' },
-      'B1': { v: 'Bear', bold: true, bg: 'bg-red-900/20' },
-      'C1': { v: 'Base', bold: true, bg: 'bg-zinc-800' },
-      'D1': { v: 'Bull', bold: true, bg: 'bg-green-900/20' },
+      'A1': { v: 'SCENARIO ANALYSIS', bold: true, bg: 'var(--surface-2)' },
+      'B1': { v: 'Bear', bold: true, bg: 'var(--danger-muted)' },
+      'C1': { v: 'Base', bold: true, bg: 'var(--surface-2)' },
+      'D1': { v: 'Bull', bold: true, bg: 'var(--success-muted)' },
       'A3': { v: 'Revenue 2030E (€M)' }, 'B3': { v: 180, t: 'n' }, 'C3': { v: 301, t: 'n' }, 'D3': { v: 500, t: 'n' },
       'A4': { v: 'Gross Margin 2030E' }, 'B4': { v: 0.50, t: 'n', fmt: '%' }, 'C4': { v: 0.62, t: 'n', fmt: '%' }, 'D4': { v: 0.68, t: 'n', fmt: '%' },
       'A5': { v: 'EBITDA Margin 2030E' }, 'B5': { v: 0.25, t: 'n', fmt: '%' }, 'C5': { v: 0.40, t: 'n', fmt: '%' }, 'D5': { v: 0.48, t: 'n', fmt: '%' },
@@ -315,7 +315,7 @@ export default function ModelPage() {
   if (loading) {
     return (
       <div className="h-[calc(100vh-4rem)] flex items-center justify-center">
-        <div className="text-zinc-600 text-sm">Loading model...</div>
+        <div className="text-sm" style={{ color: 'var(--text-tertiary)' }}>Loading model...</div>
       </div>
     );
   }
@@ -323,31 +323,75 @@ export default function ModelPage() {
   return (
     <div className="h-[calc(100vh-4rem)] -mx-6 -my-8 flex flex-col">
       {/* Sheet tabs + toolbar */}
-      <div className="shrink-0 border-b border-zinc-800 flex items-center bg-zinc-950">
+      <div
+        className="shrink-0 flex items-center"
+        style={{
+          borderBottom: '1px solid var(--border-default)',
+          backgroundColor: 'var(--surface-0)',
+        }}
+      >
         <div className="flex-1 flex items-center overflow-x-auto">
-          {sheets.map(sheet => (
-            <div
-              key={sheet.id}
-              className={`group flex items-center gap-1 px-4 py-2 text-sm cursor-pointer border-r border-zinc-800 transition-colors ${
-                sheet.id === activeSheetId
-                  ? 'bg-zinc-800/50 text-white font-medium border-b-2 border-b-blue-500'
-                  : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/30'
-              }`}
-              onClick={() => selectSheet(sheet)}
-            >
-              <span className="truncate max-w-[120px]">{sheet.sheet_name}</span>
-              <button
-                onClick={e => { e.stopPropagation(); deleteSheet(sheet); }}
-                className="hidden group-hover:block text-zinc-600 hover:text-red-400 ml-1"
+          {sheets.map(sheet => {
+            const isActive = sheet.id === activeSheetId;
+            return (
+              <div
+                key={sheet.id}
+                className="group flex items-center gap-1 px-4 py-2 text-sm cursor-pointer transition-colors"
+                style={{
+                  borderRight: '1px solid var(--border-subtle)',
+                  ...(isActive
+                    ? {
+                        backgroundColor: 'var(--surface-2)',
+                        color: 'var(--text-primary)',
+                        fontWeight: 500,
+                        borderBottom: '2px solid var(--accent)',
+                      }
+                    : {
+                        color: 'var(--text-muted)',
+                      }),
+                }}
+                onMouseEnter={e => {
+                  if (!isActive) {
+                    (e.currentTarget as HTMLDivElement).style.color = 'var(--text-secondary)';
+                    (e.currentTarget as HTMLDivElement).style.backgroundColor = 'var(--surface-1)';
+                  }
+                }}
+                onMouseLeave={e => {
+                  if (!isActive) {
+                    (e.currentTarget as HTMLDivElement).style.color = 'var(--text-muted)';
+                    (e.currentTarget as HTMLDivElement).style.backgroundColor = 'transparent';
+                  }
+                }}
+                onClick={() => selectSheet(sheet)}
               >
-                <Trash2 className="w-3 h-3" />
-              </button>
-            </div>
-          ))}
+                <span className="truncate max-w-[120px]">{sheet.sheet_name}</span>
+                <button
+                  onClick={e => { e.stopPropagation(); deleteSheet(sheet); }}
+                  className="hidden group-hover:block ml-1"
+                  style={{ color: 'var(--text-tertiary)' }}
+                  onMouseEnter={e => {
+                    (e.currentTarget as HTMLButtonElement).style.color = 'var(--danger)';
+                  }}
+                  onMouseLeave={e => {
+                    (e.currentTarget as HTMLButtonElement).style.color = 'var(--text-tertiary)';
+                  }}
+                >
+                  <Trash2 className="w-3 h-3" />
+                </button>
+              </div>
+            );
+          })}
           <button
             onClick={() => setShowAddSheet(true)}
-            className="px-3 py-2 text-zinc-600 hover:text-zinc-400 transition-colors"
+            className="px-3 py-2 transition-colors"
             title="Add sheet"
+            style={{ color: 'var(--text-tertiary)' }}
+            onMouseEnter={e => {
+              (e.currentTarget as HTMLButtonElement).style.color = 'var(--text-secondary)';
+            }}
+            onMouseLeave={e => {
+              (e.currentTarget as HTMLButtonElement).style.color = 'var(--text-tertiary)';
+            }}
           >
             <Plus className="w-4 h-4" />
           </button>
@@ -356,7 +400,17 @@ export default function ModelPage() {
           {sheets.length === 0 && (
             <button
               onClick={initializeDefaultSheets}
-              className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5"
+              className="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5"
+              style={{
+                backgroundColor: 'var(--accent)',
+                color: 'var(--text-primary)',
+              }}
+              onMouseEnter={e => {
+                (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--accent-muted)';
+              }}
+              onMouseLeave={e => {
+                (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--accent)';
+              }}
             >
               <Table className="w-3.5 h-3.5" /> Initialize Model
             </button>
@@ -364,9 +418,22 @@ export default function ModelPage() {
           <button
             onClick={handleSave}
             disabled={!dirty || saving}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-              dirty ? 'bg-blue-600 hover:bg-blue-500 text-white' : 'bg-zinc-800 text-zinc-600'
-            }`}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
+            style={
+              dirty
+                ? { backgroundColor: 'var(--accent)', color: 'var(--text-primary)' }
+                : { backgroundColor: 'var(--surface-2)', color: 'var(--text-muted)' }
+            }
+            onMouseEnter={e => {
+              if (dirty) {
+                (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--accent-muted)';
+              }
+            }}
+            onMouseLeave={e => {
+              if (dirty) {
+                (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--accent)';
+              }
+            }}
           >
             <Save className="w-3.5 h-3.5" />
             {saving ? 'Saving...' : dirty ? 'Save' : 'Saved'}
@@ -399,7 +466,7 @@ export default function ModelPage() {
             defaultSplit={65}
           />
         ) : (
-          <div className="h-full flex items-center justify-center text-zinc-600">
+          <div className="h-full flex items-center justify-center" style={{ color: 'var(--text-tertiary)' }}>
             <div className="text-center space-y-4">
               <Table className="w-12 h-12 mx-auto" />
               <p className="text-sm">{sheets.length === 0 ? 'No model yet. Click "Initialize Model" to create default sheets.' : 'Select a sheet to start editing.'}</p>

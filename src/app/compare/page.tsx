@@ -220,11 +220,11 @@ export default function ComparePage() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="h-8 w-64 bg-zinc-800 rounded animate-pulse" />
-        <div className="h-12 w-full bg-zinc-800/50 rounded animate-pulse" />
+        <div className="h-8 w-64 skeleton animate-pulse" style={{ borderRadius: 'var(--radius-md)' }} />
+        <div className="h-12 w-full skeleton animate-pulse" style={{ borderRadius: 'var(--radius-md)' }} />
         <div className="space-y-2">
           {[...Array(8)].map((_, i) => (
-            <div key={i} className="h-10 bg-zinc-800/30 rounded animate-pulse" />
+            <div key={i} className="h-10 skeleton animate-pulse" style={{ borderRadius: 'var(--radius-md)' }} />
           ))}
         </div>
       </div>
@@ -235,12 +235,19 @@ export default function ComparePage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <Link href="/investors" className="text-zinc-500 hover:text-zinc-300 transition-colors">
+        <Link
+          href="/investors"
+          style={{ color: 'var(--text-muted)', transition: 'color 150ms ease' }}
+          onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
+          onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
+        >
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div className="flex-1">
-          <h1 className="text-2xl font-bold tracking-tight">Investor Comparison Engine</h1>
-          <p className="text-zinc-500 text-sm mt-1">
+          <h1 className="page-title" style={{ fontSize: 'var(--font-size-xl)' }}>
+            Investor Comparison Engine
+          </h1>
+          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', marginTop: 'var(--space-1)' }}>
             Select 2-4 investors, then hit Compare for a full decision breakdown
           </p>
         </div>
@@ -252,66 +259,73 @@ export default function ComparePage() {
         <div className="relative flex-1">
           <button
             onClick={() => setDropdownOpen(!dropdownOpen)}
-            className="w-full flex items-center justify-between bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-2.5 text-sm text-zinc-300 hover:border-zinc-700 transition-colors"
+            className="w-full flex items-center justify-between"
+            style={{
+              background: 'var(--surface-0)',
+              border: '1px solid var(--border-default)',
+              borderRadius: 'var(--radius-lg)',
+              padding: 'var(--space-2) var(--space-4)',
+              fontSize: 'var(--font-size-sm)',
+              color: 'var(--text-secondary)',
+              transition: 'border-color 150ms ease',
+            }}
+            onMouseEnter={e => (e.currentTarget.style.borderColor = 'var(--border-strong)')}
+            onMouseLeave={e => (e.currentTarget.style.borderColor = 'var(--border-default)')}
           >
-            <span className={selectedIds.length === 0 ? 'text-zinc-600' : ''}>
+            <span style={selectedIds.length === 0 ? { color: 'var(--text-muted)' } : undefined}>
               {selectedIds.length === 0
                 ? 'Select investors to compare...'
                 : `${selectedIds.length} investor${selectedIds.length > 1 ? 's' : ''} selected`}
             </span>
-            <ChevronDown className={`w-4 h-4 text-zinc-500 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
+            <ChevronDown
+              className={`w-4 h-4 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`}
+              style={{ color: 'var(--text-muted)' }}
+            />
           </button>
 
           {dropdownOpen && (
             <>
               <div className="fixed inset-0 z-10" onClick={() => setDropdownOpen(false)} />
-              <div className="absolute z-20 mt-1 w-full bg-zinc-900 border border-zinc-800 rounded-lg shadow-xl max-h-72 overflow-hidden">
-                <div className="p-2 border-b border-zinc-800">
+              <div
+                className="absolute z-20 mt-1 w-full max-h-72 overflow-hidden"
+                style={{
+                  background: 'var(--surface-1)',
+                  border: '1px solid var(--border-default)',
+                  borderRadius: 'var(--radius-lg)',
+                  boxShadow: 'var(--shadow-lg)',
+                }}
+              >
+                <div style={{ padding: 'var(--space-2)', borderBottom: '1px solid var(--border-default)' }}>
                   <input
                     type="text"
                     value={search}
                     onChange={e => setSearch(e.target.value)}
                     placeholder="Search investors..."
-                    className="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-1.5 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-blue-600"
+                    className="input"
                     autoFocus
                   />
                 </div>
                 <div className="overflow-y-auto max-h-56">
                   {filteredInvestors.length === 0 ? (
-                    <div className="px-4 py-3 text-sm text-zinc-600">No investors found</div>
+                    <div style={{
+                      padding: 'var(--space-3) var(--space-4)',
+                      fontSize: 'var(--font-size-sm)',
+                      color: 'var(--text-muted)',
+                    }}>
+                      No investors found
+                    </div>
                   ) : (
                     filteredInvestors.map(inv => {
                       const isSelected = selectedIds.includes(inv.id);
                       const disabled = !isSelected && selectedIds.length >= 4;
                       return (
-                        <button
+                        <DropdownItem
                           key={inv.id}
-                          onClick={() => { if (!disabled) toggleInvestor(inv.id); }}
+                          investor={inv}
+                          isSelected={isSelected}
                           disabled={disabled}
-                          className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm text-left transition-colors ${
-                            isSelected
-                              ? 'bg-blue-600/10 text-blue-400'
-                              : disabled
-                              ? 'text-zinc-700 cursor-not-allowed'
-                              : 'text-zinc-300 hover:bg-zinc-800'
-                          }`}
-                        >
-                          <div className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${
-                            isSelected ? 'bg-blue-600 border-blue-600' : 'border-zinc-700'
-                          }`}>
-                            {isSelected && (
-                              <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                              </svg>
-                            )}
-                          </div>
-                          <span className="flex-1">{inv.name}</span>
-                          <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${
-                            inv.tier === 1 ? 'bg-blue-600/20 text-blue-400' :
-                            inv.tier === 2 ? 'bg-purple-600/20 text-purple-400' :
-                            'bg-zinc-600/20 text-zinc-500'
-                          }`}>T{inv.tier}</span>
-                        </button>
+                          onToggle={() => { if (!disabled) toggleInvestor(inv.id); }}
+                        />
                       );
                     })
                   )}
@@ -325,11 +339,23 @@ export default function ComparePage() {
         <button
           onClick={runComparison}
           disabled={selectedIds.length < 2 || comparing}
-          className={`px-6 py-2.5 rounded-lg font-medium text-sm transition-all flex items-center gap-2 shrink-0 ${
-            selectedIds.length >= 2 && !comparing
-              ? 'bg-blue-600 hover:bg-blue-500 text-white'
-              : 'bg-zinc-800 text-zinc-600 cursor-not-allowed'
+          className={`flex items-center gap-2 shrink-0 btn ${
+            selectedIds.length >= 2 && !comparing ? 'btn-primary' : ''
           }`}
+          style={{
+            padding: 'var(--space-2) var(--space-6)',
+            borderRadius: 'var(--radius-lg)',
+            fontSize: 'var(--font-size-sm)',
+            fontWeight: 500,
+            ...(selectedIds.length >= 2 && !comparing
+              ? {}
+              : {
+                  background: 'var(--surface-2)',
+                  color: 'var(--text-muted)',
+                  cursor: 'not-allowed',
+                  border: '1px solid transparent',
+                }),
+          }}
         >
           {comparing ? (
             <><Loader2 className="w-4 h-4 animate-spin" /> Comparing...</>
@@ -346,34 +372,24 @@ export default function ComparePage() {
             const inv = allInvestors.find(i => i.id === id);
             if (!inv) return null;
             return (
-              <span
-                key={id}
-                className="inline-flex items-center gap-1.5 bg-zinc-800 border border-zinc-700 rounded-full px-3 py-1 text-sm text-zinc-300"
-              >
-                {inv.name}
-                <button
-                  onClick={() => removeInvestor(id)}
-                  className="text-zinc-500 hover:text-zinc-300 transition-colors"
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              </span>
+              <SelectedPill key={id} name={inv.name} onRemove={() => removeInvestor(id)} />
             );
           })}
-          <button
-            onClick={() => { setSelectedIds([]); setCompareData(null); }}
-            className="text-xs text-zinc-600 hover:text-zinc-400 px-2 py-1 transition-colors"
-          >
-            Clear all
-          </button>
+          <ClearAllButton onClick={() => { setSelectedIds([]); setCompareData(null); }} />
         </div>
       )}
 
       {/* Empty state */}
       {!compareData && !comparing && (
-        <div className="border border-zinc-800 rounded-xl p-12 text-center">
-          <BarChart3 className="w-10 h-10 text-zinc-700 mx-auto mb-3" />
-          <div className="text-zinc-500 text-sm">
+        <div
+          className="p-12 text-center"
+          style={{
+            border: '1px solid var(--border-default)',
+            borderRadius: 'var(--radius-xl)',
+          }}
+        >
+          <BarChart3 className="w-10 h-10 mx-auto mb-3" style={{ color: 'var(--text-muted)' }} />
+          <div style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
             {selectedIds.length < 2
               ? 'Select at least 2 investors from the dropdown above, then click Compare.'
               : 'Click Compare to run the full analysis.'}
@@ -383,9 +399,17 @@ export default function ComparePage() {
 
       {/* Loading state */}
       {comparing && (
-        <div className="border border-zinc-800 rounded-xl p-8 text-center">
-          <Loader2 className="w-6 h-6 animate-spin text-blue-500 mx-auto mb-3" />
-          <div className="text-zinc-400 text-sm">Analyzing investors across 8 dimensions...</div>
+        <div
+          className="p-8 text-center"
+          style={{
+            border: '1px solid var(--border-default)',
+            borderRadius: 'var(--radius-xl)',
+          }}
+        >
+          <Loader2 className="w-6 h-6 animate-spin mx-auto mb-3" style={{ color: 'var(--accent)' }} />
+          <div style={{ color: 'var(--text-secondary)', fontSize: 'var(--font-size-sm)' }}>
+            Analyzing investors across 8 dimensions...
+          </div>
         </div>
       )}
 
@@ -395,29 +419,44 @@ export default function ComparePage() {
       {compareData && compareData.profiles.length >= 2 && (
         <div className="space-y-6">
 
-          {/* ── Recommendation Banner ── */}
+          {/* -- Recommendation Banner -- */}
           <RecommendationBanner recommendation={compareData.recommendation} />
 
-          {/* ── Comparison Table ── */}
-          <div className="border border-zinc-800 rounded-xl overflow-hidden">
+          {/* -- Comparison Table -- */}
+          <div
+            className="overflow-hidden"
+            style={{
+              border: '1px solid var(--border-default)',
+              borderRadius: 'var(--radius-xl)',
+            }}
+          >
             <div className="overflow-x-auto">
-              <table className="w-full text-sm min-w-[640px]">
-                <thead className="bg-zinc-900/80 border-b border-zinc-800 sticky top-0 z-10">
+              <table className="w-full min-w-[640px]" style={{ fontSize: 'var(--font-size-sm)' }}>
+                <thead
+                  className="table-header sticky top-0 z-10"
+                  style={{ background: 'var(--surface-1)', borderBottom: '1px solid var(--border-default)' }}
+                >
                   <tr>
-                    <th className="text-left px-4 py-3 text-xs text-zinc-500 font-medium min-w-[160px] bg-zinc-900/80 sticky left-0 z-20 border-r border-zinc-800/50">
+                    <th
+                      className="text-left sticky left-0 z-20"
+                      style={{
+                        padding: 'var(--space-3) var(--space-4)',
+                        fontSize: 'var(--font-size-xs)',
+                        color: 'var(--text-muted)',
+                        fontWeight: 500,
+                        minWidth: 160,
+                        background: 'var(--surface-1)',
+                        borderRight: '1px solid var(--border-subtle)',
+                      }}
+                    >
                       Metric
                     </th>
                     {compareData.profiles.map(p => (
-                      <th key={p.investor.id} className="text-left px-4 py-3 min-w-[200px]">
+                      <th key={p.investor.id} className="text-left" style={{ padding: 'var(--space-3) var(--space-4)', minWidth: 200 }}>
                         <div className="flex items-center gap-2">
-                          <Link
-                            href={`/investors/${p.investor.id}`}
-                            className="text-sm font-medium text-zinc-200 hover:text-blue-400 transition-colors"
-                          >
-                            {p.investor.name}
-                          </Link>
+                          <InvestorNameLink investor={p.investor} />
                           {p.investor.id === winnerId && (
-                            <Trophy className="w-4 h-4 text-amber-400 shrink-0" />
+                            <Trophy className="w-4 h-4 shrink-0" style={{ color: 'var(--warning)' }} />
                           )}
                         </div>
                       </th>
@@ -425,8 +464,8 @@ export default function ComparePage() {
                   </tr>
                 </thead>
 
-                <tbody className="divide-y divide-zinc-800/30">
-                  {/* ── Basic Info ── */}
+                <tbody>
+                  {/* -- Basic Info -- */}
                   <SectionHeader label="BASIC INFO" colSpan={compareData.profiles.length + 1} />
 
                   <CompareRow label="Type" cells={compareData.profiles.map(p => ({
@@ -435,109 +474,117 @@ export default function ComparePage() {
 
                   <CompareRow label="Tier" cells={compareData.profiles.map(p => ({
                     value: `Tier ${p.investor.tier}`,
-                    className: tierColor(p.investor.tier),
+                    style: tierStyle(p.investor.tier),
                   }))} />
 
                   <CompareRow label="Status" cells={compareData.profiles.map(p => ({
                     value: STATUS_LABELS[p.investor.status] ?? p.investor.status,
-                    className: statusColor(p.investor.status),
+                    style: statusStyle(p.investor.status),
                   }))} />
 
-                  {/* ── Overall Score ── */}
+                  {/* -- Overall Score -- */}
                   <SectionHeader label="SCORING" colSpan={compareData.profiles.length + 1} />
 
-                  <tr className="hover:bg-zinc-900/20 transition-colors">
-                    <td className="px-4 py-3 text-xs text-zinc-500 font-medium sticky left-0 bg-zinc-950 border-r border-zinc-800/50">
-                      Overall Score
-                    </td>
+                  <TableRow>
+                    <StickyLabel>Overall Score</StickyLabel>
                     {compareData.profiles.map(p => (
-                      <td key={p.investor.id} className="px-4 py-3">
-                        <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg ${
-                          p.investor.id === winnerId
-                            ? 'bg-amber-500/10 border border-amber-500/30'
-                            : 'bg-zinc-800/50'
-                        }`}>
-                          <span className={`text-lg font-bold ${scoreColor(p.score.overall)}`}>
+                      <td key={p.investor.id} style={{ padding: 'var(--space-3) var(--space-4)' }}>
+                        <div
+                          className="inline-flex items-center gap-2"
+                          style={{
+                            padding: 'var(--space-1) var(--space-3)',
+                            borderRadius: 'var(--radius-lg)',
+                            ...(p.investor.id === winnerId
+                              ? { background: 'var(--warning-muted)', border: '1px solid rgba(245, 158, 11, 0.3)' }
+                              : { background: 'var(--surface-2)' }),
+                          }}
+                        >
+                          <span style={{
+                            fontSize: 'var(--font-size-lg)',
+                            fontWeight: 700,
+                            ...scoreStyle(p.score.overall),
+                          }}>
                             {p.score.overall}
                           </span>
-                          <span className="text-[10px] text-zinc-600">/100</span>
+                          <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>/100</span>
                           {p.investor.id === winnerId && (
-                            <Trophy className="w-3.5 h-3.5 text-amber-400" />
+                            <Trophy className="w-3.5 h-3.5" style={{ color: 'var(--warning)' }} />
                           )}
                         </div>
                       </td>
                     ))}
-                  </tr>
+                  </TableRow>
 
-                  {/* ── Conviction Trajectory ── */}
-                  <tr className="hover:bg-zinc-900/20 transition-colors">
-                    <td className="px-4 py-3 text-xs text-zinc-500 font-medium sticky left-0 bg-zinc-950 border-r border-zinc-800/50">
-                      Conviction Trajectory
-                    </td>
+                  {/* -- Conviction Trajectory -- */}
+                  <TableRow>
+                    <StickyLabel>Conviction Trajectory</StickyLabel>
                     {compareData.profiles.map(p => (
-                      <td key={p.investor.id} className="px-4 py-3">
+                      <td key={p.investor.id} style={{ padding: 'var(--space-3) var(--space-4)' }}>
                         <div className="flex flex-col gap-1">
                           <div className="flex items-center gap-2">
                             <MomentumIcon momentum={p.convictionTrajectory.trend} />
-                            <span className={`text-xs font-medium ${momentumColor(p.convictionTrajectory.trend)}`}>
+                            <span style={{
+                              fontSize: 'var(--font-size-xs)',
+                              fontWeight: 500,
+                              ...momentumStyle(p.convictionTrajectory.trend),
+                            }}>
                               {formatMomentum(p.convictionTrajectory.trend)}
                             </span>
                             {p.convictionTrajectory.velocityPerWeek !== 0 && (
-                              <span className="text-[10px] text-zinc-600">
+                              <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
                                 {p.convictionTrajectory.velocityPerWeek > 0 ? '+' : ''}{p.convictionTrajectory.velocityPerWeek} pts/wk
                               </span>
                             )}
                           </div>
                           {p.convictionTrajectory.predictedTermSheetDate && p.convictionTrajectory.predictedTermSheetDate !== 'now' && (
-                            <span className="text-[10px] text-zinc-600">
+                            <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
                               Predicted TS: {p.convictionTrajectory.predictedTermSheetDate}
                             </span>
                           )}
                           {p.convictionTrajectory.predictedTermSheetDate === 'now' && (
-                            <span className="text-[10px] text-green-500">Ready for term sheet</span>
+                            <span style={{ fontSize: '10px', color: 'var(--success)' }}>Ready for term sheet</span>
                           )}
-                          <span className="text-[10px] text-zinc-600">
+                          <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
                             30d prediction: {p.convictionTrajectory.predictedScoreIn30Days}
                           </span>
                         </div>
                       </td>
                     ))}
-                  </tr>
+                  </TableRow>
 
-                  {/* ── Enthusiasm Trend ── */}
-                  <tr className="hover:bg-zinc-900/20 transition-colors">
-                    <td className="px-4 py-3 text-xs text-zinc-500 font-medium sticky left-0 bg-zinc-950 border-r border-zinc-800/50">
-                      Enthusiasm Trend
-                    </td>
+                  {/* -- Enthusiasm Trend -- */}
+                  <TableRow>
+                    <StickyLabel>Enthusiasm Trend</StickyLabel>
                     {compareData.profiles.map(p => (
-                      <td key={p.investor.id} className="px-4 py-3">
+                      <td key={p.investor.id} style={{ padding: 'var(--space-3) var(--space-4)' }}>
                         <EnthusiasmTrendDots trend={p.meetingHistory.enthusiasmTrend} />
                       </td>
                     ))}
-                  </tr>
+                  </TableRow>
 
-                  {/* ── Objections ── */}
-                  <tr className="hover:bg-zinc-900/20 transition-colors">
-                    <td className="px-4 py-3 text-xs text-zinc-500 font-medium sticky left-0 bg-zinc-950 border-r border-zinc-800/50">
-                      Objections
-                    </td>
+                  {/* -- Objections -- */}
+                  <TableRow>
+                    <StickyLabel>Objections</StickyLabel>
                     {compareData.profiles.map(p => (
-                      <td key={p.investor.id} className="px-4 py-3">
+                      <td key={p.investor.id} style={{ padding: 'var(--space-3) var(--space-4)' }}>
                         {p.objectionProfile.totalCount === 0 ? (
-                          <span className="text-xs text-zinc-600">No objections logged</span>
+                          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>No objections logged</span>
                         ) : (
                           <div className="flex flex-col gap-1">
-                            <div className="flex items-center gap-3 text-xs">
-                              <span className="text-zinc-400">{p.objectionProfile.totalCount} total</span>
-                              <span className={p.objectionProfile.unresolvedCount > 0 ? 'text-red-400 font-medium' : 'text-green-400'}>
+                            <div className="flex items-center gap-3" style={{ fontSize: 'var(--font-size-xs)' }}>
+                              <span style={{ color: 'var(--text-secondary)' }}>{p.objectionProfile.totalCount} total</span>
+                              <span style={{
+                                fontWeight: p.objectionProfile.unresolvedCount > 0 ? 500 : 400,
+                                color: p.objectionProfile.unresolvedCount > 0 ? 'var(--danger)' : 'var(--success)',
+                              }}>
                                 {p.objectionProfile.unresolvedCount} unresolved
                               </span>
                             </div>
-                            <div className="flex items-center gap-2 text-[10px]">
-                              <span className="text-zinc-600">
+                            <div className="flex items-center gap-2" style={{ fontSize: '10px' }}>
+                              <span style={{ color: 'var(--text-muted)' }}>
                                 Severity: {p.objectionProfile.avgSeverityScore.toFixed(1)}/3
                               </span>
-                              <span className="text-zinc-600">
+                              <span style={{ color: 'var(--text-muted)' }}>
                                 Resolved: {p.objectionProfile.resolutionRate}%
                               </span>
                             </div>
@@ -545,20 +592,24 @@ export default function ComparePage() {
                         )}
                       </td>
                     ))}
-                  </tr>
+                  </TableRow>
 
-                  {/* ── Meeting Engagement ── */}
-                  <tr className="hover:bg-zinc-900/20 transition-colors">
-                    <td className="px-4 py-3 text-xs text-zinc-500 font-medium sticky left-0 bg-zinc-950 border-r border-zinc-800/50">
-                      Meeting Engagement
-                    </td>
+                  {/* -- Meeting Engagement -- */}
+                  <TableRow>
+                    <StickyLabel>Meeting Engagement</StickyLabel>
                     {compareData.profiles.map(p => (
-                      <td key={p.investor.id} className="px-4 py-3">
+                      <td key={p.investor.id} style={{ padding: 'var(--space-3) var(--space-4)' }}>
                         <div className="flex flex-col gap-1">
-                          <div className="flex items-center gap-3 text-xs">
-                            <span className="text-zinc-300 font-medium">{p.meetingHistory.totalMeetings} meetings</span>
+                          <div className="flex items-center gap-3" style={{ fontSize: 'var(--font-size-xs)' }}>
+                            <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{p.meetingHistory.totalMeetings} meetings</span>
                             {p.meetingHistory.daysSinceLastMeeting !== null && (
-                              <span className={`${p.meetingHistory.daysSinceLastMeeting > 30 ? 'text-red-400' : p.meetingHistory.daysSinceLastMeeting > 14 ? 'text-yellow-400' : 'text-green-400'}`}>
+                              <span style={{
+                                color: p.meetingHistory.daysSinceLastMeeting > 30
+                                  ? 'var(--danger)'
+                                  : p.meetingHistory.daysSinceLastMeeting > 14
+                                  ? 'var(--warning)'
+                                  : 'var(--success)',
+                              }}>
                                 {p.meetingHistory.daysSinceLastMeeting}d ago
                               </span>
                             )}
@@ -566,7 +617,16 @@ export default function ComparePage() {
                           {Object.keys(p.meetingHistory.meetingTypes).length > 0 && (
                             <div className="flex flex-wrap gap-1">
                               {Object.entries(p.meetingHistory.meetingTypes).map(([type, count]) => (
-                                <span key={type} className="text-[10px] bg-zinc-800 text-zinc-500 px-1.5 py-0.5 rounded">
+                                <span
+                                  key={type}
+                                  style={{
+                                    fontSize: '10px',
+                                    background: 'var(--surface-2)',
+                                    color: 'var(--text-muted)',
+                                    padding: '1px 6px',
+                                    borderRadius: 'var(--radius-sm)',
+                                  }}
+                                >
                                   {MEETING_TYPE_LABELS[type] || type} {count > 1 ? `x${count}` : ''}
                                 </span>
                               ))}
@@ -575,64 +635,79 @@ export default function ComparePage() {
                         </div>
                       </td>
                     ))}
-                  </tr>
+                  </TableRow>
 
-                  {/* ── Follow-up Health ── */}
-                  <tr className="hover:bg-zinc-900/20 transition-colors">
-                    <td className="px-4 py-3 text-xs text-zinc-500 font-medium sticky left-0 bg-zinc-950 border-r border-zinc-800/50">
-                      Follow-up Health
-                    </td>
+                  {/* -- Follow-up Health -- */}
+                  <TableRow>
+                    <StickyLabel>Follow-up Health</StickyLabel>
                     {compareData.profiles.map(p => (
-                      <td key={p.investor.id} className="px-4 py-3">
-                        <div className="flex items-center gap-3 text-xs">
+                      <td key={p.investor.id} style={{ padding: 'var(--space-3) var(--space-4)' }}>
+                        <div className="flex items-center gap-3" style={{ fontSize: 'var(--font-size-xs)' }}>
                           {p.followupStatus.pendingCount > 0 && (
-                            <span className="text-yellow-400">
+                            <span style={{ color: 'var(--warning)' }}>
                               {p.followupStatus.pendingCount} pending
                             </span>
                           )}
                           {p.followupStatus.overdueCount > 0 && (
-                            <span className="text-red-400 font-medium">
+                            <span style={{ color: 'var(--danger)', fontWeight: 500 }}>
                               {p.followupStatus.overdueCount} overdue
                             </span>
                           )}
                           {p.followupStatus.completedCount > 0 && (
-                            <span className="text-green-400">
+                            <span style={{ color: 'var(--success)' }}>
                               {p.followupStatus.completedCount} done
                             </span>
                           )}
                           {p.followupStatus.pendingCount === 0 && p.followupStatus.overdueCount === 0 && p.followupStatus.completedCount === 0 && (
-                            <span className="text-zinc-600">No follow-ups</span>
+                            <span style={{ color: 'var(--text-muted)' }}>No follow-ups</span>
                           )}
                         </div>
                         {p.followupStatus.avgConvictionDelta !== 0 && (
-                          <div className="text-[10px] text-zinc-600 mt-0.5">
+                          <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: 2 }}>
                             Avg impact: {p.followupStatus.avgConvictionDelta > 0 ? '+' : ''}{p.followupStatus.avgConvictionDelta} pts
                           </div>
                         )}
                       </td>
                     ))}
-                  </tr>
+                  </TableRow>
 
-                  {/* ── Acceleration Status ── */}
-                  <tr className="hover:bg-zinc-900/20 transition-colors">
-                    <td className="px-4 py-3 text-xs text-zinc-500 font-medium sticky left-0 bg-zinc-950 border-r border-zinc-800/50">
-                      Acceleration Status
-                    </td>
+                  {/* -- Acceleration Status -- */}
+                  <TableRow>
+                    <StickyLabel>Acceleration Status</StickyLabel>
                     {compareData.profiles.map(p => (
-                      <td key={p.investor.id} className="px-4 py-3">
+                      <td key={p.investor.id} style={{ padding: 'var(--space-3) var(--space-4)' }}>
                         <AccelerationBadge status={p.accelerationStatus} />
                       </td>
                     ))}
-                  </tr>
+                  </TableRow>
 
-                  {/* ── Recommended Action ── */}
-                  <tr className="bg-zinc-900/50 border-t-2 border-zinc-700">
-                    <td className="px-4 py-4 text-xs font-semibold text-zinc-400 uppercase tracking-wider sticky left-0 bg-zinc-900/50 border-r border-zinc-800/50">
+                  {/* -- Recommended Action -- */}
+                  <tr style={{
+                    background: 'var(--surface-1)',
+                    borderTop: '2px solid var(--border-strong)',
+                  }}>
+                    <td
+                      className="sticky left-0"
+                      style={{
+                        padding: 'var(--space-4)',
+                        fontSize: 'var(--font-size-xs)',
+                        fontWeight: 600,
+                        color: 'var(--text-secondary)',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.05em',
+                        background: 'var(--surface-1)',
+                        borderRight: '1px solid var(--border-subtle)',
+                      }}
+                    >
                       Next Action
                     </td>
                     {compareData.profiles.map(p => (
-                      <td key={p.investor.id} className="px-4 py-4">
-                        <span className="text-xs text-zinc-300 leading-relaxed line-clamp-3">
+                      <td key={p.investor.id} style={{ padding: 'var(--space-4)' }}>
+                        <span className="line-clamp-3" style={{
+                          fontSize: 'var(--font-size-xs)',
+                          color: 'var(--text-secondary)',
+                          lineHeight: 1.6,
+                        }}>
                           {p.recommendedAction}
                         </span>
                       </td>
@@ -643,22 +718,43 @@ export default function ComparePage() {
             </div>
           </div>
 
-          {/* ── Score Dimension Breakdown (collapsible) ── */}
-          <div className="border border-zinc-800 rounded-xl overflow-hidden">
+          {/* -- Score Dimension Breakdown (collapsible) -- */}
+          <div
+            className="overflow-hidden"
+            style={{
+              border: '1px solid var(--border-default)',
+              borderRadius: 'var(--radius-xl)',
+            }}
+          >
             <button
               onClick={() => setDimensionsExpanded(!dimensionsExpanded)}
-              className="w-full flex items-center justify-between px-5 py-3.5 bg-zinc-900/50 hover:bg-zinc-900 transition-colors"
+              className="w-full flex items-center justify-between"
+              style={{
+                padding: 'var(--space-3) var(--space-5)',
+                background: 'var(--surface-1)',
+                transition: 'background 150ms ease',
+              }}
+              onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface-2)')}
+              onMouseLeave={e => (e.currentTarget.style.background = 'var(--surface-1)')}
             >
               <div className="flex items-center gap-2">
-                <BarChart3 className="w-4 h-4 text-zinc-500" />
-                <span className="text-sm font-medium text-zinc-300">Score Dimension Breakdown</span>
-                <span className="text-[10px] text-zinc-600">8 dimensions</span>
+                <BarChart3 className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
+                <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)' }}>
+                  Score Dimension Breakdown
+                </span>
+                <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>8 dimensions</span>
               </div>
-              <ChevronDown className={`w-4 h-4 text-zinc-500 transition-transform ${dimensionsExpanded ? 'rotate-180' : ''}`} />
+              <ChevronDown
+                className={`w-4 h-4 transition-transform ${dimensionsExpanded ? 'rotate-180' : ''}`}
+                style={{ color: 'var(--text-muted)' }}
+              />
             </button>
 
             {dimensionsExpanded && (
-              <div className="p-4 border-t border-zinc-800 space-y-3">
+              <div className="space-y-3" style={{
+                padding: 'var(--space-4)',
+                borderTop: '1px solid var(--border-default)',
+              }}>
                 {compareData.decisionMatrix.map(entry => (
                   <DimensionBar
                     key={entry.dimension}
@@ -672,26 +768,39 @@ export default function ComparePage() {
             )}
           </div>
 
-          {/* ── Decision Matrix ── */}
-          <div className="border border-zinc-800 rounded-xl overflow-hidden">
-            <div className="px-5 py-3.5 bg-zinc-900/50 border-b border-zinc-800">
-              <div className="flex items-center gap-2">
-                <Target className="w-4 h-4 text-zinc-500" />
-                <span className="text-sm font-medium text-zinc-300">Decision Matrix</span>
-              </div>
+          {/* -- Decision Matrix -- */}
+          <div
+            className="overflow-hidden"
+            style={{
+              border: '1px solid var(--border-default)',
+              borderRadius: 'var(--radius-xl)',
+            }}
+          >
+            <div
+              className="flex items-center gap-2"
+              style={{
+                padding: 'var(--space-3) var(--space-5)',
+                background: 'var(--surface-1)',
+                borderBottom: '1px solid var(--border-default)',
+              }}
+            >
+              <Target className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
+              <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)' }}>
+                Decision Matrix
+              </span>
             </div>
-            <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3" style={{ padding: 'var(--space-4)' }}>
               <VerdictCard
                 icon={<CheckCircle className="w-4 h-4" />}
                 title="Most Likely to Close"
                 verdict={compareData.verdict.mostLikelyToClose}
-                color="green"
+                color="success"
               />
               <VerdictCard
                 icon={<Zap className="w-4 h-4" />}
                 title="Fastest Decision"
                 verdict={compareData.verdict.fastestDecision}
-                color="blue"
+                color="accent"
               />
               <VerdictCard
                 icon={<Shield className="w-4 h-4" />}
@@ -703,7 +812,7 @@ export default function ComparePage() {
                 icon={<TrendingUp className="w-4 h-4" />}
                 title="Best Momentum"
                 verdict={compareData.verdict.bestMomentum}
-                color="amber"
+                color="warning"
               />
               <VerdictCard
                 icon={<ArrowUpRight className="w-4 h-4" />}
@@ -724,12 +833,159 @@ export default function ComparePage() {
 // Sub-components
 // ============================================================================
 
+function DropdownItem({
+  investor,
+  isSelected,
+  disabled,
+  onToggle,
+}: {
+  investor: Investor;
+  isSelected: boolean;
+  disabled: boolean;
+  onToggle: () => void;
+}) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <button
+      onClick={onToggle}
+      disabled={disabled}
+      className="w-full flex items-center gap-3 text-left"
+      style={{
+        padding: 'var(--space-2) var(--space-4)',
+        fontSize: 'var(--font-size-sm)',
+        transition: 'background 100ms ease',
+        color: isSelected
+          ? 'var(--accent)'
+          : disabled
+          ? 'var(--text-muted)'
+          : 'var(--text-secondary)',
+        background: isSelected
+          ? 'var(--accent-muted)'
+          : hovered && !disabled
+          ? 'var(--surface-2)'
+          : 'transparent',
+        cursor: disabled ? 'not-allowed' : 'pointer',
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <div
+        className="w-4 h-4 flex items-center justify-center shrink-0"
+        style={{
+          borderRadius: 'var(--radius-sm)',
+          border: isSelected ? '1px solid var(--accent)' : '1px solid var(--border-strong)',
+          background: isSelected ? 'var(--accent)' : 'transparent',
+        }}
+      >
+        {isSelected && (
+          <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth={3}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+        )}
+      </div>
+      <span className="flex-1">{investor.name}</span>
+      <span
+        className="badge"
+        style={{
+          fontSize: '10px',
+          ...(investor.tier === 1
+            ? { background: 'var(--accent-muted)', color: 'var(--accent)' }
+            : investor.tier === 2
+            ? { background: 'rgba(168, 85, 247, 0.12)', color: '#c084fc' }
+            : { background: 'var(--surface-2)', color: 'var(--text-muted)' }),
+        }}
+      >
+        T{investor.tier}
+      </span>
+    </button>
+  );
+}
+
+function SelectedPill({ name, onRemove }: { name: string; onRemove: () => void }) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <span
+      className="inline-flex items-center gap-1.5"
+      style={{
+        background: 'var(--surface-2)',
+        border: '1px solid var(--border-strong)',
+        borderRadius: 9999,
+        padding: 'var(--space-1) var(--space-3)',
+        fontSize: 'var(--font-size-sm)',
+        color: 'var(--text-secondary)',
+      }}
+    >
+      {name}
+      <button
+        onClick={onRemove}
+        style={{
+          color: hovered ? 'var(--text-secondary)' : 'var(--text-muted)',
+          transition: 'color 150ms ease',
+        }}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+      >
+        <X className="w-3.5 h-3.5" />
+      </button>
+    </span>
+  );
+}
+
+function ClearAllButton({ onClick }: { onClick: () => void }) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        fontSize: 'var(--font-size-xs)',
+        color: hovered ? 'var(--text-secondary)' : 'var(--text-muted)',
+        padding: 'var(--space-1) var(--space-2)',
+        transition: 'color 150ms ease',
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      Clear all
+    </button>
+  );
+}
+
+function InvestorNameLink({ investor }: { investor: Investor }) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <Link
+      href={`/investors/${investor.id}`}
+      style={{
+        fontSize: 'var(--font-size-sm)',
+        fontWeight: 500,
+        color: hovered ? 'var(--accent)' : 'var(--text-primary)',
+        transition: 'color 150ms ease',
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {investor.name}
+    </Link>
+  );
+}
+
 function SectionHeader({ label, colSpan }: { label: string; colSpan: number }) {
   return (
-    <tr className="bg-zinc-900/30">
+    <tr style={{ background: 'var(--surface-1)' }}>
       <td
         colSpan={colSpan}
-        className="px-4 py-2 text-[10px] font-semibold text-zinc-600 uppercase tracking-wider"
+        style={{
+          padding: 'var(--space-2) var(--space-4)',
+          fontSize: '10px',
+          fontWeight: 600,
+          color: 'var(--text-muted)',
+          textTransform: 'uppercase',
+          letterSpacing: '0.08em',
+        }}
       >
         {label}
       </td>
@@ -737,23 +993,73 @@ function SectionHeader({ label, colSpan }: { label: string; colSpan: number }) {
   );
 }
 
+function TableRow({ children }: { children: React.ReactNode }) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <tr
+      className="table-row"
+      style={{
+        background: hovered ? 'var(--surface-1)' : 'transparent',
+        transition: 'background 100ms ease',
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {children}
+    </tr>
+  );
+}
+
+function StickyLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <td
+      className="sticky left-0"
+      style={{
+        padding: 'var(--space-3) var(--space-4)',
+        fontSize: 'var(--font-size-xs)',
+        color: 'var(--text-muted)',
+        fontWeight: 500,
+        background: 'var(--surface-0)',
+        borderRight: '1px solid var(--border-subtle)',
+      }}
+    >
+      {children}
+    </td>
+  );
+}
+
 interface CellData {
   value: string;
-  className?: string;
+  style?: React.CSSProperties;
   wrap?: boolean;
   render?: React.ReactNode;
 }
 
 function CompareRow({ label, cells }: { label: string; cells: CellData[] }) {
+  const [hovered, setHovered] = useState(false);
+
   return (
-    <tr className="hover:bg-zinc-900/20 transition-colors">
-      <td className="px-4 py-3 text-xs text-zinc-500 font-medium sticky left-0 bg-zinc-950 border-r border-zinc-800/50">
-        {label}
-      </td>
+    <tr
+      className="table-row"
+      style={{
+        background: hovered ? 'var(--surface-1)' : 'transparent',
+        transition: 'background 100ms ease',
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <StickyLabel>{label}</StickyLabel>
       {cells.map((cell, i) => (
         <td
           key={i}
-          className={`px-4 py-3 text-sm ${cell.wrap ? 'max-w-[220px]' : ''} ${cell.className || 'text-zinc-300'}`}
+          className={cell.wrap ? 'max-w-[220px]' : ''}
+          style={{
+            padding: 'var(--space-3) var(--space-4)',
+            fontSize: 'var(--font-size-sm)',
+            color: 'var(--text-secondary)',
+            ...cell.style,
+          }}
         >
           {cell.render ?? (
             <span className={cell.wrap ? 'line-clamp-3' : ''}>{cell.value}</span>
@@ -765,11 +1071,25 @@ function CompareRow({ label, cells }: { label: string; cells: CellData[] }) {
 }
 
 function RecommendationBanner({ recommendation }: { recommendation: ComparisonRecommendation }) {
-  const bgColor = recommendation.type === 'strong'
-    ? 'bg-green-900/20 border-green-800/40'
-    : recommendation.type === 'competitive'
-    ? 'bg-blue-900/20 border-blue-800/40'
-    : 'bg-yellow-900/20 border-yellow-800/40';
+  const styleMap: Record<string, { bg: string; border: string; iconColor: string }> = {
+    strong: {
+      bg: 'var(--success-muted)',
+      border: 'rgba(34, 197, 94, 0.3)',
+      iconColor: 'var(--success)',
+    },
+    competitive: {
+      bg: 'var(--accent-muted)',
+      border: 'rgba(59, 130, 246, 0.3)',
+      iconColor: 'var(--accent)',
+    },
+    none_ready: {
+      bg: 'var(--warning-muted)',
+      border: 'rgba(245, 158, 11, 0.3)',
+      iconColor: 'var(--warning)',
+    },
+  };
+
+  const s = styleMap[recommendation.type] ?? styleMap.competitive;
 
   const Icon = recommendation.type === 'strong'
     ? CheckCircle
@@ -777,33 +1097,37 @@ function RecommendationBanner({ recommendation }: { recommendation: ComparisonRe
     ? Target
     : AlertTriangle;
 
-  const iconColor = recommendation.type === 'strong'
-    ? 'text-green-400'
-    : recommendation.type === 'competitive'
-    ? 'text-blue-400'
-    : 'text-yellow-400';
-
   return (
-    <div className={`rounded-xl border p-4 flex items-start gap-3 ${bgColor}`}>
-      <Icon className={`w-5 h-5 shrink-0 mt-0.5 ${iconColor}`} />
+    <div
+      className="flex items-start gap-3"
+      style={{
+        borderRadius: 'var(--radius-xl)',
+        border: `1px solid ${s.border}`,
+        padding: 'var(--space-4)',
+        background: s.bg,
+      }}
+    >
+      <Icon className="w-5 h-5 shrink-0 mt-0.5" style={{ color: s.iconColor }} />
       <div>
-        <div className="text-sm font-medium text-zinc-200">{recommendation.text}</div>
+        <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-primary)' }}>
+          {recommendation.text}
+        </div>
       </div>
     </div>
   );
 }
 
 function MomentumIcon({ momentum }: { momentum: string }) {
-  if (momentum === 'accelerating') return <TrendingUp className="w-3.5 h-3.5 text-green-400" />;
-  if (momentum === 'decelerating') return <TrendingDown className="w-3.5 h-3.5 text-red-400" />;
-  if (momentum === 'stalled') return <AlertTriangle className="w-3.5 h-3.5 text-red-400" />;
-  if (momentum === 'steady') return <Minus className="w-3.5 h-3.5 text-yellow-400" />;
-  return <Minus className="w-3.5 h-3.5 text-zinc-600" />;
+  if (momentum === 'accelerating') return <TrendingUp className="w-3.5 h-3.5" style={{ color: 'var(--success)' }} />;
+  if (momentum === 'decelerating') return <TrendingDown className="w-3.5 h-3.5" style={{ color: 'var(--danger)' }} />;
+  if (momentum === 'stalled') return <AlertTriangle className="w-3.5 h-3.5" style={{ color: 'var(--danger)' }} />;
+  if (momentum === 'steady') return <Minus className="w-3.5 h-3.5" style={{ color: 'var(--warning)' }} />;
+  return <Minus className="w-3.5 h-3.5" style={{ color: 'var(--text-muted)' }} />;
 }
 
 function EnthusiasmTrendDots({ trend }: { trend: number[] }) {
   if (trend.length === 0) {
-    return <span className="text-xs text-zinc-600">No data</span>;
+    return <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>No data</span>;
   }
 
   const maxDots = 3;
@@ -814,21 +1138,29 @@ function EnthusiasmTrendDots({ trend }: { trend: number[] }) {
       {dots.map((score, i) => (
         <div key={i} className="flex flex-col items-center gap-0.5">
           <div
-            className={`w-3 h-3 rounded-full ${
-              score >= 4 ? 'bg-green-500' : score === 3 ? 'bg-yellow-500' : score >= 1 ? 'bg-red-500' : 'bg-zinc-700'
-            }`}
+            className="w-3 h-3"
+            style={{
+              borderRadius: '50%',
+              background: score >= 4
+                ? 'var(--success)'
+                : score === 3
+                ? 'var(--warning)'
+                : score >= 1
+                ? 'var(--danger)'
+                : 'var(--border-strong)',
+            }}
           />
-          <span className="text-[9px] text-zinc-600">{score}</span>
+          <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>{score}</span>
         </div>
       ))}
       {dots.length >= 2 && (
         <div className="ml-1">
           {dots[dots.length - 1] > dots[0] ? (
-            <ArrowUpRight className="w-3 h-3 text-green-400" />
+            <ArrowUpRight className="w-3 h-3" style={{ color: 'var(--success)' }} />
           ) : dots[dots.length - 1] < dots[0] ? (
-            <ArrowDownRight className="w-3 h-3 text-red-400" />
+            <ArrowDownRight className="w-3 h-3" style={{ color: 'var(--danger)' }} />
           ) : (
-            <Minus className="w-3 h-3 text-zinc-600" />
+            <Minus className="w-3 h-3" style={{ color: 'var(--text-muted)' }} />
           )}
         </div>
       )}
@@ -837,25 +1169,29 @@ function EnthusiasmTrendDots({ trend }: { trend: number[] }) {
 }
 
 function AccelerationBadge({ status }: { status: AccelerationStatusData }) {
-  const config: Record<string, { bg: string; text: string; icon: React.ReactNode }> = {
+  const config: Record<string, { bg: string; border: string; color: string; icon: React.ReactNode }> = {
     'Term Sheet Ready': {
-      bg: 'bg-green-600/20 border-green-600/30',
-      text: 'text-green-400',
+      bg: 'var(--success-muted)',
+      border: 'rgba(34, 197, 94, 0.3)',
+      color: 'var(--success)',
       icon: <CheckCircle className="w-3 h-3" />,
     },
     'Active': {
-      bg: 'bg-blue-600/20 border-blue-600/30',
-      text: 'text-blue-400',
+      bg: 'var(--accent-muted)',
+      border: 'rgba(59, 130, 246, 0.3)',
+      color: 'var(--accent)',
       icon: <Zap className="w-3 h-3" />,
     },
     'At Risk': {
-      bg: 'bg-yellow-600/20 border-yellow-600/30',
-      text: 'text-yellow-400',
+      bg: 'var(--warning-muted)',
+      border: 'rgba(245, 158, 11, 0.3)',
+      color: 'var(--warning)',
       icon: <AlertTriangle className="w-3 h-3" />,
     },
     'Stalled': {
-      bg: 'bg-red-600/20 border-red-600/30',
-      text: 'text-red-400',
+      bg: 'var(--danger-muted)',
+      border: 'rgba(239, 68, 68, 0.3)',
+      color: 'var(--danger)',
       icon: <Clock className="w-3 h-3" />,
     },
   };
@@ -864,14 +1200,34 @@ function AccelerationBadge({ status }: { status: AccelerationStatusData }) {
 
   return (
     <div className="flex flex-col gap-1">
-      <span className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-md border text-xs font-medium w-fit ${c.bg} ${c.text}`}>
+      <span
+        className="inline-flex items-center gap-1.5 w-fit"
+        style={{
+          padding: 'var(--space-1) var(--space-2)',
+          borderRadius: 'var(--radius-md)',
+          border: `1px solid ${c.border}`,
+          background: c.bg,
+          color: c.color,
+          fontSize: 'var(--font-size-xs)',
+          fontWeight: 500,
+        }}
+      >
         {c.icon}
         {status.label}
       </span>
       {status.activeTriggers.length > 0 && (
         <div className="flex flex-wrap gap-1">
           {status.activeTriggers.map(t => (
-            <span key={t} className="text-[9px] text-zinc-600 bg-zinc-800 px-1 py-0.5 rounded">
+            <span
+              key={t}
+              style={{
+                fontSize: '9px',
+                color: 'var(--text-muted)',
+                background: 'var(--surface-2)',
+                padding: '1px 4px',
+                borderRadius: 'var(--radius-sm)',
+              }}
+            >
               {t.replace(/_/g, ' ')}
             </span>
           ))}
@@ -892,14 +1248,18 @@ function DimensionBar({
   winnerId: string;
   scores: Record<string, number>;
 }) {
-  const barColors = ['bg-blue-500', 'bg-purple-500', 'bg-cyan-500', 'bg-amber-500'];
+  const barColors = ['var(--accent)', 'rgba(168, 85, 247, 0.85)', 'rgba(6, 182, 212, 0.85)', 'var(--warning)'];
 
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between">
-        <span className="text-xs text-zinc-400 font-medium">{dimension}</span>
-        <span className="text-[10px] text-zinc-600">
-          Winner: <span className="text-zinc-400">{profiles.find(p => p.investor.id === winnerId)?.investor.name ?? '---'}</span>
+        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', fontWeight: 500 }}>
+          {dimension}
+        </span>
+        <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+          Winner: <span style={{ color: 'var(--text-secondary)' }}>
+            {profiles.find(p => p.investor.id === winnerId)?.investor.name ?? '---'}
+          </span>
         </span>
       </div>
       <div className="space-y-1">
@@ -908,18 +1268,34 @@ function DimensionBar({
           const isWinner = p.investor.id === winnerId;
           return (
             <div key={p.investor.id} className="flex items-center gap-2">
-              <span className="text-[10px] text-zinc-600 w-20 truncate">{p.investor.name}</span>
-              <div className="flex-1 h-3 bg-zinc-800 rounded-full overflow-hidden">
+              <span className="w-20 truncate" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                {p.investor.name}
+              </span>
+              <div
+                className="flex-1 h-3 overflow-hidden"
+                style={{
+                  background: 'var(--surface-2)',
+                  borderRadius: 9999,
+                }}
+              >
                 <div
-                  className={`h-full rounded-full transition-all ${
-                    isWinner ? barColors[idx % barColors.length] : 'bg-zinc-700'
-                  }`}
-                  style={{ width: `${score}%` }}
+                  className="h-full"
+                  style={{
+                    width: `${score}%`,
+                    borderRadius: 9999,
+                    transition: 'width 300ms ease',
+                    background: isWinner ? barColors[idx % barColors.length] : 'var(--border-strong)',
+                  }}
                 />
               </div>
-              <span className={`text-[10px] w-7 text-right font-mono ${
-                isWinner ? 'text-zinc-200 font-medium' : 'text-zinc-600'
-              }`}>
+              <span
+                className="w-7 text-right font-mono"
+                style={{
+                  fontSize: '10px',
+                  color: isWinner ? 'var(--text-primary)' : 'var(--text-muted)',
+                  fontWeight: isWinner ? 500 : 400,
+                }}
+              >
                 {score}
               </span>
             </div>
@@ -943,67 +1319,100 @@ function VerdictCard({
 }) {
   if (!verdict) return null;
 
-  const colorMap: Record<string, string> = {
-    green: 'border-green-800/30 bg-green-900/10',
-    blue: 'border-blue-800/30 bg-blue-900/10',
-    purple: 'border-purple-800/30 bg-purple-900/10',
-    amber: 'border-amber-800/30 bg-amber-900/10',
-    cyan: 'border-cyan-800/30 bg-cyan-900/10',
+  const colorMap: Record<string, { bg: string; border: string; iconColor: string }> = {
+    success: {
+      bg: 'var(--success-muted)',
+      border: 'rgba(34, 197, 94, 0.25)',
+      iconColor: 'var(--success)',
+    },
+    accent: {
+      bg: 'var(--accent-muted)',
+      border: 'rgba(59, 130, 246, 0.25)',
+      iconColor: 'var(--accent)',
+    },
+    purple: {
+      bg: 'rgba(168, 85, 247, 0.1)',
+      border: 'rgba(168, 85, 247, 0.25)',
+      iconColor: '#c084fc',
+    },
+    warning: {
+      bg: 'var(--warning-muted)',
+      border: 'rgba(245, 158, 11, 0.25)',
+      iconColor: 'var(--warning)',
+    },
+    cyan: {
+      bg: 'rgba(6, 182, 212, 0.1)',
+      border: 'rgba(6, 182, 212, 0.25)',
+      iconColor: '#22d3ee',
+    },
   };
 
-  const iconColorMap: Record<string, string> = {
-    green: 'text-green-400',
-    blue: 'text-blue-400',
-    purple: 'text-purple-400',
-    amber: 'text-amber-400',
-    cyan: 'text-cyan-400',
-  };
+  const c = colorMap[color] ?? colorMap.accent;
 
   return (
-    <div className={`rounded-lg border p-3 ${colorMap[color] ?? colorMap.blue}`}>
+    <div
+      style={{
+        borderRadius: 'var(--radius-lg)',
+        border: `1px solid ${c.border}`,
+        padding: 'var(--space-3)',
+        background: c.bg,
+      }}
+    >
       <div className="flex items-center gap-2 mb-2">
-        <span className={iconColorMap[color] ?? 'text-zinc-400'}>{icon}</span>
-        <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-medium">{title}</span>
+        <span style={{ color: c.iconColor }}>{icon}</span>
+        <span style={{
+          fontSize: '10px',
+          color: 'var(--text-muted)',
+          textTransform: 'uppercase',
+          letterSpacing: '0.08em',
+          fontWeight: 500,
+        }}>
+          {title}
+        </span>
       </div>
-      <div className="text-sm font-medium text-zinc-200 mb-1">{verdict.name}</div>
-      <div className="text-[10px] text-zinc-500 leading-relaxed">{verdict.reason}</div>
+      <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-primary)', marginBottom: 'var(--space-1)' }}>
+        {verdict.name}
+      </div>
+      <div style={{ fontSize: '10px', color: 'var(--text-muted)', lineHeight: 1.6 }}>
+        {verdict.reason}
+      </div>
     </div>
   );
 }
 
 // ============================================================================
-// Color helpers
+// Style helpers (return CSSProperties instead of Tailwind class strings)
 // ============================================================================
 
-function tierColor(tier: number): string {
+function tierStyle(tier: number): React.CSSProperties {
   switch (tier) {
-    case 1: return 'text-blue-400 font-semibold';
-    case 2: return 'text-purple-400 font-semibold';
-    default: return 'text-zinc-500';
+    case 1: return { color: 'var(--accent)', fontWeight: 600 };
+    case 2: return { color: '#c084fc', fontWeight: 600 };
+    default: return { color: 'var(--text-muted)' };
   }
 }
 
-function statusColor(status: string): string {
-  if (status === 'term_sheet' || status === 'closed') return 'text-green-400 font-semibold';
-  if (status === 'in_dd') return 'text-blue-400 font-medium';
-  if (status === 'engaged') return 'text-cyan-400';
-  if (status === 'passed' || status === 'dropped') return 'text-red-400';
-  return 'text-zinc-300';
+function statusStyle(status: string): React.CSSProperties {
+  if (status === 'term_sheet' || status === 'closed') return { color: 'var(--success)', fontWeight: 600 };
+  if (status === 'in_dd') return { color: 'var(--accent)', fontWeight: 500 };
+  if (status === 'engaged') return { color: '#22d3ee' };
+  if (status === 'passed' || status === 'dropped') return { color: 'var(--danger)' };
+  return { color: 'var(--text-secondary)' };
 }
 
-function scoreColor(score: number): string {
-  if (score >= 75) return 'text-green-400';
-  if (score >= 55) return 'text-blue-400';
-  if (score >= 35) return 'text-yellow-400';
-  return 'text-red-400';
+function scoreStyle(score: number): React.CSSProperties {
+  if (score >= 75) return { color: 'var(--success)' };
+  if (score >= 55) return { color: 'var(--accent)' };
+  if (score >= 35) return { color: 'var(--warning)' };
+  return { color: 'var(--danger)' };
 }
 
-function momentumColor(momentum: string): string {
-  if (momentum === 'accelerating') return 'text-green-400';
-  if (momentum === 'steady') return 'text-yellow-400';
-  if (momentum === 'decelerating') return 'text-red-400';
-  if (momentum === 'stalled') return 'text-red-500';
-  return 'text-zinc-500';
+function momentumStyle(momentum: string): React.CSSProperties {
+  if (momentum === 'accelerating') return { color: 'var(--success)' };
+  if (momentum === 'steady') return { color: 'var(--warning)' };
+  if (momentum === 'decelerating') return { color: 'var(--danger)' };
+  if (momentum === 'stalled') return { color: 'var(--danger)' };
+  return { color: 'var(--text-muted)' };
 }
 
 function formatMomentum(momentum: string): string {

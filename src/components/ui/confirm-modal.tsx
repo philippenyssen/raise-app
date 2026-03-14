@@ -38,43 +38,61 @@ export function ConfirmModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center animate-fade-in"
+      style={{ background: 'rgba(0, 0, 0, 0.7)', backdropFilter: 'blur(4px)' }}
       onClick={onCancel}
       onKeyDown={handleKeyDown}
     >
       <div
-        className="bg-zinc-900 border border-zinc-800 rounded-xl shadow-2xl max-w-sm w-full mx-4 p-5"
+        className="max-w-sm w-full mx-4 animate-slide-down"
+        style={{
+          background: 'var(--surface-2)',
+          border: '1px solid var(--border-default)',
+          borderRadius: 'var(--radius-lg)',
+          boxShadow: 'var(--shadow-xl)',
+          padding: 'var(--space-5)',
+        }}
         onClick={e => e.stopPropagation()}
       >
-        <div className="flex items-start gap-3">
+        <div className="flex items-start" style={{ gap: 'var(--space-3)' }}>
           {variant === 'danger' && (
-            <div className="shrink-0 w-8 h-8 rounded-full bg-red-900/30 flex items-center justify-center">
-              <AlertTriangle className="w-4 h-4 text-red-400" />
+            <div
+              className="shrink-0 flex items-center justify-center"
+              style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: 'var(--radius-md)',
+                background: 'var(--danger-muted)',
+              }}
+            >
+              <AlertTriangle style={{ width: '16px', height: '16px', color: 'var(--danger)' }} />
             </div>
           )}
           <div className="flex-1 min-w-0">
-            <h3 className="font-medium text-zinc-100">{title}</h3>
-            <p className="text-sm text-zinc-400 mt-1">{message}</p>
+            <h3 style={{ fontWeight: 500, color: 'var(--text-primary)', fontSize: 'var(--font-size-base)' }}>{title}</h3>
+            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)', marginTop: 'var(--space-1)' }}>{message}</p>
           </div>
-          <button onClick={onCancel} className="shrink-0 text-zinc-600 hover:text-zinc-400 transition-colors">
-            <X className="w-4 h-4" />
-          </button>
-        </div>
-        <div className="flex justify-end gap-2 mt-5">
           <button
             onClick={onCancel}
-            className="px-4 py-2 rounded-lg text-sm text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 transition-colors"
+            className="shrink-0 transition-colors"
+            style={{ color: 'var(--text-muted)' }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}
+          >
+            <X style={{ width: '16px', height: '16px' }} />
+          </button>
+        </div>
+        <div className="flex justify-end" style={{ gap: 'var(--space-2)', marginTop: 'var(--space-5)' }}>
+          <button
+            onClick={onCancel}
+            className="btn btn-ghost btn-md"
           >
             {cancelLabel}
           </button>
           <button
             ref={confirmRef}
             onClick={onConfirm}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              variant === 'danger'
-                ? 'bg-red-600 hover:bg-red-500 text-white'
-                : 'bg-blue-600 hover:bg-blue-500 text-white'
-            }`}
+            className={`btn btn-md ${variant === 'danger' ? 'btn-danger' : 'btn-primary'}`}
           >
             {confirmLabel}
           </button>
@@ -120,32 +138,37 @@ export function InputModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center animate-fade-in"
+      style={{ background: 'rgba(0, 0, 0, 0.7)', backdropFilter: 'blur(4px)' }}
       onClick={onCancel}
       onKeyDown={handleKeyDown}
     >
       <div
-        className="bg-zinc-900 border border-zinc-800 rounded-xl shadow-2xl max-w-sm w-full mx-4 p-5"
+        className="max-w-sm w-full mx-4 animate-slide-down"
+        style={{
+          background: 'var(--surface-2)',
+          border: '1px solid var(--border-default)',
+          borderRadius: 'var(--radius-lg)',
+          boxShadow: 'var(--shadow-xl)',
+          padding: 'var(--space-5)',
+        }}
         onClick={e => e.stopPropagation()}
       >
-        <h3 className="font-medium text-zinc-100 mb-3">{title}</h3>
+        <h3 style={{ fontWeight: 500, color: 'var(--text-primary)', marginBottom: 'var(--space-3)' }}>{title}</h3>
         <input
           ref={inputRef}
           defaultValue=""
           onChange={e => { valueRef.current = e.target.value; }}
           placeholder={placeholder}
-          className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-blue-600/50"
+          className="input"
         />
-        <div className="flex justify-end gap-2 mt-4">
-          <button
-            onClick={onCancel}
-            className="px-4 py-2 rounded-lg text-sm text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 transition-colors"
-          >
+        <div className="flex justify-end" style={{ gap: 'var(--space-2)', marginTop: 'var(--space-4)' }}>
+          <button onClick={onCancel} className="btn btn-ghost btn-md">
             Cancel
           </button>
           <button
             onClick={() => { if (valueRef.current.trim()) onConfirm(valueRef.current.trim()); }}
-            className="px-4 py-2 rounded-lg text-sm font-medium bg-blue-600 hover:bg-blue-500 text-white transition-colors"
+            className="btn btn-primary btn-md"
           >
             {confirmLabel}
           </button>

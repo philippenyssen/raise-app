@@ -162,8 +162,10 @@ export default function DataRoomPage() {
   if (loading) {
     return (
       <div className="space-y-4">
-        <div className="h-8 w-48 bg-zinc-800 rounded animate-pulse" />
-        {[...Array(3)].map((_, i) => <div key={i} className="h-20 bg-zinc-800/50 rounded-xl animate-pulse" />)}
+        <div className="h-8 w-48 skeleton" style={{ borderRadius: 'var(--radius-md)' }} />
+        {[...Array(3)].map((_, i) => (
+          <div key={i} className="h-20 skeleton" style={{ borderRadius: 'var(--radius-lg)' }} />
+        ))}
       </div>
     );
   }
@@ -172,19 +174,30 @@ export default function DataRoomPage() {
     <div className="max-w-5xl space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Data Room</h1>
-          <p className="text-zinc-500 text-sm mt-1">{files.length} files — source context for all deliverables</p>
+          <h1 className="page-title" style={{ fontSize: 'var(--font-size-xl)' }}>Data Room</h1>
+          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', marginTop: 'var(--space-1)' }}>
+            {files.length} files — source context for all deliverables
+          </p>
         </div>
         <div className="flex gap-2">
           <button
             onClick={() => setPasteMode(!pasteMode)}
-            className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
-              pasteMode ? 'bg-blue-600/20 text-blue-400 border border-blue-600/30' : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-300'
-            }`}
+            className="btn btn-md flex items-center gap-2"
+            style={pasteMode ? {
+              background: 'var(--accent-muted)',
+              color: 'var(--accent)',
+              border: '1px solid var(--accent-muted)',
+            } : {
+              background: 'var(--surface-2)',
+              color: 'var(--text-secondary)',
+              border: '1px solid var(--border-default)',
+            }}
           >
             <FileText className="w-4 h-4" /> Paste Text
           </button>
-          <label className="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 cursor-pointer">
+          <label
+            className="btn btn-primary btn-md flex items-center gap-2 cursor-pointer"
+          >
             <Upload className="w-4 h-4" /> Upload Files
             <input
               type="file"
@@ -200,30 +213,45 @@ export default function DataRoomPage() {
 
       {/* Search */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600" />
+        <Search
+          className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4"
+          style={{ color: 'var(--text-muted)' }}
+        />
         <input
           value={searchQuery}
           onChange={e => setSearchQuery(e.target.value)}
           placeholder="Search files and content..."
-          className="w-full bg-zinc-900 border border-zinc-800 rounded-xl pl-10 pr-4 py-2.5 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-blue-600/50"
+          className="input"
+          style={{
+            paddingLeft: 'var(--space-10)',
+            paddingRight: 'var(--space-4)',
+            paddingTop: '0.625rem',
+            paddingBottom: '0.625rem',
+            borderRadius: 'var(--radius-lg)',
+          }}
         />
       </div>
 
       {/* Paste mode */}
       {pasteMode && (
-        <div className="border border-zinc-800 rounded-xl p-5 space-y-4">
-          <h3 className="text-sm font-medium">Paste document content</h3>
+        <div
+          className="card space-y-4"
+        >
+          <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-primary)' }}>
+            Paste document content
+          </h3>
           <div className="flex gap-3">
             <input
               value={pasteFilename}
               onChange={e => setPasteFilename(e.target.value)}
               placeholder="Document name (e.g., Financial Model Notes.txt)"
-              className="flex-1 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-blue-600/50"
+              className="input flex-1"
             />
             <select
               value={pasteCategory}
               onChange={e => setPasteCategory(e.target.value)}
-              className="bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none"
+              className="input"
+              style={{ width: 'auto' }}
             >
               {CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
             </select>
@@ -233,14 +261,25 @@ export default function DataRoomPage() {
             onChange={e => setPasteContent(e.target.value)}
             placeholder="Paste your document content here..."
             rows={10}
-            className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-3 text-sm text-zinc-200 font-mono focus:outline-none focus:border-blue-600/50 resize-none"
+            className="input"
+            style={{
+              fontFamily: 'var(--font-mono)',
+              resize: 'none',
+              padding: 'var(--space-3) var(--space-4)',
+            }}
           />
           <div className="flex justify-end gap-2">
-            <button onClick={() => setPasteMode(false)} className="px-3 py-1.5 text-sm text-zinc-500 hover:text-zinc-300">Cancel</button>
+            <button
+              onClick={() => setPasteMode(false)}
+              className="btn btn-ghost btn-md"
+            >
+              Cancel
+            </button>
             <button
               onClick={handlePasteUpload}
               disabled={!pasteFilename.trim() || !pasteContent.trim() || uploading}
-              className="px-4 py-1.5 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+              className="btn btn-primary btn-md"
+              style={{ opacity: (!pasteFilename.trim() || !pasteContent.trim() || uploading) ? 0.5 : 1 }}
             >
               {uploading ? 'Adding...' : 'Add to Data Room'}
             </button>
@@ -251,7 +290,7 @@ export default function DataRoomPage() {
       {/* Search results */}
       {filteredFiles && (
         <div className="space-y-2">
-          <h2 className="text-xs font-medium text-zinc-400 uppercase">
+          <h2 className="section-title">
             Search Results ({filteredFiles.length})
           </h2>
           {filteredFiles.map(file => (
@@ -264,7 +303,9 @@ export default function DataRoomPage() {
             />
           ))}
           {filteredFiles.length === 0 && (
-            <p className="text-zinc-600 text-sm py-4 text-center">No files match your search.</p>
+            <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', padding: 'var(--space-4) 0', textAlign: 'center' }}>
+              No files match your search.
+            </p>
           )}
         </div>
       )}
@@ -277,10 +318,16 @@ export default function DataRoomPage() {
             return (
               <div key={cat.value}>
                 <div className="flex items-center gap-3 mb-2">
-                  <cat.icon className="w-4 h-4 text-zinc-500" />
-                  <span className="text-sm font-medium">{cat.label}</span>
-                  <span className="text-xs text-zinc-600">{catFiles.length} files</span>
-                  <span className="text-xs text-zinc-700 ml-auto">{cat.desc}</span>
+                  <cat.icon className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
+                  <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-primary)' }}>
+                    {cat.label}
+                  </span>
+                  <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                    {catFiles.length} files
+                  </span>
+                  <span className="ml-auto" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
+                    {cat.desc}
+                  </span>
                 </div>
                 {catFiles.length > 0 ? (
                   <div className="space-y-1">
@@ -295,8 +342,17 @@ export default function DataRoomPage() {
                     ))}
                   </div>
                 ) : (
-                  <div className="border border-zinc-800/50 rounded-lg p-3 text-center">
-                    <p className="text-xs text-zinc-700">No {cat.label.toLowerCase()} files yet</p>
+                  <div
+                    style={{
+                      border: '1px solid var(--border-subtle)',
+                      borderRadius: 'var(--radius-md)',
+                      padding: 'var(--space-3)',
+                      textAlign: 'center',
+                    }}
+                  >
+                    <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
+                      No {cat.label.toLowerCase()} files yet
+                    </p>
                   </div>
                 )}
               </div>
@@ -324,27 +380,71 @@ function FileRow({ file, expanded, onToggle, onDelete }: {
   onToggle: () => void;
   onDelete: () => void;
 }) {
+  const [hovered, setHovered] = useState(false);
+  const [deleteHovered, setDeleteHovered] = useState(false);
+
   return (
-    <div className="border border-zinc-800 rounded-lg hover:border-zinc-700 transition-colors">
-      <div className="flex items-center px-4 py-3 cursor-pointer" onClick={onToggle}>
-        {expanded ? <ChevronDown className="w-4 h-4 text-zinc-600 shrink-0" /> : <ChevronRight className="w-4 h-4 text-zinc-600 shrink-0" />}
-        <FileText className="w-4 h-4 text-zinc-500 ml-2 shrink-0" />
-        <span className="text-sm ml-3 truncate">{file.filename}</span>
-        <span className="text-xs text-zinc-600 ml-auto shrink-0">{formatBytes(file.size_bytes)}</span>
-        <span className="text-xs text-zinc-700 ml-3 shrink-0">{new Date(file.uploaded_at).toLocaleDateString()}</span>
+    <div
+      style={{
+        border: `1px solid ${hovered ? 'var(--border-default)' : 'var(--border-subtle)'}`,
+        borderRadius: 'var(--radius-md)',
+        transition: 'border-color 150ms ease',
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <div className="flex items-center cursor-pointer" style={{ padding: 'var(--space-3) var(--space-4)' }} onClick={onToggle}>
+        {expanded
+          ? <ChevronDown className="w-4 h-4 shrink-0" style={{ color: 'var(--text-muted)' }} />
+          : <ChevronRight className="w-4 h-4 shrink-0" style={{ color: 'var(--text-muted)' }} />
+        }
+        <FileText className="w-4 h-4 shrink-0 ml-2" style={{ color: 'var(--text-tertiary)' }} />
+        <span className="truncate ml-3" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)' }}>
+          {file.filename}
+        </span>
+        <span className="ml-auto shrink-0" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+          {formatBytes(file.size_bytes)}
+        </span>
+        <span className="shrink-0 ml-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
+          {new Date(file.uploaded_at).toLocaleDateString()}
+        </span>
         <button
           onClick={e => { e.stopPropagation(); onDelete(); }}
-          className="ml-3 text-zinc-700 hover:text-red-400 transition-colors shrink-0"
+          className="ml-3 shrink-0"
+          style={{
+            color: deleteHovered ? 'var(--danger)' : 'var(--text-tertiary)',
+            transition: 'color 150ms ease',
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            padding: 0,
+          }}
+          onMouseEnter={() => setDeleteHovered(true)}
+          onMouseLeave={() => setDeleteHovered(false)}
         >
           <Trash2 className="w-3.5 h-3.5" />
         </button>
       </div>
       {expanded && (
-        <div className="border-t border-zinc-800 px-4 py-3">
+        <div style={{ borderTop: '1px solid var(--border-subtle)', padding: 'var(--space-3) var(--space-4)' }}>
           {file.summary && (
-            <p className="text-sm text-zinc-400 mb-3">{file.summary}</p>
+            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', marginBottom: 'var(--space-3)' }}>
+              {file.summary}
+            </p>
           )}
-          <pre className="text-xs text-zinc-500 font-mono whitespace-pre-wrap max-h-60 overflow-y-auto bg-zinc-900 rounded-lg p-3">
+          <pre
+            style={{
+              fontSize: 'var(--font-size-xs)',
+              color: 'var(--text-tertiary)',
+              fontFamily: 'var(--font-mono)',
+              whiteSpace: 'pre-wrap',
+              maxHeight: '15rem',
+              overflowY: 'auto',
+              background: 'var(--surface-0)',
+              borderRadius: 'var(--radius-md)',
+              padding: 'var(--space-3)',
+            }}
+          >
             {file.extracted_text.substring(0, 5000)}
             {file.extracted_text.length > 5000 && '\n\n... (truncated)'}
           </pre>

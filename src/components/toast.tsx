@@ -21,18 +21,33 @@ export function useToast() {
   return useContext(ToastContext);
 }
 
-const icons = {
-  success: CheckCircle,
-  error: XCircle,
-  warning: AlertTriangle,
-  info: Info,
-};
+const icons = { success: CheckCircle, error: XCircle, warning: AlertTriangle, info: Info };
 
-const colors = {
-  success: 'border-green-800/40 bg-green-900/20 text-green-300',
-  error: 'border-red-800/40 bg-red-900/20 text-red-300',
-  warning: 'border-yellow-800/40 bg-yellow-900/20 text-yellow-300',
-  info: 'border-blue-800/40 bg-blue-900/20 text-blue-300',
+const typeStyles: Record<ToastType, { bg: string; border: string; color: string; icon: string }> = {
+  success: {
+    bg: 'var(--success-muted)',
+    border: 'rgba(34, 197, 94, 0.2)',
+    color: '#4ade80',
+    icon: '#22c55e',
+  },
+  error: {
+    bg: 'var(--danger-muted)',
+    border: 'rgba(239, 68, 68, 0.2)',
+    color: '#f87171',
+    icon: '#ef4444',
+  },
+  warning: {
+    bg: 'var(--warning-muted)',
+    border: 'rgba(245, 158, 11, 0.2)',
+    color: '#fbbf24',
+    icon: '#f59e0b',
+  },
+  info: {
+    bg: 'var(--accent-muted)',
+    border: 'rgba(59, 130, 246, 0.2)',
+    color: '#60a5fa',
+    icon: '#3b82f6',
+  },
 };
 
 export function ToastProvider({ children }: { children: ReactNode }) {
@@ -41,7 +56,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const toast = useCallback((message: string, type: ToastType = 'success') => {
     const id = crypto.randomUUID();
     setToasts(t => [...t, { id, message, type }]);
-    setTimeout(() => setToasts(t => t.filter(x => x.id !== id)), 3000);
+    setTimeout(() => setToasts(t => t.filter(x => x.id !== id)), 4000);
   }, []);
 
   const dismiss = useCallback((id: string) => {
@@ -51,18 +66,45 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   return (
     <ToastContext.Provider value={{ toast }}>
       {children}
-      <div className="fixed bottom-4 right-4 z-[100] space-y-2 max-w-sm">
+      <div
+        className="fixed z-[100]"
+        style={{
+          bottom: 'var(--space-5)',
+          right: 'var(--space-5)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 'var(--space-2)',
+          maxWidth: '380px',
+        }}
+      >
         {toasts.map(t => {
           const Icon = icons[t.type];
+          const styles = typeStyles[t.type];
           return (
             <div
               key={t.id}
-              className={`flex items-center gap-3 px-4 py-3 rounded-lg border text-sm shadow-lg animate-in slide-in-from-right ${colors[t.type]}`}
+              className="flex items-center gap-3 animate-slide-in"
+              style={{
+                padding: 'var(--space-3) var(--space-4)',
+                borderRadius: 'var(--radius-lg)',
+                border: `1px solid ${styles.border}`,
+                background: styles.bg,
+                backdropFilter: 'blur(12px)',
+                boxShadow: 'var(--shadow-lg)',
+                fontSize: 'var(--font-size-sm)',
+                color: styles.color,
+              }}
             >
-              <Icon className="w-4 h-4 shrink-0" />
-              <span className="flex-1">{t.message}</span>
-              <button onClick={() => dismiss(t.id)} className="shrink-0 opacity-60 hover:opacity-100">
-                <X className="w-3.5 h-3.5" />
+              <Icon className="shrink-0" style={{ width: '16px', height: '16px', color: styles.icon }} />
+              <span className="flex-1" style={{ color: 'var(--text-primary)' }}>{t.message}</span>
+              <button
+                onClick={() => dismiss(t.id)}
+                className="shrink-0 rounded transition-opacity"
+                style={{ opacity: 0.5, color: styles.color }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.opacity = '1'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.opacity = '0.5'; }}
+              >
+                <X style={{ width: '14px', height: '14px' }} />
               </button>
             </div>
           );

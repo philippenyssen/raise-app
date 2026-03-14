@@ -297,27 +297,27 @@ export default function SettingsPage() {
   const weightBalanced = Math.abs(weightTotal - 100) <= 1;
 
   const statusIcon = keyTest?.status === 'ok'
-    ? <CheckCircle className="w-5 h-5 text-green-400" />
+    ? <CheckCircle className="w-5 h-5" style={{ color: 'var(--success)' }} />
     : keyTest?.status === 'credits_issue'
-    ? <AlertTriangle className="w-5 h-5 text-yellow-400" />
-    : <XCircle className="w-5 h-5 text-red-400" />;
+    ? <AlertTriangle className="w-5 h-5" style={{ color: 'var(--warning)' }} />
+    : <XCircle className="w-5 h-5" style={{ color: 'var(--danger)' }} />;
 
-  const statusColor = keyTest?.status === 'ok'
-    ? 'border-green-800 bg-green-900/20'
+  const statusStyle: React.CSSProperties = keyTest?.status === 'ok'
+    ? { borderColor: 'color-mix(in srgb, var(--success) 40%, transparent)', background: 'var(--success-muted)' }
     : keyTest?.status === 'credits_issue'
-    ? 'border-yellow-800 bg-yellow-900/20'
-    : 'border-red-800 bg-red-900/20';
+    ? { borderColor: 'color-mix(in srgb, var(--warning) 40%, transparent)', background: 'var(--warning-muted)' }
+    : { borderColor: 'color-mix(in srgb, var(--danger) 40%, transparent)', background: 'var(--danger-muted)' };
 
   if (loading) {
     return (
       <div className="space-y-8 max-w-3xl">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
-          <p className="text-zinc-500 text-sm mt-1">Loading configuration...</p>
+          <h1 className="page-title" style={{ fontSize: 'var(--font-size-xl)' }}>Settings</h1>
+          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', marginTop: 'var(--space-1)' }}>Loading configuration...</p>
         </div>
-        <div className="flex items-center gap-3 text-zinc-500">
+        <div className="flex items-center gap-3" style={{ color: 'var(--text-muted)' }}>
           <RefreshCw className="w-4 h-4 animate-spin" />
-          <span className="text-sm">Loading settings...</span>
+          <span style={{ fontSize: 'var(--font-size-sm)' }}>Loading settings...</span>
         </div>
       </div>
     );
@@ -326,23 +326,23 @@ export default function SettingsPage() {
   return (
     <div className="space-y-8 max-w-3xl">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
-        <p className="text-zinc-500 text-sm mt-1">Raise configuration, scoring weights, follow-up cadence, and API diagnostics</p>
+        <h1 className="page-title" style={{ fontSize: 'var(--font-size-xl)' }}>Settings</h1>
+        <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', marginTop: 'var(--space-1)' }}>Raise configuration, scoring weights, follow-up cadence, and API diagnostics</p>
       </div>
 
       {/* ================================================================= */}
       {/* 1. RAISE PARAMETERS                                               */}
       {/* ================================================================= */}
-      <div className="border border-zinc-800 rounded-xl p-6">
-        <div className="flex items-center justify-between mb-6">
+      <div className="card" style={{ padding: 'var(--space-6)' }}>
+        <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-6)' }}>
           <div className="flex items-center gap-3">
-            <Building2 className="w-5 h-5 text-zinc-400" />
-            <h2 className="text-lg font-semibold">Raise Parameters</h2>
+            <Building2 className="w-5 h-5" style={{ color: 'var(--text-tertiary)' }} />
+            <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 600, color: 'var(--text-primary)' }}>Raise Parameters</h2>
           </div>
           <button
             onClick={saveRaiseConfig}
             disabled={savingRaise || !raiseDirty}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:bg-zinc-800 disabled:text-zinc-500 rounded-lg text-sm font-medium transition-colors"
+            className={`btn ${raiseDirty ? 'btn-primary' : 'btn-secondary'}`}
           >
             <Save className={`w-3.5 h-3.5 ${savingRaise ? 'animate-spin' : ''}`} />
             {savingRaise ? 'Saving...' : raiseDirty ? 'Save Changes' : 'Saved'}
@@ -352,53 +352,55 @@ export default function SettingsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {/* Company Name */}
           <div className="md:col-span-2">
-            <label className="block text-xs font-medium text-zinc-400 mb-1.5">Company Name</label>
+            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>Company Name</label>
             <input
               type="text"
               value={raiseConfig.company_name}
               onChange={e => updateRaise('company_name', e.target.value)}
               placeholder="e.g. Aerospacelab"
-              className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 placeholder-zinc-600"
+              className="input"
             />
           </div>
 
           {/* Round Type */}
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1.5">Round Type</label>
+            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>Round Type</label>
             <div className="relative">
               <select
                 value={raiseConfig.round_type}
                 onChange={e => updateRaise('round_type', e.target.value)}
-                className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-sm focus:outline-none focus:border-blue-500 appearance-none cursor-pointer"
+                className="input"
+                style={{ appearance: 'none', cursor: 'pointer' }}
               >
                 {ROUND_TYPES.map(rt => (
                   <option key={rt} value={rt}>{rt}</option>
                 ))}
               </select>
-              <ChevronDown className="w-4 h-4 text-zinc-500 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <ChevronDown className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--text-muted)' }} />
             </div>
           </div>
 
           {/* Currency */}
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1.5">Currency</label>
+            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>Currency</label>
             <div className="relative">
               <select
                 value={raiseConfig.currency}
                 onChange={e => updateRaise('currency', e.target.value)}
-                className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-sm focus:outline-none focus:border-blue-500 appearance-none cursor-pointer"
+                className="input"
+                style={{ appearance: 'none', cursor: 'pointer' }}
               >
                 {CURRENCIES.map(c => (
                   <option key={c} value={c}>{c} ({CURRENCY_SYMBOLS[c]})</option>
                 ))}
               </select>
-              <ChevronDown className="w-4 h-4 text-zinc-500 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <ChevronDown className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--text-muted)' }} />
             </div>
           </div>
 
           {/* Target Equity Raise */}
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1.5">
+            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>
               <span className="flex items-center gap-1.5">
                 <DollarSign className="w-3 h-3" />
                 Target Equity Raise
@@ -410,10 +412,10 @@ export default function SettingsPage() {
                 value={raiseConfig.equity_amount || ''}
                 onChange={e => updateRaise('equity_amount', Number(e.target.value))}
                 placeholder="250000000"
-                className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 placeholder-zinc-600"
+                className="input"
               />
               {raiseConfig.equity_amount > 0 && (
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-zinc-500">
+                <span className="absolute right-3 top-1/2 -translate-y-1/2" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
                   {formatCompact(raiseConfig.equity_amount, raiseConfig.currency)}
                 </span>
               )}
@@ -422,7 +424,7 @@ export default function SettingsPage() {
 
           {/* Target Debt Raise */}
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1.5">
+            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>
               <span className="flex items-center gap-1.5">
                 <DollarSign className="w-3 h-3" />
                 Target Debt Raise
@@ -434,10 +436,10 @@ export default function SettingsPage() {
                 value={raiseConfig.debt_amount || ''}
                 onChange={e => updateRaise('debt_amount', Number(e.target.value))}
                 placeholder="250000000"
-                className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 placeholder-zinc-600"
+                className="input"
               />
               {raiseConfig.debt_amount > 0 && (
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-zinc-500">
+                <span className="absolute right-3 top-1/2 -translate-y-1/2" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
                   {formatCompact(raiseConfig.debt_amount, raiseConfig.currency)}
                 </span>
               )}
@@ -446,7 +448,7 @@ export default function SettingsPage() {
 
           {/* Pre-money Valuation */}
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1.5">
+            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>
               <span className="flex items-center gap-1.5">
                 <Target className="w-3 h-3" />
                 Pre-money Valuation
@@ -458,10 +460,10 @@ export default function SettingsPage() {
                 value={raiseConfig.pre_money || ''}
                 onChange={e => updateRaise('pre_money', Number(e.target.value))}
                 placeholder="2000000000"
-                className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 placeholder-zinc-600"
+                className="input"
               />
               {raiseConfig.pre_money > 0 && (
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-zinc-500">
+                <span className="absolute right-3 top-1/2 -translate-y-1/2" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
                   {formatCompact(raiseConfig.pre_money, raiseConfig.currency)}
                 </span>
               )}
@@ -470,10 +472,17 @@ export default function SettingsPage() {
 
           {/* Post-money (computed) */}
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1.5">
+            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>
               Post-money Valuation
             </label>
-            <div className="px-3 py-2 bg-zinc-900/50 border border-zinc-800 rounded-lg text-sm text-zinc-400">
+            <div style={{
+              padding: '0.5rem 0.75rem',
+              background: 'var(--surface-1)',
+              border: '1px solid var(--border-subtle)',
+              borderRadius: 'var(--radius-md)',
+              fontSize: 'var(--font-size-sm)',
+              color: 'var(--text-tertiary)',
+            }}>
               {raiseConfig.pre_money && raiseConfig.equity_amount
                 ? formatCompact(raiseConfig.pre_money + raiseConfig.equity_amount, raiseConfig.currency)
                 : '---'}
@@ -482,7 +491,7 @@ export default function SettingsPage() {
 
           {/* Target Close Date */}
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1.5">
+            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>
               <span className="flex items-center gap-1.5">
                 <Calendar className="w-3 h-3" />
                 Target Close Date
@@ -492,13 +501,13 @@ export default function SettingsPage() {
               type="date"
               value={raiseConfig.target_close}
               onChange={e => updateRaise('target_close', e.target.value)}
-              className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 [color-scheme:dark]"
+              className="input [color-scheme:dark]"
             />
           </div>
 
           {/* Target Investor Count */}
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1.5">
+            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>
               <span className="flex items-center gap-1.5">
                 <Users className="w-3 h-3" />
                 Target Investor Count
@@ -510,13 +519,13 @@ export default function SettingsPage() {
               onChange={e => updateRaise('target_investor_count', Number(e.target.value))}
               placeholder="5"
               min={0}
-              className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 placeholder-zinc-600"
+              className="input"
             />
           </div>
 
           {/* Minimum Check Size */}
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1.5">
+            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>
               Minimum Check Size
             </label>
             <div className="relative">
@@ -525,10 +534,10 @@ export default function SettingsPage() {
                 value={raiseConfig.minimum_check_size || ''}
                 onChange={e => updateRaise('minimum_check_size', Number(e.target.value))}
                 placeholder="25000000"
-                className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 placeholder-zinc-600"
+                className="input"
               />
               {raiseConfig.minimum_check_size > 0 && (
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-zinc-500">
+                <span className="absolute right-3 top-1/2 -translate-y-1/2" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
                   {formatCompact(raiseConfig.minimum_check_size, raiseConfig.currency)}
                 </span>
               )}
@@ -538,23 +547,23 @@ export default function SettingsPage() {
 
         {/* Summary row */}
         {raiseConfig.equity_amount > 0 && raiseConfig.pre_money > 0 && (
-          <div className="mt-5 pt-4 border-t border-zinc-800">
-            <div className="grid grid-cols-3 gap-4 text-center">
+          <div style={{ marginTop: 'var(--space-5)', paddingTop: 'var(--space-4)', borderTop: '1px solid var(--border-subtle)' }}>
+            <div className="grid grid-cols-3 gap-4" style={{ textAlign: 'center' }}>
               <div>
-                <div className="text-xs text-zinc-500 mb-0.5">Total Raise</div>
-                <div className="text-sm font-medium text-zinc-200">
+                <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '0.125rem' }}>Total Raise</div>
+                <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)' }}>
                   {formatCompact(raiseConfig.equity_amount + raiseConfig.debt_amount, raiseConfig.currency)}
                 </div>
               </div>
               <div>
-                <div className="text-xs text-zinc-500 mb-0.5">Dilution</div>
-                <div className="text-sm font-medium text-zinc-200">
+                <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '0.125rem' }}>Dilution</div>
+                <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)' }}>
                   {((raiseConfig.equity_amount / (raiseConfig.pre_money + raiseConfig.equity_amount)) * 100).toFixed(1)}%
                 </div>
               </div>
               <div>
-                <div className="text-xs text-zinc-500 mb-0.5">Post-money EV</div>
-                <div className="text-sm font-medium text-zinc-200">
+                <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '0.125rem' }}>Post-money EV</div>
+                <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)' }}>
                   {formatCompact(raiseConfig.pre_money + raiseConfig.equity_amount, raiseConfig.currency)}
                 </div>
               </div>
@@ -566,11 +575,11 @@ export default function SettingsPage() {
       {/* ================================================================= */}
       {/* 2. SCORING WEIGHTS                                                */}
       {/* ================================================================= */}
-      <div className="border border-zinc-800 rounded-xl p-6">
-        <div className="flex items-center justify-between mb-6">
+      <div className="card" style={{ padding: 'var(--space-6)' }}>
+        <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-6)' }}>
           <div className="flex items-center gap-3">
-            <Sliders className="w-5 h-5 text-zinc-400" />
-            <h2 className="text-lg font-semibold">Scoring Weights</h2>
+            <Sliders className="w-5 h-5" style={{ color: 'var(--text-tertiary)' }} />
+            <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 600, color: 'var(--text-primary)' }}>Scoring Weights</h2>
           </div>
           <div className="flex items-center gap-2">
             <button
@@ -578,7 +587,7 @@ export default function SettingsPage() {
                 setScoringWeights({ ...DEFAULT_SCORING_WEIGHTS });
                 setScoringDirty(true);
               }}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-xs transition-colors"
+              className="btn btn-sm btn-ghost"
             >
               <RotateCcw className="w-3 h-3" />
               Reset to Defaults
@@ -586,7 +595,7 @@ export default function SettingsPage() {
             <button
               onClick={saveScoringWeights}
               disabled={savingScoring || !scoringDirty}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:bg-zinc-800 disabled:text-zinc-500 rounded-lg text-sm font-medium transition-colors"
+              className={`btn ${scoringDirty ? 'btn-primary' : 'btn-secondary'}`}
             >
               <Save className={`w-3.5 h-3.5 ${savingScoring ? 'animate-spin' : ''}`} />
               {savingScoring ? 'Saving...' : scoringDirty ? 'Save Changes' : 'Saved'}
@@ -595,7 +604,11 @@ export default function SettingsPage() {
         </div>
 
         {/* Total indicator */}
-        <div className={`mb-5 flex items-center gap-2 text-sm ${weightBalanced ? 'text-green-400' : 'text-yellow-400'}`}>
+        <div className="flex items-center gap-2" style={{
+          marginBottom: 'var(--space-5)',
+          fontSize: 'var(--font-size-sm)',
+          color: weightBalanced ? 'var(--success)' : 'var(--warning)',
+        }}>
           {weightBalanced ? (
             <CheckCircle className="w-4 h-4" />
           ) : (
@@ -610,7 +623,7 @@ export default function SettingsPage() {
         <div className="space-y-4">
           {(Object.keys(WEIGHT_LABELS) as Array<keyof ScoringWeightsForm>).map(key => (
             <div key={key} className="flex items-center gap-4">
-              <label className="w-36 text-sm text-zinc-300 shrink-0">{WEIGHT_LABELS[key]}</label>
+              <label className="w-36 shrink-0" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>{WEIGHT_LABELS[key]}</label>
               <input
                 type="range"
                 min={0}
@@ -618,19 +631,21 @@ export default function SettingsPage() {
                 step={1}
                 value={scoringWeights[key]}
                 onChange={e => updateWeight(key, Number(e.target.value))}
-                className="flex-1 h-1.5 accent-blue-500 bg-zinc-700 rounded-full cursor-pointer"
+                className="flex-1 h-1.5 cursor-pointer"
+                style={{ accentColor: 'var(--accent)' }}
               />
-              <div className="w-14 text-right">
+              <div className="w-14" style={{ textAlign: 'right' }}>
                 <input
                   type="number"
                   min={0}
                   max={100}
                   value={scoringWeights[key]}
                   onChange={e => updateWeight(key, Number(e.target.value))}
-                  className="w-14 px-2 py-1 bg-zinc-900 border border-zinc-700 rounded text-xs text-right focus:outline-none focus:border-blue-500"
+                  className="input"
+                  style={{ width: '3.5rem', padding: '0.25rem 0.5rem', fontSize: 'var(--font-size-xs)', textAlign: 'right' }}
                 />
               </div>
-              <span className="text-xs text-zinc-500 w-4">%</span>
+              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '1rem' }}>%</span>
             </div>
           ))}
         </div>
@@ -639,16 +654,16 @@ export default function SettingsPage() {
       {/* ================================================================= */}
       {/* 3. FOLLOW-UP CADENCE                                              */}
       {/* ================================================================= */}
-      <div className="border border-zinc-800 rounded-xl p-6">
-        <div className="flex items-center justify-between mb-6">
+      <div className="card" style={{ padding: 'var(--space-6)' }}>
+        <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-6)' }}>
           <div className="flex items-center gap-3">
-            <Clock className="w-5 h-5 text-zinc-400" />
-            <h2 className="text-lg font-semibold">Follow-up Cadence</h2>
+            <Clock className="w-5 h-5" style={{ color: 'var(--text-tertiary)' }} />
+            <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 600, color: 'var(--text-primary)' }}>Follow-up Cadence</h2>
           </div>
           <button
             onClick={saveFollowupCadence}
             disabled={savingFollowup || !followupDirty}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:bg-zinc-800 disabled:text-zinc-500 rounded-lg text-sm font-medium transition-colors"
+            className={`btn ${followupDirty ? 'btn-primary' : 'btn-secondary'}`}
           >
             <Save className={`w-3.5 h-3.5 ${savingFollowup ? 'animate-spin' : ''}`} />
             {savingFollowup ? 'Saving...' : followupDirty ? 'Save Changes' : 'Saved'}
@@ -658,7 +673,7 @@ export default function SettingsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {/* Thank You Delay */}
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1.5">Thank You Email Delay</label>
+            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>Thank You Email Delay</label>
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -666,15 +681,15 @@ export default function SettingsPage() {
                 onChange={e => updateFollowup('thank_you_delay_hours', Number(e.target.value))}
                 min={0}
                 max={72}
-                className="flex-1 px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20"
+                className="input flex-1"
               />
-              <span className="text-xs text-zinc-500 w-12">hours</span>
+              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '3rem' }}>hours</span>
             </div>
           </div>
 
           {/* Objection Response Delay */}
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1.5">Objection Response Delay</label>
+            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>Objection Response Delay</label>
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -682,15 +697,15 @@ export default function SettingsPage() {
                 onChange={e => updateFollowup('objection_response_delay_hours', Number(e.target.value))}
                 min={0}
                 max={168}
-                className="flex-1 px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20"
+                className="input flex-1"
               />
-              <span className="text-xs text-zinc-500 w-12">hours</span>
+              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '3rem' }}>hours</span>
             </div>
           </div>
 
           {/* Schedule Next Meeting Delay */}
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1.5">Schedule Next Meeting Delay</label>
+            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>Schedule Next Meeting Delay</label>
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -698,15 +713,15 @@ export default function SettingsPage() {
                 onChange={e => updateFollowup('schedule_next_meeting_delay_hours', Number(e.target.value))}
                 min={0}
                 max={168}
-                className="flex-1 px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20"
+                className="input flex-1"
               />
-              <span className="text-xs text-zinc-500 w-12">hours</span>
+              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '3rem' }}>hours</span>
             </div>
           </div>
 
           {/* Re-engagement Delay */}
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1.5">Re-engagement Delay</label>
+            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>Re-engagement Delay</label>
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -714,15 +729,15 @@ export default function SettingsPage() {
                 onChange={e => updateFollowup('reengagement_delay_days', Number(e.target.value))}
                 min={1}
                 max={30}
-                className="flex-1 px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20"
+                className="input flex-1"
               />
-              <span className="text-xs text-zinc-500 w-12">days</span>
+              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '3rem' }}>days</span>
             </div>
           </div>
 
           {/* Escalation Delay */}
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1.5">Escalation Delay</label>
+            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>Escalation Delay</label>
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -730,15 +745,15 @@ export default function SettingsPage() {
                 onChange={e => updateFollowup('escalation_delay_days', Number(e.target.value))}
                 min={1}
                 max={60}
-                className="flex-1 px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20"
+                className="input flex-1"
               />
-              <span className="text-xs text-zinc-500 w-12">days</span>
+              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '3rem' }}>days</span>
             </div>
           </div>
 
           {/* Tier 1 Speed Multiplier */}
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1.5">Tier 1 Speed Multiplier</label>
+            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>Tier 1 Speed Multiplier</label>
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -746,35 +761,35 @@ export default function SettingsPage() {
                 onChange={e => updateFollowup('tier1_speed_multiplier', Number(e.target.value))}
                 min={25}
                 max={100}
-                className="flex-1 px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20"
+                className="input flex-1"
               />
-              <span className="text-xs text-zinc-500 w-12">%</span>
+              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '3rem' }}>%</span>
             </div>
-            <p className="text-xs text-zinc-600 mt-1">
+            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 'var(--space-1)' }}>
               {followupCadence.tier1_speed_multiplier}% means Tier 1 investors get follow-ups {100 - followupCadence.tier1_speed_multiplier}% faster
             </p>
           </div>
         </div>
 
         {/* Cadence summary */}
-        <div className="mt-5 pt-4 border-t border-zinc-800">
-          <p className="text-xs text-zinc-500 mb-2">Effective Tier 1 cadence:</p>
-          <div className="grid grid-cols-3 gap-3 text-center">
-            <div className="bg-zinc-900/50 rounded-lg py-2 px-3">
-              <div className="text-xs text-zinc-500">Thank you</div>
-              <div className="text-sm font-medium text-zinc-300">
+        <div style={{ marginTop: 'var(--space-5)', paddingTop: 'var(--space-4)', borderTop: '1px solid var(--border-subtle)' }}>
+          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-2)' }}>Effective Tier 1 cadence:</p>
+          <div className="grid grid-cols-3 gap-3" style={{ textAlign: 'center' }}>
+            <div style={{ background: 'var(--surface-2)', borderRadius: 'var(--radius-md)', padding: '0.5rem 0.75rem' }}>
+              <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Thank you</div>
+              <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)' }}>
                 {Math.round(followupCadence.thank_you_delay_hours * followupCadence.tier1_speed_multiplier / 100)}h
               </div>
             </div>
-            <div className="bg-zinc-900/50 rounded-lg py-2 px-3">
-              <div className="text-xs text-zinc-500">Objection</div>
-              <div className="text-sm font-medium text-zinc-300">
+            <div style={{ background: 'var(--surface-2)', borderRadius: 'var(--radius-md)', padding: '0.5rem 0.75rem' }}>
+              <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Objection</div>
+              <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)' }}>
                 {Math.round(followupCadence.objection_response_delay_hours * followupCadence.tier1_speed_multiplier / 100)}h
               </div>
             </div>
-            <div className="bg-zinc-900/50 rounded-lg py-2 px-3">
-              <div className="text-xs text-zinc-500">Re-engage</div>
-              <div className="text-sm font-medium text-zinc-300">
+            <div style={{ background: 'var(--surface-2)', borderRadius: 'var(--radius-md)', padding: '0.5rem 0.75rem' }}>
+              <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Re-engage</div>
+              <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)' }}>
                 {Math.round(followupCadence.reengagement_delay_days * followupCadence.tier1_speed_multiplier / 100)}d
               </div>
             </div>
@@ -785,16 +800,22 @@ export default function SettingsPage() {
       {/* ================================================================= */}
       {/* 4. API CONFIGURATION                                              */}
       {/* ================================================================= */}
-      <div className={`border rounded-xl p-6 ${statusColor}`}>
-        <div className="flex items-center justify-between mb-4">
+      <div style={{
+        border: '1px solid',
+        borderRadius: 'var(--radius-lg)',
+        padding: 'var(--space-6)',
+        ...statusStyle,
+      }}>
+        <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-4)' }}>
           <div className="flex items-center gap-3">
-            <Key className="w-5 h-5 text-zinc-400" />
-            <h2 className="text-lg font-semibold">Anthropic API Key</h2>
+            <Key className="w-5 h-5" style={{ color: 'var(--text-tertiary)' }} />
+            <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 600, color: 'var(--text-primary)' }}>Anthropic API Key</h2>
           </div>
           <button
             onClick={testKey}
             disabled={testing}
-            className="flex items-center gap-2 px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-xs transition-colors disabled:opacity-50"
+            className="btn btn-sm btn-secondary"
+            style={{ opacity: testing ? 0.5 : 1 }}
           >
             <RefreshCw className={`w-3.5 h-3.5 ${testing ? 'animate-spin' : ''}`} />
             Test Key
@@ -806,30 +827,41 @@ export default function SettingsPage() {
             <div className="flex items-start gap-3">
               {statusIcon}
               <div>
-                <div className="font-medium">{keyTest.message}</div>
+                <div style={{ fontWeight: 500, color: 'var(--text-primary)' }}>{keyTest.message}</div>
                 {keyTest.key && (
-                  <div className="text-xs text-zinc-500 mt-1 font-mono">{keyTest.key}</div>
+                  <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 'var(--space-1)', fontFamily: 'var(--font-mono)' }}>{keyTest.key}</div>
                 )}
               </div>
             </div>
 
             {keyTest.error && (
-              <div className="text-sm text-red-400 bg-red-900/20 rounded-lg p-3 font-mono text-xs">
+              <div style={{
+                fontSize: 'var(--font-size-xs)',
+                color: 'var(--danger)',
+                background: 'var(--danger-muted)',
+                borderRadius: 'var(--radius-md)',
+                padding: 'var(--space-3)',
+                fontFamily: 'var(--font-mono)',
+              }}>
                 {keyTest.error}
               </div>
             )}
 
             {keyTest.fix && (
-              <div className="bg-zinc-900 rounded-lg p-4 space-y-2">
-                <div className="text-sm font-medium text-zinc-300">How to fix:</div>
+              <div style={{
+                background: 'var(--surface-1)',
+                borderRadius: 'var(--radius-md)',
+                padding: 'var(--space-4)',
+              }} className="space-y-2">
+                <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)' }}>How to fix:</div>
                 {Array.isArray(keyTest.fix) ? (
-                  <ol className="text-sm text-zinc-400 space-y-1">
+                  <ol className="space-y-1" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' }}>
                     {keyTest.fix.map((step, i) => (
                       <li key={i}>{step}</li>
                     ))}
                   </ol>
                 ) : (
-                  <p className="text-sm text-zinc-400">{keyTest.fix}</p>
+                  <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' }}>{keyTest.fix}</p>
                 )}
               </div>
             )}
@@ -837,31 +869,31 @@ export default function SettingsPage() {
         )}
 
         {testing && !keyTest && (
-          <div className="text-sm text-zinc-400 animate-pulse">Testing API key...</div>
+          <div className="animate-pulse" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' }}>Testing API key...</div>
         )}
       </div>
 
       {/* Billing info */}
-      <div className="border border-zinc-800 rounded-xl p-6">
-        <div className="flex items-center gap-3 mb-3">
-          <Settings2 className="w-5 h-5 text-zinc-400" />
-          <h3 className="text-sm font-medium text-zinc-400">IMPORTANT: Claude.ai vs API Credits</h3>
+      <div className="card" style={{ padding: 'var(--space-6)' }}>
+        <div className="flex items-center gap-3" style={{ marginBottom: 'var(--space-3)' }}>
+          <Settings2 className="w-5 h-5" style={{ color: 'var(--text-tertiary)' }} />
+          <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-tertiary)' }}>IMPORTANT: Claude.ai vs API Credits</h3>
         </div>
-        <div className="text-sm text-zinc-500 space-y-2">
-          <p>Anthropic has <strong className="text-zinc-300">two separate billing systems</strong>:</p>
+        <div className="space-y-2" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
+          <p>Anthropic has <strong style={{ color: 'var(--text-secondary)' }}>two separate billing systems</strong>:</p>
           <ul className="list-disc list-inside space-y-1 ml-2">
-            <li><strong className="text-zinc-300">claude.ai</strong> --- subscription credits for the chatbot (Claude Pro/Team)</li>
-            <li><strong className="text-zinc-300">console.anthropic.com</strong> --- API credits for programmatic access (what this app uses)</li>
+            <li><strong style={{ color: 'var(--text-secondary)' }}>claude.ai</strong> --- subscription credits for the chatbot (Claude Pro/Team)</li>
+            <li><strong style={{ color: 'var(--text-secondary)' }}>console.anthropic.com</strong> --- API credits for programmatic access (what this app uses)</li>
           </ul>
-          <p>Credits on claude.ai do <strong className="text-red-400">NOT</strong> apply to API usage. You need credits specifically on <strong className="text-zinc-300">console.anthropic.com/settings/billing</strong>.</p>
-          <p className="mt-3">If the test above shows a credits issue:</p>
+          <p>Credits on claude.ai do <strong style={{ color: 'var(--danger)' }}>NOT</strong> apply to API usage. You need credits specifically on <strong style={{ color: 'var(--text-secondary)' }}>console.anthropic.com/settings/billing</strong>.</p>
+          <p style={{ marginTop: 'var(--space-3)' }}>If the test above shows a credits issue:</p>
           <ol className="list-decimal list-inside space-y-1 ml-2">
-            <li>Go to <strong className="text-zinc-300">console.anthropic.com/settings/billing</strong></li>
-            <li>Click <strong className="text-zinc-300">&ldquo;Add to credit balance&rdquo;</strong> (minimum $5)</li>
-            <li>Then go to <strong className="text-zinc-300">console.anthropic.com/settings/keys</strong></li>
-            <li>Create a <strong className="text-zinc-300">new API key</strong></li>
-            <li>Update it in your <strong className="text-zinc-300">Vercel environment variables</strong></li>
-            <li><strong className="text-zinc-300">Redeploy</strong> the app</li>
+            <li>Go to <strong style={{ color: 'var(--text-secondary)' }}>console.anthropic.com/settings/billing</strong></li>
+            <li>Click <strong style={{ color: 'var(--text-secondary)' }}>&ldquo;Add to credit balance&rdquo;</strong> (minimum $5)</li>
+            <li>Then go to <strong style={{ color: 'var(--text-secondary)' }}>console.anthropic.com/settings/keys</strong></li>
+            <li>Create a <strong style={{ color: 'var(--text-secondary)' }}>new API key</strong></li>
+            <li>Update it in your <strong style={{ color: 'var(--text-secondary)' }}>Vercel environment variables</strong></li>
+            <li><strong style={{ color: 'var(--text-secondary)' }}>Redeploy</strong> the app</li>
           </ol>
         </div>
       </div>

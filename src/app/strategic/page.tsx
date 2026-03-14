@@ -86,47 +86,66 @@ interface StrategicData {
 // Helpers
 // ---------------------------------------------------------------------------
 
-const CATEGORY_CONFIG: Record<string, { label: string; color: string; bg: string; border: string; icon: React.ComponentType<{ className?: string }> }> = {
-  pipeline:  { label: 'Pipeline',  color: 'text-blue-400',    bg: 'bg-blue-900/20',    border: 'border-blue-700/40',    icon: Users },
-  narrative: { label: 'Narrative', color: 'text-purple-400',  bg: 'bg-purple-900/20',  border: 'border-purple-700/40',  icon: MessageCircleWarning },
-  execution: { label: 'Execution', color: 'text-emerald-400', bg: 'bg-emerald-900/20', border: 'border-emerald-700/40', icon: Zap },
-  timing:    { label: 'Timing',    color: 'text-amber-400',   bg: 'bg-amber-900/20',   border: 'border-amber-700/40',   icon: Clock },
-  risk:      { label: 'Risk',      color: 'text-red-400',     bg: 'bg-red-900/20',     border: 'border-red-700/40',     icon: Shield },
+const CATEGORY_CONFIG: Record<string, { label: string; color: string; bg: string; border: string; icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }> }> = {
+  pipeline:  { label: 'Pipeline',  color: 'var(--accent)',    bg: 'var(--accent-muted)',    border: 'var(--border-default)',    icon: Users },
+  narrative: { label: 'Narrative', color: '#c084fc',          bg: 'rgba(168, 85, 247, 0.12)', border: 'rgba(168, 85, 247, 0.4)', icon: MessageCircleWarning },
+  execution: { label: 'Execution', color: 'var(--success)',   bg: 'var(--success-muted)',   border: 'rgba(34, 197, 94, 0.4)',   icon: Zap },
+  timing:    { label: 'Timing',    color: 'var(--warning)',   bg: 'var(--warning-muted)',   border: 'rgba(245, 158, 11, 0.4)',  icon: Clock },
+  risk:      { label: 'Risk',      color: 'var(--danger)',    bg: 'var(--danger-muted)',    border: 'rgba(239, 68, 68, 0.4)',   icon: Shield },
 };
 
 const TREND_CONFIG = {
-  accelerating: { label: 'Accelerating', icon: TrendingUp, color: 'text-emerald-400', bg: 'bg-emerald-900/30', border: 'border-emerald-700/40' },
-  steady:       { label: 'Steady',       icon: Minus,       color: 'text-amber-400',   bg: 'bg-amber-900/30',   border: 'border-amber-700/40' },
-  decelerating: { label: 'Decelerating', icon: TrendingDown, color: 'text-red-400',    bg: 'bg-red-900/30',     border: 'border-red-700/40' },
+  accelerating: { label: 'Accelerating', icon: TrendingUp,    color: 'var(--success)',  bg: 'var(--success-muted)',  border: 'rgba(34, 197, 94, 0.4)' },
+  steady:       { label: 'Steady',       icon: Minus,          color: 'var(--warning)',  bg: 'var(--warning-muted)',  border: 'rgba(245, 158, 11, 0.4)' },
+  decelerating: { label: 'Decelerating', icon: TrendingDown,   color: 'var(--danger)',   bg: 'var(--danger-muted)',   border: 'rgba(239, 68, 68, 0.4)' },
 };
 
 function gaugeColor(score: number, invert = false): string {
   if (invert) {
-    if (score >= 0.5) return 'text-red-400';
-    if (score >= 0.25) return 'text-yellow-400';
-    return 'text-emerald-400';
+    if (score >= 0.5) return 'var(--danger)';
+    if (score >= 0.25) return 'var(--warning)';
+    return 'var(--success)';
   }
-  if (score >= 70) return 'text-emerald-400';
-  if (score >= 40) return 'text-yellow-400';
-  return 'text-red-400';
+  if (score >= 70) return 'var(--success)';
+  if (score >= 40) return 'var(--warning)';
+  return 'var(--danger)';
 }
 
 function gaugeBarColor(score: number, invert = false): string {
   if (invert) {
-    if (score >= 0.5) return 'bg-red-500';
-    if (score >= 0.25) return 'bg-yellow-500';
-    return 'bg-emerald-500';
+    if (score >= 0.5) return 'var(--danger)';
+    if (score >= 0.25) return 'var(--warning)';
+    return 'var(--success)';
   }
-  if (score >= 70) return 'bg-emerald-500';
-  if (score >= 40) return 'bg-yellow-500';
-  return 'bg-red-500';
+  if (score >= 70) return 'var(--success)';
+  if (score >= 40) return 'var(--warning)';
+  return 'var(--danger)';
 }
 
-function priorityBadge(p: number): string {
-  if (p === 1) return 'bg-red-900/30 text-red-400 border-red-700/40';
-  if (p === 2) return 'bg-orange-900/30 text-orange-400 border-orange-700/40';
-  if (p === 3) return 'bg-yellow-900/30 text-yellow-400 border-yellow-700/40';
-  return 'bg-zinc-800 text-zinc-400 border-zinc-700';
+function priorityStyle(p: number): React.CSSProperties {
+  if (p === 1) return { background: 'var(--danger-muted)', color: 'var(--danger)', borderColor: 'rgba(239, 68, 68, 0.4)' };
+  if (p === 2) return { background: 'rgba(249, 115, 22, 0.12)', color: '#fb923c', borderColor: 'rgba(249, 115, 22, 0.4)' };
+  if (p === 3) return { background: 'var(--warning-muted)', color: 'var(--warning)', borderColor: 'rgba(245, 158, 11, 0.4)' };
+  return { background: 'var(--surface-2)', color: 'var(--text-tertiary)', borderColor: 'var(--border-default)' };
+}
+
+function directionStyle(direction: string): React.CSSProperties {
+  if (direction === 'improving') return { background: 'var(--success-muted)', color: 'var(--success)', borderColor: 'rgba(34, 197, 94, 0.4)' };
+  if (direction === 'declining') return { background: 'var(--danger-muted)', color: 'var(--danger)', borderColor: 'rgba(239, 68, 68, 0.4)' };
+  if (direction === 'mixed') return { background: 'var(--warning-muted)', color: 'var(--warning)', borderColor: 'rgba(245, 158, 11, 0.4)' };
+  return { background: 'var(--surface-2)', color: 'var(--text-tertiary)', borderColor: 'var(--border-default)' };
+}
+
+function confidenceStyle(confidence: string): React.CSSProperties {
+  if (confidence === 'high') return { background: 'var(--success-muted)', color: 'var(--success)', borderColor: 'rgba(34, 197, 94, 0.4)' };
+  if (confidence === 'medium') return { background: 'var(--warning-muted)', color: 'var(--warning)', borderColor: 'rgba(245, 158, 11, 0.4)' };
+  return { background: 'var(--danger-muted)', color: 'var(--danger)', borderColor: 'rgba(239, 68, 68, 0.4)' };
+}
+
+function deltaColor(delta: number): string {
+  if (delta > 0) return 'var(--success)';
+  if (delta < 0) return 'var(--danger)';
+  return 'var(--text-muted)';
 }
 
 // ---------------------------------------------------------------------------
@@ -138,6 +157,8 @@ export default function StrategicPage() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [refreshHover, setRefreshHover] = useState(false);
+  const [retryHover, setRetryHover] = useState(false);
 
   const fetchData = useCallback(async (silent = false) => {
     if (!silent) setLoading(true);
@@ -162,14 +183,14 @@ export default function StrategicPage() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="h-8 w-64 bg-zinc-800 rounded animate-pulse" />
-        <div className="h-32 bg-zinc-800/50 rounded-xl animate-pulse" />
+        <div className="h-8 w-64 skeleton animate-pulse" style={{ borderRadius: 'var(--radius-md)' }} />
+        <div className="h-32 skeleton animate-pulse" style={{ borderRadius: 'var(--radius-lg)', opacity: 0.5 }} />
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-36 bg-zinc-800/50 rounded-xl animate-pulse" />
+            <div key={i} className="h-36 skeleton animate-pulse" style={{ borderRadius: 'var(--radius-lg)', opacity: 0.5 }} />
           ))}
         </div>
-        <div className="h-64 bg-zinc-800/50 rounded-xl animate-pulse" />
+        <div className="h-64 skeleton animate-pulse" style={{ borderRadius: 'var(--radius-lg)', opacity: 0.5 }} />
       </div>
     );
   }
@@ -177,11 +198,25 @@ export default function StrategicPage() {
   if (error || !data) {
     return (
       <div className="space-y-8">
-        <h1 className="text-2xl font-bold tracking-tight">Strategic Dashboard</h1>
-        <div className="border border-red-800/30 bg-red-900/10 rounded-xl p-8 text-center space-y-3">
-          <AlertTriangle className="w-8 h-8 text-red-400 mx-auto" />
-          <p className="text-zinc-400">{error || 'Could not load strategic data.'}</p>
-          <button onClick={() => fetchData()} className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm transition-colors">
+        <h1 className="page-title">Strategic Dashboard</h1>
+        <div
+          style={{
+            border: '1px solid var(--danger-muted)',
+            background: 'rgba(239, 68, 68, 0.05)',
+            borderRadius: 'var(--radius-lg)',
+            padding: 'var(--space-8)',
+          }}
+          className="text-center space-y-3"
+        >
+          <AlertTriangle className="w-8 h-8 mx-auto" style={{ color: 'var(--danger)' }} />
+          <p style={{ color: 'var(--text-tertiary)' }}>{error || 'Could not load strategic data.'}</p>
+          <button
+            onClick={() => fetchData()}
+            onMouseEnter={() => setRetryHover(true)}
+            onMouseLeave={() => setRetryHover(false)}
+            className="btn btn-sm btn-secondary"
+            style={retryHover ? { background: 'var(--surface-3)' } : {}}
+          >
             Retry
           </button>
         </div>
@@ -200,18 +235,30 @@ export default function StrategicPage() {
       {/* ================================================================ */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-lg bg-blue-600/20 flex items-center justify-center">
-            <Target className="w-5 h-5 text-blue-400" />
+          <div
+            className="w-10 h-10 flex items-center justify-center"
+            style={{
+              borderRadius: 'var(--radius-md)',
+              background: 'var(--accent-muted)',
+            }}
+          >
+            <Target className="w-5 h-5" style={{ color: 'var(--accent)' }} />
           </div>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">Strategic Dashboard</h1>
-            <p className="text-sm text-zinc-500 mt-0.5">Consolidated intelligence assessment</p>
+            <h1 className="page-title">Strategic Dashboard</h1>
+            <p className="page-subtitle" style={{ fontSize: 'var(--font-size-sm)' }}>Consolidated intelligence assessment</p>
           </div>
         </div>
         <button
           onClick={() => fetchData(true)}
           disabled={refreshing}
-          className="flex items-center gap-1.5 px-3 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-xs transition-colors disabled:opacity-50"
+          onMouseEnter={() => setRefreshHover(true)}
+          onMouseLeave={() => setRefreshHover(false)}
+          className="btn btn-sm btn-secondary"
+          style={{
+            opacity: refreshing ? 0.5 : 1,
+            ...(refreshHover && !refreshing ? { background: 'var(--surface-3)' } : {}),
+          }}
         >
           <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
           {refreshing ? 'Refreshing...' : 'Refresh'}
@@ -221,12 +268,12 @@ export default function StrategicPage() {
       {/* ================================================================ */}
       {/* CEO BRIEF                                                        */}
       {/* ================================================================ */}
-      <div className="border border-zinc-800 bg-zinc-900/50 rounded-xl p-6">
+      <div className="card">
         <div className="flex items-center gap-2 mb-3">
-          <Activity className="w-4 h-4 text-blue-400" />
-          <span className="text-[10px] font-semibold text-zinc-500 uppercase tracking-wider">CEO Brief</span>
+          <Activity className="w-4 h-4" style={{ color: 'var(--accent)' }} />
+          <span className="section-title" style={{ marginBottom: 0 }}>CEO Brief</span>
         </div>
-        <p className="text-lg text-zinc-200 leading-relaxed">{data.ceoBrief}</p>
+        <p style={{ fontSize: 'var(--font-size-lg)', color: 'var(--text-primary)', lineHeight: 1.6 }}>{data.ceoBrief}</p>
       </div>
 
       {/* ================================================================ */}
@@ -267,22 +314,31 @@ export default function StrategicPage() {
         />
 
         {/* Raise Velocity */}
-        <div className="border border-zinc-800 rounded-xl p-5 flex flex-col">
-          <div className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">Raise Velocity</div>
+        <div className="card flex flex-col">
+          <div className="metric-label" style={{ marginBottom: 'var(--space-1)' }}>Raise Velocity</div>
           <div className="flex items-center gap-2 mb-2">
-            <div className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border ${trendCfg.bg} ${trendCfg.color} ${trendCfg.border}`}>
+            <span
+              className="badge"
+              style={{
+                background: trendCfg.bg,
+                color: trendCfg.color,
+                border: `1px solid ${trendCfg.border}`,
+                fontSize: 'var(--font-size-xs)',
+                fontWeight: 500,
+              }}
+            >
               <TrendIcon className="w-3 h-3" />
               {trendCfg.label}
-            </div>
+            </span>
           </div>
           <div className="mt-auto space-y-1.5">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-zinc-500">Meetings/wk</span>
-              <span className="text-zinc-200 font-semibold tabular-nums">{data.raiseVelocity.meetingsPerWeek}</span>
+            <div className="flex items-center justify-between" style={{ fontSize: 'var(--font-size-sm)' }}>
+              <span style={{ color: 'var(--text-muted)' }}>Meetings/wk</span>
+              <span style={{ color: 'var(--text-primary)', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>{data.raiseVelocity.meetingsPerWeek}</span>
             </div>
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-zinc-500">Advances/wk</span>
-              <span className="text-zinc-200 font-semibold tabular-nums">{data.raiseVelocity.stageAdvancesPerWeek}</span>
+            <div className="flex items-center justify-between" style={{ fontSize: 'var(--font-size-sm)' }}>
+              <span style={{ color: 'var(--text-muted)' }}>Advances/wk</span>
+              <span style={{ color: 'var(--text-primary)', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>{data.raiseVelocity.stageAdvancesPerWeek}</span>
             </div>
           </div>
         </div>
@@ -292,18 +348,18 @@ export default function StrategicPage() {
       {/* HEALTH TREND SPARKLINE                                           */}
       {/* ================================================================ */}
       {data.historicalSnapshots.length >= 2 && (
-        <div className="border border-zinc-800 rounded-xl p-5">
+        <div className="card">
           <div className="flex items-center gap-2 mb-4">
-            <BarChart3 className="w-4 h-4 text-blue-400" />
-            <span className="text-sm font-medium text-zinc-400 uppercase">Health Trend</span>
-            <span className="text-xs text-zinc-600 ml-auto">{data.historicalSnapshots.length} snapshots</span>
+            <BarChart3 className="w-4 h-4" style={{ color: 'var(--accent)' }} />
+            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-tertiary)', textTransform: 'uppercase' as const }}>Health Trend</span>
+            <span className="ml-auto" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{data.historicalSnapshots.length} snapshots</span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <SparklineRow
               label="Readiness"
               values={data.historicalSnapshots.map(s => s.readinessScore)}
               dates={data.historicalSnapshots.map(s => s.date)}
-              color="emerald"
+              color="success"
             />
             <SparklineRow
               label="Narrative"
@@ -315,7 +371,7 @@ export default function StrategicPage() {
               label="Pipeline"
               values={data.historicalSnapshots.map(s => s.pipelineScore)}
               dates={data.historicalSnapshots.map(s => s.date)}
-              color="blue"
+              color="accent"
             />
           </div>
         </div>
@@ -325,64 +381,82 @@ export default function StrategicPage() {
       {/* TEMPORAL TRENDS (cycle 14)                                        */}
       {/* ================================================================ */}
       {data.temporalTrends && data.temporalTrends.trends.length > 0 && (
-        <div className="border border-zinc-800 rounded-xl p-5">
+        <div className="card">
           <div className="flex items-center gap-2 mb-4">
-            <Activity className="w-4 h-4 text-blue-400" />
-            <span className="text-sm font-medium text-zinc-400 uppercase">Temporal Intelligence</span>
-            <span className={`ml-2 text-[10px] px-2 py-0.5 rounded-full border font-medium ${
-              data.temporalTrends.overallDirection === 'improving' ? 'bg-emerald-900/30 text-emerald-400 border-emerald-700/40' :
-              data.temporalTrends.overallDirection === 'declining' ? 'bg-red-900/30 text-red-400 border-red-700/40' :
-              data.temporalTrends.overallDirection === 'mixed' ? 'bg-amber-900/30 text-amber-400 border-amber-700/40' :
-              'bg-zinc-800 text-zinc-400 border-zinc-700'
-            }`}>
+            <Activity className="w-4 h-4" style={{ color: 'var(--accent)' }} />
+            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-tertiary)', textTransform: 'uppercase' as const }}>Temporal Intelligence</span>
+            <span
+              className="badge ml-2"
+              style={{
+                ...directionStyle(data.temporalTrends.overallDirection),
+                border: `1px solid`,
+                fontSize: '10px',
+                fontWeight: 500,
+              }}
+            >
               {data.temporalTrends.overallDirection}
             </span>
-            <span className="text-xs text-zinc-600 ml-auto">{data.temporalTrends.daysOfData} days of data</span>
+            <span className="ml-auto" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{data.temporalTrends.daysOfData} days of data</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
             {data.temporalTrends.trends.map((trend) => (
-              <div key={trend.metric} className={`rounded-lg p-3 border ${
-                trend.direction === 'improving' ? 'border-emerald-800/30 bg-emerald-900/10' :
-                trend.direction === 'declining' ? 'border-red-800/30 bg-red-900/10' :
-                'border-zinc-800 bg-zinc-900/30'
-              }`}>
-                <div className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">{trend.metric}</div>
+              <div
+                key={trend.metric}
+                style={{
+                  borderRadius: 'var(--radius-md)',
+                  padding: 'var(--space-3)',
+                  border: `1px solid ${
+                    trend.direction === 'improving' ? 'rgba(34, 197, 94, 0.15)' :
+                    trend.direction === 'declining' ? 'rgba(239, 68, 68, 0.15)' :
+                    'var(--border-subtle)'
+                  }`,
+                  background:
+                    trend.direction === 'improving' ? 'rgba(34, 197, 94, 0.04)' :
+                    trend.direction === 'declining' ? 'rgba(239, 68, 68, 0.04)' :
+                    'var(--surface-1)',
+                }}
+              >
+                <div className="metric-label" style={{ marginBottom: 'var(--space-1)' }}>{trend.metric}</div>
                 <div className="flex items-center gap-1.5">
                   {trend.direction === 'improving' ? (
-                    <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
+                    <TrendingUp className="w-3.5 h-3.5" style={{ color: 'var(--success)' }} />
                   ) : trend.direction === 'declining' ? (
-                    <TrendingDown className="w-3.5 h-3.5 text-red-400" />
+                    <TrendingDown className="w-3.5 h-3.5" style={{ color: 'var(--danger)' }} />
                   ) : (
-                    <Minus className="w-3.5 h-3.5 text-zinc-500" />
+                    <Minus className="w-3.5 h-3.5" style={{ color: 'var(--text-muted)' }} />
                   )}
-                  <span className={`text-lg font-bold tabular-nums ${
-                    trend.direction === 'improving' ? 'text-emerald-400' :
-                    trend.direction === 'declining' ? 'text-red-400' :
-                    'text-zinc-300'
-                  }`}>{trend.current}</span>
+                  <span style={{
+                    fontSize: 'var(--font-size-lg)',
+                    fontWeight: 700,
+                    fontVariantNumeric: 'tabular-nums',
+                    color:
+                      trend.direction === 'improving' ? 'var(--success)' :
+                      trend.direction === 'declining' ? 'var(--danger)' :
+                      'var(--text-primary)',
+                  }}>{trend.current}</span>
                 </div>
                 <div className="mt-1 space-y-0.5">
-                  <div className="flex justify-between text-[10px]">
-                    <span className="text-zinc-600">7d</span>
-                    <span className={trend.delta7d > 0 ? 'text-emerald-500' : trend.delta7d < 0 ? 'text-red-500' : 'text-zinc-500'}>
+                  <div className="flex justify-between" style={{ fontSize: '10px' }}>
+                    <span style={{ color: 'var(--text-muted)' }}>7d</span>
+                    <span style={{ color: deltaColor(trend.delta7d) }}>
                       {trend.delta7d > 0 ? '+' : ''}{trend.delta7d}%
                     </span>
                   </div>
-                  <div className="flex justify-between text-[10px]">
-                    <span className="text-zinc-600">30d</span>
-                    <span className={trend.delta30d > 0 ? 'text-emerald-500' : trend.delta30d < 0 ? 'text-red-500' : 'text-zinc-500'}>
+                  <div className="flex justify-between" style={{ fontSize: '10px' }}>
+                    <span style={{ color: 'var(--text-muted)' }}>30d</span>
+                    <span style={{ color: deltaColor(trend.delta30d) }}>
                       {trend.delta30d > 0 ? '+' : ''}{trend.delta30d}%
                     </span>
                   </div>
                   {trend.streak >= 2 && (
-                    <div className="text-[10px] text-amber-500 mt-0.5">{trend.streak}-day streak</div>
+                    <div style={{ fontSize: '10px', color: 'var(--warning)', marginTop: '2px' }}>{trend.streak}-day streak</div>
                   )}
                 </div>
                 {trend.alert && (
-                  <div className="mt-1.5 flex items-start gap-1">
-                    <AlertTriangle className="w-2.5 h-2.5 text-red-400 shrink-0 mt-0.5" />
-                    <span className="text-[9px] text-red-400 leading-tight">{trend.alert}</span>
+                  <div className="flex items-start gap-1" style={{ marginTop: 'var(--space-1)' }}>
+                    <AlertTriangle className="w-2.5 h-2.5 shrink-0 mt-0.5" style={{ color: 'var(--danger)' }} />
+                    <span style={{ fontSize: '9px', color: 'var(--danger)', lineHeight: 1.3 }}>{trend.alert}</span>
                   </div>
                 )}
               </div>
@@ -395,39 +469,64 @@ export default function StrategicPage() {
       {/* RAISE FORECAST                                                   */}
       {/* ================================================================ */}
       {data.raiseForecast && (
-        <div className="border border-zinc-800 rounded-xl p-5">
+        <div className="card">
           <div className="flex items-center gap-2 mb-4">
-            <Clock className="w-4 h-4 text-purple-400" />
-            <span className="text-sm font-medium text-zinc-400 uppercase">Raise Forecast</span>
-            <span className={`ml-2 text-[10px] px-2 py-0.5 rounded-full border font-medium ${
-              data.raiseForecast.confidence === 'high' ? 'bg-emerald-900/30 text-emerald-400 border-emerald-700/40' :
-              data.raiseForecast.confidence === 'medium' ? 'bg-amber-900/30 text-amber-400 border-amber-700/40' :
-              'bg-red-900/30 text-red-400 border-red-700/40'
-            }`}>
+            <Clock className="w-4 h-4" style={{ color: '#c084fc' }} />
+            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-tertiary)', textTransform: 'uppercase' as const }}>Raise Forecast</span>
+            <span
+              className="badge ml-2"
+              style={{
+                ...confidenceStyle(data.raiseForecast.confidence),
+                border: '1px solid',
+                fontSize: '10px',
+                fontWeight: 500,
+              }}
+            >
               {data.raiseForecast.confidence} confidence
             </span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             {/* Expected close */}
-            <div className="rounded-lg p-3 border border-purple-800/30 bg-purple-900/10">
-              <div className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">Expected Close</div>
-              <div className="text-lg font-bold text-purple-300 tabular-nums">{data.raiseForecast.expectedCloseDate}</div>
+            <div
+              style={{
+                borderRadius: 'var(--radius-md)',
+                padding: 'var(--space-3)',
+                border: '1px solid rgba(168, 85, 247, 0.15)',
+                background: 'rgba(168, 85, 247, 0.04)',
+              }}
+            >
+              <div className="metric-label" style={{ marginBottom: 'var(--space-1)' }}>Expected Close</div>
+              <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 700, color: '#c084fc', fontVariantNumeric: 'tabular-nums' }}>{data.raiseForecast.expectedCloseDate}</div>
             </div>
             {/* Nearest close */}
             {data.raiseForecast.nearestClose && (
-              <div className="rounded-lg p-3 border border-blue-800/30 bg-blue-900/10">
-                <div className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">Nearest Close</div>
-                <div className="text-lg font-bold text-blue-300 tabular-nums">~{data.raiseForecast.nearestClose.days}d</div>
-                <div className="text-[10px] text-zinc-500 mt-0.5">{data.raiseForecast.nearestClose.name} ({data.raiseForecast.nearestClose.stage})</div>
+              <div
+                style={{
+                  borderRadius: 'var(--radius-md)',
+                  padding: 'var(--space-3)',
+                  border: '1px solid rgba(59, 130, 246, 0.15)',
+                  background: 'var(--accent-muted)',
+                }}
+              >
+                <div className="metric-label" style={{ marginBottom: 'var(--space-1)' }}>Nearest Close</div>
+                <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 700, color: '#60a5fa', fontVariantNumeric: 'tabular-nums' }}>~{data.raiseForecast.nearestClose.days}d</div>
+                <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '2px' }}>{data.raiseForecast.nearestClose.name} ({data.raiseForecast.nearestClose.stage})</div>
               </div>
             )}
             {/* Critical path */}
-            <div className="rounded-lg p-3 border border-zinc-800 bg-zinc-900/30">
-              <div className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">Critical Path</div>
+            <div
+              style={{
+                borderRadius: 'var(--radius-md)',
+                padding: 'var(--space-3)',
+                border: '1px solid var(--border-subtle)',
+                background: 'var(--surface-1)',
+              }}
+            >
+              <div className="metric-label" style={{ marginBottom: 'var(--space-1)' }}>Critical Path</div>
               <div className="space-y-0.5">
                 {data.raiseForecast.criticalPath.map((name) => (
-                  <div key={name} className="text-xs text-zinc-300">{name}</div>
+                  <div key={name} style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>{name}</div>
                 ))}
               </div>
             </div>
@@ -436,9 +535,9 @@ export default function StrategicPage() {
           {/* Investor forecasts table */}
           {data.raiseForecast.investorForecasts.length > 0 && (
             <div className="overflow-x-auto">
-              <table className="w-full text-xs">
+              <table className="w-full" style={{ fontSize: 'var(--font-size-xs)' }}>
                 <thead>
-                  <tr className="text-zinc-500 border-b border-zinc-800">
+                  <tr className="table-header">
                     <th className="text-left py-1.5 pr-3">Investor</th>
                     <th className="text-left py-1.5 pr-3">Stage</th>
                     <th className="text-right py-1.5 pr-3">Days to Close</th>
@@ -447,16 +546,19 @@ export default function StrategicPage() {
                 </thead>
                 <tbody>
                   {data.raiseForecast.investorForecasts.map((f) => (
-                    <tr key={f.name} className="border-b border-zinc-800/50">
-                      <td className="py-1.5 pr-3 text-zinc-300">{f.name}</td>
-                      <td className="py-1.5 pr-3 text-zinc-500">{f.stage}</td>
-                      <td className="py-1.5 pr-3 text-right tabular-nums text-zinc-300">~{f.days}d</td>
+                    <tr key={f.name} className="table-row">
+                      <td className="py-1.5 pr-3" style={{ color: 'var(--text-secondary)' }}>{f.name}</td>
+                      <td className="py-1.5 pr-3" style={{ color: 'var(--text-muted)' }}>{f.stage}</td>
+                      <td className="py-1.5 pr-3 text-right" style={{ fontVariantNumeric: 'tabular-nums', color: 'var(--text-secondary)' }}>~{f.days}d</td>
                       <td className="py-1.5">
-                        <span className={`text-[10px] px-1.5 py-0.5 rounded ${
-                          f.confidence === 'high' ? 'bg-emerald-900/30 text-emerald-400' :
-                          f.confidence === 'medium' ? 'bg-amber-900/30 text-amber-400' :
-                          'bg-red-900/30 text-red-400'
-                        }`}>{f.confidence}</span>
+                        <span
+                          style={{
+                            fontSize: '10px',
+                            padding: '2px 6px',
+                            borderRadius: 'var(--radius-sm)',
+                            ...confidenceStyle(f.confidence),
+                          }}
+                        >{f.confidence}</span>
                       </td>
                     </tr>
                   ))}
@@ -467,11 +569,11 @@ export default function StrategicPage() {
 
           {/* Risk factors */}
           {data.raiseForecast.riskFactors.length > 0 && (
-            <div className="mt-3 space-y-1">
+            <div className="space-y-1" style={{ marginTop: 'var(--space-3)' }}>
               {data.raiseForecast.riskFactors.map((rf, i) => (
                 <div key={i} className="flex items-start gap-1.5">
-                  <AlertTriangle className="w-3 h-3 text-amber-500 shrink-0 mt-0.5" />
-                  <span className="text-[11px] text-amber-500/80">{rf}</span>
+                  <AlertTriangle className="w-3 h-3 shrink-0 mt-0.5" style={{ color: 'var(--warning)' }} />
+                  <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--warning)', opacity: 0.8 }}>{rf}</span>
                 </div>
               ))}
             </div>
@@ -482,77 +584,41 @@ export default function StrategicPage() {
       {/* ================================================================ */}
       {/* STRATEGIC RECOMMENDATIONS                                        */}
       {/* ================================================================ */}
-      <div className="border border-zinc-800 rounded-xl overflow-hidden">
-        <div className="p-5 border-b border-zinc-800 flex items-center gap-2">
-          <Target className="w-4 h-4 text-blue-400" />
-          <h2 className="text-sm font-medium text-zinc-400 uppercase">Strategic Recommendations</h2>
-          <span className="ml-auto text-xs text-zinc-600">{data.recommendations.length} actions</span>
+      <div
+        style={{
+          border: '1px solid var(--border-subtle)',
+          borderRadius: 'var(--radius-lg)',
+          overflow: 'hidden',
+        }}
+      >
+        <div
+          className="flex items-center gap-2"
+          style={{
+            padding: 'var(--space-5)',
+            borderBottom: '1px solid var(--border-subtle)',
+          }}
+        >
+          <Target className="w-4 h-4" style={{ color: 'var(--accent)' }} />
+          <h2 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-tertiary)', textTransform: 'uppercase' as const }}>Strategic Recommendations</h2>
+          <span className="ml-auto" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{data.recommendations.length} actions</span>
         </div>
 
         {data.recommendations.length === 0 ? (
-          <div className="p-8 text-center">
-            <CheckCircle2 className="w-8 h-8 text-emerald-500 mx-auto mb-2" />
-            <p className="text-sm text-zinc-400">No critical recommendations at this time. Process is on track.</p>
+          <div className="text-center" style={{ padding: 'var(--space-8)' }}>
+            <CheckCircle2 className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--success)' }} />
+            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' }}>No critical recommendations at this time. Process is on track.</p>
           </div>
         ) : (
-          <div className="divide-y divide-zinc-800/50">
-            {data.recommendations.map((rec, i) => {
-              const catCfg = CATEGORY_CONFIG[rec.category] || CATEGORY_CONFIG.pipeline;
-              const CatIcon = catCfg.icon;
-
-              return (
-                <div key={i} className="p-5 hover:bg-zinc-800/20 transition-colors">
-                  <div className="flex items-start gap-4">
-                    {/* Priority badge */}
-                    <div className="flex flex-col items-center gap-1.5 shrink-0 pt-0.5">
-                      <span className={`text-[9px] px-1.5 py-0.5 rounded border font-bold ${priorityBadge(rec.priority)}`}>
-                        P{rec.priority}
-                      </span>
-                      <div className={`w-7 h-7 rounded flex items-center justify-center ${catCfg.bg}`}>
-                        <CatIcon className={`w-3.5 h-3.5 ${catCfg.color}`} />
-                      </div>
-                    </div>
-
-                    <div className="flex-1 min-w-0">
-                      {/* Title + category badge */}
-                      <div className="flex items-center gap-2 flex-wrap mb-1">
-                        <h3 className="text-sm font-semibold text-zinc-200">{rec.title}</h3>
-                        <span className={`text-[9px] px-1.5 py-0.5 rounded border ${catCfg.bg} ${catCfg.color} ${catCfg.border}`}>
-                          {catCfg.label}
-                        </span>
-                      </div>
-
-                      {/* Rationale */}
-                      <p className="text-xs text-zinc-500 mb-2">{rec.rationale}</p>
-
-                      {/* Action */}
-                      <div className="flex items-start gap-1.5 mb-2">
-                        <ArrowRight className="w-3 h-3 text-blue-400 shrink-0 mt-0.5" />
-                        <p className="text-xs text-zinc-300">{rec.action}</p>
-                      </div>
-
-                      {/* Impact + Deadline */}
-                      <div className="flex items-center gap-4 text-[10px] text-zinc-500">
-                        <span className="flex items-center gap-1">
-                          <TrendingUp className="w-3 h-3" />
-                          {rec.expectedImpact}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Clock className="w-3 h-3" />
-                          {rec.deadline}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+          <div>
+            {data.recommendations.map((rec, i) => (
+              <RecommendationRow key={i} rec={rec} isLast={i === data.recommendations.length - 1} />
+            ))}
           </div>
         )}
       </div>
 
       {/* Footer */}
-      <div className="text-center text-[10px] text-zinc-600 py-2">
+      <div className="text-center" style={{ fontSize: '10px', color: 'var(--text-muted)', padding: 'var(--space-2) 0' }}>
         Generated {new Date(data.generatedAt).toLocaleString()} — Data-driven from live context bus
       </div>
     </div>
@@ -562,6 +628,92 @@ export default function StrategicPage() {
 // ---------------------------------------------------------------------------
 // Sub-components
 // ---------------------------------------------------------------------------
+
+function RecommendationRow({ rec, isLast }: { rec: StrategicRecommendation; isLast: boolean }) {
+  const [hovered, setHovered] = useState(false);
+  const catCfg = CATEGORY_CONFIG[rec.category] || CATEGORY_CONFIG.pipeline;
+  const CatIcon = catCfg.icon;
+
+  return (
+    <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        padding: 'var(--space-5)',
+        background: hovered ? 'var(--surface-1)' : 'transparent',
+        transition: 'background 100ms ease',
+        borderBottom: isLast ? 'none' : '1px solid var(--border-subtle)',
+      }}
+    >
+      <div className="flex items-start gap-4">
+        {/* Priority badge */}
+        <div className="flex flex-col items-center gap-1.5 shrink-0 pt-0.5">
+          <span
+            style={{
+              fontSize: '9px',
+              padding: '2px 6px',
+              borderRadius: 'var(--radius-sm)',
+              border: '1px solid',
+              fontWeight: 700,
+              ...priorityStyle(rec.priority),
+            }}
+          >
+            P{rec.priority}
+          </span>
+          <div
+            className="w-7 h-7 flex items-center justify-center"
+            style={{
+              borderRadius: 'var(--radius-sm)',
+              background: catCfg.bg,
+            }}
+          >
+            <CatIcon className="w-3.5 h-3.5" style={{ color: catCfg.color }} />
+          </div>
+        </div>
+
+        <div className="flex-1 min-w-0">
+          {/* Title + category badge */}
+          <div className="flex items-center gap-2 flex-wrap mb-1">
+            <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>{rec.title}</h3>
+            <span
+              style={{
+                fontSize: '9px',
+                padding: '2px 6px',
+                borderRadius: 'var(--radius-sm)',
+                border: `1px solid ${catCfg.border}`,
+                background: catCfg.bg,
+                color: catCfg.color,
+              }}
+            >
+              {catCfg.label}
+            </span>
+          </div>
+
+          {/* Rationale */}
+          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-2)' }}>{rec.rationale}</p>
+
+          {/* Action */}
+          <div className="flex items-start gap-1.5 mb-2">
+            <ArrowRight className="w-3 h-3 shrink-0 mt-0.5" style={{ color: 'var(--accent)' }} />
+            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>{rec.action}</p>
+          </div>
+
+          {/* Impact + Deadline */}
+          <div className="flex items-center gap-4" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+            <span className="flex items-center gap-1">
+              <TrendingUp className="w-3 h-3" />
+              {rec.expectedImpact}
+            </span>
+            <span className="flex items-center gap-1">
+              <Clock className="w-3 h-3" />
+              {rec.deadline}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function GaugeCard({ label, value, suffix, description, barPct, barColor, valueColor }: {
   label: string;
@@ -573,16 +725,29 @@ function GaugeCard({ label, value, suffix, description, barPct, barColor, valueC
   valueColor: string;
 }) {
   return (
-    <div className="border border-zinc-800 rounded-xl p-5 flex flex-col">
-      <div className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">{label}</div>
-      <div className={`text-3xl font-bold tabular-nums ${valueColor}`}>
-        {value}<span className="text-lg font-medium text-zinc-600">{suffix}</span>
+    <div className="card flex flex-col">
+      <div className="metric-label" style={{ marginBottom: 'var(--space-1)' }}>{label}</div>
+      <div style={{ fontSize: 'var(--font-size-3xl)', fontWeight: 700, fontVariantNumeric: 'tabular-nums', color: valueColor }}>
+        {value}<span style={{ fontSize: 'var(--font-size-lg)', fontWeight: 500, color: 'var(--text-muted)' }}>{suffix}</span>
       </div>
-      <div className="text-xs text-zinc-600 mt-1 mb-3">{description}</div>
-      <div className="mt-auto w-full h-2 bg-zinc-800 rounded-full overflow-hidden">
+      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 'var(--space-1)', marginBottom: 'var(--space-3)' }}>{description}</div>
+      <div
+        className="mt-auto w-full"
+        style={{
+          height: '8px',
+          background: 'var(--surface-3)',
+          borderRadius: '9999px',
+          overflow: 'hidden',
+        }}
+      >
         <div
-          className={`h-full rounded-full transition-all duration-700 ${barColor}`}
-          style={{ width: `${Math.min(100, barPct)}%` }}
+          style={{
+            height: '100%',
+            borderRadius: '9999px',
+            transition: 'all 700ms ease',
+            width: `${Math.min(100, barPct)}%`,
+            background: barColor,
+          }}
         />
       </div>
     </div>
@@ -593,7 +758,7 @@ function SparklineRow({ label, values, dates, color }: {
   label: string;
   values: number[];
   dates: string[];
-  color: 'emerald' | 'purple' | 'blue';
+  color: 'success' | 'purple' | 'accent';
 }) {
   const max = Math.max(...values, 1);
   const latest = values[values.length - 1] ?? 0;
@@ -601,24 +766,24 @@ function SparklineRow({ label, values, dates, color }: {
   const delta = latest - first;
 
   const barColors: Record<string, string> = {
-    emerald: 'bg-emerald-500',
-    purple: 'bg-purple-500',
-    blue: 'bg-blue-500',
+    success: 'var(--success)',
+    purple: '#a855f7',
+    accent: 'var(--accent)',
   };
   const textColors: Record<string, string> = {
-    emerald: 'text-emerald-400',
-    purple: 'text-purple-400',
-    blue: 'text-blue-400',
+    success: 'var(--success)',
+    purple: '#c084fc',
+    accent: 'var(--accent)',
   };
 
   return (
     <div>
       <div className="flex items-center justify-between mb-2">
-        <span className="text-xs text-zinc-500">{label}</span>
+        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{label}</span>
         <div className="flex items-center gap-2">
-          <span className={`text-sm font-bold tabular-nums ${textColors[color]}`}>{latest}</span>
+          <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 700, fontVariantNumeric: 'tabular-nums', color: textColors[color] }}>{latest}</span>
           {delta !== 0 && (
-            <span className={`text-[10px] ${delta > 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+            <span style={{ fontSize: '10px', color: delta > 0 ? 'var(--success)' : 'var(--danger)' }}>
               {delta > 0 ? '+' : ''}{delta}
             </span>
           )}
@@ -630,8 +795,14 @@ function SparklineRow({ label, values, dates, color }: {
           return (
             <div key={dates[i] || i} className="flex-1 relative" style={{ height: '100%' }}>
               <div
-                className={`absolute bottom-0 w-full rounded-t ${barColors[color]} opacity-70 transition-all`}
-                style={{ height: `${Math.max(h, 4)}%` }}
+                className="absolute bottom-0 w-full"
+                style={{
+                  height: `${Math.max(h, 4)}%`,
+                  borderRadius: '2px 2px 0 0',
+                  background: barColors[color],
+                  opacity: 0.7,
+                  transition: 'all 200ms ease',
+                }}
               />
             </div>
           );

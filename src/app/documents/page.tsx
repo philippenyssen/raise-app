@@ -38,10 +38,10 @@ const TYPE_LABELS: Record<string, string> = {
   custom: 'Custom Document',
 };
 
-const STATUS_COLORS: Record<string, string> = {
-  draft: 'bg-yellow-900/30 text-yellow-400',
-  review: 'bg-blue-900/30 text-blue-400',
-  final: 'bg-green-900/30 text-green-400',
+const STATUS_STYLES: Record<string, React.CSSProperties> = {
+  draft: { backgroundColor: 'var(--warning-muted)', color: 'var(--warning)' },
+  review: { backgroundColor: 'color-mix(in srgb, var(--accent) 20%, transparent)', color: 'var(--accent)' },
+  final: { backgroundColor: 'var(--success-muted)', color: 'var(--success)' },
 };
 
 const FLAG_TYPE_LABELS: Record<string, string> = {
@@ -50,11 +50,13 @@ const FLAG_TYPE_LABELS: Record<string, string> = {
   section_improvement: 'Improve',
 };
 
-const FLAG_TYPE_STYLES: Record<string, string> = {
-  objection_response: 'bg-red-900/30 text-red-400',
-  number_update: 'bg-yellow-900/30 text-yellow-400',
-  section_improvement: 'bg-blue-900/30 text-blue-400',
+const FLAG_TYPE_STYLE_MAP: Record<string, React.CSSProperties> = {
+  objection_response: { backgroundColor: 'color-mix(in srgb, var(--danger) 20%, transparent)', color: 'var(--danger)' },
+  number_update: { backgroundColor: 'var(--warning-muted)', color: 'var(--warning)' },
+  section_improvement: { backgroundColor: 'color-mix(in srgb, var(--accent) 20%, transparent)', color: 'var(--accent)' },
 };
+
+const DEFAULT_FLAG_STYLE: React.CSSProperties = { backgroundColor: 'var(--surface-2)', color: 'var(--text-tertiary)' };
 
 export default function DocumentsPage() {
   const { toast } = useToast();
@@ -63,6 +65,9 @@ export default function DocumentsPage() {
   const [loading, setLoading] = useState(true);
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; title: string } | null>(null);
   const [showFlags, setShowFlags] = useState(true);
+  const [hoverStates, setHoverStates] = useState<Record<string, boolean>>({});
+
+  const setHover = (key: string, val: boolean) => setHoverStates(prev => ({ ...prev, [key]: val }));
 
   useEffect(() => { fetchDocs(); fetchFlags(); }, []);
 
@@ -147,9 +152,9 @@ export default function DocumentsPage() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="h-8 w-48 bg-zinc-800 rounded animate-pulse" />
+        <div className="h-8 w-48 rounded animate-pulse" style={{ backgroundColor: 'var(--surface-2)' }} />
         {[...Array(3)].map((_, i) => (
-          <div key={i} className="h-20 bg-zinc-800/50 rounded-xl animate-pulse" />
+          <div key={i} className="h-20 rounded-xl animate-pulse" style={{ backgroundColor: 'color-mix(in srgb, var(--surface-2) 50%, transparent)' }} />
         ))}
       </div>
     );
@@ -159,11 +164,11 @@ export default function DocumentsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Documents</h1>
-          <p className="text-zinc-500 text-sm mt-1">
+          <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>Documents</h1>
+          <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
             {docs.length} documents
             {flags.length > 0 && (
-              <span className="text-orange-400 ml-2">
+              <span style={{ color: 'var(--warning)', marginLeft: '0.5rem' }}>
                 {flags.length} open flag{flags.length !== 1 ? 's' : ''}
               </span>
             )}
@@ -173,22 +178,32 @@ export default function DocumentsPage() {
           {flags.length > 0 && (
             <button
               onClick={() => setShowFlags(!showFlags)}
-              className={`px-3 py-2 rounded-lg text-sm transition-colors flex items-center gap-2 ${
-                showFlags ? 'bg-orange-900/30 text-orange-400 border border-orange-800/40' : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-400'
-              }`}
+              className="px-3 py-2 rounded-lg text-sm transition-colors flex items-center gap-2"
+              style={showFlags
+                ? { backgroundColor: 'var(--warning-muted)', color: 'var(--warning)', border: '1px solid color-mix(in srgb, var(--warning) 30%, transparent)' }
+                : { backgroundColor: hoverStates['flagsBtn'] ? 'var(--surface-3)' : 'var(--surface-2)', color: 'var(--text-tertiary)', border: '1px solid transparent' }
+              }
+              onMouseEnter={() => setHover('flagsBtn', true)}
+              onMouseLeave={() => setHover('flagsBtn', false)}
             >
               <AlertTriangle className="w-3.5 h-3.5" /> {flags.length} Flags
             </button>
           )}
           <Link
             href="/documents/consistency"
-            className="px-3 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm transition-colors flex items-center gap-2"
+            className="px-3 py-2 rounded-lg text-sm transition-colors flex items-center gap-2"
+            style={{ backgroundColor: hoverStates['consBtn'] ? 'var(--surface-3)' : 'var(--surface-2)', color: 'var(--text-secondary)' }}
+            onMouseEnter={() => setHover('consBtn', true)}
+            onMouseLeave={() => setHover('consBtn', false)}
           >
             <ShieldCheck className="w-3.5 h-3.5" /> Consistency
           </Link>
           <Link
             href="/documents/new"
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+            className="px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+            style={{ backgroundColor: 'var(--accent)', color: 'var(--surface-0)', opacity: hoverStates['newBtn'] ? 0.85 : 1 }}
+            onMouseEnter={() => setHover('newBtn', true)}
+            onMouseLeave={() => setHover('newBtn', false)}
           >
           <Plus className="w-4 h-4" /> New Document
         </Link>
@@ -197,29 +212,32 @@ export default function DocumentsPage() {
 
       {/* Document Flags Banner */}
       {showFlags && flags.length > 0 && (
-        <div className="border border-orange-800/30 bg-orange-900/10 rounded-xl p-4 space-y-3">
-          <h3 className="text-sm font-medium text-orange-400 flex items-center gap-2">
+        <div className="rounded-xl p-4 space-y-3" style={{ border: '1px solid color-mix(in srgb, var(--warning) 20%, transparent)', backgroundColor: 'color-mix(in srgb, var(--warning) 5%, transparent)' }}>
+          <h3 className="text-sm font-medium flex items-center gap-2" style={{ color: 'var(--warning)' }}>
             <AlertTriangle className="w-4 h-4" />
             Open Document Flags from Meetings
           </h3>
           <div className="space-y-2 max-h-64 overflow-y-auto">
             {flags.map(flag => (
-              <div key={flag.id} className="flex items-start gap-3 bg-zinc-900/50 rounded-lg p-3 border border-zinc-800">
+              <div key={flag.id} className="flex items-start gap-3 rounded-lg p-3" style={{ backgroundColor: 'color-mix(in srgb, var(--surface-1) 50%, transparent)', border: '1px solid var(--border-subtle)' }}>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${FLAG_TYPE_STYLES[flag.flag_type] || 'bg-zinc-800 text-zinc-400'}`}>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded font-medium" style={FLAG_TYPE_STYLE_MAP[flag.flag_type] || DEFAULT_FLAG_STYLE}>
                       {FLAG_TYPE_LABELS[flag.flag_type] || flag.flag_type}
                     </span>
-                    <span className="text-xs text-zinc-500">from {flag.investor_name}</span>
-                    <span className="text-xs text-zinc-600">{new Date(flag.created_at).toLocaleDateString()}</span>
+                    <span className="text-xs" style={{ color: 'var(--text-muted)' }}>from {flag.investor_name}</span>
+                    <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{new Date(flag.created_at).toLocaleDateString()}</span>
                   </div>
-                  <p className="text-xs text-zinc-400 line-clamp-2">{flag.description}</p>
+                  <p className="text-xs line-clamp-2" style={{ color: 'var(--text-tertiary)' }}>{flag.description}</p>
                   <div className="flex items-center gap-2 mt-1.5">
-                    <span className="text-[11px] text-zinc-600">Section: {flag.section_hint}</span>
+                    <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Section: {flag.section_hint}</span>
                     {flag.document_id && (
                       <Link
                         href={`/documents/${flag.document_id}`}
-                        className="text-[11px] text-blue-500 hover:text-blue-400 underline"
+                        className="text-[11px] underline"
+                        style={{ color: 'var(--accent)' }}
+                        onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.8'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}
                       >
                         Open document
                       </Link>
@@ -229,15 +247,21 @@ export default function DocumentsPage() {
                 <div className="flex gap-1 shrink-0">
                   <button
                     onClick={() => handleFlagAction(flag.id, 'addressed')}
-                    className="p-1.5 rounded-md hover:bg-green-900/30 text-zinc-500 hover:text-green-400 transition-colors"
+                    className="p-1.5 rounded-md transition-colors"
                     title="Mark as addressed"
+                    style={{ color: hoverStates[`addr-${flag.id}`] ? 'var(--success)' : 'var(--text-muted)', backgroundColor: hoverStates[`addr-${flag.id}`] ? 'var(--success-muted)' : 'transparent' }}
+                    onMouseEnter={() => setHover(`addr-${flag.id}`, true)}
+                    onMouseLeave={() => setHover(`addr-${flag.id}`, false)}
                   >
                     <CheckCircle2 className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => handleFlagAction(flag.id, 'dismissed')}
-                    className="p-1.5 rounded-md hover:bg-red-900/30 text-zinc-500 hover:text-red-400 transition-colors"
+                    className="p-1.5 rounded-md transition-colors"
                     title="Dismiss"
+                    style={{ color: hoverStates[`dism-${flag.id}`] ? 'var(--danger)' : 'var(--text-muted)', backgroundColor: hoverStates[`dism-${flag.id}`] ? 'color-mix(in srgb, var(--danger) 20%, transparent)' : 'transparent' }}
+                    onMouseEnter={() => setHover(`dism-${flag.id}`, true)}
+                    onMouseLeave={() => setHover(`dism-${flag.id}`, false)}
                   >
                     <XCircle className="w-4 h-4" />
                   </button>
@@ -249,10 +273,16 @@ export default function DocumentsPage() {
       )}
 
       {docs.length === 0 ? (
-        <div className="border border-zinc-800 rounded-xl p-8 text-center space-y-3">
-          <FileText className="w-8 h-8 text-zinc-600 mx-auto" />
-          <p className="text-zinc-500">No documents yet.</p>
-          <Link href="/documents/new" className="text-blue-400 hover:text-blue-300 text-sm">
+        <div className="rounded-xl p-8 text-center space-y-3" style={{ border: '1px solid var(--border-subtle)' }}>
+          <FileText className="w-8 h-8 mx-auto" style={{ color: 'var(--text-muted)' }} />
+          <p style={{ color: 'var(--text-muted)' }}>No documents yet.</p>
+          <Link
+            href="/documents/new"
+            className="text-sm"
+            style={{ color: 'var(--accent)' }}
+            onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.8'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}
+          >
             Create your first document
           </Link>
         </div>
@@ -260,29 +290,39 @@ export default function DocumentsPage() {
         <div className="space-y-8">
           {Object.entries(grouped).map(([type, typeDocs]) => (
             <div key={type}>
-              <h2 className="text-xs font-medium text-zinc-400 mb-3 uppercase">
+              <h2 className="text-xs font-medium mb-3 uppercase" style={{ color: 'var(--text-tertiary)' }}>
                 {TYPE_LABELS[type] || type} ({typeDocs.length})
               </h2>
               <div className="space-y-2">
                 {typeDocs.map(doc => {
                   const docFlags = flagsByDoc[doc.id] || [];
+                  const docKey = `doc-${doc.id}`;
                   return (
-                    <div key={doc.id} className={`border rounded-xl p-4 hover:border-zinc-700 transition-colors flex items-center justify-between ${
-                      docFlags.length > 0 ? 'border-orange-800/30 bg-orange-900/5' : 'border-zinc-800'
-                    }`}>
+                    <div
+                      key={doc.id}
+                      className="rounded-xl p-4 transition-colors flex items-center justify-between"
+                      style={{
+                        border: docFlags.length > 0
+                          ? '1px solid color-mix(in srgb, var(--warning) 20%, transparent)'
+                          : `1px solid ${hoverStates[docKey] ? 'var(--border-default)' : 'var(--border-subtle)'}`,
+                        backgroundColor: docFlags.length > 0 ? 'color-mix(in srgb, var(--warning) 3%, transparent)' : 'transparent',
+                      }}
+                      onMouseEnter={() => setHover(docKey, true)}
+                      onMouseLeave={() => setHover(docKey, false)}
+                    >
                       <Link href={`/documents/${doc.id}`} className="flex-1 min-w-0">
                         <div className="flex items-center gap-3">
-                          <Edit3 className="w-4 h-4 text-zinc-500 shrink-0" />
+                          <Edit3 className="w-4 h-4 shrink-0" style={{ color: 'var(--text-muted)' }} />
                           <div className="min-w-0">
                             <div className="flex items-center gap-2">
-                              <h3 className="font-medium truncate">{doc.title}</h3>
+                              <h3 className="font-medium truncate" style={{ color: 'var(--text-primary)' }}>{doc.title}</h3>
                               {docFlags.length > 0 && (
-                                <span className="text-[10px] px-1.5 py-0.5 rounded bg-orange-900/30 text-orange-400 font-medium shrink-0">
+                                <span className="text-[10px] px-1.5 py-0.5 rounded font-medium shrink-0" style={{ backgroundColor: 'var(--warning-muted)', color: 'var(--warning)' }}>
                                   {docFlags.length} flag{docFlags.length !== 1 ? 's' : ''}
                                 </span>
                               )}
                             </div>
-                            <div className="flex items-center gap-3 text-xs text-zinc-500 mt-0.5">
+                            <div className="flex items-center gap-3 text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
                               <span className="flex items-center gap-1">
                                 <Clock className="w-3 h-3" />
                                 {new Date(doc.updated_at).toLocaleDateString()}
@@ -293,19 +333,25 @@ export default function DocumentsPage() {
                         </div>
                       </Link>
                       <div className="flex items-center gap-2 shrink-0 ml-4">
-                        <span className={`text-xs px-2 py-0.5 rounded ${STATUS_COLORS[doc.status] || 'bg-zinc-800 text-zinc-500'}`}>
+                        <span className="text-xs px-2 py-0.5 rounded" style={STATUS_STYLES[doc.status] || { backgroundColor: 'var(--surface-2)', color: 'var(--text-muted)' }}>
                           {doc.status}
                         </span>
                         <button
                           onClick={() => downloadDoc(doc)}
-                          className="text-zinc-600 hover:text-zinc-300 p-1 rounded hover:bg-zinc-800 transition-colors"
+                          className="p-1 rounded transition-colors"
                           title="Download as Markdown"
+                          style={{ color: hoverStates[`dl-${doc.id}`] ? 'var(--text-secondary)' : 'var(--text-muted)', backgroundColor: hoverStates[`dl-${doc.id}`] ? 'var(--surface-2)' : 'transparent' }}
+                          onMouseEnter={() => setHover(`dl-${doc.id}`, true)}
+                          onMouseLeave={() => setHover(`dl-${doc.id}`, false)}
                         >
                           <Download className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={() => setDeleteTarget({ id: doc.id, title: doc.title })}
-                          className="text-xs text-zinc-600 hover:text-red-400 px-2 py-1 rounded hover:bg-zinc-800"
+                          className="text-xs px-2 py-1 rounded"
+                          style={{ color: hoverStates[`del-${doc.id}`] ? 'var(--danger)' : 'var(--text-muted)', backgroundColor: hoverStates[`del-${doc.id}`] ? 'var(--surface-2)' : 'transparent' }}
+                          onMouseEnter={() => setHover(`del-${doc.id}`, true)}
+                          onMouseLeave={() => setHover(`del-${doc.id}`, false)}
                         >
                           Del
                         </button>
@@ -320,36 +366,42 @@ export default function DocumentsPage() {
           {/* General flags (not tied to a specific document) */}
           {showFlags && generalFlags.length > 0 && (
             <div>
-              <h2 className="text-xs font-medium text-orange-400 mb-3 uppercase flex items-center gap-2">
+              <h2 className="text-xs font-medium mb-3 uppercase flex items-center gap-2" style={{ color: 'var(--warning)' }}>
                 <AlertTriangle className="w-3 h-3" /> Unmatched Flags ({generalFlags.length})
               </h2>
-              <p className="text-xs text-zinc-500 mb-3">
+              <p className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>
                 These flags were generated from meeting objections but no matching document type was found. Consider creating content to address them.
               </p>
               <div className="space-y-2">
                 {generalFlags.map(flag => (
-                  <div key={flag.id} className="border border-orange-800/20 rounded-lg p-3 bg-zinc-900/50 flex items-start justify-between gap-3">
+                  <div key={flag.id} className="rounded-lg p-3 flex items-start justify-between gap-3" style={{ border: '1px solid color-mix(in srgb, var(--warning) 15%, transparent)', backgroundColor: 'color-mix(in srgb, var(--surface-1) 50%, transparent)' }}>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${FLAG_TYPE_STYLES[flag.flag_type] || 'bg-zinc-800 text-zinc-400'}`}>
+                        <span className="text-[10px] px-1.5 py-0.5 rounded font-medium" style={FLAG_TYPE_STYLE_MAP[flag.flag_type] || DEFAULT_FLAG_STYLE}>
                           {FLAG_TYPE_LABELS[flag.flag_type] || flag.flag_type}
                         </span>
-                        <span className="text-xs text-zinc-500">from {flag.investor_name}</span>
+                        <span className="text-xs" style={{ color: 'var(--text-muted)' }}>from {flag.investor_name}</span>
                       </div>
-                      <p className="text-xs text-zinc-400">{flag.description}</p>
+                      <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>{flag.description}</p>
                     </div>
                     <div className="flex gap-1 shrink-0">
                       <button
                         onClick={() => handleFlagAction(flag.id, 'addressed')}
-                        className="p-1.5 rounded-md hover:bg-green-900/30 text-zinc-500 hover:text-green-400 transition-colors"
+                        className="p-1.5 rounded-md transition-colors"
                         title="Mark as addressed"
+                        style={{ color: hoverStates[`gaddr-${flag.id}`] ? 'var(--success)' : 'var(--text-muted)', backgroundColor: hoverStates[`gaddr-${flag.id}`] ? 'var(--success-muted)' : 'transparent' }}
+                        onMouseEnter={() => setHover(`gaddr-${flag.id}`, true)}
+                        onMouseLeave={() => setHover(`gaddr-${flag.id}`, false)}
                       >
                         <CheckCircle2 className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => handleFlagAction(flag.id, 'dismissed')}
-                        className="p-1.5 rounded-md hover:bg-red-900/30 text-zinc-500 hover:text-red-400 transition-colors"
+                        className="p-1.5 rounded-md transition-colors"
                         title="Dismiss"
+                        style={{ color: hoverStates[`gdism-${flag.id}`] ? 'var(--danger)' : 'var(--text-muted)', backgroundColor: hoverStates[`gdism-${flag.id}`] ? 'color-mix(in srgb, var(--danger) 20%, transparent)' : 'transparent' }}
+                        onMouseEnter={() => setHover(`gdism-${flag.id}`, true)}
+                        onMouseLeave={() => setHover(`gdism-${flag.id}`, false)}
                       >
                         <XCircle className="w-4 h-4" />
                       </button>

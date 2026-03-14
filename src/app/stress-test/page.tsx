@@ -106,26 +106,26 @@ function formatEuro(n: number): string {
   return `${Math.round(n)}M`;
 }
 
-function probColor(p: number): string {
-  if (p >= 60) return 'text-green-400';
-  if (p >= 30) return 'text-yellow-400';
-  return 'text-red-400';
+function probColorStyle(p: number): React.CSSProperties {
+  if (p >= 60) return { color: 'var(--success)' };
+  if (p >= 30) return { color: 'var(--warning)' };
+  return { color: 'var(--danger)' };
 }
 
-function probBg(p: number): string {
-  if (p >= 60) return 'bg-green-500';
-  if (p >= 30) return 'bg-yellow-500';
-  return 'bg-red-500';
+function probBgStyle(p: number): React.CSSProperties {
+  if (p >= 60) return { background: 'var(--success)' };
+  if (p >= 30) return { background: 'var(--warning)' };
+  return { background: 'var(--danger)' };
 }
 
-function tierBadge(tier: number): string {
-  const colors: Record<number, string> = {
-    1: 'text-amber-400 bg-amber-400/10 border-amber-700/30',
-    2: 'text-blue-400 bg-blue-400/10 border-blue-700/30',
-    3: 'text-zinc-400 bg-zinc-400/10 border-zinc-700/30',
-    4: 'text-zinc-600 bg-zinc-600/10 border-zinc-700/30',
+function tierBadgeStyle(tier: number): React.CSSProperties {
+  const styles: Record<number, React.CSSProperties> = {
+    1: { color: 'var(--warning)', background: 'var(--warning-muted)', borderColor: 'rgba(245, 158, 11, 0.3)' },
+    2: { color: 'var(--accent)', background: 'var(--accent-muted)', borderColor: 'rgba(59, 130, 246, 0.3)' },
+    3: { color: 'var(--text-secondary)', background: 'rgba(113, 113, 122, 0.1)', borderColor: 'var(--border-subtle)' },
+    4: { color: 'var(--text-muted)', background: 'rgba(82, 82, 91, 0.1)', borderColor: 'var(--border-subtle)' },
   };
-  return colors[tier] ?? colors[3];
+  return styles[tier] ?? styles[3];
 }
 
 // ---------------------------------------------------------------------------
@@ -139,6 +139,13 @@ export default function StressTestPage() {
   const [refreshing, setRefreshing] = useState(false);
   const [expandedRisks, setExpandedRisks] = useState<number[]>([]);
   const [showAllInvestors, setShowAllInvestors] = useState(false);
+  const [hoveredRow, setHoveredRow] = useState<string | null>(null);
+  const [hoveredRisk, setHoveredRisk] = useState<number | null>(null);
+  const [hoveredGap, setHoveredGap] = useState<string | null>(null);
+  const [hoveredCritical, setHoveredCritical] = useState<number | null>(null);
+  const [refreshHover, setRefreshHover] = useState(false);
+  const [retryHover, setRetryHover] = useState(false);
+  const [showAllHover, setShowAllHover] = useState(false);
 
   const fetchData = useCallback(async (silent = false) => {
     if (!silent) setLoading(true);
@@ -165,14 +172,14 @@ export default function StressTestPage() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="h-8 w-64 bg-zinc-800 rounded animate-pulse" />
-        <div className="h-24 bg-zinc-800/50 rounded-xl animate-pulse" />
+        <div className="h-8 w-64 rounded animate-pulse" style={{ background: 'var(--surface-2)' }} />
+        <div className="h-24 rounded-xl animate-pulse" style={{ background: 'var(--surface-2)' }} />
         <div className="grid grid-cols-3 gap-4">
           {[...Array(3)].map((_, i) => (
-            <div key={i} className="h-28 bg-zinc-800/50 rounded-xl animate-pulse" />
+            <div key={i} className="h-28 rounded-xl animate-pulse" style={{ background: 'var(--surface-2)' }} />
           ))}
         </div>
-        <div className="h-64 bg-zinc-800/50 rounded-xl animate-pulse" />
+        <div className="h-64 rounded-xl animate-pulse" style={{ background: 'var(--surface-2)' }} />
       </div>
     );
   }
@@ -180,10 +187,19 @@ export default function StressTestPage() {
   if (!data) {
     return (
       <div className="space-y-8">
-        <h1 className="text-2xl font-bold tracking-tight">Process Stress Test</h1>
-        <div className="border border-red-800/30 bg-red-900/10 rounded-xl p-8 text-center space-y-3">
-          <p className="text-zinc-400">Could not load stress test data.</p>
-          <button onClick={() => fetchData()} className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm transition-colors">
+        <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>Process Stress Test</h1>
+        <div className="rounded-xl p-8 text-center space-y-3" style={{ border: '1px solid var(--danger-muted)', background: 'var(--danger-muted)' }}>
+          <p style={{ color: 'var(--text-secondary)' }}>Could not load stress test data.</p>
+          <button
+            onClick={() => fetchData()}
+            onMouseEnter={() => setRetryHover(true)}
+            onMouseLeave={() => setRetryHover(false)}
+            className="px-4 py-2 rounded-lg text-sm transition-colors"
+            style={{
+              background: retryHover ? 'var(--surface-3)' : 'var(--surface-2)',
+              color: 'var(--text-secondary)',
+            }}
+          >
             Retry
           </button>
         </div>
@@ -195,20 +211,20 @@ export default function StressTestPage() {
     ? data.investorForecasts
     : data.investorForecasts.slice(0, 15);
 
-  const bannerColors = {
-    green: 'border-green-800/50 bg-green-900/10',
-    yellow: 'border-yellow-800/50 bg-yellow-900/10',
-    red: 'border-red-800/50 bg-red-900/10',
+  const bannerStyles: Record<string, React.CSSProperties> = {
+    green: { borderColor: 'rgba(34, 197, 94, 0.3)', background: 'var(--success-muted)' },
+    yellow: { borderColor: 'rgba(245, 158, 11, 0.3)', background: 'var(--warning-muted)' },
+    red: { borderColor: 'rgba(239, 68, 68, 0.3)', background: 'var(--danger-muted)' },
   };
-  const bannerTextColors = {
-    green: 'text-green-400',
-    yellow: 'text-yellow-400',
-    red: 'text-red-400',
+  const bannerTextStyles: Record<string, React.CSSProperties> = {
+    green: { color: 'var(--success)' },
+    yellow: { color: 'var(--warning)' },
+    red: { color: 'var(--danger)' },
   };
   const bannerIcon = {
-    green: <CheckCircle2 className="w-5 h-5 text-green-400 shrink-0" />,
-    yellow: <AlertTriangle className="w-5 h-5 text-yellow-400 shrink-0" />,
-    red: <ShieldAlert className="w-5 h-5 text-red-400 shrink-0" />,
+    green: <CheckCircle2 className="w-5 h-5 shrink-0" style={{ color: 'var(--success)' }} />,
+    yellow: <AlertTriangle className="w-5 h-5 shrink-0" style={{ color: 'var(--warning)' }} />,
+    red: <ShieldAlert className="w-5 h-5 shrink-0" style={{ color: 'var(--danger)' }} />,
   };
 
   return (
@@ -218,15 +234,21 @@ export default function StressTestPage() {
       {/* ================================================================ */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Process Stress Test</h1>
-          <p className="text-zinc-500 text-sm mt-1">
+          <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>Process Stress Test</h1>
+          <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
             Probabilistic close forecast --- {data.companyName} Series C
           </p>
         </div>
         <button
           onClick={() => fetchData(true)}
           disabled={refreshing}
-          className="flex items-center gap-1.5 px-3 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-xs transition-colors disabled:opacity-50"
+          onMouseEnter={() => setRefreshHover(true)}
+          onMouseLeave={() => setRefreshHover(false)}
+          className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs transition-colors disabled:opacity-50"
+          style={{
+            background: refreshHover && !refreshing ? 'var(--surface-3)' : 'var(--surface-2)',
+            color: 'var(--text-secondary)',
+          }}
         >
           <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
           {refreshing ? 'Refreshing...' : 'Refresh'}
@@ -236,19 +258,22 @@ export default function StressTestPage() {
       {/* ================================================================ */}
       {/* HEALTH BANNER                                                    */}
       {/* ================================================================ */}
-      <div className={`border ${bannerColors[data.healthStatus]} rounded-xl p-5 flex items-start gap-4`}>
+      <div
+        className="rounded-xl p-5 flex items-start gap-4"
+        style={{ border: '1px solid', ...bannerStyles[data.healthStatus] }}
+      >
         {bannerIcon[data.healthStatus]}
         <div className="flex-1">
-          <div className={`text-lg font-semibold ${bannerTextColors[data.healthStatus]}`}>
+          <div className="text-lg font-semibold" style={bannerTextStyles[data.healthStatus]}>
             {data.healthMessage}
           </div>
-          <div className="flex items-center gap-4 mt-2 text-sm text-zinc-400">
-            <span>Target: <strong className="text-white">EUR {formatEuro(data.target)}</strong></span>
+          <div className="flex items-center gap-4 mt-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
+            <span>Target: <strong style={{ color: 'var(--text-primary)' }}>EUR {formatEuro(data.target)}</strong></span>
             {data.targetCloseDate && (
-              <span>Deadline: <strong className="text-white">{data.targetCloseDate}</strong></span>
+              <span>Deadline: <strong style={{ color: 'var(--text-primary)' }}>{data.targetCloseDate}</strong></span>
             )}
             {data.estimatedCloseDate && (
-              <span>Est. close: <strong className={data.onTrack ? 'text-green-400' : 'text-yellow-400'}>
+              <span>Est. close: <strong style={{ color: data.onTrack ? 'var(--success)' : 'var(--warning)' }}>
                 {data.estimatedCloseDate}
               </strong></span>
             )}
@@ -261,16 +286,16 @@ export default function StressTestPage() {
       {/* ================================================================ */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {/* Close Probability Gauge */}
-        <div className="border border-zinc-800 rounded-xl p-5 flex flex-col items-center justify-center">
-          <div className="text-[10px] text-zinc-500 uppercase tracking-wider mb-2">Close Probability</div>
-          <div className={`text-5xl font-bold tabular-nums ${probColor(data.closeProbability)}`}>
+        <div className="card rounded-xl p-5 flex flex-col items-center justify-center">
+          <div className="uppercase tracking-wider" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Close Probability</div>
+          <div className="text-5xl font-bold tabular-nums" style={{ ...probColorStyle(data.closeProbability), marginTop: '0.5rem' }}>
             {data.closeProbability}%
           </div>
-          <div className="text-xs text-zinc-500 mt-1">of hitting EUR {formatEuro(data.target)}</div>
-          <div className="w-full h-2 bg-zinc-800 rounded-full mt-3 overflow-hidden">
+          <div className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>of hitting EUR {formatEuro(data.target)}</div>
+          <div className="w-full h-2 rounded-full mt-3 overflow-hidden" style={{ background: 'var(--surface-2)' }}>
             <div
-              className={`h-full rounded-full transition-all duration-700 ${probBg(data.closeProbability)}`}
-              style={{ width: `${Math.min(100, data.closeProbability)}%` }}
+              className="h-full rounded-full transition-all duration-700"
+              style={{ ...probBgStyle(data.closeProbability), width: `${Math.min(100, data.closeProbability)}%` }}
             />
           </div>
         </div>
@@ -305,45 +330,63 @@ export default function StressTestPage() {
       {/* GAP ANALYSIS (if shortfall)                                      */}
       {/* ================================================================ */}
       {data.shortfall && data.shortfall > 0 && data.gapInvestors.length > 0 && (
-        <div className="border-2 border-red-800/40 bg-red-900/5 rounded-xl p-5">
+        <div
+          className="rounded-xl p-5"
+          style={{ border: '2px solid rgba(239, 68, 68, 0.25)', background: 'rgba(239, 68, 68, 0.04)' }}
+        >
           <div className="flex items-center gap-2 mb-4">
-            <Target className="w-5 h-5 text-red-400" />
-            <h2 className="text-sm font-semibold text-red-400 uppercase">
+            <Target className="w-5 h-5" style={{ color: 'var(--danger)' }} />
+            <h2 className="text-sm font-semibold uppercase" style={{ color: 'var(--danger)' }}>
               Gap Analysis --- EUR {formatEuro(data.shortfall)} Shortfall
             </h2>
           </div>
-          <p className="text-sm text-zinc-400 mb-4">
+          <p className="text-sm mb-4" style={{ color: 'var(--text-secondary)' }}>
             Top investors to accelerate to close the gap:
           </p>
           <div className="space-y-2">
             {data.gapInvestors.slice(0, 5).map((gap, i) => (
-              <div key={gap.id} className="flex items-start gap-3 py-3 px-4 bg-zinc-900/50 rounded-lg border border-zinc-800">
-                <span className="w-6 h-6 rounded bg-red-600/20 text-red-400 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
+              <div
+                key={gap.id}
+                className="flex items-start gap-3 py-3 px-4 rounded-lg"
+                style={{
+                  background: hoveredGap === gap.id ? 'var(--surface-2)' : 'var(--surface-1)',
+                  border: '1px solid var(--border-subtle)',
+                }}
+                onMouseEnter={() => setHoveredGap(gap.id)}
+                onMouseLeave={() => setHoveredGap(null)}
+              >
+                <span
+                  className="w-6 h-6 rounded flex items-center justify-center text-xs font-bold shrink-0 mt-0.5"
+                  style={{ background: 'var(--danger-muted)', color: 'var(--danger)' }}
+                >
                   {i + 1}
                 </span>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <Link href={`/investors/${gap.id}`} className="text-sm font-medium hover:text-blue-400 transition-colors">
+                    <Link href={`/investors/${gap.id}`} className="text-sm font-medium transition-colors" style={{ color: 'var(--text-primary)' }}>
                       {gap.name}
                     </Link>
-                    <span className={`text-[9px] px-1.5 py-0.5 rounded border ${tierBadge(gap.tier)}`}>
+                    <span
+                      className="px-1.5 py-0.5 rounded"
+                      style={{ fontSize: '9px', border: '1px solid', ...tierBadgeStyle(gap.tier) }}
+                    >
                       T{gap.tier}
                     </span>
-                    <span className="text-[10px] text-zinc-500">{STATUS_LABELS[gap.status] || gap.status}</span>
+                    <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{STATUS_LABELS[gap.status] || gap.status}</span>
                   </div>
-                  <p className="text-xs text-zinc-400 mt-1">{gap.intervention}</p>
-                  <div className="flex items-center gap-3 mt-1.5 text-[10px] text-zinc-500">
+                  <p className="text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>{gap.intervention}</p>
+                  <div className="flex items-center gap-3 mt-1.5" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
                     <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {gap.timeCost}</span>
                     <span>Current: EUR {Math.round(gap.currentExpected)}M</span>
-                    <span className="text-green-400">+EUR {Math.round(gap.impactDelta)}M if accelerated</span>
+                    <span style={{ color: 'var(--success)' }}>+EUR {Math.round(gap.impactDelta)}M if accelerated</span>
                   </div>
                 </div>
                 <div className="text-right shrink-0">
-                  <div className="text-lg font-bold text-green-400 tabular-nums flex items-center gap-1">
+                  <div className="text-lg font-bold tabular-nums flex items-center gap-1" style={{ color: 'var(--success)' }}>
                     <ArrowUpRight className="w-4 h-4" />
                     {Math.round(gap.impactDelta)}M
                   </div>
-                  <div className="text-[10px] text-zinc-500">potential lift</div>
+                  <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>potential lift</div>
                 </div>
               </div>
             ))}
@@ -354,25 +397,25 @@ export default function StressTestPage() {
       {/* ================================================================ */}
       {/* INVESTOR PROBABILITY TABLE                                       */}
       {/* ================================================================ */}
-      <div className="border border-zinc-800 rounded-xl overflow-hidden">
-        <div className="p-5 border-b border-zinc-800 flex items-center justify-between">
-          <h2 className="text-sm font-medium text-zinc-400 uppercase flex items-center gap-2">
+      <div className="card rounded-xl overflow-hidden" style={{ padding: 0 }}>
+        <div className="p-5 flex items-center justify-between" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+          <h2 className="text-sm font-medium uppercase flex items-center gap-2" style={{ color: 'var(--text-secondary)' }}>
             <TrendingUp className="w-4 h-4" /> Investor Probability Table
           </h2>
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 text-[10px] text-zinc-500">
-              <span className="w-2 h-2 rounded-full bg-green-500" /> &gt;60%
-              <span className="w-2 h-2 rounded-full bg-yellow-500 ml-2" /> 30-60%
-              <span className="w-2 h-2 rounded-full bg-red-500 ml-2" /> &lt;30%
+            <div className="flex items-center gap-2" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+              <span className="w-2 h-2 rounded-full" style={{ background: 'var(--success)' }} /> &gt;60%
+              <span className="w-2 h-2 rounded-full ml-2" style={{ background: 'var(--warning)' }} /> 30-60%
+              <span className="w-2 h-2 rounded-full ml-2" style={{ background: 'var(--danger)' }} /> &lt;30%
             </div>
-            <span className="text-xs text-zinc-500">{data.investorForecasts.length} investors</span>
+            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{data.investorForecasts.length} investors</span>
           </div>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-[10px] text-zinc-500 uppercase border-b border-zinc-800">
+              <tr className="text-left uppercase" style={{ fontSize: '10px', color: 'var(--text-muted)', borderBottom: '1px solid var(--border-subtle)' }}>
                 <th className="px-4 py-3">Investor</th>
                 <th className="px-3 py-3">Status</th>
                 <th className="px-3 py-3 text-center">Enth.</th>
@@ -386,69 +429,89 @@ export default function StressTestPage() {
             </thead>
             <tbody>
               {visibleInvestors.map((f) => {
-                const rowBorder = f.closeProbability >= 60
-                  ? 'border-l-2 border-l-green-500'
+                const borderLeftColor = f.closeProbability >= 60
+                  ? 'var(--success)'
                   : f.closeProbability >= 30
-                  ? 'border-l-2 border-l-yellow-500'
-                  : 'border-l-2 border-l-red-500';
+                  ? 'var(--warning)'
+                  : 'var(--danger)';
                 const MomentumIcon = f.momentum === 'accelerating' ? TrendingUp
                   : f.momentum === 'decelerating' ? TrendingDown
                   : null;
-                const momentumColor = f.momentum === 'accelerating' ? 'text-green-400'
-                  : f.momentum === 'decelerating' ? 'text-orange-400'
-                  : f.momentum === 'stalled' ? 'text-red-400'
-                  : 'text-zinc-500';
+                const momentumStyle: React.CSSProperties = f.momentum === 'accelerating'
+                  ? { color: 'var(--success)' }
+                  : f.momentum === 'decelerating'
+                  ? { color: 'var(--warning)' }
+                  : f.momentum === 'stalled'
+                  ? { color: 'var(--danger)' }
+                  : { color: 'var(--text-muted)' };
+
+                const enthStyle: React.CSSProperties = f.enthusiasm >= 4
+                  ? { color: 'var(--success)' }
+                  : f.enthusiasm >= 3
+                  ? { color: 'var(--warning)' }
+                  : { color: 'var(--danger)' };
 
                 return (
-                  <tr key={f.id} className={`${rowBorder} border-b border-zinc-800/50 hover:bg-zinc-800/30 transition-colors`}>
+                  <tr
+                    key={f.id}
+                    className="transition-colors"
+                    style={{
+                      borderLeft: `2px solid ${borderLeftColor}`,
+                      borderBottom: '1px solid var(--border-subtle)',
+                      background: hoveredRow === f.id ? 'var(--surface-2)' : 'transparent',
+                    }}
+                    onMouseEnter={() => setHoveredRow(f.id)}
+                    onMouseLeave={() => setHoveredRow(null)}
+                  >
                     <td className="px-4 py-2.5">
                       <div className="flex items-center gap-2">
-                        <Link href={`/investors/${f.id}`} className="font-medium hover:text-blue-400 transition-colors truncate max-w-[180px]">
+                        <Link href={`/investors/${f.id}`} className="font-medium transition-colors truncate max-w-[180px]" style={{ color: 'var(--text-primary)' }}>
                           {f.name}
                         </Link>
-                        <span className={`text-[9px] px-1 py-0.5 rounded border ${tierBadge(f.tier)}`}>
+                        <span
+                          className="px-1 py-0.5 rounded"
+                          style={{ fontSize: '9px', border: '1px solid', ...tierBadgeStyle(f.tier) }}
+                        >
                           T{f.tier}
                         </span>
                       </div>
                     </td>
                     <td className="px-3 py-2.5">
-                      <span className="text-xs text-zinc-400">{STATUS_LABELS[f.status] || f.status}</span>
+                      <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>{STATUS_LABELS[f.status] || f.status}</span>
                     </td>
                     <td className="px-3 py-2.5 text-center">
                       {f.enthusiasm > 0 ? (
-                        <span className={`text-xs font-medium tabular-nums ${
-                          f.enthusiasm >= 4 ? 'text-green-400' : f.enthusiasm >= 3 ? 'text-yellow-400' : 'text-red-400'
-                        }`}>{f.enthusiasm}/5</span>
+                        <span className="text-xs font-medium tabular-nums" style={enthStyle}>{f.enthusiasm}/5</span>
                       ) : (
-                        <span className="text-xs text-zinc-600">--</span>
+                        <span className="text-xs" style={{ color: 'var(--text-muted)' }}>--</span>
                       )}
                     </td>
                     <td className="px-3 py-2.5 text-center">
-                      <span className={`text-xs flex items-center justify-center gap-1 ${momentumColor}`}>
+                      <span className="text-xs flex items-center justify-center gap-1" style={momentumStyle}>
                         {MomentumIcon && <MomentumIcon className="w-3 h-3" />}
                         {f.momentum}
                       </span>
                     </td>
                     <td className="px-3 py-2.5 text-right">
-                      <span className="text-xs text-zinc-400 tabular-nums">{f.checkSizeRange || '--'}</span>
+                      <span className="text-xs tabular-nums" style={{ color: 'var(--text-secondary)' }}>{f.checkSizeRange || '--'}</span>
                     </td>
                     <td className="px-3 py-2.5 text-right">
-                      <span className={`text-sm font-bold tabular-nums ${probColor(f.closeProbability)}`}>
+                      <span className="text-sm font-bold tabular-nums" style={probColorStyle(f.closeProbability)}>
                         {f.closeProbability.toFixed(1)}%
                       </span>
                     </td>
                     <td className="px-3 py-2.5 text-right">
-                      <span className="text-sm font-semibold text-white tabular-nums">
+                      <span className="text-sm font-semibold tabular-nums" style={{ color: 'var(--text-primary)' }}>
                         {f.expectedValue > 0 ? `EUR ${f.expectedValue.toFixed(1)}M` : '--'}
                       </span>
                     </td>
                     <td className="px-3 py-2.5">
-                      <span className="text-xs text-zinc-400 tabular-nums">
+                      <span className="text-xs tabular-nums" style={{ color: 'var(--text-secondary)' }}>
                         {f.predictedCloseDate || '--'}
                       </span>
                     </td>
                     <td className="px-3 py-2.5">
-                      <span className="text-xs text-zinc-500 truncate max-w-[200px] block">
+                      <span className="text-xs truncate max-w-[200px] block" style={{ color: 'var(--text-muted)' }}>
                         {f.bottleneck}
                       </span>
                     </td>
@@ -460,10 +523,13 @@ export default function StressTestPage() {
         </div>
 
         {data.investorForecasts.length > 15 && (
-          <div className="p-3 text-center border-t border-zinc-800">
+          <div className="p-3 text-center" style={{ borderTop: '1px solid var(--border-subtle)' }}>
             <button
               onClick={() => setShowAllInvestors(!showAllInvestors)}
-              className="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1 mx-auto"
+              onMouseEnter={() => setShowAllHover(true)}
+              onMouseLeave={() => setShowAllHover(false)}
+              className="text-xs flex items-center gap-1 mx-auto"
+              style={{ color: showAllHover ? '#93bbfd' : 'var(--accent)' }}
             >
               {showAllInvestors ? (
                 <>Show less <ChevronUp className="w-3 h-3" /></>
@@ -480,46 +546,54 @@ export default function StressTestPage() {
       {/* ================================================================ */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Risks */}
-        <div className="border border-zinc-800 rounded-xl p-5">
-          <h2 className="text-sm font-medium text-zinc-400 uppercase flex items-center gap-2 mb-4">
+        <div className="card">
+          <h2 className="text-sm font-medium uppercase flex items-center gap-2 mb-4" style={{ color: 'var(--text-secondary)' }}>
             <AlertTriangle className="w-4 h-4" /> Risk Scenarios
           </h2>
           {data.risks.length === 0 ? (
-            <p className="text-sm text-zinc-600">No significant risks identified.</p>
+            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No significant risks identified.</p>
           ) : (
             <div className="space-y-2">
               {data.risks.map((risk, i) => {
                 const isExpanded = expandedRisks.includes(i);
-                const probColor = risk.probability === 'High' ? 'text-red-400 bg-red-400/10 border-red-700/30'
-                  : risk.probability === 'Medium' ? 'text-yellow-400 bg-yellow-400/10 border-yellow-700/30'
-                  : 'text-zinc-400 bg-zinc-400/10 border-zinc-700/30';
+                const riskBadgeStyle: React.CSSProperties = risk.probability === 'High'
+                  ? { color: 'var(--danger)', background: 'var(--danger-muted)', borderColor: 'rgba(239, 68, 68, 0.3)' }
+                  : risk.probability === 'Medium'
+                  ? { color: 'var(--warning)', background: 'var(--warning-muted)', borderColor: 'rgba(245, 158, 11, 0.3)' }
+                  : { color: 'var(--text-secondary)', background: 'rgba(113, 113, 122, 0.1)', borderColor: 'var(--border-subtle)' };
                 return (
-                  <div key={i} className="border border-zinc-800 rounded-lg overflow-hidden">
+                  <div key={i} className="rounded-lg overflow-hidden" style={{ border: '1px solid var(--border-subtle)' }}>
                     <button
                       onClick={() => setExpandedRisks(prev =>
                         prev.includes(i) ? prev.filter(x => x !== i) : [...prev, i]
                       )}
-                      className="w-full flex items-start gap-3 p-3 hover:bg-zinc-800/30 transition-colors text-left"
+                      onMouseEnter={() => setHoveredRisk(i)}
+                      onMouseLeave={() => setHoveredRisk(null)}
+                      className="w-full flex items-start gap-3 p-3 transition-colors text-left"
+                      style={{ background: hoveredRisk === i ? 'var(--surface-2)' : 'transparent' }}
                     >
-                      <span className={`text-[9px] px-1.5 py-0.5 rounded border shrink-0 mt-0.5 ${probColor}`}>
+                      <span
+                        className="px-1.5 py-0.5 rounded shrink-0 mt-0.5"
+                        style={{ fontSize: '9px', border: '1px solid', ...riskBadgeStyle }}
+                      >
                         {risk.probability}
                       </span>
-                      <span className="text-sm text-zinc-300 flex-1">{risk.description}</span>
+                      <span className="text-sm flex-1" style={{ color: 'var(--text-secondary)' }}>{risk.description}</span>
                       {isExpanded ? (
-                        <ChevronUp className="w-4 h-4 text-zinc-600 shrink-0" />
+                        <ChevronUp className="w-4 h-4 shrink-0" style={{ color: 'var(--text-muted)' }} />
                       ) : (
-                        <ChevronDown className="w-4 h-4 text-zinc-600 shrink-0" />
+                        <ChevronDown className="w-4 h-4 shrink-0" style={{ color: 'var(--text-muted)' }} />
                       )}
                     </button>
                     {isExpanded && (
-                      <div className="px-3 pb-3 space-y-2 border-t border-zinc-800/50 pt-2">
+                      <div className="px-3 pb-3 space-y-2 pt-2" style={{ borderTop: '1px solid var(--border-subtle)' }}>
                         <div>
-                          <span className="text-[10px] text-zinc-500 uppercase">Impact</span>
-                          <p className="text-xs text-zinc-400 mt-0.5">{risk.impact}</p>
+                          <span className="uppercase" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Impact</span>
+                          <p className="text-xs mt-0.5" style={{ color: 'var(--text-secondary)' }}>{risk.impact}</p>
                         </div>
                         <div>
-                          <span className="text-[10px] text-zinc-500 uppercase">Mitigation</span>
-                          <p className="text-xs text-zinc-400 mt-0.5">{risk.mitigation}</p>
+                          <span className="uppercase" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Mitigation</span>
+                          <p className="text-xs mt-0.5" style={{ color: 'var(--text-secondary)' }}>{risk.mitigation}</p>
                         </div>
                       </div>
                     )}
@@ -531,32 +605,43 @@ export default function StressTestPage() {
         </div>
 
         {/* Critical Path */}
-        <div className="border border-zinc-800 rounded-xl p-5">
-          <h2 className="text-sm font-medium text-zinc-400 uppercase flex items-center gap-2 mb-4">
+        <div className="card">
+          <h2 className="text-sm font-medium uppercase flex items-center gap-2 mb-4" style={{ color: 'var(--text-secondary)' }}>
             <Zap className="w-4 h-4" /> Critical Path
           </h2>
           <div className="mb-4">
-            <div className="text-xs text-zinc-500 mb-2">
+            <div className="text-xs mb-2" style={{ color: 'var(--text-muted)' }}>
               Minimum viable set to reach EUR {formatEuro(data.target)} target:
             </div>
             {data.criticalPath.minimumViableSet.length === 0 ? (
-              <p className="text-sm text-zinc-600">No investors with sufficient probability identified.</p>
+              <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No investors with sufficient probability identified.</p>
             ) : (
               <div className="space-y-1.5">
                 {data.criticalPath.minimumViableSet.map((name, i) => {
                   const investor = data.investorForecasts.find(f => f.name === name);
                   return (
-                    <div key={i} className="flex items-center gap-3 py-1.5 px-3 rounded-lg bg-zinc-800/30">
-                      <span className="w-5 h-5 rounded bg-blue-600/20 text-blue-400 flex items-center justify-center text-[10px] font-bold shrink-0">
+                    <div
+                      key={i}
+                      className="flex items-center gap-3 py-1.5 px-3 rounded-lg"
+                      style={{
+                        background: hoveredCritical === i ? 'var(--surface-3)' : 'var(--surface-2)',
+                      }}
+                      onMouseEnter={() => setHoveredCritical(i)}
+                      onMouseLeave={() => setHoveredCritical(null)}
+                    >
+                      <span
+                        className="w-5 h-5 rounded flex items-center justify-center font-bold shrink-0"
+                        style={{ fontSize: '10px', background: 'var(--accent-muted)', color: 'var(--accent)' }}
+                      >
                         {i + 1}
                       </span>
-                      <span className="text-sm text-zinc-300 flex-1 truncate">{name}</span>
+                      <span className="text-sm flex-1 truncate" style={{ color: 'var(--text-secondary)' }}>{name}</span>
                       {investor && (
                         <div className="flex items-center gap-2 shrink-0">
-                          <span className={`text-xs tabular-nums ${probColor(investor.closeProbability)}`}>
+                          <span className="text-xs tabular-nums" style={probColorStyle(investor.closeProbability)}>
                             {investor.closeProbability.toFixed(0)}%
                           </span>
-                          <span className="text-xs text-zinc-500 tabular-nums">
+                          <span className="text-xs tabular-nums" style={{ color: 'var(--text-muted)' }}>
                             EUR {Math.round(investor.expectedCheck)}M
                           </span>
                         </div>
@@ -567,16 +652,17 @@ export default function StressTestPage() {
               </div>
             )}
           </div>
-          <div className="border-t border-zinc-800 pt-3 flex items-center justify-between">
-            <span className="text-xs text-zinc-500">Total if all close:</span>
-            <span className={`text-lg font-bold tabular-nums ${
-              data.criticalPath.totalIfAllClose >= data.target ? 'text-green-400' : 'text-yellow-400'
-            }`}>
+          <div className="pt-3 flex items-center justify-between" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Total if all close:</span>
+            <span
+              className="text-lg font-bold tabular-nums"
+              style={{ color: data.criticalPath.totalIfAllClose >= data.target ? 'var(--success)' : 'var(--warning)' }}
+            >
               EUR {formatEuro(data.criticalPath.totalIfAllClose)}
             </span>
           </div>
           {data.criticalPath.totalIfAllClose < data.target && (
-            <div className="mt-2 text-xs text-red-400 bg-red-900/10 border border-red-800/30 rounded-lg p-2.5">
+            <div className="mt-2 text-xs rounded-lg p-2.5" style={{ color: 'var(--danger)', background: 'var(--danger-muted)', border: '1px solid rgba(239, 68, 68, 0.3)' }}>
               Even the minimum viable set falls short. Need to add more investors or increase check sizes.
             </div>
           )}
@@ -586,7 +672,7 @@ export default function StressTestPage() {
       {/* ================================================================ */}
       {/* SUMMARY BAR                                                      */}
       {/* ================================================================ */}
-      <div className="border border-zinc-800 rounded-xl p-5">
+      <div className="card">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <SummaryCard label="Active Investors" value={data.summary.totalActive} />
           <SummaryCard label="Avg Close Prob." value={`${data.summary.avgCloseProbability}%`} />
@@ -601,39 +687,39 @@ export default function StressTestPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Monte Carlo Confidence Intervals */}
         {data.monteCarlo && (
-          <div className="border border-zinc-800 rounded-xl p-5">
-            <h2 className="text-sm font-medium text-zinc-400 uppercase flex items-center gap-2 mb-4">
+          <div className="card">
+            <h2 className="text-sm font-medium uppercase flex items-center gap-2 mb-4" style={{ color: 'var(--text-secondary)' }}>
               <BarChart3 className="w-4 h-4" /> Monte Carlo Simulation
             </h2>
-            <p className="text-xs text-zinc-500 mb-4">
+            <p className="text-xs mb-4" style={{ color: 'var(--text-muted)' }}>
               {data.monteCarlo.runs.toLocaleString()} simulation runs of probabilistic close outcomes
             </p>
 
             {/* P10 / P50 / P90 bars */}
             <div className="space-y-3 mb-4">
               {[
-                { label: 'P10 (Pessimistic)', value: data.monteCarlo.p10, color: 'bg-red-500' },
-                { label: 'P50 (Median)', value: data.monteCarlo.p50, color: 'bg-yellow-500' },
-                { label: 'P90 (Optimistic)', value: data.monteCarlo.p90, color: 'bg-green-500' },
-              ].map(({ label, value, color }) => {
+                { label: 'P10 (Pessimistic)', value: data.monteCarlo.p10, bg: 'var(--danger)' },
+                { label: 'P50 (Median)', value: data.monteCarlo.p50, bg: 'var(--warning)' },
+                { label: 'P90 (Optimistic)', value: data.monteCarlo.p90, bg: 'var(--success)' },
+              ].map(({ label, value, bg }) => {
                 const pct = data.target > 0 ? Math.min(100, (value / data.target) * 100) : 0;
                 return (
                   <div key={label}>
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-xs text-zinc-500">{label}</span>
-                      <span className="text-sm font-semibold text-zinc-200 tabular-nums">
+                      <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{label}</span>
+                      <span className="text-sm font-semibold tabular-nums" style={{ color: 'var(--text-secondary)' }}>
                         EUR {formatEuro(value)}
                       </span>
                     </div>
-                    <div className="relative h-3 bg-zinc-800 rounded-full overflow-hidden">
+                    <div className="relative h-3 rounded-full overflow-hidden" style={{ background: 'var(--surface-2)' }}>
                       <div
-                        className={`h-full rounded-full transition-all duration-700 ${color}`}
-                        style={{ width: `${pct}%` }}
+                        className="h-full rounded-full transition-all duration-700"
+                        style={{ background: bg, width: `${pct}%` }}
                       />
                       {/* Target marker */}
                       <div
-                        className="absolute top-0 bottom-0 w-0.5 bg-white/40"
-                        style={{ left: '100%' }}
+                        className="absolute top-0 bottom-0"
+                        style={{ left: '100%', width: '2px', background: 'rgba(244, 244, 245, 0.4)' }}
                         title={`Target: EUR ${formatEuro(data.target)}`}
                       />
                     </div>
@@ -643,9 +729,9 @@ export default function StressTestPage() {
             </div>
 
             {/* Probability of reaching target */}
-            <div className="border-t border-zinc-800 pt-3 flex items-center justify-between">
-              <span className="text-xs text-zinc-500">Probability of reaching EUR {formatEuro(data.target)}</span>
-              <span className={`text-lg font-bold tabular-nums ${probColor(data.monteCarlo.probOfTarget)}`}>
+            <div className="pt-3 flex items-center justify-between" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+              <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Probability of reaching EUR {formatEuro(data.target)}</span>
+              <span className="text-lg font-bold tabular-nums" style={probColorStyle(data.monteCarlo.probOfTarget)}>
                 {data.monteCarlo.probOfTarget}%
               </span>
             </div>
@@ -654,44 +740,48 @@ export default function StressTestPage() {
 
         {/* Calibration Status */}
         {data.calibration && (
-          <div className="border border-zinc-800 rounded-xl p-5">
-            <h2 className="text-sm font-medium text-zinc-400 uppercase flex items-center gap-2 mb-4">
+          <div className="card">
+            <h2 className="text-sm font-medium uppercase flex items-center gap-2 mb-4" style={{ color: 'var(--text-secondary)' }}>
               <Target className="w-4 h-4" /> Weight Calibration
             </h2>
 
             <div className="flex items-center gap-3 mb-4">
-              <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                data.calibration.enabled ? 'bg-green-900/30' : 'bg-zinc-800'
-              }`}>
+              <div
+                className="w-8 h-8 rounded-lg flex items-center justify-center"
+                style={{ background: data.calibration.enabled ? 'var(--success-muted)' : 'var(--surface-2)' }}
+              >
                 {data.calibration.enabled ? (
-                  <CheckCircle2 className="w-4 h-4 text-green-400" />
+                  <CheckCircle2 className="w-4 h-4" style={{ color: 'var(--success)' }} />
                 ) : (
-                  <AlertTriangle className="w-4 h-4 text-zinc-500" />
+                  <AlertTriangle className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
                 )}
               </div>
               <div>
-                <div className={`text-sm font-medium ${data.calibration.enabled ? 'text-green-400' : 'text-zinc-400'}`}>
+                <div className="text-sm font-medium" style={{ color: data.calibration.enabled ? 'var(--success)' : 'var(--text-secondary)' }}>
                   {data.calibration.enabled ? 'Auto-Calibrated' : 'Hardcoded Weights'}
                 </div>
-                <div className="text-xs text-zinc-500">
+                <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
                   {data.calibration.resolvedCount} resolved prediction{data.calibration.resolvedCount !== 1 ? 's' : ''}
                 </div>
               </div>
             </div>
 
-            <p className="text-xs text-zinc-500 mb-4">{data.calibration.note}</p>
+            <p className="text-xs mb-4" style={{ color: 'var(--text-muted)' }}>{data.calibration.note}</p>
 
             {/* Per-status adjustments if calibrated */}
             {data.calibration.enabled && data.calibration.adjustments && (
-              <div className="border-t border-zinc-800 pt-3">
-                <span className="text-[10px] text-zinc-600 uppercase tracking-wider">Status Adjustments</span>
+              <div className="pt-3" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                <span className="uppercase tracking-wider" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Status Adjustments</span>
                 <div className="grid grid-cols-2 gap-2 mt-2">
                   {Object.entries(data.calibration.adjustments).map(([status, adj]) => (
-                    <div key={status} className="flex items-center justify-between px-2 py-1.5 bg-zinc-800/30 rounded text-xs">
-                      <span className="text-zinc-400">{status.replace(/_/g, ' ')}</span>
-                      <span className={`font-mono tabular-nums ${
-                        (adj as number) > 0 ? 'text-green-400' : (adj as number) < 0 ? 'text-red-400' : 'text-zinc-500'
-                      }`}>
+                    <div key={status} className="flex items-center justify-between px-2 py-1.5 rounded text-xs" style={{ background: 'var(--surface-2)' }}>
+                      <span style={{ color: 'var(--text-secondary)' }}>{status.replace(/_/g, ' ')}</span>
+                      <span
+                        className="font-mono tabular-nums"
+                        style={{
+                          color: (adj as number) > 0 ? 'var(--success)' : (adj as number) < 0 ? 'var(--danger)' : 'var(--text-muted)',
+                        }}
+                      >
                         {(adj as number) > 0 ? '+' : ''}{((adj as number) * 100).toFixed(1)}%
                       </span>
                     </div>
@@ -704,7 +794,7 @@ export default function StressTestPage() {
       </div>
 
       {/* Footer */}
-      <div className="text-center text-[10px] text-zinc-600 py-2">
+      <div className="text-center py-2" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
         Generated {new Date(data.generatedAt).toLocaleString()} --- Data-driven from live investor pipeline
       </div>
     </div>
@@ -723,25 +813,31 @@ function ForecastCard({ label, sublabel, amount, target, color }: {
   color: 'green' | 'yellow' | 'red';
 }) {
   const pct = target > 0 ? Math.round((amount / target) * 100) : 0;
-  const borderColor = { green: 'border-green-800/40', yellow: 'border-yellow-800/40', red: 'border-red-800/40' }[color];
-  const bgColor = { green: 'bg-green-900/10', yellow: 'bg-yellow-900/10', red: 'bg-red-900/10' }[color];
-  const valueColor = { green: 'text-green-400', yellow: 'text-yellow-400', red: 'text-red-400' }[color];
+  const colorMap: Record<string, { border: string; bg: string; value: string }> = {
+    green: { border: 'rgba(34, 197, 94, 0.25)', bg: 'var(--success-muted)', value: 'var(--success)' },
+    yellow: { border: 'rgba(245, 158, 11, 0.25)', bg: 'var(--warning-muted)', value: 'var(--warning)' },
+    red: { border: 'rgba(239, 68, 68, 0.25)', bg: 'var(--danger-muted)', value: 'var(--danger)' },
+  };
+  const c = colorMap[color];
 
   return (
-    <div className={`border ${borderColor} ${bgColor} rounded-xl p-5`}>
-      <div className="text-[10px] text-zinc-500 uppercase tracking-wider">{label}</div>
-      <div className="text-xs text-zinc-600 mb-2">{sublabel}</div>
-      <div className={`text-3xl font-bold tabular-nums ${valueColor}`}>
+    <div
+      className="rounded-xl p-5"
+      style={{ border: `1px solid ${c.border}`, background: c.bg }}
+    >
+      <div className="uppercase tracking-wider" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{label}</div>
+      <div className="text-xs mb-2" style={{ color: 'var(--text-muted)' }}>{sublabel}</div>
+      <div className="text-3xl font-bold tabular-nums" style={{ color: c.value }}>
         EUR {formatEuro(amount)}
       </div>
       <div className="flex items-center gap-2 mt-2">
-        <div className="flex-1 h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+        <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--surface-2)' }}>
           <div
-            className={`h-full rounded-full transition-all duration-500 ${probBg(pct)}`}
-            style={{ width: `${Math.min(100, pct)}%` }}
+            className="h-full rounded-full transition-all duration-500"
+            style={{ ...probBgStyle(pct), width: `${Math.min(100, pct)}%` }}
           />
         </div>
-        <span className="text-xs text-zinc-500 tabular-nums">{pct}%</span>
+        <span className="text-xs tabular-nums" style={{ color: 'var(--text-muted)' }}>{pct}%</span>
       </div>
     </div>
   );
@@ -750,8 +846,8 @@ function ForecastCard({ label, sublabel, amount, target, color }: {
 function SummaryCard({ label, value }: { label: string; value: string | number }) {
   return (
     <div className="text-center">
-      <div className="text-[10px] text-zinc-500 uppercase tracking-wider">{label}</div>
-      <div className="text-xl font-bold text-zinc-200 tabular-nums mt-1">{value}</div>
+      <div className="uppercase tracking-wider" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{label}</div>
+      <div className="text-xl font-bold tabular-nums mt-1" style={{ color: 'var(--text-secondary)' }}>{value}</div>
     </div>
   );
 }

@@ -12,6 +12,19 @@ import Link from 'next/link';
 
 type Tab = 'deals' | 'competitors' | 'briefs';
 
+const THREAT_STYLES: Record<string, { background: string; color: string }> = {
+  critical: { background: 'var(--danger-muted)', color: 'var(--danger)' },
+  high: { background: 'var(--warning-muted)', color: 'var(--warning)' },
+  medium: { background: 'rgba(245, 158, 11, 0.08)', color: '#fbbf24' },
+  low: { background: 'var(--success-muted)', color: 'var(--success)' },
+};
+
+const BRIEF_TYPE_STYLES: Record<string, { background: string; color: string }> = {
+  investor: { background: 'var(--accent-muted)', color: 'var(--accent)' },
+  competitor: { background: 'var(--warning-muted)', color: 'var(--warning)' },
+  market: { background: 'rgba(168, 85, 247, 0.12)', color: '#c084fc' },
+};
+
 export default function IntelligencePage() {
   const { toast } = useToast();
   const [tab, setTab] = useState<Tab>('deals');
@@ -26,6 +39,12 @@ export default function IntelligencePage() {
   const [deleteTarget, setDeleteTarget] = useState<{ type: string; id: string; name: string } | null>(null);
   const [researchInput, setResearchInput] = useState('');
   const [researchType, setResearchType] = useState<'investor' | 'competitor' | 'market'>('investor');
+  const [hoveredDealRow, setHoveredDealRow] = useState<string | null>(null);
+  const [hoveredDeleteBtn, setHoveredDeleteBtn] = useState<string | null>(null);
+  const [hoveredCompCard, setHoveredCompCard] = useState<string | null>(null);
+  const [hoveredBriefRow, setHoveredBriefRow] = useState<string | null>(null);
+  const [hoveredResearchBtn, setHoveredResearchBtn] = useState(false);
+  const [hoveredAddBtn, setHoveredAddBtn] = useState(false);
 
   const fetchAll = useCallback(async () => {
     setLoading(true);
@@ -107,10 +126,10 @@ export default function IntelligencePage() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="h-8 w-64 bg-zinc-800 rounded animate-pulse" />
-        <div className="h-20 bg-zinc-800/50 rounded-xl animate-pulse" />
+        <div className="h-8 w-64 skeleton" style={{ background: 'var(--surface-2)' }} />
+        <div className="h-20 skeleton rounded-xl" style={{ background: 'var(--surface-2)', opacity: 0.5 }} />
         <div className="space-y-2">
-          {[...Array(5)].map((_, i) => <div key={i} className="h-14 bg-zinc-800/30 rounded animate-pulse" />)}
+          {[...Array(5)].map((_, i) => <div key={i} className="h-14 skeleton rounded" style={{ background: 'var(--surface-2)', opacity: 0.3 }} />)}
         </div>
       </div>
     );
@@ -121,24 +140,28 @@ export default function IntelligencePage() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-          <Globe className="w-6 h-6 text-blue-400" /> Market Intelligence
+          <Globe className="w-6 h-6" style={{ color: 'var(--accent)' }} /> Market Intelligence
         </h1>
-        <p className="text-zinc-500 text-sm mt-1">
+        <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
           {deals.length} deals tracked, {competitors.length} competitors, {briefs.length} research briefs
         </p>
       </div>
 
       {/* AI Research Bar */}
-      <div className="border border-zinc-800 rounded-xl p-4 bg-zinc-900/50">
+      <div
+        className="rounded-xl p-4"
+        style={{ border: '1px solid var(--border-default)', background: 'var(--surface-1)' }}
+      >
         <div className="flex items-center gap-2 mb-2">
-          <Search className="w-4 h-4 text-blue-400" />
-          <span className="text-xs font-medium text-zinc-400">AI RESEARCH</span>
+          <Search className="w-4 h-4" style={{ color: 'var(--accent)' }} />
+          <span className="text-xs font-medium" style={{ color: 'var(--text-tertiary)' }}>AI RESEARCH</span>
         </div>
         <div className="flex gap-2">
           <select
             value={researchType}
             onChange={e => setResearchType(e.target.value as 'investor' | 'competitor' | 'market')}
-            className="bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-300"
+            className="input"
+            style={{ width: 'auto', padding: '0.5rem 0.75rem' }}
           >
             <option value="investor">Research Investor</option>
             <option value="competitor">Research Competitor</option>
@@ -152,24 +175,35 @@ export default function IntelligencePage() {
               researchType === 'competitor' ? 'e.g. ICEYE, Rocket Lab, Planet Labs...' :
               'e.g. Space/Defense, Satellite, Deep Tech...'
             }
-            className="flex-1 bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-blue-600"
+            className="input flex-1"
             onKeyDown={e => { if (e.key === 'Enter') handleResearch(); }}
           />
           <button
             onClick={handleResearch}
             disabled={researching || !researchInput.trim()}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:bg-zinc-700 disabled:text-zinc-500 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+            onMouseEnter={() => setHoveredResearchBtn(true)}
+            onMouseLeave={() => setHoveredResearchBtn(false)}
+            className="px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2"
+            style={{
+              background: researching || !researchInput.trim()
+                ? 'var(--surface-3)'
+                : hoveredResearchBtn ? 'var(--accent-hover)' : 'var(--accent)',
+              color: researching || !researchInput.trim()
+                ? 'var(--text-muted)'
+                : 'white',
+              transition: 'all 150ms ease',
+            }}
           >
             {researching ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Researching...</> : <><RefreshCw className="w-3.5 h-3.5" /> Research</>}
           </button>
         </div>
-        <p className="text-xs text-zinc-600 mt-2">
+        <p className="text-xs mt-2" style={{ color: 'var(--text-muted)' }}>
           AI will generate a comprehensive research dossier and auto-populate relevant data tables.
         </p>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 border-b border-zinc-800">
+      <div className="flex gap-1" style={{ borderBottom: '1px solid var(--border-default)' }}>
         {([
           { key: 'deals' as Tab, label: 'Market Deals', icon: DollarSign, count: deals.length },
           { key: 'competitors' as Tab, label: 'Competitors', icon: Shield, count: competitors.length },
@@ -178,13 +212,21 @@ export default function IntelligencePage() {
           <button
             key={t.key}
             onClick={() => setTab(t.key)}
-            className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 ${
-              tab === t.key ? 'border-blue-500 text-white' : 'border-transparent text-zinc-500 hover:text-zinc-300'
-            }`}
+            className="px-4 py-2.5 text-sm font-medium flex items-center gap-2"
+            style={{
+              borderBottom: `2px solid ${tab === t.key ? 'var(--accent)' : 'transparent'}`,
+              color: tab === t.key ? 'var(--text-primary)' : 'var(--text-muted)',
+              transition: 'color 150ms ease',
+            }}
           >
             <t.icon className="w-3.5 h-3.5" />
             {t.label}
-            <span className="text-xs px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400">{t.count}</span>
+            <span
+              className="text-xs px-1.5 py-0.5 rounded"
+              style={{ background: 'var(--surface-2)', color: 'var(--text-tertiary)' }}
+            >
+              {t.count}
+            </span>
           </button>
         ))}
       </div>
@@ -193,13 +235,26 @@ export default function IntelligencePage() {
       {tab === 'deals' && (
         <div className="space-y-4">
           <div className="flex justify-end">
-            <button onClick={() => setShowAddDeal(!showAddDeal)} className="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm flex items-center gap-1">
+            <button
+              onClick={() => setShowAddDeal(!showAddDeal)}
+              onMouseEnter={() => setHoveredAddBtn(true)}
+              onMouseLeave={() => setHoveredAddBtn(false)}
+              className="px-3 py-1.5 rounded-lg text-sm flex items-center gap-1"
+              style={{
+                background: hoveredAddBtn ? 'var(--surface-3)' : 'var(--surface-2)',
+                transition: 'background 150ms ease',
+              }}
+            >
               <Plus className="w-3.5 h-3.5" /> Add Deal
             </button>
           </div>
 
           {showAddDeal && (
-            <form onSubmit={handleAddDeal} className="border border-zinc-800 rounded-xl p-4 space-y-3">
+            <form
+              onSubmit={handleAddDeal}
+              className="rounded-xl p-4 space-y-3"
+              style={{ border: '1px solid var(--border-default)' }}
+            >
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <FormField name="company" label="Company" required />
                 <FormField name="round" label="Round" placeholder="Series C" />
@@ -212,8 +267,8 @@ export default function IntelligencePage() {
                 <FormField name="source" label="Source" placeholder="TechCrunch, PitchBook..." />
               </div>
               <div className="flex gap-2">
-                <button type="submit" className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm">Add</button>
-                <button type="button" onClick={() => setShowAddDeal(false)} className="px-3 py-1.5 bg-zinc-800 rounded-lg text-sm">Cancel</button>
+                <button type="submit" className="btn btn-primary btn-sm">Add</button>
+                <button type="button" onClick={() => setShowAddDeal(false)} className="btn btn-secondary btn-sm">Cancel</button>
               </div>
             </form>
           )}
@@ -221,32 +276,48 @@ export default function IntelligencePage() {
           {deals.length === 0 ? (
             <EmptyState message="No market deals tracked yet. Add manually or use AI Research to scan the market." />
           ) : (
-            <div className="border border-zinc-800 rounded-xl overflow-hidden">
+            <div className="rounded-xl overflow-hidden" style={{ border: '1px solid var(--border-default)' }}>
               <table className="w-full text-sm">
-                <thead className="bg-zinc-900/50 border-b border-zinc-800">
+                <thead className="table-header">
                   <tr>
-                    <th className="text-left px-4 py-2.5 text-xs text-zinc-500 font-medium">Company</th>
-                    <th className="text-left px-4 py-2.5 text-xs text-zinc-500 font-medium">Round</th>
-                    <th className="text-left px-4 py-2.5 text-xs text-zinc-500 font-medium">Amount</th>
-                    <th className="text-left px-4 py-2.5 text-xs text-zinc-500 font-medium">Valuation</th>
-                    <th className="text-left px-4 py-2.5 text-xs text-zinc-500 font-medium">Lead</th>
-                    <th className="text-left px-4 py-2.5 text-xs text-zinc-500 font-medium">Date</th>
-                    <th className="text-left px-4 py-2.5 text-xs text-zinc-500 font-medium">Sector</th>
-                    <th className="text-left px-4 py-2.5 text-xs text-zinc-500 font-medium w-8"></th>
+                    <th>Company</th>
+                    <th>Round</th>
+                    <th>Amount</th>
+                    <th>Valuation</th>
+                    <th>Lead</th>
+                    <th>Date</th>
+                    <th>Sector</th>
+                    <th className="w-8"></th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-zinc-800/50">
+                <tbody>
                   {deals.map(d => (
-                    <tr key={d.id} className="hover:bg-zinc-900/30">
-                      <td className="px-4 py-2.5 font-medium">{d.company}</td>
-                      <td className="px-4 py-2.5 text-zinc-400">{d.round}</td>
-                      <td className="px-4 py-2.5 text-emerald-400 font-medium">{d.amount}</td>
-                      <td className="px-4 py-2.5 text-blue-400">{d.valuation}</td>
-                      <td className="px-4 py-2.5 text-zinc-400 max-w-40 truncate">{d.lead_investors}</td>
-                      <td className="px-4 py-2.5 text-zinc-500 text-xs">{d.date}</td>
-                      <td className="px-4 py-2.5 text-zinc-500 text-xs">{d.sector}</td>
-                      <td className="px-4 py-2.5">
-                        <button onClick={() => setDeleteTarget({ type: 'deal', id: d.id, name: d.company })} className="text-zinc-600 hover:text-red-400">
+                    <tr
+                      key={d.id}
+                      className="table-row"
+                      style={{
+                        background: hoveredDealRow === d.id ? 'var(--surface-1)' : 'transparent',
+                      }}
+                      onMouseEnter={() => setHoveredDealRow(d.id)}
+                      onMouseLeave={() => setHoveredDealRow(null)}
+                    >
+                      <td style={{ fontWeight: 500, color: 'var(--text-primary)' }}>{d.company}</td>
+                      <td style={{ color: 'var(--text-tertiary)' }}>{d.round}</td>
+                      <td style={{ color: 'var(--success)', fontWeight: 500 }}>{d.amount}</td>
+                      <td style={{ color: 'var(--accent)' }}>{d.valuation}</td>
+                      <td className="max-w-40 truncate" style={{ color: 'var(--text-tertiary)' }}>{d.lead_investors}</td>
+                      <td style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>{d.date}</td>
+                      <td style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>{d.sector}</td>
+                      <td>
+                        <button
+                          onClick={() => setDeleteTarget({ type: 'deal', id: d.id, name: d.company })}
+                          onMouseEnter={() => setHoveredDeleteBtn(`deal-${d.id}`)}
+                          onMouseLeave={() => setHoveredDeleteBtn(null)}
+                          style={{
+                            color: hoveredDeleteBtn === `deal-${d.id}` ? 'var(--danger)' : 'var(--text-muted)',
+                            transition: 'color 150ms ease',
+                          }}
+                        >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       </td>
@@ -262,13 +333,26 @@ export default function IntelligencePage() {
       {tab === 'competitors' && (
         <div className="space-y-4">
           <div className="flex justify-end">
-            <button onClick={() => setShowAddComp(!showAddComp)} className="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm flex items-center gap-1">
+            <button
+              onClick={() => setShowAddComp(!showAddComp)}
+              onMouseEnter={() => setHoveredAddBtn(true)}
+              onMouseLeave={() => setHoveredAddBtn(false)}
+              className="px-3 py-1.5 rounded-lg text-sm flex items-center gap-1"
+              style={{
+                background: hoveredAddBtn ? 'var(--surface-3)' : 'var(--surface-2)',
+                transition: 'background 150ms ease',
+              }}
+            >
               <Plus className="w-3.5 h-3.5" /> Add Competitor
             </button>
           </div>
 
           {showAddComp && (
-            <form onSubmit={handleAddCompetitor} className="border border-zinc-800 rounded-xl p-4 space-y-3">
+            <form
+              onSubmit={handleAddCompetitor}
+              className="rounded-xl p-4 space-y-3"
+              style={{ border: '1px solid var(--border-default)' }}
+            >
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <FormField name="name" label="Company Name" required />
                 <FormField name="sector" label="Sector" />
@@ -283,8 +367,8 @@ export default function IntelligencePage() {
               <FormField name="positioning" label="Positioning" />
               <FormField name="our_advantage" label="Our Advantage" />
               <div className="flex gap-2">
-                <button type="submit" className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm">Add</button>
-                <button type="button" onClick={() => setShowAddComp(false)} className="px-3 py-1.5 bg-zinc-800 rounded-lg text-sm">Cancel</button>
+                <button type="submit" className="btn btn-primary btn-sm">Add</button>
+                <button type="button" onClick={() => setShowAddComp(false)} className="btn btn-secondary btn-sm">Cancel</button>
               </div>
             </form>
           )}
@@ -293,44 +377,64 @@ export default function IntelligencePage() {
             <EmptyState message="No competitors tracked yet. Add manually or use AI Research." />
           ) : (
             <div className="space-y-3">
-              {competitors.map(c => (
-                <div key={c.id} className="border border-zinc-800 rounded-xl p-4 hover:border-zinc-700 transition-colors">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-3">
-                      <Building2 className="w-5 h-5 text-zinc-500" />
-                      <div>
-                        <h3 className="font-medium">{c.name}</h3>
-                        <div className="flex gap-2 mt-1">
-                          <span className="text-xs text-zinc-500">{c.sector}</span>
-                          {c.hq && <span className="text-xs text-zinc-600">{c.hq}</span>}
-                          <span className={`text-xs px-1.5 py-0.5 rounded ${
-                            c.threat_level === 'critical' ? 'bg-red-900/30 text-red-400' :
-                            c.threat_level === 'high' ? 'bg-orange-900/30 text-orange-400' :
-                            c.threat_level === 'medium' ? 'bg-yellow-900/30 text-yellow-400' :
-                            'bg-green-900/30 text-green-400'
-                          }`}>{c.threat_level}</span>
+              {competitors.map(c => {
+                const threatStyle = THREAT_STYLES[c.threat_level || 'low'] || THREAT_STYLES.low;
+                return (
+                  <div
+                    key={c.id}
+                    className="card"
+                    style={{
+                      borderColor: hoveredCompCard === c.id ? 'var(--border-strong)' : undefined,
+                      transition: 'border-color 150ms ease',
+                    }}
+                    onMouseEnter={() => setHoveredCompCard(c.id)}
+                    onMouseLeave={() => setHoveredCompCard(null)}
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-center gap-3">
+                        <Building2 className="w-5 h-5" style={{ color: 'var(--text-muted)' }} />
+                        <div>
+                          <h3 className="font-medium" style={{ color: 'var(--text-primary)' }}>{c.name}</h3>
+                          <div className="flex gap-2 mt-1">
+                            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{c.sector}</span>
+                            {c.hq && <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{c.hq}</span>}
+                            <span
+                              className="text-xs px-1.5 py-0.5 rounded"
+                              style={{ background: threatStyle.background, color: threatStyle.color }}
+                            >
+                              {c.threat_level}
+                            </span>
+                          </div>
                         </div>
                       </div>
+                      <button
+                        onClick={() => setDeleteTarget({ type: 'competitor', id: c.id, name: c.name })}
+                        onMouseEnter={() => setHoveredDeleteBtn(`comp-${c.id}`)}
+                        onMouseLeave={() => setHoveredDeleteBtn(null)}
+                        style={{
+                          color: hoveredDeleteBtn === `comp-${c.id}` ? 'var(--danger)' : 'var(--text-muted)',
+                          transition: 'color 150ms ease',
+                        }}
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
                     </div>
-                    <button onClick={() => setDeleteTarget({ type: 'competitor', id: c.id, name: c.name })} className="text-zinc-600 hover:text-red-400">
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3 text-xs">
-                    {c.revenue && <div><span className="text-zinc-500">Revenue:</span> <span className="text-zinc-300">{c.revenue}</span></div>}
-                    {c.last_valuation && <div><span className="text-zinc-500">Valuation:</span> <span className="text-blue-400">{c.last_valuation}</span></div>}
-                    {c.total_raised && <div><span className="text-zinc-500">Raised:</span> <span className="text-zinc-300">{c.total_raised}</span></div>}
-                    {c.employees && <div><span className="text-zinc-500">Employees:</span> <span className="text-zinc-300">{c.employees}</span></div>}
-                  </div>
-                  {c.positioning && <p className="text-xs text-zinc-500 mt-2 line-clamp-2">{c.positioning}</p>}
-                  {c.our_advantage && (
-                    <div className="mt-2 text-xs">
-                      <span className="text-emerald-500 font-medium">Our advantage:</span>
-                      <span className="text-zinc-400 ml-1">{c.our_advantage}</span>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3 text-xs">
+                      {c.revenue && <div><span style={{ color: 'var(--text-muted)' }}>Revenue:</span> <span style={{ color: 'var(--text-secondary)' }}>{c.revenue}</span></div>}
+                      {c.last_valuation && <div><span style={{ color: 'var(--text-muted)' }}>Valuation:</span> <span style={{ color: 'var(--accent)' }}>{c.last_valuation}</span></div>}
+                      {c.total_raised && <div><span style={{ color: 'var(--text-muted)' }}>Raised:</span> <span style={{ color: 'var(--text-secondary)' }}>{c.total_raised}</span></div>}
+                      {c.employees && <div><span style={{ color: 'var(--text-muted)' }}>Employees:</span> <span style={{ color: 'var(--text-secondary)' }}>{c.employees}</span></div>}
                     </div>
-                  )}
-                </div>
-              ))}
+                    {c.positioning && <p className="text-xs mt-2 line-clamp-2" style={{ color: 'var(--text-muted)' }}>{c.positioning}</p>}
+                    {c.our_advantage && (
+                      <div className="mt-2 text-xs">
+                        <span className="font-medium" style={{ color: 'var(--success)' }}>Our advantage:</span>
+                        <span className="ml-1" style={{ color: 'var(--text-tertiary)' }}>{c.our_advantage}</span>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>
@@ -341,43 +445,71 @@ export default function IntelligencePage() {
           {briefs.length === 0 ? (
             <EmptyState message="No research briefs yet. Use the AI Research bar above to generate intelligence." />
           ) : (
-            briefs.map(b => (
-              <div key={b.id} className="border border-zinc-800 rounded-xl overflow-hidden">
-                <button
-                  onClick={() => setExpandedBrief(expandedBrief === b.id ? null : b.id)}
-                  className="w-full flex items-center justify-between px-4 py-3 hover:bg-zinc-900/30 transition-colors"
-                >
-                  <div className="flex items-center gap-3">
-                    <span className={`text-xs px-2 py-0.5 rounded font-medium ${
-                      b.brief_type === 'investor' ? 'bg-blue-900/30 text-blue-400' :
-                      b.brief_type === 'competitor' ? 'bg-orange-900/30 text-orange-400' :
-                      b.brief_type === 'market' ? 'bg-purple-900/30 text-purple-400' :
-                      'bg-zinc-800 text-zinc-400'
-                    }`}>{b.brief_type}</span>
-                    <span className="font-medium text-sm">{b.subject}</span>
-                    <span className="text-xs text-zinc-600">{b.updated_at?.split('T')[0]}</span>
-                    {b.investor_id && (
-                      <Link href={`/investors/${b.investor_id}`} className="text-xs text-blue-400 hover:text-blue-300" onClick={e => e.stopPropagation()}>
-                        View Investor
-                      </Link>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button onClick={(e) => { e.stopPropagation(); setDeleteTarget({ type: 'brief', id: b.id, name: b.subject }); }} className="text-zinc-600 hover:text-red-400 p-1">
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                    {expandedBrief === b.id ? <ChevronDown className="w-4 h-4 text-zinc-500" /> : <ChevronRight className="w-4 h-4 text-zinc-500" />}
-                  </div>
-                </button>
-                {expandedBrief === b.id && (
-                  <div className="px-4 pb-4 border-t border-zinc-800/50">
-                    <div className="prose prose-invert prose-sm max-w-none mt-3 text-zinc-300 whitespace-pre-wrap text-sm leading-relaxed">
-                      {b.content}
+            briefs.map(b => {
+              const briefStyle = BRIEF_TYPE_STYLES[b.brief_type] || { background: 'var(--surface-2)', color: 'var(--text-tertiary)' };
+              return (
+                <div key={b.id} className="rounded-xl overflow-hidden" style={{ border: '1px solid var(--border-default)' }}>
+                  <button
+                    onClick={() => setExpandedBrief(expandedBrief === b.id ? null : b.id)}
+                    className="w-full flex items-center justify-between px-4 py-3"
+                    style={{
+                      background: hoveredBriefRow === b.id ? 'var(--surface-1)' : 'transparent',
+                      transition: 'background 150ms ease',
+                    }}
+                    onMouseEnter={() => setHoveredBriefRow(b.id)}
+                    onMouseLeave={() => setHoveredBriefRow(null)}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span
+                        className="text-xs px-2 py-0.5 rounded font-medium"
+                        style={{ background: briefStyle.background, color: briefStyle.color }}
+                      >
+                        {b.brief_type}
+                      </span>
+                      <span className="font-medium text-sm" style={{ color: 'var(--text-primary)' }}>{b.subject}</span>
+                      <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{b.updated_at?.split('T')[0]}</span>
+                      {b.investor_id && (
+                        <Link
+                          href={`/investors/${b.investor_id}`}
+                          style={{ color: 'var(--accent)', fontSize: 'var(--font-size-xs)' }}
+                          onClick={e => e.stopPropagation()}
+                        >
+                          View Investor
+                        </Link>
+                      )}
                     </div>
-                  </div>
-                )}
-              </div>
-            ))
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={(e) => { e.stopPropagation(); setDeleteTarget({ type: 'brief', id: b.id, name: b.subject }); }}
+                        onMouseEnter={() => setHoveredDeleteBtn(`brief-${b.id}`)}
+                        onMouseLeave={() => setHoveredDeleteBtn(null)}
+                        className="p-1"
+                        style={{
+                          color: hoveredDeleteBtn === `brief-${b.id}` ? 'var(--danger)' : 'var(--text-muted)',
+                          transition: 'color 150ms ease',
+                        }}
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                      {expandedBrief === b.id
+                        ? <ChevronDown className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
+                        : <ChevronRight className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
+                      }
+                    </div>
+                  </button>
+                  {expandedBrief === b.id && (
+                    <div className="px-4 pb-4" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                      <div
+                        className="prose prose-invert prose-sm max-w-none mt-3 whitespace-pre-wrap text-sm leading-relaxed"
+                        style={{ color: 'var(--text-secondary)' }}
+                      >
+                        {b.content}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })
           )}
         </div>
       )}
@@ -406,12 +538,12 @@ export default function IntelligencePage() {
 function FormField({ name, label, placeholder, required }: { name: string; label: string; placeholder?: string; required?: boolean }) {
   return (
     <div>
-      <label className="text-xs text-zinc-500 block mb-1">{label}</label>
+      <label className="text-xs block mb-1" style={{ color: 'var(--text-muted)' }}>{label}</label>
       <input
         name={name}
         placeholder={placeholder}
         required={required}
-        className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-600 text-zinc-200"
+        className="input"
       />
     </div>
   );
@@ -419,21 +551,24 @@ function FormField({ name, label, placeholder, required }: { name: string; label
 
 function EmptyState({ message }: { message: string }) {
   return (
-    <div className="border border-dashed border-zinc-800 rounded-xl p-8 text-center">
-      <Globe className="w-8 h-8 text-zinc-700 mx-auto mb-2" />
-      <p className="text-sm text-zinc-600">{message}</p>
+    <div
+      className="rounded-xl p-8 text-center"
+      style={{ border: '1px dashed var(--border-default)' }}
+    >
+      <Globe className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--text-muted)' }} />
+      <p className="text-sm" style={{ color: 'var(--text-muted)' }}>{message}</p>
     </div>
   );
 }
 
-function StatCard({ icon: Icon, label, value }: { icon: React.ComponentType<{ className?: string }>; label: string; value: string | number }) {
+function StatCard({ icon: Icon, label, value }: { icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>; label: string; value: string | number }) {
   return (
-    <div className="border border-zinc-800 rounded-xl p-3">
+    <div className="card">
       <div className="flex items-center gap-2 mb-1">
-        <Icon className="w-3.5 h-3.5 text-zinc-500" />
-        <span className="text-xs text-zinc-500">{label}</span>
+        <Icon className="w-3.5 h-3.5" style={{ color: 'var(--text-muted)' }} />
+        <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{label}</span>
       </div>
-      <div className="text-lg font-bold">{value}</div>
+      <div className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>{value}</div>
     </div>
   );
 }

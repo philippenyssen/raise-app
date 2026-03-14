@@ -21,7 +21,7 @@ function useIsMobile(breakpoint = 768) {
 interface SplitPaneProps {
   left: React.ReactNode;
   right: React.ReactNode;
-  defaultSplit?: number; // percentage for left pane (0-100)
+  defaultSplit?: number;
   minLeft?: number;
   minRight?: number;
 }
@@ -76,25 +76,28 @@ export function SplitPane({ left, right, defaultSplit = 55, minLeft = 30, minRig
   if (isMobile) {
     return (
       <div className="flex h-full w-full flex-col overflow-hidden">
-        <div className="sticky top-0 z-10 flex shrink-0 border-b border-zinc-800 bg-zinc-900">
+        <div
+          className="sticky top-0 z-10 flex shrink-0"
+          style={{ borderBottom: '1px solid var(--border-default)', background: 'var(--surface-1)' }}
+        >
           <button
             onClick={() => setActivePane('left')}
-            className={`flex flex-1 items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium transition-colors ${
-              activePane === 'left'
-                ? 'bg-zinc-800 text-white'
-                : 'text-zinc-400 hover:text-zinc-200'
-            }`}
+            className="flex flex-1 items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium transition-colors"
+            style={{
+              background: activePane === 'left' ? 'var(--surface-2)' : 'transparent',
+              color: activePane === 'left' ? 'var(--text-primary)' : 'var(--text-tertiary)',
+            }}
           >
             <FileText className="h-4 w-4" />
             Document
           </button>
           <button
             onClick={() => setActivePane('right')}
-            className={`flex flex-1 items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium transition-colors ${
-              activePane === 'right'
-                ? 'bg-zinc-800 text-white'
-                : 'text-zinc-400 hover:text-zinc-200'
-            }`}
+            className="flex flex-1 items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium transition-colors"
+            style={{
+              background: activePane === 'right' ? 'var(--surface-2)' : 'transparent',
+              color: activePane === 'right' ? 'var(--text-primary)' : 'var(--text-tertiary)',
+            }}
           >
             <Sparkles className="h-4 w-4" />
             Chat
@@ -120,9 +123,13 @@ export function SplitPane({ left, right, defaultSplit = 55, minLeft = 30, minRig
       <div
         onMouseDown={handleMouseDown}
         onTouchStart={handleTouchStart}
-        className={`w-1.5 sm:w-1 shrink-0 cursor-col-resize transition-colors touch-none ${
-          dragging ? 'bg-blue-500' : 'bg-zinc-800 hover:bg-zinc-600'
-        }`}
+        className="shrink-0 cursor-col-resize transition-colors touch-none"
+        style={{
+          width: '4px',
+          background: dragging ? 'var(--accent)' : 'var(--border-subtle)',
+        }}
+        onMouseEnter={e => { if (!dragging) (e.currentTarget as HTMLElement).style.background = 'var(--border-strong)'; }}
+        onMouseLeave={e => { if (!dragging) (e.currentTarget as HTMLElement).style.background = 'var(--border-subtle)'; }}
       />
       <div style={{ width: `${100 - split}%` }} className="h-full overflow-hidden flex flex-col">
         {right}
