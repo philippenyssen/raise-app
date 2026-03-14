@@ -1310,7 +1310,10 @@ export default function Dashboard() {
               {pendingFollowups.length > 0 ? (
                 <div className="space-y-1.5">
                   {pendingFollowups.slice(0, 5).map((fu) => (
-                    <FollowupRow key={fu.id} followup={fu} />
+                    <FollowupRow key={fu.id} followup={fu} onComplete={(id) => {
+                      setPendingFollowups(prev => prev.filter(f => f.id !== id));
+                      fetch('/api/followups', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, status: 'completed' }) });
+                    }} />
                   ))}
                 </div>
               ) : (
@@ -1979,8 +1982,9 @@ function HotDealRow({ investor }: { investor: DealHeatInvestor }) {
   );
 }
 
-function FollowupRow({ followup }: { followup: FollowupItem }) {
+function FollowupRow({ followup, onComplete }: { followup: FollowupItem; onComplete?: (id: string) => void }) {
   const [hovered, setHovered] = useState(false);
+  const [completing, setCompleting] = useState(false);
 
   const now = new Date();
   const dueDate = new Date(followup.due_at);
@@ -2005,10 +2009,27 @@ function FollowupRow({ followup }: { followup: FollowupItem }) {
   return (
     <div
       className="flex items-center gap-3 py-2 px-3 rounded-lg transition-colors"
-      style={{ background: hovered ? 'var(--surface-3)' : 'transparent' }}
+      style={{ background: hovered ? 'var(--surface-3)' : 'transparent', opacity: completing ? 0.5 : 1, transition: 'all 150ms ease' }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
+      {onComplete && (
+        <button
+          onClick={() => { setCompleting(true); onComplete(followup.id); }}
+          className="w-5 h-5 rounded flex items-center justify-center shrink-0"
+          style={{
+            border: '2px solid var(--border-default)',
+            background: 'transparent',
+            cursor: 'pointer',
+            transition: 'all 150ms ease',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--success)'; e.currentTarget.style.background = 'var(--success-muted)'; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border-default)'; e.currentTarget.style.background = 'transparent'; }}
+          title="Mark done"
+        >
+          {completing && <CheckCircle2 className="w-3 h-3" style={{ color: 'var(--success)' }} />}
+        </button>
+      )}
       <span className="shrink-0" style={{ color: isOverdue ? 'var(--danger)' : 'var(--accent)' }}>
         <ActionIcon className="w-4 h-4" />
       </span>
