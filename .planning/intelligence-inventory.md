@@ -30,6 +30,7 @@
 | 24 | 2026-03-14 | Self-Correcting Forecasts | computeRaiseForecast() now applies calibration-learned bias correction — if forecasts have been systematically optimistic/pessimistic, adjusts predicted days by up to ±30% based on historical accuracy delta. Closes the full learning loop: predict → log → resolve → measure → correct. | db.ts |
 | 25 | 2026-03-14 | Win/Loss Pattern Analysis | Outcome-driven learning: analyzes closed vs passed investors to find distinguishing factors (7 dimensions compared), generates winner/loser profiles, surfaces key predictors. Synthesis rule flags active investors matching loser profile. Context bus field + system prompt WIN/LOSS section. 24th data source, 18 context fields, 12 functions verified. | db.ts, context-bus.ts, intelligence/verify/route.ts |
 | 26 | 2026-03-14 | Score Reversals + Pipeline Rankings | Score reversal detection (critical/warning/notable drops ≥10pts), comparative pipeline rankings with rank movement tracking. 3 synthesis rules (score crisis, rising/falling investors). Pulse insight for critical reversals. Context bus: 26 data sources, 20 context fields, 14 functions. | db.ts, context-bus.ts, pulse/route.ts, intelligence/verify/route.ts |
+| 27 | 2026-03-14 | Meeting Density + FOMO Dynamics | 12-week meeting distribution analysis (gap/cluster detection, density score), investor FOMO modeling (advancing investors create competitive pressure for peers). 2 synthesis rules (momentum gap, dead week). 28 data sources, 22 context fields, 16 functions. | db.ts, context-bus.ts, intelligence/verify/route.ts |
 
 ## Intelligence Capabilities (Existing)
 
@@ -447,6 +448,22 @@
   - [x] Proactive intelligence: low confidence (urgency 8) + 3+ risk factors (urgency 7)
   - [x] Instruction 20: forecast-aware reasoning guidance
 - [x] **Self-correcting forecasts (cycle 24)**: calibration-learned bias multiplier applied to predicted days (capped ±30%, conservative 50% correction factor)
+
+### AD. Meeting Density + FOMO Dynamics (NEW cycle 27)
+- [x] `computeMeetingDensity()`: 12-week meeting distribution analysis
+  - [x] Weekly grouping with ISO week calculation
+  - [x] Gap detection (zero-meeting weeks), cluster detection (3+ meeting weeks)
+  - [x] Density score (0-100) using coefficient of variation — lower variance = higher score
+  - [x] Auto-generated insight based on pattern (sporadic/clustered/good cadence)
+- [x] `detectFomoDynamics()`: models competitive pressure from advancing investors
+  - [x] Finds investors who advanced stage in last 7 days (engaged/DD/term sheet/closed)
+  - [x] Identifies affected investors: same or higher tier, earlier stage
+  - [x] FOMO intensity: high (term sheet/closed), medium (DD), low (engaged)
+  - [x] Actionable recommendation per dynamic
+- [x] `meetingDensity` + `fomoDynamics` fields in FullContext (28 data sources)
+  - [x] MEETING DENSITY section: current week count, avg, gaps, clusters, density score
+  - [x] COMPETITIVE DYNAMICS section: FOMO triggers with affected investors + recommendations
+- [x] 2 synthesis rules: momentum gap (low density + FOMO triggers), dead week alert
 
 ### AC. Score Reversals + Pipeline Rankings (NEW cycle 26)
 - [x] `detectScoreReversals()`: compares latest 2 snapshots per active investor

@@ -2173,6 +2173,186 @@ export async function getPipelineRankings(): Promise<PipelineRanking[]> {
 }
 
 // ---------------------------------------------------------------------------
+// Meeting Density + FOMO Dynamics (cycle 27)
+// ---------------------------------------------------------------------------
+
+export interface MeetingDensity {
+  weeklyDistribution: { week: string; count: number }[];
+  currentWeekCount: number;
+  avgPerWeek: number;
+  gapWeeks: string[]; // weeks with zero meetings
+  clusterWeeks: string[]; // weeks with 3+ meetings
+  densityScore: number; // 0-100, higher = more evenly distributed
+  insight: string;
+}
+
+export interface FomoDynamic {
+  advancingInvestor: string;
+  advancingTo: string;
+  affectedInvestors: { name: string; tier: number; status: string; daysInStage: number }[];
+  fomoIntensity: 'high' | 'medium' | 'low';
+  recommendation: string;
+}
+
+export async function computeMeetingDensity(): Promise<MeetingDensity> {
+  await ensureInitialized();
+  const db = getClient();
+
+  // Get meetings from last 12 weeks
+  const result = await db.execute(`
+    SELECT date FROM meetings
+    WHERE date >= date('now', '-84 days')
+    ORDER BY date ASC
+  `);
+
+  const meetings = result.rows as unknown as Array<{ date: string }>;
+
+  // Group by ISO week
+  const weekMap: Record<string, number> = {};
+  const now = new Date();
+  for (let i = 0; i < 12; i++) {
+    const d = new Date(now.getTime() - i * 7 * 86400000);
+    const week = getISOWeek(d);
+    weekMap[week] = 0;
+  }
+
+  for (const m of meetings) {
+    const week = getISOWeek(new Date(m.date));
+    if (weekMap[week] !== undefined) weekMap[week]++;
+    else weekMap[week] = 1;
+  }
+
+  const weeks = Object.entries(weekMap)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([week, count]) => ({ week, count }));
+
+  const counts = weeks.map(w => w.count);
+  const totalMeetings = counts.reduce((s, c) => s + c, 0);
+  const avgPerWeek = counts.length > 0 ? Math.round((totalMeetings / counts.length) * 10) / 10 : 0;
+  const currentWeekCount = weeks.length > 0 ? weeks[weeks.length - 1].count : 0;
+  const gapWeeks = weeks.filter(w => w.count === 0).map(w => w.week);
+  const clusterWeeks = weeks.filter(w => w.count >= 3).map(w => w.week);
+
+  // Density score: coefficient of variation (lower variance = higher score)
+  const variance = counts.length > 1
+    ? counts.reduce((s, c) => s + Math.pow(c - avgPerWeek, 2), 0) / counts.length
+    : 0;
+  const cv = avgPerWeek > 0 ? Math.sqrt(variance) / avgPerWeek : 1;
+  const densityScore = Math.max(0, Math.min(100, Math.round((1 - cv) * 100)));
+
+  let insight = '';
+  if (gapWeeks.length >= 3) {
+    insight = `${gapWeeks.length} gap weeks (zero meetings) in last 12 weeks — engagement is sporadic. Aim for at least 1-2 meetings every week.`;
+  } else if (clusterWeeks.length >= 2 && gapWeeks.length >= 1) {
+    insight = `Meetings are clustered — ${clusterWeeks.length} busy weeks vs ${gapWeeks.length} dead weeks. Spread meetings more evenly for sustained momentum.`;
+  } else if (densityScore >= 70) {
+    insight = `Good meeting cadence (density score ${densityScore}/100). Meetings well-distributed across weeks.`;
+  } else {
+    insight = `Meeting density ${densityScore}/100. ${avgPerWeek} meetings/week average.`;
+  }
+
+  return {
+    weeklyDistribution: weeks,
+    currentWeekCount,
+    avgPerWeek,
+    gapWeeks,
+    clusterWeeks,
+    densityScore,
+    insight,
+  };
+}
+
+function getISOWeek(date: Date): string {
+  const d = new Date(date.getTime());
+  d.setHours(0, 0, 0, 0);
+  d.setDate(d.getDate() + 3 - (d.getDay() + 6) % 7);
+  const jan4 = new Date(d.getFullYear(), 0, 4);
+  const weekNum = Math.round(((d.getTime() - jan4.getTime()) / 86400000 - 3 + (jan4.getDay() + 6) % 7) / 7) + 1;
+  return `${d.getFullYear()}-W${String(weekNum).padStart(2, '0')}`;
+}
+
+export async function detectFomoDynamics(): Promise<FomoDynamic[]> {
+  await ensureInitialized();
+  const db = getClient();
+
+  // Find investors who recently advanced to a new stage (last 7 days)
+  const advancedResult = await db.execute(`
+    SELECT i.id, i.name, i.status, i.tier, i.updated_at
+    FROM investors i
+    WHERE i.status IN ('engaged', 'in_dd', 'term_sheet', 'closed')
+      AND i.updated_at >= datetime('now', '-7 days')
+    ORDER BY CASE i.status
+      WHEN 'term_sheet' THEN 0 WHEN 'in_dd' THEN 1 WHEN 'engaged' THEN 2 WHEN 'closed' THEN 3
+    END ASC
+  `);
+
+  // Get all active investors at earlier stages
+  const activeResult = await db.execute(`
+    SELECT i.id, i.name, i.status, i.tier, i.updated_at, i.created_at
+    FROM investors i
+    WHERE i.status NOT IN ('passed', 'dropped', 'closed')
+    ORDER BY i.tier ASC
+  `);
+
+  const advancedInvestors = advancedResult.rows as unknown as Array<{
+    id: string; name: string; status: string; tier: number; updated_at: string;
+  }>;
+
+  const activeInvestors = activeResult.rows as unknown as Array<{
+    id: string; name: string; status: string; tier: number; updated_at: string; created_at: string;
+  }>;
+
+  const msPerDay = 1000 * 60 * 60 * 24;
+  const now = Date.now();
+  const stageRank: Record<string, number> = {
+    identified: 0, contacted: 1, nda_signed: 2, meeting_scheduled: 3,
+    met: 4, engaged: 5, in_dd: 6, term_sheet: 7, closed: 8,
+  };
+
+  const fomos: FomoDynamic[] = [];
+
+  for (const adv of advancedInvestors) {
+    const advRank = stageRank[adv.status] ?? 0;
+
+    // Find investors who should feel FOMO: similar or higher tier, at an earlier stage
+    const affected = activeInvestors
+      .filter(a => a.id !== adv.id && (stageRank[a.status] ?? 0) < advRank && a.tier <= adv.tier + 1)
+      .map(a => ({
+        name: a.name,
+        tier: a.tier,
+        status: a.status,
+        daysInStage: Math.max(0, Math.round((now - new Date(a.updated_at || a.created_at).getTime()) / msPerDay)),
+      }));
+
+    if (affected.length === 0) continue;
+
+    const fomoIntensity: 'high' | 'medium' | 'low' =
+      adv.status === 'term_sheet' || adv.status === 'closed' ? 'high' :
+      adv.status === 'in_dd' ? 'medium' : 'low';
+
+    const recommendation = fomoIntensity === 'high'
+      ? `${adv.name} is at ${adv.status} — use this to create urgency with ${affected.slice(0, 3).map(a => a.name).join(', ')}. Mention process is advancing.`
+      : fomoIntensity === 'medium'
+      ? `${adv.name} entering DD signals commitment — mention this dynamic to investors at earlier stages to accelerate.`
+      : `${adv.name} advancing to engaged — subtle competitive signal for other investors.`;
+
+    fomos.push({
+      advancingInvestor: adv.name,
+      advancingTo: adv.status,
+      affectedInvestors: affected.slice(0, 5),
+      fomoIntensity,
+      recommendation,
+    });
+  }
+
+  // Sort by intensity
+  const intOrder = { high: 0, medium: 1, low: 2 };
+  fomos.sort((a, b) => intOrder[a.fomoIntensity] - intOrder[b.fomoIntensity]);
+
+  return fomos;
+}
+
+// ---------------------------------------------------------------------------
 // Acceleration Actions
 // ---------------------------------------------------------------------------
 

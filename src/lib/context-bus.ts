@@ -36,8 +36,10 @@ import {
   computeWinLossPatterns,
   detectScoreReversals,
   getPipelineRankings,
+  computeMeetingDensity,
+  detectFomoDynamics,
 } from './db';
-import type { TemporalTrends, RaiseForecast, ForecastCalibration, WinLossPatterns, ScoreReversal, PipelineRanking } from './db';
+import type { TemporalTrends, RaiseForecast, ForecastCalibration, WinLossPatterns, ScoreReversal, PipelineRanking, MeetingDensity, FomoDynamic } from './db';
 
 // ---------------------------------------------------------------------------
 // Context version — monotonically increasing counter
@@ -289,6 +291,12 @@ export interface FullContext {
 
   // Pipeline rankings — comparative investor ranking with movement (cycle 26)
   pipelineRankings: PipelineRanking[];
+
+  // Meeting density — engagement distribution analysis (cycle 27)
+  meetingDensity: MeetingDensity | null;
+
+  // FOMO dynamics — competitive pressure from advancing investors (cycle 27)
+  fomoDynamics: FomoDynamic[];
 }
 
 const recentChanges: ContextChange[] = [];
@@ -331,6 +339,8 @@ export async function getFullContext(): Promise<FullContext> {
     winLossPatternsData,
     scoreReversalsData,
     pipelineRankingsData,
+    meetingDensityData,
+    fomoDynamicsData,
   ] = await Promise.all([
     getRaiseConfig().catch(() => null),
     getAllDocuments().catch(() => []),
@@ -358,6 +368,8 @@ export async function getFullContext(): Promise<FullContext> {
     computeWinLossPatterns().catch(() => null),
     detectScoreReversals().catch(() => []),
     getPipelineRankings().catch(() => []),
+    computeMeetingDensity().catch(() => null),
+    detectFomoDynamics().catch(() => []),
   ]);
 
   // Build investor snapshots enriched with meeting/task/followup data
@@ -650,6 +662,10 @@ export async function getFullContext(): Promise<FullContext> {
     // Score reversals and pipeline rankings (cycle 26)
     scoreReversals: (scoreReversalsData as ScoreReversal[]),
     pipelineRankings: (pipelineRankingsData as PipelineRanking[]),
+
+    // Meeting density and FOMO dynamics (cycle 27)
+    meetingDensity: (meetingDensityData as MeetingDensity | null),
+    fomoDynamics: (fomoDynamicsData as FomoDynamic[]),
   };
 
   cachedContext = context;
@@ -942,6 +958,32 @@ export function contextToSystemPrompt(ctx: FullContext): string {
     lines.push('');
   }
 
+  // Meeting density — engagement distribution (cycle 27)
+  if (ctx.meetingDensity) {
+    const md = ctx.meetingDensity;
+    lines.push(`MEETING DENSITY (12-week analysis, score ${md.densityScore}/100):`);
+    lines.push(`- Current week: ${md.currentWeekCount} meetings | Average: ${md.avgPerWeek}/week`);
+    if (md.gapWeeks.length > 0) {
+      lines.push(`- Gap weeks (zero meetings): ${md.gapWeeks.join(', ')}`);
+    }
+    if (md.clusterWeeks.length > 0) {
+      lines.push(`- Cluster weeks (3+ meetings): ${md.clusterWeeks.join(', ')}`);
+    }
+    lines.push(`- ${md.insight}`);
+    lines.push('');
+  }
+
+  // FOMO dynamics — competitive pressure (cycle 27)
+  if (ctx.fomoDynamics.length > 0) {
+    lines.push('COMPETITIVE DYNAMICS (FOMO signals from advancing investors):');
+    for (const fomo of ctx.fomoDynamics.slice(0, 3)) {
+      const intensityTag = fomo.fomoIntensity === 'high' ? 'HIGH' : fomo.fomoIntensity === 'medium' ? 'MEDIUM' : 'LOW';
+      lines.push(`- [${intensityTag}] ${fomo.advancingInvestor} → ${fomo.advancingTo} | Affects: ${fomo.affectedInvestors.slice(0, 3).map(a => a.name).join(', ')}`);
+      lines.push(`  → ${fomo.recommendation}`);
+    }
+    lines.push('');
+  }
+
   // Score reversals — significant drops (cycle 26)
   if (ctx.scoreReversals.length > 0) {
     lines.push('SCORE REVERSALS (significant score drops since last snapshot):');
@@ -1112,6 +1154,14 @@ export function contextToSystemPrompt(ctx: FullContext): string {
         synthesisLines.push(`SIGNAL MISMATCH: Health metrics are improving but critical path investor${stalledCritical.length > 1 ? 's' : ''} ${stalledCritical.map(i => i.name).join(', ')} ${stalledCritical.length > 1 ? 'are' : 'is'} stalled — improving averages may mask that the most important investors aren't progressing`);
       }
     }
+  }
+
+  // Meeting density + FOMO synthesis (cycle 27)
+  if (ctx.meetingDensity && ctx.meetingDensity.densityScore < 40 && ctx.fomoDynamics.length > 0) {
+    synthesisLines.push(`MOMENTUM GAP: Meeting density is low (${ctx.meetingDensity.densityScore}/100) but ${ctx.fomoDynamics.length} FOMO trigger(s) exist — use competitive dynamics to schedule meetings this week`);
+  }
+  if (ctx.meetingDensity && ctx.meetingDensity.currentWeekCount === 0 && ctx.investors.filter(i => i.tier <= 2).length >= 3) {
+    synthesisLines.push(`DEAD WEEK: Zero meetings this week with ${ctx.investors.filter(i => i.tier <= 2).length} active T1-2 investors — engagement gap will hurt momentum`);
   }
 
   // Score reversal synthesis: critical drops on T1-2 investors need immediate attention (cycle 26)
