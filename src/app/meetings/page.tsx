@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import type { Meeting } from '@/lib/types';
-import { Search, FileSearch, Calendar, Download, ChevronDown, ChevronRight, Star, CheckCircle2, X } from 'lucide-react';
+import { Search, FileSearch, Calendar, Download, ChevronDown, ChevronRight, Star, CheckCircle2, X, TrendingUp, TrendingDown, Minus, Hash } from 'lucide-react';
 
 const MEETING_TYPES = ['all', 'intro', 'management_presentation', 'deep_dive', 'site_visit', 'dd_session', 'negotiation', 'social'] as const;
 const STATUS_OPTIONS = ['all', 'met', 'engaged', 'in_dd', 'term_sheet', 'passed'] as const;
@@ -399,6 +399,41 @@ export default function MeetingsPage() {
   }, 0);
   const uniqueInvestors = new Set(meetings.map(m => m.investor_id)).size;
 
+  // Per-investor engagement intelligence (computed from meetings array)
+  const investorStats = meetings.reduce<Record<string, {
+    count: number;
+    trend: 'up' | 'down' | 'flat' | 'new';
+    latestEnthusiasm: number;
+    avgEnthusiasm: number;
+  }>>((acc, m) => {
+    if (!acc[m.investor_id]) {
+      acc[m.investor_id] = { count: 0, trend: 'new', latestEnthusiasm: 0, avgEnthusiasm: 0 };
+    }
+    acc[m.investor_id].count++;
+    return acc;
+  }, {});
+
+  // Second pass: compute trends (needs chronological order)
+  const meetingsByInvestor = meetings.reduce<Record<string, Meeting[]>>((acc, m) => {
+    if (!acc[m.investor_id]) acc[m.investor_id] = [];
+    acc[m.investor_id].push(m);
+    return acc;
+  }, {});
+
+  for (const [invId, invMeetings] of Object.entries(meetingsByInvestor)) {
+    const sorted = [...invMeetings].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    const latest = sorted[sorted.length - 1];
+    const avg = sorted.reduce((s, m) => s + m.enthusiasm_score, 0) / sorted.length;
+    investorStats[invId].latestEnthusiasm = latest.enthusiasm_score;
+    investorStats[invId].avgEnthusiasm = avg;
+    if (sorted.length >= 2) {
+      const prev = sorted[sorted.length - 2];
+      if (latest.enthusiasm_score > prev.enthusiasm_score) investorStats[invId].trend = 'up';
+      else if (latest.enthusiasm_score < prev.enthusiasm_score) investorStats[invId].trend = 'down';
+      else investorStats[invId].trend = 'flat';
+    }
+  }
+
   const handleOutcomeSaved = (updated: Meeting) => {
     setMeetings(prev => prev.map(m => m.id === updated.id ? updated : m));
   };
@@ -522,6 +557,15 @@ export default function MeetingsPage() {
             const questions = (() => { try { return JSON.parse(m.questions_asked || '[]'); } catch { return []; } })();
             const isOutcomeExpanded = expandedOutcome === m.id;
             const hasOutcome = m.outcome_rating !== null && m.outcome_rating !== undefined;
+            const stats = investorStats[m.investor_id];
+            const trendConfig = {
+              up: { icon: TrendingUp, color: 'var(--success)', label: 'Rising' },
+              down: { icon: TrendingDown, color: 'var(--danger)', label: 'Falling' },
+              flat: { icon: Minus, color: 'var(--text-muted)', label: 'Flat' },
+              new: { icon: Hash, color: 'var(--text-muted)', label: 'First' },
+            };
+            const trend = stats ? trendConfig[stats.trend] : trendConfig.new;
+            const TrendIcon = trend.icon;
 
             return (
               <div
@@ -531,14 +575,40 @@ export default function MeetingsPage() {
               >
                 <div className="flex items-start justify-between mb-3">
                   <div>
-                    <Link
-                      href={`/investors/${m.investor_id}`}
-                      style={{ fontWeight: 500, color: 'var(--text-primary)', transition: 'color 150ms ease' }}
-                      onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
-                      onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}
-                    >
-                      {m.investor_name}
-                    </Link>
+                    <div className="flex items-center gap-2">
+                      <Link
+                        href={`/investors/${m.investor_id}`}
+                        style={{ fontWeight: 500, color: 'var(--text-primary)', transition: 'color 150ms ease' }}
+                        onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
+                        onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}
+                      >
+                        {m.investor_name}
+                      </Link>
+                      {stats && stats.count > 1 && (
+                        <span
+                          className="flex items-center gap-1"
+                          style={{
+                            fontSize: '10px',
+                            padding: '1px 6px',
+                            borderRadius: 'var(--radius-sm)',
+                            background: 'var(--surface-2)',
+                            color: 'var(--text-muted)',
+                            border: '1px solid var(--border-subtle)',
+                          }}
+                        >
+                          {stats.count} meetings
+                        </span>
+                      )}
+                      {stats && stats.count >= 2 && (
+                        <span
+                          className="flex items-center gap-0.5"
+                          style={{ fontSize: '10px', color: trend.color }}
+                          title={`Enthusiasm ${trend.label.toLowerCase()} (avg ${stats.avgEnthusiasm.toFixed(1)})`}
+                        >
+                          <TrendIcon className="w-3 h-3" />
+                        </span>
+                      )}
+                    </div>
                     <div className="flex gap-3 mt-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
                       <span>{m.date}</span>
                       <span style={{ textTransform: 'capitalize' }}>{m.type.replace(/_/g, ' ')}</span>
