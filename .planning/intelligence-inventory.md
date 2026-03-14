@@ -9,6 +9,7 @@
 | 3 | 2026-03-14 | Deep intelligence | Cross-investor question patterns, prediction calibration, narrative drift, objection fix, intelligence inventory | db.ts, context-bus.ts, meetings, stress-test, investors |
 | 4 | 2026-03-14 | Relationship graph + meeting prep | Investor relationship graph (co-investment + warm path), 9th scoring dimension (Network Effect), keystone investor detection, cross-investor meeting prep API, aggregated competitive intel | db.ts, scoring.ts, context-bus.ts, meeting-brief/route.ts, meetings/prep/route.ts, investors/[id]/score/route.ts |
 | 5 | 2026-03-14 | Self-calibration + timing intelligence | Auto-weight calibration from resolved predictions, cross-investor timing correlation (competitive tension / engagement gaps / DD sync), document auto-strengthening from question convergence, automatic relationship graph rebuild, timing signals in context bus | stress-test/route.ts, momentum/route.ts, documents/strengthen/route.ts, investors/route.ts, context-bus.ts, db.ts |
+| 6 | 2026-03-14 | Monte Carlo + narrative drift + co-investor detection + verification | Monte Carlo confidence intervals (P10/P50/P90), narrative drift consumption in momentum (anomaly/alert enrichment), market deal co-investor detection in relationship graph, intelligence flow verification endpoint, Monte Carlo in context bus | stress-test/route.ts, momentum/route.ts, db.ts, context-bus.ts, intelligence/verify/route.ts |
 
 ## Intelligence Capabilities (Existing)
 
@@ -35,6 +36,7 @@
 - [x] **Proven objection responses from playbook (NEW cycle 3)**
 - [x] **Keystone investor identification — "closing one unlocks others" (NEW cycle 4)**
 - [x] **Timing signals type definition + system prompt serialization (NEW cycle 5)**
+- [x] **Monte Carlo field in FullContext (populated by stress test, null by default) + system prompt serialization (NEW cycle 6)**
 
 ### C. Prediction Engine (stress-test/route.ts)
 - [x] Status-weighted base probabilities
@@ -44,7 +46,7 @@
 - [x] **Prediction logging for calibration — every forecast run logs predictions (NEW cycle 3)**
 - [x] **Auto-weight calibration: fetches getCalibrationData(), computes empirical close rates per status, blends 70% hardcoded + 30% empirical when 5+ resolved predictions exist (NEW cycle 5)**
 - [x] **Calibration section in response: shows enabled/disabled, resolved count, per-status adjustments (NEW cycle 5)**
-- [ ] **GAP: No Monte Carlo confidence intervals**
+- [x] **Monte Carlo confidence intervals: 1000 simulations, P10/P50/P90 percentiles, probability of reaching target (NEW cycle 6)**
 
 ### D. Momentum Analysis (momentum/route.ts)
 - [x] Weekly-over-weekly deltas
@@ -57,7 +59,8 @@
   - [x] Engagement gaps: investor with meetings then 21+ day silence = stall risk
   - [x] DD synchronization: 2+ investors entering DD within 14 days = leverage opportunity
 - [x] **Auto-creates competitive_signal acceleration actions on competitive tension (NEW cycle 5)**
-- [ ] **GAP: Momentum doesn't consume narrative drift data yet**
+- [x] **Narrative drift consumption: anomalies/alerts enriched with narrativeContext when investor type is struggling (NEW cycle 6)**
+- [x] **Narrative health in response: full narrative signals array for pulse dashboard (NEW cycle 6)**
 
 ### E. Workspace AI (workspace/route.ts)
 - [x] Full context bus consumption
@@ -109,7 +112,7 @@
 - [x] `getQuestionPatternsForType(type)`: type-specific question patterns for meeting prep
 - [x] `getProvenResponsesForTopics(topics)`: best responses per objection topic
 - [x] **Auto-rebuild on investor creation and warm_path update (NEW cycle 5)**
-- [ ] **GAP: No market deal co-investor detection (only portfolio-based)**
+- [x] **Market deal co-investor detection: scans market_deals for pipeline investors, discovers co-investment relationships (NEW cycle 6)**
 
 ### J. Meeting Prep API (NEW cycle 4)
 - [x] Dedicated `/api/meetings/prep?investor_id=` endpoint
@@ -130,23 +133,28 @@
 
 ## Intelligence Gaps (Prioritized for Next Cycle)
 
-### P1 — Monte Carlo Confidence Intervals
-- Add variance estimation to stress test predictions
-- Show 10th/50th/90th percentile outcomes
-- Compounds with: prediction engine, context bus, workspace AI
-
-### P2 — Semantic Objection Matching
+### P1 — Semantic Objection Matching
 - Move beyond keyword-only objection matching to embedding-based similarity
 - Compounds with: meeting intelligence, objection playbook, proven responses
 
-### P3 — Narrative Drift Consumption in Momentum
-- Momentum analysis should incorporate narrative drift signals
-- When a cohort's narrative is struggling, that should affect momentum interpretation
-
-### P4 — Market Deal Co-Investor Detection
-- Scan market deals for investors in pipeline to detect co-investment relationships
-- Compounds with: relationship graph, keystone detection, meeting prep
-
-### P5 — Document Version Branching by Investor Type
+### P2 — Document Version Branching by Investor Type
 - Auto-create tailored document versions per investor type based on narrative drift signals
 - Compounds with: narrative intelligence, document flags, workspace AI
+
+### P3 — Explicit Reasoning Framework for Pattern Synthesis
+- Workspace AI should have structured pattern recognition across all intelligence signals
+- Compounds with: context bus, narrative drift, Monte Carlo, timing signals
+
+### L. Intelligence Flow Verification (NEW cycle 6)
+- [x] GET `/api/intelligence/verify` endpoint
+- [x] Checks context bus builds successfully
+- [x] Checks data freshness (build timestamp age)
+- [x] Counts records in intelligence tables (question_patterns, prediction_log, investor_relationships, narrative_signals)
+- [x] Verifies context bus includes all expected fields (narrativeWeaknesses, predictionCalibration, narrativeDrift, provenResponses, keystoneInvestors)
+- [x] Tests supporting functions are callable (getQuestionPatterns, getCalibrationData, computeNarrativeSignals, getKeystoneInvestors)
+- [x] Returns health report: healthy/degraded/unhealthy with per-check pass/warn/fail
+
+### CLOSED (Cycle 6):
+- ~~Monte Carlo Confidence Intervals~~ — implemented in stress-test/route.ts
+- ~~Narrative Drift Consumption in Momentum~~ — implemented in momentum/route.ts
+- ~~Market Deal Co-Investor Detection~~ — implemented in db.ts + buildRelationshipGraph()

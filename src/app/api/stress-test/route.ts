@@ -524,6 +524,28 @@ export async function GET() {
     // Sort by expected value descending
     investorForecasts.sort((a, b) => b.expectedValue - a.expectedValue);
 
+    // -----------------------------------------------------------------------
+    // Monte Carlo Simulation: 1000 runs to compute confidence intervals
+    // Each run: every investor independently closes/doesn't close based on
+    // their individual closeProbability.
+    // -----------------------------------------------------------------------
+    const MC_RUNS = 1000;
+    const outcomes: number[] = [];
+    for (let run = 0; run < MC_RUNS; run++) {
+      let runTotal = 0;
+      for (const f of investorForecasts) {
+        if (Math.random() < (f.closeProbability / 100) && f.expectedCheck > 0) {
+          runTotal += f.expectedCheck;
+        }
+      }
+      outcomes.push(runTotal);
+    }
+    outcomes.sort((a, b) => a - b);
+    const p10 = Math.round(outcomes[Math.floor(MC_RUNS * 0.10)] * 10) / 10;
+    const p50 = Math.round(outcomes[Math.floor(MC_RUNS * 0.50)] * 10) / 10;
+    const p90 = Math.round(outcomes[Math.floor(MC_RUNS * 0.90)] * 10) / 10;
+    const probOfTarget = Math.round(outcomes.filter(o => o >= targetEquityM).length / MC_RUNS * 100);
+
     // Log predictions for calibration (non-blocking, max once per day per investor)
     try {
       for (const f of investorForecasts.slice(0, 20)) {
@@ -750,6 +772,13 @@ export async function GET() {
               Math.floor(investorForecasts.filter(f => f.expectedCheck > 0).length / 2)
             ]?.expectedCheck ?? 0
           : 0,
+      },
+      monteCarlo: {
+        p10,
+        p50,
+        p90,
+        probOfTarget,
+        runs: MC_RUNS,
       },
       calibration: {
         enabled: calibration.enabled,

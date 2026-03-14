@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@libsql/client';
-import { createAccelerationAction } from '@/lib/db';
+import { createAccelerationAction, computeNarrativeSignals } from '@/lib/db';
 
 function getClient() {
   return createClient({
@@ -842,6 +842,65 @@ export async function GET() {
       }
     } catch { /* non-blocking */ }
 
+    // ═══════════════════════════════════════════════════════════════════
+    // 8. NARRATIVE DRIFT INTEGRATION
+    // ═══════════════════════════════════════════════════════════════════
+    // Fetch narrative signals and enrich anomalies/alerts with narrative context
+    // when the investor's type is "struggling" (avg enthusiasm < 2.5 or conversion < 20%).
+
+    let narrativeHealth: {
+      investorType: string;
+      avgEnthusiasm: number;
+      conversionRate: number;
+      topObjection: string;
+      topQuestionTopic: string;
+      sampleSize: number;
+      status: 'effective' | 'struggling' | 'insufficient_data';
+    }[] = [];
+
+    try {
+      const rawSignals = await computeNarrativeSignals();
+      narrativeHealth = rawSignals.map(ns => ({
+        ...ns,
+        status: (ns.sampleSize < 2
+          ? 'insufficient_data'
+          : ns.avgEnthusiasm < 2.5 || ns.conversionRate < 20
+            ? 'struggling'
+            : 'effective') as 'effective' | 'struggling' | 'insufficient_data',
+      }));
+
+      // Build a lookup of struggling types
+      const strugglingTypes = new Map<string, typeof narrativeHealth[number]>();
+      for (const nh of narrativeHealth) {
+        if (nh.status === 'struggling') {
+          strugglingTypes.set(nh.investorType, nh);
+        }
+      }
+
+      // Enrich anomalies with narrative context when their investor type is struggling
+      for (const anomaly of anomalies) {
+        const signal = strugglingTypes.get(anomaly.type);
+        if (signal) {
+          (anomaly as unknown as Record<string, unknown>).narrativeContext =
+            `Narrative not landing for ${anomaly.type} investors (avg enthusiasm: ${signal.avgEnthusiasm}/5, conversion: ${signal.conversionRate}%). ` +
+            `Top objection: "${signal.topObjection}". Top question: "${signal.topQuestionTopic}". ` +
+            `Consider adapting pitch for this investor type.`;
+        }
+      }
+
+      // Enrich trajectory alerts with narrative context too
+      for (const alert of trajectoryAlerts) {
+        const invEntry = matrix.find(m => m.investorId === alert.investorId);
+        if (!invEntry) continue;
+        const signal = strugglingTypes.get(invEntry.type);
+        if (signal) {
+          (alert as unknown as Record<string, unknown>).narrativeContext =
+            `Narrative struggling with ${invEntry.type} investors (avg enthusiasm: ${signal.avgEnthusiasm}/5, conversion: ${signal.conversionRate}%). ` +
+            `Consider type-specific pitch adjustments before re-engagement.`;
+        }
+      }
+    } catch { /* non-blocking — narrative signals are best-effort */ }
+
     return NextResponse.json({
       matrix,
       cohorts,
@@ -849,6 +908,7 @@ export async function GET() {
       crossSignals,
       trajectoryAlerts,
       timingSignals,
+      narrativeHealth,
       overallTrend,
       overallDirection,
       weeks: weekLabels,

@@ -2623,9 +2623,79 @@ export interface InvestorRelationship {
 }
 
 /**
+ * Detect co-investors from market deals:
+ * Scans market_deals for pipeline investors appearing in lead_investors/other_investors,
+ * then cross-references co-investors against the pipeline to find shared deal history.
+ */
+export async function detectMarketDealCoInvestors(): Promise<{
+  investorName: string;
+  investorId: string;
+  dealCompany: string;
+  coInvestors: string[];
+  dealRound: string;
+}[]> {
+  await ensureInitialized();
+  const db = getClient();
+
+  const [dealsResult, investorsResult] = await Promise.all([
+    db.execute('SELECT company, round, lead_investors, other_investors FROM market_deals'),
+    db.execute('SELECT id, name FROM investors WHERE status NOT IN (\'passed\', \'dropped\')'),
+  ]);
+
+  const deals = dealsResult.rows as unknown as Array<{
+    company: string; round: string; lead_investors: string; other_investors: string;
+  }>;
+  const pipelineInvestors = investorsResult.rows as unknown as Array<{ id: string; name: string }>;
+
+  const matches: {
+    investorName: string;
+    investorId: string;
+    dealCompany: string;
+    coInvestors: string[];
+    dealRound: string;
+  }[] = [];
+
+  for (const deal of deals) {
+    // Parse all investors from the deal (comma-separated strings)
+    const leadList = (deal.lead_investors || '').split(',').map(s => s.trim()).filter(Boolean);
+    const otherList = (deal.other_investors || '').split(',').map(s => s.trim()).filter(Boolean);
+    const allDealInvestors = [...leadList, ...otherList];
+
+    if (allDealInvestors.length === 0) continue;
+
+    // Check if any pipeline investor appears in this deal
+    for (const pipelineInv of pipelineInvestors) {
+      const nameLC = pipelineInv.name.toLowerCase();
+      const matchedInDeal = allDealInvestors.find(di =>
+        di.toLowerCase() === nameLC ||
+        di.toLowerCase().includes(nameLC) ||
+        nameLC.includes(di.toLowerCase())
+      );
+
+      if (matchedInDeal) {
+        // The co-investors are all deal participants EXCEPT the matched pipeline investor
+        const coInvestors = allDealInvestors.filter(di => di !== matchedInDeal);
+        if (coInvestors.length > 0) {
+          matches.push({
+            investorName: pipelineInv.name,
+            investorId: pipelineInv.id,
+            dealCompany: deal.company,
+            coInvestors,
+            dealRound: deal.round || 'unknown',
+          });
+        }
+      }
+    }
+  }
+
+  return matches;
+}
+
+/**
  * Build the relationship graph by scanning all investors for:
  * 1. Shared portfolio companies (co-investment signal)
  * 2. Warm path mentions of other investor names
+ * 3. Market deal co-investor detection
  * Returns all discovered relationships (also persists them).
  */
 export async function buildRelationshipGraph(): Promise<InvestorRelationship[]> {
@@ -2693,7 +2763,32 @@ export async function buildRelationshipGraph(): Promise<InvestorRelationship[]> 
     }
   }
 
-  // 3. Deduplicate (A-B and B-A are the same relationship)
+  // 3. Market deal co-investor detection
+  const marketDealCoInvestors = await detectMarketDealCoInvestors();
+  for (const match of marketDealCoInvestors) {
+    // For each pipeline investor found in a market deal, check if any co-investors are also in pipeline
+    const investorId = match.investorId;
+    for (const coInvestorName of match.coInvestors) {
+      // Find co-investor in pipeline by name (case-insensitive partial match)
+      const coInvestor = investors.find(inv =>
+        inv.id !== investorId &&
+        (inv.name.toLowerCase() === coInvestorName.toLowerCase() ||
+         inv.name.toLowerCase().includes(coInvestorName.toLowerCase()) ||
+         coInvestorName.toLowerCase().includes(inv.name.toLowerCase()))
+      );
+      if (coInvestor) {
+        discovered.push({
+          a: investorId,
+          b: coInvestor.id,
+          type: 'market_deal_coinvestor',
+          strength: 3, // Moderate signal — they co-invested in a market deal
+          evidence: `Both involved in ${match.dealCompany} ${match.dealRound}: ${match.investorName} and ${coInvestor.name}`,
+        });
+      }
+    }
+  }
+
+  // 4. Deduplicate (A-B and B-A are the same relationship)
   const existingPairs = new Set<string>();
   const uniqueRelationships = discovered.filter(r => {
     const pairKey = [r.a, r.b].sort().join('|') + '|' + r.type;
@@ -2702,7 +2797,7 @@ export async function buildRelationshipGraph(): Promise<InvestorRelationship[]> 
     return true;
   });
 
-  // 4. Clear existing relationships and insert fresh
+  // 5. Clear existing relationships and insert fresh
   await db.execute('DELETE FROM investor_relationships');
 
   for (const rel of uniqueRelationships) {
@@ -2712,7 +2807,7 @@ export async function buildRelationshipGraph(): Promise<InvestorRelationship[]> 
     });
   }
 
-  // 5. Return enriched results
+  // 6. Return enriched results
   return getInvestorRelationshipsAll();
 }
 

@@ -204,6 +204,14 @@ export interface FullContext {
     investorNames: string[];
     urgency: 'high' | 'medium' | 'low';
   }[];
+
+  // Monte Carlo confidence intervals from stress test
+  monteCarlo: {
+    p10: number;
+    p50: number;
+    p90: number;
+    probOfTarget: number;
+  } | null;
 }
 
 const recentChanges: ContextChange[] = [];
@@ -440,6 +448,9 @@ export async function getFullContext(): Promise<FullContext> {
 
     // Timing signals — populated by momentum route, not fetched here (too expensive)
     timingSignals: [],
+
+    // Monte Carlo — populated by stress test response, not fetched in bus
+    monteCarlo: null,
   };
 
   cachedContext = context;
@@ -584,6 +595,14 @@ export function contextToSystemPrompt(ctx: FullContext): string {
     for (const ki of ctx.keystoneInvestors) {
       lines.push(`- ${ki.name} → connected to ${ki.connectionCount} other investors in pipeline (cascade: ${ki.cascadeValue})`);
     }
+    lines.push('');
+  }
+
+  // Monte Carlo forecast confidence intervals
+  if (ctx.monteCarlo) {
+    lines.push('MONTE CARLO FORECAST (1000 simulations):');
+    lines.push(`P10 (pessimistic): €${ctx.monteCarlo.p10}M | P50 (median): €${ctx.monteCarlo.p50}M | P90 (optimistic): €${ctx.monteCarlo.p90}M`);
+    lines.push(`Probability of reaching target: ${ctx.monteCarlo.probOfTarget}%`);
     lines.push('');
   }
 
