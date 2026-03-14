@@ -215,8 +215,7 @@ export function Sidebar() {
                     fontSize: '10px',
                     fontWeight: 400,
                     color: SB.sectionLabel,
-                    textTransform: 'none',
-                    letterSpacing: '0.14em',
+                    letterSpacing: '0.04em',
                     padding: '0 var(--space-3)',
                     marginBottom: 'var(--space-1)',
                   }}
