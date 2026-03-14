@@ -106,6 +106,15 @@ async function ensureInitialized() {
       summary TEXT DEFAULT '',
       uploaded_at TEXT DEFAULT (datetime('now'))
     )`,
+    `CREATE TABLE IF NOT EXISTS model_sheets (
+      id TEXT PRIMARY KEY,
+      model_id TEXT NOT NULL DEFAULT 'default',
+      sheet_name TEXT NOT NULL,
+      sheet_order INTEGER DEFAULT 0,
+      data TEXT NOT NULL DEFAULT '{}',
+      created_at TEXT DEFAULT (datetime('now')),
+      updated_at TEXT DEFAULT (datetime('now'))
+    )`,
   ], 'write');
 
   initialized = true;
@@ -554,4 +563,60 @@ export async function getDataRoomContext(): Promise<string> {
     const text = f.extracted_text.substring(0, 3000);
     return `--- ${f.filename} (${f.category}) ---\n${f.summary ? `Summary: ${f.summary}\n` : ''}${text}`;
   }).join('\n\n');
+}
+
+// Model Sheets
+export interface ModelSheet {
+  id: string;
+  model_id: string;
+  sheet_name: string;
+  sheet_order: number;
+  data: string; // JSON: { cells: Record<string, CellData>, colWidths?: Record<string,number> }
+  created_at: string;
+  updated_at: string;
+}
+
+export async function getModelSheets(modelId: string = 'default'): Promise<ModelSheet[]> {
+  await ensureInitialized();
+  const result = await getClient().execute({
+    sql: 'SELECT * FROM model_sheets WHERE model_id = ? ORDER BY sheet_order ASC',
+    args: [modelId],
+  });
+  return result.rows as unknown as ModelSheet[];
+}
+
+export async function getModelSheet(id: string): Promise<ModelSheet | null> {
+  await ensureInitialized();
+  const result = await getClient().execute({
+    sql: 'SELECT * FROM model_sheets WHERE id = ?',
+    args: [id],
+  });
+  return result.rows.length > 0 ? (result.rows[0] as unknown as ModelSheet) : null;
+}
+
+export async function createModelSheet(sheet: { model_id?: string; sheet_name: string; sheet_order: number; data: string }): Promise<ModelSheet> {
+  await ensureInitialized();
+  const id = crypto.randomUUID();
+  const now = new Date().toISOString();
+  await getClient().execute({
+    sql: `INSERT INTO model_sheets (id, model_id, sheet_name, sheet_order, data, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    args: [id, sheet.model_id || 'default', sheet.sheet_name, sheet.sheet_order, sheet.data, now, now],
+  });
+  return (await getModelSheet(id))!;
+}
+
+export async function updateModelSheet(id: string, updates: { sheet_name?: string; data?: string; sheet_order?: number }) {
+  await ensureInitialized();
+  const sets: string[] = ['updated_at = ?'];
+  const values: InValue[] = [new Date().toISOString()];
+  if (updates.sheet_name !== undefined) { sets.push('sheet_name = ?'); values.push(updates.sheet_name); }
+  if (updates.data !== undefined) { sets.push('data = ?'); values.push(updates.data); }
+  if (updates.sheet_order !== undefined) { sets.push('sheet_order = ?'); values.push(updates.sheet_order); }
+  values.push(id);
+  await getClient().execute({ sql: `UPDATE model_sheets SET ${sets.join(', ')} WHERE id = ?`, args: values });
+}
+
+export async function deleteModelSheet(id: string) {
+  await ensureInitialized();
+  await getClient().execute({ sql: 'DELETE FROM model_sheets WHERE id = ?', args: [id] });
 }

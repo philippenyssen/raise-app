@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import {
   LayoutDashboard, Users, Calendar, Brain, HeartPulse, FileText,
-  Sparkles, FolderOpen, BookOpen,
+  Sparkles, FolderOpen, BookOpen, Table,
   Menu, X
 } from 'lucide-react';
 
@@ -21,6 +21,7 @@ const nav: NavItem[] = [
   { href: '/workspace', label: 'Workspace', icon: Sparkles, section: 'DELIVERABLES' },
   { href: '/documents', label: 'Documents', icon: BookOpen, section: 'DELIVERABLES' },
   { href: '/data-room', label: 'Data Room', icon: FolderOpen, section: 'DELIVERABLES' },
+  { href: '/model', label: 'Model', icon: Table, section: 'DELIVERABLES' },
   // Process
   { href: '/', label: 'Dashboard', icon: LayoutDashboard, section: 'PROCESS' },
   { href: '/investors', label: 'Investors', icon: Users, section: 'PROCESS' },

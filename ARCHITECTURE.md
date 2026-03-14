@@ -188,7 +188,7 @@ src/
 
 **AI:** Streaming chat with full document context. System prompt includes raise config, data room summary, current document content.
 
-### Phase 3: Data Room `[ ]`
+### Phase 3: Data Room `[x]`
 
 **What it builds:** The context engine. Users upload documents (PDFs, DOCX, XLSX, images) that become the source material for all AI-generated deliverables.
 
