@@ -112,6 +112,15 @@
 }
 
 /* ── Base ── */
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background: rgba(27, 42, 74, 0.15);
+  color: var(--text-primary);
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
@@ -122,6 +131,7 @@ body {
   letter-spacing: 0.01em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 /* ── Scrollbar ── */
@@ -182,10 +192,14 @@ body {
   border-radius: var(--radius-lg);
   padding: var(--space-5);
   cursor: pointer;
-  transition: border-color 200ms ease;
+  transition: border-color 200ms ease, box-shadow 200ms ease, transform 200ms ease;
 }
 .card-interactive:hover {
   border-color: var(--border-default);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+}
+.card-interactive:active {
+  transform: scale(0.995);
 }
 
 .section-title {
