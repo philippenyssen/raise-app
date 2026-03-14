@@ -5,7 +5,7 @@ import Link from 'next/link';
 import type { Investor, InvestorStatus, InvestorTier, InvestorType } from '@/lib/types';
 import { useToast } from '@/components/toast';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
-import { Search, Download, GitCompare, Columns3 } from 'lucide-react';
+import { Search, Download, GitCompare, Columns3, Clock } from 'lucide-react';
 
 const STATUS_LABELS: Record<InvestorStatus, string> = {
   identified: 'Identified', contacted: 'Contacted', nda_signed: 'NDA Signed',
@@ -34,6 +34,22 @@ const TYPE_LABELS: Record<InvestorType, string> = {
 };
 
 const COMPLETENESS_FIELDS = ['partner', 'fund_size', 'check_size_range', 'sector_thesis', 'warm_path', 'ic_process', 'portfolio_conflicts'] as const;
+
+function daysSince(dateStr: string | null | undefined): number | null {
+  if (!dateStr) return null;
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return null;
+  const now = new Date();
+  return Math.floor((now.getTime() - d.getTime()) / (1000 * 60 * 60 * 24));
+}
+
+function stalenessStyle(days: number | null): { color: string; label: string } {
+  if (days === null) return { color: 'var(--text-muted)', label: 'Never' };
+  if (days <= 3) return { color: 'var(--success)', label: days === 0 ? 'Today' : days === 1 ? '1d ago' : `${days}d ago` };
+  if (days <= 7) return { color: 'var(--text-secondary)', label: `${days}d ago` };
+  if (days <= 14) return { color: 'var(--warning)', label: `${days}d ago` };
+  return { color: 'var(--danger)', label: `${days}d ago` };
+}
 
 function computeCompleteness(inv: Investor): number {
   let filled = 0;
@@ -345,6 +361,7 @@ export default function InvestorsPage() {
               <th>Partner</th>
               <th>Status</th>
               <th>Check Size</th>
+              <th>Last Contact</th>
               <th>Enthusiasm</th>
               <th>Actions</th>
             </tr>
@@ -433,6 +450,22 @@ export default function InvestorsPage() {
                   </td>
                   <td style={{ padding: 'var(--space-3) var(--space-4)', color: 'var(--text-secondary)', fontSize: 'var(--font-size-xs)' }}>
                     {inv.check_size_range || '---'}
+                  </td>
+                  <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
+                    {(() => {
+                      const days = daysSince(inv.last_meeting_date);
+                      const s = stalenessStyle(days);
+                      return (
+                        <span
+                          className="inline-flex items-center gap-1"
+                          style={{ fontSize: 'var(--font-size-xs)', color: s.color, fontWeight: days !== null && days > 14 ? 600 : 400 }}
+                          title={inv.last_meeting_date ? new Date(inv.last_meeting_date).toLocaleDateString() : 'No meetings yet'}
+                        >
+                          {days !== null && days > 14 && <Clock className="w-3 h-3" />}
+                          {s.label}
+                        </span>
+                      );
+                    })()}
                   </td>
                   <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
                     {inv.enthusiasm > 0 ? (

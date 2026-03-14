@@ -22,6 +22,7 @@ export interface Investor {
   enthusiasm: number; // 1-5
   created_at: string;
   updated_at: string;
+  last_meeting_date?: string | null;
 }
 
 export interface Meeting {

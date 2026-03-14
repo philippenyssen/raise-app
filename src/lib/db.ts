@@ -545,7 +545,10 @@ export async function setRaiseConfig(config: RaiseConfig) {
 // Investors
 export async function getAllInvestors(): Promise<Investor[]> {
   await ensureInitialized();
-  const result = await getClient().execute('SELECT * FROM investors ORDER BY tier ASC, name ASC');
+  const result = await getClient().execute(
+    `SELECT i.*, (SELECT MAX(m.date) FROM meetings m WHERE m.investor_id = i.id) as last_meeting_date
+     FROM investors i ORDER BY i.tier ASC, i.name ASC`
+  );
   return result.rows as unknown as Investor[];
 }
 
