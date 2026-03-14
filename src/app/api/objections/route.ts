@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getObjectionPlaybook, updateObjectionResponse, getTopObjections, getBestResponses, getObjectionsByInvestor, getAllInvestors } from '@/lib/db';
+import { getObjectionPlaybook, updateObjectionResponse, getTopObjections, getBestResponses, getObjectionsByInvestor, getAllInvestors, logActivity, getFollowups, updateFollowup } from '@/lib/db';
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -56,6 +56,40 @@ export async function PUT(req: NextRequest) {
     response_text ?? '',
     effectiveness ?? 'unknown'
   );
+
+  // --- WIRE: Objection Response → Cascade Updates ---
+  if (effectiveness === 'effective' || effectiveness === 'partially_effective') {
+    const { investor_id, investor_name, objection_topic } = body;
+
+    // Log activity
+    try {
+      if (investor_id) {
+        await logActivity({
+          event_type: 'objection_resolved',
+          subject: `Objection resolved: ${objection_topic || 'unknown topic'}`,
+          detail: `Response marked "${effectiveness}". ${response_text ? 'Response: ' + response_text.substring(0, 100) : ''}`,
+          investor_id,
+          investor_name: investor_name || '',
+        });
+      }
+    } catch { /* non-blocking */ }
+
+    // Auto-complete follow-ups related to this objection
+    try {
+      if (investor_id) {
+        const followups = await getFollowups({ investor_id, status: 'pending' });
+        for (const fu of followups) {
+          if (fu.action_type === 'objection_response' && fu.status === 'pending') {
+            await updateFollowup(fu.id, {
+              status: 'completed',
+              outcome: `Auto-resolved: objection "${objection_topic}" marked ${effectiveness}`,
+              conviction_delta: effectiveness === 'effective' ? 1 : 0,
+            });
+          }
+        }
+      }
+    } catch { /* non-blocking */ }
+  }
 
   return NextResponse.json({ ok: true });
 }

@@ -214,7 +214,7 @@ export interface Task {
 
 export interface ActivityEvent {
   id: string;
-  event_type: 'meeting_logged' | 'status_changed' | 'document_created' | 'document_updated' | 'task_completed' | 'term_sheet_received' | 'research_completed' | 'data_room_uploaded' | 'note_added';
+  event_type: 'meeting_logged' | 'status_changed' | 'document_created' | 'document_updated' | 'task_completed' | 'term_sheet_received' | 'research_completed' | 'data_room_uploaded' | 'note_added' | 'acceleration_executed' | 'objection_resolved';
   subject: string;
   detail: string;
   investor_id: string;
@@ -249,6 +249,8 @@ export interface FollowupAction {
   conviction_delta: number;
   created_at: string;
   completed_at: string | null;
+  executed_at: string | null;
+  measured_lift: number | null;
 }
 
 export type DocumentFlagType = 'objection_response' | 'number_update' | 'section_improvement';

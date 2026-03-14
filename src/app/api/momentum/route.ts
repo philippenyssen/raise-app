@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@libsql/client';
+import { createAccelerationAction } from '@/lib/db';
 
 function getClient() {
   return createClient({
@@ -506,6 +507,56 @@ export async function GET() {
         });
       }
     }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // 4B. AUTO-ACTION: Anomalies → Acceleration Actions (compounding loop)
+    // ═══════════════════════════════════════════════════════════════════
+
+    // When anomalies are detected, auto-create acceleration actions so
+    // the insight doesn't just sit in a dashboard — it drives CEO action
+    try {
+      // Negative anomalies (below cohort) → create acceleration action
+      for (const anomaly of anomalies.filter(a => a.direction === 'below' && Math.abs(a.deviation) >= 20)) {
+        const dueAt = new Date();
+        dueAt.setDate(dueAt.getDate() + 2); // 48h to investigate
+        await createAccelerationAction({
+          investor_id: anomaly.investorId,
+          investor_name: anomaly.investorName,
+          trigger_type: 'momentum_cliff',
+          action_type: 'warm_reintro',
+          description: `${anomaly.message}. Investigate: competitor news? unresolved objection? internal politics? macro event?`,
+          expected_lift: Math.min(20, Math.abs(anomaly.deviation) * 0.5),
+          confidence: 'medium',
+          status: 'pending',
+          actual_lift: null,
+          executed_at: null,
+        });
+      }
+
+      // Cross-investor signals (systemic drops) → narrative/strategy review
+      const recentCrossSignals = crossSignals.filter(s => {
+        const signalDate = new Date(s.week);
+        const daysAgo = (Date.now() - signalDate.getTime()) / (1000 * 60 * 60 * 24);
+        return daysAgo <= 14; // only action recent signals
+      });
+      if (recentCrossSignals.length > 0) {
+        const latestSignal = recentCrossSignals[0];
+        const dueAt = new Date();
+        dueAt.setDate(dueAt.getDate() + 3);
+        await createAccelerationAction({
+          investor_id: '',
+          investor_name: 'Pipeline-wide',
+          trigger_type: 'competitive_pressure',
+          action_type: 'competitive_signal',
+          description: `Systemic signal: ${latestSignal.description}. Review: (1) competitive landscape changes, (2) narrative/deck adjustments, (3) market timing. Affected: ${latestSignal.affectedInvestors.join(', ')}.`,
+          expected_lift: 10,
+          confidence: 'low',
+          status: 'pending',
+          actual_lift: null,
+          executed_at: null,
+        });
+      }
+    } catch { /* non-blocking — anomaly actions are best-effort */ }
 
     // ═══════════════════════════════════════════════════════════════════
     // 5. OVERALL PIPELINE VELOCITY TREND

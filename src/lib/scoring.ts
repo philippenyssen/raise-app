@@ -131,8 +131,18 @@ export function computeEngagementScore(
   else if (daysSinceLast <= 30) recencyPts = 12;
   else if (daysSinceLast <= 60) recencyPts = 5;
 
-  // Enthusiasm score (0-25): average enthusiasm across meetings (1-5 scale -> 0-25)
-  const avgEnthusiasm = meetings.reduce((s, m) => s + (m.enthusiasm_score || 0), 0) / meetings.length;
+  // Enthusiasm score (0-25): recency-weighted enthusiasm (recent meetings count 3x more)
+  const latestTime = new Date(sorted[sorted.length - 1]?.date || new Date().toISOString()).getTime();
+  let enthWeightedSum = 0;
+  let enthWeightTotal = 0;
+  for (const m of meetings) {
+    const age = Math.max(0, (latestTime - new Date(m.date).getTime()) / (1000 * 60 * 60 * 24));
+    const decay = Math.exp(-age / 30); // half-life ~21 days
+    const weight = Math.max(0.1, decay);
+    enthWeightedSum += (m.enthusiasm_score || 0) * weight;
+    enthWeightTotal += weight;
+  }
+  const avgEnthusiasm = enthWeightTotal > 0 ? enthWeightedSum / enthWeightTotal : 0;
   const enthPts = clamp((avgEnthusiasm / 5) * 25, 0, 25);
 
   // Engagement signals score (0-25): check for high-signal behaviors
@@ -679,6 +689,7 @@ function determineNextAction(
   dimensions: ScoreDimension[],
   momentum: string,
   risks: string[],
+  trajectory?: ConvictionTrajectory,
 ): string {
   const status = investor.status;
   const dimMap = new Map(dimensions.map(d => [d.name, d]));
@@ -693,6 +704,19 @@ function determineNextAction(
 
   // Term sheet stage
   if (status === 'term_sheet') return 'In term sheet. Prioritize negotiation on key terms. Prepare board materials and closing conditions checklist.';
+
+  // Trajectory-driven urgency override
+  if (trajectory && trajectory.trend !== 'insufficient_data') {
+    if (trajectory.velocityPerWeek > 1.5 && trajectory.predictedTermSheetDate && trajectory.predictedTermSheetDate !== 'now') {
+      const daysToTS = Math.round((new Date(trajectory.predictedTermSheetDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+      if (daysToTS > 0 && daysToTS < 30) {
+        return `Trajectory predicts term sheet readiness by ${trajectory.predictedTermSheetDate}. Prepare board materials and term sheet framework NOW. Push for formal DD start if not already in DD.`;
+      }
+    }
+    if (trajectory.trend === 'decelerating' && trajectory.velocityPerWeek < -2) {
+      return `Conviction decelerating at ${trajectory.velocityPerWeek} pts/week. Diagnose root cause: unresolved objection? competitor? internal politics? Schedule urgent check-in with ${investor.partner || investor.name}.`;
+    }
+  }
 
   // If stalled, re-engagement is priority
   if (momentum === 'stalled') {
@@ -776,17 +800,37 @@ export function computeInvestorScore(
     momentumDimension,
   ];
 
-  // Compute weighted overall score
-  const weights: Record<string, number> = {
-    'Engagement': 0.20,
-    'Thesis Fit': 0.15,
-    'Check Size Fit': 0.10,
-    'Speed Match': 0.10,
-    'Conflict Risk': 0.10,
-    'Warm Path': 0.10,
-    'Meeting Quality': 0.15,
-    'Momentum': 0.10,
+  // Dynamic weights by raise phase — early-stage needs thesis fit > momentum;
+  // late-stage (DD/negotiation) needs momentum > thesis fit
+  const phaseWeights: Record<string, Record<string, number>> = {
+    discovery: {
+      'Engagement': 0.10, 'Thesis Fit': 0.25, 'Check Size Fit': 0.15,
+      'Speed Match': 0.05, 'Conflict Risk': 0.10, 'Warm Path': 0.15,
+      'Meeting Quality': 0.10, 'Momentum': 0.10,
+    },
+    outreach: {
+      'Engagement': 0.15, 'Thesis Fit': 0.20, 'Check Size Fit': 0.10,
+      'Speed Match': 0.10, 'Conflict Risk': 0.10, 'Warm Path': 0.15,
+      'Meeting Quality': 0.10, 'Momentum': 0.10,
+    },
+    mgmt_presentations: {
+      'Engagement': 0.20, 'Thesis Fit': 0.15, 'Check Size Fit': 0.10,
+      'Speed Match': 0.10, 'Conflict Risk': 0.10, 'Warm Path': 0.10,
+      'Meeting Quality': 0.15, 'Momentum': 0.10,
+    },
+    due_diligence: {
+      'Engagement': 0.15, 'Thesis Fit': 0.10, 'Check Size Fit': 0.10,
+      'Speed Match': 0.15, 'Conflict Risk': 0.15, 'Warm Path': 0.05,
+      'Meeting Quality': 0.15, 'Momentum': 0.15,
+    },
+    negotiation: {
+      'Engagement': 0.10, 'Thesis Fit': 0.05, 'Check Size Fit': 0.15,
+      'Speed Match': 0.20, 'Conflict Risk': 0.15, 'Warm Path': 0.05,
+      'Meeting Quality': 0.10, 'Momentum': 0.20,
+    },
   };
+  const raisePhase = (raiseConfig as Record<string, unknown>).raisePhase as string || 'mgmt_presentations';
+  const weights = phaseWeights[raisePhase] || phaseWeights.mgmt_presentations;
 
   let overall = 0;
   let weightSum = 0;
@@ -822,7 +866,7 @@ export function computeInvestorScore(
   overall = clamp(overall);
 
   const risks = identifyRisks(investor, meetings, dimensions, momentum);
-  const nextBestAction = determineNextAction(investor, meetings, dimensions, momentum, risks);
+  const nextBestAction = determineNextAction(investor, meetings, dimensions, momentum, risks, (raiseConfig as Record<string, unknown>).trajectory as ConvictionTrajectory | undefined);
   const predictedOutcome = predictOutcome(overall, momentum, investor);
 
   return {

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAllTasks, createTask, updateTask, deleteTask, getUpcomingTasks, getActivityLog, logActivity } from '@/lib/db';
+import { getAllTasks, createTask, updateTask, deleteTask, getUpcomingTasks, getActivityLog, logActivity, getDocumentFlags, updateDocumentFlag, createFollowup, getFollowups, updateFollowup } from '@/lib/db';
 
 const ALLOWED_TASK_FIELDS = new Set([
   'title', 'description', 'assignee', 'due_date', 'status', 'priority',
@@ -77,15 +77,77 @@ export async function PUT(req: NextRequest) {
 
     await updateTask(id, updates);
 
-    // Log completion
+    // Log completion + cascade downstream effects
     if (updates.status === 'done') {
+      const investorId = raw.investor_id || '';
+      const investorName = raw.investor_name || '';
+
       await logActivity({
         event_type: 'task_completed',
         subject: raw.title || 'Task completed',
         detail: '',
-        investor_id: raw.investor_id || '',
-        investor_name: raw.investor_name || '',
+        investor_id: investorId,
+        investor_name: investorName,
       });
+
+      // --- WIRE: Task Done → Document Flags + Follow-ups ---
+      if (investorId) {
+        // Auto-resolve related document flags for this investor
+        try {
+          const flags = await getDocumentFlags({ investor_id: investorId, status: 'open' });
+          const taskTitle = (raw.title || '').toLowerCase();
+          for (const flag of flags) {
+            // If task title mentions the flag type or section, mark it addressed
+            const flagDesc = (flag.description || '').toLowerCase();
+            const flagSection = (flag.section_hint || '').toLowerCase();
+            if (
+              taskTitle.includes('material') || taskTitle.includes('dd') ||
+              taskTitle.includes('document') || taskTitle.includes('deck') ||
+              taskTitle.includes(flagSection) || flagDesc.includes('prepare')
+            ) {
+              await updateDocumentFlag(flag.id, { status: 'addressed' });
+            }
+          }
+        } catch { /* non-blocking */ }
+
+        // Auto-trigger data_share follow-up if task was about preparing materials
+        try {
+          const taskTitle = (raw.title || '').toLowerCase();
+          if (
+            taskTitle.includes('prepare') || taskTitle.includes('material') ||
+            taskTitle.includes('dd') || taskTitle.includes('data room') ||
+            taskTitle.includes('deck') || taskTitle.includes('model')
+          ) {
+            const dueAt = new Date();
+            dueAt.setHours(dueAt.getHours() + 4);
+            await createFollowup({
+              meeting_id: '',
+              investor_id: investorId,
+              investor_name: investorName,
+              action_type: 'data_share',
+              description: `Materials ready: "${raw.title}". Send to investor and confirm receipt.`,
+              due_at: dueAt.toISOString(),
+            });
+          }
+        } catch { /* non-blocking */ }
+
+        // Auto-complete follow-ups that were waiting for this task
+        try {
+          const followups = await getFollowups({ investor_id: investorId, status: 'pending' });
+          for (const fu of followups) {
+            const fuDesc = (fu.description || '').toLowerCase();
+            const taskTitle = (raw.title || '').toLowerCase();
+            // If follow-up was about sharing something that just got prepared
+            if (fu.action_type === 'data_share' && (fuDesc.includes('prepare') || fuDesc.includes(taskTitle.substring(0, 20)))) {
+              await updateFollowup(fu.id, {
+                status: 'completed',
+                outcome: `Auto-completed: task "${raw.title}" marked done`,
+                conviction_delta: 0,
+              });
+            }
+          }
+        } catch { /* non-blocking */ }
+      }
     }
 
     return NextResponse.json({ ok: true });

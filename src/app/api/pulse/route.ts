@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@libsql/client';
-import { computeInvestorScore, computeMomentumScore } from '@/lib/scoring';
+import { computeInvestorScore, computeMomentumScore, computeConvictionTrajectory } from '@/lib/scoring';
+import type { ScoreSnapshot } from '@/lib/db';
 import type { Investor, Meeting, InvestorPortfolioCo, Objection } from '@/lib/types';
 
 function getClient() {
@@ -168,6 +169,7 @@ interface FocusCard {
   momentum: string;
   momentumArrow: string;
   enthusiasm: number;
+  trajectoryNote?: string;
 }
 
 interface AccelerationCard {
@@ -206,7 +208,8 @@ function computeFocusScore(
   openFlagCount: number,
   targetEquityM: number,
   targetCloseDate: string | null,
-): { score: number; action: string; timeEstimate: string; momentum: string } {
+  snapshots?: ScoreSnapshot[],
+): { score: number; action: string; timeEstimate: string; momentum: string; trajectoryNote?: string } {
   const now = new Date().toISOString();
   const sorted = [...meetings].sort((a, b) => b.date.localeCompare(a.date));
   const latest = sorted[0] ?? null;
@@ -267,13 +270,33 @@ function computeFocusScore(
   actionReady += statusBonus[investor.status] ?? 0;
   actionReady = clamp(actionReady);
 
-  const score = clamp(
+  let baseScore = clamp(
     investorScore.overall * 0.30 +
     urgency * 0.25 +
     momentumRisk * 0.20 +
     opportunity * 0.15 +
     actionReady * 0.10
   );
+
+  // --- Conviction trajectory integration ---
+  // Trajectory velocity adjusts focus: accelerating investors get priority boost,
+  // decelerating investors get urgency boost (needs attention)
+  let trajectoryNote: string | undefined;
+  if (snapshots && snapshots.length >= 2) {
+    const trajectory = computeConvictionTrajectory(snapshots);
+    if (trajectory.trend === 'accelerating' && trajectory.velocityPerWeek > 1.0) {
+      // Hot investor — boost priority (riding momentum)
+      baseScore = clamp(baseScore + Math.min(15, trajectory.velocityPerWeek * 3));
+      if (trajectory.predictedTermSheetDate && trajectory.predictedTermSheetDate !== 'now') {
+        trajectoryNote = `Accelerating +${trajectory.velocityPerWeek} pts/wk → term sheet ~${trajectory.predictedTermSheetDate}`;
+      }
+    } else if (trajectory.trend === 'decelerating' && trajectory.velocityPerWeek < -1.0) {
+      // Cooling investor — urgency boost (needs intervention)
+      baseScore = clamp(baseScore + Math.min(10, Math.abs(trajectory.velocityPerWeek) * 2));
+      trajectoryNote = `Decelerating ${trajectory.velocityPerWeek} pts/wk — needs intervention`;
+    }
+  }
+  const score = baseScore;
 
   // Simplified action determination
   const partner = investor.partner || investor.name;
@@ -308,7 +331,7 @@ function computeFocusScore(
     timeEstimate = '30min';
   }
 
-  return { score, action, timeEstimate, momentum };
+  return { score, action, timeEstimate, momentum, trajectoryNote };
 }
 
 async function computeCriticalPath(
@@ -327,8 +350,8 @@ async function computeCriticalPath(
     meetingsByInvestor[m.investor_id].push(m);
   });
 
-  // Get task and flag counts
-  const [taskRows, flagRows, portfolioRows] = await Promise.all([
+  // Get task and flag counts + score snapshots for trajectory
+  const [taskRows, flagRows, portfolioRows, snapshotRows] = await Promise.all([
     db.execute(`
       SELECT investor_id, COUNT(*) as count FROM tasks
       WHERE status IN ('pending', 'in_progress')
@@ -340,6 +363,7 @@ async function computeCriticalPath(
       GROUP BY investor_id
     `),
     db.execute(`SELECT * FROM investor_portfolio`),
+    db.execute(`SELECT * FROM score_snapshots ORDER BY snapshot_date ASC`),
   ]);
 
   const taskCountByInvestor: Record<string, number> = {};
@@ -358,6 +382,12 @@ async function computeCriticalPath(
     portfolioByInvestor[p.investor_id].push(p);
   });
 
+  const snapshotsByInvestor: Record<string, ScoreSnapshot[]> = {};
+  (snapshotRows.rows as unknown as ScoreSnapshot[]).forEach(s => {
+    if (!snapshotsByInvestor[s.investor_id]) snapshotsByInvestor[s.investor_id] = [];
+    snapshotsByInvestor[s.investor_id].push(s);
+  });
+
   // Compute focus scores for active investors
   const focusItems: FocusCard[] = [];
   for (const inv of investors) {
@@ -367,9 +397,10 @@ async function computeCriticalPath(
     const pendingTasks = taskCountByInvestor[inv.id] || 0;
     const openFlags = flagCountByInvestor[inv.id] || 0;
 
-    const { score, action, timeEstimate, momentum } = computeFocusScore(
+    const investorSnapshots = snapshotsByInvestor[inv.id] || [];
+    const { score, action, timeEstimate, momentum, trajectoryNote } = computeFocusScore(
       inv, meetings, portfolio, pendingTasks, openFlags,
-      targetEquityM, targetCloseDate,
+      targetEquityM, targetCloseDate, investorSnapshots,
     );
 
     const sorted = [...meetings].sort((a, b) => b.date.localeCompare(a.date));
@@ -386,6 +417,7 @@ async function computeCriticalPath(
       momentum,
       momentumArrow: getMomentumArrow(momentum),
       enthusiasm,
+      ...(trajectoryNote ? { trajectoryNote } : {}),
     });
   }
 
@@ -475,8 +507,22 @@ async function computeCriticalPath(
     return diff !== 0 ? diff : b.expectedLift - a.expectedLift;
   });
 
+  // Dynamic focus: always show Tier 1 + in_dd/term_sheet investors, fill rest to max 6
+  const mustShow = focusItems.filter(f =>
+    f.tier === 1 || f.status === 'in_dd' || f.status === 'term_sheet'
+  );
+  const others = focusItems.filter(f =>
+    f.tier !== 1 && f.status !== 'in_dd' && f.status !== 'term_sheet'
+  );
+  const merged = [...mustShow];
+  for (const o of others) {
+    if (!merged.some(m => m.investorId === o.investorId)) merged.push(o);
+  }
+  merged.sort((a, b) => b.focusScore - a.focusScore);
+  const topCount = Math.max(3, Math.min(6, mustShow.length + 1));
+
   return {
-    topFocus: focusItems.slice(0, 3),
+    topFocus: merged.slice(0, topCount),
     topAccelerations: accelerations.slice(0, 3),
   };
 }

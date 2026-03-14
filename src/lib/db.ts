@@ -296,7 +296,9 @@ async function ensureInitialized() {
       outcome TEXT DEFAULT '',
       conviction_delta INTEGER DEFAULT 0,
       created_at TEXT DEFAULT (datetime('now')),
-      completed_at TEXT
+      completed_at TEXT,
+      executed_at TEXT,
+      measured_lift INTEGER
     )`,
     `CREATE TABLE IF NOT EXISTS acceleration_actions (
       id TEXT PRIMARY KEY,
@@ -1555,6 +1557,48 @@ export async function processPostMeetingIntelligence(
     });
   }
 
+  // --- Objection Learning: Auto-close objections addressed in this meeting ---
+  try {
+    const investorId = meeting.investor_id;
+    const priorObjections = await getObjectionsByInvestor(investorId);
+    const meetingNotes = ((meeting.raw_notes || '') + ' ' + (meeting.next_steps || '')).toLowerCase();
+
+    for (const obj of priorObjections) {
+      if (obj.effectiveness && obj.effectiveness !== 'unknown') continue; // already rated
+
+      const objTopic = (obj.objection_topic || '').toLowerCase();
+      const objText = (obj.objection_text || '').toLowerCase();
+
+      // Check if this meeting's notes reference the objection topic
+      const topicWords = objTopic.split(/\s+/).filter(w => w.length > 3);
+      const mentionsObj = topicWords.some(w => meetingNotes.includes(w)) ||
+        (objText.length > 10 && objText.split(/\s+/).filter(w => w.length > 4).some(w => meetingNotes.includes(w)));
+
+      if (mentionsObj) {
+        // Measure effectiveness by enthusiasm delta
+        const currentEnthusiasm = meeting.enthusiasm_score || 3;
+        const objMeetingEnthusiasm = obj.next_meeting_enthusiasm_delta !== 0 ? 3 : 3; // fallback since no enthusiasm_at_raise field
+        const delta = currentEnthusiasm - objMeetingEnthusiasm;
+
+        let effectiveness: string;
+        if (delta >= 1) effectiveness = 'effective';
+        else if (delta >= 0) effectiveness = 'partially_effective';
+        else effectiveness = 'ineffective';
+
+        await updateObjectionResponse(
+          obj.id,
+          `Addressed in meeting on ${meeting.date}. Enthusiasm moved ${delta >= 0 ? '+' : ''}${delta}.`,
+          effectiveness,
+        );
+      }
+    }
+  } catch { /* non-blocking objection learning */ }
+
+  // --- Followup Efficacy: Measure lift from recent followups ---
+  try {
+    await measureFollowupEfficacy(meeting.investor_id);
+  } catch { /* non-blocking */ }
+
   return results;
 }
 
@@ -1943,6 +1987,8 @@ export async function updateFollowup(id: string, updates: {
   outcome?: string;
   conviction_delta?: number;
   completed_at?: string;
+  executed_at?: string;
+  measured_lift?: number;
 }): Promise<void> {
   await ensureInitialized();
   const sets: string[] = [];
@@ -1951,6 +1997,8 @@ export async function updateFollowup(id: string, updates: {
   if (updates.outcome !== undefined) { sets.push('outcome = ?'); values.push(updates.outcome); }
   if (updates.conviction_delta !== undefined) { sets.push('conviction_delta = ?'); values.push(updates.conviction_delta); }
   if (updates.completed_at !== undefined) { sets.push('completed_at = ?'); values.push(updates.completed_at); }
+  if (updates.executed_at !== undefined) { sets.push('executed_at = ?'); values.push(updates.executed_at); }
+  if (updates.measured_lift !== undefined) { sets.push('measured_lift = ?'); values.push(updates.measured_lift); }
   if (sets.length === 0) return;
   values.push(id);
   await getClient().execute({ sql: `UPDATE followup_actions SET ${sets.join(', ')} WHERE id = ?`, args: values });
@@ -1978,6 +2026,52 @@ export async function getOverdueFollowups(): Promise<FollowupAction[]> {
 export async function deleteFollowup(id: string): Promise<void> {
   await ensureInitialized();
   await getClient().execute({ sql: 'DELETE FROM followup_actions WHERE id = ?', args: [id] });
+}
+
+export async function measureFollowupEfficacy(investorId: string): Promise<void> {
+  const db = getClient();
+
+  // Get completed followups for this investor from last 30 days
+  const followups = await db.execute({
+    sql: `SELECT * FROM followup_actions WHERE investor_id = ? AND status = 'completed' AND created_at > datetime('now', '-30 days') ORDER BY created_at DESC`,
+    args: [investorId],
+  });
+
+  // Get meetings for this investor
+  const meetings = await db.execute({
+    sql: `SELECT * FROM meetings WHERE investor_id = ? ORDER BY date ASC`,
+    args: [investorId],
+  });
+
+  const meetingRows = meetings.rows as unknown as Array<{ date: string; enthusiasm_score: number }>;
+
+  for (const fu of followups.rows) {
+    const row = fu as unknown as { id: string; due_at: string; measured_lift: number | null; created_at: string };
+    if (row.measured_lift !== null) continue; // already measured
+
+    const fuDate = new Date(row.due_at || row.created_at);
+
+    // Find the meeting just before this followup
+    const meetingBefore = meetingRows
+      .filter(m => new Date(m.date) <= fuDate)
+      .sort((a, b) => b.date.localeCompare(a.date))[0];
+
+    // Find the meeting just after this followup (within 14 days)
+    const meetingAfter = meetingRows
+      .filter(m => {
+        const md = new Date(m.date);
+        return md > fuDate && (md.getTime() - fuDate.getTime()) < 14 * 24 * 60 * 60 * 1000;
+      })
+      .sort((a, b) => a.date.localeCompare(b.date))[0];
+
+    if (meetingBefore && meetingAfter) {
+      const lift = (meetingAfter.enthusiasm_score || 3) - (meetingBefore.enthusiasm_score || 3);
+      await db.execute({
+        sql: `UPDATE followup_actions SET measured_lift = ?, executed_at = COALESCE(executed_at, ?) WHERE id = ?`,
+        args: [lift, fuDate.toISOString(), row.id],
+      });
+    }
+  }
 }
 
 // Generate follow-up choreography after a meeting

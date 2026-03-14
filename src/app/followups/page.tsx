@@ -21,6 +21,8 @@ interface FollowupItem {
   conviction_delta: number;
   created_at: string;
   completed_at: string | null;
+  executed_at: string | null;
+  measured_lift: number | null;
 }
 
 const ACTION_TYPE_CONFIG: Record<string, { label: string; icon: typeof Mail; color: string; bgColor: string }> = {
@@ -140,6 +142,20 @@ export default function FollowupsPage() {
     return acc;
   }, {});
 
+  // Measured efficacy stats (from actual enthusiasm deltas post-followup)
+  const withMeasuredLift = completed.filter(f => f.measured_lift !== null && f.measured_lift !== undefined);
+  const avgMeasuredLift = withMeasuredLift.length > 0
+    ? withMeasuredLift.reduce((acc, f) => acc + (f.measured_lift || 0), 0) / withMeasuredLift.length
+    : null;
+  const bestActionType = Object.entries(
+    withMeasuredLift.reduce<Record<string, { count: number; totalLift: number }>>((acc, f) => {
+      if (!acc[f.action_type]) acc[f.action_type] = { count: 0, totalLift: 0 };
+      acc[f.action_type].count++;
+      acc[f.action_type].totalLift += f.measured_lift || 0;
+      return acc;
+    }, {})
+  ).sort((a, b) => (b[1].totalLift / b[1].count) - (a[1].totalLift / a[1].count))[0];
+
   function renderFollowupCard(item: FollowupItem, showOverdueIndicator = false) {
     const config = ACTION_TYPE_CONFIG[item.action_type] || ACTION_TYPE_CONFIG.milestone_update;
     const Icon = config.icon;
@@ -207,6 +223,13 @@ export default function FollowupsPage() {
                     }`}>
                       {item.conviction_delta > 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
                       {item.conviction_delta > 0 ? '+' : ''}{item.conviction_delta}
+                    </span>
+                  )}
+                  {item.measured_lift !== null && item.measured_lift !== undefined && (
+                    <span className={`ml-2 inline-flex items-center gap-0.5 border-l border-zinc-700 pl-2 ${
+                      item.measured_lift > 0 ? 'text-emerald-400' : item.measured_lift < 0 ? 'text-rose-400' : 'text-zinc-500'
+                    }`}>
+                      Measured: {item.measured_lift > 0 ? '+' : ''}{item.measured_lift} enthusiasm
                     </span>
                   )}
                 </div>
@@ -369,7 +392,7 @@ export default function FollowupsPage() {
       </div>
 
       {/* Stats row */}
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-5 gap-3">
         <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-3">
           <div className="text-[10px] text-zinc-500 uppercase font-medium">Overdue</div>
           <div className={`text-2xl font-bold mt-1 ${overdue.length > 0 ? 'text-red-400' : 'text-zinc-600'}`}>
@@ -394,6 +417,26 @@ export default function FollowupsPage() {
             {avgDelta > 0 ? <TrendingUp className="w-5 h-5" /> : avgDelta < 0 ? <TrendingDown className="w-5 h-5" /> : <Minus className="w-5 h-5" />}
             {avgDelta === 0 ? '0' : (avgDelta > 0 ? '+' : '') + avgDelta.toFixed(1)}
           </div>
+        </div>
+        <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-3">
+          <div className="text-[10px] text-zinc-500 uppercase font-medium">Measured Efficacy</div>
+          <div className={`text-2xl font-bold mt-1 flex items-center gap-1 ${
+            avgMeasuredLift !== null && avgMeasuredLift > 0 ? 'text-emerald-400' : avgMeasuredLift !== null && avgMeasuredLift < 0 ? 'text-rose-400' : 'text-zinc-600'
+          }`}>
+            {avgMeasuredLift !== null ? (
+              <>
+                {avgMeasuredLift > 0 ? <TrendingUp className="w-5 h-5" /> : avgMeasuredLift < 0 ? <TrendingDown className="w-5 h-5" /> : <Minus className="w-5 h-5" />}
+                {avgMeasuredLift > 0 ? '+' : ''}{avgMeasuredLift.toFixed(1)}
+              </>
+            ) : (
+              <span className="text-zinc-600 text-sm">No data</span>
+            )}
+          </div>
+          {bestActionType && (
+            <div className="text-[9px] text-zinc-500 mt-1">
+              Best: {ACTION_TYPE_CONFIG[bestActionType[0]]?.label || bestActionType[0]}
+            </div>
+          )}
         </div>
       </div>
 

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@libsql/client';
 import { computeInvestorScore, computeMomentumScore } from '@/lib/scoring';
 import type { Investor, Meeting, InvestorPortfolioCo, Objection } from '@/lib/types';
-import { updateAccelerationAction } from '@/lib/db';
+import { updateAccelerationAction, createTask, createFollowup, createDocumentFlag, logActivity } from '@/lib/db';
 
 function getClient() {
   return createClient({
@@ -555,11 +555,62 @@ export async function PUT(req: Request) {
       return NextResponse.json({ error: 'Missing action id' }, { status: 400 });
     }
 
+    const actionStatus = status || 'executed';
     await updateAccelerationAction(id, {
-      status: status || 'executed',
+      status: actionStatus,
       actual_lift: actual_lift ?? null,
       executed_at: new Date().toISOString(),
     });
+
+    // --- WIRE: Acceleration Execute → Task + Followup + Activity ---
+    if (actionStatus === 'executed') {
+      const { investor_id, investor_name, description, trigger_type, action_type, expected_lift } = body;
+
+      if (investor_id) {
+        // Auto-create a task for execution accountability
+        try {
+          const tomorrow = new Date();
+          tomorrow.setDate(tomorrow.getDate() + 1);
+          await createTask({
+            title: `[Acceleration] ${description || action_type || 'Follow through'}`,
+            description: `Auto-generated from ${trigger_type || 'acceleration'} action. Expected conviction lift: +${expected_lift || '?'} pts.`,
+            assignee: '',
+            due_date: tomorrow.toISOString().split('T')[0],
+            status: 'in_progress',
+            priority: trigger_type === 'term_sheet_ready' ? 'critical' : 'high',
+            phase: 'management_presentations',
+            investor_id,
+            investor_name: investor_name || '',
+            auto_generated: true,
+          });
+        } catch { /* non-blocking */ }
+
+        // Auto-create a follow-up for T+24h check-in
+        try {
+          const followupDue = new Date();
+          followupDue.setHours(followupDue.getHours() + 24);
+          await createFollowup({
+            meeting_id: '',
+            investor_id,
+            investor_name: investor_name || '',
+            action_type: trigger_type === 'term_sheet_ready' ? 'schedule_followup' : 'warm_reengagement',
+            description: `Check-in after acceleration action: ${description || action_type}. Did conviction improve?`,
+            due_at: followupDue.toISOString(),
+          });
+        } catch { /* non-blocking */ }
+
+        // Log activity for the pipeline
+        try {
+          await logActivity({
+            event_type: 'acceleration_executed',
+            subject: `Acceleration: ${action_type || trigger_type}`,
+            detail: `${description}. Expected lift: +${expected_lift || '?'} pts.`,
+            investor_id,
+            investor_name: investor_name || '',
+          });
+        } catch { /* non-blocking */ }
+      }
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {

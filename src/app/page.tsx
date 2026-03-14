@@ -112,6 +112,7 @@ interface PulseData {
       momentum: string;
       momentumArrow: string;
       enthusiasm: number;
+      trajectoryNote?: string;
     }[];
     topAccelerations: {
       id: string;
@@ -493,6 +494,13 @@ export default function Dashboard() {
                           <MomentumIcon className={`w-3.5 h-3.5 ${momentumColor}`} />
                         </div>
                         <p className="text-xs text-zinc-400 truncate mt-0.5">{item.recommendedAction}</p>
+                        {item.trajectoryNote && (
+                          <p className={`text-[10px] mt-0.5 ${
+                            item.trajectoryNote.includes('Accelerating') ? 'text-green-400' : 'text-orange-400'
+                          }`}>
+                            {item.trajectoryNote}
+                          </p>
+                        )}
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
                         <span className="text-[10px] text-zinc-500 flex items-center gap-1">

@@ -144,6 +144,7 @@ interface RiskItem {
 function computeCloseProbability(
   investor: Investor,
   momentum: string,
+  meetings?: Meeting[],
 ): number {
   const statusBase = STATUS_WEIGHT[investor.status] ?? 0;
   if (statusBase === 0) return 0;
@@ -155,6 +156,63 @@ function computeCloseProbability(
   let prob = statusBase * enthusiasmMultiplier * tierAdj;
   prob = prob + (prob * momentumAdj);
 
+  // --- Investor-specific adjustments based on meeting signals ---
+  if (meetings && meetings.length > 0) {
+    // Unresolved showstoppers reduce probability significantly
+    let showstopperCount = 0;
+    let unresolvedObjCount = 0;
+    for (const m of meetings) {
+      try {
+        const objs = JSON.parse(m.objections || '[]') as Array<{ severity?: string; resolved?: boolean }>;
+        for (const o of objs) {
+          if (o.severity === 'showstopper' && !o.resolved) showstopperCount++;
+          if (!o.resolved) unresolvedObjCount++;
+        }
+      } catch { /* skip */ }
+    }
+    // Each unresolved showstopper reduces prob by 15-25%
+    if (showstopperCount > 0) {
+      prob *= Math.max(0.3, 1 - showstopperCount * 0.20);
+    } else if (unresolvedObjCount > 2) {
+      prob *= Math.max(0.5, 1 - unresolvedObjCount * 0.05);
+    }
+
+    // Enthusiasm trend: declining enthusiasm across last 3 meetings is a red flag
+    const sorted = [...meetings].sort((a, b) => b.date.localeCompare(a.date));
+    if (sorted.length >= 3) {
+      const recent3 = sorted.slice(0, 3).map(m => m.enthusiasm_score || 3);
+      const isDecline = recent3[0] < recent3[1] && recent3[1] < recent3[2];
+      if (isDecline) {
+        const drop = recent3[2] - recent3[0];
+        prob *= Math.max(0.5, 1 - drop * 0.10);
+      }
+    }
+
+    // Meeting frequency signal: many meetings in short time = positive signal
+    if (sorted.length >= 2) {
+      const firstDate = new Date(sorted[sorted.length - 1].date).getTime();
+      const lastDate = new Date(sorted[0].date).getTime();
+      const spanDays = Math.max(1, (lastDate - firstDate) / (1000 * 60 * 60 * 24));
+      const meetingsPerWeek = (sorted.length / spanDays) * 7;
+      if (meetingsPerWeek > 1.5) {
+        prob = Math.min(1, prob * 1.10); // high meeting frequency = slight boost
+      }
+    }
+
+    // Engagement signals: process questions = strong buy signal
+    let processSignals = 0;
+    for (const m of meetings) {
+      try {
+        const signals = JSON.parse(m.engagement_signals || '{}');
+        if (signals.asked_about_process) processSignals++;
+        if (signals.asked_about_timeline) processSignals++;
+      } catch { /* skip */ }
+    }
+    if (processSignals >= 2) {
+      prob = Math.min(1, prob * 1.08);
+    }
+  }
+
   return clamp(prob);
 }
 
@@ -164,6 +222,16 @@ function computeExpectedCheck(investor: Investor): number {
   return (range[0] + range[1]) / 2;
 }
 
+// Type-specific velocity multipliers based on typical investor behavior
+const TYPE_VELOCITY: Record<string, number> = {
+  vc: 0.85,           // VCs move fast, especially in competitive processes
+  growth: 0.90,       // Growth equity slightly faster than average
+  sovereign: 1.40,    // Sovereign wealth funds have multi-layer approvals
+  strategic: 1.30,    // Strategic investors need internal alignment
+  family_office: 1.15, // Family offices — fewer hurdles but less urgency
+  debt: 1.10,         // Debt providers — credit committee process
+};
+
 function computePredictedCloseDate(
   investor: Investor,
   avgStageDays: Record<string, number>,
@@ -172,10 +240,15 @@ function computePredictedCloseDate(
   if (currentIdx < 0 || investor.status === 'closed') return null;
   if (investor.status === 'passed' || investor.status === 'dropped') return null;
 
+  const typeMultiplier = TYPE_VELOCITY[investor.type] ?? 1.0;
+  // Tier 1 investors tend to move faster (they have dedicated deal teams)
+  const tierMultiplier = investor.tier === 1 ? 0.85 : investor.tier === 2 ? 1.0 : 1.15;
+
   let totalDays = 0;
   for (let i = currentIdx; i < PIPELINE_ORDER.length - 1; i++) {
     const stage = PIPELINE_ORDER[i];
-    totalDays += avgStageDays[stage] ?? DEFAULT_STAGE_DAYS[stage] ?? 14;
+    const baseDays = avgStageDays[stage] ?? DEFAULT_STAGE_DAYS[stage] ?? 14;
+    totalDays += baseDays * typeMultiplier * tierMultiplier;
   }
 
   return addDays(new Date(), totalDays);
@@ -374,7 +447,7 @@ export async function GET() {
       const meetings = meetingsByInvestor[inv.id] || [];
       const { momentum } = computeMomentumScore(inv, meetings);
 
-      const closeProbability = computeCloseProbability(inv, momentum);
+      const closeProbability = computeCloseProbability(inv, momentum, meetings);
       const expectedCheck = computeExpectedCheck(inv);
       const expectedValue = closeProbability * expectedCheck;
       const predictedClose = computePredictedCloseDate(inv, avgStageDays);
