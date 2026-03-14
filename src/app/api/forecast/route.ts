@@ -9,8 +9,7 @@ export async function GET() {
     ]);
 
     const equityAmount = parseMoneyString(raiseConfig?.equity_amount);
-    const debtAmount = parseMoneyString(raiseConfig?.debt_amount);
-    const targetAmount = equityAmount + debtAmount;
+    const targetAmount = equityAmount || 250;
     const currency = detectCurrency(raiseConfig?.equity_amount || raiseConfig?.debt_amount || '');
 
     const committedInvestors = forecast.forecasts.filter(f => f.currentStage === 'term_sheet' || f.currentStage === 'closed');
