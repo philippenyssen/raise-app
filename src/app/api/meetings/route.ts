@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getMeetings, createMeeting, updateMeeting, getInvestor, processPostMeetingIntelligence, logActivity } from '@/lib/db';
+import { getMeetings, createMeeting, updateMeeting, getInvestor, processPostMeetingIntelligence, logActivity, createObjectionRecord, updateObjectionEnthusiasmDelta } from '@/lib/db';
 import { analyzeMeetingNotes } from '@/lib/ai';
 
 export async function GET(req: NextRequest) {
@@ -60,6 +60,36 @@ export async function POST(req: NextRequest) {
       investor_name,
     });
   } catch { /* non-blocking */ }
+
+  // Auto-populate objection_responses from extracted objections
+  try {
+    const objections = (aiData.objections || []) as { text: string; severity: string; topic: string }[];
+    if (objections.length > 0) {
+      // Check for enthusiasm delta from previous meetings with this investor
+      const previousMeetings = await getMeetings(investor_id);
+      // previousMeetings is sorted DESC — the first one after the current is the previous
+      const prevMeeting = previousMeetings.find(m => m.id !== meeting.id);
+      if (prevMeeting) {
+        const delta = (meeting.enthusiasm_score || 3) - (prevMeeting.enthusiasm_score || 3);
+        if (delta !== 0) {
+          await updateObjectionEnthusiasmDelta(investor_id, delta);
+        }
+      }
+
+      // Create new objection records for this meeting
+      for (const obj of objections) {
+        await createObjectionRecord({
+          objection_text: obj.text,
+          objection_topic: obj.topic || 'general',
+          investor_id,
+          investor_name,
+          meeting_id: meeting.id,
+        });
+      }
+    }
+  } catch (err) {
+    console.error('Objection playbook auto-population failed:', err);
+  }
 
   return NextResponse.json({
     ...meeting,

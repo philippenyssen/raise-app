@@ -8,7 +8,8 @@ import {
   ArrowLeft, Calendar, TrendingUp, AlertTriangle,
   Clock, Target, Users, Zap, Briefcase, UserCheck, BookOpen,
   RefreshCw, Loader2, Trash2, ClipboardList, Check, FileSearch,
-  Gauge, ArrowUpRight, ArrowRight, ArrowDownRight, Minus, ShieldAlert, Lightbulb
+  Gauge, ArrowUpRight, ArrowRight, ArrowDownRight, Minus, ShieldAlert, Lightbulb,
+  Activity, AlertCircle
 } from 'lucide-react';
 import { useToast } from '@/components/toast';
 
@@ -43,6 +44,15 @@ interface InvestorScoreData {
   lastUpdated: string;
 }
 
+interface ConvictionTrajectoryData {
+  dataPoints: { date: string; score: number; enthusiasm: number }[];
+  trend: 'accelerating' | 'steady' | 'decelerating' | 'insufficient_data';
+  velocityPerWeek: number;
+  predictedScoreIn30Days: number;
+  predictedTermSheetDate: string | null;
+  confidenceLevel: 'high' | 'medium' | 'low';
+}
+
 type IntelTab = 'overview' | 'partners' | 'portfolio' | 'research' | 'tasks';
 
 export default function InvestorDetailPage() {
@@ -57,6 +67,7 @@ export default function InvestorDetailPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [score, setScore] = useState<InvestorScoreData | null>(null);
   const [scoreLoading, setScoreLoading] = useState(false);
+  const [trajectory, setTrajectory] = useState<ConvictionTrajectoryData | null>(null);
   const [loading, setLoading] = useState(true);
   const [researching, setResearching] = useState(false);
   const [intelTab, setIntelTab] = useState<IntelTab>('overview');
@@ -71,6 +82,13 @@ export default function InvestorDetailPage() {
       }
     } catch { /* ignore score errors */ }
     setScoreLoading(false);
+    // Fetch trajectory after score (score may create a snapshot)
+    try {
+      const trajRes = await fetch(`/api/investors/${id}/trajectory`);
+      if (trajRes.ok) {
+        setTrajectory(await trajRes.json());
+      }
+    } catch { /* ignore trajectory errors */ }
   }, [id]);
 
   const fetchData = useCallback(async () => {
@@ -222,6 +240,38 @@ export default function InvestorDetailPage() {
         </div>
       </div>
 
+      {/* Data Quality Banner */}
+      {investor && (() => {
+        const checkFields = [
+          { field: 'partner', label: 'partner' },
+          { field: 'fund_size', label: 'fund size' },
+          { field: 'check_size_range', label: 'check size' },
+          { field: 'sector_thesis', label: 'sector thesis' },
+          { field: 'warm_path', label: 'warm path' },
+          { field: 'ic_process', label: 'IC process' },
+          { field: 'portfolio_conflicts', label: 'portfolio conflicts' },
+        ];
+        const missing = checkFields.filter(f => {
+          const val = (investor as unknown as Record<string, unknown>)[f.field];
+          return !val || (typeof val === 'string' && val.trim() === '');
+        });
+        const completeness = Math.round(((checkFields.length - missing.length) / checkFields.length) * 100);
+        if (completeness >= 80) return null;
+        return (
+          <div className="flex items-start gap-3 border border-amber-800/30 bg-amber-900/10 rounded-xl px-4 py-3">
+            <AlertCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+            <div className="min-w-0">
+              <div className="text-sm text-amber-300 font-medium">
+                Profile {completeness}% complete -- fill missing fields to unlock scoring
+              </div>
+              <div className="text-xs text-amber-400/70 mt-0.5">
+                Missing: {missing.map(f => f.label).join(', ')}
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+
       {/* Profile + Process Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="border border-zinc-800 rounded-xl p-5 space-y-3">
@@ -257,6 +307,11 @@ export default function InvestorDetailPage() {
             <span className="text-sm text-zinc-500">Computing intelligence score...</span>
           </div>
         </div>
+      )}
+
+      {/* Conviction Trajectory */}
+      {trajectory && trajectory.dataPoints.length > 0 && (
+        <ConvictionTrajectoryPanel trajectory={trajectory} />
       )}
 
       {/* Stats */}
@@ -738,6 +793,148 @@ function InvestorScorePanel({ score, loading, onRefresh }: { score: InvestorScor
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Conviction Trajectory Panel
+// ---------------------------------------------------------------------------
+
+const TREND_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
+  accelerating: { label: 'Accelerating', color: 'text-emerald-400', bg: 'bg-emerald-900/30' },
+  steady: { label: 'Steady', color: 'text-blue-400', bg: 'bg-blue-900/30' },
+  decelerating: { label: 'Decelerating', color: 'text-amber-400', bg: 'bg-amber-900/30' },
+  insufficient_data: { label: 'Insufficient Data', color: 'text-zinc-400', bg: 'bg-zinc-800' },
+};
+
+const CONFIDENCE_CONFIG: Record<string, { label: string; dots: number }> = {
+  high: { label: 'High confidence', dots: 3 },
+  medium: { label: 'Medium confidence', dots: 2 },
+  low: { label: 'Low confidence', dots: 1 },
+};
+
+function ConvictionTrajectoryPanel({ trajectory }: { trajectory: ConvictionTrajectoryData }) {
+  const trend = TREND_CONFIG[trajectory.trend] || TREND_CONFIG.insufficient_data;
+  const confidence = CONFIDENCE_CONFIG[trajectory.confidenceLevel] || CONFIDENCE_CONFIG.low;
+  const points = trajectory.dataPoints;
+
+  // Sparkline chart dimensions
+  const chartWidth = 280;
+  const chartHeight = 48;
+  const padding = 4;
+
+  // Build sparkline path
+  const scores = points.map(p => p.score);
+  const minScore = Math.min(...scores, 0);
+  const maxScore = Math.max(...scores, 100);
+  const range = maxScore - minScore || 1;
+
+  const sparklinePoints = points.map((p, i) => {
+    const x = padding + (i / Math.max(points.length - 1, 1)) * (chartWidth - padding * 2);
+    const y = chartHeight - padding - ((p.score - minScore) / range) * (chartHeight - padding * 2);
+    return { x, y, score: p.score, date: p.date };
+  });
+
+  const trendLineColor = trajectory.trend === 'accelerating' ? '#34d399' :
+    trajectory.trend === 'decelerating' ? '#fbbf24' : '#60a5fa';
+
+  return (
+    <div className="border border-zinc-800 rounded-xl overflow-hidden">
+      <div className="p-5 bg-zinc-900/30">
+        <div className="flex items-center gap-2 mb-4">
+          <Activity className="w-4 h-4 text-zinc-400" />
+          <h2 className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Conviction Trajectory</h2>
+        </div>
+
+        <div className="flex items-center gap-6 flex-wrap">
+          {/* Sparkline */}
+          <div className="shrink-0">
+            <svg width={chartWidth} height={chartHeight} className="overflow-visible">
+              {/* Grid lines */}
+              {[25, 50, 75].map(v => {
+                const y = chartHeight - padding - ((v - minScore) / range) * (chartHeight - padding * 2);
+                return (
+                  <line key={v} x1={padding} y1={y} x2={chartWidth - padding} y2={y}
+                    stroke="#27272a" strokeWidth="1" strokeDasharray="3,3" />
+                );
+              })}
+
+              {/* Trend line */}
+              {sparklinePoints.length >= 2 && (
+                <polyline
+                  points={sparklinePoints.map(p => `${p.x},${p.y}`).join(' ')}
+                  fill="none"
+                  stroke={trendLineColor}
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              )}
+
+              {/* Data points */}
+              {sparklinePoints.map((p, i) => (
+                <circle key={i} cx={p.x} cy={p.y} r="3"
+                  fill={trendLineColor} stroke="#09090b" strokeWidth="1.5">
+                  <title>{p.date}: {p.score}/100</title>
+                </circle>
+              ))}
+            </svg>
+          </div>
+
+          {/* Divider */}
+          <div className="w-px h-12 bg-zinc-800 hidden md:block" />
+
+          {/* Trend + Velocity */}
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${trend.bg} ${trend.color}`}>
+                {trend.label}
+              </span>
+              <div className="flex gap-0.5" title={confidence.label}>
+                {[1, 2, 3].map(n => (
+                  <div key={n} className={`w-1.5 h-1.5 rounded-full ${n <= confidence.dots ? 'bg-zinc-400' : 'bg-zinc-800'}`} />
+                ))}
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className={`text-sm font-medium tabular-nums ${trajectory.velocityPerWeek > 0 ? 'text-emerald-400' : trajectory.velocityPerWeek < 0 ? 'text-amber-400' : 'text-zinc-400'}`}>
+                {trajectory.velocityPerWeek > 0 ? '+' : ''}{trajectory.velocityPerWeek} pts/week
+              </span>
+            </div>
+          </div>
+
+          {/* Divider */}
+          <div className="w-px h-12 bg-zinc-800 hidden md:block" />
+
+          {/* Prediction */}
+          <div className="space-y-1.5 min-w-0">
+            <div className="text-[10px] font-medium text-zinc-500 uppercase">30-Day Prediction</div>
+            <div className="flex items-baseline gap-1">
+              <span className={`text-lg font-bold tabular-nums ${scoreColor(trajectory.predictedScoreIn30Days)}`}>
+                {trajectory.predictedScoreIn30Days}
+              </span>
+              <span className="text-xs text-zinc-600">/100</span>
+            </div>
+            {trajectory.predictedTermSheetDate && (
+              <div className="text-xs">
+                {trajectory.predictedTermSheetDate === 'now' ? (
+                  <span className="text-emerald-400">Term sheet range reached</span>
+                ) : (
+                  <span className="text-blue-400">
+                    Term sheet by ~{new Date(trajectory.predictedTermSheetDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                  </span>
+                )}
+              </div>
+            )}
+            {!trajectory.predictedTermSheetDate && trajectory.trend !== 'insufficient_data' && (
+              <div className="text-xs text-zinc-500">
+                {trajectory.velocityPerWeek <= 0 ? 'At risk of stalling' : 'Tracking -- more data needed'}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

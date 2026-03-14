@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useToast } from '@/components/toast';
-import { FileText, Sparkles, FolderOpen, Table, ArrowRight, ClipboardList, Activity, Download, Columns3 } from 'lucide-react';
+import { FileText, Sparkles, FolderOpen, Table, ArrowRight, ClipboardList, Activity, Download, Columns3, Target, Timer, ShieldCheck } from 'lucide-react';
 
 interface DocSummary {
   id: string;
@@ -29,6 +29,26 @@ interface ActivityItem {
   detail: string;
   investor_name: string;
   created_at: string;
+}
+
+interface FocusItem {
+  investorId: string;
+  investorName: string;
+  investorType: string;
+  investorTier: number;
+  status: string;
+  focusScore: number;
+  recommendedAction: string;
+  timeEstimate: string;
+}
+
+interface DataQualityData {
+  overallCompleteness: number;
+  fieldCompleteness: { field: string; category: string; filled: number; total: number; pct: number }[];
+  worstInvestors: { id: string; name: string; completeness: number; missingFields: string[] }[];
+  bestInvestors: { id: string; name: string; completeness: number }[];
+  intelligenceReadiness: number;
+  recommendations: string[];
 }
 
 interface HealthData {
@@ -58,6 +78,8 @@ export default function Dashboard() {
   const [dataRoomCount, setDataRoomCount] = useState(0);
   const [tasks, setTasks] = useState<UpcomingTask[]>([]);
   const [activity, setActivity] = useState<ActivityItem[]>([]);
+  const [topFocus, setTopFocus] = useState<FocusItem[]>([]);
+  const [dataQuality, setDataQuality] = useState<DataQualityData | null>(null);
   const [loading, setLoading] = useState(true);
   const [seeding, setSeeding] = useState(false);
 
@@ -66,18 +88,25 @@ export default function Dashboard() {
   async function fetchData() {
     setLoading(true);
     try {
-      const [healthRes, docsRes, drRes, tasksRes, actRes] = await Promise.all([
+      const [healthRes, docsRes, drRes, tasksRes, actRes, focusRes, dqRes] = await Promise.all([
         fetch('/api/health'),
         fetch('/api/documents'),
         fetch('/api/data-room'),
         fetch('/api/tasks?type=upcoming&limit=5'),
         fetch('/api/tasks?type=activity&limit=5'),
+        fetch('/api/focus'),
+        fetch('/api/data-quality'),
       ]);
       if (healthRes.ok) setData(await healthRes.json());
       if (docsRes.ok) setDocs(await docsRes.json());
       if (drRes.ok) setDataRoomCount((await drRes.json()).length);
       if (tasksRes.ok) setTasks(await tasksRes.json());
       if (actRes.ok) setActivity(await actRes.json());
+      if (focusRes.ok) {
+        const focusData = await focusRes.json();
+        setTopFocus((focusData.priorityQueue || []).slice(0, 3));
+      }
+      if (dqRes.ok) setDataQuality(await dqRes.json());
     } catch {
       toast('Failed to load dashboard data', 'error');
     } finally {
@@ -172,6 +201,48 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+
+      {/* Top 3 Focus */}
+      {topFocus.length > 0 && (
+        <div className="border border-blue-800/30 bg-blue-900/5 rounded-xl p-5">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm font-medium text-blue-400 uppercase flex items-center gap-2">
+              <Target className="w-4 h-4" /> Top Focus Today
+            </h2>
+            <Link href="/focus" className="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1">
+              Full priority queue <ArrowRight className="w-3 h-3" />
+            </Link>
+          </div>
+          <div className="space-y-2">
+            {topFocus.map((item, i) => {
+              const scoreColor = item.focusScore >= 70 ? 'text-green-400' : item.focusScore >= 50 ? 'text-yellow-400' : 'text-red-400';
+              const tierColor = item.investorTier === 1 ? 'text-amber-400' : 'text-zinc-500';
+              return (
+                <div key={item.investorId} className="flex items-center gap-3 py-2 px-3 rounded-lg hover:bg-zinc-800/50 transition-colors">
+                  <span className={`w-6 h-6 rounded flex items-center justify-center text-xs font-bold ${
+                    i === 0 ? 'bg-blue-600 text-white' : 'bg-zinc-800 text-zinc-400'
+                  }`}>{i + 1}</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <Link href={`/investors/${item.investorId}`} className="text-sm font-medium hover:text-blue-400 transition-colors truncate">
+                        {item.investorName}
+                      </Link>
+                      <span className={`text-[9px] ${tierColor}`}>T{item.investorTier}</span>
+                    </div>
+                    <p className="text-xs text-zinc-400 truncate mt-0.5">{item.recommendedAction}</p>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="text-[10px] text-zinc-500 flex items-center gap-1">
+                      <Timer className="w-3 h-3" /> {item.timeEstimate}
+                    </span>
+                    <span className={`text-sm font-bold tabular-nums ${scoreColor}`}>{item.focusScore}</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Deliverables Quick Access */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -327,6 +398,92 @@ export default function Dashboard() {
               );
             })}
           </div>
+
+          {/* Data Quality */}
+          {dataQuality && (
+            <div className="border border-zinc-800 rounded-xl p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-sm font-medium text-zinc-400 uppercase flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4" /> Data Quality
+                </h2>
+                <Link href="/investors" className="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1">
+                  Fix gaps <ArrowRight className="w-3 h-3" />
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Overall + Intelligence Readiness */}
+                <div className="space-y-3">
+                  <div>
+                    <div className="text-xs text-zinc-500 mb-1">Overall Completeness</div>
+                    <div className="flex items-baseline gap-1">
+                      <span className={`text-3xl font-bold tabular-nums ${
+                        dataQuality.overallCompleteness >= 80 ? 'text-emerald-400' :
+                        dataQuality.overallCompleteness >= 50 ? 'text-yellow-400' : 'text-red-400'
+                      }`}>{dataQuality.overallCompleteness}%</span>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-xs text-zinc-500 mb-1">Intelligence Readiness</div>
+                    <div className="flex items-center gap-2">
+                      <div className="flex-1 h-2 bg-zinc-800 rounded-full overflow-hidden">
+                        <div
+                          className={`h-full rounded-full transition-all duration-500 ${
+                            dataQuality.intelligenceReadiness >= 80 ? 'bg-emerald-500' :
+                            dataQuality.intelligenceReadiness >= 50 ? 'bg-yellow-500' : 'bg-red-500'
+                          }`}
+                          style={{ width: `${dataQuality.intelligenceReadiness}%` }}
+                        />
+                      </div>
+                      <span className="text-xs font-medium text-zinc-400 tabular-nums">{dataQuality.intelligenceReadiness}%</span>
+                    </div>
+                    <div className="text-[10px] text-zinc-600 mt-0.5">
+                      {dataQuality.intelligenceReadiness >= 80 ? 'Scoring engine fully operational' :
+                       dataQuality.intelligenceReadiness >= 50 ? 'Scoring partially reliable' :
+                       'Scoring unreliable -- fill key fields'}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Field completeness bars */}
+                <div className="space-y-1.5">
+                  <div className="text-xs text-zinc-500 mb-2">Field Coverage</div>
+                  {dataQuality.fieldCompleteness
+                    .filter(f => f.field !== 'name' && f.field !== 'type' && f.field !== 'tier' && f.field !== 'status')
+                    .map(f => (
+                    <div key={f.field} className="flex items-center gap-2">
+                      <span className="text-[10px] text-zinc-500 w-20 truncate">{f.field.replace(/_/g, ' ')}</span>
+                      <div className="flex-1 h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+                        <div
+                          className={`h-full rounded-full ${
+                            f.pct >= 80 ? 'bg-emerald-500' : f.pct >= 50 ? 'bg-yellow-500' : 'bg-red-500'
+                          }`}
+                          style={{ width: `${f.pct}%` }}
+                        />
+                      </div>
+                      <span className="text-[10px] text-zinc-600 tabular-nums w-8 text-right">{f.pct}%</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Recommendations */}
+                <div className="space-y-1.5">
+                  <div className="text-xs text-zinc-500 mb-2">Recommendations</div>
+                  {dataQuality.recommendations.slice(0, 4).map((rec, i) => (
+                    <div key={i} className="flex items-start gap-1.5">
+                      <span className="w-1 h-1 rounded-full bg-blue-500 mt-1.5 shrink-0" />
+                      <span className="text-[11px] text-zinc-400 leading-snug">{rec}</span>
+                    </div>
+                  ))}
+                  {dataQuality.worstInvestors.length > 0 && (
+                    <div className="text-[11px] text-amber-400/80 mt-2">
+                      {dataQuality.worstInvestors.length} investor{dataQuality.worstInvestors.length > 1 ? 's' : ''} need{dataQuality.worstInvestors.length === 1 ? 's' : ''} attention
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Tier Breakdown + Top Objections */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

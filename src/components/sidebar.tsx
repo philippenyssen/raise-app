@@ -6,7 +6,7 @@ import { useState } from 'react';
 import {
   LayoutDashboard, Users, Calendar, Brain, HeartPulse, FileText,
   Sparkles, FolderOpen, BookOpen, Table, Globe, ClipboardList, Settings,
-  Columns3, GitCompare, BarChart3,
+  Columns3, GitCompare, BarChart3, MessageCircleWarning, Target,
   Menu, X, LogOut
 } from 'lucide-react';
 
@@ -18,6 +18,8 @@ interface NavItem {
 }
 
 const nav: NavItem[] = [
+  // Focus — top priority
+  { href: '/focus', label: 'Focus', icon: Target, section: 'FOCUS' },
   // Deliverables
   { href: '/workspace', label: 'Workspace', icon: Sparkles, section: 'DELIVERABLES' },
   { href: '/documents', label: 'Documents', icon: BookOpen, section: 'DELIVERABLES' },
@@ -25,6 +27,7 @@ const nav: NavItem[] = [
   { href: '/model', label: 'Model', icon: Table, section: 'DELIVERABLES' },
   // Intelligence
   { href: '/intelligence', label: 'Intelligence', icon: Globe, section: 'INTELLIGENCE' },
+  { href: '/objections', label: 'Objections', icon: MessageCircleWarning, section: 'INTELLIGENCE' },
   // Workflow
   { href: '/timeline', label: 'Timeline', icon: ClipboardList, section: 'WORKFLOW' },
   // Process

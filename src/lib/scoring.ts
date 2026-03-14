@@ -1,4 +1,5 @@
 import type { Investor, Meeting, InvestorPortfolioCo, IntelligenceBrief, Objection, EngagementSignal, InvestorStatus } from './types';
+import type { ScoreSnapshot } from './db';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -832,5 +833,141 @@ export function computeInvestorScore(
     nextBestAction,
     risks,
     lastUpdated: new Date().toISOString(),
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Conviction Trajectory
+// ---------------------------------------------------------------------------
+
+export interface ConvictionTrajectory {
+  dataPoints: { date: string; score: number; enthusiasm: number }[];
+  trend: 'accelerating' | 'steady' | 'decelerating' | 'insufficient_data';
+  velocityPerWeek: number; // points per week
+  predictedScoreIn30Days: number;
+  predictedTermSheetDate: string | null; // estimated date when score reaches 80+
+  confidenceLevel: 'high' | 'medium' | 'low';
+}
+
+/**
+ * Simple linear regression: returns slope and intercept
+ * x = days since first data point, y = score
+ */
+function linearRegression(points: { x: number; y: number }[]): { slope: number; intercept: number; r2: number } {
+  const n = points.length;
+  if (n < 2) return { slope: 0, intercept: points[0]?.y ?? 0, r2: 0 };
+
+  let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0, sumY2 = 0;
+  for (const p of points) {
+    sumX += p.x;
+    sumY += p.y;
+    sumXY += p.x * p.y;
+    sumX2 += p.x * p.x;
+    sumY2 += p.y * p.y;
+  }
+
+  const denom = n * sumX2 - sumX * sumX;
+  if (denom === 0) return { slope: 0, intercept: sumY / n, r2: 0 };
+
+  const slope = (n * sumXY - sumX * sumY) / denom;
+  const intercept = (sumY - slope * sumX) / n;
+
+  // R-squared
+  const yMean = sumY / n;
+  let ssTot = 0, ssRes = 0;
+  for (const p of points) {
+    const predicted = slope * p.x + intercept;
+    ssRes += (p.y - predicted) ** 2;
+    ssTot += (p.y - yMean) ** 2;
+  }
+  const r2 = ssTot === 0 ? 0 : 1 - ssRes / ssTot;
+
+  return { slope, intercept, r2 };
+}
+
+export function computeConvictionTrajectory(snapshots: ScoreSnapshot[]): ConvictionTrajectory {
+  if (snapshots.length < 2) {
+    const point = snapshots[0];
+    return {
+      dataPoints: snapshots.map(s => ({ date: s.snapshot_date, score: s.overall_score, enthusiasm: s.enthusiasm ?? 0 })),
+      trend: 'insufficient_data',
+      velocityPerWeek: 0,
+      predictedScoreIn30Days: point?.overall_score ?? 0,
+      predictedTermSheetDate: null,
+      confidenceLevel: 'low',
+    };
+  }
+
+  const dataPoints = snapshots.map(s => ({
+    date: s.snapshot_date,
+    score: s.overall_score,
+    enthusiasm: s.enthusiasm ?? 0,
+  }));
+
+  // Convert dates to days since first snapshot
+  const firstDate = new Date(snapshots[0].snapshot_date).getTime();
+  const regressionPoints = snapshots.map(s => ({
+    x: (new Date(s.snapshot_date).getTime() - firstDate) / (1000 * 60 * 60 * 24),
+    y: s.overall_score,
+  }));
+
+  const { slope, r2 } = linearRegression(regressionPoints);
+
+  // Slope is points per day; convert to points per week
+  const velocityPerWeek = Math.round(slope * 7 * 10) / 10;
+
+  // Determine trend
+  let trend: ConvictionTrajectory['trend'];
+  if (snapshots.length < 3) {
+    trend = 'insufficient_data';
+  } else if (velocityPerWeek > 1.5) {
+    trend = 'accelerating';
+  } else if (velocityPerWeek < -1.5) {
+    trend = 'decelerating';
+  } else {
+    trend = 'steady';
+  }
+
+  // Predict score in 30 days
+  const lastPoint = regressionPoints[regressionPoints.length - 1];
+  const daysFromFirstToNow = lastPoint.x;
+  const daysFromFirstTo30 = daysFromFirstToNow + 30;
+  const rawPrediction = slope * daysFromFirstTo30 + (linearRegression(regressionPoints).intercept);
+  const predictedScoreIn30Days = clamp(Math.round(rawPrediction));
+
+  // Predict term sheet date (when score reaches 80)
+  let predictedTermSheetDate: string | null = null;
+  const currentScore = snapshots[snapshots.length - 1].overall_score;
+  if (currentScore >= 80) {
+    predictedTermSheetDate = 'now'; // already there
+  } else if (slope > 0) {
+    // Solve: slope * x + intercept = 80, where x is days from first snapshot
+    const { intercept } = linearRegression(regressionPoints);
+    const daysTo80 = (80 - intercept) / slope;
+    const daysFromNow = daysTo80 - daysFromFirstToNow;
+    if (daysFromNow > 0 && daysFromNow < 365) {
+      const targetDate = new Date();
+      targetDate.setDate(targetDate.getDate() + Math.round(daysFromNow));
+      predictedTermSheetDate = targetDate.toISOString().split('T')[0];
+    }
+  }
+
+  // Confidence based on R-squared and number of data points
+  let confidenceLevel: ConvictionTrajectory['confidenceLevel'];
+  if (snapshots.length >= 7 && r2 > 0.6) {
+    confidenceLevel = 'high';
+  } else if (snapshots.length >= 4 && r2 > 0.3) {
+    confidenceLevel = 'medium';
+  } else {
+    confidenceLevel = 'low';
+  }
+
+  return {
+    dataPoints,
+    trend,
+    velocityPerWeek,
+    predictedScoreIn30Days,
+    predictedTermSheetDate,
+    confidenceLevel,
   };
 }

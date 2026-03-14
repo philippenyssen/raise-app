@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getInvestor, getMeetings, getInvestorPortfolio, getIntelligenceBriefs, getRaiseConfig } from '@/lib/db';
+import { getInvestor, getMeetings, getInvestorPortfolio, getIntelligenceBriefs, getRaiseConfig, upsertScoreSnapshot } from '@/lib/db';
 import { computeInvestorScore } from '@/lib/scoring';
 
 export async function GET(
@@ -45,6 +45,20 @@ export async function GET(
     briefs,
     { targetEquityM, targetCloseDate },
   );
+
+  // Auto-capture score snapshot (1 per investor per day, upsert)
+  const engagementDim = score.dimensions.find(d => d.name === 'Engagement');
+  const momentumDim = score.dimensions.find(d => d.name === 'Momentum');
+
+  upsertScoreSnapshot({
+    investor_id: id,
+    overall_score: score.overall,
+    engagement_score: engagementDim?.score,
+    momentum_score: momentumDim?.score,
+    enthusiasm: investor.enthusiasm,
+    meeting_count: meetings.length,
+    predicted_outcome: score.predictedOutcome,
+  }).catch(() => { /* snapshot capture is non-blocking */ });
 
   return NextResponse.json(score);
 }

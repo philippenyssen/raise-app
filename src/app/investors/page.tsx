@@ -26,6 +26,17 @@ const TYPE_LABELS: Record<InvestorType, string> = {
   debt: 'Debt', family_office: 'Family Office',
 };
 
+const COMPLETENESS_FIELDS = ['partner', 'fund_size', 'check_size_range', 'sector_thesis', 'warm_path', 'ic_process', 'portfolio_conflicts'] as const;
+
+function computeCompleteness(inv: Investor): number {
+  let filled = 0;
+  for (const field of COMPLETENESS_FIELDS) {
+    const val = inv[field as keyof Investor];
+    if (val && typeof val === 'string' && val.trim().length > 0) filled++;
+  }
+  return Math.round((filled / COMPLETENESS_FIELDS.length) * 100);
+}
+
 export default function InvestorsPage() {
   const { toast } = useToast();
   const [investors, setInvestors] = useState<Investor[]>([]);
@@ -276,6 +287,7 @@ export default function InvestorsPage() {
                   className="rounded border-zinc-700 bg-zinc-800 text-blue-600 focus:ring-blue-600 focus:ring-offset-0" />
               </th>
               <th className="text-left px-4 py-3 text-xs text-zinc-500 font-medium">Investor</th>
+              <th className="w-8 px-2 py-3 text-xs text-zinc-500 font-medium" title="Data completeness"></th>
               <th className="text-left px-4 py-3 text-xs text-zinc-500 font-medium">Type</th>
               <th className="text-left px-4 py-3 text-xs text-zinc-500 font-medium">Tier</th>
               <th className="text-left px-4 py-3 text-xs text-zinc-500 font-medium">Partner</th>
@@ -296,6 +308,16 @@ export default function InvestorsPage() {
                   <Link href={`/investors/${inv.id}`} className="hover:text-blue-400 transition-colors">
                     {inv.name}
                   </Link>
+                </td>
+                <td className="w-8 px-2 py-3">
+                  {(() => {
+                    const pct = computeCompleteness(inv);
+                    const color = pct >= 80 ? 'bg-emerald-500' : pct >= 50 ? 'bg-yellow-500' : 'bg-red-500';
+                    return (
+                      <div className={`w-2.5 h-2.5 rounded-full ${color}`}
+                        title={`Data completeness: ${pct}%`} />
+                    );
+                  })()}
                 </td>
                 <td className="px-4 py-3 text-zinc-400">{TYPE_LABELS[inv.type as InvestorType] ?? inv.type}</td>
                 <td className="px-4 py-3">

@@ -243,6 +243,31 @@ async function ensureInitialized() {
       status TEXT DEFAULT 'open',
       created_at TEXT DEFAULT (datetime('now'))
     )`,
+    `CREATE TABLE IF NOT EXISTS objection_responses (
+      id TEXT PRIMARY KEY,
+      objection_text TEXT NOT NULL,
+      objection_topic TEXT NOT NULL,
+      investor_id TEXT,
+      investor_name TEXT,
+      meeting_id TEXT,
+      response_text TEXT DEFAULT '',
+      effectiveness TEXT DEFAULT 'unknown',
+      next_meeting_enthusiasm_delta INTEGER DEFAULT 0,
+      created_at TEXT DEFAULT (datetime('now')),
+      updated_at TEXT DEFAULT (datetime('now'))
+    )`,
+    `CREATE TABLE IF NOT EXISTS score_snapshots (
+      id TEXT PRIMARY KEY,
+      investor_id TEXT NOT NULL,
+      overall_score INTEGER NOT NULL,
+      engagement_score INTEGER,
+      momentum_score INTEGER,
+      enthusiasm INTEGER,
+      meeting_count INTEGER,
+      predicted_outcome TEXT,
+      snapshot_date TEXT DEFAULT (date('now')),
+      created_at TEXT DEFAULT (datetime('now'))
+    )`,
   ], 'write');
 
   initialized = true;
@@ -1545,4 +1570,222 @@ export async function getIntelligenceContext(): Promise<string> {
     ).join('\n'));
   }
   return parts.length > 0 ? parts.join('\n\n') : 'No intelligence data yet.';
+}
+
+// Objection Responses / Playbook
+
+export interface ObjectionRecord {
+  id: string;
+  objection_text: string;
+  objection_topic: string;
+  investor_id: string | null;
+  investor_name: string | null;
+  meeting_id: string | null;
+  response_text: string;
+  effectiveness: 'effective' | 'partially_effective' | 'ineffective' | 'unknown';
+  next_meeting_enthusiasm_delta: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export async function getObjectionPlaybook(): Promise<{
+  topic: string;
+  objections: ObjectionRecord[];
+  count: number;
+  best_response: ObjectionRecord | null;
+  effectiveness_distribution: { effective: number; partially_effective: number; ineffective: number; unknown: number };
+}[]> {
+  await ensureInitialized();
+  const result = await getClient().execute('SELECT * FROM objection_responses ORDER BY created_at DESC');
+  const all = result.rows as unknown as ObjectionRecord[];
+
+  const byTopic = new Map<string, ObjectionRecord[]>();
+  for (const rec of all) {
+    const topic = rec.objection_topic || 'general';
+    if (!byTopic.has(topic)) byTopic.set(topic, []);
+    byTopic.get(topic)!.push(rec);
+  }
+
+  return Array.from(byTopic.entries())
+    .map(([topic, objections]) => {
+      const dist = { effective: 0, partially_effective: 0, ineffective: 0, unknown: 0 };
+      let best: ObjectionRecord | null = null;
+      for (const o of objections) {
+        dist[o.effectiveness as keyof typeof dist] = (dist[o.effectiveness as keyof typeof dist] || 0) + 1;
+        if (o.effectiveness === 'effective' && o.response_text) {
+          if (!best || o.next_meeting_enthusiasm_delta > best.next_meeting_enthusiasm_delta) {
+            best = o;
+          }
+        }
+      }
+      return { topic, objections, count: objections.length, best_response: best, effectiveness_distribution: dist };
+    })
+    .sort((a, b) => b.count - a.count);
+}
+
+export async function createObjectionRecord(data: {
+  objection_text: string;
+  objection_topic: string;
+  investor_id?: string;
+  investor_name?: string;
+  meeting_id?: string;
+  response_text?: string;
+  effectiveness?: string;
+}): Promise<ObjectionRecord> {
+  await ensureInitialized();
+  const id = crypto.randomUUID();
+  const now = new Date().toISOString();
+  await getClient().execute({
+    sql: `INSERT INTO objection_responses (id, objection_text, objection_topic, investor_id, investor_name, meeting_id, response_text, effectiveness, next_meeting_enthusiasm_delta, created_at, updated_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?)`,
+    args: [
+      id,
+      data.objection_text,
+      data.objection_topic,
+      data.investor_id || null,
+      data.investor_name || null,
+      data.meeting_id || null,
+      data.response_text || '',
+      data.effectiveness || 'unknown',
+      now,
+      now,
+    ],
+  });
+  const result = await getClient().execute({ sql: 'SELECT * FROM objection_responses WHERE id = ?', args: [id] });
+  return result.rows[0] as unknown as ObjectionRecord;
+}
+
+export async function updateObjectionResponse(id: string, response: string, effectiveness: string): Promise<void> {
+  await ensureInitialized();
+  await getClient().execute({
+    sql: `UPDATE objection_responses SET response_text = ?, effectiveness = ?, updated_at = datetime('now') WHERE id = ?`,
+    args: [response, effectiveness, id],
+  });
+}
+
+export async function getTopObjections(limit: number = 10): Promise<{ objection_text: string; objection_topic: string; count: number; has_effective_response: boolean }[]> {
+  await ensureInitialized();
+  const result = await getClient().execute('SELECT * FROM objection_responses ORDER BY created_at DESC');
+  const all = result.rows as unknown as ObjectionRecord[];
+
+  const grouped = new Map<string, { topic: string; count: number; has_effective: boolean }>();
+  for (const rec of all) {
+    const key = rec.objection_text.toLowerCase().trim();
+    const existing = grouped.get(key);
+    if (existing) {
+      existing.count++;
+      if (rec.effectiveness === 'effective') existing.has_effective = true;
+    } else {
+      grouped.set(key, {
+        topic: rec.objection_topic,
+        count: 1,
+        has_effective: rec.effectiveness === 'effective',
+      });
+    }
+  }
+
+  return Array.from(grouped.entries())
+    .map(([text, data]) => ({
+      objection_text: text,
+      objection_topic: data.topic,
+      count: data.count,
+      has_effective_response: data.has_effective,
+    }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, limit);
+}
+
+export async function getBestResponses(topic: string): Promise<ObjectionRecord[]> {
+  await ensureInitialized();
+  const result = await getClient().execute({
+    sql: `SELECT * FROM objection_responses WHERE objection_topic = ? AND response_text != '' ORDER BY
+      CASE effectiveness
+        WHEN 'effective' THEN 0
+        WHEN 'partially_effective' THEN 1
+        WHEN 'unknown' THEN 2
+        WHEN 'ineffective' THEN 3
+      END ASC, next_meeting_enthusiasm_delta DESC`,
+    args: [topic],
+  });
+  return result.rows as unknown as ObjectionRecord[];
+}
+
+export async function getObjectionsByInvestor(investorId: string): Promise<ObjectionRecord[]> {
+  await ensureInitialized();
+  const result = await getClient().execute({
+    sql: 'SELECT * FROM objection_responses WHERE investor_id = ? ORDER BY created_at DESC',
+    args: [investorId],
+  });
+  return result.rows as unknown as ObjectionRecord[];
+}
+
+export async function updateObjectionEnthusiasmDelta(investorId: string, enthusiasmDelta: number): Promise<void> {
+  await ensureInitialized();
+  // Update the most recent objections for this investor that don't yet have a delta
+  await getClient().execute({
+    sql: `UPDATE objection_responses SET next_meeting_enthusiasm_delta = ?, effectiveness = CASE
+      WHEN ? > 0 THEN 'effective'
+      WHEN ? = 0 AND effectiveness = 'unknown' THEN 'partially_effective'
+      ELSE effectiveness
+    END, updated_at = datetime('now')
+    WHERE investor_id = ? AND next_meeting_enthusiasm_delta = 0 AND effectiveness = 'unknown'`,
+    args: [enthusiasmDelta, enthusiasmDelta, enthusiasmDelta, investorId],
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Score Snapshots
+// ---------------------------------------------------------------------------
+
+export interface ScoreSnapshot {
+  id: string;
+  investor_id: string;
+  overall_score: number;
+  engagement_score: number | null;
+  momentum_score: number | null;
+  enthusiasm: number | null;
+  meeting_count: number | null;
+  predicted_outcome: string | null;
+  snapshot_date: string;
+  created_at: string;
+}
+
+export async function upsertScoreSnapshot(snapshot: {
+  investor_id: string;
+  overall_score: number;
+  engagement_score?: number;
+  momentum_score?: number;
+  enthusiasm?: number;
+  meeting_count?: number;
+  predicted_outcome?: string;
+}): Promise<void> {
+  await ensureInitialized();
+  const db = getClient();
+  const today = new Date().toISOString().split('T')[0];
+  const id = `snap_${snapshot.investor_id}_${today}`;
+
+  await db.execute({
+    sql: `INSERT OR REPLACE INTO score_snapshots (id, investor_id, overall_score, engagement_score, momentum_score, enthusiasm, meeting_count, predicted_outcome, snapshot_date, created_at)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
+    args: [
+      id,
+      snapshot.investor_id,
+      snapshot.overall_score,
+      snapshot.engagement_score ?? null,
+      snapshot.momentum_score ?? null,
+      snapshot.enthusiasm ?? null,
+      snapshot.meeting_count ?? null,
+      snapshot.predicted_outcome ?? null,
+      today,
+    ] as InValue[],
+  });
+}
+
+export async function getScoreSnapshots(investorId: string, limit: number = 90): Promise<ScoreSnapshot[]> {
+  await ensureInitialized();
+  const result = await getClient().execute({
+    sql: 'SELECT * FROM score_snapshots WHERE investor_id = ? ORDER BY snapshot_date ASC LIMIT ?',
+    args: [investorId, limit],
+  });
+  return result.rows as unknown as ScoreSnapshot[];
 }
