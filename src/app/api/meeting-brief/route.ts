@@ -10,6 +10,10 @@ import {
   getInvestorPartners,
   getInvestorPortfolio,
   getIntelligenceBriefs,
+  getQuestionPatternsForType,
+  getProvenResponsesForTopics,
+  getAggregatedCompetitiveIntel,
+  getInvestorRelationships,
 } from '@/lib/db';
 import { getNarrativeProfile, getAnticipatedQuestions } from '@/lib/investor-narratives';
 import type { InvestorType, Objection } from '@/lib/types';
@@ -41,7 +45,7 @@ export async function POST(req: NextRequest) {
     // 2. Get narrative profile for this investor type
     const narrative = getNarrativeProfile(investor.type as InvestorType);
 
-    // 3. Load all contextual data in parallel
+    // 3. Load all contextual data in parallel (including cross-investor intelligence)
     const [
       meetings,
       investorObjections,
@@ -51,6 +55,9 @@ export async function POST(req: NextRequest) {
       partners,
       portfolio,
       briefs,
+      typeQuestionPatterns,
+      aggregatedCompetitiveIntel,
+      investorRelationships,
     ] = await Promise.all([
       getMeetings(investor_id),
       getObjectionsByInvestor(investor_id),
@@ -60,6 +67,9 @@ export async function POST(req: NextRequest) {
       getInvestorPartners(investor_id),
       getInvestorPortfolio(investor_id),
       getIntelligenceBriefs(undefined, investor_id),
+      getQuestionPatternsForType(investor.type),
+      getAggregatedCompetitiveIntel(),
+      getInvestorRelationships(investor_id).catch(() => []),
     ]);
 
     // 4. Extract historical questions from meetings
@@ -97,6 +107,10 @@ export async function POST(req: NextRequest) {
         effectiveness: p.effectiveness_distribution,
       }));
 
+    // 6b. Fetch proven responses for the most common objection topics
+    const objectionTopics = relevantPlaybook.map(p => p.topic);
+    const provenResponses = await getProvenResponsesForTopics(objectionTopics);
+
     // 7. Previous meeting summary
     const latestMeeting = meetings[0] || null;
     const unresolvedObjections = historicalObjections.filter(o => o.response_effectiveness !== 'resolved');
@@ -108,7 +122,7 @@ export async function POST(req: NextRequest) {
       documentsByType.get(d.type)!.push({ id: d.id, title: d.title, type: d.type, updated_at: d.updated_at });
     });
 
-    // 9. Generate personalized brief with Claude
+    // 9. Generate personalized brief with Claude (now with cross-investor intelligence)
     const contextForAI = buildAIContext({
       investor,
       narrative,
@@ -122,6 +136,10 @@ export async function POST(req: NextRequest) {
       portfolio,
       briefs,
       latestMeeting,
+      typeQuestionPatterns,
+      provenResponses,
+      aggregatedCompetitiveIntel,
+      investorRelationships,
     });
 
     const response = await getAIClient().messages.create({
@@ -226,6 +244,32 @@ export async function POST(req: NextRequest) {
         focus_areas: p.focus_areas,
         relevance: p.relevance_to_us,
       })),
+      // Cross-investor intelligence
+      cross_investor_intel: {
+        type_question_patterns: typeQuestionPatterns.slice(0, 5).map(p => ({
+          topic: p.topic,
+          frequency: p.questionCount,
+          examples: p.exampleQuestions,
+        })),
+        proven_responses: provenResponses.map(r => ({
+          topic: r.topic,
+          response: r.bestResponse,
+          effectiveness: r.effectiveness,
+          enthusiasm_lift: r.enthusiasmLift,
+        })),
+        competitive_intel_summary: aggregatedCompetitiveIntel.slice(0, 5).map(c => ({
+          competitor: c.competitor,
+          mention_count: c.mentionCount,
+          investors_mentioning: c.investors,
+          latest_context: c.context.slice(0, 2),
+        })),
+        network_connections: investorRelationships.slice(0, 5).map(r => ({
+          related_investor: r.investor_a_id === investor_id ? r.investor_b_name : r.investor_a_name,
+          relationship_type: r.relationship_type,
+          their_status: r.investor_a_id === investor_id ? r.investor_b_status : r.investor_a_status,
+          their_enthusiasm: r.investor_a_id === investor_id ? r.investor_b_enthusiasm : r.investor_a_enthusiasm,
+        })),
+      },
       generated_at: new Date().toISOString(),
     };
 
@@ -253,6 +297,10 @@ function buildAIContext(ctx: {
   portfolio: { company: string; sector: string; relevance: string }[];
   briefs: { subject: string; content: string }[];
   latestMeeting: { date: string; type: string; raw_notes: string; enthusiasm_score: number; next_steps: string; ai_analysis: string } | null;
+  typeQuestionPatterns?: { topic: string; questionCount: number; exampleQuestions: string[] }[];
+  provenResponses?: { topic: string; bestResponse: string; effectiveness: string; enthusiasmLift: number }[];
+  aggregatedCompetitiveIntel?: { competitor: string; mentionCount: number; investors: string[]; context: string[] }[];
+  investorRelationships?: { investor_a_id: string; investor_b_id: string; investor_a_name?: string; investor_b_name?: string; investor_a_status?: string; investor_b_status?: string; relationship_type: string }[];
 }): string {
   const meetingHistory = ctx.meetings.slice(0, 5).map(m =>
     `Date: ${m.date} | Type: ${m.type} | Enthusiasm: ${m.enthusiasm_score}/5\nAnalysis: ${m.ai_analysis}\nNext Steps: ${m.next_steps}`
@@ -313,6 +361,23 @@ ${ctx.briefs.length > 0 ? `INTELLIGENCE BRIEFS:\n${ctx.briefs.slice(0, 2).map(b 
 
 ANTICIPATED QUESTIONS (for this investor type):
 ${ctx.anticipatedQuestions.map((q, i) => `${i + 1}. ${q}`).join('\n')}
+
+${ctx.typeQuestionPatterns && ctx.typeQuestionPatterns.length > 0 ? `CROSS-INVESTOR QUESTION PATTERNS (what ${ctx.investor.type} investors typically ask):
+${ctx.typeQuestionPatterns.slice(0, 5).map(p => `- "${p.topic}" (asked ${p.questionCount}x by ${ctx.investor.type} investors): ${p.exampleQuestions.slice(0, 2).join('; ')}`).join('\n')}` : ''}
+
+${ctx.provenResponses && ctx.provenResponses.length > 0 ? `PROVEN RESPONSES (responses that worked best in prior meetings):
+${ctx.provenResponses.map(r => `- Topic "${r.topic}": ${r.bestResponse} (${r.effectiveness}, +${r.enthusiasmLift} enthusiasm)`).join('\n')}` : ''}
+
+${ctx.aggregatedCompetitiveIntel && ctx.aggregatedCompetitiveIntel.length > 0 ? `COMPETITIVE INTEL FROM ALL MEETINGS (cross-investor synthesis):
+${ctx.aggregatedCompetitiveIntel.slice(0, 5).map(c => `- ${c.competitor}: mentioned by ${c.investors.join(', ')} (${c.mentionCount}x). Latest: ${c.context[0] || 'N/A'}`).join('\n')}` : ''}
+
+${ctx.investorRelationships && ctx.investorRelationships.length > 0 ? `NETWORK CONNECTIONS (this investor's relationships to others in pipeline):
+${ctx.investorRelationships.slice(0, 5).map(r => {
+  const otherName = r.investor_a_name || r.investor_b_name || 'Unknown';
+  const otherStatus = r.investor_a_status || r.investor_b_status || 'unknown';
+  return `- Connected to ${otherName} (${r.relationship_type}) — their status: ${otherStatus}`;
+}).join('\n')}
+Use these connections strategically — mention shared portfolio companies or co-investors as social proof.` : ''}
 
 Generate a JSON meeting brief (no markdown, pure JSON):
 {

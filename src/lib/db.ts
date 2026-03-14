@@ -364,6 +364,15 @@ async function ensureInitialized() {
       snapshot_date TEXT DEFAULT (date('now')),
       created_at TEXT DEFAULT (datetime('now'))
     )`,
+    `CREATE TABLE IF NOT EXISTS investor_relationships (
+      id TEXT PRIMARY KEY,
+      investor_a_id TEXT NOT NULL,
+      investor_b_id TEXT NOT NULL,
+      relationship_type TEXT NOT NULL,
+      strength INTEGER DEFAULT 3,
+      evidence TEXT DEFAULT '',
+      created_at TEXT DEFAULT (datetime('now'))
+    )`,
   ], 'write');
 
   // Migration: add enthusiasm_at_objection column if missing
@@ -2569,4 +2578,474 @@ export async function computeNarrativeSignals(): Promise<{
       sampleSize: enthusiasm?.sample ?? 0,
     };
   });
+}
+
+// ---------------------------------------------------------------------------
+// Relationship Graph Intelligence
+// ---------------------------------------------------------------------------
+
+export interface InvestorRelationship {
+  id: string;
+  investor_a_id: string;
+  investor_b_id: string;
+  relationship_type: string; // 'co_investment' | 'warm_path_mention' | 'shared_portfolio' | 'same_syndicate'
+  strength: number; // 1-5
+  evidence: string;
+  created_at: string;
+  // Enriched fields (joined at query time)
+  investor_a_name?: string;
+  investor_b_name?: string;
+  investor_a_status?: string;
+  investor_b_status?: string;
+  investor_a_enthusiasm?: number;
+  investor_b_enthusiasm?: number;
+}
+
+/**
+ * Build the relationship graph by scanning all investors for:
+ * 1. Shared portfolio companies (co-investment signal)
+ * 2. Warm path mentions of other investor names
+ * Returns all discovered relationships (also persists them).
+ */
+export async function buildRelationshipGraph(): Promise<InvestorRelationship[]> {
+  await ensureInitialized();
+  const db = getClient();
+
+  // Load all investors and their portfolios
+  const investorsResult = await db.execute('SELECT id, name, warm_path FROM investors');
+  const investors = investorsResult.rows as unknown as Array<{ id: string; name: string; warm_path: string }>;
+  const investorNameMap = new Map<string, string>(); // id -> name
+  for (const inv of investors) {
+    investorNameMap.set(inv.id, inv.name);
+  }
+
+  const portfolioResult = await db.execute('SELECT investor_id, company FROM investor_portfolio');
+  const portfolioRows = portfolioResult.rows as unknown as Array<{ investor_id: string; company: string }>;
+
+  // Build company -> investor[] map
+  const companyInvestors = new Map<string, Set<string>>();
+  for (const row of portfolioRows) {
+    const companyKey = row.company.toLowerCase().trim();
+    if (!companyInvestors.has(companyKey)) companyInvestors.set(companyKey, new Set());
+    companyInvestors.get(companyKey)!.add(row.investor_id);
+  }
+
+  const discovered: Array<{ a: string; b: string; type: string; strength: number; evidence: string }> = [];
+
+  // 1. Shared portfolio companies = co-investment signal
+  for (const [company, investorIds] of companyInvestors.entries()) {
+    const ids = Array.from(investorIds);
+    if (ids.length < 2) continue;
+    for (let i = 0; i < ids.length; i++) {
+      for (let j = i + 1; j < ids.length; j++) {
+        discovered.push({
+          a: ids[i],
+          b: ids[j],
+          type: 'co_investment',
+          strength: 4, // Strong signal
+          evidence: `Both invested in ${company}`,
+        });
+      }
+    }
+  }
+
+  // 2. Warm path mentions — check if investor A's warm_path mentions investor B's name
+  for (const invA of investors) {
+    if (!invA.warm_path) continue;
+    const pathLower = invA.warm_path.toLowerCase();
+    for (const invB of investors) {
+      if (invA.id === invB.id) continue;
+      // Check if the warm path contains the other investor's name (or a significant substring)
+      const nameWords = invB.name.toLowerCase().split(/\s+/).filter(w => w.length > 3);
+      const fullNameMatch = pathLower.includes(invB.name.toLowerCase());
+      const partialMatch = nameWords.length > 0 && nameWords.some(w => pathLower.includes(w));
+
+      if (fullNameMatch || partialMatch) {
+        discovered.push({
+          a: invA.id,
+          b: invB.id,
+          type: 'warm_path_mention',
+          strength: fullNameMatch ? 4 : 2,
+          evidence: `${investorNameMap.get(invA.id)}'s warm path mentions ${invB.name}`,
+        });
+      }
+    }
+  }
+
+  // 3. Deduplicate (A-B and B-A are the same relationship)
+  const existingPairs = new Set<string>();
+  const uniqueRelationships = discovered.filter(r => {
+    const pairKey = [r.a, r.b].sort().join('|') + '|' + r.type;
+    if (existingPairs.has(pairKey)) return false;
+    existingPairs.add(pairKey);
+    return true;
+  });
+
+  // 4. Clear existing relationships and insert fresh
+  await db.execute('DELETE FROM investor_relationships');
+
+  for (const rel of uniqueRelationships) {
+    await db.execute({
+      sql: `INSERT INTO investor_relationships (id, investor_a_id, investor_b_id, relationship_type, strength, evidence) VALUES (?, ?, ?, ?, ?, ?)`,
+      args: [crypto.randomUUID(), rel.a, rel.b, rel.type, rel.strength, rel.evidence],
+    });
+  }
+
+  // 5. Return enriched results
+  return getInvestorRelationshipsAll();
+}
+
+/**
+ * Get all relationships for a specific investor, enriched with names and statuses.
+ */
+export async function getInvestorRelationships(investorId: string): Promise<InvestorRelationship[]> {
+  await ensureInitialized();
+  const db = getClient();
+  const result = await db.execute({
+    sql: `
+      SELECT
+        r.*,
+        a.name as investor_a_name, a.status as investor_a_status, a.enthusiasm as investor_a_enthusiasm,
+        b.name as investor_b_name, b.status as investor_b_status, b.enthusiasm as investor_b_enthusiasm
+      FROM investor_relationships r
+      JOIN investors a ON a.id = r.investor_a_id
+      JOIN investors b ON b.id = r.investor_b_id
+      WHERE r.investor_a_id = ? OR r.investor_b_id = ?
+      ORDER BY r.strength DESC
+    `,
+    args: [investorId, investorId],
+  });
+  return result.rows as unknown as InvestorRelationship[];
+}
+
+/**
+ * Get all relationships in the graph, enriched with investor data.
+ */
+export async function getInvestorRelationshipsAll(): Promise<InvestorRelationship[]> {
+  await ensureInitialized();
+  const db = getClient();
+  const result = await db.execute(`
+    SELECT
+      r.*,
+      a.name as investor_a_name, a.status as investor_a_status, a.enthusiasm as investor_a_enthusiasm,
+      b.name as investor_b_name, b.status as investor_b_status, b.enthusiasm as investor_b_enthusiasm
+    FROM investor_relationships r
+    JOIN investors a ON a.id = r.investor_a_id
+    JOIN investors b ON b.id = r.investor_b_id
+    ORDER BY r.strength DESC
+  `);
+  return result.rows as unknown as InvestorRelationship[];
+}
+
+/**
+ * Identify keystone investors — those whose commitment would cascade to others
+ * based on relationship density + co-investment patterns.
+ *
+ * A keystone investor has:
+ * 1. High connection count to other pipeline investors
+ * 2. Strong relationships (co-investment > warm path mention)
+ * 3. Connected investors who are still in active pipeline
+ */
+export async function getKeystoneInvestors(): Promise<{
+  id: string;
+  name: string;
+  connectionCount: number;
+  cascadeValue: string;
+  connectedInvestors: { id: string; name: string; status: string; enthusiasm: number; relationshipType: string }[];
+}[]> {
+  await ensureInitialized();
+  const db = getClient();
+
+  // Get all relationships enriched with investor data
+  const relationships = await getInvestorRelationshipsAll();
+
+  // Get all active investors
+  const activeResult = await db.execute(`SELECT id, name, status, enthusiasm FROM investors WHERE status NOT IN ('passed', 'dropped')`);
+  const activeInvestors = new Map<string, { name: string; status: string; enthusiasm: number }>();
+  for (const row of activeResult.rows as unknown as Array<{ id: string; name: string; status: string; enthusiasm: number }>) {
+    activeInvestors.set(row.id, { name: row.name, status: row.status, enthusiasm: row.enthusiasm });
+  }
+
+  // Build adjacency map: investor -> connected investors
+  const adjacency = new Map<string, Map<string, { type: string; strength: number }>>();
+
+  for (const rel of relationships) {
+    // Only count connections to active pipeline investors
+    if (!activeInvestors.has(rel.investor_a_id) || !activeInvestors.has(rel.investor_b_id)) continue;
+
+    // A -> B
+    if (!adjacency.has(rel.investor_a_id)) adjacency.set(rel.investor_a_id, new Map());
+    const existingAB = adjacency.get(rel.investor_a_id)!.get(rel.investor_b_id);
+    if (!existingAB || rel.strength > existingAB.strength) {
+      adjacency.get(rel.investor_a_id)!.set(rel.investor_b_id, { type: rel.relationship_type, strength: rel.strength });
+    }
+
+    // B -> A
+    if (!adjacency.has(rel.investor_b_id)) adjacency.set(rel.investor_b_id, new Map());
+    const existingBA = adjacency.get(rel.investor_b_id)!.get(rel.investor_a_id);
+    if (!existingBA || rel.strength > existingBA.strength) {
+      adjacency.get(rel.investor_b_id)!.set(rel.investor_a_id, { type: rel.relationship_type, strength: rel.strength });
+    }
+  }
+
+  // Score each investor by cascade potential
+  const keystones: Array<{
+    id: string;
+    name: string;
+    connectionCount: number;
+    cascadeValue: string;
+    connectedInvestors: { id: string; name: string; status: string; enthusiasm: number; relationshipType: string }[];
+  }> = [];
+
+  for (const [investorId, connections] of adjacency.entries()) {
+    const investorData = activeInvestors.get(investorId);
+    if (!investorData || connections.size === 0) continue;
+
+    const connectedList = Array.from(connections.entries()).map(([connId, conn]) => {
+      const connData = activeInvestors.get(connId);
+      return {
+        id: connId,
+        name: connData?.name || 'Unknown',
+        status: connData?.status || 'unknown',
+        enthusiasm: connData?.enthusiasm || 0,
+        relationshipType: conn.type,
+      };
+    });
+
+    // Cascade value: high if many connections, especially to undecided investors
+    const undecidedConnections = connectedList.filter(c =>
+      ['identified', 'contacted', 'nda_signed', 'meeting_scheduled', 'met', 'engaged'].includes(c.status)
+    );
+    const cascadeValue = undecidedConnections.length >= 3 ? 'high'
+      : undecidedConnections.length >= 2 ? 'medium'
+      : connections.size >= 2 ? 'low'
+      : 'minimal';
+
+    keystones.push({
+      id: investorId,
+      name: investorData.name,
+      connectionCount: connections.size,
+      cascadeValue,
+      connectedInvestors: connectedList,
+    });
+  }
+
+  // Sort by cascade potential
+  return keystones
+    .sort((a, b) => {
+      const cascadeOrder: Record<string, number> = { high: 0, medium: 1, low: 2, minimal: 3 };
+      const cascadeDiff = (cascadeOrder[a.cascadeValue] || 3) - (cascadeOrder[b.cascadeValue] || 3);
+      if (cascadeDiff !== 0) return cascadeDiff;
+      return b.connectionCount - a.connectionCount;
+    });
+}
+
+/**
+ * Compute network effect score for a specific investor.
+ * Checks if connected investors are positive (committed/high enthusiasm) or negative (passed).
+ * Returns a score 0-100 and evidence string.
+ */
+export async function computeNetworkEffectData(investorId: string): Promise<{
+  score: number;
+  evidence: string;
+  positiveSignals: string[];
+  negativeSignals: string[];
+}> {
+  const relationships = await getInvestorRelationships(investorId);
+
+  if (relationships.length === 0) {
+    return { score: 0, evidence: 'No relationship data available', positiveSignals: [], negativeSignals: [] };
+  }
+
+  let positiveWeight = 0;
+  let negativeWeight = 0;
+  const positiveSignals: string[] = [];
+  const negativeSignals: string[] = [];
+
+  for (const rel of relationships) {
+    // Determine the "other" investor in the relationship
+    const isA = rel.investor_a_id === investorId;
+    const otherName = isA ? (rel.investor_b_name || 'Unknown') : (rel.investor_a_name || 'Unknown');
+    const otherStatus = isA ? (rel.investor_b_status || '') : (rel.investor_a_status || '');
+    const otherEnthusiasm = isA ? (rel.investor_b_enthusiasm || 0) : (rel.investor_a_enthusiasm || 0);
+    const relStrength = rel.strength || 1;
+
+    // Positive signals: committed, closed, high enthusiasm, in DD, term sheet
+    if (['closed', 'term_sheet'].includes(otherStatus)) {
+      positiveWeight += relStrength * 3;
+      positiveSignals.push(`${otherName} has committed (${otherStatus})`);
+    } else if (['in_dd'].includes(otherStatus) && otherEnthusiasm >= 4) {
+      positiveWeight += relStrength * 2;
+      positiveSignals.push(`${otherName} is in DD with high enthusiasm`);
+    } else if (otherEnthusiasm >= 4) {
+      positiveWeight += relStrength * 1.5;
+      positiveSignals.push(`${otherName} shows high enthusiasm (${otherEnthusiasm}/5)`);
+    }
+
+    // Negative signals: passed, dropped
+    if (['passed', 'dropped'].includes(otherStatus)) {
+      negativeWeight += relStrength * 2;
+      negativeSignals.push(`${otherName} has ${otherStatus}`);
+    } else if (otherEnthusiasm <= 1 && otherEnthusiasm > 0) {
+      negativeWeight += relStrength * 1;
+      negativeSignals.push(`${otherName} has low enthusiasm (${otherEnthusiasm}/5)`);
+    }
+  }
+
+  // Compute score: base 50, +/- based on network signals
+  const netSignal = positiveWeight - negativeWeight;
+  const maxSignal = relationships.length * 5 * 3; // max possible positive weight
+  const normalizedBoost = maxSignal > 0 ? (netSignal / maxSignal) * 50 : 0;
+  const score = Math.max(0, Math.min(100, Math.round(50 + normalizedBoost)));
+
+  const evidenceParts: string[] = [];
+  evidenceParts.push(`${relationships.length} connection${relationships.length > 1 ? 's' : ''} in pipeline`);
+  if (positiveSignals.length > 0) evidenceParts.push(`${positiveSignals.length} positive signal${positiveSignals.length > 1 ? 's' : ''}`);
+  if (negativeSignals.length > 0) evidenceParts.push(`${negativeSignals.length} negative signal${negativeSignals.length > 1 ? 's' : ''}`);
+
+  return {
+    score,
+    evidence: evidenceParts.join(', '),
+    positiveSignals,
+    negativeSignals,
+  };
+}
+
+/**
+ * Get aggregated competitive intel from all meetings (cross-investor synthesis).
+ * Returns consolidated competitive mentions from the full pipeline.
+ */
+export async function getAggregatedCompetitiveIntel(): Promise<{
+  competitor: string;
+  mentionCount: number;
+  investors: string[];
+  latestMention: string;
+  context: string[];
+}[]> {
+  await ensureInitialized();
+  const db = getClient();
+  const result = await db.execute(`
+    SELECT m.competitive_intel, m.investor_name, m.date
+    FROM meetings m
+    WHERE m.competitive_intel != '' AND m.competitive_intel IS NOT NULL
+    ORDER BY m.date DESC
+  `);
+  const rows = result.rows as unknown as Array<{ competitive_intel: string; investor_name: string; date: string }>;
+
+  // Parse and aggregate competitive intel mentions
+  const competitorMap = new Map<string, { mentionCount: number; investors: Set<string>; latestMention: string; context: string[] }>();
+
+  for (const row of rows) {
+    const intel = row.competitive_intel.trim();
+    if (!intel) continue;
+
+    // Try to extract competitor names from the intel text
+    // Use simple heuristic: look for capitalized words/phrases that could be company names
+    const normalizedIntel = intel.toLowerCase();
+
+    // Common competitor keywords to detect
+    const competitorKeywords = ['iceye', 'planet', 'maxar', 'airbus', 'thales', 'oneweb', 'spacex',
+      'rocket lab', 'sierra', 'k2 space', 'stoke', 'anduril', 'l3harris', 'bae', 'rheinmetall',
+      'capella', 'blacksky', 'spire', 'hawkeye'];
+
+    let matchedCompetitor = 'general_competitive';
+    for (const kw of competitorKeywords) {
+      if (normalizedIntel.includes(kw)) {
+        matchedCompetitor = kw;
+        break;
+      }
+    }
+
+    if (!competitorMap.has(matchedCompetitor)) {
+      competitorMap.set(matchedCompetitor, { mentionCount: 0, investors: new Set(), latestMention: '', context: [] });
+    }
+    const entry = competitorMap.get(matchedCompetitor)!;
+    entry.mentionCount++;
+    entry.investors.add(row.investor_name);
+    if (!entry.latestMention || row.date > entry.latestMention) entry.latestMention = row.date;
+    if (entry.context.length < 5) entry.context.push(`${row.investor_name}: ${intel.substring(0, 200)}`);
+  }
+
+  return Array.from(competitorMap.entries())
+    .map(([competitor, data]) => ({
+      competitor,
+      mentionCount: data.mentionCount,
+      investors: Array.from(data.investors),
+      latestMention: data.latestMention,
+      context: data.context,
+    }))
+    .sort((a, b) => b.mentionCount - a.mentionCount);
+}
+
+/**
+ * Get question patterns for a specific investor type (for meeting prep).
+ * Returns the most common question topics for that type.
+ */
+export async function getQuestionPatternsForType(investorType: string): Promise<{
+  topic: string;
+  questionCount: number;
+  exampleQuestions: string[];
+}[]> {
+  await ensureInitialized();
+  const db = getClient();
+  const result = await db.execute({
+    sql: `
+      SELECT topic, question_text
+      FROM question_patterns
+      WHERE investor_type = ?
+      ORDER BY meeting_date DESC
+    `,
+    args: [investorType],
+  });
+  const rows = result.rows as unknown as Array<{ topic: string; question_text: string }>;
+
+  const byTopic = new Map<string, string[]>();
+  for (const row of rows) {
+    if (!byTopic.has(row.topic)) byTopic.set(row.topic, []);
+    byTopic.get(row.topic)!.push(row.question_text);
+  }
+
+  return Array.from(byTopic.entries())
+    .map(([topic, questions]) => ({
+      topic,
+      questionCount: questions.length,
+      exampleQuestions: questions.slice(0, 3),
+    }))
+    .sort((a, b) => b.questionCount - a.questionCount);
+}
+
+/**
+ * Get proven responses for objection topics (best response per topic).
+ */
+export async function getProvenResponsesForTopics(topics: string[]): Promise<{
+  topic: string;
+  bestResponse: string;
+  effectiveness: string;
+  enthusiasmLift: number;
+}[]> {
+  await ensureInitialized();
+  const db = getClient();
+
+  const results: { topic: string; bestResponse: string; effectiveness: string; enthusiasmLift: number }[] = [];
+
+  for (const topic of topics) {
+    const resp = await db.execute({
+      sql: `SELECT response_text, effectiveness, next_meeting_enthusiasm_delta
+            FROM objection_responses
+            WHERE objection_topic = ? AND response_text != '' AND effectiveness = 'effective'
+            ORDER BY next_meeting_enthusiasm_delta DESC LIMIT 1`,
+      args: [topic],
+    });
+    if (resp.rows.length > 0) {
+      const row = resp.rows[0] as unknown as { response_text: string; effectiveness: string; next_meeting_enthusiasm_delta: number };
+      results.push({
+        topic,
+        bestResponse: row.response_text,
+        effectiveness: row.effectiveness,
+        enthusiasmLift: row.next_meeting_enthusiasm_delta,
+      });
+    }
+  }
+
+  return results;
 }

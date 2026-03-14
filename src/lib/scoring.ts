@@ -1,5 +1,6 @@
 import type { Investor, Meeting, InvestorPortfolioCo, IntelligenceBrief, Objection, EngagementSignal, InvestorStatus } from './types';
 import type { ScoreSnapshot } from './db';
+import { computeNetworkEffectData } from './db';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -762,6 +763,30 @@ function determineNextAction(
 }
 
 // ---------------------------------------------------------------------------
+// Network Effect Dimension
+// ---------------------------------------------------------------------------
+
+export function computeNetworkEffectScore(
+  networkData: { score: number; evidence: string; positiveSignals: string[]; negativeSignals: string[] } | null,
+): ScoreDimension {
+  if (!networkData || networkData.score === 0 && networkData.positiveSignals.length === 0 && networkData.negativeSignals.length === 0) {
+    return { name: 'Network Effect', score: 0, signal: 'unknown', evidence: 'No relationship data available' };
+  }
+
+  const score = clamp(networkData.score);
+  const parts: string[] = [];
+  if (networkData.positiveSignals.length > 0) {
+    parts.push(`+${networkData.positiveSignals.length} positive: ${networkData.positiveSignals.slice(0, 2).join('; ')}`);
+  }
+  if (networkData.negativeSignals.length > 0) {
+    parts.push(`-${networkData.negativeSignals.length} negative: ${networkData.negativeSignals.slice(0, 2).join('; ')}`);
+  }
+  if (parts.length === 0) parts.push(networkData.evidence);
+
+  return { name: 'Network Effect', score, signal: signal(score), evidence: parts.join(' | ') };
+}
+
+// ---------------------------------------------------------------------------
 // Main Scorer
 // ---------------------------------------------------------------------------
 
@@ -771,6 +796,7 @@ export function computeInvestorScore(
   portfolio: InvestorPortfolioCo[],
   briefs: IntelligenceBrief[],
   raiseConfig: { targetEquityM: number; targetCloseDate: string | null },
+  networkData?: { score: number; evidence: string; positiveSignals: string[]; negativeSignals: string[] } | null,
 ): InvestorScore {
   // Compute all dimensions
   const engagement = computeEngagementScore(investor, meetings);
@@ -789,6 +815,9 @@ export function computeInvestorScore(
     evidence: momentumEvidence,
   };
 
+  // 9th dimension: Network Effect
+  const networkEffect = computeNetworkEffectScore(networkData || null);
+
   const dimensions = [
     engagement,
     thesisFit,
@@ -798,35 +827,37 @@ export function computeInvestorScore(
     warmPath,
     meetingQuality,
     momentumDimension,
+    networkEffect,
   ];
 
   // Dynamic weights by raise phase — early-stage needs thesis fit > momentum;
   // late-stage (DD/negotiation) needs momentum > thesis fit
+  // Network Effect grows in importance as the raise progresses (cascade dynamics)
   const phaseWeights: Record<string, Record<string, number>> = {
     discovery: {
-      'Engagement': 0.10, 'Thesis Fit': 0.25, 'Check Size Fit': 0.15,
-      'Speed Match': 0.05, 'Conflict Risk': 0.10, 'Warm Path': 0.15,
-      'Meeting Quality': 0.10, 'Momentum': 0.10,
+      'Engagement': 0.10, 'Thesis Fit': 0.24, 'Check Size Fit': 0.14,
+      'Speed Match': 0.05, 'Conflict Risk': 0.10, 'Warm Path': 0.14,
+      'Meeting Quality': 0.10, 'Momentum': 0.10, 'Network Effect': 0.03,
     },
     outreach: {
-      'Engagement': 0.15, 'Thesis Fit': 0.20, 'Check Size Fit': 0.10,
-      'Speed Match': 0.10, 'Conflict Risk': 0.10, 'Warm Path': 0.15,
-      'Meeting Quality': 0.10, 'Momentum': 0.10,
+      'Engagement': 0.14, 'Thesis Fit': 0.19, 'Check Size Fit': 0.10,
+      'Speed Match': 0.09, 'Conflict Risk': 0.10, 'Warm Path': 0.14,
+      'Meeting Quality': 0.10, 'Momentum': 0.10, 'Network Effect': 0.04,
     },
     mgmt_presentations: {
-      'Engagement': 0.20, 'Thesis Fit': 0.15, 'Check Size Fit': 0.10,
-      'Speed Match': 0.10, 'Conflict Risk': 0.10, 'Warm Path': 0.10,
-      'Meeting Quality': 0.15, 'Momentum': 0.10,
+      'Engagement': 0.18, 'Thesis Fit': 0.14, 'Check Size Fit': 0.10,
+      'Speed Match': 0.09, 'Conflict Risk': 0.10, 'Warm Path': 0.09,
+      'Meeting Quality': 0.14, 'Momentum': 0.10, 'Network Effect': 0.06,
     },
     due_diligence: {
-      'Engagement': 0.15, 'Thesis Fit': 0.10, 'Check Size Fit': 0.10,
-      'Speed Match': 0.15, 'Conflict Risk': 0.15, 'Warm Path': 0.05,
-      'Meeting Quality': 0.15, 'Momentum': 0.15,
+      'Engagement': 0.13, 'Thesis Fit': 0.09, 'Check Size Fit': 0.09,
+      'Speed Match': 0.14, 'Conflict Risk': 0.13, 'Warm Path': 0.05,
+      'Meeting Quality': 0.14, 'Momentum': 0.14, 'Network Effect': 0.09,
     },
     negotiation: {
-      'Engagement': 0.10, 'Thesis Fit': 0.05, 'Check Size Fit': 0.15,
-      'Speed Match': 0.20, 'Conflict Risk': 0.15, 'Warm Path': 0.05,
-      'Meeting Quality': 0.10, 'Momentum': 0.20,
+      'Engagement': 0.08, 'Thesis Fit': 0.05, 'Check Size Fit': 0.14,
+      'Speed Match': 0.18, 'Conflict Risk': 0.13, 'Warm Path': 0.05,
+      'Meeting Quality': 0.09, 'Momentum': 0.18, 'Network Effect': 0.10,
     },
   };
   const raisePhase = (raiseConfig as Record<string, unknown>).raisePhase as string || 'mgmt_presentations';

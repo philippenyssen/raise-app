@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getInvestor, getMeetings, getInvestorPortfolio, getIntelligenceBriefs, getRaiseConfig, upsertScoreSnapshot } from '@/lib/db';
+import { getInvestor, getMeetings, getInvestorPortfolio, getIntelligenceBriefs, getRaiseConfig, upsertScoreSnapshot, computeNetworkEffectData } from '@/lib/db';
 import { computeInvestorScore } from '@/lib/scoring';
 
 export async function GET(
@@ -8,13 +8,14 @@ export async function GET(
 ) {
   const { id } = await params;
 
-  // Fetch all data in parallel
-  const [investor, meetings, portfolio, briefs, raiseConfig] = await Promise.all([
+  // Fetch all data in parallel (including network effect data)
+  const [investor, meetings, portfolio, briefs, raiseConfig, networkData] = await Promise.all([
     getInvestor(id),
     getMeetings(id),
     getInvestorPortfolio(id),
     getIntelligenceBriefs(undefined, id),
     getRaiseConfig(),
+    computeNetworkEffectData(id).catch(() => null),
   ]);
 
   if (!investor) {
@@ -44,6 +45,7 @@ export async function GET(
     portfolio,
     briefs,
     { targetEquityM, targetCloseDate },
+    networkData,
   );
 
   // Auto-capture score snapshot (1 per investor per day, upsert)

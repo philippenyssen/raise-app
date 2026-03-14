@@ -25,6 +25,7 @@ import {
   getQuestionPatterns,
   getCalibrationData,
   computeNarrativeSignals,
+  getKeystoneInvestors,
 } from './db';
 
 // ---------------------------------------------------------------------------
@@ -187,6 +188,14 @@ export interface FullContext {
     avgEnthusiasmLift: number;
     timesUsed: number;
   }[];
+
+  // Keystone investors — closing one unlocks others via network effects
+  keystoneInvestors: {
+    id: string;
+    name: string;
+    connectionCount: number;
+    cascadeValue: string;
+  }[];
 }
 
 const recentChanges: ContextChange[] = [];
@@ -218,6 +227,7 @@ export async function getFullContext(): Promise<FullContext> {
     questionPatterns,
     calibrationData,
     narrativeSignals,
+    keystoneInvestorsData,
   ] = await Promise.all([
     getRaiseConfig().catch(() => null),
     getAllDocuments().catch(() => []),
@@ -234,6 +244,7 @@ export async function getFullContext(): Promise<FullContext> {
     getQuestionPatterns().catch(() => []),
     getCalibrationData().catch(() => ({ totalPredictions: 0, resolvedPredictions: 0, brierScore: 0, biasDirection: 'insufficient_data', byStatus: [] })),
     computeNarrativeSignals().catch(() => []),
+    getKeystoneInvestors().catch(() => []),
   ]);
 
   // Build investor snapshots enriched with meeting/task/followup data
@@ -407,6 +418,17 @@ export async function getFullContext(): Promise<FullContext> {
         avgEnthusiasmLift: p.avg_lift || 0,
         timesUsed: p.count,
       })),
+
+    // Keystone investors (closing one unlocks others)
+    keystoneInvestors: (keystoneInvestorsData as Array<{ id: string; name: string; connectionCount: number; cascadeValue: string }>)
+      .filter(k => k.cascadeValue !== 'minimal')
+      .slice(0, 5)
+      .map(k => ({
+        id: k.id,
+        name: k.name,
+        connectionCount: k.connectionCount,
+        cascadeValue: k.cascadeValue,
+      })),
   };
 
   cachedContext = context;
@@ -542,6 +564,15 @@ export function contextToSystemPrompt(ctx: FullContext): string {
   if (ctx.predictionCalibration.resolvedCount > 0) {
     lines.push(`PREDICTION CALIBRATION: ${ctx.predictionCalibration.calibrationNote}`);
     lines.push(`Brier score: ${ctx.predictionCalibration.brierScore} | Bias: ${ctx.predictionCalibration.biasDirection} | Based on ${ctx.predictionCalibration.resolvedCount} resolved predictions`);
+    lines.push('');
+  }
+
+  // Keystone investors (closing one unlocks others)
+  if (ctx.keystoneInvestors.length > 0) {
+    lines.push('KEYSTONE INVESTORS (closing one unlocks others):');
+    for (const ki of ctx.keystoneInvestors) {
+      lines.push(`- ${ki.name} → connected to ${ki.connectionCount} other investors in pipeline (cascade: ${ki.cascadeValue})`);
+    }
     lines.push('');
   }
 
