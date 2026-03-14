@@ -7,7 +7,8 @@ import type { Investor, Meeting, InvestorPartner, InvestorPortfolioCo, Intellige
 import {
   ArrowLeft, Calendar, TrendingUp, AlertTriangle,
   Clock, Target, Users, Zap, Briefcase, UserCheck, BookOpen,
-  RefreshCw, Loader2, Trash2, ClipboardList, Check, FileSearch
+  RefreshCw, Loader2, Trash2, ClipboardList, Check, FileSearch,
+  Gauge, ArrowUpRight, ArrowRight, ArrowDownRight, Minus, ShieldAlert, Lightbulb
 } from 'lucide-react';
 import { useToast } from '@/components/toast';
 
@@ -25,6 +26,23 @@ const STATUS_COLORS: Record<string, string> = {
   passed: 'bg-red-800', dropped: 'bg-zinc-800',
 };
 
+interface ScoreDimension {
+  name: string;
+  score: number;
+  signal: 'strong' | 'moderate' | 'weak' | 'unknown';
+  evidence: string;
+}
+
+interface InvestorScoreData {
+  overall: number;
+  dimensions: ScoreDimension[];
+  momentum: 'accelerating' | 'steady' | 'decelerating' | 'stalled';
+  predictedOutcome: 'likely_close' | 'possible' | 'long_shot' | 'unlikely';
+  nextBestAction: string;
+  risks: string[];
+  lastUpdated: string;
+}
+
 type IntelTab = 'overview' | 'partners' | 'portfolio' | 'research' | 'tasks';
 
 export default function InvestorDetailPage() {
@@ -37,9 +55,23 @@ export default function InvestorDetailPage() {
   const [portfolio, setPortfolio] = useState<InvestorPortfolioCo[]>([]);
   const [briefs, setBriefs] = useState<IntelligenceBrief[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [score, setScore] = useState<InvestorScoreData | null>(null);
+  const [scoreLoading, setScoreLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [researching, setResearching] = useState(false);
   const [intelTab, setIntelTab] = useState<IntelTab>('overview');
+
+  const fetchScore = useCallback(async () => {
+    setScoreLoading(true);
+    try {
+      const res = await fetch(`/api/investors/${id}/score`);
+      if (res.ok) {
+        const data = await res.json();
+        setScore(data);
+      }
+    } catch { /* ignore score errors */ }
+    setScoreLoading(false);
+  }, [id]);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -62,7 +94,7 @@ export default function InvestorDetailPage() {
     setLoading(false);
   }, [id]);
 
-  useEffect(() => { fetchData(); }, [fetchData]);
+  useEffect(() => { fetchData(); fetchScore(); }, [fetchData, fetchScore]);
 
   async function handleResearch() {
     if (!investor) return;
@@ -215,6 +247,17 @@ export default function InvestorDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Intelligence Score */}
+      {score && <InvestorScorePanel score={score} loading={scoreLoading} onRefresh={fetchScore} />}
+      {scoreLoading && !score && (
+        <div className="border border-zinc-800 rounded-xl p-6">
+          <div className="flex items-center gap-3">
+            <Loader2 className="w-4 h-4 animate-spin text-zinc-500" />
+            <span className="text-sm text-zinc-500">Computing intelligence score...</span>
+          </div>
+        </div>
+      )}
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
@@ -537,6 +580,164 @@ function StatCard({ icon: Icon, label, value, sub }: { icon: React.ComponentType
       </div>
       <div className="text-2xl font-bold">{value}</div>
       <div className="text-xs text-zinc-600">{sub}</div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Intelligence Score Panel
+// ---------------------------------------------------------------------------
+
+const OUTCOME_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
+  likely_close: { label: 'Likely Close', color: 'text-emerald-400', bg: 'bg-emerald-900/30' },
+  possible: { label: 'Possible', color: 'text-blue-400', bg: 'bg-blue-900/30' },
+  long_shot: { label: 'Long Shot', color: 'text-yellow-400', bg: 'bg-yellow-900/30' },
+  unlikely: { label: 'Unlikely', color: 'text-red-400', bg: 'bg-red-900/30' },
+};
+
+const MOMENTUM_CONFIG: Record<string, { label: string; icon: React.ComponentType<{ className?: string }>; color: string }> = {
+  accelerating: { label: 'Accelerating', icon: ArrowUpRight, color: 'text-emerald-400' },
+  steady: { label: 'Steady', icon: ArrowRight, color: 'text-blue-400' },
+  decelerating: { label: 'Decelerating', icon: ArrowDownRight, color: 'text-yellow-400' },
+  stalled: { label: 'Stalled', icon: Minus, color: 'text-red-400' },
+};
+
+function scoreColor(score: number): string {
+  if (score >= 70) return 'text-emerald-400';
+  if (score >= 50) return 'text-blue-400';
+  if (score >= 30) return 'text-yellow-400';
+  return 'text-red-400';
+}
+
+function scoreBarColor(score: number): string {
+  if (score >= 70) return 'bg-emerald-500';
+  if (score >= 50) return 'bg-blue-500';
+  if (score >= 30) return 'bg-yellow-500';
+  return 'bg-red-500';
+}
+
+function scoreBorderColor(score: number): string {
+  if (score >= 70) return 'border-emerald-500/30';
+  if (score >= 50) return 'border-blue-500/30';
+  if (score >= 30) return 'border-yellow-500/30';
+  return 'border-red-500/30';
+}
+
+function signalBadge(sig: 'strong' | 'moderate' | 'weak' | 'unknown') {
+  const config = {
+    strong: 'bg-emerald-900/30 text-emerald-400',
+    moderate: 'bg-blue-900/30 text-blue-400',
+    weak: 'bg-yellow-900/30 text-yellow-400',
+    unknown: 'bg-zinc-800 text-zinc-500',
+  };
+  return config[sig];
+}
+
+function InvestorScorePanel({ score, loading, onRefresh }: { score: InvestorScoreData; loading: boolean; onRefresh: () => void }) {
+  const outcomeConf = OUTCOME_CONFIG[score.predictedOutcome] || OUTCOME_CONFIG.possible;
+  const momentumConf = MOMENTUM_CONFIG[score.momentum] || MOMENTUM_CONFIG.steady;
+  const MomentumIcon = momentumConf.icon;
+
+  return (
+    <div className={`border rounded-xl overflow-hidden ${scoreBorderColor(score.overall)}`}>
+      {/* Header row: overall score + momentum + predicted outcome */}
+      <div className="p-5 bg-zinc-900/30">
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Gauge className="w-4 h-4 text-zinc-400" />
+            <h2 className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Intelligence Score</h2>
+          </div>
+          <button
+            onClick={onRefresh}
+            disabled={loading}
+            className="text-zinc-600 hover:text-zinc-400 transition-colors"
+            title="Refresh score"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
+          </button>
+        </div>
+
+        <div className="flex items-center gap-6">
+          {/* Overall score — large number */}
+          <div className="flex items-baseline gap-1">
+            <span className={`text-5xl font-bold tabular-nums ${scoreColor(score.overall)}`}>{score.overall}</span>
+            <span className="text-lg text-zinc-600">/100</span>
+          </div>
+
+          {/* Divider */}
+          <div className="w-px h-14 bg-zinc-800" />
+
+          {/* Momentum + Outcome */}
+          <div className="flex-1 space-y-2">
+            <div className="flex items-center gap-2">
+              <MomentumIcon className={`w-4 h-4 ${momentumConf.color}`} />
+              <span className={`text-sm font-medium ${momentumConf.color}`}>{momentumConf.label}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${outcomeConf.bg} ${outcomeConf.color}`}>
+                {outcomeConf.label}
+              </span>
+            </div>
+          </div>
+
+          {/* Next best action */}
+          <div className="flex-[2] min-w-0">
+            <div className="flex items-start gap-2">
+              <Lightbulb className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
+              <div className="min-w-0">
+                <div className="text-[10px] font-medium text-zinc-500 uppercase mb-0.5">Next Action</div>
+                <p className="text-sm text-zinc-300 leading-snug">{score.nextBestAction}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Dimension bars */}
+      <div className="border-t border-zinc-800 p-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">
+          {score.dimensions.map((dim) => (
+            <div key={dim.name} className="space-y-1">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-medium text-zinc-300">{dim.name}</span>
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded ${signalBadge(dim.signal)}`}>
+                    {dim.signal}
+                  </span>
+                </div>
+                <span className={`text-xs font-bold tabular-nums ${scoreColor(dim.score)}`}>{dim.score}</span>
+              </div>
+              <div className="h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+                <div
+                  className={`h-full rounded-full transition-all duration-500 ${scoreBarColor(dim.score)}`}
+                  style={{ width: `${dim.score}%` }}
+                />
+              </div>
+              <p className="text-[11px] text-zinc-500 leading-snug truncate" title={dim.evidence}>
+                {dim.evidence}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Risks */}
+      {score.risks.length > 0 && (
+        <div className="border-t border-zinc-800 p-5">
+          <div className="flex items-center gap-2 mb-3">
+            <ShieldAlert className="w-3.5 h-3.5 text-red-400" />
+            <h3 className="text-xs font-medium text-zinc-400 uppercase">Identified Risks</h3>
+          </div>
+          <div className="space-y-1.5">
+            {score.risks.map((risk, i) => (
+              <div key={i} className="flex items-start gap-2">
+                <span className="w-1 h-1 rounded-full bg-red-500 mt-1.5 shrink-0" />
+                <p className="text-xs text-zinc-400 leading-snug">{risk}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

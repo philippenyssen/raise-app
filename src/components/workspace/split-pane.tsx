@@ -1,6 +1,22 @@
 'use client';
 
 import { useState, useCallback, useRef, useEffect } from 'react';
+import { FileText, Sparkles } from 'lucide-react';
+
+function useIsMobile(breakpoint = 768) {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${breakpoint - 1}px)`);
+    setIsMobile(mql.matches);
+
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mql.addEventListener('change', handler);
+    return () => mql.removeEventListener('change', handler);
+  }, [breakpoint]);
+
+  return isMobile;
+}
 
 interface SplitPaneProps {
   left: React.ReactNode;
@@ -13,7 +29,9 @@ interface SplitPaneProps {
 export function SplitPane({ left, right, defaultSplit = 55, minLeft = 30, minRight = 25 }: SplitPaneProps) {
   const [split, setSplit] = useState(defaultSplit);
   const [dragging, setDragging] = useState(false);
+  const [activePane, setActivePane] = useState<'left' | 'right'>('left');
   const containerRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
 
   const calcSplit = useCallback((clientX: number) => {
     if (!containerRef.current) return;
@@ -54,6 +72,45 @@ export function SplitPane({ left, right, defaultSplit = 55, minLeft = 30, minRig
       document.removeEventListener('touchcancel', handleEnd);
     };
   }, [dragging, calcSplit]);
+
+  if (isMobile) {
+    return (
+      <div className="flex h-full w-full flex-col overflow-hidden">
+        <div className="sticky top-0 z-10 flex shrink-0 border-b border-zinc-800 bg-zinc-900">
+          <button
+            onClick={() => setActivePane('left')}
+            className={`flex flex-1 items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium transition-colors ${
+              activePane === 'left'
+                ? 'bg-zinc-800 text-white'
+                : 'text-zinc-400 hover:text-zinc-200'
+            }`}
+          >
+            <FileText className="h-4 w-4" />
+            Document
+          </button>
+          <button
+            onClick={() => setActivePane('right')}
+            className={`flex flex-1 items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium transition-colors ${
+              activePane === 'right'
+                ? 'bg-zinc-800 text-white'
+                : 'text-zinc-400 hover:text-zinc-200'
+            }`}
+          >
+            <Sparkles className="h-4 w-4" />
+            Chat
+          </button>
+        </div>
+        <div className="flex-1 overflow-hidden">
+          <div className={`h-full flex-col ${activePane === 'left' ? 'flex' : 'hidden'}`}>
+            {left}
+          </div>
+          <div className={`h-full flex-col ${activePane === 'right' ? 'flex' : 'hidden'}`}>
+            {right}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div ref={containerRef} className="flex h-full w-full overflow-hidden" style={{ cursor: dragging ? 'col-resize' : undefined }}>

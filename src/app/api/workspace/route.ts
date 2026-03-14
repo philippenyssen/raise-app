@@ -16,6 +16,53 @@ const CONTEXT_BUDGET = {
   config: 2000,       // Raise config
 };
 
+// ---------------------------------------------------------------------------
+// In-memory context cache with TTL
+// ---------------------------------------------------------------------------
+const CACHE_TTL_MS = 30_000; // 30 seconds
+
+interface CacheEntry<T> {
+  value: T;
+  timestamp: number;
+}
+
+const contextCache = new Map<string, CacheEntry<unknown>>();
+
+function getCached<T>(key: string): T | null {
+  const entry = contextCache.get(key);
+  if (!entry) return null;
+  if (Date.now() - entry.timestamp > CACHE_TTL_MS) {
+    contextCache.delete(key);
+    return null;
+  }
+  return entry.value as T;
+}
+
+function setCached<T>(key: string, value: T): void {
+  contextCache.set(key, { value, timestamp: Date.now() });
+}
+
+/** Fetch-or-cache a value produced by an async factory. */
+async function cachedFetch<T>(key: string, factory: () => Promise<T>): Promise<T> {
+  const hit = getCached<T>(key);
+  if (hit !== null) return hit;
+  const value = await factory();
+  setCached(key, value);
+  return value;
+}
+
+/** Simple FNV-1a-inspired hash of a string → hex. Used for the context_hash header. */
+function quickHash(input: string): string {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < input.length; i++) {
+    h ^= input.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  return (h >>> 0).toString(16);
+}
+
+// ---------------------------------------------------------------------------
+
 function buildOtherDocsContext(docs: { id: string; title: string; type: string; content: string }[], excludeId: string | null): string {
   const others = docs.filter(d => d.id !== excludeId);
   if (others.length === 0) return 'None';
@@ -31,12 +78,19 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
   const { messages, documentId, documentContent, documentTitle } = body;
 
-  // Build context with smart budgeting
-  const raiseConfig = await getRaiseConfig();
-  const allDocs = await getAllDocuments();
-  const otherDocsContext = buildOtherDocsContext(allDocs, documentId);
-  const dataRoomContext = await getDataRoomContext();
-  const intelligenceContext = await getIntelligenceContext();
+  // Build context with smart budgeting — uses cache to avoid re-fetching on every message
+  const raiseConfig = await cachedFetch('raiseConfig', getRaiseConfig);
+  const allDocs = await cachedFetch('allDocs', getAllDocuments);
+  const dataRoomContext = await cachedFetch('dataRoomContext', getDataRoomContext);
+  const intelligenceContext = await cachedFetch('intelligenceContext', getIntelligenceContext);
+
+  // otherDocsContext depends on which document is active, so key by documentId
+  const otherDocsCacheKey = `otherDocs:${documentId ?? '__none__'}`;
+  let otherDocsContext = getCached<string>(otherDocsCacheKey);
+  if (otherDocsContext === null) {
+    otherDocsContext = buildOtherDocsContext(allDocs, documentId);
+    setCached(otherDocsCacheKey, otherDocsContext);
+  }
 
   // For model/cell context, use full content (already condensed by the model page)
   const isModelContext = documentTitle?.startsWith('Financial Model');
@@ -75,6 +129,12 @@ INSTRUCTIONS:
 7. Cross-reference numbers against the raise configuration and other documents for consistency.
 8. If the user speaks casually or gives voice-transcribed input, interpret their intent and execute precisely.`;
 
+  // Compute a lightweight context hash from the lengths of the context components.
+  // The client can use this to detect when cached context has changed.
+  const contextHash = quickHash(
+    `${raiseConfig ? JSON.stringify(raiseConfig).length : 0}:${dataRoomContext.length}:${intelligenceContext.length}:${otherDocsContext.length}:${(documentContent ?? '').length}`
+  );
+
   try {
     const stream = getClient().messages.stream({
       model: 'claude-sonnet-4-20250514',
@@ -111,6 +171,7 @@ INSTRUCTIONS:
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
         Connection: 'keep-alive',
+        'X-Context-Hash': contextHash,
       },
     });
   } catch (err) {
@@ -127,7 +188,7 @@ INSTRUCTIONS:
     }
     return new Response(
       JSON.stringify({ error: userMsg }),
-      { status, headers: { 'Content-Type': 'application/json' } }
+      { status, headers: { 'Content-Type': 'application/json', 'X-Context-Hash': contextHash } }
     );
   }
 }

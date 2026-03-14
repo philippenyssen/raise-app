@@ -151,15 +151,21 @@ export default function ModelPage() {
   const [showAddSheet, setShowAddSheet] = useState(false);
 
   const fetchSheets = useCallback(async () => {
-    const res = await fetch('/api/model');
-    const data = await res.json();
-    setSheets(data);
-    if (data.length > 0 && !activeSheetId) {
-      setActiveSheetId(data[0].id);
-      try { setLocalCells(JSON.parse(data[0].data)); } catch { setLocalCells({}); }
+    try {
+      const res = await fetch('/api/model');
+      if (!res.ok) throw new Error(`Failed (${res.status})`);
+      const data = await res.json();
+      setSheets(data);
+      if (data.length > 0 && !activeSheetId) {
+        setActiveSheetId(data[0].id);
+        try { setLocalCells(JSON.parse(data[0].data)); } catch { setLocalCells({}); }
+      }
+    } catch {
+      toast('Failed to load model', 'error');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
-  }, [activeSheetId]);
+  }, [activeSheetId, toast]);
 
   useEffect(() => { fetchSheets(); }, [fetchSheets]);
 

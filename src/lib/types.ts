@@ -232,3 +232,31 @@ export interface IntelligenceBrief {
   created_at: string;
   updated_at: string;
 }
+
+export type DocumentFlagType = 'objection_response' | 'number_update' | 'section_improvement';
+export type DocumentFlagStatus = 'open' | 'addressed' | 'dismissed';
+
+export interface DocumentFlag {
+  id: string;
+  document_id: string;
+  meeting_id: string;
+  investor_id: string;
+  investor_name: string;
+  flag_type: DocumentFlagType;
+  description: string;
+  section_hint: string;
+  objection_text: string;
+  status: DocumentFlagStatus;
+  created_at: string;
+}
+
+export interface PostMeetingActions {
+  tasks: Task[];
+  document_flags: DocumentFlag[];
+  investor_updates: {
+    enthusiasm: number;
+    suggested_status: string;
+    previous_status?: string;
+    previous_enthusiasm?: number;
+  };
+}

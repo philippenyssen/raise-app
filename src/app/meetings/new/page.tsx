@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { Investor } from '@/lib/types';
+import PostMeetingActions from '@/components/post-meeting-actions';
 
 export default function NewMeetingPage() {
   const router = useRouter();
@@ -45,12 +46,18 @@ export default function NewMeetingPage() {
     setLoading(false);
   }
 
+  const postMeetingActions = result?.post_meeting_actions as {
+    tasks: { id: string; title: string; description: string; due_date: string; priority: string; phase: string; status: string; investor_name: string }[];
+    document_flags: { id: string; document_id: string; flag_type: string; description: string; section_hint: string; objection_text: string; investor_name: string; status: string }[];
+    investor_updates: { enthusiasm: number; suggested_status: string; previous_status?: string; previous_enthusiasm?: number };
+  } | null;
+
   return (
     <div className="max-w-3xl space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Log Meeting Debrief</h1>
         <p className="text-zinc-500 text-sm mt-1">
-          Paste your raw notes — AI extracts objections, signals, and patterns automatically.
+          Paste your raw notes — AI extracts objections, signals, and patterns, then auto-generates follow-up tasks and document flags.
         </p>
       </div>
 
@@ -237,6 +244,14 @@ The AI will extract structured data from your free-form notes.`}
             </button>
           </div>
         </div>
+      )}
+
+      {/* Post-Meeting Actions */}
+      {result && postMeetingActions && (
+        <PostMeetingActions
+          data={postMeetingActions}
+          meetingId={result.id as string}
+        />
       )}
     </div>
   );

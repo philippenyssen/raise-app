@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getMeetings, createMeeting, updateMeeting, updateInvestor, generatePostMeetingTasks, logActivity } from '@/lib/db';
+import { getMeetings, createMeeting, updateMeeting, getInvestor, processPostMeetingIntelligence, logActivity } from '@/lib/db';
 import { analyzeMeetingNotes } from '@/lib/ai';
-import type { Investor } from '@/lib/types';
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -14,7 +13,7 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
   const { raw_notes, investor_id, investor_name, date, type, attendees, duration_minutes, analyze } = body;
 
-  let aiData = {};
+  let aiData: Record<string, unknown> = {};
   if (analyze && raw_notes) {
     try {
       aiData = await analyzeMeetingNotes(raw_notes, investor_name, type || 'intro');
@@ -31,42 +30,41 @@ export async function POST(req: NextRequest) {
     attendees: attendees || '',
     duration_minutes: duration_minutes || 60,
     raw_notes: raw_notes || '',
-    questions_asked: JSON.stringify((aiData as Record<string, unknown>).questions_asked || []),
-    objections: JSON.stringify((aiData as Record<string, unknown>).objections || []),
-    engagement_signals: JSON.stringify((aiData as Record<string, unknown>).engagement_signals || {}),
-    competitive_intel: (aiData as Record<string, string>).competitive_intel || '',
-    next_steps: (aiData as Record<string, string>).next_steps || '',
-    enthusiasm_score: (aiData as Record<string, number>).enthusiasm_score || 3,
-    status_after: (aiData as Record<string, string>).suggested_status || 'met',
-    ai_analysis: (aiData as Record<string, string>).ai_analysis || '',
+    questions_asked: JSON.stringify(aiData.questions_asked || []),
+    objections: JSON.stringify(aiData.objections || []),
+    engagement_signals: JSON.stringify(aiData.engagement_signals || {}),
+    competitive_intel: (aiData.competitive_intel as string) || '',
+    next_steps: (aiData.next_steps as string) || '',
+    enthusiasm_score: (aiData.enthusiasm_score as number) || 3,
+    status_after: (aiData.suggested_status as string) || 'met',
+    ai_analysis: (aiData.ai_analysis as string) || '',
   });
 
-  // Update investor status and enthusiasm
-  const suggestedStatus = (aiData as Record<string, string>).suggested_status;
-  if (suggestedStatus) {
-    await updateInvestor(investor_id, {
-      status: suggestedStatus as Investor['status'],
-      enthusiasm: (aiData as Record<string, number>).enthusiasm_score || 3,
-    });
-  }
-
-  // Auto-generate follow-up tasks
+  // Run post-meeting intelligence pipeline
+  let postMeetingActions = null;
   try {
-    await generatePostMeetingTasks(meeting, suggestedStatus || 'met');
-  } catch { /* non-blocking */ }
+    const investor = await getInvestor(investor_id);
+    const investorTier = investor?.tier ?? 2;
+    postMeetingActions = await processPostMeetingIntelligence(meeting, aiData, investorTier);
+  } catch (err) {
+    console.error('Post-meeting intelligence pipeline failed:', err);
+  }
 
   // Log activity
   try {
     await logActivity({
       event_type: 'meeting_logged',
       subject: `${type || 'Meeting'} with ${investor_name}`,
-      detail: (aiData as Record<string, string>).ai_analysis || '',
+      detail: (aiData.ai_analysis as string) || '',
       investor_id,
       investor_name,
     });
   } catch { /* non-blocking */ }
 
-  return NextResponse.json(meeting, { status: 201 });
+  return NextResponse.json({
+    ...meeting,
+    post_meeting_actions: postMeetingActions,
+  }, { status: 201 });
 }
 
 const ALLOWED_MEETING_FIELDS = new Set([

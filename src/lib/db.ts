@@ -1,5 +1,5 @@
 import { createClient, type Client, type InValue } from '@libsql/client';
-import { Investor, Meeting, RaiseConfig, MarketDeal, InvestorPartner, InvestorPortfolioCo, Competitor, IntelligenceBrief, Task, ActivityEvent } from './types';
+import { Investor, Meeting, RaiseConfig, MarketDeal, InvestorPartner, InvestorPortfolioCo, Competitor, IntelligenceBrief, Task, ActivityEvent, type RaisePhase, type TaskPriority } from './types';
 
 let client: Client;
 let initialized = false;
@@ -228,6 +228,19 @@ async function ensureInitialized() {
       detail TEXT DEFAULT '',
       investor_id TEXT DEFAULT '',
       investor_name TEXT DEFAULT '',
+      created_at TEXT DEFAULT (datetime('now'))
+    )`,
+    `CREATE TABLE IF NOT EXISTS document_flags (
+      id TEXT PRIMARY KEY,
+      document_id TEXT DEFAULT '',
+      meeting_id TEXT DEFAULT '',
+      investor_id TEXT DEFAULT '',
+      investor_name TEXT DEFAULT '',
+      flag_type TEXT DEFAULT 'objection_response',
+      description TEXT DEFAULT '',
+      section_hint TEXT DEFAULT '',
+      objection_text TEXT DEFAULT '',
+      status TEXT DEFAULT 'open',
       created_at TEXT DEFAULT (datetime('now'))
     )`,
   ], 'write');
@@ -1141,6 +1154,371 @@ export async function generatePostMeetingTasks(meeting: Meeting, suggestedStatus
   }
 
   return tasks;
+}
+
+// Document Flags
+
+export interface DocumentFlag {
+  id: string;
+  document_id: string;
+  meeting_id: string;
+  investor_id: string;
+  investor_name: string;
+  flag_type: string; // 'objection_response' | 'number_update' | 'section_improvement'
+  description: string;
+  section_hint: string;
+  objection_text: string;
+  status: string; // 'open' | 'addressed' | 'dismissed'
+  created_at: string;
+}
+
+export async function getDocumentFlags(filters?: { status?: string; meeting_id?: string; document_id?: string; investor_id?: string }): Promise<DocumentFlag[]> {
+  await ensureInitialized();
+  let sql = 'SELECT * FROM document_flags';
+  const args: InValue[] = [];
+  const conditions: string[] = [];
+  if (filters?.status) { conditions.push('status = ?'); args.push(filters.status); }
+  if (filters?.meeting_id) { conditions.push('meeting_id = ?'); args.push(filters.meeting_id); }
+  if (filters?.document_id) { conditions.push('document_id = ?'); args.push(filters.document_id); }
+  if (filters?.investor_id) { conditions.push('investor_id = ?'); args.push(filters.investor_id); }
+  if (conditions.length > 0) sql += ' WHERE ' + conditions.join(' AND ');
+  sql += ' ORDER BY created_at DESC';
+  const result = await getClient().execute({ sql, args });
+  return result.rows as unknown as DocumentFlag[];
+}
+
+export async function createDocumentFlag(flag: Omit<DocumentFlag, 'id' | 'created_at'>): Promise<DocumentFlag> {
+  await ensureInitialized();
+  const id = crypto.randomUUID();
+  await getClient().execute({
+    sql: `INSERT INTO document_flags (id, document_id, meeting_id, investor_id, investor_name, flag_type, description, section_hint, objection_text, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
+    args: [id, flag.document_id, flag.meeting_id, flag.investor_id, flag.investor_name, flag.flag_type, flag.description, flag.section_hint, flag.objection_text, flag.status],
+  });
+  const result = await getClient().execute({ sql: 'SELECT * FROM document_flags WHERE id = ?', args: [id] });
+  return result.rows[0] as unknown as DocumentFlag;
+}
+
+export async function updateDocumentFlag(id: string, updates: { status?: string }) {
+  await ensureInitialized();
+  if (updates.status) {
+    await getClient().execute({
+      sql: 'UPDATE document_flags SET status = ? WHERE id = ?',
+      args: [updates.status, id],
+    });
+  }
+}
+
+export async function deleteDocumentFlag(id: string) {
+  await ensureInitialized();
+  await getClient().execute({ sql: 'DELETE FROM document_flags WHERE id = ?', args: [id] });
+}
+
+// Post-Meeting Intelligence Pipeline
+
+// Maps objection topics to document section hints and flag types
+const OBJECTION_TO_DOC_MAP: Record<string, { section_hint: string; flag_type: string; doc_types: string[] }> = {
+  valuation: { section_hint: 'Valuation section, SOTP analysis, comparable companies', flag_type: 'objection_response', doc_types: ['memo', 'exec_brief', 'one_pager'] },
+  competition: { section_hint: 'Competitive landscape, moat analysis, differentiation', flag_type: 'objection_response', doc_types: ['memo', 'deck'] },
+  market: { section_hint: 'Market sizing, TAM/SAM/SOM, demand drivers', flag_type: 'section_improvement', doc_types: ['memo', 'deck', 'one_pager'] },
+  execution: { section_hint: 'Management team, track record, operational plan', flag_type: 'section_improvement', doc_types: ['memo', 'exec_brief'] },
+  team: { section_hint: 'Team section, hiring plan, key-person risk', flag_type: 'section_improvement', doc_types: ['memo', 'exec_brief'] },
+  financial: { section_hint: 'Financial model, P&L, unit economics, margins', flag_type: 'number_update', doc_types: ['memo', 'one_pager'] },
+  timing: { section_hint: 'Timeline, milestones, go-to-market pace', flag_type: 'section_improvement', doc_types: ['memo', 'deck'] },
+  structure: { section_hint: 'Deal structure, terms, governance', flag_type: 'objection_response', doc_types: ['memo'] },
+  risk: { section_hint: 'Risk section, bear case, sensitivity analysis', flag_type: 'objection_response', doc_types: ['memo', 'exec_brief'] },
+  technical: { section_hint: 'Technology section, product architecture, IP', flag_type: 'section_improvement', doc_types: ['memo', 'deck'] },
+};
+
+// Determine task priority based on investor tier
+function getPriorityForTier(tier: number): TaskPriority {
+  if (tier === 1) return 'critical';
+  if (tier === 2) return 'high';
+  if (tier === 3) return 'medium';
+  return 'low';
+}
+
+// Determine due date offset based on action type keywords
+function getDueDateForAction(actionText: string): string {
+  const now = new Date();
+  const lower = actionText.toLowerCase();
+
+  // Urgent: same day / next day
+  if (lower.includes('send') || lower.includes('email') || lower.includes('share') || lower.includes('forward') || lower.includes('thank you') || lower.includes('follow up email')) {
+    return new Date(now.getTime() + 1 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+  }
+  // Near-term: 2-3 days
+  if (lower.includes('schedule') || lower.includes('call') || lower.includes('intro') || lower.includes('connect') || lower.includes('coordinate')) {
+    return new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+  }
+  // Medium: 5-7 days
+  if (lower.includes('prepare') || lower.includes('dd') || lower.includes('due diligence') || lower.includes('model') || lower.includes('update') || lower.includes('revise')) {
+    return new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+  }
+  // Default: 5 days
+  return new Date(now.getTime() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+}
+
+// Determine phase from meeting status
+function getPhaseFromStatus(status: string): RaisePhase {
+  switch (status) {
+    case 'in_dd': return 'due_diligence';
+    case 'term_sheet': return 'term_sheets';
+    case 'negotiation': return 'negotiation';
+    case 'engaged': return 'management_presentations';
+    default: return 'outreach';
+  }
+}
+
+export interface PostMeetingActions {
+  tasks: Task[];
+  document_flags: DocumentFlag[];
+  investor_updates: {
+    enthusiasm: number;
+    suggested_status: string;
+    previous_status?: string;
+    previous_enthusiasm?: number;
+  };
+}
+
+export async function processPostMeetingIntelligence(
+  meeting: Meeting,
+  aiData: Record<string, unknown>,
+  investorTier: number,
+): Promise<PostMeetingActions> {
+  const results: PostMeetingActions = {
+    tasks: [],
+    document_flags: [],
+    investor_updates: {
+      enthusiasm: (aiData.enthusiasm_score as number) || 3,
+      suggested_status: (aiData.suggested_status as string) || 'met',
+    },
+  };
+
+  const suggestedStatus = (aiData.suggested_status as string) || 'met';
+  const phase = getPhaseFromStatus(suggestedStatus);
+  const priority = getPriorityForTier(investorTier);
+
+  // 1. Parse next_steps and generate granular tasks
+  const nextSteps = meeting.next_steps || (aiData.next_steps as string) || '';
+  if (nextSteps) {
+    // Split next_steps into individual actions (by newline, semicolons, bullet points, or numbered items)
+    const actionLines = nextSteps
+      .split(/[\n;]|(?:\d+\.\s)/)
+      .map(s => s.replace(/^[-•*]\s*/, '').trim())
+      .filter(s => s.length > 5);
+
+    if (actionLines.length > 0) {
+      for (const action of actionLines) {
+        const dueDate = getDueDateForAction(action);
+        results.tasks.push(await createTask({
+          title: `${action.charAt(0).toUpperCase() + action.slice(1)}`,
+          description: `Auto-generated from meeting with ${meeting.investor_name} on ${meeting.date}.\n\nOriginal next steps: ${nextSteps}`,
+          assignee: '',
+          due_date: dueDate,
+          status: 'pending',
+          priority,
+          phase,
+          investor_id: meeting.investor_id,
+          investor_name: meeting.investor_name,
+          auto_generated: true,
+        }));
+      }
+    } else {
+      // Single block of next steps — create one follow-up task
+      results.tasks.push(await createTask({
+        title: `Follow up: ${meeting.investor_name}`,
+        description: nextSteps,
+        assignee: '',
+        due_date: getDueDateForAction(nextSteps),
+        status: 'pending',
+        priority,
+        phase,
+        investor_id: meeting.investor_id,
+        investor_name: meeting.investor_name,
+        auto_generated: true,
+      }));
+    }
+  }
+
+  // 2. Create tasks from objections (showstoppers and significant)
+  try {
+    const objections = JSON.parse(meeting.objections || '[]') as { text: string; severity: string; topic: string }[];
+    const criticalObjections = objections.filter(o => o.severity === 'showstopper' || o.severity === 'significant');
+    if (criticalObjections.length > 0) {
+      results.tasks.push(await createTask({
+        title: `Address ${criticalObjections.length} objection${criticalObjections.length > 1 ? 's' : ''} from ${meeting.investor_name}`,
+        description: criticalObjections.map(o => `[${o.severity.toUpperCase()}] ${o.text} (topic: ${o.topic})`).join('\n'),
+        assignee: '',
+        due_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        status: 'pending',
+        priority: criticalObjections.some(o => o.severity === 'showstopper') ? 'critical' : 'high',
+        phase: 'preparation',
+        investor_id: meeting.investor_id,
+        investor_name: meeting.investor_name,
+        auto_generated: true,
+      }));
+    }
+  } catch { /* skip malformed */ }
+
+  // 3. Stage-specific tasks
+  if (suggestedStatus === 'in_dd') {
+    results.tasks.push(await createTask({
+      title: `Prepare DD materials for ${meeting.investor_name}`,
+      description: 'Prepare data room access, financial model, management reference list, and DD request responses.',
+      assignee: '',
+      due_date: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      status: 'pending',
+      priority,
+      phase: 'due_diligence',
+      investor_id: meeting.investor_id,
+      investor_name: meeting.investor_name,
+      auto_generated: true,
+    }));
+  } else if (suggestedStatus === 'engaged') {
+    results.tasks.push(await createTask({
+      title: `Send follow-up materials to ${meeting.investor_name}`,
+      description: 'Send deck, one-pager, executive brief, or additional materials requested during the meeting.',
+      assignee: '',
+      due_date: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      status: 'pending',
+      priority,
+      phase: 'management_presentations',
+      investor_id: meeting.investor_id,
+      investor_name: meeting.investor_name,
+      auto_generated: true,
+    }));
+  }
+
+  // 4. Generate document flags from objections
+  try {
+    const objections = JSON.parse(meeting.objections || '[]') as { text: string; severity: string; topic: string }[];
+    // Get all documents to match against
+    const allDocs = await getAllDocuments();
+
+    for (const objection of objections) {
+      const mapping = OBJECTION_TO_DOC_MAP[objection.topic] || OBJECTION_TO_DOC_MAP['execution'];
+
+      // Find matching documents by type
+      const matchingDocs = allDocs.filter(d => mapping.doc_types.includes(d.type));
+
+      if (matchingDocs.length > 0) {
+        for (const doc of matchingDocs) {
+          results.document_flags.push(await createDocumentFlag({
+            document_id: doc.id,
+            meeting_id: meeting.id,
+            investor_id: meeting.investor_id,
+            investor_name: meeting.investor_name,
+            flag_type: objection.severity === 'showstopper' ? 'objection_response' : mapping.flag_type,
+            description: `${meeting.investor_name} raised a ${objection.severity} objection about ${objection.topic}: "${objection.text}". Review and strengthen this section.`,
+            section_hint: mapping.section_hint,
+            objection_text: objection.text,
+            status: 'open',
+          }));
+        }
+      } else {
+        // Flag without a specific document — general flag
+        results.document_flags.push(await createDocumentFlag({
+          document_id: '',
+          meeting_id: meeting.id,
+          investor_id: meeting.investor_id,
+          investor_name: meeting.investor_name,
+          flag_type: mapping.flag_type,
+          description: `${meeting.investor_name} raised a ${objection.severity} objection about ${objection.topic}: "${objection.text}". No matching document found — consider creating content to address this.`,
+          section_hint: mapping.section_hint,
+          objection_text: objection.text,
+          status: 'open',
+        }));
+      }
+    }
+  } catch { /* skip malformed */ }
+
+  // 5. Engagement signal-based flags
+  try {
+    const signals = JSON.parse(meeting.engagement_signals || '{}') as {
+      pricing_reception?: string;
+      slides_that_fell_flat?: string[];
+    };
+
+    if (signals.pricing_reception === 'negative') {
+      const pricingDocs = (await getAllDocuments()).filter(d => ['memo', 'exec_brief', 'one_pager', 'deck'].includes(d.type));
+      for (const doc of pricingDocs) {
+        results.document_flags.push(await createDocumentFlag({
+          document_id: doc.id,
+          meeting_id: meeting.id,
+          investor_id: meeting.investor_id,
+          investor_name: meeting.investor_name,
+          flag_type: 'section_improvement',
+          description: `Pricing received negatively by ${meeting.investor_name}. Consider strengthening valuation justification and comparable analysis.`,
+          section_hint: 'Valuation, pricing justification, comparable valuations',
+          objection_text: 'Negative pricing reception',
+          status: 'open',
+        }));
+      }
+    }
+
+    if (signals.slides_that_fell_flat && signals.slides_that_fell_flat.length > 0) {
+      const deckDocs = (await getAllDocuments()).filter(d => d.type === 'deck');
+      for (const doc of deckDocs) {
+        results.document_flags.push(await createDocumentFlag({
+          document_id: doc.id,
+          meeting_id: meeting.id,
+          investor_id: meeting.investor_id,
+          investor_name: meeting.investor_name,
+          flag_type: 'section_improvement',
+          description: `Slides that fell flat with ${meeting.investor_name}: ${signals.slides_that_fell_flat.join(', ')}. Consider reworking these sections.`,
+          section_hint: signals.slides_that_fell_flat.join(', '),
+          objection_text: '',
+          status: 'open',
+        }));
+      }
+    }
+  } catch { /* skip malformed */ }
+
+  // 6. Update investor profile
+  const investor = await getInvestor(meeting.investor_id);
+  if (investor) {
+    results.investor_updates.previous_status = investor.status;
+    results.investor_updates.previous_enthusiasm = investor.enthusiasm;
+
+    await updateInvestor(meeting.investor_id, {
+      status: suggestedStatus as Investor['status'],
+      enthusiasm: (aiData.enthusiasm_score as number) || investor.enthusiasm,
+    });
+  }
+
+  return results;
+}
+
+// Get all post-meeting actions for a specific meeting
+export async function getMeetingActions(meetingId: string): Promise<PostMeetingActions | null> {
+  const meeting = await getMeeting(meetingId);
+  if (!meeting) return null;
+
+  // Get tasks linked to this investor that were auto-generated around the meeting time
+  const allTasks = await getAllTasks({ investor_id: meeting.investor_id });
+  const meetingTasks = allTasks.filter(t =>
+    t.auto_generated &&
+    t.investor_id === meeting.investor_id &&
+    // Tasks created within 1 minute of the meeting
+    Math.abs(new Date(t.created_at).getTime() - new Date(meeting.created_at).getTime()) < 60000
+  );
+
+  // Get document flags for this meeting
+  const flags = await getDocumentFlags({ meeting_id: meetingId });
+
+  // Get investor for current state
+  const investor = await getInvestor(meeting.investor_id);
+
+  return {
+    tasks: meetingTasks,
+    document_flags: flags,
+    investor_updates: {
+      enthusiasm: meeting.enthusiasm_score,
+      suggested_status: meeting.status_after,
+      previous_status: investor?.status,
+      previous_enthusiasm: investor?.enthusiasm,
+    },
+  };
 }
 
 // Intelligence context for AI workspace
