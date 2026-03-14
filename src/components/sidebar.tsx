@@ -9,6 +9,7 @@ import {
   Columns3, BarChart3, MessageCircleWarning, Target,
   SendHorizonal, Menu, X, LogOut,
   ChevronLeft, ChevronRight, Sun, Activity, Flame,
+  Gauge, Compass,
 } from 'lucide-react';
 
 interface NavItem {
@@ -29,7 +30,9 @@ const nav: NavItem[] = [
   { href: '/meetings', label: 'Meetings', icon: Calendar, section: 'EXECUTE' },
   { href: '/followups', label: 'Follow-ups', icon: SendHorizonal, section: 'EXECUTE' },
   { href: '/focus', label: 'Focus', icon: Target, section: 'EXECUTE' },
+  { href: '/velocity', label: 'Velocity', icon: Gauge, section: 'EXECUTE' },
   // Analysis — understanding what's happening
+  { href: '/strategic', label: 'Strategic', icon: Compass, section: 'ANALYZE' },
   { href: '/dealflow', label: 'Dealflow', icon: Flame, section: 'ANALYZE' },
   { href: '/forecast', label: 'Forecast', icon: BarChart3, section: 'ANALYZE' },
   { href: '/objections', label: 'Objections', icon: MessageCircleWarning, section: 'ANALYZE' },
