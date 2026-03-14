@@ -3,6 +3,7 @@ import { createClient } from '@libsql/client';
 import { computeInvestorScore, computeMomentumScore } from '@/lib/scoring';
 import type { Investor, Meeting, InvestorPortfolioCo, Objection } from '@/lib/types';
 import { updateAccelerationAction, createTask, createFollowup, createDocumentFlag, logActivity } from '@/lib/db';
+import { emitContextChange } from '@/lib/context-bus';
 
 function getClient() {
   return createClient({
@@ -612,6 +613,7 @@ export async function PUT(req: Request) {
       }
     }
 
+    emitContextChange('acceleration_executed', `Acceleration ${id} ${actionStatus}${body.investor_name ? ` for ${body.investor_name}` : ''}`);
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Acceleration update error:', error);

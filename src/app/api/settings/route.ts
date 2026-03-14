@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getConfig, setConfig } from '@/lib/db';
+import { emitContextChange } from '@/lib/context-bus';
 
 const ALLOWED_KEYS = ['raise_config', 'scoring_weights', 'followup_cadence'];
 
@@ -35,6 +36,7 @@ export async function PUT(request: NextRequest) {
 
     await setConfig(key, JSON.stringify(value));
 
+    emitContextChange('settings_updated', `Config key "${key}" updated`);
     return NextResponse.json({ success: true, key, value });
   } catch (error) {
     console.error('Settings PUT error:', error);

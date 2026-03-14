@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getObjectionPlaybook, updateObjectionResponse, getTopObjections, getBestResponses, getObjectionsByInvestor, getAllInvestors, logActivity, getFollowups, updateFollowup } from '@/lib/db';
+import { emitContextChange } from '@/lib/context-bus';
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -91,5 +92,6 @@ export async function PUT(req: NextRequest) {
     } catch { /* non-blocking */ }
   }
 
+  emitContextChange('objection_updated', `Objection ${id} response: ${effectiveness || 'updated'}`);
   return NextResponse.json({ ok: true });
 }

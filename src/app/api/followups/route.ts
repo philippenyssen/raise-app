@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getFollowups, createFollowup, updateFollowup, getPendingFollowups, getOverdueFollowups } from '@/lib/db';
 import type { FollowupActionType, FollowupStatus } from '@/lib/types';
+import { emitContextChange } from '@/lib/context-bus';
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -45,6 +46,7 @@ export async function POST(req: NextRequest) {
     due_at,
   });
 
+  emitContextChange('followup_created', `Follow-up for ${investor_name || investor_id}: ${action_type}`);
   return NextResponse.json(followup, { status: 201 });
 }
 
@@ -65,5 +67,6 @@ export async function PUT(req: NextRequest) {
   }
 
   await updateFollowup(id, updates);
+  emitContextChange('followup_updated', `Follow-up ${id} ${status || 'updated'}`);
   return NextResponse.json({ ok: true });
 }

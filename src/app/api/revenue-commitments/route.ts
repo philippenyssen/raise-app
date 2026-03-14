@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getRevenueCommitments, createRevenueCommitment, updateRevenueCommitment, deleteRevenueCommitment } from '@/lib/db';
+import { emitContextChange } from '@/lib/context-bus';
 
 export async function GET(req: NextRequest) {
   try {
@@ -38,6 +39,7 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const commitment = await createRevenueCommitment(body);
+    emitContextChange('commitment_created', `Revenue commitment: ${body.counterparty || body.contract_name || ''}`);
     return NextResponse.json(commitment);
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 500 });
@@ -50,6 +52,7 @@ export async function PUT(req: NextRequest) {
     const { id, ...updates } = body;
     if (!id) return NextResponse.json({ error: 'id required' }, { status: 400 });
     await updateRevenueCommitment(id, updates);
+    emitContextChange('commitment_updated', `Commitment ${id} updated`);
     return NextResponse.json({ ok: true });
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 500 });

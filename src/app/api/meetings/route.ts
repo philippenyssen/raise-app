@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getMeetings, createMeeting, updateMeeting, getInvestor, processPostMeetingIntelligence, logActivity, createObjectionRecord, updateObjectionEnthusiasmDelta, generateFollowupChoreography } from '@/lib/db';
 import { analyzeMeetingNotes } from '@/lib/ai';
+import { emitContextChange } from '@/lib/context-bus';
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -101,6 +102,8 @@ export async function POST(req: NextRequest) {
     console.error('Objection playbook auto-population failed:', err);
   }
 
+  emitContextChange('meeting_logged', `Meeting with ${investor_name}`);
+
   return NextResponse.json({
     ...meeting,
     post_meeting_actions: postMeetingActions,
@@ -126,5 +129,6 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: 'no valid fields to update' }, { status: 400 });
   }
   await updateMeeting(id, updates);
+  emitContextChange('meeting_updated', `Meeting ${id} updated`);
   return NextResponse.json({ ok: true });
 }

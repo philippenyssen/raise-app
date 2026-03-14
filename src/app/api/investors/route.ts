@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAllInvestors, getInvestor, createInvestor, updateInvestor, deleteInvestor } from '@/lib/db';
+import { emitContextChange } from '@/lib/context-bus';
 
 // Allowlisted fields that can be updated via API
 const ALLOWED_UPDATE_FIELDS = new Set([
@@ -34,6 +35,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'name is required' }, { status: 400 });
   }
   const investor = await createInvestor(filterFields(body, ALLOWED_UPDATE_FIELDS) as { name: string });
+  emitContextChange('investor_created', `Created investor ${body.name}`);
   return NextResponse.json(investor, { status: 201 });
 }
 
@@ -46,6 +48,7 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: 'no valid fields to update' }, { status: 400 });
   }
   await updateInvestor(id, updates);
+  emitContextChange('investor_updated', `Updated investor ${id}${updates.status ? ` status=${updates.status}` : ''}`);
   return NextResponse.json({ ok: true });
 }
 

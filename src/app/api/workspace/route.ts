@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
-import { getRaiseConfig, getAllDocuments, getDataRoomContext, getIntelligenceContext } from '@/lib/db';
+import { getAllDocuments } from '@/lib/db';
+import { getFullContext, contextToSystemPrompt } from '@/lib/context-bus';
 
 let _client: Anthropic | null = null;
 function getClient(): Anthropic {
@@ -8,13 +9,8 @@ function getClient(): Anthropic {
   return _client;
 }
 
-// Smart context budgeting — allocate tokens based on content type importance
-const CONTEXT_BUDGET = {
-  document: 60000,    // Active document gets most context
-  dataRoom: 20000,    // Data room source materials
-  otherDocs: 8000,    // Summaries of other documents
-  config: 2000,       // Raise config
-};
+// Budget for other-docs snippets in the system prompt
+const OTHER_DOCS_BUDGET = 8000;
 
 // ---------------------------------------------------------------------------
 // In-memory context cache with TTL
@@ -67,7 +63,7 @@ function buildOtherDocsContext(docs: { id: string; title: string; type: string; 
   const others = docs.filter(d => d.id !== excludeId);
   if (others.length === 0) return 'None';
 
-  const perDocBudget = Math.floor(CONTEXT_BUDGET.otherDocs / Math.max(others.length, 1));
+  const perDocBudget = Math.floor(OTHER_DOCS_BUDGET / Math.max(others.length, 1));
   return others.map(d => {
     const snippet = d.content.substring(0, Math.min(perDocBudget, 2000));
     return `- ${d.title} (${d.type}): ${snippet}${d.content.length > snippet.length ? '...' : ''}`;
@@ -78,11 +74,11 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
   const { messages, documentId, documentContent, documentTitle } = body;
 
-  // Build context with smart budgeting — uses cache to avoid re-fetching on every message
-  const raiseConfig = await cachedFetch('raiseConfig', getRaiseConfig);
+  // Build context from unified context bus (includes investors, meetings, objections, tasks, follow-ups, backlog, accelerations)
+  const fullCtx = await getFullContext();
+
+  // Still need full doc content for buildOtherDocsContext — context bus only stores titles
   const allDocs = await cachedFetch('allDocs', getAllDocuments);
-  const dataRoomContext = await cachedFetch('dataRoomContext', getDataRoomContext);
-  const intelligenceContext = await cachedFetch('intelligenceContext', getIntelligenceContext);
 
   // otherDocsContext depends on which document is active, so key by documentId
   const otherDocsCacheKey = `otherDocs:${documentId ?? '__none__'}`;
@@ -92,9 +88,7 @@ export async function POST(req: NextRequest) {
     setCached(otherDocsCacheKey, otherDocsContext);
   }
 
-  // For model/cell context, use full content (already condensed by the model page)
-  const isModelContext = documentTitle?.startsWith('Financial Model');
-  const docBudget = isModelContext ? CONTEXT_BUDGET.document : CONTEXT_BUDGET.document;
+  const fullContextStr = contextToSystemPrompt(fullCtx);
 
   const systemPrompt = `You are an expert fundraising advisor and document specialist embedded in a Series C fundraise execution platform. You combine the expertise of:
 
@@ -104,20 +98,19 @@ export async function POST(req: NextRequest) {
 - A skeptical IC member (finding weak arguments)
 - A corporate lawyer (legal precision, risk language)
 
-CURRENT DOCUMENT: "${documentTitle}" (${documentId ? 'loaded' : 'none selected'})
-${documentContent ? `\nDOCUMENT CONTENT:\n${documentContent.substring(0, docBudget)}` : ''}
+${fullContextStr}
 
-RAISE CONFIGURATION:
-${raiseConfig ? JSON.stringify(raiseConfig, null, 2).substring(0, CONTEXT_BUDGET.config) : 'Not configured yet'}
+CURRENT DOCUMENT: "${documentTitle}" (${documentId ? 'loaded' : 'none selected'})
+${documentContent ? `\nDOCUMENT CONTENT:\n${documentContent.substring(0, 60000)}` : ''}
 
 OTHER DOCUMENTS IN THIS RAISE:
-${otherDocsContext}
+${buildOtherDocsContext(allDocs, documentId)}
 
 DATA ROOM (source materials):
-${dataRoomContext.substring(0, CONTEXT_BUDGET.dataRoom)}
+${fullCtx.dataRoomSummary}
 
 MARKET INTELLIGENCE (deals, competitors, research briefs):
-${intelligenceContext.substring(0, 6000)}
+${fullCtx.intelligenceSummary}
 
 INSTRUCTIONS:
 1. When the user asks you to improve, rewrite, or change the document, respond with your analysis AND include the full updated document content.
@@ -126,14 +119,14 @@ INSTRUCTIONS:
 4. Be direct, specific, and IC-grade in your feedback. No hedging.
 5. Every suggestion should make the document more compelling, more accurate, or more concise.
 6. When asked to "rewrite in Goldman style": short sentences, active voice, numbers first, no hedging, bold key metrics.
-7. Cross-reference numbers against the raise configuration and other documents for consistency.
-8. If the user speaks casually or gives voice-transcribed input, interpret their intent and execute precisely.`;
+7. Cross-reference numbers against the raise configuration, investor pipeline, revenue backlog, and other documents for consistency.
+8. If the user speaks casually or gives voice-transcribed input, interpret their intent and execute precisely.
+9. You have FULL CONTEXT of the entire fundraise — pipeline, meetings, objections, tasks, backlog. Use this context in every response.
+10. When numbers or facts conflict, ALWAYS use the most recent data (check timestamps in recent activity).`;
 
-  // Compute a lightweight context hash from the lengths of the context components.
+  // Compute a lightweight context hash from the context bus version + document length.
   // The client can use this to detect when cached context has changed.
-  const contextHash = quickHash(
-    `${raiseConfig ? JSON.stringify(raiseConfig).length : 0}:${dataRoomContext.length}:${intelligenceContext.length}:${otherDocsContext.length}:${(documentContent ?? '').length}`
-  );
+  const contextHash = quickHash(`v${fullCtx.version}:${(documentContent ?? '').length}`);
 
   try {
     const stream = getClient().messages.stream({

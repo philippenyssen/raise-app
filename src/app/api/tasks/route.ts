@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAllTasks, createTask, updateTask, deleteTask, getUpcomingTasks, getActivityLog, logActivity, getDocumentFlags, updateDocumentFlag, createFollowup, getFollowups, updateFollowup } from '@/lib/db';
+import { emitContextChange } from '@/lib/context-bus';
 
 const ALLOWED_TASK_FIELDS = new Set([
   'title', 'description', 'assignee', 'due_date', 'status', 'priority',
@@ -57,6 +58,7 @@ export async function POST(req: NextRequest) {
       auto_generated: body.auto_generated || false,
     });
 
+    emitContextChange('task_created', `Task: ${body.title || 'untitled'}`);
     return NextResponse.json(task);
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 500 });
@@ -150,6 +152,7 @@ export async function PUT(req: NextRequest) {
       }
     }
 
+    emitContextChange('task_updated', `Task ${id} ${updates.status === 'done' ? 'completed' : 'updated'}`);
     return NextResponse.json({ ok: true });
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 500 });

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAllDataRoomFiles, createDataRoomFile, deleteDataRoomFile } from '@/lib/db';
+import { emitContextChange } from '@/lib/context-bus';
 
 export async function GET() {
   const files = await getAllDataRoomFiles();
@@ -23,6 +24,7 @@ export async function POST(req: NextRequest) {
     summary,
   });
 
+  emitContextChange('data_room_uploaded', `Uploaded ${filename}`);
   return NextResponse.json(file);
 }
 

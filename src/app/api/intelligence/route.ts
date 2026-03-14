@@ -7,6 +7,7 @@ import {
   getInvestorPortfolio, createPortfolioCo, deletePortfolioCo,
 } from '@/lib/db';
 import { researchInvestor, researchCompetitor, researchMarketDeals } from '@/lib/ai';
+import { emitContextChange } from '@/lib/context-bus';
 
 // GET: Fetch intelligence data by type
 export async function GET(req: NextRequest) {
@@ -54,16 +55,31 @@ export async function POST(req: NextRequest) {
 
     switch (action) {
       // CRUD operations
-      case 'create_deal':
-        return NextResponse.json(await createMarketDeal(body.data));
-      case 'create_competitor':
-        return NextResponse.json(await createCompetitor(body.data));
-      case 'create_brief':
-        return NextResponse.json(await createIntelligenceBrief(body.data));
-      case 'create_partner':
-        return NextResponse.json(await createInvestorPartner(body.data));
-      case 'create_portfolio':
-        return NextResponse.json(await createPortfolioCo(body.data));
+      case 'create_deal': {
+        const deal = await createMarketDeal(body.data);
+        emitContextChange('intelligence_added', `Market deal: ${body.data?.company || ''}`);
+        return NextResponse.json(deal);
+      }
+      case 'create_competitor': {
+        const comp = await createCompetitor(body.data);
+        emitContextChange('intelligence_added', `Competitor: ${body.data?.name || ''}`);
+        return NextResponse.json(comp);
+      }
+      case 'create_brief': {
+        const brief = await createIntelligenceBrief(body.data);
+        emitContextChange('intelligence_added', `Brief: ${body.data?.subject || ''}`);
+        return NextResponse.json(brief);
+      }
+      case 'create_partner': {
+        const partner = await createInvestorPartner(body.data);
+        emitContextChange('intelligence_added', `Partner: ${body.data?.name || ''}`);
+        return NextResponse.json(partner);
+      }
+      case 'create_portfolio': {
+        const portfolio = await createPortfolioCo(body.data);
+        emitContextChange('intelligence_added', `Portfolio co: ${body.data?.company || ''}`);
+        return NextResponse.json(portfolio);
+      }
 
       // AI Research operations
       case 'research_investor': {
@@ -112,6 +128,7 @@ export async function POST(req: NextRequest) {
           }
         }
 
+        emitContextChange('intelligence_added', `Investor research: ${name}`);
         return NextResponse.json({ brief, research });
       }
 
@@ -146,6 +163,7 @@ export async function POST(req: NextRequest) {
           sources: JSON.stringify(['Claude AI analysis based on training data']),
         });
 
+        emitContextChange('intelligence_added', `Competitor research: ${compName}`);
         return NextResponse.json({ competitor, brief, research });
       }
 
@@ -181,6 +199,7 @@ export async function POST(req: NextRequest) {
           sources: JSON.stringify(['Claude AI analysis based on training data']),
         });
 
+        emitContextChange('intelligence_added', `Market research: ${sector || 'Space/Defense'}`);
         return NextResponse.json({ brief, research });
       }
 
