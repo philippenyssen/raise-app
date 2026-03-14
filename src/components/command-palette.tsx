@@ -73,6 +73,9 @@ const PAGES: PageItem[] = [
   { label: 'Deal Heat', href: '/deal-heat', icon: Flame, section: 'pages' },
   { label: 'Acceleration', href: '/acceleration', icon: Rocket, section: 'pages' },
   { label: 'Enrichment', href: '/enrichment', icon: Wrench, section: 'pages' },
+  { label: 'Workspace', href: '/workspace', icon: Pencil, section: 'pages' },
+  { label: 'Competitive', href: '/competitive', icon: Award, section: 'pages' },
+  { label: 'Analytics', href: '/analytics', icon: Activity, section: 'pages' },
 ];
 
 const ACTIONS: ActionItem[] = [
