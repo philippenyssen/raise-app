@@ -1,18 +1,28 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import type { Investor } from '@/lib/types';
 import PostMeetingActions from '@/components/post-meeting-actions';
 import FollowupPlan from '@/components/followup-plan';
 
 export default function NewMeetingPage() {
+  return (
+    <Suspense fallback={<div className="space-y-6"><div className="h-8 w-48 skeleton animate-pulse" style={{ borderRadius: 'var(--radius-md)' }} /></div>}>
+      <NewMeetingContent />
+    </Suspense>
+  );
+}
+
+function NewMeetingContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const preselectedInvestor = searchParams.get('investor') || '';
   const [investors, setInvestors] = useState<Investor[]>([]);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<Record<string, unknown> | null>(null);
   const [form, setForm] = useState({
-    investor_id: '',
+    investor_id: preselectedInvestor,
     date: new Date().toISOString().split('T')[0],
     type: 'management_presentation',
     attendees: '',

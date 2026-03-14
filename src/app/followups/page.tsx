@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import {
   SendHorizonal, Clock, CheckCircle2, XCircle, AlertTriangle,
@@ -156,6 +157,16 @@ function formatDate(dateStr: string): string {
 }
 
 export default function FollowupsPage() {
+  return (
+    <Suspense fallback={<div className="space-y-6"><div className="h-8 w-64 skeleton animate-pulse" style={{ borderRadius: 'var(--radius-md)' }} /></div>}>
+      <FollowupsContent />
+    </Suspense>
+  );
+}
+
+function FollowupsContent() {
+  const searchParams = useSearchParams();
+  const investorFilter = searchParams.get('investor') || '';
   const [followups, setFollowups] = useState<FollowupItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'pending' | 'completed' | 'skipped'>('pending');
@@ -173,11 +184,12 @@ export default function FollowupsPage() {
     setLoading(true);
     const params = new URLSearchParams({ view: 'intelligence' });
     if (filter !== 'all') params.set('status', filter);
+    if (investorFilter) params.set('investor_id', investorFilter);
     const res = await fetch(`/api/followups?${params.toString()}`);
     const data = await res.json();
     setFollowups(data);
     setLoading(false);
-  }, [filter]);
+  }, [filter, investorFilter]);
 
   useEffect(() => {
     fetchFollowups();
@@ -875,6 +887,16 @@ export default function FollowupsPage() {
           <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', marginTop: 'var(--space-1)' }}>
             Automated follow-up choreography after investor meetings. Track actions, record outcomes, and learn what works.
           </p>
+          {investorFilter && followups.length > 0 && (
+            <div className="flex items-center gap-2 mt-2">
+              <span className="text-xs px-2 py-1 rounded-md" style={{ background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(59,130,246,0.25)' }}>
+                Filtered: {followups[0]?.investor_name || 'Selected investor'}
+              </span>
+              <Link href="/followups" className="text-xs" style={{ color: 'var(--text-muted)', textDecoration: 'underline' }}>
+                Show all
+              </Link>
+            </div>
+          )}
         </div>
       </div>
 
