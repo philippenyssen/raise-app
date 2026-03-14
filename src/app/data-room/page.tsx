@@ -609,7 +609,7 @@ function StatCard({ label, value, icon, highlight }: {
   const [hovered, setHovered] = useState(false);
   return (
     <div
-      className="card"
+      className="card transition-colors"
       style={{
         padding: 'var(--space-3) var(--space-4)',
         borderColor: highlight ? 'var(--warning-muted)' : hovered ? 'var(--border-default)' : undefined,
@@ -636,7 +636,7 @@ function MostRequestedRow({ doc, rank }: {
   const [hovered, setHovered] = useState(false);
   return (
     <div
-      className="flex items-center gap-3"
+      className="flex items-center gap-3 transition-colors"
       style={{
         padding: 'var(--space-2) var(--space-3)',
         borderRadius: 'var(--radius-md)',
@@ -691,6 +691,7 @@ function InvestorAccessRow({ investor, expanded, onToggle, onLogAccess, files }:
 
   return (
     <div
+      className="transition-colors"
       style={{
         border: `1px solid ${hovered || expanded ? 'var(--border-default)' : 'var(--border-subtle)'}`,
         borderRadius: 'var(--radius-md)',
@@ -844,7 +845,7 @@ function RecommendedDocRow({ doc, investorId, onLogAccess }: {
   const [hovered, setHovered] = useState(false);
   return (
     <div
-      className="flex items-center gap-2"
+      className="flex items-center gap-2 transition-colors"
       style={{
         padding: 'var(--space-2) var(--space-3)',
         borderRadius: 'var(--radius-md)',
@@ -891,7 +892,7 @@ function UnreachedInvestorRow({ investor }: {
   const [hovered, setHovered] = useState(false);
   return (
     <div
-      className="flex items-center gap-3"
+      className="flex items-center gap-3 transition-colors"
       style={{
         padding: 'var(--space-2) var(--space-3)',
         borderRadius: 'var(--radius-md)',
@@ -934,7 +935,7 @@ function AccessLogRow({ entry }: {
   const [hovered, setHovered] = useState(false);
   return (
     <div
-      className="flex items-center gap-3"
+      className="flex items-center gap-3 transition-colors"
       style={{
         padding: 'var(--space-2) var(--space-3)',
         borderRadius: 'var(--radius-md)',
@@ -970,6 +971,7 @@ function FileRow({ file, expanded, onToggle, onDelete }: {
 
   return (
     <div
+      className="transition-colors"
       style={{
         border: `1px solid ${hovered ? 'var(--border-default)' : 'var(--border-subtle)'}`,
         borderRadius: 'var(--radius-md)',
@@ -995,7 +997,7 @@ function FileRow({ file, expanded, onToggle, onDelete }: {
         </span>
         <button
           onClick={e => { e.stopPropagation(); onDelete(); }}
-          className="ml-3 shrink-0"
+          className="ml-3 shrink-0 transition-colors"
           style={{
             color: deleteHovered ? 'var(--danger)' : 'var(--text-tertiary)',
             transition: 'color 150ms ease',

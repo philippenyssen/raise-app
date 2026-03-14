@@ -354,7 +354,7 @@ export default function ForecastPage() {
           return (
             <div
               key={key}
-              className="card"
+              className="card transition-colors"
               style={{
                 padding: 'var(--space-5)',
                 borderTop: `3px solid ${borderColor}`,
@@ -497,6 +497,7 @@ export default function ForecastPage() {
                       <Link
                         href={inv ? `/investors/${inv.investorId}` : '#'}
                         style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textDecoration: 'none', display: 'block' }}
+                        className="transition-colors"
                         onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
                         onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-primary)'; }}
                       >
@@ -512,7 +513,7 @@ export default function ForecastPage() {
                       <Link
                         href={`/meetings/new?investor=${inv.investorId}`}
                         title="Schedule meeting"
-                        className="flex items-center justify-center shrink-0"
+                        className="flex items-center justify-center shrink-0 transition-colors"
                         style={{
                           width: '24px',
                           height: '24px',
@@ -567,6 +568,7 @@ export default function ForecastPage() {
                   <Link
                     key={i}
                     href={riskLink}
+                    className="transition-colors"
                     style={{
                       display: 'flex',
                       alignItems: 'flex-start',
@@ -658,7 +660,7 @@ export default function ForecastPage() {
                   return (
                     <tr
                       key={inv.investorId}
-                      className="table-row"
+                      className="table-row transition-colors"
                       style={{
                         background: hoveredRow === inv.investorId ? 'var(--surface-1)' : 'transparent',
                         cursor: 'pointer',

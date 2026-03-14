@@ -262,7 +262,7 @@ function NewMeetingContent() {
             {form.investor_id && (
               <button
                 onClick={() => router.push(`/investors/${form.investor_id}`)}
-                className="px-4 py-2 rounded-lg text-sm font-medium"
+                className="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
                 style={{
                   background: 'var(--accent-muted)',
                   color: 'var(--accent)',
@@ -276,7 +276,7 @@ function NewMeetingContent() {
             )}
             <button
               onClick={() => router.push('/meetings')}
-              className="px-4 py-2 rounded-lg text-sm"
+              className="px-4 py-2 rounded-lg text-sm transition-colors"
               style={{
                 background: viewAllHovered ? 'var(--surface-3)' : 'var(--surface-2)',
                 color: 'var(--text-primary)',
@@ -288,7 +288,7 @@ function NewMeetingContent() {
             </button>
             <button
               onClick={() => { setResult(null); setForm(f => ({ ...f, raw_notes: '', investor_id: '', attendees: '' })); }}
-              className="px-4 py-2 rounded-lg text-sm"
+              className="px-4 py-2 rounded-lg text-sm transition-colors"
               style={{
                 background: logAnotherHovered ? 'var(--surface-3)' : 'var(--surface-2)',
                 color: 'var(--text-primary)',

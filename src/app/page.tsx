@@ -488,6 +488,7 @@ export default function Dashboard() {
             return (
               <Link href="/stress-test" style={{ textDecoration: 'none', display: 'block' }}>
                 <div
+                  className="transition-colors"
                   style={{
                     background: 'var(--surface-1)',
                     border: '1px solid var(--border-subtle)',
@@ -609,6 +610,7 @@ export default function Dashboard() {
           {stressTest && (
             <Link href="/stress-test" className="block group">
               <div
+                className="transition-colors"
                 style={{
                   border: '1px solid var(--border-subtle)',
                   borderRadius: 'var(--radius-xl)',
@@ -904,6 +906,7 @@ export default function Dashboard() {
                         <div key={i} className="flex items-center justify-between py-1">
                           <Link
                             href={`/investors/${alert.investorId}`}
+                            className="transition-colors"
                             style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)' }}
                             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
                             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-primary)'; }}
@@ -1290,6 +1293,7 @@ function PulseCard({ label, value, sub }: {
 }) {
   return (
     <div
+      className="transition-colors"
       style={{
         background: 'var(--surface-1)',
         border: '1px solid var(--border-subtle)',
@@ -1525,7 +1529,7 @@ function FollowupRow({ followup, onComplete }: { followup: FollowupItem; onCompl
       {onComplete && (
         <button
           onClick={() => { setCompleting(true); onComplete(followup.id); }}
-          className="w-5 h-5 rounded flex items-center justify-center shrink-0"
+          className="w-5 h-5 rounded flex items-center justify-center shrink-0 transition-colors"
           style={{
             border: '1.5px solid var(--border-default)',
             background: 'transparent',

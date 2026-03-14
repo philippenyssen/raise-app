@@ -395,7 +395,7 @@ export default function PipelinePage() {
             {hasActiveFilters && (
               <button
                 onClick={clearFilters}
-                className="flex items-center gap-1"
+                className="flex items-center gap-1 transition-colors"
                 style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}
@@ -688,7 +688,7 @@ function FilterButton({
       onClick={onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="flex items-center gap-2"
+      className="flex items-center gap-2 transition-colors"
       style={{
         padding: '0.5rem 0.75rem',
         borderRadius: 'var(--radius-lg)',
@@ -746,6 +746,7 @@ function TierFilterButton({
       onClick={onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      className="transition-colors"
       style={{
         padding: '0.25rem 0.625rem',
         borderRadius: 'var(--radius-sm)',
@@ -786,6 +787,7 @@ function TypeFilterButton({
       onClick={onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      className="transition-colors"
       style={{
         padding: '0.25rem 0.625rem',
         borderRadius: 'var(--radius-sm)',
@@ -880,6 +882,7 @@ function InvestorCard({
         onDragEnd={onDragEnd}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
+        className="transition-colors"
         style={{
           ...cardBaseStyle,
           padding: '0.5rem 0.75rem',
@@ -912,6 +915,7 @@ function InvestorCard({
       onDragEnd={onDragEnd}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      className="transition-colors"
       style={{
         ...cardBaseStyle,
         padding: 'var(--space-3)',
@@ -1037,7 +1041,7 @@ function InvestorCard({
             href={`/meetings/prep?investor=${investor.id}`}
             onClick={e => e.stopPropagation()}
             draggable={false}
-            className="flex items-center gap-1 flex-1 justify-center"
+            className="flex items-center gap-1 flex-1 justify-center transition-colors"
             style={{
               fontSize: '10px', color: 'var(--text-muted)',
               padding: '2px 0', borderRadius: 'var(--radius-sm)',
@@ -1052,7 +1056,7 @@ function InvestorCard({
             href={`/meetings/new?investor=${investor.id}`}
             onClick={e => e.stopPropagation()}
             draggable={false}
-            className="flex items-center gap-1 flex-1 justify-center"
+            className="flex items-center gap-1 flex-1 justify-center transition-colors"
             style={{
               fontSize: '10px', color: 'var(--text-muted)',
               padding: '2px 0', borderRadius: 'var(--radius-sm)',
@@ -1067,7 +1071,7 @@ function InvestorCard({
             href={`/followups?investor=${investor.id}`}
             onClick={e => e.stopPropagation()}
             draggable={false}
-            className="flex items-center gap-1 flex-1 justify-center"
+            className="flex items-center gap-1 flex-1 justify-center transition-colors"
             style={{
               fontSize: '10px', color: 'var(--text-muted)',
               padding: '2px 0', borderRadius: 'var(--radius-sm)',

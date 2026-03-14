@@ -314,6 +314,7 @@ function FollowupsContent() {
                 </span>
                 <Link
                   href={`/investors/${item.investor_id}`}
+                  className="transition-colors"
                   style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}
                   onMouseEnter={e => { e.currentTarget.style.color = 'var(--accent)'; }}
                   onMouseLeave={e => { e.currentTarget.style.color = 'var(--accent)'; }}
@@ -346,7 +347,7 @@ function FollowupsContent() {
                   style={{ fontSize: '10px', color: 'var(--text-muted)' }}
                   onMouseEnter={e => { e.currentTarget.style.color = 'var(--text-secondary)'; }}
                   onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; }}
-                  className="mt-1"
+                  className="mt-1 transition-colors"
                 >
                   {isExpanded ? 'Show less' : 'Show more'}
                 </button>
@@ -428,6 +429,7 @@ function FollowupsContent() {
                       {[-2, -1, 0, 1, 2].map(val => (
                         <button
                           key={val}
+                          className="transition-colors"
                           onClick={() => setCompleteForm(f => ({ ...f, conviction_delta: val }))}
                           style={{
                             padding: '0.25rem 0.5rem',
@@ -461,7 +463,7 @@ function FollowupsContent() {
                   <div className="flex gap-2 pt-1">
                     <button
                       onClick={() => handleComplete(item.id)}
-                      className="btn btn-sm"
+                      className="btn btn-sm transition-colors"
                       style={{
                         background: 'var(--success)',
                         color: 'var(--text-primary)',
@@ -487,7 +489,7 @@ function FollowupsContent() {
               <div className="flex gap-1 shrink-0">
                 <button
                   onClick={() => setDraftingId(draftingId === item.id ? null : item.id)}
-                  className="p-1.5"
+                  className="p-1.5 transition-colors"
                   style={{
                     borderRadius: 'var(--radius-md)',
                     color: hoveredActionBtn === `draft-${item.id}` || draftingId === item.id ? 'var(--chart-4)' : 'var(--text-muted)',
@@ -502,7 +504,7 @@ function FollowupsContent() {
                 </button>
                 <button
                   onClick={() => handleQuickComplete(item.id)}
-                  className="p-1.5"
+                  className="p-1.5 transition-colors"
                   style={{
                     borderRadius: 'var(--radius-md)',
                     color: hoveredActionBtn === `complete-${item.id}` ? 'var(--success)' : 'var(--text-muted)',
@@ -517,7 +519,7 @@ function FollowupsContent() {
                 </button>
                 <button
                   onClick={() => { setCompletingId(item.id); setCompleteForm({ outcome: '', conviction_delta: 0 }); }}
-                  className="p-1.5"
+                  className="p-1.5 transition-colors"
                   style={{
                     borderRadius: 'var(--radius-md)',
                     color: hoveredActionBtn === `outcome-${item.id}` ? 'var(--accent)' : 'var(--text-muted)',
@@ -532,7 +534,7 @@ function FollowupsContent() {
                 </button>
                 <button
                   onClick={() => handleSkip(item.id)}
-                  className="p-1.5"
+                  className="p-1.5 transition-colors"
                   style={{
                     borderRadius: 'var(--radius-md)',
                     color: hoveredActionBtn === `skip-${item.id}` ? 'var(--danger)' : 'var(--text-muted)',
@@ -775,7 +777,7 @@ function FollowupsContent() {
                   setCopiedField(`all-${item.id}`);
                   setTimeout(() => setCopiedField(null), 2000);
                 }}
-                className="btn btn-sm mt-3"
+                className="btn btn-sm mt-3 transition-colors"
                 style={{
                   background: copiedField === `all-${item.id}` ? 'var(--success)' : 'var(--accent-muted)',
                   color: copiedField === `all-${item.id}` ? 'white' : 'var(--accent)',
@@ -971,6 +973,7 @@ function FollowupsContent() {
         {(['pending', 'all', 'completed', 'skipped'] as const).map(f => (
           <button
             key={f}
+            className="transition-colors"
             onClick={() => setFilter(f)}
             style={{
               padding: '0.375rem 0.75rem',
@@ -1032,6 +1035,7 @@ function FollowupsContent() {
             Follow-ups are created automatically after meetings.{' '}
             <Link
               href="/meetings/new"
+              className="transition-colors"
               style={{ color: 'var(--accent)' }}
               onMouseEnter={e => { e.currentTarget.style.color = 'var(--accent)'; }}
               onMouseLeave={e => { e.currentTarget.style.color = 'var(--accent)'; }}

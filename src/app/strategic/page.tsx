@@ -215,7 +215,7 @@ export default function StrategicPage() {
             onClick={() => fetchData()}
             onMouseEnter={() => setRetryHover(true)}
             onMouseLeave={() => setRetryHover(false)}
-            className="btn btn-sm btn-secondary"
+            className="btn btn-sm btn-secondary transition-colors"
             style={retryHover ? { background: 'var(--surface-3)' } : {}}
           >
             Retry
@@ -244,7 +244,7 @@ export default function StrategicPage() {
           disabled={refreshing}
           onMouseEnter={() => setRefreshHover(true)}
           onMouseLeave={() => setRefreshHover(false)}
-          className="btn btn-sm btn-secondary"
+          className="btn btn-sm btn-secondary transition-colors"
           style={{
             opacity: refreshing ? 0.5 : 1,
             ...(refreshHover && !refreshing ? { background: 'var(--surface-3)' } : {}),
@@ -731,7 +731,7 @@ function RecommendationRow({ rec, isLast }: { rec: StrategicRecommendation; isLa
               href={actionLink.route}
               onMouseEnter={() => setBtnHover(true)}
               onMouseLeave={() => setBtnHover(false)}
-              className="ml-auto flex items-center gap-1"
+              className="ml-auto flex items-center gap-1 transition-colors"
               style={{
                 fontSize: '11px',
                 fontWeight: 600,

@@ -493,6 +493,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
 
   return (
     <div
+      className="transition-colors"
       style={cardStyle}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -654,7 +655,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
                 <Link
                   href={`/meetings/new?investor=${item.investorId}`}
                   title="Schedule meeting"
-                  className="flex items-center justify-center"
+                  className="flex items-center justify-center transition-colors"
                   style={{ width: '28px', height: '28px', borderRadius: 'var(--radius-md)', background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(27, 42, 74, 0.08)', transition: 'all 150ms ease' }}
                   onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent)'; e.currentTarget.style.color = 'white'; }}
                   onMouseLeave={e => { e.currentTarget.style.background = 'var(--accent-muted)'; e.currentTarget.style.color = 'var(--accent)'; }}
@@ -664,7 +665,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
                 <Link
                   href={`/meetings/prep?investor=${item.investorId}`}
                   title="Prep meeting"
-                  className="flex items-center justify-center"
+                  className="flex items-center justify-center transition-colors"
                   style={{ width: '28px', height: '28px', borderRadius: 'var(--radius-md)', background: 'var(--surface-2)', color: 'var(--text-secondary)', border: '1px solid var(--border-default)', transition: 'all 150ms ease' }}
                   onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent-muted)'; e.currentTarget.style.color = 'var(--accent)'; }}
                   onMouseLeave={e => { e.currentTarget.style.background = 'var(--surface-2)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}

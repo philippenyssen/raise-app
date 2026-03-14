@@ -124,7 +124,7 @@ export default function SkillsPage() {
               <div key={skill.skill_name}>
                 <button
                   onClick={() => setExpanded(isExpanded ? null : skill.skill_name)}
-                  className="w-full card"
+                  className="w-full card transition-colors"
                   style={{ padding: 'var(--space-4)', cursor: 'pointer', textAlign: 'left' }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--border-strong)'; }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border-default)'; }}

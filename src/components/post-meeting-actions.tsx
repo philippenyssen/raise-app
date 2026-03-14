@@ -416,7 +416,7 @@ export default function PostMeetingActions({
           <div className="flex gap-2">
             <Link
               href="/timeline"
-              className="text-xs"
+              className="text-xs transition-colors"
               style={{ color: hoveredViewTasks ? 'color-mix(in srgb, var(--accent) 80%, var(--text-primary))' : 'var(--accent)' }}
               onMouseEnter={() => setHoveredViewTasks(true)}
               onMouseLeave={() => setHoveredViewTasks(false)}
@@ -425,7 +425,7 @@ export default function PostMeetingActions({
             </Link>
             <Link
               href="/documents"
-              className="text-xs"
+              className="text-xs transition-colors"
               style={{ color: hoveredViewDocs ? 'color-mix(in srgb, var(--accent) 80%, var(--text-primary))' : 'var(--accent)' }}
               onMouseEnter={() => setHoveredViewDocs(true)}
               onMouseLeave={() => setHoveredViewDocs(false)}

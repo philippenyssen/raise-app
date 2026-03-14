@@ -164,7 +164,7 @@ export default function CompetitivePage() {
             return (
               <div key={c.name}>
                 <div
-                  className="grid items-center"
+                  className="grid items-center transition-colors"
                   style={{
                     gridTemplateColumns: '32px 1fr 80px 1fr 120px',
                     padding: 'var(--space-3) var(--space-4)',

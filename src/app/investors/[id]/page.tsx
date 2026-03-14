@@ -232,7 +232,7 @@ export default function InvestorDetailPage() {
         <p style={{ color: 'var(--text-muted)' }}>Investor not found or has been removed.</p>
         <Link
           href="/investors"
-          className="text-sm mt-2 block"
+          className="text-sm mt-2 block transition-colors"
           style={{ color: 'var(--accent)' }}
           onMouseEnter={e => (e.currentTarget.style.opacity = '0.8')}
           onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
@@ -268,7 +268,7 @@ export default function InvestorDetailPage() {
         <div>
           <Link
             href="/investors"
-            className="flex items-center gap-1 text-sm mb-3"
+            className="flex items-center gap-1 text-sm mb-3 transition-colors"
             style={{ color: 'var(--text-muted)' }}
             onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
             onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
@@ -546,6 +546,7 @@ export default function InvestorDetailPage() {
               {followups.length > 5 && (
                 <Link
                   href={`/followups?investor=${id}`}
+                  className="transition-colors"
                   style={{ fontSize: '11px', color: 'var(--accent)', textDecoration: 'none' }}
                   onMouseEnter={e => { e.currentTarget.style.textDecoration = 'underline'; }}
                   onMouseLeave={e => { e.currentTarget.style.textDecoration = 'none'; }}
@@ -598,7 +599,7 @@ export default function InvestorDetailPage() {
                     <div className="flex gap-1 shrink-0">
                       <button
                         onClick={() => quickComplete(f.id)}
-                        className="p-1 rounded"
+                        className="p-1 rounded transition-colors"
                         style={{ color: 'var(--text-muted)', transition: 'all 150ms ease' }}
                         onMouseEnter={e => { e.currentTarget.style.color = 'var(--success)'; e.currentTarget.style.background = 'var(--success-muted)'; }}
                         onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.background = 'transparent'; }}
@@ -608,7 +609,7 @@ export default function InvestorDetailPage() {
                       </button>
                       <button
                         onClick={() => quickSkip(f.id)}
-                        className="p-1 rounded"
+                        className="p-1 rounded transition-colors"
                         style={{ color: 'var(--text-muted)', transition: 'all 150ms ease' }}
                         onMouseEnter={e => { e.currentTarget.style.color = 'var(--danger)'; e.currentTarget.style.background = 'var(--danger-muted)'; }}
                         onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.background = 'transparent'; }}
@@ -824,7 +825,7 @@ export default function InvestorDetailPage() {
                   <button
                     onClick={handleResearch}
                     disabled={researching}
-                    className="px-3 py-1.5 rounded-lg text-sm flex items-center gap-2 mx-auto"
+                    className="px-3 py-1.5 rounded-lg text-sm flex items-center gap-2 mx-auto transition-colors"
                     style={{ background: 'var(--accent)', color: 'var(--text-primary)' }}
                     onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
                     onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
@@ -843,6 +844,7 @@ export default function InvestorDetailPage() {
                         </div>
                         <button
                           onClick={() => deleteIntelItem('partner', p.id)}
+                          className="transition-colors"
                           style={{ color: 'var(--text-muted)' }}
                           onMouseEnter={e => (e.currentTarget.style.color = 'var(--danger)')}
                           onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
@@ -874,7 +876,7 @@ export default function InvestorDetailPage() {
                   <button
                     onClick={handleResearch}
                     disabled={researching}
-                    className="px-3 py-1.5 rounded-lg text-sm flex items-center gap-2 mx-auto"
+                    className="px-3 py-1.5 rounded-lg text-sm flex items-center gap-2 mx-auto transition-colors"
                     style={{ background: 'var(--accent)', color: 'var(--text-primary)' }}
                     onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
                     onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
@@ -900,6 +902,7 @@ export default function InvestorDetailPage() {
                       {portfolio.map(co => (
                         <tr
                           key={co.id}
+                          className="transition-colors"
                           style={{ borderBottom: '1px solid var(--border-subtle)' }}
                           onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface-1)')}
                           onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
@@ -925,6 +928,7 @@ export default function InvestorDetailPage() {
                           <td className="px-4 py-2">
                             <button
                               onClick={() => deleteIntelItem('portfolio', co.id)}
+                              className="transition-colors"
                               style={{ color: 'var(--text-muted)' }}
                               onMouseEnter={e => (e.currentTarget.style.color = 'var(--danger)')}
                               onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
@@ -967,7 +971,7 @@ export default function InvestorDetailPage() {
                               await fetch('/api/tasks', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: t.id, status: newStatus, title: t.title, investor_id: id, investor_name: investor?.name }) });
                               fetchData();
                             }}
-                            className="w-5 h-5 rounded flex items-center justify-center shrink-0"
+                            className="w-5 h-5 rounded flex items-center justify-center shrink-0 transition-colors"
                             style={{
                               background: t.status === 'done' ? 'var(--success)' : 'transparent',
                               border: t.status === 'done' ? '2px solid var(--success)' : '2px solid var(--border-default)',
@@ -1023,7 +1027,7 @@ export default function InvestorDetailPage() {
                   <button
                     onClick={handleResearch}
                     disabled={researching}
-                    className="px-3 py-1.5 rounded-lg text-sm flex items-center gap-2 mx-auto"
+                    className="px-3 py-1.5 rounded-lg text-sm flex items-center gap-2 mx-auto transition-colors"
                     style={{ background: 'var(--accent)', color: 'var(--text-primary)' }}
                     onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
                     onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
@@ -1042,6 +1046,7 @@ export default function InvestorDetailPage() {
                         </div>
                         <button
                           onClick={() => deleteIntelItem('brief', b.id)}
+                          className="transition-colors"
                           style={{ color: 'var(--text-muted)' }}
                           onMouseEnter={e => (e.currentTarget.style.color = 'var(--danger)')}
                           onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
@@ -1513,7 +1518,7 @@ function EnrichmentPanel({
           onClick={onRefresh}
           onMouseEnter={() => setHoveredRefresh(true)}
           onMouseLeave={() => setHoveredRefresh(false)}
-          className="px-3 py-1.5 rounded-lg text-sm flex items-center gap-2 mx-auto"
+          className="px-3 py-1.5 rounded-lg text-sm flex items-center gap-2 mx-auto transition-colors"
           style={{
             background: hoveredRefresh ? 'var(--accent-hover)' : 'var(--accent)',
             color: 'var(--text-primary)',
@@ -1550,7 +1555,7 @@ function EnrichmentPanel({
           onClick={onRefresh}
           onMouseEnter={() => setHoveredRefresh(true)}
           onMouseLeave={() => setHoveredRefresh(false)}
-          className="text-xs flex items-center gap-1"
+          className="text-xs flex items-center gap-1 transition-colors"
           style={{
             color: hoveredRefresh ? 'var(--text-secondary)' : 'var(--text-muted)',
             transition: 'color 150ms ease',
@@ -1571,7 +1576,7 @@ function EnrichmentPanel({
           <div key={cat} className="rounded-lg overflow-hidden" style={{ border: '1px solid var(--border-default)' }}>
             <button
               onClick={() => onToggleCategory(cat)}
-              className="w-full flex items-center justify-between px-4 py-3"
+              className="w-full flex items-center justify-between px-4 py-3 transition-colors"
               style={{ background: isExpanded ? 'var(--surface-1)' : 'transparent', transition: 'background 150ms ease' }}
               onMouseEnter={e => { if (!isExpanded) e.currentTarget.style.background = 'var(--surface-1)'; }}
               onMouseLeave={e => { if (!isExpanded) e.currentTarget.style.background = 'transparent'; }}
@@ -1604,7 +1609,7 @@ function EnrichmentPanel({
                 {catRecords.map(rec => (
                   <div
                     key={rec.id}
-                    className="flex items-start gap-3 px-4 py-2.5"
+                    className="flex items-start gap-3 px-4 py-2.5 transition-colors"
                     style={{
                       borderBottom: '1px solid var(--border-subtle)',
                       background: hoveredRow === rec.id ? 'var(--surface-1)' : 'transparent',

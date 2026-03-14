@@ -201,7 +201,7 @@ function CopyButton({ text }: { text: string }) {
   return (
     <button
       onClick={handleCopy}
-      className="flex items-center gap-1 shrink-0"
+      className="flex items-center gap-1 shrink-0 transition-colors"
       style={{
         background: 'none',
         border: 'none',
@@ -526,7 +526,7 @@ export default function ObjectionsPage() {
                                   {obj.investor_name && obj.investor_id && (
                                     <Link
                                       href={`/investors/${obj.investor_id}`}
-                                      className="flex items-center gap-1 text-xs"
+                                      className="flex items-center gap-1 text-xs transition-colors"
                                       style={{ color: 'var(--accent)', textDecoration: 'none' }}
                                       onClick={e => e.stopPropagation()}
                                       onMouseEnter={e => { (e.currentTarget as HTMLElement).style.textDecoration = 'underline'; }}
@@ -655,6 +655,7 @@ export default function ObjectionsPage() {
                             <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{obj.count}x raised</span>
                           </div>
                           <button
+                            className="transition-colors"
                             onClick={() => {
                               setExpandedTopics(prev => new Set([...prev, obj.objection_topic]));
                               document.getElementById(`topic-${obj.objection_topic}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -754,7 +755,7 @@ export default function ObjectionsPage() {
                     <div className="flex items-center gap-1">
                       <Link
                         href={`/meetings/prep?investor=${selectedInvestor}`}
-                        className="flex items-center gap-1"
+                        className="flex items-center gap-1 transition-colors"
                         style={{
                           fontSize: '10px',
                           fontWeight: 500,
@@ -772,7 +773,7 @@ export default function ObjectionsPage() {
                       </Link>
                       <Link
                         href={`/investors/${selectedInvestor}`}
-                        className="flex items-center gap-1"
+                        className="flex items-center gap-1 transition-colors"
                         style={{
                           fontSize: '10px',
                           fontWeight: 500,
@@ -1005,7 +1006,7 @@ function EffectivenessTab({
                   return (
                     <div
                       key={te.topic}
-                      className="p-4 space-y-3"
+                      className="p-4 space-y-3 transition-colors"
                       style={{
                         background: hoveredRow === `topic-${te.topic}` ? 'var(--surface-1)' : 'transparent',
                         borderBottom: '1px solid var(--border-subtle)',
@@ -1117,7 +1118,7 @@ function EffectivenessTab({
                     >
                       <button
                         onClick={() => toggleLeaderboardItem(idx)}
-                        className="w-full p-3 flex items-center gap-3 text-left"
+                        className="w-full p-3 flex items-center gap-3 text-left transition-colors"
                         style={{
                           background: hoveredRow === `leader-${idx}` ? 'var(--surface-1)' : 'transparent',
                           transition: 'background 100ms ease',
@@ -1213,7 +1214,7 @@ function EffectivenessTab({
                   return (
                     <div
                       key={idx}
-                      className="p-3 space-y-2"
+                      className="p-3 space-y-2 transition-colors"
                       style={{
                         borderBottom: '1px solid var(--border-subtle)',
                         background: hoveredRow === `worst-${idx}` ? 'var(--surface-1)' : 'transparent',

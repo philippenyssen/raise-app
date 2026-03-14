@@ -188,7 +188,7 @@ export default function WinLossPage() {
         ].map(s => (
           <div
             key={s.label}
-            className={`card-metric ${s.variant}`.trim()}
+            className={`card-metric transition-colors ${s.variant}`.trim()}
             style={{
               padding: 'var(--space-3)',
               borderColor: hoveredCard === s.label ? 'var(--border-default)' : undefined,
@@ -379,6 +379,7 @@ export default function WinLossPage() {
                 return (
                   <div
                     key={pr.reason}
+                    className="transition-colors"
                     style={{
                       padding: 'var(--space-2)',
                       borderRadius: 'var(--radius-sm)',
@@ -438,6 +439,7 @@ export default function WinLossPage() {
             {predictors.map((p, i) => (
               <div
                 key={p.signal}
+                className="transition-colors"
                 style={{
                   padding: 'var(--space-2) var(--space-3)',
                   borderRadius: 'var(--radius-sm)',
@@ -510,6 +512,7 @@ export default function WinLossPage() {
                 {patterns.distinguishingFactors.map((f, i) => (
                   <tr
                     key={f.factor}
+                    className="transition-colors"
                     style={{
                       background: hoveredRow === `df-${i}` ? 'var(--surface-1)' : 'transparent',
                       transition: 'background 0.15s',
@@ -683,6 +686,7 @@ export default function WinLossPage() {
               {typePerformance.map((tp, i) => (
                 <div
                   key={tp.type}
+                  className="transition-colors"
                   style={{
                     padding: 'var(--space-2) var(--space-3)',
                     borderRadius: 'var(--radius-sm)',
@@ -772,6 +776,7 @@ export default function WinLossPage() {
               {recommendations.map((rec, i) => (
                 <div
                   key={i}
+                  className="transition-colors"
                   style={{
                     padding: 'var(--space-2) var(--space-3)',
                     borderRadius: 'var(--radius-sm)',

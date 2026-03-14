@@ -291,7 +291,7 @@ export default function VelocityPage() {
                 {investors.map((inv) => (
                   <tr
                     key={inv.investor_id}
-                    className="table-row"
+                    className="table-row transition-colors"
                     style={{
                       background: hoveredRow === inv.investor_id ? 'var(--surface-1)' : 'transparent',
                       cursor: 'pointer',

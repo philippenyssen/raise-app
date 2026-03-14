@@ -282,7 +282,7 @@ export default function NetworkPage() {
           return (
             <div
               key={cascade.keystoneId}
-              className="card"
+              className="card transition-colors"
               style={{
                 border: `1px solid ${isHovered ? 'var(--border-strong)' : 'var(--border-subtle)'}`,
                 transition: 'border-color 0.15s ease',
@@ -314,6 +314,7 @@ export default function NetworkPage() {
                       <Link
                         href={`/investors/${cascade.keystoneId}`}
                         onClick={e => e.stopPropagation()}
+                        className="transition-colors"
                         style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: 'var(--font-size-base)', textDecoration: 'none' }}
                         onMouseEnter={e => { e.currentTarget.style.color = 'var(--accent)'; }}
                         onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-primary)'; }}
@@ -421,7 +422,7 @@ export default function NetworkPage() {
 
                             {/* Investor Row */}
                             <div
-                              className="flex items-center justify-between rounded-md p-3"
+                              className="flex items-center justify-between rounded-md p-3 transition-colors"
                               style={{
                                 marginLeft: '24px',
                                 background: isLinkHovered ? 'var(--surface-2)' : 'var(--surface-1)',
@@ -445,6 +446,7 @@ export default function NetworkPage() {
                                   <div className="flex items-center gap-2">
                                     <Link
                                       href={`/investors/${link.investorId}`}
+                                      className="transition-colors"
                                       style={{
                                         fontWeight: 500,
                                         color: 'var(--text-primary)',

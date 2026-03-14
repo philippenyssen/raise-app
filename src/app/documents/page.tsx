@@ -243,7 +243,7 @@ export default function DocumentsPage() {
                     {flag.document_id && (
                       <Link
                         href={`/documents/${flag.document_id}`}
-                        className="text-[11px] underline"
+                        className="text-[11px] underline transition-colors"
                         style={{ color: 'var(--accent)' }}
                         onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.8'; }}
                         onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}
@@ -287,7 +287,7 @@ export default function DocumentsPage() {
           <p style={{ color: 'var(--text-muted)' }}>No documents yet.</p>
           <Link
             href="/documents/new"
-            className="text-sm"
+            className="text-sm transition-colors"
             style={{ color: 'var(--accent)' }}
             onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.8'; }}
             onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}
@@ -371,7 +371,7 @@ export default function DocumentsPage() {
                         </button>
                         <button
                           onClick={() => setDeleteTarget({ id: doc.id, title: doc.title })}
-                          className="text-xs px-2 py-1 rounded"
+                          className="text-xs px-2 py-1 rounded transition-colors"
                           style={{ color: hoverStates[`del-${doc.id}`] ? 'var(--danger)' : 'var(--text-muted)', backgroundColor: hoverStates[`del-${doc.id}`] ? 'var(--surface-2)' : 'transparent' }}
                           onMouseEnter={() => setHover(`del-${doc.id}`, true)}
                           onMouseLeave={() => setHover(`del-${doc.id}`, false)}

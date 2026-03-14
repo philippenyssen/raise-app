@@ -175,7 +175,7 @@ export default function DealHeatPage() {
           return (
             <div
               key={level}
-              className="card"
+              className="card transition-colors"
               style={{
                 padding: 'var(--space-4)',
                 border: `1px solid ${cfg.border}`,
@@ -261,7 +261,7 @@ export default function DealHeatPage() {
                 style={{ textDecoration: 'none' }}
               >
                 <div
-                  className="card"
+                  className="card transition-colors"
                   style={{
                     padding: 'var(--space-4)',
                     border: `1px solid ${isHovered ? cfg.text : cfg.border}`,

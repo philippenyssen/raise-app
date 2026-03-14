@@ -347,7 +347,7 @@ export default function StressTestPage() {
             {data.gapInvestors.slice(0, 5).map((gap, i) => (
               <div
                 key={gap.id}
-                className="flex items-start gap-3 py-3 px-4 rounded-lg"
+                className="flex items-start gap-3 py-3 px-4 rounded-lg transition-colors"
                 style={{
                   background: hoveredGap === gap.id ? 'var(--surface-2)' : 'var(--surface-1)',
                   border: '1px solid var(--border-subtle)',
@@ -528,7 +528,7 @@ export default function StressTestPage() {
               onClick={() => setShowAllInvestors(!showAllInvestors)}
               onMouseEnter={() => setShowAllHover(true)}
               onMouseLeave={() => setShowAllHover(false)}
-              className="text-xs flex items-center gap-1 mx-auto"
+              className="text-xs flex items-center gap-1 mx-auto transition-colors"
               style={{ color: showAllHover ? 'var(--accent)' : 'var(--accent)' }}
             >
               {showAllInvestors ? (
@@ -622,7 +622,7 @@ export default function StressTestPage() {
                   return (
                     <div
                       key={i}
-                      className="flex items-center gap-3 py-1.5 px-3 rounded-lg"
+                      className="flex items-center gap-3 py-1.5 px-3 rounded-lg transition-colors"
                       style={{
                         background: hoveredCritical === i ? 'var(--surface-3)' : 'var(--surface-2)',
                       }}
