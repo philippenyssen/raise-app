@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getRaiseConfig, getAllDocuments, getDataRoomContext, createDocument, getModelSheets, updateModelSheet } from '@/lib/db';
+import { getRaiseConfig, getAllDocuments, getDataRoomContext, createDocument, updateDocument, getModelSheets, updateModelSheet } from '@/lib/db';
 import { generateDeliverable, generateModelFromContext } from '@/lib/generate';
 
 export async function POST(req: NextRequest) {
@@ -42,13 +42,10 @@ export async function POST(req: NextRequest) {
     // Create or update the document
     const existing = allDocs.find(d => d.type === type);
     if (existing) {
-      // Update existing
-      const res = await fetch(`${req.nextUrl.origin}/api/documents/${existing.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content, change_summary: `AI-generated from data room (${new Date().toISOString()})` }),
+      await updateDocument(existing.id, {
+        content,
+        change_summary: `AI-generated from data room (${new Date().toISOString()})`,
       });
-      await res.json();
       return NextResponse.json({ success: true, type, documentId: existing.id, action: 'updated' });
     } else {
       // Create new

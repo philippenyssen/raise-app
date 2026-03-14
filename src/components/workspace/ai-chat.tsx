@@ -56,7 +56,7 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          messages: newMessages,
+          messages: newMessages.slice(-10), // Send last 10 messages to stay within context limits
           documentId,
           documentContent,
           documentTitle,
