@@ -29,6 +29,7 @@
 | 23 | 2026-03-14 | Forecast Calibration | Learning from outcomes — forecast predictions logged weekly, resolved on terminal state, accuracy delta computed, bias direction tracked (optimistic/pessimistic/calibrated). Calibration in context bus + system prompt + synthesis. Verification endpoint updated (8 tables, 11 functions, 17 context fields). | db.ts, context-bus.ts, investors/route.ts, pulse/route.ts, intelligence/verify/route.ts |
 | 24 | 2026-03-14 | Self-Correcting Forecasts | computeRaiseForecast() now applies calibration-learned bias correction — if forecasts have been systematically optimistic/pessimistic, adjusts predicted days by up to ±30% based on historical accuracy delta. Closes the full learning loop: predict → log → resolve → measure → correct. | db.ts |
 | 25 | 2026-03-14 | Win/Loss Pattern Analysis | Outcome-driven learning: analyzes closed vs passed investors to find distinguishing factors (7 dimensions compared), generates winner/loser profiles, surfaces key predictors. Synthesis rule flags active investors matching loser profile. Context bus field + system prompt WIN/LOSS section. 24th data source, 18 context fields, 12 functions verified. | db.ts, context-bus.ts, intelligence/verify/route.ts |
+| 26 | 2026-03-14 | Score Reversals + Pipeline Rankings | Score reversal detection (critical/warning/notable drops ≥10pts), comparative pipeline rankings with rank movement tracking. 3 synthesis rules (score crisis, rising/falling investors). Pulse insight for critical reversals. Context bus: 26 data sources, 20 context fields, 14 functions. | db.ts, context-bus.ts, pulse/route.ts, intelligence/verify/route.ts |
 
 ## Intelligence Capabilities (Existing)
 
@@ -446,6 +447,20 @@
   - [x] Proactive intelligence: low confidence (urgency 8) + 3+ risk factors (urgency 7)
   - [x] Instruction 20: forecast-aware reasoning guidance
 - [x] **Self-correcting forecasts (cycle 24)**: calibration-learned bias multiplier applied to predicted days (capped ±30%, conservative 50% correction factor)
+
+### AC. Score Reversals + Pipeline Rankings (NEW cycle 26)
+- [x] `detectScoreReversals()`: compares latest 2 snapshots per active investor
+  - [x] Flags drops ≥10pts as notable, ≥15pts as warning, ≥25pts as critical
+  - [x] Returns sorted by severity then magnitude
+- [x] `getPipelineRankings()`: ranks all active investors by current score
+  - [x] Compares against previous day's ranking to detect rank movement
+  - [x] Returns rank, previousRank, rankChange for each investor
+- [x] `scoreReversals` + `pipelineRankings` fields in FullContext
+  - [x] SCORE REVERSALS section in system prompt (severity-tagged)
+  - [x] PIPELINE RANKINGS section in system prompt (top 10, with ↑/↓ movement)
+- [x] 3 synthesis rules: critical T1-2 score crisis, rising investors (↑3+), falling investors (↓3+)
+- [x] Pulse insight: critical score drops surfaced as critical insight
+- [x] Verification: 2 function checks, 2 context field checks
 
 ### AB. Win/Loss Pattern Analysis (NEW cycle 25)
 - [x] `computeWinLossPatterns()`: analyzes terminal investors (closed/passed/dropped)

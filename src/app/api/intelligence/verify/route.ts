@@ -13,6 +13,8 @@ import {
   computeRaiseForecast,
   getForecastCalibration,
   computeWinLossPatterns,
+  detectScoreReversals,
+  getPipelineRankings,
 } from '@/lib/db';
 import { createClient } from '@libsql/client';
 
@@ -125,6 +127,8 @@ export async function GET() {
       { field: 'raiseForecast', cycle: 18 },
       { field: 'forecastCalibration', cycle: 23 },
       { field: 'winLossPatterns', cycle: 25 },
+      { field: 'scoreReversals', cycle: 26 },
+      { field: 'pipelineRankings', cycle: 26 },
     ];
 
     for (const { field, cycle } of expectedFields) {
@@ -158,6 +162,8 @@ export async function GET() {
     { name: 'computeRaiseForecast', fn: () => computeRaiseForecast(), cycle: 18 },
     { name: 'getForecastCalibration', fn: () => getForecastCalibration(), cycle: 23 },
     { name: 'computeWinLossPatterns', fn: () => computeWinLossPatterns(), cycle: 25 },
+    { name: 'detectScoreReversals', fn: () => detectScoreReversals(), cycle: 26 },
+    { name: 'getPipelineRankings', fn: () => getPipelineRankings(), cycle: 26 },
   ];
 
   for (const fc of functionChecks) {

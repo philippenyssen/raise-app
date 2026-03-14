@@ -2028,6 +2028,151 @@ export async function getScoreSnapshots(investorId: string, limit: number = 90):
 }
 
 // ---------------------------------------------------------------------------
+// Score Reversal Detection + Pipeline Rankings (cycle 26)
+// ---------------------------------------------------------------------------
+
+export interface ScoreReversal {
+  investorId: string;
+  investorName: string;
+  previousScore: number;
+  currentScore: number;
+  delta: number;
+  previousDate: string;
+  currentDate: string;
+  severity: 'critical' | 'warning' | 'notable';
+}
+
+export interface PipelineRanking {
+  rank: number;
+  previousRank: number | null;
+  rankChange: number; // positive = moved up, negative = moved down
+  investorId: string;
+  investorName: string;
+  tier: number;
+  score: number;
+  status: string;
+}
+
+export async function detectScoreReversals(): Promise<ScoreReversal[]> {
+  await ensureInitialized();
+  const db = getClient();
+
+  // Get latest 2 snapshots per investor
+  const result = await db.execute(`
+    SELECT s.investor_id, s.overall_score, s.snapshot_date, i.name
+    FROM score_snapshots s
+    JOIN investors i ON i.id = s.investor_id
+    WHERE i.status NOT IN ('passed', 'dropped', 'closed')
+    ORDER BY s.investor_id, s.snapshot_date DESC
+  `);
+
+  const byInvestor: Record<string, Array<{ score: number; date: string; name: string }>> = {};
+  for (const row of result.rows) {
+    const id = row.investor_id as string;
+    if (!byInvestor[id]) byInvestor[id] = [];
+    if (byInvestor[id].length < 2) {
+      byInvestor[id].push({
+        score: row.overall_score as number,
+        date: row.snapshot_date as string,
+        name: row.name as string,
+      });
+    }
+  }
+
+  const reversals: ScoreReversal[] = [];
+  for (const [investorId, snapshots] of Object.entries(byInvestor)) {
+    if (snapshots.length < 2) continue;
+    const [current, previous] = snapshots; // sorted DESC
+    const delta = current.score - previous.score;
+
+    if (delta <= -15) {
+      reversals.push({
+        investorId,
+        investorName: current.name,
+        previousScore: previous.score,
+        currentScore: current.score,
+        delta,
+        previousDate: previous.date,
+        currentDate: current.date,
+        severity: delta <= -25 ? 'critical' : 'warning',
+      });
+    } else if (delta <= -10) {
+      reversals.push({
+        investorId,
+        investorName: current.name,
+        previousScore: previous.score,
+        currentScore: current.score,
+        delta,
+        previousDate: previous.date,
+        currentDate: current.date,
+        severity: 'notable',
+      });
+    }
+  }
+
+  // Sort by severity then delta
+  const sevOrder = { critical: 0, warning: 1, notable: 2 };
+  reversals.sort((a, b) => sevOrder[a.severity] - sevOrder[b.severity] || a.delta - b.delta);
+
+  return reversals;
+}
+
+export async function getPipelineRankings(): Promise<PipelineRanking[]> {
+  await ensureInitialized();
+  const db = getClient();
+
+  const today = new Date().toISOString().split('T')[0];
+  const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+
+  // Get today's scores (or most recent)
+  const currentResult = await db.execute(`
+    SELECT s.investor_id, s.overall_score, i.name, i.tier, i.status
+    FROM score_snapshots s
+    JOIN investors i ON i.id = s.investor_id
+    WHERE i.status NOT IN ('passed', 'dropped', 'closed')
+      AND s.snapshot_date = (SELECT MAX(s2.snapshot_date) FROM score_snapshots s2 WHERE s2.investor_id = s.investor_id)
+    ORDER BY s.overall_score DESC
+  `);
+
+  // Get yesterday's rankings for comparison
+  const previousResult = await db.execute({
+    sql: `
+      SELECT s.investor_id, s.overall_score
+      FROM score_snapshots s
+      WHERE s.snapshot_date <= ?
+        AND s.snapshot_date = (SELECT MAX(s2.snapshot_date) FROM score_snapshots s2 WHERE s2.investor_id = s.investor_id AND s2.snapshot_date <= ?)
+    `,
+    args: [yesterday, yesterday],
+  });
+
+  // Build previous rank map
+  const previousScores = (previousResult.rows as unknown as Array<{ investor_id: string; overall_score: number }>)
+    .sort((a, b) => b.overall_score - a.overall_score);
+  const prevRankMap: Record<string, number> = {};
+  previousScores.forEach((row, idx) => { prevRankMap[row.investor_id] = idx + 1; });
+
+  // Build current rankings
+  const rankings: PipelineRanking[] = (currentResult.rows as unknown as Array<{
+    investor_id: string; overall_score: number; name: string; tier: number; status: string;
+  }>).map((row, idx) => {
+    const currentRank = idx + 1;
+    const previousRank = prevRankMap[row.investor_id] ?? null;
+    return {
+      rank: currentRank,
+      previousRank,
+      rankChange: previousRank !== null ? previousRank - currentRank : 0,
+      investorId: row.investor_id,
+      investorName: row.name,
+      tier: row.tier,
+      score: row.overall_score,
+      status: row.status,
+    };
+  });
+
+  return rankings;
+}
+
+// ---------------------------------------------------------------------------
 // Acceleration Actions
 // ---------------------------------------------------------------------------
 

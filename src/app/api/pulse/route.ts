@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@libsql/client';
 import { computeInvestorScore, computeMomentumScore, computeConvictionTrajectory } from '@/lib/scoring';
 import type { ScoreSnapshot } from '@/lib/db';
-import { generateAutoActions, measureActionEffectiveness, saveHealthSnapshot, getHealthSnapshots, computeTemporalTrends, computeRaiseForecast, logForecastPredictions } from '@/lib/db';
+import { generateAutoActions, measureActionEffectiveness, saveHealthSnapshot, getHealthSnapshots, computeTemporalTrends, computeRaiseForecast, logForecastPredictions, detectScoreReversals } from '@/lib/db';
 import type { Investor, Meeting, InvestorPortfolioCo, Objection } from '@/lib/types';
 import { getFullContext } from '@/lib/context-bus';
 
@@ -940,6 +940,21 @@ async function computeIntelligenceBriefing(
           });
         }
       }
+    }
+  } catch { /* non-blocking */ }
+
+  // Score reversal insights (cycle 26)
+  try {
+    const reversals = await detectScoreReversals();
+    const critical = reversals.filter(r => r.severity === 'critical');
+    if (critical.length > 0) {
+      insights.push({
+        type: 'critical',
+        title: `${critical.length} investor(s) with critical score drop`,
+        detail: critical.map(r => `${r.investorName}: ${r.previousScore}→${r.currentScore} (${r.delta})`).join(', '),
+        action: `Investigate score drops immediately — these may indicate loss of conviction. Prioritize direct outreach to ${critical[0].investorName}.`,
+        dataSource: 'score_reversals',
+      });
     }
   } catch { /* non-blocking */ }
 

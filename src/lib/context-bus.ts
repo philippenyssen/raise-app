@@ -34,8 +34,10 @@ import {
   computeRaiseForecast,
   getForecastCalibration,
   computeWinLossPatterns,
+  detectScoreReversals,
+  getPipelineRankings,
 } from './db';
-import type { TemporalTrends, RaiseForecast, ForecastCalibration, WinLossPatterns } from './db';
+import type { TemporalTrends, RaiseForecast, ForecastCalibration, WinLossPatterns, ScoreReversal, PipelineRanking } from './db';
 
 // ---------------------------------------------------------------------------
 // Context version — monotonically increasing counter
@@ -281,6 +283,12 @@ export interface FullContext {
 
   // Win/loss pattern analysis — what distinguishes closers from passers (cycle 25)
   winLossPatterns: WinLossPatterns | null;
+
+  // Score reversals — significant drops in investor scores (cycle 26)
+  scoreReversals: ScoreReversal[];
+
+  // Pipeline rankings — comparative investor ranking with movement (cycle 26)
+  pipelineRankings: PipelineRanking[];
 }
 
 const recentChanges: ContextChange[] = [];
@@ -321,6 +329,8 @@ export async function getFullContext(): Promise<FullContext> {
     raiseForecastData,
     forecastCalibrationData,
     winLossPatternsData,
+    scoreReversalsData,
+    pipelineRankingsData,
   ] = await Promise.all([
     getRaiseConfig().catch(() => null),
     getAllDocuments().catch(() => []),
@@ -346,6 +356,8 @@ export async function getFullContext(): Promise<FullContext> {
     computeRaiseForecast().catch(() => null),
     getForecastCalibration().catch(() => null),
     computeWinLossPatterns().catch(() => null),
+    detectScoreReversals().catch(() => []),
+    getPipelineRankings().catch(() => []),
   ]);
 
   // Build investor snapshots enriched with meeting/task/followup data
@@ -634,6 +646,10 @@ export async function getFullContext(): Promise<FullContext> {
 
     // Win/loss pattern analysis (cycle 25)
     winLossPatterns: (winLossPatternsData as WinLossPatterns | null),
+
+    // Score reversals and pipeline rankings (cycle 26)
+    scoreReversals: (scoreReversalsData as ScoreReversal[]),
+    pipelineRankings: (pipelineRankingsData as PipelineRanking[]),
   };
 
   cachedContext = context;
@@ -926,6 +942,29 @@ export function contextToSystemPrompt(ctx: FullContext): string {
     lines.push('');
   }
 
+  // Score reversals — significant drops (cycle 26)
+  if (ctx.scoreReversals.length > 0) {
+    lines.push('SCORE REVERSALS (significant score drops since last snapshot):');
+    for (const rev of ctx.scoreReversals) {
+      const severityTag = rev.severity === 'critical' ? 'CRITICAL' : rev.severity === 'warning' ? 'WARNING' : 'NOTABLE';
+      lines.push(`- [${severityTag}] ${rev.investorName}: ${rev.previousScore}→${rev.currentScore} (${rev.delta}) between ${rev.previousDate} and ${rev.currentDate}`);
+    }
+    lines.push('');
+  }
+
+  // Pipeline rankings — comparative positioning (cycle 26)
+  if (ctx.pipelineRankings.length > 0) {
+    lines.push(`PIPELINE RANKINGS (${ctx.pipelineRankings.length} active investors, by score):`);
+    for (const r of ctx.pipelineRankings.slice(0, 10)) {
+      let changeStr = '';
+      if (r.previousRank !== null && r.rankChange !== 0) {
+        changeStr = r.rankChange > 0 ? ` ↑${r.rankChange}` : ` ↓${Math.abs(r.rankChange)}`;
+      }
+      lines.push(`- #${r.rank}${changeStr} ${r.investorName} (T${r.tier}, ${r.status}, score: ${r.score})`);
+    }
+    lines.push('');
+  }
+
   // Win/loss pattern analysis — outcome-driven learning (cycle 25)
   if (ctx.winLossPatterns && (ctx.winLossPatterns.closedCount > 0 || ctx.winLossPatterns.passedCount > 0)) {
     const wl = ctx.winLossPatterns;
@@ -1073,6 +1112,28 @@ export function contextToSystemPrompt(ctx: FullContext): string {
         synthesisLines.push(`SIGNAL MISMATCH: Health metrics are improving but critical path investor${stalledCritical.length > 1 ? 's' : ''} ${stalledCritical.map(i => i.name).join(', ')} ${stalledCritical.length > 1 ? 'are' : 'is'} stalled — improving averages may mask that the most important investors aren't progressing`);
       }
     }
+  }
+
+  // Score reversal synthesis: critical drops on T1-2 investors need immediate attention (cycle 26)
+  const criticalReversals = ctx.scoreReversals.filter(r => r.severity === 'critical');
+  if (criticalReversals.length > 0) {
+    const t12Reversals = criticalReversals.filter(r => {
+      const inv = ctx.investors.find(i => i.id === r.investorId);
+      return inv && inv.tier <= 2;
+    });
+    if (t12Reversals.length > 0) {
+      synthesisLines.push(`SCORE CRISIS: ${t12Reversals.map(r => `${r.investorName} dropped ${Math.abs(r.delta)} points`).join(', ')} — investigate immediately, these are priority investors losing conviction`);
+    }
+  }
+
+  // Rank change synthesis: rising investors = momentum confirmation (cycle 26)
+  const bigRisers = ctx.pipelineRankings.filter(r => r.rankChange >= 3);
+  const bigFallers = ctx.pipelineRankings.filter(r => r.rankChange <= -3);
+  if (bigRisers.length > 0) {
+    synthesisLines.push(`RISING: ${bigRisers.map(r => `${r.investorName} (↑${r.rankChange} to #${r.rank})`).join(', ')} — capitalize on momentum`);
+  }
+  if (bigFallers.length > 0) {
+    synthesisLines.push(`FALLING: ${bigFallers.map(r => `${r.investorName} (↓${Math.abs(r.rankChange)} to #${r.rank})`).join(', ')} — engagement may be declining`);
   }
 
   // Win/loss pattern synthesis: flag active investors matching loser profile (cycle 25)
