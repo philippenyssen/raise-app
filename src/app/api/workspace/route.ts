@@ -153,6 +153,14 @@ function buildQueryFocus(
         lines.push(`- Narrative effectiveness for ${inv.type} type: ${typeDrift.status} (avg enthusiasm: ${typeDrift.avgEnthusiasm}/5, conversion: ${typeDrift.conversionRate}%)`);
       }
 
+      // Check forecast for this investor (cycle 18)
+      if (ctx.raiseForecast?.nearestClose && ctx.raiseForecast.nearestClose.name === inv.name) {
+        lines.push(`- FORECAST: Predicted to close in ~${ctx.raiseForecast.nearestClose.days} days`);
+      }
+      if (ctx.raiseForecast?.criticalPath.includes(inv.name)) {
+        lines.push(`- ON CRITICAL PATH: This investor is on the critical path to close`);
+      }
+
       lines.push(`Prioritize this investor's data in the KEY INVESTORS section. Use their specific objection history, trajectory, and meeting patterns to give targeted advice.`);
     }
   } else if (intent.type === 'strategy') {
@@ -166,7 +174,13 @@ function buildQueryFocus(
     if (ctx.compoundSignals.length > 0) {
       lines.push(`- COMPOUND SIGNALS requiring attention: ${ctx.compoundSignals.length}`);
     }
-    lines.push(`- Pipeline health, temporal trends, compound signals, and strategic recommendations are most relevant.`);
+    if (ctx.raiseForecast) {
+      lines.push(`- RAISE FORECAST: predicted close ${ctx.raiseForecast.expectedCloseDate} (${ctx.raiseForecast.confidence} confidence)`);
+      if (ctx.raiseForecast.criticalPath.length > 0) {
+        lines.push(`- CRITICAL PATH: ${ctx.raiseForecast.criticalPath.join(', ')}`);
+      }
+    }
+    lines.push(`- Pipeline health, temporal trends, raise forecast, compound signals, and strategic recommendations are most relevant.`);
     lines.push(`- Be specific and decisive. Rank priorities by impact. Don't hedge.`);
   } else if (intent.type === 'objection') {
     lines.push(`QUERY FOCUS: The user is asking about objections/pushback. Pay special attention to:`);
@@ -251,6 +265,22 @@ function buildProactiveIntelligence(ctx: FullContext): string {
       items.push({
         urgency: 8,
         text: `"${nw.topic}" weakness — ${affected.map(i => i.name).join(', ')} have pending follow-ups. Address BEFORE next contact.`,
+      });
+    }
+  }
+
+  // 8. Raise forecast risk (cycle 18)
+  if (ctx.raiseForecast) {
+    if (ctx.raiseForecast.confidence === 'low') {
+      items.push({
+        urgency: 8,
+        text: `Raise forecast confidence is LOW — insufficient advanced-stage investors to predict a close date reliably`,
+      });
+    }
+    if (ctx.raiseForecast.riskFactors.length >= 3) {
+      items.push({
+        urgency: 7,
+        text: `Raise forecast has ${ctx.raiseForecast.riskFactors.length} risk factors: ${ctx.raiseForecast.riskFactors.slice(0, 2).join('; ')}`,
       });
     }
   }
@@ -381,7 +411,13 @@ INSTRUCTIONS:
    - Don't force-insert them if completely unrelated to the user's question
    - But DO mention them when the user asks anything about strategy, priorities, or next steps
    - Frame them as natural extensions of your answer: "Also worth noting..." or "Relatedly, you should be aware..."
-   - Always tie the proactive insight to a specific action the user can take`;
+   - Always tie the proactive insight to a specific action the user can take
+
+20. FORECAST-AWARE REASONING: When RAISE FORECAST data is available in the context:
+   - Factor predicted close dates into urgency of recommendations — closer predicted closes = higher priority
+   - Critical path investors should receive disproportionate attention in strategic advice
+   - When forecast confidence is low, acknowledge the uncertainty and suggest actions to improve pipeline predictability
+   - Connect forecast risk factors to specific remediation actions`;
 
   // Compute a lightweight context hash from the context bus version + document length.
   // The client can use this to detect when cached context has changed.

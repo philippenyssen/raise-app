@@ -21,6 +21,7 @@
 | 15 | 2026-03-14 | Intelligent Context Steering | Query intent detection (5 types: investor-specific, strategy, objection, document, general), dynamic QUERY FOCUS prefix for workspace AI (targeted context per investor, compound signals, narrative drift, keystone status), instruction 18 (temporal awareness in AI reasoning) | workspace/route.ts |
 | 16 | 2026-03-14 | Investor Lifecycle Intelligence | Per-investor lifecycle fields (daysInCurrentStage, stageHealth, daysSinceLastContact), stage health thresholds (on_track/slow/stalled), lifecycle tags in system prompt, lifecycle synthesis (stalled high-value, lifecycle contradictions), workspace AI lifecycle-aware context steering | context-bus.ts, workspace/route.ts |
 | 17 | 2026-03-14 | Proactive Intelligence Surfacing | ATTENTION REQUIRED block in workspace AI prompt (top 3 urgent items from 7 signal sources), instruction 19 (natural proactive surfacing), prioritized by urgency score across stalled T1 investors, compound signals, temporal alerts, overdue follow-ups, emerging objections, thin pipeline, narrative weakness + upcoming contacts | workspace/route.ts |
+| 18 | 2026-03-14 | Close Date Forecasting | Per-investor close date prediction from pipeline velocity + conversion rates + tier/enthusiasm adjustments, raise-level forecast aggregation, critical path identification, risk factor analysis, forecast in context bus + system prompt + synthesis, proactive surfacing of low-confidence forecast, workspace AI forecast-aware context steering + instruction 20 | db.ts, context-bus.ts, workspace/route.ts |
 
 ## Intelligence Capabilities (Existing)
 
@@ -414,6 +415,27 @@
   - [x] Stalled high-value investor alert (tier 1-2 + stalled → escalate or deprioritize)
   - [x] Lifecycle contradiction detection (high enthusiasm + stalled = internal blockers or politeness)
 - [x] Workspace AI context steering: lifecycle data included in investor-specific QUERY FOCUS
+
+### Z. Close Date Forecasting (NEW cycle 18)
+- [x] `computeRaiseForecast()`: per-investor close date prediction engine
+  - [x] Uses pipeline flow conversion rates per stage + avg dwell times
+  - [x] Tier adjustment (T1=0.8x, T3=1.2x) — higher-tier investors close faster
+  - [x] Enthusiasm adjustment (high=0.85x, low=1.3x) — enthusiastic investors accelerate
+  - [x] Per-investor forecast: predicted days to close, predicted close date, confidence (high/medium/low), reasoning
+  - [x] Raise-level aggregation: expected close date, expected amount, critical path investors, risk factors
+- [x] `raiseForecast` field in FullContext (context-bus.ts)
+  - [x] Populated via `computeRaiseForecast()` in Promise.all
+  - [x] Fields: expectedCloseDate, confidence, criticalPath, riskFactors, nearestClose
+  - [x] Serialized to system prompt as RAISE FORECAST section
+- [x] Intelligence synthesis additions:
+  - [x] Low confidence forecast warning → pipeline needs more advanced investors
+  - [x] Distant nearest close (>90 days) → timeline risk signal
+  - [x] Compound timeline risk: declining health + low confidence forecast = stalling risk
+- [x] Workspace AI integration:
+  - [x] Strategy query focus: includes forecast + critical path
+  - [x] Investor-specific focus: forecast data + critical path membership
+  - [x] Proactive intelligence: low confidence (urgency 8) + 3+ risk factors (urgency 7)
+  - [x] Instruction 20: forecast-aware reasoning guidance
 
 ### CLOSED (Cycle 9):
 - ~~Learning Intelligence / Action Outcome Measurement~~ — implemented in db.ts (measureActionEffectiveness, getAutoActionEffectiveness), self-improving generateAutoActions, context-bus.ts (actionEffectiveness field + system prompt), workspace/route.ts (instruction 17), pulse/route.ts (measurement trigger)

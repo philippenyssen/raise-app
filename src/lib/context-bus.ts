@@ -31,8 +31,9 @@ import {
   computePipelineFlow,
   detectCompoundSignals,
   computeTemporalTrends,
+  computeRaiseForecast,
 } from './db';
-import type { TemporalTrends } from './db';
+import type { TemporalTrends, RaiseForecast } from './db';
 
 // ---------------------------------------------------------------------------
 // Context version — monotonically increasing counter
@@ -263,6 +264,15 @@ export interface FullContext {
 
   // Temporal intelligence — health trend analysis (cycle 14)
   temporalTrends: TemporalTrends | null;
+
+  // Close date forecasting — investor timeline prediction (cycle 18)
+  raiseForecast: {
+    expectedCloseDate: string;
+    confidence: string;
+    criticalPath: string[];
+    riskFactors: string[];
+    nearestClose: { name: string; days: number; stage: string } | null;
+  } | null;
 }
 
 const recentChanges: ContextChange[] = [];
@@ -300,6 +310,7 @@ export async function getFullContext(): Promise<FullContext> {
     pipelineFlowData,
     compoundSignalsData,
     temporalTrendsData,
+    raiseForecastData,
   ] = await Promise.all([
     getRaiseConfig().catch(() => null),
     getAllDocuments().catch(() => []),
@@ -322,6 +333,7 @@ export async function getFullContext(): Promise<FullContext> {
     computePipelineFlow().catch(() => null),
     detectCompoundSignals().catch(() => []),
     computeTemporalTrends().catch(() => null),
+    computeRaiseForecast().catch(() => null),
   ]);
 
   // Build investor snapshots enriched with meeting/task/followup data
@@ -589,6 +601,21 @@ export async function getFullContext(): Promise<FullContext> {
         return allDays.length > 0 ? Math.round(allDays.reduce((a, b) => a + b, 0)) : 0;
       })(),
     } : null,
+
+    // Raise forecast — close date prediction (cycle 18)
+    raiseForecast: raiseForecastData ? (() => {
+      const fd = raiseForecastData as RaiseForecast;
+      const nearest = fd.forecasts.length > 0
+        ? fd.forecasts.reduce((best, f) => f.predictedDaysToClose < best.predictedDaysToClose ? f : best)
+        : null;
+      return {
+        expectedCloseDate: fd.expectedCloseDate,
+        confidence: fd.confidence,
+        criticalPath: fd.criticalPathInvestors,
+        riskFactors: fd.riskFactors,
+        nearestClose: nearest ? { name: nearest.investorName, days: nearest.predictedDaysToClose, stage: nearest.currentStage } : null,
+      };
+    })() : null,
   };
 
   cachedContext = context;
@@ -842,6 +869,22 @@ export function contextToSystemPrompt(ctx: FullContext): string {
     lines.push('');
   }
 
+  // Raise forecast — close date prediction (cycle 18)
+  if (ctx.raiseForecast) {
+    const rf = ctx.raiseForecast;
+    lines.push(`RAISE FORECAST (predicted close: ${rf.expectedCloseDate}, confidence: ${rf.confidence}):`);
+    if (rf.nearestClose) {
+      lines.push(`- Nearest close: ${rf.nearestClose.name} (~${rf.nearestClose.days} days, at "${rf.nearestClose.stage}")`);
+    }
+    if (rf.criticalPath.length > 0) {
+      lines.push(`- Critical path investors: ${rf.criticalPath.join(', ')}`);
+    }
+    if (rf.riskFactors.length > 0) {
+      lines.push(`- Risk factors: ${rf.riskFactors.join('; ')}`);
+    }
+    lines.push('');
+  }
+
   // =========================================================================
   // INTELLIGENCE SYNTHESIS (reasoning aids — connect the dots between sources)
   // =========================================================================
@@ -935,6 +978,21 @@ export function contextToSystemPrompt(ctx: FullContext): string {
       if (earlyStatuses.includes(inv.status)) {
         synthesisLines.push(`CONTRADICTION: ${inv.name} has enthusiasm ${inv.enthusiasm}/5 after ${inv.meetingCount} meetings but still at "${inv.status}" — possible politeness signal, probe for real conviction`);
       }
+    }
+  }
+
+  // Forecast synthesis: connect close date prediction to pipeline health (cycle 18)
+  if (ctx.raiseForecast) {
+    const rf = ctx.raiseForecast;
+    if (rf.confidence === 'low') {
+      synthesisLines.push(`FORECAST WARNING: Close date prediction has LOW confidence — pipeline needs more advanced-stage investors or faster stage transitions`);
+    }
+    if (rf.nearestClose && rf.nearestClose.days > 90) {
+      synthesisLines.push(`TIMELINE RISK: Nearest predicted close is ${rf.nearestClose.days} days away (${rf.nearestClose.name}) — consider accelerating top prospects`);
+    }
+    // Forecast + temporal trends: declining metrics + distant close = compounding risk
+    if (ctx.temporalTrends && ctx.temporalTrends.overallDirection === 'declining' && rf.confidence !== 'high') {
+      synthesisLines.push(`COMPOUND TIMELINE RISK: Health metrics are declining AND close date confidence is ${rf.confidence} — fundraise momentum is at risk of stalling completely`);
     }
   }
 
