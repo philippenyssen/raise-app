@@ -9,7 +9,8 @@ import {
   Clock, Target, Users, Zap, Briefcase, UserCheck, BookOpen,
   RefreshCw, Loader2, Trash2, ClipboardList, Check, FileSearch,
   Gauge, ArrowUpRight, ArrowRight, ArrowDownRight, Minus, ShieldAlert, Lightbulb,
-  Activity, AlertCircle, Database, ChevronDown, ChevronRight, ExternalLink
+  Activity, AlertCircle, Database, ChevronDown, ChevronRight, ExternalLink,
+  Flame, Phone, Mail,
 } from 'lucide-react';
 import { useToast } from '@/components/toast';
 
@@ -95,6 +96,9 @@ export default function InvestorDetailPage() {
   const [loading, setLoading] = useState(true);
   const [researching, setResearching] = useState(false);
   const [intelTab, setIntelTab] = useState<IntelTab>('overview');
+  const [dealIntel, setDealIntel] = useState<{
+    heat: number; heatLabel: string; trackingStatus: string; bottleneck: string; daysInProcess: number; velocityScore: number;
+  } | null>(null);
 
   const fetchScore = useCallback(async () => {
     setScoreLoading(true);
@@ -148,7 +152,27 @@ export default function InvestorDetailPage() {
     setLoading(false);
   }, [id]);
 
-  useEffect(() => { fetchData(); fetchScore(); fetchEnrichment(); }, [fetchData, fetchScore, fetchEnrichment]);
+  useEffect(() => {
+    fetchData(); fetchScore(); fetchEnrichment();
+    // Non-blocking deal intelligence fetch
+    Promise.all([
+      fetch('/api/deal-heat').then(r => r.ok ? r.json() : null).catch(() => null),
+      fetch('/api/velocity').then(r => r.ok ? r.json() : null).catch(() => null),
+    ]).then(([dhData, velData]) => {
+      const dhInv = dhData?.investors?.find((i: { id: string }) => i.id === id);
+      const velInv = velData?.investors?.find((i: { investor_id: string }) => i.investor_id === id);
+      if (dhInv || velInv) {
+        setDealIntel({
+          heat: dhInv?.dealHeat?.heat ?? 0,
+          heatLabel: dhInv?.dealHeat?.label ?? 'unknown',
+          trackingStatus: velInv?.tracking_status ?? 'unknown',
+          bottleneck: velInv?.bottleneck ?? '',
+          daysInProcess: velInv?.days_in_process ?? 0,
+          velocityScore: velInv?.velocity_score ?? 0,
+        });
+      }
+    });
+  }, [fetchData, fetchScore, fetchEnrichment, id]);
 
   async function handleResearch() {
     if (!investor) return;
@@ -301,7 +325,7 @@ export default function InvestorDetailPage() {
             {researching ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Researching...</> : <><RefreshCw className="w-3.5 h-3.5" /> Research</>}
           </button>
           <Link
-            href="/meetings/new"
+            href={`/meetings/new?investor=${id}`}
             className="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
             style={{ background: 'var(--accent)', color: 'var(--text-primary)' }}
             onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
@@ -346,6 +370,113 @@ export default function InvestorDetailPage() {
           </div>
         );
       })()}
+
+      {/* Deal Intelligence Strip */}
+      {dealIntel && (
+        <div
+          className="flex items-center gap-4 flex-wrap rounded-xl px-4 py-3"
+          style={{
+            border: `1px solid ${
+              dealIntel.heatLabel === 'hot' ? 'rgba(239,68,68,0.2)' :
+              dealIntel.heatLabel === 'warm' ? 'rgba(234,179,8,0.2)' :
+              'var(--border-subtle)'
+            }`,
+            background: dealIntel.heatLabel === 'hot' ? 'rgba(239,68,68,0.03)' :
+              dealIntel.heatLabel === 'warm' ? 'rgba(234,179,8,0.03)' :
+              'var(--surface-1)',
+          }}
+        >
+          {/* Heat */}
+          <div className="flex items-center gap-1.5">
+            <Flame className="w-3.5 h-3.5" style={{
+              color: dealIntel.heatLabel === 'hot' ? '#ef4444' :
+                dealIntel.heatLabel === 'warm' ? '#eab308' :
+                'var(--text-muted)'
+            }} />
+            <span style={{
+              fontSize: 'var(--font-size-sm)', fontWeight: 700, fontVariantNumeric: 'tabular-nums',
+              color: dealIntel.heatLabel === 'hot' ? '#ef4444' :
+                dealIntel.heatLabel === 'warm' ? '#eab308' :
+                'var(--text-secondary)'
+            }}>
+              {dealIntel.heat}
+            </span>
+            <span style={{
+              fontSize: '9px', fontWeight: 600, textTransform: 'uppercase',
+              color: dealIntel.heatLabel === 'hot' ? '#ef4444' :
+                dealIntel.heatLabel === 'warm' ? '#eab308' :
+                'var(--text-muted)'
+            }}>
+              {dealIntel.heatLabel}
+            </span>
+          </div>
+
+          <span style={{ color: 'var(--border-default)' }}>|</span>
+
+          {/* Tracking */}
+          <div className="flex items-center gap-1.5">
+            <span
+              className="w-2 h-2 rounded-full"
+              style={{
+                background: dealIntel.trackingStatus === 'on_track' ? 'var(--success)' :
+                  dealIntel.trackingStatus === 'behind' ? 'var(--warning)' : 'var(--danger)'
+              }}
+            />
+            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
+              {dealIntel.trackingStatus === 'on_track' ? 'On Track' :
+                dealIntel.trackingStatus === 'behind' ? 'Behind' : 'At Risk'}
+            </span>
+          </div>
+
+          <span style={{ color: 'var(--border-default)' }}>|</span>
+
+          {/* Days + Velocity */}
+          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+            {dealIntel.daysInProcess > 0 ? `${dealIntel.daysInProcess}d in process` : 'New'} · Velocity {dealIntel.velocityScore}
+          </span>
+
+          {/* Bottleneck */}
+          {dealIntel.bottleneck && (
+            <>
+              <span style={{ color: 'var(--border-default)' }}>|</span>
+              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--warning)', fontStyle: 'italic' }}>
+                {dealIntel.bottleneck}
+              </span>
+            </>
+          )}
+
+          {/* Quick action */}
+          <div className="ml-auto">
+            {dealIntel.trackingStatus === 'at_risk' ? (
+              <Link
+                href={`/meetings/new?investor=${id}`}
+                className="flex items-center gap-1"
+                style={{
+                  fontSize: '11px', fontWeight: 600, padding: '3px 10px',
+                  borderRadius: 'var(--radius-sm)', textDecoration: 'none',
+                  background: 'var(--danger-muted)', color: 'var(--danger)',
+                  border: '1px solid rgba(239,68,68,0.25)',
+                }}
+              >
+                <Phone className="w-3 h-3" /> Rescue
+              </Link>
+            ) : dealIntel.trackingStatus === 'behind' ? (
+              <Link
+                href={`/followups?investor=${id}`}
+                className="flex items-center gap-1"
+                style={{
+                  fontSize: '11px', fontWeight: 600, padding: '3px 10px',
+                  borderRadius: 'var(--radius-sm)', textDecoration: 'none',
+                  background: 'var(--warning-muted)', color: 'var(--warning)',
+                  border: '1px solid rgba(245,158,11,0.25)',
+                }}
+              >
+                <Mail className="w-3 h-3" /> Nudge
+              </Link>
+            ) : null}
+          </div>
+        </div>
+      )}
 
       {/* Profile + Process Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
