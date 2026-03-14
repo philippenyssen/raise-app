@@ -470,22 +470,22 @@ export default function MeetingsPage() {
       </div>
 
       {/* Stats Bar */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="card" style={{ padding: 'var(--space-3)' }}>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 card-stagger">
+        <div className="card-metric">
           <div className="metric-label">Total Meetings</div>
           <div className="metric-value" style={{ marginTop: '2px' }}>{meetings.length}</div>
         </div>
-        <div className="card" style={{ padding: 'var(--space-3)' }}>
+        <div className="card-metric">
           <div className="metric-label">Avg Enthusiasm</div>
           <div className="metric-value" style={{ marginTop: '2px' }}>
             {avgEnthusiasm}<span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>/5</span>
           </div>
         </div>
-        <div className="card" style={{ padding: 'var(--space-3)' }}>
+        <div className="card-metric metric-warning">
           <div className="metric-label">Objections</div>
           <div className="metric-value" style={{ marginTop: '2px', color: 'var(--warning)' }}>{totalObjections}</div>
         </div>
-        <div className="card" style={{ padding: 'var(--space-3)' }}>
+        <div className="card-metric metric-success">
           <div className="metric-label">Unique Investors</div>
           <div className="metric-value" style={{ marginTop: '2px' }}>{uniqueInvestors}</div>
         </div>
