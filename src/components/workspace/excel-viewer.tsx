@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
+import { HyperFormula } from 'hyperformula';
 
 export interface CellData {
   v: string | number; // value (display)
@@ -28,8 +29,22 @@ function colLabel(idx: number): string {
   return label;
 }
 
-function cellRef(row: number, col: number): string {
+function colIndex(label: string): number {
+  let idx = 0;
+  for (let i = 0; i < label.length; i++) {
+    idx = idx * 26 + (label.charCodeAt(i) - 65 + 1);
+  }
+  return idx - 1;
+}
+
+function cellRefStr(row: number, col: number): string {
   return `${colLabel(col)}${row + 1}`;
+}
+
+function parseCellRef(ref: string): { row: number; col: number } | null {
+  const match = ref.match(/^([A-Z]+)(\d+)$/);
+  if (!match) return null;
+  return { col: colIndex(match[1]), row: parseInt(match[2]) - 1 };
 }
 
 export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15 }: ExcelViewerProps) {
@@ -38,6 +53,59 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15 }: Excel
   const [editValue, setEditValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
+
+  // Build HyperFormula engine from cells
+  const hf = useMemo(() => {
+    const engine = HyperFormula.buildEmpty({ licenseKey: 'gpl-v3' });
+    engine.addSheet('Sheet1');
+    const sheetId = engine.getSheetId('Sheet1');
+    if (sheetId === undefined) return engine;
+
+    // Populate cells
+    Object.entries(cells).forEach(([ref, cell]) => {
+      const parsed = parseCellRef(ref);
+      if (!parsed) return;
+      const { row, col } = parsed;
+
+      // Ensure the sheet is big enough
+      const currentRows = engine.getSheetDimensions(sheetId).height;
+      const currentCols = engine.getSheetDimensions(sheetId).width;
+      if (row >= currentRows) {
+        engine.addRows(sheetId, [currentRows, row - currentRows + 1]);
+      }
+      if (col >= currentCols) {
+        engine.addColumns(sheetId, [currentCols, col - currentCols + 1]);
+      }
+
+      try {
+        if (cell.f) {
+          engine.setCellContents({ sheet: sheetId, row, col }, cell.f);
+        } else if (cell.v !== undefined && cell.v !== '') {
+          engine.setCellContents({ sheet: sheetId, row, col }, cell.v);
+        }
+      } catch {
+        // Skip cells that cause errors (e.g., invalid formulas)
+      }
+    });
+
+    return engine;
+  }, [cells]);
+
+  // Get computed value for a cell
+  const getComputedValue = useCallback((ref: string): string | number | null => {
+    const parsed = parseCellRef(ref);
+    if (!parsed) return null;
+    try {
+      const sheetId = hf.getSheetId('Sheet1');
+      if (sheetId === undefined) return null;
+      const val = hf.getCellValue({ sheet: sheetId, row: parsed.row, col: parsed.col });
+      if (val === null || val === undefined) return null;
+      if (typeof val === 'object' && 'type' in val) return '#ERROR'; // CellError
+      return val as string | number;
+    } catch {
+      return null;
+    }
+  }, [hf]);
 
   useEffect(() => {
     if (editingCell && inputRef.current) {
@@ -67,7 +135,6 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15 }: Excel
     if (e.key === 'Enter') {
       if (editingCell) {
         handleEditComplete();
-        // Move down
         const match = editingCell.match(/^([A-Z]+)(\d+)$/);
         if (match) {
           const nextRef = `${match[1]}${parseInt(match[2]) + 1}`;
@@ -82,19 +149,34 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15 }: Excel
     } else if (e.key === 'Tab') {
       e.preventDefault();
       if (editingCell) handleEditComplete();
-      // Move right
       if (selectedCell) {
         const match = selectedCell.match(/^([A-Z]+)(\d+)$/);
         if (match) {
-          const colIdx = match[1].split('').reduce((acc, c, i, arr) => acc + (c.charCodeAt(0) - 65) * Math.pow(26, arr.length - 1 - i), 0);
-          const nextRef = `${colLabel(colIdx + 1)}${match[2]}`;
+          const ci = colIndex(match[1]);
+          const nextRef = `${colLabel(ci + 1)}${match[2]}`;
           setSelectedCell(nextRef);
         }
       }
     }
   }, [editingCell, selectedCell, handleEditComplete, handleCellDoubleClick]);
 
-  const formatValue = (cell: CellData | undefined): string => {
+  const formatValue = (cell: CellData | undefined, ref: string): string => {
+    // First check if HyperFormula has a computed value (for formulas)
+    if (cell?.f) {
+      const computed = getComputedValue(ref);
+      if (computed !== null) {
+        if (typeof computed === 'number') {
+          if (cell.fmt === '%') return `${(computed * 100).toFixed(1)}%`;
+          if (cell.fmt === '$' || cell.fmt === '€') return `${cell.fmt}${computed.toLocaleString()}`;
+          if (cell.fmt === '#,##0') return computed.toLocaleString();
+          if (Math.abs(computed) >= 1000000) return `${(computed / 1000000).toFixed(1)}M`;
+          if (Math.abs(computed) >= 1000) return `${(computed / 1000).toFixed(1)}K`;
+          return computed.toLocaleString();
+        }
+        return String(computed);
+      }
+    }
+
     if (!cell) return '';
     const val = cell.v;
     if (val === undefined || val === null || val === '') return '';
@@ -147,7 +229,7 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15 }: Excel
                   {ri + 1}
                 </td>
                 {Array.from({ length: cols }, (_, ci) => {
-                  const ref = cellRef(ri, ci);
+                  const ref = cellRefStr(ri, ci);
                   const cell = cells[ref];
                   const isSelected = ref === selectedCell;
                   const isEditing = ref === editingCell;
@@ -161,7 +243,7 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15 }: Excel
                         ${isSelected ? 'ring-2 ring-blue-500 ring-inset bg-zinc-800/30' : ''}
                         ${cell?.bg || ''}
                         ${cell?.bold ? 'font-semibold' : ''}
-                        ${cell?.t === 'n' ? 'text-right' : 'text-left'}
+                        ${cell?.t === 'n' || (cell?.f && typeof getComputedValue(ref) === 'number') ? 'text-right' : 'text-left'}
                         ${cell?.f ? 'text-blue-300' : 'text-zinc-300'}
                         ${!cell ? 'text-zinc-700' : ''}
                       `}
@@ -175,7 +257,7 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15 }: Excel
                           className="w-full bg-transparent outline-none text-zinc-100 font-mono"
                         />
                       ) : (
-                        <span className="block truncate">{formatValue(cell)}</span>
+                        <span className="block truncate">{formatValue(cell, ref)}</span>
                       )}
                     </td>
                   );
