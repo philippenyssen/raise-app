@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import type { Meeting } from '@/lib/types';
-import { Search, Filter, FileSearch, Calendar, Download } from 'lucide-react';
+import { Search, FileSearch, Calendar, Download, ChevronDown, ChevronRight, Star, CheckCircle2, X } from 'lucide-react';
 
 const MEETING_TYPES = ['all', 'intro', 'management_presentation', 'deep_dive', 'site_visit', 'dd_session', 'negotiation', 'social'] as const;
 const STATUS_OPTIONS = ['all', 'met', 'engaged', 'in_dd', 'term_sheet', 'passed'] as const;
@@ -29,11 +29,351 @@ function getObjectionStyle(severity: string): React.CSSProperties {
   }
 }
 
+function RatingDots({ value, onChange, label }: { value: number | null; onChange?: (v: number) => void; label: string }) {
+  const [hovered, setHovered] = useState<number | null>(null);
+  return (
+    <div>
+      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '4px' }}>{label}</div>
+      <div className="flex gap-1">
+        {[1, 2, 3, 4, 5].map(n => (
+          <button
+            key={n}
+            type="button"
+            onClick={() => onChange?.(n)}
+            onMouseEnter={() => setHovered(n)}
+            onMouseLeave={() => setHovered(null)}
+            disabled={!onChange}
+            style={{
+              width: '24px',
+              height: '24px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: onChange ? 'pointer' : 'default',
+              background: 'none',
+              border: 'none',
+              padding: 0,
+            }}
+          >
+            <span style={{
+              color: n <= (hovered ?? value ?? 0) ? 'var(--warning)' : 'var(--text-muted)',
+              transition: 'color 100ms ease',
+            }}>
+              <Star className="w-4 h-4" style={{ fill: n <= (hovered ?? value ?? 0) ? 'currentColor' : 'none' }} />
+            </span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+interface OutcomeFormData {
+  outcome_rating: number | null;
+  objections_addressed: string[];
+  competitive_mentions: string[];
+  key_takeaway: string;
+  prep_usefulness: number | null;
+}
+
+function MeetingOutcomeSection({
+  meeting,
+  onSaved,
+}: {
+  meeting: Meeting;
+  onSaved: (updated: Meeting) => void;
+}) {
+  const hasOutcome = meeting.outcome_rating !== null && meeting.outcome_rating !== undefined;
+  const [editing, setEditing] = useState(!hasOutcome);
+  const [saving, setSaving] = useState(false);
+  const [newObjection, setNewObjection] = useState('');
+  const [newCompetitor, setNewCompetitor] = useState('');
+
+  const existingObjections: string[] = (() => {
+    try { return JSON.parse(meeting.objections_addressed || '[]'); } catch { return []; }
+  })();
+  const existingMentions: string[] = (() => {
+    try { return JSON.parse(meeting.competitive_mentions || '[]'); } catch { return []; }
+  })();
+
+  const [form, setForm] = useState<OutcomeFormData>({
+    outcome_rating: meeting.outcome_rating ?? null,
+    objections_addressed: existingObjections,
+    competitive_mentions: existingMentions,
+    key_takeaway: meeting.key_takeaway || '',
+    prep_usefulness: meeting.prep_usefulness ?? null,
+  });
+
+  const addObjection = () => {
+    const val = newObjection.trim();
+    if (val && !form.objections_addressed.includes(val)) {
+      setForm(prev => ({ ...prev, objections_addressed: [...prev.objections_addressed, val] }));
+      setNewObjection('');
+    }
+  };
+
+  const removeObjection = (idx: number) => {
+    setForm(prev => ({ ...prev, objections_addressed: prev.objections_addressed.filter((_, i) => i !== idx) }));
+  };
+
+  const addCompetitor = () => {
+    const val = newCompetitor.trim();
+    if (val && !form.competitive_mentions.includes(val)) {
+      setForm(prev => ({ ...prev, competitive_mentions: [...prev.competitive_mentions, val] }));
+      setNewCompetitor('');
+    }
+  };
+
+  const removeCompetitor = (idx: number) => {
+    setForm(prev => ({ ...prev, competitive_mentions: prev.competitive_mentions.filter((_, i) => i !== idx) }));
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      const res = await fetch('/api/meetings', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          meeting_id: meeting.id,
+          outcome_rating: form.outcome_rating,
+          objections_addressed: form.objections_addressed,
+          competitive_mentions: form.competitive_mentions,
+          key_takeaway: form.key_takeaway,
+          prep_usefulness: form.prep_usefulness,
+        }),
+      });
+      if (res.ok) {
+        onSaved({
+          ...meeting,
+          outcome_rating: form.outcome_rating,
+          objections_addressed: JSON.stringify(form.objections_addressed),
+          competitive_mentions: JSON.stringify(form.competitive_mentions),
+          key_takeaway: form.key_takeaway,
+          prep_usefulness: form.prep_usefulness,
+        });
+        setEditing(false);
+      }
+    } catch { /* ignore */ }
+    setSaving(false);
+  };
+
+  if (!editing && hasOutcome) {
+    return (
+      <div
+        style={{
+          padding: 'var(--space-3) var(--space-4)',
+          background: 'var(--surface-1)',
+          borderRadius: 'var(--radius-sm)',
+          border: '1px solid var(--border-subtle)',
+        }}
+      >
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--success)' }}>
+            <CheckCircle2 className="w-3.5 h-3.5" />
+            Outcome Recorded
+          </div>
+          <button
+            onClick={() => setEditing(true)}
+            style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)', background: 'none', border: 'none', cursor: 'pointer' }}
+            onMouseEnter={e => (e.currentTarget.style.textDecoration = 'underline')}
+            onMouseLeave={e => (e.currentTarget.style.textDecoration = 'none')}
+          >
+            Edit
+          </button>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3" style={{ fontSize: 'var(--font-size-xs)' }}>
+          <div>
+            <div style={{ color: 'var(--text-muted)' }}>Outcome</div>
+            <div className="flex gap-0.5 mt-1">
+              {[1,2,3,4,5].map(n => (
+                <span key={n} style={{ color: n <= (meeting.outcome_rating ?? 0) ? 'var(--warning)' : 'var(--text-muted)' }}>
+                  <Star className="w-3 h-3" style={{ fill: n <= (meeting.outcome_rating ?? 0) ? 'currentColor' : 'none' }} />
+                </span>
+              ))}
+            </div>
+          </div>
+          <div>
+            <div style={{ color: 'var(--text-muted)' }}>Prep Usefulness</div>
+            <div className="flex gap-0.5 mt-1">
+              {[1,2,3,4,5].map(n => (
+                <span key={n} style={{ color: n <= (meeting.prep_usefulness ?? 0) ? 'var(--accent)' : 'var(--text-muted)' }}>
+                  <Star className="w-3 h-3" style={{ fill: n <= (meeting.prep_usefulness ?? 0) ? 'currentColor' : 'none' }} />
+                </span>
+              ))}
+            </div>
+          </div>
+          <div className="col-span-2">
+            <div style={{ color: 'var(--text-muted)' }}>Key Takeaway</div>
+            <div style={{ color: 'var(--text-primary)', marginTop: '2px' }}>{meeting.key_takeaway || '-'}</div>
+          </div>
+        </div>
+
+        {existingObjections.length > 0 && (
+          <div className="mt-2">
+            <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '4px' }}>Objections Addressed</div>
+            <div className="flex flex-wrap gap-1">
+              {existingObjections.map((o: string, i: number) => (
+                <span key={i} style={{ fontSize: 'var(--font-size-xs)', padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--success-muted)', color: 'var(--success)' }}>
+                  {o}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {existingMentions.length > 0 && (
+          <div className="mt-2">
+            <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '4px' }}>Competitors Mentioned</div>
+            <div className="flex flex-wrap gap-1">
+              {existingMentions.map((c: string, i: number) => (
+                <span key={i} style={{ fontSize: 'var(--font-size-xs)', padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--warning-muted)', color: 'var(--warning)' }}>
+                  {c}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div
+      style={{
+        padding: 'var(--space-4)',
+        background: 'var(--surface-1)',
+        borderRadius: 'var(--radius-sm)',
+        border: '1px solid var(--border-subtle)',
+      }}
+    >
+      <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-primary)', marginBottom: 'var(--space-3)' }}>
+        Meeting Outcome
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <RatingDots
+          value={form.outcome_rating}
+          onChange={v => setForm(prev => ({ ...prev, outcome_rating: v }))}
+          label="How did it go?"
+        />
+        <RatingDots
+          value={form.prep_usefulness}
+          onChange={v => setForm(prev => ({ ...prev, prep_usefulness: v }))}
+          label="Prep brief usefulness"
+        />
+      </div>
+
+      <div className="mt-3">
+        <label style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>
+          Key Takeaway
+        </label>
+        <input
+          value={form.key_takeaway}
+          onChange={e => setForm(prev => ({ ...prev, key_takeaway: e.target.value }))}
+          placeholder="Most important insight from this meeting..."
+          className="input"
+        />
+      </div>
+
+      <div className="mt-3">
+        <label style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>
+          Objections Addressed
+        </label>
+        <div className="flex flex-wrap gap-1 mb-2">
+          {form.objections_addressed.map((o, i) => (
+            <span
+              key={i}
+              className="flex items-center gap-1"
+              style={{ fontSize: 'var(--font-size-xs)', padding: '2px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--success-muted)', color: 'var(--success)' }}
+            >
+              {o}
+              <button
+                type="button"
+                onClick={() => removeObjection(i)}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: 'inherit', display: 'flex' }}
+              >
+                <X className="w-3 h-3" />
+              </button>
+            </span>
+          ))}
+        </div>
+        <div className="flex gap-2">
+          <input
+            value={newObjection}
+            onChange={e => setNewObjection(e.target.value)}
+            onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addObjection(); } }}
+            placeholder="Add objection handled..."
+            className="input"
+            style={{ flex: 1 }}
+          />
+          <button onClick={addObjection} className="btn btn-secondary btn-md" type="button">Add</button>
+        </div>
+      </div>
+
+      <div className="mt-3">
+        <label style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>
+          Competitors Mentioned by Investor
+        </label>
+        <div className="flex flex-wrap gap-1 mb-2">
+          {form.competitive_mentions.map((c, i) => (
+            <span
+              key={i}
+              className="flex items-center gap-1"
+              style={{ fontSize: 'var(--font-size-xs)', padding: '2px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--warning-muted)', color: 'var(--warning)' }}
+            >
+              {c}
+              <button
+                type="button"
+                onClick={() => removeCompetitor(i)}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: 'inherit', display: 'flex' }}
+              >
+                <X className="w-3 h-3" />
+              </button>
+            </span>
+          ))}
+        </div>
+        <div className="flex gap-2">
+          <input
+            value={newCompetitor}
+            onChange={e => setNewCompetitor(e.target.value)}
+            onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addCompetitor(); } }}
+            placeholder="Add competitor name..."
+            className="input"
+            style={{ flex: 1 }}
+          />
+          <button onClick={addCompetitor} className="btn btn-secondary btn-md" type="button">Add</button>
+        </div>
+      </div>
+
+      <div className="flex gap-2 mt-4">
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="btn btn-primary btn-md"
+        >
+          {saving ? 'Saving...' : 'Save Outcome'}
+        </button>
+        {hasOutcome && (
+          <button
+            onClick={() => setEditing(false)}
+            className="btn btn-secondary btn-md"
+          >
+            Cancel
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function MeetingsPage() {
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [expandedOutcome, setExpandedOutcome] = useState<string | null>(null);
 
   useEffect(() => {
     fetch('/api/meetings')
@@ -59,11 +399,15 @@ export default function MeetingsPage() {
   }, 0);
   const uniqueInvestors = new Set(meetings.map(m => m.investor_id)).size;
 
+  const handleOutcomeSaved = (updated: Meeting) => {
+    setMeetings(prev => prev.map(m => m.id === updated.id ? updated : m));
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="page-title">{/* text-2xl font-bold tracking-tight */}Meetings</h1>
+          <h1 className="page-title">Meetings</h1>
           <p className="page-subtitle" style={{ fontSize: 'var(--font-size-sm)' }}>
             {meetings.length} meetings with {uniqueInvestors} investors
           </p>
@@ -170,6 +514,9 @@ export default function MeetingsPage() {
           {filtered.map(m => {
             const objections = (() => { try { return JSON.parse(m.objections || '[]'); } catch { return []; } })();
             const questions = (() => { try { return JSON.parse(m.questions_asked || '[]'); } catch { return []; } })();
+            const isOutcomeExpanded = expandedOutcome === m.id;
+            const hasOutcome = m.outcome_rating !== null && m.outcome_rating !== undefined;
+
             return (
               <div
                 key={m.id}
@@ -262,6 +609,45 @@ export default function MeetingsPage() {
                     Next: {m.next_steps}
                   </div>
                 )}
+
+                {/* Meeting Outcome Toggle */}
+                <div className="mt-3" style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 'var(--space-3)' }}>
+                  <button
+                    onClick={() => setExpandedOutcome(isOutcomeExpanded ? null : m.id)}
+                    className="flex items-center gap-2 w-full"
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      padding: 0,
+                      fontSize: 'var(--font-size-sm)',
+                      fontWeight: 500,
+                      color: hasOutcome ? 'var(--success)' : 'var(--text-tertiary)',
+                    }}
+                    onMouseEnter={e => (e.currentTarget.style.color = hasOutcome ? 'var(--success)' : 'var(--text-secondary)')}
+                    onMouseLeave={e => (e.currentTarget.style.color = hasOutcome ? 'var(--success)' : 'var(--text-tertiary)')}
+                  >
+                    {isOutcomeExpanded
+                      ? <ChevronDown className="w-3.5 h-3.5" />
+                      : <ChevronRight className="w-3.5 h-3.5" />
+                    }
+                    {hasOutcome ? 'Meeting Outcome' : 'Record Outcome'}
+                    {hasOutcome && (
+                      <span style={{ marginLeft: '4px' }}>
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                      </span>
+                    )}
+                  </button>
+
+                  {isOutcomeExpanded && (
+                    <div className="mt-3">
+                      <MeetingOutcomeSection
+                        meeting={m}
+                        onSaved={handleOutcomeSaved}
+                      />
+                    </div>
+                  )}
+                </div>
               </div>
             );
           })}
