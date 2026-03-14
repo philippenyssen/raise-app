@@ -296,6 +296,15 @@ function AlertCard({ alert }: { alert: BriefingAlert }) {
   const style = ALERT_STYLES[alert.type] ?? ALERT_STYLES.warning;
   const Icon = style.icon;
 
+  // Smart routing based on alert type and content
+  const alertLink = alert.type === 'opportunity' ? '/pipeline'
+    : alert.type === 'risk' ? '/dealflow'
+    : '/focus';
+
+  const alertAction = alert.type === 'opportunity' ? 'View Pipeline'
+    : alert.type === 'risk' ? 'View Dealflow'
+    : 'Review';
+
   return (
     <div
       style={{
@@ -317,6 +326,25 @@ function AlertCard({ alert }: { alert: BriefingAlert }) {
             {alert.detail}
           </p>
         </div>
+        <Link
+          href={alertLink}
+          className="shrink-0 flex items-center gap-1"
+          style={{
+            fontSize: 'var(--font-size-xs)',
+            fontWeight: 500,
+            color: style.color,
+            textDecoration: 'none',
+            padding: '3px 8px',
+            borderRadius: 'var(--radius-sm)',
+            background: 'rgba(255,255,255,0.06)',
+            whiteSpace: 'nowrap',
+          }}
+          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.12)'; }}
+          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.06)'; }}
+        >
+          {alertAction}
+          <span style={{ display: 'flex' }}><ChevronRight className="w-3 h-3" /></span>
+        </Link>
       </div>
     </div>
   );
@@ -340,7 +368,7 @@ export default function TodayPage() {
   const [insight, setInsight] = useState<{ title: string; detail: string; priority: string } | null>(null);
   const [raiseProgress, setRaiseProgress] = useState<RaiseProgress | null>(null);
   const [overnight, setOvernight] = useState<{
-    statusChanges: { investorName: string; from: string; to: string }[];
+    statusChanges: { investorId: string; investorName: string; from: string; to: string }[];
     newMeetings: number;
     meetingNames: string[];
     tasksCompleted: number;
@@ -724,7 +752,14 @@ export default function TodayPage() {
             {overnight.statusChanges.map((sc, i) => (
               <div key={i} className="flex items-center gap-1.5" style={{ fontSize: 'var(--font-size-xs)' }}>
                 <ArrowUpRight className="w-3 h-3" style={{ color: 'var(--success)' }} />
-                <span style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>{sc.investorName}</span>
+                <Link
+                  href={`/investors/${sc.investorId}`}
+                  style={{ color: 'var(--accent)', fontWeight: 500, textDecoration: 'none' }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.textDecoration = 'underline'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.textDecoration = 'none'; }}
+                >
+                  {sc.investorName}
+                </Link>
                 <span style={{ color: 'var(--text-muted)' }}>{sc.from.replace(/_/g, ' ')} → {sc.to.replace(/_/g, ' ')}</span>
               </div>
             ))}

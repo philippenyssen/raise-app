@@ -1,11 +1,12 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
+import Link from 'next/link';
 import {
   MessageCircleWarning, ChevronDown, ChevronRight, Shield, AlertTriangle,
   CheckCircle2, HelpCircle, Edit3, Save, X, TrendingUp, TrendingDown, Minus,
   Target, User, BarChart3, ArrowUpRight, ArrowDownRight, Clock, Zap,
-  ThumbsUp, ThumbsDown, Activity
+  ThumbsUp, ThumbsDown, Activity, Copy, Check, Calendar, ExternalLink,
 } from 'lucide-react';
 
 interface ObjectionRecord {
@@ -187,6 +188,60 @@ const EFFECTIVENESS_BADGE: Record<string, { style: React.CSSProperties; label: s
 
 function getTopicColor(topic: string) {
   return TOPIC_COLORS[topic] || DEFAULT_TOPIC_COLOR;
+}
+
+function CopyButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+  function handleCopy() {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }).catch(() => {});
+  }
+  return (
+    <button
+      onClick={handleCopy}
+      className="flex items-center gap-1 shrink-0"
+      style={{
+        background: 'none',
+        border: 'none',
+        cursor: 'pointer',
+        padding: '2px 6px',
+        borderRadius: 'var(--radius-sm)',
+        fontSize: '10px',
+        fontWeight: 500,
+        color: copied ? 'var(--success)' : 'var(--text-muted)',
+        transition: 'color 150ms ease',
+      }}
+      onMouseEnter={e => { if (!copied) (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; }}
+      onMouseLeave={e => { if (!copied) (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}
+    >
+      {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+      {copied ? 'Copied' : 'Copy'}
+    </button>
+  );
+}
+
+function BestResponseCard({ response }: { response: ObjectionRecord }) {
+  return (
+    <div className="mx-4 mt-3 p-3 rounded-lg" style={{ background: 'var(--success-muted)', border: '1px solid rgba(34, 197, 94, 0.2)' }}>
+      <div className="flex items-center justify-between mb-1">
+        <div className="flex items-center gap-2">
+          <CheckCircle2 className="w-3.5 h-3.5" style={{ color: 'var(--success)' }} />
+          <span className="text-xs font-medium" style={{ color: 'var(--success)' }}>Best Response</span>
+          {response.investor_name && (
+            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+              (worked with {response.investor_name})
+            </span>
+          )}
+        </div>
+        <CopyButton text={response.response_text} />
+      </div>
+      <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+        {response.response_text}
+      </p>
+    </div>
+  );
 }
 
 export default function ObjectionsPage() {
@@ -414,7 +469,7 @@ export default function ObjectionsPage() {
                 const isExpanded = expandedTopics.has(group.topic);
 
                 return (
-                  <div key={group.topic} className="rounded-xl overflow-hidden" style={{ border: '1px solid', ...color.border }}>
+                  <div key={group.topic} id={`topic-${group.topic}`} className="rounded-xl overflow-hidden" style={{ border: '1px solid', ...color.border }}>
                     {/* Topic header */}
                     <button
                       onClick={() => toggleTopic(group.topic)}
@@ -461,20 +516,7 @@ export default function ObjectionsPage() {
 
                     {/* Best response highlight */}
                     {isExpanded && group.best_response && (
-                      <div className="mx-4 mt-3 p-3 rounded-lg" style={{ background: 'var(--success-muted)', border: '1px solid rgba(34, 197, 94, 0.2)' }}>
-                        <div className="flex items-center gap-2 mb-1">
-                          <CheckCircle2 className="w-3.5 h-3.5" style={{ color: 'var(--success)' }} />
-                          <span className="text-xs font-medium" style={{ color: 'var(--success)' }}>Best Response</span>
-                          {group.best_response.investor_name && (
-                            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                              (worked with {group.best_response.investor_name})
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-                          {group.best_response.response_text}
-                        </p>
-                      </div>
+                      <BestResponseCard response={group.best_response} />
                     )}
 
                     {/* Individual objections */}
@@ -486,7 +528,20 @@ export default function ObjectionsPage() {
                               <div className="flex-1 space-y-1">
                                 <p className="text-sm" style={{ color: 'var(--text-primary)' }}>{obj.objection_text}</p>
                                 <div className="flex items-center gap-2 flex-wrap">
-                                  {obj.investor_name && (
+                                  {obj.investor_name && obj.investor_id && (
+                                    <Link
+                                      href={`/investors/${obj.investor_id}`}
+                                      className="flex items-center gap-1 text-xs"
+                                      style={{ color: 'var(--accent)', textDecoration: 'none' }}
+                                      onClick={e => e.stopPropagation()}
+                                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.textDecoration = 'underline'; }}
+                                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.textDecoration = 'none'; }}
+                                    >
+                                      <User className="w-3 h-3" />
+                                      {obj.investor_name}
+                                    </Link>
+                                  )}
+                                  {obj.investor_name && !obj.investor_id && (
                                     <span className="flex items-center gap-1 text-xs" style={{ color: 'var(--text-muted)' }}>
                                       <User className="w-3 h-3" />
                                       {obj.investor_name}
@@ -594,14 +649,37 @@ export default function ObjectionsPage() {
                     return (
                       <div key={i} className="p-2 rounded-lg space-y-1" style={{ background: 'var(--surface-1)' }}>
                         <p className="text-xs line-clamp-2" style={{ color: 'var(--text-secondary)' }}>{obj.objection_text}</p>
-                        <div className="flex items-center gap-2">
-                          <span
-                            className="px-1.5 py-0.5 rounded"
-                            style={{ fontSize: '10px', ...color.bg, ...color.text }}
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-2">
+                            <span
+                              className="px-1.5 py-0.5 rounded"
+                              style={{ fontSize: '10px', ...color.bg, ...color.text }}
+                            >
+                              {obj.objection_topic}
+                            </span>
+                            <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{obj.count}x raised</span>
+                          </div>
+                          <button
+                            onClick={() => {
+                              setExpandedTopics(prev => new Set([...prev, obj.objection_topic]));
+                              document.getElementById(`topic-${obj.objection_topic}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }}
+                            style={{
+                              background: 'none',
+                              border: 'none',
+                              cursor: 'pointer',
+                              fontSize: '10px',
+                              fontWeight: 500,
+                              color: 'var(--accent)',
+                              padding: '1px 4px',
+                              borderRadius: 'var(--radius-sm)',
+                              whiteSpace: 'nowrap',
+                            }}
+                            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.textDecoration = 'underline'; }}
+                            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.textDecoration = 'none'; }}
                           >
-                            {obj.objection_topic}
-                          </span>
-                          <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{obj.count}x raised</span>
+                            Fix →
+                          </button>
                         </div>
                       </div>
                     );
@@ -674,9 +752,49 @@ export default function ObjectionsPage() {
 
               {selectedInvestor && !loadingInvestor && investorObjections.length > 0 && (
                 <div className="space-y-2">
-                  <p className="uppercase tracking-wide" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
-                    {investorObjections.length} objection{investorObjections.length !== 1 ? 's' : ''} from this investor
-                  </p>
+                  <div className="flex items-center justify-between">
+                    <p className="uppercase tracking-wide" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                      {investorObjections.length} objection{investorObjections.length !== 1 ? 's' : ''} from this investor
+                    </p>
+                    <div className="flex items-center gap-1">
+                      <Link
+                        href={`/meetings/prep?investor=${selectedInvestor}`}
+                        className="flex items-center gap-1"
+                        style={{
+                          fontSize: '10px',
+                          fontWeight: 500,
+                          color: 'var(--accent)',
+                          textDecoration: 'none',
+                          padding: '2px 6px',
+                          borderRadius: 'var(--radius-sm)',
+                          background: 'var(--accent-muted)',
+                        }}
+                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(59,130,246,0.2)'; }}
+                        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--accent-muted)'; }}
+                      >
+                        <Calendar className="w-3 h-3" />
+                        Prep
+                      </Link>
+                      <Link
+                        href={`/investors/${selectedInvestor}`}
+                        className="flex items-center gap-1"
+                        style={{
+                          fontSize: '10px',
+                          fontWeight: 500,
+                          color: 'var(--text-muted)',
+                          textDecoration: 'none',
+                          padding: '2px 6px',
+                          borderRadius: 'var(--radius-sm)',
+                          background: 'var(--surface-2)',
+                        }}
+                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; }}
+                        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}
+                      >
+                        <ExternalLink className="w-3 h-3" />
+                        Profile
+                      </Link>
+                    </div>
+                  </div>
                   {investorObjections.map((obj) => {
                     const color = getTopicColor(obj.objection_topic);
                     const effBadge = EFFECTIVENESS_BADGE[obj.effectiveness];
@@ -1060,19 +1178,22 @@ function EffectivenessTab({
                             <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>{entry.objection_text}</p>
                             <p className="text-xs mt-2" style={{ color: 'var(--text-muted)' }}>Full response:</p>
                             <p className="text-sm leading-relaxed" style={{ color: 'var(--text-primary)' }}>{entry.response_text}</p>
-                            <div className="flex items-center gap-4 pt-2" style={{ borderTop: '1px solid var(--border-subtle)' }}>
-                              <div className="flex items-center gap-1.5">
-                                <span className="w-2 h-2 rounded-full" style={{ background: 'var(--success)' }} />
-                                <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{entry.positive_outcomes} positive</span>
+                            <div className="flex items-center justify-between pt-2" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                              <div className="flex items-center gap-4">
+                                <div className="flex items-center gap-1.5">
+                                  <span className="w-2 h-2 rounded-full" style={{ background: 'var(--success)' }} />
+                                  <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{entry.positive_outcomes} positive</span>
+                                </div>
+                                <div className="flex items-center gap-1.5">
+                                  <span className="w-2 h-2 rounded-full" style={{ background: 'var(--danger)' }} />
+                                  <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{entry.negative_outcomes} negative</span>
+                                </div>
+                                <div className="flex items-center gap-1.5">
+                                  <span className="w-2 h-2 rounded-full" style={{ background: 'var(--text-muted)' }} />
+                                  <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{entry.neutral_outcomes} neutral</span>
+                                </div>
                               </div>
-                              <div className="flex items-center gap-1.5">
-                                <span className="w-2 h-2 rounded-full" style={{ background: 'var(--danger)' }} />
-                                <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{entry.negative_outcomes} negative</span>
-                              </div>
-                              <div className="flex items-center gap-1.5">
-                                <span className="w-2 h-2 rounded-full" style={{ background: 'var(--text-muted)' }} />
-                                <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{entry.neutral_outcomes} neutral</span>
-                              </div>
+                              <CopyButton text={entry.response_text} />
                             </div>
                           </div>
                         </div>
