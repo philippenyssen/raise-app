@@ -163,7 +163,7 @@ src/
 
 **Completed.** Document CRUD, templates, version history, AI operations (improve, consistency, weak arguments, Goldman polish).
 
-### Phase 2: The Workspace `[ ]`
+### Phase 2: The Workspace `[x]`
 
 **What it builds:** The core product experience — a split-pane workspace where the user sees their deliverable on the left and talks to the AI on the right. This is the Claude-artifacts-style UX.
 

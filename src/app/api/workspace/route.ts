@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
-import { getRaiseConfig, getAllDocuments } from '@/lib/db';
+import { getRaiseConfig, getAllDocuments, getDataRoomContext } from '@/lib/db';
 
 let _client: Anthropic | null = null;
 function getClient(): Anthropic {
@@ -16,6 +16,7 @@ export async function POST(req: NextRequest) {
   const raiseConfig = await getRaiseConfig();
   const allDocs = await getAllDocuments();
   const otherDocs = allDocs.filter(d => d.id !== documentId).map(d => `- ${d.title} (${d.type}): ${d.content.substring(0, 500)}...`).join('\n');
+  const dataRoomContext = await getDataRoomContext();
 
   const systemPrompt = `You are an expert fundraising advisor and document specialist embedded in a Series C fundraise execution platform. You combine the expertise of:
 
@@ -33,6 +34,9 @@ ${raiseConfig ? JSON.stringify(raiseConfig, null, 2) : 'Not configured yet'}
 
 OTHER DOCUMENTS IN THIS RAISE:
 ${otherDocs || 'None'}
+
+DATA ROOM (source materials):
+${dataRoomContext.substring(0, 8000)}
 
 INSTRUCTIONS:
 1. When the user asks you to improve, rewrite, or change the document, respond with your analysis AND include the full updated document content.

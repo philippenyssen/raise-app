@@ -96,6 +96,16 @@ async function ensureInitialized() {
       created_at TEXT DEFAULT (datetime('now')),
       FOREIGN KEY (document_id) REFERENCES documents(id)
     )`,
+    `CREATE TABLE IF NOT EXISTS data_room_files (
+      id TEXT PRIMARY KEY,
+      filename TEXT NOT NULL,
+      category TEXT DEFAULT 'other',
+      mime_type TEXT DEFAULT '',
+      size_bytes INTEGER DEFAULT 0,
+      extracted_text TEXT DEFAULT '',
+      summary TEXT DEFAULT '',
+      uploaded_at TEXT DEFAULT (datetime('now'))
+    )`,
   ], 'write');
 
   initialized = true;
@@ -482,4 +492,66 @@ export async function getDocumentVersion(versionId: string): Promise<DocumentVer
     args: [versionId],
   });
   return result.rows.length > 0 ? (result.rows[0] as unknown as DocumentVersion) : null;
+}
+
+// Data Room
+export interface DataRoomFile {
+  id: string;
+  filename: string;
+  category: string;
+  mime_type: string;
+  size_bytes: number;
+  extracted_text: string;
+  summary: string;
+  uploaded_at: string;
+}
+
+export async function getAllDataRoomFiles(): Promise<DataRoomFile[]> {
+  await ensureInitialized();
+  const result = await getClient().execute('SELECT * FROM data_room_files ORDER BY uploaded_at DESC');
+  return result.rows as unknown as DataRoomFile[];
+}
+
+export async function getDataRoomFile(id: string): Promise<DataRoomFile | null> {
+  await ensureInitialized();
+  const result = await getClient().execute({
+    sql: 'SELECT * FROM data_room_files WHERE id = ?',
+    args: [id],
+  });
+  return result.rows.length > 0 ? (result.rows[0] as unknown as DataRoomFile) : null;
+}
+
+export async function createDataRoomFile(file: { filename: string; category: string; mime_type: string; size_bytes: number; extracted_text: string; summary?: string }): Promise<DataRoomFile> {
+  await ensureInitialized();
+  const id = crypto.randomUUID();
+  await getClient().execute({
+    sql: `INSERT INTO data_room_files (id, filename, category, mime_type, size_bytes, extracted_text, summary, uploaded_at) VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
+    args: [id, file.filename, file.category, file.mime_type, file.size_bytes, file.extracted_text, file.summary || ''],
+  });
+  return (await getDataRoomFile(id))!;
+}
+
+export async function updateDataRoomFile(id: string, updates: { category?: string; summary?: string }) {
+  await ensureInitialized();
+  const sets: string[] = [];
+  const values: InValue[] = [];
+  if (updates.category !== undefined) { sets.push('category = ?'); values.push(updates.category); }
+  if (updates.summary !== undefined) { sets.push('summary = ?'); values.push(updates.summary); }
+  if (sets.length === 0) return;
+  values.push(id);
+  await getClient().execute({ sql: `UPDATE data_room_files SET ${sets.join(', ')} WHERE id = ?`, args: values });
+}
+
+export async function deleteDataRoomFile(id: string) {
+  await ensureInitialized();
+  await getClient().execute({ sql: 'DELETE FROM data_room_files WHERE id = ?', args: [id] });
+}
+
+export async function getDataRoomContext(): Promise<string> {
+  const files = await getAllDataRoomFiles();
+  if (files.length === 0) return 'No data room files uploaded yet.';
+  return files.map(f => {
+    const text = f.extracted_text.substring(0, 3000);
+    return `--- ${f.filename} (${f.category}) ---\n${f.summary ? `Summary: ${f.summary}\n` : ''}${text}`;
+  }).join('\n\n');
 }
