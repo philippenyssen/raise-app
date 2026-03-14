@@ -6,7 +6,7 @@ import type { Investor } from '@/lib/types';
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const investorId = searchParams.get('investor_id') ?? undefined;
-  const meetings = getMeetings(investorId);
+  const meetings = await getMeetings(investorId);
   return NextResponse.json(meetings);
 }
 
@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  const meeting = createMeeting({
+  const meeting = await createMeeting({
     investor_id,
     investor_name,
     date: date || new Date().toISOString().split('T')[0],
@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
 
   // Update investor status and enthusiasm
   if ((aiData as Record<string, unknown>).suggested_status) {
-    updateInvestor(investor_id, {
+    await updateInvestor(investor_id, {
       status: (aiData as Record<string, string>).suggested_status as Investor['status'],
       enthusiasm: (aiData as Record<string, number>).enthusiasm_score || 3,
     });
@@ -56,6 +56,6 @@ export async function PUT(req: NextRequest) {
   const body = await req.json();
   const { id, ...updates } = body;
   if (!id) return NextResponse.json({ error: 'id required' }, { status: 400 });
-  updateMeeting(id, updates);
+  await updateMeeting(id, updates);
   return NextResponse.json({ ok: true });
 }

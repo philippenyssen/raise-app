@@ -3,7 +3,7 @@ import { createInvestor, setRaiseConfig } from '@/lib/db';
 
 export async function POST() {
   // Set ASL raise config
-  setRaiseConfig({
+  await setRaiseConfig({
     company_name: 'Aerospacelab',
     equity_amount: '250M',
     debt_amount: '250M',
@@ -51,7 +51,7 @@ export async function POST() {
   ];
 
   for (const inv of [...tier1, ...tier2, ...tier3]) {
-    createInvestor(inv);
+    await createInvestor(inv);
   }
 
   return NextResponse.json({ ok: true, seeded: tier1.length + tier2.length + tier3.length });

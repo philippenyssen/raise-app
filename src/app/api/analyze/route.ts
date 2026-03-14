@@ -3,9 +3,9 @@ import { getMeetings, getObjectionPatterns, getFunnelMetrics } from '@/lib/db';
 import { analyzePatterns, assessProcessHealth } from '@/lib/ai';
 
 export async function GET() {
-  const meetings = getMeetings();
-  const objections = getObjectionPatterns();
-  const funnel = getFunnelMetrics();
+  const meetings = await getMeetings();
+  const objections = await getObjectionPatterns();
+  const funnel = await getFunnelMetrics();
 
   if (meetings.length < 2) {
     return NextResponse.json({

@@ -2,11 +2,11 @@ import { NextResponse } from 'next/server';
 import { getFunnelMetrics, getLatestConvergence, getAllInvestors, getMeetings, getObjectionPatterns } from '@/lib/db';
 
 export async function GET() {
-  const funnel = getFunnelMetrics();
-  const convergence = getLatestConvergence();
-  const investors = getAllInvestors();
-  const meetings = getMeetings();
-  const objections = getObjectionPatterns();
+  const funnel = await getFunnelMetrics();
+  const convergence = await getLatestConvergence();
+  const investors = await getAllInvestors();
+  const meetings = await getMeetings();
+  const objections = await getObjectionPatterns();
 
   const tierBreakdown = {
     tier1: investors.filter(i => i.tier === 1).length,

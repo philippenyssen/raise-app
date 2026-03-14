@@ -1,23 +1,24 @@
-import Database from 'better-sqlite3';
-import path from 'path';
+import { createClient, type Client, type InValue } from '@libsql/client';
 import { Investor, Meeting, RaiseConfig } from './types';
 
-const DB_PATH = path.join(process.cwd(), 'raise.db');
+let client: Client;
+let initialized = false;
 
-let db: Database.Database;
-
-function getDb(): Database.Database {
-  if (!db) {
-    db = new Database(DB_PATH);
-    db.pragma('journal_mode = WAL');
-    db.pragma('foreign_keys = ON');
-    initializeDb(db);
+function getClient(): Client {
+  if (!client) {
+    client = createClient({
+      url: process.env.TURSO_DATABASE_URL || 'file:raise.db',
+      authToken: process.env.TURSO_AUTH_TOKEN,
+    });
   }
-  return db;
+  return client;
 }
 
-function initializeDb(db: Database.Database) {
-  db.exec(`
+async function ensureInitialized() {
+  if (initialized) return;
+  const db = getClient();
+
+  await db.executeMultiple(`
     CREATE TABLE IF NOT EXISTS config (
       key TEXT PRIMARY KEY,
       value TEXT NOT NULL
@@ -81,132 +82,179 @@ function initializeDb(db: Database.Database) {
       notes TEXT DEFAULT ''
     );
   `);
+
+  initialized = true;
 }
 
 // Config
-export function getConfig(key: string): string | null {
-  const row = getDb().prepare('SELECT value FROM config WHERE key = ?').get(key) as { value: string } | undefined;
-  return row?.value ?? null;
+export async function getConfig(key: string): Promise<string | null> {
+  await ensureInitialized();
+  const result = await getClient().execute({
+    sql: 'SELECT value FROM config WHERE key = ?',
+    args: [key],
+  });
+  return result.rows.length > 0 ? (result.rows[0].value as string) : null;
 }
 
-export function setConfig(key: string, value: string) {
-  getDb().prepare('INSERT OR REPLACE INTO config (key, value) VALUES (?, ?)').run(key, value);
+export async function setConfig(key: string, value: string) {
+  await ensureInitialized();
+  await getClient().execute({
+    sql: 'INSERT OR REPLACE INTO config (key, value) VALUES (?, ?)',
+    args: [key, value],
+  });
 }
 
-export function getRaiseConfig(): RaiseConfig | null {
-  const raw = getConfig('raise_config');
+export async function getRaiseConfig(): Promise<RaiseConfig | null> {
+  const raw = await getConfig('raise_config');
   return raw ? JSON.parse(raw) : null;
 }
 
-export function setRaiseConfig(config: RaiseConfig) {
-  setConfig('raise_config', JSON.stringify(config));
+export async function setRaiseConfig(config: RaiseConfig) {
+  await setConfig('raise_config', JSON.stringify(config));
 }
 
 // Investors
-export function getAllInvestors(): Investor[] {
-  return getDb().prepare('SELECT * FROM investors ORDER BY tier ASC, name ASC').all() as Investor[];
+export async function getAllInvestors(): Promise<Investor[]> {
+  await ensureInitialized();
+  const result = await getClient().execute('SELECT * FROM investors ORDER BY tier ASC, name ASC');
+  return result.rows as unknown as Investor[];
 }
 
-export function getInvestor(id: string): Investor | null {
-  return getDb().prepare('SELECT * FROM investors WHERE id = ?').get(id) as Investor | null;
+export async function getInvestor(id: string): Promise<Investor | null> {
+  await ensureInitialized();
+  const result = await getClient().execute({
+    sql: 'SELECT * FROM investors WHERE id = ?',
+    args: [id],
+  });
+  return result.rows.length > 0 ? (result.rows[0] as unknown as Investor) : null;
 }
 
-export function createInvestor(investor: Partial<Investor> & { name: string }): Investor {
+export async function createInvestor(investor: Partial<Investor> & { name: string }): Promise<Investor> {
+  await ensureInitialized();
   const id = crypto.randomUUID();
   const now = new Date().toISOString();
-  getDb().prepare(`
-    INSERT INTO investors (id, name, type, tier, status, partner, fund_size, check_size_range, sector_thesis, warm_path, ic_process, speed, portfolio_conflicts, notes, enthusiasm, created_at, updated_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `).run(
-    id,
-    investor.name,
-    investor.type ?? 'vc',
-    investor.tier ?? 2,
-    investor.status ?? 'identified',
-    investor.partner ?? '',
-    investor.fund_size ?? '',
-    investor.check_size_range ?? '',
-    investor.sector_thesis ?? '',
-    investor.warm_path ?? '',
-    investor.ic_process ?? '',
-    investor.speed ?? 'medium',
-    investor.portfolio_conflicts ?? '',
-    investor.notes ?? '',
-    investor.enthusiasm ?? 0,
-    now,
-    now,
-  );
-  return getInvestor(id)!;
+  await getClient().execute({
+    sql: `INSERT INTO investors (id, name, type, tier, status, partner, fund_size, check_size_range, sector_thesis, warm_path, ic_process, speed, portfolio_conflicts, notes, enthusiasm, created_at, updated_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    args: [
+      id,
+      investor.name,
+      investor.type ?? 'vc',
+      investor.tier ?? 2,
+      investor.status ?? 'identified',
+      investor.partner ?? '',
+      investor.fund_size ?? '',
+      investor.check_size_range ?? '',
+      investor.sector_thesis ?? '',
+      investor.warm_path ?? '',
+      investor.ic_process ?? '',
+      investor.speed ?? 'medium',
+      investor.portfolio_conflicts ?? '',
+      investor.notes ?? '',
+      investor.enthusiasm ?? 0,
+      now,
+      now,
+    ],
+  });
+  return (await getInvestor(id))!;
 }
 
-export function updateInvestor(id: string, updates: Partial<Investor>) {
+export async function updateInvestor(id: string, updates: Partial<Investor>) {
+  await ensureInitialized();
   const fields = Object.keys(updates).filter(k => k !== 'id' && k !== 'created_at');
   if (fields.length === 0) return;
   const sets = fields.map(f => `${f} = ?`).join(', ');
-  const values = fields.map(f => (updates as Record<string, unknown>)[f]);
-  getDb().prepare(`UPDATE investors SET ${sets}, updated_at = datetime('now') WHERE id = ?`).run(...values, id);
+  const values = fields.map(f => (updates as Record<string, unknown>)[f] as InValue);
+  await getClient().execute({
+    sql: `UPDATE investors SET ${sets}, updated_at = datetime('now') WHERE id = ?`,
+    args: [...values, id],
+  });
 }
 
-export function deleteInvestor(id: string) {
-  getDb().prepare('DELETE FROM meetings WHERE investor_id = ?').run(id);
-  getDb().prepare('DELETE FROM investors WHERE id = ?').run(id);
+export async function deleteInvestor(id: string) {
+  await ensureInitialized();
+  await getClient().execute({
+    sql: 'DELETE FROM meetings WHERE investor_id = ?',
+    args: [id],
+  });
+  await getClient().execute({
+    sql: 'DELETE FROM investors WHERE id = ?',
+    args: [id],
+  });
 }
 
 // Meetings
-export function getMeetings(investorId?: string): Meeting[] {
+export async function getMeetings(investorId?: string): Promise<Meeting[]> {
+  await ensureInitialized();
   if (investorId) {
-    return getDb().prepare('SELECT * FROM meetings WHERE investor_id = ? ORDER BY date DESC').all(investorId) as Meeting[];
+    const result = await getClient().execute({
+      sql: 'SELECT * FROM meetings WHERE investor_id = ? ORDER BY date DESC',
+      args: [investorId],
+    });
+    return result.rows as unknown as Meeting[];
   }
-  return getDb().prepare('SELECT * FROM meetings ORDER BY date DESC').all() as Meeting[];
+  const result = await getClient().execute('SELECT * FROM meetings ORDER BY date DESC');
+  return result.rows as unknown as Meeting[];
 }
 
-export function getMeeting(id: string): Meeting | null {
-  return getDb().prepare('SELECT * FROM meetings WHERE id = ?').get(id) as Meeting | null;
+export async function getMeeting(id: string): Promise<Meeting | null> {
+  await ensureInitialized();
+  const result = await getClient().execute({
+    sql: 'SELECT * FROM meetings WHERE id = ?',
+    args: [id],
+  });
+  return result.rows.length > 0 ? (result.rows[0] as unknown as Meeting) : null;
 }
 
-export function createMeeting(meeting: Partial<Omit<Meeting, 'id' | 'created_at'>> & { investor_id: string; investor_name: string; date: string }): Meeting {
+export async function createMeeting(meeting: Partial<Omit<Meeting, 'id' | 'created_at'>> & { investor_id: string; investor_name: string; date: string }): Promise<Meeting> {
+  await ensureInitialized();
   const id = crypto.randomUUID();
-  getDb().prepare(`
-    INSERT INTO meetings (id, investor_id, investor_name, date, type, attendees, duration_minutes, raw_notes, questions_asked, objections, engagement_signals, competitive_intel, next_steps, enthusiasm_score, status_after, ai_analysis, created_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
-  `).run(
-    id,
-    meeting.investor_id,
-    meeting.investor_name,
-    meeting.date,
-    meeting.type ?? 'intro',
-    meeting.attendees ?? '',
-    meeting.duration_minutes ?? 60,
-    meeting.raw_notes ?? '',
-    meeting.questions_asked ?? '[]',
-    meeting.objections ?? '[]',
-    meeting.engagement_signals ?? '{}',
-    meeting.competitive_intel ?? '',
-    meeting.next_steps ?? '',
-    meeting.enthusiasm_score ?? 3,
-    meeting.status_after ?? 'met',
-    meeting.ai_analysis ?? '',
-  );
-  return getMeeting(id)!;
+  await getClient().execute({
+    sql: `INSERT INTO meetings (id, investor_id, investor_name, date, type, attendees, duration_minutes, raw_notes, questions_asked, objections, engagement_signals, competitive_intel, next_steps, enthusiasm_score, status_after, ai_analysis, created_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
+    args: [
+      id,
+      meeting.investor_id,
+      meeting.investor_name,
+      meeting.date,
+      meeting.type ?? 'intro',
+      meeting.attendees ?? '',
+      meeting.duration_minutes ?? 60,
+      meeting.raw_notes ?? '',
+      meeting.questions_asked ?? '[]',
+      meeting.objections ?? '[]',
+      meeting.engagement_signals ?? '{}',
+      meeting.competitive_intel ?? '',
+      meeting.next_steps ?? '',
+      meeting.enthusiasm_score ?? 3,
+      meeting.status_after ?? 'met',
+      meeting.ai_analysis ?? '',
+    ],
+  });
+  return (await getMeeting(id))!;
 }
 
-export function updateMeeting(id: string, updates: Partial<Meeting>) {
+export async function updateMeeting(id: string, updates: Partial<Meeting>) {
+  await ensureInitialized();
   const fields = Object.keys(updates).filter(k => k !== 'id' && k !== 'created_at');
   if (fields.length === 0) return;
   const sets = fields.map(f => `${f} = ?`).join(', ');
-  const values = fields.map(f => (updates as Record<string, unknown>)[f]);
-  getDb().prepare(`UPDATE meetings SET ${sets} WHERE id = ?`).run(...values, id);
+  const values = fields.map(f => (updates as Record<string, unknown>)[f] as InValue);
+  await getClient().execute({
+    sql: `UPDATE meetings SET ${sets} WHERE id = ?`,
+    args: [...values, id],
+  });
 }
 
 // Funnel Metrics
-export function getFunnelMetrics() {
-  const db = getDb();
-  const statusCounts = db.prepare(`
-    SELECT status, COUNT(*) as count FROM investors GROUP BY status
-  `).all() as { status: string; count: number }[];
+export async function getFunnelMetrics() {
+  await ensureInitialized();
+  const db = getClient();
+  const statusResult = await db.execute('SELECT status, COUNT(*) as count FROM investors GROUP BY status');
+  const statusCounts = statusResult.rows as unknown as { status: string; count: number }[];
 
   const counts: Record<string, number> = {};
-  statusCounts.forEach(s => { counts[s.status] = s.count; });
+  statusCounts.forEach(s => { counts[s.status] = Number(s.count); });
 
   const contacted = (counts['contacted'] ?? 0) + (counts['nda_signed'] ?? 0) + (counts['meeting_scheduled'] ?? 0) +
     (counts['met'] ?? 0) + (counts['engaged'] ?? 0) + (counts['in_dd'] ?? 0) +
@@ -218,8 +266,11 @@ export function getFunnelMetrics() {
   const in_dd = (counts['in_dd'] ?? 0) + (counts['term_sheet'] ?? 0) + (counts['closed'] ?? 0);
   const term_sheets = (counts['term_sheet'] ?? 0) + (counts['closed'] ?? 0);
 
+  const totalResult = await db.execute('SELECT COUNT(*) as count FROM investors');
+  const total = totalResult.rows[0] as unknown as { count: number };
+
   return {
-    total: db.prepare('SELECT COUNT(*) as count FROM investors').get() as { count: number },
+    total,
     contacted,
     nda_signed: contacted,
     meetings,
@@ -245,30 +296,36 @@ export function getFunnelMetrics() {
 }
 
 // Convergence
-export function getLatestConvergence() {
-  return getDb().prepare('SELECT * FROM convergence ORDER BY id DESC LIMIT 1').get();
+export async function getLatestConvergence() {
+  await ensureInitialized();
+  const result = await getClient().execute('SELECT * FROM convergence ORDER BY id DESC LIMIT 1');
+  return result.rows.length > 0 ? result.rows[0] : null;
 }
 
-export function saveConvergence(data: Record<string, unknown>) {
-  getDb().prepare(`
-    INSERT INTO convergence (story, materials, model, investors, objections, pricing, terms, funnel, timeline, team, score, notes)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `).run(
-    data.story ? 1 : 0, data.materials ? 1 : 0, data.model ? 1 : 0,
-    data.investors ? 1 : 0, data.objections ? 1 : 0, data.pricing ? 1 : 0,
-    data.terms ? 1 : 0, data.funnel ? 1 : 0, data.timeline ? 1 : 0,
-    data.team ? 1 : 0, data.score ?? 0, data.notes ?? ''
-  );
+export async function saveConvergence(data: Record<string, unknown>) {
+  await ensureInitialized();
+  await getClient().execute({
+    sql: `INSERT INTO convergence (story, materials, model, investors, objections, pricing, terms, funnel, timeline, team, score, notes)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    args: [
+      data.story ? 1 : 0, data.materials ? 1 : 0, data.model ? 1 : 0,
+      data.investors ? 1 : 0, data.objections ? 1 : 0, data.pricing ? 1 : 0,
+      data.terms ? 1 : 0, data.funnel ? 1 : 0, data.timeline ? 1 : 0,
+      data.team ? 1 : 0, (data.score as number) ?? 0, (data.notes as string) ?? '',
+    ],
+  });
 }
 
 // Analytics
-export function getObjectionPatterns(): { text: string; count: number; topic: string }[] {
-  const meetings = getDb().prepare('SELECT objections FROM meetings WHERE objections != \'[]\'').all() as { objections: string }[];
+export async function getObjectionPatterns(): Promise<{ text: string; count: number; topic: string }[]> {
+  await ensureInitialized();
+  const result = await getClient().execute("SELECT objections FROM meetings WHERE objections != '[]'");
+  const meetingRows = result.rows as unknown as { objections: string }[];
   const objMap = new Map<string, { count: number; topic: string }>();
 
-  meetings.forEach(m => {
+  meetingRows.forEach(m => {
     try {
-      const objs = JSON.parse(m.objections) as { text: string; topic: string }[];
+      const objs = JSON.parse(m.objections as string) as { text: string; topic: string }[];
       objs.forEach(o => {
         const key = o.text.toLowerCase().trim();
         const existing = objMap.get(key);
@@ -286,9 +343,11 @@ export function getObjectionPatterns(): { text: string; count: number; topic: st
     .sort((a, b) => b.count - a.count);
 }
 
-export function getEnthusiasmTrend(): { date: string; score: number; investor: string }[] {
-  return getDb().prepare(`
+export async function getEnthusiasmTrend(): Promise<{ date: string; score: number; investor: string }[]> {
+  await ensureInitialized();
+  const result = await getClient().execute(`
     SELECT date, enthusiasm_score as score, investor_name as investor
     FROM meetings ORDER BY date ASC
-  `).all() as { date: string; score: number; investor: string }[];
+  `);
+  return result.rows as unknown as { date: string; score: number; investor: string }[];
 }
