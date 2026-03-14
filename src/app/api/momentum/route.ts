@@ -693,12 +693,162 @@ export async function GET() {
     const alertOrder = { critical_warning: 0, early_warning: 1, term_sheet_signal: 2 };
     trajectoryAlerts.sort((a, b) => (alertOrder[a.type] ?? 9) - (alertOrder[b.type] ?? 9));
 
+    // ═══════════════════════════════════════════════════════════════════
+    // 7. CROSS-INVESTOR TIMING CORRELATION
+    // ═══════════════════════════════════════════════════════════════════
+
+    interface TimingSignal {
+      type: 'competitive_tension' | 'engagement_gap' | 'dd_synchronization';
+      description: string;
+      investorNames: string[];
+      urgency: 'high' | 'medium' | 'low';
+    }
+
+    const timingSignals: TimingSignal[] = [];
+
+    // Fetch ALL meetings (not just within the 8-week window) for timing analysis
+    const allMeetingsResult = await db.execute(`
+      SELECT id, investor_id, investor_name, date, type, status_after
+      FROM meetings
+      ORDER BY date ASC
+    `);
+    const allMeetingsForTiming = allMeetingsResult.rows as unknown as Array<{
+      id: string; investor_id: string; investor_name: string; date: string; type: string; status_after: string;
+    }>;
+
+    // (a) Meeting clusters: 3+ different-investor meetings within 5 days = competitive tension
+    const meetingDates = allMeetingsForTiming.map(m => ({
+      date: new Date(m.date),
+      investorId: m.investor_id,
+      investorName: m.investor_name,
+    }));
+
+    for (let i = 0; i < meetingDates.length; i++) {
+      const anchor = meetingDates[i];
+      const windowEnd = new Date(anchor.date);
+      windowEnd.setDate(windowEnd.getDate() + 5);
+
+      const cluster = meetingDates
+        .filter(m => m.date >= anchor.date && m.date <= windowEnd)
+        .reduce((acc, m) => {
+          if (!acc.has(m.investorId)) acc.set(m.investorId, m.investorName);
+          return acc;
+        }, new Map<string, string>());
+
+      if (cluster.size >= 3) {
+        const investorNames = Array.from(cluster.values());
+        // Avoid duplicates: check if we already have a competitive_tension signal with same investors
+        const alreadyExists = timingSignals.some(
+          ts => ts.type === 'competitive_tension' &&
+                ts.investorNames.length === investorNames.length &&
+                ts.investorNames.every(n => investorNames.includes(n))
+        );
+        if (!alreadyExists) {
+          timingSignals.push({
+            type: 'competitive_tension',
+            description: `${cluster.size} different investors met within 5 days around ${anchor.date.toISOString().slice(0, 10)} — competitive tension signal. Use this leverage in conversations.`,
+            investorNames,
+            urgency: 'high',
+          });
+        }
+      }
+    }
+
+    // (b) Engagement gaps: investor with meetings, then no meeting for 21+ days = stall risk
+    const meetingsByInvestorAll: Record<string, { date: Date; name: string }[]> = {};
+    for (const m of allMeetingsForTiming) {
+      if (!meetingsByInvestorAll[m.investor_id]) meetingsByInvestorAll[m.investor_id] = [];
+      meetingsByInvestorAll[m.investor_id].push({ date: new Date(m.date), name: m.investor_name });
+    }
+
+    const now = new Date();
+    for (const [invId, invMeetings] of Object.entries(meetingsByInvestorAll)) {
+      if (invMeetings.length < 1) continue;
+      const sorted = invMeetings.sort((a, b) => a.date.getTime() - b.date.getTime());
+      const lastMeeting = sorted[sorted.length - 1];
+      const daysSinceLast = (now.getTime() - lastMeeting.date.getTime()) / (1000 * 60 * 60 * 24);
+
+      // Only flag active investors
+      const investorRecord = investors.find(inv => inv.id === invId);
+      if (!investorRecord) continue;
+
+      if (daysSinceLast >= 21) {
+        timingSignals.push({
+          type: 'engagement_gap',
+          description: `${lastMeeting.name} had ${sorted.length} meeting(s) but none in ${Math.round(daysSinceLast)} days — stall risk. Re-engage with milestone update.`,
+          investorNames: [lastMeeting.name],
+          urgency: daysSinceLast >= 35 ? 'high' : 'medium',
+        });
+      }
+    }
+
+    // (c) DD synchronization: 2+ investors entering DD within 14 days = leverage opportunity
+    const ddEntries: { investorId: string; investorName: string; date: Date }[] = [];
+    for (const m of allMeetingsForTiming) {
+      if (m.status_after === 'in_dd') {
+        ddEntries.push({
+          investorId: m.investor_id,
+          investorName: m.investor_name,
+          date: new Date(m.date),
+        });
+      }
+    }
+    // Deduplicate: keep first DD entry per investor
+    const ddByInvestor = new Map<string, { investorName: string; date: Date }>();
+    for (const entry of ddEntries) {
+      if (!ddByInvestor.has(entry.investorId)) {
+        ddByInvestor.set(entry.investorId, { investorName: entry.investorName, date: entry.date });
+      }
+    }
+    const ddList = Array.from(ddByInvestor.values()).sort((a, b) => a.date.getTime() - b.date.getTime());
+
+    for (let i = 0; i < ddList.length; i++) {
+      const windowEnd = new Date(ddList[i].date);
+      windowEnd.setDate(windowEnd.getDate() + 14);
+      const synchronized = ddList.filter(d => d.date >= ddList[i].date && d.date <= windowEnd);
+
+      if (synchronized.length >= 2) {
+        const names = synchronized.map(d => d.investorName);
+        const alreadyExists = timingSignals.some(
+          ts => ts.type === 'dd_synchronization' &&
+                ts.investorNames.every(n => names.includes(n))
+        );
+        if (!alreadyExists) {
+          timingSignals.push({
+            type: 'dd_synchronization',
+            description: `${synchronized.length} investors entered DD within 14 days (${ddList[i].date.toISOString().slice(0, 10)} window) — leverage opportunity for competitive term sheet pressure.`,
+            investorNames: names,
+            urgency: 'high',
+          });
+        }
+      }
+    }
+
+    // Auto-create acceleration actions for competitive tension signals
+    try {
+      for (const ts of timingSignals.filter(s => s.type === 'competitive_tension' && s.urgency === 'high')) {
+        await createAccelerationAction({
+          investor_id: '',
+          investor_name: 'Pipeline-wide',
+          trigger_type: 'competitive_pressure',
+          action_type: 'competitive_signal',
+          description: `Timing signal: ${ts.description} Investors: ${ts.investorNames.join(', ')}`,
+          expected_lift: 15,
+          confidence: 'medium',
+          status: 'pending',
+          actual_lift: null,
+          executed_at: null,
+        });
+      }
+    } catch { /* non-blocking */ }
+
     return NextResponse.json({
       matrix,
       cohorts,
       anomalies,
       crossSignals,
       trajectoryAlerts,
+      timingSignals,
       overallTrend,
       overallDirection,
       weeks: weekLabels,

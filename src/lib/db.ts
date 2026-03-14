@@ -2464,12 +2464,33 @@ export async function getCalibrationData(): Promise<{
     avgPredicted < actualRate - 0.1 ? 'under_confident' as const :
     'calibrated' as const;
 
+  // Compute empirical close rates per investor status bucket
+  // Join prediction_log with investors to group by status at time of prediction
+  const byStatusResult = await db.execute(`
+    SELECT i.status,
+           AVG(p.predicted_close_prob) as avg_predicted,
+           SUM(CASE WHEN p.actual_outcome = 'closed' THEN 1.0 ELSE 0.0 END) / COUNT(*) as actual_rate,
+           COUNT(*) as count
+    FROM prediction_log p
+    JOIN investors i ON i.id = p.investor_id
+    WHERE p.actual_outcome IS NOT NULL
+    GROUP BY i.status
+    HAVING COUNT(*) >= 2
+  `);
+  const byStatus = (byStatusResult.rows as unknown as Array<{ status: string; avg_predicted: number; actual_rate: number; count: number }>)
+    .map(row => ({
+      status: row.status,
+      avgPredicted: Math.round(row.avg_predicted * 1000) / 1000,
+      actualRate: Math.round(row.actual_rate * 1000) / 1000,
+      count: row.count,
+    }));
+
   return {
     totalPredictions,
     resolvedPredictions: resolved.length,
     brierScore: Math.round(brierScore * 1000) / 1000,
     biasDirection,
-    byStatus: [], // Populated when we have enough data per status
+    byStatus,
   };
 }
 

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAllInvestors, getInvestor, createInvestor, updateInvestor, deleteInvestor, resolvePrediction } from '@/lib/db';
+import { getAllInvestors, getInvestor, createInvestor, updateInvestor, deleteInvestor, resolvePrediction, buildRelationshipGraph } from '@/lib/db';
 import { emitContextChange } from '@/lib/context-bus';
 
 // Allowlisted fields that can be updated via API
@@ -36,6 +36,10 @@ export async function POST(req: NextRequest) {
   }
   const investor = await createInvestor(filterFields(body, ALLOWED_UPDATE_FIELDS) as { name: string });
   emitContextChange('investor_created', `Created investor ${body.name}`);
+
+  // Rebuild relationship graph after creating a new investor (non-blocking)
+  try { buildRelationshipGraph().catch(() => {}); } catch { /* non-blocking */ }
+
   return NextResponse.json(investor, { status: 201 });
 }
 
@@ -58,6 +62,12 @@ export async function PUT(req: NextRequest) {
   }
 
   emitContextChange('investor_updated', `Updated investor ${id}${updates.status ? ` status=${updates.status}` : ''}`);
+
+  // Rebuild relationship graph when warm_path changes (non-blocking)
+  if (updates.warm_path !== undefined) {
+    try { buildRelationshipGraph().catch(() => {}); } catch { /* non-blocking */ }
+  }
+
   return NextResponse.json({ ok: true });
 }
 

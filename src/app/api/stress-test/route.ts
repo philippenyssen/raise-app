@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@libsql/client';
 import { computeMomentumScore } from '@/lib/scoring';
-import { logPrediction } from '@/lib/db';
+import { logPrediction, getCalibrationData } from '@/lib/db';
 import type { Investor, Meeting } from '@/lib/types';
 
 function getClient() {
@@ -146,8 +146,10 @@ function computeCloseProbability(
   investor: Investor,
   momentum: string,
   meetings?: Meeting[],
+  weightOverrides?: Record<string, number>,
 ): number {
-  const statusBase = STATUS_WEIGHT[investor.status] ?? 0;
+  const weights = weightOverrides || STATUS_WEIGHT;
+  const statusBase = weights[investor.status] ?? 0;
   if (statusBase === 0) return 0;
 
   const enthusiasmMultiplier = (investor.enthusiasm || 3) / 5;
@@ -364,6 +366,54 @@ export async function GET() {
   try {
     const db = getClient();
 
+    // -----------------------------------------------------------------------
+    // Auto-Weight Calibration: blend hardcoded STATUS_WEIGHT with empirical
+    // close rates from resolved predictions when enough data exists.
+    // -----------------------------------------------------------------------
+    let calibration: {
+      enabled: boolean;
+      resolvedCount: number;
+      empiricalRates: Record<string, number>;
+      blendedWeights: Record<string, number>;
+      adjustments: { status: string; hardcoded: number; empirical: number; blended: number }[];
+    } = {
+      enabled: false,
+      resolvedCount: 0,
+      empiricalRates: {},
+      blendedWeights: { ...STATUS_WEIGHT },
+      adjustments: [],
+    };
+
+    try {
+      const calData = await getCalibrationData();
+      calibration.resolvedCount = calData.resolvedPredictions;
+
+      if (calData.resolvedPredictions >= 5 && calData.byStatus.length > 0) {
+        calibration.enabled = true;
+        const empiricalRates: Record<string, number> = {};
+        for (const bucket of calData.byStatus) {
+          empiricalRates[bucket.status] = bucket.actualRate;
+        }
+        calibration.empiricalRates = empiricalRates;
+
+        // Compute blended weights: 70% hardcoded + 30% empirical
+        const blendedWeights: Record<string, number> = { ...STATUS_WEIGHT };
+        const adjustments: { status: string; hardcoded: number; empirical: number; blended: number }[] = [];
+        for (const status of Object.keys(STATUS_WEIGHT)) {
+          if (status === 'passed' || status === 'dropped' || status === 'closed') continue;
+          if (empiricalRates[status] !== undefined) {
+            const hardcoded = STATUS_WEIGHT[status];
+            const empirical = empiricalRates[status];
+            const blended = Math.round((0.7 * hardcoded + 0.3 * empirical) * 1000) / 1000;
+            blendedWeights[status] = blended;
+            adjustments.push({ status, hardcoded, empirical, blended });
+          }
+        }
+        calibration.blendedWeights = blendedWeights;
+        calibration.adjustments = adjustments;
+      }
+    } catch { /* non-blocking — calibration is best-effort */ }
+
     const [investorRows, meetingRows, activityRows, configRow] = await Promise.all([
       db.execute(`SELECT * FROM investors ORDER BY tier ASC, name ASC`),
       db.execute(`SELECT * FROM meetings ORDER BY date DESC`),
@@ -448,7 +498,7 @@ export async function GET() {
       const meetings = meetingsByInvestor[inv.id] || [];
       const { momentum } = computeMomentumScore(inv, meetings);
 
-      const closeProbability = computeCloseProbability(inv, momentum, meetings);
+      const closeProbability = computeCloseProbability(inv, momentum, meetings, calibration.enabled ? calibration.blendedWeights : undefined);
       const expectedCheck = computeExpectedCheck(inv);
       const expectedValue = closeProbability * expectedCheck;
       const predictedClose = computePredictedCloseDate(inv, avgStageDays);
@@ -700,6 +750,16 @@ export async function GET() {
               Math.floor(investorForecasts.filter(f => f.expectedCheck > 0).length / 2)
             ]?.expectedCheck ?? 0
           : 0,
+      },
+      calibration: {
+        enabled: calibration.enabled,
+        resolvedCount: calibration.resolvedCount,
+        adjustments: calibration.adjustments,
+        note: calibration.enabled
+          ? `Weights auto-calibrated from ${calibration.resolvedCount} resolved predictions (70% hardcoded + 30% empirical)`
+          : calibration.resolvedCount > 0
+          ? `${calibration.resolvedCount} resolved predictions — need 5+ for auto-calibration`
+          : 'No resolved predictions yet — using hardcoded weights',
       },
       generatedAt: new Date().toISOString(),
     });

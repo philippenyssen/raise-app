@@ -196,6 +196,14 @@ export interface FullContext {
     connectionCount: number;
     cascadeValue: string;
   }[];
+
+  // Timing signals from cross-investor timing correlation analysis
+  timingSignals: {
+    type: 'competitive_tension' | 'engagement_gap' | 'dd_synchronization';
+    description: string;
+    investorNames: string[];
+    urgency: 'high' | 'medium' | 'low';
+  }[];
 }
 
 const recentChanges: ContextChange[] = [];
@@ -429,6 +437,9 @@ export async function getFullContext(): Promise<FullContext> {
         connectionCount: k.connectionCount,
         cascadeValue: k.cascadeValue,
       })),
+
+    // Timing signals — populated by momentum route, not fetched here (too expensive)
+    timingSignals: [],
   };
 
   cachedContext = context;
@@ -572,6 +583,17 @@ export function contextToSystemPrompt(ctx: FullContext): string {
     lines.push('KEYSTONE INVESTORS (closing one unlocks others):');
     for (const ki of ctx.keystoneInvestors) {
       lines.push(`- ${ki.name} → connected to ${ki.connectionCount} other investors in pipeline (cascade: ${ki.cascadeValue})`);
+    }
+    lines.push('');
+  }
+
+  // Timing signals (cross-investor timing correlation)
+  if (ctx.timingSignals && ctx.timingSignals.length > 0) {
+    lines.push('TIMING SIGNALS (cross-investor timing patterns):');
+    for (const ts of ctx.timingSignals) {
+      const urgencyTag = ts.urgency === 'high' ? 'URGENT' : ts.urgency === 'medium' ? 'WATCH' : 'INFO';
+      lines.push(`- [${urgencyTag}] ${ts.type}: ${ts.description}`);
+      lines.push(`  Investors: ${ts.investorNames.join(', ')}`);
     }
     lines.push('');
   }
