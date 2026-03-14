@@ -18,6 +18,7 @@ import {
   computeMeetingDensity,
   detectFomoDynamics,
   computeEngagementVelocity,
+  computeNetworkCascades,
 } from '@/lib/db';
 import { createClient } from '@libsql/client';
 
@@ -135,6 +136,7 @@ export async function GET() {
       { field: 'meetingDensity', cycle: 27 },
       { field: 'fomoDynamics', cycle: 27 },
       { field: 'engagementVelocity', cycle: 29 },
+      { field: 'networkCascades', cycle: 32 },
     ];
 
     for (const { field, cycle } of expectedFields) {
@@ -173,6 +175,7 @@ export async function GET() {
     { name: 'computeMeetingDensity', fn: () => computeMeetingDensity(), cycle: 27 },
     { name: 'detectFomoDynamics', fn: () => detectFomoDynamics(), cycle: 27 },
     { name: 'computeEngagementVelocity', fn: () => computeEngagementVelocity(), cycle: 29 },
+    { name: 'computeNetworkCascades', fn: () => computeNetworkCascades(), cycle: 32 },
   ];
 
   for (const fc of functionChecks) {
@@ -246,6 +249,7 @@ export async function GET() {
       const sections = [
         'PIPELINE:', 'KEY INVESTORS', 'RAISE FORECAST', 'TEMPORAL TRENDS',
         'COMPOUND INTELLIGENCE', 'INTELLIGENCE SYNTHESIS', 'FORECAST CALIBRATION', 'WIN/LOSS',
+        'NETWORK CASCADES',
       ];
       const found = sections.filter(s => prompt.includes(s));
       checks.push({

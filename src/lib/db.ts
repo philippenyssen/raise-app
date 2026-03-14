@@ -3469,6 +3469,106 @@ export async function getKeystoneInvestors(): Promise<{
     });
 }
 
+// ---------------------------------------------------------------------------
+// Network Cascade Intelligence (cycle 32)
+// ---------------------------------------------------------------------------
+
+export interface NetworkCascade {
+  keystoneId: string;
+  keystoneName: string;
+  cascadeChain: { investorId: string; investorName: string; probability: number; cumulativeProbability: number; status: string; tier: number }[];
+  totalCascadeProbability: number; // product of all chain probabilities
+  networkBottleneck: { investorId: string; investorName: string; impactIfPass: number } | null; // investor whose pass collapses most value
+  signal: string;
+}
+
+export async function computeNetworkCascades(): Promise<NetworkCascade[]> {
+  const keystones = await getKeystoneInvestors();
+  if (keystones.length === 0) return [];
+
+  const db = getClient();
+  // Get tier + check size data for all active investors
+  const activeResult = await db.execute(`SELECT id, name, tier, status, enthusiasm, check_size_range FROM investors WHERE status NOT IN ('passed', 'dropped')`);
+  const investorMap = new Map<string, { name: string; tier: number; status: string; enthusiasm: number; checkSize: string }>();
+  for (const row of activeResult.rows as unknown as Array<{ id: string; name: string; tier: number; status: string; enthusiasm: number; check_size_range: string }>) {
+    investorMap.set(row.id, { name: row.name, tier: row.tier, status: row.status, enthusiasm: row.enthusiasm, checkSize: row.check_size_range || '' });
+  }
+
+  // Status-based base probability of closing (reusing scoring logic)
+  const statusProb: Record<string, number> = {
+    identified: 0.05, contacted: 0.10, nda_signed: 0.15, meeting_scheduled: 0.20,
+    met: 0.30, engaged: 0.45, in_dd: 0.65, term_sheet: 0.85, closed: 1.0,
+  };
+
+  const cascades: NetworkCascade[] = [];
+
+  for (const keystone of keystones.slice(0, 5)) { // top 5 keystones
+    if (keystone.connectedInvestors.length === 0) continue;
+
+    // For each connected investor, compute cascade probability:
+    // P(connected closes | keystone closes) = baseProb × networkBoost
+    // networkBoost = 1.0 + (relationship_strength / 10) + (enthusiasm / 10)
+    const chain = keystone.connectedInvestors
+      .filter(c => c.status !== 'closed' && c.status !== 'passed')
+      .map(conn => {
+        const inv = investorMap.get(conn.id);
+        const baseProb = statusProb[conn.status] || 0.10;
+        const networkBoost = 1.0 + (conn.enthusiasm / 10);
+        const conditionalProb = Math.min(0.95, baseProb * networkBoost);
+        return {
+          investorId: conn.id,
+          investorName: conn.name,
+          probability: Math.round(conditionalProb * 100) / 100,
+          cumulativeProbability: 0, // filled below
+          status: conn.status,
+          tier: inv?.tier || 3,
+        };
+      })
+      .sort((a, b) => b.probability - a.probability);
+
+    // Compute cumulative cascade probability (product)
+    let cumulative = 1.0;
+    for (const link of chain) {
+      cumulative *= link.probability;
+      link.cumulativeProbability = Math.round(cumulative * 100) / 100;
+    }
+
+    // Network bottleneck: which connected investor's pass would reduce total chain value the most
+    let bottleneck: NetworkCascade['networkBottleneck'] = null;
+    let maxImpact = 0;
+    for (const link of chain) {
+      // Impact = how much the total probability drops if this link breaks
+      const withoutThis = chain.filter(l => l.investorId !== link.investorId)
+        .reduce((prod, l) => prod * l.probability, 1.0);
+      const withThis = chain.reduce((prod, l) => prod * l.probability, 1.0);
+      const impact = withThis - withoutThis;
+      if (Math.abs(impact) > maxImpact) {
+        maxImpact = Math.abs(impact);
+        bottleneck = { investorId: link.investorId, investorName: link.investorName, impactIfPass: Math.round(impact * 100) / 100 };
+      }
+    }
+
+    const totalProb = chain.reduce((prod, l) => prod * l.probability, 1.0);
+    const highProbCount = chain.filter(c => c.probability >= 0.5).length;
+    const signal = highProbCount >= 3
+      ? `Closing ${keystone.name} likely cascades to ${highProbCount} investors (${chain.length} connected)`
+      : chain.length >= 2
+        ? `${keystone.name} connects to ${chain.length} investors but cascade probability is moderate`
+        : `${keystone.name} has limited cascade potential`;
+
+    cascades.push({
+      keystoneId: keystone.id,
+      keystoneName: keystone.name,
+      cascadeChain: chain,
+      totalCascadeProbability: Math.round(totalProb * 1000) / 1000,
+      networkBottleneck: bottleneck,
+      signal,
+    });
+  }
+
+  return cascades.sort((a, b) => b.cascadeChain.length - a.cascadeChain.length);
+}
+
 /**
  * Compute network effect score for a specific investor.
  * Checks if connected investors are positive (committed/high enthusiasm) or negative (passed).

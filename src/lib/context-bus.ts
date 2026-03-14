@@ -39,8 +39,9 @@ import {
   computeMeetingDensity,
   detectFomoDynamics,
   computeEngagementVelocity,
+  computeNetworkCascades,
 } from './db';
-import type { TemporalTrends, RaiseForecast, ForecastCalibration, WinLossPatterns, ScoreReversal, PipelineRanking, MeetingDensity, FomoDynamic, EngagementVelocity } from './db';
+import type { TemporalTrends, RaiseForecast, ForecastCalibration, WinLossPatterns, ScoreReversal, PipelineRanking, MeetingDensity, FomoDynamic, EngagementVelocity, NetworkCascade } from './db';
 
 // ---------------------------------------------------------------------------
 // Context version — monotonically increasing counter
@@ -301,6 +302,9 @@ export interface FullContext {
 
   // Engagement velocity — per-investor meeting frequency acceleration (cycle 29)
   engagementVelocity: EngagementVelocity[];
+
+  // Network cascade intelligence (cycle 32)
+  networkCascades: NetworkCascade[];
 }
 
 const recentChanges: ContextChange[] = [];
@@ -346,6 +350,7 @@ export async function getFullContext(): Promise<FullContext> {
     meetingDensityData,
     fomoDynamicsData,
     engagementVelocityData,
+    networkCascadesData,
   ] = await Promise.all([
     getRaiseConfig().catch(() => null),
     getAllDocuments().catch(() => []),
@@ -376,6 +381,7 @@ export async function getFullContext(): Promise<FullContext> {
     computeMeetingDensity().catch(() => null),
     detectFomoDynamics().catch(() => []),
     computeEngagementVelocity().catch(() => []),
+    computeNetworkCascades().catch(() => []),
   ]);
 
   // Build investor snapshots enriched with meeting/task/followup data
@@ -675,6 +681,7 @@ export async function getFullContext(): Promise<FullContext> {
 
     // Engagement velocity (cycle 29)
     engagementVelocity: (engagementVelocityData as EngagementVelocity[]),
+    networkCascades: (networkCascadesData as NetworkCascade[]),
   };
 
   cachedContext = context;
@@ -1050,6 +1057,20 @@ export function contextToSystemPrompt(ctx: FullContext): string {
     lines.push('');
   }
 
+  // Network cascade intelligence — probability-weighted capital chains (cycle 32)
+  if (ctx.networkCascades.length > 0) {
+    lines.push('NETWORK CASCADES (keystone investors → cascade chains):');
+    for (const cascade of ctx.networkCascades.slice(0, 3)) {
+      const chainStr = cascade.cascadeChain.slice(0, 4).map(c => `${c.investorName} (${Math.round(c.probability * 100)}%)`).join(' → ');
+      lines.push(`- ${cascade.keystoneName}: ${chainStr}`);
+      if (cascade.networkBottleneck) {
+        lines.push(`  BOTTLENECK: ${cascade.networkBottleneck.investorName} — if passes, cascade impact: ${cascade.networkBottleneck.impactIfPass}`);
+      }
+      lines.push(`  → ${cascade.signal}`);
+    }
+    lines.push('');
+  }
+
   // =========================================================================
   // INTELLIGENCE SYNTHESIS (reasoning aids — connect the dots between sources)
   // =========================================================================
@@ -1245,6 +1266,15 @@ export function contextToSystemPrompt(ctx: FullContext): string {
   for (const inv of ctx.investors) {
     if (inv.tier <= 2 && inv.meetingCount === 0 && inv.daysInCurrentStage > 14 && inv.status !== 'identified') {
       synthesisLines.push(`DORMANT T${inv.tier}: ${inv.name} has been at "${inv.status}" for ${inv.daysInCurrentStage}d with ZERO meetings — either activate or remove to avoid inflating pipeline metrics`);
+    }
+  }
+
+  // Network cascade synthesis: bottleneck investor gone silent or stalled (cycle 32)
+  for (const cascade of ctx.networkCascades) {
+    if (!cascade.networkBottleneck) continue;
+    const bottleneckInv = ctx.investors.find(i => i.id === cascade.networkBottleneck!.investorId);
+    if (bottleneckInv && (bottleneckInv.stageHealth === 'stalled' || bottleneckInv.daysSinceLastContact !== null && bottleneckInv.daysSinceLastContact > 21)) {
+      synthesisLines.push(`CASCADE RISK: ${bottleneckInv.name} is the bottleneck in ${cascade.keystoneName}'s cascade chain but is ${bottleneckInv.stageHealth === 'stalled' ? 'stalled' : `silent for ${bottleneckInv.daysSinceLastContact}d`} — losing this investor collapses the chain`);
     }
   }
 
