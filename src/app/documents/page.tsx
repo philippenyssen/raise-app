@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useToast } from '@/components/toast';
+import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { FileText, Plus, Clock, Edit3 } from 'lucide-react';
 
 interface Doc {
@@ -33,6 +34,7 @@ export default function DocumentsPage() {
   const { toast } = useToast();
   const [docs, setDocs] = useState<Doc[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; title: string } | null>(null);
 
   useEffect(() => { fetchDocs(); }, []);
 
@@ -43,10 +45,11 @@ export default function DocumentsPage() {
     setLoading(false);
   }
 
-  async function handleDelete(id: string) {
-    if (!confirm('Delete this document and all its versions?')) return;
-    await fetch(`/api/documents/${id}`, { method: 'DELETE' });
+  async function handleDelete() {
+    if (!deleteTarget) return;
+    await fetch(`/api/documents/${deleteTarget.id}`, { method: 'DELETE' });
     toast('Document deleted', 'warning');
+    setDeleteTarget(null);
     fetchDocs();
   }
 
@@ -122,7 +125,7 @@ export default function DocumentsPage() {
                         {doc.status}
                       </span>
                       <button
-                        onClick={() => handleDelete(doc.id)}
+                        onClick={() => setDeleteTarget({ id: doc.id, title: doc.title })}
                         className="text-xs text-zinc-600 hover:text-red-400 px-2 py-1 rounded hover:bg-zinc-800"
                       >
                         Del
@@ -135,6 +138,16 @@ export default function DocumentsPage() {
           ))}
         </div>
       )}
+
+      <ConfirmModal
+        open={!!deleteTarget}
+        title="Delete document"
+        message={`Delete "${deleteTarget?.title}" and all its versions? This cannot be undone.`}
+        confirmLabel="Delete"
+        variant="danger"
+        onConfirm={handleDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }

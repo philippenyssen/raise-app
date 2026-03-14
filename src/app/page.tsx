@@ -3,6 +3,15 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useToast } from '@/components/toast';
+import { FileText, Sparkles, FolderOpen, Table, ArrowRight } from 'lucide-react';
+
+interface DocSummary {
+  id: string;
+  title: string;
+  type: string;
+  status: string;
+  updated_at: string;
+}
 
 interface HealthData {
   funnel: {
@@ -27,6 +36,8 @@ interface HealthData {
 export default function Dashboard() {
   const { toast } = useToast();
   const [data, setData] = useState<HealthData | null>(null);
+  const [docs, setDocs] = useState<DocSummary[]>([]);
+  const [dataRoomCount, setDataRoomCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [seeding, setSeeding] = useState(false);
 
@@ -34,8 +45,14 @@ export default function Dashboard() {
 
   async function fetchData() {
     setLoading(true);
-    const res = await fetch('/api/health');
-    setData(await res.json());
+    const [healthRes, docsRes, drRes] = await Promise.all([
+      fetch('/api/health'),
+      fetch('/api/documents'),
+      fetch('/api/data-room'),
+    ]);
+    setData(await healthRes.json());
+    setDocs(await docsRes.json());
+    setDataRoomCount((await drRes.json()).length);
     setLoading(false);
   }
 
@@ -96,6 +113,76 @@ export default function Dashboard() {
           </span>
         </div>
       </div>
+
+      {/* Deliverables Quick Access */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <Link href="/workspace" className="group border border-zinc-800 hover:border-blue-600/40 rounded-xl p-4 transition-colors">
+          <Sparkles className="w-5 h-5 text-blue-400 mb-2" />
+          <div className="text-sm font-medium">Workspace</div>
+          <div className="text-xs text-zinc-500 mt-1">
+            {docs.length > 0 ? `${docs.length} document${docs.length !== 1 ? 's' : ''}` : 'Create deliverables'}
+          </div>
+          <div className="text-xs text-blue-400 mt-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            Open <ArrowRight className="w-3 h-3" />
+          </div>
+        </Link>
+        <Link href="/data-room" className="group border border-zinc-800 hover:border-blue-600/40 rounded-xl p-4 transition-colors">
+          <FolderOpen className="w-5 h-5 text-purple-400 mb-2" />
+          <div className="text-sm font-medium">Data Room</div>
+          <div className="text-xs text-zinc-500 mt-1">
+            {dataRoomCount > 0 ? `${dataRoomCount} file${dataRoomCount !== 1 ? 's' : ''} uploaded` : 'Upload source materials'}
+          </div>
+          <div className="text-xs text-blue-400 mt-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            Open <ArrowRight className="w-3 h-3" />
+          </div>
+        </Link>
+        <Link href="/model" className="group border border-zinc-800 hover:border-blue-600/40 rounded-xl p-4 transition-colors">
+          <Table className="w-5 h-5 text-green-400 mb-2" />
+          <div className="text-sm font-medium">Financial Model</div>
+          <div className="text-xs text-zinc-500 mt-1">Build & refine with AI</div>
+          <div className="text-xs text-blue-400 mt-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            Open <ArrowRight className="w-3 h-3" />
+          </div>
+        </Link>
+        <Link href="/documents" className="group border border-zinc-800 hover:border-blue-600/40 rounded-xl p-4 transition-colors">
+          <FileText className="w-5 h-5 text-orange-400 mb-2" />
+          <div className="text-sm font-medium">Documents</div>
+          <div className="text-xs text-zinc-500 mt-1">
+            {docs.length > 0 ? `${docs.filter(d => d.status === 'draft').length} drafts` : 'Version history'}
+          </div>
+          <div className="text-xs text-blue-400 mt-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            Open <ArrowRight className="w-3 h-3" />
+          </div>
+        </Link>
+      </div>
+
+      {/* Recent Documents */}
+      {docs.length > 0 && (
+        <div className="border border-zinc-800 rounded-xl p-5">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm font-medium text-zinc-400 uppercase">Recent Documents</h2>
+            <Link href="/workspace" className="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1">
+              Open Workspace <ArrowRight className="w-3 h-3" />
+            </Link>
+          </div>
+          <div className="space-y-2">
+            {docs.slice(0, 5).map(doc => (
+              <Link key={doc.id} href="/workspace" className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-zinc-800/50 transition-colors">
+                <div className="flex items-center gap-3 min-w-0">
+                  <FileText className="w-4 h-4 text-zinc-600 shrink-0" />
+                  <span className="text-sm truncate">{doc.title}</span>
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded border ${
+                    doc.status === 'final' ? 'bg-green-900/30 text-green-400 border-green-800' :
+                    doc.status === 'review' ? 'bg-blue-900/30 text-blue-400 border-blue-800' :
+                    'bg-yellow-900/30 text-yellow-400 border-yellow-800'
+                  }`}>{doc.status}</span>
+                </div>
+                <span className="text-xs text-zinc-600 shrink-0">{new Date(doc.updated_at).toLocaleDateString()}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Empty State */}
       {data.totalInvestors === 0 && (
