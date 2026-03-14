@@ -34,7 +34,8 @@ Use `.card`, `.btn`, `.btn-primary`, `.btn-secondary`, `.input`, `.table-row`, `
 - `src/lib/context-bus.ts` — Unified context aggregation from 12-15 data sources (62KB)
 - `src/lib/scoring.ts` — 11-dimension investor scoring with phase-dynamic weights (53KB)
 - `src/lib/enrichment/` — 9-provider data enrichment system
-- `src/components/sidebar.tsx` — Navigation with sections: CORE, CRM, INTEL, DOCS, SYS
+- `src/components/sidebar.tsx` — Navigation with sections: DAILY, EXECUTE, ANALYZE, TOOLS (15 items)
+- `src/app/dealflow/page.tsx` — Consolidated investor health (heat + velocity + momentum)
 
 ## Self-Improving Loop (50+ Experts, 10 Panels, Self-Evolving Skills)
 This project uses continuous improvement cycles with comprehensive expert coverage.
