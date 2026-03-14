@@ -2271,6 +2271,109 @@ function getISOWeek(date: Date): string {
   return `${d.getFullYear()}-W${String(weekNum).padStart(2, '0')}`;
 }
 
+export interface EngagementVelocity {
+  investorId: string;
+  investorName: string;
+  tier: number;
+  recentMeetings: number; // last 14 days
+  previousMeetings: number; // 15-28 days ago
+  acceleration: 'accelerating' | 'decelerating' | 'stable' | 'new' | 'gone_silent';
+  daysSinceLastMeeting: number | null;
+  avgDaysBetweenMeetings: number | null;
+  signal: string;
+}
+
+export async function computeEngagementVelocity(): Promise<EngagementVelocity[]> {
+  await ensureInitialized();
+  const db = getClient();
+
+  const result = await db.execute(`
+    SELECT m.investor_id, m.date, i.name, i.tier, i.status
+    FROM meetings m
+    JOIN investors i ON i.id = m.investor_id
+    WHERE i.status NOT IN ('passed', 'dropped', 'closed')
+    ORDER BY m.investor_id, m.date DESC
+  `);
+
+  const byInvestor: Record<string, { name: string; tier: number; status: string; dates: string[] }> = {};
+  for (const row of result.rows) {
+    const id = row.investor_id as string;
+    if (!byInvestor[id]) byInvestor[id] = { name: row.name as string, tier: row.tier as number, status: row.status as string, dates: [] };
+    byInvestor[id].dates.push(row.date as string);
+  }
+
+  const now = Date.now();
+  const msPerDay = 1000 * 60 * 60 * 24;
+  const velocities: EngagementVelocity[] = [];
+
+  for (const [investorId, data] of Object.entries(byInvestor)) {
+    const { name, tier, dates } = data;
+
+    // Count meetings in windows
+    const recent = dates.filter(d => (now - new Date(d).getTime()) / msPerDay <= 14).length;
+    const previous = dates.filter(d => {
+      const daysAgo = (now - new Date(d).getTime()) / msPerDay;
+      return daysAgo > 14 && daysAgo <= 28;
+    }).length;
+
+    // Days since last meeting
+    const daysSinceLastMeeting = dates.length > 0
+      ? Math.round((now - new Date(dates[0]).getTime()) / msPerDay)
+      : null;
+
+    // Average days between meetings
+    let avgDaysBetweenMeetings: number | null = null;
+    if (dates.length >= 2) {
+      const sortedDates = [...dates].sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+      const gaps: number[] = [];
+      for (let i = 1; i < sortedDates.length; i++) {
+        gaps.push((new Date(sortedDates[i]).getTime() - new Date(sortedDates[i-1]).getTime()) / msPerDay);
+      }
+      avgDaysBetweenMeetings = Math.round(gaps.reduce((s, g) => s + g, 0) / gaps.length);
+    }
+
+    // Determine acceleration
+    let acceleration: EngagementVelocity['acceleration'] = 'stable';
+    let signal = '';
+
+    if (dates.length === 0) continue; // no meetings at all
+
+    if (daysSinceLastMeeting !== null && daysSinceLastMeeting > 28) {
+      acceleration = 'gone_silent';
+      signal = `No meetings in ${daysSinceLastMeeting} days — engagement has stopped`;
+    } else if (recent > previous && recent >= 2) {
+      acceleration = 'accelerating';
+      signal = `Meeting frequency increasing (${previous}→${recent} in 2-week windows) — momentum building`;
+    } else if (recent < previous && previous >= 2) {
+      acceleration = 'decelerating';
+      signal = `Meeting frequency declining (${previous}→${recent} in 2-week windows) — losing engagement`;
+    } else if (dates.length <= 1) {
+      acceleration = 'new';
+      signal = `Only ${dates.length} meeting(s) — too early to measure velocity`;
+    } else {
+      signal = `Stable engagement (${recent} recent, ${previous} previous)`;
+    }
+
+    velocities.push({
+      investorId,
+      investorName: name,
+      tier,
+      recentMeetings: recent,
+      previousMeetings: previous,
+      acceleration,
+      daysSinceLastMeeting,
+      avgDaysBetweenMeetings,
+      signal,
+    });
+  }
+
+  // Sort: gone_silent and decelerating first (concerning), then by tier
+  const accOrder = { gone_silent: 0, decelerating: 1, new: 2, stable: 3, accelerating: 4 };
+  velocities.sort((a, b) => accOrder[a.acceleration] - accOrder[b.acceleration] || a.tier - b.tier);
+
+  return velocities;
+}
+
 export async function detectFomoDynamics(): Promise<FomoDynamic[]> {
   await ensureInitialized();
   const db = getClient();

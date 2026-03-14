@@ -32,6 +32,7 @@
 | 26 | 2026-03-14 | Score Reversals + Pipeline Rankings | Score reversal detection (critical/warning/notable drops ≥10pts), comparative pipeline rankings with rank movement tracking. 3 synthesis rules (score crisis, rising/falling investors). Pulse insight for critical reversals. Context bus: 26 data sources, 20 context fields, 14 functions. | db.ts, context-bus.ts, pulse/route.ts, intelligence/verify/route.ts |
 | 27 | 2026-03-14 | Meeting Density + FOMO Dynamics | 12-week meeting distribution analysis (gap/cluster detection, density score), investor FOMO modeling (advancing investors create competitive pressure for peers). 2 synthesis rules (momentum gap, dead week). 28 data sources, 22 context fields, 16 functions. | db.ts, context-bus.ts, intelligence/verify/route.ts |
 | 28 | 2026-03-14 | FOMO Auto-Actions + AI Awareness | Auto-action Rule 11: FOMO-triggered competitive outreach (high-intensity triggers auto-create actions for affected T1-2 peers). Workspace AI instruction 21: competitive dynamics reasoning. Investor-specific context steering now includes FOMO pressure, win/loss matching, score reversals, pipeline rank. | db.ts, workspace/route.ts |
+| 29 | 2026-03-14 | Engagement Velocity | Per-investor meeting frequency acceleration (2-week window comparison: accelerating/decelerating/stable/gone_silent). 2 synthesis rules (gone-silent T1-2, velocity-enthusiasm contradiction). System prompt ENGAGEMENT VELOCITY section. 29 data sources, 23 context fields, 17 functions. | db.ts, context-bus.ts, intelligence/verify/route.ts |
 
 ## Intelligence Capabilities (Existing)
 
@@ -449,6 +450,16 @@
   - [x] Proactive intelligence: low confidence (urgency 8) + 3+ risk factors (urgency 7)
   - [x] Instruction 20: forecast-aware reasoning guidance
 - [x] **Self-correcting forecasts (cycle 24)**: calibration-learned bias multiplier applied to predicted days (capped ±30%, conservative 50% correction factor)
+
+### AE. Engagement Velocity (NEW cycle 29)
+- [x] `computeEngagementVelocity()`: per-investor meeting frequency acceleration
+  - [x] Compares recent (0-14d) vs previous (15-28d) meeting counts
+  - [x] Classification: accelerating, decelerating, stable, new, gone_silent
+  - [x] Metrics: days since last meeting, avg days between meetings
+  - [x] Signal text generated per investor
+- [x] `engagementVelocity` field in FullContext (29th data source)
+  - [x] ENGAGEMENT VELOCITY section: concerning (silent/slowing) + accelerating investors
+  - [x] 2 synthesis rules: gone-silent T1-2, velocity-enthusiasm contradiction
 
 ### AD. Meeting Density + FOMO Dynamics (NEW cycle 27)
 - [x] `computeMeetingDensity()`: 12-week meeting distribution analysis

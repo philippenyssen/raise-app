@@ -17,6 +17,7 @@ import {
   getPipelineRankings,
   computeMeetingDensity,
   detectFomoDynamics,
+  computeEngagementVelocity,
 } from '@/lib/db';
 import { createClient } from '@libsql/client';
 
@@ -133,6 +134,7 @@ export async function GET() {
       { field: 'pipelineRankings', cycle: 26 },
       { field: 'meetingDensity', cycle: 27 },
       { field: 'fomoDynamics', cycle: 27 },
+      { field: 'engagementVelocity', cycle: 29 },
     ];
 
     for (const { field, cycle } of expectedFields) {
@@ -170,6 +172,7 @@ export async function GET() {
     { name: 'getPipelineRankings', fn: () => getPipelineRankings(), cycle: 26 },
     { name: 'computeMeetingDensity', fn: () => computeMeetingDensity(), cycle: 27 },
     { name: 'detectFomoDynamics', fn: () => detectFomoDynamics(), cycle: 27 },
+    { name: 'computeEngagementVelocity', fn: () => computeEngagementVelocity(), cycle: 29 },
   ];
 
   for (const fc of functionChecks) {

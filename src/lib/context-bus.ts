@@ -38,8 +38,9 @@ import {
   getPipelineRankings,
   computeMeetingDensity,
   detectFomoDynamics,
+  computeEngagementVelocity,
 } from './db';
-import type { TemporalTrends, RaiseForecast, ForecastCalibration, WinLossPatterns, ScoreReversal, PipelineRanking, MeetingDensity, FomoDynamic } from './db';
+import type { TemporalTrends, RaiseForecast, ForecastCalibration, WinLossPatterns, ScoreReversal, PipelineRanking, MeetingDensity, FomoDynamic, EngagementVelocity } from './db';
 
 // ---------------------------------------------------------------------------
 // Context version — monotonically increasing counter
@@ -297,6 +298,9 @@ export interface FullContext {
 
   // FOMO dynamics — competitive pressure from advancing investors (cycle 27)
   fomoDynamics: FomoDynamic[];
+
+  // Engagement velocity — per-investor meeting frequency acceleration (cycle 29)
+  engagementVelocity: EngagementVelocity[];
 }
 
 const recentChanges: ContextChange[] = [];
@@ -341,6 +345,7 @@ export async function getFullContext(): Promise<FullContext> {
     pipelineRankingsData,
     meetingDensityData,
     fomoDynamicsData,
+    engagementVelocityData,
   ] = await Promise.all([
     getRaiseConfig().catch(() => null),
     getAllDocuments().catch(() => []),
@@ -370,6 +375,7 @@ export async function getFullContext(): Promise<FullContext> {
     getPipelineRankings().catch(() => []),
     computeMeetingDensity().catch(() => null),
     detectFomoDynamics().catch(() => []),
+    computeEngagementVelocity().catch(() => []),
   ]);
 
   // Build investor snapshots enriched with meeting/task/followup data
@@ -666,6 +672,9 @@ export async function getFullContext(): Promise<FullContext> {
     // Meeting density and FOMO dynamics (cycle 27)
     meetingDensity: (meetingDensityData as MeetingDensity | null),
     fomoDynamics: (fomoDynamicsData as FomoDynamic[]),
+
+    // Engagement velocity (cycle 29)
+    engagementVelocity: (engagementVelocityData as EngagementVelocity[]),
   };
 
   cachedContext = context;
@@ -984,6 +993,20 @@ export function contextToSystemPrompt(ctx: FullContext): string {
     lines.push('');
   }
 
+  // Engagement velocity — per-investor meeting frequency trends (cycle 29)
+  const concerningVelocity = ctx.engagementVelocity.filter(v => v.acceleration === 'gone_silent' || v.acceleration === 'decelerating');
+  const acceleratingVelocity = ctx.engagementVelocity.filter(v => v.acceleration === 'accelerating');
+  if (concerningVelocity.length > 0 || acceleratingVelocity.length > 0) {
+    lines.push('ENGAGEMENT VELOCITY (meeting frequency trends by investor):');
+    for (const v of concerningVelocity.slice(0, 5)) {
+      lines.push(`- [${v.acceleration === 'gone_silent' ? 'SILENT' : 'SLOWING'}] ${v.investorName} (T${v.tier}): ${v.signal}`);
+    }
+    for (const v of acceleratingVelocity.slice(0, 3)) {
+      lines.push(`- [ACCELERATING] ${v.investorName} (T${v.tier}): ${v.signal}`);
+    }
+    lines.push('');
+  }
+
   // Score reversals — significant drops (cycle 26)
   if (ctx.scoreReversals.length > 0) {
     lines.push('SCORE REVERSALS (significant score drops since last snapshot):');
@@ -1154,6 +1177,20 @@ export function contextToSystemPrompt(ctx: FullContext): string {
         synthesisLines.push(`SIGNAL MISMATCH: Health metrics are improving but critical path investor${stalledCritical.length > 1 ? 's' : ''} ${stalledCritical.map(i => i.name).join(', ')} ${stalledCritical.length > 1 ? 'are' : 'is'} stalled — improving averages may mask that the most important investors aren't progressing`);
       }
     }
+  }
+
+  // Engagement velocity synthesis (cycle 29)
+  const silentT1T2 = ctx.engagementVelocity.filter(v => v.acceleration === 'gone_silent' && v.tier <= 2);
+  if (silentT1T2.length > 0) {
+    synthesisLines.push(`GONE SILENT: ${silentT1T2.map(v => `${v.investorName} (T${v.tier}, ${v.daysSinceLastMeeting}d)`).join(', ')} — high-tier investors have stopped engaging. This is a strong negative signal — investigate or deprioritize.`);
+  }
+  const deceleratingHighEnthusiasm = ctx.engagementVelocity.filter(v => {
+    if (v.acceleration !== 'decelerating') return false;
+    const inv = ctx.investors.find(i => i.id === v.investorId);
+    return inv && inv.enthusiasm >= 4;
+  });
+  if (deceleratingHighEnthusiasm.length > 0) {
+    synthesisLines.push(`VELOCITY CONTRADICTION: ${deceleratingHighEnthusiasm.map(v => v.investorName).join(', ')} show high enthusiasm but decelerating meeting frequency — gap between stated interest and behavior`);
   }
 
   // Meeting density + FOMO synthesis (cycle 27)
