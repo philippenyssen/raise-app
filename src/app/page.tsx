@@ -508,11 +508,23 @@ export default function Dashboard() {
                     borderRadius: 'var(--radius-xl)',
                     padding: 'var(--space-6)',
                     cursor: 'pointer',
-                    transition: 'border-color 0.15s ease',
+                    transition: 'border-color 0.15s ease, box-shadow 0.15s ease',
+                    position: 'relative',
+                    overflow: 'hidden',
                   }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--accent)'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--accent)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 0 20px rgba(124, 110, 240, 0.08)'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; (e.currentTarget as HTMLElement).style.boxShadow = 'none'; }}
                 >
+                  {/* Top accent gradient line */}
+                  <div style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: '3px',
+                    background: `linear-gradient(90deg, ${amountColor} 0%, transparent ${Math.max(pct, 5)}%, transparent 100%)`,
+                    borderRadius: 'var(--radius-xl) var(--radius-xl) 0 0',
+                  }} />
                   <div className="flex items-baseline gap-3" style={{ marginBottom: 'var(--space-4)' }}>
                     <span style={{
                       fontSize: 'var(--font-size-3xl)',
@@ -545,6 +557,7 @@ export default function Dashboard() {
                         borderRadius: '4px',
                         background: amountColor,
                         transition: 'width 0.4s ease',
+                        boxShadow: `0 0 10px ${amountColor === 'var(--success)' ? 'rgba(52, 211, 153, 0.4)' : amountColor === 'var(--warning)' ? 'rgba(234, 179, 8, 0.4)' : 'rgba(240, 96, 112, 0.4)'}`,
                       }} />
                     </div>
                     {velocity?.summary?.raise_days_elapsed != null && velocity?.summary?.raise_target_days != null && (

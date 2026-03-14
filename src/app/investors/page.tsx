@@ -378,8 +378,12 @@ export default function InvestorsPage() {
                     background: isSelected
                       ? 'var(--accent-muted)'
                       : isHovered
-                        ? 'var(--surface-1)'
+                        ? 'var(--surface-2)'
                         : 'transparent',
+                    borderLeft: isHovered && !isSelected
+                      ? '3px solid var(--accent)'
+                      : '3px solid transparent',
+                    transition: 'background 100ms ease, border-left 100ms ease',
                   }}
                   onMouseEnter={() => setHoveredRow(inv.id)}
                   onMouseLeave={() => setHoveredRow(null)}
@@ -419,11 +423,19 @@ export default function InvestorsPage() {
                       inv.tier === 1 ? 'tier-1' :
                       inv.tier === 2 ? 'tier-2' :
                       inv.tier === 3 ? 'tier-3' : ''
-                    }`} style={inv.tier === 4 ? {
-                      background: 'var(--surface-2)',
-                      color: 'var(--text-muted)',
-                      border: '1px solid var(--border-subtle)',
-                    } : undefined}>
+                    }`} style={
+                      inv.tier === 1
+                        ? { boxShadow: '0 0 10px rgba(124, 110, 240, 0.4), 0 0 4px rgba(124, 110, 240, 0.2)' }
+                        : inv.tier === 2
+                          ? { boxShadow: '0 0 10px rgba(240, 176, 96, 0.35), 0 0 4px rgba(240, 176, 96, 0.15)' }
+                          : inv.tier === 3
+                            ? { boxShadow: '0 0 8px rgba(255, 255, 255, 0.06)' }
+                            : {
+                                background: 'var(--surface-2)',
+                                color: 'var(--text-muted)',
+                                border: '1px solid var(--border-subtle)',
+                              }
+                    }>
                       {inv.tier}
                     </span>
                   </td>
@@ -437,12 +449,20 @@ export default function InvestorsPage() {
                       style={{
                         background: (STATUS_STYLES[inv.status] || STATUS_STYLES.identified).background,
                         color: (STATUS_STYLES[inv.status] || STATUS_STYLES.identified).color,
-                        borderRadius: 'var(--radius-sm)',
-                        padding: '0.25rem 0.5rem',
+                        borderRadius: '9999px',
+                        padding: '0.2rem 1.5rem 0.2rem 0.625rem',
                         fontSize: 'var(--font-size-xs)',
-                        fontWeight: 500,
-                        border: 'none',
+                        fontWeight: 600,
+                        border: '1px solid transparent',
                         cursor: 'pointer',
+                        letterSpacing: '0.01em',
+                        lineHeight: '1.5',
+                        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath d='M3 5l3 3 3-3' stroke='${encodeURIComponent((STATUS_STYLES[inv.status] || STATUS_STYLES.identified).color)}' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`,
+                        backgroundRepeat: 'no-repeat',
+                        backgroundPosition: 'right 0.4rem center',
+                        backgroundSize: '10px',
+                        appearance: 'none',
+                        WebkitAppearance: 'none',
                       }}
                     >
                       {Object.entries(STATUS_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}

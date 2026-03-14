@@ -35,8 +35,17 @@ const TYPE_LABELS: Record<string, string> = {
   deck: 'Presentation Deck',
   one_pager: 'One-Pager',
   exec_brief: 'Executive Brief',
+  exec_summary: 'Executive Summary',
   custom: 'Custom Document',
 };
+
+function formatTypeLabel(type: string): string {
+  if (TYPE_LABELS[type]) return TYPE_LABELS[type];
+  // Convert UPPER_SNAKE or lower_snake to Title Case
+  return type
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, c => c.toUpperCase());
+}
 
 const STATUS_STYLES: Record<string, React.CSSProperties> = {
   draft: { backgroundColor: 'var(--warning-muted)', color: 'var(--warning)' },
@@ -290,8 +299,14 @@ export default function DocumentsPage() {
         <div className="space-y-8">
           {Object.entries(grouped).map(([type, typeDocs]) => (
             <div key={type}>
-              <h2 className="text-xs font-medium mb-3 uppercase" style={{ color: 'var(--text-tertiary)' }}>
-                {TYPE_LABELS[type] || type} ({typeDocs.length})
+              <h2 className="mb-3" style={{
+                fontSize: 'var(--font-size-xs)',
+                fontWeight: 600,
+                color: 'var(--text-tertiary)',
+                letterSpacing: '0.05em',
+                textTransform: 'uppercase' as const,
+              }}>
+                {formatTypeLabel(type)} ({typeDocs.length})
               </h2>
               <div className="space-y-2">
                 {typeDocs.map(doc => {
@@ -302,10 +317,18 @@ export default function DocumentsPage() {
                       key={doc.id}
                       className="rounded-xl p-4 transition-colors flex items-center justify-between"
                       style={{
+                        position: 'relative' as const,
                         border: docFlags.length > 0
                           ? '1px solid color-mix(in srgb, var(--warning) 20%, transparent)'
                           : `1px solid ${hoverStates[docKey] ? 'var(--border-default)' : 'var(--border-subtle)'}`,
-                        backgroundColor: docFlags.length > 0 ? 'color-mix(in srgb, var(--warning) 3%, transparent)' : 'transparent',
+                        backgroundColor: docFlags.length > 0
+                          ? 'color-mix(in srgb, var(--warning) 3%, transparent)'
+                          : hoverStates[docKey]
+                            ? 'var(--surface-2)'
+                            : 'transparent',
+                        borderLeft: docFlags.length > 0
+                          ? '3px solid var(--warning)'
+                          : '3px solid var(--accent)',
                       }}
                       onMouseEnter={() => setHover(docKey, true)}
                       onMouseLeave={() => setHover(docKey, false)}
