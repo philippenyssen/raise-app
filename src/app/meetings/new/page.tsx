@@ -217,7 +217,7 @@ export default function NewMeetingPage() {
             <div>
               <h3 className="text-xs font-medium mb-2" style={{ color: 'var(--text-tertiary)' }}>QUESTIONS ASKED</h3>
               <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-                {JSON.parse(String(result.questions_asked) || '[]').map((q: { text: string; topic: string }, i: number) => (
+                {((() => { try { return JSON.parse(String(result.questions_asked) || '[]'); } catch { return []; } })()).map((q: { text: string; topic: string }, i: number) => (
                   <div key={i} className="flex gap-2 mb-1">
                     <span className="text-xs px-1.5 py-0.5 rounded shrink-0" style={{ background: 'var(--surface-2)', color: 'var(--text-muted)' }}>{q.topic}</span>
                     <span>{q.text}</span>
@@ -231,7 +231,7 @@ export default function NewMeetingPage() {
             <div>
               <h3 className="text-xs font-medium mb-2" style={{ color: 'var(--text-tertiary)' }}>OBJECTIONS</h3>
               <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-                {JSON.parse(String(result.objections) || '[]').map((o: { text: string; severity: string }, i: number) => (
+                {((() => { try { return JSON.parse(String(result.objections) || '[]'); } catch { return []; } })()).map((o: { text: string; severity: string }, i: number) => (
                   <div key={i} className="flex gap-2 mb-1">
                     <span className="text-xs px-1.5 py-0.5 rounded shrink-0" style={{
                       background: o.severity === 'showstopper' ? 'var(--danger-muted)' :

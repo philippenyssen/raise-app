@@ -483,8 +483,10 @@ export default function EnrichmentPage() {
             </div>
           ) : (
             jobs.map(job => {
-              const sources = JSON.parse(job.sources || '[]');
-              const errors = JSON.parse(job.errors || '[]');
+              let sources: string[] = [];
+              let errors: string[] = [];
+              try { sources = JSON.parse(job.sources || '[]'); } catch { /* use default */ }
+              try { errors = JSON.parse(job.errors || '[]'); } catch { /* use default */ }
               return (
                 <div key={job.id} className="card" style={{ padding: 'var(--space-3) var(--space-4)' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

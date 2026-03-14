@@ -114,6 +114,11 @@ Rules:
       overall_assessment: string;
       missing_sections: string[];
       strongest_sections: string[];
+    } = {
+      suggestions: [],
+      overall_assessment: 'Could not analyze document.',
+      missing_sections: [],
+      strongest_sections: [],
     };
 
     try {
@@ -121,14 +126,7 @@ Rules:
     } catch {
       const jsonMatch = text.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
-        result = JSON.parse(jsonMatch[0]);
-      } else {
-        result = {
-          suggestions: [],
-          overall_assessment: 'Could not analyze document.',
-          missing_sections: [],
-          strongest_sections: [],
-        };
+        try { result = JSON.parse(jsonMatch[0]); } catch { /* use default */ }
       }
     }
 

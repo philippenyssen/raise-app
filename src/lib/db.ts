@@ -534,7 +534,8 @@ export async function setConfig(key: string, value: string) {
 
 export async function getRaiseConfig(): Promise<RaiseConfig | null> {
   const raw = await getConfig('raise_config');
-  return raw ? JSON.parse(raw) : null;
+  if (!raw) return null;
+  try { return JSON.parse(raw); } catch { return null; }
 }
 
 export async function setRaiseConfig(config: RaiseConfig) {

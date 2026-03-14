@@ -9,7 +9,7 @@ export async function GET() {
     const results: Record<string, unknown> = {};
     for (const key of ALLOWED_KEYS) {
       const raw = await getConfig(key);
-      results[key] = raw ? JSON.parse(raw) : null;
+      if (raw) { try { results[key] = JSON.parse(raw); } catch { results[key] = null; } } else { results[key] = null; }
     }
     return NextResponse.json(results);
   } catch (error) {

@@ -258,23 +258,24 @@ export async function POST(req: NextRequest) {
       recommended_ask: string;
     };
 
+    const briefFallback = {
+      personalized_opening: narrative.openingHook,
+      key_talking_points: narrative.emphasis,
+      metrics_to_highlight: narrative.keyMetrics.map(m => ({ metric: m, value: 'See model', why: 'Key for this investor type' })),
+      anticipated_questions_with_answers: anticipatedQuestions.map(q => ({ question: q, suggested_answer: 'Prepare specific data point.' })),
+      previous_meeting_summary: null,
+      unresolved_items: [] as string[],
+      risks_to_watch: [] as string[],
+      recommended_ask: 'Push for next milestone in process.',
+    };
     try {
       briefContent = JSON.parse(aiSummary);
     } catch {
       const jsonMatch = aiSummary.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
-        briefContent = JSON.parse(jsonMatch[0]);
+        try { briefContent = JSON.parse(jsonMatch[0]); } catch { briefContent = briefFallback; }
       } else {
-        briefContent = {
-          personalized_opening: narrative.openingHook,
-          key_talking_points: narrative.emphasis,
-          metrics_to_highlight: narrative.keyMetrics.map(m => ({ metric: m, value: 'See model', why: 'Key for this investor type' })),
-          anticipated_questions_with_answers: anticipatedQuestions.map(q => ({ question: q, suggested_answer: 'Prepare specific data point.' })),
-          previous_meeting_summary: null,
-          unresolved_items: [],
-          risks_to_watch: [],
-          recommended_ask: 'Push for next milestone in process.',
-        };
+        briefContent = briefFallback;
       }
     }
 

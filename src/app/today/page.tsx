@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { useToast } from '@/components/toast';
 import {
@@ -300,6 +300,8 @@ export default function TodayPage() {
   const [data, setData] = useState<BriefingData | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [stalenessMinutes, setStalenessMinutes] = useState(0);
+  const lastFetchedAt = useRef<number>(Date.now());
 
   const fetchBriefing = useCallback(async (silent = false) => {
     if (!silent) setLoading(true);
@@ -308,6 +310,8 @@ export default function TodayPage() {
       const res = await fetch('/api/briefing');
       if (res.ok) {
         setData(await res.json());
+        lastFetchedAt.current = Date.now();
+        setStalenessMinutes(0);
       } else {
         if (!silent) toast('Failed to load briefing', 'error');
       }
@@ -321,8 +325,14 @@ export default function TodayPage() {
 
   useEffect(() => {
     fetchBriefing();
-    const interval = setInterval(() => fetchBriefing(true), 5 * 60 * 1000);
-    return () => clearInterval(interval);
+    const refreshInterval = setInterval(() => fetchBriefing(true), 5 * 60 * 1000);
+    const stalenessInterval = setInterval(() => {
+      setStalenessMinutes(Math.floor((Date.now() - lastFetchedAt.current) / 60000));
+    }, 30000);
+    return () => {
+      clearInterval(refreshInterval);
+      clearInterval(stalenessInterval);
+    };
   }, [fetchBriefing]);
 
   // Loading skeleton
@@ -396,11 +406,22 @@ export default function TodayPage() {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)', maxWidth: '860px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)', maxWidth: '860px', position: 'relative' }}>
 
-      {/* ----------------------------------------------------------------- */}
-      {/* 1. Greeting Section                                               */}
-      {/* ----------------------------------------------------------------- */}
+      {refreshing && (
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: '2px',
+          background: 'var(--accent)',
+          borderRadius: '1px',
+          animation: 'pulse 1.5s ease-in-out infinite',
+          zIndex: 10,
+        }} />
+      )}
+
       <div className="flex items-start justify-between">
         <div>
           <div className="flex items-center gap-3">
@@ -429,6 +450,39 @@ export default function TodayPage() {
                 {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
               </p>
             </div>
+          </div>
+
+          <div className="flex items-center gap-2" style={{ marginTop: '6px' }}>
+            <span style={{
+              fontSize: 'var(--font-size-xs)',
+              color: stalenessMinutes >= 5 ? 'var(--warning)' : 'var(--text-muted)',
+              transition: 'color 300ms ease',
+            }}>
+              {stalenessMinutes < 1 ? 'Updated just now' : `Updated ${stalenessMinutes}m ago`}
+            </span>
+            <button
+              onClick={() => fetchBriefing(true)}
+              disabled={refreshing}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '20px',
+                height: '20px',
+                borderRadius: 'var(--radius-sm)',
+                border: 'none',
+                background: 'transparent',
+                cursor: refreshing ? 'default' : 'pointer',
+                color: stalenessMinutes >= 5 ? 'var(--warning)' : 'var(--text-muted)',
+                opacity: refreshing ? 0.5 : 1,
+                transition: 'color 300ms ease, opacity 150ms ease',
+                padding: 0,
+              }}
+            >
+              <span style={{ display: 'flex', animation: refreshing ? 'spin 1s linear infinite' : 'none' }}>
+                <RefreshCw className="w-3 h-3" />
+              </span>
+            </button>
           </div>
 
           <p style={{
@@ -478,10 +532,10 @@ export default function TodayPage() {
               <Calendar className="w-8 h-8" style={{ color: 'var(--text-muted)' }} />
             </span>
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', fontWeight: 500 }}>
-              No meetings today
+              No meetings scheduled today
             </p>
             <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginTop: '4px' }}>
-              Use the time for follow-ups and investor outreach
+              Time to focus on follow-ups?
             </p>
             <div className="flex items-center justify-center gap-2" style={{ marginTop: 'var(--space-3)' }}>
               <Link href="/followups" className="btn btn-secondary btn-sm">
@@ -519,10 +573,10 @@ export default function TodayPage() {
               <CheckCircle className="w-8 h-8" style={{ color: 'var(--success)' }} />
             </span>
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', fontWeight: 500 }}>
-              All caught up
+              All caught up!
             </p>
             <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginTop: '4px' }}>
-              No urgent actions right now. Review the{' '}
+              Your pipeline is humming. Check the{' '}
               <Link href="/focus" style={{ color: 'var(--accent)' }}>Focus Queue</Link>
               {' '}for proactive moves.
             </p>
