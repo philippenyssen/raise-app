@@ -315,6 +315,11 @@ export default function TodayPage() {
     tasksCompleted: number;
     activityFeed: string[];
   } | null>(null);
+  const [dueFollowups, setDueFollowups] = useState<{
+    id: string; investor_id: string; investor_name: string;
+    action_type: string; description: string; due_at: string; status: string;
+  }[]>([]);
+  const [completingFollowupId, setCompletingFollowupId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [stalenessMinutes, setStalenessMinutes] = useState(0);
@@ -338,10 +343,11 @@ export default function TodayPage() {
 
     // Non-blocking: fetch velocity (for raise day counter), strategic insight, and pulse
     try {
-      const [stratRes, velRes, pulseRes] = await Promise.all([
+      const [stratRes, velRes, pulseRes, fuRes] = await Promise.all([
         fetch('/api/intelligence/strategic').catch(() => null),
         fetch('/api/velocity').catch(() => null),
         fetch('/api/pulse').catch(() => null),
+        fetch('/api/followups?status=pending').catch(() => null),
       ]);
       if (stratRes?.ok) {
         const stratData = await stratRes.json();
@@ -374,6 +380,15 @@ export default function TodayPage() {
           });
         }
       }
+      if (fuRes?.ok) {
+        const fuData = await fuRes.json();
+        const today = new Date().toISOString().split('T')[0];
+        const due = (Array.isArray(fuData) ? fuData : []).filter((f: { due_at: string; status: string }) => {
+          const dueDate = f.due_at?.split('T')[0];
+          return f.status === 'pending' && dueDate && dueDate <= today;
+        });
+        setDueFollowups(due);
+      }
     } catch {
       // Non-blocking
     } finally {
@@ -393,6 +408,38 @@ export default function TodayPage() {
       clearInterval(stalenessInterval);
     };
   }, [fetchBriefing]);
+
+  async function handleQuickComplete(id: string) {
+    setCompletingFollowupId(id);
+    try {
+      await fetch('/api/followups', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status: 'completed' }),
+      });
+      setDueFollowups(prev => prev.filter(f => f.id !== id));
+      toast('Follow-up completed', 'success');
+    } catch {
+      toast('Failed to complete', 'error');
+    }
+    setCompletingFollowupId(null);
+  }
+
+  async function handleQuickSkip(id: string) {
+    setCompletingFollowupId(id);
+    try {
+      await fetch('/api/followups', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status: 'skipped' }),
+      });
+      setDueFollowups(prev => prev.filter(f => f.id !== id));
+      toast('Follow-up skipped', 'success');
+    } catch {
+      toast('Failed to skip', 'error');
+    }
+    setCompletingFollowupId(null);
+  }
 
   // Loading skeleton
   if (loading) {
@@ -741,6 +788,75 @@ export default function TodayPage() {
           </div>
         )}
       </div>
+
+      {/* ----------------------------------------------------------------- */}
+      {/* 3.5 Due Follow-ups (inline quick-complete)                        */}
+      {/* ----------------------------------------------------------------- */}
+      {dueFollowups.length > 0 && (
+        <div>
+          <div className="flex items-center justify-between">
+            <div className="section-title">Follow-ups Due</div>
+            <Link href="/followups" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', textDecoration: 'underline' }}>
+              View all
+            </Link>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+            {dueFollowups.map(fu => {
+              const isOverdue = fu.due_at?.split('T')[0] < new Date().toISOString().split('T')[0];
+              const typeConfig: Record<string, { label: string; color: string; bg: string }> = {
+                thank_you: { label: 'Thank You', color: 'var(--accent)', bg: 'var(--accent-muted)' },
+                objection_response: { label: 'Objection', color: 'var(--danger)', bg: 'var(--danger-muted)' },
+                data_share: { label: 'Share Docs', color: '#c084fc', bg: 'rgba(168,85,247,0.12)' },
+                schedule_followup: { label: 'Schedule', color: 'var(--success)', bg: 'var(--success-muted)' },
+                warm_reengagement: { label: 'Re-engage', color: 'var(--warning)', bg: 'var(--warning-muted)' },
+                milestone_update: { label: 'Update', color: '#fb923c', bg: 'rgba(251,146,60,0.12)' },
+              };
+              const tc = typeConfig[fu.action_type] || { label: fu.action_type, color: 'var(--text-tertiary)', bg: 'var(--surface-2)' };
+              const isProcessing = completingFollowupId === fu.id;
+              return (
+                <div key={fu.id} className="card" style={{ padding: 'var(--space-3)', opacity: isProcessing ? 0.5 : 1, transition: 'opacity 150ms' }}>
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs px-2 py-0.5 rounded shrink-0" style={{ background: tc.bg, color: tc.color, fontWeight: 500 }}>
+                      {tc.label}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <p className="truncate" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)' }}>
+                        {fu.description}
+                      </p>
+                      <div className="flex items-center gap-2" style={{ marginTop: '2px' }}>
+                        <Link href={`/investors/${fu.investor_id}`} style={{ fontSize: '11px', color: 'var(--accent)', textDecoration: 'none' }}>
+                          {fu.investor_name}
+                        </Link>
+                        {isOverdue && (
+                          <span style={{ fontSize: '10px', color: 'var(--danger)', fontWeight: 600 }}>OVERDUE</span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1 shrink-0">
+                      <button
+                        onClick={() => handleQuickComplete(fu.id)}
+                        disabled={isProcessing}
+                        className="btn btn-sm"
+                        style={{ background: 'var(--success-muted)', color: 'var(--success)', border: '1px solid rgba(34,197,94,0.25)', fontSize: '11px', padding: '3px 10px' }}
+                      >
+                        Done
+                      </button>
+                      <button
+                        onClick={() => handleQuickSkip(fu.id)}
+                        disabled={isProcessing}
+                        className="btn btn-sm"
+                        style={{ background: 'var(--surface-2)', color: 'var(--text-muted)', fontSize: '11px', padding: '3px 8px' }}
+                      >
+                        Skip
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* ----------------------------------------------------------------- */}
       {/* 4. Pipeline Pulse                                                 */}
