@@ -985,6 +985,34 @@ async function computeIntelligenceBriefing(
     }
   } catch { /* non-blocking */ }
 
+  // Follow-up conviction signals — capitalize on positive momentum (cycle 37)
+  if (fullCtx.recentFollowupSignals.length > 0) {
+    const positive = fullCtx.recentFollowupSignals.filter(s => s.convictionDelta > 0);
+    const negative = fullCtx.recentFollowupSignals.filter(s => s.convictionDelta < 0);
+
+    if (positive.length > 0) {
+      const names = positive.slice(0, 3).map(s => `${s.investorName || s.investorId} (+${s.convictionDelta})`).join(', ');
+      insights.push({
+        type: 'opportunity',
+        title: `Follow-up momentum: ${positive.length} positive signal${positive.length > 1 ? 's' : ''}`,
+        detail: `Recent follow-ups lifted conviction: ${names}. Momentum peaks 24-72h post-completion.`,
+        action: `Schedule next touchpoint with ${positive[0].investorName || positive[0].investorId} within 2-3 days to capitalize.`,
+        dataSource: 'followup_signals',
+      });
+    }
+
+    if (negative.length > 0) {
+      const names = negative.slice(0, 2).map(s => `${s.investorName || s.investorId} (${s.convictionDelta})`).join(', ');
+      insights.push({
+        type: 'risk',
+        title: `Follow-up backfire: ${negative.length} conviction drop${negative.length > 1 ? 's' : ''}`,
+        detail: `Follow-ups decreased conviction for ${names}. Likely messaging misalignment.`,
+        action: `Review what was communicated vs. what they needed. Prepare corrective data for next contact.`,
+        dataSource: 'followup_signals',
+      });
+    }
+  }
+
   // Sort: critical first, then opportunity, then risk, then trend
   const typeOrder: Record<string, number> = { critical: 0, opportunity: 1, risk: 2, trend: 3 };
   insights.sort((a, b) => (typeOrder[a.type] ?? 3) - (typeOrder[b.type] ?? 3));

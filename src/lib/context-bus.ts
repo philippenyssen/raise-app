@@ -40,6 +40,7 @@ import {
   detectFomoDynamics,
   computeEngagementVelocity,
   computeNetworkCascades,
+  getRecentFollowupSignals,
 } from './db';
 import type { TemporalTrends, RaiseForecast, ForecastCalibration, WinLossPatterns, ScoreReversal, PipelineRanking, MeetingDensity, FomoDynamic, EngagementVelocity, NetworkCascade } from './db';
 
@@ -305,6 +306,16 @@ export interface FullContext {
 
   // Network cascade intelligence (cycle 32)
   networkCascades: NetworkCascade[];
+
+  // Recent follow-up completion signals with conviction deltas (cycle 37)
+  recentFollowupSignals: Array<{
+    investorId: string;
+    investorName: string | null;
+    convictionDelta: number;
+    actionType: string;
+    completedAt: string;
+    hoursAgo: number;
+  }>;
 }
 
 const recentChanges: ContextChange[] = [];
@@ -351,6 +362,7 @@ export async function getFullContext(): Promise<FullContext> {
     fomoDynamicsData,
     engagementVelocityData,
     networkCascadesData,
+    recentFollowupSignalsData,
   ] = await Promise.all([
     getRaiseConfig().catch(() => null),
     getAllDocuments().catch(() => []),
@@ -382,6 +394,7 @@ export async function getFullContext(): Promise<FullContext> {
     detectFomoDynamics().catch(() => []),
     computeEngagementVelocity().catch(() => []),
     computeNetworkCascades().catch(() => []),
+    getRecentFollowupSignals().catch(() => []),
   ]);
 
   // Build investor snapshots enriched with meeting/task/followup data
@@ -682,6 +695,7 @@ export async function getFullContext(): Promise<FullContext> {
     // Engagement velocity (cycle 29)
     engagementVelocity: (engagementVelocityData as EngagementVelocity[]),
     networkCascades: (networkCascadesData as NetworkCascade[]),
+    recentFollowupSignals: (recentFollowupSignalsData as Array<{ investorId: string; investorName: string | null; convictionDelta: number; actionType: string; completedAt: string; hoursAgo: number }>),
   };
 
   cachedContext = context;
@@ -889,6 +903,16 @@ export function contextToSystemPrompt(ctx: FullContext): string {
       }
       lines.push('');
     }
+  }
+
+  // Recent follow-up signals — conviction deltas from last 24h (cycle 37)
+  if (ctx.recentFollowupSignals.length > 0) {
+    lines.push('RECENT FOLLOW-UP SIGNALS (conviction movement in last 24h):');
+    for (const sig of ctx.recentFollowupSignals.slice(0, 8)) {
+      const deltaStr = sig.convictionDelta > 0 ? `+${sig.convictionDelta}` : `${sig.convictionDelta}`;
+      lines.push(`- ${sig.investorName || sig.investorId}: ${sig.actionType} → conviction ${deltaStr} (${sig.hoursAgo}h ago)`);
+    }
+    lines.push('');
   }
 
   // Pipeline flow (bottleneck and velocity intelligence)
@@ -1262,6 +1286,18 @@ export function contextToSystemPrompt(ctx: FullContext): string {
     }
   }
 
+  // Follow-up signal synthesis: capitalize on positive momentum or diagnose negative (cycle 37)
+  const positiveFollowups = ctx.recentFollowupSignals.filter(s => s.convictionDelta > 0);
+  const negativeFollowups = ctx.recentFollowupSignals.filter(s => s.convictionDelta < 0);
+  if (positiveFollowups.length > 0) {
+    const top = positiveFollowups.slice(0, 3).map(s => `${s.investorName || s.investorId} (+${s.convictionDelta})`).join(', ');
+    synthesisLines.push(`MOMENTUM: ${positiveFollowups.length} follow-up(s) with positive conviction: ${top} — schedule next touchpoint within 48h to capitalize`);
+  }
+  if (negativeFollowups.length > 0) {
+    const top = negativeFollowups.slice(0, 2).map(s => `${s.investorName || s.investorId} (${s.convictionDelta})`).join(', ');
+    synthesisLines.push(`FOLLOW-UP BACKFIRE: ${top} — conviction dropped after follow-up. Review messaging alignment before next contact.`);
+  }
+
   // Cross-system: high-tier investors with low engagement but long stage dwell (cycle 22)
   for (const inv of ctx.investors) {
     if (inv.tier <= 2 && inv.meetingCount === 0 && inv.daysInCurrentStage > 14 && inv.status !== 'identified') {
@@ -1320,7 +1356,7 @@ export function getContextStats(ctx: FullContext): {
 } {
   const prompt = contextToSystemPrompt(ctx);
   return {
-    dataSources: 29, // manually tracked
+    dataSources: 31, // manually tracked
     contextFields: Object.keys(ctx).length,
     investorCount: ctx.investors.length,
     synthesisRules: (prompt.match(/INTELLIGENCE SYNTHESIS/g) || []).length > 0

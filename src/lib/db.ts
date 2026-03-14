@@ -6,7 +6,7 @@ export interface AccelerationAction {
   id: string;
   investor_id: string;
   investor_name: string | null;
-  trigger_type: 'momentum_cliff' | 'stall_risk' | 'window_closing' | 'catalyst_match' | 'competitive_pressure' | 'term_sheet_ready';
+  trigger_type: 'momentum_cliff' | 'stall_risk' | 'window_closing' | 'catalyst_match' | 'competitive_pressure' | 'term_sheet_ready' | 'cascade_bottleneck' | 'velocity_decay';
   action_type: 'milestone_share' | 'expert_call' | 'site_visit' | 'competitive_signal' | 'warm_reintro' | 'data_update' | 'escalation' | 'fomo_outreach';
   description: string;
   expected_lift: number;
@@ -2600,6 +2600,98 @@ export async function getOverdueFollowups(): Promise<FollowupAction[]> {
   return result.rows as unknown as FollowupAction[];
 }
 
+/**
+ * Backfill investor enthusiasm from recent completed follow-ups (cycle 37).
+ * Recalculates enthusiasm by blending current value with recency-weighted
+ * conviction_delta from follow-ups completed in the last 7 days.
+ */
+export async function backfillEnthusiasmFromFollowups(
+  investorId: string
+): Promise<void> {
+  await ensureInitialized();
+  const db = getClient();
+
+  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+
+  const result = await db.execute({
+    sql: `SELECT conviction_delta, completed_at FROM followup_actions
+          WHERE investor_id = ? AND status = 'completed'
+            AND completed_at IS NOT NULL AND completed_at >= ?
+            AND conviction_delta IS NOT NULL
+          ORDER BY completed_at DESC`,
+    args: [investorId, sevenDaysAgo],
+  });
+
+  const followups = result.rows as unknown as { conviction_delta: number; completed_at: string }[];
+  if (followups.length === 0) return;
+
+  const now = Date.now();
+  let weightedSum = 0;
+  let weightSum = 0;
+  for (const fu of followups) {
+    const ageD = (now - new Date(fu.completed_at).getTime()) / (1000 * 60 * 60 * 24);
+    const weight = Math.max(0.3, 1.0 - ageD / 7);
+    weightedSum += fu.conviction_delta * weight;
+    weightSum += weight;
+  }
+  const avgWeightedDelta = weightedSum / weightSum;
+
+  const invResult = await db.execute({
+    sql: `SELECT enthusiasm FROM investors WHERE id = ?`,
+    args: [investorId],
+  });
+  if (invResult.rows.length === 0) return;
+
+  const current = (invResult.rows[0] as unknown as { enthusiasm: number }).enthusiasm || 3;
+  const deltaInfluence = avgWeightedDelta * 0.3; // max ±1.5 from follow-ups
+  const newEnthusiasm = Math.max(1, Math.min(5, current + deltaInfluence));
+  const rounded = Math.round(newEnthusiasm * 10) / 10;
+
+  if (Math.abs(rounded - current) >= 0.1) {
+    await db.execute({
+      sql: `UPDATE investors SET enthusiasm = ?, updated_at = datetime('now') WHERE id = ?`,
+      args: [rounded, investorId],
+    });
+  }
+}
+
+/**
+ * Get recent follow-up completion signals for context bus (cycle 37).
+ * Returns follow-ups completed in last 24h with their conviction deltas.
+ */
+export async function getRecentFollowupSignals(): Promise<Array<{
+  investorId: string;
+  investorName: string | null;
+  convictionDelta: number;
+  actionType: string;
+  completedAt: string;
+  hoursAgo: number;
+}>> {
+  await ensureInitialized();
+  const result = await getClient().execute({
+    sql: `SELECT investor_id, investor_name, conviction_delta, action_type, completed_at
+          FROM followup_actions
+          WHERE status = 'completed' AND completed_at IS NOT NULL
+            AND completed_at >= datetime('now', '-24 hours')
+            AND conviction_delta IS NOT NULL
+          ORDER BY completed_at DESC`,
+    args: [],
+  });
+
+  const now = Date.now();
+  return (result.rows as unknown as Array<{
+    investor_id: string; investor_name: string | null;
+    conviction_delta: number; action_type: string; completed_at: string;
+  }>).map(r => ({
+    investorId: r.investor_id,
+    investorName: r.investor_name,
+    convictionDelta: r.conviction_delta,
+    actionType: r.action_type,
+    completedAt: r.completed_at,
+    hoursAgo: Math.round((now - new Date(r.completed_at).getTime()) / (60 * 60 * 1000)),
+  }));
+}
+
 export async function deleteFollowup(id: string): Promise<void> {
   await ensureInitialized();
   await getClient().execute({ sql: 'DELETE FROM followup_actions WHERE id = ?', args: [id] });
@@ -4337,9 +4429,69 @@ export async function generateAutoActions(): Promise<AutoActionResult> {
     }
   } catch { /* non-blocking */ }
 
+  // --- Rule 12: cascade_bottleneck (network bottleneck investor stalled/slow) --- (cycle 36)
+  try {
+    if (!shouldSkipRule('cascade_bottleneck', 'escalation')) {
+      const cascades = await computeNetworkCascades();
+      for (const cascade of cascades.slice(0, 3)) {
+        if (!cascade.networkBottleneck) continue;
+        // Query bottleneck investor for stale check
+        const bnResult = await db.execute({ sql: `SELECT id, name, updated_at, created_at FROM investors WHERE id = ? LIMIT 1`, args: [cascade.networkBottleneck.investorId] });
+        if (bnResult.rows.length === 0) continue;
+        const bottleneckInv = bnResult.rows[0] as unknown as { id: string; name: string; updated_at: string; created_at: string };
+        // Only act if bottleneck is stalled or slow
+        const daysSinceUpdate = Math.round((Date.now() - new Date(bottleneckInv.updated_at || bottleneckInv.created_at).getTime()) / (1000 * 60 * 60 * 24));
+        if (daysSinceUpdate < 14) continue; // not stalled yet
+        patternsDetected++;
+        if (!(await hasDuplicateAction(bottleneckInv.id, 'escalation'))) {
+          const action = await createAccelerationAction({
+            investor_id: bottleneckInv.id,
+            investor_name: bottleneckInv.name,
+            trigger_type: 'cascade_bottleneck',
+            action_type: 'escalation',
+            description: `[AUTO-CASCADE] ${bottleneckInv.name} is the network bottleneck in ${cascade.keystoneName}'s cascade chain (${cascade.cascadeChain.length} downstream). Stalled for ${daysSinceUpdate}d. If this investor passes, the cascade collapses. Escalate immediately.`,
+            expected_lift: 15,
+            confidence: 'high',
+            status: 'pending',
+            actual_lift: null,
+            executed_at: null,
+          });
+          actionsCreated.push(action);
+        } else { skippedDuplicate++; }
+      }
+    }
+  } catch { /* non-blocking */ }
+
+  // --- Rule 13: velocity_decay (high-tier investor engagement decelerating) --- (cycle 36)
+  try {
+    if (!shouldSkipRule('velocity_decay', 'warm_reintro')) {
+      const velocities = await computeEngagementVelocity();
+      for (const vel of velocities) {
+        if (vel.tier > 2) continue; // only T1-2
+        if (vel.acceleration !== 'gone_silent' && vel.acceleration !== 'decelerating') continue;
+        patternsDetected++;
+        if (!(await hasDuplicateAction(vel.investorId, 'warm_reintro'))) {
+          const action = await createAccelerationAction({
+            investor_id: vel.investorId,
+            investor_name: vel.investorName,
+            trigger_type: 'velocity_decay',
+            action_type: 'warm_reintro',
+            description: `[AUTO-VELOCITY] ${vel.investorName} (T${vel.tier}) is ${vel.acceleration === 'gone_silent' ? 'SILENT' : 'decelerating'} — ${vel.signal}. Re-engage with milestone update or competitive timing signal before they disengage permanently.`,
+            expected_lift: vel.acceleration === 'gone_silent' ? 10 : 8,
+            confidence: 'medium',
+            status: 'pending',
+            actual_lift: null,
+            executed_at: null,
+          });
+          actionsCreated.push(action);
+        } else { skippedDuplicate++; }
+      }
+    }
+  } catch { /* non-blocking */ }
+
   return {
     actionsCreated,
-    rulesEvaluated: AUTO_ACTION_RULES.length + 6, // +1 Rule 6-11
+    rulesEvaluated: AUTO_ACTION_RULES.length + 8, // +1 Rule 6-13
     patternsDetected,
     skippedDuplicate,
     skippedIneffective,

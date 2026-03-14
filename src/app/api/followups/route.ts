@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getFollowups, createFollowup, updateFollowup, getPendingFollowups, getOverdueFollowups } from '@/lib/db';
+import { getFollowups, createFollowup, updateFollowup, getPendingFollowups, getOverdueFollowups, backfillEnthusiasmFromFollowups } from '@/lib/db';
 import type { FollowupActionType, FollowupStatus } from '@/lib/types';
 import { emitContextChange } from '@/lib/context-bus';
 
@@ -68,5 +68,15 @@ export async function PUT(req: NextRequest) {
 
   await updateFollowup(id, updates);
   emitContextChange('followup_updated', `Follow-up ${id} ${status || 'updated'}`);
+
+  // Backfill investor enthusiasm from follow-up conviction delta (cycle 37)
+  if (status === 'completed' && conviction_delta !== undefined) {
+    const { searchParams } = new URL(req.url);
+    const invId = body.investor_id || searchParams.get('investor_id');
+    if (invId) {
+      backfillEnthusiasmFromFollowups(invId).catch(() => {/* non-blocking */});
+    }
+  }
+
   return NextResponse.json({ ok: true });
 }

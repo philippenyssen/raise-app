@@ -39,6 +39,8 @@
 | 33 | 2026-03-14 | Investor-Specific Deep Scoring in Workspace AI | On-demand 11-dimension score computation for queried investor. AI workspace now sees: STRENGTHS (strong dimensions), FRICTION POINTS (weak dimensions with evidence), overall score/momentum/prediction, DEAL HEAT (composite with drivers), engagement velocity, network cascade power. Enables AI to diagnose fit gaps, identify hidden friction, suggest dimension-specific moves. | workspace/route.ts |
 | 34 | 2026-03-14 | Pulse + Strategic Intelligence Consumption | Pulse dashboard now surfaces 6 real-time signal layers: investor momentum (accelerating/decelerating/gone_silent), network cascades (keystone→chain→bottleneck), pipeline movement (rising/falling), FOMO opportunities, meeting health, win/loss insights. Strategic assessment gets 3 new recommendations: engagement velocity deterioration, network bottleneck risk, FOMO window. Recommendation cap raised 5→7. | pulse/route.ts, intelligence/strategic/route.ts |
 | 35 | 2026-03-14 | Meeting Intelligence Enrichment | Meeting brief AI prompt now includes real-time tactical intelligence: engagement velocity + silence risk, FOMO competitive levers, network cascade dependencies, win/loss predictors. Meeting prep API returns tacticalIntelligence section (velocity, FOMO pressure, cascade dependency, win/loss signal). Frontline meeting execution now informed by all computed intelligence. | meeting-brief/route.ts, meetings/prep/route.ts |
+| 36 | 2026-03-14 | Auto-Action Expansion: Cascade + Velocity | 2 new auto-action rules: Rule 12 (`cascade_bottleneck`) detects network bottleneck investors stalled 14+ days and creates escalation actions. Rule 13 (`velocity_decay`) detects T1-2 investors with gone_silent/decelerating velocity and creates warm_reintro actions. trigger_type union extended with `cascade_bottleneck` and `velocity_decay`. Total auto-action rules: 13 (11 base + 2 new). | db.ts |
+| 37 | 2026-03-14 | Follow-up Conviction Feedback Loop | Closed dead-end: conviction_delta from completed follow-ups now backfills investor enthusiasm (recency-weighted 7d window, ±1.5 max influence). New `getRecentFollowupSignals()` surfaces 24h conviction deltas. Context bus: `recentFollowupSignals` field (25th), system prompt RECENT FOLLOW-UP SIGNALS section, 2 synthesis rules (momentum capitalize, backfire diagnose). Pulse: follow-up uplift/backfire insights. 31 data sources, 25 context fields. | db.ts, context-bus.ts, followups/route.ts, pulse/route.ts |
 
 ## Intelligence Capabilities (Existing)
 
@@ -225,6 +227,8 @@
   - [x] **Rule 7: `compound_signal` — very_high confidence compound signals → escalation action with expected_lift 15 (NEW cycle 13)**
   - [x] **Rule 9: `critical_path_stalled` — critical path investors stalled >21 days → escalation action with expected_lift 14 (NEW cycle 19)**
   - [x] **Rule 10: `dormant_high_tier` — T1-2 investors at non-identified stage with zero meetings for 14+ days → warm_reintro action (NEW cycle 22)**
+  - [x] **Rule 12: `cascade_bottleneck` — network bottleneck investor stalled 14+ days → escalation action with expected_lift 16 (NEW cycle 36)**
+  - [x] **Rule 13: `velocity_decay` — T1-2 investors with gone_silent or decelerating velocity → warm_reintro action (NEW cycle 36)**
 - [x] Duplicate prevention: checks for same investor_id + trigger_type within last 7 days before creating
 - [x] All auto-actions prefixed with `[AUTO]` for identification
 - [x] POST `/api/intelligence/auto-actions` — triggers engine, emits context changes
