@@ -9,7 +9,7 @@ import {
   Clock, Target, Users, Zap, Briefcase, UserCheck, BookOpen,
   RefreshCw, Loader2, Trash2, ClipboardList, Check, FileSearch,
   Gauge, ArrowUpRight, ArrowRight, ArrowDownRight, Minus, ShieldAlert, Lightbulb,
-  Activity, AlertCircle
+  Activity, AlertCircle, Database, ChevronDown, ChevronRight, ExternalLink
 } from 'lucide-react';
 import { useToast } from '@/components/toast';
 
@@ -60,7 +60,21 @@ interface ConvictionTrajectoryData {
   confidenceLevel: 'high' | 'medium' | 'low';
 }
 
-type IntelTab = 'overview' | 'partners' | 'portfolio' | 'research' | 'tasks';
+interface EnrichmentRecord {
+  id: string;
+  investor_id: string;
+  source_id: string;
+  field_name: string;
+  field_value: string;
+  category: string;
+  confidence: number;
+  source_url: string;
+  fetched_at: string;
+  stale_after: string;
+  created_at: string;
+}
+
+type IntelTab = 'overview' | 'partners' | 'portfolio' | 'research' | 'tasks' | 'enrichment';
 
 export default function InvestorDetailPage() {
   const params = useParams();
@@ -75,6 +89,9 @@ export default function InvestorDetailPage() {
   const [score, setScore] = useState<InvestorScoreData | null>(null);
   const [scoreLoading, setScoreLoading] = useState(false);
   const [trajectory, setTrajectory] = useState<ConvictionTrajectoryData | null>(null);
+  const [enrichmentRecords, setEnrichmentRecords] = useState<EnrichmentRecord[]>([]);
+  const [enrichmentLoading, setEnrichmentLoading] = useState(false);
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [researching, setResearching] = useState(false);
   const [intelTab, setIntelTab] = useState<IntelTab>('overview');
@@ -98,6 +115,18 @@ export default function InvestorDetailPage() {
     } catch { /* ignore trajectory errors */ }
   }, [id]);
 
+  const fetchEnrichment = useCallback(async () => {
+    setEnrichmentLoading(true);
+    try {
+      const res = await fetch(`/api/enrichment?action=records&investor_id=${id}`);
+      if (res.ok) {
+        const data = await res.json();
+        setEnrichmentRecords(Array.isArray(data) ? data : []);
+      }
+    } catch { /* ignore enrichment errors */ }
+    setEnrichmentLoading(false);
+  }, [id]);
+
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
@@ -119,7 +148,7 @@ export default function InvestorDetailPage() {
     setLoading(false);
   }, [id]);
 
-  useEffect(() => { fetchData(); fetchScore(); }, [fetchData, fetchScore]);
+  useEffect(() => { fetchData(); fetchScore(); fetchEnrichment(); }, [fetchData, fetchScore, fetchEnrichment]);
 
   async function handleResearch() {
     if (!investor) return;
@@ -377,6 +406,7 @@ export default function InvestorDetailPage() {
             { key: 'partners' as IntelTab, label: `Partners (${partners.length})`, icon: UserCheck },
             { key: 'portfolio' as IntelTab, label: `Portfolio (${portfolio.length})`, icon: Briefcase },
             { key: 'tasks' as IntelTab, label: `Tasks (${tasks.filter(t => t.status !== 'done').length})`, icon: ClipboardList },
+            { key: 'enrichment' as IntelTab, label: `Enriched (${enrichmentRecords.length})`, icon: Database },
             { key: 'research' as IntelTab, label: `Research (${briefs.length})`, icon: BookOpen },
           ]).map(t => (
             <button
@@ -685,6 +715,23 @@ export default function InvestorDetailPage() {
                 </div>
               )}
             </div>
+          )}
+
+          {/* Enriched Intelligence Tab */}
+          {intelTab === 'enrichment' && (
+            <EnrichmentPanel
+              records={enrichmentRecords}
+              loading={enrichmentLoading}
+              expandedCategories={expandedCategories}
+              onToggleCategory={(cat: string) => {
+                setExpandedCategories(prev => {
+                  const next = new Set(prev);
+                  if (next.has(cat)) next.delete(cat); else next.add(cat);
+                  return next;
+                });
+              }}
+              onRefresh={fetchEnrichment}
+            />
           )}
 
           {/* Research Tab */}
@@ -1086,6 +1133,233 @@ function ConvictionTrajectoryPanel({ trajectory }: { trajectory: ConvictionTraje
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Enriched Intelligence Panel
+// ---------------------------------------------------------------------------
+
+const CATEGORY_LABELS: Record<string, string> = {
+  identity: 'Identity',
+  financials: 'Financials',
+  strategy: 'Strategy',
+  people: 'People',
+  portfolio: 'Portfolio',
+  process: 'Process',
+  contact: 'Contact',
+  regulatory: 'Regulatory',
+  corporate: 'Corporate',
+  media: 'Media',
+  relationships: 'Relationships',
+};
+
+const CATEGORY_COLORS: Record<string, { bg: string; color: string }> = {
+  identity: { bg: 'var(--surface-2)', color: 'var(--text-tertiary)' },
+  financials: { bg: 'var(--success-muted)', color: 'var(--success)' },
+  strategy: { bg: 'var(--accent-muted)', color: 'var(--accent)' },
+  people: { bg: 'rgba(168, 85, 247, 0.12)', color: '#c084fc' },
+  portfolio: { bg: 'var(--warning-muted)', color: 'var(--warning)' },
+  process: { bg: 'var(--accent-muted)', color: 'var(--accent)' },
+  contact: { bg: 'var(--surface-2)', color: 'var(--text-tertiary)' },
+  regulatory: { bg: 'var(--danger-muted)', color: 'var(--danger)' },
+  corporate: { bg: 'var(--surface-2)', color: 'var(--text-tertiary)' },
+  media: { bg: 'rgba(168, 85, 247, 0.12)', color: '#c084fc' },
+  relationships: { bg: 'var(--accent-muted)', color: 'var(--accent)' },
+};
+
+function confidenceColor(confidence: number): string {
+  if (confidence >= 0.8) return 'var(--success)';
+  if (confidence >= 0.6) return 'var(--accent)';
+  if (confidence >= 0.4) return 'var(--warning)';
+  return 'var(--danger)';
+}
+
+function confidenceBg(confidence: number): string {
+  if (confidence >= 0.8) return 'var(--success-muted)';
+  if (confidence >= 0.6) return 'var(--accent-muted)';
+  if (confidence >= 0.4) return 'var(--warning-muted)';
+  return 'var(--danger-muted)';
+}
+
+function EnrichmentPanel({
+  records,
+  loading,
+  expandedCategories,
+  onToggleCategory,
+  onRefresh,
+}: {
+  records: EnrichmentRecord[];
+  loading: boolean;
+  expandedCategories: Set<string>;
+  onToggleCategory: (cat: string) => void;
+  onRefresh: () => void;
+}) {
+  const [hoveredRefresh, setHoveredRefresh] = useState(false);
+  const [hoveredRow, setHoveredRow] = useState<string | null>(null);
+
+  if (loading) {
+    return (
+      <div className="flex items-center gap-3 py-6 justify-center">
+        <Loader2 className="w-4 h-4 animate-spin" style={{ color: 'var(--text-muted)' }} />
+        <span className="text-sm" style={{ color: 'var(--text-muted)' }}>Loading enrichment data...</span>
+      </div>
+    );
+  }
+
+  if (records.length === 0) {
+    return (
+      <div className="text-center py-6">
+        <Database className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--text-muted)' }} />
+        <p className="text-sm mb-3" style={{ color: 'var(--text-muted)' }}>No enrichment data yet. Run research to pull financials, strategy, people, and more.</p>
+        <button
+          onClick={onRefresh}
+          onMouseEnter={() => setHoveredRefresh(true)}
+          onMouseLeave={() => setHoveredRefresh(false)}
+          className="px-3 py-1.5 rounded-lg text-sm flex items-center gap-2 mx-auto"
+          style={{
+            background: hoveredRefresh ? 'var(--accent-hover)' : 'var(--accent)',
+            color: 'white',
+            transition: 'background 150ms ease',
+          }}
+        >
+          <RefreshCw className="w-3.5 h-3.5" /> Refresh
+        </button>
+      </div>
+    );
+  }
+
+  // Group records by category
+  const grouped: Record<string, EnrichmentRecord[]> = {};
+  for (const rec of records) {
+    const cat = rec.category || 'other';
+    if (!grouped[cat]) grouped[cat] = [];
+    grouped[cat].push(rec);
+  }
+
+  // Sort categories by number of records (largest first)
+  const sortedCategories = Object.keys(grouped).sort((a, b) => grouped[b].length - grouped[a].length);
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <Database className="w-3.5 h-3.5" style={{ color: 'var(--text-tertiary)' }} />
+          <span className="text-xs font-medium uppercase" style={{ color: 'var(--text-tertiary)' }}>
+            {records.length} enriched fields across {sortedCategories.length} categories
+          </span>
+        </div>
+        <button
+          onClick={onRefresh}
+          onMouseEnter={() => setHoveredRefresh(true)}
+          onMouseLeave={() => setHoveredRefresh(false)}
+          className="text-xs flex items-center gap-1"
+          style={{
+            color: hoveredRefresh ? 'var(--text-secondary)' : 'var(--text-muted)',
+            transition: 'color 150ms ease',
+          }}
+        >
+          <RefreshCw className="w-3 h-3" /> Refresh
+        </button>
+      </div>
+
+      {sortedCategories.map(cat => {
+        const catRecords = grouped[cat];
+        const isExpanded = expandedCategories.has(cat);
+        const catLabel = CATEGORY_LABELS[cat] || cat.charAt(0).toUpperCase() + cat.slice(1);
+        const catColor = CATEGORY_COLORS[cat] || { bg: 'var(--surface-2)', color: 'var(--text-tertiary)' };
+        const avgConfidence = catRecords.reduce((sum, r) => sum + r.confidence, 0) / catRecords.length;
+
+        return (
+          <div key={cat} className="rounded-lg overflow-hidden" style={{ border: '1px solid var(--border-default)' }}>
+            <button
+              onClick={() => onToggleCategory(cat)}
+              className="w-full flex items-center justify-between px-4 py-3"
+              style={{ background: isExpanded ? 'var(--surface-1)' : 'transparent', transition: 'background 150ms ease' }}
+              onMouseEnter={e => { if (!isExpanded) e.currentTarget.style.background = 'var(--surface-1)'; }}
+              onMouseLeave={e => { if (!isExpanded) e.currentTarget.style.background = 'transparent'; }}
+            >
+              <div className="flex items-center gap-3">
+                <span
+                  className="text-xs px-2 py-0.5 rounded font-medium"
+                  style={{ background: catColor.bg, color: catColor.color }}
+                >
+                  {catLabel}
+                </span>
+                <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{catRecords.length} field{catRecords.length !== 1 ? 's' : ''}</span>
+                <span
+                  className="text-[10px] px-1.5 py-0.5 rounded"
+                  style={{ background: confidenceBg(avgConfidence), color: confidenceColor(avgConfidence) }}
+                >
+                  {Math.round(avgConfidence * 100)}% avg confidence
+                </span>
+              </div>
+              <div style={{ color: 'var(--text-muted)' }}>
+                {isExpanded
+                  ? <ChevronDown className="w-4 h-4" />
+                  : <ChevronRight className="w-4 h-4" />
+                }
+              </div>
+            </button>
+
+            {isExpanded && (
+              <div style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                {catRecords.map(rec => (
+                  <div
+                    key={rec.id}
+                    className="flex items-start gap-3 px-4 py-2.5"
+                    style={{
+                      borderBottom: '1px solid var(--border-subtle)',
+                      background: hoveredRow === rec.id ? 'var(--surface-1)' : 'transparent',
+                      transition: 'background 150ms ease',
+                    }}
+                    onMouseEnter={() => setHoveredRow(rec.id)}
+                    onMouseLeave={() => setHoveredRow(null)}
+                  >
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <span className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>
+                          {rec.field_name.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
+                        </span>
+                        <span
+                          className="text-[10px] px-1.5 py-0.5 rounded font-medium"
+                          style={{ background: confidenceBg(rec.confidence), color: confidenceColor(rec.confidence) }}
+                        >
+                          {Math.round(rec.confidence * 100)}%
+                        </span>
+                      </div>
+                      <p className="text-sm break-words" style={{ color: 'var(--text-primary)' }}>
+                        {rec.field_value.length > 300 ? rec.field_value.slice(0, 300) + '...' : rec.field_value}
+                      </p>
+                      <div className="flex items-center gap-3 mt-1">
+                        <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
+                          Source: {rec.source_id}
+                        </span>
+                        <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
+                          Updated: {rec.fetched_at ? new Date(rec.fetched_at).toLocaleDateString() : '---'}
+                        </span>
+                        {rec.source_url && (
+                          <a
+                            href={rec.source_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[10px] flex items-center gap-0.5"
+                            style={{ color: 'var(--accent)' }}
+                            onClick={e => e.stopPropagation()}
+                          >
+                            <ExternalLink className="w-2.5 h-2.5" /> Link
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }
