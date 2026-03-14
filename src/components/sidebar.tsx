@@ -264,6 +264,30 @@ export function Sidebar() {
             borderTop: '1px solid var(--border-subtle)',
           }}
         >
+          {!collapsed && (
+            <div
+              className="flex items-center justify-center"
+              style={{
+                fontSize: '10px',
+                color: 'var(--text-muted)',
+                padding: '0 var(--space-2) var(--space-2)',
+              }}
+            >
+              <kbd
+                style={{
+                  background: 'var(--surface-2)',
+                  border: '1px solid var(--border-subtle)',
+                  borderRadius: '3px',
+                  padding: '1px 5px',
+                  fontSize: '10px',
+                  marginRight: '4px',
+                }}
+              >
+                ⌘K
+              </kbd>
+              to search
+            </div>
+          )}
           <button
             onClick={async () => {
               await fetch('/api/auth', { method: 'DELETE' });
