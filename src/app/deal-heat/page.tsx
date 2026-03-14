@@ -136,16 +136,11 @@ export default function DealHeatPage() {
     <div className="flex-1 p-6" style={{ maxWidth: '1400px', margin: '0 auto' }}>
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-4" style={{ marginBottom: 'var(--space-6)' }}>
-        <div className="flex items-center gap-3">
-          <span style={{ color: 'var(--text-primary)' }}>
-            <Flame className="w-7 h-7" />
-          </span>
-          <div>
-            <h1 className="page-title">Deal Heat Map</h1>
-            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', marginTop: '2px' }}>
-              Composite deal temperature across {counts.total} active investors
-            </p>
-          </div>
+        <div>
+          <h1 className="page-title">Deal Heat Map</h1>
+          <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', marginTop: '2px' }}>
+            Composite deal temperature across {counts.total} active investors
+          </p>
         </div>
         <div
           className="flex items-center gap-2"

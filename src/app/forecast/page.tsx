@@ -211,16 +211,11 @@ export default function ForecastPage() {
     <div className="page-content flex-1 p-6" style={{ maxWidth: '1400px', margin: '0 auto' }}>
       {/* Header */}
       <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-6)' }}>
-        <div className="flex items-center gap-3">
-          <span style={{ color: 'var(--accent)' }}>
-            <BarChart3 className="w-7 h-7" />
-          </span>
-          <div>
-            <h1 className="page-title">Raise Forecast</h1>
-            <p className="page-subtitle">
-              {totalActive} active investor{totalActive !== 1 ? 's' : ''} &middot; Expected close {formatDate(forecast.expectedCloseDate)}
-            </p>
-          </div>
+        <div>
+          <h1 className="page-title">Raise Forecast</h1>
+          <p className="page-subtitle">
+            {totalActive} active investor{totalActive !== 1 ? 's' : ''} &middot; Expected close {formatDate(forecast.expectedCloseDate)}
+          </p>
         </div>
         <div className="flex items-center gap-2">
           <span
