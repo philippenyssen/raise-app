@@ -429,14 +429,97 @@ function MeetingPrepContent() {
           </div>
         </div>
 
-        {/* No investor selected */}
-        {!selectedId && (
+        {/* No investor selected — smart suggestions */}
+        {!selectedId && !loading && investors.length > 0 && (() => {
+          // Prioritize: active investors sorted by tier then enthusiasm descending
+          const active = investors.filter(i =>
+            !['passed', 'dropped', 'closed', 'identified'].includes(i.status)
+          );
+          const byPriority = [...active].sort((a, b) => {
+            if (a.tier !== b.tier) return a.tier - b.tier;
+            return (b.enthusiasm ?? 0) - (a.enthusiasm ?? 0);
+          });
+          const suggested = byPriority.slice(0, 6);
+
+          return (
+            <div className="space-y-4">
+              <div
+                className="rounded-xl p-6"
+                style={{ border: '1px solid var(--border-default)', background: 'var(--surface-1)' }}
+              >
+                <div className="flex items-center gap-2 mb-1">
+                  <Sparkles className="w-4 h-4" style={{ color: 'var(--accent)' }} />
+                  <h3 className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
+                    Who are you meeting?
+                  </h3>
+                </div>
+                <p className="text-xs mb-4" style={{ color: 'var(--text-muted)' }}>
+                  Select an investor above or quick-pick from your active pipeline. AI will generate a personalized brief with talking points, objection prep, and data room priorities.
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                  {suggested.map(inv => {
+                    const statusLabel = STATUS_LABELS[inv.status] || inv.status;
+                    return (
+                      <button
+                        key={inv.id}
+                        onClick={() => setSelectedId(inv.id)}
+                        className="flex items-center gap-3 p-3 rounded-lg text-left transition-colors"
+                        style={{
+                          background: 'var(--surface-0)',
+                          border: '1px solid var(--border-subtle)',
+                        }}
+                        onMouseEnter={e => {
+                          e.currentTarget.style.borderColor = 'var(--accent)';
+                          e.currentTarget.style.background = 'var(--accent-muted)';
+                        }}
+                        onMouseLeave={e => {
+                          e.currentTarget.style.borderColor = 'var(--border-subtle)';
+                          e.currentTarget.style.background = 'var(--surface-0)';
+                        }}
+                      >
+                        <div
+                          className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-xs font-bold"
+                          style={{ background: 'var(--accent-muted)', color: 'var(--accent)' }}
+                        >
+                          T{inv.tier}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-sm font-medium truncate" style={{ color: 'var(--text-primary)' }}>
+                            {inv.name}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{statusLabel}</span>
+                            {(inv.enthusiasm ?? 0) > 0 && (
+                              <span className="flex gap-0.5">
+                                {[1,2,3,4,5].map(n => (
+                                  <span
+                                    key={n}
+                                    className="w-1.5 h-1.5 rounded-full inline-block"
+                                    style={{ background: n <= (inv.enthusiasm ?? 0) ? 'var(--accent)' : 'var(--surface-3)' }}
+                                  />
+                                ))}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <ChevronRight className="w-3.5 h-3.5 shrink-0" style={{ color: 'var(--text-muted)' }} />
+                      </button>
+                    );
+                  })}
+                </div>
+                {active.length > 6 && (
+                  <p className="text-xs mt-3 text-center" style={{ color: 'var(--text-muted)' }}>
+                    + {active.length - 6} more in pipeline — use the dropdown above to search
+                  </p>
+                )}
+              </div>
+            </div>
+          );
+        })()}
+        {!selectedId && !loading && investors.length === 0 && (
           <div className="rounded-xl p-12 text-center" style={{ border: '1px dashed var(--border-default)' }}>
-            <span className="block mx-auto mb-3 w-10 h-10" style={{ color: 'var(--surface-3)' }}>
-              <Users className="w-10 h-10" />
-            </span>
-            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Select an investor above to load their engagement history and generate a personalized brief.</p>
-            <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>{investors.length} investors in pipeline</p>
+            <Users className="w-10 h-10 mx-auto mb-3" style={{ color: 'var(--surface-3)' }} />
+            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No investors in pipeline yet.</p>
           </div>
         )}
 
