@@ -347,7 +347,8 @@ export default function InvestorsPage() {
           overflow: 'hidden',
         }}
       >
-        <table style={{ width: '100%', fontSize: 'var(--font-size-sm)' }}>
+        <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+        <table style={{ width: '100%', minWidth: '900px', fontSize: 'var(--font-size-sm)' }}>
           <thead className="table-header">
             <tr>
               <th style={{ width: '2.5rem', padding: 'var(--space-3) var(--space-4)' }}>
@@ -535,6 +536,7 @@ export default function InvestorsPage() {
             })}
           </tbody>
         </table>
+        </div>
         {filtered.length === 0 && (
           <div style={{
             padding: 'var(--space-8)',
