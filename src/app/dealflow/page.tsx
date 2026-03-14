@@ -456,9 +456,13 @@ export default function DealflowPage() {
                         /objection|concern|pushback/i.test(inv.bottleneck) ? `/objections` :
                         `/investors/${inv.id}`
                       }
-                      style={{ color: 'var(--warning)', textDecoration: 'underline', textDecorationStyle: 'dotted', textUnderlineOffset: '2px' }}
+                      className="inline-flex items-center gap-1"
+                      style={{ color: 'var(--warning)', textDecoration: 'none' }}
+                      onMouseEnter={e => { e.currentTarget.style.color = '#fbbf24'; }}
+                      onMouseLeave={e => { e.currentTarget.style.color = 'var(--warning)'; }}
                     >
-                      {inv.bottleneck}
+                      <span className="truncate">{inv.bottleneck}</span>
+                      <ArrowRight className="w-3 h-3 shrink-0" style={{ opacity: 0.7 }} />
                     </Link>
                   ) : (
                     <span style={{ color: 'var(--text-muted)' }}>—</span>
@@ -481,8 +485,22 @@ export default function DealflowPage() {
       {/* Empty state */}
       {!loading && !error && filtered.length === 0 && (
         <div className="text-center py-16" style={{ color: 'var(--text-muted)' }}>
-          <span><Users className="w-8 h-8 mx-auto mb-2" /></span>
-          <p>No investors match this filter</p>
+          <Users className="w-8 h-8 mx-auto mb-2" />
+          <p className="text-sm font-medium" style={{ color: 'var(--text-secondary)', marginBottom: 'var(--space-1)' }}>
+            {heatFilter !== 'all' ? `No ${heatFilter} investors` : 'No investors scored yet'}
+          </p>
+          <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+            {heatFilter !== 'all' ? (
+              <button
+                onClick={() => setHeatFilter('all')}
+                style={{ color: 'var(--accent)', textDecoration: 'underline', background: 'none', border: 'none', cursor: 'pointer' }}
+              >
+                Clear filter to see all {investors.length} investors
+              </button>
+            ) : (
+              <>Log meetings to start generating heat scores. <Link href="/meetings/new" style={{ color: 'var(--accent)' }}>Log a meeting</Link></>
+            )}
+          </p>
         </div>
       )}
 
