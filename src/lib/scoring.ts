@@ -172,12 +172,17 @@ export function computeThesisFitScore(
     return { name: 'Thesis Fit', score: 0, signal: 'unknown', evidence: 'No sector thesis data available' };
   }
 
-  // Check for relevant keywords
-  const relevantKeywords = [
-    'space', 'aerospace', 'defense', 'defence', 'satellite', 'deeptech', 'deep tech',
-    'hardware', 'industrial', 'manufacturing', 'climate', 'govtech', 'government',
-    'infrastructure', 'sar', 'earth observation', 'security', 'dual-use', 'dual use',
-    'european', 'europe', 'sovereignty', 'frontier', 'hard tech',
+  // Tiered keyword matching — primary keywords are direct ASL fit
+  const primaryKeywords = [
+    'space', 'aerospace', 'defense', 'defence', 'satellite',
+  ];
+  const secondaryKeywords = [
+    'deeptech', 'deep tech', 'hardware', 'dual-use', 'dual use',
+    'earth observation', 'sar', 'sovereignty', 'govtech', 'hard tech',
+  ];
+  const tertiaryKeywords = [
+    'industrial', 'manufacturing', 'climate', 'government',
+    'infrastructure', 'european', 'europe', 'frontier', 'security',
   ];
   const partialKeywords = [
     'tech', 'b2b', 'enterprise', 'growth', 'generalist',
@@ -185,9 +190,23 @@ export function computeThesisFitScore(
 
   let keywordScore = 0;
   let matchedKeywords: string[] = [];
-  for (const kw of relevantKeywords) {
+  let hasPrimaryMatch = false;
+  for (const kw of primaryKeywords) {
     if (thesis.includes(kw)) {
-      keywordScore += 10;
+      keywordScore += 20;
+      matchedKeywords.push(kw);
+      hasPrimaryMatch = true;
+    }
+  }
+  for (const kw of secondaryKeywords) {
+    if (thesis.includes(kw)) {
+      keywordScore += 12;
+      matchedKeywords.push(kw);
+    }
+  }
+  for (const kw of tertiaryKeywords) {
+    if (thesis.includes(kw)) {
+      keywordScore += 6;
       matchedKeywords.push(kw);
     }
   }
@@ -197,19 +216,26 @@ export function computeThesisFitScore(
       matchedKeywords.push(kw);
     }
   }
+  // Primary keyword match guarantees a meaningful base score
+  if (hasPrimaryMatch && keywordScore < 30) keywordScore = 30;
   keywordScore = Math.min(60, keywordScore);
 
   // Portfolio relevance bonus (0-40): scan portfolio companies for overlap
+  const allRelevantKeywords = [...primaryKeywords, ...secondaryKeywords, ...tertiaryKeywords];
   let portfolioBonus = 0;
   let relevantPortfolio: string[] = [];
   for (const co of portfolio) {
     const sector = (co.sector || '').toLowerCase();
+    const name = (co.company || '').toLowerCase();
     const relevance = (co.relevance || '').toLowerCase();
     if (relevance.includes('synergy') || relevance.includes('relevant')) {
       portfolioBonus += 10;
       relevantPortfolio.push(co.company);
-    } else if (sector && relevantKeywords.some(kw => sector.includes(kw))) {
+    } else if (sector && allRelevantKeywords.some(kw => sector.includes(kw))) {
       portfolioBonus += 8;
+      relevantPortfolio.push(co.company);
+    } else if (['anduril', 'spacex', 'planet', 'rocket lab', 'palantir', 'shield ai', 'relativity'].some(c => name.includes(c))) {
+      portfolioBonus += 10;
       relevantPortfolio.push(co.company);
     }
   }
