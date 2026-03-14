@@ -161,6 +161,35 @@ function buildQueryFocus(
         lines.push(`- ON CRITICAL PATH: This investor is on the critical path to close`);
       }
 
+      // FOMO dynamics affecting this investor (cycle 28)
+      const fomoForInvestor = ctx.fomoDynamics.filter(f =>
+        f.affectedInvestors.some(a => a.name === inv.name)
+      );
+      if (fomoForInvestor.length > 0) {
+        lines.push(`- COMPETITIVE PRESSURE: ${fomoForInvestor.map(f => `${f.advancingInvestor} at ${f.advancingTo}`).join(', ')} — use this as leverage`);
+      }
+
+      // Win/loss pattern matching (cycle 28)
+      if (ctx.winLossPatterns?.loserProfile) {
+        const lp = ctx.winLossPatterns.loserProfile;
+        if (inv.enthusiasm <= lp.avgEnthusiasm && inv.meetingCount >= lp.avgMeetings) {
+          lines.push(`- WARNING: Matches historical loser profile (enthusiasm ${inv.enthusiasm}/5 ≤ ${lp.avgEnthusiasm}, ${inv.meetingCount} meetings ≥ ${lp.avgMeetings}) — probe for real conviction`);
+        }
+      }
+
+      // Score reversal for this investor (cycle 28)
+      const reversal = ctx.scoreReversals.find(r => r.investorId === inv.id);
+      if (reversal) {
+        lines.push(`- SCORE DROP: ${reversal.previousScore}→${reversal.currentScore} (${reversal.delta}) [${reversal.severity}]`);
+      }
+
+      // Pipeline rank (cycle 28)
+      const ranking = ctx.pipelineRankings.find(r => r.investorId === inv.id);
+      if (ranking) {
+        const changeStr = ranking.rankChange > 0 ? ` (↑${ranking.rankChange})` : ranking.rankChange < 0 ? ` (↓${Math.abs(ranking.rankChange)})` : '';
+        lines.push(`- RANK: #${ranking.rank}${changeStr} in pipeline`);
+      }
+
       lines.push(`Prioritize this investor's data in the KEY INVESTORS section. Use their specific objection history, trajectory, and meeting patterns to give targeted advice.`);
     }
   } else if (intent.type === 'strategy') {
@@ -417,7 +446,13 @@ INSTRUCTIONS:
    - Factor predicted close dates into urgency of recommendations — closer predicted closes = higher priority
    - Critical path investors should receive disproportionate attention in strategic advice
    - When forecast confidence is low, acknowledge the uncertainty and suggest actions to improve pipeline predictability
-   - Connect forecast risk factors to specific remediation actions`;
+   - Connect forecast risk factors to specific remediation actions
+
+21. COMPETITIVE DYNAMICS: When COMPETITIVE DYNAMICS (FOMO) data is available:
+   - Proactively suggest using advancing investors as leverage with stalled or slower peers
+   - In investor-specific conversations, reference competitive dynamics: "X is now in DD, you may want to mention process momentum to Y"
+   - Frame meeting requests around competitive urgency when FOMO triggers exist
+   - Use win/loss patterns to identify investors matching loser profiles — suggest direct conviction checks`;
 
   // Compute a lightweight context hash from the context bus version + document length.
   // The client can use this to detect when cached context has changed.

@@ -7,7 +7,7 @@ export interface AccelerationAction {
   investor_id: string;
   investor_name: string | null;
   trigger_type: 'momentum_cliff' | 'stall_risk' | 'window_closing' | 'catalyst_match' | 'competitive_pressure' | 'term_sheet_ready';
-  action_type: 'milestone_share' | 'expert_call' | 'site_visit' | 'competitive_signal' | 'warm_reintro' | 'data_update' | 'escalation';
+  action_type: 'milestone_share' | 'expert_call' | 'site_visit' | 'competitive_signal' | 'warm_reintro' | 'data_update' | 'escalation' | 'fomo_outreach';
   description: string;
   expected_lift: number;
   confidence: 'high' | 'medium' | 'low';
@@ -4102,9 +4102,41 @@ export async function generateAutoActions(): Promise<AutoActionResult> {
     }
   } catch { /* non-blocking */ }
 
+  // --- Rule 11: fomo_trigger (competitive urgency from advancing investors) --- (cycle 28)
+  try {
+    if (!shouldSkipRule('competitive_pressure', 'fomo_outreach')) {
+      const fomos = await detectFomoDynamics();
+      for (const fomo of fomos) {
+        if (fomo.fomoIntensity !== 'high') continue; // only auto-act on high-intensity FOMO
+        for (const affected of fomo.affectedInvestors.slice(0, 2)) { // top 2 per trigger
+          patternsDetected++;
+          // Build a synthetic investor ID lookup
+          const invResult = await db.execute({ sql: `SELECT id FROM investors WHERE name = ? LIMIT 1`, args: [affected.name] });
+          const invId = invResult.rows.length > 0 ? invResult.rows[0].id as string : null;
+          if (!invId) continue;
+          if (!(await hasDuplicateAction(invId, 'fomo_outreach'))) {
+            const action = await createAccelerationAction({
+              investor_id: invId,
+              investor_name: affected.name,
+              trigger_type: 'competitive_pressure',
+              action_type: 'fomo_outreach',
+              description: `[AUTO-FOMO] ${fomo.advancingInvestor} has reached ${fomo.advancingTo} — create competitive urgency with ${affected.name} (T${affected.tier}, at "${affected.status}"). Mention process is advancing with other investors.`,
+              expected_lift: 12,
+              confidence: 'medium',
+              status: 'pending',
+              actual_lift: null,
+              executed_at: null,
+            });
+            actionsCreated.push(action);
+          } else { skippedDuplicate++; }
+        }
+      }
+    }
+  } catch { /* non-blocking */ }
+
   return {
     actionsCreated,
-    rulesEvaluated: AUTO_ACTION_RULES.length + 5, // +1 Rule 6-10
+    rulesEvaluated: AUTO_ACTION_RULES.length + 6, // +1 Rule 6-11
     patternsDetected,
     skippedDuplicate,
     skippedIneffective,
