@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
   BarChart3, TrendingUp, AlertTriangle, Shield, Clock,
@@ -131,35 +131,32 @@ export default function ForecastPage() {
       .catch(e => { setError(e.message); setLoading(false); });
   }, []);
 
-  // useMemo MUST be called before any early returns (Rules of Hooks)
+  // Compute what-if scenario without useMemo to avoid hooks ordering issues
   const hasExclusions = excludedIds.size > 0;
-  const whatIf = useMemo(() => {
-    if (!data || !hasExclusions) return null;
+  let whatIf: {
+    expected: number; bestCase: number; committed: number;
+    excludedCapital: number; excludedCount: number;
+    high: number; medium: number; low: number;
+  } | null = null;
+  if (data && hasExclusions) {
     const included = data.forecast.forecasts.filter(f => !excludedIds.has(f.investorId));
     const committed = included.filter(f => f.currentStage === 'term_sheet' || f.currentStage === 'closed');
     const high = included.filter(f => f.confidence === 'high');
     const med = included.filter(f => f.confidence === 'medium');
-
     const committedAmt = committed.reduce((s, i) => s + tierCapital(i.tier), 0);
     const expectedAmt = high.reduce((s, i) => s + tierCapital(i.tier), 0) + med.reduce((s, i) => s + tierCapital(i.tier), 0) * 0.5;
     const bestCaseAmt = included.reduce((s, i) => s + tierCapital(i.tier), 0);
-
     const excludedCapital = [...excludedIds].reduce((s, id) => {
       const inv = data.forecast.forecasts.find(f => f.investorId === id);
       return s + (inv ? tierCapital(inv.tier) : 0);
     }, 0);
-
-    return {
-      expected: committedAmt + expectedAmt,
-      bestCase: bestCaseAmt,
-      committed: committedAmt,
-      excludedCapital,
-      excludedCount: excludedIds.size,
-      high: high.length,
-      medium: med.length,
+    whatIf = {
+      expected: committedAmt + expectedAmt, bestCase: bestCaseAmt, committed: committedAmt,
+      excludedCapital, excludedCount: excludedIds.size,
+      high: high.length, medium: med.length,
       low: included.filter(f => f.confidence === 'low').length,
     };
-  }, [excludedIds, hasExclusions, data]);
+  }
 
   if (loading) {
     return (
