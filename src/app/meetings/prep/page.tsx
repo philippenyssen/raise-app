@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import {
   Users, Calendar, AlertTriangle, CheckCircle, MessageSquare,
-  ChevronDown, Printer, Briefcase, Target, Shield, Clock,
+  ChevronDown, Printer, Target, Shield, Clock,
   TrendingUp, Star, FileText, Loader2, BookOpen, Building2,
   ArrowLeft, Zap, CircleDot, ExternalLink, Sparkles,
   ListChecks, MessageCircleQuestion, FolderOpen, ChevronRight,
@@ -383,10 +383,7 @@ function MeetingPrepContent() {
               <ArrowLeft className="w-5 h-5" />
             </Link>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
-                <span style={{ color: 'var(--accent)' }}><Briefcase className="w-6 h-6" /></span>
-                Meeting Prep
-              </h1>
+              <h1 className="page-title">Meeting Prep</h1>
               <p className="text-sm mt-0.5" style={{ color: 'var(--text-muted)' }}>AI-generated brief with talking points, objections to preempt, and data room priorities</p>
             </div>
           </div>

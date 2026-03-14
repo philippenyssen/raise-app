@@ -144,22 +144,7 @@ export default function VelocityPage() {
             <Gauge className="w-7 h-7" />
           </span>
           <div>
-            <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
-              Close in 60
-              <span
-                style={{
-                  fontSize: 'var(--font-size-xs)',
-                  fontWeight: 400,
-                  padding: '2px 8px',
-                  borderRadius: '9999px',
-                  background: 'var(--accent)',
-                  color: 'var(--surface-0)',
-                  letterSpacing: '0.04em',
-                }}
-              >
-                Live
-              </span>
-            </h1>
+            <h1 className="page-title">Close in 60</h1>
             <p className="page-subtitle">
               {summary.total_active} active deal{summary.total_active !== 1 ? 's' : ''} &middot; {summary.avg_days_in_process}d avg time in process
             </p>

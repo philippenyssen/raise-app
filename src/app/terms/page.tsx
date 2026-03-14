@@ -146,7 +146,7 @@ export default function TermsPage() {
     <div className="space-y-6 page-content">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>Term Sheet Comparison</h1>
+          <h1 className="page-title">Term Sheet Comparison</h1>
           <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
             Compare and score term sheets side-by-side. {sheets.length} received.
           </p>

@@ -138,9 +138,7 @@ export default function TimelinePage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-            <ListTodo className="w-6 h-6" style={{ color: 'var(--accent)' }} /> Timeline & Tasks
-          </h1>
+          <h1 className="page-title">Timeline & Tasks</h1>
           <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
             {pendingCount} pending, {doneCount} done{criticalCount > 0 ? `, ${criticalCount} critical` : ''}
           </p>

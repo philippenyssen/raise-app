@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import {
-  Network, RefreshCw, AlertTriangle, ArrowRight, Crown,
+  RefreshCw, AlertTriangle, ArrowRight, Crown,
   TrendingUp, Users, Link2, ChevronDown, ChevronUp, Calendar,
 } from 'lucide-react';
 
@@ -153,9 +153,8 @@ export default function NetworkPage() {
   if (!data || data.cascades.length === 0) {
     return (
       <div className="p-6">
-        <div className="flex items-center gap-3 mb-6">
-          <span style={{ color: 'var(--accent)' }}><Network className="w-5 h-5" /></span>
-          <h1 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 600, color: 'var(--text-primary)' }}>Investor Network</h1>
+        <div className="mb-6">
+          <h1 className="page-title">Investor Network</h1>
         </div>
         <div className="card p-8 flex flex-col items-center gap-3" style={{ textAlign: 'center' }}>
           <span style={{ color: 'var(--text-muted)' }}><Link2 className="w-8 h-8" /></span>
@@ -180,10 +179,9 @@ export default function NetworkPage() {
     <div className="p-6" style={{ maxWidth: '1200px' }}>
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <span style={{ color: 'var(--accent)' }}><Network className="w-5 h-5" /></span>
+        <div>
           <div>
-            <h1 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 600, color: 'var(--text-primary)' }}>Investor Network</h1>
+            <h1 className="page-title">Investor Network</h1>
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', marginTop: '2px' }}>
               Cascade effects from keystone investors
             </p>

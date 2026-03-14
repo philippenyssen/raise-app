@@ -389,7 +389,7 @@ export default function ObjectionsPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>Objection Playbook</h1>
+          <h1 className="page-title">Objection Playbook</h1>
           <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>Loading...</p>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -410,12 +410,7 @@ export default function ObjectionsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight flex items-center gap-3" style={{ color: 'var(--text-primary)' }}>
-            <span className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'var(--warning)' }}>
-              <MessageCircleWarning className="w-4.5 h-4.5" style={{ color: '#fafaf8' }} />
-            </span>
-            Objection Playbook
-          </h1>
+          <h1 className="page-title">Objection Playbook</h1>
           <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
             {total_objections} objection{total_objections !== 1 ? 's' : ''} tracked across {playbook.length} topic{playbook.length !== 1 ? 's' : ''}
           </p>

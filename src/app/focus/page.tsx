@@ -1191,9 +1191,7 @@ export default function FocusPage() {
   if (!data || data.priorityQueue.length === 0) {
     return (
       <div className="space-y-6">
-        <h1 className="page-title flex items-center gap-3">
-          <Target className="w-6 h-6" style={{ color: 'var(--accent)' }} /> CEO Focus
-        </h1>
+        <h1 className="page-title">CEO Focus</h1>
         <div className="card" style={{ padding: 'var(--space-8)', textAlign: 'center' }}>
           <p style={{ color: 'var(--text-tertiary)' }}>No investors in the pipeline yet.</p>
           <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', marginTop: '4px' }}>Add investors and log meetings to build your daily priority queue.</p>
@@ -1217,9 +1215,7 @@ export default function FocusPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="page-title flex items-center gap-3">
-            <Target className="w-6 h-6" style={{ color: 'var(--accent)' }} /> CEO Focus
-          </h1>
+          <h1 className="page-title">CEO Focus</h1>
           <p className="page-subtitle">
             Investors ranked by urgency and opportunity — {weeklyBudget.totalHoursRecommended}h recommended this week
           </p>

@@ -250,7 +250,7 @@ export default function MomentumPage() {
               <Activity className="w-5 h-5" style={{ color: 'var(--accent)' }} />
             </div>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>Deal Momentum</h1>
+              <h1 className="page-title">Deal Momentum</h1>
               <p className="text-sm mt-0.5" style={{ color: 'var(--text-muted)' }}>
                 Investor behavior patterns &middot; Last 8 weeks
               </p>

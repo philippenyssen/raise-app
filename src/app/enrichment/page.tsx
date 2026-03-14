@@ -210,15 +210,7 @@ export default function EnrichmentPage() {
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div>
-          <h1 style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
-            <span style={{
-              width: '36px', height: '36px', borderRadius: 'var(--radius-lg)',
-              background: 'var(--accent-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}>
-              <Database style={{ width: '20px', height: '20px', color: 'var(--accent)' }} />
-            </span>
-            Investor Enrichment
-          </h1>
+          <h1 className="page-title">Data Enrichment</h1>
           <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', marginTop: 'var(--space-1)' }}>
             {configuredCount} sources active ({freeCount} free) &middot; {investors.length} investors in pipeline
           </p>

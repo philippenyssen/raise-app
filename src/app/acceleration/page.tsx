@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { useToast } from '@/components/toast';
 import {
-  Zap, RefreshCw, CheckCircle, AlertTriangle, Clock, Shield,
+  RefreshCw, CheckCircle, AlertTriangle, Clock, Shield,
   ChevronDown, Play, Ban, XCircle, Rocket, Timer, ArrowUpRight,
   TrendingDown, SkipForward,
 } from 'lucide-react';
@@ -605,9 +605,7 @@ export default function AccelerationPage() {
   if (!data) {
     return (
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold tracking-tight flex items-center gap-3">
-          <Zap className="w-6 h-6" style={{ color: 'var(--text-tertiary)' }} /> Deal Acceleration
-        </h1>
+        <h1 className="page-title">Acceleration</h1>
         <div className="rounded-xl p-8 text-center space-y-3" style={{ border: '1px solid var(--border-subtle)' }}>
           <p style={{ color: 'var(--text-tertiary)' }}>Unable to load acceleration data.</p>
           <button
@@ -648,9 +646,7 @@ export default function AccelerationPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight flex items-center gap-3">
-            <Zap className="w-6 h-6" style={{ color: 'var(--text-tertiary)' }} /> Deal Acceleration
-          </h1>
+          <h1 className="page-title">Acceleration</h1>
           <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', marginTop: '4px' }}>
             {data.summary.total} action{data.summary.total !== 1 ? 's' : ''} detected
             {data.summary.immediate > 0 && (

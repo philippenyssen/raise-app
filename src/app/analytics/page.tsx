@@ -182,7 +182,7 @@ export default function AnalyticsPage() {
   if (!data) {
     return (
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>Process Analytics</h1>
+        <h1 className="page-title">Process Analytics</h1>
         <div className="rounded-xl p-8 text-center space-y-3" style={{ border: '1px solid var(--danger-muted)', background: 'var(--danger-muted)', opacity: 0.3 }}>
           <p style={{ color: 'var(--text-tertiary)', fontSize: 'var(--font-size-sm)' }}>Could not load analytics data.</p>
           <button
@@ -206,7 +206,7 @@ export default function AnalyticsPage() {
       {/* ── Header ──────────────────────────────────────────────── */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>Process Analytics</h1>
+          <h1 className="page-title">Process Analytics</h1>
           <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
             Deep funnel, velocity, and risk analysis
           </p>

@@ -232,7 +232,7 @@ export default function DealflowPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Dealflow</h1>
+          <h1 className="page-title">Dealflow</h1>
           <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', marginTop: '2px' }}>
             Investor health: heat, velocity, and momentum in one view
           </p>

@@ -68,7 +68,7 @@ function NewMeetingContent() {
   return (
     <div className="max-w-3xl space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>Log Meeting Debrief</h1>
+        <h1 className="page-title">Log Meeting Debrief</h1>
         <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
           Paste your raw notes. AI extracts objections, buying signals, and next steps, then auto-generates follow-up tasks.
         </p>

@@ -658,9 +658,7 @@ export default function FomoPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
-              FOMO Dynamics
-            </h1>
+            <h1 className="page-title">FOMO Dynamics</h1>
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', marginTop: '4px' }}>
               Competitive pressure between investors — leverage asymmetry to accelerate the process
             </p>

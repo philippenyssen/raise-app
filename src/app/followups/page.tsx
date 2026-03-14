@@ -880,10 +880,7 @@ function FollowupsContent() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 700, letterSpacing: '-0.02em' }}>
-            <SendHorizonal className="w-6 h-6" style={{ color: 'var(--accent)' }} />
-            Follow-ups
-          </h1>
+          <h1 className="page-title">Follow-ups</h1>
           <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', marginTop: 'var(--space-1)' }}>
             Automated follow-up choreography after investor meetings. Track actions, record outcomes, and learn what works.
           </p>

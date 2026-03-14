@@ -71,7 +71,7 @@ export default function HealthPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>Process Health</h1>
+        <h1 className="page-title">Process Health</h1>
         <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>Convergence tracking and process verification</p>
       </div>
 

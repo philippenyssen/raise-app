@@ -74,7 +74,7 @@ export default function SkillsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>Skill Health</h1>
+        <h1 className="page-title">Skill Health</h1>
         <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
           Monitor and evolve product AI skills — observe, inspect, amend, evaluate
         </p>

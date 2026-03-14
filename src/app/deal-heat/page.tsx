@@ -141,9 +141,7 @@ export default function DealHeatPage() {
             <Flame className="w-7 h-7" />
           </span>
           <div>
-            <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
-              Deal Heat Map
-            </h1>
+            <h1 className="page-title">Deal Heat Map</h1>
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', marginTop: '2px' }}>
               Composite deal temperature across {counts.total} active investors
             </p>

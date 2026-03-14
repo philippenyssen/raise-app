@@ -74,9 +74,7 @@ export default function AnalysisPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>
-            AI Pattern Analysis
-          </h1>
+          <h1 className="page-title">AI Pattern Analysis</h1>
           <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
             Claude analyzes your meetings to find what&apos;s working and what needs to change.
           </p>
