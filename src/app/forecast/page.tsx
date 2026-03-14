@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
 import {
   BarChart3, TrendingUp, AlertTriangle, Shield, Clock,
-  CheckCircle2, Target, ArrowRight, Users, Zap,
+  CheckCircle2, Target, ArrowRight, Users, Zap, ToggleLeft, ToggleRight, RotateCcw,
 } from 'lucide-react';
 
 interface InvestorForecast {
@@ -105,12 +105,20 @@ function formatShortDate(iso: string): string {
   return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
 }
 
+function tierCapital(tier: number): number {
+  if (tier === 1) return 50_000_000;
+  if (tier === 2) return 25_000_000;
+  if (tier === 3) return 10_000_000;
+  return 5_000_000;
+}
+
 export default function ForecastPage() {
   const [data, setData] = useState<ForecastData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [hoveredRow, setHoveredRow] = useState<string | null>(null);
   const [hoveredScenario, setHoveredScenario] = useState<string | null>(null);
+  const [excludedIds, setExcludedIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     fetch('/api/forecast')
@@ -152,10 +160,45 @@ export default function ForecastPage() {
   }
 
   const { forecast, raiseTarget, currency, amounts, distribution, scenarios } = data;
+
+  const hasExclusions = excludedIds.size > 0;
+
+  // What-if recalculated amounts
+  const whatIf = useMemo(() => {
+    if (!hasExclusions) return null;
+    const included = forecast.forecasts.filter(f => !excludedIds.has(f.investorId));
+    const committed = included.filter(f => f.currentStage === 'term_sheet' || f.currentStage === 'closed');
+    const high = included.filter(f => f.confidence === 'high');
+    const med = included.filter(f => f.confidence === 'medium');
+
+    const committedAmt = committed.reduce((s, i) => s + tierCapital(i.tier), 0);
+    const expectedAmt = high.reduce((s, i) => s + tierCapital(i.tier), 0) + med.reduce((s, i) => s + tierCapital(i.tier), 0) * 0.5;
+    const bestCaseAmt = included.reduce((s, i) => s + tierCapital(i.tier), 0);
+
+    const excludedCapital = [...excludedIds].reduce((s, id) => {
+      const inv = forecast.forecasts.find(f => f.investorId === id);
+      return s + (inv ? tierCapital(inv.tier) : 0);
+    }, 0);
+
+    return {
+      expected: committedAmt + expectedAmt,
+      bestCase: bestCaseAmt,
+      committed: committedAmt,
+      excludedCapital,
+      excludedCount: excludedIds.size,
+      high: high.length,
+      medium: med.length,
+      low: included.filter(f => f.confidence === 'low').length,
+    };
+  }, [excludedIds, hasExclusions, forecast.forecasts]);
+
+  const effectiveExpected = whatIf ? whatIf.expected : amounts.expected;
+  const effectiveCommitted = whatIf ? whatIf.committed : amounts.committed;
+
   const totalActive = forecast.forecasts.length;
   const targetDisplay = raiseTarget > 0 ? formatAmount(raiseTarget, currency) : 'Not set';
-  const progressPct = raiseTarget > 0 ? Math.min(100, Math.round((amounts.expected / raiseTarget) * 100)) : 0;
-  const committedPct = raiseTarget > 0 ? Math.min(100, Math.round((amounts.committed / raiseTarget) * 100)) : 0;
+  const progressPct = raiseTarget > 0 ? Math.min(100, Math.round((effectiveExpected / raiseTarget) * 100)) : 0;
+  const committedPct = raiseTarget > 0 ? Math.min(100, Math.round((effectiveCommitted / raiseTarget) * 100)) : 0;
 
   const highConfInvestors = forecast.forecasts.filter(f => f.confidence === 'high');
   const medConfInvestors = forecast.forecasts.filter(f => f.confidence === 'medium');
@@ -274,7 +317,7 @@ export default function ForecastPage() {
                 whiteSpace: 'nowrap',
               }}
             >
-              {formatAmount(amounts.expected, currency)} / {targetDisplay}
+              {formatAmount(effectiveExpected, currency)} / {targetDisplay}
             </div>
           </div>
         </div>
@@ -284,15 +327,22 @@ export default function ForecastPage() {
           <div className="flex items-center gap-2">
             <div style={{ width: '12px', height: '12px', borderRadius: '3px', background: 'var(--accent)' }} />
             <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
-              Committed: {formatAmount(amounts.committed, currency)}
+              Committed: {formatAmount(effectiveCommitted, currency)}
             </span>
           </div>
           <div className="flex items-center gap-2">
             <div style={{ width: '12px', height: '12px', borderRadius: '3px', background: 'var(--accent-muted)' }} />
             <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
-              Expected (weighted): {formatAmount(amounts.expected, currency)}
+              Expected (weighted): {formatAmount(effectiveExpected, currency)}
             </span>
           </div>
+          {hasExclusions && whatIf && (
+            <div className="flex items-center gap-2">
+              <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'var(--danger)', fontVariantNumeric: 'tabular-nums' }}>
+                -{formatAmount(whatIf.excludedCapital, currency)} ({whatIf.excludedCount} excluded)
+              </span>
+            </div>
+          )}
           <div className="flex items-center gap-2" style={{ marginLeft: 'auto' }}>
             <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'var(--text-secondary)', fontVariantNumeric: 'tabular-nums' }}>
               {progressPct}% of target
@@ -530,7 +580,17 @@ export default function ForecastPage() {
               Investor Timeline
             </span>
             <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginLeft: 'auto' }}>
-              Ordered by predicted close date
+              {hasExclusions ? (
+                <button
+                  onClick={() => setExcludedIds(new Set())}
+                  className="flex items-center gap-1"
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--accent)', fontWeight: 500, fontSize: 'var(--font-size-xs)' }}
+                >
+                  <RotateCcw className="w-3 h-3" /> Reset what-if
+                </button>
+              ) : (
+                'Click toggles to model what-if scenarios'
+              )}
             </span>
           </div>
         </div>
@@ -546,7 +606,9 @@ export default function ForecastPage() {
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
                 <tr className="table-header">
+                  <th style={{ minWidth: '40px', textAlign: 'center', width: '40px' }}></th>
                   <th style={{ minWidth: '180px' }}>Investor</th>
+                  <th style={{ minWidth: '80px', textAlign: 'right' }}>Est. Capital</th>
                   <th style={{ minWidth: '100px' }}>Stage</th>
                   <th style={{ minWidth: '80px', textAlign: 'center' }}>Days in Stage</th>
                   <th style={{ minWidth: '100px', textAlign: 'center' }}>Predicted Close</th>
@@ -558,6 +620,8 @@ export default function ForecastPage() {
               <tbody>
                 {sortedByDate.map((inv) => {
                   const isCritical = forecast.criticalPathInvestors.includes(inv.investorName);
+                  const isExcluded = excludedIds.has(inv.investorId);
+                  const estCapital = tierCapital(inv.tier);
                   return (
                     <tr
                       key={inv.investorId}
@@ -565,10 +629,35 @@ export default function ForecastPage() {
                       style={{
                         background: hoveredRow === inv.investorId ? 'var(--surface-1)' : 'transparent',
                         cursor: 'pointer',
+                        opacity: isExcluded ? 0.4 : 1,
+                        transition: 'opacity 200ms ease',
                       }}
                       onMouseEnter={() => setHoveredRow(inv.investorId)}
                       onMouseLeave={() => setHoveredRow(null)}
                     >
+                      {/* What-if toggle */}
+                      <td style={{ padding: 'var(--space-3) var(--space-2)', textAlign: 'center' }}>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setExcludedIds(prev => {
+                              const next = new Set(prev);
+                              if (next.has(inv.investorId)) next.delete(inv.investorId);
+                              else next.add(inv.investorId);
+                              return next;
+                            });
+                          }}
+                          style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                          title={isExcluded ? 'Include in forecast' : 'Exclude from forecast (what-if)'}
+                        >
+                          {isExcluded ? (
+                            <span style={{ color: 'var(--text-muted)' }}><ToggleLeft className="w-5 h-5" /></span>
+                          ) : (
+                            <span style={{ color: 'var(--accent)' }}><ToggleRight className="w-5 h-5" /></span>
+                          )}
+                        </button>
+                      </td>
+
                       {/* Investor */}
                       <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
                         <Link href={`/investors/${inv.investorId}`} style={{ textDecoration: 'none' }}>
@@ -607,6 +696,21 @@ export default function ForecastPage() {
                             </div>
                           </div>
                         </Link>
+                      </td>
+
+                      {/* Estimated Capital */}
+                      <td style={{ padding: 'var(--space-3) var(--space-4)', textAlign: 'right' }}>
+                        <span
+                          style={{
+                            fontSize: 'var(--font-size-xs)',
+                            fontWeight: 600,
+                            color: isExcluded ? 'var(--text-muted)' : 'var(--text-secondary)',
+                            fontVariantNumeric: 'tabular-nums',
+                            textDecoration: isExcluded ? 'line-through' : 'none',
+                          }}
+                        >
+                          {formatAmount(estCapital, currency)}
+                        </span>
                       </td>
 
                       {/* Stage */}
