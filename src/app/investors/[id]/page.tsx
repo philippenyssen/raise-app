@@ -505,7 +505,7 @@ export default function InvestorDetailPage() {
       </div>
 
       {/* Intelligence Score */}
-      {score && <InvestorScorePanel score={score} loading={scoreLoading} onRefresh={fetchScore} />}
+      {score && <InvestorScorePanel score={score} loading={scoreLoading} onRefresh={fetchScore} investorId={id} />}
       {scoreLoading && !score && (
         <div className="rounded-xl p-6" style={{ border: '1px solid var(--border-default)' }}>
           <div className="flex items-center gap-3">
@@ -995,7 +995,7 @@ function signalBadge(sig: 'strong' | 'moderate' | 'weak' | 'unknown'): { bg: str
   return config[sig];
 }
 
-function InvestorScorePanel({ score, loading, onRefresh }: { score: InvestorScoreData; loading: boolean; onRefresh: () => void }) {
+function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: InvestorScoreData; loading: boolean; onRefresh: () => void; investorId: string }) {
   const outcomeConf = OUTCOME_CONFIG[score.predictedOutcome] || OUTCOME_CONFIG.possible;
   const momentumConf = MOMENTUM_CONFIG[score.momentum] || MOMENTUM_CONFIG.steady;
   const MomentumIcon = momentumConf.icon;
@@ -1052,9 +1052,26 @@ function InvestorScorePanel({ score, loading, onRefresh }: { score: InvestorScor
           <div className="flex-[2] min-w-0">
             <div className="flex items-start gap-2">
               <Lightbulb className="w-3.5 h-3.5 shrink-0 mt-0.5" style={{ color: 'var(--warning)' }} />
-              <div className="min-w-0">
+              <div className="flex-1 min-w-0">
                 <div className="text-[10px] font-medium uppercase mb-0.5" style={{ color: 'var(--text-muted)' }}>Next Action</div>
-                <p className="text-sm leading-snug" style={{ color: 'var(--text-secondary)' }}>{score.nextBestAction}</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-sm leading-snug flex-1" style={{ color: 'var(--text-secondary)' }}>{score.nextBestAction}</p>
+                  <Link
+                    href={(() => {
+                      const t = score.nextBestAction.toLowerCase();
+                      if (/meeting|call|schedule|present/.test(t)) return `/meetings/new?investor=${investorId}`;
+                      if (/follow.?up|send|share|email|outreach/.test(t)) return `/followups?investor=${investorId}`;
+                      if (/prep|brief|research/.test(t)) return `/meetings/prep?investor=${investorId}`;
+                      if (/doc|data.?room|material|deck/.test(t)) return '/data-room';
+                      if (/objection|concern|address/.test(t)) return '/objections';
+                      return `/meetings/new?investor=${investorId}`;
+                    })()}
+                    className="btn btn-sm shrink-0"
+                    style={{ background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(59,130,246,0.25)', fontSize: '11px', padding: '3px 10px', gap: '4px', display: 'inline-flex', alignItems: 'center', textDecoration: 'none' }}
+                  >
+                    Do it <ArrowRight className="w-3 h-3" />
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
