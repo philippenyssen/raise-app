@@ -22,6 +22,7 @@
 | 16 | 2026-03-14 | Investor Lifecycle Intelligence | Per-investor lifecycle fields (daysInCurrentStage, stageHealth, daysSinceLastContact), stage health thresholds (on_track/slow/stalled), lifecycle tags in system prompt, lifecycle synthesis (stalled high-value, lifecycle contradictions), workspace AI lifecycle-aware context steering | context-bus.ts, workspace/route.ts |
 | 17 | 2026-03-14 | Proactive Intelligence Surfacing | ATTENTION REQUIRED block in workspace AI prompt (top 3 urgent items from 7 signal sources), instruction 19 (natural proactive surfacing), prioritized by urgency score across stalled T1 investors, compound signals, temporal alerts, overdue follow-ups, emerging objections, thin pipeline, narrative weakness + upcoming contacts | workspace/route.ts |
 | 18 | 2026-03-14 | Close Date Forecasting | Per-investor close date prediction from pipeline velocity + conversion rates + tier/enthusiasm adjustments, raise-level forecast aggregation, critical path identification, risk factor analysis, forecast in context bus + system prompt + synthesis, proactive surfacing of low-confidence forecast, workspace AI forecast-aware context steering + instruction 20 | db.ts, context-bus.ts, workspace/route.ts |
+| 19 | 2026-03-14 | Forecast Consumption | Forecast data consumed across entire intelligence layer: strategic API (forecast-based recommendations), strategic dashboard UI (forecast panel with investor table + risk factors), pulse insights (critical path stalled + low confidence), auto-action Rule 9 (critical path stalled investors), strategic recommendations (9 generators) | intelligence/strategic/route.ts, strategic/page.tsx, pulse/route.ts, db.ts |
 
 ## Intelligence Capabilities (Existing)
 
@@ -205,6 +206,7 @@
   - [x] Rule 5: `narrative_struggling_type` — investor type with avg enthusiasm < 2.5 → data_update action
   - [x] **Rule 6: `pipeline_bottleneck` — investors stuck at bottleneck stage >21 days → escalation action (up to 3 investors) (NEW cycle 13)**
   - [x] **Rule 7: `compound_signal` — very_high confidence compound signals → escalation action with expected_lift 15 (NEW cycle 13)**
+  - [x] **Rule 9: `critical_path_stalled` — critical path investors stalled >21 days → escalation action with expected_lift 14 (NEW cycle 19)**
 - [x] Duplicate prevention: checks for same investor_id + trigger_type within last 7 days before creating
 - [x] All auto-actions prefixed with `[AUTO]` for identification
 - [x] POST `/api/intelligence/auto-actions` — triggers engine, emits context changes

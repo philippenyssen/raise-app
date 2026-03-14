@@ -3684,9 +3684,44 @@ export async function generateAutoActions(): Promise<AutoActionResult> {
     }
   } catch { /* non-blocking */ }
 
+  // --- Rule 9: critical_path_stalled (critical path investors stuck in stage) ---
+  try {
+    if (!shouldSkipRule('window_closing', 'escalation')) {
+      const forecastData = await computeRaiseForecast();
+      const criticalNames = forecastData.criticalPathInvestors;
+      // Find critical path investors who are stalled
+      const activeInvestors = (await db.execute(`SELECT * FROM investors WHERE status NOT IN ('passed','dropped','closed')`)).rows as unknown as Array<{
+        id: string; name: string; status: string; updated_at: string; created_at: string;
+      }>;
+      const msPerDay = 1000 * 60 * 60 * 24;
+      for (const inv of activeInvestors) {
+        if (!criticalNames.includes(inv.name)) continue;
+        const daysInStage = Math.max(0, Math.round((Date.now() - new Date(inv.updated_at || inv.created_at).getTime()) / msPerDay));
+        if (daysInStage >= 21) {
+          patternsDetected++;
+          if (!(await hasDuplicateAction(inv.id, 'escalation'))) {
+            const action = await createAccelerationAction({
+              investor_id: inv.id,
+              investor_name: inv.name,
+              trigger_type: 'window_closing',
+              action_type: 'escalation',
+              description: `[AUTO-FORECAST] Critical path investor ${inv.name} is stalled at "${inv.status}" for ${daysInStage} days. This investor is on the critical path to close — delays here push the entire raise timeline.`,
+              expected_lift: 14,
+              confidence: 'high',
+              status: 'pending',
+              actual_lift: null,
+              executed_at: null,
+            });
+            actionsCreated.push(action);
+          } else { skippedDuplicate++; }
+        }
+      }
+    }
+  } catch { /* non-blocking */ }
+
   return {
     actionsCreated,
-    rulesEvaluated: AUTO_ACTION_RULES.length + 3, // +1 Rule 6 (bottleneck), +1 Rule 7 (compound), +1 Rule 8 (temporal)
+    rulesEvaluated: AUTO_ACTION_RULES.length + 4, // +1 Rule 6 (bottleneck), +1 Rule 7 (compound), +1 Rule 8 (temporal), +1 Rule 9 (critical path)
     patternsDetected,
     skippedDuplicate,
     skippedIneffective,
@@ -4831,6 +4866,162 @@ export async function getHealthSnapshots(limit: number = 30): Promise<HealthSnap
     args: [limit],
   });
   return result.rows as unknown as HealthSnapshot[];
+}
+
+// ---------------------------------------------------------------------------
+// Close Date Forecasting — Investor timeline prediction (cycle 18)
+// ---------------------------------------------------------------------------
+
+export interface InvestorForecast {
+  investorId: string;
+  investorName: string;
+  currentStage: string;
+  tier: number;
+  daysInStage: number;
+  predictedDaysToClose: number;
+  predictedCloseDate: string;
+  confidence: 'high' | 'medium' | 'low';
+  reasoning: string;
+}
+
+export interface RaiseForecast {
+  forecasts: InvestorForecast[];
+  expectedCloseDate: string;
+  expectedAmount: number;
+  confidence: 'high' | 'medium' | 'low';
+  criticalPathInvestors: string[];
+  riskFactors: string[];
+}
+
+export async function computeRaiseForecast(): Promise<RaiseForecast> {
+  await ensureInitialized();
+  const db = getClient();
+
+  // Get active investors and pipeline flow data
+  const [investorsResult, pipelineFlowData] = await Promise.all([
+    db.execute(`SELECT * FROM investors WHERE status NOT IN ('passed', 'dropped', 'closed') ORDER BY tier ASC, name ASC`),
+    computePipelineFlow(),
+  ]);
+
+  const investors = investorsResult.rows as unknown as Array<{
+    id: string; name: string; status: string; tier: number; enthusiasm: number;
+    updated_at: string; created_at: string;
+  }>;
+
+  const stageOrder = ['identified', 'contacted', 'nda_signed', 'meeting_scheduled', 'met', 'engaged', 'in_dd', 'term_sheet', 'closed'];
+
+  // Average days per stage from pipeline flow
+  const avgDaysPerStage = pipelineFlowData.avgDaysPerStage;
+  const conversionByStage = pipelineFlowData.conversionByStage;
+
+  // Fallback averages if no data
+  const defaultDays: Record<string, number> = {
+    identified: 7, contacted: 5, nda_signed: 3, meeting_scheduled: 7,
+    met: 10, engaged: 14, in_dd: 21, term_sheet: 14,
+  };
+
+  const now = Date.now();
+  const msPerDay = 1000 * 60 * 60 * 24;
+
+  const forecasts: InvestorForecast[] = [];
+
+  for (const inv of investors) {
+    const currentIdx = stageOrder.indexOf(inv.status);
+    if (currentIdx < 0) continue;
+
+    const daysInStage = Math.max(0, Math.round((now - new Date(inv.updated_at || inv.created_at).getTime()) / msPerDay));
+
+    // Sum up expected days from current stage to close
+    let totalDaysRemaining = 0;
+    let cumulativeConversion = 1.0;
+
+    for (let i = currentIdx; i < stageOrder.length - 1; i++) {
+      const stage = stageOrder[i];
+      const avgDays = avgDaysPerStage[stage] || defaultDays[stage] || 14;
+      const conversion = conversionByStage[stage] || 50;
+
+      if (i === currentIdx) {
+        // For current stage, subtract time already spent (but minimum 1 day remaining)
+        totalDaysRemaining += Math.max(1, avgDays - daysInStage);
+      } else {
+        totalDaysRemaining += avgDays;
+      }
+      cumulativeConversion *= (conversion / 100);
+    }
+
+    // Tier adjustment: T1 investors often move faster
+    const tierMultiplier = inv.tier === 1 ? 0.8 : inv.tier === 2 ? 1.0 : inv.tier === 3 ? 1.2 : 1.5;
+    totalDaysRemaining = Math.round(totalDaysRemaining * tierMultiplier);
+
+    // Enthusiasm adjustment: high enthusiasm = faster progression
+    if (inv.enthusiasm >= 4) totalDaysRemaining = Math.round(totalDaysRemaining * 0.85);
+    else if (inv.enthusiasm <= 2) totalDaysRemaining = Math.round(totalDaysRemaining * 1.3);
+
+    const predictedCloseDate = new Date(now + totalDaysRemaining * msPerDay).toISOString().split('T')[0];
+
+    // Confidence based on stage advancement and data quality
+    let confidence: 'high' | 'medium' | 'low' = 'medium';
+    if (currentIdx >= 6) confidence = 'high'; // in_dd or term_sheet
+    else if (currentIdx >= 4 && inv.enthusiasm >= 4) confidence = 'medium'; // met/engaged + enthusiastic
+    else if (currentIdx <= 2 || cumulativeConversion < 0.1) confidence = 'low'; // early stage
+
+    const reasoning = `Stage ${currentIdx + 1}/9, ${daysInStage}d in "${inv.status}", ~${totalDaysRemaining}d remaining (${Math.round(cumulativeConversion * 100)}% path probability)`;
+
+    forecasts.push({
+      investorId: inv.id,
+      investorName: inv.name,
+      currentStage: inv.status,
+      tier: inv.tier,
+      daysInStage,
+      predictedDaysToClose: totalDaysRemaining,
+      predictedCloseDate,
+      confidence,
+      reasoning,
+    });
+  }
+
+  // Sort by predicted close date
+  forecasts.sort((a, b) => a.predictedDaysToClose - b.predictedDaysToClose);
+
+  // Aggregate: expected close date = when we'd reach target amount
+  // Use high/medium confidence investors first
+  const closeable = forecasts.filter(f => f.confidence !== 'low');
+  const expectedCloseDate = closeable.length > 0
+    ? closeable[Math.min(2, closeable.length - 1)].predictedCloseDate // 3rd investor to close
+    : forecasts.length > 0
+    ? forecasts[Math.floor(forecasts.length / 2)].predictedCloseDate
+    : new Date(now + 90 * msPerDay).toISOString().split('T')[0]; // 90-day default
+
+  // Critical path: first 3 investors by close date
+  const criticalPathInvestors = forecasts.slice(0, 3).map(f => f.investorName);
+
+  // Risk factors
+  const riskFactors: string[] = [];
+  const lowConfidence = forecasts.filter(f => f.confidence === 'low');
+  if (lowConfidence.length > forecasts.length * 0.6) {
+    riskFactors.push('Most pipeline is early-stage — close dates are uncertain');
+  }
+  if (forecasts.length < 5) {
+    riskFactors.push('Pipeline too narrow for reliable forecasting');
+  }
+  const slowInvestors = forecasts.filter(f => f.daysInStage > 30);
+  if (slowInvestors.length > 0) {
+    riskFactors.push(`${slowInvestors.length} investor(s) stalled >30 days in current stage`);
+  }
+
+  // Overall confidence
+  let overallConfidence: 'high' | 'medium' | 'low' = 'medium';
+  if (closeable.length >= 3 && riskFactors.length === 0) overallConfidence = 'high';
+  else if (closeable.length < 2 || riskFactors.length >= 2) overallConfidence = 'low';
+
+  return {
+    forecasts,
+    expectedCloseDate,
+    expectedAmount: 0, // would need raise config
+    confidence: overallConfidence,
+    criticalPathInvestors,
+    riskFactors,
+  };
 }
 
 // ---------------------------------------------------------------------------

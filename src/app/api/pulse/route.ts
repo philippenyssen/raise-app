@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@libsql/client';
 import { computeInvestorScore, computeMomentumScore, computeConvictionTrajectory } from '@/lib/scoring';
 import type { ScoreSnapshot } from '@/lib/db';
-import { generateAutoActions, measureActionEffectiveness, saveHealthSnapshot, getHealthSnapshots, computeTemporalTrends } from '@/lib/db';
+import { generateAutoActions, measureActionEffectiveness, saveHealthSnapshot, getHealthSnapshots, computeTemporalTrends, computeRaiseForecast } from '@/lib/db';
 import type { Investor, Meeting, InvestorPortfolioCo, Objection } from '@/lib/types';
 import { getFullContext } from '@/lib/context-bus';
 
@@ -943,13 +943,40 @@ async function computeIntelligenceBriefing(
     }
   } catch { /* non-blocking */ }
 
+  // Forecast insights (cycle 19)
+  try {
+    const forecastData = await computeRaiseForecast();
+    if (forecastData.confidence === 'low') {
+      insights.push({
+        type: 'risk',
+        title: 'Close date forecast has low confidence',
+        detail: `Predicted close: ${forecastData.expectedCloseDate}, but pipeline lacks advanced-stage investors for reliable prediction. ${forecastData.riskFactors.join('. ')}.`,
+        action: 'Focus on advancing 2-3 investors to engaged/DD stage to improve forecast reliability.',
+        dataSource: 'raise_forecast',
+      });
+    }
+    if (forecastData.criticalPathInvestors.length > 0) {
+      const criticalStalled = forecastData.forecasts
+        .filter(f => forecastData.criticalPathInvestors.includes(f.investorName) && f.daysInStage > 21);
+      if (criticalStalled.length > 0) {
+        insights.push({
+          type: 'critical',
+          title: `Critical path investor${criticalStalled.length > 1 ? 's' : ''} stalled`,
+          detail: `${criticalStalled.map(f => `${f.investorName} (${f.daysInStage}d at "${f.currentStage}")`).join(', ')} — delays push entire raise timeline.`,
+          action: `Escalate ${criticalStalled[0].investorName} immediately. Schedule a direct call with the decision maker.`,
+          dataSource: 'raise_forecast',
+        });
+      }
+    }
+  } catch { /* non-blocking */ }
+
   // Sort: critical first, then opportunity, then risk, then trend
   const typeOrder: Record<string, number> = { critical: 0, opportunity: 1, risk: 2, trend: 3 };
   insights.sort((a, b) => (typeOrder[a.type] ?? 3) - (typeOrder[b.type] ?? 3));
 
-  // Cap at 8 insights to keep it actionable
+  // Cap at 9 insights to keep it actionable
   return {
-    insights: insights.slice(0, 8),
+    insights: insights.slice(0, 9),
     generatedAt: new Date().toISOString(),
   };
 }

@@ -49,6 +49,15 @@ interface TemporalTrends {
   alertCount: number;
 }
 
+interface RaiseForecastData {
+  expectedCloseDate: string;
+  confidence: string;
+  criticalPath: string[];
+  nearestClose: { name: string; days: number; stage: string } | null;
+  riskFactors: string[];
+  investorForecasts: { name: string; stage: string; days: number; confidence: string }[];
+}
+
 interface StrategicData {
   ceoBrief: string;
   raiseVelocity: {
@@ -69,6 +78,7 @@ interface StrategicData {
   };
   historicalSnapshots: HealthSnapshotPoint[];
   temporalTrends: TemporalTrends | null;
+  raiseForecast: RaiseForecastData | null;
   generatedAt: string;
 }
 
@@ -378,6 +388,94 @@ export default function StrategicPage() {
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* ================================================================ */}
+      {/* RAISE FORECAST                                                   */}
+      {/* ================================================================ */}
+      {data.raiseForecast && (
+        <div className="border border-zinc-800 rounded-xl p-5">
+          <div className="flex items-center gap-2 mb-4">
+            <Clock className="w-4 h-4 text-purple-400" />
+            <span className="text-sm font-medium text-zinc-400 uppercase">Raise Forecast</span>
+            <span className={`ml-2 text-[10px] px-2 py-0.5 rounded-full border font-medium ${
+              data.raiseForecast.confidence === 'high' ? 'bg-emerald-900/30 text-emerald-400 border-emerald-700/40' :
+              data.raiseForecast.confidence === 'medium' ? 'bg-amber-900/30 text-amber-400 border-amber-700/40' :
+              'bg-red-900/30 text-red-400 border-red-700/40'
+            }`}>
+              {data.raiseForecast.confidence} confidence
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            {/* Expected close */}
+            <div className="rounded-lg p-3 border border-purple-800/30 bg-purple-900/10">
+              <div className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">Expected Close</div>
+              <div className="text-lg font-bold text-purple-300 tabular-nums">{data.raiseForecast.expectedCloseDate}</div>
+            </div>
+            {/* Nearest close */}
+            {data.raiseForecast.nearestClose && (
+              <div className="rounded-lg p-3 border border-blue-800/30 bg-blue-900/10">
+                <div className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">Nearest Close</div>
+                <div className="text-lg font-bold text-blue-300 tabular-nums">~{data.raiseForecast.nearestClose.days}d</div>
+                <div className="text-[10px] text-zinc-500 mt-0.5">{data.raiseForecast.nearestClose.name} ({data.raiseForecast.nearestClose.stage})</div>
+              </div>
+            )}
+            {/* Critical path */}
+            <div className="rounded-lg p-3 border border-zinc-800 bg-zinc-900/30">
+              <div className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">Critical Path</div>
+              <div className="space-y-0.5">
+                {data.raiseForecast.criticalPath.map((name) => (
+                  <div key={name} className="text-xs text-zinc-300">{name}</div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Investor forecasts table */}
+          {data.raiseForecast.investorForecasts.length > 0 && (
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs">
+                <thead>
+                  <tr className="text-zinc-500 border-b border-zinc-800">
+                    <th className="text-left py-1.5 pr-3">Investor</th>
+                    <th className="text-left py-1.5 pr-3">Stage</th>
+                    <th className="text-right py-1.5 pr-3">Days to Close</th>
+                    <th className="text-left py-1.5">Confidence</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.raiseForecast.investorForecasts.map((f) => (
+                    <tr key={f.name} className="border-b border-zinc-800/50">
+                      <td className="py-1.5 pr-3 text-zinc-300">{f.name}</td>
+                      <td className="py-1.5 pr-3 text-zinc-500">{f.stage}</td>
+                      <td className="py-1.5 pr-3 text-right tabular-nums text-zinc-300">~{f.days}d</td>
+                      <td className="py-1.5">
+                        <span className={`text-[10px] px-1.5 py-0.5 rounded ${
+                          f.confidence === 'high' ? 'bg-emerald-900/30 text-emerald-400' :
+                          f.confidence === 'medium' ? 'bg-amber-900/30 text-amber-400' :
+                          'bg-red-900/30 text-red-400'
+                        }`}>{f.confidence}</span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {/* Risk factors */}
+          {data.raiseForecast.riskFactors.length > 0 && (
+            <div className="mt-3 space-y-1">
+              {data.raiseForecast.riskFactors.map((rf, i) => (
+                <div key={i} className="flex items-start gap-1.5">
+                  <AlertTriangle className="w-3 h-3 text-amber-500 shrink-0 mt-0.5" />
+                  <span className="text-[11px] text-amber-500/80">{rf}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 

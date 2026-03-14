@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getFullContext } from '@/lib/context-bus';
-import { saveHealthSnapshot, getHealthSnapshots, computeTemporalTrends } from '@/lib/db';
-import type { TemporalTrends } from '@/lib/db';
+import { saveHealthSnapshot, getHealthSnapshots, computeTemporalTrends, computeRaiseForecast } from '@/lib/db';
+import type { TemporalTrends, RaiseForecast } from '@/lib/db';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -44,6 +44,14 @@ interface StrategicAssessment {
     activeInvestors: number;
   }[];
   temporalTrends: TemporalTrends | null;
+  raiseForecast: {
+    expectedCloseDate: string;
+    confidence: string;
+    criticalPath: string[];
+    nearestClose: { name: string; days: number; stage: string } | null;
+    riskFactors: string[];
+    investorForecasts: { name: string; stage: string; days: number; confidence: string }[];
+  } | null;
   generatedAt: string;
 }
 
@@ -371,6 +379,33 @@ function generateRecommendations(
     }
   }
 
+  // 9. Forecast-based timeline risk (cycle 19)
+  if (ctx.raiseForecast) {
+    const rf = ctx.raiseForecast;
+    if (rf.confidence === 'low') {
+      recs.push({
+        priority: 2,
+        category: 'pipeline',
+        title: 'Close date forecast has low confidence',
+        rationale: `Predicted close: ${rf.expectedCloseDate}, but confidence is LOW. ${rf.riskFactors.join('. ')}.`,
+        action: 'Accelerate 2-3 investors to engaged/DD stage to improve forecast predictability. Focus on investors closest to advancing.',
+        expectedImpact: 'Moving 2 investors to DD stage typically shifts forecast confidence from low to medium.',
+        deadline: 'Next 2 weeks',
+      });
+    }
+    if (rf.nearestClose && rf.nearestClose.days > 60) {
+      recs.push({
+        priority: 3,
+        category: 'timing',
+        title: `Nearest close is ${rf.nearestClose.days} days away`,
+        rationale: `${rf.nearestClose.name} at "${rf.nearestClose.stage}" is the closest to closing but predicted at ~${rf.nearestClose.days} days. No investor is near term sheet.`,
+        action: 'Identify 1-2 investors who can be fast-tracked. Consider a "champion dinner" or site visit to compress timelines.',
+        expectedImpact: 'Targeted acceleration can reduce close timeline by 30-50% for willing investors.',
+        deadline: 'This week',
+      });
+    }
+  }
+
   // Sort by priority
   recs.sort((a, b) => a.priority - b.priority);
 
@@ -468,6 +503,12 @@ export async function GET() {
       temporalTrends = await computeTemporalTrends();
     } catch { /* non-blocking */ }
 
+    // Compute raise forecast (cycle 19)
+    let raiseForecastResult: RaiseForecast | null = null;
+    try {
+      raiseForecastResult = await computeRaiseForecast();
+    } catch { /* non-blocking */ }
+
     // Non-blocking: store today's snapshot if not already stored
     try {
       const recentSnapshots = await getHealthSnapshots(1);
@@ -500,6 +541,24 @@ export async function GET() {
       },
       historicalSnapshots,
       temporalTrends,
+      raiseForecast: raiseForecastResult ? (() => {
+        const nearest = raiseForecastResult.forecasts.length > 0
+          ? raiseForecastResult.forecasts.reduce((best, f) => f.predictedDaysToClose < best.predictedDaysToClose ? f : best)
+          : null;
+        return {
+          expectedCloseDate: raiseForecastResult.expectedCloseDate,
+          confidence: raiseForecastResult.confidence,
+          criticalPath: raiseForecastResult.criticalPathInvestors,
+          nearestClose: nearest ? { name: nearest.investorName, days: nearest.predictedDaysToClose, stage: nearest.currentStage } : null,
+          riskFactors: raiseForecastResult.riskFactors,
+          investorForecasts: raiseForecastResult.forecasts.slice(0, 10).map(f => ({
+            name: f.investorName,
+            stage: f.currentStage,
+            days: f.predictedDaysToClose,
+            confidence: f.confidence,
+          })),
+        };
+      })() : null,
       generatedAt: new Date().toISOString(),
     };
 
