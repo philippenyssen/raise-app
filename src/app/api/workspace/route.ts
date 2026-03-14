@@ -8,15 +8,38 @@ function getClient(): Anthropic {
   return _client;
 }
 
+// Smart context budgeting — allocate tokens based on content type importance
+const CONTEXT_BUDGET = {
+  document: 60000,    // Active document gets most context
+  dataRoom: 20000,    // Data room source materials
+  otherDocs: 8000,    // Summaries of other documents
+  config: 2000,       // Raise config
+};
+
+function buildOtherDocsContext(docs: { id: string; title: string; type: string; content: string }[], excludeId: string | null): string {
+  const others = docs.filter(d => d.id !== excludeId);
+  if (others.length === 0) return 'None';
+
+  const perDocBudget = Math.floor(CONTEXT_BUDGET.otherDocs / Math.max(others.length, 1));
+  return others.map(d => {
+    const snippet = d.content.substring(0, Math.min(perDocBudget, 2000));
+    return `- ${d.title} (${d.type}): ${snippet}${d.content.length > snippet.length ? '...' : ''}`;
+  }).join('\n');
+}
+
 export async function POST(req: NextRequest) {
   const body = await req.json();
   const { messages, documentId, documentContent, documentTitle } = body;
 
-  // Build context
+  // Build context with smart budgeting
   const raiseConfig = await getRaiseConfig();
   const allDocs = await getAllDocuments();
-  const otherDocs = allDocs.filter(d => d.id !== documentId).map(d => `- ${d.title} (${d.type}): ${d.content.substring(0, 500)}...`).join('\n');
+  const otherDocsContext = buildOtherDocsContext(allDocs, documentId);
   const dataRoomContext = await getDataRoomContext();
+
+  // For model/cell context, use full content (already condensed by the model page)
+  const isModelContext = documentTitle?.startsWith('Financial Model');
+  const docBudget = isModelContext ? CONTEXT_BUDGET.document : CONTEXT_BUDGET.document;
 
   const systemPrompt = `You are an expert fundraising advisor and document specialist embedded in a Series C fundraise execution platform. You combine the expertise of:
 
@@ -27,25 +50,26 @@ export async function POST(req: NextRequest) {
 - A corporate lawyer (legal precision, risk language)
 
 CURRENT DOCUMENT: "${documentTitle}" (${documentId ? 'loaded' : 'none selected'})
-${documentContent ? `\nDOCUMENT CONTENT:\n${documentContent.substring(0, 50000)}` : ''}
+${documentContent ? `\nDOCUMENT CONTENT:\n${documentContent.substring(0, docBudget)}` : ''}
 
 RAISE CONFIGURATION:
-${raiseConfig ? JSON.stringify(raiseConfig, null, 2) : 'Not configured yet'}
+${raiseConfig ? JSON.stringify(raiseConfig, null, 2).substring(0, CONTEXT_BUDGET.config) : 'Not configured yet'}
 
 OTHER DOCUMENTS IN THIS RAISE:
-${otherDocs || 'None'}
+${otherDocsContext}
 
 DATA ROOM (source materials):
-${dataRoomContext.substring(0, 30000)}
+${dataRoomContext.substring(0, CONTEXT_BUDGET.dataRoom)}
 
 INSTRUCTIONS:
 1. When the user asks you to improve, rewrite, or change the document, respond with your analysis AND include the full updated document content.
 2. When providing updated content, wrap it in <updated_content>...</updated_content> tags so the system can extract and apply it.
-3. Be direct, specific, and IC-grade in your feedback. No hedging.
-4. Every suggestion should make the document more compelling, more accurate, or more concise.
-5. When asked to "rewrite in Goldman style": short sentences, active voice, numbers first, no hedging, bold key metrics.
-6. Cross-reference numbers against the raise configuration and other documents for consistency.
-7. If the user speaks casually or gives voice-transcribed input, interpret their intent and execute precisely.`;
+3. For financial model changes, wrap cell updates in <cell_updates>[{"ref":"A1","value":"new value","formula":"=B1+C1"}]</cell_updates> tags.
+4. Be direct, specific, and IC-grade in your feedback. No hedging.
+5. Every suggestion should make the document more compelling, more accurate, or more concise.
+6. When asked to "rewrite in Goldman style": short sentences, active voice, numbers first, no hedging, bold key metrics.
+7. Cross-reference numbers against the raise configuration and other documents for consistency.
+8. If the user speaks casually or gives voice-transcribed input, interpret their intent and execute precisely.`;
 
   try {
     const stream = getClient().messages.stream({

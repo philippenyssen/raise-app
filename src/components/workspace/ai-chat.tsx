@@ -105,18 +105,28 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
         }
       }
 
-      // Extract updated content from the full response
+      // Extract updated content or cell updates from the full response
       const contentMatch = fullText.match(/<updated_content>([\s\S]*?)<\/updated_content>/);
+      const cellMatch = fullText.match(/<cell_updates>([\s\S]*?)<\/cell_updates>/);
+
       if (contentMatch) {
         const updatedContent = contentMatch[1].trim();
         const cleanResponse = fullText.replace(/<updated_content>[\s\S]*?<\/updated_content>/, '').trim();
-        // Update the message to show clean version
         setMessages(prev => {
           const updated = [...prev];
           updated[assistantIdx] = { role: 'assistant', content: cleanResponse };
           return updated;
         });
         setPendingChange({ content: updatedContent, messageIdx: assistantIdx });
+      } else if (cellMatch && onApplyChange) {
+        // For model cell updates, stage the full response text (handler will parse)
+        const cleanResponse = fullText.replace(/<cell_updates>[\s\S]*?<\/cell_updates>/, '').trim();
+        setMessages(prev => {
+          const updated = [...prev];
+          updated[assistantIdx] = { role: 'assistant', content: cleanResponse };
+          return updated;
+        });
+        setPendingChange({ content: fullText, messageIdx: assistantIdx });
       }
     } catch {
       setMessages(prev => [...prev.slice(0, -1), { role: 'assistant', content: 'Sorry, something went wrong. Please try again.' }]);
