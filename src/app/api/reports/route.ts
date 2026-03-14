@@ -60,62 +60,62 @@ const BASE_STYLES = `
     .no-print { display: none !important; }
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1a1a2e; background: #fff; line-height: 1.5; }
+  body { font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif; color: #1a1a2e; background: #fafaf8; line-height: 1.5; }
   .report-container { max-width: 900px; margin: 0 auto; padding: 40px 48px; }
-  .report-header { border-bottom: 3px solid #1a1a2e; padding-bottom: 16px; margin-bottom: 24px; }
-  .report-header h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
-  .report-header .subtitle { font-size: 13px; color: #666; margin-top: 4px; }
-  .report-header .date { font-size: 12px; color: #999; margin-top: 2px; }
-  .health-badge { display: inline-block; padding: 4px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-  .health-green { background: #dcfce7; color: #166534; }
-  .health-yellow { background: #fef9c3; color: #854d0e; }
-  .health-red { background: #fee2e2; color: #991b1b; }
-  .metrics-strip { display: flex; gap: 0; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; margin: 20px 0; }
-  .metric-box { flex: 1; padding: 14px 16px; border-right: 1px solid #e5e7eb; text-align: center; }
+  .report-header { border-bottom: 2px solid #1a1a2e; padding-bottom: 16px; margin-bottom: 24px; }
+  .report-header h1 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 24px; font-weight: 300; letter-spacing: -0.5px; }
+  .report-header .subtitle { font-size: 13px; color: #8a8880; margin-top: 4px; }
+  .report-header .date { font-size: 12px; color: #8a8880; margin-top: 2px; }
+  .health-badge { display: inline-block; padding: 4px 14px; border-radius: 20px; font-size: 12px; font-weight: 500; letter-spacing: 0.2px; }
+  .health-green { background: #e4e3e0; color: #1a1a2e; }
+  .health-yellow { background: #e4e3e0; color: #1b2a4a; }
+  .health-red { background: #1b2a4a; color: #fafaf8; }
+  .metrics-strip { display: flex; gap: 0; border: 1px solid #e4e3e0; border-radius: 8px; overflow: hidden; margin: 20px 0; }
+  .metric-box { flex: 1; padding: 14px 16px; border-right: 1px solid #e4e3e0; text-align: center; }
   .metric-box:last-child { border-right: none; }
   .metric-value { font-size: 24px; font-weight: 700; color: #1a1a2e; }
-  .metric-label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.3px; margin-top: 2px; }
+  .metric-label { font-size: 11px; color: #8a8880; letter-spacing: 0.2px; margin-top: 2px; }
   .section { margin-top: 24px; }
-  .section-title { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #1a1a2e; border-bottom: 1px solid #e5e7eb; padding-bottom: 6px; margin-bottom: 12px; }
+  .section-title { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; color: #1a1a2e; border-bottom: 1px solid #e4e3e0; padding-bottom: 6px; margin-bottom: 12px; }
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th { text-align: left; padding: 8px 10px; background: #f8fafc; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.3px; color: #666; border-bottom: 2px solid #e5e7eb; }
-  td { padding: 8px 10px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+  th { text-align: left; padding: 8px 10px; background: #fafaf8; font-weight: 500; font-size: 11px; letter-spacing: 0.2px; color: #8a8880; border-bottom: 2px solid #e4e3e0; }
+  td { padding: 8px 10px; border-bottom: 1px solid #e4e3e0; vertical-align: top; }
   tr:last-child td { border-bottom: none; }
   .status-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; }
-  .status-identified { background: #f3f4f6; color: #4b5563; }
-  .status-contacted { background: #dbeafe; color: #1e40af; }
-  .status-met { background: #e0e7ff; color: #3730a3; }
-  .status-engaged { background: #fef3c7; color: #92400e; }
-  .status-in_dd { background: #d1fae5; color: #065f46; }
-  .status-term_sheet { background: #dcfce7; color: #166534; }
-  .status-closed { background: #bbf7d0; color: #14532d; }
-  .status-passed { background: #fee2e2; color: #991b1b; }
-  .status-dropped { background: #fecaca; color: #7f1d1d; }
-  .priority-critical { background: #fee2e2; color: #991b1b; }
-  .priority-high { background: #ffedd5; color: #9a3412; }
-  .priority-medium { background: #fef3c7; color: #92400e; }
-  .priority-low { background: #f3f4f6; color: #4b5563; }
+  .status-identified { background: #e4e3e0; color: #8a8880; }
+  .status-contacted { background: #e4e3e0; color: #1b2a4a; }
+  .status-met { background: #e4e3e0; color: #1a1a2e; }
+  .status-engaged { background: #1b2a4a; color: #fafaf8; }
+  .status-in_dd { background: #1b2a4a; color: #fafaf8; }
+  .status-term_sheet { background: #1a1a2e; color: #fafaf8; }
+  .status-closed { background: #1a1a2e; color: #fafaf8; }
+  .status-passed { background: #e4e3e0; color: #8a8880; }
+  .status-dropped { background: #e4e3e0; color: #8a8880; }
+  .priority-critical { background: #1a1a2e; color: #fafaf8; }
+  .priority-high { background: #1b2a4a; color: #fafaf8; }
+  .priority-medium { background: #e4e3e0; color: #1b2a4a; }
+  .priority-low { background: #e4e3e0; color: #8a8880; }
   .enthusiasm { display: inline-block; min-width: 24px; text-align: center; padding: 2px 6px; border-radius: 4px; font-size: 12px; font-weight: 600; }
-  .enth-high { background: #dcfce7; color: #166534; }
-  .enth-mid { background: #fef3c7; color: #92400e; }
-  .enth-low { background: #fee2e2; color: #991b1b; }
-  .risk-item { padding: 8px 12px; background: #fef2f2; border-left: 3px solid #f06070; border-radius: 0 4px 4px 0; margin-bottom: 8px; font-size: 13px; }
-  .action-item { padding: 8px 12px; background: #eff6ff; border-left: 3px solid #7c6ef0; border-radius: 0 4px 4px 0; margin-bottom: 8px; font-size: 13px; }
-  .gap-item { padding: 6px 10px; background: #fefce8; border-left: 3px solid #f0b060; border-radius: 0 4px 4px 0; margin-bottom: 6px; font-size: 12px; }
-  .conviction-up { color: #16a34a; }
-  .conviction-down { color: #d04050; }
-  .conviction-steady { color: #ca8a04; }
+  .enth-high { background: #1a1a2e; color: #fafaf8; }
+  .enth-mid { background: #e4e3e0; color: #1b2a4a; }
+  .enth-low { background: #e4e3e0; color: #8a8880; }
+  .risk-item { padding: 8px 12px; background: #e4e3e0; border-left: 3px solid #1a1a2e; border-radius: 0 4px 4px 0; margin-bottom: 8px; font-size: 13px; }
+  .action-item { padding: 8px 12px; background: #e4e3e0; border-left: 3px solid #1b2a4a; border-radius: 0 4px 4px 0; margin-bottom: 8px; font-size: 13px; }
+  .gap-item { padding: 6px 10px; background: #e4e3e0; border-left: 3px solid #8a8880; border-radius: 0 4px 4px 0; margin-bottom: 6px; font-size: 12px; }
+  .conviction-up { color: #1a1a2e; font-weight: 700; }
+  .conviction-down { color: #8a8880; }
+  .conviction-steady { color: #1b2a4a; }
   .funnel-bar { height: 18px; border-radius: 3px; display: inline-block; vertical-align: middle; }
-  .score-bar { height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; display: inline-block; width: 80px; vertical-align: middle; margin-left: 6px; }
+  .score-bar { height: 8px; background: #e4e3e0; border-radius: 4px; overflow: hidden; display: inline-block; width: 80px; vertical-align: middle; margin-left: 6px; }
   .score-fill { height: 100%; border-radius: 4px; }
-  .timestamp { font-size: 11px; color: #aaa; margin-top: 24px; text-align: right; }
+  .timestamp { font-size: 11px; color: #8a8880; margin-top: 24px; text-align: right; }
   .investor-header { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
   .investor-header h2 { font-size: 18px; font-weight: 700; }
-  .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 24px; font-size: 13px; margin-bottom: 20px; padding: 14px; background: #f8fafc; border-radius: 8px; }
-  .profile-label { color: #888; font-size: 11px; text-transform: uppercase; letter-spacing: 0.3px; }
+  .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 24px; font-size: 13px; margin-bottom: 20px; padding: 14px; background: #fafaf8; border: 1px solid #e4e3e0; border-radius: 8px; }
+  .profile-label { color: #8a8880; font-size: 11px; letter-spacing: 0.2px; }
   .profile-value { font-weight: 500; margin-top: 1px; }
-  .recommendation-box { padding: 16px; border: 2px solid #7c6ef0; border-radius: 8px; background: #eff6ff; margin-top: 20px; }
-  .recommendation-box h3 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; color: #1e40af; margin-bottom: 8px; }
+  .recommendation-box { padding: 16px; border: 2px solid #1b2a4a; border-radius: 8px; background: #fafaf8; margin-top: 20px; }
+  .recommendation-box h3 { font-size: 13px; font-weight: 600; letter-spacing: -0.01em; color: #1a1a2e; margin-bottom: 8px; }
   .recommendation-box p { font-size: 13px; line-height: 1.6; }
 </style>
 `;
@@ -253,9 +253,9 @@ async function generateBoardUpdate(): Promise<string> {
         <td style="font-weight:600;">${count}</td>
         <td>
           <div class="funnel-bar" style="width:${Math.max(4, count * 12)}px; background:${
-            stage === 'term_sheet' || stage === 'closed' ? '#16a34a' :
-            stage === 'in_dd' ? '#6a5bdf' :
-            stage === 'engaged' ? '#ca8a04' : '#8b8fa3'
+            stage === 'term_sheet' || stage === 'closed' ? '#1a1a2e' :
+            stage === 'in_dd' ? '#1b2a4a' :
+            stage === 'engaged' ? '#1b2a4a' : '#8a8880'
           };"></div>
         </td>
       </tr>`;
@@ -433,7 +433,7 @@ async function generateWeeklyAgenda(): Promise<string> {
     return `<tr>
       <td style="font-weight:600;">${f.investor_name}</td>
       <td>${f.description.length > 60 ? f.description.substring(0, 60) + '...' : f.description}</td>
-      <td style="color:#d04050;font-weight:600;">${daysOverdue}d overdue</td>
+      <td style="color:#1a1a2e;font-weight:600;">${daysOverdue}d overdue</td>
     </tr>`;
   }).join('');
 
@@ -643,7 +643,7 @@ async function generateInvestorBrief(investorId: string): Promise<string> {
   // Score dimensions
   const dimRows = score.dimensions.map(d => {
     const pct = Math.round(d.score);
-    const color = pct >= 70 ? '#16a34a' : pct >= 40 ? '#ca8a04' : '#d04050';
+    const color = pct >= 70 ? '#1a1a2e' : pct >= 40 ? '#1b2a4a' : '#8a8880';
     return `<tr>
       <td>${d.name}</td>
       <td style="font-weight:600;">${pct}/100</td>
