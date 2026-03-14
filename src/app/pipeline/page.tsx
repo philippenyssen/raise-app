@@ -971,29 +971,48 @@ function InvestorCard({
           )}
         </div>
 
-        {/* Enthusiasm dots */}
-        {investor.enthusiasm > 0 && (
-          <div className="flex items-center gap-1.5">
-            <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Signal</span>
-            <div className="enthusiasm-dots">
-              {[1, 2, 3, 4, 5].map(n => (
-                <div
-                  key={n}
-                  className="enthusiasm-dot"
-                  style={{
-                    background: n <= investor.enthusiasm
-                      ? investor.enthusiasm >= 4
-                        ? 'var(--success)'
-                        : investor.enthusiasm >= 3
-                        ? 'var(--accent)'
-                        : 'var(--text-muted)'
-                      : 'var(--border-default)',
-                  }}
-                />
-              ))}
+        {/* Enthusiasm + days in stage row */}
+        <div className="flex items-center justify-between">
+          {investor.enthusiasm > 0 ? (
+            <div className="flex items-center gap-1.5">
+              <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Signal</span>
+              <div className="enthusiasm-dots">
+                {[1, 2, 3, 4, 5].map(n => (
+                  <div
+                    key={n}
+                    className="enthusiasm-dot"
+                    style={{
+                      background: n <= investor.enthusiasm
+                        ? investor.enthusiasm >= 4
+                          ? 'var(--success)'
+                          : investor.enthusiasm >= 3
+                          ? 'var(--accent)'
+                          : 'var(--text-muted)'
+                        : 'var(--border-default)',
+                    }}
+                  />
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          ) : <div />}
+          {(() => {
+            const daysInStage = Math.floor((Date.now() - new Date(investor.updated_at).getTime()) / (1000 * 60 * 60 * 24));
+            const isStale = daysInStage >= 14;
+            const isWarning = daysInStage >= 7 && daysInStage < 14;
+            return (
+              <span
+                style={{
+                  fontSize: '10px',
+                  color: isStale ? 'var(--danger)' : isWarning ? 'var(--warning)' : 'var(--text-muted)',
+                  fontWeight: isStale ? 600 : 400,
+                }}
+                title={`Last updated ${daysInStage}d ago`}
+              >
+                {daysInStage}d
+              </span>
+            );
+          })()}
+        </div>
       </Link>
     </div>
   );
