@@ -43,11 +43,11 @@ type HeatFilter = 'all' | 'hot' | 'warm' | 'cool' | 'cold' | 'frozen';
 // ── Config ────────────────────────────────────────────────────────────
 
 const HEAT_CONFIG: Record<string, { bg: string; border: string; text: string; glow: string; label: string }> = {
-  hot:    { bg: 'rgba(196, 90, 90, 0.15)', border: 'rgba(196, 90, 90, 0.5)',  text: '#c45a5a', glow: '0 0 20px rgba(196, 90, 90, 0.3)', label: 'HOT' },
-  warm:   { bg: 'rgba(234, 179, 8, 0.12)',  border: 'rgba(234, 179, 8, 0.4)',  text: '#c4a35a', glow: '0 0 12px rgba(234, 179, 8, 0.2)', label: 'WARM' },
-  cool:   { bg: 'rgba(74, 111, 165, 0.10)', border: 'rgba(74, 111, 165, 0.35)', text: '#4a6fa5', glow: 'none', label: 'COOL' },
-  cold:   { bg: 'rgba(148, 163, 184, 0.10)', border: 'rgba(148, 163, 184, 0.3)', text: '#8b8fa3', glow: 'none', label: 'COLD' },
-  frozen: { bg: 'rgba(100, 116, 139, 0.08)', border: 'rgba(100, 116, 139, 0.25)', text: '#5c6178', glow: 'none', label: 'FROZEN' },
+  hot:    { bg: 'rgba(27, 42, 74, 0.08)', border: 'rgba(27, 42, 74, 0.15)',  text: 'var(--text-primary)', glow: 'none', label: 'Hot' },
+  warm:   { bg: 'rgba(27, 42, 74, 0.06)',  border: 'rgba(27, 42, 74, 0.12)',  text: 'var(--text-secondary)', glow: 'none', label: 'Warm' },
+  cool:   { bg: 'rgba(27, 42, 74, 0.05)', border: 'rgba(27, 42, 74, 0.10)', text: 'var(--text-tertiary)', glow: 'none', label: 'Cool' },
+  cold:   { bg: 'rgba(27, 42, 74, 0.04)', border: 'rgba(27, 42, 74, 0.08)', text: 'var(--text-muted)', glow: 'none', label: 'Cold' },
+  frozen: { bg: 'rgba(27, 42, 74, 0.03)', border: 'rgba(27, 42, 74, 0.06)', text: 'var(--text-muted)', glow: 'none', label: 'Frozen' },
 };
 
 const TYPE_LABELS: Record<string, string> = {

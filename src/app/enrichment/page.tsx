@@ -72,7 +72,7 @@ interface EnrichResult {
 
 const SOURCE_TYPE_STYLES: Record<string, { bg: string; color: string; border: string }> = {
   free: { bg: 'var(--success-muted)', color: 'var(--success)', border: 'rgba(74, 158, 110, 0.2)' },
-  freemium: { bg: 'var(--accent-muted)', color: 'var(--accent)', border: 'rgba(74, 111, 165, 0.2)' },
+  freemium: { bg: 'var(--accent-muted)', color: 'var(--accent)', border: 'rgba(27, 42, 74, 0.05)' },
   paid: { bg: 'var(--warning-muted)', color: 'var(--warning)', border: 'rgba(196, 163, 90, 0.2)' },
 };
 

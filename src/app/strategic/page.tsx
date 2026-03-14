@@ -92,13 +92,13 @@ const CATEGORY_CONFIG: Record<string, { label: string; color: string; bg: string
   narrative: { label: 'Narrative', color: 'var(--chart-4)',          bg: 'rgba(106, 111, 165, 0.12)', border: 'rgba(106, 111, 165, 0.4)', icon: MessageCircleWarning },
   execution: { label: 'Execution', color: 'var(--success)',   bg: 'var(--success-muted)',   border: 'rgba(74, 158, 110, 0.4)',   icon: Zap },
   timing:    { label: 'Timing',    color: 'var(--warning)',   bg: 'var(--warning-muted)',   border: 'rgba(196, 163, 90, 0.4)',  icon: Clock },
-  risk:      { label: 'Risk',      color: 'var(--danger)',    bg: 'var(--danger-muted)',    border: 'rgba(196, 90, 90, 0.4)',   icon: Shield },
+  risk:      { label: 'Risk',      color: 'var(--danger)',    bg: 'var(--danger-muted)',    border: 'rgba(27, 42, 74, 0.08)',   icon: Shield },
 };
 
 const TREND_CONFIG = {
   accelerating: { label: 'Accelerating', icon: TrendingUp,    color: 'var(--success)',  bg: 'var(--success-muted)',  border: 'rgba(74, 158, 110, 0.4)' },
   steady:       { label: 'Steady',       icon: Minus,          color: 'var(--warning)',  bg: 'var(--warning-muted)',  border: 'rgba(196, 163, 90, 0.4)' },
-  decelerating: { label: 'Decelerating', icon: TrendingDown,   color: 'var(--danger)',   bg: 'var(--danger-muted)',   border: 'rgba(196, 90, 90, 0.4)' },
+  decelerating: { label: 'Decelerating', icon: TrendingDown,   color: 'var(--danger)',   bg: 'var(--danger-muted)',   border: 'rgba(27, 42, 74, 0.08)' },
 };
 
 function gaugeColor(score: number, invert = false): string {
@@ -124,7 +124,7 @@ function gaugeBarColor(score: number, invert = false): string {
 }
 
 function priorityStyle(p: number): React.CSSProperties {
-  if (p === 1) return { background: 'var(--danger-muted)', color: 'var(--danger)', borderColor: 'rgba(196, 90, 90, 0.4)' };
+  if (p === 1) return { background: 'var(--danger-muted)', color: 'var(--danger)', borderColor: 'rgba(27, 42, 74, 0.08)' };
   if (p === 2) return { background: 'rgba(196, 163, 90, 0.12)', color: 'var(--warning)', borderColor: 'rgba(196, 163, 90, 0.4)' };
   if (p === 3) return { background: 'var(--warning-muted)', color: 'var(--warning)', borderColor: 'rgba(196, 163, 90, 0.4)' };
   return { background: 'var(--surface-2)', color: 'var(--text-tertiary)', borderColor: 'var(--border-default)' };
@@ -132,7 +132,7 @@ function priorityStyle(p: number): React.CSSProperties {
 
 function directionStyle(direction: string): React.CSSProperties {
   if (direction === 'improving') return { background: 'var(--success-muted)', color: 'var(--success)', borderColor: 'rgba(74, 158, 110, 0.4)' };
-  if (direction === 'declining') return { background: 'var(--danger-muted)', color: 'var(--danger)', borderColor: 'rgba(196, 90, 90, 0.4)' };
+  if (direction === 'declining') return { background: 'var(--danger-muted)', color: 'var(--danger)', borderColor: 'rgba(27, 42, 74, 0.08)' };
   if (direction === 'mixed') return { background: 'var(--warning-muted)', color: 'var(--warning)', borderColor: 'rgba(196, 163, 90, 0.4)' };
   return { background: 'var(--surface-2)', color: 'var(--text-tertiary)', borderColor: 'var(--border-default)' };
 }
@@ -140,7 +140,7 @@ function directionStyle(direction: string): React.CSSProperties {
 function confidenceStyle(confidence: string): React.CSSProperties {
   if (confidence === 'high') return { background: 'var(--success-muted)', color: 'var(--success)', borderColor: 'rgba(74, 158, 110, 0.4)' };
   if (confidence === 'medium') return { background: 'var(--warning-muted)', color: 'var(--warning)', borderColor: 'rgba(196, 163, 90, 0.4)' };
-  return { background: 'var(--danger-muted)', color: 'var(--danger)', borderColor: 'rgba(196, 90, 90, 0.4)' };
+  return { background: 'var(--danger-muted)', color: 'var(--danger)', borderColor: 'rgba(27, 42, 74, 0.08)' };
 }
 
 function deltaColor(delta: number): string {
@@ -203,7 +203,7 @@ export default function StrategicPage() {
         <div
           style={{
             border: '1px solid var(--danger-muted)',
-            background: 'rgba(196, 90, 90, 0.05)',
+            background: 'rgba(27, 42, 74, 0.08)',
             borderRadius: 'var(--radius-lg)',
             padding: 'var(--space-8)',
           }}
@@ -409,12 +409,12 @@ export default function StrategicPage() {
                   padding: 'var(--space-3)',
                   border: `1px solid ${
                     trend.direction === 'improving' ? 'rgba(74, 158, 110, 0.15)' :
-                    trend.direction === 'declining' ? 'rgba(196, 90, 90, 0.15)' :
+                    trend.direction === 'declining' ? 'rgba(27, 42, 74, 0.08)' :
                     'var(--border-subtle)'
                   }`,
                   background:
                     trend.direction === 'improving' ? 'rgba(74, 158, 110, 0.04)' :
-                    trend.direction === 'declining' ? 'rgba(196, 90, 90, 0.04)' :
+                    trend.direction === 'declining' ? 'rgba(27, 42, 74, 0.08)' :
                     'var(--surface-1)',
                 }}
               >
@@ -506,7 +506,7 @@ export default function StrategicPage() {
                 style={{
                   borderRadius: 'var(--radius-md)',
                   padding: 'var(--space-3)',
-                  border: '1px solid rgba(74, 111, 165, 0.15)',
+                  border: '1px solid rgba(27, 42, 74, 0.05)',
                   background: 'var(--accent-muted)',
                 }}
               >

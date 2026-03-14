@@ -397,22 +397,22 @@ export default function InvestorDetailPage() {
           {/* Heat */}
           <div className="flex items-center gap-1.5">
             <Flame className="w-3.5 h-3.5" style={{
-              color: dealIntel.heatLabel === 'hot' ? '#c45a5a' :
-                dealIntel.heatLabel === 'warm' ? '#c4a35a' :
+              color: dealIntel.heatLabel === 'hot' ? 'var(--text-primary)' :
+                dealIntel.heatLabel === 'warm' ? 'var(--text-secondary)' :
                 'var(--text-muted)'
             }} />
             <span style={{
               fontSize: 'var(--font-size-sm)', fontWeight: 700, fontVariantNumeric: 'tabular-nums',
-              color: dealIntel.heatLabel === 'hot' ? '#c45a5a' :
-                dealIntel.heatLabel === 'warm' ? '#c4a35a' :
+              color: dealIntel.heatLabel === 'hot' ? 'var(--text-primary)' :
+                dealIntel.heatLabel === 'warm' ? 'var(--text-secondary)' :
                 'var(--text-secondary)'
             }}>
               {dealIntel.heat}
             </span>
             <span style={{
               fontSize: '9px', fontWeight: 600, textTransform: 'none',
-              color: dealIntel.heatLabel === 'hot' ? '#c45a5a' :
-                dealIntel.heatLabel === 'warm' ? '#c4a35a' :
+              color: dealIntel.heatLabel === 'hot' ? 'var(--text-primary)' :
+                dealIntel.heatLabel === 'warm' ? 'var(--text-secondary)' :
                 'var(--text-muted)'
             }}>
               {dealIntel.heatLabel}

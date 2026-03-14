@@ -576,11 +576,11 @@ export default function MomentumPage() {
               <div className="w-4 h-3 rounded" style={{ background: 'rgba(5,150,105,0.8)' }} /><span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>71-100</span>
             </div>
             <div className="ml-4 flex items-center gap-1.5">
-              <div className="w-4 h-3 rounded" style={{ background: 'var(--surface-2)', boxShadow: '0 0 0 2px rgba(27, 42, 74, 0.06)' }} />
+              <div className="w-4 h-3 rounded" style={{ background: 'var(--surface-2)', boxShadow: '0 none' }} />
               <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Above cohort</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <div className="w-4 h-3 rounded" style={{ background: 'var(--surface-2)', boxShadow: '0 0 0 2px rgba(26, 26, 46, 0.06)' }} />
+              <div className="w-4 h-3 rounded" style={{ background: 'var(--surface-2)', boxShadow: '0 none' }} />
               <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Below cohort</span>
             </div>
           </div>

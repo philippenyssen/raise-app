@@ -214,7 +214,7 @@ export default function StressTestPage() {
   const bannerStyles: Record<string, React.CSSProperties> = {
     green: { borderColor: 'rgba(74, 158, 110, 0.3)', background: 'var(--success-muted)' },
     yellow: { borderColor: 'rgba(196, 163, 90, 0.3)', background: 'var(--warning-muted)' },
-    red: { borderColor: 'rgba(196, 90, 90, 0.3)', background: 'var(--danger-muted)' },
+    red: { borderColor: 'rgba(27, 42, 74, 0.10)', background: 'var(--danger-muted)' },
   };
   const bannerTextStyles: Record<string, React.CSSProperties> = {
     green: { color: 'var(--success)' },
@@ -332,7 +332,7 @@ export default function StressTestPage() {
       {data.shortfall && data.shortfall > 0 && data.gapInvestors.length > 0 && (
         <div
           className="rounded-xl p-5"
-          style={{ border: '2px solid rgba(196, 90, 90, 0.25)', background: 'rgba(196, 90, 90, 0.04)' }}
+          style={{ border: '2px solid rgba(27, 42, 74, 0.08)', background: 'rgba(27, 42, 74, 0.08)' }}
         >
           <div className="flex items-center gap-2 mb-4">
             <Target className="w-5 h-5" style={{ color: 'var(--danger)' }} />
@@ -557,7 +557,7 @@ export default function StressTestPage() {
               {data.risks.map((risk, i) => {
                 const isExpanded = expandedRisks.includes(i);
                 const riskBadgeStyle: React.CSSProperties = risk.probability === 'High'
-                  ? { color: 'var(--danger)', background: 'var(--danger-muted)', borderColor: 'rgba(196, 90, 90, 0.3)' }
+                  ? { color: 'var(--danger)', background: 'var(--danger-muted)', borderColor: 'rgba(27, 42, 74, 0.10)' }
                   : risk.probability === 'Medium'
                   ? { color: 'var(--warning)', background: 'var(--warning-muted)', borderColor: 'rgba(196, 163, 90, 0.3)' }
                   : { color: 'var(--text-secondary)', background: 'rgba(255, 255, 255, 0.1)', borderColor: 'var(--border-subtle)' };
@@ -662,7 +662,7 @@ export default function StressTestPage() {
             </span>
           </div>
           {data.criticalPath.totalIfAllClose < data.target && (
-            <div className="mt-2 text-xs rounded-lg p-2.5" style={{ color: 'var(--danger)', background: 'var(--danger-muted)', border: '1px solid rgba(196, 90, 90, 0.3)' }}>
+            <div className="mt-2 text-xs rounded-lg p-2.5" style={{ color: 'var(--danger)', background: 'var(--danger-muted)', border: '1px solid rgba(27, 42, 74, 0.10)' }}>
               Even the minimum viable set falls short. Need to add more investors or increase check sizes.
             </div>
           )}
@@ -816,7 +816,7 @@ function ForecastCard({ label, sublabel, amount, target, color }: {
   const colorMap: Record<string, { border: string; bg: string; value: string }> = {
     green: { border: 'rgba(74, 158, 110, 0.25)', bg: 'var(--success-muted)', value: 'var(--success)' },
     yellow: { border: 'rgba(196, 163, 90, 0.25)', bg: 'var(--warning-muted)', value: 'var(--warning)' },
-    red: { border: 'rgba(196, 90, 90, 0.25)', bg: 'var(--danger-muted)', value: 'var(--danger)' },
+    red: { border: 'rgba(27, 42, 74, 0.08)', bg: 'var(--danger-muted)', value: 'var(--danger)' },
   };
   const c = colorMap[color];
 

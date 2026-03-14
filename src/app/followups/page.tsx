@@ -282,7 +282,7 @@ function FollowupsContent() {
           padding: 0,
           borderColor: showOverdueIndicator || isOverdue ? 'rgba(26, 26, 46, 0.06)' : undefined,
           background: showOverdueIndicator || isOverdue ? 'rgba(26, 26, 46, 0.06)' : undefined,
-          boxShadow: showOverdueIndicator || isOverdue ? '0 0 0 1px rgba(26, 26, 46, 0.06)' : undefined,
+          boxShadow: showOverdueIndicator || isOverdue ? '0 none' : undefined,
         }}
       >
         <div style={{ padding: 'var(--space-4)' }}>

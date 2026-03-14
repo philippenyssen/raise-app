@@ -59,8 +59,8 @@ const STATUS_LABELS: Record<string, string> = {
 const STATUS_COLORS: Record<string, string> = {
   contacted: 'var(--accent)',
   nda_signed: 'var(--accent)',
-  meeting_scheduled: '#4a6fa5',
-  met: '#4a6fa5',
+  meeting_scheduled: 'var(--text-tertiary)',
+  met: 'var(--text-tertiary)',
   engaged: 'var(--accent)',
   in_dd: 'var(--warning)',
   term_sheet: 'var(--success)',

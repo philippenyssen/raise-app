@@ -723,7 +723,7 @@ export default function ObjectionsPage() {
             {/* Meeting Prep */}
             <div className="rounded-xl p-4 space-y-3" style={{ border: '1px solid var(--border-subtle)' }}>
               <div className="flex items-center gap-2">
-                <Target className="w-4 h-4" style={{ color: '#4a6fa5' }} />
+                <Target className="w-4 h-4" style={{ color: 'var(--text-tertiary)' }} />
                 <h3 className="text-xs font-semibold  tracking-wide" style={{ color: 'var(--text-tertiary)' }}>Meeting Prep</h3>
               </div>
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Select an investor to see their objection history and what worked with similar investors.</p>
@@ -1081,7 +1081,7 @@ function EffectivenessTab({
                         </div>
                       )}
                       {te.worst_response && (
-                        <div className="p-2 rounded-lg" style={{ background: 'var(--danger-muted)', border: '1px solid rgba(196, 90, 90, 0.15)' }}>
+                        <div className="p-2 rounded-lg" style={{ background: 'var(--danger-muted)', border: '1px solid rgba(27, 42, 74, 0.08)' }}>
                           <div className="flex items-center gap-1 mb-1">
                             <ThumbsDown className="w-3 h-3" style={{ color: 'var(--danger)' }} />
                             <span className="text-xs font-medium" style={{ color: 'var(--danger)' }}>Worst response</span>

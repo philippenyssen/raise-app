@@ -19,7 +19,7 @@ const STATUS_STYLES: Record<string, { background: string; color: string }> = {
   contacted: { background: 'var(--border-strong)', color: 'var(--text-primary)' },
   nda_signed: { background: 'var(--accent-muted)', color: 'var(--accent)' },
   meeting_scheduled: { background: 'var(--accent-muted)', color: 'var(--accent)' },
-  met: { background: 'rgba(74, 111, 165, 0.35)', color: 'var(--accent)' },
+  met: { background: 'rgba(27, 42, 74, 0.10)', color: 'var(--accent)' },
   engaged: { background: 'rgba(106, 111, 165, 0.25)', color: 'var(--chart-4)' },
   in_dd: { background: 'var(--warning-muted)', color: 'var(--warning)' },
   term_sheet: { background: 'var(--success-muted)', color: 'var(--success)' },
@@ -285,7 +285,7 @@ export default function InvestorsPage() {
           className="flex items-center gap-3"
           style={{
             background: 'var(--accent-muted)',
-            border: '1px solid rgba(74, 111, 165, 0.2)',
+            border: '1px solid rgba(27, 42, 74, 0.05)',
             borderRadius: 'var(--radius-lg)',
             padding: 'var(--space-2) var(--space-4)',
           }}
@@ -426,11 +426,11 @@ export default function InvestorsPage() {
                       inv.tier === 3 ? 'tier-3' : ''
                     }`} style={
                       inv.tier === 1
-                        ? { boxShadow: '0 0 10px rgba(74, 111, 165, 0.4), 0 0 4px rgba(74, 111, 165, 0.2)' }
+                        ? { boxShadow: 'none, none' }
                         : inv.tier === 2
-                          ? { boxShadow: '0 0 10px rgba(196, 163, 90, 0.35), 0 0 4px rgba(196, 163, 90, 0.15)' }
+                          ? { boxShadow: 'none, none' }
                           : inv.tier === 3
-                            ? { boxShadow: '0 0 8px rgba(255, 255, 255, 0.06)' }
+                            ? { boxShadow: 'none' }
                             : {
                                 background: 'var(--surface-2)',
                                 color: 'var(--text-muted)',

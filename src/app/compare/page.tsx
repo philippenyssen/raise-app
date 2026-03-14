@@ -1190,7 +1190,7 @@ function AccelerationBadge({ status }: { status: AccelerationStatusData }) {
     },
     'Stalled': {
       bg: 'var(--danger-muted)',
-      border: 'rgba(196, 90, 90, 0.3)',
+      border: 'rgba(27, 42, 74, 0.10)',
       color: 'var(--danger)',
       icon: <Clock className="w-3 h-3" />,
     },

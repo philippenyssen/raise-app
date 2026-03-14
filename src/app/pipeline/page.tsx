@@ -46,15 +46,15 @@ const COLUMN_COLORS: Record<InvestorStatus, {
     badge: { background: 'rgba(255, 255, 255, 0.25)', color: 'var(--text-secondary)' },
   },
   contacted: {
-    header: { background: 'rgba(74, 111, 165, 0.1)' },
-    border: { borderColor: 'rgba(74, 111, 165, 0.2)' },
-    bg: { background: 'rgba(74, 111, 165, 0.03)' },
+    header: { background: 'rgba(27, 42, 74, 0.05)' },
+    border: { borderColor: 'rgba(27, 42, 74, 0.05)' },
+    bg: { background: 'rgba(27, 42, 74, 0.05)' },
     badge: { background: 'var(--accent-muted)', color: 'var(--accent)' },
   },
   nda_signed: {
-    header: { background: 'rgba(74, 111, 165, 0.15)' },
+    header: { background: 'rgba(27, 42, 74, 0.05)' },
     border: { borderColor: 'var(--accent-muted)' },
-    bg: { background: 'rgba(74, 111, 165, 0.04)' },
+    bg: { background: 'rgba(27, 42, 74, 0.05)' },
     badge: { background: 'var(--accent-muted)', color: 'var(--accent)' },
   },
   meeting_scheduled: {
@@ -94,10 +94,10 @@ const COLUMN_COLORS: Record<InvestorStatus, {
     badge: { background: 'rgba(74, 158, 110, 0.35)', color: 'var(--success)' },
   },
   passed: {
-    header: { background: 'rgba(196, 90, 90, 0.08)' },
-    border: { borderColor: 'rgba(196, 90, 90, 0.2)' },
-    bg: { background: 'rgba(196, 90, 90, 0.03)' },
-    badge: { background: 'rgba(196, 90, 90, 0.25)', color: 'var(--danger)' },
+    header: { background: 'rgba(27, 42, 74, 0.08)' },
+    border: { borderColor: 'rgba(27, 42, 74, 0.08)' },
+    bg: { background: 'rgba(27, 42, 74, 0.08)' },
+    badge: { background: 'rgba(27, 42, 74, 0.08)', color: 'var(--danger)' },
   },
   dropped: {
     header: { background: 'rgba(255, 255, 255, 0.1)' },
@@ -138,7 +138,7 @@ const TYPE_STYLES: Record<InvestorType, React.CSSProperties> = {
   sovereign: { background: 'var(--warning-muted)', color: 'var(--warning)', borderColor: 'rgba(196, 163, 90, 0.3)' },
   strategic: { background: 'var(--success-muted)', color: 'var(--success)', borderColor: 'rgba(74, 158, 110, 0.3)' },
   debt: { background: 'rgba(196, 163, 90, 0.12)', color: 'var(--warning)', borderColor: 'rgba(196, 163, 90, 0.3)' },
-  family_office: { background: 'rgba(196, 90, 90, 0.12)', color: 'var(--danger)', borderColor: 'rgba(196, 90, 90, 0.3)' },
+  family_office: { background: 'rgba(27, 42, 74, 0.08)', color: 'var(--danger)', borderColor: 'rgba(27, 42, 74, 0.10)' },
 };
 
 // ── Pipeline velocity stage weights ──────────────────────────────────
@@ -503,8 +503,8 @@ export default function PipelinePage() {
                   ...colors.border,
                   transition: 'all 150ms ease',
                   ...(isOver ? {
-                    boxShadow: '0 0 0 2px rgba(74, 111, 165, 0.4)',
-                    borderColor: 'rgba(74, 111, 165, 0.5)',
+                    boxShadow: '0 none',
+                    borderColor: 'rgba(27, 42, 74, 0.05)',
                   } : {}),
                 }}
                 onDragOver={e => handleDragOver(e, status)}
@@ -596,8 +596,8 @@ export default function PipelinePage() {
                     ...colors.border,
                     transition: 'all 150ms ease',
                     ...(isOver ? {
-                      boxShadow: '0 0 0 2px rgba(74, 111, 165, 0.4)',
-                      borderColor: 'rgba(74, 111, 165, 0.5)',
+                      boxShadow: '0 none',
+                      borderColor: 'rgba(27, 42, 74, 0.05)',
                     } : {}),
                   }}
                   onDragOver={e => handleDragOver(e, status)}
@@ -699,7 +699,7 @@ function FilterButton({
         ...(active
           ? {
               background: 'var(--accent-muted)',
-              borderColor: 'rgba(74, 111, 165, 0.4)',
+              borderColor: 'rgba(27, 42, 74, 0.05)',
               color: 'var(--accent)',
             }
           : {
@@ -855,10 +855,10 @@ function InvestorCard({
 
   const tierGlow = hovered
     ? investor.tier === 1
-      ? '0 0 12px rgba(74, 111, 165, 0.15)'
+      ? 'none'
       : investor.tier === 2
-        ? '0 0 12px rgba(196, 163, 90, 0.12)'
-        : '0 0 8px rgba(255, 255, 255, 0.04)'
+        ? 'none'
+        : 'none'
     : 'none';
 
   const cardBaseStyle: React.CSSProperties = {
