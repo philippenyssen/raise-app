@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
 import { getRaiseConfig, getAllDocuments, getDataRoomContext } from '@/lib/db';
 
@@ -48,7 +48,7 @@ INSTRUCTIONS:
 7. If the user speaks casually or gives voice-transcribed input, interpret their intent and execute precisely.`;
 
   try {
-    const response = await getClient().messages.create({
+    const stream = getClient().messages.stream({
       model: 'claude-sonnet-4-20250514',
       max_tokens: 8192,
       system: systemPrompt,
@@ -58,22 +58,38 @@ INSTRUCTIONS:
       })),
     });
 
-    const text = response.content[0].type === 'text' ? response.content[0].text : '';
+    const encoder = new TextEncoder();
 
-    // Extract updated content if present
-    const contentMatch = text.match(/<updated_content>([\s\S]*?)<\/updated_content>/);
-    const updatedContent = contentMatch ? contentMatch[1].trim() : null;
-    const cleanResponse = text.replace(/<updated_content>[\s\S]*?<\/updated_content>/, '').trim();
+    const readable = new ReadableStream({
+      async start(controller) {
+        try {
+          for await (const event of stream) {
+            if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
+              controller.enqueue(encoder.encode(`data: ${JSON.stringify({ text: event.delta.text })}\n\n`));
+            }
+          }
+          // Send done signal
+          controller.enqueue(encoder.encode(`data: [DONE]\n\n`));
+          controller.close();
+        } catch (err) {
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify({ error: err instanceof Error ? err.message : 'Stream error' })}\n\n`));
+          controller.close();
+        }
+      },
+    });
 
-    return NextResponse.json({
-      response: cleanResponse,
-      updatedContent,
+    return new Response(readable, {
+      headers: {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        Connection: 'keep-alive',
+      },
     });
   } catch (err) {
     console.error('Workspace AI error:', err);
-    return NextResponse.json(
-      { error: err instanceof Error ? err.message : 'AI request failed' },
-      { status: 500 }
+    return new Response(
+      JSON.stringify({ error: err instanceof Error ? err.message : 'AI request failed' }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }
 }

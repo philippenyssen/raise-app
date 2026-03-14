@@ -56,7 +56,7 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          messages: newMessages.slice(-10), // Send last 10 messages to stay within context limits
+          messages: newMessages.slice(-10),
           documentId,
           documentContent,
           documentTitle,
@@ -65,19 +65,65 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
 
       if (!res.ok) throw new Error('AI request failed');
 
-      const data = await res.json();
-      setMessages([...newMessages, { role: 'assistant', content: data.response }]);
+      // Stream SSE response
+      const reader = res.body?.getReader();
+      if (!reader) throw new Error('No response body');
 
-      // If the AI returned updated content, stage it for review (don't auto-apply)
-      if (data.updatedContent) {
-        setPendingChange({ content: data.updatedContent, messageIdx: newMessages.length });
+      const decoder = new TextDecoder();
+      let fullText = '';
+      const assistantIdx = newMessages.length;
+
+      // Add empty assistant message that we'll update as tokens stream in
+      setMessages(prev => [...prev, { role: 'assistant', content: '' }]);
+
+      let buffer = '';
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue;
+          const data = line.slice(6);
+          if (data === '[DONE]') continue;
+
+          try {
+            const parsed = JSON.parse(data);
+            if (parsed.text) {
+              fullText += parsed.text;
+              // Update the last message in place
+              setMessages(prev => {
+                const updated = [...prev];
+                updated[assistantIdx] = { role: 'assistant', content: fullText };
+                return updated;
+              });
+            }
+          } catch { /* skip unparseable chunks */ }
+        }
+      }
+
+      // Extract updated content from the full response
+      const contentMatch = fullText.match(/<updated_content>([\s\S]*?)<\/updated_content>/);
+      if (contentMatch) {
+        const updatedContent = contentMatch[1].trim();
+        const cleanResponse = fullText.replace(/<updated_content>[\s\S]*?<\/updated_content>/, '').trim();
+        // Update the message to show clean version
+        setMessages(prev => {
+          const updated = [...prev];
+          updated[assistantIdx] = { role: 'assistant', content: cleanResponse };
+          return updated;
+        });
+        setPendingChange({ content: updatedContent, messageIdx: assistantIdx });
       }
     } catch {
-      setMessages([...newMessages, { role: 'assistant', content: 'Sorry, something went wrong. Please try again.' }]);
+      setMessages(prev => [...prev.slice(0, -1), { role: 'assistant', content: 'Sorry, something went wrong. Please try again.' }]);
     } finally {
       setLoading(false);
     }
-  }, [messages, loading, documentId, documentContent, documentTitle, onApplyChange]);
+  }, [messages, loading, documentId, documentContent, documentTitle]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
