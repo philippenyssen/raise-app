@@ -1,6 +1,12 @@
 import Anthropic from '@anthropic-ai/sdk';
 
-const client = new Anthropic();
+let _client: Anthropic | null = null;
+function getAIClient(): Anthropic {
+  if (!_client) {
+    _client = new Anthropic();
+  }
+  return _client;
+}
 
 export async function analyzeMeetingNotes(rawNotes: string, investorName: string, meetingType: string): Promise<{
   questions_asked: { text: string; topic: string }[];
@@ -21,7 +27,7 @@ export async function analyzeMeetingNotes(rawNotes: string, investorName: string
   ai_analysis: string;
   suggested_status: string;
 }> {
-  const response = await client.messages.create({
+  const response = await getAIClient().messages.create({
     model: 'claude-sonnet-4-20250514',
     max_tokens: 4096,
     messages: [{
@@ -110,7 +116,7 @@ SIGNALS: ${JSON.stringify(signals)}
 NOTES: ${m.raw_notes.substring(0, 500)}`;
   }).join('\n---\n');
 
-  const response = await client.messages.create({
+  const response = await getAIClient().messages.create({
     model: 'claude-sonnet-4-20250514',
     max_tokens: 4096,
     messages: [{
@@ -160,7 +166,7 @@ export async function assessProcessHealth(funnel: Record<string, unknown>, objec
   recommendations: string[];
   risk_factors: string[];
 }> {
-  const response = await client.messages.create({
+  const response = await getAIClient().messages.create({
     model: 'claude-sonnet-4-20250514',
     max_tokens: 2048,
     messages: [{

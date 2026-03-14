@@ -18,13 +18,12 @@ async function ensureInitialized() {
   if (initialized) return;
   const db = getClient();
 
-  await db.executeMultiple(`
-    CREATE TABLE IF NOT EXISTS config (
+  await db.batch([
+    `CREATE TABLE IF NOT EXISTS config (
       key TEXT PRIMARY KEY,
       value TEXT NOT NULL
-    );
-
-    CREATE TABLE IF NOT EXISTS investors (
+    )`,
+    `CREATE TABLE IF NOT EXISTS investors (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
       type TEXT NOT NULL DEFAULT 'vc',
@@ -42,9 +41,8 @@ async function ensureInitialized() {
       enthusiasm INTEGER DEFAULT 0,
       created_at TEXT DEFAULT (datetime('now')),
       updated_at TEXT DEFAULT (datetime('now'))
-    );
-
-    CREATE TABLE IF NOT EXISTS meetings (
+    )`,
+    `CREATE TABLE IF NOT EXISTS meetings (
       id TEXT PRIMARY KEY,
       investor_id TEXT NOT NULL,
       investor_name TEXT NOT NULL,
@@ -63,9 +61,8 @@ async function ensureInitialized() {
       ai_analysis TEXT DEFAULT '',
       created_at TEXT DEFAULT (datetime('now')),
       FOREIGN KEY (investor_id) REFERENCES investors(id)
-    );
-
-    CREATE TABLE IF NOT EXISTS convergence (
+    )`,
+    `CREATE TABLE IF NOT EXISTS convergence (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       date TEXT DEFAULT (datetime('now')),
       story INTEGER DEFAULT 0,
@@ -80,10 +77,22 @@ async function ensureInitialized() {
       team INTEGER DEFAULT 0,
       score INTEGER DEFAULT 0,
       notes TEXT DEFAULT ''
-    );
-  `);
+    )`,
+  ], 'write');
 
   initialized = true;
+}
+
+// Clear all data (for re-seeding)
+export async function clearAllData() {
+  await ensureInitialized();
+  const db = getClient();
+  await db.batch([
+    'DELETE FROM meetings',
+    'DELETE FROM investors',
+    'DELETE FROM config',
+    'DELETE FROM convergence',
+  ], 'write');
 }
 
 // Config
