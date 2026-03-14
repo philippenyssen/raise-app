@@ -674,7 +674,7 @@ export default function InvestorDetailPage() {
         <StatCard icon={SendHorizonal} label="Follow-ups" value={followups.length} sub={followups.filter(f => new Date(f.due_at) < new Date()).length > 0 ? `${followups.filter(f => new Date(f.due_at) < new Date()).length} overdue` : 'pending'} highlight={followups.filter(f => new Date(f.due_at) < new Date()).length > 0} />
         <StatCard icon={AlertTriangle} label="Objections" value={allObjections.length} sub="unresolved" />
         <StatCard icon={UserCheck} label="Partners" value={partners.length} sub="profiled" />
-        <StatCard icon={Briefcase} label="Portfolio Cos" value={portfolio.length} sub="tracked" />
+        <StatCard icon={Briefcase} label="Portfolio" value={portfolio.length} sub="tracked" />
       </div>
 
       {/* Intelligence Tabs */}
@@ -1065,7 +1065,7 @@ export default function InvestorDetailPage() {
       {investor.notes && (
         <div className="rounded-xl p-5" style={{ border: '1px solid var(--border-default)' }}>
           <h2 className="text-xs font-medium mb-2" style={{ color: 'var(--text-tertiary)' }}>NOTES</h2>
-          <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>{investor.notes}</p>
+          <p className="text-sm" style={{ color: 'var(--text-tertiary)', whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>{investor.notes}</p>
         </div>
       )}
     </div>
@@ -1086,7 +1086,7 @@ function StatCard({ icon: Icon, label, value, sub, highlight }: { icon: React.Co
     <div className="rounded-xl p-4" style={{ border: highlight ? '1px solid rgba(240,96,112,0.3)' : '1px solid var(--border-default)', background: highlight ? 'rgba(240,96,112,0.03)' : undefined }}>
       <div className="flex items-center gap-2 mb-1">
         <span style={{ color: highlight ? 'var(--danger)' : 'var(--text-muted)' }}><Icon className="w-3.5 h-3.5" /></span>
-        <span className="text-xs" style={{ color: highlight ? 'var(--danger)' : 'var(--text-muted)' }}>{label}</span>
+        <span className="text-xs truncate" style={{ color: highlight ? 'var(--danger)' : 'var(--text-muted)' }}>{label}</span>
       </div>
       <div className="text-2xl font-bold" style={{ color: highlight ? 'var(--danger)' : 'var(--text-primary)' }}>{value}</div>
       <div className="text-xs" style={{ color: highlight ? 'var(--danger)' : 'var(--text-muted)' }}>{sub}</div>
