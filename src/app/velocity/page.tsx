@@ -217,10 +217,10 @@ export default function VelocityPage() {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-2 gap-4" style={{ marginBottom: 'var(--space-6)' }}>
+      <div className="grid grid-cols-2 gap-4 card-stagger" style={{ marginBottom: 'var(--space-6)' }}>
         <div className="grid grid-cols-2 gap-4">
           {/* On Track */}
-          <div className="card" style={{ padding: 'var(--space-4)' }}>
+          <div className="card-metric metric-success" style={{ padding: 'var(--space-4)' }}>
             <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-2)' }}>
               <span style={{ color: 'var(--success)' }}>
                 <CheckCircle2 className="w-4 h-4" />
@@ -233,7 +233,7 @@ export default function VelocityPage() {
           </div>
 
           {/* Behind */}
-          <div className="card" style={{ padding: 'var(--space-4)' }}>
+          <div className="card-metric metric-warning" style={{ padding: 'var(--space-4)' }}>
             <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-2)' }}>
               <span style={{ color: 'var(--warning)' }}>
                 <AlertTriangle className="w-4 h-4" />
@@ -248,7 +248,7 @@ export default function VelocityPage() {
 
         <div className="grid grid-cols-2 gap-4">
           {/* At Risk */}
-          <div className="card" style={{ padding: 'var(--space-4)' }}>
+          <div className="card-metric metric-danger" style={{ padding: 'var(--space-4)' }}>
             <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-2)' }}>
               <span style={{ color: 'var(--danger)' }}>
                 <XCircle className="w-4 h-4" />
@@ -261,7 +261,7 @@ export default function VelocityPage() {
           </div>
 
           {/* Avg Velocity */}
-          <div className="card" style={{ padding: 'var(--space-4)' }}>
+          <div className="card-metric" style={{ padding: 'var(--space-4)' }}>
             <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-2)' }}>
               <span style={{ color: velocityColor(summary.avg_velocity_score) }}>
                 <TrendingUp className="w-4 h-4" />

@@ -61,20 +61,20 @@ export default function CompetitivePage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="card" style={{ padding: 'var(--space-3)' }}>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 card-stagger">
+        <div className="card-metric metric-danger" style={{ padding: 'var(--space-3)' }}>
           <div className="metric-label">Total Mentions</div>
           <div className="metric-value" style={{ marginTop: '2px' }}>{totalMentions}</div>
         </div>
-        <div className="card" style={{ padding: 'var(--space-3)' }}>
+        <div className="card-metric" style={{ padding: 'var(--space-3)' }}>
           <div className="metric-label">Unique Competitors</div>
           <div className="metric-value" style={{ marginTop: '2px' }}>{uniqueCompetitors}</div>
         </div>
-        <div className="card" style={{ padding: 'var(--space-3)' }}>
+        <div className="card-metric metric-warning" style={{ padding: 'var(--space-3)' }}>
           <div className="metric-label">Top Competitor</div>
           <div className="metric-value" style={{ marginTop: '2px', fontSize: 'var(--font-size-lg)' }}>{topCompetitor}</div>
         </div>
-        <div className="card" style={{ padding: 'var(--space-3)' }}>
+        <div className="card-metric" style={{ padding: 'var(--space-3)' }}>
           <div className="metric-label">Meetings Scanned</div>
           <div className="metric-value" style={{ marginTop: '2px' }}>{data?.total_meetings_scanned ?? 0}</div>
         </div>

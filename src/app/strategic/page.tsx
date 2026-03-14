@@ -280,7 +280,7 @@ export default function StrategicPage() {
       {/* ================================================================ */}
       {/* GAUGE CARDS                                                      */}
       {/* ================================================================ */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 card-stagger">
         {/* Readiness Score */}
         <GaugeCard
           label="Fundraise Readiness"
@@ -315,7 +315,7 @@ export default function StrategicPage() {
         />
 
         {/* Raise Velocity */}
-        <div className="card flex flex-col">
+        <div className="card-metric flex flex-col">
           <div className="metric-label" style={{ marginBottom: 'var(--space-1)' }}>Raise Velocity</div>
           <div className="flex items-center gap-2 mb-2">
             <span
@@ -775,7 +775,7 @@ function GaugeCard({ label, value, suffix, description, barPct, barColor, valueC
   valueColor: string;
 }) {
   return (
-    <div className="card flex flex-col">
+    <div className="card-metric flex flex-col">
       <div className="metric-label" style={{ marginBottom: 'var(--space-1)' }}>{label}</div>
       <div style={{ fontSize: 'var(--font-size-3xl)', fontWeight: 700, fontVariantNumeric: 'tabular-nums', color: valueColor }}>
         {value}<span style={{ fontSize: 'var(--font-size-lg)', fontWeight: 500, color: 'var(--text-muted)' }}>{suffix}</span>

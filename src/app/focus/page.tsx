@@ -1233,29 +1233,29 @@ export default function FocusPage() {
       </div>
 
       {/* Weekly Budget Summary */}
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
-        <div className="card" style={{ padding: 'var(--space-4)' }}>
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 card-stagger">
+        <div className="card-metric" style={{ padding: 'var(--space-4)' }}>
           <div className="flex items-center gap-2 mb-1" style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>
             <Clock className="w-3.5 h-3.5" /> Total Time
           </div>
           <div className="metric-value">{weeklyBudget.totalHoursRecommended}h</div>
           <div className="metric-label" style={{ marginTop: '2px' }}>recommended this week</div>
         </div>
-        <div className="card" style={{ padding: 'var(--space-4)' }}>
+        <div className="card-metric" style={{ padding: 'var(--space-4)' }}>
           <div className="flex items-center gap-2 mb-1" style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>
             <Calendar className="w-3.5 h-3.5" /> Meetings
           </div>
           <div className="metric-value">{weeklyBudget.meetingsRecommended}</div>
           <div className="metric-label" style={{ marginTop: '2px' }}>calls & meetings</div>
         </div>
-        <div className="card" style={{ padding: 'var(--space-4)' }}>
+        <div className="card-metric metric-success" style={{ padding: 'var(--space-4)' }}>
           <div className="flex items-center gap-2 mb-1" style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>
             <CheckCircle className="w-3.5 h-3.5" /> Follow-ups
           </div>
           <div className="metric-value">{weeklyBudget.followUpsRecommended}</div>
           <div className="metric-label" style={{ marginTop: '2px' }}>prep & outreach</div>
         </div>
-        <div className="card" style={{ padding: 'var(--space-4)' }}>
+        <div className="card-metric metric-warning" style={{ padding: 'var(--space-4)' }}>
           <div className="flex items-center gap-2 mb-1" style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>
             <Rocket className="w-3.5 h-3.5" /> Acceleration
           </div>

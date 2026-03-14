@@ -344,7 +344,7 @@ export default function PipelinePage() {
       </div>
 
       {/* ── Summary Stats ───────────────────────────────────────── */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 flex-shrink-0">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 flex-shrink-0 card-stagger">
         <StatCard
           icon={<Users className="w-4 h-4" />}
           label="Total Investors"
@@ -819,7 +819,7 @@ function StatCard({
 }) {
   return (
     <div
-      className="card"
+      className="card-metric"
       style={{
         padding: 'var(--space-3) var(--space-4)',
       }}

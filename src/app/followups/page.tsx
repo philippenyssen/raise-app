@@ -901,8 +901,8 @@ function FollowupsContent() {
       </div>
 
       {/* Stats row */}
-      <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
-        <div className="card" style={{ padding: 'var(--space-3)' }}>
+      <div className="grid grid-cols-3 md:grid-cols-5 gap-3 card-stagger">
+        <div className="card-metric metric-danger" style={{ padding: 'var(--space-3)' }}>
           <div className="metric-label">Overdue</div>
           <div
             className="metric-value mt-1"
@@ -911,7 +911,7 @@ function FollowupsContent() {
             {overdue.length}
           </div>
         </div>
-        <div className="card" style={{ padding: 'var(--space-3)' }}>
+        <div className="card-metric metric-warning" style={{ padding: 'var(--space-3)' }}>
           <div className="metric-label">Due Today</div>
           <div
             className="metric-value mt-1"
@@ -920,11 +920,11 @@ function FollowupsContent() {
             {dueToday.length}
           </div>
         </div>
-        <div className="card" style={{ padding: 'var(--space-3)' }}>
+        <div className="card-metric metric-success" style={{ padding: 'var(--space-3)' }}>
           <div className="metric-label">Completed</div>
           <div className="metric-value mt-1" style={{ color: 'var(--success)' }}>{completed.length}</div>
         </div>
-        <div className="card" style={{ padding: 'var(--space-3)' }}>
+        <div className="card-metric" style={{ padding: 'var(--space-3)' }}>
           <div className="metric-label">Avg Conviction Change</div>
           <div
             className="metric-value mt-1 flex items-center gap-1"
@@ -936,7 +936,7 @@ function FollowupsContent() {
             {avgDelta === 0 ? '0' : (avgDelta > 0 ? '+' : '') + avgDelta.toFixed(1)}
           </div>
         </div>
-        <div className="card" style={{ padding: 'var(--space-3)' }}>
+        <div className="card-metric" style={{ padding: 'var(--space-3)' }}>
           <div className="metric-label">Measured Efficacy</div>
           <div
             className="metric-value mt-1 flex items-center gap-1"
