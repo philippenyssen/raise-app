@@ -159,7 +159,7 @@ function computeCloseProbability(
   let prob = statusBase * enthusiasmMultiplier * tierAdj;
   prob = prob + (prob * momentumAdj);
 
-  // --- Investor-specific adjustments based on meeting signals ---
+  // —Investor-specific adjustments based on meeting signals ---
   if (meetings && meetings.length > 0) {
     // Unresolved showstoppers reduce probability significantly
     let showstopperCount = 0;
@@ -271,28 +271,28 @@ function determineBottleneck(
   if (momentum === 'stalled') {
     const lastMeeting = meetings.sort((a, b) => b.date.localeCompare(a.date))[0];
     const daysSince = lastMeeting ? Math.round(daysBetween(lastMeeting.date, new Date().toISOString())) : null;
-    return daysSince ? `Stalled --- no contact in ${daysSince} days` : 'Stalled --- no meetings logged';
+    return daysSince ? `Stalled —no contact in ${daysSince} days` : 'Stalled —no meetings logged';
   }
   if (momentum === 'decelerating') {
-    return 'Momentum decelerating --- enthusiasm or frequency declining';
+    return 'Momentum decelerating —enthusiasm or frequency declining';
   }
   if ((investor.enthusiasm || 0) <= 2) {
     return 'Low enthusiasm (score: ' + (investor.enthusiasm || 0) + '/5)';
   }
   if (investor.status === 'identified') {
-    return 'Not yet contacted --- need to activate intro path';
+    return 'Not yet contacted —need to activate intro path';
   }
   if (investor.status === 'contacted') {
     return 'Awaiting response to outreach';
   }
   if (investor.status === 'met' || investor.status === 'engaged') {
-    return 'Need to deepen engagement --- push toward DD';
+    return 'Need to deepen engagement —push toward DD';
   }
   if (investor.status === 'in_dd') {
-    return 'In DD --- accelerate DD response time to reach term sheet';
+    return 'In DD —accelerate DD response time to reach term sheet';
   }
   if (investor.status === 'term_sheet') {
-    return 'Term sheet stage --- negotiate and close';
+    return 'Term sheet stage —negotiate and close';
   }
   return 'Progressing normally';
 }
@@ -329,7 +329,7 @@ function determineIntervention(investor: Investor, momentum: string): { interven
       };
     case 'engaged':
       return {
-        intervention: 'Push for DD start --- propose structured DD timeline and data room access',
+        intervention: 'Push for DD start —propose structured DD timeline and data room access',
         timeCost: '30min call',
       };
     case 'in_dd':
@@ -661,7 +661,7 @@ export async function GET() {
         description: `High concentration: ${topInvestorExpected.name} represents ${Math.round((topInvestorExpected.expectedValue / baseCase) * 100)}% of expected commitments`,
         probability: 'Medium',
         impact: `If ${topInvestorExpected.name} passes, shortfall increases by €${Math.round(topInvestorExpected.expectedValue)}M`,
-        mitigation: 'Diversify pipeline --- add 3-5 more investors at similar check sizes',
+        mitigation: 'Diversify pipeline —add 3-5 more investors at similar check sizes',
       });
     }
 
@@ -689,7 +689,7 @@ export async function GET() {
       risks.push({
         description: `Thin advanced pipeline: only ${engagedPlusCount} investor(s) at engaged+ stage`,
         probability: 'High',
-        impact: 'Insufficient competitive tension --- may result in weaker terms',
+        impact: 'Insufficient competitive tension —may result in weaker terms',
         mitigation: 'Accelerate top-of-funnel investors through to engagement stage',
       });
     }
@@ -700,7 +700,7 @@ export async function GET() {
       risks.push({
         description: `${lowEnthusiasm.length} investors with low enthusiasm (2/5 or below)`,
         probability: 'Medium',
-        impact: 'Low-enthusiasm investors rarely convert --- pipeline value may be overstated',
+        impact: 'Low-enthusiasm investors rarely convert —pipeline value may be overstated',
         mitigation: 'Focus energy on high-enthusiasm investors; consider dropping low-conviction leads',
       });
     }
@@ -709,7 +709,7 @@ export async function GET() {
     const stalledCount = investorForecasts.filter(f => f.momentum === 'stalled').length;
     if (stalledCount > 0) {
       risks.push({
-        description: `${stalledCount} investor(s) with stalled momentum --- at risk of going cold`,
+        description: `${stalledCount} investor(s) with stalled momentum —at risk of going cold`,
         probability: 'High',
         impact: `€${Math.round(investorForecasts.filter(f => f.momentum === 'stalled').reduce((s, f) => s + f.expectedValue, 0))}M expected value at risk`,
         mitigation: 'Immediate re-engagement with value-add updates for each stalled investor',
@@ -733,9 +733,9 @@ export async function GET() {
       healthMessage = `On track to close €${targetEquityM}M${targetCloseDate ? ` by ${targetCloseDate}` : ''}`;
     } else if (healthStatus === 'yellow') {
       const interventionCount = gapInvestors.filter(g => g.impactDelta > 5).length;
-      healthMessage = `€${shortfall ?? 0}M shortfall at current pace --- ${interventionCount > 0 ? `${interventionCount} intervention(s) needed` : 'acceleration required'}`;
+      healthMessage = `€${shortfall ?? 0}M shortfall at current pace —${interventionCount > 0 ? `${interventionCount} intervention(s) needed` : 'acceleration required'}`;
     } else {
-      healthMessage = `Unlikely to close at current pace --- major pipeline restructuring needed`;
+      healthMessage = `Unlikely to close at current pace —major pipeline restructuring needed`;
     }
 
     return NextResponse.json({

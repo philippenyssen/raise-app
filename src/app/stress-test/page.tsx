@@ -236,7 +236,7 @@ export default function StressTestPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>Process Stress Test</h1>
           <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
-            Probabilistic close forecast --- {data.companyName} Series C
+            Probabilistic close forecast — {data.companyName} Series C
           </p>
         </div>
         <button
@@ -337,7 +337,7 @@ export default function StressTestPage() {
           <div className="flex items-center gap-2 mb-4">
             <Target className="w-5 h-5" style={{ color: 'var(--danger)' }} />
             <h2 className="text-sm font-semibold uppercase" style={{ color: 'var(--danger)' }}>
-              Gap Analysis --- EUR {formatEuro(data.shortfall)} Shortfall
+              Gap Analysis — EUR {formatEuro(data.shortfall)} Shortfall
             </h2>
           </div>
           <p className="text-sm mb-4" style={{ color: 'var(--text-secondary)' }}>
@@ -795,7 +795,7 @@ export default function StressTestPage() {
 
       {/* Footer */}
       <div className="text-center py-2" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
-        Generated {new Date(data.generatedAt).toLocaleString()} --- Data-driven from live investor pipeline
+        Generated {new Date(data.generatedAt).toLocaleString()} — Data-driven from live investor pipeline
       </div>
     </div>
   );
