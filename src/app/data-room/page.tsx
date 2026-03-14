@@ -237,7 +237,7 @@ export default function DataRoomPage() {
   }
 
   return (
-    <div className="max-w-5xl space-y-6">
+    <div className="max-w-5xl space-y-6 page-content">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="page-title" style={{ fontSize: 'var(--font-size-xl)' }}>Data Room</h1>

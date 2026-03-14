@@ -137,7 +137,7 @@ export default function IntelligencePage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 page-content">
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">

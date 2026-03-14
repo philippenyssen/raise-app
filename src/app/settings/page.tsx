@@ -324,7 +324,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="space-y-8 max-w-3xl">
+    <div className="space-y-8 max-w-3xl page-content">
       <div>
         <h1 className="page-title" style={{ fontSize: 'var(--font-size-xl)' }}>Settings</h1>
         <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', marginTop: 'var(--space-1)' }}>Raise configuration, scoring weights, follow-up cadence, and API diagnostics</p>
