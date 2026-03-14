@@ -559,7 +559,7 @@ export default function Dashboard() {
                         borderRadius: '4px',
                         background: amountColor,
                         transition: 'width 0.4s ease',
-                        boxShadow: `0 0 10px ${amountColor === 'var(--success)' ? 'rgba(74, 158, 110, 0.4)' : amountColor === 'var(--warning)' ? 'rgba(234, 179, 8, 0.4)' : 'rgba(196, 90, 90, 0.4)'}`,
+                        boxShadow: 'none',
                       }} />
                     </div>
                     {velocity?.summary?.raise_days_elapsed != null && velocity?.summary?.raise_target_days != null && (
@@ -1721,27 +1721,27 @@ function PulseCard({ label, value, sub, color }: {
   sub: string;
   color: 'blue' | 'green' | 'yellow' | 'red' | 'zinc';
 }) {
-  const colorMap = {
-    blue: { accent: 'var(--accent)', muted: 'var(--accent-muted)', border: 'rgba(74,111,165,0.15)' },
-    green: { accent: 'var(--success)', muted: 'var(--success-muted)', border: 'rgba(74,158,110,0.15)' },
-    yellow: { accent: 'var(--warning)', muted: 'var(--warning-muted)', border: 'rgba(196,163,90,0.15)' },
-    red: { accent: 'var(--danger)', muted: 'var(--danger-muted)', border: 'rgba(196,90,90,0.15)' },
-    zinc: { accent: 'var(--text-secondary)', muted: 'var(--surface-1)', border: 'var(--border-subtle)' },
+  const accentColor = {
+    blue: 'var(--accent)',
+    green: 'var(--success)',
+    yellow: 'var(--warning)',
+    red: 'var(--danger)',
+    zinc: 'var(--text-tertiary)',
   }[color];
 
   return (
     <div
       className="transition-all duration-150"
       style={{
-        background: colorMap.muted,
-        border: `1px solid ${colorMap.border}`,
-        borderLeft: `3px solid ${colorMap.accent}`,
+        background: 'var(--surface-1)',
+        border: '1px solid var(--border-subtle)',
+        borderLeft: `3px solid ${accentColor}`,
         borderRadius: 'var(--radius-lg)',
         padding: 'var(--space-4) var(--space-5)',
       }}
     >
       <div className="metric-label">{label}</div>
-      <div className="metric-value" style={{ color: colorMap.accent, marginTop: 'var(--space-1)' }}>{value}</div>
+      <div className="metric-value" style={{ color: 'var(--text-primary)', marginTop: 'var(--space-1)' }}>{value}</div>
       <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 'var(--space-1)' }}>{sub}</div>
     </div>
   );

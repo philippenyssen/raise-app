@@ -610,7 +610,7 @@ export default function TodayPage() {
                 width: '40px',
                 height: '40px',
                 borderRadius: '50%',
-                background: 'linear-gradient(135deg, rgba(196,163,90,0.2), rgba(251,191,36,0.1))',
+                background: 'var(--surface-2)',
                 border: '1px solid rgba(196,163,90,0.2)',
               }}
             >
