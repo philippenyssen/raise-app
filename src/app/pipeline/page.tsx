@@ -435,6 +435,52 @@ export default function PipelinePage() {
         </div>
       )}
 
+      {/* ── Pipeline Summary Strip ──────────────────────────────── */}
+      {(() => {
+        const totalInv = filtered.length;
+        const activeCount = filtered.filter(i => !['passed', 'dropped'].includes(i.status)).length;
+        const inDdCount = filtered.filter(i => i.status === 'in_dd').length;
+        const termSheetCount = filtered.filter(i => i.status === 'term_sheet').length;
+        const closedCount = filtered.filter(i => i.status === 'closed').length;
+        const passedCount = filtered.filter(i => i.status === 'passed').length;
+        const passRate = totalInv > 0 ? ((passedCount / totalInv) * 100).toFixed(1) : '0.0';
+        const convDenom = activeCount + closedCount + passedCount;
+        const conversionRate = convDenom > 0 ? ((closedCount / convDenom) * 100).toFixed(1) : '0.0';
+
+        const metrics = [
+          { label: 'Total', value: String(totalInv) },
+          { label: 'Active', value: String(activeCount) },
+          { label: 'In DD', value: String(inDdCount) },
+          { label: 'Term Sheets', value: String(termSheetCount) },
+          { label: 'Closed', value: String(closedCount), color: 'var(--success)' },
+          { label: 'Pass Rate', value: `${passRate}%`, color: passedCount > 0 ? 'var(--danger)' : undefined },
+          { label: 'Conversion', value: `${conversionRate}%`, color: closedCount > 0 ? 'var(--success)' : undefined },
+        ];
+
+        return (
+          <div
+            className="flex items-center gap-6 flex-shrink-0 overflow-x-auto"
+            style={{
+              padding: 'var(--space-3) var(--space-4)',
+              borderBottom: '1px solid var(--border-default)',
+              background: 'var(--surface-1)',
+              borderRadius: 'var(--radius-lg)',
+            }}
+          >
+            {metrics.map((m) => (
+              <div key={m.label} className="flex flex-col items-center" style={{ minWidth: '4rem' }}>
+                <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontWeight: 500, whiteSpace: 'nowrap' }}>
+                  {m.label}
+                </span>
+                <span style={{ fontSize: 'var(--font-size-lg)', fontWeight: 700, color: m.color || 'var(--text-primary)', lineHeight: 1.2 }}>
+                  {m.value}
+                </span>
+              </div>
+            ))}
+          </div>
+        );
+      })()}
+
       {/* ── Kanban Board ────────────────────────────────────────── */}
       <div
         ref={boardRef}

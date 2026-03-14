@@ -231,8 +231,9 @@ export default function FollowupsPage() {
         className="card"
         style={{
           padding: 0,
-          borderColor: showOverdueIndicator || isOverdue ? 'var(--danger)' : undefined,
-          background: showOverdueIndicator || isOverdue ? 'var(--danger-muted)' : undefined,
+          borderColor: showOverdueIndicator || isOverdue ? 'rgba(239,68,68,0.35)' : undefined,
+          background: showOverdueIndicator || isOverdue ? 'rgba(239,68,68,0.06)' : undefined,
+          boxShadow: showOverdueIndicator || isOverdue ? '0 0 0 1px rgba(239,68,68,0.15)' : undefined,
         }}
       >
         <div style={{ padding: 'var(--space-4)' }}>
@@ -606,12 +607,18 @@ export default function FollowupsPage() {
           className="flex items-center justify-between"
           style={{
             padding: '0.5rem var(--space-4)',
-            borderTop: '1px solid var(--border-subtle)',
+            borderTop: isOverdue ? '1px solid rgba(239,68,68,0.15)' : '1px solid var(--border-subtle)',
             fontSize: '10px',
             color: 'var(--text-muted)',
           }}
         >
-          <span>Due: {formatDate(item.due_at)}</span>
+          {isOverdue ? (
+            <span style={{ color: 'var(--danger)', fontWeight: 600 }}>
+              {formatRelativeTime(item.due_at)} — was due {formatDate(item.due_at)}
+            </span>
+          ) : (
+            <span>Due: {formatDate(item.due_at)}</span>
+          )}
           {item.completed_at && <span>Completed: {formatDate(item.completed_at)}</span>}
         </div>
       </div>
@@ -846,7 +853,11 @@ export default function FollowupsPage() {
         </div>
       ) : (
         <div className="space-y-2">
-          {followups.map(item => renderFollowupCard(item))}
+          {[...followups].sort((a, b) => {
+            const aOverdue = a.status === 'pending' && new Date(a.due_at) < now ? 1 : 0;
+            const bOverdue = b.status === 'pending' && new Date(b.due_at) < now ? 1 : 0;
+            return bOverdue - aOverdue;
+          }).map(item => renderFollowupCard(item))}
         </div>
       )}
 

@@ -490,6 +490,114 @@ export default function Dashboard() {
       {data.totalInvestors > 0 && (
         <>
           {/* ================================================================ */}
+          {/* RAISE PROGRESS HERO                                              */}
+          {/* ================================================================ */}
+          {stressTest ? (() => {
+            const pct = Math.min(100, Math.round((stressTest.forecast.base / stressTest.target) * 100));
+            const amountColor = stressTest.healthStatus === 'green'
+              ? 'var(--success)'
+              : stressTest.healthStatus === 'yellow'
+                ? 'var(--warning)'
+                : 'var(--danger)';
+            return (
+              <Link href="/stress-test" style={{ textDecoration: 'none', display: 'block' }}>
+                <div
+                  style={{
+                    background: 'var(--surface-1)',
+                    border: '1px solid var(--border-default)',
+                    borderRadius: 'var(--radius-xl)',
+                    padding: 'var(--space-6)',
+                    cursor: 'pointer',
+                    transition: 'border-color 0.15s ease',
+                  }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--accent)'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
+                >
+                  <div className="flex items-baseline gap-3" style={{ marginBottom: 'var(--space-4)' }}>
+                    <span style={{
+                      fontSize: 'var(--font-size-3xl)',
+                      fontWeight: 700,
+                      color: amountColor,
+                      lineHeight: 1,
+                      letterSpacing: '-0.02em',
+                    }}>
+                      €{Math.round(stressTest.forecast.base)}M
+                    </span>
+                    <span style={{
+                      fontSize: 'var(--font-size-sm)',
+                      color: 'var(--text-muted)',
+                    }}>
+                      of €{stressTest.target}M target
+                    </span>
+                  </div>
+
+                  <div style={{
+                    height: '8px',
+                    borderRadius: '4px',
+                    background: 'var(--surface-3)',
+                    overflow: 'hidden',
+                    marginBottom: 'var(--space-5)',
+                  }}>
+                    <div style={{
+                      width: `${pct}%`,
+                      height: '100%',
+                      borderRadius: '4px',
+                      background: amountColor,
+                      transition: 'width 0.4s ease',
+                    }} />
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-1)' }}>
+                        Best Case
+                      </div>
+                      <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 600, color: 'var(--text-primary)' }}>
+                        €{Math.round(stressTest.forecast.best)}M
+                      </div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-1)' }}>
+                        Close Probability
+                      </div>
+                      <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 600, color: 'var(--text-primary)' }}>
+                        {stressTest.closeProbability}%
+                      </div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-1)' }}>
+                        On Track Status
+                      </div>
+                      <div style={{
+                        fontSize: 'var(--font-size-lg)',
+                        fontWeight: 600,
+                        color: stressTest.onTrack ? 'var(--success)' : 'var(--danger)',
+                      }}>
+                        {stressTest.onTrack ? 'On Track' : 'Off Track'}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            );
+          })() : (
+            <div style={{
+              background: 'var(--surface-1)',
+              border: '1px solid var(--border-default)',
+              borderRadius: 'var(--radius-xl)',
+              padding: 'var(--space-6)',
+            }}>
+              <div className="skeleton" style={{ height: '48px', width: '220px', marginBottom: 'var(--space-4)', borderRadius: 'var(--radius-md)' }} />
+              <div className="skeleton" style={{ height: '8px', width: '100%', marginBottom: 'var(--space-5)', borderRadius: '4px' }} />
+              <div className="grid grid-cols-3 gap-4">
+                <div className="skeleton" style={{ height: '40px', borderRadius: 'var(--radius-md)' }} />
+                <div className="skeleton" style={{ height: '40px', borderRadius: 'var(--radius-md)' }} />
+                <div className="skeleton" style={{ height: '40px', borderRadius: 'var(--radius-md)' }} />
+              </div>
+            </div>
+          )}
+
+          {/* ================================================================ */}
           {/* PULSE STRIP - 4 compact metric cards                             */}
           {/* ================================================================ */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
