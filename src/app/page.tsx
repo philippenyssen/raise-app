@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useToast } from '@/components/toast';
-import { FileText, Sparkles, FolderOpen, Table, ArrowRight, ClipboardList, Activity } from 'lucide-react';
+import { FileText, Sparkles, FolderOpen, Table, ArrowRight, ClipboardList, Activity, Download, Columns3 } from 'lucide-react';
 
 interface DocSummary {
   id: string;
@@ -136,10 +136,25 @@ export default function Dashboard() {
           <h1 className="text-2xl font-bold tracking-tight">Series C Dashboard</h1>
           <p className="text-zinc-500 text-sm mt-1">Aerospacelab --- Process Orchestrator</p>
         </div>
-        <div className={`px-4 py-2 rounded-lg border ${healthBg}`}>
-          <span className={`text-sm font-medium ${healthColor} uppercase`}>
-            {data.health}
-          </span>
+        <div className="flex items-center gap-3">
+          <div className="relative group">
+            <button className="flex items-center gap-2 px-3 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-xs transition-colors">
+              <Download className="w-3.5 h-3.5" /> Export
+            </button>
+            <div className="absolute right-0 mt-1 w-44 bg-zinc-900 border border-zinc-700 rounded-lg shadow-xl py-1 hidden group-hover:block z-10">
+              {['investors', 'meetings', 'tasks', 'pipeline', 'activity'].map(t => (
+                <a key={t} href={`/api/export?type=${t}`} download
+                  className="block px-3 py-2 text-xs text-zinc-400 hover:text-white hover:bg-zinc-800 capitalize">
+                  {t} CSV
+                </a>
+              ))}
+            </div>
+          </div>
+          <div className={`px-4 py-2 rounded-lg border ${healthBg}`}>
+            <span className={`text-sm font-medium ${healthColor} uppercase`}>
+              {data.health}
+            </span>
+          </div>
         </div>
       </div>
 
@@ -248,33 +263,31 @@ export default function Dashboard() {
             <MetricCard label="Term Sheets" value={data.funnel.term_sheets} sub="received" />
           </div>
 
-          {/* Funnel */}
+          {/* Funnel — Visual Funnel Shape */}
           <div className="border border-zinc-800 rounded-xl p-6">
-            <h2 className="text-sm font-medium text-zinc-400 mb-4">INVESTOR FUNNEL</h2>
-            <div className="space-y-3">
-              {funnelStages.map(stage => (
-                <div key={stage.label} className="flex items-center gap-4">
-                  <span className="text-xs text-zinc-500 w-24 text-right">{stage.label}</span>
-                  <div className="flex-1 bg-zinc-900 rounded-full h-6 overflow-hidden">
-                    <div
-                      className={`${stage.color} h-full rounded-full transition-all duration-500 flex items-center px-3`}
-                      style={{ width: `${Math.max((stage.value / maxFunnel) * 100, stage.value > 0 ? 8 : 0)}%` }}
-                    >
-                      {stage.value > 0 && <span className="text-xs font-medium">{stage.value}</span>}
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-sm font-medium text-zinc-400">INVESTOR FUNNEL</h2>
+              <Link href="/pipeline" className="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1">
+                Pipeline view <Columns3 className="w-3 h-3" />
+              </Link>
+            </div>
+            <div className="flex flex-col items-center space-y-1.5">
+              {funnelStages.map((stage, i) => {
+                const widthPct = Math.max(100 - (i * 13), 25);
+                return (
+                  <div key={stage.label} className="w-full flex items-center justify-center" style={{ maxWidth: `${widthPct}%` }}>
+                    <div className={`${stage.color} w-full rounded-md h-10 flex items-center justify-between px-4 transition-all duration-500 relative`}>
+                      <span className="text-xs font-medium text-white/90">{stage.label}</span>
+                      <span className="text-sm font-bold">{stage.value}</span>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
               {data.funnel.passed > 0 && (
-                <div className="flex items-center gap-4">
-                  <span className="text-xs text-zinc-500 w-24 text-right">Passed</span>
-                  <div className="flex-1 bg-zinc-900 rounded-full h-6 overflow-hidden">
-                    <div
-                      className="bg-red-600/50 h-full rounded-full flex items-center px-3"
-                      style={{ width: `${Math.max((data.funnel.passed / maxFunnel) * 100, 8)}%` }}
-                    >
-                      <span className="text-xs font-medium">{data.funnel.passed}</span>
-                    </div>
+                <div className="w-full flex items-center justify-center mt-2 pt-2 border-t border-zinc-800" style={{ maxWidth: '50%' }}>
+                  <div className="bg-red-600/30 border border-red-800 w-full rounded-md h-8 flex items-center justify-between px-4">
+                    <span className="text-xs text-red-400">Passed</span>
+                    <span className="text-sm font-bold text-red-400">{data.funnel.passed}</span>
                   </div>
                 </div>
               )}
@@ -411,9 +424,9 @@ export default function Dashboard() {
               <div className="text-sm font-medium">AI Analysis</div>
               <div className="text-xs text-zinc-500 mt-1">Pattern detection</div>
             </Link>
-            <Link href="/timeline" className="border border-zinc-800 hover:border-zinc-600 rounded-xl p-4 text-center transition-colors">
-              <div className="text-sm font-medium">Timeline</div>
-              <div className="text-xs text-zinc-500 mt-1">Tasks & workflow</div>
+            <Link href="/pipeline" className="border border-zinc-800 hover:border-zinc-600 rounded-xl p-4 text-center transition-colors">
+              <div className="text-sm font-medium">Pipeline</div>
+              <div className="text-xs text-zinc-500 mt-1">Kanban board</div>
             </Link>
           </div>
         </>
