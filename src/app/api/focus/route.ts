@@ -14,6 +14,13 @@ function getClient() {
 // Types
 // ---------------------------------------------------------------------------
 
+interface ScoreDimensionData {
+  name: string;
+  score: number;
+  signal: 'strong' | 'moderate' | 'weak' | 'unknown';
+  evidence: string;
+}
+
 interface FocusItem {
   investorId: string;
   investorName: string;
@@ -29,6 +36,7 @@ interface FocusItem {
     opportunitySize: number;
     actionReadiness: number;
   };
+  scoringDimensions: ScoreDimensionData[];
   recommendedAction: string;
   timeEstimate: string;
   expectedImpact: string;
@@ -531,6 +539,12 @@ export async function GET() {
           opportunitySize,
           actionReadiness,
         },
+        scoringDimensions: investorScore.dimensions.map(d => ({
+          name: d.name,
+          score: d.score,
+          signal: d.signal,
+          evidence: d.evidence,
+        })),
         recommendedAction: actionResult.action,
         timeEstimate: actionResult.timeEstimate,
         expectedImpact: actionResult.expectedImpact,

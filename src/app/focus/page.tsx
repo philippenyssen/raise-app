@@ -6,12 +6,20 @@ import { useToast } from '@/components/toast';
 import {
   Target, Clock, AlertTriangle, Zap, ChevronRight, RefreshCw,
   Calendar, CheckCircle, ArrowUpRight, TrendingDown, Timer, Users,
-  Rocket, Shield, XCircle, ChevronDown, Play, Ban,
+  Rocket, Shield, XCircle, ChevronDown, Play, Ban, BarChart3,
+  Star, Eye,
 } from 'lucide-react';
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
+
+interface ScoreDimensionData {
+  name: string;
+  score: number;
+  signal: 'strong' | 'moderate' | 'weak' | 'unknown';
+  evidence: string;
+}
 
 interface FocusItem {
   investorId: string;
@@ -28,6 +36,7 @@ interface FocusItem {
     opportunitySize: number;
     actionReadiness: number;
   };
+  scoringDimensions?: ScoreDimensionData[];
   recommendedAction: string;
   timeEstimate: string;
   expectedImpact: string;
@@ -97,16 +106,16 @@ interface AccelerationData {
 }
 
 // ---------------------------------------------------------------------------
-// Helpers
+// Helpers — style objects using design tokens
 // ---------------------------------------------------------------------------
 
-const TYPE_COLORS: Record<string, string> = {
-  vc: 'bg-blue-900/40 text-blue-300 border-blue-800',
-  growth: 'bg-purple-900/40 text-purple-300 border-purple-800',
-  sovereign: 'bg-amber-900/40 text-amber-300 border-amber-800',
-  strategic: 'bg-teal-900/40 text-teal-300 border-teal-800',
-  debt: 'bg-zinc-800/60 text-zinc-300 border-zinc-700',
-  family_office: 'bg-rose-900/40 text-rose-300 border-rose-800',
+const TYPE_STYLES: Record<string, React.CSSProperties> = {
+  vc: { background: 'var(--accent-muted)', color: '#60a5fa', border: '1px solid rgba(59,130,246,0.25)' },
+  growth: { background: 'rgba(168,85,247,0.12)', color: '#c084fc', border: '1px solid rgba(168,85,247,0.25)' },
+  sovereign: { background: 'var(--warning-muted)', color: '#fbbf24', border: '1px solid rgba(245,158,11,0.25)' },
+  strategic: { background: 'rgba(20,184,166,0.12)', color: '#2dd4bf', border: '1px solid rgba(20,184,166,0.25)' },
+  debt: { background: 'var(--surface-2)', color: 'var(--text-secondary)', border: '1px solid var(--border-default)' },
+  family_office: { background: 'rgba(244,63,94,0.12)', color: '#fb7185', border: '1px solid rgba(244,63,94,0.25)' },
 };
 
 const TYPE_LABELS: Record<string, string> = {
@@ -120,22 +129,22 @@ const STATUS_LABELS: Record<string, string> = {
   in_dd: 'In DD', term_sheet: 'Term Sheet', closed: 'Closed',
 };
 
-const STATUS_COLORS: Record<string, string> = {
-  identified: 'bg-zinc-800 text-zinc-400 border-zinc-700',
-  contacted: 'bg-zinc-800 text-zinc-300 border-zinc-600',
-  nda_signed: 'bg-blue-900/30 text-blue-400 border-blue-800',
-  meeting_scheduled: 'bg-blue-900/30 text-blue-300 border-blue-800',
-  met: 'bg-purple-900/30 text-purple-400 border-purple-800',
-  engaged: 'bg-purple-900/30 text-purple-300 border-purple-700',
-  in_dd: 'bg-orange-900/30 text-orange-400 border-orange-800',
-  term_sheet: 'bg-green-900/30 text-green-400 border-green-800',
+const STATUS_STYLES: Record<string, React.CSSProperties> = {
+  identified: { background: 'var(--surface-2)', color: 'var(--text-tertiary)', border: '1px solid var(--border-default)' },
+  contacted: { background: 'var(--surface-2)', color: 'var(--text-secondary)', border: '1px solid var(--border-strong)' },
+  nda_signed: { background: 'var(--accent-muted)', color: '#60a5fa', border: '1px solid rgba(59,130,246,0.25)' },
+  meeting_scheduled: { background: 'var(--accent-muted)', color: '#93c5fd', border: '1px solid rgba(59,130,246,0.25)' },
+  met: { background: 'rgba(168,85,247,0.12)', color: '#c084fc', border: '1px solid rgba(168,85,247,0.25)' },
+  engaged: { background: 'rgba(168,85,247,0.12)', color: '#d8b4fe', border: '1px solid rgba(168,85,247,0.2)' },
+  in_dd: { background: 'var(--warning-muted)', color: '#fb923c', border: '1px solid rgba(245,158,11,0.25)' },
+  term_sheet: { background: 'var(--success-muted)', color: '#4ade80', border: '1px solid rgba(34,197,94,0.25)' },
 };
 
-const MOMENTUM_COLORS: Record<string, string> = {
-  accelerating: 'text-green-400',
-  steady: 'text-zinc-400',
-  decelerating: 'text-yellow-400',
-  stalled: 'text-red-400',
+const MOMENTUM_STYLE: Record<string, React.CSSProperties> = {
+  accelerating: { color: 'var(--success)' },
+  steady: { color: 'var(--text-tertiary)' },
+  decelerating: { color: 'var(--warning)' },
+  stalled: { color: 'var(--danger)' },
 };
 
 const MOMENTUM_LABELS: Record<string, string> = {
@@ -145,13 +154,13 @@ const MOMENTUM_LABELS: Record<string, string> = {
   stalled: 'Stalled',
 };
 
-const TRIGGER_COLORS: Record<string, string> = {
-  momentum_cliff: 'bg-orange-900/40 text-orange-300 border-orange-800',
-  stall_risk: 'bg-red-900/40 text-red-300 border-red-800',
-  window_closing: 'bg-yellow-900/40 text-yellow-300 border-yellow-800',
-  catalyst_match: 'bg-blue-900/40 text-blue-300 border-blue-800',
-  competitive_pressure: 'bg-purple-900/40 text-purple-300 border-purple-800',
-  term_sheet_ready: 'bg-green-900/40 text-green-300 border-green-800',
+const TRIGGER_STYLES: Record<string, React.CSSProperties> = {
+  momentum_cliff: { background: 'rgba(249,115,22,0.12)', color: '#fb923c', border: '1px solid rgba(249,115,22,0.25)' },
+  stall_risk: { background: 'var(--danger-muted)', color: '#f87171', border: '1px solid rgba(239,68,68,0.25)' },
+  window_closing: { background: 'var(--warning-muted)', color: '#fbbf24', border: '1px solid rgba(245,158,11,0.25)' },
+  catalyst_match: { background: 'var(--accent-muted)', color: '#60a5fa', border: '1px solid rgba(59,130,246,0.25)' },
+  competitive_pressure: { background: 'rgba(168,85,247,0.12)', color: '#c084fc', border: '1px solid rgba(168,85,247,0.25)' },
+  term_sheet_ready: { background: 'var(--success-muted)', color: '#4ade80', border: '1px solid rgba(34,197,94,0.25)' },
 };
 
 const TRIGGER_LABELS: Record<string, string> = {
@@ -163,42 +172,43 @@ const TRIGGER_LABELS: Record<string, string> = {
   term_sheet_ready: 'Term Sheet Ready',
 };
 
-const CONFIDENCE_COLORS: Record<string, string> = {
-  high: 'bg-green-900/30 text-green-400 border-green-800',
-  medium: 'bg-yellow-900/30 text-yellow-400 border-yellow-800',
-  low: 'bg-zinc-800 text-zinc-400 border-zinc-700',
+const CONFIDENCE_STYLES: Record<string, React.CSSProperties> = {
+  high: { background: 'var(--success-muted)', color: '#4ade80', border: '1px solid rgba(34,197,94,0.25)' },
+  medium: { background: 'var(--warning-muted)', color: '#fbbf24', border: '1px solid rgba(245,158,11,0.25)' },
+  low: { background: 'var(--surface-2)', color: 'var(--text-tertiary)', border: '1px solid var(--border-default)' },
 };
 
-const URGENCY_COLORS: Record<string, string> = {
-  immediate: 'text-red-400',
-  '48h': 'text-orange-400',
-  this_week: 'text-yellow-400',
-  next_week: 'text-zinc-400',
+const URGENCY_STYLE: Record<string, React.CSSProperties> = {
+  immediate: { color: 'var(--danger)' },
+  '48h': { color: '#f97316' },
+  this_week: { color: 'var(--warning)' },
+  next_week: { color: 'var(--text-tertiary)' },
 };
 
 function focusScoreColor(score: number): string {
-  if (score >= 70) return 'text-green-400';
-  if (score >= 50) return 'text-yellow-400';
-  return 'text-red-400';
+  if (score >= 70) return 'var(--success)';
+  if (score >= 50) return 'var(--warning)';
+  return 'var(--danger)';
 }
 
-function focusScoreBg(score: number): string {
-  if (score >= 70) return 'bg-green-500/10 border-green-500/20';
-  if (score >= 50) return 'bg-yellow-500/10 border-yellow-500/20';
-  return 'bg-red-500/10 border-red-500/20';
+function focusScoreBgStyle(score: number): React.CSSProperties {
+  if (score >= 70) return { background: 'var(--success-muted)', border: '1px solid rgba(34,197,94,0.2)' };
+  if (score >= 50) return { background: 'var(--warning-muted)', border: '1px solid rgba(245,158,11,0.2)' };
+  return { background: 'var(--danger-muted)', border: '1px solid rgba(239,68,68,0.2)' };
 }
 
 function EnthusiasmDots({ value }: { value: number }) {
   return (
-    <div className="flex gap-0.5">
+    <div className="enthusiasm-dots">
       {[1, 2, 3, 4, 5].map(i => (
         <div
           key={i}
-          className={`w-2 h-2 rounded-full ${
-            i <= value
-              ? value >= 4 ? 'bg-green-400' : value >= 3 ? 'bg-yellow-400' : 'bg-red-400'
-              : 'bg-zinc-700'
-          }`}
+          className="enthusiasm-dot"
+          style={{
+            background: i <= value
+              ? (value >= 4 ? 'var(--success)' : value >= 3 ? 'var(--warning)' : 'var(--danger)')
+              : 'var(--border-default)',
+          }}
         />
       ))}
     </div>
@@ -206,16 +216,258 @@ function EnthusiasmDots({ value }: { value: number }) {
 }
 
 function TierBadge({ tier }: { tier: number }) {
-  const colors: Record<number, string> = {
-    1: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
-    2: 'bg-zinc-500/20 text-zinc-300 border-zinc-500/30',
-    3: 'bg-zinc-700/30 text-zinc-500 border-zinc-700',
-    4: 'bg-zinc-800/30 text-zinc-600 border-zinc-800',
-  };
+  const tierClass = tier <= 3 ? `tier-badge tier-${tier}` : 'tier-badge tier-3';
   return (
-    <span className={`text-[9px] px-1 py-0.5 rounded border font-medium ${colors[tier] ?? colors[3]}`}>
-      T{tier}
+    <span className={tierClass}>
+      {tier}
     </span>
+  );
+}
+
+// Shared inline badge style helper
+function inlineBadgeStyle(styleObj: React.CSSProperties): React.CSSProperties {
+  return {
+    fontSize: 'var(--font-size-xs)',
+    padding: '2px 6px',
+    borderRadius: 'var(--radius-sm)',
+    fontWeight: 500,
+    lineHeight: 1.5,
+    whiteSpace: 'nowrap' as const,
+    ...styleObj,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Scoring Breakdown Component
+// ---------------------------------------------------------------------------
+
+const DIMENSION_SHORT_LABELS: Record<string, string> = {
+  'Engagement': 'ENG',
+  'Thesis Fit': 'FIT',
+  'Check Size Fit': 'CHK',
+  'Speed Match': 'SPD',
+  'Conflict Risk': 'CON',
+  'Warm Path': 'WRM',
+  'Meeting Quality': 'MTG',
+  'Momentum': 'MOM',
+  'Network Effect': 'NET',
+  'Forecast Alignment': 'FCT',
+  'Engagement Velocity': 'VEL',
+};
+
+function dimensionColor(score: number, sig: string): string {
+  if (sig === 'unknown') return 'var(--text-muted)';
+  if (score >= 70) return 'var(--success)';
+  if (score >= 40) return 'var(--warning)';
+  return 'var(--danger)';
+}
+
+function dimensionBg(score: number, sig: string): string {
+  if (sig === 'unknown') return 'var(--surface-2)';
+  if (score >= 70) return 'var(--success-muted)';
+  if (score >= 40) return 'var(--warning-muted)';
+  return 'var(--danger-muted)';
+}
+
+function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimensionData[] }) {
+  const [expanded, setExpanded] = useState(false);
+
+  const known = dimensions.filter(d => d.signal !== 'unknown');
+  const sorted = [...known].sort((a, b) => b.score - a.score);
+  const topDimensions = sorted.slice(0, 3);
+  const weakest = sorted.length > 0 ? sorted[sorted.length - 1] : null;
+
+  return (
+    <div style={{ marginTop: '10px' }}>
+      {/* Compact bar visualization */}
+      <div className="flex items-center gap-1">
+        <button
+          onClick={e => { e.stopPropagation(); setExpanded(!expanded); }}
+          className="flex items-center gap-1.5 shrink-0"
+          style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+        >
+          <span style={{ color: 'var(--text-muted)' }}>
+            <BarChart3 className="w-3 h-3" />
+          </span>
+          <ChevronDown
+            className={`w-3 h-3 transition-transform ${expanded ? 'rotate-180' : ''}`}
+            style={{ color: 'var(--text-muted)' }}
+          />
+        </button>
+        <div className="flex items-center gap-0.5 flex-1">
+          {dimensions.map(d => (
+            <div
+              key={d.name}
+              title={`${d.name}: ${d.score}/100 — ${d.evidence}`}
+              style={{
+                flex: 1,
+                height: '6px',
+                borderRadius: '3px',
+                background: dimensionBg(d.score, d.signal),
+                position: 'relative',
+                overflow: 'hidden',
+                maxWidth: '32px',
+              }}
+            >
+              <div
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  width: `${d.signal === 'unknown' ? 0 : d.score}%`,
+                  background: dimensionColor(d.score, d.signal),
+                  borderRadius: '3px',
+                  opacity: 0.85,
+                  transition: 'width 300ms ease',
+                }}
+              />
+            </div>
+          ))}
+        </div>
+        {/* Inline top strengths summary */}
+        {!expanded && topDimensions.length > 0 && (
+          <div className="flex items-center gap-1.5 shrink-0" style={{ marginLeft: '4px' }}>
+            {topDimensions.slice(0, 2).map(d => (
+              <span
+                key={d.name}
+                style={{
+                  fontSize: '9px',
+                  fontWeight: 600,
+                  color: dimensionColor(d.score, d.signal),
+                  background: dimensionBg(d.score, d.signal),
+                  padding: '1px 4px',
+                  borderRadius: 'var(--radius-sm)',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {DIMENSION_SHORT_LABELS[d.name] || d.name.slice(0, 3).toUpperCase()} {d.score}
+              </span>
+            ))}
+            {weakest && weakest.score < 40 && (
+              <span
+                style={{
+                  fontSize: '9px',
+                  fontWeight: 600,
+                  color: dimensionColor(weakest.score, weakest.signal),
+                  background: dimensionBg(weakest.score, weakest.signal),
+                  padding: '1px 4px',
+                  borderRadius: 'var(--radius-sm)',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {DIMENSION_SHORT_LABELS[weakest.name] || weakest.name.slice(0, 3).toUpperCase()} {weakest.score}
+              </span>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Expanded detail */}
+      {expanded && (
+        <div
+          className="mt-2 space-y-2"
+          onClick={e => e.stopPropagation()}
+          style={{
+            background: 'var(--surface-1)',
+            border: '1px solid var(--border-subtle)',
+            borderRadius: 'var(--radius-md)',
+            padding: 'var(--space-3)',
+          }}
+        >
+          {/* Full dimension grid */}
+          <div className="grid grid-cols-3 sm:grid-cols-4 gap-x-3 gap-y-2">
+            {dimensions.map(d => (
+              <div key={d.name}>
+                <div className="flex items-center justify-between mb-0.5">
+                  <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                    {d.name}
+                  </span>
+                  <span
+                    className="tabular-nums"
+                    style={{ fontSize: '10px', fontWeight: 700, color: dimensionColor(d.score, d.signal) }}
+                  >
+                    {d.signal === 'unknown' ? '--' : d.score}
+                  </span>
+                </div>
+                <div
+                  style={{
+                    height: '4px',
+                    borderRadius: '2px',
+                    background: dimensionBg(d.score, d.signal),
+                    position: 'relative',
+                    overflow: 'hidden',
+                  }}
+                >
+                  <div
+                    style={{
+                      position: 'absolute',
+                      left: 0,
+                      top: 0,
+                      bottom: 0,
+                      width: `${d.signal === 'unknown' ? 0 : d.score}%`,
+                      background: dimensionColor(d.score, d.signal),
+                      borderRadius: '2px',
+                      opacity: 0.85,
+                    }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Strengths */}
+          {topDimensions.length > 0 && (
+            <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 'var(--space-2)' }}>
+              <div className="flex items-center gap-1 mb-1">
+                <span style={{ color: 'var(--success)' }}><Star className="w-3 h-3" /></span>
+                <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                  Strengths
+                </span>
+              </div>
+              <div className="space-y-1">
+                {topDimensions.map(d => (
+                  <div key={d.name} className="flex items-start gap-1.5">
+                    <span style={{ fontSize: '10px', fontWeight: 700, color: dimensionColor(d.score, d.signal), minWidth: '20px' }} className="tabular-nums shrink-0">
+                      {d.score}
+                    </span>
+                    <span style={{ fontSize: '10px', color: 'var(--text-secondary)', fontWeight: 500 }}>
+                      {d.name}
+                    </span>
+                    <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                      {d.evidence}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Weakest */}
+          {weakest && weakest.score < 70 && (
+            <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 'var(--space-2)' }}>
+              <div className="flex items-center gap-1 mb-1">
+                <span style={{ color: 'var(--warning)' }}><Eye className="w-3 h-3" /></span>
+                <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                  Needs Attention
+                </span>
+              </div>
+              <div className="flex items-start gap-1.5">
+                <span style={{ fontSize: '10px', fontWeight: 700, color: dimensionColor(weakest.score, weakest.signal), minWidth: '20px' }} className="tabular-nums shrink-0">
+                  {weakest.score}
+                </span>
+                <span style={{ fontSize: '10px', color: 'var(--text-secondary)', fontWeight: 500 }}>
+                  {weakest.name}
+                </span>
+                <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                  {weakest.evidence}
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -225,13 +477,22 @@ function TierBadge({ tier }: { tier: number }) {
 
 function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
   const [expanded, setExpanded] = useState(false);
+  const [hovered, setHovered] = useState(false);
+
+  const cardStyle: React.CSSProperties = {
+    border: `1px solid ${rank <= 3 ? 'var(--border-default)' : 'var(--border-subtle)'}`,
+    borderRadius: 'var(--radius-lg)',
+    background: rank <= 3 ? 'var(--surface-1)' : 'var(--surface-0)',
+    transition: 'all 200ms ease',
+    ...(expanded ? { boxShadow: '0 0 0 1px var(--border-default)' } : {}),
+  };
+
+  const rankStyle: React.CSSProperties = rank <= 3
+    ? { background: 'var(--accent)', color: 'white' }
+    : { background: 'var(--surface-2)', color: 'var(--text-tertiary)' };
 
   return (
-    <div
-      className={`border rounded-xl transition-all ${
-        rank <= 3 ? 'border-zinc-700 bg-zinc-900/80' : 'border-zinc-800 bg-zinc-900/40'
-      } ${expanded ? 'ring-1 ring-zinc-700' : ''}`}
-    >
+    <div style={cardStyle}>
       <div
         className="p-4 cursor-pointer"
         onClick={() => setExpanded(!expanded)}
@@ -239,9 +500,15 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
         {/* Main row */}
         <div className="flex items-start gap-3">
           {/* Rank number */}
-          <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold shrink-0 ${
-            rank <= 3 ? 'bg-blue-600 text-white' : 'bg-zinc-800 text-zinc-400'
-          }`}>
+          <div
+            className="w-8 h-8 flex items-center justify-center shrink-0"
+            style={{
+              ...rankStyle,
+              borderRadius: 'var(--radius-md)',
+              fontSize: 'var(--font-size-sm)',
+              fontWeight: 700,
+            }}
+          >
             {rank}
           </div>
 
@@ -251,34 +518,37 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
               <Link
                 href={`/investors/${item.investorId}`}
                 onClick={e => e.stopPropagation()}
-                className="text-sm font-semibold hover:text-blue-400 transition-colors"
+                className="transition-colors"
+                style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}
+                onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
+                onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}
               >
                 {item.investorName}
               </Link>
-              <span className={`text-[9px] px-1.5 py-0.5 rounded border ${TYPE_COLORS[item.investorType] ?? TYPE_COLORS.vc}`}>
+              <span style={inlineBadgeStyle(TYPE_STYLES[item.investorType] ?? TYPE_STYLES.vc)}>
                 {TYPE_LABELS[item.investorType] ?? item.investorType}
               </span>
               <TierBadge tier={item.investorTier} />
-              <span className={`text-[9px] px-1.5 py-0.5 rounded border ${STATUS_COLORS[item.status] ?? STATUS_COLORS.identified}`}>
+              <span style={inlineBadgeStyle(STATUS_STYLES[item.status] ?? STATUS_STYLES.identified)}>
                 {STATUS_LABELS[item.status] ?? item.status}
               </span>
             </div>
 
             {/* Recommended action */}
-            <p className="text-sm text-zinc-200 mt-1.5 leading-snug font-medium">
+            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 500, lineHeight: 1.4, marginTop: '6px' }}>
               {item.recommendedAction}
             </p>
 
             {/* Meta row */}
-            <div className="flex items-center gap-4 mt-2 flex-wrap">
+            <div className="flex items-center gap-4 flex-wrap" style={{ marginTop: '8px' }}>
               {/* Time estimate */}
-              <span className="flex items-center gap-1 text-[11px] text-zinc-500">
+              <span className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
                 <Timer className="w-3 h-3" />
                 {item.timeEstimate}
               </span>
 
               {/* Days since last meeting */}
-              <span className="flex items-center gap-1 text-[11px] text-zinc-500">
+              <span className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
                 <Calendar className="w-3 h-3" />
                 {item.daysSinceLastMeeting !== null
                   ? `${item.daysSinceLastMeeting}d ago`
@@ -286,7 +556,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
               </span>
 
               {/* Momentum */}
-              <span className={`flex items-center gap-1 text-[11px] ${MOMENTUM_COLORS[item.momentum]}`}>
+              <span className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', ...(MOMENTUM_STYLE[item.momentum] ?? {}) }}>
                 {item.momentum === 'decelerating' || item.momentum === 'stalled'
                   ? <TrendingDown className="w-3 h-3" />
                   : <ArrowUpRight className="w-3 h-3" />
@@ -301,29 +571,43 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
 
               {/* Pending tasks */}
               {item.pendingTaskCount > 0 && (
-                <span className="text-[11px] text-orange-400 flex items-center gap-1">
+                <span className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--warning)' }}>
                   <AlertTriangle className="w-3 h-3" />
                   {item.pendingTaskCount} task{item.pendingTaskCount !== 1 ? 's' : ''}
                 </span>
               )}
             </div>
+
+            {/* 11-Dimension Scoring Breakdown */}
+            {item.scoringDimensions && item.scoringDimensions.length > 0 && (
+              <ScoringBreakdown dimensions={item.scoringDimensions} />
+            )}
           </div>
 
           {/* Focus score */}
-          <div className={`flex flex-col items-center shrink-0 px-3 py-2 rounded-lg border ${focusScoreBg(item.focusScore)}`}>
-            <span className={`text-xl font-bold tabular-nums ${focusScoreColor(item.focusScore)}`}>
+          <div
+            className="flex flex-col items-center shrink-0 px-3 py-2"
+            style={{
+              ...focusScoreBgStyle(item.focusScore),
+              borderRadius: 'var(--radius-md)',
+            }}
+          >
+            <span
+              className="tabular-nums"
+              style={{ fontSize: 'var(--font-size-xl)', fontWeight: 700, color: focusScoreColor(item.focusScore) }}
+            >
               {item.focusScore}
             </span>
-            <span className="text-[9px] text-zinc-500 uppercase tracking-wider">Focus</span>
+            <span style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Focus</span>
           </div>
         </div>
 
         {/* Impact + Risk row */}
-        <div className="flex items-start gap-4 mt-2.5 ml-11">
-          <p className="text-[11px] text-green-400/80 flex-1 leading-relaxed">
+        <div className="flex items-start gap-4 ml-11" style={{ marginTop: '10px' }}>
+          <p className="flex-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--success)', opacity: 0.85, lineHeight: 1.6 }}>
             {item.expectedImpact}
           </p>
-          <p className="text-[11px] text-red-400/70 flex-1 leading-relaxed">
+          <p className="flex-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)', opacity: 0.75, lineHeight: 1.6 }}>
             {item.riskIfIgnored}
           </p>
         </div>
@@ -331,10 +615,10 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
 
       {/* Expanded details */}
       {expanded && (
-        <div className="border-t border-zinc-800 px-4 py-3 ml-11 space-y-3">
+        <div className="px-4 py-3 ml-11 space-y-3" style={{ borderTop: '1px solid var(--border-subtle)' }}>
           {/* Score breakdown */}
           <div>
-            <p className="text-[10px] text-zinc-500 uppercase tracking-wider mb-2">Score Breakdown</p>
+            <p style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>Score Breakdown</p>
             <div className="grid grid-cols-5 gap-2">
               {[
                 { label: 'Investor Score', value: item.components.investorScore, weight: '30%' },
@@ -344,9 +628,9 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
                 { label: 'Action Readiness', value: item.components.actionReadiness, weight: '10%' },
               ].map(comp => (
                 <div key={comp.label} className="text-center">
-                  <div className={`text-sm font-bold tabular-nums ${focusScoreColor(comp.value)}`}>{comp.value}</div>
-                  <div className="text-[9px] text-zinc-500 mt-0.5">{comp.label}</div>
-                  <div className="text-[8px] text-zinc-600">{comp.weight}</div>
+                  <div className="tabular-nums" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 700, color: focusScoreColor(comp.value) }}>{comp.value}</div>
+                  <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '2px' }}>{comp.label}</div>
+                  <div style={{ fontSize: '8px', color: 'var(--text-muted)' }}>{comp.weight}</div>
                 </div>
               ))}
             </div>
@@ -355,10 +639,10 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
           {/* Unresolved objections */}
           {item.unresolvedObjections.length > 0 && (
             <div>
-              <p className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">Unresolved Objections</p>
+              <p style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px' }}>Unresolved Objections</p>
               <div className="space-y-1">
                 {item.unresolvedObjections.map((obj, i) => (
-                  <div key={i} className="text-xs text-red-400/80 flex items-start gap-1.5">
+                  <div key={i} className="flex items-start gap-1.5" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)', opacity: 0.85 }}>
                     <AlertTriangle className="w-3 h-3 shrink-0 mt-0.5" />
                     {obj}
                   </div>
@@ -371,17 +655,17 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
           <div className="flex items-center gap-2 pt-1">
             <Link
               href={`/meetings/new?investor=${item.investorId}`}
-              className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 rounded-lg text-xs font-medium transition-colors"
+              className="btn btn-primary btn-sm"
               onClick={e => e.stopPropagation()}
             >
               Schedule Meeting
             </Link>
             <Link
               href={`/investors/${item.investorId}`}
-              className="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-xs transition-colors"
+              className="btn btn-secondary btn-sm"
               onClick={e => e.stopPropagation()}
             >
-              View Profile
+              Open Investor
             </Link>
           </div>
         </div>
@@ -392,12 +676,18 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
 
 function QuickWinCard({ item }: { item: FocusItem }) {
   return (
-    <div className="border border-zinc-800 rounded-xl p-4 hover:border-zinc-700 transition-colors">
+    <div
+      className="card"
+      style={{ padding: 'var(--space-4)' }}
+    >
       <div className="flex items-center gap-2 mb-2">
-        <Zap className="w-3.5 h-3.5 text-yellow-400" />
+        <Zap className="w-3.5 h-3.5" style={{ color: 'var(--warning)' }} />
         <Link
           href={`/investors/${item.investorId}`}
-          className="text-sm font-medium hover:text-blue-400 transition-colors"
+          className="transition-colors"
+          style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-primary)' }}
+          onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
+          onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}
         >
           {item.investorName}
         </Link>
@@ -405,22 +695,22 @@ function QuickWinCard({ item }: { item: FocusItem }) {
       </div>
       {item.unresolvedObjections.length > 0 ? (
         <>
-          <p className="text-[11px] text-zinc-500 mb-1">Blocker:</p>
-          <p className="text-xs text-red-400/80 mb-2">{item.unresolvedObjections[0]}</p>
-          <p className="text-[11px] text-zinc-500 mb-1">Resolution:</p>
-          <p className="text-xs text-green-400/80">{item.recommendedAction.substring(0, 120)}</p>
+          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '4px' }}>Blocker:</p>
+          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)', opacity: 0.85, marginBottom: '8px' }}>{item.unresolvedObjections[0]}</p>
+          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '4px' }}>Resolution:</p>
+          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--success)', opacity: 0.85 }}>{item.recommendedAction.substring(0, 120)}</p>
         </>
       ) : (
         <>
-          <p className="text-[11px] text-zinc-500 mb-1">Opportunity:</p>
-          <p className="text-xs text-zinc-300">{item.recommendedAction.substring(0, 120)}</p>
+          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '4px' }}>Opportunity:</p>
+          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>{item.recommendedAction.substring(0, 120)}</p>
         </>
       )}
-      <div className="flex items-center gap-2 mt-3">
-        <span className="text-[10px] text-zinc-500 flex items-center gap-1">
+      <div className="flex items-center gap-2" style={{ marginTop: '12px' }}>
+        <span className="flex items-center gap-1" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
           <Timer className="w-3 h-3" /> {item.timeEstimate}
         </span>
-        <span className={`text-[10px] ${focusScoreColor(item.focusScore)}`}>
+        <span style={{ fontSize: '10px', color: focusScoreColor(item.focusScore) }}>
           Score: {item.focusScore}
         </span>
       </div>
@@ -430,34 +720,45 @@ function QuickWinCard({ item }: { item: FocusItem }) {
 
 function StaleAlertCard({ item, onReengage }: { item: FocusItem; onReengage: (item: FocusItem) => void }) {
   return (
-    <div className="border border-red-800/40 bg-red-900/10 rounded-xl p-4">
+    <div
+      style={{
+        border: '1px solid rgba(239,68,68,0.25)',
+        background: 'var(--danger-muted)',
+        borderRadius: 'var(--radius-lg)',
+        padding: 'var(--space-4)',
+      }}
+    >
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          <AlertTriangle className="w-3.5 h-3.5 text-red-400" />
+          <AlertTriangle className="w-3.5 h-3.5" style={{ color: 'var(--danger)' }} />
           <Link
             href={`/investors/${item.investorId}`}
-            className="text-sm font-medium hover:text-blue-400 transition-colors"
+            className="transition-colors"
+            style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-primary)' }}
+            onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
+            onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}
           >
             {item.investorName}
           </Link>
-          <span className={`text-[9px] px-1.5 py-0.5 rounded border ${STATUS_COLORS[item.status] ?? ''}`}>
+          <span style={inlineBadgeStyle(STATUS_STYLES[item.status] ?? STATUS_STYLES.identified)}>
             {STATUS_LABELS[item.status]}
           </span>
         </div>
-        <span className="text-xs text-red-400 font-bold">
+        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)', fontWeight: 700 }}>
           {item.daysSinceLastMeeting !== null ? `${item.daysSinceLastMeeting}d` : '--'}
         </span>
       </div>
       <div className="flex items-center gap-3 mb-3">
-        <span className="text-[11px] text-zinc-500">Last enthusiasm:</span>
+        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Last enthusiasm:</span>
         <EnthusiasmDots value={item.enthusiasm} />
-        <span className={`text-[11px] ${MOMENTUM_COLORS[item.momentum]}`}>
+        <span style={{ fontSize: 'var(--font-size-xs)', ...(MOMENTUM_STYLE[item.momentum] ?? {}) }}>
           {MOMENTUM_LABELS[item.momentum]}
         </span>
       </div>
       <button
         onClick={() => onReengage(item)}
-        className="px-3 py-1.5 bg-red-800/40 hover:bg-red-700/50 border border-red-800/50 rounded-lg text-xs text-red-300 transition-colors w-full"
+        className="btn btn-danger btn-sm w-full"
+        style={{ opacity: 0.9 }}
       >
         Create Re-engagement Task
       </button>
@@ -479,44 +780,50 @@ function AccelerationCard({
   executing: boolean;
 }) {
   return (
-    <div className="border border-zinc-800 rounded-xl p-4 hover:border-zinc-700 transition-colors bg-zinc-900/60">
+    <div
+      className="card"
+      style={{ padding: 'var(--space-4)' }}
+    >
       <div className="flex items-start gap-3">
         <div className="flex-1 min-w-0">
           {/* Header: investor name + badges */}
           <div className="flex items-center gap-2 flex-wrap mb-1.5">
             <Link
               href={`/investors/${item.investorId}`}
-              className="text-sm font-semibold hover:text-blue-400 transition-colors"
+              className="transition-colors"
+              style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}
+              onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
+              onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}
             >
               {item.investorName}
             </Link>
             <TierBadge tier={item.investorTier} />
-            <span className={`text-[9px] px-1.5 py-0.5 rounded border ${TRIGGER_COLORS[item.triggerType] ?? TRIGGER_COLORS.stall_risk}`}>
+            <span style={inlineBadgeStyle(TRIGGER_STYLES[item.triggerType] ?? TRIGGER_STYLES.stall_risk)}>
               {TRIGGER_LABELS[item.triggerType] ?? item.triggerType}
             </span>
-            <span className={`text-[9px] px-1.5 py-0.5 rounded border ${CONFIDENCE_COLORS[item.confidence] ?? CONFIDENCE_COLORS.medium}`}>
+            <span style={inlineBadgeStyle(CONFIDENCE_STYLES[item.confidence] ?? CONFIDENCE_STYLES.medium)}>
               {item.confidence} confidence
             </span>
           </div>
 
           {/* Description */}
-          <p className="text-xs text-zinc-300 leading-relaxed mb-2">
+          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '8px' }}>
             {item.description}
           </p>
 
           {/* Meta row */}
           <div className="flex items-center gap-4 flex-wrap">
-            <span className="flex items-center gap-1 text-[11px] text-zinc-500">
+            <span className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
               <Timer className="w-3 h-3" />
               {item.timeEstimate}
             </span>
-            <span className="text-[11px] text-green-400/80">
+            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--success)', opacity: 0.85 }}>
               +{item.expectedLift} pts expected
             </span>
-            <span className={`text-[11px] font-medium ${URGENCY_COLORS[item.urgency] ?? 'text-zinc-400'}`}>
+            <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, ...(URGENCY_STYLE[item.urgency] ?? { color: 'var(--text-tertiary)' }) }}>
               {item.urgency === 'immediate' ? 'Act now' : item.urgency === '48h' ? 'Within 48h' : item.urgency === 'this_week' ? 'This week' : 'Next week'}
             </span>
-            <span className="text-[10px] text-zinc-600">
+            <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
               {item.triggerEvidence}
             </span>
           </div>
@@ -526,7 +833,8 @@ function AccelerationCard({
         <button
           onClick={() => onExecute(item)}
           disabled={executing}
-          className="shrink-0 px-3 py-2 bg-blue-600 hover:bg-blue-500 disabled:bg-zinc-700 disabled:text-zinc-500 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5"
+          className="btn btn-primary btn-sm shrink-0 flex items-center gap-1.5"
+          style={executing ? { background: 'var(--surface-2)', color: 'var(--text-muted)', cursor: 'default' } : {}}
         >
           <Play className="w-3 h-3" />
           {executing ? 'Done' : 'Execute'}
@@ -538,53 +846,77 @@ function AccelerationCard({
 
 function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
   return (
-    <div className="border border-green-800/40 bg-green-900/10 rounded-xl p-4">
+    <div
+      style={{
+        border: '1px solid rgba(34,197,94,0.25)',
+        background: 'var(--success-muted)',
+        borderRadius: 'var(--radius-lg)',
+        padding: 'var(--space-4)',
+      }}
+    >
       <div className="flex items-center gap-2 mb-2">
-        <Rocket className="w-3.5 h-3.5 text-green-400" />
+        <Rocket className="w-3.5 h-3.5" style={{ color: 'var(--success)' }} />
         <Link
           href={`/investors/${investor.investorId}`}
-          className="text-sm font-semibold hover:text-blue-400 transition-colors"
+          className="transition-colors"
+          style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}
+          onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
+          onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}
         >
           {investor.investorName}
         </Link>
         <TierBadge tier={investor.investorTier} />
-        <span className={`text-[9px] px-1.5 py-0.5 rounded border ${STATUS_COLORS[investor.status] ?? ''}`}>
+        <span style={inlineBadgeStyle(STATUS_STYLES[investor.status] ?? STATUS_STYLES.identified)}>
           {STATUS_LABELS[investor.status] ?? investor.status}
         </span>
       </div>
       <div className="flex items-center gap-3 mb-2">
-        <span className="text-[11px] text-zinc-500">Score: <span className="text-green-400 font-bold">{investor.score}</span>/100</span>
-        <span className={`text-[11px] ${MOMENTUM_COLORS[investor.momentum]}`}>
+        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+          Score: <span style={{ color: 'var(--success)', fontWeight: 700 }}>{investor.score}</span>/100
+        </span>
+        <span style={{ fontSize: 'var(--font-size-xs)', ...(MOMENTUM_STYLE[investor.momentum] ?? {}) }}>
           {MOMENTUM_LABELS[investor.momentum]}
         </span>
         <EnthusiasmDots value={investor.enthusiasm} />
       </div>
-      <p className="text-[11px] text-zinc-400">{investor.reason}</p>
+      <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>{investor.reason}</p>
     </div>
   );
 }
 
 function AtRiskCard({ investor }: { investor: InvestorSummary }) {
   return (
-    <div className="border border-red-800/40 bg-red-900/10 rounded-xl p-4">
+    <div
+      style={{
+        border: '1px solid rgba(239,68,68,0.25)',
+        background: 'var(--danger-muted)',
+        borderRadius: 'var(--radius-lg)',
+        padding: 'var(--space-4)',
+      }}
+    >
       <div className="flex items-center gap-2 mb-2">
-        <Shield className="w-3.5 h-3.5 text-red-400" />
+        <Shield className="w-3.5 h-3.5" style={{ color: 'var(--danger)' }} />
         <Link
           href={`/investors/${investor.investorId}`}
-          className="text-sm font-semibold hover:text-blue-400 transition-colors"
+          className="transition-colors"
+          style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}
+          onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
+          onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}
         >
           {investor.investorName}
         </Link>
         <TierBadge tier={investor.investorTier} />
       </div>
       <div className="flex items-center gap-3 mb-2">
-        <span className="text-[11px] text-zinc-500">Score: <span className="text-red-400 font-bold">{investor.score}</span>/100</span>
-        <span className={`text-[11px] ${MOMENTUM_COLORS[investor.momentum]}`}>
+        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+          Score: <span style={{ color: 'var(--danger)', fontWeight: 700 }}>{investor.score}</span>/100
+        </span>
+        <span style={{ fontSize: 'var(--font-size-xs)', ...(MOMENTUM_STYLE[investor.momentum] ?? {}) }}>
           {MOMENTUM_LABELS[investor.momentum]}
         </span>
         <EnthusiasmDots value={investor.enthusiasm} />
       </div>
-      <p className="text-[11px] text-zinc-400">{investor.reason}</p>
+      <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>{investor.reason}</p>
     </div>
   );
 }
@@ -595,38 +927,44 @@ function DeprioritizeSection({ investors }: { investors: InvestorSummary[] }) {
   if (investors.length === 0) return null;
 
   return (
-    <div className="border border-zinc-800/50 rounded-xl overflow-hidden">
+    <div style={{ border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
       <button
         onClick={() => setExpanded(!expanded)}
-        className="w-full flex items-center justify-between p-3 text-left hover:bg-zinc-800/30 transition-colors"
+        className="w-full flex items-center justify-between p-3 text-left transition-colors"
+        style={{ background: 'transparent' }}
+        onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface-1)')}
+        onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
       >
         <div className="flex items-center gap-2">
-          <Ban className="w-3.5 h-3.5 text-zinc-500" />
-          <span className="text-xs text-zinc-500 font-medium uppercase tracking-wider">
+          <Ban className="w-3.5 h-3.5" style={{ color: 'var(--text-muted)' }} />
+          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
             Deprioritize ({investors.length})
           </span>
         </div>
-        <ChevronDown className={`w-4 h-4 text-zinc-600 transition-transform ${expanded ? 'rotate-180' : ''}`} />
+        <ChevronDown className={`w-4 h-4 transition-transform ${expanded ? 'rotate-180' : ''}`} style={{ color: 'var(--text-muted)' }} />
       </button>
       {expanded && (
-        <div className="border-t border-zinc-800/50 p-3 space-y-2">
+        <div className="p-3 space-y-2" style={{ borderTop: '1px solid var(--border-subtle)' }}>
           {investors.map(inv => (
             <div key={inv.investorId} className="flex items-center justify-between py-1.5">
               <div className="flex items-center gap-2">
-                <XCircle className="w-3 h-3 text-zinc-600" />
+                <XCircle className="w-3 h-3" style={{ color: 'var(--text-muted)' }} />
                 <Link
                   href={`/investors/${inv.investorId}`}
-                  className="text-xs text-zinc-400 hover:text-blue-400 transition-colors"
+                  className="transition-colors"
+                  style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}
+                  onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
+                  onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-tertiary)')}
                 >
                   {inv.investorName}
                 </Link>
                 <TierBadge tier={inv.investorTier} />
               </div>
-              <span className="text-[10px] text-zinc-600">{inv.reason}</span>
+              <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{inv.reason}</span>
             </div>
           ))}
-          <p className="text-[10px] text-zinc-600 mt-2 pt-2 border-t border-zinc-800/50">
-            Stop allocating active time to these investors. Move effort to higher-conviction targets.
+          <p style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '8px', paddingTop: '8px', borderTop: '1px solid var(--border-subtle)' }}>
+            Park these for now. Redirect time to higher-conviction conversations.
           </p>
         </div>
       )}
@@ -713,14 +1051,14 @@ export default function FocusPage() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="h-8 w-48 bg-zinc-800 rounded animate-pulse" />
+        <div className="skeleton" style={{ height: '32px', width: '192px' }} />
         <div className="grid grid-cols-4 gap-3">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-20 bg-zinc-800/50 rounded-xl animate-pulse" />
+            <div key={i} className="skeleton" style={{ height: '80px', borderRadius: 'var(--radius-lg)' }} />
           ))}
         </div>
         {[...Array(5)].map((_, i) => (
-          <div key={i} className="h-32 bg-zinc-800/30 rounded-xl animate-pulse" />
+          <div key={i} className="skeleton" style={{ height: '128px', borderRadius: 'var(--radius-lg)' }} />
         ))}
       </div>
     );
@@ -729,14 +1067,14 @@ export default function FocusPage() {
   if (!data || data.priorityQueue.length === 0) {
     return (
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold tracking-tight flex items-center gap-3">
-          <Target className="w-6 h-6 text-blue-400" /> CEO Focus
+        <h1 className="page-title flex items-center gap-3">
+          <Target className="w-6 h-6" style={{ color: 'var(--accent)' }} /> CEO Focus
         </h1>
-        <div className="border border-zinc-800 rounded-xl p-8 text-center space-y-3">
-          <p className="text-zinc-400">No active investors to prioritize.</p>
-          <p className="text-zinc-500 text-sm">Add investors and log meetings to see your priority queue.</p>
-          <Link href="/investors" className="inline-block px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm transition-colors">
-            Add Investors
+        <div className="card" style={{ padding: 'var(--space-8)', textAlign: 'center' }}>
+          <p style={{ color: 'var(--text-tertiary)' }}>No investors in the pipeline yet.</p>
+          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', marginTop: '4px' }}>Add investors and log meetings to build your daily priority queue.</p>
+          <Link href="/investors" className="btn btn-primary btn-md" style={{ marginTop: '12px', display: 'inline-flex' }}>
+            Go to Pipeline
           </Link>
         </div>
       </div>
@@ -755,16 +1093,16 @@ export default function FocusPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight flex items-center gap-3">
-            <Target className="w-6 h-6 text-blue-400" /> CEO Focus
+          <h1 className="page-title flex items-center gap-3">
+            <Target className="w-6 h-6" style={{ color: 'var(--accent)' }} /> CEO Focus
           </h1>
-          <p className="text-zinc-500 text-sm mt-1">
+          <p className="page-subtitle">
             {weeklyBudget.totalHoursRecommended}h recommended this week across {weeklyBudget.investorCount} investors
           </p>
         </div>
         <button
           onClick={fetchData}
-          className="flex items-center gap-2 px-3 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-xs transition-colors"
+          className="btn btn-secondary btn-sm"
         >
           <RefreshCw className="w-3.5 h-3.5" /> Refresh
         </button>
@@ -772,33 +1110,33 @@ export default function FocusPage() {
 
       {/* Weekly Budget Summary */}
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
-        <div className="border border-zinc-800 rounded-xl p-4">
-          <div className="flex items-center gap-2 text-zinc-500 text-xs mb-1">
+        <div className="card" style={{ padding: 'var(--space-4)' }}>
+          <div className="flex items-center gap-2 mb-1" style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>
             <Clock className="w-3.5 h-3.5" /> Total Time
           </div>
-          <div className="text-2xl font-bold">{weeklyBudget.totalHoursRecommended}h</div>
-          <div className="text-xs text-zinc-600">recommended this week</div>
+          <div className="metric-value">{weeklyBudget.totalHoursRecommended}h</div>
+          <div className="metric-label" style={{ marginTop: '2px' }}>recommended this week</div>
         </div>
-        <div className="border border-zinc-800 rounded-xl p-4">
-          <div className="flex items-center gap-2 text-zinc-500 text-xs mb-1">
+        <div className="card" style={{ padding: 'var(--space-4)' }}>
+          <div className="flex items-center gap-2 mb-1" style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>
             <Calendar className="w-3.5 h-3.5" /> Meetings
           </div>
-          <div className="text-2xl font-bold">{weeklyBudget.meetingsRecommended}</div>
-          <div className="text-xs text-zinc-600">calls & meetings</div>
+          <div className="metric-value">{weeklyBudget.meetingsRecommended}</div>
+          <div className="metric-label" style={{ marginTop: '2px' }}>calls & meetings</div>
         </div>
-        <div className="border border-zinc-800 rounded-xl p-4">
-          <div className="flex items-center gap-2 text-zinc-500 text-xs mb-1">
+        <div className="card" style={{ padding: 'var(--space-4)' }}>
+          <div className="flex items-center gap-2 mb-1" style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>
             <CheckCircle className="w-3.5 h-3.5" /> Follow-ups
           </div>
-          <div className="text-2xl font-bold">{weeklyBudget.followUpsRecommended}</div>
-          <div className="text-xs text-zinc-600">prep & outreach</div>
+          <div className="metric-value">{weeklyBudget.followUpsRecommended}</div>
+          <div className="metric-label" style={{ marginTop: '2px' }}>prep & outreach</div>
         </div>
-        <div className="border border-zinc-800 rounded-xl p-4">
-          <div className="flex items-center gap-2 text-zinc-500 text-xs mb-1">
+        <div className="card" style={{ padding: 'var(--space-4)' }}>
+          <div className="flex items-center gap-2 mb-1" style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>
             <Rocket className="w-3.5 h-3.5" /> Acceleration
           </div>
-          <div className="text-2xl font-bold">{accelData?.summary.total ?? 0}</div>
-          <div className="text-xs text-zinc-600">
+          <div className="metric-value">{accelData?.summary.total ?? 0}</div>
+          <div className="metric-label" style={{ marginTop: '2px' }}>
             {accelData?.summary.immediate ?? 0} immediate
           </div>
         </div>
@@ -807,14 +1145,14 @@ export default function FocusPage() {
       {/* Deal Acceleration Engine */}
       {hasAccelerationData && (
         <div className="space-y-4">
-          <h2 className="text-sm font-medium text-zinc-400 uppercase tracking-wider flex items-center gap-2">
-            <Rocket className="w-4 h-4 text-blue-400" /> Deal Acceleration Engine
+          <h2 className="section-title flex items-center gap-2">
+            <Rocket className="w-4 h-4" style={{ color: 'var(--accent)' }} /> Deal Acceleration Engine
           </h2>
 
           {/* Term Sheet Ready */}
           {accelData.termSheetReady.length > 0 && (
             <div>
-              <h3 className="text-xs font-medium text-green-400 uppercase tracking-wider flex items-center gap-2 mb-2">
+              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--success)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                 <CheckCircle className="w-3.5 h-3.5" /> Term Sheet Ready ({accelData.termSheetReady.length})
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -828,7 +1166,7 @@ export default function FocusPage() {
           {/* Immediate Actions */}
           {immediateActions.length > 0 && (
             <div>
-              <h3 className="text-xs font-medium text-red-400 uppercase tracking-wider flex items-center gap-2 mb-2">
+              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--danger)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                 <AlertTriangle className="w-3.5 h-3.5" /> Immediate ({immediateActions.length})
               </h3>
               <div className="space-y-2">
@@ -847,7 +1185,7 @@ export default function FocusPage() {
           {/* This Week Actions */}
           {thisWeekActions.length > 0 && (
             <div>
-              <h3 className="text-xs font-medium text-yellow-400 uppercase tracking-wider flex items-center gap-2 mb-2">
+              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--warning)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                 <Clock className="w-3.5 h-3.5" /> This Week ({thisWeekActions.length})
               </h3>
               <div className="space-y-2">
@@ -866,7 +1204,7 @@ export default function FocusPage() {
           {/* At Risk */}
           {accelData.atRisk.length > 0 && (
             <div>
-              <h3 className="text-xs font-medium text-red-400 uppercase tracking-wider flex items-center gap-2 mb-2">
+              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--danger)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                 <Shield className="w-3.5 h-3.5" /> At Risk ({accelData.atRisk.length})
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -886,7 +1224,7 @@ export default function FocusPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Priority Queue */}
         <div className="lg:col-span-2 space-y-3">
-          <h2 className="text-sm font-medium text-zinc-400 uppercase tracking-wider flex items-center gap-2">
+          <h2 className="section-title flex items-center gap-2">
             <Target className="w-4 h-4" /> Priority Queue
           </h2>
           <div className="space-y-2">
@@ -901,8 +1239,8 @@ export default function FocusPage() {
           {/* Quick Wins */}
           {quickWins.length > 0 && (
             <div>
-              <h2 className="text-sm font-medium text-zinc-400 uppercase tracking-wider flex items-center gap-2 mb-3">
-                <Zap className="w-4 h-4 text-yellow-400" /> Quick Wins
+              <h2 className="section-title flex items-center gap-2 mb-3">
+                <Zap className="w-4 h-4" style={{ color: 'var(--warning)' }} /> Quick Wins
               </h2>
               <div className="space-y-2">
                 {quickWins.map(item => (
@@ -915,7 +1253,7 @@ export default function FocusPage() {
           {/* Stale Alerts */}
           {staleAlerts.length > 0 && (
             <div>
-              <h2 className="text-sm font-medium text-red-400 uppercase tracking-wider flex items-center gap-2 mb-3">
+              <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--danger)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                 <AlertTriangle className="w-4 h-4" /> Stale Alerts
               </h2>
               <div className="space-y-2">
@@ -928,10 +1266,10 @@ export default function FocusPage() {
 
           {/* If no quick wins or stale alerts */}
           {quickWins.length === 0 && staleAlerts.length === 0 && (
-            <div className="border border-zinc-800 rounded-xl p-6 text-center">
-              <CheckCircle className="w-8 h-8 text-green-400 mx-auto mb-2" />
-              <p className="text-sm text-zinc-400">All clear</p>
-              <p className="text-xs text-zinc-600 mt-1">No quick wins or stale processes to flag.</p>
+            <div className="card" style={{ padding: 'var(--space-6)', textAlign: 'center' }}>
+              <CheckCircle className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--success)' }} />
+              <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' }}>All caught up</p>
+              <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '4px' }}>No quick wins or stale conversations to flag right now.</p>
             </div>
           )}
         </div>
