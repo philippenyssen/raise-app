@@ -13,6 +13,7 @@
 | 7 | 2026-03-14 | Intelligence Synthesis | 6-instruction reasoning framework for workspace AI (pattern synthesis, strategic prioritization, conviction arcs, contradiction detection, predictive reasoning, phase awareness), intelligence briefing layer in pulse dashboard (8 insight generators, typed/sorted/capped), synthesis section in context bus system prompt (6 cross-source reasoning aids) | workspace/route.ts, pulse/route.ts, context-bus.ts |
 | 8 | 2026-03-14 | Autonomous Intelligence | Auto-action engine (5 rules: narrative weakness, engagement gap, declining trajectory, keystone uncommitted, struggling type), pulse-triggered intelligence refresh, smart follow-up timing (day-of-week + time-of-day optimization per investor + type), auto-actions API (POST trigger + GET pending) | db.ts, pulse/route.ts, intelligence/auto-actions/route.ts |
 | 9 | 2026-03-14 | Learning Intelligence | Action outcome measurement (enthusiasm delta + status progression + engagement increase), rule effectiveness aggregation (by trigger_type × action_type), self-improving auto-actions (skip ineffective rules, boost proven ones), action effectiveness in context bus + system prompt, evidence-based AI instructions, pulse-triggered measurement | db.ts, context-bus.ts, workspace/route.ts, pulse/route.ts |
+| 10 | 2026-03-14 | Depth: Trajectory + Objections + Pipeline | Advanced conviction trajectory (inflection detection, acceleration/2nd derivative, plateau detection, risk classification), objection evolution (emerging/resolved/persistent temporal tracking, heat map), pipeline flow intelligence (stage dwell time, bottleneck detection, conversion rates, velocity trend), all wired to context bus + system prompt | scoring.ts, db.ts, context-bus.ts |
 
 ## Intelligence Capabilities (Existing)
 
@@ -24,6 +25,14 @@
 - [x] Trajectory → action integration: velocity/deceleration drives next-action recommendations
 - [x] **Network Effect dimension: boosts score when connected investors are positive, reduces when they've passed (NEW cycle 4)**
 - [x] **Auto-weight calibration: STATUS_WEIGHT blended 70/30 with empirical close rates from resolved predictions (NEW cycle 5)**
+- [x] **Advanced trajectory analysis (NEW cycle 10)**:
+  - [x] `computeAdvancedTrajectory()`: extends ConvictionTrajectory with EnhancedTrajectory interface
+  - [x] Inflection detection: piecewise regression comparing last-3-point slope vs all-point slope (>1 std dev = inflection)
+  - [x] Acceleration (2nd derivative): sliding window local slopes → regression of slopes → pts/week/week
+  - [x] Plateau detection: score change ≤2 pts for 3+ consecutive snapshots → plateau duration in weeks
+  - [x] Pattern classification: accelerating / decelerating / plateau / inflecting / insufficient_data
+  - [x] Risk classification: low / medium / high / critical (based on pattern + velocity + score level)
+  - [x] Backward-compatible: existing `computeConvictionTrajectory()` unchanged, new function extends it
 
 ### B. Context Bus (context-bus.ts)
 - [x] Version-based cache invalidation
@@ -41,6 +50,8 @@
 - [x] **Timing signals type definition + system prompt serialization (NEW cycle 5)**
 - [x] **Monte Carlo field in FullContext (populated by stress test, null by default) + system prompt serialization (NEW cycle 6)**
 - [x] **Action effectiveness field in FullContext (populated by getAutoActionEffectiveness(), null if no data) + system prompt serialization (NEW cycle 9)**
+- [x] **Objection evolution field in FullContext (emerging/persistent/resolved) + system prompt serialization (NEW cycle 10)**
+- [x] **Pipeline flow field in FullContext (bottleneck stage/velocity trend/avg days) + system prompt serialization (NEW cycle 10)**
 - [x] **Intelligence Synthesis section in system prompt — cross-source reasoning aids (NEW cycle 7)**:
   - [x] Narrative weakness → pending follow-up urgency linking
   - [x] Keystone investor priority surfacing
@@ -224,6 +235,26 @@
   - [x] AI avoids low-effectiveness action types unless specifically warranted
   - [x] AI cites evidence basis ("Based on X measured outcomes...")
 - [x] Pulse-triggered measurement: every dashboard view runs `measureActionEffectiveness()` non-blocking
+
+### Q. Objection Evolution Intelligence (NEW cycle 10)
+- [x] `computeObjectionEvolution()`: temporal analysis of objection topics across all meetings
+  - [x] Emerging objections: topics appearing in recent 3 weeks or growing — early warning system
+  - [x] Resolved objections: topics that stopped appearing — identifies what worked (cross-references objection_responses for effective response)
+  - [x] Persistent objections: topics spanning both old and recent meetings — signals failing responses
+  - [x] Objection heat map: topic × week frequency matrix for trend visualization
+  - [x] Wired to context bus: emerging/persistent/resolvedCount in FullContext
+  - [x] System prompt: OBJECTION EVOLUTION section with actionable guidance per category
+
+### R. Pipeline Flow Intelligence (NEW cycle 10)
+- [x] `computePipelineFlow()`: stage-level pipeline analytics from activity_log status changes
+  - [x] Average dwell time per stage: how long investors spend at each pipeline stage
+  - [x] Bottleneck identification: stage with longest average dwell time
+  - [x] Conversion rates per stage: % of investors that advance from each stage
+  - [x] Velocity trend: accelerating/steady/decelerating — compares first-half vs second-half transition speeds
+  - [x] Stage health classification: healthy/slow/blocked per stage (with stage-specific thresholds)
+  - [x] Parses activity_log detail field for status transitions + investor creation dates as baseline
+  - [x] Wired to context bus: bottleneckStage/velocityTrend/avgDaysToClose in FullContext
+  - [x] System prompt: PIPELINE FLOW section with bottleneck identification and velocity trend
 
 ## Intelligence Gaps (Prioritized for Next Cycle)
 

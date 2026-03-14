@@ -27,6 +27,8 @@ import {
   computeNarrativeSignals,
   getKeystoneInvestors,
   getAutoActionEffectiveness,
+  computeObjectionEvolution,
+  computePipelineFlow,
 } from './db';
 
 // ---------------------------------------------------------------------------
@@ -221,6 +223,20 @@ export interface FullContext {
     worstActionType: string;
     totalMeasured: number;
   } | null;
+
+  // Objection evolution — temporal intelligence on how objections change (cycle 10)
+  objectionEvolution: {
+    emerging: string[];
+    persistent: string[];
+    resolvedCount: number;
+  } | null;
+
+  // Pipeline flow — stage bottlenecks and velocity (cycle 10)
+  pipelineFlow: {
+    bottleneckStage: string;
+    velocityTrend: string;
+    avgDaysToClose: number;
+  } | null;
 }
 
 const recentChanges: ContextChange[] = [];
@@ -254,6 +270,8 @@ export async function getFullContext(): Promise<FullContext> {
     narrativeSignals,
     keystoneInvestorsData,
     actionEffectivenessData,
+    objectionEvolutionData,
+    pipelineFlowData,
   ] = await Promise.all([
     getRaiseConfig().catch(() => null),
     getAllDocuments().catch(() => []),
@@ -272,6 +290,8 @@ export async function getFullContext(): Promise<FullContext> {
     computeNarrativeSignals().catch(() => []),
     getKeystoneInvestors().catch(() => []),
     getAutoActionEffectiveness().catch(() => null),
+    computeObjectionEvolution().catch(() => null),
+    computePipelineFlow().catch(() => null),
   ]);
 
   // Build investor snapshots enriched with meeting/task/followup data
@@ -474,6 +494,24 @@ export async function getFullContext(): Promise<FullContext> {
         : 'none',
       totalMeasured: (actionEffectivenessData as { ruleEffectiveness: Array<{ count: number }> }).ruleEffectiveness.reduce((s, r) => s + r.count, 0),
     } : null,
+
+    // Objection evolution — temporal objection intelligence (cycle 10)
+    objectionEvolution: objectionEvolutionData ? {
+      emerging: (objectionEvolutionData as { emergingObjections: Array<{ topic: string }> }).emergingObjections.map(e => e.topic),
+      persistent: (objectionEvolutionData as { persistentObjections: Array<{ topic: string }> }).persistentObjections.map(p => p.topic),
+      resolvedCount: (objectionEvolutionData as { resolvedObjections: Array<unknown> }).resolvedObjections.length,
+    } : null,
+
+    // Pipeline flow — bottleneck and velocity intelligence (cycle 10)
+    pipelineFlow: pipelineFlowData ? {
+      bottleneckStage: (pipelineFlowData as { bottleneckStage: string }).bottleneckStage,
+      velocityTrend: (pipelineFlowData as { velocityTrend: string }).velocityTrend,
+      avgDaysToClose: (() => {
+        const flow = pipelineFlowData as { avgDaysPerStage: Record<string, number> };
+        const allDays = Object.values(flow.avgDaysPerStage).filter(d => d > 0);
+        return allDays.length > 0 ? Math.round(allDays.reduce((a, b) => a + b, 0)) : 0;
+      })(),
+    } : null,
   };
 
   cachedContext = context;
@@ -647,6 +685,36 @@ export function contextToSystemPrompt(ctx: FullContext): string {
     lines.push(`- Worst action type: ${ctx.actionEffectiveness.worstActionType} (lowest avg lift)`);
     lines.push(`- Overall avg lift: ${ctx.actionEffectiveness.overallAvgLift}`);
     lines.push(`- Based on ${ctx.actionEffectiveness.totalMeasured} measured outcomes`);
+    lines.push('');
+  }
+
+  // Objection evolution (temporal objection intelligence)
+  if (ctx.objectionEvolution) {
+    const oe = ctx.objectionEvolution;
+    if (oe.emerging.length > 0 || oe.persistent.length > 0 || oe.resolvedCount > 0) {
+      lines.push('OBJECTION EVOLUTION (how objections are changing over time):');
+      if (oe.emerging.length > 0) {
+        lines.push(`- EMERGING (new/growing): ${oe.emerging.join(', ')} — these are appearing in recent meetings. Prepare responses proactively.`);
+      }
+      if (oe.persistent.length > 0) {
+        lines.push(`- PERSISTENT (not going away): ${oe.persistent.join(', ')} — current responses are NOT working. Rethink approach for these topics.`);
+      }
+      if (oe.resolvedCount > 0) {
+        lines.push(`- RESOLVED: ${oe.resolvedCount} objection topic(s) have stopped appearing — previous responses worked.`);
+      }
+      lines.push('');
+    }
+  }
+
+  // Pipeline flow (bottleneck and velocity intelligence)
+  if (ctx.pipelineFlow) {
+    const pf = ctx.pipelineFlow;
+    lines.push('PIPELINE FLOW:');
+    lines.push(`- Bottleneck stage: "${pf.bottleneckStage}" — investors spend the most time here. Focus process improvement efforts on this stage.`);
+    lines.push(`- Pipeline velocity: ${pf.velocityTrend}${pf.velocityTrend === 'decelerating' ? ' — WARNING: investors are taking longer to move through stages' : pf.velocityTrend === 'accelerating' ? ' — momentum is building, transitions are getting faster' : ' — stable pace'}`);
+    if (pf.avgDaysToClose > 0) {
+      lines.push(`- Sum of avg stage durations: ~${pf.avgDaysToClose} days`);
+    }
     lines.push('');
   }
 

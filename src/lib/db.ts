@@ -3907,3 +3907,420 @@ export async function getAutoActionEffectiveness(): Promise<{
     overallAvgLift,
   };
 }
+
+// ---------------------------------------------------------------------------
+// Objection Evolution — temporal intelligence on how objections change (Cycle 10)
+// ---------------------------------------------------------------------------
+
+export async function computeObjectionEvolution(): Promise<{
+  emergingObjections: { topic: string; firstSeen: string; growthRate: number; currentCount: number }[];
+  resolvedObjections: { topic: string; peakCount: number; resolvedDate: string; effectiveResponse: string }[];
+  persistentObjections: { topic: string; count: number; duration: number; avgEnthusiasmImpact: number }[];
+  objectionHeatMap: { topic: string; week: string; count: number }[];
+}> {
+  await ensureInitialized();
+  const db = getClient();
+
+  // Fetch all meetings with objections, ordered by date
+  const meetingsResult = await db.execute(
+    `SELECT m.date, m.objections, m.enthusiasm_score, m.investor_id
+     FROM meetings m
+     WHERE m.objections != '[]'
+     ORDER BY m.date ASC`
+  );
+  const meetingRows = meetingsResult.rows as unknown as Array<{
+    date: string;
+    objections: string;
+    enthusiasm_score: number;
+    investor_id: string;
+  }>;
+
+  // Parse all objections with their dates
+  interface ObjectionEvent {
+    topic: string;
+    text: string;
+    date: string;
+    enthusiasm: number;
+    investorId: string;
+  }
+  const allEvents: ObjectionEvent[] = [];
+
+  for (const row of meetingRows) {
+    try {
+      const objs = JSON.parse(row.objections) as Array<{ topic?: string; text?: string }>;
+      for (const obj of objs) {
+        if (obj.topic) {
+          allEvents.push({
+            topic: obj.topic,
+            text: obj.text || '',
+            date: row.date,
+            enthusiasm: row.enthusiasm_score,
+            investorId: row.investor_id,
+          });
+        }
+      }
+    } catch { /* skip malformed JSON */ }
+  }
+
+  if (allEvents.length === 0) {
+    return { emergingObjections: [], resolvedObjections: [], persistentObjections: [], objectionHeatMap: [] };
+  }
+
+  // Group events by topic
+  const byTopic = new Map<string, ObjectionEvent[]>();
+  for (const evt of allEvents) {
+    if (!byTopic.has(evt.topic)) byTopic.set(evt.topic, []);
+    byTopic.get(evt.topic)!.push(evt);
+  }
+
+  // Compute ISO week string for heat map
+  const getWeek = (dateStr: string): string => {
+    const d = new Date(dateStr);
+    const startOfYear = new Date(d.getFullYear(), 0, 1);
+    const dayOfYear = Math.floor((d.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24));
+    const weekNum = Math.ceil((dayOfYear + 1) / 7);
+    return `${d.getFullYear()}-W${String(weekNum).padStart(2, '0')}`;
+  };
+
+  // Build heat map
+  const objectionHeatMap: { topic: string; week: string; count: number }[] = [];
+  const heatMapAgg = new Map<string, number>(); // "topic|week" → count
+  for (const evt of allEvents) {
+    const key = `${evt.topic}|${getWeek(evt.date)}`;
+    heatMapAgg.set(key, (heatMapAgg.get(key) || 0) + 1);
+  }
+  for (const [key, count] of heatMapAgg) {
+    const [topic, week] = key.split('|');
+    objectionHeatMap.push({ topic, week, count });
+  }
+  objectionHeatMap.sort((a, b) => a.week.localeCompare(b.week));
+
+  // Determine time boundaries
+  const allDates = allEvents.map(e => new Date(e.date).getTime());
+  const latestDate = Math.max(...allDates);
+  const msPerDay = 1000 * 60 * 60 * 24;
+  const recentThresholdMs = latestDate - 21 * msPerDay; // last 3 weeks = recent
+  const olderThresholdMs = latestDate - 42 * msPerDay; // 6 weeks ago
+
+  // Classify topics
+  const emergingObjections: { topic: string; firstSeen: string; growthRate: number; currentCount: number }[] = [];
+  const resolvedObjections: { topic: string; peakCount: number; resolvedDate: string; effectiveResponse: string }[] = [];
+  const persistentObjections: { topic: string; count: number; duration: number; avgEnthusiasmImpact: number }[] = [];
+
+  for (const [topic, events] of byTopic) {
+    const sortedEvents = events.sort((a, b) => a.date.localeCompare(b.date));
+    const firstSeen = sortedEvents[0].date;
+    const lastSeen = sortedEvents[sortedEvents.length - 1].date;
+    const firstTime = new Date(firstSeen).getTime();
+    const lastTime = new Date(lastSeen).getTime();
+
+    const recentEvents = sortedEvents.filter(e => new Date(e.date).getTime() >= recentThresholdMs);
+    const olderEvents = sortedEvents.filter(e => new Date(e.date).getTime() < recentThresholdMs && new Date(e.date).getTime() >= olderThresholdMs);
+
+    // EMERGING: first seen recently, or strong growth in recent vs older period
+    if (firstTime >= recentThresholdMs || (recentEvents.length > olderEvents.length && recentEvents.length >= 2)) {
+      const durationWeeks = Math.max(1, (lastTime - firstTime) / (7 * msPerDay));
+      const growthRate = Math.round((recentEvents.length / durationWeeks) * 10) / 10;
+      emergingObjections.push({
+        topic,
+        firstSeen,
+        growthRate,
+        currentCount: events.length,
+      });
+      continue;
+    }
+
+    // RESOLVED: last seen more than 3 weeks ago, and had at least 2 occurrences
+    if (lastTime < recentThresholdMs && events.length >= 2) {
+      // Look for the effective response in objection_responses table
+      let effectiveResponse = '';
+      try {
+        const respResult = await db.execute({
+          sql: `SELECT response_text FROM objection_responses
+                WHERE objection_topic = ? AND effectiveness = 'effective' AND response_text != ''
+                ORDER BY updated_at DESC LIMIT 1`,
+          args: [topic],
+        });
+        if (respResult.rows.length > 0) {
+          effectiveResponse = String((respResult.rows[0] as unknown as { response_text: string }).response_text);
+        }
+      } catch { /* non-blocking */ }
+
+      // Count by week to find peak
+      const weekCounts = new Map<string, number>();
+      for (const evt of sortedEvents) {
+        const w = getWeek(evt.date);
+        weekCounts.set(w, (weekCounts.get(w) || 0) + 1);
+      }
+      const peakCount = Math.max(...weekCounts.values());
+
+      resolvedObjections.push({
+        topic,
+        peakCount,
+        resolvedDate: lastSeen,
+        effectiveResponse,
+      });
+      continue;
+    }
+
+    // PERSISTENT: spans both old and recent, keeps appearing
+    if (events.length >= 3 && recentEvents.length > 0 && olderEvents.length > 0) {
+      const durationWeeks = Math.round((lastTime - firstTime) / (7 * msPerDay) * 10) / 10;
+      const avgEnthusiasm = events.reduce((s, e) => s + e.enthusiasm, 0) / events.length;
+      // Impact = how much lower enthusiasm is in meetings with this objection vs baseline 3
+      const avgEnthusiasmImpact = Math.round((3 - avgEnthusiasm) * 10) / 10;
+
+      persistentObjections.push({
+        topic,
+        count: events.length,
+        duration: durationWeeks,
+        avgEnthusiasmImpact,
+      });
+    }
+  }
+
+  // Sort by relevance
+  emergingObjections.sort((a, b) => b.growthRate - a.growthRate);
+  persistentObjections.sort((a, b) => b.count - a.count);
+  resolvedObjections.sort((a, b) => b.peakCount - a.peakCount);
+
+  return {
+    emergingObjections,
+    resolvedObjections,
+    persistentObjections,
+    objectionHeatMap,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Pipeline Flow Intelligence — stage dwell time, bottlenecks, velocity (Cycle 10)
+// ---------------------------------------------------------------------------
+
+export async function computePipelineFlow(): Promise<{
+  avgDaysPerStage: Record<string, number>;
+  bottleneckStage: string;
+  bottleneckAvgDays: number;
+  conversionByStage: Record<string, number>;
+  velocityTrend: 'accelerating' | 'steady' | 'decelerating';
+  stageHealth: { stage: string; count: number; avgDays: number; conversionRate: number; health: 'healthy' | 'slow' | 'blocked' }[];
+}> {
+  await ensureInitialized();
+  const db = getClient();
+
+  // Define ordered stages
+  const stageOrder = ['identified', 'contacted', 'nda_signed', 'meeting_scheduled', 'met', 'engaged', 'in_dd', 'term_sheet', 'closed'];
+  const stageIndex = new Map(stageOrder.map((s, i) => [s, i]));
+
+  // Get all status change events from activity_log
+  const statusChanges = await db.execute(
+    `SELECT investor_id, detail, created_at
+     FROM activity_log
+     WHERE event_type = 'status_changed'
+     ORDER BY investor_id, created_at ASC`
+  );
+  const changeRows = statusChanges.rows as unknown as Array<{
+    investor_id: string;
+    detail: string;
+    created_at: string;
+  }>;
+
+  // Also get current investor statuses for investors who may never have had a status_changed event
+  const investorsResult = await db.execute(
+    `SELECT id, status, created_at FROM investors WHERE status NOT IN ('passed', 'dropped')`
+  );
+  const investorRows = investorsResult.rows as unknown as Array<{
+    id: string;
+    status: string;
+    created_at: string;
+  }>;
+
+  // Build per-investor timeline: list of (stage, enteredDate)
+  const investorTimelines = new Map<string, { stage: string; date: string }[]>();
+
+  // Initialize with creation date → 'identified'
+  for (const inv of investorRows) {
+    if (!investorTimelines.has(inv.id)) {
+      investorTimelines.set(inv.id, [{ stage: 'identified', date: inv.created_at }]);
+    }
+  }
+
+  // Parse status changes from activity_log detail field
+  // Common patterns: "Status changed to engaged", "Status: contacted → met", etc.
+  for (const row of changeRows) {
+    const detail = row.detail || '';
+    // Try to extract the new status from the detail
+    let newStatus: string | null = null;
+
+    // Pattern 1: "Status changed to <status>"
+    const match1 = detail.match(/(?:changed|updated)\s+(?:to|→)\s+(\w+)/i);
+    if (match1) newStatus = match1[1].toLowerCase();
+
+    // Pattern 2: "<old> → <new>"
+    if (!newStatus) {
+      const match2 = detail.match(/→\s*(\w+)/);
+      if (match2) newStatus = match2[1].toLowerCase();
+    }
+
+    // Pattern 3: just the status name if detail is short
+    if (!newStatus && stageIndex.has(detail.toLowerCase().trim())) {
+      newStatus = detail.toLowerCase().trim();
+    }
+
+    if (newStatus && stageIndex.has(newStatus)) {
+      if (!investorTimelines.has(row.investor_id)) {
+        investorTimelines.set(row.investor_id, []);
+      }
+      investorTimelines.get(row.investor_id)!.push({ stage: newStatus, date: row.created_at });
+    }
+  }
+
+  // Compute stage dwell times and conversions
+  const stageDwellDays: Record<string, number[]> = {};
+  const stageEntryDates: Record<string, string[]> = {}; // for velocity trend
+  const stageEntered: Record<string, number> = {};
+  const stageAdvanced: Record<string, number> = {};
+
+  for (const stage of stageOrder) {
+    stageDwellDays[stage] = [];
+    stageEntryDates[stage] = [];
+    stageEntered[stage] = 0;
+    stageAdvanced[stage] = 0;
+  }
+
+  const msPerDay = 1000 * 60 * 60 * 24;
+
+  for (const [, timeline] of investorTimelines) {
+    const sorted = [...timeline].sort((a, b) => a.date.localeCompare(b.date));
+
+    for (let i = 0; i < sorted.length; i++) {
+      const stage = sorted[i].stage;
+      if (!stageIndex.has(stage)) continue;
+
+      stageEntered[stage] = (stageEntered[stage] || 0) + 1;
+      stageEntryDates[stage] = stageEntryDates[stage] || [];
+      stageEntryDates[stage].push(sorted[i].date);
+
+      // If there's a next stage in the timeline, compute dwell time
+      if (i < sorted.length - 1) {
+        const nextStage = sorted[i + 1].stage;
+        const dwellMs = new Date(sorted[i + 1].date).getTime() - new Date(sorted[i].date).getTime();
+        const dwellDays = Math.max(0, dwellMs / msPerDay);
+        stageDwellDays[stage] = stageDwellDays[stage] || [];
+        stageDwellDays[stage].push(dwellDays);
+
+        // Count as advanced if next stage is further along
+        if ((stageIndex.get(nextStage) ?? -1) > (stageIndex.get(stage) ?? -1)) {
+          stageAdvanced[stage] = (stageAdvanced[stage] || 0) + 1;
+        }
+      }
+    }
+  }
+
+  // Also count investors currently AT each stage (for stageHealth.count)
+  const currentStageCounts: Record<string, number> = {};
+  for (const inv of investorRows) {
+    currentStageCounts[inv.status] = (currentStageCounts[inv.status] || 0) + 1;
+  }
+
+  // Compute averages
+  const avgDaysPerStage: Record<string, number> = {};
+  for (const stage of stageOrder) {
+    const dwells = stageDwellDays[stage] || [];
+    avgDaysPerStage[stage] = dwells.length > 0
+      ? Math.round((dwells.reduce((a, b) => a + b, 0) / dwells.length) * 10) / 10
+      : 0;
+  }
+
+  // Find bottleneck (stage with longest average dwell time, excluding stages with no data)
+  let bottleneckStage = 'identified';
+  let bottleneckAvgDays = 0;
+  for (const stage of stageOrder) {
+    if (avgDaysPerStage[stage] > bottleneckAvgDays && (stageDwellDays[stage] || []).length > 0) {
+      bottleneckStage = stage;
+      bottleneckAvgDays = avgDaysPerStage[stage];
+    }
+  }
+
+  // Conversion rates per stage
+  const conversionByStage: Record<string, number> = {};
+  for (const stage of stageOrder) {
+    const entered = stageEntered[stage] || 0;
+    const advanced = stageAdvanced[stage] || 0;
+    conversionByStage[stage] = entered > 0 ? Math.round((advanced / entered) * 100) : 0;
+  }
+
+  // Velocity trend: is the pipeline moving faster or slower over time?
+  // Compare average dwell times of recent transitions vs older transitions.
+  let velocityTrend: 'accelerating' | 'steady' | 'decelerating' = 'steady';
+  const allDwells: { date: string; days: number }[] = [];
+  for (const [, timeline] of investorTimelines) {
+    const sorted = [...timeline].sort((a, b) => a.date.localeCompare(b.date));
+    for (let i = 0; i < sorted.length - 1; i++) {
+      const dwellMs = new Date(sorted[i + 1].date).getTime() - new Date(sorted[i].date).getTime();
+      allDwells.push({ date: sorted[i].date, days: dwellMs / msPerDay });
+    }
+  }
+
+  if (allDwells.length >= 4) {
+    allDwells.sort((a, b) => a.date.localeCompare(b.date));
+    const midpoint = Math.floor(allDwells.length / 2);
+    const firstHalf = allDwells.slice(0, midpoint);
+    const secondHalf = allDwells.slice(midpoint);
+    const avgFirst = firstHalf.reduce((s, d) => s + d.days, 0) / firstHalf.length;
+    const avgSecond = secondHalf.reduce((s, d) => s + d.days, 0) / secondHalf.length;
+
+    if (avgSecond < avgFirst * 0.75) {
+      velocityTrend = 'accelerating'; // transitions getting faster
+    } else if (avgSecond > avgFirst * 1.35) {
+      velocityTrend = 'decelerating'; // transitions getting slower
+    }
+  }
+
+  // Stage health classification
+  const stageHealth: { stage: string; count: number; avgDays: number; conversionRate: number; health: 'healthy' | 'slow' | 'blocked' }[] = [];
+  // Healthy thresholds vary by stage
+  const healthThresholds: Record<string, { slow: number; blocked: number }> = {
+    identified: { slow: 14, blocked: 30 },
+    contacted: { slow: 10, blocked: 21 },
+    nda_signed: { slow: 7, blocked: 14 },
+    meeting_scheduled: { slow: 14, blocked: 30 },
+    met: { slow: 14, blocked: 30 },
+    engaged: { slow: 21, blocked: 45 },
+    in_dd: { slow: 30, blocked: 60 },
+    term_sheet: { slow: 21, blocked: 45 },
+    closed: { slow: 999, blocked: 999 }, // terminal
+  };
+
+  for (const stage of stageOrder) {
+    const avgDays = avgDaysPerStage[stage];
+    const conversion = conversionByStage[stage];
+    const count = currentStageCounts[stage] || 0;
+    const thresholds = healthThresholds[stage] || { slow: 21, blocked: 45 };
+
+    let health: 'healthy' | 'slow' | 'blocked';
+    if (avgDays >= thresholds.blocked || (conversion > 0 && conversion < 20 && count > 2)) {
+      health = 'blocked';
+    } else if (avgDays >= thresholds.slow || (conversion > 0 && conversion < 40)) {
+      health = 'slow';
+    } else {
+      health = 'healthy';
+    }
+
+    stageHealth.push({
+      stage,
+      count,
+      avgDays,
+      conversionRate: conversion,
+      health,
+    });
+  }
+
+  return {
+    avgDaysPerStage,
+    bottleneckStage,
+    bottleneckAvgDays,
+    conversionByStage,
+    velocityTrend,
+    stageHealth,
+  };
+}

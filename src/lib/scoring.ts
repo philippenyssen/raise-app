@@ -960,6 +960,179 @@ function linearRegression(points: { x: number; y: number }[]): { slope: number; 
   return { slope, intercept, r2 };
 }
 
+// ---------------------------------------------------------------------------
+// Enhanced Trajectory (Advanced Analysis — Cycle 10 Depth)
+// ---------------------------------------------------------------------------
+
+export interface EnhancedTrajectory extends ConvictionTrajectory {
+  acceleration: number; // second derivative, pts/week/week
+  hasInflection: boolean;
+  inflectionDate: string | null;
+  pattern: 'accelerating' | 'decelerating' | 'plateau' | 'inflecting' | 'insufficient_data';
+  plateauDuration: number; // weeks at plateau, 0 if not in plateau
+  riskLevel: 'low' | 'medium' | 'high' | 'critical';
+}
+
+/**
+ * Advanced trajectory analysis: inflection detection, acceleration (2nd derivative),
+ * plateau detection, and risk classification.
+ * Backward-compatible — extends ConvictionTrajectory.
+ */
+export function computeAdvancedTrajectory(snapshots: ScoreSnapshot[]): EnhancedTrajectory {
+  // Get base trajectory first
+  const base = computeConvictionTrajectory(snapshots);
+
+  // Default enhanced fields for insufficient data
+  if (snapshots.length < 3) {
+    return {
+      ...base,
+      acceleration: 0,
+      hasInflection: false,
+      inflectionDate: null,
+      pattern: 'insufficient_data',
+      plateauDuration: 0,
+      riskLevel: base.trend === 'decelerating' ? 'medium' : 'low',
+    };
+  }
+
+  const firstDate = new Date(snapshots[0].snapshot_date).getTime();
+  const msPerDay = 1000 * 60 * 60 * 24;
+  const regressionPoints = snapshots.map(s => ({
+    x: (new Date(s.snapshot_date).getTime() - firstDate) / msPerDay,
+    y: s.overall_score,
+  }));
+
+  // --- Acceleration (2nd derivative) ---
+  // Compute velocity (slope) over sliding windows, then take the slope of those velocities.
+  // We use 3-point windows to compute local slopes, then regress those slopes.
+  const localSlopes: { x: number; slope: number }[] = [];
+  for (let i = 1; i < regressionPoints.length; i++) {
+    const dx = regressionPoints[i].x - regressionPoints[i - 1].x;
+    if (dx > 0) {
+      localSlopes.push({
+        x: (regressionPoints[i].x + regressionPoints[i - 1].x) / 2,
+        slope: (regressionPoints[i].y - regressionPoints[i - 1].y) / dx,
+      });
+    }
+  }
+
+  let acceleration = 0; // pts/day/day
+  if (localSlopes.length >= 2) {
+    const slopeRegression = linearRegression(
+      localSlopes.map(s => ({ x: s.x, y: s.slope }))
+    );
+    acceleration = slopeRegression.slope;
+  }
+  // Convert to pts/week/week
+  const accelerationPerWeekPerWeek = Math.round(acceleration * 7 * 7 * 100) / 100;
+
+  // --- Inflection Detection ---
+  // An inflection is where the trajectory changed direction.
+  // Compare slope of last 3 points vs slope of all points.
+  // If they differ by more than 1 standard deviation of residuals, that's an inflection.
+  let hasInflection = false;
+  let inflectionDate: string | null = null;
+
+  if (regressionPoints.length >= 4) {
+    const allReg = linearRegression(regressionPoints);
+    const lastN = Math.min(3, regressionPoints.length - 1);
+    const recentPoints = regressionPoints.slice(-lastN);
+    const recentReg = linearRegression(recentPoints);
+
+    // Compute standard deviation of residuals from the all-points regression
+    let sumSqResidual = 0;
+    for (const p of regressionPoints) {
+      const predicted = allReg.slope * p.x + allReg.intercept;
+      sumSqResidual += (p.y - predicted) ** 2;
+    }
+    const residualStd = Math.sqrt(sumSqResidual / regressionPoints.length);
+    // Normalize slope difference relative to the data range
+    const slopeDiff = Math.abs(recentReg.slope - allReg.slope);
+    // The slope itself is in pts/day; residualStd is in pts. Use a scaled threshold.
+    const xRange = regressionPoints[regressionPoints.length - 1].x - regressionPoints[0].x;
+    const threshold = xRange > 0 ? residualStd / xRange : 0;
+
+    if (threshold > 0 && slopeDiff > threshold) {
+      hasInflection = true;
+      // The inflection is approximately where recent segment starts
+      const inflectionIdx = Math.max(0, snapshots.length - lastN);
+      inflectionDate = snapshots[inflectionIdx].snapshot_date;
+    }
+  }
+
+  // --- Plateau Detection ---
+  // A plateau is when velocity is near zero for 3+ consecutive snapshots.
+  let plateauDuration = 0;
+  const plateauThreshold = 2; // score change of <=2 pts between consecutive snapshots = flat
+  let currentPlateauCount = 0;
+
+  for (let i = regressionPoints.length - 1; i >= 1; i--) {
+    const scoreDelta = Math.abs(regressionPoints[i].y - regressionPoints[i - 1].y);
+    if (scoreDelta <= plateauThreshold) {
+      currentPlateauCount++;
+    } else {
+      break; // plateau broken going backwards
+    }
+  }
+
+  const isInPlateau = currentPlateauCount >= 3;
+  if (isInPlateau) {
+    // Compute duration in weeks
+    const plateauStartIdx = regressionPoints.length - 1 - currentPlateauCount;
+    const plateauStartDay = regressionPoints[Math.max(0, plateauStartIdx)].x;
+    const latestDay = regressionPoints[regressionPoints.length - 1].x;
+    plateauDuration = Math.round((latestDay - plateauStartDay) / 7 * 10) / 10;
+  }
+
+  // --- Pattern Classification ---
+  let pattern: EnhancedTrajectory['pattern'];
+  if (isInPlateau) {
+    pattern = 'plateau';
+  } else if (hasInflection) {
+    pattern = 'inflecting';
+  } else if (accelerationPerWeekPerWeek > 0.3) {
+    pattern = 'accelerating';
+  } else if (accelerationPerWeekPerWeek < -0.3) {
+    pattern = 'decelerating';
+  } else if (Math.abs(base.velocityPerWeek) < 0.5) {
+    pattern = 'plateau'; // low velocity even if not strictly consecutive flat
+  } else if (base.velocityPerWeek > 0) {
+    pattern = 'accelerating';
+  } else {
+    pattern = 'decelerating';
+  }
+
+  // --- Risk Level ---
+  let riskLevel: EnhancedTrajectory['riskLevel'];
+  const currentScore = snapshots[snapshots.length - 1].overall_score;
+
+  if (pattern === 'decelerating' && base.velocityPerWeek < -3) {
+    riskLevel = 'critical'; // rapid decline
+  } else if (pattern === 'decelerating' && base.velocityPerWeek < -1.5) {
+    riskLevel = 'high';
+  } else if (pattern === 'plateau' && plateauDuration > 3 && currentScore < 50) {
+    riskLevel = 'high'; // stuck at low score
+  } else if (pattern === 'plateau' && plateauDuration > 2) {
+    riskLevel = 'medium'; // indecision
+  } else if (pattern === 'inflecting' && base.velocityPerWeek < 0) {
+    riskLevel = 'high'; // just started declining
+  } else if (pattern === 'decelerating') {
+    riskLevel = 'medium';
+  } else {
+    riskLevel = 'low';
+  }
+
+  return {
+    ...base,
+    acceleration: accelerationPerWeekPerWeek,
+    hasInflection,
+    inflectionDate,
+    pattern,
+    plateauDuration,
+    riskLevel,
+  };
+}
+
 export function computeConvictionTrajectory(snapshots: ScoreSnapshot[]): ConvictionTrajectory {
   if (snapshots.length < 2) {
     const point = snapshots[0];
