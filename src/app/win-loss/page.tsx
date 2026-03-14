@@ -1,0 +1,811 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import {
+  TrendingDown, TrendingUp, RefreshCw, Users, Target, AlertTriangle,
+  CheckCircle, XCircle, ArrowDown, Clock, Lightbulb, BarChart3,
+} from 'lucide-react';
+
+// ── Types ─────────────────────────────────────────────────────────────
+
+interface DistinguishingFactor {
+  factor: string;
+  closedAvg: number;
+  passedAvg: number;
+  delta: number;
+  significance: 'high' | 'medium' | 'low';
+}
+
+interface Profile {
+  avgScore: number;
+  avgEnthusiasm: number;
+  avgMeetings: number;
+  avgDaysToClose?: number;
+  avgDaysToPass?: number;
+  commonTiers: string;
+  commonTypes: string;
+}
+
+interface PassReason {
+  reason: string;
+  count: number;
+}
+
+interface FunnelStage {
+  stage: string;
+  count: number;
+  dropOff: number;
+}
+
+interface TypePerf {
+  type: string;
+  total: number;
+  closed: number;
+  passed: number;
+  dropped: number;
+  closeRate: number;
+  passRate: number;
+}
+
+interface Predictor {
+  signal: string;
+  description: string;
+  strength: 'strong' | 'moderate' | 'weak';
+}
+
+interface WinLossData {
+  patterns: {
+    closedCount: number;
+    passedCount: number;
+    droppedCount: number;
+    distinguishingFactors: DistinguishingFactor[];
+    winnerProfile: Profile | null;
+    loserProfile: Profile | null;
+    insights: string[];
+  };
+  passReasons: PassReason[];
+  timing: {
+    avgDaysToClose: number;
+    avgDaysToPass: number;
+    medianDaysToClose: number;
+    medianDaysToPass: number;
+  };
+  funnel: FunnelStage[];
+  typePerformance: TypePerf[];
+  predictors: Predictor[];
+  recommendations: string[];
+  summary: {
+    totalInvestors: number;
+    active: number;
+    closed: number;
+    passed: number;
+    dropped: number;
+    overallCloseRate: number;
+    avgClosedMeetings: number;
+    avgPassedMeetings: number;
+    avgClosedEnthusiasm: number;
+    avgPassedEnthusiasm: number;
+  };
+  generatedAt: string;
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────
+
+const TYPE_LABELS: Record<string, string> = {
+  vc: 'VC',
+  growth: 'Growth',
+  sovereign: 'SWF',
+  strategic: 'Strategic',
+  debt: 'Debt',
+  family_office: 'Family Office',
+};
+
+function strengthColor(s: 'strong' | 'moderate' | 'weak' | 'high' | 'medium' | 'low'): string {
+  if (s === 'strong' || s === 'high') return 'var(--success)';
+  if (s === 'moderate' || s === 'medium') return 'var(--warning)';
+  return 'var(--text-muted)';
+}
+
+// ── Page ──────────────────────────────────────────────────────────────
+
+export default function WinLossPage() {
+  const [data, setData] = useState<WinLossData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [hoveredCard, setHoveredCard] = useState<string | null>(null);
+  const [hoveredRow, setHoveredRow] = useState<string | null>(null);
+
+  const fetchData = () => {
+    setLoading(true);
+    setError(null);
+    fetch('/api/win-loss')
+      .then(r => {
+        if (!r.ok) throw new Error(`${r.status}`);
+        return r.json();
+      })
+      .then((d: WinLossData) => { setData(d); setLoading(false); })
+      .catch(e => { setError(e.message); setLoading(false); });
+  };
+
+  useEffect(() => { fetchData(); }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center" style={{ minHeight: '400px' }}>
+        <div className="flex items-center gap-3">
+          <RefreshCw className="w-5 h-5 animate-spin" style={{ color: 'var(--text-muted)' }} />
+          <span style={{ color: 'var(--text-secondary)' }}>Analyzing win/loss patterns...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-4">
+        <h1 className="page-title">Win/Loss Analysis</h1>
+        <div className="card" style={{ padding: 'var(--space-6)', textAlign: 'center' }}>
+          <span style={{ color: 'var(--danger)' }}>Failed to load: {error}</span>
+          <div style={{ marginTop: 'var(--space-3)' }}>
+            <button onClick={fetchData} className="btn btn-secondary btn-sm">Retry</button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!data) return null;
+
+  const { patterns, passReasons, timing, funnel, typePerformance, predictors, recommendations, summary } = data;
+
+  // Funnel max for width calculation
+  const funnelMax = Math.max(...funnel.map(f => f.count), 1);
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="page-title">Win/Loss Analysis</h1>
+          <p className="page-subtitle" style={{ fontSize: 'var(--font-size-sm)' }}>
+            Patterns from closed and passed investors
+          </p>
+        </div>
+        <button onClick={fetchData} className="btn btn-secondary btn-sm" style={{ gap: 'var(--space-2)' }}>
+          <RefreshCw className="w-3.5 h-3.5" />
+          Refresh
+        </button>
+      </div>
+
+      {/* Summary Stats */}
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+        {[
+          { label: 'Total Pipeline', value: summary.totalInvestors, sub: `${summary.active} active` },
+          { label: 'Closed', value: summary.closed, sub: `${summary.overallCloseRate}% rate`, accent: true },
+          { label: 'Passed', value: summary.passed, sub: null },
+          { label: 'Dropped', value: summary.dropped, sub: null },
+          { label: 'Avg Days to Close', value: timing.avgDaysToClose, sub: `Median: ${timing.medianDaysToClose}d` },
+        ].map(s => (
+          <div
+            key={s.label}
+            className="card"
+            style={{
+              padding: 'var(--space-3)',
+              borderColor: hoveredCard === s.label ? 'var(--border-default)' : undefined,
+              ...(s.accent ? { borderLeft: '3px solid var(--success)' } : {}),
+            }}
+            onMouseEnter={() => setHoveredCard(s.label)}
+            onMouseLeave={() => setHoveredCard(null)}
+          >
+            <div className="metric-label">{s.label}</div>
+            <div className="metric-value" style={{ marginTop: '2px' }}>{s.value}</div>
+            {s.sub && (
+              <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '2px' }}>{s.sub}</div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Funnel Visualization */}
+      <div className="card" style={{ padding: 'var(--space-4)' }}>
+        <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-4)' }}>
+          <span style={{ color: 'var(--accent)' }}><BarChart3 className="w-4 h-4" /></span>
+          <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 600, color: 'var(--text-primary)' }}>
+            Conversion Funnel
+          </h2>
+        </div>
+        <div className="space-y-2">
+          {funnel.map((stage, i) => {
+            const pct = funnelMax > 0 ? (stage.count / funnelMax) * 100 : 0;
+            const conversionPct = i > 0 && funnel[i - 1].count > 0
+              ? Math.round((stage.count / funnel[i - 1].count) * 100)
+              : 100;
+            return (
+              <div key={stage.stage}>
+                <div className="flex items-center justify-between" style={{ marginBottom: '4px' }}>
+                  <div className="flex items-center gap-2">
+                    <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 500, minWidth: '120px' }}>
+                      {stage.stage}
+                    </span>
+                    <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', fontWeight: 600 }}>
+                      {stage.count}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    {i > 0 && (
+                      <span style={{
+                        fontSize: 'var(--font-size-xs)',
+                        color: conversionPct >= 50 ? 'var(--success)' : conversionPct >= 25 ? 'var(--warning)' : 'var(--danger)',
+                      }}>
+                        {conversionPct}% from prev
+                      </span>
+                    )}
+                    {stage.dropOff > 0 && (
+                      <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)' }}>
+                        {stage.dropOff}% drop-off
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div
+                  style={{
+                    height: '24px',
+                    background: 'var(--surface-1)',
+                    borderRadius: 'var(--radius-sm)',
+                    overflow: 'hidden',
+                    position: 'relative',
+                  }}
+                >
+                  <div
+                    style={{
+                      height: '100%',
+                      width: `${Math.max(pct, 2)}%`,
+                      background: i === funnel.length - 1
+                        ? 'var(--success)'
+                        : `color-mix(in srgb, var(--accent) ${Math.round(40 + (60 * (funnel.length - i) / funnel.length))}%, transparent)`,
+                      borderRadius: 'var(--radius-sm)',
+                      transition: 'width 0.6s ease',
+                    }}
+                  />
+                </div>
+                {i < funnel.length - 1 && (
+                  <div className="flex justify-center" style={{ marginTop: '2px', marginBottom: '2px' }}>
+                    <ArrowDown className="w-3 h-3" style={{ color: 'var(--text-muted)' }} />
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Winner vs Loser Profile */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Winner Profile */}
+        <div
+          className="card"
+          style={{
+            padding: 'var(--space-4)',
+            borderLeft: '3px solid var(--success)',
+          }}
+        >
+          <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
+            <span style={{ color: 'var(--success)' }}><CheckCircle className="w-4 h-4" /></span>
+            <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 600, color: 'var(--text-primary)' }}>
+              Winner Profile
+            </h2>
+            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginLeft: 'auto' }}>
+              {summary.closed} investors
+            </span>
+          </div>
+          {patterns.winnerProfile ? (
+            <div className="space-y-2">
+              {[
+                { label: 'Avg Score', value: `${patterns.winnerProfile.avgScore}/100` },
+                { label: 'Avg Enthusiasm', value: `${patterns.winnerProfile.avgEnthusiasm}/5` },
+                { label: 'Avg Meetings', value: `${patterns.winnerProfile.avgMeetings}` },
+                { label: 'Avg Days to Close', value: `${patterns.winnerProfile.avgDaysToClose}d` },
+                { label: 'Common Tiers', value: patterns.winnerProfile.commonTiers },
+                { label: 'Common Types', value: patterns.winnerProfile.commonTypes },
+              ].map(row => (
+                <div key={row.label} className="flex items-center justify-between" style={{ padding: 'var(--space-1) 0' }}>
+                  <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' }}>{row.label}</span>
+                  <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 500 }}>{row.value}</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
+              No closed investors yet
+            </p>
+          )}
+        </div>
+
+        {/* Loser Profile */}
+        <div
+          className="card"
+          style={{
+            padding: 'var(--space-4)',
+            borderLeft: '3px solid var(--danger)',
+          }}
+        >
+          <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
+            <span style={{ color: 'var(--danger)' }}><XCircle className="w-4 h-4" /></span>
+            <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 600, color: 'var(--text-primary)' }}>
+              Passer Profile
+            </h2>
+            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginLeft: 'auto' }}>
+              {summary.passed} investors
+            </span>
+          </div>
+          {patterns.loserProfile ? (
+            <div className="space-y-2">
+              {[
+                { label: 'Avg Score', value: `${patterns.loserProfile.avgScore}/100` },
+                { label: 'Avg Enthusiasm', value: `${patterns.loserProfile.avgEnthusiasm}/5` },
+                { label: 'Avg Meetings', value: `${patterns.loserProfile.avgMeetings}` },
+                { label: 'Avg Days to Pass', value: `${patterns.loserProfile.avgDaysToPass}d` },
+                { label: 'Common Tiers', value: patterns.loserProfile.commonTiers },
+                { label: 'Common Types', value: patterns.loserProfile.commonTypes },
+              ].map(row => (
+                <div key={row.label} className="flex items-center justify-between" style={{ padding: 'var(--space-1) 0' }}>
+                  <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' }}>{row.label}</span>
+                  <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 500 }}>{row.value}</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
+              No passed investors yet
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* Pass Reasons + Key Predictors Row */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Pass Reasons */}
+        <div className="card" style={{ padding: 'var(--space-4)' }}>
+          <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
+            <span style={{ color: 'var(--warning)' }}><AlertTriangle className="w-4 h-4" /></span>
+            <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 600, color: 'var(--text-primary)' }}>
+              Pass Reasons
+            </h2>
+          </div>
+          {passReasons.length > 0 ? (
+            <div className="space-y-2">
+              {passReasons.map((pr, i) => {
+                const maxCount = passReasons[0]?.count || 1;
+                const barPct = (pr.count / maxCount) * 100;
+                return (
+                  <div
+                    key={pr.reason}
+                    style={{
+                      padding: 'var(--space-2)',
+                      borderRadius: 'var(--radius-sm)',
+                      background: hoveredRow === `pr-${i}` ? 'var(--surface-2)' : 'transparent',
+                      transition: 'background 0.15s',
+                    }}
+                    onMouseEnter={() => setHoveredRow(`pr-${i}`)}
+                    onMouseLeave={() => setHoveredRow(null)}
+                  >
+                    <div className="flex items-center justify-between" style={{ marginBottom: '4px' }}>
+                      <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)' }}>
+                        {pr.reason}
+                      </span>
+                      <span style={{
+                        fontSize: 'var(--font-size-xs)',
+                        color: 'var(--text-secondary)',
+                        fontWeight: 600,
+                        fontVariantNumeric: 'tabular-nums',
+                      }}>
+                        {pr.count}x
+                      </span>
+                    </div>
+                    <div style={{
+                      height: '4px',
+                      background: 'var(--surface-1)',
+                      borderRadius: '2px',
+                      overflow: 'hidden',
+                    }}>
+                      <div style={{
+                        height: '100%',
+                        width: `${barPct}%`,
+                        background: 'var(--danger)',
+                        borderRadius: '2px',
+                        opacity: 0.7,
+                      }} />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
+              No pass data available yet
+            </p>
+          )}
+        </div>
+
+        {/* Key Predictors */}
+        <div className="card" style={{ padding: 'var(--space-4)' }}>
+          <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
+            <span style={{ color: 'var(--accent)' }}><Target className="w-4 h-4" /></span>
+            <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 600, color: 'var(--text-primary)' }}>
+              Key Predictors
+            </h2>
+          </div>
+          <div className="space-y-3">
+            {predictors.map((p, i) => (
+              <div
+                key={p.signal}
+                style={{
+                  padding: 'var(--space-2) var(--space-3)',
+                  borderRadius: 'var(--radius-sm)',
+                  background: hoveredRow === `pred-${i}` ? 'var(--surface-2)' : 'var(--surface-1)',
+                  borderLeft: `3px solid ${strengthColor(p.strength)}`,
+                  transition: 'background 0.15s',
+                }}
+                onMouseEnter={() => setHoveredRow(`pred-${i}`)}
+                onMouseLeave={() => setHoveredRow(null)}
+              >
+                <div className="flex items-center justify-between" style={{ marginBottom: '2px' }}>
+                  <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 500 }}>
+                    {p.signal}
+                  </span>
+                  <span style={{
+                    fontSize: 'var(--font-size-xs)',
+                    color: strengthColor(p.strength),
+                    textTransform: 'uppercase',
+                    fontWeight: 600,
+                    letterSpacing: '0.04em',
+                  }}>
+                    {p.strength}
+                  </span>
+                </div>
+                <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', margin: 0 }}>
+                  {p.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Distinguishing Factors */}
+      {patterns.distinguishingFactors.length > 0 && (
+        <div className="card" style={{ padding: 'var(--space-4)' }}>
+          <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
+            <span style={{ color: 'var(--accent)' }}><TrendingUp className="w-4 h-4" /></span>
+            <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 600, color: 'var(--text-primary)' }}>
+              Distinguishing Factors
+            </h2>
+            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginLeft: 'auto' }}>
+              Winners vs Passers
+            </span>
+          </div>
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead>
+                <tr>
+                  {['Factor', 'Winners Avg', 'Passers Avg', 'Delta', 'Significance'].map(h => (
+                    <th
+                      key={h}
+                      style={{
+                        textAlign: h === 'Factor' ? 'left' : 'right',
+                        padding: 'var(--space-2) var(--space-3)',
+                        fontSize: 'var(--font-size-xs)',
+                        fontWeight: 500,
+                        color: 'var(--text-muted)',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.04em',
+                        borderBottom: '1px solid var(--border-subtle)',
+                      }}
+                    >
+                      {h}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {patterns.distinguishingFactors.map((f, i) => (
+                  <tr
+                    key={f.factor}
+                    style={{
+                      background: hoveredRow === `df-${i}` ? 'var(--surface-1)' : 'transparent',
+                      transition: 'background 0.15s',
+                    }}
+                    onMouseEnter={() => setHoveredRow(`df-${i}`)}
+                    onMouseLeave={() => setHoveredRow(null)}
+                  >
+                    <td style={{
+                      padding: 'var(--space-2) var(--space-3)',
+                      fontSize: 'var(--font-size-sm)',
+                      color: 'var(--text-primary)',
+                      fontWeight: 500,
+                      borderBottom: '1px solid var(--border-subtle)',
+                    }}>
+                      {f.factor}
+                    </td>
+                    <td style={{
+                      padding: 'var(--space-2) var(--space-3)',
+                      fontSize: 'var(--font-size-sm)',
+                      color: 'var(--success)',
+                      textAlign: 'right',
+                      fontVariantNumeric: 'tabular-nums',
+                      borderBottom: '1px solid var(--border-subtle)',
+                    }}>
+                      {f.closedAvg}
+                    </td>
+                    <td style={{
+                      padding: 'var(--space-2) var(--space-3)',
+                      fontSize: 'var(--font-size-sm)',
+                      color: 'var(--danger)',
+                      textAlign: 'right',
+                      fontVariantNumeric: 'tabular-nums',
+                      borderBottom: '1px solid var(--border-subtle)',
+                    }}>
+                      {f.passedAvg}
+                    </td>
+                    <td style={{
+                      padding: 'var(--space-2) var(--space-3)',
+                      fontSize: 'var(--font-size-sm)',
+                      color: f.delta > 0 ? 'var(--success)' : f.delta < 0 ? 'var(--danger)' : 'var(--text-muted)',
+                      textAlign: 'right',
+                      fontWeight: 600,
+                      fontVariantNumeric: 'tabular-nums',
+                      borderBottom: '1px solid var(--border-subtle)',
+                    }}>
+                      {f.delta > 0 ? '+' : ''}{f.delta}
+                    </td>
+                    <td style={{
+                      padding: 'var(--space-2) var(--space-3)',
+                      textAlign: 'right',
+                      borderBottom: '1px solid var(--border-subtle)',
+                    }}>
+                      <span style={{
+                        fontSize: 'var(--font-size-xs)',
+                        fontWeight: 600,
+                        color: strengthColor(f.significance),
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.04em',
+                      }}>
+                        {f.significance}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* Time Analysis + Investor Type Performance */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Time Analysis */}
+        <div className="card" style={{ padding: 'var(--space-4)' }}>
+          <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
+            <span style={{ color: 'var(--accent)' }}><Clock className="w-4 h-4" /></span>
+            <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 600, color: 'var(--text-primary)' }}>
+              Time Analysis
+            </h2>
+          </div>
+          <div className="space-y-3">
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gap: 'var(--space-3)',
+            }}>
+              <div style={{
+                padding: 'var(--space-3)',
+                borderRadius: 'var(--radius-md)',
+                background: 'var(--surface-1)',
+                textAlign: 'center',
+              }}>
+                <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '4px' }}>
+                  Avg Days to Close
+                </div>
+                <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 700, color: 'var(--success)' }}>
+                  {timing.avgDaysToClose}
+                </div>
+                <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                  Median: {timing.medianDaysToClose}d
+                </div>
+              </div>
+              <div style={{
+                padding: 'var(--space-3)',
+                borderRadius: 'var(--radius-md)',
+                background: 'var(--surface-1)',
+                textAlign: 'center',
+              }}>
+                <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '4px' }}>
+                  Avg Days to Pass
+                </div>
+                <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 700, color: 'var(--danger)' }}>
+                  {timing.avgDaysToPass}
+                </div>
+                <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                  Median: {timing.medianDaysToPass}d
+                </div>
+              </div>
+            </div>
+            <div style={{
+              padding: 'var(--space-3)',
+              borderRadius: 'var(--radius-md)',
+              background: 'var(--surface-1)',
+            }}>
+              <div className="flex items-center justify-between">
+                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
+                  Avg Meetings (Winners)
+                </span>
+                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--success)', fontWeight: 600 }}>
+                  {summary.avgClosedMeetings}
+                </span>
+              </div>
+              <div className="flex items-center justify-between" style={{ marginTop: 'var(--space-1)' }}>
+                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
+                  Avg Meetings (Passers)
+                </span>
+                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--danger)', fontWeight: 600 }}>
+                  {summary.avgPassedMeetings}
+                </span>
+              </div>
+              <div className="flex items-center justify-between" style={{ marginTop: 'var(--space-1)' }}>
+                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
+                  Avg Enthusiasm (Winners)
+                </span>
+                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--success)', fontWeight: 600 }}>
+                  {summary.avgClosedEnthusiasm}/5
+                </span>
+              </div>
+              <div className="flex items-center justify-between" style={{ marginTop: 'var(--space-1)' }}>
+                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
+                  Avg Enthusiasm (Passers)
+                </span>
+                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--danger)', fontWeight: 600 }}>
+                  {summary.avgPassedEnthusiasm}/5
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Investor Type Performance */}
+        <div className="card" style={{ padding: 'var(--space-4)' }}>
+          <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
+            <span style={{ color: 'var(--accent)' }}><Users className="w-4 h-4" /></span>
+            <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 600, color: 'var(--text-primary)' }}>
+              Performance by Type
+            </h2>
+          </div>
+          {typePerformance.length > 0 ? (
+            <div className="space-y-2">
+              {typePerformance.map((tp, i) => (
+                <div
+                  key={tp.type}
+                  style={{
+                    padding: 'var(--space-2) var(--space-3)',
+                    borderRadius: 'var(--radius-sm)',
+                    background: hoveredRow === `tp-${i}` ? 'var(--surface-2)' : 'var(--surface-1)',
+                    transition: 'background 0.15s',
+                  }}
+                  onMouseEnter={() => setHoveredRow(`tp-${i}`)}
+                  onMouseLeave={() => setHoveredRow(null)}
+                >
+                  <div className="flex items-center justify-between" style={{ marginBottom: '4px' }}>
+                    <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 500 }}>
+                      {TYPE_LABELS[tp.type] || tp.type}
+                    </span>
+                    <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                      {tp.total} total
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-1">
+                      <span style={{ color: 'var(--success)' }}><TrendingUp className="w-3 h-3" /></span>
+                      <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--success)', fontWeight: 600 }}>
+                        {tp.closeRate}% close
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span style={{ color: 'var(--danger)' }}><TrendingDown className="w-3 h-3" /></span>
+                      <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)', fontWeight: 600 }}>
+                        {tp.passRate}% pass
+                      </span>
+                    </div>
+                    <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                      {tp.closed}W / {tp.passed}L / {tp.dropped}D
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
+              No investor type data available
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* Insights + Recommendations */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Insights from patterns */}
+        {patterns.insights.length > 0 && (
+          <div className="card" style={{ padding: 'var(--space-4)' }}>
+            <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
+              <span style={{ color: 'var(--accent)' }}><TrendingDown className="w-4 h-4" /></span>
+              <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 600, color: 'var(--text-primary)' }}>
+                Pattern Insights
+              </h2>
+            </div>
+            <div className="space-y-2">
+              {patterns.insights.map((insight, i) => (
+                <div
+                  key={i}
+                  style={{
+                    padding: 'var(--space-2) var(--space-3)',
+                    borderRadius: 'var(--radius-sm)',
+                    background: 'var(--surface-1)',
+                    fontSize: 'var(--font-size-sm)',
+                    color: 'var(--text-secondary)',
+                    borderLeft: '3px solid var(--accent-muted)',
+                  }}
+                >
+                  {insight}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Recommendations */}
+        <div className="card" style={{ padding: 'var(--space-4)' }}>
+          <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
+            <span style={{ color: 'var(--warning)' }}><Lightbulb className="w-4 h-4" /></span>
+            <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 600, color: 'var(--text-primary)' }}>
+              Recommendations
+            </h2>
+          </div>
+          {recommendations.length > 0 ? (
+            <div className="space-y-2">
+              {recommendations.map((rec, i) => (
+                <div
+                  key={i}
+                  style={{
+                    padding: 'var(--space-2) var(--space-3)',
+                    borderRadius: 'var(--radius-sm)',
+                    background: hoveredRow === `rec-${i}` ? 'var(--surface-2)' : 'var(--surface-1)',
+                    fontSize: 'var(--font-size-sm)',
+                    color: 'var(--text-secondary)',
+                    borderLeft: '3px solid var(--warning)',
+                    transition: 'background 0.15s',
+                  }}
+                  onMouseEnter={() => setHoveredRow(`rec-${i}`)}
+                  onMouseLeave={() => setHoveredRow(null)}
+                >
+                  {rec}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
+              Recommendations will appear as more outcomes are recorded
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div style={{
+        fontSize: 'var(--font-size-xs)',
+        color: 'var(--text-muted)',
+        textAlign: 'right',
+        paddingTop: 'var(--space-2)',
+      }}>
+        Generated {data.generatedAt ? new Date(data.generatedAt).toLocaleString() : '-'}
+      </div>
+    </div>
+  );
+}
