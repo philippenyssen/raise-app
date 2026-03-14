@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useToast } from '@/components/toast';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
+import Link from 'next/link';
+import { Scale } from 'lucide-react';
 
 interface TermSheet {
   id: string;
@@ -149,12 +151,21 @@ export default function TermsPage() {
             Compare and score term sheets side-by-side. {sheets.length} received.
           </p>
         </div>
-        <button
-          onClick={() => { setShowForm(!showForm); setEditId(null); setForm(EMPTY_TS); }}
-          className="btn btn-primary btn-md text-sm font-medium"
-        >
-          + Add Term Sheet
-        </button>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/term-compare"
+            className="btn btn-secondary btn-md text-sm font-medium"
+          >
+            <Scale className="w-4 h-4" />
+            Compare Terms
+          </Link>
+          <button
+            onClick={() => { setShowForm(!showForm); setEditId(null); setForm(EMPTY_TS); }}
+            className="btn btn-primary btn-md text-sm font-medium"
+          >
+            + Add Term Sheet
+          </button>
+        </div>
       </div>
 
       {/* Market Standards Reference */}
