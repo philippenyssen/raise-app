@@ -8,6 +8,7 @@ import {
   Activity, Download, Columns3, Target, Timer, ShieldCheck,
   RefreshCw, Zap, TrendingUp, TrendingDown, Minus, AlertTriangle,
   ChevronRight, Clock, ArrowUpRight, ArrowDownRight, ShieldAlert,
+  UserMinus, CalendarClock,
 } from 'lucide-react';
 
 // ---------------------------------------------------------------------------
@@ -67,6 +68,31 @@ interface StressTestSummary {
   onTrack: boolean;
   healthStatus: 'green' | 'yellow' | 'red';
   healthMessage: string;
+}
+
+interface ScoreReversalItem {
+  investorId: string;
+  investorName: string;
+  previousScore: number;
+  currentScore: number;
+  delta: number;
+  previousDate: string;
+  currentDate: string;
+  severity: 'critical' | 'warning' | 'notable';
+}
+
+interface StaleInvestorItem {
+  investorId: string;
+  investorName: string;
+  tier: number;
+  daysSinceLastMeeting: number | null;
+  acceleration: 'gone_silent' | 'decelerating';
+  signal: string;
+}
+
+interface AtRiskData {
+  scoreReversals: ScoreReversalItem[];
+  staleInvestors: StaleInvestorItem[];
 }
 
 interface HealthData {
@@ -167,6 +193,7 @@ export default function Dashboard() {
   const [activity, setActivity] = useState<ActivityItem[]>([]);
   const [dataQuality, setDataQuality] = useState<DataQualityData | null>(null);
   const [stressTest, setStressTest] = useState<StressTestSummary | null>(null);
+  const [atRisk, setAtRisk] = useState<AtRiskData | null>(null);
   const [loading, setLoading] = useState(true);
   const [seeding, setSeeding] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -176,7 +203,7 @@ export default function Dashboard() {
     if (!silent) setLoading(true);
     else setRefreshing(true);
     try {
-      const [healthRes, pulseRes, docsRes, drRes, tasksRes, actRes, dqRes, stRes] = await Promise.all([
+      const [healthRes, pulseRes, docsRes, drRes, tasksRes, actRes, dqRes, stRes, arRes] = await Promise.all([
         fetch('/api/health'),
         fetch('/api/pulse'),
         fetch('/api/documents'),
@@ -185,6 +212,7 @@ export default function Dashboard() {
         fetch('/api/tasks?type=activity&limit=5'),
         fetch('/api/data-quality'),
         fetch('/api/stress-test'),
+        fetch('/api/at-risk'),
       ]);
       if (healthRes.ok) setData(await healthRes.json());
       if (pulseRes.ok) setPulse(await pulseRes.json());
@@ -194,6 +222,7 @@ export default function Dashboard() {
       if (actRes.ok) setActivity(await actRes.json());
       if (dqRes.ok) setDataQuality(await dqRes.json());
       if (stRes.ok) setStressTest(await stRes.json());
+      if (arRes.ok) setAtRisk(await arRes.json());
       setLastRefresh(new Date());
     } catch {
       if (!silent) toast('Failed to load dashboard data', 'error');
@@ -246,28 +275,39 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="space-y-6">
-        <div className="h-8 w-64 bg-zinc-800 rounded animate-pulse" />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
+        <div>
+          <div className="skeleton" style={{ height: '32px', width: '200px' }} />
+          <div className="skeleton" style={{ height: '16px', width: '280px', marginTop: 'var(--space-2)' }} />
+        </div>
+        <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: 'var(--space-3)' }}>
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-20 bg-zinc-800/50 rounded-xl animate-pulse" />
+            <div key={i} className="skeleton" style={{ height: '88px', borderRadius: 'var(--radius-lg)' }} />
           ))}
         </div>
-        <div className="h-40 bg-zinc-800/50 rounded-xl animate-pulse" />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="h-32 bg-zinc-800/50 rounded-xl animate-pulse" />
-          <div className="h-32 bg-zinc-800/50 rounded-xl animate-pulse" />
+        <div className="skeleton" style={{ height: '140px', borderRadius: 'var(--radius-lg)' }} />
+        <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: 'var(--space-4)' }}>
+          <div className="skeleton" style={{ height: '120px', borderRadius: 'var(--radius-lg)' }} />
+          <div className="skeleton" style={{ height: '120px', borderRadius: 'var(--radius-lg)' }} />
         </div>
       </div>
     );
   }
 
   if (!data) return (
-    <div className="space-y-8">
-      <h1 className="text-2xl font-bold tracking-tight">Series C Dashboard</h1>
-      <div className="border border-red-800/30 bg-red-900/10 rounded-xl p-8 text-center space-y-3">
-        <p className="text-zinc-400">Could not load dashboard data.</p>
-        <button onClick={() => fetchData()} className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm transition-colors">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-8)' }}>
+      <h1 className="page-title">Dashboard</h1>
+      <div
+        className="text-center"
+        style={{
+          border: '1px solid rgba(239,68,68,0.15)',
+          background: 'var(--danger-muted)',
+          borderRadius: 'var(--radius-lg)',
+          padding: 'var(--space-10)',
+        }}
+      >
+        <p style={{ color: 'var(--text-secondary)', marginBottom: 'var(--space-4)' }}>Could not load dashboard data.</p>
+        <button onClick={() => fetchData()} className="btn btn-secondary btn-md">
           Retry
         </button>
       </div>
@@ -281,12 +321,12 @@ export default function Dashboard() {
   const ov = pulse?.overnight;
 
   const funnelStages = [
-    { label: 'Contacted', value: data.funnel.contacted, color: 'bg-zinc-600' },
-    { label: 'Meetings', value: data.funnel.meetings, color: 'bg-blue-600' },
-    { label: 'Engaged', value: data.funnel.engaged, color: 'bg-purple-600' },
-    { label: 'In DD', value: data.funnel.in_dd, color: 'bg-orange-600' },
-    { label: 'Term Sheets', value: data.funnel.term_sheets, color: 'bg-green-600' },
-    { label: 'Closed', value: data.funnel.closed, color: 'bg-emerald-600' },
+    { label: 'Contacted', value: data.funnel.contacted, bg: 'var(--text-tertiary)' },
+    { label: 'Meetings', value: data.funnel.meetings, bg: 'var(--accent)' },
+    { label: 'Engaged', value: data.funnel.engaged, bg: '#9333ea' },
+    { label: 'In DD', value: data.funnel.in_dd, bg: '#ea580c' },
+    { label: 'Term Sheets', value: data.funnel.term_sheets, bg: 'var(--success)' },
+    { label: 'Closed', value: data.funnel.closed, bg: '#059669' },
   ];
 
   return (
@@ -296,33 +336,53 @@ export default function Dashboard() {
       {/* ================================================================ */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Series C Dashboard</h1>
-          <p className="text-zinc-500 text-sm mt-1">
-            Aerospacelab --- Process Orchestrator
+          <h1 className="page-title">Dashboard</h1>
+          <p className="page-subtitle">
+            Series C Process Orchestrator
             {lastRefresh && (
-              <span className="ml-2 text-zinc-600">
-                Last updated {lastRefresh.toLocaleTimeString()}
+              <span style={{ marginLeft: 'var(--space-3)', color: 'var(--text-muted)' }}>
+                Updated {lastRefresh.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </span>
             )}
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center" style={{ gap: 'var(--space-2)' }}>
           <button
             onClick={() => fetchData(true)}
             disabled={refreshing}
-            className="flex items-center gap-1.5 px-3 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-xs transition-colors disabled:opacity-50"
+            className="btn btn-secondary btn-sm"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
             {refreshing ? 'Refreshing...' : 'Refresh'}
           </button>
           <div className="relative group">
-            <button className="flex items-center gap-2 px-3 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-xs transition-colors">
+            <button className="btn btn-secondary btn-sm">
               <Download className="w-3.5 h-3.5" /> Export
             </button>
-            <div className="absolute right-0 mt-1 w-44 bg-zinc-900 border border-zinc-700 rounded-lg shadow-xl py-1 hidden group-hover:block z-10">
+            <div
+              className="absolute right-0 mt-1 py-1 hidden group-hover:block z-10"
+              style={{
+                width: '176px',
+                background: 'var(--surface-2)',
+                border: '1px solid var(--border-default)',
+                borderRadius: 'var(--radius-md)',
+                boxShadow: 'var(--shadow-lg)',
+              }}
+            >
               {['investors', 'meetings', 'tasks', 'pipeline', 'activity'].map(t => (
-                <a key={t} href={`/api/export?type=${t}`} download
-                  className="block px-3 py-2 text-xs text-zinc-400 hover:text-white hover:bg-zinc-800 capitalize">
+                <a
+                  key={t}
+                  href={`/api/export?type=${t}`}
+                  download
+                  className="block capitalize transition-colors"
+                  style={{
+                    padding: 'var(--space-2) var(--space-3)',
+                    fontSize: 'var(--font-size-xs)',
+                    color: 'var(--text-secondary)',
+                  }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-3)'; (e.currentTarget as HTMLElement).style.color = 'var(--text-primary)'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; }}
+                >
                   {t} CSV
                 </a>
               ))}
@@ -335,23 +395,28 @@ export default function Dashboard() {
       {/* EMPTY STATE                                                      */}
       {/* ================================================================ */}
       {data.totalInvestors === 0 && (
-        <div className="border border-zinc-800 rounded-xl p-8 text-center space-y-4">
-          <h2 className="text-lg font-semibold">Initialize Your Fundraise</h2>
-          <p className="text-zinc-500 text-sm max-w-md mx-auto">
+        <div
+          className="text-center"
+          style={{
+            border: '1px solid var(--border-default)',
+            borderRadius: 'var(--radius-xl)',
+            padding: 'var(--space-12) var(--space-8)',
+            background: 'var(--surface-1)',
+          }}
+        >
+          <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 600, color: 'var(--text-primary)' }}>Initialize Your Fundraise</h2>
+          <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', maxWidth: '28rem', margin: 'var(--space-3) auto var(--space-6)' }}>
             Seed the database with ASL Series C investor targets and configuration, or add investors manually.
           </p>
-          <div className="flex gap-3 justify-center">
+          <div className="flex justify-center" style={{ gap: 'var(--space-3)' }}>
             <button
               onClick={seedData}
               disabled={seeding}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+              className="btn btn-primary btn-md disabled:opacity-50"
             >
               {seeding ? 'Seeding...' : 'Seed ASL Data'}
             </button>
-            <Link
-              href="/investors"
-              className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm font-medium transition-colors"
-            >
+            <Link href="/investors" className="btn btn-secondary btn-md">
               Add Manually
             </Link>
           </div>
@@ -398,55 +463,119 @@ export default function Dashboard() {
           {/* ================================================================ */}
           {stressTest && (
             <Link href="/stress-test" className="block group">
-              <div className={`border rounded-xl p-5 transition-colors ${
-                stressTest.healthStatus === 'green'
-                  ? 'border-green-800/40 bg-green-900/5 hover:border-green-700/60'
-                  : stressTest.healthStatus === 'yellow'
-                  ? 'border-yellow-800/40 bg-yellow-900/5 hover:border-yellow-700/60'
-                  : 'border-red-800/40 bg-red-900/5 hover:border-red-700/60'
-              }`}>
+              <div
+                className="rounded-xl p-5 transition-colors"
+                style={{
+                  border: `1px solid ${
+                    stressTest.healthStatus === 'green'
+                      ? 'rgba(34,197,94,0.25)'
+                      : stressTest.healthStatus === 'yellow'
+                      ? 'rgba(245,158,11,0.25)'
+                      : 'rgba(239,68,68,0.25)'
+                  }`,
+                  background: stressTest.healthStatus === 'green'
+                    ? 'rgba(34,197,94,0.03)'
+                    : stressTest.healthStatus === 'yellow'
+                    ? 'rgba(245,158,11,0.03)'
+                    : 'rgba(239,68,68,0.03)',
+                }}
+                onMouseEnter={e => {
+                  const borderColor = stressTest.healthStatus === 'green'
+                    ? 'rgba(34,197,94,0.4)'
+                    : stressTest.healthStatus === 'yellow'
+                    ? 'rgba(245,158,11,0.4)'
+                    : 'rgba(239,68,68,0.4)';
+                  (e.currentTarget as HTMLElement).style.borderColor = borderColor;
+                }}
+                onMouseLeave={e => {
+                  const borderColor = stressTest.healthStatus === 'green'
+                    ? 'rgba(34,197,94,0.25)'
+                    : stressTest.healthStatus === 'yellow'
+                    ? 'rgba(245,158,11,0.25)'
+                    : 'rgba(239,68,68,0.25)';
+                  (e.currentTarget as HTMLElement).style.borderColor = borderColor;
+                }}
+              >
                 <div className="flex items-center justify-between mb-3">
-                  <h2 className="text-sm font-medium text-zinc-400 uppercase flex items-center gap-2">
+                  <h2
+                    className="uppercase flex items-center gap-2"
+                    style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)' }}
+                  >
                     <ShieldAlert className="w-4 h-4" /> Close Forecast
                   </h2>
-                  <span className="text-xs text-blue-400 group-hover:text-blue-300 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <span
+                    className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                    style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}
+                  >
                     Full stress test <ArrowRight className="w-3 h-3" />
                   </span>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div>
-                    <div className="text-[10px] text-zinc-500 uppercase">Target</div>
-                    <div className="text-xl font-bold text-zinc-200 tabular-nums mt-0.5">
+                    <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Target</div>
+                    <div
+                      className="tabular-nums mt-0.5"
+                      style={{ fontSize: 'var(--font-size-xl)', fontWeight: 700, color: 'var(--text-primary)' }}
+                    >
                       EUR {stressTest.target >= 1000 ? `${(stressTest.target / 1000).toFixed(1).replace(/\.0$/, '')}Bn` : `${stressTest.target}M`}
                     </div>
                   </div>
                   <div>
-                    <div className="text-[10px] text-zinc-500 uppercase">Forecast (Base)</div>
-                    <div className={`text-xl font-bold tabular-nums mt-0.5 ${
-                      stressTest.forecast.base >= stressTest.target ? 'text-green-400' : 'text-yellow-400'
-                    }`}>
+                    <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Forecast (Base)</div>
+                    <div
+                      className="tabular-nums mt-0.5"
+                      style={{
+                        fontSize: 'var(--font-size-xl)',
+                        fontWeight: 700,
+                        color: stressTest.forecast.base >= stressTest.target ? 'var(--success)' : 'var(--warning)',
+                      }}
+                    >
                       EUR {stressTest.forecast.base >= 1000 ? `${(stressTest.forecast.base / 1000).toFixed(1).replace(/\.0$/, '')}Bn` : `${Math.round(stressTest.forecast.base)}M`}
                     </div>
                   </div>
                   <div>
-                    <div className="text-[10px] text-zinc-500 uppercase">Probability</div>
-                    <div className={`text-xl font-bold tabular-nums mt-0.5 ${
-                      stressTest.closeProbability >= 60 ? 'text-green-400'
-                      : stressTest.closeProbability >= 30 ? 'text-yellow-400'
-                      : 'text-red-400'
-                    }`}>
+                    <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Probability</div>
+                    <div
+                      className="tabular-nums mt-0.5"
+                      style={{
+                        fontSize: 'var(--font-size-xl)',
+                        fontWeight: 700,
+                        color: stressTest.closeProbability >= 60
+                          ? 'var(--success)'
+                          : stressTest.closeProbability >= 30
+                          ? 'var(--warning)'
+                          : 'var(--danger)',
+                      }}
+                    >
                       {stressTest.closeProbability}%
                     </div>
                   </div>
                   <div>
-                    <div className="text-[10px] text-zinc-500 uppercase">Status</div>
-                    <div className={`text-sm font-semibold mt-1 px-2.5 py-1 rounded-md inline-block ${
-                      stressTest.healthStatus === 'green'
-                        ? 'bg-green-600/20 text-green-400 border border-green-700/30'
-                        : stressTest.healthStatus === 'yellow'
-                        ? 'bg-yellow-600/20 text-yellow-400 border border-yellow-700/30'
-                        : 'bg-red-600/20 text-red-400 border border-red-700/30'
-                    }`}>
+                    <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Status</div>
+                    <div
+                      className="rounded-md inline-block mt-1 px-2.5 py-1"
+                      style={{
+                        fontSize: 'var(--font-size-sm)',
+                        fontWeight: 600,
+                        background: stressTest.healthStatus === 'green'
+                          ? 'var(--success-muted)'
+                          : stressTest.healthStatus === 'yellow'
+                          ? 'var(--warning-muted)'
+                          : 'var(--danger-muted)',
+                        color: stressTest.healthStatus === 'green'
+                          ? 'var(--success)'
+                          : stressTest.healthStatus === 'yellow'
+                          ? 'var(--warning)'
+                          : 'var(--danger)',
+                        border: `1px solid ${
+                          stressTest.healthStatus === 'green'
+                            ? 'rgba(34,197,94,0.2)'
+                            : stressTest.healthStatus === 'yellow'
+                            ? 'rgba(245,158,11,0.2)'
+                            : 'rgba(239,68,68,0.2)'
+                        }`,
+                      }}
+                    >
                       {stressTest.onTrack ? 'On Track' : stressTest.healthStatus === 'red' ? 'Critical' : 'At Risk'}
                     </div>
                   </div>
@@ -456,57 +585,256 @@ export default function Dashboard() {
           )}
 
           {/* ================================================================ */}
+          {/* AT RISK DEALS                                                     */}
+          {/* ================================================================ */}
+          {atRisk && (atRisk.scoreReversals.length > 0 || atRisk.staleInvestors.length > 0) && (
+            <div
+              className="rounded-xl p-5"
+              style={{ border: '1px solid rgba(239,68,68,0.2)', background: 'rgba(239,68,68,0.03)' }}
+            >
+              <div className="flex items-center justify-between mb-3">
+                <h2
+                  className="uppercase flex items-center gap-2"
+                  style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--danger)' }}
+                >
+                  <ShieldAlert className="w-4 h-4" /> At Risk
+                </h2>
+                <span
+                  className="px-2 py-0.5 rounded-md tabular-nums"
+                  style={{
+                    fontSize: '10px',
+                    fontWeight: 600,
+                    background: 'var(--danger-muted)',
+                    color: 'var(--danger)',
+                    border: '1px solid rgba(239,68,68,0.2)',
+                  }}
+                >
+                  {atRisk.scoreReversals.length + atRisk.staleInvestors.length} deal{atRisk.scoreReversals.length + atRisk.staleInvestors.length !== 1 ? 's' : ''}
+                </span>
+              </div>
+
+              <div className="space-y-2">
+                {/* Score Reversals */}
+                {atRisk.scoreReversals.map((rev) => {
+                  const isCritical = rev.severity === 'critical';
+                  const sevLabel = rev.severity === 'critical' ? 'CRITICAL' : rev.severity === 'warning' ? 'WARNING' : 'NOTABLE';
+                  const sevBg = isCritical ? 'var(--danger-muted)' : 'var(--warning-muted)';
+                  const sevColor = isCritical ? 'var(--danger)' : 'var(--warning)';
+                  const sevBorder = isCritical ? 'rgba(239,68,68,0.3)' : 'rgba(245,158,11,0.3)';
+                  return (
+                    <div
+                      key={`rev-${rev.investorId}`}
+                      className="flex items-start gap-3 py-2.5 px-3 rounded-lg transition-colors"
+                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-3)'; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+                    >
+                      <span className="mt-0.5 shrink-0" style={{ color: sevColor }}>
+                        <TrendingDown className="w-4 h-4" />
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-0.5">
+                          <Link
+                            href={`/investors/${rev.investorId}`}
+                            className="transition-colors truncate"
+                            style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500 }}
+                            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
+                            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = ''; }}
+                          >
+                            {rev.investorName}
+                          </Link>
+                          <span
+                            className="px-1.5 py-0.5 rounded shrink-0"
+                            style={{
+                              fontSize: '9px',
+                              background: sevBg,
+                              color: sevColor,
+                              border: `1px solid ${sevBorder}`,
+                            }}
+                          >
+                            {sevLabel}
+                          </span>
+                        </div>
+                        <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
+                          Score dropped{' '}
+                          <span className="tabular-nums" style={{ fontWeight: 600, color: 'var(--danger)' }}>
+                            {rev.previousScore} {'\u2192'} {rev.currentScore}
+                          </span>
+                          <span style={{ color: 'var(--danger)', marginLeft: '4px' }}>({rev.delta})</span>
+                        </p>
+                      </div>
+                      <Link
+                        href={`/investors/${rev.investorId}`}
+                        className="shrink-0 px-3 py-1.5 rounded-md transition-colors flex items-center gap-1"
+                        style={{
+                          fontSize: '10px',
+                          fontWeight: 500,
+                          background: 'var(--danger-muted)',
+                          color: 'var(--danger)',
+                          border: '1px solid rgba(239,68,68,0.2)',
+                        }}
+                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(239,68,68,0.2)'; }}
+                        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--danger-muted)'; }}
+                      >
+                        Schedule follow-up <ChevronRight className="w-3 h-3" />
+                      </Link>
+                    </div>
+                  );
+                })}
+
+                {/* Stale T1/T2 Investors */}
+                {atRisk.staleInvestors.map((inv) => {
+                  const isSilent = inv.acceleration === 'gone_silent';
+                  return (
+                    <div
+                      key={`stale-${inv.investorId}`}
+                      className="flex items-start gap-3 py-2.5 px-3 rounded-lg transition-colors"
+                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-3)'; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+                    >
+                      <span className="mt-0.5 shrink-0" style={{ color: isSilent ? 'var(--danger)' : 'var(--warning)' }}>
+                        {isSilent ? <UserMinus className="w-4 h-4" /> : <CalendarClock className="w-4 h-4" />}
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-0.5">
+                          <Link
+                            href={`/investors/${inv.investorId}`}
+                            className="transition-colors truncate"
+                            style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500 }}
+                            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
+                            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = ''; }}
+                          >
+                            {inv.investorName}
+                          </Link>
+                          <span style={{ fontSize: '9px', color: inv.tier === 1 ? '#fbbf24' : 'var(--text-muted)' }}>T{inv.tier}</span>
+                          <span
+                            className="px-1.5 py-0.5 rounded shrink-0"
+                            style={{
+                              fontSize: '9px',
+                              background: isSilent ? 'var(--danger-muted)' : 'var(--warning-muted)',
+                              color: isSilent ? 'var(--danger)' : 'var(--warning)',
+                              border: `1px solid ${isSilent ? 'rgba(239,68,68,0.3)' : 'rgba(245,158,11,0.3)'}`,
+                            }}
+                          >
+                            {isSilent ? 'SILENT' : 'SLOWING'}
+                          </span>
+                        </div>
+                        <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
+                          {inv.daysSinceLastMeeting !== null
+                            ? `No contact in ${inv.daysSinceLastMeeting} days`
+                            : inv.signal}
+                        </p>
+                      </div>
+                      <Link
+                        href={`/investors/${inv.investorId}`}
+                        className="shrink-0 px-3 py-1.5 rounded-md transition-colors flex items-center gap-1"
+                        style={{
+                          fontSize: '10px',
+                          fontWeight: 500,
+                          background: isSilent ? 'var(--danger-muted)' : 'var(--warning-muted)',
+                          color: isSilent ? 'var(--danger)' : 'var(--warning)',
+                          border: `1px solid ${isSilent ? 'rgba(239,68,68,0.2)' : 'rgba(245,158,11,0.2)'}`,
+                        }}
+                        onMouseEnter={e => {
+                          (e.currentTarget as HTMLElement).style.background = isSilent ? 'rgba(239,68,68,0.2)' : 'rgba(245,158,11,0.2)';
+                        }}
+                        onMouseLeave={e => {
+                          (e.currentTarget as HTMLElement).style.background = isSilent ? 'var(--danger-muted)' : 'var(--warning-muted)';
+                        }}
+                      >
+                        Schedule follow-up <ChevronRight className="w-3 h-3" />
+                      </Link>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* ================================================================ */}
           {/* TOP FOCUS TODAY                                                   */}
           {/* ================================================================ */}
           {cp && cp.topFocus.length > 0 && (
-            <div className="border border-blue-800/30 bg-blue-900/5 rounded-xl p-5">
+            <div
+              className="rounded-xl p-5"
+              style={{ border: '1px solid rgba(59,130,246,0.2)', background: 'rgba(59,130,246,0.03)' }}
+            >
               <div className="flex items-center justify-between mb-3">
-                <h2 className="text-sm font-medium text-blue-400 uppercase flex items-center gap-2">
+                <h2
+                  className="uppercase flex items-center gap-2"
+                  style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--accent)' }}
+                >
                   <Target className="w-4 h-4" /> Top Focus Today
                 </h2>
-                <Link href="/focus" className="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1">
+                <Link
+                  href="/focus"
+                  className="flex items-center gap-1"
+                  style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#60a5fa'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
+                >
                   Full priority queue <ArrowRight className="w-3 h-3" />
                 </Link>
               </div>
               <div className="space-y-2">
                 {cp.topFocus.map((item, i) => {
-                  const scoreColor = item.focusScore >= 70 ? 'text-green-400' : item.focusScore >= 50 ? 'text-yellow-400' : 'text-red-400';
-                  const tierColor = item.tier === 1 ? 'text-amber-400' : 'text-zinc-500';
+                  const scoreColor = item.focusScore >= 70 ? 'var(--success)' : item.focusScore >= 50 ? 'var(--warning)' : 'var(--danger)';
+                  const tierColor = item.tier === 1 ? '#fbbf24' : 'var(--text-muted)';
                   const MomentumIcon = item.momentum === 'accelerating' ? TrendingUp
                     : item.momentum === 'decelerating' ? TrendingDown
                     : item.momentum === 'stalled' ? ArrowDownRight
                     : Minus;
-                  const momentumColor = item.momentum === 'accelerating' ? 'text-green-400'
-                    : item.momentum === 'decelerating' ? 'text-orange-400'
-                    : item.momentum === 'stalled' ? 'text-red-400'
-                    : 'text-zinc-500';
+                  const momentumColor = item.momentum === 'accelerating' ? 'var(--success)'
+                    : item.momentum === 'decelerating' ? '#f97316'
+                    : item.momentum === 'stalled' ? 'var(--danger)'
+                    : 'var(--text-muted)';
                   return (
-                    <div key={item.investorId} className="flex items-center gap-3 py-2 px-3 rounded-lg hover:bg-zinc-800/50 transition-colors">
-                      <span className={`w-6 h-6 rounded flex items-center justify-center text-xs font-bold ${
-                        i === 0 ? 'bg-blue-600 text-white' : 'bg-zinc-800 text-zinc-400'
-                      }`}>{i + 1}</span>
+                    <div
+                      key={item.investorId}
+                      className="flex items-center gap-3 py-2 px-3 rounded-lg transition-colors"
+                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-3)'; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+                    >
+                      <span
+                        className="w-6 h-6 rounded flex items-center justify-center"
+                        style={{
+                          fontSize: 'var(--font-size-xs)',
+                          fontWeight: 700,
+                          background: i === 0 ? 'var(--accent)' : 'var(--surface-3)',
+                          color: i === 0 ? 'var(--text-primary)' : 'var(--text-secondary)',
+                        }}
+                      >{i + 1}</span>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <Link href={`/investors/${item.investorId}`} className="text-sm font-medium hover:text-blue-400 transition-colors truncate">
+                          <Link
+                            href={`/investors/${item.investorId}`}
+                            className="truncate transition-colors"
+                            style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500 }}
+                            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
+                            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = ''; }}
+                          >
                             {item.investorName}
                           </Link>
-                          <span className={`text-[9px] ${tierColor}`}>T{item.tier}</span>
-                          <MomentumIcon className={`w-3.5 h-3.5 ${momentumColor}`} />
+                          <span style={{ fontSize: '9px', color: tierColor }}>T{item.tier}</span>
+                          <MomentumIcon className="w-3.5 h-3.5" style={{ color: momentumColor }} />
                         </div>
-                        <p className="text-xs text-zinc-400 truncate mt-0.5">{item.recommendedAction}</p>
+                        <p className="truncate mt-0.5" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>{item.recommendedAction}</p>
                         {item.trajectoryNote && (
-                          <p className={`text-[10px] mt-0.5 ${
-                            item.trajectoryNote.includes('Accelerating') ? 'text-green-400' : 'text-orange-400'
-                          }`}>
+                          <p
+                            className="mt-0.5"
+                            style={{
+                              fontSize: '10px',
+                              color: item.trajectoryNote.includes('Accelerating') ? 'var(--success)' : '#f97316',
+                            }}
+                          >
                             {item.trajectoryNote}
                           </p>
                         )}
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
-                        <span className="text-[10px] text-zinc-500 flex items-center gap-1">
+                        <span className="flex items-center gap-1" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
                           <Timer className="w-3 h-3" /> {item.timeEstimate}
                         </span>
-                        <span className={`text-sm font-bold tabular-nums ${scoreColor}`}>{item.focusScore}</span>
+                        <span className="tabular-nums" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 700, color: scoreColor }}>{item.focusScore}</span>
                       </div>
                     </div>
                   );
@@ -520,26 +848,29 @@ export default function Dashboard() {
           {/* ================================================================ */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Overnight Activity */}
-            <div className="border border-zinc-800 rounded-xl p-5">
-              <h2 className="text-sm font-medium text-zinc-400 uppercase flex items-center gap-2 mb-3">
+            <div className="rounded-xl p-5" style={{ border: '1px solid var(--border-default)' }}>
+              <h2
+                className="uppercase flex items-center gap-2 mb-3"
+                style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)' }}
+              >
                 <Clock className="w-4 h-4" /> Last 24 Hours
               </h2>
               {ov ? (
                 <div className="space-y-2.5">
                   {ov.activityFeed.map((item, i) => (
                     <div key={i} className="flex items-start gap-2.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 shrink-0" />
-                      <span className="text-sm text-zinc-300">{item}</span>
+                      <span className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0" style={{ background: 'var(--accent)' }} />
+                      <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)' }}>{item}</span>
                     </div>
                   ))}
                   {ov.statusChanges.length > 0 && (
-                    <div className="mt-3 pt-3 border-t border-zinc-800/50">
-                      <div className="text-[10px] text-zinc-500 uppercase mb-1.5">Stage Movements</div>
+                    <div className="mt-3 pt-3" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                      <div className="mb-1.5" style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Stage Movements</div>
                       {ov.statusChanges.slice(0, 3).map((sc, i) => (
                         <div key={i} className="flex items-center gap-2 py-1">
-                          <ArrowUpRight className="w-3 h-3 text-green-400 shrink-0" />
-                          <span className="text-xs text-zinc-400">
-                            <span className="text-zinc-200 font-medium">{sc.investorName}</span>
+                          <ArrowUpRight className="w-3 h-3 shrink-0" style={{ color: 'var(--success)' }} />
+                          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
+                            <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{sc.investorName}</span>
                             {' '}{sc.from !== 'unknown' ? `${formatStage(sc.from)} \u2192 ` : ''}{formatStage(sc.to)}
                           </span>
                         </div>
@@ -547,20 +878,23 @@ export default function Dashboard() {
                     </div>
                   )}
                   {ov.meetingNames.length > 0 && (
-                    <div className="mt-2 pt-2 border-t border-zinc-800/50">
-                      <div className="text-[10px] text-zinc-500 uppercase mb-1">Meetings Logged</div>
-                      <div className="text-xs text-zinc-400">{ov.meetingNames.join(', ')}</div>
+                    <div className="mt-2 pt-2" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                      <div className="mb-1" style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Meetings Logged</div>
+                      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>{ov.meetingNames.join(', ')}</div>
                     </div>
                   )}
                 </div>
               ) : (
-                <p className="text-sm text-zinc-600">Loading overnight data...</p>
+                <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>Loading overnight data...</p>
               )}
             </div>
 
             {/* Conviction Radar */}
-            <div className="border border-zinc-800 rounded-xl p-5">
-              <h2 className="text-sm font-medium text-zinc-400 uppercase flex items-center gap-2 mb-3">
+            <div className="rounded-xl p-5" style={{ border: '1px solid var(--border-default)' }}>
+              <h2
+                className="uppercase flex items-center gap-2 mb-3"
+                style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)' }}
+              >
                 <Activity className="w-4 h-4" /> Conviction Radar
               </h2>
               {cv ? (
@@ -568,54 +902,62 @@ export default function Dashboard() {
                   {/* Avg enthusiasm */}
                   <div className="flex items-center gap-4">
                     <div>
-                      <div className="text-2xl font-bold tabular-nums">{cv.avgEnthusiasm.toFixed(1)}<span className="text-sm text-zinc-500 font-normal">/5</span></div>
-                      <div className="text-[10px] text-zinc-500">Avg Enthusiasm</div>
+                      <div className="tabular-nums" style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 700 }}>
+                        {cv.avgEnthusiasm.toFixed(1)}
+                        <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', fontWeight: 400 }}>/5</span>
+                      </div>
+                      <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Avg Enthusiasm</div>
                     </div>
                   </div>
 
                   {/* Momentum distribution bar */}
                   <div>
-                    <div className="text-[10px] text-zinc-500 uppercase mb-1.5">Momentum Distribution</div>
+                    <div className="mb-1.5" style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Momentum Distribution</div>
                     <div className="flex gap-0.5 h-6 rounded-md overflow-hidden">
                       {cv.accelerating > 0 && (
                         <MomentumBar count={cv.accelerating} total={cv.accelerating + cv.steady + cv.decelerating + cv.stalled}
-                          color="bg-green-500" label="Accelerating" />
+                          bg="var(--success)" label="Accelerating" />
                       )}
                       {cv.steady > 0 && (
                         <MomentumBar count={cv.steady} total={cv.accelerating + cv.steady + cv.decelerating + cv.stalled}
-                          color="bg-blue-500" label="Steady" />
+                          bg="var(--accent)" label="Steady" />
                       )}
                       {cv.decelerating > 0 && (
                         <MomentumBar count={cv.decelerating} total={cv.accelerating + cv.steady + cv.decelerating + cv.stalled}
-                          color="bg-orange-500" label="Decelerating" />
+                          bg="#f97316" label="Decelerating" />
                       )}
                       {cv.stalled > 0 && (
                         <MomentumBar count={cv.stalled} total={cv.accelerating + cv.steady + cv.decelerating + cv.stalled}
-                          color="bg-red-500" label="Stalled" />
+                          bg="var(--danger)" label="Stalled" />
                       )}
                     </div>
                     <div className="flex gap-3 mt-1.5 flex-wrap">
-                      {cv.accelerating > 0 && <MomentumLabel count={cv.accelerating} label="Accelerating" color="text-green-400" />}
-                      {cv.steady > 0 && <MomentumLabel count={cv.steady} label="Steady" color="text-blue-400" />}
-                      {cv.decelerating > 0 && <MomentumLabel count={cv.decelerating} label="Decelerating" color="text-orange-400" />}
-                      {cv.stalled > 0 && <MomentumLabel count={cv.stalled} label="Stalled" color="text-red-400" />}
+                      {cv.accelerating > 0 && <MomentumLabel count={cv.accelerating} label="Accelerating" color="var(--success)" />}
+                      {cv.steady > 0 && <MomentumLabel count={cv.steady} label="Steady" color="var(--accent)" />}
+                      {cv.decelerating > 0 && <MomentumLabel count={cv.decelerating} label="Decelerating" color="#f97316" />}
+                      {cv.stalled > 0 && <MomentumLabel count={cv.stalled} label="Stalled" color="var(--danger)" />}
                     </div>
                   </div>
 
                   {/* Alerts */}
                   {cv.alerts.length > 0 && (
-                    <div className="mt-2 pt-2 border-t border-zinc-800/50">
-                      <div className="text-[10px] text-red-400 uppercase mb-1.5 flex items-center gap-1">
+                    <div className="mt-2 pt-2" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                      <div className="mb-1.5 flex items-center gap-1" style={{ fontSize: '10px', color: 'var(--danger)', textTransform: 'uppercase' }}>
                         <AlertTriangle className="w-3 h-3" /> Enthusiasm Drops
                       </div>
                       {cv.alerts.map((alert, i) => (
                         <div key={i} className="flex items-center justify-between py-1">
-                          <Link href={`/investors/${alert.investorId}`} className="text-xs text-zinc-300 hover:text-blue-400">
+                          <Link
+                            href={`/investors/${alert.investorId}`}
+                            style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)' }}
+                            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
+                            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-primary)'; }}
+                          >
                             {alert.investorName}
                           </Link>
-                          <span className="text-xs text-red-400 font-medium tabular-nums">
+                          <span className="tabular-nums" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)', fontWeight: 500 }}>
                             {alert.previousScore} {'\u2192'} {alert.currentScore}
-                            <span className="text-red-500 ml-1">(-{alert.drop})</span>
+                            <span style={{ color: 'var(--danger)', marginLeft: '4px' }}>(-{alert.drop})</span>
                           </span>
                         </div>
                       ))}
@@ -623,7 +965,7 @@ export default function Dashboard() {
                   )}
                 </div>
               ) : (
-                <p className="text-sm text-zinc-600">Loading conviction data...</p>
+                <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>Loading conviction data...</p>
               )}
             </div>
           </div>
@@ -632,41 +974,81 @@ export default function Dashboard() {
           {/* ACCELERATION ALERTS                                              */}
           {/* ================================================================ */}
           {cp && cp.topAccelerations.length > 0 && (
-            <div className="border border-amber-800/30 bg-amber-900/5 rounded-xl p-5">
+            <div
+              className="rounded-xl p-5"
+              style={{ border: '1px solid rgba(245,158,11,0.2)', background: 'rgba(245,158,11,0.03)' }}
+            >
               <div className="flex items-center justify-between mb-3">
-                <h2 className="text-sm font-medium text-amber-400 uppercase flex items-center gap-2">
+                <h2
+                  className="uppercase flex items-center gap-2"
+                  style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--warning)' }}
+                >
                   <Zap className="w-4 h-4" /> Acceleration Alerts
                 </h2>
-                <Link href="/acceleration" className="text-xs text-amber-400 hover:text-amber-300 flex items-center gap-1">
+                <Link
+                  href="/acceleration"
+                  className="flex items-center gap-1"
+                  style={{ fontSize: 'var(--font-size-xs)', color: 'var(--warning)' }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#fbbf24'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--warning)'; }}
+                >
                   All actions <ArrowRight className="w-3 h-3" />
                 </Link>
               </div>
               <div className="space-y-2">
                 {cp.topAccelerations.map((accel) => {
-                  const urgencyColor = accel.urgency === 'immediate'
-                    ? 'bg-red-500/20 text-red-400 border-red-800'
+                  const urgencyStyles = accel.urgency === 'immediate'
+                    ? { background: 'var(--danger-muted)', color: 'var(--danger)', borderColor: 'rgba(239,68,68,0.3)' }
                     : accel.urgency === '48h'
-                    ? 'bg-orange-500/20 text-orange-400 border-orange-800'
-                    : 'bg-yellow-500/20 text-yellow-400 border-yellow-800';
+                    ? { background: 'rgba(249,115,22,0.12)', color: '#f97316', borderColor: 'rgba(249,115,22,0.3)' }
+                    : { background: 'var(--warning-muted)', color: 'var(--warning)', borderColor: 'rgba(245,158,11,0.3)' };
                   const triggerLabel = accel.triggerType.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
                   return (
-                    <div key={accel.id} className="flex items-start gap-3 py-2.5 px-3 rounded-lg hover:bg-zinc-800/50 transition-colors">
-                      <Zap className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                    <div
+                      key={accel.id}
+                      className="flex items-start gap-3 py-2.5 px-3 rounded-lg transition-colors"
+                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-3)'; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+                    >
+                      <Zap className="w-4 h-4 shrink-0 mt-0.5" style={{ color: 'var(--warning)' }} />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-0.5">
-                          <Link href={`/investors/${accel.investorId}`} className="text-sm font-medium hover:text-blue-400 transition-colors">
+                          <Link
+                            href={`/investors/${accel.investorId}`}
+                            className="transition-colors"
+                            style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500 }}
+                            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
+                            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = ''; }}
+                          >
                             {accel.investorName}
                           </Link>
-                          <span className={`text-[9px] px-1.5 py-0.5 rounded border ${urgencyColor}`}>
+                          <span
+                            className="px-1.5 py-0.5 rounded"
+                            style={{
+                              fontSize: '9px',
+                              background: urgencyStyles.background,
+                              color: urgencyStyles.color,
+                              border: `1px solid ${urgencyStyles.borderColor}`,
+                            }}
+                          >
                             {accel.urgency === 'immediate' ? 'NOW' : accel.urgency.toUpperCase()}
                           </span>
-                          <span className="text-[9px] text-zinc-600">{triggerLabel}</span>
+                          <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>{triggerLabel}</span>
                         </div>
-                        <p className="text-xs text-zinc-400 leading-relaxed">{accel.description}</p>
+                        <p className="leading-relaxed" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>{accel.description}</p>
                       </div>
                       <button
                         onClick={() => executeAcceleration(accel.id)}
-                        className="shrink-0 px-3 py-1.5 text-[10px] font-medium bg-amber-600/20 hover:bg-amber-600/40 text-amber-300 rounded-md border border-amber-700/30 transition-colors flex items-center gap-1"
+                        className="shrink-0 px-3 py-1.5 rounded-md transition-colors flex items-center gap-1"
+                        style={{
+                          fontSize: '10px',
+                          fontWeight: 500,
+                          background: 'rgba(245,158,11,0.12)',
+                          color: '#fbbf24',
+                          border: '1px solid rgba(245,158,11,0.2)',
+                        }}
+                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(245,158,11,0.25)'; }}
+                        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(245,158,11,0.12)'; }}
                       >
                         Execute <ChevronRight className="w-3 h-3" />
                       </button>
@@ -680,10 +1062,16 @@ export default function Dashboard() {
           {/* ================================================================ */}
           {/* PIPELINE FUNNEL (compact)                                        */}
           {/* ================================================================ */}
-          <div className="border border-zinc-800 rounded-xl p-5">
+          <div className="rounded-xl p-5" style={{ border: '1px solid var(--border-default)' }}>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-sm font-medium text-zinc-400 uppercase">Pipeline</h2>
-              <Link href="/pipeline" className="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1">
+              <h2 className="uppercase" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)' }}>Pipeline</h2>
+              <Link
+                href="/pipeline"
+                className="flex items-center gap-1"
+                style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#60a5fa'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
+              >
                 Pipeline view <Columns3 className="w-3 h-3" />
               </Link>
             </div>
@@ -692,18 +1080,27 @@ export default function Dashboard() {
                 const widthPct = Math.max(100 - (i * 13), 25);
                 return (
                   <div key={stage.label} className="w-full flex items-center justify-center" style={{ maxWidth: `${widthPct}%` }}>
-                    <div className={`${stage.color} w-full rounded-md h-9 flex items-center justify-between px-4 transition-all duration-500`}>
-                      <span className="text-xs font-medium text-white/90">{stage.label}</span>
-                      <span className="text-sm font-bold">{stage.value}</span>
+                    <div
+                      className="w-full rounded-md h-9 flex items-center justify-between px-4 transition-all duration-500"
+                      style={{ background: stage.bg }}
+                    >
+                      <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'rgba(255,255,255,0.9)' }}>{stage.label}</span>
+                      <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 700, color: 'var(--text-primary)' }}>{stage.value}</span>
                     </div>
                   </div>
                 );
               })}
               {data.funnel.passed > 0 && (
-                <div className="w-full flex items-center justify-center mt-2 pt-2 border-t border-zinc-800" style={{ maxWidth: '50%' }}>
-                  <div className="bg-red-600/30 border border-red-800 w-full rounded-md h-7 flex items-center justify-between px-4">
-                    <span className="text-xs text-red-400">Passed</span>
-                    <span className="text-sm font-bold text-red-400">{data.funnel.passed}</span>
+                <div className="w-full flex items-center justify-center mt-2 pt-2" style={{ maxWidth: '50%', borderTop: '1px solid var(--border-default)' }}>
+                  <div
+                    className="w-full rounded-md h-7 flex items-center justify-between px-4"
+                    style={{
+                      background: 'var(--danger-muted)',
+                      border: '1px solid rgba(239,68,68,0.3)',
+                    }}
+                  >
+                    <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)' }}>Passed</span>
+                    <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 700, color: 'var(--danger)' }}>{data.funnel.passed}</span>
                   </div>
                 </div>
               )}
@@ -714,41 +1111,65 @@ export default function Dashboard() {
           {/* DELIVERABLES QUICK ACCESS                                        */}
           {/* ================================================================ */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            <Link href="/workspace" className="group border border-zinc-800 hover:border-blue-600/40 rounded-xl p-4 transition-colors">
-              <Sparkles className="w-5 h-5 text-blue-400 mb-2" />
-              <div className="text-sm font-medium">Workspace</div>
-              <div className="text-xs text-zinc-500 mt-1">
+            <Link
+              href="/workspace"
+              className="group rounded-xl p-4 transition-colors"
+              style={{ border: '1px solid var(--border-default)' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(59,130,246,0.3)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
+            >
+              <Sparkles className="w-5 h-5 mb-2" style={{ color: 'var(--accent)' }} />
+              <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500 }}>Workspace</div>
+              <div className="mt-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
                 {docs.length > 0 ? `${docs.length} document${docs.length !== 1 ? 's' : ''}` : 'Create deliverables'}
               </div>
-              <div className="text-xs text-blue-400 mt-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="mt-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}>
                 Open <ArrowRight className="w-3 h-3" />
               </div>
             </Link>
-            <Link href="/data-room" className="group border border-zinc-800 hover:border-blue-600/40 rounded-xl p-4 transition-colors">
-              <FolderOpen className="w-5 h-5 text-purple-400 mb-2" />
-              <div className="text-sm font-medium">Data Room</div>
-              <div className="text-xs text-zinc-500 mt-1">
+            <Link
+              href="/data-room"
+              className="group rounded-xl p-4 transition-colors"
+              style={{ border: '1px solid var(--border-default)' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(59,130,246,0.3)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
+            >
+              <FolderOpen className="w-5 h-5 mb-2" style={{ color: '#a855f7' }} />
+              <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500 }}>Data Room</div>
+              <div className="mt-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
                 {dataRoomCount > 0 ? `${dataRoomCount} file${dataRoomCount !== 1 ? 's' : ''} uploaded` : 'Upload source materials'}
               </div>
-              <div className="text-xs text-blue-400 mt-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="mt-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}>
                 Open <ArrowRight className="w-3 h-3" />
               </div>
             </Link>
-            <Link href="/model" className="group border border-zinc-800 hover:border-blue-600/40 rounded-xl p-4 transition-colors">
-              <Table className="w-5 h-5 text-green-400 mb-2" />
-              <div className="text-sm font-medium">Financial Model</div>
-              <div className="text-xs text-zinc-500 mt-1">Build & refine with AI</div>
-              <div className="text-xs text-blue-400 mt-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            <Link
+              href="/model"
+              className="group rounded-xl p-4 transition-colors"
+              style={{ border: '1px solid var(--border-default)' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(59,130,246,0.3)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
+            >
+              <Table className="w-5 h-5 mb-2" style={{ color: 'var(--success)' }} />
+              <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500 }}>Financial Model</div>
+              <div className="mt-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Build & refine with AI</div>
+              <div className="mt-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}>
                 Open <ArrowRight className="w-3 h-3" />
               </div>
             </Link>
-            <Link href="/documents" className="group border border-zinc-800 hover:border-blue-600/40 rounded-xl p-4 transition-colors">
-              <FileText className="w-5 h-5 text-orange-400 mb-2" />
-              <div className="text-sm font-medium">Documents</div>
-              <div className="text-xs text-zinc-500 mt-1">
+            <Link
+              href="/documents"
+              className="group rounded-xl p-4 transition-colors"
+              style={{ border: '1px solid var(--border-default)' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(59,130,246,0.3)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
+            >
+              <FileText className="w-5 h-5 mb-2" style={{ color: '#f97316' }} />
+              <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500 }}>Documents</div>
+              <div className="mt-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
                 {docs.length > 0 ? `${docs.filter(d => d.status === 'draft').length} drafts` : 'Version history'}
               </div>
-              <div className="text-xs text-blue-400 mt-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="mt-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}>
                 Open <ArrowRight className="w-3 h-3" />
               </div>
             </Link>
@@ -758,12 +1179,21 @@ export default function Dashboard() {
           {/* DATA QUALITY (compact)                                           */}
           {/* ================================================================ */}
           {dataQuality && (
-            <div className="border border-zinc-800 rounded-xl p-5">
+            <div className="rounded-xl p-5" style={{ border: '1px solid var(--border-default)' }}>
               <div className="flex items-center justify-between mb-3">
-                <h2 className="text-sm font-medium text-zinc-400 uppercase flex items-center gap-2">
+                <h2
+                  className="uppercase flex items-center gap-2"
+                  style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)' }}
+                >
                   <ShieldCheck className="w-4 h-4" /> Data Quality
                 </h2>
-                <Link href="/investors" className="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1">
+                <Link
+                  href="/investors"
+                  className="flex items-center gap-1"
+                  style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#60a5fa'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
+                >
                   Fix gaps <ArrowRight className="w-3 h-3" />
                 </Link>
               </div>
@@ -771,55 +1201,62 @@ export default function Dashboard() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                 <div className="space-y-2">
                   <div>
-                    <div className="text-xs text-zinc-500 mb-1">Overall Completeness</div>
-                    <div className={`text-2xl font-bold tabular-nums ${
-                      dataQuality.overallCompleteness >= 80 ? 'text-emerald-400' :
-                      dataQuality.overallCompleteness >= 50 ? 'text-yellow-400' : 'text-red-400'
-                    }`}>{dataQuality.overallCompleteness}%</div>
+                    <div className="mb-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Overall Completeness</div>
+                    <div
+                      className="tabular-nums"
+                      style={{
+                        fontSize: 'var(--font-size-2xl)',
+                        fontWeight: 700,
+                        color: dataQuality.overallCompleteness >= 80 ? 'var(--success)'
+                          : dataQuality.overallCompleteness >= 50 ? 'var(--warning)' : 'var(--danger)',
+                      }}
+                    >{dataQuality.overallCompleteness}%</div>
                   </div>
                   <div>
-                    <div className="text-xs text-zinc-500 mb-1">Intelligence Readiness</div>
+                    <div className="mb-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Intelligence Readiness</div>
                     <div className="flex items-center gap-2">
-                      <div className="flex-1 h-2 bg-zinc-800 rounded-full overflow-hidden">
+                      <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ background: 'var(--surface-3)' }}>
                         <div
-                          className={`h-full rounded-full transition-all duration-500 ${
-                            dataQuality.intelligenceReadiness >= 80 ? 'bg-emerald-500' :
-                            dataQuality.intelligenceReadiness >= 50 ? 'bg-yellow-500' : 'bg-red-500'
-                          }`}
-                          style={{ width: `${dataQuality.intelligenceReadiness}%` }}
+                          className="h-full rounded-full transition-all duration-500"
+                          style={{
+                            width: `${dataQuality.intelligenceReadiness}%`,
+                            background: dataQuality.intelligenceReadiness >= 80 ? 'var(--success)'
+                              : dataQuality.intelligenceReadiness >= 50 ? 'var(--warning)' : 'var(--danger)',
+                          }}
                         />
                       </div>
-                      <span className="text-xs font-medium text-zinc-400 tabular-nums">{dataQuality.intelligenceReadiness}%</span>
+                      <span className="tabular-nums" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-secondary)' }}>{dataQuality.intelligenceReadiness}%</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="space-y-1.5">
-                  <div className="text-xs text-zinc-500 mb-1">Field Coverage</div>
+                  <div className="mb-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Field Coverage</div>
                   {dataQuality.fieldCompleteness
                     .filter(f => f.field !== 'name' && f.field !== 'type' && f.field !== 'tier' && f.field !== 'status')
                     .map(f => (
                     <div key={f.field} className="flex items-center gap-2">
-                      <span className="text-[10px] text-zinc-500 w-20 truncate">{f.field.replace(/_/g, ' ')}</span>
-                      <div className="flex-1 h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+                      <span className="w-20 truncate" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{f.field.replace(/_/g, ' ')}</span>
+                      <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--surface-3)' }}>
                         <div
-                          className={`h-full rounded-full ${
-                            f.pct >= 80 ? 'bg-emerald-500' : f.pct >= 50 ? 'bg-yellow-500' : 'bg-red-500'
-                          }`}
-                          style={{ width: `${f.pct}%` }}
+                          className="h-full rounded-full"
+                          style={{
+                            width: `${f.pct}%`,
+                            background: f.pct >= 80 ? 'var(--success)' : f.pct >= 50 ? 'var(--warning)' : 'var(--danger)',
+                          }}
                         />
                       </div>
-                      <span className="text-[10px] text-zinc-600 tabular-nums w-8 text-right">{f.pct}%</span>
+                      <span className="tabular-nums w-8 text-right" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{f.pct}%</span>
                     </div>
                   ))}
                 </div>
 
                 <div className="space-y-1.5">
-                  <div className="text-xs text-zinc-500 mb-1">Recommendations</div>
+                  <div className="mb-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Recommendations</div>
                   {dataQuality.recommendations.slice(0, 3).map((rec, i) => (
                     <div key={i} className="flex items-start gap-1.5">
-                      <span className="w-1 h-1 rounded-full bg-blue-500 mt-1.5 shrink-0" />
-                      <span className="text-[11px] text-zinc-400 leading-snug">{rec}</span>
+                      <span className="w-1 h-1 rounded-full mt-1.5 shrink-0" style={{ background: 'var(--accent)' }} />
+                      <span className="leading-snug" style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{rec}</span>
                     </div>
                   ))}
                 </div>
@@ -831,32 +1268,46 @@ export default function Dashboard() {
           {/* UPCOMING TASKS + RECENT ACTIVITY                                 */}
           {/* ================================================================ */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="border border-zinc-800 rounded-xl p-5">
+            <div className="rounded-xl p-5" style={{ border: '1px solid var(--border-default)' }}>
               <div className="flex items-center justify-between mb-3">
-                <h2 className="text-sm font-medium text-zinc-400 uppercase flex items-center gap-2">
+                <h2
+                  className="uppercase flex items-center gap-2"
+                  style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)' }}
+                >
                   <ClipboardList className="w-4 h-4" /> Upcoming Tasks
                 </h2>
-                <Link href="/timeline" className="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1">
+                <Link
+                  href="/timeline"
+                  className="flex items-center gap-1"
+                  style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#60a5fa'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
+                >
                   All tasks <ArrowRight className="w-3 h-3" />
                 </Link>
               </div>
               {tasks.length === 0 ? (
-                <p className="text-sm text-zinc-600">No upcoming tasks</p>
+                <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>No upcoming tasks</p>
               ) : (
                 <div className="space-y-2">
                   {tasks.map(t => {
                     const overdue = t.due_date && new Date(t.due_date) < new Date();
-                    const prioColor = { critical: 'text-red-400', high: 'text-orange-400', medium: 'text-yellow-400', low: 'text-zinc-500' }[t.priority] || 'text-zinc-500';
+                    const prioColor = { critical: 'var(--danger)', high: '#f97316', medium: 'var(--warning)', low: 'var(--text-muted)' }[t.priority] || 'var(--text-muted)';
                     return (
-                      <div key={t.id} className="flex items-center justify-between py-1.5 px-2 rounded hover:bg-zinc-800/50">
+                      <div
+                        key={t.id}
+                        className="flex items-center justify-between py-1.5 px-2 rounded"
+                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-3)'; }}
+                        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+                      >
                         <div className="min-w-0">
-                          <div className="text-sm truncate">{t.title}</div>
-                          {t.investor_name && <div className="text-xs text-zinc-600 truncate">{t.investor_name}</div>}
+                          <div className="truncate" style={{ fontSize: 'var(--font-size-sm)' }}>{t.title}</div>
+                          {t.investor_name && <div className="truncate" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{t.investor_name}</div>}
                         </div>
                         <div className="flex items-center gap-2 shrink-0">
-                          <span className={`text-[10px] ${prioColor}`}>{t.priority}</span>
+                          <span style={{ fontSize: '10px', color: prioColor }}>{t.priority}</span>
                           {t.due_date && (
-                            <span className={`text-[10px] ${overdue ? 'text-red-400' : 'text-zinc-500'}`}>
+                            <span style={{ fontSize: '10px', color: overdue ? 'var(--danger)' : 'var(--text-muted)' }}>
                               {new Date(t.due_date).toLocaleDateString()}
                             </span>
                           )}
@@ -868,23 +1319,37 @@ export default function Dashboard() {
               )}
             </div>
 
-            <div className="border border-zinc-800 rounded-xl p-5">
+            <div className="rounded-xl p-5" style={{ border: '1px solid var(--border-default)' }}>
               <div className="flex items-center justify-between mb-3">
-                <h2 className="text-sm font-medium text-zinc-400 uppercase flex items-center gap-2">
+                <h2
+                  className="uppercase flex items-center gap-2"
+                  style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)' }}
+                >
                   <Activity className="w-4 h-4" /> Recent Activity
                 </h2>
-                <Link href="/timeline" className="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1">
+                <Link
+                  href="/timeline"
+                  className="flex items-center gap-1"
+                  style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#60a5fa'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
+                >
                   Full log <ArrowRight className="w-3 h-3" />
                 </Link>
               </div>
               {activity.length === 0 ? (
-                <p className="text-sm text-zinc-600">No activity recorded yet</p>
+                <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>No activity recorded yet</p>
               ) : (
                 <div className="space-y-2">
                   {activity.map(a => (
-                    <div key={a.id} className="py-1.5 px-2 rounded hover:bg-zinc-800/50">
-                      <div className="text-sm truncate">{a.subject}</div>
-                      <div className="flex items-center gap-2 text-[10px] text-zinc-600">
+                    <div
+                      key={a.id}
+                      className="py-1.5 px-2 rounded"
+                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-3)'; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+                    >
+                      <div className="truncate" style={{ fontSize: 'var(--font-size-sm)' }}>{a.subject}</div>
+                      <div className="flex items-center gap-2" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
                         <span>{a.event_type.replace(/_/g, ' ')}</span>
                         <span>{new Date(a.created_at).toLocaleString()}</span>
                       </div>
@@ -899,21 +1364,45 @@ export default function Dashboard() {
           {/* QUICK ACTIONS                                                    */}
           {/* ================================================================ */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            <Link href="/meetings/new" className="border border-zinc-800 hover:border-zinc-600 rounded-xl p-4 text-center transition-colors">
-              <div className="text-sm font-medium">Log Meeting</div>
-              <div className="text-xs text-zinc-500 mt-1">Capture debrief</div>
+            <Link
+              href="/meetings/new"
+              className="rounded-xl p-4 text-center transition-colors"
+              style={{ border: '1px solid var(--border-default)' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-strong)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
+            >
+              <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500 }}>Log Meeting</div>
+              <div className="mt-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Capture debrief</div>
             </Link>
-            <Link href="/investors" className="border border-zinc-800 hover:border-zinc-600 rounded-xl p-4 text-center transition-colors">
-              <div className="text-sm font-medium">Manage CRM</div>
-              <div className="text-xs text-zinc-500 mt-1">Update statuses</div>
+            <Link
+              href="/investors"
+              className="rounded-xl p-4 text-center transition-colors"
+              style={{ border: '1px solid var(--border-default)' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-strong)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
+            >
+              <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500 }}>Manage CRM</div>
+              <div className="mt-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Update statuses</div>
             </Link>
-            <Link href="/analysis" className="border border-zinc-800 hover:border-zinc-600 rounded-xl p-4 text-center transition-colors">
-              <div className="text-sm font-medium">AI Analysis</div>
-              <div className="text-xs text-zinc-500 mt-1">Pattern detection</div>
+            <Link
+              href="/analysis"
+              className="rounded-xl p-4 text-center transition-colors"
+              style={{ border: '1px solid var(--border-default)' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-strong)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
+            >
+              <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500 }}>AI Analysis</div>
+              <div className="mt-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Pattern detection</div>
             </Link>
-            <Link href="/pipeline" className="border border-zinc-800 hover:border-zinc-600 rounded-xl p-4 text-center transition-colors">
-              <div className="text-sm font-medium">Pipeline</div>
-              <div className="text-xs text-zinc-500 mt-1">Kanban board</div>
+            <Link
+              href="/pipeline"
+              className="rounded-xl p-4 text-center transition-colors"
+              style={{ border: '1px solid var(--border-default)' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-strong)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
+            >
+              <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500 }}>Pipeline</div>
+              <div className="mt-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Kanban board</div>
             </Link>
           </div>
         </>
@@ -932,51 +1421,46 @@ function PulseCard({ label, value, sub, color }: {
   sub: string;
   color: 'blue' | 'green' | 'yellow' | 'red' | 'zinc';
 }) {
-  const borderColor = {
-    blue: 'border-blue-800/40',
-    green: 'border-green-800/40',
-    yellow: 'border-yellow-800/40',
-    red: 'border-red-800/40',
-    zinc: 'border-zinc-800',
-  }[color];
-
-  const bgColor = {
-    blue: 'bg-blue-900/10',
-    green: 'bg-green-900/10',
-    yellow: 'bg-yellow-900/10',
-    red: 'bg-red-900/10',
-    zinc: 'bg-zinc-900/10',
-  }[color];
-
-  const valueColor = {
-    blue: 'text-blue-400',
-    green: 'text-green-400',
-    yellow: 'text-yellow-400',
-    red: 'text-red-400',
-    zinc: 'text-zinc-300',
+  const colorMap = {
+    blue: { accent: 'var(--accent)', muted: 'var(--accent-muted)', border: 'rgba(59,130,246,0.15)' },
+    green: { accent: 'var(--success)', muted: 'var(--success-muted)', border: 'rgba(34,197,94,0.15)' },
+    yellow: { accent: 'var(--warning)', muted: 'var(--warning-muted)', border: 'rgba(245,158,11,0.15)' },
+    red: { accent: 'var(--danger)', muted: 'var(--danger-muted)', border: 'rgba(239,68,68,0.15)' },
+    zinc: { accent: 'var(--text-secondary)', muted: 'var(--surface-1)', border: 'var(--border-subtle)' },
   }[color];
 
   return (
-    <div className={`border ${borderColor} ${bgColor} rounded-xl p-3.5`}>
-      <div className="text-[10px] text-zinc-500 uppercase tracking-wider">{label}</div>
-      <div className={`text-2xl font-bold mt-0.5 tabular-nums ${valueColor}`}>{value}</div>
-      <div className="text-[10px] text-zinc-600 mt-0.5">{sub}</div>
+    <div
+      className="transition-all duration-150"
+      style={{
+        background: colorMap.muted,
+        border: `1px solid ${colorMap.border}`,
+        borderRadius: 'var(--radius-lg)',
+        padding: 'var(--space-4) var(--space-5)',
+      }}
+    >
+      <div className="metric-label">{label}</div>
+      <div className="metric-value" style={{ color: colorMap.accent, marginTop: 'var(--space-1)' }}>{value}</div>
+      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 'var(--space-1)' }}>{sub}</div>
     </div>
   );
 }
 
-function MomentumBar({ count, total, color, label }: {
-  count: number; total: number; color: string; label: string;
+function MomentumBar({ count, total, bg, label }: {
+  count: number; total: number; bg: string; label: string;
 }) {
   const pct = total > 0 ? Math.max((count / total) * 100, 4) : 0;
   return (
     <div
-      className={`${color} relative group cursor-default transition-all`}
-      style={{ width: `${pct}%` }}
+      className="relative group cursor-default transition-all"
+      style={{ width: `${pct}%`, background: bg }}
       title={`${label}: ${count}`}
     >
       {pct >= 15 && (
-        <span className="absolute inset-0 flex items-center justify-center text-[9px] font-bold text-white/80">
+        <span
+          className="absolute inset-0 flex items-center justify-center"
+          style={{ fontSize: '9px', fontWeight: 700, color: 'rgba(255,255,255,0.8)' }}
+        >
           {count}
         </span>
       )}
@@ -988,8 +1472,8 @@ function MomentumLabel({ count, label, color }: {
   count: number; label: string; color: string;
 }) {
   return (
-    <span className={`text-[10px] ${color} flex items-center gap-1`}>
-      <span className="font-bold">{count}</span> {label}
+    <span className="flex items-center gap-1" style={{ fontSize: '10px', color }}>
+      <span style={{ fontWeight: 700 }}>{count}</span> {label}
     </span>
   );
 }
