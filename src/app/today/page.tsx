@@ -103,6 +103,20 @@ const MOMENTUM_CONFIG: Record<string, { color: string; bg: string; border: strin
 };
 
 // ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+function renderMarkdown(text: string): React.ReactNode[] {
+  const parts = text.split(/(\*\*[^*]+\*\*)/g);
+  return parts.map((part, i) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return <strong key={i} style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{part.slice(2, -2)}</strong>;
+    }
+    return <span key={i}>{part}</span>;
+  });
+}
+
+// ---------------------------------------------------------------------------
 // Sub-components
 // ---------------------------------------------------------------------------
 
@@ -193,7 +207,7 @@ function MeetingCard({ meeting }: { meeting: BriefingMeeting }) {
           </div>
 
           <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', marginTop: '6px', lineHeight: 1.5 }}>
-            {meeting.keyPoint}
+            {renderMarkdown(meeting.keyPoint)}
           </p>
         </div>
 
@@ -251,12 +265,12 @@ function ActionCard({ action }: { action: UrgentAction }) {
 
         <div className="flex-1 min-w-0">
           <p style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-primary)', lineHeight: 1.4 }}>
-            {action.title}
+            {renderMarkdown(action.title)}
           </p>
 
           {action.description && (
             <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginTop: '2px', lineHeight: 1.5 }}>
-              {action.description}
+              {renderMarkdown(action.description)}
             </p>
           )}
 
@@ -320,10 +334,10 @@ function AlertCard({ alert }: { alert: BriefingAlert }) {
         </span>
         <div className="flex-1 min-w-0">
           <p style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-primary)', lineHeight: 1.4 }}>
-            {alert.title}
+            {renderMarkdown(alert.title)}
           </p>
           <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginTop: '2px' }}>
-            {alert.detail}
+            {renderMarkdown(alert.detail)}
           </p>
         </div>
         <Link
@@ -657,7 +671,7 @@ export default function TodayPage() {
             lineHeight: 1.6,
             maxWidth: '640px',
           }}>
-            {data.todaySummary}
+            {renderMarkdown(data.todaySummary)}
           </p>
         </div>
 
