@@ -16,6 +16,10 @@ import {
   getInvestorRelationships,
   getScoreSnapshots,
   computeRaiseForecast,
+  computeEngagementVelocity,
+  detectFomoDynamics,
+  computeNetworkCascades,
+  computeWinLossPatterns,
 } from '@/lib/db';
 import { computeAdvancedTrajectory } from '@/lib/scoring';
 import { getNarrativeProfile, getAnticipatedQuestions } from '@/lib/investor-narratives';
@@ -111,6 +115,53 @@ export async function POST(req: NextRequest) {
       }
     } catch { /* non-blocking */ }
 
+    // 3d. Engagement velocity + FOMO + cascade + win/loss (cycle 35)
+    let tacticalContext = '';
+    try {
+      const [velocities, fomos, cascades, winLoss] = await Promise.all([
+        computeEngagementVelocity().catch(() => []),
+        detectFomoDynamics().catch(() => []),
+        computeNetworkCascades().catch(() => []),
+        computeWinLossPatterns().catch(() => null),
+      ]);
+
+      const parts: string[] = [];
+
+      // Velocity signal for this investor
+      const thisVelocity = velocities.find(v => v.investorId === investor_id);
+      if (thisVelocity) {
+        parts.push(`VELOCITY: ${thisVelocity.acceleration.toUpperCase()} — ${thisVelocity.signal}`);
+        if (thisVelocity.daysSinceLastMeeting && thisVelocity.avgDaysBetweenMeetings && thisVelocity.daysSinceLastMeeting > thisVelocity.avgDaysBetweenMeetings * 1.5) {
+          parts.push(`SILENCE RISK: ${thisVelocity.daysSinceLastMeeting}d since last meeting (avg: ${thisVelocity.avgDaysBetweenMeetings}d). Push to lock next meeting before this one ends.`);
+        }
+      }
+
+      // FOMO pressure on this investor
+      const fomoForThis = fomos.find(f => f.affectedInvestors.some(a => a.name === investor.name));
+      if (fomoForThis) {
+        parts.push(`COMPETITIVE LEVER: ${fomoForThis.advancingInvestor} just moved to ${fomoForThis.advancingTo} (intensity: ${fomoForThis.fomoIntensity}). Use this as leverage — signal process momentum without naming names.`);
+      }
+
+      // Network cascade dependency
+      const cascadeAffecting = cascades.find(c => c.cascadeChain.some(ch => ch.investorId === investor_id));
+      if (cascadeAffecting) {
+        const thisLink = cascadeAffecting.cascadeChain.find(ch => ch.investorId === investor_id);
+        parts.push(`NETWORK LINK: If ${cascadeAffecting.keystoneName} closes, this investor's close probability rises to ${Math.round((thisLink?.probability || 0) * 100)}%. Mention the broader syndicate forming.`);
+      }
+
+      // Win/loss pattern match
+      if (winLoss && winLoss.distinguishingFactors.length > 0) {
+        const highSig = winLoss.distinguishingFactors.filter(f => f.significance === 'high');
+        if (highSig.length > 0) {
+          parts.push(`WIN PREDICTORS: Key factors that distinguish closers from passers: ${highSig.map(f => `${f.factor} (closed avg: ${f.closedAvg}, passed avg: ${f.passedAvg})`).join('; ')}`);
+        }
+      }
+
+      if (parts.length > 0) {
+        tacticalContext = parts.join('\n');
+      }
+    } catch { /* non-blocking */ }
+
     // 4. Extract historical questions from meetings
     const historicalQuestions: string[] = [];
     const historicalObjections: { text: string; severity: string; topic: string; addressed: boolean; response_effectiveness: string; meetingDate: string }[] = [];
@@ -181,6 +232,7 @@ export async function POST(req: NextRequest) {
       investorRelationships,
       trajectoryContext,
       forecastContext,
+      tacticalContext,
     });
 
     const response = await getAIClient().messages.create({
@@ -344,6 +396,7 @@ function buildAIContext(ctx: {
   investorRelationships?: { investor_a_id: string; investor_b_id: string; investor_a_name?: string; investor_b_name?: string; investor_a_status?: string; investor_b_status?: string; relationship_type: string }[];
   trajectoryContext?: string;
   forecastContext?: string;
+  tacticalContext?: string;
 }): string {
   const meetingHistory = ctx.meetings.slice(0, 5).map(m =>
     `Date: ${m.date} | Type: ${m.type} | Enthusiasm: ${m.enthusiasm_score}/5\nAnalysis: ${m.ai_analysis}\nNext Steps: ${m.next_steps}`
@@ -428,6 +481,10 @@ Factor this into your recommendations — if declining, focus on re-engagement; 
 
 ${ctx.forecastContext ? `RAISE FORECAST CONTEXT:
 ${ctx.forecastContext}` : ''}
+
+${ctx.tacticalContext ? `REAL-TIME TACTICAL INTELLIGENCE:
+${ctx.tacticalContext}
+Use these signals to calibrate urgency: if velocity is decelerating, push for commitment NOW. If FOMO pressure exists, mention process momentum. If a keystone is closing, frame the syndicate narrative.` : ''}
 
 Generate a JSON meeting brief (no markdown, pure JSON):
 {

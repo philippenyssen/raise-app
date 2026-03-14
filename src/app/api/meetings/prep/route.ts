@@ -10,6 +10,10 @@ import {
   getInvestorPartners,
   getInvestorPortfolio,
   getObjectionsByInvestor,
+  computeEngagementVelocity,
+  detectFomoDynamics,
+  computeNetworkCascades,
+  computeWinLossPatterns,
 } from '@/lib/db';
 
 /**
@@ -203,6 +207,46 @@ export async function GET(req: NextRequest) {
           score: m.enthusiasm_score,
         })).reverse(),
       },
+
+      // Tactical intelligence: velocity, FOMO, cascades, win/loss (cycle 35)
+      tacticalIntelligence: await (async () => {
+        try {
+          const [velocities, fomos, cascades, winLoss] = await Promise.all([
+            computeEngagementVelocity().catch(() => []),
+            detectFomoDynamics().catch(() => []),
+            computeNetworkCascades().catch(() => []),
+            computeWinLossPatterns().catch(() => null),
+          ]);
+
+          const thisVelocity = velocities.find(v => v.investorId === investorId);
+          const fomoForThis = fomos.find(f => f.affectedInvestors.some(a => a.name === investor.name));
+          const cascadeForThis = cascades.find(c => c.cascadeChain.some(ch => ch.investorId === investorId));
+
+          return {
+            velocity: thisVelocity ? {
+              acceleration: thisVelocity.acceleration,
+              signal: thisVelocity.signal,
+              daysSinceLastMeeting: thisVelocity.daysSinceLastMeeting,
+              avgDaysBetween: thisVelocity.avgDaysBetweenMeetings,
+            } : null,
+            fomoPressure: fomoForThis ? {
+              trigger: fomoForThis.advancingInvestor,
+              advancingTo: fomoForThis.advancingTo,
+              intensity: fomoForThis.fomoIntensity,
+              recommendation: fomoForThis.recommendation,
+            } : null,
+            cascadeDependency: cascadeForThis ? {
+              keystone: cascadeForThis.keystoneName,
+              chainLength: cascadeForThis.cascadeChain.length,
+              signal: cascadeForThis.signal,
+            } : null,
+            winLossSignal: winLoss ? {
+              keyPredictors: winLoss.distinguishingFactors.filter(f => f.significance === 'high').slice(0, 3).map(f => ({ factor: f.factor, closedAvg: f.closedAvg, passedAvg: f.passedAvg })),
+              insights: winLoss.insights.slice(0, 2),
+            } : null,
+          };
+        } catch { return null; }
+      })(),
 
       generatedAt: new Date().toISOString(),
     };
