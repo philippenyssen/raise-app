@@ -1,4 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk';
+import { logSkillExecution } from './db';
 
 let _client: Anthropic | null = null;
 function getAIClient(): Anthropic {
@@ -6,6 +7,18 @@ function getAIClient(): Anthropic {
     _client = new Anthropic();
   }
   return _client;
+}
+
+function safeParseJSON<T>(text: string, fallback: T): { parsed: T; success: boolean } {
+  try {
+    return { parsed: JSON.parse(text), success: true };
+  } catch {
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      try { return { parsed: JSON.parse(jsonMatch[0]), success: true }; } catch { /* fall through */ }
+    }
+    return { parsed: fallback, success: false };
+  }
 }
 
 export async function analyzeMeetingNotes(rawNotes: string, investorName: string, meetingType: string): Promise<{
@@ -68,34 +81,42 @@ Be rigorous. Don't infer enthusiasm that isn't there. If notes are sparse, flag 
   });
 
   const text = response.content[0].type === 'text' ? response.content[0].text : '';
-  try {
-    return JSON.parse(text);
-  } catch {
-    // Try to extract JSON from the response
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (jsonMatch) {
-      return JSON.parse(jsonMatch[0]);
-    }
-    return {
-      questions_asked: [],
-      objections: [],
-      engagement_signals: {
-        enthusiasm: 3,
-        asked_about_process: false,
-        asked_about_timeline: false,
-        requested_followup: false,
-        mentioned_competitors: false,
-        pricing_reception: 'not_discussed',
-        slides_that_landed: [],
-        slides_that_fell_flat: [],
-      },
-      competitive_intel: '',
-      next_steps: '',
-      enthusiasm_score: 3,
-      ai_analysis: 'Could not parse meeting notes. Please add more detail.',
-      suggested_status: 'met',
-    };
-  }
+  const fallback = {
+    questions_asked: [],
+    objections: [],
+    engagement_signals: {
+      enthusiasm: 3,
+      asked_about_process: false,
+      asked_about_timeline: false,
+      requested_followup: false,
+      mentioned_competitors: false,
+      pricing_reception: 'not_discussed',
+      slides_that_landed: [],
+      slides_that_fell_flat: [],
+    },
+    competitive_intel: '',
+    next_steps: '',
+    enthusiasm_score: 3,
+    ai_analysis: 'Could not parse meeting notes. Please add more detail.',
+    suggested_status: 'met',
+  };
+  const expectedFields = 8;
+  const { parsed, success } = safeParseJSON(text, fallback);
+  const extractedFields = success
+    ? Object.values(parsed).filter(v => v !== '' && v !== null && (Array.isArray(v) ? v.length > 0 : true)).length
+    : 0;
+  logSkillExecution({
+    skill_name: 'analyze_meeting_notes',
+    skill_type: 'product_ai',
+    trigger_source: 'api',
+    input_summary: `${investorName} / ${meetingType} / ${rawNotes.length} chars`,
+    outcome: success ? 'success' : 'partial',
+    parse_success: success,
+    fields_extracted: extractedFields,
+    fields_expected: expectedFields,
+    latency_ms: 0,
+  }).catch(() => {});
+  return parsed;
 }
 
 export async function analyzePatterns(meetings: { raw_notes: string; objections: string; engagement_signals: string; investor_name: string; enthusiasm_score: number; date: string }[]): Promise<{
@@ -107,11 +128,13 @@ export async function analyzePatterns(meetings: { raw_notes: string; objections:
   convergence_signals: string[];
 }> {
   const meetingSummaries = meetings.map(m => {
-    const objs = JSON.parse(m.objections || '[]');
-    const signals = JSON.parse(m.engagement_signals || '{}');
+    let objs: { text: string }[] = [];
+    try { objs = JSON.parse(m.objections || '[]'); } catch { /* use default */ }
+    let signals: unknown = {};
+    try { signals = JSON.parse(m.engagement_signals || '{}'); } catch { /* use default */ }
     return `
 DATE: ${m.date} | INVESTOR: ${m.investor_name} | ENTHUSIASM: ${m.enthusiasm_score}/5
-OBJECTIONS: ${objs.map((o: { text: string }) => o.text).join('; ') || 'None recorded'}
+OBJECTIONS: ${objs.map((o) => o.text).join('; ') || 'None recorded'}
 SIGNALS: ${JSON.stringify(signals)}
 NOTES: ${m.raw_notes.substring(0, 500)}`;
   }).join('\n---\n');
@@ -144,20 +167,26 @@ Return JSON (no markdown):
   });
 
   const text = response.content[0].type === 'text' ? response.content[0].text : '';
-  try {
-    return JSON.parse(text);
-  } catch {
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (jsonMatch) return JSON.parse(jsonMatch[0]);
-    return {
-      top_objections: [],
-      story_effectiveness: { landing: [], failing: [], exciting: [] },
-      pricing_trend: 'Not enough data',
-      material_changes: [],
-      overall_assessment: 'Need more meetings to identify patterns.',
-      convergence_signals: [],
-    };
-  }
+  const patternsFallback = {
+    top_objections: [],
+    story_effectiveness: { landing: [], failing: [], exciting: [] },
+    pricing_trend: 'Not enough data',
+    material_changes: [],
+    overall_assessment: 'Need more meetings to identify patterns.',
+    convergence_signals: [],
+  };
+  const { parsed, success } = safeParseJSON(text, patternsFallback);
+  logSkillExecution({
+    skill_name: 'analyze_patterns',
+    skill_type: 'product_ai',
+    trigger_source: 'api',
+    input_summary: `${meetings.length} meetings`,
+    outcome: success ? 'success' : 'partial',
+    parse_success: success,
+    fields_extracted: success ? 6 : 0,
+    fields_expected: 6,
+  }).catch(() => {});
+  return parsed;
 }
 
 export async function assessProcessHealth(funnel: Record<string, unknown>, objections: unknown[], recentMeetings: unknown[]): Promise<{
@@ -188,13 +217,17 @@ Return JSON (no markdown):
   });
 
   const text = response.content[0].type === 'text' ? response.content[0].text : '';
-  try {
-    return JSON.parse(text);
-  } catch {
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (jsonMatch) return JSON.parse(jsonMatch[0]);
-    return { health: 'yellow', diagnosis: 'Insufficient data for assessment.', recommendations: ['Add more meeting data'], risk_factors: [] };
-  }
+  const healthFallback = { health: 'yellow' as const, diagnosis: 'Insufficient data for assessment.', recommendations: ['Add more meeting data'], risk_factors: [] as string[] };
+  const { parsed, success } = safeParseJSON(text, healthFallback);
+  logSkillExecution({
+    skill_name: 'assess_process_health',
+    skill_type: 'product_ai',
+    outcome: success ? 'success' : 'partial',
+    parse_success: success,
+    fields_extracted: success ? 4 : 0,
+    fields_expected: 4,
+  }).catch(() => {});
+  return parsed;
 }
 
 // Document AI Operations
@@ -251,11 +284,16 @@ If no discrepancies found, return {"discrepancies": []}.`
   });
 
   const text = response.content[0].type === 'text' ? response.content[0].text : '{"discrepancies":[]}';
-  try { return JSON.parse(text); } catch {
-    const match = text.match(/\{[\s\S]*\}/);
-    if (match) return JSON.parse(match[0]);
-    return { discrepancies: [] };
-  }
+  const { parsed, success } = safeParseJSON(text, { discrepancies: [] as { location: string; issue: string; suggestion: string }[] });
+  logSkillExecution({
+    skill_name: 'check_consistency',
+    skill_type: 'product_ai',
+    outcome: success ? 'success' : 'partial',
+    parse_success: success,
+    fields_extracted: success ? (parsed.discrepancies?.length ?? 0) : 0,
+    fields_expected: 1,
+  }).catch(() => {});
+  return parsed;
 }
 
 export async function findWeakArguments(content: string): Promise<{ weaknesses: { claim: string; issue: string; suggestion: string }[] }> {
@@ -281,11 +319,16 @@ Be thorough but fair. Flag only genuinely weak arguments, not stylistic preferen
   });
 
   const text = response.content[0].type === 'text' ? response.content[0].text : '{"weaknesses":[]}';
-  try { return JSON.parse(text); } catch {
-    const match = text.match(/\{[\s\S]*\}/);
-    if (match) return JSON.parse(match[0]);
-    return { weaknesses: [] };
-  }
+  const { parsed, success } = safeParseJSON(text, { weaknesses: [] as { claim: string; issue: string; suggestion: string }[] });
+  logSkillExecution({
+    skill_name: 'find_weak_arguments',
+    skill_type: 'product_ai',
+    outcome: success ? 'success' : 'partial',
+    parse_success: success,
+    fields_extracted: success ? (parsed.weaknesses?.length ?? 0) : 0,
+    fields_expected: 1,
+  }).catch(() => {});
+  return parsed;
 }
 
 // Intelligence Research Functions
@@ -344,24 +387,30 @@ Be specific with real data where you have it. If you're uncertain about specific
   });
 
   const text = response.content[0].type === 'text' ? response.content[0].text : '';
-  try {
-    return JSON.parse(text);
-  } catch {
-    const match = text.match(/\{[\s\S]*\}/);
-    if (match) return JSON.parse(match[0]);
-    return {
-      overview: 'Research could not be completed. Try providing more context.',
-      fund_details: { aum: '', vintage: '', strategy: '', hq: '' },
-      key_partners: [],
-      recent_investments: [],
-      investment_thesis: '',
-      ic_process: '',
-      typical_check: '',
-      portfolio_in_sector: [],
-      fit_assessment: '',
-      approach_strategy: '',
-    };
-  }
+  const investorFallback = {
+    overview: 'Research could not be completed. Try providing more context.',
+    fund_details: { aum: '', vintage: '', strategy: '', hq: '' },
+    key_partners: [] as { name: string; title: string; focus: string; notable_deals: string }[],
+    recent_investments: [] as { company: string; round: string; amount: string; date: string; sector: string }[],
+    investment_thesis: '',
+    ic_process: '',
+    typical_check: '',
+    portfolio_in_sector: [] as { company: string; relevance: string }[],
+    fit_assessment: '',
+    approach_strategy: '',
+  };
+  const { parsed, success } = safeParseJSON(text, investorFallback);
+  logSkillExecution({
+    skill_name: 'research_investor',
+    skill_type: 'product_ai',
+    trigger_source: 'api',
+    input_summary: investorName,
+    outcome: success ? 'success' : 'partial',
+    parse_success: success,
+    fields_extracted: success ? Object.values(parsed).filter(v => v !== '' && (Array.isArray(v) ? v.length > 0 : true)).length : 0,
+    fields_expected: 10,
+  }).catch(() => {});
+  return parsed;
 }
 
 export async function researchCompetitor(companyName: string, context?: string): Promise<{
@@ -408,11 +457,18 @@ Be specific. Note uncertainty where appropriate.`
   });
 
   const text = response.content[0].type === 'text' ? response.content[0].text : '';
-  try { return JSON.parse(text); } catch {
-    const match = text.match(/\{[\s\S]*\}/);
-    if (match) return JSON.parse(match[0]);
-    return { overview: '', financials: { revenue: '', employees: '', total_raised: '', last_round: '', last_valuation: '', key_investors: '' }, positioning: '', strengths: [], weaknesses: [], our_advantage: '', threat_assessment: '', recent_news: [] };
-  }
+  const competitorFallback = { overview: '', financials: { revenue: '', employees: '', total_raised: '', last_round: '', last_valuation: '', key_investors: '' }, positioning: '', strengths: [] as string[], weaknesses: [] as string[], our_advantage: '', threat_assessment: '', recent_news: [] as string[] };
+  const { parsed, success } = safeParseJSON(text, competitorFallback);
+  logSkillExecution({
+    skill_name: 'research_competitor',
+    skill_type: 'product_ai',
+    input_summary: companyName,
+    outcome: success ? 'success' : 'partial',
+    parse_success: success,
+    fields_extracted: success ? 8 : 0,
+    fields_expected: 8,
+  }).catch(() => {});
+  return parsed;
 }
 
 export async function researchMarketDeals(sector: string): Promise<{
@@ -446,11 +502,18 @@ Focus on 2025-2026 deals. Include space, defense tech, aerospace, satellite, and
   });
 
   const text = response.content[0].type === 'text' ? response.content[0].text : '';
-  try { return JSON.parse(text); } catch {
-    const match = text.match(/\{[\s\S]*\}/);
-    if (match) return JSON.parse(match[0]);
-    return { deals: [], trends: [], valuation_context: '', implications_for_us: '' };
-  }
+  const marketFallback = { deals: [] as { company: string; round: string; amount: string; valuation: string; lead: string; date: string; equity_story: string }[], trends: [] as string[], valuation_context: '', implications_for_us: '' };
+  const { parsed, success } = safeParseJSON(text, marketFallback);
+  logSkillExecution({
+    skill_name: 'research_market_deals',
+    skill_type: 'product_ai',
+    input_summary: sector,
+    outcome: success ? 'success' : 'partial',
+    parse_success: success,
+    fields_extracted: success ? 4 : 0,
+    fields_expected: 4,
+  }).catch(() => {});
+  return parsed;
 }
 
 export async function polishGoldmanStyle(content: string): Promise<string> {

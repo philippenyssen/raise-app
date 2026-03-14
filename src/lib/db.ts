@@ -411,6 +411,72 @@ async function ensureInitialized() {
     )`);
   } catch { /* already exists */ }
 
+  // Enrichment system tables
+  try {
+    await db.execute(`CREATE TABLE IF NOT EXISTS enrichment_jobs (
+      id TEXT PRIMARY KEY,
+      investor_id TEXT NOT NULL,
+      investor_name TEXT NOT NULL,
+      sources TEXT DEFAULT '[]',
+      status TEXT DEFAULT 'queued',
+      results_count INTEGER DEFAULT 0,
+      errors TEXT DEFAULT '[]',
+      started_at TEXT,
+      completed_at TEXT,
+      created_at TEXT DEFAULT (datetime('now'))
+    )`);
+  } catch { /* already exists */ }
+
+  try {
+    await db.execute(`CREATE TABLE IF NOT EXISTS enrichment_records (
+      id TEXT PRIMARY KEY,
+      investor_id TEXT NOT NULL,
+      source_id TEXT NOT NULL,
+      field_name TEXT NOT NULL,
+      field_value TEXT NOT NULL,
+      category TEXT NOT NULL,
+      confidence REAL DEFAULT 0.5,
+      source_url TEXT DEFAULT '',
+      raw_json TEXT DEFAULT '',
+      fetched_at TEXT NOT NULL,
+      stale_after TEXT,
+      created_at TEXT DEFAULT (datetime('now'))
+    )`);
+  } catch { /* already exists */ }
+
+  try {
+    await db.execute(`CREATE TABLE IF NOT EXISTS enrichment_source_config (
+      source_id TEXT PRIMARY KEY,
+      enabled INTEGER DEFAULT 1,
+      api_key TEXT DEFAULT '',
+      last_used TEXT,
+      total_calls INTEGER DEFAULT 0,
+      total_results INTEGER DEFAULT 0,
+      avg_confidence REAL DEFAULT 0
+    )`);
+  } catch { /* already exists */ }
+
+  try {
+    await db.execute(`CREATE TABLE IF NOT EXISTS skill_executions (
+      id TEXT PRIMARY KEY,
+      skill_name TEXT NOT NULL,
+      skill_type TEXT NOT NULL DEFAULT 'product_ai',
+      version INTEGER DEFAULT 1,
+      trigger_source TEXT DEFAULT 'api',
+      input_summary TEXT DEFAULT '',
+      outcome TEXT NOT NULL DEFAULT 'success',
+      output_quality REAL DEFAULT 0,
+      parse_success INTEGER DEFAULT 1,
+      latency_ms INTEGER DEFAULT 0,
+      error_message TEXT DEFAULT '',
+      fields_extracted INTEGER DEFAULT 0,
+      fields_expected INTEGER DEFAULT 0,
+      user_accepted INTEGER DEFAULT 1,
+      metadata TEXT DEFAULT '{}',
+      created_at TEXT DEFAULT (datetime('now'))
+    )`);
+  } catch { /* already exists */ }
+
   initialized = true;
 }
 
@@ -1258,6 +1324,94 @@ export async function getActivityLog(limit: number = 20, investorId?: string): P
     args: [limit],
   });
   return result.rows as unknown as ActivityEvent[];
+}
+
+// Skill execution tracking — product AI skills
+export async function logSkillExecution(execution: {
+  skill_name: string;
+  skill_type?: string;
+  version?: number;
+  trigger_source?: string;
+  input_summary?: string;
+  outcome: 'success' | 'partial' | 'failure';
+  output_quality?: number;
+  parse_success?: boolean;
+  latency_ms?: number;
+  error_message?: string;
+  fields_extracted?: number;
+  fields_expected?: number;
+  user_accepted?: boolean;
+  metadata?: Record<string, unknown>;
+}): Promise<void> {
+  await ensureInitialized();
+  await getClient().execute({
+    sql: `INSERT INTO skill_executions (id, skill_name, skill_type, version, trigger_source, input_summary, outcome, output_quality, parse_success, latency_ms, error_message, fields_extracted, fields_expected, user_accepted, metadata, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
+    args: [
+      crypto.randomUUID(),
+      execution.skill_name,
+      execution.skill_type ?? 'product_ai',
+      execution.version ?? 1,
+      execution.trigger_source ?? 'api',
+      execution.input_summary ?? '',
+      execution.outcome,
+      execution.output_quality ?? 0,
+      execution.parse_success !== false ? 1 : 0,
+      execution.latency_ms ?? 0,
+      execution.error_message ?? '',
+      execution.fields_extracted ?? 0,
+      execution.fields_expected ?? 0,
+      execution.user_accepted !== false ? 1 : 0,
+      JSON.stringify(execution.metadata ?? {}),
+    ],
+  });
+}
+
+export async function getSkillExecutions(skillName?: string, limit: number = 50): Promise<Array<{
+  id: string; skill_name: string; skill_type: string; version: number;
+  trigger_source: string; outcome: string; output_quality: number;
+  parse_success: number; latency_ms: number; error_message: string;
+  fields_extracted: number; fields_expected: number; user_accepted: number;
+  created_at: string;
+}>> {
+  await ensureInitialized();
+  const sql = skillName
+    ? 'SELECT * FROM skill_executions WHERE skill_name = ? ORDER BY created_at DESC LIMIT ?'
+    : 'SELECT * FROM skill_executions ORDER BY created_at DESC LIMIT ?';
+  const args = skillName ? [skillName, limit] : [limit];
+  const result = await getClient().execute({ sql, args });
+  return result.rows as unknown as Array<{
+    id: string; skill_name: string; skill_type: string; version: number;
+    trigger_source: string; outcome: string; output_quality: number;
+    parse_success: number; latency_ms: number; error_message: string;
+    fields_extracted: number; fields_expected: number; user_accepted: number;
+    created_at: string;
+  }>;
+}
+
+export async function getSkillHealthMetrics(): Promise<Array<{
+  skill_name: string; total_executions: number; success_rate: number;
+  avg_quality: number; parse_success_rate: number; avg_latency_ms: number;
+  last_execution: string;
+}>> {
+  await ensureInitialized();
+  const result = await getClient().execute(
+    `SELECT
+      skill_name,
+      COUNT(*) as total_executions,
+      ROUND(100.0 * SUM(CASE WHEN outcome = 'success' THEN 1 ELSE 0 END) / COUNT(*), 1) as success_rate,
+      ROUND(AVG(output_quality), 2) as avg_quality,
+      ROUND(100.0 * SUM(parse_success) / COUNT(*), 1) as parse_success_rate,
+      ROUND(AVG(latency_ms), 0) as avg_latency_ms,
+      MAX(created_at) as last_execution
+    FROM skill_executions
+    GROUP BY skill_name
+    ORDER BY success_rate ASC, total_executions DESC`
+  );
+  return result.rows as unknown as Array<{
+    skill_name: string; total_executions: number; success_rate: number;
+    avg_quality: number; parse_success_rate: number; avg_latency_ms: number;
+    last_execution: string;
+  }>;
 }
 
 // Auto-generate tasks after meeting
@@ -6269,4 +6423,169 @@ export async function computeTemporalTrends(): Promise<TemporalTrends> {
   const alertCount = trends.filter(t => t.alert !== null).length;
 
   return { trends, overallDirection, daysOfData, alertCount };
+}
+
+// ---------------------------------------------------------------------------
+// Enrichment CRUD
+// ---------------------------------------------------------------------------
+
+export async function createEnrichmentJob(job: {
+  id: string;
+  investor_id: string;
+  investor_name: string;
+  sources: string[];
+  status: string;
+}) {
+  await ensureInitialized();
+  await getClient().execute({
+    sql: `INSERT INTO enrichment_jobs (id, investor_id, investor_name, sources, status, started_at)
+          VALUES (?, ?, ?, ?, ?, datetime('now'))`,
+    args: [job.id, job.investor_id, job.investor_name, JSON.stringify(job.sources), job.status],
+  });
+}
+
+export async function updateEnrichmentJob(id: string, updates: {
+  status?: string;
+  results_count?: number;
+  errors?: string[];
+  completed_at?: string;
+}) {
+  await ensureInitialized();
+  const sets: string[] = [];
+  const args: InValue[] = [];
+
+  if (updates.status) { sets.push('status = ?'); args.push(updates.status); }
+  if (updates.results_count !== undefined) { sets.push('results_count = ?'); args.push(updates.results_count); }
+  if (updates.errors) { sets.push('errors = ?'); args.push(JSON.stringify(updates.errors)); }
+  if (updates.completed_at) { sets.push('completed_at = ?'); args.push(updates.completed_at); }
+
+  if (sets.length === 0) return;
+  args.push(id);
+
+  await getClient().execute({
+    sql: `UPDATE enrichment_jobs SET ${sets.join(', ')} WHERE id = ?`,
+    args,
+  });
+}
+
+export async function getEnrichmentJobs(investorId?: string): Promise<EnrichmentJobRow[]> {
+  await ensureInitialized();
+  if (investorId) {
+    const result = await getClient().execute({
+      sql: 'SELECT * FROM enrichment_jobs WHERE investor_id = ? ORDER BY created_at DESC LIMIT 20',
+      args: [investorId],
+    });
+    return result.rows as unknown as EnrichmentJobRow[];
+  }
+  const result = await getClient().execute('SELECT * FROM enrichment_jobs ORDER BY created_at DESC LIMIT 50');
+  return result.rows as unknown as EnrichmentJobRow[];
+}
+
+export interface EnrichmentJobRow {
+  id: string;
+  investor_id: string;
+  investor_name: string;
+  sources: string;
+  status: string;
+  results_count: number;
+  errors: string;
+  started_at: string;
+  completed_at: string | null;
+  created_at: string;
+}
+
+export async function saveEnrichmentRecords(records: {
+  investor_id: string;
+  source_id: string;
+  field_name: string;
+  field_value: string;
+  category: string;
+  confidence: number;
+  source_url: string;
+  fetched_at: string;
+}[]) {
+  await ensureInitialized();
+  const db = getClient();
+  const staleDays = 30;
+  const staleDate = new Date(Date.now() + staleDays * 86400000).toISOString();
+
+  for (const record of records) {
+    const id = crypto.randomUUID();
+    await db.execute({
+      sql: `INSERT OR REPLACE INTO enrichment_records (id, investor_id, source_id, field_name, field_value, category, confidence, source_url, fetched_at, stale_after)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      args: [id, record.investor_id, record.source_id, record.field_name, record.field_value, record.category, record.confidence, record.source_url || '', record.fetched_at, staleDate],
+    });
+  }
+}
+
+export async function getEnrichmentRecords(investorId: string): Promise<EnrichmentRecordRow[]> {
+  await ensureInitialized();
+  const result = await getClient().execute({
+    sql: 'SELECT * FROM enrichment_records WHERE investor_id = ? ORDER BY confidence DESC, fetched_at DESC',
+    args: [investorId],
+  });
+  return result.rows as unknown as EnrichmentRecordRow[];
+}
+
+export interface EnrichmentRecordRow {
+  id: string;
+  investor_id: string;
+  source_id: string;
+  field_name: string;
+  field_value: string;
+  category: string;
+  confidence: number;
+  source_url: string;
+  fetched_at: string;
+  stale_after: string;
+  created_at: string;
+}
+
+export async function getEnrichmentStats(): Promise<{
+  total_records: number;
+  total_investors_enriched: number;
+  total_jobs: number;
+  records_by_source: { source_id: string; count: number }[];
+  records_by_category: { category: string; count: number }[];
+  avg_confidence: number;
+  stale_count: number;
+}> {
+  await ensureInitialized();
+  const db = getClient();
+
+  const [totalRes, investorsRes, jobsRes, bySourceRes, byCatRes, avgConfRes, staleRes] = await Promise.all([
+    db.execute('SELECT COUNT(*) as cnt FROM enrichment_records'),
+    db.execute('SELECT COUNT(DISTINCT investor_id) as cnt FROM enrichment_records'),
+    db.execute('SELECT COUNT(*) as cnt FROM enrichment_jobs'),
+    db.execute('SELECT source_id, COUNT(*) as cnt FROM enrichment_records GROUP BY source_id ORDER BY cnt DESC'),
+    db.execute('SELECT category, COUNT(*) as cnt FROM enrichment_records GROUP BY category ORDER BY cnt DESC'),
+    db.execute('SELECT AVG(confidence) as avg FROM enrichment_records'),
+    db.execute({ sql: 'SELECT COUNT(*) as cnt FROM enrichment_records WHERE stale_after < ?', args: [new Date().toISOString()] }),
+  ]);
+
+  return {
+    total_records: (totalRes.rows[0] as unknown as { cnt: number }).cnt || 0,
+    total_investors_enriched: (investorsRes.rows[0] as unknown as { cnt: number }).cnt || 0,
+    total_jobs: (jobsRes.rows[0] as unknown as { cnt: number }).cnt || 0,
+    records_by_source: bySourceRes.rows as unknown as { source_id: string; count: number }[],
+    records_by_category: byCatRes.rows as unknown as { category: string; count: number }[],
+    avg_confidence: (avgConfRes.rows[0] as unknown as { avg: number }).avg || 0,
+    stale_count: (staleRes.rows[0] as unknown as { cnt: number }).cnt || 0,
+  };
+}
+
+export async function deleteEnrichmentRecords(investorId: string, sourceId?: string) {
+  await ensureInitialized();
+  if (sourceId) {
+    await getClient().execute({
+      sql: 'DELETE FROM enrichment_records WHERE investor_id = ? AND source_id = ?',
+      args: [investorId, sourceId],
+    });
+  } else {
+    await getClient().execute({
+      sql: 'DELETE FROM enrichment_records WHERE investor_id = ?',
+      args: [investorId],
+    });
+  }
 }
