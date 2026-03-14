@@ -10,7 +10,7 @@ import {
   RefreshCw, Loader2, Trash2, ClipboardList, Check, FileSearch,
   Gauge, ArrowUpRight, ArrowRight, ArrowDownRight, Minus, ShieldAlert, Lightbulb,
   Activity, AlertCircle, Database, ChevronDown, ChevronRight, ExternalLink,
-  Flame, Phone, Mail,
+  Flame, Phone, Mail, SendHorizonal, CheckCircle2, XCircle,
 } from 'lucide-react';
 import { useToast } from '@/components/toast';
 
@@ -99,6 +99,9 @@ export default function InvestorDetailPage() {
   const [dealIntel, setDealIntel] = useState<{
     heat: number; heatLabel: string; trackingStatus: string; bottleneck: string; daysInProcess: number; velocityScore: number;
   } | null>(null);
+  const [followups, setFollowups] = useState<{
+    id: string; action_type: string; description: string; due_at: string; status: string; investor_name: string;
+  }[]>([]);
 
   const fetchScore = useCallback(async () => {
     setScoreLoading(true);
@@ -154,6 +157,11 @@ export default function InvestorDetailPage() {
 
   useEffect(() => {
     fetchData(); fetchScore(); fetchEnrichment();
+    // Non-blocking follow-ups fetch
+    fetch(`/api/followups?investor_id=${id}&status=pending`)
+      .then(r => r.ok ? r.json() : [])
+      .then(data => setFollowups(Array.isArray(data) ? data : []))
+      .catch(() => {});
     // Non-blocking deal intelligence fetch
     Promise.all([
       fetch('/api/deal-heat').then(r => r.ok ? r.json() : null).catch(() => null),
@@ -478,6 +486,145 @@ export default function InvestorDetailPage() {
         </div>
       )}
 
+      {/* Pending Actions — inline follow-ups */}
+      {followups.length > 0 && (() => {
+        const now = new Date();
+        const overdueItems = followups.filter(f => new Date(f.due_at) < now);
+        const upcomingItems = followups.filter(f => new Date(f.due_at) >= now);
+        const sortedItems = [...overdueItems, ...upcomingItems].slice(0, 5);
+
+        async function quickComplete(fId: string) {
+          await fetch('/api/followups', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: fId, status: 'completed' }),
+          });
+          setFollowups(prev => prev.filter(f => f.id !== fId));
+        }
+
+        async function quickSkip(fId: string) {
+          await fetch('/api/followups', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: fId, status: 'skipped' }),
+          });
+          setFollowups(prev => prev.filter(f => f.id !== fId));
+        }
+
+        return (
+          <div
+            className="rounded-xl overflow-hidden"
+            style={{
+              border: overdueItems.length > 0 ? '1px solid rgba(239,68,68,0.25)' : '1px solid var(--border-default)',
+              background: overdueItems.length > 0 ? 'rgba(239,68,68,0.02)' : undefined,
+            }}
+          >
+            <div
+              className="flex items-center justify-between px-5 py-3"
+              style={{
+                borderBottom: '1px solid var(--border-subtle)',
+                background: 'var(--surface-1)',
+              }}
+            >
+              <div className="flex items-center gap-2">
+                <SendHorizonal className="w-3.5 h-3.5" style={{ color: overdueItems.length > 0 ? 'var(--danger)' : 'var(--accent)' }} />
+                <span className="text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--text-tertiary)' }}>
+                  Pending Actions
+                </span>
+                {overdueItems.length > 0 && (
+                  <span
+                    style={{
+                      fontSize: '10px', fontWeight: 600,
+                      padding: '1px 6px', borderRadius: '9999px',
+                      background: 'var(--danger)', color: 'white',
+                    }}
+                  >
+                    {overdueItems.length} overdue
+                  </span>
+                )}
+              </div>
+              {followups.length > 5 && (
+                <Link
+                  href={`/followups?investor=${id}`}
+                  style={{ fontSize: '11px', color: 'var(--accent)', textDecoration: 'none' }}
+                  onMouseEnter={e => { e.currentTarget.style.textDecoration = 'underline'; }}
+                  onMouseLeave={e => { e.currentTarget.style.textDecoration = 'none'; }}
+                >
+                  View all {followups.length}
+                </Link>
+              )}
+            </div>
+            <div style={{ padding: 'var(--space-2) var(--space-4)' }}>
+              {sortedItems.map(f => {
+                const isOverdue = new Date(f.due_at) < now;
+                const diffMs = new Date(f.due_at).getTime() - now.getTime();
+                const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
+                const timeLabel = isOverdue
+                  ? `${Math.abs(diffDays)}d overdue`
+                  : diffDays === 0 ? 'Due today'
+                  : diffDays === 1 ? 'Tomorrow'
+                  : `In ${diffDays}d`;
+
+                return (
+                  <div
+                    key={f.id}
+                    className="flex items-center gap-3 py-2"
+                    style={{ borderBottom: '1px solid var(--border-subtle)' }}
+                  >
+                    <span
+                      className="text-xs px-1.5 py-0.5 rounded shrink-0"
+                      style={{
+                        background: isOverdue ? 'var(--danger-muted)' : 'var(--surface-2)',
+                        color: isOverdue ? 'var(--danger)' : 'var(--text-muted)',
+                        fontWeight: isOverdue ? 600 : 400,
+                        fontSize: '10px',
+                      }}
+                    >
+                      {timeLabel}
+                    </span>
+                    <span
+                      className="text-xs px-1.5 py-0.5 rounded shrink-0 capitalize"
+                      style={{ background: 'var(--surface-2)', color: 'var(--text-muted)', fontSize: '10px' }}
+                    >
+                      {f.action_type.replace(/_/g, ' ')}
+                    </span>
+                    <span
+                      className="flex-1 text-sm truncate"
+                      style={{ color: 'var(--text-secondary)' }}
+                      title={f.description}
+                    >
+                      {f.description.split('\n')[0]}
+                    </span>
+                    <div className="flex gap-1 shrink-0">
+                      <button
+                        onClick={() => quickComplete(f.id)}
+                        className="p-1 rounded"
+                        style={{ color: 'var(--text-muted)', transition: 'all 150ms ease' }}
+                        onMouseEnter={e => { e.currentTarget.style.color = 'var(--success)'; e.currentTarget.style.background = 'var(--success-muted)'; }}
+                        onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.background = 'transparent'; }}
+                        title="Mark done"
+                      >
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        onClick={() => quickSkip(f.id)}
+                        className="p-1 rounded"
+                        style={{ color: 'var(--text-muted)', transition: 'all 150ms ease' }}
+                        onMouseEnter={e => { e.currentTarget.style.color = 'var(--danger)'; e.currentTarget.style.background = 'var(--danger-muted)'; }}
+                        onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.background = 'transparent'; }}
+                        title="Skip"
+                      >
+                        <XCircle className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })()}
+
       {/* Profile + Process Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="rounded-xl p-5 space-y-3" style={{ border: '1px solid var(--border-default)' }}>
@@ -521,9 +668,10 @@ export default function InvestorDetailPage() {
       )}
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
         <StatCard icon={TrendingUp} label="Enthusiasm" value={`${latestEnthusiasm}/5`} sub="latest reading" />
         <StatCard icon={Calendar} label="Meetings" value={meetings.length} sub="logged" />
+        <StatCard icon={SendHorizonal} label="Follow-ups" value={followups.length} sub={followups.filter(f => new Date(f.due_at) < new Date()).length > 0 ? `${followups.filter(f => new Date(f.due_at) < new Date()).length} overdue` : 'pending'} highlight={followups.filter(f => new Date(f.due_at) < new Date()).length > 0} />
         <StatCard icon={AlertTriangle} label="Objections" value={allObjections.length} sub="unresolved" />
         <StatCard icon={UserCheck} label="Partners" value={partners.length} sub="profiled" />
         <StatCard icon={Briefcase} label="Portfolio Cos" value={portfolio.length} sub="tracked" />
@@ -933,15 +1081,15 @@ function Row({ label, value }: { label: string; value: string }) {
   );
 }
 
-function StatCard({ icon: Icon, label, value, sub }: { icon: React.ComponentType<{ className?: string }>; label: string; value: string | number; sub: string }) {
+function StatCard({ icon: Icon, label, value, sub, highlight }: { icon: React.ComponentType<{ className?: string }>; label: string; value: string | number; sub: string; highlight?: boolean }) {
   return (
-    <div className="rounded-xl p-4" style={{ border: '1px solid var(--border-default)' }}>
+    <div className="rounded-xl p-4" style={{ border: highlight ? '1px solid rgba(239,68,68,0.3)' : '1px solid var(--border-default)', background: highlight ? 'rgba(239,68,68,0.03)' : undefined }}>
       <div className="flex items-center gap-2 mb-1">
-        <span style={{ color: 'var(--text-muted)' }}><Icon className="w-3.5 h-3.5" /></span>
-        <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{label}</span>
+        <span style={{ color: highlight ? 'var(--danger)' : 'var(--text-muted)' }}><Icon className="w-3.5 h-3.5" /></span>
+        <span className="text-xs" style={{ color: highlight ? 'var(--danger)' : 'var(--text-muted)' }}>{label}</span>
       </div>
-      <div className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>{value}</div>
-      <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{sub}</div>
+      <div className="text-2xl font-bold" style={{ color: highlight ? 'var(--danger)' : 'var(--text-primary)' }}>{value}</div>
+      <div className="text-xs" style={{ color: highlight ? 'var(--danger)' : 'var(--text-muted)' }}>{sub}</div>
     </div>
   );
 }
