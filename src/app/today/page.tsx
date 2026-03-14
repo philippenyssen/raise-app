@@ -468,7 +468,8 @@ export default function TodayPage() {
       setLoading(false);
       setRefreshing(false);
     }
-  }, [toast]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     fetchBriefing();
@@ -480,7 +481,8 @@ export default function TodayPage() {
       clearInterval(refreshInterval);
       clearInterval(stalenessInterval);
     };
-  }, [fetchBriefing]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function handleQuickComplete(id: string) {
     setCompletingFollowupId(id);
