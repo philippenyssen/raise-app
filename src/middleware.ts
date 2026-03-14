@@ -1,31 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server';
+import crypto from 'crypto';
 
 // --- AUTH ---
 // Set RAISE_APP_PASSWORD env var to enable auth protection
-// When set, users must log in before accessing any page or API
+// Cookie stores HMAC(password, secret) — never the raw password
 const AUTH_COOKIE = 'raise_auth';
+
+function makeExpectedToken(password: string): string {
+  return crypto.createHmac('sha256', password).update(password + ':raise-session').digest('hex');
+}
 
 function checkAuth(req: NextRequest): boolean {
   const password = process.env.RAISE_APP_PASSWORD;
-  // If no password is set, auth is disabled (development mode)
   if (!password) return true;
 
-  // Allow the login API endpoint without auth
   if (req.nextUrl.pathname === '/api/auth') return true;
-  // Allow the login page itself
   if (req.nextUrl.pathname === '/login') return true;
-  // Allow health check
   if (req.nextUrl.pathname === '/api/health') return true;
 
-  // Check for auth cookie
   const cookie = req.cookies.get(AUTH_COOKIE);
   if (!cookie) return false;
 
-  // Verify cookie value matches a hash of the password
-  // Simple but effective: cookie = base64(password)
+  // Verify HMAC session token (constant-time comparison)
   try {
-    const decoded = Buffer.from(cookie.value, 'base64').toString();
-    return decoded === password;
+    const expected = makeExpectedToken(password);
+    return crypto.timingSafeEqual(
+      Buffer.from(cookie.value),
+      Buffer.from(expected)
+    );
   } catch {
     return false;
   }

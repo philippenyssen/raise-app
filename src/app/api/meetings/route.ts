@@ -52,10 +52,23 @@ export async function POST(req: NextRequest) {
   return NextResponse.json(meeting, { status: 201 });
 }
 
+const ALLOWED_MEETING_FIELDS = new Set([
+  'date', 'type', 'attendees', 'duration_minutes', 'raw_notes',
+  'questions_asked', 'objections', 'engagement_signals', 'competitive_intel',
+  'next_steps', 'enthusiasm_score', 'status_after', 'ai_analysis',
+]);
+
 export async function PUT(req: NextRequest) {
   const body = await req.json();
-  const { id, ...updates } = body;
+  const { id, ...rawUpdates } = body;
   if (!id) return NextResponse.json({ error: 'id required' }, { status: 400 });
+  const updates: Record<string, unknown> = {};
+  for (const key of Object.keys(rawUpdates)) {
+    if (ALLOWED_MEETING_FIELDS.has(key)) updates[key] = rawUpdates[key];
+  }
+  if (Object.keys(updates).length === 0) {
+    return NextResponse.json({ error: 'no valid fields to update' }, { status: 400 });
+  }
   await updateMeeting(id, updates);
   return NextResponse.json({ ok: true });
 }

@@ -45,15 +45,20 @@ export default function Dashboard() {
 
   async function fetchData() {
     setLoading(true);
-    const [healthRes, docsRes, drRes] = await Promise.all([
-      fetch('/api/health'),
-      fetch('/api/documents'),
-      fetch('/api/data-room'),
-    ]);
-    setData(await healthRes.json());
-    setDocs(await docsRes.json());
-    setDataRoomCount((await drRes.json()).length);
-    setLoading(false);
+    try {
+      const [healthRes, docsRes, drRes] = await Promise.all([
+        fetch('/api/health'),
+        fetch('/api/documents'),
+        fetch('/api/data-room'),
+      ]);
+      if (healthRes.ok) setData(await healthRes.json());
+      if (docsRes.ok) setDocs(await docsRes.json());
+      if (drRes.ok) setDataRoomCount((await drRes.json()).length);
+    } catch {
+      toast('Failed to load dashboard data', 'error');
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function seedData() {
@@ -73,7 +78,7 @@ export default function Dashboard() {
     return (
       <div className="space-y-8">
         <div className="h-8 w-64 bg-zinc-800 rounded animate-pulse" />
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {[...Array(4)].map((_, i) => (
             <div key={i} className="h-24 bg-zinc-800/50 rounded-xl animate-pulse" />
           ))}
@@ -115,7 +120,7 @@ export default function Dashboard() {
       </div>
 
       {/* Deliverables Quick Access */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         <Link href="/workspace" className="group border border-zinc-800 hover:border-blue-600/40 rounded-xl p-4 transition-colors">
           <Sparkles className="w-5 h-5 text-blue-400 mb-2" />
           <div className="text-sm font-medium">Workspace</div>
@@ -212,7 +217,7 @@ export default function Dashboard() {
       {/* Key Metrics */}
       {data.totalInvestors > 0 && (
         <>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <MetricCard label="Investors" value={data.totalInvestors} sub="in universe" />
             <MetricCard label="Meetings" value={data.totalMeetings} sub="completed" />
             <MetricCard label="Enthusiasm" value={data.avgEnthusiasm.toFixed(1)} sub="avg score /5" />
@@ -253,7 +258,7 @@ export default function Dashboard() {
           </div>
 
           {/* Conversion Rates */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {Object.entries(data.funnel.conversion_rates).map(([key, rate]) => {
               const target = data.funnel.targets[key] ?? 50;
               const ok = rate >= target;
@@ -303,7 +308,7 @@ export default function Dashboard() {
           </div>
 
           {/* Quick Actions */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             <Link href="/meetings/new" className="border border-zinc-800 hover:border-zinc-600 rounded-xl p-4 text-center transition-colors">
               <div className="text-sm font-medium">Log Meeting</div>
               <div className="text-xs text-zinc-500 mt-1">Capture debrief</div>
