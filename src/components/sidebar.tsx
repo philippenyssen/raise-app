@@ -138,7 +138,14 @@ export function Sidebar() {
         >
           {!collapsed && (
             <div className="min-w-0">
-              <h1 className="text-base font-bold tracking-tight" style={{ color: 'var(--text-primary)', letterSpacing: '0.05em' }}>
+              <h1 className="text-base font-bold tracking-tight" style={{
+                background: 'linear-gradient(135deg, var(--accent) 0%, #a78bfa 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                letterSpacing: '0.12em',
+                fontSize: '15px',
+              }}>
                 RAISE
               </h1>
               <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '1px' }}>
@@ -148,7 +155,13 @@ export function Sidebar() {
           )}
           {collapsed && (
             <div className="w-full flex justify-center">
-              <span className="text-sm font-bold" style={{ color: 'var(--text-primary)', letterSpacing: '0.05em' }}>R</span>
+              <span className="text-sm font-bold" style={{
+                background: 'linear-gradient(135deg, var(--accent) 0%, #a78bfa 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                letterSpacing: '0.12em',
+              }}>R</span>
             </div>
           )}
           <button

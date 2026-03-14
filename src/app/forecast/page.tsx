@@ -131,6 +131,36 @@ export default function ForecastPage() {
       .catch(e => { setError(e.message); setLoading(false); });
   }, []);
 
+  // useMemo MUST be called before any early returns (Rules of Hooks)
+  const hasExclusions = excludedIds.size > 0;
+  const whatIf = useMemo(() => {
+    if (!data || !hasExclusions) return null;
+    const included = data.forecast.forecasts.filter(f => !excludedIds.has(f.investorId));
+    const committed = included.filter(f => f.currentStage === 'term_sheet' || f.currentStage === 'closed');
+    const high = included.filter(f => f.confidence === 'high');
+    const med = included.filter(f => f.confidence === 'medium');
+
+    const committedAmt = committed.reduce((s, i) => s + tierCapital(i.tier), 0);
+    const expectedAmt = high.reduce((s, i) => s + tierCapital(i.tier), 0) + med.reduce((s, i) => s + tierCapital(i.tier), 0) * 0.5;
+    const bestCaseAmt = included.reduce((s, i) => s + tierCapital(i.tier), 0);
+
+    const excludedCapital = [...excludedIds].reduce((s, id) => {
+      const inv = data.forecast.forecasts.find(f => f.investorId === id);
+      return s + (inv ? tierCapital(inv.tier) : 0);
+    }, 0);
+
+    return {
+      expected: committedAmt + expectedAmt,
+      bestCase: bestCaseAmt,
+      committed: committedAmt,
+      excludedCapital,
+      excludedCount: excludedIds.size,
+      high: high.length,
+      medium: med.length,
+      low: included.filter(f => f.confidence === 'low').length,
+    };
+  }, [excludedIds, hasExclusions, data]);
+
   if (loading) {
     return (
       <div className="flex-1 p-6" style={{ maxWidth: '1400px', margin: '0 auto' }}>
@@ -161,37 +191,6 @@ export default function ForecastPage() {
   }
 
   const { forecast, raiseTarget, currency, amounts, distribution, scenarios } = data;
-
-  const hasExclusions = excludedIds.size > 0;
-
-  // What-if recalculated amounts
-  const whatIf = useMemo(() => {
-    if (!hasExclusions) return null;
-    const included = forecast.forecasts.filter(f => !excludedIds.has(f.investorId));
-    const committed = included.filter(f => f.currentStage === 'term_sheet' || f.currentStage === 'closed');
-    const high = included.filter(f => f.confidence === 'high');
-    const med = included.filter(f => f.confidence === 'medium');
-
-    const committedAmt = committed.reduce((s, i) => s + tierCapital(i.tier), 0);
-    const expectedAmt = high.reduce((s, i) => s + tierCapital(i.tier), 0) + med.reduce((s, i) => s + tierCapital(i.tier), 0) * 0.5;
-    const bestCaseAmt = included.reduce((s, i) => s + tierCapital(i.tier), 0);
-
-    const excludedCapital = [...excludedIds].reduce((s, id) => {
-      const inv = forecast.forecasts.find(f => f.investorId === id);
-      return s + (inv ? tierCapital(inv.tier) : 0);
-    }, 0);
-
-    return {
-      expected: committedAmt + expectedAmt,
-      bestCase: bestCaseAmt,
-      committed: committedAmt,
-      excludedCapital,
-      excludedCount: excludedIds.size,
-      high: high.length,
-      medium: med.length,
-      low: included.filter(f => f.confidence === 'low').length,
-    };
-  }, [excludedIds, hasExclusions, forecast.forecasts]);
 
   const effectiveExpected = whatIf ? whatIf.expected : amounts.expected;
   const effectiveCommitted = whatIf ? whatIf.committed : amounts.committed;
