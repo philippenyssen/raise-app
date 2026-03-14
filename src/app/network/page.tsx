@@ -1,9 +1,10 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
+import Link from 'next/link';
 import {
   Network, RefreshCw, AlertTriangle, ArrowRight, Crown,
-  TrendingUp, Users, Link2, ChevronDown, ChevronUp,
+  TrendingUp, Users, Link2, ChevronDown, ChevronUp, Calendar,
 } from 'lucide-react';
 
 interface CascadeLink {
@@ -159,8 +160,15 @@ export default function NetworkPage() {
         <div className="card p-8 flex flex-col items-center gap-3" style={{ textAlign: 'center' }}>
           <span style={{ color: 'var(--text-muted)' }}><Link2 className="w-8 h-8" /></span>
           <p style={{ color: 'var(--text-secondary)', fontSize: 'var(--font-size-sm)' }}>
-            No network cascades detected. Add investor relationships to see cascade effects.
+            No network cascades detected. Add investors and log meetings to build cascade effects.
           </p>
+          <Link
+            href="/investors"
+            className="btn btn-primary btn-sm"
+            style={{ marginTop: '4px' }}
+          >
+            Go to Investors
+          </Link>
         </div>
       </div>
     );
@@ -238,7 +246,7 @@ export default function NetworkPage() {
           }}
         >
           <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" style={{ color: 'var(--warning)' }} />
-          <div>
+          <div className="flex-1">
             <p style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: 'var(--font-size-sm)' }}>
               Bottleneck Alert
             </p>
@@ -251,6 +259,18 @@ export default function NetworkPage() {
                 </span>
               )}
             </p>
+            <div className="flex items-center gap-2 mt-3">
+              <Link
+                href={`/dealflow?search=${encodeURIComponent(bottleneckAlert.bottleneckName)}`}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors"
+                style={{ background: 'rgba(245,158,11,0.2)', color: 'var(--warning)', border: '1px solid rgba(245,158,11,0.3)' }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(245,158,11,0.3)'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'rgba(245,158,11,0.2)'; }}
+              >
+                <Calendar className="w-3 h-3" />
+                Engage {bottleneckAlert.bottleneckName}
+              </Link>
+            </div>
           </div>
         </div>
       )}
@@ -293,9 +313,15 @@ export default function NetworkPage() {
                   </div>
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <span style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: 'var(--font-size-base)' }}>
+                      <Link
+                        href={`/investors/${cascade.keystoneId}`}
+                        onClick={e => e.stopPropagation()}
+                        style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: 'var(--font-size-base)', textDecoration: 'none' }}
+                        onMouseEnter={e => { e.currentTarget.style.color = 'var(--accent)'; }}
+                        onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-primary)'; }}
+                      >
                         {cascade.keystoneName}
-                      </span>
+                      </Link>
                       <span style={{
                         fontSize: 'var(--font-size-xs)',
                         padding: '1px 6px',
@@ -419,13 +445,19 @@ export default function NetworkPage() {
                                 }} />
                                 <div className="min-w-0">
                                   <div className="flex items-center gap-2">
-                                    <span style={{
-                                      fontWeight: 500,
-                                      color: 'var(--text-primary)',
-                                      fontSize: 'var(--font-size-sm)',
-                                    }}>
+                                    <Link
+                                      href={`/investors/${link.investorId}`}
+                                      style={{
+                                        fontWeight: 500,
+                                        color: 'var(--text-primary)',
+                                        fontSize: 'var(--font-size-sm)',
+                                        textDecoration: 'none',
+                                      }}
+                                      onMouseEnter={e => { e.currentTarget.style.color = 'var(--accent)'; }}
+                                      onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-primary)'; }}
+                                    >
                                       {link.investorName}
-                                    </span>
+                                    </Link>
                                     <span style={{
                                       fontSize: '10px',
                                       padding: '0 4px',
@@ -524,11 +556,22 @@ export default function NetworkPage() {
                       }}
                     >
                       <AlertTriangle className="w-3.5 h-3.5 shrink-0 mt-0.5" style={{ color: 'var(--warning)' }} />
-                      <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
-                        <strong>{cascade.networkBottleneck.investorName}</strong> is the bottleneck.{' '}
-                        If they pass, chain probability impact: <strong>{Math.round(Math.abs(cascade.networkBottleneck.impactIfPass) * 100)}%</strong>.
-                        Prioritize engagement with this investor.
-                      </p>
+                      <div className="flex-1">
+                        <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
+                          <strong>{cascade.networkBottleneck.investorName}</strong> is the bottleneck.{' '}
+                          If they pass, chain probability impact: <strong>{Math.round(Math.abs(cascade.networkBottleneck.impactIfPass) * 100)}%</strong>.
+                        </p>
+                        <Link
+                          href={`/investors/${cascade.networkBottleneck.investorId}`}
+                          className="inline-flex items-center gap-1 mt-2 px-2.5 py-1 rounded text-[11px] font-medium transition-colors"
+                          style={{ background: 'rgba(245,158,11,0.15)', color: 'var(--warning)', border: '1px solid rgba(245,158,11,0.25)' }}
+                          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(245,158,11,0.25)'; }}
+                          onMouseLeave={e => { e.currentTarget.style.background = 'rgba(245,158,11,0.15)'; }}
+                        >
+                          Prioritize Engagement
+                          <ArrowRight className="w-3 h-3" />
+                        </Link>
+                      </div>
                     </div>
                   )}
                 </div>
