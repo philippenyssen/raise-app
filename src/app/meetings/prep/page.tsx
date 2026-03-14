@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState, useMemo, useRef, useCallback } from 'react';
+import { useEffect, useState, useMemo, useRef, useCallback, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import {
   Users, Calendar, AlertTriangle, CheckCircle, MessageSquare,
@@ -96,11 +97,21 @@ const SPEED_STYLE: Record<string, React.CSSProperties> = {
 // ---------- main page ----------
 
 export default function MeetingPrepPage() {
+  return (
+    <Suspense fallback={<div className="space-y-6"><div className="h-8 w-48 skeleton animate-pulse" style={{ borderRadius: 'var(--radius-md)' }} /></div>}>
+      <MeetingPrepContent />
+    </Suspense>
+  );
+}
+
+function MeetingPrepContent() {
   const { toast } = useToast();
+  const searchParams = useSearchParams();
+  const preselectedInvestor = searchParams.get('investor') || '';
 
   // data state
   const [investors, setInvestors] = useState<Investor[]>([]);
-  const [selectedId, setSelectedId] = useState<string>('');
+  const [selectedId, setSelectedId] = useState<string>(preselectedInvestor);
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [briefs, setBriefs] = useState<IntelligenceBrief[]>([]);
