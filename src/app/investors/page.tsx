@@ -5,6 +5,7 @@ import Link from 'next/link';
 import type { Investor, InvestorStatus, InvestorTier, InvestorType } from '@/lib/types';
 import { useToast } from '@/components/toast';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
+import { Search, Download, GitCompare, Columns3 } from 'lucide-react';
 
 const STATUS_LABELS: Record<InvestorStatus, string> = {
   identified: 'Identified', contacted: 'Contacted', nda_signed: 'NDA Signed',
@@ -32,6 +33,8 @@ export default function InvestorsPage() {
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [filter, setFilter] = useState<{ tier?: number; status?: string; type?: string }>({});
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selected, setSelected] = useState<Set<string>>(new Set());
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null);
   const [form, setForm] = useState({
     name: '', type: 'vc' as InvestorType, tier: 2 as InvestorTier, partner: '',
@@ -94,8 +97,37 @@ export default function InvestorsPage() {
     if (filter.tier && i.tier !== filter.tier) return false;
     if (filter.status && i.status !== filter.status) return false;
     if (filter.type && i.type !== filter.type) return false;
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      if (!i.name.toLowerCase().includes(q) && !i.partner.toLowerCase().includes(q) && !(i.notes || '').toLowerCase().includes(q)) return false;
+    }
     return true;
   });
+
+  async function bulkUpdateStatus(newStatus: string) {
+    for (const id of selected) {
+      await fetch('/api/investors', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, status: newStatus }) });
+    }
+    toast(`Updated ${selected.size} investors to ${STATUS_LABELS[newStatus as InvestorStatus] || newStatus}`);
+    setSelected(new Set());
+    fetchInvestors();
+  }
+
+  function toggleSelect(id: string) {
+    setSelected(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  }
+
+  function toggleSelectAll() {
+    if (selected.size === filtered.length) {
+      setSelected(new Set());
+    } else {
+      setSelected(new Set(filtered.map(i => i.id)));
+    }
+  }
 
   if (loading) {
     return (
@@ -117,16 +149,36 @@ export default function InvestorsPage() {
           <h1 className="text-2xl font-bold tracking-tight">Investor CRM</h1>
           <p className="text-zinc-500 text-sm mt-1">{investors.length} investors tracked</p>
         </div>
-        <button
-          onClick={() => { setShowForm(!showForm); setEditId(null); }}
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm font-medium transition-colors"
-        >
-          + Add Investor
-        </button>
+        <div className="flex gap-2">
+          <Link href="/pipeline" className="px-3 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm transition-colors flex items-center gap-2">
+            <Columns3 className="w-3.5 h-3.5" /> Pipeline
+          </Link>
+          <Link href="/compare" className="px-3 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm transition-colors flex items-center gap-2">
+            <GitCompare className="w-3.5 h-3.5" /> Compare
+          </Link>
+          <a href="/api/export?type=investors" download className="px-3 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm transition-colors flex items-center gap-2">
+            <Download className="w-3.5 h-3.5" /> CSV
+          </a>
+          <button
+            onClick={() => { setShowForm(!showForm); setEditId(null); }}
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm font-medium transition-colors"
+          >
+            + Add Investor
+          </button>
+        </div>
       </div>
 
-      {/* Filters */}
+      {/* Search + Filters */}
       <div className="flex gap-2 flex-wrap">
+        <div className="relative flex-1 min-w-48">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+          <input
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            placeholder="Search investors, partners, notes..."
+            className="w-full bg-zinc-900 border border-zinc-800 rounded-lg pl-9 pr-3 py-1.5 text-sm focus:outline-none focus:border-blue-600 text-zinc-200"
+          />
+        </div>
         <select value={filter.tier ?? ''} onChange={e => setFilter(f => ({ ...f, tier: e.target.value ? Number(e.target.value) : undefined }))} className="bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1.5 text-sm text-zinc-300">
           <option value="">All Tiers</option>
           <option value="1">Tier 1</option><option value="2">Tier 2</option>
@@ -140,10 +192,26 @@ export default function InvestorsPage() {
           <option value="">All Types</option>
           {Object.entries(TYPE_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
         </select>
-        {(filter.tier || filter.status || filter.type) && (
-          <button onClick={() => setFilter({})} className="text-xs text-zinc-500 hover:text-zinc-300 px-2">Clear</button>
+        {(filter.tier || filter.status || filter.type || searchQuery) && (
+          <button onClick={() => { setFilter({}); setSearchQuery(''); }} className="text-xs text-zinc-500 hover:text-zinc-300 px-2">Clear</button>
         )}
       </div>
+
+      {/* Bulk Actions */}
+      {selected.size > 0 && (
+        <div className="flex items-center gap-3 bg-blue-900/20 border border-blue-800/30 rounded-lg px-4 py-2">
+          <span className="text-sm text-blue-400 font-medium">{selected.size} selected</span>
+          <select
+            defaultValue=""
+            onChange={e => { if (e.target.value) bulkUpdateStatus(e.target.value); e.target.value = ''; }}
+            className="bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-xs text-zinc-300"
+          >
+            <option value="" disabled>Bulk change status...</option>
+            {Object.entries(STATUS_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+          </select>
+          <button onClick={() => setSelected(new Set())} className="text-xs text-zinc-500 hover:text-zinc-300">Deselect all</button>
+        </div>
+      )}
 
       {/* Add/Edit Form */}
       {showForm && (
@@ -178,6 +246,10 @@ export default function InvestorsPage() {
         <table className="w-full text-sm">
           <thead className="bg-zinc-900/50 border-b border-zinc-800">
             <tr>
+              <th className="w-10 px-4 py-3">
+                <input type="checkbox" checked={selected.size === filtered.length && filtered.length > 0} onChange={toggleSelectAll}
+                  className="rounded border-zinc-700 bg-zinc-800 text-blue-600 focus:ring-blue-600 focus:ring-offset-0" />
+              </th>
               <th className="text-left px-4 py-3 text-xs text-zinc-500 font-medium">Investor</th>
               <th className="text-left px-4 py-3 text-xs text-zinc-500 font-medium">Type</th>
               <th className="text-left px-4 py-3 text-xs text-zinc-500 font-medium">Tier</th>
@@ -190,7 +262,11 @@ export default function InvestorsPage() {
           </thead>
           <tbody className="divide-y divide-zinc-800/50">
             {filtered.map(inv => (
-              <tr key={inv.id} className="hover:bg-zinc-900/30 transition-colors">
+              <tr key={inv.id} className={`hover:bg-zinc-900/30 transition-colors ${selected.has(inv.id) ? 'bg-blue-900/10' : ''}`}>
+                <td className="w-10 px-4 py-3">
+                  <input type="checkbox" checked={selected.has(inv.id)} onChange={() => toggleSelect(inv.id)}
+                    className="rounded border-zinc-700 bg-zinc-800 text-blue-600 focus:ring-blue-600 focus:ring-offset-0" />
+                </td>
                 <td className="px-4 py-3 font-medium">
                   <Link href={`/investors/${inv.id}`} className="hover:text-blue-400 transition-colors">
                     {inv.name}
