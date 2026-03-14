@@ -7,7 +7,7 @@ import {
   Target, Clock, AlertTriangle, Zap, ChevronRight, RefreshCw,
   Calendar, CheckCircle, ArrowUpRight, TrendingDown, Timer, Users,
   Rocket, Shield, XCircle, ChevronDown, Play, Ban, BarChart3,
-  Star, Eye,
+  Star, Eye, Flame, Flag, MessageSquare,
 } from 'lucide-react';
 
 // ---------------------------------------------------------------------------
@@ -541,17 +541,31 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
 
             {/* Meta row */}
             <div className="flex items-center gap-4 flex-wrap" style={{ marginTop: '8px' }}>
-              {/* Time estimate */}
-              <span className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-                <Timer className="w-3 h-3" />
-                {item.timeEstimate}
-              </span>
+              {/* Deal heat — composite of focus score + momentum */}
+              {(() => {
+                const momentumBonus = item.momentum === 'accelerating' ? 15 : item.momentum === 'steady' ? 0 : item.momentum === 'decelerating' ? -10 : -20;
+                const heat = Math.min(100, Math.max(0, item.focusScore + momentumBonus));
+                const heatColor = heat >= 70 ? 'var(--danger)' : heat >= 45 ? 'var(--warning)' : 'var(--text-muted)';
+                return (
+                  <span className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: heatColor, fontWeight: 600 }} title={`Deal heat: ${heat}/100`}>
+                    <Flame className="w-3 h-3" />
+                    {heat}
+                  </span>
+                );
+              })()}
 
-              {/* Days since last meeting */}
+              {/* Last meeting type + days ago */}
               <span className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
                 <Calendar className="w-3 h-3" />
                 {item.daysSinceLastMeeting !== null
-                  ? `${item.daysSinceLastMeeting}d ago`
+                  ? <>
+                      {item.lastMeetingType && (
+                        <span style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>
+                          {item.lastMeetingType.replace(/_/g, ' ')}
+                        </span>
+                      )}
+                      {' '}{item.daysSinceLastMeeting}d ago
+                    </>
                   : 'No meetings'}
               </span>
 
@@ -569,6 +583,12 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
                 <EnthusiasmDots value={item.enthusiasm} />
               </div>
 
+              {/* Time estimate */}
+              <span className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                <Timer className="w-3 h-3" />
+                {item.timeEstimate}
+              </span>
+
               {/* Pending tasks */}
               {item.pendingTaskCount > 0 && (
                 <span className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--warning)' }}>
@@ -576,7 +596,30 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
                   {item.pendingTaskCount} task{item.pendingTaskCount !== 1 ? 's' : ''}
                 </span>
               )}
+
+              {/* Open flags */}
+              {item.openFlagCount > 0 && (
+                <span className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)' }}>
+                  <Flag className="w-3 h-3" />
+                  {item.openFlagCount} flag{item.openFlagCount !== 1 ? 's' : ''}
+                </span>
+              )}
             </div>
+
+            {/* Top objection — the #1 blocker for this deal */}
+            {item.topObjectionTopic && (
+              <div className="flex items-center gap-1.5" style={{ marginTop: '6px' }}>
+                <span style={{ color: 'var(--warning)' }}><MessageSquare className="w-3 h-3" /></span>
+                <span style={{
+                  fontSize: '11px',
+                  color: 'var(--warning)',
+                  fontWeight: 500,
+                  fontStyle: 'italic',
+                }}>
+                  Blocker: {item.topObjectionTopic}
+                </span>
+              </div>
+            )}
 
             {/* 11-Dimension Scoring Breakdown */}
             {item.scoringDimensions && item.scoringDimensions.length > 0 && (
