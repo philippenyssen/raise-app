@@ -1,5 +1,5 @@
 import { createClient, type Client, type InValue } from '@libsql/client';
-import { Investor, Meeting, RaiseConfig } from './types';
+import { Investor, Meeting, RaiseConfig, MarketDeal, InvestorPartner, InvestorPortfolioCo, Competitor, IntelligenceBrief } from './types';
 
 let client: Client;
 let initialized = false;
@@ -129,6 +129,80 @@ async function ensureInitialized() {
       exclusivity TEXT DEFAULT '',
       strategic_value INTEGER DEFAULT 3,
       notes TEXT DEFAULT '',
+      created_at TEXT DEFAULT (datetime('now')),
+      updated_at TEXT DEFAULT (datetime('now'))
+    )`,
+    `CREATE TABLE IF NOT EXISTS market_deals (
+      id TEXT PRIMARY KEY,
+      company TEXT NOT NULL,
+      round TEXT DEFAULT '',
+      amount TEXT DEFAULT '',
+      valuation TEXT DEFAULT '',
+      lead_investors TEXT DEFAULT '',
+      other_investors TEXT DEFAULT '',
+      date TEXT DEFAULT '',
+      sector TEXT DEFAULT '',
+      sub_sector TEXT DEFAULT '',
+      equity_story TEXT DEFAULT '',
+      relevance TEXT DEFAULT '',
+      source TEXT DEFAULT '',
+      created_at TEXT DEFAULT (datetime('now')),
+      updated_at TEXT DEFAULT (datetime('now'))
+    )`,
+    `CREATE TABLE IF NOT EXISTS investor_partners (
+      id TEXT PRIMARY KEY,
+      investor_id TEXT NOT NULL,
+      name TEXT NOT NULL,
+      title TEXT DEFAULT '',
+      focus_areas TEXT DEFAULT '',
+      notable_deals TEXT DEFAULT '',
+      board_seats TEXT DEFAULT '',
+      linkedin TEXT DEFAULT '',
+      background TEXT DEFAULT '',
+      relevance_to_us TEXT DEFAULT '',
+      created_at TEXT DEFAULT (datetime('now')),
+      updated_at TEXT DEFAULT (datetime('now')),
+      FOREIGN KEY (investor_id) REFERENCES investors(id)
+    )`,
+    `CREATE TABLE IF NOT EXISTS investor_portfolio (
+      id TEXT PRIMARY KEY,
+      investor_id TEXT NOT NULL,
+      company TEXT NOT NULL,
+      sector TEXT DEFAULT '',
+      stage_invested TEXT DEFAULT '',
+      amount TEXT DEFAULT '',
+      date TEXT DEFAULT '',
+      status TEXT DEFAULT 'active',
+      relevance TEXT DEFAULT '',
+      created_at TEXT DEFAULT (datetime('now')),
+      FOREIGN KEY (investor_id) REFERENCES investors(id)
+    )`,
+    `CREATE TABLE IF NOT EXISTS competitors (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      sector TEXT DEFAULT '',
+      hq TEXT DEFAULT '',
+      last_round TEXT DEFAULT '',
+      last_valuation TEXT DEFAULT '',
+      total_raised TEXT DEFAULT '',
+      key_investors TEXT DEFAULT '',
+      revenue TEXT DEFAULT '',
+      employees TEXT DEFAULT '',
+      positioning TEXT DEFAULT '',
+      strengths TEXT DEFAULT '',
+      weaknesses TEXT DEFAULT '',
+      threat_level TEXT DEFAULT 'medium',
+      our_advantage TEXT DEFAULT '',
+      created_at TEXT DEFAULT (datetime('now')),
+      updated_at TEXT DEFAULT (datetime('now'))
+    )`,
+    `CREATE TABLE IF NOT EXISTS intelligence_briefs (
+      id TEXT PRIMARY KEY,
+      subject TEXT NOT NULL,
+      brief_type TEXT NOT NULL DEFAULT 'investor',
+      content TEXT DEFAULT '',
+      sources TEXT DEFAULT '[]',
+      investor_id TEXT DEFAULT NULL,
       created_at TEXT DEFAULT (datetime('now')),
       updated_at TEXT DEFAULT (datetime('now'))
     )`,
@@ -699,4 +773,228 @@ export async function updateTermSheet(id: string, updates: Partial<Omit<TermShee
 export async function deleteTermSheet(id: string) {
   await ensureInitialized();
   await getClient().execute({ sql: 'DELETE FROM term_sheets WHERE id = ?', args: [id] });
+}
+
+// Market Deals
+
+export async function getAllMarketDeals(): Promise<MarketDeal[]> {
+  await ensureInitialized();
+  const result = await getClient().execute('SELECT * FROM market_deals ORDER BY date DESC');
+  return result.rows as unknown as MarketDeal[];
+}
+
+export async function getMarketDeal(id: string): Promise<MarketDeal | null> {
+  await ensureInitialized();
+  const result = await getClient().execute({ sql: 'SELECT * FROM market_deals WHERE id = ?', args: [id] });
+  return result.rows.length > 0 ? (result.rows[0] as unknown as MarketDeal) : null;
+}
+
+export async function createMarketDeal(deal: Omit<MarketDeal, 'id' | 'created_at' | 'updated_at'>): Promise<MarketDeal> {
+  await ensureInitialized();
+  const id = crypto.randomUUID();
+  const now = new Date().toISOString();
+  await getClient().execute({
+    sql: `INSERT INTO market_deals (id, company, round, amount, valuation, lead_investors, other_investors, date, sector, sub_sector, equity_story, relevance, source, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    args: [id, deal.company, deal.round, deal.amount, deal.valuation, deal.lead_investors, deal.other_investors, deal.date, deal.sector, deal.sub_sector, deal.equity_story, deal.relevance, deal.source, now, now],
+  });
+  return (await getMarketDeal(id))!;
+}
+
+export async function updateMarketDeal(id: string, updates: Partial<MarketDeal>) {
+  await ensureInitialized();
+  const fields = Object.keys(updates).filter(k => k !== 'id' && k !== 'created_at');
+  if (fields.length === 0) return;
+  const sets = fields.map(f => `${f} = ?`).join(', ');
+  const values = fields.map(f => (updates as Record<string, unknown>)[f] as InValue);
+  await getClient().execute({
+    sql: `UPDATE market_deals SET ${sets}, updated_at = datetime('now') WHERE id = ?`,
+    args: [...values, id],
+  });
+}
+
+export async function deleteMarketDeal(id: string) {
+  await ensureInitialized();
+  await getClient().execute({ sql: 'DELETE FROM market_deals WHERE id = ?', args: [id] });
+}
+
+// Investor Partners
+
+export async function getInvestorPartners(investorId: string): Promise<InvestorPartner[]> {
+  await ensureInitialized();
+  const result = await getClient().execute({
+    sql: 'SELECT * FROM investor_partners WHERE investor_id = ? ORDER BY name ASC',
+    args: [investorId],
+  });
+  return result.rows as unknown as InvestorPartner[];
+}
+
+export async function createInvestorPartner(partner: Omit<InvestorPartner, 'id' | 'created_at' | 'updated_at'>): Promise<InvestorPartner> {
+  await ensureInitialized();
+  const id = crypto.randomUUID();
+  const now = new Date().toISOString();
+  await getClient().execute({
+    sql: `INSERT INTO investor_partners (id, investor_id, name, title, focus_areas, notable_deals, board_seats, linkedin, background, relevance_to_us, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    args: [id, partner.investor_id, partner.name, partner.title, partner.focus_areas, partner.notable_deals, partner.board_seats, partner.linkedin, partner.background, partner.relevance_to_us, now, now],
+  });
+  const result = await getClient().execute({ sql: 'SELECT * FROM investor_partners WHERE id = ?', args: [id] });
+  return result.rows[0] as unknown as InvestorPartner;
+}
+
+export async function updateInvestorPartner(id: string, updates: Partial<InvestorPartner>) {
+  await ensureInitialized();
+  const fields = Object.keys(updates).filter(k => k !== 'id' && k !== 'created_at' && k !== 'investor_id');
+  if (fields.length === 0) return;
+  const sets = fields.map(f => `${f} = ?`).join(', ');
+  const values = fields.map(f => (updates as Record<string, unknown>)[f] as InValue);
+  await getClient().execute({
+    sql: `UPDATE investor_partners SET ${sets}, updated_at = datetime('now') WHERE id = ?`,
+    args: [...values, id],
+  });
+}
+
+export async function deleteInvestorPartner(id: string) {
+  await ensureInitialized();
+  await getClient().execute({ sql: 'DELETE FROM investor_partners WHERE id = ?', args: [id] });
+}
+
+// Investor Portfolio Companies
+
+export async function getInvestorPortfolio(investorId: string): Promise<InvestorPortfolioCo[]> {
+  await ensureInitialized();
+  const result = await getClient().execute({
+    sql: 'SELECT * FROM investor_portfolio WHERE investor_id = ? ORDER BY date DESC',
+    args: [investorId],
+  });
+  return result.rows as unknown as InvestorPortfolioCo[];
+}
+
+export async function createPortfolioCo(co: Omit<InvestorPortfolioCo, 'id' | 'created_at'>): Promise<InvestorPortfolioCo> {
+  await ensureInitialized();
+  const id = crypto.randomUUID();
+  await getClient().execute({
+    sql: `INSERT INTO investor_portfolio (id, investor_id, company, sector, stage_invested, amount, date, status, relevance, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
+    args: [id, co.investor_id, co.company, co.sector, co.stage_invested, co.amount, co.date, co.status, co.relevance],
+  });
+  const result = await getClient().execute({ sql: 'SELECT * FROM investor_portfolio WHERE id = ?', args: [id] });
+  return result.rows[0] as unknown as InvestorPortfolioCo;
+}
+
+export async function deletePortfolioCo(id: string) {
+  await ensureInitialized();
+  await getClient().execute({ sql: 'DELETE FROM investor_portfolio WHERE id = ?', args: [id] });
+}
+
+// Competitors
+
+export async function getAllCompetitors(): Promise<Competitor[]> {
+  await ensureInitialized();
+  const result = await getClient().execute('SELECT * FROM competitors ORDER BY threat_level DESC, name ASC');
+  return result.rows as unknown as Competitor[];
+}
+
+export async function getCompetitor(id: string): Promise<Competitor | null> {
+  await ensureInitialized();
+  const result = await getClient().execute({ sql: 'SELECT * FROM competitors WHERE id = ?', args: [id] });
+  return result.rows.length > 0 ? (result.rows[0] as unknown as Competitor) : null;
+}
+
+export async function createCompetitor(comp: Omit<Competitor, 'id' | 'created_at' | 'updated_at'>): Promise<Competitor> {
+  await ensureInitialized();
+  const id = crypto.randomUUID();
+  const now = new Date().toISOString();
+  await getClient().execute({
+    sql: `INSERT INTO competitors (id, name, sector, hq, last_round, last_valuation, total_raised, key_investors, revenue, employees, positioning, strengths, weaknesses, threat_level, our_advantage, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    args: [id, comp.name, comp.sector, comp.hq, comp.last_round, comp.last_valuation, comp.total_raised, comp.key_investors, comp.revenue, comp.employees, comp.positioning, comp.strengths, comp.weaknesses, comp.threat_level, comp.our_advantage, now, now],
+  });
+  return (await getCompetitor(id))!;
+}
+
+export async function updateCompetitor(id: string, updates: Partial<Competitor>) {
+  await ensureInitialized();
+  const fields = Object.keys(updates).filter(k => k !== 'id' && k !== 'created_at');
+  if (fields.length === 0) return;
+  const sets = fields.map(f => `${f} = ?`).join(', ');
+  const values = fields.map(f => (updates as Record<string, unknown>)[f] as InValue);
+  await getClient().execute({
+    sql: `UPDATE competitors SET ${sets}, updated_at = datetime('now') WHERE id = ?`,
+    args: [...values, id],
+  });
+}
+
+export async function deleteCompetitor(id: string) {
+  await ensureInitialized();
+  await getClient().execute({ sql: 'DELETE FROM competitors WHERE id = ?', args: [id] });
+}
+
+// Intelligence Briefs
+
+export async function getIntelligenceBriefs(briefType?: string, investorId?: string): Promise<IntelligenceBrief[]> {
+  await ensureInitialized();
+  let sql = 'SELECT * FROM intelligence_briefs';
+  const args: InValue[] = [];
+  const conditions: string[] = [];
+  if (briefType) { conditions.push('brief_type = ?'); args.push(briefType); }
+  if (investorId) { conditions.push('investor_id = ?'); args.push(investorId); }
+  if (conditions.length > 0) sql += ' WHERE ' + conditions.join(' AND ');
+  sql += ' ORDER BY updated_at DESC';
+  const result = await getClient().execute({ sql, args });
+  return result.rows as unknown as IntelligenceBrief[];
+}
+
+export async function getIntelligenceBrief(id: string): Promise<IntelligenceBrief | null> {
+  await ensureInitialized();
+  const result = await getClient().execute({ sql: 'SELECT * FROM intelligence_briefs WHERE id = ?', args: [id] });
+  return result.rows.length > 0 ? (result.rows[0] as unknown as IntelligenceBrief) : null;
+}
+
+export async function createIntelligenceBrief(brief: Omit<IntelligenceBrief, 'id' | 'created_at' | 'updated_at'>): Promise<IntelligenceBrief> {
+  await ensureInitialized();
+  const id = crypto.randomUUID();
+  const now = new Date().toISOString();
+  await getClient().execute({
+    sql: `INSERT INTO intelligence_briefs (id, subject, brief_type, content, sources, investor_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    args: [id, brief.subject, brief.brief_type, brief.content, brief.sources, brief.investor_id || null, now, now],
+  });
+  return (await getIntelligenceBrief(id))!;
+}
+
+export async function updateIntelligenceBrief(id: string, updates: { content?: string; sources?: string }) {
+  await ensureInitialized();
+  const sets: string[] = ['updated_at = ?'];
+  const values: InValue[] = [new Date().toISOString()];
+  if (updates.content !== undefined) { sets.push('content = ?'); values.push(updates.content); }
+  if (updates.sources !== undefined) { sets.push('sources = ?'); values.push(updates.sources); }
+  values.push(id);
+  await getClient().execute({ sql: `UPDATE intelligence_briefs SET ${sets.join(', ')} WHERE id = ?`, args: values });
+}
+
+export async function deleteIntelligenceBrief(id: string) {
+  await ensureInitialized();
+  await getClient().execute({ sql: 'DELETE FROM intelligence_briefs WHERE id = ?', args: [id] });
+}
+
+// Intelligence context for AI workspace
+export async function getIntelligenceContext(): Promise<string> {
+  const [deals, competitors, briefs] = await Promise.all([
+    getAllMarketDeals(),
+    getAllCompetitors(),
+    getIntelligenceBriefs(),
+  ]);
+  const parts: string[] = [];
+  if (deals.length > 0) {
+    parts.push('## Recent Market Deals\n' + deals.slice(0, 10).map(d =>
+      `- ${d.company}: ${d.round} ${d.amount} at ${d.valuation} (${d.date}) — Led by ${d.lead_investors}. ${d.relevance}`
+    ).join('\n'));
+  }
+  if (competitors.length > 0) {
+    parts.push('## Competitors\n' + competitors.map(c =>
+      `- ${c.name} [${c.threat_level}]: ${c.positioning}. Last round: ${c.last_round} at ${c.last_valuation}. Our advantage: ${c.our_advantage}`
+    ).join('\n'));
+  }
+  if (briefs.length > 0) {
+    parts.push('## Intelligence Briefs\n' + briefs.slice(0, 5).map(b =>
+      `- [${b.brief_type}] ${b.subject}: ${b.content.substring(0, 500)}...`
+    ).join('\n'));
+  }
+  return parts.length > 0 ? parts.join('\n\n') : 'No intelligence data yet.';
 }

@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
-import { getRaiseConfig, getAllDocuments, getDataRoomContext } from '@/lib/db';
+import { getRaiseConfig, getAllDocuments, getDataRoomContext, getIntelligenceContext } from '@/lib/db';
 
 let _client: Anthropic | null = null;
 function getClient(): Anthropic {
@@ -36,6 +36,7 @@ export async function POST(req: NextRequest) {
   const allDocs = await getAllDocuments();
   const otherDocsContext = buildOtherDocsContext(allDocs, documentId);
   const dataRoomContext = await getDataRoomContext();
+  const intelligenceContext = await getIntelligenceContext();
 
   // For model/cell context, use full content (already condensed by the model page)
   const isModelContext = documentTitle?.startsWith('Financial Model');
@@ -60,6 +61,9 @@ ${otherDocsContext}
 
 DATA ROOM (source materials):
 ${dataRoomContext.substring(0, CONTEXT_BUDGET.dataRoom)}
+
+MARKET INTELLIGENCE (deals, competitors, research briefs):
+${intelligenceContext.substring(0, 6000)}
 
 INSTRUCTIONS:
 1. When the user asks you to improve, rewrite, or change the document, respond with your analysis AND include the full updated document content.

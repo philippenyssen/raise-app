@@ -288,6 +288,171 @@ Be thorough but fair. Flag only genuinely weak arguments, not stylistic preferen
   }
 }
 
+// Intelligence Research Functions
+
+export async function researchInvestor(investorName: string, context?: string): Promise<{
+  overview: string;
+  fund_details: { aum: string; vintage: string; strategy: string; hq: string };
+  key_partners: { name: string; title: string; focus: string; notable_deals: string }[];
+  recent_investments: { company: string; round: string; amount: string; date: string; sector: string }[];
+  investment_thesis: string;
+  ic_process: string;
+  typical_check: string;
+  portfolio_in_sector: { company: string; relevance: string }[];
+  fit_assessment: string;
+  approach_strategy: string;
+}> {
+  const response = await getAIClient().messages.create({
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: 8192,
+    messages: [{
+      role: 'user',
+      content: `You are a world-class fundraising intelligence analyst. Generate a comprehensive research dossier on this investor for a Series C fundraise in the European space/defense technology sector.
+
+INVESTOR: ${investorName}
+${context ? `ADDITIONAL CONTEXT: ${context}` : ''}
+
+OUR COMPANY: Aerospacelab — European vertically-integrated satellite manufacturer. Series C raising €250M equity + €250M debt at €2.0Bn pre-money. €4.1Bn contracted backlog (IRIS2). Revenue: €51M FY2025, projected €120M FY2026.
+
+Generate a research dossier in this exact JSON format (no markdown, pure JSON):
+{
+  "overview": "2-3 sentence overview of the fund/firm",
+  "fund_details": {
+    "aum": "Assets under management",
+    "vintage": "Current fund vintage year",
+    "strategy": "Growth/late-stage/crossover/etc.",
+    "hq": "Location"
+  },
+  "key_partners": [
+    {"name": "Partner name", "title": "Managing Partner/GP/etc.", "focus": "Sector focus areas", "notable_deals": "2-3 most relevant deals"}
+  ],
+  "recent_investments": [
+    {"company": "Company name", "round": "Series X", "amount": "$XM", "date": "2025-XX", "sector": "sector"}
+  ],
+  "investment_thesis": "What this investor looks for — sectors, metrics, stage preferences, business model preferences",
+  "ic_process": "How their IC works — number of partners needed, timeline, typical diligence depth",
+  "typical_check": "$X-Y range for this stage",
+  "portfolio_in_sector": [
+    {"company": "Portfolio company in space/defense/deep tech", "relevance": "How it relates to us — conflict, synergy, or neutral"}
+  ],
+  "fit_assessment": "1-2 sentences on how well our company fits their mandate. Be honest — flag mismatches.",
+  "approach_strategy": "Recommended approach — who to contact, what angle to lead with, what to emphasize/de-emphasize"
+}
+
+Be specific with real data where you have it. If you're uncertain about specific numbers, note it. Do NOT fabricate fund sizes or investment amounts — say "estimated" or "reported" if uncertain.`
+    }]
+  });
+
+  const text = response.content[0].type === 'text' ? response.content[0].text : '';
+  try {
+    return JSON.parse(text);
+  } catch {
+    const match = text.match(/\{[\s\S]*\}/);
+    if (match) return JSON.parse(match[0]);
+    return {
+      overview: 'Research could not be completed. Try providing more context.',
+      fund_details: { aum: '', vintage: '', strategy: '', hq: '' },
+      key_partners: [],
+      recent_investments: [],
+      investment_thesis: '',
+      ic_process: '',
+      typical_check: '',
+      portfolio_in_sector: [],
+      fit_assessment: '',
+      approach_strategy: '',
+    };
+  }
+}
+
+export async function researchCompetitor(companyName: string, context?: string): Promise<{
+  overview: string;
+  financials: { revenue: string; employees: string; total_raised: string; last_round: string; last_valuation: string; key_investors: string };
+  positioning: string;
+  strengths: string[];
+  weaknesses: string[];
+  our_advantage: string;
+  threat_assessment: string;
+  recent_news: string[];
+}> {
+  const response = await getAIClient().messages.create({
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: 4096,
+    messages: [{
+      role: 'user',
+      content: `You are a competitive intelligence analyst. Research this company as a competitor to Aerospacelab (European satellite manufacturer, Series C, €51M revenue, €4.1Bn backlog).
+
+COMPANY: ${companyName}
+${context ? `CONTEXT: ${context}` : ''}
+
+Return JSON (no markdown):
+{
+  "overview": "2-3 sentence company overview",
+  "financials": {
+    "revenue": "Latest known revenue",
+    "employees": "Headcount",
+    "total_raised": "Total funding raised",
+    "last_round": "Most recent round details",
+    "last_valuation": "Most recent valuation",
+    "key_investors": "Notable investors"
+  },
+  "positioning": "How they position themselves vs us — products, markets, strategy",
+  "strengths": ["Competitive strengths"],
+  "weaknesses": ["Competitive weaknesses"],
+  "our_advantage": "Where Aerospacelab has structural advantage",
+  "threat_assessment": "Overall threat level and why",
+  "recent_news": ["Notable recent developments"]
+}
+
+Be specific. Note uncertainty where appropriate.`
+    }]
+  });
+
+  const text = response.content[0].type === 'text' ? response.content[0].text : '';
+  try { return JSON.parse(text); } catch {
+    const match = text.match(/\{[\s\S]*\}/);
+    if (match) return JSON.parse(match[0]);
+    return { overview: '', financials: { revenue: '', employees: '', total_raised: '', last_round: '', last_valuation: '', key_investors: '' }, positioning: '', strengths: [], weaknesses: [], our_advantage: '', threat_assessment: '', recent_news: [] };
+  }
+}
+
+export async function researchMarketDeals(sector: string): Promise<{
+  deals: { company: string; round: string; amount: string; valuation: string; lead: string; date: string; equity_story: string }[];
+  trends: string[];
+  valuation_context: string;
+  implications_for_us: string;
+}> {
+  const response = await getAIClient().messages.create({
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: 4096,
+    messages: [{
+      role: 'user',
+      content: `You are a capital markets analyst. Research recent fundraising activity in this sector.
+
+SECTOR: ${sector}
+CONTEXT: We are Aerospacelab, raising Series C at €2.0Bn pre-money (€250M equity). European satellite/defense company.
+
+Return JSON (no markdown):
+{
+  "deals": [
+    {"company": "name", "round": "Series X", "amount": "$XM", "valuation": "$XBn", "lead": "Lead investor(s)", "date": "YYYY-MM", "equity_story": "Brief equity story / thesis"}
+  ],
+  "trends": ["Key market trends affecting fundraising in this sector"],
+  "valuation_context": "How current valuations compare historically. Are we in an up/down cycle?",
+  "implications_for_us": "What these deals mean for our fundraise — pricing, investor appetite, competition for capital"
+}
+
+Focus on 2025-2026 deals. Include space, defense tech, aerospace, satellite, and adjacent sectors. Be specific with real data.`
+    }]
+  });
+
+  const text = response.content[0].type === 'text' ? response.content[0].text : '';
+  try { return JSON.parse(text); } catch {
+    const match = text.match(/\{[\s\S]*\}/);
+    if (match) return JSON.parse(match[0]);
+    return { deals: [], trends: [], valuation_context: '', implications_for_us: '' };
+  }
+}
+
 export async function polishGoldmanStyle(content: string): Promise<string> {
   const response = await getAIClient().messages.create({
     model: 'claude-sonnet-4-20250514',

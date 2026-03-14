@@ -121,3 +121,82 @@ export interface RaiseConfig {
   three_beliefs: string[];
   one_paragraph_pitch: string;
 }
+
+// Intelligence types
+
+export interface MarketDeal {
+  id: string;
+  company: string;
+  round: string; // Series A, B, C, etc.
+  amount: string;
+  valuation: string;
+  lead_investors: string;
+  other_investors: string;
+  date: string;
+  sector: string;
+  sub_sector: string;
+  equity_story: string;
+  relevance: string; // how it compares to our raise
+  source: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface InvestorPartner {
+  id: string;
+  investor_id: string;
+  name: string;
+  title: string;
+  focus_areas: string;
+  notable_deals: string;
+  board_seats: string;
+  linkedin: string;
+  background: string;
+  relevance_to_us: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface InvestorPortfolioCo {
+  id: string;
+  investor_id: string;
+  company: string;
+  sector: string;
+  stage_invested: string;
+  amount: string;
+  date: string;
+  status: 'active' | 'exited' | 'written_off';
+  relevance: string; // overlap/conflict/synergy with us
+  created_at: string;
+}
+
+export interface Competitor {
+  id: string;
+  name: string;
+  sector: string;
+  hq: string;
+  last_round: string;
+  last_valuation: string;
+  total_raised: string;
+  key_investors: string;
+  revenue: string;
+  employees: string;
+  positioning: string;
+  strengths: string;
+  weaknesses: string;
+  threat_level: 'low' | 'medium' | 'high' | 'critical';
+  our_advantage: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface IntelligenceBrief {
+  id: string;
+  subject: string; // name of investor/company/topic
+  brief_type: 'investor' | 'company' | 'market' | 'competitor' | 'deal';
+  content: string; // markdown research brief
+  sources: string; // JSON array of source references
+  investor_id?: string; // FK if investor research
+  created_at: string;
+  updated_at: string;
+}

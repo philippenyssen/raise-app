@@ -58,9 +58,14 @@ export async function POST(req: NextRequest) {
     }
   } catch (err) {
     console.error('Generation failed:', err);
-    return NextResponse.json(
-      { error: err instanceof Error ? err.message : 'Generation failed' },
-      { status: 500 }
-    );
+    const msg = err instanceof Error ? err.message : 'Generation failed';
+    // Detect authentication errors and provide clear guidance
+    if (msg.includes('authentication') || msg.includes('api_key') || msg.includes('401') || msg.includes('credit')) {
+      return NextResponse.json(
+        { error: 'Anthropic API key missing or invalid. Set ANTHROPIC_API_KEY in .env.local and restart the dev server.' },
+        { status: 401 }
+      );
+    }
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }

@@ -1,13 +1,15 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import type { Investor, Meeting, InvestorStatus } from '@/lib/types';
+import type { Investor, Meeting, InvestorPartner, InvestorPortfolioCo, IntelligenceBrief, InvestorStatus } from '@/lib/types';
 import {
   ArrowLeft, Calendar, MessageSquare, TrendingUp, AlertTriangle,
-  Clock, Target, Users, Zap
+  Clock, Target, Users, Zap, Briefcase, UserCheck, BookOpen,
+  RefreshCw, Loader2, Trash2, Plus
 } from 'lucide-react';
+import { useToast } from '@/components/toast';
 
 const STATUS_LABELS: Record<InvestorStatus, string> = {
   identified: 'Identified', contacted: 'Contacted', nda_signed: 'NDA Signed',
@@ -23,23 +25,70 @@ const STATUS_COLORS: Record<string, string> = {
   passed: 'bg-red-800', dropped: 'bg-zinc-800',
 };
 
+type IntelTab = 'overview' | 'partners' | 'portfolio' | 'research';
+
 export default function InvestorDetailPage() {
   const params = useParams();
+  const { toast } = useToast();
   const id = params.id as string;
   const [investor, setInvestor] = useState<Investor | null>(null);
   const [meetings, setMeetings] = useState<Meeting[]>([]);
+  const [partners, setPartners] = useState<InvestorPartner[]>([]);
+  const [portfolio, setPortfolio] = useState<InvestorPortfolioCo[]>([]);
+  const [briefs, setBriefs] = useState<IntelligenceBrief[]>([]);
   const [loading, setLoading] = useState(true);
+  const [researching, setResearching] = useState(false);
+  const [intelTab, setIntelTab] = useState<IntelTab>('overview');
 
-  useEffect(() => {
-    Promise.all([
-      fetch(`/api/investors?id=${id}`).then(r => r.json()),
-      fetch(`/api/meetings?investor_id=${id}`).then(r => r.json()),
-    ]).then(([inv, mtgs]) => {
-      setInvestor(inv);
-      setMeetings(mtgs);
-      setLoading(false);
-    });
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const [invRes, mtgRes, partRes, portRes, briefRes] = await Promise.all([
+        fetch(`/api/investors?id=${id}`).then(r => r.json()),
+        fetch(`/api/meetings?investor_id=${id}`).then(r => r.json()),
+        fetch(`/api/intelligence?type=partners&investor_id=${id}`).then(r => r.json()).catch(() => []),
+        fetch(`/api/intelligence?type=portfolio&investor_id=${id}`).then(r => r.json()).catch(() => []),
+        fetch(`/api/intelligence?type=briefs&investor_id=${id}`).then(r => r.json()).catch(() => []),
+      ]);
+      setInvestor(invRes);
+      setMeetings(mtgRes);
+      setPartners(Array.isArray(partRes) ? partRes : []);
+      setPortfolio(Array.isArray(portRes) ? portRes : []);
+      setBriefs(Array.isArray(briefRes) ? briefRes : []);
+    } catch { /* ignore */ }
+    setLoading(false);
   }, [id]);
+
+  useEffect(() => { fetchData(); }, [fetchData]);
+
+  async function handleResearch() {
+    if (!investor) return;
+    setResearching(true);
+    try {
+      const res = await fetch('/api/intelligence', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'research_investor',
+          name: investor.name,
+          investor_id: id,
+          context: `Type: ${investor.type}, Fund size: ${investor.fund_size}, Key partner: ${investor.partner}, Thesis: ${investor.sector_thesis}`,
+        }),
+      });
+      if (!res.ok) throw new Error(await res.text());
+      toast('Research complete', 'success');
+      fetchData();
+      setIntelTab('research');
+    } catch (err) {
+      toast(`Research failed: ${err}`, 'error');
+    }
+    setResearching(false);
+  }
+
+  async function deleteIntelItem(type: string, itemId: string) {
+    await fetch(`/api/intelligence?type=${type}&id=${itemId}`, { method: 'DELETE' });
+    fetchData();
+  }
 
   if (loading) {
     return (
@@ -55,35 +104,27 @@ export default function InvestorDetailPage() {
     return (
       <div className="text-center py-12">
         <p className="text-zinc-500">Investor not found</p>
-        <Link href="/investors" className="text-blue-400 hover:text-blue-300 text-sm mt-2 block">
-          Back to CRM
-        </Link>
+        <Link href="/investors" className="text-blue-400 hover:text-blue-300 text-sm mt-2 block">Back to CRM</Link>
       </div>
     );
   }
 
-  // Parse objections across all meetings
   const allObjections: { text: string; severity: string; topic: string; date: string }[] = [];
   const allQuestions: { text: string; topic: string; date: string }[] = [];
   meetings.forEach(m => {
     try {
       const objs = JSON.parse(m.objections || '[]');
-      objs.forEach((o: { text: string; severity: string; topic: string }) => {
-        allObjections.push({ ...o, date: m.date });
-      });
+      objs.forEach((o: { text: string; severity: string; topic: string }) => { allObjections.push({ ...o, date: m.date }); });
     } catch { /* skip */ }
     try {
       const qs = JSON.parse(m.questions_asked || '[]');
-      qs.forEach((q: { text: string; topic: string }) => {
-        allQuestions.push({ ...q, date: m.date });
-      });
+      qs.forEach((q: { text: string; topic: string }) => { allQuestions.push({ ...q, date: m.date }); });
     } catch { /* skip */ }
   });
 
   const enthusiasmTrend = meetings
     .sort((a, b) => a.date.localeCompare(b.date))
     .map(m => ({ date: m.date, score: m.enthusiasm_score }));
-
   const latestEnthusiasm = enthusiasmTrend.length > 0 ? enthusiasmTrend[enthusiasmTrend.length - 1].score : 0;
 
   return (
@@ -92,8 +133,7 @@ export default function InvestorDetailPage() {
       <div className="flex items-start justify-between">
         <div>
           <Link href="/investors" className="flex items-center gap-1 text-zinc-500 hover:text-zinc-300 text-sm mb-3">
-            <ArrowLeft className="w-3.5 h-3.5" />
-            Back to CRM
+            <ArrowLeft className="w-3.5 h-3.5" /> Back to CRM
           </Link>
           <h1 className="text-2xl font-bold tracking-tight">{investor.name}</h1>
           <div className="flex items-center gap-3 mt-2">
@@ -108,15 +148,24 @@ export default function InvestorDetailPage() {
             <span className="text-xs text-zinc-500 capitalize">{investor.type}</span>
           </div>
         </div>
-        <Link
-          href="/meetings/new"
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm font-medium transition-colors"
-        >
-          + Log Meeting
-        </Link>
+        <div className="flex gap-2">
+          <button
+            onClick={handleResearch}
+            disabled={researching}
+            className="px-3 py-2 bg-zinc-800 hover:bg-zinc-700 disabled:bg-zinc-800 disabled:text-zinc-600 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+          >
+            {researching ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Researching...</> : <><RefreshCw className="w-3.5 h-3.5" /> Research</>}
+          </button>
+          <Link
+            href="/meetings/new"
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm font-medium transition-colors"
+          >
+            + Log Meeting
+          </Link>
+        </div>
       </div>
 
-      {/* Profile Grid */}
+      {/* Profile + Process Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="border border-zinc-800 rounded-xl p-5 space-y-3">
           <h2 className="text-xs font-medium text-zinc-400 flex items-center gap-2">
@@ -142,104 +191,255 @@ export default function InvestorDetailPage() {
         </div>
       </div>
 
-      {/* Enthusiasm + Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {/* Stats */}
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         <StatCard icon={TrendingUp} label="Enthusiasm" value={`${latestEnthusiasm}/5`} sub="latest" />
         <StatCard icon={Calendar} label="Meetings" value={meetings.length} sub="total" />
         <StatCard icon={AlertTriangle} label="Objections" value={allObjections.length} sub="raised" />
-        <StatCard icon={MessageSquare} label="Questions" value={allQuestions.length} sub="asked" />
+        <StatCard icon={UserCheck} label="Partners" value={partners.length} sub="profiled" />
+        <StatCard icon={Briefcase} label="Portfolio" value={portfolio.length} sub="companies" />
       </div>
 
-      {/* Enthusiasm Trend */}
-      {enthusiasmTrend.length > 1 && (
-        <div className="border border-zinc-800 rounded-xl p-5">
-          <h2 className="text-xs font-medium text-zinc-400 mb-4 flex items-center gap-2">
-            <Zap className="w-3.5 h-3.5" /> ENTHUSIASM TREND
-          </h2>
-          <div className="flex items-end gap-2 h-20">
-            {enthusiasmTrend.map((point, i) => (
-              <div key={i} className="flex-1 flex flex-col items-center gap-1">
-                <div
-                  className={`w-full rounded-t ${
-                    point.score >= 4 ? 'bg-green-600' : point.score >= 3 ? 'bg-blue-600' : point.score >= 2 ? 'bg-yellow-600' : 'bg-red-600'
-                  }`}
-                  style={{ height: `${(point.score / 5) * 100}%` }}
-                />
-                <span className="text-[10px] text-zinc-600">{point.date.slice(5)}</span>
-              </div>
-            ))}
-          </div>
+      {/* Intelligence Tabs */}
+      <div className="border border-zinc-800 rounded-xl overflow-hidden">
+        <div className="flex border-b border-zinc-800 bg-zinc-900/30">
+          {([
+            { key: 'overview' as IntelTab, label: 'Meetings', icon: Clock },
+            { key: 'partners' as IntelTab, label: `Partners (${partners.length})`, icon: UserCheck },
+            { key: 'portfolio' as IntelTab, label: `Portfolio (${portfolio.length})`, icon: Briefcase },
+            { key: 'research' as IntelTab, label: `Research (${briefs.length})`, icon: BookOpen },
+          ]).map(t => (
+            <button
+              key={t.key}
+              onClick={() => setIntelTab(t.key)}
+              className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 ${
+                intelTab === t.key ? 'border-blue-500 text-white' : 'border-transparent text-zinc-500 hover:text-zinc-300'
+              }`}
+            >
+              <t.icon className="w-3.5 h-3.5" />
+              {t.label}
+            </button>
+          ))}
         </div>
-      )}
 
-      {/* Meeting History */}
-      <div className="border border-zinc-800 rounded-xl p-5">
-        <h2 className="text-xs font-medium text-zinc-400 mb-4 flex items-center gap-2">
-          <Clock className="w-3.5 h-3.5" /> MEETING HISTORY
-        </h2>
-        {meetings.length === 0 ? (
-          <p className="text-sm text-zinc-600">No meetings logged yet.</p>
-        ) : (
-          <div className="space-y-4">
-            {meetings.map(m => {
-              const objs = (() => { try { return JSON.parse(m.objections || '[]'); } catch { return []; } })();
-              return (
-                <div key={m.id} className="border-l-2 border-zinc-800 pl-4 pb-2">
-                  <div className="flex items-center gap-3 mb-1">
-                    <span className="text-sm font-medium">{m.date}</span>
-                    <span className="text-xs text-zinc-500">{m.type.replace(/_/g, ' ')}</span>
-                    <span className="text-xs text-zinc-600">{m.duration_minutes}min</span>
-                    <div className="flex gap-0.5 ml-auto">
-                      {[1,2,3,4,5].map(n => (
-                        <div key={n} className={`w-1.5 h-1.5 rounded-full ${n <= m.enthusiasm_score ? 'bg-blue-500' : 'bg-zinc-800'}`} />
-                      ))}
-                    </div>
+        <div className="p-5">
+          {/* Meetings Tab */}
+          {intelTab === 'overview' && (
+            <div>
+              {/* Enthusiasm Trend */}
+              {enthusiasmTrend.length > 1 && (
+                <div className="mb-6">
+                  <h3 className="text-xs font-medium text-zinc-400 mb-3 flex items-center gap-2">
+                    <Zap className="w-3.5 h-3.5" /> ENTHUSIASM TREND
+                  </h3>
+                  <div className="flex items-end gap-2 h-20">
+                    {enthusiasmTrend.map((point, i) => (
+                      <div key={i} className="flex-1 flex flex-col items-center gap-1">
+                        <div
+                          className={`w-full rounded-t ${
+                            point.score >= 4 ? 'bg-green-600' : point.score >= 3 ? 'bg-blue-600' : point.score >= 2 ? 'bg-yellow-600' : 'bg-red-600'
+                          }`}
+                          style={{ height: `${(point.score / 5) * 100}%` }}
+                        />
+                        <span className="text-[10px] text-zinc-600">{point.date.slice(5)}</span>
+                      </div>
+                    ))}
                   </div>
-                  {m.ai_analysis && (
-                    <p className="text-sm text-zinc-400 mb-2">{m.ai_analysis}</p>
-                  )}
-                  {m.next_steps && (
-                    <p className="text-xs text-blue-400/70">Next: {m.next_steps}</p>
-                  )}
-                  {objs.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mt-2">
-                      {objs.map((o: { text: string; severity: string }, i: number) => (
-                        <span key={i} className={`text-xs px-1.5 py-0.5 rounded ${
-                          o.severity === 'showstopper' ? 'bg-red-900/30 text-red-400' :
-                          o.severity === 'significant' ? 'bg-yellow-900/30 text-yellow-400' :
-                          'bg-zinc-800 text-zinc-500'
-                        }`}>{o.text.length > 40 ? o.text.slice(0, 40) + '...' : o.text}</span>
-                      ))}
-                    </div>
-                  )}
                 </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
+              )}
 
-      {/* Objection Summary */}
-      {allObjections.length > 0 && (
-        <div className="border border-zinc-800 rounded-xl p-5">
-          <h2 className="text-xs font-medium text-zinc-400 mb-4 flex items-center gap-2">
-            <AlertTriangle className="w-3.5 h-3.5" /> ALL OBJECTIONS
-          </h2>
-          <div className="space-y-2">
-            {allObjections.map((o, i) => (
-              <div key={i} className="flex items-center gap-3 text-sm">
-                <span className={`text-xs px-1.5 py-0.5 rounded shrink-0 ${
-                  o.severity === 'showstopper' ? 'bg-red-900/50 text-red-400' :
-                  o.severity === 'significant' ? 'bg-yellow-900/50 text-yellow-400' :
-                  'bg-zinc-800 text-zinc-500'
-                }`}>{o.severity}</span>
-                <span className="text-zinc-300 flex-1">{o.text}</span>
-                <span className="text-xs text-zinc-600 shrink-0">{o.date}</span>
-              </div>
-            ))}
-          </div>
+              {/* Meeting History */}
+              <h3 className="text-xs font-medium text-zinc-400 mb-3 flex items-center gap-2">
+                <Clock className="w-3.5 h-3.5" /> MEETING HISTORY
+              </h3>
+              {meetings.length === 0 ? (
+                <p className="text-sm text-zinc-600">No meetings logged yet.</p>
+              ) : (
+                <div className="space-y-4">
+                  {meetings.map(m => {
+                    const objs = (() => { try { return JSON.parse(m.objections || '[]'); } catch { return []; } })();
+                    return (
+                      <div key={m.id} className="border-l-2 border-zinc-800 pl-4 pb-2">
+                        <div className="flex items-center gap-3 mb-1">
+                          <span className="text-sm font-medium">{m.date}</span>
+                          <span className="text-xs text-zinc-500">{m.type.replace(/_/g, ' ')}</span>
+                          <span className="text-xs text-zinc-600">{m.duration_minutes}min</span>
+                          <div className="flex gap-0.5 ml-auto">
+                            {[1,2,3,4,5].map(n => (
+                              <div key={n} className={`w-1.5 h-1.5 rounded-full ${n <= m.enthusiasm_score ? 'bg-blue-500' : 'bg-zinc-800'}`} />
+                            ))}
+                          </div>
+                        </div>
+                        {m.ai_analysis && <p className="text-sm text-zinc-400 mb-2">{m.ai_analysis}</p>}
+                        {m.next_steps && <p className="text-xs text-blue-400/70">Next: {m.next_steps}</p>}
+                        {objs.length > 0 && (
+                          <div className="flex flex-wrap gap-1 mt-2">
+                            {objs.map((o: { text: string; severity: string }, i: number) => (
+                              <span key={i} className={`text-xs px-1.5 py-0.5 rounded ${
+                                o.severity === 'showstopper' ? 'bg-red-900/30 text-red-400' :
+                                o.severity === 'significant' ? 'bg-yellow-900/30 text-yellow-400' :
+                                'bg-zinc-800 text-zinc-500'
+                              }`}>{o.text.length > 40 ? o.text.slice(0, 40) + '...' : o.text}</span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Objection Summary */}
+              {allObjections.length > 0 && (
+                <div className="mt-6">
+                  <h3 className="text-xs font-medium text-zinc-400 mb-3 flex items-center gap-2">
+                    <AlertTriangle className="w-3.5 h-3.5" /> ALL OBJECTIONS
+                  </h3>
+                  <div className="space-y-2">
+                    {allObjections.map((o, i) => (
+                      <div key={i} className="flex items-center gap-3 text-sm">
+                        <span className={`text-xs px-1.5 py-0.5 rounded shrink-0 ${
+                          o.severity === 'showstopper' ? 'bg-red-900/50 text-red-400' :
+                          o.severity === 'significant' ? 'bg-yellow-900/50 text-yellow-400' :
+                          'bg-zinc-800 text-zinc-500'
+                        }`}>{o.severity}</span>
+                        <span className="text-zinc-300 flex-1">{o.text}</span>
+                        <span className="text-xs text-zinc-600 shrink-0">{o.date}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Partners Tab */}
+          {intelTab === 'partners' && (
+            <div>
+              {partners.length === 0 ? (
+                <div className="text-center py-6">
+                  <UserCheck className="w-8 h-8 text-zinc-700 mx-auto mb-2" />
+                  <p className="text-sm text-zinc-600 mb-3">No partner profiles yet.</p>
+                  <button onClick={handleResearch} disabled={researching} className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm flex items-center gap-2 mx-auto">
+                    <RefreshCw className="w-3.5 h-3.5" /> Research {investor.name}
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {partners.map(p => (
+                    <div key={p.id} className="border border-zinc-800 rounded-lg p-4">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <h4 className="font-medium">{p.name}</h4>
+                          <p className="text-xs text-zinc-500">{p.title}</p>
+                        </div>
+                        <button onClick={() => deleteIntelItem('partner', p.id)} className="text-zinc-600 hover:text-red-400">
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                      <div className="mt-2 space-y-1 text-xs text-zinc-400">
+                        {p.focus_areas && <p><span className="text-zinc-500">Focus:</span> {p.focus_areas}</p>}
+                        {p.notable_deals && <p><span className="text-zinc-500">Deals:</span> {p.notable_deals}</p>}
+                        {p.board_seats && <p><span className="text-zinc-500">Boards:</span> {p.board_seats}</p>}
+                        {p.background && <p><span className="text-zinc-500">Background:</span> {p.background}</p>}
+                        {p.relevance_to_us && <p className="text-blue-400"><span className="text-zinc-500">Relevance:</span> {p.relevance_to_us}</p>}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Portfolio Tab */}
+          {intelTab === 'portfolio' && (
+            <div>
+              {portfolio.length === 0 ? (
+                <div className="text-center py-6">
+                  <Briefcase className="w-8 h-8 text-zinc-700 mx-auto mb-2" />
+                  <p className="text-sm text-zinc-600 mb-3">No portfolio companies tracked.</p>
+                  <button onClick={handleResearch} disabled={researching} className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm flex items-center gap-2 mx-auto">
+                    <RefreshCw className="w-3.5 h-3.5" /> Research {investor.name}
+                  </button>
+                </div>
+              ) : (
+                <div className="border border-zinc-800 rounded-lg overflow-hidden">
+                  <table className="w-full text-sm">
+                    <thead className="bg-zinc-900/50 border-b border-zinc-800">
+                      <tr>
+                        <th className="text-left px-4 py-2 text-xs text-zinc-500 font-medium">Company</th>
+                        <th className="text-left px-4 py-2 text-xs text-zinc-500 font-medium">Sector</th>
+                        <th className="text-left px-4 py-2 text-xs text-zinc-500 font-medium">Stage</th>
+                        <th className="text-left px-4 py-2 text-xs text-zinc-500 font-medium">Amount</th>
+                        <th className="text-left px-4 py-2 text-xs text-zinc-500 font-medium">Date</th>
+                        <th className="text-left px-4 py-2 text-xs text-zinc-500 font-medium">Status</th>
+                        <th className="w-8"></th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-zinc-800/50">
+                      {portfolio.map(co => (
+                        <tr key={co.id} className="hover:bg-zinc-900/30">
+                          <td className="px-4 py-2 font-medium">{co.company}</td>
+                          <td className="px-4 py-2 text-zinc-400 text-xs">{co.sector}</td>
+                          <td className="px-4 py-2 text-zinc-400 text-xs">{co.stage_invested}</td>
+                          <td className="px-4 py-2 text-emerald-400 text-xs">{co.amount}</td>
+                          <td className="px-4 py-2 text-zinc-500 text-xs">{co.date}</td>
+                          <td className="px-4 py-2">
+                            <span className={`text-xs px-1.5 py-0.5 rounded ${
+                              co.status === 'active' ? 'bg-green-900/30 text-green-400' :
+                              co.status === 'exited' ? 'bg-blue-900/30 text-blue-400' :
+                              'bg-red-900/30 text-red-400'
+                            }`}>{co.status}</span>
+                          </td>
+                          <td className="px-4 py-2">
+                            <button onClick={() => deleteIntelItem('portfolio', co.id)} className="text-zinc-600 hover:text-red-400">
+                              <Trash2 className="w-3 h-3" />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Research Tab */}
+          {intelTab === 'research' && (
+            <div>
+              {briefs.length === 0 ? (
+                <div className="text-center py-6">
+                  <BookOpen className="w-8 h-8 text-zinc-700 mx-auto mb-2" />
+                  <p className="text-sm text-zinc-600 mb-3">No research briefs yet.</p>
+                  <button onClick={handleResearch} disabled={researching} className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm flex items-center gap-2 mx-auto">
+                    {researching ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Researching...</> : <><RefreshCw className="w-3.5 h-3.5" /> Research {investor.name}</>}
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {briefs.map(b => (
+                    <div key={b.id} className="border border-zinc-800 rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs px-2 py-0.5 rounded bg-blue-900/30 text-blue-400 font-medium">{b.brief_type}</span>
+                          <span className="text-xs text-zinc-600">{b.updated_at?.split('T')[0]}</span>
+                        </div>
+                        <button onClick={() => deleteIntelItem('brief', b.id)} className="text-zinc-600 hover:text-red-400">
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                      <div className="prose prose-invert prose-sm max-w-none text-zinc-300 whitespace-pre-wrap text-sm leading-relaxed">
+                        {b.content}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
-      )}
+      </div>
 
       {/* Notes */}
       {investor.notes && (
