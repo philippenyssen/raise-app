@@ -601,7 +601,7 @@ export default function TermComparePage() {
                 {/* Score row */}
                 <tr style={{ background: 'var(--surface-1)', borderTop: '2px solid var(--border-strong)' }}>
                   <td className="px-4 py-3 text-xs font-medium" style={{ color: 'var(--text-tertiary)' }}>
-                    FOUNDER SCORE
+                    Founder score
                   </td>
                   {results.results.map(r => (
                     <td key={r.investor_name} className="px-4 py-3">

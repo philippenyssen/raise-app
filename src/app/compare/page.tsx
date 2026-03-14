@@ -466,7 +466,7 @@ export default function ComparePage() {
 
                 <tbody>
                   {/* -- Basic Info -- */}
-                  <SectionHeader label="BASIC INFO" colSpan={compareData.profiles.length + 1} />
+                  <SectionHeader label="Basic info" colSpan={compareData.profiles.length + 1} />
 
                   <CompareRow label="Type" cells={compareData.profiles.map(p => ({
                     value: TYPE_LABELS[p.investor.type as InvestorType] ?? p.investor.type,

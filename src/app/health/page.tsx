@@ -78,7 +78,7 @@ export default function HealthPage() {
       {/* Convergence Score */}
       <div className="rounded-xl p-6" style={{ border: '1px solid var(--border-default)' }}>
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-sm font-medium" style={{ color: 'var(--text-tertiary)' }}>CONVERGENCE SCORE</h2>
+          <h2 className="text-sm font-medium" style={{ color: 'var(--text-tertiary)' }}>Convergence score</h2>
           <div className="text-4xl font-bold" style={{
             color: score >= 8 ? 'var(--success)' : score >= 5 ? 'var(--warning)' : 'var(--danger)'
           }}>{score}/10</div>
@@ -124,7 +124,7 @@ export default function HealthPage() {
 
       {/* Funnel Details */}
       <div className="rounded-xl p-6" style={{ border: '1px solid var(--border-default)' }}>
-        <h2 className="text-sm font-medium mb-4" style={{ color: 'var(--text-tertiary)' }}>PIPELINE CONVERSION RATES</h2>
+        <h2 className="text-sm font-medium mb-4" style={{ color: 'var(--text-tertiary)' }}>Pipeline conversion rates</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {Object.entries(data.funnel.conversion_rates).map(([key, rate]) => {
             const target = data.funnel.targets[key] ?? 50;
@@ -166,7 +166,7 @@ export default function HealthPage() {
 
       {/* Status Breakdown */}
       <div className="rounded-xl p-6" style={{ border: '1px solid var(--border-default)' }}>
-        <h2 className="text-sm font-medium mb-4" style={{ color: 'var(--text-tertiary)' }}>INVESTOR STATUS BREAKDOWN</h2>
+        <h2 className="text-sm font-medium mb-4" style={{ color: 'var(--text-tertiary)' }}>Investor status breakdown</h2>
         <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
           {Object.entries(data.statusBreakdown).sort((a, b) => b[1] - a[1]).map(([status, count]) => (
             <div key={status} className="rounded-lg p-3 text-center" style={{ backgroundColor: 'var(--surface-1)' }}>
@@ -182,7 +182,7 @@ export default function HealthPage() {
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <Shield className="w-4 h-4" style={{ color: 'var(--accent)' }} />
-            <h2 className="text-sm font-medium" style={{ color: 'var(--text-tertiary)' }}>INTELLIGENCE HEALTH</h2>
+            <h2 className="text-sm font-medium" style={{ color: 'var(--text-tertiary)' }}>Intelligence health</h2>
           </div>
           {intelVerify && (
             <div

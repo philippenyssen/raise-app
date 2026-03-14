@@ -713,7 +713,7 @@ export default function InvestorDetailPage() {
               {enthusiasmTrend.length > 1 && (
                 <div className="mb-6">
                   <h3 className="text-xs font-medium mb-3 flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
-                    <Zap className="w-3.5 h-3.5" /> ENTHUSIASM TREND
+                    <Zap className="w-3.5 h-3.5" /> Enthusiasm trend
                   </h3>
                   <div className="flex items-end gap-2 h-20">
                     {enthusiasmTrend.map((point, i) => (
@@ -734,7 +734,7 @@ export default function InvestorDetailPage() {
 
               {/* Meeting History */}
               <h3 className="text-xs font-medium mb-3 flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
-                <Clock className="w-3.5 h-3.5" /> MEETING HISTORY
+                <Clock className="w-3.5 h-3.5" /> Meeting history
               </h3>
               {meetings.length === 0 ? (
                 <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No meetings logged yet. Log your first meeting to start tracking engagement.</p>
@@ -788,7 +788,7 @@ export default function InvestorDetailPage() {
               {allObjections.length > 0 && (
                 <div className="mt-6">
                   <h3 className="text-xs font-medium mb-3 flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
-                    <AlertTriangle className="w-3.5 h-3.5" /> ALL OBJECTIONS
+                    <AlertTriangle className="w-3.5 h-3.5" /> All objections
                   </h3>
                   <div className="space-y-2">
                     {allObjections.map((o, i) => (

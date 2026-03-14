@@ -297,7 +297,7 @@ export default function DocumentEditorPage() {
         <div className="w-72 shrink-0 space-y-3">
           <div className="rounded-xl p-4" style={{ border: '1px solid var(--border-default)' }}>
             <h3 className="text-xs font-medium mb-3 flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
-              <Sparkles className="w-3.5 h-3.5" /> AI OPERATIONS
+              <Sparkles className="w-3.5 h-3.5" /> AI operations
             </h3>
             {selectedText && (
               <div className="text-xs mb-3 p-2 rounded" style={{ color: 'var(--accent)', background: 'var(--accent-muted)', border: '1px solid var(--accent)' }}>
@@ -335,7 +335,7 @@ export default function DocumentEditorPage() {
           {/* AI Result */}
           {aiResult && (
             <div className="rounded-xl p-4 max-h-96 overflow-y-auto" style={{ border: '1px solid var(--border-default)' }}>
-              <h3 className="text-xs font-medium mb-3" style={{ color: 'var(--text-tertiary)' }}>AI RESULT</h3>
+              <h3 className="text-xs font-medium mb-3" style={{ color: 'var(--text-tertiary)' }}>AI result</h3>
 
               {(aiResult.type === 'improve' || aiResult.type === 'goldman') && (
                 <>

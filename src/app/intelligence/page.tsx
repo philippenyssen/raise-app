@@ -155,7 +155,7 @@ export default function IntelligencePage() {
       >
         <div className="flex items-center gap-2 mb-2">
           <Search className="w-4 h-4" style={{ color: 'var(--accent)' }} />
-          <span className="text-xs font-medium" style={{ color: 'var(--text-tertiary)' }}>AI RESEARCH</span>
+          <span className="text-xs font-medium" style={{ color: 'var(--text-tertiary)' }}>AI Research</span>
         </div>
         <div className="flex gap-2">
           <select

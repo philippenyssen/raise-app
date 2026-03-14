@@ -142,7 +142,7 @@ function NewMeetingContent() {
         {/* Investor Quick Profile */}
         {selectedInvestor && (
           <div className="rounded-lg p-4 space-y-2" style={{ background: 'var(--surface-1)', border: '1px solid var(--border-default)' }}>
-            <h3 className="text-xs font-medium" style={{ color: 'var(--text-tertiary)' }}>INVESTOR PROFILE</h3>
+            <h3 className="text-xs font-medium" style={{ color: 'var(--text-tertiary)' }}>Investor profile</h3>
             <div className="grid grid-cols-2 gap-2 text-xs">
               <div><span style={{ color: 'var(--text-muted)' }}>Partner:</span> <span style={{ color: 'var(--text-secondary)' }}>{selectedInvestor.partner || '—'}</span></div>
               <div><span style={{ color: 'var(--text-muted)' }}>Thesis:</span> <span style={{ color: 'var(--text-secondary)' }}>{selectedInvestor.sector_thesis || '—'}</span></div>
@@ -218,14 +218,14 @@ function NewMeetingContent() {
               </div>
             </div>
             <div>
-              <h3 className="text-xs font-medium mb-2" style={{ color: 'var(--text-tertiary)' }}>SUGGESTED STATUS</h3>
+              <h3 className="text-xs font-medium mb-2" style={{ color: 'var(--text-tertiary)' }}>Suggested status</h3>
               <span className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>{String((result as Record<string, unknown>).status_after || '—')}</span>
             </div>
           </div>
 
           {!!result.questions_asked && (
             <div>
-              <h3 className="text-xs font-medium mb-2" style={{ color: 'var(--text-tertiary)' }}>QUESTIONS ASKED</h3>
+              <h3 className="text-xs font-medium mb-2" style={{ color: 'var(--text-tertiary)' }}>Questions asked</h3>
               <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>
                 {((() => { try { return JSON.parse(String(result.questions_asked) || '[]'); } catch { return []; } })()).map((q: { text: string; topic: string }, i: number) => (
                   <div key={i} className="flex gap-2 mb-1">

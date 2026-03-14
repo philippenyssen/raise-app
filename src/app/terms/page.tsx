@@ -170,7 +170,7 @@ export default function TermsPage() {
 
       {/* Market Standards Reference */}
       <div className="rounded-xl p-5" style={{ border: '1px solid var(--border-default)', background: 'var(--surface-0)' }}>
-        <h3 className="text-xs font-medium mb-3" style={{ color: 'var(--text-tertiary)' }}>MARKET STANDARDS (Series C)</h3>
+        <h3 className="text-xs font-medium mb-3" style={{ color: 'var(--text-tertiary)' }}>Market standards (Series C)</h3>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-xs">
           {Object.entries(MARKET_STANDARDS).map(([key, val]) => (
             <div key={key}>
@@ -184,7 +184,7 @@ export default function TermsPage() {
       {/* Add/Edit Form */}
       {showForm && (
         <form onSubmit={handleSubmit} className="rounded-xl p-6 space-y-4" style={{ border: '1px solid var(--border-default)', background: 'var(--surface-0)' }}>
-          <h3 className="text-sm font-medium" style={{ color: 'var(--text-tertiary)' }}>{editId ? 'EDIT' : 'ADD'} TERM SHEET</h3>
+          <h3 className="text-sm font-medium" style={{ color: 'var(--text-tertiary)' }}>{editId ? 'Edit' : 'Add'} term sheet</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <TsInput label="Investor" value={form.investor} onChange={v => setForm(f => ({ ...f, investor: v }))} required />
             <TsInput label="Pre-Money Valuation" value={form.valuation} onChange={v => setForm(f => ({ ...f, valuation: v }))} placeholder="e.g., 2.0Bn" />
@@ -270,7 +270,7 @@ export default function TermsPage() {
               ))}
               {/* Score Row */}
               <tr style={{ background: 'var(--surface-1)', borderTop: '2px solid var(--border-strong)' }}>
-                <td className="px-4 py-3 text-xs font-medium" style={{ color: 'var(--text-tertiary)' }}>SCORE</td>
+                <td className="px-4 py-3 text-xs font-medium" style={{ color: 'var(--text-tertiary)' }}>Score</td>
                 {sheets.map(ts => {
                   const { score, flags } = scoreSheet(ts);
                   return (

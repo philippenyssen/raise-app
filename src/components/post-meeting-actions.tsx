@@ -173,7 +173,7 @@ export default function PostMeetingActions({
         {(statusChanged || enthusiasmChanged) && (
           <div className="px-5 py-4" style={{ borderBottom: '1px solid color-mix(in srgb, var(--border-subtle) 50%, transparent)' }}>
             <h3 className="text-xs font-medium mb-3 flex items-center gap-2" style={{ color: 'var(--text-secondary)' }}>
-              <UserCheck className="w-3.5 h-3.5" /> INVESTOR PROFILE UPDATED
+              <UserCheck className="w-3.5 h-3.5" /> Investor profile updated
             </h3>
             <div className="flex flex-wrap gap-3">
               {statusChanged && (
@@ -213,7 +213,7 @@ export default function PostMeetingActions({
               style={{ color: 'var(--text-secondary)' }}
             >
               <span className="flex items-center gap-2">
-                <ClipboardList className="w-3.5 h-3.5" /> GENERATED TASKS ({visibleTasks.length})
+                <ClipboardList className="w-3.5 h-3.5" /> Generated tasks ({visibleTasks.length})
               </span>
               {tasksExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
             </button>
@@ -312,7 +312,7 @@ export default function PostMeetingActions({
               style={{ color: 'var(--text-secondary)' }}
             >
               <span className="flex items-center gap-2">
-                <FileWarning className="w-3.5 h-3.5" /> DOCUMENT FLAGS ({visibleFlags.length})
+                <FileWarning className="w-3.5 h-3.5" /> Document flags ({visibleFlags.length})
               </span>
               {flagsExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
             </button>
