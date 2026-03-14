@@ -1,10 +1,11 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
+import Link from 'next/link';
 import {
   Target, Activity, Shield, Users, TrendingUp, TrendingDown,
   Minus, RefreshCw, AlertTriangle, ArrowRight, Clock,
-  BarChart3, MessageCircleWarning, Zap, CheckCircle2,
+  BarChart3, MessageCircleWarning, Zap, CheckCircle2, ExternalLink,
 } from 'lucide-react';
 
 // ---------------------------------------------------------------------------
@@ -547,7 +548,9 @@ export default function StrategicPage() {
                 <tbody>
                   {data.raiseForecast.investorForecasts.map((f) => (
                     <tr key={f.name} className="table-row">
-                      <td className="py-1.5 pr-3" style={{ color: 'var(--text-secondary)' }}>{f.name}</td>
+                      <td className="py-1.5 pr-3">
+                        <Link href={`/dealflow?search=${encodeURIComponent(f.name)}`} style={{ color: 'var(--accent)', textDecoration: 'none', fontWeight: 500 }}>{f.name}</Link>
+                      </td>
                       <td className="py-1.5 pr-3" style={{ color: 'var(--text-muted)' }}>{f.stage}</td>
                       <td className="py-1.5 pr-3 text-right" style={{ fontVariantNumeric: 'tabular-nums', color: 'var(--text-secondary)' }}>~{f.days}d</td>
                       <td className="py-1.5">
@@ -629,10 +632,37 @@ export default function StrategicPage() {
 // Sub-components
 // ---------------------------------------------------------------------------
 
+const ACTION_ROUTES: Record<string, { route: string; label: string }> = {
+  pipeline:  { route: '/dealflow',     label: 'Open Dealflow' },
+  narrative: { route: '/objections',   label: 'Fix Narrative' },
+  execution: { route: '/focus',        label: 'Open Focus' },
+  timing:    { route: '/velocity',     label: 'Check Velocity' },
+  risk:      { route: '/stress-test',  label: 'Stress Test' },
+};
+
+function deriveActionRoute(rec: StrategicRecommendation): { route: string; label: string } {
+  const text = `${rec.title} ${rec.action} ${rec.rationale}`.toLowerCase();
+  if (text.includes('meeting') || text.includes('schedule') || text.includes('reconnect'))
+    return { route: '/meetings/new', label: 'Schedule Meeting' };
+  if (text.includes('follow') || text.includes('followup') || text.includes('nudge') || text.includes('outreach'))
+    return { route: '/followups', label: 'Send Follow-up' };
+  if (text.includes('data room') || text.includes('document'))
+    return { route: '/data-room', label: 'Open Data Room' };
+  if (text.includes('objection') || text.includes('narrative') || text.includes('story'))
+    return { route: '/objections', label: 'Fix Objections' };
+  if (text.includes('forecast') || text.includes('close date'))
+    return { route: '/forecast', label: 'View Forecast' };
+  if (text.includes('pipeline') || text.includes('diversif'))
+    return { route: '/pipeline', label: 'View Pipeline' };
+  return ACTION_ROUTES[rec.category] || { route: '/focus', label: 'Take Action' };
+}
+
 function RecommendationRow({ rec, isLast }: { rec: StrategicRecommendation; isLast: boolean }) {
   const [hovered, setHovered] = useState(false);
+  const [btnHover, setBtnHover] = useState(false);
   const catCfg = CATEGORY_CONFIG[rec.category] || CATEGORY_CONFIG.pipeline;
   const CatIcon = catCfg.icon;
+  const actionLink = deriveActionRoute(rec);
 
   return (
     <div
@@ -698,7 +728,7 @@ function RecommendationRow({ rec, isLast }: { rec: StrategicRecommendation; isLa
             <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>{rec.action}</p>
           </div>
 
-          {/* Impact + Deadline */}
+          {/* Impact + Deadline + Action button */}
           <div className="flex items-center gap-4" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
             <span className="flex items-center gap-1">
               <TrendingUp className="w-3 h-3" />
@@ -708,6 +738,26 @@ function RecommendationRow({ rec, isLast }: { rec: StrategicRecommendation; isLa
               <Clock className="w-3 h-3" />
               {rec.deadline}
             </span>
+            <Link
+              href={actionLink.route}
+              onMouseEnter={() => setBtnHover(true)}
+              onMouseLeave={() => setBtnHover(false)}
+              className="ml-auto flex items-center gap-1"
+              style={{
+                fontSize: '11px',
+                fontWeight: 600,
+                padding: '3px 10px',
+                borderRadius: 'var(--radius-sm)',
+                background: btnHover ? 'var(--accent)' : 'var(--accent-muted)',
+                color: btnHover ? '#fff' : 'var(--accent)',
+                border: '1px solid rgba(59, 130, 246, 0.25)',
+                transition: 'all 150ms ease',
+                textDecoration: 'none',
+              }}
+            >
+              {actionLink.label}
+              <ExternalLink className="w-3 h-3" />
+            </Link>
           </div>
         </div>
       </div>
