@@ -6,7 +6,29 @@ import {
   SendHorizonal, Clock, CheckCircle2, XCircle, AlertTriangle,
   Mail, MessageSquare, FolderOpen, CalendarPlus, RefreshCw, Milestone,
   ChevronDown, ChevronUp, TrendingUp, TrendingDown, Minus, Users,
+  Zap, Timer, Network, ArrowUpRight, ArrowDownRight, Activity,
 } from 'lucide-react';
+
+interface TimingIntel {
+  optimalDayOfWeek: string;
+  optimalTimeOfDay: string;
+  reasoning: string;
+}
+
+interface VelocityIntel {
+  acceleration: 'accelerating' | 'decelerating' | 'stable' | 'new' | 'gone_silent';
+  signal: string;
+  daysSinceLastMeeting: number | null;
+  recentMeetings: number;
+  previousMeetings: number;
+}
+
+interface CascadeIntel {
+  cascadeChainLength: number;
+  signal: string;
+  keystoneName: string;
+  totalCascadeProbability: number;
+}
 
 interface FollowupItem {
   id: string;
@@ -23,15 +45,53 @@ interface FollowupItem {
   completed_at: string | null;
   executed_at: string | null;
   measured_lift: number | null;
+  timing: TimingIntel | null;
+  velocity: VelocityIntel | null;
+  cascade: CascadeIntel | null;
 }
 
-const ACTION_TYPE_CONFIG: Record<string, { label: string; icon: typeof Mail; color: string; bgColor: string }> = {
-  thank_you: { label: 'Thank-You Note', icon: Mail, color: 'text-blue-400', bgColor: 'bg-blue-900/30' },
-  objection_response: { label: 'Objection Response', icon: MessageSquare, color: 'text-red-400', bgColor: 'bg-red-900/30' },
-  data_share: { label: 'Share Materials', icon: FolderOpen, color: 'text-purple-400', bgColor: 'bg-purple-900/30' },
-  schedule_followup: { label: 'Schedule Meeting', icon: CalendarPlus, color: 'text-green-400', bgColor: 'bg-green-900/30' },
-  warm_reengagement: { label: 'Re-engagement', icon: RefreshCw, color: 'text-yellow-400', bgColor: 'bg-yellow-900/30' },
-  milestone_update: { label: 'Milestone Update', icon: Milestone, color: 'text-orange-400', bgColor: 'bg-orange-900/30' },
+const ACTION_TYPE_CONFIG: Record<string, {
+  label: string;
+  icon: typeof Mail;
+  color: string;
+  bgColor: string;
+}> = {
+  thank_you: {
+    label: 'Thank-You Note',
+    icon: Mail,
+    color: 'var(--accent)',
+    bgColor: 'var(--accent-muted)',
+  },
+  objection_response: {
+    label: 'Objection Response',
+    icon: MessageSquare,
+    color: 'var(--danger)',
+    bgColor: 'var(--danger-muted)',
+  },
+  data_share: {
+    label: 'Share Materials',
+    icon: FolderOpen,
+    color: '#c084fc',
+    bgColor: 'rgba(168, 85, 247, 0.12)',
+  },
+  schedule_followup: {
+    label: 'Schedule Meeting',
+    icon: CalendarPlus,
+    color: 'var(--success)',
+    bgColor: 'var(--success-muted)',
+  },
+  warm_reengagement: {
+    label: 'Re-engagement',
+    icon: RefreshCw,
+    color: 'var(--warning)',
+    bgColor: 'var(--warning-muted)',
+  },
+  milestone_update: {
+    label: 'Milestone Update',
+    icon: Milestone,
+    color: '#fb923c',
+    bgColor: 'rgba(251, 146, 60, 0.12)',
+  },
 };
 
 function formatRelativeTime(dateStr: string): string {
@@ -70,11 +130,13 @@ export default function FollowupsPage() {
   const [overdueExpanded, setOverdueExpanded] = useState(true);
   const [todayExpanded, setTodayExpanded] = useState(true);
   const [upcomingExpanded, setUpcomingExpanded] = useState(true);
+  const [hoveredActionBtn, setHoveredActionBtn] = useState<string | null>(null);
 
   const fetchFollowups = useCallback(async () => {
     setLoading(true);
-    const params = filter === 'all' ? '' : `?status=${filter}`;
-    const res = await fetch(`/api/followups${params}`);
+    const params = new URLSearchParams({ view: 'intelligence' });
+    if (filter !== 'all') params.set('status', filter);
+    const res = await fetch(`/api/followups?${params.toString()}`);
     const data = await res.json();
     setFollowups(data);
     setLoading(false);
@@ -166,48 +228,75 @@ export default function FollowupsPage() {
     return (
       <div
         key={item.id}
-        className={`rounded-lg border transition-all ${
-          showOverdueIndicator || isOverdue
-            ? 'border-red-800/50 bg-red-900/5'
-            : 'border-zinc-800 bg-zinc-900/50 hover:border-zinc-700'
-        }`}
+        className="card"
+        style={{
+          padding: 0,
+          borderColor: showOverdueIndicator || isOverdue ? 'var(--danger)' : undefined,
+          background: showOverdueIndicator || isOverdue ? 'var(--danger-muted)' : undefined,
+        }}
       >
-        <div className="p-4">
+        <div style={{ padding: 'var(--space-4)' }}>
           <div className="flex items-start gap-3">
             {/* Icon */}
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-              isOverdue ? 'bg-red-900/40' : config.bgColor
-            }`}>
-              <Icon className={`w-4 h-4 ${isOverdue ? 'text-red-400' : config.color}`} />
+            <div
+              className="w-8 h-8 flex items-center justify-center shrink-0"
+              style={{
+                borderRadius: '50%',
+                background: isOverdue ? 'var(--danger-muted)' : config.bgColor,
+              }}
+            >
+              <Icon className="w-4 h-4" style={{ color: isOverdue ? 'var(--danger)' : config.color }} />
             </div>
 
             {/* Content */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1 flex-wrap">
-                <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium uppercase ${
-                  isOverdue ? 'bg-red-900/40 text-red-300' : `${config.bgColor} ${config.color}`
-                }`}>
+                <span
+                  className="badge"
+                  style={{
+                    fontSize: '10px',
+                    textTransform: 'uppercase',
+                    background: isOverdue ? 'var(--danger-muted)' : config.bgColor,
+                    color: isOverdue ? '#fca5a5' : config.color,
+                  }}
+                >
                   {config.label}
                 </span>
-                <Link href={`/investors/${item.investor_id}`} className="text-xs text-blue-400 hover:text-blue-300">
+                <Link
+                  href={`/investors/${item.investor_id}`}
+                  style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}
+                  onMouseEnter={e => { e.currentTarget.style.color = '#60a5fa'; }}
+                  onMouseLeave={e => { e.currentTarget.style.color = 'var(--accent)'; }}
+                >
                   {item.investor_name}
                 </Link>
-                <span className={`text-[10px] flex items-center gap-1 ${
-                  isOverdue ? 'text-red-400 font-medium' : 'text-zinc-500'
-                }`}>
+                <span
+                  className="flex items-center gap-1"
+                  style={{
+                    fontSize: '10px',
+                    color: isOverdue ? 'var(--danger)' : 'var(--text-muted)',
+                    fontWeight: isOverdue ? 500 : undefined,
+                  }}
+                >
                   <Clock className="w-3 h-3" />
                   {formatRelativeTime(item.due_at)}
                 </span>
               </div>
 
-              <p className={`text-xs text-zinc-400 ${isExpanded ? 'whitespace-pre-line' : 'line-clamp-2'}`}>
+              <p
+                className={isExpanded ? 'whitespace-pre-line' : 'line-clamp-2'}
+                style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}
+              >
                 {item.description}
               </p>
 
               {item.description.includes('\n') && (
                 <button
                   onClick={() => setExpandedId(isExpanded ? null : item.id)}
-                  className="text-[10px] text-zinc-600 hover:text-zinc-400 mt-1"
+                  style={{ fontSize: '10px', color: 'var(--text-muted)' }}
+                  onMouseEnter={e => { e.currentTarget.style.color = 'var(--text-secondary)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; }}
+                  className="mt-1"
                 >
                   {isExpanded ? 'Show less' : 'Show more'}
                 </button>
@@ -215,20 +304,39 @@ export default function FollowupsPage() {
 
               {/* Completed outcome */}
               {item.status === 'completed' && item.outcome && (
-                <div className="mt-2 bg-zinc-800/50 rounded px-2 py-1.5 text-xs text-zinc-400">
-                  <span className="text-zinc-500">Outcome:</span> {item.outcome}
+                <div
+                  className="mt-2"
+                  style={{
+                    background: 'var(--surface-2)',
+                    borderRadius: 'var(--radius-sm)',
+                    padding: '0.375rem 0.5rem',
+                    fontSize: 'var(--font-size-xs)',
+                    color: 'var(--text-secondary)',
+                  }}
+                >
+                  <span style={{ color: 'var(--text-muted)' }}>Outcome:</span> {item.outcome}
                   {item.conviction_delta !== 0 && (
-                    <span className={`ml-2 inline-flex items-center gap-0.5 ${
-                      item.conviction_delta > 0 ? 'text-green-400' : 'text-red-400'
-                    }`}>
+                    <span
+                      className="inline-flex items-center gap-0.5"
+                      style={{
+                        marginLeft: '0.5rem',
+                        color: item.conviction_delta > 0 ? 'var(--success)' : 'var(--danger)',
+                      }}
+                    >
                       {item.conviction_delta > 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
                       {item.conviction_delta > 0 ? '+' : ''}{item.conviction_delta}
                     </span>
                   )}
                   {item.measured_lift !== null && item.measured_lift !== undefined && (
-                    <span className={`ml-2 inline-flex items-center gap-0.5 border-l border-zinc-700 pl-2 ${
-                      item.measured_lift > 0 ? 'text-emerald-400' : item.measured_lift < 0 ? 'text-rose-400' : 'text-zinc-500'
-                    }`}>
+                    <span
+                      className="inline-flex items-center gap-0.5"
+                      style={{
+                        marginLeft: '0.5rem',
+                        borderLeft: '1px solid var(--border-default)',
+                        paddingLeft: '0.5rem',
+                        color: item.measured_lift > 0 ? 'var(--success)' : item.measured_lift < 0 ? 'var(--danger)' : 'var(--text-muted)',
+                      }}
+                    >
                       Measured: {item.measured_lift > 0 ? '+' : ''}{item.measured_lift} enthusiasm
                     </span>
                   )}
@@ -237,28 +345,63 @@ export default function FollowupsPage() {
 
               {/* Completing form */}
               {isCompleting && (
-                <div className="mt-3 space-y-2 bg-zinc-800/30 rounded-lg p-3">
+                <div
+                  className="mt-3 space-y-2"
+                  style={{
+                    background: 'var(--surface-2)',
+                    borderRadius: 'var(--radius-lg)',
+                    padding: 'var(--space-3)',
+                  }}
+                >
                   <div>
-                    <label className="text-[10px] text-zinc-500 block mb-1">Outcome (what happened?)</label>
+                    <label
+                      className="block mb-1"
+                      style={{ fontSize: '10px', color: 'var(--text-muted)' }}
+                    >
+                      Outcome (what happened?)
+                    </label>
                     <input
                       value={completeForm.outcome}
                       onChange={e => setCompleteForm(f => ({ ...f, outcome: e.target.value }))}
                       placeholder="e.g., Sent thank-you, they responded positively..."
-                      className="w-full bg-zinc-900 border border-zinc-700 rounded px-2 py-1.5 text-xs text-zinc-200"
+                      className="input"
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] text-zinc-500 block mb-1">Conviction change (-2 to +2)</label>
+                    <label
+                      className="block mb-1"
+                      style={{ fontSize: '10px', color: 'var(--text-muted)' }}
+                    >
+                      Conviction change (-2 to +2)
+                    </label>
                     <div className="flex gap-1">
                       {[-2, -1, 0, 1, 2].map(val => (
                         <button
                           key={val}
                           onClick={() => setCompleteForm(f => ({ ...f, conviction_delta: val }))}
-                          className={`px-2 py-1 rounded text-[10px] font-medium transition-colors ${
-                            completeForm.conviction_delta === val
-                              ? val > 0 ? 'bg-green-600 text-white' : val < 0 ? 'bg-red-600 text-white' : 'bg-blue-600 text-white'
-                              : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'
-                          }`}
+                          style={{
+                            padding: '0.25rem 0.5rem',
+                            borderRadius: 'var(--radius-sm)',
+                            fontSize: '10px',
+                            fontWeight: 500,
+                            transition: 'all 150ms ease',
+                            background: completeForm.conviction_delta === val
+                              ? val > 0 ? 'var(--success)' : val < 0 ? 'var(--danger)' : 'var(--accent)'
+                              : 'var(--surface-3)',
+                            color: completeForm.conviction_delta === val
+                              ? 'white'
+                              : 'var(--text-secondary)',
+                          }}
+                          onMouseEnter={e => {
+                            if (completeForm.conviction_delta !== val) {
+                              e.currentTarget.style.background = 'var(--border-strong)';
+                            }
+                          }}
+                          onMouseLeave={e => {
+                            if (completeForm.conviction_delta !== val) {
+                              e.currentTarget.style.background = 'var(--surface-3)';
+                            }
+                          }}
                         >
                           {val > 0 ? '+' : ''}{val}
                         </button>
@@ -268,13 +411,19 @@ export default function FollowupsPage() {
                   <div className="flex gap-2 pt-1">
                     <button
                       onClick={() => handleComplete(item.id)}
-                      className="px-3 py-1.5 rounded text-xs font-medium bg-green-600 hover:bg-green-500 text-white transition-colors"
+                      className="btn btn-sm"
+                      style={{
+                        background: 'var(--success)',
+                        color: 'white',
+                      }}
+                      onMouseEnter={e => { e.currentTarget.style.background = '#16a34a'; }}
+                      onMouseLeave={e => { e.currentTarget.style.background = 'var(--success)'; }}
                     >
                       Complete
                     </button>
                     <button
                       onClick={() => { setCompletingId(null); setCompleteForm({ outcome: '', conviction_delta: 0 }); }}
-                      className="px-3 py-1.5 rounded text-xs font-medium bg-zinc-800 hover:bg-zinc-700 text-zinc-400 transition-colors"
+                      className="btn btn-sm btn-secondary"
                     >
                       Cancel
                     </button>
@@ -288,21 +437,45 @@ export default function FollowupsPage() {
               <div className="flex gap-1 shrink-0">
                 <button
                   onClick={() => handleQuickComplete(item.id)}
-                  className="p-1.5 rounded-md hover:bg-green-900/30 text-zinc-500 hover:text-green-400 transition-colors"
+                  className="p-1.5"
+                  style={{
+                    borderRadius: 'var(--radius-md)',
+                    color: hoveredActionBtn === `complete-${item.id}` ? 'var(--success)' : 'var(--text-muted)',
+                    background: hoveredActionBtn === `complete-${item.id}` ? 'var(--success-muted)' : 'transparent',
+                    transition: 'all 150ms ease',
+                  }}
+                  onMouseEnter={() => setHoveredActionBtn(`complete-${item.id}`)}
+                  onMouseLeave={() => setHoveredActionBtn(null)}
                   title="Quick complete"
                 >
                   <CheckCircle2 className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => { setCompletingId(item.id); setCompleteForm({ outcome: '', conviction_delta: 0 }); }}
-                  className="p-1.5 rounded-md hover:bg-blue-900/30 text-zinc-500 hover:text-blue-400 transition-colors"
+                  className="p-1.5"
+                  style={{
+                    borderRadius: 'var(--radius-md)',
+                    color: hoveredActionBtn === `outcome-${item.id}` ? 'var(--accent)' : 'var(--text-muted)',
+                    background: hoveredActionBtn === `outcome-${item.id}` ? 'var(--accent-muted)' : 'transparent',
+                    transition: 'all 150ms ease',
+                  }}
+                  onMouseEnter={() => setHoveredActionBtn(`outcome-${item.id}`)}
+                  onMouseLeave={() => setHoveredActionBtn(null)}
                   title="Complete with outcome"
                 >
                   <TrendingUp className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => handleSkip(item.id)}
-                  className="p-1.5 rounded-md hover:bg-red-900/30 text-zinc-500 hover:text-red-400 transition-colors"
+                  className="p-1.5"
+                  style={{
+                    borderRadius: 'var(--radius-md)',
+                    color: hoveredActionBtn === `skip-${item.id}` ? 'var(--danger)' : 'var(--text-muted)',
+                    background: hoveredActionBtn === `skip-${item.id}` ? 'var(--danger-muted)' : 'transparent',
+                    transition: 'all 150ms ease',
+                  }}
+                  onMouseEnter={() => setHoveredActionBtn(`skip-${item.id}`)}
+                  onMouseLeave={() => setHoveredActionBtn(null)}
                   title="Skip"
                 >
                   <XCircle className="w-4 h-4" />
@@ -311,21 +484,133 @@ export default function FollowupsPage() {
             )}
 
             {item.status === 'completed' && (
-              <span className="text-xs text-green-500 flex items-center gap-1 shrink-0">
+              <span className="flex items-center gap-1 shrink-0" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--success)' }}>
                 <CheckCircle2 className="w-3.5 h-3.5" />
               </span>
             )}
 
             {item.status === 'skipped' && (
-              <span className="text-xs text-zinc-500 flex items-center gap-1 shrink-0">
+              <span className="flex items-center gap-1 shrink-0" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
                 <XCircle className="w-3.5 h-3.5" />
               </span>
             )}
           </div>
         </div>
 
+        {/* Intelligence strip */}
+        {item.status === 'pending' && (item.timing || item.velocity || item.cascade) && (
+          <div
+            style={{
+              padding: '0.375rem var(--space-4)',
+              borderTop: '1px solid var(--border-subtle)',
+              display: 'flex',
+              gap: 'var(--space-3)',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              background: 'var(--surface-1)',
+            }}
+          >
+            {/* Optimal timing */}
+            {item.timing && (
+              <div
+                className="flex items-center gap-1.5"
+                style={{ fontSize: '10px' }}
+                title={item.timing.reasoning}
+              >
+                <span
+                  className="flex items-center justify-center"
+                  style={{
+                    width: '16px',
+                    height: '16px',
+                    borderRadius: '50%',
+                    background: 'var(--accent-muted)',
+                  }}
+                >
+                  <Timer className="w-2.5 h-2.5" style={{ color: 'var(--accent)' }} />
+                </span>
+                <span style={{ color: 'var(--text-muted)' }}>Send</span>
+                <span style={{ color: 'var(--accent)', fontWeight: 600 }}>
+                  {item.timing.optimalDayOfWeek} {item.timing.optimalTimeOfDay}
+                </span>
+              </div>
+            )}
+
+            {/* Engagement velocity */}
+            {item.velocity && (() => {
+              const velConfig: Record<string, { color: string; bg: string; icon: typeof ArrowUpRight; label: string }> = {
+                accelerating: { color: 'var(--success)', bg: 'var(--success-muted)', icon: ArrowUpRight, label: 'Rising' },
+                decelerating: { color: 'var(--danger)', bg: 'var(--danger-muted)', icon: ArrowDownRight, label: 'Falling' },
+                stable: { color: 'var(--text-muted)', bg: 'var(--surface-3)', icon: Activity, label: 'Stable' },
+                new: { color: 'var(--warning)', bg: 'var(--warning-muted)', icon: Zap, label: 'New' },
+                gone_silent: { color: 'var(--danger)', bg: 'var(--danger-muted)', icon: AlertTriangle, label: 'Silent' },
+              };
+              const vc = velConfig[item.velocity!.acceleration] || velConfig.stable;
+              const VelIcon = vc.icon;
+              return (
+                <div
+                  className="flex items-center gap-1.5"
+                  style={{ fontSize: '10px' }}
+                  title={item.velocity!.signal}
+                >
+                  <span
+                    className="flex items-center justify-center"
+                    style={{
+                      width: '16px',
+                      height: '16px',
+                      borderRadius: '50%',
+                      background: vc.bg,
+                    }}
+                  >
+                    <VelIcon className="w-2.5 h-2.5" style={{ color: vc.color }} />
+                  </span>
+                  <span style={{ color: 'var(--text-muted)' }}>Velocity</span>
+                  <span style={{ color: vc.color, fontWeight: 600 }}>{vc.label}</span>
+                  {item.velocity!.daysSinceLastMeeting !== null && (
+                    <span style={{ color: 'var(--text-muted)' }}>
+                      ({item.velocity!.daysSinceLastMeeting}d ago)
+                    </span>
+                  )}
+                </div>
+              );
+            })()}
+
+            {/* Network cascade */}
+            {item.cascade && item.cascade.cascadeChainLength > 0 && (
+              <div
+                className="flex items-center gap-1.5"
+                style={{ fontSize: '10px' }}
+                title={item.cascade.signal}
+              >
+                <span
+                  className="flex items-center justify-center"
+                  style={{
+                    width: '16px',
+                    height: '16px',
+                    borderRadius: '50%',
+                    background: 'rgba(168, 85, 247, 0.12)',
+                  }}
+                >
+                  <Network className="w-2.5 h-2.5" style={{ color: '#c084fc' }} />
+                </span>
+                <span style={{ color: 'var(--text-muted)' }}>Cascade</span>
+                <span style={{ color: '#c084fc', fontWeight: 600 }}>
+                  {item.cascade.cascadeChainLength} investor{item.cascade.cascadeChainLength !== 1 ? 's' : ''}
+                </span>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Due date footer */}
-        <div className="px-4 py-2 border-t border-zinc-800/50 flex items-center justify-between text-[10px] text-zinc-600">
+        <div
+          className="flex items-center justify-between"
+          style={{
+            padding: '0.5rem var(--space-4)',
+            borderTop: '1px solid var(--border-subtle)',
+            fontSize: '10px',
+            color: 'var(--text-muted)',
+          }}
+        >
           <span>Due: {formatDate(item.due_at)}</span>
           {item.completed_at && <span>Completed: {formatDate(item.completed_at)}</span>}
         </div>
@@ -343,11 +628,11 @@ export default function FollowupsPage() {
   ) {
     if (items.length === 0) return null;
 
-    const accentColors = {
-      red: 'text-red-400',
-      blue: 'text-blue-400',
-      zinc: 'text-zinc-400',
-      green: 'text-green-400',
+    const accentColorMap: Record<string, string> = {
+      red: 'var(--danger)',
+      blue: 'var(--accent)',
+      zinc: 'var(--text-secondary)',
+      green: 'var(--success)',
     };
 
     return (
@@ -357,15 +642,24 @@ export default function FollowupsPage() {
           className="w-full flex items-center justify-between mb-3"
         >
           <div className="flex items-center gap-2">
-            {accent === 'red' && <AlertTriangle className="w-4 h-4 text-red-400" />}
-            <h2 className={`text-sm font-semibold ${accentColors[accent]}`}>{title}</h2>
-            <span className={`text-xs px-1.5 py-0.5 rounded-full ${
-              accent === 'red' ? 'bg-red-900/40 text-red-300' : 'bg-zinc-800 text-zinc-400'
-            }`}>
+            {accent === 'red' && <AlertTriangle className="w-4 h-4" style={{ color: 'var(--danger)' }} />}
+            <h2 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: accentColorMap[accent] }}>{title}</h2>
+            <span
+              style={{
+                fontSize: 'var(--font-size-xs)',
+                padding: '0.125rem 0.375rem',
+                borderRadius: '9999px',
+                background: accent === 'red' ? 'var(--danger-muted)' : 'var(--surface-3)',
+                color: accent === 'red' ? '#fca5a5' : 'var(--text-secondary)',
+              }}
+            >
               {items.length}
             </span>
           </div>
-          {expanded ? <ChevronUp className="w-4 h-4 text-zinc-500" /> : <ChevronDown className="w-4 h-4 text-zinc-500" />}
+          {expanded
+            ? <ChevronUp className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
+            : <ChevronDown className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
+          }
         </button>
         {expanded && (
           <div className="space-y-2">
@@ -381,11 +675,11 @@ export default function FollowupsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-            <SendHorizonal className="w-6 h-6 text-indigo-400" />
+          <h1 className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 700, letterSpacing: '-0.02em' }}>
+            <SendHorizonal className="w-6 h-6" style={{ color: 'var(--accent)' }} />
             Follow-ups
           </h1>
-          <p className="text-zinc-500 text-sm mt-1">
+          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', marginTop: 'var(--space-1)' }}>
             Automated follow-up choreography after investor meetings. Track actions, record outcomes, and learn what works.
           </p>
         </div>
@@ -393,47 +687,59 @@ export default function FollowupsPage() {
 
       {/* Stats row */}
       <div className="grid grid-cols-5 gap-3">
-        <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-3">
-          <div className="text-[10px] text-zinc-500 uppercase font-medium">Overdue</div>
-          <div className={`text-2xl font-bold mt-1 ${overdue.length > 0 ? 'text-red-400' : 'text-zinc-600'}`}>
+        <div className="card" style={{ padding: 'var(--space-3)' }}>
+          <div className="metric-label">Overdue</div>
+          <div
+            className="metric-value mt-1"
+            style={{ color: overdue.length > 0 ? 'var(--danger)' : 'var(--text-muted)' }}
+          >
             {overdue.length}
           </div>
         </div>
-        <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-3">
-          <div className="text-[10px] text-zinc-500 uppercase font-medium">Due Today</div>
-          <div className={`text-2xl font-bold mt-1 ${dueToday.length > 0 ? 'text-blue-400' : 'text-zinc-600'}`}>
+        <div className="card" style={{ padding: 'var(--space-3)' }}>
+          <div className="metric-label">Due Today</div>
+          <div
+            className="metric-value mt-1"
+            style={{ color: dueToday.length > 0 ? 'var(--accent)' : 'var(--text-muted)' }}
+          >
             {dueToday.length}
           </div>
         </div>
-        <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-3">
-          <div className="text-[10px] text-zinc-500 uppercase font-medium">Completed</div>
-          <div className="text-2xl font-bold mt-1 text-green-400">{completed.length}</div>
+        <div className="card" style={{ padding: 'var(--space-3)' }}>
+          <div className="metric-label">Completed</div>
+          <div className="metric-value mt-1" style={{ color: 'var(--success)' }}>{completed.length}</div>
         </div>
-        <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-3">
-          <div className="text-[10px] text-zinc-500 uppercase font-medium">Avg Conviction Change</div>
-          <div className={`text-2xl font-bold mt-1 flex items-center gap-1 ${
-            avgDelta > 0 ? 'text-green-400' : avgDelta < 0 ? 'text-red-400' : 'text-zinc-600'
-          }`}>
+        <div className="card" style={{ padding: 'var(--space-3)' }}>
+          <div className="metric-label">Avg Conviction Change</div>
+          <div
+            className="metric-value mt-1 flex items-center gap-1"
+            style={{
+              color: avgDelta > 0 ? 'var(--success)' : avgDelta < 0 ? 'var(--danger)' : 'var(--text-muted)',
+            }}
+          >
             {avgDelta > 0 ? <TrendingUp className="w-5 h-5" /> : avgDelta < 0 ? <TrendingDown className="w-5 h-5" /> : <Minus className="w-5 h-5" />}
             {avgDelta === 0 ? '0' : (avgDelta > 0 ? '+' : '') + avgDelta.toFixed(1)}
           </div>
         </div>
-        <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-3">
-          <div className="text-[10px] text-zinc-500 uppercase font-medium">Measured Efficacy</div>
-          <div className={`text-2xl font-bold mt-1 flex items-center gap-1 ${
-            avgMeasuredLift !== null && avgMeasuredLift > 0 ? 'text-emerald-400' : avgMeasuredLift !== null && avgMeasuredLift < 0 ? 'text-rose-400' : 'text-zinc-600'
-          }`}>
+        <div className="card" style={{ padding: 'var(--space-3)' }}>
+          <div className="metric-label">Measured Efficacy</div>
+          <div
+            className="metric-value mt-1 flex items-center gap-1"
+            style={{
+              color: avgMeasuredLift !== null && avgMeasuredLift > 0 ? 'var(--success)' : avgMeasuredLift !== null && avgMeasuredLift < 0 ? 'var(--danger)' : 'var(--text-muted)',
+            }}
+          >
             {avgMeasuredLift !== null ? (
               <>
                 {avgMeasuredLift > 0 ? <TrendingUp className="w-5 h-5" /> : avgMeasuredLift < 0 ? <TrendingDown className="w-5 h-5" /> : <Minus className="w-5 h-5" />}
                 {avgMeasuredLift > 0 ? '+' : ''}{avgMeasuredLift.toFixed(1)}
               </>
             ) : (
-              <span className="text-zinc-600 text-sm">No data</span>
+              <span style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>No data</span>
             )}
           </div>
           {bestActionType && (
-            <div className="text-[9px] text-zinc-500 mt-1">
+            <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: 'var(--space-1)' }}>
               Best: {ACTION_TYPE_CONFIG[bestActionType[0]]?.label || bestActionType[0]}
             </div>
           )}
@@ -441,18 +747,53 @@ export default function FollowupsPage() {
       </div>
 
       {/* Filter tabs */}
-      <div className="flex gap-1 bg-zinc-900/50 border border-zinc-800 rounded-lg p-1">
+      <div
+        className="flex gap-1"
+        style={{
+          background: 'var(--surface-1)',
+          border: '1px solid var(--border-subtle)',
+          borderRadius: 'var(--radius-lg)',
+          padding: 'var(--space-1)',
+        }}
+      >
         {(['pending', 'all', 'completed', 'skipped'] as const).map(f => (
           <button
             key={f}
             onClick={() => setFilter(f)}
-            className={`px-3 py-1.5 rounded text-xs font-medium transition-colors ${
-              filter === f ? 'bg-zinc-700 text-white' : 'text-zinc-500 hover:text-zinc-300'
-            }`}
+            style={{
+              padding: '0.375rem 0.75rem',
+              borderRadius: 'var(--radius-sm)',
+              fontSize: 'var(--font-size-xs)',
+              fontWeight: 500,
+              transition: 'all 150ms ease',
+              background: filter === f ? 'var(--surface-3)' : 'transparent',
+              color: filter === f ? 'var(--text-primary)' : 'var(--text-muted)',
+            }}
+            onMouseEnter={e => {
+              if (filter !== f) {
+                e.currentTarget.style.color = 'var(--text-secondary)';
+              }
+            }}
+            onMouseLeave={e => {
+              if (filter !== f) {
+                e.currentTarget.style.color = 'var(--text-muted)';
+              }
+            }}
           >
             {f.charAt(0).toUpperCase() + f.slice(1)}
             {f === 'pending' && overdue.length > 0 && (
-              <span className="ml-1.5 bg-red-600 text-white text-[9px] px-1 rounded-full">{overdue.length}</span>
+              <span
+                style={{
+                  marginLeft: '0.375rem',
+                  background: 'var(--danger)',
+                  color: 'white',
+                  fontSize: '9px',
+                  padding: '0 0.25rem',
+                  borderRadius: '9999px',
+                }}
+              >
+                {overdue.length}
+              </span>
             )}
           </button>
         ))}
@@ -460,14 +801,31 @@ export default function FollowupsPage() {
 
       {/* Content */}
       {loading ? (
-        <div className="text-center py-12 text-zinc-500 text-sm">Loading follow-ups...</div>
+        <div className="text-center py-12" style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
+          Loading follow-ups...
+        </div>
       ) : followups.length === 0 ? (
-        <div className="text-center py-12 border border-zinc-800 rounded-xl">
-          <SendHorizonal className="w-10 h-10 text-zinc-700 mx-auto mb-3" />
-          <h3 className="text-sm font-medium text-zinc-400 mb-1">No follow-ups {filter !== 'all' ? `with status "${filter}"` : ''}</h3>
-          <p className="text-xs text-zinc-600">
+        <div
+          className="text-center py-12"
+          style={{
+            border: '1px solid var(--border-subtle)',
+            borderRadius: 'var(--radius-xl)',
+          }}
+        >
+          <SendHorizonal className="w-10 h-10 mx-auto mb-3" style={{ color: 'var(--border-default)' }} />
+          <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)', marginBottom: 'var(--space-1)' }}>
+            No follow-ups {filter !== 'all' ? `with status "${filter}"` : ''}
+          </h3>
+          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
             Follow-ups are auto-generated when you log a meeting.{' '}
-            <Link href="/meetings/new" className="text-blue-500 hover:text-blue-400">Log a meeting</Link>
+            <Link
+              href="/meetings/new"
+              style={{ color: 'var(--accent)' }}
+              onMouseEnter={e => { e.currentTarget.style.color = '#60a5fa'; }}
+              onMouseLeave={e => { e.currentTarget.style.color = 'var(--accent)'; }}
+            >
+              Log a meeting
+            </Link>
           </p>
         </div>
       ) : filter === 'pending' ? (
@@ -477,7 +835,9 @@ export default function FollowupsPage() {
           {renderSection('Next 3 Days', upcoming, upcomingExpanded, setUpcomingExpanded, 'zinc')}
           {later.length > 0 && (
             <div>
-              <h2 className="text-sm font-semibold text-zinc-500 mb-3">Later ({later.length})</h2>
+              <h2 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-muted)', marginBottom: 'var(--space-3)' }}>
+                Later ({later.length})
+              </h2>
               <div className="space-y-2">
                 {later.map(item => renderFollowupCard(item))}
               </div>
@@ -492,17 +852,29 @@ export default function FollowupsPage() {
 
       {/* Learning section */}
       {completed.length >= 3 && (
-        <div className="border border-zinc-800 rounded-xl overflow-hidden">
-          <div className="bg-gradient-to-r from-purple-900/20 to-blue-900/20 border-b border-zinc-800 px-5 py-4">
-            <h2 className="text-sm font-bold flex items-center gap-2">
-              <Users className="w-4 h-4 text-purple-400" />
+        <div
+          style={{
+            border: '1px solid var(--border-subtle)',
+            borderRadius: 'var(--radius-xl)',
+            overflow: 'hidden',
+          }}
+        >
+          <div
+            style={{
+              background: 'linear-gradient(to right, rgba(168, 85, 247, 0.08), var(--accent-muted))',
+              borderBottom: '1px solid var(--border-subtle)',
+              padding: 'var(--space-4) var(--space-5)',
+            }}
+          >
+            <h2 className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 700 }}>
+              <Users className="w-4 h-4" style={{ color: '#c084fc' }} />
               Follow-up Effectiveness
             </h2>
-            <p className="text-[10px] text-zinc-500 mt-1">
+            <p style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: 'var(--space-1)' }}>
               Which follow-up types drive the most conviction change?
             </p>
           </div>
-          <div className="p-4">
+          <div style={{ padding: 'var(--space-4)' }}>
             <div className="space-y-2">
               {Object.entries(byType)
                 .sort(([, a], [, b]) => (b.totalDelta / b.count) - (a.totalDelta / a.count))
@@ -512,14 +884,29 @@ export default function FollowupsPage() {
                   const avgTypeDelta = stats.totalDelta / stats.count;
                   return (
                     <div key={type} className="flex items-center gap-3 py-2">
-                      <div className={`w-6 h-6 rounded flex items-center justify-center ${config.bgColor}`}>
-                        <Icon className={`w-3.5 h-3.5 ${config.color}`} />
+                      <div
+                        className="w-6 h-6 flex items-center justify-center"
+                        style={{
+                          borderRadius: 'var(--radius-sm)',
+                          background: config.bgColor,
+                        }}
+                      >
+                        <Icon className="w-3.5 h-3.5" style={{ color: config.color }} />
                       </div>
-                      <span className="text-xs text-zinc-300 flex-1">{config.label}</span>
-                      <span className="text-xs text-zinc-500">{stats.count} done</span>
-                      <span className={`text-xs font-medium flex items-center gap-0.5 ${
-                        avgTypeDelta > 0 ? 'text-green-400' : avgTypeDelta < 0 ? 'text-red-400' : 'text-zinc-500'
-                      }`}>
+                      <span className="flex-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
+                        {config.label}
+                      </span>
+                      <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                        {stats.count} done
+                      </span>
+                      <span
+                        className="flex items-center gap-0.5"
+                        style={{
+                          fontSize: 'var(--font-size-xs)',
+                          fontWeight: 500,
+                          color: avgTypeDelta > 0 ? 'var(--success)' : avgTypeDelta < 0 ? 'var(--danger)' : 'var(--text-muted)',
+                        }}
+                      >
                         {avgTypeDelta > 0 ? '+' : ''}{avgTypeDelta.toFixed(1)} avg
                       </span>
                     </div>
