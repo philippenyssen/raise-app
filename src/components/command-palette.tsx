@@ -233,7 +233,6 @@ export default function CommandPalette() {
         style={{
           fontSize: '10px',
           fontWeight: 600,
-          textTransform: 'none',
           letterSpacing: '0.08em',
           color: 'var(--text-muted)',
           padding: '8px 16px 4px',

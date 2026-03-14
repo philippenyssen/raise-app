@@ -114,7 +114,7 @@ export default function SkillsPage() {
         </div>
       ) : (
         <div className="space-y-2">
-          <div className="text-xs font-medium" style={{ color: 'var(--text-tertiary)', textTransform: 'none', letterSpacing: '0.05em' }}>
+          <div className="text-xs font-medium" style={{ color: 'var(--text-tertiary)', letterSpacing: '0.05em' }}>
             Skill Performance
           </div>
           {health.map(skill => {
@@ -221,7 +221,7 @@ export default function SkillsPage() {
       {/* Recent executions timeline */}
       {executions.length > 0 && (
         <div>
-          <div className="text-xs font-medium mb-2" style={{ color: 'var(--text-tertiary)', textTransform: 'none', letterSpacing: '0.05em' }}>
+          <div className="text-xs font-medium mb-2" style={{ color: 'var(--text-tertiary)', letterSpacing: '0.05em' }}>
             Recent Executions
           </div>
           <div className="space-y-1">

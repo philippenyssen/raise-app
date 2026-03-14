@@ -380,7 +380,7 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimensionData[] }) 
             {dimensions.map(d => (
               <div key={d.name}>
                 <div className="flex items-center justify-between mb-0.5">
-                  <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 500, textTransform: 'none', letterSpacing: '0.04em' }}>
+                  <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 500, letterSpacing: '0.04em' }}>
                     {d.name}
                   </span>
                   <span
@@ -421,7 +421,7 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimensionData[] }) 
             <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 'var(--space-2)' }}>
               <div className="flex items-center gap-1 mb-1">
                 <span style={{ color: 'var(--text-secondary)' }}><Star className="w-3 h-3" /></span>
-                <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'none', letterSpacing: '0.06em' }}>
+                <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 600, letterSpacing: '0.06em' }}>
                   Strengths
                 </span>
               </div>
@@ -448,7 +448,7 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimensionData[] }) 
             <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 'var(--space-2)' }}>
               <div className="flex items-center gap-1 mb-1">
                 <span style={{ color: 'var(--text-tertiary)' }}><Eye className="w-3 h-3" /></span>
-                <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'none', letterSpacing: '0.06em' }}>
+                <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 600, letterSpacing: '0.06em' }}>
                   Needs Attention
                 </span>
               </div>
@@ -647,7 +647,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
               >
                 {item.focusScore}
               </span>
-              <span style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'none', letterSpacing: '0.08em' }}>Focus</span>
+              <span style={{ fontSize: '9px', color: 'var(--text-muted)', letterSpacing: '0.08em' }}>Focus</span>
             </div>
             {/* Quick action buttons — always visible for top 3, on hover for rest */}
             {(rank <= 3 || hovered) && (
@@ -693,7 +693,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
         <div className="px-4 py-3 ml-11 space-y-3" style={{ borderTop: '1px solid var(--border-subtle)' }}>
           {/* Score breakdown */}
           <div>
-            <p style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'none', letterSpacing: '0.08em', marginBottom: '8px' }}>Score Breakdown</p>
+            <p style={{ fontSize: '10px', color: 'var(--text-muted)', letterSpacing: '0.08em', marginBottom: '8px' }}>Score Breakdown</p>
             <div className="grid grid-cols-5 gap-2">
               {[
                 { label: 'Investor Score', value: item.components.investorScore, weight: '30%' },
@@ -714,7 +714,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
           {/* Unresolved objections */}
           {item.unresolvedObjections.length > 0 && (
             <div>
-              <p style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'none', letterSpacing: '0.08em', marginBottom: '4px' }}>Unresolved Objections</p>
+              <p style={{ fontSize: '10px', color: 'var(--text-muted)', letterSpacing: '0.08em', marginBottom: '4px' }}>Unresolved Objections</p>
               <div className="space-y-1">
                 {item.unresolvedObjections.map((obj, i) => (
                   <div key={i} className="flex items-start gap-1.5" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', opacity: 0.85 }}>
@@ -1062,7 +1062,7 @@ function DeprioritizeSection({ investors }: { investors: InvestorSummary[] }) {
       >
         <div className="flex items-center gap-2">
           <Ban className="w-3.5 h-3.5" style={{ color: 'var(--text-muted)' }} />
-          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontWeight: 500, textTransform: 'none', letterSpacing: '0.08em' }}>
+          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontWeight: 500, letterSpacing: '0.08em' }}>
             Deprioritize ({investors.length})
           </span>
         </div>
@@ -1273,7 +1273,7 @@ export default function FocusPage() {
           {/* Term Sheet Ready */}
           {accelData.termSheetReady.length > 0 && (
             <div>
-              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-secondary)', textTransform: 'none', letterSpacing: '0.08em' }}>
+              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-secondary)', letterSpacing: '0.08em' }}>
                 <CheckCircle className="w-3.5 h-3.5" /> Term Sheet Ready ({accelData.termSheetReady.length})
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -1287,7 +1287,7 @@ export default function FocusPage() {
           {/* Immediate Actions */}
           {immediateActions.length > 0 && (
             <div>
-              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-primary)', textTransform: 'none', letterSpacing: '0.08em' }}>
+              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-primary)', letterSpacing: '0.08em' }}>
                 <AlertTriangle className="w-3.5 h-3.5" /> Immediate ({immediateActions.length})
               </h3>
               <div className="space-y-2">
@@ -1306,7 +1306,7 @@ export default function FocusPage() {
           {/* This Week Actions */}
           {thisWeekActions.length > 0 && (
             <div>
-              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-tertiary)', textTransform: 'none', letterSpacing: '0.08em' }}>
+              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-tertiary)', letterSpacing: '0.08em' }}>
                 <Clock className="w-3.5 h-3.5" /> This Week ({thisWeekActions.length})
               </h3>
               <div className="space-y-2">
@@ -1325,7 +1325,7 @@ export default function FocusPage() {
           {/* At Risk */}
           {accelData.atRisk.length > 0 && (
             <div>
-              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-primary)', textTransform: 'none', letterSpacing: '0.08em' }}>
+              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-primary)', letterSpacing: '0.08em' }}>
                 <Shield className="w-3.5 h-3.5" /> At Risk ({accelData.atRisk.length})
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -1374,7 +1374,7 @@ export default function FocusPage() {
           {/* Stale Alerts */}
           {staleAlerts.length > 0 && (
             <div>
-              <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-primary)', textTransform: 'none', letterSpacing: '0.08em' }}>
+              <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-primary)', letterSpacing: '0.08em' }}>
                 <AlertTriangle className="w-4 h-4" /> Stale Alerts
               </h2>
               <div className="space-y-2">

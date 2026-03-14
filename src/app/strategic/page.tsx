@@ -341,7 +341,7 @@ export default function StrategicPage() {
         <div className="card">
           <div className="flex items-center gap-2 mb-4">
             <BarChart3 className="w-4 h-4" style={{ color: 'var(--accent)' }} />
-            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-tertiary)', textTransform: 'none' as const }}>Health Trend</span>
+            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-tertiary)' }}>Health Trend</span>
             <span className="ml-auto" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{data.historicalSnapshots.length} snapshots</span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -374,7 +374,7 @@ export default function StrategicPage() {
         <div className="card">
           <div className="flex items-center gap-2 mb-4">
             <Activity className="w-4 h-4" style={{ color: 'var(--accent)' }} />
-            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-tertiary)', textTransform: 'none' as const }}>Temporal Intelligence</span>
+            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-tertiary)' }}>Temporal Intelligence</span>
             <span
               className="badge ml-2"
               style={{
@@ -462,7 +462,7 @@ export default function StrategicPage() {
         <div className="card">
           <div className="flex items-center gap-2 mb-4">
             <Clock className="w-4 h-4" style={{ color: 'var(--chart-4)' }} />
-            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-tertiary)', textTransform: 'none' as const }}>Raise Forecast</span>
+            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-tertiary)' }}>Raise Forecast</span>
             <span
               className="badge ml-2"
               style={{
@@ -591,7 +591,7 @@ export default function StrategicPage() {
           }}
         >
           <Target className="w-4 h-4" style={{ color: 'var(--accent)' }} />
-          <h2 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-tertiary)', textTransform: 'none' as const }}>Strategic Recommendations</h2>
+          <h2 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-tertiary)' }}>Strategic Recommendations</h2>
           <span className="ml-auto" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{data.recommendations.length} actions</span>
         </div>
 

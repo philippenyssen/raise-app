@@ -223,7 +223,7 @@ export default function NetworkPage() {
           <div key={stat.label} className="card p-4" style={{ border: '1px solid var(--border-subtle)' }}>
             <div className="flex items-center gap-2 mb-1">
               <span style={{ color: 'var(--text-muted)' }}><stat.icon className="w-3.5 h-3.5" /></span>
-              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', textTransform: 'none', letterSpacing: '0.05em' }}>
+              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', letterSpacing: '0.05em' }}>
                 {stat.label}
               </span>
             </div>
@@ -498,7 +498,7 @@ export default function NetworkPage() {
                               </div>
                               <div className="flex items-center gap-4 shrink-0">
                                 <div style={{ textAlign: 'right' }}>
-                                  <p style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'none' }}>Prob</p>
+                                  <p style={{ fontSize: '10px', color: 'var(--text-muted)', }}>Prob</p>
                                   <p style={{
                                     fontSize: 'var(--font-size-sm)',
                                     fontWeight: 600,
@@ -510,7 +510,7 @@ export default function NetworkPage() {
                                 </div>
                                 {link.capitalM > 0 && (
                                   <div style={{ textAlign: 'right' }}>
-                                    <p style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'none' }}>Expected</p>
+                                    <p style={{ fontSize: '10px', color: 'var(--text-muted)', }}>Expected</p>
                                     <p style={{
                                       fontSize: 'var(--font-size-sm)',
                                       fontWeight: 600,
@@ -523,7 +523,7 @@ export default function NetworkPage() {
                                 )}
                                 {idx < cascade.cascadeChain.length - 1 && (
                                   <div style={{ textAlign: 'right' }}>
-                                    <p style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'none' }}>Cumulative</p>
+                                    <p style={{ fontSize: '10px', color: 'var(--text-muted)', }}>Cumulative</p>
                                     <p style={{
                                       fontSize: 'var(--font-size-sm)',
                                       fontWeight: 500,
@@ -594,7 +594,7 @@ export default function NetworkPage() {
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           <div>
-            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', textTransform: 'none', letterSpacing: '0.05em' }}>
+            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', letterSpacing: '0.05em' }}>
               Strongest Chain
             </p>
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 500, marginTop: '2px' }}>
@@ -604,7 +604,7 @@ export default function NetworkPage() {
             </p>
           </div>
           <div>
-            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', textTransform: 'none', letterSpacing: '0.05em' }}>
+            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', letterSpacing: '0.05em' }}>
               Weakest Chain
             </p>
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 500, marginTop: '2px' }}>
@@ -614,7 +614,7 @@ export default function NetworkPage() {
             </p>
           </div>
           <div>
-            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', textTransform: 'none', letterSpacing: '0.05em' }}>
+            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', letterSpacing: '0.05em' }}>
               Total Raise Forecast
             </p>
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--accent)', fontWeight: 600, marginTop: '2px' }}>

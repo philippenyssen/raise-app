@@ -262,7 +262,7 @@ export default function InvestorDetailPage() {
   const latestEnthusiasm = enthusiasmTrend.length > 0 ? enthusiasmTrend[enthusiasmTrend.length - 1].score : 0;
 
   return (
-    <div className="space-y-6">
+    <div className="page-content space-y-6">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
@@ -275,7 +275,7 @@ export default function InvestorDetailPage() {
           >
             <ArrowLeft className="w-3.5 h-3.5" /> Back to CRM
           </Link>
-          <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>{investor.name}</h1>
+          <h1 className="page-title">{investor.name}</h1>
           <div className="flex items-center gap-3 mt-2">
             <span
               className="px-2 py-0.5 rounded text-xs font-medium"
@@ -410,7 +410,7 @@ export default function InvestorDetailPage() {
               {dealIntel.heat}
             </span>
             <span style={{
-              fontSize: '9px', fontWeight: 600, textTransform: 'none',
+              fontSize: '9px', fontWeight: 600,
               color: dealIntel.heatLabel === 'hot' ? 'var(--text-primary)' :
                 dealIntel.heatLabel === 'warm' ? 'var(--text-secondary)' :
                 'var(--text-muted)'

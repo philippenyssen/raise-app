@@ -304,7 +304,7 @@ export default function DocumentsPage() {
                 fontWeight: 600,
                 color: 'var(--text-tertiary)',
                 letterSpacing: '0.05em',
-                textTransform: 'none' as const,
+
               }}>
                 {formatTypeLabel(type)} ({typeDocs.length})
               </h2>

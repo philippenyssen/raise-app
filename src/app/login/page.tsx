@@ -96,7 +96,7 @@ export default function LoginPage() {
           >
             <span style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--accent)', letterSpacing: '0.12em', fontFamily: 'var(--font-cormorant), Georgia, serif' }}>R</span>
           </div>
-          <h1 style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 300, color: 'var(--text-primary)', letterSpacing: '0.18em', fontFamily: 'var(--font-cormorant), Georgia, serif', textTransform: 'none' as const }}>
+          <h1 style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 300, color: 'var(--text-primary)', letterSpacing: '0.18em', fontFamily: 'var(--font-cormorant), Georgia, serif' }}>
             RAISE
           </h1>
           <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', marginTop: 'var(--space-1)' }}>

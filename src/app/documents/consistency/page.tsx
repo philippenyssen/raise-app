@@ -53,7 +53,7 @@ export default function ConsistencyPage() {
   const mismatchCount = result?.checks.filter(c => c.status === 'mismatch').length ?? 0;
 
   return (
-    <div className="space-y-6">
+    <div className="page-content space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
@@ -70,7 +70,7 @@ export default function ConsistencyPage() {
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>Consistency Check</h1>
+            <h1 className="page-title">Consistency Check</h1>
             <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
               Cross-document metric comparison
             </p>

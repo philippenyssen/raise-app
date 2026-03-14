@@ -132,7 +132,7 @@ export default function BacklogPage() {
     <div className="page-content space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>Revenue Backlog</h1>
+          <h1 className="page-title">Revenue Backlog</h1>
           <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
             {summary?.count || 0} commitments &middot; {formatEur(summary?.total_committed_eur || 0)} total &middot; {formatEur(summary?.probability_weighted_eur || 0)} probability-weighted
           </p>

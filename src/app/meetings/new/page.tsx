@@ -66,7 +66,7 @@ function NewMeetingContent() {
   } | null;
 
   return (
-    <div className="max-w-3xl space-y-6">
+    <div className="page-content max-w-3xl space-y-6">
       <div>
         <h1 className="page-title">Log Meeting Debrief</h1>
         <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>

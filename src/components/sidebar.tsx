@@ -159,7 +159,6 @@ export function Sidebar() {
                 fontSize: '13px',
                 fontWeight: 300,
                 fontFamily: 'var(--font-cormorant), Georgia, serif',
-                textTransform: 'none' as const,
               }}>
                 RAISE
               </h1>

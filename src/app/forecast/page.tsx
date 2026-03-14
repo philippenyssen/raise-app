@@ -229,7 +229,6 @@ export default function ForecastPage() {
               fontWeight: 600,
               background: confidenceBg(forecast.confidence),
               color: confidenceColor(forecast.confidence),
-              textTransform: 'none',
               letterSpacing: '0.04em',
             }}
           >

@@ -741,7 +741,7 @@ export default function TodayPage() {
             }}
           >
             <Zap className="w-3.5 h-3.5" style={{ color: 'var(--chart-4)' }} />
-            <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--chart-4)', textTransform: 'none', letterSpacing: '0.05em' }}>Since Yesterday</span>
+            <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--chart-4)', letterSpacing: '0.05em' }}>Since Yesterday</span>
           </div>
           <div className="flex items-center gap-4 flex-wrap" style={{ padding: 'var(--space-3) var(--space-4)' }}>
             {overnight.statusChanges.map((sc, i) => (
@@ -1095,7 +1095,7 @@ export default function TodayPage() {
 
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2" style={{ marginBottom: '4px' }}>
-                <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'var(--accent)', textTransform: 'none' as const, letterSpacing: '0.05em' }}>
+                <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'var(--accent)', letterSpacing: '0.05em' }}>
                   AI Insight
                 </span>
               </div>

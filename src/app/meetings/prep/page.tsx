@@ -375,7 +375,7 @@ function MeetingPrepContent() {
         }
       `}</style>
 
-      <div ref={printRef} className="space-y-6 print-bg-white">
+      <div ref={printRef} className="page-content space-y-6 print-bg-white">
         {/* Header */}
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div className="flex items-center gap-3">

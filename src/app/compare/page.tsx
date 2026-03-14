@@ -694,7 +694,6 @@ export default function ComparePage() {
                         fontSize: 'var(--font-size-xs)',
                         fontWeight: 600,
                         color: 'var(--text-secondary)',
-                        textTransform: 'none',
                         letterSpacing: '0.05em',
                         background: 'var(--surface-1)',
                         borderRight: '1px solid var(--border-subtle)',
@@ -987,7 +986,6 @@ function SectionHeader({ label, colSpan }: { label: string; colSpan: number }) {
           fontSize: '10px',
           fontWeight: 600,
           color: 'var(--text-muted)',
-          textTransform: 'none',
           letterSpacing: '0.08em',
         }}
       >
@@ -1367,7 +1365,6 @@ function VerdictCard({
         <span style={{
           fontSize: '10px',
           color: 'var(--text-muted)',
-          textTransform: 'none',
           letterSpacing: '0.08em',
           fontWeight: 500,
         }}>

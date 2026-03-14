@@ -457,7 +457,6 @@ export default function WinLossPage() {
                   <span style={{
                     fontSize: 'var(--font-size-xs)',
                     color: strengthColor(p.strength),
-                    textTransform: 'none',
                     fontWeight: 600,
                     letterSpacing: '0.04em',
                   }}>
@@ -498,7 +497,6 @@ export default function WinLossPage() {
                         fontSize: 'var(--font-size-xs)',
                         fontWeight: 500,
                         color: 'var(--text-muted)',
-                        textTransform: 'none',
                         letterSpacing: '0.04em',
                         borderBottom: '1px solid var(--border-subtle)',
                       }}
@@ -569,7 +567,6 @@ export default function WinLossPage() {
                         fontSize: 'var(--font-size-xs)',
                         fontWeight: 600,
                         color: strengthColor(f.significance),
-                        textTransform: 'none',
                         letterSpacing: '0.04em',
                       }}>
                         {f.significance}

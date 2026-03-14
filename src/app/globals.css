@@ -569,14 +569,6 @@ select option {
   line-height: 1.5;
 }
 
-.stat-number {
-  font-size: var(--font-size-3xl);
-  font-weight: 300;
-  letter-spacing: -0.03em;
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-}
-
 /* =========================================================================
    RESPONSIVE
    ========================================================================= */
@@ -595,40 +587,7 @@ select option {
   .btn { font-size: var(--font-size-xs); padding: 0.4rem 0.75rem; }
   .btn-sm { padding: 0.3rem 0.6rem; }
 
-  .overflow-x-guard {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-  .overflow-x-guard::-webkit-scrollbar { display: none; }
-
-  .stats-row {
-    display: flex;
-    gap: var(--space-3);
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: var(--space-2);
-    scrollbar-width: none;
-  }
-  .stats-row::-webkit-scrollbar { display: none; }
-  .stats-row > * { flex-shrink: 0; min-width: 100px; }
-
   .page-content { animation: none; }
-}
-
-.scroll-fade-right {
-  position: relative;
-}
-.scroll-fade-right::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 40px;
-  background: linear-gradient(90deg, transparent, var(--surface-0));
-  pointer-events: none;
-  z-index: 2;
 }
 
 @keyframes count-up {

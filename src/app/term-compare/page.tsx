@@ -291,7 +291,7 @@ export default function TermComparePage() {
             Terms
           </Link>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>
+            <h1 className="page-title">
               Term Sheet Economics Engine
             </h1>
             <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>

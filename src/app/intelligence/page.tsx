@@ -140,7 +140,7 @@ export default function IntelligencePage() {
     <div className="space-y-6 page-content">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+        <h1 className="page-title flex items-center gap-2">
           <Globe className="w-6 h-6" style={{ color: 'var(--accent)' }} /> Market Intelligence
         </h1>
         <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>

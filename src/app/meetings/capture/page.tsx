@@ -146,7 +146,7 @@ function QuickCaptureInner() {
     const competitiveIntel = String(result.competitive_intel || '');
 
     return (
-      <div style={{ maxWidth: '720px', margin: '0 auto' }}>
+      <div className="page-content" style={{ maxWidth: '720px', margin: '0 auto' }}>
         {/* Success header */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', marginBottom: 'var(--space-6)' }}>
           <div style={{
@@ -379,7 +379,7 @@ function QuickCaptureInner() {
 
   // --- CAPTURE FORM ---
   return (
-    <div style={{ maxWidth: '720px', margin: '0 auto' }}>
+    <div className="page-content" style={{ maxWidth: '720px', margin: '0 auto' }}>
       {/* Header */}
       <div style={{ marginBottom: 'var(--space-6)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>

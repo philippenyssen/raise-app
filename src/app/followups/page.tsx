@@ -305,7 +305,7 @@ function FollowupsContent() {
                   className="badge"
                   style={{
                     fontSize: '10px',
-                    textTransform: 'none',
+
                     background: isOverdue ? 'var(--danger-muted)' : config.bgColor,
                     color: isOverdue ? 'var(--text-tertiary)' : config.color,
                   }}
@@ -692,7 +692,7 @@ function FollowupsContent() {
               {/* Subject */}
               <div style={{ marginBottom: 'var(--space-2)' }}>
                 <div className="flex items-center justify-between" style={{ marginBottom: '4px' }}>
-                  <span style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'none' as const, letterSpacing: '0.05em' }}>Subject</span>
+                  <span style={{ fontSize: '10px', color: 'var(--text-muted)', letterSpacing: '0.05em' }}>Subject</span>
                   <button
                     onClick={() => {
                       navigator.clipboard.writeText(draft.subject);
@@ -732,7 +732,7 @@ function FollowupsContent() {
               {/* Body */}
               <div>
                 <div className="flex items-center justify-between" style={{ marginBottom: '4px' }}>
-                  <span style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'none' as const, letterSpacing: '0.05em' }}>Body</span>
+                  <span style={{ fontSize: '10px', color: 'var(--text-muted)', letterSpacing: '0.05em' }}>Body</span>
                   <button
                     onClick={() => {
                       navigator.clipboard.writeText(draft.body);
