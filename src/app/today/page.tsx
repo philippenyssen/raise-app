@@ -7,7 +7,7 @@ import {
   Sunrise, Calendar, Clock, ArrowRight, ChevronRight, RefreshCw,
   Mail, UserPlus, FileText, AlertTriangle, Zap, TrendingUp,
   TrendingDown, Minus, Users, Shield, Target,
-  CheckCircle, ExternalLink, Sparkles,
+  CheckCircle, ExternalLink, Sparkles, ArrowUpRight, ArrowDownRight,
 } from 'lucide-react';
 
 // ---------------------------------------------------------------------------
@@ -308,6 +308,13 @@ export default function TodayPage() {
   const [data, setData] = useState<BriefingData | null>(null);
   const [insight, setInsight] = useState<{ title: string; detail: string; priority: string } | null>(null);
   const [raiseProgress, setRaiseProgress] = useState<RaiseProgress | null>(null);
+  const [overnight, setOvernight] = useState<{
+    statusChanges: { investorName: string; from: string; to: string }[];
+    newMeetings: number;
+    meetingNames: string[];
+    tasksCompleted: number;
+    activityFeed: string[];
+  } | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [stalenessMinutes, setStalenessMinutes] = useState(0);
@@ -329,11 +336,12 @@ export default function TodayPage() {
       if (!silent) toast('Failed to load briefing', 'error');
     }
 
-    // Non-blocking: fetch velocity (for raise day counter) and strategic insight
+    // Non-blocking: fetch velocity (for raise day counter), strategic insight, and pulse
     try {
-      const [stratRes, velRes] = await Promise.all([
+      const [stratRes, velRes, pulseRes] = await Promise.all([
         fetch('/api/intelligence/strategic').catch(() => null),
         fetch('/api/velocity').catch(() => null),
+        fetch('/api/pulse').catch(() => null),
       ]);
       if (stratRes?.ok) {
         const stratData = await stratRes.json();
@@ -353,6 +361,18 @@ export default function TodayPage() {
           pct: Math.min(100, Math.round((elapsed / target) * 100)),
           isOver: elapsed > target,
         });
+      }
+      if (pulseRes?.ok) {
+        const pulseData = await pulseRes.json();
+        if (pulseData.overnight) {
+          setOvernight({
+            statusChanges: pulseData.overnight.statusChanges ?? [],
+            newMeetings: pulseData.overnight.newMeetings ?? 0,
+            meetingNames: pulseData.overnight.meetingNames ?? [],
+            tasksCompleted: pulseData.overnight.tasksCompleted ?? 0,
+            activityFeed: pulseData.overnight.activityFeed ?? [],
+          });
+        }
       }
     } catch {
       // Non-blocking
@@ -597,6 +617,52 @@ export default function TodayPage() {
               : `${raiseProgress.daysRemaining}d left`
             }
           </span>
+        </div>
+      )}
+
+      {/* ----------------------------------------------------------------- */}
+      {/* 1.6. Overnight Changes                                            */}
+      {/* ----------------------------------------------------------------- */}
+      {overnight && (overnight.statusChanges.length > 0 || overnight.newMeetings > 0 || overnight.tasksCompleted > 0) && (
+        <div
+          className="rounded-xl"
+          style={{
+            border: '1px solid var(--border-subtle)',
+            background: 'var(--surface-1)',
+            overflow: 'hidden',
+          }}
+        >
+          <div
+            className="flex items-center gap-2"
+            style={{
+              padding: 'var(--space-3) var(--space-4)',
+              borderBottom: '1px solid var(--border-subtle)',
+            }}
+          >
+            <Zap className="w-3.5 h-3.5" style={{ color: '#c084fc' }} />
+            <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: '#c084fc', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Since Yesterday</span>
+          </div>
+          <div className="flex items-center gap-4 flex-wrap" style={{ padding: 'var(--space-3) var(--space-4)' }}>
+            {overnight.statusChanges.map((sc, i) => (
+              <div key={i} className="flex items-center gap-1.5" style={{ fontSize: 'var(--font-size-xs)' }}>
+                <ArrowUpRight className="w-3 h-3" style={{ color: 'var(--success)' }} />
+                <span style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>{sc.investorName}</span>
+                <span style={{ color: 'var(--text-muted)' }}>{sc.from.replace(/_/g, ' ')} → {sc.to.replace(/_/g, ' ')}</span>
+              </div>
+            ))}
+            {overnight.newMeetings > 0 && (
+              <div className="flex items-center gap-1.5" style={{ fontSize: 'var(--font-size-xs)' }}>
+                <Calendar className="w-3 h-3" style={{ color: 'var(--accent)' }} />
+                <span style={{ color: 'var(--text-secondary)' }}>{overnight.newMeetings} new meeting{overnight.newMeetings > 1 ? 's' : ''}</span>
+              </div>
+            )}
+            {overnight.tasksCompleted > 0 && (
+              <div className="flex items-center gap-1.5" style={{ fontSize: 'var(--font-size-xs)' }}>
+                <CheckCircle className="w-3 h-3" style={{ color: 'var(--success)' }} />
+                <span style={{ color: 'var(--text-secondary)' }}>{overnight.tasksCompleted} task{overnight.tasksCompleted > 1 ? 's' : ''} completed</span>
+              </div>
+            )}
+          </div>
         </div>
       )}
 
