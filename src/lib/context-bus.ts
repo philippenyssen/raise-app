@@ -1249,12 +1249,53 @@ export function contextToSystemPrompt(ctx: FullContext): string {
   }
 
   if (synthesisLines.length > 0) {
+    // Cap synthesis lines at 15 to prevent prompt bloat (cycle 30)
+    const cappedSynthesis = synthesisLines.slice(0, 15);
     lines.push('=== INTELLIGENCE SYNTHESIS (reasoning aids) ===');
-    for (const sl of synthesisLines) {
+    for (const sl of cappedSynthesis) {
       lines.push(sl);
+    }
+    if (synthesisLines.length > 15) {
+      lines.push(`(${synthesisLines.length - 15} additional synthesis signals omitted for brevity)`);
     }
     lines.push('');
   }
 
-  return lines.join('\n');
+  // Prompt size tracking (cycle 30)
+  const prompt = lines.join('\n');
+  const charCount = prompt.length;
+  const lineCount = lines.length;
+
+  // If prompt exceeds budget, truncate lower-priority sections
+  const MAX_PROMPT_CHARS = 20000;
+  if (charCount > MAX_PROMPT_CHARS) {
+    // Trim from bottom (synthesis gets truncated first, then recent activity)
+    const trimmedLines = lines.slice(0, Math.max(50, Math.floor(lines.length * (MAX_PROMPT_CHARS / charCount))));
+    trimmedLines.push(`\n[Context truncated: ${charCount} chars → ${MAX_PROMPT_CHARS} budget. ${lineCount} lines → ${trimmedLines.length} lines]`);
+    return trimmedLines.join('\n');
+  }
+
+  return prompt;
+}
+
+/**
+ * Get context system stats for monitoring (cycle 30)
+ */
+export function getContextStats(ctx: FullContext): {
+  dataSources: number;
+  contextFields: number;
+  investorCount: number;
+  synthesisRules: number;
+  promptChars: number;
+} {
+  const prompt = contextToSystemPrompt(ctx);
+  return {
+    dataSources: 29, // manually tracked
+    contextFields: Object.keys(ctx).length,
+    investorCount: ctx.investors.length,
+    synthesisRules: (prompt.match(/INTELLIGENCE SYNTHESIS/g) || []).length > 0
+      ? (prompt.split('=== INTELLIGENCE SYNTHESIS')[1] || '').split('\n').filter(l => l.trim().length > 0).length
+      : 0,
+    promptChars: prompt.length,
+  };
 }

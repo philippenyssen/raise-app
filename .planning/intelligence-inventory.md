@@ -33,6 +33,7 @@
 | 27 | 2026-03-14 | Meeting Density + FOMO Dynamics | 12-week meeting distribution analysis (gap/cluster detection, density score), investor FOMO modeling (advancing investors create competitive pressure for peers). 2 synthesis rules (momentum gap, dead week). 28 data sources, 22 context fields, 16 functions. | db.ts, context-bus.ts, intelligence/verify/route.ts |
 | 28 | 2026-03-14 | FOMO Auto-Actions + AI Awareness | Auto-action Rule 11: FOMO-triggered competitive outreach (high-intensity triggers auto-create actions for affected T1-2 peers). Workspace AI instruction 21: competitive dynamics reasoning. Investor-specific context steering now includes FOMO pressure, win/loss matching, score reversals, pipeline rank. | db.ts, workspace/route.ts |
 | 29 | 2026-03-14 | Engagement Velocity | Per-investor meeting frequency acceleration (2-week window comparison: accelerating/decelerating/stable/gone_silent). 2 synthesis rules (gone-silent T1-2, velocity-enthusiasm contradiction). System prompt ENGAGEMENT VELOCITY section. 29 data sources, 23 context fields, 17 functions. | db.ts, context-bus.ts, intelligence/verify/route.ts |
+| 30 | 2026-03-14 | System Health: Prompt Budget | Synthesis line cap (15 max), system prompt budget (20K chars with intelligent truncation), getContextStats() for monitoring. Prevents prompt bloat as intelligence surface grows. | context-bus.ts |
 
 ## Intelligence Capabilities (Existing)
 
