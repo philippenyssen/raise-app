@@ -307,7 +307,7 @@ function FollowupsContent() {
                     fontSize: '10px',
                     textTransform: 'none',
                     background: isOverdue ? 'var(--danger-muted)' : config.bgColor,
-                    color: isOverdue ? '#f5b0b8' : config.color,
+                    color: isOverdue ? 'var(--text-tertiary)' : config.color,
                   }}
                 >
                   {config.label}
@@ -466,7 +466,7 @@ function FollowupsContent() {
                         background: 'var(--success)',
                         color: 'var(--text-primary)',
                       }}
-                      onMouseEnter={e => { e.currentTarget.style.background = '#16a34a'; }}
+                      onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent-hover)'; }}
                       onMouseLeave={e => { e.currentTarget.style.background = 'var(--success)'; }}
                     >
                       Complete
@@ -855,7 +855,7 @@ function FollowupsContent() {
                 padding: '0.125rem 0.375rem',
                 borderRadius: '9999px',
                 background: accent === 'red' ? 'var(--danger-muted)' : 'var(--surface-3)',
-                color: accent === 'red' ? '#f5b0b8' : 'var(--text-secondary)',
+                color: accent === 'red' ? 'var(--text-tertiary)' : 'var(--text-secondary)',
               }}
             >
               {items.length}

@@ -122,10 +122,10 @@ const TOPIC_COLORS: Record<string, { bg: React.CSSProperties; text: React.CSSPro
   },
   execution: {
     bg: { background: 'rgba(202, 138, 4, 0.15)' },
-    text: { color: '#facc15' },
+    text: { color: 'var(--accent)' },
     border: { borderColor: 'rgba(161, 98, 7, 0.35)' },
-    dotColor: '#facc15',
-    textColor: '#facc15',
+    dotColor: 'var(--accent)',
+    textColor: 'var(--accent)',
   },
   financial: {
     bg: { background: 'rgba(22, 163, 74, 0.15)' },
@@ -143,10 +143,10 @@ const TOPIC_COLORS: Record<string, { bg: React.CSSProperties; text: React.CSSPro
   },
   technical: {
     bg: { background: 'rgba(79, 70, 229, 0.15)' },
-    text: { color: '#818cf8' },
+    text: { color: 'var(--text-tertiary)' },
     border: { borderColor: 'rgba(55, 48, 163, 0.35)' },
-    dotColor: '#818cf8',
-    textColor: '#818cf8',
+    dotColor: 'var(--text-tertiary)',
+    textColor: 'var(--text-tertiary)',
   },
   risk: {
     bg: { background: 'rgba(220, 38, 38, 0.15)' },
@@ -412,7 +412,7 @@ export default function ObjectionsPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight flex items-center gap-3" style={{ color: 'var(--text-primary)' }}>
             <span className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'var(--warning)' }}>
-              <MessageCircleWarning className="w-4.5 h-4.5" style={{ color: '#ffffff' }} />
+              <MessageCircleWarning className="w-4.5 h-4.5" style={{ color: '#fafaf8' }} />
             </span>
             Objection Playbook
           </h1>

@@ -23,7 +23,7 @@ const STATUS_STYLES: Record<string, { background: string; color: string }> = {
   engaged: { background: 'rgba(106, 111, 165, 0.25)', color: 'var(--chart-4)' },
   in_dd: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
   term_sheet: { background: 'var(--success-muted)', color: 'var(--text-secondary)' },
-  closed: { background: 'rgba(16, 185, 129, 0.25)', color: '#4a9e6e' },
+  closed: { background: 'var(--accent-muted)', color: 'var(--accent)' },
   passed: { background: 'var(--danger-muted)', color: 'var(--text-primary)' },
   dropped: { background: 'var(--surface-2)', color: 'var(--text-muted)' },
 };

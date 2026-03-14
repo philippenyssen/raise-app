@@ -92,15 +92,15 @@ interface AnalyticsData {
 // ── Constants ────────────────────────────────────────────────────────
 
 const STAGE_COLORS: Record<string, string> = {
-  identified: '#52525b',
-  contacted: '#3d5a80',
-  nda_signed: '#3d5f8f',
-  meeting_scheduled: '#4f46e5',
-  met: '#7c3aed',
-  engaged: '#8b6ef5',
-  in_dd: 'var(--warning)',
-  term_sheet: 'var(--text-secondary)',
-  closed: '#4a9e6e',
+  identified: 'var(--chart-7)',
+  contacted: 'var(--chart-6)',
+  nda_signed: 'var(--chart-5)',
+  meeting_scheduled: 'var(--chart-4)',
+  met: 'var(--chart-3)',
+  engaged: 'var(--chart-2)',
+  in_dd: 'var(--chart-1)',
+  term_sheet: 'var(--accent)',
+  closed: 'var(--text-primary)',
 };
 
 const STAGE_LABELS: Record<string, string> = {

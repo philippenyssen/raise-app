@@ -1320,7 +1320,7 @@ function ConvictionTrajectoryPanel({ trajectory }: { trajectory: ConvictionTraje
     return { x, y, score: p.score, date: p.date };
   });
 
-  const trendLineColor = trajectory.trend === 'accelerating' ? '#4a9e6e' :
+  const trendLineColor = trajectory.trend === 'accelerating' ? 'var(--accent)' :
     trajectory.trend === 'decelerating' ? 'var(--warning)' : 'var(--accent)';
 
   return (

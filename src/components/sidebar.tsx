@@ -284,7 +284,7 @@ export function Sidebar() {
                               width: '7px',
                               height: '7px',
                               borderRadius: '50%',
-                              background: '#a04040',
+                              background: SB.accent,
                             }}
                           />
                         )}
@@ -313,7 +313,7 @@ export function Sidebar() {
                                 width: '5px',
                                 height: '5px',
                                 borderRadius: '50%',
-                                background: '#a04040',
+                                background: SB.accent,
                               }}
                             />
                           )}
@@ -324,8 +324,8 @@ export function Sidebar() {
                                 minWidth: '18px',
                                 height: '18px',
                                 borderRadius: '9px',
-                                background: '#a04040',
-                                color: '#fafaf8',
+                                background: 'rgba(255,255,255,0.15)',
+                                color: SB.textActive,
                                 fontSize: '10px',
                                 fontWeight: 500,
                                 padding: '0 5px',
