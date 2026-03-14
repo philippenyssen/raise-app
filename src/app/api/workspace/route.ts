@@ -115,9 +115,19 @@ INSTRUCTIONS:
     });
   } catch (err) {
     console.error('Workspace AI error:', err);
+    const msg = err instanceof Error ? err.message : 'AI request failed';
+    let status = 500;
+    let userMsg = msg;
+    if (msg.includes('credit balance') || msg.includes('too low')) {
+      status = 402;
+      userMsg = 'Anthropic API: insufficient credits. Check console.anthropic.com/settings/billing — make sure credits are on the same workspace as the API key.';
+    } else if (msg.includes('authentication') || msg.includes('api_key') || msg.includes('401')) {
+      status = 401;
+      userMsg = 'Anthropic API key missing or invalid. Set ANTHROPIC_API_KEY in environment variables and redeploy.';
+    }
     return new Response(
-      JSON.stringify({ error: err instanceof Error ? err.message : 'AI request failed' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
+      JSON.stringify({ error: userMsg }),
+      { status, headers: { 'Content-Type': 'application/json' } }
     );
   }
 }

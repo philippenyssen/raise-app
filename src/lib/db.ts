@@ -1,5 +1,5 @@
 import { createClient, type Client, type InValue } from '@libsql/client';
-import { Investor, Meeting, RaiseConfig, MarketDeal, InvestorPartner, InvestorPortfolioCo, Competitor, IntelligenceBrief } from './types';
+import { Investor, Meeting, RaiseConfig, MarketDeal, InvestorPartner, InvestorPortfolioCo, Competitor, IntelligenceBrief, Task, ActivityEvent } from './types';
 
 let client: Client;
 let initialized = false;
@@ -205,6 +205,30 @@ async function ensureInitialized() {
       investor_id TEXT DEFAULT NULL,
       created_at TEXT DEFAULT (datetime('now')),
       updated_at TEXT DEFAULT (datetime('now'))
+    )`,
+    `CREATE TABLE IF NOT EXISTS tasks (
+      id TEXT PRIMARY KEY,
+      title TEXT NOT NULL,
+      description TEXT DEFAULT '',
+      assignee TEXT DEFAULT '',
+      due_date TEXT DEFAULT '',
+      status TEXT DEFAULT 'pending',
+      priority TEXT DEFAULT 'medium',
+      phase TEXT DEFAULT 'preparation',
+      investor_id TEXT DEFAULT '',
+      investor_name TEXT DEFAULT '',
+      auto_generated INTEGER DEFAULT 0,
+      created_at TEXT DEFAULT (datetime('now')),
+      updated_at TEXT DEFAULT (datetime('now'))
+    )`,
+    `CREATE TABLE IF NOT EXISTS activity_log (
+      id TEXT PRIMARY KEY,
+      event_type TEXT NOT NULL,
+      subject TEXT NOT NULL,
+      detail TEXT DEFAULT '',
+      investor_id TEXT DEFAULT '',
+      investor_name TEXT DEFAULT '',
+      created_at TEXT DEFAULT (datetime('now'))
     )`,
   ], 'write');
 
@@ -971,6 +995,152 @@ export async function updateIntelligenceBrief(id: string, updates: { content?: s
 export async function deleteIntelligenceBrief(id: string) {
   await ensureInitialized();
   await getClient().execute({ sql: 'DELETE FROM intelligence_briefs WHERE id = ?', args: [id] });
+}
+
+// Tasks
+
+export async function getAllTasks(filters?: { status?: string; phase?: string; investor_id?: string }): Promise<Task[]> {
+  await ensureInitialized();
+  let sql = 'SELECT * FROM tasks';
+  const args: InValue[] = [];
+  const conditions: string[] = [];
+  if (filters?.status) { conditions.push('status = ?'); args.push(filters.status); }
+  if (filters?.phase) { conditions.push('phase = ?'); args.push(filters.phase); }
+  if (filters?.investor_id) { conditions.push('investor_id = ?'); args.push(filters.investor_id); }
+  if (conditions.length > 0) sql += ' WHERE ' + conditions.join(' AND ');
+  sql += ' ORDER BY CASE priority WHEN \'critical\' THEN 0 WHEN \'high\' THEN 1 WHEN \'medium\' THEN 2 ELSE 3 END, due_date ASC';
+  const result = await getClient().execute({ sql, args });
+  return result.rows as unknown as Task[];
+}
+
+export async function createTask(task: Omit<Task, 'id' | 'created_at' | 'updated_at'>): Promise<Task> {
+  await ensureInitialized();
+  const id = crypto.randomUUID();
+  const now = new Date().toISOString();
+  await getClient().execute({
+    sql: `INSERT INTO tasks (id, title, description, assignee, due_date, status, priority, phase, investor_id, investor_name, auto_generated, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    args: [id, task.title, task.description, task.assignee, task.due_date, task.status, task.priority, task.phase, task.investor_id, task.investor_name, task.auto_generated ? 1 : 0, now, now],
+  });
+  const result = await getClient().execute({ sql: 'SELECT * FROM tasks WHERE id = ?', args: [id] });
+  return result.rows[0] as unknown as Task;
+}
+
+export async function updateTask(id: string, updates: Partial<Task>) {
+  await ensureInitialized();
+  const fields = Object.keys(updates).filter(k => k !== 'id' && k !== 'created_at');
+  if (fields.length === 0) return;
+  const sets = fields.map(f => `${f} = ?`).join(', ');
+  const values = fields.map(f => {
+    const val = (updates as Record<string, unknown>)[f];
+    if (typeof val === 'boolean') return val ? 1 : 0;
+    return val as InValue;
+  });
+  await getClient().execute({
+    sql: `UPDATE tasks SET ${sets}, updated_at = datetime('now') WHERE id = ?`,
+    args: [...values, id],
+  });
+}
+
+export async function deleteTask(id: string) {
+  await ensureInitialized();
+  await getClient().execute({ sql: 'DELETE FROM tasks WHERE id = ?', args: [id] });
+}
+
+export async function getUpcomingTasks(limit: number = 5): Promise<Task[]> {
+  await ensureInitialized();
+  const result = await getClient().execute({
+    sql: `SELECT * FROM tasks WHERE status IN ('pending', 'in_progress') ORDER BY CASE priority WHEN 'critical' THEN 0 WHEN 'high' THEN 1 WHEN 'medium' THEN 2 ELSE 3 END, due_date ASC LIMIT ?`,
+    args: [limit],
+  });
+  return result.rows as unknown as Task[];
+}
+
+// Activity Log
+
+export async function logActivity(event: Omit<ActivityEvent, 'id' | 'created_at'>): Promise<void> {
+  await ensureInitialized();
+  await getClient().execute({
+    sql: `INSERT INTO activity_log (id, event_type, subject, detail, investor_id, investor_name, created_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))`,
+    args: [crypto.randomUUID(), event.event_type, event.subject, event.detail, event.investor_id, event.investor_name],
+  });
+}
+
+export async function getActivityLog(limit: number = 20, investorId?: string): Promise<ActivityEvent[]> {
+  await ensureInitialized();
+  if (investorId) {
+    const result = await getClient().execute({
+      sql: 'SELECT * FROM activity_log WHERE investor_id = ? ORDER BY created_at DESC LIMIT ?',
+      args: [investorId, limit],
+    });
+    return result.rows as unknown as ActivityEvent[];
+  }
+  const result = await getClient().execute({
+    sql: 'SELECT * FROM activity_log ORDER BY created_at DESC LIMIT ?',
+    args: [limit],
+  });
+  return result.rows as unknown as ActivityEvent[];
+}
+
+// Auto-generate tasks after meeting
+export async function generatePostMeetingTasks(meeting: Meeting, suggestedStatus: string): Promise<Task[]> {
+  const tasks: Task[] = [];
+  const now = new Date();
+  const in3Days = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+  const in7Days = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+
+  // Always create follow-up task
+  if (meeting.next_steps) {
+    tasks.push(await createTask({
+      title: `Follow up: ${meeting.investor_name}`,
+      description: meeting.next_steps,
+      assignee: '',
+      due_date: in3Days,
+      status: 'pending',
+      priority: 'high',
+      phase: suggestedStatus === 'in_dd' ? 'due_diligence' : suggestedStatus === 'engaged' ? 'management_presentations' : 'outreach',
+      investor_id: meeting.investor_id,
+      investor_name: meeting.investor_name,
+      auto_generated: true,
+    }));
+  }
+
+  // If objections exist, create task to address them in materials
+  try {
+    const objs = JSON.parse(meeting.objections || '[]');
+    const showstoppers = objs.filter((o: { severity: string }) => o.severity === 'showstopper' || o.severity === 'significant');
+    if (showstoppers.length > 0) {
+      tasks.push(await createTask({
+        title: `Address objections from ${meeting.investor_name}`,
+        description: showstoppers.map((o: { text: string; severity: string }) => `[${o.severity}] ${o.text}`).join('\n'),
+        assignee: '',
+        due_date: in7Days,
+        status: 'pending',
+        priority: showstoppers.some((o: { severity: string }) => o.severity === 'showstopper') ? 'critical' : 'high',
+        phase: 'preparation',
+        investor_id: meeting.investor_id,
+        investor_name: meeting.investor_name,
+        auto_generated: true,
+      }));
+    }
+  } catch { /* skip malformed */ }
+
+  // If engaged or DD, create materials preparation task
+  if (suggestedStatus === 'engaged' || suggestedStatus === 'in_dd') {
+    tasks.push(await createTask({
+      title: suggestedStatus === 'in_dd' ? `Prepare DD materials for ${meeting.investor_name}` : `Send follow-up materials to ${meeting.investor_name}`,
+      description: suggestedStatus === 'in_dd' ? 'Prepare data room access, financial model, and DD request list responses.' : 'Send deck, one-pager, or additional requested materials.',
+      assignee: '',
+      due_date: in3Days,
+      status: 'pending',
+      priority: 'high',
+      phase: suggestedStatus === 'in_dd' ? 'due_diligence' : 'management_presentations',
+      investor_id: meeting.investor_id,
+      investor_name: meeting.investor_name,
+      auto_generated: true,
+    }));
+  }
+
+  return tasks;
 }
 
 // Intelligence context for AI workspace

@@ -190,6 +190,38 @@ export interface Competitor {
   updated_at: string;
 }
 
+// Workflow & Timeline types
+
+export type TaskStatus = 'pending' | 'in_progress' | 'done' | 'blocked' | 'cancelled';
+export type TaskPriority = 'critical' | 'high' | 'medium' | 'low';
+export type RaisePhase = 'preparation' | 'outreach' | 'management_presentations' | 'due_diligence' | 'term_sheets' | 'negotiation' | 'closing';
+
+export interface Task {
+  id: string;
+  title: string;
+  description: string;
+  assignee: string;
+  due_date: string;
+  status: TaskStatus;
+  priority: TaskPriority;
+  phase: RaisePhase;
+  investor_id: string;
+  investor_name: string;
+  auto_generated: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ActivityEvent {
+  id: string;
+  event_type: 'meeting_logged' | 'status_changed' | 'document_created' | 'document_updated' | 'task_completed' | 'term_sheet_received' | 'research_completed' | 'data_room_uploaded' | 'note_added';
+  subject: string;
+  detail: string;
+  investor_id: string;
+  investor_name: string;
+  created_at: string;
+}
+
 export interface IntelligenceBrief {
   id: string;
   subject: string; // name of investor/company/topic

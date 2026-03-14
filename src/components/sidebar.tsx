@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import {
   LayoutDashboard, Users, Calendar, Brain, HeartPulse, FileText,
-  Sparkles, FolderOpen, BookOpen, Table, Globe,
+  Sparkles, FolderOpen, BookOpen, Table, Globe, ClipboardList, Settings,
   Menu, X, LogOut
 } from 'lucide-react';
 
@@ -24,6 +24,8 @@ const nav: NavItem[] = [
   { href: '/model', label: 'Model', icon: Table, section: 'DELIVERABLES' },
   // Intelligence
   { href: '/intelligence', label: 'Intelligence', icon: Globe, section: 'INTELLIGENCE' },
+  // Workflow
+  { href: '/timeline', label: 'Timeline', icon: ClipboardList, section: 'WORKFLOW' },
   // Process
   { href: '/', label: 'Dashboard', icon: LayoutDashboard, section: 'PROCESS' },
   { href: '/investors', label: 'Investors', icon: Users, section: 'PROCESS' },
@@ -31,6 +33,8 @@ const nav: NavItem[] = [
   { href: '/analysis', label: 'Analysis', icon: Brain, section: 'PROCESS' },
   { href: '/health', label: 'Health', icon: HeartPulse, section: 'PROCESS' },
   { href: '/terms', label: 'Terms', icon: FileText, section: 'PROCESS' },
+  // Settings
+  { href: '/settings', label: 'Settings', icon: Settings, section: 'SETTINGS' },
 ];
 
 export function Sidebar() {

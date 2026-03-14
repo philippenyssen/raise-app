@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getMeetings, createMeeting, updateMeeting, updateInvestor } from '@/lib/db';
+import { getMeetings, createMeeting, updateMeeting, updateInvestor, generatePostMeetingTasks, logActivity } from '@/lib/db';
 import { analyzeMeetingNotes } from '@/lib/ai';
 import type { Investor } from '@/lib/types';
 
@@ -42,12 +42,29 @@ export async function POST(req: NextRequest) {
   });
 
   // Update investor status and enthusiasm
-  if ((aiData as Record<string, unknown>).suggested_status) {
+  const suggestedStatus = (aiData as Record<string, string>).suggested_status;
+  if (suggestedStatus) {
     await updateInvestor(investor_id, {
-      status: (aiData as Record<string, string>).suggested_status as Investor['status'],
+      status: suggestedStatus as Investor['status'],
       enthusiasm: (aiData as Record<string, number>).enthusiasm_score || 3,
     });
   }
+
+  // Auto-generate follow-up tasks
+  try {
+    await generatePostMeetingTasks(meeting, suggestedStatus || 'met');
+  } catch { /* non-blocking */ }
+
+  // Log activity
+  try {
+    await logActivity({
+      event_type: 'meeting_logged',
+      subject: `${type || 'Meeting'} with ${investor_name}`,
+      detail: (aiData as Record<string, string>).ai_analysis || '',
+      investor_id,
+      investor_name,
+    });
+  } catch { /* non-blocking */ }
 
   return NextResponse.json(meeting, { status: 201 });
 }

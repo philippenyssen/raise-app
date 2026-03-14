@@ -188,7 +188,11 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: 'Unknown action' }, { status: 400 });
     }
   } catch (err) {
-    return NextResponse.json({ error: String(err) }, { status: 500 });
+    const msg = String(err);
+    if (msg.includes('credit balance') || msg.includes('too low')) {
+      return NextResponse.json({ error: 'Anthropic API: insufficient credits. Check console.anthropic.com/settings/billing.' }, { status: 402 });
+    }
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
 

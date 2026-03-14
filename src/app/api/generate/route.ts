@@ -59,10 +59,16 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     console.error('Generation failed:', err);
     const msg = err instanceof Error ? err.message : 'Generation failed';
-    // Detect authentication errors and provide clear guidance
-    if (msg.includes('authentication') || msg.includes('api_key') || msg.includes('401') || msg.includes('credit')) {
+    // Detect billing/authentication errors and provide clear guidance
+    if (msg.includes('credit balance') || msg.includes('too low')) {
       return NextResponse.json(
-        { error: 'Anthropic API key missing or invalid. Set ANTHROPIC_API_KEY in .env.local and restart the dev server.' },
+        { error: 'Anthropic API: insufficient credits. Check console.anthropic.com/settings/billing — make sure credits are on the same workspace as the API key. If you just added credits, try generating a new API key and redeploying.' },
+        { status: 402 }
+      );
+    }
+    if (msg.includes('authentication') || msg.includes('api_key') || msg.includes('401')) {
+      return NextResponse.json(
+        { error: 'Anthropic API key missing or invalid. Set ANTHROPIC_API_KEY in environment variables and redeploy.' },
         { status: 401 }
       );
     }

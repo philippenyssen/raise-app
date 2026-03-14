@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useToast } from '@/components/toast';
-import { FileText, Sparkles, FolderOpen, Table, ArrowRight } from 'lucide-react';
+import { FileText, Sparkles, FolderOpen, Table, ArrowRight, ClipboardList, Activity } from 'lucide-react';
 
 interface DocSummary {
   id: string;
@@ -11,6 +11,24 @@ interface DocSummary {
   type: string;
   status: string;
   updated_at: string;
+}
+
+interface UpcomingTask {
+  id: string;
+  title: string;
+  due_date: string;
+  priority: string;
+  investor_name: string;
+  phase: string;
+}
+
+interface ActivityItem {
+  id: string;
+  event_type: string;
+  subject: string;
+  detail: string;
+  investor_name: string;
+  created_at: string;
 }
 
 interface HealthData {
@@ -38,6 +56,8 @@ export default function Dashboard() {
   const [data, setData] = useState<HealthData | null>(null);
   const [docs, setDocs] = useState<DocSummary[]>([]);
   const [dataRoomCount, setDataRoomCount] = useState(0);
+  const [tasks, setTasks] = useState<UpcomingTask[]>([]);
+  const [activity, setActivity] = useState<ActivityItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [seeding, setSeeding] = useState(false);
 
@@ -46,14 +66,18 @@ export default function Dashboard() {
   async function fetchData() {
     setLoading(true);
     try {
-      const [healthRes, docsRes, drRes] = await Promise.all([
+      const [healthRes, docsRes, drRes, tasksRes, actRes] = await Promise.all([
         fetch('/api/health'),
         fetch('/api/documents'),
         fetch('/api/data-room'),
+        fetch('/api/tasks?type=upcoming&limit=5'),
+        fetch('/api/tasks?type=activity&limit=5'),
       ]);
       if (healthRes.ok) setData(await healthRes.json());
       if (docsRes.ok) setDocs(await docsRes.json());
       if (drRes.ok) setDataRoomCount((await drRes.json()).length);
+      if (tasksRes.ok) setTasks(await tasksRes.json());
+      if (actRes.ok) setActivity(await actRes.json());
     } catch {
       toast('Failed to load dashboard data', 'error');
     } finally {
@@ -307,6 +331,72 @@ export default function Dashboard() {
             </div>
           </div>
 
+          {/* Upcoming Tasks + Recent Activity */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="border border-zinc-800 rounded-xl p-5">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-sm font-medium text-zinc-400 uppercase flex items-center gap-2">
+                  <ClipboardList className="w-4 h-4" /> Upcoming Tasks
+                </h2>
+                <Link href="/timeline" className="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1">
+                  All tasks <ArrowRight className="w-3 h-3" />
+                </Link>
+              </div>
+              {tasks.length === 0 ? (
+                <p className="text-sm text-zinc-600">No upcoming tasks</p>
+              ) : (
+                <div className="space-y-2">
+                  {tasks.map(t => {
+                    const overdue = t.due_date && new Date(t.due_date) < new Date();
+                    const prioColor = { critical: 'text-red-400', high: 'text-orange-400', medium: 'text-yellow-400', low: 'text-zinc-500' }[t.priority] || 'text-zinc-500';
+                    return (
+                      <div key={t.id} className="flex items-center justify-between py-1.5 px-2 rounded hover:bg-zinc-800/50">
+                        <div className="min-w-0">
+                          <div className="text-sm truncate">{t.title}</div>
+                          {t.investor_name && <div className="text-xs text-zinc-600 truncate">{t.investor_name}</div>}
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span className={`text-[10px] ${prioColor}`}>{t.priority}</span>
+                          {t.due_date && (
+                            <span className={`text-[10px] ${overdue ? 'text-red-400' : 'text-zinc-500'}`}>
+                              {new Date(t.due_date).toLocaleDateString()}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            <div className="border border-zinc-800 rounded-xl p-5">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-sm font-medium text-zinc-400 uppercase flex items-center gap-2">
+                  <Activity className="w-4 h-4" /> Recent Activity
+                </h2>
+                <Link href="/timeline" className="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1">
+                  Full log <ArrowRight className="w-3 h-3" />
+                </Link>
+              </div>
+              {activity.length === 0 ? (
+                <p className="text-sm text-zinc-600">No activity recorded yet</p>
+              ) : (
+                <div className="space-y-2">
+                  {activity.map(a => (
+                    <div key={a.id} className="py-1.5 px-2 rounded hover:bg-zinc-800/50">
+                      <div className="text-sm truncate">{a.subject}</div>
+                      <div className="flex items-center gap-2 text-[10px] text-zinc-600">
+                        <span>{a.event_type.replace(/_/g, ' ')}</span>
+                        <span>{new Date(a.created_at).toLocaleString()}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
           {/* Quick Actions */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             <Link href="/meetings/new" className="border border-zinc-800 hover:border-zinc-600 rounded-xl p-4 text-center transition-colors">
@@ -321,9 +411,9 @@ export default function Dashboard() {
               <div className="text-sm font-medium">AI Analysis</div>
               <div className="text-xs text-zinc-500 mt-1">Pattern detection</div>
             </Link>
-            <Link href="/health" className="border border-zinc-800 hover:border-zinc-600 rounded-xl p-4 text-center transition-colors">
-              <div className="text-sm font-medium">Process Health</div>
-              <div className="text-xs text-zinc-500 mt-1">Convergence score</div>
+            <Link href="/timeline" className="border border-zinc-800 hover:border-zinc-600 rounded-xl p-4 text-center transition-colors">
+              <div className="text-sm font-medium">Timeline</div>
+              <div className="text-xs text-zinc-500 mt-1">Tasks & workflow</div>
             </Link>
           </div>
         </>
