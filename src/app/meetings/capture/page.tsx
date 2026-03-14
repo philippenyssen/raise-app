@@ -340,9 +340,9 @@ function QuickCaptureInner() {
 
           {/* Action buttons */}
           <div style={{ display: 'flex', gap: 'var(--space-3)', paddingTop: 'var(--space-2)' }}>
-            {!!result.id && (
+            {investorId && (
               <Link
-                href={`/meetings/${result.id}`}
+                href={`/investors/${investorId}`}
                 className="btn btn-md"
                 style={{
                   background: viewMeetingHovered ? 'var(--accent-hover)' : 'var(--accent)',
@@ -354,7 +354,7 @@ function QuickCaptureInner() {
                 onMouseEnter={() => setViewMeetingHovered(true)}
                 onMouseLeave={() => setViewMeetingHovered(false)}
               >
-                <ExternalLink className="w-3.5 h-3.5" /> View Meeting
+                <ExternalLink className="w-3.5 h-3.5" /> View {selectedInvestor?.name || 'Investor'}
               </Link>
             )}
             <button

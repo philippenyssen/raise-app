@@ -259,6 +259,21 @@ function NewMeetingContent() {
           )}
 
           <div className="flex gap-3">
+            {form.investor_id && (
+              <button
+                onClick={() => router.push(`/investors/${form.investor_id}`)}
+                className="px-4 py-2 rounded-lg text-sm font-medium"
+                style={{
+                  background: 'var(--accent-muted)',
+                  color: 'var(--accent)',
+                  border: '1px solid rgba(59,130,246,0.25)',
+                }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(59,130,246,0.2)'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--accent-muted)'; }}
+              >
+                View {selectedInvestor?.name || 'Investor'}
+              </button>
+            )}
             <button
               onClick={() => router.push('/meetings')}
               className="px-4 py-2 rounded-lg text-sm"
@@ -269,7 +284,7 @@ function NewMeetingContent() {
               onMouseEnter={() => setViewAllHovered(true)}
               onMouseLeave={() => setViewAllHovered(false)}
             >
-              View Meeting Log
+              All Meetings
             </button>
             <button
               onClick={() => { setResult(null); setForm(f => ({ ...f, raw_notes: '', investor_id: '', attendees: '' })); }}
@@ -281,7 +296,7 @@ function NewMeetingContent() {
               onMouseEnter={() => setLogAnotherHovered(true)}
               onMouseLeave={() => setLogAnotherHovered(false)}
             >
-              Log Another Meeting
+              Log Another
             </button>
           </div>
         </div>
