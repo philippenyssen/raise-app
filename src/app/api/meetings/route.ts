@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getMeetings, createMeeting, updateMeeting, getInvestor, processPostMeetingIntelligence, logActivity, createObjectionRecord, updateObjectionEnthusiasmDelta, generateFollowupChoreography } from '@/lib/db';
+import { getMeetings, createMeeting, updateMeeting, getInvestor, processPostMeetingIntelligence, logActivity, createObjectionRecord, updateObjectionEnthusiasmDelta, generateFollowupChoreography, extractAndStoreQuestionPatterns } from '@/lib/db';
 import { analyzeMeetingNotes } from '@/lib/ai';
 import { emitContextChange } from '@/lib/context-bus';
 
@@ -101,6 +101,19 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     console.error('Objection playbook auto-population failed:', err);
   }
+
+  // Extract and store question patterns for cross-investor analysis
+  try {
+    const investor = await getInvestor(investor_id);
+    await extractAndStoreQuestionPatterns(
+      meeting.id,
+      investor_id,
+      investor_name,
+      investor?.type || 'vc',
+      JSON.stringify(aiData.questions_asked || []),
+      date || new Date().toISOString().split('T')[0],
+    );
+  } catch { /* non-blocking */ }
 
   emitContextChange('meeting_logged', `Meeting with ${investor_name}`);
 

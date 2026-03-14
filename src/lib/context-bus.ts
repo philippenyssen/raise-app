@@ -22,6 +22,9 @@ import {
   getRevenueCommitments,
   getScoreSnapshots,
   getAccelerationActions,
+  getQuestionPatterns,
+  getCalibrationData,
+  computeNarrativeSignals,
 } from './db';
 
 // ---------------------------------------------------------------------------
@@ -148,6 +151,42 @@ export interface FullContext {
 
   // Acceleration alerts
   pendingAccelerations: number;
+
+  // Cross-investor question convergence (narrative weakness signals)
+  narrativeWeaknesses: {
+    topic: string;
+    questionCount: number;
+    investorCount: number;
+    investorNames: string[];
+    suggestedAction: string;
+  }[];
+
+  // Prediction calibration metrics
+  predictionCalibration: {
+    brierScore: number;
+    biasDirection: string;
+    resolvedCount: number;
+    calibrationNote: string;
+  };
+
+  // Narrative drift by investor type
+  narrativeDrift: {
+    investorType: string;
+    avgEnthusiasm: number;
+    conversionRate: number;
+    topObjection: string;
+    topQuestionTopic: string;
+    sampleSize: number;
+    status: 'effective' | 'struggling' | 'insufficient_data';
+  }[];
+
+  // Proven objection responses (best response per topic)
+  provenResponses: {
+    topic: string;
+    bestResponse: string;
+    avgEnthusiasmLift: number;
+    timesUsed: number;
+  }[];
 }
 
 const recentChanges: ContextChange[] = [];
@@ -176,6 +215,9 @@ export async function getFullContext(): Promise<FullContext> {
     playbook,
     commitmentsData,
     accelerations,
+    questionPatterns,
+    calibrationData,
+    narrativeSignals,
   ] = await Promise.all([
     getRaiseConfig().catch(() => null),
     getAllDocuments().catch(() => []),
@@ -189,6 +231,9 @@ export async function getFullContext(): Promise<FullContext> {
     getObjectionPlaybook().catch(() => []),
     getRevenueCommitments().catch(() => []),
     getAccelerationActions().catch(() => []),
+    getQuestionPatterns().catch(() => []),
+    getCalibrationData().catch(() => ({ totalPredictions: 0, resolvedPredictions: 0, brierScore: 0, biasDirection: 'insufficient_data', byStatus: [] })),
+    computeNarrativeSignals().catch(() => []),
   ]);
 
   // Build investor snapshots enriched with meeting/task/followup data
@@ -316,6 +361,52 @@ export async function getFullContext(): Promise<FullContext> {
       pendingTasks: pendingTaskCount,
     },
     pendingAccelerations,
+
+    // Narrative weaknesses from cross-investor question convergence
+    narrativeWeaknesses: (questionPatterns as Array<{ topic: string; questionCount: number; investorCount: number; investorNames: string[]; recentQuestions: string[] }>)
+      .filter(qp => qp.investorCount >= 2) // convergence = 2+ investors asking same topic
+      .slice(0, 5)
+      .map(qp => ({
+        topic: qp.topic,
+        questionCount: qp.questionCount,
+        investorCount: qp.investorCount,
+        investorNames: qp.investorNames.slice(0, 5),
+        suggestedAction: qp.investorCount >= 3
+          ? `CRITICAL: ${qp.investorCount} investors questioning "${qp.topic}" — narrative needs urgent strengthening`
+          : `WARNING: ${qp.investorCount} investors questioning "${qp.topic}" — consider reinforcing this area`,
+      })),
+
+    // Prediction calibration
+    predictionCalibration: {
+      brierScore: (calibrationData as { brierScore: number }).brierScore,
+      biasDirection: (calibrationData as { biasDirection: string }).biasDirection,
+      resolvedCount: (calibrationData as { resolvedPredictions: number }).resolvedPredictions,
+      calibrationNote: (calibrationData as { biasDirection: string }).biasDirection === 'over_confident'
+        ? 'Our predictions have been systematically over-confident. Treat probabilities with skepticism.'
+        : (calibrationData as { biasDirection: string }).biasDirection === 'under_confident'
+        ? 'Our predictions have been conservative. Actual outcomes have been better than predicted.'
+        : (calibrationData as { resolvedPredictions: number }).resolvedPredictions < 5
+        ? 'Insufficient resolved predictions for calibration. Treat probabilities as rough estimates.'
+        : 'Predictions are reasonably calibrated.',
+    },
+
+    // Narrative drift by investor type
+    narrativeDrift: (narrativeSignals as Array<{ investorType: string; avgEnthusiasm: number; conversionRate: number; topObjection: string; topQuestionTopic: string; sampleSize: number }>)
+      .map(ns => ({
+        ...ns,
+        status: (ns.sampleSize < 2 ? 'insufficient_data' : ns.avgEnthusiasm < 2.5 || ns.conversionRate < 20 ? 'struggling' : 'effective') as 'effective' | 'struggling' | 'insufficient_data',
+      })),
+
+    // Proven responses (from objection playbook with effectiveness data)
+    provenResponses: (playbook as Array<{ topic: string; count: number; has_effective_response: boolean; best_response?: string; avg_lift?: number }>)
+      .filter(p => p.has_effective_response && p.best_response)
+      .slice(0, 5)
+      .map(p => ({
+        topic: p.topic,
+        bestResponse: p.best_response || '',
+        avgEnthusiasmLift: p.avg_lift || 0,
+        timesUsed: p.count,
+      })),
   };
 
   cachedContext = context;
@@ -411,6 +502,46 @@ export function contextToSystemPrompt(ctx: FullContext): string {
     for (const c of ctx.recentChanges.slice(0, 5)) {
       lines.push(`  [v${c.version}] ${c.timestamp}: ${c.source} — ${c.detail}`);
     }
+    lines.push('');
+  }
+
+  // Narrative Health (cross-investor question convergence)
+  if (ctx.narrativeWeaknesses.length > 0) {
+    lines.push('NARRATIVE HEALTH (cross-investor question patterns):');
+    for (const nw of ctx.narrativeWeaknesses) {
+      lines.push(`- "${nw.topic}" questioned by ${nw.investorCount} investors (${nw.investorNames.join(', ')})`);
+      lines.push(`  → ${nw.suggestedAction}`);
+    }
+    lines.push('');
+  }
+
+  // Narrative effectiveness by investor type
+  if (ctx.narrativeDrift.length > 0) {
+    lines.push('NARRATIVE EFFECTIVENESS BY INVESTOR TYPE:');
+    for (const nd of ctx.narrativeDrift) {
+      const statusIcon = nd.status === 'effective' ? '✓' : nd.status === 'struggling' ? '✗' : '?';
+      lines.push(`- ${statusIcon} ${nd.investorType}: avg enthusiasm ${nd.avgEnthusiasm}/5, conversion ${nd.conversionRate}%, top objection: "${nd.topObjection}", top question: "${nd.topQuestionTopic}" (n=${nd.sampleSize})`);
+    }
+    const struggling = ctx.narrativeDrift.filter(nd => nd.status === 'struggling');
+    if (struggling.length > 0) {
+      lines.push(`WARNING: Narrative not landing with: ${struggling.map(s => s.investorType).join(', ')} — consider type-specific pitch adjustments`);
+    }
+    lines.push('');
+  }
+
+  // Proven objection responses
+  if (ctx.provenResponses.length > 0) {
+    lines.push('PROVEN OBJECTION RESPONSES (use these in conversations):');
+    for (const pr of ctx.provenResponses) {
+      lines.push(`- "${pr.topic}": ${pr.bestResponse} (avg +${pr.avgEnthusiasmLift} enthusiasm, used ${pr.timesUsed}x)`);
+    }
+    lines.push('');
+  }
+
+  // Prediction calibration
+  if (ctx.predictionCalibration.resolvedCount > 0) {
+    lines.push(`PREDICTION CALIBRATION: ${ctx.predictionCalibration.calibrationNote}`);
+    lines.push(`Brier score: ${ctx.predictionCalibration.brierScore} | Bias: ${ctx.predictionCalibration.biasDirection} | Based on ${ctx.predictionCalibration.resolvedCount} resolved predictions`);
     lines.push('');
   }
 

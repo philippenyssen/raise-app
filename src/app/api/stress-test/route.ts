@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@libsql/client';
 import { computeMomentumScore } from '@/lib/scoring';
+import { logPrediction } from '@/lib/db';
 import type { Investor, Meeting } from '@/lib/types';
 
 function getClient() {
@@ -472,6 +473,13 @@ export async function GET() {
 
     // Sort by expected value descending
     investorForecasts.sort((a, b) => b.expectedValue - a.expectedValue);
+
+    // Log predictions for calibration (non-blocking, max once per day per investor)
+    try {
+      for (const f of investorForecasts.slice(0, 20)) {
+        await logPrediction(f.id, f.name, f.closeProbability / 100, f.predictedCloseDate);
+      }
+    } catch { /* non-blocking */ }
 
     // Aggregate forecasts
     const totalExpected = investorForecasts.reduce((s, f) => s + f.expectedValue, 0);

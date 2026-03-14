@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAllInvestors, getInvestor, createInvestor, updateInvestor, deleteInvestor } from '@/lib/db';
+import { getAllInvestors, getInvestor, createInvestor, updateInvestor, deleteInvestor, resolvePrediction } from '@/lib/db';
 import { emitContextChange } from '@/lib/context-bus';
 
 // Allowlisted fields that can be updated via API
@@ -48,6 +48,15 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: 'no valid fields to update' }, { status: 400 });
   }
   await updateInvestor(id, updates);
+
+  // Resolve predictions when investor reaches terminal state
+  if (updates.status && ['passed', 'dropped', 'closed'].includes(updates.status as string)) {
+    try {
+      const outcome = updates.status as 'closed' | 'passed' | 'dropped';
+      await resolvePrediction(id, outcome, outcome === 'closed' ? new Date().toISOString().split('T')[0] : undefined);
+    } catch { /* non-blocking */ }
+  }
+
   emitContextChange('investor_updated', `Updated investor ${id}${updates.status ? ` status=${updates.status}` : ''}`);
   return NextResponse.json({ ok: true });
 }

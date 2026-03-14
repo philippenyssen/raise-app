@@ -330,7 +330,44 @@ async function ensureInitialized() {
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
     )`,
+    `CREATE TABLE IF NOT EXISTS question_patterns (
+      id TEXT PRIMARY KEY,
+      topic TEXT NOT NULL,
+      question_text TEXT NOT NULL,
+      investor_id TEXT NOT NULL,
+      investor_name TEXT,
+      investor_type TEXT,
+      meeting_id TEXT NOT NULL,
+      meeting_date TEXT,
+      created_at TEXT DEFAULT (datetime('now'))
+    )`,
+    `CREATE TABLE IF NOT EXISTS prediction_log (
+      id TEXT PRIMARY KEY,
+      investor_id TEXT NOT NULL,
+      investor_name TEXT,
+      predicted_close_prob REAL,
+      predicted_close_date TEXT,
+      prediction_date TEXT DEFAULT (date('now')),
+      actual_outcome TEXT,
+      actual_close_date TEXT,
+      resolved_at TEXT,
+      created_at TEXT DEFAULT (datetime('now'))
+    )`,
+    `CREATE TABLE IF NOT EXISTS narrative_signals (
+      id TEXT PRIMARY KEY,
+      investor_type TEXT NOT NULL,
+      avg_enthusiasm REAL,
+      conversion_rate REAL,
+      top_objection TEXT,
+      top_question_topic TEXT,
+      sample_size INTEGER,
+      snapshot_date TEXT DEFAULT (date('now')),
+      created_at TEXT DEFAULT (datetime('now'))
+    )`,
   ], 'write');
+
+  // Migration: add enthusiasm_at_objection column if missing
+  try { await db.execute(`ALTER TABLE objection_responses ADD COLUMN enthusiasm_at_objection INTEGER DEFAULT 0`); } catch { /* column already exists */ }
 
   initialized = true;
 }
@@ -1593,7 +1630,7 @@ export async function processPostMeetingIntelligence(
       if (mentionsObj) {
         // Measure effectiveness by enthusiasm delta
         const currentEnthusiasm = meeting.enthusiasm_score || 3;
-        const objMeetingEnthusiasm = obj.next_meeting_enthusiasm_delta !== 0 ? 3 : 3; // fallback since no enthusiasm_at_raise field
+        const objMeetingEnthusiasm = (obj as unknown as Record<string, unknown>).enthusiasm_at_objection as number || 3;
         const delta = currentEnthusiasm - objMeetingEnthusiasm;
 
         let effectiveness: string;
@@ -1735,13 +1772,14 @@ export async function createObjectionRecord(data: {
   meeting_id?: string;
   response_text?: string;
   effectiveness?: string;
+  enthusiasm_at_objection?: number;
 }): Promise<ObjectionRecord> {
   await ensureInitialized();
   const id = crypto.randomUUID();
   const now = new Date().toISOString();
   await getClient().execute({
-    sql: `INSERT INTO objection_responses (id, objection_text, objection_topic, investor_id, investor_name, meeting_id, response_text, effectiveness, next_meeting_enthusiasm_delta, created_at, updated_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?)`,
+    sql: `INSERT INTO objection_responses (id, objection_text, objection_topic, investor_id, investor_name, meeting_id, response_text, effectiveness, next_meeting_enthusiasm_delta, enthusiasm_at_objection, created_at, updated_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?)`,
     args: [
       id,
       data.objection_text,
@@ -1751,6 +1789,7 @@ export async function createObjectionRecord(data: {
       data.meeting_id || null,
       data.response_text || '',
       data.effectiveness || 'unknown',
+      data.enthusiasm_at_objection ?? 0,
       now,
       now,
     ],
@@ -2261,4 +2300,273 @@ export async function updateRevenueCommitment(id: string, updates: Record<string
 export async function deleteRevenueCommitment(id: string): Promise<void> {
   await ensureInitialized();
   await getClient().execute({ sql: 'DELETE FROM revenue_commitments WHERE id = ?', args: [id] });
+}
+
+// ---------------------------------------------------------------------------
+// Question Pattern Analysis
+// ---------------------------------------------------------------------------
+
+export async function extractAndStoreQuestionPatterns(meetingId: string, investorId: string, investorName: string, investorType: string, questionsJson: string, meetingDate: string): Promise<void> {
+  await ensureInitialized();
+  const db = getClient();
+  try {
+    const questions = JSON.parse(questionsJson) as Array<{ text?: string; topic?: string }>;
+    for (const q of questions) {
+      if (!q.text) continue;
+      const topic = q.topic || extractTopic(q.text);
+      await db.execute({
+        sql: `INSERT OR IGNORE INTO question_patterns (id, topic, question_text, investor_id, investor_name, investor_type, meeting_id, meeting_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        args: [crypto.randomUUID(), topic, q.text, investorId, investorName, investorType, meetingId, meetingDate],
+      });
+    }
+  } catch { /* skip malformed */ }
+}
+
+function extractTopic(questionText: string): string {
+  const text = questionText.toLowerCase();
+  const topicKeywords: Record<string, string[]> = {
+    'valuation': ['valuation', 'price', 'multiple', 'expensive', 'premium', 'worth'],
+    'timeline': ['timeline', 'when', 'schedule', 'delay', 'on time', 'deadline'],
+    'competition': ['competitor', 'competition', 'market share', 'differentiat'],
+    'team': ['team', 'hire', 'talent', 'ceo', 'founder', 'management', 'key person'],
+    'technology': ['technology', 'tech', 'platform', 'product', 'r&d', 'patent'],
+    'revenue': ['revenue', 'sales', 'growth', 'customer', 'contract', 'backlog', 'pipeline'],
+    'risk': ['risk', 'downside', 'fail', 'worst case', 'what if'],
+    'governance': ['governance', 'board', 'control', 'rights', 'protection'],
+    'exit': ['exit', 'ipo', 'liquidity', 'return', 'secondary'],
+    'capital': ['capital', 'burn', 'runway', 'cash', 'funding', 'dilution'],
+    'regulation': ['regulation', 'regulatory', 'compliance', 'government', 'policy', 'itar'],
+    'integration': ['integration', 'acquisition', 'merger', 'synergy', 'mynaric'],
+  };
+  for (const [topic, keywords] of Object.entries(topicKeywords)) {
+    if (keywords.some(kw => text.includes(kw))) return topic;
+  }
+  return 'general';
+}
+
+export async function getQuestionPatterns(): Promise<{
+  topic: string;
+  questionCount: number;
+  investorCount: number;
+  investorNames: string[];
+  investorTypes: string[];
+  recentQuestions: string[];
+}[]> {
+  await ensureInitialized();
+  const db = getClient();
+  const result = await db.execute(`
+    SELECT topic, question_text, investor_name, investor_type, investor_id
+    FROM question_patterns
+    ORDER BY meeting_date DESC
+  `);
+  const rows = result.rows as unknown as Array<{ topic: string; question_text: string; investor_name: string; investor_type: string; investor_id: string }>;
+
+  const byTopic = new Map<string, { questions: string[]; investors: Set<string>; investorNames: Set<string>; investorTypes: Set<string> }>();
+  for (const row of rows) {
+    if (!byTopic.has(row.topic)) {
+      byTopic.set(row.topic, { questions: [], investors: new Set(), investorNames: new Set(), investorTypes: new Set() });
+    }
+    const entry = byTopic.get(row.topic)!;
+    entry.questions.push(row.question_text);
+    entry.investors.add(row.investor_id);
+    entry.investorNames.add(row.investor_name);
+    entry.investorTypes.add(row.investor_type);
+  }
+
+  return Array.from(byTopic.entries())
+    .map(([topic, data]) => ({
+      topic,
+      questionCount: data.questions.length,
+      investorCount: data.investors.size,
+      investorNames: Array.from(data.investorNames),
+      investorTypes: Array.from(data.investorTypes),
+      recentQuestions: data.questions.slice(0, 3),
+    }))
+    .sort((a, b) => b.investorCount - a.investorCount || b.questionCount - a.questionCount);
+}
+
+// ---------------------------------------------------------------------------
+// Prediction Calibration
+// ---------------------------------------------------------------------------
+
+export async function logPrediction(investorId: string, investorName: string, closeProbability: number, predictedCloseDate: string | null): Promise<void> {
+  await ensureInitialized();
+  await getClient().execute({
+    sql: `INSERT INTO prediction_log (id, investor_id, investor_name, predicted_close_prob, predicted_close_date) VALUES (?, ?, ?, ?, ?)`,
+    args: [crypto.randomUUID(), investorId, investorName, closeProbability, predictedCloseDate],
+  });
+}
+
+export async function resolvePrediction(investorId: string, outcome: 'closed' | 'passed' | 'dropped', closeDate?: string): Promise<void> {
+  await ensureInitialized();
+  const now = new Date().toISOString();
+  await getClient().execute({
+    sql: `UPDATE prediction_log SET actual_outcome = ?, actual_close_date = ?, resolved_at = ? WHERE investor_id = ? AND actual_outcome IS NULL`,
+    args: [outcome, closeDate || null, now, investorId],
+  });
+}
+
+export async function getCalibrationData(): Promise<{
+  totalPredictions: number;
+  resolvedPredictions: number;
+  brierScore: number;
+  biasDirection: 'over_confident' | 'under_confident' | 'calibrated' | 'insufficient_data';
+  byStatus: { status: string; avgPredicted: number; actualRate: number; count: number }[];
+}> {
+  await ensureInitialized();
+  const db = getClient();
+
+  const allResult = await db.execute(`SELECT COUNT(*) as count FROM prediction_log`);
+  const totalPredictions = (allResult.rows[0] as unknown as { count: number }).count;
+
+  const resolvedResult = await db.execute(`
+    SELECT predicted_close_prob, actual_outcome
+    FROM prediction_log
+    WHERE actual_outcome IS NOT NULL
+  `);
+  const resolved = resolvedResult.rows as unknown as Array<{ predicted_close_prob: number; actual_outcome: string }>;
+
+  if (resolved.length < 3) {
+    return {
+      totalPredictions,
+      resolvedPredictions: resolved.length,
+      brierScore: 0,
+      biasDirection: 'insufficient_data',
+      byStatus: [],
+    };
+  }
+
+  // Brier score: mean squared error of probability predictions
+  let brierSum = 0;
+  let totalPredictedProb = 0;
+  let actualCloseCount = 0;
+  for (const r of resolved) {
+    const actual = r.actual_outcome === 'closed' ? 1 : 0;
+    brierSum += (r.predicted_close_prob - actual) ** 2;
+    totalPredictedProb += r.predicted_close_prob;
+    actualCloseCount += actual;
+  }
+  const brierScore = brierSum / resolved.length;
+
+  const avgPredicted = totalPredictedProb / resolved.length;
+  const actualRate = actualCloseCount / resolved.length;
+  const biasDirection = resolved.length < 5 ? 'insufficient_data' as const :
+    avgPredicted > actualRate + 0.1 ? 'over_confident' as const :
+    avgPredicted < actualRate - 0.1 ? 'under_confident' as const :
+    'calibrated' as const;
+
+  return {
+    totalPredictions,
+    resolvedPredictions: resolved.length,
+    brierScore: Math.round(brierScore * 1000) / 1000,
+    biasDirection,
+    byStatus: [], // Populated when we have enough data per status
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Narrative Drift Detection
+// ---------------------------------------------------------------------------
+
+export async function computeNarrativeSignals(): Promise<{
+  investorType: string;
+  avgEnthusiasm: number;
+  conversionRate: number;
+  topObjection: string;
+  topQuestionTopic: string;
+  sampleSize: number;
+}[]> {
+  await ensureInitialized();
+  const db = getClient();
+
+  // Get enthusiasm by investor type
+  const enthusiasmResult = await db.execute(`
+    SELECT i.type as investor_type,
+           AVG(m.enthusiasm_score) as avg_enthusiasm,
+           COUNT(DISTINCT i.id) as sample_size
+    FROM investors i
+    JOIN meetings m ON m.investor_id = i.id
+    WHERE i.status NOT IN ('passed', 'dropped')
+    GROUP BY i.type
+  `);
+  const enthusiasmByType = new Map<string, { avg: number; sample: number }>();
+  for (const row of enthusiasmResult.rows as unknown as Array<{ investor_type: string; avg_enthusiasm: number; sample_size: number }>) {
+    enthusiasmByType.set(row.investor_type, { avg: Math.round(row.avg_enthusiasm * 10) / 10, sample: row.sample_size });
+  }
+
+  // Get conversion rates by type (reached engaged+ / total met)
+  const conversionResult = await db.execute(`
+    SELECT type as investor_type,
+           COUNT(*) as total,
+           SUM(CASE WHEN status IN ('engaged', 'in_dd', 'term_sheet', 'closed') THEN 1 ELSE 0 END) as converted
+    FROM investors
+    WHERE status NOT IN ('identified')
+    GROUP BY type
+  `);
+  const conversionByType = new Map<string, number>();
+  for (const row of conversionResult.rows as unknown as Array<{ investor_type: string; total: number; converted: number }>) {
+    conversionByType.set(row.investor_type, row.total > 0 ? Math.round((row.converted / row.total) * 100) : 0);
+  }
+
+  // Get top objection by investor type
+  const objectionResult = await db.execute(`
+    SELECT i.type as investor_type, m.objections
+    FROM meetings m
+    JOIN investors i ON i.id = m.investor_id
+    WHERE m.objections != '[]'
+  `);
+  const objectionsByType = new Map<string, Map<string, number>>();
+  for (const row of objectionResult.rows as unknown as Array<{ investor_type: string; objections: string }>) {
+    try {
+      const objs = JSON.parse(row.objections) as Array<{ topic?: string; text?: string }>;
+      if (!objectionsByType.has(row.investor_type)) objectionsByType.set(row.investor_type, new Map());
+      const typeMap = objectionsByType.get(row.investor_type)!;
+      for (const o of objs) {
+        const topic = o.topic || 'general';
+        typeMap.set(topic, (typeMap.get(topic) || 0) + 1);
+      }
+    } catch { /* skip */ }
+  }
+
+  // Get top question topic by investor type
+  const questionResult = await db.execute(`
+    SELECT investor_type, topic, COUNT(*) as cnt
+    FROM question_patterns
+    GROUP BY investor_type, topic
+    ORDER BY cnt DESC
+  `);
+  const topQuestionByType = new Map<string, string>();
+  for (const row of questionResult.rows as unknown as Array<{ investor_type: string; topic: string; cnt: number }>) {
+    if (!topQuestionByType.has(row.investor_type)) {
+      topQuestionByType.set(row.investor_type, row.topic);
+    }
+  }
+
+  // Combine all signals
+  const allTypes = new Set([
+    ...Array.from(enthusiasmByType.keys()),
+    ...Array.from(conversionByType.keys()),
+    ...Array.from(objectionsByType.keys()),
+  ]);
+
+  return Array.from(allTypes).map(type => {
+    const enthusiasm = enthusiasmByType.get(type);
+    const objTopics = objectionsByType.get(type);
+    let topObjection = 'none';
+    if (objTopics) {
+      let maxCount = 0;
+      Array.from(objTopics.entries()).forEach(([topic, count]) => {
+        if (count > maxCount) { maxCount = count; topObjection = topic; }
+      });
+    }
+
+    return {
+      investorType: type,
+      avgEnthusiasm: enthusiasm?.avg ?? 0,
+      conversionRate: conversionByType.get(type) ?? 0,
+      topObjection,
+      topQuestionTopic: topQuestionByType.get(type) || 'none',
+      sampleSize: enthusiasm?.sample ?? 0,
+    };
+  });
 }
