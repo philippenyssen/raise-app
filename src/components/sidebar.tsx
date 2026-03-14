@@ -5,11 +5,10 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import {
   LayoutDashboard, Users, Calendar, FileText,
-  Sparkles, FolderOpen, BookOpen, Table, Globe, Settings,
-  Columns3, GitCompare, BarChart3, MessageCircleWarning, Target,
-  SendHorizonal, Menu, X, LogOut, FileBarChart, Zap, ShieldAlert, Activity,
-  DollarSign, Compass, ChevronLeft, ChevronRight, Database, Sun, Mic, Shield, Gauge, Flame,
-  Network, TrendingDown
+  FolderOpen, BookOpen, Globe, Settings,
+  Columns3, BarChart3, MessageCircleWarning, Target,
+  SendHorizonal, Menu, X, LogOut,
+  ChevronLeft, ChevronRight, Sun, Activity, Flame,
 } from 'lucide-react';
 
 interface NavItem {
@@ -21,43 +20,25 @@ interface NavItem {
 }
 
 const nav: NavItem[] = [
-  // Core
-  { href: '/today', label: 'Today', icon: Sun, section: 'CORE', badge: 'hot' },
-  { href: '/', label: 'Dashboard', icon: LayoutDashboard, section: 'CORE' },
-  { href: '/focus', label: 'Focus', icon: Target, section: 'CORE' },
-  { href: '/pipeline', label: 'Pipeline', icon: Columns3, section: 'CORE' },
-  { href: '/velocity', label: 'Velocity', icon: Gauge, section: 'CORE', badge: 'hot' },
-  { href: '/forecast', label: 'Forecast', icon: BarChart3, section: 'CORE' },
-  { href: '/deal-heat', label: 'Deal Heat', icon: Flame, section: 'CORE' },
-  { href: '/workspace', label: 'Workspace', icon: Sparkles, section: 'CORE' },
-  // CRM
-  { href: '/investors', label: 'Investors', icon: Users, section: 'CRM' },
-  { href: '/meetings', label: 'Meetings', icon: Calendar, section: 'CRM' },
-  { href: '/meetings/capture', label: 'Quick Capture', icon: Mic, section: 'CRM', badge: 'new' },
-  { href: '/followups', label: 'Follow-ups', icon: SendHorizonal, section: 'CRM' },
-  { href: '/compare', label: 'Compare', icon: GitCompare, section: 'CRM' },
-  { href: '/backlog', label: 'Backlog', icon: DollarSign, section: 'CRM' },
-  // Intelligence
-  { href: '/strategic', label: 'Strategic', icon: Compass, section: 'INTEL' },
-  { href: '/intelligence', label: 'Intelligence', icon: Globe, section: 'INTEL' },
-  { href: '/momentum', label: 'Momentum', icon: Activity, section: 'INTEL' },
-  { href: '/objections', label: 'Objections', icon: MessageCircleWarning, section: 'INTEL' },
-  { href: '/stress-test', label: 'Stress Test', icon: ShieldAlert, section: 'INTEL' },
-  { href: '/acceleration', label: 'Acceleration', icon: Zap, section: 'INTEL' },
-  { href: '/competitive', label: 'Competitive', icon: Shield, section: 'INTEL', badge: 'new' },
-  { href: '/enrichment', label: 'Enrichment', icon: Database, section: 'INTEL', badge: 'new' },
-  { href: '/network', label: 'Network', icon: Network, section: 'INTEL' },
-  { href: '/fomo', label: 'FOMO', icon: Zap, section: 'INTEL' },
-  { href: '/win-loss', label: 'Win/Loss', icon: TrendingDown, section: 'INTEL' },
-  // Deliverables
-  { href: '/documents', label: 'Documents', icon: BookOpen, section: 'DOCS' },
-  { href: '/data-room', label: 'Data Room', icon: FolderOpen, section: 'DOCS' },
-  { href: '/model', label: 'Model', icon: Table, section: 'DOCS' },
-  { href: '/reports', label: 'Reports', icon: FileBarChart, section: 'DOCS' },
-  { href: '/terms', label: 'Terms', icon: FileText, section: 'DOCS' },
-  // System
-  { href: '/skills', label: 'Skill Health', icon: Activity, section: 'SYS' },
-  { href: '/settings', label: 'Settings', icon: Settings, section: 'SYS' },
+  // Daily — what you use every day
+  { href: '/today', label: 'Today', icon: Sun, section: 'DAILY', badge: 'hot' },
+  { href: '/', label: 'Dashboard', icon: LayoutDashboard, section: 'DAILY' },
+  { href: '/pipeline', label: 'Pipeline', icon: Columns3, section: 'DAILY' },
+  { href: '/investors', label: 'Investors', icon: Users, section: 'DAILY' },
+  // Execution — running the fundraise
+  { href: '/meetings', label: 'Meetings', icon: Calendar, section: 'EXECUTE' },
+  { href: '/followups', label: 'Follow-ups', icon: SendHorizonal, section: 'EXECUTE' },
+  { href: '/focus', label: 'Focus', icon: Target, section: 'EXECUTE' },
+  // Analysis — understanding what's happening
+  { href: '/dealflow', label: 'Dealflow', icon: Flame, section: 'ANALYZE' },
+  { href: '/forecast', label: 'Forecast', icon: BarChart3, section: 'ANALYZE' },
+  { href: '/objections', label: 'Objections', icon: MessageCircleWarning, section: 'ANALYZE' },
+  { href: '/intelligence', label: 'Intelligence', icon: Globe, section: 'ANALYZE' },
+  // Tools — materials and configuration
+  { href: '/documents', label: 'Documents', icon: BookOpen, section: 'TOOLS' },
+  { href: '/data-room', label: 'Data Room', icon: FolderOpen, section: 'TOOLS' },
+  { href: '/terms', label: 'Terms', icon: FileText, section: 'TOOLS' },
+  { href: '/settings', label: 'Settings', icon: Settings, section: 'TOOLS' },
 ];
 
 export function Sidebar() {
@@ -73,11 +54,10 @@ export function Sidebar() {
   }, {});
 
   const sectionLabels: Record<string, string> = {
-    CORE: '',
-    CRM: 'CRM',
-    INTEL: 'Intelligence',
-    DOCS: 'Deliverables',
-    SYS: 'System',
+    DAILY: '',
+    EXECUTE: 'Execution',
+    ANALYZE: 'Analysis',
+    TOOLS: 'Tools',
   };
 
   return (
