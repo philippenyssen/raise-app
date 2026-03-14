@@ -536,7 +536,7 @@ export default function InvestorDetailPage() {
                     style={{
                       fontSize: '10px', fontWeight: 600,
                       padding: '1px 6px', borderRadius: '9999px',
-                      background: 'var(--danger)', color: 'white',
+                      background: 'var(--danger)', color: 'var(--text-primary)',
                     }}
                   >
                     {overdueItems.length} overdue
@@ -1516,7 +1516,7 @@ function EnrichmentPanel({
           className="px-3 py-1.5 rounded-lg text-sm flex items-center gap-2 mx-auto"
           style={{
             background: hoveredRefresh ? 'var(--accent-hover)' : 'var(--accent)',
-            color: 'white',
+            color: 'var(--text-primary)',
             transition: 'background 150ms ease',
           }}
         >

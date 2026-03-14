@@ -305,7 +305,7 @@ function ActionCard({
                   borderRadius: 'var(--radius-md)',
                   fontSize: 'var(--font-size-sm)',
                   fontWeight: 500,
-                  color: 'white',
+                  color: 'var(--text-primary)',
                   border: 'none',
                   cursor: 'pointer',
                 }}
@@ -618,7 +618,7 @@ export default function AccelerationPage() {
             style={{
               padding: '8px 16px',
               background: retryHovered ? 'rgba(74,111,165,0.8)' : 'var(--accent)',
-              color: 'white',
+              color: 'var(--text-primary)',
               fontSize: 'var(--font-size-sm)',
               border: 'none',
               cursor: 'pointer',

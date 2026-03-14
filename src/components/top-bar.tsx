@@ -131,7 +131,7 @@ export function TopBar() {
                 width: '14px',
                 height: '14px',
                 background: 'var(--danger)',
-                color: 'white',
+                color: 'var(--text-primary)',
                 fontSize: '9px',
                 fontWeight: 700,
               }}

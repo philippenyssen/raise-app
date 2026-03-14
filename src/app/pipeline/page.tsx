@@ -715,7 +715,7 @@ function FilterButton({
         <span
           style={{
             background: 'var(--accent)',
-            color: 'white',
+            color: 'var(--text-primary)',
             fontSize: '10px',
             fontWeight: 700,
             padding: '0.125rem 0.375rem',

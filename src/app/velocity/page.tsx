@@ -159,7 +159,7 @@ export default function VelocityPage() {
                   padding: '2px 8px',
                   borderRadius: '9999px',
                   background: 'var(--danger)',
-                  color: 'white',
+                  color: 'var(--text-primary)',
                   letterSpacing: '0.04em',
                   textTransform: 'uppercase',
                 }}
@@ -341,9 +341,9 @@ export default function VelocityPage() {
                             className="tier-badge"
                             style={{
                               ...(inv.investor_tier === 1
-                                ? { background: 'var(--accent)', color: 'white' }
+                                ? { background: 'var(--accent)', color: 'var(--text-primary)' }
                                 : inv.investor_tier === 2
-                                  ? { background: 'var(--accent)', color: 'white' }
+                                  ? { background: 'var(--accent)', color: 'var(--text-primary)' }
                                   : { background: 'var(--surface-3)', color: 'var(--text-secondary)', border: '1px solid var(--border-default)' }),
                               width: '20px',
                               height: '20px',

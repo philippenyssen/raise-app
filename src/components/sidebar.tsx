@@ -44,6 +44,20 @@ const nav: NavItem[] = [
   { href: '/settings', label: 'Settings', icon: Settings, section: 'TOOLS' },
 ];
 
+/* ── Sidebar-specific palette (dark navy panel on light page) ── */
+const SB = {
+  bg: '#1a1a2e',
+  bgHover: 'rgba(255,255,255,0.06)',
+  bgActive: 'rgba(255,255,255,0.10)',
+  border: 'rgba(255,255,255,0.08)',
+  text: 'rgba(255,255,255,0.50)',
+  textHover: 'rgba(255,255,255,0.75)',
+  textActive: '#fafaf8',
+  accent: '#fafaf8',
+  muted: 'rgba(255,255,255,0.25)',
+  sectionLabel: 'rgba(255,255,255,0.30)',
+};
+
 export function Sidebar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -53,7 +67,6 @@ export function Sidebar() {
 
   useEffect(() => {
     function fetchBadges() {
-      // Overdue follow-ups
       fetch('/api/followups?status=pending')
         .then(r => r.ok ? r.json() : [])
         .then(data => {
@@ -65,7 +78,6 @@ export function Sidebar() {
           setOverdueCount(overdue.length);
         })
         .catch(() => {});
-      // Today's meetings
       fetch('/api/meetings')
         .then(r => r.ok ? r.json() : [])
         .then(data => {
@@ -103,21 +115,21 @@ export function Sidebar() {
       <button
         onClick={() => setMobileOpen(true)}
         className="md:hidden fixed top-3 left-3 z-50 p-2 rounded-lg"
-        style={{ background: 'var(--surface-2)', border: '1px solid var(--border-default)' }}
+        style={{ background: SB.bg, border: `1px solid ${SB.border}` }}
       >
-        <Menu className="w-4 h-4" style={{ color: 'var(--text-secondary)' }} />
+        <Menu className="w-4 h-4" style={{ color: SB.textActive }} />
       </button>
 
       {/* Overlay */}
       {mobileOpen && (
         <div
           className="md:hidden fixed inset-0 z-40"
-          style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)' }}
+          style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)' }}
           onClick={() => setMobileOpen(false)}
         />
       )}
 
-      {/* Sidebar */}
+      {/* Sidebar — dark navy panel */}
       <aside
         className={`
           fixed md:static inset-y-0 left-0 z-50
@@ -127,8 +139,8 @@ export function Sidebar() {
         `}
         style={{
           width: collapsed ? '60px' : '220px',
-          background: 'var(--surface-0)',
-          borderRight: '1px solid var(--border-subtle)',
+          background: SB.bg,
+          borderRight: `1px solid ${SB.border}`,
         }}
       >
         {/* Header */}
@@ -136,21 +148,22 @@ export function Sidebar() {
           className="flex items-center justify-between shrink-0"
           style={{
             padding: collapsed ? 'var(--space-4) var(--space-3)' : 'var(--space-5) var(--space-4)',
-            borderBottom: '1px solid var(--border-subtle)',
+            borderBottom: `1px solid ${SB.border}`,
           }}
         >
           {!collapsed && (
             <div className="min-w-0">
               <h1 style={{
-                color: 'var(--accent)',
-                letterSpacing: '0.18em',
-                fontSize: '14px',
-                fontWeight: 400,
+                color: SB.accent,
+                letterSpacing: '0.22em',
+                fontSize: '13px',
+                fontWeight: 300,
                 fontFamily: 'var(--font-cormorant), Georgia, serif',
+                textTransform: 'uppercase' as const,
               }}>
                 RAISE
               </h1>
-              <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '1px' }}>
+              <p style={{ fontSize: '10px', color: SB.muted, marginTop: '2px', letterSpacing: '0.08em', fontWeight: 300 }}>
                 Series C
               </p>
             </div>
@@ -158,9 +171,9 @@ export function Sidebar() {
           {collapsed && (
             <div className="w-full flex justify-center">
               <span style={{
-                color: 'var(--accent)',
+                color: SB.accent,
                 letterSpacing: '0.12em',
-                fontWeight: 400,
+                fontWeight: 300,
                 fontFamily: 'var(--font-cormorant), Georgia, serif',
                 fontSize: '14px',
               }}>R</span>
@@ -172,17 +185,17 @@ export function Sidebar() {
             style={{
               width: '24px',
               height: '24px',
-              color: 'var(--text-muted)',
+              color: SB.muted,
             }}
-            onMouseEnter={e => { (e.target as HTMLElement).style.color = 'var(--text-secondary)'; (e.target as HTMLElement).style.background = 'var(--surface-2)'; }}
-            onMouseLeave={e => { (e.target as HTMLElement).style.color = 'var(--text-muted)'; (e.target as HTMLElement).style.background = 'transparent'; }}
+            onMouseEnter={e => { (e.target as HTMLElement).style.color = SB.textHover; (e.target as HTMLElement).style.background = SB.bgHover; }}
+            onMouseLeave={e => { (e.target as HTMLElement).style.color = SB.muted; (e.target as HTMLElement).style.background = 'transparent'; }}
           >
             {collapsed ? <ChevronRight className="w-3.5 h-3.5" /> : <ChevronLeft className="w-3.5 h-3.5" />}
           </button>
           <button
             onClick={() => setMobileOpen(false)}
             className="md:hidden p-1"
-            style={{ color: 'var(--text-muted)' }}
+            style={{ color: SB.textHover }}
           >
             <X className="w-4 h-4" />
           </button>
@@ -199,11 +212,11 @@ export function Sidebar() {
               {!collapsed && sectionLabels[section] && (
                 <div
                   style={{
-                    fontSize: 'var(--font-size-xs)',
-                    fontWeight: 500,
-                    color: 'var(--text-muted)',
+                    fontSize: '10px',
+                    fontWeight: 400,
+                    color: SB.sectionLabel,
                     textTransform: 'uppercase',
-                    letterSpacing: '0.06em',
+                    letterSpacing: '0.14em',
                     padding: '0 var(--space-3)',
                     marginBottom: 'var(--space-1)',
                   }}
@@ -212,7 +225,7 @@ export function Sidebar() {
                 </div>
               )}
               {collapsed && sIdx > 0 && (
-                <div style={{ height: '1px', background: 'var(--border-subtle)', margin: '0 var(--space-2) var(--space-2)' }} />
+                <div style={{ height: '1px', background: SB.border, margin: '0 var(--space-2) var(--space-2)' }} />
               )}
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1px' }}>
@@ -231,21 +244,21 @@ export function Sidebar() {
                         gap: collapsed ? '0' : 'var(--space-3)',
                         padding: collapsed ? 'var(--space-2)' : 'var(--space-2) var(--space-3)',
                         justifyContent: collapsed ? 'center' : 'flex-start',
-                        background: active ? 'var(--surface-2)' : 'transparent',
-                        color: active ? 'var(--text-primary)' : 'var(--text-tertiary)',
+                        background: active ? SB.bgActive : 'transparent',
+                        color: active ? SB.textActive : SB.text,
                         fontSize: 'var(--font-size-sm)',
-                        fontWeight: active ? 500 : 400,
+                        fontWeight: active ? 400 : 300,
                       }}
                       onMouseEnter={e => {
                         if (!active) {
-                          (e.currentTarget as HTMLElement).style.background = 'var(--surface-1)';
-                          (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)';
+                          (e.currentTarget as HTMLElement).style.background = SB.bgHover;
+                          (e.currentTarget as HTMLElement).style.color = SB.textHover;
                         }
                       }}
                       onMouseLeave={e => {
                         if (!active) {
                           (e.currentTarget as HTMLElement).style.background = 'transparent';
-                          (e.currentTarget as HTMLElement).style.color = 'var(--text-tertiary)';
+                          (e.currentTarget as HTMLElement).style.color = SB.text;
                         }
                       }}
                     >
@@ -256,12 +269,12 @@ export function Sidebar() {
                           style={{
                             width: '2px',
                             height: '16px',
-                            background: 'var(--accent)',
+                            background: SB.accent,
                           }}
                         />
                       )}
 
-                      <span className="shrink-0 flex items-center justify-center relative" style={{ width: '16px', height: '16px', color: active ? 'var(--accent)' : 'inherit' }}>
+                      <span className="shrink-0 flex items-center justify-center relative" style={{ width: '16px', height: '16px', color: active ? SB.accent : 'inherit' }}>
                         <Icon className="w-4 h-4" />
                         {collapsed && item.href === '/followups' && overdueCount > 0 && (
                           <span
@@ -272,8 +285,7 @@ export function Sidebar() {
                               width: '7px',
                               height: '7px',
                               borderRadius: '50%',
-                              background: 'var(--danger)',
-                              boxShadow: '0 0 4px rgba(196, 90, 90, 0.5)',
+                              background: '#a04040',
                             }}
                           />
                         )}
@@ -286,8 +298,7 @@ export function Sidebar() {
                               width: '7px',
                               height: '7px',
                               borderRadius: '50%',
-                              background: 'var(--accent)',
-                              boxShadow: '0 0 4px rgba(74, 111, 165, 0.5)',
+                              background: SB.accent,
                             }}
                           />
                         )}
@@ -300,11 +311,10 @@ export function Sidebar() {
                             <span
                               className="ml-auto shrink-0"
                               style={{
-                                width: '6px',
-                                height: '6px',
+                                width: '5px',
+                                height: '5px',
                                 borderRadius: '50%',
-                                background: 'var(--danger)',
-                                boxShadow: '0 0 6px rgba(196, 90, 90, 0.4)',
+                                background: '#a04040',
                               }}
                             />
                           )}
@@ -315,10 +325,10 @@ export function Sidebar() {
                                 minWidth: '18px',
                                 height: '18px',
                                 borderRadius: '9px',
-                                background: 'var(--danger)',
-                                color: 'white',
+                                background: '#a04040',
+                                color: '#fafaf8',
                                 fontSize: '10px',
-                                fontWeight: 700,
+                                fontWeight: 500,
                                 padding: '0 5px',
                                 lineHeight: 1,
                               }}
@@ -333,10 +343,10 @@ export function Sidebar() {
                                 minWidth: '18px',
                                 height: '18px',
                                 borderRadius: '9px',
-                                background: 'var(--accent)',
-                                color: 'white',
+                                background: 'rgba(255,255,255,0.15)',
+                                color: SB.textActive,
                                 fontSize: '10px',
-                                fontWeight: 700,
+                                fontWeight: 500,
                                 padding: '0 5px',
                                 lineHeight: 1,
                               }}
@@ -352,11 +362,11 @@ export function Sidebar() {
                         <div
                           className="absolute left-full ml-2 px-2 py-1 rounded-md opacity-0 pointer-events-none group-hover:opacity-100 whitespace-nowrap z-50 transition-opacity duration-100"
                           style={{
-                            background: 'var(--surface-3)',
-                            border: '1px solid var(--border-default)',
+                            background: '#1a1a2e',
+                            border: `1px solid ${SB.border}`,
                             fontSize: 'var(--font-size-xs)',
-                            color: 'var(--text-primary)',
-                            boxShadow: 'var(--shadow-md)',
+                            color: SB.textActive,
+                            boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
                           }}
                         >
                           {item.label}
@@ -374,7 +384,7 @@ export function Sidebar() {
         <div
           style={{
             padding: collapsed ? 'var(--space-3) var(--space-2)' : 'var(--space-3) var(--space-4)',
-            borderTop: '1px solid var(--border-subtle)',
+            borderTop: `1px solid ${SB.border}`,
           }}
         >
           {!collapsed && (
@@ -382,18 +392,19 @@ export function Sidebar() {
               className="flex items-center justify-center"
               style={{
                 fontSize: '10px',
-                color: 'var(--text-muted)',
+                color: SB.muted,
                 padding: '0 var(--space-2) var(--space-2)',
               }}
             >
               <kbd
                 style={{
-                  background: 'var(--surface-2)',
-                  border: '1px solid var(--border-subtle)',
+                  background: SB.bgHover,
+                  border: `1px solid ${SB.border}`,
                   borderRadius: '3px',
                   padding: '1px 5px',
                   fontSize: '10px',
                   marginRight: '4px',
+                  color: SB.text,
                 }}
               >
                 ⌘K
@@ -412,10 +423,10 @@ export function Sidebar() {
               padding: 'var(--space-2)',
               justifyContent: collapsed ? 'center' : 'flex-start',
               fontSize: 'var(--font-size-xs)',
-              color: 'var(--text-muted)',
+              color: SB.muted,
             }}
-            onMouseEnter={e => { (e.target as HTMLElement).style.color = 'var(--text-secondary)'; }}
-            onMouseLeave={e => { (e.target as HTMLElement).style.color = 'var(--text-muted)'; }}
+            onMouseEnter={e => { (e.target as HTMLElement).style.color = SB.textHover; }}
+            onMouseLeave={e => { (e.target as HTMLElement).style.color = SB.muted; }}
           >
             <LogOut className="w-3.5 h-3.5 shrink-0" />
             {!collapsed && <span>Sign Out</span>}

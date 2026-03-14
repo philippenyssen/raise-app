@@ -346,7 +346,7 @@ function QuickCaptureInner() {
                 className="btn btn-md"
                 style={{
                   background: viewMeetingHovered ? 'var(--accent-hover)' : 'var(--accent)',
-                  color: 'white',
+                  color: 'var(--text-primary)',
                   border: '1px solid transparent',
                   textDecoration: 'none',
                   gap: 'var(--space-2)',

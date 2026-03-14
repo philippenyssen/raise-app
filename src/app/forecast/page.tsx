@@ -712,9 +712,9 @@ export default function ForecastPage() {
                                 fontWeight: 700,
                                 flexShrink: 0,
                                 ...(inv.tier === 1
-                                  ? { background: 'var(--accent)', color: 'white' }
+                                  ? { background: 'var(--accent)', color: 'var(--text-primary)' }
                                   : inv.tier === 2
-                                    ? { background: 'var(--accent)', color: 'white' }
+                                    ? { background: 'var(--accent)', color: 'var(--text-primary)' }
                                     : { background: 'var(--surface-3)', color: 'var(--text-secondary)', border: '1px solid var(--border-default)' }),
                               }}
                             >

@@ -488,7 +488,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
   };
 
   const rankStyle: React.CSSProperties = rank <= 3
-    ? { background: 'var(--accent)', color: 'white' }
+    ? { background: 'var(--accent)', color: 'var(--text-primary)' }
     : { background: 'var(--surface-2)', color: 'var(--text-tertiary)' };
 
   return (

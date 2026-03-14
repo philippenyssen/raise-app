@@ -464,7 +464,7 @@ function FollowupsContent() {
                       className="btn btn-sm"
                       style={{
                         background: 'var(--success)',
-                        color: 'white',
+                        color: 'var(--text-primary)',
                       }}
                       onMouseEnter={e => { e.currentTarget.style.background = '#16a34a'; }}
                       onMouseLeave={e => { e.currentTarget.style.background = 'var(--success)'; }}
@@ -1001,7 +1001,7 @@ function FollowupsContent() {
                 style={{
                   marginLeft: '0.375rem',
                   background: 'var(--danger)',
-                  color: 'white',
+                  color: 'var(--text-primary)',
                   fontSize: '9px',
                   padding: '0 0.25rem',
                   borderRadius: '9999px',

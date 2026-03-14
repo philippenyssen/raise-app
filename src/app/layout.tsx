@@ -29,13 +29,13 @@ export const metadata: Metadata = {
     type: "website",
   },
   other: {
-    "theme-color": "#09090f",
+    "theme-color": "#fafaf8",
   },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <body className={`${dmSans.variable} ${cormorant.variable} ${geistMono.variable} antialiased`} style={{ background: 'var(--surface-0)', color: 'var(--text-primary)' }}>
         <ToastProvider>
           <CommandPalette />

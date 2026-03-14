@@ -1368,7 +1368,7 @@ export default function Dashboard() {
                       className="w-full rounded-md h-9 flex items-center justify-between px-4 transition-all duration-500"
                       style={{ background: stage.bg }}
                     >
-                      <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'rgba(255,255,255,0.9)' }}>{stage.label}</span>
+                      <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'rgba(0,0,0,0.70)' }}>{stage.label}</span>
                       <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 700, color: 'var(--text-primary)' }}>{stage.value}</span>
                     </div>
                   </div>
@@ -1760,7 +1760,7 @@ function MomentumBar({ count, total, bg, label }: {
       {pct >= 15 && (
         <span
           className="absolute inset-0 flex items-center justify-center"
-          style={{ fontSize: '9px', fontWeight: 700, color: 'rgba(255,255,255,0.8)' }}
+          style={{ fontSize: '9px', fontWeight: 700, color: 'rgba(0,0,0,0.60)' }}
         >
           {count}
         </span>

@@ -350,11 +350,11 @@ function AlertCard({ alert }: { alert: BriefingAlert }) {
             textDecoration: 'none',
             padding: '3px 8px',
             borderRadius: 'var(--radius-sm)',
-            background: 'rgba(255,255,255,0.06)',
+            background: 'rgba(0,0,0,0.03)',
             whiteSpace: 'nowrap',
           }}
-          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.12)'; }}
-          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.06)'; }}
+          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(0,0,0,0.06)'; }}
+          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(0,0,0,0.03)'; }}
         >
           {alertAction}
           <span style={{ display: 'flex' }}><ChevronRight className="w-3 h-3" /></span>
