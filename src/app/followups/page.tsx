@@ -7,6 +7,7 @@ import {
   Mail, MessageSquare, FolderOpen, CalendarPlus, RefreshCw, Milestone,
   ChevronDown, ChevronUp, TrendingUp, TrendingDown, Minus, Users,
   Zap, Timer, Network, ArrowUpRight, ArrowDownRight, Activity,
+  PenLine, Copy, Check,
 } from 'lucide-react';
 
 interface TimingIntel {
@@ -94,6 +95,40 @@ const ACTION_TYPE_CONFIG: Record<string, {
   },
 };
 
+function generateDraft(item: FollowupItem): { subject: string; body: string } {
+  const name = item.investor_name;
+  const desc = item.description.split('\n')[0]; // First line as context
+
+  const templates: Record<string, { subject: string; body: string }> = {
+    thank_you: {
+      subject: `Following up — ${name}`,
+      body: `Dear team,\n\nThank you for taking the time to meet with us. We valued the discussion and your thoughtful questions.\n\n${desc}\n\nWe're happy to provide any additional materials or context that would be helpful for your evaluation. Please don't hesitate to reach out.\n\nBest regards`,
+    },
+    objection_response: {
+      subject: `Addressing your questions — ${name}`,
+      body: `Dear team,\n\nFollowing up on the points raised during our discussion. We wanted to provide additional context and data:\n\n${desc}\n\nWe've attached [relevant materials] that address these questions in more detail. Happy to walk through any of this on a call.\n\nBest regards`,
+    },
+    data_share: {
+      subject: `Materials as discussed — ${name}`,
+      body: `Dear team,\n\nAs discussed, please find the requested materials:\n\n${desc}\n\n• [Document/Data 1]\n• [Document/Data 2]\n\nLet us know if you need anything else to support your review.\n\nBest regards`,
+    },
+    schedule_followup: {
+      subject: `Next steps — ${name}`,
+      body: `Dear team,\n\nThank you again for the productive conversation. We'd love to continue the dialogue and propose scheduling a follow-up.\n\n${desc}\n\nWould any of the following work for your team?\n\n• [Option 1]\n• [Option 2]\n• [Option 3]\n\nHappy to accommodate your schedule.\n\nBest regards`,
+    },
+    warm_reengagement: {
+      subject: `Checking in — ${name}`,
+      body: `Dear team,\n\nHope all is well. Wanted to reconnect following our earlier conversations and share some recent developments.\n\n${desc}\n\nWe've made meaningful progress since we last spoke and would welcome the chance to update you. Are you available for a brief call this week?\n\nBest regards`,
+    },
+    milestone_update: {
+      subject: `Progress update — ${name}`,
+      body: `Dear team,\n\nWanted to share a quick update on our progress since our last interaction:\n\n${desc}\n\nWe believe these developments are relevant to your evaluation and are happy to discuss further at your convenience.\n\nBest regards`,
+    },
+  };
+
+  return templates[item.action_type] || templates.milestone_update;
+}
+
 function formatRelativeTime(dateStr: string): string {
   const now = new Date();
   const due = new Date(dateStr);
@@ -131,6 +166,8 @@ export default function FollowupsPage() {
   const [todayExpanded, setTodayExpanded] = useState(true);
   const [upcomingExpanded, setUpcomingExpanded] = useState(true);
   const [hoveredActionBtn, setHoveredActionBtn] = useState<string | null>(null);
+  const [draftingId, setDraftingId] = useState<string | null>(null);
+  const [copiedField, setCopiedField] = useState<string | null>(null);
 
   const fetchFollowups = useCallback(async () => {
     setLoading(true);
@@ -437,6 +474,21 @@ export default function FollowupsPage() {
             {item.status === 'pending' && !isCompleting && (
               <div className="flex gap-1 shrink-0">
                 <button
+                  onClick={() => setDraftingId(draftingId === item.id ? null : item.id)}
+                  className="p-1.5"
+                  style={{
+                    borderRadius: 'var(--radius-md)',
+                    color: hoveredActionBtn === `draft-${item.id}` || draftingId === item.id ? '#c084fc' : 'var(--text-muted)',
+                    background: hoveredActionBtn === `draft-${item.id}` || draftingId === item.id ? 'rgba(168,85,247,0.12)' : 'transparent',
+                    transition: 'all 150ms ease',
+                  }}
+                  onMouseEnter={() => setHoveredActionBtn(`draft-${item.id}`)}
+                  onMouseLeave={() => setHoveredActionBtn(null)}
+                  title="Draft message"
+                >
+                  <PenLine className="w-4 h-4" />
+                </button>
+                <button
                   onClick={() => handleQuickComplete(item.id)}
                   className="p-1.5"
                   style={{
@@ -602,6 +654,140 @@ export default function FollowupsPage() {
           </div>
         )}
 
+        {/* Draft message panel */}
+        {draftingId === item.id && (() => {
+          const draft = generateDraft(item);
+          return (
+            <div
+              style={{
+                borderTop: '1px solid rgba(168,85,247,0.15)',
+                background: 'rgba(168,85,247,0.04)',
+                padding: 'var(--space-4)',
+              }}
+            >
+              <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-3)' }}>
+                <span className="flex items-center gap-1.5" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: '#c084fc' }}>
+                  <PenLine className="w-3.5 h-3.5" />
+                  Draft Message
+                </span>
+                <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                  Edit before sending
+                </span>
+              </div>
+
+              {/* Subject */}
+              <div style={{ marginBottom: 'var(--space-2)' }}>
+                <div className="flex items-center justify-between" style={{ marginBottom: '4px' }}>
+                  <span style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.05em' }}>Subject</span>
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(draft.subject);
+                      setCopiedField(`subject-${item.id}`);
+                      setTimeout(() => setCopiedField(null), 2000);
+                    }}
+                    className="flex items-center gap-1 p-1"
+                    style={{
+                      borderRadius: 'var(--radius-sm)',
+                      fontSize: '10px',
+                      color: copiedField === `subject-${item.id}` ? 'var(--success)' : 'var(--text-muted)',
+                      background: 'transparent',
+                      border: 'none',
+                      cursor: 'pointer',
+                      transition: 'color 150ms ease',
+                    }}
+                  >
+                    {copiedField === `subject-${item.id}` ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                    {copiedField === `subject-${item.id}` ? 'Copied' : 'Copy'}
+                  </button>
+                </div>
+                <div
+                  style={{
+                    background: 'var(--surface-1)',
+                    border: '1px solid var(--border-subtle)',
+                    borderRadius: 'var(--radius-md)',
+                    padding: 'var(--space-2) var(--space-3)',
+                    fontSize: 'var(--font-size-xs)',
+                    color: 'var(--text-primary)',
+                    fontWeight: 500,
+                  }}
+                >
+                  {draft.subject}
+                </div>
+              </div>
+
+              {/* Body */}
+              <div>
+                <div className="flex items-center justify-between" style={{ marginBottom: '4px' }}>
+                  <span style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.05em' }}>Body</span>
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(draft.body);
+                      setCopiedField(`body-${item.id}`);
+                      setTimeout(() => setCopiedField(null), 2000);
+                    }}
+                    className="flex items-center gap-1 p-1"
+                    style={{
+                      borderRadius: 'var(--radius-sm)',
+                      fontSize: '10px',
+                      color: copiedField === `body-${item.id}` ? 'var(--success)' : 'var(--text-muted)',
+                      background: 'transparent',
+                      border: 'none',
+                      cursor: 'pointer',
+                      transition: 'color 150ms ease',
+                    }}
+                  >
+                    {copiedField === `body-${item.id}` ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                    {copiedField === `body-${item.id}` ? 'Copied' : 'Copy'}
+                  </button>
+                </div>
+                <div
+                  style={{
+                    background: 'var(--surface-1)',
+                    border: '1px solid var(--border-subtle)',
+                    borderRadius: 'var(--radius-md)',
+                    padding: 'var(--space-3)',
+                    fontSize: 'var(--font-size-xs)',
+                    color: 'var(--text-secondary)',
+                    lineHeight: 1.6,
+                    whiteSpace: 'pre-line',
+                  }}
+                >
+                  {draft.body}
+                </div>
+              </div>
+
+              {/* Copy all button */}
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(`Subject: ${draft.subject}\n\n${draft.body}`);
+                  setCopiedField(`all-${item.id}`);
+                  setTimeout(() => setCopiedField(null), 2000);
+                }}
+                className="btn btn-sm mt-3"
+                style={{
+                  background: copiedField === `all-${item.id}` ? 'var(--success)' : 'rgba(168,85,247,0.15)',
+                  color: copiedField === `all-${item.id}` ? 'white' : '#c084fc',
+                  border: 'none',
+                  transition: 'all 150ms ease',
+                }}
+                onMouseEnter={e => {
+                  if (copiedField !== `all-${item.id}`) {
+                    e.currentTarget.style.background = 'rgba(168,85,247,0.25)';
+                  }
+                }}
+                onMouseLeave={e => {
+                  if (copiedField !== `all-${item.id}`) {
+                    e.currentTarget.style.background = 'rgba(168,85,247,0.15)';
+                  }
+                }}
+              >
+                {copiedField === `all-${item.id}` ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                {copiedField === `all-${item.id}` ? 'Copied to clipboard' : 'Copy full message'}
+              </button>
+            </div>
+          );
+        })()}
+
         {/* Due date footer */}
         <div
           className="flex items-center justify-between"
@@ -693,7 +879,7 @@ export default function FollowupsPage() {
       </div>
 
       {/* Stats row */}
-      <div className="grid grid-cols-5 gap-3">
+      <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
         <div className="card" style={{ padding: 'var(--space-3)' }}>
           <div className="metric-label">Overdue</div>
           <div
