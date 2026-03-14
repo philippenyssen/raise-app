@@ -151,7 +151,8 @@ INSTRUCTIONS:
    - Outreach: focus on meeting conversion and first impressions
    - Mgmt Presentations: focus on narrative effectiveness and objection handling
    - Due Diligence: focus on speed, responsiveness, and competitive tension
-   - Negotiation: focus on term optimization and closing tactics`;
+   - Negotiation: focus on term optimization and closing tactics
+17. EVIDENCE-BASED RECOMMENDATIONS: When recommending actions, prefer action types that have empirically worked (shown in ACTION EFFECTIVENESS). Avoid recommending action types with low measured effectiveness unless the situation specifically calls for it. Always mention the evidence basis: "Based on X measured outcomes, [action type] has been most effective for this type of situation."`;
 
   // Compute a lightweight context hash from the context bus version + document length.
   // The client can use this to detect when cached context has changed.

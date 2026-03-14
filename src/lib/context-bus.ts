@@ -26,6 +26,7 @@ import {
   getCalibrationData,
   computeNarrativeSignals,
   getKeystoneInvestors,
+  getAutoActionEffectiveness,
 } from './db';
 
 // ---------------------------------------------------------------------------
@@ -212,6 +213,14 @@ export interface FullContext {
     p90: number;
     probOfTarget: number;
   } | null;
+
+  // Action effectiveness — what's working and what's not (learning intelligence)
+  actionEffectiveness: {
+    overallAvgLift: number;
+    bestActionType: string;
+    worstActionType: string;
+    totalMeasured: number;
+  } | null;
 }
 
 const recentChanges: ContextChange[] = [];
@@ -244,6 +253,7 @@ export async function getFullContext(): Promise<FullContext> {
     calibrationData,
     narrativeSignals,
     keystoneInvestorsData,
+    actionEffectivenessData,
   ] = await Promise.all([
     getRaiseConfig().catch(() => null),
     getAllDocuments().catch(() => []),
@@ -261,6 +271,7 @@ export async function getFullContext(): Promise<FullContext> {
     getCalibrationData().catch(() => ({ totalPredictions: 0, resolvedPredictions: 0, brierScore: 0, biasDirection: 'insufficient_data', byStatus: [] })),
     computeNarrativeSignals().catch(() => []),
     getKeystoneInvestors().catch(() => []),
+    getAutoActionEffectiveness().catch(() => null),
   ]);
 
   // Build investor snapshots enriched with meeting/task/followup data
@@ -451,6 +462,18 @@ export async function getFullContext(): Promise<FullContext> {
 
     // Monte Carlo — populated by stress test response, not fetched in bus
     monteCarlo: null,
+
+    // Action effectiveness — learning intelligence
+    actionEffectiveness: actionEffectivenessData ? {
+      overallAvgLift: (actionEffectivenessData as { overallAvgLift: number }).overallAvgLift,
+      bestActionType: (actionEffectivenessData as { ruleEffectiveness: Array<{ actionType: string }> }).ruleEffectiveness.length > 0
+        ? (actionEffectivenessData as { ruleEffectiveness: Array<{ actionType: string; avgLift: number }> }).ruleEffectiveness.sort((a, b) => b.avgLift - a.avgLift)[0].actionType
+        : 'none',
+      worstActionType: (actionEffectivenessData as { ruleEffectiveness: Array<{ actionType: string }> }).ruleEffectiveness.length > 0
+        ? (actionEffectivenessData as { ruleEffectiveness: Array<{ actionType: string; avgLift: number }> }).ruleEffectiveness.sort((a, b) => a.avgLift - b.avgLift)[0].actionType
+        : 'none',
+      totalMeasured: (actionEffectivenessData as { ruleEffectiveness: Array<{ count: number }> }).ruleEffectiveness.reduce((s, r) => s + r.count, 0),
+    } : null,
   };
 
   cachedContext = context;
@@ -614,6 +637,16 @@ export function contextToSystemPrompt(ctx: FullContext): string {
       lines.push(`- [${urgencyTag}] ${ts.type}: ${ts.description}`);
       lines.push(`  Investors: ${ts.investorNames.join(', ')}`);
     }
+    lines.push('');
+  }
+
+  // Action effectiveness (learning intelligence — what's working)
+  if (ctx.actionEffectiveness && ctx.actionEffectiveness.totalMeasured > 0) {
+    lines.push('ACTION EFFECTIVENESS (what\'s working):');
+    lines.push(`- Best action type: ${ctx.actionEffectiveness.bestActionType} (highest avg lift)`);
+    lines.push(`- Worst action type: ${ctx.actionEffectiveness.worstActionType} (lowest avg lift)`);
+    lines.push(`- Overall avg lift: ${ctx.actionEffectiveness.overallAvgLift}`);
+    lines.push(`- Based on ${ctx.actionEffectiveness.totalMeasured} measured outcomes`);
     lines.push('');
   }
 

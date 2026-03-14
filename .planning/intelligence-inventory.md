@@ -12,6 +12,7 @@
 | 6 | 2026-03-14 | Monte Carlo + narrative drift + co-investor detection + verification | Monte Carlo confidence intervals (P10/P50/P90), narrative drift consumption in momentum (anomaly/alert enrichment), market deal co-investor detection in relationship graph, intelligence flow verification endpoint, Monte Carlo in context bus | stress-test/route.ts, momentum/route.ts, db.ts, context-bus.ts, intelligence/verify/route.ts |
 | 7 | 2026-03-14 | Intelligence Synthesis | 6-instruction reasoning framework for workspace AI (pattern synthesis, strategic prioritization, conviction arcs, contradiction detection, predictive reasoning, phase awareness), intelligence briefing layer in pulse dashboard (8 insight generators, typed/sorted/capped), synthesis section in context bus system prompt (6 cross-source reasoning aids) | workspace/route.ts, pulse/route.ts, context-bus.ts |
 | 8 | 2026-03-14 | Autonomous Intelligence | Auto-action engine (5 rules: narrative weakness, engagement gap, declining trajectory, keystone uncommitted, struggling type), pulse-triggered intelligence refresh, smart follow-up timing (day-of-week + time-of-day optimization per investor + type), auto-actions API (POST trigger + GET pending) | db.ts, pulse/route.ts, intelligence/auto-actions/route.ts |
+| 9 | 2026-03-14 | Learning Intelligence | Action outcome measurement (enthusiasm delta + status progression + engagement increase), rule effectiveness aggregation (by trigger_type × action_type), self-improving auto-actions (skip ineffective rules, boost proven ones), action effectiveness in context bus + system prompt, evidence-based AI instructions, pulse-triggered measurement | db.ts, context-bus.ts, workspace/route.ts, pulse/route.ts |
 
 ## Intelligence Capabilities (Existing)
 
@@ -39,6 +40,7 @@
 - [x] **Keystone investor identification — "closing one unlocks others" (NEW cycle 4)**
 - [x] **Timing signals type definition + system prompt serialization (NEW cycle 5)**
 - [x] **Monte Carlo field in FullContext (populated by stress test, null by default) + system prompt serialization (NEW cycle 6)**
+- [x] **Action effectiveness field in FullContext (populated by getAutoActionEffectiveness(), null if no data) + system prompt serialization (NEW cycle 9)**
 - [x] **Intelligence Synthesis section in system prompt — cross-source reasoning aids (NEW cycle 7)**:
   - [x] Narrative weakness → pending follow-up urgency linking
   - [x] Keystone investor priority surfacing
@@ -78,13 +80,14 @@
 - [x] **Now receives narrative weakness signals, proven responses, narrative drift, calibration (NEW cycle 3)**
 - [x] **Now receives keystone investor data for network-aware recommendations (NEW cycle 4)**
 - [x] **Now receives timing signals in system prompt when present (NEW cycle 5)**
-- [x] **16 instruction categories with 6 new reasoning framework instructions (NEW cycle 7)**:
+- [x] **17 instruction categories with 6 reasoning framework + 1 evidence-based recommendation instructions (NEW cycle 7, extended cycle 9)**:
   - [x] Pattern synthesis: cross-reference weaknesses with documents, investor types, proven responses
   - [x] Strategic prioritization: keystone-first, declining-urgent, timing-leverage weighting
   - [x] Conviction arc reasoning: accelerating/steady/decelerating/stalled → action mapping
   - [x] Contradiction detection: enthusiasm vs engagement, meetings vs progression, responses vs lift
   - [x] Predictive reasoning: trajectory extrapolation, cascade prediction, showstopper forecasting
   - [x] Fundraise phase awareness: discovery/outreach/presentations/DD/negotiation context switching
+  - [x] **Evidence-based recommendations: prefer empirically effective action types, cite measurement data (NEW cycle 9)**
 
 ### F. Meeting Intelligence (db.ts + meeting-brief)
 - [x] AI-extracted structured data: questions, objections, engagement signals, competitive intel
@@ -114,6 +117,8 @@
 - [x] **Engagement gap detected (21+ days) → auto milestone_share action (NEW cycle 8)**
 - [x] **Declining trajectory detected (>2 pts/wk) → auto expert_call action (NEW cycle 8)**
 - [x] **Keystone investor uncommitted → auto escalation action (NEW cycle 8)**
+- [x] **Pulse dashboard viewed → measureActionEffectiveness() non-blocking (NEW cycle 9)**
+- [x] **Action executed → outcome measured → rule effectiveness updated → future actions adjusted (NEW cycle 9)**
 
 ### H. Narrative Intelligence (NEW cycle 3)
 - [x] Per-investor-type narrative effectiveness (enthusiasm × conversion × top objection)
@@ -166,7 +171,7 @@
 - [x] Typed insight model: critical/opportunity/risk/trend with title, detail, action, dataSource
 - [x] Sorted by severity (critical first), capped at 7 insights for actionability
 
-### N. Autonomous Intelligence Engine (NEW cycle 8)
+### N. Autonomous Intelligence Engine (NEW cycle 8, extended cycle 9)
 - [x] `generateAutoActions()`: 5-rule engine that detects patterns and creates acceleration_actions
   - [x] Rule 1: `narrative_weakness_critical` — 3+ investors questioning same topic → data_update action
   - [x] Rule 2: `engagement_gap` — 21+ days no contact for active investors → milestone_share action
@@ -178,6 +183,8 @@
 - [x] POST `/api/intelligence/auto-actions` — triggers engine, emits context changes
 - [x] GET `/api/intelligence/auto-actions` — returns pending auto-generated actions
 - [x] **Pulse-triggered refresh: every pulse dashboard view runs generateAutoActions() non-blocking (NEW cycle 8)**
+- [x] **Self-improving rules: skips ineffective rules (5+ measurements, avgLift <2), boosts proven rules (5+ measurements, avgLift >8) (NEW cycle 9)**
+- [x] **AutoActionResult now includes skippedIneffective[] and boostedRules[] for transparency (NEW cycle 9)**
 - [x] `computeOptimalFollowupTiming(investorId)`: smart follow-up timing
   - [x] Analyzes day-of-week enthusiasm patterns for individual investor
   - [x] Falls back to type-level patterns (all investors of same type)
@@ -185,10 +192,38 @@
   - [x] Type-specific time-of-day heuristics (VC=10AM, growth=9:30AM, sovereign=11AM, strategic=2PM, etc.)
   - [x] Returns optimalDayOfWeek, optimalTimeOfDay, reasoning with data sources
 
-### O. Pulse as Intelligence Heartbeat (NEW cycle 8)
+### O. Pulse as Intelligence Heartbeat (NEW cycle 8, extended cycle 9)
 - [x] Every pulse dashboard view triggers non-blocking `generateAutoActions()`
 - [x] Detect→Act loop closed: patterns detected → actions created → visible in dashboard
 - [x] No manual trigger needed — intelligence refreshes on CEO dashboard view
+- [x] **Every pulse view also triggers `measureActionEffectiveness()` — measures outcomes of executed actions (NEW cycle 9)**
+
+### P. Learning Intelligence (NEW cycle 9)
+- [x] `measureActionEffectiveness()`: measures outcomes of executed acceleration actions
+  - [x] Finds executed actions with unmeasured lift (actual_lift IS NULL)
+  - [x] For each, computes enthusiasm delta (before vs after execution), status progression, and engagement increase
+  - [x] Produces lift score (-10 to +20) combining all three signals
+  - [x] Handles synthetic investor IDs (narrative_*) with neutral lift
+  - [x] Skips actions with <14 days post-execution and no post-execution data (waits for more data)
+  - [x] Returns summary with avgLift, bestActionType, worstActionType, byType breakdown
+- [x] `getAutoActionEffectiveness()`: aggregates effectiveness by trigger_type × action_type
+  - [x] Sample-size-based confidence (low <5, medium 5-9, high 10+)
+  - [x] Recommendations per rule: HIGH PERFORMER / Effective / Marginally effective / LOW PERFORMER / INEFFECTIVE
+  - [x] Overall average lift across all measured actions
+- [x] Self-improving `generateAutoActions()`:
+  - [x] Fetches effectiveness data before rule evaluation
+  - [x] Skips rules measured 5+ times with avgLift < 2 (ineffective rules)
+  - [x] Boosts expected_lift for rules measured 5+ times with avgLift > 8 (proven rules)
+  - [x] Logs which rules were skipped (skippedIneffective) and boosted (boostedRules) in result
+- [x] `actionEffectiveness` field in FullContext (context bus)
+  - [x] Populated via `getAutoActionEffectiveness()` in Promise.all
+  - [x] Fields: overallAvgLift, bestActionType, worstActionType, totalMeasured
+  - [x] Serialized to system prompt as ACTION EFFECTIVENESS section
+- [x] Workspace AI instruction 17: EVIDENCE-BASED RECOMMENDATIONS
+  - [x] AI prefers action types with empirically measured high effectiveness
+  - [x] AI avoids low-effectiveness action types unless specifically warranted
+  - [x] AI cites evidence basis ("Based on X measured outcomes...")
+- [x] Pulse-triggered measurement: every dashboard view runs `measureActionEffectiveness()` non-blocking
 
 ## Intelligence Gaps (Prioritized for Next Cycle)
 
@@ -216,6 +251,9 @@
 - [x] Verifies context bus includes all expected fields (narrativeWeaknesses, predictionCalibration, narrativeDrift, provenResponses, keystoneInvestors)
 - [x] Tests supporting functions are callable (getQuestionPatterns, getCalibrationData, computeNarrativeSignals, getKeystoneInvestors)
 - [x] Returns health report: healthy/degraded/unhealthy with per-check pass/warn/fail
+
+### CLOSED (Cycle 9):
+- ~~Learning Intelligence / Action Outcome Measurement~~ — implemented in db.ts (measureActionEffectiveness, getAutoActionEffectiveness), self-improving generateAutoActions, context-bus.ts (actionEffectiveness field + system prompt), workspace/route.ts (instruction 17), pulse/route.ts (measurement trigger)
 
 ### CLOSED (Cycle 8):
 - ~~Autonomous Action Engine~~ — implemented in db.ts (generateAutoActions, 5 rules) + intelligence/auto-actions/route.ts

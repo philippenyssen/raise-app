@@ -3223,6 +3223,8 @@ export interface AutoActionResult {
   rulesEvaluated: number;
   patternsDetected: number;
   skippedDuplicate: number;
+  skippedIneffective: string[];
+  boostedRules: string[];
 }
 
 /**
@@ -3238,6 +3240,52 @@ export async function generateAutoActions(): Promise<AutoActionResult> {
   const actionsCreated: AccelerationAction[] = [];
   let patternsDetected = 0;
   let skippedDuplicate = 0;
+  const skippedIneffective: string[] = [];
+  const boostedRules: string[] = [];
+
+  // --- Learning: fetch historical effectiveness to guide rule application ---
+  let effectiveness: Awaited<ReturnType<typeof getAutoActionEffectiveness>> | null = null;
+  try {
+    effectiveness = await getAutoActionEffectiveness();
+  } catch { /* non-blocking — proceed without learning data */ }
+
+  // Build a lookup: "triggerType:actionType" → { avgLift, count }
+  const effectivenessMap = new Map<string, { avgLift: number; count: number }>();
+  if (effectiveness) {
+    for (const rule of effectiveness.ruleEffectiveness) {
+      effectivenessMap.set(`${rule.triggerType}:${rule.actionType}`, {
+        avgLift: rule.avgLift,
+        count: rule.count,
+      });
+    }
+  }
+
+  // Helper: check if a rule should be skipped due to poor measured effectiveness
+  function shouldSkipRule(triggerType: string, actionType: string): boolean {
+    const key = `${triggerType}:${actionType}`;
+    const data = effectivenessMap.get(key);
+    if (!data) return false; // No data yet — keep the rule active
+    // Skip if measured 5+ times with avgLift < 2
+    if (data.count >= 5 && data.avgLift < 2) {
+      skippedIneffective.push(`${triggerType}/${actionType} (avgLift=${data.avgLift}, n=${data.count})`);
+      return true;
+    }
+    return false;
+  }
+
+  // Helper: boost expected_lift if a rule has proven highly effective
+  function adjustExpectedLift(triggerType: string, actionType: string, baseExpectedLift: number): number {
+    const key = `${triggerType}:${actionType}`;
+    const data = effectivenessMap.get(key);
+    if (!data) return baseExpectedLift;
+    // Boost if measured 5+ times with avgLift > 8
+    if (data.count >= 5 && data.avgLift > 8) {
+      const boosted = Math.round(Math.max(baseExpectedLift, data.avgLift));
+      boostedRules.push(`${triggerType}/${actionType} (${baseExpectedLift}→${boosted}, n=${data.count})`);
+      return boosted;
+    }
+    return baseExpectedLift;
+  }
 
   // Helper: check if a similar pending action already exists (same investor + trigger_type in last 7 days)
   async function hasDuplicateAction(investorId: string, triggerType: string): Promise<boolean> {
@@ -3251,118 +3299,168 @@ export async function generateAutoActions(): Promise<AutoActionResult> {
 
   // --- Rule 1: narrative_weakness_critical (3+ investors same topic) ---
   try {
-    const patterns = await getQuestionPatterns();
-    const criticalPatterns = patterns.filter(p => p.investorCount >= 3);
-    for (const pattern of criticalPatterns) {
-      patternsDetected++;
-      // Use a synthetic investor_id for cross-investor patterns
-      const syntheticId = `narrative_${pattern.topic}`;
-      if (await hasDuplicateAction(syntheticId, 'catalyst_match')) {
-        skippedDuplicate++;
-        continue;
-      }
-      const rule = AUTO_ACTION_RULES[0];
-      const action = await createAccelerationAction({
-        investor_id: syntheticId,
-        investor_name: pattern.investorNames.join(', '),
-        trigger_type: rule.trigger_type,
-        action_type: rule.action_type,
-        description: rule.template(pattern.topic, pattern.investorCount),
-        expected_lift: rule.expected_lift,
-        confidence: rule.confidence,
-        status: 'pending',
-        actual_lift: null,
-        executed_at: null,
-      });
-      actionsCreated.push(action);
-    }
-  } catch { /* non-blocking */ }
-
-  // --- Rule 2: engagement_gap (21+ days no contact for active investors) ---
-  try {
-    const investorsResult = await db.execute(
-      `SELECT id, name, status FROM investors WHERE status NOT IN ('passed', 'dropped', 'closed', 'identified')`
-    );
-    const activeInvestors = investorsResult.rows as unknown as Array<{ id: string; name: string; status: string }>;
-
-    for (const inv of activeInvestors) {
-      const lastMeetingResult = await db.execute({
-        sql: `SELECT MAX(date) as last_date FROM meetings WHERE investor_id = ?`,
-        args: [inv.id],
-      });
-      const lastDate = (lastMeetingResult.rows[0] as unknown as { last_date: string | null }).last_date;
-      if (!lastDate) continue;
-
-      const daysSince = Math.round((now.getTime() - new Date(lastDate).getTime()) / (1000 * 60 * 60 * 24));
-      if (daysSince >= 21) {
+    const rule1 = AUTO_ACTION_RULES[0];
+    if (shouldSkipRule(rule1.trigger_type, rule1.action_type)) {
+      // Rule skipped due to poor effectiveness
+    } else {
+      const patterns = await getQuestionPatterns();
+      const criticalPatterns = patterns.filter(p => p.investorCount >= 3);
+      for (const pattern of criticalPatterns) {
         patternsDetected++;
-        if (await hasDuplicateAction(inv.id, 'stall_risk')) {
+        // Use a synthetic investor_id for cross-investor patterns
+        const syntheticId = `narrative_${pattern.topic}`;
+        if (await hasDuplicateAction(syntheticId, 'catalyst_match')) {
           skippedDuplicate++;
           continue;
         }
-        const rule = AUTO_ACTION_RULES[1];
         const action = await createAccelerationAction({
-          investor_id: inv.id,
-          investor_name: inv.name,
-          trigger_type: rule.trigger_type,
-          action_type: rule.action_type,
-          description: rule.template(inv.name, daysSince),
-          expected_lift: rule.expected_lift,
-          confidence: rule.confidence,
+          investor_id: syntheticId,
+          investor_name: pattern.investorNames.join(', '),
+          trigger_type: rule1.trigger_type,
+          action_type: rule1.action_type,
+          description: rule1.template(pattern.topic, pattern.investorCount),
+          expected_lift: adjustExpectedLift(rule1.trigger_type, rule1.action_type, rule1.expected_lift),
+          confidence: rule1.confidence,
           status: 'pending',
           actual_lift: null,
           executed_at: null,
         });
         actionsCreated.push(action);
+      }
+    }
+  } catch { /* non-blocking */ }
+
+  // --- Rule 2: engagement_gap (21+ days no contact for active investors) ---
+  try {
+    const rule2 = AUTO_ACTION_RULES[1];
+    if (shouldSkipRule(rule2.trigger_type, rule2.action_type)) {
+      // Rule skipped due to poor effectiveness
+    } else {
+      const investorsResult = await db.execute(
+        `SELECT id, name, status FROM investors WHERE status NOT IN ('passed', 'dropped', 'closed', 'identified')`
+      );
+      const activeInvestors = investorsResult.rows as unknown as Array<{ id: string; name: string; status: string }>;
+
+      for (const inv of activeInvestors) {
+        const lastMeetingResult = await db.execute({
+          sql: `SELECT MAX(date) as last_date FROM meetings WHERE investor_id = ?`,
+          args: [inv.id],
+        });
+        const lastDate = (lastMeetingResult.rows[0] as unknown as { last_date: string | null }).last_date;
+        if (!lastDate) continue;
+
+        const daysSince = Math.round((now.getTime() - new Date(lastDate).getTime()) / (1000 * 60 * 60 * 24));
+        if (daysSince >= 21) {
+          patternsDetected++;
+          if (await hasDuplicateAction(inv.id, 'stall_risk')) {
+            skippedDuplicate++;
+            continue;
+          }
+          const action = await createAccelerationAction({
+            investor_id: inv.id,
+            investor_name: inv.name,
+            trigger_type: rule2.trigger_type,
+            action_type: rule2.action_type,
+            description: rule2.template(inv.name, daysSince),
+            expected_lift: adjustExpectedLift(rule2.trigger_type, rule2.action_type, rule2.expected_lift),
+            confidence: rule2.confidence,
+            status: 'pending',
+            actual_lift: null,
+            executed_at: null,
+          });
+          actionsCreated.push(action);
+        }
       }
     }
   } catch { /* non-blocking */ }
 
   // --- Rule 3: declining_trajectory (score declining >2 pts/week) ---
   try {
-    const snapshotsResult = await db.execute(
-      `SELECT investor_id, overall_score, snapshot_date FROM score_snapshots
-       WHERE snapshot_date >= date('now', '-21 days')
-       ORDER BY investor_id, snapshot_date ASC`
-    );
-    const snapRows = snapshotsResult.rows as unknown as Array<{ investor_id: string; overall_score: number; snapshot_date: string }>;
+    const rule3 = AUTO_ACTION_RULES[2];
+    if (shouldSkipRule(rule3.trigger_type, rule3.action_type)) {
+      // Rule skipped due to poor effectiveness
+    } else {
+      const snapshotsResult = await db.execute(
+        `SELECT investor_id, overall_score, snapshot_date FROM score_snapshots
+         WHERE snapshot_date >= date('now', '-21 days')
+         ORDER BY investor_id, snapshot_date ASC`
+      );
+      const snapRows = snapshotsResult.rows as unknown as Array<{ investor_id: string; overall_score: number; snapshot_date: string }>;
 
-    // Group by investor
-    const snapsByInvestor = new Map<string, Array<{ score: number; date: string }>>();
-    for (const row of snapRows) {
-      if (!snapsByInvestor.has(row.investor_id)) snapsByInvestor.set(row.investor_id, []);
-      snapsByInvestor.get(row.investor_id)!.push({ score: row.overall_score, date: row.snapshot_date });
+      // Group by investor
+      const snapsByInvestor = new Map<string, Array<{ score: number; date: string }>>();
+      for (const row of snapRows) {
+        if (!snapsByInvestor.has(row.investor_id)) snapsByInvestor.set(row.investor_id, []);
+        snapsByInvestor.get(row.investor_id)!.push({ score: row.overall_score, date: row.snapshot_date });
+      }
+
+      for (const [investorId, snaps] of snapsByInvestor.entries()) {
+        if (snaps.length < 2) continue;
+        const first = snaps[0];
+        const last = snaps[snaps.length - 1];
+        const daysDiff = (new Date(last.date).getTime() - new Date(first.date).getTime()) / (1000 * 60 * 60 * 24);
+        if (daysDiff < 3) continue; // need at least 3 days of data
+
+        const weeksDiff = daysDiff / 7;
+        const velocityPerWeek = weeksDiff > 0 ? (last.score - first.score) / weeksDiff : 0;
+
+        if (velocityPerWeek < -2) {
+          patternsDetected++;
+          if (await hasDuplicateAction(investorId, 'momentum_cliff')) {
+            skippedDuplicate++;
+            continue;
+          }
+          // Get investor name
+          const invResult = await db.execute({ sql: `SELECT name FROM investors WHERE id = ?`, args: [investorId] });
+          const invName = invResult.rows.length > 0 ? (invResult.rows[0] as unknown as { name: string }).name : 'Unknown';
+
+          const action = await createAccelerationAction({
+            investor_id: investorId,
+            investor_name: invName,
+            trigger_type: rule3.trigger_type,
+            action_type: rule3.action_type,
+            description: rule3.template(invName, velocityPerWeek.toFixed(1)),
+            expected_lift: adjustExpectedLift(rule3.trigger_type, rule3.action_type, rule3.expected_lift),
+            confidence: rule3.confidence,
+            status: 'pending',
+            actual_lift: null,
+            executed_at: null,
+          });
+          actionsCreated.push(action);
+        }
+      }
     }
+  } catch { /* non-blocking */ }
 
-    for (const [investorId, snaps] of snapsByInvestor.entries()) {
-      if (snaps.length < 2) continue;
-      const first = snaps[0];
-      const last = snaps[snaps.length - 1];
-      const daysDiff = (new Date(last.date).getTime() - new Date(first.date).getTime()) / (1000 * 60 * 60 * 24);
-      if (daysDiff < 3) continue; // need at least 3 days of data
+  // --- Rule 4: keystone_uncommitted (keystone investor not at engaged+) ---
+  try {
+    const rule4 = AUTO_ACTION_RULES[3];
+    if (shouldSkipRule(rule4.trigger_type, rule4.action_type)) {
+      // Rule skipped due to poor effectiveness
+    } else {
+      const keystones = await getKeystoneInvestors();
+      for (const ks of keystones) {
+        if (ks.cascadeValue === 'minimal') continue;
+        // Check if investor is NOT yet at engaged or beyond
+        const invResult = await db.execute({ sql: `SELECT status FROM investors WHERE id = ?`, args: [ks.id] });
+        if (invResult.rows.length === 0) continue;
+        const status = (invResult.rows[0] as unknown as { status: string }).status;
+        const advancedStatuses = ['engaged', 'in_dd', 'term_sheet', 'closed'];
+        if (advancedStatuses.includes(status)) continue;
 
-      const weeksDiff = daysDiff / 7;
-      const velocityPerWeek = weeksDiff > 0 ? (last.score - first.score) / weeksDiff : 0;
-
-      if (velocityPerWeek < -2) {
         patternsDetected++;
-        if (await hasDuplicateAction(investorId, 'momentum_cliff')) {
+        if (await hasDuplicateAction(ks.id, 'window_closing')) {
           skippedDuplicate++;
           continue;
         }
-        // Get investor name
-        const invResult = await db.execute({ sql: `SELECT name FROM investors WHERE id = ?`, args: [investorId] });
-        const invName = invResult.rows.length > 0 ? (invResult.rows[0] as unknown as { name: string }).name : 'Unknown';
-
-        const rule = AUTO_ACTION_RULES[2];
         const action = await createAccelerationAction({
-          investor_id: investorId,
-          investor_name: invName,
-          trigger_type: rule.trigger_type,
-          action_type: rule.action_type,
-          description: rule.template(invName, velocityPerWeek.toFixed(1)),
-          expected_lift: rule.expected_lift,
-          confidence: rule.confidence,
+          investor_id: ks.id,
+          investor_name: ks.name,
+          trigger_type: rule4.trigger_type,
+          action_type: rule4.action_type,
+          description: rule4.template(ks.name, ks.connectionCount),
+          expected_lift: adjustExpectedLift(rule4.trigger_type, rule4.action_type, rule4.expected_lift),
+          confidence: rule4.confidence,
           status: 'pending',
           actual_lift: null,
           executed_at: null,
@@ -3372,65 +3470,35 @@ export async function generateAutoActions(): Promise<AutoActionResult> {
     }
   } catch { /* non-blocking */ }
 
-  // --- Rule 4: keystone_uncommitted (keystone investor not at engaged+) ---
-  try {
-    const keystones = await getKeystoneInvestors();
-    for (const ks of keystones) {
-      if (ks.cascadeValue === 'minimal') continue;
-      // Check if investor is NOT yet at engaged or beyond
-      const invResult = await db.execute({ sql: `SELECT status FROM investors WHERE id = ?`, args: [ks.id] });
-      if (invResult.rows.length === 0) continue;
-      const status = (invResult.rows[0] as unknown as { status: string }).status;
-      const advancedStatuses = ['engaged', 'in_dd', 'term_sheet', 'closed'];
-      if (advancedStatuses.includes(status)) continue;
-
-      patternsDetected++;
-      if (await hasDuplicateAction(ks.id, 'window_closing')) {
-        skippedDuplicate++;
-        continue;
-      }
-      const rule = AUTO_ACTION_RULES[3];
-      const action = await createAccelerationAction({
-        investor_id: ks.id,
-        investor_name: ks.name,
-        trigger_type: rule.trigger_type,
-        action_type: rule.action_type,
-        description: rule.template(ks.name, ks.connectionCount),
-        expected_lift: rule.expected_lift,
-        confidence: rule.confidence,
-        status: 'pending',
-        actual_lift: null,
-        executed_at: null,
-      });
-      actionsCreated.push(action);
-    }
-  } catch { /* non-blocking */ }
-
   // --- Rule 5: narrative_struggling_type (investor type with avg enthusiasm < 2.5) ---
   try {
-    const narrativeSignals = await computeNarrativeSignals();
-    const struggling = narrativeSignals.filter(ns => ns.avgEnthusiasm > 0 && ns.avgEnthusiasm < 2.5 && ns.sampleSize >= 2);
-    for (const signal of struggling) {
-      patternsDetected++;
-      const syntheticId = `narrative_type_${signal.investorType}`;
-      if (await hasDuplicateAction(syntheticId, 'catalyst_match')) {
-        skippedDuplicate++;
-        continue;
+    const rule5 = AUTO_ACTION_RULES[4];
+    if (shouldSkipRule(rule5.trigger_type, rule5.action_type)) {
+      // Rule skipped due to poor effectiveness
+    } else {
+      const narrativeSignals = await computeNarrativeSignals();
+      const struggling = narrativeSignals.filter(ns => ns.avgEnthusiasm > 0 && ns.avgEnthusiasm < 2.5 && ns.sampleSize >= 2);
+      for (const signal of struggling) {
+        patternsDetected++;
+        const syntheticId = `narrative_type_${signal.investorType}`;
+        if (await hasDuplicateAction(syntheticId, 'catalyst_match')) {
+          skippedDuplicate++;
+          continue;
+        }
+        const action = await createAccelerationAction({
+          investor_id: syntheticId,
+          investor_name: `All ${signal.investorType} investors`,
+          trigger_type: rule5.trigger_type,
+          action_type: rule5.action_type,
+          description: rule5.template(signal.investorType, signal.avgEnthusiasm.toFixed(1)),
+          expected_lift: adjustExpectedLift(rule5.trigger_type, rule5.action_type, rule5.expected_lift),
+          confidence: rule5.confidence,
+          status: 'pending',
+          actual_lift: null,
+          executed_at: null,
+        });
+        actionsCreated.push(action);
       }
-      const rule = AUTO_ACTION_RULES[4];
-      const action = await createAccelerationAction({
-        investor_id: syntheticId,
-        investor_name: `All ${signal.investorType} investors`,
-        trigger_type: rule.trigger_type,
-        action_type: rule.action_type,
-        description: rule.template(signal.investorType, signal.avgEnthusiasm.toFixed(1)),
-        expected_lift: rule.expected_lift,
-        confidence: rule.confidence,
-        status: 'pending',
-        actual_lift: null,
-        executed_at: null,
-      });
-      actionsCreated.push(action);
     }
   } catch { /* non-blocking */ }
 
@@ -3439,6 +3507,8 @@ export async function generateAutoActions(): Promise<AutoActionResult> {
     rulesEvaluated: AUTO_ACTION_RULES.length,
     patternsDetected,
     skippedDuplicate,
+    skippedIneffective,
+    boostedRules,
   };
 }
 
@@ -3567,5 +3637,273 @@ export async function computeOptimalFollowupTiming(investorId: string): Promise<
     optimalDayOfWeek: DAY_NAMES[bestDay],
     optimalTimeOfDay: optimalTime,
     reasoning: reasonParts.join('. ') + '.',
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Learning Intelligence — Action Outcome Measurement
+// ---------------------------------------------------------------------------
+
+export async function measureActionEffectiveness(): Promise<{
+  measured: number;
+  avgLift: number;
+  bestActionType: string;
+  worstActionType: string;
+  byType: { actionType: string; avgLift: number; count: number }[];
+}> {
+  await ensureInitialized();
+  const db = getClient();
+
+  // Get all executed actions that haven't been measured yet
+  const unmeasuredResult = await db.execute(
+    `SELECT * FROM acceleration_actions WHERE status = 'executed' AND actual_lift IS NULL`
+  );
+  const unmeasuredActions = unmeasuredResult.rows as unknown as AccelerationAction[];
+
+  let measured = 0;
+  const liftsByType: Record<string, { total: number; count: number }> = {};
+
+  for (const action of unmeasuredActions) {
+    // Skip synthetic investor IDs (narrative_* patterns) — no investor-level measurement possible
+    if (action.investor_id.startsWith('narrative_')) {
+      // For narrative-type actions, mark with neutral lift (can't measure directly)
+      await db.execute({
+        sql: `UPDATE acceleration_actions SET actual_lift = 0 WHERE id = ?`,
+        args: [action.id],
+      });
+      measured++;
+      if (!liftsByType[action.action_type]) liftsByType[action.action_type] = { total: 0, count: 0 };
+      liftsByType[action.action_type].total += 0;
+      liftsByType[action.action_type].count++;
+      continue;
+    }
+
+    const executedAt = action.executed_at;
+    if (!executedAt) continue;
+
+    // Find the last meeting BEFORE execution
+    const beforeResult = await db.execute({
+      sql: `SELECT enthusiasm_score FROM meetings
+            WHERE investor_id = ? AND date < ?
+            ORDER BY date DESC LIMIT 1`,
+      args: [action.investor_id, executedAt],
+    });
+
+    // Find the first meeting AFTER execution
+    const afterResult = await db.execute({
+      sql: `SELECT enthusiasm_score FROM meetings
+            WHERE investor_id = ? AND date > ?
+            ORDER BY date ASC LIMIT 1`,
+      args: [action.investor_id, executedAt],
+    });
+
+    // Check if investor status progressed
+    const invResult = await db.execute({
+      sql: `SELECT status FROM investors WHERE id = ?`,
+      args: [action.investor_id],
+    });
+    const currentStatus = invResult.rows.length > 0
+      ? (invResult.rows[0] as unknown as { status: string }).status
+      : null;
+
+    // Check if any new meetings were scheduled after execution
+    const newMeetingsResult = await db.execute({
+      sql: `SELECT COUNT(*) as count FROM meetings
+            WHERE investor_id = ? AND date > ?`,
+      args: [action.investor_id, executedAt],
+    });
+    const newMeetingCount = Number((newMeetingsResult.rows[0] as unknown as { count: number }).count);
+
+    // Compute lift score (-10 to +20)
+    let lift = 0;
+
+    // Enthusiasm change component (-5 to +10)
+    const enthBefore = beforeResult.rows.length > 0
+      ? Number((beforeResult.rows[0] as unknown as { enthusiasm_score: number }).enthusiasm_score)
+      : null;
+    const enthAfter = afterResult.rows.length > 0
+      ? Number((afterResult.rows[0] as unknown as { enthusiasm_score: number }).enthusiasm_score)
+      : null;
+
+    if (enthBefore !== null && enthAfter !== null) {
+      const enthDelta = enthAfter - enthBefore;
+      lift += Math.max(-5, Math.min(10, enthDelta * 3)); // Scale: each point of enthusiasm = 3 lift
+    }
+
+    // Status progression component (0 to +8)
+    if (currentStatus) {
+      const statusOrder: Record<string, number> = {
+        identified: 0, contacted: 1, nda_signed: 2, meeting_scheduled: 3,
+        met: 4, engaged: 5, in_dd: 6, term_sheet: 7, closed: 8,
+        passed: -1, dropped: -1,
+      };
+      // We need the status at execution time — approximate from activity log
+      const statusAtExecResult = await db.execute({
+        sql: `SELECT detail FROM activity_log
+              WHERE investor_id = ? AND event_type = 'status_changed' AND created_at <= ?
+              ORDER BY created_at DESC LIMIT 1`,
+        args: [action.investor_id, executedAt],
+      });
+      let statusAtExec: string | null = null;
+      if (statusAtExecResult.rows.length > 0) {
+        const detail = (statusAtExecResult.rows[0] as unknown as { detail: string }).detail || '';
+        const match = detail.match(/(?:->|→)\s*(\w+)/i);
+        if (match) statusAtExec = match[1];
+      }
+
+      if (statusAtExec) {
+        const oldIdx = statusOrder[statusAtExec] ?? 0;
+        const newIdx = statusOrder[currentStatus] ?? 0;
+        if (newIdx > oldIdx) {
+          lift += Math.min(8, (newIdx - oldIdx) * 3);
+        } else if (currentStatus === 'passed' || currentStatus === 'dropped') {
+          lift -= 5; // Investor was lost
+        }
+      }
+    }
+
+    // Engagement increase component (0 to +5)
+    if (newMeetingCount > 0) {
+      lift += Math.min(5, newMeetingCount * 2);
+    }
+
+    // If we have NO post-execution data at all, skip measuring (wait for more data)
+    if (enthAfter === null && newMeetingCount === 0) {
+      // Check if enough time has passed (14+ days) — if so, neutral lift
+      const execDate = new Date(executedAt);
+      const daysSinceExec = (Date.now() - execDate.getTime()) / (1000 * 60 * 60 * 24);
+      if (daysSinceExec < 14) continue; // Not enough time, skip for now
+      // If 14+ days with no interaction, that's a signal of low effectiveness
+      lift = -2;
+    }
+
+    // Clamp to range
+    lift = Math.max(-10, Math.min(20, Math.round(lift)));
+
+    // Update the action with measured lift
+    await db.execute({
+      sql: `UPDATE acceleration_actions SET actual_lift = ? WHERE id = ?`,
+      args: [lift, action.id],
+    });
+
+    measured++;
+    if (!liftsByType[action.action_type]) liftsByType[action.action_type] = { total: 0, count: 0 };
+    liftsByType[action.action_type].total += lift;
+    liftsByType[action.action_type].count++;
+  }
+
+  // Also include previously measured actions for the aggregation
+  const allMeasuredResult = await db.execute(
+    `SELECT action_type, actual_lift FROM acceleration_actions WHERE actual_lift IS NOT NULL`
+  );
+  const allMeasured = allMeasuredResult.rows as unknown as Array<{ action_type: string; actual_lift: number }>;
+
+  const allByType: Record<string, { total: number; count: number }> = {};
+  let totalLift = 0;
+  for (const row of allMeasured) {
+    if (!allByType[row.action_type]) allByType[row.action_type] = { total: 0, count: 0 };
+    allByType[row.action_type].total += row.actual_lift;
+    allByType[row.action_type].count++;
+    totalLift += row.actual_lift;
+  }
+
+  const byType = Object.entries(allByType).map(([actionType, data]) => ({
+    actionType,
+    avgLift: data.count > 0 ? Math.round((data.total / data.count) * 10) / 10 : 0,
+    count: data.count,
+  }));
+
+  byType.sort((a, b) => b.avgLift - a.avgLift);
+
+  return {
+    measured,
+    avgLift: allMeasured.length > 0 ? Math.round((totalLift / allMeasured.length) * 10) / 10 : 0,
+    bestActionType: byType.length > 0 ? byType[0].actionType : 'none',
+    worstActionType: byType.length > 0 ? byType[byType.length - 1].actionType : 'none',
+    byType,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Learning Intelligence — Auto-Action Rule Effectiveness
+// ---------------------------------------------------------------------------
+
+export async function getAutoActionEffectiveness(): Promise<{
+  ruleEffectiveness: {
+    triggerType: string;
+    actionType: string;
+    avgLift: number;
+    count: number;
+    confidence: 'high' | 'medium' | 'low';
+    recommendation: string;
+  }[];
+  overallAvgLift: number;
+}> {
+  await ensureInitialized();
+  const db = getClient();
+
+  // Aggregate measured lifts by trigger_type + action_type
+  const result = await db.execute(
+    `SELECT trigger_type, action_type, AVG(actual_lift) as avg_lift, COUNT(*) as count
+     FROM acceleration_actions
+     WHERE actual_lift IS NOT NULL
+     GROUP BY trigger_type, action_type
+     ORDER BY avg_lift DESC`
+  );
+
+  const rows = result.rows as unknown as Array<{
+    trigger_type: string;
+    action_type: string;
+    avg_lift: number;
+    count: number;
+  }>;
+
+  const ruleEffectiveness = rows.map(row => {
+    const avgLift = Math.round(row.avg_lift * 10) / 10;
+    const count = Number(row.count);
+
+    // Confidence based on sample size
+    let confidence: 'high' | 'medium' | 'low';
+    if (count >= 10) confidence = 'high';
+    else if (count >= 5) confidence = 'medium';
+    else confidence = 'low';
+
+    // Recommendation based on measured effectiveness
+    let recommendation: string;
+    if (count < 5) {
+      recommendation = 'Insufficient data — continue measuring';
+    } else if (avgLift > 8) {
+      recommendation = 'HIGH PERFORMER — increase frequency and expected_lift';
+    } else if (avgLift > 4) {
+      recommendation = 'Effective — continue using';
+    } else if (avgLift > 2) {
+      recommendation = 'Marginally effective — consider refining trigger conditions';
+    } else if (avgLift > 0) {
+      recommendation = 'LOW PERFORMER — consider modifying or reducing frequency';
+    } else {
+      recommendation = 'INEFFECTIVE — skip this rule until redesigned';
+    }
+
+    return {
+      triggerType: row.trigger_type,
+      actionType: row.action_type,
+      avgLift,
+      count,
+      confidence,
+      recommendation,
+    };
+  });
+
+  // Overall average lift across all measured actions
+  const overallResult = await db.execute(
+    `SELECT AVG(actual_lift) as avg_lift FROM acceleration_actions WHERE actual_lift IS NOT NULL`
+  );
+  const overallAvgLift = overallResult.rows.length > 0
+    ? Math.round(Number((overallResult.rows[0] as unknown as { avg_lift: number | null }).avg_lift ?? 0) * 10) / 10
+    : 0;
+
+  return {
+    ruleEffectiveness,
+    overallAvgLift,
   };
 }
