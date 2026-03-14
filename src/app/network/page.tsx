@@ -213,7 +213,7 @@ export default function NetworkPage() {
       </div>
 
       {/* Summary Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6 card-stagger">
         {[
           { label: 'Keystones', value: String(summary.keystoneCount), icon: Crown },
           { label: 'Connected Investors', value: String(summary.totalInvestorsConnected), icon: Users },

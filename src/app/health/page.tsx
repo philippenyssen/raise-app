@@ -167,7 +167,7 @@ export default function HealthPage() {
       {/* Status Breakdown */}
       <div className="rounded-xl p-6" style={{ border: '1px solid var(--border-default)' }}>
         <h2 className="text-sm font-medium mb-4" style={{ color: 'var(--text-tertiary)' }}>Investor status breakdown</h2>
-        <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
+        <div className="grid grid-cols-3 md:grid-cols-5 gap-3 card-stagger">
           {Object.entries(data.statusBreakdown).sort((a, b) => b[1] - a[1]).map(([status, count]) => (
             <div key={status} className="rounded-lg p-3 text-center" style={{ backgroundColor: 'var(--surface-1)' }}>
               <div className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>{count}</div>

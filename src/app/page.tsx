@@ -873,11 +873,11 @@ export default function Dashboard() {
                 <div className="space-y-4">
                   <div className="flex items-center gap-4">
                     <div>
-                      <div className="tabular-nums" style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 300, color: 'var(--text-primary)' }}>
+                      <div className="metric-value">
                         {cv.avgEnthusiasm.toFixed(1)}
                         <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', fontWeight: 300 }}>/5</span>
                       </div>
-                      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>Avg enthusiasm</div>
+                      <div className="metric-label">Avg enthusiasm</div>
                     </div>
                   </div>
 
@@ -1108,11 +1108,11 @@ export default function Dashboard() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                 <div className="space-y-2">
                   <div>
-                    <div className="mb-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>Overall completeness</div>
-                    <div className="tabular-nums" style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 300, color: 'var(--text-primary)' }}>{dataQuality.overallCompleteness}%</div>
+                    <div className="metric-label mb-1">Overall completeness</div>
+                    <div className="metric-value">{dataQuality.overallCompleteness}%</div>
                   </div>
                   <div>
-                    <div className="mb-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>Intelligence readiness</div>
+                    <div className="metric-label mb-1">Intelligence readiness</div>
                     <div className="flex items-center gap-2">
                       <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--surface-3)' }}>
                         <div className="h-full rounded-full transition-all duration-500" style={{ width: `${dataQuality.intelligenceReadiness}%`, background: 'var(--accent)' }} />
@@ -1304,8 +1304,8 @@ function PulseCard({ label, value, sub }: {
       onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
       onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-subtle)'; }}
     >
-      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', marginBottom: 'var(--space-1)' }}>{label}</div>
-      <div style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 300, color: 'var(--text-primary)', letterSpacing: '-0.02em', fontVariantNumeric: 'tabular-nums' }}>{value}</div>
+      <div className="metric-label" style={{ marginBottom: 'var(--space-1)' }}>{label}</div>
+      <div className="metric-value">{value}</div>
       <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginTop: '2px' }}>{sub}</div>
     </div>
   );

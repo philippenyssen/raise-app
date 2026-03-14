@@ -679,7 +679,7 @@ export default function AccelerationPage() {
       </div>
 
       {/* Summary cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 card-stagger">
         <div
           className="rounded-xl p-4"
           style={{ border: '1px solid rgba(26, 26, 46, 0.06)', background: 'var(--danger-muted)' }}

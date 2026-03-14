@@ -168,7 +168,7 @@ export default function DealHeatPage() {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-5 gap-3" style={{ marginBottom: 'var(--space-6)' }}>
+      <div className="grid grid-cols-5 gap-3 card-stagger" style={{ marginBottom: 'var(--space-6)' }}>
         {(['hot', 'warm', 'cool', 'cold', 'frozen'] as const).map(level => {
           const cfg = HEAT_CONFIG[level];
           const count = counts[level];

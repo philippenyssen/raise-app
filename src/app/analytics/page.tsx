@@ -228,7 +228,7 @@ export default function AnalyticsPage() {
       </div>
 
       {/* ── Summary Cards ───────────────────────────────────────── */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 card-stagger">
         <SummaryCard
           label="Active Pipeline"
           value={String(summary.activeInvestors)}

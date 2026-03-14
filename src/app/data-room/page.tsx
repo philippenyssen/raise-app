@@ -479,7 +479,7 @@ function AccessIntelligenceSection({ intelligence, files, expandedInvestor, onTo
       </div>
 
       {/* Summary Stats */}
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-4 gap-3 card-stagger">
         <StatCard
           label="Total Access Events"
           value={intelligence.total_access_events.toString()}

@@ -144,7 +144,7 @@ export default function BacklogPage() {
 
       {/* Summary cards */}
       {summary && (
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-4 gap-3 card-stagger">
           <div className="rounded-lg p-4" style={{ background: 'var(--surface-1)', border: '1px solid var(--border-subtle)' }}>
             <div className="text-[10px]  font-medium flex items-center gap-1" style={{ color: 'var(--text-muted)' }}><DollarSign className="w-3 h-3" /> Total Committed</div>
             <div className="text-2xl font-bold mt-1" style={{ color: 'var(--text-primary)' }}>{formatEur(summary.total_committed_eur)}</div>
