@@ -7,7 +7,7 @@ import {
   FileText, Sparkles, FolderOpen, Table, ArrowRight, ClipboardList,
   Activity, Download, Columns3, Target, Timer, ShieldCheck,
   RefreshCw, Zap, TrendingUp, TrendingDown, Minus, AlertTriangle,
-  ChevronRight, Clock, ArrowUpRight, ArrowDownRight,
+  ChevronRight, Clock, ArrowUpRight, ArrowDownRight, ShieldAlert,
 } from 'lucide-react';
 
 // ---------------------------------------------------------------------------
@@ -58,6 +58,15 @@ interface DataQualityData {
   bestInvestors: { id: string; name: string; completeness: number }[];
   intelligenceReadiness: number;
   recommendations: string[];
+}
+
+interface StressTestSummary {
+  target: number;
+  forecast: { best: number; base: number; worst: number };
+  closeProbability: number;
+  onTrack: boolean;
+  healthStatus: 'green' | 'yellow' | 'red';
+  healthMessage: string;
 }
 
 interface HealthData {
@@ -156,6 +165,7 @@ export default function Dashboard() {
   const [tasks, setTasks] = useState<UpcomingTask[]>([]);
   const [activity, setActivity] = useState<ActivityItem[]>([]);
   const [dataQuality, setDataQuality] = useState<DataQualityData | null>(null);
+  const [stressTest, setStressTest] = useState<StressTestSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [seeding, setSeeding] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -165,7 +175,7 @@ export default function Dashboard() {
     if (!silent) setLoading(true);
     else setRefreshing(true);
     try {
-      const [healthRes, pulseRes, docsRes, drRes, tasksRes, actRes, dqRes] = await Promise.all([
+      const [healthRes, pulseRes, docsRes, drRes, tasksRes, actRes, dqRes, stRes] = await Promise.all([
         fetch('/api/health'),
         fetch('/api/pulse'),
         fetch('/api/documents'),
@@ -173,6 +183,7 @@ export default function Dashboard() {
         fetch('/api/tasks?type=upcoming&limit=5'),
         fetch('/api/tasks?type=activity&limit=5'),
         fetch('/api/data-quality'),
+        fetch('/api/stress-test'),
       ]);
       if (healthRes.ok) setData(await healthRes.json());
       if (pulseRes.ok) setPulse(await pulseRes.json());
@@ -181,6 +192,7 @@ export default function Dashboard() {
       if (tasksRes.ok) setTasks(await tasksRes.json());
       if (actRes.ok) setActivity(await actRes.json());
       if (dqRes.ok) setDataQuality(await dqRes.json());
+      if (stRes.ok) setStressTest(await stRes.json());
       setLastRefresh(new Date());
     } catch {
       if (!silent) toast('Failed to load dashboard data', 'error');
@@ -379,6 +391,68 @@ export default function Dashboard() {
               }
             />
           </div>
+
+          {/* ================================================================ */}
+          {/* CLOSE FORECAST WIDGET                                            */}
+          {/* ================================================================ */}
+          {stressTest && (
+            <Link href="/stress-test" className="block group">
+              <div className={`border rounded-xl p-5 transition-colors ${
+                stressTest.healthStatus === 'green'
+                  ? 'border-green-800/40 bg-green-900/5 hover:border-green-700/60'
+                  : stressTest.healthStatus === 'yellow'
+                  ? 'border-yellow-800/40 bg-yellow-900/5 hover:border-yellow-700/60'
+                  : 'border-red-800/40 bg-red-900/5 hover:border-red-700/60'
+              }`}>
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="text-sm font-medium text-zinc-400 uppercase flex items-center gap-2">
+                    <ShieldAlert className="w-4 h-4" /> Close Forecast
+                  </h2>
+                  <span className="text-xs text-blue-400 group-hover:text-blue-300 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    Full stress test <ArrowRight className="w-3 h-3" />
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div>
+                    <div className="text-[10px] text-zinc-500 uppercase">Target</div>
+                    <div className="text-xl font-bold text-zinc-200 tabular-nums mt-0.5">
+                      EUR {stressTest.target >= 1000 ? `${(stressTest.target / 1000).toFixed(1).replace(/\.0$/, '')}Bn` : `${stressTest.target}M`}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-[10px] text-zinc-500 uppercase">Forecast (Base)</div>
+                    <div className={`text-xl font-bold tabular-nums mt-0.5 ${
+                      stressTest.forecast.base >= stressTest.target ? 'text-green-400' : 'text-yellow-400'
+                    }`}>
+                      EUR {stressTest.forecast.base >= 1000 ? `${(stressTest.forecast.base / 1000).toFixed(1).replace(/\.0$/, '')}Bn` : `${Math.round(stressTest.forecast.base)}M`}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-[10px] text-zinc-500 uppercase">Probability</div>
+                    <div className={`text-xl font-bold tabular-nums mt-0.5 ${
+                      stressTest.closeProbability >= 60 ? 'text-green-400'
+                      : stressTest.closeProbability >= 30 ? 'text-yellow-400'
+                      : 'text-red-400'
+                    }`}>
+                      {stressTest.closeProbability}%
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-[10px] text-zinc-500 uppercase">Status</div>
+                    <div className={`text-sm font-semibold mt-1 px-2.5 py-1 rounded-md inline-block ${
+                      stressTest.healthStatus === 'green'
+                        ? 'bg-green-600/20 text-green-400 border border-green-700/30'
+                        : stressTest.healthStatus === 'yellow'
+                        ? 'bg-yellow-600/20 text-yellow-400 border border-yellow-700/30'
+                        : 'bg-red-600/20 text-red-400 border border-red-700/30'
+                    }`}>
+                      {stressTest.onTrack ? 'On Track' : stressTest.healthStatus === 'red' ? 'Critical' : 'At Risk'}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          )}
 
           {/* ================================================================ */}
           {/* TOP FOCUS TODAY                                                   */}

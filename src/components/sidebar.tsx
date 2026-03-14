@@ -7,7 +7,7 @@ import {
   LayoutDashboard, Users, Calendar, FileText,
   Sparkles, FolderOpen, BookOpen, Table, Globe, Settings,
   Columns3, GitCompare, BarChart3, MessageCircleWarning, Target,
-  SendHorizonal, Menu, X, LogOut, FileBarChart, Zap
+  SendHorizonal, Menu, X, LogOut, FileBarChart, Zap, ShieldAlert, Activity
 } from 'lucide-react';
 
 interface NavItem {
@@ -21,6 +21,7 @@ const nav: NavItem[] = [
   // Command Center
   { href: '/focus', label: 'Focus', icon: Target, section: 'COMMAND CENTER' },
   { href: '/', label: 'Dashboard', icon: LayoutDashboard, section: 'COMMAND CENTER' },
+  { href: '/stress-test', label: 'Stress Test', icon: ShieldAlert, section: 'COMMAND CENTER' },
   { href: '/acceleration', label: 'Acceleration', icon: Zap, section: 'COMMAND CENTER' },
   // CRM & Pipeline
   { href: '/pipeline', label: 'Pipeline', icon: Columns3, section: 'CRM & PIPELINE' },
@@ -30,6 +31,7 @@ const nav: NavItem[] = [
   { href: '/followups', label: 'Follow-ups', icon: SendHorizonal, section: 'CRM & PIPELINE' },
   // Intelligence
   { href: '/intelligence', label: 'Intelligence', icon: Globe, section: 'INTELLIGENCE' },
+  { href: '/momentum', label: 'Momentum', icon: Activity, section: 'INTELLIGENCE' },
   { href: '/objections', label: 'Objections', icon: MessageCircleWarning, section: 'INTELLIGENCE' },
   { href: '/analytics', label: 'Analytics', icon: BarChart3, section: 'INTELLIGENCE' },
   // Deliverables
