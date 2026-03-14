@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { Send, Loader2, Sparkles, RotateCcw, Copy, Check } from 'lucide-react';
+import { Send, Loader2, Sparkles, RotateCcw, Copy, Check, CheckCircle, XCircle } from 'lucide-react';
 import { VoiceInput } from './voice-input';
 
 interface Message {
@@ -16,11 +16,17 @@ interface AIChatProps {
   onApplyChange?: (newContent: string) => void;
 }
 
+interface PendingChange {
+  content: string;
+  messageIdx: number;
+}
+
 export function AIChat({ documentId, documentContent, documentTitle, onApplyChange }: AIChatProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
+  const [pendingChange, setPendingChange] = useState<PendingChange | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -62,9 +68,9 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
       const data = await res.json();
       setMessages([...newMessages, { role: 'assistant', content: data.response }]);
 
-      // If the AI returned updated content, offer to apply it
-      if (data.updatedContent && onApplyChange) {
-        onApplyChange(data.updatedContent);
+      // If the AI returned updated content, stage it for review (don't auto-apply)
+      if (data.updatedContent) {
+        setPendingChange({ content: data.updatedContent, messageIdx: newMessages.length });
       }
     } catch {
       setMessages([...newMessages, { role: 'assistant', content: 'Sorry, something went wrong. Please try again.' }]);
@@ -172,6 +178,32 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
         )}
         <div ref={messagesEndRef} />
       </div>
+
+      {/* Pending changes banner */}
+      {pendingChange && onApplyChange && (
+        <div className="shrink-0 border-t border-zinc-800 bg-blue-950/30 px-4 py-3">
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-blue-300">AI has proposed document changes</span>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setPendingChange(null)}
+                className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-400 transition-colors"
+              >
+                <XCircle className="w-3.5 h-3.5" /> Discard
+              </button>
+              <button
+                onClick={() => {
+                  onApplyChange(pendingChange.content);
+                  setPendingChange(null);
+                }}
+                className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs bg-blue-600 hover:bg-blue-500 text-white font-medium transition-colors"
+              >
+                <CheckCircle className="w-3.5 h-3.5" /> Apply Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Input */}
       <div className="shrink-0 border-t border-zinc-800 p-3">

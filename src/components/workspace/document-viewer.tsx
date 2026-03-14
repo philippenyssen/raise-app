@@ -38,48 +38,75 @@ const TYPE_LABELS: Record<string, string> = {
 export function DocumentViewer({ document, onContentChange, onSave, saving, dirty }: DocumentViewerProps) {
   const [mode, setMode] = useState<'preview' | 'edit'>('preview');
 
+  // Safe inline text rendering (no dangerouslySetInnerHTML)
+  const renderInline = useCallback((text: string, key: string): React.ReactNode[] => {
+    const parts: React.ReactNode[] = [];
+    let remaining = text;
+    let idx = 0;
+
+    while (remaining.length > 0) {
+      // Bold
+      const boldMatch = remaining.match(/\*\*(.*?)\*\*/);
+      if (boldMatch && boldMatch.index !== undefined) {
+        if (boldMatch.index > 0) {
+          parts.push(<span key={`${key}-${idx++}`}>{remaining.slice(0, boldMatch.index)}</span>);
+        }
+        parts.push(<strong key={`${key}-${idx++}`} className="text-zinc-100 font-semibold">{boldMatch[1]}</strong>);
+        remaining = remaining.slice(boldMatch.index + boldMatch[0].length);
+        continue;
+      }
+      // Italic
+      const italicMatch = remaining.match(/\*(.*?)\*/);
+      if (italicMatch && italicMatch.index !== undefined) {
+        if (italicMatch.index > 0) {
+          parts.push(<span key={`${key}-${idx++}`}>{remaining.slice(0, italicMatch.index)}</span>);
+        }
+        parts.push(<em key={`${key}-${idx++}`}>{italicMatch[1]}</em>);
+        remaining = remaining.slice(italicMatch.index + italicMatch[0].length);
+        continue;
+      }
+      // No more matches
+      parts.push(<span key={`${key}-${idx++}`}>{remaining}</span>);
+      break;
+    }
+    return parts;
+  }, []);
+
   const renderMarkdown = useCallback((content: string) => {
-    // Simple markdown rendering
     return content
       .split('\n')
       .map((line, i) => {
+        const k = `line-${i}`;
         // Headers
-        if (line.startsWith('# ')) return <h1 key={i} className="text-2xl font-bold mt-6 mb-3">{line.slice(2)}</h1>;
-        if (line.startsWith('## ')) return <h2 key={i} className="text-xl font-semibold mt-5 mb-2 text-zinc-200">{line.slice(3)}</h2>;
-        if (line.startsWith('### ')) return <h3 key={i} className="text-lg font-medium mt-4 mb-1.5 text-zinc-300">{line.slice(4)}</h3>;
-        if (line.startsWith('#### ')) return <h4 key={i} className="text-base font-medium mt-3 mb-1 text-zinc-400">{line.slice(5)}</h4>;
-        // Bold
-        const boldLine = line.replace(/\*\*(.*?)\*\*/g, '<strong class="text-zinc-100 font-semibold">$1</strong>');
-        // Italic
-        const italicLine = boldLine.replace(/\*(.*?)\*/g, '<em>$1</em>');
+        if (line.startsWith('# ')) return <h1 key={k} className="text-2xl font-bold mt-6 mb-3">{line.slice(2)}</h1>;
+        if (line.startsWith('## ')) return <h2 key={k} className="text-xl font-semibold mt-5 mb-2 text-zinc-200">{line.slice(3)}</h2>;
+        if (line.startsWith('### ')) return <h3 key={k} className="text-lg font-medium mt-4 mb-1.5 text-zinc-300">{line.slice(4)}</h3>;
+        if (line.startsWith('#### ')) return <h4 key={k} className="text-base font-medium mt-3 mb-1 text-zinc-400">{line.slice(5)}</h4>;
         // List items
-        if (line.startsWith('- ')) return <li key={i} className="ml-4 text-zinc-300 leading-relaxed" dangerouslySetInnerHTML={{ __html: italicLine.slice(2) }} />;
-        if (/^\d+\. /.test(line)) return <li key={i} className="ml-4 text-zinc-300 leading-relaxed list-decimal" dangerouslySetInnerHTML={{ __html: italicLine.replace(/^\d+\. /, '') }} />;
+        if (line.startsWith('- ')) return <li key={k} className="ml-4 text-zinc-300 leading-relaxed">{renderInline(line.slice(2), k)}</li>;
+        if (/^\d+\. /.test(line)) return <li key={k} className="ml-4 text-zinc-300 leading-relaxed list-decimal">{renderInline(line.replace(/^\d+\. /, ''), k)}</li>;
         // Table rows
         if (line.startsWith('|')) {
           const cells = line.split('|').filter(c => c.trim());
-          if (cells.every(c => /^[\s-:]+$/.test(c))) return <hr key={i} className="border-zinc-800 my-0" />;
-          const isHeader = i > 0; // simplified
+          if (cells.every(c => /^[\s-:]+$/.test(c))) return <hr key={k} className="border-zinc-800 my-0" />;
           return (
-            <div key={i} className="flex border-b border-zinc-800/50">
+            <div key={k} className="flex border-b border-zinc-800/50">
               {cells.map((cell, j) => (
-                <div key={j} className={`flex-1 px-3 py-1.5 text-sm ${isHeader ? 'text-zinc-300' : 'text-zinc-400 font-medium'}`}
-                  dangerouslySetInnerHTML={{ __html: cell.trim() }}
-                />
+                <div key={j} className="flex-1 px-3 py-1.5 text-sm text-zinc-300">{renderInline(cell.trim(), `${k}-${j}`)}</div>
               ))}
             </div>
           );
         }
         // Blockquote
-        if (line.startsWith('> ')) return <blockquote key={i} className="border-l-2 border-blue-600 pl-4 text-zinc-400 italic my-2">{line.slice(2)}</blockquote>;
+        if (line.startsWith('> ')) return <blockquote key={k} className="border-l-2 border-blue-600 pl-4 text-zinc-400 italic my-2">{line.slice(2)}</blockquote>;
         // Horizontal rule
-        if (line.match(/^---+$/)) return <hr key={i} className="border-zinc-800 my-4" />;
+        if (line.match(/^---+$/)) return <hr key={k} className="border-zinc-800 my-4" />;
         // Empty line
-        if (line.trim() === '') return <div key={i} className="h-3" />;
+        if (line.trim() === '') return <div key={k} className="h-3" />;
         // Regular paragraph
-        return <p key={i} className="text-zinc-300 leading-relaxed" dangerouslySetInnerHTML={{ __html: italicLine }} />;
+        return <p key={k} className="text-zinc-300 leading-relaxed">{renderInline(line, k)}</p>;
       });
-  }, []);
+  }, [renderInline]);
 
   if (!document) {
     return (

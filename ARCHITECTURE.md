@@ -219,7 +219,7 @@ CREATE TABLE IF NOT EXISTS data_room_files (
 );
 ```
 
-### Phase 4: Excel Model Engine `[ ]`
+### Phase 4: Excel Model Engine `[x]`
 
 **What it builds:** A full in-browser spreadsheet viewer and editor for the financial model. The user can inspect every cell, see formulas, edit values, and see downstream effects — all within the workspace.
 

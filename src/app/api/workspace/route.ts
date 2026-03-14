@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
 - A corporate lawyer (legal precision, risk language)
 
 CURRENT DOCUMENT: "${documentTitle}" (${documentId ? 'loaded' : 'none selected'})
-${documentContent ? `\nDOCUMENT CONTENT:\n${documentContent.substring(0, 12000)}` : ''}
+${documentContent ? `\nDOCUMENT CONTENT:\n${documentContent.substring(0, 50000)}` : ''}
 
 RAISE CONFIGURATION:
 ${raiseConfig ? JSON.stringify(raiseConfig, null, 2) : 'Not configured yet'}
@@ -36,7 +36,7 @@ OTHER DOCUMENTS IN THIS RAISE:
 ${otherDocs || 'None'}
 
 DATA ROOM (source materials):
-${dataRoomContext.substring(0, 8000)}
+${dataRoomContext.substring(0, 30000)}
 
 INSTRUCTIONS:
 1. When the user asks you to improve, rewrite, or change the document, respond with your analysis AND include the full updated document content.

@@ -1,0 +1,69 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { getRaiseConfig, getAllDocuments, getDataRoomContext, createDocument, getModelSheets, updateModelSheet } from '@/lib/db';
+import { generateDeliverable, generateModelFromContext } from '@/lib/generate';
+
+export async function POST(req: NextRequest) {
+  const body = await req.json();
+  const { type } = body; // teaser, exec_summary, memo, dd_memo, deck, model
+
+  try {
+    const raiseConfig = await getRaiseConfig();
+    const dataRoomContext = await getDataRoomContext();
+    const allDocs = await getAllDocuments();
+
+    const context = {
+      dataRoomContext,
+      raiseConfig: raiseConfig ? JSON.stringify(raiseConfig, null, 2) : 'Not configured',
+      existingDocs: allDocs.map(d => ({ title: d.title, type: d.type, content: d.content })),
+    };
+
+    if (type === 'model') {
+      // Generate model assumptions and populate the first sheet
+      const cells = await generateModelFromContext(context);
+      const sheets = await getModelSheets();
+      const assumptionsSheet = sheets.find(s => s.sheet_name === 'Assumptions');
+      if (assumptionsSheet) {
+        await updateModelSheet(assumptionsSheet.id, { data: JSON.stringify(cells) });
+      }
+      return NextResponse.json({ success: true, type: 'model', sheetsUpdated: 1 });
+    }
+
+    // Generate document
+    const TYPE_TITLES: Record<string, string> = {
+      teaser: 'Series C Teaser',
+      exec_summary: 'Executive Summary',
+      memo: 'Investment Memorandum',
+      dd_memo: 'Confirmatory DD Memorandum',
+      deck: 'Management Presentation',
+    };
+
+    const content = await generateDeliverable(type, context);
+
+    // Create or update the document
+    const existing = allDocs.find(d => d.type === type);
+    if (existing) {
+      // Update existing
+      const res = await fetch(`${req.nextUrl.origin}/api/documents/${existing.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content, change_summary: `AI-generated from data room (${new Date().toISOString()})` }),
+      });
+      await res.json();
+      return NextResponse.json({ success: true, type, documentId: existing.id, action: 'updated' });
+    } else {
+      // Create new
+      const doc = await createDocument({
+        title: TYPE_TITLES[type] || type,
+        type,
+        content,
+      });
+      return NextResponse.json({ success: true, type, documentId: doc.id, action: 'created' });
+    }
+  } catch (err) {
+    console.error('Generation failed:', err);
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : 'Generation failed' },
+      { status: 500 }
+    );
+  }
+}
