@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
-import { Bell, Clock, AlertTriangle, Activity } from 'lucide-react';
+import { Bell, Clock, AlertTriangle, Activity, Search } from 'lucide-react';
 
 interface UpcomingTask {
   id: string;
@@ -78,6 +78,37 @@ export function TopBar() {
         background: 'var(--surface-0)',
       }}
     >
+      {/* Search trigger */}
+      <button
+        onClick={() => {
+          document.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }));
+        }}
+        className="hidden md:flex items-center gap-2 rounded-md transition-colors"
+        style={{
+          padding: '5px 10px',
+          color: 'var(--text-muted)',
+          background: 'var(--surface-1)',
+          border: '1px solid var(--border-subtle)',
+          fontSize: 'var(--font-size-xs)',
+          cursor: 'pointer',
+          marginRight: 'var(--space-2)',
+        }}
+        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; (e.currentTarget as HTMLElement).style.color = 'var(--text-tertiary)'; }}
+        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-subtle)'; (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}
+      >
+        <Search style={{ width: '12px', height: '12px' }} />
+        <span>Search</span>
+        <span style={{
+          padding: '1px 5px',
+          borderRadius: '4px',
+          background: 'var(--surface-2)',
+          border: '1px solid var(--border-subtle)',
+          fontSize: '10px',
+          fontWeight: 600,
+          letterSpacing: '0.02em',
+        }}>⌘K</span>
+      </button>
+
       <div ref={ref} className="relative">
         <button
           onClick={() => setOpen(!open)}

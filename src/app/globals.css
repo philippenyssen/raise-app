@@ -180,9 +180,10 @@ body {
   width: 3px;
   background: var(--accent);
   border-radius: var(--radius-lg) 0 0 var(--radius-lg);
-  opacity: 0.6;
+  opacity: 0.8;
 }
 .card-metric:hover { border-color: var(--border-default); background: var(--surface-2); }
+.card-metric:hover::before { opacity: 1; }
 .card-metric.metric-success::before { background: var(--success); }
 .card-metric.metric-warning::before { background: var(--warning); }
 .card-metric.metric-danger::before { background: var(--danger); }
