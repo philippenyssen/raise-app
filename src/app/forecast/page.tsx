@@ -5,6 +5,7 @@ import Link from 'next/link';
 import {
   BarChart3, TrendingUp, AlertTriangle, Shield, Clock,
   CheckCircle2, Target, ArrowRight, Users, Zap, ToggleLeft, ToggleRight, RotateCcw,
+  Calendar, ExternalLink,
 } from 'lucide-react';
 
 interface InvestorForecast {
@@ -502,15 +503,39 @@ export default function ForecastPage() {
                       {i + 1}
                     </span>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      <Link
+                        href={inv ? `/investors/${inv.investorId}` : '#'}
+                        style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textDecoration: 'none', display: 'block' }}
+                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
+                        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-primary)'; }}
+                      >
                         {name}
-                      </div>
+                      </Link>
                       {inv && (
                         <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
                           {STAGE_LABELS[inv.currentStage] || inv.currentStage} &middot; ~{inv.predictedDaysToClose}d
                         </div>
                       )}
                     </div>
+                    {inv && (
+                      <Link
+                        href={`/meetings/new?investor=${inv.investorId}`}
+                        title="Schedule meeting"
+                        className="flex items-center justify-center shrink-0"
+                        style={{
+                          width: '24px',
+                          height: '24px',
+                          borderRadius: 'var(--radius-sm)',
+                          background: 'var(--warning-muted)',
+                          color: 'var(--warning)',
+                          textDecoration: 'none',
+                        }}
+                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(245,158,11,0.25)'; }}
+                        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--warning-muted)'; }}
+                      >
+                        <Calendar className="w-3 h-3" />
+                      </Link>
+                    )}
                   </div>
                 );
               })}
@@ -539,26 +564,43 @@ export default function ForecastPage() {
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
-              {forecast.riskFactors.map((risk, i) => (
-                <div
-                  key={i}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    gap: 'var(--space-2)',
-                    padding: 'var(--space-2) var(--space-3)',
-                    background: 'var(--danger-muted)',
-                    borderRadius: 'var(--radius-sm)',
-                  }}
-                >
-                  <span style={{ color: 'var(--danger)', marginTop: '2px', flexShrink: 0 }}>
-                    <AlertTriangle className="w-3 h-3" />
-                  </span>
-                  <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)', lineHeight: 1.5 }}>
-                    {risk}
-                  </span>
-                </div>
-              ))}
+              {forecast.riskFactors.map((risk, i) => {
+                // Smart routing: derive the best action page from risk content
+                const riskLower = risk.toLowerCase();
+                const riskLink = riskLower.includes('meeting') || riskLower.includes('stall') ? '/focus'
+                  : riskLower.includes('objection') || riskLower.includes('concern') ? '/objections'
+                  : riskLower.includes('follow') || riskLower.includes('overdue') ? '/followups'
+                  : riskLower.includes('pipeline') || riskLower.includes('funnel') ? '/pipeline'
+                  : '/dealflow';
+                return (
+                  <Link
+                    key={i}
+                    href={riskLink}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      gap: 'var(--space-2)',
+                      padding: 'var(--space-2) var(--space-3)',
+                      background: 'var(--danger-muted)',
+                      borderRadius: 'var(--radius-sm)',
+                      textDecoration: 'none',
+                      transition: 'background 150ms ease',
+                    }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(239,68,68,0.15)'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--danger-muted)'; }}
+                  >
+                    <span style={{ color: 'var(--danger)', marginTop: '2px', flexShrink: 0 }}>
+                      <AlertTriangle className="w-3 h-3" />
+                    </span>
+                    <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)', lineHeight: 1.5, flex: 1 }}>
+                      {risk}
+                    </span>
+                    <span style={{ color: 'var(--danger)', marginTop: '2px', flexShrink: 0, opacity: 0.6 }}>
+                      <ExternalLink className="w-3 h-3" />
+                    </span>
+                  </Link>
+                );
+              })}
             </div>
           )}
         </div>
@@ -860,8 +902,9 @@ export default function ForecastPage() {
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                 {investors.map(inv => (
-                  <div
+                  <Link
                     key={inv.investorId}
+                    href={`/investors/${inv.investorId}`}
                     style={{
                       display: 'flex',
                       alignItems: 'center',
@@ -869,7 +912,11 @@ export default function ForecastPage() {
                       padding: 'var(--space-1) var(--space-2)',
                       borderRadius: 'var(--radius-sm)',
                       background: bg,
+                      textDecoration: 'none',
+                      transition: 'filter 150ms ease',
                     }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.filter = 'brightness(1.1)'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.filter = 'none'; }}
                   >
                     <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '60%' }}>
                       {inv.investorName}
@@ -877,7 +924,7 @@ export default function ForecastPage() {
                     <span style={{ fontSize: '10px', color: 'var(--text-muted)', fontVariantNumeric: 'tabular-nums', flexShrink: 0 }}>
                       {STAGE_LABELS[inv.currentStage] || inv.currentStage}
                     </span>
-                  </div>
+                  </Link>
                 ))}
               </div>
             )}
