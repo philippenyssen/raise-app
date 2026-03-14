@@ -1610,50 +1610,71 @@ export default function Dashboard() {
           </div>
 
           {/* ================================================================ */}
-          {/* QUICK ACTIONS                                                    */}
+          {/* CONTEXTUAL QUICK ACTIONS                                         */}
           {/* ================================================================ */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            <Link
-              href="/meetings/new"
-              className="rounded-xl p-4 text-center transition-colors"
-              style={{ border: '1px solid var(--border-default)' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-strong)'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
-            >
-              <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500 }}>Log Meeting</div>
-              <div className="mt-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Capture debrief</div>
-            </Link>
-            <Link
-              href="/investors"
-              className="rounded-xl p-4 text-center transition-colors"
-              style={{ border: '1px solid var(--border-default)' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-strong)'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
-            >
-              <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500 }}>Manage CRM</div>
-              <div className="mt-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Update statuses</div>
-            </Link>
-            <Link
-              href="/intelligence"
-              className="rounded-xl p-4 text-center transition-colors"
-              style={{ border: '1px solid var(--border-default)' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-strong)'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
-            >
-              <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500 }}>AI Analysis</div>
-              <div className="mt-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Pattern detection</div>
-            </Link>
-            <Link
-              href="/pipeline"
-              className="rounded-xl p-4 text-center transition-colors"
-              style={{ border: '1px solid var(--border-default)' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-strong)'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
-            >
-              <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500 }}>Pipeline</div>
-              <div className="mt-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Kanban board</div>
-            </Link>
-          </div>
+          {(() => {
+            const overdueFollowups = pendingFollowups.filter(f => {
+              const dueDate = f.due_at?.split('T')[0];
+              return dueDate && dueDate < new Date().toISOString().split('T')[0];
+            });
+            const atRiskCount = (atRisk?.scoreReversals?.length ?? 0) + (atRisk?.staleInvestors?.length ?? 0);
+            const overdueTasks = tasks.filter(t => {
+              const due = t.due_date?.split('T')[0];
+              return due && due < new Date().toISOString().split('T')[0] && t.priority !== 'low';
+            });
+            const completeness = dataQuality?.overallCompleteness ?? 100;
+
+            const actions: { href: string; label: string; sub: string; color: string; borderColor: string; count?: number }[] = [];
+
+            if (overdueFollowups.length > 0) {
+              actions.push({ href: '/followups', label: 'Overdue Follow-ups', sub: `${overdueFollowups.length} past due — respond today`, color: 'var(--danger)', borderColor: 'rgba(239,68,68,0.3)', count: overdueFollowups.length });
+            }
+            if (atRiskCount > 0) {
+              actions.push({ href: '/dealflow', label: 'At-Risk Investors', sub: `${atRiskCount} losing momentum — intervene now`, color: 'var(--warning)', borderColor: 'rgba(245,158,11,0.3)', count: atRiskCount });
+            }
+            if (overdueTasks.length > 0) {
+              actions.push({ href: '/focus', label: 'Blocked Tasks', sub: `${overdueTasks.length} overdue — unblock pipeline`, color: 'var(--danger)', borderColor: 'rgba(239,68,68,0.2)', count: overdueTasks.length });
+            }
+            if (completeness < 70) {
+              actions.push({ href: '/investors', label: 'Data Gaps', sub: `CRM ${completeness}% complete — fill key fields`, color: 'var(--accent)', borderColor: 'rgba(59,130,246,0.2)' });
+            }
+
+            // Always include core quick nav (fill to 4)
+            if (actions.length < 4) actions.push({ href: '/meetings/new', label: 'Log Meeting', sub: 'Capture a debrief', color: 'var(--text-secondary)', borderColor: 'var(--border-default)' });
+            if (actions.length < 4) actions.push({ href: '/pipeline', label: 'Pipeline', sub: 'Kanban board', color: 'var(--text-secondary)', borderColor: 'var(--border-default)' });
+            if (actions.length < 4) actions.push({ href: '/intelligence', label: 'AI Analysis', sub: 'Pattern detection', color: 'var(--text-secondary)', borderColor: 'var(--border-default)' });
+            if (actions.length < 4) actions.push({ href: '/investors', label: 'Manage CRM', sub: 'Update statuses', color: 'var(--text-secondary)', borderColor: 'var(--border-default)' });
+
+            return (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                {actions.slice(0, 4).map((a) => (
+                  <Link
+                    key={a.href + a.label}
+                    href={a.href}
+                    className="rounded-xl p-4 transition-colors relative"
+                    style={{ border: `1px solid ${a.borderColor}`, textDecoration: 'none' }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-strong)'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = a.borderColor; }}
+                  >
+                    <div className="flex items-center gap-2">
+                      <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: a.color }}>{a.label}</span>
+                      {a.count && (
+                        <span style={{
+                          fontSize: '10px', fontWeight: 700,
+                          background: a.color === 'var(--danger)' ? 'var(--danger-muted)' : 'var(--warning-muted)',
+                          color: a.color,
+                          padding: '1px 6px', borderRadius: '9px',
+                        }}>
+                          {a.count}
+                        </span>
+                      )}
+                    </div>
+                    <div className="mt-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{a.sub}</div>
+                  </Link>
+                ))}
+              </div>
+            );
+          })()}
         </>
       )}
     </div>
