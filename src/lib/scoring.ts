@@ -175,17 +175,25 @@ export function computeThesisFitScore(
   // Tiered keyword matching — primary keywords are direct ASL fit
   const primaryKeywords = [
     'space', 'aerospace', 'defense', 'defence', 'satellite',
+    'defense-tech', 'defence-tech', 'defense tech', 'defence tech',
   ];
   const secondaryKeywords = [
     'deeptech', 'deep tech', 'hardware', 'dual-use', 'dual use',
     'earth observation', 'sar', 'sovereignty', 'govtech', 'hard tech',
+    'national security', 'military', 'geospatial',
   ];
   const tertiaryKeywords = [
     'industrial', 'manufacturing', 'climate', 'government',
     'infrastructure', 'european', 'europe', 'frontier', 'security',
+    'contrarian', 'deep technology',
   ];
   const partialKeywords = [
     'tech', 'b2b', 'enterprise', 'growth', 'generalist',
+  ];
+  // Known defense/space companies mentioned in thesis text get a bonus
+  const knownCompanies = [
+    'anduril', 'spacex', 'palantir', 'planet labs', 'rocket lab',
+    'shield ai', 'relativity', 'l3harris', 'northrop', 'raytheon',
   ];
 
   let keywordScore = 0;
@@ -214,6 +222,14 @@ export function computeThesisFitScore(
     if (thesis.includes(kw)) {
       keywordScore += 3;
       matchedKeywords.push(kw);
+    }
+  }
+  // Known company mentions in thesis signal strong alignment
+  for (const co of knownCompanies) {
+    if (thesis.includes(co)) {
+      keywordScore += 15;
+      matchedKeywords.push(co);
+      hasPrimaryMatch = true;
     }
   }
   // Primary keyword match guarantees a meaningful base score
