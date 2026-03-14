@@ -33,7 +33,7 @@ export async function PUT(req: NextRequest) {
   if (!body.id) return NextResponse.json({ error: 'id is required' }, { status: 400 });
   const { id, ...updates } = body;
   await updateTermSheet(id, updates);
-  return NextResponse.json({ success: true });
+  return NextResponse.json({ ok: true });
 }
 
 export async function DELETE(req: NextRequest) {
@@ -41,5 +41,5 @@ export async function DELETE(req: NextRequest) {
   const id = searchParams.get('id');
   if (!id) return NextResponse.json({ error: 'id is required' }, { status: 400 });
   await deleteTermSheet(id);
-  return NextResponse.json({ success: true });
+  return NextResponse.json({ ok: true });
 }

@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
 
   // Set HMAC session token cookie — no raw password stored
   const token = makeSessionToken(password);
-  const response = NextResponse.json({ success: true });
+  const response = NextResponse.json({ ok: true });
   response.cookies.set('raise_auth', token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
 }
 
 export async function DELETE() {
-  const response = NextResponse.json({ success: true });
+  const response = NextResponse.json({ ok: true });
   response.cookies.delete('raise_auth');
   return response;
 }

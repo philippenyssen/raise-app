@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
       if (assumptionsSheet) {
         await updateModelSheet(assumptionsSheet.id, { data: JSON.stringify(cells) });
       }
-      return NextResponse.json({ success: true, type: 'model', sheetsUpdated: 1 });
+      return NextResponse.json({ ok: true, type: 'model', sheetsUpdated: 1 });
     }
 
     // Generate document
@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
         content,
         change_summary: `AI-generated from data room (${new Date().toISOString()})`,
       });
-      return NextResponse.json({ success: true, type, documentId: existing.id, action: 'updated' });
+      return NextResponse.json({ ok: true, type, documentId: existing.id, action: 'updated' });
     } else {
       // Create new
       const doc = await createDocument({
@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
         type,
         content,
       });
-      return NextResponse.json({ success: true, type, documentId: doc.id, action: 'created' });
+      return NextResponse.json({ ok: true, type, documentId: doc.id, action: 'created' });
     }
   } catch (err) {
     console.error('Generation failed:', err);

@@ -37,7 +37,7 @@ export async function PUT(request: NextRequest) {
     await setConfig(key, JSON.stringify(value));
 
     emitContextChange('settings_updated', `Config key "${key}" updated`);
-    return NextResponse.json({ success: true, key, value });
+    return NextResponse.json({ ok: true, key, value });
   } catch (error) {
     console.error('Settings PUT error:', error);
     return NextResponse.json({ error: 'Failed to save settings' }, { status: 500 });

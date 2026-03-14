@@ -33,5 +33,5 @@ export async function DELETE(req: NextRequest) {
   const id = searchParams.get('id');
   if (!id) return NextResponse.json({ error: 'id is required' }, { status: 400 });
   await deleteDataRoomFile(id);
-  return NextResponse.json({ success: true });
+  return NextResponse.json({ ok: true });
 }

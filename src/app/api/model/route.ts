@@ -38,7 +38,7 @@ export async function PUT(req: NextRequest) {
     sheet_order,
   });
 
-  return NextResponse.json({ success: true });
+  return NextResponse.json({ ok: true });
 }
 
 export async function DELETE(req: NextRequest) {
@@ -46,5 +46,5 @@ export async function DELETE(req: NextRequest) {
   const id = searchParams.get('id');
   if (!id) return NextResponse.json({ error: 'id is required' }, { status: 400 });
   await deleteModelSheet(id);
-  return NextResponse.json({ success: true });
+  return NextResponse.json({ ok: true });
 }

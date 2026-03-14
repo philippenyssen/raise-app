@@ -614,7 +614,7 @@ export async function PUT(req: Request) {
     }
 
     emitContextChange('acceleration_executed', `Acceleration ${id} ${actionStatus}${body.investor_name ? ` for ${body.investor_name}` : ''}`);
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ ok: true });
   } catch (error) {
     console.error('Acceleration update error:', error);
     return NextResponse.json(
