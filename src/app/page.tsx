@@ -364,7 +364,7 @@ export default function Dashboard() {
       <div
         className="text-center"
         style={{
-          border: '1px solid rgba(240,96,112,0.15)',
+          border: '1px solid rgba(196,90,90,0.15)',
           background: 'var(--danger-muted)',
           borderRadius: 'var(--radius-lg)',
           padding: 'var(--space-10)',
@@ -392,7 +392,7 @@ export default function Dashboard() {
     { label: 'Engaged', value: data.funnel.engaged, bg: '#8b6ef5' },
     { label: 'In DD', value: data.funnel.in_dd, bg: '#e08050' },
     { label: 'Term Sheets', value: data.funnel.term_sheets, bg: 'var(--success)' },
-    { label: 'Closed', value: data.funnel.closed, bg: '#34d399' },
+    { label: 'Closed', value: data.funnel.closed, bg: '#4a9e6e' },
   ];
 
   return (
@@ -514,7 +514,7 @@ export default function Dashboard() {
                     position: 'relative',
                     overflow: 'hidden',
                   }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--accent)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 0 20px rgba(124, 110, 240, 0.08)'; }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--accent)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 0 20px rgba(74, 111, 165, 0.08)'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; (e.currentTarget as HTMLElement).style.boxShadow = 'none'; }}
                 >
                   {/* Top accent gradient line */}
@@ -559,7 +559,7 @@ export default function Dashboard() {
                         borderRadius: '4px',
                         background: amountColor,
                         transition: 'width 0.4s ease',
-                        boxShadow: `0 0 10px ${amountColor === 'var(--success)' ? 'rgba(52, 211, 153, 0.4)' : amountColor === 'var(--warning)' ? 'rgba(234, 179, 8, 0.4)' : 'rgba(240, 96, 112, 0.4)'}`,
+                        boxShadow: `0 0 10px ${amountColor === 'var(--success)' ? 'rgba(74, 158, 110, 0.4)' : amountColor === 'var(--warning)' ? 'rgba(234, 179, 8, 0.4)' : 'rgba(196, 90, 90, 0.4)'}`,
                       }} />
                     </div>
                     {velocity?.summary?.raise_days_elapsed != null && velocity?.summary?.raise_target_days != null && (
@@ -678,31 +678,31 @@ export default function Dashboard() {
                 style={{
                   border: `1px solid ${
                     stressTest.healthStatus === 'green'
-                      ? 'rgba(52,211,153,0.25)'
+                      ? 'rgba(74,158,110,0.25)'
                       : stressTest.healthStatus === 'yellow'
-                      ? 'rgba(240,176,96,0.25)'
-                      : 'rgba(240,96,112,0.25)'
+                      ? 'rgba(196,163,90,0.25)'
+                      : 'rgba(196,90,90,0.25)'
                   }`,
                   background: stressTest.healthStatus === 'green'
-                    ? 'rgba(52,211,153,0.03)'
+                    ? 'rgba(74,158,110,0.03)'
                     : stressTest.healthStatus === 'yellow'
-                    ? 'rgba(240,176,96,0.03)'
-                    : 'rgba(240,96,112,0.03)',
+                    ? 'rgba(196,163,90,0.03)'
+                    : 'rgba(196,90,90,0.03)',
                 }}
                 onMouseEnter={e => {
                   const borderColor = stressTest.healthStatus === 'green'
-                    ? 'rgba(52,211,153,0.4)'
+                    ? 'rgba(74,158,110,0.4)'
                     : stressTest.healthStatus === 'yellow'
-                    ? 'rgba(240,176,96,0.4)'
-                    : 'rgba(240,96,112,0.4)';
+                    ? 'rgba(196,163,90,0.4)'
+                    : 'rgba(196,90,90,0.4)';
                   (e.currentTarget as HTMLElement).style.borderColor = borderColor;
                 }}
                 onMouseLeave={e => {
                   const borderColor = stressTest.healthStatus === 'green'
-                    ? 'rgba(52,211,153,0.25)'
+                    ? 'rgba(74,158,110,0.25)'
                     : stressTest.healthStatus === 'yellow'
-                    ? 'rgba(240,176,96,0.25)'
-                    : 'rgba(240,96,112,0.25)';
+                    ? 'rgba(196,163,90,0.25)'
+                    : 'rgba(196,90,90,0.25)';
                   (e.currentTarget as HTMLElement).style.borderColor = borderColor;
                 }}
               >
@@ -779,10 +779,10 @@ export default function Dashboard() {
                           : 'var(--danger)',
                         border: `1px solid ${
                           stressTest.healthStatus === 'green'
-                            ? 'rgba(52,211,153,0.2)'
+                            ? 'rgba(74,158,110,0.2)'
                             : stressTest.healthStatus === 'yellow'
-                            ? 'rgba(240,176,96,0.2)'
-                            : 'rgba(240,96,112,0.2)'
+                            ? 'rgba(196,163,90,0.2)'
+                            : 'rgba(196,90,90,0.2)'
                         }`,
                       }}
                     >
@@ -800,7 +800,7 @@ export default function Dashboard() {
           {atRisk && (atRisk.scoreReversals.length > 0 || atRisk.staleInvestors.length > 0) && (
             <div
               className="rounded-xl p-5"
-              style={{ border: '1px solid rgba(240,96,112,0.2)', background: 'rgba(240,96,112,0.03)' }}
+              style={{ border: '1px solid rgba(196,90,90,0.2)', background: 'rgba(196,90,90,0.03)' }}
             >
               <div className="flex items-center justify-between mb-3">
                 <h2
@@ -816,7 +816,7 @@ export default function Dashboard() {
                     fontWeight: 600,
                     background: 'var(--danger-muted)',
                     color: 'var(--danger)',
-                    border: '1px solid rgba(240,96,112,0.2)',
+                    border: '1px solid rgba(196,90,90,0.2)',
                   }}
                 >
                   {atRisk.scoreReversals.length + atRisk.staleInvestors.length} deal{atRisk.scoreReversals.length + atRisk.staleInvestors.length !== 1 ? 's' : ''}
@@ -830,7 +830,7 @@ export default function Dashboard() {
                   const sevLabel = rev.severity === 'critical' ? 'CRITICAL' : rev.severity === 'warning' ? 'WARNING' : 'NOTABLE';
                   const sevBg = isCritical ? 'var(--danger-muted)' : 'var(--warning-muted)';
                   const sevColor = isCritical ? 'var(--danger)' : 'var(--warning)';
-                  const sevBorder = isCritical ? 'rgba(240,96,112,0.3)' : 'rgba(240,176,96,0.3)';
+                  const sevBorder = isCritical ? 'rgba(196,90,90,0.3)' : 'rgba(196,163,90,0.3)';
                   return (
                     <div
                       key={`rev-${rev.investorId}`}
@@ -880,9 +880,9 @@ export default function Dashboard() {
                           fontWeight: 500,
                           background: 'var(--danger-muted)',
                           color: 'var(--danger)',
-                          border: '1px solid rgba(240,96,112,0.2)',
+                          border: '1px solid rgba(196,90,90,0.2)',
                         }}
-                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(240,96,112,0.2)'; }}
+                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(196,90,90,0.2)'; }}
                         onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--danger-muted)'; }}
                       >
                         Schedule follow-up <ChevronRight className="w-3 h-3" />
@@ -915,14 +915,14 @@ export default function Dashboard() {
                           >
                             {inv.investorName}
                           </Link>
-                          <span style={{ fontSize: '9px', color: inv.tier === 1 ? '#f5c88a' : 'var(--text-muted)' }}>T{inv.tier}</span>
+                          <span style={{ fontSize: '9px', color: inv.tier === 1 ? '#d4be82' : 'var(--text-muted)' }}>T{inv.tier}</span>
                           <span
                             className="px-1.5 py-0.5 rounded shrink-0"
                             style={{
                               fontSize: '9px',
                               background: isSilent ? 'var(--danger-muted)' : 'var(--warning-muted)',
                               color: isSilent ? 'var(--danger)' : 'var(--warning)',
-                              border: `1px solid ${isSilent ? 'rgba(240,96,112,0.3)' : 'rgba(240,176,96,0.3)'}`,
+                              border: `1px solid ${isSilent ? 'rgba(196,90,90,0.3)' : 'rgba(196,163,90,0.3)'}`,
                             }}
                           >
                             {isSilent ? 'SILENT' : 'SLOWING'}
@@ -942,10 +942,10 @@ export default function Dashboard() {
                           fontWeight: 500,
                           background: isSilent ? 'var(--danger-muted)' : 'var(--warning-muted)',
                           color: isSilent ? 'var(--danger)' : 'var(--warning)',
-                          border: `1px solid ${isSilent ? 'rgba(240,96,112,0.2)' : 'rgba(240,176,96,0.2)'}`,
+                          border: `1px solid ${isSilent ? 'rgba(196,90,90,0.2)' : 'rgba(196,163,90,0.2)'}`,
                         }}
                         onMouseEnter={e => {
-                          (e.currentTarget as HTMLElement).style.background = isSilent ? 'rgba(240,96,112,0.2)' : 'rgba(240,176,96,0.2)';
+                          (e.currentTarget as HTMLElement).style.background = isSilent ? 'rgba(196,90,90,0.2)' : 'rgba(196,163,90,0.2)';
                         }}
                         onMouseLeave={e => {
                           (e.currentTarget as HTMLElement).style.background = isSilent ? 'var(--danger-muted)' : 'var(--warning-muted)';
@@ -966,7 +966,7 @@ export default function Dashboard() {
           {cp && cp.topFocus.length > 0 && (
             <div
               className="rounded-xl p-5"
-              style={{ border: '1px solid rgba(124,110,240,0.2)', background: 'rgba(124,110,240,0.03)' }}
+              style={{ border: '1px solid rgba(74,111,165,0.2)', background: 'rgba(74,111,165,0.03)' }}
             >
               <div className="flex items-center justify-between mb-3">
                 <h2
@@ -979,7 +979,7 @@ export default function Dashboard() {
                   href="/focus"
                   className="flex items-center gap-1"
                   style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#9b8ffa'; }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#6a8fc0'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
                 >
                   Full priority queue <ArrowRight className="w-3 h-3" />
@@ -988,13 +988,13 @@ export default function Dashboard() {
               <div className="space-y-2">
                 {cp.topFocus.map((item, i) => {
                   const scoreColor = item.focusScore >= 70 ? 'var(--success)' : item.focusScore >= 50 ? 'var(--warning)' : 'var(--danger)';
-                  const tierColor = item.tier === 1 ? '#f5c88a' : 'var(--text-muted)';
+                  const tierColor = item.tier === 1 ? '#d4be82' : 'var(--text-muted)';
                   const MomentumIcon = item.momentum === 'accelerating' ? TrendingUp
                     : item.momentum === 'decelerating' ? TrendingDown
                     : item.momentum === 'stalled' ? ArrowDownRight
                     : Minus;
                   const momentumColor = item.momentum === 'accelerating' ? 'var(--success)'
-                    : item.momentum === 'decelerating' ? '#f59e6b'
+                    : item.momentum === 'decelerating' ? '#a58a5a'
                     : item.momentum === 'stalled' ? 'var(--danger)'
                     : 'var(--text-muted)';
                   return (
@@ -1033,7 +1033,7 @@ export default function Dashboard() {
                             className="mt-0.5"
                             style={{
                               fontSize: '10px',
-                              color: item.trajectoryNote.includes('Accelerating') ? 'var(--success)' : '#f59e6b',
+                              color: item.trajectoryNote.includes('Accelerating') ? 'var(--success)' : '#a58a5a',
                             }}
                           >
                             {item.trajectoryNote}
@@ -1134,7 +1134,7 @@ export default function Dashboard() {
                       )}
                       {cv.decelerating > 0 && (
                         <MomentumBar count={cv.decelerating} total={cv.accelerating + cv.steady + cv.decelerating + cv.stalled}
-                          bg="#f59e6b" label="Decelerating" />
+                          bg="#a58a5a" label="Decelerating" />
                       )}
                       {cv.stalled > 0 && (
                         <MomentumBar count={cv.stalled} total={cv.accelerating + cv.steady + cv.decelerating + cv.stalled}
@@ -1144,7 +1144,7 @@ export default function Dashboard() {
                     <div className="flex gap-3 mt-1.5 flex-wrap">
                       {cv.accelerating > 0 && <MomentumLabel count={cv.accelerating} label="Accelerating" color="var(--success)" />}
                       {cv.steady > 0 && <MomentumLabel count={cv.steady} label="Steady" color="var(--accent)" />}
-                      {cv.decelerating > 0 && <MomentumLabel count={cv.decelerating} label="Decelerating" color="#f59e6b" />}
+                      {cv.decelerating > 0 && <MomentumLabel count={cv.decelerating} label="Decelerating" color="#a58a5a" />}
                       {cv.stalled > 0 && <MomentumLabel count={cv.stalled} label="Stalled" color="var(--danger)" />}
                     </div>
                   </div>
@@ -1186,7 +1186,7 @@ export default function Dashboard() {
           {cp && cp.topAccelerations.length > 0 && (
             <div
               className="rounded-xl p-5"
-              style={{ border: '1px solid rgba(240,176,96,0.2)', background: 'rgba(240,176,96,0.03)' }}
+              style={{ border: '1px solid rgba(196,163,90,0.2)', background: 'rgba(196,163,90,0.03)' }}
             >
               <div className="flex items-center justify-between mb-3">
                 <h2
@@ -1199,7 +1199,7 @@ export default function Dashboard() {
                   href="/focus"
                   className="flex items-center gap-1"
                   style={{ fontSize: 'var(--font-size-xs)', color: 'var(--warning)' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#f5c88a'; }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#d4be82'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--warning)'; }}
                 >
                   All actions <ArrowRight className="w-3 h-3" />
@@ -1208,10 +1208,10 @@ export default function Dashboard() {
               <div className="space-y-2">
                 {cp.topAccelerations.map((accel) => {
                   const urgencyStyles = accel.urgency === 'immediate'
-                    ? { background: 'var(--danger-muted)', color: 'var(--danger)', borderColor: 'rgba(240,96,112,0.3)' }
+                    ? { background: 'var(--danger-muted)', color: 'var(--danger)', borderColor: 'rgba(196,90,90,0.3)' }
                     : accel.urgency === '48h'
-                    ? { background: 'rgba(249,115,22,0.12)', color: '#f59e6b', borderColor: 'rgba(249,115,22,0.3)' }
-                    : { background: 'var(--warning-muted)', color: 'var(--warning)', borderColor: 'rgba(240,176,96,0.3)' };
+                    ? { background: 'rgba(249,115,22,0.12)', color: '#a58a5a', borderColor: 'rgba(249,115,22,0.3)' }
+                    : { background: 'var(--warning-muted)', color: 'var(--warning)', borderColor: 'rgba(196,163,90,0.3)' };
                   const triggerLabel = accel.triggerType.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
                   return (
                     <div
@@ -1253,12 +1253,12 @@ export default function Dashboard() {
                         style={{
                           fontSize: '10px',
                           fontWeight: 500,
-                          background: 'rgba(240,176,96,0.12)',
-                          color: '#f5c88a',
-                          border: '1px solid rgba(240,176,96,0.2)',
+                          background: 'rgba(196,163,90,0.12)',
+                          color: '#d4be82',
+                          border: '1px solid rgba(196,163,90,0.2)',
                         }}
-                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(240,176,96,0.25)'; }}
-                        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(240,176,96,0.12)'; }}
+                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(196,163,90,0.25)'; }}
+                        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(196,163,90,0.12)'; }}
                       >
                         Execute <ChevronRight className="w-3 h-3" />
                       </button>
@@ -1278,16 +1278,16 @@ export default function Dashboard() {
               <div className="flex items-center justify-between mb-3">
                 <h2
                   className="uppercase flex items-center gap-2"
-                  style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: '#f59e6b' }}
+                  style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: '#a58a5a' }}
                 >
                   <Flame className="w-4 h-4" /> Hot Deals
                 </h2>
                 <Link
                   href="/dealflow"
                   className="flex items-center gap-1"
-                  style={{ fontSize: 'var(--font-size-xs)', color: '#f59e6b' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#f5b08a'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = '#f59e6b'; }}
+                  style={{ fontSize: 'var(--font-size-xs)', color: '#a58a5a' }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#d4be82'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = '#a58a5a'; }}
                 >
                   All deals <ArrowRight className="w-3 h-3" />
                 </Link>
@@ -1307,7 +1307,7 @@ export default function Dashboard() {
             </div>
 
             {/* Upcoming Follow-ups */}
-            <div className="rounded-xl p-5" style={{ border: '1px solid rgba(124,110,240,0.2)', background: 'rgba(124,110,240,0.02)' }}>
+            <div className="rounded-xl p-5" style={{ border: '1px solid rgba(74,111,165,0.2)', background: 'rgba(74,111,165,0.02)' }}>
               <div className="flex items-center justify-between mb-3">
                 <h2
                   className="uppercase flex items-center gap-2"
@@ -1319,7 +1319,7 @@ export default function Dashboard() {
                   href="/followups"
                   className="flex items-center gap-1"
                   style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#9b8ffa'; }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#6a8fc0'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
                 >
                   All follow-ups <ArrowRight className="w-3 h-3" />
@@ -1353,7 +1353,7 @@ export default function Dashboard() {
                 href="/pipeline"
                 className="flex items-center gap-1"
                 style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#9b8ffa'; }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#6a8fc0'; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
               >
                 Pipeline view <Columns3 className="w-3 h-3" />
@@ -1380,7 +1380,7 @@ export default function Dashboard() {
                     className="w-full rounded-md h-7 flex items-center justify-between px-4"
                     style={{
                       background: 'var(--danger-muted)',
-                      border: '1px solid rgba(240,96,112,0.3)',
+                      border: '1px solid rgba(196,90,90,0.3)',
                     }}
                   >
                     <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)' }}>Passed</span>
@@ -1399,7 +1399,7 @@ export default function Dashboard() {
               href="/workspace"
               className="group rounded-xl p-4 transition-colors"
               style={{ border: '1px solid var(--border-default)' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(124,110,240,0.3)'; }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(74,111,165,0.3)'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
             >
               <Sparkles className="w-5 h-5 mb-2" style={{ color: 'var(--accent)' }} />
@@ -1415,10 +1415,10 @@ export default function Dashboard() {
               href="/data-room"
               className="group rounded-xl p-4 transition-colors"
               style={{ border: '1px solid var(--border-default)' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(124,110,240,0.3)'; }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(74,111,165,0.3)'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
             >
-              <FolderOpen className="w-5 h-5 mb-2" style={{ color: '#a78bfa' }} />
+              <FolderOpen className="w-5 h-5 mb-2" style={{ color: '#6a8fc0' }} />
               <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500 }}>Data Room</div>
               <div className="mt-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
                 {dataRoomCount > 0 ? `${dataRoomCount} file${dataRoomCount !== 1 ? 's' : ''} uploaded` : 'Upload source materials'}
@@ -1431,7 +1431,7 @@ export default function Dashboard() {
               href="/model"
               className="group rounded-xl p-4 transition-colors"
               style={{ border: '1px solid var(--border-default)' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(124,110,240,0.3)'; }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(74,111,165,0.3)'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
             >
               <Table className="w-5 h-5 mb-2" style={{ color: 'var(--success)' }} />
@@ -1445,10 +1445,10 @@ export default function Dashboard() {
               href="/documents"
               className="group rounded-xl p-4 transition-colors"
               style={{ border: '1px solid var(--border-default)' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(124,110,240,0.3)'; }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(74,111,165,0.3)'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
             >
-              <FileText className="w-5 h-5 mb-2" style={{ color: '#f59e6b' }} />
+              <FileText className="w-5 h-5 mb-2" style={{ color: '#a58a5a' }} />
               <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500 }}>Documents</div>
               <div className="mt-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
                 {docs.length > 0 ? `${docs.filter(d => d.status === 'draft').length} drafts` : 'Version history'}
@@ -1475,7 +1475,7 @@ export default function Dashboard() {
                   href="/investors"
                   className="flex items-center gap-1"
                   style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#9b8ffa'; }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#6a8fc0'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
                 >
                   Fix gaps <ArrowRight className="w-3 h-3" />
@@ -1564,7 +1564,7 @@ export default function Dashboard() {
                   href="/timeline"
                   className="flex items-center gap-1"
                   style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#9b8ffa'; }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#6a8fc0'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
                 >
                   All tasks <ArrowRight className="w-3 h-3" />
@@ -1579,7 +1579,7 @@ export default function Dashboard() {
                 <div className="space-y-2">
                   {tasks.map(t => {
                     const overdue = t.due_date && new Date(t.due_date) < new Date();
-                    const prioColor = { critical: 'var(--danger)', high: '#f59e6b', medium: 'var(--warning)', low: 'var(--text-muted)' }[t.priority] || 'var(--text-muted)';
+                    const prioColor = { critical: 'var(--danger)', high: '#a58a5a', medium: 'var(--warning)', low: 'var(--text-muted)' }[t.priority] || 'var(--text-muted)';
                     return (
                       <div
                         key={t.id}
@@ -1618,7 +1618,7 @@ export default function Dashboard() {
                   href="/timeline"
                   className="flex items-center gap-1"
                   style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#9b8ffa'; }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#6a8fc0'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
                 >
                   Full log <ArrowRight className="w-3 h-3" />
@@ -1657,16 +1657,16 @@ export default function Dashboard() {
             const actions: { href: string; label: string; sub: string; color: string; borderColor: string; count?: number }[] = [];
 
             if (overdueFollowups.length > 0) {
-              actions.push({ href: '/followups', label: 'Overdue Follow-ups', sub: `${overdueFollowups.length} past due — respond today`, color: 'var(--danger)', borderColor: 'rgba(240,96,112,0.3)', count: overdueFollowups.length });
+              actions.push({ href: '/followups', label: 'Overdue Follow-ups', sub: `${overdueFollowups.length} past due — respond today`, color: 'var(--danger)', borderColor: 'rgba(196,90,90,0.3)', count: overdueFollowups.length });
             }
             if (atRiskCount > 0) {
-              actions.push({ href: '/dealflow', label: 'At-Risk Investors', sub: `${atRiskCount} losing momentum — intervene now`, color: 'var(--warning)', borderColor: 'rgba(240,176,96,0.3)', count: atRiskCount });
+              actions.push({ href: '/dealflow', label: 'At-Risk Investors', sub: `${atRiskCount} losing momentum — intervene now`, color: 'var(--warning)', borderColor: 'rgba(196,163,90,0.3)', count: atRiskCount });
             }
             if (overdueTasks.length > 0) {
-              actions.push({ href: '/focus', label: 'Blocked Tasks', sub: `${overdueTasks.length} overdue — unblock pipeline`, color: 'var(--danger)', borderColor: 'rgba(240,96,112,0.2)', count: overdueTasks.length });
+              actions.push({ href: '/focus', label: 'Blocked Tasks', sub: `${overdueTasks.length} overdue — unblock pipeline`, color: 'var(--danger)', borderColor: 'rgba(196,90,90,0.2)', count: overdueTasks.length });
             }
             if (completeness < 70) {
-              actions.push({ href: '/investors', label: 'Data Gaps', sub: `CRM ${completeness}% complete — fill key fields`, color: 'var(--accent)', borderColor: 'rgba(124,110,240,0.2)' });
+              actions.push({ href: '/investors', label: 'Data Gaps', sub: `CRM ${completeness}% complete — fill key fields`, color: 'var(--accent)', borderColor: 'rgba(74,111,165,0.2)' });
             }
 
             // Always include core quick nav (fill to 4)
@@ -1722,10 +1722,10 @@ function PulseCard({ label, value, sub, color }: {
   color: 'blue' | 'green' | 'yellow' | 'red' | 'zinc';
 }) {
   const colorMap = {
-    blue: { accent: 'var(--accent)', muted: 'var(--accent-muted)', border: 'rgba(124,110,240,0.15)' },
-    green: { accent: 'var(--success)', muted: 'var(--success-muted)', border: 'rgba(52,211,153,0.15)' },
-    yellow: { accent: 'var(--warning)', muted: 'var(--warning-muted)', border: 'rgba(240,176,96,0.15)' },
-    red: { accent: 'var(--danger)', muted: 'var(--danger-muted)', border: 'rgba(240,96,112,0.15)' },
+    blue: { accent: 'var(--accent)', muted: 'var(--accent-muted)', border: 'rgba(74,111,165,0.15)' },
+    green: { accent: 'var(--success)', muted: 'var(--success-muted)', border: 'rgba(74,158,110,0.15)' },
+    yellow: { accent: 'var(--warning)', muted: 'var(--warning-muted)', border: 'rgba(196,163,90,0.15)' },
+    red: { accent: 'var(--danger)', muted: 'var(--danger-muted)', border: 'rgba(196,90,90,0.15)' },
     zinc: { accent: 'var(--text-secondary)', muted: 'var(--surface-1)', border: 'var(--border-subtle)' },
   }[color];
 
@@ -1811,8 +1811,8 @@ function VelocityStrip({ velocity }: { velocity: VelocityResponse }) {
     <div
       className="rounded-xl overflow-hidden transition-all"
       style={{
-        border: `1px solid ${isOverTarget ? 'rgba(240,96,112,0.25)' : 'rgba(124,110,240,0.2)'}`,
-        background: isOverTarget ? 'rgba(240,96,112,0.03)' : 'rgba(124,110,240,0.02)',
+        border: `1px solid ${isOverTarget ? 'rgba(196,90,90,0.25)' : 'rgba(74,111,165,0.2)'}`,
+        background: isOverTarget ? 'rgba(196,90,90,0.03)' : 'rgba(74,111,165,0.02)',
       }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -1937,21 +1937,21 @@ function HotDealRow({ investor }: { investor: DealHeatInvestor }) {
   const [hovered, setHovered] = useState(false);
 
   const heatColor =
-    investor.dealHeat.label === 'hot' ? '#f06070' :
-    investor.dealHeat.label === 'warm' ? '#f59e6b' :
+    investor.dealHeat.label === 'hot' ? '#c45a5a' :
+    investor.dealHeat.label === 'warm' ? '#a58a5a' :
     investor.dealHeat.label === 'cool' ? 'var(--accent)' :
     investor.dealHeat.label === 'cold' ? 'var(--text-tertiary)' : 'var(--text-muted)';
 
   const heatBg =
-    investor.dealHeat.label === 'hot' ? 'rgba(240,96,112,0.12)' :
+    investor.dealHeat.label === 'hot' ? 'rgba(196,90,90,0.12)' :
     investor.dealHeat.label === 'warm' ? 'rgba(249,115,22,0.12)' :
-    investor.dealHeat.label === 'cool' ? 'rgba(124,110,240,0.12)' :
+    investor.dealHeat.label === 'cool' ? 'rgba(74,111,165,0.12)' :
     'var(--surface-3)';
 
   const heatBorder =
-    investor.dealHeat.label === 'hot' ? 'rgba(240,96,112,0.3)' :
+    investor.dealHeat.label === 'hot' ? 'rgba(196,90,90,0.3)' :
     investor.dealHeat.label === 'warm' ? 'rgba(249,115,22,0.3)' :
-    investor.dealHeat.label === 'cool' ? 'rgba(124,110,240,0.3)' :
+    investor.dealHeat.label === 'cool' ? 'rgba(74,111,165,0.3)' :
     'var(--border-subtle)';
 
   return (
@@ -1974,7 +1974,7 @@ function HotDealRow({ investor }: { investor: DealHeatInvestor }) {
           >
             {investor.name}
           </Link>
-          <span style={{ fontSize: '9px', color: investor.tier === 1 ? '#f5c88a' : 'var(--text-muted)' }}>
+          <span style={{ fontSize: '9px', color: investor.tier === 1 ? '#d4be82' : 'var(--text-muted)' }}>
             T{investor.tier}
           </span>
         </div>
@@ -2119,7 +2119,7 @@ function FollowupRow({ followup, onComplete }: { followup: FollowupItem; onCompl
             borderRadius: 'var(--radius-sm)',
             background: isOverdue ? 'var(--danger-muted)' : 'var(--accent-muted)',
             color: isOverdue ? 'var(--danger)' : 'var(--accent)',
-            border: `1px solid ${isOverdue ? 'rgba(240,96,112,0.25)' : 'rgba(124,110,240,0.25)'}`,
+            border: `1px solid ${isOverdue ? 'rgba(196,90,90,0.25)' : 'rgba(74,111,165,0.25)'}`,
             textDecoration: 'none',
           }}
         >
@@ -2146,7 +2146,7 @@ function ActivityRow({ activity }: { activity: ActivityItem }) {
     meeting_logged: 'var(--accent)',
     status_changed: 'var(--success)',
     followup_completed: 'var(--success)',
-    investor_added: '#a78bfa',
+    investor_added: '#6a8fc0',
     followup_created: 'var(--warning)',
     meeting_created: 'var(--accent)',
   };

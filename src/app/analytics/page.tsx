@@ -93,14 +93,14 @@ interface AnalyticsData {
 
 const STAGE_COLORS: Record<string, string> = {
   identified: '#52525b',
-  contacted: '#5b4cc7',
-  nda_signed: '#6a5bdf',
+  contacted: '#3d5a80',
+  nda_signed: '#3d5f8f',
   meeting_scheduled: '#4f46e5',
   met: '#7c3aed',
   engaged: '#8b6ef5',
   in_dd: '#d97706',
-  term_sheet: '#f59e6b',
-  closed: '#34d399',
+  term_sheet: '#a58a5a',
+  closed: '#4a9e6e',
 };
 
 const STAGE_LABELS: Record<string, string> = {

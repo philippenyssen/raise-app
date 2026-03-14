@@ -495,7 +495,7 @@ export default function ComparePage() {
                             padding: 'var(--space-1) var(--space-3)',
                             borderRadius: 'var(--radius-lg)',
                             ...(p.investor.id === winnerId
-                              ? { background: 'var(--warning-muted)', border: '1px solid rgba(240, 176, 96, 0.3)' }
+                              ? { background: 'var(--warning-muted)', border: '1px solid rgba(196, 163, 90, 0.3)' }
                               : { background: 'var(--surface-2)' }),
                           }}
                         >
@@ -892,7 +892,7 @@ function DropdownItem({
           ...(investor.tier === 1
             ? { background: 'var(--accent-muted)', color: 'var(--accent)' }
             : investor.tier === 2
-            ? { background: 'rgba(167, 139, 250, 0.12)', color: '#c4b5fd' }
+            ? { background: 'rgba(106, 111, 165, 0.12)', color: '#8ab0d0' }
             : { background: 'var(--surface-2)', color: 'var(--text-muted)' }),
         }}
       >
@@ -1074,17 +1074,17 @@ function RecommendationBanner({ recommendation }: { recommendation: ComparisonRe
   const styleMap: Record<string, { bg: string; border: string; iconColor: string }> = {
     strong: {
       bg: 'var(--success-muted)',
-      border: 'rgba(52, 211, 153, 0.3)',
+      border: 'rgba(74, 158, 110, 0.3)',
       iconColor: 'var(--success)',
     },
     competitive: {
       bg: 'var(--accent-muted)',
-      border: 'rgba(124, 110, 240, 0.3)',
+      border: 'rgba(74, 111, 165, 0.3)',
       iconColor: 'var(--accent)',
     },
     none_ready: {
       bg: 'var(--warning-muted)',
-      border: 'rgba(240, 176, 96, 0.3)',
+      border: 'rgba(196, 163, 90, 0.3)',
       iconColor: 'var(--warning)',
     },
   };
@@ -1172,25 +1172,25 @@ function AccelerationBadge({ status }: { status: AccelerationStatusData }) {
   const config: Record<string, { bg: string; border: string; color: string; icon: React.ReactNode }> = {
     'Term Sheet Ready': {
       bg: 'var(--success-muted)',
-      border: 'rgba(52, 211, 153, 0.3)',
+      border: 'rgba(74, 158, 110, 0.3)',
       color: 'var(--success)',
       icon: <CheckCircle className="w-3 h-3" />,
     },
     'Active': {
       bg: 'var(--accent-muted)',
-      border: 'rgba(124, 110, 240, 0.3)',
+      border: 'rgba(74, 111, 165, 0.3)',
       color: 'var(--accent)',
       icon: <Zap className="w-3 h-3" />,
     },
     'At Risk': {
       bg: 'var(--warning-muted)',
-      border: 'rgba(240, 176, 96, 0.3)',
+      border: 'rgba(196, 163, 90, 0.3)',
       color: 'var(--warning)',
       icon: <AlertTriangle className="w-3 h-3" />,
     },
     'Stalled': {
       bg: 'var(--danger-muted)',
-      border: 'rgba(240, 96, 112, 0.3)',
+      border: 'rgba(196, 90, 90, 0.3)',
       color: 'var(--danger)',
       icon: <Clock className="w-3 h-3" />,
     },
@@ -1248,7 +1248,7 @@ function DimensionBar({
   winnerId: string;
   scores: Record<string, number>;
 }) {
-  const barColors = ['var(--accent)', 'rgba(167, 139, 250, 0.85)', 'rgba(6, 182, 212, 0.85)', 'var(--warning)'];
+  const barColors = ['var(--accent)', 'rgba(106, 111, 165, 0.85)', 'rgba(6, 182, 212, 0.85)', 'var(--warning)'];
 
   return (
     <div className="space-y-1.5">
@@ -1322,28 +1322,28 @@ function VerdictCard({
   const colorMap: Record<string, { bg: string; border: string; iconColor: string }> = {
     success: {
       bg: 'var(--success-muted)',
-      border: 'rgba(52, 211, 153, 0.25)',
+      border: 'rgba(74, 158, 110, 0.25)',
       iconColor: 'var(--success)',
     },
     accent: {
       bg: 'var(--accent-muted)',
-      border: 'rgba(124, 110, 240, 0.25)',
+      border: 'rgba(74, 111, 165, 0.25)',
       iconColor: 'var(--accent)',
     },
     purple: {
-      bg: 'rgba(167, 139, 250, 0.1)',
-      border: 'rgba(167, 139, 250, 0.25)',
-      iconColor: '#c4b5fd',
+      bg: 'rgba(106, 111, 165, 0.1)',
+      border: 'rgba(106, 111, 165, 0.25)',
+      iconColor: '#8ab0d0',
     },
     warning: {
       bg: 'var(--warning-muted)',
-      border: 'rgba(240, 176, 96, 0.25)',
+      border: 'rgba(196, 163, 90, 0.25)',
       iconColor: 'var(--warning)',
     },
     cyan: {
       bg: 'rgba(6, 182, 212, 0.1)',
       border: 'rgba(6, 182, 212, 0.25)',
-      iconColor: '#2dd4bf',
+      iconColor: '#4a9e8a',
     },
   };
 
@@ -1387,7 +1387,7 @@ function VerdictCard({
 function tierStyle(tier: number): React.CSSProperties {
   switch (tier) {
     case 1: return { color: 'var(--accent)', fontWeight: 600 };
-    case 2: return { color: '#c4b5fd', fontWeight: 600 };
+    case 2: return { color: '#8ab0d0', fontWeight: 600 };
     default: return { color: 'var(--text-muted)' };
   }
 }
@@ -1395,7 +1395,7 @@ function tierStyle(tier: number): React.CSSProperties {
 function statusStyle(status: string): React.CSSProperties {
   if (status === 'term_sheet' || status === 'closed') return { color: 'var(--success)', fontWeight: 600 };
   if (status === 'in_dd') return { color: 'var(--accent)', fontWeight: 500 };
-  if (status === 'engaged') return { color: '#2dd4bf' };
+  if (status === 'engaged') return { color: '#4a9e8a' };
   if (status === 'passed' || status === 'dropped') return { color: 'var(--danger)' };
   return { color: 'var(--text-secondary)' };
 }

@@ -73,8 +73,8 @@ const ACTION_TYPE_CONFIG: Record<string, {
   data_share: {
     label: 'Share Materials',
     icon: FolderOpen,
-    color: '#c4b5fd',
-    bgColor: 'rgba(167, 139, 250, 0.12)',
+    color: '#8ab0d0',
+    bgColor: 'rgba(106, 111, 165, 0.12)',
   },
   schedule_followup: {
     label: 'Schedule Meeting',
@@ -91,7 +91,7 @@ const ACTION_TYPE_CONFIG: Record<string, {
   milestone_update: {
     label: 'Milestone Update',
     icon: Milestone,
-    color: '#f5b08a',
+    color: '#d4be82',
     bgColor: 'rgba(251, 146, 60, 0.12)',
   },
 };
@@ -280,9 +280,9 @@ function FollowupsContent() {
         className="card"
         style={{
           padding: 0,
-          borderColor: showOverdueIndicator || isOverdue ? 'rgba(240,96,112,0.35)' : undefined,
-          background: showOverdueIndicator || isOverdue ? 'rgba(240,96,112,0.06)' : undefined,
-          boxShadow: showOverdueIndicator || isOverdue ? '0 0 0 1px rgba(240,96,112,0.15)' : undefined,
+          borderColor: showOverdueIndicator || isOverdue ? 'rgba(196,90,90,0.35)' : undefined,
+          background: showOverdueIndicator || isOverdue ? 'rgba(196,90,90,0.06)' : undefined,
+          boxShadow: showOverdueIndicator || isOverdue ? '0 0 0 1px rgba(196,90,90,0.15)' : undefined,
         }}
       >
         <div style={{ padding: 'var(--space-4)' }}>
@@ -315,7 +315,7 @@ function FollowupsContent() {
                 <Link
                   href={`/investors/${item.investor_id}`}
                   style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}
-                  onMouseEnter={e => { e.currentTarget.style.color = '#9b8ffa'; }}
+                  onMouseEnter={e => { e.currentTarget.style.color = '#6a8fc0'; }}
                   onMouseLeave={e => { e.currentTarget.style.color = 'var(--accent)'; }}
                 >
                   {item.investor_name}
@@ -490,7 +490,7 @@ function FollowupsContent() {
                   className="p-1.5"
                   style={{
                     borderRadius: 'var(--radius-md)',
-                    color: hoveredActionBtn === `draft-${item.id}` || draftingId === item.id ? '#c4b5fd' : 'var(--text-muted)',
+                    color: hoveredActionBtn === `draft-${item.id}` || draftingId === item.id ? '#8ab0d0' : 'var(--text-muted)',
                     background: hoveredActionBtn === `draft-${item.id}` || draftingId === item.id ? 'rgba(167,139,250,0.12)' : 'transparent',
                     transition: 'all 150ms ease',
                   }}
@@ -652,13 +652,13 @@ function FollowupsContent() {
                     width: '16px',
                     height: '16px',
                     borderRadius: '50%',
-                    background: 'rgba(167, 139, 250, 0.12)',
+                    background: 'rgba(106, 111, 165, 0.12)',
                   }}
                 >
-                  <Network className="w-2.5 h-2.5" style={{ color: '#c4b5fd' }} />
+                  <Network className="w-2.5 h-2.5" style={{ color: '#8ab0d0' }} />
                 </span>
                 <span style={{ color: 'var(--text-muted)' }}>Cascade</span>
-                <span style={{ color: '#c4b5fd', fontWeight: 600 }}>
+                <span style={{ color: '#8ab0d0', fontWeight: 600 }}>
                   {item.cascade.cascadeChainLength} investor{item.cascade.cascadeChainLength !== 1 ? 's' : ''}
                 </span>
               </div>
@@ -678,7 +678,7 @@ function FollowupsContent() {
               }}
             >
               <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-3)' }}>
-                <span className="flex items-center gap-1.5" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: '#c4b5fd' }}>
+                <span className="flex items-center gap-1.5" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: '#8ab0d0' }}>
                   <PenLine className="w-3.5 h-3.5" />
                   Draft Message
                 </span>
@@ -778,7 +778,7 @@ function FollowupsContent() {
                 className="btn btn-sm mt-3"
                 style={{
                   background: copiedField === `all-${item.id}` ? 'var(--success)' : 'rgba(167,139,250,0.15)',
-                  color: copiedField === `all-${item.id}` ? 'white' : '#c4b5fd',
+                  color: copiedField === `all-${item.id}` ? 'white' : '#8ab0d0',
                   border: 'none',
                   transition: 'all 150ms ease',
                 }}
@@ -805,7 +805,7 @@ function FollowupsContent() {
           className="flex items-center justify-between"
           style={{
             padding: '0.5rem var(--space-4)',
-            borderTop: isOverdue ? '1px solid rgba(240,96,112,0.15)' : '1px solid var(--border-subtle)',
+            borderTop: isOverdue ? '1px solid rgba(196,90,90,0.15)' : '1px solid var(--border-subtle)',
             fontSize: '10px',
             color: 'var(--text-muted)',
           }}
@@ -889,7 +889,7 @@ function FollowupsContent() {
           </p>
           {investorFilter && followups.length > 0 && (
             <div className="flex items-center gap-2 mt-2">
-              <span className="text-xs px-2 py-1 rounded-md" style={{ background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(124,110,240,0.25)' }}>
+              <span className="text-xs px-2 py-1 rounded-md" style={{ background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(74,111,165,0.25)' }}>
                 Filtered: {followups[0]?.investor_name || 'Selected investor'}
               </span>
               <Link href="/followups" className="text-xs" style={{ color: 'var(--text-muted)', textDecoration: 'underline' }}>
@@ -1036,7 +1036,7 @@ function FollowupsContent() {
             <Link
               href="/meetings/new"
               style={{ color: 'var(--accent)' }}
-              onMouseEnter={e => { e.currentTarget.style.color = '#9b8ffa'; }}
+              onMouseEnter={e => { e.currentTarget.style.color = '#6a8fc0'; }}
               onMouseLeave={e => { e.currentTarget.style.color = 'var(--accent)'; }}
             >
               Log a meeting
@@ -1080,13 +1080,13 @@ function FollowupsContent() {
         >
           <div
             style={{
-              background: 'linear-gradient(to right, rgba(167, 139, 250, 0.08), var(--accent-muted))',
+              background: 'linear-gradient(to right, rgba(106, 111, 165, 0.08), var(--accent-muted))',
               borderBottom: '1px solid var(--border-subtle)',
               padding: 'var(--space-4) var(--space-5)',
             }}
           >
             <h2 className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 700 }}>
-              <Users className="w-4 h-4" style={{ color: '#c4b5fd' }} />
+              <Users className="w-4 h-4" style={{ color: '#8ab0d0' }} />
               Follow-up Effectiveness
             </h2>
             <p style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: 'var(--space-1)' }}>

@@ -385,11 +385,11 @@ export default function InvestorDetailPage() {
           className="flex items-center gap-4 flex-wrap rounded-xl px-4 py-3"
           style={{
             border: `1px solid ${
-              dealIntel.heatLabel === 'hot' ? 'rgba(240,96,112,0.2)' :
+              dealIntel.heatLabel === 'hot' ? 'rgba(196,90,90,0.2)' :
               dealIntel.heatLabel === 'warm' ? 'rgba(234,179,8,0.2)' :
               'var(--border-subtle)'
             }`,
-            background: dealIntel.heatLabel === 'hot' ? 'rgba(240,96,112,0.03)' :
+            background: dealIntel.heatLabel === 'hot' ? 'rgba(196,90,90,0.03)' :
               dealIntel.heatLabel === 'warm' ? 'rgba(234,179,8,0.03)' :
               'var(--surface-1)',
           }}
@@ -397,22 +397,22 @@ export default function InvestorDetailPage() {
           {/* Heat */}
           <div className="flex items-center gap-1.5">
             <Flame className="w-3.5 h-3.5" style={{
-              color: dealIntel.heatLabel === 'hot' ? '#f06070' :
-                dealIntel.heatLabel === 'warm' ? '#f0b060' :
+              color: dealIntel.heatLabel === 'hot' ? '#c45a5a' :
+                dealIntel.heatLabel === 'warm' ? '#c4a35a' :
                 'var(--text-muted)'
             }} />
             <span style={{
               fontSize: 'var(--font-size-sm)', fontWeight: 700, fontVariantNumeric: 'tabular-nums',
-              color: dealIntel.heatLabel === 'hot' ? '#f06070' :
-                dealIntel.heatLabel === 'warm' ? '#f0b060' :
+              color: dealIntel.heatLabel === 'hot' ? '#c45a5a' :
+                dealIntel.heatLabel === 'warm' ? '#c4a35a' :
                 'var(--text-secondary)'
             }}>
               {dealIntel.heat}
             </span>
             <span style={{
               fontSize: '9px', fontWeight: 600, textTransform: 'uppercase',
-              color: dealIntel.heatLabel === 'hot' ? '#f06070' :
-                dealIntel.heatLabel === 'warm' ? '#f0b060' :
+              color: dealIntel.heatLabel === 'hot' ? '#c45a5a' :
+                dealIntel.heatLabel === 'warm' ? '#c4a35a' :
                 'var(--text-muted)'
             }}>
               {dealIntel.heatLabel}
@@ -463,7 +463,7 @@ export default function InvestorDetailPage() {
                   fontSize: '11px', fontWeight: 600, padding: '3px 10px',
                   borderRadius: 'var(--radius-sm)', textDecoration: 'none',
                   background: 'var(--danger-muted)', color: 'var(--danger)',
-                  border: '1px solid rgba(240,96,112,0.25)',
+                  border: '1px solid rgba(196,90,90,0.25)',
                 }}
               >
                 <Phone className="w-3 h-3" /> Rescue
@@ -476,7 +476,7 @@ export default function InvestorDetailPage() {
                   fontSize: '11px', fontWeight: 600, padding: '3px 10px',
                   borderRadius: 'var(--radius-sm)', textDecoration: 'none',
                   background: 'var(--warning-muted)', color: 'var(--warning)',
-                  border: '1px solid rgba(240,176,96,0.25)',
+                  border: '1px solid rgba(196,163,90,0.25)',
                 }}
               >
                 <Mail className="w-3 h-3" /> Nudge
@@ -515,8 +515,8 @@ export default function InvestorDetailPage() {
           <div
             className="rounded-xl overflow-hidden"
             style={{
-              border: overdueItems.length > 0 ? '1px solid rgba(240,96,112,0.25)' : '1px solid var(--border-default)',
-              background: overdueItems.length > 0 ? 'rgba(240,96,112,0.02)' : undefined,
+              border: overdueItems.length > 0 ? '1px solid rgba(196,90,90,0.25)' : '1px solid var(--border-default)',
+              background: overdueItems.length > 0 ? 'rgba(196,90,90,0.02)' : undefined,
             }}
           >
             <div
@@ -1083,7 +1083,7 @@ function Row({ label, value }: { label: string; value: string }) {
 
 function StatCard({ icon: Icon, label, value, sub, highlight }: { icon: React.ComponentType<{ className?: string }>; label: string; value: string | number; sub: string; highlight?: boolean }) {
   return (
-    <div className="rounded-xl p-4" style={{ border: highlight ? '1px solid rgba(240,96,112,0.3)' : '1px solid var(--border-default)', background: highlight ? 'rgba(240,96,112,0.03)' : undefined }}>
+    <div className="rounded-xl p-4" style={{ border: highlight ? '1px solid rgba(196,90,90,0.3)' : '1px solid var(--border-default)', background: highlight ? 'rgba(196,90,90,0.03)' : undefined }}>
       <div className="flex items-center gap-2 mb-1">
         <span style={{ color: highlight ? 'var(--danger)' : 'var(--text-muted)' }}><Icon className="w-3.5 h-3.5" /></span>
         <span className="text-xs truncate" style={{ color: highlight ? 'var(--danger)' : 'var(--text-muted)' }}>{label}</span>
@@ -1215,7 +1215,7 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
                       return `/meetings/new?investor=${investorId}`;
                     })()}
                     className="btn btn-sm shrink-0"
-                    style={{ background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(124,110,240,0.25)', fontSize: '11px', padding: '3px 10px', gap: '4px', display: 'inline-flex', alignItems: 'center', textDecoration: 'none' }}
+                    style={{ background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(74,111,165,0.25)', fontSize: '11px', padding: '3px 10px', gap: '4px', display: 'inline-flex', alignItems: 'center', textDecoration: 'none' }}
                   >
                     Do it <ArrowRight className="w-3 h-3" />
                   </Link>
@@ -1320,8 +1320,8 @@ function ConvictionTrajectoryPanel({ trajectory }: { trajectory: ConvictionTraje
     return { x, y, score: p.score, date: p.date };
   });
 
-  const trendLineColor = trajectory.trend === 'accelerating' ? '#34d399' :
-    trajectory.trend === 'decelerating' ? '#f5c88a' : '#9b8ffa';
+  const trendLineColor = trajectory.trend === 'accelerating' ? '#4a9e6e' :
+    trajectory.trend === 'decelerating' ? '#d4be82' : '#6a8fc0';
 
   return (
     <div className="rounded-xl overflow-hidden" style={{ border: '1px solid var(--border-default)' }}>
@@ -1455,13 +1455,13 @@ const CATEGORY_COLORS: Record<string, { bg: string; color: string }> = {
   identity: { bg: 'var(--surface-2)', color: 'var(--text-tertiary)' },
   financials: { bg: 'var(--success-muted)', color: 'var(--success)' },
   strategy: { bg: 'var(--accent-muted)', color: 'var(--accent)' },
-  people: { bg: 'rgba(167, 139, 250, 0.12)', color: '#c4b5fd' },
+  people: { bg: 'rgba(106, 111, 165, 0.12)', color: '#8ab0d0' },
   portfolio: { bg: 'var(--warning-muted)', color: 'var(--warning)' },
   process: { bg: 'var(--accent-muted)', color: 'var(--accent)' },
   contact: { bg: 'var(--surface-2)', color: 'var(--text-tertiary)' },
   regulatory: { bg: 'var(--danger-muted)', color: 'var(--danger)' },
   corporate: { bg: 'var(--surface-2)', color: 'var(--text-tertiary)' },
-  media: { bg: 'rgba(167, 139, 250, 0.12)', color: '#c4b5fd' },
+  media: { bg: 'rgba(106, 111, 165, 0.12)', color: '#8ab0d0' },
   relationships: { bg: 'var(--accent-muted)', color: 'var(--accent)' },
 };
 

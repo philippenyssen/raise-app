@@ -59,9 +59,9 @@ const STATUS_LABELS: Record<string, string> = {
 const STATUS_COLORS: Record<string, string> = {
   contacted: 'var(--accent)',
   nda_signed: 'var(--accent)',
-  meeting_scheduled: '#7c6ef0',
-  met: '#7c6ef0',
-  engaged: '#a78bfa',
+  meeting_scheduled: '#4a6fa5',
+  met: '#4a6fa5',
+  engaged: '#6a8fc0',
   in_dd: 'var(--warning)',
   term_sheet: 'var(--success)',
   closed: 'var(--success)',
@@ -341,9 +341,9 @@ export default function VelocityPage() {
                             className="tier-badge"
                             style={{
                               ...(inv.investor_tier === 1
-                                ? { background: 'linear-gradient(135deg, #7c6ef0, #5b4cc7)', color: 'white' }
+                                ? { background: 'var(--accent)', color: 'white' }
                                 : inv.investor_tier === 2
-                                  ? { background: 'linear-gradient(135deg, #7c6ef0, #5b4cc7)', color: 'white' }
+                                  ? { background: 'var(--accent)', color: 'white' }
                                   : { background: 'var(--surface-3)', color: 'var(--text-secondary)', border: '1px solid var(--border-default)' }),
                               width: '20px',
                               height: '20px',
@@ -511,7 +511,7 @@ export default function VelocityPage() {
                           style={{
                             background: 'var(--danger-muted)',
                             color: 'var(--danger)',
-                            border: '1px solid rgba(240,96,112,0.25)',
+                            border: '1px solid rgba(196,90,90,0.25)',
                             fontSize: '11px',
                             padding: '3px 8px',
                             gap: '4px',
@@ -529,7 +529,7 @@ export default function VelocityPage() {
                           style={{
                             background: 'var(--warning-muted)',
                             color: 'var(--warning)',
-                            border: '1px solid rgba(240,176,96,0.25)',
+                            border: '1px solid rgba(196,163,90,0.25)',
                             fontSize: '11px',
                             padding: '3px 8px',
                             gap: '4px',

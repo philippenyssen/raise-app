@@ -89,16 +89,16 @@ interface StrategicData {
 
 const CATEGORY_CONFIG: Record<string, { label: string; color: string; bg: string; border: string; icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }> }> = {
   pipeline:  { label: 'Pipeline',  color: 'var(--accent)',    bg: 'var(--accent-muted)',    border: 'var(--border-default)',    icon: Users },
-  narrative: { label: 'Narrative', color: '#c4b5fd',          bg: 'rgba(167, 139, 250, 0.12)', border: 'rgba(167, 139, 250, 0.4)', icon: MessageCircleWarning },
-  execution: { label: 'Execution', color: 'var(--success)',   bg: 'var(--success-muted)',   border: 'rgba(52, 211, 153, 0.4)',   icon: Zap },
-  timing:    { label: 'Timing',    color: 'var(--warning)',   bg: 'var(--warning-muted)',   border: 'rgba(240, 176, 96, 0.4)',  icon: Clock },
-  risk:      { label: 'Risk',      color: 'var(--danger)',    bg: 'var(--danger-muted)',    border: 'rgba(240, 96, 112, 0.4)',   icon: Shield },
+  narrative: { label: 'Narrative', color: '#8ab0d0',          bg: 'rgba(106, 111, 165, 0.12)', border: 'rgba(106, 111, 165, 0.4)', icon: MessageCircleWarning },
+  execution: { label: 'Execution', color: 'var(--success)',   bg: 'var(--success-muted)',   border: 'rgba(74, 158, 110, 0.4)',   icon: Zap },
+  timing:    { label: 'Timing',    color: 'var(--warning)',   bg: 'var(--warning-muted)',   border: 'rgba(196, 163, 90, 0.4)',  icon: Clock },
+  risk:      { label: 'Risk',      color: 'var(--danger)',    bg: 'var(--danger-muted)',    border: 'rgba(196, 90, 90, 0.4)',   icon: Shield },
 };
 
 const TREND_CONFIG = {
-  accelerating: { label: 'Accelerating', icon: TrendingUp,    color: 'var(--success)',  bg: 'var(--success-muted)',  border: 'rgba(52, 211, 153, 0.4)' },
-  steady:       { label: 'Steady',       icon: Minus,          color: 'var(--warning)',  bg: 'var(--warning-muted)',  border: 'rgba(240, 176, 96, 0.4)' },
-  decelerating: { label: 'Decelerating', icon: TrendingDown,   color: 'var(--danger)',   bg: 'var(--danger-muted)',   border: 'rgba(240, 96, 112, 0.4)' },
+  accelerating: { label: 'Accelerating', icon: TrendingUp,    color: 'var(--success)',  bg: 'var(--success-muted)',  border: 'rgba(74, 158, 110, 0.4)' },
+  steady:       { label: 'Steady',       icon: Minus,          color: 'var(--warning)',  bg: 'var(--warning-muted)',  border: 'rgba(196, 163, 90, 0.4)' },
+  decelerating: { label: 'Decelerating', icon: TrendingDown,   color: 'var(--danger)',   bg: 'var(--danger-muted)',   border: 'rgba(196, 90, 90, 0.4)' },
 };
 
 function gaugeColor(score: number, invert = false): string {
@@ -124,23 +124,23 @@ function gaugeBarColor(score: number, invert = false): string {
 }
 
 function priorityStyle(p: number): React.CSSProperties {
-  if (p === 1) return { background: 'var(--danger-muted)', color: 'var(--danger)', borderColor: 'rgba(240, 96, 112, 0.4)' };
-  if (p === 2) return { background: 'rgba(249, 115, 22, 0.12)', color: '#f5b08a', borderColor: 'rgba(249, 115, 22, 0.4)' };
-  if (p === 3) return { background: 'var(--warning-muted)', color: 'var(--warning)', borderColor: 'rgba(240, 176, 96, 0.4)' };
+  if (p === 1) return { background: 'var(--danger-muted)', color: 'var(--danger)', borderColor: 'rgba(196, 90, 90, 0.4)' };
+  if (p === 2) return { background: 'rgba(196, 163, 90, 0.12)', color: '#d4be82', borderColor: 'rgba(196, 163, 90, 0.4)' };
+  if (p === 3) return { background: 'var(--warning-muted)', color: 'var(--warning)', borderColor: 'rgba(196, 163, 90, 0.4)' };
   return { background: 'var(--surface-2)', color: 'var(--text-tertiary)', borderColor: 'var(--border-default)' };
 }
 
 function directionStyle(direction: string): React.CSSProperties {
-  if (direction === 'improving') return { background: 'var(--success-muted)', color: 'var(--success)', borderColor: 'rgba(52, 211, 153, 0.4)' };
-  if (direction === 'declining') return { background: 'var(--danger-muted)', color: 'var(--danger)', borderColor: 'rgba(240, 96, 112, 0.4)' };
-  if (direction === 'mixed') return { background: 'var(--warning-muted)', color: 'var(--warning)', borderColor: 'rgba(240, 176, 96, 0.4)' };
+  if (direction === 'improving') return { background: 'var(--success-muted)', color: 'var(--success)', borderColor: 'rgba(74, 158, 110, 0.4)' };
+  if (direction === 'declining') return { background: 'var(--danger-muted)', color: 'var(--danger)', borderColor: 'rgba(196, 90, 90, 0.4)' };
+  if (direction === 'mixed') return { background: 'var(--warning-muted)', color: 'var(--warning)', borderColor: 'rgba(196, 163, 90, 0.4)' };
   return { background: 'var(--surface-2)', color: 'var(--text-tertiary)', borderColor: 'var(--border-default)' };
 }
 
 function confidenceStyle(confidence: string): React.CSSProperties {
-  if (confidence === 'high') return { background: 'var(--success-muted)', color: 'var(--success)', borderColor: 'rgba(52, 211, 153, 0.4)' };
-  if (confidence === 'medium') return { background: 'var(--warning-muted)', color: 'var(--warning)', borderColor: 'rgba(240, 176, 96, 0.4)' };
-  return { background: 'var(--danger-muted)', color: 'var(--danger)', borderColor: 'rgba(240, 96, 112, 0.4)' };
+  if (confidence === 'high') return { background: 'var(--success-muted)', color: 'var(--success)', borderColor: 'rgba(74, 158, 110, 0.4)' };
+  if (confidence === 'medium') return { background: 'var(--warning-muted)', color: 'var(--warning)', borderColor: 'rgba(196, 163, 90, 0.4)' };
+  return { background: 'var(--danger-muted)', color: 'var(--danger)', borderColor: 'rgba(196, 90, 90, 0.4)' };
 }
 
 function deltaColor(delta: number): string {
@@ -203,7 +203,7 @@ export default function StrategicPage() {
         <div
           style={{
             border: '1px solid var(--danger-muted)',
-            background: 'rgba(240, 96, 112, 0.05)',
+            background: 'rgba(196, 90, 90, 0.05)',
             borderRadius: 'var(--radius-lg)',
             padding: 'var(--space-8)',
           }}
@@ -408,13 +408,13 @@ export default function StrategicPage() {
                   borderRadius: 'var(--radius-md)',
                   padding: 'var(--space-3)',
                   border: `1px solid ${
-                    trend.direction === 'improving' ? 'rgba(52, 211, 153, 0.15)' :
-                    trend.direction === 'declining' ? 'rgba(240, 96, 112, 0.15)' :
+                    trend.direction === 'improving' ? 'rgba(74, 158, 110, 0.15)' :
+                    trend.direction === 'declining' ? 'rgba(196, 90, 90, 0.15)' :
                     'var(--border-subtle)'
                   }`,
                   background:
-                    trend.direction === 'improving' ? 'rgba(52, 211, 153, 0.04)' :
-                    trend.direction === 'declining' ? 'rgba(240, 96, 112, 0.04)' :
+                    trend.direction === 'improving' ? 'rgba(74, 158, 110, 0.04)' :
+                    trend.direction === 'declining' ? 'rgba(196, 90, 90, 0.04)' :
                     'var(--surface-1)',
                 }}
               >
@@ -472,7 +472,7 @@ export default function StrategicPage() {
       {data.raiseForecast && (
         <div className="card">
           <div className="flex items-center gap-2 mb-4">
-            <Clock className="w-4 h-4" style={{ color: '#c4b5fd' }} />
+            <Clock className="w-4 h-4" style={{ color: '#8ab0d0' }} />
             <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-tertiary)', textTransform: 'uppercase' as const }}>Raise Forecast</span>
             <span
               className="badge ml-2"
@@ -493,12 +493,12 @@ export default function StrategicPage() {
               style={{
                 borderRadius: 'var(--radius-md)',
                 padding: 'var(--space-3)',
-                border: '1px solid rgba(167, 139, 250, 0.15)',
-                background: 'rgba(167, 139, 250, 0.04)',
+                border: '1px solid rgba(106, 111, 165, 0.15)',
+                background: 'rgba(106, 111, 165, 0.04)',
               }}
             >
               <div className="metric-label" style={{ marginBottom: 'var(--space-1)' }}>Expected Close</div>
-              <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 700, color: '#c4b5fd', fontVariantNumeric: 'tabular-nums' }}>{data.raiseForecast.expectedCloseDate}</div>
+              <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 700, color: '#8ab0d0', fontVariantNumeric: 'tabular-nums' }}>{data.raiseForecast.expectedCloseDate}</div>
             </div>
             {/* Nearest close */}
             {data.raiseForecast.nearestClose && (
@@ -506,12 +506,12 @@ export default function StrategicPage() {
                 style={{
                   borderRadius: 'var(--radius-md)',
                   padding: 'var(--space-3)',
-                  border: '1px solid rgba(124, 110, 240, 0.15)',
+                  border: '1px solid rgba(74, 111, 165, 0.15)',
                   background: 'var(--accent-muted)',
                 }}
               >
                 <div className="metric-label" style={{ marginBottom: 'var(--space-1)' }}>Nearest Close</div>
-                <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 700, color: '#9b8ffa', fontVariantNumeric: 'tabular-nums' }}>~{data.raiseForecast.nearestClose.days}d</div>
+                <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 700, color: '#6a8fc0', fontVariantNumeric: 'tabular-nums' }}>~{data.raiseForecast.nearestClose.days}d</div>
                 <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '2px' }}>{data.raiseForecast.nearestClose.name} ({data.raiseForecast.nearestClose.stage})</div>
               </div>
             )}
@@ -750,7 +750,7 @@ function RecommendationRow({ rec, isLast }: { rec: StrategicRecommendation; isLa
                 borderRadius: 'var(--radius-sm)',
                 background: btnHover ? 'var(--accent)' : 'var(--accent-muted)',
                 color: btnHover ? '#fff' : 'var(--accent)',
-                border: '1px solid rgba(124, 110, 240, 0.25)',
+                border: '1px solid rgba(74, 111, 165, 0.25)',
                 transition: 'all 150ms ease',
                 textDecoration: 'none',
               }}
@@ -817,12 +817,12 @@ function SparklineRow({ label, values, dates, color }: {
 
   const barColors: Record<string, string> = {
     success: 'var(--success)',
-    purple: '#a78bfa',
+    purple: '#6a8fc0',
     accent: 'var(--accent)',
   };
   const textColors: Record<string, string> = {
     success: 'var(--success)',
-    purple: '#c4b5fd',
+    purple: '#8ab0d0',
     accent: 'var(--accent)',
   };
 

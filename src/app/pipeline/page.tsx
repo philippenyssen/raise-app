@@ -46,58 +46,58 @@ const COLUMN_COLORS: Record<InvestorStatus, {
     badge: { background: 'rgba(255, 255, 255, 0.25)', color: 'var(--text-secondary)' },
   },
   contacted: {
-    header: { background: 'rgba(124, 110, 240, 0.1)' },
-    border: { borderColor: 'rgba(124, 110, 240, 0.2)' },
-    bg: { background: 'rgba(124, 110, 240, 0.03)' },
-    badge: { background: 'rgba(124, 110, 240, 0.25)', color: '#9b8ffa' },
+    header: { background: 'rgba(74, 111, 165, 0.1)' },
+    border: { borderColor: 'rgba(74, 111, 165, 0.2)' },
+    bg: { background: 'rgba(74, 111, 165, 0.03)' },
+    badge: { background: 'rgba(74, 111, 165, 0.25)', color: '#6a8fc0' },
   },
   nda_signed: {
-    header: { background: 'rgba(124, 110, 240, 0.15)' },
-    border: { borderColor: 'rgba(124, 110, 240, 0.25)' },
-    bg: { background: 'rgba(124, 110, 240, 0.04)' },
-    badge: { background: 'rgba(124, 110, 240, 0.3)', color: '#b4a8fc' },
+    header: { background: 'rgba(74, 111, 165, 0.15)' },
+    border: { borderColor: 'rgba(74, 111, 165, 0.25)' },
+    bg: { background: 'rgba(74, 111, 165, 0.04)' },
+    badge: { background: 'rgba(74, 111, 165, 0.3)', color: '#7a9ec5' },
   },
   meeting_scheduled: {
     header: { background: 'rgba(99, 102, 241, 0.12)' },
     border: { borderColor: 'rgba(99, 102, 241, 0.25)' },
     bg: { background: 'rgba(99, 102, 241, 0.03)' },
-    badge: { background: 'rgba(99, 102, 241, 0.3)', color: '#c4b5fd' },
+    badge: { background: 'rgba(99, 102, 241, 0.3)', color: '#8ab0d0' },
   },
   met: {
     header: { background: 'rgba(139, 92, 246, 0.12)' },
     border: { borderColor: 'rgba(139, 92, 246, 0.25)' },
     bg: { background: 'rgba(139, 92, 246, 0.03)' },
-    badge: { background: 'rgba(139, 92, 246, 0.3)', color: '#c4b5fd' },
+    badge: { background: 'rgba(139, 92, 246, 0.3)', color: '#8ab0d0' },
   },
   engaged: {
-    header: { background: 'rgba(167, 139, 250, 0.12)' },
-    border: { borderColor: 'rgba(167, 139, 250, 0.25)' },
-    bg: { background: 'rgba(167, 139, 250, 0.03)' },
-    badge: { background: 'rgba(167, 139, 250, 0.3)', color: '#d5c8fd' },
+    header: { background: 'rgba(106, 111, 165, 0.12)' },
+    border: { borderColor: 'rgba(106, 111, 165, 0.25)' },
+    bg: { background: 'rgba(106, 111, 165, 0.03)' },
+    badge: { background: 'rgba(106, 111, 165, 0.3)', color: '#d5c8fd' },
   },
   in_dd: {
-    header: { background: 'rgba(240, 176, 96, 0.12)' },
-    border: { borderColor: 'rgba(240, 176, 96, 0.25)' },
-    bg: { background: 'rgba(240, 176, 96, 0.03)' },
-    badge: { background: 'rgba(240, 176, 96, 0.3)', color: '#f5c88a' },
+    header: { background: 'rgba(196, 163, 90, 0.12)' },
+    border: { borderColor: 'rgba(196, 163, 90, 0.25)' },
+    bg: { background: 'rgba(196, 163, 90, 0.03)' },
+    badge: { background: 'rgba(196, 163, 90, 0.3)', color: '#d4be82' },
   },
   term_sheet: {
-    header: { background: 'rgba(52, 211, 153, 0.1)' },
-    border: { borderColor: 'rgba(52, 211, 153, 0.25)' },
-    bg: { background: 'rgba(52, 211, 153, 0.03)' },
-    badge: { background: 'rgba(52, 211, 153, 0.3)', color: '#5ee8b7' },
+    header: { background: 'rgba(74, 158, 110, 0.1)' },
+    border: { borderColor: 'rgba(74, 158, 110, 0.25)' },
+    bg: { background: 'rgba(74, 158, 110, 0.03)' },
+    badge: { background: 'rgba(74, 158, 110, 0.3)', color: '#6ab88a' },
   },
   closed: {
-    header: { background: 'rgba(52, 211, 153, 0.15)' },
-    border: { borderColor: 'rgba(52, 211, 153, 0.3)' },
-    bg: { background: 'rgba(52, 211, 153, 0.05)' },
-    badge: { background: 'rgba(52, 211, 153, 0.35)', color: '#86efce' },
+    header: { background: 'rgba(74, 158, 110, 0.15)' },
+    border: { borderColor: 'rgba(74, 158, 110, 0.3)' },
+    bg: { background: 'rgba(74, 158, 110, 0.05)' },
+    badge: { background: 'rgba(74, 158, 110, 0.35)', color: '#86efce' },
   },
   passed: {
-    header: { background: 'rgba(240, 96, 112, 0.08)' },
-    border: { borderColor: 'rgba(240, 96, 112, 0.2)' },
-    bg: { background: 'rgba(240, 96, 112, 0.03)' },
-    badge: { background: 'rgba(240, 96, 112, 0.25)', color: '#f5909a' },
+    header: { background: 'rgba(196, 90, 90, 0.08)' },
+    border: { borderColor: 'rgba(196, 90, 90, 0.2)' },
+    bg: { background: 'rgba(196, 90, 90, 0.03)' },
+    badge: { background: 'rgba(196, 90, 90, 0.25)', color: '#d48080' },
   },
   dropped: {
     header: { background: 'rgba(255, 255, 255, 0.1)' },
@@ -108,8 +108,8 @@ const COLUMN_COLORS: Record<InvestorStatus, {
 };
 
 const TIER_STYLES: Record<number, React.CSSProperties> = {
-  1: { background: 'var(--accent-muted)', color: '#9b8ffa', borderColor: 'rgba(124, 110, 240, 0.3)' },
-  2: { background: 'rgba(167, 139, 250, 0.12)', color: '#c4b5fd', borderColor: 'rgba(167, 139, 250, 0.3)' },
+  1: { background: 'var(--accent-muted)', color: '#6a8fc0', borderColor: 'rgba(74, 111, 165, 0.3)' },
+  2: { background: 'rgba(106, 111, 165, 0.12)', color: '#8ab0d0', borderColor: 'rgba(106, 111, 165, 0.3)' },
   3: { background: 'rgba(255, 255, 255, 0.12)', color: 'var(--text-secondary)', borderColor: 'var(--border-default)' },
   4: { background: 'rgba(255, 255, 255, 0.08)', color: 'var(--text-muted)', borderColor: 'var(--border-subtle)' },
 };
@@ -133,12 +133,12 @@ const TYPE_ICONS: Record<InvestorType, React.ComponentType<{ className?: string 
 };
 
 const TYPE_STYLES: Record<InvestorType, React.CSSProperties> = {
-  vc: { background: 'var(--accent-muted)', color: '#9b8ffa', borderColor: 'rgba(124, 110, 240, 0.3)' },
-  growth: { background: 'rgba(167, 139, 250, 0.12)', color: '#c4b5fd', borderColor: 'rgba(167, 139, 250, 0.3)' },
-  sovereign: { background: 'var(--warning-muted)', color: '#f5c88a', borderColor: 'rgba(240, 176, 96, 0.3)' },
-  strategic: { background: 'var(--success-muted)', color: '#5ee8b7', borderColor: 'rgba(52, 211, 153, 0.3)' },
-  debt: { background: 'rgba(249, 115, 22, 0.12)', color: '#f5b08a', borderColor: 'rgba(249, 115, 22, 0.3)' },
-  family_office: { background: 'rgba(240, 96, 112, 0.12)', color: '#f5909a', borderColor: 'rgba(240, 96, 112, 0.3)' },
+  vc: { background: 'var(--accent-muted)', color: '#6a8fc0', borderColor: 'rgba(74, 111, 165, 0.3)' },
+  growth: { background: 'rgba(106, 111, 165, 0.12)', color: '#8ab0d0', borderColor: 'rgba(106, 111, 165, 0.3)' },
+  sovereign: { background: 'var(--warning-muted)', color: '#d4be82', borderColor: 'rgba(196, 163, 90, 0.3)' },
+  strategic: { background: 'var(--success-muted)', color: '#6ab88a', borderColor: 'rgba(74, 158, 110, 0.3)' },
+  debt: { background: 'rgba(196, 163, 90, 0.12)', color: '#d4be82', borderColor: 'rgba(196, 163, 90, 0.3)' },
+  family_office: { background: 'rgba(196, 90, 90, 0.12)', color: '#d48080', borderColor: 'rgba(196, 90, 90, 0.3)' },
 };
 
 // ── Pipeline velocity stage weights ──────────────────────────────────
@@ -151,7 +151,7 @@ const STAGE_WEIGHTS: Record<InvestorStatus, number> = {
 // ── Stat icon color map ──────────────────────────────────────────────
 const STAT_ICON_COLORS: Record<string, string> = {
   blue: 'var(--accent)',
-  purple: '#a78bfa',
+  purple: '#6a8fc0',
   amber: 'var(--warning)',
   emerald: 'var(--success)',
 };
@@ -503,8 +503,8 @@ export default function PipelinePage() {
                   ...colors.border,
                   transition: 'all 150ms ease',
                   ...(isOver ? {
-                    boxShadow: '0 0 0 2px rgba(124, 110, 240, 0.4)',
-                    borderColor: 'rgba(124, 110, 240, 0.5)',
+                    boxShadow: '0 0 0 2px rgba(74, 111, 165, 0.4)',
+                    borderColor: 'rgba(74, 111, 165, 0.5)',
                   } : {}),
                 }}
                 onDragOver={e => handleDragOver(e, status)}
@@ -596,8 +596,8 @@ export default function PipelinePage() {
                     ...colors.border,
                     transition: 'all 150ms ease',
                     ...(isOver ? {
-                      boxShadow: '0 0 0 2px rgba(124, 110, 240, 0.4)',
-                      borderColor: 'rgba(124, 110, 240, 0.5)',
+                      boxShadow: '0 0 0 2px rgba(74, 111, 165, 0.4)',
+                      borderColor: 'rgba(74, 111, 165, 0.5)',
                     } : {}),
                   }}
                   onDragOver={e => handleDragOver(e, status)}
@@ -699,8 +699,8 @@ function FilterButton({
         ...(active
           ? {
               background: 'var(--accent-muted)',
-              borderColor: 'rgba(124, 110, 240, 0.4)',
-              color: '#9b8ffa',
+              borderColor: 'rgba(74, 111, 165, 0.4)',
+              color: '#6a8fc0',
             }
           : {
               background: 'var(--surface-1)',
@@ -855,9 +855,9 @@ function InvestorCard({
 
   const tierGlow = hovered
     ? investor.tier === 1
-      ? '0 0 12px rgba(124, 110, 240, 0.15)'
+      ? '0 0 12px rgba(74, 111, 165, 0.15)'
       : investor.tier === 2
-        ? '0 0 12px rgba(240, 176, 96, 0.12)'
+        ? '0 0 12px rgba(196, 163, 90, 0.12)'
         : '0 0 8px rgba(255, 255, 255, 0.04)'
     : 'none';
 

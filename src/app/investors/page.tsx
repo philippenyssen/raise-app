@@ -17,14 +17,14 @@ const STATUS_LABELS: Record<InvestorStatus, string> = {
 const STATUS_STYLES: Record<string, { background: string; color: string }> = {
   identified: { background: 'var(--surface-3)', color: 'var(--text-secondary)' },
   contacted: { background: 'var(--border-strong)', color: 'var(--text-primary)' },
-  nda_signed: { background: 'var(--accent-muted)', color: '#9b8ffa' },
-  meeting_scheduled: { background: 'rgba(124, 110, 240, 0.25)', color: '#9b8ffa' },
-  met: { background: 'rgba(124, 110, 240, 0.35)', color: '#b4a8fc' },
-  engaged: { background: 'rgba(167, 139, 250, 0.25)', color: '#c4b5fd' },
-  in_dd: { background: 'var(--warning-muted)', color: '#f5c88a' },
-  term_sheet: { background: 'var(--success-muted)', color: '#5ee8b7' },
-  closed: { background: 'rgba(16, 185, 129, 0.25)', color: '#34d399' },
-  passed: { background: 'var(--danger-muted)', color: '#f5909a' },
+  nda_signed: { background: 'var(--accent-muted)', color: '#6a8fc0' },
+  meeting_scheduled: { background: 'rgba(74, 111, 165, 0.25)', color: '#6a8fc0' },
+  met: { background: 'rgba(74, 111, 165, 0.35)', color: '#7a9ec5' },
+  engaged: { background: 'rgba(106, 111, 165, 0.25)', color: '#8ab0d0' },
+  in_dd: { background: 'var(--warning-muted)', color: '#d4be82' },
+  term_sheet: { background: 'var(--success-muted)', color: '#6ab88a' },
+  closed: { background: 'rgba(16, 185, 129, 0.25)', color: '#4a9e6e' },
+  passed: { background: 'var(--danger-muted)', color: '#d48080' },
   dropped: { background: 'var(--surface-2)', color: 'var(--text-muted)' },
 };
 
@@ -285,12 +285,12 @@ export default function InvestorsPage() {
           className="flex items-center gap-3"
           style={{
             background: 'var(--accent-muted)',
-            border: '1px solid rgba(124, 110, 240, 0.2)',
+            border: '1px solid rgba(74, 111, 165, 0.2)',
             borderRadius: 'var(--radius-lg)',
             padding: 'var(--space-2) var(--space-4)',
           }}
         >
-          <span style={{ fontSize: 'var(--font-size-sm)', color: '#9b8ffa', fontWeight: 500 }}>
+          <span style={{ fontSize: 'var(--font-size-sm)', color: '#6a8fc0', fontWeight: 500 }}>
             {selected.size} selected
           </span>
           <select
@@ -426,9 +426,9 @@ export default function InvestorsPage() {
                       inv.tier === 3 ? 'tier-3' : ''
                     }`} style={
                       inv.tier === 1
-                        ? { boxShadow: '0 0 10px rgba(124, 110, 240, 0.4), 0 0 4px rgba(124, 110, 240, 0.2)' }
+                        ? { boxShadow: '0 0 10px rgba(74, 111, 165, 0.4), 0 0 4px rgba(74, 111, 165, 0.2)' }
                         : inv.tier === 2
-                          ? { boxShadow: '0 0 10px rgba(240, 176, 96, 0.35), 0 0 4px rgba(240, 176, 96, 0.15)' }
+                          ? { boxShadow: '0 0 10px rgba(196, 163, 90, 0.35), 0 0 4px rgba(196, 163, 90, 0.15)' }
                           : inv.tier === 3
                             ? { boxShadow: '0 0 8px rgba(255, 255, 255, 0.06)' }
                             : {

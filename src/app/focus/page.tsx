@@ -110,12 +110,12 @@ interface AccelerationData {
 // ---------------------------------------------------------------------------
 
 const TYPE_STYLES: Record<string, React.CSSProperties> = {
-  vc: { background: 'var(--accent-muted)', color: '#9b8ffa', border: '1px solid rgba(124,110,240,0.25)' },
-  growth: { background: 'rgba(167,139,250,0.12)', color: '#c4b5fd', border: '1px solid rgba(167,139,250,0.25)' },
-  sovereign: { background: 'var(--warning-muted)', color: '#f5c88a', border: '1px solid rgba(240,176,96,0.25)' },
-  strategic: { background: 'rgba(45,212,191,0.12)', color: '#2dd4bf', border: '1px solid rgba(45,212,191,0.25)' },
+  vc: { background: 'var(--accent-muted)', color: '#6a8fc0', border: '1px solid rgba(74,111,165,0.25)' },
+  growth: { background: 'rgba(167,139,250,0.12)', color: '#8ab0d0', border: '1px solid rgba(167,139,250,0.25)' },
+  sovereign: { background: 'var(--warning-muted)', color: '#d4be82', border: '1px solid rgba(196,163,90,0.25)' },
+  strategic: { background: 'rgba(45,212,191,0.12)', color: '#4a9e8a', border: '1px solid rgba(45,212,191,0.25)' },
   debt: { background: 'var(--surface-2)', color: 'var(--text-secondary)', border: '1px solid var(--border-default)' },
-  family_office: { background: 'rgba(240,96,112,0.12)', color: '#f5909a', border: '1px solid rgba(240,96,112,0.25)' },
+  family_office: { background: 'rgba(196,90,90,0.12)', color: '#d48080', border: '1px solid rgba(196,90,90,0.25)' },
 };
 
 const TYPE_LABELS: Record<string, string> = {
@@ -132,12 +132,12 @@ const STATUS_LABELS: Record<string, string> = {
 const STATUS_STYLES: Record<string, React.CSSProperties> = {
   identified: { background: 'var(--surface-2)', color: 'var(--text-tertiary)', border: '1px solid var(--border-default)' },
   contacted: { background: 'var(--surface-2)', color: 'var(--text-secondary)', border: '1px solid var(--border-strong)' },
-  nda_signed: { background: 'var(--accent-muted)', color: '#9b8ffa', border: '1px solid rgba(124,110,240,0.25)' },
-  meeting_scheduled: { background: 'var(--accent-muted)', color: '#b4a8fc', border: '1px solid rgba(124,110,240,0.25)' },
-  met: { background: 'rgba(167,139,250,0.12)', color: '#c4b5fd', border: '1px solid rgba(167,139,250,0.25)' },
+  nda_signed: { background: 'var(--accent-muted)', color: '#6a8fc0', border: '1px solid rgba(74,111,165,0.25)' },
+  meeting_scheduled: { background: 'var(--accent-muted)', color: '#7a9ec5', border: '1px solid rgba(74,111,165,0.25)' },
+  met: { background: 'rgba(167,139,250,0.12)', color: '#8ab0d0', border: '1px solid rgba(167,139,250,0.25)' },
   engaged: { background: 'rgba(167,139,250,0.12)', color: '#d5c8fd', border: '1px solid rgba(167,139,250,0.2)' },
-  in_dd: { background: 'var(--warning-muted)', color: '#f5b08a', border: '1px solid rgba(240,176,96,0.25)' },
-  term_sheet: { background: 'var(--success-muted)', color: '#5ee8b7', border: '1px solid rgba(52,211,153,0.25)' },
+  in_dd: { background: 'var(--warning-muted)', color: '#d4be82', border: '1px solid rgba(196,163,90,0.25)' },
+  term_sheet: { background: 'var(--success-muted)', color: '#6ab88a', border: '1px solid rgba(74,158,110,0.25)' },
 };
 
 const MOMENTUM_STYLE: Record<string, React.CSSProperties> = {
@@ -155,12 +155,12 @@ const MOMENTUM_LABELS: Record<string, string> = {
 };
 
 const TRIGGER_STYLES: Record<string, React.CSSProperties> = {
-  momentum_cliff: { background: 'rgba(249,115,22,0.12)', color: '#f5b08a', border: '1px solid rgba(249,115,22,0.25)' },
-  stall_risk: { background: 'var(--danger-muted)', color: '#f5909a', border: '1px solid rgba(240,96,112,0.25)' },
-  window_closing: { background: 'var(--warning-muted)', color: '#f5c88a', border: '1px solid rgba(240,176,96,0.25)' },
-  catalyst_match: { background: 'var(--accent-muted)', color: '#9b8ffa', border: '1px solid rgba(124,110,240,0.25)' },
-  competitive_pressure: { background: 'rgba(167,139,250,0.12)', color: '#c4b5fd', border: '1px solid rgba(167,139,250,0.25)' },
-  term_sheet_ready: { background: 'var(--success-muted)', color: '#5ee8b7', border: '1px solid rgba(52,211,153,0.25)' },
+  momentum_cliff: { background: 'rgba(249,115,22,0.12)', color: '#d4be82', border: '1px solid rgba(249,115,22,0.25)' },
+  stall_risk: { background: 'var(--danger-muted)', color: '#d48080', border: '1px solid rgba(196,90,90,0.25)' },
+  window_closing: { background: 'var(--warning-muted)', color: '#d4be82', border: '1px solid rgba(196,163,90,0.25)' },
+  catalyst_match: { background: 'var(--accent-muted)', color: '#6a8fc0', border: '1px solid rgba(74,111,165,0.25)' },
+  competitive_pressure: { background: 'rgba(167,139,250,0.12)', color: '#8ab0d0', border: '1px solid rgba(167,139,250,0.25)' },
+  term_sheet_ready: { background: 'var(--success-muted)', color: '#6ab88a', border: '1px solid rgba(74,158,110,0.25)' },
 };
 
 const TRIGGER_LABELS: Record<string, string> = {
@@ -173,14 +173,14 @@ const TRIGGER_LABELS: Record<string, string> = {
 };
 
 const CONFIDENCE_STYLES: Record<string, React.CSSProperties> = {
-  high: { background: 'var(--success-muted)', color: '#5ee8b7', border: '1px solid rgba(52,211,153,0.25)' },
-  medium: { background: 'var(--warning-muted)', color: '#f5c88a', border: '1px solid rgba(240,176,96,0.25)' },
+  high: { background: 'var(--success-muted)', color: '#6ab88a', border: '1px solid rgba(74,158,110,0.25)' },
+  medium: { background: 'var(--warning-muted)', color: '#d4be82', border: '1px solid rgba(196,163,90,0.25)' },
   low: { background: 'var(--surface-2)', color: 'var(--text-tertiary)', border: '1px solid var(--border-default)' },
 };
 
 const URGENCY_STYLE: Record<string, React.CSSProperties> = {
   immediate: { color: 'var(--danger)' },
-  '48h': { color: '#f59e6b' },
+  '48h': { color: '#a58a5a' },
   this_week: { color: 'var(--warning)' },
   next_week: { color: 'var(--text-tertiary)' },
 };
@@ -192,9 +192,9 @@ function focusScoreColor(score: number): string {
 }
 
 function focusScoreBgStyle(score: number): React.CSSProperties {
-  if (score >= 70) return { background: 'var(--success-muted)', border: '1px solid rgba(52,211,153,0.2)' };
-  if (score >= 50) return { background: 'var(--warning-muted)', border: '1px solid rgba(240,176,96,0.2)' };
-  return { background: 'var(--danger-muted)', border: '1px solid rgba(240,96,112,0.2)' };
+  if (score >= 70) return { background: 'var(--success-muted)', border: '1px solid rgba(74,158,110,0.2)' };
+  if (score >= 50) return { background: 'var(--warning-muted)', border: '1px solid rgba(196,163,90,0.2)' };
+  return { background: 'var(--danger-muted)', border: '1px solid rgba(196,90,90,0.2)' };
 }
 
 function EnthusiasmDots({ value }: { value: number }) {
@@ -655,7 +655,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
                   href={`/meetings/new?investor=${item.investorId}`}
                   title="Schedule meeting"
                   className="flex items-center justify-center"
-                  style={{ width: '28px', height: '28px', borderRadius: 'var(--radius-md)', background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(124,110,240,0.2)', transition: 'all 150ms ease' }}
+                  style={{ width: '28px', height: '28px', borderRadius: 'var(--radius-md)', background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(74,111,165,0.2)', transition: 'all 150ms ease' }}
                   onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent)'; e.currentTarget.style.color = 'white'; }}
                   onMouseLeave={e => { e.currentTarget.style.background = 'var(--accent-muted)'; e.currentTarget.style.color = 'var(--accent)'; }}
                 >
@@ -814,7 +814,7 @@ function StaleAlertCard({ item, onReengage }: { item: FocusItem; onReengage: (it
   return (
     <div
       style={{
-        border: '1px solid rgba(240,96,112,0.25)',
+        border: '1px solid rgba(196,90,90,0.25)',
         background: 'var(--danger-muted)',
         borderRadius: 'var(--radius-lg)',
         padding: 'var(--space-4)',
@@ -940,7 +940,7 @@ function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
   return (
     <div
       style={{
-        border: '1px solid rgba(52,211,153,0.25)',
+        border: '1px solid rgba(74,158,110,0.25)',
         background: 'var(--success-muted)',
         borderRadius: 'var(--radius-lg)',
         padding: 'var(--space-4)',
@@ -996,7 +996,7 @@ function AtRiskCard({ investor }: { investor: InvestorSummary }) {
   return (
     <div
       style={{
-        border: '1px solid rgba(240,96,112,0.25)',
+        border: '1px solid rgba(196,90,90,0.25)',
         background: 'var(--danger-muted)',
         borderRadius: 'var(--radius-lg)',
         padding: 'var(--space-4)',
@@ -1029,7 +1029,7 @@ function AtRiskCard({ investor }: { investor: InvestorSummary }) {
         <Link
           href={`/meetings/new?investor=${investor.investorId}`}
           className="btn btn-sm flex-1 flex items-center justify-center gap-1"
-          style={{ fontSize: '11px', background: 'rgba(240,96,112,0.15)', color: '#f5909a', border: '1px solid rgba(240,96,112,0.25)' }}
+          style={{ fontSize: '11px', background: 'rgba(196,90,90,0.15)', color: '#d48080', border: '1px solid rgba(196,90,90,0.25)' }}
         >
           Re-engage
         </Link>

@@ -526,7 +526,7 @@ export default function ForecastPage() {
                           color: 'var(--warning)',
                           textDecoration: 'none',
                         }}
-                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(240,176,96,0.25)'; }}
+                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(196,163,90,0.25)'; }}
                         onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--warning-muted)'; }}
                       >
                         <Calendar className="w-3 h-3" />
@@ -582,7 +582,7 @@ export default function ForecastPage() {
                       textDecoration: 'none',
                       transition: 'background 150ms ease',
                     }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(240,96,112,0.15)'; }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(196,90,90,0.15)'; }}
                     onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--danger-muted)'; }}
                   >
                     <span style={{ color: 'var(--danger)', marginTop: '2px', flexShrink: 0 }}>
@@ -712,9 +712,9 @@ export default function ForecastPage() {
                                 fontWeight: 700,
                                 flexShrink: 0,
                                 ...(inv.tier === 1
-                                  ? { background: 'linear-gradient(135deg, #7c6ef0, #5b4cc7)', color: 'white' }
+                                  ? { background: 'var(--accent)', color: 'white' }
                                   : inv.tier === 2
-                                    ? { background: 'linear-gradient(135deg, #7c6ef0, #5b4cc7)', color: 'white' }
+                                    ? { background: 'var(--accent)', color: 'white' }
                                     : { background: 'var(--surface-3)', color: 'var(--text-secondary)', border: '1px solid var(--border-default)' }),
                               }}
                             >

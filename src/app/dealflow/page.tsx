@@ -43,9 +43,9 @@ type HeatFilter = 'all' | 'hot' | 'warm' | 'cool' | 'cold' | 'frozen';
 // ── Config ────────────────────────────────────────────────────────────
 
 const HEAT_CONFIG: Record<string, { bg: string; border: string; text: string; glow: string; label: string }> = {
-  hot:    { bg: 'rgba(240, 96, 112, 0.15)', border: 'rgba(240, 96, 112, 0.5)',  text: '#f06070', glow: '0 0 20px rgba(240, 96, 112, 0.3)', label: 'HOT' },
-  warm:   { bg: 'rgba(234, 179, 8, 0.12)',  border: 'rgba(234, 179, 8, 0.4)',  text: '#f0b060', glow: '0 0 12px rgba(234, 179, 8, 0.2)', label: 'WARM' },
-  cool:   { bg: 'rgba(124, 110, 240, 0.10)', border: 'rgba(124, 110, 240, 0.35)', text: '#7c6ef0', glow: 'none', label: 'COOL' },
+  hot:    { bg: 'rgba(196, 90, 90, 0.15)', border: 'rgba(196, 90, 90, 0.5)',  text: '#c45a5a', glow: '0 0 20px rgba(196, 90, 90, 0.3)', label: 'HOT' },
+  warm:   { bg: 'rgba(234, 179, 8, 0.12)',  border: 'rgba(234, 179, 8, 0.4)',  text: '#c4a35a', glow: '0 0 12px rgba(234, 179, 8, 0.2)', label: 'WARM' },
+  cool:   { bg: 'rgba(74, 111, 165, 0.10)', border: 'rgba(74, 111, 165, 0.35)', text: '#4a6fa5', glow: 'none', label: 'COOL' },
   cold:   { bg: 'rgba(148, 163, 184, 0.10)', border: 'rgba(148, 163, 184, 0.3)', text: '#8b8fa3', glow: 'none', label: 'COLD' },
   frozen: { bg: 'rgba(100, 116, 139, 0.08)', border: 'rgba(100, 116, 139, 0.25)', text: '#5c6178', glow: 'none', label: 'FROZEN' },
 };
@@ -458,7 +458,7 @@ export default function DealflowPage() {
                       }
                       className="inline-flex items-center gap-1"
                       style={{ color: 'var(--warning)', textDecoration: 'none' }}
-                      onMouseEnter={e => { e.currentTarget.style.color = '#f5c88a'; }}
+                      onMouseEnter={e => { e.currentTarget.style.color = '#d4be82'; }}
                       onMouseLeave={e => { e.currentTarget.style.color = 'var(--warning)'; }}
                     >
                       <span className="truncate">{inv.bottleneck}</span>

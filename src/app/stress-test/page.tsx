@@ -120,8 +120,8 @@ function probBgStyle(p: number): React.CSSProperties {
 
 function tierBadgeStyle(tier: number): React.CSSProperties {
   const styles: Record<number, React.CSSProperties> = {
-    1: { color: 'var(--warning)', background: 'var(--warning-muted)', borderColor: 'rgba(240, 176, 96, 0.3)' },
-    2: { color: 'var(--accent)', background: 'var(--accent-muted)', borderColor: 'rgba(124, 110, 240, 0.3)' },
+    1: { color: 'var(--warning)', background: 'var(--warning-muted)', borderColor: 'rgba(196, 163, 90, 0.3)' },
+    2: { color: 'var(--accent)', background: 'var(--accent-muted)', borderColor: 'rgba(74, 111, 165, 0.3)' },
     3: { color: 'var(--text-secondary)', background: 'rgba(255, 255, 255, 0.1)', borderColor: 'var(--border-subtle)' },
     4: { color: 'var(--text-muted)', background: 'rgba(255, 255, 255, 0.1)', borderColor: 'var(--border-subtle)' },
   };
@@ -212,9 +212,9 @@ export default function StressTestPage() {
     : data.investorForecasts.slice(0, 15);
 
   const bannerStyles: Record<string, React.CSSProperties> = {
-    green: { borderColor: 'rgba(52, 211, 153, 0.3)', background: 'var(--success-muted)' },
-    yellow: { borderColor: 'rgba(240, 176, 96, 0.3)', background: 'var(--warning-muted)' },
-    red: { borderColor: 'rgba(240, 96, 112, 0.3)', background: 'var(--danger-muted)' },
+    green: { borderColor: 'rgba(74, 158, 110, 0.3)', background: 'var(--success-muted)' },
+    yellow: { borderColor: 'rgba(196, 163, 90, 0.3)', background: 'var(--warning-muted)' },
+    red: { borderColor: 'rgba(196, 90, 90, 0.3)', background: 'var(--danger-muted)' },
   };
   const bannerTextStyles: Record<string, React.CSSProperties> = {
     green: { color: 'var(--success)' },
@@ -332,7 +332,7 @@ export default function StressTestPage() {
       {data.shortfall && data.shortfall > 0 && data.gapInvestors.length > 0 && (
         <div
           className="rounded-xl p-5"
-          style={{ border: '2px solid rgba(240, 96, 112, 0.25)', background: 'rgba(240, 96, 112, 0.04)' }}
+          style={{ border: '2px solid rgba(196, 90, 90, 0.25)', background: 'rgba(196, 90, 90, 0.04)' }}
         >
           <div className="flex items-center gap-2 mb-4">
             <Target className="w-5 h-5" style={{ color: 'var(--danger)' }} />
@@ -529,7 +529,7 @@ export default function StressTestPage() {
               onMouseEnter={() => setShowAllHover(true)}
               onMouseLeave={() => setShowAllHover(false)}
               className="text-xs flex items-center gap-1 mx-auto"
-              style={{ color: showAllHover ? '#b4a8fc' : 'var(--accent)' }}
+              style={{ color: showAllHover ? '#7a9ec5' : 'var(--accent)' }}
             >
               {showAllInvestors ? (
                 <>Show less <ChevronUp className="w-3 h-3" /></>
@@ -557,9 +557,9 @@ export default function StressTestPage() {
               {data.risks.map((risk, i) => {
                 const isExpanded = expandedRisks.includes(i);
                 const riskBadgeStyle: React.CSSProperties = risk.probability === 'High'
-                  ? { color: 'var(--danger)', background: 'var(--danger-muted)', borderColor: 'rgba(240, 96, 112, 0.3)' }
+                  ? { color: 'var(--danger)', background: 'var(--danger-muted)', borderColor: 'rgba(196, 90, 90, 0.3)' }
                   : risk.probability === 'Medium'
-                  ? { color: 'var(--warning)', background: 'var(--warning-muted)', borderColor: 'rgba(240, 176, 96, 0.3)' }
+                  ? { color: 'var(--warning)', background: 'var(--warning-muted)', borderColor: 'rgba(196, 163, 90, 0.3)' }
                   : { color: 'var(--text-secondary)', background: 'rgba(255, 255, 255, 0.1)', borderColor: 'var(--border-subtle)' };
                 return (
                   <div key={i} className="rounded-lg overflow-hidden" style={{ border: '1px solid var(--border-subtle)' }}>
@@ -662,7 +662,7 @@ export default function StressTestPage() {
             </span>
           </div>
           {data.criticalPath.totalIfAllClose < data.target && (
-            <div className="mt-2 text-xs rounded-lg p-2.5" style={{ color: 'var(--danger)', background: 'var(--danger-muted)', border: '1px solid rgba(240, 96, 112, 0.3)' }}>
+            <div className="mt-2 text-xs rounded-lg p-2.5" style={{ color: 'var(--danger)', background: 'var(--danger-muted)', border: '1px solid rgba(196, 90, 90, 0.3)' }}>
               Even the minimum viable set falls short. Need to add more investors or increase check sizes.
             </div>
           )}
@@ -814,9 +814,9 @@ function ForecastCard({ label, sublabel, amount, target, color }: {
 }) {
   const pct = target > 0 ? Math.round((amount / target) * 100) : 0;
   const colorMap: Record<string, { border: string; bg: string; value: string }> = {
-    green: { border: 'rgba(52, 211, 153, 0.25)', bg: 'var(--success-muted)', value: 'var(--success)' },
-    yellow: { border: 'rgba(240, 176, 96, 0.25)', bg: 'var(--warning-muted)', value: 'var(--warning)' },
-    red: { border: 'rgba(240, 96, 112, 0.25)', bg: 'var(--danger-muted)', value: 'var(--danger)' },
+    green: { border: 'rgba(74, 158, 110, 0.25)', bg: 'var(--success-muted)', value: 'var(--success)' },
+    yellow: { border: 'rgba(196, 163, 90, 0.25)', bg: 'var(--warning-muted)', value: 'var(--warning)' },
+    red: { border: 'rgba(196, 90, 90, 0.25)', bg: 'var(--danger-muted)', value: 'var(--danger)' },
   };
   const c = colorMap[color];
 

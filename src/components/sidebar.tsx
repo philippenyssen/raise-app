@@ -141,13 +141,12 @@ export function Sidebar() {
         >
           {!collapsed && (
             <div className="min-w-0">
-              <h1 className="text-base font-bold tracking-tight" style={{
-                background: 'linear-gradient(135deg, var(--accent) 0%, #a78bfa 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                letterSpacing: '0.12em',
-                fontSize: '15px',
+              <h1 style={{
+                color: 'var(--accent)',
+                letterSpacing: '0.18em',
+                fontSize: '14px',
+                fontWeight: 400,
+                fontFamily: 'var(--font-cormorant), Georgia, serif',
               }}>
                 RAISE
               </h1>
@@ -158,12 +157,12 @@ export function Sidebar() {
           )}
           {collapsed && (
             <div className="w-full flex justify-center">
-              <span className="text-sm font-bold" style={{
-                background: 'linear-gradient(135deg, var(--accent) 0%, #a78bfa 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
+              <span style={{
+                color: 'var(--accent)',
                 letterSpacing: '0.12em',
+                fontWeight: 400,
+                fontFamily: 'var(--font-cormorant), Georgia, serif',
+                fontSize: '14px',
               }}>R</span>
             </div>
           )}
@@ -274,7 +273,7 @@ export function Sidebar() {
                               height: '7px',
                               borderRadius: '50%',
                               background: 'var(--danger)',
-                              boxShadow: '0 0 4px rgba(240, 96, 112, 0.5)',
+                              boxShadow: '0 0 4px rgba(196, 90, 90, 0.5)',
                             }}
                           />
                         )}
@@ -288,7 +287,7 @@ export function Sidebar() {
                               height: '7px',
                               borderRadius: '50%',
                               background: 'var(--accent)',
-                              boxShadow: '0 0 4px rgba(124, 110, 240, 0.5)',
+                              boxShadow: '0 0 4px rgba(74, 111, 165, 0.5)',
                             }}
                           />
                         )}
@@ -305,7 +304,7 @@ export function Sidebar() {
                                 height: '6px',
                                 borderRadius: '50%',
                                 background: 'var(--danger)',
-                                boxShadow: '0 0 6px rgba(240, 96, 112, 0.4)',
+                                boxShadow: '0 0 6px rgba(196, 90, 90, 0.4)',
                               }}
                             />
                           )}

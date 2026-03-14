@@ -502,21 +502,21 @@ export default function TermComparePage() {
               label="Best for Founders"
               value={results.recommendations.best_for_founders}
               bg="var(--success-muted)"
-              border="rgba(52, 211, 153, 0.25)"
+              border="rgba(74, 158, 110, 0.25)"
             />
             <RecoCard
               icon={<DollarSign className="w-5 h-5" style={{ color: 'var(--accent)' }} />}
               label="Most Capital"
               value={results.recommendations.most_capital}
               bg="var(--accent-muted)"
-              border="rgba(124, 110, 240, 0.25)"
+              border="rgba(74, 111, 165, 0.25)"
             />
             <RecoCard
               icon={<Trophy className="w-5 h-5" style={{ color: 'var(--warning)' }} />}
               label="Highest Effective Valuation"
               value={results.recommendations.highest_effective_valuation}
               bg="var(--warning-muted)"
-              border="rgba(240, 176, 96, 0.25)"
+              border="rgba(196, 163, 90, 0.25)"
             />
           </div>
 

@@ -74,11 +74,11 @@ const CATEGORY_ICONS: Record<string, React.ComponentType<{ className?: string }>
 };
 
 const CATEGORY_COLORS: Record<string, string> = {
-  followup: '#9b8ffa',
-  outreach: '#c4b5fd',
-  preparation: '#2dd4bf',
-  escalation: '#f5909a',
-  meeting: '#f5c88a',
+  followup: '#6a8fc0',
+  outreach: '#8ab0d0',
+  preparation: '#4a9e8a',
+  escalation: '#d48080',
+  meeting: '#d4be82',
 };
 
 const CATEGORY_BG: Record<string, string> = {
@@ -90,16 +90,16 @@ const CATEGORY_BG: Record<string, string> = {
 };
 
 const ALERT_STYLES: Record<string, { bg: string; border: string; color: string; icon: React.ComponentType<{ className?: string }> }> = {
-  warning: { bg: 'var(--warning-muted)', border: 'rgba(240,176,96,0.25)', color: '#f5c88a', icon: AlertTriangle },
-  opportunity: { bg: 'var(--success-muted)', border: 'rgba(52,211,153,0.25)', color: '#5ee8b7', icon: Zap },
-  risk: { bg: 'var(--danger-muted)', border: 'rgba(240,96,112,0.25)', color: '#f5909a', icon: Shield },
+  warning: { bg: 'var(--warning-muted)', border: 'rgba(196,163,90,0.25)', color: '#d4be82', icon: AlertTriangle },
+  opportunity: { bg: 'var(--success-muted)', border: 'rgba(74,158,110,0.25)', color: '#6ab88a', icon: Zap },
+  risk: { bg: 'var(--danger-muted)', border: 'rgba(196,90,90,0.25)', color: '#d48080', icon: Shield },
 };
 
 const MOMENTUM_CONFIG: Record<string, { color: string; bg: string; border: string; icon: React.ComponentType<{ className?: string }>; label: string }> = {
-  accelerating: { color: 'var(--success)', bg: 'var(--success-muted)', border: 'rgba(52,211,153,0.25)', icon: TrendingUp, label: 'Accelerating' },
+  accelerating: { color: 'var(--success)', bg: 'var(--success-muted)', border: 'rgba(74,158,110,0.25)', icon: TrendingUp, label: 'Accelerating' },
   steady: { color: 'var(--text-secondary)', bg: 'var(--surface-2)', border: 'var(--border-default)', icon: Minus, label: 'Steady' },
-  decelerating: { color: 'var(--warning)', bg: 'var(--warning-muted)', border: 'rgba(240,176,96,0.25)', icon: TrendingDown, label: 'Decelerating' },
-  stalled: { color: 'var(--danger)', bg: 'var(--danger-muted)', border: 'rgba(240,96,112,0.25)', icon: TrendingDown, label: 'Stalled' },
+  decelerating: { color: 'var(--warning)', bg: 'var(--warning-muted)', border: 'rgba(196,163,90,0.25)', icon: TrendingDown, label: 'Decelerating' },
+  stalled: { color: 'var(--danger)', bg: 'var(--danger-muted)', border: 'rgba(196,90,90,0.25)', icon: TrendingDown, label: 'Stalled' },
 };
 
 // ---------------------------------------------------------------------------
@@ -551,7 +551,7 @@ export default function TodayPage() {
         <div
           className="text-center"
           style={{
-            border: '1px solid rgba(240,96,112,0.15)',
+            border: '1px solid rgba(196,90,90,0.15)',
             background: 'var(--danger-muted)',
             borderRadius: 'var(--radius-lg)',
             padding: 'var(--space-10)',
@@ -610,11 +610,11 @@ export default function TodayPage() {
                 width: '40px',
                 height: '40px',
                 borderRadius: '50%',
-                background: 'linear-gradient(135deg, rgba(240,176,96,0.2), rgba(251,191,36,0.1))',
-                border: '1px solid rgba(240,176,96,0.2)',
+                background: 'linear-gradient(135deg, rgba(196,163,90,0.2), rgba(251,191,36,0.1))',
+                border: '1px solid rgba(196,163,90,0.2)',
               }}
             >
-              <span style={{ color: '#f5c88a', display: 'flex' }}>
+              <span style={{ color: '#d4be82', display: 'flex' }}>
                 <Sunrise className="w-5 h-5" />
               </span>
             </div>
@@ -699,7 +699,7 @@ export default function TodayPage() {
             padding: 'var(--space-3) var(--space-4)',
             borderRadius: 'var(--radius-lg)',
             background: 'var(--surface-1)',
-            border: `1px solid ${raiseProgress.isOver ? 'rgba(240,96,112,0.25)' : raiseProgress.pct >= 75 ? 'rgba(240,176,96,0.25)' : 'var(--border-subtle)'}`,
+            border: `1px solid ${raiseProgress.isOver ? 'rgba(196,90,90,0.25)' : raiseProgress.pct >= 75 ? 'rgba(196,163,90,0.25)' : 'var(--border-subtle)'}`,
           }}
         >
           <div className="flex items-center gap-2 shrink-0">
@@ -759,8 +759,8 @@ export default function TodayPage() {
               borderBottom: '1px solid var(--border-subtle)',
             }}
           >
-            <Zap className="w-3.5 h-3.5" style={{ color: '#c4b5fd' }} />
-            <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: '#c4b5fd', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Since Yesterday</span>
+            <Zap className="w-3.5 h-3.5" style={{ color: '#8ab0d0' }} />
+            <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: '#8ab0d0', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Since Yesterday</span>
           </div>
           <div className="flex items-center gap-4 flex-wrap" style={{ padding: 'var(--space-3) var(--space-4)' }}>
             {overnight.statusChanges.map((sc, i) => (
@@ -886,10 +886,10 @@ export default function TodayPage() {
               const typeConfig: Record<string, { label: string; color: string; bg: string }> = {
                 thank_you: { label: 'Thank You', color: 'var(--accent)', bg: 'var(--accent-muted)' },
                 objection_response: { label: 'Objection', color: 'var(--danger)', bg: 'var(--danger-muted)' },
-                data_share: { label: 'Share Docs', color: '#c4b5fd', bg: 'rgba(167,139,250,0.12)' },
+                data_share: { label: 'Share Docs', color: '#8ab0d0', bg: 'rgba(167,139,250,0.12)' },
                 schedule_followup: { label: 'Schedule', color: 'var(--success)', bg: 'var(--success-muted)' },
                 warm_reengagement: { label: 'Re-engage', color: 'var(--warning)', bg: 'var(--warning-muted)' },
-                milestone_update: { label: 'Update', color: '#f5b08a', bg: 'rgba(251,146,60,0.12)' },
+                milestone_update: { label: 'Update', color: '#d4be82', bg: 'rgba(251,146,60,0.12)' },
               };
               const tc = typeConfig[fu.action_type] || { label: fu.action_type, color: 'var(--text-tertiary)', bg: 'var(--surface-2)' };
               const isProcessing = completingFollowupId === fu.id;
@@ -917,7 +917,7 @@ export default function TodayPage() {
                         onClick={() => handleQuickComplete(fu.id)}
                         disabled={isProcessing}
                         className="btn btn-sm"
-                        style={{ background: 'var(--success-muted)', color: 'var(--success)', border: '1px solid rgba(52,211,153,0.25)', fontSize: '11px', padding: '3px 10px' }}
+                        style={{ background: 'var(--success-muted)', color: 'var(--success)', border: '1px solid rgba(74,158,110,0.25)', fontSize: '11px', padding: '3px 10px' }}
                       >
                         Done
                       </button>

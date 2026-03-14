@@ -99,12 +99,12 @@ const TYPE_LABELS: Record<string, string> = {
 };
 
 const TYPE_COLORS: Record<string, { bg: string; color: string; border: string }> = {
-  vc:            { bg: 'rgba(124,110,240,0.15)',  color: 'rgba(96,165,250,1)',   border: 'rgba(29,78,216,0.4)' },
+  vc:            { bg: 'rgba(74,111,165,0.15)',  color: 'rgba(96,165,250,1)',   border: 'rgba(29,78,216,0.4)' },
   growth:        { bg: 'rgba(147,51,234,0.15)',  color: 'rgba(192,132,252,1)',  border: 'rgba(126,34,206,0.4)' },
   sovereign:     { bg: 'rgba(217,119,6,0.15)',   color: 'rgba(251,191,36,1)',   border: 'rgba(180,83,9,0.4)' },
-  strategic:     { bg: 'rgba(16,185,129,0.15)',  color: 'rgba(52,211,153,1)',   border: 'rgba(4,120,87,0.4)' },
+  strategic:     { bg: 'rgba(16,185,129,0.15)',  color: 'rgba(74,158,110,1)',   border: 'rgba(4,120,87,0.4)' },
   debt:          { bg: 'rgba(249,115,22,0.15)',  color: 'rgba(251,146,60,1)',   border: 'rgba(194,65,12,0.4)' },
-  family_office: { bg: 'rgba(240,96,112,0.15)',   color: 'rgba(251,113,133,1)',  border: 'rgba(190,18,60,0.4)' },
+  family_office: { bg: 'rgba(196,90,90,0.15)',   color: 'rgba(251,113,133,1)',  border: 'rgba(190,18,60,0.4)' },
 };
 
 function scoreColorStyle(score: number): React.CSSProperties {
@@ -116,18 +116,18 @@ function scoreColorStyle(score: number): React.CSSProperties {
 }
 
 function scoreBorderStyle(score: number): React.CSSProperties {
-  if (score >= 71) return { borderColor: 'rgba(52,211,153,1)' };
+  if (score >= 71) return { borderColor: 'rgba(74,158,110,1)' };
   if (score >= 51) return { borderColor: 'rgba(5,150,105,1)' };
-  if (score >= 31) return { borderColor: 'rgba(240,176,96,1)' };
-  if (score >= 1)  return { borderColor: 'rgba(240,96,112,1)' };
+  if (score >= 31) return { borderColor: 'rgba(196,163,90,1)' };
+  if (score >= 1)  return { borderColor: 'rgba(196,90,90,1)' };
   return { borderColor: 'rgba(63,63,70,1)' };
 }
 
 function trendBarBg(score: number): string {
   if (score >= 50) return 'rgba(16,185,129,1)';
-  if (score >= 30) return 'rgba(240,176,96,1)';
+  if (score >= 30) return 'rgba(196,163,90,1)';
   if (score >= 10) return 'rgba(249,115,22,1)';
-  return 'rgba(240,96,112,1)';
+  return 'rgba(196,90,90,1)';
 }
 
 function formatWeekLabel(w: string): string {
@@ -142,7 +142,7 @@ const DIRECTION_CONFIG = {
     label: 'Accelerating',
     icon: TrendingUp,
     bg: 'rgba(6,78,59,0.4)',
-    color: 'var(--success, rgba(52,211,153,1))',
+    color: 'var(--success, rgba(74,158,110,1))',
     border: 'rgba(4,120,87,0.5)',
   },
   stable: {
@@ -165,7 +165,7 @@ const TREND_CONFIG = {
   heating: {
     label: 'Heating up',
     icon: TrendingUp,
-    color: 'var(--success, rgba(52,211,153,1))',
+    color: 'var(--success, rgba(74,158,110,1))',
     bg: 'rgba(6,78,59,0.3)',
   },
   cooling: {
@@ -245,7 +245,7 @@ export default function MomentumPage() {
           <div className="flex items-center gap-4">
             <div
               className="w-10 h-10 rounded-lg flex items-center justify-center"
-              style={{ background: 'var(--accent-muted, rgba(124,110,240,0.2))' }}
+              style={{ background: 'var(--accent-muted, rgba(74,111,165,0.2))' }}
             >
               <Activity className="w-5 h-5" style={{ color: 'var(--accent)' }} />
             </div>
@@ -329,7 +329,7 @@ export default function MomentumPage() {
             {data.trajectoryAlerts.map((alert, i) => {
               const colors: Record<string, { bg: string; border: string; color: string }> = {
                 critical_warning:  { border: 'rgba(153,27,27,0.5)',  bg: 'rgba(127,29,29,0.1)',  color: 'var(--danger, rgba(248,113,113,1))' },
-                early_warning:     { border: 'rgba(154,52,18,0.5)',  bg: 'rgba(124,45,18,0.1)',  color: 'rgba(251,146,60,1)' },
+                early_warning:     { border: 'rgba(154,52,18,0.5)',  bg: 'rgba(196,90,90,0.1)',  color: 'rgba(251,146,60,1)' },
                 term_sheet_signal: { border: 'rgba(22,101,52,0.5)',  bg: 'rgba(20,83,45,0.1)',   color: 'var(--success, rgba(74,222,128,1))' },
               };
               const labels: Record<string, string> = {
@@ -372,9 +372,9 @@ export default function MomentumPage() {
                       <Link
                         href={`/meetings/new?investor=${alert.investorId}`}
                         className="px-2.5 py-1 rounded text-[11px] font-medium transition-colors"
-                        style={{ background: 'rgba(124,110,240,0.15)', color: '#9b8ffa', border: '1px solid rgba(124,110,240,0.25)' }}
-                        onMouseEnter={e => { e.currentTarget.style.background = 'rgba(124,110,240,0.3)'; }}
-                        onMouseLeave={e => { e.currentTarget.style.background = 'rgba(124,110,240,0.15)'; }}
+                        style={{ background: 'rgba(74,111,165,0.15)', color: '#6a8fc0', border: '1px solid rgba(74,111,165,0.25)' }}
+                        onMouseEnter={e => { e.currentTarget.style.background = 'rgba(74,111,165,0.3)'; }}
+                        onMouseLeave={e => { e.currentTarget.style.background = 'rgba(74,111,165,0.15)'; }}
                       >
                         Schedule
                       </Link>
@@ -504,7 +504,7 @@ export default function MomentumPage() {
                               style={{
                                 ...scoreColorStyle(ws.score),
                                 ...(isAnomalyCell ? {
-                                  boxShadow: `0 0 0 2px ${anomalyForWeek.direction === 'above' ? 'rgba(52,211,153,1)' : 'rgba(248,113,113,1)'}`,
+                                  boxShadow: `0 0 0 2px ${anomalyForWeek.direction === 'above' ? 'rgba(74,158,110,1)' : 'rgba(248,113,113,1)'}`,
                                 } : {}),
                               }}
                             >
@@ -520,7 +520,7 @@ export default function MomentumPage() {
                           className="inline-flex items-center gap-0.5 text-xs font-mono font-semibold"
                           style={{
                             color: delta > 0
-                              ? 'var(--success, rgba(52,211,153,1))'
+                              ? 'var(--success, rgba(74,158,110,1))'
                               : delta < 0
                                 ? 'var(--danger, rgba(248,113,113,1))'
                                 : 'var(--text-muted)',
@@ -576,7 +576,7 @@ export default function MomentumPage() {
               <div className="w-4 h-3 rounded" style={{ background: 'rgba(5,150,105,0.8)' }} /><span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>71-100</span>
             </div>
             <div className="ml-4 flex items-center gap-1.5">
-              <div className="w-4 h-3 rounded" style={{ background: 'var(--surface-2)', boxShadow: '0 0 0 2px rgba(52,211,153,1)' }} />
+              <div className="w-4 h-3 rounded" style={{ background: 'var(--surface-2)', boxShadow: '0 0 0 2px rgba(74,158,110,1)' }} />
               <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Above cohort</span>
             </div>
             <div className="flex items-center gap-1.5">
@@ -902,7 +902,7 @@ export default function MomentumPage() {
                 const typeIconColors: Record<string, string> = {
                   competitive_tension: 'var(--danger, rgba(248,113,113,1))',
                   engagement_gap: 'rgba(251,146,60,1)',
-                  dd_synchronization: 'var(--success, rgba(52,211,153,1))',
+                  dd_synchronization: 'var(--success, rgba(74,158,110,1))',
                 };
                 const us = urgencyStyles[signal.urgency] || urgencyStyles.low;
 
@@ -982,7 +982,7 @@ export default function MomentumPage() {
               {data.narrativeHealth.map((nh) => {
                 const tc = TYPE_COLORS[nh.investorType] || TYPE_COLORS.vc;
                 const statusStyles: Record<string, { bg: string; color: string; label: string }> = {
-                  effective:         { bg: 'rgba(6,78,59,0.2)',   color: 'var(--success, rgba(52,211,153,1))',  label: 'Effective' },
+                  effective:         { bg: 'rgba(6,78,59,0.2)',   color: 'var(--success, rgba(74,158,110,1))',  label: 'Effective' },
                   struggling:        { bg: 'rgba(127,29,29,0.2)', color: 'var(--danger, rgba(248,113,113,1))',  label: 'Struggling' },
                   insufficient_data: { bg: 'rgba(39,39,42,0.4)',  color: 'var(--text-muted)',                   label: 'Low data' },
                 };
@@ -1019,7 +1019,7 @@ export default function MomentumPage() {
                         <span style={{ color: 'var(--text-muted)' }}>Enthusiasm</span>
                         <div
                           className="font-semibold tabular-nums"
-                          style={{ color: nh.avgEnthusiasm >= 3 ? 'var(--success, rgba(52,211,153,1))' : 'var(--danger, rgba(248,113,113,1))' }}
+                          style={{ color: nh.avgEnthusiasm >= 3 ? 'var(--success, rgba(74,158,110,1))' : 'var(--danger, rgba(248,113,113,1))' }}
                         >
                           {nh.avgEnthusiasm.toFixed(1)}/5
                         </div>
@@ -1028,7 +1028,7 @@ export default function MomentumPage() {
                         <span style={{ color: 'var(--text-muted)' }}>Conversion</span>
                         <div
                           className="font-semibold tabular-nums"
-                          style={{ color: nh.conversionRate >= 20 ? 'var(--success, rgba(52,211,153,1))' : 'var(--danger, rgba(248,113,113,1))' }}
+                          style={{ color: nh.conversionRate >= 20 ? 'var(--success, rgba(74,158,110,1))' : 'var(--danger, rgba(248,113,113,1))' }}
                         >
                           {nh.conversionRate}%
                         </div>
