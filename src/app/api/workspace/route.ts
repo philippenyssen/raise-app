@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
 import { getAllDocuments } from '@/lib/db';
 import { getFullContext, contextToSystemPrompt } from '@/lib/context-bus';
+import type { FullContext } from '@/lib/context-bus';
 
 let _client: Anthropic | null = null;
 function getClient(): Anthropic {
@@ -58,6 +59,128 @@ function quickHash(input: string): string {
 }
 
 // ---------------------------------------------------------------------------
+// Query intent detection + context steering (cycle 15)
+// ---------------------------------------------------------------------------
+
+interface QueryIntent {
+  type: 'investor_specific' | 'strategy' | 'document' | 'objection' | 'general';
+  investorName?: string;
+  investorId?: string;
+}
+
+function detectQueryIntent(
+  messages: Array<{ role: string; content: string }>,
+  ctx: FullContext,
+): QueryIntent {
+  const lastUserMsg = messages.filter(m => m.role === 'user').pop()?.content?.toLowerCase() || '';
+
+  // Check for investor-specific queries (match investor names)
+  for (const inv of ctx.investors) {
+    const nameLower = inv.name.toLowerCase();
+    // Match full name or significant portion (3+ chars)
+    if (nameLower.length >= 3 && lastUserMsg.includes(nameLower)) {
+      return { type: 'investor_specific', investorName: inv.name, investorId: inv.id };
+    }
+  }
+
+  // Objection/pitch queries
+  const objectionKeywords = ['objection', 'pushback', 'concern', 'question they', 'they asked', 'respond to', 'handle', 'counter'];
+  if (objectionKeywords.some(kw => lastUserMsg.includes(kw))) {
+    return { type: 'objection' };
+  }
+
+  // Strategy/overview queries
+  const strategyKeywords = ['strategy', 'next steps', 'what should', 'how are we', 'pipeline', 'progress', 'recommend', 'priority', 'priorities', 'focus', 'momentum', 'trajectory', 'health', 'where do we stand'];
+  if (strategyKeywords.some(kw => lastUserMsg.includes(kw))) {
+    return { type: 'strategy' };
+  }
+
+  // Document queries
+  const docKeywords = ['document', 'rewrite', 'improve', 'draft', 'edit', 'memo', 'pitch', 'deck', 'strengthen', 'section'];
+  if (docKeywords.some(kw => lastUserMsg.includes(kw))) {
+    return { type: 'document' };
+  }
+
+  return { type: 'general' };
+}
+
+/**
+ * Build a dynamic focus instruction that steers the AI's attention to
+ * the most relevant context sections for this specific query.
+ */
+function buildQueryFocus(
+  intent: QueryIntent,
+  ctx: FullContext,
+): string {
+  const lines: string[] = [];
+
+  if (intent.type === 'investor_specific' && intent.investorName) {
+    const inv = ctx.investors.find(i => i.name === intent.investorName);
+    if (inv) {
+      lines.push(`QUERY FOCUS: The user is asking about ${inv.name}. Here is deep context for this investor:`);
+      lines.push(`- Status: ${inv.status} | Tier: ${inv.tier} | Enthusiasm: ${inv.enthusiasm}/5 | Partner: ${inv.partner || 'unknown'}`);
+      lines.push(`- Meetings: ${inv.meetingCount}${inv.lastMeetingDate ? ` | Last meeting: ${inv.lastMeetingDate}` : ''}`);
+      if (inv.unresolvedObjections.length > 0) {
+        lines.push(`- Unresolved objections: ${inv.unresolvedObjections.join('; ')}`);
+      }
+      if (inv.pendingTasks > 0) lines.push(`- ${inv.pendingTasks} pending tasks`);
+      if (inv.pendingFollowups > 0) lines.push(`- ${inv.pendingFollowups} pending follow-ups`);
+
+      // Check compound signals involving this investor
+      const relevantSignals = ctx.compoundSignals.filter(cs =>
+        cs.signal.toLowerCase().includes(inv.name.toLowerCase())
+      );
+      if (relevantSignals.length > 0) {
+        lines.push(`- COMPOUND SIGNALS: ${relevantSignals.map(s => s.signal).join('; ')}`);
+      }
+
+      // Check if this is a keystone investor
+      const keystone = ctx.keystoneInvestors.find(k => k.id === inv.id);
+      if (keystone) {
+        lines.push(`- KEYSTONE: Connected to ${keystone.connectionCount} other investors (cascade: ${keystone.cascadeValue})`);
+      }
+
+      // Check narrative effectiveness for this investor type
+      const typeDrift = ctx.narrativeDrift.find(nd => nd.investorType === inv.type);
+      if (typeDrift) {
+        lines.push(`- Narrative effectiveness for ${inv.type} type: ${typeDrift.status} (avg enthusiasm: ${typeDrift.avgEnthusiasm}/5, conversion: ${typeDrift.conversionRate}%)`);
+      }
+
+      lines.push(`Prioritize this investor's data in the KEY INVESTORS section. Use their specific objection history, trajectory, and meeting patterns to give targeted advice.`);
+    }
+  } else if (intent.type === 'strategy') {
+    lines.push(`QUERY FOCUS: The user is asking about strategic priorities. Pay special attention to:`);
+    if (ctx.temporalTrends) {
+      const declining = ctx.temporalTrends.trends.filter(t => t.direction === 'declining');
+      const improving = ctx.temporalTrends.trends.filter(t => t.direction === 'improving');
+      if (declining.length > 0) lines.push(`- DECLINING TRENDS: ${declining.map(t => `${t.metric} (${t.delta7d}%)`).join(', ')}`);
+      if (improving.length > 0) lines.push(`- IMPROVING TRENDS: ${improving.map(t => `${t.metric} (+${t.delta7d}%)`).join(', ')}`);
+    }
+    if (ctx.compoundSignals.length > 0) {
+      lines.push(`- COMPOUND SIGNALS requiring attention: ${ctx.compoundSignals.length}`);
+    }
+    lines.push(`- Pipeline health, temporal trends, compound signals, and strategic recommendations are most relevant.`);
+    lines.push(`- Be specific and decisive. Rank priorities by impact. Don't hedge.`);
+  } else if (intent.type === 'objection') {
+    lines.push(`QUERY FOCUS: The user is asking about objections/pushback. Pay special attention to:`);
+    lines.push(`- TOP OBJECTIONS section (frequency, effective responses)`);
+    lines.push(`- OBJECTION EVOLUTION section (emerging vs persistent vs resolved)`);
+    lines.push(`- PROVEN OBJECTION RESPONSES (use the specific responses that have worked)`);
+    lines.push(`- NARRATIVE EFFECTIVENESS BY INVESTOR TYPE (which types are struggling)`);
+    lines.push(`When recommending responses, ALWAYS prefer proven responses from the playbook over generic advice.`);
+  } else if (intent.type === 'document') {
+    lines.push(`QUERY FOCUS: The user is working on a document. Pay special attention to:`);
+    lines.push(`- NARRATIVE HEALTH section (what topics are investors questioning)`);
+    lines.push(`- PROVEN OBJECTION RESPONSES (incorporate these into document language)`);
+    lines.push(`- Cross-reference all numbers against RAISE PARAMETERS and REVENUE BACKLOG`);
+    lines.push(`- Focus on making the document IC-grade: concise, evidence-based, Goldman style.`);
+  }
+
+  if (lines.length === 0) return '';
+  return lines.join('\n') + '\n\n';
+}
+
+// ---------------------------------------------------------------------------
 
 function buildOtherDocsContext(docs: { id: string; title: string; type: string; content: string }[], excludeId: string | null): string {
   const others = docs.filter(d => d.id !== excludeId);
@@ -90,7 +213,11 @@ export async function POST(req: NextRequest) {
 
   const fullContextStr = contextToSystemPrompt(fullCtx);
 
-  const systemPrompt = `You are an expert fundraising advisor and document specialist embedded in a Series C fundraise execution platform. You combine the expertise of:
+  // Detect query intent and build focused context steering (cycle 15)
+  const queryIntent = detectQueryIntent(messages, fullCtx);
+  const queryFocus = buildQueryFocus(queryIntent, fullCtx);
+
+  const systemPrompt = `${queryFocus}You are an expert fundraising advisor and document specialist embedded in a Series C fundraise execution platform. You combine the expertise of:
 
 - A Goldman Sachs ECM Managing Director (document style, IC-readiness)
 - A top-tier VC Partner (investor perspective, what makes deals close)
@@ -152,7 +279,12 @@ INSTRUCTIONS:
    - Mgmt Presentations: focus on narrative effectiveness and objection handling
    - Due Diligence: focus on speed, responsiveness, and competitive tension
    - Negotiation: focus on term optimization and closing tactics
-17. EVIDENCE-BASED RECOMMENDATIONS: When recommending actions, prefer action types that have empirically worked (shown in ACTION EFFECTIVENESS). Avoid recommending action types with low measured effectiveness unless the situation specifically calls for it. Always mention the evidence basis: "Based on X measured outcomes, [action type] has been most effective for this type of situation."`;
+17. EVIDENCE-BASED RECOMMENDATIONS: When recommending actions, prefer action types that have empirically worked (shown in ACTION EFFECTIVENESS). Avoid recommending action types with low measured effectiveness unless the situation specifically calls for it. Always mention the evidence basis: "Based on X measured outcomes, [action type] has been most effective for this type of situation."
+18. TEMPORAL AWARENESS: When TEMPORAL TRENDS data is available, incorporate trajectory into your reasoning:
+   - If a metric is declining, don't just report the current value — report the trend ("Pipeline health is 65 and declining 8% over 7 days")
+   - If multiple metrics decline simultaneously, flag it as a systemic issue, not isolated incidents
+   - If metrics are improving, validate that the improvement is real (check if it correlates with actual pipeline events)
+   - Use streak data: a 4-day declining streak is more concerning than a single-day dip`;
 
   // Compute a lightweight context hash from the context bus version + document length.
   // The client can use this to detect when cached context has changed.

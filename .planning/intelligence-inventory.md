@@ -18,6 +18,7 @@
 | 12 | 2026-03-14 | Frontline Intelligence Consumption | Strategic Dashboard page (CEO brief, 4 gauge cards, recommendations, health trend sparklines), Strategic in sidebar, Stress Test Monte Carlo + Calibration display, Momentum timing signals + narrative health by type display, Health page intelligence verification status, all frontline pages now consume deep intelligence | strategic/page.tsx, sidebar.tsx, stress-test/page.tsx, momentum/page.tsx, health/page.tsx |
 | 13 | 2026-03-14 | Compound Intelligence | Cross-signal correlation engine (4 compound signal detectors: convergent decline, ready to close, narrative crisis, competitive window), post-meeting intelligence cascade (narrative re-check + compound signal auto-actions), pipeline bottleneck auto-actions (Rule 6), compound signal auto-actions (Rule 7), compoundSignals field in context bus + system prompt | db.ts, context-bus.ts |
 | 14 | 2026-03-14 | Temporal Intelligence | Health trend analysis from stored snapshots (7d/30d averages, deltas, streaks, alerts), temporal trends in context bus + system prompt with AI synthesis, temporal-aware auto-actions (Rule 8: multi-metric decline + long streak alerts), strategic dashboard temporal intelligence UI (5-metric trend cards with direction/delta/alerts), temporal-aware strategic recommendations, pulse temporal trend insights | db.ts, context-bus.ts, intelligence/strategic/route.ts, pulse/route.ts, strategic/page.tsx |
+| 15 | 2026-03-14 | Intelligent Context Steering | Query intent detection (5 types: investor-specific, strategy, objection, document, general), dynamic QUERY FOCUS prefix for workspace AI (targeted context per investor, compound signals, narrative drift, keystone status), instruction 18 (temporal awareness in AI reasoning) | workspace/route.ts |
 
 ## Intelligence Capabilities (Existing)
 
@@ -370,6 +371,21 @@
   - [x] Temporal Intelligence panel with overall direction badge
   - [x] 5-metric trend cards: direction icon, current value, 7d/30d delta %, streak indicator, alerts
   - [x] Color-coded: green=improving, red=declining, neutral=stable
+
+### W. Intelligent Context Steering (NEW cycle 15)
+- [x] `detectQueryIntent()`: classifies user message into 5 intent types
+  - [x] `investor_specific`: matches investor names in user message → deep context for that investor
+  - [x] `strategy`: keywords like "next steps", "priorities", "how are we" → temporal + compound + pipeline focus
+  - [x] `objection`: keywords like "pushback", "respond to" → objection playbook + proven responses + narrative drift focus
+  - [x] `document`: keywords like "rewrite", "improve", "draft" → narrative health + cross-reference accuracy focus
+  - [x] `general`: fallback → no special steering
+- [x] `buildQueryFocus()`: generates dynamic QUERY FOCUS prefix for system prompt
+  - [x] Investor-specific: deep investor snapshot (status, tier, enthusiasm, objections, compound signals, keystone status, narrative effectiveness for type)
+  - [x] Strategy: declining/improving temporal trends, compound signal count, directive to be decisive
+  - [x] Objection: points AI to proven responses, objection evolution, narrative effectiveness
+  - [x] Document: points AI to narrative health, proven responses, cross-reference accuracy
+- [x] Instruction 18 added: Temporal Awareness in AI reasoning (incorporate trends, streaks, validate improvements)
+- [x] Query focus prepended to system prompt BEFORE role description and full context — steers attention without changing context
 
 ### CLOSED (Cycle 9):
 - ~~Learning Intelligence / Action Outcome Measurement~~ — implemented in db.ts (measureActionEffectiveness, getAutoActionEffectiveness), self-improving generateAutoActions, context-bus.ts (actionEffectiveness field + system prompt), workspace/route.ts (instruction 17), pulse/route.ts (measurement trigger)
