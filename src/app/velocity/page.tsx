@@ -1,0 +1,536 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import {
+  Gauge, Clock, CheckCircle2, XCircle, AlertTriangle,
+  TrendingUp, Users, ArrowRight, Zap,
+} from 'lucide-react';
+
+interface VelocityInvestor {
+  investor_id: string;
+  investor_name: string;
+  investor_type: string;
+  investor_tier: number;
+  status: string;
+  enthusiasm: number;
+  days_in_process: number;
+  days_in_current_stage: number;
+  projected_close_date: string;
+  days_to_target: number;
+  on_track: boolean;
+  tracking_status: 'on_track' | 'behind' | 'at_risk';
+  bottleneck: string;
+  velocity_score: number;
+  meeting_count: number;
+  meetings_per_week: number;
+  days_since_last_meeting: number;
+}
+
+interface VelocitySummary {
+  total_active: number;
+  on_track: number;
+  behind: number;
+  at_risk: number;
+  avg_velocity_score: number;
+  avg_days_in_process: number;
+  raise_days_elapsed: number;
+  raise_target_days: number;
+}
+
+interface VelocityData {
+  investors: VelocityInvestor[];
+  summary: VelocitySummary;
+  generated_at: string;
+}
+
+const STATUS_LABELS: Record<string, string> = {
+  identified: 'Identified',
+  contacted: 'Contacted',
+  nda_signed: 'NDA Signed',
+  meeting_scheduled: 'Meeting Set',
+  met: 'Met',
+  engaged: 'Engaged',
+  in_dd: 'In DD',
+  term_sheet: 'Term Sheet',
+  closed: 'Closed',
+};
+
+const STATUS_COLORS: Record<string, string> = {
+  contacted: 'var(--accent)',
+  nda_signed: 'var(--accent)',
+  meeting_scheduled: '#6366f1',
+  met: '#8b5cf6',
+  engaged: '#a855f7',
+  in_dd: 'var(--warning)',
+  term_sheet: 'var(--success)',
+  closed: 'var(--success)',
+};
+
+const TYPE_LABELS: Record<string, string> = {
+  vc: 'VC',
+  growth: 'Growth',
+  sovereign: 'Sovereign',
+  strategic: 'Strategic',
+  debt: 'Debt',
+  family_office: 'Family Office',
+};
+
+function velocityColor(score: number): string {
+  if (score >= 70) return 'var(--success)';
+  if (score >= 40) return 'var(--warning)';
+  return 'var(--danger)';
+}
+
+function trackingColor(status: string): string {
+  if (status === 'on_track') return 'var(--success)';
+  if (status === 'behind') return 'var(--warning)';
+  return 'var(--danger)';
+}
+
+function trackingBg(status: string): string {
+  if (status === 'on_track') return 'var(--success-muted)';
+  if (status === 'behind') return 'var(--warning-muted)';
+  return 'var(--danger-muted)';
+}
+
+export default function VelocityPage() {
+  const [data, setData] = useState<VelocityData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [hoveredRow, setHoveredRow] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch('/api/velocity')
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch velocity data');
+        return res.json();
+      })
+      .then(d => { setData(d); setLoading(false); })
+      .catch(e => { setError(e.message); setLoading(false); });
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex-1 p-6" style={{ maxWidth: '1400px', margin: '0 auto' }}>
+        <div className="flex items-center gap-3" style={{ marginBottom: 'var(--space-8)' }}>
+          <div className="skeleton" style={{ width: '200px', height: '32px' }} />
+        </div>
+        <div className="grid grid-cols-4 gap-4" style={{ marginBottom: 'var(--space-6)' }}>
+          {[1, 2, 3, 4].map(i => (
+            <div key={i} className="card skeleton" style={{ height: '100px' }} />
+          ))}
+        </div>
+        <div className="card skeleton" style={{ height: '400px' }} />
+      </div>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <div className="flex-1 p-6" style={{ maxWidth: '1400px', margin: '0 auto' }}>
+        <div className="card" style={{ textAlign: 'center', padding: 'var(--space-12)' }}>
+          <span style={{ color: 'var(--danger)', fontSize: 'var(--font-size-lg)' }}>
+            {error || 'Failed to load velocity data'}
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  const { investors, summary } = data;
+  const raiseProgress = Math.min(100, Math.round((summary.raise_days_elapsed / summary.raise_target_days) * 100));
+
+  return (
+    <div className="flex-1 p-6" style={{ maxWidth: '1400px', margin: '0 auto' }}>
+      {/* Header */}
+      <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-6)' }}>
+        <div className="flex items-center gap-3">
+          <span style={{ color: 'var(--accent)' }}>
+            <Gauge className="w-7 h-7" />
+          </span>
+          <div>
+            <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+              Close in 60
+              <span
+                style={{
+                  fontSize: 'var(--font-size-xs)',
+                  fontWeight: 600,
+                  padding: '2px 8px',
+                  borderRadius: '9999px',
+                  background: 'var(--danger)',
+                  color: 'white',
+                  letterSpacing: '0.04em',
+                  textTransform: 'uppercase',
+                }}
+              >
+                HOT
+              </span>
+            </h1>
+            <p className="page-subtitle">
+              {summary.total_active} active deal{summary.total_active !== 1 ? 's' : ''} &middot; {summary.avg_days_in_process}d avg time in process
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Raise Progress Bar */}
+      <div className="card" style={{ marginBottom: 'var(--space-6)', padding: 'var(--space-4) var(--space-5)' }}>
+        <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-2)' }}>
+          <div className="flex items-center gap-2">
+            <span style={{ color: 'var(--text-tertiary)' }}>
+              <Clock className="w-4 h-4" />
+            </span>
+            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)' }}>
+              Raise Timeline
+            </span>
+          </div>
+          <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' }}>
+            Day {summary.raise_days_elapsed} of {summary.raise_target_days}
+          </span>
+        </div>
+        <div className="progress-track" style={{ height: '8px', borderRadius: '4px' }}>
+          <div
+            className="progress-fill"
+            style={{
+              width: `${raiseProgress}%`,
+              background: raiseProgress > 80
+                ? 'var(--danger)'
+                : raiseProgress > 50
+                  ? 'var(--warning)'
+                  : 'var(--accent)',
+              borderRadius: '4px',
+            }}
+          />
+        </div>
+        <div className="flex items-center justify-between" style={{ marginTop: 'var(--space-1)' }}>
+          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+            Launch
+          </span>
+          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+            {raiseProgress}% elapsed &middot; {Math.max(0, summary.raise_target_days - summary.raise_days_elapsed)}d remaining
+          </span>
+          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+            Target Close
+          </span>
+        </div>
+      </div>
+
+      {/* Summary Cards */}
+      <div className="grid grid-cols-2 gap-4" style={{ marginBottom: 'var(--space-6)' }}>
+        <div className="grid grid-cols-2 gap-4">
+          {/* On Track */}
+          <div className="card" style={{ padding: 'var(--space-4)' }}>
+            <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-2)' }}>
+              <span style={{ color: 'var(--success)' }}>
+                <CheckCircle2 className="w-4 h-4" />
+              </span>
+              <span className="metric-label">On Track</span>
+            </div>
+            <div className="metric-value" style={{ color: 'var(--success)' }}>
+              {summary.on_track}
+            </div>
+          </div>
+
+          {/* Behind */}
+          <div className="card" style={{ padding: 'var(--space-4)' }}>
+            <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-2)' }}>
+              <span style={{ color: 'var(--warning)' }}>
+                <AlertTriangle className="w-4 h-4" />
+              </span>
+              <span className="metric-label">Behind</span>
+            </div>
+            <div className="metric-value" style={{ color: 'var(--warning)' }}>
+              {summary.behind}
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          {/* At Risk */}
+          <div className="card" style={{ padding: 'var(--space-4)' }}>
+            <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-2)' }}>
+              <span style={{ color: 'var(--danger)' }}>
+                <XCircle className="w-4 h-4" />
+              </span>
+              <span className="metric-label">At Risk</span>
+            </div>
+            <div className="metric-value" style={{ color: 'var(--danger)' }}>
+              {summary.at_risk}
+            </div>
+          </div>
+
+          {/* Avg Velocity */}
+          <div className="card" style={{ padding: 'var(--space-4)' }}>
+            <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-2)' }}>
+              <span style={{ color: velocityColor(summary.avg_velocity_score) }}>
+                <TrendingUp className="w-4 h-4" />
+              </span>
+              <span className="metric-label">Avg Velocity</span>
+            </div>
+            <div className="metric-value" style={{ color: velocityColor(summary.avg_velocity_score) }}>
+              {summary.avg_velocity_score}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Investor Table */}
+      <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+        <div
+          style={{
+            padding: 'var(--space-4) var(--space-5)',
+            borderBottom: '1px solid var(--border-subtle)',
+          }}
+        >
+          <div className="flex items-center gap-2">
+            <span style={{ color: 'var(--text-tertiary)' }}>
+              <Users className="w-4 h-4" />
+            </span>
+            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>
+              Deal Velocity Tracker
+            </span>
+            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginLeft: 'auto' }}>
+              Sorted by urgency
+            </span>
+          </div>
+        </div>
+
+        {investors.length === 0 ? (
+          <div style={{ padding: 'var(--space-12)', textAlign: 'center' }}>
+            <span style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
+              No active investors in pipeline. Add investors to track velocity.
+            </span>
+          </div>
+        ) : (
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead>
+                <tr className="table-header">
+                  <th style={{ minWidth: '180px' }}>Investor</th>
+                  <th style={{ minWidth: '100px' }}>Stage</th>
+                  <th style={{ minWidth: '80px', textAlign: 'center' }}>Days In</th>
+                  <th style={{ minWidth: '80px', textAlign: 'center' }}>In Stage</th>
+                  <th style={{ minWidth: '100px', textAlign: 'center' }}>Proj. Close</th>
+                  <th style={{ minWidth: '70px', textAlign: 'center' }}>Status</th>
+                  <th style={{ minWidth: '200px' }}>Bottleneck</th>
+                  <th style={{ minWidth: '120px' }}>Velocity</th>
+                </tr>
+              </thead>
+              <tbody>
+                {investors.map((inv) => (
+                  <tr
+                    key={inv.investor_id}
+                    className="table-row"
+                    style={{
+                      background: hoveredRow === inv.investor_id ? 'var(--surface-1)' : 'transparent',
+                      cursor: 'pointer',
+                    }}
+                    onMouseEnter={() => setHoveredRow(inv.investor_id)}
+                    onMouseLeave={() => setHoveredRow(null)}
+                  >
+                    {/* Investor Name */}
+                    <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
+                      <Link
+                        href={`/investors/${inv.investor_id}`}
+                        style={{ textDecoration: 'none' }}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span
+                            className="tier-badge"
+                            style={{
+                              ...(inv.investor_tier === 1
+                                ? { background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', color: 'white' }
+                                : inv.investor_tier === 2
+                                  ? { background: 'linear-gradient(135deg, #8b5cf6, #6d28d9)', color: 'white' }
+                                  : { background: 'var(--surface-3)', color: 'var(--text-secondary)', border: '1px solid var(--border-default)' }),
+                              width: '20px',
+                              height: '20px',
+                              fontSize: '10px',
+                              flexShrink: 0,
+                            }}
+                          >
+                            {inv.investor_tier}
+                          </span>
+                          <div>
+                            <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-primary)' }}>
+                              {inv.investor_name}
+                            </div>
+                            <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                              {TYPE_LABELS[inv.investor_type] || inv.investor_type}
+                            </div>
+                          </div>
+                        </div>
+                      </Link>
+                    </td>
+
+                    {/* Stage */}
+                    <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
+                      <div className="flex items-center gap-2">
+                        <div
+                          className="status-dot"
+                          style={{
+                            background: STATUS_COLORS[inv.status] || 'var(--text-muted)',
+                            boxShadow: `0 0 6px ${STATUS_COLORS[inv.status] || 'var(--text-muted)'}40`,
+                          }}
+                        />
+                        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
+                          {STATUS_LABELS[inv.status] || inv.status}
+                        </span>
+                      </div>
+                    </td>
+
+                    {/* Days in Process */}
+                    <td style={{ padding: 'var(--space-3) var(--space-4)', textAlign: 'center' }}>
+                      <span
+                        style={{
+                          fontSize: 'var(--font-size-sm)',
+                          fontWeight: 600,
+                          fontVariantNumeric: 'tabular-nums',
+                          color: inv.days_in_process > 50
+                            ? 'var(--danger)'
+                            : inv.days_in_process > 35
+                              ? 'var(--warning)'
+                              : 'var(--text-secondary)',
+                        }}
+                      >
+                        {inv.days_in_process}d
+                      </span>
+                    </td>
+
+                    {/* Days in Stage */}
+                    <td style={{ padding: 'var(--space-3) var(--space-4)', textAlign: 'center' }}>
+                      <span
+                        style={{
+                          fontSize: 'var(--font-size-sm)',
+                          fontVariantNumeric: 'tabular-nums',
+                          color: inv.days_in_current_stage > 21
+                            ? 'var(--danger)'
+                            : inv.days_in_current_stage > 14
+                              ? 'var(--warning)'
+                              : 'var(--text-tertiary)',
+                        }}
+                      >
+                        {inv.days_in_current_stage}d
+                      </span>
+                    </td>
+
+                    {/* Projected Close */}
+                    <td style={{ padding: 'var(--space-3) var(--space-4)', textAlign: 'center' }}>
+                      <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', fontVariantNumeric: 'tabular-nums' }}>
+                        {new Date(inv.projected_close_date).toLocaleDateString('en-GB', {
+                          day: 'numeric',
+                          month: 'short',
+                        })}
+                      </span>
+                    </td>
+
+                    {/* On-Track Status */}
+                    <td style={{ padding: 'var(--space-3) var(--space-4)', textAlign: 'center' }}>
+                      <span
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          padding: '2px 8px',
+                          borderRadius: '9999px',
+                          fontSize: 'var(--font-size-xs)',
+                          fontWeight: 500,
+                          background: trackingBg(inv.tracking_status),
+                          color: trackingColor(inv.tracking_status),
+                        }}
+                      >
+                        {inv.tracking_status === 'on_track' ? (
+                          <><CheckCircle2 className="w-3 h-3" style={{ marginRight: '4px' }} /> On</>
+                        ) : inv.tracking_status === 'behind' ? (
+                          <><AlertTriangle className="w-3 h-3" style={{ marginRight: '4px' }} /> Late</>
+                        ) : (
+                          <><XCircle className="w-3 h-3" style={{ marginRight: '4px' }} /> Risk</>
+                        )}
+                      </span>
+                    </td>
+
+                    {/* Bottleneck */}
+                    <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
+                      <span
+                        style={{
+                          fontSize: 'var(--font-size-xs)',
+                          color: inv.bottleneck === 'On pace' ? 'var(--text-muted)' : 'var(--warning)',
+                          lineHeight: 1.4,
+                        }}
+                      >
+                        {inv.bottleneck}
+                      </span>
+                    </td>
+
+                    {/* Velocity Score Bar */}
+                    <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
+                      <div className="flex items-center gap-2">
+                        <div
+                          style={{
+                            flex: 1,
+                            height: '6px',
+                            background: 'var(--surface-3)',
+                            borderRadius: '3px',
+                            overflow: 'hidden',
+                          }}
+                        >
+                          <div
+                            style={{
+                              width: `${inv.velocity_score}%`,
+                              height: '100%',
+                              background: velocityColor(inv.velocity_score),
+                              borderRadius: '3px',
+                              transition: 'width 500ms ease',
+                            }}
+                          />
+                        </div>
+                        <span
+                          style={{
+                            fontSize: 'var(--font-size-xs)',
+                            fontWeight: 600,
+                            fontVariantNumeric: 'tabular-nums',
+                            color: velocityColor(inv.velocity_score),
+                            minWidth: '28px',
+                            textAlign: 'right',
+                          }}
+                        >
+                          {inv.velocity_score}
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      {/* Footer hint */}
+      <div
+        className="flex items-center justify-center gap-2"
+        style={{
+          marginTop: 'var(--space-6)',
+          padding: 'var(--space-3)',
+          fontSize: 'var(--font-size-xs)',
+          color: 'var(--text-muted)',
+        }}
+      >
+        <span style={{ color: 'var(--text-tertiary)' }}>
+          <Zap className="w-3 h-3" />
+        </span>
+        Velocity scores update in real-time based on meetings, follow-ups, and stage progression
+        <span style={{ margin: '0 var(--space-2)', color: 'var(--border-default)' }}>|</span>
+        <Link
+          href="/pipeline"
+          className="flex items-center gap-1"
+          style={{ color: 'var(--accent)', textDecoration: 'none' }}
+        >
+          View Pipeline
+          <ArrowRight className="w-3 h-3" />
+        </Link>
+      </div>
+    </div>
+  );
+}
