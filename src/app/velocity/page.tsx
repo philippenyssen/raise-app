@@ -149,16 +149,15 @@ export default function VelocityPage() {
               <span
                 style={{
                   fontSize: 'var(--font-size-xs)',
-                  fontWeight: 600,
+                  fontWeight: 400,
                   padding: '2px 8px',
                   borderRadius: '9999px',
-                  background: 'var(--danger)',
-                  color: 'var(--text-primary)',
+                  background: 'var(--accent)',
+                  color: 'var(--surface-0)',
                   letterSpacing: '0.04em',
-                  textTransform: 'none',
                 }}
               >
-                HOT
+                Live
               </span>
             </h1>
             <p className="page-subtitle">
