@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@libsql/client';
 import { computeInvestorScore, computeMomentumScore, computeConvictionTrajectory } from '@/lib/scoring';
 import type { ScoreSnapshot } from '@/lib/db';
-import { generateAutoActions, measureActionEffectiveness } from '@/lib/db';
+import { generateAutoActions, measureActionEffectiveness, saveHealthSnapshot, getHealthSnapshots } from '@/lib/db';
 import type { Investor, Meeting, InvestorPortfolioCo, Objection } from '@/lib/types';
 import { getFullContext } from '@/lib/context-bus';
 
@@ -961,6 +961,28 @@ export async function GET() {
     // This makes the pulse dashboard the "heartbeat" — every view refreshes intelligence
     try { generateAutoActions().catch(() => {}); } catch { /* non-blocking */ }
     try { measureActionEffectiveness().catch(() => {}); } catch { /* non-blocking */ }
+
+    // Non-blocking: store daily health snapshot if not stored today (cycle 11)
+    try {
+      getHealthSnapshots(1).then(snapshots => {
+        const today = new Date().toISOString().split('T')[0];
+        if (!snapshots.length || snapshots[0].snapshot_date !== today) {
+          const activeInvestors = investors.filter(i => !['passed', 'dropped'].includes(i.status)).length;
+          const advancedCount = investors.filter(i => ['engaged', 'in_dd', 'term_sheet'].includes(i.status)).length;
+          const pScore = Math.min(100, Math.round(activeInvestors * 4 + advancedCount * 10 + convictionPulse.avgEnthusiasm * 4));
+          const nScore = Math.min(100, Math.round(70 - (convictionPulse.decelerating * 5) + (convictionPulse.accelerating * 5)));
+          const rScore = Math.min(100, Math.round(pScore * 0.4 + nScore * 0.3 + (processHealth.dataQualityPct * 0.3)));
+          saveHealthSnapshot({
+            pipelineScore: pScore,
+            narrativeScore: nScore,
+            readinessScore: rScore,
+            velocity: processHealth.meetingsThisWeek / Math.max(1, (new Date().getDay() || 7)),
+            activeInvestors,
+            strategicSummary: `${activeInvestors} active, ${advancedCount} advanced, health: ${processHealth.health}`,
+          }).catch(() => {});
+        }
+      }).catch(() => {});
+    } catch { /* non-blocking */ }
 
     return NextResponse.json({
       overnight,

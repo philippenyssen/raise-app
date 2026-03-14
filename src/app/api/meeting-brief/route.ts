@@ -14,7 +14,9 @@ import {
   getProvenResponsesForTopics,
   getAggregatedCompetitiveIntel,
   getInvestorRelationships,
+  getScoreSnapshots,
 } from '@/lib/db';
+import { computeAdvancedTrajectory } from '@/lib/scoring';
 import { getNarrativeProfile, getAnticipatedQuestions } from '@/lib/investor-narratives';
 import type { InvestorType, Objection } from '@/lib/types';
 
@@ -72,6 +74,24 @@ export async function POST(req: NextRequest) {
       getInvestorRelationships(investor_id).catch(() => []),
     ]);
 
+    // 3b. Compute conviction trajectory for this investor (cycle 11)
+    let trajectoryContext = '';
+    try {
+      const snapshots = await getScoreSnapshots(investor_id);
+      if (snapshots.length >= 3) {
+        const trajectory = computeAdvancedTrajectory(snapshots);
+        if (trajectory.pattern === 'plateau') {
+          trajectoryContext = `CONVICTION TRAJECTORY WARNING: Investor is in a plateau (${trajectory.plateauDuration} weeks flat). Score has not meaningfully changed. Consider a new value-add approach — share a milestone, new data point, or competitive signal to break the stall.`;
+        } else if (trajectory.pattern === 'decelerating' || trajectory.riskLevel === 'high' || trajectory.riskLevel === 'critical') {
+          trajectoryContext = `CONVICTION TRAJECTORY ALERT: Investor conviction is declining (${trajectory.velocityPerWeek > 0 ? '+' : ''}${trajectory.velocityPerWeek} pts/week, risk: ${trajectory.riskLevel}). Diagnose cause in this meeting: probe for unstated concerns, competitive alternatives, or internal politics.`;
+        } else if (trajectory.pattern === 'accelerating') {
+          trajectoryContext = `CONVICTION TRAJECTORY POSITIVE: Investor is accelerating (+${trajectory.velocityPerWeek} pts/week). Lean into the momentum — push for next concrete commitment (DD, term sheet, timeline).`;
+        } else if (trajectory.pattern === 'inflecting') {
+          trajectoryContext = `CONVICTION TRAJECTORY INFLECTION: Investor trajectory has changed direction${trajectory.inflectionDate ? ` around ${trajectory.inflectionDate}` : ''}. Pay attention to what caused the shift and adapt accordingly.`;
+        }
+      }
+    } catch { /* non-blocking — trajectory is supplementary */ }
+
     // 4. Extract historical questions from meetings
     const historicalQuestions: string[] = [];
     const historicalObjections: { text: string; severity: string; topic: string; addressed: boolean; response_effectiveness: string; meetingDate: string }[] = [];
@@ -122,7 +142,7 @@ export async function POST(req: NextRequest) {
       documentsByType.get(d.type)!.push({ id: d.id, title: d.title, type: d.type, updated_at: d.updated_at });
     });
 
-    // 9. Generate personalized brief with Claude (now with cross-investor intelligence)
+    // 9. Generate personalized brief with Claude (now with cross-investor intelligence + trajectory)
     const contextForAI = buildAIContext({
       investor,
       narrative,
@@ -140,6 +160,7 @@ export async function POST(req: NextRequest) {
       provenResponses,
       aggregatedCompetitiveIntel,
       investorRelationships,
+      trajectoryContext,
     });
 
     const response = await getAIClient().messages.create({
@@ -301,6 +322,7 @@ function buildAIContext(ctx: {
   provenResponses?: { topic: string; bestResponse: string; effectiveness: string; enthusiasmLift: number }[];
   aggregatedCompetitiveIntel?: { competitor: string; mentionCount: number; investors: string[]; context: string[] }[];
   investorRelationships?: { investor_a_id: string; investor_b_id: string; investor_a_name?: string; investor_b_name?: string; investor_a_status?: string; investor_b_status?: string; relationship_type: string }[];
+  trajectoryContext?: string;
 }): string {
   const meetingHistory = ctx.meetings.slice(0, 5).map(m =>
     `Date: ${m.date} | Type: ${m.type} | Enthusiasm: ${m.enthusiasm_score}/5\nAnalysis: ${m.ai_analysis}\nNext Steps: ${m.next_steps}`
@@ -378,6 +400,10 @@ ${ctx.investorRelationships.slice(0, 5).map(r => {
   return `- Connected to ${otherName} (${r.relationship_type}) — their status: ${otherStatus}`;
 }).join('\n')}
 Use these connections strategically — mention shared portfolio companies or co-investors as social proof.` : ''}
+
+${ctx.trajectoryContext ? `CONVICTION TRAJECTORY ANALYSIS:
+${ctx.trajectoryContext}
+Factor this into your recommendations — if declining, focus on re-engagement; if plateaued, suggest pattern-breaking actions; if accelerating, push for commitment.` : ''}
 
 Generate a JSON meeting brief (no markdown, pure JSON):
 {

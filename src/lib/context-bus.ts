@@ -237,6 +237,14 @@ export interface FullContext {
     velocityTrend: string;
     avgDaysToClose: number;
   } | null;
+
+  // Strategic health — consolidated fundraise health metrics (cycle 11)
+  strategicHealth: {
+    readinessScore: number;
+    narrativeScore: number;
+    pipelineConcentration: number; // 0=diversified, 1=concentrated
+    velocityTrend: string;
+  } | null;
 }
 
 const recentChanges: ContextChange[] = [];
@@ -502,6 +510,9 @@ export async function getFullContext(): Promise<FullContext> {
       resolvedCount: (objectionEvolutionData as { resolvedObjections: Array<unknown> }).resolvedObjections.length,
     } : null,
 
+    // Strategic health — populated by strategic assessment route, not fetched in bus (cycle 11)
+    strategicHealth: null,
+
     // Pipeline flow — bottleneck and velocity intelligence (cycle 10)
     pipelineFlow: pipelineFlowData ? {
       bottleneckStage: (pipelineFlowData as { bottleneckStage: string }).bottleneckStage,
@@ -715,6 +726,12 @@ export function contextToSystemPrompt(ctx: FullContext): string {
     if (pf.avgDaysToClose > 0) {
       lines.push(`- Sum of avg stage durations: ~${pf.avgDaysToClose} days`);
     }
+    lines.push('');
+  }
+
+  // Strategic health (consolidated fundraise assessment)
+  if (ctx.strategicHealth) {
+    lines.push(`STRATEGIC HEALTH: Readiness ${ctx.strategicHealth.readinessScore}/100 | Narrative ${ctx.strategicHealth.narrativeScore}/100 | Concentration ${Math.round(ctx.strategicHealth.pipelineConcentration * 100)}% | Velocity: ${ctx.strategicHealth.velocityTrend}`);
     lines.push('');
   }
 

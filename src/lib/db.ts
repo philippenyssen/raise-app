@@ -378,6 +378,21 @@ async function ensureInitialized() {
   // Migration: add enthusiasm_at_objection column if missing
   try { await db.execute(`ALTER TABLE objection_responses ADD COLUMN enthusiasm_at_objection INTEGER DEFAULT 0`); } catch { /* column already exists */ }
 
+  // Migration: health_snapshots table for strategic assessment tracking (cycle 11)
+  try {
+    await db.execute(`CREATE TABLE IF NOT EXISTS health_snapshots (
+      id TEXT PRIMARY KEY,
+      snapshot_date TEXT DEFAULT (date('now')),
+      pipeline_score INTEGER,
+      narrative_score INTEGER,
+      readiness_score INTEGER,
+      velocity REAL,
+      active_investors INTEGER,
+      strategic_summary TEXT,
+      created_at TEXT DEFAULT (datetime('now'))
+    )`);
+  } catch { /* already exists */ }
+
   initialized = true;
 }
 
@@ -4323,4 +4338,56 @@ export async function computePipelineFlow(): Promise<{
     velocityTrend,
     stageHealth,
   };
+}
+
+// ---------------------------------------------------------------------------
+// Health Snapshots — strategic assessment tracking (cycle 11)
+// ---------------------------------------------------------------------------
+
+export interface HealthSnapshot {
+  id: string;
+  snapshot_date: string;
+  pipeline_score: number;
+  narrative_score: number;
+  readiness_score: number;
+  velocity: number;
+  active_investors: number;
+  strategic_summary: string;
+  created_at: string;
+}
+
+export async function saveHealthSnapshot(snapshot: {
+  pipelineScore: number;
+  narrativeScore: number;
+  readinessScore: number;
+  velocity: number;
+  activeInvestors: number;
+  strategicSummary: string;
+}): Promise<void> {
+  await ensureInitialized();
+  const db = getClient();
+  const id = `hs_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+  await db.execute({
+    sql: `INSERT INTO health_snapshots (id, pipeline_score, narrative_score, readiness_score, velocity, active_investors, strategic_summary)
+          VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    args: [
+      id,
+      snapshot.pipelineScore,
+      snapshot.narrativeScore,
+      snapshot.readinessScore,
+      snapshot.velocity,
+      snapshot.activeInvestors,
+      snapshot.strategicSummary,
+    ],
+  });
+}
+
+export async function getHealthSnapshots(limit: number = 30): Promise<HealthSnapshot[]> {
+  await ensureInitialized();
+  const db = getClient();
+  const result = await db.execute({
+    sql: `SELECT * FROM health_snapshots ORDER BY snapshot_date DESC, created_at DESC LIMIT ?`,
+    args: [limit],
+  });
+  return result.rows as unknown as HealthSnapshot[];
 }

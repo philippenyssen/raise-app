@@ -14,6 +14,7 @@
 | 8 | 2026-03-14 | Autonomous Intelligence | Auto-action engine (5 rules: narrative weakness, engagement gap, declining trajectory, keystone uncommitted, struggling type), pulse-triggered intelligence refresh, smart follow-up timing (day-of-week + time-of-day optimization per investor + type), auto-actions API (POST trigger + GET pending) | db.ts, pulse/route.ts, intelligence/auto-actions/route.ts |
 | 9 | 2026-03-14 | Learning Intelligence | Action outcome measurement (enthusiasm delta + status progression + engagement increase), rule effectiveness aggregation (by trigger_type × action_type), self-improving auto-actions (skip ineffective rules, boost proven ones), action effectiveness in context bus + system prompt, evidence-based AI instructions, pulse-triggered measurement | db.ts, context-bus.ts, workspace/route.ts, pulse/route.ts |
 | 10 | 2026-03-14 | Depth: Trajectory + Objections + Pipeline | Advanced conviction trajectory (inflection detection, acceleration/2nd derivative, plateau detection, risk classification), objection evolution (emerging/resolved/persistent temporal tracking, heat map), pipeline flow intelligence (stage dwell time, bottleneck detection, conversion rates, velocity trend), all wired to context bus + system prompt | scoring.ts, db.ts, context-bus.ts |
+| 11 | 2026-03-14 | Strategic Intelligence Consolidation | Strategic assessment API (CEO brief, raise velocity, narrative health score, pipeline concentration Herfindahl, readiness score, ranked recommendations), health snapshot storage + trend tracking, pulse auto-snapshots, meeting brief trajectory integration (plateau/decline/acceleration detection), context bus strategicHealth field | intelligence/strategic/route.ts, db.ts, context-bus.ts, pulse/route.ts, meeting-brief/route.ts |
 
 ## Intelligence Capabilities (Existing)
 
@@ -150,7 +151,7 @@
 - [x] **Auto-rebuild on investor creation and warm_path update (NEW cycle 5)**
 - [x] **Market deal co-investor detection: scans market_deals for pipeline investors, discovers co-investment relationships (NEW cycle 6)**
 
-### J. Meeting Prep API (NEW cycle 4)
+### J. Meeting Prep API (NEW cycle 4, extended cycle 11)
 - [x] Dedicated `/api/meetings/prep?investor_id=` endpoint
 - [x] Cross-investor question patterns by investor type
 - [x] Proven responses with effectiveness ratings
@@ -158,6 +159,7 @@
 - [x] Network connection context with strategic implications
 - [x] Unresolved objection tracking with suggested responses
 - [x] Enhanced `/api/meeting-brief` with all cross-investor data passed to AI
+- [x] **Conviction trajectory integration: advanced trajectory (plateau/decline/acceleration/inflection) detected and injected into AI meeting brief prompt (NEW cycle 11)**
 
 ### K. Document Auto-Strengthening (NEW cycle 5)
 - [x] POST `/api/documents/strengthen` endpoint
@@ -203,11 +205,12 @@
   - [x] Type-specific time-of-day heuristics (VC=10AM, growth=9:30AM, sovereign=11AM, strategic=2PM, etc.)
   - [x] Returns optimalDayOfWeek, optimalTimeOfDay, reasoning with data sources
 
-### O. Pulse as Intelligence Heartbeat (NEW cycle 8, extended cycle 9)
+### O. Pulse as Intelligence Heartbeat (NEW cycle 8, extended cycle 9, extended cycle 11)
 - [x] Every pulse dashboard view triggers non-blocking `generateAutoActions()`
 - [x] Detect→Act loop closed: patterns detected → actions created → visible in dashboard
 - [x] No manual trigger needed — intelligence refreshes on CEO dashboard view
 - [x] **Every pulse view also triggers `measureActionEffectiveness()` — measures outcomes of executed actions (NEW cycle 9)**
+- [x] **Every pulse view stores daily health snapshot if not already stored today — tracks fundraise health over time (NEW cycle 11)**
 
 ### P. Learning Intelligence (NEW cycle 9)
 - [x] `measureActionEffectiveness()`: measures outcomes of executed acceleration actions
@@ -255,6 +258,29 @@
   - [x] Parses activity_log detail field for status transitions + investor creation dates as baseline
   - [x] Wired to context bus: bottleneckStage/velocityTrend/avgDaysToClose in FullContext
   - [x] System prompt: PIPELINE FLOW section with bottleneck identification and velocity trend
+
+### S. Strategic Intelligence Consolidation (NEW cycle 11)
+- [x] GET `/api/intelligence/strategic` — single strategic assessment endpoint
+  - [x] CEO Brief: 3-sentence strategic situation summary, auto-generated from all data sources
+  - [x] Raise Velocity: meetings/week, stage advances/week, trend (accelerating/steady/decelerating)
+  - [x] Narrative Health Score (0-100): question convergence, objection resolution rate, enthusiasm trend, investor type effectiveness
+  - [x] Pipeline Concentration Risk: Herfindahl index of weighted pipeline value (0=diversified, 1=concentrated)
+  - [x] Fundraise Readiness Score (0-100): composite of pipeline depth, narrative health, execution quality, data room completeness, diversification
+  - [x] Strategic Recommendations: 3-5 ranked by impact with priority, category, rationale, action, expectedImpact, deadline
+  - [x] 7 recommendation generators: velocity, narrative gaps, concentration risk, execution gaps, keystone investors, timing opportunities, emerging objections
+  - [x] Historical health snapshots for trend tracking
+  - [x] Auto-stores daily snapshot on access
+- [x] `health_snapshots` table in db.ts for persistent health metric tracking
+- [x] `saveHealthSnapshot()` + `getHealthSnapshots()` in db.ts
+- [x] Pulse auto-snapshot: stores daily health metrics non-blocking on every pulse view
+- [x] `strategicHealth` field in FullContext (context-bus.ts) — type defined, initialized as null, populated externally
+- [x] System prompt serialization: STRATEGIC HEALTH line with readiness/narrative/concentration/velocity
+- [x] Meeting brief trajectory integration: `computeAdvancedTrajectory()` consumed in meeting-brief/route.ts
+  - [x] Plateau detection: suggests pattern-breaking actions when investor conviction is flat
+  - [x] Decline detection: flags declining trajectory with diagnostic guidance
+  - [x] Acceleration detection: suggests pushing for commitment when momentum is positive
+  - [x] Inflection detection: alerts to trajectory direction changes
+  - [x] Trajectory context injected into AI prompt for personalized brief generation
 
 ## Intelligence Gaps (Prioritized for Next Cycle)
 

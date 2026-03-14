@@ -104,7 +104,7 @@ CURRENT DOCUMENT: "${documentTitle}" (${documentId ? 'loaded' : 'none selected'}
 ${documentContent ? `\nDOCUMENT CONTENT:\n${documentContent.substring(0, 60000)}` : ''}
 
 OTHER DOCUMENTS IN THIS RAISE:
-${buildOtherDocsContext(allDocs, documentId)}
+${otherDocsContext}
 
 DATA ROOM (source materials):
 ${fullCtx.dataRoomSummary}
