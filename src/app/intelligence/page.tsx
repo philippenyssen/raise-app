@@ -473,13 +473,25 @@ export default function IntelligencePage() {
                       <span className="font-medium text-sm" style={{ color: 'var(--text-primary)' }}>{b.subject}</span>
                       <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{b.updated_at?.split('T')[0]}</span>
                       {b.investor_id && (
-                        <Link
-                          href={`/investors/${b.investor_id}`}
-                          style={{ color: 'var(--accent)', fontSize: 'var(--font-size-xs)' }}
-                          onClick={e => e.stopPropagation()}
-                        >
-                          View Investor
-                        </Link>
+                        <span className="flex items-center gap-2" onClick={e => e.stopPropagation()}>
+                          <Link
+                            href={`/investors/${b.investor_id}`}
+                            style={{ color: 'var(--accent)', fontSize: 'var(--font-size-xs)', textDecoration: 'none' }}
+                          >
+                            View
+                          </Link>
+                          <Link
+                            href={`/meetings/new?investor=${b.investor_id}`}
+                            style={{
+                              fontSize: '10px', fontWeight: 600, padding: '2px 6px',
+                              borderRadius: 'var(--radius-sm)', textDecoration: 'none',
+                              background: 'var(--accent-muted)', color: 'var(--accent)',
+                              border: '1px solid rgba(59,130,246,0.2)',
+                            }}
+                          >
+                            Schedule
+                          </Link>
+                        </span>
                       )}
                     </div>
                     <div className="flex items-center gap-2">
@@ -627,13 +639,37 @@ function RecentResearchSection({ briefs }: { briefs: IntelligenceBrief[] }) {
                     {brief.content}
                   </div>
                   {brief.investor_id && (
-                    <div className="mt-2">
+                    <div className="mt-2 flex items-center gap-3">
                       <Link
                         href={`/investors/${brief.investor_id}`}
                         className="text-xs flex items-center gap-1"
-                        style={{ color: 'var(--accent)' }}
+                        style={{ color: 'var(--accent)', textDecoration: 'none' }}
                       >
-                        View Investor Profile
+                        View Profile
+                      </Link>
+                      <Link
+                        href={`/meetings/new?investor=${brief.investor_id}`}
+                        className="text-xs flex items-center gap-1"
+                        style={{
+                          padding: '2px 8px', borderRadius: 'var(--radius-sm)',
+                          background: 'var(--accent-muted)', color: 'var(--accent)',
+                          border: '1px solid rgba(59,130,246,0.2)', textDecoration: 'none',
+                          fontWeight: 600,
+                        }}
+                      >
+                        Schedule Meeting
+                      </Link>
+                      <Link
+                        href={`/followups?investor=${brief.investor_id}`}
+                        className="text-xs flex items-center gap-1"
+                        style={{
+                          padding: '2px 8px', borderRadius: 'var(--radius-sm)',
+                          background: 'var(--surface-2)', color: 'var(--text-secondary)',
+                          border: '1px solid var(--border-default)', textDecoration: 'none',
+                          fontWeight: 600,
+                        }}
+                      >
+                        Follow-up
                       </Link>
                     </div>
                   )}
