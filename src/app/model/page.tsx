@@ -321,7 +321,7 @@ export default function ModelPage() {
   }
 
   return (
-    <div className="h-[calc(100vh-4rem)] -mx-6 -my-8 flex flex-col">
+    <div className="page-content h-[calc(100vh-4rem)] -mx-6 -my-8 flex flex-col">
       {/* Sheet tabs + toolbar */}
       <div
         className="shrink-0 flex items-center"

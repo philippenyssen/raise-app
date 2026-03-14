@@ -52,7 +52,7 @@ export default function CompetitivePage() {
   const topCompetitor = data?.competitors[0]?.name ?? '-';
 
   return (
-    <div className="space-y-6">
+    <div className="page-content space-y-6">
       <div>
         <h1 className="page-title">Competitive Intelligence</h1>
         <p className="page-subtitle" style={{ fontSize: 'var(--font-size-sm)' }}>

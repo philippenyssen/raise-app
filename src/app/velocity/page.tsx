@@ -136,7 +136,7 @@ export default function VelocityPage() {
   const raiseProgress = Math.min(100, Math.round((summary.raise_days_elapsed / summary.raise_target_days) * 100));
 
   return (
-    <div className="flex-1 p-6" style={{ maxWidth: '1400px', margin: '0 auto' }}>
+    <div className="page-content flex-1 p-6" style={{ maxWidth: '1400px', margin: '0 auto' }}>
       {/* Header */}
       <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-6)' }}>
         <div>

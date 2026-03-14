@@ -200,7 +200,7 @@ export default function WorkspacePage() {
   }
 
   return (
-    <div className="h-[calc(100vh-4rem)] -mx-6 -my-8 flex">
+    <div className="page-content h-[calc(100vh-4rem)] -mx-6 -my-8 flex">
       {/* Document sidebar */}
       {sidebarOpen && (
         <div

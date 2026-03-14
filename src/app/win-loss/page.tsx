@@ -162,7 +162,7 @@ export default function WinLossPage() {
   const funnelMax = Math.max(...funnel.map(f => f.count), 1);
 
   return (
-    <div className="space-y-6">
+    <div className="page-content space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>

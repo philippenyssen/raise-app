@@ -129,7 +129,7 @@ export default function BacklogPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="page-content space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>Revenue Backlog</h1>

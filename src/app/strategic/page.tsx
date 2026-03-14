@@ -230,7 +230,7 @@ export default function StrategicPage() {
   const concentrationPct = Math.round(data.pipelineConcentrationRisk * 100);
 
   return (
-    <div className="space-y-6">
+    <div className="page-content space-y-6">
       {/* ================================================================ */}
       {/* HEADER                                                           */}
       {/* ================================================================ */}
