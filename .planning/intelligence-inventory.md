@@ -24,11 +24,12 @@
 | 18 | 2026-03-14 | Close Date Forecasting | Per-investor close date prediction from pipeline velocity + conversion rates + tier/enthusiasm adjustments, raise-level forecast aggregation, critical path identification, risk factor analysis, forecast in context bus + system prompt + synthesis, proactive surfacing of low-confidence forecast, workspace AI forecast-aware context steering + instruction 20 | db.ts, context-bus.ts, workspace/route.ts |
 | 19 | 2026-03-14 | Forecast Consumption | Forecast data consumed across entire intelligence layer: strategic API (forecast-based recommendations), strategic dashboard UI (forecast panel with investor table + risk factors), pulse insights (critical path stalled + low confidence), auto-action Rule 9 (critical path stalled investors), strategic recommendations (9 generators) | intelligence/strategic/route.ts, strategic/page.tsx, pulse/route.ts, db.ts |
 | 20 | 2026-03-14 | Verification + Meeting Brief Forecast | Intelligence verification expanded from 13 to 35+ checks across 5 categories (infrastructure, database, context bus, functions, quality). Meeting brief enriched with forecast context (critical path, predicted close date). System prompt section verification. | intelligence/verify/route.ts, meeting-brief/route.ts |
+| 21 | 2026-03-14 | Scoring: Forecast Dimension | 10th scoring dimension "Forecast Alignment" — scores predicted days to close, confidence, critical path membership, path probability. Phase-dynamic weights updated (2% in discovery → 10% in negotiation). Investor score API enriched with forecast data from computeRaiseForecast(). | scoring.ts, investors/[id]/score/route.ts |
 
 ## Intelligence Capabilities (Existing)
 
 ### A. Scoring Engine (scoring.ts)
-- [x] 9-dimension scoring: engagement, thesis fit, check size, speed match, conflict risk, warm path, meeting quality, momentum, **network effect (NEW cycle 4)**
+- [x] 10-dimension scoring: engagement, thesis fit, check size, speed match, conflict risk, warm path, meeting quality, momentum, **network effect (cycle 4)**, **forecast alignment (cycle 21)**
 - [x] Phase-dynamic weights: discovery/outreach/mgmt_presentations/due_diligence/negotiation
 - [x] Recency-weighted enthusiasm: exponential decay half-life ~21 days
 - [x] Conviction trajectory: linear regression on score snapshots, velocity/wk, predicted score in 30d

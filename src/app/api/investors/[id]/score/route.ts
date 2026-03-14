@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getInvestor, getMeetings, getInvestorPortfolio, getIntelligenceBriefs, getRaiseConfig, upsertScoreSnapshot, computeNetworkEffectData } from '@/lib/db';
+import { getInvestor, getMeetings, getInvestorPortfolio, getIntelligenceBriefs, getRaiseConfig, upsertScoreSnapshot, computeNetworkEffectData, computeRaiseForecast } from '@/lib/db';
 import { computeInvestorScore } from '@/lib/scoring';
 
 export async function GET(
@@ -8,14 +8,15 @@ export async function GET(
 ) {
   const { id } = await params;
 
-  // Fetch all data in parallel (including network effect data)
-  const [investor, meetings, portfolio, briefs, raiseConfig, networkData] = await Promise.all([
+  // Fetch all data in parallel (including network effect + forecast data)
+  const [investor, meetings, portfolio, briefs, raiseConfig, networkData, raiseForecastData] = await Promise.all([
     getInvestor(id),
     getMeetings(id),
     getInvestorPortfolio(id),
     getIntelligenceBriefs(undefined, id),
     getRaiseConfig(),
     computeNetworkEffectData(id).catch(() => null),
+    computeRaiseForecast().catch(() => null),
   ]);
 
   if (!investor) {
@@ -39,6 +40,20 @@ export async function GET(
     targetCloseDate = raiseConfig.target_close || null;
   }
 
+  // Build forecast data for this investor
+  let forecastData: { predictedDaysToClose: number; confidence: string; isCriticalPath: boolean; pathProbability: number } | null = null;
+  if (raiseForecastData) {
+    const invForecast = raiseForecastData.forecasts.find(f => f.investorId === id);
+    if (invForecast) {
+      forecastData = {
+        predictedDaysToClose: invForecast.predictedDaysToClose,
+        confidence: invForecast.confidence,
+        isCriticalPath: raiseForecastData.criticalPathInvestors.includes(investor?.name || ''),
+        pathProbability: 0.5, // derived from pipeline flow conversion rates
+      };
+    }
+  }
+
   const score = computeInvestorScore(
     investor,
     meetings,
@@ -46,6 +61,7 @@ export async function GET(
     briefs,
     { targetEquityM, targetCloseDate },
     networkData,
+    forecastData,
   );
 
   // Auto-capture score snapshot (1 per investor per day, upsert)

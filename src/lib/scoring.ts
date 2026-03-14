@@ -763,6 +763,69 @@ function determineNextAction(
 }
 
 // ---------------------------------------------------------------------------
+// Forecast Alignment Dimension (cycle 21)
+// ---------------------------------------------------------------------------
+
+/**
+ * Scores how well-positioned this investor is based on forecast data.
+ * High score = investor is predicted to close soon with high confidence.
+ * Factors: predicted days to close, confidence, critical path membership, path probability.
+ */
+export function computeForecastAlignmentScore(
+  forecastData: { predictedDaysToClose: number; confidence: string; isCriticalPath: boolean; pathProbability: number } | null,
+): ScoreDimension {
+  if (!forecastData) {
+    return { name: 'Forecast Alignment', score: 0, signal: 'unknown', evidence: 'No forecast data available' };
+  }
+
+  let score = 50; // baseline
+  const parts: string[] = [];
+
+  // Days to close: closer = better (0-30 pts)
+  if (forecastData.predictedDaysToClose <= 30) {
+    score += 30;
+    parts.push(`~${forecastData.predictedDaysToClose}d to close (very near)`);
+  } else if (forecastData.predictedDaysToClose <= 60) {
+    score += 20;
+    parts.push(`~${forecastData.predictedDaysToClose}d to close (near)`);
+  } else if (forecastData.predictedDaysToClose <= 90) {
+    score += 10;
+    parts.push(`~${forecastData.predictedDaysToClose}d to close`);
+  } else {
+    score -= 10;
+    parts.push(`~${forecastData.predictedDaysToClose}d to close (distant)`);
+  }
+
+  // Confidence: high/medium/low (0-20 pts)
+  if (forecastData.confidence === 'high') {
+    score += 20;
+    parts.push('high confidence');
+  } else if (forecastData.confidence === 'medium') {
+    score += 10;
+    parts.push('medium confidence');
+  } else {
+    score -= 5;
+    parts.push('low confidence');
+  }
+
+  // Critical path membership (0-15 pts)
+  if (forecastData.isCriticalPath) {
+    score += 15;
+    parts.push('on critical path');
+  }
+
+  // Path probability (0-10 pts)
+  if (forecastData.pathProbability >= 0.5) {
+    score += 10;
+  } else if (forecastData.pathProbability >= 0.2) {
+    score += 5;
+  }
+
+  score = clamp(score);
+  return { name: 'Forecast Alignment', score, signal: signal(score), evidence: parts.join(' | ') };
+}
+
+// ---------------------------------------------------------------------------
 // Network Effect Dimension
 // ---------------------------------------------------------------------------
 
@@ -797,6 +860,7 @@ export function computeInvestorScore(
   briefs: IntelligenceBrief[],
   raiseConfig: { targetEquityM: number; targetCloseDate: string | null },
   networkData?: { score: number; evidence: string; positiveSignals: string[]; negativeSignals: string[] } | null,
+  forecastData?: { predictedDaysToClose: number; confidence: string; isCriticalPath: boolean; pathProbability: number } | null,
 ): InvestorScore {
   // Compute all dimensions
   const engagement = computeEngagementScore(investor, meetings);
@@ -818,6 +882,9 @@ export function computeInvestorScore(
   // 9th dimension: Network Effect
   const networkEffect = computeNetworkEffectScore(networkData || null);
 
+  // 10th dimension: Forecast Alignment (cycle 21)
+  const forecastAlignment = computeForecastAlignmentScore(forecastData || null);
+
   const dimensions = [
     engagement,
     thesisFit,
@@ -828,36 +895,38 @@ export function computeInvestorScore(
     meetingQuality,
     momentumDimension,
     networkEffect,
+    forecastAlignment,
   ];
 
   // Dynamic weights by raise phase — early-stage needs thesis fit > momentum;
   // late-stage (DD/negotiation) needs momentum > thesis fit
   // Network Effect grows in importance as the raise progresses (cascade dynamics)
+  // Forecast Alignment grows in importance as the raise progresses (timeline matters more in DD/negotiation)
   const phaseWeights: Record<string, Record<string, number>> = {
     discovery: {
-      'Engagement': 0.10, 'Thesis Fit': 0.24, 'Check Size Fit': 0.14,
+      'Engagement': 0.10, 'Thesis Fit': 0.23, 'Check Size Fit': 0.13,
       'Speed Match': 0.05, 'Conflict Risk': 0.10, 'Warm Path': 0.14,
-      'Meeting Quality': 0.10, 'Momentum': 0.10, 'Network Effect': 0.03,
+      'Meeting Quality': 0.10, 'Momentum': 0.10, 'Network Effect': 0.03, 'Forecast Alignment': 0.02,
     },
     outreach: {
-      'Engagement': 0.14, 'Thesis Fit': 0.19, 'Check Size Fit': 0.10,
-      'Speed Match': 0.09, 'Conflict Risk': 0.10, 'Warm Path': 0.14,
-      'Meeting Quality': 0.10, 'Momentum': 0.10, 'Network Effect': 0.04,
+      'Engagement': 0.13, 'Thesis Fit': 0.18, 'Check Size Fit': 0.10,
+      'Speed Match': 0.09, 'Conflict Risk': 0.10, 'Warm Path': 0.13,
+      'Meeting Quality': 0.10, 'Momentum': 0.10, 'Network Effect': 0.04, 'Forecast Alignment': 0.03,
     },
     mgmt_presentations: {
-      'Engagement': 0.18, 'Thesis Fit': 0.14, 'Check Size Fit': 0.10,
-      'Speed Match': 0.09, 'Conflict Risk': 0.10, 'Warm Path': 0.09,
-      'Meeting Quality': 0.14, 'Momentum': 0.10, 'Network Effect': 0.06,
+      'Engagement': 0.17, 'Thesis Fit': 0.13, 'Check Size Fit': 0.10,
+      'Speed Match': 0.09, 'Conflict Risk': 0.09, 'Warm Path': 0.09,
+      'Meeting Quality': 0.13, 'Momentum': 0.10, 'Network Effect': 0.05, 'Forecast Alignment': 0.05,
     },
     due_diligence: {
-      'Engagement': 0.13, 'Thesis Fit': 0.09, 'Check Size Fit': 0.09,
-      'Speed Match': 0.14, 'Conflict Risk': 0.13, 'Warm Path': 0.05,
-      'Meeting Quality': 0.14, 'Momentum': 0.14, 'Network Effect': 0.09,
+      'Engagement': 0.12, 'Thesis Fit': 0.08, 'Check Size Fit': 0.09,
+      'Speed Match': 0.13, 'Conflict Risk': 0.12, 'Warm Path': 0.05,
+      'Meeting Quality': 0.13, 'Momentum': 0.13, 'Network Effect': 0.08, 'Forecast Alignment': 0.07,
     },
     negotiation: {
-      'Engagement': 0.08, 'Thesis Fit': 0.05, 'Check Size Fit': 0.14,
-      'Speed Match': 0.18, 'Conflict Risk': 0.13, 'Warm Path': 0.05,
-      'Meeting Quality': 0.09, 'Momentum': 0.18, 'Network Effect': 0.10,
+      'Engagement': 0.07, 'Thesis Fit': 0.05, 'Check Size Fit': 0.13,
+      'Speed Match': 0.16, 'Conflict Risk': 0.12, 'Warm Path': 0.04,
+      'Meeting Quality': 0.08, 'Momentum': 0.16, 'Network Effect': 0.09, 'Forecast Alignment': 0.10,
     },
   };
   const raisePhase = (raiseConfig as Record<string, unknown>).raisePhase as string || 'mgmt_presentations';
