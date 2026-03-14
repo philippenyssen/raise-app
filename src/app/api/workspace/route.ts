@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
-import { getAllDocuments } from '@/lib/db';
+import { getAllDocuments, getInvestor, getMeetings, getInvestorPortfolio, getIntelligenceBriefs, getRaiseConfig, computeNetworkEffectData, computeRaiseForecast, computeEngagementVelocity, detectFomoDynamics, detectScoreReversals } from '@/lib/db';
+import { computeInvestorScore, computeDealHeat } from '@/lib/scoring';
 import { getFullContext, contextToSystemPrompt } from '@/lib/context-bus';
 import type { FullContext } from '@/lib/context-bus';
 
@@ -108,10 +109,10 @@ function detectQueryIntent(
  * Build a dynamic focus instruction that steers the AI's attention to
  * the most relevant context sections for this specific query.
  */
-function buildQueryFocus(
+async function buildQueryFocus(
   intent: QueryIntent,
   ctx: FullContext,
-): string {
+): Promise<string> {
   const lines: string[] = [];
 
   if (intent.type === 'investor_specific' && intent.investorName) {
@@ -190,7 +191,65 @@ function buildQueryFocus(
         lines.push(`- RANK: #${ranking.rank}${changeStr} in pipeline`);
       }
 
-      lines.push(`Prioritize this investor's data in the KEY INVESTORS section. Use their specific objection history, trajectory, and meeting patterns to give targeted advice.`);
+      // Engagement velocity for this investor (cycle 33)
+      const velocity = ctx.engagementVelocity.find(v => v.investorId === inv.id);
+      if (velocity) {
+        lines.push(`- VELOCITY: ${velocity.acceleration.toUpperCase()} — ${velocity.signal}`);
+      }
+
+      // Network cascade impact for this investor (cycle 33)
+      const cascade = ctx.networkCascades.find(c => c.keystoneId === inv.id);
+      if (cascade) {
+        lines.push(`- CASCADE POWER: Closing ${inv.name} cascades to ${cascade.cascadeChain.length} investors (${cascade.cascadeChain.slice(0, 3).map(c => `${c.investorName} ${Math.round(c.probability * 100)}%`).join(', ')})`);
+      }
+
+      // On-demand scoring dimensions (cycle 33) — compute fresh for this investor
+      try {
+        const [investorData, investorMeetings, investorPortfolio, investorBriefs, raiseConfig] = await Promise.all([
+          getInvestor(inv.id),
+          getMeetings(inv.id),
+          getInvestorPortfolio(inv.id),
+          getIntelligenceBriefs(undefined, inv.id),
+          getRaiseConfig(),
+        ]);
+        if (investorData) {
+          let targetEquityM = 250;
+          if (raiseConfig) {
+            const eqStr = (raiseConfig.equity_amount || '').replace(/[€$£,]/g, '').trim().toLowerCase();
+            const eqMatch = eqStr.match(/([\d.]+)\s*(m|b|bn|million|billion)?/i);
+            if (eqMatch) {
+              let val = parseFloat(eqMatch[1]);
+              const unit = (eqMatch[2] || '').toLowerCase();
+              if (unit === 'b' || unit === 'bn' || unit === 'billion') val *= 1000;
+              targetEquityM = val;
+            }
+          }
+          const velocityData = velocity ? { acceleration: velocity.acceleration, recentMeetings: velocity.recentMeetings, previousMeetings: velocity.previousMeetings, daysSinceLastMeeting: velocity.daysSinceLastMeeting } : null;
+          const score = computeInvestorScore(investorData, investorMeetings, investorPortfolio, investorBriefs, { targetEquityM, targetCloseDate: raiseConfig?.target_close || null }, null, null, velocityData);
+          const strong = score.dimensions.filter(d => d.signal === 'strong');
+          const weak = score.dimensions.filter(d => d.signal === 'weak');
+          if (strong.length > 0) {
+            lines.push(`- STRENGTHS: ${strong.map(d => `${d.name} (${d.score})`).join(', ')}`);
+          }
+          if (weak.length > 0) {
+            lines.push(`- FRICTION POINTS: ${weak.map(d => `${d.name} (${d.score}) — ${d.evidence}`).join('; ')}`);
+          }
+          lines.push(`- OVERALL SCORE: ${score.overall}/100 | MOMENTUM: ${score.momentum} | PREDICTED: ${score.predictedOutcome}`);
+
+          // Deal heat (cycle 33)
+          const fomoForInv = ctx.fomoDynamics.find(f => f.affectedInvestors.some(a => a.name === inv.name));
+          const reversalData = ctx.scoreReversals.find(r => r.investorId === inv.id);
+          const heat = computeDealHeat(
+            score.overall, score.momentum, inv.enthusiasm,
+            velocity?.acceleration || null, fomoForInv?.fomoIntensity || null,
+            inv.daysInCurrentStage, inv.stageHealth,
+            reversalData?.delta ?? null,
+          );
+          lines.push(`- DEAL HEAT: ${heat.label.toUpperCase()} (${heat.heat}/100) — ${heat.drivers.join(', ')}`);
+        }
+      } catch { /* non-blocking — score computation failure doesn't break workspace */ }
+
+      lines.push(`Prioritize this investor's data in the KEY INVESTORS section. Use their specific scoring dimensions, deal heat, objection history, trajectory, and meeting patterns to give targeted advice.`);
     }
   } else if (intent.type === 'strategy') {
     lines.push(`QUERY FOCUS: The user is asking about strategic priorities. Pay special attention to:`);
@@ -362,7 +421,7 @@ export async function POST(req: NextRequest) {
 
   // Detect query intent and build focused context steering (cycle 15)
   const queryIntent = detectQueryIntent(messages, fullCtx);
-  const queryFocus = buildQueryFocus(queryIntent, fullCtx);
+  const queryFocus = await buildQueryFocus(queryIntent, fullCtx);
 
   // Proactive intelligence: top urgent items the AI should surface naturally (cycle 17)
   const proactiveIntel = buildProactiveIntelligence(fullCtx);
