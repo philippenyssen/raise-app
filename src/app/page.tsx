@@ -394,7 +394,7 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 page-content">
       {/* ================================================================ */}
       {/* HEADER                                                           */}
       {/* ================================================================ */}
@@ -616,7 +616,7 @@ export default function Dashboard() {
           {/* ================================================================ */}
           {/* PULSE STRIP - 4 compact metric cards                             */}
           {/* ================================================================ */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 card-stagger">
             <PulseCard
               label="Active Investors"
               value={ph?.activeInvestors ?? data.totalInvestors}
@@ -1708,6 +1708,7 @@ function PulseCard({ label, value, sub, color }: {
       style={{
         background: colorMap.muted,
         border: `1px solid ${colorMap.border}`,
+        borderLeft: `3px solid ${colorMap.accent}`,
         borderRadius: 'var(--radius-lg)',
         padding: 'var(--space-4) var(--space-5)',
       }}

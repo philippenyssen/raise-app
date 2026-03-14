@@ -1213,7 +1213,7 @@ export default function FocusPage() {
   const hasAccelerationData = accelData && accelData.accelerations.length > 0;
 
   return (
-    <div className="space-y-6">
+    <div className="page-content space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>

@@ -161,6 +161,32 @@ body {
   box-shadow: var(--shadow-sm);
 }
 
+/* ── Metric card ── KPI card with subtle left accent */
+.card-metric {
+  background: var(--surface-1);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4) var(--space-5);
+  position: relative;
+  overflow: hidden;
+  transition: border-color 150ms ease, background 150ms ease;
+}
+.card-metric::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--accent);
+  border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+  opacity: 0.6;
+}
+.card-metric:hover { border-color: var(--border-default); background: var(--surface-2); }
+.card-metric.metric-success::before { background: var(--success); }
+.card-metric.metric-warning::before { background: var(--warning); }
+.card-metric.metric-danger::before { background: var(--danger); }
+
 /* ── Section heading ── */
 .section-title {
   font-size: var(--font-size-xs);
@@ -428,6 +454,26 @@ select option {
 .animate-slide-in { animation: slide-in-right 200ms ease forwards; }
 .animate-slide-down { animation: slide-down 200ms ease forwards; }
 
+/* ── Page content wrapper ── smooth load animation */
+.page-content {
+  animation: page-enter 300ms ease forwards;
+}
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Staggered card animation ── */
+.card-stagger > * {
+  animation: fade-in 250ms ease both;
+}
+.card-stagger > *:nth-child(1) { animation-delay: 0ms; }
+.card-stagger > *:nth-child(2) { animation-delay: 50ms; }
+.card-stagger > *:nth-child(3) { animation-delay: 100ms; }
+.card-stagger > *:nth-child(4) { animation-delay: 150ms; }
+.card-stagger > *:nth-child(5) { animation-delay: 200ms; }
+.card-stagger > *:nth-child(6) { animation-delay: 250ms; }
+
 /* ── Enthusiasm dots ── */
 .enthusiasm-dots {
   display: flex;
@@ -505,4 +551,50 @@ select option {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* =========================================================================
+   RESPONSIVE — Mobile-first fixes
+   ========================================================================= */
+
+@media (max-width: 768px) {
+  /* Page titles smaller on mobile */
+  .page-title { font-size: var(--font-size-xl); }
+  .page-subtitle { font-size: var(--font-size-xs); }
+
+  /* Cards need less padding on mobile */
+  .card, .card-elevated, .card-metric {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  /* Metric cards compact */
+  .metric-value { font-size: var(--font-size-xl); }
+  .metric-label { font-size: 10px; }
+
+  /* Buttons wrap better */
+  .btn { font-size: var(--font-size-xs); padding: 0.4rem 0.75rem; }
+  .btn-sm { padding: 0.3rem 0.6rem; }
+
+  /* Horizontal overflow prevention */
+  .overflow-x-guard {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .overflow-x-guard::-webkit-scrollbar { display: none; }
+
+  /* Stats row scrollable on mobile */
+  .stats-row {
+    display: flex;
+    gap: var(--space-3);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: var(--space-2);
+    scrollbar-width: none;
+  }
+  .stats-row::-webkit-scrollbar { display: none; }
+  .stats-row > * { flex-shrink: 0; min-width: 100px; }
+
+  /* Disable page-enter animation on mobile for faster paint */
+  .page-content { animation: none; }
 }

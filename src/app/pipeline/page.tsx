@@ -319,7 +319,7 @@ export default function PipelinePage() {
   }
 
   return (
-    <div className="space-y-5 h-full flex flex-col">
+    <div className="page-content space-y-5 h-full flex flex-col">
       {/* ── Header ──────────────────────────────────────────────── */}
       <div className="flex items-center justify-between flex-shrink-0">
         <div>

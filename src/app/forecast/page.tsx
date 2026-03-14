@@ -208,7 +208,7 @@ export default function ForecastPage() {
   const maxDaysToClose = Math.max(...forecast.forecasts.map(f => f.predictedDaysToClose), 1);
 
   return (
-    <div className="flex-1 p-6" style={{ maxWidth: '1400px', margin: '0 auto' }}>
+    <div className="page-content flex-1 p-6" style={{ maxWidth: '1400px', margin: '0 auto' }}>
       {/* Header */}
       <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-6)' }}>
         <div className="flex items-center gap-3">
