@@ -384,7 +384,9 @@ export default function Dashboard() {
   const cv = pulse?.convictionPulse;
   const ov = pulse?.overnight;
 
+  const identifiedCount = data.totalInvestors - data.funnel.contacted - (data.funnel.passed ?? 0);
   const funnelStages = [
+    { label: 'Identified', value: identifiedCount > 0 ? identifiedCount : 0, bg: 'var(--text-muted)' },
     { label: 'Contacted', value: data.funnel.contacted, bg: 'var(--text-tertiary)' },
     { label: 'Meetings', value: data.funnel.meetings, bg: 'var(--accent)' },
     { label: 'Engaged', value: data.funnel.engaged, bg: '#8b6ef5' },
@@ -1297,7 +1299,10 @@ export default function Dashboard() {
                   ))}
                 </div>
               ) : (
-                <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>No active deals scored yet</p>
+                <div style={{ padding: 'var(--space-2) 0' }}>
+                  <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>No active deals scored yet</p>
+                  <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 'var(--space-1)', opacity: 0.7 }}>Log meetings to generate deal heat scores</p>
+                </div>
               )}
             </div>
 
@@ -1330,7 +1335,10 @@ export default function Dashboard() {
                   ))}
                 </div>
               ) : (
-                <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>No pending follow-ups</p>
+                <div style={{ padding: 'var(--space-2) 0' }}>
+                  <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>No pending follow-ups</p>
+                  <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 'var(--space-1)', opacity: 0.7 }}>Follow-ups are created after meeting debriefs</p>
+                </div>
               )}
             </div>
           </div>
@@ -1563,7 +1571,10 @@ export default function Dashboard() {
                 </Link>
               </div>
               {tasks.length === 0 ? (
-                <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>No upcoming tasks</p>
+                <div style={{ padding: 'var(--space-2) 0' }}>
+                  <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>No upcoming tasks</p>
+                  <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 'var(--space-1)', opacity: 0.7 }}>Tasks are generated from meetings and AI analysis</p>
+                </div>
               ) : (
                 <div className="space-y-2">
                   {tasks.map(t => {
@@ -1614,7 +1625,10 @@ export default function Dashboard() {
                 </Link>
               </div>
               {activity.length === 0 ? (
-                <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>No activity recorded yet</p>
+                <div style={{ padding: 'var(--space-2) 0' }}>
+                  <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>No activity recorded yet</p>
+                  <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 'var(--space-1)', opacity: 0.7 }}>Activity logs from meetings, status changes, and tasks</p>
+                </div>
               ) : (
                 <div className="space-y-1">
                   {activity.slice(0, 10).map(a => (
