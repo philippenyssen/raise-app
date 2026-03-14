@@ -6,7 +6,7 @@ import { useState } from 'react';
 import {
   LayoutDashboard, Users, Calendar, Brain, HeartPulse, FileText,
   Sparkles, FolderOpen, BookOpen, Table, Globe, ClipboardList, Settings,
-  Columns3, Download,
+  Columns3, GitCompare,
   Menu, X, LogOut
 } from 'lucide-react';
 
@@ -31,6 +31,7 @@ const nav: NavItem[] = [
   { href: '/', label: 'Dashboard', icon: LayoutDashboard, section: 'PROCESS' },
   { href: '/pipeline', label: 'Pipeline', icon: Columns3, section: 'PROCESS' },
   { href: '/investors', label: 'Investors', icon: Users, section: 'PROCESS' },
+  { href: '/compare', label: 'Compare', icon: GitCompare, section: 'PROCESS' },
   { href: '/meetings', label: 'Meetings', icon: Calendar, section: 'PROCESS' },
   { href: '/analysis', label: 'Analysis', icon: Brain, section: 'PROCESS' },
   { href: '/health', label: 'Health', icon: HeartPulse, section: 'PROCESS' },
