@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@libsql/client';
 import { computeInvestorScore, computeMomentumScore, computeConvictionTrajectory } from '@/lib/scoring';
 import type { ScoreSnapshot } from '@/lib/db';
+import { generateAutoActions } from '@/lib/db';
 import type { Investor, Meeting, InvestorPortfolioCo, Objection } from '@/lib/types';
 import { getFullContext } from '@/lib/context-bus';
 
@@ -955,6 +956,10 @@ export async function GET() {
     const intelligenceBriefing = await computeIntelligenceBriefing(
       investors, allMeetings, criticalPath, convictionPulse, processHealth,
     );
+
+    // Non-blocking intelligence refresh: trigger auto-action generation
+    // This makes the pulse dashboard the "heartbeat" — every view refreshes intelligence
+    try { generateAutoActions().catch(() => {}); } catch { /* non-blocking */ }
 
     return NextResponse.json({
       overnight,

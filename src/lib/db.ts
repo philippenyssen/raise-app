@@ -3165,3 +3165,407 @@ export async function getProvenResponsesForTopics(topics: string[]): Promise<{
 
   return results;
 }
+
+// ---------------------------------------------------------------------------
+// Auto-Action Engine — Autonomous intelligence that detects patterns and acts
+// ---------------------------------------------------------------------------
+
+const AUTO_ACTION_RULES = [
+  {
+    condition: 'narrative_weakness_critical' as const,
+    trigger_type: 'catalyst_match' as const,
+    action_type: 'data_update' as const,
+    template: (topic: string, count: number) =>
+      `[AUTO] ${count} investors questioned "${topic}" — update pitch materials and prepare response framework before next meetings`,
+    expected_lift: 5,
+    confidence: 'medium' as const,
+  },
+  {
+    condition: 'engagement_gap' as const,
+    trigger_type: 'stall_risk' as const,
+    action_type: 'milestone_share' as const,
+    template: (name: string, days: number) =>
+      `[AUTO] ${name} has gone ${days} days without contact — send milestone update or news hook to re-engage`,
+    expected_lift: 8,
+    confidence: 'medium' as const,
+  },
+  {
+    condition: 'declining_trajectory' as const,
+    trigger_type: 'momentum_cliff' as const,
+    action_type: 'expert_call' as const,
+    template: (name: string, velocity: string) =>
+      `[AUTO] ${name} declining at ${velocity}/wk — schedule direct call with partner to understand concerns`,
+    expected_lift: 10,
+    confidence: 'high' as const,
+  },
+  {
+    condition: 'keystone_uncommitted' as const,
+    trigger_type: 'window_closing' as const,
+    action_type: 'escalation' as const,
+    template: (name: string, connections: number) =>
+      `[AUTO] ${name} is a keystone investor (connected to ${connections} others) — prioritize advancement to unlock cascade`,
+    expected_lift: 15,
+    confidence: 'high' as const,
+  },
+  {
+    condition: 'narrative_struggling_type' as const,
+    trigger_type: 'catalyst_match' as const,
+    action_type: 'data_update' as const,
+    template: (type: string, enthusiasm: string) =>
+      `[AUTO] "${type}" investors averaging only ${enthusiasm}/5 enthusiasm — create type-specific pitch variant`,
+    expected_lift: 7,
+    confidence: 'medium' as const,
+  },
+] as const;
+
+export interface AutoActionResult {
+  actionsCreated: AccelerationAction[];
+  rulesEvaluated: number;
+  patternsDetected: number;
+  skippedDuplicate: number;
+}
+
+/**
+ * Generate autonomous acceleration actions based on detected intelligence patterns.
+ * Checks each rule condition against current data, avoids duplicates,
+ * and creates acceleration_actions for new detections.
+ */
+export async function generateAutoActions(): Promise<AutoActionResult> {
+  await ensureInitialized();
+  const db = getClient();
+  const now = new Date();
+  const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
+  const actionsCreated: AccelerationAction[] = [];
+  let patternsDetected = 0;
+  let skippedDuplicate = 0;
+
+  // Helper: check if a similar pending action already exists (same investor + trigger_type in last 7 days)
+  async function hasDuplicateAction(investorId: string, triggerType: string): Promise<boolean> {
+    const result = await db.execute({
+      sql: `SELECT COUNT(*) as count FROM acceleration_actions
+            WHERE investor_id = ? AND trigger_type = ? AND status = 'pending' AND created_at >= ?`,
+      args: [investorId, triggerType, sevenDaysAgo],
+    });
+    return Number((result.rows[0] as unknown as { count: number }).count) > 0;
+  }
+
+  // --- Rule 1: narrative_weakness_critical (3+ investors same topic) ---
+  try {
+    const patterns = await getQuestionPatterns();
+    const criticalPatterns = patterns.filter(p => p.investorCount >= 3);
+    for (const pattern of criticalPatterns) {
+      patternsDetected++;
+      // Use a synthetic investor_id for cross-investor patterns
+      const syntheticId = `narrative_${pattern.topic}`;
+      if (await hasDuplicateAction(syntheticId, 'catalyst_match')) {
+        skippedDuplicate++;
+        continue;
+      }
+      const rule = AUTO_ACTION_RULES[0];
+      const action = await createAccelerationAction({
+        investor_id: syntheticId,
+        investor_name: pattern.investorNames.join(', '),
+        trigger_type: rule.trigger_type,
+        action_type: rule.action_type,
+        description: rule.template(pattern.topic, pattern.investorCount),
+        expected_lift: rule.expected_lift,
+        confidence: rule.confidence,
+        status: 'pending',
+        actual_lift: null,
+        executed_at: null,
+      });
+      actionsCreated.push(action);
+    }
+  } catch { /* non-blocking */ }
+
+  // --- Rule 2: engagement_gap (21+ days no contact for active investors) ---
+  try {
+    const investorsResult = await db.execute(
+      `SELECT id, name, status FROM investors WHERE status NOT IN ('passed', 'dropped', 'closed', 'identified')`
+    );
+    const activeInvestors = investorsResult.rows as unknown as Array<{ id: string; name: string; status: string }>;
+
+    for (const inv of activeInvestors) {
+      const lastMeetingResult = await db.execute({
+        sql: `SELECT MAX(date) as last_date FROM meetings WHERE investor_id = ?`,
+        args: [inv.id],
+      });
+      const lastDate = (lastMeetingResult.rows[0] as unknown as { last_date: string | null }).last_date;
+      if (!lastDate) continue;
+
+      const daysSince = Math.round((now.getTime() - new Date(lastDate).getTime()) / (1000 * 60 * 60 * 24));
+      if (daysSince >= 21) {
+        patternsDetected++;
+        if (await hasDuplicateAction(inv.id, 'stall_risk')) {
+          skippedDuplicate++;
+          continue;
+        }
+        const rule = AUTO_ACTION_RULES[1];
+        const action = await createAccelerationAction({
+          investor_id: inv.id,
+          investor_name: inv.name,
+          trigger_type: rule.trigger_type,
+          action_type: rule.action_type,
+          description: rule.template(inv.name, daysSince),
+          expected_lift: rule.expected_lift,
+          confidence: rule.confidence,
+          status: 'pending',
+          actual_lift: null,
+          executed_at: null,
+        });
+        actionsCreated.push(action);
+      }
+    }
+  } catch { /* non-blocking */ }
+
+  // --- Rule 3: declining_trajectory (score declining >2 pts/week) ---
+  try {
+    const snapshotsResult = await db.execute(
+      `SELECT investor_id, overall_score, snapshot_date FROM score_snapshots
+       WHERE snapshot_date >= date('now', '-21 days')
+       ORDER BY investor_id, snapshot_date ASC`
+    );
+    const snapRows = snapshotsResult.rows as unknown as Array<{ investor_id: string; overall_score: number; snapshot_date: string }>;
+
+    // Group by investor
+    const snapsByInvestor = new Map<string, Array<{ score: number; date: string }>>();
+    for (const row of snapRows) {
+      if (!snapsByInvestor.has(row.investor_id)) snapsByInvestor.set(row.investor_id, []);
+      snapsByInvestor.get(row.investor_id)!.push({ score: row.overall_score, date: row.snapshot_date });
+    }
+
+    for (const [investorId, snaps] of snapsByInvestor.entries()) {
+      if (snaps.length < 2) continue;
+      const first = snaps[0];
+      const last = snaps[snaps.length - 1];
+      const daysDiff = (new Date(last.date).getTime() - new Date(first.date).getTime()) / (1000 * 60 * 60 * 24);
+      if (daysDiff < 3) continue; // need at least 3 days of data
+
+      const weeksDiff = daysDiff / 7;
+      const velocityPerWeek = weeksDiff > 0 ? (last.score - first.score) / weeksDiff : 0;
+
+      if (velocityPerWeek < -2) {
+        patternsDetected++;
+        if (await hasDuplicateAction(investorId, 'momentum_cliff')) {
+          skippedDuplicate++;
+          continue;
+        }
+        // Get investor name
+        const invResult = await db.execute({ sql: `SELECT name FROM investors WHERE id = ?`, args: [investorId] });
+        const invName = invResult.rows.length > 0 ? (invResult.rows[0] as unknown as { name: string }).name : 'Unknown';
+
+        const rule = AUTO_ACTION_RULES[2];
+        const action = await createAccelerationAction({
+          investor_id: investorId,
+          investor_name: invName,
+          trigger_type: rule.trigger_type,
+          action_type: rule.action_type,
+          description: rule.template(invName, velocityPerWeek.toFixed(1)),
+          expected_lift: rule.expected_lift,
+          confidence: rule.confidence,
+          status: 'pending',
+          actual_lift: null,
+          executed_at: null,
+        });
+        actionsCreated.push(action);
+      }
+    }
+  } catch { /* non-blocking */ }
+
+  // --- Rule 4: keystone_uncommitted (keystone investor not at engaged+) ---
+  try {
+    const keystones = await getKeystoneInvestors();
+    for (const ks of keystones) {
+      if (ks.cascadeValue === 'minimal') continue;
+      // Check if investor is NOT yet at engaged or beyond
+      const invResult = await db.execute({ sql: `SELECT status FROM investors WHERE id = ?`, args: [ks.id] });
+      if (invResult.rows.length === 0) continue;
+      const status = (invResult.rows[0] as unknown as { status: string }).status;
+      const advancedStatuses = ['engaged', 'in_dd', 'term_sheet', 'closed'];
+      if (advancedStatuses.includes(status)) continue;
+
+      patternsDetected++;
+      if (await hasDuplicateAction(ks.id, 'window_closing')) {
+        skippedDuplicate++;
+        continue;
+      }
+      const rule = AUTO_ACTION_RULES[3];
+      const action = await createAccelerationAction({
+        investor_id: ks.id,
+        investor_name: ks.name,
+        trigger_type: rule.trigger_type,
+        action_type: rule.action_type,
+        description: rule.template(ks.name, ks.connectionCount),
+        expected_lift: rule.expected_lift,
+        confidence: rule.confidence,
+        status: 'pending',
+        actual_lift: null,
+        executed_at: null,
+      });
+      actionsCreated.push(action);
+    }
+  } catch { /* non-blocking */ }
+
+  // --- Rule 5: narrative_struggling_type (investor type with avg enthusiasm < 2.5) ---
+  try {
+    const narrativeSignals = await computeNarrativeSignals();
+    const struggling = narrativeSignals.filter(ns => ns.avgEnthusiasm > 0 && ns.avgEnthusiasm < 2.5 && ns.sampleSize >= 2);
+    for (const signal of struggling) {
+      patternsDetected++;
+      const syntheticId = `narrative_type_${signal.investorType}`;
+      if (await hasDuplicateAction(syntheticId, 'catalyst_match')) {
+        skippedDuplicate++;
+        continue;
+      }
+      const rule = AUTO_ACTION_RULES[4];
+      const action = await createAccelerationAction({
+        investor_id: syntheticId,
+        investor_name: `All ${signal.investorType} investors`,
+        trigger_type: rule.trigger_type,
+        action_type: rule.action_type,
+        description: rule.template(signal.investorType, signal.avgEnthusiasm.toFixed(1)),
+        expected_lift: rule.expected_lift,
+        confidence: rule.confidence,
+        status: 'pending',
+        actual_lift: null,
+        executed_at: null,
+      });
+      actionsCreated.push(action);
+    }
+  } catch { /* non-blocking */ }
+
+  return {
+    actionsCreated,
+    rulesEvaluated: AUTO_ACTION_RULES.length,
+    patternsDetected,
+    skippedDuplicate,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Smart Follow-up Timing — Optimal timing for follow-ups based on patterns
+// ---------------------------------------------------------------------------
+
+export async function computeOptimalFollowupTiming(investorId: string): Promise<{
+  optimalDayOfWeek: string;
+  optimalTimeOfDay: string;
+  reasoning: string;
+}> {
+  await ensureInitialized();
+  const db = getClient();
+
+  const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+  // Get all meetings with this investor and their enthusiasm scores
+  const meetingsResult = await db.execute({
+    sql: `SELECT date, enthusiasm_score FROM meetings WHERE investor_id = ? ORDER BY date DESC`,
+    args: [investorId],
+  });
+  const meetings = meetingsResult.rows as unknown as Array<{ date: string; enthusiasm_score: number }>;
+
+  // Get the investor's type for type-level pattern analysis
+  const invResult = await db.execute({ sql: `SELECT type, name FROM investors WHERE id = ?`, args: [investorId] });
+  const investor = invResult.rows.length > 0
+    ? (invResult.rows[0] as unknown as { type: string; name: string })
+    : { type: 'vc', name: 'Unknown' };
+
+  // Analyze day-of-week patterns for THIS investor
+  const dayScores: Record<number, { total: number; count: number }> = {};
+  for (const m of meetings) {
+    const date = new Date(m.date);
+    const day = date.getUTCDay();
+    if (!dayScores[day]) dayScores[day] = { total: 0, count: 0 };
+    dayScores[day].total += m.enthusiasm_score;
+    dayScores[day].count++;
+  }
+
+  // Analyze day-of-week patterns for ALL investors of this type (broader signal)
+  const typeResult = await db.execute({
+    sql: `SELECT m.date, m.enthusiasm_score
+          FROM meetings m
+          JOIN investors i ON i.id = m.investor_id
+          WHERE i.type = ?
+          ORDER BY m.date DESC
+          LIMIT 100`,
+    args: [investor.type],
+  });
+  const typeMeetings = typeResult.rows as unknown as Array<{ date: string; enthusiasm_score: number }>;
+
+  const typeDayScores: Record<number, { total: number; count: number }> = {};
+  for (const m of typeMeetings) {
+    const date = new Date(m.date);
+    const day = date.getUTCDay();
+    if (!typeDayScores[day]) typeDayScores[day] = { total: 0, count: 0 };
+    typeDayScores[day].total += m.enthusiasm_score;
+    typeDayScores[day].count++;
+  }
+
+  // Find optimal day (blend individual + type patterns, weight individual 70%, type 30%)
+  let bestDay = 2; // Default to Tuesday
+  let bestDayScore = 0;
+  const reasonParts: string[] = [];
+
+  for (let day = 1; day <= 5; day++) { // Monday-Friday only
+    const individual = dayScores[day];
+    const typeLevel = typeDayScores[day];
+
+    const indivAvg = individual && individual.count > 0 ? individual.total / individual.count : 0;
+    const typeAvg = typeLevel && typeLevel.count > 0 ? typeLevel.total / typeLevel.count : 0;
+
+    let blended: number;
+    if (individual && individual.count >= 2) {
+      blended = indivAvg * 0.7 + typeAvg * 0.3;
+    } else if (typeLevel && typeLevel.count >= 2) {
+      blended = typeAvg;
+    } else {
+      // Default: midweek slightly preferred
+      blended = day === 2 || day === 3 ? 3.2 : 3.0;
+    }
+
+    if (blended > bestDayScore) {
+      bestDayScore = blended;
+      bestDay = day;
+    }
+  }
+
+  // Determine time of day based on investor type heuristics
+  let optimalTime = '10:00 AM';
+  const typeHeuristics: Record<string, { time: string; reason: string }> = {
+    'vc': { time: '10:00 AM', reason: 'VCs typically have morning partner meetings; late morning catches attention' },
+    'growth': { time: '9:30 AM', reason: 'Growth equity runs on tight schedules; early catch is best' },
+    'sovereign': { time: '11:00 AM', reason: 'Sovereign wealth funds operate across time zones; late morning accommodates review cycles' },
+    'strategic': { time: '2:00 PM', reason: 'Strategic/corporate investors often have morning internal meetings; afternoon is review time' },
+    'family_office': { time: '10:30 AM', reason: 'Family offices have flexible schedules; mid-morning is reliable' },
+    'debt': { time: '9:00 AM', reason: 'Debt providers start early; catching the credit committee prep window' },
+  };
+
+  const typeHint = typeHeuristics[investor.type] || typeHeuristics['vc'];
+  optimalTime = typeHint.time;
+
+  // Build reasoning
+  if (meetings.length >= 3) {
+    const indivData = dayScores[bestDay];
+    if (indivData && indivData.count >= 2) {
+      reasonParts.push(`${investor.name}'s meetings on ${DAY_NAMES[bestDay]}s averaged ${(indivData.total / indivData.count).toFixed(1)}/5 enthusiasm (n=${indivData.count})`);
+    }
+  }
+
+  if (typeMeetings.length >= 5) {
+    const typeData = typeDayScores[bestDay];
+    if (typeData && typeData.count >= 2) {
+      reasonParts.push(`${investor.type} investors generally show higher enthusiasm on ${DAY_NAMES[bestDay]}s (${(typeData.total / typeData.count).toFixed(1)}/5, n=${typeData.count})`);
+    }
+  }
+
+  reasonParts.push(typeHint.reason);
+
+  if (meetings.length < 3 && typeMeetings.length < 5) {
+    reasonParts.push('Limited meeting history — recommendation based on type-level heuristics. Will improve with more data.');
+  }
+
+  return {
+    optimalDayOfWeek: DAY_NAMES[bestDay],
+    optimalTimeOfDay: optimalTime,
+    reasoning: reasonParts.join('. ') + '.',
+  };
+}

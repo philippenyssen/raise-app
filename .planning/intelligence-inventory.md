@@ -11,6 +11,7 @@
 | 5 | 2026-03-14 | Self-calibration + timing intelligence | Auto-weight calibration from resolved predictions, cross-investor timing correlation (competitive tension / engagement gaps / DD sync), document auto-strengthening from question convergence, automatic relationship graph rebuild, timing signals in context bus | stress-test/route.ts, momentum/route.ts, documents/strengthen/route.ts, investors/route.ts, context-bus.ts, db.ts |
 | 6 | 2026-03-14 | Monte Carlo + narrative drift + co-investor detection + verification | Monte Carlo confidence intervals (P10/P50/P90), narrative drift consumption in momentum (anomaly/alert enrichment), market deal co-investor detection in relationship graph, intelligence flow verification endpoint, Monte Carlo in context bus | stress-test/route.ts, momentum/route.ts, db.ts, context-bus.ts, intelligence/verify/route.ts |
 | 7 | 2026-03-14 | Intelligence Synthesis | 6-instruction reasoning framework for workspace AI (pattern synthesis, strategic prioritization, conviction arcs, contradiction detection, predictive reasoning, phase awareness), intelligence briefing layer in pulse dashboard (8 insight generators, typed/sorted/capped), synthesis section in context bus system prompt (6 cross-source reasoning aids) | workspace/route.ts, pulse/route.ts, context-bus.ts |
+| 8 | 2026-03-14 | Autonomous Intelligence | Auto-action engine (5 rules: narrative weakness, engagement gap, declining trajectory, keystone uncommitted, struggling type), pulse-triggered intelligence refresh, smart follow-up timing (day-of-week + time-of-day optimization per investor + type), auto-actions API (POST trigger + GET pending) | db.ts, pulse/route.ts, intelligence/auto-actions/route.ts |
 
 ## Intelligence Capabilities (Existing)
 
@@ -108,6 +109,11 @@
 - [x] **Investor created → relationship graph rebuild (NEW cycle 5)**
 - [x] **Investor warm_path updated → relationship graph rebuild (NEW cycle 5)**
 - [x] **Competitive tension detected → competitive_signal acceleration action (NEW cycle 5)**
+- [x] **Pulse dashboard viewed → auto-action generation (non-blocking) (NEW cycle 8)**
+- [x] **Narrative weakness detected (3+ investors) → auto data_update action (NEW cycle 8)**
+- [x] **Engagement gap detected (21+ days) → auto milestone_share action (NEW cycle 8)**
+- [x] **Declining trajectory detected (>2 pts/wk) → auto expert_call action (NEW cycle 8)**
+- [x] **Keystone investor uncommitted → auto escalation action (NEW cycle 8)**
 
 ### H. Narrative Intelligence (NEW cycle 3)
 - [x] Per-investor-type narrative effectiveness (enthusiasm × conversion × top objection)
@@ -160,6 +166,30 @@
 - [x] Typed insight model: critical/opportunity/risk/trend with title, detail, action, dataSource
 - [x] Sorted by severity (critical first), capped at 7 insights for actionability
 
+### N. Autonomous Intelligence Engine (NEW cycle 8)
+- [x] `generateAutoActions()`: 5-rule engine that detects patterns and creates acceleration_actions
+  - [x] Rule 1: `narrative_weakness_critical` — 3+ investors questioning same topic → data_update action
+  - [x] Rule 2: `engagement_gap` — 21+ days no contact for active investors → milestone_share action
+  - [x] Rule 3: `declining_trajectory` — score declining >2 pts/week → expert_call action
+  - [x] Rule 4: `keystone_uncommitted` — keystone investor not at engaged+ → escalation action
+  - [x] Rule 5: `narrative_struggling_type` — investor type with avg enthusiasm < 2.5 → data_update action
+- [x] Duplicate prevention: checks for same investor_id + trigger_type within last 7 days before creating
+- [x] All auto-actions prefixed with `[AUTO]` for identification
+- [x] POST `/api/intelligence/auto-actions` — triggers engine, emits context changes
+- [x] GET `/api/intelligence/auto-actions` — returns pending auto-generated actions
+- [x] **Pulse-triggered refresh: every pulse dashboard view runs generateAutoActions() non-blocking (NEW cycle 8)**
+- [x] `computeOptimalFollowupTiming(investorId)`: smart follow-up timing
+  - [x] Analyzes day-of-week enthusiasm patterns for individual investor
+  - [x] Falls back to type-level patterns (all investors of same type)
+  - [x] Blends individual (70%) + type (30%) signals when data is sufficient
+  - [x] Type-specific time-of-day heuristics (VC=10AM, growth=9:30AM, sovereign=11AM, strategic=2PM, etc.)
+  - [x] Returns optimalDayOfWeek, optimalTimeOfDay, reasoning with data sources
+
+### O. Pulse as Intelligence Heartbeat (NEW cycle 8)
+- [x] Every pulse dashboard view triggers non-blocking `generateAutoActions()`
+- [x] Detect→Act loop closed: patterns detected → actions created → visible in dashboard
+- [x] No manual trigger needed — intelligence refreshes on CEO dashboard view
+
 ## Intelligence Gaps (Prioritized for Next Cycle)
 
 ### P1 — Semantic Objection Matching
@@ -186,6 +216,11 @@
 - [x] Verifies context bus includes all expected fields (narrativeWeaknesses, predictionCalibration, narrativeDrift, provenResponses, keystoneInvestors)
 - [x] Tests supporting functions are callable (getQuestionPatterns, getCalibrationData, computeNarrativeSignals, getKeystoneInvestors)
 - [x] Returns health report: healthy/degraded/unhealthy with per-check pass/warn/fail
+
+### CLOSED (Cycle 8):
+- ~~Autonomous Action Engine~~ — implemented in db.ts (generateAutoActions, 5 rules) + intelligence/auto-actions/route.ts
+- ~~Pulse-triggered Intelligence Refresh~~ — implemented in pulse/route.ts (non-blocking generateAutoActions call)
+- ~~Smart Follow-up Timing~~ — implemented in db.ts (computeOptimalFollowupTiming)
 
 ### CLOSED (Cycle 7):
 - ~~Explicit Reasoning Framework for Pattern Synthesis (P3)~~ — implemented in workspace/route.ts (instructions 11-16), pulse/route.ts (intelligenceBriefing), context-bus.ts (synthesis section)
