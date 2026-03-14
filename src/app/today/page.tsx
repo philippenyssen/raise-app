@@ -605,33 +605,12 @@ export default function TodayPage() {
 
       <div className="flex items-start justify-between">
         <div>
-          <div className="flex items-center gap-3">
-            <div
-              className="flex items-center justify-center shrink-0"
-              style={{
-                width: '40px',
-                height: '40px',
-                borderRadius: '50%',
-                background: 'var(--surface-2)',
-                border: '1px solid rgba(26, 26, 46, 0.05)',
-              }}
-            >
-              <span style={{ color: 'var(--text-tertiary)', display: 'flex' }}>
-                <Sunrise className="w-5 h-5" />
-              </span>
-            </div>
-            <div>
-              <h1
-                className="page-title"
-                style={{ fontSize: 'var(--font-size-2xl)' }}
-              >
-                {data.greeting}
-              </h1>
-              <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)', marginTop: '2px' }}>
-                {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-              </p>
-            </div>
-          </div>
+          <h1 className="page-title">
+            {data.greeting}
+          </h1>
+          <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)', marginTop: '2px' }}>
+            {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+          </p>
 
           <div className="flex items-center gap-2" style={{ marginTop: '6px' }}>
             <span style={{

@@ -235,20 +235,9 @@ export default function StrategicPage() {
       {/* HEADER                                                           */}
       {/* ================================================================ */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <div
-            className="w-10 h-10 flex items-center justify-center"
-            style={{
-              borderRadius: 'var(--radius-md)',
-              background: 'var(--accent-muted)',
-            }}
-          >
-            <Target className="w-5 h-5" style={{ color: 'var(--accent)' }} />
-          </div>
-          <div>
-            <h1 className="page-title">Strategic Dashboard</h1>
-            <p className="page-subtitle" style={{ fontSize: 'var(--font-size-sm)' }}>Consolidated intelligence assessment</p>
-          </div>
+        <div>
+          <h1 className="page-title">Strategic Dashboard</h1>
+          <p className="page-subtitle" style={{ fontSize: 'var(--font-size-sm)' }}>Consolidated intelligence assessment</p>
         </div>
         <button
           onClick={() => fetchData(true)}
