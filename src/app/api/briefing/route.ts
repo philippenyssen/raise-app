@@ -96,12 +96,18 @@ export async function GET() {
               ? `Low engagement — lead with strongest proof points`
               : 'Focus on building conviction and listening for signals';
 
+        const meetingCount = allMeetings.filter(am => am.investor_id === m.investor_id).length;
+
         return {
+          investorId: m.investor_id,
           investorName: m.investor_name,
           time: m.date,
           type: m.type || 'meeting',
-          prepLink: `/meetings?highlight=${m.id}`,
+          prepLink: `/meetings/prep?investor=${m.investor_id}`,
+          captureLink: `/meetings/capture?investor=${m.investor_id}`,
           keyPoint,
+          enthusiasm: inv?.enthusiasm ?? 0,
+          meetingCount,
         };
       });
 

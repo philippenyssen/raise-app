@@ -15,11 +15,15 @@ import {
 // ---------------------------------------------------------------------------
 
 interface BriefingMeeting {
+  investorId?: string;
   investorName: string;
   time: string;
   type: string;
   prepLink: string;
+  captureLink?: string;
   keyPoint: string;
+  enthusiasm?: number;
+  meetingCount?: number;
 }
 
 interface UrgentAction {
@@ -159,6 +163,33 @@ function MeetingCard({ meeting }: { meeting: BriefingMeeting }) {
             >
               {meeting.type.replace(/_/g, ' ')}
             </span>
+            {(meeting.meetingCount ?? 0) > 1 && (
+              <span style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 500 }}>
+                Meeting #{meeting.meetingCount}
+              </span>
+            )}
+            {(meeting.enthusiasm ?? 0) > 0 && (
+              <span
+                className="inline-flex items-center gap-0.5"
+                style={{
+                  fontSize: '10px',
+                  fontWeight: 500,
+                  color: (meeting.enthusiasm ?? 0) >= 4 ? 'var(--success)' : (meeting.enthusiasm ?? 0) >= 3 ? 'var(--text-secondary)' : 'var(--danger)',
+                }}
+              >
+                {[1, 2, 3, 4, 5].map(n => (
+                  <span
+                    key={n}
+                    style={{
+                      width: '5px', height: '5px', borderRadius: '50%', display: 'inline-block',
+                      background: n <= (meeting.enthusiasm ?? 0)
+                        ? (meeting.enthusiasm ?? 0) >= 4 ? 'var(--success)' : (meeting.enthusiasm ?? 0) >= 3 ? 'var(--accent)' : 'var(--text-muted)'
+                        : 'var(--border-default)',
+                    }}
+                  />
+                ))}
+              </span>
+            )}
           </div>
 
           <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', marginTop: '6px', lineHeight: 1.5 }}>
@@ -174,7 +205,7 @@ function MeetingCard({ meeting }: { meeting: BriefingMeeting }) {
             Prep
           </Link>
           <Link
-            href="/meetings/capture"
+            href={meeting.captureLink || '/meetings/capture'}
             className="btn btn-ghost btn-sm"
             style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}
           >
