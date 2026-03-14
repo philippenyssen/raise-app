@@ -25,6 +25,7 @@
 | 19 | 2026-03-14 | Forecast Consumption | Forecast data consumed across entire intelligence layer: strategic API (forecast-based recommendations), strategic dashboard UI (forecast panel with investor table + risk factors), pulse insights (critical path stalled + low confidence), auto-action Rule 9 (critical path stalled investors), strategic recommendations (9 generators) | intelligence/strategic/route.ts, strategic/page.tsx, pulse/route.ts, db.ts |
 | 20 | 2026-03-14 | Verification + Meeting Brief Forecast | Intelligence verification expanded from 13 to 35+ checks across 5 categories (infrastructure, database, context bus, functions, quality). Meeting brief enriched with forecast context (critical path, predicted close date). System prompt section verification. | intelligence/verify/route.ts, meeting-brief/route.ts |
 | 21 | 2026-03-14 | Scoring: Forecast Dimension | 10th scoring dimension "Forecast Alignment" — scores predicted days to close, confidence, critical path membership, path probability. Phase-dynamic weights updated (2% in discovery → 10% in negotiation). Investor score API enriched with forecast data from computeRaiseForecast(). | scoring.ts, investors/[id]/score/route.ts |
+| 22 | 2026-03-14 | Cross-System Contradiction Detection | 4 new synthesis rules: forecast-enthusiasm contradiction, stalled-critical-path vs improving-metrics signal mismatch, dormant T1-2 investor detection. Auto-action Rule 10: dormant high-tier investors (zero meetings, 14+ days). | context-bus.ts, db.ts |
 
 ## Intelligence Capabilities (Existing)
 
@@ -209,6 +210,7 @@
   - [x] **Rule 6: `pipeline_bottleneck` — investors stuck at bottleneck stage >21 days → escalation action (up to 3 investors) (NEW cycle 13)**
   - [x] **Rule 7: `compound_signal` — very_high confidence compound signals → escalation action with expected_lift 15 (NEW cycle 13)**
   - [x] **Rule 9: `critical_path_stalled` — critical path investors stalled >21 days → escalation action with expected_lift 14 (NEW cycle 19)**
+  - [x] **Rule 10: `dormant_high_tier` — T1-2 investors at non-identified stage with zero meetings for 14+ days → warm_reintro action (NEW cycle 22)**
 - [x] Duplicate prevention: checks for same investor_id + trigger_type within last 7 days before creating
 - [x] All auto-actions prefixed with `[AUTO]` for identification
 - [x] POST `/api/intelligence/auto-actions` — triggers engine, emits context changes

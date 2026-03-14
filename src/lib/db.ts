@@ -3719,9 +3719,49 @@ export async function generateAutoActions(): Promise<AutoActionResult> {
     }
   } catch { /* non-blocking */ }
 
+  // --- Rule 10: dormant_high_tier (T1-2 investors with zero meetings past identified) ---
+  try {
+    if (!shouldSkipRule('stall_risk', 'warm_reintro')) {
+      const dormantInvestors = (await db.execute(
+        `SELECT i.id, i.name, i.tier, i.status, i.updated_at, i.created_at,
+                (SELECT COUNT(*) FROM meetings m WHERE m.investor_id = i.id) as meeting_count
+         FROM investors i
+         WHERE i.status NOT IN ('passed', 'dropped', 'closed', 'identified')
+           AND i.tier <= 2`
+      )).rows as unknown as Array<{
+        id: string; name: string; tier: number; status: string;
+        updated_at: string; created_at: string; meeting_count: number;
+      }>;
+
+      const msPerDay = 1000 * 60 * 60 * 24;
+      for (const inv of dormantInvestors) {
+        if (inv.meeting_count > 0) continue;
+        const daysInStage = Math.max(0, Math.round((Date.now() - new Date(inv.updated_at || inv.created_at).getTime()) / msPerDay));
+        if (daysInStage >= 14) {
+          patternsDetected++;
+          if (!(await hasDuplicateAction(inv.id, 'warm_reintro'))) {
+            const action = await createAccelerationAction({
+              investor_id: inv.id,
+              investor_name: inv.name,
+              trigger_type: 'stall_risk',
+              action_type: 'warm_reintro',
+              description: `[AUTO-DORMANT] T${inv.tier} investor ${inv.name} at "${inv.status}" for ${daysInStage}d with ZERO meetings. Either schedule first meeting or remove from pipeline to avoid inflating metrics.`,
+              expected_lift: 10,
+              confidence: 'medium',
+              status: 'pending',
+              actual_lift: null,
+              executed_at: null,
+            });
+            actionsCreated.push(action);
+          } else { skippedDuplicate++; }
+        }
+      }
+    }
+  } catch { /* non-blocking */ }
+
   return {
     actionsCreated,
-    rulesEvaluated: AUTO_ACTION_RULES.length + 4, // +1 Rule 6 (bottleneck), +1 Rule 7 (compound), +1 Rule 8 (temporal), +1 Rule 9 (critical path)
+    rulesEvaluated: AUTO_ACTION_RULES.length + 5, // +1 Rule 6-10
     patternsDetected,
     skippedDuplicate,
     skippedIneffective,

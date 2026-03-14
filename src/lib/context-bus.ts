@@ -994,6 +994,31 @@ export function contextToSystemPrompt(ctx: FullContext): string {
     if (ctx.temporalTrends && ctx.temporalTrends.overallDirection === 'declining' && rf.confidence !== 'high') {
       synthesisLines.push(`COMPOUND TIMELINE RISK: Health metrics are declining AND close date confidence is ${rf.confidence} — fundraise momentum is at risk of stalling completely`);
     }
+
+    // Cross-system contradiction: enthusiastic investors with distant close dates (cycle 22)
+    if (rf.nearestClose) {
+      const nearInv = ctx.investors.find(i => i.name === rf.nearestClose!.name);
+      if (nearInv && nearInv.enthusiasm >= 4 && rf.nearestClose.days > 60) {
+        synthesisLines.push(`FORECAST CONTRADICTION: ${nearInv.name} has enthusiasm ${nearInv.enthusiasm}/5 but forecast predicts ~${rf.nearestClose.days}d to close — high enthusiasm should translate to faster movement. Either the forecast is conservative or the enthusiasm is superficial.`);
+      }
+    }
+
+    // Stalled critical path + positive temporal = misleading signals (cycle 22)
+    if (ctx.temporalTrends && ctx.temporalTrends.overallDirection === 'improving') {
+      const stalledCritical = ctx.investors.filter(i =>
+        rf.criticalPath.includes(i.name) && i.stageHealth === 'stalled'
+      );
+      if (stalledCritical.length > 0) {
+        synthesisLines.push(`SIGNAL MISMATCH: Health metrics are improving but critical path investor${stalledCritical.length > 1 ? 's' : ''} ${stalledCritical.map(i => i.name).join(', ')} ${stalledCritical.length > 1 ? 'are' : 'is'} stalled — improving averages may mask that the most important investors aren't progressing`);
+      }
+    }
+  }
+
+  // Cross-system: high-tier investors with low engagement but long stage dwell (cycle 22)
+  for (const inv of ctx.investors) {
+    if (inv.tier <= 2 && inv.meetingCount === 0 && inv.daysInCurrentStage > 14 && inv.status !== 'identified') {
+      synthesisLines.push(`DORMANT T${inv.tier}: ${inv.name} has been at "${inv.status}" for ${inv.daysInCurrentStage}d with ZERO meetings — either activate or remove to avoid inflating pipeline metrics`);
+    }
   }
 
   if (synthesisLines.length > 0) {
