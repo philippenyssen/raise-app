@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
   Gauge, Clock, CheckCircle2, XCircle, AlertTriangle,
-  TrendingUp, Users, ArrowRight, Zap,
+  TrendingUp, Users, ArrowRight, Zap, Phone, Mail, Target,
 } from 'lucide-react';
 
 interface VelocityInvestor {
@@ -315,6 +315,7 @@ export default function VelocityPage() {
                   <th style={{ minWidth: '70px', textAlign: 'center' }}>Status</th>
                   <th style={{ minWidth: '200px' }}>Bottleneck</th>
                   <th style={{ minWidth: '120px' }}>Velocity</th>
+                  <th style={{ minWidth: '90px', textAlign: 'center' }}>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -498,6 +499,65 @@ export default function VelocityPage() {
                           {inv.velocity_score}
                         </span>
                       </div>
+                    </td>
+
+                    {/* Action */}
+                    <td style={{ padding: 'var(--space-3) var(--space-4)', textAlign: 'center' }}>
+                      {inv.tracking_status === 'at_risk' ? (
+                        <Link
+                          href={`/meetings/new?investor=${inv.investor_id}`}
+                          className="btn btn-sm"
+                          onClick={e => e.stopPropagation()}
+                          style={{
+                            background: 'var(--danger-muted)',
+                            color: 'var(--danger)',
+                            border: '1px solid rgba(239,68,68,0.25)',
+                            fontSize: '11px',
+                            padding: '3px 8px',
+                            gap: '4px',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                          }}
+                        >
+                          <Phone className="w-3 h-3" /> Rescue
+                        </Link>
+                      ) : inv.tracking_status === 'behind' ? (
+                        <Link
+                          href={`/followups?investor=${inv.investor_id}`}
+                          className="btn btn-sm"
+                          onClick={e => e.stopPropagation()}
+                          style={{
+                            background: 'var(--warning-muted)',
+                            color: 'var(--warning)',
+                            border: '1px solid rgba(245,158,11,0.25)',
+                            fontSize: '11px',
+                            padding: '3px 8px',
+                            gap: '4px',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                          }}
+                        >
+                          <Mail className="w-3 h-3" /> Nudge
+                        </Link>
+                      ) : (
+                        <Link
+                          href={`/investors/${inv.investor_id}`}
+                          className="btn btn-sm"
+                          onClick={e => e.stopPropagation()}
+                          style={{
+                            background: 'var(--surface-2)',
+                            color: 'var(--text-muted)',
+                            border: '1px solid var(--border-default)',
+                            fontSize: '11px',
+                            padding: '3px 8px',
+                            gap: '4px',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                          }}
+                        >
+                          <Target className="w-3 h-3" /> View
+                        </Link>
+                      )}
                     </td>
                   </tr>
                 ))}
