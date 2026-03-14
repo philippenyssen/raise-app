@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useToast } from '@/components/toast';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
-import { FolderOpen, Upload, FileText, Table, Image, Trash2, ChevronDown, ChevronRight, Search } from 'lucide-react';
+import { FolderOpen, Upload, FileText, Table, Image, Trash2, ChevronDown, ChevronRight, Search, Eye, BarChart3, Users, AlertCircle, Send, TrendingUp } from 'lucide-react';
 
 interface DataRoomFile {
   id: string;
@@ -16,6 +16,40 @@ interface DataRoomFile {
   uploaded_at: string;
 }
 
+interface IntelligenceData {
+  document_access_log: Array<{
+    investor_name: string;
+    investor_id: string;
+    document_id: string;
+    document_title: string;
+    accessed_at: string;
+  }>;
+  most_requested: Array<{
+    document_id: string;
+    document_title: string;
+    category: string;
+    access_count: number;
+  }>;
+  per_investor_access: Array<{
+    investor_id: string;
+    investor_name: string;
+    status: string;
+    tier: number;
+    documents_accessed: number;
+    accessed_documents: Array<{ document_id: string; document_title: string; category: string }>;
+    recommended_documents: Array<{ document_id: string; document_title: string; category: string; reason: string }>;
+  }>;
+  unreached_investors: Array<{
+    investor_id: string;
+    investor_name: string;
+    status: string;
+    tier: number;
+    recommended_categories: string[];
+  }>;
+  total_files: number;
+  total_access_events: number;
+}
+
 const CATEGORIES = [
   { value: 'financial', label: 'Financial', icon: Table, desc: 'Financials, model, cap table, projections' },
   { value: 'legal', label: 'Legal', icon: FileText, desc: 'SHA, contracts, IP schedule, articles' },
@@ -24,6 +58,20 @@ const CATEGORIES = [
   { value: 'team', label: 'Team', icon: FileText, desc: 'Org chart, bios, employment agreements' },
   { value: 'other', label: 'Other', icon: FileText, desc: 'Uncategorized documents' },
 ];
+
+const STATUS_LABELS: Record<string, string> = {
+  identified: 'Identified',
+  contacted: 'Contacted',
+  nda_signed: 'NDA Signed',
+  meeting_scheduled: 'Meeting Scheduled',
+  met: 'Met',
+  engaged: 'Engaged',
+  in_dd: 'In DD',
+  term_sheet: 'Term Sheet',
+  closed: 'Closed',
+  passed: 'Passed',
+  dropped: 'Dropped',
+};
 
 export default function DataRoomPage() {
   const { toast } = useToast();
@@ -37,6 +85,9 @@ export default function DataRoomPage() {
   const [pasteContent, setPasteContent] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; filename: string } | null>(null);
+  const [intelligence, setIntelligence] = useState<IntelligenceData | null>(null);
+  const [intelLoading, setIntelLoading] = useState(true);
+  const [expandedInvestor, setExpandedInvestor] = useState<string | null>(null);
 
   const fetchFiles = useCallback(async () => {
     const res = await fetch('/api/data-room');
@@ -44,7 +95,27 @@ export default function DataRoomPage() {
     setLoading(false);
   }, []);
 
-  useEffect(() => { fetchFiles(); }, [fetchFiles]);
+  const fetchIntelligence = useCallback(async () => {
+    try {
+      const res = await fetch('/api/data-room/intelligence');
+      if (res.ok) {
+        setIntelligence(await res.json());
+      }
+    } catch { /* silently fail */ }
+    setIntelLoading(false);
+  }, []);
+
+  useEffect(() => { fetchFiles(); fetchIntelligence(); }, [fetchFiles, fetchIntelligence]);
+
+  async function handleLogAccess(investorId: string, documentId: string) {
+    await fetch('/api/data-room/intelligence', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ investor_id: investorId, document_id: documentId }),
+    });
+    toast('Access logged');
+    fetchIntelligence();
+  }
 
   async function handleFileUpload(fileList: FileList) {
     setUploading(true);
@@ -52,15 +123,12 @@ export default function DataRoomPage() {
       const category = inferCategory(file.name);
       let text = '';
 
-      // For text-based files, read as text
       const textTypes = ['.txt', '.md', '.csv', '.json', '.xml', '.html', '.rtf', '.tsv'];
       const isTextFile = textTypes.some(ext => file.name.toLowerCase().endsWith(ext));
 
       if (isTextFile) {
         text = await file.text();
       } else {
-        // For binary files (PDF, DOCX, XLSX, etc.), store metadata
-        // and upload as base64 for server-side extraction
         const buffer = await file.arrayBuffer();
         const bytes = new Uint8Array(buffer);
         let binary = '';
@@ -76,7 +144,7 @@ export default function DataRoomPage() {
             body: JSON.stringify({
               filename: file.name,
               mime_type: file.type,
-              base64_content: base64.substring(0, 2000000), // ~1.5MB limit
+              base64_content: base64.substring(0, 2000000),
             }),
           });
           if (extractRes.ok) {
@@ -146,7 +214,6 @@ export default function DataRoomPage() {
     return 'other';
   }
 
-  // Group files by category
   const grouped = files.reduce<Record<string, DataRoomFile[]>>((acc, file) => {
     const cat = file.category || 'other';
     if (!acc[cat]) acc[cat] = [];
@@ -154,7 +221,6 @@ export default function DataRoomPage() {
     return acc;
   }, {});
 
-  // Filter by search
   const filteredFiles = searchQuery
     ? files.filter(f => f.filename.toLowerCase().includes(searchQuery.toLowerCase()) || f.extracted_text.toLowerCase().includes(searchQuery.toLowerCase()))
     : null;
@@ -361,6 +427,17 @@ export default function DataRoomPage() {
         </div>
       )}
 
+      {/* Access Intelligence Section */}
+      {!intelLoading && intelligence && (
+        <AccessIntelligenceSection
+          intelligence={intelligence}
+          files={files}
+          expandedInvestor={expandedInvestor}
+          onToggleInvestor={(id) => setExpandedInvestor(expandedInvestor === id ? null : id)}
+          onLogAccess={handleLogAccess}
+        />
+      )}
+
       <ConfirmModal
         open={!!deleteTarget}
         title="Delete file"
@@ -370,6 +447,514 @@ export default function DataRoomPage() {
         onConfirm={handleDelete}
         onCancel={() => setDeleteTarget(null)}
       />
+    </div>
+  );
+}
+
+function AccessIntelligenceSection({ intelligence, files, expandedInvestor, onToggleInvestor, onLogAccess }: {
+  intelligence: IntelligenceData;
+  files: DataRoomFile[];
+  expandedInvestor: string | null;
+  onToggleInvestor: (id: string) => void;
+  onLogAccess: (investorId: string, documentId: string) => void;
+}) {
+  const hasActivity = intelligence.total_access_events > 0;
+  const investorsWithAccess = intelligence.per_investor_access.filter(i => i.documents_accessed > 0);
+  const investorsWithRecommendations = intelligence.per_investor_access.filter(i => i.recommended_documents.length > 0);
+
+  return (
+    <div className="space-y-6" style={{ marginTop: 'var(--space-8)' }}>
+      <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 'var(--space-6)' }}>
+        <div className="flex items-center gap-3 mb-1">
+          <span style={{ color: 'var(--text-muted)' }}>
+            <Eye className="w-5 h-5" />
+          </span>
+          <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 600, color: 'var(--text-primary)' }}>
+            Access Intelligence
+          </h2>
+        </div>
+        <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
+          Track which investors have accessed which documents and get sharing recommendations
+        </p>
+      </div>
+
+      {/* Summary Stats */}
+      <div className="grid grid-cols-4 gap-3">
+        <StatCard
+          label="Total Access Events"
+          value={intelligence.total_access_events.toString()}
+          icon={<BarChart3 className="w-4 h-4" />}
+        />
+        <StatCard
+          label="Investors with Access"
+          value={investorsWithAccess.length.toString()}
+          icon={<Users className="w-4 h-4" />}
+        />
+        <StatCard
+          label="Unreached Investors"
+          value={intelligence.unreached_investors.length.toString()}
+          icon={<AlertCircle className="w-4 h-4" />}
+          highlight={intelligence.unreached_investors.length > 0}
+        />
+        <StatCard
+          label="Pending Recommendations"
+          value={investorsWithRecommendations.length.toString()}
+          icon={<Send className="w-4 h-4" />}
+        />
+      </div>
+
+      {/* Most Requested Documents */}
+      <div className="card" style={{ padding: 'var(--space-4)' }}>
+        <div className="flex items-center gap-2 mb-3">
+          <span style={{ color: 'var(--text-muted)' }}>
+            <TrendingUp className="w-4 h-4" />
+          </span>
+          <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>
+            Most Requested Documents
+          </h3>
+        </div>
+        {intelligence.most_requested.length > 0 ? (
+          <div className="space-y-1">
+            {intelligence.most_requested.map((doc, idx) => (
+              <MostRequestedRow key={doc.document_id} doc={doc} rank={idx + 1} />
+            ))}
+          </div>
+        ) : (
+          <p style={{ color: 'var(--text-tertiary)', fontSize: 'var(--font-size-sm)', textAlign: 'center', padding: 'var(--space-4) 0' }}>
+            No access events recorded yet. Log document access to see rankings.
+          </p>
+        )}
+      </div>
+
+      {/* Per-Investor Access */}
+      <div className="card" style={{ padding: 'var(--space-4)' }}>
+        <div className="flex items-center gap-2 mb-3">
+          <span style={{ color: 'var(--text-muted)' }}>
+            <Users className="w-4 h-4" />
+          </span>
+          <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>
+            Per-Investor Document Access
+          </h3>
+        </div>
+        {intelligence.per_investor_access.length > 0 ? (
+          <div className="space-y-1">
+            {intelligence.per_investor_access.map(inv => (
+              <InvestorAccessRow
+                key={inv.investor_id}
+                investor={inv}
+                expanded={expandedInvestor === inv.investor_id}
+                onToggle={() => onToggleInvestor(inv.investor_id)}
+                onLogAccess={onLogAccess}
+                files={files}
+              />
+            ))}
+          </div>
+        ) : (
+          <p style={{ color: 'var(--text-tertiary)', fontSize: 'var(--font-size-sm)', textAlign: 'center', padding: 'var(--space-4) 0' }}>
+            No active investors yet. Add investors in the CRM to see access tracking.
+          </p>
+        )}
+      </div>
+
+      {/* Unreached Investors */}
+      {intelligence.unreached_investors.length > 0 && (
+        <div className="card" style={{ padding: 'var(--space-4)' }}>
+          <div className="flex items-center gap-2 mb-3">
+            <span style={{ color: 'var(--warning)' }}>
+              <AlertCircle className="w-4 h-4" />
+            </span>
+            <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>
+              Unreached Investors
+            </h3>
+            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+              Active investors who haven&apos;t accessed any documents
+            </span>
+          </div>
+          <div className="space-y-1">
+            {intelligence.unreached_investors.map(inv => (
+              <UnreachedInvestorRow key={inv.investor_id} investor={inv} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Recent Access Log */}
+      {hasActivity && (
+        <div className="card" style={{ padding: 'var(--space-4)' }}>
+          <div className="flex items-center gap-2 mb-3">
+            <span style={{ color: 'var(--text-muted)' }}>
+              <Eye className="w-4 h-4" />
+            </span>
+            <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>
+              Recent Access Log
+            </h3>
+          </div>
+          <div className="space-y-1">
+            {intelligence.document_access_log.slice(0, 20).map((entry, idx) => (
+              <AccessLogRow key={`${entry.investor_id}-${entry.document_id}-${idx}`} entry={entry} />
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function StatCard({ label, value, icon, highlight }: {
+  label: string;
+  value: string;
+  icon: React.ReactNode;
+  highlight?: boolean;
+}) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <div
+      className="card"
+      style={{
+        padding: 'var(--space-3) var(--space-4)',
+        borderColor: highlight ? 'var(--warning-muted)' : hovered ? 'var(--border-default)' : undefined,
+        transition: 'border-color 150ms ease',
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <div className="flex items-center gap-2 mb-1">
+        <span style={{ color: highlight ? 'var(--warning)' : 'var(--text-muted)' }}>{icon}</span>
+        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{label}</span>
+      </div>
+      <span style={{ fontSize: 'var(--font-size-lg)', fontWeight: 600, color: highlight ? 'var(--warning)' : 'var(--text-primary)' }}>
+        {value}
+      </span>
+    </div>
+  );
+}
+
+function MostRequestedRow({ doc, rank }: {
+  doc: { document_id: string; document_title: string; category: string; access_count: number };
+  rank: number;
+}) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <div
+      className="flex items-center gap-3"
+      style={{
+        padding: 'var(--space-2) var(--space-3)',
+        borderRadius: 'var(--radius-md)',
+        background: hovered ? 'var(--surface-1)' : 'transparent',
+        transition: 'background 150ms ease',
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <span style={{
+        fontSize: 'var(--font-size-xs)',
+        fontWeight: 600,
+        color: rank <= 3 ? 'var(--accent)' : 'var(--text-muted)',
+        width: '1.5rem',
+        textAlign: 'center',
+      }}>
+        #{rank}
+      </span>
+      <FileText className="w-3.5 h-3.5 shrink-0" style={{ color: 'var(--text-tertiary)' }} />
+      <span className="truncate" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)' }}>
+        {doc.document_title}
+      </span>
+      <span
+        style={{
+          fontSize: 'var(--font-size-xs)',
+          color: 'var(--text-muted)',
+          background: 'var(--surface-2)',
+          padding: '0.125rem var(--space-2)',
+          borderRadius: 'var(--radius-sm)',
+        }}
+      >
+        {doc.category}
+      </span>
+      <span className="ml-auto shrink-0" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-secondary)' }}>
+        {doc.access_count} {doc.access_count === 1 ? 'view' : 'views'}
+      </span>
+    </div>
+  );
+}
+
+function InvestorAccessRow({ investor, expanded, onToggle, onLogAccess, files }: {
+  investor: IntelligenceData['per_investor_access'][0];
+  expanded: boolean;
+  onToggle: () => void;
+  onLogAccess: (investorId: string, documentId: string) => void;
+  files: DataRoomFile[];
+}) {
+  const [hovered, setHovered] = useState(false);
+  const [logDocId, setLogDocId] = useState('');
+
+  const accessedPct = files.length > 0 ? Math.round((investor.documents_accessed / files.length) * 100) : 0;
+
+  return (
+    <div
+      style={{
+        border: `1px solid ${hovered || expanded ? 'var(--border-default)' : 'var(--border-subtle)'}`,
+        borderRadius: 'var(--radius-md)',
+        transition: 'border-color 150ms ease',
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <div
+        className="flex items-center gap-3 cursor-pointer"
+        style={{ padding: 'var(--space-3) var(--space-4)' }}
+        onClick={onToggle}
+      >
+        {expanded
+          ? <ChevronDown className="w-4 h-4 shrink-0" style={{ color: 'var(--text-muted)' }} />
+          : <ChevronRight className="w-4 h-4 shrink-0" style={{ color: 'var(--text-muted)' }} />
+        }
+        <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-primary)' }}>
+          {investor.investor_name}
+        </span>
+        <span
+          style={{
+            fontSize: 'var(--font-size-xs)',
+            color: 'var(--text-muted)',
+            background: 'var(--surface-2)',
+            padding: '0.125rem var(--space-2)',
+            borderRadius: 'var(--radius-sm)',
+          }}
+        >
+          {STATUS_LABELS[investor.status] || investor.status}
+        </span>
+        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+          T{investor.tier}
+        </span>
+        <div className="ml-auto flex items-center gap-3">
+          <span style={{ fontSize: 'var(--font-size-xs)', color: investor.documents_accessed > 0 ? 'var(--success)' : 'var(--text-tertiary)' }}>
+            {investor.documents_accessed} / {files.length} docs ({accessedPct}%)
+          </span>
+          {investor.recommended_documents.length > 0 && (
+            <span style={{
+              fontSize: 'var(--font-size-xs)',
+              color: 'var(--accent)',
+              background: 'var(--accent-muted)',
+              padding: '0.125rem var(--space-2)',
+              borderRadius: 'var(--radius-sm)',
+              fontWeight: 500,
+            }}>
+              {investor.recommended_documents.length} to share
+            </span>
+          )}
+        </div>
+      </div>
+      {expanded && (
+        <div style={{ borderTop: '1px solid var(--border-subtle)', padding: 'var(--space-3) var(--space-4)' }}>
+          {/* Accessed documents */}
+          {investor.accessed_documents.length > 0 && (
+            <div className="mb-3">
+              <h4 style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 'var(--space-2)' }}>
+                Documents Accessed
+              </h4>
+              <div className="flex flex-wrap gap-2">
+                {investor.accessed_documents.map(doc => (
+                  <span
+                    key={doc.document_id}
+                    style={{
+                      fontSize: 'var(--font-size-xs)',
+                      color: 'var(--success)',
+                      background: 'var(--success-muted)',
+                      padding: '0.125rem var(--space-2)',
+                      borderRadius: 'var(--radius-sm)',
+                    }}
+                  >
+                    {doc.document_title}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Recommended documents */}
+          {investor.recommended_documents.length > 0 && (
+            <div className="mb-3">
+              <h4 style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 'var(--space-2)' }}>
+                Recommended to Share
+              </h4>
+              <div className="space-y-1">
+                {investor.recommended_documents.map(doc => (
+                  <RecommendedDocRow
+                    key={doc.document_id}
+                    doc={doc}
+                    investorId={investor.investor_id}
+                    onLogAccess={onLogAccess}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Log access manually */}
+          <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 'var(--space-3)', marginTop: 'var(--space-2)' }}>
+            <h4 style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 'var(--space-2)' }}>
+              Log Access
+            </h4>
+            <div className="flex gap-2">
+              <select
+                value={logDocId}
+                onChange={e => setLogDocId(e.target.value)}
+                className="input flex-1"
+                style={{ fontSize: 'var(--font-size-xs)' }}
+              >
+                <option value="">Select a document...</option>
+                {files
+                  .filter(f => !investor.accessed_documents.some(d => d.document_id === f.id))
+                  .map(f => (
+                    <option key={f.id} value={f.id}>{f.filename}</option>
+                  ))}
+              </select>
+              <button
+                className="btn btn-md"
+                style={{
+                  background: logDocId ? 'var(--accent)' : 'var(--surface-2)',
+                  color: logDocId ? 'white' : 'var(--text-muted)',
+                  border: `1px solid ${logDocId ? 'var(--accent)' : 'var(--border-default)'}`,
+                  fontSize: 'var(--font-size-xs)',
+                  opacity: logDocId ? 1 : 0.5,
+                  cursor: logDocId ? 'pointer' : 'default',
+                }}
+                disabled={!logDocId}
+                onClick={() => {
+                  if (logDocId) {
+                    onLogAccess(investor.investor_id, logDocId);
+                    setLogDocId('');
+                  }
+                }}
+              >
+                Log
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function RecommendedDocRow({ doc, investorId, onLogAccess }: {
+  doc: { document_id: string; document_title: string; category: string; reason: string };
+  investorId: string;
+  onLogAccess: (investorId: string, documentId: string) => void;
+}) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <div
+      className="flex items-center gap-2"
+      style={{
+        padding: 'var(--space-2) var(--space-3)',
+        borderRadius: 'var(--radius-md)',
+        background: hovered ? 'var(--surface-1)' : 'transparent',
+        transition: 'background 150ms ease',
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <FileText className="w-3.5 h-3.5 shrink-0" style={{ color: 'var(--accent)' }} />
+      <span className="truncate" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)' }}>
+        {doc.document_title}
+      </span>
+      <span style={{
+        fontSize: '0.625rem',
+        color: 'var(--text-muted)',
+        background: 'var(--surface-2)',
+        padding: '0 var(--space-1)',
+        borderRadius: 'var(--radius-sm)',
+      }}>
+        {doc.category}
+      </span>
+      <button
+        className="ml-auto shrink-0 btn btn-md"
+        style={{
+          fontSize: 'var(--font-size-xs)',
+          padding: '0.125rem var(--space-2)',
+          background: hovered ? 'var(--accent)' : 'var(--accent-muted)',
+          color: hovered ? 'white' : 'var(--accent)',
+          border: 'none',
+          transition: 'all 150ms ease',
+        }}
+        onClick={() => onLogAccess(investorId, doc.document_id)}
+      >
+        Mark shared
+      </button>
+    </div>
+  );
+}
+
+function UnreachedInvestorRow({ investor }: {
+  investor: IntelligenceData['unreached_investors'][0];
+}) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <div
+      className="flex items-center gap-3"
+      style={{
+        padding: 'var(--space-2) var(--space-3)',
+        borderRadius: 'var(--radius-md)',
+        background: hovered ? 'var(--surface-1)' : 'transparent',
+        transition: 'background 150ms ease',
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <span style={{ color: 'var(--warning)' }}>
+        <AlertCircle className="w-3.5 h-3.5" />
+      </span>
+      <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-primary)' }}>
+        {investor.investor_name}
+      </span>
+      <span style={{
+        fontSize: 'var(--font-size-xs)',
+        color: 'var(--text-muted)',
+        background: 'var(--surface-2)',
+        padding: '0.125rem var(--space-2)',
+        borderRadius: 'var(--radius-sm)',
+      }}>
+        {STATUS_LABELS[investor.status] || investor.status}
+      </span>
+      <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+        T{investor.tier}
+      </span>
+      {investor.recommended_categories.length > 0 && (
+        <span className="ml-auto" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
+          Share: {investor.recommended_categories.join(', ')}
+        </span>
+      )}
+    </div>
+  );
+}
+
+function AccessLogRow({ entry }: {
+  entry: IntelligenceData['document_access_log'][0];
+}) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <div
+      className="flex items-center gap-3"
+      style={{
+        padding: 'var(--space-2) var(--space-3)',
+        borderRadius: 'var(--radius-md)',
+        background: hovered ? 'var(--surface-1)' : 'transparent',
+        transition: 'background 150ms ease',
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <Eye className="w-3.5 h-3.5 shrink-0" style={{ color: 'var(--text-tertiary)' }} />
+      <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-primary)', minWidth: '8rem' }}>
+        {entry.investor_name}
+      </span>
+      <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>viewed</span>
+      <span className="truncate" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
+        {entry.document_title}
+      </span>
+      <span className="ml-auto shrink-0" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
+        {new Date(entry.accessed_at).toLocaleDateString()} {new Date(entry.accessed_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+      </span>
     </div>
   );
 }

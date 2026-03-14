@@ -482,6 +482,16 @@ async function ensureInitialized() {
     )`);
   } catch { /* already exists */ }
 
+  // Data room access tracking
+  try {
+    await db.execute(`CREATE TABLE IF NOT EXISTS data_room_access (
+      id TEXT PRIMARY KEY,
+      investor_id TEXT NOT NULL,
+      document_id TEXT NOT NULL,
+      accessed_at TEXT DEFAULT (datetime('now'))
+    )`);
+  } catch { /* already exists */ }
+
   // Migration: add meeting outcome feedback columns
   try { await db.execute(`ALTER TABLE meetings ADD COLUMN outcome_rating INTEGER DEFAULT NULL`); } catch { /* column already exists */ }
   try { await db.execute(`ALTER TABLE meetings ADD COLUMN objections_addressed TEXT DEFAULT '[]'`); } catch { /* column already exists */ }
@@ -935,6 +945,39 @@ export async function getDataRoomContext(): Promise<string> {
     const text = f.extracted_text.substring(0, 3000);
     return `--- ${f.filename} (${f.category}) ---\n${f.summary ? `Summary: ${f.summary}\n` : ''}${text}`;
   }).join('\n\n');
+}
+
+// Data Room Access
+export interface DataRoomAccessRecord {
+  id: string;
+  investor_id: string;
+  document_id: string;
+  accessed_at: string;
+}
+
+export async function logDataRoomAccess(investorId: string, documentId: string): Promise<DataRoomAccessRecord> {
+  await ensureInitialized();
+  const id = crypto.randomUUID();
+  await getClient().execute({
+    sql: `INSERT INTO data_room_access (id, investor_id, document_id, accessed_at) VALUES (?, ?, ?, datetime('now'))`,
+    args: [id, investorId, documentId],
+  });
+  return { id, investor_id: investorId, document_id: documentId, accessed_at: new Date().toISOString() };
+}
+
+export async function getAllDataRoomAccess(): Promise<DataRoomAccessRecord[]> {
+  await ensureInitialized();
+  const result = await getClient().execute('SELECT * FROM data_room_access ORDER BY accessed_at DESC');
+  return result.rows as unknown as DataRoomAccessRecord[];
+}
+
+export async function getDataRoomAccessByInvestor(investorId: string): Promise<DataRoomAccessRecord[]> {
+  await ensureInitialized();
+  const result = await getClient().execute({
+    sql: 'SELECT * FROM data_room_access WHERE investor_id = ? ORDER BY accessed_at DESC',
+    args: [investorId],
+  });
+  return result.rows as unknown as DataRoomAccessRecord[];
 }
 
 // Model Sheets
