@@ -853,6 +853,14 @@ function InvestorCard({
   const [hovered, setHovered] = useState(false);
   const TypeIcon = TYPE_ICONS[investor.type as InvestorType] || Building2;
 
+  const tierGlow = hovered
+    ? investor.tier === 1
+      ? '0 0 12px rgba(124, 110, 240, 0.15)'
+      : investor.tier === 2
+        ? '0 0 12px rgba(240, 176, 96, 0.12)'
+        : '0 0 8px rgba(255, 255, 255, 0.04)'
+    : 'none';
+
   const cardBaseStyle: React.CSSProperties = {
     background: hovered ? 'var(--surface-2)' : 'var(--surface-1)',
     border: '1px solid',
@@ -860,6 +868,7 @@ function InvestorCard({
     borderRadius: 'var(--radius-lg)',
     cursor: 'grab',
     transition: 'all 150ms ease',
+    boxShadow: tierGlow,
     ...(isDragging ? { opacity: 0.5, transform: 'scale(0.95)' } : {}),
   };
 

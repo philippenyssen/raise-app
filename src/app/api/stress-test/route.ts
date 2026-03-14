@@ -557,10 +557,9 @@ export async function GET() {
     const totalExpected = investorForecasts.reduce((s, f) => s + f.expectedValue, 0);
     const baseCase = Math.round(totalExpected * 10) / 10;
 
-    // Best case: all engaged+ investors close at midpoint check
+    // Best case: all active investors close at midpoint check
     const bestCase = Math.round(
       investorForecasts
-        .filter(f => ['engaged', 'in_dd', 'term_sheet', 'closed'].includes(f.status))
         .reduce((s, f) => s + f.expectedCheck, 0) * 10
     ) / 10;
 
