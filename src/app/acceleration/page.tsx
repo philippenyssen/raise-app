@@ -59,10 +59,10 @@ interface AccelerationData {
 // ---------------------------------------------------------------------------
 
 const TYPE_STYLES: Record<string, React.CSSProperties> = {
-  vc: { background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(74,111,165,0.25)' },
-  growth: { background: 'var(--cat-purple-muted)', color: 'var(--chart-4)', border: '1px solid rgba(74,74,138,0.15)' },
+  vc: { background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(27, 42, 74, 0.10)' },
+  growth: { background: 'var(--cat-purple-muted)', color: 'var(--chart-4)', border: '1px solid rgba(90, 90, 122, 0.10)' },
   sovereign: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: '1px solid rgba(26, 26, 46, 0.05)' },
-  strategic: { background: 'var(--cat-teal-muted)', color: 'var(--cat-teal)', border: '1px solid rgba(45,122,106,0.15)' },
+  strategic: { background: 'var(--cat-teal-muted)', color: 'var(--cat-teal)', border: '1px solid rgba(74, 106, 106, 0.10)' },
   debt: { background: 'var(--surface-2)', color: 'var(--text-secondary)', border: '1px solid var(--border-default)' },
   family_office: { background: 'rgba(26, 26, 46, 0.06)', color: 'var(--text-primary)', border: '1px solid rgba(26, 26, 46, 0.06)' },
 };
@@ -81,10 +81,10 @@ const STATUS_LABELS: Record<string, string> = {
 const STATUS_STYLES: Record<string, React.CSSProperties> = {
   identified: { background: 'var(--surface-2)', color: 'var(--text-tertiary)', border: '1px solid var(--border-default)' },
   contacted: { background: 'var(--surface-2)', color: 'var(--text-secondary)', border: '1px solid var(--border-strong)' },
-  nda_signed: { background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(74,111,165,0.25)' },
-  meeting_scheduled: { background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(74,111,165,0.25)' },
-  met: { background: 'var(--cat-purple-muted)', color: 'var(--chart-4)', border: '1px solid rgba(74,74,138,0.15)' },
-  engaged: { background: 'var(--cat-purple-muted)', color: 'var(--cat-purple)', border: '1px solid rgba(74,74,138,0.12)' },
+  nda_signed: { background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(27, 42, 74, 0.10)' },
+  meeting_scheduled: { background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(27, 42, 74, 0.10)' },
+  met: { background: 'var(--cat-purple-muted)', color: 'var(--chart-4)', border: '1px solid rgba(90, 90, 122, 0.10)' },
+  engaged: { background: 'var(--cat-purple-muted)', color: 'var(--cat-purple)', border: '1px solid rgba(90, 90, 122, 0.08)' },
   in_dd: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: '1px solid rgba(26, 26, 46, 0.05)' },
   term_sheet: { background: 'var(--success-muted)', color: 'var(--text-secondary)', border: '1px solid rgba(27, 42, 74, 0.08)' },
 };
@@ -107,8 +107,8 @@ const TRIGGER_STYLES: Record<string, React.CSSProperties> = {
   momentum_cliff: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: '1px solid rgba(26, 26, 46, 0.05)' },
   stall_risk: { background: 'var(--danger-muted)', color: 'var(--text-primary)', border: '1px solid rgba(26, 26, 46, 0.06)' },
   window_closing: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: '1px solid rgba(26, 26, 46, 0.05)' },
-  catalyst_match: { background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(74,111,165,0.25)' },
-  competitive_pressure: { background: 'var(--cat-purple-muted)', color: 'var(--chart-4)', border: '1px solid rgba(74,74,138,0.15)' },
+  catalyst_match: { background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(27, 42, 74, 0.10)' },
+  competitive_pressure: { background: 'var(--cat-purple-muted)', color: 'var(--chart-4)', border: '1px solid rgba(90, 90, 122, 0.10)' },
   term_sheet_ready: { background: 'var(--success-muted)', color: 'var(--text-secondary)', border: '1px solid rgba(27, 42, 74, 0.08)' },
 };
 
@@ -208,7 +208,7 @@ function ActionCard({
         border: '1px solid var(--border-subtle)',
         borderRadius: 'var(--radius-lg)',
         padding: '16px',
-        background: 'rgba(24,24,27,0.3)',
+        background: 'rgba(26, 26, 46,0.3)',
         opacity: 0.6,
         transition: 'all 200ms ease',
       }
@@ -301,7 +301,7 @@ function ActionCard({
                 className="flex items-center gap-1.5 transition-colors"
                 style={{
                   padding: '8px 12px',
-                  background: execHovered ? 'rgba(74,111,165,0.8)' : 'var(--accent)',
+                  background: execHovered ? 'var(--accent-hover)' : 'var(--accent)',
                   borderRadius: 'var(--radius-md)',
                   fontSize: 'var(--font-size-sm)',
                   fontWeight: 500,
@@ -615,7 +615,7 @@ export default function AccelerationPage() {
             className="inline-flex items-center gap-2 rounded-lg transition-colors"
             style={{
               padding: '8px 16px',
-              background: retryHovered ? 'rgba(74,111,165,0.8)' : 'var(--accent)',
+              background: retryHovered ? 'var(--accent-hover)' : 'var(--accent)',
               color: 'var(--text-primary)',
               fontSize: 'var(--font-size-sm)',
               border: 'none',

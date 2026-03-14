@@ -870,7 +870,7 @@ export default function TodayPage() {
                 data_share: { label: 'Share Docs', color: 'var(--chart-4)', bg: 'var(--cat-purple-muted)' },
                 schedule_followup: { label: 'Schedule', color: 'var(--text-secondary)', bg: 'var(--success-muted)' },
                 warm_reengagement: { label: 'Re-engage', color: 'var(--text-tertiary)', bg: 'var(--warning-muted)' },
-                milestone_update: { label: 'Update', color: 'var(--text-tertiary)', bg: 'rgba(251,146,60,0.12)' },
+                milestone_update: { label: 'Update', color: 'var(--text-tertiary)', bg: 'rgba(138, 136, 128, 0.08)' },
               };
               const tc = typeConfig[fu.action_type] || { label: fu.action_type, color: 'var(--text-tertiary)', bg: 'var(--surface-2)' };
               const isProcessing = completingFollowupId === fu.id;
@@ -1071,8 +1071,8 @@ export default function TodayPage() {
       {insight && (
         <div
           style={{
-            background: 'rgba(167,139,250,0.08)',
-            border: '1px solid rgba(74,74,138,0.12)',
+            background: 'var(--accent-muted)',
+            border: '1px solid rgba(27, 42, 74, 0.08)',
             borderRadius: 'var(--radius-lg)',
             padding: 'var(--space-4)',
           }}
@@ -1084,17 +1084,17 @@ export default function TodayPage() {
                 width: '32px',
                 height: '32px',
                 borderRadius: 'var(--radius-md)',
-                background: 'rgba(167,139,250,0.15)',
+                background: 'rgba(27, 42, 74, 0.10)',
               }}
             >
-              <span style={{ color: 'rgba(167,139,250,0.9)', display: 'flex' }}>
+              <span style={{ color: 'var(--accent)', display: 'flex' }}>
                 <Sparkles className="w-4 h-4" />
               </span>
             </div>
 
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2" style={{ marginBottom: '4px' }}>
-                <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'rgba(167,139,250,0.9)', textTransform: 'none' as const, letterSpacing: '0.05em' }}>
+                <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'var(--accent)', textTransform: 'none' as const, letterSpacing: '0.05em' }}>
                   AI Insight
                 </span>
               </div>
@@ -1109,9 +1109,9 @@ export default function TodayPage() {
             <Link
               href="/intelligence"
               className="btn btn-ghost btn-sm shrink-0"
-              style={{ color: 'rgba(167,139,250,0.8)' }}
-              onMouseEnter={e => (e.currentTarget.style.color = 'rgba(167,139,250,1)')}
-              onMouseLeave={e => (e.currentTarget.style.color = 'rgba(167,139,250,0.8)')}
+              style={{ color: 'var(--text-secondary)' }}
+              onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
+              onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
             >
               See more
               <span style={{ display: 'flex' }}><ChevronRight className="w-3.5 h-3.5" /></span>

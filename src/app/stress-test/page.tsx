@@ -120,7 +120,7 @@ function probBgStyle(p: number): React.CSSProperties {
 
 function tierBadgeStyle(tier: number): React.CSSProperties {
   const styles: Record<number, React.CSSProperties> = {
-    1: { color: 'var(--text-tertiary)', background: 'var(--warning-muted)', borderColor: 'rgba(196, 163, 90, 0.3)' },
+    1: { color: 'var(--text-tertiary)', background: 'var(--warning-muted)', borderColor: 'rgba(138, 136, 128, 0.3)' },
     2: { color: 'var(--accent)', background: 'var(--accent-muted)', borderColor: 'var(--accent-muted)' },
     3: { color: 'var(--text-secondary)', background: 'rgba(255, 255, 255, 0.1)', borderColor: 'var(--border-subtle)' },
     4: { color: 'var(--text-muted)', background: 'rgba(255, 255, 255, 0.1)', borderColor: 'var(--border-subtle)' },
@@ -212,8 +212,8 @@ export default function StressTestPage() {
     : data.investorForecasts.slice(0, 15);
 
   const bannerStyles: Record<string, React.CSSProperties> = {
-    green: { borderColor: 'rgba(74, 158, 110, 0.3)', background: 'var(--success-muted)' },
-    yellow: { borderColor: 'rgba(196, 163, 90, 0.3)', background: 'var(--warning-muted)' },
+    green: { borderColor: 'rgba(27, 42, 74, 0.3)', background: 'var(--success-muted)' },
+    yellow: { borderColor: 'rgba(138, 136, 128, 0.3)', background: 'var(--warning-muted)' },
     red: { borderColor: 'rgba(27, 42, 74, 0.10)', background: 'var(--danger-muted)' },
   };
   const bannerTextStyles: Record<string, React.CSSProperties> = {
@@ -559,7 +559,7 @@ export default function StressTestPage() {
                 const riskBadgeStyle: React.CSSProperties = risk.probability === 'High'
                   ? { color: 'var(--text-primary)', background: 'var(--danger-muted)', borderColor: 'rgba(27, 42, 74, 0.10)' }
                   : risk.probability === 'Medium'
-                  ? { color: 'var(--text-tertiary)', background: 'var(--warning-muted)', borderColor: 'rgba(196, 163, 90, 0.3)' }
+                  ? { color: 'var(--text-tertiary)', background: 'var(--warning-muted)', borderColor: 'rgba(138, 136, 128, 0.3)' }
                   : { color: 'var(--text-secondary)', background: 'rgba(255, 255, 255, 0.1)', borderColor: 'var(--border-subtle)' };
                 return (
                   <div key={i} className="rounded-lg overflow-hidden" style={{ border: '1px solid var(--border-subtle)' }}>
@@ -719,7 +719,7 @@ export default function StressTestPage() {
                       {/* Target marker */}
                       <div
                         className="absolute top-0 bottom-0"
-                        style={{ left: '100%', width: '2px', background: 'rgba(244, 244, 245, 0.4)' }}
+                        style={{ left: '100%', width: '2px', background: 'rgba(228, 227, 224, 0.4)' }}
                         title={`Target: EUR ${formatEuro(data.target)}`}
                       />
                     </div>
@@ -814,8 +814,8 @@ function ForecastCard({ label, sublabel, amount, target, color }: {
 }) {
   const pct = target > 0 ? Math.round((amount / target) * 100) : 0;
   const colorMap: Record<string, { border: string; bg: string; value: string }> = {
-    green: { border: 'rgba(74, 158, 110, 0.25)', bg: 'var(--success-muted)', value: 'var(--success)' },
-    yellow: { border: 'rgba(196, 163, 90, 0.25)', bg: 'var(--warning-muted)', value: 'var(--warning)' },
+    green: { border: 'rgba(27, 42, 74, 0.25)', bg: 'var(--success-muted)', value: 'var(--success)' },
+    yellow: { border: 'rgba(138, 136, 128, 0.25)', bg: 'var(--warning-muted)', value: 'var(--warning)' },
     red: { border: 'rgba(27, 42, 74, 0.08)', bg: 'var(--danger-muted)', value: 'var(--danger)' },
   };
   const c = colorMap[color];

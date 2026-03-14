@@ -16,14 +16,14 @@ type Tab = 'deals' | 'competitors' | 'briefs';
 const THREAT_STYLES: Record<string, { background: string; color: string }> = {
   critical: { background: 'var(--danger-muted)', color: 'var(--text-primary)' },
   high: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
-  medium: { background: 'rgba(196, 163, 90, 0.08)', color: 'var(--text-tertiary)' },
+  medium: { background: 'rgba(138, 136, 128, 0.08)', color: 'var(--text-tertiary)' },
   low: { background: 'var(--success-muted)', color: 'var(--text-secondary)' },
 };
 
 const BRIEF_TYPE_STYLES: Record<string, { background: string; color: string }> = {
   investor: { background: 'var(--accent-muted)', color: 'var(--accent)' },
   competitor: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
-  market: { background: 'rgba(106, 111, 165, 0.12)', color: 'var(--chart-4)' },
+  market: { background: 'rgba(90, 90, 122, 0.12)', color: 'var(--chart-4)' },
 };
 
 export default function IntelligencePage() {
@@ -486,7 +486,7 @@ export default function IntelligencePage() {
                               fontSize: '10px', fontWeight: 600, padding: '2px 6px',
                               borderRadius: 'var(--radius-sm)', textDecoration: 'none',
                               background: 'var(--accent-muted)', color: 'var(--accent)',
-                              border: '1px solid rgba(74,111,165,0.2)',
+                              border: '1px solid rgba(27, 42, 74, 0.2)',
                             }}
                           >
                             Schedule
@@ -653,7 +653,7 @@ function RecentResearchSection({ briefs }: { briefs: IntelligenceBrief[] }) {
                         style={{
                           padding: '2px 8px', borderRadius: 'var(--radius-sm)',
                           background: 'var(--accent-muted)', color: 'var(--accent)',
-                          border: '1px solid rgba(74,111,165,0.2)', textDecoration: 'none',
+                          border: '1px solid rgba(27, 42, 74, 0.2)', textDecoration: 'none',
                           fontWeight: 600,
                         }}
                       >

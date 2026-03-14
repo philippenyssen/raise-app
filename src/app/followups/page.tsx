@@ -73,8 +73,8 @@ const ACTION_TYPE_CONFIG: Record<string, {
   data_share: {
     label: 'Share Materials',
     icon: FolderOpen,
-    color: 'var(--chart-4)',
-    bgColor: 'rgba(106, 111, 165, 0.12)',
+    color: 'var(--text-secondary)',
+    bgColor: 'rgba(27, 42, 74, 0.06)',
   },
   schedule_followup: {
     label: 'Schedule Meeting',
@@ -92,7 +92,7 @@ const ACTION_TYPE_CONFIG: Record<string, {
     label: 'Milestone Update',
     icon: Milestone,
     color: 'var(--text-tertiary)',
-    bgColor: 'rgba(251, 146, 60, 0.12)',
+    bgColor: 'rgba(138, 136, 128, 0.08)',
   },
 };
 
@@ -652,13 +652,13 @@ function FollowupsContent() {
                     width: '16px',
                     height: '16px',
                     borderRadius: '50%',
-                    background: 'rgba(106, 111, 165, 0.12)',
+                    background: 'rgba(27, 42, 74, 0.06)',
                   }}
                 >
-                  <Network className="w-2.5 h-2.5" style={{ color: 'var(--chart-4)' }} />
+                  <Network className="w-2.5 h-2.5" style={{ color: 'var(--text-secondary)' }} />
                 </span>
                 <span style={{ color: 'var(--text-muted)' }}>Cascade</span>
-                <span style={{ color: 'var(--chart-4)', fontWeight: 600 }}>
+                <span style={{ color: 'var(--text-secondary)', fontWeight: 600 }}>
                   {item.cascade.cascadeChainLength} investor{item.cascade.cascadeChainLength !== 1 ? 's' : ''}
                 </span>
               </div>
@@ -672,13 +672,13 @@ function FollowupsContent() {
           return (
             <div
               style={{
-                borderTop: '1px solid rgba(167,139,250,0.15)',
-                background: 'rgba(167,139,250,0.04)',
+                borderTop: '1px solid rgba(27, 42, 74, 0.08)',
+                background: 'rgba(27, 42, 74, 0.03)',
                 padding: 'var(--space-4)',
               }}
             >
               <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-3)' }}>
-                <span className="flex items-center gap-1.5" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'var(--chart-4)' }}>
+                <span className="flex items-center gap-1.5" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'var(--accent)' }}>
                   <PenLine className="w-3.5 h-3.5" />
                   Draft Message
                 </span>
@@ -777,19 +777,19 @@ function FollowupsContent() {
                 }}
                 className="btn btn-sm mt-3"
                 style={{
-                  background: copiedField === `all-${item.id}` ? 'var(--success)' : 'rgba(167,139,250,0.15)',
-                  color: copiedField === `all-${item.id}` ? 'white' : 'var(--chart-4)',
+                  background: copiedField === `all-${item.id}` ? 'var(--success)' : 'var(--accent-muted)',
+                  color: copiedField === `all-${item.id}` ? 'white' : 'var(--accent)',
                   border: 'none',
                   transition: 'all 150ms ease',
                 }}
                 onMouseEnter={e => {
                   if (copiedField !== `all-${item.id}`) {
-                    e.currentTarget.style.background = 'rgba(74,74,138,0.15)';
+                    e.currentTarget.style.background = 'rgba(27, 42, 74, 0.10)';
                   }
                 }}
                 onMouseLeave={e => {
                   if (copiedField !== `all-${item.id}`) {
-                    e.currentTarget.style.background = 'rgba(167,139,250,0.15)';
+                    e.currentTarget.style.background = 'var(--accent-muted)';
                   }
                 }}
               >
@@ -886,7 +886,7 @@ function FollowupsContent() {
           </p>
           {investorFilter && followups.length > 0 && (
             <div className="flex items-center gap-2 mt-2">
-              <span className="text-xs px-2 py-1 rounded-md" style={{ background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(74,111,165,0.25)' }}>
+              <span className="text-xs px-2 py-1 rounded-md" style={{ background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(27, 42, 74, 0.10)' }}>
                 Filtered: {followups[0]?.investor_name || 'Selected investor'}
               </span>
               <Link href="/followups" className="text-xs" style={{ color: 'var(--text-muted)', textDecoration: 'underline' }}>
@@ -1077,7 +1077,7 @@ function FollowupsContent() {
         >
           <div
             style={{
-              background: 'linear-gradient(to right, rgba(106, 111, 165, 0.08), var(--accent-muted))',
+              background: 'var(--accent-muted)',
               borderBottom: '1px solid var(--border-subtle)',
               padding: 'var(--space-4) var(--space-5)',
             }}

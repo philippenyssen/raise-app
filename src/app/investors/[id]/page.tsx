@@ -1215,7 +1215,7 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
                       return `/meetings/new?investor=${investorId}`;
                     })()}
                     className="btn btn-sm shrink-0"
-                    style={{ background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(74,111,165,0.25)', fontSize: '11px', padding: '3px 10px', gap: '4px', display: 'inline-flex', alignItems: 'center', textDecoration: 'none' }}
+                    style={{ background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(27, 42, 74, 0.25)', fontSize: '11px', padding: '3px 10px', gap: '4px', display: 'inline-flex', alignItems: 'center', textDecoration: 'none' }}
                   >
                     Do it <ArrowRight className="w-3 h-3" />
                   </Link>
@@ -1455,13 +1455,13 @@ const CATEGORY_COLORS: Record<string, { bg: string; color: string }> = {
   identity: { bg: 'var(--surface-2)', color: 'var(--text-tertiary)' },
   financials: { bg: 'var(--success-muted)', color: 'var(--text-secondary)' },
   strategy: { bg: 'var(--accent-muted)', color: 'var(--accent)' },
-  people: { bg: 'rgba(106, 111, 165, 0.12)', color: 'var(--chart-4)' },
+  people: { bg: 'rgba(90, 90, 122, 0.12)', color: 'var(--chart-4)' },
   portfolio: { bg: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
   process: { bg: 'var(--accent-muted)', color: 'var(--accent)' },
   contact: { bg: 'var(--surface-2)', color: 'var(--text-tertiary)' },
   regulatory: { bg: 'var(--danger-muted)', color: 'var(--text-primary)' },
   corporate: { bg: 'var(--surface-2)', color: 'var(--text-tertiary)' },
-  media: { bg: 'rgba(106, 111, 165, 0.12)', color: 'var(--chart-4)' },
+  media: { bg: 'rgba(90, 90, 122, 0.12)', color: 'var(--chart-4)' },
   relationships: { bg: 'var(--accent-muted)', color: 'var(--accent)' },
 };
 

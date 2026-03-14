@@ -100,74 +100,74 @@ type Tab = 'playbook' | 'effectiveness';
 
 const TOPIC_COLORS: Record<string, { bg: React.CSSProperties; text: React.CSSProperties; border: React.CSSProperties; dotColor: string; textColor: string }> = {
   valuation: {
-    bg: { background: 'rgba(147, 51, 234, 0.15)' },
-    text: { color: 'var(--chart-4)' },
-    border: { borderColor: 'rgba(126, 34, 206, 0.35)' },
-    dotColor: 'var(--chart-4)',
-    textColor: 'var(--chart-4)',
+    bg: { background: 'rgba(27, 42, 74, 0.08)' },
+    text: { color: 'var(--accent)' },
+    border: { borderColor: 'rgba(27, 42, 74, 0.15)' },
+    dotColor: 'var(--accent)',
+    textColor: 'var(--accent)',
   },
   competition: {
-    bg: { background: 'rgba(234, 88, 12, 0.15)' },
-    text: { color: 'var(--text-tertiary)' },
-    border: { borderColor: 'rgba(194, 65, 12, 0.35)' },
-    dotColor: 'var(--warning)',
-    textColor: 'var(--warning)',
+    bg: { background: 'rgba(27, 42, 74, 0.06)' },
+    text: { color: 'var(--text-secondary)' },
+    border: { borderColor: 'rgba(27, 42, 74, 0.12)' },
+    dotColor: 'var(--text-secondary)',
+    textColor: 'var(--text-secondary)',
   },
   team: {
-    bg: { background: 'rgba(6, 182, 212, 0.15)' },
-    text: { color: 'var(--cat-teal)' },
-    border: { borderColor: 'rgba(14, 116, 144, 0.35)' },
-    dotColor: 'var(--cat-teal)',
-    textColor: 'var(--cat-teal)',
+    bg: { background: 'rgba(138, 136, 128, 0.08)' },
+    text: { color: 'var(--text-tertiary)' },
+    border: { borderColor: 'rgba(138, 136, 128, 0.15)' },
+    dotColor: 'var(--text-tertiary)',
+    textColor: 'var(--text-tertiary)',
   },
   execution: {
-    bg: { background: 'rgba(202, 138, 4, 0.15)' },
+    bg: { background: 'rgba(27, 42, 74, 0.10)' },
     text: { color: 'var(--accent)' },
-    border: { borderColor: 'rgba(161, 98, 7, 0.35)' },
+    border: { borderColor: 'rgba(27, 42, 74, 0.18)' },
     dotColor: 'var(--accent)',
     textColor: 'var(--accent)',
   },
   financial: {
-    bg: { background: 'rgba(22, 163, 74, 0.15)' },
+    bg: { background: 'rgba(27, 42, 74, 0.05)' },
     text: { color: 'var(--text-secondary)' },
-    border: { borderColor: 'rgba(21, 128, 61, 0.35)' },
-    dotColor: 'var(--success)',
-    textColor: 'var(--success)',
+    border: { borderColor: 'rgba(27, 42, 74, 0.10)' },
+    dotColor: 'var(--text-secondary)',
+    textColor: 'var(--text-secondary)',
   },
   market: {
-    bg: { background: 'rgba(37, 99, 235, 0.15)' },
+    bg: { background: 'rgba(27, 42, 74, 0.07)' },
     text: { color: 'var(--accent)' },
-    border: { borderColor: 'rgba(30, 64, 175, 0.35)' },
+    border: { borderColor: 'rgba(27, 42, 74, 0.14)' },
     dotColor: 'var(--accent)',
     textColor: 'var(--accent)',
   },
   technical: {
-    bg: { background: 'rgba(79, 70, 229, 0.15)' },
+    bg: { background: 'rgba(138, 136, 128, 0.06)' },
     text: { color: 'var(--text-tertiary)' },
-    border: { borderColor: 'rgba(55, 48, 163, 0.35)' },
+    border: { borderColor: 'rgba(138, 136, 128, 0.12)' },
     dotColor: 'var(--text-tertiary)',
     textColor: 'var(--text-tertiary)',
   },
   risk: {
-    bg: { background: 'rgba(220, 38, 38, 0.15)' },
+    bg: { background: 'rgba(26, 26, 46, 0.08)' },
     text: { color: 'var(--text-primary)' },
-    border: { borderColor: 'rgba(153, 27, 27, 0.35)' },
-    dotColor: 'var(--danger)',
-    textColor: 'var(--danger)',
+    border: { borderColor: 'rgba(26, 26, 46, 0.15)' },
+    dotColor: 'var(--text-primary)',
+    textColor: 'var(--text-primary)',
   },
   timing: {
-    bg: { background: 'rgba(217, 119, 6, 0.15)' },
+    bg: { background: 'rgba(138, 136, 128, 0.07)' },
     text: { color: 'var(--text-tertiary)' },
-    border: { borderColor: 'rgba(146, 64, 14, 0.35)' },
-    dotColor: 'var(--warning)',
-    textColor: 'var(--warning)',
+    border: { borderColor: 'rgba(138, 136, 128, 0.14)' },
+    dotColor: 'var(--text-tertiary)',
+    textColor: 'var(--text-tertiary)',
   },
   structure: {
-    bg: { background: 'rgba(13, 148, 136, 0.15)' },
-    text: { color: 'var(--cat-teal)' },
-    border: { borderColor: 'rgba(15, 118, 110, 0.35)' },
-    dotColor: 'var(--cat-teal)',
-    textColor: 'var(--cat-teal)',
+    bg: { background: 'rgba(27, 42, 74, 0.04)' },
+    text: { color: 'var(--text-secondary)' },
+    border: { borderColor: 'rgba(27, 42, 74, 0.08)' },
+    dotColor: 'var(--text-secondary)',
+    textColor: 'var(--text-secondary)',
   },
 };
 
@@ -224,7 +224,7 @@ function CopyButton({ text }: { text: string }) {
 
 function BestResponseCard({ response }: { response: ObjectionRecord }) {
   return (
-    <div className="mx-4 mt-3 p-3 rounded-lg" style={{ background: 'var(--success-muted)', border: '1px solid rgba(74, 158, 110, 0.2)' }}>
+    <div className="mx-4 mt-3 p-3 rounded-lg" style={{ background: 'var(--success-muted)', border: '1px solid rgba(27, 42, 74, 0.2)' }}>
       <div className="flex items-center justify-between mb-1">
         <div className="flex items-center gap-2">
           <CheckCircle2 className="w-3.5 h-3.5" style={{ color: 'var(--text-secondary)' }} />
@@ -480,7 +480,7 @@ export default function ObjectionsPage() {
                         <span className="text-sm font-semibold  tracking-wide" style={color.text}>
                           {group.topic}
                         </span>
-                        <span className="text-xs px-2 py-0.5 rounded-full" style={{ color: 'var(--text-muted)', background: 'rgba(24, 24, 28, 0.8)' }}>
+                        <span className="text-xs px-2 py-0.5 rounded-full" style={{ color: 'var(--text-muted)', background: 'rgba(26, 26, 46, 0.8)' }}>
                           {group.count} objection{group.count !== 1 ? 's' : ''}
                         </span>
                       </div>
@@ -764,7 +764,7 @@ export default function ObjectionsPage() {
                           borderRadius: 'var(--radius-sm)',
                           background: 'var(--accent-muted)',
                         }}
-                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(74,111,165,0.2)'; }}
+                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(27, 42, 74, 0.08)'; }}
                         onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--accent-muted)'; }}
                       >
                         <Calendar className="w-3 h-3" />
@@ -837,7 +837,7 @@ export default function ObjectionsPage() {
                         {bestFromPlaybook.map(({ topic, response }) => {
                           const color = getTopicColor(topic);
                           return (
-                            <div key={topic} className="p-2 rounded-lg space-y-1" style={{ background: 'var(--success-muted)', border: '1px solid rgba(74, 158, 110, 0.15)' }}>
+                            <div key={topic} className="p-2 rounded-lg space-y-1" style={{ background: 'var(--success-muted)', border: '1px solid rgba(27, 42, 74, 0.15)' }}>
                               <span
                                 className="px-1 py-0.5 rounded"
                                 style={{ fontSize: '10px', ...color.bg, ...color.text }}
@@ -1067,7 +1067,7 @@ function EffectivenessTab({
 
                       {/* Best / worst response */}
                       {te.best_response && (
-                        <div className="p-2 rounded-lg" style={{ background: 'var(--success-muted)', border: '1px solid rgba(74, 158, 110, 0.15)' }}>
+                        <div className="p-2 rounded-lg" style={{ background: 'var(--success-muted)', border: '1px solid rgba(27, 42, 74, 0.15)' }}>
                           <div className="flex items-center gap-1 mb-1">
                             <ThumbsUp className="w-3 h-3" style={{ color: 'var(--text-secondary)' }} />
                             <span className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>Best response</span>

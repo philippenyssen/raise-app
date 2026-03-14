@@ -502,7 +502,7 @@ export default function TermComparePage() {
               label="Best for Founders"
               value={results.recommendations.best_for_founders}
               bg="var(--success-muted)"
-              border="rgba(74, 158, 110, 0.25)"
+              border="rgba(27, 42, 74, 0.25)"
             />
             <RecoCard
               icon={<DollarSign className="w-5 h-5" style={{ color: 'var(--accent)' }} />}
@@ -516,7 +516,7 @@ export default function TermComparePage() {
               label="Highest Effective Valuation"
               value={results.recommendations.highest_effective_valuation}
               bg="var(--warning-muted)"
-              border="rgba(196, 163, 90, 0.25)"
+              border="rgba(138, 136, 128, 0.25)"
             />
           </div>
 

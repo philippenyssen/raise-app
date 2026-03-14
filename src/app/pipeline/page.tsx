@@ -58,40 +58,40 @@ const COLUMN_COLORS: Record<InvestorStatus, {
     badge: { background: 'var(--accent-muted)', color: 'var(--accent)' },
   },
   meeting_scheduled: {
-    header: { background: 'rgba(99, 102, 241, 0.12)' },
-    border: { borderColor: 'rgba(99, 102, 241, 0.25)' },
-    bg: { background: 'rgba(99, 102, 241, 0.03)' },
-    badge: { background: 'var(--cat-purple-muted)', color: 'var(--chart-4)' },
+    header: { background: 'rgba(27, 42, 74, 0.08)' },
+    border: { borderColor: 'rgba(27, 42, 74, 0.12)' },
+    bg: { background: 'rgba(27, 42, 74, 0.03)' },
+    badge: { background: 'rgba(27, 42, 74, 0.10)', color: 'var(--text-secondary)' },
   },
   met: {
-    header: { background: 'rgba(139, 92, 246, 0.12)' },
-    border: { borderColor: 'rgba(139, 92, 246, 0.25)' },
-    bg: { background: 'rgba(139, 92, 246, 0.03)' },
-    badge: { background: 'var(--cat-purple-muted)', color: 'var(--chart-4)' },
+    header: { background: 'rgba(27, 42, 74, 0.10)' },
+    border: { borderColor: 'rgba(27, 42, 74, 0.15)' },
+    bg: { background: 'rgba(27, 42, 74, 0.04)' },
+    badge: { background: 'rgba(27, 42, 74, 0.12)', color: 'var(--text-secondary)' },
   },
   engaged: {
-    header: { background: 'rgba(106, 111, 165, 0.12)' },
-    border: { borderColor: 'rgba(106, 111, 165, 0.25)' },
-    bg: { background: 'rgba(106, 111, 165, 0.03)' },
-    badge: { background: 'var(--cat-purple-muted)', color: 'var(--cat-purple)' },
+    header: { background: 'rgba(27, 42, 74, 0.12)' },
+    border: { borderColor: 'rgba(27, 42, 74, 0.18)' },
+    bg: { background: 'rgba(27, 42, 74, 0.04)' },
+    badge: { background: 'rgba(27, 42, 74, 0.15)', color: 'var(--accent)' },
   },
   in_dd: {
-    header: { background: 'rgba(196, 163, 90, 0.12)' },
-    border: { borderColor: 'rgba(196, 163, 90, 0.25)' },
-    bg: { background: 'rgba(196, 163, 90, 0.03)' },
-    badge: { background: 'rgba(196, 163, 90, 0.3)', color: 'var(--text-tertiary)' },
+    header: { background: 'rgba(27, 42, 74, 0.15)' },
+    border: { borderColor: 'rgba(27, 42, 74, 0.22)' },
+    bg: { background: 'rgba(27, 42, 74, 0.05)' },
+    badge: { background: 'rgba(27, 42, 74, 0.18)', color: 'var(--accent)' },
   },
   term_sheet: {
-    header: { background: 'rgba(74, 158, 110, 0.1)' },
-    border: { borderColor: 'rgba(74, 158, 110, 0.25)' },
-    bg: { background: 'rgba(74, 158, 110, 0.03)' },
-    badge: { background: 'rgba(74, 158, 110, 0.3)', color: 'var(--text-secondary)' },
+    header: { background: 'rgba(27, 42, 74, 0.18)' },
+    border: { borderColor: 'rgba(27, 42, 74, 0.25)' },
+    bg: { background: 'rgba(27, 42, 74, 0.06)' },
+    badge: { background: 'rgba(27, 42, 74, 0.22)', color: 'var(--accent)' },
   },
   closed: {
-    header: { background: 'rgba(74, 158, 110, 0.15)' },
-    border: { borderColor: 'rgba(74, 158, 110, 0.3)' },
-    bg: { background: 'rgba(74, 158, 110, 0.05)' },
-    badge: { background: 'rgba(74, 158, 110, 0.35)', color: 'var(--text-secondary)' },
+    header: { background: 'rgba(27, 42, 74, 0.22)' },
+    border: { borderColor: 'rgba(27, 42, 74, 0.30)' },
+    bg: { background: 'rgba(27, 42, 74, 0.08)' },
+    badge: { background: 'rgba(27, 42, 74, 0.28)', color: 'var(--accent)' },
   },
   passed: {
     header: { background: 'rgba(27, 42, 74, 0.08)' },
@@ -109,7 +109,7 @@ const COLUMN_COLORS: Record<InvestorStatus, {
 
 const TIER_STYLES: Record<number, React.CSSProperties> = {
   1: { background: 'var(--accent-muted)', color: 'var(--accent)', borderColor: 'var(--accent-muted)' },
-  2: { background: 'rgba(106, 111, 165, 0.12)', color: 'var(--chart-4)', borderColor: 'var(--cat-purple-muted)' },
+  2: { background: 'rgba(27, 42, 74, 0.08)', color: 'var(--text-secondary)', borderColor: 'rgba(27, 42, 74, 0.10)' },
   3: { background: 'rgba(255, 255, 255, 0.12)', color: 'var(--text-secondary)', borderColor: 'var(--border-default)' },
   4: { background: 'rgba(255, 255, 255, 0.08)', color: 'var(--text-muted)', borderColor: 'var(--border-subtle)' },
 };
@@ -134,10 +134,10 @@ const TYPE_ICONS: Record<InvestorType, React.ComponentType<{ className?: string 
 
 const TYPE_STYLES: Record<InvestorType, React.CSSProperties> = {
   vc: { background: 'var(--accent-muted)', color: 'var(--accent)', borderColor: 'var(--accent-muted)' },
-  growth: { background: 'rgba(106, 111, 165, 0.12)', color: 'var(--chart-4)', borderColor: 'var(--cat-purple-muted)' },
-  sovereign: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', borderColor: 'rgba(196, 163, 90, 0.3)' },
-  strategic: { background: 'var(--success-muted)', color: 'var(--text-secondary)', borderColor: 'rgba(74, 158, 110, 0.3)' },
-  debt: { background: 'rgba(196, 163, 90, 0.12)', color: 'var(--text-tertiary)', borderColor: 'rgba(196, 163, 90, 0.3)' },
+  growth: { background: 'rgba(90, 90, 122, 0.08)', color: 'var(--text-secondary)', borderColor: 'rgba(90, 90, 122, 0.10)' },
+  sovereign: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', borderColor: 'rgba(138, 136, 128, 0.3)' },
+  strategic: { background: 'var(--success-muted)', color: 'var(--text-secondary)', borderColor: 'rgba(27, 42, 74, 0.3)' },
+  debt: { background: 'rgba(138, 136, 128, 0.12)', color: 'var(--text-tertiary)', borderColor: 'rgba(138, 136, 128, 0.3)' },
   family_office: { background: 'rgba(27, 42, 74, 0.08)', color: 'var(--text-primary)', borderColor: 'rgba(27, 42, 74, 0.10)' },
 };
 

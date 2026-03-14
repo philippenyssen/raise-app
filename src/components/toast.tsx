@@ -26,25 +26,25 @@ const icons = { success: CheckCircle, error: XCircle, warning: AlertTriangle, in
 const typeStyles: Record<ToastType, { bg: string; border: string; color: string; icon: string }> = {
   success: {
     bg: 'var(--success-muted)',
-    border: 'rgba(74, 158, 110, 0.2)',
+    border: 'rgba(27, 42, 74, 0.2)',
     color: 'var(--success)',
     icon: 'var(--success)',
   },
   error: {
     bg: 'var(--danger-muted)',
-    border: 'rgba(196, 90, 90, 0.2)',
+    border: 'rgba(26, 26, 46, 0.2)',
     color: 'var(--danger)',
     icon: 'var(--danger)',
   },
   warning: {
     bg: 'var(--warning-muted)',
-    border: 'rgba(196, 163, 90, 0.2)',
+    border: 'rgba(138, 136, 128, 0.2)',
     color: 'var(--warning)',
     icon: 'var(--warning)',
   },
   info: {
     bg: 'var(--accent-muted)',
-    border: 'rgba(74, 111, 165, 0.2)',
+    border: 'rgba(27, 42, 74, 0.2)',
     color: 'var(--accent)',
     icon: 'var(--accent)',
   },
