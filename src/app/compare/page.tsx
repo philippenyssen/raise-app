@@ -40,6 +40,7 @@ export default function ComparePage() {
     async function load() {
       try {
         const res = await fetch('/api/investors');
+        if (!res.ok) throw new Error(`${res.status}`);
         const data = await res.json();
         setAllInvestors(data);
       } catch {

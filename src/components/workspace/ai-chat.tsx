@@ -7,6 +7,7 @@ import { VoiceInput } from './voice-input';
 interface Message {
   role: 'user' | 'assistant';
   content: string;
+  error?: boolean;
 }
 
 interface AIChatProps {
@@ -129,11 +130,31 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
         setPendingChange({ content: fullText, messageIdx: assistantIdx });
       }
     } catch {
-      setMessages(prev => [...prev.slice(0, -1), { role: 'assistant', content: 'Sorry, something went wrong. Please try again.' }]);
+      setMessages(prev => {
+        const updated = [...prev];
+        // Replace the incomplete assistant message or add error message
+        if (updated.length > 0 && updated[updated.length - 1].role === 'assistant') {
+          updated[updated.length - 1] = { role: 'assistant', content: 'Request failed. Click retry to try again.', error: true };
+        } else {
+          updated.push({ role: 'assistant', content: 'Request failed. Click retry to try again.', error: true });
+        }
+        return updated;
+      });
     } finally {
       setLoading(false);
     }
   }, [messages, loading, documentId, documentContent, documentTitle]);
+
+  const retryLast = useCallback(() => {
+    // Find the last user message and retry from there
+    const lastUserIdx = messages.findLastIndex(m => m.role === 'user');
+    if (lastUserIdx === -1) return;
+    const lastUserText = messages[lastUserIdx].content;
+    // Remove messages from the last user message onward
+    setMessages(prev => prev.slice(0, lastUserIdx));
+    // Re-send
+    setTimeout(() => sendMessage(lastUserText), 50);
+  }, [messages, sendMessage]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -211,7 +232,7 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
             }`}>
               <div className="whitespace-pre-wrap">{msg.content}</div>
               {msg.role === 'assistant' && (
-                <div className="flex items-center gap-1 mt-2 pt-2 border-t border-zinc-700/30">
+                <div className="flex items-center gap-2 mt-2 pt-2 border-t border-zinc-700/30">
                   <button
                     onClick={() => copyMessage(i)}
                     className="text-xs text-zinc-600 hover:text-zinc-400 flex items-center gap-1 transition-colors"
@@ -219,6 +240,14 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
                     {copiedIdx === i ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                     {copiedIdx === i ? 'Copied' : 'Copy'}
                   </button>
+                  {msg.error && (
+                    <button
+                      onClick={retryLast}
+                      className="text-xs text-red-400 hover:text-red-300 flex items-center gap-1 transition-colors"
+                    >
+                      <RotateCcw className="w-3 h-3" /> Retry
+                    </button>
+                  )}
                 </div>
               )}
             </div>

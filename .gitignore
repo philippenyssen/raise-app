@@ -44,3 +44,4 @@ raise.db-shm
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+.env*.local

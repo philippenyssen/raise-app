@@ -39,6 +39,14 @@ export async function POST(req: NextRequest) {
 
     const content = await generateDeliverable(type, context);
 
+    // Validate generated content before saving
+    if (!content || typeof content !== 'string' || content.trim().length < 50) {
+      return NextResponse.json(
+        { error: 'AI generated insufficient content. Please try again.' },
+        { status: 422 }
+      );
+    }
+
     // Create or update the document
     const existing = allDocs.find(d => d.type === type);
     if (existing) {

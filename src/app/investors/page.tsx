@@ -47,38 +47,57 @@ export default function InvestorsPage() {
 
   async function fetchInvestors() {
     setLoading(true);
-    const res = await fetch('/api/investors');
-    setInvestors(await res.json());
-    setLoading(false);
+    try {
+      const res = await fetch('/api/investors');
+      if (!res.ok) throw new Error(`Failed (${res.status})`);
+      setInvestors(await res.json());
+    } catch {
+      toast('Failed to load investors', 'error');
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (editId) {
-      await fetch('/api/investors', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: editId, ...form }) });
-      toast(`${form.name} updated`);
-    } else {
-      await fetch('/api/investors', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) });
-      toast(`${form.name} added`);
+    try {
+      const method = editId ? 'PUT' : 'POST';
+      const body = editId ? { id: editId, ...form } : form;
+      const res = await fetch('/api/investors', { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      if (!res.ok) throw new Error(`Failed (${res.status})`);
+      toast(editId ? `${form.name} updated` : `${form.name} added`);
+      setShowForm(false);
+      setEditId(null);
+      setForm({ name: '', type: 'vc', tier: 2, partner: '', fund_size: '', check_size_range: '', sector_thesis: '', warm_path: '', ic_process: '', speed: 'medium', portfolio_conflicts: '', notes: '' });
+      fetchInvestors();
+    } catch {
+      toast('Failed to save investor', 'error');
     }
-    setShowForm(false);
-    setEditId(null);
-    setForm({ name: '', type: 'vc', tier: 2, partner: '', fund_size: '', check_size_range: '', sector_thesis: '', warm_path: '', ic_process: '', speed: 'medium', portfolio_conflicts: '', notes: '' });
-    fetchInvestors();
   }
 
   async function updateStatus(id: string, status: string) {
-    await fetch('/api/investors', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, status }) });
-    toast(`Status updated to ${STATUS_LABELS[status as InvestorStatus] || status}`);
-    fetchInvestors();
+    try {
+      const res = await fetch('/api/investors', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, status }) });
+      if (!res.ok) throw new Error(`Failed (${res.status})`);
+      toast(`Status updated to ${STATUS_LABELS[status as InvestorStatus] || status}`);
+      fetchInvestors();
+    } catch {
+      toast('Failed to update status', 'error');
+    }
   }
 
   async function handleDelete() {
     if (!deleteTarget) return;
-    await fetch(`/api/investors?id=${deleteTarget.id}`, { method: 'DELETE' });
-    toast('Investor deleted', 'warning');
-    setDeleteTarget(null);
-    fetchInvestors();
+    try {
+      const res = await fetch(`/api/investors?id=${deleteTarget.id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error(`Failed (${res.status})`);
+      toast('Investor deleted', 'warning');
+      setDeleteTarget(null);
+      fetchInvestors();
+    } catch {
+      toast('Failed to delete investor', 'error');
+      setDeleteTarget(null);
+    }
   }
 
   function startEdit(inv: Investor) {
@@ -105,12 +124,18 @@ export default function InvestorsPage() {
   });
 
   async function bulkUpdateStatus(newStatus: string) {
-    for (const id of selected) {
-      await fetch('/api/investors', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, status: newStatus }) });
+    try {
+      for (const id of selected) {
+        const res = await fetch('/api/investors', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, status: newStatus }) });
+        if (!res.ok) throw new Error(`Failed for ${id}`);
+      }
+      toast(`Updated ${selected.size} investors to ${STATUS_LABELS[newStatus as InvestorStatus] || newStatus}`);
+      setSelected(new Set());
+      fetchInvestors();
+    } catch {
+      toast('Some updates failed', 'error');
+      fetchInvestors();
     }
-    toast(`Updated ${selected.size} investors to ${STATUS_LABELS[newStatus as InvestorStatus] || newStatus}`);
-    setSelected(new Set());
-    fetchInvestors();
   }
 
   function toggleSelect(id: string) {

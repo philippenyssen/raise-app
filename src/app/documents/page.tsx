@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useToast } from '@/components/toast';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
-import { FileText, Plus, Clock, Edit3 } from 'lucide-react';
+import { FileText, Plus, Clock, Edit3, Download } from 'lucide-react';
 
 interface Doc {
   id: string;
@@ -40,17 +40,39 @@ export default function DocumentsPage() {
 
   async function fetchDocs() {
     setLoading(true);
-    const res = await fetch('/api/documents');
-    setDocs(await res.json());
-    setLoading(false);
+    try {
+      const res = await fetch('/api/documents');
+      if (!res.ok) throw new Error(`Failed (${res.status})`);
+      setDocs(await res.json());
+    } catch {
+      toast('Failed to load documents', 'error');
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function handleDelete() {
     if (!deleteTarget) return;
-    await fetch(`/api/documents/${deleteTarget.id}`, { method: 'DELETE' });
-    toast('Document deleted', 'warning');
-    setDeleteTarget(null);
-    fetchDocs();
+    try {
+      const res = await fetch(`/api/documents/${deleteTarget.id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error(`Failed (${res.status})`);
+      toast('Document deleted', 'warning');
+      setDeleteTarget(null);
+      fetchDocs();
+    } catch {
+      toast('Failed to delete document', 'error');
+      setDeleteTarget(null);
+    }
+  }
+
+  function downloadDoc(doc: Doc) {
+    const blob = new Blob([doc.content], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = window.document.createElement('a');
+    a.href = url;
+    a.download = `${doc.title.replace(/[^a-zA-Z0-9_-]/g, '_')}.md`;
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
   // Group by type
@@ -124,6 +146,13 @@ export default function DocumentsPage() {
                       <span className={`text-xs px-2 py-0.5 rounded ${STATUS_COLORS[doc.status] || 'bg-zinc-800 text-zinc-500'}`}>
                         {doc.status}
                       </span>
+                      <button
+                        onClick={() => downloadDoc(doc)}
+                        className="text-zinc-600 hover:text-zinc-300 p-1 rounded hover:bg-zinc-800 transition-colors"
+                        title="Download as Markdown"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                      </button>
                       <button
                         onClick={() => setDeleteTarget({ id: doc.id, title: doc.title })}
                         className="text-xs text-zinc-600 hover:text-red-400 px-2 py-1 rounded hover:bg-zinc-800"

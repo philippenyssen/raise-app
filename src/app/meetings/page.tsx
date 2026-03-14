@@ -15,7 +15,10 @@ export default function MeetingsPage() {
   const [statusFilter, setStatusFilter] = useState('all');
 
   useEffect(() => {
-    fetch('/api/meetings').then(r => r.json()).then(setMeetings);
+    fetch('/api/meetings')
+      .then(r => { if (!r.ok) throw new Error(`${r.status}`); return r.json(); })
+      .then(setMeetings)
+      .catch(() => {/* meetings remain empty */});
   }, []);
 
   const filtered = meetings.filter(m => {

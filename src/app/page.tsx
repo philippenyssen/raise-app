@@ -87,12 +87,17 @@ export default function Dashboard() {
 
   async function seedData() {
     setSeeding(true);
-    const res = await fetch('/api/seed', { method: 'POST' });
-    const result = await res.json();
-    if (result.ok) {
-      toast(`Seeded ${result.seeded} investors`);
-    } else {
-      toast(`Seed failed: ${result.error}`, 'error');
+    try {
+      const res = await fetch('/api/seed', { method: 'POST' });
+      if (!res.ok) throw new Error(`Server error (${res.status})`);
+      const result = await res.json();
+      if (result.ok) {
+        toast(`Seeded ${result.seeded} investors`);
+      } else {
+        toast(`Seed failed: ${result.error}`, 'error');
+      }
+    } catch (err) {
+      toast(`Seed failed: ${err instanceof Error ? err.message : 'unknown error'}`, 'error');
     }
     await fetchData();
     setSeeding(false);
@@ -112,7 +117,17 @@ export default function Dashboard() {
     );
   }
 
-  if (!data) return null;
+  if (!data) return (
+    <div className="space-y-8">
+      <h1 className="text-2xl font-bold tracking-tight">Series C Dashboard</h1>
+      <div className="border border-red-800/30 bg-red-900/10 rounded-xl p-8 text-center space-y-3">
+        <p className="text-zinc-400">Could not load dashboard data.</p>
+        <button onClick={fetchData} className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm transition-colors">
+          Retry
+        </button>
+      </div>
+    </div>
+  );
 
   const healthColor = { green: 'text-green-400', yellow: 'text-yellow-400', red: 'text-red-400' }[data.health];
   const healthBg = { green: 'bg-green-400/10 border-green-400/20', yellow: 'bg-yellow-400/10 border-yellow-400/20', red: 'bg-red-400/10 border-red-400/20' }[data.health];

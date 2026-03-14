@@ -89,8 +89,13 @@ export default function InvestorDetailPage() {
   }
 
   async function deleteIntelItem(type: string, itemId: string) {
-    await fetch(`/api/intelligence?type=${type}&id=${itemId}`, { method: 'DELETE' });
-    fetchData();
+    try {
+      const res = await fetch(`/api/intelligence?type=${type}&id=${itemId}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error(`Failed (${res.status})`);
+      fetchData();
+    } catch {
+      toast('Failed to delete item', 'error');
+    }
   }
 
   if (loading) {

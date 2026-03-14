@@ -44,11 +44,16 @@ export default function WorkspacePage() {
   const [pendingDoc, setPendingDoc] = useState<Doc | null>(null);
 
   const fetchDocs = useCallback(async () => {
-    const res = await fetch('/api/documents');
-    const data = await res.json();
-    setDocs(data);
-    setLoading(false);
-  }, []);
+    try {
+      const res = await fetch('/api/documents');
+      if (!res.ok) throw new Error(`Failed (${res.status})`);
+      setDocs(await res.json());
+    } catch {
+      toast('Failed to load documents', 'error');
+    } finally {
+      setLoading(false);
+    }
+  }, [toast]);
 
   useEffect(() => { fetchDocs(); }, [fetchDocs]);
 
@@ -125,12 +130,14 @@ export default function WorkspacePage() {
         toast(data.error, 'error');
       } else {
         toast(`Generated ${TYPE_LABELS[type] || type} — ${data.action}`);
-        await fetchDocs();
-        // Select the new/updated document
-        const refreshed = await fetch('/api/documents');
-        const allDocs = await refreshed.json();
-        const generated = allDocs.find((d: Doc) => d.type === type);
-        if (generated) selectDoc(generated);
+        // Single fetch to refresh and select the generated doc
+        const refreshRes = await fetch('/api/documents');
+        if (refreshRes.ok) {
+          const allDocs: Doc[] = await refreshRes.json();
+          setDocs(allDocs);
+          const generated = allDocs.find((d: Doc) => d.type === type);
+          if (generated) selectDoc(generated);
+        }
       }
     } catch {
       toast('Generation failed', 'error');

@@ -95,12 +95,13 @@ export default function MeetingPrepPage() {
 
     setLoadingPrep(true);
 
+    const safeFetch = (url: string) => fetch(url).then(r => r.ok ? r.json() : []).catch(() => []);
     Promise.all([
-      fetch(`/api/meetings?investor_id=${selectedId}`).then(r => r.json()),
-      fetch(`/api/tasks?investor_id=${selectedId}`).then(r => r.json()),
-      fetch(`/api/intelligence?type=briefs&investor_id=${selectedId}`).then(r => r.json()),
-      fetch(`/api/intelligence?type=partners&investor_id=${selectedId}`).then(r => r.json()),
-      fetch(`/api/intelligence?type=portfolio&investor_id=${selectedId}`).then(r => r.json()),
+      safeFetch(`/api/meetings?investor_id=${selectedId}`),
+      safeFetch(`/api/tasks?investor_id=${selectedId}`),
+      safeFetch(`/api/intelligence?type=briefs&investor_id=${selectedId}`),
+      safeFetch(`/api/intelligence?type=partners&investor_id=${selectedId}`),
+      safeFetch(`/api/intelligence?type=portfolio&investor_id=${selectedId}`),
     ]).then(([m, t, b, p, pf]) => {
       setMeetings(Array.isArray(m) ? m : []);
       setTasks(Array.isArray(t) ? t : []);
