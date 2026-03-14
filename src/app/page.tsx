@@ -1937,18 +1937,22 @@ function HotDealRow({ investor }: { investor: DealHeatInvestor }) {
         >
           {investor.dealHeat.heat}
         </span>
-        <span
-          className="px-1.5 py-0.5 rounded uppercase"
+        <Link
+          href={`/meetings/new?investor=${investor.id}`}
+          onClick={e => e.stopPropagation()}
           style={{
-            fontSize: '9px',
+            fontSize: '10px',
             fontWeight: 600,
+            padding: '2px 8px',
+            borderRadius: 'var(--radius-sm)',
             background: heatBg,
             color: heatColor,
             border: `1px solid ${heatBorder}`,
+            textDecoration: 'none',
           }}
         >
-          {investor.dealHeat.label}
-        </span>
+          Schedule
+        </Link>
       </div>
     </div>
   );
@@ -2016,26 +2020,41 @@ function FollowupRow({ followup }: { followup: FollowupItem }) {
           {followup.description}
         </p>
       </div>
-      <div className="shrink-0 text-right">
-        <div
-          className="tabular-nums"
+      <div className="shrink-0 flex items-center gap-2">
+        <div className="text-right">
+          <div
+            className="tabular-nums"
+            style={{
+              fontSize: 'var(--font-size-xs)',
+              fontWeight: 500,
+              color: isOverdue ? 'var(--danger)' : daysUntil <= 1 ? 'var(--warning)' : 'var(--text-muted)',
+            }}
+          >
+            {isOverdue
+              ? `${Math.abs(daysUntil)}d overdue`
+              : daysUntil === 0
+              ? 'Today'
+              : daysUntil === 1
+              ? 'Tomorrow'
+              : `${daysUntil}d`}
+          </div>
+        </div>
+        <Link
+          href={`/followups?investor=${followup.investor_id}`}
+          onClick={e => e.stopPropagation()}
           style={{
-            fontSize: 'var(--font-size-xs)',
-            fontWeight: 500,
-            color: isOverdue ? 'var(--danger)' : daysUntil <= 1 ? 'var(--warning)' : 'var(--text-muted)',
+            fontSize: '10px',
+            fontWeight: 600,
+            padding: '2px 8px',
+            borderRadius: 'var(--radius-sm)',
+            background: isOverdue ? 'var(--danger-muted)' : 'var(--accent-muted)',
+            color: isOverdue ? 'var(--danger)' : 'var(--accent)',
+            border: `1px solid ${isOverdue ? 'rgba(239,68,68,0.25)' : 'rgba(59,130,246,0.25)'}`,
+            textDecoration: 'none',
           }}
         >
-          {isOverdue
-            ? `${Math.abs(daysUntil)}d overdue`
-            : daysUntil === 0
-            ? 'Today'
-            : daysUntil === 1
-            ? 'Tomorrow'
-            : `${daysUntil}d`}
-        </div>
-        <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
-          {dueDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
-        </div>
+          Act
+        </Link>
       </div>
     </div>
   );

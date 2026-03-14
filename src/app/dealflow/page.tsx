@@ -446,8 +446,23 @@ export default function DealflowPage() {
                 </div>
 
                 {/* Bottleneck */}
-                <div className="truncate" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-                  {inv.bottleneck || '—'}
+                <div className="truncate" style={{ fontSize: 'var(--font-size-xs)' }} onClick={e => e.preventDefault()}>
+                  {inv.bottleneck ? (
+                    <Link
+                      href={
+                        /meeting|call|schedule/i.test(inv.bottleneck) ? `/meetings/new?investor=${inv.id}` :
+                        /follow.?up|outreach|nudge/i.test(inv.bottleneck) ? `/followups?investor=${inv.id}` :
+                        /doc|data.?room|material/i.test(inv.bottleneck) ? `/data-room` :
+                        /objection|concern|pushback/i.test(inv.bottleneck) ? `/objections` :
+                        `/investors/${inv.id}`
+                      }
+                      style={{ color: 'var(--warning)', textDecoration: 'underline', textDecorationStyle: 'dotted', textUnderlineOffset: '2px' }}
+                    >
+                      {inv.bottleneck}
+                    </Link>
+                  ) : (
+                    <span style={{ color: 'var(--text-muted)' }}>—</span>
+                  )}
                 </div>
 
                 {/* Last Meeting */}
