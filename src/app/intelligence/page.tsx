@@ -531,7 +531,7 @@ export default function IntelligencePage() {
       )}
 
       {/* Summary Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 card-stagger">
         <StatCard icon={TrendingUp} label="Avg. Round Size" value={avgRoundSize(deals)} />
         <StatCard icon={DollarSign} label="Avg. Valuation" value={avgValuation(deals)} />
         <StatCard icon={Shield} label="High Threats" value={competitors.filter(c => c.threat_level === 'high' || c.threat_level === 'critical').length} />
@@ -711,12 +711,12 @@ function EmptyState({ message }: { message: string }) {
 
 function StatCard({ icon: Icon, label, value }: { icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>; label: string; value: string | number }) {
   return (
-    <div className="card">
+    <div className="card-metric">
       <div className="flex items-center gap-2 mb-1">
         <Icon className="w-3.5 h-3.5" style={{ color: 'var(--text-muted)' }} />
-        <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{label}</span>
+        <span className="metric-label">{label}</span>
       </div>
-      <div className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>{value}</div>
+      <div className="metric-value" style={{ marginTop: '2px' }}>{value}</div>
     </div>
   );
 }
