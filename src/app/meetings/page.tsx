@@ -414,6 +414,12 @@ export default function MeetingsPage() {
         </div>
         <div className="flex gap-2">
           <Link
+            href="/meetings/capture"
+            className="btn btn-secondary btn-md"
+          >
+            Quick Capture
+          </Link>
+          <Link
             href="/meetings/prep"
             className="btn btn-secondary btn-md"
           >
