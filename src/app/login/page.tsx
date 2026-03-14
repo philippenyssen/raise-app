@@ -94,10 +94,10 @@ export default function LoginPage() {
               marginBottom: 'var(--space-4)',
             }}
           >
-            <span style={{ fontSize: 'var(--font-size-xl)', fontWeight: 700, color: 'var(--accent)', letterSpacing: '0.05em' }}>R</span>
+            <span style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--accent)', letterSpacing: '0.12em', fontFamily: 'var(--font-cormorant), Georgia, serif' }}>R</span>
           </div>
-          <h1 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
-            Raise
+          <h1 style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 300, color: 'var(--text-primary)', letterSpacing: '0.18em', fontFamily: 'var(--font-cormorant), Georgia, serif', textTransform: 'uppercase' as const }}>
+            RAISE
           </h1>
           <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', marginTop: 'var(--space-1)' }}>
             Series C Execution Platform
