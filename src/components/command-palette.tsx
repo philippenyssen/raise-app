@@ -8,7 +8,9 @@ import {
   SendHorizonal, Target, Flame, BarChart3, MessageCircleWarning,
   Globe, BookOpen, FolderOpen, FileText, Settings,
   PlusCircle, Pencil, Mic, ClipboardList, Search,
-  Command,
+  Command, Activity, Shield, TrendingUp, Network,
+  Gauge, Award, Zap, Layers, GitCompare, FileBarChart,
+  Wrench, Rocket,
 } from 'lucide-react';
 
 interface PageItem {
@@ -33,7 +35,14 @@ interface ActionItem {
   section: 'actions';
 }
 
-type PaletteItem = PageItem | InvestorItem | ActionItem;
+interface InvestorActionItem {
+  label: string;
+  href: string;
+  icon: React.ComponentType<{ className?: string }>;
+  section: 'investor_actions';
+}
+
+type PaletteItem = PageItem | InvestorItem | ActionItem | InvestorActionItem;
 
 const PAGES: PageItem[] = [
   { label: 'Today', href: '/today', icon: Sun, section: 'pages' },
@@ -51,6 +60,19 @@ const PAGES: PageItem[] = [
   { label: 'Data Room', href: '/data-room', icon: FolderOpen, section: 'pages' },
   { label: 'Terms', href: '/terms', icon: FileText, section: 'pages' },
   { label: 'Settings', href: '/settings', icon: Settings, section: 'pages' },
+  { label: 'Velocity', href: '/velocity', icon: Gauge, section: 'pages' },
+  { label: 'Strategic', href: '/strategic', icon: Shield, section: 'pages' },
+  { label: 'Momentum', href: '/momentum', icon: TrendingUp, section: 'pages' },
+  { label: 'Network', href: '/network', icon: Network, section: 'pages' },
+  { label: 'Stress Test', href: '/stress-test', icon: Zap, section: 'pages' },
+  { label: 'Reports', href: '/reports', icon: FileBarChart, section: 'pages' },
+  { label: 'Timeline', href: '/timeline', icon: Activity, section: 'pages' },
+  { label: 'Win/Loss', href: '/win-loss', icon: Award, section: 'pages' },
+  { label: 'Term Compare', href: '/term-compare', icon: GitCompare, section: 'pages' },
+  { label: 'Model', href: '/model', icon: Layers, section: 'pages' },
+  { label: 'Deal Heat', href: '/deal-heat', icon: Flame, section: 'pages' },
+  { label: 'Acceleration', href: '/acceleration', icon: Rocket, section: 'pages' },
+  { label: 'Enrichment', href: '/enrichment', icon: Wrench, section: 'pages' },
 ];
 
 const ACTIONS: ActionItem[] = [
@@ -136,9 +158,19 @@ export default function CommandPalette() {
     [lowerQuery]
   );
 
+  const investorActions = useMemo((): InvestorActionItem[] => {
+    if (filteredInvestors.length === 0) return [];
+    const top = filteredInvestors[0];
+    return [
+      { label: `Log meeting with ${top.label}`, href: `/meetings/new?investor=${top.id}`, icon: Pencil, section: 'investor_actions' },
+      { label: `Follow up with ${top.label}`, href: `/followups?investor=${top.id}`, icon: SendHorizonal, section: 'investor_actions' },
+      { label: `Prep for ${top.label}`, href: `/meetings/prep?investor=${top.id}`, icon: ClipboardList, section: 'investor_actions' },
+    ];
+  }, [filteredInvestors]);
+
   const allItems: PaletteItem[] = useMemo(
-    () => [...filteredPages, ...filteredInvestors, ...filteredActions],
-    [filteredPages, filteredInvestors, filteredActions]
+    () => [...filteredPages, ...investorActions, ...filteredInvestors, ...filteredActions],
+    [filteredPages, investorActions, filteredInvestors, filteredActions]
   );
 
   // Clamp active index
@@ -266,6 +298,35 @@ export default function CommandPalette() {
     );
   }
 
+  function renderInvestorActionItem(item: InvestorActionItem) {
+    globalIdx++;
+    const idx = globalIdx;
+    const Icon = item.icon;
+    const isActive = idx === activeIndex;
+    return (
+      <div
+        key={item.href}
+        data-index={idx}
+        onClick={() => navigate(item)}
+        className="flex items-center gap-3 cursor-pointer"
+        style={{
+          padding: '8px 16px',
+          background: isActive ? 'var(--surface-3)' : 'transparent',
+          color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
+          borderRadius: 'var(--radius-md)',
+          margin: '0 8px',
+          transition: 'background 100ms',
+        }}
+        onMouseEnter={() => setActiveIndex(idx)}
+      >
+        <span className="shrink-0 flex items-center justify-center" style={{ width: '16px', height: '16px', color: isActive ? 'var(--success)' : 'var(--text-muted)' }}>
+          <Icon className="w-4 h-4" />
+        </span>
+        <span style={{ fontSize: '13px' }}>{item.label}</span>
+      </div>
+    );
+  }
+
   function renderActionItem(item: ActionItem) {
     globalIdx++;
     const idx = globalIdx;
@@ -369,6 +430,12 @@ export default function CommandPalette() {
                 <div>
                   {renderSectionHeader('Pages')}
                   {filteredPages.map(item => renderPageItem(item))}
+                </div>
+              )}
+              {investorActions.length > 0 && (
+                <div>
+                  {renderSectionHeader('Quick Actions')}
+                  {investorActions.map(item => renderInvestorActionItem(item))}
                 </div>
               )}
               {filteredInvestors.length > 0 && (
