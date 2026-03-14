@@ -20,6 +20,7 @@
 | 14 | 2026-03-14 | Temporal Intelligence | Health trend analysis from stored snapshots (7d/30d averages, deltas, streaks, alerts), temporal trends in context bus + system prompt with AI synthesis, temporal-aware auto-actions (Rule 8: multi-metric decline + long streak alerts), strategic dashboard temporal intelligence UI (5-metric trend cards with direction/delta/alerts), temporal-aware strategic recommendations, pulse temporal trend insights | db.ts, context-bus.ts, intelligence/strategic/route.ts, pulse/route.ts, strategic/page.tsx |
 | 15 | 2026-03-14 | Intelligent Context Steering | Query intent detection (5 types: investor-specific, strategy, objection, document, general), dynamic QUERY FOCUS prefix for workspace AI (targeted context per investor, compound signals, narrative drift, keystone status), instruction 18 (temporal awareness in AI reasoning) | workspace/route.ts |
 | 16 | 2026-03-14 | Investor Lifecycle Intelligence | Per-investor lifecycle fields (daysInCurrentStage, stageHealth, daysSinceLastContact), stage health thresholds (on_track/slow/stalled), lifecycle tags in system prompt, lifecycle synthesis (stalled high-value, lifecycle contradictions), workspace AI lifecycle-aware context steering | context-bus.ts, workspace/route.ts |
+| 17 | 2026-03-14 | Proactive Intelligence Surfacing | ATTENTION REQUIRED block in workspace AI prompt (top 3 urgent items from 7 signal sources), instruction 19 (natural proactive surfacing), prioritized by urgency score across stalled T1 investors, compound signals, temporal alerts, overdue follow-ups, emerging objections, thin pipeline, narrative weakness + upcoming contacts | workspace/route.ts |
 
 ## Intelligence Capabilities (Existing)
 
@@ -387,6 +388,19 @@
   - [x] Document: points AI to narrative health, proven responses, cross-reference accuracy
 - [x] Instruction 18 added: Temporal Awareness in AI reasoning (incorporate trends, streaks, validate improvements)
 - [x] Query focus prepended to system prompt BEFORE role description and full context — steers attention without changing context
+
+### Y. Proactive Intelligence Surfacing (NEW cycle 17)
+- [x] `buildProactiveIntelligence()`: scans 7 signal sources, scores by urgency, returns top 3
+  - [x] Source 1: Stalled tier-1 investors (urgency 10)
+  - [x] Source 2: Very high confidence compound signals (urgency 9)
+  - [x] Source 3: Temporal trend alerts (urgency 7)
+  - [x] Source 4: Overdue follow-ups > 3 (urgency 8)
+  - [x] Source 5: Emerging objections without responses (urgency 6)
+  - [x] Source 6: Thin pipeline < 5 active (urgency 7)
+  - [x] Source 7: Narrative weakness affecting investors with pending follow-ups (urgency 8)
+- [x] ATTENTION REQUIRED block prepended to system prompt BEFORE role description
+- [x] Instruction 19: Natural proactive surfacing guidance (weave into responses when relevant, don't force-insert, tie to actions)
+- [x] Urgency-sorted, capped at top 3 to avoid information overload
 
 ### X. Investor Lifecycle Intelligence (NEW cycle 16)
 - [x] InvestorSnapshot extended with 3 lifecycle fields:

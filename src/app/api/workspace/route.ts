@@ -187,6 +187,87 @@ function buildQueryFocus(
   return lines.join('\n') + '\n\n';
 }
 
+/**
+ * Build a prioritized "attention required" block from all intelligence signals (cycle 17).
+ * The AI should naturally weave these into responses when contextually relevant.
+ */
+function buildProactiveIntelligence(ctx: FullContext): string {
+  const items: { urgency: number; text: string }[] = [];
+
+  // 1. Stalled tier-1 investors (highest urgency)
+  for (const inv of ctx.investors) {
+    if (inv.tier === 1 && inv.stageHealth === 'stalled') {
+      items.push({
+        urgency: 10,
+        text: `${inv.name} (Tier 1) has been stalled at "${inv.status}" for ${inv.daysInCurrentStage} days — needs immediate intervention or explicit deprioritization decision`,
+      });
+    }
+  }
+
+  // 2. Compound signals requiring action
+  for (const cs of ctx.compoundSignals) {
+    if (cs.confidence === 'very_high') {
+      items.push({ urgency: 9, text: cs.recommendation });
+    }
+  }
+
+  // 3. Temporal alerts
+  if (ctx.temporalTrends) {
+    for (const trend of ctx.temporalTrends.trends) {
+      if (trend.alert) {
+        items.push({ urgency: 7, text: trend.alert });
+      }
+    }
+  }
+
+  // 4. Overdue follow-ups
+  if (ctx.pipelineHealth.overdueFollowups > 3) {
+    items.push({
+      urgency: 8,
+      text: `${ctx.pipelineHealth.overdueFollowups} overdue follow-ups — each day of delay erodes close probability`,
+    });
+  }
+
+  // 5. Emerging objections without responses
+  if (ctx.objectionEvolution && ctx.objectionEvolution.emerging.length > 0) {
+    items.push({
+      urgency: 6,
+      text: `New objection topics emerging: ${ctx.objectionEvolution.emerging.join(', ')} — prepare responses before next meetings`,
+    });
+  }
+
+  // 6. Pipeline thin
+  if (ctx.pipelineHealth.totalActive < 5) {
+    items.push({
+      urgency: 7,
+      text: `Only ${ctx.pipelineHealth.totalActive} active investors — pipeline needs diversification`,
+    });
+  }
+
+  // 7. Narrative weakness affecting upcoming contacts
+  for (const nw of ctx.narrativeWeaknesses.slice(0, 2)) {
+    const affected = ctx.investors.filter(i => nw.investorNames.includes(i.name) && i.pendingFollowups > 0);
+    if (affected.length > 0) {
+      items.push({
+        urgency: 8,
+        text: `"${nw.topic}" weakness — ${affected.map(i => i.name).join(', ')} have pending follow-ups. Address BEFORE next contact.`,
+      });
+    }
+  }
+
+  if (items.length === 0) return '';
+
+  // Sort by urgency and take top 3
+  items.sort((a, b) => b.urgency - a.urgency);
+  const top = items.slice(0, 3);
+
+  const lines = ['ATTENTION REQUIRED (proactively surface these when contextually relevant):'];
+  for (let i = 0; i < top.length; i++) {
+    lines.push(`${i + 1}. ${top[i].text}`);
+  }
+  return lines.join('\n') + '\n';
+}
+
 // ---------------------------------------------------------------------------
 
 function buildOtherDocsContext(docs: { id: string; title: string; type: string; content: string }[], excludeId: string | null): string {
@@ -224,7 +305,11 @@ export async function POST(req: NextRequest) {
   const queryIntent = detectQueryIntent(messages, fullCtx);
   const queryFocus = buildQueryFocus(queryIntent, fullCtx);
 
-  const systemPrompt = `${queryFocus}You are an expert fundraising advisor and document specialist embedded in a Series C fundraise execution platform. You combine the expertise of:
+  // Proactive intelligence: top urgent items the AI should surface naturally (cycle 17)
+  const proactiveIntel = buildProactiveIntelligence(fullCtx);
+
+  const systemPrompt = `${queryFocus}${proactiveIntel}
+You are an expert fundraising advisor and document specialist embedded in a Series C fundraise execution platform. You combine the expertise of:
 
 - A Goldman Sachs ECM Managing Director (document style, IC-readiness)
 - A top-tier VC Partner (investor perspective, what makes deals close)
@@ -291,7 +376,12 @@ INSTRUCTIONS:
    - If a metric is declining, don't just report the current value — report the trend ("Pipeline health is 65 and declining 8% over 7 days")
    - If multiple metrics decline simultaneously, flag it as a systemic issue, not isolated incidents
    - If metrics are improving, validate that the improvement is real (check if it correlates with actual pipeline events)
-   - Use streak data: a 4-day declining streak is more concerning than a single-day dip`;
+   - Use streak data: a 4-day declining streak is more concerning than a single-day dip
+19. PROACTIVE INTELLIGENCE: When ATTENTION REQUIRED items are listed above, naturally weave them into your response when contextually relevant:
+   - Don't force-insert them if completely unrelated to the user's question
+   - But DO mention them when the user asks anything about strategy, priorities, or next steps
+   - Frame them as natural extensions of your answer: "Also worth noting..." or "Relatedly, you should be aware..."
+   - Always tie the proactive insight to a specific action the user can take`;
 
   // Compute a lightweight context hash from the context bus version + document length.
   // The client can use this to detect when cached context has changed.
