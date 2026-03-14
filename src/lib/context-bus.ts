@@ -33,8 +33,9 @@ import {
   computeTemporalTrends,
   computeRaiseForecast,
   getForecastCalibration,
+  computeWinLossPatterns,
 } from './db';
-import type { TemporalTrends, RaiseForecast, ForecastCalibration } from './db';
+import type { TemporalTrends, RaiseForecast, ForecastCalibration, WinLossPatterns } from './db';
 
 // ---------------------------------------------------------------------------
 // Context version — monotonically increasing counter
@@ -277,6 +278,9 @@ export interface FullContext {
 
   // Forecast calibration — learning from outcomes (cycle 23)
   forecastCalibration: ForecastCalibration | null;
+
+  // Win/loss pattern analysis — what distinguishes closers from passers (cycle 25)
+  winLossPatterns: WinLossPatterns | null;
 }
 
 const recentChanges: ContextChange[] = [];
@@ -316,6 +320,7 @@ export async function getFullContext(): Promise<FullContext> {
     temporalTrendsData,
     raiseForecastData,
     forecastCalibrationData,
+    winLossPatternsData,
   ] = await Promise.all([
     getRaiseConfig().catch(() => null),
     getAllDocuments().catch(() => []),
@@ -340,6 +345,7 @@ export async function getFullContext(): Promise<FullContext> {
     computeTemporalTrends().catch(() => null),
     computeRaiseForecast().catch(() => null),
     getForecastCalibration().catch(() => null),
+    computeWinLossPatterns().catch(() => null),
   ]);
 
   // Build investor snapshots enriched with meeting/task/followup data
@@ -625,6 +631,9 @@ export async function getFullContext(): Promise<FullContext> {
 
     // Forecast calibration — learning from outcomes (cycle 23)
     forecastCalibration: (forecastCalibrationData as ForecastCalibration | null),
+
+    // Win/loss pattern analysis (cycle 25)
+    winLossPatterns: (winLossPatternsData as WinLossPatterns | null),
   };
 
   cachedContext = context;
@@ -917,6 +926,26 @@ export function contextToSystemPrompt(ctx: FullContext): string {
     lines.push('');
   }
 
+  // Win/loss pattern analysis — outcome-driven learning (cycle 25)
+  if (ctx.winLossPatterns && (ctx.winLossPatterns.closedCount > 0 || ctx.winLossPatterns.passedCount > 0)) {
+    const wl = ctx.winLossPatterns;
+    lines.push(`WIN/LOSS PATTERNS (${wl.closedCount} closed, ${wl.passedCount} passed, ${wl.droppedCount} dropped):`);
+    if (wl.winnerProfile) {
+      lines.push(`- Winner profile: score ${wl.winnerProfile.avgScore}, enthusiasm ${wl.winnerProfile.avgEnthusiasm}/5, ${wl.winnerProfile.avgMeetings} meetings, ${wl.winnerProfile.avgDaysToClose}d to close, tiers: ${wl.winnerProfile.commonTiers}`);
+    }
+    if (wl.loserProfile) {
+      lines.push(`- Loser profile: score ${wl.loserProfile.avgScore}, enthusiasm ${wl.loserProfile.avgEnthusiasm}/5, ${wl.loserProfile.avgMeetings} meetings, ${wl.loserProfile.avgDaysToPass}d to pass, tiers: ${wl.loserProfile.commonTiers}`);
+    }
+    const highSigFactors = wl.distinguishingFactors.filter(f => f.significance === 'high');
+    if (highSigFactors.length > 0) {
+      lines.push(`- KEY PREDICTORS: ${highSigFactors.map(f => `${f.factor} (closed: ${f.closedAvg}, passed: ${f.passedAvg})`).join('; ')}`);
+    }
+    for (const insight of wl.insights) {
+      lines.push(`- ${insight}`);
+    }
+    lines.push('');
+  }
+
   // =========================================================================
   // INTELLIGENCE SYNTHESIS (reasoning aids — connect the dots between sources)
   // =========================================================================
@@ -1042,6 +1071,16 @@ export function contextToSystemPrompt(ctx: FullContext): string {
       );
       if (stalledCritical.length > 0) {
         synthesisLines.push(`SIGNAL MISMATCH: Health metrics are improving but critical path investor${stalledCritical.length > 1 ? 's' : ''} ${stalledCritical.map(i => i.name).join(', ')} ${stalledCritical.length > 1 ? 'are' : 'is'} stalled — improving averages may mask that the most important investors aren't progressing`);
+      }
+    }
+  }
+
+  // Win/loss pattern synthesis: flag active investors matching loser profile (cycle 25)
+  if (ctx.winLossPatterns && ctx.winLossPatterns.loserProfile && ctx.winLossPatterns.passedCount >= 2) {
+    const lp = ctx.winLossPatterns.loserProfile;
+    for (const inv of ctx.investors) {
+      if (inv.enthusiasm <= lp.avgEnthusiasm && inv.meetingCount >= lp.avgMeetings && inv.tier <= 2) {
+        synthesisLines.push(`LOSER PATTERN MATCH: ${inv.name} matches passed-investor profile (enthusiasm ${inv.enthusiasm}/5, ${inv.meetingCount} meetings) — historical data suggests this investor may pass. Consider direct conviction check.`);
       }
     }
   }

@@ -5251,6 +5251,187 @@ export async function getForecastCalibration(): Promise<ForecastCalibration> {
 }
 
 // ---------------------------------------------------------------------------
+// Win/Loss Pattern Analysis — Learning from Outcomes (cycle 25)
+// ---------------------------------------------------------------------------
+
+export interface WinLossPatterns {
+  closedCount: number;
+  passedCount: number;
+  droppedCount: number;
+  distinguishingFactors: {
+    factor: string;
+    closedAvg: number;
+    passedAvg: number;
+    delta: number; // positive = winners have more
+    significance: 'high' | 'medium' | 'low';
+  }[];
+  winnerProfile: {
+    avgScore: number;
+    avgEnthusiasm: number;
+    avgMeetings: number;
+    avgDaysToClose: number;
+    commonTiers: string;
+    commonTypes: string;
+  } | null;
+  loserProfile: {
+    avgScore: number;
+    avgEnthusiasm: number;
+    avgMeetings: number;
+    avgDaysToPass: number;
+    commonTiers: string;
+    commonTypes: string;
+  } | null;
+  insights: string[];
+}
+
+export async function computeWinLossPatterns(): Promise<WinLossPatterns> {
+  await ensureInitialized();
+  const db = getClient();
+
+  // Get terminal investors
+  const [closedResult, passedResult, droppedResult] = await Promise.all([
+    db.execute(`SELECT * FROM investors WHERE status = 'closed'`),
+    db.execute(`SELECT * FROM investors WHERE status = 'passed'`),
+    db.execute(`SELECT * FROM investors WHERE status = 'dropped'`),
+  ]);
+
+  const closed = closedResult.rows as unknown as Array<{
+    id: string; name: string; tier: number; type: string; enthusiasm: number;
+    created_at: string; updated_at: string;
+  }>;
+  const passed = passedResult.rows as unknown as Array<{
+    id: string; name: string; tier: number; type: string; enthusiasm: number;
+    created_at: string; updated_at: string;
+  }>;
+  const dropped = droppedResult.rows as unknown as Array<{
+    id: string; name: string; tier: number; type: string; enthusiasm: number;
+    created_at: string; updated_at: string;
+  }>;
+
+  const insights: string[] = [];
+
+  if (closed.length === 0 && passed.length === 0) {
+    return {
+      closedCount: 0, passedCount: 0, droppedCount: dropped.length,
+      distinguishingFactors: [], winnerProfile: null, loserProfile: null,
+      insights: ['No closed or passed investors yet — patterns will emerge as outcomes resolve'],
+    };
+  }
+
+  const msPerDay = 1000 * 60 * 60 * 24;
+
+  // Helper: get meeting count + score snapshots for a set of investors
+  async function enrichInvestors(invs: typeof closed) {
+    const enriched = [];
+    for (const inv of invs) {
+      const [meetingsResult, scoresResult] = await Promise.all([
+        db.execute({ sql: `SELECT COUNT(*) as cnt FROM meetings WHERE investor_id = ?`, args: [inv.id] }),
+        db.execute({ sql: `SELECT overall_score, engagement_score, momentum_score FROM score_snapshots WHERE investor_id = ? ORDER BY snapshot_date DESC LIMIT 1`, args: [inv.id] }),
+      ]);
+      const meetingCount = (meetingsResult.rows[0] as unknown as { cnt: number }).cnt;
+      const latestScore = scoresResult.rows[0] as unknown as { overall_score: number; engagement_score: number; momentum_score: number } | undefined;
+      const daysInPipeline = Math.max(1, Math.round((new Date(inv.updated_at || inv.created_at).getTime() - new Date(inv.created_at).getTime()) / msPerDay));
+
+      enriched.push({
+        ...inv,
+        meetingCount,
+        overallScore: latestScore?.overall_score ?? 0,
+        engagementScore: latestScore?.engagement_score ?? 0,
+        momentumScore: latestScore?.momentum_score ?? 0,
+        daysInPipeline,
+      });
+    }
+    return enriched;
+  }
+
+  const [enrichedClosed, enrichedPassed] = await Promise.all([
+    enrichInvestors(closed),
+    enrichInvestors(passed),
+  ]);
+
+  // Compute averages
+  const avg = (arr: number[]) => arr.length > 0 ? arr.reduce((s, v) => s + v, 0) / arr.length : 0;
+  const mode = (arr: string[]) => {
+    const counts: Record<string, number> = {};
+    for (const v of arr) counts[v] = (counts[v] || 0) + 1;
+    return Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 2).map(e => e[0]).join(', ') || 'N/A';
+  };
+
+  // Distinguishing factors
+  const factors: WinLossPatterns['distinguishingFactors'] = [];
+
+  if (enrichedClosed.length > 0 && enrichedPassed.length > 0) {
+    const comparisons = [
+      { factor: 'Overall Score', closedVals: enrichedClosed.map(i => i.overallScore), passedVals: enrichedPassed.map(i => i.overallScore) },
+      { factor: 'Enthusiasm', closedVals: enrichedClosed.map(i => i.enthusiasm), passedVals: enrichedPassed.map(i => i.enthusiasm) },
+      { factor: 'Meeting Count', closedVals: enrichedClosed.map(i => i.meetingCount), passedVals: enrichedPassed.map(i => i.meetingCount) },
+      { factor: 'Engagement Score', closedVals: enrichedClosed.map(i => i.engagementScore), passedVals: enrichedPassed.map(i => i.engagementScore) },
+      { factor: 'Momentum Score', closedVals: enrichedClosed.map(i => i.momentumScore), passedVals: enrichedPassed.map(i => i.momentumScore) },
+      { factor: 'Tier (lower=better)', closedVals: enrichedClosed.map(i => i.tier), passedVals: enrichedPassed.map(i => i.tier) },
+      { factor: 'Days in Pipeline', closedVals: enrichedClosed.map(i => i.daysInPipeline), passedVals: enrichedPassed.map(i => i.daysInPipeline) },
+    ];
+
+    for (const comp of comparisons) {
+      const closedAvg = Math.round(avg(comp.closedVals) * 10) / 10;
+      const passedAvg = Math.round(avg(comp.passedVals) * 10) / 10;
+      const delta = Math.round((closedAvg - passedAvg) * 10) / 10;
+      const relDelta = passedAvg !== 0 ? Math.abs(delta / passedAvg) : Math.abs(delta);
+      const significance: 'high' | 'medium' | 'low' = relDelta > 0.3 ? 'high' : relDelta > 0.15 ? 'medium' : 'low';
+
+      factors.push({ factor: comp.factor, closedAvg, passedAvg, delta, significance });
+    }
+
+    // Sort by significance
+    const sigOrder = { high: 0, medium: 1, low: 2 };
+    factors.sort((a, b) => sigOrder[a.significance] - sigOrder[b.significance]);
+
+    // Generate insights
+    const highSig = factors.filter(f => f.significance === 'high');
+    if (highSig.length > 0) {
+      insights.push(`Strongest predictors of close: ${highSig.map(f => f.factor).join(', ')}`);
+    }
+
+    const closedMeetingAvg = avg(enrichedClosed.map(i => i.meetingCount));
+    const passedMeetingAvg = avg(enrichedPassed.map(i => i.meetingCount));
+    if (closedMeetingAvg > passedMeetingAvg * 1.5) {
+      insights.push(`Winners averaged ${Math.round(closedMeetingAvg)} meetings vs ${Math.round(passedMeetingAvg)} for passers — more meetings correlate with close`);
+    }
+
+    const closedEnthAvg = avg(enrichedClosed.map(i => i.enthusiasm));
+    const passedEnthAvg = avg(enrichedPassed.map(i => i.enthusiasm));
+    if (closedEnthAvg - passedEnthAvg >= 1.0) {
+      insights.push(`Enthusiasm gap of ${(closedEnthAvg - passedEnthAvg).toFixed(1)} between winners and losers — enthusiasm is a reliable signal`);
+    } else if (Math.abs(closedEnthAvg - passedEnthAvg) < 0.5) {
+      insights.push(`Enthusiasm similar between winners (${closedEnthAvg.toFixed(1)}) and losers (${passedEnthAvg.toFixed(1)}) — enthusiasm alone is NOT predictive here`);
+    }
+  }
+
+  return {
+    closedCount: closed.length,
+    passedCount: passed.length,
+    droppedCount: dropped.length,
+    distinguishingFactors: factors,
+    winnerProfile: enrichedClosed.length > 0 ? {
+      avgScore: Math.round(avg(enrichedClosed.map(i => i.overallScore))),
+      avgEnthusiasm: Math.round(avg(enrichedClosed.map(i => i.enthusiasm)) * 10) / 10,
+      avgMeetings: Math.round(avg(enrichedClosed.map(i => i.meetingCount)) * 10) / 10,
+      avgDaysToClose: Math.round(avg(enrichedClosed.map(i => i.daysInPipeline))),
+      commonTiers: mode(enrichedClosed.map(i => `T${i.tier}`)),
+      commonTypes: mode(enrichedClosed.map(i => i.type || 'unknown')),
+    } : null,
+    loserProfile: enrichedPassed.length > 0 ? {
+      avgScore: Math.round(avg(enrichedPassed.map(i => i.overallScore))),
+      avgEnthusiasm: Math.round(avg(enrichedPassed.map(i => i.enthusiasm)) * 10) / 10,
+      avgMeetings: Math.round(avg(enrichedPassed.map(i => i.meetingCount)) * 10) / 10,
+      avgDaysToPass: Math.round(avg(enrichedPassed.map(i => i.daysInPipeline))),
+      commonTiers: mode(enrichedPassed.map(i => `T${i.tier}`)),
+      commonTypes: mode(enrichedPassed.map(i => i.type || 'unknown')),
+    } : null,
+    insights,
+  };
+}
+
+// ---------------------------------------------------------------------------
 // Temporal Intelligence — Health Trend Analysis (cycle 14)
 // ---------------------------------------------------------------------------
 

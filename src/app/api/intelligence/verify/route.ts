@@ -12,6 +12,7 @@ import {
   computeTemporalTrends,
   computeRaiseForecast,
   getForecastCalibration,
+  computeWinLossPatterns,
 } from '@/lib/db';
 import { createClient } from '@libsql/client';
 
@@ -123,6 +124,7 @@ export async function GET() {
       { field: 'temporalTrends', cycle: 14 },
       { field: 'raiseForecast', cycle: 18 },
       { field: 'forecastCalibration', cycle: 23 },
+      { field: 'winLossPatterns', cycle: 25 },
     ];
 
     for (const { field, cycle } of expectedFields) {
@@ -130,7 +132,7 @@ export async function GET() {
       const present = value !== undefined && value !== null;
       checks.push({
         name: `context_field_${field}`,
-        status: present ? 'pass' : field === 'actionEffectiveness' || field === 'objectionEvolution' || field === 'pipelineFlow' || field === 'temporalTrends' || field === 'raiseForecast' || field === 'forecastCalibration' ? 'warn' : 'fail',
+        status: present ? 'pass' : field === 'actionEffectiveness' || field === 'objectionEvolution' || field === 'pipelineFlow' || field === 'temporalTrends' || field === 'raiseForecast' || field === 'forecastCalibration' || field === 'winLossPatterns' ? 'warn' : 'fail',
         detail: present
           ? `${field}: present (${Array.isArray(value) ? value.length + ' items' : typeof value}) [cycle ${cycle}]`
           : `${field}: null — may indicate no data yet [cycle ${cycle}]`,
@@ -155,6 +157,7 @@ export async function GET() {
     { name: 'computeTemporalTrends', fn: () => computeTemporalTrends(), cycle: 14 },
     { name: 'computeRaiseForecast', fn: () => computeRaiseForecast(), cycle: 18 },
     { name: 'getForecastCalibration', fn: () => getForecastCalibration(), cycle: 23 },
+    { name: 'computeWinLossPatterns', fn: () => computeWinLossPatterns(), cycle: 25 },
   ];
 
   for (const fc of functionChecks) {
@@ -227,7 +230,7 @@ export async function GET() {
       const prompt = contextToSystemPrompt(ctx);
       const sections = [
         'PIPELINE:', 'KEY INVESTORS', 'RAISE FORECAST', 'TEMPORAL TRENDS',
-        'COMPOUND INTELLIGENCE', 'INTELLIGENCE SYNTHESIS', 'FORECAST CALIBRATION',
+        'COMPOUND INTELLIGENCE', 'INTELLIGENCE SYNTHESIS', 'FORECAST CALIBRATION', 'WIN/LOSS',
       ];
       const found = sections.filter(s => prompt.includes(s));
       checks.push({

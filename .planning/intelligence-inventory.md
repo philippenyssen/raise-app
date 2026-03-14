@@ -28,6 +28,7 @@
 | 22 | 2026-03-14 | Cross-System Contradiction Detection | 4 new synthesis rules: forecast-enthusiasm contradiction, stalled-critical-path vs improving-metrics signal mismatch, dormant T1-2 investor detection. Auto-action Rule 10: dormant high-tier investors (zero meetings, 14+ days). | context-bus.ts, db.ts |
 | 23 | 2026-03-14 | Forecast Calibration | Learning from outcomes — forecast predictions logged weekly, resolved on terminal state, accuracy delta computed, bias direction tracked (optimistic/pessimistic/calibrated). Calibration in context bus + system prompt + synthesis. Verification endpoint updated (8 tables, 11 functions, 17 context fields). | db.ts, context-bus.ts, investors/route.ts, pulse/route.ts, intelligence/verify/route.ts |
 | 24 | 2026-03-14 | Self-Correcting Forecasts | computeRaiseForecast() now applies calibration-learned bias correction — if forecasts have been systematically optimistic/pessimistic, adjusts predicted days by up to ±30% based on historical accuracy delta. Closes the full learning loop: predict → log → resolve → measure → correct. | db.ts |
+| 25 | 2026-03-14 | Win/Loss Pattern Analysis | Outcome-driven learning: analyzes closed vs passed investors to find distinguishing factors (7 dimensions compared), generates winner/loser profiles, surfaces key predictors. Synthesis rule flags active investors matching loser profile. Context bus field + system prompt WIN/LOSS section. 24th data source, 18 context fields, 12 functions verified. | db.ts, context-bus.ts, intelligence/verify/route.ts |
 
 ## Intelligence Capabilities (Existing)
 
@@ -445,6 +446,20 @@
   - [x] Proactive intelligence: low confidence (urgency 8) + 3+ risk factors (urgency 7)
   - [x] Instruction 20: forecast-aware reasoning guidance
 - [x] **Self-correcting forecasts (cycle 24)**: calibration-learned bias multiplier applied to predicted days (capped ±30%, conservative 50% correction factor)
+
+### AB. Win/Loss Pattern Analysis (NEW cycle 25)
+- [x] `computeWinLossPatterns()`: analyzes terminal investors (closed/passed/dropped)
+  - [x] Enriches terminal investors with meeting count + last score snapshot + days in pipeline
+  - [x] Computes 7-factor comparison: Overall Score, Enthusiasm, Meeting Count, Engagement Score, Momentum Score, Tier, Days in Pipeline
+  - [x] Significance detection (high/medium/low) based on relative delta between groups
+  - [x] Winner profile: avg score, enthusiasm, meetings, days to close, common tiers/types
+  - [x] Loser profile: avg score, enthusiasm, meetings, days to pass, common tiers/types
+  - [x] Auto-generated insights: strongest predictors, meeting correlation, enthusiasm reliability
+- [x] `winLossPatterns` field in FullContext (context-bus.ts)
+  - [x] Populated via `computeWinLossPatterns()` in Promise.all (24th data source)
+  - [x] Serialized to system prompt as WIN/LOSS PATTERNS section
+  - [x] Synthesis rule: flags active T1-2 investors matching loser profile
+- [x] Verification: function check + context field check
 
 ### AA. Forecast Calibration Engine (NEW cycle 23)
 - [x] `forecast_log` table: stores weekly predictions per investor (predicted_days, confidence, stage_at_prediction)
