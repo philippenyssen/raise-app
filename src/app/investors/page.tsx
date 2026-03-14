@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import type { Investor, InvestorStatus, InvestorTier, InvestorType } from '@/lib/types';
+import { useToast } from '@/components/toast';
 
 const STATUS_LABELS: Record<InvestorStatus, string> = {
   identified: 'Identified', contacted: 'Contacted', nda_signed: 'NDA Signed',
@@ -23,7 +25,9 @@ const TYPE_LABELS: Record<InvestorType, string> = {
 };
 
 export default function InvestorsPage() {
+  const { toast } = useToast();
   const [investors, setInvestors] = useState<Investor[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [filter, setFilter] = useState<{ tier?: number; status?: string; type?: string }>({});
@@ -37,16 +41,20 @@ export default function InvestorsPage() {
   useEffect(() => { fetchInvestors(); }, []);
 
   async function fetchInvestors() {
+    setLoading(true);
     const res = await fetch('/api/investors');
     setInvestors(await res.json());
+    setLoading(false);
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (editId) {
       await fetch('/api/investors', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: editId, ...form }) });
+      toast(`${form.name} updated`);
     } else {
       await fetch('/api/investors', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) });
+      toast(`${form.name} added`);
     }
     setShowForm(false);
     setEditId(null);
@@ -56,12 +64,14 @@ export default function InvestorsPage() {
 
   async function updateStatus(id: string, status: string) {
     await fetch('/api/investors', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, status }) });
+    toast(`Status updated to ${STATUS_LABELS[status as InvestorStatus] || status}`);
     fetchInvestors();
   }
 
   async function handleDelete(id: string) {
     if (!confirm('Delete this investor and all their meetings?')) return;
     await fetch(`/api/investors?id=${id}`, { method: 'DELETE' });
+    toast('Investor deleted', 'warning');
     fetchInvestors();
   }
 
@@ -83,6 +93,19 @@ export default function InvestorsPage() {
     if (filter.type && i.type !== filter.type) return false;
     return true;
   });
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="h-8 w-48 bg-zinc-800 rounded animate-pulse" />
+        <div className="space-y-2">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="h-12 bg-zinc-800/50 rounded animate-pulse" />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -165,7 +188,11 @@ export default function InvestorsPage() {
           <tbody className="divide-y divide-zinc-800/50">
             {filtered.map(inv => (
               <tr key={inv.id} className="hover:bg-zinc-900/30 transition-colors">
-                <td className="px-4 py-3 font-medium">{inv.name}</td>
+                <td className="px-4 py-3 font-medium">
+                  <Link href={`/investors/${inv.id}`} className="hover:text-blue-400 transition-colors">
+                    {inv.name}
+                  </Link>
+                </td>
                 <td className="px-4 py-3 text-zinc-400">{TYPE_LABELS[inv.type as InvestorType] ?? inv.type}</td>
                 <td className="px-4 py-3">
                   <span className={`px-2 py-0.5 rounded text-xs font-medium ${
@@ -174,7 +201,7 @@ export default function InvestorsPage() {
                     inv.tier === 3 ? 'bg-zinc-600/20 text-zinc-400' : 'bg-zinc-800 text-zinc-500'
                   }`}>T{inv.tier}</span>
                 </td>
-                <td className="px-4 py-3 text-zinc-400">{inv.partner || '—'}</td>
+                <td className="px-4 py-3 text-zinc-400">{inv.partner || '---'}</td>
                 <td className="px-4 py-3">
                   <select
                     value={inv.status}
@@ -184,7 +211,7 @@ export default function InvestorsPage() {
                     {Object.entries(STATUS_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                   </select>
                 </td>
-                <td className="px-4 py-3 text-zinc-400 text-xs">{inv.check_size_range || '—'}</td>
+                <td className="px-4 py-3 text-zinc-400 text-xs">{inv.check_size_range || '---'}</td>
                 <td className="px-4 py-3">
                   {inv.enthusiasm > 0 ? (
                     <div className="flex gap-0.5">
@@ -192,7 +219,7 @@ export default function InvestorsPage() {
                         <div key={n} className={`w-2 h-2 rounded-full ${n <= inv.enthusiasm ? 'bg-blue-500' : 'bg-zinc-800'}`} />
                       ))}
                     </div>
-                  ) : <span className="text-zinc-600">—</span>}
+                  ) : <span className="text-zinc-600">---</span>}
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex gap-1">
