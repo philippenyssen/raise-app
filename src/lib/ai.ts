@@ -196,3 +196,117 @@ Return JSON (no markdown):
     return { health: 'yellow', diagnosis: 'Insufficient data for assessment.', recommendations: ['Add more meeting data'], risk_factors: [] };
   }
 }
+
+// Document AI Operations
+
+export async function improveSection(section: string, instruction: string, context: string): Promise<string> {
+  const response = await getAIClient().messages.create({
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: 4096,
+    messages: [{
+      role: 'user',
+      content: `You are an expert investment banking memo writer. Improve the following section of a Series C fundraise document.
+
+INSTRUCTION: ${instruction}
+
+SECTION TO IMPROVE:
+${section}
+
+SURROUNDING CONTEXT (for reference only, do not rewrite this):
+${context.substring(0, 2000)}
+
+Return ONLY the improved text. No explanations, no markdown code blocks, just the improved content.`
+    }]
+  });
+  return response.content[0].type === 'text' ? response.content[0].text : section;
+}
+
+export async function checkConsistency(
+  documents: { title: string; content: string }[],
+  raiseConfig: { company_name: string; pre_money: string; post_money: string; equity_amount: string } | null
+): Promise<{ discrepancies: { location: string; issue: string; suggestion: string }[] }> {
+  const docSummaries = documents.map(d => `--- ${d.title} ---\n${d.content.substring(0, 3000)}`).join('\n\n');
+
+  const response = await getAIClient().messages.create({
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: 4096,
+    messages: [{
+      role: 'user',
+      content: `You are an IC-grade document reviewer. Check these fundraise documents for numerical inconsistencies, contradictions, and factual discrepancies.
+
+RAISE CONFIG: ${JSON.stringify(raiseConfig)}
+
+DOCUMENTS:
+${docSummaries}
+
+Return JSON (no markdown):
+{
+  "discrepancies": [
+    {"location": "Document: section or line", "issue": "what is inconsistent", "suggestion": "how to fix"}
+  ]
+}
+
+If no discrepancies found, return {"discrepancies": []}.`
+    }]
+  });
+
+  const text = response.content[0].type === 'text' ? response.content[0].text : '{"discrepancies":[]}';
+  try { return JSON.parse(text); } catch {
+    const match = text.match(/\{[\s\S]*\}/);
+    if (match) return JSON.parse(match[0]);
+    return { discrepancies: [] };
+  }
+}
+
+export async function findWeakArguments(content: string): Promise<{ weaknesses: { claim: string; issue: string; suggestion: string }[] }> {
+  const response = await getAIClient().messages.create({
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: 4096,
+    messages: [{
+      role: 'user',
+      content: `You are a skeptical IC member reviewing a Series C investment memo. Find weak arguments, unsourced claims, circular reasoning, and unsubstantiated superlatives.
+
+DOCUMENT:
+${content.substring(0, 8000)}
+
+Return JSON (no markdown):
+{
+  "weaknesses": [
+    {"claim": "the claim or statement", "issue": "why it is weak", "suggestion": "how to strengthen it"}
+  ]
+}
+
+Be thorough but fair. Flag only genuinely weak arguments, not stylistic preferences.`
+    }]
+  });
+
+  const text = response.content[0].type === 'text' ? response.content[0].text : '{"weaknesses":[]}';
+  try { return JSON.parse(text); } catch {
+    const match = text.match(/\{[\s\S]*\}/);
+    if (match) return JSON.parse(match[0]);
+    return { weaknesses: [] };
+  }
+}
+
+export async function polishGoldmanStyle(content: string): Promise<string> {
+  const response = await getAIClient().messages.create({
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: 4096,
+    messages: [{
+      role: 'user',
+      content: `You are a Goldman Sachs ECM Managing Director. Rewrite this content in concise, authoritative investment banking memo style:
+- Short sentences, active voice
+- Lead with the conclusion
+- Numbers first, narrative second
+- Remove hedging language
+- Use "we believe" sparingly and only for genuine opinions
+- Bold key metrics inline
+
+CONTENT:
+${content}
+
+Return ONLY the rewritten text. No explanations.`
+    }]
+  });
+  return response.content[0].type === 'text' ? response.content[0].text : content;
+}

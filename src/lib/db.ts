@@ -78,6 +78,24 @@ async function ensureInitialized() {
       score INTEGER DEFAULT 0,
       notes TEXT DEFAULT ''
     )`,
+    `CREATE TABLE IF NOT EXISTS documents (
+      id TEXT PRIMARY KEY,
+      title TEXT NOT NULL,
+      type TEXT NOT NULL DEFAULT 'custom',
+      content TEXT DEFAULT '',
+      status TEXT DEFAULT 'draft',
+      created_at TEXT DEFAULT (datetime('now')),
+      updated_at TEXT DEFAULT (datetime('now'))
+    )`,
+    `CREATE TABLE IF NOT EXISTS document_versions (
+      id TEXT PRIMARY KEY,
+      document_id TEXT NOT NULL,
+      content TEXT NOT NULL,
+      version_number INTEGER NOT NULL,
+      change_summary TEXT DEFAULT '',
+      created_at TEXT DEFAULT (datetime('now')),
+      FOREIGN KEY (document_id) REFERENCES documents(id)
+    )`,
   ], 'write');
 
   initialized = true;
@@ -359,4 +377,109 @@ export async function getEnthusiasmTrend(): Promise<{ date: string; score: numbe
     FROM meetings ORDER BY date ASC
   `);
   return result.rows as unknown as { date: string; score: number; investor: string }[];
+}
+
+// Documents
+export interface Document {
+  id: string;
+  title: string;
+  type: string;
+  content: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface DocumentVersion {
+  id: string;
+  document_id: string;
+  content: string;
+  version_number: number;
+  change_summary: string;
+  created_at: string;
+}
+
+export async function getAllDocuments(): Promise<Document[]> {
+  await ensureInitialized();
+  const result = await getClient().execute('SELECT * FROM documents ORDER BY updated_at DESC');
+  return result.rows as unknown as Document[];
+}
+
+export async function getDocument(id: string): Promise<Document | null> {
+  await ensureInitialized();
+  const result = await getClient().execute({
+    sql: 'SELECT * FROM documents WHERE id = ?',
+    args: [id],
+  });
+  return result.rows.length > 0 ? (result.rows[0] as unknown as Document) : null;
+}
+
+export async function createDocument(doc: { title: string; type: string; content?: string }): Promise<Document> {
+  await ensureInitialized();
+  const id = crypto.randomUUID();
+  const now = new Date().toISOString();
+  await getClient().execute({
+    sql: `INSERT INTO documents (id, title, type, content, status, created_at, updated_at) VALUES (?, ?, ?, ?, 'draft', ?, ?)`,
+    args: [id, doc.title, doc.type, doc.content || '', now, now],
+  });
+  // Create initial version
+  await getClient().execute({
+    sql: `INSERT INTO document_versions (id, document_id, content, version_number, change_summary, created_at) VALUES (?, ?, ?, 1, 'Initial version', ?)`,
+    args: [crypto.randomUUID(), id, doc.content || '', now],
+  });
+  return (await getDocument(id))!;
+}
+
+export async function updateDocument(id: string, updates: { title?: string; content?: string; status?: string; change_summary?: string }): Promise<void> {
+  await ensureInitialized();
+  const db = getClient();
+  const now = new Date().toISOString();
+
+  const sets: string[] = ['updated_at = ?'];
+  const values: InValue[] = [now];
+
+  if (updates.title !== undefined) { sets.push('title = ?'); values.push(updates.title); }
+  if (updates.content !== undefined) { sets.push('content = ?'); values.push(updates.content); }
+  if (updates.status !== undefined) { sets.push('status = ?'); values.push(updates.status); }
+
+  values.push(id);
+  await db.execute({ sql: `UPDATE documents SET ${sets.join(', ')} WHERE id = ?`, args: values });
+
+  // Create new version if content changed
+  if (updates.content !== undefined) {
+    const versionResult = await db.execute({
+      sql: 'SELECT MAX(version_number) as max_ver FROM document_versions WHERE document_id = ?',
+      args: [id],
+    });
+    const nextVersion = ((versionResult.rows[0] as unknown as { max_ver: number | null }).max_ver ?? 0) + 1;
+    await db.execute({
+      sql: `INSERT INTO document_versions (id, document_id, content, version_number, change_summary, created_at) VALUES (?, ?, ?, ?, ?, ?)`,
+      args: [crypto.randomUUID(), id, updates.content, nextVersion, updates.change_summary || '', now],
+    });
+  }
+}
+
+export async function deleteDocument(id: string): Promise<void> {
+  await ensureInitialized();
+  const db = getClient();
+  await db.execute({ sql: 'DELETE FROM document_versions WHERE document_id = ?', args: [id] });
+  await db.execute({ sql: 'DELETE FROM documents WHERE id = ?', args: [id] });
+}
+
+export async function getDocumentVersions(documentId: string): Promise<DocumentVersion[]> {
+  await ensureInitialized();
+  const result = await getClient().execute({
+    sql: 'SELECT * FROM document_versions WHERE document_id = ? ORDER BY version_number DESC',
+    args: [documentId],
+  });
+  return result.rows as unknown as DocumentVersion[];
+}
+
+export async function getDocumentVersion(versionId: string): Promise<DocumentVersion | null> {
+  await ensureInitialized();
+  const result = await getClient().execute({
+    sql: 'SELECT * FROM document_versions WHERE id = ?',
+    args: [versionId],
+  });
+  return result.rows.length > 0 ? (result.rows[0] as unknown as DocumentVersion) : null;
 }

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import {
-  LayoutDashboard, Users, Calendar, Brain, HeartPulse, FileText,
+  LayoutDashboard, Users, Calendar, Brain, HeartPulse, FileText, BookOpen,
   Menu, X
 } from 'lucide-react';
 
@@ -12,6 +12,7 @@ const nav = [
   { href: '/', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/investors', label: 'Investors', icon: Users },
   { href: '/meetings', label: 'Meetings', icon: Calendar },
+  { href: '/documents', label: 'Documents', icon: BookOpen },
   { href: '/analysis', label: 'Analysis', icon: Brain },
   { href: '/health', label: 'Health', icon: HeartPulse },
   { href: '/terms', label: 'Terms', icon: FileText },
