@@ -34,11 +34,13 @@
 | 28 | 2026-03-14 | FOMO Auto-Actions + AI Awareness | Auto-action Rule 11: FOMO-triggered competitive outreach (high-intensity triggers auto-create actions for affected T1-2 peers). Workspace AI instruction 21: competitive dynamics reasoning. Investor-specific context steering now includes FOMO pressure, win/loss matching, score reversals, pipeline rank. | db.ts, workspace/route.ts |
 | 29 | 2026-03-14 | Engagement Velocity | Per-investor meeting frequency acceleration (2-week window comparison: accelerating/decelerating/stable/gone_silent). 2 synthesis rules (gone-silent T1-2, velocity-enthusiasm contradiction). System prompt ENGAGEMENT VELOCITY section. 29 data sources, 23 context fields, 17 functions. | db.ts, context-bus.ts, intelligence/verify/route.ts |
 | 30 | 2026-03-14 | System Health: Prompt Budget | Synthesis line cap (15 max), system prompt budget (20K chars with intelligent truncation), getContextStats() for monitoring. Prevents prompt bloat as intelligence surface grows. | context-bus.ts |
+| 31 | 2026-03-14 | Deal Heat + Engagement Velocity Scoring | 11th scoring dimension "Engagement Velocity" (accelerating/decelerating/stable/gone_silent + recency bonus). Deal Heat composite (0-100, hot/warm/cool/cold/frozen) combining score, momentum, enthusiasm, velocity, FOMO, stage health, reversals. Score API wired with velocity + FOMO + reversal data. Phase weights updated for 11 dimensions. | scoring.ts, investors/[id]/score/route.ts |
 
 ## Intelligence Capabilities (Existing)
 
 ### A. Scoring Engine (scoring.ts)
-- [x] 10-dimension scoring: engagement, thesis fit, check size, speed match, conflict risk, warm path, meeting quality, momentum, **network effect (cycle 4)**, **forecast alignment (cycle 21)**
+- [x] 11-dimension scoring: engagement, thesis fit, check size, speed match, conflict risk, warm path, meeting quality, momentum, **network effect (cycle 4)**, **forecast alignment (cycle 21)**, **engagement velocity (cycle 31)**
+- [x] **Deal Heat composite: 0-100 score combining overall score (40%), momentum (0-20), enthusiasm (0-15), velocity (0-15), FOMO (0-10), stage health (-10), score reversal (-10). Labels: hot/warm/cool/cold/frozen. Score API returns dealHeat in response. (NEW cycle 31)**
 - [x] Phase-dynamic weights: discovery/outreach/mgmt_presentations/due_diligence/negotiation
 - [x] Recency-weighted enthusiasm: exponential decay half-life ~21 days
 - [x] Conviction trajectory: linear regression on score snapshots, velocity/wk, predicted score in 30d

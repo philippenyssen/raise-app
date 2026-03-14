@@ -850,6 +850,115 @@ export function computeNetworkEffectScore(
 }
 
 // ---------------------------------------------------------------------------
+// Engagement Velocity Dimension (cycle 31)
+// ---------------------------------------------------------------------------
+
+export function computeEngagementVelocityScore(
+  velocityData: { acceleration: string; recentMeetings: number; previousMeetings: number; daysSinceLastMeeting: number | null } | null,
+): ScoreDimension {
+  if (!velocityData) {
+    return { name: 'Engagement Velocity', score: 0, signal: 'unknown', evidence: 'No velocity data available' };
+  }
+
+  let score = 50;
+  const parts: string[] = [];
+
+  // Acceleration state (0-30 pts)
+  if (velocityData.acceleration === 'accelerating') {
+    score += 30;
+    parts.push(`accelerating (${velocityData.previousMeetings}→${velocityData.recentMeetings} meetings)`);
+  } else if (velocityData.acceleration === 'stable') {
+    score += 10;
+    parts.push(`stable engagement`);
+  } else if (velocityData.acceleration === 'decelerating') {
+    score -= 15;
+    parts.push(`decelerating (${velocityData.previousMeetings}→${velocityData.recentMeetings})`);
+  } else if (velocityData.acceleration === 'gone_silent') {
+    score -= 30;
+    parts.push(`gone silent (${velocityData.daysSinceLastMeeting}d since last meeting)`);
+  } else if (velocityData.acceleration === 'new') {
+    parts.push('new engagement — insufficient data');
+  }
+
+  // Recency bonus (0-15 pts)
+  if (velocityData.daysSinceLastMeeting !== null) {
+    if (velocityData.daysSinceLastMeeting <= 7) {
+      score += 15;
+      parts.push('met within 7d');
+    } else if (velocityData.daysSinceLastMeeting <= 14) {
+      score += 10;
+    } else if (velocityData.daysSinceLastMeeting > 28) {
+      score -= 10;
+    }
+  }
+
+  score = clamp(score);
+  return { name: 'Engagement Velocity', score, signal: signal(score), evidence: parts.join(' | ') };
+}
+
+// ---------------------------------------------------------------------------
+// Deal Heat — composite signal combining all intelligence (cycle 31)
+// ---------------------------------------------------------------------------
+
+export interface DealHeat {
+  heat: number; // 0-100
+  label: 'hot' | 'warm' | 'cool' | 'cold' | 'frozen';
+  drivers: string[];
+}
+
+export function computeDealHeat(
+  overallScore: number,
+  momentum: string,
+  enthusiasm: number,
+  velocityAcceleration: string | null,
+  fomoIntensity: string | null,
+  daysInStage: number,
+  stageHealth: string,
+  scoreReversal: number | null, // negative = drop
+): DealHeat {
+  let heat = overallScore * 0.4; // 40% from score
+  const drivers: string[] = [];
+
+  // Momentum component (0-20)
+  if (momentum === 'accelerating') { heat += 20; drivers.push('momentum accelerating'); }
+  else if (momentum === 'steady') { heat += 10; }
+  else if (momentum === 'decelerating') { heat -= 5; drivers.push('momentum decelerating'); }
+  else if (momentum === 'stalled') { heat -= 10; drivers.push('momentum stalled'); }
+
+  // Enthusiasm (0-15)
+  if (enthusiasm >= 4) { heat += 15; drivers.push(`enthusiasm ${enthusiasm}/5`); }
+  else if (enthusiasm >= 3) { heat += 5; }
+  else { heat -= 5; drivers.push(`low enthusiasm ${enthusiasm}/5`); }
+
+  // Velocity (0-15)
+  if (velocityAcceleration === 'accelerating') { heat += 15; drivers.push('meetings accelerating'); }
+  else if (velocityAcceleration === 'gone_silent') { heat -= 15; drivers.push('gone silent'); }
+  else if (velocityAcceleration === 'decelerating') { heat -= 5; drivers.push('meetings slowing'); }
+
+  // FOMO pressure (0-10)
+  if (fomoIntensity === 'high') { heat += 10; drivers.push('high competitive pressure'); }
+  else if (fomoIntensity === 'medium') { heat += 5; }
+
+  // Stage health (-10 to 0)
+  if (stageHealth === 'stalled') { heat -= 10; drivers.push('stalled in stage'); }
+  else if (stageHealth === 'slow') { heat -= 5; }
+
+  // Score reversal (-10 to 0)
+  if (scoreReversal !== null && scoreReversal <= -15) { heat -= 10; drivers.push(`score dropped ${scoreReversal}`); }
+  else if (scoreReversal !== null && scoreReversal <= -10) { heat -= 5; }
+
+  heat = clamp(heat);
+
+  const label: DealHeat['label'] =
+    heat >= 80 ? 'hot' :
+    heat >= 60 ? 'warm' :
+    heat >= 40 ? 'cool' :
+    heat >= 20 ? 'cold' : 'frozen';
+
+  return { heat, label, drivers };
+}
+
+// ---------------------------------------------------------------------------
 // Main Scorer
 // ---------------------------------------------------------------------------
 
@@ -861,6 +970,7 @@ export function computeInvestorScore(
   raiseConfig: { targetEquityM: number; targetCloseDate: string | null },
   networkData?: { score: number; evidence: string; positiveSignals: string[]; negativeSignals: string[] } | null,
   forecastData?: { predictedDaysToClose: number; confidence: string; isCriticalPath: boolean; pathProbability: number } | null,
+  velocityData?: { acceleration: string; recentMeetings: number; previousMeetings: number; daysSinceLastMeeting: number | null } | null,
 ): InvestorScore {
   // Compute all dimensions
   const engagement = computeEngagementScore(investor, meetings);
@@ -885,6 +995,9 @@ export function computeInvestorScore(
   // 10th dimension: Forecast Alignment (cycle 21)
   const forecastAlignment = computeForecastAlignmentScore(forecastData || null);
 
+  // 11th dimension: Engagement Velocity (cycle 31)
+  const engagementVelocity = computeEngagementVelocityScore(velocityData || null);
+
   const dimensions = [
     engagement,
     thesisFit,
@@ -896,37 +1009,39 @@ export function computeInvestorScore(
     momentumDimension,
     networkEffect,
     forecastAlignment,
+    engagementVelocity,
   ];
 
   // Dynamic weights by raise phase — early-stage needs thesis fit > momentum;
   // late-stage (DD/negotiation) needs momentum > thesis fit
   // Network Effect grows in importance as the raise progresses (cascade dynamics)
   // Forecast Alignment grows in importance as the raise progresses (timeline matters more in DD/negotiation)
+  // 11-dimension phase-dynamic weights (cycle 31: added Engagement Velocity)
   const phaseWeights: Record<string, Record<string, number>> = {
     discovery: {
-      'Engagement': 0.10, 'Thesis Fit': 0.23, 'Check Size Fit': 0.13,
+      'Engagement': 0.09, 'Thesis Fit': 0.22, 'Check Size Fit': 0.12,
       'Speed Match': 0.05, 'Conflict Risk': 0.10, 'Warm Path': 0.14,
-      'Meeting Quality': 0.10, 'Momentum': 0.10, 'Network Effect': 0.03, 'Forecast Alignment': 0.02,
+      'Meeting Quality': 0.09, 'Momentum': 0.09, 'Network Effect': 0.03, 'Forecast Alignment': 0.02, 'Engagement Velocity': 0.05,
     },
     outreach: {
-      'Engagement': 0.13, 'Thesis Fit': 0.18, 'Check Size Fit': 0.10,
-      'Speed Match': 0.09, 'Conflict Risk': 0.10, 'Warm Path': 0.13,
-      'Meeting Quality': 0.10, 'Momentum': 0.10, 'Network Effect': 0.04, 'Forecast Alignment': 0.03,
+      'Engagement': 0.12, 'Thesis Fit': 0.17, 'Check Size Fit': 0.09,
+      'Speed Match': 0.08, 'Conflict Risk': 0.10, 'Warm Path': 0.12,
+      'Meeting Quality': 0.09, 'Momentum': 0.09, 'Network Effect': 0.04, 'Forecast Alignment': 0.03, 'Engagement Velocity': 0.07,
     },
     mgmt_presentations: {
-      'Engagement': 0.17, 'Thesis Fit': 0.13, 'Check Size Fit': 0.10,
-      'Speed Match': 0.09, 'Conflict Risk': 0.09, 'Warm Path': 0.09,
-      'Meeting Quality': 0.13, 'Momentum': 0.10, 'Network Effect': 0.05, 'Forecast Alignment': 0.05,
+      'Engagement': 0.15, 'Thesis Fit': 0.12, 'Check Size Fit': 0.09,
+      'Speed Match': 0.08, 'Conflict Risk': 0.09, 'Warm Path': 0.08,
+      'Meeting Quality': 0.12, 'Momentum': 0.09, 'Network Effect': 0.05, 'Forecast Alignment': 0.05, 'Engagement Velocity': 0.08,
     },
     due_diligence: {
-      'Engagement': 0.12, 'Thesis Fit': 0.08, 'Check Size Fit': 0.09,
-      'Speed Match': 0.13, 'Conflict Risk': 0.12, 'Warm Path': 0.05,
-      'Meeting Quality': 0.13, 'Momentum': 0.13, 'Network Effect': 0.08, 'Forecast Alignment': 0.07,
+      'Engagement': 0.10, 'Thesis Fit': 0.07, 'Check Size Fit': 0.09,
+      'Speed Match': 0.12, 'Conflict Risk': 0.11, 'Warm Path': 0.05,
+      'Meeting Quality': 0.12, 'Momentum': 0.12, 'Network Effect': 0.07, 'Forecast Alignment': 0.06, 'Engagement Velocity': 0.09,
     },
     negotiation: {
-      'Engagement': 0.07, 'Thesis Fit': 0.05, 'Check Size Fit': 0.13,
-      'Speed Match': 0.16, 'Conflict Risk': 0.12, 'Warm Path': 0.04,
-      'Meeting Quality': 0.08, 'Momentum': 0.16, 'Network Effect': 0.09, 'Forecast Alignment': 0.10,
+      'Engagement': 0.06, 'Thesis Fit': 0.05, 'Check Size Fit': 0.12,
+      'Speed Match': 0.14, 'Conflict Risk': 0.11, 'Warm Path': 0.04,
+      'Meeting Quality': 0.07, 'Momentum': 0.15, 'Network Effect': 0.08, 'Forecast Alignment': 0.09, 'Engagement Velocity': 0.09,
     },
   };
   const raisePhase = (raiseConfig as Record<string, unknown>).raisePhase as string || 'mgmt_presentations';
