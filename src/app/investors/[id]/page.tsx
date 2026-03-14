@@ -630,7 +630,7 @@ export default function InvestorDetailPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="rounded-xl p-5 space-y-3" style={{ border: '1px solid var(--border-default)' }}>
           <h2 className="text-xs font-medium flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
-            <Users className="w-3.5 h-3.5" /> PROFILE
+            <Users className="w-3.5 h-3.5" /> Profile
           </h2>
           <div className="space-y-2 text-sm">
             <Row label="Partner" value={investor.partner} />
@@ -641,7 +641,7 @@ export default function InvestorDetailPage() {
         </div>
         <div className="rounded-xl p-5 space-y-3" style={{ border: '1px solid var(--border-default)' }}>
           <h2 className="text-xs font-medium flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
-            <Target className="w-3.5 h-3.5" /> PROCESS
+            <Target className="w-3.5 h-3.5" /> Process
           </h2>
           <div className="space-y-2 text-sm">
             <Row label="Warm Path" value={investor.warm_path} />
@@ -1069,7 +1069,7 @@ export default function InvestorDetailPage() {
       {/* Notes */}
       {investor.notes && (
         <div className="rounded-xl p-5" style={{ border: '1px solid var(--border-default)' }}>
-          <h2 className="text-xs font-medium mb-2" style={{ color: 'var(--text-tertiary)' }}>NOTES</h2>
+          <h2 className="text-xs font-medium mb-2" style={{ color: 'var(--text-tertiary)' }}>Notes</h2>
           <p className="text-sm" style={{ color: 'var(--text-tertiary)', whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>{investor.notes}</p>
         </div>
       )}

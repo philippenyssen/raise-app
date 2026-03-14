@@ -216,7 +216,7 @@ export default function TimelinePage() {
           <div className="flex gap-2">
             <button
               type="submit"
-              className="px-3 py-1.5 rounded-lg text-sm"
+              className="px-3 py-1.5 rounded-lg text-sm transition-colors"
               style={{ backgroundColor: 'var(--accent)', color: 'var(--surface-0)' }}
               onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.85'; }}
               onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}
@@ -239,7 +239,7 @@ export default function TimelinePage() {
       <div className="flex gap-1" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
         <button
           onClick={() => setTab('tasks')}
-          className="px-4 py-2.5 text-sm font-medium flex items-center gap-2"
+          className="px-4 py-2.5 text-sm font-medium flex items-center gap-2 transition-colors"
           style={{
             borderBottom: tab === 'tasks' ? '2px solid var(--accent)' : '2px solid transparent',
             color: tab === 'tasks' ? 'var(--text-primary)' : 'var(--text-muted)',
@@ -252,7 +252,7 @@ export default function TimelinePage() {
         </button>
         <button
           onClick={() => setTab('activity')}
-          className="px-4 py-2.5 text-sm font-medium flex items-center gap-2"
+          className="px-4 py-2.5 text-sm font-medium flex items-center gap-2 transition-colors"
           style={{
             borderBottom: tab === 'activity' ? '2px solid var(--accent)' : '2px solid transparent',
             color: tab === 'activity' ? 'var(--text-primary)' : 'var(--text-muted)',
@@ -293,7 +293,7 @@ export default function TimelinePage() {
             {(filterPhase || filterStatus) && (
               <button
                 onClick={() => { setFilterPhase(''); setFilterStatus(''); }}
-                className="text-xs px-2"
+                className="text-xs px-2 transition-colors"
                 style={{ color: 'var(--text-muted)' }}
                 onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--text-secondary)'; }}
                 onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-muted)'; }}
@@ -374,7 +374,7 @@ export default function TimelinePage() {
                           {task.investor_name && (
                             <Link
                               href={`/investors/${task.investor_id}`}
-                              className="text-xs"
+                              className="text-xs transition-colors"
                               style={{ color: 'var(--accent)' }}
                               onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.8'; }}
                               onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}
@@ -400,6 +400,7 @@ export default function TimelinePage() {
                           </select>
                           <button
                             onClick={() => deleteTaskById(task.id)}
+                            className="transition-colors"
                             style={{ color: 'var(--text-muted)' }}
                             onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--danger)'; }}
                             onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-muted)'; }}
@@ -430,7 +431,7 @@ export default function TimelinePage() {
               return (
                 <div
                   key={event.id}
-                  className="flex items-start gap-3 px-3 py-2 rounded-lg"
+                  className="flex items-start gap-3 px-3 py-2 rounded-lg transition-colors"
                   style={{ backgroundColor: hoverStates[evKey] ? 'color-mix(in srgb, var(--surface-1) 30%, transparent)' : 'transparent' }}
                   onMouseEnter={() => setHover(evKey, true)}
                   onMouseLeave={() => setHover(evKey, false)}

@@ -319,6 +319,7 @@ function PressureCard({ inv }: { inv: InvestorFomo }) {
           <div className="flex items-center gap-2 flex-wrap">
             <Link
               href={`/investors/${inv.investorId}`}
+              className="transition-colors"
               style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}
               onClick={e => e.stopPropagation()}
               onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
@@ -706,6 +707,7 @@ export default function FomoPage() {
                 {filterTabs.map(tab => (
                   <button
                     key={tab.key}
+                    className="transition-colors"
                     onClick={() => setFilterIntensity(tab.key)}
                     style={{
                       padding: '4px 10px',

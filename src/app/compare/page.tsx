@@ -237,6 +237,7 @@ export default function ComparePage() {
       <div className="flex items-center gap-3">
         <Link
           href="/investors"
+          className="transition-colors"
           style={{ color: 'var(--text-muted)', transition: 'color 150ms ease' }}
           onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
           onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
@@ -259,7 +260,7 @@ export default function ComparePage() {
         <div className="relative flex-1">
           <button
             onClick={() => setDropdownOpen(!dropdownOpen)}
-            className="w-full flex items-center justify-between"
+            className="w-full flex items-center justify-between transition-colors"
             style={{
               background: 'var(--surface-0)',
               border: '1px solid var(--border-default)',
@@ -728,7 +729,7 @@ export default function ComparePage() {
           >
             <button
               onClick={() => setDimensionsExpanded(!dimensionsExpanded)}
-              className="w-full flex items-center justify-between"
+              className="w-full flex items-center justify-between transition-colors"
               style={{
                 padding: 'var(--space-3) var(--space-5)',
                 background: 'var(--surface-1)',
@@ -850,7 +851,7 @@ function DropdownItem({
     <button
       onClick={onToggle}
       disabled={disabled}
-      className="w-full flex items-center gap-3 text-left"
+      className="w-full flex items-center gap-3 text-left transition-colors"
       style={{
         padding: 'var(--space-2) var(--space-4)',
         fontSize: 'var(--font-size-sm)',
@@ -920,6 +921,7 @@ function SelectedPill({ name, onRemove }: { name: string; onRemove: () => void }
       {name}
       <button
         onClick={onRemove}
+        className="transition-colors"
         style={{
           color: hovered ? 'var(--text-secondary)' : 'var(--text-muted)',
           transition: 'color 150ms ease',
@@ -939,6 +941,7 @@ function ClearAllButton({ onClick }: { onClick: () => void }) {
   return (
     <button
       onClick={onClick}
+      className="transition-colors"
       style={{
         fontSize: 'var(--font-size-xs)',
         color: hovered ? 'var(--text-secondary)' : 'var(--text-muted)',
@@ -959,6 +962,7 @@ function InvestorNameLink({ investor }: { investor: Investor }) {
   return (
     <Link
       href={`/investors/${investor.id}`}
+      className="transition-colors"
       style={{
         fontSize: 'var(--font-size-sm)',
         fontWeight: 500,
@@ -998,7 +1002,7 @@ function TableRow({ children }: { children: React.ReactNode }) {
 
   return (
     <tr
-      className="table-row"
+      className="table-row transition-colors"
       style={{
         background: hovered ? 'var(--surface-1)' : 'transparent',
         transition: 'background 100ms ease',
@@ -1041,7 +1045,7 @@ function CompareRow({ label, cells }: { label: string; cells: CellData[] }) {
 
   return (
     <tr
-      className="table-row"
+      className="table-row transition-colors"
       style={{
         background: hovered ? 'var(--surface-1)' : 'transparent',
         transition: 'background 100ms ease',

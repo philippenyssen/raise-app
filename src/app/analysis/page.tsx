@@ -220,7 +220,7 @@ export default function AnalysisPage() {
               {data.patterns.top_objections.length > 0 && (
                 <div className="rounded-xl p-6" style={{ border: '1px solid var(--border-default)' }}>
                   <h2 className="text-sm font-medium mb-4" style={{ color: 'var(--text-secondary)' }}>
-                    TOP OBJECTIONS + RECOMMENDED RESPONSES
+                    Top objections + recommended responses
                   </h2>
                   <div className="space-y-4">
                     {data.patterns.top_objections.map((obj, i) => (
@@ -313,7 +313,7 @@ export default function AnalysisPage() {
           {data.objections.length > 0 && (
             <div className="rounded-xl p-6" style={{ border: '1px solid var(--border-default)' }}>
               <h2 className="text-sm font-medium mb-4" style={{ color: 'var(--text-secondary)' }}>
-                ALL OBJECTIONS (from database)
+                All objections (from database)
               </h2>
               <div className="space-y-2">
                 {data.objections.map((obj, i) => (

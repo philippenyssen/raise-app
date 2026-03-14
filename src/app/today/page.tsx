@@ -135,7 +135,7 @@ function MeetingCard({ meeting }: { meeting: BriefingMeeting }) {
 
   return (
     <div
-      className="card"
+      className="card transition-colors"
       style={{
         padding: 'var(--space-4)',
         borderColor: hovered ? 'var(--border-default)' : 'var(--border-subtle)',
@@ -239,7 +239,7 @@ function ActionCard({ action }: { action: UrgentAction }) {
 
   return (
     <div
-      className="card"
+      className="card transition-colors"
       style={{
         padding: 'var(--space-4)',
         borderColor: hovered ? 'var(--border-default)' : 'var(--border-subtle)',
@@ -342,7 +342,7 @@ function AlertCard({ alert }: { alert: BriefingAlert }) {
         </div>
         <Link
           href={alertLink}
-          className="shrink-0 flex items-center gap-1"
+          className="shrink-0 flex items-center gap-1 transition-colors"
           style={{
             fontSize: 'var(--font-size-xs)',
             fontWeight: 500,
@@ -749,6 +749,7 @@ export default function TodayPage() {
                 <ArrowUpRight className="w-3 h-3" style={{ color: 'var(--text-secondary)' }} />
                 <Link
                   href={`/investors/${sc.investorId}`}
+                  className="transition-colors"
                   style={{ color: 'var(--accent)', fontWeight: 500, textDecoration: 'none' }}
                   onMouseEnter={e => { (e.currentTarget as HTMLElement).style.textDecoration = 'underline'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLElement).style.textDecoration = 'none'; }}
@@ -928,7 +929,7 @@ export default function TodayPage() {
         <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: 'var(--space-3)' }}>
           <Link
             href="/pipeline"
-            className="card"
+            className="card transition-colors"
             style={{ padding: 'var(--space-4)', textDecoration: 'none' }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-subtle)'; }}
@@ -941,7 +942,7 @@ export default function TodayPage() {
 
           <Link
             href="/pipeline?stage=in_dd"
-            className="card"
+            className="card transition-colors"
             style={{ padding: 'var(--space-4)', textDecoration: 'none' }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-subtle)'; }}
@@ -954,7 +955,7 @@ export default function TodayPage() {
 
           <Link
             href="/pipeline?stage=term_sheet"
-            className="card"
+            className="card transition-colors"
             style={{ padding: 'var(--space-4)', textDecoration: 'none' }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-subtle)'; }}
@@ -1054,7 +1055,7 @@ export default function TodayPage() {
 
           <Link
             href="/dealflow"
-            className="btn btn-ghost btn-sm shrink-0"
+            className="btn btn-ghost btn-sm shrink-0 transition-colors"
             style={{ color: 'var(--text-tertiary)' }}
             onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-primary)')}
             onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-tertiary)')}
@@ -1108,7 +1109,7 @@ export default function TodayPage() {
 
             <Link
               href="/intelligence"
-              className="btn btn-ghost btn-sm shrink-0"
+              className="btn btn-ghost btn-sm shrink-0 transition-colors"
               style={{ color: 'var(--text-secondary)' }}
               onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
               onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-secondary)')}

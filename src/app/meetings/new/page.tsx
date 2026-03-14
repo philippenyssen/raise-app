@@ -207,7 +207,7 @@ function NewMeetingContent() {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <h3 className="text-xs font-medium mb-2" style={{ color: 'var(--text-tertiary)' }}>ENTHUSIASM</h3>
+              <h3 className="text-xs font-medium mb-2" style={{ color: 'var(--text-tertiary)' }}>Enthusiasm</h3>
               <div className="flex items-center gap-2">
                 <div className="flex gap-1">
                   {[1,2,3,4,5].map(n => (
@@ -239,7 +239,7 @@ function NewMeetingContent() {
 
           {!!result.objections && (
             <div>
-              <h3 className="text-xs font-medium mb-2" style={{ color: 'var(--text-tertiary)' }}>OBJECTIONS</h3>
+              <h3 className="text-xs font-medium mb-2" style={{ color: 'var(--text-tertiary)' }}>Objections</h3>
               <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>
                 {((() => { try { return JSON.parse(String(result.objections) || '[]'); } catch { return []; } })()).map((o: { text: string; severity: string }, i: number) => (
                   <div key={i} className="flex gap-2 mb-1">
