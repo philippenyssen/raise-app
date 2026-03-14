@@ -6,7 +6,7 @@ import { useToast } from '@/components/toast';
 import {
   Sunrise, Calendar, Clock, ArrowRight, ChevronRight, RefreshCw,
   Mail, UserPlus, FileText, AlertTriangle, Zap, TrendingUp,
-  TrendingDown, Minus, Users, Shield,
+  TrendingDown, Minus, Users, Shield, Target,
   CheckCircle, ExternalLink, Sparkles,
 } from 'lucide-react';
 
@@ -295,10 +295,19 @@ function AlertCard({ alert }: { alert: BriefingAlert }) {
 // Main Page
 // ---------------------------------------------------------------------------
 
+interface RaiseProgress {
+  daysElapsed: number;
+  targetDays: number;
+  daysRemaining: number;
+  pct: number;
+  isOver: boolean;
+}
+
 export default function TodayPage() {
   const { toast } = useToast();
   const [data, setData] = useState<BriefingData | null>(null);
   const [insight, setInsight] = useState<{ title: string; detail: string; priority: string } | null>(null);
+  const [raiseProgress, setRaiseProgress] = useState<RaiseProgress | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [stalenessMinutes, setStalenessMinutes] = useState(0);
@@ -320,18 +329,33 @@ export default function TodayPage() {
       if (!silent) toast('Failed to load briefing', 'error');
     }
 
-    // Non-blocking: fetch top strategic insight
+    // Non-blocking: fetch velocity (for raise day counter) and strategic insight
     try {
-      const stratRes = await fetch('/api/intelligence/strategic');
-      if (stratRes.ok) {
+      const [stratRes, velRes] = await Promise.all([
+        fetch('/api/intelligence/strategic').catch(() => null),
+        fetch('/api/velocity').catch(() => null),
+      ]);
+      if (stratRes?.ok) {
         const stratData = await stratRes.json();
         const rec = stratData.recommendations?.[0];
         if (rec) {
           setInsight({ title: rec.title, detail: rec.rationale ?? rec.action, priority: String(rec.priority) });
         }
       }
+      if (velRes?.ok) {
+        const velData = await velRes.json();
+        const elapsed = velData.summary?.raise_days_elapsed ?? 0;
+        const target = velData.summary?.raise_target_days ?? 60;
+        setRaiseProgress({
+          daysElapsed: elapsed,
+          targetDays: target,
+          daysRemaining: Math.max(0, target - elapsed),
+          pct: Math.min(100, Math.round((elapsed / target) * 100)),
+          isOver: elapsed > target,
+        });
+      }
     } catch {
-      // Non-blocking — don't surface errors for insight fetch
+      // Non-blocking
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -522,6 +546,59 @@ export default function TodayPage() {
           </span>
         </button>
       </div>
+
+      {/* ----------------------------------------------------------------- */}
+      {/* 1.5. Raise Day Counter                                            */}
+      {/* ----------------------------------------------------------------- */}
+      {raiseProgress && (
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 'var(--space-4)',
+            padding: 'var(--space-3) var(--space-4)',
+            borderRadius: 'var(--radius-lg)',
+            background: 'var(--surface-1)',
+            border: `1px solid ${raiseProgress.isOver ? 'rgba(239,68,68,0.25)' : raiseProgress.pct >= 75 ? 'rgba(245,158,11,0.25)' : 'var(--border-subtle)'}`,
+          }}
+        >
+          <div className="flex items-center gap-2 shrink-0">
+            <span style={{ color: 'var(--accent)', display: 'flex' }}><Target className="w-4 h-4" /></span>
+            <span style={{
+              fontSize: 'var(--font-size-lg)',
+              fontWeight: 700,
+              fontVariantNumeric: 'tabular-nums',
+              color: raiseProgress.isOver ? 'var(--danger)' : raiseProgress.pct >= 75 ? 'var(--warning)' : 'var(--text-primary)',
+            }}>
+              Day {raiseProgress.daysElapsed}
+            </span>
+            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+              of {raiseProgress.targetDays}
+            </span>
+          </div>
+          <div style={{ flex: 1, height: '6px', background: 'var(--surface-3)', borderRadius: '3px', overflow: 'hidden' }}>
+            <div style={{
+              width: `${raiseProgress.pct}%`,
+              height: '100%',
+              borderRadius: '3px',
+              background: raiseProgress.isOver ? 'var(--danger)' : raiseProgress.pct >= 75 ? 'var(--warning)' : 'var(--accent)',
+              transition: 'width 600ms ease',
+            }} />
+          </div>
+          <span style={{
+            fontSize: 'var(--font-size-xs)',
+            fontWeight: 600,
+            fontVariantNumeric: 'tabular-nums',
+            color: raiseProgress.isOver ? 'var(--danger)' : raiseProgress.daysRemaining <= 14 ? 'var(--warning)' : 'var(--text-tertiary)',
+            whiteSpace: 'nowrap',
+          }}>
+            {raiseProgress.isOver
+              ? `+${raiseProgress.daysElapsed - raiseProgress.targetDays}d over`
+              : `${raiseProgress.daysRemaining}d left`
+            }
+          </span>
+        </div>
+      )}
 
       {/* ----------------------------------------------------------------- */}
       {/* 2. Today's Meetings                                               */}
