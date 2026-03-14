@@ -44,7 +44,7 @@ function QuickCaptureInner() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const [investors, setInvestors] = useState<Investor[]>([]);
-  const [investorId, setInvestorId] = useState(searchParams.get('investor_id') || '');
+  const [investorId, setInvestorId] = useState(searchParams.get('investor') || searchParams.get('investor_id') || '');
   const [rawNotes, setRawNotes] = useState('');
   const [enthusiasm, setEnthusiasm] = useState(0);
   const [showDetails, setShowDetails] = useState(false);

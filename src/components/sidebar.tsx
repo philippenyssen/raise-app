@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   LayoutDashboard, Users, Calendar, FileText,
   FolderOpen, BookOpen, Globe, Settings,
@@ -45,6 +45,26 @@ export function Sidebar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
+  const [overdueCount, setOverdueCount] = useState(0);
+
+  useEffect(() => {
+    function fetchOverdue() {
+      fetch('/api/followups?status=pending')
+        .then(r => r.ok ? r.json() : [])
+        .then(data => {
+          if (!Array.isArray(data)) return;
+          const today = new Date().toISOString().split('T')[0];
+          const overdue = data.filter((f: { due_at: string; status: string }) =>
+            f.status === 'pending' && f.due_at?.split('T')[0] < today
+          );
+          setOverdueCount(overdue.length);
+        })
+        .catch(() => {});
+    }
+    fetchOverdue();
+    const interval = setInterval(fetchOverdue, 3 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const sections = nav.reduce<Record<string, NavItem[]>>((acc, item) => {
     const section = item.section || 'OTHER';
@@ -230,6 +250,24 @@ export function Sidebar() {
                                 boxShadow: '0 0 6px rgba(239, 68, 68, 0.4)',
                               }}
                             />
+                          )}
+                          {item.href === '/followups' && overdueCount > 0 && (
+                            <span
+                              className="ml-auto shrink-0 flex items-center justify-center"
+                              style={{
+                                minWidth: '18px',
+                                height: '18px',
+                                borderRadius: '9px',
+                                background: 'var(--danger)',
+                                color: 'white',
+                                fontSize: '10px',
+                                fontWeight: 700,
+                                padding: '0 5px',
+                                lineHeight: 1,
+                              }}
+                            >
+                              {overdueCount > 9 ? '9+' : overdueCount}
+                            </span>
                           )}
                         </>
                       )}
