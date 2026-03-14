@@ -485,7 +485,10 @@ export default function InvestorsPage() {
             color: 'var(--text-muted)',
             fontSize: 'var(--font-size-sm)',
           }}>
-            No investors match your filters — try adjusting or clearing them
+            {investors.length === 0
+              ? 'No investors yet. Click "Add Investor" above or seed your pipeline from the dashboard.'
+              : 'No investors match your filters — try adjusting or clearing them'}
+
           </div>
         )}
       </div>

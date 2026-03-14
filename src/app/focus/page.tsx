@@ -1097,7 +1097,7 @@ export default function FocusPage() {
             <Target className="w-6 h-6" style={{ color: 'var(--accent)' }} /> CEO Focus
           </h1>
           <p className="page-subtitle">
-            {weeklyBudget.totalHoursRecommended}h recommended this week across {weeklyBudget.investorCount} investors
+            Investors ranked by urgency and opportunity — {weeklyBudget.totalHoursRecommended}h recommended this week
           </p>
         </div>
         <button

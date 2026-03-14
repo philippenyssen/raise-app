@@ -821,10 +821,10 @@ export default function FollowupsPage() {
         >
           <SendHorizonal className="w-10 h-10 mx-auto mb-3" style={{ color: 'var(--border-default)' }} />
           <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)', marginBottom: 'var(--space-1)' }}>
-            No follow-ups {filter !== 'all' ? `with status "${filter}"` : ''}
+            No follow-ups pending
           </h3>
           <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-            Follow-ups are auto-generated when you log a meeting.{' '}
+            Follow-ups are created automatically after meetings.{' '}
             <Link
               href="/meetings/new"
               style={{ color: 'var(--accent)' }}

@@ -506,7 +506,7 @@ export default function MeetingsPage() {
           <div className="space-y-3">
             <Calendar className="w-8 h-8 mx-auto" style={{ color: 'var(--text-muted)' }} />
             <p style={{ color: 'var(--text-tertiary)' }}>
-              {meetings.length === 0 ? 'No meetings yet — log your first investor meeting to start tracking engagement.' : 'No meetings match your filters — try adjusting them.'}
+              {meetings.length === 0 ? 'No meetings logged yet. Start by scheduling your first meeting.' : 'No meetings match your filters — try adjusting them.'}
             </p>
             {meetings.length === 0 && (
               <Link href="/meetings/new" style={{ color: 'var(--accent)', fontSize: 'var(--font-size-sm)' }}>

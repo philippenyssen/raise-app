@@ -402,7 +402,7 @@ export default function Dashboard() {
         <div>
           <h1 className="page-title">Dashboard</h1>
           <p className="page-subtitle">
-            Series C Process Orchestrator
+            Your raise at a glance
             {lastRefresh && (
               <span style={{ marginLeft: 'var(--space-3)', color: 'var(--text-muted)' }}>
                 Updated {lastRefresh.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}

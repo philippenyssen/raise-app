@@ -561,9 +561,9 @@ export default function PipelinePage() {
                   {cards.length === 0 && (
                     <div
                       className="flex items-center justify-center"
-                      style={{ height: '5rem', color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}
+                      style={{ height: '5rem', color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)', textAlign: 'center', padding: '0 var(--space-2)' }}
                     >
-                      Drop here
+                      {dragId ? 'Drop here' : 'No investors at this stage yet'}
                     </div>
                   )}
                 </div>
