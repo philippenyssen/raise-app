@@ -66,53 +66,56 @@ export default function HealthPage() {
 
   const score = Object.values(convergence).filter(Boolean).length;
 
-  if (!data) return <div className="text-zinc-500 animate-pulse">Loading...</div>;
+  if (!data) return <div className="animate-pulse" style={{ color: 'var(--text-muted)' }}>Loading...</div>;
 
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Process Health</h1>
-        <p className="text-zinc-500 text-sm mt-1">Convergence tracking and process verification</p>
+        <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>Process Health</h1>
+        <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>Convergence tracking and process verification</p>
       </div>
 
       {/* Convergence Score */}
-      <div className="border border-zinc-800 rounded-xl p-6">
+      <div className="rounded-xl p-6" style={{ border: '1px solid var(--border-default)' }}>
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-sm font-medium text-zinc-400">CONVERGENCE SCORE</h2>
-          <div className={`text-4xl font-bold ${
-            score >= 8 ? 'text-green-400' : score >= 5 ? 'text-yellow-400' : 'text-red-400'
-          }`}>{score}/10</div>
+          <h2 className="text-sm font-medium" style={{ color: 'var(--text-tertiary)' }}>CONVERGENCE SCORE</h2>
+          <div className="text-4xl font-bold" style={{
+            color: score >= 8 ? 'var(--success)' : score >= 5 ? 'var(--warning)' : 'var(--danger)'
+          }}>{score}/10</div>
         </div>
         <div className="space-y-3">
           {convergenceDimensions.map(dim => (
             <div key={dim.key} className="flex items-center gap-4">
               <button
                 onClick={() => setConvergence(c => ({ ...c, [dim.key]: !c[dim.key] }))}
-                className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors shrink-0 ${
-                  convergence[dim.key]
-                    ? 'bg-green-600 border-green-600'
-                    : 'border-zinc-700 hover:border-zinc-500'
-                }`}
+                className="w-5 h-5 rounded flex items-center justify-center transition-colors shrink-0"
+                style={{
+                  borderWidth: '2px',
+                  borderStyle: 'solid',
+                  backgroundColor: convergence[dim.key] ? 'var(--success)' : 'transparent',
+                  borderColor: convergence[dim.key] ? 'var(--success)' : 'var(--border-default)',
+                }}
               >
-                {convergence[dim.key] && <span className="text-xs">&#10003;</span>}
+                {convergence[dim.key] && <span className="text-xs" style={{ color: 'var(--text-primary)' }}>&#10003;</span>}
               </button>
               <div className="flex-1">
-                <span className="text-sm font-medium">{dim.label}</span>
-                <span className="text-xs text-zinc-600 ml-2">{dim.desc}</span>
+                <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{dim.label}</span>
+                <span className="text-xs ml-2" style={{ color: 'var(--text-muted)' }}>{dim.desc}</span>
               </div>
             </div>
           ))}
         </div>
-        <div className="mt-6 pt-4 border-t border-zinc-800">
-          <div className="h-3 bg-zinc-900 rounded-full overflow-hidden">
+        <div className="mt-6 pt-4" style={{ borderTop: '1px solid var(--border-default)' }}>
+          <div className="h-3 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--surface-1)' }}>
             <div
-              className={`h-full rounded-full transition-all duration-500 ${
-                score >= 8 ? 'bg-green-600' : score >= 5 ? 'bg-yellow-600' : 'bg-red-600'
-              }`}
-              style={{ width: `${score * 10}%` }}
+              className="h-full rounded-full transition-all duration-500"
+              style={{
+                width: `${score * 10}%`,
+                backgroundColor: score >= 8 ? 'var(--success)' : score >= 5 ? 'var(--warning)' : 'var(--danger)',
+              }}
             />
           </div>
-          <div className="flex justify-between text-xs text-zinc-600 mt-1">
+          <div className="flex justify-between text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
             <span>Not ready</span>
             <span>{score >= 8 ? 'Ready for term sheet deadline' : score >= 5 ? 'Getting closer' : 'More work needed'}</span>
           </div>
@@ -120,32 +123,39 @@ export default function HealthPage() {
       </div>
 
       {/* Funnel Details */}
-      <div className="border border-zinc-800 rounded-xl p-6">
-        <h2 className="text-sm font-medium text-zinc-400 mb-4">DETAILED FUNNEL METRICS</h2>
+      <div className="rounded-xl p-6" style={{ border: '1px solid var(--border-default)' }}>
+        <h2 className="text-sm font-medium mb-4" style={{ color: 'var(--text-tertiary)' }}>PIPELINE CONVERSION RATES</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {Object.entries(data.funnel.conversion_rates).map(([key, rate]) => {
             const target = data.funnel.targets[key] ?? 50;
             const delta = rate - target;
             return (
-              <div key={key} className="bg-zinc-900/50 rounded-lg p-4">
-                <div className="text-xs text-zinc-500 mb-2">
+              <div key={key} className="rounded-lg p-4" style={{ backgroundColor: 'var(--surface-1)' }}>
+                <div className="text-xs mb-2" style={{ color: 'var(--text-muted)' }}>
                   {key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                 </div>
                 <div className="flex items-baseline gap-2">
-                  <span className={`text-2xl font-bold ${rate >= target ? 'text-green-400' : rate > 0 ? 'text-yellow-400' : 'text-zinc-600'}`}>
+                  <span className="text-2xl font-bold" style={{
+                    color: rate >= target ? 'var(--success)' : rate > 0 ? 'var(--warning)' : 'var(--text-muted)'
+                  }}>
                     {rate}%
                   </span>
                   {rate > 0 && (
-                    <span className={`text-xs ${delta >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                    <span className="text-xs" style={{
+                      color: delta >= 0 ? 'var(--success)' : 'var(--danger)'
+                    }}>
                       {delta >= 0 ? '+' : ''}{delta}pp
                     </span>
                   )}
                 </div>
-                <div className="text-xs text-zinc-600 mt-1">target: {target}%</div>
-                <div className="mt-2 h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+                <div className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>target: {target}%</div>
+                <div className="mt-2 h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--surface-2)' }}>
                   <div
-                    className={`h-full rounded-full ${rate >= target ? 'bg-green-600' : 'bg-yellow-600'}`}
-                    style={{ width: `${Math.min(rate, 100)}%` }}
+                    className="h-full rounded-full"
+                    style={{
+                      width: `${Math.min(rate, 100)}%`,
+                      backgroundColor: rate >= target ? 'var(--success)' : 'var(--warning)',
+                    }}
                   />
                 </div>
               </div>
@@ -155,33 +165,48 @@ export default function HealthPage() {
       </div>
 
       {/* Status Breakdown */}
-      <div className="border border-zinc-800 rounded-xl p-6">
-        <h2 className="text-sm font-medium text-zinc-400 mb-4">INVESTOR STATUS BREAKDOWN</h2>
+      <div className="rounded-xl p-6" style={{ border: '1px solid var(--border-default)' }}>
+        <h2 className="text-sm font-medium mb-4" style={{ color: 'var(--text-tertiary)' }}>INVESTOR STATUS BREAKDOWN</h2>
         <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
           {Object.entries(data.statusBreakdown).sort((a, b) => b[1] - a[1]).map(([status, count]) => (
-            <div key={status} className="bg-zinc-900/50 rounded-lg p-3 text-center">
-              <div className="text-lg font-bold">{count}</div>
-              <div className="text-xs text-zinc-500">{status.replace(/_/g, ' ')}</div>
+            <div key={status} className="rounded-lg p-3 text-center" style={{ backgroundColor: 'var(--surface-1)' }}>
+              <div className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>{count}</div>
+              <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{status.replace(/_/g, ' ')}</div>
             </div>
           ))}
         </div>
       </div>
 
       {/* Intelligence Verification Status */}
-      <div className="border border-zinc-800 rounded-xl p-6">
+      <div className="rounded-xl p-6" style={{ border: '1px solid var(--border-default)' }}>
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <Shield className="w-4 h-4 text-blue-400" />
-            <h2 className="text-sm font-medium text-zinc-400">INTELLIGENCE HEALTH</h2>
+            <Shield className="w-4 h-4" style={{ color: 'var(--accent)' }} />
+            <h2 className="text-sm font-medium" style={{ color: 'var(--text-tertiary)' }}>INTELLIGENCE HEALTH</h2>
           </div>
           {intelVerify && (
-            <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${
-              intelVerify.status === 'healthy'
-                ? 'bg-green-900/20 text-green-400 border-green-700/40'
-                : intelVerify.status === 'degraded'
-                ? 'bg-yellow-900/20 text-yellow-400 border-yellow-700/40'
-                : 'bg-red-900/20 text-red-400 border-red-700/40'
-            }`}>
+            <div
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold"
+              style={{
+                backgroundColor: intelVerify.status === 'healthy'
+                  ? 'var(--success-muted)'
+                  : intelVerify.status === 'degraded'
+                  ? 'var(--warning-muted)'
+                  : 'var(--danger-muted)',
+                color: intelVerify.status === 'healthy'
+                  ? 'var(--success)'
+                  : intelVerify.status === 'degraded'
+                  ? 'var(--warning)'
+                  : 'var(--danger)',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                borderColor: intelVerify.status === 'healthy'
+                  ? 'var(--success)'
+                  : intelVerify.status === 'degraded'
+                  ? 'var(--warning)'
+                  : 'var(--danger)',
+              }}
+            >
               {intelVerify.status === 'healthy' && <CheckCircle2 className="w-3 h-3" />}
               {intelVerify.status === 'degraded' && <AlertTriangle className="w-3 h-3" />}
               {intelVerify.status === 'unhealthy' && <XCircle className="w-3 h-3" />}
@@ -192,35 +217,42 @@ export default function HealthPage() {
 
         {intelLoading ? (
           <div className="flex items-center gap-2 py-4">
-            <RefreshCw className="w-4 h-4 text-zinc-500 animate-spin" />
-            <span className="text-sm text-zinc-500">Verifying intelligence systems...</span>
+            <RefreshCw className="w-4 h-4 animate-spin" style={{ color: 'var(--text-muted)' }} />
+            <span className="text-sm" style={{ color: 'var(--text-muted)' }}>Verifying intelligence systems...</span>
           </div>
         ) : intelVerify ? (
           <div>
-            <p className="text-xs text-zinc-500 mb-3">{intelVerify.summary}</p>
+            <p className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>{intelVerify.summary}</p>
             <div className="space-y-1.5">
               {intelVerify.checks.map((check, i) => {
+                const iconStyle = {
+                  color: check.status === 'pass'
+                    ? 'var(--success)'
+                    : check.status === 'warn'
+                    ? 'var(--warning)'
+                    : 'var(--danger)',
+                };
                 const statusIcon = check.status === 'pass'
-                  ? <CheckCircle2 className="w-3.5 h-3.5 text-green-400 shrink-0" />
+                  ? <CheckCircle2 className="w-3.5 h-3.5 shrink-0" style={iconStyle} />
                   : check.status === 'warn'
-                  ? <AlertTriangle className="w-3.5 h-3.5 text-yellow-400 shrink-0" />
-                  : <XCircle className="w-3.5 h-3.5 text-red-400 shrink-0" />;
+                  ? <AlertTriangle className="w-3.5 h-3.5 shrink-0" style={iconStyle} />
+                  : <XCircle className="w-3.5 h-3.5 shrink-0" style={iconStyle} />;
 
                 return (
-                  <div key={i} className="flex items-start gap-2 py-1.5 px-3 rounded-lg bg-zinc-900/50">
+                  <div key={i} className="flex items-start gap-2 py-1.5 px-3 rounded-lg" style={{ backgroundColor: 'var(--surface-1)' }}>
                     {statusIcon}
                     <div className="flex-1 min-w-0">
-                      <span className="text-xs text-zinc-300 font-medium">
+                      <span className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>
                         {check.name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                       </span>
-                      <p className="text-[10px] text-zinc-500 truncate">{check.detail}</p>
+                      <p className="text-[10px] truncate" style={{ color: 'var(--text-muted)' }}>{check.detail}</p>
                     </div>
                   </div>
                 );
               })}
             </div>
             {intelVerify.contextVersion && (
-              <div className="mt-3 pt-3 border-t border-zinc-800 flex items-center gap-4 text-[10px] text-zinc-600">
+              <div className="mt-3 pt-3 flex items-center gap-4 text-[10px]" style={{ borderTop: '1px solid var(--border-default)', color: 'var(--text-muted)' }}>
                 <span>Context v{intelVerify.contextVersion}</span>
                 {intelVerify.contextBuildTimestamp && (
                   <span>Built {new Date(intelVerify.contextBuildTimestamp).toLocaleString()}</span>
@@ -230,7 +262,7 @@ export default function HealthPage() {
             )}
           </div>
         ) : (
-          <p className="text-sm text-zinc-600">Intelligence verification unavailable.</p>
+          <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Intelligence verification unavailable.</p>
         )}
       </div>
 
@@ -247,9 +279,9 @@ export default function HealthPage() {
 
 function MetricCard({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="border border-zinc-800 rounded-xl p-4">
-      <div className="text-xs text-zinc-500">{label}</div>
-      <div className="text-2xl font-bold mt-1">{value}</div>
+    <div className="rounded-xl p-4" style={{ border: '1px solid var(--border-default)' }}>
+      <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{label}</div>
+      <div className="text-2xl font-bold mt-1" style={{ color: 'var(--text-primary)' }}>{value}</div>
     </div>
   );
 }

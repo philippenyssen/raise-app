@@ -19,6 +19,8 @@ export default function NewMeetingPage() {
     duration_minutes: 60,
     raw_notes: '',
   });
+  const [viewAllHovered, setViewAllHovered] = useState(false);
+  const [logAnotherHovered, setLogAnotherHovered] = useState(false);
 
   useEffect(() => {
     fetch('/api/investors').then(r => r.json()).then(setInvestors);
@@ -56,21 +58,22 @@ export default function NewMeetingPage() {
   return (
     <div className="max-w-3xl space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Log Meeting Debrief</h1>
-        <p className="text-zinc-500 text-sm mt-1">
-          Paste your raw notes — AI extracts objections, signals, and patterns, then auto-generates follow-up tasks and document flags.
+        <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>Log Meeting Debrief</h1>
+        <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
+          Paste your raw notes. AI extracts objections, buying signals, and next steps, then auto-generates follow-up tasks.
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="text-xs text-zinc-500 block mb-1">Investor</label>
+            <label className="text-xs block mb-1" style={{ color: 'var(--text-muted)' }}>Investor</label>
             <select
               value={form.investor_id}
               onChange={e => setForm(f => ({ ...f, investor_id: e.target.value }))}
               required
-              className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200"
+              className="w-full rounded-lg px-3 py-2 text-sm"
+              style={{ background: 'var(--surface-1)', border: '1px solid var(--border-default)', color: 'var(--text-secondary)' }}
             >
               <option value="">Select investor...</option>
               {investors.map(inv => (
@@ -79,19 +82,21 @@ export default function NewMeetingPage() {
             </select>
           </div>
           <div>
-            <label className="text-xs text-zinc-500 block mb-1">Date</label>
+            <label className="text-xs block mb-1" style={{ color: 'var(--text-muted)' }}>Date</label>
             <input
               type="date" value={form.date}
               onChange={e => setForm(f => ({ ...f, date: e.target.value }))}
-              className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200"
+              className="w-full rounded-lg px-3 py-2 text-sm"
+              style={{ background: 'var(--surface-1)', border: '1px solid var(--border-default)', color: 'var(--text-secondary)' }}
             />
           </div>
           <div>
-            <label className="text-xs text-zinc-500 block mb-1">Meeting Type</label>
+            <label className="text-xs block mb-1" style={{ color: 'var(--text-muted)' }}>Meeting Type</label>
             <select
               value={form.type}
               onChange={e => setForm(f => ({ ...f, type: e.target.value }))}
-              className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200"
+              className="w-full rounded-lg px-3 py-2 text-sm"
+              style={{ background: 'var(--surface-1)', border: '1px solid var(--border-default)', color: 'var(--text-secondary)' }}
             >
               <option value="intro">Intro Call</option>
               <option value="management_presentation">Management Presentation</option>
@@ -103,108 +108,118 @@ export default function NewMeetingPage() {
             </select>
           </div>
           <div>
-            <label className="text-xs text-zinc-500 block mb-1">Duration (min)</label>
+            <label className="text-xs block mb-1" style={{ color: 'var(--text-muted)' }}>Duration (min)</label>
             <input
               type="number" value={form.duration_minutes}
               onChange={e => setForm(f => ({ ...f, duration_minutes: Number(e.target.value) }))}
-              className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200"
+              className="w-full rounded-lg px-3 py-2 text-sm"
+              style={{ background: 'var(--surface-1)', border: '1px solid var(--border-default)', color: 'var(--text-secondary)' }}
             />
           </div>
         </div>
 
         <div>
-          <label className="text-xs text-zinc-500 block mb-1">Attendees</label>
+          <label className="text-xs block mb-1" style={{ color: 'var(--text-muted)' }}>Attendees</label>
           <input
             value={form.attendees}
             onChange={e => setForm(f => ({ ...f, attendees: e.target.value }))}
             placeholder="e.g., Katherine Boyle (a16z), John Smith (Associate)"
-            className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200"
+            className="w-full rounded-lg px-3 py-2 text-sm"
+            style={{ background: 'var(--surface-1)', border: '1px solid var(--border-default)', color: 'var(--text-secondary)' }}
           />
         </div>
 
         {/* Investor Quick Profile */}
         {selectedInvestor && (
-          <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4 space-y-2">
-            <h3 className="text-xs font-medium text-zinc-400">INVESTOR PROFILE</h3>
+          <div className="rounded-lg p-4 space-y-2" style={{ background: 'var(--surface-1)', border: '1px solid var(--border-default)' }}>
+            <h3 className="text-xs font-medium" style={{ color: 'var(--text-tertiary)' }}>INVESTOR PROFILE</h3>
             <div className="grid grid-cols-2 gap-2 text-xs">
-              <div><span className="text-zinc-500">Partner:</span> <span className="text-zinc-300">{selectedInvestor.partner || '—'}</span></div>
-              <div><span className="text-zinc-500">Thesis:</span> <span className="text-zinc-300">{selectedInvestor.sector_thesis || '—'}</span></div>
-              <div><span className="text-zinc-500">Check Size:</span> <span className="text-zinc-300">{selectedInvestor.check_size_range || '—'}</span></div>
-              <div><span className="text-zinc-500">Speed:</span> <span className="text-zinc-300">{selectedInvestor.speed}</span></div>
-              <div><span className="text-zinc-500">Warm Path:</span> <span className="text-zinc-300">{selectedInvestor.warm_path || '—'}</span></div>
-              <div><span className="text-zinc-500">IC Process:</span> <span className="text-zinc-300">{selectedInvestor.ic_process || '—'}</span></div>
+              <div><span style={{ color: 'var(--text-muted)' }}>Partner:</span> <span style={{ color: 'var(--text-secondary)' }}>{selectedInvestor.partner || '—'}</span></div>
+              <div><span style={{ color: 'var(--text-muted)' }}>Thesis:</span> <span style={{ color: 'var(--text-secondary)' }}>{selectedInvestor.sector_thesis || '—'}</span></div>
+              <div><span style={{ color: 'var(--text-muted)' }}>Check Size:</span> <span style={{ color: 'var(--text-secondary)' }}>{selectedInvestor.check_size_range || '—'}</span></div>
+              <div><span style={{ color: 'var(--text-muted)' }}>Speed:</span> <span style={{ color: 'var(--text-secondary)' }}>{selectedInvestor.speed}</span></div>
+              <div><span style={{ color: 'var(--text-muted)' }}>Warm Path:</span> <span style={{ color: 'var(--text-secondary)' }}>{selectedInvestor.warm_path || '—'}</span></div>
+              <div><span style={{ color: 'var(--text-muted)' }}>IC Process:</span> <span style={{ color: 'var(--text-secondary)' }}>{selectedInvestor.ic_process || '—'}</span></div>
             </div>
           </div>
         )}
 
         <div>
-          <label className="text-xs text-zinc-500 block mb-1">Meeting Notes (raw — AI will structure these)</label>
+          <label className="text-xs block mb-1" style={{ color: 'var(--text-muted)' }}>Meeting Notes (raw is fine — AI will structure them)</label>
           <textarea
             value={form.raw_notes}
             onChange={e => setForm(f => ({ ...f, raw_notes: e.target.value }))}
             required
             rows={12}
-            placeholder={`Paste your meeting notes here. Include anything you remember:
+            placeholder={`Dump everything you remember — bullet points, stream of consciousness, voice memo transcript. For example:
 
-- What questions did they ask?
-- What objections or concerns did they raise?
-- Which parts of the pitch seemed to land?
-- What was their body language at pricing discussion?
-- Did they ask about the process or timeline?
-- Any competitive intelligence?
-- What are the next steps?
-- How enthusiastic were they overall?
-
-The AI will extract structured data from your free-form notes.`}
-            className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-3 text-sm text-zinc-200 font-mono leading-relaxed focus:outline-none focus:border-blue-600"
+- They pushed back hard on valuation, said 39x trailing is rich
+- Partner seemed engaged on the defense angle, less on commercial SAR
+- Asked who else is in the process — told them competitive but no names
+- Wants to see the Excel model before IC
+- Body language was positive when we showed the IRIS2 contract
+- Next steps: send model + schedule follow-up with their space analyst
+- Overall vibe: cautiously interested, maybe 3.5/5`}
+            className="w-full rounded-lg px-4 py-3 text-sm font-mono leading-relaxed focus:outline-none"
+            style={{
+              background: 'var(--surface-1)',
+              border: '1px solid var(--border-default)',
+              color: 'var(--text-secondary)',
+            }}
+            onFocus={e => { e.target.style.borderColor = 'var(--accent)'; }}
+            onBlur={e => { e.target.style.borderColor = 'var(--border-default)'; }}
           />
         </div>
 
         <button
           type="submit"
           disabled={loading || !form.investor_id || !form.raw_notes}
-          className="px-6 py-3 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:hover:bg-blue-600 rounded-lg text-sm font-medium transition-colors"
+          className="px-6 py-3 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+          style={{
+            background: 'var(--accent)',
+            color: 'var(--surface-0)',
+          }}
         >
-          {loading ? 'Analyzing with AI...' : 'Log & Analyze Meeting'}
+          {loading ? 'Analyzing notes...' : 'Log & Analyze Debrief'}
         </button>
       </form>
 
       {/* AI Analysis Result */}
       {result && (
-        <div className="border border-zinc-800 rounded-xl p-6 space-y-6">
-          <h2 className="text-lg font-bold">AI Analysis</h2>
+        <div className="rounded-xl p-6 space-y-6" style={{ border: '1px solid var(--border-default)' }}>
+          <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>AI Analysis</h2>
 
           {!!(result as Record<string, unknown>).ai_analysis && (
-            <div className="bg-blue-900/20 border border-blue-800/30 rounded-lg p-4">
-              <p className="text-sm text-blue-200">{String((result as Record<string, unknown>).ai_analysis)}</p>
+            <div className="rounded-lg p-4" style={{ background: 'var(--accent-muted)', border: '1px solid var(--accent)' }}>
+              <p className="text-sm" style={{ color: 'var(--accent)' }}>{String((result as Record<string, unknown>).ai_analysis)}</p>
             </div>
           )}
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <h3 className="text-xs font-medium text-zinc-400 mb-2">ENTHUSIASM</h3>
+              <h3 className="text-xs font-medium mb-2" style={{ color: 'var(--text-tertiary)' }}>ENTHUSIASM</h3>
               <div className="flex items-center gap-2">
                 <div className="flex gap-1">
                   {[1,2,3,4,5].map(n => (
-                    <div key={n} className={`w-4 h-4 rounded-full ${n <= ((result as Record<string, number>).enthusiasm_score || 0) ? 'bg-blue-500' : 'bg-zinc-800'}`} />
+                    <div key={n} className="w-4 h-4 rounded-full" style={{ background: n <= ((result as Record<string, number>).enthusiasm_score || 0) ? 'var(--accent)' : 'var(--surface-2)' }} />
                   ))}
                 </div>
-                <span className="text-sm text-zinc-400">{(result as Record<string, number>).enthusiasm_score}/5</span>
+                <span className="text-sm" style={{ color: 'var(--text-tertiary)' }}>{(result as Record<string, number>).enthusiasm_score}/5</span>
               </div>
             </div>
             <div>
-              <h3 className="text-xs font-medium text-zinc-400 mb-2">SUGGESTED STATUS</h3>
-              <span className="text-sm font-medium text-zinc-200">{String((result as Record<string, unknown>).status_after || '—')}</span>
+              <h3 className="text-xs font-medium mb-2" style={{ color: 'var(--text-tertiary)' }}>SUGGESTED STATUS</h3>
+              <span className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>{String((result as Record<string, unknown>).status_after || '—')}</span>
             </div>
           </div>
 
           {!!result.questions_asked && (
             <div>
-              <h3 className="text-xs font-medium text-zinc-400 mb-2">QUESTIONS ASKED</h3>
-              <div className="text-sm text-zinc-300">
+              <h3 className="text-xs font-medium mb-2" style={{ color: 'var(--text-tertiary)' }}>QUESTIONS ASKED</h3>
+              <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>
                 {JSON.parse(String(result.questions_asked) || '[]').map((q: { text: string; topic: string }, i: number) => (
                   <div key={i} className="flex gap-2 mb-1">
-                    <span className="text-xs bg-zinc-800 px-1.5 py-0.5 rounded text-zinc-500 shrink-0">{q.topic}</span>
+                    <span className="text-xs px-1.5 py-0.5 rounded shrink-0" style={{ background: 'var(--surface-2)', color: 'var(--text-muted)' }}>{q.topic}</span>
                     <span>{q.text}</span>
                   </div>
                 ))}
@@ -214,15 +229,18 @@ The AI will extract structured data from your free-form notes.`}
 
           {!!result.objections && (
             <div>
-              <h3 className="text-xs font-medium text-zinc-400 mb-2">OBJECTIONS</h3>
-              <div className="text-sm text-zinc-300">
+              <h3 className="text-xs font-medium mb-2" style={{ color: 'var(--text-tertiary)' }}>OBJECTIONS</h3>
+              <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>
                 {JSON.parse(String(result.objections) || '[]').map((o: { text: string; severity: string }, i: number) => (
                   <div key={i} className="flex gap-2 mb-1">
-                    <span className={`text-xs px-1.5 py-0.5 rounded shrink-0 ${
-                      o.severity === 'showstopper' ? 'bg-red-900/50 text-red-400' :
-                      o.severity === 'significant' ? 'bg-yellow-900/50 text-yellow-400' :
-                      'bg-zinc-800 text-zinc-500'
-                    }`}>{o.severity}</span>
+                    <span className="text-xs px-1.5 py-0.5 rounded shrink-0" style={{
+                      background: o.severity === 'showstopper' ? 'var(--danger-muted)' :
+                        o.severity === 'significant' ? 'var(--warning-muted)' :
+                        'var(--surface-2)',
+                      color: o.severity === 'showstopper' ? 'var(--danger)' :
+                        o.severity === 'significant' ? 'var(--warning)' :
+                        'var(--text-muted)',
+                    }}>{o.severity}</span>
                     <span>{o.text}</span>
                   </div>
                 ))}
@@ -233,15 +251,27 @@ The AI will extract structured data from your free-form notes.`}
           <div className="flex gap-3">
             <button
               onClick={() => router.push('/meetings')}
-              className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm"
+              className="px-4 py-2 rounded-lg text-sm"
+              style={{
+                background: viewAllHovered ? 'var(--surface-3)' : 'var(--surface-2)',
+                color: 'var(--text-primary)',
+              }}
+              onMouseEnter={() => setViewAllHovered(true)}
+              onMouseLeave={() => setViewAllHovered(false)}
             >
-              View All Meetings
+              View Meeting Log
             </button>
             <button
               onClick={() => { setResult(null); setForm(f => ({ ...f, raw_notes: '', investor_id: '', attendees: '' })); }}
-              className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm"
+              className="px-4 py-2 rounded-lg text-sm"
+              style={{
+                background: logAnotherHovered ? 'var(--surface-3)' : 'var(--surface-2)',
+                color: 'var(--text-primary)',
+              }}
+              onMouseEnter={() => setLogAnotherHovered(true)}
+              onMouseLeave={() => setLogAnotherHovered(false)}
             >
-              Log Another
+              Log Another Meeting
             </button>
           </div>
         </div>

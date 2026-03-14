@@ -35,7 +35,6 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Auto-resize textarea
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
@@ -66,7 +65,6 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
 
       if (!res.ok) throw new Error('AI request failed');
 
-      // Stream SSE response
       const reader = res.body?.getReader();
       if (!reader) throw new Error('No response body');
 
@@ -74,7 +72,6 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
       let fullText = '';
       const assistantIdx = newMessages.length;
 
-      // Add empty assistant message that we'll update as tokens stream in
       setMessages(prev => [...prev, { role: 'assistant', content: '' }]);
 
       let buffer = '';
@@ -95,7 +92,6 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
             const parsed = JSON.parse(data);
             if (parsed.text) {
               fullText += parsed.text;
-              // Update the last message in place
               setMessages(prev => {
                 const updated = [...prev];
                 updated[assistantIdx] = { role: 'assistant', content: fullText };
@@ -106,7 +102,6 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
         }
       }
 
-      // Extract updated content or cell updates from the full response
       const contentMatch = fullText.match(/<updated_content>([\s\S]*?)<\/updated_content>/);
       const cellMatch = fullText.match(/<cell_updates>([\s\S]*?)<\/cell_updates>/);
 
@@ -120,7 +115,6 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
         });
         setPendingChange({ content: updatedContent, messageIdx: assistantIdx });
       } else if (cellMatch && onApplyChange) {
-        // For model cell updates, stage the full response text (handler will parse)
         const cleanResponse = fullText.replace(/<cell_updates>[\s\S]*?<\/cell_updates>/, '').trim();
         setMessages(prev => {
           const updated = [...prev];
@@ -132,7 +126,6 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
     } catch {
       setMessages(prev => {
         const updated = [...prev];
-        // Replace the incomplete assistant message or add error message
         if (updated.length > 0 && updated[updated.length - 1].role === 'assistant') {
           updated[updated.length - 1] = { role: 'assistant', content: 'Request failed. Click retry to try again.', error: true };
         } else {
@@ -146,13 +139,10 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
   }, [messages, loading, documentId, documentContent, documentTitle]);
 
   const retryLast = useCallback(() => {
-    // Find the last user message and retry from there
     const lastUserIdx = messages.findLastIndex(m => m.role === 'user');
     if (lastUserIdx === -1) return;
     const lastUserText = messages[lastUserIdx].content;
-    // Remove messages from the last user message onward
     setMessages(prev => prev.slice(0, lastUserIdx));
-    // Re-send
     setTimeout(() => sendMessage(lastUserText), 50);
   }, [messages, sendMessage]);
 
@@ -178,30 +168,39 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
   };
 
   return (
-    <div className="h-full flex flex-col bg-zinc-950">
+    <div className="h-full flex flex-col" style={{ background: 'var(--surface-0)' }}>
       {/* Header */}
-      <div className="shrink-0 border-b border-zinc-800 px-4 py-2 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-blue-400" />
-          <span className="text-sm font-medium">AI Assistant</span>
+      <div
+        className="shrink-0 flex items-center justify-between"
+        style={{
+          borderBottom: '1px solid var(--border-subtle)',
+          padding: 'var(--space-2) var(--space-4)',
+        }}
+      >
+        <div className="flex items-center" style={{ gap: 'var(--space-2)' }}>
+          <Sparkles style={{ width: '16px', height: '16px', color: 'var(--accent)' }} />
+          <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-primary)' }}>AI Assistant</span>
         </div>
         {messages.length > 0 && (
           <button
             onClick={clearChat}
-            className="text-xs text-zinc-600 hover:text-zinc-400 flex items-center gap-1 transition-colors"
+            className="flex items-center transition-colors"
+            style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', gap: '4px' }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}
           >
-            <RotateCcw className="w-3 h-3" /> Clear
+            <RotateCcw style={{ width: '12px', height: '12px' }} /> Clear
           </button>
         )}
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+      <div className="flex-1 overflow-y-auto" style={{ padding: 'var(--space-4)', display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
         {messages.length === 0 && (
-          <div className="text-center py-12 space-y-4">
-            <Sparkles className="w-8 h-8 text-zinc-700 mx-auto" />
-            <div className="space-y-2">
-              <p className="text-sm text-zinc-500">Ask me anything about this document</p>
+          <div className="text-center" style={{ padding: 'var(--space-12) 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--space-4)' }}>
+            <Sparkles style={{ width: '32px', height: '32px', color: 'var(--text-muted)' }} />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+              <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>Edit, critique, or rewrite any section of this document</p>
               <div className="flex flex-wrap gap-2 justify-center">
                 {[
                   'Make the executive summary more concise',
@@ -213,7 +212,17 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
                   <button
                     key={suggestion}
                     onClick={() => sendMessage(suggestion)}
-                    className="text-xs bg-zinc-800/50 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-300 px-3 py-1.5 rounded-lg border border-zinc-800 transition-colors"
+                    className="transition-colors"
+                    style={{
+                      fontSize: 'var(--font-size-xs)',
+                      background: 'var(--surface-1)',
+                      color: 'var(--text-tertiary)',
+                      padding: '6px 12px',
+                      borderRadius: 'var(--radius-md)',
+                      border: '1px solid var(--border-subtle)',
+                    }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-1)'; (e.currentTarget as HTMLElement).style.color = 'var(--text-tertiary)'; (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-subtle)'; }}
                   >
                     {suggestion}
                   </button>
@@ -225,27 +234,46 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
 
         {messages.map((msg, i) => (
           <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-            <div className={`max-w-[85%] rounded-xl px-4 py-2.5 text-sm leading-relaxed ${
-              msg.role === 'user'
-                ? 'bg-blue-600/20 text-blue-100 border border-blue-600/20'
-                : 'bg-zinc-800/50 text-zinc-200 border border-zinc-800'
-            }`}>
+            <div
+              className="max-w-[85%]"
+              style={{
+                borderRadius: 'var(--radius-lg)',
+                padding: 'var(--space-3) var(--space-4)',
+                fontSize: 'var(--font-size-sm)',
+                lineHeight: 1.6,
+                background: msg.role === 'user' ? 'var(--accent-muted)' : 'var(--surface-1)',
+                color: msg.role === 'user' ? '#93c5fd' : 'var(--text-secondary)',
+                border: `1px solid ${msg.role === 'user' ? 'rgba(59, 130, 246, 0.15)' : 'var(--border-subtle)'}`,
+              }}
+            >
               <div className="whitespace-pre-wrap">{msg.content}</div>
               {msg.role === 'assistant' && (
-                <div className="flex items-center gap-2 mt-2 pt-2 border-t border-zinc-700/30">
+                <div
+                  className="flex items-center"
+                  style={{
+                    gap: 'var(--space-2)',
+                    marginTop: 'var(--space-2)',
+                    paddingTop: 'var(--space-2)',
+                    borderTop: '1px solid var(--border-subtle)',
+                  }}
+                >
                   <button
                     onClick={() => copyMessage(i)}
-                    className="text-xs text-zinc-600 hover:text-zinc-400 flex items-center gap-1 transition-colors"
+                    className="flex items-center transition-colors"
+                    style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', gap: '4px' }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}
                   >
-                    {copiedIdx === i ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                    {copiedIdx === i ? <Check style={{ width: '12px', height: '12px' }} /> : <Copy style={{ width: '12px', height: '12px' }} />}
                     {copiedIdx === i ? 'Copied' : 'Copy'}
                   </button>
                   {msg.error && (
                     <button
                       onClick={retryLast}
-                      className="text-xs text-red-400 hover:text-red-300 flex items-center gap-1 transition-colors"
+                      className="flex items-center transition-colors"
+                      style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)', gap: '4px' }}
                     >
-                      <RotateCcw className="w-3 h-3" /> Retry
+                      <RotateCcw style={{ width: '12px', height: '12px' }} /> Retry
                     </button>
                   )}
                 </div>
@@ -256,8 +284,8 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
 
         {loading && (
           <div className="flex justify-start">
-            <div className="bg-zinc-800/50 rounded-xl px-4 py-3 border border-zinc-800">
-              <Loader2 className="w-4 h-4 animate-spin text-blue-400" />
+            <div style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-3) var(--space-4)', border: '1px solid var(--border-subtle)' }}>
+              <Loader2 style={{ width: '16px', height: '16px', color: 'var(--accent)' }} className="animate-spin" />
             </div>
           </div>
         )}
@@ -266,24 +294,28 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
 
       {/* Pending changes banner */}
       {pendingChange && onApplyChange && (
-        <div className="shrink-0 border-t border-zinc-800 bg-blue-950/30 px-4 py-3">
+        <div
+          className="shrink-0"
+          style={{
+            borderTop: '1px solid var(--border-subtle)',
+            background: 'var(--accent-muted)',
+            padding: 'var(--space-3) var(--space-4)',
+          }}
+        >
           <div className="flex items-center justify-between">
-            <span className="text-sm text-blue-300">AI has proposed document changes</span>
-            <div className="flex gap-2">
-              <button
-                onClick={() => setPendingChange(null)}
-                className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-400 transition-colors"
-              >
-                <XCircle className="w-3.5 h-3.5" /> Discard
+            <span style={{ fontSize: 'var(--font-size-sm)', color: '#93c5fd' }}>AI has proposed edits — review before applying</span>
+            <div className="flex" style={{ gap: 'var(--space-2)' }}>
+              <button onClick={() => setPendingChange(null)} className="btn btn-ghost btn-sm">
+                <XCircle style={{ width: '14px', height: '14px' }} /> Discard
               </button>
               <button
                 onClick={() => {
                   onApplyChange(pendingChange.content);
                   setPendingChange(null);
                 }}
-                className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs bg-blue-600 hover:bg-blue-500 text-white font-medium transition-colors"
+                className="btn btn-primary btn-sm"
               >
-                <CheckCircle className="w-3.5 h-3.5" /> Apply Changes
+                <CheckCircle style={{ width: '14px', height: '14px' }} /> Apply Changes
               </button>
             </div>
           </div>
@@ -291,8 +323,8 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
       )}
 
       {/* Input */}
-      <div className="shrink-0 border-t border-zinc-800 p-3">
-        <div className="flex items-end gap-2">
+      <div className="shrink-0" style={{ borderTop: '1px solid var(--border-subtle)', padding: 'var(--space-3)' }}>
+        <div className="flex items-end" style={{ gap: 'var(--space-2)' }}>
           <VoiceInput onTranscript={handleVoiceTranscript} disabled={loading} />
           <div className="flex-1 relative">
             <textarea
@@ -300,18 +332,28 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder={documentId ? 'Ask about this document, or tell me what to improve...' : 'Select a document first...'}
+              placeholder={documentId ? 'e.g. "Sharpen the risk factors" or "Rewrite Section 3 for a growth equity IC"' : 'Select a document first...'}
               disabled={loading || !documentId}
               rows={1}
-              className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 pr-10 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-blue-600/50 resize-none disabled:opacity-50"
+              className="input resize-none"
+              style={{
+                borderRadius: 'var(--radius-lg)',
+                paddingRight: 'var(--space-10)',
+                opacity: loading || !documentId ? 0.5 : 1,
+              }}
             />
           </div>
           <button
             onClick={() => sendMessage(input)}
             disabled={!input.trim() || loading || !documentId}
-            className="p-2.5 bg-blue-600 hover:bg-blue-500 disabled:bg-zinc-800 disabled:text-zinc-600 rounded-xl transition-colors"
+            className="btn btn-primary"
+            style={{
+              padding: 'var(--space-2)',
+              borderRadius: 'var(--radius-lg)',
+              opacity: !input.trim() || loading || !documentId ? 0.3 : 1,
+            }}
           >
-            <Send className="w-4 h-4" />
+            <Send style={{ width: '16px', height: '16px' }} />
           </button>
         </div>
       </div>

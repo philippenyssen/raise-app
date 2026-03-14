@@ -21,10 +21,17 @@ const STATUS_LABELS: Record<InvestorStatus, string> = {
 };
 
 const STATUS_COLORS: Record<string, string> = {
-  identified: 'bg-zinc-700', contacted: 'bg-zinc-600', nda_signed: 'bg-blue-900',
-  meeting_scheduled: 'bg-blue-800', met: 'bg-blue-700', engaged: 'bg-purple-700',
-  in_dd: 'bg-orange-700', term_sheet: 'bg-green-700', closed: 'bg-emerald-700',
-  passed: 'bg-red-800', dropped: 'bg-zinc-800',
+  identified: 'var(--surface-3)',
+  contacted: 'var(--surface-2)',
+  nda_signed: 'var(--accent-muted)',
+  meeting_scheduled: 'var(--accent-muted)',
+  met: 'var(--accent)',
+  engaged: 'var(--accent)',
+  in_dd: 'var(--warning)',
+  term_sheet: 'var(--success)',
+  closed: 'var(--success)',
+  passed: 'var(--danger)',
+  dropped: 'var(--surface-3)',
 };
 
 interface ScoreDimension {
@@ -151,9 +158,9 @@ export default function InvestorDetailPage() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="h-8 w-48 bg-zinc-800 rounded animate-pulse" />
-        <div className="h-32 bg-zinc-800/50 rounded-xl animate-pulse" />
-        <div className="h-64 bg-zinc-800/50 rounded-xl animate-pulse" />
+        <div className="h-8 w-48 rounded animate-pulse" style={{ background: 'var(--surface-2)' }} />
+        <div className="h-32 rounded-xl animate-pulse" style={{ background: 'var(--surface-1)' }} />
+        <div className="h-64 rounded-xl animate-pulse" style={{ background: 'var(--surface-1)' }} />
       </div>
     );
   }
@@ -161,8 +168,16 @@ export default function InvestorDetailPage() {
   if (!investor) {
     return (
       <div className="text-center py-12">
-        <p className="text-zinc-500">Investor not found</p>
-        <Link href="/investors" className="text-blue-400 hover:text-blue-300 text-sm mt-2 block">Back to CRM</Link>
+        <p style={{ color: 'var(--text-muted)' }}>Investor not found or has been removed.</p>
+        <Link
+          href="/investors"
+          className="text-sm mt-2 block"
+          style={{ color: 'var(--accent)' }}
+          onMouseEnter={e => (e.currentTarget.style.opacity = '0.8')}
+          onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+        >
+          Back to Pipeline
+        </Link>
       </div>
     );
   }
@@ -190,16 +205,28 @@ export default function InvestorDetailPage() {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <Link href="/investors" className="flex items-center gap-1 text-zinc-500 hover:text-zinc-300 text-sm mb-3">
+          <Link
+            href="/investors"
+            className="flex items-center gap-1 text-sm mb-3"
+            style={{ color: 'var(--text-muted)' }}
+            onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
+            onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
+          >
             <ArrowLeft className="w-3.5 h-3.5" /> Back to CRM
           </Link>
-          <h1 className="text-2xl font-bold tracking-tight">{investor.name}</h1>
+          <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>{investor.name}</h1>
           <div className="flex items-center gap-3 mt-2">
-            <span className={`px-2 py-0.5 rounded text-xs font-medium ${
-              investor.tier === 1 ? 'bg-blue-600/20 text-blue-400' :
-              investor.tier === 2 ? 'bg-purple-600/20 text-purple-400' :
-              'bg-zinc-600/20 text-zinc-400'
-            }`}>Tier {investor.tier}</span>
+            <span
+              className="px-2 py-0.5 rounded text-xs font-medium"
+              style={{
+                background: investor.tier === 1 ? 'var(--accent-muted)' :
+                  investor.tier === 2 ? 'var(--accent-muted)' :
+                  'var(--surface-2)',
+                color: investor.tier === 1 ? 'var(--accent)' :
+                  investor.tier === 2 ? 'var(--accent)' :
+                  'var(--text-tertiary)',
+              }}
+            >Tier {investor.tier}</span>
             <select
               value={investor.status}
               onChange={async (e) => {
@@ -208,32 +235,48 @@ export default function InvestorDetailPage() {
                 setInvestor(prev => prev ? { ...prev, status: newStatus as InvestorStatus } : prev);
                 toast(`Status updated to ${STATUS_LABELS[newStatus as InvestorStatus] || newStatus}`);
               }}
-              className={`${STATUS_COLORS[investor.status]} px-2 py-0.5 rounded text-xs font-medium bg-opacity-80 border-none cursor-pointer focus:outline-none focus:ring-1 focus:ring-blue-500`}
+              className="px-2 py-0.5 rounded text-xs font-medium border-none cursor-pointer focus:outline-none"
+              style={{
+                backgroundColor: STATUS_COLORS[investor.status],
+                color: 'var(--text-primary)',
+              }}
             >
               {Object.entries(STATUS_LABELS).map(([val, label]) => (
-                <option key={val} value={val} className="bg-zinc-900 text-zinc-300">{label}</option>
+                <option key={val} value={val} style={{ background: 'var(--surface-0)', color: 'var(--text-secondary)' }}>{label}</option>
               ))}
             </select>
-            <span className="text-xs text-zinc-500 capitalize">{investor.type.replace(/_/g, ' ')}</span>
+            <span className="text-xs capitalize" style={{ color: 'var(--text-muted)' }}>{investor.type.replace(/_/g, ' ')}</span>
           </div>
         </div>
         <div className="flex gap-2">
           <Link
             href={`/meetings/prep?investor=${id}`}
-            className="px-3 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+            className="px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+            style={{ background: 'var(--surface-2)', color: 'var(--text-primary)' }}
+            onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface-3)')}
+            onMouseLeave={e => (e.currentTarget.style.background = 'var(--surface-2)')}
           >
-            <FileSearch className="w-3.5 h-3.5" /> Prep
+            <FileSearch className="w-3.5 h-3.5" /> Prep Meeting
           </Link>
           <button
             onClick={handleResearch}
             disabled={researching}
-            className="px-3 py-2 bg-zinc-800 hover:bg-zinc-700 disabled:bg-zinc-800 disabled:text-zinc-600 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+            className="px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+            style={{
+              background: researching ? 'var(--surface-2)' : 'var(--surface-2)',
+              color: researching ? 'var(--text-muted)' : 'var(--text-primary)',
+            }}
+            onMouseEnter={e => { if (!researching) e.currentTarget.style.background = 'var(--surface-3)'; }}
+            onMouseLeave={e => { if (!researching) e.currentTarget.style.background = 'var(--surface-2)'; }}
           >
             {researching ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Researching...</> : <><RefreshCw className="w-3.5 h-3.5" /> Research</>}
           </button>
           <Link
             href="/meetings/new"
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm font-medium transition-colors"
+            className="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+            style={{ background: 'var(--accent)', color: 'var(--text-primary)' }}
+            onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
+            onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
           >
             + Log Meeting
           </Link>
@@ -258,13 +301,16 @@ export default function InvestorDetailPage() {
         const completeness = Math.round(((checkFields.length - missing.length) / checkFields.length) * 100);
         if (completeness >= 80) return null;
         return (
-          <div className="flex items-start gap-3 border border-amber-800/30 bg-amber-900/10 rounded-xl px-4 py-3">
-            <AlertCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+          <div
+            className="flex items-start gap-3 rounded-xl px-4 py-3"
+            style={{ border: '1px solid var(--warning-muted)', background: 'var(--warning-muted)' }}
+          >
+            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" style={{ color: 'var(--warning)' }} />
             <div className="min-w-0">
-              <div className="text-sm text-amber-300 font-medium">
-                Profile {completeness}% complete -- fill missing fields to unlock scoring
+              <div className="text-sm font-medium" style={{ color: 'var(--warning)' }}>
+                Profile {completeness}% complete — fill missing fields to improve scoring accuracy
               </div>
-              <div className="text-xs text-amber-400/70 mt-0.5">
+              <div className="text-xs mt-0.5" style={{ color: 'var(--warning)', opacity: 0.7 }}>
                 Missing: {missing.map(f => f.label).join(', ')}
               </div>
             </div>
@@ -274,8 +320,8 @@ export default function InvestorDetailPage() {
 
       {/* Profile + Process Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="border border-zinc-800 rounded-xl p-5 space-y-3">
-          <h2 className="text-xs font-medium text-zinc-400 flex items-center gap-2">
+        <div className="rounded-xl p-5 space-y-3" style={{ border: '1px solid var(--border-default)' }}>
+          <h2 className="text-xs font-medium flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
             <Users className="w-3.5 h-3.5" /> PROFILE
           </h2>
           <div className="space-y-2 text-sm">
@@ -285,8 +331,8 @@ export default function InvestorDetailPage() {
             <Row label="Thesis" value={investor.sector_thesis} />
           </div>
         </div>
-        <div className="border border-zinc-800 rounded-xl p-5 space-y-3">
-          <h2 className="text-xs font-medium text-zinc-400 flex items-center gap-2">
+        <div className="rounded-xl p-5 space-y-3" style={{ border: '1px solid var(--border-default)' }}>
+          <h2 className="text-xs font-medium flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
             <Target className="w-3.5 h-3.5" /> PROCESS
           </h2>
           <div className="space-y-2 text-sm">
@@ -301,10 +347,10 @@ export default function InvestorDetailPage() {
       {/* Intelligence Score */}
       {score && <InvestorScorePanel score={score} loading={scoreLoading} onRefresh={fetchScore} />}
       {scoreLoading && !score && (
-        <div className="border border-zinc-800 rounded-xl p-6">
+        <div className="rounded-xl p-6" style={{ border: '1px solid var(--border-default)' }}>
           <div className="flex items-center gap-3">
-            <Loader2 className="w-4 h-4 animate-spin text-zinc-500" />
-            <span className="text-sm text-zinc-500">Computing intelligence score...</span>
+            <Loader2 className="w-4 h-4 animate-spin" style={{ color: 'var(--text-muted)' }} />
+            <span className="text-sm" style={{ color: 'var(--text-muted)' }}>Scoring investor across 11 dimensions...</span>
           </div>
         </div>
       )}
@@ -316,16 +362,16 @@ export default function InvestorDetailPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        <StatCard icon={TrendingUp} label="Enthusiasm" value={`${latestEnthusiasm}/5`} sub="latest" />
-        <StatCard icon={Calendar} label="Meetings" value={meetings.length} sub="total" />
-        <StatCard icon={AlertTriangle} label="Objections" value={allObjections.length} sub="raised" />
+        <StatCard icon={TrendingUp} label="Enthusiasm" value={`${latestEnthusiasm}/5`} sub="latest reading" />
+        <StatCard icon={Calendar} label="Meetings" value={meetings.length} sub="logged" />
+        <StatCard icon={AlertTriangle} label="Objections" value={allObjections.length} sub="unresolved" />
         <StatCard icon={UserCheck} label="Partners" value={partners.length} sub="profiled" />
-        <StatCard icon={Briefcase} label="Portfolio" value={portfolio.length} sub="companies" />
+        <StatCard icon={Briefcase} label="Portfolio Cos" value={portfolio.length} sub="tracked" />
       </div>
 
       {/* Intelligence Tabs */}
-      <div className="border border-zinc-800 rounded-xl overflow-hidden">
-        <div className="flex border-b border-zinc-800 bg-zinc-900/30">
+      <div className="rounded-xl overflow-hidden" style={{ border: '1px solid var(--border-default)' }}>
+        <div className="flex" style={{ borderBottom: '1px solid var(--border-default)', background: 'var(--surface-1)' }}>
           {([
             { key: 'overview' as IntelTab, label: 'Meetings', icon: Clock },
             { key: 'partners' as IntelTab, label: `Partners (${partners.length})`, icon: UserCheck },
@@ -336,9 +382,13 @@ export default function InvestorDetailPage() {
             <button
               key={t.key}
               onClick={() => setIntelTab(t.key)}
-              className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 ${
-                intelTab === t.key ? 'border-blue-500 text-white' : 'border-transparent text-zinc-500 hover:text-zinc-300'
-              }`}
+              className="px-4 py-2.5 text-sm font-medium transition-colors flex items-center gap-2"
+              style={{
+                borderBottom: intelTab === t.key ? '2px solid var(--accent)' : '2px solid transparent',
+                color: intelTab === t.key ? 'var(--text-primary)' : 'var(--text-muted)',
+              }}
+              onMouseEnter={e => { if (intelTab !== t.key) e.currentTarget.style.color = 'var(--text-secondary)'; }}
+              onMouseLeave={e => { if (intelTab !== t.key) e.currentTarget.style.color = 'var(--text-muted)'; }}
             >
               <t.icon className="w-3.5 h-3.5" />
               {t.label}
@@ -353,19 +403,20 @@ export default function InvestorDetailPage() {
               {/* Enthusiasm Trend */}
               {enthusiasmTrend.length > 1 && (
                 <div className="mb-6">
-                  <h3 className="text-xs font-medium text-zinc-400 mb-3 flex items-center gap-2">
+                  <h3 className="text-xs font-medium mb-3 flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
                     <Zap className="w-3.5 h-3.5" /> ENTHUSIASM TREND
                   </h3>
                   <div className="flex items-end gap-2 h-20">
                     {enthusiasmTrend.map((point, i) => (
                       <div key={i} className="flex-1 flex flex-col items-center gap-1">
                         <div
-                          className={`w-full rounded-t ${
-                            point.score >= 4 ? 'bg-green-600' : point.score >= 3 ? 'bg-blue-600' : point.score >= 2 ? 'bg-yellow-600' : 'bg-red-600'
-                          }`}
-                          style={{ height: `${(point.score / 5) * 100}%` }}
+                          className="w-full rounded-t"
+                          style={{
+                            height: `${(point.score / 5) * 100}%`,
+                            background: point.score >= 4 ? 'var(--success)' : point.score >= 3 ? 'var(--accent)' : point.score >= 2 ? 'var(--warning)' : 'var(--danger)',
+                          }}
                         />
-                        <span className="text-[10px] text-zinc-600">{point.date.slice(5)}</span>
+                        <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{point.date.slice(5)}</span>
                       </div>
                     ))}
                   </div>
@@ -373,37 +424,48 @@ export default function InvestorDetailPage() {
               )}
 
               {/* Meeting History */}
-              <h3 className="text-xs font-medium text-zinc-400 mb-3 flex items-center gap-2">
+              <h3 className="text-xs font-medium mb-3 flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
                 <Clock className="w-3.5 h-3.5" /> MEETING HISTORY
               </h3>
               {meetings.length === 0 ? (
-                <p className="text-sm text-zinc-600">No meetings logged yet.</p>
+                <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No meetings logged yet. Log your first meeting to start tracking engagement.</p>
               ) : (
                 <div className="space-y-4">
                   {meetings.map(m => {
                     const objs = (() => { try { return JSON.parse(m.objections || '[]'); } catch { return []; } })();
                     return (
-                      <div key={m.id} className="border-l-2 border-zinc-800 pl-4 pb-2">
+                      <div key={m.id} className="pl-4 pb-2" style={{ borderLeft: '2px solid var(--border-default)' }}>
                         <div className="flex items-center gap-3 mb-1">
-                          <span className="text-sm font-medium">{m.date}</span>
-                          <span className="text-xs text-zinc-500">{m.type.replace(/_/g, ' ')}</span>
-                          <span className="text-xs text-zinc-600">{m.duration_minutes}min</span>
+                          <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{m.date}</span>
+                          <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{m.type.replace(/_/g, ' ')}</span>
+                          <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{m.duration_minutes}min</span>
                           <div className="flex gap-0.5 ml-auto">
                             {[1,2,3,4,5].map(n => (
-                              <div key={n} className={`w-1.5 h-1.5 rounded-full ${n <= m.enthusiasm_score ? 'bg-blue-500' : 'bg-zinc-800'}`} />
+                              <div
+                                key={n}
+                                className="w-1.5 h-1.5 rounded-full"
+                                style={{ background: n <= m.enthusiasm_score ? 'var(--accent)' : 'var(--surface-2)' }}
+                              />
                             ))}
                           </div>
                         </div>
-                        {m.ai_analysis && <p className="text-sm text-zinc-400 mb-2">{m.ai_analysis}</p>}
-                        {m.next_steps && <p className="text-xs text-blue-400/70">Next: {m.next_steps}</p>}
+                        {m.ai_analysis && <p className="text-sm mb-2" style={{ color: 'var(--text-tertiary)' }}>{m.ai_analysis}</p>}
+                        {m.next_steps && <p className="text-xs" style={{ color: 'var(--accent)', opacity: 0.7 }}>Next: {m.next_steps}</p>}
                         {objs.length > 0 && (
                           <div className="flex flex-wrap gap-1 mt-2">
                             {objs.map((o: { text: string; severity: string }, i: number) => (
-                              <span key={i} className={`text-xs px-1.5 py-0.5 rounded ${
-                                o.severity === 'showstopper' ? 'bg-red-900/30 text-red-400' :
-                                o.severity === 'significant' ? 'bg-yellow-900/30 text-yellow-400' :
-                                'bg-zinc-800 text-zinc-500'
-                              }`}>{o.text.length > 40 ? o.text.slice(0, 40) + '...' : o.text}</span>
+                              <span
+                                key={i}
+                                className="text-xs px-1.5 py-0.5 rounded"
+                                style={{
+                                  background: o.severity === 'showstopper' ? 'var(--danger-muted)' :
+                                    o.severity === 'significant' ? 'var(--warning-muted)' :
+                                    'var(--surface-2)',
+                                  color: o.severity === 'showstopper' ? 'var(--danger)' :
+                                    o.severity === 'significant' ? 'var(--warning)' :
+                                    'var(--text-muted)',
+                                }}
+                              >{o.text.length > 40 ? o.text.slice(0, 40) + '...' : o.text}</span>
                             ))}
                           </div>
                         )}
@@ -416,19 +478,25 @@ export default function InvestorDetailPage() {
               {/* Objection Summary */}
               {allObjections.length > 0 && (
                 <div className="mt-6">
-                  <h3 className="text-xs font-medium text-zinc-400 mb-3 flex items-center gap-2">
+                  <h3 className="text-xs font-medium mb-3 flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
                     <AlertTriangle className="w-3.5 h-3.5" /> ALL OBJECTIONS
                   </h3>
                   <div className="space-y-2">
                     {allObjections.map((o, i) => (
                       <div key={i} className="flex items-center gap-3 text-sm">
-                        <span className={`text-xs px-1.5 py-0.5 rounded shrink-0 ${
-                          o.severity === 'showstopper' ? 'bg-red-900/50 text-red-400' :
-                          o.severity === 'significant' ? 'bg-yellow-900/50 text-yellow-400' :
-                          'bg-zinc-800 text-zinc-500'
-                        }`}>{o.severity}</span>
-                        <span className="text-zinc-300 flex-1">{o.text}</span>
-                        <span className="text-xs text-zinc-600 shrink-0">{o.date}</span>
+                        <span
+                          className="text-xs px-1.5 py-0.5 rounded shrink-0"
+                          style={{
+                            background: o.severity === 'showstopper' ? 'var(--danger-muted)' :
+                              o.severity === 'significant' ? 'var(--warning-muted)' :
+                              'var(--surface-2)',
+                            color: o.severity === 'showstopper' ? 'var(--danger)' :
+                              o.severity === 'significant' ? 'var(--warning)' :
+                              'var(--text-muted)',
+                          }}
+                        >{o.severity}</span>
+                        <span className="flex-1" style={{ color: 'var(--text-secondary)' }}>{o.text}</span>
+                        <span className="text-xs shrink-0" style={{ color: 'var(--text-muted)' }}>{o.date}</span>
                       </div>
                     ))}
                   </div>
@@ -442,31 +510,43 @@ export default function InvestorDetailPage() {
             <div>
               {partners.length === 0 ? (
                 <div className="text-center py-6">
-                  <UserCheck className="w-8 h-8 text-zinc-700 mx-auto mb-2" />
-                  <p className="text-sm text-zinc-600 mb-3">No partner profiles yet.</p>
-                  <button onClick={handleResearch} disabled={researching} className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm flex items-center gap-2 mx-auto">
+                  <UserCheck className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--text-muted)' }} />
+                  <p className="text-sm mb-3" style={{ color: 'var(--text-muted)' }}>No partner profiles yet. Run research to pull key decision-makers.</p>
+                  <button
+                    onClick={handleResearch}
+                    disabled={researching}
+                    className="px-3 py-1.5 rounded-lg text-sm flex items-center gap-2 mx-auto"
+                    style={{ background: 'var(--accent)', color: 'var(--text-primary)' }}
+                    onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
+                    onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+                  >
                     <RefreshCw className="w-3.5 h-3.5" /> Research {investor.name}
                   </button>
                 </div>
               ) : (
                 <div className="space-y-4">
                   {partners.map(p => (
-                    <div key={p.id} className="border border-zinc-800 rounded-lg p-4">
+                    <div key={p.id} className="rounded-lg p-4" style={{ border: '1px solid var(--border-default)' }}>
                       <div className="flex items-start justify-between">
                         <div>
-                          <h4 className="font-medium">{p.name}</h4>
-                          <p className="text-xs text-zinc-500">{p.title}</p>
+                          <h4 className="font-medium" style={{ color: 'var(--text-primary)' }}>{p.name}</h4>
+                          <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{p.title}</p>
                         </div>
-                        <button onClick={() => deleteIntelItem('partner', p.id)} className="text-zinc-600 hover:text-red-400">
+                        <button
+                          onClick={() => deleteIntelItem('partner', p.id)}
+                          style={{ color: 'var(--text-muted)' }}
+                          onMouseEnter={e => (e.currentTarget.style.color = 'var(--danger)')}
+                          onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
+                        >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       </div>
-                      <div className="mt-2 space-y-1 text-xs text-zinc-400">
-                        {p.focus_areas && <p><span className="text-zinc-500">Focus:</span> {p.focus_areas}</p>}
-                        {p.notable_deals && <p><span className="text-zinc-500">Deals:</span> {p.notable_deals}</p>}
-                        {p.board_seats && <p><span className="text-zinc-500">Boards:</span> {p.board_seats}</p>}
-                        {p.background && <p><span className="text-zinc-500">Background:</span> {p.background}</p>}
-                        {p.relevance_to_us && <p className="text-blue-400"><span className="text-zinc-500">Relevance:</span> {p.relevance_to_us}</p>}
+                      <div className="mt-2 space-y-1 text-xs" style={{ color: 'var(--text-tertiary)' }}>
+                        {p.focus_areas && <p><span style={{ color: 'var(--text-muted)' }}>Focus:</span> {p.focus_areas}</p>}
+                        {p.notable_deals && <p><span style={{ color: 'var(--text-muted)' }}>Deals:</span> {p.notable_deals}</p>}
+                        {p.board_seats && <p><span style={{ color: 'var(--text-muted)' }}>Boards:</span> {p.board_seats}</p>}
+                        {p.background && <p><span style={{ color: 'var(--text-muted)' }}>Background:</span> {p.background}</p>}
+                        {p.relevance_to_us && <p style={{ color: 'var(--accent)' }}><span style={{ color: 'var(--text-muted)' }}>Relevance:</span> {p.relevance_to_us}</p>}
                       </div>
                     </div>
                   ))}
@@ -480,43 +560,66 @@ export default function InvestorDetailPage() {
             <div>
               {portfolio.length === 0 ? (
                 <div className="text-center py-6">
-                  <Briefcase className="w-8 h-8 text-zinc-700 mx-auto mb-2" />
-                  <p className="text-sm text-zinc-600 mb-3">No portfolio companies tracked.</p>
-                  <button onClick={handleResearch} disabled={researching} className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm flex items-center gap-2 mx-auto">
+                  <Briefcase className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--text-muted)' }} />
+                  <p className="text-sm mb-3" style={{ color: 'var(--text-muted)' }}>No portfolio companies tracked. Run research to identify conflicts and overlap.</p>
+                  <button
+                    onClick={handleResearch}
+                    disabled={researching}
+                    className="px-3 py-1.5 rounded-lg text-sm flex items-center gap-2 mx-auto"
+                    style={{ background: 'var(--accent)', color: 'var(--text-primary)' }}
+                    onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
+                    onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+                  >
                     <RefreshCw className="w-3.5 h-3.5" /> Research {investor.name}
                   </button>
                 </div>
               ) : (
-                <div className="border border-zinc-800 rounded-lg overflow-hidden">
+                <div className="rounded-lg overflow-hidden" style={{ border: '1px solid var(--border-default)' }}>
                   <table className="w-full text-sm">
-                    <thead className="bg-zinc-900/50 border-b border-zinc-800">
+                    <thead style={{ background: 'var(--surface-1)', borderBottom: '1px solid var(--border-default)' }}>
                       <tr>
-                        <th className="text-left px-4 py-2 text-xs text-zinc-500 font-medium">Company</th>
-                        <th className="text-left px-4 py-2 text-xs text-zinc-500 font-medium">Sector</th>
-                        <th className="text-left px-4 py-2 text-xs text-zinc-500 font-medium">Stage</th>
-                        <th className="text-left px-4 py-2 text-xs text-zinc-500 font-medium">Amount</th>
-                        <th className="text-left px-4 py-2 text-xs text-zinc-500 font-medium">Date</th>
-                        <th className="text-left px-4 py-2 text-xs text-zinc-500 font-medium">Status</th>
+                        <th className="text-left px-4 py-2 text-xs font-medium" style={{ color: 'var(--text-muted)' }}>Company</th>
+                        <th className="text-left px-4 py-2 text-xs font-medium" style={{ color: 'var(--text-muted)' }}>Sector</th>
+                        <th className="text-left px-4 py-2 text-xs font-medium" style={{ color: 'var(--text-muted)' }}>Stage</th>
+                        <th className="text-left px-4 py-2 text-xs font-medium" style={{ color: 'var(--text-muted)' }}>Amount</th>
+                        <th className="text-left px-4 py-2 text-xs font-medium" style={{ color: 'var(--text-muted)' }}>Date</th>
+                        <th className="text-left px-4 py-2 text-xs font-medium" style={{ color: 'var(--text-muted)' }}>Status</th>
                         <th className="w-8"></th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-zinc-800/50">
+                    <tbody>
                       {portfolio.map(co => (
-                        <tr key={co.id} className="hover:bg-zinc-900/30">
-                          <td className="px-4 py-2 font-medium">{co.company}</td>
-                          <td className="px-4 py-2 text-zinc-400 text-xs">{co.sector}</td>
-                          <td className="px-4 py-2 text-zinc-400 text-xs">{co.stage_invested}</td>
-                          <td className="px-4 py-2 text-emerald-400 text-xs">{co.amount}</td>
-                          <td className="px-4 py-2 text-zinc-500 text-xs">{co.date}</td>
+                        <tr
+                          key={co.id}
+                          style={{ borderBottom: '1px solid var(--border-subtle)' }}
+                          onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface-1)')}
+                          onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                        >
+                          <td className="px-4 py-2 font-medium" style={{ color: 'var(--text-primary)' }}>{co.company}</td>
+                          <td className="px-4 py-2 text-xs" style={{ color: 'var(--text-tertiary)' }}>{co.sector}</td>
+                          <td className="px-4 py-2 text-xs" style={{ color: 'var(--text-tertiary)' }}>{co.stage_invested}</td>
+                          <td className="px-4 py-2 text-xs" style={{ color: 'var(--success)' }}>{co.amount}</td>
+                          <td className="px-4 py-2 text-xs" style={{ color: 'var(--text-muted)' }}>{co.date}</td>
                           <td className="px-4 py-2">
-                            <span className={`text-xs px-1.5 py-0.5 rounded ${
-                              co.status === 'active' ? 'bg-green-900/30 text-green-400' :
-                              co.status === 'exited' ? 'bg-blue-900/30 text-blue-400' :
-                              'bg-red-900/30 text-red-400'
-                            }`}>{co.status}</span>
+                            <span
+                              className="text-xs px-1.5 py-0.5 rounded"
+                              style={{
+                                background: co.status === 'active' ? 'var(--success-muted)' :
+                                  co.status === 'exited' ? 'var(--accent-muted)' :
+                                  'var(--danger-muted)',
+                                color: co.status === 'active' ? 'var(--success)' :
+                                  co.status === 'exited' ? 'var(--accent)' :
+                                  'var(--danger)',
+                              }}
+                            >{co.status}</span>
                           </td>
                           <td className="px-4 py-2">
-                            <button onClick={() => deleteIntelItem('portfolio', co.id)} className="text-zinc-600 hover:text-red-400">
+                            <button
+                              onClick={() => deleteIntelItem('portfolio', co.id)}
+                              style={{ color: 'var(--text-muted)' }}
+                              onMouseEnter={e => (e.currentTarget.style.color = 'var(--danger)')}
+                              onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
+                            >
                               <Trash2 className="w-3 h-3" />
                             </button>
                           </td>
@@ -533,14 +636,21 @@ export default function InvestorDetailPage() {
           {intelTab === 'tasks' && (
             <div>
               {tasks.length === 0 ? (
-                <p className="text-sm text-zinc-600 text-center py-6">No tasks for this investor yet. Tasks are auto-generated when you log meetings.</p>
+                <p className="text-sm text-center py-6" style={{ color: 'var(--text-muted)' }}>No tasks yet. Tasks are auto-generated from meeting debriefs — log a meeting to get started.</p>
               ) : (
                 <div className="space-y-2">
                   {tasks.map(t => {
                     const overdue = t.due_date && new Date(t.due_date) < new Date() && t.status !== 'done';
-                    const prioColor = { critical: 'text-red-400', high: 'text-orange-400', medium: 'text-yellow-400', low: 'text-zinc-500' }[t.priority] || 'text-zinc-500';
+                    const prioColor = { critical: 'var(--danger)', high: 'var(--warning)', medium: 'var(--warning)', low: 'var(--text-muted)' }[t.priority] || 'var(--text-muted)';
                     return (
-                      <div key={t.id} className={`flex items-center justify-between py-2 px-3 rounded-lg border ${t.status === 'done' ? 'border-zinc-800/50 opacity-50' : 'border-zinc-800'}`}>
+                      <div
+                        key={t.id}
+                        className="flex items-center justify-between py-2 px-3 rounded-lg"
+                        style={{
+                          border: `1px solid ${t.status === 'done' ? 'var(--border-subtle)' : 'var(--border-default)'}`,
+                          opacity: t.status === 'done' ? 0.5 : 1,
+                        }}
+                      >
                         <div className="flex items-center gap-3 min-w-0">
                           <button
                             onClick={async () => {
@@ -548,19 +658,26 @@ export default function InvestorDetailPage() {
                               await fetch('/api/tasks', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: t.id, status: newStatus, title: t.title, investor_id: id, investor_name: investor?.name }) });
                               fetchData();
                             }}
-                            className={`w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 ${t.status === 'done' ? 'bg-green-600 border-green-600' : 'border-zinc-700 hover:border-zinc-500'}`}
+                            className="w-5 h-5 rounded flex items-center justify-center shrink-0"
+                            style={{
+                              background: t.status === 'done' ? 'var(--success)' : 'transparent',
+                              border: t.status === 'done' ? '2px solid var(--success)' : '2px solid var(--border-default)',
+                              color: 'var(--text-primary)',
+                            }}
+                            onMouseEnter={e => { if (t.status !== 'done') e.currentTarget.style.borderColor = 'var(--border-strong)'; }}
+                            onMouseLeave={e => { if (t.status !== 'done') e.currentTarget.style.borderColor = 'var(--border-default)'; }}
                           >
                             {t.status === 'done' && <Check className="w-3 h-3" />}
                           </button>
                           <div className="min-w-0">
-                            <div className={`text-sm truncate ${t.status === 'done' ? 'line-through' : ''}`}>{t.title}</div>
-                            {t.description && <div className="text-xs text-zinc-600 truncate">{t.description}</div>}
+                            <div className={`text-sm truncate ${t.status === 'done' ? 'line-through' : ''}`} style={{ color: 'var(--text-primary)' }}>{t.title}</div>
+                            {t.description && <div className="text-xs truncate" style={{ color: 'var(--text-muted)' }}>{t.description}</div>}
                           </div>
                         </div>
                         <div className="flex items-center gap-3 shrink-0">
-                          <span className={`text-[10px] ${prioColor}`}>{t.priority}</span>
-                          <span className="text-[10px] text-zinc-600">{t.phase}</span>
-                          {t.due_date && <span className={`text-[10px] ${overdue ? 'text-red-400 font-medium' : 'text-zinc-500'}`}>{t.due_date}</span>}
+                          <span className="text-[10px]" style={{ color: prioColor }}>{t.priority}</span>
+                          <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{t.phase}</span>
+                          {t.due_date && <span className="text-[10px]" style={{ color: overdue ? 'var(--danger)' : 'var(--text-muted)', fontWeight: overdue ? 500 : 400 }}>{t.due_date}</span>}
                         </div>
                       </div>
                     );
@@ -575,26 +692,38 @@ export default function InvestorDetailPage() {
             <div>
               {briefs.length === 0 ? (
                 <div className="text-center py-6">
-                  <BookOpen className="w-8 h-8 text-zinc-700 mx-auto mb-2" />
-                  <p className="text-sm text-zinc-600 mb-3">No research briefs yet.</p>
-                  <button onClick={handleResearch} disabled={researching} className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm flex items-center gap-2 mx-auto">
+                  <BookOpen className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--text-muted)' }} />
+                  <p className="text-sm mb-3" style={{ color: 'var(--text-muted)' }}>No research briefs yet. Run AI research to pull fund strategy, recent deals, and thesis alignment.</p>
+                  <button
+                    onClick={handleResearch}
+                    disabled={researching}
+                    className="px-3 py-1.5 rounded-lg text-sm flex items-center gap-2 mx-auto"
+                    style={{ background: 'var(--accent)', color: 'var(--text-primary)' }}
+                    onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
+                    onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+                  >
                     {researching ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Researching...</> : <><RefreshCw className="w-3.5 h-3.5" /> Research {investor.name}</>}
                   </button>
                 </div>
               ) : (
                 <div className="space-y-4">
                   {briefs.map(b => (
-                    <div key={b.id} className="border border-zinc-800 rounded-lg p-4">
+                    <div key={b.id} className="rounded-lg p-4" style={{ border: '1px solid var(--border-default)' }}>
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-2">
-                          <span className="text-xs px-2 py-0.5 rounded bg-blue-900/30 text-blue-400 font-medium">{b.brief_type}</span>
-                          <span className="text-xs text-zinc-600">{b.updated_at?.split('T')[0]}</span>
+                          <span className="text-xs px-2 py-0.5 rounded font-medium" style={{ background: 'var(--accent-muted)', color: 'var(--accent)' }}>{b.brief_type}</span>
+                          <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{b.updated_at?.split('T')[0]}</span>
                         </div>
-                        <button onClick={() => deleteIntelItem('brief', b.id)} className="text-zinc-600 hover:text-red-400">
+                        <button
+                          onClick={() => deleteIntelItem('brief', b.id)}
+                          style={{ color: 'var(--text-muted)' }}
+                          onMouseEnter={e => (e.currentTarget.style.color = 'var(--danger)')}
+                          onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
+                        >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       </div>
-                      <div className="prose prose-invert prose-sm max-w-none text-zinc-300 whitespace-pre-wrap text-sm leading-relaxed">
+                      <div className="prose prose-sm max-w-none whitespace-pre-wrap text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
                         {b.content}
                       </div>
                     </div>
@@ -608,9 +737,9 @@ export default function InvestorDetailPage() {
 
       {/* Notes */}
       {investor.notes && (
-        <div className="border border-zinc-800 rounded-xl p-5">
-          <h2 className="text-xs font-medium text-zinc-400 mb-2">NOTES</h2>
-          <p className="text-sm text-zinc-400">{investor.notes}</p>
+        <div className="rounded-xl p-5" style={{ border: '1px solid var(--border-default)' }}>
+          <h2 className="text-xs font-medium mb-2" style={{ color: 'var(--text-tertiary)' }}>NOTES</h2>
+          <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>{investor.notes}</p>
         </div>
       )}
     </div>
@@ -620,21 +749,21 @@ export default function InvestorDetailPage() {
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex justify-between">
-      <span className="text-zinc-500">{label}</span>
-      <span className="text-zinc-300 text-right max-w-[60%]">{value || '---'}</span>
+      <span style={{ color: 'var(--text-muted)' }}>{label}</span>
+      <span className="text-right max-w-[60%]" style={{ color: 'var(--text-secondary)' }}>{value || '---'}</span>
     </div>
   );
 }
 
 function StatCard({ icon: Icon, label, value, sub }: { icon: React.ComponentType<{ className?: string }>; label: string; value: string | number; sub: string }) {
   return (
-    <div className="border border-zinc-800 rounded-xl p-4">
+    <div className="rounded-xl p-4" style={{ border: '1px solid var(--border-default)' }}>
       <div className="flex items-center gap-2 mb-1">
-        <Icon className="w-3.5 h-3.5 text-zinc-500" />
-        <span className="text-xs text-zinc-500">{label}</span>
+        <span style={{ color: 'var(--text-muted)' }}><Icon className="w-3.5 h-3.5" /></span>
+        <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{label}</span>
       </div>
-      <div className="text-2xl font-bold">{value}</div>
-      <div className="text-xs text-zinc-600">{sub}</div>
+      <div className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>{value}</div>
+      <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{sub}</div>
     </div>
   );
 }
@@ -644,46 +773,46 @@ function StatCard({ icon: Icon, label, value, sub }: { icon: React.ComponentType
 // ---------------------------------------------------------------------------
 
 const OUTCOME_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
-  likely_close: { label: 'Likely Close', color: 'text-emerald-400', bg: 'bg-emerald-900/30' },
-  possible: { label: 'Possible', color: 'text-blue-400', bg: 'bg-blue-900/30' },
-  long_shot: { label: 'Long Shot', color: 'text-yellow-400', bg: 'bg-yellow-900/30' },
-  unlikely: { label: 'Unlikely', color: 'text-red-400', bg: 'bg-red-900/30' },
+  likely_close: { label: 'Likely Close', color: 'var(--success)', bg: 'var(--success-muted)' },
+  possible: { label: 'Possible', color: 'var(--accent)', bg: 'var(--accent-muted)' },
+  long_shot: { label: 'Long Shot', color: 'var(--warning)', bg: 'var(--warning-muted)' },
+  unlikely: { label: 'Unlikely', color: 'var(--danger)', bg: 'var(--danger-muted)' },
 };
 
 const MOMENTUM_CONFIG: Record<string, { label: string; icon: React.ComponentType<{ className?: string }>; color: string }> = {
-  accelerating: { label: 'Accelerating', icon: ArrowUpRight, color: 'text-emerald-400' },
-  steady: { label: 'Steady', icon: ArrowRight, color: 'text-blue-400' },
-  decelerating: { label: 'Decelerating', icon: ArrowDownRight, color: 'text-yellow-400' },
-  stalled: { label: 'Stalled', icon: Minus, color: 'text-red-400' },
+  accelerating: { label: 'Accelerating', icon: ArrowUpRight, color: 'var(--success)' },
+  steady: { label: 'Steady', icon: ArrowRight, color: 'var(--accent)' },
+  decelerating: { label: 'Decelerating', icon: ArrowDownRight, color: 'var(--warning)' },
+  stalled: { label: 'Stalled', icon: Minus, color: 'var(--danger)' },
 };
 
 function scoreColor(score: number): string {
-  if (score >= 70) return 'text-emerald-400';
-  if (score >= 50) return 'text-blue-400';
-  if (score >= 30) return 'text-yellow-400';
-  return 'text-red-400';
+  if (score >= 70) return 'var(--success)';
+  if (score >= 50) return 'var(--accent)';
+  if (score >= 30) return 'var(--warning)';
+  return 'var(--danger)';
 }
 
 function scoreBarColor(score: number): string {
-  if (score >= 70) return 'bg-emerald-500';
-  if (score >= 50) return 'bg-blue-500';
-  if (score >= 30) return 'bg-yellow-500';
-  return 'bg-red-500';
+  if (score >= 70) return 'var(--success)';
+  if (score >= 50) return 'var(--accent)';
+  if (score >= 30) return 'var(--warning)';
+  return 'var(--danger)';
 }
 
 function scoreBorderColor(score: number): string {
-  if (score >= 70) return 'border-emerald-500/30';
-  if (score >= 50) return 'border-blue-500/30';
-  if (score >= 30) return 'border-yellow-500/30';
-  return 'border-red-500/30';
+  if (score >= 70) return 'var(--success-muted)';
+  if (score >= 50) return 'var(--accent-muted)';
+  if (score >= 30) return 'var(--warning-muted)';
+  return 'var(--danger-muted)';
 }
 
-function signalBadge(sig: 'strong' | 'moderate' | 'weak' | 'unknown') {
+function signalBadge(sig: 'strong' | 'moderate' | 'weak' | 'unknown'): { bg: string; color: string } {
   const config = {
-    strong: 'bg-emerald-900/30 text-emerald-400',
-    moderate: 'bg-blue-900/30 text-blue-400',
-    weak: 'bg-yellow-900/30 text-yellow-400',
-    unknown: 'bg-zinc-800 text-zinc-500',
+    strong: { bg: 'var(--success-muted)', color: 'var(--success)' },
+    moderate: { bg: 'var(--accent-muted)', color: 'var(--accent)' },
+    weak: { bg: 'var(--warning-muted)', color: 'var(--warning)' },
+    unknown: { bg: 'var(--surface-2)', color: 'var(--text-muted)' },
   };
   return config[sig];
 }
@@ -694,18 +823,21 @@ function InvestorScorePanel({ score, loading, onRefresh }: { score: InvestorScor
   const MomentumIcon = momentumConf.icon;
 
   return (
-    <div className={`border rounded-xl overflow-hidden ${scoreBorderColor(score.overall)}`}>
+    <div className="rounded-xl overflow-hidden" style={{ border: `1px solid ${scoreBorderColor(score.overall)}` }}>
       {/* Header row: overall score + momentum + predicted outcome */}
-      <div className="p-5 bg-zinc-900/30">
+      <div className="p-5" style={{ background: 'var(--surface-1)' }}>
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-2">
-            <Gauge className="w-4 h-4 text-zinc-400" />
-            <h2 className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Intelligence Score</h2>
+            <Gauge className="w-4 h-4" style={{ color: 'var(--text-tertiary)' }} />
+            <h2 className="text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--text-tertiary)' }}>Intelligence Score</h2>
           </div>
           <button
             onClick={onRefresh}
             disabled={loading}
-            className="text-zinc-600 hover:text-zinc-400 transition-colors"
+            className="transition-colors"
+            style={{ color: 'var(--text-muted)' }}
+            onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-tertiary)')}
+            onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
             title="Refresh score"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
@@ -713,23 +845,26 @@ function InvestorScorePanel({ score, loading, onRefresh }: { score: InvestorScor
         </div>
 
         <div className="flex items-center gap-6">
-          {/* Overall score — large number */}
+          {/* Overall score -- large number */}
           <div className="flex items-baseline gap-1">
-            <span className={`text-5xl font-bold tabular-nums ${scoreColor(score.overall)}`}>{score.overall}</span>
-            <span className="text-lg text-zinc-600">/100</span>
+            <span className="text-5xl font-bold tabular-nums" style={{ color: scoreColor(score.overall) }}>{score.overall}</span>
+            <span className="text-lg" style={{ color: 'var(--text-muted)' }}>/100</span>
           </div>
 
           {/* Divider */}
-          <div className="w-px h-14 bg-zinc-800" />
+          <div className="w-px h-14" style={{ background: 'var(--border-default)' }} />
 
           {/* Momentum + Outcome */}
           <div className="flex-1 space-y-2">
             <div className="flex items-center gap-2">
-              <MomentumIcon className={`w-4 h-4 ${momentumConf.color}`} />
-              <span className={`text-sm font-medium ${momentumConf.color}`}>{momentumConf.label}</span>
+              <span style={{ color: momentumConf.color }}><MomentumIcon className="w-4 h-4" /></span>
+              <span className="text-sm font-medium" style={{ color: momentumConf.color }}>{momentumConf.label}</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${outcomeConf.bg} ${outcomeConf.color}`}>
+              <span
+                className="text-xs px-2 py-0.5 rounded-full font-medium"
+                style={{ background: outcomeConf.bg, color: outcomeConf.color }}
+              >
                 {outcomeConf.label}
               </span>
             </div>
@@ -738,10 +873,10 @@ function InvestorScorePanel({ score, loading, onRefresh }: { score: InvestorScor
           {/* Next best action */}
           <div className="flex-[2] min-w-0">
             <div className="flex items-start gap-2">
-              <Lightbulb className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
+              <Lightbulb className="w-3.5 h-3.5 shrink-0 mt-0.5" style={{ color: 'var(--warning)' }} />
               <div className="min-w-0">
-                <div className="text-[10px] font-medium text-zinc-500 uppercase mb-0.5">Next Action</div>
-                <p className="text-sm text-zinc-300 leading-snug">{score.nextBestAction}</p>
+                <div className="text-[10px] font-medium uppercase mb-0.5" style={{ color: 'var(--text-muted)' }}>Next Action</div>
+                <p className="text-sm leading-snug" style={{ color: 'var(--text-secondary)' }}>{score.nextBestAction}</p>
               </div>
             </div>
           </div>
@@ -749,45 +884,51 @@ function InvestorScorePanel({ score, loading, onRefresh }: { score: InvestorScor
       </div>
 
       {/* Dimension bars */}
-      <div className="border-t border-zinc-800 p-5">
+      <div className="p-5" style={{ borderTop: '1px solid var(--border-default)' }}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">
-          {score.dimensions.map((dim) => (
-            <div key={dim.name} className="space-y-1">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-medium text-zinc-300">{dim.name}</span>
-                  <span className={`text-[10px] px-1.5 py-0.5 rounded ${signalBadge(dim.signal)}`}>
-                    {dim.signal}
-                  </span>
+          {score.dimensions.map((dim) => {
+            const badge = signalBadge(dim.signal);
+            return (
+              <div key={dim.name} className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>{dim.name}</span>
+                    <span
+                      className="text-[10px] px-1.5 py-0.5 rounded"
+                      style={{ background: badge.bg, color: badge.color }}
+                    >
+                      {dim.signal}
+                    </span>
+                  </div>
+                  <span className="text-xs font-bold tabular-nums" style={{ color: scoreColor(dim.score) }}>{dim.score}</span>
                 </div>
-                <span className={`text-xs font-bold tabular-nums ${scoreColor(dim.score)}`}>{dim.score}</span>
+                <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--surface-2)' }}>
+                  <div
+                    className="h-full rounded-full transition-all duration-500"
+                    style={{ width: `${dim.score}%`, background: scoreBarColor(dim.score) }}
+                  />
+                </div>
+                <p className="text-[11px] leading-snug truncate" title={dim.evidence} style={{ color: 'var(--text-muted)' }}>
+                  {dim.evidence}
+                </p>
               </div>
-              <div className="h-1.5 bg-zinc-800 rounded-full overflow-hidden">
-                <div
-                  className={`h-full rounded-full transition-all duration-500 ${scoreBarColor(dim.score)}`}
-                  style={{ width: `${dim.score}%` }}
-                />
-              </div>
-              <p className="text-[11px] text-zinc-500 leading-snug truncate" title={dim.evidence}>
-                {dim.evidence}
-              </p>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
       {/* Risks */}
       {score.risks.length > 0 && (
-        <div className="border-t border-zinc-800 p-5">
+        <div className="p-5" style={{ borderTop: '1px solid var(--border-default)' }}>
           <div className="flex items-center gap-2 mb-3">
-            <ShieldAlert className="w-3.5 h-3.5 text-red-400" />
-            <h3 className="text-xs font-medium text-zinc-400 uppercase">Identified Risks</h3>
+            <ShieldAlert className="w-3.5 h-3.5" style={{ color: 'var(--danger)' }} />
+            <h3 className="text-xs font-medium uppercase" style={{ color: 'var(--text-tertiary)' }}>Identified Risks</h3>
           </div>
           <div className="space-y-1.5">
             {score.risks.map((risk, i) => (
               <div key={i} className="flex items-start gap-2">
-                <span className="w-1 h-1 rounded-full bg-red-500 mt-1.5 shrink-0" />
-                <p className="text-xs text-zinc-400 leading-snug">{risk}</p>
+                <span className="w-1 h-1 rounded-full mt-1.5 shrink-0" style={{ background: 'var(--danger)' }} />
+                <p className="text-xs leading-snug" style={{ color: 'var(--text-tertiary)' }}>{risk}</p>
               </div>
             ))}
           </div>
@@ -802,10 +943,10 @@ function InvestorScorePanel({ score, loading, onRefresh }: { score: InvestorScor
 // ---------------------------------------------------------------------------
 
 const TREND_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
-  accelerating: { label: 'Accelerating', color: 'text-emerald-400', bg: 'bg-emerald-900/30' },
-  steady: { label: 'Steady', color: 'text-blue-400', bg: 'bg-blue-900/30' },
-  decelerating: { label: 'Decelerating', color: 'text-amber-400', bg: 'bg-amber-900/30' },
-  insufficient_data: { label: 'Insufficient Data', color: 'text-zinc-400', bg: 'bg-zinc-800' },
+  accelerating: { label: 'Accelerating', color: 'var(--success)', bg: 'var(--success-muted)' },
+  steady: { label: 'Steady', color: 'var(--accent)', bg: 'var(--accent-muted)' },
+  decelerating: { label: 'Decelerating', color: 'var(--warning)', bg: 'var(--warning-muted)' },
+  insufficient_data: { label: 'Insufficient Data', color: 'var(--text-tertiary)', bg: 'var(--surface-2)' },
 };
 
 const CONFIDENCE_CONFIG: Record<string, { label: string; dots: number }> = {
@@ -840,11 +981,11 @@ function ConvictionTrajectoryPanel({ trajectory }: { trajectory: ConvictionTraje
     trajectory.trend === 'decelerating' ? '#fbbf24' : '#60a5fa';
 
   return (
-    <div className="border border-zinc-800 rounded-xl overflow-hidden">
-      <div className="p-5 bg-zinc-900/30">
+    <div className="rounded-xl overflow-hidden" style={{ border: '1px solid var(--border-default)' }}>
+      <div className="p-5" style={{ background: 'var(--surface-1)' }}>
         <div className="flex items-center gap-2 mb-4">
-          <Activity className="w-4 h-4 text-zinc-400" />
-          <h2 className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Conviction Trajectory</h2>
+          <Activity className="w-4 h-4" style={{ color: 'var(--text-tertiary)' }} />
+          <h2 className="text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--text-tertiary)' }}>Conviction Trajectory</h2>
         </div>
 
         <div className="flex items-center gap-6 flex-wrap">
@@ -856,7 +997,7 @@ function ConvictionTrajectoryPanel({ trajectory }: { trajectory: ConvictionTraje
                 const y = chartHeight - padding - ((v - minScore) / range) * (chartHeight - padding * 2);
                 return (
                   <line key={v} x1={padding} y1={y} x2={chartWidth - padding} y2={y}
-                    stroke="#27272a" strokeWidth="1" strokeDasharray="3,3" />
+                    stroke="var(--border-subtle)" strokeWidth="1" strokeDasharray="3,3" />
                 );
               })}
 
@@ -875,7 +1016,7 @@ function ConvictionTrajectoryPanel({ trajectory }: { trajectory: ConvictionTraje
               {/* Data points */}
               {sparklinePoints.map((p, i) => (
                 <circle key={i} cx={p.x} cy={p.y} r="3"
-                  fill={trendLineColor} stroke="#09090b" strokeWidth="1.5">
+                  fill={trendLineColor} stroke="var(--surface-0)" strokeWidth="1.5">
                   <title>{p.date}: {p.score}/100</title>
                 </circle>
               ))}
@@ -883,52 +1024,62 @@ function ConvictionTrajectoryPanel({ trajectory }: { trajectory: ConvictionTraje
           </div>
 
           {/* Divider */}
-          <div className="w-px h-12 bg-zinc-800 hidden md:block" />
+          <div className="w-px h-12 hidden md:block" style={{ background: 'var(--border-default)' }} />
 
           {/* Trend + Velocity */}
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${trend.bg} ${trend.color}`}>
+              <span
+                className="text-xs px-2 py-0.5 rounded-full font-medium"
+                style={{ background: trend.bg, color: trend.color }}
+              >
                 {trend.label}
               </span>
               <div className="flex gap-0.5" title={confidence.label}>
                 {[1, 2, 3].map(n => (
-                  <div key={n} className={`w-1.5 h-1.5 rounded-full ${n <= confidence.dots ? 'bg-zinc-400' : 'bg-zinc-800'}`} />
+                  <div
+                    key={n}
+                    className="w-1.5 h-1.5 rounded-full"
+                    style={{ background: n <= confidence.dots ? 'var(--text-tertiary)' : 'var(--surface-2)' }}
+                  />
                 ))}
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <span className={`text-sm font-medium tabular-nums ${trajectory.velocityPerWeek > 0 ? 'text-emerald-400' : trajectory.velocityPerWeek < 0 ? 'text-amber-400' : 'text-zinc-400'}`}>
+              <span
+                className="text-sm font-medium tabular-nums"
+                style={{ color: trajectory.velocityPerWeek > 0 ? 'var(--success)' : trajectory.velocityPerWeek < 0 ? 'var(--warning)' : 'var(--text-tertiary)' }}
+              >
                 {trajectory.velocityPerWeek > 0 ? '+' : ''}{trajectory.velocityPerWeek} pts/week
               </span>
             </div>
           </div>
 
           {/* Divider */}
-          <div className="w-px h-12 bg-zinc-800 hidden md:block" />
+          <div className="w-px h-12 hidden md:block" style={{ background: 'var(--border-default)' }} />
 
           {/* Prediction */}
           <div className="space-y-1.5 min-w-0">
-            <div className="text-[10px] font-medium text-zinc-500 uppercase">30-Day Prediction</div>
+            <div className="text-[10px] font-medium uppercase" style={{ color: 'var(--text-muted)' }}>30-Day Prediction</div>
             <div className="flex items-baseline gap-1">
-              <span className={`text-lg font-bold tabular-nums ${scoreColor(trajectory.predictedScoreIn30Days)}`}>
+              <span className="text-lg font-bold tabular-nums" style={{ color: scoreColor(trajectory.predictedScoreIn30Days) }}>
                 {trajectory.predictedScoreIn30Days}
               </span>
-              <span className="text-xs text-zinc-600">/100</span>
+              <span className="text-xs" style={{ color: 'var(--text-muted)' }}>/100</span>
             </div>
             {trajectory.predictedTermSheetDate && (
               <div className="text-xs">
                 {trajectory.predictedTermSheetDate === 'now' ? (
-                  <span className="text-emerald-400">Term sheet range reached</span>
+                  <span style={{ color: 'var(--success)' }}>Term sheet range reached</span>
                 ) : (
-                  <span className="text-blue-400">
+                  <span style={{ color: 'var(--accent)' }}>
                     Term sheet by ~{new Date(trajectory.predictedTermSheetDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                   </span>
                 )}
               </div>
             )}
             {!trajectory.predictedTermSheetDate && trajectory.trend !== 'insufficient_data' && (
-              <div className="text-xs text-zinc-500">
+              <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
                 {trajectory.velocityPerWeek <= 0 ? 'At risk of stalling' : 'Tracking -- more data needed'}
               </div>
             )}

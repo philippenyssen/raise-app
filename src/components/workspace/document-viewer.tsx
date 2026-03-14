@@ -18,10 +18,10 @@ interface DocumentViewerProps {
   dirty: boolean;
 }
 
-const STATUS_COLORS: Record<string, string> = {
-  draft: 'bg-yellow-900/30 text-yellow-400 border-yellow-800',
-  review: 'bg-blue-900/30 text-blue-400 border-blue-800',
-  final: 'bg-green-900/30 text-green-400 border-green-800',
+const STATUS_STYLES: Record<string, { bg: string; color: string; border: string }> = {
+  draft: { bg: 'var(--warning-muted)', color: '#fbbf24', border: 'rgba(245, 158, 11, 0.2)' },
+  review: { bg: 'var(--accent-muted)', color: '#60a5fa', border: 'rgba(59, 130, 246, 0.2)' },
+  final: { bg: 'var(--success-muted)', color: '#4ade80', border: 'rgba(34, 197, 94, 0.2)' },
 };
 
 const TYPE_LABELS: Record<string, string> = {
@@ -38,24 +38,21 @@ const TYPE_LABELS: Record<string, string> = {
 export function DocumentViewer({ document, onContentChange, onSave, saving, dirty }: DocumentViewerProps) {
   const [mode, setMode] = useState<'preview' | 'edit'>('preview');
 
-  // Safe inline text rendering (no dangerouslySetInnerHTML)
   const renderInline = useCallback((text: string, key: string): React.ReactNode[] => {
     const parts: React.ReactNode[] = [];
     let remaining = text;
     let idx = 0;
 
     while (remaining.length > 0) {
-      // Bold
       const boldMatch = remaining.match(/\*\*(.*?)\*\*/);
       if (boldMatch && boldMatch.index !== undefined) {
         if (boldMatch.index > 0) {
           parts.push(<span key={`${key}-${idx++}`}>{remaining.slice(0, boldMatch.index)}</span>);
         }
-        parts.push(<strong key={`${key}-${idx++}`} className="text-zinc-100 font-semibold">{boldMatch[1]}</strong>);
+        parts.push(<strong key={`${key}-${idx++}`} style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{boldMatch[1]}</strong>);
         remaining = remaining.slice(boldMatch.index + boldMatch[0].length);
         continue;
       }
-      // Italic
       const italicMatch = remaining.match(/\*(.*?)\*/);
       if (italicMatch && italicMatch.index !== undefined) {
         if (italicMatch.index > 0) {
@@ -65,7 +62,6 @@ export function DocumentViewer({ document, onContentChange, onSave, saving, dirt
         remaining = remaining.slice(italicMatch.index + italicMatch[0].length);
         continue;
       }
-      // No more matches
       parts.push(<span key={`${key}-${idx++}`}>{remaining}</span>);
       break;
     }
@@ -77,85 +73,105 @@ export function DocumentViewer({ document, onContentChange, onSave, saving, dirt
       .split('\n')
       .map((line, i) => {
         const k = `line-${i}`;
-        // Headers
-        if (line.startsWith('# ')) return <h1 key={k} className="text-2xl font-bold mt-6 mb-3">{line.slice(2)}</h1>;
-        if (line.startsWith('## ')) return <h2 key={k} className="text-xl font-semibold mt-5 mb-2 text-zinc-200">{line.slice(3)}</h2>;
-        if (line.startsWith('### ')) return <h3 key={k} className="text-lg font-medium mt-4 mb-1.5 text-zinc-300">{line.slice(4)}</h3>;
-        if (line.startsWith('#### ')) return <h4 key={k} className="text-base font-medium mt-3 mb-1 text-zinc-400">{line.slice(5)}</h4>;
-        // List items
-        if (line.startsWith('- ')) return <li key={k} className="ml-4 text-zinc-300 leading-relaxed">{renderInline(line.slice(2), k)}</li>;
-        if (/^\d+\. /.test(line)) return <li key={k} className="ml-4 text-zinc-300 leading-relaxed list-decimal">{renderInline(line.replace(/^\d+\. /, ''), k)}</li>;
-        // Table rows
+        if (line.startsWith('# ')) return <h1 key={k} style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 700, marginTop: 'var(--space-6)', marginBottom: 'var(--space-3)', color: 'var(--text-primary)' }}>{line.slice(2)}</h1>;
+        if (line.startsWith('## ')) return <h2 key={k} style={{ fontSize: 'var(--font-size-xl)', fontWeight: 600, marginTop: 'var(--space-5)', marginBottom: 'var(--space-2)', color: 'var(--text-primary)' }}>{line.slice(3)}</h2>;
+        if (line.startsWith('### ')) return <h3 key={k} style={{ fontSize: 'var(--font-size-lg)', fontWeight: 500, marginTop: 'var(--space-4)', marginBottom: 'var(--space-1)', color: 'var(--text-secondary)' }}>{line.slice(4)}</h3>;
+        if (line.startsWith('#### ')) return <h4 key={k} style={{ fontSize: 'var(--font-size-base)', fontWeight: 500, marginTop: 'var(--space-3)', marginBottom: 'var(--space-1)', color: 'var(--text-tertiary)' }}>{line.slice(5)}</h4>;
+        if (line.startsWith('- ')) return <li key={k} style={{ marginLeft: 'var(--space-4)', color: 'var(--text-secondary)', lineHeight: 1.7 }}>{renderInline(line.slice(2), k)}</li>;
+        if (/^\d+\. /.test(line)) return <li key={k} style={{ marginLeft: 'var(--space-4)', color: 'var(--text-secondary)', lineHeight: 1.7, listStyleType: 'decimal' }}>{renderInline(line.replace(/^\d+\. /, ''), k)}</li>;
         if (line.startsWith('|')) {
           const cells = line.split('|').filter(c => c.trim());
-          if (cells.every(c => /^[\s-:]+$/.test(c))) return <hr key={k} className="border-zinc-800 my-0" />;
+          if (cells.every(c => /^[\s-:]+$/.test(c))) return <hr key={k} style={{ border: 'none', borderBottom: '1px solid var(--border-subtle)', margin: 0 }} />;
           return (
-            <div key={k} className="flex border-b border-zinc-800/50">
+            <div key={k} className="flex" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
               {cells.map((cell, j) => (
-                <div key={j} className="flex-1 px-3 py-1.5 text-sm text-zinc-300">{renderInline(cell.trim(), `${k}-${j}`)}</div>
+                <div key={j} className="flex-1" style={{ padding: 'var(--space-1) var(--space-3)', fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>{renderInline(cell.trim(), `${k}-${j}`)}</div>
               ))}
             </div>
           );
         }
-        // Blockquote
-        if (line.startsWith('> ')) return <blockquote key={k} className="border-l-2 border-blue-600 pl-4 text-zinc-400 italic my-2">{line.slice(2)}</blockquote>;
-        // Horizontal rule
-        if (line.match(/^---+$/)) return <hr key={k} className="border-zinc-800 my-4" />;
-        // Empty line
-        if (line.trim() === '') return <div key={k} className="h-3" />;
-        // Regular paragraph
-        return <p key={k} className="text-zinc-300 leading-relaxed">{renderInline(line, k)}</p>;
+        if (line.startsWith('> ')) return <blockquote key={k} style={{ borderLeft: '2px solid var(--accent)', paddingLeft: 'var(--space-4)', color: 'var(--text-tertiary)', fontStyle: 'italic', margin: 'var(--space-2) 0' }}>{line.slice(2)}</blockquote>;
+        if (line.match(/^---+$/)) return <hr key={k} style={{ border: 'none', borderBottom: '1px solid var(--border-subtle)', margin: 'var(--space-4) 0' }} />;
+        if (line.trim() === '') return <div key={k} style={{ height: 'var(--space-3)' }} />;
+        return <p key={k} style={{ color: 'var(--text-secondary)', lineHeight: 1.7 }}>{renderInline(line, k)}</p>;
       });
   }, [renderInline]);
 
   if (!document) {
     return (
-      <div className="h-full flex items-center justify-center text-zinc-600">
-        <div className="text-center space-y-3">
-          <FileText className="w-12 h-12 mx-auto" />
-          <p className="text-sm">Select a document to start editing</p>
+      <div className="h-full flex items-center justify-center" style={{ color: 'var(--text-muted)' }}>
+        <div className="text-center" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--space-3)' }}>
+          <FileText style={{ width: '48px', height: '48px' }} />
+          <p style={{ fontSize: 'var(--font-size-sm)' }}>Select a deliverable from the sidebar, or generate one</p>
         </div>
       </div>
     );
   }
 
+  const statusStyle = STATUS_STYLES[document.status] || { bg: 'var(--surface-2)', color: 'var(--text-muted)', border: 'var(--border-default)' };
+
   return (
-    <div className="h-full flex flex-col bg-zinc-950">
+    <div className="h-full flex flex-col" style={{ background: 'var(--surface-0)' }}>
       {/* Toolbar */}
-      <div className="shrink-0 border-b border-zinc-800 px-4 py-2 flex items-center justify-between bg-zinc-950/80 backdrop-blur-sm">
-        <div className="flex items-center gap-3 min-w-0">
-          <span className={`text-xs px-2 py-0.5 rounded border ${STATUS_COLORS[document.status] || 'bg-zinc-800 text-zinc-500 border-zinc-700'}`}>
+      <div
+        className="shrink-0 flex items-center justify-between"
+        style={{
+          borderBottom: '1px solid var(--border-subtle)',
+          padding: 'var(--space-2) var(--space-4)',
+          background: 'var(--surface-0)',
+          backdropFilter: 'blur(8px)',
+        }}
+      >
+        <div className="flex items-center min-w-0" style={{ gap: 'var(--space-3)' }}>
+          <span
+            style={{
+              fontSize: 'var(--font-size-xs)',
+              padding: '2px 8px',
+              borderRadius: 'var(--radius-sm)',
+              border: `1px solid ${statusStyle.border}`,
+              background: statusStyle.bg,
+              color: statusStyle.color,
+            }}
+          >
             {document.status}
           </span>
-          <h2 className="font-medium truncate">{document.title}</h2>
-          <span className="text-xs text-zinc-600">{TYPE_LABELS[document.type] || document.type}</span>
+          <h2 className="truncate" style={{ fontWeight: 500, color: 'var(--text-primary)' }}>{document.title}</h2>
+          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{TYPE_LABELS[document.type] || document.type}</span>
         </div>
-        <div className="flex items-center gap-2 shrink-0">
-          <span className="text-xs text-zinc-600 flex items-center gap-1">
-            <Clock className="w-3 h-3" />
+        <div className="flex items-center shrink-0" style={{ gap: 'var(--space-2)' }}>
+          <span className="flex items-center" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', gap: '4px' }}>
+            <Clock style={{ width: '12px', height: '12px' }} />
             {new Date(document.updated_at).toLocaleString()}
           </span>
-          <span className="text-xs text-zinc-600">
+          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
             {document.content.length.toLocaleString()} chars
           </span>
-          <div className="w-px h-4 bg-zinc-800" />
+          <div style={{ width: '1px', height: '16px', background: 'var(--border-subtle)' }} />
           <button
             onClick={() => setMode(mode === 'preview' ? 'edit' : 'preview')}
-            className={`p-1.5 rounded transition-colors ${
-              mode === 'edit' ? 'bg-blue-600/20 text-blue-400' : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800'
-            }`}
+            className="rounded transition-colors"
+            style={{
+              padding: '6px',
+              background: mode === 'edit' ? 'var(--accent-muted)' : 'transparent',
+              color: mode === 'edit' ? 'var(--accent)' : 'var(--text-muted)',
+            }}
+            onMouseEnter={e => { if (mode !== 'edit') { (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; } }}
+            onMouseLeave={e => { if (mode !== 'edit') { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; (e.currentTarget as HTMLElement).style.background = 'transparent'; } }}
             title={mode === 'preview' ? 'Edit' : 'Preview'}
           >
-            {mode === 'preview' ? <Edit3 className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            {mode === 'preview' ? <Edit3 style={{ width: '16px', height: '16px' }} /> : <Eye style={{ width: '16px', height: '16px' }} />}
           </button>
           <button
             onClick={onSave}
             disabled={!dirty || saving}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-              dirty ? 'bg-blue-600 hover:bg-blue-500 text-white' : 'bg-zinc-800 text-zinc-600'
-            }`}
+            className="btn btn-sm"
+            style={{
+              background: dirty ? 'var(--accent)' : 'var(--surface-2)',
+              color: dirty ? 'white' : 'var(--text-muted)',
+              border: dirty ? 'none' : '1px solid var(--border-default)',
+            }}
           >
-            <Save className="w-3.5 h-3.5" />
+            <Save style={{ width: '14px', height: '14px' }} />
             {saving ? 'Saving...' : dirty ? 'Save' : 'Saved'}
           </button>
           <button
@@ -168,10 +184,13 @@ export function DocumentViewer({ document, onContentChange, onSave, saving, dirt
               a.click();
               URL.revokeObjectURL(url);
             }}
-            className="p-1.5 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 rounded transition-colors"
+            className="rounded transition-colors"
+            style={{ padding: '6px', color: 'var(--text-muted)' }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
             title="Export as Markdown"
           >
-            <Download className="w-4 h-4" />
+            <Download style={{ width: '16px', height: '16px' }} />
           </button>
         </div>
       </div>
@@ -182,11 +201,19 @@ export function DocumentViewer({ document, onContentChange, onSave, saving, dirt
           <textarea
             value={document.content}
             onChange={e => onContentChange(e.target.value)}
-            className="w-full h-full bg-transparent px-8 py-6 text-sm text-zinc-200 font-mono leading-relaxed focus:outline-none resize-none"
+            className="w-full h-full resize-none focus:outline-none"
+            style={{
+              background: 'transparent',
+              padding: 'var(--space-6) var(--space-8)',
+              fontSize: 'var(--font-size-sm)',
+              color: 'var(--text-primary)',
+              fontFamily: 'monospace',
+              lineHeight: 1.7,
+            }}
             spellCheck={false}
           />
         ) : (
-          <div className="px-8 py-6 max-w-4xl">
+          <div style={{ padding: 'var(--space-6) var(--space-8)', maxWidth: '56rem' }}>
             {renderMarkdown(document.content)}
           </div>
         )}

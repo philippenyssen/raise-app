@@ -14,11 +14,18 @@ const STATUS_LABELS: Record<InvestorStatus, string> = {
   passed: 'Passed', dropped: 'Dropped',
 };
 
-const STATUS_COLORS: Record<string, string> = {
-  identified: 'bg-zinc-700', contacted: 'bg-zinc-600', nda_signed: 'bg-blue-900',
-  meeting_scheduled: 'bg-blue-800', met: 'bg-blue-700', engaged: 'bg-purple-700',
-  in_dd: 'bg-orange-700', term_sheet: 'bg-green-700', closed: 'bg-emerald-700',
-  passed: 'bg-red-800', dropped: 'bg-zinc-800',
+const STATUS_STYLES: Record<string, { background: string; color: string }> = {
+  identified: { background: 'var(--surface-3)', color: 'var(--text-secondary)' },
+  contacted: { background: 'var(--border-strong)', color: 'var(--text-primary)' },
+  nda_signed: { background: 'var(--accent-muted)', color: '#60a5fa' },
+  meeting_scheduled: { background: 'rgba(59, 130, 246, 0.25)', color: '#60a5fa' },
+  met: { background: 'rgba(59, 130, 246, 0.35)', color: '#93bbfd' },
+  engaged: { background: 'rgba(168, 85, 247, 0.25)', color: '#c084fc' },
+  in_dd: { background: 'var(--warning-muted)', color: '#fbbf24' },
+  term_sheet: { background: 'var(--success-muted)', color: '#4ade80' },
+  closed: { background: 'rgba(16, 185, 129, 0.25)', color: '#34d399' },
+  passed: { background: 'var(--danger-muted)', color: '#f87171' },
+  dropped: { background: 'var(--surface-2)', color: 'var(--text-muted)' },
 };
 
 const TYPE_LABELS: Record<InvestorType, string> = {
@@ -47,6 +54,8 @@ export default function InvestorsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null);
+  const [hoveredRow, setHoveredRow] = useState<string | null>(null);
+  const [hoveredBtn, setHoveredBtn] = useState<string | null>(null);
   const [form, setForm] = useState({
     name: '', type: 'vc' as InvestorType, tier: 2 as InvestorTier, partner: '',
     fund_size: '', check_size_range: '', sector_thesis: '', warm_path: '',
@@ -63,7 +72,7 @@ export default function InvestorsPage() {
       if (!res.ok) throw new Error(`Failed (${res.status})`);
       setInvestors(await res.json());
     } catch {
-      toast('Failed to load investors', 'error');
+      toast('Couldn\'t load investors — check your connection and refresh', 'error');
     } finally {
       setLoading(false);
     }
@@ -168,10 +177,10 @@ export default function InvestorsPage() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="h-8 w-48 bg-zinc-800 rounded animate-pulse" />
+        <div className="skeleton" style={{ height: '2rem', width: '12rem' }} />
         <div className="space-y-2">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="h-12 bg-zinc-800/50 rounded animate-pulse" />
+            <div key={i} className="skeleton" style={{ height: '3rem' }} />
           ))}
         </div>
       </div>
@@ -182,22 +191,22 @@ export default function InvestorsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Investor CRM</h1>
-          <p className="text-zinc-500 text-sm mt-1">{investors.length} investors tracked</p>
+          <h1 className="page-title">Investor CRM</h1>
+          <p className="page-subtitle">{investors.length} investors tracked</p>
         </div>
         <div className="flex gap-2">
-          <Link href="/pipeline" className="px-3 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm transition-colors flex items-center gap-2">
+          <Link href="/pipeline" className="btn btn-secondary btn-md">
             <Columns3 className="w-3.5 h-3.5" /> Pipeline
           </Link>
-          <Link href="/compare" className="px-3 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm transition-colors flex items-center gap-2">
+          <Link href="/compare" className="btn btn-secondary btn-md">
             <GitCompare className="w-3.5 h-3.5" /> Compare
           </Link>
-          <a href="/api/export?type=investors" download className="px-3 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm transition-colors flex items-center gap-2">
+          <a href="/api/export?type=investors" download className="btn btn-secondary btn-md">
             <Download className="w-3.5 h-3.5" /> CSV
           </a>
           <button
             onClick={() => { setShowForm(!showForm); setEditId(null); }}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm font-medium transition-colors"
+            className="btn btn-primary btn-md"
           >
             + Add Investor
           </button>
@@ -207,52 +216,89 @@ export default function InvestorsPage() {
       {/* Search + Filters */}
       <div className="flex gap-2 flex-wrap">
         <div className="relative flex-1 min-w-48">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--text-muted)' }} />
           <input
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            placeholder="Search investors, partners, notes..."
-            className="w-full bg-zinc-900 border border-zinc-800 rounded-lg pl-9 pr-3 py-1.5 text-sm focus:outline-none focus:border-blue-600 text-zinc-200"
+            placeholder="Find by name, firm, or deal focus..."
+            className="input"
+            style={{ paddingLeft: '2.25rem' }}
           />
         </div>
-        <select value={filter.tier ?? ''} onChange={e => setFilter(f => ({ ...f, tier: e.target.value ? Number(e.target.value) : undefined }))} className="bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1.5 text-sm text-zinc-300">
+        <select
+          value={filter.tier ?? ''}
+          onChange={e => setFilter(f => ({ ...f, tier: e.target.value ? Number(e.target.value) : undefined }))}
+          className="input"
+          style={{ width: 'auto' }}
+        >
           <option value="">All Tiers</option>
           <option value="1">Tier 1</option><option value="2">Tier 2</option>
           <option value="3">Tier 3</option><option value="4">Tier 4</option>
         </select>
-        <select value={filter.status ?? ''} onChange={e => setFilter(f => ({ ...f, status: e.target.value || undefined }))} className="bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1.5 text-sm text-zinc-300">
+        <select
+          value={filter.status ?? ''}
+          onChange={e => setFilter(f => ({ ...f, status: e.target.value || undefined }))}
+          className="input"
+          style={{ width: 'auto' }}
+        >
           <option value="">All Statuses</option>
           {Object.entries(STATUS_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
         </select>
-        <select value={filter.type ?? ''} onChange={e => setFilter(f => ({ ...f, type: e.target.value || undefined }))} className="bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1.5 text-sm text-zinc-300">
+        <select
+          value={filter.type ?? ''}
+          onChange={e => setFilter(f => ({ ...f, type: e.target.value || undefined }))}
+          className="input"
+          style={{ width: 'auto' }}
+        >
           <option value="">All Types</option>
           {Object.entries(TYPE_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
         </select>
         {(filter.tier || filter.status || filter.type || searchQuery) && (
-          <button onClick={() => { setFilter({}); setSearchQuery(''); }} className="text-xs text-zinc-500 hover:text-zinc-300 px-2">Clear</button>
+          <button
+            onClick={() => { setFilter({}); setSearchQuery(''); }}
+            className="btn btn-ghost btn-sm"
+          >
+            Clear
+          </button>
         )}
       </div>
 
       {/* Bulk Actions */}
       {selected.size > 0 && (
-        <div className="flex items-center gap-3 bg-blue-900/20 border border-blue-800/30 rounded-lg px-4 py-2">
-          <span className="text-sm text-blue-400 font-medium">{selected.size} selected</span>
+        <div
+          className="flex items-center gap-3"
+          style={{
+            background: 'var(--accent-muted)',
+            border: '1px solid rgba(59, 130, 246, 0.2)',
+            borderRadius: 'var(--radius-lg)',
+            padding: 'var(--space-2) var(--space-4)',
+          }}
+        >
+          <span style={{ fontSize: 'var(--font-size-sm)', color: '#60a5fa', fontWeight: 500 }}>
+            {selected.size} selected
+          </span>
           <select
             defaultValue=""
             onChange={e => { if (e.target.value) bulkUpdateStatus(e.target.value); e.target.value = ''; }}
-            className="bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-xs text-zinc-300"
+            className="input"
+            style={{ width: 'auto', fontSize: 'var(--font-size-xs)', padding: '0.25rem 0.5rem' }}
           >
             <option value="" disabled>Bulk change status...</option>
             {Object.entries(STATUS_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
           </select>
-          <button onClick={() => setSelected(new Set())} className="text-xs text-zinc-500 hover:text-zinc-300">Deselect all</button>
+          <button onClick={() => setSelected(new Set())} className="btn btn-ghost btn-sm">
+            Deselect all
+          </button>
         </div>
       )}
 
       {/* Add/Edit Form */}
       {showForm && (
-        <form onSubmit={handleSubmit} className="border border-zinc-800 rounded-xl p-6 space-y-4">
-          <h3 className="text-sm font-medium text-zinc-400">{editId ? 'EDIT' : 'ADD'} INVESTOR</h3>
+        <form
+          onSubmit={handleSubmit}
+          className="card-elevated space-y-4"
+        >
+          <h3 className="section-title">{editId ? 'EDIT' : 'ADD'} INVESTOR</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Input label="Name" value={form.name} onChange={v => setForm(f => ({ ...f, name: v }))} required />
             <Select label="Type" value={form.type} onChange={v => setForm(f => ({ ...f, type: v as InvestorType }))} options={Object.entries(TYPE_LABELS)} />
@@ -267,10 +313,10 @@ export default function InvestorsPage() {
           <Input label="Sector Thesis" value={form.sector_thesis} onChange={v => setForm(f => ({ ...f, sector_thesis: v }))} />
           <Input label="Notes" value={form.notes} onChange={v => setForm(f => ({ ...f, notes: v }))} />
           <div className="flex gap-2">
-            <button type="submit" className="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm font-medium">
+            <button type="submit" className="btn btn-primary btn-md">
               {editId ? 'Update' : 'Add'}
             </button>
-            <button type="button" onClick={() => { setShowForm(false); setEditId(null); }} className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm">
+            <button type="button" onClick={() => { setShowForm(false); setEditId(null); }} className="btn btn-secondary btn-md">
               Cancel
             </button>
           </div>
@@ -278,94 +324,176 @@ export default function InvestorsPage() {
       )}
 
       {/* Investor Table */}
-      <div className="border border-zinc-800 rounded-xl overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-zinc-900/50 border-b border-zinc-800">
+      <div
+        style={{
+          border: '1px solid var(--border-default)',
+          borderRadius: 'var(--radius-lg)',
+          overflow: 'hidden',
+        }}
+      >
+        <table style={{ width: '100%', fontSize: 'var(--font-size-sm)' }}>
+          <thead className="table-header">
             <tr>
-              <th className="w-10 px-4 py-3">
+              <th style={{ width: '2.5rem', padding: 'var(--space-3) var(--space-4)' }}>
                 <input type="checkbox" checked={selected.size === filtered.length && filtered.length > 0} onChange={toggleSelectAll}
-                  className="rounded border-zinc-700 bg-zinc-800 text-blue-600 focus:ring-blue-600 focus:ring-offset-0" />
+                  style={{ accentColor: 'var(--accent)' }} />
               </th>
-              <th className="text-left px-4 py-3 text-xs text-zinc-500 font-medium">Investor</th>
-              <th className="w-8 px-2 py-3 text-xs text-zinc-500 font-medium" title="Data completeness"></th>
-              <th className="text-left px-4 py-3 text-xs text-zinc-500 font-medium">Type</th>
-              <th className="text-left px-4 py-3 text-xs text-zinc-500 font-medium">Tier</th>
-              <th className="text-left px-4 py-3 text-xs text-zinc-500 font-medium">Partner</th>
-              <th className="text-left px-4 py-3 text-xs text-zinc-500 font-medium">Status</th>
-              <th className="text-left px-4 py-3 text-xs text-zinc-500 font-medium">Check Size</th>
-              <th className="text-left px-4 py-3 text-xs text-zinc-500 font-medium">Enthusiasm</th>
-              <th className="text-left px-4 py-3 text-xs text-zinc-500 font-medium">Actions</th>
+              <th>Investor</th>
+              <th style={{ width: '2rem', padding: 'var(--space-3) var(--space-2)' }} title="Data completeness"></th>
+              <th>Type</th>
+              <th>Tier</th>
+              <th>Partner</th>
+              <th>Status</th>
+              <th>Check Size</th>
+              <th>Enthusiasm</th>
+              <th>Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-zinc-800/50">
-            {filtered.map(inv => (
-              <tr key={inv.id} className={`hover:bg-zinc-900/30 transition-colors ${selected.has(inv.id) ? 'bg-blue-900/10' : ''}`}>
-                <td className="w-10 px-4 py-3">
-                  <input type="checkbox" checked={selected.has(inv.id)} onChange={() => toggleSelect(inv.id)}
-                    className="rounded border-zinc-700 bg-zinc-800 text-blue-600 focus:ring-blue-600 focus:ring-offset-0" />
-                </td>
-                <td className="px-4 py-3 font-medium">
-                  <Link href={`/investors/${inv.id}`} className="hover:text-blue-400 transition-colors">
-                    {inv.name}
-                  </Link>
-                </td>
-                <td className="w-8 px-2 py-3">
-                  {(() => {
-                    const pct = computeCompleteness(inv);
-                    const color = pct >= 80 ? 'bg-emerald-500' : pct >= 50 ? 'bg-yellow-500' : 'bg-red-500';
-                    return (
-                      <div className={`w-2.5 h-2.5 rounded-full ${color}`}
-                        title={`Data completeness: ${pct}%`} />
-                    );
-                  })()}
-                </td>
-                <td className="px-4 py-3 text-zinc-400">{TYPE_LABELS[inv.type as InvestorType] ?? inv.type}</td>
-                <td className="px-4 py-3">
-                  <span className={`px-2 py-0.5 rounded text-xs font-medium ${
-                    inv.tier === 1 ? 'bg-blue-600/20 text-blue-400' :
-                    inv.tier === 2 ? 'bg-purple-600/20 text-purple-400' :
-                    inv.tier === 3 ? 'bg-zinc-600/20 text-zinc-400' : 'bg-zinc-800 text-zinc-500'
-                  }`}>T{inv.tier}</span>
-                </td>
-                <td className="px-4 py-3 text-zinc-400">{inv.partner || '---'}</td>
-                <td className="px-4 py-3">
-                  <select
-                    value={inv.status}
-                    onChange={e => updateStatus(inv.id, e.target.value)}
-                    className={`${STATUS_COLORS[inv.status] || 'bg-zinc-700'} rounded px-2 py-1 text-xs font-medium border-0 cursor-pointer`}
-                  >
-                    {Object.entries(STATUS_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
-                  </select>
-                </td>
-                <td className="px-4 py-3 text-zinc-400 text-xs">{inv.check_size_range || '---'}</td>
-                <td className="px-4 py-3">
-                  {inv.enthusiasm > 0 ? (
-                    <div className="flex gap-0.5">
-                      {[1,2,3,4,5].map(n => (
-                        <div key={n} className={`w-2 h-2 rounded-full ${n <= inv.enthusiasm ? 'bg-blue-500' : 'bg-zinc-800'}`} />
-                      ))}
+          <tbody>
+            {filtered.map(inv => {
+              const isHovered = hoveredRow === inv.id;
+              const isSelected = selected.has(inv.id);
+              return (
+                <tr
+                  key={inv.id}
+                  className="table-row"
+                  style={{
+                    background: isSelected
+                      ? 'var(--accent-muted)'
+                      : isHovered
+                        ? 'var(--surface-1)'
+                        : 'transparent',
+                  }}
+                  onMouseEnter={() => setHoveredRow(inv.id)}
+                  onMouseLeave={() => setHoveredRow(null)}
+                >
+                  <td style={{ width: '2.5rem', padding: 'var(--space-3) var(--space-4)' }}>
+                    <input type="checkbox" checked={isSelected} onChange={() => toggleSelect(inv.id)}
+                      style={{ accentColor: 'var(--accent)' }} />
+                  </td>
+                  <td style={{ padding: 'var(--space-3) var(--space-4)', fontWeight: 500, color: 'var(--text-primary)' }}>
+                    <Link
+                      href={`/investors/${inv.id}`}
+                      style={{ color: 'inherit', textDecoration: 'none', transition: 'color 150ms' }}
+                      onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
+                      onMouseLeave={e => (e.currentTarget.style.color = 'inherit')}
+                    >
+                      {inv.name}
+                    </Link>
+                  </td>
+                  <td style={{ width: '2rem', padding: 'var(--space-3) var(--space-2)' }}>
+                    {(() => {
+                      const pct = computeCompleteness(inv);
+                      const dotColor = pct >= 80 ? 'var(--success)' : pct >= 50 ? 'var(--warning)' : 'var(--danger)';
+                      return (
+                        <div
+                          className="status-dot"
+                          style={{ background: dotColor, width: '10px', height: '10px' }}
+                          title={`Data completeness: ${pct}%`}
+                        />
+                      );
+                    })()}
+                  </td>
+                  <td style={{ padding: 'var(--space-3) var(--space-4)', color: 'var(--text-secondary)' }}>
+                    {TYPE_LABELS[inv.type as InvestorType] ?? inv.type}
+                  </td>
+                  <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
+                    <span className={`tier-badge ${
+                      inv.tier === 1 ? 'tier-1' :
+                      inv.tier === 2 ? 'tier-2' :
+                      inv.tier === 3 ? 'tier-3' : ''
+                    }`} style={inv.tier === 4 ? {
+                      background: 'var(--surface-2)',
+                      color: 'var(--text-muted)',
+                      border: '1px solid var(--border-subtle)',
+                    } : undefined}>
+                      {inv.tier}
+                    </span>
+                  </td>
+                  <td style={{ padding: 'var(--space-3) var(--space-4)', color: 'var(--text-secondary)' }}>
+                    {inv.partner || '---'}
+                  </td>
+                  <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
+                    <select
+                      value={inv.status}
+                      onChange={e => updateStatus(inv.id, e.target.value)}
+                      style={{
+                        background: (STATUS_STYLES[inv.status] || STATUS_STYLES.identified).background,
+                        color: (STATUS_STYLES[inv.status] || STATUS_STYLES.identified).color,
+                        borderRadius: 'var(--radius-sm)',
+                        padding: '0.25rem 0.5rem',
+                        fontSize: 'var(--font-size-xs)',
+                        fontWeight: 500,
+                        border: 'none',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      {Object.entries(STATUS_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+                    </select>
+                  </td>
+                  <td style={{ padding: 'var(--space-3) var(--space-4)', color: 'var(--text-secondary)', fontSize: 'var(--font-size-xs)' }}>
+                    {inv.check_size_range || '---'}
+                  </td>
+                  <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
+                    {inv.enthusiasm > 0 ? (
+                      <div className="enthusiasm-dots">
+                        {[1,2,3,4,5].map(n => (
+                          <div key={n} className={`enthusiasm-dot ${n <= inv.enthusiasm ? 'enthusiasm-dot-filled' : 'enthusiasm-dot-empty'}`} />
+                        ))}
+                      </div>
+                    ) : <span style={{ color: 'var(--text-muted)' }}>---</span>}
+                  </td>
+                  <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
+                    <div className="flex gap-1">
+                      <button
+                        onClick={() => startEdit(inv)}
+                        className="btn btn-ghost btn-sm"
+                        style={{
+                          fontSize: 'var(--font-size-xs)',
+                          padding: '0.25rem 0.5rem',
+                          color: hoveredBtn === `edit-${inv.id}` ? 'var(--text-primary)' : 'var(--text-muted)',
+                        }}
+                        onMouseEnter={() => setHoveredBtn(`edit-${inv.id}`)}
+                        onMouseLeave={() => setHoveredBtn(null)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => setDeleteTarget({ id: inv.id, name: inv.name })}
+                        className="btn btn-ghost btn-sm"
+                        style={{
+                          fontSize: 'var(--font-size-xs)',
+                          padding: '0.25rem 0.5rem',
+                          color: hoveredBtn === `del-${inv.id}` ? 'var(--danger)' : 'var(--text-muted)',
+                        }}
+                        onMouseEnter={() => setHoveredBtn(`del-${inv.id}`)}
+                        onMouseLeave={() => setHoveredBtn(null)}
+                      >
+                        Del
+                      </button>
                     </div>
-                  ) : <span className="text-zinc-600">---</span>}
-                </td>
-                <td className="px-4 py-3">
-                  <div className="flex gap-1">
-                    <button onClick={() => startEdit(inv)} className="text-xs text-zinc-500 hover:text-zinc-300 px-2 py-1 rounded hover:bg-zinc-800">Edit</button>
-                    <button onClick={() => setDeleteTarget({ id: inv.id, name: inv.name })} className="text-xs text-zinc-500 hover:text-red-400 px-2 py-1 rounded hover:bg-zinc-800">Del</button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
         {filtered.length === 0 && (
-          <div className="p-8 text-center text-zinc-600 text-sm">No investors match filters</div>
+          <div style={{
+            padding: 'var(--space-8)',
+            textAlign: 'center',
+            color: 'var(--text-muted)',
+            fontSize: 'var(--font-size-sm)',
+          }}>
+            No investors match your filters — try adjusting or clearing them
+          </div>
         )}
       </div>
 
       <ConfirmModal
         open={!!deleteTarget}
         title="Delete investor"
-        message={`Delete "${deleteTarget?.name}" and all their meetings? This cannot be undone.`}
+        message={`Permanently delete ${deleteTarget?.name} and all associated meetings, follow-ups, and scoring data? This cannot be undone.`}
         confirmLabel="Delete"
         variant="danger"
         onConfirm={handleDelete}
@@ -378,10 +506,10 @@ export default function InvestorsPage() {
 function Input({ label, value, onChange, required }: { label: string; value: string; onChange: (v: string) => void; required?: boolean }) {
   return (
     <div>
-      <label className="text-xs text-zinc-500 block mb-1">{label}</label>
+      <label className="label" style={{ display: 'block' }}>{label}</label>
       <input
         value={value} onChange={e => onChange(e.target.value)} required={required}
-        className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-600 text-zinc-200"
+        className="input"
       />
     </div>
   );
@@ -390,8 +518,8 @@ function Input({ label, value, onChange, required }: { label: string; value: str
 function Select({ label, value, onChange, options }: { label: string; value: string; onChange: (v: string) => void; options: string[][] }) {
   return (
     <div>
-      <label className="text-xs text-zinc-500 block mb-1">{label}</label>
-      <select value={value} onChange={e => onChange(e.target.value)} className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-600 text-zinc-200">
+      <label className="label" style={{ display: 'block' }}>{label}</label>
+      <select value={value} onChange={e => onChange(e.target.value)} className="input">
         {options.map(([k, v]) => <option key={k} value={k}>{v}</option>)}
       </select>
     </div>

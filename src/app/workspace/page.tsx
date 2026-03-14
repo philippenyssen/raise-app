@@ -43,6 +43,13 @@ export default function WorkspacePage() {
   const [contentHistory, setContentHistory] = useState<string[]>([]);
   const [pendingDoc, setPendingDoc] = useState<Doc | null>(null);
 
+  // Hover states for interactive elements
+  const [hoveredDocId, setHoveredDocId] = useState<string | null>(null);
+  const [hoveredGenType, setHoveredGenType] = useState<string | null>(null);
+  const [chevronHover, setChevronHover] = useState(false);
+  const [closedChevronHover, setClosedChevronHover] = useState(false);
+  const [newDocHover, setNewDocHover] = useState(false);
+
   const fetchDocs = useCallback(async () => {
     try {
       const res = await fetch('/api/documents');
@@ -180,7 +187,14 @@ export default function WorkspacePage() {
   if (loading) {
     return (
       <div className="h-[calc(100vh-4rem)] flex items-center justify-center">
-        <div className="text-zinc-600 text-sm">Loading workspace...</div>
+        <div
+          style={{
+            color: 'var(--text-tertiary)',
+            fontSize: 'var(--font-size-sm)',
+          }}
+        >
+          Loading workspace...
+        </div>
       </div>
     );
   }
@@ -189,58 +203,167 @@ export default function WorkspacePage() {
     <div className="h-[calc(100vh-4rem)] -mx-6 -my-8 flex">
       {/* Document sidebar */}
       {sidebarOpen && (
-        <div className="w-56 shrink-0 border-r border-zinc-800 bg-zinc-950 flex flex-col overflow-hidden">
-          <div className="p-3 border-b border-zinc-800 flex items-center justify-between">
-            <span className="text-xs font-medium text-zinc-400 uppercase">Deliverables</span>
+        <div
+          className="w-56 shrink-0 flex flex-col overflow-hidden"
+          style={{
+            borderRight: '1px solid var(--border-default)',
+            background: 'var(--surface-0)',
+          }}
+        >
+          <div
+            className="flex items-center justify-between"
+            style={{
+              padding: 'var(--space-3)',
+              borderBottom: '1px solid var(--border-default)',
+            }}
+          >
+            <span
+              className="uppercase"
+              style={{
+                fontSize: 'var(--font-size-xs)',
+                fontWeight: 500,
+                color: 'var(--text-tertiary)',
+              }}
+            >
+              Deliverables
+            </span>
             <button
               onClick={() => setSidebarOpen(false)}
-              className="text-zinc-600 hover:text-zinc-400 transition-colors"
+              onMouseEnter={() => setChevronHover(true)}
+              onMouseLeave={() => setChevronHover(false)}
+              style={{
+                color: chevronHover ? 'var(--text-tertiary)' : 'var(--text-muted)',
+                transition: 'color 150ms ease',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+              }}
             >
               <ChevronRight className="w-4 h-4 rotate-180" />
             </button>
           </div>
-          <div className="flex-1 overflow-y-auto p-2 space-y-3">
+          <div
+            className="flex-1 overflow-y-auto space-y-3"
+            style={{ padding: 'var(--space-2)' }}
+          >
             {Object.entries(grouped).map(([type, typeDocs]) => (
               <div key={type}>
-                <div className="text-[10px] font-medium text-zinc-600 uppercase px-2 mb-1">
+                <div
+                  className="uppercase"
+                  style={{
+                    fontSize: '10px',
+                    fontWeight: 500,
+                    color: 'var(--text-muted)',
+                    padding: '0 var(--space-2)',
+                    marginBottom: 'var(--space-1)',
+                  }}
+                >
                   {TYPE_LABELS[type] || type}
                 </div>
-                {typeDocs.map(doc => (
-                  <button
-                    key={doc.id}
-                    onClick={() => selectDoc(doc)}
-                    className={`w-full text-left px-2 py-1.5 rounded-lg text-sm transition-colors ${
-                      selectedDoc?.id === doc.id
-                        ? 'bg-zinc-800 text-white'
-                        : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
-                    }`}
-                  >
-                    <div className="truncate">{doc.title}</div>
-                  </button>
-                ))}
+                {typeDocs.map(doc => {
+                  const isSelected = selectedDoc?.id === doc.id;
+                  const isHovered = hoveredDocId === doc.id;
+                  return (
+                    <button
+                      key={doc.id}
+                      onClick={() => selectDoc(doc)}
+                      onMouseEnter={() => setHoveredDocId(doc.id)}
+                      onMouseLeave={() => setHoveredDocId(null)}
+                      className="w-full text-left"
+                      style={{
+                        padding: 'var(--space-1) var(--space-2)',
+                        borderRadius: 'var(--radius-md)',
+                        fontSize: 'var(--font-size-sm)',
+                        transition: 'all 150ms ease',
+                        background: isSelected
+                          ? 'var(--surface-2)'
+                          : isHovered
+                            ? 'var(--surface-2)'
+                            : 'transparent',
+                        color: isSelected
+                          ? 'var(--text-primary)'
+                          : isHovered
+                            ? 'var(--text-secondary)'
+                            : 'var(--text-tertiary)',
+                        border: 'none',
+                        cursor: 'pointer',
+                        display: 'block',
+                        width: '100%',
+                      }}
+                    >
+                      <div className="truncate">{doc.title}</div>
+                    </button>
+                  );
+                })}
               </div>
             ))}
             {docs.length === 0 && (
-              <div className="text-center py-8 space-y-2">
-                <FileText className="w-6 h-6 text-zinc-700 mx-auto" />
-                <p className="text-xs text-zinc-600">No documents yet</p>
+              <div className="text-center space-y-2" style={{ padding: 'var(--space-8) 0' }}>
+                <FileText
+                  className="w-6 h-6 mx-auto"
+                  style={{ color: 'var(--text-muted)' }}
+                />
+                <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                  No deliverables yet. Generate one below or create a new document.
+                </p>
               </div>
             )}
           </div>
           {/* Generate section */}
-          <div className="p-2 border-t border-zinc-800 space-y-1">
-            <div className="text-[10px] font-medium text-zinc-600 uppercase px-2 mb-1">Generate from Data Room</div>
+          <div
+            className="space-y-1"
+            style={{
+              padding: 'var(--space-2)',
+              borderTop: '1px solid var(--border-default)',
+            }}
+          >
+            <div
+              className="uppercase"
+              style={{
+                fontSize: '10px',
+                fontWeight: 500,
+                color: 'var(--text-muted)',
+                padding: '0 var(--space-2)',
+                marginBottom: 'var(--space-1)',
+              }}
+            >
+              Generate from Data Room
+            </div>
             {['teaser', 'exec_summary', 'memo', 'deck', 'dd_memo'].map(type => {
               const exists = docs.some(d => d.type === type);
+              const isHovered = hoveredGenType === type;
+              const isDisabled = generating !== null;
               return (
                 <button
                   key={type}
                   onClick={() => generateDeliverable(type)}
-                  disabled={generating !== null}
-                  className="w-full flex items-center gap-2 px-2 py-1.5 rounded-lg text-xs text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/50 transition-colors disabled:opacity-50"
+                  disabled={isDisabled}
+                  onMouseEnter={() => setHoveredGenType(type)}
+                  onMouseLeave={() => setHoveredGenType(null)}
+                  className="w-full flex items-center gap-2"
+                  style={{
+                    padding: 'var(--space-1) var(--space-2)',
+                    borderRadius: 'var(--radius-md)',
+                    fontSize: 'var(--font-size-xs)',
+                    color: isHovered && !isDisabled
+                      ? 'var(--text-secondary)'
+                      : 'var(--text-muted)',
+                    background: isHovered && !isDisabled
+                      ? 'var(--surface-2)'
+                      : 'transparent',
+                    transition: 'all 150ms ease',
+                    opacity: isDisabled ? 0.5 : 1,
+                    border: 'none',
+                    cursor: isDisabled ? 'default' : 'pointer',
+                  }}
                 >
                   {generating === type ? (
-                    <Loader2 className="w-3.5 h-3.5 animate-spin text-blue-400" />
+                    <Loader2
+                      className="w-3.5 h-3.5 animate-spin"
+                      style={{ color: 'var(--accent)' }}
+                    />
                   ) : (
                     <Wand2 className="w-3.5 h-3.5" />
                   )}
@@ -249,10 +372,21 @@ export default function WorkspacePage() {
               );
             })}
           </div>
-          <div className="p-2 border-t border-zinc-800">
+          <div style={{ padding: 'var(--space-2)', borderTop: '1px solid var(--border-default)' }}>
             <a
               href="/documents/new"
-              className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50 transition-colors"
+              onMouseEnter={() => setNewDocHover(true)}
+              onMouseLeave={() => setNewDocHover(false)}
+              className="flex items-center gap-2"
+              style={{
+                padding: 'var(--space-2) var(--space-3)',
+                borderRadius: 'var(--radius-md)',
+                fontSize: 'var(--font-size-sm)',
+                color: newDocHover ? 'var(--text-secondary)' : 'var(--text-tertiary)',
+                background: newDocHover ? 'var(--surface-2)' : 'transparent',
+                transition: 'all 150ms ease',
+                textDecoration: 'none',
+              }}
             >
               <Plus className="w-4 h-4" /> New Document
             </a>
@@ -263,9 +397,21 @@ export default function WorkspacePage() {
       {!sidebarOpen && (
         <button
           onClick={() => setSidebarOpen(true)}
-          className="w-8 shrink-0 border-r border-zinc-800 flex items-center justify-center hover:bg-zinc-800/50 transition-colors"
+          onMouseEnter={() => setClosedChevronHover(true)}
+          onMouseLeave={() => setClosedChevronHover(false)}
+          className="w-8 shrink-0 flex items-center justify-center"
+          style={{
+            borderRight: '1px solid var(--border-default)',
+            background: closedChevronHover ? 'var(--surface-2)' : 'transparent',
+            transition: 'background 150ms ease',
+            border: 'none',
+            borderRightStyle: 'solid',
+            borderRightWidth: '1px',
+            borderRightColor: 'var(--border-default)',
+            cursor: 'pointer',
+          }}
         >
-          <ChevronRight className="w-4 h-4 text-zinc-600" />
+          <ChevronRight className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
         </button>
       )}
 
@@ -296,7 +442,7 @@ export default function WorkspacePage() {
       <ConfirmModal
         open={!!pendingDoc}
         title="Unsaved changes"
-        message="You have unsaved changes. Discard them?"
+        message="You have unsaved edits to this document. Discard them?"
         confirmLabel="Discard"
         variant="danger"
         onConfirm={() => { if (pendingDoc) doSelectDoc(pendingDoc); }}

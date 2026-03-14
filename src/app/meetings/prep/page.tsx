@@ -87,10 +87,10 @@ const TYPE_LABELS: Record<string, string> = {
   strategic: 'Strategic', debt: 'Debt Provider', family_office: 'Family Office',
 };
 
-const SPEED_COLORS: Record<string, string> = {
-  fast: 'text-green-400',
-  medium: 'text-yellow-400',
-  slow: 'text-red-400',
+const SPEED_STYLE: Record<string, React.CSSProperties> = {
+  fast: { color: 'var(--success)' },
+  medium: { color: 'var(--warning)' },
+  slow: { color: 'var(--danger)' },
 };
 
 // ---------- main page ----------
@@ -335,11 +335,11 @@ export default function MeetingPrepPage() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="h-8 w-56 bg-zinc-800 rounded animate-pulse" />
-        <div className="h-12 bg-zinc-800/50 rounded-xl animate-pulse" />
+        <div className="h-8 w-56 rounded animate-pulse" style={{ background: 'var(--surface-2)' }} />
+        <div className="h-12 rounded-xl animate-pulse" style={{ background: 'var(--surface-2)' }} />
         <div className="space-y-3">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-24 bg-zinc-800/30 rounded-xl animate-pulse" />
+            <div key={i} className="h-24 rounded-xl animate-pulse" style={{ background: 'var(--surface-2)' }} />
           ))}
         </div>
       </div>
@@ -351,14 +351,14 @@ export default function MeetingPrepPage() {
       {/* Print-only stylesheet */}
       <style>{`
         @media print {
-          body { background: white !important; color: black !important; }
+          body { background: #fff !important; color: #000 !important; }
           nav, aside, button, .no-print { display: none !important; }
           .print-card { border: 1px solid #ccc !important; break-inside: avoid; page-break-inside: avoid; margin-bottom: 12px; }
-          .print-card * { color: black !important; }
+          .print-card * { color: #000 !important; }
           .print-break { page-break-before: always; }
-          h1, h2, h3 { color: black !important; }
-          .print-bg-white { background: white !important; }
-          textarea { border: 1px solid #ccc !important; background: #f9f9f9 !important; color: black !important; }
+          h1, h2, h3 { color: #000 !important; }
+          .print-bg-white { background: #fff !important; }
+          textarea { border: 1px solid #ccc !important; background: #f9f9f9 !important; color: #000 !important; }
           .print-section-title { font-size: 14px; font-weight: 700; border-bottom: 2px solid #333; padding-bottom: 4px; margin-bottom: 8px; }
           @page { margin: 1.5cm; }
         }
@@ -368,39 +368,22 @@ export default function MeetingPrepPage() {
         {/* Header */}
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div className="flex items-center gap-3">
-            <Link href="/meetings" className="text-zinc-500 hover:text-zinc-300 transition-colors no-print">
+            <Link href="/meetings" className="transition-colors no-print" style={{ color: 'var(--text-muted)' }}>
               <ArrowLeft className="w-5 h-5" />
             </Link>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-                <Briefcase className="w-6 h-6 text-blue-400" />
+              <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
+                <span style={{ color: 'var(--accent)' }}><Briefcase className="w-6 h-6" /></span>
                 Meeting Prep
               </h1>
-              <p className="text-zinc-500 text-sm mt-0.5">Prepare for your next investor meeting</p>
+              <p className="text-sm mt-0.5" style={{ color: 'var(--text-muted)' }}>AI-generated brief with talking points, objections to preempt, and data room priorities</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             {investor && (
               <>
-                <button
-                  onClick={generateBrief}
-                  disabled={generatingBrief}
-                  className="no-print px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:bg-blue-600/50 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
-                >
-                  {generatingBrief ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Sparkles className="w-4 h-4" />
-                  )}
-                  {generatingBrief ? 'Generating...' : 'Generate Brief'}
-                </button>
-                <button
-                  onClick={handlePrint}
-                  className="no-print px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
-                >
-                  <Printer className="w-4 h-4" />
-                  Print
-                </button>
+                <GenerateBriefButton generating={generatingBrief} onClick={generateBrief} />
+                <PrintButton onClick={handlePrint} />
               </>
             )}
           </div>
@@ -408,38 +391,51 @@ export default function MeetingPrepPage() {
 
         {/* Investor selector */}
         <div className="no-print">
-          <label className="text-xs text-zinc-500 block mb-1.5 font-medium uppercase tracking-wider">Select Investor</label>
+          <label className="text-xs block mb-1.5 font-medium uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Select Investor</label>
           <div className="relative">
             <select
               value={selectedId}
               onChange={e => setSelectedId(e.target.value)}
-              className="w-full md:w-96 bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-600 text-zinc-200 appearance-none cursor-pointer pr-10"
+              className="w-full md:w-96 rounded-lg px-4 py-2.5 text-sm focus:outline-none appearance-none cursor-pointer pr-10"
+              style={{
+                background: 'var(--surface-1)',
+                border: '1px solid var(--border-default)',
+                color: 'var(--text-secondary)',
+              }}
+              onFocus={e => { e.target.style.borderColor = 'var(--accent)'; }}
+              onBlur={e => { e.target.style.borderColor = 'var(--border-default)'; }}
             >
-              <option value="">Choose an investor...</option>
+              <option value="">Select investor for this meeting...</option>
               {investors.map(inv => (
                 <option key={inv.id} value={inv.id}>
                   {inv.name} -- {TYPE_LABELS[inv.type] || inv.type} (T{inv.tier})
                 </option>
               ))}
             </select>
-            <ChevronDown className="w-4 h-4 text-zinc-500 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--text-muted)' }}>
+              <ChevronDown className="w-4 h-4" />
+            </span>
           </div>
         </div>
 
         {/* No investor selected */}
         {!selectedId && (
-          <div className="border border-dashed border-zinc-800 rounded-xl p-12 text-center">
-            <Users className="w-10 h-10 text-zinc-700 mx-auto mb-3" />
-            <p className="text-zinc-500 text-sm">Select an investor above to generate a meeting prep sheet.</p>
-            <p className="text-zinc-600 text-xs mt-1">{investors.length} investors available</p>
+          <div className="rounded-xl p-12 text-center" style={{ border: '1px dashed var(--border-default)' }}>
+            <span className="block mx-auto mb-3 w-10 h-10" style={{ color: 'var(--surface-3)' }}>
+              <Users className="w-10 h-10" />
+            </span>
+            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Select an investor above to load their engagement history and generate a personalized brief.</p>
+            <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>{investors.length} investors in pipeline</p>
           </div>
         )}
 
         {/* Loading prep data */}
         {selectedId && loadingPrep && (
-          <div className="border border-zinc-800 rounded-xl p-12 text-center">
-            <Loader2 className="w-8 h-8 text-blue-400 animate-spin mx-auto mb-3" />
-            <p className="text-zinc-500 text-sm">Loading prep data...</p>
+          <div className="rounded-xl p-12 text-center" style={{ border: '1px solid var(--border-default)' }}>
+            <span className="block mx-auto mb-3 w-8 h-8" style={{ color: 'var(--accent)' }}>
+              <Loader2 className="w-8 h-8 animate-spin" />
+            </span>
+            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Loading meeting history, objections, and tasks...</p>
           </div>
         )}
 
@@ -449,16 +445,18 @@ export default function MeetingPrepPage() {
 
             {/* ============ CUSTOMIZED MEETING BRIEF (AI-generated) ============ */}
             {meetingBrief && (
-              <section className="border border-blue-800/40 rounded-xl bg-blue-950/10 print-card overflow-hidden">
+              <section className="rounded-xl print-card overflow-hidden" style={{ border: '1px solid var(--accent)', background: 'var(--accent-muted)' }}>
                 <button
                   onClick={() => setBriefExpanded(!briefExpanded)}
                   className="w-full p-5 flex items-center justify-between no-print"
                 >
-                  <h2 className="text-sm font-semibold text-blue-400 uppercase tracking-wider flex items-center gap-2 print-section-title">
+                  <h2 className="text-sm font-semibold uppercase tracking-wider flex items-center gap-2 print-section-title" style={{ color: 'var(--accent)' }}>
                     <Sparkles className="w-4 h-4" />
                     Customized Brief for {investor.name} ({TYPE_LABELS[investor.type] || investor.type})
                   </h2>
-                  <ChevronRight className={`w-4 h-4 text-blue-400 transition-transform ${briefExpanded ? 'rotate-90' : ''}`} />
+                  <span style={{ color: 'var(--accent)' }}>
+                    <ChevronRight className={`w-4 h-4 transition-transform ${briefExpanded ? 'rotate-90' : ''}`} />
+                  </span>
                 </button>
                 {/* Print-only static header */}
                 <div className="hidden print:block p-5 pb-0">
@@ -471,25 +469,25 @@ export default function MeetingPrepPage() {
                   <div className="px-5 pb-5 space-y-5">
                     {/* Opening Hook */}
                     <div>
-                      <h3 className="text-xs font-medium text-blue-400/70 uppercase tracking-wider mb-2">Opening</h3>
-                      <p className="text-sm text-zinc-200 leading-relaxed">{meetingBrief.brief.personalized_opening}</p>
+                      <h3 className="text-xs font-medium uppercase tracking-wider mb-2" style={{ color: 'var(--accent)' }}>Opening</h3>
+                      <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{meetingBrief.brief.personalized_opening}</p>
                     </div>
 
                     {/* Narrative Profile */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <h3 className="text-xs font-medium text-blue-400/70 uppercase tracking-wider mb-2">Emphasize</h3>
+                        <h3 className="text-xs font-medium uppercase tracking-wider mb-2" style={{ color: 'var(--accent)' }}>Emphasize</h3>
                         <div className="flex flex-wrap gap-1.5">
                           {meetingBrief.narrative_profile.emphasis.map((e, i) => (
-                            <span key={i} className="text-xs px-2 py-1 rounded-md bg-blue-900/30 text-blue-300">{e}</span>
+                            <span key={i} className="text-xs px-2 py-1 rounded-md" style={{ background: 'var(--accent-muted)', color: 'var(--accent)' }}>{e}</span>
                           ))}
                         </div>
                       </div>
                       <div>
-                        <h3 className="text-xs font-medium text-red-400/70 uppercase tracking-wider mb-2">Avoid</h3>
+                        <h3 className="text-xs font-medium uppercase tracking-wider mb-2" style={{ color: 'var(--danger)' }}>Avoid</h3>
                         <div className="flex flex-wrap gap-1.5">
                           {meetingBrief.narrative_profile.avoid_topics.map((t, i) => (
-                            <span key={i} className="text-xs px-2 py-1 rounded-md bg-red-900/20 text-red-400/80">{t}</span>
+                            <span key={i} className="text-xs px-2 py-1 rounded-md" style={{ background: 'var(--danger-muted)', color: 'var(--danger)' }}>{t}</span>
                           ))}
                         </div>
                       </div>
@@ -497,15 +495,15 @@ export default function MeetingPrepPage() {
 
                     {/* Key Talking Points */}
                     <div>
-                      <h3 className="text-xs font-medium text-blue-400/70 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                      <h3 className="text-xs font-medium uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: 'var(--accent)' }}>
                         <ListChecks className="w-3.5 h-3.5" />
                         Key Talking Points
                       </h3>
                       <div className="space-y-2">
                         {meetingBrief.brief.key_talking_points.map((point, i) => (
                           <div key={i} className="flex items-start gap-2.5 text-sm">
-                            <span className="shrink-0 mt-1.5 w-1.5 h-1.5 rounded-full bg-blue-400" />
-                            <span className="text-zinc-300">{point}</span>
+                            <span className="shrink-0 mt-1.5 w-1.5 h-1.5 rounded-full" style={{ background: 'var(--accent)' }} />
+                            <span style={{ color: 'var(--text-secondary)' }}>{point}</span>
                           </div>
                         ))}
                       </div>
@@ -514,25 +512,25 @@ export default function MeetingPrepPage() {
                     {/* Key Metrics */}
                     {meetingBrief.brief.metrics_to_highlight.length > 0 && (
                       <div>
-                        <h3 className="text-xs font-medium text-blue-400/70 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                        <h3 className="text-xs font-medium uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: 'var(--accent)' }}>
                           <Target className="w-3.5 h-3.5" />
                           Key Metrics
                         </h3>
-                        <div className="border border-zinc-800/50 rounded-lg overflow-hidden">
+                        <div className="rounded-lg overflow-hidden" style={{ border: '1px solid var(--border-subtle)' }}>
                           <table className="w-full text-xs">
-                            <thead className="bg-zinc-900/30 border-b border-zinc-800/50">
+                            <thead style={{ background: 'var(--surface-1)', borderBottom: '1px solid var(--border-subtle)' }}>
                               <tr>
-                                <th className="text-left px-3 py-2 text-zinc-500 font-medium">Metric</th>
-                                <th className="text-left px-3 py-2 text-zinc-500 font-medium">Value</th>
-                                <th className="text-left px-3 py-2 text-zinc-500 font-medium">Why It Matters</th>
+                                <th className="text-left px-3 py-2 font-medium" style={{ color: 'var(--text-muted)' }}>Metric</th>
+                                <th className="text-left px-3 py-2 font-medium" style={{ color: 'var(--text-muted)' }}>Value</th>
+                                <th className="text-left px-3 py-2 font-medium" style={{ color: 'var(--text-muted)' }}>Why It Matters</th>
                               </tr>
                             </thead>
-                            <tbody className="divide-y divide-zinc-800/30">
+                            <tbody>
                               {meetingBrief.brief.metrics_to_highlight.map((m, i) => (
-                                <tr key={i}>
-                                  <td className="px-3 py-2 text-zinc-200 font-medium">{m.metric}</td>
-                                  <td className="px-3 py-2 text-blue-400 font-mono">{m.value}</td>
-                                  <td className="px-3 py-2 text-zinc-400">{m.why}</td>
+                                <tr key={i} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+                                  <td className="px-3 py-2 font-medium" style={{ color: 'var(--text-secondary)' }}>{m.metric}</td>
+                                  <td className="px-3 py-2 font-mono" style={{ color: 'var(--accent)' }}>{m.value}</td>
+                                  <td className="px-3 py-2" style={{ color: 'var(--text-tertiary)' }}>{m.why}</td>
                                 </tr>
                               ))}
                             </tbody>
@@ -544,15 +542,15 @@ export default function MeetingPrepPage() {
                     {/* Anticipated Questions with Answers */}
                     {meetingBrief.brief.anticipated_questions_with_answers.length > 0 && (
                       <div>
-                        <h3 className="text-xs font-medium text-blue-400/70 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                        <h3 className="text-xs font-medium uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: 'var(--accent)' }}>
                           <MessageCircleQuestion className="w-3.5 h-3.5" />
                           Anticipated Questions + Suggested Answers
                         </h3>
                         <div className="space-y-3">
                           {meetingBrief.brief.anticipated_questions_with_answers.map((qa, i) => (
-                            <div key={i} className="border border-zinc-800/40 rounded-lg p-3">
-                              <p className="text-sm font-medium text-zinc-200 mb-1.5">Q: {qa.question}</p>
-                              <p className="text-xs text-zinc-400 leading-relaxed">A: {qa.suggested_answer}</p>
+                            <div key={i} className="rounded-lg p-3" style={{ border: '1px solid var(--border-subtle)' }}>
+                              <p className="text-sm font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>Q: {qa.question}</p>
+                              <p className="text-xs leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>A: {qa.suggested_answer}</p>
                             </div>
                           ))}
                         </div>
@@ -562,17 +560,17 @@ export default function MeetingPrepPage() {
                     {/* Data Room Priority */}
                     {meetingBrief.data_room_priority.length > 0 && (
                       <div>
-                        <h3 className="text-xs font-medium text-blue-400/70 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                        <h3 className="text-xs font-medium uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: 'var(--accent)' }}>
                           <FolderOpen className="w-3.5 h-3.5" />
                           Data Room Priority
                         </h3>
                         <div className="space-y-1.5">
                           {meetingBrief.data_room_priority.map((dr, i) => (
                             <div key={i} className="flex items-center gap-2 text-sm">
-                              <span className="text-xs font-mono text-zinc-500 w-4">{i + 1}.</span>
-                              <span className="text-zinc-300">{dr.category}</span>
+                              <span className="text-xs font-mono w-4" style={{ color: 'var(--text-muted)' }}>{i + 1}.</span>
+                              <span style={{ color: 'var(--text-secondary)' }}>{dr.category}</span>
                               {dr.documents.length > 0 && (
-                                <span className="text-xs text-zinc-600">
+                                <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
                                   ({dr.documents.map(d => d.title).join(', ')})
                                 </span>
                               )}
@@ -584,20 +582,22 @@ export default function MeetingPrepPage() {
 
                     {/* Previous Meeting + Unresolved Items */}
                     {meetingBrief.brief.previous_meeting_summary && (
-                      <div className="border-t border-zinc-800/30 pt-4">
-                        <h3 className="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-2">Previous Meeting</h3>
-                        <p className="text-sm text-zinc-400">{meetingBrief.brief.previous_meeting_summary}</p>
+                      <div className="pt-4" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                        <h3 className="text-xs font-medium uppercase tracking-wider mb-2" style={{ color: 'var(--text-muted)' }}>Previous Meeting</h3>
+                        <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>{meetingBrief.brief.previous_meeting_summary}</p>
                       </div>
                     )}
 
                     {meetingBrief.brief.unresolved_items.length > 0 && (
                       <div>
-                        <h3 className="text-xs font-medium text-orange-400/70 uppercase tracking-wider mb-2">Unresolved Items</h3>
+                        <h3 className="text-xs font-medium uppercase tracking-wider mb-2" style={{ color: 'var(--warning)' }}>Unresolved Items</h3>
                         <div className="space-y-1.5">
                           {meetingBrief.brief.unresolved_items.map((item, i) => (
                             <div key={i} className="flex items-start gap-2 text-sm">
-                              <AlertTriangle className="w-3.5 h-3.5 text-orange-400 shrink-0 mt-0.5" />
-                              <span className="text-zinc-300">{item}</span>
+                              <span className="shrink-0 mt-0.5" style={{ color: 'var(--warning)' }}>
+                                <AlertTriangle className="w-3.5 h-3.5" />
+                              </span>
+                              <span style={{ color: 'var(--text-secondary)' }}>{item}</span>
                             </div>
                           ))}
                         </div>
@@ -607,12 +607,14 @@ export default function MeetingPrepPage() {
                     {/* Risks to Watch */}
                     {meetingBrief.brief.risks_to_watch.length > 0 && (
                       <div>
-                        <h3 className="text-xs font-medium text-red-400/70 uppercase tracking-wider mb-2">Risks to Watch</h3>
+                        <h3 className="text-xs font-medium uppercase tracking-wider mb-2" style={{ color: 'var(--danger)' }}>Risks to Watch</h3>
                         <div className="space-y-1.5">
                           {meetingBrief.brief.risks_to_watch.map((risk, i) => (
                             <div key={i} className="flex items-start gap-2 text-sm">
-                              <Shield className="w-3.5 h-3.5 text-red-400/70 shrink-0 mt-0.5" />
-                              <span className="text-zinc-400">{risk}</span>
+                              <span className="shrink-0 mt-0.5" style={{ color: 'var(--danger)' }}>
+                                <Shield className="w-3.5 h-3.5" />
+                              </span>
+                              <span style={{ color: 'var(--text-tertiary)' }}>{risk}</span>
                             </div>
                           ))}
                         </div>
@@ -620,23 +622,23 @@ export default function MeetingPrepPage() {
                     )}
 
                     {/* Recommended Ask */}
-                    <div className="border-t border-zinc-800/30 pt-4">
-                      <h3 className="text-xs font-medium text-green-400/70 uppercase tracking-wider mb-2">Recommended Ask</h3>
-                      <p className="text-sm text-zinc-200 font-medium">{meetingBrief.brief.recommended_ask}</p>
+                    <div className="pt-4" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                      <h3 className="text-xs font-medium uppercase tracking-wider mb-2" style={{ color: 'var(--success)' }}>Recommended Ask</h3>
+                      <p className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>{meetingBrief.brief.recommended_ask}</p>
                     </div>
 
                     {/* Playbook Insights */}
                     {meetingBrief.playbook_insights.length > 0 && (
-                      <div className="border-t border-zinc-800/30 pt-4">
-                        <h3 className="text-xs font-medium text-purple-400/70 uppercase tracking-wider mb-2">Playbook Insights</h3>
+                      <div className="pt-4" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                        <h3 className="text-xs font-medium uppercase tracking-wider mb-2" style={{ color: 'var(--text-tertiary)' }}>Playbook Insights</h3>
                         <div className="space-y-2">
                           {meetingBrief.playbook_insights.map((pi, i) => (
                             <div key={i} className="text-sm">
-                              <span className="text-xs px-1.5 py-0.5 rounded bg-purple-900/30 text-purple-400 mr-2">
+                              <span className="text-xs px-1.5 py-0.5 rounded mr-2" style={{ background: 'var(--accent-muted)', color: 'var(--accent)' }}>
                                 {pi.topic} ({pi.count}x)
                               </span>
                               {pi.bestResponse && (
-                                <span className="text-zinc-400 text-xs">Best response: {pi.bestResponse}</span>
+                                <span className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Best response: {pi.bestResponse}</span>
                               )}
                             </div>
                           ))}
@@ -645,12 +647,12 @@ export default function MeetingPrepPage() {
                     )}
 
                     {/* Tone Guidance */}
-                    <div className="border-t border-zinc-800/30 pt-4">
-                      <h3 className="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-2">Tone Guidance</h3>
-                      <p className="text-xs text-zinc-500 italic">{meetingBrief.narrative_profile.tone_guidance}</p>
+                    <div className="pt-4" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                      <h3 className="text-xs font-medium uppercase tracking-wider mb-2" style={{ color: 'var(--text-muted)' }}>Tone Guidance</h3>
+                      <p className="text-xs italic" style={{ color: 'var(--text-muted)' }}>{meetingBrief.narrative_profile.tone_guidance}</p>
                     </div>
 
-                    <div className="text-xs text-zinc-600 text-right">
+                    <div className="text-xs text-right" style={{ color: 'var(--text-muted)' }}>
                       Generated {new Date(meetingBrief.generated_at).toLocaleString('en-GB')}
                     </div>
                   </div>
@@ -659,73 +661,73 @@ export default function MeetingPrepPage() {
             )}
 
             {/* ============ INVESTOR PROFILE ============ */}
-            <section className="border border-zinc-800 rounded-xl p-5 print-card">
-              <h2 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-4 flex items-center gap-2 print-section-title">
-                <Building2 className="w-4 h-4 text-blue-400" />
+            <section className="rounded-xl p-5 print-card" style={{ border: '1px solid var(--border-default)' }}>
+              <h2 className="text-sm font-semibold uppercase tracking-wider mb-4 flex items-center gap-2 print-section-title" style={{ color: 'var(--text-tertiary)' }}>
+                <span style={{ color: 'var(--accent)' }}><Building2 className="w-4 h-4" /></span>
                 Investor Profile
               </h2>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <ProfileField label="Name" value={investor.name} bold />
                 <ProfileField label="Type" value={TYPE_LABELS[investor.type] || investor.type} />
-                <ProfileField label="Tier" value={`Tier ${investor.tier}`} badge badgeColor={
-                  investor.tier === 1 ? 'bg-blue-600/20 text-blue-400' :
-                  investor.tier === 2 ? 'bg-purple-600/20 text-purple-400' :
-                  'bg-zinc-700/50 text-zinc-400'
+                <ProfileField label="Tier" value={`Tier ${investor.tier}`} badge badgeStyle={
+                  investor.tier === 1 ? { background: 'var(--accent-muted)', color: 'var(--accent)' } :
+                  investor.tier === 2 ? { background: 'var(--accent-muted)', color: 'var(--accent)' } :
+                  { background: 'var(--surface-3)', color: 'var(--text-tertiary)' }
                 } />
                 <ProfileField label="Status" value={STATUS_LABELS[investor.status] || investor.status} />
                 <ProfileField label="Fund Size" value={investor.fund_size || '---'} />
                 <ProfileField label="Check Size" value={investor.check_size_range || '---'} />
                 <ProfileField label="Key Partner" value={investor.partner || '---'} />
                 <div>
-                  <span className="text-xs text-zinc-500 block mb-0.5">Enthusiasm</span>
+                  <span className="text-xs block mb-0.5" style={{ color: 'var(--text-muted)' }}>Enthusiasm</span>
                   <div className="flex items-center gap-1.5">
                     <div className="flex gap-0.5">
                       {[1,2,3,4,5].map(n => (
-                        <div key={n} className={`w-2.5 h-2.5 rounded-full ${n <= investor.enthusiasm ? 'bg-blue-500' : 'bg-zinc-800'}`} />
+                        <div key={n} className="w-2.5 h-2.5 rounded-full" style={{ background: n <= investor.enthusiasm ? 'var(--accent)' : 'var(--surface-2)' }} />
                       ))}
                     </div>
-                    <span className="text-xs text-zinc-400">{investor.enthusiasm}/5</span>
+                    <span className="text-xs" style={{ color: 'var(--text-tertiary)' }}>{investor.enthusiasm}/5</span>
                   </div>
                 </div>
                 <ProfileField label="IC Process" value={investor.ic_process || '---'} />
                 <div>
-                  <span className="text-xs text-zinc-500 block mb-0.5">Speed</span>
-                  <span className={`text-sm font-medium capitalize ${SPEED_COLORS[investor.speed] || 'text-zinc-400'}`}>
+                  <span className="text-xs block mb-0.5" style={{ color: 'var(--text-muted)' }}>Speed</span>
+                  <span className="text-sm font-medium capitalize" style={SPEED_STYLE[investor.speed] || { color: 'var(--text-tertiary)' }}>
                     {investor.speed || '---'}
                   </span>
                 </div>
               </div>
               {investor.sector_thesis && (
-                <div className="mt-4 pt-3 border-t border-zinc-800/50">
-                  <span className="text-xs text-zinc-500">Sector Thesis: </span>
-                  <span className="text-sm text-zinc-300">{investor.sector_thesis}</span>
+                <div className="mt-4 pt-3" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                  <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Sector Thesis: </span>
+                  <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>{investor.sector_thesis}</span>
                 </div>
               )}
               {investor.warm_path && (
                 <div className="mt-2">
-                  <span className="text-xs text-zinc-500">Warm Path: </span>
-                  <span className="text-sm text-zinc-300">{investor.warm_path}</span>
+                  <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Warm Path: </span>
+                  <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>{investor.warm_path}</span>
                 </div>
               )}
               {investor.portfolio_conflicts && (
                 <div className="mt-2">
-                  <span className="text-xs text-zinc-500">Portfolio Conflicts: </span>
-                  <span className="text-sm text-red-400">{investor.portfolio_conflicts}</span>
+                  <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Portfolio Conflicts: </span>
+                  <span className="text-sm" style={{ color: 'var(--danger)' }}>{investor.portfolio_conflicts}</span>
                 </div>
               )}
               {investor.notes && (
                 <div className="mt-2">
-                  <span className="text-xs text-zinc-500">Notes: </span>
-                  <span className="text-sm text-zinc-400">{investor.notes}</span>
+                  <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Notes: </span>
+                  <span className="text-sm" style={{ color: 'var(--text-tertiary)' }}>{investor.notes}</span>
                 </div>
               )}
             </section>
 
             {/* ============ SUGGESTED TALKING POINTS ============ */}
             {talkingPoints.length > 0 && (
-              <section className="border border-zinc-800 rounded-xl p-5 print-card">
-                <h2 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-4 flex items-center gap-2 print-section-title">
-                  <Zap className="w-4 h-4 text-yellow-400" />
+              <section className="rounded-xl p-5 print-card" style={{ border: '1px solid var(--border-default)' }}>
+                <h2 className="text-sm font-semibold uppercase tracking-wider mb-4 flex items-center gap-2 print-section-title" style={{ color: 'var(--text-tertiary)' }}>
+                  <span style={{ color: 'var(--warning)' }}><Zap className="w-4 h-4" /></span>
                   Suggested Talking Points
                 </h2>
                 <div className="space-y-2.5">
@@ -736,25 +738,25 @@ export default function MeetingPrepPage() {
                     })
                     .map((tp, i) => (
                     <div key={i} className="flex items-start gap-3 text-sm">
-                      <span className={`shrink-0 mt-0.5 w-2 h-2 rounded-full ${
-                        tp.priority === 'high' ? 'bg-red-500' :
-                        tp.priority === 'medium' ? 'bg-yellow-500' :
-                        'bg-zinc-600'
-                      }`} />
+                      <span className="shrink-0 mt-0.5 w-2 h-2 rounded-full" style={{
+                        background: tp.priority === 'high' ? 'var(--danger)' :
+                          tp.priority === 'medium' ? 'var(--warning)' :
+                          'var(--surface-3)',
+                      }} />
                       <div className="flex-1">
-                        <span className={`text-xs font-medium px-1.5 py-0.5 rounded mr-2 ${
-                          tp.category === 'Follow-up' ? 'bg-blue-900/30 text-blue-400' :
-                          tp.category === 'Objection to preempt' ? 'bg-red-900/30 text-red-400' :
-                          tp.category === 'Positive signal' ? 'bg-green-900/30 text-green-400' :
-                          tp.category === 'Build on strength' ? 'bg-emerald-900/30 text-emerald-400' :
-                          tp.category === 'Improve delivery' ? 'bg-orange-900/30 text-orange-400' :
-                          tp.category === 'Competitive intel' ? 'bg-purple-900/30 text-purple-400' :
-                          tp.category === 'Risk' ? 'bg-red-900/30 text-red-400' :
-                          tp.category === 'Warning' ? 'bg-red-900/30 text-red-400' :
-                          tp.category === 'Momentum' ? 'bg-green-900/30 text-green-400' :
-                          'bg-zinc-800 text-zinc-400'
-                        }`}>{tp.category}</span>
-                        <span className="text-zinc-300">{tp.text}</span>
+                        <span className="text-xs font-medium px-1.5 py-0.5 rounded mr-2" style={
+                          tp.category === 'Follow-up' ? { background: 'var(--accent-muted)', color: 'var(--accent)' } :
+                          tp.category === 'Objection to preempt' ? { background: 'var(--danger-muted)', color: 'var(--danger)' } :
+                          tp.category === 'Positive signal' ? { background: 'var(--success-muted)', color: 'var(--success)' } :
+                          tp.category === 'Build on strength' ? { background: 'var(--success-muted)', color: 'var(--success)' } :
+                          tp.category === 'Improve delivery' ? { background: 'var(--warning-muted)', color: 'var(--warning)' } :
+                          tp.category === 'Competitive intel' ? { background: 'var(--accent-muted)', color: 'var(--accent)' } :
+                          tp.category === 'Risk' ? { background: 'var(--danger-muted)', color: 'var(--danger)' } :
+                          tp.category === 'Warning' ? { background: 'var(--danger-muted)', color: 'var(--danger)' } :
+                          tp.category === 'Momentum' ? { background: 'var(--success-muted)', color: 'var(--success)' } :
+                          { background: 'var(--surface-2)', color: 'var(--text-tertiary)' }
+                        }>{tp.category}</span>
+                        <span style={{ color: 'var(--text-secondary)' }}>{tp.text}</span>
                       </div>
                     </div>
                   ))}
@@ -764,53 +766,61 @@ export default function MeetingPrepPage() {
 
             {/* ============ KEY RISKS ============ */}
             {(portfolioConflicts.length > 0 || unresolvedObjections.length > 0 || investor.portfolio_conflicts || enthusiasmTrend === 'declining') && (
-              <section className="border border-red-900/30 rounded-xl p-5 bg-red-950/10 print-card">
-                <h2 className="text-sm font-semibold text-red-400 uppercase tracking-wider mb-4 flex items-center gap-2 print-section-title">
+              <section className="rounded-xl p-5 print-card" style={{ border: '1px solid var(--danger-muted)', background: 'var(--danger-muted)' }}>
+                <h2 className="text-sm font-semibold uppercase tracking-wider mb-4 flex items-center gap-2 print-section-title" style={{ color: 'var(--danger)' }}>
                   <AlertTriangle className="w-4 h-4" />
                   Key Risks to Address
                 </h2>
                 <div className="space-y-3">
                   {investor.portfolio_conflicts && (
                     <div className="flex items-start gap-2 text-sm">
-                      <Shield className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+                      <span className="shrink-0 mt-0.5" style={{ color: 'var(--danger)' }}>
+                        <Shield className="w-4 h-4" />
+                      </span>
                       <div>
-                        <span className="text-zinc-300 font-medium">Portfolio Conflict: </span>
-                        <span className="text-zinc-400">{investor.portfolio_conflicts}</span>
+                        <span className="font-medium" style={{ color: 'var(--text-secondary)' }}>Portfolio Conflict: </span>
+                        <span style={{ color: 'var(--text-tertiary)' }}>{investor.portfolio_conflicts}</span>
                       </div>
                     </div>
                   )}
                   {portfolioConflicts.map((pc, i) => (
                     <div key={i} className="flex items-start gap-2 text-sm">
-                      <Shield className="w-4 h-4 text-orange-400 shrink-0 mt-0.5" />
+                      <span className="shrink-0 mt-0.5" style={{ color: 'var(--warning)' }}>
+                        <Shield className="w-4 h-4" />
+                      </span>
                       <div>
-                        <span className="text-zinc-300 font-medium">Portfolio company overlap: </span>
-                        <span className="text-zinc-400">{pc.company} ({pc.sector}) -- {pc.relevance}</span>
+                        <span className="font-medium" style={{ color: 'var(--text-secondary)' }}>Portfolio company overlap: </span>
+                        <span style={{ color: 'var(--text-tertiary)' }}>{pc.company} ({pc.sector}) -- {pc.relevance}</span>
                       </div>
                     </div>
                   ))}
                   {unresolvedObjections.map((o, i) => (
                     <div key={i} className="flex items-start gap-2 text-sm">
-                      <CircleDot className={`w-4 h-4 shrink-0 mt-0.5 ${
-                        o.severity === 'showstopper' ? 'text-red-400' :
-                        o.severity === 'significant' ? 'text-yellow-400' :
-                        'text-zinc-500'
-                      }`} />
+                      <span className="shrink-0 mt-0.5" style={{
+                        color: o.severity === 'showstopper' ? 'var(--danger)' :
+                          o.severity === 'significant' ? 'var(--warning)' :
+                          'var(--text-muted)',
+                      }}>
+                        <CircleDot className="w-4 h-4" />
+                      </span>
                       <div>
-                        <span className="text-zinc-300 font-medium">
+                        <span className="font-medium" style={{ color: 'var(--text-secondary)' }}>
                           {o.response_effectiveness === 'partial' ? 'Partially addressed' : 'Unresolved'} objection
                           {o.severity === 'showstopper' ? ' (SHOWSTOPPER)' : ''}:
                         </span>{' '}
-                        <span className="text-zinc-400">{o.text}</span>
-                        <span className="text-xs text-zinc-600 ml-2">from {formatDate(o.meetingDate)}</span>
+                        <span style={{ color: 'var(--text-tertiary)' }}>{o.text}</span>
+                        <span className="text-xs ml-2" style={{ color: 'var(--text-muted)' }}>from {formatDate(o.meetingDate)}</span>
                       </div>
                     </div>
                   ))}
                   {enthusiasmTrend === 'declining' && (
                     <div className="flex items-start gap-2 text-sm">
-                      <TrendingUp className="w-4 h-4 text-red-400 shrink-0 mt-0.5 rotate-180" />
+                      <span className="shrink-0 mt-0.5 rotate-180" style={{ color: 'var(--danger)' }}>
+                        <TrendingUp className="w-4 h-4" />
+                      </span>
                       <div>
-                        <span className="text-zinc-300 font-medium">Declining enthusiasm: </span>
-                        <span className="text-zinc-400">
+                        <span className="font-medium" style={{ color: 'var(--text-secondary)' }}>Declining enthusiasm: </span>
+                        <span style={{ color: 'var(--text-tertiary)' }}>
                           Enthusiasm score has dropped across meetings. Identify what changed and counter it.
                         </span>
                       </div>
@@ -821,80 +831,20 @@ export default function MeetingPrepPage() {
             )}
 
             {/* ============ MEETING HISTORY ============ */}
-            <section className="border border-zinc-800 rounded-xl p-5 print-card">
-              <h2 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-4 flex items-center gap-2 print-section-title">
-                <Calendar className="w-4 h-4 text-blue-400" />
+            <section className="rounded-xl p-5 print-card" style={{ border: '1px solid var(--border-default)' }}>
+              <h2 className="text-sm font-semibold uppercase tracking-wider mb-4 flex items-center gap-2 print-section-title" style={{ color: 'var(--text-tertiary)' }}>
+                <span style={{ color: 'var(--accent)' }}><Calendar className="w-4 h-4" /></span>
                 Meeting History
-                <span className="text-xs font-normal text-zinc-600 ml-1">({meetings.length} meetings)</span>
+                <span className="text-xs font-normal ml-1" style={{ color: 'var(--text-muted)' }}>({meetings.length} meetings)</span>
               </h2>
               {meetings.length === 0 ? (
-                <p className="text-sm text-zinc-600">No previous meetings recorded with this investor.</p>
+                <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No previous meetings recorded with this investor.</p>
               ) : (
                 <div className="space-y-3">
                   {meetings.map(m => {
                     const objs = safeJsonParse<Objection[]>(m.objections, []);
                     return (
-                      <div key={m.id} className="border border-zinc-800/60 rounded-lg p-4 hover:border-zinc-700 transition-colors">
-                        <div className="flex items-start justify-between gap-4 flex-wrap">
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <span className="text-sm font-medium text-zinc-200">{formatDate(m.date)}</span>
-                              <span className="text-xs px-2 py-0.5 rounded bg-zinc-800 text-zinc-400">
-                                {meetingTypeLabel(m.type)}
-                              </span>
-                              {m.duration_minutes > 0 && (
-                                <span className="text-xs text-zinc-600">{m.duration_minutes}min</span>
-                              )}
-                              {m.attendees && (
-                                <span className="text-xs text-zinc-600">{m.attendees}</span>
-                              )}
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2 shrink-0">
-                            <div className="flex gap-0.5" title={`Enthusiasm: ${m.enthusiasm_score}/5`}>
-                              {[1,2,3,4,5].map(n => (
-                                <div key={n} className={`w-2 h-2 rounded-full ${n <= m.enthusiasm_score ? 'bg-blue-500' : 'bg-zinc-800'}`} />
-                              ))}
-                            </div>
-                            <span className={`text-xs px-2 py-0.5 rounded ${
-                              m.status_after === 'engaged' ? 'bg-purple-900/50 text-purple-400' :
-                              m.status_after === 'in_dd' ? 'bg-orange-900/50 text-orange-400' :
-                              m.status_after === 'term_sheet' ? 'bg-green-900/50 text-green-400' :
-                              m.status_after === 'passed' ? 'bg-red-900/50 text-red-400' :
-                              'bg-zinc-800 text-zinc-400'
-                            }`}>{STATUS_LABELS[m.status_after] || m.status_after}</span>
-                          </div>
-                        </div>
-
-                        {m.ai_analysis && (
-                          <p className="text-xs text-zinc-400 mt-2 line-clamp-2">{m.ai_analysis}</p>
-                        )}
-
-                        {objs.length > 0 && (
-                          <div className="mt-2">
-                            <span className="text-xs text-zinc-500 font-medium">Objections: </span>
-                            <div className="flex flex-wrap gap-1 mt-1">
-                              {objs.map((o, i) => (
-                                <span key={i} className={`text-xs px-2 py-0.5 rounded ${
-                                  o.severity === 'showstopper' ? 'bg-red-900/30 text-red-400' :
-                                  o.severity === 'significant' ? 'bg-yellow-900/30 text-yellow-400' :
-                                  'bg-zinc-800 text-zinc-500'
-                                }`}>
-                                  {o.text.length > 60 ? o.text.slice(0, 60) + '...' : o.text}
-                                  {o.response_effectiveness === 'resolved' ? ' [resolved]' : ''}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-
-                        {m.next_steps && (
-                          <div className="mt-2">
-                            <span className="text-xs text-zinc-500 font-medium">Next Steps: </span>
-                            <span className="text-xs text-zinc-400">{m.next_steps}</span>
-                          </div>
-                        )}
-                      </div>
+                      <MeetingCard key={m.id} meeting={m} objs={objs} />
                     );
                   })}
                 </div>
@@ -903,29 +853,29 @@ export default function MeetingPrepPage() {
 
             {/* ============ INTELLIGENCE ============ */}
             {(briefs.length > 0 || partners.length > 0 || portfolio.length > 0) && (
-              <section className="border border-zinc-800 rounded-xl p-5 print-card">
-                <h2 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-4 flex items-center gap-2 print-section-title">
-                  <BookOpen className="w-4 h-4 text-purple-400" />
+              <section className="rounded-xl p-5 print-card" style={{ border: '1px solid var(--border-default)' }}>
+                <h2 className="text-sm font-semibold uppercase tracking-wider mb-4 flex items-center gap-2 print-section-title" style={{ color: 'var(--text-tertiary)' }}>
+                  <span style={{ color: 'var(--accent)' }}><BookOpen className="w-4 h-4" /></span>
                   Intelligence
                 </h2>
 
                 {/* Research briefs */}
                 {briefs.length > 0 && (
                   <div className="mb-4">
-                    <h3 className="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-2">Research Briefs</h3>
+                    <h3 className="text-xs font-medium uppercase tracking-wider mb-2" style={{ color: 'var(--text-muted)' }}>Research Briefs</h3>
                     <div className="space-y-2">
                       {briefs.map(b => (
-                        <details key={b.id} className="group border border-zinc-800/50 rounded-lg overflow-hidden">
-                          <summary className="flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-zinc-900/30 text-sm">
-                            <span className={`text-xs px-1.5 py-0.5 rounded font-medium ${
-                              b.brief_type === 'investor' ? 'bg-blue-900/30 text-blue-400' :
-                              b.brief_type === 'competitor' ? 'bg-orange-900/30 text-orange-400' :
-                              'bg-zinc-800 text-zinc-400'
-                            }`}>{b.brief_type}</span>
-                            <span className="text-zinc-300">{b.subject}</span>
-                            <span className="text-xs text-zinc-600 ml-auto">{b.updated_at?.split('T')[0]}</span>
+                        <details key={b.id} className="group rounded-lg overflow-hidden" style={{ border: '1px solid var(--border-subtle)' }}>
+                          <summary className="flex items-center gap-2 px-3 py-2 cursor-pointer text-sm">
+                            <span className="text-xs px-1.5 py-0.5 rounded font-medium" style={
+                              b.brief_type === 'investor' ? { background: 'var(--accent-muted)', color: 'var(--accent)' } :
+                              b.brief_type === 'competitor' ? { background: 'var(--warning-muted)', color: 'var(--warning)' } :
+                              { background: 'var(--surface-2)', color: 'var(--text-tertiary)' }
+                            }>{b.brief_type}</span>
+                            <span style={{ color: 'var(--text-secondary)' }}>{b.subject}</span>
+                            <span className="text-xs ml-auto" style={{ color: 'var(--text-muted)' }}>{b.updated_at?.split('T')[0]}</span>
                           </summary>
-                          <div className="px-3 pb-3 text-xs text-zinc-400 whitespace-pre-wrap leading-relaxed border-t border-zinc-800/30 pt-2">
+                          <div className="px-3 pb-3 text-xs whitespace-pre-wrap leading-relaxed pt-2" style={{ color: 'var(--text-tertiary)', borderTop: '1px solid var(--border-subtle)' }}>
                             {b.content}
                           </div>
                         </details>
@@ -937,18 +887,18 @@ export default function MeetingPrepPage() {
                 {/* Partner profiles */}
                 {partners.length > 0 && (
                   <div className="mb-4">
-                    <h3 className="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-2">Partner Profiles</h3>
+                    <h3 className="text-xs font-medium uppercase tracking-wider mb-2" style={{ color: 'var(--text-muted)' }}>Partner Profiles</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                       {partners.map(p => (
-                        <div key={p.id} className="border border-zinc-800/50 rounded-lg p-3">
+                        <div key={p.id} className="rounded-lg p-3" style={{ border: '1px solid var(--border-subtle)' }}>
                           <div className="flex items-center gap-2 mb-1">
-                            <Users className="w-3.5 h-3.5 text-zinc-500" />
-                            <span className="text-sm font-medium text-zinc-200">{p.name}</span>
+                            <span style={{ color: 'var(--text-muted)' }}><Users className="w-3.5 h-3.5" /></span>
+                            <span className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>{p.name}</span>
                           </div>
-                          {p.title && <p className="text-xs text-zinc-500">{p.title}</p>}
-                          {p.focus_areas && <p className="text-xs text-zinc-400 mt-1">Focus: {p.focus_areas}</p>}
-                          {p.notable_deals && <p className="text-xs text-zinc-400 mt-0.5">Deals: {p.notable_deals}</p>}
-                          {p.relevance_to_us && <p className="text-xs text-blue-400 mt-0.5">{p.relevance_to_us}</p>}
+                          {p.title && <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{p.title}</p>}
+                          {p.focus_areas && <p className="text-xs mt-1" style={{ color: 'var(--text-tertiary)' }}>Focus: {p.focus_areas}</p>}
+                          {p.notable_deals && <p className="text-xs mt-0.5" style={{ color: 'var(--text-tertiary)' }}>Deals: {p.notable_deals}</p>}
+                          {p.relevance_to_us && <p className="text-xs mt-0.5" style={{ color: 'var(--accent)' }}>{p.relevance_to_us}</p>}
                         </div>
                       ))}
                     </div>
@@ -958,24 +908,27 @@ export default function MeetingPrepPage() {
                 {/* Portfolio companies */}
                 {portfolio.length > 0 && (
                   <div>
-                    <h3 className="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-2">Portfolio Companies</h3>
-                    <div className="border border-zinc-800/50 rounded-lg overflow-hidden">
+                    <h3 className="text-xs font-medium uppercase tracking-wider mb-2" style={{ color: 'var(--text-muted)' }}>Portfolio Companies</h3>
+                    <div className="rounded-lg overflow-hidden" style={{ border: '1px solid var(--border-subtle)' }}>
                       <table className="w-full text-xs">
-                        <thead className="bg-zinc-900/30 border-b border-zinc-800/50">
+                        <thead style={{ background: 'var(--surface-1)', borderBottom: '1px solid var(--border-subtle)' }}>
                           <tr>
-                            <th className="text-left px-3 py-2 text-zinc-500 font-medium">Company</th>
-                            <th className="text-left px-3 py-2 text-zinc-500 font-medium">Sector</th>
-                            <th className="text-left px-3 py-2 text-zinc-500 font-medium">Stage</th>
-                            <th className="text-left px-3 py-2 text-zinc-500 font-medium">Relevance</th>
+                            <th className="text-left px-3 py-2 font-medium" style={{ color: 'var(--text-muted)' }}>Company</th>
+                            <th className="text-left px-3 py-2 font-medium" style={{ color: 'var(--text-muted)' }}>Sector</th>
+                            <th className="text-left px-3 py-2 font-medium" style={{ color: 'var(--text-muted)' }}>Stage</th>
+                            <th className="text-left px-3 py-2 font-medium" style={{ color: 'var(--text-muted)' }}>Relevance</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-zinc-800/30">
+                        <tbody>
                           {portfolio.map(pc => (
-                            <tr key={pc.id} className={pc.relevance?.toLowerCase().includes('conflict') ? 'bg-red-950/10' : ''}>
-                              <td className="px-3 py-2 text-zinc-300 font-medium">{pc.company}</td>
-                              <td className="px-3 py-2 text-zinc-500">{pc.sector}</td>
-                              <td className="px-3 py-2 text-zinc-500">{pc.stage_invested}</td>
-                              <td className="px-3 py-2 text-zinc-400">{pc.relevance || '---'}</td>
+                            <tr key={pc.id} style={{
+                              borderBottom: '1px solid var(--border-subtle)',
+                              background: pc.relevance?.toLowerCase().includes('conflict') ? 'var(--danger-muted)' : undefined,
+                            }}>
+                              <td className="px-3 py-2 font-medium" style={{ color: 'var(--text-secondary)' }}>{pc.company}</td>
+                              <td className="px-3 py-2" style={{ color: 'var(--text-muted)' }}>{pc.sector}</td>
+                              <td className="px-3 py-2" style={{ color: 'var(--text-muted)' }}>{pc.stage_invested}</td>
+                              <td className="px-3 py-2" style={{ color: 'var(--text-tertiary)' }}>{pc.relevance || '---'}</td>
                             </tr>
                           ))}
                         </tbody>
@@ -987,44 +940,44 @@ export default function MeetingPrepPage() {
             )}
 
             {/* ============ OPEN TASKS ============ */}
-            <section className="border border-zinc-800 rounded-xl p-5 print-card">
-              <h2 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-4 flex items-center gap-2 print-section-title">
-                <CheckCircle className="w-4 h-4 text-green-400" />
+            <section className="rounded-xl p-5 print-card" style={{ border: '1px solid var(--border-default)' }}>
+              <h2 className="text-sm font-semibold uppercase tracking-wider mb-4 flex items-center gap-2 print-section-title" style={{ color: 'var(--text-tertiary)' }}>
+                <span style={{ color: 'var(--success)' }}><CheckCircle className="w-4 h-4" /></span>
                 Open Tasks
-                <span className="text-xs font-normal text-zinc-600 ml-1">
+                <span className="text-xs font-normal ml-1" style={{ color: 'var(--text-muted)' }}>
                   ({pendingTasks.length} pending)
                 </span>
               </h2>
               {pendingTasks.length === 0 ? (
-                <p className="text-sm text-zinc-600">No pending tasks for this investor.</p>
+                <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No pending tasks for this investor.</p>
               ) : (
                 <div className="space-y-2">
                   {pendingTasks.map(t => (
-                    <div key={t.id} className="flex items-start gap-3 text-sm border border-zinc-800/40 rounded-lg p-3">
-                      <span className={`shrink-0 mt-1 w-2 h-2 rounded-full ${
-                        t.priority === 'critical' ? 'bg-red-500' :
-                        t.priority === 'high' ? 'bg-orange-500' :
-                        t.priority === 'medium' ? 'bg-yellow-500' :
-                        'bg-zinc-600'
-                      }`} />
+                    <div key={t.id} className="flex items-start gap-3 text-sm rounded-lg p-3" style={{ border: '1px solid var(--border-subtle)' }}>
+                      <span className="shrink-0 mt-1 w-2 h-2 rounded-full" style={{
+                        background: t.priority === 'critical' ? 'var(--danger)' :
+                          t.priority === 'high' ? 'var(--warning)' :
+                          t.priority === 'medium' ? 'var(--warning)' :
+                          'var(--surface-3)',
+                      }} />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className="text-zinc-200 font-medium">{t.title}</span>
-                          <span className={`text-xs px-1.5 py-0.5 rounded ${
-                            t.status === 'in_progress' ? 'bg-blue-900/30 text-blue-400' : 'bg-zinc-800 text-zinc-500'
-                          }`}>{t.status === 'in_progress' ? 'In Progress' : 'Pending'}</span>
-                          <span className={`text-xs px-1.5 py-0.5 rounded ${
-                            t.priority === 'critical' ? 'bg-red-900/30 text-red-400' :
-                            t.priority === 'high' ? 'bg-orange-900/30 text-orange-400' :
-                            'bg-zinc-800 text-zinc-500'
-                          }`}>{t.priority}</span>
+                          <span className="font-medium" style={{ color: 'var(--text-secondary)' }}>{t.title}</span>
+                          <span className="text-xs px-1.5 py-0.5 rounded" style={
+                            t.status === 'in_progress' ? { background: 'var(--accent-muted)', color: 'var(--accent)' } : { background: 'var(--surface-2)', color: 'var(--text-muted)' }
+                          }>{t.status === 'in_progress' ? 'In Progress' : 'Pending'}</span>
+                          <span className="text-xs px-1.5 py-0.5 rounded" style={
+                            t.priority === 'critical' ? { background: 'var(--danger-muted)', color: 'var(--danger)' } :
+                            t.priority === 'high' ? { background: 'var(--warning-muted)', color: 'var(--warning)' } :
+                            { background: 'var(--surface-2)', color: 'var(--text-muted)' }
+                          }>{t.priority}</span>
                         </div>
-                        {t.description && <p className="text-xs text-zinc-500 mt-0.5">{t.description}</p>}
-                        <div className="flex gap-3 text-xs text-zinc-600 mt-1">
+                        {t.description && <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{t.description}</p>}
+                        <div className="flex gap-3 text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
                           {t.due_date && (
-                            <span className={`flex items-center gap-1 ${
-                              new Date(t.due_date) < new Date() ? 'text-red-400' : ''
-                            }`}>
+                            <span className="flex items-center gap-1" style={{
+                              color: new Date(t.due_date) < new Date() ? 'var(--danger)' : undefined,
+                            }}>
                               <Clock className="w-3 h-3" />
                               {formatDate(t.due_date)}
                               {new Date(t.due_date) < new Date() && ' (overdue)'}
@@ -1040,9 +993,9 @@ export default function MeetingPrepPage() {
             </section>
 
             {/* ============ PRE-MEETING NOTES ============ */}
-            <section className="border border-zinc-800 rounded-xl p-5 print-card">
-              <h2 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-4 flex items-center gap-2 print-section-title">
-                <MessageSquare className="w-4 h-4 text-zinc-400" />
+            <section className="rounded-xl p-5 print-card" style={{ border: '1px solid var(--border-default)' }}>
+              <h2 className="text-sm font-semibold uppercase tracking-wider mb-4 flex items-center gap-2 print-section-title" style={{ color: 'var(--text-tertiary)' }}>
+                <span style={{ color: 'var(--text-tertiary)' }}><MessageSquare className="w-4 h-4" /></span>
                 Pre-Meeting Notes
               </h2>
               <textarea
@@ -1050,30 +1003,22 @@ export default function MeetingPrepPage() {
                 onChange={e => setNotes(e.target.value)}
                 placeholder="Jot down your agenda, questions to ask, points to emphasize, materials to bring..."
                 rows={6}
-                className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-3 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-blue-600 resize-y"
+                className="w-full rounded-lg px-4 py-3 text-sm focus:outline-none resize-y"
+                style={{
+                  background: 'var(--surface-1)',
+                  border: '1px solid var(--border-default)',
+                  color: 'var(--text-secondary)',
+                }}
+                onFocus={e => { e.target.style.borderColor = 'var(--accent)'; }}
+                onBlur={e => { e.target.style.borderColor = 'var(--border-default)'; }}
               />
             </section>
 
             {/* ============ QUICK LINKS (no-print) ============ */}
             <div className="flex flex-wrap gap-2 no-print">
-              <Link
-                href={`/investors/${investor.id}`}
-                className="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-xs text-zinc-300 flex items-center gap-1.5 transition-colors"
-              >
-                <ExternalLink className="w-3 h-3" /> Investor Detail
-              </Link>
-              <Link
-                href="/meetings/new"
-                className="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-xs text-zinc-300 flex items-center gap-1.5 transition-colors"
-              >
-                <Calendar className="w-3 h-3" /> Log New Meeting
-              </Link>
-              <Link
-                href="/intelligence"
-                className="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-xs text-zinc-300 flex items-center gap-1.5 transition-colors"
-              >
-                <BookOpen className="w-3 h-3" /> Intelligence Hub
-              </Link>
+              <QuickLink href={`/investors/${investor.id}`} icon={<ExternalLink className="w-3 h-3" />} label="Investor Detail" />
+              <QuickLink href="/meetings/new" icon={<Calendar className="w-3 h-3" />} label="Log New Meeting" />
+              <QuickLink href="/intelligence" icon={<BookOpen className="w-3 h-3" />} label="Intelligence Hub" />
             </div>
           </div>
         )}
@@ -1084,22 +1029,157 @@ export default function MeetingPrepPage() {
 
 // ---------- small components ----------
 
-function ProfileField({ label, value, bold, badge, badgeColor }: {
+function GenerateBriefButton({ generating, onClick }: { generating: boolean; onClick: () => void }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <button
+      onClick={onClick}
+      disabled={generating}
+      className="no-print px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 disabled:opacity-50"
+      style={{
+        background: hovered ? 'var(--accent)' : 'var(--accent)',
+        color: 'var(--surface-0)',
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {generating ? (
+        <Loader2 className="w-4 h-4 animate-spin" />
+      ) : (
+        <Sparkles className="w-4 h-4" />
+      )}
+      {generating ? 'Generating...' : 'Generate Brief'}
+    </button>
+  );
+}
+
+function PrintButton({ onClick }: { onClick: () => void }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <button
+      onClick={onClick}
+      className="no-print px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+      style={{
+        background: hovered ? 'var(--surface-3)' : 'var(--surface-2)',
+        color: 'var(--text-primary)',
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <Printer className="w-4 h-4" />
+      Print
+    </button>
+  );
+}
+
+function QuickLink({ href, icon, label }: { href: string; icon: React.ReactNode; label: string }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <Link
+      href={href}
+      className="px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 transition-colors"
+      style={{
+        background: hovered ? 'var(--surface-3)' : 'var(--surface-2)',
+        color: 'var(--text-secondary)',
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {icon} {label}
+    </Link>
+  );
+}
+
+function MeetingCard({ meeting: m, objs }: { meeting: Meeting; objs: Objection[] }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <div
+      className="rounded-lg p-4 transition-colors"
+      style={{
+        border: `1px solid ${hovered ? 'var(--border-strong)' : 'var(--border-subtle)'}`,
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>{formatDate(m.date)}</span>
+            <span className="text-xs px-2 py-0.5 rounded" style={{ background: 'var(--surface-2)', color: 'var(--text-tertiary)' }}>
+              {meetingTypeLabel(m.type)}
+            </span>
+            {m.duration_minutes > 0 && (
+              <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{m.duration_minutes}min</span>
+            )}
+            {m.attendees && (
+              <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{m.attendees}</span>
+            )}
+          </div>
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          <div className="flex gap-0.5" title={`Enthusiasm: ${m.enthusiasm_score}/5`}>
+            {[1,2,3,4,5].map(n => (
+              <div key={n} className="w-2 h-2 rounded-full" style={{ background: n <= m.enthusiasm_score ? 'var(--accent)' : 'var(--surface-2)' }} />
+            ))}
+          </div>
+          <span className="text-xs px-2 py-0.5 rounded" style={
+            m.status_after === 'engaged' ? { background: 'var(--accent-muted)', color: 'var(--accent)' } :
+            m.status_after === 'in_dd' ? { background: 'var(--warning-muted)', color: 'var(--warning)' } :
+            m.status_after === 'term_sheet' ? { background: 'var(--success-muted)', color: 'var(--success)' } :
+            m.status_after === 'passed' ? { background: 'var(--danger-muted)', color: 'var(--danger)' } :
+            { background: 'var(--surface-2)', color: 'var(--text-tertiary)' }
+          }>{STATUS_LABELS[m.status_after] || m.status_after}</span>
+        </div>
+      </div>
+
+      {m.ai_analysis && (
+        <p className="text-xs mt-2 line-clamp-2" style={{ color: 'var(--text-tertiary)' }}>{m.ai_analysis}</p>
+      )}
+
+      {objs.length > 0 && (
+        <div className="mt-2">
+          <span className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>Objections: </span>
+          <div className="flex flex-wrap gap-1 mt-1">
+            {objs.map((o, i) => (
+              <span key={i} className="text-xs px-2 py-0.5 rounded" style={
+                o.severity === 'showstopper' ? { background: 'var(--danger-muted)', color: 'var(--danger)' } :
+                o.severity === 'significant' ? { background: 'var(--warning-muted)', color: 'var(--warning)' } :
+                { background: 'var(--surface-2)', color: 'var(--text-muted)' }
+              }>
+                {o.text.length > 60 ? o.text.slice(0, 60) + '...' : o.text}
+                {o.response_effectiveness === 'resolved' ? ' [resolved]' : ''}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {m.next_steps && (
+        <div className="mt-2">
+          <span className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>Next Steps: </span>
+          <span className="text-xs" style={{ color: 'var(--text-tertiary)' }}>{m.next_steps}</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ProfileField({ label, value, bold, badge, badgeStyle }: {
   label: string;
   value: string;
   bold?: boolean;
   badge?: boolean;
-  badgeColor?: string;
+  badgeStyle?: React.CSSProperties;
 }) {
   return (
     <div>
-      <span className="text-xs text-zinc-500 block mb-0.5">{label}</span>
+      <span className="text-xs block mb-0.5" style={{ color: 'var(--text-muted)' }}>{label}</span>
       {badge ? (
-        <span className={`text-xs font-medium px-2 py-0.5 rounded ${badgeColor || 'bg-zinc-800 text-zinc-400'}`}>
+        <span className="text-xs font-medium px-2 py-0.5 rounded" style={badgeStyle || { background: 'var(--surface-2)', color: 'var(--text-tertiary)' }}>
           {value}
         </span>
       ) : (
-        <span className={`text-sm ${bold ? 'font-semibold text-zinc-100' : 'text-zinc-300'}`}>{value}</span>
+        <span className="text-sm" style={bold ? { fontWeight: 600, color: 'var(--text-primary)' } : { color: 'var(--text-secondary)' }}>{value}</span>
       )}
     </div>
   );
