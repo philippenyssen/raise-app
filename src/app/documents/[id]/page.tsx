@@ -50,28 +50,51 @@ export default function DocumentEditorPage() {
   const [selectedText, setSelectedText] = useState('');
 
   useEffect(() => {
-    fetch(`/api/documents/${id}`).then(r => r.json()).then(d => {
+    fetch(`/api/documents/${id}`).then(r => {
+      if (!r.ok) throw new Error('Failed to load document');
+      return r.json();
+    }).then(d => {
       setDoc(d);
       setContent(d.content);
       setTitle(d.title);
       setLoading(false);
+    }).catch(() => {
+      toast('Failed to load document', 'error');
+      setLoading(false);
     });
-  }, [id]);
+  }, [id, toast]);
 
   const save = useCallback(async (changeSummary?: string) => {
     setSaving(true);
-    await fetch(`/api/documents/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title, content, change_summary: changeSummary || '' }),
-    });
-    setDirty(false);
-    setSaving(false);
-    toast('Saved');
-    // Refresh doc
-    const res = await fetch(`/api/documents/${id}`);
-    setDoc(await res.json());
+    try {
+      const res = await fetch(`/api/documents/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, content, change_summary: changeSummary || '' }),
+      });
+      if (!res.ok) throw new Error('Save failed');
+      setDirty(false);
+      toast('Saved');
+      const refreshRes = await fetch(`/api/documents/${id}`);
+      if (refreshRes.ok) setDoc(await refreshRes.json());
+    } catch {
+      toast('Failed to save document', 'error');
+    } finally {
+      setSaving(false);
+    }
   }, [id, title, content, toast]);
+
+  // Keyboard shortcut: Cmd/Ctrl+S to save
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+        e.preventDefault();
+        if (dirty) save();
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [dirty, save]);
 
   async function loadVersions() {
     const res = await fetch(`/api/documents/${id}/versions`);
