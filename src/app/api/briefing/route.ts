@@ -193,7 +193,7 @@ export async function GET() {
         description: sig.recommendation,
         investorName: null,
         category: 'escalation',
-        link: '/pulse',
+        link: '/dealflow',
         timeEstimate: '20-30 min',
       });
     }
