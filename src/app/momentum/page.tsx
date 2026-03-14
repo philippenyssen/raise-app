@@ -333,9 +333,9 @@ export default function MomentumPage() {
                 term_sheet_signal: { border: 'rgba(22,101,52,0.5)',  bg: 'rgba(20,83,45,0.1)',   color: 'var(--success, rgba(74,222,128,1))' },
               };
               const labels: Record<string, string> = {
-                critical_warning: 'CRITICAL',
-                early_warning: 'WARNING',
-                term_sheet_signal: 'OPPORTUNITY',
+                critical_warning: 'Critical',
+                early_warning: 'Warning',
+                term_sheet_signal: 'Signal',
               };
               const c = colors[alert.type] || colors.early_warning;
               return (

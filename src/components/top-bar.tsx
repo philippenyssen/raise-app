@@ -157,7 +157,7 @@ export function TopBar() {
               <div style={{ padding: 'var(--space-3)', borderBottom: '1px solid var(--border-subtle)' }}>
                 <div className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'var(--danger)' }}>
                   <AlertTriangle style={{ width: '13px', height: '13px' }} />
-                  OVERDUE ({overdue.length})
+                  Overdue ({overdue.length})
                 </div>
                 {overdue.slice(0, 3).map(t => {
                   const days = Math.ceil((now.getTime() - new Date(t.due_date).getTime()) / 86400000);
@@ -191,7 +191,7 @@ export function TopBar() {
             <div style={{ padding: 'var(--space-3)', borderBottom: '1px solid var(--border-subtle)' }}>
               <div className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'var(--text-tertiary)' }}>
                 <Clock style={{ width: '13px', height: '13px' }} />
-                UPCOMING
+                Upcoming
               </div>
               {upcoming.length === 0 ? (
                 <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', padding: 'var(--space-1) 0' }}>No upcoming tasks</p>
@@ -226,7 +226,7 @@ export function TopBar() {
             <div style={{ padding: 'var(--space-3)' }}>
               <div className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'var(--text-tertiary)' }}>
                 <Activity style={{ width: '13px', height: '13px' }} />
-                RECENT
+                Recent
               </div>
               {activity.length === 0 ? (
                 <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', padding: 'var(--space-1) 0' }}>No recent activity</p>
