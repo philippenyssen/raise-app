@@ -88,6 +88,7 @@ export async function analyzeMeetingNotes(rawNotes: string, investorName: string
   const response = await getAIClient().messages.create({
     model: 'claude-sonnet-4-20250514',
     max_tokens: 4096,
+    temperature: 0,
     system: 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.',
     messages: [{
       role: 'user',
@@ -182,6 +183,7 @@ NOTES: ${m.raw_notes.substring(0, 500)}`;
   const response = await getAIClient().messages.create({
     model: 'claude-sonnet-4-20250514',
     max_tokens: 4096,
+    temperature: 0,
     system: 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.',
     messages: [{
       role: 'user',
@@ -221,6 +223,7 @@ export async function assessProcessHealth(funnel: Record<string, unknown>, objec
   const response = await getAIClient().messages.create({
     model: 'claude-sonnet-4-20250514',
     max_tokens: 2048,
+    temperature: 0,
     system: 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.',
     messages: [{
       role: 'user',
@@ -252,6 +255,7 @@ export async function improveSection(section: string, instruction: string, conte
   const response = await getAIClient().messages.create({
     model: 'claude-sonnet-4-20250514',
     max_tokens: 4096,
+    temperature: 0.3,
     system: 'You are a Series C fundraise advisor. Be concise, specific, and actionable. Focus on what matters for closing the deal.',
     messages: [{
       role: 'user',
@@ -279,6 +283,7 @@ export async function checkConsistency(
   const response = await getAIClient().messages.create({
     model: 'claude-sonnet-4-20250514',
     max_tokens: 4096,
+    temperature: 0,
     system: 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.',
     messages: [{
       role: 'user',
@@ -308,6 +313,7 @@ export async function findWeakArguments(content: string): Promise<{ weaknesses: 
   const response = await getAIClient().messages.create({
     model: 'claude-sonnet-4-20250514',
     max_tokens: 4096,
+    temperature: 0,
     system: 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.',
     messages: [{
       role: 'user',
@@ -348,6 +354,7 @@ export async function researchInvestor(investorName: string, context?: string): 
   const response = await getAIClient().messages.create({
     model: 'claude-sonnet-4-20250514',
     max_tokens: 8192,
+    temperature: 0,
     system: 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.',
     messages: [{
       role: 'user',
@@ -405,6 +412,7 @@ export async function researchCompetitor(companyName: string, context?: string):
   const response = await getAIClient().messages.create({
     model: 'claude-sonnet-4-20250514',
     max_tokens: 4096,
+    temperature: 0,
     system: 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.',
     messages: [{
       role: 'user',
@@ -451,6 +459,7 @@ export async function researchMarketDeals(sector: string): Promise<{
   const response = await getAIClient().messages.create({
     model: 'claude-sonnet-4-20250514',
     max_tokens: 4096,
+    temperature: 0,
     system: 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.',
     messages: [{
       role: 'user',
@@ -526,6 +535,7 @@ NEXT STEPS: ${m.next_steps || 'None recorded'}`;
   const response = await getAIClient().messages.create({
     model: 'claude-sonnet-4-20250514',
     max_tokens: 4096,
+    temperature: 0,
     system: 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.',
     messages: [{
       role: 'user',
@@ -585,6 +595,7 @@ export async function polishGoldmanStyle(content: string): Promise<string> {
   const response = await getAIClient().messages.create({
     model: 'claude-sonnet-4-20250514',
     max_tokens: 4096,
+    temperature: 0.3,
     system: 'You are a Series C fundraise advisor. Be concise, specific, and actionable. Focus on what matters for closing the deal.',
     messages: [{
       role: 'user',
