@@ -614,6 +614,27 @@ select option {
 .tier-2 { background: var(--text-secondary); color: var(--surface-0); }
 .tier-3 { background: var(--surface-3); color: var(--text-secondary); border: 1px solid var(--border-default); }
 
+/* ── Status badges ── */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 0.125rem 0.5rem;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.status-identified { background: var(--surface-2); color: var(--text-muted); }
+.status-contacted { background: var(--surface-3); color: var(--text-secondary); }
+.status-nda { background: color-mix(in srgb, var(--accent) 15%, transparent); color: var(--accent); }
+.status-engaged { background: color-mix(in srgb, var(--accent) 20%, transparent); color: var(--accent); }
+.status-dd { background: var(--warning-muted); color: var(--text-primary); }
+.status-term { background: var(--success-muted); color: var(--text-primary); }
+.status-closed { background: var(--success); color: var(--surface-0); }
+.status-passed { background: var(--danger-muted); color: var(--text-primary); }
+
 /* ── Progress bars — monochrome ── */
 .progress-track {
   height: 4px;
