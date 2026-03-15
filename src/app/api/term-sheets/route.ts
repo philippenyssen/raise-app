@@ -26,6 +26,12 @@ export async function POST(req: NextRequest) {
   if (!body.investor) {
     return NextResponse.json({ error: 'investor is required' }, { status: 400 });
   }
+  const textLimits: Record<string, number> = { investor: 255, valuation: 100, amount: 100, liq_pref: 500, anti_dilution: 500, board_seats: 500, dividends: 500, protective_provisions: 2000, option_pool: 500, exclusivity: 500, notes: 5000 };
+  for (const [field, max] of Object.entries(textLimits)) {
+    if (body[field] && typeof body[field] === 'string' && (body[field] as string).length > max) {
+      return NextResponse.json({ error: `${field} exceeds maximum length of ${max} characters` }, { status: 400 });
+    }
+  }
   const rawSV = Number(body.strategic_value);
   const strategic_value = (!isNaN(rawSV) && rawSV >= 1 && rawSV <= 5) ? rawSV : 3;
   try {
