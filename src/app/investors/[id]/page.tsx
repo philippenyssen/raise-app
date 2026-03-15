@@ -16,7 +16,7 @@ import {
 import { useToast } from '@/components/toast';
 import { fmtDateShort, fmtDate } from '@/lib/format';
 import { STATUS_LABELS, OUTCOME_CONFIG } from '@/lib/constants';
-import { scoreColor4 as scoreColor, scoreBorderColor, stTextMuted as textMuted, stTextTertiary as textTertiary, stTextSecondary as textSecondary, stTextPrimary as textPrimary } from '@/lib/styles';
+import { scoreColor4 as scoreColor, scoreBorderColor, stTextMuted as textMuted, stTextTertiary as textTertiary, stTextSecondary as textSecondary, stTextPrimary as textPrimary, stSurface1, stSurface2, labelMuted } from '@/lib/styles';
 
 const STATUS_COLORS: Record<string, string> = {
   identified: 'var(--surface-3)',
@@ -328,9 +328,9 @@ export default function InvestorDetailPage() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="h-8 w-48 rounded animate-pulse" style={{ background: 'var(--surface-2)' }} />
-        <div className="h-32 rounded-xl animate-pulse" style={{ background: 'var(--surface-1)' }} />
-        <div className="h-64 rounded-xl animate-pulse" style={{ background: 'var(--surface-1)' }} />
+        <div className="h-8 w-48 rounded animate-pulse" style={stSurface2} />
+        <div className="h-32 rounded-xl animate-pulse" style={stSurface1} />
+        <div className="h-64 rounded-xl animate-pulse" style={stSurface1} />
       </div>
     );
   }
@@ -344,8 +344,7 @@ export default function InvestorDetailPage() {
           className="text-sm mt-2 block transition-colors"
           style={{ color: 'var(--accent)' }}
           onMouseEnter={e => (e.currentTarget.style.opacity = '0.8')}
-          onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
-        >
+          onMouseLeave={e => (e.currentTarget.style.opacity = '1')}>
           Back to Pipeline
         </Link>
       </div>
@@ -381,8 +380,7 @@ export default function InvestorDetailPage() {
             className="flex items-center gap-1 text-sm mb-3 transition-colors"
             style={textMuted}
             onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
-            onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
-          >
+            onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}>
             <ArrowLeft className="w-3.5 h-3.5" /> Back to CRM
           </Link>
           {editing ? (
@@ -390,8 +388,7 @@ export default function InvestorDetailPage() {
               className="input"
               value={editForm.name}
               onChange={e => setEditForm(f => ({ ...f, name: e.target.value }))}
-              style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, maxWidth: '400px' }}
-            />
+              style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, maxWidth: '400px' }} />
           ) : (
             <h1 className="page-title">{investor.name}</h1>
           )}
@@ -401,8 +398,7 @@ export default function InvestorDetailPage() {
                 value={editForm.tier}
                 onChange={e => setEditForm(f => ({ ...f, tier: Number(e.target.value) }))}
                 className="input"
-                style={{ width: 'auto', padding: '2px 8px', fontSize: 'var(--font-size-xs)' }}
-              >
+                style={{ width: 'auto', padding: '2px 8px', fontSize: 'var(--font-size-xs)' }}>
                 {[1, 2, 3, 4].map(t => (
                   <option key={t} value={t}>Tier {t}</option>
                 ))}
@@ -425,8 +421,7 @@ export default function InvestorDetailPage() {
                 value={editForm.status}
                 onChange={e => setEditForm(f => ({ ...f, status: e.target.value }))}
                 className="input"
-                style={{ width: 'auto', padding: '2px 8px', fontSize: 'var(--font-size-xs)' }}
-              >
+                style={{ width: 'auto', padding: '2px 8px', fontSize: 'var(--font-size-xs)' }}>
                 {Object.entries(STATUS_LABELS).map(([val, label]) => (
                   <option key={val} value={val}>{label}</option>
                 ))}
@@ -460,16 +455,14 @@ export default function InvestorDetailPage() {
               <button
                 onClick={saveEdit}
                 disabled={saving}
-                className="btn btn-primary btn-md flex items-center gap-2"
-              >
+                className="btn btn-primary btn-md flex items-center gap-2">
                 {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
                 {saving ? 'Saving...' : 'Save'}
               </button>
               <button
                 onClick={cancelEdit}
                 disabled={saving}
-                className="btn btn-ghost btn-md flex items-center gap-2"
-              >
+                className="btn btn-ghost btn-md flex items-center gap-2">
                 <X className="w-3.5 h-3.5" /> Cancel
               </button>
             </>
@@ -477,20 +470,18 @@ export default function InvestorDetailPage() {
             <button
               onClick={startEdit}
               className="px-3 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2"
-              style={{ background: 'var(--surface-2)', color: 'var(--text-primary)' }}
+              style={{ ...stSurface2, ...textPrimary }}
               onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface-3)')}
-              onMouseLeave={e => (e.currentTarget.style.background = 'var(--surface-2)')}
-            >
+              onMouseLeave={e => (e.currentTarget.style.background = 'var(--surface-2)')}>
               <Pencil className="w-3.5 h-3.5" /> Edit
             </button>
           )}
           <Link
             href={`/meetings/prep?investor=${id}`}
             className="px-3 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2"
-            style={{ background: 'var(--surface-2)', color: 'var(--text-primary)' }}
+            style={{ ...stSurface2, ...textPrimary }}
             onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface-3)')}
-            onMouseLeave={e => (e.currentTarget.style.background = 'var(--surface-2)')}
-          >
+            onMouseLeave={e => (e.currentTarget.style.background = 'var(--surface-2)')}>
             <FileSearch className="w-3.5 h-3.5" /> Prep Meeting
           </Link>
           <button
@@ -502,8 +493,7 @@ export default function InvestorDetailPage() {
               color: researching ? 'var(--text-muted)' : 'var(--text-primary)',
             }}
             onMouseEnter={e => { if (!researching) e.currentTarget.style.background = 'var(--surface-3)'; }}
-            onMouseLeave={e => { if (!researching) e.currentTarget.style.background = 'var(--surface-2)'; }}
-          >
+            onMouseLeave={e => { if (!researching) e.currentTarget.style.background = 'var(--surface-2)'; }}>
             {researching ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Researching...</> : <><RefreshCw className="w-3.5 h-3.5" /> Research</>}
           </button>
           <Link
@@ -511,8 +501,7 @@ export default function InvestorDetailPage() {
             className="px-4 py-2 rounded-lg text-sm font-normal transition-colors"
             style={{ background: 'var(--accent)', color: 'var(--text-primary)' }}
             onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
-            onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
-          >
+            onMouseLeave={e => (e.currentTarget.style.opacity = '1')}>
             + Log Meeting
           </Link>
         </div>
@@ -538,8 +527,7 @@ export default function InvestorDetailPage() {
         return (
           <div
             className="flex items-start gap-3 rounded-xl px-4 py-3"
-            style={{ background: 'var(--warning-muted)' }}
-          >
+            style={{ background: 'var(--warning-muted)' }}>
             <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" style={textTertiary} />
             <div className="min-w-0">
               <div className="text-sm font-normal" style={textTertiary}>
@@ -613,7 +601,7 @@ export default function InvestorDetailPage() {
           <span style={{ color: 'var(--border-default)' }}>|</span>
 
           {/* Days + Velocity */}
-          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+          <span style={labelMuted}>
             {dealIntel.daysInProcess > 0 ? `${dealIntel.daysInProcess}d in process` : 'New'} · Velocity {dealIntel.velocityScore}
           </span>
 
@@ -841,8 +829,7 @@ export default function InvestorDetailPage() {
       <EnrichmentStatusCard
         status={enrichmentStatus}
         enriching={enriching}
-        onEnrich={triggerEnrichment}
-      />
+        onEnrich={triggerEnrichment} />
 
       {/* Intelligence Score */}
       {score && <InvestorScorePanel score={score} loading={scoreLoading} onRefresh={fetchScore} investorId={id} />}
@@ -946,8 +933,7 @@ export default function InvestorDetailPage() {
                               <div
                                 key={n}
                                 className="w-1.5 h-1.5 rounded-full"
-                                style={{ background: n <= m.enthusiasm_score ? 'var(--accent)' : 'var(--surface-2)' }}
-                              />
+                                style={{ background: n <= m.enthusiasm_score ? 'var(--accent)' : 'var(--surface-2)' }} />
                             ))}
                           </div>
                         </div>
@@ -1144,8 +1130,7 @@ export default function InvestorDetailPage() {
                   return next;
                 });
               }}
-              onRefresh={fetchEnrichment}
-            />
+              onRefresh={fetchEnrichment} />
           )}
 
           {/* Research Tab */}
@@ -1186,8 +1171,7 @@ export default function InvestorDetailPage() {
               value={editForm.notes}
               onChange={e => setEditForm(f => ({ ...f, notes: e.target.value }))}
               rows={5}
-              style={{ resize: 'vertical', lineHeight: 1.6 }}
-            />
+              style={{ resize: 'vertical', lineHeight: 1.6 }} />
           ) : (
             <p className="text-sm" style={{ color: 'var(--text-tertiary)', whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>{investor.notes}</p>
           )}
@@ -1214,8 +1198,7 @@ function EditRow({ label, value, onChange }: { label: string; value: string; onC
         className="input"
         value={value}
         onChange={e => onChange(e.target.value)}
-        style={{ maxWidth: '60%', textAlign: 'right' }}
-      />
+        style={{ maxWidth: '60%', textAlign: 'right' }} />
     </div>
   );
 }
@@ -1302,7 +1285,7 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
   return (
     <div className="rounded-xl overflow-hidden" style={{ border: `1px solid ${scoreBorderColor(score.overall)}` }}>
       {/* Header row: overall score + momentum + predicted outcome */}
-      <div className="p-5" style={{ background: 'var(--surface-1)' }}>
+      <div className="p-5" style={stSurface1}>
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-2">
             <Gauge className="w-4 h-4" style={textTertiary} />
@@ -1396,11 +1379,10 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
                   </div>
                   <span className="text-xs font-normal tabular-nums" style={{ color: scoreColor(dim.score) }}>{dim.score}</span>
                 </div>
-                <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--surface-2)' }}>
+                <div className="h-1.5 rounded-full overflow-hidden" style={stSurface2}>
                   <div
                     className="h-full rounded-full transition-all duration-500"
-                    style={{ width: `${dim.score}%`, background: scoreColor(dim.score) }}
-                  />
+                    style={{ width: `${dim.score}%`, background: scoreColor(dim.score) }} />
                 </div>
                 <p className="text-xs leading-snug truncate" title={dim.evidence} style={textMuted}>
                   {dim.evidence}
@@ -1476,7 +1458,7 @@ function ConvictionTrajectoryPanel({ trajectory }: { trajectory: ConvictionTraje
 
   return (
     <div className="rounded-xl overflow-hidden">
-      <div className="p-5" style={{ background: 'var(--surface-1)' }}>
+      <div className="p-5" style={stSurface1}>
         <div className="flex items-center gap-2 mb-4">
           <Activity className="w-4 h-4" style={textTertiary} />
           <h2 className="text-xs font-normal  tracking-wider" style={textTertiary}>Conviction Trajectory</h2>
@@ -1534,8 +1516,7 @@ function ConvictionTrajectoryPanel({ trajectory }: { trajectory: ConvictionTraje
                   <div
                     key={n}
                     className="w-1.5 h-1.5 rounded-full"
-                    style={{ background: n <= confidence.dots ? 'var(--text-tertiary)' : 'var(--surface-2)' }}
-                  />
+                    style={{ background: n <= confidence.dots ? 'var(--text-tertiary)' : 'var(--surface-2)' }} />
                 ))}
               </div>
             </div>
@@ -1612,7 +1593,7 @@ function EnrichmentStatusCard({
   const coverageColor = coveragePct >= 60 ? 'var(--success)' : coveragePct >= 30 ? 'var(--warning)' : 'var(--text-muted)';
 
   return (
-    <div className="rounded-xl p-5" style={{ background: 'var(--surface-1)' }}>
+    <div className="rounded-xl p-5" style={stSurface1}>
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <span style={textMuted}><Database className="w-4 h-4" /></span>
@@ -1731,8 +1712,7 @@ function EnrichmentStatusCard({
                         <span className="w-3 h-3 shrink-0 flex items-center justify-center">
                           <span
                             className="w-1.5 h-1.5 rounded-full"
-                            style={{ background: st.color }}
-                          />
+                            style={{ background: st.color }} />
                         </span>
                       )}
                       <span className="text-xs truncate" style={textSecondary}>{p.name}</span>

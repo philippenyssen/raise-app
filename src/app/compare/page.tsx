@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { STATUS_LABELS, TYPE_LABELS, MEETING_TYPE_LABELS } from '@/lib/constants';
+import { stTextMuted, stTextSecondary, stTextTertiary, stTextPrimary, stSurface1, labelMuted } from '@/lib/styles';
 
 // ---------------------------------------------------------------------------
 // API response types
@@ -201,7 +202,7 @@ export default function ComparePage() {
         <Link
           href="/investors"
           className="transition-colors"
-          style={{ color: 'var(--text-muted)', transition: 'color 150ms ease' }}
+          style={{ ...stTextMuted, transition: 'color 150ms ease' }}
           onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
           onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
         >
@@ -211,9 +212,7 @@ export default function ComparePage() {
           <h1 className="page-title" style={{ fontSize: 'var(--font-size-xl)' }}>
             Investor Comparison Engine
           </h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', marginTop: 'var(--space-1)' }}>
-            Select 2-4 investors, then hit Compare for a full decision breakdown
-          </p>
+          <p style={{ ...stTextMuted, fontSize: 'var(--font-size-sm)', marginTop: 'var(--space-1)' }}>Select 2-4 investors, then hit Compare for a full decision breakdown</p>
         </div>
       </div>
 
@@ -234,15 +233,10 @@ export default function ComparePage() {
             onMouseEnter={e => (e.currentTarget.style.borderColor = 'var(--border-strong)')}
             onMouseLeave={e => (e.currentTarget.style.borderColor = 'var(--border-default)')}
           >
-            <span style={selectedIds.length === 0 ? { color: 'var(--text-muted)' } : undefined}>
-              {selectedIds.length === 0
-                ? 'Select investors to compare...'
-                : `${selectedIds.length} investor${selectedIds.length > 1 ? 's' : ''} selected`}
+            <span style={selectedIds.length === 0 ? stTextMuted : undefined}>
+              {selectedIds.length === 0 ? 'Select investors to compare...' : `${selectedIds.length} investor${selectedIds.length > 1 ? 's' : ''} selected`}
             </span>
-            <ChevronDown
-              className={`w-4 h-4 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`}
-              style={{ color: 'var(--text-muted)' }}
-            />
+            <ChevronDown className={`w-4 h-4 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} style={stTextMuted} />
           </button>
 
           {dropdownOpen && (
@@ -280,13 +274,7 @@ export default function ComparePage() {
                       const isSelected = selectedIds.includes(inv.id);
                       const disabled = !isSelected && selectedIds.length >= 4;
                       return (
-                        <DropdownItem
-                          key={inv.id}
-                          investor={inv}
-                          isSelected={isSelected}
-                          disabled={disabled}
-                          onToggle={() => { if (!disabled) toggleInvestor(inv.id); }}
-                        />
+                        <DropdownItem key={inv.id} investor={inv} isSelected={isSelected} disabled={disabled} onToggle={() => { if (!disabled) toggleInvestor(inv.id); }} />
                       );
                     })
                   )}
@@ -348,11 +336,9 @@ export default function ComparePage() {
             borderRadius: 'var(--radius-xl)',
           }}
         >
-          <BarChart3 className="w-10 h-10 mx-auto mb-3" style={{ color: 'var(--text-muted)' }} />
-          <div style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
-            {selectedIds.length < 2
-              ? 'Select at least 2 investors from the dropdown above, then click Compare.'
-              : 'Click Compare to run the full analysis.'}
+          <BarChart3 className="w-10 h-10 mx-auto mb-3" style={stTextMuted} />
+          <div style={{ ...stTextMuted, fontSize: 'var(--font-size-sm)' }}>
+            {selectedIds.length < 2 ? 'Select at least 2 investors from the dropdown above, then click Compare.' : 'Click Compare to run the full analysis.'}
           </div>
         </div>
       )}
@@ -366,9 +352,7 @@ export default function ComparePage() {
           }}
         >
           <Loader2 className="w-6 h-6 animate-spin mx-auto mb-3" style={{ color: 'var(--accent)' }} />
-          <div style={{ color: 'var(--text-secondary)', fontSize: 'var(--font-size-sm)' }}>
-            Analyzing investors across 8 dimensions...
-          </div>
+          <div style={{ ...stTextSecondary, fontSize: 'var(--font-size-sm)' }}>Analyzing investors across 8 dimensions...</div>
         </div>
       )}
 
@@ -414,7 +398,7 @@ export default function ComparePage() {
                         <div className="flex items-center gap-2">
                           <InvestorNameLink investor={p.investor} />
                           {p.investor.id === winnerId && (
-                            <Trophy className="w-4 h-4 shrink-0" style={{ color: 'var(--text-tertiary)' }} />
+                            <Trophy className="w-4 h-4 shrink-0" style={stTextTertiary} />
                           )}
                         </div>
                       </th>
@@ -466,7 +450,7 @@ export default function ComparePage() {
                           </span>
                           <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>/100</span>
                           {p.investor.id === winnerId && (
-                            <Trophy className="w-3.5 h-3.5" style={{ color: 'var(--text-tertiary)' }} />
+                            <Trophy className="w-3.5 h-3.5" style={stTextTertiary} />
                           )}
                         </div>
                       </td>
@@ -530,7 +514,7 @@ export default function ComparePage() {
                         ) : (
                           <div className="flex flex-col gap-1">
                             <div className="flex items-center gap-3" style={{ fontSize: 'var(--font-size-xs)' }}>
-                              <span style={{ color: 'var(--text-secondary)' }}>{p.objectionProfile.totalCount} total</span>
+                              <span style={stTextSecondary}>{p.objectionProfile.totalCount} total</span>
                               <span style={{
                                 fontWeight: 400,
                                 color: p.objectionProfile.unresolvedCount > 0 ? 'var(--danger)' : 'var(--success)',
@@ -602,9 +586,7 @@ export default function ComparePage() {
                       <td key={p.investor.id} style={{ padding: 'var(--space-3) var(--space-4)' }}>
                         <div className="flex items-center gap-3" style={{ fontSize: 'var(--font-size-xs)' }}>
                           {p.followupStatus.pendingCount > 0 && (
-                            <span style={{ color: 'var(--text-tertiary)' }}>
-                              {p.followupStatus.pendingCount} pending
-                            </span>
+                            <span style={stTextTertiary}>{p.followupStatus.pendingCount} pending</span>
                           )}
                           {p.followupStatus.overdueCount > 0 && (
                             <span style={{ color: 'var(--text-primary)', fontWeight: 400 }}>
@@ -612,12 +594,10 @@ export default function ComparePage() {
                             </span>
                           )}
                           {p.followupStatus.completedCount > 0 && (
-                            <span style={{ color: 'var(--text-secondary)' }}>
-                              {p.followupStatus.completedCount} done
-                            </span>
+                            <span style={stTextSecondary}>{p.followupStatus.completedCount} done</span>
                           )}
                           {p.followupStatus.pendingCount === 0 && p.followupStatus.overdueCount === 0 && p.followupStatus.completedCount === 0 && (
-                            <span style={{ color: 'var(--text-muted)' }}>No follow-ups</span>
+                            <span style={stTextMuted}>No follow-ups</span>
                           )}
                         </div>
                         {p.followupStatus.avgConvictionDelta !== 0 && (
@@ -694,16 +674,13 @@ export default function ComparePage() {
               onMouseLeave={e => (e.currentTarget.style.background = 'var(--surface-1)')}
             >
               <div className="flex items-center gap-2">
-                <BarChart3 className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
+                <BarChart3 className="w-4 h-4" style={stTextMuted} />
                 <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
                   Score Dimension Breakdown
                 </span>
                 <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>8 dimensions</span>
               </div>
-              <ChevronDown
-                className={`w-4 h-4 transition-transform ${dimensionsExpanded ? 'rotate-180' : ''}`}
-                style={{ color: 'var(--text-muted)' }}
-              />
+              <ChevronDown className={`w-4 h-4 transition-transform ${dimensionsExpanded ? 'rotate-180' : ''}`} style={stTextMuted} />
             </button>
 
             {dimensionsExpanded && (
@@ -712,13 +689,7 @@ export default function ComparePage() {
                 borderTop: '1px solid var(--border-default)',
               }}>
                 {compareData.decisionMatrix.map(entry => (
-                  <DimensionBar
-                    key={entry.dimension}
-                    dimension={entry.dimension}
-                    profiles={compareData.profiles}
-                    winnerId={entry.winnerId}
-                    scores={entry.scores}
-                  />
+                  <DimensionBar key={entry.dimension} dimension={entry.dimension} profiles={compareData.profiles} winnerId={entry.winnerId} scores={entry.scores} />
                 ))}
               </div>
             )}
@@ -739,42 +710,17 @@ export default function ComparePage() {
                 borderBottom: '1px solid var(--border-default)',
               }}
             >
-              <Target className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
+              <Target className="w-4 h-4" style={stTextMuted} />
               <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
                 Decision Matrix
               </span>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3" style={{ padding: 'var(--space-4)' }}>
-              <VerdictCard
-                icon={<CheckCircle className="w-4 h-4" />}
-                title="Most Likely to Close"
-                verdict={compareData.verdict.mostLikelyToClose}
-                color="success"
-              />
-              <VerdictCard
-                icon={<Zap className="w-4 h-4" />}
-                title="Fastest Decision"
-                verdict={compareData.verdict.fastestDecision}
-                color="accent"
-              />
-              <VerdictCard
-                icon={<Shield className="w-4 h-4" />}
-                title="Lowest Risk"
-                verdict={compareData.verdict.lowestRisk}
-                color="purple"
-              />
-              <VerdictCard
-                icon={<TrendingUp className="w-4 h-4" />}
-                title="Best Momentum"
-                verdict={compareData.verdict.bestMomentum}
-                color="warning"
-              />
-              <VerdictCard
-                icon={<ArrowUpRight className="w-4 h-4" />}
-                title="Highest Check Potential"
-                verdict={compareData.verdict.highestCheckPotential}
-                color="cyan"
-              />
+              <VerdictCard icon={<CheckCircle className="w-4 h-4" />} title="Most Likely to Close" verdict={compareData.verdict.mostLikelyToClose} color="success" />
+              <VerdictCard icon={<Zap className="w-4 h-4" />} title="Fastest Decision" verdict={compareData.verdict.fastestDecision} color="accent" />
+              <VerdictCard icon={<Shield className="w-4 h-4" />} title="Lowest Risk" verdict={compareData.verdict.lowestRisk} color="purple" />
+              <VerdictCard icon={<TrendingUp className="w-4 h-4" />} title="Best Momentum" verdict={compareData.verdict.bestMomentum} color="warning" />
+              <VerdictCard icon={<ArrowUpRight className="w-4 h-4" />} title="Highest Check Potential" verdict={compareData.verdict.highestCheckPotential} color="cyan" />
             </div>
           </div>
 
@@ -933,17 +879,8 @@ function InvestorNameLink({ investor }: { investor: Investor }) {
 
 function SectionHeader({ label, colSpan }: { label: string; colSpan: number }) {
   return (
-    <tr style={{ background: 'var(--surface-1)' }}>
-      <td
-        colSpan={colSpan}
-        style={{
-          padding: 'var(--space-2) var(--space-4)',
-          fontSize: '10px',
-          fontWeight: 400,
-          color: 'var(--text-muted)',
-          letterSpacing: '0.08em',
-        }}
-      >
+    <tr style={stSurface1}>
+      <td colSpan={colSpan} style={{ padding: 'var(--space-2) var(--space-4)', fontSize: '10px', fontWeight: 400, ...stTextMuted, letterSpacing: '0.08em' }}>
         {label}
       </td>
     </tr>
@@ -970,17 +907,7 @@ function TableRow({ children }: { children: React.ReactNode }) {
 
 function StickyLabel({ children }: { children: React.ReactNode }) {
   return (
-    <td
-      className="sticky left-0"
-      style={{
-        padding: 'var(--space-3) var(--space-4)',
-        fontSize: 'var(--font-size-xs)',
-        color: 'var(--text-muted)',
-        fontWeight: 400,
-        background: 'var(--surface-0)',
-        borderRight: '1px solid var(--border-subtle)',
-      }}
-    >
+    <td className="sticky left-0" style={{ padding: 'var(--space-3) var(--space-4)', ...labelMuted, fontWeight: 400, background: 'var(--surface-0)', borderRight: '1px solid var(--border-subtle)' }}>
       {children}
     </td>
   );
@@ -1008,16 +935,7 @@ function CompareRow({ label, cells }: { label: string; cells: CellData[] }) {
     >
       <StickyLabel>{label}</StickyLabel>
       {cells.map((cell, i) => (
-        <td
-          key={i}
-          className={cell.wrap ? 'max-w-[220px]' : ''}
-          style={{
-            padding: 'var(--space-3) var(--space-4)',
-            fontSize: 'var(--font-size-sm)',
-            color: 'var(--text-secondary)',
-            ...cell.style,
-          }}
-        >
+        <td key={i} className={cell.wrap ? 'max-w-[220px]' : ''} style={{ padding: 'var(--space-3) var(--space-4)', fontSize: 'var(--font-size-sm)', ...stTextSecondary, ...cell.style }}>
           {cell.render ?? (
             <span className={cell.wrap ? 'line-clamp-3' : ''}>{cell.value}</span>
           )}
@@ -1075,16 +993,16 @@ function RecommendationBanner({ recommendation }: { recommendation: ComparisonRe
 }
 
 function MomentumIcon({ momentum }: { momentum: string }) {
-  if (momentum === 'accelerating') return <TrendingUp className="w-3.5 h-3.5" style={{ color: 'var(--text-secondary)' }} />;
-  if (momentum === 'decelerating') return <TrendingDown className="w-3.5 h-3.5" style={{ color: 'var(--text-primary)' }} />;
-  if (momentum === 'stalled') return <AlertTriangle className="w-3.5 h-3.5" style={{ color: 'var(--text-primary)' }} />;
-  if (momentum === 'steady') return <Minus className="w-3.5 h-3.5" style={{ color: 'var(--text-tertiary)' }} />;
-  return <Minus className="w-3.5 h-3.5" style={{ color: 'var(--text-muted)' }} />;
+  if (momentum === 'accelerating') return <TrendingUp className="w-3.5 h-3.5" style={stTextSecondary} />;
+  if (momentum === 'decelerating') return <TrendingDown className="w-3.5 h-3.5" style={stTextPrimary} />;
+  if (momentum === 'stalled') return <AlertTriangle className="w-3.5 h-3.5" style={stTextPrimary} />;
+  if (momentum === 'steady') return <Minus className="w-3.5 h-3.5" style={stTextTertiary} />;
+  return <Minus className="w-3.5 h-3.5" style={stTextMuted} />;
 }
 
 function EnthusiasmTrendDots({ trend }: { trend: number[] }) {
   if (trend.length === 0) {
-    return <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>No data</span>;
+    return <span style={{ ...stTextMuted, fontSize: 'var(--font-size-xs)' }}>No data</span>;
   }
 
   const maxDots = 3;
@@ -1113,11 +1031,11 @@ function EnthusiasmTrendDots({ trend }: { trend: number[] }) {
       {dots.length >= 2 && (
         <div className="ml-1">
           {dots[dots.length - 1] > dots[0] ? (
-            <ArrowUpRight className="w-3 h-3" style={{ color: 'var(--text-secondary)' }} />
+            <ArrowUpRight className="w-3 h-3" style={stTextSecondary} />
           ) : dots[dots.length - 1] < dots[0] ? (
-            <ArrowDownRight className="w-3 h-3" style={{ color: 'var(--text-primary)' }} />
+            <ArrowDownRight className="w-3 h-3" style={stTextPrimary} />
           ) : (
-            <Minus className="w-3 h-3" style={{ color: 'var(--text-muted)' }} />
+            <Minus className="w-3 h-3" style={stTextMuted} />
           )}
         </div>
       )}
@@ -1214,7 +1132,7 @@ function DimensionBar({
           {dimension}
         </span>
         <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
-          Winner: <span style={{ color: 'var(--text-secondary)' }}>
+          Winner: <span style={stTextSecondary}>
             {profiles.find(p => p.investor.id === winnerId)?.investor.name ?? '—'}
           </span>
         </span>

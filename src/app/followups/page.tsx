@@ -11,6 +11,7 @@ import {
   PenLine, Copy, Check,
 } from 'lucide-react';
 import { fmtDateTime } from '@/lib/format';
+import { stTextMuted, stTextSecondary, stTextPrimary } from '@/lib/styles';
 
 interface TimingIntel {
   optimalDayOfWeek: string;
@@ -283,23 +284,13 @@ function FollowupsContent() {
       <div
         key={item.id}
         className="card"
-        style={{
-          padding: 0,
-          borderColor: showOverdueIndicator || isOverdue ? 'var(--fg-6)' : undefined,
-          background: showOverdueIndicator || isOverdue ? 'var(--fg-6)' : undefined,
-          boxShadow: showOverdueIndicator || isOverdue ? '0 none' : undefined,
-        }}
-      >
+        style={{ padding: 0, borderColor: showOverdueIndicator || isOverdue ? 'var(--fg-6)' : undefined, background: showOverdueIndicator || isOverdue ? 'var(--fg-6)' : undefined, boxShadow: showOverdueIndicator || isOverdue ? '0 none' : undefined }}>
         <div style={{ padding: 'var(--space-4)' }}>
           <div className="flex items-start gap-3">
             {/* Icon */}
             <div
               className="w-8 h-8 flex items-center justify-center shrink-0"
-              style={{
-                borderRadius: '50%',
-                background: isOverdue ? 'var(--danger-muted)' : config.bgColor,
-              }}
-            >
+              style={{ borderRadius: '50%', background: isOverdue ? 'var(--danger-muted)' : config.bgColor }}>
               <Icon className="w-4 h-4" style={{ color: isOverdue ? 'var(--danger)' : config.color }} />
             </div>
 
@@ -308,13 +299,7 @@ function FollowupsContent() {
               <div className="flex items-center gap-2 mb-1 flex-wrap">
                 <span
                   className="badge"
-                  style={{
-                    fontSize: '10px',
-
-                    background: isOverdue ? 'var(--danger-muted)' : config.bgColor,
-                    color: isOverdue ? 'var(--text-tertiary)' : config.color,
-                  }}
-                >
+                  style={{ fontSize: '10px', background: isOverdue ? 'var(--danger-muted)' : config.bgColor, color: isOverdue ? 'var(--text-tertiary)' : config.color }}>
                   {config.label}
                 </span>
                 <Link
@@ -328,12 +313,7 @@ function FollowupsContent() {
                 </Link>
                 <span
                   className="flex items-center gap-1"
-                  style={{
-                    fontSize: '10px',
-                    color: isOverdue ? 'var(--danger)' : 'var(--text-muted)',
-                    fontWeight: 400,
-                  }}
-                >
+                  style={{ fontSize: '10px', color: isOverdue ? 'var(--danger)' : 'var(--text-muted)', fontWeight: 400 }}>
                   <Clock className="w-3 h-3" />
                   {formatRelativeTime(item.due_at)}
                 </span>
@@ -362,23 +342,12 @@ function FollowupsContent() {
               {item.status === 'completed' && item.outcome && (
                 <div
                   className="mt-2"
-                  style={{
-                    background: 'var(--surface-2)',
-                    borderRadius: 'var(--radius-sm)',
-                    padding: '0.375rem 0.5rem',
-                    fontSize: 'var(--font-size-xs)',
-                    color: 'var(--text-secondary)',
-                  }}
-                >
-                  <span style={{ color: 'var(--text-muted)' }}>Outcome:</span> {item.outcome}
+                  style={{ background: 'var(--surface-2)', borderRadius: 'var(--radius-sm)', padding: '0.375rem 0.5rem', fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
+                  <span style={stTextMuted}>Outcome:</span> {item.outcome}
                   {item.conviction_delta !== 0 && (
                     <span
                       className="inline-flex items-center gap-0.5"
-                      style={{
-                        marginLeft: '0.5rem',
-                        color: item.conviction_delta > 0 ? 'var(--success)' : 'var(--danger)',
-                      }}
-                    >
+                      style={{ marginLeft: '0.5rem', color: item.conviction_delta > 0 ? 'var(--success)' : 'var(--danger)' }}>
                       {item.conviction_delta > 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
                       {item.conviction_delta > 0 ? '+' : ''}{item.conviction_delta}
                     </span>
@@ -386,11 +355,7 @@ function FollowupsContent() {
                   {item.measured_lift !== null && item.measured_lift !== undefined && (
                     <span
                       className="inline-flex items-center gap-0.5"
-                      style={{
-                        marginLeft: '0.5rem',
-                        color: item.measured_lift > 0 ? 'var(--success)' : item.measured_lift < 0 ? 'var(--danger)' : 'var(--text-muted)',
-                      }}
-                    >
+                      style={{ marginLeft: '0.5rem', color: item.measured_lift > 0 ? 'var(--success)' : item.measured_lift < 0 ? 'var(--danger)' : 'var(--text-muted)' }}>
                       Measured: {item.measured_lift > 0 ? '+' : ''}{item.measured_lift} enthusiasm
                     </span>
                   )}
@@ -401,12 +366,7 @@ function FollowupsContent() {
               {isCompleting && (
                 <div
                   className="mt-3 space-y-2"
-                  style={{
-                    background: 'var(--surface-2)',
-                    borderRadius: 'var(--radius-lg)',
-                    padding: 'var(--space-3)',
-                  }}
-                >
+                  style={{ background: 'var(--surface-2)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-3)' }}>
                   <div>
                     <label
                       className="block mb-1"
@@ -467,10 +427,7 @@ function FollowupsContent() {
                     <button
                       onClick={() => handleComplete(item.id)}
                       className="btn btn-sm transition-colors"
-                      style={{
-                        background: 'var(--success)',
-                        color: 'var(--text-primary)',
-                      }}
+                      style={{ background: 'var(--success)', color: 'var(--text-primary)' }}
                       onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent-hover)'; }}
                       onMouseLeave={e => { e.currentTarget.style.background = 'var(--success)'; }}
                     >
@@ -493,12 +450,7 @@ function FollowupsContent() {
                 <button
                   onClick={() => setDraftingId(draftingId === item.id ? null : item.id)}
                   className="p-1.5 transition-colors"
-                  style={{
-                    borderRadius: 'var(--radius-md)',
-                    color: hoveredActionBtn === `draft-${item.id}` || draftingId === item.id ? 'var(--chart-4)' : 'var(--text-muted)',
-                    background: hoveredActionBtn === `draft-${item.id}` || draftingId === item.id ? 'var(--cat-purple-muted)' : 'transparent',
-                    transition: 'all 150ms ease',
-                  }}
+                  style={{ borderRadius: 'var(--radius-md)', color: hoveredActionBtn === `draft-${item.id}` || draftingId === item.id ? 'var(--chart-4)' : 'var(--text-muted)', background: hoveredActionBtn === `draft-${item.id}` || draftingId === item.id ? 'var(--cat-purple-muted)' : 'transparent', transition: 'all 150ms ease' }}
                   onMouseEnter={() => setHoveredActionBtn(`draft-${item.id}`)}
                   onMouseLeave={() => setHoveredActionBtn(null)}
                   title="Draft message"
@@ -508,12 +460,7 @@ function FollowupsContent() {
                 <button
                   onClick={() => handleQuickComplete(item.id)}
                   className="p-1.5 transition-colors"
-                  style={{
-                    borderRadius: 'var(--radius-md)',
-                    color: hoveredActionBtn === `complete-${item.id}` ? 'var(--success)' : 'var(--text-muted)',
-                    background: hoveredActionBtn === `complete-${item.id}` ? 'var(--success-muted)' : 'transparent',
-                    transition: 'all 150ms ease',
-                  }}
+                  style={{ borderRadius: 'var(--radius-md)', color: hoveredActionBtn === `complete-${item.id}` ? 'var(--success)' : 'var(--text-muted)', background: hoveredActionBtn === `complete-${item.id}` ? 'var(--success-muted)' : 'transparent', transition: 'all 150ms ease' }}
                   onMouseEnter={() => setHoveredActionBtn(`complete-${item.id}`)}
                   onMouseLeave={() => setHoveredActionBtn(null)}
                   title="Quick complete"
@@ -523,12 +470,7 @@ function FollowupsContent() {
                 <button
                   onClick={() => { setCompletingId(item.id); setCompleteForm({ outcome: '', conviction_delta: 0 }); }}
                   className="p-1.5 transition-colors"
-                  style={{
-                    borderRadius: 'var(--radius-md)',
-                    color: hoveredActionBtn === `outcome-${item.id}` ? 'var(--accent)' : 'var(--text-muted)',
-                    background: hoveredActionBtn === `outcome-${item.id}` ? 'var(--accent-muted)' : 'transparent',
-                    transition: 'all 150ms ease',
-                  }}
+                  style={{ borderRadius: 'var(--radius-md)', color: hoveredActionBtn === `outcome-${item.id}` ? 'var(--accent)' : 'var(--text-muted)', background: hoveredActionBtn === `outcome-${item.id}` ? 'var(--accent-muted)' : 'transparent', transition: 'all 150ms ease' }}
                   onMouseEnter={() => setHoveredActionBtn(`outcome-${item.id}`)}
                   onMouseLeave={() => setHoveredActionBtn(null)}
                   title="Complete with outcome"
@@ -538,12 +480,7 @@ function FollowupsContent() {
                 <button
                   onClick={() => handleSkip(item.id)}
                   className="p-1.5 transition-colors"
-                  style={{
-                    borderRadius: 'var(--radius-md)',
-                    color: hoveredActionBtn === `skip-${item.id}` ? 'var(--danger)' : 'var(--text-muted)',
-                    background: hoveredActionBtn === `skip-${item.id}` ? 'var(--danger-muted)' : 'transparent',
-                    transition: 'all 150ms ease',
-                  }}
+                  style={{ borderRadius: 'var(--radius-md)', color: hoveredActionBtn === `skip-${item.id}` ? 'var(--danger)' : 'var(--text-muted)', background: hoveredActionBtn === `skip-${item.id}` ? 'var(--danger-muted)' : 'transparent', transition: 'all 150ms ease' }}
                   onMouseEnter={() => setHoveredActionBtn(`skip-${item.id}`)}
                   onMouseLeave={() => setHoveredActionBtn(null)}
                   title="Skip"
@@ -570,16 +507,7 @@ function FollowupsContent() {
         {/* Intelligence strip */}
         {item.status === 'pending' && (item.timing || item.velocity || item.cascade) && (
           <div
-            style={{
-              padding: '0.375rem var(--space-4)',
-              borderTop: '1px solid var(--border-subtle)',
-              display: 'flex',
-              gap: 'var(--space-3)',
-              flexWrap: 'wrap',
-              alignItems: 'center',
-              background: 'var(--surface-1)',
-            }}
-          >
+            style={{ padding: '0.375rem var(--space-4)', borderTop: '1px solid var(--border-subtle)', display: 'flex', gap: 'var(--space-3)', flexWrap: 'wrap', alignItems: 'center', background: 'var(--surface-1)' }}>
             {/* Optimal timing */}
             {item.timing && (
               <div
@@ -589,16 +517,10 @@ function FollowupsContent() {
               >
                 <span
                   className="flex items-center justify-center"
-                  style={{
-                    width: '16px',
-                    height: '16px',
-                    borderRadius: '50%',
-                    background: 'var(--accent-muted)',
-                  }}
-                >
+                  style={{ width: '16px', height: '16px', borderRadius: '50%', background: 'var(--accent-muted)' }}>
                   <Timer className="w-2.5 h-2.5" style={{ color: 'var(--accent)' }} />
                 </span>
-                <span style={{ color: 'var(--text-muted)' }}>Send</span>
+                <span style={stTextMuted}>Send</span>
                 <span style={{ color: 'var(--accent)', fontWeight: 400 }}>
                   {item.timing.optimalDayOfWeek} {item.timing.optimalTimeOfDay}
                 </span>
@@ -624,21 +546,13 @@ function FollowupsContent() {
                 >
                   <span
                     className="flex items-center justify-center"
-                    style={{
-                      width: '16px',
-                      height: '16px',
-                      borderRadius: '50%',
-                      background: vc.bg,
-                    }}
-                  >
+                    style={{ width: '16px', height: '16px', borderRadius: '50%', background: vc.bg }}>
                     <VelIcon className="w-2.5 h-2.5" style={{ color: vc.color }} />
                   </span>
-                  <span style={{ color: 'var(--text-muted)' }}>Velocity</span>
+                  <span style={stTextMuted}>Velocity</span>
                   <span style={{ color: vc.color, fontWeight: 400 }}>{vc.label}</span>
                   {item.velocity!.daysSinceLastMeeting !== null && (
-                    <span style={{ color: 'var(--text-muted)' }}>
-                      ({item.velocity!.daysSinceLastMeeting}d ago)
-                    </span>
+                    <span style={stTextMuted}>({item.velocity!.daysSinceLastMeeting}d ago)</span>
                   )}
                 </div>
               );
@@ -653,16 +567,10 @@ function FollowupsContent() {
               >
                 <span
                   className="flex items-center justify-center"
-                  style={{
-                    width: '16px',
-                    height: '16px',
-                    borderRadius: '50%',
-                    background: 'var(--accent-muted)',
-                  }}
-                >
-                  <Network className="w-2.5 h-2.5" style={{ color: 'var(--text-secondary)' }} />
+                  style={{ width: '16px', height: '16px', borderRadius: '50%', background: 'var(--accent-muted)' }}>
+                  <Network className="w-2.5 h-2.5" style={stTextSecondary} />
                 </span>
-                <span style={{ color: 'var(--text-muted)' }}>Cascade</span>
+                <span style={stTextMuted}>Cascade</span>
                 <span style={{ color: 'var(--text-secondary)', fontWeight: 400 }}>
                   {item.cascade.cascadeChainLength} investor{item.cascade.cascadeChainLength !== 1 ? 's' : ''}
                 </span>
@@ -676,12 +584,7 @@ function FollowupsContent() {
           const draft = generateDraft(item);
           return (
             <div
-              style={{
-                borderTop: '1px solid var(--accent-8)',
-                background: 'var(--accent-3)',
-                padding: 'var(--space-4)',
-              }}
-            >
+              style={{ borderTop: '1px solid var(--accent-8)', background: 'var(--accent-3)', padding: 'var(--space-4)' }}>
               <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-3)' }}>
                 <span className="flex items-center gap-1.5" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--accent)' }}>
                   <PenLine className="w-3.5 h-3.5" />
@@ -703,30 +606,13 @@ function FollowupsContent() {
                       setTimeout(() => setCopiedField(null), 2000);
                     }}
                     className="flex items-center gap-1 p-1"
-                    style={{
-                      borderRadius: 'var(--radius-sm)',
-                      fontSize: '10px',
-                      color: copiedField === `subject-${item.id}` ? 'var(--success)' : 'var(--text-muted)',
-                      background: 'transparent',
-                      border: 'none',
-                      cursor: 'pointer',
-                      transition: 'color 150ms ease',
-                    }}
-                  >
+                    style={{ borderRadius: 'var(--radius-sm)', fontSize: '10px', color: copiedField === `subject-${item.id}` ? 'var(--success)' : 'var(--text-muted)', background: 'transparent', border: 'none', cursor: 'pointer', transition: 'color 150ms ease' }}>
                     {copiedField === `subject-${item.id}` ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                     {copiedField === `subject-${item.id}` ? 'Copied' : 'Copy'}
                   </button>
                 </div>
                 <div
-                  style={{
-                    background: 'var(--surface-1)',
-                    borderRadius: 'var(--radius-md)',
-                    padding: 'var(--space-2) var(--space-3)',
-                    fontSize: 'var(--font-size-xs)',
-                    color: 'var(--text-primary)',
-                    fontWeight: 400,
-                  }}
-                >
+                  style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-md)', padding: 'var(--space-2) var(--space-3)', fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', fontWeight: 400 }}>
                   {draft.subject}
                 </div>
               </div>
@@ -742,31 +628,13 @@ function FollowupsContent() {
                       setTimeout(() => setCopiedField(null), 2000);
                     }}
                     className="flex items-center gap-1 p-1"
-                    style={{
-                      borderRadius: 'var(--radius-sm)',
-                      fontSize: '10px',
-                      color: copiedField === `body-${item.id}` ? 'var(--success)' : 'var(--text-muted)',
-                      background: 'transparent',
-                      border: 'none',
-                      cursor: 'pointer',
-                      transition: 'color 150ms ease',
-                    }}
-                  >
+                    style={{ borderRadius: 'var(--radius-sm)', fontSize: '10px', color: copiedField === `body-${item.id}` ? 'var(--success)' : 'var(--text-muted)', background: 'transparent', border: 'none', cursor: 'pointer', transition: 'color 150ms ease' }}>
                     {copiedField === `body-${item.id}` ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                     {copiedField === `body-${item.id}` ? 'Copied' : 'Copy'}
                   </button>
                 </div>
                 <div
-                  style={{
-                    background: 'var(--surface-1)',
-                    borderRadius: 'var(--radius-md)',
-                    padding: 'var(--space-3)',
-                    fontSize: 'var(--font-size-xs)',
-                    color: 'var(--text-secondary)',
-                    lineHeight: 1.6,
-                    whiteSpace: 'pre-line',
-                  }}
-                >
+                  style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-md)', padding: 'var(--space-3)', fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', lineHeight: 1.6, whiteSpace: 'pre-line' as const }}>
                   {draft.body}
                 </div>
               </div>
@@ -779,12 +647,7 @@ function FollowupsContent() {
                   setTimeout(() => setCopiedField(null), 2000);
                 }}
                 className="btn btn-sm mt-3 transition-colors"
-                style={{
-                  background: copiedField === `all-${item.id}` ? 'var(--success)' : 'var(--accent-muted)',
-                  color: copiedField === `all-${item.id}` ? 'white' : 'var(--accent)',
-                  border: 'none',
-                  transition: 'all 150ms ease',
-                }}
+                style={{ background: copiedField === `all-${item.id}` ? 'var(--success)' : 'var(--accent-muted)', color: copiedField === `all-${item.id}` ? 'white' : 'var(--accent)', border: 'none', transition: 'all 150ms ease' }}
                 onMouseEnter={e => {
                   if (copiedField !== `all-${item.id}`) {
                     e.currentTarget.style.background = 'var(--accent-10)';
@@ -806,13 +669,7 @@ function FollowupsContent() {
         {/* Due date footer */}
         <div
           className="flex items-center justify-between"
-          style={{
-            padding: '0.5rem var(--space-4)',
-            borderTop: isOverdue ? '1px solid var(--fg-6)' : '1px solid var(--border-subtle)',
-            fontSize: '10px',
-            color: 'var(--text-muted)',
-          }}
-        >
+          style={{ padding: '0.5rem var(--space-4)', borderTop: isOverdue ? '1px solid var(--fg-6)' : '1px solid var(--border-subtle)', fontSize: '10px', color: 'var(--text-muted)' }}>
           {isOverdue ? (
             <span style={{ color: 'var(--text-primary)', fontWeight: 400 }}>
               {formatRelativeTime(item.due_at)} — was due {fmtDateTime(item.due_at)}
@@ -850,23 +707,16 @@ function FollowupsContent() {
           className="w-full flex items-center justify-between mb-3"
         >
           <div className="flex items-center gap-2">
-            {accent === 'red' && <AlertTriangle className="w-4 h-4" style={{ color: 'var(--text-primary)' }} />}
+            {accent === 'red' && <AlertTriangle className="w-4 h-4" style={stTextPrimary} />}
             <h2 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: accentColorMap[accent] }}>{title}</h2>
             <span
-              style={{
-                fontSize: 'var(--font-size-xs)',
-                padding: '0.125rem 0.375rem',
-                borderRadius: '9999px',
-                background: accent === 'red' ? 'var(--danger-muted)' : 'var(--surface-3)',
-                color: accent === 'red' ? 'var(--text-tertiary)' : 'var(--text-secondary)',
-              }}
-            >
+              style={{ fontSize: 'var(--font-size-xs)', padding: '0.125rem 0.375rem', borderRadius: '9999px', background: accent === 'red' ? 'var(--danger-muted)' : 'var(--surface-3)', color: accent === 'red' ? 'var(--text-tertiary)' : 'var(--text-secondary)' }}>
               {items.length}
             </span>
           </div>
           {expanded
-            ? <ChevronUp className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
-            : <ChevronDown className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
+            ? <ChevronUp className="w-4 h-4" style={stTextMuted} />
+            : <ChevronDown className="w-4 h-4" style={stTextMuted} />
           }
         </button>
         {expanded && (
@@ -884,7 +734,7 @@ function FollowupsContent() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="page-title">Follow-ups</h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', marginTop: 'var(--space-1)' }}>
+          <p style={{ ...stTextMuted, fontSize: 'var(--font-size-sm)', marginTop: 'var(--space-1)' }}>
             Automated follow-up choreography after investor meetings. Track actions, record outcomes, and learn what works.
           </p>
           {investorFilter && followups.length > 0 && (
@@ -922,16 +772,13 @@ function FollowupsContent() {
         </div>
         <div className="card-metric" style={{ padding: 'var(--space-3)' }}>
           <div className="metric-label">Completed</div>
-          <div className="metric-value mt-1" style={{ color: 'var(--text-secondary)' }}>{completed.length}</div>
+          <div className="metric-value mt-1" style={stTextSecondary}>{completed.length}</div>
         </div>
         <div className="card-metric" style={{ padding: 'var(--space-3)' }}>
           <div className="metric-label">Avg Conviction Change</div>
           <div
             className="metric-value mt-1 flex items-center gap-1"
-            style={{
-              color: avgDelta > 0 ? 'var(--success)' : avgDelta < 0 ? 'var(--danger)' : 'var(--text-muted)',
-            }}
-          >
+            style={{ color: avgDelta > 0 ? 'var(--success)' : avgDelta < 0 ? 'var(--danger)' : 'var(--text-muted)' }}>
             {avgDelta > 0 ? <TrendingUp className="w-5 h-5" /> : avgDelta < 0 ? <TrendingDown className="w-5 h-5" /> : <Minus className="w-5 h-5" />}
             {avgDelta === 0 ? '0' : (avgDelta > 0 ? '+' : '') + avgDelta.toFixed(1)}
           </div>
@@ -940,10 +787,7 @@ function FollowupsContent() {
           <div className="metric-label">Measured Efficacy</div>
           <div
             className="metric-value mt-1 flex items-center gap-1"
-            style={{
-              color: avgMeasuredLift !== null && avgMeasuredLift > 0 ? 'var(--success)' : avgMeasuredLift !== null && avgMeasuredLift < 0 ? 'var(--danger)' : 'var(--text-muted)',
-            }}
-          >
+            style={{ color: avgMeasuredLift !== null && avgMeasuredLift > 0 ? 'var(--success)' : avgMeasuredLift !== null && avgMeasuredLift < 0 ? 'var(--danger)' : 'var(--text-muted)' }}>
             {avgMeasuredLift !== null ? (
               <>
                 {avgMeasuredLift > 0 ? <TrendingUp className="w-5 h-5" /> : avgMeasuredLift < 0 ? <TrendingDown className="w-5 h-5" /> : <Minus className="w-5 h-5" />}
@@ -964,26 +808,13 @@ function FollowupsContent() {
       {/* Filter tabs */}
       <div
         className="flex gap-1"
-        style={{
-          background: 'var(--surface-1)',
-          borderRadius: 'var(--radius-lg)',
-          padding: 'var(--space-1)',
-        }}
-      >
+        style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-1)' }}>
         {(['pending', 'all', 'completed', 'skipped'] as const).map(f => (
           <button
             key={f}
             className="transition-colors"
             onClick={() => setFilter(f)}
-            style={{
-              padding: '0.375rem 0.75rem',
-              borderRadius: 'var(--radius-sm)',
-              fontSize: 'var(--font-size-xs)',
-              fontWeight: 400,
-              transition: 'all 150ms ease',
-              background: filter === f ? 'var(--surface-3)' : 'transparent',
-              color: filter === f ? 'var(--text-primary)' : 'var(--text-muted)',
-            }}
+            style={{ padding: '0.375rem 0.75rem', borderRadius: 'var(--radius-sm)', fontSize: 'var(--font-size-xs)', fontWeight: 400, transition: 'all 150ms ease', background: filter === f ? 'var(--surface-3)' : 'transparent', color: filter === f ? 'var(--text-primary)' : 'var(--text-muted)' }}
             onMouseEnter={e => {
               if (filter !== f) {
                 e.currentTarget.style.color = 'var(--text-secondary)';
@@ -998,15 +829,7 @@ function FollowupsContent() {
             {f.charAt(0).toUpperCase() + f.slice(1)}
             {f === 'pending' && overdue.length > 0 && (
               <span
-                style={{
-                  marginLeft: '0.375rem',
-                  background: 'var(--danger)',
-                  color: 'var(--text-primary)',
-                  fontSize: '9px',
-                  padding: '0 0.25rem',
-                  borderRadius: '9999px',
-                }}
-              >
+                style={{ marginLeft: '0.375rem', background: 'var(--danger)', color: 'var(--text-primary)', fontSize: '9px', padding: '0 0.25rem', borderRadius: '9999px' }}>
                 {overdue.length}
               </span>
             )}
@@ -1055,15 +878,10 @@ function FollowupsContent() {
       ) : followups.length === 0 ? (
         <div
           className="text-center py-12"
-          style={{
-            borderRadius: 'var(--radius-xl)',
-          }}
-        >
+          style={{ borderRadius: 'var(--radius-xl)' }}>
           <SendHorizonal className="w-10 h-10 mx-auto mb-3" style={{ color: 'var(--border-default)' }} />
-          <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)', marginBottom: 'var(--space-1)' }}>
-            No follow-ups pending
-          </h3>
-          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+          <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, ...stTextSecondary, marginBottom: 'var(--space-1)' }}>No follow-ups pending</h3>
+          <p style={{ fontSize: 'var(--font-size-xs)', ...stTextMuted }}>
             Follow-ups are created automatically after meetings.{' '}
             <Link
               href="/meetings/new"
@@ -1105,17 +923,9 @@ function FollowupsContent() {
       {/* Learning section */}
       {completed.length >= 3 && (
         <div
-          style={{
-              borderRadius: 'var(--radius-xl)',
-            overflow: 'hidden',
-          }}
-        >
+          style={{ borderRadius: 'var(--radius-xl)', overflow: 'hidden' }}>
           <div
-            style={{
-              background: 'var(--accent-muted)',
-              borderBottom: '1px solid var(--border-subtle)',
-              padding: 'var(--space-4) var(--space-5)',
-            }}
+            style={{ background: 'var(--accent-muted)', borderBottom: '1px solid var(--border-subtle)', padding: 'var(--space-4) var(--space-5)' }}
           >
             <h2 className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 300 }}>
               <Users className="w-4 h-4" style={{ color: 'var(--chart-4)' }} />
@@ -1137,11 +947,7 @@ function FollowupsContent() {
                     <div key={type} className="flex items-center gap-3 py-2">
                       <div
                         className="w-6 h-6 flex items-center justify-center"
-                        style={{
-                          borderRadius: 'var(--radius-sm)',
-                          background: config.bgColor,
-                        }}
-                      >
+                        style={{ borderRadius: 'var(--radius-sm)', background: config.bgColor }}>
                         <Icon className="w-3.5 h-3.5" style={{ color: config.color }} />
                       </div>
                       <span className="flex-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
@@ -1152,12 +958,7 @@ function FollowupsContent() {
                       </span>
                       <span
                         className="flex items-center gap-0.5"
-                        style={{
-                          fontSize: 'var(--font-size-xs)',
-                          fontWeight: 400,
-                          color: avgTypeDelta > 0 ? 'var(--success)' : avgTypeDelta < 0 ? 'var(--danger)' : 'var(--text-muted)',
-                        }}
-                      >
+                        style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: avgTypeDelta > 0 ? 'var(--success)' : avgTypeDelta < 0 ? 'var(--danger)' : 'var(--text-muted)' }}>
                         {avgTypeDelta > 0 ? '+' : ''}{avgTypeDelta.toFixed(1)} avg
                       </span>
                     </div>
