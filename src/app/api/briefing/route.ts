@@ -367,7 +367,8 @@ Rules:
         console.error('[BRIEFING_AI] Empty or truncated response, stop_reason:', response.stop_reason);
       }
       todaySummary = text || 'Unable to generate summary.';
-    } catch {
+    } catch (e) {
+      console.error('[BRIEFING_AI_SUMMARY]', e instanceof Error ? e.message : e);
       // Fallback: deterministic summary without AI
       const parts: string[] = [];
       if (todayMeetings.length > 0) {
