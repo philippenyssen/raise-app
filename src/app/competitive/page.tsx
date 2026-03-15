@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Shield, ChevronDown, ChevronRight, Calendar, Users, Hash } from 'lucide-react';
+import { useToast } from '@/components/toast';
 import { labelTertiary, stFontSm, stTextMuted, stTextPrimary, stTextTertiary } from '@/lib/styles';
 
 interface CompetitorMeeting { meeting_id: string; investor_name: string; date: string; }
@@ -21,6 +22,7 @@ interface CompetitiveData {
 }
 
 export default function CompetitivePage() {
+  const { toast } = useToast();
   const [data, setData] = useState<CompetitiveData | null>(null);
   const [loading, setLoading] = useState(true);
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
@@ -37,7 +39,7 @@ export default function CompetitivePage() {
     fetch(`/api/competitive${qs ? '?' + qs : ''}`)
       .then(r => { if (!r.ok) throw new Error(`${r.status}`); return r.json(); })
       .then((d: CompetitiveData) => { setData(d); setLoading(false); })
-      .catch(() => { setData(null); setLoading(false); });
+      .catch(() => { setData(null); setLoading(false); toast('Failed to load competitive intelligence', 'error'); });
   };
 
   useEffect(() => { fetchData(); }, []);
@@ -102,8 +104,9 @@ export default function CompetitivePage() {
 
       {/* Competitor Table */}
       {loading ? (
-        <div className="card" style={{ padding: 'var(--space-8)', textAlign: 'center' }}>
-          <p style={stTextTertiary}>Loading competitive intelligence...</p></div>
+        <div className="space-y-3">
+          {[1,2,3].map(i => <div key={i} className="skeleton" style={{ height: '48px', borderRadius: 'var(--radius-lg)' }} />)}
+        </div>
       ) : !data || data.competitors.length === 0 ? (
         <div className="card" style={{ padding: 'var(--space-8)', textAlign: 'center' }}>
           <div className="space-y-3">
@@ -148,7 +151,10 @@ export default function CompetitivePage() {
                     transition: 'background 150ms ease', }}
                   onClick={() => setExpandedRow(isExpanded ? null : c.name)}
                   onMouseEnter={() => setHoveredRow(c.name)}
-                  onMouseLeave={() => setHoveredRow(null)}>
+                  onMouseLeave={() => setHoveredRow(null)}
+                  role="button"
+                  aria-expanded={isExpanded}
+                  aria-label={`${isExpanded ? 'Collapse' : 'Expand'} ${c.name} details`}>
                   <div style={stTextMuted}>
                     {isExpanded
                       ? <ChevronDown className="w-4 h-4" />

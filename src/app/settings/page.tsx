@@ -306,7 +306,7 @@ export default function SettingsPage() {
                 type="number"
                 value={raise.data.equity_amount || ''}
                 onChange={e => raise.update('equity_amount', Number(e.target.value))}
-                placeholder="250000000"
+                placeholder="e.g. 250000000 (€250M)"
                 className="input" />
               {raise.data.equity_amount > 0 && (
                 <span className="absolute right-3 top-1/2 -translate-y-1/2" style={{ ...stFontXs, ...stTextMuted }}>
@@ -324,7 +324,7 @@ export default function SettingsPage() {
                 type="number"
                 value={raise.data.debt_amount || ''}
                 onChange={e => raise.update('debt_amount', Number(e.target.value))}
-                placeholder="250000000"
+                placeholder="e.g. 250000000 (€250M)"
                 className="input" />
               {raise.data.debt_amount > 0 && (
                 <span className="absolute right-3 top-1/2 -translate-y-1/2" style={{ ...stFontXs, ...stTextMuted }}>
@@ -342,7 +342,7 @@ export default function SettingsPage() {
                 type="number"
                 value={raise.data.pre_money || ''}
                 onChange={e => raise.update('pre_money', Number(e.target.value))}
-                placeholder="2000000000"
+                placeholder="e.g. 2000000000 (€2Bn)"
                 className="input" />
               {raise.data.pre_money > 0 && (
                 <span className="absolute right-3 top-1/2 -translate-y-1/2" style={{ ...stFontXs, ...stTextMuted }}>
@@ -393,7 +393,7 @@ export default function SettingsPage() {
                 type="number"
                 value={raise.data.minimum_check_size || ''}
                 onChange={e => raise.update('minimum_check_size', Number(e.target.value))}
-                placeholder="25000000"
+                placeholder="e.g. 25000000 (€25M)"
                 className="input" />
               {raise.data.minimum_check_size > 0 && (
                 <span className="absolute right-3 top-1/2 -translate-y-1/2" style={{ ...stFontXs, ...stTextMuted }}>
