@@ -103,8 +103,8 @@ export default function ForecastPage() {
         <div className="card" style={{ textAlign: 'center', padding: 'var(--space-12)' }}>
           <AlertTriangle className="w-8 h-8 mx-auto mb-3" style={{ color: 'var(--text-muted)' }} />
           <p style={{ color: 'var(--text-primary)', fontSize: 'var(--font-size-sm)', marginBottom: 'var(--space-3)' }}>
-            {error || 'Forecast data could not be loaded. Ensure investors are added to the pipeline, then try again.'}</p>
-          <button onClick={fetchForecast} className="btn btn-secondary btn-sm">Retry</button></div>
+            {error || 'No forecast yet — add investors to your pipeline first, then come back to see close projections.'}</p>
+          <button onClick={fetchForecast} className="btn btn-secondary btn-sm">Reload forecast</button></div>
       </div>);
   }
 
@@ -388,13 +388,13 @@ export default function ForecastPage() {
                   onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}>
                   <RotateCcw className="w-3 h-3" /> Reset what-if</button>
               ) : (
-                'Click toggles to model what-if scenarios'
+                'Click the toggle icons to exclude investors and see the impact'
               )}</span></div></div>
 
         {sortedByDate.length === 0 ? (
           <div style={{ padding: 'var(--space-12)', textAlign: 'center' }}>
             <span style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
-              Add investors to see your raise trajectory, timing gaps, and close probabilities.</span></div>
+              Add investors to forecast close dates, spot bottlenecks, and stress-test your timeline.</span></div>
         ) : (
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>

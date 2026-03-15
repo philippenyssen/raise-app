@@ -238,7 +238,7 @@ export default function ObjectionsPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, response_text: editResponse, effectiveness: editEffectiveness }),});
       if (!res.ok) throw new Error('Failed to save');
-      if (editEffectiveness === 'effective') toast('Objection resolved!', 'success');
+      if (editEffectiveness === 'effective') toast('Response marked effective — will surface as a template for similar objections', 'success');
       setEditingId(null);
       loadData();
       if (effectivenessData) loadEffectivenessData();

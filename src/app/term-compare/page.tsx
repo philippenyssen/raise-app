@@ -558,7 +558,7 @@ export default function TermComparePage() {
           className="rounded-xl p-8 text-center"
           style={stTextMuted}>
           <Scale className="w-8 h-8 mx-auto mb-3" style={stTextMuted} />
-          <p className="text-sm">Fill in the scenarios above and click <strong>Compare</strong> to see the analysis.</p></div>
+          <p className="text-sm">Fill in 2+ term sheets above to compare economics, dilution, and founder-friendliness side-by-side.</p></div>
       )}
     </div>);
 }

@@ -151,7 +151,7 @@ export default function StressTestPage() {
       <div className="space-y-8">
         <h1 className="page-title">Process Stress Test</h1>
         <div className="rounded-xl p-8 text-center space-y-3" style={{ background: 'var(--danger-muted)' }}>
-          <p style={stTextSecondary}>Could not load stress test data. Check your connection and try again.</p>
+          <p style={stTextSecondary}>Could not load stress test data. If this persists, check Settings to verify your API credentials.</p>
           <button
             onClick={() => fetchData()}
             onMouseEnter={() => setRetryHover(true)}
