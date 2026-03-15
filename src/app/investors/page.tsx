@@ -7,13 +7,7 @@ import { useToast } from '@/components/toast';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { Search, Download, GitCompare, Columns3, Clock, Pencil, Trash2 } from 'lucide-react';
 import { fmtDate } from '@/lib/format';
-
-const STATUS_LABELS: Record<InvestorStatus, string> = {
-  identified: 'Identified', contacted: 'Contacted', nda_signed: 'NDA Signed',
-  meeting_scheduled: 'Meeting Set', met: 'Met', engaged: 'Engaged',
-  in_dd: 'In DD', term_sheet: 'Term Sheet', closed: 'Closed',
-  passed: 'Passed', dropped: 'Dropped',
-};
+import { STATUS_LABELS } from '@/lib/constants';
 
 const STATUS_STYLES: Record<string, { background: string; color: string }> = {
   identified: { background: 'var(--surface-3)', color: 'var(--text-secondary)' },

@@ -7,6 +7,7 @@ import {
   TrendingUp, TrendingDown, Minus, RefreshCw, ArrowRight,
   Users, Filter,
 } from 'lucide-react';
+import { STATUS_LABELS } from '@/lib/constants';
 
 // ── Types ─────────────────────────────────────────────────────────────
 
@@ -53,12 +54,6 @@ const HEAT_CONFIG: Record<string, { bg: string; border: string; text: string; gl
 const TYPE_LABELS: Record<string, string> = {
   vc: 'VC', growth: 'Growth', sovereign: 'SWF', strategic: 'Strategic',
   debt: 'Debt', family_office: 'Family',
-};
-
-const STATUS_LABELS: Record<string, string> = {
-  identified: 'Identified', contacted: 'Contacted', nda_signed: 'NDA',
-  meeting_scheduled: 'Meeting Set', met: 'Met', engaged: 'Engaged',
-  in_dd: 'In DD', term_sheet: 'Term Sheet', closed: 'Closed',
 };
 
 const HEAT_ORDER: Record<string, number> = { hot: 0, warm: 1, cool: 2, cold: 3, frozen: 4 };

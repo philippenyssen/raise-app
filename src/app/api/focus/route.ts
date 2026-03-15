@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { computeInvestorScore, computeMomentumScore } from '@/lib/scoring';
 import type { Investor, Meeting, InvestorPortfolioCo, IntelligenceBrief, Objection } from '@/lib/types';
 import { getClient, daysBetween, parseJsonSafe, clamp } from '@/lib/api-helpers';
+import { STATUS_LABELS, MEETING_TYPE_LABELS } from '@/lib/constants';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -43,19 +44,6 @@ interface FocusItem {
   unresolvedObjections: string[];
   topObjectionTopic: string | null;
 }
-
-const STATUS_LABELS: Record<string, string> = {
-  identified: 'Identified', contacted: 'Contacted', nda_signed: 'NDA Signed',
-  meeting_scheduled: 'Meeting Set', met: 'Met', engaged: 'Engaged',
-  in_dd: 'In DD', term_sheet: 'Term Sheet', closed: 'Closed',
-  passed: 'Passed', dropped: 'Dropped',
-};
-
-const MEETING_TYPE_LABELS: Record<string, string> = {
-  intro: 'Intro', management_presentation: 'Mgmt Presentation',
-  deep_dive: 'Deep Dive', site_visit: 'Site Visit',
-  dd_session: 'DD Session', negotiation: 'Negotiation', social: 'Social',
-};
 
 // ---------------------------------------------------------------------------
 // Focus Score Computation

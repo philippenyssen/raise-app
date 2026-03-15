@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Flame, Filter, TrendingUp, Users, Thermometer } from 'lucide-react';
+import { STATUS_LABELS } from '@/lib/constants';
 
 interface DealHeatInvestor {
   id: string;
@@ -49,20 +50,6 @@ const TYPE_LABELS: Record<string, string> = {
   strategic: 'Strategic',
   debt: 'Debt',
   family_office: 'Family Office',
-};
-
-const STATUS_LABELS: Record<string, string> = {
-  identified: 'Identified',
-  contacted: 'Contacted',
-  nda_signed: 'NDA Signed',
-  meeting_scheduled: 'Meeting Set',
-  met: 'Met',
-  engaged: 'Engaged',
-  in_dd: 'In DD',
-  term_sheet: 'Term Sheet',
-  closed: 'Closed',
-  passed: 'Passed',
-  dropped: 'Dropped',
 };
 
 function formatDate(d: string): string {

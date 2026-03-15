@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { useToast } from '@/components/toast';
+import { STATUS_LABELS } from '@/lib/constants';
 import {
   Target, Clock, AlertTriangle, Zap, ChevronRight, RefreshCw,
   Calendar, CheckCircle, ArrowUpRight, TrendingDown, Timer, Users,
@@ -121,12 +122,6 @@ const TYPE_STYLES: Record<string, React.CSSProperties> = {
 const TYPE_LABELS: Record<string, string> = {
   vc: 'VC', growth: 'Growth', sovereign: 'SWF', strategic: 'Strategic',
   debt: 'Debt', family_office: 'Family',
-};
-
-const STATUS_LABELS: Record<string, string> = {
-  identified: 'Identified', contacted: 'Contacted', nda_signed: 'NDA Signed',
-  meeting_scheduled: 'Meeting Set', met: 'Met', engaged: 'Engaged',
-  in_dd: 'In DD', term_sheet: 'Term Sheet', closed: 'Closed',
 };
 
 const STATUS_STYLES: Record<string, React.CSSProperties> = {

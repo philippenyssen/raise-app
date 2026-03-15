@@ -6,6 +6,7 @@ import {
   CheckCircle2, XCircle, ClipboardList, FileWarning, UserCheck,
   ChevronDown, ChevronUp, AlertTriangle, Clock, ArrowRight
 } from 'lucide-react';
+import { STATUS_LABELS } from '@/lib/constants';
 
 interface TaskAction {
   id: string;
@@ -59,20 +60,6 @@ const FLAG_TYPE_STYLES: Record<string, { bg: string; color: string }> = {
   objection_response: { bg: 'var(--danger-muted)', color: 'var(--danger)' },
   number_update: { bg: 'var(--warning-muted)', color: 'var(--warning)' },
   section_improvement: { bg: 'var(--accent-muted)', color: 'var(--accent)' },
-};
-
-const STATUS_LABELS: Record<string, string> = {
-  met: 'Met',
-  engaged: 'Engaged',
-  in_dd: 'In DD',
-  term_sheet: 'Term Sheet',
-  passed: 'Passed',
-  contacted: 'Contacted',
-  identified: 'Identified',
-  nda_signed: 'NDA Signed',
-  meeting_scheduled: 'Meeting Scheduled',
-  closed: 'Closed',
-  dropped: 'Dropped',
 };
 
 export default function PostMeetingActions({

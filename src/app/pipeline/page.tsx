@@ -10,6 +10,7 @@ import {
   Calendar, SendHorizonal, ClipboardList,
 } from 'lucide-react';
 import { fmtDate } from '@/lib/format';
+import { STATUS_LABELS } from '@/lib/constants';
 
 // ── Pipeline column order ────────────────────────────────────────────
 const PIPELINE_STATUSES: InvestorStatus[] = [
@@ -18,20 +19,6 @@ const PIPELINE_STATUSES: InvestorStatus[] = [
 ];
 
 const EXIT_STATUSES: InvestorStatus[] = ['passed', 'dropped'];
-
-const STATUS_LABELS: Record<InvestorStatus, string> = {
-  identified: 'Identified',
-  contacted: 'Contacted',
-  nda_signed: 'NDA Signed',
-  meeting_scheduled: 'Meeting Set',
-  met: 'Met',
-  engaged: 'Engaged',
-  in_dd: 'In DD',
-  term_sheet: 'Term Sheet',
-  closed: 'Closed',
-  passed: 'Passed',
-  dropped: 'Dropped',
-};
 
 type ColumnStyle = { header: React.CSSProperties; border: React.CSSProperties; bg: React.CSSProperties; badge: React.CSSProperties };
 function colStyle(headerBg: string, borderClr: string, bgVal: string, badgeBg: string, badgeClr: string): ColumnStyle {

@@ -15,13 +15,7 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/components/toast';
 import { fmtDateShort, fmtDate } from '@/lib/format';
-
-const STATUS_LABELS: Record<InvestorStatus, string> = {
-  identified: 'Identified', contacted: 'Contacted', nda_signed: 'NDA Signed',
-  meeting_scheduled: 'Meeting Set', met: 'Met', engaged: 'Engaged',
-  in_dd: 'In DD', term_sheet: 'Term Sheet', closed: 'Closed',
-  passed: 'Passed', dropped: 'Dropped',
-};
+import { STATUS_LABELS } from '@/lib/constants';
 
 const STATUS_COLORS: Record<string, string> = {
   identified: 'var(--surface-3)',

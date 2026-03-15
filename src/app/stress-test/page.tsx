@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { useToast } from '@/components/toast';
+import { STATUS_LABELS } from '@/lib/constants';
 import {
   ShieldAlert, TrendingUp, TrendingDown, ArrowRight,
   RefreshCw, AlertTriangle, CheckCircle2, Target,
@@ -93,13 +94,6 @@ interface StressTestData {
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-
-const STATUS_LABELS: Record<string, string> = {
-  identified: 'Identified', contacted: 'Contacted', nda_signed: 'NDA Signed',
-  meeting_scheduled: 'Meeting Set', met: 'Met', engaged: 'Engaged',
-  in_dd: 'In DD', term_sheet: 'Term Sheet', closed: 'Closed',
-  passed: 'Passed', dropped: 'Dropped',
-};
 
 function formatEuro(n: number): string {
   if (n >= 1000) return `${(n / 1000).toFixed(1).replace(/\.0$/, '')}Bn`;

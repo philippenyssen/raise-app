@@ -140,35 +140,81 @@ function parseMoneyString(s: unknown): number {
 }
 
 // ---------------------------------------------------------------------------
+// Form section hook — consolidates data/dirty/saving state + save logic
+// ---------------------------------------------------------------------------
+
+function useFormSection<T extends object>(
+  settingsKey: string,
+  defaultValue: T,
+  toastFn: (msg: string, type: 'success' | 'error' | 'warning') => void,
+  successMsg: string,
+  errorMsg: string,
+) {
+  const [data, setData] = useState<T>({ ...defaultValue });
+  const [dirty, setDirty] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  const update = useCallback(<K extends keyof T>(field: K, value: T[K]) => {
+    setData(prev => ({ ...prev, [field]: value }));
+    setDirty(true);
+  }, []);
+
+  const reset = useCallback((newData: T) => {
+    setData(newData);
+    setDirty(false);
+  }, []);
+
+  const save = useCallback(async (validate?: () => boolean) => {
+    if (validate && !validate()) return;
+    setSaving(true);
+    try {
+      const res = await fetch('/api/settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: settingsKey, value: data }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || 'Save failed');
+      }
+      await res.json();
+      toastFn(successMsg, 'success');
+      setDirty(false);
+    } catch (e: unknown) {
+      toastFn((e as Error).message || errorMsg, 'error');
+    } finally {
+      setSaving(false);
+    }
+  }, [settingsKey, data, toastFn, successMsg, errorMsg]);
+
+  const replace = useCallback((newData: T) => {
+    setData(newData);
+    setDirty(true);
+  }, []);
+
+  return { data, dirty, saving, update, save, reset, replace };
+}
+
+// ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 
 export default function SettingsPage() {
   const { toast } = useToast();
 
-  // API key test
   const [keyTest, setKeyTest] = useState<KeyTest | null>(null);
   const [testing, setTesting] = useState(false);
-
-  // Config state
   const [loading, setLoading] = useState(true);
-  const [raiseConfig, setRaiseConfig] = useState<RaiseConfigForm>({ ...DEFAULT_RAISE_CONFIG });
-  const [scoringWeights, setScoringWeights] = useState<ScoringWeightsForm>({ ...DEFAULT_SCORING_WEIGHTS });
-  const [followupCadence, setFollowupCadence] = useState<FollowupCadenceForm>({ ...DEFAULT_FOLLOWUP_CADENCE });
 
-  // Dirty tracking
-  const [raiseDirty, setRaiseDirty] = useState(false);
-  const [scoringDirty, setScoringDirty] = useState(false);
-  const [followupDirty, setFollowupDirty] = useState(false);
-
-  // Saving state
-  const [savingRaise, setSavingRaise] = useState(false);
-  const [savingScoring, setSavingScoring] = useState(false);
-  const [savingFollowup, setSavingFollowup] = useState(false);
-
-  // -------------------------------------------------------------------------
-  // Load settings
-  // -------------------------------------------------------------------------
+  const raise = useFormSection<RaiseConfigForm>(
+    'raise_config', DEFAULT_RAISE_CONFIG, toast, 'Raise parameters saved', 'Failed to save raise config',
+  );
+  const scoring = useFormSection<ScoringWeightsForm>(
+    'scoring_weights', DEFAULT_SCORING_WEIGHTS, toast, 'Scoring weights saved', 'Failed to save scoring weights',
+  );
+  const followup = useFormSection<FollowupCadenceForm>(
+    'followup_cadence', DEFAULT_FOLLOWUP_CADENCE, toast, 'Follow-up cadence saved', 'Failed to save follow-up cadence',
+  );
 
   const loadSettings = useCallback(async () => {
     try {
@@ -177,90 +223,26 @@ export default function SettingsPage() {
       const data = await res.json();
 
       if (data.raise_config) {
-        setRaiseConfig(parseExistingRaiseConfig(data.raise_config));
+        raise.reset(parseExistingRaiseConfig(data.raise_config));
       }
       if (data.scoring_weights) {
-        setScoringWeights({ ...DEFAULT_SCORING_WEIGHTS, ...(data.scoring_weights as ScoringWeightsForm) });
+        scoring.reset({ ...DEFAULT_SCORING_WEIGHTS, ...(data.scoring_weights as ScoringWeightsForm) });
       }
       if (data.followup_cadence) {
-        setFollowupCadence({ ...DEFAULT_FOLLOWUP_CADENCE, ...(data.followup_cadence as FollowupCadenceForm) });
+        followup.reset({ ...DEFAULT_FOLLOWUP_CADENCE, ...(data.followup_cadence as FollowupCadenceForm) });
       }
     } catch {
       toast('Failed to load settings', 'error');
     } finally {
       setLoading(false);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [toast]);
 
   useEffect(() => {
     loadSettings();
     testKey();
   }, [loadSettings]);
-
-  // -------------------------------------------------------------------------
-  // Save helpers
-  // -------------------------------------------------------------------------
-
-  async function saveConfig(key: string, value: unknown) {
-    const res = await fetch('/api/settings', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ key, value }),
-    });
-    if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.error || 'Save failed');
-    }
-    return res.json();
-  }
-
-  async function saveRaiseConfig() {
-    setSavingRaise(true);
-    try {
-      await saveConfig('raise_config', raiseConfig);
-      toast('Raise parameters saved', 'success');
-      setRaiseDirty(false);
-    } catch (e: unknown) {
-      toast((e as Error).message || 'Failed to save raise config', 'error');
-    } finally {
-      setSavingRaise(false);
-    }
-  }
-
-  async function saveScoringWeights() {
-    const total = Object.values(scoringWeights).reduce((a, b) => a + b, 0);
-    if (Math.abs(total - 100) > 1) {
-      toast(`Weights must sum to 100% (currently ${total}%)`, 'warning');
-      return;
-    }
-    setSavingScoring(true);
-    try {
-      await saveConfig('scoring_weights', scoringWeights);
-      toast('Scoring weights saved', 'success');
-      setScoringDirty(false);
-    } catch (e: unknown) {
-      toast((e as Error).message || 'Failed to save scoring weights', 'error');
-    } finally {
-      setSavingScoring(false);
-    }
-  }
-
-  async function saveFollowupCadence() {
-    setSavingFollowup(true);
-    try {
-      await saveConfig('followup_cadence', followupCadence);
-      toast('Follow-up cadence saved', 'success');
-      setFollowupDirty(false);
-    } catch (e: unknown) {
-      toast((e as Error).message || 'Failed to save follow-up cadence', 'error');
-    } finally {
-      setSavingFollowup(false);
-    }
-  }
-
-  // -------------------------------------------------------------------------
-  // API key test
-  // -------------------------------------------------------------------------
 
   async function testKey() {
     setTesting(true);
@@ -274,26 +256,7 @@ export default function SettingsPage() {
     }
   }
 
-  // -------------------------------------------------------------------------
-  // Helpers for form fields
-  // -------------------------------------------------------------------------
-
-  function updateRaise<K extends keyof RaiseConfigForm>(field: K, value: RaiseConfigForm[K]) {
-    setRaiseConfig(prev => ({ ...prev, [field]: value }));
-    setRaiseDirty(true);
-  }
-
-  function updateWeight(field: keyof ScoringWeightsForm, value: number) {
-    setScoringWeights(prev => ({ ...prev, [field]: value }));
-    setScoringDirty(true);
-  }
-
-  function updateFollowup<K extends keyof FollowupCadenceForm>(field: K, value: FollowupCadenceForm[K]) {
-    setFollowupCadence(prev => ({ ...prev, [field]: value }));
-    setFollowupDirty(true);
-  }
-
-  const weightTotal = Object.values(scoringWeights).reduce((a, b) => a + b, 0);
+  const weightTotal = Object.values(scoring.data).reduce((a, b) => a + b, 0);
   const weightBalanced = Math.abs(weightTotal - 100) <= 1;
 
   const statusIcon = keyTest?.status === 'ok'
@@ -340,16 +303,16 @@ export default function SettingsPage() {
             <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 400, color: 'var(--text-primary)' }}>Raise Parameters</h2>
           </div>
           <div className="flex items-center gap-2">
-            {raiseDirty && (
+            {raise.dirty && (
               <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)', fontWeight: 400 }}>Unsaved changes</span>
             )}
             <button
-              onClick={saveRaiseConfig}
-              disabled={savingRaise || !raiseDirty}
-              className={`btn btn-md ${raiseDirty ? 'btn-primary' : 'btn-secondary'}`}
+              onClick={() => raise.save()}
+              disabled={raise.saving || !raise.dirty}
+              className={`btn btn-md ${raise.dirty ? 'btn-primary' : 'btn-secondary'}`}
             >
-              <Save className={`w-3.5 h-3.5 ${savingRaise ? 'animate-spin' : ''}`} />
-              {savingRaise ? 'Saving...' : raiseDirty ? 'Save Changes' : 'Saved'}
+              <Save className={`w-3.5 h-3.5 ${raise.saving ? 'animate-spin' : ''}`} />
+              {raise.saving ? 'Saving...' : raise.dirty ? 'Save Changes' : 'Saved'}
             </button>
           </div>
         </div>
@@ -360,8 +323,8 @@ export default function SettingsPage() {
             <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>Company Name</label>
             <input
               type="text"
-              value={raiseConfig.company_name}
-              onChange={e => updateRaise('company_name', e.target.value)}
+              value={raise.data.company_name}
+              onChange={e => raise.update('company_name', e.target.value)}
               placeholder="e.g. Aerospacelab"
               className="input"
             />
@@ -372,8 +335,8 @@ export default function SettingsPage() {
             <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>Round Type</label>
             <div className="relative">
               <select
-                value={raiseConfig.round_type}
-                onChange={e => updateRaise('round_type', e.target.value)}
+                value={raise.data.round_type}
+                onChange={e => raise.update('round_type', e.target.value)}
                 className="input"
                 style={{ appearance: 'none', cursor: 'pointer' }}
               >
@@ -390,8 +353,8 @@ export default function SettingsPage() {
             <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>Currency</label>
             <div className="relative">
               <select
-                value={raiseConfig.currency}
-                onChange={e => updateRaise('currency', e.target.value)}
+                value={raise.data.currency}
+                onChange={e => raise.update('currency', e.target.value)}
                 className="input"
                 style={{ appearance: 'none', cursor: 'pointer' }}
               >
@@ -414,14 +377,14 @@ export default function SettingsPage() {
             <div className="relative">
               <input
                 type="number"
-                value={raiseConfig.equity_amount || ''}
-                onChange={e => updateRaise('equity_amount', Number(e.target.value))}
+                value={raise.data.equity_amount || ''}
+                onChange={e => raise.update('equity_amount', Number(e.target.value))}
                 placeholder="250000000"
                 className="input"
               />
-              {raiseConfig.equity_amount > 0 && (
+              {raise.data.equity_amount > 0 && (
                 <span className="absolute right-3 top-1/2 -translate-y-1/2" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-                  {formatCompact(raiseConfig.equity_amount, raiseConfig.currency)}
+                  {formatCompact(raise.data.equity_amount, raise.data.currency)}
                 </span>
               )}
             </div>
@@ -438,14 +401,14 @@ export default function SettingsPage() {
             <div className="relative">
               <input
                 type="number"
-                value={raiseConfig.debt_amount || ''}
-                onChange={e => updateRaise('debt_amount', Number(e.target.value))}
+                value={raise.data.debt_amount || ''}
+                onChange={e => raise.update('debt_amount', Number(e.target.value))}
                 placeholder="250000000"
                 className="input"
               />
-              {raiseConfig.debt_amount > 0 && (
+              {raise.data.debt_amount > 0 && (
                 <span className="absolute right-3 top-1/2 -translate-y-1/2" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-                  {formatCompact(raiseConfig.debt_amount, raiseConfig.currency)}
+                  {formatCompact(raise.data.debt_amount, raise.data.currency)}
                 </span>
               )}
             </div>
@@ -462,14 +425,14 @@ export default function SettingsPage() {
             <div className="relative">
               <input
                 type="number"
-                value={raiseConfig.pre_money || ''}
-                onChange={e => updateRaise('pre_money', Number(e.target.value))}
+                value={raise.data.pre_money || ''}
+                onChange={e => raise.update('pre_money', Number(e.target.value))}
                 placeholder="2000000000"
                 className="input"
               />
-              {raiseConfig.pre_money > 0 && (
+              {raise.data.pre_money > 0 && (
                 <span className="absolute right-3 top-1/2 -translate-y-1/2" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-                  {formatCompact(raiseConfig.pre_money, raiseConfig.currency)}
+                  {formatCompact(raise.data.pre_money, raise.data.currency)}
                 </span>
               )}
             </div>
@@ -488,8 +451,8 @@ export default function SettingsPage() {
               fontSize: 'var(--font-size-sm)',
               color: 'var(--text-tertiary)',
             }}>
-              {raiseConfig.pre_money && raiseConfig.equity_amount
-                ? formatCompact(raiseConfig.pre_money + raiseConfig.equity_amount, raiseConfig.currency)
+              {raise.data.pre_money && raise.data.equity_amount
+                ? formatCompact(raise.data.pre_money + raise.data.equity_amount, raise.data.currency)
                 : '—'}
             </div>
           </div>
@@ -504,8 +467,8 @@ export default function SettingsPage() {
             </label>
             <input
               type="date"
-              value={raiseConfig.target_close}
-              onChange={e => updateRaise('target_close', e.target.value)}
+              value={raise.data.target_close}
+              onChange={e => raise.update('target_close', e.target.value)}
               className="input [color-scheme:dark]"
             />
           </div>
@@ -520,8 +483,8 @@ export default function SettingsPage() {
             </label>
             <input
               type="number"
-              value={raiseConfig.target_investor_count || ''}
-              onChange={e => updateRaise('target_investor_count', Number(e.target.value))}
+              value={raise.data.target_investor_count || ''}
+              onChange={e => raise.update('target_investor_count', Number(e.target.value))}
               placeholder="5"
               min={0}
               className="input"
@@ -536,14 +499,14 @@ export default function SettingsPage() {
             <div className="relative">
               <input
                 type="number"
-                value={raiseConfig.minimum_check_size || ''}
-                onChange={e => updateRaise('minimum_check_size', Number(e.target.value))}
+                value={raise.data.minimum_check_size || ''}
+                onChange={e => raise.update('minimum_check_size', Number(e.target.value))}
                 placeholder="25000000"
                 className="input"
               />
-              {raiseConfig.minimum_check_size > 0 && (
+              {raise.data.minimum_check_size > 0 && (
                 <span className="absolute right-3 top-1/2 -translate-y-1/2" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-                  {formatCompact(raiseConfig.minimum_check_size, raiseConfig.currency)}
+                  {formatCompact(raise.data.minimum_check_size, raise.data.currency)}
                 </span>
               )}
             </div>
@@ -551,25 +514,25 @@ export default function SettingsPage() {
         </div>
 
         {/* Summary row */}
-        {raiseConfig.equity_amount > 0 && raiseConfig.pre_money > 0 && (
+        {raise.data.equity_amount > 0 && raise.data.pre_money > 0 && (
           <div style={{ marginTop: 'var(--space-5)', paddingTop: 'var(--space-4)', borderTop: '1px solid var(--border-subtle)' }}>
             <div className="grid grid-cols-3 gap-4" style={{ textAlign: 'center' }}>
               <div>
                 <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '0.125rem' }}>Total Raise</div>
                 <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
-                  {formatCompact(raiseConfig.equity_amount + raiseConfig.debt_amount, raiseConfig.currency)}
+                  {formatCompact(raise.data.equity_amount + raise.data.debt_amount, raise.data.currency)}
                 </div>
               </div>
               <div>
                 <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '0.125rem' }}>Dilution</div>
                 <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
-                  {((raiseConfig.equity_amount / (raiseConfig.pre_money + raiseConfig.equity_amount)) * 100).toFixed(1)}%
+                  {((raise.data.equity_amount / (raise.data.pre_money + raise.data.equity_amount)) * 100).toFixed(1)}%
                 </div>
               </div>
               <div>
                 <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '0.125rem' }}>Post-money EV</div>
                 <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
-                  {formatCompact(raiseConfig.pre_money + raiseConfig.equity_amount, raiseConfig.currency)}
+                  {formatCompact(raise.data.pre_money + raise.data.equity_amount, raise.data.currency)}
                 </div>
               </div>
             </div>
@@ -589,8 +552,7 @@ export default function SettingsPage() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => {
-                setScoringWeights({ ...DEFAULT_SCORING_WEIGHTS });
-                setScoringDirty(true);
+                scoring.replace({ ...DEFAULT_SCORING_WEIGHTS });
               }}
               className="btn btn-sm btn-ghost"
             >
@@ -598,16 +560,23 @@ export default function SettingsPage() {
               Reset to Defaults
             </button>
             <div className="flex items-center gap-2">
-              {scoringDirty && (
+              {scoring.dirty && (
                 <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)', fontWeight: 400 }}>Unsaved changes</span>
               )}
               <button
-                onClick={saveScoringWeights}
-                disabled={savingScoring || !scoringDirty}
-                className={`btn btn-md ${scoringDirty ? 'btn-primary' : 'btn-secondary'}`}
+                onClick={() => scoring.save(() => {
+                  const total = Object.values(scoring.data).reduce((a, b) => a + b, 0);
+                  if (Math.abs(total - 100) > 1) {
+                    toast(`Weights must sum to 100% (currently ${total}%)`, 'warning');
+                    return false;
+                  }
+                  return true;
+                })}
+                disabled={scoring.saving || !scoring.dirty}
+                className={`btn btn-md ${scoring.dirty ? 'btn-primary' : 'btn-secondary'}`}
               >
-                <Save className={`w-3.5 h-3.5 ${savingScoring ? 'animate-spin' : ''}`} />
-                {savingScoring ? 'Saving...' : scoringDirty ? 'Save Changes' : 'Saved'}
+                <Save className={`w-3.5 h-3.5 ${scoring.saving ? 'animate-spin' : ''}`} />
+                {scoring.saving ? 'Saving...' : scoring.dirty ? 'Save Changes' : 'Saved'}
               </button>
             </div>
           </div>
@@ -639,8 +608,8 @@ export default function SettingsPage() {
                 min={0}
                 max={50}
                 step={1}
-                value={scoringWeights[key]}
-                onChange={e => updateWeight(key, Number(e.target.value))}
+                value={scoring.data[key]}
+                onChange={e => scoring.update(key, Number(e.target.value))}
                 className="flex-1 h-1.5 cursor-pointer"
                 style={{ accentColor: 'var(--accent)' }}
               />
@@ -649,8 +618,8 @@ export default function SettingsPage() {
                   type="number"
                   min={0}
                   max={100}
-                  value={scoringWeights[key]}
-                  onChange={e => updateWeight(key, Number(e.target.value))}
+                  value={scoring.data[key]}
+                  onChange={e => scoring.update(key, Number(e.target.value))}
                   className="input"
                   style={{ width: '3.5rem', padding: '0.25rem 0.5rem', fontSize: 'var(--font-size-xs)', textAlign: 'right' }}
                 />
@@ -671,16 +640,16 @@ export default function SettingsPage() {
             <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 400, color: 'var(--text-primary)' }}>Follow-up Cadence</h2>
           </div>
           <div className="flex items-center gap-2">
-            {followupDirty && (
+            {followup.dirty && (
               <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)', fontWeight: 400 }}>Unsaved changes</span>
             )}
             <button
-              onClick={saveFollowupCadence}
-              disabled={savingFollowup || !followupDirty}
-              className={`btn btn-md ${followupDirty ? 'btn-primary' : 'btn-secondary'}`}
+              onClick={() => followup.save()}
+              disabled={followup.saving || !followup.dirty}
+              className={`btn btn-md ${followup.dirty ? 'btn-primary' : 'btn-secondary'}`}
             >
-              <Save className={`w-3.5 h-3.5 ${savingFollowup ? 'animate-spin' : ''}`} />
-              {savingFollowup ? 'Saving...' : followupDirty ? 'Save Changes' : 'Saved'}
+              <Save className={`w-3.5 h-3.5 ${followup.saving ? 'animate-spin' : ''}`} />
+              {followup.saving ? 'Saving...' : followup.dirty ? 'Save Changes' : 'Saved'}
             </button>
           </div>
         </div>
@@ -692,8 +661,8 @@ export default function SettingsPage() {
             <div className="flex items-center gap-2">
               <input
                 type="number"
-                value={followupCadence.thank_you_delay_hours}
-                onChange={e => updateFollowup('thank_you_delay_hours', Number(e.target.value))}
+                value={followup.data.thank_you_delay_hours}
+                onChange={e => followup.update('thank_you_delay_hours', Number(e.target.value))}
                 min={0}
                 max={72}
                 className="input flex-1"
@@ -708,8 +677,8 @@ export default function SettingsPage() {
             <div className="flex items-center gap-2">
               <input
                 type="number"
-                value={followupCadence.objection_response_delay_hours}
-                onChange={e => updateFollowup('objection_response_delay_hours', Number(e.target.value))}
+                value={followup.data.objection_response_delay_hours}
+                onChange={e => followup.update('objection_response_delay_hours', Number(e.target.value))}
                 min={0}
                 max={168}
                 className="input flex-1"
@@ -724,8 +693,8 @@ export default function SettingsPage() {
             <div className="flex items-center gap-2">
               <input
                 type="number"
-                value={followupCadence.schedule_next_meeting_delay_hours}
-                onChange={e => updateFollowup('schedule_next_meeting_delay_hours', Number(e.target.value))}
+                value={followup.data.schedule_next_meeting_delay_hours}
+                onChange={e => followup.update('schedule_next_meeting_delay_hours', Number(e.target.value))}
                 min={0}
                 max={168}
                 className="input flex-1"
@@ -740,8 +709,8 @@ export default function SettingsPage() {
             <div className="flex items-center gap-2">
               <input
                 type="number"
-                value={followupCadence.reengagement_delay_days}
-                onChange={e => updateFollowup('reengagement_delay_days', Number(e.target.value))}
+                value={followup.data.reengagement_delay_days}
+                onChange={e => followup.update('reengagement_delay_days', Number(e.target.value))}
                 min={1}
                 max={30}
                 className="input flex-1"
@@ -756,8 +725,8 @@ export default function SettingsPage() {
             <div className="flex items-center gap-2">
               <input
                 type="number"
-                value={followupCadence.escalation_delay_days}
-                onChange={e => updateFollowup('escalation_delay_days', Number(e.target.value))}
+                value={followup.data.escalation_delay_days}
+                onChange={e => followup.update('escalation_delay_days', Number(e.target.value))}
                 min={1}
                 max={60}
                 className="input flex-1"
@@ -772,8 +741,8 @@ export default function SettingsPage() {
             <div className="flex items-center gap-2">
               <input
                 type="number"
-                value={followupCadence.tier1_speed_multiplier}
-                onChange={e => updateFollowup('tier1_speed_multiplier', Number(e.target.value))}
+                value={followup.data.tier1_speed_multiplier}
+                onChange={e => followup.update('tier1_speed_multiplier', Number(e.target.value))}
                 min={25}
                 max={100}
                 className="input flex-1"
@@ -781,7 +750,7 @@ export default function SettingsPage() {
               <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '3rem' }}>%</span>
             </div>
             <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 'var(--space-1)' }}>
-              {followupCadence.tier1_speed_multiplier}% means Tier 1 investors get follow-ups {100 - followupCadence.tier1_speed_multiplier}% faster
+              {followup.data.tier1_speed_multiplier}% means Tier 1 investors get follow-ups {100 - followup.data.tier1_speed_multiplier}% faster
             </p>
           </div>
         </div>
@@ -793,19 +762,19 @@ export default function SettingsPage() {
             <div style={{ background: 'var(--surface-2)', borderRadius: 'var(--radius-md)', padding: '0.5rem 0.75rem' }}>
               <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Thank you</div>
               <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
-                {Math.round(followupCadence.thank_you_delay_hours * followupCadence.tier1_speed_multiplier / 100)}h
+                {Math.round(followup.data.thank_you_delay_hours * followup.data.tier1_speed_multiplier / 100)}h
               </div>
             </div>
             <div style={{ background: 'var(--surface-2)', borderRadius: 'var(--radius-md)', padding: '0.5rem 0.75rem' }}>
               <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Objection</div>
               <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
-                {Math.round(followupCadence.objection_response_delay_hours * followupCadence.tier1_speed_multiplier / 100)}h
+                {Math.round(followup.data.objection_response_delay_hours * followup.data.tier1_speed_multiplier / 100)}h
               </div>
             </div>
             <div style={{ background: 'var(--surface-2)', borderRadius: 'var(--radius-md)', padding: '0.5rem 0.75rem' }}>
               <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Re-engage</div>
               <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
-                {Math.round(followupCadence.reengagement_delay_days * followupCadence.tier1_speed_multiplier / 100)}d
+                {Math.round(followup.data.reengagement_delay_days * followup.data.tier1_speed_multiplier / 100)}d
               </div>
             </div>
           </div>

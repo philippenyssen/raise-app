@@ -6,6 +6,7 @@ import {
   RefreshCw, AlertTriangle, ArrowRight, Crown,
   TrendingUp, Users, Link2, ChevronDown, ChevronUp, Calendar,
 } from 'lucide-react';
+import { STATUS_LABELS } from '@/lib/constants';
 
 interface CascadeLink {
   investorId: string;
@@ -54,18 +55,6 @@ interface NetworkData {
   } | null;
   generatedAt: string;
 }
-
-const STATUS_LABELS: Record<string, string> = {
-  identified: 'Identified',
-  contacted: 'Contacted',
-  nda_signed: 'NDA Signed',
-  meeting_scheduled: 'Meeting Scheduled',
-  met: 'Met',
-  engaged: 'Engaged',
-  in_dd: 'In DD',
-  term_sheet: 'Term Sheet',
-  closed: 'Closed',
-};
 
 function formatCapital(m: number): string {
   if (m === 0) return '--';

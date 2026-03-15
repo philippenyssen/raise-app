@@ -9,6 +9,7 @@ import {
   BarChart3, ArrowUpRight, ArrowDownRight, Loader2,
 } from 'lucide-react';
 import Link from 'next/link';
+import { STATUS_LABELS } from '@/lib/constants';
 
 // ---------------------------------------------------------------------------
 // Type labels
@@ -17,13 +18,6 @@ import Link from 'next/link';
 const TYPE_LABELS: Record<InvestorType, string> = {
   vc: 'VC', growth: 'Growth', sovereign: 'Sovereign', strategic: 'Strategic',
   debt: 'Debt', family_office: 'Family Office',
-};
-
-const STATUS_LABELS: Record<string, string> = {
-  identified: 'Identified', contacted: 'Contacted', nda_signed: 'NDA Signed',
-  meeting_scheduled: 'Meeting Set', met: 'Met', engaged: 'Engaged',
-  in_dd: 'In DD', term_sheet: 'Term Sheet', closed: 'Closed',
-  passed: 'Passed', dropped: 'Dropped',
 };
 
 const MEETING_TYPE_LABELS: Record<string, string> = {

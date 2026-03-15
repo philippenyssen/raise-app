@@ -5,6 +5,7 @@ import { useToast } from '@/components/toast';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { FolderOpen, Upload, FileText, Table, Image, Trash2, ChevronDown, ChevronRight, Search, Eye, BarChart3, Users, AlertCircle, Send, TrendingUp } from 'lucide-react';
 import { fmtDateTime, fmtDate } from '@/lib/format';
+import { STATUS_LABELS } from '@/lib/constants';
 
 interface DataRoomFile {
   id: string;
@@ -59,20 +60,6 @@ const CATEGORIES = [
   { value: 'team', label: 'Team', icon: FileText, desc: 'Org chart, bios, employment agreements' },
   { value: 'other', label: 'Other', icon: FileText, desc: 'Uncategorized documents' },
 ];
-
-const STATUS_LABELS: Record<string, string> = {
-  identified: 'Identified',
-  contacted: 'Contacted',
-  nda_signed: 'NDA Signed',
-  meeting_scheduled: 'Meeting Scheduled',
-  met: 'Met',
-  engaged: 'Engaged',
-  in_dd: 'In DD',
-  term_sheet: 'Term Sheet',
-  closed: 'Closed',
-  passed: 'Passed',
-  dropped: 'Dropped',
-};
 
 export default function DataRoomPage() {
   const { toast } = useToast();

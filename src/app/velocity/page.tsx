@@ -6,6 +6,7 @@ import {
   Gauge, Clock, CheckCircle2, XCircle, AlertTriangle,
   TrendingUp, Users, ArrowRight, Zap, Phone, Mail, Target,
 } from 'lucide-react';
+import { STATUS_LABELS } from '@/lib/constants';
 
 interface VelocityInvestor {
   investor_id: string;
@@ -43,18 +44,6 @@ interface VelocityData {
   summary: VelocitySummary;
   generated_at: string;
 }
-
-const STATUS_LABELS: Record<string, string> = {
-  identified: 'Identified',
-  contacted: 'Contacted',
-  nda_signed: 'NDA Signed',
-  meeting_scheduled: 'Meeting Set',
-  met: 'Met',
-  engaged: 'Engaged',
-  in_dd: 'In DD',
-  term_sheet: 'Term Sheet',
-  closed: 'Closed',
-};
 
 const STATUS_COLORS: Record<string, string> = {
   contacted: 'var(--text-tertiary)',

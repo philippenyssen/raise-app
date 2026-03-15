@@ -20,6 +20,41 @@ export interface AccelerationAction {
 let client: Client;
 let initialized = false;
 
+async function genericUpdate(
+  table: string,
+  id: string,
+  updates: Record<string, unknown>,
+  opts?: { exclude?: string[]; autoUpdatedAt?: boolean; booleanFields?: string[] },
+) {
+  await ensureInitialized();
+  const excl = new Set(opts?.exclude ?? ['id', 'created_at']);
+  const fields = Object.keys(updates).filter(k => !excl.has(k));
+  if (fields.length === 0) return;
+  const sets = fields.map(f => `${f} = ?`).join(', ');
+  const bools = new Set(opts?.booleanFields ?? []);
+  const values = fields.map(f => {
+    const v = updates[f];
+    if (bools.has(f) || typeof v === 'boolean') return v ? 1 : 0;
+    return v as InValue;
+  });
+  const suffix = opts?.autoUpdatedAt !== false ? `, updated_at = datetime('now')` : '';
+  await getClient().execute({
+    sql: `UPDATE ${table} SET ${sets}${suffix} WHERE id = ?`,
+    args: [...values, id],
+  });
+}
+
+async function genericGetById<T>(table: string, id: string): Promise<T | null> {
+  await ensureInitialized();
+  const result = await getClient().execute({ sql: `SELECT * FROM ${table} WHERE id = ?`, args: [id] });
+  return result.rows.length > 0 ? (result.rows[0] as unknown as T) : null;
+}
+
+async function genericDelete(table: string, id: string) {
+  await ensureInitialized();
+  await getClient().execute({ sql: `DELETE FROM ${table} WHERE id = ?`, args: [id] });
+}
+
 function getClient(): Client {
   if (!client) {
     client = createClient({
@@ -552,14 +587,7 @@ export async function getAllInvestors(): Promise<Investor[]> {
   return result.rows as unknown as Investor[];
 }
 
-export async function getInvestor(id: string): Promise<Investor | null> {
-  await ensureInitialized();
-  const result = await getClient().execute({
-    sql: 'SELECT * FROM investors WHERE id = ?',
-    args: [id],
-  });
-  return result.rows.length > 0 ? (result.rows[0] as unknown as Investor) : null;
-}
+export const getInvestor = (id: string) => genericGetById<Investor>('investors', id);
 
 export async function createInvestor(investor: Partial<Investor> & { name: string }): Promise<Investor> {
   await ensureInitialized();
@@ -592,15 +620,7 @@ export async function createInvestor(investor: Partial<Investor> & { name: strin
 }
 
 export async function updateInvestor(id: string, updates: Partial<Investor>) {
-  await ensureInitialized();
-  const fields = Object.keys(updates).filter(k => k !== 'id' && k !== 'created_at');
-  if (fields.length === 0) return;
-  const sets = fields.map(f => `${f} = ?`).join(', ');
-  const values = fields.map(f => (updates as Record<string, unknown>)[f] as InValue);
-  await getClient().execute({
-    sql: `UPDATE investors SET ${sets}, updated_at = datetime('now') WHERE id = ?`,
-    args: [...values, id],
-  });
+  await genericUpdate('investors', id, updates as Record<string, unknown>);
 }
 
 export async function deleteInvestor(id: string) {
@@ -629,14 +649,7 @@ export async function getMeetings(investorId?: string): Promise<Meeting[]> {
   return result.rows as unknown as Meeting[];
 }
 
-export async function getMeeting(id: string): Promise<Meeting | null> {
-  await ensureInitialized();
-  const result = await getClient().execute({
-    sql: 'SELECT * FROM meetings WHERE id = ?',
-    args: [id],
-  });
-  return result.rows.length > 0 ? (result.rows[0] as unknown as Meeting) : null;
-}
+export const getMeeting = (id: string) => genericGetById<Meeting>('meetings', id);
 
 export async function createMeeting(meeting: Partial<Omit<Meeting, 'id' | 'created_at'>> & { investor_id: string; investor_name: string; date: string }): Promise<Meeting> {
   await ensureInitialized();
@@ -667,15 +680,7 @@ export async function createMeeting(meeting: Partial<Omit<Meeting, 'id' | 'creat
 }
 
 export async function updateMeeting(id: string, updates: Partial<Meeting>) {
-  await ensureInitialized();
-  const fields = Object.keys(updates).filter(k => k !== 'id' && k !== 'created_at');
-  if (fields.length === 0) return;
-  const sets = fields.map(f => `${f} = ?`).join(', ');
-  const values = fields.map(f => (updates as Record<string, unknown>)[f] as InValue);
-  await getClient().execute({
-    sql: `UPDATE meetings SET ${sets} WHERE id = ?`,
-    args: [...values, id],
-  });
+  await genericUpdate('meetings', id, updates as Record<string, unknown>, { autoUpdatedAt: false });
 }
 
 // Funnel Metrics
@@ -787,14 +792,7 @@ export async function getAllDocuments(): Promise<Document[]> {
   return result.rows as unknown as Document[];
 }
 
-export async function getDocument(id: string): Promise<Document | null> {
-  await ensureInitialized();
-  const result = await getClient().execute({
-    sql: 'SELECT * FROM documents WHERE id = ?',
-    args: [id],
-  });
-  return result.rows.length > 0 ? (result.rows[0] as unknown as Document) : null;
-}
+export const getDocument = (id: string) => genericGetById<Document>('documents', id);
 
 export async function createDocument(doc: { title: string; type: string; content?: string }): Promise<Document> {
   await ensureInitialized();
@@ -857,14 +855,7 @@ export async function getDocumentVersions(documentId: string): Promise<DocumentV
   return result.rows as unknown as DocumentVersion[];
 }
 
-export async function getDocumentVersion(versionId: string): Promise<DocumentVersion | null> {
-  await ensureInitialized();
-  const result = await getClient().execute({
-    sql: 'SELECT * FROM document_versions WHERE id = ?',
-    args: [versionId],
-  });
-  return result.rows.length > 0 ? (result.rows[0] as unknown as DocumentVersion) : null;
-}
+export const getDocumentVersion = (id: string) => genericGetById<DocumentVersion>('document_versions', id);
 
 // Data Room
 export interface DataRoomFile {
@@ -884,14 +875,7 @@ export async function getAllDataRoomFiles(): Promise<DataRoomFile[]> {
   return result.rows as unknown as DataRoomFile[];
 }
 
-async function getDataRoomFile(id: string): Promise<DataRoomFile | null> {
-  await ensureInitialized();
-  const result = await getClient().execute({
-    sql: 'SELECT * FROM data_room_files WHERE id = ?',
-    args: [id],
-  });
-  return result.rows.length > 0 ? (result.rows[0] as unknown as DataRoomFile) : null;
-}
+const getDataRoomFile = (id: string) => genericGetById<DataRoomFile>('data_room_files', id);
 
 export async function createDataRoomFile(file: { filename: string; category: string; mime_type: string; size_bytes: number; extracted_text: string; summary?: string }): Promise<DataRoomFile> {
   await ensureInitialized();
@@ -903,10 +887,7 @@ export async function createDataRoomFile(file: { filename: string; category: str
   return (await getDataRoomFile(id))!;
 }
 
-export async function deleteDataRoomFile(id: string) {
-  await ensureInitialized();
-  await getClient().execute({ sql: 'DELETE FROM data_room_files WHERE id = ?', args: [id] });
-}
+export const deleteDataRoomFile = (id: string) => genericDelete('data_room_files', id);
 
 export async function getDataRoomContext(): Promise<string> {
   const files = await getAllDataRoomFiles();
@@ -961,14 +942,7 @@ export async function getModelSheets(modelId: string = 'default'): Promise<Model
   return result.rows as unknown as ModelSheet[];
 }
 
-async function getModelSheet(id: string): Promise<ModelSheet | null> {
-  await ensureInitialized();
-  const result = await getClient().execute({
-    sql: 'SELECT * FROM model_sheets WHERE id = ?',
-    args: [id],
-  });
-  return result.rows.length > 0 ? (result.rows[0] as unknown as ModelSheet) : null;
-}
+const getModelSheet = (id: string) => genericGetById<ModelSheet>('model_sheets', id);
 
 export async function createModelSheet(sheet: { model_id?: string; sheet_name: string; sheet_order: number; data: string }): Promise<ModelSheet> {
   await ensureInitialized();
@@ -982,20 +956,10 @@ export async function createModelSheet(sheet: { model_id?: string; sheet_name: s
 }
 
 export async function updateModelSheet(id: string, updates: { sheet_name?: string; data?: string; sheet_order?: number }) {
-  await ensureInitialized();
-  const sets: string[] = ['updated_at = ?'];
-  const values: InValue[] = [new Date().toISOString()];
-  if (updates.sheet_name !== undefined) { sets.push('sheet_name = ?'); values.push(updates.sheet_name); }
-  if (updates.data !== undefined) { sets.push('data = ?'); values.push(updates.data); }
-  if (updates.sheet_order !== undefined) { sets.push('sheet_order = ?'); values.push(updates.sheet_order); }
-  values.push(id);
-  await getClient().execute({ sql: `UPDATE model_sheets SET ${sets.join(', ')} WHERE id = ?`, args: values });
+  await genericUpdate('model_sheets', id, updates as Record<string, unknown>);
 }
 
-export async function deleteModelSheet(id: string) {
-  await ensureInitialized();
-  await getClient().execute({ sql: 'DELETE FROM model_sheets WHERE id = ?', args: [id] });
-}
+export const deleteModelSheet = (id: string) => genericDelete('model_sheets', id);
 
 // Term Sheets
 export interface TermSheet {
@@ -1022,14 +986,7 @@ export async function getAllTermSheets(): Promise<TermSheet[]> {
   return result.rows as unknown as TermSheet[];
 }
 
-async function getTermSheet(id: string): Promise<TermSheet | null> {
-  await ensureInitialized();
-  const result = await getClient().execute({
-    sql: 'SELECT * FROM term_sheets WHERE id = ?',
-    args: [id],
-  });
-  return result.rows.length > 0 ? (result.rows[0] as unknown as TermSheet) : null;
-}
+const getTermSheet = (id: string) => genericGetById<TermSheet>('term_sheets', id);
 
 export async function createTermSheet(ts: Omit<TermSheet, 'id' | 'created_at' | 'updated_at'>): Promise<TermSheet> {
   await ensureInitialized();
@@ -1044,21 +1001,10 @@ export async function createTermSheet(ts: Omit<TermSheet, 'id' | 'created_at' | 
 }
 
 export async function updateTermSheet(id: string, updates: Partial<Omit<TermSheet, 'id' | 'created_at'>>) {
-  await ensureInitialized();
-  const fields = Object.keys(updates).filter(k => k !== 'updated_at');
-  if (fields.length === 0) return;
-  const sets = fields.map(f => `${f} = ?`).join(', ');
-  const values = fields.map(f => (updates as Record<string, unknown>)[f] as InValue);
-  await getClient().execute({
-    sql: `UPDATE term_sheets SET ${sets}, updated_at = datetime('now') WHERE id = ?`,
-    args: [...values, id],
-  });
+  await genericUpdate('term_sheets', id, updates as Record<string, unknown>, { exclude: ['id', 'created_at', 'updated_at'] });
 }
 
-export async function deleteTermSheet(id: string) {
-  await ensureInitialized();
-  await getClient().execute({ sql: 'DELETE FROM term_sheets WHERE id = ?', args: [id] });
-}
+export const deleteTermSheet = (id: string) => genericDelete('term_sheets', id);
 
 // Market Deals
 
@@ -1068,11 +1014,7 @@ export async function getAllMarketDeals(): Promise<MarketDeal[]> {
   return result.rows as unknown as MarketDeal[];
 }
 
-async function getMarketDeal(id: string): Promise<MarketDeal | null> {
-  await ensureInitialized();
-  const result = await getClient().execute({ sql: 'SELECT * FROM market_deals WHERE id = ?', args: [id] });
-  return result.rows.length > 0 ? (result.rows[0] as unknown as MarketDeal) : null;
-}
+const getMarketDeal = (id: string) => genericGetById<MarketDeal>('market_deals', id);
 
 export async function createMarketDeal(deal: Omit<MarketDeal, 'id' | 'created_at' | 'updated_at'>): Promise<MarketDeal> {
   await ensureInitialized();
@@ -1086,21 +1028,10 @@ export async function createMarketDeal(deal: Omit<MarketDeal, 'id' | 'created_at
 }
 
 export async function updateMarketDeal(id: string, updates: Partial<MarketDeal>) {
-  await ensureInitialized();
-  const fields = Object.keys(updates).filter(k => k !== 'id' && k !== 'created_at');
-  if (fields.length === 0) return;
-  const sets = fields.map(f => `${f} = ?`).join(', ');
-  const values = fields.map(f => (updates as Record<string, unknown>)[f] as InValue);
-  await getClient().execute({
-    sql: `UPDATE market_deals SET ${sets}, updated_at = datetime('now') WHERE id = ?`,
-    args: [...values, id],
-  });
+  await genericUpdate('market_deals', id, updates as Record<string, unknown>);
 }
 
-export async function deleteMarketDeal(id: string) {
-  await ensureInitialized();
-  await getClient().execute({ sql: 'DELETE FROM market_deals WHERE id = ?', args: [id] });
-}
+export const deleteMarketDeal = (id: string) => genericDelete('market_deals', id);
 
 // Investor Partners
 
@@ -1126,21 +1057,10 @@ export async function createInvestorPartner(partner: Omit<InvestorPartner, 'id' 
 }
 
 export async function updateInvestorPartner(id: string, updates: Partial<InvestorPartner>) {
-  await ensureInitialized();
-  const fields = Object.keys(updates).filter(k => k !== 'id' && k !== 'created_at' && k !== 'investor_id');
-  if (fields.length === 0) return;
-  const sets = fields.map(f => `${f} = ?`).join(', ');
-  const values = fields.map(f => (updates as Record<string, unknown>)[f] as InValue);
-  await getClient().execute({
-    sql: `UPDATE investor_partners SET ${sets}, updated_at = datetime('now') WHERE id = ?`,
-    args: [...values, id],
-  });
+  await genericUpdate('investor_partners', id, updates as Record<string, unknown>, { exclude: ['id', 'created_at', 'investor_id'] });
 }
 
-export async function deleteInvestorPartner(id: string) {
-  await ensureInitialized();
-  await getClient().execute({ sql: 'DELETE FROM investor_partners WHERE id = ?', args: [id] });
-}
+export const deleteInvestorPartner = (id: string) => genericDelete('investor_partners', id);
 
 // Investor Portfolio Companies
 
@@ -1164,10 +1084,7 @@ export async function createPortfolioCo(co: Omit<InvestorPortfolioCo, 'id' | 'cr
   return result.rows[0] as unknown as InvestorPortfolioCo;
 }
 
-export async function deletePortfolioCo(id: string) {
-  await ensureInitialized();
-  await getClient().execute({ sql: 'DELETE FROM investor_portfolio WHERE id = ?', args: [id] });
-}
+export const deletePortfolioCo = (id: string) => genericDelete('investor_portfolio', id);
 
 // Competitors
 
@@ -1177,11 +1094,7 @@ export async function getAllCompetitors(): Promise<Competitor[]> {
   return result.rows as unknown as Competitor[];
 }
 
-async function getCompetitor(id: string): Promise<Competitor | null> {
-  await ensureInitialized();
-  const result = await getClient().execute({ sql: 'SELECT * FROM competitors WHERE id = ?', args: [id] });
-  return result.rows.length > 0 ? (result.rows[0] as unknown as Competitor) : null;
-}
+const getCompetitor = (id: string) => genericGetById<Competitor>('competitors', id);
 
 export async function createCompetitor(comp: Omit<Competitor, 'id' | 'created_at' | 'updated_at'>): Promise<Competitor> {
   await ensureInitialized();
@@ -1195,21 +1108,10 @@ export async function createCompetitor(comp: Omit<Competitor, 'id' | 'created_at
 }
 
 export async function updateCompetitor(id: string, updates: Partial<Competitor>) {
-  await ensureInitialized();
-  const fields = Object.keys(updates).filter(k => k !== 'id' && k !== 'created_at');
-  if (fields.length === 0) return;
-  const sets = fields.map(f => `${f} = ?`).join(', ');
-  const values = fields.map(f => (updates as Record<string, unknown>)[f] as InValue);
-  await getClient().execute({
-    sql: `UPDATE competitors SET ${sets}, updated_at = datetime('now') WHERE id = ?`,
-    args: [...values, id],
-  });
+  await genericUpdate('competitors', id, updates as Record<string, unknown>);
 }
 
-export async function deleteCompetitor(id: string) {
-  await ensureInitialized();
-  await getClient().execute({ sql: 'DELETE FROM competitors WHERE id = ?', args: [id] });
-}
+export const deleteCompetitor = (id: string) => genericDelete('competitors', id);
 
 // Intelligence Briefs
 
@@ -1226,11 +1128,7 @@ export async function getIntelligenceBriefs(briefType?: string, investorId?: str
   return result.rows as unknown as IntelligenceBrief[];
 }
 
-async function getIntelligenceBrief(id: string): Promise<IntelligenceBrief | null> {
-  await ensureInitialized();
-  const result = await getClient().execute({ sql: 'SELECT * FROM intelligence_briefs WHERE id = ?', args: [id] });
-  return result.rows.length > 0 ? (result.rows[0] as unknown as IntelligenceBrief) : null;
-}
+const getIntelligenceBrief = (id: string) => genericGetById<IntelligenceBrief>('intelligence_briefs', id);
 
 export async function createIntelligenceBrief(brief: Omit<IntelligenceBrief, 'id' | 'created_at' | 'updated_at'>): Promise<IntelligenceBrief> {
   await ensureInitialized();
@@ -1243,10 +1141,7 @@ export async function createIntelligenceBrief(brief: Omit<IntelligenceBrief, 'id
   return (await getIntelligenceBrief(id))!;
 }
 
-export async function deleteIntelligenceBrief(id: string) {
-  await ensureInitialized();
-  await getClient().execute({ sql: 'DELETE FROM intelligence_briefs WHERE id = ?', args: [id] });
-}
+export const deleteIntelligenceBrief = (id: string) => genericDelete('intelligence_briefs', id);
 
 // Tasks
 
@@ -1277,25 +1172,10 @@ export async function createTask(task: Omit<Task, 'id' | 'created_at' | 'updated
 }
 
 export async function updateTask(id: string, updates: Partial<Task>) {
-  await ensureInitialized();
-  const fields = Object.keys(updates).filter(k => k !== 'id' && k !== 'created_at');
-  if (fields.length === 0) return;
-  const sets = fields.map(f => `${f} = ?`).join(', ');
-  const values = fields.map(f => {
-    const val = (updates as Record<string, unknown>)[f];
-    if (typeof val === 'boolean') return val ? 1 : 0;
-    return val as InValue;
-  });
-  await getClient().execute({
-    sql: `UPDATE tasks SET ${sets}, updated_at = datetime('now') WHERE id = ?`,
-    args: [...values, id],
-  });
+  await genericUpdate('tasks', id, updates as Record<string, unknown>);
 }
 
-export async function deleteTask(id: string) {
-  await ensureInitialized();
-  await getClient().execute({ sql: 'DELETE FROM tasks WHERE id = ?', args: [id] });
-}
+export const deleteTask = (id: string) => genericDelete('tasks', id);
 
 export async function getUpcomingTasks(limit: number = 5): Promise<Task[]> {
   await ensureInitialized();
@@ -2591,15 +2471,7 @@ export async function getAccelerationActions(filters?: { investor_id?: string; s
 }
 
 export async function updateAccelerationAction(id: string, updates: { status?: string; actual_lift?: number; executed_at?: string }): Promise<void> {
-  await ensureInitialized();
-  const sets: string[] = [];
-  const values: InValue[] = [];
-  if (updates.status !== undefined) { sets.push('status = ?'); values.push(updates.status); }
-  if (updates.actual_lift !== undefined) { sets.push('actual_lift = ?'); values.push(updates.actual_lift); }
-  if (updates.executed_at !== undefined) { sets.push('executed_at = ?'); values.push(updates.executed_at); }
-  if (sets.length === 0) return;
-  values.push(id);
-  await getClient().execute({ sql: `UPDATE acceleration_actions SET ${sets.join(', ')} WHERE id = ?`, args: values });
+  await genericUpdate('acceleration_actions', id, updates as Record<string, unknown>, { autoUpdatedAt: false });
 }
 
 // ---------------------------------------------------------------------------
@@ -2651,18 +2523,7 @@ export async function updateFollowup(id: string, updates: {
   executed_at?: string;
   measured_lift?: number;
 }): Promise<void> {
-  await ensureInitialized();
-  const sets: string[] = [];
-  const values: InValue[] = [];
-  if (updates.status !== undefined) { sets.push('status = ?'); values.push(updates.status); }
-  if (updates.outcome !== undefined) { sets.push('outcome = ?'); values.push(updates.outcome); }
-  if (updates.conviction_delta !== undefined) { sets.push('conviction_delta = ?'); values.push(updates.conviction_delta); }
-  if (updates.completed_at !== undefined) { sets.push('completed_at = ?'); values.push(updates.completed_at); }
-  if (updates.executed_at !== undefined) { sets.push('executed_at = ?'); values.push(updates.executed_at); }
-  if (updates.measured_lift !== undefined) { sets.push('measured_lift = ?'); values.push(updates.measured_lift); }
-  if (sets.length === 0) return;
-  values.push(id);
-  await getClient().execute({ sql: `UPDATE followup_actions SET ${sets.join(', ')} WHERE id = ?`, args: values });
+  await genericUpdate('followup_actions', id, updates as Record<string, unknown>, { autoUpdatedAt: false });
 }
 
 export async function getPendingFollowups(): Promise<FollowupAction[]> {
@@ -2977,23 +2838,12 @@ export async function createRevenueCommitment(commitment: {
 }
 
 export async function updateRevenueCommitment(id: string, updates: Record<string, unknown>): Promise<void> {
-  await ensureInitialized();
-  const allowed = ['customer', 'program', 'contract_type', 'amount_eur', 'start_date', 'end_date', 'annual_amount', 'confidence', 'status', 'source_doc', 'notes'];
-  const sets: string[] = [];
-  const args: InValue[] = [];
-  for (const [k, v] of Object.entries(updates)) {
-    if (allowed.includes(k)) { sets.push(`${k} = ?`); args.push(v as InValue); }
-  }
-  if (sets.length === 0) return;
-  sets.push("updated_at = datetime('now')");
-  args.push(id);
-  await getClient().execute({ sql: `UPDATE revenue_commitments SET ${sets.join(', ')} WHERE id = ?`, args });
+  const allowed = new Set(['customer', 'program', 'contract_type', 'amount_eur', 'start_date', 'end_date', 'annual_amount', 'confidence', 'status', 'source_doc', 'notes']);
+  const filtered = Object.fromEntries(Object.entries(updates).filter(([k]) => allowed.has(k)));
+  await genericUpdate('revenue_commitments', id, filtered);
 }
 
-export async function deleteRevenueCommitment(id: string): Promise<void> {
-  await ensureInitialized();
-  await getClient().execute({ sql: 'DELETE FROM revenue_commitments WHERE id = ?', args: [id] });
-}
+export const deleteRevenueCommitment = (id: string) => genericDelete('revenue_commitments', id);
 
 // ---------------------------------------------------------------------------
 // Question Pattern Analysis
@@ -6375,22 +6225,9 @@ export async function updateEnrichmentJob(id: string, updates: {
   errors?: string[];
   completed_at?: string;
 }) {
-  await ensureInitialized();
-  const sets: string[] = [];
-  const args: InValue[] = [];
-
-  if (updates.status) { sets.push('status = ?'); args.push(updates.status); }
-  if (updates.results_count !== undefined) { sets.push('results_count = ?'); args.push(updates.results_count); }
-  if (updates.errors) { sets.push('errors = ?'); args.push(JSON.stringify(updates.errors)); }
-  if (updates.completed_at) { sets.push('completed_at = ?'); args.push(updates.completed_at); }
-
-  if (sets.length === 0) return;
-  args.push(id);
-
-  await getClient().execute({
-    sql: `UPDATE enrichment_jobs SET ${sets.join(', ')} WHERE id = ?`,
-    args,
-  });
+  const mapped: Record<string, unknown> = { ...updates };
+  if (updates.errors) mapped.errors = JSON.stringify(updates.errors);
+  await genericUpdate('enrichment_jobs', id, mapped, { autoUpdatedAt: false });
 }
 
 export async function getEnrichmentJobs(investorId?: string): Promise<EnrichmentJobRow[]> {
