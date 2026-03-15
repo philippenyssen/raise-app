@@ -21,9 +21,16 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
   }
   const allowed = ['title', 'content', 'status', 'change_summary'];
+  const maxLengths: Record<string, number> = { title: 500, content: 5_000_000, status: 50, change_summary: 2000 };
   const updates: Record<string, unknown> = {};
   for (const key of allowed) {
-    if (key in body) updates[key] = typeof body[key] === 'string' ? (body[key] as string).trim() : body[key];
+    if (key in body) {
+      const val = typeof body[key] === 'string' ? (body[key] as string).trim() : body[key];
+      if (typeof val === 'string' && val.length > (maxLengths[key] || 10000)) {
+        return NextResponse.json({ error: `${key} exceeds maximum length of ${maxLengths[key]} characters` }, { status: 400 });
+      }
+      updates[key] = val;
+    }
   }
   if (Object.keys(updates).length === 0) {
     return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 });

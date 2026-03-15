@@ -46,6 +46,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'name is required and must be a non-empty string' }, { status: 400 });
   }
   body.name = (body.name as string).trim();
+  const textLimits: Record<string, number> = { name: 255, sector_thesis: 2000, warm_path: 1000, ic_process: 2000, notes: 10000, portfolio_conflicts: 2000, partner: 255, fund_size: 100, check_size_range: 100 };
+  for (const [field, max] of Object.entries(textLimits)) {
+    if (body[field] && typeof body[field] === 'string' && (body[field] as string).length > max) {
+      return NextResponse.json({ error: `${field} exceeds maximum length of ${max} characters` }, { status: 400 });
+    }
+  }
 
   if (body.tier !== undefined && (typeof body.tier !== 'number' || body.tier < 1 || body.tier > 4)) {
     return NextResponse.json({ error: 'tier must be a number between 1 and 4' }, { status: 400 });
