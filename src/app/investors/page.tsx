@@ -108,7 +108,14 @@ export default function InvestorsPage() {
       setSubmitting(false);
     }}
 
-  async function updateStatus(id: string, status: string) {
+  async function updateStatus(id: string, status: string, previousStatus?: string) {
+    // Confirm destructive status changes
+    const destructive = ['passed', 'dropped'];
+    if (destructive.includes(status) && previousStatus && !destructive.includes(previousStatus)) {
+      const inv = investors.find(i => i.id === id);
+      const ok = window.confirm(`Move ${inv?.name || 'this investor'} to "${STATUS_LABELS[status as InvestorStatus] || status}"? This removes them from the active pipeline.`);
+      if (!ok) return;
+    }
     try {
       const res = await fetch('/api/investors', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, status }) });
       if (!res.ok) throw new Error(`Failed (${res.status})`);
@@ -378,7 +385,7 @@ export default function InvestorsPage() {
                     <select
                       value={inv.status}
                       aria-label={`Status for ${inv.name}`}
-                      onChange={e => updateStatus(inv.id, e.target.value)}
+                      onChange={e => updateStatus(inv.id, e.target.value, inv.status)}
                       style={{ background: (STATUS_STYLES[inv.status] || STATUS_STYLES.identified).background, color: (STATUS_STYLES[inv.status] || STATUS_STYLES.identified).color, borderRadius: '9999px', padding: '0.2rem 1.5rem 0.2rem 0.625rem', fontSize: 'var(--font-size-xs)', fontWeight: 400, border: '1px solid transparent', cursor: 'pointer', letterSpacing: '0.01em', lineHeight: '1.5', backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath d='M3 5l3 3 3-3' stroke='${encodeURIComponent((STATUS_STYLES[inv.status] || STATUS_STYLES.identified).color)}' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.4rem center', backgroundSize: '10px', appearance: 'none', WebkitAppearance: 'none' }}>
                       {Object.entries(STATUS_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select></td>
                   <td style={{ padding: 'var(--space-3) var(--space-4)', color: 'var(--text-secondary)', fontSize: 'var(--font-size-xs)' }}>

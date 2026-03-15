@@ -213,6 +213,12 @@ export default function PipelinePage() {
 
     const previousStatus = investor.status;
 
+    // Confirm destructive status changes
+    if (['passed', 'dropped'].includes(newStatus) && !['passed', 'dropped'].includes(previousStatus)) {
+      const ok = window.confirm(`Move ${investor.name} to "${STATUS_LABELS[newStatus as InvestorStatus]}"? This removes them from the active pipeline.`);
+      if (!ok) { setDragId(null); return; }
+    }
+
     // Optimistic update
     setInvestors(prev =>
       prev.map(i => i.id === id ? { ...i, status: newStatus as InvestorStatus } : i));
