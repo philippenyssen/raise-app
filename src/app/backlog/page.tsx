@@ -61,6 +61,7 @@ export default function BacklogPage() {
   const [summary, setSummary] = useState<Summary | null>(null);
   const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
+  const [adding, setAdding] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   const [form, setForm] = useState({
     customer: '', program: '', contract_type: 'firm', amount_eur: '',
@@ -86,8 +87,9 @@ export default function BacklogPage() {
 
   async function handleAdd() {
     if (!form.customer || !form.amount_eur) { toast('Customer and amount required', 'error'); return; }
+    setAdding(true);
     try {
-      await fetch('/api/revenue-commitments', {
+      const res = await fetch('/api/revenue-commitments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -96,13 +98,16 @@ export default function BacklogPage() {
           annual_amount: form.annual_amount ? parseFloat(form.annual_amount) * 1e6 : null,
           confidence: parseFloat(form.confidence),
         }),});
+      if (!res.ok) throw new Error('Failed');
       toast('Commitment added', 'success');
       setShowAdd(false);
       setForm({ customer: '', program: '', contract_type: 'firm', amount_eur: '', start_date: '', end_date: '', annual_amount: '', confidence: '0.9', source_doc: '', notes: '', status: 'active' });
       fetchData();
     } catch {
       toast('Failed to add', 'error');
-    }}
+    }
+    setAdding(false);
+  }
 
   async function handleDelete() {
     if (!deleteTarget) return;
@@ -179,7 +184,7 @@ export default function BacklogPage() {
           <textarea placeholder="Notes" value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} className="input" rows={2}
             />
           <div className="flex gap-2">
-            <button onClick={handleAdd} className="btn btn-primary btn-md">Add Commitment</button>
+            <button onClick={handleAdd} disabled={adding} className="btn btn-primary btn-md">{adding ? 'Adding...' : 'Add Commitment'}</button>
             <button onClick={() => setShowAdd(false)} className="btn btn-secondary btn-md">Cancel</button></div></div>
       )}
 

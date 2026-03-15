@@ -35,6 +35,7 @@ export default function IntelligencePage() {
   const [researching, setResearching] = useState(false);
   const [showAddDeal, setShowAddDeal] = useState(false);
   const [showAddComp, setShowAddComp] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [expandedBrief, setExpandedBrief] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<{ type: string; id: string; name: string } | null>(null);
   const [researchInput, setResearchInput] = useState('');
@@ -94,30 +95,40 @@ export default function IntelligencePage() {
 
   async function handleAddDeal(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const fd = new FormData(e.currentTarget);
-    const data: Record<string, string> = {};
-    fd.forEach((v, k) => { data[k] = v as string; });
-    await fetch('/api/intelligence', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'create_deal', data }),});
-    toast('Deal added');
-    setShowAddDeal(false);
-    fetchAll();
+    setSubmitting(true);
+    try {
+      const fd = new FormData(e.currentTarget);
+      const data: Record<string, string> = {};
+      fd.forEach((v, k) => { data[k] = v as string; });
+      const res = await fetch('/api/intelligence', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'create_deal', data }),});
+      if (!res.ok) throw new Error('Failed');
+      toast('Deal added');
+      setShowAddDeal(false);
+      fetchAll();
+    } catch { toast('Failed to add deal', 'error'); }
+    setSubmitting(false);
   }
 
   async function handleAddCompetitor(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const fd = new FormData(e.currentTarget);
-    const data: Record<string, string> = {};
-    fd.forEach((v, k) => { data[k] = v as string; });
-    await fetch('/api/intelligence', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'create_competitor', data }),});
-    toast('Competitor added');
-    setShowAddComp(false);
-    fetchAll();
+    setSubmitting(true);
+    try {
+      const fd = new FormData(e.currentTarget);
+      const data: Record<string, string> = {};
+      fd.forEach((v, k) => { data[k] = v as string; });
+      const res = await fetch('/api/intelligence', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'create_competitor', data }),});
+      if (!res.ok) throw new Error('Failed');
+      toast('Competitor added');
+      setShowAddComp(false);
+      fetchAll();
+    } catch { toast('Failed to add competitor', 'error'); }
+    setSubmitting(false);
   }
 
   if (loading) {
@@ -240,7 +251,7 @@ export default function IntelligencePage() {
                 <FormField name="equity_story" label="Equity Story" />
                 <FormField name="source" label="Source" placeholder="TechCrunch, PitchBook..." /></div>
               <div className="flex gap-2">
-                <button type="submit" className="btn btn-primary btn-sm">Add</button>
+                <button type="submit" disabled={submitting} className="btn btn-primary btn-sm">{submitting ? 'Adding...' : 'Add'}</button>
                 <button type="button" onClick={() => setShowAddDeal(false)} className="btn btn-secondary btn-sm">Cancel</button>
               </div></form>
           )}
@@ -319,7 +330,7 @@ export default function IntelligencePage() {
               <FormField name="positioning" label="Positioning" />
               <FormField name="our_advantage" label="Our Advantage" />
               <div className="flex gap-2">
-                <button type="submit" className="btn btn-primary btn-sm">Add</button>
+                <button type="submit" disabled={submitting} className="btn btn-primary btn-sm">{submitting ? 'Adding...' : 'Add'}</button>
                 <button type="button" onClick={() => setShowAddComp(false)} className="btn btn-secondary btn-sm">Cancel</button>
               </div></form>
           )}
