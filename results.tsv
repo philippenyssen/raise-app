@@ -46,3 +46,4 @@ e06bb9a	100	100	0	keep	strategy+product	score breakdown + urgency badge + quick 
 d477064	100	100	0	keep	product+design	meeting streak + objection toast + kbd hints + focus mode = 53650 lines, score 100
 15e56c6	100	100	0	keep	design+product+ops+copy	heat legend + CSV export + bottleneck hover fix + sidebar cleanup + button copy = 53658 lines, score 100
 e917581	100	100	0	keep	eng+workflow+strategy	safeJsonParse dedup + keyboard shortcuts + relative timestamps = 53669 lines, score 100
+2669e6f	100	100	0	keep	competitive+product+eng	compare CSV export + data room size + R-to-refresh strategic = 53683 lines, score 100

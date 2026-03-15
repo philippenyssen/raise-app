@@ -198,7 +198,7 @@ export default function DataRoomPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="page-title" style={{ fontSize: 'var(--font-size-xl)' }}>Data Room</h1>
-          <p style={{ ...stTextMuted, ...stFontSm, marginTop: 'var(--space-1)' }}>{files.length} files — source context for all deliverables</p>
+          <p style={{ ...stTextMuted, ...stFontSm, marginTop: 'var(--space-1)' }}>{files.length} files · {(() => { const bytes = files.reduce((s, f) => s + (f.size_bytes || 0), 0); return bytes < 1024 ? `${bytes}B` : bytes < 1048576 ? `${(bytes/1024).toFixed(1)}KB` : `${(bytes/1048576).toFixed(1)}MB`; })()} — source context for all deliverables</p>
         </div>
         <div className="flex gap-2">
           <button

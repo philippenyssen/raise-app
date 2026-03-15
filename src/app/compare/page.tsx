@@ -6,7 +6,7 @@ import type { Investor, InvestorType, InvestorScoreData } from '@/lib/types';
 import {
   ChevronDown, X, Trophy, ArrowLeft, TrendingUp, TrendingDown,
   Minus, AlertTriangle, CheckCircle, Clock, Zap, Target, Shield,
-  BarChart3, ArrowUpRight, ArrowDownRight, Loader2,
+  BarChart3, ArrowUpRight, ArrowDownRight, Loader2, Download,
 } from 'lucide-react';
 import Link from 'next/link';
 import { STATUS_LABELS, TYPE_LABELS, MEETING_TYPE_LABELS } from '@/lib/constants';
@@ -264,7 +264,21 @@ export default function ComparePage() {
             <><Loader2 className="w-4 h-4 animate-spin" /> Comparing...</>
           ) : (
             <><BarChart3 className="w-4 h-4" /> Compare</>
-          )}</button></div>
+          )}</button>
+        {compareData && (
+          <button
+            onClick={() => {
+              const rows = [['Dimension', ...compareData.profiles.map(p => p.investor.name)]];
+              for (const dm of compareData.decisionMatrix) rows.push([dm.dimension, ...compareData.profiles.map(p => String(dm.scores[p.investor.id] ?? ''))]);
+              rows.push(['Overall Score', ...compareData.profiles.map(p => String(p.score.overall))]);
+              rows.push(['Recommended Action', ...compareData.profiles.map(p => p.recommendedAction)]);
+              const blob = new Blob([rows.map(r => r.join('\t')).join('\n')], { type: 'text/tab-separated-values' });
+              const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `comparison-${new Date().toISOString().split('T')[0]}.tsv`; a.click();
+            }}
+            className="flex items-center gap-1.5 btn btn-secondary"
+            style={{ fontSize: 'var(--font-size-sm)', padding: 'var(--space-2) var(--space-4)' }}>
+            <Download className="w-3.5 h-3.5" /> Export</button>
+        )}</div>
 
       {/* Selected pills */}
       {selectedIds.length > 0 && (
