@@ -13,6 +13,7 @@ export async function GET() {
     }
     return NextResponse.json(results, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
   } catch (error) {
+    console.error('[SETTINGS_GET]', error instanceof Error ? error.message : error);
     return NextResponse.json({ error: 'Failed to load settings' }, { status: 500 });
   }
 }
@@ -45,6 +46,7 @@ export async function PUT(request: NextRequest) {
     emitContextChange('settings_updated', `Config key "${key}" updated`);
     return NextResponse.json({ ok: true, key, value });
   } catch (error) {
+    console.error('[SETTINGS_PUT]', error instanceof Error ? error.message : error);
     return NextResponse.json({ error: 'Failed to save settings' }, { status: 500 });
   }
 }

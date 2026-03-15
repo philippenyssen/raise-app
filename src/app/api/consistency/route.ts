@@ -132,6 +132,7 @@ export async function GET() {
 
     return NextResponse.json({ consistent, checks, checkedAt });
   } catch (error) {
+    console.error('[CONSISTENCY_GET]', error instanceof Error ? error.message : error);
     return NextResponse.json(
       { error: 'Consistency check failed', details: String(error) },
       { status: 500 });
