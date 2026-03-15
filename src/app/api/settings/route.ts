@@ -41,7 +41,12 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Value is required' }, { status: 400 });
     }
 
-    await setConfig(key, JSON.stringify(value));
+    const serialized = JSON.stringify(value);
+    if (serialized.length > 50000) {
+      return NextResponse.json({ error: 'Value exceeds maximum length of 50000 characters' }, { status: 400 });
+    }
+
+    await setConfig(key, serialized);
 
     emitContextChange('settings_updated', `Config key "${key}" updated`);
     return NextResponse.json({ ok: true, key, value });

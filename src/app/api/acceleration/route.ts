@@ -199,6 +199,9 @@ export async function PUT(req: NextRequest) {
     const actionStatus = (status as string) || 'executed';
     const validStatuses = ['pending', 'executed', 'skipped', 'dismissed'];
     if (!validStatuses.includes(actionStatus)) return NextResponse.json({ error: `status must be one of: ${validStatuses.join(', ')}` }, { status: 400 });
+    if (actual_lift !== undefined && actual_lift !== null && (typeof actual_lift !== 'number' || actual_lift < -100 || actual_lift > 100)) {
+      return NextResponse.json({ error: 'actual_lift must be a number between -100 and 100' }, { status: 400 });
+    }
     await updateAccelerationAction(id as string, { status: actionStatus, actual_lift: (actual_lift as number) ?? null, executed_at: new Date().toISOString() });
 
     if (actionStatus === 'executed') {
