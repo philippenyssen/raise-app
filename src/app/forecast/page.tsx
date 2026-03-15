@@ -83,7 +83,7 @@ export default function ForecastPage() {
 
   if (loading) {
     return (
-      <div className="flex-1 p-6" style={{ maxWidth: '1400px', margin: '0 auto' }}>
+      <div className="flex-1 p-6 page-content" style={{ maxWidth: '1400px', margin: '0 auto' }}>
         <div className="flex items-center gap-3" style={{ marginBottom: 'var(--space-8)' }}>
           <div className="skeleton" style={{ width: '200px', height: '32px' }} /></div>
         <div className="card skeleton" style={{ height: '120px', marginBottom: 'var(--space-6)' }} />
@@ -97,7 +97,7 @@ export default function ForecastPage() {
 
   if (error || !data) {
     return (
-      <div className="flex-1 p-6" style={{ maxWidth: '1400px', margin: '0 auto' }}>
+      <div className="flex-1 p-6 page-content" style={{ maxWidth: '1400px', margin: '0 auto' }}>
         <div className="card" style={{ textAlign: 'center', padding: 'var(--space-12)' }}>
           <AlertTriangle className="w-8 h-8 mx-auto mb-3" style={{ color: 'var(--text-muted)' }} />
           <p style={{ color: 'var(--text-primary)', fontSize: 'var(--font-size-sm)', marginBottom: 'var(--space-3)' }}>
