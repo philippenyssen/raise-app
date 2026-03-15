@@ -160,7 +160,7 @@ export function Sidebar() {
                 letterSpacing: '0.12em',
                 fontWeight: 300,
                 fontFamily: 'var(--font-cormorant), Georgia, serif',
-                fontSize: '14px',
+                fontSize: 'var(--font-size-sm)',
               }}>R</span></div>
           )}
           <button
@@ -187,7 +187,7 @@ export function Sidebar() {
               {!collapsed && sectionLabels[section] && (
                 <div
                   style={{
-                    fontSize: '10px',
+                    fontSize: 'var(--font-size-xs)',
                     fontWeight: 400,
                     color: SB.sectionLabel,
                     letterSpacing: '0.04em',
@@ -276,8 +276,8 @@ export function Sidebar() {
             padding: collapsed ? 'var(--space-3) var(--space-2)' : 'var(--space-3) var(--space-4)',
             borderTop: `1px solid ${SB.border}`,}}>
           {!collapsed && (
-            <div className="flex items-center justify-center" style={{ fontSize: '10px', color: SB.muted, padding: '0 var(--space-2) var(--space-2)' }}>
-              <kbd style={{ background: SB.bgHover, border: `1px solid ${SB.border}`, borderRadius: 'var(--radius-xs)', padding: '1px 5px', fontSize: '10px', marginRight: '4px', color: SB.text }}>⌘K</kbd>
+            <div className="flex items-center justify-center" style={{ fontSize: 'var(--font-size-xs)', color: SB.muted, padding: '0 var(--space-2) var(--space-2)' }}>
+              <kbd style={{ background: SB.bgHover, border: `1px solid ${SB.border}`, borderRadius: 'var(--radius-xs)', padding: '1px 5px', fontSize: 'var(--font-size-xs)', marginRight: '4px', color: SB.text }}>⌘K</kbd>
               to search</div>
           )}
           <button

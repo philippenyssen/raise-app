@@ -103,7 +103,7 @@ export const stBorderSubtle: React.CSSProperties = { borderColor: 'var(--border-
 // Combined style constants
 export const stAccentBadge: React.CSSProperties = { background: 'var(--accent-muted)', color: 'var(--accent)' } as const;
 export const stSurface1Border: React.CSSProperties = { background: 'var(--surface-1)', borderBottom: '1px solid var(--border-subtle)' } as const;
-export const labelMuted10: React.CSSProperties = { fontSize: '10px', color: 'var(--text-muted)' } as const;
+export const labelMuted10: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' } as const;
 export const labelSmMuted: React.CSSProperties = { fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' } as const;
 
 // Label style constants (font-size-xs + color)

@@ -232,16 +232,16 @@ export default function CommandPalette() {
       <div className="fixed inset-0 z-[100] flex items-start justify-center" style={{ background: 'var(--overlay)', backdropFilter: 'blur(4px)', paddingTop: '15vh' }} onClick={() => setShowHelp(false)}>
         <div onClick={e => e.stopPropagation()} style={{ width: '340px', background: 'var(--surface-1)', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-xl)', padding: '20px' }}>
           <div className="flex items-center justify-between" style={{ marginBottom: '16px' }}>
-            <span style={{ fontSize: '14px', fontWeight: 400, color: 'var(--text-primary)' }}>Keyboard Shortcuts</span>
-            <kbd style={{ fontSize: '10px', color: 'var(--text-muted)', background: 'var(--surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xs)', padding: '2px 6px', cursor: 'pointer' }} onClick={() => setShowHelp(false)}>ESC</kbd>
+            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>Keyboard Shortcuts</span>
+            <kbd style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', background: 'var(--surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xs)', padding: '2px 6px', cursor: 'pointer' }} onClick={() => setShowHelp(false)}>ESC</kbd>
           </div>
           {helpItems.map(([key, desc]) => (
             <div key={key} className="flex items-center justify-between" style={{ padding: '6px 0', borderTop: '1px solid var(--border-subtle)' }}>
-              <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>{desc}</span>
-              <kbd style={{ fontSize: '11px', color: 'var(--text-muted)', background: 'var(--surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xs)', padding: '2px 6px' }}>{key}</kbd>
+              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>{desc}</span>
+              <kbd style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', background: 'var(--surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xs)', padding: '2px 6px' }}>{key}</kbd>
             </div>
           ))}
-          <div style={{ marginTop: '12px', fontSize: '11px', color: 'var(--text-muted)' }}>Type <code style={{ background: 'var(--surface-2)', padding: '1px 4px', borderRadius: 'var(--radius-xs)' }}>investor:</code> or <code style={{ background: 'var(--surface-2)', padding: '1px 4px', borderRadius: 'var(--radius-xs)' }}>action:</code> in palette to filter</div>
+          <div style={{ marginTop: '12px', fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Type <code style={{ background: 'var(--surface-2)', padding: '1px 4px', borderRadius: 'var(--radius-xs)' }}>investor:</code> or <code style={{ background: 'var(--surface-2)', padding: '1px 4px', borderRadius: 'var(--radius-xs)' }}>action:</code> in palette to filter</div>
         </div>
       </div>, document.body);
   }
@@ -252,7 +252,7 @@ export default function CommandPalette() {
 
   function renderSectionHeader(title: string) {
     return (
-      <div style={{ fontSize: '10px', fontWeight: 400, letterSpacing: '0.08em', color: 'var(--text-muted)', padding: '8px 16px 4px' }}>
+      <div style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, letterSpacing: '0.08em', color: 'var(--text-muted)', padding: '8px 16px 4px' }}>
         {title}
       </div>);
   }
@@ -273,7 +273,7 @@ export default function CommandPalette() {
         <span className="shrink-0 flex items-center justify-center" style={{ width: '16px', height: '16px', color: isActive ? 'var(--accent)' : 'var(--text-muted)' }}>
           <Icon className="w-4 h-4" /></span>
         <span style={{ fontSize: '13px' }}>{item.label}</span>
-        {SHORTCUTS[item.href] && <kbd style={{ marginLeft: 'auto', fontSize: '10px', color: 'var(--text-muted)', background: 'var(--surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xs)', padding: '1px 5px' }}>{SHORTCUTS[item.href]}</kbd>}
+        {SHORTCUTS[item.href] && <kbd style={{ marginLeft: 'auto', fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', background: 'var(--surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xs)', padding: '1px 5px' }}>{SHORTCUTS[item.href]}</kbd>}
       </div>);
   }
 
@@ -330,8 +330,8 @@ export default function CommandPalette() {
         <span className="shrink-0 flex items-center justify-center" style={{ width: '16px', height: '16px', color: isActive ? 'var(--accent)' : 'var(--text-muted)' }}>
           <Icon className="w-4 h-4" /></span>
         <span style={{ fontSize: '13px' }}>{item.label}</span>
-        {SHORTCUTS[item.href] ? <kbd style={{ marginLeft: 'auto', fontSize: '10px', color: 'var(--text-muted)', background: 'var(--surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xs)', padding: '1px 5px' }}>{SHORTCUTS[item.href]}</kbd>
-          : item.note ? <span style={{ fontSize: '11px', color: 'var(--text-muted)', marginLeft: 'auto' }}>{item.note}</span> : null}
+        {SHORTCUTS[item.href] ? <kbd style={{ marginLeft: 'auto', fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', background: 'var(--surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xs)', padding: '1px 5px' }}>{SHORTCUTS[item.href]}</kbd>
+          : item.note ? <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginLeft: 'auto' }}>{item.note}</span> : null}
       </div>);
   }
 
@@ -368,12 +368,12 @@ export default function CommandPalette() {
             style={{
               background: 'transparent',
               color: 'var(--text-primary)',
-              fontSize: '14px',
+              fontSize: 'var(--font-size-sm)',
               border: 'none',
             }}/>
           <kbd
             style={{
-              fontSize: '10px',
+              fontSize: 'var(--font-size-xs)',
               color: 'var(--text-muted)',
               background: 'var(--surface-2)',
               border: '1px solid var(--border-subtle)',
@@ -419,7 +419,7 @@ export default function CommandPalette() {
           style={{
             padding: '8px 16px',
             borderTop: '1px solid var(--border-subtle)',
-            fontSize: '10px',
+            fontSize: 'var(--font-size-xs)',
             color: 'var(--text-muted)',}}>
           <span className="flex items-center gap-1">
             <kbd style={{ background: 'var(--surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xs)', padding: '1px 4px' }}>&uarr;&darr;</kbd>

@@ -107,7 +107,7 @@ export function TopBar() {
           borderRadius: 'var(--radius-xs)',
           background: 'var(--surface-2)',
           border: '1px solid var(--border-subtle)',
-          fontSize: '10px',
+          fontSize: 'var(--font-size-xs)',
           fontWeight: 400,
           letterSpacing: '0.02em',
         }}>⌘K</span></button>
@@ -131,7 +131,7 @@ export function TopBar() {
                 height: '14px',
                 background: 'var(--danger)',
                 color: 'var(--surface-0)',
-                fontSize: '9px',
+                fontSize: 'var(--font-size-xs)',
                 fontWeight: 300,}}>
               {overdue.length}</span>
           )}</button>

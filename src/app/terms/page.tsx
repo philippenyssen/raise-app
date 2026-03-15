@@ -279,7 +279,7 @@ export default function TermsPage() {
                       <span
                         style={{
                           display: 'inline-block',
-                          fontSize: '10px',
+                          fontSize: 'var(--font-size-xs)',
                           fontWeight: 400,
                           padding: '2px 8px',
                           borderRadius: 'var(--radius-sm)',
@@ -287,7 +287,7 @@ export default function TermsPage() {
                           color: action.color,
                           marginBottom: '4px', }}>
                         {action.label}</span>
-                      <div style={{ fontSize: '10px', color: 'var(--text-muted)', lineHeight: 1.4 }}>
+                      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', lineHeight: 1.4 }}>
                         {action.advice}</div>
                     </td>);
                 })}
