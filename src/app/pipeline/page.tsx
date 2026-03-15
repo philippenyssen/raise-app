@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import { fmtDate } from '@/lib/format';
 import { STATUS_LABELS, TYPE_LABELS } from '@/lib/constants';
-import { labelMuted, labelMuted10, stFontSm, stFontXs, stTextMuted } from '@/lib/styles';
+import { labelMuted, labelMuted10, stFontSm, stFontXs, stTextMuted, badgeSmall } from '@/lib/styles';
 import { MS_PER_MINUTE } from '@/lib/time';
 
 // ── Pipeline column order ────────────────────────────────────────────
@@ -747,7 +747,7 @@ function InvestorCard({
           {onToggleCompare && (hovered || isCompareSelected) && <span onClick={e => { e.preventDefault(); e.stopPropagation(); onToggleCompare(investor.id); }} style={{ width: 12, height: 12, borderRadius: 'var(--radius-sm)', border: `1.5px solid ${isCompareSelected ? 'var(--accent)' : 'var(--border-default)'}`, background: isCompareSelected ? 'var(--accent)' : 'transparent', cursor: 'pointer', flexShrink: 0 }} />}
           <GripVertical className="w-3 h-3 flex-shrink-0" style={{ color: hovered ? 'var(--text-muted)' : 'var(--border-strong)' }} />
           <span className="truncate" title={investor.name} style={{ ...stFontXs, fontWeight: 400, color: 'var(--text-secondary)' }}>{investor.name}</span>
-          <span style={{ padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-sm)', fontSize: 'var(--font-size-xs)', fontWeight: 400, ...TIER_STYLES[investor.tier] }}>T{investor.tier}</span>
+          <span style={{ ...badgeSmall, ...TIER_STYLES[investor.tier] }}>T{investor.tier}</span>
         </Link>
       </div>);
   }
@@ -775,12 +775,12 @@ function InvestorCard({
 
         {/* Badges row: type + tier */}
         <div className="flex items-center gap-1.5">
-          <span className="inline-flex items-center gap-1" style={{ padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-sm)', fontSize: 'var(--font-size-xs)', fontWeight: 400, ...TYPE_STYLES[investor.type as InvestorType] }}>
+          <span className="inline-flex items-center gap-1" style={{ ...badgeSmall, ...TYPE_STYLES[investor.type as InvestorType] }}>
             <TypeIcon className="w-2.5 h-2.5" />{TYPE_LABELS[investor.type as InvestorType] ?? investor.type}</span>
-          <span style={{ padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-sm)', fontSize: 'var(--font-size-xs)', fontWeight: 400, ...TIER_STYLES[investor.tier] }}>T{investor.tier}</span>
-          {isStale && <span style={{ padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-sm)', fontSize: 'var(--font-size-xs)', fontWeight: 400, background: 'var(--warning-muted)', color: 'var(--warning)' }}>Stale</span>}
-          {convictionDelta !== null && convictionDelta !== 0 && <span style={{ padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-sm)', fontSize: 'var(--font-size-xs)', fontWeight: 400, background: convictionDelta > 0 ? 'var(--success-muted)' : 'var(--warning-muted)', color: convictionDelta > 0 ? 'var(--success)' : 'var(--danger)' }}>{convictionDelta > 0 ? '+' : ''}{convictionDelta}</span>}
-          {(() => { const d = Math.floor((Date.now() - new Date(investor.updated_at).getTime()) / 864e5); return d > 0 ? <span title="Time in current stage" style={{ padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-sm)', fontSize: 'var(--font-size-xs)', fontWeight: 400, color: d >= 14 ? 'var(--warning)' : 'var(--text-muted)', background: 'var(--white-8)' }}>{d}d</span> : null; })()}
+          <span style={{ ...badgeSmall, ...TIER_STYLES[investor.tier] }}>T{investor.tier}</span>
+          {isStale && <span style={{ ...badgeSmall, background: 'var(--warning-muted)', color: 'var(--warning)' }}>Stale</span>}
+          {convictionDelta !== null && convictionDelta !== 0 && <span style={{ ...badgeSmall, background: convictionDelta > 0 ? 'var(--success-muted)' : 'var(--warning-muted)', color: convictionDelta > 0 ? 'var(--success)' : 'var(--danger)' }}>{convictionDelta > 0 ? '+' : ''}{convictionDelta}</span>}
+          {(() => { const d = Math.floor((Date.now() - new Date(investor.updated_at).getTime()) / 864e5); return d > 0 ? <span title="Time in current stage" style={{ ...badgeSmall, color: d >= 14 ? 'var(--warning)' : 'var(--text-muted)', background: 'var(--white-8)' }}>{d}d</span> : null; })()}
         </div>
 
         {/* Details */}
