@@ -77,12 +77,15 @@ export default function DataRoomPage() {
   useEffect(() => { fetchFiles(); fetchIntelligence(); }, [fetchFiles, fetchIntelligence]);
 
   async function handleLogAccess(investorId: string, documentId: string) {
-    await fetch('/api/data-room/intelligence', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ investor_id: investorId, document_id: documentId }),});
-    toast('Access logged');
-    fetchIntelligence();
+    try {
+      const res = await fetch('/api/data-room/intelligence', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ investor_id: investorId, document_id: documentId }),});
+      if (!res.ok) throw new Error('Failed');
+      toast('Access logged');
+      fetchIntelligence();
+    } catch { toast('Failed to log access', 'error'); }
   }
 
   async function handleFileUpload(fileList: FileList) {
@@ -122,17 +125,20 @@ export default function DataRoomPage() {
           text = `[Binary file: ${file.name} (${file.type}, ${file.size} bytes). Text extraction not available — upload the text content separately via Paste.]`;
         }}
 
-      await fetch('/api/data-room', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          filename: file.name,
-          category,
-          mime_type: file.type || 'application/octet-stream',
-          size_bytes: file.size,
-          extracted_text: text.substring(0, 50000),
-        }),});
-      toast(`Uploaded "${file.name}"`);
+      try {
+        const res = await fetch('/api/data-room', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            filename: file.name,
+            category,
+            mime_type: file.type || 'application/octet-stream',
+            size_bytes: file.size,
+            extracted_text: text.substring(0, 50000),
+          }),});
+        if (!res.ok) throw new Error('Failed');
+        toast(`Uploaded "${file.name}"`);
+      } catch { toast(`Failed to upload "${file.name}"`, 'error'); }
     }
     setUploading(false);
     fetchFiles();
@@ -141,21 +147,24 @@ export default function DataRoomPage() {
   async function handlePasteUpload() {
     if (!pasteFilename.trim() || !pasteContent.trim()) return;
     setUploading(true);
-    await fetch('/api/data-room', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        filename: pasteFilename.trim(),
-        category: pasteCategory,
-        mime_type: 'text/plain',
-        size_bytes: pasteContent.length,
-        extracted_text: pasteContent.substring(0, 50000),
-      }),});
-    toast(`Added "${pasteFilename.trim()}"`);
-    setPasteFilename('');
-    setPasteContent('');
-    setPasteCategory('other');
-    setPasteMode(false);
+    try {
+      const res = await fetch('/api/data-room', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          filename: pasteFilename.trim(),
+          category: pasteCategory,
+          mime_type: 'text/plain',
+          size_bytes: pasteContent.length,
+          extracted_text: pasteContent.substring(0, 50000),
+        }),});
+      if (!res.ok) throw new Error('Failed');
+      toast(`Added "${pasteFilename.trim()}"`);
+      setPasteFilename('');
+      setPasteContent('');
+      setPasteCategory('other');
+      setPasteMode(false);
+    } catch { toast('Failed to add document', 'error'); }
     setUploading(false);
     fetchFiles();
   }

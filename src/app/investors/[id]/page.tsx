@@ -639,19 +639,25 @@ export default function InvestorDetailPage() {
         const sortedItems = [...overdueItems, ...upcomingItems].slice(0, 5);
 
         async function quickComplete(fId: string) {
-          await fetch('/api/followups', {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: fId, status: 'completed' }),});
-          setFollowups(prev => prev.filter(f => f.id !== fId));
+          try {
+            const res = await fetch('/api/followups', {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ id: fId, status: 'completed' }),});
+            if (!res.ok) throw new Error('Failed');
+            setFollowups(prev => prev.filter(f => f.id !== fId));
+          } catch { toast('Failed to complete follow-up', 'error'); }
         }
 
         async function quickSkip(fId: string) {
-          await fetch('/api/followups', {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: fId, status: 'skipped' }),});
-          setFollowups(prev => prev.filter(f => f.id !== fId));
+          try {
+            const res = await fetch('/api/followups', {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ id: fId, status: 'skipped' }),});
+            if (!res.ok) throw new Error('Failed');
+            setFollowups(prev => prev.filter(f => f.id !== fId));
+          } catch { toast('Failed to skip follow-up', 'error'); }
         }
 
         return (
