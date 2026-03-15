@@ -24,6 +24,12 @@ export async function POST(req: NextRequest) {
   if (!filename || !extracted_text) {
     return NextResponse.json({ error: 'filename and extracted_text are required' }, { status: 400 });
   }
+  const textLimits: Record<string, number> = { filename: 500, category: 100, mime_type: 200, extracted_text: 200000, summary: 5000 };
+  for (const [field, max] of Object.entries(textLimits)) {
+    if (body[field] && typeof body[field] === 'string' && (body[field] as string).length > max) {
+      return NextResponse.json({ error: `${field} exceeds maximum length of ${max} characters` }, { status: 400 });
+    }
+  }
 
   try {
     const file = await createDataRoomFile({

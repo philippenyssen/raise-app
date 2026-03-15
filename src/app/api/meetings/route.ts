@@ -28,6 +28,12 @@ export async function POST(req: NextRequest) {
   if (!investor_name || typeof investor_name !== 'string') {
     return NextResponse.json({ error: 'investor_name is required' }, { status: 400 });
   }
+  const textLimits: Record<string, number> = { investor_name: 255, raw_notes: 50000, attendees: 1000 };
+  for (const [field, max] of Object.entries(textLimits)) {
+    if (body[field] && typeof body[field] === 'string' && (body[field] as string).length > max) {
+      return NextResponse.json({ error: `${field} exceeds maximum length of ${max} characters` }, { status: 400 });
+    }
+  }
 
   const validTypes = ['intro', 'deep_dive', 'dd', 'negotiation', 'social', 'follow_up'];
   if (type && !validTypes.includes(type as string)) {
