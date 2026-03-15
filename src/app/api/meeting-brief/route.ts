@@ -223,12 +223,15 @@ export async function POST(req: NextRequest) {
     const response = await getAIClient().messages.create({
       model: AI_MODEL,
       max_tokens: 4096,
+      temperature: 0,
       messages: [{
         role: 'user',
         content: contextForAI,
       }],});
 
-    const aiSummary = response.content[0].type === 'text' ? response.content[0].text : '';
+    if (response.stop_reason === 'max_tokens') console.error('[MEETING_BRIEF] Response truncated — JSON may be incomplete');
+    const block = response.content[0];
+    const aiSummary = block?.type === 'text' && block.text ? block.text : '';
 
     // 10. Parse AI response
     let briefContent: {

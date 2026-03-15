@@ -496,6 +496,7 @@ INSTRUCTIONS:
     const stream = getClient().messages.stream({
       model: AI_MODEL,
       max_tokens: 8192,
+      temperature: 0.3,
       system: systemPrompt,
       messages: messages.map((m: { role: string; content: string }) => ({
         role: m.role as 'user' | 'assistant',
