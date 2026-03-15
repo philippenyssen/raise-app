@@ -64,10 +64,11 @@ export default function TimelinePage() {
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && showAdd) setShowAdd(false);
+      if (e.key === 'r' && !e.metaKey && !e.ctrlKey && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement)) { e.preventDefault(); fetchData(); }
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [showAdd]);
+  }, [showAdd, fetchData]);
 
   async function toggleTask(task: Task) {
     const newStatus = task.status === 'done' ? 'pending' : 'done';

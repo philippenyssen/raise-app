@@ -68,10 +68,11 @@ export default function IntelligencePage() {
         if (showAddDeal) setShowAddDeal(false);
         if (showAddComp) setShowAddComp(false);
       }
+      if (e.key === 'r' && !e.metaKey && !e.ctrlKey && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement)) { e.preventDefault(); fetchAll(); }
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [showAddDeal, showAddComp]);
+  }, [showAddDeal, showAddComp, fetchAll]);
 
   async function handleResearch() {
     if (!researchInput.trim()) return;
