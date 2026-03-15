@@ -456,6 +456,35 @@ body {
   color: var(--text-secondary);
 }
 
+.icon-delete {
+  color: var(--text-muted);
+  transition: color 150ms ease;
+}
+.icon-delete:hover {
+  color: var(--danger);
+}
+
+.btn-surface {
+  transition: background 150ms ease;
+}
+.btn-surface:hover {
+  background: var(--surface-3) !important;
+}
+
+.hover-row {
+  transition: background 150ms ease;
+}
+.hover-row:hover {
+  background: var(--surface-1);
+}
+
+.hover-border {
+  transition: border-color 150ms ease;
+}
+.hover-border:hover {
+  border-color: var(--border-strong);
+}
+
 /* ── Inputs ── */
 .input {
   width: 100%;

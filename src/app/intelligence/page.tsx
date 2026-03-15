@@ -42,12 +42,6 @@ export default function IntelligencePage() {
   const [deleting, setDeleting] = useState(false);
   const [researchInput, setResearchInput] = useState('');
   const [researchType, setResearchType] = useState<'investor' | 'competitor' | 'market'>('investor');
-  const [hoveredDealRow, setHoveredDealRow] = useState<string | null>(null);
-  const [hoveredDeleteBtn, setHoveredDeleteBtn] = useState<string | null>(null);
-  const [hoveredCompCard, setHoveredCompCard] = useState<string | null>(null);
-  const [hoveredBriefRow, setHoveredBriefRow] = useState<string | null>(null);
-  const [hoveredResearchBtn, setHoveredResearchBtn] = useState(false);
-  const [hoveredAddBtn, setHoveredAddBtn] = useState(false);
 
   const fetchAll = useCallback(async () => {
     setLoading(true);
@@ -206,17 +200,7 @@ export default function IntelligencePage() {
           <button
             onClick={handleResearch}
             disabled={researching || !researchInput.trim()}
-            onMouseEnter={() => setHoveredResearchBtn(true)}
-            onMouseLeave={() => setHoveredResearchBtn(false)}
-            className="px-4 py-2 rounded-lg text-sm font-normal flex items-center gap-2 transition-colors"
-            style={{
-              background: researching || !researchInput.trim()
-                ? 'var(--surface-3)'
-                : hoveredResearchBtn ? 'var(--accent-hover)' : 'var(--accent)',
-              color: researching || !researchInput.trim()
-                ? 'var(--text-muted)'
-                : 'white',
-              transition: 'all 150ms ease', }}>
+            className="btn btn-primary px-4 py-2 rounded-lg text-sm font-normal flex items-center gap-2">
             {researching ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Researching...</> : <><RefreshCw className="w-3.5 h-3.5" /> Research</>}
           </button></div>
         <p className="text-xs mt-2" style={stTextMuted}>
@@ -254,12 +238,8 @@ export default function IntelligencePage() {
           <div className="flex justify-end">
             <button
               onClick={() => setShowAddDeal(!showAddDeal)}
-              onMouseEnter={() => setHoveredAddBtn(true)}
-              onMouseLeave={() => setHoveredAddBtn(false)}
-              className="px-3 py-1.5 rounded-lg text-sm flex items-center gap-1"
-              style={{
-                background: hoveredAddBtn ? 'var(--surface-3)' : 'var(--surface-2)',
-                transition: 'background 150ms ease', }}>
+              className="btn-surface px-3 py-1.5 rounded-lg text-sm flex items-center gap-1"
+              style={{ background: 'var(--surface-2)' }}>
               <Plus className="w-3.5 h-3.5" /> Add Deal</button></div>
 
           {showAddDeal && (
@@ -301,10 +281,7 @@ export default function IntelligencePage() {
                   {deals.map(d => (
                     <tr
                       key={d.id}
-                      className="table-row transition-colors"
-                      style={{ background: hoveredDealRow === d.id ? 'var(--surface-1)' : 'transparent' }}
-                      onMouseEnter={() => setHoveredDealRow(d.id)}
-                      onMouseLeave={() => setHoveredDealRow(null)}>
+                      className="table-row">
                       <td style={{ fontWeight: 400, color: 'var(--text-primary)' }}>{d.company}</td>
                       <td style={stTextTertiary}>{d.round}</td>
                       <td style={{ color: 'var(--text-secondary)', fontWeight: 400 }}>{d.amount}</td>
@@ -316,12 +293,7 @@ export default function IntelligencePage() {
                         <button
                           aria-label={`Delete deal ${d.company}`}
                           onClick={() => setDeleteTarget({ type: 'deal', id: d.id, name: d.company })}
-                          onMouseEnter={() => setHoveredDeleteBtn(`deal-${d.id}`)}
-                          onMouseLeave={() => setHoveredDeleteBtn(null)}
-                          className="transition-colors"
-                          style={{
-                            color: hoveredDeleteBtn === `deal-${d.id}` ? 'var(--danger)' : 'var(--text-muted)',
-                            transition: 'color 150ms ease', }}>
+                          className="icon-delete">
                           <Trash2 className="w-3.5 h-3.5" /></button></td></tr>
                   ))}</tbody></table></div>
           )}</div>
@@ -332,12 +304,8 @@ export default function IntelligencePage() {
           <div className="flex justify-end">
             <button
               onClick={() => setShowAddComp(!showAddComp)}
-              onMouseEnter={() => setHoveredAddBtn(true)}
-              onMouseLeave={() => setHoveredAddBtn(false)}
-              className="px-3 py-1.5 rounded-lg text-sm flex items-center gap-1"
-              style={{
-                background: hoveredAddBtn ? 'var(--surface-3)' : 'var(--surface-2)',
-                transition: 'background 150ms ease', }}>
+              className="btn-surface px-3 py-1.5 rounded-lg text-sm flex items-center gap-1"
+              style={{ background: 'var(--surface-2)' }}>
               <Plus className="w-3.5 h-3.5" /> Add Competitor</button></div>
 
           {showAddComp && (
@@ -371,12 +339,7 @@ export default function IntelligencePage() {
                 return (
                   <div
                     key={c.id}
-                    className="card transition-colors"
-                    style={{
-                      borderColor: hoveredCompCard === c.id ? 'var(--border-strong)' : undefined,
-                      transition: 'border-color 150ms ease', }}
-                    onMouseEnter={() => setHoveredCompCard(c.id)}
-                    onMouseLeave={() => setHoveredCompCard(null)}>
+                    className="card hover-border">
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3">
                         <Building2 className="w-5 h-5" style={stTextMuted} />
@@ -392,12 +355,7 @@ export default function IntelligencePage() {
                       <button
                         aria-label={`Delete competitor ${c.name}`}
                         onClick={() => setDeleteTarget({ type: 'competitor', id: c.id, name: c.name })}
-                        onMouseEnter={() => setHoveredDeleteBtn(`comp-${c.id}`)}
-                        onMouseLeave={() => setHoveredDeleteBtn(null)}
-                        className="transition-colors"
-                        style={{
-                          color: hoveredDeleteBtn === `comp-${c.id}` ? 'var(--danger)' : 'var(--text-muted)',
-                          transition: 'color 150ms ease', }}>
+                        className="icon-delete">
                         <Trash2 className="w-3.5 h-3.5" /></button></div>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3 text-xs">
                       {c.revenue && <div><span style={stTextMuted}>Revenue:</span> <span style={stTextSecondary}>{c.revenue}</span></div>}
@@ -427,12 +385,7 @@ export default function IntelligencePage() {
                 <div key={b.id} className="rounded-xl overflow-hidden">
                   <button
                     onClick={() => setExpandedBrief(expandedBrief === b.id ? null : b.id)}
-                    className="w-full flex items-center justify-between px-4 py-3"
-                    style={{
-                      background: hoveredBriefRow === b.id ? 'var(--surface-1)' : 'transparent',
-                      transition: 'background 150ms ease', }}
-                    onMouseEnter={() => setHoveredBriefRow(b.id)}
-                    onMouseLeave={() => setHoveredBriefRow(null)}>
+                    className="hover-row w-full flex items-center justify-between px-4 py-3">
                     <div className="flex items-center gap-3">
                       <span
                         className="text-xs px-2 py-0.5 rounded font-normal"
@@ -458,12 +411,7 @@ export default function IntelligencePage() {
                       <button
                         aria-label={`Delete brief ${b.subject}`}
                         onClick={(e) => { e.stopPropagation(); setDeleteTarget({ type: 'brief', id: b.id, name: b.subject }); }}
-                        onMouseEnter={() => setHoveredDeleteBtn(`brief-${b.id}`)}
-                        onMouseLeave={() => setHoveredDeleteBtn(null)}
-                        className="p-1 transition-colors"
-                        style={{
-                          color: hoveredDeleteBtn === `brief-${b.id}` ? 'var(--danger)' : 'var(--text-muted)',
-                          transition: 'color 150ms ease', }}>
+                        className="icon-delete p-1">
                         <Trash2 className="w-3.5 h-3.5" /></button>
                       {expandedBrief === b.id
                         ? <ChevronDown className="w-4 h-4" style={stTextMuted} />
@@ -510,7 +458,6 @@ const RECENT_BRIEF_ICONS: Record<string, React.ComponentType<{ className?: strin
 
 function RecentResearchSection({ briefs }: { briefs: IntelligenceBrief[] }) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [hoveredId, setHoveredId] = useState<string | null>(null);
 
   const recentBriefs = briefs.slice(0, 10);
 
@@ -538,12 +485,7 @@ function RecentResearchSection({ briefs }: { briefs: IntelligenceBrief[] }) {
             <div key={brief.id} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
               <button
                 onClick={() => setExpandedId(isExpanded ? null : brief.id)}
-                className="w-full flex items-center gap-3 px-4 py-2.5 text-left"
-                style={{
-                  background: hoveredId === brief.id ? 'var(--surface-1)' : 'transparent',
-                  transition: 'background 150ms ease', }}
-                onMouseEnter={() => setHoveredId(brief.id)}
-                onMouseLeave={() => setHoveredId(null)}>
+                className="hover-row w-full flex items-center gap-3 px-4 py-2.5 text-left">
                 <span style={{ color: briefTypeStyle.color }}>
                   <Icon className="w-4 h-4" /></span>
                 <span
