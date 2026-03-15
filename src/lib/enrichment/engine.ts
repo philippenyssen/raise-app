@@ -117,7 +117,9 @@ export async function enrichInvestor(
             source_id: provider.id,
             success: false,
             fields: [],
-            error: error instanceof Error ? error.message : 'Provider threw an exception',
+            error: error instanceof Error
+              ? (error.name === 'AbortError' ? `Timeout (${provider.id})` : `${provider.id}: ${error.message}`)
+              : `${provider.id}: unknown error`,
             fetched_at: new Date().toISOString(),
           } as EnrichmentProviderResult))));
 
@@ -125,12 +127,11 @@ export async function enrichInvestor(
       if (result.status === 'fulfilled') {
         results.push(result.value);
       } else {
-        // This shouldn't happen since we catch in the map, but just in case
         results.push({
-          source_id: 'sec_edgar_formd', // fallback
+          source_id: batch[batchResults.indexOf(result)]?.id ?? 'unknown',
           success: false,
           fields: [],
-          error: 'Promise rejected unexpectedly',
+          error: `Unexpected rejection: ${result.reason}`,
           fetched_at: new Date().toISOString(),});
       }}
   }

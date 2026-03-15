@@ -69,7 +69,7 @@ async function scrapeWebsite(
         'User-Agent': 'Mozilla/5.0 (compatible; RaiseApp/1.0; fundraise-enrichment)',
         'Accept': 'text/html',},
       redirect: 'follow',
-      signal: AbortSignal.timeout(10000),});
+      signal: AbortSignal.timeout(15000),});
 
     if (!mainRes.ok) {
       return { source_id: 'website_scraper', success: false, fields, error: `HTTP ${mainRes.status}`, fetched_at: now };
@@ -151,7 +151,7 @@ async function scrapeWebsite(
               'User-Agent': 'Mozilla/5.0 (compatible; RaiseApp/1.0; fundraise-enrichment)',
               'Accept': 'text/html',},
             redirect: 'follow',
-            signal: AbortSignal.timeout(10000),});
+            signal: AbortSignal.timeout(15000),});
 
           if (portfolioRes.ok) {
             const portfolioHtml = await portfolioRes.text();
@@ -186,7 +186,7 @@ async function scrapeWebsite(
               'User-Agent': 'Mozilla/5.0 (compatible; RaiseApp/1.0; fundraise-enrichment)',
               'Accept': 'text/html',},
             redirect: 'follow',
-            signal: AbortSignal.timeout(10000),});
+            signal: AbortSignal.timeout(15000),});
 
           if (teamRes.ok) {
             const teamHtml = await teamRes.text();
