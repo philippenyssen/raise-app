@@ -29,6 +29,13 @@ function logAISkill(
   }).catch(() => {});
 }
 
+/** Extract text from AI response, flagging truncation */
+function extractText(response: { content: { type: string; text?: string }[]; stop_reason: string | null }): { text: string; truncated: boolean } {
+  const text = response.content[0]?.type === 'text' ? (response.content[0] as { text: string }).text : '';
+  const truncated = response.stop_reason === 'max_tokens';
+  return { text, truncated };
+}
+
 function safeParseJSON<T>(text: string, fallback: T): { parsed: T; success: boolean } {
   try {
     return { parsed: JSON.parse(text), success: true };
@@ -134,7 +141,7 @@ Enthusiasm scale: 1=Cold/polite 2=Lukewarm 3=Interested 4=Excited 5=Ready to ter
 Be rigorous. Don't infer enthusiasm that isn't there. If notes are sparse, flag what's missing. Empty arrays and empty strings are preferred over fabricated data.`
     }]});
 
-  const text = response.content[0].type === 'text' ? response.content[0].text : '';
+  const { text } = extractText(response);
   const fallback = {
     questions_asked: [] as { text: string; topic: string }[],
     objections: [] as { text: string; severity: string; topic: string }[],
@@ -207,7 +214,7 @@ Return JSON (no markdown):
 }`
     }]});
 
-  const text = response.content[0].type === 'text' ? response.content[0].text : '';
+  const { text } = extractText(response);
   const patternsFallback = { top_objections: [] as { text: string; count: number; unique_or_repeated: string; recommendation: string }[], story_effectiveness: { landing: [] as string[], failing: [] as string[], exciting: [] as string[] }, investor_velocity: [] as { investor: string; trajectory: string; evidence: string; action: string }[], pricing_trend: 'Not enough data', material_changes: [] as { change: string; priority: string; rationale: string }[], overall_assessment: 'Need more meetings to identify patterns.', convergence_signals: [] as string[] };
   const { parsed, success } = safeParseJSON(text, patternsFallback);
   logAISkill('analyze_patterns', success, 7, success ? 7 : 0, { trigger_source: 'api', input_summary: `${meetings.length} meetings` });
@@ -242,7 +249,7 @@ Return JSON (no markdown):
 }`
     }]});
 
-  const text = response.content[0].type === 'text' ? response.content[0].text : '';
+  const { text } = extractText(response);
   const healthFallback = { health: 'yellow' as const, diagnosis: 'Insufficient data for assessment.', recommendations: ['Add more meeting data'], risk_factors: [] as string[] };
   const { parsed, success } = safeParseJSON(text, healthFallback);
   logAISkill('assess_process_health', success, 4, success ? 4 : 0);
@@ -271,7 +278,7 @@ ${context.substring(0, 2000)}
 
 Return ONLY the improved text. No explanations, no markdown code blocks, just the improved content.`
     }]});
-  return response.content[0].type === 'text' ? response.content[0].text : section;
+  return extractText(response).text || section;
 }
 
 export async function checkConsistency(
@@ -353,7 +360,7 @@ export async function researchInvestor(investorName: string, context?: string): 
 }> {
   const response = await getAIClient().messages.create({
     model: 'claude-sonnet-4-20250514',
-    max_tokens: 8192,
+    max_tokens: 4096,
     temperature: 0,
     system: 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.',
     messages: [{
@@ -392,7 +399,7 @@ Generate a research dossier in this exact JSON format (no markdown, pure JSON):
 Be specific with real data where you have it. If you're uncertain about specific numbers, note it. Do NOT fabricate fund sizes or investment amounts — say "estimated" or "reported" if uncertain.`
     }]});
 
-  const text = response.content[0].type === 'text' ? response.content[0].text : '';
+  const { text } = extractText(response);
   const investorFallback = { overview: 'Research could not be completed. Try providing more context.', fund_details: { aum: '', vintage: '', strategy: '', hq: '' }, key_partners: [] as { name: string; title: string; focus: string; notable_deals: string }[], recent_investments: [] as { company: string; round: string; amount: string; date: string; sector: string }[], investment_thesis: '', ic_process: '', typical_check: '', portfolio_in_sector: [] as { company: string; relevance: string }[], fit_assessment: '', approach_strategy: '' };
   const { parsed, success } = safeParseJSON(text, investorFallback);
   logAISkill('research_investor', success, 10, success ? Object.values(parsed).filter(v => v !== '' && (Array.isArray(v) ? v.length > 0 : true)).length : 0, { trigger_source: 'api', input_summary: investorName });
@@ -443,7 +450,7 @@ Return JSON (no markdown):
 Be specific. Note uncertainty where appropriate.`
     }]});
 
-  const text = response.content[0].type === 'text' ? response.content[0].text : '';
+  const { text } = extractText(response);
   const competitorFallback = { overview: '', financials: { revenue: '', employees: '', total_raised: '', last_round: '', last_valuation: '', key_investors: '' }, positioning: '', strengths: [] as string[], weaknesses: [] as string[], our_advantage: '', threat_assessment: '', recent_news: [] as string[] };
   const { parsed, success } = safeParseJSON(text, competitorFallback);
   logAISkill('research_competitor', success, 8, success ? 8 : 0, { input_summary: companyName });
@@ -481,7 +488,7 @@ Return JSON (no markdown):
 Focus on 2025-2026 deals. Include space, defense tech, aerospace, satellite, and adjacent sectors. Be specific with real data.`
     }]});
 
-  const text = response.content[0].type === 'text' ? response.content[0].text : '';
+  const { text } = extractText(response);
   const marketFallback = { deals: [] as { company: string; round: string; amount: string; valuation: string; lead: string; date: string; equity_story: string }[], trends: [] as string[], valuation_context: '', implications_for_us: '' };
   const { parsed, success } = safeParseJSON(text, marketFallback);
   logAISkill('research_market_deals', success, 4, success ? 4 : 0, { input_summary: sector });
@@ -575,7 +582,7 @@ Generate a pre-meeting brief in this exact JSON format (no markdown, pure JSON):
 Be direct and tactical. This brief should make the meeting 2x more productive.`
     }]});
 
-  const text = response.content[0].type === 'text' ? response.content[0].text : '';
+  const { text } = extractText(response);
   const briefFallback = {
     firm_context: 'Insufficient data to generate firm context. Review investor profile manually.',
     interaction_summary: meetingHistory.length > 0
@@ -612,5 +619,5 @@ ${content}
 
 Return ONLY the rewritten text. No explanations.`
     }]});
-  return response.content[0].type === 'text' ? response.content[0].text : content;
+  return extractText(response).text || content;
 }
