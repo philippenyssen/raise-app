@@ -279,7 +279,10 @@ export function Sidebar() {
               to search</div>
           )}
           <button
-            onClick={async () => {
+            onClick={async (e) => {
+              const btn = e.currentTarget;
+              if (btn.dataset.busy) return;
+              btn.dataset.busy = '1';
               await fetch('/api/auth', { method: 'DELETE' });
               window.location.href = '/login';
             }}

@@ -64,6 +64,7 @@ export default function InvestorsPage() {
   const [hoveredBtn, setHoveredBtn] = useState<string | null>(null);
   const [sortKey, setSortKey] = useState<'name' | 'tier' | 'last_meeting_date' | 'enthusiasm' | null>(null);
   const [sortAsc, setSortAsc] = useState(true);
+  const [bulkUpdating, setBulkUpdating] = useState(false);
   const [form, setForm] = useState({
     name: '', type: 'vc' as InvestorType, tier: 2 as InvestorTier, partner: '',
     fund_size: '', check_size_range: '', sector_thesis: '', warm_path: '',
@@ -147,6 +148,8 @@ export default function InvestorsPage() {
     return true;}).sort((a, b) => { if (!sortKey) return 0; const dir = sortAsc ? 1 : -1; if (sortKey === 'name') return dir * a.name.localeCompare(b.name); if (sortKey === 'tier') return dir * (a.tier - b.tier); if (sortKey === 'enthusiasm') return dir * ((a.enthusiasm || 0) - (b.enthusiasm || 0)); return dir * ((a.last_meeting_date || '').localeCompare(b.last_meeting_date || '')); });
 
   async function bulkUpdateStatus(newStatus: string) {
+    if (bulkUpdating) return;
+    setBulkUpdating(true);
     try {
       for (const id of selected) {
         const res = await fetch('/api/investors', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, status: newStatus }) });
@@ -158,7 +161,7 @@ export default function InvestorsPage() {
     } catch {
       toast('Some updates failed', 'error');
       fetchInvestors();
-    }}
+    } finally { setBulkUpdating(false); }}
 
   function toggleSelect(id: string) {
     setSelected(prev => {
@@ -248,13 +251,16 @@ export default function InvestorsPage() {
             {selected.size} selected</span>
           <button
             onClick={() => bulkUpdateStatus('contacted')}
-            className="btn btn-sm btn-primary">
-            Mark Contacted</button>
+            disabled={bulkUpdating}
+            className="btn btn-sm btn-primary"
+            style={{ opacity: bulkUpdating ? 0.5 : 1 }}>
+            {bulkUpdating ? 'Updating...' : 'Mark Contacted'}</button>
           <select
             defaultValue=""
+            disabled={bulkUpdating}
             onChange={e => { if (e.target.value) bulkUpdateStatus(e.target.value); e.target.value = ''; }}
             className="input"
-            style={{ width: 'auto', fontSize: 'var(--font-size-xs)', padding: '0.25rem 0.5rem' }}>
+            style={{ width: 'auto', fontSize: 'var(--font-size-xs)', padding: '0.25rem 0.5rem', opacity: bulkUpdating ? 0.5 : 1 }}>
             <option value="" disabled>Other status...</option>
             {Object.entries(STATUS_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select>
           <button onClick={() => setSelected(new Set())} className="btn btn-ghost btn-sm">

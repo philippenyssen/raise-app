@@ -21,28 +21,33 @@ export default function PostMeetingActions({ data, meetingId, onActionTaken }: {
   const [acceptedTasks, setAcceptedTasks] = useState<Set<string>>(new Set());
   const [acceptedFlags, setAcceptedFlags] = useState<Set<string>>(new Set());
   const [hovered, setHovered] = useState<Record<string, boolean>>({});
+  const [busyActions, setBusyActions] = useState<Set<string>>(new Set());
   const setH = (key: string, val: boolean) => setHovered(p => ({ ...p, [key]: val }));
 
   const hasActions = data.tasks.length > 0 || data.document_flags.length > 0;
 
   async function handleTaskAction(taskId: string, operation: 'accept' | 'dismiss') {
+    if (busyActions.has(taskId)) return;
+    setBusyActions(prev => new Set(prev).add(taskId));
     try {
       const res = await fetch(`/api/meetings/${meetingId}/actions`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action_type: 'task', action_id: taskId, operation }) });
       if (!res.ok) return;
       if (operation === 'dismiss') setDismissedTasks(prev => new Set(prev).add(taskId));
       else setAcceptedTasks(prev => new Set(prev).add(taskId));
       onActionTaken?.();
-    } catch { /* non-critical UI action */ }
+    } catch { /* non-critical UI action */ } finally { setBusyActions(prev => { const n = new Set(prev); n.delete(taskId); return n; }); }
   }
 
   async function handleFlagAction(flagId: string, operation: 'accept' | 'dismiss') {
+    if (busyActions.has(flagId)) return;
+    setBusyActions(prev => new Set(prev).add(flagId));
     try {
       const res = await fetch(`/api/meetings/${meetingId}/actions`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action_type: 'document_flag', action_id: flagId, operation }) });
       if (!res.ok) return;
       if (operation === 'dismiss') setDismissedFlags(prev => new Set(prev).add(flagId));
       else setAcceptedFlags(prev => new Set(prev).add(flagId));
       onActionTaken?.();
-    } catch { /* non-critical UI action */ }
+    } catch { /* non-critical UI action */ } finally { setBusyActions(prev => { const n = new Set(prev); n.delete(flagId); return n; }); }
   }
 
   if (!hasActions && !data.investor_updates.suggested_status) return null;
@@ -56,10 +61,11 @@ export default function PostMeetingActions({ data, meetingId, onActionTaken }: {
   function ActionButtons({ id, type, isAccepted, onAccept, onDismiss }: { id: string; type: string; isAccepted: boolean; onAccept: () => void; onDismiss: () => void }) {
     if (isAccepted) return <span className="text-xs flex items-center gap-1 shrink-0" style={{ color: 'var(--success)' }}><CheckCircle2 className="w-3.5 h-3.5" /> {type === 'flag' ? 'Noted' : 'Accepted'}</span>;
     const aKey = `${type}-accept-${id}`, dKey = `${type}-dismiss-${id}`;
+    const isBusy = busyActions.has(id);
     return (
       <div className="flex gap-1 shrink-0">
-        <button onClick={onAccept} onMouseEnter={() => setH(aKey, true)} onMouseLeave={() => setH(aKey, false)} className="p-1.5 rounded-md transition-colors" style={{ color: hovered[aKey] ? 'var(--success)' : 'var(--text-muted)', backgroundColor: hovered[aKey] ? 'var(--success-muted)' : 'transparent' }} title={type === 'flag' ? 'Acknowledge flag' : 'Accept task'}><CheckCircle2 className="w-4 h-4" /></button>
-        <button onClick={onDismiss} onMouseEnter={() => setH(dKey, true)} onMouseLeave={() => setH(dKey, false)} className="p-1.5 rounded-md transition-colors" style={{ color: hovered[dKey] ? 'var(--danger)' : 'var(--text-muted)', backgroundColor: hovered[dKey] ? 'var(--danger-muted)' : 'transparent' }} title={type === 'flag' ? 'Dismiss flag' : 'Dismiss task'}><XCircle className="w-4 h-4" /></button>
+        <button onClick={onAccept} disabled={isBusy} onMouseEnter={() => setH(aKey, true)} onMouseLeave={() => setH(aKey, false)} className="p-1.5 rounded-md transition-colors" style={{ color: hovered[aKey] ? 'var(--success)' : 'var(--text-muted)', backgroundColor: hovered[aKey] ? 'var(--success-muted)' : 'transparent', opacity: isBusy ? 0.5 : 1 }} title={type === 'flag' ? 'Acknowledge flag' : 'Accept task'}><CheckCircle2 className="w-4 h-4" /></button>
+        <button onClick={onDismiss} disabled={isBusy} onMouseEnter={() => setH(dKey, true)} onMouseLeave={() => setH(dKey, false)} className="p-1.5 rounded-md transition-colors" style={{ color: hovered[dKey] ? 'var(--danger)' : 'var(--text-muted)', backgroundColor: hovered[dKey] ? 'var(--danger-muted)' : 'transparent', opacity: isBusy ? 0.5 : 1 }} title={type === 'flag' ? 'Dismiss flag' : 'Dismiss task'}><XCircle className="w-4 h-4" /></button>
       </div>);
   }
 

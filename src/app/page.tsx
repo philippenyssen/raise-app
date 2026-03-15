@@ -305,7 +305,7 @@ export default function Dashboard() {
   async function seedData() {
     setSeeding(true);
     try {
-      const res = await fetch('/api/seed', { method: 'POST' });
+      const res = await fetch('/api/seed', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
       if (!res.ok) throw new Error(`Server error (${res.status})`);
       const result = await res.json();
       if (result.ok) {

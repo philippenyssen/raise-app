@@ -31,18 +31,21 @@ export default function FollowupPlan({ followups, showInvestorName = false }: { 
   const [skippedIds, setSkippedIds] = useState<Set<string>>(new Set());
   const [hoveredDone, setHoveredDone] = useState<string | null>(null);
   const [hoveredSkip, setHoveredSkip] = useState<string | null>(null);
+  const [busyId, setBusyId] = useState<string | null>(null);
 
   if (!followups || followups.length === 0) return null;
   const pending = followups.filter(f => f.status === 'pending' && !completedIds.has(f.id) && !skippedIds.has(f.id));
   const handled = followups.filter(f => f.status !== 'pending' || completedIds.has(f.id) || skippedIds.has(f.id));
 
   async function handleAction(id: string, action: 'completed' | 'skipped') {
+    if (busyId === id) return;
+    setBusyId(id);
     try {
       const res = await fetch('/api/followups', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, status: action }) });
       if (!res.ok) return;
       if (action === 'completed') setCompletedIds(prev => new Set(prev).add(id));
       else setSkippedIds(prev => new Set(prev).add(id));
-    } catch { /* non-blocking */ }
+    } catch { /* non-blocking */ } finally { setBusyId(null); }
   }
 
   return (
@@ -87,8 +90,8 @@ export default function FollowupPlan({ followups, showInvestorName = false }: { 
                       <p className="text-xs line-clamp-2 whitespace-pre-line" style={{ color: 'var(--text-secondary)' }}>{item.description.split('\n')[0]}</p>
                       {!isDone && (
                         <div className="flex gap-1.5 mt-2">
-                          <button onClick={() => handleAction(item.id, 'completed')} onMouseEnter={() => setHoveredDone(item.id)} onMouseLeave={() => setHoveredDone(null)} className="flex items-center gap-1 px-2 py-1 rounded text-xs font-normal transition-colors" style={{ backgroundColor: hoveredDone === item.id ? 'color-mix(in srgb, var(--success) 30%, transparent)' : 'var(--success-muted)', color: 'var(--success)' }}><CheckCircle2 className="w-3 h-3" /> Done</button>
-                          <button onClick={() => handleAction(item.id, 'skipped')} onMouseEnter={() => setHoveredSkip(item.id)} onMouseLeave={() => setHoveredSkip(null)} className="flex items-center gap-1 px-2 py-1 rounded text-xs font-normal transition-colors" style={{ backgroundColor: hoveredSkip === item.id ? 'var(--surface-3)' : 'var(--surface-2)', color: 'var(--text-muted)' }}><XCircle className="w-3 h-3" /> Skip</button>
+                          <button onClick={() => handleAction(item.id, 'completed')} disabled={busyId === item.id} onMouseEnter={() => setHoveredDone(item.id)} onMouseLeave={() => setHoveredDone(null)} className="flex items-center gap-1 px-2 py-1 rounded text-xs font-normal transition-colors" style={{ backgroundColor: hoveredDone === item.id ? 'color-mix(in srgb, var(--success) 30%, transparent)' : 'var(--success-muted)', color: 'var(--success)', opacity: busyId === item.id ? 0.5 : 1 }}><CheckCircle2 className="w-3 h-3" /> Done</button>
+                          <button onClick={() => handleAction(item.id, 'skipped')} disabled={busyId === item.id} onMouseEnter={() => setHoveredSkip(item.id)} onMouseLeave={() => setHoveredSkip(null)} className="flex items-center gap-1 px-2 py-1 rounded text-xs font-normal transition-colors" style={{ backgroundColor: hoveredSkip === item.id ? 'var(--surface-3)' : 'var(--surface-2)', color: 'var(--text-muted)', opacity: busyId === item.id ? 0.5 : 1 }}><XCircle className="w-3 h-3" /> Skip</button>
                         </div>
                       )}</div>
                   </div>);
