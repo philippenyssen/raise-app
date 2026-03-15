@@ -383,7 +383,7 @@ export default function TimelinePage() {
                             </Link>
                           )}
                           {task.due_date && (
-                            <span className="text-xs" style={{ color: isOverdue ? 'var(--danger)' : 'var(--text-muted)', fontWeight: isOverdue ? 500 : 400 }}>
+                            <span className="text-xs" style={{ color: isOverdue ? 'var(--danger)' : 'var(--text-muted)', fontWeight: 400 }}>
                               {task.due_date}
                             </span>
                           )}

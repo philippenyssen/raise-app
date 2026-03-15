@@ -18,75 +18,149 @@ function filterFields<T extends Record<string, unknown>>(data: T, allowed: Set<s
 }
 
 export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const id = searchParams.get('id');
-  if (id) {
-    const investor = await getInvestor(id);
-    if (!investor) return NextResponse.json({ error: 'not found' }, { status: 404 });
-    return NextResponse.json(investor);
+  try {
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get('id');
+    if (id) {
+      const investor = await getInvestor(id);
+      if (!investor) return NextResponse.json({ error: `Investor ${id} not found` }, { status: 404 });
+      return NextResponse.json(investor);
+    }
+    const investors = await getAllInvestors();
+    return NextResponse.json(investors);
+  } catch (error) {
+    console.error('GET /api/investors failed:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch investors', detail: error instanceof Error ? error.message : 'Database error' },
+      { status: 500 }
+    );
   }
-  const investors = await getAllInvestors();
-  return NextResponse.json(investors);
 }
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
-  if (!body.name || typeof body.name !== 'string' || body.name.trim().length === 0) {
-    return NextResponse.json({ error: 'name is required' }, { status: 400 });
-  }
-  const investor = await createInvestor(filterFields(body, ALLOWED_UPDATE_FIELDS) as { name: string });
-  emitContextChange('investor_created', `Created investor ${body.name}`);
-
-  // Rebuild relationship graph after creating a new investor (non-blocking)
-  try { buildRelationshipGraph().catch(() => {}); } catch { /* non-blocking */ }
-
-  // Fire-and-forget: trigger enrichment for the newly created investor
+  let body: Record<string, unknown>;
   try {
-    const baseUrl = req.nextUrl.origin;
-    fetch(`${baseUrl}/api/enrichment`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'enrich', investor_id: investor.id, auto_apply: true }),
-    }).catch(() => { /* non-blocking enrichment */ });
-  } catch { /* non-blocking */ }
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+  }
 
-  return NextResponse.json(investor, { status: 201 });
+  if (!body.name || typeof body.name !== 'string' || body.name.trim().length === 0) {
+    return NextResponse.json({ error: 'name is required and must be a non-empty string' }, { status: 400 });
+  }
+
+  if (body.tier !== undefined && (typeof body.tier !== 'number' || body.tier < 1 || body.tier > 4)) {
+    return NextResponse.json({ error: 'tier must be a number between 1 and 4' }, { status: 400 });
+  }
+
+  const validTypes = ['vc', 'growth', 'sovereign', 'strategic', 'debt', 'family_office'];
+  if (body.type !== undefined && !validTypes.includes(body.type as string)) {
+    return NextResponse.json({ error: `type must be one of: ${validTypes.join(', ')}` }, { status: 400 });
+  }
+
+  try {
+    const investor = await createInvestor(filterFields(body, ALLOWED_UPDATE_FIELDS) as { name: string });
+    emitContextChange('investor_created', `Created investor ${body.name}`);
+
+    // Rebuild relationship graph after creating a new investor (non-blocking)
+    try { buildRelationshipGraph().catch(() => {}); } catch { /* non-blocking */ }
+
+    // Fire-and-forget: trigger enrichment for the newly created investor
+    try {
+      const baseUrl = req.nextUrl.origin;
+      fetch(`${baseUrl}/api/enrichment`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'enrich', investor_id: investor.id, auto_apply: true }),
+      }).catch(() => { /* non-blocking enrichment */ });
+    } catch { /* non-blocking */ }
+
+    return NextResponse.json(investor, { status: 201 });
+  } catch (error) {
+    console.error('POST /api/investors failed:', error);
+    return NextResponse.json(
+      { error: 'Failed to create investor', detail: error instanceof Error ? error.message : 'Database error' },
+      { status: 500 }
+    );
+  }
 }
 
 export async function PUT(req: NextRequest) {
-  const body = await req.json();
+  let body: Record<string, unknown>;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+  }
+
   const { id, ...rawUpdates } = body;
-  if (!id) return NextResponse.json({ error: 'id required' }, { status: 400 });
+  if (!id || typeof id !== 'string') {
+    return NextResponse.json({ error: 'id is required and must be a string' }, { status: 400 });
+  }
+
+  const validStatuses = ['identified', 'contacted', 'nda_signed', 'meeting_scheduled', 'met', 'engaged', 'in_dd', 'term_sheet', 'closed', 'passed', 'dropped'];
+  if (rawUpdates.status && !validStatuses.includes(rawUpdates.status as string)) {
+    return NextResponse.json({ error: `status must be one of: ${validStatuses.join(', ')}` }, { status: 400 });
+  }
+
+  if (rawUpdates.enthusiasm !== undefined) {
+    const enth = rawUpdates.enthusiasm as number;
+    if (typeof enth !== 'number' || enth < 0 || enth > 5) {
+      return NextResponse.json({ error: 'enthusiasm must be a number between 0 and 5' }, { status: 400 });
+    }
+  }
+
   const updates = filterFields(rawUpdates, ALLOWED_UPDATE_FIELDS);
   if (Object.keys(updates).length === 0) {
-    return NextResponse.json({ error: 'no valid fields to update' }, { status: 400 });
-  }
-  await updateInvestor(id, updates);
-
-  // Resolve predictions when investor reaches terminal state
-  if (updates.status && ['passed', 'dropped', 'closed'].includes(updates.status as string)) {
-    try {
-      const outcome = updates.status as 'closed' | 'passed' | 'dropped';
-      await resolvePrediction(id, outcome, outcome === 'closed' ? new Date().toISOString().split('T')[0] : undefined);
-      // Also resolve forecast predictions for calibration learning (cycle 23)
-      await resolveForecastPredictions(id, outcome);
-    } catch { /* non-blocking */ }
+    return NextResponse.json({ error: 'No valid fields to update. Allowed fields: ' + [...ALLOWED_UPDATE_FIELDS].join(', ') }, { status: 400 });
   }
 
-  emitContextChange('investor_updated', `Updated investor ${id}${updates.status ? ` status=${updates.status}` : ''}`);
+  try {
+    await updateInvestor(id as string, updates);
 
-  // Rebuild relationship graph when warm_path changes (non-blocking)
-  if (updates.warm_path !== undefined) {
-    try { buildRelationshipGraph().catch(() => {}); } catch { /* non-blocking */ }
+    // Resolve predictions when investor reaches terminal state
+    if (updates.status && ['passed', 'dropped', 'closed'].includes(updates.status as string)) {
+      try {
+        const outcome = updates.status as 'closed' | 'passed' | 'dropped';
+        await resolvePrediction(id as string, outcome, outcome === 'closed' ? new Date().toISOString().split('T')[0] : undefined);
+        await resolveForecastPredictions(id as string, outcome);
+      } catch { /* non-blocking */ }
+    }
+
+    emitContextChange('investor_updated', `Updated investor ${id}${updates.status ? ` status=${updates.status}` : ''}`);
+
+    // Rebuild relationship graph when warm_path changes (non-blocking)
+    if (updates.warm_path !== undefined) {
+      try { buildRelationshipGraph().catch(() => {}); } catch { /* non-blocking */ }
+    }
+
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    console.error('PUT /api/investors failed:', error);
+    return NextResponse.json(
+      { error: 'Failed to update investor', detail: error instanceof Error ? error.message : 'Database error' },
+      { status: 500 }
+    );
   }
-
-  return NextResponse.json({ ok: true });
 }
 
 export async function DELETE(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const id = searchParams.get('id');
-  if (!id) return NextResponse.json({ error: 'id required' }, { status: 400 });
-  await deleteInvestor(id);
-  return NextResponse.json({ ok: true });
+  if (!id) return NextResponse.json({ error: 'id query parameter is required' }, { status: 400 });
+
+  try {
+    const investor = await getInvestor(id);
+    if (!investor) {
+      return NextResponse.json({ error: `Investor ${id} not found` }, { status: 404 });
+    }
+    await deleteInvestor(id);
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    console.error('DELETE /api/investors failed:', error);
+    return NextResponse.json(
+      { error: 'Failed to delete investor', detail: error instanceof Error ? error.message : 'Database error' },
+      { status: 500 }
+    );
+  }
 }

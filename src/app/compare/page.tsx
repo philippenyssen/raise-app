@@ -569,7 +569,7 @@ export default function ComparePage() {
                             <div className="flex items-center gap-3" style={{ fontSize: 'var(--font-size-xs)' }}>
                               <span style={{ color: 'var(--text-secondary)' }}>{p.objectionProfile.totalCount} total</span>
                               <span style={{
-                                fontWeight: p.objectionProfile.unresolvedCount > 0 ? 500 : 400,
+                                fontWeight: 400,
                                 color: p.objectionProfile.unresolvedCount > 0 ? 'var(--danger)' : 'var(--success)',
                               }}>
                                 {p.objectionProfile.unresolvedCount} unresolved
@@ -884,7 +884,7 @@ function DropdownItem({
           ...(investor.tier === 1
             ? { background: 'var(--accent-muted)', color: 'var(--accent)' }
             : investor.tier === 2
-            ? { background: 'rgba(90, 90, 122, 0.12)', color: 'var(--chart-4)' }
+            ? { background: 'var(--cat-12)', color: 'var(--chart-4)' }
             : { background: 'var(--surface-2)', color: 'var(--text-muted)' }),
         }}
       >
@@ -1287,7 +1287,7 @@ function DimensionBar({
                 style={{
                   fontSize: '10px',
                   color: isWinner ? 'var(--text-primary)' : 'var(--text-muted)',
-                  fontWeight: isWinner ? 500 : 400,
+                  fontWeight: 400,
                 }}
               >
                 {score}

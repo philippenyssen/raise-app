@@ -170,6 +170,7 @@ function FollowupsContent() {
   const investorFilter = searchParams.get('investor') || '';
   const [followups, setFollowups] = useState<FollowupItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [filter, setFilter] = useState<'all' | 'pending' | 'completed' | 'skipped'>('pending');
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [completingId, setCompletingId] = useState<string | null>(null);
@@ -183,13 +184,23 @@ function FollowupsContent() {
 
   const fetchFollowups = useCallback(async () => {
     setLoading(true);
-    const params = new URLSearchParams({ view: 'intelligence' });
-    if (filter !== 'all') params.set('status', filter);
-    if (investorFilter) params.set('investor_id', investorFilter);
-    const res = await fetch(`/api/followups?${params.toString()}`);
-    const data = await res.json();
-    setFollowups(data);
-    setLoading(false);
+    setFetchError(null);
+    try {
+      const params = new URLSearchParams({ view: 'intelligence' });
+      if (filter !== 'all') params.set('status', filter);
+      if (investorFilter) params.set('investor_id', investorFilter);
+      const res = await fetch(`/api/followups?${params.toString()}`);
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || `Server error (${res.status})`);
+      }
+      const data = await res.json();
+      setFollowups(data);
+    } catch (err) {
+      setFetchError(err instanceof Error ? err.message : 'Failed to load follow-ups');
+    } finally {
+      setLoading(false);
+    }
   }, [filter, investorFilter]);
 
   useEffect(() => {
@@ -327,7 +338,7 @@ function FollowupsContent() {
                   style={{
                     fontSize: '10px',
                     color: isOverdue ? 'var(--danger)' : 'var(--text-muted)',
-                    fontWeight: isOverdue ? 500 : undefined,
+                    fontWeight: 400,
                   }}
                 >
                   <Clock className="w-3 h-3" />
@@ -1014,8 +1025,39 @@ function FollowupsContent() {
       {loading ? (
         <div className="space-y-3">
           {[...Array(5)].map((_, i) => (
-            <div key={i} className="rounded-xl animate-pulse" style={{ background: 'var(--surface-1)', height: '72px' }} />
+            <div key={i} className="card" style={{ padding: 'var(--space-4)' }}>
+              <div className="flex items-start gap-3">
+                <div className="skeleton" style={{ width: '32px', height: '32px', borderRadius: '50%', flexShrink: 0 }} />
+                <div className="flex-1 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <div className="skeleton" style={{ width: '80px', height: '16px', borderRadius: 'var(--radius-sm)' }} />
+                    <div className="skeleton" style={{ width: '100px', height: '14px', borderRadius: 'var(--radius-sm)' }} />
+                  </div>
+                  <div className="skeleton" style={{ width: `${70 - i * 8}%`, height: '14px', borderRadius: 'var(--radius-sm)' }} />
+                </div>
+              </div>
+            </div>
           ))}
+        </div>
+      ) : fetchError ? (
+        <div
+          className="text-center py-12"
+          style={{ borderRadius: 'var(--radius-xl)' }}
+        >
+          <AlertTriangle className="w-10 h-10 mx-auto mb-3" style={{ color: 'var(--danger)' }} />
+          <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', marginBottom: 'var(--space-1)' }}>
+            Failed to load follow-ups
+          </h3>
+          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-4)' }}>
+            {fetchError}
+          </p>
+          <button
+            onClick={fetchFollowups}
+            className="btn btn-secondary btn-sm inline-flex items-center gap-2"
+          >
+            <RefreshCw className="w-3.5 h-3.5" />
+            Retry
+          </button>
         </div>
       ) : followups.length === 0 ? (
         <div

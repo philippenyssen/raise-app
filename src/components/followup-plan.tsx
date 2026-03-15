@@ -183,7 +183,7 @@ export default function FollowupPlan({
                           className="text-xs flex items-center gap-1"
                           style={{
                             color: isOverdue ? 'var(--danger)' : 'var(--text-muted)',
-                            fontWeight: isOverdue ? 500 : 400,
+                            fontWeight: 400,
                           }}
                         >
                           <Clock className="w-3 h-3" />

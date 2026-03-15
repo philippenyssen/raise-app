@@ -122,8 +122,8 @@ function tierBadgeStyle(tier: number): React.CSSProperties {
   const styles: Record<number, React.CSSProperties> = {
     1: { color: 'var(--text-tertiary)', background: 'var(--warning-muted)', borderColor: 'var(--warn-30)' },
     2: { color: 'var(--accent)', background: 'var(--accent-muted)', borderColor: 'var(--accent-muted)' },
-    3: { color: 'var(--text-secondary)', background: 'rgba(255, 255, 255, 0.1)', borderColor: 'var(--border-subtle)' },
-    4: { color: 'var(--text-muted)', background: 'rgba(255, 255, 255, 0.1)', borderColor: 'var(--border-subtle)' },
+    3: { color: 'var(--text-secondary)', background: 'var(--white-10)', borderColor: 'var(--border-subtle)' },
+    4: { color: 'var(--text-muted)', background: 'var(--white-10)', borderColor: 'var(--border-subtle)' },
   };
   return styles[tier] ?? styles[3];
 }
@@ -558,7 +558,7 @@ export default function StressTestPage() {
                   ? { color: 'var(--text-primary)', background: 'var(--danger-muted)', borderColor: 'var(--accent-10)' }
                   : risk.probability === 'Medium'
                   ? { color: 'var(--text-tertiary)', background: 'var(--warning-muted)', borderColor: 'var(--warn-30)' }
-                  : { color: 'var(--text-secondary)', background: 'rgba(255, 255, 255, 0.1)', borderColor: 'var(--border-subtle)' };
+                  : { color: 'var(--text-secondary)', background: 'var(--white-10)', borderColor: 'var(--border-subtle)' };
                 return (
                   <div key={i} className="rounded-lg overflow-hidden">
                     <button
@@ -717,7 +717,7 @@ export default function StressTestPage() {
                       {/* Target marker */}
                       <div
                         className="absolute top-0 bottom-0"
-                        style={{ left: '100%', width: '2px', background: 'rgba(228, 227, 224, 0.4)' }}
+                        style={{ left: '100%', width: '2px', background: 'var(--surface-muted)' }}
                         title={`Target: EUR ${formatEuro(data.target)}`}
                       />
                     </div>

@@ -56,7 +56,20 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const toast = useCallback((message: string, type: ToastType = 'success') => {
     const id = crypto.randomUUID();
     setToasts(t => [...t, { id, message, type }]);
-    setTimeout(() => setToasts(t => t.filter(x => x.id !== id)), 4000);
+
+    // Error toasts persist until manually dismissed
+    // Warning toasts get extra time (6s) since they may need attention
+    // Success/info auto-dismiss after 4s
+    const durations: Record<ToastType, number | null> = {
+      success: 4000,
+      info: 4000,
+      warning: 6000,
+      error: null,
+    };
+    const duration = durations[type];
+    if (duration !== null) {
+      setTimeout(() => setToasts(t => t.filter(x => x.id !== id)), duration);
+    }
   }, []);
 
   const dismiss = useCallback((id: string) => {

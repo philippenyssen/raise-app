@@ -1105,6 +1105,13 @@ export function computeInvestorScore(
     overall = overall / weightSum;
   }
 
+  // Edge case: brand new investor with all-unknown dimensions
+  // Give a minimal baseline score so they appear in pipeline without distortion
+  if (weightSum === 0) {
+    const statusPts = STATUS_PROGRESSION[investor.status] ?? 0;
+    overall = Math.max(5, statusPts * 5); // 5 baseline, scales with status progression
+  }
+
   // Status bonus: advanced stages get a floor
   const statusFloor: Record<string, number> = {
     in_dd: 40,
@@ -1443,5 +1450,185 @@ export function computeConvictionTrajectory(snapshots: ScoreSnapshot[]): Convict
     predictedScoreIn30Days,
     predictedTermSheetDate,
     confidenceLevel,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Score Breakdown — transparency into what drives each investor's score
+// ---------------------------------------------------------------------------
+
+export interface ScoreBreakdownEntry {
+  dimension: string;
+  rawScore: number;
+  weight: number;
+  weightedContribution: number;
+  signal: 'strong' | 'moderate' | 'weak' | 'unknown';
+  evidence: string;
+  included: boolean; // false if 'unknown' and excluded from weighted calc
+}
+
+export interface ScoreBreakdown {
+  investorId: string;
+  investorName: string;
+  investorStatus: string;
+  overallScore: number;
+  isExcludedFromActiveScoring: boolean;
+  exclusionReason: string | null;
+  dimensions: ScoreBreakdownEntry[];
+  statusAdjustment: { type: 'floor' | 'cap' | 'none'; value: number | null; reason: string | null };
+  effectiveWeightSum: number;
+  raisePhase: string;
+  momentum: 'accelerating' | 'steady' | 'decelerating' | 'stalled';
+  predictedOutcome: string;
+}
+
+export function getScoreBreakdown(
+  investor: Investor,
+  meetings: Meeting[],
+  portfolio: InvestorPortfolioCo[],
+  briefs: IntelligenceBrief[],
+  raiseConfig: { targetEquityM: number; targetCloseDate: string | null; raisePhase?: string },
+  networkData?: { score: number; evidence: string; positiveSignals: string[]; negativeSignals: string[] } | null,
+  forecastData?: { predictedDaysToClose: number; confidence: string; isCriticalPath: boolean; pathProbability: number } | null,
+  velocityData?: { acceleration: string; recentMeetings: number; previousMeetings: number; daysSinceLastMeeting: number | null } | null,
+): ScoreBreakdown {
+  // Check if investor should be excluded from active scoring
+  const isExcluded = investor.status === 'passed' || investor.status === 'dropped';
+  const exclusionReason = isExcluded
+    ? `Investor ${investor.status === 'passed' ? 'passed on the deal' : 'was dropped from pipeline'}. Score capped at 15.`
+    : null;
+
+  // Compute all dimensions
+  const engagement = computeEngagementScore(investor, meetings);
+  const thesisFit = computeThesisFitScore(investor, portfolio);
+  const checkSizeFit = computeCheckSizeFitScore(investor, raiseConfig.targetEquityM);
+  const speedMatch = computeSpeedMatchScore(investor, raiseConfig.targetCloseDate);
+  const conflictRisk = computeConflictRiskScore(investor, portfolio);
+  const warmPath = computeWarmPathScore(investor);
+  const meetingQuality = computeMeetingQualityScore(meetings);
+  const { momentum, score: momentumScore, evidence: momentumEvidence } = computeMomentumScore(investor, meetings);
+  const networkEffect = computeNetworkEffectScore(networkData || null);
+  const forecastAlignment = computeForecastAlignmentScore(forecastData || null);
+  const engagementVelocity = computeEngagementVelocityScore(velocityData || null);
+
+  const momentumDimension: ScoreDimension = {
+    name: 'Momentum',
+    score: momentumScore,
+    signal: signal(momentumScore),
+    evidence: momentumEvidence,
+  };
+
+  const dimensions = [
+    engagement, thesisFit, checkSizeFit, speedMatch, conflictRisk,
+    warmPath, meetingQuality, momentumDimension, networkEffect,
+    forecastAlignment, engagementVelocity,
+  ];
+
+  const raisePhase = raiseConfig.raisePhase || 'mgmt_presentations';
+
+  const phaseWeights: Record<string, Record<string, number>> = {
+    discovery: {
+      'Engagement': 0.09, 'Thesis Fit': 0.22, 'Check Size Fit': 0.12,
+      'Speed Match': 0.05, 'Conflict Risk': 0.10, 'Warm Path': 0.14,
+      'Meeting Quality': 0.09, 'Momentum': 0.09, 'Network Effect': 0.03, 'Forecast Alignment': 0.02, 'Engagement Velocity': 0.05,
+    },
+    outreach: {
+      'Engagement': 0.12, 'Thesis Fit': 0.17, 'Check Size Fit': 0.09,
+      'Speed Match': 0.08, 'Conflict Risk': 0.10, 'Warm Path': 0.12,
+      'Meeting Quality': 0.09, 'Momentum': 0.09, 'Network Effect': 0.04, 'Forecast Alignment': 0.03, 'Engagement Velocity': 0.07,
+    },
+    mgmt_presentations: {
+      'Engagement': 0.15, 'Thesis Fit': 0.12, 'Check Size Fit': 0.09,
+      'Speed Match': 0.08, 'Conflict Risk': 0.09, 'Warm Path': 0.08,
+      'Meeting Quality': 0.12, 'Momentum': 0.09, 'Network Effect': 0.05, 'Forecast Alignment': 0.05, 'Engagement Velocity': 0.08,
+    },
+    due_diligence: {
+      'Engagement': 0.10, 'Thesis Fit': 0.07, 'Check Size Fit': 0.09,
+      'Speed Match': 0.12, 'Conflict Risk': 0.11, 'Warm Path': 0.05,
+      'Meeting Quality': 0.12, 'Momentum': 0.12, 'Network Effect': 0.07, 'Forecast Alignment': 0.06, 'Engagement Velocity': 0.09,
+    },
+    negotiation: {
+      'Engagement': 0.06, 'Thesis Fit': 0.05, 'Check Size Fit': 0.12,
+      'Speed Match': 0.14, 'Conflict Risk': 0.11, 'Warm Path': 0.04,
+      'Meeting Quality': 0.07, 'Momentum': 0.15, 'Network Effect': 0.08, 'Forecast Alignment': 0.09, 'Engagement Velocity': 0.09,
+    },
+  };
+
+  const weights = phaseWeights[raisePhase] || phaseWeights.mgmt_presentations;
+
+  let weightSum = 0;
+  let overall = 0;
+  const breakdownEntries: ScoreBreakdownEntry[] = [];
+
+  for (const dim of dimensions) {
+    const w = weights[dim.name] || 0.1;
+    const included = dim.signal !== 'unknown';
+    const weightedContribution = included ? dim.score * w : 0;
+    if (included) {
+      overall += weightedContribution;
+      weightSum += w;
+    }
+    breakdownEntries.push({
+      dimension: dim.name,
+      rawScore: dim.score,
+      weight: w,
+      weightedContribution: included ? Math.round((weightedContribution / (weightSum || 1)) * 100) / 100 : 0,
+      signal: dim.signal,
+      evidence: dim.evidence,
+      included,
+    });
+  }
+
+  // Normalize
+  if (weightSum > 0 && weightSum < 1) {
+    overall = overall / weightSum;
+  }
+
+  // Recalculate weighted contributions as percentage of overall
+  for (const entry of breakdownEntries) {
+    if (entry.included && overall > 0) {
+      entry.weightedContribution = Math.round(((entry.rawScore * entry.weight) / (weightSum || 1)) / (overall || 1) * 100);
+    }
+  }
+
+  // Status adjustments
+  let statusAdjustment: ScoreBreakdown['statusAdjustment'] = { type: 'none', value: null, reason: null };
+
+  const statusFloor: Record<string, number> = { in_dd: 40, term_sheet: 55, closed: 80 };
+  if (statusFloor[investor.status] && overall < statusFloor[investor.status]) {
+    statusAdjustment = {
+      type: 'floor',
+      value: statusFloor[investor.status],
+      reason: `Status "${investor.status}" guarantees a minimum score of ${statusFloor[investor.status]}`,
+    };
+    overall = statusFloor[investor.status];
+  }
+
+  if (isExcluded) {
+    statusAdjustment = {
+      type: 'cap',
+      value: 15,
+      reason: `Investor ${investor.status}. Score capped at 15 and excluded from active pipeline.`,
+    };
+    overall = Math.min(overall, 15);
+  }
+
+  overall = clamp(overall);
+
+  const predictedOutcome = predictOutcome(overall, momentum, investor);
+
+  return {
+    investorId: investor.id,
+    investorName: investor.name,
+    investorStatus: investor.status,
+    overallScore: overall,
+    isExcludedFromActiveScoring: isExcluded,
+    exclusionReason,
+    dimensions: breakdownEntries,
+    statusAdjustment,
+    effectiveWeightSum: Math.round(weightSum * 100) / 100,
+    raisePhase,
+    momentum,
+    predictedOutcome,
   };
 }

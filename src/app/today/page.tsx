@@ -298,7 +298,17 @@ function ActionCard({ action }: { action: UrgentAction }) {
           href={action.link}
           className="btn btn-primary btn-sm shrink-0"
         >
-          Do it
+          {action.category === 'followup' && action.investorName
+            ? `Write to ${action.investorName.split(' ')[0] || 'them'}`
+            : action.category === 'outreach'
+            ? 'Start outreach'
+            : action.category === 'preparation'
+            ? 'Prepare now'
+            : action.category === 'escalation'
+            ? 'Address now'
+            : action.category === 'meeting'
+            ? 'Open prep'
+            : 'Take action'}
           <span style={{ display: 'flex' }}><ArrowRight className="w-3 h-3" /></span>
         </Link>
       </div>
@@ -311,12 +321,25 @@ function AlertCard({ alert }: { alert: BriefingAlert }) {
   const Icon = style.icon;
 
   // Smart routing based on alert type and content
-  const alertLink = alert.type === 'opportunity' ? '/pipeline'
-    : alert.type === 'risk' ? '/dealflow'
+  const alertContent = (alert.title + ' ' + alert.detail).toLowerCase();
+  const alertLink = alert.type === 'opportunity'
+    ? (alertContent.includes('term sheet') ? '/pipeline?stage=term_sheet'
+      : alertContent.includes('dd') || alertContent.includes('diligence') ? '/pipeline?stage=in_dd'
+      : '/pipeline')
+    : alert.type === 'risk'
+    ? (alertContent.includes('stall') || alertContent.includes('momentum') ? '/dealflow'
+      : alertContent.includes('objection') ? '/focus'
+      : '/dealflow')
     : '/focus';
 
-  const alertAction = alert.type === 'opportunity' ? 'View Pipeline'
-    : alert.type === 'risk' ? 'View Dealflow'
+  const alertAction = alert.type === 'opportunity'
+    ? (alertContent.includes('term sheet') ? 'Review term sheets'
+      : alertContent.includes('dd') || alertContent.includes('diligence') ? 'Track DD progress'
+      : 'See opportunity')
+    : alert.type === 'risk'
+    ? (alertContent.includes('stall') || alertContent.includes('momentum') ? 'Re-engage investors'
+      : alertContent.includes('objection') ? 'Address objections'
+      : 'Mitigate risk')
     : 'Review';
 
   return (
@@ -798,15 +821,15 @@ export default function TodayPage() {
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', fontWeight: 400 }}>
               No meetings scheduled today
             </p>
-            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginTop: '4px' }}>
-              Time to focus on follow-ups?
+            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginTop: '4px', lineHeight: 1.5 }}>
+              Use the open calendar to schedule follow-ups with your highest-momentum investors, or work through overdue actions.
             </p>
             <div className="flex items-center justify-center gap-2" style={{ marginTop: 'var(--space-3)' }}>
-              <Link href="/followups" className="btn btn-secondary btn-sm">
-                Follow-ups
+              <Link href="/focus" className="btn btn-primary btn-sm">
+                Schedule high-momentum follow-ups
               </Link>
-              <Link href="/focus" className="btn btn-secondary btn-sm">
-                Focus Queue
+              <Link href="/followups" className="btn btn-secondary btn-sm">
+                Clear overdue actions
               </Link>
             </div>
           </div>
@@ -837,13 +860,21 @@ export default function TodayPage() {
               <CheckCircle className="w-8 h-8" style={{ color: 'var(--text-secondary)' }} />
             </span>
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', fontWeight: 400 }}>
-              All caught up!
+              No urgent actions right now
             </p>
-            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginTop: '4px' }}>
-              Your pipeline is humming. Check the{' '}
-              <Link href="/focus" style={{ color: 'var(--accent)' }}>Focus Queue</Link>
-              {' '}for proactive moves.
+            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginTop: '4px', lineHeight: 1.5 }}>
+              Good time to advance stalled conversations or prepare materials for upcoming deep dives. Check the{' '}
+              <Link href="/focus" style={{ color: 'var(--accent)', textDecoration: 'none' }}>focus queue</Link>
+              {' '}for investors who need a push.
             </p>
+            <div className="flex items-center justify-center gap-2" style={{ marginTop: 'var(--space-3)' }}>
+              <Link href="/pipeline?sort=momentum" className="btn btn-secondary btn-sm">
+                Review stalled investors
+              </Link>
+              <Link href="/intelligence" className="btn btn-secondary btn-sm">
+                Refresh competitive intel
+              </Link>
+            </div>
           </div>
         )}
       </div>
@@ -1057,7 +1088,7 @@ export default function TodayPage() {
             onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-primary)')}
             onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-tertiary)')}
           >
-            Details
+            {data.momentum === 'stalled' ? 'Diagnose' : data.momentum === 'decelerating' ? 'Investigate' : 'View dealflow'}
             <span style={{ display: 'flex' }}><ChevronRight className="w-3.5 h-3.5" /></span>
           </Link>
         </div>

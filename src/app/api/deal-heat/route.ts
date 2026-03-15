@@ -3,6 +3,7 @@ import { getAllInvestors, getMeetings, getInvestorPortfolio, getIntelligenceBrie
 import { computeInvestorScore, computeDealHeat } from '@/lib/scoring';
 
 export async function GET() {
+  try {
   const [investors, raiseConfig, raiseForecastData, velocityAll, fomoAll, reversalAll] = await Promise.all([
     getAllInvestors(),
     getRaiseConfig(),
@@ -118,4 +119,7 @@ export async function GET() {
   };
 
   return NextResponse.json({ investors: results, counts, generated_at: new Date().toISOString() });
+  } catch (err) {
+    return NextResponse.json({ error: 'Failed to compute deal heat', detail: String(err) }, { status: 500 });
+  }
 }

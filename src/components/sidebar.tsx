@@ -47,15 +47,15 @@ const nav: NavItem[] = [
 /* ── Sidebar-specific palette (dark navy panel on light page) ── */
 const SB = {
   bg: 'var(--foreground)',
-  bgHover: 'rgba(255,255,255,0.06)',
-  bgActive: 'rgba(255,255,255,0.10)',
-  border: 'rgba(255,255,255,0.08)',
-  text: 'rgba(255,255,255,0.50)',
-  textHover: 'rgba(255,255,255,0.75)',
+  bgHover: 'var(--white-6)',
+  bgActive: 'var(--white-10)',
+  border: 'var(--white-8)',
+  text: 'var(--white-50)',
+  textHover: 'var(--white-75)',
   textActive: 'var(--surface-0)',
   accent: 'var(--surface-0)',
-  muted: 'rgba(255,255,255,0.25)',
-  sectionLabel: 'rgba(255,255,255,0.30)',
+  muted: 'var(--white-25)',
+  sectionLabel: 'var(--white-30)',
 };
 
 export function Sidebar() {
@@ -323,7 +323,7 @@ export function Sidebar() {
                                 minWidth: '18px',
                                 height: '18px',
                                 borderRadius: '9px',
-                                background: 'rgba(255,255,255,0.15)',
+                                background: 'var(--white-15)',
                                 color: SB.textActive,
                                 fontSize: '10px',
                                 fontWeight: 400,
@@ -341,7 +341,7 @@ export function Sidebar() {
                                 minWidth: '18px',
                                 height: '18px',
                                 borderRadius: '9px',
-                                background: 'rgba(255,255,255,0.15)',
+                                background: 'var(--white-15)',
                                 color: SB.textActive,
                                 fontSize: '10px',
                                 fontWeight: 400,

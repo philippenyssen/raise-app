@@ -48,6 +48,16 @@ async function checkAuth(req: NextRequest): Promise<boolean> {
 
 // --- RATE LIMITING ---
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+let lastCleanup = Date.now();
+
+function cleanupRateLimitMap() {
+  const now = Date.now();
+  if (now - lastCleanup < 120_000) return;
+  lastCleanup = now;
+  for (const [key, entry] of rateLimitMap) {
+    if (now > entry.resetAt) rateLimitMap.delete(key);
+  }
+}
 
 const RATE_LIMIT_WINDOW = 60_000;
 const RATE_LIMITS: Record<string, number> = {
@@ -80,6 +90,22 @@ function blockSeedInProd(req: NextRequest): boolean {
 }
 
 export async function middleware(req: NextRequest) {
+  const startTime = Date.now();
+  const isApiRoute = req.nextUrl.pathname.startsWith('/api/');
+
+  // Handle CORS preflight
+  if (req.method === 'OPTIONS' && isApiRoute) {
+    return new NextResponse(null, {
+      status: 204,
+      headers: {
+        'Access-Control-Allow-Origin': req.headers.get('origin') || '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        'Access-Control-Max-Age': '86400',
+      },
+    });
+  }
+
   // Block /api/seed in production
   if (blockSeedInProd(req)) {
     return NextResponse.json(
@@ -90,18 +116,17 @@ export async function middleware(req: NextRequest) {
 
   // Auth check
   if (!(await checkAuth(req))) {
-    // For API routes, return 401
-    if (req.nextUrl.pathname.startsWith('/api/')) {
+    if (isApiRoute) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    // For page routes, redirect to login
     const loginUrl = new URL('/login', req.url);
     loginUrl.searchParams.set('redirect', req.nextUrl.pathname);
     return NextResponse.redirect(loginUrl);
   }
 
   // Rate limiting (only for POST/PUT/DELETE on API routes)
-  if (req.nextUrl.pathname.startsWith('/api/') && req.method !== 'GET') {
+  if (isApiRoute && req.method !== 'GET') {
+    cleanupRateLimitMap();
     const clientKey = getClientKey(req);
     const pathname = req.nextUrl.pathname;
     const key = `${clientKey}:${pathname}`;
@@ -128,7 +153,26 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  return NextResponse.next();
+  const response = NextResponse.next();
+
+  // Add response timing header for API routes
+  if (isApiRoute) {
+    response.headers.set('X-Response-Time', `${Date.now() - startTime}ms`);
+  }
+
+  // Add security + CORS headers
+  response.headers.set('X-Content-Type-Options', 'nosniff');
+  response.headers.set('X-Frame-Options', 'DENY');
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  if (isApiRoute) {
+    const origin = req.headers.get('origin');
+    if (origin) {
+      response.headers.set('Access-Control-Allow-Origin', origin);
+      response.headers.set('Access-Control-Allow-Credentials', 'true');
+    }
+  }
+
+  return response;
 }
 
 export const config = {

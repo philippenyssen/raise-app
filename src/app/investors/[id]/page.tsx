@@ -11,6 +11,7 @@ import {
   Gauge, ArrowUpRight, ArrowRight, ArrowDownRight, Minus, ShieldAlert, Lightbulb,
   Activity, AlertCircle, Database, ChevronDown, ChevronRight, ExternalLink,
   Flame, Phone, Mail, SendHorizonal, CheckCircle2, XCircle,
+  Pencil, Save, X,
 } from 'lucide-react';
 import { useToast } from '@/components/toast';
 import { fmtDateShort, fmtDate } from '@/lib/format';
@@ -76,6 +77,38 @@ interface EnrichmentRecord {
   created_at: string;
 }
 
+interface EnrichmentProviderStatus {
+  id: string;
+  name: string;
+  type: 'free' | 'freemium' | 'paid';
+  configured: boolean;
+  has_data: boolean;
+  field_count: number;
+  last_fetched: string | null;
+  last_error: string | null;
+  status: 'success' | 'failed' | 'pending' | 'unconfigured';
+}
+
+interface EnrichmentStatus {
+  investor_id: string;
+  last_enriched: string | null;
+  total_fields: number;
+  field_coverage: number;
+  categories_covered: number;
+  categories_total: number;
+  fields_by_category: Record<string, number>;
+  avg_confidence: number;
+  stale_count: number;
+  providers: EnrichmentProviderStatus[];
+  last_job: {
+    id: string;
+    status: string;
+    results_count: number;
+    started_at: string;
+    completed_at: string | null;
+  } | null;
+}
+
 type IntelTab = 'overview' | 'partners' | 'portfolio' | 'research' | 'tasks' | 'enrichment';
 
 export default function InvestorDetailPage() {
@@ -93,6 +126,8 @@ export default function InvestorDetailPage() {
   const [trajectory, setTrajectory] = useState<ConvictionTrajectoryData | null>(null);
   const [enrichmentRecords, setEnrichmentRecords] = useState<EnrichmentRecord[]>([]);
   const [enrichmentLoading, setEnrichmentLoading] = useState(false);
+  const [enrichmentStatus, setEnrichmentStatus] = useState<EnrichmentStatus | null>(null);
+  const [enriching, setEnriching] = useState(false);
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [researching, setResearching] = useState(false);
@@ -103,6 +138,12 @@ export default function InvestorDetailPage() {
   const [followups, setFollowups] = useState<{
     id: string; action_type: string; description: string; due_at: string; status: string; investor_name: string;
   }[]>([]);
+  const [editing, setEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [editForm, setEditForm] = useState<{
+    name: string; partner: string; tier: number; status: string;
+    check_size_range: string; sector_thesis: string; notes: string;
+  }>({ name: '', partner: '', tier: 1, status: 'identified', check_size_range: '', sector_thesis: '', notes: '' });
 
   const fetchScore = useCallback(async () => {
     setScoreLoading(true);
@@ -135,6 +176,34 @@ export default function InvestorDetailPage() {
     setEnrichmentLoading(false);
   }, [id]);
 
+  const fetchEnrichmentStatus = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/enrichment?action=status&investor_id=${id}`);
+      if (res.ok) {
+        setEnrichmentStatus(await res.json());
+      }
+    } catch { /* ignore */ }
+  }, [id]);
+
+  const triggerEnrichment = useCallback(async () => {
+    setEnriching(true);
+    try {
+      const res = await fetch('/api/enrichment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'enrich', investor_id: id, auto_apply: true }),
+      });
+      if (!res.ok) throw new Error(await res.text());
+      const data = await res.json();
+      toast(`Enrichment complete: ${data.total_fields} fields from ${data.sources_succeeded} sources`, 'success');
+      fetchEnrichment();
+      fetchEnrichmentStatus();
+    } catch (err) {
+      toast(`Enrichment failed: ${err}`, 'error');
+    }
+    setEnriching(false);
+  }, [id, toast, fetchEnrichment, fetchEnrichmentStatus]);
+
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
@@ -157,7 +226,7 @@ export default function InvestorDetailPage() {
   }, [id]);
 
   useEffect(() => {
-    fetchData(); fetchScore(); fetchEnrichment();
+    fetchData(); fetchScore(); fetchEnrichment(); fetchEnrichmentStatus();
     // Non-blocking follow-ups fetch
     fetch(`/api/followups?investor_id=${id}&status=pending`)
       .then(r => r.ok ? r.json() : [])
@@ -181,7 +250,7 @@ export default function InvestorDetailPage() {
         });
       }
     });
-  }, [fetchData, fetchScore, fetchEnrichment, id]);
+  }, [fetchData, fetchScore, fetchEnrichment, fetchEnrichmentStatus, id]);
 
   async function handleResearch() {
     if (!investor) return;
@@ -215,6 +284,61 @@ export default function InvestorDetailPage() {
     } catch {
       toast('Failed to delete item', 'error');
     }
+  }
+
+  function startEdit() {
+    if (!investor) return;
+    setEditForm({
+      name: investor.name || '',
+      partner: investor.partner || '',
+      tier: investor.tier || 1,
+      status: investor.status || 'identified',
+      check_size_range: investor.check_size_range || '',
+      sector_thesis: investor.sector_thesis || '',
+      notes: investor.notes || '',
+    });
+    setEditing(true);
+  }
+
+  function cancelEdit() {
+    setEditing(false);
+  }
+
+  async function saveEdit() {
+    if (!investor) return;
+    setSaving(true);
+    try {
+      const res = await fetch('/api/investors', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: investor.id,
+          name: editForm.name,
+          partner: editForm.partner,
+          tier: editForm.tier,
+          status: editForm.status,
+          check_size_range: editForm.check_size_range,
+          sector_thesis: editForm.sector_thesis,
+          notes: editForm.notes,
+        }),
+      });
+      if (!res.ok) throw new Error(await res.text());
+      setInvestor(prev => prev ? {
+        ...prev,
+        name: editForm.name,
+        partner: editForm.partner,
+        tier: editForm.tier as 1 | 2 | 3 | 4,
+        status: editForm.status as InvestorStatus,
+        check_size_range: editForm.check_size_range,
+        sector_thesis: editForm.sector_thesis,
+        notes: editForm.notes,
+      } : prev);
+      setEditing(false);
+      toast('Investor updated', 'success');
+    } catch (err) {
+      toast(`Save failed: ${err}`, 'error');
+    }
+    setSaving(false);
   }
 
   if (loading) {
@@ -276,41 +400,105 @@ export default function InvestorDetailPage() {
           >
             <ArrowLeft className="w-3.5 h-3.5" /> Back to CRM
           </Link>
-          <h1 className="page-title">{investor.name}</h1>
+          {editing ? (
+            <input
+              className="input"
+              value={editForm.name}
+              onChange={e => setEditForm(f => ({ ...f, name: e.target.value }))}
+              style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, maxWidth: '400px' }}
+            />
+          ) : (
+            <h1 className="page-title">{investor.name}</h1>
+          )}
           <div className="flex items-center gap-3 mt-2">
-            <span
-              className="px-2 py-0.5 rounded text-xs font-normal"
-              style={{
-                background: investor.tier === 1 ? 'var(--accent-muted)' :
-                  investor.tier === 2 ? 'var(--accent-muted)' :
-                  'var(--surface-2)',
-                color: investor.tier === 1 ? 'var(--accent)' :
-                  investor.tier === 2 ? 'var(--accent)' :
-                  'var(--text-tertiary)',
-              }}
-            >Tier {investor.tier}</span>
-            <select
-              value={investor.status}
-              onChange={async (e) => {
-                const newStatus = e.target.value;
-                await fetch('/api/investors', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, status: newStatus }) });
-                setInvestor(prev => prev ? { ...prev, status: newStatus as InvestorStatus } : prev);
-                toast(`Status updated to ${STATUS_LABELS[newStatus as InvestorStatus] || newStatus}`);
-              }}
-              className="px-2 py-0.5 rounded text-xs font-normal border-none cursor-pointer focus:outline-none"
-              style={{
-                backgroundColor: STATUS_COLORS[investor.status],
-                color: 'var(--text-primary)',
-              }}
-            >
-              {Object.entries(STATUS_LABELS).map(([val, label]) => (
-                <option key={val} value={val} style={{ background: 'var(--surface-0)', color: 'var(--text-secondary)' }}>{label}</option>
-              ))}
-            </select>
+            {editing ? (
+              <select
+                value={editForm.tier}
+                onChange={e => setEditForm(f => ({ ...f, tier: Number(e.target.value) }))}
+                className="input"
+                style={{ width: 'auto', padding: '2px 8px', fontSize: 'var(--font-size-xs)' }}
+              >
+                {[1, 2, 3, 4].map(t => (
+                  <option key={t} value={t}>Tier {t}</option>
+                ))}
+              </select>
+            ) : (
+              <span
+                className="px-2 py-0.5 rounded text-xs font-normal"
+                style={{
+                  background: investor.tier === 1 ? 'var(--accent-muted)' :
+                    investor.tier === 2 ? 'var(--accent-muted)' :
+                    'var(--surface-2)',
+                  color: investor.tier === 1 ? 'var(--accent)' :
+                    investor.tier === 2 ? 'var(--accent)' :
+                    'var(--text-tertiary)',
+                }}
+              >Tier {investor.tier}</span>
+            )}
+            {editing ? (
+              <select
+                value={editForm.status}
+                onChange={e => setEditForm(f => ({ ...f, status: e.target.value }))}
+                className="input"
+                style={{ width: 'auto', padding: '2px 8px', fontSize: 'var(--font-size-xs)' }}
+              >
+                {Object.entries(STATUS_LABELS).map(([val, label]) => (
+                  <option key={val} value={val}>{label}</option>
+                ))}
+              </select>
+            ) : (
+              <select
+                value={investor.status}
+                onChange={async (e) => {
+                  const newStatus = e.target.value;
+                  await fetch('/api/investors', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, status: newStatus }) });
+                  setInvestor(prev => prev ? { ...prev, status: newStatus as InvestorStatus } : prev);
+                  toast(`Status updated to ${STATUS_LABELS[newStatus as InvestorStatus] || newStatus}`);
+                }}
+                className="px-2 py-0.5 rounded text-xs font-normal border-none cursor-pointer focus:outline-none"
+                style={{
+                  backgroundColor: STATUS_COLORS[investor.status],
+                  color: 'var(--text-primary)',
+                }}
+              >
+                {Object.entries(STATUS_LABELS).map(([val, label]) => (
+                  <option key={val} value={val} style={{ background: 'var(--surface-0)', color: 'var(--text-secondary)' }}>{label}</option>
+                ))}
+              </select>
+            )}
             <span className="text-xs capitalize" style={{ color: 'var(--text-muted)' }}>{investor.type.replace(/_/g, ' ')}</span>
           </div>
         </div>
         <div className="flex gap-2">
+          {editing ? (
+            <>
+              <button
+                onClick={saveEdit}
+                disabled={saving}
+                className="btn btn-primary btn-md flex items-center gap-2"
+              >
+                {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
+                {saving ? 'Saving...' : 'Save'}
+              </button>
+              <button
+                onClick={cancelEdit}
+                disabled={saving}
+                className="btn btn-ghost btn-md flex items-center gap-2"
+              >
+                <X className="w-3.5 h-3.5" /> Cancel
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={startEdit}
+              className="px-3 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2"
+              style={{ background: 'var(--surface-2)', color: 'var(--text-primary)' }}
+              onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface-3)')}
+              onMouseLeave={e => (e.currentTarget.style.background = 'var(--surface-2)')}
+            >
+              <Pencil className="w-3.5 h-3.5" /> Edit
+            </button>
+          )}
           <Link
             href={`/meetings/prep?investor=${id}`}
             className="px-3 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2"
@@ -577,7 +765,7 @@ export default function InvestorDetailPage() {
                       style={{
                         background: isOverdue ? 'var(--danger-muted)' : 'var(--surface-2)',
                         color: isOverdue ? 'var(--danger)' : 'var(--text-muted)',
-                        fontWeight: isOverdue ? 600 : 400,
+                        fontWeight: 400,
                         fontSize: '10px',
                       }}
                     >
@@ -633,10 +821,22 @@ export default function InvestorDetailPage() {
             <Users className="w-3.5 h-3.5" /> Profile
           </h2>
           <div className="space-y-2 text-sm">
-            <Row label="Partner" value={investor.partner} />
+            {editing ? (
+              <EditRow label="Partner" value={editForm.partner} onChange={v => setEditForm(f => ({ ...f, partner: v }))} />
+            ) : (
+              <Row label="Partner" value={investor.partner} />
+            )}
             <Row label="Fund Size" value={investor.fund_size} />
-            <Row label="Check Size" value={investor.check_size_range} />
-            <Row label="Thesis" value={investor.sector_thesis} />
+            {editing ? (
+              <EditRow label="Check Size" value={editForm.check_size_range} onChange={v => setEditForm(f => ({ ...f, check_size_range: v }))} />
+            ) : (
+              <Row label="Check Size" value={investor.check_size_range} />
+            )}
+            {editing ? (
+              <EditRow label="Thesis" value={editForm.sector_thesis} onChange={v => setEditForm(f => ({ ...f, sector_thesis: v }))} />
+            ) : (
+              <Row label="Thesis" value={investor.sector_thesis} />
+            )}
           </div>
         </div>
         <div className="rounded-xl p-5 space-y-3">
@@ -651,6 +851,13 @@ export default function InvestorDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Enrichment Status */}
+      <EnrichmentStatusCard
+        status={enrichmentStatus}
+        enriching={enriching}
+        onEnrich={triggerEnrichment}
+      />
 
       {/* Intelligence Score */}
       {score && <InvestorScorePanel score={score} loading={scoreLoading} onRefresh={fetchScore} investorId={id} />}
@@ -989,7 +1196,7 @@ export default function InvestorDetailPage() {
                         <div className="flex items-center gap-3 shrink-0">
                           <span className="text-xs" style={{ color: prioColor }}>{t.priority}</span>
                           <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{t.phase}</span>
-                          {t.due_date && <span className="text-xs" style={{ color: overdue ? 'var(--danger)' : 'var(--text-muted)', fontWeight: overdue ? 500 : 400 }}>{t.due_date}</span>}
+                          {t.due_date && <span className="text-xs" style={{ color: overdue ? 'var(--danger)' : 'var(--text-muted)', fontWeight: 400 }}>{t.due_date}</span>}
                         </div>
                       </div>
                     );
@@ -1066,10 +1273,20 @@ export default function InvestorDetailPage() {
       </div>
 
       {/* Notes */}
-      {investor.notes && (
+      {(investor.notes || editing) && (
         <div className="rounded-xl p-5">
           <h2 className="text-xs font-normal mb-2" style={{ color: 'var(--text-tertiary)' }}>Notes</h2>
-          <p className="text-sm" style={{ color: 'var(--text-tertiary)', whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>{investor.notes}</p>
+          {editing ? (
+            <textarea
+              className="input"
+              value={editForm.notes}
+              onChange={e => setEditForm(f => ({ ...f, notes: e.target.value }))}
+              rows={5}
+              style={{ resize: 'vertical', lineHeight: 1.6 }}
+            />
+          ) : (
+            <p className="text-sm" style={{ color: 'var(--text-tertiary)', whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>{investor.notes}</p>
+          )}
         </div>
       )}
     </div>
@@ -1081,6 +1298,20 @@ function Row({ label, value }: { label: string; value: string }) {
     <div className="flex justify-between">
       <span style={{ color: 'var(--text-muted)' }}>{label}</span>
       <span className="text-right max-w-[60%]" style={{ color: 'var(--text-secondary)' }}>{value || '—'}</span>
+    </div>
+  );
+}
+
+function EditRow({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
+  return (
+    <div className="flex items-center justify-between gap-3">
+      <span className="shrink-0" style={{ color: 'var(--text-muted)' }}>{label}</span>
+      <input
+        className="input"
+        value={value}
+        onChange={e => onChange(e.target.value)}
+        style={{ maxWidth: '60%', textAlign: 'right' }}
+      />
     </div>
   );
 }
@@ -1438,6 +1669,206 @@ function ConvictionTrajectoryPanel({ trajectory }: { trajectory: ConvictionTraje
 }
 
 // ---------------------------------------------------------------------------
+// Enrichment Status Card
+// ---------------------------------------------------------------------------
+
+const PROVIDER_STATUS_ICON: Record<string, { color: string; label: string }> = {
+  success: { color: 'var(--success)', label: 'Data found' },
+  failed: { color: 'var(--danger)', label: 'Failed' },
+  pending: { color: 'var(--text-muted)', label: 'Not yet run' },
+  unconfigured: { color: 'var(--text-muted)', label: 'No API key' },
+};
+
+function EnrichmentStatusCard({
+  status,
+  enriching,
+  onEnrich,
+}: {
+  status: EnrichmentStatus | null;
+  enriching: boolean;
+  onEnrich: () => void;
+}) {
+  const [hoveredEnrich, setHoveredEnrich] = useState(false);
+  const [showProviders, setShowProviders] = useState(false);
+
+  const hasData = status && status.total_fields > 0;
+  const coveragePct = status?.field_coverage ?? 0;
+  const coverageColor = coveragePct >= 60 ? 'var(--success)' : coveragePct >= 30 ? 'var(--warning)' : 'var(--text-muted)';
+
+  return (
+    <div className="rounded-xl p-5" style={{ background: 'var(--surface-1)' }}>
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <span style={{ color: 'var(--text-muted)' }}><Database className="w-4 h-4" /></span>
+          <span className="text-xs font-normal" style={{ color: 'var(--text-tertiary)', letterSpacing: '0.02em' }}>Data Enrichment</span>
+        </div>
+        <button
+          onClick={onEnrich}
+          disabled={enriching}
+          onMouseEnter={() => setHoveredEnrich(true)}
+          onMouseLeave={() => setHoveredEnrich(false)}
+          className="px-3 py-1.5 rounded-lg text-xs font-normal flex items-center gap-1.5 transition-colors"
+          style={{
+            background: enriching ? 'var(--surface-2)' : hoveredEnrich ? 'var(--accent-hover)' : 'var(--accent)',
+            color: enriching ? 'var(--text-muted)' : 'var(--text-primary)',
+            cursor: enriching ? 'not-allowed' : 'pointer',
+            transition: 'background 150ms ease',
+          }}
+        >
+          {enriching
+            ? <><Loader2 className="w-3 h-3 animate-spin" /> Enriching...</>
+            : <><RefreshCw className="w-3 h-3" /> {hasData ? 'Re-enrich' : 'Enrich'}</>
+          }
+        </button>
+      </div>
+
+      {!status ? (
+        <div className="flex items-center gap-2 py-2">
+          <Loader2 className="w-3.5 h-3.5 animate-spin" style={{ color: 'var(--text-muted)' }} />
+          <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Loading status...</span>
+        </div>
+      ) : !hasData ? (
+        <div className="text-center py-3">
+          <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
+            No enrichment data yet. Run enrichment to pull identity, financials, strategy, and more from 9 public sources.
+          </p>
+        </div>
+      ) : (
+        <>
+          {/* Summary row */}
+          <div className="grid grid-cols-4 gap-4 mb-4">
+            <div>
+              <div className="text-xs" style={{ color: 'var(--text-muted)' }}>Last enriched</div>
+              <div className="text-sm font-light" style={{ color: 'var(--text-primary)' }}>
+                {status.last_enriched ? fmtDateShort(status.last_enriched) : 'Never'}
+              </div>
+            </div>
+            <div>
+              <div className="text-xs" style={{ color: 'var(--text-muted)' }}>Fields found</div>
+              <div className="text-sm font-light" style={{ color: 'var(--text-primary)' }}>
+                {status.total_fields}
+              </div>
+            </div>
+            <div>
+              <div className="text-xs" style={{ color: 'var(--text-muted)' }}>Avg confidence</div>
+              <div className="text-sm font-light" style={{ color: 'var(--text-primary)' }}>
+                {status.avg_confidence}%
+              </div>
+            </div>
+            <div>
+              <div className="text-xs" style={{ color: 'var(--text-muted)' }}>Category coverage</div>
+              <div className="text-sm font-light" style={{ color: coverageColor }}>
+                {status.categories_covered}/{status.categories_total} ({coveragePct}%)
+              </div>
+            </div>
+          </div>
+
+          {/* Coverage bar */}
+          <div className="mb-4">
+            <div
+              className="w-full rounded-full overflow-hidden"
+              style={{ height: 4, background: 'var(--surface-3)' }}
+            >
+              <div
+                className="rounded-full transition-all"
+                style={{
+                  width: `${coveragePct}%`,
+                  height: '100%',
+                  background: coverageColor,
+                  transition: 'width 300ms ease',
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Stale warning */}
+          {status.stale_count > 0 && (
+            <div
+              className="flex items-center gap-2 rounded-lg px-3 py-2 mb-4"
+              style={{ background: 'var(--warning-muted)' }}
+            >
+              <AlertTriangle className="w-3 h-3 shrink-0" style={{ color: 'var(--text-tertiary)' }} />
+              <span className="text-xs" style={{ color: 'var(--text-tertiary)' }}>
+                {status.stale_count} field{status.stale_count !== 1 ? 's are' : ' is'} stale and may need refreshing
+              </span>
+            </div>
+          )}
+
+          {/* Provider toggle */}
+          <button
+            onClick={() => setShowProviders(!showProviders)}
+            className="flex items-center gap-1.5 text-xs transition-colors w-full"
+            style={{ color: 'var(--text-muted)', transition: 'color 150ms ease' }}
+            onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
+            onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
+          >
+            {showProviders ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
+            {status.providers.length} providers ({status.providers.filter(p => p.status === 'success').length} with data)
+          </button>
+
+          {/* Provider details */}
+          {showProviders && (
+            <div className="mt-3 space-y-1">
+              {status.providers.map(p => {
+                const st = PROVIDER_STATUS_ICON[p.status] || PROVIDER_STATUS_ICON.pending;
+                return (
+                  <div
+                    key={p.id}
+                    className="flex items-center justify-between py-1.5 px-2 rounded"
+                    style={{ transition: 'background 150ms ease' }}
+                    onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface-2)')}
+                    onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                  >
+                    <div className="flex items-center gap-2 min-w-0">
+                      {p.status === 'success' ? (
+                        <CheckCircle2 className="w-3 h-3 shrink-0" style={{ color: st.color }} />
+                      ) : p.status === 'failed' ? (
+                        <XCircle className="w-3 h-3 shrink-0" style={{ color: st.color }} />
+                      ) : (
+                        <span className="w-3 h-3 shrink-0 flex items-center justify-center">
+                          <span
+                            className="w-1.5 h-1.5 rounded-full"
+                            style={{ background: st.color }}
+                          />
+                        </span>
+                      )}
+                      <span className="text-xs truncate" style={{ color: 'var(--text-secondary)' }}>{p.name}</span>
+                      <span
+                        className="text-xs px-1.5 py-0.5 rounded shrink-0"
+                        style={{
+                          background: p.type === 'free' ? 'var(--success-muted)' : p.type === 'freemium' ? 'var(--accent-muted)' : 'var(--warning-muted)',
+                          color: 'var(--text-muted)',
+                          fontSize: '9px',
+                        }}
+                      >
+                        {p.type}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3 shrink-0">
+                      {p.field_count > 0 && (
+                        <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{p.field_count} fields</span>
+                      )}
+                      {p.last_error && (
+                        <span className="text-xs truncate max-w-[120px]" style={{ color: 'var(--danger)' }} title={p.last_error}>
+                          {p.last_error.length > 20 ? p.last_error.slice(0, 20) + '...' : p.last_error}
+                        </span>
+                      )}
+                      <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                        {p.last_fetched ? fmtDateShort(p.last_fetched) : st.label}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Enriched Intelligence Panel
 // ---------------------------------------------------------------------------
 
@@ -1459,13 +1890,13 @@ const CATEGORY_COLORS: Record<string, { bg: string; color: string }> = {
   identity: { bg: 'var(--surface-2)', color: 'var(--text-tertiary)' },
   financials: { bg: 'var(--success-muted)', color: 'var(--text-secondary)' },
   strategy: { bg: 'var(--accent-muted)', color: 'var(--accent)' },
-  people: { bg: 'rgba(90, 90, 122, 0.12)', color: 'var(--chart-4)' },
+  people: { bg: 'var(--cat-12)', color: 'var(--chart-4)' },
   portfolio: { bg: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
   process: { bg: 'var(--accent-muted)', color: 'var(--accent)' },
   contact: { bg: 'var(--surface-2)', color: 'var(--text-tertiary)' },
   regulatory: { bg: 'var(--danger-muted)', color: 'var(--text-primary)' },
   corporate: { bg: 'var(--surface-2)', color: 'var(--text-tertiary)' },
-  media: { bg: 'rgba(90, 90, 122, 0.12)', color: 'var(--chart-4)' },
+  media: { bg: 'var(--cat-12)', color: 'var(--chart-4)' },
   relationships: { bg: 'var(--accent-muted)', color: 'var(--accent)' },
 };
 

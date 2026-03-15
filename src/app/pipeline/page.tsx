@@ -41,10 +41,10 @@ const COLUMN_COLORS: Record<InvestorStatus, {
   badge: React.CSSProperties;
 }> = {
   identified: {
-    header: { background: 'rgba(255, 255, 255, 0.15)' },
+    header: { background: 'var(--white-15)' },
     border: { borderColor: 'var(--border-subtle)' },
-    bg: { background: 'rgba(255, 255, 255, 0.04)' },
-    badge: { background: 'rgba(255, 255, 255, 0.25)', color: 'var(--text-secondary)' },
+    bg: { background: 'var(--white-4)' },
+    badge: { background: 'var(--white-25)', color: 'var(--text-secondary)' },
   },
   contacted: {
     header: { background: 'var(--accent-5)' },
@@ -101,18 +101,18 @@ const COLUMN_COLORS: Record<InvestorStatus, {
     badge: { background: 'var(--accent-8)', color: 'var(--text-primary)' },
   },
   dropped: {
-    header: { background: 'rgba(255, 255, 255, 0.1)' },
+    header: { background: 'var(--white-10)' },
     border: { borderColor: 'var(--border-subtle)' },
-    bg: { background: 'rgba(255, 255, 255, 0.03)' },
-    badge: { background: 'rgba(255, 255, 255, 0.2)', color: 'var(--text-tertiary)' },
+    bg: { background: 'var(--white-3)' },
+    badge: { background: 'var(--white-20)', color: 'var(--text-tertiary)' },
   },
 };
 
 const TIER_STYLES: Record<number, React.CSSProperties> = {
   1: { background: 'var(--accent-muted)', color: 'var(--accent)', borderColor: 'var(--accent-muted)' },
   2: { background: 'var(--accent-8)', color: 'var(--text-secondary)', borderColor: 'var(--accent-10)' },
-  3: { background: 'rgba(255, 255, 255, 0.12)', color: 'var(--text-secondary)', borderColor: 'var(--border-default)' },
-  4: { background: 'rgba(255, 255, 255, 0.08)', color: 'var(--text-muted)', borderColor: 'var(--border-subtle)' },
+  3: { background: 'var(--white-12)', color: 'var(--text-secondary)', borderColor: 'var(--border-default)' },
+  4: { background: 'var(--white-8)', color: 'var(--text-muted)', borderColor: 'var(--border-subtle)' },
 };
 
 const TYPE_LABELS: Record<InvestorType, string> = {
@@ -135,7 +135,7 @@ const TYPE_ICONS: Record<InvestorType, React.ComponentType<{ className?: string 
 
 const TYPE_STYLES: Record<InvestorType, React.CSSProperties> = {
   vc: { background: 'var(--accent-muted)', color: 'var(--accent)', borderColor: 'var(--accent-muted)' },
-  growth: { background: 'rgba(90, 90, 122, 0.08)', color: 'var(--text-secondary)', borderColor: 'rgba(90, 90, 122, 0.10)' },
+  growth: { background: 'var(--cat-8)', color: 'var(--text-secondary)', borderColor: 'var(--cat-10)' },
   sovereign: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', borderColor: 'var(--warn-30)' },
   strategic: { background: 'var(--success-muted)', color: 'var(--text-secondary)', borderColor: 'var(--accent-30)' },
   debt: { background: 'var(--warn-12)', color: 'var(--text-tertiary)', borderColor: 'var(--warn-30)' },
@@ -161,6 +161,7 @@ export default function PipelinePage() {
   const { toast } = useToast();
   const [investors, setInvestors] = useState<Investor[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [dragId, setDragId] = useState<string | null>(null);
   const [dragOverCol, setDragOverCol] = useState<string | null>(null);
   const [filters, setFilters] = useState<{ tiers: Set<number>; types: Set<string> }>({
@@ -174,12 +175,18 @@ export default function PipelinePage() {
 
   async function fetchInvestors() {
     setLoading(true);
+    setFetchError(null);
     try {
       const res = await fetch('/api/investors');
-      if (!res.ok) throw new Error('Failed to fetch');
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || `Server error (${res.status})`);
+      }
       setInvestors(await res.json());
-    } catch {
-      toast('Failed to load investors', 'error');
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Failed to load investors';
+      setFetchError(msg);
+      toast(msg, 'error');
     }
     setLoading(false);
   }
@@ -314,6 +321,29 @@ export default function PipelinePage() {
               ))}
             </div>
           ))}
+        </div>
+      </div>
+    );
+  }
+
+  // ── Error state ─────────────────────────────────────────────────
+  if (fetchError && investors.length === 0) {
+    return (
+      <div className="page-content flex items-center justify-center" style={{ minHeight: '400px' }}>
+        <div style={{ textAlign: 'center' }}>
+          <Users className="w-10 h-10 mx-auto mb-3" style={{ color: 'var(--danger)' }} />
+          <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', marginBottom: 'var(--space-1)' }}>
+            Failed to load pipeline
+          </h3>
+          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-4)' }}>
+            {fetchError}
+          </p>
+          <button
+            onClick={fetchInvestors}
+            className="btn btn-secondary btn-sm"
+          >
+            Retry
+          </button>
         </div>
       </div>
     );
@@ -993,7 +1023,7 @@ function InvestorCard({
                 style={{
                   fontSize: '10px',
                   color: isStale ? 'var(--danger)' : isWarning ? 'var(--warning)' : 'var(--text-muted)',
-                  fontWeight: isStale ? 600 : 400,
+                  fontWeight: 400,
                 }}
                 title={`Last meeting: ${fmtDate(lastDate)}`}
               >

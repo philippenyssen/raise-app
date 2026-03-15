@@ -21,7 +21,7 @@ const STATUS_STYLES: Record<string, { background: string; color: string }> = {
   nda_signed: { background: 'var(--accent-muted)', color: 'var(--accent)' },
   meeting_scheduled: { background: 'var(--accent-muted)', color: 'var(--accent)' },
   met: { background: 'var(--accent-10)', color: 'var(--accent)' },
-  engaged: { background: 'rgba(90, 90, 122, 0.25)', color: 'var(--chart-4)' },
+  engaged: { background: 'var(--cat-25)', color: 'var(--chart-4)' },
   in_dd: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
   term_sheet: { background: 'var(--success-muted)', color: 'var(--text-secondary)' },
   closed: { background: 'var(--accent-muted)', color: 'var(--accent)' },
@@ -314,7 +314,7 @@ export default function InvestorsPage() {
           onSubmit={handleSubmit}
           className="card-elevated space-y-4"
         >
-          <h3 className="section-title">{editId ? 'EDIT' : 'ADD'} INVESTOR</h3>
+          <h3 className="section-title">{editId ? 'Edit' : 'Add'} investor</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Input label="Name" value={form.name} onChange={v => setForm(f => ({ ...f, name: v }))} required />
             <Select label="Type" value={form.type} onChange={v => setForm(f => ({ ...f, type: v as InvestorType }))} options={Object.entries(TYPE_LABELS)} />
@@ -478,7 +478,7 @@ export default function InvestorsPage() {
                       return (
                         <span
                           className="inline-flex items-center gap-1"
-                          style={{ fontSize: 'var(--font-size-xs)', color: s.color, fontWeight: days !== null && days > 14 ? 600 : 400 }}
+                          style={{ fontSize: 'var(--font-size-xs)', color: s.color, fontWeight: 400 }}
                           title={inv.last_meeting_date ? fmtDate(inv.last_meeting_date) : 'No meetings yet'}
                         >
                           {days !== null && days > 14 && <Clock className="w-3 h-3" />}

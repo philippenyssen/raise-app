@@ -63,6 +63,102 @@ export async function GET(req: NextRequest) {
       return NextResponse.json(stats);
     }
 
+    // Get enrichment status summary for an investor
+    if (action === 'status' && investorId) {
+      const records = await getEnrichmentRecords(investorId);
+      const jobs = await getEnrichmentJobs(investorId);
+      const allProviders = getAvailableProviders();
+
+      // Determine which providers have data
+      const sourceIds = new Set(records.map(r => r.source_id));
+      const latestFetchBySource: Record<string, string> = {};
+      for (const rec of records) {
+        if (!latestFetchBySource[rec.source_id] || rec.fetched_at > latestFetchBySource[rec.source_id]) {
+          latestFetchBySource[rec.source_id] = rec.fetched_at;
+        }
+      }
+
+      // Determine last enrichment date overall
+      const lastEnriched = records.length > 0
+        ? records.reduce((latest, r) => r.fetched_at > latest ? r.fetched_at : latest, records[0].fetched_at)
+        : null;
+
+      // Count fields by category
+      const fieldsByCategory: Record<string, number> = {};
+      for (const rec of records) {
+        fieldsByCategory[rec.category] = (fieldsByCategory[rec.category] || 0) + 1;
+      }
+
+      // All possible enrichable categories
+      const allCategories = ['identity', 'financials', 'strategy', 'people', 'portfolio', 'process', 'contact', 'regulatory', 'corporate', 'media', 'relationships'];
+      const categoriesCovered = allCategories.filter(c => fieldsByCategory[c] && fieldsByCategory[c] > 0);
+      const fieldCoverage = allCategories.length > 0 ? Math.round((categoriesCovered.length / allCategories.length) * 100) : 0;
+
+      // Avg confidence
+      const avgConfidence = records.length > 0
+        ? records.reduce((sum, r) => sum + r.confidence, 0) / records.length
+        : 0;
+
+      // Stale records count
+      const now = new Date().toISOString();
+      const staleCount = records.filter(r => r.stale_after && r.stale_after < now).length;
+
+      // Last job info
+      const lastJob = jobs.length > 0 ? jobs[0] : null;
+
+      // Build provider status list
+      const providerStatuses = allProviders.map(p => {
+        const hasData = sourceIds.has(p.provider.id);
+        const fieldCount = records.filter(r => r.source_id === p.provider.id).length;
+        const lastFetched = latestFetchBySource[p.provider.id] || null;
+
+        // Check if there was a failed job for this provider
+        let lastError: string | null = null;
+        if (lastJob) {
+          try {
+            const errors = JSON.parse(lastJob.errors || '[]');
+            const providerError = errors.find((e: string) => e.startsWith(p.provider.id + ':'));
+            if (providerError) lastError = providerError.replace(p.provider.id + ': ', '');
+          } catch { /* ignore */ }
+        }
+
+        return {
+          id: p.provider.id,
+          name: p.provider.name,
+          type: p.provider.type,
+          configured: p.configured,
+          has_data: hasData,
+          field_count: fieldCount,
+          last_fetched: lastFetched,
+          last_error: lastError,
+          status: !p.configured ? 'unconfigured' as const
+            : hasData ? 'success' as const
+            : lastError ? 'failed' as const
+            : 'pending' as const,
+        };
+      });
+
+      return NextResponse.json({
+        investor_id: investorId,
+        last_enriched: lastEnriched,
+        total_fields: records.length,
+        field_coverage: fieldCoverage,
+        categories_covered: categoriesCovered.length,
+        categories_total: allCategories.length,
+        fields_by_category: fieldsByCategory,
+        avg_confidence: Math.round(avgConfidence * 100),
+        stale_count: staleCount,
+        providers: providerStatuses,
+        last_job: lastJob ? {
+          id: lastJob.id,
+          status: lastJob.status,
+          results_count: lastJob.results_count,
+          started_at: lastJob.started_at,
+          completed_at: lastJob.completed_at,
+        } : null,
+      });
+    }
+
     // Get enriched profile for an investor
     if (action === 'profile' && investorId) {
       const records = await getEnrichmentRecords(investorId);
@@ -95,7 +191,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json(profile);
     }
 
-    return NextResponse.json({ error: 'Invalid action. Use: providers, records, jobs, stats, profile' }, { status: 400 });
+    return NextResponse.json({ error: 'Invalid action. Use: providers, records, jobs, stats, status, profile' }, { status: 400 });
   } catch (error) {
     console.error('Enrichment GET error:', error);
     return NextResponse.json({ error: 'Internal error' }, { status: 500 });

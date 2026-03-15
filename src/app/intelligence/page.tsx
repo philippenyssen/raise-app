@@ -23,7 +23,7 @@ const THREAT_STYLES: Record<string, { background: string; color: string }> = {
 const BRIEF_TYPE_STYLES: Record<string, { background: string; color: string }> = {
   investor: { background: 'var(--accent-muted)', color: 'var(--accent)' },
   competitor: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
-  market: { background: 'rgba(90, 90, 122, 0.12)', color: 'var(--chart-4)' },
+  market: { background: 'var(--cat-12)', color: 'var(--chart-4)' },
 };
 
 export default function IntelligencePage() {

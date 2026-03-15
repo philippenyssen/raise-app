@@ -89,7 +89,7 @@ interface StrategicData {
 
 const CATEGORY_CONFIG: Record<string, { label: string; color: string; bg: string; border: string; icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }> }> = {
   pipeline:  { label: 'Pipeline',  color: 'var(--accent)',    bg: 'var(--accent-muted)',    border: 'var(--border-default)',    icon: Users },
-  narrative: { label: 'Narrative', color: 'var(--chart-4)',          bg: 'rgba(90, 90, 122, 0.12)', border: 'rgba(90, 90, 122, 0.4)', icon: MessageCircleWarning },
+  narrative: { label: 'Narrative', color: 'var(--chart-4)',          bg: 'var(--cat-12)', border: 'var(--cat-40)', icon: MessageCircleWarning },
   execution: { label: 'Execution', color: 'var(--text-secondary)',   bg: 'var(--success-muted)',   border: 'var(--accent-40)',   icon: Zap },
   timing:    { label: 'Timing',    color: 'var(--text-tertiary)',   bg: 'var(--warning-muted)',   border: 'var(--warn-40)',  icon: Clock },
   risk:      { label: 'Risk',      color: 'var(--text-primary)',    bg: 'var(--danger-muted)',    border: 'var(--accent-8)',   icon: Shield },
@@ -481,7 +481,7 @@ export default function StrategicPage() {
               style={{
                 borderRadius: 'var(--radius-md)',
                 padding: 'var(--space-3)',
-                background: 'rgba(90, 90, 122, 0.04)',
+                background: 'var(--cat-4)',
               }}
             >
               <div className="metric-label" style={{ marginBottom: 'var(--space-1)' }}>Expected Close</div>

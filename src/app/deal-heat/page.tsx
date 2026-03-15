@@ -77,15 +77,19 @@ export default function DealHeatPage() {
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
   const [hoveredFilter, setHoveredFilter] = useState<HeatLevel | null>(null);
 
-  useEffect(() => {
+  function fetchDealHeat() {
+    setLoading(true);
+    setError(null);
     fetch('/api/deal-heat')
       .then(res => {
-        if (!res.ok) throw new Error('Failed to fetch deal heat data');
+        if (!res.ok) throw new Error(`Server error (${res.status})`);
         return res.json();
       })
       .then(d => { setData(d); setLoading(false); })
       .catch(e => { setError(e.message); setLoading(false); });
-  }, []);
+  }
+
+  useEffect(() => { fetchDealHeat(); }, []);
 
   if (loading) {
     return (
@@ -111,9 +115,19 @@ export default function DealHeatPage() {
     return (
       <div className="flex-1 p-6" style={{ maxWidth: '1400px', margin: '0 auto' }}>
         <div className="card" style={{ textAlign: 'center', padding: 'var(--space-12)' }}>
-          <span style={{ color: 'var(--text-primary)', fontSize: 'var(--font-size-lg)' }}>
-            {error || 'Failed to load deal heat data'}
-          </span>
+          <Flame className="w-10 h-10 mx-auto mb-3" style={{ color: 'var(--danger)' }} />
+          <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', marginBottom: 'var(--space-1)' }}>
+            Failed to load deal heat data
+          </h3>
+          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-4)' }}>
+            {error || 'An unexpected error occurred'}
+          </p>
+          <button
+            onClick={fetchDealHeat}
+            className="btn btn-secondary btn-sm inline-flex items-center gap-2"
+          >
+            Retry
+          </button>
         </div>
       </div>
     );
@@ -218,7 +232,7 @@ export default function DealHeatPage() {
                 padding: 'var(--space-1) var(--space-3)',
                 borderRadius: 'var(--radius-md)',
                 fontSize: 'var(--font-size-sm)',
-                fontWeight: active ? 600 : 400,
+                fontWeight: 400,
                 background: active ? (cfg ? cfg.bg : 'var(--surface-2)') : 'transparent',
                 color: active ? (cfg ? cfg.text : 'var(--text-primary)') : 'var(--text-tertiary)',
                 cursor: 'pointer',
