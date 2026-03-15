@@ -27,8 +27,9 @@ export async function POST() {
         : `No new actions needed. ${result.patternsDetected} pattern(s) detected, all already have pending actions.`,
     });
   } catch (error) {
+    console.error('[AUTO_ACTIONS_POST]', error instanceof Error ? error.message : error);
     return NextResponse.json(
-      { error: 'Failed to generate auto-actions', detail: error instanceof Error ? error.message : 'Unknown error' },
+      { error: 'Failed to generate auto-actions' },
       { status: 500 },
     );
   }
@@ -52,8 +53,9 @@ export async function GET() {
       totalPending: pending.length,
     });
   } catch (error) {
+    console.error('[AUTO_ACTIONS_GET]', error instanceof Error ? error.message : error);
     return NextResponse.json(
-      { error: 'Failed to fetch auto-actions', detail: error instanceof Error ? error.message : 'Unknown error' },
+      { error: 'Failed to fetch auto-actions' },
       { status: 500 },
     );
   }

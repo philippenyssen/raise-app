@@ -225,5 +225,6 @@ export async function GET() {
       weeklyBudget: { totalHoursRecommended: Math.round(totalHours * 10) / 10, meetingsRecommended: meetingsCount, followUpsRecommended: followUpsCount, investorCount: topItems.length },
       generatedAt: new Date().toISOString(),});
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to compute focus data', detail: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 });
+    console.error('[FOCUS_GET]', error instanceof Error ? error.message : error);
+    return NextResponse.json({ error: 'Failed to compute focus data' }, { status: 500 });
   }}

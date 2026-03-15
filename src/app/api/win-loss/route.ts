@@ -249,7 +249,8 @@ export async function GET() {
         avgPassedEnthusiasm: passedEnthusiasms.length > 0 ? Math.round(avg(passedEnthusiasms) * 10) / 10 : 0,},
       generatedAt: new Date().toISOString(),});
   } catch (error) {
+    console.error('[WIN_LOSS_GET]', error instanceof Error ? error.message : error);
     return NextResponse.json(
-      { error: 'Failed to compute win/loss analysis', detail: error instanceof Error ? error.message : 'Unknown error' },
+      { error: 'Failed to compute win/loss analysis' },
       { status: 500 },);
   }}

@@ -357,5 +357,6 @@ export async function GET() {
       },
       generatedAt: new Date().toISOString(),});
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to compute stress test', detail: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 });
+    console.error('[STRESS_TEST_GET]', error instanceof Error ? error.message : error);
+    return NextResponse.json({ error: 'Failed to compute stress test' }, { status: 500 });
   }}

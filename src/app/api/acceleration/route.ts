@@ -180,7 +180,8 @@ export async function GET() {
       summary: { immediate: accelerations.filter(a => a.urgency === 'immediate').length, this_week: accelerations.filter(a => a.urgency === '48h' || a.urgency === 'this_week').length, total: accelerations.length },
       accelerations, termSheetReady, atRisk, deprioritize, generatedAt: new Date().toISOString(),});
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to run acceleration analysis', detail: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 });
+    console.error('[ACCELERATION_GET]', error instanceof Error ? error.message : error);
+    return NextResponse.json({ error: 'Failed to run acceleration analysis' }, { status: 500 });
   }}
 
 // ---------------------------------------------------------------------------
@@ -225,5 +226,6 @@ export async function PUT(req: Request) {
     emitContextChange('acceleration_executed', `Acceleration ${id} ${actionStatus}${body.investor_name ? ` for ${body.investor_name}` : ''}`);
     return NextResponse.json({ ok: true });
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to update acceleration action', detail: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 });
+    console.error('[ACCELERATION_PUT]', error instanceof Error ? error.message : error);
+    return NextResponse.json({ error: 'Failed to update acceleration action' }, { status: 500 });
   }}

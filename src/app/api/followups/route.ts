@@ -89,8 +89,9 @@ export async function GET(req: NextRequest) {
     const followups = await getFollowups(Object.keys(filters).length > 0 ? filters : undefined);
     return NextResponse.json(followups.map(enrichTemporal));
   } catch (error) {
+    console.error('[FOLLOWUPS_GET]', error instanceof Error ? error.message : error);
     return NextResponse.json(
-      { error: 'Failed to fetch follow-ups', detail: error instanceof Error ? error.message : 'Database error' },
+      { error: 'Failed to fetch follow-ups' },
       { status: 500 });
   }}
 

@@ -129,7 +129,8 @@ export async function POST() {
         investorNames: p.investorNames,
       })),});
   } catch (error) {
+    console.error('[DOCUMENTS_STRENGTHEN_POST]', error instanceof Error ? error.message : error);
     return NextResponse.json(
-      { error: 'Failed to analyze documents for strengthening', detail: error instanceof Error ? error.message : 'Unknown error' },
+      { error: 'Failed to analyze documents for strengthening' },
       { status: 500 },);
   }}

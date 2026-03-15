@@ -229,5 +229,6 @@ export async function GET() {
 
     return NextResponse.json(assessment);
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to compute strategic assessment', detail: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 });
+    console.error('[STRATEGIC_GET]', error instanceof Error ? error.message : error);
+    return NextResponse.json({ error: 'Failed to compute strategic assessment' }, { status: 500 });
   }}

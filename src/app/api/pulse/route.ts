@@ -907,7 +907,8 @@ export async function GET() {
       realTimeSignals,
       generatedAt: new Date().toISOString(),});
   } catch (error) {
+    console.error('[PULSE_GET]', error instanceof Error ? error.message : error);
     return NextResponse.json(
-      { error: 'Failed to compute pulse', detail: error instanceof Error ? error.message : 'Unknown error' },
+      { error: 'Failed to compute pulse' },
       { status: 500 },);
   }}

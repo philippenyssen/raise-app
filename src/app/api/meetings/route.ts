@@ -10,8 +10,9 @@ export async function GET(req: NextRequest) {
     const meetings = await getMeetings(investorId);
     return NextResponse.json(meetings);
   } catch (error) {
+    console.error('[MEETINGS_GET]', error instanceof Error ? error.message : error);
     return NextResponse.json(
-      { error: 'Failed to fetch meetings', detail: error instanceof Error ? error.message : 'Database error' },
+      { error: 'Failed to fetch meetings' },
       { status: 500 });
   }}
 
@@ -142,8 +143,9 @@ export async function POST(req: NextRequest) {
     auto_advanced: autoAdvanced,
   }, { status: 201 });
   } catch (error) {
+    console.error('[MEETINGS_POST]', error instanceof Error ? error.message : error);
     return NextResponse.json(
-      { error: 'Failed to create meeting', detail: error instanceof Error ? error.message : 'Database error' },
+      { error: 'Failed to create meeting' },
       { status: 500 });
   }}
 
@@ -174,8 +176,9 @@ export async function PUT(req: NextRequest) {
     emitContextChange('meeting_updated', `Meeting ${id} updated`);
     return NextResponse.json({ ok: true });
   } catch (error) {
+    console.error('[MEETINGS_PUT]', error instanceof Error ? error.message : error);
     return NextResponse.json(
-      { error: 'Failed to update meeting', detail: error instanceof Error ? error.message : 'Database error' },
+      { error: 'Failed to update meeting' },
       { status: 500 });
   }}
 
@@ -221,13 +224,14 @@ export async function PATCH(req: NextRequest) {
         detail: (key_takeaway as string) || '',
         investor_id: meeting.investor_id,
         investor_name: meeting.investor_name,});
-    } catch { /* non-blocking */ }
+    } catch (e) { console.error('[MEETING_OUTCOME_LOG]', e instanceof Error ? e.message : e); }
 
     emitContextChange('meeting_updated', `Meeting outcome recorded for ${meeting.investor_name}`);
 
     return NextResponse.json({ ok: true });
   } catch (error) {
+    console.error('[MEETINGS_PATCH]', error instanceof Error ? error.message : error);
     return NextResponse.json(
-      { error: 'Failed to update meeting outcome', detail: error instanceof Error ? error.message : 'Database error' },
+      { error: 'Failed to update meeting outcome' },
       { status: 500 });
   }}

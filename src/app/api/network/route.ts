@@ -116,7 +116,8 @@ export async function GET() {
       } : null,
       generatedAt: new Date().toISOString(),});
   } catch (error) {
+    console.error('[NETWORK_GET]', error instanceof Error ? error.message : error);
     return NextResponse.json(
-      { error: 'Failed to compute network cascades', detail: error instanceof Error ? error.message : 'Unknown error' },
+      { error: 'Failed to compute network cascades' },
       { status: 500 });
   }}
