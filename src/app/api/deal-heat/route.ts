@@ -7,10 +7,10 @@ export async function GET() {
   const [investors, raiseConfig, raiseForecastData, velocityAll, fomoAll, reversalAll] = await Promise.all([
     getAllInvestors(),
     getRaiseConfig(),
-    computeRaiseForecast().catch(() => null),
-    computeEngagementVelocity().catch(() => [] as Awaited<ReturnType<typeof computeEngagementVelocity>>),
-    detectFomoDynamics().catch(() => [] as Awaited<ReturnType<typeof detectFomoDynamics>>),
-    detectScoreReversals().catch(() => [] as Awaited<ReturnType<typeof detectScoreReversals>>),]);
+    computeRaiseForecast().catch(e => { console.error('[DEAL_HEAT] forecast failed:', e instanceof Error ? e.message : e); return null; }),
+    computeEngagementVelocity().catch(e => { console.error('[DEAL_HEAT] velocity failed:', e instanceof Error ? e.message : e); return [] as Awaited<ReturnType<typeof computeEngagementVelocity>>; }),
+    detectFomoDynamics().catch(e => { console.error('[DEAL_HEAT] fomo failed:', e instanceof Error ? e.message : e); return [] as Awaited<ReturnType<typeof detectFomoDynamics>>; }),
+    detectScoreReversals().catch(e => { console.error('[DEAL_HEAT] reversals failed:', e instanceof Error ? e.message : e); return [] as Awaited<ReturnType<typeof detectScoreReversals>>; }),]);
 
   let targetEquityM = 250;
   let targetCloseDate: string | null = null;
@@ -108,7 +108,7 @@ export async function GET() {
     frozen: results.filter(r => r.dealHeat.label === 'frozen').length,
     total: results.length,};
 
-  return NextResponse.json({ investors: results, counts, generated_at: new Date().toISOString() }, { headers: { 'Cache-Control': 'private, max-age=15, stale-while-revalidate=30' } });
+  return NextResponse.json({ investors: results, counts, generated_at: new Date().toISOString() }, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
   } catch (err) {
     console.error('[DEAL_HEAT_GET]', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: 'Failed to compute deal heat' }, { status: 500 });
