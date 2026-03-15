@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/components/toast';
 import { stFontSm, stFontXs, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
+import { cachedFetch } from '@/lib/cache';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -164,7 +165,7 @@ export default function SettingsPage() {
 
   const loadSettings = useCallback(async () => {
     try {
-      const res = await fetch('/api/settings');
+      const res = await cachedFetch('/api/settings');
       if (!res.ok) throw new Error('Failed to load');
       const data = await res.json();
 

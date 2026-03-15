@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { labelMuted10, stBorderTop, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 import { relativeTime } from '@/lib/time';
+import { cachedFetch } from '@/lib/cache';
 
 // ---------------------------------------------------------------------------
 // Constants — style objects using design tokens
@@ -342,7 +343,7 @@ export default function AccelerationPage() {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/acceleration');
+      const res = await cachedFetch('/api/acceleration');
       if (res.ok) {
         setData(await res.json());
       } else {

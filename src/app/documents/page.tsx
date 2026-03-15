@@ -92,7 +92,7 @@ export default function DocumentsPage() {
 
   async function fetchFlags() {
     try {
-      const res = await fetch('/api/document-flags?status=open');
+      const res = await cachedFetch('/api/document-flags?status=open');
       if (res.ok) setFlags(await res.json());
     } catch { /* non-blocking */ }
   }

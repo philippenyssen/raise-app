@@ -11,6 +11,7 @@ import { useToast } from '@/components/toast';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
 import Link from 'next/link';
 import { stAccent, stBorderTop, stSurface1, stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
+import { cachedFetch } from '@/lib/cache';
 
 type Tab = 'deals' | 'competitors' | 'briefs';
 
@@ -51,7 +52,7 @@ export default function IntelligencePage() {
   const fetchAll = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/intelligence?type=all');
+      const res = await cachedFetch('/api/intelligence?type=all');
       const data = await res.json();
       setDeals(data.deals || []);
       setCompetitors(data.competitors || []);

@@ -20,6 +20,7 @@ import { fmtDate, fmtDateTime } from '@/lib/format';
 import { useToast } from '@/components/toast';
 import { stAccent, stAccentBadge, stAccentBg, stBorderTop, stSurface0, stSurface1, stSurface1Border, stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 import { parseJsonSafe } from '@/lib/api-helpers';
+import { cachedFetch } from '@/lib/cache';
 
 // ---------- types for the meeting brief ----------
 
@@ -124,7 +125,7 @@ function MeetingPrepContent() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch('/api/investors');
+        const res = await cachedFetch('/api/investors');
         const data: Investor[] = await res.json();
         setInvestors(data);
       } catch (e) { console.error('[PREP_INVESTORS]', e instanceof Error ? e.message : e); }

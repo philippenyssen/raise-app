@@ -8,6 +8,7 @@ import { useToast } from '@/components/toast';
 import { ConfirmModal, InputModal } from '@/components/ui/confirm-modal';
 import { Plus, Save, Table, Trash2 } from 'lucide-react';
 import { stTextTertiary } from '@/lib/styles';
+import { cachedFetch } from '@/lib/cache';
 
 interface ModelSheet {
   id: string;
@@ -149,7 +150,7 @@ export default function ModelPage() {
 
   const fetchSheets = useCallback(async () => {
     try {
-      const res = await fetch('/api/model');
+      const res = await cachedFetch('/api/model');
       if (!res.ok) throw new Error(`Failed (${res.status})`);
       const data = await res.json();
       setSheets(data);

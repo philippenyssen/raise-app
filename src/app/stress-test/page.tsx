@@ -14,6 +14,7 @@ import {
   BarChart3,
 } from 'lucide-react';
 import type { StressTestInvestorForecast as InvestorForecast, GapInvestor, RiskItem } from '@/lib/types';
+import { cachedFetch } from '@/lib/cache';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -109,7 +110,7 @@ export default function StressTestPage() {
     if (!silent) setLoading(true);
     else setRefreshing(true);
     try {
-      const res = await fetch('/api/stress-test');
+      const res = await cachedFetch('/api/stress-test');
       if (res.ok) {
         setData(await res.json());
         setLoadedAt(new Date().toISOString());

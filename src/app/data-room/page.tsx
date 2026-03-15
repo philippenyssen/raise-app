@@ -8,6 +8,7 @@ import { FolderOpen, Upload, FileText, Table, Image, Trash2, ChevronDown, Chevro
 import { fmtDateTime, fmtDate } from '@/lib/format';
 import { STATUS_LABELS } from '@/lib/constants';
 import { labelMuted, stAccent, stFontSm, stFontXs, stSurface2, stTextMuted, stTextSecondary, stTextTertiary } from '@/lib/styles';
+import { cachedFetch } from '@/lib/cache';
 
 interface DataRoomFile {
   id: string;
@@ -56,7 +57,7 @@ export default function DataRoomPage() {
 
   const fetchFiles = useCallback(async () => {
     try {
-      const res = await fetch('/api/data-room');
+      const res = await cachedFetch('/api/data-room');
       if (!res.ok) throw new Error('Failed to load');
       setFiles(await res.json());
     } catch (e) { console.error('[DATA_ROOM_FETCH]', e instanceof Error ? e.message : e); }
@@ -65,7 +66,7 @@ export default function DataRoomPage() {
 
   const fetchIntelligence = useCallback(async () => {
     try {
-      const res = await fetch('/api/data-room/intelligence');
+      const res = await cachedFetch('/api/data-room/intelligence');
       if (res.ok) {
         setIntelligence(await res.json());
       }
