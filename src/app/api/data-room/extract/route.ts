@@ -11,6 +11,11 @@ export async function POST(req: NextRequest) {
 
   if (!base64_content) { return NextResponse.json({ text: '' }); }
 
+  // Reject files over 10MB (base64 is ~33% larger than raw)
+  if (typeof base64_content === 'string' && base64_content.length > 14_000_000) {
+    return NextResponse.json({ error: 'File too large (max 10MB)' }, { status: 413 });
+  }
+
   try {
     // For PDF files, extract text using basic parsing
     if (filename.toLowerCase().endsWith('.pdf') || mime_type === 'application/pdf') {
