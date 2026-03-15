@@ -144,7 +144,10 @@ Extract structured data in this exact JSON format (no markdown, just pure JSON):
 
 Enthusiasm scale: 1=Cold/polite 2=Lukewarm 3=Interested 4=Excited 5=Ready to term sheet
 
-Be rigorous. Don't infer enthusiasm that isn't there. If notes are sparse, flag what's missing. Empty arrays and empty strings are preferred over fabricated data.`
+Be rigorous. Don't infer enthusiasm that isn't there. If notes are sparse, flag what's missing. Empty arrays and empty strings are preferred over fabricated data.
+Only count explicit objections (pushback, concern, disagreement), not questions or requests for information.
+Only count slides_that_landed when investor showed clear positive signal (follow-up questions, explicit praise), not generic acknowledgment.
+Only count competitive_bids_mentioned when investor named a specific company or deal, not general market commentary.`
     }]});
 
   const { text } = extractText(response);
@@ -622,6 +625,7 @@ export async function polishGoldmanStyle(content: string): Promise<string> {
 - Remove hedging language
 - Use "we believe" sparingly and only for genuine opinions
 - Bold key metrics inline
+- CRITICAL: Preserve ALL numbers, dates, and factual claims exactly — only rewrite sentence structure and tone
 
 CONTENT:
 ${content}

@@ -360,9 +360,8 @@ Rules:
 - No greetings, no sign-offs, just the summary`,
         }],});
 
-      todaySummary = response.content[0].type === 'text'
-        ? response.content[0].text
-        : 'Unable to generate summary.';
+      const textBlock = response.content.find(c => c.type === 'text') as { type: 'text'; text: string } | undefined;
+      todaySummary = textBlock?.text || 'Unable to generate summary.';
     } catch {
       // Fallback: deterministic summary without AI
       const parts: string[] = [];
