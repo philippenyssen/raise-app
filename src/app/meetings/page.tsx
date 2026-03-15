@@ -6,6 +6,7 @@ import type { Meeting } from '@/lib/types';
 import { Search, FileSearch, Calendar, Download, ChevronDown, ChevronRight, Star, CheckCircle2, X, TrendingUp, TrendingDown, Minus, Hash } from 'lucide-react';
 import { fmtDateTime } from '@/lib/format';
 import { labelTertiary, stFontSm, stFontXs, stTextMuted, stTextTertiary } from '@/lib/styles';
+import { CopyButton } from '@/components/copy-button';
 
 const MEETING_TYPES = ['all', 'intro', 'management_presentation', 'deep_dive', 'site_visit', 'dd_session', 'negotiation', 'social'] as const;
 const STATUS_OPTIONS = ['all', 'met', 'engaged', 'in_dd', 'term_sheet', 'passed'] as const;
@@ -502,8 +503,10 @@ export default function MeetingsPage() {
                       {m.status_after.replace(/_/g, ' ')}</span></div></div>
 
                 {m.ai_analysis && (
-                  <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', marginBottom: 'var(--space-3)' }}>
-                    {m.ai_analysis}</p>
+                  <div className="flex items-start gap-2" style={{ marginBottom: 'var(--space-3)' }}>
+                    <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', flex: 1 }}>
+                      {m.ai_analysis}</p>
+                    <CopyButton text={m.ai_analysis} label="" /></div>
                 )}
 
                 <div className="flex gap-4" style={stFontXs}>
@@ -535,8 +538,9 @@ export default function MeetingsPage() {
                 )}
 
                 {m.next_steps && (
-                  <div className="mt-2" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)', opacity: 0.6, background: 'var(--accent-muted)', borderRadius: 'var(--radius-sm)', padding: '4px 8px' }}>
-                    Next: {m.next_steps}</div>
+                  <div className="mt-2 flex items-center gap-2" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)', opacity: 0.6, background: 'var(--accent-muted)', borderRadius: 'var(--radius-sm)', padding: '4px 8px' }}>
+                    <span style={{ flex: 1 }}>Next: {m.next_steps}</span>
+                    <CopyButton text={m.next_steps} label="" style={{ background: 'transparent', opacity: 1 }} /></div>
                 )}
 
                 {/* Meeting Outcome Toggle */}
