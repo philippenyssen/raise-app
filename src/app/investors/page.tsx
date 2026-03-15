@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import type { Investor, InvestorStatus, InvestorTier, InvestorType } from '@/lib/types';
 import { useToast } from '@/components/toast';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
-import { Search, Download, GitCompare, Columns3, Clock, Pencil, Trash2 } from 'lucide-react';
+import { Search, Download, GitCompare, Columns3, Clock, Pencil, Trash2, Calendar } from 'lucide-react';
 import { fmtDate } from '@/lib/format';
 import { STATUS_LABELS, TYPE_LABELS } from '@/lib/constants';
 import { stTextMuted } from '@/lib/styles';
@@ -432,6 +432,19 @@ export default function InvestorsPage() {
                         onMouseEnter={() => setHoveredBtn(`edit-${inv.id}`)}
                         onMouseLeave={() => setHoveredBtn(null)}>
                         <Pencil className="w-3 h-3" /></button>
+                      <Link
+                        href={`/meetings/new?investor=${inv.id}`}
+                        className="btn btn-ghost btn-sm"
+                        title="Log meeting"
+                        aria-label="Log meeting"
+                        style={{
+                          fontSize: 'var(--font-size-xs)',
+                          padding: '0.3rem 0.5rem',
+                          color: hoveredBtn === `meet-${inv.id}` ? 'var(--success)' : 'var(--text-muted)',
+                          borderRadius: 'var(--radius-sm)', }}
+                        onMouseEnter={() => setHoveredBtn(`meet-${inv.id}`)}
+                        onMouseLeave={() => setHoveredBtn(null)}>
+                        <Calendar className="w-3 h-3" /></Link>
                       <button
                         onClick={() => setDeleteTarget({ id: inv.id, name: inv.name })}
                         className="btn btn-ghost btn-sm"
