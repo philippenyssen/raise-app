@@ -6,7 +6,8 @@ export async function GET() {
   try {
     const documents = await getAllDocuments();
     return NextResponse.json(documents, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
-  } catch {
+  } catch (e) {
+    console.error('[DOCUMENTS_GET]', e instanceof Error ? e.message : e);
     return NextResponse.json({ error: 'Failed to load documents' }, { status: 500 });
   }
 }
