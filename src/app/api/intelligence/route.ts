@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
 
       // AI Research operations
       case 'research_investor': {
-        const name = body.name as string;
+        const name = ((body.name as string) || '').trim();
         const context = body.context as string | undefined;
         const investor_id = body.investor_id as string | undefined;
         const research = await researchInvestor(name, context);
@@ -132,7 +132,7 @@ export async function POST(req: NextRequest) {
       }
 
       case 'research_competitor': {
-        const compName = body.name as string;
+        const compName = ((body.name as string) || '').trim();
         const compCtx = body.context as string | undefined;
         const research = await researchCompetitor(compName, compCtx);
 

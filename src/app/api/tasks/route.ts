@@ -54,9 +54,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'title is required' }, { status: 400 });
     }
     const task = await createTask({
-      title: (body.title as string) || '',
-      description: (body.description as string) || '',
-      assignee: (body.assignee as string) || '',
+      title: ((body.title as string) || '').trim(),
+      description: ((body.description as string) || '').trim(),
+      assignee: ((body.assignee as string) || '').trim(),
       due_date: (body.due_date as string) || '',
       status: ((body.status as string) || 'pending') as TaskStatus,
       priority: ((body.priority as string) || 'medium') as TaskPriority,
