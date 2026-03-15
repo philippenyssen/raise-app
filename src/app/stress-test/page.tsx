@@ -124,6 +124,7 @@ export default function StressTestPage() {
     }
   }, [toast]);
 
+  useEffect(() => { document.title = 'Raise | Stress Test'; }, []);
   useEffect(() => {
     fetchData();
   }, [fetchData]);

@@ -36,6 +36,7 @@ export default function ConsistencyPage() {
     }
   }, []);
 
+  useEffect(() => { document.title = 'Raise | Consistency Check'; }, []);
   useEffect(() => {
     fetchConsistency();
   }, [fetchConsistency]);

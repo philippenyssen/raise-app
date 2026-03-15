@@ -50,6 +50,7 @@ export default function TermsPage() {
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; investor: string } | null>(null);
   const [deleting, setDeleting] = useState(false);
 
+  useEffect(() => { document.title = 'Raise | Term Sheets'; }, []);
   useEffect(() => { fetchSheets(); }, []);
 
   useEffect(() => {

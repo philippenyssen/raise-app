@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useToast } from '@/components/toast';
 import { BarChart3 } from 'lucide-react';
 import { stAccent, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
@@ -55,6 +55,7 @@ function getPriorityStyles(priority: string): React.CSSProperties {
   }}
 
 export default function AnalysisPage() {
+  useEffect(() => { document.title = 'Raise | AI Analysis'; }, []);
   const { toast } = useToast();
   const [data, setData] = useState<AnalysisData | null>(null);
   const [loading, setLoading] = useState(false);

@@ -285,6 +285,7 @@ export default function Dashboard() {
     setLastRefresh(new Date()); setLoading(false); setRefreshing(false);
   }, [fetchSection]);
 
+  useEffect(() => { document.title = 'Raise | Dashboard'; }, []);
   useEffect(() => {
     fetchData();
     const interval = setInterval(() => fetchData(true), 5 * MS_PER_MINUTE);

@@ -782,6 +782,7 @@ export default function FocusPage() {
     }
   }, [toast]);
 
+  useEffect(() => { document.title = 'Raise | CEO Focus'; }, []);
   useEffect(() => { fetchData(); }, [fetchData]);
 
   useEffect(() => {

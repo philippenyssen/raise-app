@@ -208,6 +208,7 @@ export default function InvestorDetailPage() {
     setLoading(false);
   }, [id]);
 
+  useEffect(() => { document.title = 'Raise | Investor Detail'; }, []);
   useEffect(() => {
     fetchData(); fetchScore(); fetchEnrichment(); fetchEnrichmentStatus();
     // Non-blocking follow-ups fetch

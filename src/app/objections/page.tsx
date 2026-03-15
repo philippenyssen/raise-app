@@ -196,6 +196,7 @@ export default function ObjectionsPage() {
     setLoadingEffectiveness(false);
   }, []);
 
+  useEffect(() => { document.title = 'Raise | Objection Playbook'; }, []);
   useEffect(() => {
     loadData();
   }, [loadData]);

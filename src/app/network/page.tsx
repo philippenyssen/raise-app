@@ -55,6 +55,7 @@ export default function NetworkPage() {
     }
   }, []);
 
+  useEffect(() => { document.title = 'Raise | Network Map'; }, []);
   useEffect(() => { fetchData(); }, [fetchData]);
 
   useEffect(() => {

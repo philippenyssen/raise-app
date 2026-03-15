@@ -40,6 +40,7 @@ export default function SkillsPage() {
   const [expanded, setExpanded] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
+  useEffect(() => { document.title = 'Raise | Skill Health'; }, []);
   useEffect(() => {
     const safeFetch = (url: string) => fetch(url).then(r => { if (!r.ok) throw new Error(`${r.status}`); return r.json(); });
     Promise.all([

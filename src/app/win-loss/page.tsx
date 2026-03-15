@@ -110,6 +110,7 @@ export default function WinLossPage() {
       .catch(e => { setError(e.message); setLoading(false); });
   };
 
+  useEffect(() => { document.title = 'Raise | Win/Loss Analysis'; }, []);
   useEffect(() => { fetchData(); }, []);
 
   if (loading) {

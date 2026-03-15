@@ -148,6 +148,7 @@ export default function SettingsPage() {
     'followup_cadence', DEFAULT_FOLLOWUP_CADENCE, toast, 'Follow-up cadence saved', 'Couldn\'t save follow-up cadence — try again',);
 
   // Cmd+S / Ctrl+S to save whichever form has unsaved changes
+  useEffect(() => { document.title = 'Raise | Settings'; }, []);
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
       if ((e.metaKey || e.ctrlKey) && e.key === 's') {

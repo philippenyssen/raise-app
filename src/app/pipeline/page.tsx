@@ -98,6 +98,7 @@ export default function PipelinePage() {
   const [quickAddCol, setQuickAddCol] = useState<string | null>(null);
   const [quickAddName, setQuickAddName] = useState('');
 
+  useEffect(() => { document.title = 'Raise | Investor Pipeline'; }, []);
   useEffect(() => {
     const load = () => { fetchInvestors(); cachedFetch('/api/at-risk').then(r => r.ok ? r.json() : null).then(d => { if (d?.scoreReversals) { const m = new Map<string, number>(); d.scoreReversals.forEach((r: { investorId: string; delta: number }) => m.set(r.investorId, r.delta)); setScoreDeltaMap(m); } }).catch(e => console.error('[PIPELINE_ATRISK]', e instanceof Error ? e.message : e)); };
     load();

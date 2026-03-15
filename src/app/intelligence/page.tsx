@@ -60,6 +60,7 @@ export default function IntelligencePage() {
     setLoading(false);
   }, []);
 
+  useEffect(() => { document.title = 'Raise | Intelligence'; }, []);
   useEffect(() => { fetchAll(); }, [fetchAll]);
 
   useEffect(() => {

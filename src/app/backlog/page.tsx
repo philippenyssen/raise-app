@@ -84,6 +84,7 @@ export default function BacklogPage() {
     }
   }, [toast]);
 
+  useEffect(() => { document.title = 'Raise | Revenue Backlog'; }, []);
   useEffect(() => { fetchData(); }, [fetchData]);
 
   useEffect(() => {

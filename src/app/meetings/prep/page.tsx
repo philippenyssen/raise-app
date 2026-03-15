@@ -120,6 +120,7 @@ function MeetingPrepContent() {
   const printRef = useRef<HTMLDivElement>(null);
 
   // load investor list on mount
+  useEffect(() => { document.title = 'Raise | Meeting Prep'; }, []);
   useEffect(() => {
     (async () => {
       try {

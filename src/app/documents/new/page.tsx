@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/toast';
 import { FileText, Upload } from 'lucide-react';
@@ -151,6 +151,7 @@ const TEMPLATES = [
   },];
 
 export default function NewDocumentPage() {
+  useEffect(() => { document.title = 'Raise | New Document'; }, []);
   const router = useRouter();
   const { toast } = useToast();
   const [creating, setCreating] = useState(false);

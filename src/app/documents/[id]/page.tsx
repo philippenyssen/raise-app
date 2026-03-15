@@ -39,6 +39,7 @@ export default function DocumentEditorPage() {
   const [closeModalHovered, setCloseModalHovered] = useState(false);
   const [applyHovered, setApplyHovered] = useState(false);
 
+  useEffect(() => { document.title = 'Raise | Document'; }, []);
   useEffect(() => {
     fetch(`/api/documents/${id}`).then(r => {
       if (!r.ok) throw new Error('Failed to load document');

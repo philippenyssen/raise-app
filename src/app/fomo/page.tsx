@@ -415,6 +415,7 @@ export default function FomoPage() {
     }
   }, []);
 
+  useEffect(() => { document.title = 'Raise | Pipeline FOMO'; }, []);
   useEffect(() => { fetchData(); }, [fetchData]);
 
   useEffect(() => {

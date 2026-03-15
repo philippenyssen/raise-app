@@ -40,6 +40,7 @@ function NewMeetingContent() {
   const [viewAllHovered, setViewAllHovered] = useState(false);
   const [logAnotherHovered, setLogAnotherHovered] = useState(false);
 
+  useEffect(() => { document.title = 'Raise | Log Meeting'; }, []);
   useEffect(() => {
     fetch('/api/investors').then(r => r.json()).then(setInvestors).catch(e => console.error('[NEW_MEETING_INVESTORS]', e instanceof Error ? e.message : e));
   }, []);

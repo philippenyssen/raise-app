@@ -188,6 +188,7 @@ export default function DealflowPage() {
     }
   }, []);
 
+  useEffect(() => { document.title = 'Raise | Dealflow'; }, []);
   useEffect(() => {
     fetchData();
     const interval = setInterval(() => fetchData(), 5 * MS_PER_MINUTE);

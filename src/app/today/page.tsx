@@ -394,6 +394,7 @@ export default function TodayPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => { document.title = 'Raise | Morning Briefing'; }, []);
   useEffect(() => {
     fetchBriefing();
     const refreshInterval = setInterval(() => fetchBriefing(true), 5 * MS_PER_MINUTE);

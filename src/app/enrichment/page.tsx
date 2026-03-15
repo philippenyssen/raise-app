@@ -84,6 +84,7 @@ export default function EnrichmentPage() {
     setLoading(false);
   }, []);
 
+  useEffect(() => { document.title = 'Raise | Data Enrichment'; }, []);
   useEffect(() => { fetchData(); }, [fetchData]);
 
   useEffect(() => {

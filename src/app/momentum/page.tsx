@@ -174,6 +174,7 @@ export default function MomentumPage() {
       setLoading(false);
     }};
 
+  useEffect(() => { document.title = 'Raise | Deal Momentum'; }, []);
   useEffect(() => {
     fetchData();
     const interval = setInterval(() => fetchData(), 5 * MS_PER_MINUTE);

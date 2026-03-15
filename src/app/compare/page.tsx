@@ -97,6 +97,7 @@ export default function ComparePage() {
   const [dimensionsExpanded, setDimensionsExpanded] = useState(false);
 
   // Fetch all investors on mount
+  useEffect(() => { document.title = 'Raise | Investor Compare'; }, []);
   useEffect(() => {
     async function load() {
       try {

@@ -44,6 +44,7 @@ export default function CompetitivePage() {
       .catch(() => { setData(null); setLoading(false); toast('Couldn\'t load competitive intelligence — try refreshing', 'error'); });
   };
 
+  useEffect(() => { document.title = 'Raise | Competitive Intel'; }, []);
   useEffect(() => { fetchData(); }, []);
 
   const handleFilter = () => { fetchData(); };

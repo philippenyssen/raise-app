@@ -122,6 +122,7 @@ export default function AnalyticsPage() {
   const [refreshHovered, setRefreshHovered] = useState(false);
   const [retryHovered, setRetryHovered] = useState(false);
 
+  useEffect(() => { document.title = 'Raise | Process Analytics'; }, []);
   useEffect(() => { fetchAnalytics(); }, []);
   useEffect(() => {
     const h = (e: KeyboardEvent) => { if (e.key === 'r' && !e.metaKey && !e.ctrlKey && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement)) { e.preventDefault(); fetchAnalytics(); } };

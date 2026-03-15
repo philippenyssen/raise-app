@@ -293,6 +293,7 @@ export default function MeetingsPage() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [expandedOutcome, setExpandedOutcome] = useState<string | null>(null);
 
+  useEffect(() => { document.title = 'Raise | Meetings'; }, []);
   useEffect(() => {
     let active = true;
     const load = () => fetch('/api/meetings')

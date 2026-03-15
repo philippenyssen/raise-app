@@ -190,6 +190,7 @@ function FollowupsContent() {
     }
   }, [filter, investorFilter]);
 
+  useEffect(() => { document.title = 'Raise | Follow-Ups'; }, []);
   useEffect(() => {
     fetchFollowups();
   }, [fetchFollowups]);

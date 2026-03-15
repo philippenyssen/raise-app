@@ -355,6 +355,7 @@ export default function AccelerationPage() {
     }
   }, [toast]);
 
+  useEffect(() => { document.title = 'Raise | Acceleration'; }, []);
   useEffect(() => { fetchData(); }, [fetchData]);
 
   useEffect(() => {

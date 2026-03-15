@@ -69,6 +69,7 @@ export default function HealthPage() {
       .finally(() => setIntelLoading(false));
   }
 
+  useEffect(() => { document.title = 'Raise | Process Health'; }, []);
   useEffect(() => { fetchHealth(); }, []);
 
   const score = Object.values(convergence).filter(Boolean).length;

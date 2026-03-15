@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useToast } from '@/components/toast';
 import { fmtDateTime } from '@/lib/format';
 import Link from 'next/link';
@@ -72,6 +72,7 @@ function cellStyle(rating: CellRating): React.CSSProperties {
 // ---------------------------------------------------------------------------
 
 export default function TermComparePage() {
+  useEffect(() => { document.title = 'Raise | Term Compare'; }, []);
   const { toast } = useToast();
   const [scenarios, setScenarios] = useState<TermScenario[]>([{ ...EMPTY_SCENARIO }]);
   const [results, setResults] = useState<CompareResponse | null>(null);

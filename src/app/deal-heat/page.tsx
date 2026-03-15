@@ -50,6 +50,7 @@ export default function DealHeatPage() {
       .catch(e => { setError(e.message); setLoading(false); });
   }
 
+  useEffect(() => { document.title = 'Raise | Deal Heat Map'; }, []);
   useEffect(() => { fetchDealHeat(); }, []);
 
   if (loading) {

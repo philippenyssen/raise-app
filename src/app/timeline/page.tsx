@@ -59,6 +59,7 @@ export default function TimelinePage() {
     setLoading(false);
   }, []);
 
+  useEffect(() => { document.title = 'Raise | Timeline & Tasks'; }, []);
   useEffect(() => { fetchData(); }, [fetchData]);
 
   useEffect(() => {

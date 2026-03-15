@@ -73,6 +73,7 @@ export default function DataRoomPage() {
     setIntelLoading(false);
   }, []);
 
+  useEffect(() => { document.title = 'Raise | Data Room'; }, []);
   useEffect(() => { fetchFiles(); fetchIntelligence(); }, [fetchFiles, fetchIntelligence]);
 
   async function handleLogAccess(investorId: string, documentId: string) {

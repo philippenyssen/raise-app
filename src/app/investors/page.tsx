@@ -76,6 +76,7 @@ export default function InvestorsPage() {
     ic_process: '', speed: 'medium' as 'fast' | 'medium' | 'slow',
     portfolio_conflicts: '', notes: '',});
 
+  useEffect(() => { document.title = 'Raise | Investor CRM'; }, []);
   useEffect(() => { fetchInvestors(); }, []);
   useEffect(() => { if (showForm) setTimeout(() => { const el = document.querySelector<HTMLInputElement>('#investor-form input'); el?.focus(); }, 50); }, [showForm]);
   useEffect(() => {

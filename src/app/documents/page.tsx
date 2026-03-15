@@ -70,6 +70,7 @@ export default function DocumentsPage() {
 
   const setHover = (key: string, val: boolean) => setHoverStates(prev => ({ ...prev, [key]: val }));
 
+  useEffect(() => { document.title = 'Raise | Documents'; }, []);
   useEffect(() => { fetchDocs(); fetchFlags(); }, []);
 
   async function fetchDocs() {

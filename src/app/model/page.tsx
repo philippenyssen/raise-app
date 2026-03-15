@@ -164,6 +164,7 @@ export default function ModelPage() {
     }
   }, [activeSheetId, toast]);
 
+  useEffect(() => { document.title = 'Raise | Financial Model'; }, []);
   useEffect(() => { fetchSheets(); }, [fetchSheets]);
 
   const doSelectSheet = useCallback((sheet: ModelSheet) => {

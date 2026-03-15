@@ -40,6 +40,7 @@ export default function VelocityPage() {
       .catch(e => { setError(e.message); setLoading(false); });
   }
 
+  useEffect(() => { document.title = 'Raise | Close in 60'; }, []);
   useEffect(() => { fetchVelocity(); }, []);
 
   if (loading) {

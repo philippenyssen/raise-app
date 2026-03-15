@@ -157,6 +157,7 @@ export default function StrategicPage() {
     }
   }, []);
 
+  useEffect(() => { document.title = 'Raise | Strategic Dashboard'; }, []);
   useEffect(() => {
     fetchData();
     function onKey(e: KeyboardEvent) {

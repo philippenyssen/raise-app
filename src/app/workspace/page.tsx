@@ -53,6 +53,7 @@ export default function WorkspacePage() {
     }
   }, [toast]);
 
+  useEffect(() => { document.title = 'Raise | Workspace'; }, []);
   useEffect(() => { fetchDocs(); }, [fetchDocs]);
 
   const doSelectDoc = useCallback((doc: Doc) => {

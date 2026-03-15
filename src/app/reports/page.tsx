@@ -19,6 +19,7 @@ export default function ReportsPage() {
 
   const setHover = (key: string, val: boolean) => setHoverStates(prev => ({ ...prev, [key]: val }));
 
+  useEffect(() => { document.title = 'Raise | Reports'; }, []);
   useEffect(() => {
     fetch('/api/investors')
       .then(r => r.json())
