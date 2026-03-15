@@ -45,6 +45,7 @@ function LoginForm() {
           onChange={e => setPassword(e.target.value)}
           placeholder="Enter password"
           autoFocus
+          autoComplete="current-password"
           className="input"
           style={{ padding: 'var(--space-3) var(--space-4)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)' }} />
       </div>

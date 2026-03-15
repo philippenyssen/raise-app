@@ -189,9 +189,9 @@ export default function BacklogPage() {
               />
             <select value={form.contract_type} onChange={e => setForm(f => ({ ...f, contract_type: e.target.value }))} className="input">
               {Object.entries(TYPE_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select>
-            <input type="number" placeholder="Total Amount (€M)" value={form.amount_eur} onChange={e => setForm(f => ({ ...f, amount_eur: e.target.value }))} className="input"
+            <input type="number" min="0" step="0.1" placeholder="Total Amount (€M)" value={form.amount_eur} onChange={e => setForm(f => ({ ...f, amount_eur: e.target.value }))} className="input"
               />
-            <input type="number" placeholder="Annual Amount (€M)" value={form.annual_amount} onChange={e => setForm(f => ({ ...f, annual_amount: e.target.value }))} className="input"
+            <input type="number" min="0" step="0.1" placeholder="Annual Amount (€M)" value={form.annual_amount} onChange={e => setForm(f => ({ ...f, annual_amount: e.target.value }))} className="input"
               />
             <input type="number" step="0.05" min="0" max="1" placeholder="Confidence: 1.0=signed, 0.7=LOI, 0.3=pipeline" value={form.confidence} onChange={e => setForm(f => ({ ...f, confidence: e.target.value }))} className="input" title="1.0 = signed contract, 0.7 = LOI/MOU, 0.5 = verbal, 0.3 = pipeline"
               />
