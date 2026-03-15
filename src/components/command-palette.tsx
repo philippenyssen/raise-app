@@ -362,6 +362,9 @@ export default function CommandPalette() {
             onChange={e => setQuery(e.target.value)}
             placeholder="Search investors, pages, actions..."
             className="flex-1 outline-none"
+            autoComplete="off"
+            spellCheck={false}
+            aria-label="Command palette search"
             style={{
               background: 'transparent',
               color: 'var(--text-primary)',
