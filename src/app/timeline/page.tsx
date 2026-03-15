@@ -63,27 +63,36 @@ export default function TimelinePage() {
 
   async function toggleTask(task: Task) {
     const newStatus = task.status === 'done' ? 'pending' : 'done';
-    await fetch('/api/tasks', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: task.id, status: newStatus, title: task.title, investor_id: task.investor_id, investor_name: task.investor_name }),
-    });
-    toast(newStatus === 'done' ? 'Task completed' : 'Task reopened');
-    fetchData();
+    try {
+      const res = await fetch('/api/tasks', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: task.id, status: newStatus, title: task.title, investor_id: task.investor_id, investor_name: task.investor_name }),
+      });
+      if (!res.ok) throw new Error('Failed to update task');
+      toast(newStatus === 'done' ? 'Task completed' : 'Task reopened');
+      fetchData();
+    } catch { toast('Failed to update task', 'error'); }
   }
 
   async function updateTaskStatus(id: string, status: string) {
-    await fetch('/api/tasks', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, status }),});
-    fetchData();
+    try {
+      const res = await fetch('/api/tasks', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status }),});
+      if (!res.ok) throw new Error('Failed to update');
+      fetchData();
+    } catch { toast('Failed to update status', 'error'); }
   }
 
   async function deleteTaskById(id: string) {
-    await fetch(`/api/tasks?id=${id}`, { method: 'DELETE' });
-    toast('Task deleted');
-    fetchData();
+    try {
+      const res = await fetch(`/api/tasks?id=${id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Failed to delete');
+      toast('Task deleted');
+      fetchData();
+    } catch { toast('Failed to delete task', 'error'); }
   }
 
   async function handleAddTask(e: React.FormEvent<HTMLFormElement>) {
@@ -91,13 +100,16 @@ export default function TimelinePage() {
     const fd = new FormData(e.currentTarget);
     const data: Record<string, string> = {};
     fd.forEach((v, k) => { data[k] = v as string; });
-    await fetch('/api/tasks', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),});
-    toast('Task created');
-    setShowAdd(false);
-    fetchData();
+    try {
+      const res = await fetch('/api/tasks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),});
+      if (!res.ok) throw new Error('Failed to create');
+      toast('Task created');
+      setShowAdd(false);
+      fetchData();
+    } catch { toast('Failed to create task', 'error'); }
   }
 
   const filteredTasks = tasks.filter(t => {
@@ -350,6 +362,7 @@ export default function TimelinePage() {
                             onClick={() => deleteTaskById(task.id)}
                             className="transition-colors"
                             style={stTextMuted}
+                            title="Delete task"
                             onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--danger)'; }}
                             onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-muted)'; }}>
                             <Trash2 className="w-3 h-3" /></button></div>

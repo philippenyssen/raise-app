@@ -37,7 +37,7 @@ export default function CompetitivePage() {
     fetch(`/api/competitive${qs ? '?' + qs : ''}`)
       .then(r => { if (!r.ok) throw new Error(`${r.status}`); return r.json(); })
       .then((d: CompetitiveData) => { setData(d); setLoading(false); })
-      .catch(() => { setLoading(false); });
+      .catch(() => { setData(null); setLoading(false); });
   };
 
   useEffect(() => { fetchData(); }, []);

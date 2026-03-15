@@ -51,8 +51,13 @@ export default function HealthPage() {
   const [intelVerify, setIntelVerify] = useState<IntelligenceVerification | null>(null);
   const [intelLoading, setIntelLoading] = useState(true);
 
+  const [healthError, setHealthError] = useState<string | null>(null);
+
   useEffect(() => {
-    fetch('/api/health').then(r => r.json()).then(setData);
+    fetch('/api/health')
+      .then(r => { if (!r.ok) throw new Error('Failed to load'); return r.json(); })
+      .then(setData)
+      .catch(() => setHealthError('Failed to load health data'));
     fetch('/api/intelligence/verify')
       .then(r => r.json())
       .then(setIntelVerify)
@@ -61,6 +66,13 @@ export default function HealthPage() {
   }, []);
 
   const score = Object.values(convergence).filter(Boolean).length;
+
+  if (healthError) return (
+    <div className="page-content space-y-6 text-center py-12">
+      <AlertTriangle className="w-10 h-10 mx-auto" style={{ color: 'var(--danger)' }} />
+      <p style={stTextMuted}>{healthError}</p>
+      <button onClick={() => window.location.reload()} className="btn btn-secondary btn-sm">Retry</button>
+    </div>);
 
   if (!data) return (
     <div className="page-content space-y-6">
