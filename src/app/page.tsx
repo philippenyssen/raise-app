@@ -281,8 +281,14 @@ export default function Dashboard() {
 
   const fetchData = useCallback(async (silent = false) => {
     if (!silent) setLoading(true); else setRefreshing(true);
-    await Promise.allSettled(['health','pulse','docs','dataRoom','tasks','activity','dataQuality','stressTest','atRisk','dealHeat','followups','velocity'].map(k => fetchSection(k, silent)));
-    setLastRefresh(new Date()); setLoading(false); setRefreshing(false);
+    // Critical path: load essential data first (health + pulse + stressTest)
+    const critical = ['health', 'pulse', 'stressTest'];
+    const secondary = ['docs','dataRoom','tasks','activity','dataQuality','atRisk','dealHeat','followups','velocity'];
+    await Promise.allSettled(critical.map(k => fetchSection(k, silent)));
+    setLoading(false); // Unblock render after critical data loads
+    // Load remaining sections in background — each renders as it arrives
+    await Promise.allSettled(secondary.map(k => fetchSection(k, silent)));
+    setLastRefresh(new Date()); setRefreshing(false);
   }, [fetchSection]);
 
   useEffect(() => { document.title = 'Raise | Dashboard'; }, []);
@@ -1249,22 +1255,16 @@ function VelocityStrip({ velocity }: { velocity: VelocityResponse }) {
     }
     return bins;
   })();
-  const [hovered, setHovered] = useState(false);
-
   return (
-    <div
-      className="rounded-xl overflow-hidden transition-all"
-      style={{}}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}>
+    <div className="group rounded-xl overflow-hidden transition-all">
       <div className="px-5 pt-4 pb-2">
         <div className="flex items-center justify-between mb-3">
           <h2 className="section-title flex items-center gap-2">
             <Gauge className="w-4 h-4" /> Pipeline velocity</h2>
           <Link
             href="/dealflow"
-            className="flex items-center gap-1 transition-opacity"
-            style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)', opacity: hovered ? 1 : 0 }}>
+            className="flex items-center gap-1 transition-opacity opacity-0 group-hover:opacity-100"
+            style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}>
             Details <ArrowRight className="w-3 h-3" /></Link></div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-3">
@@ -1313,28 +1313,23 @@ function VelocityStrip({ velocity }: { velocity: VelocityResponse }) {
 }
 
 function HotDealRow({ investor }: { investor: DealHeatInvestor }) {
-  const [hovered, setHovered] = useState(false);
-
+  const daysSilent = investor.lastMeeting ? Math.floor((Date.now() - new Date(investor.lastMeeting).getTime()) / 864e5) : null;
   return (
     <div
-      className="flex items-center gap-3 py-2 px-3 rounded-lg transition-colors"
-      style={{ background: hovered ? 'var(--surface-2)' : 'transparent' }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}>
+      className="table-row flex items-center gap-3 py-2 px-3 rounded-lg transition-colors">
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
           <Link
             href={`/investors/${investor.id}`}
             className="truncate transition-colors"
-            style={{
-              fontSize: 'var(--font-size-sm)',
-              fontWeight: 400,
-              color: hovered ? 'var(--accent)' : 'var(--text-primary)', }}>
+            style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = ''; }}>
             {investor.name}</Link>
           <span style={labelTertiary}>T{investor.tier}</span></div>
         <div className="mt-0.5 flex items-center gap-2" style={labelMuted}>
           <span>{formatStage(investor.status)}</span>
-          {(() => { if (!investor.lastMeeting) return null; const d = Math.floor((Date.now() - new Date(investor.lastMeeting).getTime()) / 864e5); if (d < 7) return null; return <span style={{ color: d >= 14 ? 'var(--danger)' : 'var(--warning)', fontSize: 'var(--font-size-xs)' }}>{d}d silent</span>; })()}</div></div>
+          {daysSilent !== null && daysSilent >= 7 && <span style={{ color: daysSilent >= 14 ? 'var(--danger)' : 'var(--warning)', fontSize: 'var(--font-size-xs)' }}>{daysSilent}d silent</span>}</div></div>
       <div className="flex items-center gap-2 shrink-0">
         <span className="tabular-nums" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
           {investor.dealHeat.heat}</span>
@@ -1347,22 +1342,22 @@ function HotDealRow({ investor }: { investor: DealHeatInvestor }) {
     </div>);
 }
 
+const ACTION_LABELS: Record<string, string> = {
+  thank_you: 'Thank You',
+  objection_response: 'Objection Response',
+  data_share: 'Data Share',
+  schedule_followup: 'Schedule Follow-up',
+  warm_reengagement: 'Re-engagement',
+  milestone_update: 'Milestone Update',
+};
+
 function FollowupRow({ followup, onComplete }: { followup: FollowupItem; onComplete?: (id: string) => void }) {
-  const [hovered, setHovered] = useState(false);
   const [completing, setCompleting] = useState(false);
 
   const now = new Date();
   const dueDate = new Date(followup.due_at);
   const isOverdue = dueDate < now;
   const daysUntil = Math.round((dueDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-
-  const actionLabel: Record<string, string> = {
-    thank_you: 'Thank You',
-    objection_response: 'Objection Response',
-    data_share: 'Data Share',
-    schedule_followup: 'Schedule Follow-up',
-    warm_reengagement: 'Re-engagement',
-    milestone_update: 'Milestone Update',};
 
   const ActionIcon = followup.action_type === 'thank_you' ? Mail :
     followup.action_type === 'schedule_followup' ? Calendar :
@@ -1371,10 +1366,8 @@ function FollowupRow({ followup, onComplete }: { followup: FollowupItem; onCompl
 
   return (
     <div
-      className="flex items-center gap-3 py-2 px-3 rounded-lg transition-colors"
-      style={{ background: hovered ? 'var(--surface-2)' : 'transparent', opacity: completing ? 0.5 : 1 }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}>
+      className="table-row flex items-center gap-3 py-2 px-3 rounded-lg transition-colors"
+      style={{ opacity: completing ? 0.5 : 1 }}>
       {onComplete && (
         <button
           onClick={() => { setCompleting(true); onComplete(followup.id); }}
@@ -1396,10 +1389,12 @@ function FollowupRow({ followup, onComplete }: { followup: FollowupItem; onCompl
           <Link
             href={`/investors/${followup.investor_id}`}
             className="truncate transition-colors"
-            style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: hovered ? 'var(--accent)' : 'var(--text-primary)' }}>
+            style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = ''; }}>
             {followup.investor_name || 'Unknown'}</Link>
           <span style={labelTertiary}>
-            {actionLabel[followup.action_type] || followup.action_type.replace(/_/g, ' ')}</span></div>
+            {ACTION_LABELS[followup.action_type] || followup.action_type.replace(/_/g, ' ')}</span></div>
         <p className="truncate mt-0.5" style={labelSecondary}>
           {followup.description}</p></div>
       <div className="shrink-0 flex items-center gap-2">
@@ -1421,26 +1416,21 @@ function FollowupRow({ followup, onComplete }: { followup: FollowupItem; onCompl
     </div>);
 }
 
+const EVENT_ICONS: Record<string, typeof Activity> = {
+  meeting_logged: Calendar,
+  status_changed: ArrowUp,
+  followup_completed: CheckCircle2,
+  investor_added: UserPlus,
+  followup_created: Mail,
+  meeting_created: Calendar,
+};
+
 function ActivityRow({ activity }: { activity: ActivityItem }) {
-  const [hovered, setHovered] = useState(false);
-
-  const eventIcons: Record<string, typeof Activity> = {
-    meeting_logged: Calendar,
-    status_changed: ArrowUp,
-    followup_completed: CheckCircle2,
-    investor_added: UserPlus,
-    followup_created: Mail,
-    meeting_created: Calendar,};
-
-  const Icon = eventIcons[activity.event_type] || Activity;
+  const Icon = EVENT_ICONS[activity.event_type] || Activity;
   const timeAgo = formatTimeAgo(activity.created_at);
 
   return (
-    <div
-      className="flex items-start gap-2.5 py-1.5 px-2 rounded transition-colors"
-      style={{ background: hovered ? 'var(--surface-2)' : 'transparent' }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}>
+    <div className="table-row flex items-start gap-2.5 py-1.5 px-2 rounded transition-colors">
       <span className="mt-0.5 shrink-0" style={textTertiary}>
         <Icon className="w-3.5 h-3.5" /></span>
       <div className="flex-1 min-w-0">
