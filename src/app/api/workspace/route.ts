@@ -502,7 +502,7 @@ INSTRUCTIONS:
       system: systemPrompt,
       messages: messages.map((m: { role: string; content: string }) => ({
         role: m.role as 'user' | 'assistant',
-        content: m.content,
+        content: m.content.length > 30000 ? m.content.substring(0, 30000) + '\n[...truncated]' : m.content,
       })),});
 
     const encoder = new TextEncoder();
