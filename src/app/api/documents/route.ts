@@ -32,7 +32,12 @@ export async function POST(req: NextRequest) {
   const filtered = Object.fromEntries(
     Object.entries(body).filter(([k]) => ALLOWED_FIELDS.has(k))
   ) as { title: string; type: string; content: string };
-  const doc = await createDocument(filtered);
-  emitContextChange('document_created', `Created document ${filtered.title || ''}`);
-  return NextResponse.json(doc, { status: 201 });
+  try {
+    const doc = await createDocument(filtered);
+    emitContextChange('document_created', `Created document ${filtered.title || ''}`);
+    return NextResponse.json(doc, { status: 201 });
+  } catch (e) {
+    console.error('[DOCUMENTS_POST]', e instanceof Error ? e.message : e);
+    return NextResponse.json({ error: 'Failed to create document' }, { status: 500 });
+  }
 }
