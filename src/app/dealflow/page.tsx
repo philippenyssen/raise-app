@@ -99,9 +99,14 @@ export default function DealflowPage() {
         safeParse('/api/deal-heat'),
         safeParse('/api/momentum'),]);
 
-      const velData = velRes.status === 'fulfilled' ? velRes.value : null;
-      const heatData = heatRes.status === 'fulfilled' ? heatRes.value : null;
-      const momData = momRes.status === 'fulfilled' ? momRes.value : null;
+      const unwrap = <T,>(r: PromiseSettledResult<T>, label: string): T | null => {
+        if (r.status === 'fulfilled') return r.value;
+        console.error(`[DEALFLOW] ${label}:`, r.reason instanceof Error ? r.reason.message : r.reason);
+        return null;
+      };
+      const velData = unwrap(velRes, 'velocity');
+      const heatData = unwrap(heatRes, 'deal-heat');
+      const momData = unwrap(momRes, 'momentum');
 
       // Build a map keyed by investor id/name
       const map = new Map<string, DealflowInvestor>();

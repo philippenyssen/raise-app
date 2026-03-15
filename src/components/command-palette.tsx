@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
+import { cachedFetch } from '@/lib/cache';
 import { createPortal } from 'react-dom';
 import {
   Sun, LayoutDashboard, Columns3, Users, Calendar,
@@ -115,7 +116,7 @@ export default function CommandPalette() {
   // Fetch investors once when palette opens
   useEffect(() => {
     if (open && !investorsFetched) {
-      fetch('/api/investors')
+      cachedFetch('/api/investors')
         .then(r => r.json())
         .then((data: { id: string; name: string }[]) => {
           if (Array.isArray(data)) {

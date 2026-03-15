@@ -61,8 +61,8 @@ export function TopBar() {
   async function fetchData() {
     try {
       const [tRes, aRes] = await Promise.all([
-        fetch('/api/tasks?type=upcoming&limit=10'),
-        fetch('/api/tasks?type=activity&limit=5'),]);
+        cachedFetch('/api/tasks?type=upcoming&limit=10'),
+        cachedFetch('/api/tasks?type=activity&limit=5'),]);
       if (tRes.ok) setTasks(await tRes.json());
       if (aRes.ok) setActivity(await aRes.json());
       cachedFetch('/api/investors').then(r => r.ok ? r.json() : []).then((inv: { status: string }[]) => { if (Array.isArray(inv) && inv.length > 0) { const advanced = inv.filter(i => ['term_sheet', 'closed'].includes(i.status)).length; setRaisePct(Math.round((advanced / inv.length) * 100)); } }).catch(() => {});
