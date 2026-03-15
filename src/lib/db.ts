@@ -64,8 +64,8 @@ async function genericGetByField<T>(
 ): Promise<T[]> {
   await ensureInitialized();
   let sql = `SELECT * FROM ${tableName} WHERE ${field} = ?`;
-  if (opts?.orderBy) sql += ` ORDER BY ${opts.orderBy}`;
-  if (opts?.limit) sql += ` LIMIT ${opts.limit}`;
+  if (opts?.orderBy && /^[\w]+(?: (?:ASC|DESC))?(?:, ?[\w]+(?: (?:ASC|DESC))?)*$/i.test(opts.orderBy)) sql += ` ORDER BY ${opts.orderBy}`;
+  if (opts?.limit && Number.isInteger(opts.limit) && opts.limit > 0) sql += ` LIMIT ${opts.limit}`;
   const result = await getClient().execute({ sql, args: [value] });
   return result.rows as unknown as T[];
 }

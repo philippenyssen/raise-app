@@ -188,7 +188,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ error: 'Invalid action. Use: providers, records, jobs, stats, status, profile' }, { status: 400 });
   } catch (error) {
-    return NextResponse.json({ error: 'Internal error' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to fetch enrichment data', detail: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 });
   }}
 
 // POST — trigger enrichment
@@ -370,7 +370,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ error: 'Invalid action. Use: enrich, bulk_enrich' }, { status: 400 });
   } catch (error) {
-    return NextResponse.json({ error: 'Internal error' }, { status: 500 });
+    return NextResponse.json({ error: 'Enrichment operation failed', detail: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 });
   }}
 
 // DELETE — clear enrichment data
@@ -384,5 +384,5 @@ export async function DELETE(req: NextRequest) {
     await deleteEnrichmentRecords(investorId, sourceId || undefined);
     return NextResponse.json({ ok: true });
   } catch (error) {
-    return NextResponse.json({ error: 'Internal error' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to delete enrichment data', detail: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 });
   }}
