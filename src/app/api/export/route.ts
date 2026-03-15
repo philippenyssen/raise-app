@@ -22,7 +22,6 @@ function toCSV(headers: string[], rows: unknown[][]): string {
 function csvResponse(csv: string, type: string): NextResponse {
   const date = new Date().toISOString().slice(0, 10);
   return new NextResponse(csv, {
-    status: 200,
     headers: {
       'Content-Type': 'text/csv',
       'Content-Disposition': `attachment; filename=raise-${type}-${date}.csv`,
