@@ -475,16 +475,12 @@ function StatCard({ label, value, icon, highlight }: {
   icon: React.ReactNode;
   highlight?: boolean;
 }) {
-  const [hovered, setHovered] = useState(false);
   return (
     <div
-      className="card transition-colors"
+      className="card hover-border"
       style={{
         padding: 'var(--space-3) var(--space-4)',
-        borderColor: highlight ? 'var(--warning-muted)' : hovered ? 'var(--border-default)' : undefined,
-        transition: 'border-color 150ms ease', }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}>
+        borderColor: highlight ? 'var(--warning-muted)' : undefined, }}>
       <div className="flex items-center gap-2 mb-1">
         <span style={{ color: highlight ? 'var(--warning)' : 'var(--text-muted)' }}>{icon}</span>
         <span style={labelMuted}>{label}</span></div>
@@ -497,17 +493,12 @@ function MostRequestedRow({ doc, rank }: {
   doc: { document_id: string; document_title: string; category: string; access_count: number };
   rank: number;
 }) {
-  const [hovered, setHovered] = useState(false);
   return (
     <div
-      className="flex items-center gap-3 transition-colors"
+      className="flex items-center gap-3 hover-row"
       style={{
         padding: 'var(--space-2) var(--space-3)',
-        borderRadius: 'var(--radius-md)',
-        background: hovered ? 'var(--surface-1)' : 'transparent',
-        transition: 'background 150ms ease', }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}>
+        borderRadius: 'var(--radius-md)', }}>
       <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: rank <= 3 ? 'var(--accent)' : 'var(--text-muted)', width: '1.5rem', textAlign: 'center' }}>
         #{rank}</span>
       <FileText className="w-3.5 h-3.5 shrink-0" style={stTextTertiary} />
@@ -624,31 +615,23 @@ function RecommendedDocRow({ doc, investorId, onLogAccess }: {
   investorId: string;
   onLogAccess: (investorId: string, documentId: string) => void;
 }) {
-  const [hovered, setHovered] = useState(false);
   return (
     <div
-      className="flex items-center gap-2 transition-colors"
+      className="flex items-center gap-2 hover-row"
       style={{
         padding: 'var(--space-2) var(--space-3)',
-        borderRadius: 'var(--radius-md)',
-        background: hovered ? 'var(--surface-1)' : 'transparent',
-        transition: 'background 150ms ease', }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}>
+        borderRadius: 'var(--radius-md)', }}>
       <FileText className="w-3.5 h-3.5 shrink-0" style={stAccent} />
       <span className="truncate" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)' }}>
         {doc.document_title}</span>
       <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', background: 'var(--surface-2)', padding: '0 var(--space-1)', borderRadius: 'var(--radius-sm)' }}>
         {doc.category}</span>
       <button
-        className="ml-auto shrink-0 btn btn-md"
+        className="ml-auto shrink-0 btn btn-md share-btn"
         style={{
           fontSize: 'var(--font-size-xs)',
           padding: '0.125rem var(--space-2)',
-          background: hovered ? 'var(--accent)' : 'var(--accent-muted)',
-          color: hovered ? 'white' : 'var(--accent)',
-          border: 'none',
-          transition: 'all 150ms ease', }}
+          border: 'none', }}
         onClick={() => onLogAccess(investorId, doc.document_id)}>
         Mark as shared</button>
     </div>);
@@ -657,17 +640,12 @@ function RecommendedDocRow({ doc, investorId, onLogAccess }: {
 function UnreachedInvestorRow({ investor }: {
   investor: IntelligenceData['unreached_investors'][0];
 }) {
-  const [hovered, setHovered] = useState(false);
   return (
     <div
-      className="flex items-center gap-3 transition-colors"
+      className="flex items-center gap-3 hover-row"
       style={{
         padding: 'var(--space-2) var(--space-3)',
-        borderRadius: 'var(--radius-md)',
-        background: hovered ? 'var(--surface-1)' : 'transparent',
-        transition: 'background 150ms ease', }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}>
+        borderRadius: 'var(--radius-md)', }}>
       <span style={stTextTertiary}><AlertCircle className="w-3.5 h-3.5" /></span>
       <Link href={`/investors/${investor.investor_id}`} style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)', textDecoration: 'none' }}
         onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
@@ -683,17 +661,12 @@ function UnreachedInvestorRow({ investor }: {
 function AccessLogRow({ entry }: {
   entry: IntelligenceData['document_access_log'][0];
 }) {
-  const [hovered, setHovered] = useState(false);
   return (
     <div
-      className="flex items-center gap-3 transition-colors"
+      className="flex items-center gap-3 hover-row"
       style={{
         padding: 'var(--space-2) var(--space-3)',
-        borderRadius: 'var(--radius-md)',
-        background: hovered ? 'var(--surface-1)' : 'transparent',
-        transition: 'background 150ms ease', }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}>
+        borderRadius: 'var(--radius-md)', }}>
       <Eye className="w-3.5 h-3.5 shrink-0" style={stTextTertiary} />
       <Link href={`/investors/${entry.investor_id}`} style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)', textDecoration: 'none', minWidth: '8rem' }}
         onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
@@ -710,12 +683,9 @@ function FileRow({ file, expanded, onToggle, onDelete }: {
   onToggle: () => void;
   onDelete: () => void;
 }) {
-  const [deleteHovered, setDeleteHovered] = useState(false);
-
   return (
     <div
-      className="transition-colors"
-      style={{ borderRadius: 'var(--radius-md)', transition: 'all 150ms ease' }}>
+      style={{ borderRadius: 'var(--radius-md)' }}>
       <div className="flex items-center cursor-pointer" style={{ padding: 'var(--space-3) var(--space-4)' }} onClick={onToggle}>
         {expanded
           ? <ChevronDown className="w-4 h-4 shrink-0" style={stTextMuted} />
@@ -727,16 +697,12 @@ function FileRow({ file, expanded, onToggle, onDelete }: {
         <span className="shrink-0 ml-3" style={{ ...stFontXs, ...stTextTertiary }}>{fmtDate(file.uploaded_at)}</span>
         <button
           onClick={e => { e.stopPropagation(); onDelete(); }}
-          className="ml-3 shrink-0 transition-colors"
+          className="ml-3 shrink-0 icon-delete"
           style={{
-            color: deleteHovered ? 'var(--danger)' : 'var(--text-tertiary)',
-            transition: 'color 150ms ease',
             background: 'none',
             border: 'none',
             cursor: 'pointer',
             padding: 0, }}
-          onMouseEnter={() => setDeleteHovered(true)}
-          onMouseLeave={() => setDeleteHovered(false)}
           aria-label="Delete file"
           title="Delete file">
           <Trash2 className="w-3.5 h-3.5" /></button></div>

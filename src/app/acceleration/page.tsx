@@ -90,8 +90,6 @@ function ActionCard({
   const isExecuted = executedIds.has(item.id);
   const isSkipped = skippedIds.has(item.id);
   const isDone = isExecuted || isSkipped;
-  const [execHovered, setExecHovered] = useState(false);
-  const [skipHovered, setSkipHovered] = useState(false);
 
   const cardStyle: React.CSSProperties = isDone
     ? {
@@ -165,28 +163,20 @@ function ActionCard({
             <>
               <button
                 onClick={() => onExecute(item)}
-                onMouseEnter={() => setExecHovered(true)}
-                onMouseLeave={() => setExecHovered(false)}
-                className="flex items-center gap-1.5 transition-colors"
+                className="btn btn-primary flex items-center gap-1.5"
                 style={{
                   padding: '8px 12px',
-                  background: execHovered ? 'var(--accent-hover)' : 'var(--accent)',
                   borderRadius: 'var(--radius-md)',
                   fontSize: 'var(--font-size-sm)',
-                  fontWeight: 400,
-                  color: 'var(--text-primary)',
-                  border: 'none',
-                  cursor: 'pointer', }}>
+                  fontWeight: 400, }}>
                 <Play className="w-3 h-3" />
                 Execute</button>
               <button
                 onClick={() => onSkip(item)}
-                onMouseEnter={() => setSkipHovered(true)}
-                onMouseLeave={() => setSkipHovered(false)}
-                className="flex items-center gap-1.5 transition-colors"
+                className="flex items-center gap-1.5 btn-surface"
                 style={{
                   padding: '8px 12px',
-                  background: skipHovered ? 'var(--surface-3)' : 'var(--surface-2)',
+                  background: 'var(--surface-2)',
                   borderRadius: 'var(--radius-md)',
                   fontSize: 'var(--font-size-sm)',
                   color: 'var(--text-tertiary)',
@@ -273,7 +263,6 @@ function AtRiskCard({ investor }: { investor: InvestorSummary }) {
 
 function DeprioritizeSection({ investors }: { investors: InvestorSummary[] }) {
   const [expanded, setExpanded] = useState(false);
-  const [hovered, setHovered] = useState(false);
 
   if (investors.length === 0) return null;
 
@@ -282,11 +271,8 @@ function DeprioritizeSection({ investors }: { investors: InvestorSummary[] }) {
       style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
       <button
         onClick={() => setExpanded(!expanded)}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-        className="w-full flex items-center justify-between p-3 text-left transition-colors"
+        className="w-full flex items-center justify-between p-3 text-left hover-row"
         style={{
-          background: hovered ? 'var(--surface-1)' : 'transparent',
           border: 'none',
           cursor: 'pointer', }}>
         <div className="flex items-center gap-2">
@@ -331,8 +317,6 @@ export default function AccelerationPage() {
   const [executedIds, setExecutedIds] = useState<Set<string>>(new Set());
   const [skippedIds, setSkippedIds] = useState<Set<string>>(new Set());
   const [activeTab, setActiveTab] = useState<FilterTab>('all');
-  const [refreshHovered, setRefreshHovered] = useState(false);
-  const [retryHovered, setRetryHovered] = useState(false);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -443,16 +427,10 @@ export default function AccelerationPage() {
           <p style={stTextTertiary}>Unable to load acceleration data.</p>
           <button
             onClick={fetchData}
-            onMouseEnter={() => setRetryHovered(true)}
-            onMouseLeave={() => setRetryHovered(false)}
-            className="inline-flex items-center gap-2 rounded-lg transition-colors"
+            className="btn btn-primary inline-flex items-center gap-2 rounded-lg"
             style={{
               padding: '8px 16px',
-              background: retryHovered ? 'var(--accent-hover)' : 'var(--accent)',
-              color: 'var(--text-primary)',
-              fontSize: 'var(--font-size-sm)',
-              border: 'none',
-              cursor: 'pointer', }}>
+              fontSize: 'var(--font-size-sm)', }}>
             <RefreshCw className="w-3.5 h-3.5" /> Retry</button></div>
       </div>);
   }
@@ -489,12 +467,10 @@ export default function AccelerationPage() {
             )}</p></div>
         <button
           onClick={fetchData}
-          onMouseEnter={() => setRefreshHovered(true)}
-          onMouseLeave={() => setRefreshHovered(false)}
-          className="flex items-center gap-2 rounded-lg transition-colors"
+          className="flex items-center gap-2 rounded-lg btn-surface"
           style={{
             padding: '8px 12px',
-            background: refreshHovered ? 'var(--surface-3)' : 'var(--surface-2)',
+            background: 'var(--surface-2)',
             fontSize: 'var(--font-size-sm)',
             color: 'var(--text-secondary)',
             border: 'none',
