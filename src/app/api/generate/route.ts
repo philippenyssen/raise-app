@@ -3,8 +3,13 @@ import { getRaiseConfig, getAllDocuments, getDataRoomContext, createDocument, up
 import { generateDeliverable, generateModelFromContext } from '@/lib/generate';
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
-  const { type } = body; // teaser, exec_summary, memo, dd_memo, deck, model
+  let body: Record<string, unknown>;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+  }
+  const { type } = body as { type: string };
 
   try {
     const raiseConfig = await getRaiseConfig();

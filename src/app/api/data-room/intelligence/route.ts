@@ -117,11 +117,16 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
+  let body: Record<string, unknown>;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+  }
   const { investor_id, document_id } = body;
   if (!investor_id || !document_id) {
     return NextResponse.json({ error: 'investor_id and document_id are required' }, { status: 400 });
   }
-  const record = await logDataRoomAccess(investor_id, document_id);
+  const record = await logDataRoomAccess(investor_id as string, document_id as string);
   return NextResponse.json(record);
 }

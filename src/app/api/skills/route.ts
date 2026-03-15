@@ -24,12 +24,18 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  let body: Record<string, unknown>;
   try {
-    const body = await req.json();
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+  }
+
+  try {
     if (!body.skill_name || !body.outcome) {
       return NextResponse.json({ error: 'skill_name and outcome are required' }, { status: 400 });
     }
-    await db.logSkillExecution(body);
+    await db.logSkillExecution(body as Parameters<typeof db.logSkillExecution>[0]);
     return NextResponse.json({ success: true });
   } catch (err) {
     return NextResponse.json({ error: err instanceof Error ? err.message : 'Failed to log skill execution' }, { status: 500 });

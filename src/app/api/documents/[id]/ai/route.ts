@@ -4,8 +4,15 @@ import { improveSection, checkConsistency, findWeakArguments, polishGoldmanStyle
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const body = await req.json();
-  const { operation, section, instruction } = body;
+  let body: Record<string, unknown>;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+  }
+  const operation = body.operation as string | undefined;
+  const section = body.section as string | undefined;
+  const instruction = body.instruction as string | undefined;
 
   const doc = await getDocument(id);
   if (!doc) return NextResponse.json({ error: 'Document not found' }, { status: 404 });

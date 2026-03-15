@@ -49,41 +49,50 @@ export async function GET(req: NextRequest) {
 
 // POST: Create intelligence data or run AI research
 export async function POST(req: NextRequest) {
+  let body: Record<string, unknown>;
   try {
-    const body = await req.json();
-    const { action } = body;
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+  }
+
+  try {
+    const action = body.action as string;
+    const data = body.data as Record<string, unknown> | undefined;
 
     switch (action) {
       // CRUD operations
       case 'create_deal': {
-        const deal = await createMarketDeal(body.data);
-        emitContextChange('intelligence_added', `Market deal: ${body.data?.company || ''}`);
+        const deal = await createMarketDeal(data as Parameters<typeof createMarketDeal>[0]);
+        emitContextChange('intelligence_added', `Market deal: ${(data as Record<string, string>)?.company || ''}`);
         return NextResponse.json(deal);
       }
       case 'create_competitor': {
-        const comp = await createCompetitor(body.data);
-        emitContextChange('intelligence_added', `Competitor: ${body.data?.name || ''}`);
+        const comp = await createCompetitor(data as Parameters<typeof createCompetitor>[0]);
+        emitContextChange('intelligence_added', `Competitor: ${(data as Record<string, string>)?.name || ''}`);
         return NextResponse.json(comp);
       }
       case 'create_brief': {
-        const brief = await createIntelligenceBrief(body.data);
-        emitContextChange('intelligence_added', `Brief: ${body.data?.subject || ''}`);
+        const brief = await createIntelligenceBrief(data as Parameters<typeof createIntelligenceBrief>[0]);
+        emitContextChange('intelligence_added', `Brief: ${(data as Record<string, string>)?.subject || ''}`);
         return NextResponse.json(brief);
       }
       case 'create_partner': {
-        const partner = await createInvestorPartner(body.data);
-        emitContextChange('intelligence_added', `Partner: ${body.data?.name || ''}`);
+        const partner = await createInvestorPartner(data as Parameters<typeof createInvestorPartner>[0]);
+        emitContextChange('intelligence_added', `Partner: ${(data as Record<string, string>)?.name || ''}`);
         return NextResponse.json(partner);
       }
       case 'create_portfolio': {
-        const portfolio = await createPortfolioCo(body.data);
-        emitContextChange('intelligence_added', `Portfolio co: ${body.data?.company || ''}`);
+        const portfolio = await createPortfolioCo(data as Parameters<typeof createPortfolioCo>[0]);
+        emitContextChange('intelligence_added', `Portfolio co: ${(data as Record<string, string>)?.company || ''}`);
         return NextResponse.json(portfolio);
       }
 
       // AI Research operations
       case 'research_investor': {
-        const { name, context, investor_id } = body;
+        const name = body.name as string;
+        const context = body.context as string | undefined;
+        const investor_id = body.investor_id as string | undefined;
         const research = await researchInvestor(name, context);
 
         // Store as intelligence brief
@@ -133,7 +142,8 @@ export async function POST(req: NextRequest) {
       }
 
       case 'research_competitor': {
-        const { name: compName, context: compCtx } = body;
+        const compName = body.name as string;
+        const compCtx = body.context as string | undefined;
         const research = await researchCompetitor(compName, compCtx);
 
         // Auto-create competitor entry
@@ -168,7 +178,7 @@ export async function POST(req: NextRequest) {
       }
 
       case 'research_market': {
-        const { sector } = body;
+        const sector = body.sector as string | undefined;
         const research = await researchMarketDeals(sector || 'Space, Defense Technology, Satellites');
 
         // Auto-create deal entries
@@ -217,8 +227,17 @@ export async function POST(req: NextRequest) {
 
 // PUT: Update intelligence data
 export async function PUT(req: NextRequest) {
+  let body: Record<string, unknown>;
   try {
-    const { type, id, ...updates } = await req.json();
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+  }
+
+  try {
+    const type = body.type as string;
+    const id = body.id as string;
+    const { type: _t, id: _i, ...updates } = body;
     switch (type) {
       case 'deal':
         await updateMarketDeal(id, updates);

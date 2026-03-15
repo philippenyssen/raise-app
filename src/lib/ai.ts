@@ -48,6 +48,26 @@ export async function analyzeMeetingNotes(rawNotes: string, investorName: string
   ai_analysis: string;
   suggested_status: string;
 }> {
+  if (rawNotes.trim().length < 30) {
+    return {
+      questions_asked: [],
+      objections: [],
+      engagement_signals: {
+        enthusiasm: 3, asked_about_process: false, asked_about_timeline: false,
+        requested_followup: false, mentioned_competitors: false, pricing_reception: 'not_discussed',
+        slides_that_landed: [], slides_that_fell_flat: [], check_size_mentioned: '',
+        ic_process_details: '', co_investors_referenced: [], portfolio_conflicts_surfaced: [],
+        competitive_bids_mentioned: [], followup_commitments: [], specific_concerns: [],
+        body_language_at_pricing: 'not_discussed',
+      },
+      competitive_intel: '',
+      next_steps: '',
+      enthusiasm_score: 3,
+      ai_analysis: 'Notes too brief for meaningful analysis. Add more detail about what was discussed, questions asked, and signals observed.',
+      suggested_status: 'met',
+    };
+  }
+
   const response = await getAIClient().messages.create({
     model: 'claude-sonnet-4-20250514',
     max_tokens: 4096,
@@ -126,6 +146,16 @@ Be rigorous. Don't infer enthusiasm that isn't there. If notes are sparse, flag 
   };
   const expectedFields = 10;
   const { parsed, success } = safeParseJSON(text, fallback);
+  if (success) {
+    if (typeof parsed.enthusiasm_score === 'number') {
+      parsed.enthusiasm_score = Math.max(1, Math.min(5, Math.round(parsed.enthusiasm_score)));
+    }
+    if (!Array.isArray(parsed.questions_asked)) parsed.questions_asked = [];
+    if (!Array.isArray(parsed.objections)) parsed.objections = [];
+    if (typeof parsed.engagement_signals !== 'object' || parsed.engagement_signals === null) {
+      parsed.engagement_signals = fallback.engagement_signals;
+    }
+  }
   const extractedFields = success
     ? Object.values(parsed).filter(v => v !== '' && v !== null && (Array.isArray(v) ? v.length > 0 : true)).length
     : 0;

@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
 import { getAllDocuments, getInvestor, getMeetings, getInvestorPortfolio, getIntelligenceBriefs, getRaiseConfig, computeNetworkEffectData, computeRaiseForecast, computeEngagementVelocity, detectFomoDynamics, detectScoreReversals } from '@/lib/db';
 import { computeInvestorScore, computeDealHeat } from '@/lib/scoring';
@@ -400,10 +400,17 @@ function buildOtherDocsContext(docs: { id: string; title: string; type: string; 
 }
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
-  const { messages, documentId, documentContent, documentTitle } = body;
+  let body: Record<string, unknown>;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+  }
+  const messages = body.messages as { role: string; content: string }[];
+  const documentId = body.documentId as string | null;
+  const documentContent = body.documentContent as string | undefined;
+  const documentTitle = body.documentTitle as string | undefined;
 
-  // Build context from unified context bus (includes investors, meetings, objections, tasks, follow-ups, backlog, accelerations)
   const fullCtx = await getFullContext();
 
   // Still need full doc content for buildOtherDocsContext — context bus only stores titles

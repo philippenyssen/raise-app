@@ -9,8 +9,15 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
-  const { sheet_name, sheet_order, data, model_id } = body;
+  let body: Record<string, unknown>;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+  }
+  const { sheet_name, sheet_order, data, model_id } = body as {
+    sheet_name: string; sheet_order: number; data: unknown; model_id: string;
+  };
 
   if (!sheet_name) {
     return NextResponse.json({ error: 'sheet_name is required' }, { status: 400 });
@@ -27,8 +34,15 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
-  const body = await req.json();
-  const { id, sheet_name, data, sheet_order } = body;
+  let body: Record<string, unknown>;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+  }
+  const { id, sheet_name, data, sheet_order } = body as {
+    id: string; sheet_name: string; data: unknown; sheet_order: number;
+  };
 
   if (!id) return NextResponse.json({ error: 'id is required' }, { status: 400 });
 

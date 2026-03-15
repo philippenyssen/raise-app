@@ -88,8 +88,16 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
-  const { meeting_id, investor_id, investor_name, action_type, description, due_at } = body;
+  let body: Record<string, unknown>;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+  }
+  const { meeting_id, investor_id, investor_name, action_type, description, due_at } = body as {
+    meeting_id: string; investor_id: string; investor_name: string;
+    action_type: string; description: string; due_at: string;
+  };
 
   if (!meeting_id || !investor_id || !action_type || !description || !due_at) {
     return NextResponse.json({ error: 'meeting_id, investor_id, action_type, description, and due_at are required' }, { status: 400 });
@@ -109,8 +117,15 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
-  const body = await req.json();
-  const { id, status, outcome, conviction_delta } = body;
+  let body: Record<string, unknown>;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+  }
+  const { id, status, outcome, conviction_delta } = body as {
+    id: string; status: string; outcome: string; conviction_delta: number;
+  };
 
   if (!id) {
     return NextResponse.json({ error: 'id is required' }, { status: 400 });
@@ -118,19 +133,18 @@ export async function PUT(req: NextRequest) {
 
   const updates: { status?: FollowupStatus; outcome?: string; conviction_delta?: number; completed_at?: string } = {};
   if (status) updates.status = status as FollowupStatus;
-  if (outcome !== undefined) updates.outcome = outcome;
-  if (conviction_delta !== undefined) updates.conviction_delta = conviction_delta;
+  if (outcome !== undefined) updates.outcome = outcome as string;
+  if (conviction_delta !== undefined) updates.conviction_delta = conviction_delta as number;
   if (status === 'completed' || status === 'skipped') {
     updates.completed_at = new Date().toISOString();
   }
 
-  await updateFollowup(id, updates);
+  await updateFollowup(id as string, updates);
   emitContextChange('followup_updated', `Follow-up ${id} ${status || 'updated'}`);
 
-  // Backfill investor enthusiasm from follow-up conviction delta (cycle 37)
   if (status === 'completed' && conviction_delta !== undefined) {
     const { searchParams } = new URL(req.url);
-    const invId = body.investor_id || searchParams.get('investor_id');
+    const invId = (body.investor_id as string) || searchParams.get('investor_id');
     if (invId) {
       backfillEnthusiasmFromFollowups(invId).catch(() => {/* non-blocking */});
     }

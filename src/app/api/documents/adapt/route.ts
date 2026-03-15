@@ -18,8 +18,16 @@ export interface AdaptationSuggestion {
 }
 
 export async function POST(req: NextRequest) {
+  let body: Record<string, unknown>;
   try {
-    const { document_id, investor_type } = await req.json();
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+  }
+
+  try {
+    const document_id = body.document_id as string | undefined;
+    const investor_type = body.investor_type as string | undefined;
 
     if (!document_id || !investor_type) {
       return NextResponse.json(

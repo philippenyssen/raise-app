@@ -37,8 +37,15 @@ function safeJsonParse<T>(raw: string | null | undefined, fallback: T): T {
 }
 
 export async function POST(req: NextRequest) {
+  let body: Record<string, unknown>;
   try {
-    const { investor_id } = await req.json();
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+  }
+
+  try {
+    const investor_id = body.investor_id as string;
     if (!investor_id) {
       return NextResponse.json({ error: 'investor_id is required' }, { status: 400 });
     }

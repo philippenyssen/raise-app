@@ -372,9 +372,15 @@ function buildRecommendation(profiles: InvestorCompareProfile[]): ComparisonReco
 // ---------------------------------------------------------------------------
 
 export async function POST(req: NextRequest) {
+  let body: Record<string, unknown>;
   try {
-    const body = await req.json();
-    const investorIds: string[] = body.investor_ids;
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+  }
+
+  try {
+    const investorIds: string[] = body.investor_ids as string[];
 
     if (!Array.isArray(investorIds) || investorIds.length < 2 || investorIds.length > 4) {
       return NextResponse.json(

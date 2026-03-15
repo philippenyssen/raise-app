@@ -253,9 +253,7 @@ export default function MomentumPage() {
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
               style={{
                 background: dirConfig.bg,
-                borderWidth: '1px',
-                borderStyle: 'solid',
-                borderColor: dirConfig.border,
+                boxShadow: `inset 0 0 0 1px ${dirConfig.border}`,
               }}
             >
               <DirIcon className="w-4 h-4" style={{ color: dirConfig.color }} />
@@ -334,9 +332,6 @@ export default function MomentumPage() {
                   key={i}
                   className="rounded-lg p-3"
                   style={{
-                    borderWidth: '1px',
-                    borderStyle: 'solid',
-                    borderColor: c.border,
                     background: c.bg,
                     color: c.color,
                   }}
@@ -363,7 +358,7 @@ export default function MomentumPage() {
                       <Link
                         href={`/meetings/new?investor=${alert.investorId}`}
                         className="px-2.5 py-1 rounded text-xs font-normal transition-colors"
-                        style={{ background: 'var(--accent-15)', color: 'var(--accent)', border: '1px solid var(--accent-25)' }}
+                        style={{ background: 'var(--accent-15)', color: 'var(--accent)', boxShadow: 'inset 0 0 0 1px var(--accent-25)' }}
                         onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent-30)'; }}
                         onMouseLeave={e => { e.currentTarget.style.background = 'var(--accent-15)'; }}
                       >
@@ -465,9 +460,7 @@ export default function MomentumPage() {
                             style={{
                               background: tc.bg,
                               color: tc.color,
-                              borderWidth: '1px',
-                              borderStyle: 'solid',
-                              borderColor: tc.border,
+                              boxShadow: `inset 0 0 0 1px ${tc.border}`,
                             }}
                           >
                             {TYPE_LABELS[inv.type] || inv.type}
@@ -607,9 +600,7 @@ export default function MomentumPage() {
                             style={{
                               background: tc.bg,
                               color: tc.color,
-                              borderWidth: '1px',
-                              borderStyle: 'solid',
-                              borderColor: tc.border,
+                              boxShadow: `inset 0 0 0 1px ${tc.border}`,
                             }}
                           >
                             {TYPE_LABELS[cohort.type] || cohort.type}
@@ -675,9 +666,7 @@ export default function MomentumPage() {
                   style={{
                     background: 'var(--warning-muted)',
                     color: 'var(--text-tertiary)',
-                    borderWidth: '1px',
-                    borderStyle: 'solid',
-                    borderColor: 'var(--warn-40)',
+                    boxShadow: 'inset 0 0 0 1px var(--warn-40)',
                   }}
                 >
                   {data.anomalies.length}
@@ -702,9 +691,6 @@ export default function MomentumPage() {
                       className="rounded-lg p-3"
                       style={{
                         background: isAbove ? 'var(--accent-20)' : 'var(--fg-20)',
-                        borderWidth: '1px',
-                        borderStyle: 'solid',
-                        borderColor: isAbove ? 'var(--accent-30)' : 'var(--fg-30)',
                       }}
                     >
                       <div className="flex items-start gap-3">
@@ -732,9 +718,7 @@ export default function MomentumPage() {
                               style={{
                                 background: tc.bg,
                                 color: tc.color,
-                                borderWidth: '1px',
-                                borderStyle: 'solid',
-                                borderColor: tc.border,
+                                boxShadow: `inset 0 0 0 1px ${tc.border}`,
                               }}
                             >
                               {TYPE_LABELS[anomaly.type] || anomaly.type}
@@ -754,7 +738,7 @@ export default function MomentumPage() {
                               style={{
                                 background: isAbove ? 'var(--accent-30)' : 'var(--fg-30)',
                                 color: isAbove ? 'var(--success)' : 'var(--danger)',
-                                border: `1px solid ${isAbove ? 'var(--accent-40)' : 'var(--fg-40)'}`,
+                                boxShadow: `inset 0 0 0 1px ${isAbove ? 'var(--accent-40)' : 'var(--fg-40)'}`,
                               }}
                               onMouseEnter={e => { e.currentTarget.style.opacity = '0.8'; }}
                               onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}
@@ -788,9 +772,7 @@ export default function MomentumPage() {
                 style={{
                   background: 'var(--danger-muted, var(--fg-40))',
                   color: 'var(--text-primary)',
-                  borderWidth: '1px',
-                  borderStyle: 'solid',
-                  borderColor: 'var(--fg-40)',
+                  boxShadow: 'inset 0 0 0 1px var(--fg-40)',
                 }}
               >
                 {data.crossSignals.length}
@@ -803,9 +785,6 @@ export default function MomentumPage() {
                   className="rounded-lg p-4"
                   style={{
                     background: 'var(--surface-2)',
-                    borderWidth: '1px',
-                    borderStyle: 'solid',
-                    borderColor: 'var(--border-subtle)',
                   }}
                 >
                   <div className="flex items-start gap-3">
@@ -852,9 +831,7 @@ export default function MomentumPage() {
                 style={{
                   background: 'var(--warning-muted, var(--warn-40))',
                   color: 'var(--text-tertiary)',
-                  borderWidth: '1px',
-                  borderStyle: 'solid',
-                  borderColor: 'var(--warn-40)',
+                  boxShadow: 'inset 0 0 0 1px var(--warn-40)',
                 }}
               >
                 {data.timingSignals.length}
@@ -963,9 +940,7 @@ export default function MomentumPage() {
                         style={{
                           background: tc.bg,
                           color: tc.color,
-                          borderWidth: '1px',
-                          borderStyle: 'solid',
-                          borderColor: tc.border,
+                          boxShadow: `inset 0 0 0 1px ${tc.border}`,
                         }}
                       >
                         {TYPE_LABELS[nh.investorType] || nh.investorType}

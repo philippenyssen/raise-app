@@ -19,9 +19,16 @@ export async function GET() {
 }
 
 export async function PUT(request: NextRequest) {
+  let body: Record<string, unknown>;
   try {
-    const body = await request.json();
-    const { key, value } = body;
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+  }
+
+  try {
+    const key = body.key as string;
+    const value = body.value;
 
     if (!key || !ALLOWED_KEYS.includes(key)) {
       return NextResponse.json(

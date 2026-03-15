@@ -109,10 +109,10 @@ const COLUMN_COLORS: Record<InvestorStatus, {
 };
 
 const TIER_STYLES: Record<number, React.CSSProperties> = {
-  1: { background: 'var(--accent-muted)', color: 'var(--accent)', borderColor: 'var(--accent-muted)' },
-  2: { background: 'var(--accent-8)', color: 'var(--text-secondary)', borderColor: 'var(--accent-10)' },
-  3: { background: 'var(--white-12)', color: 'var(--text-secondary)', borderColor: 'var(--border-default)' },
-  4: { background: 'var(--white-8)', color: 'var(--text-muted)', borderColor: 'var(--border-subtle)' },
+  1: { background: 'var(--accent-muted)', color: 'var(--accent)', boxShadow: 'inset 0 0 0 1px var(--accent-muted)' },
+  2: { background: 'var(--accent-8)', color: 'var(--text-secondary)', boxShadow: 'inset 0 0 0 1px var(--accent-10)' },
+  3: { background: 'var(--white-12)', color: 'var(--text-secondary)', boxShadow: 'inset 0 0 0 1px var(--border-default)' },
+  4: { background: 'var(--white-8)', color: 'var(--text-muted)', boxShadow: 'inset 0 0 0 1px var(--border-subtle)' },
 };
 
 const TYPE_LABELS: Record<InvestorType, string> = {
@@ -134,12 +134,12 @@ const TYPE_ICONS: Record<InvestorType, React.ComponentType<{ className?: string 
 };
 
 const TYPE_STYLES: Record<InvestorType, React.CSSProperties> = {
-  vc: { background: 'var(--accent-muted)', color: 'var(--accent)', borderColor: 'var(--accent-muted)' },
-  growth: { background: 'var(--cat-8)', color: 'var(--text-secondary)', borderColor: 'var(--cat-10)' },
-  sovereign: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', borderColor: 'var(--warn-30)' },
-  strategic: { background: 'var(--success-muted)', color: 'var(--text-secondary)', borderColor: 'var(--accent-30)' },
-  debt: { background: 'var(--warn-12)', color: 'var(--text-tertiary)', borderColor: 'var(--warn-30)' },
-  family_office: { background: 'var(--accent-8)', color: 'var(--text-primary)', borderColor: 'var(--accent-10)' },
+  vc: { background: 'var(--accent-muted)', color: 'var(--accent)', boxShadow: 'inset 0 0 0 1px var(--accent-muted)' },
+  growth: { background: 'var(--cat-8)', color: 'var(--text-secondary)', boxShadow: 'inset 0 0 0 1px var(--cat-10)' },
+  sovereign: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', boxShadow: 'inset 0 0 0 1px var(--warn-30)' },
+  strategic: { background: 'var(--success-muted)', color: 'var(--text-secondary)', boxShadow: 'inset 0 0 0 1px var(--accent-30)' },
+  debt: { background: 'var(--warn-12)', color: 'var(--text-tertiary)', boxShadow: 'inset 0 0 0 1px var(--warn-30)' },
+  family_office: { background: 'var(--accent-8)', color: 'var(--text-primary)', boxShadow: 'inset 0 0 0 1px var(--accent-10)' },
 };
 
 // ── Pipeline velocity stage weights ──────────────────────────────────
@@ -356,7 +356,7 @@ export default function PipelinePage() {
         <div>
           <h1 className="page-title" style={{ fontSize: 'var(--font-size-xl)' }}>Investor Pipeline</h1>
           <p className="page-subtitle" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', marginTop: 'var(--space-1)' }}>
-            Drag investors across stages to update status
+            Drag to move through the pipeline
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -585,7 +585,7 @@ export default function PipelinePage() {
                       className="flex items-center justify-center"
                       style={{ height: '5rem', color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)', textAlign: 'center', padding: '0 var(--space-2)' }}
                     >
-                      {dragId ? 'Drop here' : 'No investors at this stage yet'}
+                      {dragId ? 'Drop here' : 'Drag investors here or add from the investor list'}
                     </div>
                   )}
                 </div>
@@ -900,7 +900,6 @@ function InvestorCard({
               borderRadius: 'var(--radius-sm)',
               fontSize: '10px',
               fontWeight: 400,
-              border: '1px solid',
               ...TIER_STYLES[investor.tier],
             }}
           >
@@ -953,7 +952,6 @@ function InvestorCard({
               borderRadius: 'var(--radius-sm)',
               fontSize: '10px',
               fontWeight: 400,
-              border: '1px solid',
               ...TYPE_STYLES[investor.type as InvestorType],
             }}
           >
@@ -966,7 +964,6 @@ function InvestorCard({
               borderRadius: 'var(--radius-sm)',
               fontSize: '10px',
               fontWeight: 400,
-              border: '1px solid',
               ...TIER_STYLES[investor.tier],
             }}
           >

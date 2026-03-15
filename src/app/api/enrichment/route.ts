@@ -200,9 +200,19 @@ export async function GET(req: NextRequest) {
 
 // POST — trigger enrichment
 export async function POST(req: NextRequest) {
+  let body: Record<string, unknown>;
   try {
-    const body = await req.json();
-    const { action, investor_id, investor_ids, sources, auto_apply } = body;
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+  }
+
+  try {
+    const action = body.action as string | undefined;
+    const investor_id = body.investor_id as string | undefined;
+    const investor_ids = body.investor_ids as string[] | undefined;
+    const sources = body.sources as EnrichmentSourceId[] | undefined;
+    const auto_apply = body.auto_apply as boolean | undefined;
 
     // Enrich a single investor
     if (action === 'enrich' && investor_id) {
@@ -229,7 +239,7 @@ export async function POST(req: NextRequest) {
 
       // Run enrichment
       const result = await enrichInvestor(investor.name, existingData, {
-        sources: sources?.length > 0 ? sources : undefined,
+        sources: (sources?.length ?? 0) > 0 ? sources : undefined,
       });
 
       // Store results
@@ -340,7 +350,7 @@ export async function POST(req: NextRequest) {
         }
 
         const result = await enrichInvestor(investor.name, existingData, {
-          sources: sources?.length > 0 ? sources : undefined,
+          sources: (sources?.length ?? 0) > 0 ? sources : undefined,
         });
 
         const allFields = result.results.flatMap(r =>

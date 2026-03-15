@@ -11,6 +11,7 @@ import {
 import type { Investor } from '@/lib/types';
 import PostMeetingActions from '@/components/post-meeting-actions';
 import FollowupPlan from '@/components/followup-plan';
+import { useToast } from '@/components/toast';
 
 const ENTHUSIASM_LABELS = ['Cold', 'Lukewarm', 'Interested', 'Excited', 'All-in'];
 
@@ -42,6 +43,7 @@ export default function QuickCapturePage() {
 function QuickCaptureInner() {
   const searchParams = useSearchParams();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const { toast } = useToast();
 
   const [investors, setInvestors] = useState<Investor[]>([]);
   const [investorId, setInvestorId] = useState(searchParams.get('investor') || searchParams.get('investor_id') || '');
@@ -84,6 +86,9 @@ function QuickCaptureInner() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!investorId || !rawNotes.trim()) return;
+    if (rawNotes.trim().length < 50) {
+      toast('add more detail to your notes for better ai analysis', 'warning');
+    }
     setLoading(true);
     setResult(null);
     setThinkingMsg(0);
@@ -107,6 +112,7 @@ function QuickCaptureInner() {
       if (enthusiasm > 0) {
         data.enthusiasm_score = enthusiasm;
       }
+      toast('meeting captured and analyzed', 'success');
       setResult(data);
     } catch {
       // Non-blocking
@@ -338,6 +344,16 @@ function QuickCaptureInner() {
             />
           )}
 
+          {investorId && (
+            <Link
+              href={`/followups?investor=${investorId}`}
+              className="btn btn-secondary btn-md"
+              style={{ textDecoration: 'none', width: 'fit-content' }}
+            >
+              view all follow-ups
+            </Link>
+          )}
+
           {/* Action buttons */}
           <div style={{ display: 'flex', gap: 'var(--space-3)', paddingTop: 'var(--space-2)' }}>
             {investorId && (
@@ -405,7 +421,7 @@ function QuickCaptureInner() {
             className="input"
             style={{ cursor: 'pointer' }}
           >
-            <option value="">Select investor...</option>
+            <option value="">Choose investor for this meeting</option>
             {investors.map(inv => (
               <option key={inv.id} value={inv.id}>{inv.name} (T{inv.tier})</option>
             ))}

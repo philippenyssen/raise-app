@@ -548,27 +548,37 @@ export async function GET() {
 // ---------------------------------------------------------------------------
 
 export async function PUT(req: Request) {
+  let body: Record<string, unknown>;
   try {
-    const body = await req.json();
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+  }
+
+  try {
     const { id, status, actual_lift } = body;
 
     if (!id) {
       return NextResponse.json({ error: 'Missing action id' }, { status: 400 });
     }
 
-    const actionStatus = status || 'executed';
-    await updateAccelerationAction(id, {
+    const actionStatus = (status as string) || 'executed';
+    await updateAccelerationAction(id as string, {
       status: actionStatus,
-      actual_lift: actual_lift ?? null,
+      actual_lift: (actual_lift as number) ?? null,
       executed_at: new Date().toISOString(),
     });
 
     // --- WIRE: Acceleration Execute → Task + Followup + Activity ---
     if (actionStatus === 'executed') {
-      const { investor_id, investor_name, description, trigger_type, action_type, expected_lift } = body;
+      const investor_id = body.investor_id as string | undefined;
+      const investor_name = body.investor_name as string | undefined;
+      const description = body.description as string | undefined;
+      const trigger_type = body.trigger_type as string | undefined;
+      const action_type = body.action_type as string | undefined;
+      const expected_lift = body.expected_lift as number | undefined;
 
       if (investor_id) {
-        // Auto-create a task for execution accountability
         try {
           const tomorrow = new Date();
           tomorrow.setDate(tomorrow.getDate() + 1);
@@ -580,19 +590,18 @@ export async function PUT(req: Request) {
             status: 'in_progress',
             priority: trigger_type === 'term_sheet_ready' ? 'critical' : 'high',
             phase: 'management_presentations',
-            investor_id,
+            investor_id: investor_id || '',
             investor_name: investor_name || '',
             auto_generated: true,
           });
         } catch { /* non-blocking */ }
 
-        // Auto-create a follow-up for T+24h check-in
         try {
           const followupDue = new Date();
           followupDue.setHours(followupDue.getHours() + 24);
           await createFollowup({
             meeting_id: '',
-            investor_id,
+            investor_id: investor_id || '',
             investor_name: investor_name || '',
             action_type: trigger_type === 'term_sheet_ready' ? 'schedule_followup' : 'warm_reengagement',
             description: `Check-in after acceleration action: ${description || action_type}. Did conviction improve?`,
@@ -600,13 +609,12 @@ export async function PUT(req: Request) {
           });
         } catch { /* non-blocking */ }
 
-        // Log activity for the pipeline
         try {
           await logActivity({
             event_type: 'acceleration_executed',
             subject: `Acceleration: ${action_type || trigger_type}`,
             detail: `${description}. Expected lift: +${expected_lift || '?'} pts.`,
-            investor_id,
+            investor_id: investor_id || '',
             investor_name: investor_name || '',
           });
         } catch { /* non-blocking */ }

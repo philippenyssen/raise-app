@@ -13,9 +13,14 @@ export async function GET(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
-  const body = await req.json();
+  let body: Record<string, unknown>;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+  }
   const { id, status } = body;
   if (!id) return NextResponse.json({ error: 'id required' }, { status: 400 });
-  await updateDocumentFlag(id, { status });
+  await updateDocumentFlag(id as string, { status: status as string });
   return NextResponse.json({ ok: true });
 }

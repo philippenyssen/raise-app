@@ -14,7 +14,13 @@ export function verifySessionToken(token: string): boolean {
 }
 
 export async function POST(req: NextRequest) {
-  const { password } = await req.json();
+  let body: Record<string, unknown>;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+  }
+  const { password } = body;
   const expected = process.env.RAISE_APP_PASSWORD;
 
   if (!expected) {

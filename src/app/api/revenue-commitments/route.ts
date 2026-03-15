@@ -36,10 +36,16 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  let body: Record<string, unknown>;
   try {
-    const body = await req.json();
-    const commitment = await createRevenueCommitment(body);
-    emitContextChange('commitment_created', `Revenue commitment: ${body.counterparty || body.contract_name || ''}`);
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+  }
+
+  try {
+    const commitment = await createRevenueCommitment(body as unknown as Parameters<typeof createRevenueCommitment>[0]);
+    emitContextChange('commitment_created', `Revenue commitment: ${(body.counterparty as string) || (body.contract_name as string) || ''}`);
     return NextResponse.json(commitment);
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 500 });
@@ -47,9 +53,16 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
+  let body: Record<string, unknown>;
   try {
-    const body = await req.json();
-    const { id, ...updates } = body;
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+  }
+
+  try {
+    const id = body.id as string;
+    const { id: _id, ...updates } = body;
     if (!id) return NextResponse.json({ error: 'id required' }, { status: 400 });
     await updateRevenueCommitment(id, updates);
     emitContextChange('commitment_updated', `Commitment ${id} updated`);

@@ -8,8 +8,13 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
-  const doc = await createDocument(body);
-  emitContextChange('document_created', `Created document ${body.title || ''}`);
+  let body: Record<string, unknown>;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+  }
+  const doc = await createDocument(body as { title: string; type: string; content: string });
+  emitContextChange('document_created', `Created document ${(body.title as string) || ''}`);
   return NextResponse.json(doc, { status: 201 });
 }

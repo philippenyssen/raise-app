@@ -8,7 +8,12 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
+  let body: Record<string, unknown>;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+  }
   const { filename, category, mime_type, size_bytes, extracted_text, summary } = body;
 
   if (!filename || !extracted_text) {
@@ -16,12 +21,12 @@ export async function POST(req: NextRequest) {
   }
 
   const file = await createDataRoomFile({
-    filename,
-    category: category || 'other',
-    mime_type: mime_type || '',
-    size_bytes: size_bytes || 0,
-    extracted_text,
-    summary,
+    filename: String(filename),
+    category: String(category || 'other'),
+    mime_type: String(mime_type || ''),
+    size_bytes: Number(size_bytes) || 0,
+    extracted_text: String(extracted_text),
+    summary: summary ? String(summary) : undefined,
   });
 
   emitContextChange('data_room_uploaded', `Uploaded ${filename}`);

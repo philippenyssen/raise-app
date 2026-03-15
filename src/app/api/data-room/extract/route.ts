@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
-  const { filename, mime_type, base64_content } = await req.json();
+  let body: Record<string, unknown>;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+  }
+  const { filename, mime_type, base64_content } = body as { filename: string; mime_type: string; base64_content: string };
 
   if (!base64_content) {
     return NextResponse.json({ text: '' });

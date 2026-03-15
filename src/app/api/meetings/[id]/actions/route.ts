@@ -19,11 +19,15 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   await params; // consume the params
-  const body = await req.json();
-  const { action_type, action_id, operation } = body;
-
-  // action_type: 'task' | 'document_flag'
-  // operation: 'accept' | 'dismiss'
+  let body: Record<string, unknown>;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+  }
+  const { action_type, action_id, operation } = body as {
+    action_type: string; action_id: string; operation: string;
+  };
 
   if (!action_type || !action_id || !operation) {
     return NextResponse.json({ error: 'action_type, action_id, and operation required' }, { status: 400 });
@@ -39,7 +43,7 @@ export async function PUT(
     if (operation === 'dismiss') {
       await updateDocumentFlag(action_id, { status: 'dismissed' });
     } else if (operation === 'accept') {
-      await updateDocumentFlag(action_id, { status: 'open' }); // confirm it stays open
+      await updateDocumentFlag(action_id, { status: 'open' });
     }
   }
 

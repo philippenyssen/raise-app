@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAllTasks, createTask, updateTask, deleteTask, getUpcomingTasks, getActivityLog, logActivity, getDocumentFlags, updateDocumentFlag, createFollowup, getFollowups, updateFollowup } from '@/lib/db';
 import { emitContextChange } from '@/lib/context-bus';
+import type { TaskStatus, TaskPriority, RaisePhase } from '@/lib/types';
 
 const ALLOWED_TASK_FIELDS = new Set([
   'title', 'description', 'assignee', 'due_date', 'status', 'priority',
@@ -37,25 +38,30 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  let body: Record<string, unknown>;
   try {
-    const body = await req.json();
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+  }
 
+  try {
     if (body.action === 'log_activity') {
-      await logActivity(body.data);
+      await logActivity(body.data as Parameters<typeof logActivity>[0]);
       return NextResponse.json({ ok: true });
     }
 
     const task = await createTask({
-      title: body.title || '',
-      description: body.description || '',
-      assignee: body.assignee || '',
-      due_date: body.due_date || '',
-      status: body.status || 'pending',
-      priority: body.priority || 'medium',
-      phase: body.phase || 'preparation',
-      investor_id: body.investor_id || '',
-      investor_name: body.investor_name || '',
-      auto_generated: body.auto_generated || false,
+      title: (body.title as string) || '',
+      description: (body.description as string) || '',
+      assignee: (body.assignee as string) || '',
+      due_date: (body.due_date as string) || '',
+      status: ((body.status as string) || 'pending') as TaskStatus,
+      priority: ((body.priority as string) || 'medium') as TaskPriority,
+      phase: ((body.phase as string) || 'preparation') as RaisePhase,
+      investor_id: (body.investor_id as string) || '',
+      investor_name: (body.investor_name as string) || '',
+      auto_generated: (body.auto_generated as boolean) || false,
     });
 
     emitContextChange('task_created', `Task: ${body.title || 'untitled'}`);
@@ -66,9 +72,16 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
+  let body: Record<string, unknown>;
   try {
-    const body = await req.json();
-    const { id, ...raw } = body;
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+  }
+
+  try {
+    const id = body.id as string;
+    const { id: _id, ...raw } = body;
     if (!id) return NextResponse.json({ error: 'id required' }, { status: 400 });
 
     // Filter to allowed fields
@@ -81,12 +94,12 @@ export async function PUT(req: NextRequest) {
 
     // Log completion + cascade downstream effects
     if (updates.status === 'done') {
-      const investorId = raw.investor_id || '';
-      const investorName = raw.investor_name || '';
+      const investorId = (raw.investor_id as string) || '';
+      const investorName = (raw.investor_name as string) || '';
 
       await logActivity({
         event_type: 'task_completed',
-        subject: raw.title || 'Task completed',
+        subject: (raw.title as string) || 'Task completed',
         detail: '',
         investor_id: investorId,
         investor_name: investorName,
@@ -97,7 +110,7 @@ export async function PUT(req: NextRequest) {
         // Auto-resolve related document flags for this investor
         try {
           const flags = await getDocumentFlags({ investor_id: investorId, status: 'open' });
-          const taskTitle = (raw.title || '').toLowerCase();
+          const taskTitle = ((raw.title as string) || '').toLowerCase();
           for (const flag of flags) {
             // If task title mentions the flag type or section, mark it addressed
             const flagDesc = (flag.description || '').toLowerCase();
@@ -114,7 +127,7 @@ export async function PUT(req: NextRequest) {
 
         // Auto-trigger data_share follow-up if task was about preparing materials
         try {
-          const taskTitle = (raw.title || '').toLowerCase();
+          const taskTitle = ((raw.title as string) || '').toLowerCase();
           if (
             taskTitle.includes('prepare') || taskTitle.includes('material') ||
             taskTitle.includes('dd') || taskTitle.includes('data room') ||
@@ -138,8 +151,7 @@ export async function PUT(req: NextRequest) {
           const followups = await getFollowups({ investor_id: investorId, status: 'pending' });
           for (const fu of followups) {
             const fuDesc = (fu.description || '').toLowerCase();
-            const taskTitle = (raw.title || '').toLowerCase();
-            // If follow-up was about sharing something that just got prepared
+            const taskTitle = ((raw.title as string) || '').toLowerCase();
             if (fu.action_type === 'data_share' && (fuDesc.includes('prepare') || fuDesc.includes(taskTitle.substring(0, 20)))) {
               await updateFollowup(fu.id, {
                 status: 'completed',

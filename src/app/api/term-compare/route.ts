@@ -163,9 +163,15 @@ function generateComparisonNotes(s: TermScenario, allScenarios: TermScenario[]):
 // ---------------------------------------------------------------------------
 
 export async function POST(request: Request) {
+  let body: Record<string, unknown>;
   try {
-    const body = await request.json();
-    const scenarios: TermScenario[] = body.scenarios;
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+  }
+
+  try {
+    const scenarios: TermScenario[] = body.scenarios as TermScenario[];
 
     if (!scenarios || !Array.isArray(scenarios) || scenarios.length < 1) {
       return NextResponse.json(

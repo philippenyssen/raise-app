@@ -14,8 +14,14 @@ import { analyzeMeetingNotes } from '@/lib/ai';
 import { emitContextChange } from '@/lib/context-bus';
 
 export async function POST(req: NextRequest) {
+  let body: Record<string, unknown>;
   try {
-    const body = await req.json();
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+  }
+
+  try {
     const {
       investorId,
       investorName,
@@ -23,7 +29,10 @@ export async function POST(req: NextRequest) {
       meetingType,
       duration,
       enthusiasm,
-    } = body;
+    } = body as {
+      investorId: string; investorName: string; rawNotes: string;
+      meetingType: string; duration: number; enthusiasm: number;
+    };
 
     if (!investorId || !investorName || !rawNotes) {
       return NextResponse.json(

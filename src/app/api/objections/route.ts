@@ -45,8 +45,15 @@ export async function GET(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
-  const body = await req.json();
-  const { id, response_text, effectiveness } = body;
+  let body: Record<string, unknown>;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+  }
+  const { id, response_text, effectiveness } = body as {
+    id: string; response_text: string; effectiveness: string;
+  };
 
   if (!id) {
     return NextResponse.json({ error: 'id required' }, { status: 400 });
@@ -60,7 +67,9 @@ export async function PUT(req: NextRequest) {
 
   // --- WIRE: Objection Response → Cascade Updates ---
   if (effectiveness === 'effective' || effectiveness === 'partially_effective') {
-    const { investor_id, investor_name, objection_topic } = body;
+    const investor_id = body.investor_id as string | undefined;
+    const investor_name = body.investor_name as string | undefined;
+    const objection_topic = body.objection_topic as string | undefined;
 
     // Log activity
     try {

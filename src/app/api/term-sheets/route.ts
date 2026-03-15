@@ -7,32 +7,42 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
+  let body: Record<string, unknown>;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+  }
   if (!body.investor) {
     return NextResponse.json({ error: 'investor is required' }, { status: 400 });
   }
   const sheet = await createTermSheet({
-    investor: body.investor,
-    valuation: body.valuation ?? '',
-    amount: body.amount ?? '',
-    liq_pref: body.liq_pref ?? '1x non-participating',
-    anti_dilution: body.anti_dilution ?? 'Broad-based weighted average',
-    board_seats: body.board_seats ?? '1 + observer',
-    dividends: body.dividends ?? 'None',
-    protective_provisions: body.protective_provisions ?? 'Standard',
-    option_pool: body.option_pool ?? '',
-    exclusivity: body.exclusivity ?? '',
-    strategic_value: body.strategic_value ?? 3,
-    notes: body.notes ?? '',
+    investor: body.investor as string,
+    valuation: (body.valuation as string) ?? '',
+    amount: (body.amount as string) ?? '',
+    liq_pref: (body.liq_pref as string) ?? '1x non-participating',
+    anti_dilution: (body.anti_dilution as string) ?? 'Broad-based weighted average',
+    board_seats: (body.board_seats as string) ?? '1 + observer',
+    dividends: (body.dividends as string) ?? 'None',
+    protective_provisions: (body.protective_provisions as string) ?? 'Standard',
+    option_pool: (body.option_pool as string) ?? '',
+    exclusivity: (body.exclusivity as string) ?? '',
+    strategic_value: (body.strategic_value as number) ?? 3,
+    notes: (body.notes as string) ?? '',
   });
   return NextResponse.json(sheet);
 }
 
 export async function PUT(req: NextRequest) {
-  const body = await req.json();
+  let body: Record<string, unknown>;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+  }
   if (!body.id) return NextResponse.json({ error: 'id is required' }, { status: 400 });
   const { id, ...updates } = body;
-  await updateTermSheet(id, updates);
+  await updateTermSheet(id as string, updates);
   return NextResponse.json({ ok: true });
 }
 
