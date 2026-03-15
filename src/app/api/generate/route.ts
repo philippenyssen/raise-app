@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
     const context = {
       dataRoomContext,
       raiseConfig: raiseConfig ? JSON.stringify(raiseConfig, null, 2) : 'Not configured',
-      existingDocs: allDocs.map(d => ({ title: d.title, type: d.type, content: d.content })),
+      existingDocs: allDocs.map(d => ({ title: d.title, type: d.type, content: d.content.substring(0, 8000) })),
     };
 
     if (type === 'model') {
