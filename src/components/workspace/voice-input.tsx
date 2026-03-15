@@ -3,6 +3,11 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { Mic, MicOff } from 'lucide-react';
 
+interface SpeechRecognitionResult { readonly isFinal: boolean; readonly length: number; readonly [index: number]: { readonly transcript: string }; }
+interface SpeechRecognitionResultList { readonly length: number; readonly [index: number]: SpeechRecognitionResult; }
+interface SpeechRecognitionEvent { readonly resultIndex: number; readonly results: SpeechRecognitionResultList; }
+interface SpeechRecognitionInstance { continuous: boolean; interimResults: boolean; lang: string; onresult: ((event: SpeechRecognitionEvent) => void) | null; onerror: (() => void) | null; onend: (() => void) | null; start(): void; stop(): void; }
+
 interface VoiceInputProps {
   onTranscript: (text: string) => void;
   disabled?: boolean;
@@ -12,12 +17,11 @@ export function VoiceInput({ onTranscript, disabled }: VoiceInputProps) {
   const [listening, setListening] = useState(false);
   const [supported, setSupported] = useState(true);
   const [hovered, setHovered] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const recognitionRef = useRef<any>(null);
+  const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
 
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const w = window as unknown as Record<string, { new(): SpeechRecognitionInstance } | undefined>;
+    const SpeechRecognition = w.SpeechRecognition || w.webkitSpeechRecognition;
     if (!SpeechRecognition) {
       setSupported(false);
       return;
@@ -28,8 +32,7 @@ export function VoiceInput({ onTranscript, disabled }: VoiceInputProps) {
     recognition.interimResults = true;
     recognition.lang = 'en-US';
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    recognition.onresult = (event: any) => {
+    recognition.onresult = (event: SpeechRecognitionEvent) => {
       let finalTranscript = '';
       for (let i = event.resultIndex; i < event.results.length; i++) {
         if (event.results[i].isFinal) {
