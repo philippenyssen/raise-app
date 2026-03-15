@@ -52,6 +52,10 @@ export async function POST(req: NextRequest) {
     if (!body.title || typeof body.title !== 'string' || !body.title.trim()) {
       return NextResponse.json({ error: 'title is required' }, { status: 400 });
     }
+    const validStatuses = ['pending', 'in_progress', 'done', 'blocked', 'cancelled'];
+    const validPriorities = ['critical', 'high', 'medium', 'low'];
+    if (body.status && !validStatuses.includes(body.status as string)) return NextResponse.json({ error: `status must be one of: ${validStatuses.join(', ')}` }, { status: 400 });
+    if (body.priority && !validPriorities.includes(body.priority as string)) return NextResponse.json({ error: `priority must be one of: ${validPriorities.join(', ')}` }, { status: 400 });
     const task = await createTask({
       title: ((body.title as string) || '').trim(),
       description: ((body.description as string) || '').trim(),

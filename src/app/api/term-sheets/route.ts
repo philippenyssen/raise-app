@@ -24,9 +24,9 @@ export async function POST(req: NextRequest) {
   const strategic_value = (!isNaN(rawSV) && rawSV >= 1 && rawSV <= 5) ? rawSV : 3;
   try {
     const sheet = await createTermSheet({
-      investor: body.investor as string,
-      valuation: (body.valuation as string) ?? '',
-      amount: (body.amount as string) ?? '',
+      investor: (body.investor as string).trim(),
+      valuation: ((body.valuation as string) ?? '').trim(),
+      amount: ((body.amount as string) ?? '').trim(),
       liq_pref: (body.liq_pref as string) ?? '1x non-participating',
       anti_dilution: (body.anti_dilution as string) ?? 'Broad-based weighted average',
       board_seats: (body.board_seats as string) ?? '1 + observer',

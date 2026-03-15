@@ -46,11 +46,15 @@ export async function POST(req: NextRequest) {
       console.error('[MEETING_AI_ANALYSIS]', err instanceof Error ? err.message : err);
     }}
 
+  const dateStr = (date as string) || new Date().toISOString().split('T')[0];
+  if (!/^\d{4}-\d{2}-\d{2}/.test(dateStr) || isNaN(new Date(dateStr).getTime())) {
+    return NextResponse.json({ error: 'date must be a valid YYYY-MM-DD format' }, { status: 400 });
+  }
   try {
   const meeting = await createMeeting({
     investor_id,
     investor_name,
-    date: (date as string) || new Date().toISOString().split('T')[0],
+    date: dateStr,
     type: ((type as string) || 'intro') as import('@/lib/types').MeetingType,
     attendees: (attendees as string) || '',
     duration_minutes: (duration_minutes as number) || 60,
