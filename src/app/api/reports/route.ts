@@ -385,7 +385,7 @@ export async function GET(req: NextRequest) {
     else if (type === 'team') html = await generateWeeklyAgenda();
     else html = await generateInvestorBrief(investorId!);
 
-    return new NextResponse(html, { status: 200, headers: { 'Content-Type': 'text/html; charset=utf-8' } });
+    return new NextResponse(html, { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'private, max-age=60, stale-while-revalidate=120' } });
   } catch (error) {
     console.error('[REPORTS_GET]', error instanceof Error ? error.message : error);
     return NextResponse.json({ error: 'Failed to generate report' }, { status: 500 });
