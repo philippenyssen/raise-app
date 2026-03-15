@@ -396,7 +396,7 @@ export default function TodayPage() {
 
   useEffect(() => {
     fetchBriefing();
-    const refreshInterval = setInterval(() => fetchBriefing(true), 5 * 60 * 1000);
+    const refreshInterval = setInterval(() => fetchBriefing(true), 5 * MS_PER_MINUTE);
     const stalenessInterval = setInterval(() => {
       setStalenessMinutes(Math.floor((Date.now() - lastFetchedAt.current) / MS_PER_MINUTE));
     }, 30000);

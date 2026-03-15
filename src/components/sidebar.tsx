@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import { MS_PER_MINUTE } from '@/lib/time';
 import {
   LayoutDashboard, Users, Calendar, FileText,
   FolderOpen, BookOpen, Globe, Settings,
@@ -89,7 +90,7 @@ export function Sidebar() {
       fetch('/api/document-flags?status=open').then(r => r.ok ? r.json() : []).then(data => { if (!cancelled && Array.isArray(data)) setDocFlagCount(data.length); }).catch(() => {});
     }
     fetchBadges();
-    const interval = setInterval(fetchBadges, 3 * 60 * 1000);
+    const interval = setInterval(fetchBadges, 3 * MS_PER_MINUTE);
     return () => { cancelled = true; clearInterval(interval); };
   }, []);
 

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getFullContext } from '@/lib/context-bus';
 import { saveHealthSnapshot, getHealthSnapshots, computeTemporalTrends, computeRaiseForecast } from '@/lib/db';
 import type { TemporalTrends, RaiseForecast } from '@/lib/db';
+import { MS_PER_DAY } from '@/lib/time';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -29,8 +30,8 @@ interface StrategicAssessment {
 
 function computeRaiseVelocity(ctx: Awaited<ReturnType<typeof getFullContext>>): { meetingsPerWeek: number; stageAdvancesPerWeek: number; trend: 'accelerating' | 'steady' | 'decelerating' } {
   const now = Date.now();
-  const twoWeeksAgo = now - 14 * 24 * 60 * 60 * 1000;
-  const fourWeeksAgo = now - 28 * 24 * 60 * 60 * 1000;
+  const twoWeeksAgo = now - 14 * MS_PER_DAY;
+  const fourWeeksAgo = now - 28 * MS_PER_DAY;
 
   let recentMeetings = 0, olderMeetings = 0, recentAdvances = 0, olderAdvances = 0;
 

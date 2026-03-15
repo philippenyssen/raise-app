@@ -3,6 +3,7 @@ import { computeInvestorScore, computeMomentumScore, computeConvictionTrajectory
 import type { ScoreSnapshot } from '@/lib/db';
 import { generateAutoActions, measureActionEffectiveness, saveHealthSnapshot, getHealthSnapshots, computeTemporalTrends, computeRaiseForecast, logForecastPredictions, detectScoreReversals, computeEngagementVelocity, computeNetworkCascades, getPipelineRankings, detectFomoDynamics, computeMeetingDensity, computeWinLossPatterns } from '@/lib/db';
 import type { Investor, Meeting, InvestorPortfolioCo, Objection } from '@/lib/types';
+import { MS_PER_DAY } from '@/lib/time';
 import { getFullContext, type FullContext } from '@/lib/context-bus';
 import { getClient, daysBetween, parseJsonSafe, clamp, STATUS_PROGRESSION, loadAllMeetings, loadRaiseConfig, loadAllPortfolios, groupByInvestorId } from '@/lib/api-helpers';
 
@@ -15,7 +16,7 @@ interface StatusChange { investorId: string; investorName: string; from: string;
 interface OvernightChanges { statusChanges: StatusChange[]; newMeetings: number; meetingNames: string[]; tasksCompleted: number; newTasks: number; newAccelerations: number; activityFeed: string[]; }
 
 async function computeOvernightChanges(db: ReturnType<typeof getClient>): Promise<OvernightChanges> {
-  const cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+  const cutoff = new Date(Date.now() - MS_PER_DAY).toISOString();
 
   const [statusChanges, recentMeetings, completedTasks, createdTasks, recentAccelerations] = await Promise.all([
     // Status changes from activity log
