@@ -543,7 +543,7 @@ export default function Dashboard() {
 
           {/* Pulse Strip */}
           {sectionErrors.health && !data && <SectionError label="Health metrics" onRetry={() => fetchSection('health')} />}
-          <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 card-stagger">
+          <div key={lastRefresh?.getTime()} className="grid grid-cols-2 lg:grid-cols-5 gap-3 card-stagger data-refreshed">
             <PulseCard label="Active investors" value={ph?.activeInvestors ?? data?.totalInvestors ?? 0} sub={`${data?.totalInvestors ?? 0} total`}
               />
             <PulseCard label="This week" value={ph?.meetingsThisWeek ?? 0} sub="meetings" />

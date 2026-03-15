@@ -668,3 +668,12 @@ select option {
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes data-refresh { from { opacity: 0.6; } to { opacity: 1; } }
+.data-refreshed { animation: data-refresh 400ms ease forwards; }
+
+@media print {
+  nav, aside, header, button, .btn, [data-sidebar] { display: none !important; }
+  main { margin: 0 !important; padding: 0 !important; max-width: 100% !important; width: 100% !important; }
+  * { box-shadow: none !important; }
+}
+

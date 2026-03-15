@@ -533,8 +533,10 @@ export default function InvestorDetailPage() {
             <div className="min-w-0">
               <div className="text-sm font-normal" style={textTertiary}>
                 Profile {completeness}% complete — fill missing fields to improve scoring accuracy</div>
-              <div className="text-xs mt-0.5" style={{ color: 'var(--text-tertiary)', opacity: 0.7 }}>
-                Missing: {missing.map(f => f.label).join(', ')}</div></div>
+              <div className="flex flex-wrap gap-1 mt-1">
+                {missing.map(f => (
+                  <button key={f.field} onClick={() => { setEditing(true); setTimeout(() => document.querySelector<HTMLInputElement>(`[data-field="${f.field}"]`)?.focus(), 100); }} className="text-xs px-1.5 py-0.5 rounded cursor-pointer border-none" style={{ background: 'var(--surface-2)', color: 'var(--accent)' }}>Missing: {f.label}</button>
+                ))}</div></div>
           </div>);
       })()}
 

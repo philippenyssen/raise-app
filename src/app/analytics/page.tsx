@@ -196,31 +196,12 @@ export default function AnalyticsPage() {
             <RefreshCw className="w-3.5 h-3.5" /> Refresh</button></div></div>
 
       {/* ── Summary Cards ───────────────────────────────────────── */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 card-stagger">
-        <SummaryCard
-          label="Active Pipeline"
-          value={String(summary.activeInvestors)}
-          sub={`of ${summary.totalInvestors} total`}
-          icon={<Users className="w-4 h-4" />}
-          color="var(--accent)"/>
-        <SummaryCard
-          label="Velocity Score"
-          value={velocity.velocityScore > 0 ? velocity.velocityScore.toFixed(1) : '—'}
-          sub="tier x stage x signal"
-          icon={<Zap className="w-4 h-4" />}
-          color="var(--warning)"/>
-        <SummaryCard
-          label="Risk Alerts"
-          value={String(risks.totalAlerts)}
-          sub={risks.totalAlerts === 0 ? 'all clear' : 'need attention'}
-          icon={<ShieldAlert className="w-4 h-4" />}
-          color={risks.totalAlerts === 0 ? 'var(--success)' : risks.totalAlerts <= 3 ? 'var(--warning)' : 'var(--danger)'} />
-        <SummaryCard
-          label="Meetings"
-          value={String(velocity.totalMeetings)}
-          sub={`${velocity.meetingsThisWeek} this week`}
-          icon={<Calendar className="w-4 h-4" />}
-          color="var(--accent-muted)"/></div>
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 card-stagger">
+        <SummaryCard label="Active Pipeline" value={String(summary.activeInvestors)} sub={`of ${summary.totalInvestors} total`} icon={<Users className="w-4 h-4" />} color="var(--accent)"/>
+        <SummaryCard label="Velocity Score" value={velocity.velocityScore > 0 ? velocity.velocityScore.toFixed(1) : '—'} sub="tier x stage x signal" icon={<Zap className="w-4 h-4" />} color="var(--warning)"/>
+        <SummaryCard label="Risk Alerts" value={String(risks.totalAlerts)} sub={risks.totalAlerts === 0 ? 'all clear' : 'need attention'} icon={<ShieldAlert className="w-4 h-4" />} color={risks.totalAlerts === 0 ? 'var(--success)' : risks.totalAlerts <= 3 ? 'var(--warning)' : 'var(--danger)'} />
+        <SummaryCard label="Avg Time to Close" value={velocity.estimatedDaysToClose !== null ? `${velocity.estimatedDaysToClose}d` : '—'} sub={velocity.estimatedDaysToClose !== null ? 'estimated' : 'no data yet'} icon={<Clock className="w-4 h-4" />} color="var(--accent)"/>
+        <SummaryCard label="Meetings" value={String(velocity.totalMeetings)} sub={`${velocity.meetingsThisWeek} this week`} icon={<Calendar className="w-4 h-4" />} color="var(--accent-muted)"/></div>
 
       {/* ── Top Objections Summary ─────────────────────────────── */}
       {engagement.topObjections.length > 0 && (
