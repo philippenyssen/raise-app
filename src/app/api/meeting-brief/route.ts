@@ -264,6 +264,17 @@ export async function POST(req: NextRequest) {
       } else {
         briefContent = briefFallback;
       }}
+    // Ensure all required fields exist by merging with fallback defaults
+    briefContent = {
+      personalized_opening: briefContent.personalized_opening || briefFallback.personalized_opening,
+      key_talking_points: Array.isArray(briefContent.key_talking_points) ? briefContent.key_talking_points : briefFallback.key_talking_points,
+      metrics_to_highlight: Array.isArray(briefContent.metrics_to_highlight) ? briefContent.metrics_to_highlight : briefFallback.metrics_to_highlight,
+      anticipated_questions_with_answers: Array.isArray(briefContent.anticipated_questions_with_answers) ? briefContent.anticipated_questions_with_answers : briefFallback.anticipated_questions_with_answers,
+      previous_meeting_summary: briefContent.previous_meeting_summary ?? briefFallback.previous_meeting_summary,
+      unresolved_items: Array.isArray(briefContent.unresolved_items) ? briefContent.unresolved_items : briefFallback.unresolved_items,
+      risks_to_watch: Array.isArray(briefContent.risks_to_watch) ? briefContent.risks_to_watch : briefFallback.risks_to_watch,
+      recommended_ask: briefContent.recommended_ask || briefFallback.recommended_ask,
+    };
 
     // 11. Assemble the full brief
     const brief = {
