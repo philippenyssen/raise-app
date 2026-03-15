@@ -170,7 +170,7 @@ export default function ReportsPage() {
             onMouseEnter={() => setHover('invBtn', true)}
             onMouseLeave={() => setHover('invBtn', false)}>
             {loading === 'investor_brief' ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-            {loading === 'investor_brief' ? 'Generating...' : 'Generate'}</button></div></div>
+            {loading === 'investor_brief' ? 'Generating...' : selectedInvestor ? `Brief ${investors.find(i => i.id === selectedInvestor)?.name || 'investor'}` : 'Select an investor'}</button></div></div>
 
       {/* Error */}
       {error && (
