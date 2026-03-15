@@ -33,79 +33,23 @@ const STATUS_LABELS: Record<InvestorStatus, string> = {
   dropped: 'Dropped',
 };
 
-// Color gradient using design tokens: cool (early) → warm (late)
-const COLUMN_COLORS: Record<InvestorStatus, {
-  header: React.CSSProperties;
-  border: React.CSSProperties;
-  bg: React.CSSProperties;
-  badge: React.CSSProperties;
-}> = {
-  identified: {
-    header: { background: 'var(--white-15)' },
-    border: { borderColor: 'var(--border-subtle)' },
-    bg: { background: 'var(--white-4)' },
-    badge: { background: 'var(--white-25)', color: 'var(--text-secondary)' },
-  },
-  contacted: {
-    header: { background: 'var(--accent-5)' },
-    border: { borderColor: 'var(--accent-5)' },
-    bg: { background: 'var(--accent-5)' },
-    badge: { background: 'var(--accent-muted)', color: 'var(--accent)' },
-  },
-  nda_signed: {
-    header: { background: 'var(--accent-5)' },
-    border: { borderColor: 'var(--accent-muted)' },
-    bg: { background: 'var(--accent-5)' },
-    badge: { background: 'var(--accent-muted)', color: 'var(--accent)' },
-  },
-  meeting_scheduled: {
-    header: { background: 'var(--accent-8)' },
-    border: { borderColor: 'var(--accent-12)' },
-    bg: { background: 'var(--accent-3)' },
-    badge: { background: 'var(--accent-10)', color: 'var(--text-secondary)' },
-  },
-  met: {
-    header: { background: 'var(--accent-10)' },
-    border: { borderColor: 'var(--accent-15)' },
-    bg: { background: 'var(--accent-4)' },
-    badge: { background: 'var(--accent-12)', color: 'var(--text-secondary)' },
-  },
-  engaged: {
-    header: { background: 'var(--accent-12)' },
-    border: { borderColor: 'var(--accent-20)' },
-    bg: { background: 'var(--accent-4)' },
-    badge: { background: 'var(--accent-15)', color: 'var(--accent)' },
-  },
-  in_dd: {
-    header: { background: 'var(--accent-15)' },
-    border: { borderColor: 'var(--accent-25)' },
-    bg: { background: 'var(--accent-5)' },
-    badge: { background: 'var(--accent-20)', color: 'var(--accent)' },
-  },
-  term_sheet: {
-    header: { background: 'var(--accent-20)' },
-    border: { borderColor: 'var(--accent-25)' },
-    bg: { background: 'var(--accent-muted)' },
-    badge: { background: 'var(--accent-25)', color: 'var(--accent)' },
-  },
-  closed: {
-    header: { background: 'var(--accent-25)' },
-    border: { borderColor: 'var(--accent-30)' },
-    bg: { background: 'var(--accent-8)' },
-    badge: { background: 'var(--accent-30)', color: 'var(--accent)' },
-  },
-  passed: {
-    header: { background: 'var(--accent-8)' },
-    border: { borderColor: 'var(--accent-8)' },
-    bg: { background: 'var(--accent-8)' },
-    badge: { background: 'var(--accent-8)', color: 'var(--text-primary)' },
-  },
-  dropped: {
-    header: { background: 'var(--white-10)' },
-    border: { borderColor: 'var(--border-subtle)' },
-    bg: { background: 'var(--white-3)' },
-    badge: { background: 'var(--white-20)', color: 'var(--text-tertiary)' },
-  },
+type ColumnStyle = { header: React.CSSProperties; border: React.CSSProperties; bg: React.CSSProperties; badge: React.CSSProperties };
+function colStyle(headerBg: string, borderClr: string, bgVal: string, badgeBg: string, badgeClr: string): ColumnStyle {
+  return { header: { background: headerBg }, border: { borderColor: borderClr }, bg: { background: bgVal }, badge: { background: badgeBg, color: badgeClr } };
+}
+
+const COLUMN_COLORS: Record<InvestorStatus, ColumnStyle> = {
+  identified:        colStyle('var(--white-15)',  'var(--border-subtle)', 'var(--white-4)',     'var(--white-25)',    'var(--text-secondary)'),
+  contacted:         colStyle('var(--accent-5)',  'var(--accent-5)',      'var(--accent-5)',    'var(--accent-muted)','var(--accent)'),
+  nda_signed:        colStyle('var(--accent-5)',  'var(--accent-muted)',  'var(--accent-5)',    'var(--accent-muted)','var(--accent)'),
+  meeting_scheduled: colStyle('var(--accent-8)',  'var(--accent-12)',     'var(--accent-3)',    'var(--accent-10)',   'var(--text-secondary)'),
+  met:               colStyle('var(--accent-10)', 'var(--accent-15)',     'var(--accent-4)',    'var(--accent-12)',   'var(--text-secondary)'),
+  engaged:           colStyle('var(--accent-12)', 'var(--accent-20)',     'var(--accent-4)',    'var(--accent-15)',   'var(--accent)'),
+  in_dd:             colStyle('var(--accent-15)', 'var(--accent-25)',     'var(--accent-5)',    'var(--accent-20)',   'var(--accent)'),
+  term_sheet:        colStyle('var(--accent-20)', 'var(--accent-25)',     'var(--accent-muted)','var(--accent-25)',   'var(--accent)'),
+  closed:            colStyle('var(--accent-25)', 'var(--accent-30)',     'var(--accent-8)',    'var(--accent-30)',   'var(--accent)'),
+  passed:            colStyle('var(--accent-8)',  'var(--accent-8)',      'var(--accent-8)',    'var(--accent-8)',    'var(--text-primary)'),
+  dropped:           colStyle('var(--white-10)',  'var(--border-subtle)', 'var(--white-3)',     'var(--white-20)',    'var(--text-tertiary)'),
 };
 
 const TIER_STYLES: Record<number, React.CSSProperties> = {

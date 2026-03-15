@@ -8,7 +8,7 @@
 
 import type { InvestorType } from './types';
 
-export interface NarrativeProfile {
+interface NarrativeProfile {
   emphasis: string[];
   keyMetrics: string[];
   openingHook: string;
@@ -18,7 +18,7 @@ export interface NarrativeProfile {
   avoidTopics: string[];
 }
 
-export const INVESTOR_NARRATIVES: Record<InvestorType, NarrativeProfile> = {
+const INVESTOR_NARRATIVES: Record<InvestorType, NarrativeProfile> = {
   vc: {
     emphasis: [
       'Technology moat',
@@ -261,6 +261,6 @@ export function getAnticipatedQuestions(
 /**
  * Returns data room items sorted by priority for a given investor type.
  */
-export function getDataRoomPriority(type: InvestorType): string[] {
+function getDataRoomPriority(type: InvestorType): string[] {
   return getNarrativeProfile(type).dataRoomPriority;
 }
