@@ -62,14 +62,17 @@ export async function POST(req: NextRequest) {
     // Rebuild relationship graph after creating a new investor (non-blocking)
     try { buildRelationshipGraph().catch(() => {}); } catch { /* non-blocking */ }
 
-    // Fire-and-forget: trigger enrichment for the newly created investor
+    // Fire-and-forget: trigger enrichment for the newly created investor (5s timeout)
     try {
       const baseUrl = req.nextUrl.origin;
+      const ac = new AbortController();
+      const tid = setTimeout(() => ac.abort(), 5000);
       fetch(`${baseUrl}/api/enrichment`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'enrich', investor_id: investor.id, auto_apply: true }),
-      }).catch(() => { /* non-blocking enrichment */ });
+        signal: ac.signal,
+      }).catch(() => { /* non-blocking enrichment */ }).finally(() => clearTimeout(tid));
     } catch { /* non-blocking */ }
 
     return NextResponse.json(investor, { status: 201 });
