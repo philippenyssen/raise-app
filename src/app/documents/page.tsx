@@ -99,16 +99,17 @@ export default function DocumentsPage() {
 
   async function handleDelete() {
     if (!deleteTarget) return;
+    const target = deleteTarget;
     setDeleting(true);
+    setDeleteTarget(null);
+    setDocs(prev => prev.filter(d => d.id !== target.id));
     try {
-      const res = await fetch(`/api/documents/${deleteTarget.id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/documents/${target.id}`, { method: 'DELETE' });
       if (!res.ok) throw new Error(`Failed (${res.status})`);
       toast('Document deleted', 'warning');
-      setDeleteTarget(null);
-      fetchDocs();
     } catch {
-      toast('Couldn\'t delete document — try again in a moment', 'error');
-      setDeleteTarget(null);
+      toast('Couldn\'t delete document — restoring', 'error');
+      fetchDocs();
     } finally {
       setDeleting(false);
     }}
