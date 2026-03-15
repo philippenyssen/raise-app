@@ -34,7 +34,7 @@ export default function VelocityPage() {
     setError(null);
     fetch('/api/velocity')
       .then(res => {
-        if (!res.ok) throw new Error('Failed to fetch velocity data');
+        if (!res.ok) throw new Error('Could not load velocity data — refresh to retry');
         return res.json();})
       .then(d => { setData(d); setLoading(false); })
       .catch(e => { setError(e.message); setLoading(false); });
@@ -67,7 +67,7 @@ export default function VelocityPage() {
         <div className="card" style={{ textAlign: 'center', padding: 'var(--space-12)' }}>
           <AlertTriangle className="w-8 h-8 mx-auto mb-3" style={{ color: 'var(--text-muted)' }} />
           <p style={{ color: 'var(--text-primary)', fontSize: 'var(--font-size-sm)', marginBottom: 'var(--space-3)' }}>
-            {error || 'Failed to load velocity data'}</p>
+            {error || 'Could not load velocity data — refresh to retry'}</p>
           <button onClick={fetchVelocity} className="btn btn-secondary btn-sm" title="Retry loading velocity data">Retry</button></div>
       </div>);
   }
