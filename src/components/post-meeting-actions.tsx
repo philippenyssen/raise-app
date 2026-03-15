@@ -27,20 +27,22 @@ export default function PostMeetingActions({ data, meetingId, onActionTaken }: {
 
   async function handleTaskAction(taskId: string, operation: 'accept' | 'dismiss') {
     try {
-      await fetch(`/api/meetings/${meetingId}/actions`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action_type: 'task', action_id: taskId, operation }) });
+      const res = await fetch(`/api/meetings/${meetingId}/actions`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action_type: 'task', action_id: taskId, operation }) });
+      if (!res.ok) return;
       if (operation === 'dismiss') setDismissedTasks(prev => new Set(prev).add(taskId));
       else setAcceptedTasks(prev => new Set(prev).add(taskId));
       onActionTaken?.();
-    } catch { /* ignore */ }
+    } catch { /* non-critical UI action */ }
   }
 
   async function handleFlagAction(flagId: string, operation: 'accept' | 'dismiss') {
     try {
-      await fetch(`/api/meetings/${meetingId}/actions`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action_type: 'document_flag', action_id: flagId, operation }) });
+      const res = await fetch(`/api/meetings/${meetingId}/actions`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action_type: 'document_flag', action_id: flagId, operation }) });
+      if (!res.ok) return;
       if (operation === 'dismiss') setDismissedFlags(prev => new Set(prev).add(flagId));
       else setAcceptedFlags(prev => new Set(prev).add(flagId));
       onActionTaken?.();
-    } catch { /* ignore */ }
+    } catch { /* non-critical UI action */ }
   }
 
   if (!hasActions && !data.investor_updates.suggested_status) return null;

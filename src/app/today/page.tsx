@@ -415,10 +415,11 @@ export default function TodayPage() {
   async function handleQuickComplete(id: string) {
     setCompletingFollowupId(id);
     try {
-      await fetch('/api/followups', {
+      const res = await fetch('/api/followups', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, status: 'completed' }),});
+      if (!res.ok) throw new Error('Server error');
       setDueFollowups(prev => prev.filter(f => f.id !== id));
       toast('Follow-up completed', 'success');
     } catch {
@@ -430,10 +431,11 @@ export default function TodayPage() {
   async function handleQuickSkip(id: string) {
     setCompletingFollowupId(id);
     try {
-      await fetch('/api/followups', {
+      const res = await fetch('/api/followups', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, status: 'skipped' }),});
+      if (!res.ok) throw new Error('Server error');
       setDueFollowups(prev => prev.filter(f => f.id !== id));
       toast('Follow-up skipped', 'success');
     } catch {

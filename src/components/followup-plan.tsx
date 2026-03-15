@@ -38,7 +38,8 @@ export default function FollowupPlan({ followups, showInvestorName = false }: { 
 
   async function handleAction(id: string, action: 'completed' | 'skipped') {
     try {
-      await fetch('/api/followups', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, status: action }) });
+      const res = await fetch('/api/followups', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, status: action }) });
+      if (!res.ok) return;
       if (action === 'completed') setCompletedIds(prev => new Set(prev).add(id));
       else setSkippedIds(prev => new Set(prev).add(id));
     } catch { /* non-blocking */ }
