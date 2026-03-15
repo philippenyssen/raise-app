@@ -27,6 +27,12 @@ export async function POST(req: NextRequest) {
   if (!sheet_name) {
     return NextResponse.json({ error: 'sheet_name is required' }, { status: 400 });
   }
+  const textLimits: Record<string, number> = { sheet_name: 255, model_id: 100 };
+  for (const [field, max] of Object.entries(textLimits)) {
+    if (body[field] && typeof body[field] === 'string' && (body[field] as string).length > max) {
+      return NextResponse.json({ error: `${field} exceeds maximum length of ${max} characters` }, { status: 400 });
+    }
+  }
 
   try {
     const sheet = await createModelSheet({

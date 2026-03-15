@@ -32,6 +32,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
   }
 
+  const textLimits: Record<string, number> = { skill_name: 255, outcome: 100, trigger: 255, failure_reason: 1000 };
+  for (const [field, max] of Object.entries(textLimits)) {
+    if (body[field] && typeof body[field] === 'string' && (body[field] as string).length > max) {
+      return NextResponse.json({ error: `${field} exceeds maximum length of ${max} characters` }, { status: 400 });
+    }
+  }
   try {
     if (!body.skill_name || !body.outcome) {
       return NextResponse.json({ error: 'skill_name and outcome are required' }, { status: 400 });
