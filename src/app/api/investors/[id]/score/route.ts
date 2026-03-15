@@ -6,6 +6,7 @@ export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  try {
   const { id } = await params;
 
   // Fetch all data in parallel (including network effect + forecast data)
@@ -105,4 +106,7 @@ export async function GET(
   }).catch(() => { /* snapshot capture is non-blocking */ });
 
   return NextResponse.json({ ...score, dealHeat });
+  } catch (e) {
+    return NextResponse.json({ error: e instanceof Error ? e.message : 'Failed to compute investor score' }, { status: 500 });
+  }
 }
