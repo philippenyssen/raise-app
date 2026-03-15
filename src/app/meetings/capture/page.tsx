@@ -113,7 +113,7 @@ function QuickCaptureInner() {
       toast('meeting captured and analyzed', 'success');
       setResult(data);
     } catch {
-      // Non-blocking
+      toast('Failed to capture meeting — check your connection and try again', 'error');
     } finally {
       setLoading(false);
     }}
@@ -312,6 +312,7 @@ function QuickCaptureInner() {
             <button
               onClick={handleReset}
               className="btn btn-md transition-colors"
+              title="Clear form and capture another meeting"
               style={{
                 background: newCaptureHovered ? 'var(--surface-3)' : 'var(--surface-2)',
                 color: 'var(--text-primary)', }}
@@ -395,6 +396,8 @@ function QuickCaptureInner() {
                 key={level}
                 type="button"
                 onClick={() => setEnthusiasm(level === enthusiasm ? 0 : level)}
+                aria-label={`Rate enthusiasm ${level} of 5: ${ENTHUSIASM_LABELS[level - 1]}`}
+                aria-pressed={enthusiasm === level}
                 style={{ width: '48px', height: '48px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 'var(--font-size-lg)', fontWeight: 400, cursor: 'pointer', transition: 'all 150ms ease', border: enthusiasm === level ? '2px solid var(--accent)' : '2px solid var(--border-default)', background: enthusiasm === level ? 'var(--accent-muted)' : 'var(--surface-1)', color: enthusiasm === level ? 'var(--accent)' : 'var(--text-tertiary)', transform: enthusiasm === level ? 'scale(1.1)' : 'scale(1)' }}>
                 {level}</button>
             ))}

@@ -188,10 +188,12 @@ export default function EnrichmentPage() {
       )}
 
       {/* Tabs */}
-      <div style={{ display: 'flex', gap: 'var(--space-1)', borderBottom: '1px solid var(--border-default)' }}>
+      <div role="tablist" style={{ display: 'flex', gap: 'var(--space-1)', borderBottom: '1px solid var(--border-default)' }}>
         {(['enrich', 'sources', 'history'] as const).map(t => (
           <button
             key={t}
+            role="tab"
+            aria-selected={tab === t}
             onClick={() => setTab(t)}
             style={{
               padding: 'var(--space-2) var(--space-4)',
@@ -223,7 +225,7 @@ export default function EnrichmentPage() {
                 {lastResult.total_fields} fields enriched from {lastResult.sources_succeeded} sources</span>
               <span style={labelMuted}>
                 ({lastResult.duration_ms}ms)</span></div>
-            <button onClick={() => setLastResult(null)} style={{ color: 'var(--text-muted)', cursor: 'pointer', background: 'none', border: 'none' }}>
+            <button onClick={() => setLastResult(null)} aria-label="Dismiss result" title="Dismiss" style={{ color: 'var(--text-muted)', cursor: 'pointer', background: 'none', border: 'none' }}>
               <XCircle style={{ width: '14px', height: '14px' }} /></button></div>
           {lastResult.errors.length > 0 && (
             <div style={{ marginTop: 'var(--space-2)', fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
@@ -245,7 +247,7 @@ export default function EnrichmentPage() {
             <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
               {investors.length === 0 ? (
                 <div style={{ padding: 'var(--space-8)', textAlign: 'center', color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
-                  No investors in pipeline. Add investors first.</div>
+                  No investors in pipeline yet. <Link href="/investors" style={{ color: 'var(--accent)', textDecoration: 'none' }}>Add investors</Link> to start enriching their profiles with background intelligence.</div>
               ) : (
                 investors.map(inv => (
                   <div
