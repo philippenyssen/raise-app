@@ -414,9 +414,12 @@ export default function InvestorDetailPage() {
                 value={investor.status}
                 onChange={async (e) => {
                   const newStatus = e.target.value;
-                  await fetch('/api/investors', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, status: newStatus }) });
-                  setInvestor(prev => prev ? { ...prev, status: newStatus as InvestorStatus } : prev);
-                  toast(`Status updated to ${STATUS_LABELS[newStatus as InvestorStatus] || newStatus}`);
+                  try {
+                    const res = await fetch('/api/investors', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, status: newStatus }) });
+                    if (!res.ok) throw new Error('Failed');
+                    setInvestor(prev => prev ? { ...prev, status: newStatus as InvestorStatus } : prev);
+                    toast(`Status updated to ${STATUS_LABELS[newStatus as InvestorStatus] || newStatus}`);
+                  } catch { toast('Failed to update status', 'error'); }
                 }}
                 className="px-2 py-0.5 rounded text-xs font-normal border-none cursor-pointer focus:outline-none"
                 style={{
@@ -993,8 +996,11 @@ export default function InvestorDetailPage() {
                           <button
                             onClick={async () => {
                               const newStatus = t.status === 'done' ? 'pending' : 'done';
-                              await fetch('/api/tasks', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: t.id, status: newStatus, title: t.title, investor_id: id, investor_name: investor?.name }) });
-                              fetchData(); }}
+                              try {
+                                const res = await fetch('/api/tasks', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: t.id, status: newStatus, title: t.title, investor_id: id, investor_name: investor?.name }) });
+                                if (!res.ok) throw new Error('Failed');
+                                fetchData();
+                              } catch { toast('Failed to update task', 'error'); } }}
                             className="w-5 h-5 rounded flex items-center justify-center shrink-0 transition-colors"
                             style={{
                               background: t.status === 'done' ? 'var(--success)' : 'transparent',
