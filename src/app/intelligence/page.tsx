@@ -151,7 +151,7 @@ export default function IntelligencePage() {
       {/* AI Research Bar */}
       <div
         className="rounded-xl p-4"
-        style={{ border: '1px solid var(--border-default)', background: 'var(--surface-1)' }}
+        style={{ background: 'var(--surface-1)' }}
       >
         <div className="flex items-center gap-2 mb-2">
           <Search className="w-4 h-4" style={{ color: 'var(--accent)' }} />
@@ -257,7 +257,6 @@ export default function IntelligencePage() {
             <form
               onSubmit={handleAddDeal}
               className="rounded-xl p-4 space-y-3"
-              style={{ border: '1px solid var(--border-default)' }}
             >
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <FormField name="company" label="Company" required />
@@ -280,7 +279,7 @@ export default function IntelligencePage() {
           {deals.length === 0 ? (
             <EmptyState message="No market deals tracked yet. Add manually or use AI Research to scan the market." />
           ) : (
-            <div className="rounded-xl overflow-hidden" style={{ border: '1px solid var(--border-default)' }}>
+            <div className="rounded-xl overflow-hidden">
               <table className="w-full text-sm">
                 <thead className="table-header">
                   <tr>
@@ -355,7 +354,6 @@ export default function IntelligencePage() {
             <form
               onSubmit={handleAddCompetitor}
               className="rounded-xl p-4 space-y-3"
-              style={{ border: '1px solid var(--border-default)' }}
             >
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <FormField name="name" label="Company Name" required />
@@ -452,7 +450,7 @@ export default function IntelligencePage() {
             briefs.map(b => {
               const briefStyle = BRIEF_TYPE_STYLES[b.brief_type] || { background: 'var(--surface-2)', color: 'var(--text-tertiary)' };
               return (
-                <div key={b.id} className="rounded-xl overflow-hidden" style={{ border: '1px solid var(--border-default)' }}>
+                <div key={b.id} className="rounded-xl overflow-hidden">
                   <button
                     onClick={() => setExpandedBrief(expandedBrief === b.id ? null : b.id)}
                     className="w-full flex items-center justify-between px-4 py-3"
@@ -570,7 +568,6 @@ function RecentResearchSection({ briefs }: { briefs: IntelligenceBrief[] }) {
   return (
     <div
       className="rounded-xl overflow-hidden"
-      style={{ border: '1px solid var(--border-default)' }}
     >
       <div className="px-4 py-3 flex items-center gap-2" style={{ background: 'var(--surface-1)', borderBottom: '1px solid var(--border-default)' }}>
         <Radar className="w-4 h-4" style={{ color: 'var(--accent)' }} />

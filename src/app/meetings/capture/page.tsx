@@ -537,7 +537,6 @@ function QuickCaptureInner() {
               marginTop: 'var(--space-3)',
               padding: 'var(--space-4)',
               background: 'var(--surface-1)',
-              border: '1px solid var(--border-subtle)',
               borderRadius: 'var(--radius-lg)',
             }}>
               <div>

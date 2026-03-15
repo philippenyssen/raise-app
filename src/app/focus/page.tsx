@@ -370,7 +370,6 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimensionData[] }) 
           onClick={e => e.stopPropagation()}
           style={{
             background: 'var(--surface-1)',
-            border: '1px solid var(--border-subtle)',
             borderRadius: 'var(--radius-md)',
             padding: 'var(--space-3)',
           }}

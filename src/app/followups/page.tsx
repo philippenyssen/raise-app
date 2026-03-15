@@ -715,7 +715,6 @@ function FollowupsContent() {
                 <div
                   style={{
                     background: 'var(--surface-1)',
-                    border: '1px solid var(--border-subtle)',
                     borderRadius: 'var(--radius-md)',
                     padding: 'var(--space-2) var(--space-3)',
                     fontSize: 'var(--font-size-xs)',
@@ -755,7 +754,6 @@ function FollowupsContent() {
                 <div
                   style={{
                     background: 'var(--surface-1)',
-                    border: '1px solid var(--border-subtle)',
                     borderRadius: 'var(--radius-md)',
                     padding: 'var(--space-3)',
                     fontSize: 'var(--font-size-xs)',
@@ -963,7 +961,6 @@ function FollowupsContent() {
         className="flex gap-1"
         style={{
           background: 'var(--surface-1)',
-          border: '1px solid var(--border-subtle)',
           borderRadius: 'var(--radius-lg)',
           padding: 'var(--space-1)',
         }}
@@ -1016,14 +1013,13 @@ function FollowupsContent() {
       {loading ? (
         <div className="space-y-3">
           {[...Array(5)].map((_, i) => (
-            <div key={i} className="rounded-xl animate-pulse" style={{ background: 'var(--surface-1)', height: '72px', border: '1px solid var(--border-subtle)' }} />
+            <div key={i} className="rounded-xl animate-pulse" style={{ background: 'var(--surface-1)', height: '72px' }} />
           ))}
         </div>
       ) : followups.length === 0 ? (
         <div
           className="text-center py-12"
           style={{
-            border: '1px solid var(--border-subtle)',
             borderRadius: 'var(--radius-xl)',
           }}
         >
@@ -1074,8 +1070,7 @@ function FollowupsContent() {
       {completed.length >= 3 && (
         <div
           style={{
-            border: '1px solid var(--border-subtle)',
-            borderRadius: 'var(--radius-xl)',
+              borderRadius: 'var(--radius-xl)',
             overflow: 'hidden',
           }}
         >

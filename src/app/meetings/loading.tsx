@@ -18,7 +18,7 @@ export default function MeetingsLoading() {
       {/* Meeting list items */}
       <div className="flex flex-col gap-3">
         {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="card flex items-start gap-4" style={{ background: 'var(--surface-1)', border: '1px solid var(--border-subtle)', padding: 'var(--space-4)' }}>
+          <div key={i} className="card flex items-start gap-4" style={{ background: 'var(--surface-1)', padding: 'var(--space-4)' }}>
             {/* Date column */}
             <div className="flex flex-col items-center gap-1" style={{ minWidth: 48 }}>
               <div className="skeleton" style={{ width: 32, height: 11 }} />

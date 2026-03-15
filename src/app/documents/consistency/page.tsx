@@ -153,7 +153,7 @@ export default function ConsistencyPage() {
 
           {/* No checks */}
           {result.checks.length === 0 && (
-            <div className="rounded-xl p-8 text-center" style={{ border: '1px solid var(--border-default)' }}>
+            <div className="rounded-xl p-8 text-center">
               <p style={{ color: 'var(--text-muted)' }}>
                 No shared metrics found across documents. Add at least 2 documents with overlapping metrics to compare.
               </p>

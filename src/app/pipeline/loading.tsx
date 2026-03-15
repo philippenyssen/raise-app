@@ -23,14 +23,14 @@ export default function PipelineLoading() {
         {columns.map((col, ci) => (
           <div key={ci} className="flex flex-col gap-2 flex-1" style={{ minWidth: 200 }}>
             {/* Column header */}
-            <div className="flex items-center justify-between p-3" style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
+            <div className="flex items-center justify-between p-3" style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-md)' }}>
               <div className="skeleton" style={{ width: col.label, height: 12 }} />
               <div className="skeleton" style={{ width: 24, height: 20, borderRadius: 9999 }} />
             </div>
             {/* Cards */}
             <div className="flex flex-col gap-2">
               {Array.from({ length: col.cards }).map((_, ki) => (
-                <div key={ki} className="flex flex-col gap-2 p-3" style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
+                <div key={ki} className="flex flex-col gap-2 p-3" style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-md)' }}>
                   <div className="skeleton" style={{ width: '80%', height: 14 }} />
                   <div className="flex items-center gap-2">
                     <div className="skeleton" style={{ width: 52, height: 18, borderRadius: 9999 }} />

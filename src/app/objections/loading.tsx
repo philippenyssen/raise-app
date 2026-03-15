@@ -17,7 +17,7 @@ export default function ObjectionsLoading() {
       {/* Topic groups */}
       <div className="space-y-4">
         {Array.from({ length: 5 }).map((_, i) => (
-          <div key={i} className="rounded-xl" style={{ border: '1px solid var(--border-subtle)' }}>
+          <div key={i} className="rounded-xl">
             <div className="skeleton" style={{ height: '52px', borderRadius: '12px 12px 0 0' }} />
             <div className="p-4 space-y-3">
               <div className="skeleton rounded" style={{ height: '40px' }} />

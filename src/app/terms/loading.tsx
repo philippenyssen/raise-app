@@ -17,7 +17,7 @@ export default function TermsLoading() {
       <div className="skeleton rounded-xl" style={{ height: '100px' }} />
 
       {/* Table skeleton */}
-      <div className="rounded-xl overflow-hidden" style={{ border: '1px solid var(--border-subtle)' }}>
+      <div className="rounded-xl overflow-hidden">
         <div className="skeleton" style={{ height: '44px', borderBottom: '1px solid var(--border-subtle)' }} />
         {Array.from({ length: 9 }).map((_, i) => (
           <div key={i} className="skeleton" style={{ height: '40px', borderBottom: '1px solid var(--border-subtle)', opacity: 1 - i * 0.06 }} />

@@ -262,7 +262,7 @@ export default function DealflowPage() {
           <div
             key={label}
             className="rounded-lg p-3 text-center"
-            style={{ background: 'var(--surface-1)', border: '1px solid var(--border-subtle)' }}
+            style={{ background: 'var(--surface-1)' }}
           >
             <div className="flex items-center justify-center gap-1.5 mb-1">
               <span style={{ color }}><Icon className="w-3.5 h-3.5" /></span>
@@ -328,7 +328,7 @@ export default function DealflowPage() {
 
       {/* Investor Table */}
       {filtered.length > 0 && (
-        <div className="rounded-xl overflow-hidden" style={{ border: '1px solid var(--border-subtle)', background: 'var(--surface-0)' }}>
+        <div className="rounded-xl overflow-hidden" style={{ background: 'var(--surface-0)' }}>
           {/* Header row */}
           <div
             className="grid gap-3 px-4 py-2.5"

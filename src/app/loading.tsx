@@ -10,7 +10,7 @@ export default function DashboardLoading() {
       {/* Metric strip — 4 boxes */}
       <div className="grid grid-cols-4 gap-4">
         {[0, 1, 2, 3].map(i => (
-          <div key={i} className="card flex flex-col gap-3" style={{ background: 'var(--surface-1)', border: '1px solid var(--border-subtle)' }}>
+          <div key={i} className="card flex flex-col gap-3" style={{ background: 'var(--surface-1)' }}>
             <div className="skeleton" style={{ width: 80, height: 11 }} />
             <div className="skeleton" style={{ width: 64, height: 28 }} />
             <div className="skeleton" style={{ width: 100, height: 12 }} />
@@ -19,7 +19,7 @@ export default function DashboardLoading() {
       </div>
 
       {/* Table skeleton */}
-      <div style={{ background: 'var(--surface-1)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
+      <div style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
         {/* Table header */}
         <div className="flex gap-4 p-4" style={{ borderBottom: '1px solid var(--border-default)', background: 'var(--surface-1)' }}>
           {[100, 140, 80, 120, 80, 60].map((w, i) => (

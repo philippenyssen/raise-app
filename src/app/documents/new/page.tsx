@@ -205,7 +205,7 @@ export default function NewDocumentPage() {
       </div>
 
       {showImport && (
-        <div className="rounded-xl p-4" style={{ border: '1px solid var(--border-default)' }}>
+        <div className="rounded-xl p-4">
           <label className="text-xs block mb-2" style={{ color: 'var(--text-muted)' }}>Paste markdown content (will replace template content)</label>
           <textarea
             value={importContent}

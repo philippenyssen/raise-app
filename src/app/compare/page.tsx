@@ -263,12 +263,10 @@ export default function ComparePage() {
             className="w-full flex items-center justify-between transition-colors"
             style={{
               background: 'var(--surface-0)',
-              border: '1px solid var(--border-default)',
               borderRadius: 'var(--radius-lg)',
               padding: 'var(--space-2) var(--space-4)',
               fontSize: 'var(--font-size-sm)',
               color: 'var(--text-secondary)',
-              transition: 'border-color 150ms ease',
             }}
             onMouseEnter={e => (e.currentTarget.style.borderColor = 'var(--border-strong)')}
             onMouseLeave={e => (e.currentTarget.style.borderColor = 'var(--border-default)')}
@@ -291,7 +289,6 @@ export default function ComparePage() {
                 className="absolute z-20 mt-1 w-full max-h-72 overflow-hidden"
                 style={{
                   background: 'var(--surface-1)',
-                  border: '1px solid var(--border-default)',
                   borderRadius: 'var(--radius-lg)',
                   boxShadow: 'var(--shadow-lg)',
                 }}
@@ -385,7 +382,6 @@ export default function ComparePage() {
         <div
           className="p-12 text-center"
           style={{
-            border: '1px solid var(--border-default)',
             borderRadius: 'var(--radius-xl)',
           }}
         >
@@ -403,7 +399,6 @@ export default function ComparePage() {
         <div
           className="p-8 text-center"
           style={{
-            border: '1px solid var(--border-default)',
             borderRadius: 'var(--radius-xl)',
           }}
         >
@@ -427,7 +422,6 @@ export default function ComparePage() {
           <div
             className="overflow-hidden"
             style={{
-              border: '1px solid var(--border-default)',
               borderRadius: 'var(--radius-xl)',
             }}
           >
@@ -722,7 +716,6 @@ export default function ComparePage() {
           <div
             className="overflow-hidden"
             style={{
-              border: '1px solid var(--border-default)',
               borderRadius: 'var(--radius-xl)',
             }}
           >
@@ -772,7 +765,6 @@ export default function ComparePage() {
           <div
             className="overflow-hidden"
             style={{
-              border: '1px solid var(--border-default)',
               borderRadius: 'var(--radius-xl)',
             }}
           >

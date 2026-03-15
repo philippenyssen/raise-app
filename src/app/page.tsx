@@ -422,7 +422,6 @@ export default function Dashboard() {
               style={{
                 width: '176px',
                 background: 'var(--surface-1)',
-                border: '1px solid var(--border-default)',
                 borderRadius: 'var(--radius-md)',
                 boxShadow: 'var(--shadow-lg)',
               }}

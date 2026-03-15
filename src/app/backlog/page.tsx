@@ -145,19 +145,19 @@ export default function BacklogPage() {
       {/* Summary cards */}
       {summary && (
         <div className="grid grid-cols-4 gap-3 card-stagger">
-          <div className="rounded-lg p-4" style={{ background: 'var(--surface-1)', border: '1px solid var(--border-subtle)' }}>
+          <div className="rounded-lg p-4" style={{ background: 'var(--surface-1)' }}>
             <div className="text-[10px]  font-medium flex items-center gap-1" style={{ color: 'var(--text-muted)' }}><DollarSign className="w-3 h-3" /> Total Committed</div>
             <div className="text-2xl font-bold mt-1" style={{ color: 'var(--text-primary)' }}>{formatEur(summary.total_committed_eur)}</div>
           </div>
-          <div className="rounded-lg p-4" style={{ background: 'var(--surface-1)', border: '1px solid var(--border-subtle)' }}>
+          <div className="rounded-lg p-4" style={{ background: 'var(--surface-1)' }}>
             <div className="text-[10px]  font-medium flex items-center gap-1" style={{ color: 'var(--text-muted)' }}><ShieldCheck className="w-3 h-3" /> Probability-Weighted</div>
             <div className="text-2xl font-bold mt-1" style={{ color: 'var(--text-secondary)' }}>{formatEur(summary.probability_weighted_eur)}</div>
           </div>
-          <div className="rounded-lg p-4" style={{ background: 'var(--surface-1)', border: '1px solid var(--border-subtle)' }}>
+          <div className="rounded-lg p-4" style={{ background: 'var(--surface-1)' }}>
             <div className="text-[10px]  font-medium flex items-center gap-1" style={{ color: 'var(--text-muted)' }}><TrendingUp className="w-3 h-3" /> Firm Contracts</div>
             <div className="text-2xl font-bold mt-1" style={{ color: 'var(--accent)' }}>{formatEur(summary.by_type?.firm || 0)}</div>
           </div>
-          <div className="rounded-lg p-4" style={{ background: 'var(--surface-1)', border: '1px solid var(--border-subtle)' }}>
+          <div className="rounded-lg p-4" style={{ background: 'var(--surface-1)' }}>
             <div className="text-[10px]  font-medium flex items-center gap-1" style={{ color: 'var(--text-muted)' }}><AlertTriangle className="w-3 h-3" /> Pipeline (Unsigned)</div>
             <div className="text-2xl font-bold mt-1" style={{ color: 'var(--text-tertiary)' }}>{formatEur(summary.by_type?.pipeline || 0)}</div>
           </div>
@@ -166,7 +166,7 @@ export default function BacklogPage() {
 
       {/* Add form */}
       {showAdd && (
-        <div className="rounded-xl p-4 space-y-3" style={{ background: 'var(--surface-1)', border: '1px solid var(--border-subtle)' }}>
+        <div className="rounded-xl p-4 space-y-3" style={{ background: 'var(--surface-1)' }}>
           <h3 className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>Add Revenue Commitment</h3>
           <div className="grid grid-cols-3 gap-3">
             <input placeholder="Customer" value={form.customer} onChange={e => setForm(f => ({ ...f, customer: e.target.value }))} className="input" />
@@ -191,13 +191,13 @@ export default function BacklogPage() {
 
       {/* Commitments table */}
       {commitments.length === 0 ? (
-        <div className="rounded-xl p-8 text-center space-y-3" style={{ border: '1px solid var(--border-subtle)' }}>
+        <div className="rounded-xl p-8 text-center space-y-3">
           <DollarSign className="w-8 h-8 mx-auto" style={{ color: 'var(--text-muted)' }} />
           <p style={{ color: 'var(--text-muted)' }}>No revenue commitments tracked yet.</p>
           <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>Add your contracted backlog to enable auditable drill-down during DD.</p>
         </div>
       ) : (
-        <div className="rounded-xl overflow-hidden" style={{ border: '1px solid var(--border-subtle)' }}>
+        <div className="rounded-xl overflow-hidden">
           <table className="w-full text-sm">
             <thead>
               <tr className="table-header">

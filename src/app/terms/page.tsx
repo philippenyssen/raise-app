@@ -169,7 +169,7 @@ export default function TermsPage() {
       </div>
 
       {/* Market Standards Reference */}
-      <div className="rounded-xl p-5" style={{ border: '1px solid var(--border-default)', background: 'var(--surface-0)' }}>
+      <div className="rounded-xl p-5" style={{ background: 'var(--surface-0)' }}>
         <h3 className="text-xs font-medium mb-3" style={{ color: 'var(--text-tertiary)' }}>Market standards (Series C)</h3>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-xs">
           {Object.entries(MARKET_STANDARDS).map(([key, val]) => (
@@ -183,7 +183,7 @@ export default function TermsPage() {
 
       {/* Add/Edit Form */}
       {showForm && (
-        <form onSubmit={handleSubmit} className="rounded-xl p-6 space-y-4" style={{ border: '1px solid var(--border-default)', background: 'var(--surface-0)' }}>
+        <form onSubmit={handleSubmit} className="rounded-xl p-6 space-y-4" style={{ background: 'var(--surface-0)' }}>
           <h3 className="text-sm font-medium" style={{ color: 'var(--text-tertiary)' }}>{editId ? 'Edit' : 'Add'} term sheet</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <TsInput label="Investor" value={form.investor} onChange={v => setForm(f => ({ ...f, investor: v }))} required />
@@ -218,7 +218,7 @@ export default function TermsPage() {
 
       {/* Comparison Table */}
       {sheets.length > 0 && (
-        <div className="rounded-xl overflow-x-auto" style={{ border: '1px solid var(--border-default)' }}>
+        <div className="rounded-xl overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="table-header">
               <tr>
@@ -326,7 +326,7 @@ export default function TermsPage() {
       )}
 
       {sheets.length === 0 && !showForm && (
-        <div className="rounded-xl p-8 text-center text-sm" style={{ border: '1px solid var(--border-default)', color: 'var(--text-muted)' }}>
+        <div className="rounded-xl p-8 text-center text-sm" style={{ color: 'var(--text-muted)' }}>
           No term sheets yet. Add them as they come in for side-by-side comparison.
         </div>
       )}

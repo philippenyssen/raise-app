@@ -696,7 +696,7 @@ export default function TermComparePage() {
                         Post-money: EUR {formatM(r.post_money_valuation)}
                       </span>
                     </div>
-                    <div className="flex h-6 rounded-lg overflow-hidden" style={{ border: '1px solid var(--border-subtle)' }}>
+                    <div className="flex h-6 rounded-lg overflow-hidden">
                       <div
                         className="flex items-center justify-center text-xs font-medium"
                         style={{

@@ -20,7 +20,7 @@ export default function TodayLoading() {
       {/* 3 action cards */}
       <div className="grid grid-cols-3 gap-4">
         {[0, 1, 2].map(i => (
-          <div key={i} className="card flex flex-col gap-3" style={{ background: 'var(--surface-1)', border: '1px solid var(--border-subtle)' }}>
+          <div key={i} className="card flex flex-col gap-3" style={{ background: 'var(--surface-1)' }}>
             <div className="flex items-center gap-2">
               <div className="skeleton" style={{ width: 28, height: 28, borderRadius: 'var(--radius-sm)' }} />
               <div className="skeleton" style={{ width: 140, height: 14 }} />
@@ -36,7 +36,7 @@ export default function TodayLoading() {
       <div className="flex flex-col gap-3">
         <div className="skeleton" style={{ width: 140, height: 16 }} />
         {[0, 1, 2].map(i => (
-          <div key={i} className="card flex items-center gap-4" style={{ background: 'var(--surface-1)', border: '1px solid var(--border-subtle)', padding: 'var(--space-4)' }}>
+          <div key={i} className="card flex items-center gap-4" style={{ background: 'var(--surface-1)', padding: 'var(--space-4)' }}>
             <div className="skeleton" style={{ width: 56, height: 32, borderRadius: 'var(--radius-sm)' }} />
             <div className="flex flex-col gap-2 flex-1">
               <div className="skeleton" style={{ width: 200, height: 14 }} />

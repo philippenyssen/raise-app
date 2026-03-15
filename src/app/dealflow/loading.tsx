@@ -25,7 +25,7 @@ export default function DealflowLoading() {
       </div>
 
       {/* Table header */}
-      <div className="rounded-xl overflow-hidden" style={{ border: '1px solid var(--border-subtle)' }}>
+      <div className="rounded-xl overflow-hidden">
         <div className="skeleton" style={{ height: '40px', borderBottom: '1px solid var(--border-subtle)' }} />
         {Array.from({ length: 8 }).map((_, i) => (
           <div key={i} className="skeleton" style={{ height: '56px', borderBottom: '1px solid var(--border-subtle)', opacity: 1 - i * 0.08 }} />

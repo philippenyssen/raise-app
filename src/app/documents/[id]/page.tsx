@@ -261,7 +261,7 @@ export default function DocumentEditorPage() {
         {/* Editor */}
         <div className="flex-1 min-w-0">
           {preview ? (
-            <div className="rounded-xl p-6 min-h-[60vh] prose prose-invert prose-sm max-w-none" style={{ border: '1px solid var(--border-default)' }}>
+            <div className="rounded-xl p-6 min-h-[60vh] prose prose-invert prose-sm max-w-none">
               <MarkdownPreview content={content} />
             </div>
           ) : (
@@ -295,7 +295,7 @@ export default function DocumentEditorPage() {
 
         {/* AI Panel */}
         <div className="w-72 shrink-0 space-y-3">
-          <div className="rounded-xl p-4" style={{ border: '1px solid var(--border-default)' }}>
+          <div className="rounded-xl p-4">
             <h3 className="text-xs font-medium mb-3 flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
               <Sparkles className="w-3.5 h-3.5" /> AI operations
             </h3>
@@ -334,7 +334,7 @@ export default function DocumentEditorPage() {
 
           {/* AI Result */}
           {aiResult && (
-            <div className="rounded-xl p-4 max-h-96 overflow-y-auto" style={{ border: '1px solid var(--border-default)' }}>
+            <div className="rounded-xl p-4 max-h-96 overflow-y-auto">
               <h3 className="text-xs font-medium mb-3" style={{ color: 'var(--text-tertiary)' }}>AI result</h3>
 
               {(aiResult.type === 'improve' || aiResult.type === 'goldman') && (
@@ -407,7 +407,7 @@ export default function DocumentEditorPage() {
       {/* Version History Modal */}
       {showVersions && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.6)' }} onClick={() => setShowVersions(false)}>
-          <div className="rounded-xl p-6 max-w-lg w-full max-h-[70vh] overflow-y-auto" style={{ background: 'var(--surface-1)', border: '1px solid var(--border-default)' }} onClick={e => e.stopPropagation()}>
+          <div className="rounded-xl p-6 max-w-lg w-full max-h-[70vh] overflow-y-auto" style={{ background: 'var(--surface-1)' }} onClick={e => e.stopPropagation()}>
             <h2 className="text-lg font-bold mb-4 flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
               <History className="w-5 h-5" /> Version History
             </h2>
@@ -445,9 +445,6 @@ function VersionRow({ version: v, onRestore }: { version: Version; onRestore: (v
   return (
     <div
       className="flex items-center justify-between p-3 rounded-lg"
-      style={{
-        border: `1px solid ${hovered ? 'var(--border-strong)' : 'var(--border-default)'}`,
-      }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >

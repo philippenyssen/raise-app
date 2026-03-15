@@ -11,7 +11,7 @@ export default function FocusLoading() {
       </div>
 
       {/* Budget bar */}
-      <div className="flex gap-4 p-4" style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-subtle)' }}>
+      <div className="flex gap-4 p-4" style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)' }}>
         {[0, 1, 2].map(i => (
           <div key={i} className="flex flex-col gap-1 flex-1">
             <div className="skeleton" style={{ width: 80, height: 11 }} />
@@ -23,7 +23,7 @@ export default function FocusLoading() {
       {/* Ranked list with score bars */}
       <div className="flex flex-col gap-2">
         {Array.from({ length: 7 }).map((_, i) => (
-          <div key={i} className="flex items-center gap-4 p-4" style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
+          <div key={i} className="flex items-center gap-4 p-4" style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-md)' }}>
             {/* Rank */}
             <div className="skeleton" style={{ width: 24, height: 24, borderRadius: '50%' }} />
             {/* Investor info */}

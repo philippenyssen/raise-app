@@ -16,7 +16,7 @@ export default function InvestorsLoading() {
       </div>
 
       {/* Table */}
-      <div style={{ background: 'var(--surface-1)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
+      <div style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
         {/* Header row */}
         <div className="flex items-center gap-4 p-4" style={{ borderBottom: '1px solid var(--border-default)' }}>
           <div className="skeleton" style={{ width: 16, height: 16, borderRadius: 3 }} />
