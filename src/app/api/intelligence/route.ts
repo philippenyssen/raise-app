@@ -207,7 +207,7 @@ export async function POST(req: NextRequest) {
     if (msg.includes('credit balance') || msg.includes('too low')) {
       return NextResponse.json({ error: 'Anthropic API: insufficient credits. Check console.anthropic.com/settings/billing.' }, { status: 402 });
     }
-    return NextResponse.json({ error: 'Intelligence operation failed' }, { status: 500 });
+    return NextResponse.json({ error: 'Could not process intelligence request' }, { status: 500 });
   }}
 
 // PUT: Update intelligence data

@@ -106,7 +106,7 @@ export default function IntelligencePage() {
       toast(`Deleted ${deleteTarget.name}`, 'warning');
       setDeleteTarget(null);
       fetchAll();
-    } catch { toast('Failed to delete', 'error'); } finally { setDeleting(false); }
+    } catch { toast('Could not delete — check your connection and try again', 'error'); } finally { setDeleting(false); }
   }
 
   async function handleAddDeal(e: React.FormEvent<HTMLFormElement>) {

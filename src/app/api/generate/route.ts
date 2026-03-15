@@ -80,10 +80,11 @@ export async function POST(req: NextRequest) {
     }
     if (msg.includes('authentication') || msg.includes('api_key') || msg.includes('401')) {
       return NextResponse.json(
-        { error: 'Anthropic API key missing or invalid. Set ANTHROPIC_API_KEY in environment variables and redeploy.' },
+        { error: 'AI service configuration error — please contact your administrator' },
         { status: 401 }
       );
     }
-    return NextResponse.json({ error: msg }, { status: 500 });
+    console.error('[GENERATE]', msg);
+    return NextResponse.json({ error: 'Document generation failed' }, { status: 500 });
   }
 }
