@@ -20,6 +20,8 @@ export async function POST(req: NextRequest) {
   if (!body.investor) {
     return NextResponse.json({ error: 'investor is required' }, { status: 400 });
   }
+  const rawSV = Number(body.strategic_value);
+  const strategic_value = (!isNaN(rawSV) && rawSV >= 1 && rawSV <= 5) ? rawSV : 3;
   try {
     const sheet = await createTermSheet({
       investor: body.investor as string,
@@ -32,7 +34,7 @@ export async function POST(req: NextRequest) {
       protective_provisions: (body.protective_provisions as string) ?? 'Standard',
       option_pool: (body.option_pool as string) ?? '',
       exclusivity: (body.exclusivity as string) ?? '',
-      strategic_value: (body.strategic_value as number) ?? 3,
+      strategic_value,
       notes: (body.notes as string) ?? '',
     });
     return NextResponse.json(sheet, { status: 201 });

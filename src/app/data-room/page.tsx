@@ -203,10 +203,11 @@ export default function DataRoomPage() {
 
   if (loading) {
     return (
-      <div className="space-y-4">
-        <div className="h-8 w-48 skeleton" style={{ borderRadius: 'var(--radius-md)' }} />
-        {[...Array(3)].map((_, i) => (
-          <div key={i} className="h-20 skeleton" style={{ borderRadius: 'var(--radius-lg)' }} />
+      <div className="space-y-4 page-content">
+        <div className="skeleton" style={{ height: '28px', width: '200px' }} />
+        <div className="skeleton" style={{ height: '16px', width: '350px' }} />
+        {[1,2,3].map(i => (
+          <div key={i} className="skeleton" style={{ height: '80px', borderRadius: 'var(--radius-lg)' }} />
         ))}
       </div>);
   }
@@ -293,8 +294,17 @@ export default function DataRoomPage() {
           )}</div>
       )}
 
+      {/* Empty state — no files uploaded yet */}
+      {!filteredFiles && files.length === 0 && (
+        <div className="rounded-xl p-8 text-center space-y-3">
+          <FolderOpen className="w-8 h-8 mx-auto" style={stTextMuted} />
+          <p style={stTextMuted}>No files in your data room yet.</p>
+          <p className="text-sm" style={stTextTertiary}>Upload financial models, legal docs, and pitch materials to enable AI-powered due diligence support.</p>
+        </div>
+      )}
+
       {/* Category overview */}
-      {!filteredFiles && (
+      {!filteredFiles && files.length > 0 && (
         <div className="space-y-6">
           {CATEGORIES.map(cat => {
             const catFiles = grouped[cat.value] || [];
