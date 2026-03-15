@@ -146,19 +146,19 @@ export default function BacklogPage() {
       {summary && (
         <div className="grid grid-cols-4 gap-3 card-stagger">
           <div className="rounded-lg p-4" style={{ background: 'var(--surface-1)' }}>
-            <div className="text-[10px]  font-normal flex items-center gap-1" style={{ color: 'var(--text-muted)' }}><DollarSign className="w-3 h-3" /> Total Committed</div>
+            <div className="text-xs  font-normal flex items-center gap-1" style={{ color: 'var(--text-muted)' }}><DollarSign className="w-3 h-3" /> Total Committed</div>
             <div className="text-2xl font-normal mt-1" style={{ color: 'var(--text-primary)' }}>{formatEur(summary.total_committed_eur)}</div>
           </div>
           <div className="rounded-lg p-4" style={{ background: 'var(--surface-1)' }}>
-            <div className="text-[10px]  font-normal flex items-center gap-1" style={{ color: 'var(--text-muted)' }}><ShieldCheck className="w-3 h-3" /> Probability-Weighted</div>
+            <div className="text-xs  font-normal flex items-center gap-1" style={{ color: 'var(--text-muted)' }}><ShieldCheck className="w-3 h-3" /> Probability-Weighted</div>
             <div className="text-2xl font-normal mt-1" style={{ color: 'var(--text-secondary)' }}>{formatEur(summary.probability_weighted_eur)}</div>
           </div>
           <div className="rounded-lg p-4" style={{ background: 'var(--surface-1)' }}>
-            <div className="text-[10px]  font-normal flex items-center gap-1" style={{ color: 'var(--text-muted)' }}><TrendingUp className="w-3 h-3" /> Firm Contracts</div>
+            <div className="text-xs  font-normal flex items-center gap-1" style={{ color: 'var(--text-muted)' }}><TrendingUp className="w-3 h-3" /> Firm Contracts</div>
             <div className="text-2xl font-normal mt-1" style={{ color: 'var(--accent)' }}>{formatEur(summary.by_type?.firm || 0)}</div>
           </div>
           <div className="rounded-lg p-4" style={{ background: 'var(--surface-1)' }}>
-            <div className="text-[10px]  font-normal flex items-center gap-1" style={{ color: 'var(--text-muted)' }}><AlertTriangle className="w-3 h-3" /> Pipeline (Unsigned)</div>
+            <div className="text-xs  font-normal flex items-center gap-1" style={{ color: 'var(--text-muted)' }}><AlertTriangle className="w-3 h-3" /> Pipeline (Unsigned)</div>
             <div className="text-2xl font-normal mt-1" style={{ color: 'var(--text-tertiary)' }}>{formatEur(summary.by_type?.pipeline || 0)}</div>
           </div>
         </div>
@@ -219,10 +219,10 @@ export default function BacklogPage() {
                   <tr key={c.id} className="table-row">
                     <td className="px-4 py-3 font-normal" style={{ color: 'var(--text-primary)' }}>{c.customer}</td>
                     <td className="px-4 py-3" style={{ color: 'var(--text-secondary)' }}>{c.program || '—'}</td>
-                    <td className="px-4 py-3"><span className="text-[10px] px-1.5 py-0.5 rounded" style={{ background: 'var(--surface-2)', color: 'var(--text-secondary)' }}>{TYPE_LABELS[c.contract_type] || c.contract_type}</span></td>
+                    <td className="px-4 py-3"><span className="text-xs px-1.5 py-0.5 rounded" style={{ background: 'var(--surface-2)', color: 'var(--text-secondary)' }}>{TYPE_LABELS[c.contract_type] || c.contract_type}</span></td>
                     <td className="px-4 py-3 text-right font-mono" style={{ color: 'var(--text-primary)' }}>{(c.amount_eur / 1e6).toFixed(0)}</td>
                     <td className="px-4 py-3 text-right font-mono" style={{ color: 'var(--text-muted)' }}>{c.annual_amount ? (c.annual_amount / 1e6).toFixed(0) : '—'}</td>
-                    <td className="px-4 py-3 text-center"><span className="text-[10px] px-1.5 py-0.5 rounded font-normal" style={CONFIDENCE_COLORS[conf]}>{(c.confidence * 100).toFixed(0)}%</span></td>
+                    <td className="px-4 py-3 text-center"><span className="text-xs px-1.5 py-0.5 rounded font-normal" style={CONFIDENCE_COLORS[conf]}>{(c.confidence * 100).toFixed(0)}%</span></td>
                     <td className="px-4 py-3 text-xs" style={{ color: 'var(--text-muted)' }}>{c.start_date && c.end_date ? `${c.start_date.slice(0, 7)} → ${c.end_date.slice(0, 7)}` : c.start_date || '—'}</td>
                     <td className="px-4 py-3 text-xs" style={{ color: 'var(--text-muted)' }}>{c.source_doc ? <span className="flex items-center gap-1"><FileText className="w-3 h-3" />{c.source_doc}</span> : '—'}</td>
                     <td className="px-4 py-3">

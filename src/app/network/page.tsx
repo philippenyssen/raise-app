@@ -557,7 +557,7 @@ export default function NetworkPage() {
                         </p>
                         <Link
                           href={`/investors/${cascade.networkBottleneck.investorId}`}
-                          className="inline-flex items-center gap-1 mt-2 px-2.5 py-1 rounded text-[11px] font-normal transition-colors"
+                          className="inline-flex items-center gap-1 mt-2 px-2.5 py-1 rounded text-xs font-normal transition-colors"
                           style={{ background: 'var(--fg-5)', color: 'var(--text-tertiary)', border: '1px solid var(--fg-5)' }}
                           onMouseEnter={e => { e.currentTarget.style.background = 'var(--fg-5)'; }}
                           onMouseLeave={e => { e.currentTarget.style.background = 'var(--fg-5)'; }}

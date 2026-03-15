@@ -726,7 +726,7 @@ export default function InvestorDetailPage() {
                             background: point.score >= 4 ? 'var(--success)' : point.score >= 3 ? 'var(--accent)' : point.score >= 2 ? 'var(--warning)' : 'var(--danger)',
                           }}
                         />
-                        <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{point.date.slice(5)}</span>
+                        <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{point.date.slice(5)}</span>
                       </div>
                     ))}
                   </div>
@@ -987,9 +987,9 @@ export default function InvestorDetailPage() {
                           </div>
                         </div>
                         <div className="flex items-center gap-3 shrink-0">
-                          <span className="text-[10px]" style={{ color: prioColor }}>{t.priority}</span>
-                          <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{t.phase}</span>
-                          {t.due_date && <span className="text-[10px]" style={{ color: overdue ? 'var(--danger)' : 'var(--text-muted)', fontWeight: overdue ? 500 : 400 }}>{t.due_date}</span>}
+                          <span className="text-xs" style={{ color: prioColor }}>{t.priority}</span>
+                          <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{t.phase}</span>
+                          {t.due_date && <span className="text-xs" style={{ color: overdue ? 'var(--danger)' : 'var(--text-muted)', fontWeight: overdue ? 500 : 400 }}>{t.due_date}</span>}
                         </div>
                       </div>
                     );
@@ -1205,7 +1205,7 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
             <div className="flex items-start gap-2">
               <Lightbulb className="w-3.5 h-3.5 shrink-0 mt-0.5" style={{ color: 'var(--text-tertiary)' }} />
               <div className="flex-1 min-w-0">
-                <div className="text-[10px] font-normal  mb-0.5" style={{ color: 'var(--text-muted)' }}>Next Action</div>
+                <div className="text-xs font-normal  mb-0.5" style={{ color: 'var(--text-muted)' }}>Next Action</div>
                 <div className="flex items-center gap-2">
                   <p className="text-sm leading-snug flex-1" style={{ color: 'var(--text-secondary)' }}>{score.nextBestAction}</p>
                   <Link
@@ -1241,7 +1241,7 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-normal" style={{ color: 'var(--text-secondary)' }}>{dim.name}</span>
                     <span
-                      className="text-[10px] px-1.5 py-0.5 rounded"
+                      className="text-xs px-1.5 py-0.5 rounded"
                       style={{ background: badge.bg, color: badge.color }}
                     >
                       {dim.signal}
@@ -1255,7 +1255,7 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
                     style={{ width: `${dim.score}%`, background: scoreBarColor(dim.score) }}
                   />
                 </div>
-                <p className="text-[11px] leading-snug truncate" title={dim.evidence} style={{ color: 'var(--text-muted)' }}>
+                <p className="text-xs leading-snug truncate" title={dim.evidence} style={{ color: 'var(--text-muted)' }}>
                   {dim.evidence}
                 </p>
               </div>
@@ -1407,7 +1407,7 @@ function ConvictionTrajectoryPanel({ trajectory }: { trajectory: ConvictionTraje
 
           {/* Prediction */}
           <div className="space-y-1.5 min-w-0">
-            <div className="text-[10px] font-normal " style={{ color: 'var(--text-muted)' }}>30-Day Prediction</div>
+            <div className="text-xs font-normal " style={{ color: 'var(--text-muted)' }}>30-Day Prediction</div>
             <div className="flex items-baseline gap-1">
               <span className="text-lg font-normal tabular-nums" style={{ color: scoreColor(trajectory.predictedScoreIn30Days) }}>
                 {trajectory.predictedScoreIn30Days}
@@ -1589,7 +1589,7 @@ function EnrichmentPanel({
                 </span>
                 <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{catRecords.length} field{catRecords.length !== 1 ? 's' : ''}</span>
                 <span
-                  className="text-[10px] px-1.5 py-0.5 rounded"
+                  className="text-xs px-1.5 py-0.5 rounded"
                   style={{ background: confidenceBg(avgConfidence), color: confidenceColor(avgConfidence) }}
                 >
                   {Math.round(avgConfidence * 100)}% avg confidence
@@ -1623,7 +1623,7 @@ function EnrichmentPanel({
                           {rec.field_name.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
                         </span>
                         <span
-                          className="text-[10px] px-1.5 py-0.5 rounded font-normal"
+                          className="text-xs px-1.5 py-0.5 rounded font-normal"
                           style={{ background: confidenceBg(rec.confidence), color: confidenceColor(rec.confidence) }}
                         >
                           {Math.round(rec.confidence * 100)}%
@@ -1633,10 +1633,10 @@ function EnrichmentPanel({
                         {rec.field_value.length > 300 ? rec.field_value.slice(0, 300) + '...' : rec.field_value}
                       </p>
                       <div className="flex items-center gap-3 mt-1">
-                        <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
+                        <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
                           Source: {rec.source_id}
                         </span>
-                        <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
+                        <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
                           Updated: {rec.fetched_at ? fmtDate(rec.fetched_at) : '—'}
                         </span>
                         {rec.source_url && (
@@ -1644,7 +1644,7 @@ function EnrichmentPanel({
                             href={rec.source_url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-[10px] flex items-center gap-0.5"
+                            className="text-xs flex items-center gap-0.5"
                             style={{ color: 'var(--accent)' }}
                             onClick={e => e.stopPropagation()}
                           >

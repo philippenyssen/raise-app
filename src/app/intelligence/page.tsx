@@ -605,7 +605,7 @@ function RecentResearchSection({ briefs }: { briefs: IntelligenceBrief[] }) {
                   <Icon className="w-4 h-4" />
                 </span>
                 <span
-                  className="text-[10px] px-1.5 py-0.5 rounded font-normal shrink-0"
+                  className="text-xs px-1.5 py-0.5 rounded font-normal shrink-0"
                   style={{ background: briefTypeStyle.background, color: briefTypeStyle.color }}
                 >
                   {brief.brief_type}

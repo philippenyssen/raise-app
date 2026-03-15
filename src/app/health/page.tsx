@@ -251,14 +251,14 @@ export default function HealthPage() {
                       <span className="text-xs font-normal" style={{ color: 'var(--text-secondary)' }}>
                         {check.name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                       </span>
-                      <p className="text-[10px] truncate" style={{ color: 'var(--text-muted)' }}>{check.detail}</p>
+                      <p className="text-xs truncate" style={{ color: 'var(--text-muted)' }}>{check.detail}</p>
                     </div>
                   </div>
                 );
               })}
             </div>
             {intelVerify.contextVersion && (
-              <div className="mt-3 pt-3 flex items-center gap-4 text-[10px]" style={{ borderTop: '1px solid var(--border-default)', color: 'var(--text-muted)' }}>
+              <div className="mt-3 pt-3 flex items-center gap-4 text-xs" style={{ borderTop: '1px solid var(--border-default)', color: 'var(--text-muted)' }}>
                 <span>Context v{intelVerify.contextVersion}</span>
                 {intelVerify.contextBuildTimestamp && (
                   <span>Built {new Date(intelVerify.contextBuildTimestamp).toLocaleString()}</span>

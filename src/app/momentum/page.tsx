@@ -298,7 +298,7 @@ export default function MomentumPage() {
                       }}
                     />
                   </div>
-                  <span className="text-[10px] font-mono" style={{ color: 'var(--text-muted)' }}>{formatWeekLabel(t.week)}</span>
+                  <span className="text-xs font-mono" style={{ color: 'var(--text-muted)' }}>{formatWeekLabel(t.week)}</span>
                 </div>
               );
             })}
@@ -311,7 +311,7 @@ export default function MomentumPage() {
             <h3 className="text-sm font-normal flex items-center gap-2" style={{ color: 'var(--text-secondary)' }}>
               Trajectory Alerts
               <span
-                className="text-[10px] px-1.5 py-0.5 rounded"
+                className="text-xs px-1.5 py-0.5 rounded"
                 style={{ background: 'var(--surface-2)', color: 'var(--text-muted)' }}
               >
                 {data.trajectoryAlerts.length}
@@ -343,7 +343,7 @@ export default function MomentumPage() {
                 >
                   <div className="flex items-center justify-between mb-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-normal ">{labels[alert.type]}</span>
+                      <span className="text-xs font-normal ">{labels[alert.type]}</span>
                       <span className="text-sm font-normal" style={{ color: 'var(--text-primary)' }}>{alert.investorName}</span>
                     </div>
                     <div className="flex items-center gap-3 text-xs">
@@ -362,7 +362,7 @@ export default function MomentumPage() {
                     <div className="flex items-center gap-2 ml-4 shrink-0">
                       <Link
                         href={`/meetings/new?investor=${alert.investorId}`}
-                        className="px-2.5 py-1 rounded text-[11px] font-normal transition-colors"
+                        className="px-2.5 py-1 rounded text-xs font-normal transition-colors"
                         style={{ background: 'var(--accent-15)', color: 'var(--accent)', border: '1px solid var(--accent-25)' }}
                         onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent-30)'; }}
                         onMouseLeave={e => { e.currentTarget.style.background = 'var(--accent-15)'; }}
@@ -371,7 +371,7 @@ export default function MomentumPage() {
                       </Link>
                       <Link
                         href={`/investors/${alert.investorId}`}
-                        className="px-2.5 py-1 rounded text-[11px] font-normal transition-colors"
+                        className="px-2.5 py-1 rounded text-xs font-normal transition-colors"
                         style={{ background: 'var(--surface-2)', color: 'var(--text-secondary)' }}
                         onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-3)'; }}
                         onMouseLeave={e => { e.currentTarget.style.background = 'var(--surface-2)'; }}
@@ -461,7 +461,7 @@ export default function MomentumPage() {
                             {inv.investorName}
                           </Link>
                           <span
-                            className="px-1.5 py-0.5 rounded text-[10px] font-normal"
+                            className="px-1.5 py-0.5 rounded text-xs font-normal"
                             style={{
                               background: tc.bg,
                               color: tc.color,
@@ -550,26 +550,26 @@ export default function MomentumPage() {
               background: 'var(--surface-1)',
             }}
           >
-            <span className="text-[10px]  tracking-wider" style={{ color: 'var(--text-muted)' }}>Score</span>
+            <span className="text-xs  tracking-wider" style={{ color: 'var(--text-muted)' }}>Score</span>
             <div className="flex items-center gap-1.5">
-              <div className="w-4 h-3 rounded" style={{ background: 'var(--fg-60)' }} /><span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>1-30</span>
+              <div className="w-4 h-3 rounded" style={{ background: 'var(--fg-60)' }} /><span className="text-xs" style={{ color: 'var(--text-muted)' }}>1-30</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <div className="w-4 h-3 rounded" style={{ background: 'var(--warn-60)' }} /><span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>31-50</span>
+              <div className="w-4 h-3 rounded" style={{ background: 'var(--warn-60)' }} /><span className="text-xs" style={{ color: 'var(--text-muted)' }}>31-50</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <div className="w-4 h-3 rounded" style={{ background: 'var(--accent-60)' }} /><span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>51-70</span>
+              <div className="w-4 h-3 rounded" style={{ background: 'var(--accent-60)' }} /><span className="text-xs" style={{ color: 'var(--text-muted)' }}>51-70</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <div className="w-4 h-3 rounded" style={{ background: 'var(--accent-85)' }} /><span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>71-100</span>
+              <div className="w-4 h-3 rounded" style={{ background: 'var(--accent-85)' }} /><span className="text-xs" style={{ color: 'var(--text-muted)' }}>71-100</span>
             </div>
             <div className="ml-4 flex items-center gap-1.5">
               <div className="w-4 h-3 rounded" style={{ background: 'var(--surface-2)', boxShadow: '0 none' }} />
-              <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Above cohort</span>
+              <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Above cohort</span>
             </div>
             <div className="flex items-center gap-1.5">
               <div className="w-4 h-3 rounded" style={{ background: 'var(--surface-2)', boxShadow: '0 none' }} />
-              <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Below cohort</span>
+              <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Below cohort</span>
             </div>
           </div>
         </div>
@@ -648,7 +648,7 @@ export default function MomentumPage() {
                       <div className="flex gap-1 mt-1">
                         {cohort.weeklyAvg.map((ws) => (
                           <div key={ws.week} className="flex-1 text-center">
-                            <span className="text-[9px] font-mono" style={{ color: 'var(--text-muted)' }}>{ws.score}</span>
+                            <span className="text-xs font-mono" style={{ color: 'var(--text-muted)' }}>{ws.score}</span>
                           </div>
                         ))}
                       </div>
@@ -728,7 +728,7 @@ export default function MomentumPage() {
                               {anomaly.investorName}
                             </Link>
                             <span
-                              className="px-1.5 py-0.5 rounded text-[10px] font-normal"
+                              className="px-1.5 py-0.5 rounded text-xs font-normal"
                               style={{
                                 background: tc.bg,
                                 color: tc.color,
@@ -750,7 +750,7 @@ export default function MomentumPage() {
                             <p className="text-xs flex-1" style={{ color: 'var(--text-muted)' }}>{anomaly.message}</p>
                             <Link
                               href={isAbove ? `/meetings/prep?investor=${anomaly.investorId}` : `/meetings/new?investor=${anomaly.investorId}`}
-                              className="ml-3 px-2 py-0.5 rounded text-[10px] font-normal shrink-0 transition-colors"
+                              className="ml-3 px-2 py-0.5 rounded text-xs font-normal shrink-0 transition-colors"
                               style={{
                                 background: isAbove ? 'var(--accent-30)' : 'var(--fg-30)',
                                 color: isAbove ? 'var(--success)' : 'var(--danger)',
@@ -818,7 +818,7 @@ export default function MomentumPage() {
                         {signal.affectedInvestors.map(name => (
                           <span
                             key={name}
-                            className="px-2 py-0.5 rounded text-[10px]"
+                            className="px-2 py-0.5 rounded text-xs"
                             style={{
                               background: 'var(--surface-2)',
                               color: 'var(--text-secondary)',
@@ -890,13 +890,13 @@ export default function MomentumPage() {
                   >
                     <div className="flex items-center gap-2 mb-1.5">
                       <span
-                        className="text-[10px] font-normal "
+                        className="text-xs font-normal "
                         style={{ color: typeIconColors[signal.type] || 'var(--text-secondary)' }}
                       >
                         {typeLabels[signal.type] || signal.type}
                       </span>
                       <span
-                        className="text-[9px] px-1.5 py-0.5 rounded font-normal"
+                        className="text-xs px-1.5 py-0.5 rounded font-normal"
                         style={{
                           background: us.bg,
                           color: us.color,
@@ -910,7 +910,7 @@ export default function MomentumPage() {
                       {signal.investorNames.map(name => (
                         <span
                           key={name}
-                          className="px-2 py-0.5 rounded text-[10px]"
+                          className="px-2 py-0.5 rounded text-xs"
                           style={{
                             background: 'var(--surface-2)',
                             color: 'var(--text-secondary)',
@@ -970,7 +970,7 @@ export default function MomentumPage() {
                       >
                         {TYPE_LABELS[nh.investorType] || nh.investorType}
                       </span>
-                      <span className="text-[10px] font-normal " style={{ color: sc.color }}>{sc.label}</span>
+                      <span className="text-xs font-normal " style={{ color: sc.color }}>{sc.label}</span>
                     </div>
                     <div className="grid grid-cols-2 gap-2 text-xs">
                       <div>
@@ -994,12 +994,12 @@ export default function MomentumPage() {
                     </div>
                     {nh.topObjection && (
                       <div className="mt-2 flex items-center justify-between">
-                        <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
+                        <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
                           Top objection: <span style={{ color: 'var(--text-secondary)' }}>{nh.topObjection}</span>
                         </div>
                         <Link
                           href="/objections"
-                          className="text-[10px] font-normal shrink-0 ml-2 transition-colors"
+                          className="text-xs font-normal shrink-0 ml-2 transition-colors"
                           style={{ color: 'var(--accent)' }}
                           onMouseEnter={e => { e.currentTarget.style.opacity = '0.7'; }}
                           onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}
@@ -1009,11 +1009,11 @@ export default function MomentumPage() {
                       </div>
                     )}
                     {nh.topQuestionTopic && (
-                      <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
+                      <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
                         Top question: <span style={{ color: 'var(--text-secondary)' }}>{nh.topQuestionTopic}</span>
                       </div>
                     )}
-                    <div className="mt-1 text-[9px]" style={{ color: 'var(--text-muted)' }}>
+                    <div className="mt-1 text-xs" style={{ color: 'var(--text-muted)' }}>
                       {nh.sampleSize} investor{nh.sampleSize !== 1 ? 's' : ''}
                     </div>
                   </div>

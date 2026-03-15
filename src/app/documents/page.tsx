@@ -232,7 +232,7 @@ export default function DocumentsPage() {
               <div key={flag.id} className="flex items-start gap-3 rounded-lg p-3" style={{ backgroundColor: 'color-mix(in srgb, var(--surface-1) 50%, transparent)' }}>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="text-[10px] px-1.5 py-0.5 rounded font-normal" style={FLAG_TYPE_STYLE_MAP[flag.flag_type] || DEFAULT_FLAG_STYLE}>
+                    <span className="text-xs px-1.5 py-0.5 rounded font-normal" style={FLAG_TYPE_STYLE_MAP[flag.flag_type] || DEFAULT_FLAG_STYLE}>
                       {FLAG_TYPE_LABELS[flag.flag_type] || flag.flag_type}
                     </span>
                     <span className="text-xs" style={{ color: 'var(--text-muted)' }}>from {flag.investor_name}</span>
@@ -240,11 +240,11 @@ export default function DocumentsPage() {
                   </div>
                   <p className="text-xs line-clamp-2" style={{ color: 'var(--text-tertiary)' }}>{flag.description}</p>
                   <div className="flex items-center gap-2 mt-1.5">
-                    <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Section: {flag.section_hint}</span>
+                    <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Section: {flag.section_hint}</span>
                     {flag.document_id && (
                       <Link
                         href={`/documents/${flag.document_id}`}
-                        className="text-[11px] underline transition-colors"
+                        className="text-xs underline transition-colors"
                         style={{ color: 'var(--accent)' }}
                         onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.8'; }}
                         onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}
@@ -335,7 +335,7 @@ export default function DocumentsPage() {
                             <div className="flex items-center gap-2">
                               <h3 className="font-normal truncate" style={{ color: 'var(--text-primary)' }}>{doc.title}</h3>
                               {docFlags.length > 0 && (
-                                <span className="text-[10px] px-1.5 py-0.5 rounded font-normal shrink-0" style={{ backgroundColor: 'var(--warning-muted)', color: 'var(--text-tertiary)' }}>
+                                <span className="text-xs px-1.5 py-0.5 rounded font-normal shrink-0" style={{ backgroundColor: 'var(--warning-muted)', color: 'var(--text-tertiary)' }}>
                                   {docFlags.length} flag{docFlags.length !== 1 ? 's' : ''}
                                 </span>
                               )}
@@ -395,7 +395,7 @@ export default function DocumentsPage() {
                   <div key={flag.id} className="rounded-lg p-3 flex items-start justify-between gap-3" style={{ backgroundColor: 'color-mix(in srgb, var(--surface-1) 50%, transparent)' }}>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="text-[10px] px-1.5 py-0.5 rounded font-normal" style={FLAG_TYPE_STYLE_MAP[flag.flag_type] || DEFAULT_FLAG_STYLE}>
+                        <span className="text-xs px-1.5 py-0.5 rounded font-normal" style={FLAG_TYPE_STYLE_MAP[flag.flag_type] || DEFAULT_FLAG_STYLE}>
                           {FLAG_TYPE_LABELS[flag.flag_type] || flag.flag_type}
                         </span>
                         <span className="text-xs" style={{ color: 'var(--text-muted)' }}>from {flag.investor_name}</span>

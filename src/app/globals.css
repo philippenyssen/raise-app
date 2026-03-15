@@ -339,7 +339,7 @@ body {
 
 .btn-primary {
   background: var(--accent);
-  color: #fafaf8;
+  color: var(--surface-0);
   border: 1px solid var(--accent);
 }
 .btn-primary:hover {
@@ -370,7 +370,7 @@ body {
 
 .btn-danger {
   background: var(--accent);
-  color: #fafaf8;
+  color: var(--surface-0);
   border: 1px solid var(--accent);
 }
 .btn-danger:hover {
@@ -561,12 +561,12 @@ select option {
   height: 1.375rem;
   border-radius: 50%;
   font-size: 0.6875rem;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 1;
 }
 
-.tier-1 { background: #1b2a4a; color: #fafaf8; }
-.tier-2 { background: var(--text-secondary); color: #fafaf8; }
+.tier-1 { background: var(--accent); color: var(--surface-0); }
+.tier-2 { background: var(--text-secondary); color: var(--surface-0); }
 .tier-3 { background: var(--surface-3); color: var(--text-secondary); border: 1px solid var(--border-default); }
 
 /* ── Progress bars — monochrome ── */

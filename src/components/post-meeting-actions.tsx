@@ -239,7 +239,7 @@ export default function PostMeetingActions({
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1">
                             <span
-                              className="text-[10px] px-1.5 py-0.5 rounded font-normal "
+                              className="text-xs px-1.5 py-0.5 rounded font-normal "
                               style={{
                                 backgroundColor: pStyle.bg,
                                 color: pStyle.color,
@@ -252,7 +252,7 @@ export default function PostMeetingActions({
                           {task.description && (
                             <p className="text-xs mt-1 line-clamp-2" style={{ color: 'var(--text-muted)' }}>{task.description.split('\n')[0]}</p>
                           )}
-                          <div className="flex items-center gap-3 mt-2 text-[11px]" style={{ color: 'var(--text-muted)' }}>
+                          <div className="flex items-center gap-3 mt-2 text-xs" style={{ color: 'var(--text-muted)' }}>
                             <span className="flex items-center gap-1">
                               <Clock className="w-3 h-3" /> Due: {task.due_date}
                             </span>
@@ -338,7 +338,7 @@ export default function PostMeetingActions({
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1">
                             <span
-                              className="text-[10px] px-1.5 py-0.5 rounded font-normal"
+                              className="text-xs px-1.5 py-0.5 rounded font-normal"
                               style={{ backgroundColor: fStyle.bg, color: fStyle.color }}
                             >
                               {FLAG_TYPE_LABELS[flag.flag_type] || flag.flag_type}
@@ -346,7 +346,7 @@ export default function PostMeetingActions({
                             <AlertTriangle className="w-3 h-3" style={{ color: 'color-mix(in srgb, var(--warning) 70%, transparent)' }} />
                           </div>
                           <p className="text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>{flag.description}</p>
-                          <div className="flex items-center gap-3 mt-2 text-[11px]" style={{ color: 'var(--text-muted)' }}>
+                          <div className="flex items-center gap-3 mt-2 text-xs" style={{ color: 'var(--text-muted)' }}>
                             <span>Section: {flag.section_hint}</span>
                             {flag.document_id && (
                               <Link

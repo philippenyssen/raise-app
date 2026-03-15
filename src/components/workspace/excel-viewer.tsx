@@ -278,7 +278,7 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
             {Array.from({ length: rows }, (_, ri) => (
               <tr key={ri}>
                 <td
-                  className="text-center py-0.5 font-normal sticky left-0 z-10 text-[10px]"
+                  className="text-center py-0.5 font-normal sticky left-0 z-10 text-xs"
                   style={{
                     backgroundColor: 'var(--surface-1)',
                     border: '1px solid var(--border-subtle)',
