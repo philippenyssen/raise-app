@@ -43,6 +43,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
   }
 
+  if (!body.counterparty || typeof body.counterparty !== 'string') {
+    return NextResponse.json({ error: 'counterparty is required' }, { status: 400 });
+  }
+  if (!body.amount_eur || typeof body.amount_eur !== 'number') {
+    return NextResponse.json({ error: 'amount_eur is required and must be a number' }, { status: 400 });
+  }
   try {
     const commitment = await createRevenueCommitment(body as unknown as Parameters<typeof createRevenueCommitment>[0]);
     emitContextChange('commitment_created', `Revenue commitment: ${(body.counterparty as string) || (body.contract_name as string) || ''}`);

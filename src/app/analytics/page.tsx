@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useToast } from '@/components/toast';
+import { cachedFetch } from '@/lib/cache';
 import { STATUS_LABELS as STAGE_LABELS, TYPE_LABELS } from '@/lib/constants';
 import {
   BarChart3, TrendingUp, AlertTriangle, Users, Clock,
@@ -124,7 +125,7 @@ export default function AnalyticsPage() {
   async function fetchAnalytics() {
     setLoading(true);
     try {
-      const res = await fetch('/api/analytics');
+      const res = await cachedFetch('/api/analytics');
       if (!res.ok) throw new Error(`Server error (${res.status})`);
       setData(await res.json());
     } catch (err) {

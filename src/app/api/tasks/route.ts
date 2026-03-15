@@ -49,6 +49,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true });
     }
 
+    if (!body.title || typeof body.title !== 'string' || !body.title.trim()) {
+      return NextResponse.json({ error: 'title is required' }, { status: 400 });
+    }
     const task = await createTask({
       title: (body.title as string) || '',
       description: (body.description as string) || '',

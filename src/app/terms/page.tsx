@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useToast } from '@/components/toast';
+import { cachedFetch } from '@/lib/cache';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
 import Link from 'next/link';
 import { Scale } from 'lucide-react';
@@ -53,7 +54,7 @@ export default function TermsPage() {
   async function fetchSheets() {
     setLoading(true);
     try {
-      const res = await fetch('/api/term-sheets');
+      const res = await cachedFetch('/api/term-sheets');
       setSheets(await res.json());
     } catch {
       toast('Failed to load term sheets', 'error');

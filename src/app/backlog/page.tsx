@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { useToast } from '@/components/toast';
+import { cachedFetch } from '@/lib/cache';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { Plus, Trash2, DollarSign, ShieldCheck, AlertTriangle, TrendingUp, FileText } from 'lucide-react';
 import { stAccent, stSurface1, stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
@@ -69,7 +70,7 @@ export default function BacklogPage() {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/revenue-commitments');
+      const res = await cachedFetch('/api/revenue-commitments');
       if (!res.ok) throw new Error('Failed');
       const data = await res.json();
       setCommitments(data.commitments);

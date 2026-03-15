@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useToast } from '@/components/toast';
+import { cachedFetch } from '@/lib/cache';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { FileText, Plus, Clock, Edit3, Download, ShieldCheck, AlertTriangle, CheckCircle2, XCircle } from 'lucide-react';
 import { fmtDate } from '@/lib/format';
@@ -72,7 +73,7 @@ export default function DocumentsPage() {
   async function fetchDocs() {
     setLoading(true);
     try {
-      const res = await fetch('/api/documents');
+      const res = await cachedFetch('/api/documents');
       if (!res.ok) throw new Error(`Failed (${res.status})`);
       setDocs(await res.json());
     } catch {

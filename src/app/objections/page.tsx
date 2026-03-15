@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
+import { cachedFetch } from '@/lib/cache';
 import {
   MessageCircleWarning, ChevronDown, ChevronRight, Shield, AlertTriangle,
   CheckCircle2, Edit3, Save, X, TrendingUp, TrendingDown, Minus,
@@ -202,7 +203,7 @@ export default function ObjectionsPage() {
 
   const loadData = useCallback(async () => {
     setLoading(true);
-    const res = await fetch('/api/objections');
+    const res = await cachedFetch('/api/objections');
     const json = await res.json();
     setData(json);
     setLoading(false);
