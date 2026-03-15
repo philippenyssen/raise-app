@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Shield, ChevronDown, ChevronRight, Calendar, Users, Hash } from 'lucide-react';
 import { useToast } from '@/components/toast';
+import { relativeTime } from '@/lib/time';
 import { labelTertiary, stFontSm, stTextMuted, stTextPrimary, stTextTertiary } from '@/lib/styles';
 
 interface CompetitorMeeting { meeting_id: string; investor_name: string; date: string; }
@@ -29,6 +30,7 @@ export default function CompetitivePage() {
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
   const [hoveredRow, setHoveredRow] = useState<string | null>(null);
+  const [loadedAt, setLoadedAt] = useState<string | null>(null);
 
   const fetchData = () => {
     setLoading(true);
@@ -38,7 +40,7 @@ export default function CompetitivePage() {
     const qs = params.toString();
     fetch(`/api/competitive${qs ? '?' + qs : ''}`)
       .then(r => { if (!r.ok) throw new Error(`${r.status}`); return r.json(); })
-      .then((d: CompetitiveData) => { setData(d); setLoading(false); })
+      .then((d: CompetitiveData) => { setData(d); setLoading(false); setLoadedAt(new Date().toISOString()); })
       .catch(() => { setData(null); setLoading(false); toast('Failed to load competitive intelligence', 'error'); });
   };
 
@@ -55,7 +57,8 @@ export default function CompetitivePage() {
       <div>
         <h1 className="page-title">Competitive Intelligence</h1>
         <p className="page-subtitle" style={stFontSm}>
-          Competitors mentioned across investor meetings</p></div>
+          Competitors mentioned across investor meetings
+          {loadedAt && <> &middot; <span style={{ color: 'var(--text-muted)' }}>{relativeTime(loadedAt)}</span></>}</p></div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 card-stagger">

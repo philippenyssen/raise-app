@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { useToast } from '@/components/toast';
 import { fmtDateTime } from '@/lib/format';
+import { relativeTime } from '@/lib/time';
 import { STATUS_LABELS } from '@/lib/constants';
 import { labelMuted10, stBorderTop, stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 import {
@@ -93,6 +94,7 @@ export default function StressTestPage() {
   const [data, setData] = useState<StressTestData | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [loadedAt, setLoadedAt] = useState<string | null>(null);
   const [expandedRisks, setExpandedRisks] = useState<number[]>([]);
   const [showAllInvestors, setShowAllInvestors] = useState(false);
   const [hoveredRow, setHoveredRow] = useState<string | null>(null);
@@ -110,6 +112,7 @@ export default function StressTestPage() {
       const res = await fetch('/api/stress-test');
       if (res.ok) {
         setData(await res.json());
+        setLoadedAt(new Date().toISOString());
       } else {
         toast('Failed to load stress test data', 'error');
       }
@@ -187,7 +190,8 @@ export default function StressTestPage() {
         <div>
           <h1 className="page-title">Process Stress Test</h1>
           <p className="text-sm mt-1" style={stTextMuted}>
-            Probabilistic close forecast — {data.companyName} Series C</p></div>
+            Probabilistic close forecast — {data.companyName} Series C
+            {loadedAt && <> &middot; <span>{relativeTime(loadedAt)}</span></>}</p></div>
         <button
           onClick={() => fetchData(true)}
           disabled={refreshing}
