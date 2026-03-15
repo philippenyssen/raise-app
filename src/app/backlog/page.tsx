@@ -112,7 +112,8 @@ export default function BacklogPage() {
   async function handleDelete() {
     if (!deleteTarget) return;
     try {
-      await fetch(`/api/revenue-commitments?id=${deleteTarget}`, { method: 'DELETE' });
+      const res = await fetch(`/api/revenue-commitments?id=${deleteTarget}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Failed');
       toast('Deleted', 'warning');
       setDeleteTarget(null);
       fetchData();
