@@ -710,7 +710,7 @@ export async function GET() {
       overallTrend,
       overallDirection,
       weeks: weekLabels,
-      generatedAt: new Date().toISOString(),});
+      generatedAt: new Date().toISOString(),}, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
   } catch (error) {
     console.error('[MOMENTUM_GET]', error instanceof Error ? error.message : error);
     return NextResponse.json(

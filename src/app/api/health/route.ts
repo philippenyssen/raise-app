@@ -63,7 +63,7 @@ export async function GET() {
       totalInvestors: investors.length,
       totalMeetings: meetings.length,
       timeInStage,
-    });
+    }, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
   } catch (e) {
     console.error('[HEALTH_GET]', e instanceof Error ? e.message : e);
     return NextResponse.json({ error: 'Failed to load health data' }, { status: 500 });

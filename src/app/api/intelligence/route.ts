@@ -36,7 +36,7 @@ export async function GET(req: NextRequest) {
           getAllMarketDeals(),
           getAllCompetitors(),
           getIntelligenceBriefs(),]);
-        return NextResponse.json({ deals, competitors, briefs });
+        return NextResponse.json({ deals, competitors, briefs }, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
       }
       default:
         return NextResponse.json({ error: 'type parameter required (deals|competitors|briefs|partners|portfolio|all)' }, { status: 400 });
