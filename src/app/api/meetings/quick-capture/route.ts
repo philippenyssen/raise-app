@@ -45,8 +45,7 @@ export async function POST(req: NextRequest) {
     let aiData: Record<string, unknown> = {};
     try {
       aiData = await analyzeMeetingNotes(rawNotes, investorName, inferredType);
-    } catch (err) {
-    }
+    } catch (err) { console.error('[QUICK_CAPTURE_AI]', err instanceof Error ? err.message : err); }
 
     // Apply user overrides — explicit values take precedence over AI inference
     if (meetingType) {
@@ -92,6 +91,7 @@ export async function POST(req: NextRequest) {
       }
     } catch (err) {
       intelligenceSummary = 'Intelligence pipeline failed — tasks not generated';
+      console.error('[QUICK_CAPTURE_INTEL]', err instanceof Error ? err.message : err);
     }
 
     // 4. Generate follow-up choreography
@@ -100,8 +100,7 @@ export async function POST(req: NextRequest) {
       const investor = await getInvestor(investorId);
       const tier = investor?.tier ?? 2;
       followups = await generateFollowupChoreography(meeting, aiData, tier);
-    } catch (err) {
-    }
+    } catch (err) { console.error('[QUICK_CAPTURE_FOLLOWUP]', err instanceof Error ? err.message : err); }
 
     // 5. Objection tracking + enthusiasm delta (non-blocking)
     try {
@@ -122,8 +121,7 @@ export async function POST(req: NextRequest) {
             investor_name: investorName,
             meeting_id: meeting.id,});
         }}
-    } catch (err) {
-    }
+    } catch (err) { console.error('[QUICK_CAPTURE_OBJECTIONS]', err instanceof Error ? err.message : err); }
 
     // 6. Question pattern extraction (non-blocking)
     try {
@@ -176,6 +174,7 @@ export async function POST(req: NextRequest) {
       intelligence: intelligenceSummary,
     }, { status: 201 });
   } catch (err) {
+    console.error('[QUICK_CAPTURE_POST]', err instanceof Error ? err.message : err);
     return NextResponse.json(
       { error: 'Quick capture failed' },
       { status: 500 },);

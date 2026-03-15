@@ -140,6 +140,7 @@ Rules:
       ...result,
       generated_at: new Date().toISOString(),});
   } catch (err) {
+    console.error('[DOCUMENT_ADAPT_POST]', err instanceof Error ? err.message : err);
     return NextResponse.json(
       { error: 'Failed to generate adaptation suggestions' },
       { status: 500 },);

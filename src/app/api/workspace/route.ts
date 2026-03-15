@@ -530,6 +530,7 @@ INSTRUCTIONS:
         'X-Context-Hash': contextHash,
       },});
   } catch (err) {
+    console.error('[WORKSPACE_POST]', err instanceof Error ? err.message : err);
     const msg = err instanceof Error ? err.message : 'AI request failed';
     let status = 500;
     let userMsg = msg;
