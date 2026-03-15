@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import { computeMomentumScore } from '@/lib/scoring';
 import { logPrediction, getCalibrationData } from '@/lib/db';
-import type { Investor, Meeting } from '@/lib/types';
-import { getClient, daysBetween, PIPELINE_ORDER, loadAllMeetings, loadRaiseConfig, groupByInvestorId } from '@/lib/api-helpers';
+import type { Investor, Meeting, StressTestInvestorForecast, GapInvestor, RiskItem } from '@/lib/types';
+import { getClient, daysBetween, PIPELINE_ORDER, loadAllMeetings, loadRaiseConfig, groupByInvestorId, parseMoneyRange } from '@/lib/api-helpers';
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -48,29 +48,6 @@ const DEFAULT_STAGE_DAYS: Record<string, number> = {
   term_sheet: 14,
 };
 
-function parseMoneyRange(s: string): [number, number] | null {
-  if (!s) return null;
-  const cleaned = s.replace(/[€$£,]/g, '').trim().toLowerCase();
-
-  // Range: "50-100m", "50m-100m"
-  const rangeMatch = cleaned.match(/([\d.]+)\s*m?\s*[-–to]+\s*([\d.]+)\s*m/i);
-  if (rangeMatch) {
-    return [parseFloat(rangeMatch[1]), parseFloat(rangeMatch[2])];
-  }
-
-  // Single value: "100m", "2b", "500k"
-  const singleMatch = cleaned.match(/([\d.]+)\s*(m|b|k|bn|million|billion)?/i);
-  if (singleMatch) {
-    let val = parseFloat(singleMatch[1]);
-    const unit = (singleMatch[2] || '').toLowerCase();
-    if (unit === 'b' || unit === 'bn' || unit === 'billion') val *= 1000;
-    if (unit === 'k') val /= 1000;
-    return [val * 0.8, val * 1.2];
-  }
-
-  return null;
-}
-
 function clamp(n: number, min = 0, max = 1): number {
   return Math.max(min, Math.min(max, n));
 }
@@ -85,40 +62,7 @@ function addDays(date: Date, days: number): Date {
 // Core computation
 // ---------------------------------------------------------------------------
 
-interface InvestorForecast {
-  id: string;
-  name: string;
-  tier: number;
-  type: string;
-  status: string;
-  enthusiasm: number;
-  momentum: string;
-  checkSizeRange: string;
-  expectedCheck: number;
-  closeProbability: number;
-  expectedValue: number;
-  predictedCloseDate: string | null;
-  bottleneck: string;
-}
-
-interface GapInvestor {
-  id: string;
-  name: string;
-  tier: number;
-  status: string;
-  currentExpected: number;
-  potentialExpected: number;
-  intervention: string;
-  timeCost: string;
-  impactDelta: number;
-}
-
-interface RiskItem {
-  description: string;
-  probability: string;
-  impact: string;
-  mitigation: string;
-}
+type InvestorForecast = StressTestInvestorForecast;
 
 function computeCloseProbability(
   investor: Investor,

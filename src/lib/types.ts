@@ -318,3 +318,72 @@ export interface DealHeatInvestor {
   enthusiasm: number;
   lastMeeting: string | null;
 }
+
+// Stress-test / forecast shared types
+
+export interface StressTestInvestorForecast {
+  id: string;
+  name: string;
+  tier: number;
+  type: string;
+  status: string;
+  enthusiasm: number;
+  momentum: string;
+  checkSizeRange: string;
+  expectedCheck: number;
+  closeProbability: number;
+  expectedValue: number;
+  predictedCloseDate: string | null;
+  bottleneck: string;
+}
+
+export interface GapInvestor {
+  id: string;
+  name: string;
+  tier: number;
+  status: string;
+  currentExpected: number;
+  potentialExpected: number;
+  intervention: string;
+  timeCost: string;
+  impactDelta: number;
+}
+
+export interface RiskItem {
+  description: string;
+  probability: string;
+  impact: string;
+  mitigation: string;
+}
+
+// Term-compare shared types
+
+export interface TermScenario {
+  investor_name: string;
+  pre_money_valuation: number;
+  investment_amount: number;
+  liquidation_preference: number;
+  participation: boolean;
+  anti_dilution: 'broad' | 'narrow' | 'none';
+  board_seats: number;
+  pro_rata_rights: boolean;
+  drag_along_threshold: number;
+}
+
+export interface TermScenarioResult {
+  investor_name: string;
+  pre_money_valuation: number;
+  investment_amount: number;
+  post_money_valuation: number;
+  ownership_percentage: number;
+  dilution_to_founders: number;
+  effective_valuation: number;
+  founder_friendly_score: number;
+  liquidation_preference: number;
+  participation: boolean;
+  anti_dilution: 'broad' | 'narrow' | 'none';
+  board_seats: number;
+  pro_rata_rights: boolean;
+  drag_along_threshold: number;
+  comparison_notes: string[];
+}

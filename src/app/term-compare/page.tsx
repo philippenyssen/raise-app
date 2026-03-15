@@ -8,40 +8,13 @@ import {
   ShieldCheck, AlertTriangle, ChevronDown, ChevronUp, Loader2,
 } from 'lucide-react';
 import { scoreColor, scoreBg } from '@/lib/styles';
+import type { TermScenario, TermScenarioResult } from '@/lib/types';
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
-interface TermScenario {
-  investor_name: string;
-  pre_money_valuation: number;
-  investment_amount: number;
-  liquidation_preference: number;
-  participation: boolean;
-  anti_dilution: 'broad' | 'narrow' | 'none';
-  board_seats: number;
-  pro_rata_rights: boolean;
-  drag_along_threshold: number;
-}
-
-interface ScenarioResult {
-  investor_name: string;
-  pre_money_valuation: number;
-  investment_amount: number;
-  post_money_valuation: number;
-  ownership_percentage: number;
-  dilution_to_founders: number;
-  effective_valuation: number;
-  founder_friendly_score: number;
-  liquidation_preference: number;
-  participation: boolean;
-  anti_dilution: 'broad' | 'narrow' | 'none';
-  board_seats: number;
-  pro_rata_rights: boolean;
-  drag_along_threshold: number;
-  comparison_notes: string[];
-}
+type ScenarioResult = TermScenarioResult;
 
 interface CompareResponse {
   results: ScenarioResult[];

@@ -12,3 +12,4 @@ b955a61	94	94	0	keep	eng	genericCreate helper (-43) + page type dedup (-73) = 65
 c8b90f2	94	94	0	keep	eng	genericGetByField (-17) + API route data fetch dedup (-34) + groupByInvestorId helper = 65339 lines
 750bac6	94	94	0	keep	eng	groupByInvestorId across 5 files (-27) + investor detail page consolidation (-58) = 65250 lines
 c197856	94	95	+1	keep	eng	pulse/context-bus/16-file consolidation (-264) = 64984 lines, score 95
+7d8f37c	95	95	0	keep	eng	styles/configs/dead-code consolidation (-156 lines) = 64828 lines

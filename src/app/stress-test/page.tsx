@@ -10,45 +10,11 @@ import {
   Clock, ChevronDown, ChevronUp, Zap, ArrowUpRight,
   BarChart3,
 } from 'lucide-react';
+import type { StressTestInvestorForecast as InvestorForecast, GapInvestor, RiskItem } from '@/lib/types';
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
-
-interface InvestorForecast {
-  id: string;
-  name: string;
-  tier: number;
-  type: string;
-  status: string;
-  enthusiasm: number;
-  momentum: string;
-  checkSizeRange: string;
-  expectedCheck: number;
-  closeProbability: number;
-  expectedValue: number;
-  predictedCloseDate: string | null;
-  bottleneck: string;
-}
-
-interface GapInvestor {
-  id: string;
-  name: string;
-  tier: number;
-  status: string;
-  currentExpected: number;
-  potentialExpected: number;
-  intervention: string;
-  timeCost: string;
-  impactDelta: number;
-}
-
-interface RiskItem {
-  description: string;
-  probability: string;
-  impact: string;
-  mitigation: string;
-}
 
 interface MonteCarloData {
   p10: number;

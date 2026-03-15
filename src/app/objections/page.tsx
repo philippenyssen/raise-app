@@ -99,77 +99,21 @@ interface EffectivenessData {
 
 type Tab = 'playbook' | 'effectiveness';
 
-const TOPIC_COLORS: Record<string, { bg: React.CSSProperties; text: React.CSSProperties; border: React.CSSProperties; dotColor: string; textColor: string }> = {
-  valuation: {
-    bg: { background: 'var(--accent-8)' },
-    text: { color: 'var(--accent)' },
-    border: { borderColor: 'var(--accent-15)' },
-    dotColor: 'var(--accent)',
-    textColor: 'var(--accent)',
-  },
-  competition: {
-    bg: { background: 'var(--accent-muted)' },
-    text: { color: 'var(--text-secondary)' },
-    border: { borderColor: 'var(--accent-12)' },
-    dotColor: 'var(--text-secondary)',
-    textColor: 'var(--text-secondary)',
-  },
-  team: {
-    bg: { background: 'var(--warn-8)' },
-    text: { color: 'var(--text-tertiary)' },
-    border: { borderColor: 'var(--warn-15)' },
-    dotColor: 'var(--text-tertiary)',
-    textColor: 'var(--text-tertiary)',
-  },
-  execution: {
-    bg: { background: 'var(--accent-10)' },
-    text: { color: 'var(--accent)' },
-    border: { borderColor: 'var(--accent-20)' },
-    dotColor: 'var(--accent)',
-    textColor: 'var(--accent)',
-  },
-  financial: {
-    bg: { background: 'var(--accent-5)' },
-    text: { color: 'var(--text-secondary)' },
-    border: { borderColor: 'var(--accent-10)' },
-    dotColor: 'var(--text-secondary)',
-    textColor: 'var(--text-secondary)',
-  },
-  market: {
-    bg: { background: 'var(--accent-8)' },
-    text: { color: 'var(--accent)' },
-    border: { borderColor: 'var(--accent-15)' },
-    dotColor: 'var(--accent)',
-    textColor: 'var(--accent)',
-  },
-  technical: {
-    bg: { background: 'var(--warn-6)' },
-    text: { color: 'var(--text-tertiary)' },
-    border: { borderColor: 'var(--warn-12)' },
-    dotColor: 'var(--text-tertiary)',
-    textColor: 'var(--text-tertiary)',
-  },
-  risk: {
-    bg: { background: 'var(--fg-8)' },
-    text: { color: 'var(--text-primary)' },
-    border: { borderColor: 'var(--fg-15)' },
-    dotColor: 'var(--text-primary)',
-    textColor: 'var(--text-primary)',
-  },
-  timing: {
-    bg: { background: 'var(--warn-8)' },
-    text: { color: 'var(--text-tertiary)' },
-    border: { borderColor: 'var(--warn-15)' },
-    dotColor: 'var(--text-tertiary)',
-    textColor: 'var(--text-tertiary)',
-  },
-  structure: {
-    bg: { background: 'var(--accent-4)' },
-    text: { color: 'var(--text-secondary)' },
-    border: { borderColor: 'var(--accent-8)' },
-    dotColor: 'var(--text-secondary)',
-    textColor: 'var(--text-secondary)',
-  },
+function topicTheme(bg: string, color: string, border: string, dot: string) {
+  return { bg: { background: bg }, text: { color }, border: { borderColor: border }, dotColor: dot, textColor: color };
+}
+
+const TOPIC_COLORS: Record<string, ReturnType<typeof topicTheme>> = {
+  valuation:   topicTheme('var(--accent-8)',  'var(--accent)',         'var(--accent-15)', 'var(--accent)'),
+  competition: topicTheme('var(--accent-muted)', 'var(--text-secondary)', 'var(--accent-12)', 'var(--text-secondary)'),
+  team:        topicTheme('var(--warn-8)',    'var(--text-tertiary)',  'var(--warn-15)',    'var(--text-tertiary)'),
+  execution:   topicTheme('var(--accent-10)', 'var(--accent)',         'var(--accent-20)', 'var(--accent)'),
+  financial:   topicTheme('var(--accent-5)',  'var(--text-secondary)', 'var(--accent-10)', 'var(--text-secondary)'),
+  market:      topicTheme('var(--accent-8)',  'var(--accent)',         'var(--accent-15)', 'var(--accent)'),
+  technical:   topicTheme('var(--warn-6)',    'var(--text-tertiary)',  'var(--warn-12)',    'var(--text-tertiary)'),
+  risk:        topicTheme('var(--fg-8)',      'var(--text-primary)',   'var(--fg-15)',      'var(--text-primary)'),
+  timing:      topicTheme('var(--warn-8)',    'var(--text-tertiary)',  'var(--warn-15)',    'var(--text-tertiary)'),
+  structure:   topicTheme('var(--accent-4)',  'var(--text-secondary)', 'var(--accent-8)',   'var(--text-secondary)'),
 };
 
 const DEFAULT_TOPIC_COLOR = {
