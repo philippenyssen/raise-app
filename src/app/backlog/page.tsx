@@ -183,11 +183,12 @@ export default function BacklogPage() {
         <div className="rounded-xl p-4 space-y-3" style={stSurface1}>
           <h3 className="text-sm font-normal" style={stTextPrimary}>Add Revenue Commitment</h3>
           <div className="grid grid-cols-3 gap-3">
-            <input placeholder="e.g., ESA, Belgian MoD" value={form.customer} onChange={e => setForm(f => ({ ...f, customer: e.target.value }))} className="input" autoFocus
+            <input placeholder="e.g., ESA, Belgian MoD" value={form.customer} onChange={e => setForm(f => ({ ...f, customer: e.target.value }))} className="input" autoFocus maxLength={200}
               />
-            <input placeholder="e.g., IRIS2 Phase 2" value={form.program} onChange={e => setForm(f => ({ ...f, program: e.target.value }))} className="input"
+            <input placeholder="e.g., IRIS2 Phase 2" value={form.program} onChange={e => setForm(f => ({ ...f, program: e.target.value }))} className="input" maxLength={200}
               />
             <select value={form.contract_type} onChange={e => setForm(f => ({ ...f, contract_type: e.target.value }))} className="input">
+              <option value="" disabled>Select type...</option>
               {Object.entries(TYPE_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select>
             <input type="number" min="0" step="0.1" placeholder="Total Amount (€M)" value={form.amount_eur} onChange={e => setForm(f => ({ ...f, amount_eur: e.target.value }))} className="input"
               />
@@ -199,9 +200,9 @@ export default function BacklogPage() {
               />
             <input type="date" placeholder="End Date" value={form.end_date} onChange={e => setForm(f => ({ ...f, end_date: e.target.value }))} className="input"
               />
-            <input placeholder="e.g., signed contract, LOI" value={form.source_doc} onChange={e => setForm(f => ({ ...f, source_doc: e.target.value }))} className="input"
+            <input placeholder="e.g., signed contract, LOI" value={form.source_doc} onChange={e => setForm(f => ({ ...f, source_doc: e.target.value }))} className="input" maxLength={200}
               /></div>
-          <textarea placeholder="Notes" value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} className="input" rows={2}
+          <textarea placeholder="Notes" value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} className="input" rows={2} maxLength={2000}
             />
           <div className="flex gap-2">
             <button onClick={handleAdd} disabled={adding} className="btn btn-primary btn-md">{adding ? 'Adding...' : 'Add Commitment'}</button>

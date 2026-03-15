@@ -267,14 +267,15 @@ export default function DataRoomPage() {
               value={pasteFilename}
               onChange={e => setPasteFilename(e.target.value)}
               placeholder="Document name (e.g., Financial Model Notes.txt)"
-              className="input flex-1" />
+              className="input flex-1"
+              maxLength={500} />
             <select
               value={pasteCategory}
               onChange={e => setPasteCategory(e.target.value)}
               className="input"
               style={{ width: 'auto' }}>
               {CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}</select></div>
-          <textarea value={pasteContent} onChange={e => setPasteContent(e.target.value)} placeholder="Paste your document content here..." rows={10} className="input" style={{ fontFamily: 'var(--font-mono)', resize: 'none', padding: 'var(--space-3) var(--space-4)' }}
+          <textarea value={pasteContent} onChange={e => setPasteContent(e.target.value)} placeholder="Paste your document content here..." rows={10} className="input" style={{ fontFamily: 'var(--font-mono)', resize: 'none', padding: 'var(--space-3) var(--space-4)' }} maxLength={50000}
             />
           <div className="flex justify-end gap-2">
             <button onClick={() => setPasteMode(false)} className="btn btn-ghost btn-md">Cancel</button>
