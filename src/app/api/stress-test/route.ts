@@ -1,15 +1,8 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@libsql/client';
 import { computeMomentumScore } from '@/lib/scoring';
 import { logPrediction, getCalibrationData } from '@/lib/db';
 import type { Investor, Meeting } from '@/lib/types';
-
-function getClient() {
-  return createClient({
-    url: process.env.TURSO_DATABASE_URL || 'file:raise.db',
-    authToken: process.env.TURSO_AUTH_TOKEN,
-  });
-}
+import { getClient, daysBetween, PIPELINE_ORDER } from '@/lib/api-helpers';
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -55,15 +48,6 @@ const DEFAULT_STAGE_DAYS: Record<string, number> = {
   term_sheet: 14,
 };
 
-const PIPELINE_ORDER = [
-  'identified', 'contacted', 'nda_signed', 'meeting_scheduled',
-  'met', 'engaged', 'in_dd', 'term_sheet', 'closed',
-];
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
 function parseMoneyRange(s: string): [number, number] | null {
   if (!s) return null;
   const cleaned = s.replace(/[€$£,]/g, '').trim().toLowerCase();
@@ -85,12 +69,6 @@ function parseMoneyRange(s: string): [number, number] | null {
   }
 
   return null;
-}
-
-function daysBetween(a: string | Date, b: string | Date): number {
-  const da = typeof a === 'string' ? new Date(a) : a;
-  const db = typeof b === 'string' ? new Date(b) : b;
-  return Math.abs(da.getTime() - db.getTime()) / (1000 * 60 * 60 * 24);
 }
 
 function clamp(n: number, min = 0, max = 1): number {

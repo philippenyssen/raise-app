@@ -1,18 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@libsql/client';
-
-function getClient() {
-  return createClient({
-    url: process.env.TURSO_DATABASE_URL || 'file:raise.db',
-    authToken: process.env.TURSO_AUTH_TOKEN,
-  });
-}
-
-// Pipeline stage order for funnel analysis
-const PIPELINE_ORDER = [
-  'identified', 'contacted', 'nda_signed', 'meeting_scheduled',
-  'met', 'engaged', 'in_dd', 'term_sheet', 'closed',
-];
+import { getClient, PIPELINE_ORDER } from '@/lib/api-helpers';
 
 const STAGE_LABELS: Record<string, string> = {
   identified: 'Identified',

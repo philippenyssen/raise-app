@@ -13,6 +13,7 @@ import {
 } from '@/lib/db';
 import { computeInvestorScore, computeMomentumScore, computeConvictionTrajectory } from '@/lib/scoring';
 import type { Investor, Meeting } from '@/lib/types';
+import { daysBetween, parseJsonSafe, PIPELINE_ORDER } from '@/lib/api-helpers';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Helpers
@@ -28,25 +29,12 @@ function weekOf(d: Date): string {
   return `${mon.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })}`;
 }
 
-function daysBetween(a: string, b: string): number {
-  return Math.round(Math.abs(new Date(a).getTime() - new Date(b).getTime()) / (1000 * 60 * 60 * 24));
-}
-
-function parseJsonSafe<T>(raw: string, fallback: T): T {
-  try { return JSON.parse(raw) as T; } catch { return fallback; }
-}
-
 const STATUS_LABELS: Record<string, string> = {
   identified: 'Identified', contacted: 'Contacted', nda_signed: 'NDA Signed',
   meeting_scheduled: 'Meeting Set', met: 'Met', engaged: 'Engaged',
   in_dd: 'In DD', term_sheet: 'Term Sheet', closed: 'Closed',
   passed: 'Passed', dropped: 'Dropped',
 };
-
-const PIPELINE_ORDER = [
-  'identified', 'contacted', 'nda_signed', 'meeting_scheduled',
-  'met', 'engaged', 'in_dd', 'term_sheet', 'closed',
-];
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Shared styles

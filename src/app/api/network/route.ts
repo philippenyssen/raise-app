@@ -1,13 +1,6 @@
 import { NextResponse } from 'next/server';
 import { computeNetworkCascades } from '@/lib/db';
-import { createClient } from '@libsql/client';
-
-function getClient() {
-  return createClient({
-    url: process.env.TURSO_DATABASE_URL || 'file:raise.db',
-    authToken: process.env.TURSO_AUTH_TOKEN,
-  });
-}
+import { getClient } from '@/lib/api-helpers';
 
 function parseCheckSizeMidpoint(range: string): number {
   if (!range) return 0;

@@ -1,14 +1,7 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@libsql/client';
 import { computeInvestorScore, computeMomentumScore } from '@/lib/scoring';
 import type { Investor, Meeting, InvestorPortfolioCo, IntelligenceBrief, Objection } from '@/lib/types';
-
-function getClient() {
-  return createClient({
-    url: process.env.TURSO_DATABASE_URL || 'file:raise.db',
-    authToken: process.env.TURSO_AUTH_TOKEN,
-  });
-}
+import { getClient, daysBetween, parseJsonSafe, clamp } from '@/lib/api-helpers';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -49,22 +42,6 @@ interface FocusItem {
   openFlagCount: number;
   unresolvedObjections: string[];
   topObjectionTopic: string | null;
-}
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-function clamp(n: number, min = 0, max = 100): number {
-  return Math.max(min, Math.min(max, Math.round(n)));
-}
-
-function daysBetween(a: string, b: string): number {
-  return Math.abs(new Date(a).getTime() - new Date(b).getTime()) / (1000 * 60 * 60 * 24);
-}
-
-function parseJsonSafe<T>(raw: string, fallback: T): T {
-  try { return JSON.parse(raw) as T; } catch { return fallback; }
 }
 
 const STATUS_LABELS: Record<string, string> = {

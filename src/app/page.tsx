@@ -1161,7 +1161,7 @@ export default function Dashboard() {
               </div>
               {tasks.length === 0 ? (
                 <div style={{ padding: 'var(--space-2) 0' }}>
-                  <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>No upcoming tasks</p>
+                  <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>No immediate deadlines — <Link href="/meetings/capture" style={{ color: 'var(--accent)', textDecoration: 'none' }}>log a meeting</Link> to generate tasks</p>
                 </div>
               ) : (
                 <div className="space-y-2">

@@ -1,39 +1,10 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@libsql/client';
 import { computeInvestorScore, computeMomentumScore, computeConvictionTrajectory } from '@/lib/scoring';
 import type { ScoreSnapshot } from '@/lib/db';
 import { generateAutoActions, measureActionEffectiveness, saveHealthSnapshot, getHealthSnapshots, computeTemporalTrends, computeRaiseForecast, logForecastPredictions, detectScoreReversals, computeEngagementVelocity, computeNetworkCascades, getPipelineRankings, detectFomoDynamics, computeMeetingDensity, computeWinLossPatterns } from '@/lib/db';
 import type { Investor, Meeting, InvestorPortfolioCo, Objection } from '@/lib/types';
 import { getFullContext } from '@/lib/context-bus';
-
-function getClient() {
-  return createClient({
-    url: process.env.TURSO_DATABASE_URL || 'file:raise.db',
-    authToken: process.env.TURSO_AUTH_TOKEN,
-  });
-}
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-function clamp(n: number, min = 0, max = 100): number {
-  return Math.max(min, Math.min(max, Math.round(n)));
-}
-
-function daysBetween(a: string, b: string): number {
-  return Math.abs(new Date(a).getTime() - new Date(b).getTime()) / (1000 * 60 * 60 * 24);
-}
-
-function parseJsonSafe<T>(raw: string, fallback: T): T {
-  try { return JSON.parse(raw) as T; } catch { return fallback; }
-}
-
-const STATUS_PROGRESSION: Record<string, number> = {
-  identified: 0, contacted: 1, nda_signed: 2, meeting_scheduled: 3,
-  met: 4, engaged: 5, in_dd: 6, term_sheet: 7, closed: 8,
-  passed: -1, dropped: -1,
-};
+import { getClient, daysBetween, parseJsonSafe, clamp, STATUS_PROGRESSION } from '@/lib/api-helpers';
 
 const ACTIVE_STAGES = ['engaged', 'in_dd', 'term_sheet'];
 

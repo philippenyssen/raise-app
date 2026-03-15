@@ -106,6 +106,7 @@ function QuickCaptureInner() {
           duration_minutes: durationMinutes,
           attendees: '',
           analyze: true,
+          ...(enthusiasm > 0 && { enthusiasm }),
         }),
       });
       const data = await res.json();

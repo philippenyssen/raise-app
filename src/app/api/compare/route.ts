@@ -13,6 +13,7 @@ import {
 import type { AccelerationAction } from '@/lib/db';
 import { computeInvestorScore, computeConvictionTrajectory } from '@/lib/scoring';
 import type { Investor, Meeting, Objection, FollowupAction } from '@/lib/types';
+import { daysBetween, parseJsonSafe } from '@/lib/api-helpers';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -81,19 +82,6 @@ interface ComparisonRecommendation {
   text: string;
   primaryInvestorId: string | null;
   primaryInvestorName: string | null;
-}
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-function parseJsonSafe<T>(raw: string, fallback: T): T {
-  try { return JSON.parse(raw) as T; }
-  catch { return fallback; }
-}
-
-function daysBetween(a: string, b: string): number {
-  return Math.abs(new Date(a).getTime() - new Date(b).getTime()) / (1000 * 60 * 60 * 24);
 }
 
 function buildObjectionProfile(meetings: Meeting[]): ObjectionProfile {

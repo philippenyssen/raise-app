@@ -1,13 +1,6 @@
 import { NextResponse } from 'next/server';
 import { detectFomoDynamics, computeMeetingDensity, computeEngagementVelocity } from '@/lib/db';
-import { createClient } from '@libsql/client';
-
-function getClient() {
-  return createClient({
-    url: process.env.TURSO_DATABASE_URL || 'file:raise.db',
-    authToken: process.env.TURSO_AUTH_TOKEN,
-  });
-}
+import { getClient } from '@/lib/api-helpers';
 
 const STAGE_RANK: Record<string, number> = {
   identified: 0, contacted: 1, nda_signed: 2, meeting_scheduled: 3,

@@ -526,7 +526,10 @@ export default function PipelinePage() {
                       className="flex items-center justify-center"
                       style={{ height: '5rem', color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)', textAlign: 'center', padding: '0 var(--space-2)' }}
                     >
-                      {dragId ? 'Drop here' : 'Drag investors here or add from the investor list'}
+                      {dragId ? 'Drop here'
+                        : status === 'identified' ? 'Add investors from the table view'
+                        : status === 'closed' ? 'Move investors here when signed'
+                        : 'Move investors from earlier stages'}
                     </div>
                   )}
                 </div>

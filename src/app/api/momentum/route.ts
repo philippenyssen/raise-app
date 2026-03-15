@@ -1,19 +1,6 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@libsql/client';
 import { createAccelerationAction, computeNarrativeSignals } from '@/lib/db';
-
-function getClient() {
-  return createClient({
-    url: process.env.TURSO_DATABASE_URL || 'file:raise.db',
-    authToken: process.env.TURSO_AUTH_TOKEN,
-  });
-}
-
-// Pipeline stage ordering for forward/backward detection
-const PIPELINE_ORDER = [
-  'identified', 'contacted', 'nda_signed', 'meeting_scheduled',
-  'met', 'engaged', 'in_dd', 'term_sheet', 'closed',
-];
+import { getClient, PIPELINE_ORDER } from '@/lib/api-helpers';
 
 function stageIndex(status: string): number {
   const idx = PIPELINE_ORDER.indexOf(status);

@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import type { Investor } from '@/lib/types';
 import PostMeetingActions from '@/components/post-meeting-actions';
 import FollowupPlan from '@/components/followup-plan';
+import { useToast } from '@/components/toast';
 
 export default function NewMeetingPage() {
   return (
@@ -17,6 +18,7 @@ export default function NewMeetingPage() {
 function NewMeetingContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { toast } = useToast();
   const preselectedInvestor = searchParams.get('investor') || '';
   const [investors, setInvestors] = useState<Investor[]>([]);
   const [loading, setLoading] = useState(false);
@@ -56,6 +58,7 @@ function NewMeetingContent() {
 
     const data = await res.json();
     setResult(data);
+    toast(`Meeting with ${selectedInvestor?.name || 'investor'} logged`);
     setLoading(false);
   }
 
