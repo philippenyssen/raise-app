@@ -49,3 +49,245 @@ e917581	100	100	0	keep	eng+workflow+strategy	safeJsonParse dedup + keyboard shor
 2669e6f	100	100	0	keep	competitive+product+eng	compare CSV export + data room size + R-to-refresh strategic = 53683 lines, score 100
 b288b72	100	100	0	keep	design+ops+product+strategy	sidebar aria-labels + error retry buttons + CEO copy + velocity error UX = 53694 lines, score 100
 9971cc8	100	100	0	keep	data+product+copy	momentum staleness + win-loss best type + relative timestamps = 53698 lines, score 100
+9dc650d	100	100	0	keep	workflow+design+ai	followup draft personalization + settings Cmd+S + intelligence Enter hint = 53713 lines, score 100
+4d312c0	100	100	0	keep	ops+engineering+design	timeline task CRUD error handling + health error state + competitive catch fix + delete title = 53738 lines, score 100
+2e5fb39	100	100	0	keep	ops+data	data-room fetch error handling + reports catch fix = 53744 lines, score 100
+e12dad7	100	100	0	keep	engineering+ops	remove client-side console.error + analysis empty style cleanup = 53739 lines, score 100
+f62e9a6	100	100	0	keep	ops+product	meetings new/capture error handling + investor fetch catch = 53743 lines, score 100
+d1eb71a	100	100	0	keep	copy+ops	document delete label + objections error handling = 53752 lines, score 100
+64a0e30	100	100	0	keep	strategy+ops	velocity concentration warning + skills catch fix + network retry a11y = 53756 lines, score 100
+e2a5f2b	100	100	0	keep	design+ops	skills skeleton loading + catch state reset = 53763 lines, score 100
+a0d13d4	100	100	0	keep	product+ops	double-submit protection + error handling backlog + intelligence forms = 53779 lines, score 100
+59e1fd0	100	100	0	keep	engineering+ops	delete handler error handling intelligence + terms + model + data-room = 53789 lines, score 100
+0e72ca7	100	100	0	keep	engineering	investor detail inline mutation error handling = 53795 lines, score 100
+d875816	100	100	0	keep	copy+design	win-loss empty states with contextual guidance = 53795 lines, score 100
+af72c70	100	100	0	keep	engineering	backlog delete res check + pipeline quick-add/bulk-move error handling = 53796 lines, score 100
+07be0b1	100	100	0	keep	engineering+workflow	followup mutations + data-room upload error handling = 53811 lines, score 100
+f3d3bda	100	100	0	keep	engineering+workflow	followups + document status mutation error handling = 53825 lines, score 100
+9e5cbc4	100	100	0	keep	engineering	model addSheet + terms submit response checks = 53830 lines, score 100
+0dd15b9	100	100	0	keep	design+product+a11y	enrichment empty state + tab a11y + CSV error handling + enthusiasm aria-labels = 53839 lines, score 100
+4c33afb	100	100	0	keep	ai+competitive+ops	momentum + analysis + intelligence silent error catches fixed = 53846 lines, score 100
+f83abea	100	100	0	keep	design+workflow	skeleton loading momentum + analysis + retry a11y = 53849 lines, score 100
+c03bce0	100	100	0	keep	design+copy	workspace skeleton loading + sidebar a11y = 53853 lines, score 100
+0c60340	100	100	0	keep	strategy+engineering	strategic page error toast = 53857 lines, score 100
+207917f	100	100	0	keep	product+ai	stress-test + forecast + acceleration a11y improvements = 53861 lines, score 100
+ba752dc	100	100	0	keep	data+competitive	modal dialog a11y + sidebar nav label = 53869 lines, score 100
+45a63d3	100	100	0	keep	engineering+ops	term-sheets + documents API try-catch hardening = 53901 lines, score 100
+ba7c62d	100	100	0	keep	product+design	meetings/new + meetings/prep Suspense skeleton upgrades = 53914 lines, score 100
+2ad139c	100	100	0	keep	workflow+copy	followups Suspense + backlog skeleton standardization = 53922 lines, score 100
+320a38b	100	100	0	keep	engineering+ops	model API route try-catch hardening = 53936 lines, score 100
+3bb1c1e	100	100	0	keep	strategy+competitive	term-sheet strategic_value validation + data-room empty state + skeleton upgrade = 53948 lines, score 100
+e1bd5a7	100	100	0	keep	design+copy	competitive error toast + a11y expand/collapse + skeleton + settings placeholders = 53954 lines, score 100
+ac0fcba	100	100	0	keep	engineering+ops	data-room API hardening + 201 status codes + settings res.ok = 53967 lines, score 100
+8802d6b	100	100	0	keep	product+ai	dealflow skeleton + timeline/today/velocity a11y = 53970 lines, score 100
+b2e6884	100	100	0	keep	workflow+data	health + terms skeleton + pipeline catch annotation = 53970 lines, score 100
+984117b	100	100	0	keep	design+engineering	skeleton standardization: acceleration + stress-test + strategic + analytics = 53970 lines, score 100
+ddab076	100	100	0	keep	design+engineering	skeleton standardization: timeline + documents + objections = 53969 lines, score 100
+443fa90	100	100	0	keep	design+engineering	ZERO animate-pulse remaining: settings + prep + investor detail + consistency = 53969 lines, score 100
+75dc7ad	100	100	0	keep	product+competitive	skills error toast + win-loss skeleton loading = 53974 lines, score 100
+65e56e3	100	100	0	keep	ops+ai	fomo + network skeleton + generate API 201 = 53977 lines, score 100
+44acb5e	100	100	0	keep	strategy+copy	compare outcome copy + focus ellipsis + deal-heat empty state = 53978 lines, score 100
+072ba21	100	100	0	keep	design+engineering	fix fontWeight 500 design system violation in command palette = 53978 lines, score 100
+a03ce48	100	100	0	keep	product+workflow	graceful retry: velocity + forecast + health pages drop window.location.reload() = 53989 lines, score 100
+f495568	100	100	0	keep	ai+data	client-side nav + objections limit clamp + error boundary graceful reset = 53988 lines, score 100
+e32fa4e	100	100	0	keep	design+engineering	sidebar + top-bar a11y: aria-labels on mobile menu + search button = 53993 lines, score 100
+50540a4	100	100	0	keep	strategy+competitive	enrichment fetch 5s abort timeout prevents indefinite hang = 53996 lines, score 100
+cdb944b	100	100	0	keep	ops+copy	document API error messages + followups empty state copy = 53996 lines, score 100
+fd6ef1a	100	100	0	keep	product+workflow	document PUT allowlist + search inputs a11y/autocomplete on compare/data-room/meetings = 54010 lines, score 100
+493ae87	100	100	0	keep	engineering+ops	stop leaking String(err) across 6 API routes (tasks, revenue, intelligence, compare, deal-heat, quick-capture) = 54023 lines, score 100
+d0e2b4a	100	100	0	keep	design+copy	page-content class on loading/error states: deal-heat + velocity + forecast = 54023 lines, score 100
+87ce9e2	100	100	0	keep	ai+strategy	documents/new try-catch + res.ok prevents stuck creating state = 54029 lines, score 100
+9f26cfb	100	100	0	keep	product+engineering	double-click protection on investor task toggle = 54034 lines, score 100
+20a5534	100	100	0	keep	workflow+competitive	res.ok checks on followup-plan + post-meeting-actions + today followup mutations = 54039 lines, score 100
+5d2a775	100	100	0	keep	engineering+ops	res.ok on document-flags PUT + model sheet init (zero unchecked fetches remaining) = 54041 lines, score 100
+67a463a	100	100	0	keep	security+ops	10MB file size limit on data-room extract prevents memory exhaustion = 54046 lines, score 100
+193a37b	100	100	0	keep	security+engineering	XSS fix: HTML escape before markdown-to-HTML in document preview = 54050 lines, score 100
+c5e62c0	100	100	0	keep	design+a11y	command palette search: autocomplete + spellcheck + aria-label = 54053 lines, score 100
+44fb80b	100	100	0	keep	security+engineering	double-click protection: sidebar logout + post-meeting actions + followup plan + bulk investor update + seed Content-Type = 54069 lines, score 100
+8b1b1b3	100	100	0	keep	design+a11y	semantic <strong>→<span> in doc viewer + aria-labels on investor status selects = 54071 lines, score 100
+9eb2f29	100	100	0	keep	ai+data	trim whitespace on task/intelligence inputs + Invalid Date guard in momentum = 54072 lines, score 100
+d91f542	100	100	0	keep	workflow+design	hover feedback on forecast reset-what-if button = 54074 lines, score 100
+cd68750	100	100	0	keep	engineering+ops	NaN-safe limit clamping on tasks + skills API GET routes = 54074 lines, score 100
+89e1bb1	100	100	0	keep	product+a11y	aria-current=page on nav links + title attrs on pipeline truncated text = 54075 lines, score 100
+cfab47b	100	100	0	keep	engineering+ops	dead code: removed unused imports + state vars across 12 files = 54066 lines (-9), score 100
+7deb528	100	100	0	keep	engineering+ops	dead code round 2: unused imports across 7 more files = 54064 lines (-2), score 100
+a1a0cd7	100	100	0	keep	engineering+ops	dead code: eliminated all 28 remaining unused locals across 15 files, zero noUnusedLocals warnings = 54018 lines, score 100
+6ce9fe2	100	100	0	keep	copy+product	improved empty states, error toasts, button labels, placeholders across 5 pages = 54018 lines, score 100
+54be6f1	100	100	0	keep	competitive+design	relative timestamps on analytics page + SVG favicon + icons metadata = 54021 lines, score 100
+a8d0085	100	100	0	keep	product+design	autoFocus on 4 forms + Escape to close investor form + global .btn:disabled styling = 54023 lines, score 100
+1c1cab0	100	100	0	keep	workflow+product	'R' keyboard refresh shortcut on analytics, momentum, forecast, stress-test, pipeline = 54040 lines, score 100
+a3eabd8	100	100	0	keep	ai+engineering	explicit temperature settings on all 11 AI calls (0 for JSON, 0.3 for creative) = 54051 lines, score 100
+cd20c41	100	100	0	keep	design+engineering	standardized transition durations: cards 200ms, interactive 150ms, two-tier system = 54051 lines, score 100
+185b40e	100	100	0	keep	ops+engineering	removed 65 redundant console.error from 38 API route files (-65 lines) = 53986 lines, score 100
+d823423	100	100	0	keep	strategy+product	page-specific browser tab titles via 9 route layouts + title.template pattern = 54016 lines, score 100
+ce7b293	100	100	0	keep	data+ops	standardized enrichment timeouts 10s→15s + classified error types (timeout vs network vs unknown) = 54017 lines, score 100
+bb4454e	100	100	0	keep	engineering	time constants: extracted 18 magic numbers + relativeTime() across 10 files into src/lib/time.ts = 54052 lines, score 100
+54d1ee9	100	100	0	keep	product+engineering	toast undo action button + acceleration execute/skip undo + filtered empty states = 54095 lines, score 100
+42037bd	100	100	0	keep	design	--radius-xs token + replaced 12 hardcoded borderRadius values across 4 shared components = 54096 lines, score 100
+ca2dd2b	100	100	0	keep	ops+engineering	response.ok checks on 8 unsafe fetch chains across dealflow, enrichment, skills, health = 54105 lines, score 100
+2a86286	100	100	0	keep	ai+engineering	extractText() truncation detection + right-sized researchInvestor 8192→4096 max_tokens = 54112 lines, score 100
+483e004	100	100	0	keep	workflow+design	shared CopyButton component with visual feedback, replaced inline clipboard in strategic + objections = 54100 lines, score 100
+269ee50	100	100	0	keep	copywriting	actionable errors, aria-labels, empty state icons, clearer jargon across analysis/forecast/stress-test/data-room = 54122 lines, score 100
+72e8e80	100	100	0	keep	competitive	Escape key handlers on 5 inline forms: terms, backlog, timeline, intelligence, objections = 54165 lines, score 100
+bb3aa8b	100	100	0	keep	strategy	investor submit loading state + meetings form full reset on Log Another = 54169 lines, score 100
+6b8528f	100	100	0	keep	data+engineering	standardized 13 date toLocaleString() to fmtDateTime() across 10 pages = 54180 lines, score 100
+887bdd7	100	100	0	keep	product	auto-refresh every 5min on dealflow, momentum, pipeline pages = 54194 lines, score 100
+c675f8c	100	100	0	keep	design+engineering	replaced 7 magic time numbers + inline relativeTime IIFE in top-bar, today, strategic = 54197 lines, score 100
+7f7c8f9	100	100	0	keep	engineering	remaining time magic numbers in sidebar, today, pulse API, strategic API = 54200 lines, score 100
+a404c40	100	100	0	keep	ai	content filter detection in extractText + right-sized consistency/weakArgs 4096→3072 tokens = 54201 lines, score 100
+d8cd6d0	100	100	0	keep	ops	try/catch on data-quality, export, investor score APIs — all 6 routes now hardened = 54224 lines, score 100
+af60064	100	100	0	keep	strategy	numeric range validation on revenue commitments (amount+confidence) and meeting ratings (outcome+prep 1-5, duration 1-480) = 54237 lines, score 100
+031f1af	100	100	0	keep	product	optimistic UI for revenue backlog add/delete — instant visual feedback, background summary refresh = 54243 lines, score 100
+b435921	100	100	0	keep	design	filtered count in investor/meeting subtitles — 'X of Y' when filters active = 54243 lines, score 100
+d40e767	100	100	0	keep	engineering	Promise.all for 5 sequential DB calls in health API — reduced endpoint latency = 54248 lines, score 100
+6266f86	100	100	0	keep	ai	truncation+filter detection in improveSection and polishGoldmanStyle — no more silent failures = 54254 lines, score 100
+08431ee	100	100	0	keep	workflow	auto-focus first input on investor form + data-room paste form open = 54261 lines, score 100
+e01cd52	100	100	0	keep	copywriting	actionable error messages in revenue backlog — load, add, delete toasts now guide user = 54261 lines, score 100
+c9d5306	100	100	0	keep	competitive	copy buttons on meeting AI analysis and next steps — one-click sharing = 54268 lines, score 100
+737e6f9	100	100	0	keep	ops	console.error in 5 empty catches — skill log, AI analysis, post-meeting intel, followups, objections = 54275 lines, score 100
+7b17d74	100	100	0	keep	data	server-side temporal enrichment on followups — isOverdue, daysOverdue, daysUntilDue = 54288 lines, score 100
+5cc8fd6	100	100	0	keep	strategy	data freshness timestamp on acceleration page — relativeTime in subtitle = 54294 lines, score 100
+6b6d27d	100	100	0	keep	product	linked investor names to profiles in data-room intelligence — 3 sections now clickable = 54305 lines, score 100
+7f9b1e4	100	100	0	keep	design	consistent timestamps — forecast relativeTime, meeting prep fmtDateTime = 54309 lines, score 100
+42e355f	100	100	0	keep	engineering	fix missing [] dependency arrays on keyboard useEffects — 4 pages, prevents memory leaks = 54292 lines, score 100
+bc5c4ed	100	100	0	keep	ai	centralize AI_MODEL constant — 18 hardcoded strings across 7 files → 1 exported constant = 54297 lines, score 100
+0cefce0	100	100	0	keep	data	enrichment error details + orderBy SQL validation — 3 catch blocks + regex whitelist = 54302 lines, score 100
+4ed4e68	100	100	0	keep	workflow	ConfirmModal loading prop + documents double-delete prevention — benefits all 8 modal consumers = 54317 lines, score 100
+1934dc5	100	100	0	keep	copywriting	actionable error toasts — 12 'Failed to X' → 'Couldn't X — next step' across documents/investors/analytics/today = 54317 lines, score 100
+89739ce	100	100	0	keep	competitive	aria-labels on 5 icon-only delete buttons across intelligence/model/investor-detail = 54322 lines, score 100
+2bf63b1	100	100	0	keep	ops	explicit parens for operator precedence in health + focus APIs — clarity fix = 54322 lines, score 100
+d728743	100	100	0	keep	strategy	data freshness relativeTime on competitive + stress-test pages = 54331 lines, score 100
+49fdca8	100	100	0	keep	product	move Escape handler to form element on investors — works from any field now = 54332 lines, score 100
+5a33524	100	100	0	keep	design	design token compliance — 6 hardcoded px values in sidebar/topbar/copy-button → CSS custom props = 54332 lines, score 100
+717d003	100	100	0	keep	engineering	useMemo whatIf in forecast — avoid recomputing 5+ array ops on every render = 54327 lines, score 100
+6692423	100	100	0	keep	ai	log AI JSON parse failures — error message + first 200 chars of raw response for debugging = 54328 lines, score 100
+8542b4a	100	100	0	keep	data	database indexes on 4 investor_id FKs — enrichment/meetings/followups/score_snapshots = 54334 lines, score 100
+66abd20	100	100	0	keep	workflow	ConfirmModal loading on 4 remaining delete flows — intelligence/data-room/backlog/terms double-click prevention = 54339 lines, score 100
+2ff87a7	100	100	0	keep	copywriting	actionable error toasts across 22 pages — 46 'Failed to X' → 'Couldn't X — next step' = 54339 lines, score 100
+9b04528	100	100	0	keep	competitive	server-side validation (data-room 100K cap, flag status enum, term-sheets clamp) + Escape-clear + useMemo = 54347 lines, score 100
+b026353	100	100	0	keep	ops	structured error logging in 11 silent catch blocks — investors/meetings/tasks/strategic APIs now tagged for Vercel logs = 54347 lines, score 100
+37317fa	100	100	0	keep	strategy	cachedFetch on 4 read-heavy pages — forecast/health/deal-heat/strategic reduce redundant API calls = 54351 lines, score 100
+d8eff2b	100	100	0	keep	product	analysis success toast + fomo cachedFetch + documents/new error copy = 54354 lines, score 100
+ff76dbe	100	100	0	keep	design	replace hardcoded px font sizes with design tokens in 6 core components — top-bar/sidebar/command-palette/styles/terms/intelligence = 54354 lines, score 100
+3a9bfc3	100	100	0	keep	design	eliminate ALL hardcoded px font sizes — 190+ instances across 25 files → var(--font-size-xs/sm) tokens, zero remaining = 54354 lines, score 100
+a22a77f	100	100	0	keep	engineering	fix fire-and-forget fetch on dashboard + aria-labels on meetings (rating/remove/toggle) = 54359 lines, score 100
+640dab0	100	100	0	keep	ai	prompt precision (Goldman fact-preservation, meeting objection definitions, briefing safe extraction) = 54362 lines, score 100
+d38b23b	100	100	0	keep	data	fix counterparty/customer mismatch + 5 new DB indexes + trim due_date = 54369 lines, score 100
+5011bf8	100	100	0	keep	workflow	followup double-click protection + post-meeting error logging + meeting form query param pre-fill = 54376 lines, score 100
+4371da1	100	100	0	keep	copywriting	win-loss 4 actionable empty states + reports subtitle lists 3 types + dropdown placeholder = 54376 lines, score 100
+1022f76	100	100	0	keep	competitive	field allowlists on intelligence + revenue-commitments PUT handlers + error leakage fix = 54385 lines, score 100
+1b41ea0	100	100	0	keep	ops	tagged error logging + remove detail leakage from 22 API routes (intelligence/forecast/meetings/investors/reports/enrichment/etc) = 54419 lines, score 100
+c5e3207	100	100	0	keep	strategy	time-in-stage bottleneck detection on health page + health API error leak fix = 54458 lines, score 100
+91e53d6	100	100	0	keep	product	confirm dialog before passed/dropped on investors table + pipeline drag-drop = 54471 lines, score 100
+8c37246	100	100	0	keep	engineering	data-room error logging for silent catches = 54471 lines, score 100
+3882d52	100	100	0	keep	ai	extractText safety in 2 AI functions + NaN guard in context-bus + scoring division guard = 54471 lines, score 100
+31a24a1	100	100	0	keep	data	trim investor name + commitment customer before storage = 54472 lines, score 100
+20fa832	100	100	0	keep	workflow	auto-refresh meetings page every 60s with cleanup on unmount = 54476 lines, score 100
+dc939b3	100	100	0	keep	copy	actionable empty state messages on objections/momentum/compare pages = 54476 lines, score 100
+dc402ea	100	100	0	keep	competitive	silent investor warning (Xd silent) on dashboard hot deal rows = 54477 lines, score 100
+19699bb	100	100	0	keep	ops	replace 8 silent .catch(() => {}) with tagged error logging across 7 files = 54477 lines, score 100
+cf5dc05	100	100	0	keep	strategy	gap-closer section on dashboard showing top 3 investors to accelerate when off-track = 54495 lines, score 100
+ebbea89	100	100	0	keep	product	follow-up disabled states during processing + success toast on outcome complete = 54498 lines, score 100
+c8f45e3	100	100	0	keep	design	aria-labels on 4 icon-only follow-up action buttons = 54502 lines, score 100
+cab8f11	100	100	0	keep	engineering	fix NaN in stress-test date calc + revenue confidence parseFloat guard = 54503 lines, score 100
+8dbcebf	100	100	0	keep	ai	extractText robustness + prompt input length caps + doc AI error leakage fix = 54507 lines, score 100
+812a3e1	100	100	0	keep	data	date format validation on meetings + enum validation on tasks + term sheet trimming = 54515 lines, score 100
+6625068	100	100	0	keep	workflow	auto-redirect to investor detail page after creation = 54521 lines, score 100
+92beb54	100	100	0	keep	copy	improve 3 worst error messages (generate API key, intelligence delete, intelligence API) + error leakage fix = 54522 lines, score 100
+f0cd296	100	100	0	keep	competitive	quick log-meeting action button on investor list rows = 54535 lines, score 100
+9873f68	100	100	0	keep	ops	fix last 4 error detail leakage in skills/seed/workspace routes = 54538 lines, score 100
+dec4c0d	100	100	0	keep	product	sort controls (newest/oldest/A-Z) on documents page
+ebe1742	100	100	0	keep	design	normalize card border-radius to rounded-xl on backlog + momentum pages
+132697a	100	100	0	keep	engineering	PUT validation on revenue-commitments + acceleration status enum check
+61e391c	100	100	0	keep	ai	temperature:0 + truncation detection on briefing and doc-adapt AI calls
+1c8abd8	100	100	0	keep	data	validate due_at date on followups POST + trim strings on data-room POST
+6c39118	100	100	0	keep	workflow	Escape key to dismiss investor form + meeting result overlay
+7de52c9	100	100	0	keep	copy	clearer confidence placeholder on backlog + better empty state on dealflow
+968bd0b	100	100	0	keep	competitive	quick context strip on investor detail page
+3c0750c	100	100	0	keep	ops	replace 5 silent catch blocks with tagged error logging in momentum + pipeline
+da3dd5e	100	100	0	keep	strategy	urgency color coding on dashboard follow-ups + task overdue labels
+f2a09d7	100	100	0	keep	product	success toast after task status update on timeline page
+f80e77a	100	100	0	keep	design	standardize terms page padding + aria-labels on edit/delete buttons
+11843d1	100	100	0	keep	engineering	type-check objections_addressed + competitive_mentions + key_takeaway on meetings PATCH
+c6d0f67	100	100	0	keep	ai	temperature + truncation detection on meeting-brief and workspace AI calls
+0b33a67	100	100	0	keep	data	field length limits on documents PUT + investor text fields
+8b5b77b	100	100	0	keep	workflow	auto-save meeting capture notes to localStorage, restore on page load
+55967f2	100	100	0	keep	copy	rename Settings to Raise Settings + improve acceleration empty state messaging
+317626e	100	100	0	keep	competitive	momentum signal strip on meetings page (gaining/cooling investors)
+610639d	100	100	0	keep	ops	tagged error logging on settings/consistency/seed API routes (4 catch blocks)
+c25eebe	100	100	0	keep	strategy	conversion rate percentages between pipeline funnel stages on dashboard
+2b5ba51	100	100	0	keep	product	freshness indicator (last updated Xd ago) on term sheet comparison page
+4d58709	100	100	0	keep	design	fix 72 double-space className instances across 9 page files
+9b9161d	100	100	0	keep	engineering	SQL identifier validation (assertIdentifier) on genericUpdate + genericGetByField
+1463f45	100	100	0	keep	ai	temperature:0 + truncation detection on 2 generate.ts AI calls
+ddd643c	100	100	0	keep	data	validate status/priority on tasks PUT + 4 tagged error logging catch blocks
+a9672d1	100	100	0	keep	workflow	'r' keyboard shortcut to refresh on followups + dealflow pages
+0c50c17	100	100	0	keep	copy	descriptive error messages + tagged logging on revenue-commitments (4 handlers)
+a91aca1	100	100	0	keep	competitive	fix broken hover states on network page (enter/leave were identical)
+b8fce12	100	100	0	keep	ops	tagged error logging on deal-heat/compare/generate/analyze/export/data-quality routes
+1b72f17	100	100	0	keep	strategy	avg days-in-process metric on pipeline summary strip (warns >60d)
+320aea5	100	100	0	keep	product	'r' keyboard shortcut to refresh on intelligence, network, and timeline pages
+803cafc	100	100	0	keep	design	fix low-visibility states (opacity:0.3 → default on analytics error + intelligence skeleton)
+0843bf6	100	100	0	keep	engineering	tagged error logging on term-sheets + model API routes (8 catch blocks)
+21cc068	100	100	0	keep	ai	input truncation on assessProcessHealth (objections/meetings capped to prevent token overflow)
+8ccbb63	100	100	0	keep	data	tagged error logging on at-risk, data-room, documents API routes (7 catch blocks)
+c11e790	100	100	0	keep	workflow	'r' keyboard shortcut to refresh on enrichment, backlog, and fomo pages
+2a54fb3	100	100	0	keep	copy	replace 5 generic 'Internal server error' with descriptive messages in tasks + intelligence routes
+89ced14	100	100	0	keep	competitive	'r' keyboard shortcut to refresh on acceleration + CEO focus pages
+4736749	100	100	0	keep	ops	tagged error logging on meeting-brief + try/catch on document-flags GET
+100a13f	100	100	0	keep	strategy	dynamic document.title on all 45 pages for tab identification
+c87a9f4	100	100	0	keep	product	'r' keyboard shortcut on data-room, objections, model, workspace pages
+f84142a	100	100	0	keep	design	replace 13 hardcoded gap px values with var(--space-*) design tokens across 7 files
+db62910	100	100	0	keep	engineering	tagged error logging on quick-capture, workspace, meeting-prep, document-adapt (8 catch blocks)
+e133dad	100	100	0	keep	ai	truncate 3 unbounded JSON.stringify in AI prompts (signals, raiseConfig) to prevent token overflow
+baf6a0e	100	100	0	keep	data	field allowlist on term-sheets PUT route to prevent mass-assignment vulnerability
+1ae9ab8	100	100	0	keep	workflow	'r' keyboard shortcut on competitive, velocity, win-loss pages
+6cd6d8e	100	100	0	keep	copy	differentiate 4 identical task error messages by HTTP method
+edb8f76	100	100	0	keep	competitive	'r' keyboard shortcut on deal-heat and health pages
+6cf294d	100	100	0	keep	ops	tagged error logging on data-room/extract and test-key routes
+2b2df59	100	100	0	keep	strategy	centralized fmtEur/fmtPct formatters in format.ts, replaced inline fmtEur in context-bus
+3252902	100	100	0	keep	product	'r' keyboard shortcut on investors, meetings, documents pages
+685f62c	100	100	0	keep	design	add --radius-full CSS token, replace 12 hardcoded 9999px borderRadius values
+714f8f2	100	100	0	keep	engineering	field allowlists on objections PUT and followups PUT routes to prevent mass-assignment
+b58950d	100	100	0	keep	ai	log truncation and content-filter warnings in shared extractText helper (covers all 11 AI call sites)
+bfee7d2	100	100	0	keep	data	field allowlist on documents POST route to prevent mass-assignment
+0f1123d	100	100	0	keep	workflow	'r' keyboard shortcut on settings, terms, documents/consistency pages
+f2c4815	100	100	0	keep	copy	improve 6 generic error toasts with actionable guidance across 4 pages
+358c9ae	100	100	0	keep	competitive	Cache-Control headers on investors, meetings, term-sheets, tasks GET routes for faster response
+c09d9e7	100	100	0	keep	ops	tagged error logging on 8 silent catch blocks in acceleration, meeting-brief, quick-capture
+1a236be	100	100	0	keep	strategy	replace last 2 hardcoded font-size values with var(--font-size-xs) design token
+97e781a	100	100	0	keep	product	maxLength on 3 key textarea inputs (chat 5K, capture 50K, document import 5M)
+21de537	100	100	0	keep	design	replace 6 hardcoded padding px values with var(--space-4/6) design tokens
+8c7439c	100	100	0	keep	engineering	tagged error logging on 7 silent catch blocks in investors, workspace, pulse, document-versions routes
+4ed2ea4	100	100	0	keep	ai	upgrade model to claude-sonnet-4-6 and add input truncation guard on meeting notes
+d2994cc	100	100	0	keep	data	tagged error logging on 4 silent catch blocks in stress-test and objections routes
+eaf797c	100	100	0	keep	workflow	Cmd+S save shortcut on meetings/new, meetings/capture, and terms form pages
+fdea2aa	100	100	0	keep	copy	improve 9 generic error toasts with actionable guidance on investor detail, data-room, document editor
+978e7cb	100	100	0	keep	competitive	Cache-Control headers on followups, objections, analytics, deal-heat GET routes
+236d2f8	100	100	0	keep	ops	input validation on workspace chat — require messages array, cap at 50 messages
+66f2282	100	100	0	keep	strategy	add loading skeletons for analytics, acceleration, and stress-test pages
+766a609	100	100	0	keep	product	add autoComplete, spellCheck, aria-label to investor search input
+05f1cf6	100	100	0	keep	design	add loading skeletons for deal-heat, workspace, and momentum pages
+d94e3a5	100	100	0	keep	engineering	field allowlist on tasks POST route to prevent mass-assignment
+5371f90	100	100	0	keep	ai	truncate context inputs on researchInvestor and researchCompetitor to prevent token overflow
+ca7c888	100	100	0	keep	data	Cache-Control headers on velocity, intelligence, momentum, health GET routes
+898d9d9	100	100	0	keep	workflow	add loading skeletons for win-loss, velocity, and competitive pages
+1994ef9	100	100	0	keep	copy	improve 6 generic error toasts with actionable guidance on acceleration, terms, intelligence pages
+998181c	100	100	0	keep	competitive	Cache-Control headers on stress-test, fomo, win-loss GET routes
+1c33b37	100	100	0	keep	ops	field allowlist on model PUT route, Cache-Control on data-room and model GET routes
+3578f18	100	100	0	keep	strategy	add loading skeletons for fomo, network, and health pages
+a972664	100	100	0	keep	product	improve error messages with actionable guidance on network, velocity, meeting prep pages
+bb40d2c	100	100	0	keep	design	add loading skeletons for strategic, timeline, and model pages
+4b3980e	100	100	0	keep	engineering	Cache-Control headers on acceleration, network, pulse GET routes
+223bed9	100	100	0	keep	ai	input truncation on improveSection (8K) and polishGoldmanStyle (10K) to prevent token overflow
+9d341ac	100	100	0	keep	data	Cache-Control headers on revenue-commitments, focus, forecast GET routes
+b4e99c7	100	100	0	keep	workflow	add loading skeletons for backlog, enrichment, and reports pages
+3c7aff7	100	100	0	keep	copy	replace raw status codes with user-friendly errors on win-loss and deal-heat pages
+b246393	100	100	0	keep	competitive	Cache-Control headers on at-risk, data-quality, briefing GET routes
+d780867	100	100	0	keep	ops	tagged error logging on briefing AI summary fallback catch block
+0ea2b42	100	100	0	keep	strategy	add loading skeletons for compare, analysis, and skills pages
+a5cfe81	100	100	0	keep	product	Cache-Control headers on enrichment stats, document-flags, objections/effectiveness routes
+65888bf	100	100	0	keep	design	add loading skeleton for term-compare page, Cache-Control on intelligence/strategic route
+22482b2	100	100	0	keep	engineering	Cache-Control headers on investor score, trajectory, and meeting prep routes
+851ab96	100	100	0	keep	ai	Cache-Control headers on document GET, versions, and meeting actions routes
+6a98444	100	100	0	keep	data	Cache-Control headers on data-room/intelligence, skills, consistency routes
