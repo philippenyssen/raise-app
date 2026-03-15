@@ -123,9 +123,10 @@ export default function BacklogPage() {
 
   if (loading) {
     return (
-      <div className="space-y-4">
-        <div className="h-8 w-48 rounded animate-pulse" style={stSurface2} />
-        {[...Array(3)].map((_, i) => <div key={i} className="h-16 rounded-xl animate-pulse" style={stSurface1} />)}
+      <div className="space-y-4 page-content">
+        <div className="skeleton" style={{ height: '28px', width: '200px' }} />
+        <div className="skeleton" style={{ height: '16px', width: '350px' }} />
+        {[1,2,3].map(i => <div key={i} className="skeleton" style={{ height: '64px', borderRadius: 'var(--radius-lg)' }} />)}
       </div>);
   }
 

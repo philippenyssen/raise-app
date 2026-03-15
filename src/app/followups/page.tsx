@@ -137,7 +137,14 @@ function formatRelativeTime(dateStr: string): string {
 
 export default function FollowupsPage() {
   return (
-    <Suspense fallback={<div className="space-y-6"><div className="h-8 w-64 skeleton animate-pulse" style={{ borderRadius: 'var(--radius-md)' }} /></div>}>
+    <Suspense fallback={
+      <div className="space-y-6 page-content">
+        <div className="skeleton" style={{ height: '28px', width: '200px' }} />
+        <div className="skeleton" style={{ height: '16px', width: '320px' }} />
+        <div className="space-y-2">
+          {[1,2,3,4].map(i => <div key={i} className="skeleton" style={{ height: '52px', borderRadius: 'var(--radius-md)' }} />)}
+        </div>
+      </div>}>
       <FollowupsContent />
     </Suspense>);
 }
