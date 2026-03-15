@@ -1065,8 +1065,8 @@ export default function Dashboard() {
                         <div className="flex items-center gap-2 shrink-0">
                           <span style={labelTertiary}>{t.priority}</span>
                           {t.due_date && (
-                            <span style={{ fontSize: 'var(--font-size-xs)', color: overdue ? 'var(--text-primary)' : 'var(--text-muted)', fontWeight: overdue ? 400 : 300 }}>
-                              {fmtDate(t.due_date)}</span>
+                            <span style={{ fontSize: 'var(--font-size-xs)', color: overdue ? 'var(--danger)' : 'var(--text-muted)', fontWeight: overdue ? 400 : 300 }}>
+                              {overdue ? `${fmtDate(t.due_date)} (overdue)` : fmtDate(t.due_date)}</span>
                           )}</div>
                       </div>);
                   })}</div>
@@ -1396,7 +1396,7 @@ function FollowupRow({ followup, onComplete }: { followup: FollowupItem; onCompl
           {followup.description}</p></div>
       <div className="shrink-0 flex items-center gap-2">
         <div className="text-right">
-          <div className="tabular-nums" style={{ fontSize: 'var(--font-size-xs)', color: isOverdue ? 'var(--text-primary)' : 'var(--text-muted)', fontWeight: isOverdue ? 400 : 300 }}>
+          <div className="tabular-nums" style={{ fontSize: 'var(--font-size-xs)', color: isOverdue ? 'var(--danger)' : daysUntil <= 1 ? 'var(--warning)' : 'var(--text-muted)', fontWeight: isOverdue || daysUntil <= 1 ? 400 : 300 }}>
             {isOverdue
               ? `${Math.abs(daysUntil)}d overdue`
               : daysUntil === 0
