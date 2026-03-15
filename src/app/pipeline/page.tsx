@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import type { Investor, InvestorStatus, InvestorType } from '@/lib/types';
 import { useToast } from '@/components/toast';
 import { cachedFetch } from '@/lib/cache';
@@ -76,6 +77,7 @@ const STAT_ICON_COLORS: Record<string, string> = {
   emerald: 'var(--success)',};
 
 export default function PipelinePage() {
+  const router = useRouter();
   const { toast } = useToast();
   const [investors, setInvestors] = useState<Investor[]>([]);
   const [loading, setLoading] = useState(true);
@@ -88,6 +90,8 @@ export default function PipelinePage() {
   const [showFilters, setShowFilters] = useState(false);
   const [scoreDeltaMap, setScoreDeltaMap] = useState<Map<string, number>>(new Map());
   const boardRef = useRef<HTMLDivElement>(null);
+  const [kbCol, setKbCol] = useState(0);
+  const [kbRow, setKbRow] = useState(0);
 
   useEffect(() => { fetchInvestors(); cachedFetch('/api/at-risk').then(r => r.ok ? r.json() : null).then(d => { if (d?.scoreReversals) { const m = new Map<string, number>(); d.scoreReversals.forEach((r: { investorId: string; delta: number }) => m.set(r.investorId, r.delta)); setScoreDeltaMap(m); } }).catch(() => {}); }, []);
 
@@ -144,6 +148,23 @@ export default function PipelinePage() {
   const pipelineVelocity = activeInvestors.length > 0
     ? activeInvestors.reduce((sum, i) => sum + STAGE_WEIGHTS[i.status as InvestorStatus], 0) / activeInvestors.length
     : 0;
+
+  // ── Keyboard navigation ────────────────────────────────────────
+  const colGrid = useMemo(() => PIPELINE_STATUSES.map(s => filtered.filter(i => i.status === s).sort((a, b) => a.tier !== b.tier ? a.tier - b.tier : (b.enthusiasm || 0) - (a.enthusiasm || 0))), [filtered]);
+  const selectedId = colGrid[kbCol]?.[kbRow]?.id ?? null;
+
+  useEffect(() => {
+    const handleKb = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLSelectElement || e.target instanceof HTMLTextAreaElement) return;
+      if (e.key === 'ArrowRight') { e.preventDefault(); setKbCol(c => Math.min(c + 1, PIPELINE_STATUSES.length - 1)); setKbRow(0); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); setKbCol(c => Math.max(c - 1, 0)); setKbRow(0); }
+      else if (e.key === 'ArrowDown') { e.preventDefault(); setKbRow(r => { const max = (colGrid[kbCol]?.length ?? 1) - 1; return Math.min(r + 1, max); }); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); setKbRow(r => Math.max(r - 1, 0)); }
+      else if (e.key === 'Enter' && selectedId) { e.preventDefault(); router.push(`/investors/${selectedId}`); }
+    };
+    window.addEventListener('keydown', handleKb);
+    return () => window.removeEventListener('keydown', handleKb);
+  }, [kbCol, kbRow, colGrid, selectedId, router]);
 
   // ── Drag and drop ───────────────────────────────────────────────
   const handleDragStart = useCallback((e: React.DragEvent, id: string) => {
@@ -401,6 +422,7 @@ export default function PipelinePage() {
                       investor={inv}
                       convictionDelta={scoreDeltaMap.get(inv.id) ?? null}
                       isDragging={dragId === inv.id}
+                      isKbSelected={selectedId === inv.id}
                       onDragStart={handleDragStart}
                       onDragEnd={handleDragEnd} />
                   ))}
@@ -623,6 +645,7 @@ function InvestorCard({
   compact = false,
   convictionDelta = null,
   isDragging,
+  isKbSelected = false,
   onDragStart,
   onDragEnd,
 }: {
@@ -630,11 +653,15 @@ function InvestorCard({
   compact?: boolean;
   convictionDelta?: number | null;
   isDragging: boolean;
+  isKbSelected?: boolean;
   onDragStart: (e: React.DragEvent, id: string) => void;
   onDragEnd: (e: React.DragEvent) => void;
 }) {
   const [hovered, setHovered] = useState(false);
   const TypeIcon = TYPE_ICONS[investor.type as InvestorType] || Building2;
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => { if (isKbSelected && cardRef.current) cardRef.current.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }, [isKbSelected]);
 
   const isStale = investor.last_meeting_date
     ? Math.floor((Date.now() - new Date(investor.last_meeting_date).getTime()) / (1000 * 60 * 60 * 24)) >= 14
@@ -646,17 +673,18 @@ function InvestorCard({
   const tierGlow = 'none';
 
   const cardBaseStyle: React.CSSProperties = {
-    background: hovered ? 'var(--surface-2)' : 'var(--surface-1)',
+    background: hovered || isKbSelected ? 'var(--surface-2)' : 'var(--surface-1)',
     borderRadius: 'var(--radius-lg)',
     cursor: 'grab',
     transition: 'all 150ms ease',
-    boxShadow: tierGlow,
+    boxShadow: isKbSelected ? 'inset 0 0 0 1.5px var(--accent)' : tierGlow,
     borderLeft: isStale ? '3px solid var(--warning)' : 'none',
     ...(isDragging ? { opacity: 0.5, transform: 'scale(0.95)' } : {}),};
 
   if (compact) {
     return (
       <div
+        ref={cardRef}
         draggable
         onDragStart={e => onDragStart(e, investor.id)}
         onDragEnd={onDragEnd}
@@ -675,6 +703,7 @@ function InvestorCard({
 
   return (
     <div
+      ref={cardRef}
       draggable
       onDragStart={e => onDragStart(e, investor.id)}
       onDragEnd={onDragEnd}

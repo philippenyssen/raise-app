@@ -424,6 +424,39 @@ export default function Dashboard() {
 
       {(!data || data.totalInvestors > 0) && (
         <>
+          {/* Fundraise Health Score */}
+          {(() => {
+            const velScore = velocity ? Math.min(100, Math.round(velocity.summary.avg_velocity_score)) : 0;
+            const convRate = data && data.funnel.contacted > 0 ? Math.min(100, Math.round(((data.funnel.term_sheets + data.funnel.closed) / data.funnel.contacted) * 100 * 5)) : 0;
+            const heatScore = dealHeat ? Math.min(100, Math.round((dealHeat.counts.hot * 100 + dealHeat.counts.warm * 70 + dealHeat.counts.cool * 40) / Math.max(dealHeat.counts.total, 1))) : 0;
+            const totalFollowups = pendingFollowups.length;
+            const overdueCount = pendingFollowups.filter(f => f.due_at && f.due_at.split('T')[0] < new Date().toISOString().split('T')[0]).length;
+            const fuRate = totalFollowups > 0 ? Math.round(((totalFollowups - overdueCount) / totalFollowups) * 100) : 100;
+            const dqScore = dataQuality?.overallCompleteness ?? (ph?.dataQualityPct ?? 0);
+            const healthScore = Math.round(velScore * 0.30 + convRate * 0.25 + heatScore * 0.20 + fuRate * 0.15 + dqScore * 0.10);
+            const scoreClr = healthScore >= 70 ? 'var(--success)' : healthScore >= 45 ? 'var(--warning)' : 'var(--danger)';
+            return (
+              <div className="flex items-center gap-5" style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-4) var(--space-6)' }}>
+                <div style={{ position: 'relative', width: 56, height: 56 }}>
+                  <svg width="56" height="56" viewBox="0 0 56 56"><circle cx="28" cy="28" r="24" fill="none" stroke="var(--surface-3)" strokeWidth="4" /><circle cx="28" cy="28" r="24" fill="none" stroke={scoreClr} strokeWidth="4" strokeLinecap="round" strokeDasharray={`${healthScore * 1.508} 151`} transform="rotate(-90 28 28)" style={{ transition: 'stroke-dasharray 0.6s ease' }} /></svg>
+                  <span style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 'var(--font-size-lg)', fontWeight: 300, color: scoreClr, fontVariantNumeric: 'tabular-nums' }}>{healthScore}</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>Fundraise Health</div>
+                  <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginTop: 2 }}>{healthScore >= 70 ? 'Strong momentum across the board' : healthScore >= 45 ? 'Some areas need attention' : 'Multiple areas require immediate focus'}</div>
+                </div>
+                <div className="flex gap-4">
+                  {[{ l: 'Velocity', v: velScore }, { l: 'Conversion', v: convRate }, { l: 'Heat', v: heatScore }, { l: 'Follow-ups', v: fuRate }, { l: 'Data', v: dqScore }].map(m => (
+                    <div key={m.l} className="text-center" style={{ minWidth: 48 }}>
+                      <div style={labelTertiary}>{m.l}</div>
+                      <div className="tabular-nums" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 300, color: m.v >= 70 ? 'var(--success)' : m.v >= 45 ? 'var(--warning)' : 'var(--danger)', marginTop: 2 }}>{m.v}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
+
           {/* Raise Progress */}
           {stressTest ? (() => {
             const pct = Math.min(100, Math.round((stressTest.forecast.base / stressTest.target) * 100));

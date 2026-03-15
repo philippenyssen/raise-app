@@ -484,6 +484,32 @@ export default function InvestorDetailPage() {
             onMouseLeave={e => (e.currentTarget.style.opacity = '1')}>
             + Log Meeting</Link></div></div>
 
+      {/* Suggested Actions */}
+      {investor && (() => {
+        const suggestions: string[] = [];
+        const lastMeeting = meetings.length > 0 ? meetings.sort((a, b) => b.date.localeCompare(a.date))[0] : null;
+        const daysSinceContact = lastMeeting ? Math.floor((Date.now() - new Date(lastMeeting.date).getTime()) / 86400000) : null;
+        if (daysSinceContact !== null && daysSinceContact >= 5) suggestions.push(`Schedule follow-up meeting (last contact ${daysSinceContact} days ago)`);
+        else if (daysSinceContact === null && !['identified'].includes(investor.status)) suggestions.push('Log your first meeting to start tracking momentum');
+        const unresolvedObjs = allObjections.filter(o => o.severity === 'showstopper' || o.severity === 'significant');
+        if (unresolvedObjs.length > 0) suggestions.push(`Address ${unresolvedObjs.length} unresolved objection${unresolvedObjs.length > 1 ? 's' : ''} before next meeting`);
+        if (overdueFollowups > 0) suggestions.push(`Complete ${overdueFollowups} overdue follow-up${overdueFollowups > 1 ? 's' : ''}`);
+        if (['identified', 'contacted'].includes(investor.status) && meetings.length === 0) suggestions.push('Send intro materials and request first meeting');
+        if (investor.status === 'met' && meetings.length >= 2) suggestions.push('Move to Engaged — multiple meetings completed');
+        if (suggestions.length === 0) return null;
+        return (
+          <div style={{ background: 'var(--accent-muted)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-3) var(--space-4)' }}>
+            <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-2)' }}>
+              <span style={{ color: 'var(--accent)', display: 'flex' }}><Lightbulb className="w-3.5 h-3.5" /></span>
+              <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--accent)' }}>Suggested Actions</span></div>
+            <div className="space-y-1">
+              {suggestions.slice(0, 3).map((s, i) => (
+                <div key={i} className="flex items-start gap-2">
+                  <span className="w-1 h-1 rounded-full mt-1.5 shrink-0" style={{ background: 'var(--accent)' }} />
+                  <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', lineHeight: 1.5 }}>{s}</span></div>
+              ))}</div></div>);
+      })()}
+
       {/* Data Quality Banner */}
       {investor && (() => {
         const checkFields = [

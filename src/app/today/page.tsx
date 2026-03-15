@@ -746,6 +746,37 @@ export default function TodayPage() {
           </div></div></div>
 
       {/* ----------------------------------------------------------------- */}
+      {/* 4.5. This Week Summary                                            */}
+      {/* ----------------------------------------------------------------- */}
+      {(() => {
+        const weekMeetings = data.todayMeetings.length + (overnight?.newMeetings ?? 0);
+        const weekStageChanges = overnight?.statusChanges?.length ?? 0;
+        const weekTasksDone = overnight?.tasksCompleted ?? 0;
+        const weekNewInvestors = overnight?.statusChanges?.filter(sc => sc.from === 'unknown' || sc.from === 'identified')?.length ?? 0;
+        if (weekMeetings + weekStageChanges + weekTasksDone === 0) return null;
+        return (
+          <div>
+            <div className="section-title">This Week</div>
+            <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: 'var(--space-3)' }}>
+              {[
+                { label: 'Meetings', value: weekMeetings, icon: Calendar, color: 'var(--accent)' },
+                { label: 'New investors', value: weekNewInvestors, icon: UserPlus, color: 'var(--chart-4)' },
+                { label: 'Stage changes', value: weekStageChanges, icon: ArrowRight, color: 'var(--text-secondary)' },
+                { label: 'Tasks done', value: weekTasksDone, icon: CheckCircle, color: 'var(--success)' },
+              ].map(m => {
+                const Icon = m.icon;
+                return (
+                  <div key={m.label} className="card" style={{ padding: 'var(--space-3) var(--space-4)' }}>
+                    <div className="flex items-center gap-2">
+                      <span style={{ color: m.color, display: 'flex' }}><Icon className="w-3.5 h-3.5" /></span>
+                      <span style={labelMuted}>{m.label}</span></div>
+                    <div className="tabular-nums" style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)', marginTop: 4 }}>{m.value}</div>
+                  </div>);
+              })}
+            </div></div>);
+      })()}
+
+      {/* ----------------------------------------------------------------- */}
       {/* 5. Alerts                                                         */}
       {/* ----------------------------------------------------------------- */}
       {data.alerts.length > 0 && (
