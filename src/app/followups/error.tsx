@@ -19,7 +19,7 @@ export default function FollowupsError({ error, reset }: { error: Error & { dige
         )}
       </div>
       <div className="flex gap-3">
-        <button onClick={reset} className="btn btn-primary flex items-center gap-2">
+        <button onClick={reset} className="btn btn-primary btn-md flex items-center gap-2">
           <RefreshCw size={16} /> Try again
         </button>
         <Link href="/" className="btn btn-secondary btn-md">

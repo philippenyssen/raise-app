@@ -800,7 +800,7 @@ function QuickWinCard({ item }: { item: FocusItem }) {
           </Link>
           <Link
             href={`/investors/${item.investorId}`}
-            className="btn btn-secondary"
+            className="btn btn-secondary btn-sm"
             style={{ fontSize: '10px', padding: '2px 8px', borderRadius: 'var(--radius-sm)' }}
           >
             Open

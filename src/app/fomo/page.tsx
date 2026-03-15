@@ -624,7 +624,7 @@ export default function FomoPage() {
           <AlertTriangle className="w-6 h-6" style={{ color: 'var(--text-primary)' }} />
           <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)' }}>{error}</span>
           <button
-            className="btn btn-secondary"
+            className="btn btn-secondary btn-md"
             onClick={fetchData}
           >
             Retry

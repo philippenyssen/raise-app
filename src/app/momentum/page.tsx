@@ -108,8 +108,8 @@ const TYPE_COLORS: Record<string, { bg: string; color: string; border: string }>
 };
 
 function scoreColorStyle(score: number): React.CSSProperties {
-  if (score >= 71) return { background: 'rgba(27, 42, 74, 0.85)', color: '#fafaf8' };
-  if (score >= 51) return { background: 'rgba(27, 42, 74, 0.55)', color: '#fafaf8' };
+  if (score >= 71) return { background: 'rgba(27, 42, 74, 0.85)', color: 'var(--surface-0)' };
+  if (score >= 51) return { background: 'rgba(27, 42, 74, 0.55)', color: 'var(--surface-0)' };
   if (score >= 31) return { background: 'rgba(138, 136, 128, 0.40)', color: 'var(--text-primary)' };
   if (score >= 1)  return { background: 'rgba(26, 26, 46, 0.15)', color: 'var(--text-secondary)' };
   return { background: 'rgba(26, 26, 46, 0.06)', color: 'var(--text-muted)' };

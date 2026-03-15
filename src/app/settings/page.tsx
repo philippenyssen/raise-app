@@ -342,7 +342,7 @@ export default function SettingsPage() {
           <button
             onClick={saveRaiseConfig}
             disabled={savingRaise || !raiseDirty}
-            className={`btn ${raiseDirty ? 'btn-primary' : 'btn-secondary'}`}
+            className={`btn btn-md ${raiseDirty ? 'btn-primary' : 'btn-secondary'}`}
           >
             <Save className={`w-3.5 h-3.5 ${savingRaise ? 'animate-spin' : ''}`} />
             {savingRaise ? 'Saving...' : raiseDirty ? 'Save Changes' : 'Saved'}
@@ -595,7 +595,7 @@ export default function SettingsPage() {
             <button
               onClick={saveScoringWeights}
               disabled={savingScoring || !scoringDirty}
-              className={`btn ${scoringDirty ? 'btn-primary' : 'btn-secondary'}`}
+              className={`btn btn-md ${scoringDirty ? 'btn-primary' : 'btn-secondary'}`}
             >
               <Save className={`w-3.5 h-3.5 ${savingScoring ? 'animate-spin' : ''}`} />
               {savingScoring ? 'Saving...' : scoringDirty ? 'Save Changes' : 'Saved'}
@@ -663,7 +663,7 @@ export default function SettingsPage() {
           <button
             onClick={saveFollowupCadence}
             disabled={savingFollowup || !followupDirty}
-            className={`btn ${followupDirty ? 'btn-primary' : 'btn-secondary'}`}
+            className={`btn btn-md ${followupDirty ? 'btn-primary' : 'btn-secondary'}`}
           >
             <Save className={`w-3.5 h-3.5 ${savingFollowup ? 'animate-spin' : ''}`} />
             {savingFollowup ? 'Saving...' : followupDirty ? 'Save Changes' : 'Saved'}
