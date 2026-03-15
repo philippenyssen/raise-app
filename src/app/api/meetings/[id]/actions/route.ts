@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getMeetingActions, updateTask, updateDocumentFlag, deleteTask } from '@/lib/db';
+import { emitContextChange } from '@/lib/context-bus';
 
 export async function GET(
   _req: NextRequest,
@@ -33,19 +34,25 @@ export async function PUT(
     return NextResponse.json({ error: 'action_type, action_id, and operation required' }, { status: 400 });
   }
 
-  if (action_type === 'task') {
-    if (operation === 'dismiss') {
-      await deleteTask(action_id);
-    } else if (operation === 'accept') {
-      await updateTask(action_id, { status: 'in_progress' });
+  try {
+    if (action_type === 'task') {
+      if (operation === 'dismiss') {
+        await deleteTask(action_id);
+      } else if (operation === 'accept') {
+        await updateTask(action_id, { status: 'in_progress' });
+      }
+      emitContextChange('task_updated', `Task ${action_id} ${operation}ed`);
+    } else if (action_type === 'document_flag') {
+      if (operation === 'dismiss') {
+        await updateDocumentFlag(action_id, { status: 'dismissed' });
+      } else if (operation === 'accept') {
+        await updateDocumentFlag(action_id, { status: 'open' });
+      }
+      emitContextChange('document_flag_updated', `Document flag ${action_id} ${operation}ed`);
     }
-  } else if (action_type === 'document_flag') {
-    if (operation === 'dismiss') {
-      await updateDocumentFlag(action_id, { status: 'dismissed' });
-    } else if (operation === 'accept') {
-      await updateDocumentFlag(action_id, { status: 'open' });
-    }
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    console.error('[MEETING_ACTIONS_PUT]', err instanceof Error ? err.message : err);
+    return NextResponse.json({ error: 'Failed to update action' }, { status: 500 });
   }
-
-  return NextResponse.json({ ok: true });
 }
