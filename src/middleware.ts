@@ -54,6 +54,10 @@ function cleanupRateLimitMap() {
   const now = Date.now();
   if (now - lastCleanup < 120_000) return;
   lastCleanup = now;
+  if (rateLimitMap.size > 10_000) {
+    rateLimitMap.clear();
+    return;
+  }
   for (const [key, entry] of rateLimitMap) {
     if (now > entry.resetAt) rateLimitMap.delete(key);
   }
