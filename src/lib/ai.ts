@@ -248,9 +248,9 @@ export async function assessProcessHealth(funnel: Record<string, unknown>, objec
       role: 'user',
       content: `Assess this Series C fundraise process health:
 
-FUNNEL: ${JSON.stringify(funnel)}
-TOP OBJECTIONS: ${JSON.stringify(objections)}
-RECENT MEETINGS (last 5): ${JSON.stringify(recentMeetings)}
+FUNNEL: ${JSON.stringify(funnel).substring(0, 2000)}
+TOP OBJECTIONS: ${JSON.stringify(objections.slice(0, 10)).substring(0, 2000)}
+RECENT MEETINGS (last 5): ${JSON.stringify(recentMeetings.slice(0, 5)).substring(0, 3000)}
 
 Return JSON (no markdown):
 {
