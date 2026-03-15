@@ -171,6 +171,9 @@ export async function middleware(req: NextRequest) {
   response.headers.set('Permissions-Policy', 'camera=(), microphone=(self), geolocation=()');
   response.headers.set('X-DNS-Prefetch-Control', 'on');
   response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  if (!isApiRoute) {
+    response.headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none'");
+  }
   if (isApiRoute) {
     const origin = req.headers.get('origin');
     if (origin) {
