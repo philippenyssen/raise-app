@@ -156,7 +156,7 @@ const DIRECTION_CONFIG = {
     label: 'Decelerating',
     icon: TrendingDown,
     bg: 'var(--fg-40)',
-    color: 'var(--danger, var(--fg-6))',
+    color: 'var(--danger)',
     border: 'var(--fg-50)',
   },
 };
@@ -171,7 +171,7 @@ const TREND_CONFIG = {
   cooling: {
     label: 'Cooling down',
     icon: TrendingDown,
-    color: 'var(--danger, var(--fg-6))',
+    color: 'var(--danger)',
     bg: 'var(--fg-30)',
   },
   stable: {
@@ -319,7 +319,7 @@ export default function MomentumPage() {
             </h3>
             {data.trajectoryAlerts.map((alert, i) => {
               const colors: Record<string, { bg: string; border: string; color: string }> = {
-                critical_warning:  { border: 'var(--fg-50)',  bg: 'var(--fg-10)',  color: 'var(--danger, var(--fg-6))' },
+                critical_warning:  { border: 'var(--fg-50)',  bg: 'var(--fg-10)',  color: 'var(--danger)' },
                 early_warning:     { border: 'var(--warn-50)',  bg: 'var(--fg-6)',  color: 'var(--text-secondary)' },
                 term_sheet_signal: { border: 'var(--accent-50)',  bg: 'var(--accent-10)',   color: 'var(--success)' },
               };
@@ -349,7 +349,7 @@ export default function MomentumPage() {
                     <div className="flex items-center gap-3 text-xs">
                       <span>Score: {alert.currentScore}</span>
                       <span>&rarr; {alert.predictedScore21d} (21d)</span>
-                      <span style={{ color: alert.slopePerWeek >= 0 ? 'var(--success)' : 'var(--danger, var(--fg-6))' }}>
+                      <span style={{ color: alert.slopePerWeek >= 0 ? 'var(--success)' : 'var(--danger)' }}>
                         {alert.slopePerWeek >= 0 ? '+' : ''}{alert.slopePerWeek}/wk
                       </span>
                       {alert.daysToThreshold && (
@@ -510,7 +510,7 @@ export default function MomentumPage() {
                             color: delta > 0
                               ? 'var(--success)'
                               : delta < 0
-                                ? 'var(--danger, var(--fg-6))'
+                                ? 'var(--danger)'
                                 : 'var(--text-muted)',
                           }}
                         >
@@ -863,7 +863,7 @@ export default function MomentumPage() {
             <div className="space-y-2">
               {data.timingSignals.map((signal, i) => {
                 const urgencyStyles: Record<string, { bg: string; border: string; color: string }> = {
-                  high:   { bg: 'var(--fg-20)',  border: 'var(--fg-40)',  color: 'var(--danger, var(--fg-6))' },
+                  high:   { bg: 'var(--fg-20)',  border: 'var(--fg-40)',  color: 'var(--danger)' },
                   medium: { bg: 'var(--warn-20)',  border: 'var(--warn-40)',  color: 'var(--warning)' },
                   low:    { bg: 'var(--fg-40)',   border: 'var(--warn-40)',   color: 'var(--text-secondary)' },
                 };
@@ -873,7 +873,7 @@ export default function MomentumPage() {
                   dd_synchronization: 'DD Synchronization',
                 };
                 const typeIconColors: Record<string, string> = {
-                  competitive_tension: 'var(--danger, var(--fg-6))',
+                  competitive_tension: 'var(--danger)',
                   engagement_gap: 'var(--text-secondary)',
                   dd_synchronization: 'var(--success)',
                 };
@@ -902,7 +902,7 @@ export default function MomentumPage() {
                           color: us.color,
                         }}
                       >
-                        {signal.urgency.toUpperCase()}
+                        {signal.urgency}
                       </span>
                     </div>
                     <p className="text-xs mb-2" style={{ color: 'var(--text-secondary)' }}>{signal.description}</p>
@@ -944,7 +944,7 @@ export default function MomentumPage() {
                 const tc = TYPE_COLORS[nh.investorType] || TYPE_COLORS.vc;
                 const statusStyles: Record<string, { bg: string; color: string; label: string }> = {
                   effective:         { bg: 'var(--accent-20)',   color: 'var(--success)',  label: 'Effective' },
-                  struggling:        { bg: 'var(--fg-20)', color: 'var(--danger, var(--fg-6))',  label: 'Struggling' },
+                  struggling:        { bg: 'var(--fg-20)', color: 'var(--danger)',  label: 'Struggling' },
                   insufficient_data: { bg: 'var(--fg-40)',  color: 'var(--text-muted)',                   label: 'Low data' },
                 };
                 const sc = statusStyles[nh.status] || statusStyles.insufficient_data;
@@ -977,7 +977,7 @@ export default function MomentumPage() {
                         <span style={{ color: 'var(--text-muted)' }}>Enthusiasm</span>
                         <div
                           className="font-normal tabular-nums"
-                          style={{ color: nh.avgEnthusiasm >= 3 ? 'var(--success)' : 'var(--danger, var(--fg-6))' }}
+                          style={{ color: nh.avgEnthusiasm >= 3 ? 'var(--success)' : 'var(--danger)' }}
                         >
                           {nh.avgEnthusiasm.toFixed(1)}/5
                         </div>
@@ -986,7 +986,7 @@ export default function MomentumPage() {
                         <span style={{ color: 'var(--text-muted)' }}>Conversion</span>
                         <div
                           className="font-normal tabular-nums"
-                          style={{ color: nh.conversionRate >= 20 ? 'var(--success)' : 'var(--danger, var(--fg-6))' }}
+                          style={{ color: nh.conversionRate >= 20 ? 'var(--success)' : 'var(--danger)' }}
                         >
                           {nh.conversionRate}%
                         </div>
