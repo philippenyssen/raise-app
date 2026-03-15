@@ -88,7 +88,7 @@ export default function DataRoomPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ investor_id: investorId, document_id: documentId }),});
       if (!res.ok) throw new Error('Failed');
-      toast('Document access logged');
+      toast('Access logged — investor engagement data updated');
       fetchIntelligence();
     } catch { toast('Could not log access — check your connection and retry', 'error'); }
   }
@@ -145,7 +145,7 @@ export default function DataRoomPage() {
           }),});
         if (!res.ok) throw new Error('Failed');
         toast(`Uploaded "${file.name}"`);
-      } catch { toast(`Failed to upload "${file.name}"`, 'error'); }
+      } catch { toast(`Could not upload "${file.name}" — check file size and format, then retry`, 'error'); }
     }
     setUploading(false);
     fetchFiles();

@@ -132,7 +132,7 @@ export default function BacklogPage() {
       setCommitments(prev => prev.filter(c => c.id !== targetId));
       const res = await fetch(`/api/revenue-commitments?id=${targetId}`, { method: 'DELETE' });
       if (!res.ok) throw new Error('Failed');
-      toast('Deleted', 'warning');
+      toast('Commitment removed from backlog', 'warning');
       // Refresh summary in background
       cachedFetch('/api/revenue-commitments').then(r => r.ok ? r.json() : null).then(d => { if (d) setSummary(d.summary); }).catch(e => console.error('[BACKLOG_SUMMARY]', e instanceof Error ? e.message : e));
     } catch {
