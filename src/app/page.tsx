@@ -1301,8 +1301,9 @@ function HotDealRow({ investor }: { investor: DealHeatInvestor }) {
               color: hovered ? 'var(--accent)' : 'var(--text-primary)', }}>
             {investor.name}</Link>
           <span style={labelTertiary}>T{investor.tier}</span></div>
-        <div className="mt-0.5" style={labelMuted}>
-          {formatStage(investor.status)}</div></div>
+        <div className="mt-0.5 flex items-center gap-2" style={labelMuted}>
+          <span>{formatStage(investor.status)}</span>
+          {(() => { if (!investor.lastMeeting) return null; const d = Math.floor((Date.now() - new Date(investor.lastMeeting).getTime()) / 864e5); if (d < 7) return null; return <span style={{ color: d >= 14 ? 'var(--danger)' : 'var(--warning)', fontSize: 'var(--font-size-xs)' }}>{d}d silent</span>; })()}</div></div>
       <div className="flex items-center gap-2 shrink-0">
         <span className="tabular-nums" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
           {investor.dealHeat.heat}</span>
