@@ -1,7 +1,7 @@
 type CacheEntry = { data: Response; ts: number; };
 const cache = new Map<string, CacheEntry>();
 const inflight = new Map<string, Promise<Response>>();
-const DEFAULT_TTL = 2 * 60 * 1000; // 2 minutes
+const DEFAULT_TTL = 5 * 60 * 1000; // 5 minutes — aligned with dashboard refresh interval
 
 export async function cachedFetch(
   url: string,

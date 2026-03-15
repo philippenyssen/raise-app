@@ -946,6 +946,12 @@ export async function getAllDataRoomFiles(): Promise<DataRoomFile[]> {
   return result.rows as unknown as DataRoomFile[];
 }
 
+export async function getDataRoomFileCount(): Promise<number> {
+  await ensureInitialized();
+  const result = await getClient().execute('SELECT COUNT(*) as cnt FROM data_room_files');
+  return Number((result.rows[0] as unknown as { cnt: number }).cnt) || 0;
+}
+
 export async function getAllDataRoomFileSummaries(): Promise<Omit<DataRoomFile, 'extracted_text'>[]> {
   await ensureInitialized();
   const result = await getClient().execute('SELECT id, filename, category, mime_type, size_bytes, summary, uploaded_at FROM data_room_files ORDER BY uploaded_at DESC');
@@ -2051,7 +2057,7 @@ export interface PipelineRanking {
 }
 
 export function detectScoreReversals(): Promise<ScoreReversal[]> {
-  return cachedCompute('detectScoreReversals', 60_000, async () => {
+  return cachedCompute('detectScoreReversals', 120_000, async () => {
   await ensureInitialized();
   const db = getClient();
 
@@ -2117,7 +2123,7 @@ export function detectScoreReversals(): Promise<ScoreReversal[]> {
 }
 
 export function getPipelineRankings(): Promise<PipelineRanking[]> {
-  return cachedCompute('getPipelineRankings', 60_000, async () => {
+  return cachedCompute('getPipelineRankings', 120_000, async () => {
   await ensureInitialized();
   const db = getClient();
 
@@ -2195,7 +2201,7 @@ export interface FomoDynamic {
 }
 
 export function computeMeetingDensity(): Promise<MeetingDensity> {
-  return cachedCompute('computeMeetingDensity', 60_000, async () => {
+  return cachedCompute('computeMeetingDensity', 120_000, async () => {
   await ensureInitialized();
   const db = getClient();
 
@@ -2286,7 +2292,7 @@ export interface EngagementVelocity {
 }
 
 export function computeEngagementVelocity(): Promise<EngagementVelocity[]> {
-  return cachedCompute('computeEngagementVelocity', 60_000, async () => {
+  return cachedCompute('computeEngagementVelocity', 120_000, async () => {
   await ensureInitialized();
   const db = getClient();
 
@@ -2379,7 +2385,7 @@ export function computeEngagementVelocity(): Promise<EngagementVelocity[]> {
 }
 
 export function detectFomoDynamics(): Promise<FomoDynamic[]> {
-  return cachedCompute('detectFomoDynamics', 60_000, async () => {
+  return cachedCompute('detectFomoDynamics', 120_000, async () => {
   await ensureInitialized();
   const db = getClient();
 
@@ -3537,7 +3543,7 @@ export interface NetworkCascade {
 }
 
 export function computeNetworkCascades(): Promise<NetworkCascade[]> {
-  return cachedCompute('computeNetworkCascades', 60_000, async () => {
+  return cachedCompute('computeNetworkCascades', 120_000, async () => {
   const keystones = await getKeystoneInvestors();
   if (keystones.length === 0) return [];
 
@@ -5634,7 +5640,7 @@ export interface RaiseForecast {
 }
 
 export function computeRaiseForecast(): Promise<RaiseForecast> {
-  return cachedCompute('computeRaiseForecast', 60_000, async () => {
+  return cachedCompute('computeRaiseForecast', 120_000, async () => {
   await ensureInitialized();
   const db = getClient();
 
@@ -6140,7 +6146,7 @@ export interface TemporalTrends {
 }
 
 export function computeTemporalTrends(): Promise<TemporalTrends> {
-  return cachedCompute('computeTemporalTrends', 60_000, async () => {
+  return cachedCompute('computeTemporalTrends', 120_000, async () => {
   await ensureInitialized();
   const db = getClient();
 
