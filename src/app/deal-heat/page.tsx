@@ -176,7 +176,8 @@ export default function DealHeatPage() {
       {filtered.length === 0 ? (
         <div className="card" style={{ textAlign: 'center', padding: 'var(--space-12)' }}>
           <span style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-lg)' }}>
-            No investors at this heat level</span></div>
+            No investors at this heat level</span>
+          <p className="text-sm mt-2" style={{ color: 'var(--text-tertiary)' }}>Try a different heat filter or check your active pipeline.</p></div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {filtered.map(inv => {

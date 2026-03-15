@@ -299,7 +299,7 @@ export default function ComparePage() {
           style={{ borderRadius: 'var(--radius-xl)' }}>
           <BarChart3 className="w-10 h-10 mx-auto mb-3" style={stTextMuted} />
           <div style={{ ...stTextMuted, fontSize: 'var(--font-size-sm)' }}>
-            {selectedIds.length < 2 ? 'Select at least 2 investors from the dropdown above, then click Compare.' : 'Click Compare to run the full analysis.'}
+            {selectedIds.length < 2 ? 'Select at least 2 investors from the dropdown above, then click Compare.' : 'Ready. Compare will show decision likelihood, momentum, risk profile, and a clear recommendation.'}
           </div></div>
       )}
 

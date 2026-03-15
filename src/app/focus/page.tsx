@@ -519,12 +519,12 @@ function QuickWinCard({ item }: { item: FocusItem }) {
           <p style={{ ...labelMuted, marginBottom: '4px' }}>Blocker:</p>
           <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', opacity: 0.85, marginBottom: '8px' }}>{item.unresolvedObjections[0]}</p>
           <p style={{ ...labelMuted, marginBottom: '4px' }}>Resolution:</p>
-          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', opacity: 0.85 }}>{item.recommendedAction.substring(0, 120)}</p>
+          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', opacity: 0.85 }} title={item.recommendedAction}>{item.recommendedAction.length > 140 ? item.recommendedAction.substring(0, 137) + '...' : item.recommendedAction}</p>
         </>
       ) : (
         <>
           <p style={{ ...labelMuted, marginBottom: '4px' }}>Opportunity:</p>
-          <p style={labelSecondary}>{item.recommendedAction.substring(0, 120)}</p>
+          <p style={labelSecondary} title={item.recommendedAction}>{item.recommendedAction.length > 140 ? item.recommendedAction.substring(0, 137) + '...' : item.recommendedAction}</p>
         </>
       )}
       <div className="flex items-center justify-between" style={{ marginTop: '12px' }}>
