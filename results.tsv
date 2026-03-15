@@ -291,3 +291,99 @@ a5cfe81	100	100	0	keep	product	Cache-Control headers on enrichment stats, docume
 22482b2	100	100	0	keep	engineering	Cache-Control headers on investor score, trajectory, and meeting prep routes
 851ab96	100	100	0	keep	ai	Cache-Control headers on document GET, versions, and meeting actions routes
 6a98444	100	100	0	keep	data	Cache-Control headers on data-room/intelligence, skills, consistency routes
+e04be85	100	100	0	keep	workflow	add 'r' refresh keyboard shortcut on investor detail page
+0971ba2	100	100	0	keep	copy	replace generic error messages with actionable guidance on skills and pipeline pages
+0ded330	100	100	0	keep	competitive	add 'r' refresh keyboard shortcut to skills and reports pages
+ddfe755	100	100	0	keep	ops	tagged error logging on documents GET route
+b86b855	100	100	0	keep	strategy	add loading skeletons for document detail, meeting prep, and investor detail pages
+a898ea2	100	100	0	keep	product	add loading skeletons for consistency, new document, meeting capture, new meeting pages
+4a0113a	100	100	0	keep	design	add 'r' refresh shortcut to document detail page
+19008a3	100	100	0	keep	engineering	replace as-any with proper SpeechRecognition type interfaces in voice input
+e2dbe28	100	100	0	keep	ai	add per-message truncation guard (30K) on workspace AI chat route
+d09a2fa	100	100	0	keep	data	add text length limits on term-sheets POST route inputs
+86b547c	100	100	0	keep	workflow	add 'r' refresh shortcut to analysis page
+bd5ce8a	100	100	0	keep	copy	replace all remaining Failed toast messages with actionable guidance
+ff79dee	100	100	0	keep	competitive	add text length limits on meetings and data-room POST routes
+f018427	100	100	0	keep	strategy	add loading skeleton for login page — 100% page coverage
+8d1f83c	100	100	0	keep	product	add text length limits on tasks POST route inputs
+5860c8a	100	100	0	keep	design	add 'r' refresh shortcut to investor compare page
+b58cb54	100	100	0	keep	engineering	add text length limits on revenue-commitments POST route inputs
+5737b55	100	100	0	keep	ai	truncate existing doc content (8K/doc) in generate route to prevent token overflow
+cd5a0f8	100	100	0	keep	data	add text length limits on followups objections and documents routes
+88493fb	100	100	0	keep	workflow	add Cache-Control headers to all GET branches on investors followups and objections
+297c90c	100	100	0	keep	copy	fix document title on meeting capture page
+91ddeb3	100	100	0	keep	competitive	replace empty catch with tagged error logging on meeting prep page
+17b0e64	100	100	0	keep	ops	add Permissions-Policy and X-DNS-Prefetch-Control security headers
+9b12c58	100	100	0	keep	strategy	disable X-Powered-By header to hide tech stack fingerprint
+c27f162	100	100	0	keep	product	add Escape key to close dialogs on financial model page
+0bfaa17	100	100	0	keep	design	add shared PageError component and error boundaries for 8 pages
+cd785ef	100	100	0	keep	engineering	add error boundaries for remaining 14 pages — 100% coverage
+39dd4c4	100	100	0	keep	ai	add 120s timeout to all Anthropic client instances
+57efdab	100	100	0	keep	data	add Cache-Control headers to analyze and auto-actions routes
+b76085d	100	100	0	keep	workflow	add Escape key to collapse expanded follow-up on followups page
+4a51b08	100	100	0	keep	copy	standardize error messages to id is required across all API routes
+15c190c	100	100	0	keep	competitive	wrap unprotected DB calls in try-catch on analyze and documents routes
+e4eb34f	100	100	0	keep	ops	add HSTS header and wrap followups POST in try-catch
+bc1c21f	100	100	0	keep	strategy	add hard cap to rate limit map to prevent unbounded memory growth
+9b9c044	100	100	0	keep	product	add min step constraints on backlog amounts and autoComplete on login
+7af877e	100	100	0	keep	design	add error boundaries for remaining 8 sub-pages — full coverage
+cc0989b	100	100	0	keep	engineering	use NextRequest instead of Request on term-compare and acceleration routes
+6abadd3	100	100	0	keep	ai	replace silent catch with tagged error logging on objections effectiveness fetch
+f102341	100	100	0	keep	data	add text length limits on model and skills API routes
+822477a	100	100	0	keep	workflow	add Cache-Control and remove redundant status on reports route
+cd93715	100	100	0	keep	copy	fix redundant Raise Raise Forecast title to Raise Forecast
+bd4e688	100	100	0	keep	competitive	emit context change on term sheet deletion and add term_sheet event types
+239b0ae	100	100	0	keep	ops	remove redundant status 200 from export CSV response
+ca56e6f	100	100	0	keep	strategy	add global-error.tsx to catch root layout errors
+f12028a	100	100	0	keep	product	add disabled state and loading text on timeline task creation button
+3c21c76	100	100	0	keep	design	add role=status and aria-live to toast container for screen readers
+e4938eb	100	100	0	keep	engineering	use req.nextUrl.searchParams instead of new URL(req.url) across 12 routes
+e6224a9	100	100	0	keep	ai	measure actual AI call latency instead of hardcoded 0 across all 9 logAISkill invocations
+d8da9f7	100	100	0	keep	data	add value size limit on settings PUT and actual_lift numeric validation on acceleration PUT
+7d3bf71	100	100	0	keep	workflow	emit context change events on document-flags PUT and model POST PUT DELETE mutations
+19d2035	100	100	0	keep	copy	add page title metadata for 20 pages missing browser tab titles
+43244cf	100	100	0	keep	competitive	emit context events on document PUT DELETE and enrichment DELETE for full event bus coverage
+fcc104f	100	100	0	keep	ops	add Content-Security-Policy header for non-API page routes in middleware
+ba62dc0	100	100	0	keep	strategy	parallelize health page fetches with Promise.all and add disabled states to 3 retry buttons
+efb8192	100	100	0	keep	product	add min=0 constraints to 4 financial amount inputs in settings page
+5b41bc6	100	100	0	keep	design	add noscript fallback message for users with JavaScript disabled
+289e336	100	100	0	keep	engineering	add 10s AbortController timeout to test-key external API fetch
+97c9528	100	100	0	keep	ai	use shared AI client from ai.ts instead of duplicate Anthropic instance in generate.ts
+c994466	100	100	0	keep	data	add text length validation on intelligence POST data payload fields
+2e18d9a	100	100	0	keep	workflow	add context events and error handling to meeting actions PUT handler
+913b573	100	100	0	keep	copy	improve empty states, error recovery hints, and toast messages across 4 pages
+b2c4d46	100	100	0	keep	competitive	harden intelligence PUT with id validation, empty-update guard, and context events
+c6ca9df	100	100	0	keep	ops	log silent catch errors in deal-heat Promise.all and extend cache TTL to 30s
+8fbc4b5	100	100	0	keep	strategy	add error recovery banner with retry to enrichment page when fetches fail
+f80071a	100	100	0	keep	product	add maxLength to backlog and data-room form inputs, placeholder to contract type select
+835d34d	100	100	0	keep	design	add aria-hidden to sidebar icons, focus-visible outlines on nav links
+43ca481	100	100	0	keep	engineering	hoist TrajectoryAlert and TimingSignal interfaces to module level in momentum route
+eb105d6	100	100	0	keep	ai	add logAISkill to improveSection and polishGoldmanStyle, system prompt to meeting-brief
+9235548	100	100	0	keep	data	validate dates and annual_amount in revenue-commitments PUT, trim term-sheet strings
+4d216fd	100	100	0	keep	workflow	fix silent error swallowing in meeting outcome save, show error on failure
+415ff10	100	100	0	keep	copy	improve empty states on documents/investors pages, add completeness tooltip guidance
+134fcdd	100	100	0	keep	competitive	add 404 existence check to meetings PUT handler for consistency with PATCH
+45f2bfd	100	100	0	keep	ops	add X-Request-ID header to middleware for request tracing
+9357e89	100	100	0	keep	strategy	log silent catches in at-risk route and return 500 on outer failure
+2eae3a7	100	100	0	keep	product	add submitting state to term sheet form to prevent double-submit
+6f426b1	100	100	0	keep	design	add hover state to copy button component
+ed4e372	100	100	0	keep	engineering	log silent catches in meeting-brief route for observability
+1aa11ff	100	100	0	keep	ai	validate AI response fields in meeting-brief with fallback merge
+9d70d4d	100	100	0	keep	data	trim strings before date validation in revenue-commitments, trim data-room summary
+4b30097	100	100	0	keep	workflow	add optimistic deletion to intelligence page
+eadb606	100	100	0	keep	copy	improve toast messages in backlog and data-room pages
+7925593	100	100	0	keep	competitive	add 404 existence check to tasks PUT handler
+6bbcdc4	100	100	0	keep	ops	add try-catch to followups PUT and log silent catches in GET
+42378ee	100	100	0	keep	strategy	log 6 silent catches in pulse route intelligence signals
+c4c3d19	100	100	0	keep	product	improve document delete confirmation to explain data loss scope
+c8c26e6	100	100	0	keep	design	focus cancel button on danger dialogs to prevent accidental deletion
+6c15a5d	100	100	0	keep	ai	validate AI-generated records before DB insert in intelligence route
+339fd32	100	100	0	keep	data	add 404 existence checks to term-sheets and model PUT handlers, trim model sheet_name
+a0dce51	100	100	0	keep	workflow	add optimistic deletion to documents page
+ea5b9c8	100	100	0	keep	copy	improve toast messages in acceleration, backlog, today, followups pages
+bb0183b	100	100	0	keep	performance	add 60-120s TTL cache for 10 expensive compute functions, deduplicate in-flight requests
+4d3c5d6	100	100	0	keep	competitive	cache 3 more expensive functions (narrativeSignals, compoundSignals, pipelineFlow)
+1ba48f4	100	100	0	keep	ops	switch 4 pages to cachedFetch for GET requests (investors, network, compare, workspace)
+e5125ed	100	100	0	keep	strategy	parallelize today page — fetch briefing + 4 secondary APIs simultaneously
+45e1af2	100	100	0	keep	product	switch 8 more pages to cachedFetch (acceleration, prep, model, data-room, intelligence, stress-test, settings, docs)
+263e4f4	100	100	0	keep	design	convert sidebar badge fetches to cachedFetch, reducing redundant network requests

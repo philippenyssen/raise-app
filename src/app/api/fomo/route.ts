@@ -12,53 +12,17 @@ export async function GET() {
       computeMeetingDensity(),
       computeEngagementVelocity(),]);
 
-    // Fetch active investors for per-investor FOMO scoring
-    const investorResult = await db.execute(`
-      SELECT id, name, tier, status, type, enthusiasm, updated_at
-      FROM investors
-      WHERE status NOT IN ('passed', 'dropped')
-      ORDER BY tier ASC, name ASC
-    `);
-    const investors = investorResult.rows as unknown as Array<{
-      id: string; name: string; tier: number; status: string;
-      type: string; enthusiasm: number; updated_at: string;
-    }>;
-
-    // Fetch recent status changes (last 14 days) for trigger events
-    const activityResult = await db.execute(`
-      SELECT event_type, subject, detail, investor_id, investor_name, created_at
-      FROM activity_log
-      WHERE event_type = 'status_changed'
-        AND created_at >= datetime('now', '-14 days')
-      ORDER BY created_at DESC
-    `);
-    const statusChanges = activityResult.rows as unknown as Array<{
-      event_type: string; subject: string; detail: string;
-      investor_id: string; investor_name: string; created_at: string;
-    }>;
-
-    // Fetch recent meetings (last 14 days) for meeting density signal
-    const meetingsResult = await db.execute(`
-      SELECT m.investor_id, m.investor_name, m.date, m.type, i.tier, i.status
-      FROM meetings m
-      JOIN investors i ON i.id = m.investor_id
-      WHERE m.date >= date('now', '-14 days')
-      ORDER BY m.date DESC
-    `);
-    const recentMeetings = meetingsResult.rows as unknown as Array<{
-      investor_id: string; investor_name: string; date: string;
-      type: string; tier: number; status: string;
-    }>;
-
-    // Fetch network relationships for connection-based FOMO
-    const relResult = await db.execute(`
-      SELECT r.investor_a_id, r.investor_b_id, r.relationship_type, r.strength
-      FROM investor_relationships r
-    `);
-    const relationships = relResult.rows as unknown as Array<{
-      investor_a_id: string; investor_b_id: string;
-      relationship_type: string; strength: number;
-    }>;
+    // Fetch all supporting data in parallel
+    const [investorResult, activityResult, meetingsResult, relResult] = await Promise.all([
+      db.execute(`SELECT id, name, tier, status, type, enthusiasm, updated_at FROM investors WHERE status NOT IN ('passed', 'dropped') ORDER BY tier ASC, name ASC`),
+      db.execute(`SELECT event_type, subject, detail, investor_id, investor_name, created_at FROM activity_log WHERE event_type = 'status_changed' AND created_at >= datetime('now', '-14 days') ORDER BY created_at DESC`),
+      db.execute(`SELECT m.investor_id, m.investor_name, m.date, m.type, i.tier, i.status FROM meetings m JOIN investors i ON i.id = m.investor_id WHERE m.date >= date('now', '-14 days') ORDER BY m.date DESC`),
+      db.execute(`SELECT r.investor_a_id, r.investor_b_id, r.relationship_type, r.strength FROM investor_relationships r`),
+    ]);
+    const investors = investorResult.rows as unknown as Array<{ id: string; name: string; tier: number; status: string; type: string; enthusiasm: number; updated_at: string; }>;
+    const statusChanges = activityResult.rows as unknown as Array<{ event_type: string; subject: string; detail: string; investor_id: string; investor_name: string; created_at: string; }>;
+    const recentMeetings = meetingsResult.rows as unknown as Array<{ investor_id: string; investor_name: string; date: string; type: string; tier: number; status: string; }>;
+    const relationships = relResult.rows as unknown as Array<{ investor_a_id: string; investor_b_id: string; relationship_type: string; strength: number; }>;
 
     // Build adjacency map for network connections
     const connectionMap = new Map<string, Set<string>>();

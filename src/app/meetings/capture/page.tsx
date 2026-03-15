@@ -1,6 +1,7 @@
 'use client';
 
 import { Suspense, useEffect, useRef, useState } from 'react';
+import { cachedFetch } from '@/lib/cache';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -66,7 +67,7 @@ function QuickCaptureInner() {
 
   useEffect(() => { document.title = 'Raise | Quick Capture'; }, []);
   useEffect(() => {
-    fetch('/api/investors').then(r => r.json()).then(setInvestors).catch(e => console.error('[CAPTURE_INVESTORS]', e instanceof Error ? e.message : e));
+    cachedFetch('/api/investors').then(r => r.json()).then(setInvestors).catch(e => console.error('[CAPTURE_INVESTORS]', e instanceof Error ? e.message : e));
   }, []);
 
   useEffect(() => {

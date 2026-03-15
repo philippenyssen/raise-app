@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, Suspense } from 'react';
+import { cachedFetch } from '@/lib/cache';
 import { useRouter, useSearchParams } from 'next/navigation';
 import type { Investor } from '@/lib/types';
 import PostMeetingActions from '@/components/post-meeting-actions';
@@ -42,7 +43,7 @@ function NewMeetingContent() {
 
   useEffect(() => { document.title = 'Raise | Log Meeting'; }, []);
   useEffect(() => {
-    fetch('/api/investors').then(r => r.json()).then(setInvestors).catch(e => console.error('[NEW_MEETING_INVESTORS]', e instanceof Error ? e.message : e));
+    cachedFetch('/api/investors').then(r => r.json()).then(setInvestors).catch(e => console.error('[NEW_MEETING_INVESTORS]', e instanceof Error ? e.message : e));
   }, []);
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {

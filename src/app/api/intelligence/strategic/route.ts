@@ -193,15 +193,21 @@ export async function GET() {
     const pipelineScore = Math.round(Math.min(40, ctx.pipelineHealth.totalActive * 4) + Math.min(40, ((ctx.pipelineHealth.byStatus['engaged'] || 0) + (ctx.pipelineHealth.byStatus['in_dd'] || 0) + (ctx.pipelineHealth.byStatus['term_sheet'] || 0)) * 10) + Math.min(20, ctx.pipelineHealth.avgEnthusiasm * 4));
 
     let historicalSnapshots: { date: string; pipelineScore: number; narrativeScore: number; readinessScore: number; velocity: number; activeInvestors: number }[] = [];
-    try {
-      historicalSnapshots = (await getHealthSnapshots(30)).map(s => ({ date: s.snapshot_date, pipelineScore: s.pipeline_score, narrativeScore: s.narrative_score, readinessScore: s.readiness_score, velocity: s.velocity, activeInvestors: s.active_investors }));
-    } catch (e) { console.error('[HEALTH_SNAPSHOTS]', e instanceof Error ? e.message : e); }
-
     let temporalTrends: TemporalTrends | null = null;
-    try { temporalTrends = await computeTemporalTrends(); } catch (e) { console.error('[TEMPORAL_TRENDS]', e instanceof Error ? e.message : e); }
-
     let raiseForecastResult: RaiseForecast | null = null;
-    try { raiseForecastResult = await computeRaiseForecast(); } catch (e) { console.error('[RAISE_FORECAST]', e instanceof Error ? e.message : e); }
+    try {
+      const [snapshots, trends, forecast] = await Promise.allSettled([
+        getHealthSnapshots(30),
+        computeTemporalTrends(),
+        computeRaiseForecast(),
+      ]);
+      if (snapshots.status === 'fulfilled') historicalSnapshots = snapshots.value.map(s => ({ date: s.snapshot_date, pipelineScore: s.pipeline_score, narrativeScore: s.narrative_score, readinessScore: s.readiness_score, velocity: s.velocity, activeInvestors: s.active_investors }));
+      else console.error('[HEALTH_SNAPSHOTS]', snapshots.reason);
+      if (trends.status === 'fulfilled') temporalTrends = trends.value;
+      else console.error('[TEMPORAL_TRENDS]', trends.reason);
+      if (forecast.status === 'fulfilled') raiseForecastResult = forecast.value;
+      else console.error('[RAISE_FORECAST]', forecast.reason);
+    } catch (e) { console.error('[STRATEGIC_PARALLEL]', e instanceof Error ? e.message : e); }
 
     try {
       const recentSnapshots = await getHealthSnapshots(1);

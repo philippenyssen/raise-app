@@ -31,8 +31,10 @@ interface TopicEffectiveness {
 }
 
 export async function GET() {
-  const playbook = await getObjectionPlaybook();
-  const evolution = await computeObjectionEvolution();
+  const [playbook, evolution] = await Promise.all([
+    getObjectionPlaybook(),
+    computeObjectionEvolution(),
+  ]);
 
   // Build per-topic effectiveness
   const topicEffectiveness: TopicEffectiveness[] = [];

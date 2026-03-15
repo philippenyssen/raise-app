@@ -692,9 +692,15 @@ async function computeIntelligenceBriefing(
       dataSource: 'narrative_drift',});
   }
 
-  // 9. Temporal trends — multi-metric decline or improvement (cycle 14)
-  try {
-    const temporalData = await computeTemporalTrends();
+  // 9. Temporal trends + score reversals + forecast (parallelized)
+  const [temporalResult, reversalResult, forecastResult] = await Promise.allSettled([
+    computeTemporalTrends(),
+    detectScoreReversals(),
+    computeRaiseForecast(),
+  ]);
+
+  if (temporalResult.status === 'fulfilled') {
+    const temporalData = temporalResult.value;
     if (temporalData.trends.length > 0) {
       const declining = temporalData.trends.filter(t => t.direction === 'declining');
       const improving = temporalData.trends.filter(t => t.direction === 'improving');
@@ -715,7 +721,6 @@ async function computeIntelligenceBriefing(
           dataSource: 'temporal_trends',});
       }
 
-      // Alert on long decline streaks
       for (const trend of temporalData.trends) {
         if (trend.alert && trend.streak >= 4) {
           insights.push({
@@ -726,12 +731,10 @@ async function computeIntelligenceBriefing(
             dataSource: 'temporal_trends',});
         }}
     }
-  } catch (e) { console.error('[PULSE_TRENDS]', e instanceof Error ? e.message : e); }
+  } else { console.error('[PULSE_TRENDS]', temporalResult.reason); }
 
-  // Score reversal insights (cycle 26)
-  try {
-    const reversals = await detectScoreReversals();
-    const critical = reversals.filter(r => r.severity === 'critical');
+  if (reversalResult.status === 'fulfilled') {
+    const critical = reversalResult.value.filter(r => r.severity === 'critical');
     if (critical.length > 0) {
       insights.push({
         type: 'critical',
@@ -740,11 +743,11 @@ async function computeIntelligenceBriefing(
         action: `Investigate score drops immediately — these may indicate loss of conviction. Prioritize direct outreach to ${critical[0].investorName}.`,
         dataSource: 'score_reversals',});
     }
-  } catch (e) { console.error('[PULSE_REVERSALS]', e instanceof Error ? e.message : e); }
+  } else { console.error('[PULSE_REVERSALS]', reversalResult.reason); }
 
-  // Forecast insights (cycle 19)
   try {
-    const forecastData = await computeRaiseForecast();
+    if (forecastResult.status !== 'fulfilled') throw forecastResult.reason;
+    const forecastData = forecastResult.value;
     if (forecastData.confidence === 'low') {
       insights.push({
         type: 'risk',

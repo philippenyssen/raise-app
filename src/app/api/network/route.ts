@@ -20,11 +20,11 @@ function parseCheckSizeMidpoint(range: string): number {
 
 export async function GET() {
   try {
-    const cascades = await computeNetworkCascades();
     const db = getClient();
-
-    const investorResult = await db.execute(
-      `SELECT id, name, tier, status, enthusiasm, check_size_range FROM investors WHERE status NOT IN ('passed', 'dropped')`);
+    const [cascades, investorResult] = await Promise.all([
+      computeNetworkCascades(),
+      db.execute(`SELECT id, name, tier, status, enthusiasm, check_size_range FROM investors WHERE status NOT IN ('passed', 'dropped')`),
+    ]);
     const investorLookup = new Map<string, { name: string; tier: number; status: string; enthusiasm: number; checkSize: string; capitalM: number }>();
     for (const row of investorResult.rows as unknown as Array<{ id: string; name: string; tier: number; status: string; enthusiasm: number; check_size_range: string }>) {
       const capitalM = parseCheckSizeMidpoint(row.check_size_range || '');
