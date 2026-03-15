@@ -1,9 +1,12 @@
 'use client';
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import dynamic from 'next/dynamic';
 import { SplitPane } from '@/components/workspace/split-pane';
-import { ExcelViewer, type CellData, type SheetData } from '@/components/workspace/excel-viewer';
-import { AIChat } from '@/components/workspace/ai-chat';
+import { type CellData, type SheetData } from '@/components/workspace/excel-viewer';
+
+const ExcelViewer = dynamic(() => import('@/components/workspace/excel-viewer').then(m => ({ default: m.ExcelViewer })), { ssr: false });
+const AIChat = dynamic(() => import('@/components/workspace/ai-chat').then(m => ({ default: m.AIChat })), { ssr: false });
 import { useToast } from '@/components/toast';
 import { ConfirmModal, InputModal } from '@/components/ui/confirm-modal';
 import { Plus, Save, Table, Trash2 } from 'lucide-react';
