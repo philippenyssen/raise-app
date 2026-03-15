@@ -260,7 +260,7 @@ export default function WinLossPage() {
               ))}</div>
           ) : (
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
-              No closed investors yet</p>
+              No closed investors yet. Profiles appear as investors reach term sheet or closed status.</p>
           )}</div>
 
         {/* Loser Profile */}
@@ -290,7 +290,7 @@ export default function WinLossPage() {
               ))}</div>
           ) : (
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
-              No passed investors yet</p>
+              No passed investors yet. Profiles appear when investors pass or drop out.</p>
           )}</div></div>
 
       {/* Pass Reasons + Key Predictors Row */}
@@ -333,7 +333,7 @@ export default function WinLossPage() {
               })}</div>
           ) : (
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
-              No pass data available yet</p>
+              No pass reasons recorded yet. Reasons are captured when investors are marked as passed.</p>
           )}</div>
 
         {/* Key Predictors */}
@@ -505,7 +505,7 @@ export default function WinLossPage() {
               ))}</div>
           ) : (
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
-              No investor type data available</p>
+              No investor type data available. Add more investors with type classifications to see performance by type.</p>
           )}</div></div>
 
       {/* Insights + Recommendations */}
