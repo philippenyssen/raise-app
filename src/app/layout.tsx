@@ -43,6 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={`${dmSans.variable} ${cormorant.variable} ${geistMono.variable} antialiased`} style={{ background: 'var(--surface-0)', color: 'var(--text-primary)' }}>
+        <noscript><div style={{ padding: '2rem', textAlign: 'center', color: '#444' }}>This application requires JavaScript to run.</div></noscript>
         <ToastProvider>
           <CommandPalette />
           <AppShell>{children}</AppShell>
