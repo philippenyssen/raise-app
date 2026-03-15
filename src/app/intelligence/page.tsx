@@ -61,6 +61,17 @@ export default function IntelligencePage() {
 
   useEffect(() => { fetchAll(); }, [fetchAll]);
 
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (showAddDeal) setShowAddDeal(false);
+        if (showAddComp) setShowAddComp(false);
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [showAddDeal, showAddComp]);
+
   async function handleResearch() {
     if (!researchInput.trim()) return;
     setResearching(true);

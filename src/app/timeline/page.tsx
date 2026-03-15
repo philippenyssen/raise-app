@@ -61,6 +61,14 @@ export default function TimelinePage() {
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && showAdd) setShowAdd(false);
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [showAdd]);
+
   async function toggleTask(task: Task) {
     const newStatus = task.status === 'done' ? 'pending' : 'done';
     try {

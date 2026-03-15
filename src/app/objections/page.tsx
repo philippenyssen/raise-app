@@ -206,6 +206,14 @@ export default function ObjectionsPage() {
     }
   }, [tab, effectivenessData, loadEffectivenessData]);
 
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && editingId) setEditingId(null);
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [editingId]);
+
   function toggleTopic(topic: string) {
     setExpandedTopics(prev => {
       const next = new Set(prev);

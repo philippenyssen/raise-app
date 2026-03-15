@@ -51,6 +51,14 @@ export default function TermsPage() {
 
   useEffect(() => { fetchSheets(); }, []);
 
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && showForm) { setShowForm(false); setEditId(null); }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [showForm]);
+
   async function fetchSheets() {
     setLoading(true);
     try {

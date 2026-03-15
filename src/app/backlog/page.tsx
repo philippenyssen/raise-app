@@ -85,6 +85,14 @@ export default function BacklogPage() {
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && showAdd) setShowAdd(false);
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [showAdd]);
+
   async function handleAdd() {
     if (!form.customer || !form.amount_eur) { toast('Customer and amount required', 'error'); return; }
     setAdding(true);
