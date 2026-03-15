@@ -12,12 +12,12 @@ export async function GET(req: NextRequest) {
     const type = req.nextUrl.searchParams.get('type');
 
     if (type === 'upcoming') {
-      const limit = parseInt(req.nextUrl.searchParams.get('limit') || '5');
+      const limit = Math.min(Math.max(parseInt(req.nextUrl.searchParams.get('limit') || '5', 10) || 5, 1), 100);
       return NextResponse.json(await getUpcomingTasks(limit));
     }
 
     if (type === 'activity') {
-      const limit = parseInt(req.nextUrl.searchParams.get('limit') || '20');
+      const limit = Math.min(Math.max(parseInt(req.nextUrl.searchParams.get('limit') || '20', 10) || 20, 1), 200);
       const investorId = req.nextUrl.searchParams.get('investor_id') || undefined;
       return NextResponse.json(await getActivityLog(limit, investorId));
     }

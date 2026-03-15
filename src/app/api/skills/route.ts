@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
     }
 
     if (view === 'executions') {
-      const limit = parseInt(req.nextUrl.searchParams.get('limit') ?? '50');
+      const limit = Math.min(Math.max(parseInt(req.nextUrl.searchParams.get('limit') ?? '50', 10) || 50, 1), 500);
       const executions = await db.getSkillExecutions(skillName ?? undefined, limit);
       return NextResponse.json(executions);
     }
