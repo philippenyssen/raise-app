@@ -227,7 +227,7 @@ export async function GET() {
       })() : null,
       generatedAt: new Date().toISOString(),};
 
-    return NextResponse.json(assessment);
+    return NextResponse.json(assessment, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
   } catch (error) {
     console.error('[STRATEGIC_GET]', error instanceof Error ? error.message : error);
     return NextResponse.json({ error: 'Failed to compute strategic assessment' }, { status: 500 });

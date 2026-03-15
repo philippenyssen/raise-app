@@ -1,0 +1,15 @@
+export default function TermCompareLoading() {
+  return (
+    <div className="p-6 max-w-6xl mx-auto space-y-8">
+      <div>
+        <div className="skeleton rounded" style={{ width: '240px', height: '28px', marginBottom: '6px' }} />
+        <div className="skeleton rounded" style={{ width: '320px', height: '16px' }} />
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="skeleton rounded-xl" style={{ height: '200px' }} />
+        <div className="skeleton rounded-xl" style={{ height: '200px' }} />
+      </div>
+      <div className="skeleton rounded-xl" style={{ height: '240px' }} />
+    </div>
+  );
+}
