@@ -166,6 +166,7 @@ export async function middleware(req: NextRequest) {
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   response.headers.set('Permissions-Policy', 'camera=(), microphone=(self), geolocation=()');
   response.headers.set('X-DNS-Prefetch-Control', 'on');
+  response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
   if (isApiRoute) {
     const origin = req.headers.get('origin');
     if (origin) {
