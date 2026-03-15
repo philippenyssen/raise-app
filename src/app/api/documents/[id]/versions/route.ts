@@ -8,7 +8,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
   if (versionId) {
     const version = await getDocumentVersion(versionId);
-    if (!version) return NextResponse.json({ error: 'not found' }, { status: 404 });
+    if (!version) return NextResponse.json({ error: 'Document version not found' }, { status: 404 });
     return NextResponse.json(version);
   }
 

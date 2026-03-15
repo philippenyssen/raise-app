@@ -695,7 +695,7 @@ function FollowupsContent() {
                 {avgMeasuredLift > 0 ? '+' : ''}{avgMeasuredLift.toFixed(1)}
               </>
             ) : (
-              <span style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>No data</span>
+              <span style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>Complete follow-ups to track</span>
             )}</div>
           {bestActionType && (
             <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: 'var(--space-1)' }}>
