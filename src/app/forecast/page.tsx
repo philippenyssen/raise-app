@@ -42,14 +42,18 @@ export default function ForecastPage() {
   const [hoveredScenario, setHoveredScenario] = useState<string | null>(null);
   const [excludedIds, setExcludedIds] = useState<Set<string>>(new Set());
 
-  useEffect(() => {
+  function fetchForecast() {
+    setLoading(true);
+    setError(null);
     fetch('/api/forecast')
       .then(res => {
         if (!res.ok) throw new Error('Failed to fetch forecast data');
         return res.json();})
       .then(d => { setData(d); setLoading(false); })
       .catch(e => { setError(e.message); setLoading(false); });
-  }, []);
+  }
+
+  useEffect(() => { fetchForecast(); }, []);
 
   // Compute what-if scenario without useMemo to avoid hooks ordering issues
   const hasExclusions = excludedIds.size > 0;
@@ -98,7 +102,7 @@ export default function ForecastPage() {
           <AlertTriangle className="w-8 h-8 mx-auto mb-3" style={{ color: 'var(--text-muted)' }} />
           <p style={{ color: 'var(--text-primary)', fontSize: 'var(--font-size-sm)', marginBottom: 'var(--space-3)' }}>
             {error || 'Failed to load forecast data'}</p>
-          <button onClick={() => window.location.reload()} className="btn btn-secondary btn-sm">Retry</button></div>
+          <button onClick={fetchForecast} className="btn btn-secondary btn-sm">Retry</button></div>
       </div>);
   }
 

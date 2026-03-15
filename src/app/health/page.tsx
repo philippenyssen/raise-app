@@ -53,7 +53,8 @@ export default function HealthPage() {
 
   const [healthError, setHealthError] = useState<string | null>(null);
 
-  useEffect(() => {
+  function fetchHealth() {
+    setHealthError(null);
     fetch('/api/health')
       .then(r => { if (!r.ok) throw new Error('Failed to load'); return r.json(); })
       .then(setData)
@@ -63,7 +64,9 @@ export default function HealthPage() {
       .then(setIntelVerify)
       .catch(() => {})
       .finally(() => setIntelLoading(false));
-  }, []);
+  }
+
+  useEffect(() => { fetchHealth(); }, []);
 
   const score = Object.values(convergence).filter(Boolean).length;
 
@@ -71,7 +74,7 @@ export default function HealthPage() {
     <div className="page-content space-y-6 text-center py-12">
       <AlertTriangle className="w-10 h-10 mx-auto" style={{ color: 'var(--danger)' }} />
       <p style={stTextMuted}>{healthError}</p>
-      <button onClick={() => window.location.reload()} className="btn btn-secondary btn-sm">Retry</button>
+      <button onClick={fetchHealth} className="btn btn-secondary btn-sm">Retry</button>
     </div>);
 
   if (!data) return (
