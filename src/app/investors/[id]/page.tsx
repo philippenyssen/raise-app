@@ -1171,6 +1171,7 @@ function EmptyTabState({ icon: Icon, message, actionLabel, onAction, loading }: 
 function DeleteBtn({ onClick, small }: { onClick: () => void; small?: boolean }) {
   return (
     <button
+      aria-label="Delete item"
       onClick={onClick}
       className="transition-colors"
       style={textMuted}

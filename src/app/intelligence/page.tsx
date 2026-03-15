@@ -302,6 +302,7 @@ export default function IntelligencePage() {
                       <td style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>{d.sector}</td>
                       <td>
                         <button
+                          aria-label={`Delete deal ${d.company}`}
                           onClick={() => setDeleteTarget({ type: 'deal', id: d.id, name: d.company })}
                           onMouseEnter={() => setHoveredDeleteBtn(`deal-${d.id}`)}
                           onMouseLeave={() => setHoveredDeleteBtn(null)}
@@ -377,6 +378,7 @@ export default function IntelligencePage() {
                               style={{ background: threatStyle.background, color: threatStyle.color }}>
                               {c.threat_level}</span></div></div></div>
                       <button
+                        aria-label={`Delete competitor ${c.name}`}
                         onClick={() => setDeleteTarget({ type: 'competitor', id: c.id, name: c.name })}
                         onMouseEnter={() => setHoveredDeleteBtn(`comp-${c.id}`)}
                         onMouseLeave={() => setHoveredDeleteBtn(null)}
@@ -442,6 +444,7 @@ export default function IntelligencePage() {
                       )}</div>
                     <div className="flex items-center gap-2">
                       <button
+                        aria-label={`Delete brief ${b.subject}`}
                         onClick={(e) => { e.stopPropagation(); setDeleteTarget({ type: 'brief', id: b.id, name: b.subject }); }}
                         onMouseEnter={() => setHoveredDeleteBtn(`brief-${b.id}`)}
                         onMouseLeave={() => setHoveredDeleteBtn(null)}

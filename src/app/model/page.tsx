@@ -353,6 +353,7 @@ export default function ModelPage() {
                 onClick={() => selectSheet(sheet)}>
                 <span className="truncate max-w-[120px]">{sheet.sheet_name}</span>
                 <button
+                  aria-label={`Delete sheet ${sheet}`}
                   onClick={e => { e.stopPropagation(); deleteSheet(sheet); }}
                   className="hidden group-hover:block ml-1"
                   style={stTextTertiary}
