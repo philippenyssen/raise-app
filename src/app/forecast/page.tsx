@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import {
   BarChart3, TrendingUp, AlertTriangle, Shield, Clock,
@@ -60,14 +60,9 @@ export default function ForecastPage() {
     window.addEventListener('keydown', h); return () => window.removeEventListener('keydown', h);
   }, []);
 
-  // Compute what-if scenario without useMemo to avoid hooks ordering issues
   const hasExclusions = excludedIds.size > 0;
-  let whatIf: {
-    expected: number; bestCase: number; committed: number;
-    excludedCapital: number; excludedCount: number;
-    high: number; medium: number; low: number;
-  } | null = null;
-  if (data && hasExclusions) {
+  const whatIf = useMemo(() => {
+    if (!data || !hasExclusions) return null;
     const included = data.forecast.forecasts.filter(f => !excludedIds.has(f.investorId));
     const committed = included.filter(f => f.currentStage === 'term_sheet' || f.currentStage === 'closed');
     const high = included.filter(f => f.confidence === 'high');
@@ -79,12 +74,12 @@ export default function ForecastPage() {
       const inv = data.forecast.forecasts.find(f => f.investorId === id);
       return s + (inv ? tierCapital(inv.tier) : 0);
     }, 0);
-    whatIf = {
+    return {
       expected: committedAmt + expectedAmt, bestCase: bestCaseAmt, committed: committedAmt,
       excludedCapital, excludedCount: excludedIds.size,
       high: high.length, medium: med.length,
       low: included.filter(f => f.confidence === 'low').length,};
-  }
+  }, [data, hasExclusions, excludedIds]);
 
   if (loading) {
     return (
