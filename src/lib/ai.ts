@@ -2,6 +2,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import { logSkillExecution } from './db';
 
 export const AI_MODEL = 'claude-sonnet-4-6';
+const SYS_JSON = 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.';
 
 let _client: Anthropic | null = null;
 export function getAIClient(): Anthropic {
@@ -108,7 +109,7 @@ export async function analyzeMeetingNotes(rawNotes: string, investorName: string
     model: AI_MODEL,
     max_tokens: 4096,
     temperature: 0,
-    system: 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.',
+    system: SYS_JSON,
     messages: [{
       role: 'user',
       content: `Analyze these meeting notes from a Series C fundraise meeting.
@@ -207,7 +208,7 @@ NOTES: ${m.raw_notes.substring(0, 500)}`;
     model: AI_MODEL,
     max_tokens: 4096,
     temperature: 0,
-    system: 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.',
+    system: SYS_JSON,
     messages: [{
       role: 'user',
       content: `Combining the expertise of Gregg Lemkau (Goldman Sachs), Marc Andreessen (a16z), and Travis Kalanick (process mastery), analyze these ${meetings.length} investor meetings from a Series C fundraise and identify patterns:
@@ -248,7 +249,7 @@ export async function assessProcessHealth(funnel: Record<string, unknown>, objec
     model: AI_MODEL,
     max_tokens: 2048,
     temperature: 0,
-    system: 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.',
+    system: SYS_JSON,
     messages: [{
       role: 'user',
       content: `Assess this Series C fundraise process health:
@@ -319,7 +320,7 @@ export async function checkConsistency(
     model: AI_MODEL,
     max_tokens: 3072,
     temperature: 0,
-    system: 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.',
+    system: SYS_JSON,
     messages: [{
       role: 'user',
       content: `As an IC-grade document reviewer, check these fundraise documents for numerical inconsistencies, contradictions, and factual discrepancies.
@@ -350,7 +351,7 @@ export async function findWeakArguments(content: string): Promise<{ weaknesses: 
     model: AI_MODEL,
     max_tokens: 3072,
     temperature: 0,
-    system: 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.',
+    system: SYS_JSON,
     messages: [{
       role: 'user',
       content: `As a skeptical IC member, review this Series C investment memo. Find weak arguments, unsourced claims, circular reasoning, and unsubstantiated superlatives.
@@ -392,7 +393,7 @@ export async function researchInvestor(investorName: string, context?: string): 
     model: AI_MODEL,
     max_tokens: 4096,
     temperature: 0,
-    system: 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.',
+    system: SYS_JSON,
     messages: [{
       role: 'user',
       content: `Generate a comprehensive research dossier on this investor for a Series C fundraise in the European space/defense technology sector.
@@ -451,7 +452,7 @@ export async function researchCompetitor(companyName: string, context?: string):
     model: AI_MODEL,
     max_tokens: 4096,
     temperature: 0,
-    system: 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.',
+    system: SYS_JSON,
     messages: [{
       role: 'user',
       content: `Research this company as a competitor to Aerospacelab (European satellite manufacturer, Series C, €51M revenue, €4.1Bn backlog).
@@ -499,7 +500,7 @@ export async function researchMarketDeals(sector: string): Promise<{
     model: AI_MODEL,
     max_tokens: 4096,
     temperature: 0,
-    system: 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.',
+    system: SYS_JSON,
     messages: [{
       role: 'user',
       content: `As a capital markets analyst, research recent fundraising activity in this sector.
@@ -576,7 +577,7 @@ NEXT STEPS: ${m.next_steps || 'None recorded'}`;
     model: AI_MODEL,
     max_tokens: 4096,
     temperature: 0,
-    system: 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.',
+    system: SYS_JSON,
     messages: [{
       role: 'user',
       content: `Prepare a 1-page pre-meeting brief for a Series C fundraise.

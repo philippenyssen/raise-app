@@ -189,7 +189,7 @@ export default function ObjectionsPage() {
   const loadEffectivenessData = useCallback(async () => {
     setLoadingEffectiveness(true);
     try {
-      const res = await fetch('/api/objections/effectiveness');
+      const res = await cachedFetch('/api/objections/effectiveness');
       const json = await res.json();
       setEffectivenessData(json);
     } catch (e) { console.error('[OBJECTIONS_EFFECTIVENESS]', e instanceof Error ? e.message : e); }

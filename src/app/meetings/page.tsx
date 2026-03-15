@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { cachedFetch } from '@/lib/cache';
 import Link from 'next/link';
 import type { Meeting } from '@/lib/types';
 import { Search, FileSearch, Calendar, Download, ChevronDown, ChevronRight, Star, CheckCircle2, X, TrendingUp, TrendingDown, Minus, Hash } from 'lucide-react';
@@ -302,7 +303,7 @@ export default function MeetingsPage() {
   useEffect(() => { document.title = 'Raise | Meetings'; }, []);
   useEffect(() => {
     let active = true;
-    const load = () => fetch('/api/meetings')
+    const load = () => cachedFetch('/api/meetings')
       .then(r => { if (!r.ok) throw new Error(`${r.status}`); return r.json(); })
       .then(d => { if (active) setMeetings(d); })
       .catch(() => { if (active) setMeetings([]); });
@@ -312,7 +313,7 @@ export default function MeetingsPage() {
   }, []);
 
   useEffect(() => {
-    const h = (e: KeyboardEvent) => { if (e.key === 'r' && !e.metaKey && !e.ctrlKey && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement)) { e.preventDefault(); fetch('/api/meetings').then(r => r.json()).then(setMeetings).catch(() => {}); } };
+    const h = (e: KeyboardEvent) => { if (e.key === 'r' && !e.metaKey && !e.ctrlKey && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement)) { e.preventDefault(); cachedFetch('/api/meetings').then(r => r.json()).then(setMeetings).catch(() => {}); } };
     window.addEventListener('keydown', h);
     return () => window.removeEventListener('keydown', h);
   }, []);

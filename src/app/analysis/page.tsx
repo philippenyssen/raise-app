@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { cachedFetch } from '@/lib/cache';
 import { useToast } from '@/components/toast';
 import { BarChart3 } from 'lucide-react';
 import { stAccent, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
@@ -63,7 +64,7 @@ export default function AnalysisPage() {
   const runAnalysis = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/analyze');
+      const res = await cachedFetch('/api/analyze');
       const result = await res.json();
       setData(result);
       if (!result.error) toast('Analysis complete — scroll down to see insights');

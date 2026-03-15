@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { cachedFetch } from '@/lib/cache';
 import {
   TrendingDown, TrendingUp, RefreshCw, Users, Target, AlertTriangle,
   CheckCircle, XCircle, ArrowDown, Clock, Lightbulb, BarChart3,
@@ -102,7 +103,7 @@ export default function WinLossPage() {
   const fetchData = () => {
     setLoading(true);
     setError(null);
-    fetch('/api/win-loss')
+    cachedFetch('/api/win-loss')
       .then(r => {
         if (!r.ok) throw new Error('Could not load win/loss data — refresh to retry');
         return r.json();})

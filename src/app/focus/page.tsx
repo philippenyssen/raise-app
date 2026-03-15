@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
+import { cachedFetch } from '@/lib/cache';
 import Link from 'next/link';
 import { useToast } from '@/components/toast';
 import { MS_PER_DAY } from '@/lib/time';
@@ -770,8 +771,8 @@ export default function FocusPage() {
     setAccelLoading(true);
     try {
       const [focusRes, accelRes] = await Promise.all([
-        fetch('/api/focus'),
-        fetch('/api/acceleration'),]);
+        cachedFetch('/api/focus'),
+        cachedFetch('/api/acceleration'),]);
       if (focusRes.ok) setData(await focusRes.json());
       if (accelRes.ok) setAccelData(await accelRes.json());
     } catch {

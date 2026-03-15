@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Printer, Loader2, ClipboardList, Users2, BarChart3 } from 'lucide-react';
 import { stAccent, stTextMuted, stTextPrimary, stTextSecondary } from '@/lib/styles';
+import { cachedFetch } from '@/lib/cache';
 
 interface InvestorOption { id: string; name: string; tier: number; status: string; }
 
@@ -21,7 +22,7 @@ export default function ReportsPage() {
 
   useEffect(() => { document.title = 'Raise | Reports'; }, []);
   const fetchInvestors = useCallback(() => {
-    fetch('/api/investors')
+    cachedFetch('/api/investors')
       .then(r => r.json())
       .then(data => {
         const list = (Array.isArray(data) ? data : data.investors || []) as InvestorOption[];

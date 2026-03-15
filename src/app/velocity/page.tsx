@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { cachedFetch } from '@/lib/cache';
 import Link from 'next/link';
 import {
   Clock, CheckCircle2, XCircle, AlertTriangle,
@@ -32,7 +33,7 @@ export default function VelocityPage() {
   function fetchVelocity() {
     setLoading(true);
     setError(null);
-    fetch('/api/velocity')
+    cachedFetch('/api/velocity')
       .then(res => {
         if (!res.ok) throw new Error('Could not load velocity data — refresh to retry');
         return res.json();})

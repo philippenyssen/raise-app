@@ -17,6 +17,7 @@ import { useToast } from '@/components/toast';
 import { fmtDateShort, fmtDate } from '@/lib/format';
 import { STATUS_LABELS, OUTCOME_CONFIG } from '@/lib/constants';
 import { labelMuted, labelSecondary, scoreBorderColor, scoreColor4 as scoreColor, stAccent, stAccentBadge, stBorderTop, stSurface1, stSurface2, stTextMuted as textMuted, stTextPrimary as textPrimary, stTextSecondary as textSecondary, stTextTertiary as textTertiary } from '@/lib/styles';
+import { cachedFetch } from '@/lib/cache';
 import { MS_PER_DAY } from '@/lib/time';
 
 const STATUS_COLORS: Record<string, string> = {
@@ -133,7 +134,7 @@ export default function InvestorDetailPage() {
   const fetchScore = useCallback(async () => {
     setScoreLoading(true);
     try {
-      const res = await fetch(`/api/investors/${id}/score`);
+      const res = await cachedFetch(`/api/investors/${id}/score`);
       if (res.ok) {
         const data = await res.json();
         setScore(data);
@@ -142,7 +143,7 @@ export default function InvestorDetailPage() {
     setScoreLoading(false);
     // Fetch trajectory after score (score may create a snapshot)
     try {
-      const trajRes = await fetch(`/api/investors/${id}/trajectory`);
+      const trajRes = await cachedFetch(`/api/investors/${id}/trajectory`);
       if (trajRes.ok) {
         setTrajectory(await trajRes.json());
       }
@@ -152,7 +153,7 @@ export default function InvestorDetailPage() {
   const fetchEnrichment = useCallback(async () => {
     setEnrichmentLoading(true);
     try {
-      const res = await fetch(`/api/enrichment?action=records&investor_id=${id}`);
+      const res = await cachedFetch(`/api/enrichment?action=records&investor_id=${id}`);
       if (res.ok) {
         const data = await res.json();
         setEnrichmentRecords(Array.isArray(data) ? data : []);
@@ -163,7 +164,7 @@ export default function InvestorDetailPage() {
 
   const fetchEnrichmentStatus = useCallback(async () => {
     try {
-      const res = await fetch(`/api/enrichment?action=status&investor_id=${id}`);
+      const res = await cachedFetch(`/api/enrichment?action=status&investor_id=${id}`);
       if (res.ok) {
         setEnrichmentStatus(await res.json());
       }
@@ -192,12 +193,12 @@ export default function InvestorDetailPage() {
     setLoading(true);
     try {
       const [invRes, mtgRes, partRes, portRes, briefRes, taskRes] = await Promise.all([
-        fetch(`/api/investors?id=${id}`).then(r => r.json()),
-        fetch(`/api/meetings?investor_id=${id}`).then(r => r.json()),
-        fetch(`/api/intelligence?type=partners&investor_id=${id}`).then(r => r.json()).catch(() => []),
-        fetch(`/api/intelligence?type=portfolio&investor_id=${id}`).then(r => r.json()).catch(() => []),
-        fetch(`/api/intelligence?type=briefs&investor_id=${id}`).then(r => r.json()).catch(() => []),
-        fetch(`/api/tasks?investor_id=${id}`).then(r => r.json()).catch(() => []),]);
+        cachedFetch(`/api/investors?id=${id}`).then(r => r.json()),
+        cachedFetch(`/api/meetings?investor_id=${id}`).then(r => r.json()),
+        cachedFetch(`/api/intelligence?type=partners&investor_id=${id}`).then(r => r.json()).catch(() => []),
+        cachedFetch(`/api/intelligence?type=portfolio&investor_id=${id}`).then(r => r.json()).catch(() => []),
+        cachedFetch(`/api/intelligence?type=briefs&investor_id=${id}`).then(r => r.json()).catch(() => []),
+        cachedFetch(`/api/tasks?investor_id=${id}`).then(r => r.json()).catch(() => []),]);
       setInvestor(invRes);
       setMeetings(mtgRes);
       setPartners(Array.isArray(partRes) ? partRes : []);
@@ -212,14 +213,14 @@ export default function InvestorDetailPage() {
   useEffect(() => {
     fetchData(); fetchScore(); fetchEnrichment(); fetchEnrichmentStatus();
     // Non-blocking follow-ups fetch
-    fetch(`/api/followups?investor_id=${id}&status=pending`)
+    cachedFetch(`/api/followups?investor_id=${id}&status=pending`)
       .then(r => r.ok ? r.json() : [])
       .then(data => setFollowups(Array.isArray(data) ? data : []))
       .catch(e => console.error('[INVESTOR_FOLLOWUPS]', e instanceof Error ? e.message : e));
     // Non-blocking deal intelligence fetch
     Promise.all([
-      fetch('/api/deal-heat').then(r => r.ok ? r.json() : null).catch(() => null),
-      fetch('/api/velocity').then(r => r.ok ? r.json() : null).catch(() => null),
+      cachedFetch('/api/deal-heat').then(r => r.ok ? r.json() : null).catch(() => null),
+      cachedFetch('/api/velocity').then(r => r.ok ? r.json() : null).catch(() => null),
     ]).then(([dhData, velData]) => {
       const dhInv = dhData?.investors?.find((i: { id: string }) => i.id === id);
       const velInv = velData?.investors?.find((i: { investor_id: string }) => i.investor_id === id);

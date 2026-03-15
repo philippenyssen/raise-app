@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
+import { cachedFetch } from '@/lib/cache';
 import {
   CheckCircle2, Circle, Clock, AlertCircle, Plus, Trash2,
   ListTodo, Activity
@@ -53,8 +54,8 @@ export default function TimelinePage() {
   const fetchData = useCallback(async () => {
     setLoading(true);
     const [taskRes, actRes] = await Promise.all([
-      fetch('/api/tasks').then(r => r.json()).catch(() => []),
-      fetch('/api/tasks?type=activity&limit=30').then(r => r.json()).catch(() => []),]);
+      cachedFetch('/api/tasks').then(r => r.json()).catch(() => []),
+      cachedFetch('/api/tasks?type=activity&limit=30').then(r => r.json()).catch(() => []),]);
     setTasks(Array.isArray(taskRes) ? taskRes : []);
     setActivity(Array.isArray(actRes) ? actRes : []);
     setLoading(false);
