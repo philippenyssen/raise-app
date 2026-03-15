@@ -228,6 +228,7 @@ export default function NewDocumentPage() {
                       value={customTitle}
                       onChange={e => setCustomTitle(e.target.value)}
                       placeholder="Document title..."
+                      autoFocus
                       className="mt-2 rounded-lg px-3 py-1.5 text-sm focus:outline-none w-64"
                       style={{
                         background: 'var(--surface-1)',

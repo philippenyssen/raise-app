@@ -93,6 +93,7 @@ function NewMeetingContent() {
               value={form.investor_id}
               onChange={e => setForm(f => ({ ...f, investor_id: e.target.value }))}
               required
+              autoFocus
               className="w-full rounded-lg px-3 py-2 text-sm"
               style={{ background: 'var(--surface-1)', border: '1px solid var(--border-default)', color: 'var(--text-secondary)' }}>
               <option value="">Select investor...</option>

@@ -274,8 +274,8 @@ export default function InvestorsPage() {
           onSubmit={handleSubmit}
           className="card-elevated space-y-4">
           <h3 className="section-title">{editId ? 'Edit' : 'Add'} investor</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div><Input label="Name" value={form.name} onChange={v => setForm(f => ({ ...f, name: v }))} required />{!editId && form.name.length >= 3 && (() => { const q = form.name.toLowerCase(); const match = investors.find(i => i.name.toLowerCase().includes(q)); return match ? <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--warning)' }}>Similar investor exists: {match.name}</span> : null; })()}</div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4" onKeyDown={e => { if (e.key === 'Escape') { setShowForm(false); setEditId(null); } }}>
+            <div><Input label="Name" value={form.name} onChange={v => setForm(f => ({ ...f, name: v }))} required autoFocus />{!editId && form.name.length >= 3 && (() => { const q = form.name.toLowerCase(); const match = investors.find(i => i.name.toLowerCase().includes(q)); return match ? <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--warning)' }}>Similar investor exists: {match.name}</span> : null; })()}</div>
             <Select label="Type" value={form.type} onChange={v => setForm(f => ({ ...f, type: v as InvestorType }))} options={Object.entries(TYPE_LABELS)}
               />
             <Select label="Tier" value={String(form.tier)} onChange={v => setForm(f => ({ ...f, tier: Number(v) as InvestorTier }))} options={[['1','Tier 1'],['2','Tier 2'],['3','Tier 3'],['4','Tier 4']]}
@@ -441,12 +441,12 @@ export default function InvestorsPage() {
     </div>);
 }
 
-function Input({ label, value, onChange, required }: { label: string; value: string; onChange: (v: string) => void; required?: boolean }) {
+function Input({ label, value, onChange, required, autoFocus }: { label: string; value: string; onChange: (v: string) => void; required?: boolean; autoFocus?: boolean }) {
   return (
     <div>
       <label className="label" style={{ display: 'block' }}>{label}</label>
       <input
-        value={value} onChange={e => onChange(e.target.value)} required={required}
+        value={value} onChange={e => onChange(e.target.value)} required={required} autoFocus={autoFocus}
         className="input" />
     </div>);
 }

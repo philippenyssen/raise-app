@@ -165,7 +165,7 @@ export default function BacklogPage() {
         <div className="rounded-xl p-4 space-y-3" style={stSurface1}>
           <h3 className="text-sm font-normal" style={stTextPrimary}>Add Revenue Commitment</h3>
           <div className="grid grid-cols-3 gap-3">
-            <input placeholder="e.g., ESA, Belgian MoD" value={form.customer} onChange={e => setForm(f => ({ ...f, customer: e.target.value }))} className="input"
+            <input placeholder="e.g., ESA, Belgian MoD" value={form.customer} onChange={e => setForm(f => ({ ...f, customer: e.target.value }))} className="input" autoFocus
               />
             <input placeholder="e.g., IRIS2 Phase 2" value={form.program} onChange={e => setForm(f => ({ ...f, program: e.target.value }))} className="input"
               />
