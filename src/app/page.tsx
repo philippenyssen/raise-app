@@ -267,7 +267,7 @@ export default function Dashboard() {
       health: () => safeFetch('health', '/api/health', setData, silent),
       pulse: () => safeFetch('pulse', '/api/pulse', setPulse, silent),
       docs: () => safeFetch('docs', '/api/documents', setDocs, silent),
-      dataRoom: () => safeFetch('dataRoom', '/api/data-room', setDataRoomCount, silent, async r => (await r.json()).length),
+      dataRoom: () => safeFetch('dataRoom', '/api/data-room/count', setDataRoomCount, silent, async r => (await r.json()).count),
       tasks: () => safeFetch('tasks', '/api/tasks?type=upcoming&limit=5', setTasks, silent),
       activity: () => safeFetch('activity', '/api/tasks?type=activity&limit=10', setActivity, silent),
       dataQuality: () => safeFetch('dataQuality', '/api/data-quality', setDataQuality, silent),
