@@ -189,6 +189,11 @@ export default function SettingsPage() {
     loadSettings();
     testKey();
   }, [loadSettings]);
+  useEffect(() => {
+    const h = (e: KeyboardEvent) => { if (e.key === 'r' && !e.metaKey && !e.ctrlKey && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement)) { e.preventDefault(); loadSettings(); testKey(); } };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, [loadSettings]);
 
   async function testKey() {
     setTesting(true);

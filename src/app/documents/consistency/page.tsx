@@ -40,6 +40,11 @@ export default function ConsistencyPage() {
   useEffect(() => {
     fetchConsistency();
   }, [fetchConsistency]);
+  useEffect(() => {
+    const h = (e: KeyboardEvent) => { if (e.key === 'r' && !e.metaKey && !e.ctrlKey && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement)) { e.preventDefault(); fetchConsistency(); } };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, [fetchConsistency]);
 
   const matchCount = result?.checks.filter(c => c.status === 'match').length ?? 0;
   const mismatchCount = result?.checks.filter(c => c.status === 'mismatch').length ?? 0;
