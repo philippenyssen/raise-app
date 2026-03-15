@@ -79,7 +79,7 @@ export function TopBar() {
         padding: 'var(--space-2) var(--space-4)',
         borderBottom: '1px solid var(--border-subtle)',
         background: 'var(--surface-0)',}}>
-      {raisePct !== null && <span style={{ fontSize: '11px', fontWeight: 400, color: 'var(--text-muted)', marginRight: 'var(--space-2)', whiteSpace: 'nowrap' }}>{raisePct}% to close</span>}
+      {raisePct !== null && <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-muted)', marginRight: 'var(--space-2)', whiteSpace: 'nowrap' }}>{raisePct}% to close</span>}
       {/* Search trigger */}
       <button
         onClick={() => {
@@ -89,7 +89,7 @@ export function TopBar() {
         aria-label="Open search palette"
         title="Search (⌘K)"
         style={{
-          padding: '5px 10px',
+          padding: 'var(--space-1) var(--space-2)',
           color: 'var(--text-muted)',
           background: 'var(--surface-1)',
           border: '1px solid var(--border-subtle)',

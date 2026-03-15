@@ -22,7 +22,7 @@ export function CopyButton({ text, label = 'Copy', className = '', style }: Copy
       }}
       className={`flex items-center gap-1 transition-colors ${className}`}
       style={{
-        padding: '2px 8px',
+        padding: 'var(--space-1) var(--space-2)',
         borderRadius: 'var(--radius-sm)',
         border: 'none',
         cursor: 'pointer',

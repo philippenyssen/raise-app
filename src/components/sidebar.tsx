@@ -59,7 +59,7 @@ const SB = {
 
 const badgeCountStyle: React.CSSProperties = {
   minWidth: '18px', height: '18px', borderRadius: 'var(--radius-xl)', background: 'var(--white-15)',
-  color: SB.textActive, fontSize: '10px', fontWeight: 400, padding: '0 5px', lineHeight: 1,};
+  color: SB.textActive, fontSize: 'var(--font-size-xs)', fontWeight: 400, padding: '0 var(--space-1)', lineHeight: 1,};
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -146,11 +146,11 @@ export function Sidebar() {
               <h1 style={{
                 color: SB.accent,
                 letterSpacing: '0.22em',
-                fontSize: '13px',
+                fontSize: 'var(--font-size-sm)',
                 fontWeight: 300,
                 fontFamily: 'var(--font-cormorant), Georgia, serif',}}>
                 RAISE</h1>
-              <p style={{ fontSize: '10px', color: SB.muted, marginTop: '2px', letterSpacing: '0.08em', fontWeight: 300 }}>
+              <p style={{ fontSize: 'var(--font-size-xs)', color: SB.muted, marginTop: '2px', letterSpacing: '0.08em', fontWeight: 300 }}>
                 Series C</p></div>
           )}
           {collapsed && (
