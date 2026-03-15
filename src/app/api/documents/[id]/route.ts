@@ -7,7 +7,8 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
     const doc = await getDocument(id);
     if (!doc) return NextResponse.json({ error: 'Document not found' }, { status: 404 });
     return NextResponse.json(doc);
-  } catch {
+  } catch (err) {
+    console.error('[DOCUMENT_GET]', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: 'Failed to load document' }, { status: 500 });
   }
 }
@@ -38,7 +39,8 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   try {
     await updateDocument(id, updates);
     return NextResponse.json({ ok: true });
-  } catch {
+  } catch (err) {
+    console.error('[DOCUMENT_PUT]', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: 'Failed to update document' }, { status: 500 });
   }
 }
@@ -48,7 +50,8 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
     const { id } = await params;
     await deleteDocument(id);
     return NextResponse.json({ ok: true });
-  } catch {
+  } catch (err) {
+    console.error('[DOCUMENT_DELETE]', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: 'Failed to delete document' }, { status: 500 });
   }
 }

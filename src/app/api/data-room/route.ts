@@ -6,7 +6,8 @@ export async function GET() {
   try {
     const files = await getAllDataRoomFiles();
     return NextResponse.json(files);
-  } catch {
+  } catch (err) {
+    console.error('[DATA_ROOM_GET]', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: 'Failed to load data room files' }, { status: 500 });
   }
 }
@@ -36,7 +37,8 @@ export async function POST(req: NextRequest) {
 
     emitContextChange('data_room_uploaded', `Uploaded ${filename}`);
     return NextResponse.json(file, { status: 201 });
-  } catch {
+  } catch (err) {
+    console.error('[DATA_ROOM_POST]', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: 'Failed to create data room file' }, { status: 500 });
   }
 }
@@ -48,7 +50,8 @@ export async function DELETE(req: NextRequest) {
   try {
     await deleteDataRoomFile(id);
     return NextResponse.json({ ok: true });
-  } catch {
+  } catch (err) {
+    console.error('[DATA_ROOM_DELETE]', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: 'Failed to delete data room file' }, { status: 500 });
   }
 }

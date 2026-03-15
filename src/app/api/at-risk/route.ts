@@ -23,7 +23,8 @@ export async function GET() {
       scoreReversals: reversals,
       staleInvestors,
     });
-  } catch {
+  } catch (err) {
+    console.error('[AT_RISK_GET]', err instanceof Error ? err.message : err);
     return NextResponse.json({ scoreReversals: [], staleInvestors: [] });
   }
 }
