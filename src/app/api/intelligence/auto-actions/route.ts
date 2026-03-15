@@ -51,7 +51,7 @@ export async function GET() {
       autoActions,
       count: autoActions.length,
       totalPending: pending.length,
-    });
+    }, { headers: { 'Cache-Control': 'private, max-age=15, stale-while-revalidate=30' } });
   } catch (error) {
     console.error('[AUTO_ACTIONS_GET]', error instanceof Error ? error.message : error);
     return NextResponse.json(
