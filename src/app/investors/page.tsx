@@ -198,7 +198,7 @@ export default function InvestorsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="page-title">Investor CRM</h1>
-          <p className="page-subtitle">{investors.length} investors tracked</p></div>
+          <p className="page-subtitle">{filtered.length === investors.length ? `${investors.length} investors tracked` : `${filtered.length} of ${investors.length} investors`}</p></div>
         <div className="flex gap-2">
           <Link href="/pipeline" className="btn btn-secondary btn-md">
             <Columns3 className="w-3.5 h-3.5" /> Pipeline</Link>

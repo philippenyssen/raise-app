@@ -356,7 +356,7 @@ export default function MeetingsPage() {
         <div>
           <h1 className="page-title">Meetings</h1>
           <p className="page-subtitle" style={stFontSm}>
-            {meetings.length} meetings with {uniqueInvestors} investors</p></div>
+            {filtered.length === meetings.length ? `${meetings.length} meetings with ${uniqueInvestors} investors` : `${filtered.length} of ${meetings.length} meetings`}</p></div>
         <div className="flex gap-2">
           <Link
             href="/meetings/capture"
