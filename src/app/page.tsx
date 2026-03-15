@@ -239,6 +239,7 @@ export default function Dashboard() {
   const [refreshing, setRefreshing] = useState(false);
   const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
   const [sectionErrors, setSectionErrors] = useState<Record<string, boolean>>({});
+  const [focusMode, setFocusMode] = useState(false);
 
   const safeFetch = useCallback(async <T,>(
     key: string, url: string, setter: (v: T) => void,
@@ -292,10 +293,12 @@ export default function Dashboard() {
         e.preventDefault();
         const first = pulse?.criticalPath?.topAccelerations?.[0];
         if (first) executeAcceleration(first.id);
-      }};
+      }
+      if (!e.metaKey && !e.ctrlKey && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement)) { if (e.key === 'n') window.location.href = '/meetings/new'; if (e.key === 'r') { e.preventDefault(); fetchData(true); } }
+    };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [pulse]);
+  }, [pulse, fetchData]);
 
   async function seedData() {
     setSeeding(true);
@@ -349,6 +352,7 @@ export default function Dashboard() {
   const cv = pulse?.convictionPulse;
   const ov = pulse?.overnight;
 
+  const meetingStreak = (() => { const days = new Set(activity.filter(a => a.event_type === 'meeting').map(a => a.created_at?.split('T')[0])); let s = 0; for (const d = new Date(); s < 365; d.setDate(d.getDate() - 1)) { if (days.has(d.toISOString().split('T')[0])) s++; else if (s > 0) break; } return s; })();
   const identifiedCount = data ? data.totalInvestors - data.funnel.contacted - (data.funnel.passed ?? 0) : 0;
   const funnelStages = data ? [
     { label: 'Identified', value: identifiedCount > 0 ? identifiedCount : 0 },
@@ -373,12 +377,14 @@ export default function Dashboard() {
                 Updated {(() => { const m = Math.round((Date.now() - lastRefresh.getTime()) / 60000); return m < 1 ? 'just now' : `${m}m ago`; })()}</span>
             )}</p></div>
         <div className="flex items-center" style={{ gap: 'var(--space-2)' }}>
+          <button onClick={() => setFocusMode(f => !f)} className="btn btn-secondary btn-sm" title="Show only essential sections">
+            <Target className="w-3.5 h-3.5" /> {focusMode ? 'Full' : 'Focus'}</button>
           <button
             onClick={() => fetchData(true)}
             disabled={refreshing}
             className="btn btn-secondary btn-sm">
             <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
-            {refreshing ? 'Refreshing...' : 'Refresh'}</button>
+            {refreshing ? 'Refreshing...' : 'Refresh'} <span style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>(R)</span></button>
           <div className="relative group">
             <button className="btn btn-secondary btn-sm">
               <Download className="w-3.5 h-3.5" /> Export</button>
@@ -537,23 +543,24 @@ export default function Dashboard() {
 
           {/* Pulse Strip */}
           {sectionErrors.health && !data && <SectionError label="Health metrics" onRetry={() => fetchSection('health')} />}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 card-stagger">
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 card-stagger">
             <PulseCard label="Active investors" value={ph?.activeInvestors ?? data?.totalInvestors ?? 0} sub={`${data?.totalInvestors ?? 0} total`}
               />
             <PulseCard label="This week" value={ph?.meetingsThisWeek ?? 0} sub="meetings" />
+            <PulseCard label="Meeting streak" value={meetingStreak} sub={`day${meetingStreak === 1 ? '' : 's'}`} />
             <PulseCard label="Follow-ups due" value={ph?.overdueFollowups ?? 0} sub="overdue" />
             <PulseCard label="Data quality" value={`${ph?.dataQualityPct ?? dataQuality?.overallCompleteness ?? 0}%`} sub="completeness"
               /></div>
 
           {/* Pipeline Velocity */}
-          {velocity ? (
+          {!focusMode && (velocity ? (
             <VelocityStrip velocity={velocity} />
           ) : sectionErrors.velocity ? (
             <SectionError label="Pipeline velocity" onRetry={() => fetchSection('velocity')} />
-          ) : null}
+          ) : null)}
 
           {/* Close Forecast */}
-          {stressTest && (
+          {!focusMode && stressTest && (
             <Link href="/stress-test" className="block group">
               <div
                 className="transition-colors"
@@ -589,7 +596,7 @@ export default function Dashboard() {
           )}
 
           {/* Watching — Tier 1 active investors */}
-          {dealHeat && (() => {
+          {!focusMode && dealHeat && (() => {
             const watching = dealHeat.investors.filter(i => i.tier === 1 && !['passed','dropped'].includes(i.status)).slice(0, 5);
             if (!watching.length) return null;
             return (
@@ -732,7 +739,7 @@ export default function Dashboard() {
           )}
 
           {/* Overnight + Conviction */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {!focusMode && <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div style={cardPadding}>
               <h2 className="section-title flex items-center gap-2 mb-3">
                 <Clock className="w-4 h-4" /> Last 24 hours</h2>
@@ -809,10 +816,10 @@ export default function Dashboard() {
                   )}</div>
               ) : (
                 <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>Loading conviction data...</p>
-              )}</div></div>
+              )}</div></div>}
 
           {/* Acceleration Alerts */}
-          {cp && cp.topAccelerations.length > 0 && (
+          {!focusMode && cp && cp.topAccelerations.length > 0 && (
             <div style={cardPadding}>
               <div className="flex items-center justify-between mb-3">
                 <h2 className="section-title flex items-center gap-2">
@@ -852,7 +859,7 @@ export default function Dashboard() {
           )}
 
           {/* Hot Deals + Follow-ups */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {!focusMode && <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div style={cardPadding}>
               <div className="flex items-center justify-between mb-3">
                 <h2 className="section-title flex items-center gap-2">
@@ -894,10 +901,10 @@ export default function Dashboard() {
                   <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>No pending follow-ups</p>
                   <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 'var(--space-1)', opacity: 0.7 }}>Follow-ups are created after meeting debriefs</p>
                 </div>
-              )}</div></div>
+              )}</div></div>}
 
           {/* Pipeline */}
-          <div style={cardPadding}>
+          {!focusMode && <div style={cardPadding}>
             <div className="flex items-center justify-between mb-4">
               <h2 className="section-title">Pipeline</h2>
               <Link href="/pipeline" className="flex items-center gap-1" style={labelAccent}>
@@ -936,10 +943,10 @@ export default function Dashboard() {
                   <span className="flex items-center gap-1"><Target className="w-3 h-3" /> Win Rate</span>
                   <span className="tabular-nums" style={{ color }}>{rate}% <span style={stTextMuted}>({wins}/{data.funnel.contacted})</span></span>
                 </div>);
-            })()}</div>
+            })()}</div>}
 
           {/* Deliverables */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {!focusMode && <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {[
               { href: '/workspace', Icon: Sparkles, label: 'Workspace', sub: docs.length > 0 ? `${docs.length} document${docs.length !== 1 ? 's' : ''}` : 'Create deliverables' },
               { href: '/data-room', Icon: FolderOpen, label: 'Data Room', sub: dataRoomCount > 0 ? `${dataRoomCount} file${dataRoomCount !== 1 ? 's' : ''} uploaded` : 'Upload source materials' },
@@ -955,11 +962,11 @@ export default function Dashboard() {
                 <div className="mt-1" style={labelMuted}>{sub}</div>
                 <div className="mt-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity" style={labelAccent}>
                   Open <ArrowRight className="w-3 h-3" /></div></Link>
-            ))}</div>
+            ))}</div>}
 
           {/* Data Quality */}
-          {sectionErrors.dataQuality && !dataQuality && <SectionError label="Data quality" onRetry={() => fetchSection('dataQuality')} />}
-          {dataQuality && (
+          {!focusMode && sectionErrors.dataQuality && !dataQuality && <SectionError label="Data quality" onRetry={() => fetchSection('dataQuality')} />}
+          {!focusMode && dataQuality && (
             <div style={cardPadding}>
               <div className="flex items-center justify-between mb-3">
                 <h2 className="section-title flex items-center gap-2">
@@ -1003,7 +1010,7 @@ export default function Dashboard() {
           )}
 
           {/* Tasks + Activity */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {!focusMode && <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div style={cardPadding}>
               <div className="flex items-center justify-between mb-3">
                 <h2 className="section-title flex items-center gap-2">
@@ -1055,7 +1062,7 @@ export default function Dashboard() {
                   {activity.slice(0, 10).map(a => (
                     <ActivityRow key={a.id} activity={a} />
                   ))}</div>
-              )}</div></div>
+              )}</div></div>}
 
           {/* Quick Actions */}
           {(() => {
@@ -1082,7 +1089,7 @@ export default function Dashboard() {
             if (completeness < 70) {
               actions.push({ href: '/investors', label: 'Data gaps', sub: `CRM ${completeness}% complete` });
             }
-            if (actions.length < 4) actions.push({ href: '/meetings/new', label: 'Log meeting', sub: 'Capture a debrief' });
+            if (actions.length < 4) actions.push({ href: '/meetings/new', label: 'Log meeting (N)', sub: 'Capture a debrief' });
             if (actions.length < 4) actions.push({ href: '/pipeline', label: 'Pipeline', sub: 'Kanban board' });
             if (actions.length < 4) actions.push({ href: '/intelligence', label: 'AI analysis', sub: 'Pattern detection' });
             if (actions.length < 4) actions.push({ href: '/investors', label: 'Manage CRM', sub: 'Update statuses' });

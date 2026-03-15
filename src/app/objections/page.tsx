@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { cachedFetch } from '@/lib/cache';
+import { useToast } from '@/components/toast';
 import {
   MessageCircleWarning, ChevronDown, ChevronRight, Shield, AlertTriangle,
   CheckCircle2, Edit3, Save, X, TrendingUp, TrendingDown, Minus,
@@ -185,6 +186,7 @@ function BestResponseCard({ response }: { response: ObjectionRecord }) {
 }
 
 export default function ObjectionsPage() {
+  const { toast } = useToast();
   const [tab, setTab] = useState<Tab>('playbook');
   const [data, setData] = useState<PlaybookData | null>(null);
   const [effectivenessData, setEffectivenessData] = useState<EffectivenessData | null>(null);
@@ -249,6 +251,7 @@ export default function ObjectionsPage() {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id, response_text: editResponse, effectiveness: editEffectiveness }),});
+    if (editEffectiveness === 'effective') toast('Objection resolved!', 'success');
     setEditingId(null);
     setSaving(false);
     loadData();
