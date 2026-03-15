@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDocument, updateDocument, deleteDocument } from '@/lib/db';
+import { emitContextChange } from '@/lib/context-bus';
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -38,6 +39,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   }
   try {
     await updateDocument(id, updates);
+    emitContextChange('document_updated', `Updated document ${id}`);
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error('[DOCUMENT_PUT]', err instanceof Error ? err.message : err);
@@ -49,6 +51,7 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
   try {
     const { id } = await params;
     await deleteDocument(id);
+    emitContextChange('document_updated', `Deleted document ${id}`);
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error('[DOCUMENT_DELETE]', err instanceof Error ? err.message : err);

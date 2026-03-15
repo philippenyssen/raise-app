@@ -6,6 +6,7 @@ import {
   mergeEnrichmentToInvestor,
 } from '@/lib/enrichment';
 import type { EnrichmentSourceId } from '@/lib/enrichment';
+import { emitContextChange } from '@/lib/context-bus';
 import {
   getInvestor,
   updateInvestor,
@@ -384,6 +385,7 @@ export async function DELETE(req: NextRequest) {
 
   try {
     await deleteEnrichmentRecords(investorId, sourceId || undefined);
+    emitContextChange('investor_updated', `Cleared enrichment data for ${investorId}`);
     return NextResponse.json({ ok: true });
   } catch (error) {
     console.error('[ENRICHMENT_DELETE]', error instanceof Error ? error.message : error);
