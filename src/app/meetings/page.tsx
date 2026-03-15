@@ -395,6 +395,18 @@ export default function MeetingsPage() {
           <div className="metric-label">Unique Investors</div>
           <div className="metric-value" style={{ marginTop: '2px' }}>{uniqueInvestors}</div></div></div>
 
+      {/* Momentum Signals */}
+      {(() => {
+        const up = Object.entries(investorStats).filter(([, s]) => s.trend === 'up').map(([id, s]) => ({ id, name: meetingsByInvestor[id]?.[0]?.investor_name || id, score: s.latestEnthusiasm })).sort((a, b) => b.score - a.score).slice(0, 3);
+        const down = Object.entries(investorStats).filter(([, s]) => s.trend === 'down').map(([id, s]) => ({ id, name: meetingsByInvestor[id]?.[0]?.investor_name || id, score: s.latestEnthusiasm })).sort((a, b) => a.score - b.score).slice(0, 3);
+        if (!up.length && !down.length) return null;
+        return (
+          <div className="flex gap-4 text-xs" style={{ color: 'var(--text-muted)' }}>
+            {up.length > 0 && <span style={{ color: 'var(--success)' }}>Gaining momentum: {up.map(i => i.name).join(', ')}</span>}
+            {down.length > 0 && <span style={{ color: 'var(--warning)' }}>Cooling: {down.map(i => i.name).join(', ')}</span>}
+          </div>);
+      })()}
+
       {/* Filters */}
       <div className="flex flex-wrap gap-3">
         <div className="relative flex-1 min-w-48">
