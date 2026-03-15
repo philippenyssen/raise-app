@@ -6,6 +6,7 @@ import {
   Zap, RefreshCw, AlertTriangle, TrendingUp, Users,
   ArrowRight, Clock, Activity, Target, Flame,
 } from 'lucide-react';
+import { getIntensityColor } from '@/lib/styles';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -119,13 +120,6 @@ function inlineBadgeStyle(styleObj: React.CSSProperties): React.CSSProperties {
     whiteSpace: 'nowrap' as const,
     ...styleObj,
   };
-}
-
-function getIntensityColor(intensity: number): string {
-  if (intensity >= 70) return 'var(--danger)';
-  if (intensity >= 40) return 'var(--warning)';
-  if (intensity > 0) return 'var(--accent)';
-  return 'var(--text-muted)';
 }
 
 function getIntensityLabel(intensity: number): string {

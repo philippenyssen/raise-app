@@ -7,6 +7,7 @@ import {
   TrendingUp, Users, ArrowRight, Zap, Phone, Mail, Target,
 } from 'lucide-react';
 import { STATUS_LABELS, TYPE_LABELS } from '@/lib/constants';
+import { velocityColor, trackingColor, trackingBg } from '@/lib/styles';
 
 interface VelocityInvestor {
   investor_id: string;
@@ -56,18 +57,6 @@ const STATUS_COLORS: Record<string, string> = {
   closed: 'var(--accent)',
 };
 
-
-function velocityColor(_score: number): string {
-  return 'var(--text-primary)';
-}
-
-function trackingColor(_status: string): string {
-  return 'var(--text-secondary)';
-}
-
-function trackingBg(_status: string): string {
-  return 'var(--surface-2)';
-}
 
 export default function VelocityPage() {
   const [data, setData] = useState<VelocityData | null>(null);

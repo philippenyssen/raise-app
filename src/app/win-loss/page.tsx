@@ -5,6 +5,7 @@ import {
   TrendingDown, TrendingUp, RefreshCw, Users, Target, AlertTriangle,
   CheckCircle, XCircle, ArrowDown, Clock, Lightbulb, BarChart3,
 } from 'lucide-react';
+import { strengthColor } from '@/lib/styles';
 
 // ── Types ─────────────────────────────────────────────────────────────
 
@@ -99,12 +100,6 @@ const TYPE_LABELS: Record<string, string> = {
   debt: 'Debt',
   family_office: 'Family Office',
 };
-
-function strengthColor(s: 'strong' | 'moderate' | 'weak' | 'high' | 'medium' | 'low'): string {
-  if (s === 'strong' || s === 'high') return 'var(--success)';
-  if (s === 'moderate' || s === 'medium') return 'var(--warning)';
-  return 'var(--text-muted)';
-}
 
 // ── Page ──────────────────────────────────────────────────────────────
 

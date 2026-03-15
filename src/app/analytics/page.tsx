@@ -9,6 +9,11 @@ import {
   ArrowRight, RefreshCw, Target, Zap, ShieldAlert,
   ChevronDown, ChevronUp, Calendar, MessageSquare,
 } from 'lucide-react';
+import {
+  stTextMuted, stTextTertiary, stTextSecondary, stTextPrimary, stFontSm,
+  stSurface0, stSurface1, stSurface2, stBorderTop,
+  labelMuted10, labelSmMuted, labelTertiary, labelMuted,
+} from '@/lib/styles';
 
 // ── Types ────────────────────────────────────────────────────────────
 
@@ -146,14 +151,14 @@ export default function AnalyticsPage() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="h-8 w-64 rounded animate-pulse" style={{ background: 'var(--surface-2)' }} />
+        <div className="h-8 w-64 rounded animate-pulse" style={stSurface2} />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-24 rounded-xl animate-pulse" style={{ background: 'var(--surface-1)' }} />
+            <div key={i} className="h-24 rounded-xl animate-pulse" style={stSurface1} />
           ))}
         </div>
-        <div className="h-64 rounded-xl animate-pulse" style={{ background: 'var(--surface-1)' }} />
-        <div className="h-48 rounded-xl animate-pulse" style={{ background: 'var(--surface-1)' }} />
+        <div className="h-64 rounded-xl animate-pulse" style={stSurface1} />
+        <div className="h-48 rounded-xl animate-pulse" style={stSurface1} />
       </div>
     );
   }
@@ -163,14 +168,13 @@ export default function AnalyticsPage() {
       <div className="space-y-6">
         <h1 className="page-title">Process Analytics</h1>
         <div className="rounded-xl p-8 text-center space-y-3" style={{ background: 'var(--danger-muted)', opacity: 0.3 }}>
-          <p style={{ color: 'var(--text-tertiary)', fontSize: 'var(--font-size-sm)' }}>Could not load analytics data.</p>
+          <p style={{ ...stTextTertiary, ...stFontSm }}>Could not load analytics data.</p>
           <button
             onClick={fetchAnalytics}
             onMouseEnter={() => setRetryHovered(true)}
             onMouseLeave={() => setRetryHovered(false)}
             className="px-4 py-2 rounded-lg text-sm transition-colors"
-            style={{ background: retryHovered ? 'var(--surface-3)' : 'var(--surface-2)', color: 'var(--text-primary)' }}
-          >
+            style={{ background: retryHovered ? 'var(--surface-3)' : 'var(--surface-2)', ...stTextPrimary }}>
             Retry
           </button>
         </div>
@@ -186,12 +190,12 @@ export default function AnalyticsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="page-title">Process Analytics</h1>
-          <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
+          <p className="text-sm mt-1" style={stTextMuted}>
             Deep funnel, velocity, and risk analysis
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+          <span style={labelMuted10}>
             Updated {new Date(data.generatedAt).toLocaleTimeString()}
           </span>
           <button
@@ -199,8 +203,7 @@ export default function AnalyticsPage() {
             onMouseEnter={() => setRefreshHovered(true)}
             onMouseLeave={() => setRefreshHovered(false)}
             className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs transition-colors"
-            style={{ background: refreshHovered ? 'var(--surface-3)' : 'var(--surface-2)', color: 'var(--text-primary)' }}
-          >
+            style={{ background: refreshHovered ? 'var(--surface-3)' : 'var(--surface-2)', ...stTextPrimary }}>
             <RefreshCw className="w-3.5 h-3.5" /> Refresh
           </button>
         </div>
@@ -213,15 +216,13 @@ export default function AnalyticsPage() {
           value={String(summary.activeInvestors)}
           sub={`of ${summary.totalInvestors} total`}
           icon={<Users className="w-4 h-4" />}
-          color="var(--accent)"
-        />
+          color="var(--accent)"/>
         <SummaryCard
           label="Velocity Score"
           value={velocity.velocityScore > 0 ? velocity.velocityScore.toFixed(1) : '—'}
           sub="tier x stage x signal"
           icon={<Zap className="w-4 h-4" />}
-          color="var(--warning)"
-        />
+          color="var(--warning)"/>
         <SummaryCard
           label="Risk Alerts"
           value={String(risks.totalAlerts)}
@@ -234,31 +235,27 @@ export default function AnalyticsPage() {
           value={String(velocity.totalMeetings)}
           sub={`${velocity.meetingsThisWeek} this week`}
           icon={<Calendar className="w-4 h-4" />}
-          color="var(--accent-muted)"
-        />
+          color="var(--accent-muted)"/>
       </div>
 
       {/* ── Bottleneck Alert ─────────────────────────────────────── */}
       {funnel.bottleneck && funnel.bottleneck.count > 2 && (
         <div
           className="rounded-xl px-5 py-4 flex items-center gap-4"
-          style={{ background: 'color-mix(in srgb, var(--warning-muted) 20%, transparent)' }}
-        >
-          <AlertTriangle className="w-5 h-5 shrink-0" style={{ color: 'var(--text-tertiary)' }} />
+          style={{ background: 'color-mix(in srgb, var(--warning-muted) 20%, transparent)' }}>
+          <AlertTriangle className="w-5 h-5 shrink-0" style={stTextTertiary} />
           <div>
-            <div className="text-sm font-normal" style={{ color: 'var(--text-tertiary)' }}>
+            <div className="text-sm font-normal" style={stTextTertiary}>
               Bottleneck Detected: {funnel.bottleneck.label}
             </div>
-            <div className="text-xs mt-0.5" style={{ color: 'var(--text-tertiary)' }}>
+            <div className="text-xs mt-0.5" style={stTextTertiary}>
               {funnel.bottleneck.count} investors stuck at this stage.
               Consider targeted follow-ups to move them forward.
             </div>
           </div>
           <Link
             href="/pipeline"
-            className="ml-auto shrink-0 flex items-center gap-1"
-            style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}
-          >
+            className="ml-auto shrink-0 flex items-center gap-1" style={labelTertiary}>
             Pipeline <ArrowRight className="w-3 h-3" />
           </Link>
         </div>
@@ -270,14 +267,13 @@ export default function AnalyticsPage() {
           className="rounded-xl px-5 py-4 flex items-center gap-4"
           style={{
             background: `color-mix(in srgb, ${risks.timelineRisk.level === 'high' ? 'var(--danger-muted)' : 'var(--warning-muted)'} 20%, transparent)`,
-          }}
-        >
+          }}>
           <Clock className="w-5 h-5 shrink-0" style={{ color: risks.timelineRisk.level === 'high' ? 'var(--danger)' : 'var(--warning)' }} />
           <div>
             <div className="text-sm font-normal" style={{ color: risks.timelineRisk.level === 'high' ? 'var(--danger)' : 'var(--warning)' }}>
               Timeline Risk: {risks.timelineRisk.level === 'high' ? 'Critical' : 'Elevated'}
             </div>
-            <div className="text-xs mt-0.5" style={{ color: 'var(--text-tertiary)' }}>
+            <div className="text-xs mt-0.5" style={stTextTertiary}>
               {risks.timelineRisk.daysRemaining !== null
                 ? `${risks.timelineRisk.daysRemaining} days remaining to target close`
                 : 'No target close date set'}
@@ -295,13 +291,12 @@ export default function AnalyticsPage() {
         title="Funnel Analytics"
         icon={<BarChart3 className="w-4 h-4" />}
         isOpen={expandedSections.has('funnel')}
-        onToggle={() => toggleSection('funnel')}
-      >
+        onToggle={() => toggleSection('funnel')}>
         {/* Funnel Visualization */}
         <div className="space-y-6">
           {/* Horizontal funnel bars */}
           <div>
-            <h3 className="text-xs font-normal  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
+            <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
               Pipeline Distribution
             </h3>
             <div className="space-y-2">
@@ -310,19 +305,17 @@ export default function AnalyticsPage() {
                 const pct = (stage.count / maxCount) * 100;
                 return (
                   <div key={stage.stage} className="flex items-center gap-3">
-                    <div className="w-24 text-xs text-right shrink-0" style={{ color: 'var(--text-tertiary)' }}>
+                    <div className="w-24 text-xs text-right shrink-0" style={stTextTertiary}>
                       {stage.label}
                     </div>
-                    <div className="flex-1 h-8 rounded overflow-hidden relative" style={{ background: 'var(--surface-0)' }}>
+                    <div className="flex-1 h-8 rounded overflow-hidden relative" style={stSurface0}>
                       <div
                         className="h-full rounded transition-all duration-700 ease-out flex items-center px-3"
                         style={{
                           width: `${Math.max(pct, stage.count > 0 ? 8 : 0)}%`,
-                          background: STAGE_COLORS[stage.stage] || 'var(--surface-3)',
-                        }}
-                      >
+                          background: STAGE_COLORS[stage.stage] || 'var(--surface-3)', }}>
                         {stage.count > 0 && (
-                          <span className="text-xs font-normal" style={{ color: 'var(--text-primary)', opacity: 0.9 }}>{stage.count}</span>
+                          <span className="text-xs font-normal" style={{ ...stTextPrimary, opacity: 0.9 }}>{stage.count}</span>
                         )}
                       </div>
                     </div>
@@ -331,35 +324,31 @@ export default function AnalyticsPage() {
               })}
               {/* Passed / Dropped */}
               {((funnel.exact['passed'] || 0) > 0 || (funnel.exact['dropped'] || 0) > 0) && (
-                <div className="pt-2 mt-2 space-y-2" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                <div className="pt-2 mt-2 space-y-2" style={stBorderTop}>
                   {(funnel.exact['passed'] || 0) > 0 && (
                     <div className="flex items-center gap-3">
-                      <div className="w-24 text-xs text-right shrink-0" style={{ color: 'var(--text-primary)', opacity: 0.8 }}>Passed</div>
-                      <div className="flex-1 h-8 rounded overflow-hidden" style={{ background: 'var(--surface-0)' }}>
+                      <div className="w-24 text-xs text-right shrink-0" style={{ ...stTextPrimary, opacity: 0.8 }}>Passed</div>
+                      <div className="flex-1 h-8 rounded overflow-hidden" style={stSurface0}>
                         <div
                           className="h-full rounded flex items-center px-3"
                           style={{
                             width: `${Math.max((funnel.exact['passed'] / Math.max(...summary.pipelineStages.map(s => s.count), 1)) * 100, 8)}%`,
-                            background: 'var(--danger-muted)',
-                          }}
-                        >
-                          <span className="text-xs font-normal" style={{ color: 'var(--text-primary)' }}>{funnel.exact['passed']}</span>
+                            background: 'var(--danger-muted)', }}>
+                          <span className="text-xs font-normal" style={stTextPrimary}>{funnel.exact['passed']}</span>
                         </div>
                       </div>
                     </div>
                   )}
                   {(funnel.exact['dropped'] || 0) > 0 && (
                     <div className="flex items-center gap-3">
-                      <div className="w-24 text-xs text-right shrink-0" style={{ color: 'var(--text-muted)' }}>Dropped</div>
-                      <div className="flex-1 h-8 rounded overflow-hidden" style={{ background: 'var(--surface-0)' }}>
+                      <div className="w-24 text-xs text-right shrink-0" style={stTextMuted}>Dropped</div>
+                      <div className="flex-1 h-8 rounded overflow-hidden" style={stSurface0}>
                         <div
                           className="h-full rounded flex items-center px-3"
                           style={{
                             width: `${Math.max((funnel.exact['dropped'] / Math.max(...summary.pipelineStages.map(s => s.count), 1)) * 100, 8)}%`,
-                            background: 'var(--surface-2)',
-                          }}
-                        >
-                          <span className="text-xs font-normal" style={{ color: 'var(--text-tertiary)' }}>{funnel.exact['dropped']}</span>
+                            background: 'var(--surface-2)', }}>
+                          <span className="text-xs font-normal" style={stTextTertiary}>{funnel.exact['dropped']}</span>
                         </div>
                       </div>
                     </div>
@@ -371,13 +360,13 @@ export default function AnalyticsPage() {
 
           {/* Conversion Rates */}
           <div>
-            <h3 className="text-xs font-normal  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
+            <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
               Stage-to-Stage Conversion
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {funnel.conversionRates.map(cr => (
                 <div key={`${cr.from}-${cr.to}`} className="rounded-lg p-3">
-                  <div className="mb-1 truncate" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                  <div className="mb-1 truncate" style={labelMuted10}>
                     {STAGE_LABELS[cr.from]} {'->'} {STAGE_LABELS[cr.to]}
                   </div>
                   <div
@@ -385,12 +374,10 @@ export default function AnalyticsPage() {
                     style={{
                       color: cr.rate >= 60 ? 'var(--success)' :
                         cr.rate >= 30 ? 'var(--warning)' :
-                        cr.rate > 0 ? 'var(--danger)' : 'var(--text-muted)',
-                    }}
-                  >
+                        cr.rate > 0 ? 'var(--danger)' : 'var(--text-muted)', }}>
                     {cr.rate}%
                   </div>
-                  <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                  <div style={labelMuted10}>
                     {cr.fromCount} {'->'} {cr.toCount}
                   </div>
                 </div>
@@ -400,24 +387,20 @@ export default function AnalyticsPage() {
 
           {/* Drop-off Analysis */}
           <div>
-            <h3 className="text-xs font-normal  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
+            <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
               Drop-off by Stage
             </h3>
             <div className="space-y-1.5">
               {funnel.dropOffRates.filter(d => d.rate > 0).map(d => (
                 <div key={d.stage} className="flex items-center gap-3">
-                  <div className="w-24 text-xs text-right shrink-0" style={{ color: 'var(--text-tertiary)' }}>
+                  <div className="w-24 text-xs text-right shrink-0" style={stTextTertiary}>
                     {STAGE_LABELS[d.stage]}
                   </div>
-                  <div className="flex-1 h-6 rounded overflow-hidden" style={{ background: 'var(--surface-0)' }}>
+                  <div className="flex-1 h-6 rounded overflow-hidden" style={stSurface0}>
                     <div
                       className="h-full rounded-l flex items-center px-2"
-                      style={{
-                        width: `${Math.max(d.rate, 5)}%`,
-                        background: 'var(--danger-muted)',
-                      }}
-                    >
-                      <span className="font-normal whitespace-nowrap" style={{ fontSize: '10px', color: 'var(--text-primary)' }}>
+                      style={{ width: `${Math.max(d.rate, 5)}%`, background: 'var(--danger-muted)' }}>
+                      <span className="font-normal whitespace-nowrap" style={{ fontSize: '10px', ...stTextPrimary }}>
                         {d.rate}% ({d.count})
                       </span>
                     </div>
@@ -425,7 +408,7 @@ export default function AnalyticsPage() {
                 </div>
               ))}
               {funnel.dropOffRates.every(d => d.rate === 0) && (
-                <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>No drop-offs detected yet. Add more investors and progress them through stages.</p>
+                <p style={labelSmMuted}>No drop-offs detected yet. Add more investors and progress them through stages.</p>
               )}
             </div>
           </div>
@@ -433,24 +416,22 @@ export default function AnalyticsPage() {
           {/* Average Time in Stage */}
           {Object.keys(funnel.avgTimeInStage).length > 0 && (
             <div>
-              <h3 className="text-xs font-normal  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
+              <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
                 Average Time in Stage (days)
               </h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {Object.entries(funnel.avgTimeInStage).map(([stage, data]) => (
                   <div key={stage} className="rounded-lg p-3">
-                    <div className="mb-1" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{STAGE_LABELS[stage]}</div>
+                    <div className="mb-1" style={labelMuted10}>{STAGE_LABELS[stage]}</div>
                     <div
                       className="text-lg font-normal"
                       style={{
                         color: data.avgDays > 14 ? 'var(--danger)' :
                           data.avgDays > 7 ? 'var(--warning)' :
-                          'var(--success)',
-                      }}
-                    >
+                          'var(--success)', }}>
                       {data.avgDays}d
                     </div>
-                    <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>n={data.count}</div>
+                    <div style={labelMuted10}>n={data.count}</div>
                   </div>
                 ))}
               </div>
@@ -466,15 +447,14 @@ export default function AnalyticsPage() {
         title="Velocity Metrics"
         icon={<TrendingUp className="w-4 h-4" />}
         isOpen={expandedSections.has('velocity')}
-        onToggle={() => toggleSection('velocity')}
-      >
+        onToggle={() => toggleSection('velocity')}>
         <div className="space-y-6">
           {/* Key velocity numbers */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             <div className="rounded-lg p-3">
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Meetings This Week</div>
-              <div className="text-2xl font-normal" style={{ color: 'var(--text-primary)' }}>{velocity.meetingsThisWeek}</div>
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+              <div style={labelMuted10}>Meetings This Week</div>
+              <div className="text-2xl font-normal" style={stTextPrimary}>{velocity.meetingsThisWeek}</div>
+              <div style={labelMuted10}>
                 {velocity.meetingsLastWeek > 0 && (
                   <span style={{ color: velocity.meetingsThisWeek >= velocity.meetingsLastWeek ? 'var(--success)' : 'var(--danger)' }}>
                     {velocity.meetingsThisWeek >= velocity.meetingsLastWeek ? '+' : ''}
@@ -484,41 +464,37 @@ export default function AnalyticsPage() {
               </div>
             </div>
             <div className="rounded-lg p-3">
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Pipeline Velocity</div>
-              <div className="text-2xl font-normal" style={{ color: 'var(--text-tertiary)' }}>{velocity.velocityScore > 0 ? velocity.velocityScore.toFixed(1) : '—'}</div>
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>weighted score</div>
+              <div style={labelMuted10}>Pipeline Velocity</div>
+              <div className="text-2xl font-normal" style={stTextTertiary}>{velocity.velocityScore > 0 ? velocity.velocityScore.toFixed(1) : '—'}</div>
+              <div style={labelMuted10}>weighted score</div>
             </div>
             <div className="rounded-lg p-3">
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Days Since Progress</div>
+              <div style={labelMuted10}>Days Since Progress</div>
               <div
                 className="text-2xl font-normal"
                 style={{
                   color: velocity.daysSinceProgress === null ? 'var(--text-muted)' :
                     velocity.daysSinceProgress > 7 ? 'var(--danger)' :
                     velocity.daysSinceProgress > 3 ? 'var(--warning)' :
-                    'var(--success)',
-                }}
-              >
+                    'var(--success)', }}>
                 {velocity.daysSinceProgress !== null ? velocity.daysSinceProgress : '—'}
               </div>
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>last meeting or status change</div>
+              <div style={labelMuted10}>last meeting or status change</div>
             </div>
             <div className="rounded-lg p-3">
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Est. Days to Close</div>
+              <div style={labelMuted10}>Est. Days to Close</div>
               <div
                 className="text-2xl font-normal"
                 style={{
                   color: velocity.estimatedDaysToClose === null ? 'var(--text-muted)' :
                     velocity.estimatedDaysToClose < 30 ? 'var(--danger)' :
                     velocity.estimatedDaysToClose < 60 ? 'var(--warning)' :
-                    'var(--accent)',
-                }}
-              >
+                    'var(--accent)', }}>
                 {velocity.estimatedDaysToClose !== null ? velocity.estimatedDaysToClose : '—'}
               </div>
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
-                {velocity.onTrack === true && <span style={{ color: 'var(--text-secondary)' }}>On track</span>}
-                {velocity.onTrack === false && <span style={{ color: 'var(--text-primary)' }}>Behind schedule</span>}
+              <div style={labelMuted10}>
+                {velocity.onTrack === true && <span style={stTextSecondary}>On track</span>}
+                {velocity.onTrack === false && <span style={stTextPrimary}>Behind schedule</span>}
                 {velocity.onTrack === null && 'no target set'}
               </div>
             </div>
@@ -526,7 +502,7 @@ export default function AnalyticsPage() {
 
           {/* Meetings per week sparkline */}
           <div>
-            <h3 className="text-xs font-normal  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
+            <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
               Meetings Per Week (Last 8 Weeks)
             </h3>
             <SparklineChart data={velocity.meetingsPerWeek} color="var(--accent)" />
@@ -534,7 +510,7 @@ export default function AnalyticsPage() {
 
           {/* Investors added per week */}
           <div>
-            <h3 className="text-xs font-normal  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
+            <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
               New Investors Per Week
             </h3>
             <SparklineChart data={velocity.investorsPerWeek} color="var(--accent-muted)" />
@@ -553,18 +529,16 @@ export default function AnalyticsPage() {
         badge={risks.totalAlerts > 0 ? {
           text: String(risks.totalAlerts),
           color: risks.totalAlerts > 5 ? 'var(--danger)' : risks.totalAlerts > 2 ? 'var(--warning)' : 'var(--accent)',
-        } : undefined}
-      >
+        } : undefined}>
         <div className="space-y-5">
           {/* Stale Investors */}
           <RiskSection
             title="Stale Investors"
             subtitle="Engaged+ investors with no meeting in 2+ weeks"
             count={risks.staleInvestors.length}
-            severity={risks.staleInvestors.length > 3 ? 'high' : risks.staleInvestors.length > 0 ? 'medium' : 'low'}
-          >
+            severity={risks.staleInvestors.length > 3 ? 'high' : risks.staleInvestors.length > 0 ? 'medium' : 'low'}>
             {risks.staleInvestors.length === 0 ? (
-              <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>No stale investors. All engaged investors have recent meetings.</p>
+              <p style={labelSmMuted}>No stale investors. All engaged investors have recent meetings.</p>
             ) : (
               <div className="space-y-1.5">
                 {risks.staleInvestors.map(inv => (
@@ -582,7 +556,7 @@ export default function AnalyticsPage() {
             severity={risks.decliningEnthusiasm.length > 2 ? 'high' : risks.decliningEnthusiasm.length > 0 ? 'medium' : 'low'}
           >
             {risks.decliningEnthusiasm.length === 0 ? (
-              <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>No declining enthusiasm detected.</p>
+              <p style={labelSmMuted}>No declining enthusiasm detected.</p>
             ) : (
               <div className="space-y-1.5">
                 {risks.decliningEnthusiasm.map(inv => (
@@ -597,10 +571,9 @@ export default function AnalyticsPage() {
             title="High-Tier Investors Not Progressing"
             subtitle="T1/T2 investors stuck in stage for 14+ days"
             count={risks.highTierStuck.length}
-            severity={risks.highTierStuck.length > 3 ? 'high' : risks.highTierStuck.length > 0 ? 'medium' : 'low'}
-          >
+            severity={risks.highTierStuck.length > 3 ? 'high' : risks.highTierStuck.length > 0 ? 'medium' : 'low'}>
             {risks.highTierStuck.length === 0 ? (
-              <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>All high-tier investors are progressing.</p>
+              <p style={labelSmMuted}>All high-tier investors are progressing.</p>
             ) : (
               <div className="space-y-1.5">
                 {risks.highTierStuck.map(inv => (
@@ -615,11 +588,10 @@ export default function AnalyticsPage() {
             title="Concentration Risk"
             subtitle="Diversification across investor types"
             count={risks.concentrationRisk.isRisky ? 1 : 0}
-            severity={risks.concentrationRisk.isRisky ? 'medium' : 'low'}
-          >
+            severity={risks.concentrationRisk.isRisky ? 'medium' : 'low'}>
             <div className="space-y-3">
               {risks.concentrationRisk.isRisky && (
-                <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' }}>
+                <p style={{ ...stFontSm, ...stTextTertiary }}>
                   {risks.concentrationRisk.maxConcentration}% of active pipeline is {TYPE_LABELS[risks.concentrationRisk.dominantType || ''] || risks.concentrationRisk.dominantType}.
                   Consider diversifying investor outreach.
                 </p>
@@ -627,8 +599,8 @@ export default function AnalyticsPage() {
               <div className="flex gap-2 flex-wrap">
                 {Object.entries(risks.concentrationRisk.breakdown).map(([type, count]) => (
                   <div key={type} className="rounded px-3 py-2">
-                    <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{TYPE_LABELS[type] || type}</div>
-                    <div className="text-sm font-normal" style={{ color: 'var(--text-primary)' }}>{count}</div>
+                    <div style={labelMuted10}>{TYPE_LABELS[type] || type}</div>
+                    <div className="text-sm font-normal" style={stTextPrimary}>{count}</div>
                   </div>
                 ))}
               </div>
@@ -644,23 +616,22 @@ export default function AnalyticsPage() {
         title="Engagement Intelligence"
         icon={<MessageSquare className="w-4 h-4" />}
         isOpen={expandedSections.has('engagement')}
-        onToggle={() => toggleSection('engagement')}
-      >
+        onToggle={() => toggleSection('engagement')}>
         <div className="space-y-6">
           {/* Enthusiasm by Type */}
           <div>
-            <h3 className="text-xs font-normal  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
+            <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
               Average Enthusiasm by Investor Type
             </h3>
             {Object.keys(engagement.enthusiasmByType).length === 0 ? (
-              <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>No enthusiasm data yet. Log meetings to track investor signals.</p>
+              <p style={labelSmMuted}>No enthusiasm data yet. Log meetings to track investor signals.</p>
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                 {Object.entries(engagement.enthusiasmByType)
                   .sort((a, b) => b[1].avg - a[1].avg)
                   .map(([type, data]) => (
                     <div key={type} className="rounded-lg p-3">
-                      <div className="mb-1" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{TYPE_LABELS[type] || type}</div>
+                      <div className="mb-1" style={labelMuted10}>{TYPE_LABELS[type] || type}</div>
                       <div className="flex items-center gap-2">
                         <span
                           className="text-lg font-normal"
@@ -668,14 +639,12 @@ export default function AnalyticsPage() {
                             color: data.avg >= 4 ? 'var(--success)' :
                               data.avg >= 3 ? 'var(--accent)' :
                               data.avg >= 2 ? 'var(--warning)' :
-                              'var(--danger)',
-                          }}
-                        >
+                              'var(--danger)', }}>
                           {data.avg}
                         </span>
                         <EnthusiasmDots score={Math.round(data.avg)} />
                       </div>
-                      <div className="mt-0.5" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>n={data.count}</div>
+                      <div className="mt-0.5" style={labelMuted10}>n={data.count}</div>
                     </div>
                   ))}
               </div>
@@ -685,11 +654,11 @@ export default function AnalyticsPage() {
           {/* Objection Leaderboard */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <h3 className="text-xs font-normal  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
+              <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
                 Top Objection Topics
               </h3>
               {engagement.topObjections.length === 0 ? (
-                <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>No objections recorded yet.</p>
+                <p style={labelSmMuted}>No objections recorded yet.</p>
               ) : (
                 <div className="space-y-2">
                   {engagement.topObjections.map((obj, i) => {
@@ -697,20 +666,19 @@ export default function AnalyticsPage() {
                     const pct = (obj.count / maxCount) * 100;
                     return (
                       <div key={i} className="flex items-center gap-3">
-                        <span className="text-xs w-4 text-right shrink-0" style={{ color: 'var(--text-muted)' }}>
+                        <span className="text-xs w-4 text-right shrink-0" style={stTextMuted}>
                           {i + 1}.
                         </span>
                         <div className="flex-1 relative">
-                          <div className="h-7 rounded overflow-hidden" style={{ background: 'var(--surface-0)' }}>
+                          <div className="h-7 rounded overflow-hidden" style={stSurface0}>
                             <div
                               className="h-full rounded flex items-center px-2"
-                              style={{ width: `${Math.max(pct, 15)}%`, background: 'var(--danger-muted)' }}
-                            >
-                              <span className="truncate" style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{obj.topic}</span>
+                              style={{ width: `${Math.max(pct, 15)}%`, background: 'var(--danger-muted)' }}>
+                              <span className="truncate" style={{ fontSize: '11px', ...stTextSecondary }}>{obj.topic}</span>
                             </div>
                           </div>
                         </div>
-                        <span className="text-xs font-normal shrink-0 w-8 text-right" style={{ color: 'var(--text-primary)' }}>
+                        <span className="text-xs font-normal shrink-0 w-8 text-right" style={stTextPrimary}>
                           {obj.count}x
                         </span>
                       </div>
@@ -723,7 +691,7 @@ export default function AnalyticsPage() {
             <div className="space-y-4">
               {/* Objection Resolution */}
               <div>
-                <h3 className="text-xs font-normal  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
+                <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
                   Objection Resolution
                 </h3>
                 <div className="rounded-lg p-4">
@@ -734,25 +702,21 @@ export default function AnalyticsPage() {
                         color: engagement.objectionResolutionRate >= 70 ? 'var(--success)' :
                           engagement.objectionResolutionRate >= 40 ? 'var(--warning)' :
                           engagement.totalObjections === 0 ? 'var(--text-muted)' :
-                          'var(--danger)',
-                      }}
-                    >
+                          'var(--danger)', }}>
                       {engagement.totalObjections > 0 ? `${engagement.objectionResolutionRate}%` : '—'}
                     </span>
-                    <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>resolved</span>
+                    <span style={labelMuted}>resolved</span>
                   </div>
-                  <div className="mt-2 h-3 rounded-full overflow-hidden" style={{ background: 'var(--surface-0)' }}>
+                  <div className="mt-2 h-3 rounded-full overflow-hidden" style={stSurface0}>
                     <div
                       className="h-full rounded-full"
                       style={{
                         width: `${engagement.objectionResolutionRate}%`,
                         background: engagement.objectionResolutionRate >= 70 ? 'var(--success)' :
                           engagement.objectionResolutionRate >= 40 ? 'var(--warning)' :
-                          'var(--danger)',
-                      }}
-                    />
+                          'var(--danger)', }}/>
                   </div>
-                  <div className="mt-2" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                  <div className="mt-2" style={labelMuted10}>
                     {engagement.addressedObjections} of {engagement.totalObjections} objections addressed
                   </div>
                 </div>
@@ -760,26 +724,21 @@ export default function AnalyticsPage() {
 
               {/* Competitive Mentions */}
               <div>
-                <h3 className="text-xs font-normal  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
+                <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
                   Competitive Intelligence
                 </h3>
                 <div className="rounded-lg p-4">
-                  <div className="text-2xl font-normal" style={{ color: 'var(--text-primary)' }}>
+                  <div className="text-2xl font-normal" style={stTextPrimary}>
                     {engagement.competitiveMentions}
                   </div>
-                  <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>meetings with competitive mentions</div>
+                  <div style={labelMuted10}>meetings with competitive mentions</div>
                   {engagement.topCompetitors.length > 0 && (
                     <div className="mt-3 flex flex-wrap gap-1.5">
                       {engagement.topCompetitors.map(c => (
                         <span
                           key={c.name}
                           className="px-2 py-1 rounded"
-                          style={{
-                            fontSize: '10px',
-                            background: 'var(--surface-2)',
-                            color: 'var(--text-tertiary)',
-                          }}
-                        >
+                          style={{ fontSize: '10px', background: 'var(--surface-2)', color: 'var(--text-tertiary)' }}>
                           {c.name} ({c.count}x)
                         </span>
                       ))}
@@ -799,36 +758,33 @@ export default function AnalyticsPage() {
         title="Win / Loss Insights"
         icon={<Target className="w-4 h-4" />}
         isOpen={expandedSections.has('winloss')}
-        onToggle={() => toggleSection('winloss')}
-      >
+        onToggle={() => toggleSection('winloss')}>
         <div className="space-y-6">
           {/* Overview */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             <div className="rounded-lg p-3">
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Passed</div>
-              <div className="text-2xl font-normal" style={{ color: 'var(--text-primary)' }}>{winLoss.passedCount}</div>
+              <div style={labelMuted10}>Passed</div>
+              <div className="text-2xl font-normal" style={stTextPrimary}>{winLoss.passedCount}</div>
             </div>
             <div className="rounded-lg p-3">
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Dropped</div>
-              <div className="text-2xl font-normal" style={{ color: 'var(--text-muted)' }}>{winLoss.droppedCount}</div>
+              <div style={labelMuted10}>Dropped</div>
+              <div className="text-2xl font-normal" style={stTextMuted}>{winLoss.droppedCount}</div>
             </div>
             <div className="rounded-lg p-3">
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Attrition Rate</div>
+              <div style={labelMuted10}>Attrition Rate</div>
               <div
                 className="text-2xl font-normal"
                 style={{
                   color: winLoss.passRate > 30 ? 'var(--danger)' :
                     winLoss.passRate > 15 ? 'var(--warning)' :
                     winLoss.passRate > 0 ? 'var(--success)' :
-                    'var(--text-muted)',
-                }}
-              >
+                    'var(--text-muted)', }}>
                 {winLoss.passRate}%
               </div>
             </div>
             <div className="rounded-lg p-3">
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Active</div>
-              <div className="text-2xl font-normal" style={{ color: 'var(--text-secondary)' }}>
+              <div style={labelMuted10}>Active</div>
+              <div className="text-2xl font-normal" style={stTextSecondary}>
                 {summary.activeInvestors}
               </div>
             </div>
@@ -837,7 +793,7 @@ export default function AnalyticsPage() {
           {/* Outcomes by Tier */}
           {Object.keys(winLoss.outcomeByTier).length > 0 && (
             <div>
-              <h3 className="text-xs font-normal  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
+              <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
                 Outcomes by Tier
               </h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -847,33 +803,30 @@ export default function AnalyticsPage() {
                     const total = data.active + data.passed + data.dropped;
                     return (
                       <div key={tier} className="rounded-lg p-3">
-                        <div className="mb-2" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Tier {tier}</div>
-                        <div className="h-4 rounded-full overflow-hidden flex" style={{ background: 'var(--surface-0)' }}>
+                        <div className="mb-2" style={labelMuted10}>Tier {tier}</div>
+                        <div className="h-4 rounded-full overflow-hidden flex" style={stSurface0}>
                           {data.active > 0 && (
                             <div
                               className="h-full"
                               style={{ width: `${(data.active / total) * 100}%`, background: 'var(--success)' }}
-                              title={`Active: ${data.active}`}
-                            />
+                              title={`Active: ${data.active}`}/>
                           )}
                           {data.passed > 0 && (
                             <div
                               className="h-full"
                               style={{ width: `${(data.passed / total) * 100}%`, background: 'var(--danger)' }}
-                              title={`Passed: ${data.passed}`}
-                            />
+                              title={`Passed: ${data.passed}`}/>
                           )}
                           {data.dropped > 0 && (
                             <div
                               className="h-full"
                               style={{ width: `${(data.dropped / total) * 100}%`, background: 'var(--surface-3)' }}
-                              title={`Dropped: ${data.dropped}`}
-                            />
+                              title={`Dropped: ${data.dropped}`}/>
                           )}
                         </div>
                         <div className="flex justify-between mt-1.5" style={{ fontSize: '10px' }}>
-                          <span style={{ color: 'var(--text-secondary)' }}>{data.active} active</span>
-                          <span style={{ color: 'var(--text-primary)' }}>{data.passed + data.dropped} out</span>
+                          <span style={stTextSecondary}>{data.active} active</span>
+                          <span style={stTextPrimary}>{data.passed + data.dropped} out</span>
                         </div>
                       </div>
                     );
@@ -885,7 +838,7 @@ export default function AnalyticsPage() {
           {/* Outcomes by Type */}
           {Object.keys(winLoss.outcomeByType).length > 0 && (
             <div>
-              <h3 className="text-xs font-normal  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
+              <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
                 Outcomes by Investor Type
               </h3>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -896,18 +849,16 @@ export default function AnalyticsPage() {
                     const retentionRate = total > 0 ? Math.round((data.active / total) * 100) : 0;
                     return (
                       <div key={type} className="rounded-lg p-3">
-                        <div className="mb-1" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{TYPE_LABELS[type] || type}</div>
+                        <div className="mb-1" style={labelMuted10}>{TYPE_LABELS[type] || type}</div>
                         <div
                           className="text-lg font-normal"
                           style={{
                             color: retentionRate >= 80 ? 'var(--success)' :
                               retentionRate >= 50 ? 'var(--warning)' :
-                              'var(--danger)',
-                          }}
-                        >
+                              'var(--danger)', }}>
                           {retentionRate}%
                         </div>
-                        <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                        <div style={labelMuted10}>
                           {data.active} active, {data.passed} passed, {data.dropped} dropped
                         </div>
                       </div>
@@ -920,15 +871,15 @@ export default function AnalyticsPage() {
           {/* Top Pass Reasons */}
           {winLoss.topPassReasons.length > 0 && (
             <div>
-              <h3 className="text-xs font-normal  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
+              <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
                 Top Pass Reasons
               </h3>
               <div className="space-y-1.5">
                 {winLoss.topPassReasons.map((reason, i) => (
                   <div key={i} className="flex items-center gap-3 py-1">
-                    <span className="text-xs w-4 text-right" style={{ color: 'var(--text-muted)' }}>{i + 1}.</span>
-                    <span className="text-sm flex-1" style={{ color: 'var(--text-secondary)' }}>{reason.topic}</span>
-                    <span className="text-xs font-normal" style={{ color: 'var(--text-primary)' }}>{reason.count}x</span>
+                    <span className="text-xs w-4 text-right" style={stTextMuted}>{i + 1}.</span>
+                    <span className="text-sm flex-1" style={stTextSecondary}>{reason.topic}</span>
+                    <span className="text-xs font-normal" style={stTextPrimary}>{reason.count}x</span>
                   </div>
                 ))}
               </div>
@@ -937,7 +888,7 @@ export default function AnalyticsPage() {
 
           {/* Empty state */}
           {winLoss.passedCount === 0 && winLoss.droppedCount === 0 && (
-            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
+            <p style={labelSmMuted}>
               No investors have passed or dropped yet. Win/loss insights will appear as the process progresses.
             </p>
           )}
@@ -956,14 +907,14 @@ function SummaryCard({
   icon: React.ReactNode; color: string;
 }) {
   return (
-    <div className="rounded-xl px-4 py-3" style={{ background: 'var(--surface-1)' }}>
+    <div className="rounded-xl px-4 py-3" style={stSurface1}>
       <div className="flex items-center gap-2 mb-1">
         <span style={{ color }}>{icon}</span>
-        <span className="font-normal  tracking-wider" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{label}</span>
+        <span className="font-normal  tracking-wider" style={labelMuted10}>{label}</span>
       </div>
       <div className="flex items-baseline gap-1.5">
-        <span className="text-xl font-normal" style={{ color: 'var(--text-primary)' }}>{value}</span>
-        <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{sub}</span>
+        <span className="text-xl font-normal" style={stTextPrimary}>{value}</span>
+        <span style={labelMuted10}>{sub}</span>
       </div>
     </div>
   );
@@ -985,25 +936,24 @@ function CollapsibleSection({
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         className="w-full flex items-center justify-between px-5 py-4 transition-colors"
-        style={{ background: hovered ? 'var(--surface-1)' : 'transparent' }}
-      >
+        style={{ background: hovered ? 'var(--surface-1)' : 'transparent' }}>
         <div className="flex items-center gap-3">
-          <span style={{ color: 'var(--text-tertiary)' }}>{icon}</span>
-          <span className="text-sm font-normal" style={{ color: 'var(--text-primary)' }}>{title}</span>
+          <span style={stTextTertiary}>{icon}</span>
+          <span className="text-sm font-normal" style={stTextPrimary}>{title}</span>
           {badge && (
-            <span className="font-normal px-1.5 py-0.5 rounded-full" style={{ fontSize: '10px', background: badge.color, color: 'var(--text-primary)' }}>
+            <span className="font-normal px-1.5 py-0.5 rounded-full" style={{ fontSize: '10px', background: badge.color, ...stTextPrimary }}>
               {badge.text}
             </span>
           )}
         </div>
         {isOpen ? (
-          <ChevronUp className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
+          <ChevronUp className="w-4 h-4" style={stTextMuted} />
         ) : (
-          <ChevronDown className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
+          <ChevronDown className="w-4 h-4" style={stTextMuted} />
         )}
       </button>
       {isOpen && (
-        <div className="px-5 pb-5 pt-4" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+        <div className="px-5 pb-5 pt-4" style={stBorderTop}>
           {children}
         </div>
       )}
@@ -1023,17 +973,15 @@ function SparklineChart({
     <div className="flex items-end gap-1.5 h-24">
       {data.map((d, i) => (
         <div key={i} className="flex-1 flex flex-col items-center gap-1">
-          <span className="font-normal" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{d.count}</span>
-          <div className="w-full rounded-t relative" style={{ height: '72px', background: 'var(--surface-0)' }}>
+          <span className="font-normal" style={labelMuted10}>{d.count}</span>
+          <div className="w-full rounded-t relative" style={{ height: '72px', ...stSurface0 }}>
             <div
               className="absolute bottom-0 w-full rounded-t transition-all duration-500"
               style={{
                 height: `${Math.max((d.count / maxVal) * 100, d.count > 0 ? 8 : 0)}%`,
-                background: color,
-              }}
-            />
+                background: color, }}/>
           </div>
-          <span className="truncate w-full text-center" style={{ fontSize: '9px', color: 'var(--text-muted)' }}>{d.week}</span>
+          <span className="truncate w-full text-center" style={{ fontSize: '9px', ...stTextMuted }}>{d.week}</span>
         </div>
       ))}
     </div>
@@ -1055,9 +1003,7 @@ function EnthusiasmDots({ score, size = 'md' }: { score: number; size?: 'sm' | '
                 : score >= 3
                 ? 'var(--accent)'
                 : 'var(--text-muted)'
-              : 'var(--surface-2)',
-          }}
-        />
+              : 'var(--surface-2)', }}/>
       ))}
     </div>
   );
@@ -1097,17 +1043,16 @@ function RiskSection({
     <div className="rounded-lg p-4" style={{ border: `1px solid ${borderColor}` }}>
       <div className="flex items-center gap-2 mb-1">
         <div className="w-2 h-2 rounded-full" style={{ background: dotColor }} />
-        <h4 className="text-sm font-normal" style={{ color: 'var(--text-primary)' }}>{title}</h4>
+        <h4 className="text-sm font-normal" style={stTextPrimary}>{title}</h4>
         {count > 0 && (
           <span
             className="font-normal px-1.5 py-0.5 rounded-full"
-            style={{ fontSize: '10px', background: badgeBg, color: badgeText }}
-          >
+            style={{ fontSize: '10px', background: badgeBg, color: badgeText }}>
             {count}
           </span>
         )}
       </div>
-      <p className="mb-3" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{subtitle}</p>
+      <p className="mb-3" style={labelMuted10}>{subtitle}</p>
       {children}
     </div>
   );
@@ -1128,17 +1073,16 @@ function StaleInvestorRow({ inv }: { inv: { id: string; name: string; status: st
       className="flex items-center justify-between py-2 px-3 rounded-lg transition-colors group"
       style={{ background: hovered ? 'var(--surface-1)' : 'transparent' }}
       onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
+      onMouseLeave={() => setHovered(false)}>
       <div className="flex items-center gap-3 min-w-0">
         <span className="px-1.5 py-0.5 rounded" style={{ fontSize: '10px', ...tierStyle }}>
           T{inv.tier}
         </span>
-        <span className="text-sm font-normal truncate" style={{ color: 'var(--text-primary)' }}>{inv.name}</span>
-        <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{STAGE_LABELS[inv.status]}</span>
+        <span className="text-sm font-normal truncate" style={stTextPrimary}>{inv.name}</span>
+        <span style={labelMuted10}>{STAGE_LABELS[inv.status]}</span>
       </div>
       <div className="flex items-center gap-2 shrink-0">
-        <span className="text-xs" style={{ color: 'var(--text-primary)' }}>
+        <span className="text-xs" style={stTextPrimary}>
           {inv.daysSinceLastMeeting !== null
             ? `${inv.daysSinceLastMeeting}d ago`
             : 'No meetings'}
@@ -1162,15 +1106,14 @@ function DecliningEnthusiasmRow({ inv }: { inv: { id: string; name: string; tier
       className="flex items-center justify-between py-2 px-3 rounded-lg transition-colors group"
       style={{ background: hovered ? 'var(--surface-1)' : 'transparent' }}
       onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
+      onMouseLeave={() => setHovered(false)}>
       <div className="flex items-center gap-3 min-w-0">
         <span className="px-1.5 py-0.5 rounded" style={{ fontSize: '10px', ...tierStyle }}>T{inv.tier}</span>
-        <span className="text-sm font-normal truncate" style={{ color: 'var(--text-primary)' }}>{inv.name}</span>
+        <span className="text-sm font-normal truncate" style={stTextPrimary}>{inv.name}</span>
       </div>
       <div className="flex items-center gap-2 shrink-0">
         <EnthusiasmDots score={inv.previousScore} size="sm" />
-        <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{'>'}</span>
+        <span className="text-xs" style={stTextMuted}>{'>'}</span>
         <EnthusiasmDots score={inv.currentScore} size="sm" />
         <ArrowRight className="w-3 h-3 ml-1 transition-colors" style={{ color: hovered ? 'var(--text-tertiary)' : 'var(--text-muted)' }} />
       </div>
@@ -1187,8 +1130,7 @@ function HighTierStuckRow({ inv }: { inv: { id: string; name: string; tier: numb
       className="flex items-center justify-between py-2 px-3 rounded-lg transition-colors group"
       style={{ background: hovered ? 'var(--surface-1)' : 'transparent' }}
       onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
+      onMouseLeave={() => setHovered(false)}>
       <div className="flex items-center gap-3 min-w-0">
         <span
           className="px-1.5 py-0.5 rounded"
@@ -1196,16 +1138,14 @@ function HighTierStuckRow({ inv }: { inv: { id: string; name: string; tier: numb
             fontSize: '10px',
             background: 'color-mix(in srgb, var(--accent) 20%, transparent)',
             color: 'var(--accent)',
-            border: '1px solid color-mix(in srgb, var(--accent) 30%, transparent)',
-          }}
-        >
+            border: '1px solid color-mix(in srgb, var(--accent) 30%, transparent)', }}>
           T{inv.tier}
         </span>
-        <span className="text-sm font-normal truncate" style={{ color: 'var(--text-primary)' }}>{inv.name}</span>
-        <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{STAGE_LABELS[inv.status]}</span>
+        <span className="text-sm font-normal truncate" style={stTextPrimary}>{inv.name}</span>
+        <span style={labelMuted10}>{STAGE_LABELS[inv.status]}</span>
       </div>
       <div className="flex items-center gap-2 shrink-0">
-        <span className="text-xs" style={{ color: 'var(--text-tertiary)' }}>
+        <span className="text-xs" style={stTextTertiary}>
           {inv.daysInStage}d in stage
         </span>
         <ArrowRight className="w-3 h-3 transition-colors" style={{ color: hovered ? 'var(--text-tertiary)' : 'var(--text-muted)' }} />

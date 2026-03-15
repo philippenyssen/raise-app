@@ -80,8 +80,106 @@ export const stTextTertiary: React.CSSProperties = { color: 'var(--text-tertiary
 export const stTextSecondary: React.CSSProperties = { color: 'var(--text-secondary)' };
 export const stTextPrimary: React.CSSProperties = { color: 'var(--text-primary)' };
 
+// Accent color
+export const stAccent: React.CSSProperties = { color: 'var(--accent)' };
+
+// Font-size constants
+export const stFontXs: React.CSSProperties = { fontSize: 'var(--font-size-xs)' } as const;
+export const stFontSm: React.CSSProperties = { fontSize: 'var(--font-size-sm)' } as const;
+
+// Background constants
+export const stSurface0: React.CSSProperties = { background: 'var(--surface-0)' } as const;
+export const stSurface1: React.CSSProperties = { background: 'var(--surface-1)' } as const;
+export const stSurface2: React.CSSProperties = { background: 'var(--surface-2)' } as const;
+export const stBgSuccess: React.CSSProperties = { background: 'var(--success)' } as const;
+export const stBgDanger: React.CSSProperties = { background: 'var(--danger)' } as const;
+export const stBgMuted: React.CSSProperties = { background: 'var(--text-muted)' } as const;
+export const stAccentBg: React.CSSProperties = { background: 'var(--accent-muted)' } as const;
+
+// Border constants
+export const stBorderTop: React.CSSProperties = { borderTop: '1px solid var(--border-subtle)' } as const;
+export const stBorderSubtle: React.CSSProperties = { borderColor: 'var(--border-subtle)' } as const;
+
+// Combined style constants
+export const stAccentBadge: React.CSSProperties = { background: 'var(--accent-muted)', color: 'var(--accent)' } as const;
+export const stSurface1Border: React.CSSProperties = { background: 'var(--surface-1)', borderBottom: '1px solid var(--border-subtle)' } as const;
+export const labelMuted10: React.CSSProperties = { fontSize: '10px', color: 'var(--text-muted)' } as const;
+export const labelSmMuted: React.CSSProperties = { fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' } as const;
+
 // Label style constants (font-size-xs + color)
 export const labelTertiary: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' };
 export const labelSecondary: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' };
 export const labelAccent: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--accent)' };
 export const labelMuted: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' };
+
+// Probability color: 0.6/0.3 thresholds on 0-1 scale
+export function probColor(prob: number): string {
+  if (prob >= 0.6) return 'var(--success)';
+  if (prob >= 0.3) return 'var(--warning)';
+  return 'var(--danger)';
+}
+
+// Velocity color (neutral)
+export function velocityColor(_score: number): string {
+  return 'var(--text-primary)';
+}
+
+// Tracking status color (neutral)
+export function trackingColor(_status: string): string {
+  return 'var(--text-secondary)';
+}
+
+// Tracking status background (neutral)
+export function trackingBg(_status: string): string {
+  return 'var(--surface-2)';
+}
+
+// Delta color: positive / negative / zero
+export function deltaColor(delta: number): string {
+  if (delta > 0) return 'var(--success)';
+  if (delta < 0) return 'var(--danger)';
+  return 'var(--text-muted)';
+}
+
+// Confidence color: high / medium / low
+export function confidenceColor(c: 'high' | 'medium' | 'low'): string {
+  if (c === 'high') return 'var(--success)';
+  if (c === 'medium') return 'var(--warning)';
+  return 'var(--danger)';
+}
+
+// Confidence background: high / medium / low
+export function confidenceBg(c: 'high' | 'medium' | 'low'): string {
+  if (c === 'high') return 'var(--success-muted)';
+  if (c === 'medium') return 'var(--warning-muted)';
+  return 'var(--danger-muted)';
+}
+
+// Intensity color: 70/40/0 thresholds
+export function getIntensityColor(intensity: number): string {
+  if (intensity >= 70) return 'var(--danger)';
+  if (intensity >= 40) return 'var(--warning)';
+  if (intensity > 0) return 'var(--accent)';
+  return 'var(--text-muted)';
+}
+
+// Health color: 90/70 thresholds
+export function getHealthColor(rate: number): string {
+  if (rate >= 90) return 'var(--success)';
+  if (rate >= 70) return 'var(--warning)';
+  return 'var(--danger)';
+}
+
+// Health background: 90/70 thresholds
+export function getHealthBg(rate: number): string {
+  if (rate >= 90) return 'var(--success-muted)';
+  if (rate >= 70) return 'var(--warning-muted)';
+  return 'var(--danger-muted)';
+}
+
+// Strength/significance color: strong/moderate/weak or high/medium/low
+export function strengthColor(s: 'strong' | 'moderate' | 'weak' | 'high' | 'medium' | 'low'): string {
+  if (s === 'strong' || s === 'high') return 'var(--success)';
+  if (s === 'moderate' || s === 'medium') return 'var(--warning)';
+  return 'var(--text-muted)';
+}

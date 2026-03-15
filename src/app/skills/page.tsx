@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Activity, AlertTriangle, CheckCircle2, XCircle, ChevronDown, ChevronRight } from 'lucide-react';
+import { getHealthColor, getHealthBg } from '@/lib/styles';
 
 interface SkillHealth {
   skill_name: string;
@@ -28,18 +29,6 @@ interface SkillExecution {
   fields_expected: number;
   user_accepted: number;
   created_at: string;
-}
-
-function getHealthColor(rate: number): string {
-  if (rate >= 90) return 'var(--success)';
-  if (rate >= 70) return 'var(--warning)';
-  return 'var(--danger)';
-}
-
-function getHealthBg(rate: number): string {
-  if (rate >= 90) return 'var(--success-muted)';
-  if (rate >= 70) return 'var(--warning-muted)';
-  return 'var(--danger-muted)';
 }
 
 export default function SkillsPage() {

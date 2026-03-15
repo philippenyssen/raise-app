@@ -9,6 +9,11 @@ import {
   ThumbsUp, ThumbsDown, Activity, Copy, Check, Calendar, ExternalLink,
 } from 'lucide-react';
 import { fmtDate } from '@/lib/format';
+import {
+  stTextMuted, stTextTertiary, stTextSecondary, stTextPrimary, stAccent, stFontXs,
+  stSurface0, stSurface1, stSurface2, stSurface1Border, stBgSuccess, stBgDanger,
+  stBgMuted, stAccentBg, stBorderTop, stBorderSubtle, labelMuted10,
+} from '@/lib/styles';
 
 interface ObjectionRecord {
   id: string;
@@ -156,11 +161,9 @@ function CopyButton({ text }: { text: string }) {
         fontSize: '10px',
         fontWeight: 400,
         color: copied ? 'var(--success)' : 'var(--text-muted)',
-        transition: 'color 150ms ease',
-      }}
+        transition: 'color 150ms ease', }}
       onMouseEnter={e => { if (!copied) (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; }}
-      onMouseLeave={e => { if (!copied) (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}
-    >
+      onMouseLeave={e => { if (!copied) (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}>
       {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
       {copied ? 'Copied' : 'Copy'}
     </button>
@@ -172,17 +175,17 @@ function BestResponseCard({ response }: { response: ObjectionRecord }) {
     <div className="mx-4 mt-3 p-3 rounded-lg" style={{ background: 'var(--success-muted)', border: '1px solid var(--accent-20)' }}>
       <div className="flex items-center justify-between mb-1">
         <div className="flex items-center gap-2">
-          <CheckCircle2 className="w-3.5 h-3.5" style={{ color: 'var(--text-secondary)' }} />
-          <span className="text-xs font-normal" style={{ color: 'var(--text-secondary)' }}>Best Response</span>
+          <CheckCircle2 className="w-3.5 h-3.5" style={stTextSecondary} />
+          <span className="text-xs font-normal" style={stTextSecondary}>Best Response</span>
           {response.investor_name && (
-            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+            <span className="text-xs" style={stTextMuted}>
               (worked with {response.investor_name})
             </span>
           )}
         </div>
         <CopyButton text={response.response_text} />
       </div>
-      <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+      <p className="text-sm leading-relaxed" style={stTextSecondary}>
         {response.response_text}
       </p>
     </div>
@@ -279,10 +282,10 @@ export default function ObjectionsPage() {
 
   function EffectivenessBar({ dist }: { dist: TopicGroup['effectiveness_distribution'] }) {
     const total = dist.effective + dist.partially_effective + dist.ineffective + dist.unknown;
-    if (total === 0) return <div className="h-2 rounded-full" style={{ background: 'var(--surface-2)' }} />;
+    if (total === 0) return <div className="h-2 rounded-full" style={stSurface2} />;
     const pct = (n: number) => Math.round((n / total) * 100);
     return (
-      <div className="flex h-2 rounded-full overflow-hidden" style={{ background: 'var(--surface-2)' }}>
+      <div className="flex h-2 rounded-full overflow-hidden" style={stSurface2}>
         {dist.effective > 0 && (
           <div style={{ width: `${pct(dist.effective)}%`, background: 'var(--success)' }} />
         )}
@@ -300,16 +303,16 @@ export default function ObjectionsPage() {
   }
 
   function DeltaIcon({ delta }: { delta: number }) {
-    if (delta > 0) return <TrendingUp className="w-3 h-3" style={{ color: 'var(--text-secondary)' }} />;
-    if (delta < 0) return <TrendingDown className="w-3 h-3" style={{ color: 'var(--text-primary)' }} />;
-    return <Minus className="w-3 h-3" style={{ color: 'var(--text-muted)' }} />;
+    if (delta > 0) return <TrendingUp className="w-3 h-3" style={stTextSecondary} />;
+    if (delta < 0) return <TrendingDown className="w-3 h-3" style={stTextPrimary} />;
+    return <Minus className="w-3 h-3" style={stTextMuted} />;
   }
 
   function ScoreBar({ score, size = 'sm' }: { score: number; size?: 'sm' | 'md' }) {
     const color = score >= 70 ? 'var(--success)' : score >= 40 ? 'var(--warning)' : 'var(--danger)';
     const height = size === 'md' ? 'h-2.5' : 'h-1.5';
     return (
-      <div className={`flex-1 ${height} rounded-full overflow-hidden`} style={{ background: 'var(--surface-2)' }}>
+      <div className={`flex-1 ${height} rounded-full overflow-hidden`} style={stSurface2}>
         <div style={{ width: `${score}%`, background: color, height: '100%', transition: 'width 300ms ease' }} />
       </div>
     );
@@ -335,11 +338,11 @@ export default function ObjectionsPage() {
       <div className="space-y-6">
         <div>
           <h1 className="page-title">Objection Playbook</h1>
-          <div className="h-4 w-64 rounded animate-pulse mt-1" style={{ background: 'var(--surface-2)' }} />
+          <div className="h-4 w-64 rounded animate-pulse mt-1" style={stSurface2} />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {[1, 2, 3].map(i => (
-            <div key={i} className="h-32 rounded-xl animate-pulse" style={{ background: 'var(--surface-1)' }} />
+            <div key={i} className="h-32 rounded-xl animate-pulse" style={stSurface1} />
           ))}
         </div>
       </div>
@@ -356,14 +359,13 @@ export default function ObjectionsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="page-title">Objection Playbook</h1>
-          <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
+          <p className="text-sm mt-1" style={stTextMuted}>
             {total_objections} objection{total_objections !== 1 ? 's' : ''} tracked across {playbook.length} topic{playbook.length !== 1 ? 's' : ''}
           </p>
         </div>
         <button
           onClick={() => { loadData(); if (effectivenessData) loadEffectivenessData(); }}
-          className="btn btn-secondary btn-sm"
-        >
+          className="btn btn-secondary btn-sm">
           Refresh
         </button>
       </div>
@@ -381,9 +383,7 @@ export default function ObjectionsPage() {
             style={{
               borderBottom: `2px solid ${tab === t.key ? 'var(--accent)' : 'transparent'}`,
               color: tab === t.key ? 'var(--text-primary)' : 'var(--text-muted)',
-              transition: 'color 150ms ease',
-            }}
-          >
+              transition: 'color 150ms ease', }}>
             <t.icon className="w-3.5 h-3.5" />
             {t.label}
           </button>
@@ -396,10 +396,10 @@ export default function ObjectionsPage() {
           {/* Main content -- 3 cols */}
           <div className="xl:col-span-3 space-y-4">
             {playbook.length === 0 ? (
-              <div className="rounded-xl p-12 text-center space-y-3" style={{ background: 'var(--surface-0)' }}>
+              <div className="rounded-xl p-12 text-center space-y-3" style={stSurface0}>
                 <MessageCircleWarning className="w-10 h-10 mx-auto" style={{ color: 'var(--border-default)' }} />
-                <p style={{ color: 'var(--text-muted)' }}>No objections tracked yet.</p>
-                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                <p style={stTextMuted}>No objections tracked yet.</p>
+                <p className="text-xs" style={stTextMuted}>
                   Log meetings with AI analysis enabled to automatically capture investor objections.
                 </p>
               </div>
@@ -414,8 +414,7 @@ export default function ObjectionsPage() {
                     <button
                       onClick={() => toggleTopic(group.topic)}
                       className="w-full flex items-center justify-between p-4 transition-all"
-                      style={{ ...color.bg }}
-                    >
+                      style={{ ...color.bg }}>
                       <div className="flex items-center gap-3">
                         {isExpanded ? (
                           <ChevronDown className="w-4 h-4" style={color.text} />
@@ -425,7 +424,7 @@ export default function ObjectionsPage() {
                         <span className="text-sm font-normal  tracking-wide" style={color.text}>
                           {group.topic}
                         </span>
-                        <span className="text-xs px-2 py-0.5 rounded-full" style={{ color: 'var(--text-muted)', background: 'var(--fg-80)' }}>
+                        <span className="text-xs px-2 py-0.5 rounded-full" style={{ ...stTextMuted, background: 'var(--fg-80)' }}>
                           {group.count} objection{group.count !== 1 ? 's' : ''}
                         </span>
                       </div>
@@ -433,9 +432,9 @@ export default function ObjectionsPage() {
                         <div className="w-32">
                           <EffectivenessBar dist={group.effectiveness_distribution} />
                         </div>
-                        <div className="flex gap-2" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                        <div className="flex gap-2" style={labelMuted10}>
                           <span className="flex items-center gap-1">
-                            <span className="w-2 h-2 rounded-full" style={{ background: 'var(--success)' }} />
+                            <span className="w-2 h-2 rounded-full" style={stBgSuccess} />
                             {group.effectiveness_distribution.effective}
                           </span>
                           <span className="flex items-center gap-1">
@@ -443,11 +442,11 @@ export default function ObjectionsPage() {
                             {group.effectiveness_distribution.partially_effective}
                           </span>
                           <span className="flex items-center gap-1">
-                            <span className="w-2 h-2 rounded-full" style={{ background: 'var(--danger)' }} />
+                            <span className="w-2 h-2 rounded-full" style={stBgDanger} />
                             {group.effectiveness_distribution.ineffective}
                           </span>
                           <span className="flex items-center gap-1">
-                            <span className="w-2 h-2 rounded-full" style={{ background: 'var(--text-muted)' }} />
+                            <span className="w-2 h-2 rounded-full" style={stBgMuted} />
                             {group.effectiveness_distribution.unknown}
                           </span>
                         </div>
@@ -463,16 +462,16 @@ export default function ObjectionsPage() {
                     {isExpanded && (
                       <div className="p-4 space-y-3">
                         {group.objections.map((obj) => (
-                          <div key={obj.id} className="rounded-lg p-3 space-y-2" style={{ background: 'var(--surface-1)' }}>
+                          <div key={obj.id} className="rounded-lg p-3 space-y-2" style={stSurface1}>
                             <div className="flex items-start justify-between gap-3">
                               <div className="flex-1 space-y-1">
-                                <p className="text-sm" style={{ color: 'var(--text-primary)' }}>{obj.objection_text}</p>
+                                <p className="text-sm" style={stTextPrimary}>{obj.objection_text}</p>
                                 <div className="flex items-center gap-2 flex-wrap">
                                   {obj.investor_name && obj.investor_id && (
                                     <Link
                                       href={`/investors/${obj.investor_id}`}
                                       className="flex items-center gap-1 text-xs transition-colors"
-                                      style={{ color: 'var(--accent)', textDecoration: 'none' }}
+                                      style={{ ...stAccent, textDecoration: 'none' }}
                                       onClick={e => e.stopPropagation()}
                                       onMouseEnter={e => { (e.currentTarget as HTMLElement).style.textDecoration = 'underline'; }}
                                       onMouseLeave={e => { (e.currentTarget as HTMLElement).style.textDecoration = 'none'; }}
@@ -482,18 +481,17 @@ export default function ObjectionsPage() {
                                     </Link>
                                   )}
                                   {obj.investor_name && !obj.investor_id && (
-                                    <span className="flex items-center gap-1 text-xs" style={{ color: 'var(--text-muted)' }}>
+                                    <span className="flex items-center gap-1 text-xs" style={stTextMuted}>
                                       <User className="w-3 h-3" />
                                       {obj.investor_name}
                                     </span>
                                   )}
-                                  <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                                  <span className="text-xs" style={stTextMuted}>
                                     {fmtDate(obj.created_at)}
                                   </span>
                                   <span
                                     className="text-xs px-1.5 py-0.5 rounded"
-                                    style={EFFECTIVENESS_BADGE[obj.effectiveness]?.style}
-                                  >
+                                    style={EFFECTIVENESS_BADGE[obj.effectiveness]?.style}>
                                     {EFFECTIVENESS_BADGE[obj.effectiveness]?.label}
                                   </span>
                                   {obj.next_meeting_enthusiasm_delta !== 0 && (
@@ -509,10 +507,8 @@ export default function ObjectionsPage() {
                               {editingId !== obj.id && (
                                 <button
                                   onClick={() => startEdit(obj)}
-                                  className="p-1.5 rounded transition-colors shrink-0"
-                                  style={{ color: 'var(--text-muted)' }}
-                                  title="Edit response"
-                                >
+                                  className="p-1.5 rounded transition-colors shrink-0" style={stTextMuted}
+                                  title="Edit response">
                                   <Edit3 className="w-3.5 h-3.5" />
                                 </button>
                               )}
@@ -526,15 +522,13 @@ export default function ObjectionsPage() {
                                   onChange={e => setEditResponse(e.target.value)}
                                   rows={3}
                                   placeholder="What response worked or would work for this objection?"
-                                  className="input"
-                                />
+                                  className="input"/>
                                 <div className="flex items-center gap-3">
                                   <select
                                     value={editEffectiveness}
                                     onChange={e => setEditEffectiveness(e.target.value)}
                                     className="input"
-                                    style={{ width: 'auto', fontSize: 'var(--font-size-xs)', padding: '0.375rem 0.5rem' }}
-                                  >
+                                    style={{ width: 'auto', ...stFontXs, padding: '0.375rem 0.5rem' }}>
                                     <option value="unknown">Unknown</option>
                                     <option value="effective">Effective</option>
                                     <option value="partially_effective">Partially Effective</option>
@@ -543,23 +537,21 @@ export default function ObjectionsPage() {
                                   <button
                                     onClick={() => saveEdit(obj.id)}
                                     disabled={saving}
-                                    className="btn btn-primary btn-sm"
-                                  >
+                                    className="btn btn-primary btn-sm">
                                     <Save className="w-3 h-3" />
                                     {saving ? 'Saving...' : 'Save'}
                                   </button>
                                   <button
                                     onClick={() => setEditingId(null)}
-                                    className="btn btn-ghost btn-sm"
-                                  >
+                                    className="btn btn-ghost btn-sm">
                                     <X className="w-3.5 h-3.5" />
                                   </button>
                                 </div>
                               </div>
                             ) : obj.response_text ? (
-                              <div className="pt-1" style={{ borderTop: '1px solid var(--border-subtle)' }}>
-                                <p className="text-xs mb-0.5" style={{ color: 'var(--text-muted)' }}>Response:</p>
-                                <p className="text-sm leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>{obj.response_text}</p>
+                              <div className="pt-1" style={stBorderTop}>
+                                <p className="text-xs mb-0.5" style={stTextMuted}>Response:</p>
+                                <p className="text-sm leading-relaxed" style={stTextTertiary}>{obj.response_text}</p>
                               </div>
                             ) : null}
                           </div>
@@ -577,27 +569,26 @@ export default function ObjectionsPage() {
             {/* Top Unresolved */}
             <div className="rounded-xl p-4 space-y-3">
               <div className="flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4" style={{ color: 'var(--text-tertiary)' }} />
-                <h3 className="text-xs font-normal  tracking-wide" style={{ color: 'var(--text-tertiary)' }}>Top Unresolved</h3>
+                <AlertTriangle className="w-4 h-4" style={stTextTertiary} />
+                <h3 className="text-xs font-normal  tracking-wide" style={stTextTertiary}>Top Unresolved</h3>
               </div>
               {unresolved.length === 0 ? (
-                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>All objections have effective responses.</p>
+                <p className="text-xs" style={stTextMuted}>All objections have effective responses.</p>
               ) : (
                 <div className="space-y-2">
                   {unresolved.map((obj, i) => {
                     const color = getTopicColor(obj.objection_topic);
                     return (
-                      <div key={i} className="p-2 rounded-lg space-y-1" style={{ background: 'var(--surface-1)' }}>
-                        <p className="text-xs line-clamp-2" style={{ color: 'var(--text-secondary)' }}>{obj.objection_text}</p>
+                      <div key={i} className="p-2 rounded-lg space-y-1" style={stSurface1}>
+                        <p className="text-xs line-clamp-2" style={stTextSecondary}>{obj.objection_text}</p>
                         <div className="flex items-center justify-between gap-2">
                           <div className="flex items-center gap-2">
                             <span
                               className="px-1.5 py-0.5 rounded"
-                              style={{ fontSize: '10px', ...color.bg, ...color.text }}
-                            >
+                              style={{ fontSize: '10px', ...color.bg, ...color.text }}>
                               {obj.objection_topic}
                             </span>
-                            <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{obj.count}x raised</span>
+                            <span style={labelMuted10}>{obj.count}x raised</span>
                           </div>
                           <button
                             className="transition-colors"
@@ -614,11 +605,9 @@ export default function ObjectionsPage() {
                               color: 'var(--accent)',
                               padding: '1px 4px',
                               borderRadius: 'var(--radius-sm)',
-                              whiteSpace: 'nowrap',
-                            }}
+                              whiteSpace: 'nowrap', }}
                             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.textDecoration = 'underline'; }}
-                            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.textDecoration = 'none'; }}
-                          >
+                            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.textDecoration = 'none'; }}>
                             Fix →
                           </button>
                         </div>
@@ -632,11 +621,11 @@ export default function ObjectionsPage() {
             {/* Effectiveness summary */}
             <div className="rounded-xl p-4 space-y-3">
               <div className="flex items-center gap-2">
-                <Shield className="w-4 h-4" style={{ color: 'var(--accent)' }} />
-                <h3 className="text-xs font-normal  tracking-wide" style={{ color: 'var(--text-tertiary)' }}>Coverage</h3>
+                <Shield className="w-4 h-4" style={stAccent} />
+                <h3 className="text-xs font-normal  tracking-wide" style={stTextTertiary}>Coverage</h3>
               </div>
               {playbook.length === 0 ? (
-                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>No data yet.</p>
+                <p className="text-xs" style={stTextMuted}>No data yet.</p>
               ) : (
                 <div className="space-y-2">
                   {playbook.map((group) => {
@@ -648,12 +637,11 @@ export default function ObjectionsPage() {
                     return (
                       <div key={group.topic} className="flex items-center gap-2">
                         <span className="w-20 truncate" style={{ fontSize: '10px', ...color.text }}>{group.topic}</span>
-                        <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--surface-2)' }}>
+                        <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={stSurface2}>
                           <div
-                            style={{ width: `${pct}%`, background: barColor, height: '100%' }}
-                          />
+                            style={{ width: `${pct}%`, background: barColor, height: '100%' }}/>
                         </div>
-                        <span className="w-8 text-right" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{pct}%</span>
+                        <span className="w-8 text-right" style={labelMuted10}>{pct}%</span>
                       </div>
                     );
                   })}
@@ -664,19 +652,17 @@ export default function ObjectionsPage() {
             {/* Meeting Prep */}
             <div className="rounded-xl p-4 space-y-3">
               <div className="flex items-center gap-2">
-                <Target className="w-4 h-4" style={{ color: 'var(--text-tertiary)' }} />
-                <h3 className="text-xs font-normal  tracking-wide" style={{ color: 'var(--text-tertiary)' }}>Meeting Prep</h3>
+                <Target className="w-4 h-4" style={stTextTertiary} />
+                <h3 className="text-xs font-normal  tracking-wide" style={stTextTertiary}>Meeting Prep</h3>
               </div>
-              <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Select an investor to see their objection history and what worked with similar investors.</p>
+              <p className="text-xs" style={stTextMuted}>Select an investor to see their objection history and what worked with similar investors.</p>
               <select
                 value={selectedInvestor}
                 onChange={e => {
                   setSelectedInvestor(e.target.value);
-                  loadInvestorObjections(e.target.value);
-                }}
+                  loadInvestorObjections(e.target.value); }}
                 className="input"
-                style={{ fontSize: 'var(--font-size-xs)', padding: '0.375rem 0.5rem' }}
-              >
+                style={{ ...stFontXs, padding: '0.375rem 0.5rem' }}>
                 <option value="">Select investor...</option>
                 {investors.map(inv => (
                   <option key={inv.id} value={inv.id}>{inv.name}</option>
@@ -684,17 +670,17 @@ export default function ObjectionsPage() {
               </select>
 
               {loadingInvestor && (
-                <div className="h-4 w-40 rounded animate-pulse" style={{ background: 'var(--surface-2)' }} />
+                <div className="h-4 w-40 rounded animate-pulse" style={stSurface2} />
               )}
 
               {selectedInvestor && !loadingInvestor && investorObjections.length === 0 && (
-                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>No objections recorded for this investor.</p>
+                <p className="text-xs" style={stTextMuted}>No objections recorded for this investor.</p>
               )}
 
               {selectedInvestor && !loadingInvestor && investorObjections.length > 0 && (
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <p className=" tracking-wide" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                    <p className=" tracking-wide" style={labelMuted10}>
                       {investorObjections.length} objection{investorObjections.length !== 1 ? 's' : ''} from this investor
                     </p>
                     <div className="flex items-center gap-1">
@@ -708,8 +694,7 @@ export default function ObjectionsPage() {
                           textDecoration: 'none',
                           padding: '2px 6px',
                           borderRadius: 'var(--radius-sm)',
-                          background: 'var(--accent-muted)',
-                        }}
+                          background: 'var(--accent-muted)', }}
                         onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--accent-8)'; }}
                         onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--accent-muted)'; }}
                       >
@@ -726,11 +711,9 @@ export default function ObjectionsPage() {
                           textDecoration: 'none',
                           padding: '2px 6px',
                           borderRadius: 'var(--radius-sm)',
-                          background: 'var(--surface-2)',
-                        }}
+                          background: 'var(--surface-2)', }}
                         onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; }}
-                        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}
-                      >
+                        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}>
                         <ExternalLink className="w-3 h-3" />
                         Profile
                       </Link>
@@ -740,24 +723,22 @@ export default function ObjectionsPage() {
                     const color = getTopicColor(obj.objection_topic);
                     const effBadge = EFFECTIVENESS_BADGE[obj.effectiveness];
                     return (
-                      <div key={obj.id} className="p-2 rounded-lg space-y-1" style={{ background: 'var(--surface-1)' }}>
-                        <p className="text-xs line-clamp-2" style={{ color: 'var(--text-secondary)' }}>{obj.objection_text}</p>
+                      <div key={obj.id} className="p-2 rounded-lg space-y-1" style={stSurface1}>
+                        <p className="text-xs line-clamp-2" style={stTextSecondary}>{obj.objection_text}</p>
                         <div className="flex items-center gap-1.5 flex-wrap">
                           <span
                             className="px-1 py-0.5 rounded"
-                            style={{ fontSize: '10px', ...color.bg, ...color.text }}
-                          >
+                            style={{ fontSize: '10px', ...color.bg, ...color.text }}>
                             {obj.objection_topic}
                           </span>
                           <span
                             className="px-1 py-0.5 rounded"
-                            style={{ fontSize: '10px', ...effBadge.style }}
-                          >
+                            style={{ fontSize: '10px', ...effBadge.style }}>
                             {effBadge.label}
                           </span>
                         </div>
                         {obj.response_text && (
-                          <p className="leading-relaxed mt-1" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                          <p className="leading-relaxed mt-1" style={labelMuted10}>
                             Response: {obj.response_text}
                           </p>
                         )}
@@ -775,9 +756,9 @@ export default function ObjectionsPage() {
                     if (bestFromPlaybook.length === 0) return null;
 
                     return (
-                      <div className="mt-3 pt-3 space-y-2" style={{ borderTop: '1px solid var(--border-subtle)' }}>
-                        <p className=" tracking-wide flex items-center gap-1" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
-                          <CheckCircle2 className="w-3 h-3" style={{ color: 'var(--text-secondary)' }} />
+                      <div className="mt-3 pt-3 space-y-2" style={stBorderTop}>
+                        <p className=" tracking-wide flex items-center gap-1" style={labelMuted10}>
+                          <CheckCircle2 className="w-3 h-3" style={stTextSecondary} />
                           What worked with similar investors
                         </p>
                         {bestFromPlaybook.map(({ topic, response }) => {
@@ -786,13 +767,12 @@ export default function ObjectionsPage() {
                             <div key={topic} className="p-2 rounded-lg space-y-1" style={{ background: 'var(--success-muted)', border: '1px solid var(--accent-15)' }}>
                               <span
                                 className="px-1 py-0.5 rounded"
-                                style={{ fontSize: '10px', ...color.bg, ...color.text }}
-                              >
+                                style={{ fontSize: '10px', ...color.bg, ...color.text }}>
                                 {topic}
                               </span>
-                              <p className="text-xs leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>{response.response_text}</p>
+                              <p className="text-xs leading-relaxed" style={stTextTertiary}>{response.response_text}</p>
                               {response.investor_name && (
-                                <p style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                                <p style={labelMuted10}>
                                   Worked with {response.investor_name}
                                 </p>
                               )}
@@ -820,8 +800,7 @@ export default function ObjectionsPage() {
           setHoveredRow={setHoveredRow}
           ScoreBar={ScoreBar}
           TrendBadge={TrendBadge}
-          getTopicColor={getTopicColor}
-        />
+          getTopicColor={getTopicColor}/>
       )}
     </div>
   );
@@ -856,7 +835,7 @@ function EffectivenessTab({
     return (
       <div className="space-y-4">
         {[1, 2, 3, 4].map(i => (
-          <div key={i} className="h-24 rounded-xl animate-pulse" style={{ background: 'var(--surface-1)' }} />
+          <div key={i} className="h-24 rounded-xl animate-pulse" style={stSurface1} />
         ))}
       </div>
     );
@@ -864,9 +843,9 @@ function EffectivenessTab({
 
   if (!data) {
     return (
-      <div className="rounded-xl p-12 text-center space-y-3" style={{ background: 'var(--surface-0)' }}>
+      <div className="rounded-xl p-12 text-center space-y-3" style={stSurface0}>
         <BarChart3 className="w-10 h-10 mx-auto" style={{ color: 'var(--border-default)' }} />
-        <p style={{ color: 'var(--text-muted)' }}>No effectiveness data available.</p>
+        <p style={stTextMuted}>No effectiveness data available.</p>
       </div>
     );
   }
@@ -886,48 +865,48 @@ function EffectivenessTab({
     <div className="space-y-6">
       {/* Summary Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="rounded-xl p-4" style={{ background: 'var(--surface-1)' }}>
+        <div className="rounded-xl p-4" style={stSurface1}>
           <div className="flex items-center gap-2 mb-2">
-            <span className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: 'var(--accent-muted)' }}>
-              <Activity className="w-3.5 h-3.5" style={{ color: 'var(--accent)' }} />
+            <span className="w-6 h-6 rounded-md flex items-center justify-center" style={{ ...stAccentBg }}>
+              <Activity className="w-3.5 h-3.5" style={stAccent} />
             </span>
-            <p className="text-xs  tracking-wide" style={{ color: 'var(--text-muted)' }}>Total Tracked</p>
+            <p className="text-xs  tracking-wide" style={stTextMuted}>Total Tracked</p>
           </div>
-          <p className="text-2xl font-normal" style={{ color: 'var(--text-primary)' }}>{summary.total_objections}</p>
-          <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>{summary.topics_count} topics, {summary.responses_count} responses</p>
+          <p className="text-2xl font-normal" style={stTextPrimary}>{summary.total_objections}</p>
+          <p className="text-xs mt-1" style={stTextMuted}>{summary.topics_count} topics, {summary.responses_count} responses</p>
         </div>
 
-        <div className="rounded-xl p-4" style={{ background: 'var(--surface-1)' }}>
-          <div className="flex items-center gap-2 mb-2">
-            <span className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: 'var(--success-muted)' }}>
-              <CheckCircle2 className="w-3.5 h-3.5" style={{ color: 'var(--text-secondary)' }} />
-            </span>
-            <p className="text-xs  tracking-wide" style={{ color: 'var(--text-muted)' }}>Resolution Rate</p>
-          </div>
-          <p className="text-2xl font-normal" style={{ color: 'var(--text-primary)' }}>{summary.overall_resolution_rate}%</p>
-          <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>{summary.total_resolved} of {summary.total_objections} resolved</p>
-        </div>
-
-        <div className="rounded-xl p-4" style={{ background: 'var(--surface-1)' }}>
+        <div className="rounded-xl p-4" style={stSurface1}>
           <div className="flex items-center gap-2 mb-2">
             <span className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: 'var(--success-muted)' }}>
-              <ThumbsUp className="w-3.5 h-3.5" style={{ color: 'var(--text-secondary)' }} />
+              <CheckCircle2 className="w-3.5 h-3.5" style={stTextSecondary} />
             </span>
-            <p className="text-xs  tracking-wide" style={{ color: 'var(--text-muted)' }}>Effective</p>
+            <p className="text-xs  tracking-wide" style={stTextMuted}>Resolution Rate</p>
           </div>
-          <p className="text-2xl font-normal" style={{ color: 'var(--text-secondary)' }}>{summary.total_effective}</p>
-          <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>{summary.overall_effectiveness_rate}% of all objections</p>
+          <p className="text-2xl font-normal" style={stTextPrimary}>{summary.overall_resolution_rate}%</p>
+          <p className="text-xs mt-1" style={stTextMuted}>{summary.total_resolved} of {summary.total_objections} resolved</p>
         </div>
 
-        <div className="rounded-xl p-4" style={{ background: 'var(--surface-1)' }}>
+        <div className="rounded-xl p-4" style={stSurface1}>
+          <div className="flex items-center gap-2 mb-2">
+            <span className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: 'var(--success-muted)' }}>
+              <ThumbsUp className="w-3.5 h-3.5" style={stTextSecondary} />
+            </span>
+            <p className="text-xs  tracking-wide" style={stTextMuted}>Effective</p>
+          </div>
+          <p className="text-2xl font-normal" style={stTextSecondary}>{summary.total_effective}</p>
+          <p className="text-xs mt-1" style={stTextMuted}>{summary.overall_effectiveness_rate}% of all objections</p>
+        </div>
+
+        <div className="rounded-xl p-4" style={stSurface1}>
           <div className="flex items-center gap-2 mb-2">
             <span className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: 'var(--danger-muted)' }}>
-              <ThumbsDown className="w-3.5 h-3.5" style={{ color: 'var(--text-primary)' }} />
+              <ThumbsDown className="w-3.5 h-3.5" style={stTextPrimary} />
             </span>
-            <p className="text-xs  tracking-wide" style={{ color: 'var(--text-muted)' }}>Ineffective</p>
+            <p className="text-xs  tracking-wide" style={stTextMuted}>Ineffective</p>
           </div>
-          <p className="text-2xl font-normal" style={{ color: 'var(--text-primary)' }}>{summary.total_ineffective}</p>
-          <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>Responses that need rework</p>
+          <p className="text-2xl font-normal" style={stTextPrimary}>{summary.total_ineffective}</p>
+          <p className="text-xs mt-1" style={stTextMuted}>Responses that need rework</p>
         </div>
       </div>
 
@@ -936,14 +915,14 @@ function EffectivenessTab({
         <div className="xl:col-span-2 space-y-6">
           {/* Topic Effectiveness Rankings */}
           <div className="rounded-xl overflow-hidden">
-            <div className="p-4 flex items-center gap-2" style={{ background: 'var(--surface-1)', borderBottom: '1px solid var(--border-subtle)' }}>
-              <Target className="w-4 h-4" style={{ color: 'var(--accent)' }} />
-              <h3 className="text-sm font-normal" style={{ color: 'var(--text-primary)' }}>Effectiveness by Topic</h3>
+            <div className="p-4 flex items-center gap-2" style={stSurface1Border}>
+              <Target className="w-4 h-4" style={stAccent} />
+              <h3 className="text-sm font-normal" style={stTextPrimary}>Effectiveness by Topic</h3>
             </div>
-            <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
+            <div className="divide-y" style={stBorderSubtle}>
               {topic_effectiveness.length === 0 ? (
                 <div className="p-8 text-center">
-                  <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No topic data available yet.</p>
+                  <p className="text-sm" style={stTextMuted}>No topic data available yet.</p>
                 </div>
               ) : (
                 topic_effectiveness.map((te) => {
@@ -955,20 +934,17 @@ function EffectivenessTab({
                       style={{
                         background: hoveredRow === `topic-${te.topic}` ? 'var(--surface-1)' : 'transparent',
                         borderBottom: '1px solid var(--border-subtle)',
-                        transition: 'background 100ms ease',
-                      }}
+                        transition: 'background 100ms ease', }}
                       onMouseEnter={() => setHoveredRow(`topic-${te.topic}`)}
-                      onMouseLeave={() => setHoveredRow(null)}
-                    >
+                      onMouseLeave={() => setHoveredRow(null)}>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <span
                             className="text-xs font-normal  tracking-wide px-2 py-1 rounded"
-                            style={{ ...color.bg, ...color.text }}
-                          >
+                            style={{ ...color.bg, ...color.text }}>
                             {te.topic}
                           </span>
-                          <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                          <span className="text-xs" style={stTextMuted}>
                             {te.total_raised} raised
                           </span>
                         </div>
@@ -986,27 +962,27 @@ function EffectivenessTab({
 
                       <div className="flex items-center gap-4 flex-wrap">
                         <div className="flex items-center gap-1.5">
-                          <span className="w-2 h-2 rounded-full" style={{ background: 'var(--success)' }} />
-                          <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{te.positive_outcomes} positive</span>
+                          <span className="w-2 h-2 rounded-full" style={stBgSuccess} />
+                          <span className="text-xs" style={stTextMuted}>{te.positive_outcomes} positive</span>
                         </div>
                         <div className="flex items-center gap-1.5">
-                          <span className="w-2 h-2 rounded-full" style={{ background: 'var(--danger)' }} />
-                          <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{te.negative_outcomes} negative</span>
+                          <span className="w-2 h-2 rounded-full" style={stBgDanger} />
+                          <span className="text-xs" style={stTextMuted}>{te.negative_outcomes} negative</span>
                         </div>
                         <div className="flex items-center gap-1.5">
-                          <span className="w-2 h-2 rounded-full" style={{ background: 'var(--text-muted)' }} />
-                          <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{te.neutral_outcomes} neutral</span>
+                          <span className="w-2 h-2 rounded-full" style={stBgMuted} />
+                          <span className="text-xs" style={stTextMuted}>{te.neutral_outcomes} neutral</span>
                         </div>
-                        <span className="text-xs" style={{ color: 'var(--text-muted)' }}>|</span>
-                        <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                        <span className="text-xs" style={stTextMuted}>|</span>
+                        <span className="text-xs" style={stTextMuted}>
                           Resolution: {te.resolution_rate}%
                         </span>
                       </div>
 
                       {/* Timeline */}
                       <div className="flex items-center gap-2">
-                        <Clock className="w-3 h-3" style={{ color: 'var(--text-muted)' }} />
-                        <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                        <Clock className="w-3 h-3" style={stTextMuted} />
+                        <span className="text-xs" style={stTextMuted}>
                           First seen {fmtDate(te.first_seen)} &mdash; Last seen {fmtDate(te.last_seen)}
                         </span>
                       </div>
@@ -1015,19 +991,19 @@ function EffectivenessTab({
                       {te.best_response && (
                         <div className="p-2 rounded-lg" style={{ background: 'var(--success-muted)', border: '1px solid var(--accent-15)' }}>
                           <div className="flex items-center gap-1 mb-1">
-                            <ThumbsUp className="w-3 h-3" style={{ color: 'var(--text-secondary)' }} />
-                            <span className="text-xs font-normal" style={{ color: 'var(--text-secondary)' }}>Best response</span>
+                            <ThumbsUp className="w-3 h-3" style={stTextSecondary} />
+                            <span className="text-xs font-normal" style={stTextSecondary}>Best response</span>
                           </div>
-                          <p className="text-xs leading-relaxed line-clamp-2" style={{ color: 'var(--text-secondary)' }}>{te.best_response}</p>
+                          <p className="text-xs leading-relaxed line-clamp-2" style={stTextSecondary}>{te.best_response}</p>
                         </div>
                       )}
                       {te.worst_response && (
                         <div className="p-2 rounded-lg" style={{ background: 'var(--danger-muted)', border: '1px solid var(--accent-8)' }}>
                           <div className="flex items-center gap-1 mb-1">
-                            <ThumbsDown className="w-3 h-3" style={{ color: 'var(--text-primary)' }} />
-                            <span className="text-xs font-normal" style={{ color: 'var(--text-primary)' }}>Worst response</span>
+                            <ThumbsDown className="w-3 h-3" style={stTextPrimary} />
+                            <span className="text-xs font-normal" style={stTextPrimary}>Worst response</span>
                           </div>
-                          <p className="text-xs leading-relaxed line-clamp-2" style={{ color: 'var(--text-secondary)' }}>{te.worst_response}</p>
+                          <p className="text-xs leading-relaxed line-clamp-2" style={stTextSecondary}>{te.worst_response}</p>
                         </div>
                       )}
                     </div>
@@ -1039,16 +1015,16 @@ function EffectivenessTab({
 
           {/* Response Leaderboard */}
           <div className="rounded-xl overflow-hidden">
-            <div className="p-4 flex items-center gap-2" style={{ background: 'var(--surface-1)', borderBottom: '1px solid var(--border-subtle)' }}>
-              <Zap className="w-4 h-4" style={{ color: 'var(--text-secondary)' }} />
-              <h3 className="text-sm font-normal" style={{ color: 'var(--text-primary)' }}>Top Performing Responses</h3>
-              <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: 'var(--surface-2)', color: 'var(--text-muted)' }}>
+            <div className="p-4 flex items-center gap-2" style={stSurface1Border}>
+              <Zap className="w-4 h-4" style={stTextSecondary} />
+              <h3 className="text-sm font-normal" style={stTextPrimary}>Top Performing Responses</h3>
+              <span className="text-xs px-1.5 py-0.5 rounded" style={{ ...stSurface2, ...stTextMuted }}>
                 {response_leaderboard.length}
               </span>
             </div>
             {response_leaderboard.length === 0 ? (
               <div className="p-8 text-center">
-                <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No responses with outcome data yet.</p>
+                <p className="text-sm" style={stTextMuted}>No responses with outcome data yet.</p>
               </div>
             ) : (
               <div>
@@ -1058,34 +1034,30 @@ function EffectivenessTab({
                   return (
                     <div
                       key={idx}
-                      className="border-b last:border-b-0"
-                      style={{ borderColor: 'var(--border-subtle)' }}
-                    >
+                      className="border-b last:border-b-0" style={stBorderSubtle}>
                       <button
                         onClick={() => toggleLeaderboardItem(idx)}
                         className="w-full p-3 flex items-center gap-3 text-left transition-colors"
                         style={{
                           background: hoveredRow === `leader-${idx}` ? 'var(--surface-1)' : 'transparent',
-                          transition: 'background 100ms ease',
-                        }}
+                          transition: 'background 100ms ease', }}
                         onMouseEnter={() => setHoveredRow(`leader-${idx}`)}
-                        onMouseLeave={() => setHoveredRow(null)}
-                      >
-                        <span className="text-xs font-normal w-6 text-center" style={{ color: 'var(--text-muted)' }}>
+                        onMouseLeave={() => setHoveredRow(null)}>
+                        <span className="text-xs font-normal w-6 text-center" style={stTextMuted}>
                           #{idx + 1}
                         </span>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm truncate" style={{ color: 'var(--text-primary)' }}>{entry.response_text}</p>
+                          <p className="text-sm truncate" style={stTextPrimary}>{entry.response_text}</p>
                           <div className="flex items-center gap-2 mt-0.5">
                             <span className="px-1 py-0.5 rounded" style={{ fontSize: '10px', ...color.bg, ...color.text }}>
                               {entry.objection_topic}
                             </span>
                             {entry.investor_name && (
-                              <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                              <span style={labelMuted10}>
                                 {entry.investor_name}
                               </span>
                             )}
-                            <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                            <span style={labelMuted10}>
                               Used {entry.times_used}x
                             </span>
                           </div>
@@ -1106,32 +1078,32 @@ function EffectivenessTab({
                             {entry.avg_enthusiasm_delta >= 0 ? '+' : ''}{entry.avg_enthusiasm_delta}
                           </span>
                           {isExpanded ? (
-                            <ChevronDown className="w-3.5 h-3.5" style={{ color: 'var(--text-muted)' }} />
+                            <ChevronDown className="w-3.5 h-3.5" style={stTextMuted} />
                           ) : (
-                            <ChevronRight className="w-3.5 h-3.5" style={{ color: 'var(--text-muted)' }} />
+                            <ChevronRight className="w-3.5 h-3.5" style={stTextMuted} />
                           )}
                         </div>
                       </button>
                       {isExpanded && (
                         <div className="px-3 pb-3 pl-12 space-y-2">
-                          <div className="p-3 rounded-lg space-y-2" style={{ background: 'var(--surface-1)' }}>
-                            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Objection:</p>
-                            <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>{entry.objection_text}</p>
-                            <p className="text-xs mt-2" style={{ color: 'var(--text-muted)' }}>Full response:</p>
-                            <p className="text-sm leading-relaxed" style={{ color: 'var(--text-primary)' }}>{entry.response_text}</p>
-                            <div className="flex items-center justify-between pt-2" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                          <div className="p-3 rounded-lg space-y-2" style={stSurface1}>
+                            <p className="text-xs" style={stTextMuted}>Objection:</p>
+                            <p className="text-sm" style={stTextSecondary}>{entry.objection_text}</p>
+                            <p className="text-xs mt-2" style={stTextMuted}>Full response:</p>
+                            <p className="text-sm leading-relaxed" style={stTextPrimary}>{entry.response_text}</p>
+                            <div className="flex items-center justify-between pt-2" style={stBorderTop}>
                               <div className="flex items-center gap-4">
                                 <div className="flex items-center gap-1.5">
-                                  <span className="w-2 h-2 rounded-full" style={{ background: 'var(--success)' }} />
-                                  <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{entry.positive_outcomes} positive</span>
+                                  <span className="w-2 h-2 rounded-full" style={stBgSuccess} />
+                                  <span className="text-xs" style={stTextMuted}>{entry.positive_outcomes} positive</span>
                                 </div>
                                 <div className="flex items-center gap-1.5">
-                                  <span className="w-2 h-2 rounded-full" style={{ background: 'var(--danger)' }} />
-                                  <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{entry.negative_outcomes} negative</span>
+                                  <span className="w-2 h-2 rounded-full" style={stBgDanger} />
+                                  <span className="text-xs" style={stTextMuted}>{entry.negative_outcomes} negative</span>
                                 </div>
                                 <div className="flex items-center gap-1.5">
-                                  <span className="w-2 h-2 rounded-full" style={{ background: 'var(--text-muted)' }} />
-                                  <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{entry.neutral_outcomes} neutral</span>
+                                  <span className="w-2 h-2 rounded-full" style={stBgMuted} />
+                                  <span className="text-xs" style={stTextMuted}>{entry.neutral_outcomes} neutral</span>
                                 </div>
                               </div>
                               <CopyButton text={entry.response_text} />
@@ -1150,8 +1122,8 @@ function EffectivenessTab({
           {worst_responses.length > 0 && worst_responses.some(r => r.effectiveness_score < 50) && (
             <div className="rounded-xl overflow-hidden">
               <div className="p-4 flex items-center gap-2" style={{ background: 'var(--danger-muted)', borderBottom: '1px solid var(--border-subtle)' }}>
-                <AlertTriangle className="w-4 h-4" style={{ color: 'var(--text-primary)' }} />
-                <h3 className="text-sm font-normal" style={{ color: 'var(--text-primary)' }}>Responses Needing Rework</h3>
+                <AlertTriangle className="w-4 h-4" style={stTextPrimary} />
+                <h3 className="text-sm font-normal" style={stTextPrimary}>Responses Needing Rework</h3>
               </div>
               <div>
                 {worst_responses.filter(r => r.effectiveness_score < 50).slice(0, 5).map((entry, idx) => {
@@ -1163,25 +1135,23 @@ function EffectivenessTab({
                       style={{
                         borderBottom: '1px solid var(--border-subtle)',
                         background: hoveredRow === `worst-${idx}` ? 'var(--surface-1)' : 'transparent',
-                        transition: 'background 100ms ease',
-                      }}
+                        transition: 'background 100ms ease', }}
                       onMouseEnter={() => setHoveredRow(`worst-${idx}`)}
-                      onMouseLeave={() => setHoveredRow(null)}
-                    >
+                      onMouseLeave={() => setHoveredRow(null)}>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <span className="px-1 py-0.5 rounded" style={{ fontSize: '10px', ...color.bg, ...color.text }}>
                             {entry.objection_topic}
                           </span>
-                          <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Used {entry.times_used}x</span>
+                          <span className="text-xs" style={stTextMuted}>Used {entry.times_used}x</span>
                         </div>
-                        <span className="text-sm font-normal" style={{ color: 'var(--text-primary)' }}>
+                        <span className="text-sm font-normal" style={stTextPrimary}>
                           {entry.effectiveness_score}%
                         </span>
                       </div>
-                      <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Objection: {entry.objection_text}</p>
-                      <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>{entry.response_text}</p>
-                      <div className="flex items-center gap-1 text-xs" style={{ color: 'var(--text-primary)' }}>
+                      <p className="text-xs" style={stTextMuted}>Objection: {entry.objection_text}</p>
+                      <p className="text-sm" style={stTextSecondary}>{entry.response_text}</p>
+                      <div className="flex items-center gap-1 text-xs" style={stTextPrimary}>
                         <TrendingDown className="w-3 h-3" />
                         <span>Avg delta: {entry.avg_enthusiasm_delta >= 0 ? '+' : ''}{entry.avg_enthusiasm_delta}</span>
                       </div>
@@ -1199,23 +1169,23 @@ function EffectivenessTab({
           {evolution.emergingObjections.length > 0 && (
             <div className="rounded-xl p-4 space-y-3">
               <div className="flex items-center gap-2">
-                <TrendingUp className="w-4 h-4" style={{ color: 'var(--text-tertiary)' }} />
-                <h3 className="text-xs font-normal  tracking-wide" style={{ color: 'var(--text-tertiary)' }}>Emerging</h3>
+                <TrendingUp className="w-4 h-4" style={stTextTertiary} />
+                <h3 className="text-xs font-normal  tracking-wide" style={stTextTertiary}>Emerging</h3>
               </div>
               <div className="space-y-2">
                 {evolution.emergingObjections.map((obj, i) => {
                   const color = getColor(obj.topic);
                   return (
-                    <div key={i} className="p-2 rounded-lg space-y-1" style={{ background: 'var(--surface-1)' }}>
+                    <div key={i} className="p-2 rounded-lg space-y-1" style={stSurface1}>
                       <div className="flex items-center justify-between">
                         <span className="px-1.5 py-0.5 rounded" style={{ fontSize: '10px', ...color.bg, ...color.text }}>
                           {obj.topic}
                         </span>
-                        <span className="text-xs font-normal" style={{ color: 'var(--text-tertiary)' }}>
+                        <span className="text-xs font-normal" style={stTextTertiary}>
                           {obj.currentCount}x
                         </span>
                       </div>
-                      <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                      <p className="text-xs" style={stTextMuted}>
                         Since {fmtDate(obj.firstSeen)} &middot; {obj.growthRate}/wk
                       </p>
                     </div>
@@ -1229,27 +1199,27 @@ function EffectivenessTab({
           {evolution.resolvedObjections.length > 0 && (
             <div className="rounded-xl p-4 space-y-3">
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4" style={{ color: 'var(--text-secondary)' }} />
-                <h3 className="text-xs font-normal  tracking-wide" style={{ color: 'var(--text-tertiary)' }}>Resolved</h3>
+                <CheckCircle2 className="w-4 h-4" style={stTextSecondary} />
+                <h3 className="text-xs font-normal  tracking-wide" style={stTextTertiary}>Resolved</h3>
               </div>
               <div className="space-y-2">
                 {evolution.resolvedObjections.map((obj, i) => {
                   const color = getColor(obj.topic);
                   return (
-                    <div key={i} className="p-2 rounded-lg space-y-1" style={{ background: 'var(--surface-1)' }}>
+                    <div key={i} className="p-2 rounded-lg space-y-1" style={stSurface1}>
                       <div className="flex items-center justify-between">
                         <span className="px-1.5 py-0.5 rounded" style={{ fontSize: '10px', ...color.bg, ...color.text }}>
                           {obj.topic}
                         </span>
-                        <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>
+                        <span className="text-xs" style={stTextSecondary}>
                           Resolved
                         </span>
                       </div>
-                      <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                      <p className="text-xs" style={stTextMuted}>
                         Peak: {obj.peakCount}/wk &middot; Last: {fmtDate(obj.resolvedDate)}
                       </p>
                       {obj.effectiveResponse && (
-                        <p className="text-xs leading-relaxed line-clamp-2" style={{ color: 'var(--text-tertiary)' }}>
+                        <p className="text-xs leading-relaxed line-clamp-2" style={stTextTertiary}>
                           {obj.effectiveResponse}
                         </p>
                       )}
@@ -1264,24 +1234,24 @@ function EffectivenessTab({
           {evolution.persistentObjections.length > 0 && (
             <div className="rounded-xl p-4 space-y-3">
               <div className="flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4" style={{ color: 'var(--text-primary)' }} />
-                <h3 className="text-xs font-normal  tracking-wide" style={{ color: 'var(--text-tertiary)' }}>Persistent</h3>
+                <AlertTriangle className="w-4 h-4" style={stTextPrimary} />
+                <h3 className="text-xs font-normal  tracking-wide" style={stTextTertiary}>Persistent</h3>
               </div>
               <div className="space-y-2">
                 {evolution.persistentObjections.map((obj, i) => {
                   const color = getColor(obj.topic);
                   return (
-                    <div key={i} className="p-2 rounded-lg space-y-1" style={{ background: 'var(--surface-1)' }}>
+                    <div key={i} className="p-2 rounded-lg space-y-1" style={stSurface1}>
                       <div className="flex items-center justify-between">
                         <span className="px-1.5 py-0.5 rounded" style={{ fontSize: '10px', ...color.bg, ...color.text }}>
                           {obj.topic}
                         </span>
-                        <span className="text-xs font-normal" style={{ color: 'var(--text-primary)' }}>
+                        <span className="text-xs font-normal" style={stTextPrimary}>
                           {obj.count}x over {Math.round(obj.duration)}wk
                         </span>
                       </div>
                       {obj.avgEnthusiasmImpact > 0 && (
-                        <p className="text-xs" style={{ color: 'var(--text-primary)' }}>
+                        <p className="text-xs" style={stTextPrimary}>
                           Enthusiasm impact: -{obj.avgEnthusiasmImpact}
                         </p>
                       )}
@@ -1296,8 +1266,8 @@ function EffectivenessTab({
           {evolution.objectionHeatMap.length > 0 && (
             <div className="rounded-xl p-4 space-y-3">
               <div className="flex items-center gap-2">
-                <BarChart3 className="w-4 h-4" style={{ color: 'var(--accent)' }} />
-                <h3 className="text-xs font-normal  tracking-wide" style={{ color: 'var(--text-tertiary)' }}>Activity by Week</h3>
+                <BarChart3 className="w-4 h-4" style={stAccent} />
+                <h3 className="text-xs font-normal  tracking-wide" style={stTextTertiary}>Activity by Week</h3>
               </div>
               {(() => {
                 // Group by week, show last 8 weeks max
@@ -1319,16 +1289,16 @@ function EffectivenessTab({
                       const pct = maxCount > 0 ? Math.round((count / maxCount) * 100) : 0;
                       return (
                         <div key={week} className="flex items-center gap-2">
-                          <span className="w-14 text-right shrink-0" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                          <span className="w-14 text-right shrink-0" style={labelMuted10}>
                             {week}
                           </span>
-                          <div className="flex-1 h-3 rounded overflow-hidden" style={{ background: 'var(--surface-2)' }}>
+                          <div className="flex-1 h-3 rounded overflow-hidden" style={stSurface2}>
                             <div
                               className="h-full rounded"
                               style={{ width: `${pct}%`, background: 'var(--accent)', transition: 'width 300ms ease' }}
                             />
                           </div>
-                          <span className="w-6 text-right" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                          <span className="w-6 text-right" style={labelMuted10}>
                             {count}
                           </span>
                         </div>
@@ -1343,11 +1313,11 @@ function EffectivenessTab({
           {/* Resolution Rate by Topic */}
           <div className="rounded-xl p-4 space-y-3">
             <div className="flex items-center gap-2">
-              <Shield className="w-4 h-4" style={{ color: 'var(--accent)' }} />
-              <h3 className="text-xs font-normal  tracking-wide" style={{ color: 'var(--text-tertiary)' }}>Resolution Rate</h3>
+              <Shield className="w-4 h-4" style={stAccent} />
+              <h3 className="text-xs font-normal  tracking-wide" style={stTextTertiary}>Resolution Rate</h3>
             </div>
             {topic_effectiveness.length === 0 ? (
-              <p className="text-xs" style={{ color: 'var(--text-muted)' }}>No data yet.</p>
+              <p className="text-xs" style={stTextMuted}>No data yet.</p>
             ) : (
               <div className="space-y-2">
                 {topic_effectiveness
@@ -1358,10 +1328,10 @@ function EffectivenessTab({
                     return (
                       <div key={te.topic} className="flex items-center gap-2">
                         <span className="w-20 truncate" style={{ fontSize: '10px', ...color.text }}>{te.topic}</span>
-                        <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--surface-2)' }}>
+                        <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={stSurface2}>
                           <div style={{ width: `${te.resolution_rate}%`, background: barColor, height: '100%' }} />
                         </div>
-                        <span className="w-8 text-right" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{te.resolution_rate}%</span>
+                        <span className="w-8 text-right" style={labelMuted10}>{te.resolution_rate}%</span>
                       </div>
                     );
                   })}

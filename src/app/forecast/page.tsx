@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { STATUS_LABELS as STAGE_LABELS } from '@/lib/constants';
 import { fmtDate, fmtDateShort } from '@/lib/format';
+import { confidenceColor, confidenceBg } from '@/lib/styles';
 
 interface InvestorForecast {
   investorId: string;
@@ -71,19 +72,6 @@ function formatAmount(value: number, currency: string): string {
   if (value >= 1_000) return `${sym}${(value / 1_000).toFixed(0)}K`;
   return `${sym}${value}`;
 }
-
-function confidenceColor(c: 'high' | 'medium' | 'low'): string {
-  if (c === 'high') return 'var(--success)';
-  if (c === 'medium') return 'var(--warning)';
-  return 'var(--danger)';
-}
-
-function confidenceBg(c: 'high' | 'medium' | 'low'): string {
-  if (c === 'high') return 'var(--success-muted)';
-  if (c === 'medium') return 'var(--warning-muted)';
-  return 'var(--danger-muted)';
-}
-
 
 function tierCapital(tier: number): number {
   if (tier === 1) return 50_000_000;

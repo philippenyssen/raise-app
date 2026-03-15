@@ -7,7 +7,7 @@ import {
   Minus, RefreshCw, AlertTriangle, ArrowRight, Clock,
   BarChart3, MessageCircleWarning, Zap, CheckCircle2, ExternalLink,
 } from 'lucide-react';
-import { gaugeColor, gaugeColor as gaugeBarColor } from '@/lib/styles';
+import { gaugeColor, gaugeColor as gaugeBarColor, deltaColor } from '@/lib/styles';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -121,12 +121,6 @@ function confidenceStyle(confidence: string): React.CSSProperties {
   if (confidence === 'high') return { background: 'var(--success-muted)', color: 'var(--text-secondary)', borderColor: 'var(--accent-40)' };
   if (confidence === 'medium') return { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', borderColor: 'var(--warn-40)' };
   return { background: 'var(--danger-muted)', color: 'var(--text-primary)', borderColor: 'var(--accent-8)' };
-}
-
-function deltaColor(delta: number): string {
-  if (delta > 0) return 'var(--success)';
-  if (delta < 0) return 'var(--danger)';
-  return 'var(--text-muted)';
 }
 
 // ---------------------------------------------------------------------------

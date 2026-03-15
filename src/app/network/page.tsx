@@ -7,6 +7,7 @@ import {
   TrendingUp, Users, Link2, ChevronDown, ChevronUp, Calendar,
 } from 'lucide-react';
 import { STATUS_LABELS } from '@/lib/constants';
+import { probColor } from '@/lib/styles';
 
 interface CascadeLink {
   investorId: string;
@@ -67,12 +68,6 @@ function tierLabel(tier: number): string {
   if (tier === 1) return 'T1';
   if (tier === 2) return 'T2';
   return 'T3';
-}
-
-function probColor(prob: number): string {
-  if (prob >= 0.6) return 'var(--success)';
-  if (prob >= 0.3) return 'var(--warning)';
-  return 'var(--danger)';
 }
 
 function enthusiasmDots(level: number): string {
