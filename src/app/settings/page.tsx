@@ -311,6 +311,7 @@ export default function SettingsPage() {
             <div className="relative">
               <input
                 type="number"
+                min="0"
                 value={raise.data.equity_amount || ''}
                 onChange={e => raise.update('equity_amount', Number(e.target.value))}
                 placeholder="e.g. 250000000 (€250M)"
@@ -329,6 +330,7 @@ export default function SettingsPage() {
             <div className="relative">
               <input
                 type="number"
+                min="0"
                 value={raise.data.debt_amount || ''}
                 onChange={e => raise.update('debt_amount', Number(e.target.value))}
                 placeholder="e.g. 250000000 (€250M)"
@@ -347,6 +349,7 @@ export default function SettingsPage() {
             <div className="relative">
               <input
                 type="number"
+                min="0"
                 value={raise.data.pre_money || ''}
                 onChange={e => raise.update('pre_money', Number(e.target.value))}
                 placeholder="e.g. 2000000000 (€2Bn)"
@@ -398,6 +401,7 @@ export default function SettingsPage() {
             <div className="relative">
               <input
                 type="number"
+                min="0"
                 value={raise.data.minimum_check_size || ''}
                 onChange={e => raise.update('minimum_check_size', Number(e.target.value))}
                 placeholder="e.g. 25000000 (€25M)"
