@@ -26,7 +26,9 @@ function logAISkill(
     fields_extracted,
     fields_expected,
     ...(opts?.latency_ms !== undefined && { latency_ms: opts.latency_ms }),
-  }).catch(() => {});
+  }).catch(err => {
+    console.error(`[SKILL_LOG_FAILURE] ${skill_name}:`, err instanceof Error ? err.message : err);
+  });
 }
 
 /** Extract text from AI response, flagging truncation and content filtering */

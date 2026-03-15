@@ -42,6 +42,7 @@ export async function POST(req: NextRequest) {
     try {
       aiData = await analyzeMeetingNotes(raw_notes as string, investor_name as string, (type as string) || 'intro');
     } catch (err) {
+      console.error('[MEETING_AI_ANALYSIS]', err instanceof Error ? err.message : err);
     }}
 
   try {
@@ -69,6 +70,7 @@ export async function POST(req: NextRequest) {
     const investorTier = investor?.tier ?? 2;
     postMeetingActions = await processPostMeetingIntelligence(meeting, aiData, investorTier);
   } catch (err) {
+    console.error('[POST_MEETING_INTEL]', err instanceof Error ? err.message : err);
   }
 
   // Log activity
@@ -88,6 +90,7 @@ export async function POST(req: NextRequest) {
     const tier = investor?.tier ?? 2;
     followupPlan = await generateFollowupChoreography(meeting, aiData, tier);
   } catch (err) {
+    console.error('[FOLLOWUP_CHOREOGRAPHY]', err instanceof Error ? err.message : err);
   }
 
   // Auto-populate objection_responses from extracted objections
@@ -114,6 +117,7 @@ export async function POST(req: NextRequest) {
           meeting_id: meeting.id,});
       }}
   } catch (err) {
+    console.error('[OBJECTION_EXTRACTION]', err instanceof Error ? err.message : err);
   }
 
   // Extract and store question patterns for cross-investor analysis
