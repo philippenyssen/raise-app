@@ -206,6 +206,7 @@ export default function NewDocumentPage() {
             value={importContent}
             onChange={e => setImportContent(e.target.value)}
             rows={8}
+            maxLength={5000000}
             placeholder="Paste your markdown here..."
             className="w-full rounded-lg px-4 py-3 text-sm font-mono focus:outline-none"
             style={{ background: 'var(--surface-1)', color: 'var(--text-secondary)' }} /></div>

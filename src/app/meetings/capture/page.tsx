@@ -385,6 +385,7 @@ function QuickCaptureInner() {
             onChange={e => setRawNotes(e.target.value)}
             required
             rows={14}
+            maxLength={50000}
             placeholder="What happened? What did they say? Any objections? What's the vibe?"
             className="input"
             style={{ fontSize: 'var(--font-size-md)', lineHeight: 1.8, padding: 'var(--space-5)', resize: 'vertical', minHeight: '280px', fontFamily: 'var(--font-sans), system-ui, sans-serif', letterSpacing: '-0.01em' }} />

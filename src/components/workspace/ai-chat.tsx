@@ -288,6 +288,7 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
               placeholder={documentId ? 'e.g. "Sharpen the risk factors" or "Rewrite Section 3 for a growth equity IC"' : 'Select a document first...'}
               disabled={loading || !documentId}
               rows={1}
+              maxLength={5000}
               className="input resize-none"
               style={{
                 borderRadius: 'var(--radius-lg)',
