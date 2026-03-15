@@ -65,10 +65,7 @@ export default function DocumentsPage() {
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; title: string } | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [showFlags, setShowFlags] = useState(true);
-  const [hoverStates, setHoverStates] = useState<Record<string, boolean>>({});
   const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'name'>('newest');
-
-  const setHover = (key: string, val: boolean) => setHoverStates(prev => ({ ...prev, [key]: val }));
 
   useEffect(() => { document.title = 'Raise | Documents'; }, []);
   useEffect(() => { fetchDocs(); fetchFlags(); }, []);
@@ -208,25 +205,19 @@ export default function DocumentsPage() {
               className="px-3 py-2 rounded-lg text-sm transition-colors flex items-center gap-2"
               style={showFlags
                 ? { backgroundColor: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: '1px solid color-mix(in srgb, var(--warning) 30%, transparent)' }
-                : { backgroundColor: hoverStates['flagsBtn'] ? 'var(--surface-3)' : 'var(--surface-2)', color: 'var(--text-tertiary)', border: '1px solid transparent' }
-              }
-              onMouseEnter={() => setHover('flagsBtn', true)}
-              onMouseLeave={() => setHover('flagsBtn', false)}>
+                : { backgroundColor: 'var(--surface-2)', color: 'var(--text-tertiary)', border: '1px solid transparent' }
+              }>
               <AlertTriangle className="w-3.5 h-3.5" /> {flags.length} Flags</button>
           )}
           <Link
             href="/documents/consistency"
             className="px-3 py-2 rounded-lg text-sm transition-colors flex items-center gap-2"
-            style={{ backgroundColor: hoverStates['consBtn'] ? 'var(--surface-3)' : 'var(--surface-2)', color: 'var(--text-secondary)' }}
-            onMouseEnter={() => setHover('consBtn', true)}
-            onMouseLeave={() => setHover('consBtn', false)}>
+            style={{ backgroundColor: 'var(--surface-2)', color: 'var(--text-secondary)' }}>
             <ShieldCheck className="w-3.5 h-3.5" /> Check Alignment</Link>
           <Link
             href="/documents/new"
             className="px-4 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2"
-            style={{ backgroundColor: 'var(--accent)', color: 'var(--surface-0)', opacity: hoverStates['newBtn'] ? 0.85 : 1 }}
-            onMouseEnter={() => setHover('newBtn', true)}
-            onMouseLeave={() => setHover('newBtn', false)}>
+            style={{ backgroundColor: 'var(--accent)', color: 'var(--surface-0)' }}>
           <Plus className="w-4 h-4" /> New Document</Link></div></div>
 
       {/* Document Flags Banner */}
@@ -259,21 +250,15 @@ export default function DocumentsPage() {
                 <div className="flex gap-1 shrink-0">
                   <button
                     onClick={() => handleFlagAction(flag.id, 'addressed')}
-                    className="p-1.5 rounded-md transition-colors"
+                    className="flag-addr p-1.5 rounded-md"
                     title="Mark as addressed"
-                    aria-label="Mark as addressed"
-                    style={{ color: hoverStates[`addr-${flag.id}`] ? 'var(--success)' : 'var(--text-muted)', backgroundColor: hoverStates[`addr-${flag.id}`] ? 'var(--success-muted)' : 'transparent' }}
-                    onMouseEnter={() => setHover(`addr-${flag.id}`, true)}
-                    onMouseLeave={() => setHover(`addr-${flag.id}`, false)}>
+                    aria-label="Mark as addressed">
                     <CheckCircle2 className="w-4 h-4" /></button>
                   <button
                     onClick={() => handleFlagAction(flag.id, 'dismissed')}
-                    className="p-1.5 rounded-md transition-colors"
+                    className="flag-dism p-1.5 rounded-md"
                     title="Dismiss"
-                    aria-label="Dismiss"
-                    style={{ color: hoverStates[`dism-${flag.id}`] ? 'var(--danger)' : 'var(--text-muted)', backgroundColor: hoverStates[`dism-${flag.id}`] ? 'color-mix(in srgb, var(--danger) 20%, transparent)' : 'transparent' }}
-                    onMouseEnter={() => setHover(`dism-${flag.id}`, true)}
-                    onMouseLeave={() => setHover(`dism-${flag.id}`, false)}>
+                    aria-label="Dismiss">
                     <XCircle className="w-4 h-4" /></button></div></div>
             ))}</div></div>
       )}
@@ -307,16 +292,12 @@ export default function DocumentsPage() {
                   return (
                     <div
                       key={doc.id}
-                      className="rounded-xl p-4 transition-colors flex items-center justify-between"
+                      className="hover-row rounded-xl p-4 flex items-center justify-between"
                       style={{
                         position: 'relative' as const,
                         backgroundColor: docFlags.length > 0
                           ? 'color-mix(in srgb, var(--warning) 3%, transparent)'
-                          : hoverStates[docKey]
-                            ? 'var(--surface-2)'
-                            : 'transparent', }}
-                      onMouseEnter={() => setHover(docKey, true)}
-                      onMouseLeave={() => setHover(docKey, false)}>
+                          : undefined, }}>
                       <Link href={`/documents/${doc.id}`} className="flex-1 min-w-0">
                         <div className="flex items-center gap-3">
                           <Edit3 className="w-4 h-4 shrink-0" style={stTextMuted} />
@@ -337,21 +318,15 @@ export default function DocumentsPage() {
                           {doc.status}</span>
                         <button
                           onClick={() => downloadDoc(doc)}
-                          className="p-1 rounded transition-colors"
+                          className="icon-dl p-1 rounded"
                           title="Download as Markdown"
-                          aria-label="Download as Markdown"
-                          style={{ color: hoverStates[`dl-${doc.id}`] ? 'var(--text-secondary)' : 'var(--text-muted)', backgroundColor: hoverStates[`dl-${doc.id}`] ? 'var(--surface-2)' : 'transparent' }}
-                          onMouseEnter={() => setHover(`dl-${doc.id}`, true)}
-                          onMouseLeave={() => setHover(`dl-${doc.id}`, false)}>
+                          aria-label="Download as Markdown">
                           <Download className="w-3.5 h-3.5" /></button>
                         <button
                           onClick={() => setDeleteTarget({ id: doc.id, title: doc.title })}
-                          className="text-xs px-2 py-1 rounded transition-colors"
+                          className="icon-delete text-xs px-2 py-1 rounded"
                           title="Delete document"
-                          aria-label="Delete document"
-                          style={{ color: hoverStates[`del-${doc.id}`] ? 'var(--danger)' : 'var(--text-muted)', backgroundColor: hoverStates[`del-${doc.id}`] ? 'var(--surface-2)' : 'transparent' }}
-                          onMouseEnter={() => setHover(`del-${doc.id}`, true)}
-                          onMouseLeave={() => setHover(`del-${doc.id}`, false)}>
+                          aria-label="Delete document">
                           Delete</button></div>
                     </div>);
                 })}</div></div>
@@ -377,21 +352,15 @@ export default function DocumentsPage() {
                     <div className="flex gap-1 shrink-0">
                       <button
                         onClick={() => handleFlagAction(flag.id, 'addressed')}
-                        className="p-1.5 rounded-md transition-colors"
+                        className="flag-addr p-1.5 rounded-md"
                         title="Mark as addressed"
-                        aria-label="Mark as addressed"
-                        style={{ color: hoverStates[`gaddr-${flag.id}`] ? 'var(--success)' : 'var(--text-muted)', backgroundColor: hoverStates[`gaddr-${flag.id}`] ? 'var(--success-muted)' : 'transparent' }}
-                        onMouseEnter={() => setHover(`gaddr-${flag.id}`, true)}
-                        onMouseLeave={() => setHover(`gaddr-${flag.id}`, false)}>
+                        aria-label="Mark as addressed">
                         <CheckCircle2 className="w-4 h-4" /></button>
                       <button
                         onClick={() => handleFlagAction(flag.id, 'dismissed')}
-                        className="p-1.5 rounded-md transition-colors"
+                        className="flag-dism p-1.5 rounded-md"
                         title="Dismiss"
-                        aria-label="Dismiss"
-                        style={{ color: hoverStates[`gdism-${flag.id}`] ? 'var(--danger)' : 'var(--text-muted)', backgroundColor: hoverStates[`gdism-${flag.id}`] ? 'color-mix(in srgb, var(--danger) 20%, transparent)' : 'transparent' }}
-                        onMouseEnter={() => setHover(`gdism-${flag.id}`, true)}
-                        onMouseLeave={() => setHover(`gdism-${flag.id}`, false)}>
+                        aria-label="Dismiss">
                         <XCircle className="w-4 h-4" /></button></div></div>
                 ))}</div></div>
           )}</div>

@@ -472,6 +472,36 @@ body {
   color: var(--success) !important;
 }
 
+.flag-addr {
+  color: var(--text-muted);
+  background-color: transparent;
+  transition: color 150ms ease, background-color 150ms ease;
+}
+.flag-addr:hover {
+  color: var(--success);
+  background-color: var(--success-muted);
+}
+
+.flag-dism {
+  color: var(--text-muted);
+  background-color: transparent;
+  transition: color 150ms ease, background-color 150ms ease;
+}
+.flag-dism:hover {
+  color: var(--danger);
+  background-color: color-mix(in srgb, var(--danger) 20%, transparent);
+}
+
+.icon-dl {
+  color: var(--text-muted);
+  background-color: transparent;
+  transition: color 150ms ease, background-color 150ms ease;
+}
+.icon-dl:hover {
+  color: var(--text-secondary);
+  background-color: var(--surface-2);
+}
+
 .row-actions {
   opacity: 0.4;
   transition: opacity 150ms ease;
