@@ -78,11 +78,6 @@ export default function TermComparePage() {
   const [results, setResults] = useState<CompareResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [expandedNotes, setExpandedNotes] = useState<number[]>([]);
-  const [hoveredRow, setHoveredRow] = useState<string | null>(null);
-  const [addHover, setAddHover] = useState(false);
-  const [compareHover, setCompareHover] = useState(false);
-  const [backHover, setBackHover] = useState(false);
-  const [hoveredRemove, setHoveredRemove] = useState<number | null>(null);
 
   const addScenario = useCallback(() => {
     if (scenarios.length >= 5) {
@@ -203,12 +198,10 @@ export default function TermComparePage() {
         <div className="flex items-center gap-4">
           <Link
             href="/terms"
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs transition-colors"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs btn-surface"
             style={{
-              background: backHover ? 'var(--surface-3)' : 'var(--surface-2)',
-              color: 'var(--text-secondary)', }}
-            onMouseEnter={() => setBackHover(true)}
-            onMouseLeave={() => setBackHover(false)}>
+              background: 'var(--surface-2)',
+              color: 'var(--text-secondary)', }}>
             <ArrowLeft className="w-3.5 h-3.5" />
             Terms</Link>
           <div>
@@ -226,11 +219,9 @@ export default function TermComparePage() {
             {scenarios.length < 5 && (
               <button
                 onClick={addScenario}
-                onMouseEnter={() => setAddHover(true)}
-                onMouseLeave={() => setAddHover(false)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-normal transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-normal btn-surface"
                 style={{
-                  background: addHover ? 'var(--surface-3)' : 'var(--surface-2)',
+                  background: 'var(--surface-2)',
                   color: 'var(--text-secondary)', }}>
                 <Plus className="w-3.5 h-3.5" />
                 Add Scenario</button>
@@ -238,10 +229,7 @@ export default function TermComparePage() {
             <button
               onClick={runComparison}
               disabled={loading || scenarios.filter(s => s.investor_name && s.pre_money_valuation > 0 && s.investment_amount > 0).length < 2}
-              onMouseEnter={() => setCompareHover(true)}
-              onMouseLeave={() => setCompareHover(false)}
-              className="btn btn-primary btn-md text-sm font-normal disabled:opacity-40"
-              style={{ background: compareHover && !loading ? 'var(--accent-hover)' : 'var(--accent)' }}>
+              className="btn btn-primary btn-md text-sm font-normal disabled:opacity-40">
               {loading ? (
                 <><Loader2 className="w-4 h-4 animate-spin" /> Analyzing...</>
               ) : (
@@ -264,12 +252,7 @@ export default function TermComparePage() {
               {scenarios.length > 1 && (
                 <button
                   onClick={() => removeScenario(idx)}
-                  onMouseEnter={() => setHoveredRemove(idx)}
-                  onMouseLeave={() => setHoveredRemove(null)}
-                  className="flex items-center gap-1 px-2 py-1 rounded text-xs transition-colors"
-                  style={{
-                    color: hoveredRemove === idx ? 'var(--danger)' : 'var(--text-muted)',
-                    background: hoveredRemove === idx ? 'var(--danger-muted)' : 'transparent', }}>
+                  className="flex items-center gap-1 px-2 py-1 rounded text-xs remove-btn">
                   <Trash2 className="w-3 h-3" />
                   Remove</button>
               )}</div>
@@ -425,12 +408,9 @@ export default function TermComparePage() {
                 {tableRows.map(row => (
                   <tr
                     key={row.label}
-                    className="transition-colors"
+                    className="hover-row"
                     style={{
-                      borderBottom: '1px solid var(--border-subtle)',
-                      background: hoveredRow === row.label ? 'var(--surface-1)' : 'transparent', }}
-                    onMouseEnter={() => setHoveredRow(row.label)}
-                    onMouseLeave={() => setHoveredRow(null)}>
+                      borderBottom: '1px solid var(--border-subtle)', }}>
                     <td className="px-4 py-2.5 text-xs font-normal" style={stTextMuted}>
                       {row.label}</td>
                     {results.results.map(r => {

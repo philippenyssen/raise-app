@@ -37,12 +37,7 @@ export default function WorkspacePage() {
   const [contentHistory, setContentHistory] = useState<string[]>([]);
   const [pendingDoc, setPendingDoc] = useState<Doc | null>(null);
 
-  // Hover states for interactive elements
-  const [hoveredDocId, setHoveredDocId] = useState<string | null>(null);
-  const [hoveredGenType, setHoveredGenType] = useState<string | null>(null);
-  const [chevronHover, setChevronHover] = useState(false);
-  const [closedChevronHover, setClosedChevronHover] = useState(false);
-  const [newDocHover, setNewDocHover] = useState(false);
+
 
   const fetchDocs = useCallback(async () => {
     try {
@@ -224,11 +219,8 @@ export default function WorkspacePage() {
               Deliverables</span>
             <button
               onClick={() => setSidebarOpen(false)}
-              onMouseEnter={() => setChevronHover(true)}
-              onMouseLeave={() => setChevronHover(false)}
+              className="icon-delete"
               style={{
-                color: chevronHover ? 'var(--text-tertiary)' : 'var(--text-muted)',
-                transition: 'color 150ms ease',
                 background: 'none',
                 border: 'none',
                 cursor: 'pointer',
@@ -251,29 +243,17 @@ export default function WorkspacePage() {
                   {TYPE_LABELS[type] || type}</div>
                 {typeDocs.map(doc => {
                   const isSelected = selectedDoc?.id === doc.id;
-                  const isHovered = hoveredDocId === doc.id;
                   return (
                     <button
                       key={doc.id}
                       onClick={() => selectDoc(doc)}
-                      onMouseEnter={() => setHoveredDocId(doc.id)}
-                      onMouseLeave={() => setHoveredDocId(null)}
-                      className="w-full text-left"
+                      className={`w-full text-left ${isSelected ? '' : 'sidebar-link'}`}
                       style={{
                         padding: 'var(--space-1) var(--space-2)',
                         borderRadius: 'var(--radius-md)',
                         fontSize: 'var(--font-size-sm)',
-                        transition: 'all 150ms ease',
-                        background: isSelected
-                          ? 'var(--surface-2)'
-                          : isHovered
-                            ? 'var(--surface-2)'
-                            : 'transparent',
-                        color: isSelected
-                          ? 'var(--text-primary)'
-                          : isHovered
-                            ? 'var(--text-secondary)'
-                            : 'var(--text-tertiary)',
+                        background: isSelected ? 'var(--surface-2)' : undefined,
+                        color: isSelected ? 'var(--text-primary)' : undefined,
                         border: 'none',
                         cursor: 'pointer',
                         display: 'block',
@@ -305,27 +285,18 @@ export default function WorkspacePage() {
               Generate from Data Room</div>
             {['teaser', 'exec_summary', 'memo', 'deck', 'dd_memo'].map(type => {
               const exists = docs.some(d => d.type === type);
-              const isHovered = hoveredGenType === type;
               const isDisabled = generating !== null;
               return (
                 <button
                   key={type}
                   onClick={() => generateDeliverable(type)}
                   disabled={isDisabled}
-                  onMouseEnter={() => setHoveredGenType(type)}
-                  onMouseLeave={() => setHoveredGenType(null)}
-                  className="w-full flex items-center gap-2"
+                  className="w-full flex items-center gap-2 sidebar-link"
                   style={{
                     padding: 'var(--space-1) var(--space-2)',
                     borderRadius: 'var(--radius-md)',
                     fontSize: 'var(--font-size-xs)',
-                    color: isHovered && !isDisabled
-                      ? 'var(--text-secondary)'
-                      : 'var(--text-muted)',
-                    background: isHovered && !isDisabled
-                      ? 'var(--surface-2)'
-                      : 'transparent',
-                    transition: 'all 150ms ease',
+                    color: 'var(--text-muted)',
                     opacity: isDisabled ? 0.5 : 1,
                     border: 'none',
                     cursor: isDisabled ? 'default' : 'pointer', }}>
@@ -342,16 +313,11 @@ export default function WorkspacePage() {
           <div style={{ padding: 'var(--space-2)', borderTop: '1px solid var(--border-default)' }}>
             <a
               href="/documents/new"
-              onMouseEnter={() => setNewDocHover(true)}
-              onMouseLeave={() => setNewDocHover(false)}
-              className="flex items-center gap-2 transition-colors"
+              className="flex items-center gap-2 sidebar-link"
               style={{
                 padding: 'var(--space-2) var(--space-3)',
                 borderRadius: 'var(--radius-md)',
                 fontSize: 'var(--font-size-sm)',
-                color: newDocHover ? 'var(--text-secondary)' : 'var(--text-tertiary)',
-                background: newDocHover ? 'var(--surface-2)' : 'transparent',
-                transition: 'all 150ms ease',
                 textDecoration: 'none', }}>
               <Plus className="w-4 h-4" /> New Document</a></div></div>
       )}
@@ -359,15 +325,11 @@ export default function WorkspacePage() {
       {!sidebarOpen && (
         <button
           onClick={() => setSidebarOpen(true)}
-          onMouseEnter={() => setClosedChevronHover(true)}
-          onMouseLeave={() => setClosedChevronHover(false)}
           aria-label="Open document sidebar"
           title="Open sidebar"
-          className="w-8 shrink-0 flex items-center justify-center"
+          className="w-8 shrink-0 flex items-center justify-center btn-surface"
           style={{
-            borderRight: '1px solid var(--border-default)',
-            background: closedChevronHover ? 'var(--surface-2)' : 'transparent',
-            transition: 'background 150ms ease',
+            background: 'transparent',
             border: 'none',
             borderRightStyle: 'solid',
             borderRightWidth: '1px',

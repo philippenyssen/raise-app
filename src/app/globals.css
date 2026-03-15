@@ -531,6 +531,26 @@ body {
   border-color: var(--border-strong);
 }
 
+.sidebar-link {
+  color: var(--text-tertiary);
+  background: transparent;
+  transition: color 150ms ease, background 150ms ease;
+}
+.sidebar-link:hover {
+  color: var(--text-secondary);
+  background: var(--surface-2);
+}
+
+.remove-btn {
+  color: var(--text-muted);
+  background-color: transparent;
+  transition: color 150ms ease, background-color 150ms ease;
+}
+.remove-btn:hover {
+  color: var(--danger);
+  background-color: var(--danger-muted);
+}
+
 /* ── Inputs ── */
 .input {
   width: 100%;
