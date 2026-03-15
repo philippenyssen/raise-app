@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { DealHeatInvestor } from '@/lib/types';
 import { STATUS_LABELS } from '@/lib/constants';
-import { labelAccent, labelMuted, labelSecondary, labelTertiary, stAccent, stBorderTop, stSurface2, stTextSecondary, stTextTertiary as textTertiary } from '@/lib/styles';
+import { labelAccent, labelMuted, labelSecondary, labelTertiary, stAccent, stBorderTop, stSurface2, stTextMuted, stTextSecondary, stTextTertiary as textTertiary } from '@/lib/styles';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -1013,6 +1013,17 @@ export default function Dashboard() {
               )}
             </div>
             )}
+            {data && data.funnel.contacted > 0 && (() => {
+              const wins = (data.funnel.term_sheets ?? 0) + (data.funnel.closed ?? 0);
+              const rate = Math.round((wins / data.funnel.contacted) * 100);
+              const color = rate >= 10 ? 'var(--success)' : rate >= 5 ? 'var(--warning)' : 'var(--danger)';
+              return (
+                <div className="flex items-center justify-between mt-3 px-1" style={labelSecondary}>
+                  <span className="flex items-center gap-1"><Target className="w-3 h-3" /> Win Rate</span>
+                  <span className="tabular-nums" style={{ color }}>{rate}% <span style={stTextMuted}>({wins}/{data.funnel.contacted})</span></span>
+                </div>
+              );
+            })()}
           </div>
 
           {/* Deliverables */}
