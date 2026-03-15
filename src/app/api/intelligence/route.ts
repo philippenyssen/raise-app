@@ -55,6 +55,16 @@ export async function POST(req: NextRequest) {
     const action = body.action as string;
     const data = body.data as Record<string, unknown> | undefined;
 
+    // Validate text field lengths on data payload
+    if (data) {
+      const textLimits: Record<string, number> = { name: 500, company: 500, subject: 500, content: 50000, notes: 10000, focus: 2000, notable_deals: 5000, relevance: 2000 };
+      for (const [field, max] of Object.entries(textLimits)) {
+        if (data[field] && typeof data[field] === 'string' && (data[field] as string).length > max) {
+          return NextResponse.json({ error: `${field} exceeds maximum length of ${max} characters` }, { status: 400 });
+        }
+      }
+    }
+
     switch (action) {
       // CRUD operations
       case 'create_deal': {
