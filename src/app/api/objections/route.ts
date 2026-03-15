@@ -50,7 +50,14 @@ export async function PUT(req: NextRequest) {
   } catch {
     return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
   }
-  const { id, response_text, effectiveness } = body as {
+  const ALLOWED_FIELDS = new Set([
+    'id', 'response_text', 'effectiveness', 'investor_id', 'investor_name', 'objection_topic',
+  ]);
+  const filtered: Record<string, unknown> = Object.fromEntries(
+    Object.entries(body).filter(([k]) => ALLOWED_FIELDS.has(k))
+  );
+
+  const { id, response_text, effectiveness } = filtered as {
     id: string; response_text: string; effectiveness: string;
   };
 
@@ -63,9 +70,9 @@ export async function PUT(req: NextRequest) {
 
   // --- WIRE: Objection Response → Cascade Updates ---
   if (effectiveness === 'effective' || effectiveness === 'partially_effective') {
-    const investor_id = body.investor_id as string | undefined;
-    const investor_name = body.investor_name as string | undefined;
-    const objection_topic = body.objection_topic as string | undefined;
+    const investor_id = filtered.investor_id as string | undefined;
+    const investor_name = filtered.investor_name as string | undefined;
+    const objection_topic = filtered.objection_topic as string | undefined;
 
     // Log activity
     try {

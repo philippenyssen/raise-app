@@ -133,7 +133,14 @@ export async function PUT(req: NextRequest) {
   } catch {
     return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
   }
-  const { id, status, outcome, conviction_delta } = body as {
+  const ALLOWED_FIELDS = new Set([
+    'id', 'status', 'outcome', 'conviction_delta', 'investor_id',
+  ]);
+  const filtered: Record<string, unknown> = Object.fromEntries(
+    Object.entries(body).filter(([k]) => ALLOWED_FIELDS.has(k))
+  );
+
+  const { id, status, outcome, conviction_delta } = filtered as {
     id: string; status: string; outcome: string; conviction_delta: number;
   };
 
@@ -152,7 +159,7 @@ export async function PUT(req: NextRequest) {
 
   if (status === 'completed' && conviction_delta !== undefined) {
     const { searchParams } = new URL(req.url);
-    const invId = (body.investor_id as string) || searchParams.get('investor_id');
+    const invId = (filtered.investor_id as string) || searchParams.get('investor_id');
     if (invId) {
       backfillEnthusiasmFromFollowups(invId).catch(() => {/* non-blocking */});
     }}
