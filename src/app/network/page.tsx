@@ -50,7 +50,7 @@ export default function NetworkPage() {
       const json = await res.json();
       setData(json);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error');
+      setError(err instanceof Error ? err.message : 'Couldn\'t load data — try refreshing');
     } finally {
       setLoading(false);
     }

@@ -148,7 +148,7 @@ export default function StrategicPage() {
       if (!res.ok) throw new Error('Couldn\'t load strategic data — try refreshing');
       setData(await res.json());
     } catch (e) {
-      const msg = e instanceof Error ? e.message : 'Unknown error';
+      const msg = e instanceof Error ? e.message : 'Couldn\'t load data — try refreshing';
       setError(msg);
       if (!silent) toast(msg, 'error');
     } finally {

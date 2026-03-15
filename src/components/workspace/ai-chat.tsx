@@ -115,9 +115,9 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
       setMessages(prev => {
         const updated = [...prev];
         if (updated.length > 0 && updated[updated.length - 1].role === 'assistant') {
-          updated[updated.length - 1] = { role: 'assistant', content: 'Request failed. Click retry to try again.', error: true };
+          updated[updated.length - 1] = { role: 'assistant', content: 'AI response failed — check your connection and try again.', error: true };
         } else {
-          updated.push({ role: 'assistant', content: 'Request failed. Click retry to try again.', error: true });
+          updated.push({ role: 'assistant', content: 'AI response failed — check your connection and try again.', error: true });
         }
         return updated;});
     } finally {

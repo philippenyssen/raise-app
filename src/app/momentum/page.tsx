@@ -167,7 +167,7 @@ export default function MomentumPage() {
       const json = await res.json();
       setData(json);
     } catch (e) {
-      const msg = e instanceof Error ? e.message : 'Unknown error';
+      const msg = e instanceof Error ? e.message : 'Couldn\'t load data — try refreshing';
       setError(msg);
       toast(msg, 'error');
     } finally {
