@@ -148,9 +148,9 @@ export default function DocumentEditorPage() {
 
   if (loading) {
     return (
-      <div className="space-y-4">
-        <div className="h-8 w-64 rounded animate-pulse" style={stSurface2} />
-        <div className="h-[60vh] rounded-xl animate-pulse" style={stSurface2} />
+      <div className="space-y-4 page-content">
+        <div className="skeleton" style={{ height: '28px', width: '250px' }} />
+        <div className="skeleton" style={{ height: '60vh', borderRadius: 'var(--radius-xl)' }} />
       </div>);
   }
 

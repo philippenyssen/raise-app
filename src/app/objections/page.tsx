@@ -331,13 +331,13 @@ export default function ObjectionsPage() {
 
   if (loading) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 page-content">
         <div>
           <h1 className="page-title">Objection Playbook</h1>
-          <div className="h-4 w-64 rounded animate-pulse mt-1" style={stSurface2} /></div>
+          <div className="skeleton mt-1" style={{ height: '16px', width: '250px' }} /></div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {[1, 2, 3].map(i => (
-            <div key={i} className="h-32 rounded-xl animate-pulse" style={stSurface1} />
+            <div key={i} className="skeleton" style={{ height: '120px', borderRadius: 'var(--radius-xl)' }} />
           ))}</div>
       </div>);
   }
@@ -612,7 +612,7 @@ export default function ObjectionsPage() {
                 ))}</select>
 
               {loadingInvestor && (
-                <div className="h-4 w-40 rounded animate-pulse" style={stSurface2} />
+                <div className="skeleton" style={{ height: '16px', width: '160px' }} />
               )}
 
               {selectedInvestor && !loadingInvestor && investorObjections.length === 0 && (
@@ -756,7 +756,7 @@ function EffectivenessTab({
     return (
       <div className="space-y-4">
         {[1, 2, 3, 4].map(i => (
-          <div key={i} className="h-24 rounded-xl animate-pulse" style={stSurface1} />
+          <div key={i} className="skeleton" style={{ height: '96px', borderRadius: 'var(--radius-xl)' }} />
         ))}
       </div>);
   }

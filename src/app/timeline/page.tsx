@@ -130,10 +130,10 @@ export default function TimelinePage() {
 
   if (loading) {
     return (
-      <div className="space-y-6">
-        <div className="h-8 w-48 rounded animate-pulse" style={{ backgroundColor: 'var(--surface-2)' }} />
+      <div className="space-y-6 page-content">
+        <div className="skeleton" style={{ height: '28px', width: '200px' }} />
         <div className="space-y-2">
-          {[...Array(6)].map((_, i) => <div key={i} className="h-12 rounded animate-pulse" style={{ backgroundColor: 'color-mix(in srgb, var(--surface-2) 30%, transparent)' }} />)}
+          {[1,2,3,4,5,6].map(i => <div key={i} className="skeleton" style={{ height: '48px', borderRadius: 'var(--radius-md)' }} />)}
         </div>
       </div>);
   }

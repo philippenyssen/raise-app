@@ -146,11 +146,10 @@ export default function DocumentsPage() {
 
   if (loading) {
     return (
-      <div className="space-y-6">
-        <div className="h-8 w-48 rounded animate-pulse" style={{ backgroundColor: 'var(--surface-2)' }} />
-        {[...Array(3)].map((_, i) => (
-          <div key={i} className="h-20 rounded-xl animate-pulse" style={{ backgroundColor: 'color-mix(in srgb, var(--surface-2) 50%, transparent)' }}
-            />
+      <div className="space-y-6 page-content">
+        <div className="skeleton" style={{ height: '28px', width: '200px' }} />
+        {[1,2,3].map(i => (
+          <div key={i} className="skeleton" style={{ height: '80px', borderRadius: 'var(--radius-xl)' }} />
         ))}
       </div>);
   }
