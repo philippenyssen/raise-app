@@ -43,6 +43,11 @@ function NewMeetingContent() {
   useEffect(() => {
     fetch('/api/investors').then(r => r.json()).then(setInvestors).catch(e => console.error('[NEW_MEETING_INVESTORS]', e instanceof Error ? e.message : e));
   }, []);
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape' && result) setResult(null); };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [result]);
 
   const selectedInvestor = investors.find(i => i.id === form.investor_id);
 

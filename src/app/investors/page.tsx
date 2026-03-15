@@ -78,6 +78,11 @@ export default function InvestorsPage() {
 
   useEffect(() => { fetchInvestors(); }, []);
   useEffect(() => { if (showForm) setTimeout(() => { const el = document.querySelector<HTMLInputElement>('#investor-form input'); el?.focus(); }, 50); }, [showForm]);
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape' && showForm) { setShowForm(false); setEditId(null); } };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [showForm]);
 
   async function fetchInvestors() {
     setLoading(true);
