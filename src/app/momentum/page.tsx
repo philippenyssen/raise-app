@@ -372,7 +372,7 @@ export default function MomentumPage() {
                       <Link
                         href={`/investors/${alert.investorId}`}
                         className="px-2.5 py-1 rounded text-[11px] font-medium transition-colors"
-                        style={{ background: 'var(--surface-2)', color: 'var(--text-secondary)', border: '1px solid var(--border-default)' }}
+                        style={{ background: 'var(--surface-2)', color: 'var(--text-secondary)' }}
                         onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-3)'; }}
                         onMouseLeave={e => { e.currentTarget.style.background = 'var(--surface-2)'; }}
                       >

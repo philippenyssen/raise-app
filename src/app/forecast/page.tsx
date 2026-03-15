@@ -708,7 +708,7 @@ export default function ForecastPage() {
                                   ? { background: 'var(--accent)', color: 'var(--text-primary)' }
                                   : inv.tier === 2
                                     ? { background: 'var(--accent)', color: 'var(--text-primary)' }
-                                    : { background: 'var(--surface-3)', color: 'var(--text-secondary)', border: '1px solid var(--border-default)' }),
+                                    : { background: 'var(--surface-3)', color: 'var(--text-secondary)' }),
                               }}
                             >
                               {inv.tier}

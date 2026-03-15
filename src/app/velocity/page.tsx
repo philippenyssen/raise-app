@@ -313,7 +313,7 @@ export default function VelocityPage() {
                                 ? { background: 'var(--accent)', color: 'var(--text-primary)' }
                                 : inv.investor_tier === 2
                                   ? { background: 'var(--accent)', color: 'var(--text-primary)' }
-                                  : { background: 'var(--surface-3)', color: 'var(--text-secondary)', border: '1px solid var(--border-default)' }),
+                                  : { background: 'var(--surface-3)', color: 'var(--text-secondary)' }),
                               width: '20px',
                               height: '20px',
                               fontSize: '10px',

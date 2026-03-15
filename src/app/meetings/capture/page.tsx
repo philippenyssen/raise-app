@@ -363,8 +363,6 @@ function QuickCaptureInner() {
               style={{
                 background: newCaptureHovered ? 'var(--surface-3)' : 'var(--surface-2)',
                 color: 'var(--text-primary)',
-                border: '1px solid var(--border-default)',
-                borderColor: newCaptureHovered ? 'var(--border-strong)' : 'var(--border-default)',
               }}
               onMouseEnter={() => setNewCaptureHovered(true)}
               onMouseLeave={() => setNewCaptureHovered(false)}
@@ -513,8 +511,6 @@ function QuickCaptureInner() {
             style={{
               background: detailsHovered ? 'var(--surface-3)' : 'transparent',
               color: 'var(--text-tertiary)',
-              border: '1px solid var(--border-subtle)',
-              borderColor: detailsHovered ? 'var(--border-default)' : 'var(--border-subtle)',
               width: '100%',
               justifyContent: 'space-between',
             }}

@@ -432,7 +432,6 @@ export default function InvestorsPage() {
                             : {
                                 background: 'var(--surface-2)',
                                 color: 'var(--text-muted)',
-                                border: '1px solid var(--border-subtle)',
                               }
                     }>
                       {inv.tier}

@@ -243,7 +243,6 @@ export default function CompetitivePage() {
                             padding: 'var(--space-2) var(--space-3)',
                             background: 'var(--surface-0)',
                             borderRadius: 'var(--radius-sm)',
-                            border: '1px solid var(--border-subtle)',
                           }}
                         >
                           <span style={{ color: 'var(--text-muted)' }}><Calendar className="w-3.5 h-3.5" /></span>

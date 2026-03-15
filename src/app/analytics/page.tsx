@@ -1138,10 +1138,10 @@ function StaleInvestorRow({ inv }: { inv: { id: string; name: string; status: st
   const [hovered, setHovered] = useState(false);
 
   const tierStyle = inv.tier === 1
-    ? { background: 'color-mix(in srgb, var(--accent) 20%, transparent)', color: 'var(--accent)', border: '1px solid color-mix(in srgb, var(--accent) 30%, transparent)' }
+    ? { background: 'color-mix(in srgb, var(--accent) 20%, transparent)', color: 'var(--accent)' }
     : inv.tier === 2
-    ? { background: 'color-mix(in srgb, var(--accent-muted) 20%, transparent)', color: 'var(--accent-muted)', border: '1px solid color-mix(in srgb, var(--accent-muted) 30%, transparent)' }
-    : { background: 'var(--surface-1)', color: 'var(--text-tertiary)', border: '1px solid var(--border-subtle)' };
+    ? { background: 'color-mix(in srgb, var(--accent-muted) 20%, transparent)', color: 'var(--accent-muted)' }
+    : { background: 'var(--surface-1)', color: 'var(--text-tertiary)' };
 
   return (
     <Link

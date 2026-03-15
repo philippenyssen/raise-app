@@ -59,12 +59,12 @@ interface AccelerationData {
 // ---------------------------------------------------------------------------
 
 const TYPE_STYLES: Record<string, React.CSSProperties> = {
-  vc: { background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(27, 42, 74, 0.10)' },
-  growth: { background: 'var(--cat-purple-muted)', color: 'var(--chart-4)', border: '1px solid rgba(90, 90, 122, 0.10)' },
-  sovereign: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: '1px solid rgba(26, 26, 46, 0.05)' },
-  strategic: { background: 'var(--cat-teal-muted)', color: 'var(--cat-teal)', border: '1px solid rgba(74, 106, 106, 0.10)' },
-  debt: { background: 'var(--surface-2)', color: 'var(--text-secondary)', border: '1px solid var(--border-default)' },
-  family_office: { background: 'rgba(26, 26, 46, 0.06)', color: 'var(--text-primary)', border: '1px solid rgba(26, 26, 46, 0.06)' },
+  vc: { background: 'var(--accent-muted)', color: 'var(--accent)' },
+  growth: { background: 'var(--cat-purple-muted)', color: 'var(--chart-4)' },
+  sovereign: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
+  strategic: { background: 'var(--cat-teal-muted)', color: 'var(--cat-teal)' },
+  debt: { background: 'var(--surface-2)', color: 'var(--text-secondary)' },
+  family_office: { background: 'rgba(26, 26, 46, 0.06)', color: 'var(--text-primary)' },
 };
 
 const TYPE_LABELS: Record<string, string> = {
@@ -79,14 +79,14 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 const STATUS_STYLES: Record<string, React.CSSProperties> = {
-  identified: { background: 'var(--surface-2)', color: 'var(--text-tertiary)', border: '1px solid var(--border-default)' },
-  contacted: { background: 'var(--surface-2)', color: 'var(--text-secondary)', border: '1px solid var(--border-strong)' },
-  nda_signed: { background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(27, 42, 74, 0.10)' },
-  meeting_scheduled: { background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(27, 42, 74, 0.10)' },
-  met: { background: 'var(--cat-purple-muted)', color: 'var(--chart-4)', border: '1px solid rgba(90, 90, 122, 0.10)' },
-  engaged: { background: 'var(--cat-purple-muted)', color: 'var(--cat-purple)', border: '1px solid rgba(90, 90, 122, 0.08)' },
-  in_dd: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: '1px solid rgba(26, 26, 46, 0.05)' },
-  term_sheet: { background: 'var(--success-muted)', color: 'var(--text-secondary)', border: '1px solid rgba(27, 42, 74, 0.08)' },
+  identified: { background: 'var(--surface-2)', color: 'var(--text-tertiary)' },
+  contacted: { background: 'var(--surface-2)', color: 'var(--text-secondary)' },
+  nda_signed: { background: 'var(--accent-muted)', color: 'var(--accent)' },
+  meeting_scheduled: { background: 'var(--accent-muted)', color: 'var(--accent)' },
+  met: { background: 'var(--cat-purple-muted)', color: 'var(--chart-4)' },
+  engaged: { background: 'var(--cat-purple-muted)', color: 'var(--cat-purple)' },
+  in_dd: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
+  term_sheet: { background: 'var(--success-muted)', color: 'var(--text-secondary)' },
 };
 
 const MOMENTUM_STYLE: Record<string, React.CSSProperties> = {
@@ -104,12 +104,12 @@ const MOMENTUM_LABELS: Record<string, string> = {
 };
 
 const TRIGGER_STYLES: Record<string, React.CSSProperties> = {
-  momentum_cliff: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: '1px solid rgba(26, 26, 46, 0.05)' },
-  stall_risk: { background: 'var(--danger-muted)', color: 'var(--text-primary)', border: '1px solid rgba(26, 26, 46, 0.06)' },
-  window_closing: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: '1px solid rgba(26, 26, 46, 0.05)' },
-  catalyst_match: { background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(27, 42, 74, 0.10)' },
-  competitive_pressure: { background: 'var(--cat-purple-muted)', color: 'var(--chart-4)', border: '1px solid rgba(90, 90, 122, 0.10)' },
-  term_sheet_ready: { background: 'var(--success-muted)', color: 'var(--text-secondary)', border: '1px solid rgba(27, 42, 74, 0.08)' },
+  momentum_cliff: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
+  stall_risk: { background: 'var(--danger-muted)', color: 'var(--text-primary)' },
+  window_closing: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
+  catalyst_match: { background: 'var(--accent-muted)', color: 'var(--accent)' },
+  competitive_pressure: { background: 'var(--cat-purple-muted)', color: 'var(--chart-4)' },
+  term_sheet_ready: { background: 'var(--success-muted)', color: 'var(--text-secondary)' },
 };
 
 const TRIGGER_LABELS: Record<string, string> = {
@@ -122,9 +122,9 @@ const TRIGGER_LABELS: Record<string, string> = {
 };
 
 const CONFIDENCE_STYLES: Record<string, React.CSSProperties> = {
-  high: { background: 'var(--success-muted)', color: 'var(--text-secondary)', border: '1px solid rgba(27, 42, 74, 0.08)' },
-  medium: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: '1px solid rgba(26, 26, 46, 0.05)' },
-  low: { background: 'var(--surface-2)', color: 'var(--text-tertiary)', border: '1px solid var(--border-default)' },
+  high: { background: 'var(--success-muted)', color: 'var(--text-secondary)' },
+  medium: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
+  low: { background: 'var(--surface-2)', color: 'var(--text-tertiary)' },
 };
 
 const URGENCY_STYLE: Record<string, React.CSSProperties> = {
@@ -283,8 +283,8 @@ function ActionCard({
                 fontSize: 'var(--font-size-sm)',
                 fontWeight: 500,
                 ...(isExecuted
-                  ? { background: 'var(--success-muted)', color: 'var(--text-secondary)', border: '1px solid rgba(27, 42, 74, 0.06)' }
-                  : { background: 'var(--surface-2)', color: 'var(--text-muted)', border: '1px solid var(--border-default)' }
+                  ? { background: 'var(--success-muted)', color: 'var(--text-secondary)' }
+                  : { background: 'var(--surface-2)', color: 'var(--text-muted)' }
                 ),
               }}
             >

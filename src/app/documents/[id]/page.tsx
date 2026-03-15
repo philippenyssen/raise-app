@@ -300,7 +300,7 @@ export default function DocumentEditorPage() {
               <Sparkles className="w-3.5 h-3.5" /> AI operations
             </h3>
             {selectedText && (
-              <div className="text-xs mb-3 p-2 rounded" style={{ color: 'var(--accent)', background: 'var(--accent-muted)', border: '1px solid var(--accent)' }}>
+              <div className="text-xs mb-3 p-2 rounded" style={{ color: 'var(--accent)', background: 'var(--accent-muted)' }}>
                 {selectedText.length} chars selected — AI will operate on selection
               </div>
             )}
@@ -348,7 +348,6 @@ export default function DocumentEditorPage() {
                     style={{
                       background: applyHovered ? 'var(--success-muted)' : 'var(--success-muted)',
                       color: 'var(--text-secondary)',
-                      border: '1px solid var(--success)',
                     }}
                     onMouseEnter={() => setApplyHovered(true)}
                     onMouseLeave={() => setApplyHovered(false)}
@@ -482,7 +481,6 @@ function AIButton({ label, desc, loading, onClick }: { label: string; desc: stri
       className="w-full text-left px-3 py-2 rounded-lg transition-colors disabled:opacity-50"
       style={{
         background: hovered ? 'var(--surface-2)' : 'var(--surface-1)',
-        border: '1px solid var(--border-default)',
       }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}

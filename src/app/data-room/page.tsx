@@ -252,11 +252,9 @@ export default function DataRoomPage() {
             style={pasteMode ? {
               background: 'var(--accent-muted)',
               color: 'var(--accent)',
-              border: '1px solid var(--accent-muted)',
             } : {
               background: 'var(--surface-2)',
               color: 'var(--text-secondary)',
-              border: '1px solid var(--border-default)',
             }}
           >
             <FileText className="w-4 h-4" /> Paste Text

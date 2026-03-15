@@ -241,7 +241,7 @@ export default function DealflowPage() {
           onClick={fetchData}
           disabled={loading}
           className="flex items-center gap-2 px-3 py-2 rounded-lg"
-          style={{ background: 'var(--surface-2)', border: '1px solid var(--border-default)', color: 'var(--text-secondary)', fontSize: 'var(--font-size-sm)' }}
+          style={{ background: 'var(--surface-2)', color: 'var(--text-secondary)', fontSize: 'var(--font-size-sm)' }}
         >
           <span style={{ color: 'var(--text-muted)' }}><RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} /></span>
           Refresh

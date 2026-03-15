@@ -85,18 +85,18 @@ const TYPE_LABELS: Record<string, string> = {
 };
 
 const TYPE_STYLES: Record<string, React.CSSProperties> = {
-  vc: { background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(27, 42, 74, 0.10)' },
-  growth: { background: 'var(--cat-purple-muted)', color: 'var(--chart-4)', border: '1px solid rgba(90, 90, 122, 0.10)' },
-  sovereign: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: '1px solid rgba(26, 26, 46, 0.05)' },
-  strategic: { background: 'var(--cat-teal-muted)', color: 'var(--cat-teal)', border: '1px solid rgba(74, 106, 106, 0.10)' },
-  debt: { background: 'var(--surface-2)', color: 'var(--text-secondary)', border: '1px solid var(--border-default)' },
-  family_office: { background: 'rgba(26, 26, 46, 0.06)', color: 'var(--text-primary)', border: '1px solid rgba(26, 26, 46, 0.06)' },
+  vc: { background: 'var(--accent-muted)', color: 'var(--accent)' },
+  growth: { background: 'var(--cat-purple-muted)', color: 'var(--chart-4)' },
+  sovereign: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
+  strategic: { background: 'var(--cat-teal-muted)', color: 'var(--cat-teal)' },
+  debt: { background: 'var(--surface-2)', color: 'var(--text-secondary)' },
+  family_office: { background: 'rgba(26, 26, 46, 0.06)', color: 'var(--text-primary)' },
 };
 
 const IMPACT_STYLES: Record<string, React.CSSProperties> = {
-  high: { background: 'var(--danger-muted)', color: 'var(--text-primary)', border: '1px solid rgba(26, 26, 46, 0.06)' },
-  medium: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: '1px solid rgba(26, 26, 46, 0.05)' },
-  low: { background: 'var(--surface-2)', color: 'var(--text-tertiary)', border: '1px solid var(--border-default)' },
+  high: { background: 'var(--danger-muted)', color: 'var(--text-primary)' },
+  medium: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
+  low: { background: 'var(--surface-2)', color: 'var(--text-tertiary)' },
 };
 
 const PRIORITY_STYLES: Record<string, React.CSSProperties> = {
@@ -527,7 +527,6 @@ function StrategyCardComponent({ card }: { card: StrategyCard }) {
           <span style={inlineBadgeStyle({
             background: card.priority === 'high' ? 'var(--danger-muted)' : card.priority === 'medium' ? 'var(--warning-muted)' : 'var(--surface-2)',
             color: card.priority === 'high' ? 'var(--danger)' : card.priority === 'medium' ? 'var(--warning)' : 'var(--text-tertiary)',
-            border: `1px solid ${card.priority === 'high' ? 'rgba(26, 26, 46, 0.06)' : card.priority === 'medium' ? 'rgba(26, 26, 46, 0.05)' : 'var(--border-default)'}`,
             marginTop: '4px',
             display: 'inline-block',
           })}>

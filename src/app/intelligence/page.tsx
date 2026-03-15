@@ -484,7 +484,6 @@ export default function IntelligencePage() {
                               fontSize: '10px', fontWeight: 600, padding: '2px 6px',
                               borderRadius: 'var(--radius-sm)', textDecoration: 'none',
                               background: 'var(--accent-muted)', color: 'var(--accent)',
-                              border: '1px solid rgba(27, 42, 74, 0.2)',
                             }}
                           >
                             Schedule
@@ -650,7 +649,7 @@ function RecentResearchSection({ briefs }: { briefs: IntelligenceBrief[] }) {
                         style={{
                           padding: '2px 8px', borderRadius: 'var(--radius-sm)',
                           background: 'var(--accent-muted)', color: 'var(--accent)',
-                          border: '1px solid rgba(27, 42, 74, 0.2)', textDecoration: 'none',
+                          textDecoration: 'none',
                           fontWeight: 600,
                         }}
                       >
@@ -662,7 +661,7 @@ function RecentResearchSection({ briefs }: { briefs: IntelligenceBrief[] }) {
                         style={{
                           padding: '2px 8px', borderRadius: 'var(--radius-sm)',
                           background: 'var(--surface-2)', color: 'var(--text-secondary)',
-                          border: '1px solid var(--border-default)', textDecoration: 'none',
+                          textDecoration: 'none',
                           fontWeight: 600,
                         }}
                       >
