@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { cachedFetch } from '@/lib/cache';
-import { relativeTime } from '@/lib/time';
+import { relativeTime, MS_PER_MINUTE } from '@/lib/time';
 import { useToast } from '@/components/toast';
 import { fmtDateTime } from '@/lib/format';
 import { scoreColorStyle, stAccent, stSurface0, stSurface1, stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
@@ -174,7 +174,11 @@ export default function MomentumPage() {
       setLoading(false);
     }};
 
-  useEffect(() => { fetchData(); }, []);
+  useEffect(() => {
+    fetchData();
+    const interval = setInterval(() => fetchData(), 5 * MS_PER_MINUTE);
+    return () => clearInterval(interval);
+  }, []);
   useEffect(() => {
     const h = (e: KeyboardEvent) => { if (e.key === 'r' && !e.metaKey && !e.ctrlKey && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement)) { e.preventDefault(); fetchData(); } };
     window.addEventListener('keydown', h); return () => window.removeEventListener('keydown', h);

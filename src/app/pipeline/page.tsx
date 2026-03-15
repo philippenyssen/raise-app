@@ -14,6 +14,7 @@ import {
 import { fmtDate } from '@/lib/format';
 import { STATUS_LABELS, TYPE_LABELS } from '@/lib/constants';
 import { labelMuted, labelMuted10, stFontSm, stFontXs, stTextMuted } from '@/lib/styles';
+import { MS_PER_MINUTE } from '@/lib/time';
 
 // ── Pipeline column order ────────────────────────────────────────────
 const PIPELINE_STATUSES: InvestorStatus[] = [
@@ -97,7 +98,12 @@ export default function PipelinePage() {
   const [quickAddCol, setQuickAddCol] = useState<string | null>(null);
   const [quickAddName, setQuickAddName] = useState('');
 
-  useEffect(() => { fetchInvestors(); cachedFetch('/api/at-risk').then(r => r.ok ? r.json() : null).then(d => { if (d?.scoreReversals) { const m = new Map<string, number>(); d.scoreReversals.forEach((r: { investorId: string; delta: number }) => m.set(r.investorId, r.delta)); setScoreDeltaMap(m); } }).catch(() => { /* at-risk scoring is non-critical */ }); }, []);
+  useEffect(() => {
+    const load = () => { fetchInvestors(); cachedFetch('/api/at-risk').then(r => r.ok ? r.json() : null).then(d => { if (d?.scoreReversals) { const m = new Map<string, number>(); d.scoreReversals.forEach((r: { investorId: string; delta: number }) => m.set(r.investorId, r.delta)); setScoreDeltaMap(m); } }).catch(() => { /* at-risk scoring is non-critical */ }); };
+    load();
+    const interval = setInterval(load, 5 * MS_PER_MINUTE);
+    return () => clearInterval(interval);
+  }, []);
 
   async function fetchInvestors() {
     setLoading(true);

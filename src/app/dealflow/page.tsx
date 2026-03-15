@@ -8,7 +8,7 @@ import {
   Users, Filter, Download,
 } from 'lucide-react';
 import { cachedFetch } from '@/lib/cache';
-import { MS_PER_DAY } from '@/lib/time';
+import { MS_PER_DAY, MS_PER_MINUTE } from '@/lib/time';
 import { STATUS_LABELS } from '@/lib/constants';
 import { stAccent, stFontXs, stSurface0, stSurface1, stTextMuted, stTextSecondary } from '@/lib/styles';
 
@@ -188,7 +188,11 @@ export default function DealflowPage() {
     }
   }, []);
 
-  useEffect(() => { fetchData(); }, [fetchData]);
+  useEffect(() => {
+    fetchData();
+    const interval = setInterval(() => fetchData(), 5 * MS_PER_MINUTE);
+    return () => clearInterval(interval);
+  }, [fetchData]);
 
   // Sort & filter
   const filtered = investors
