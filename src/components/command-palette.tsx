@@ -75,7 +75,7 @@ const ACTIONS: ActionItem[] = [
   { label: 'New document', href: '/documents/new', icon: FileText, section: 'actions' },
   { label: 'Meeting prep', href: '/meetings/prep', icon: ClipboardList, section: 'actions' },];
 
-const SHORTCUTS: Record<string, string> = { '/today': '⌘T', '/meetings/new': '⌘N', '/meetings/capture': '⌘J' };
+const SHORTCUTS: Record<string, string> = { '/today': '⌘T', '/meetings/new': '⌘N', '/meetings/capture': '⌘J', '/dealflow': '⌘D', '/focus': '⌘F' };
 
 export default function CommandPalette() {
   const [open, setOpen] = useState(false);
@@ -107,6 +107,8 @@ export default function CommandPalette() {
       else if (mod && e.key === 'j') { e.preventDefault(); openWith('investor:'); }
       else if (mod && e.key === 'n') { e.preventDefault(); router.push('/meetings/new'); }
       else if (mod && e.key === 't') { e.preventDefault(); router.push('/today'); }
+      else if (mod && e.key === 'd') { e.preventDefault(); router.push('/dealflow'); }
+      else if (mod && e.key === 'f') { e.preventDefault(); router.push('/focus'); }
       else if (mod && e.key === '/') { e.preventDefault(); setShowHelp(prev => !prev); }
     }
     window.addEventListener('keydown', onKeyDown);
