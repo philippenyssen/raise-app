@@ -290,7 +290,7 @@ export default function InvestorsPage() {
             padding: 'var(--space-2) var(--space-4)',
           }}
         >
-          <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--accent)', fontWeight: 500 }}>
+          <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--accent)', fontWeight: 400 }}>
             {selected.size} selected
           </span>
           <select
@@ -392,7 +392,7 @@ export default function InvestorsPage() {
                     <input type="checkbox" checked={isSelected} onChange={() => toggleSelect(inv.id)}
                       style={{ accentColor: 'var(--accent)' }} />
                   </td>
-                  <td style={{ padding: 'var(--space-3) var(--space-4)', fontWeight: 500, color: 'var(--text-primary)' }}>
+                  <td style={{ padding: 'var(--space-3) var(--space-4)', fontWeight: 400, color: 'var(--text-primary)' }}>
                     <Link
                       href={`/investors/${inv.id}`}
                       style={{ color: 'inherit', textDecoration: 'none', transition: 'color 150ms' }}
@@ -451,7 +451,7 @@ export default function InvestorsPage() {
                         borderRadius: '9999px',
                         padding: '0.2rem 1.5rem 0.2rem 0.625rem',
                         fontSize: 'var(--font-size-xs)',
-                        fontWeight: 600,
+                        fontWeight: 400,
                         border: '1px solid transparent',
                         cursor: 'pointer',
                         letterSpacing: '0.01em',

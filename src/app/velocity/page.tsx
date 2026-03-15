@@ -154,7 +154,7 @@ export default function VelocityPage() {
             <span style={{ color: 'var(--text-tertiary)' }}>
               <Clock className="w-4 h-4" />
             </span>
-            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)' }}>
+            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
               Raise Timeline
             </span>
           </div>
@@ -256,7 +256,7 @@ export default function VelocityPage() {
             <span style={{ color: 'var(--text-tertiary)' }}>
               <Users className="w-4 h-4" />
             </span>
-            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>
+            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
               Deal Velocity Tracker
             </span>
             <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginLeft: 'auto' }}>
@@ -323,7 +323,7 @@ export default function VelocityPage() {
                             {inv.investor_tier}
                           </span>
                           <div>
-                            <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-primary)' }}>
+                            <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
                               {inv.investor_name}
                             </div>
                             <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
@@ -355,7 +355,7 @@ export default function VelocityPage() {
                       <span
                         style={{
                           fontSize: 'var(--font-size-sm)',
-                          fontWeight: 600,
+                          fontWeight: 400,
                           fontVariantNumeric: 'tabular-nums',
                           color: inv.days_in_process > 50
                             ? 'var(--danger)'
@@ -405,7 +405,7 @@ export default function VelocityPage() {
                           padding: '2px 8px',
                           borderRadius: '9999px',
                           fontSize: 'var(--font-size-xs)',
-                          fontWeight: 500,
+                          fontWeight: 400,
                           background: trackingBg(inv.tracking_status),
                           color: trackingColor(inv.tracking_status),
                         }}
@@ -458,7 +458,7 @@ export default function VelocityPage() {
                         <span
                           style={{
                             fontSize: 'var(--font-size-xs)',
-                            fontWeight: 600,
+                            fontWeight: 400,
                             fontVariantNumeric: 'tabular-nums',
                             color: velocityColor(inv.velocity_score),
                             minWidth: '28px',

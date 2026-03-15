@@ -403,7 +403,7 @@ export default function InvestorDetailPage() {
                 'var(--text-muted)'
             }} />
             <span style={{
-              fontSize: 'var(--font-size-sm)', fontWeight: 700, fontVariantNumeric: 'tabular-nums',
+              fontSize: 'var(--font-size-sm)', fontWeight: 300, fontVariantNumeric: 'tabular-nums',
               color: dealIntel.heatLabel === 'hot' ? 'var(--text-primary)' :
                 dealIntel.heatLabel === 'warm' ? 'var(--text-secondary)' :
                 'var(--text-secondary)'
@@ -411,7 +411,7 @@ export default function InvestorDetailPage() {
               {dealIntel.heat}
             </span>
             <span style={{
-              fontSize: '9px', fontWeight: 600,
+              fontSize: '9px', fontWeight: 400,
               color: dealIntel.heatLabel === 'hot' ? 'var(--text-primary)' :
                 dealIntel.heatLabel === 'warm' ? 'var(--text-secondary)' :
                 'var(--text-muted)'
@@ -461,7 +461,7 @@ export default function InvestorDetailPage() {
                 href={`/meetings/new?investor=${id}`}
                 className="flex items-center gap-1"
                 style={{
-                  fontSize: '11px', fontWeight: 600, padding: '3px 10px',
+                  fontSize: '11px', fontWeight: 400, padding: '3px 10px',
                   borderRadius: 'var(--radius-sm)', textDecoration: 'none',
                   background: 'var(--danger-muted)', color: 'var(--text-primary)',
                   border: '1px solid rgba(26, 26, 46, 0.06)',
@@ -474,7 +474,7 @@ export default function InvestorDetailPage() {
                 href={`/followups?investor=${id}`}
                 className="flex items-center gap-1"
                 style={{
-                  fontSize: '11px', fontWeight: 600, padding: '3px 10px',
+                  fontSize: '11px', fontWeight: 400, padding: '3px 10px',
                   borderRadius: 'var(--radius-sm)', textDecoration: 'none',
                   background: 'var(--warning-muted)', color: 'var(--text-tertiary)',
                   border: '1px solid rgba(26, 26, 46, 0.05)',
@@ -534,7 +534,7 @@ export default function InvestorDetailPage() {
                 {overdueItems.length > 0 && (
                   <span
                     style={{
-                      fontSize: '10px', fontWeight: 600,
+                      fontSize: '10px', fontWeight: 400,
                       padding: '1px 6px', borderRadius: '9999px',
                       background: 'var(--danger)', color: 'var(--text-primary)',
                     }}

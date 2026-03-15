@@ -210,7 +210,7 @@ function CopyButton({ text }: { text: string }) {
         padding: '2px 6px',
         borderRadius: 'var(--radius-sm)',
         fontSize: '10px',
-        fontWeight: 500,
+        fontWeight: 400,
         color: copied ? 'var(--success)' : 'var(--text-muted)',
         transition: 'color 150ms ease',
       }}
@@ -666,7 +666,7 @@ export default function ObjectionsPage() {
                               border: 'none',
                               cursor: 'pointer',
                               fontSize: '10px',
-                              fontWeight: 500,
+                              fontWeight: 400,
                               color: 'var(--accent)',
                               padding: '1px 4px',
                               borderRadius: 'var(--radius-sm)',
@@ -759,7 +759,7 @@ export default function ObjectionsPage() {
                         className="flex items-center gap-1 transition-colors"
                         style={{
                           fontSize: '10px',
-                          fontWeight: 500,
+                          fontWeight: 400,
                           color: 'var(--accent)',
                           textDecoration: 'none',
                           padding: '2px 6px',
@@ -777,7 +777,7 @@ export default function ObjectionsPage() {
                         className="flex items-center gap-1 transition-colors"
                         style={{
                           fontSize: '10px',
-                          fontWeight: 500,
+                          fontWeight: 400,
                           color: 'var(--text-muted)',
                           textDecoration: 'none',
                           padding: '2px 6px',

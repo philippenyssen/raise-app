@@ -145,7 +145,7 @@ function inlineBadgeStyle(styleObj: React.CSSProperties): React.CSSProperties {
     fontSize: 'var(--font-size-xs)',
     padding: '2px 6px',
     borderRadius: 'var(--radius-sm)',
-    fontWeight: 500,
+    fontWeight: 400,
     lineHeight: 1.5,
     whiteSpace: 'nowrap' as const,
     ...styleObj,
@@ -231,7 +231,7 @@ function ActionCard({
             <Link
               href={`/investors/${item.investorId}`}
               className="transition-colors"
-              style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}
+              style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}
               onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
               onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}
             >
@@ -263,7 +263,7 @@ function ActionCard({
             <span style={{ fontSize: '11px', color: 'var(--text-secondary)', opacity: 0.8 }}>
               +{item.expectedLift} pts expected
             </span>
-            <span style={{ fontSize: '11px', fontWeight: 500, ...(URGENCY_STYLE[item.urgency] ?? { color: 'var(--text-tertiary)' }) }}>
+            <span style={{ fontSize: '11px', fontWeight: 400, ...(URGENCY_STYLE[item.urgency] ?? { color: 'var(--text-tertiary)' }) }}>
               {item.urgency === 'immediate' ? 'Act now' : item.urgency === '48h' ? 'Within 48h' : item.urgency === 'this_week' ? 'This week' : 'Next week'}
             </span>
             <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
@@ -281,7 +281,7 @@ function ActionCard({
                 padding: '8px 12px',
                 borderRadius: 'var(--radius-md)',
                 fontSize: 'var(--font-size-sm)',
-                fontWeight: 500,
+                fontWeight: 400,
                 ...(isExecuted
                   ? { background: 'var(--success-muted)', color: 'var(--text-secondary)' }
                   : { background: 'var(--surface-2)', color: 'var(--text-muted)' }
@@ -302,7 +302,7 @@ function ActionCard({
                   background: execHovered ? 'var(--accent-hover)' : 'var(--accent)',
                   borderRadius: 'var(--radius-md)',
                   fontSize: 'var(--font-size-sm)',
-                  fontWeight: 500,
+                  fontWeight: 400,
                   color: 'var(--text-primary)',
                   border: 'none',
                   cursor: 'pointer',
@@ -351,7 +351,7 @@ function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
         <Link
           href={`/investors/${investor.investorId}`}
           className="transition-colors"
-          style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}
+          style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}
           onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
           onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}
         >
@@ -367,7 +367,7 @@ function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
       </div>
       <div className="flex items-center gap-3 mb-2">
         <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-          Score: <span style={{ color: 'var(--text-secondary)', fontWeight: 700 }}>{investor.score}</span>/100
+          Score: <span style={{ color: 'var(--text-secondary)', fontWeight: 300 }}>{investor.score}</span>/100
         </span>
         <span style={{ fontSize: '11px', ...(MOMENTUM_STYLE[investor.momentum] ?? {}) }}>
           {MOMENTUM_LABELS[investor.momentum]}
@@ -385,7 +385,7 @@ function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
           borderRadius: 'var(--radius-md)',
           fontSize: 'var(--font-size-sm)',
           color: 'var(--text-secondary)',
-          fontWeight: 500,
+          fontWeight: 400,
         }}
         onMouseEnter={e => (e.currentTarget.style.background = 'rgba(27, 42, 74, 0.08)')}
         onMouseLeave={e => (e.currentTarget.style.background = 'rgba(27, 42, 74, 0.06)')}
@@ -411,7 +411,7 @@ function AtRiskCard({ investor }: { investor: InvestorSummary }) {
         <Link
           href={`/investors/${investor.investorId}`}
           className="transition-colors"
-          style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}
+          style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}
           onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
           onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}
         >
@@ -424,7 +424,7 @@ function AtRiskCard({ investor }: { investor: InvestorSummary }) {
       </div>
       <div className="flex items-center gap-3 mb-2">
         <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-          Score: <span style={{ color: 'var(--text-secondary)', fontWeight: 700 }}>{investor.score}</span>/100
+          Score: <span style={{ color: 'var(--text-secondary)', fontWeight: 300 }}>{investor.score}</span>/100
         </span>
         <span style={{ fontSize: '11px', ...(MOMENTUM_STYLE[investor.momentum] ?? {}) }}>
           {investor.momentum === 'decelerating' || investor.momentum === 'stalled'
@@ -465,7 +465,7 @@ function DeprioritizeSection({ investors }: { investors: InvestorSummary[] }) {
       >
         <div className="flex items-center gap-2">
           <Ban className="w-3.5 h-3.5" style={{ color: 'var(--text-muted)' }} />
-          <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', fontWeight: 500, letterSpacing: '0.01em' }}>
+          <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', fontWeight: 400, letterSpacing: '0.01em' }}>
             Deprioritize ({investors.length})
           </span>
         </div>
@@ -645,13 +645,13 @@ export default function AccelerationPage() {
           <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', marginTop: '4px' }}>
             {data.summary.total} action{data.summary.total !== 1 ? 's' : ''} detected
             {data.summary.immediate > 0 && (
-              <> &middot; <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{data.summary.immediate} immediate</span></>
+              <> &middot; <span style={{ color: 'var(--text-primary)', fontWeight: 400 }}>{data.summary.immediate} immediate</span></>
             )}
             {data.summary.this_week > 0 && (
               <> &middot; <span style={{ color: 'var(--text-tertiary)' }}>{data.summary.this_week} this week</span></>
             )}
             {data.termSheetReady.length > 0 && (
-              <> &middot; <span style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>{data.termSheetReady.length} term sheet ready</span></>
+              <> &middot; <span style={{ color: 'var(--text-secondary)', fontWeight: 400 }}>{data.termSheetReady.length} term sheet ready</span></>
             )}
           </p>
         </div>
@@ -722,7 +722,7 @@ export default function AccelerationPage() {
             style={{
               padding: '8px 12px',
               fontSize: 'var(--font-size-sm)',
-              fontWeight: 500,
+              fontWeight: 400,
               borderBottom: `2px solid ${activeTab === tab.key ? 'var(--accent)' : 'transparent'}`,
               marginBottom: '-1px',
               color: activeTab === tab.key ? 'var(--accent)' : 'var(--text-muted)',
@@ -755,7 +755,7 @@ export default function AccelerationPage() {
       {/* Term Sheet Ready */}
       {data.termSheetReady.length > 0 && (activeTab === 'all' || activeTab === 'pending') && (
         <div>
-          <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)', letterSpacing: '0.01em' }}>
+          <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)', letterSpacing: '0.01em' }}>
             <CheckCircle className="w-3.5 h-3.5" /> Term Sheet Ready ({data.termSheetReady.length})
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -769,7 +769,7 @@ export default function AccelerationPage() {
       {/* Immediate Actions */}
       {immediateActions.length > 0 && (
         <div>
-          <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-primary)', letterSpacing: '0.01em' }}>
+          <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', letterSpacing: '0.01em' }}>
             <AlertTriangle className="w-3.5 h-3.5" /> Immediate Actions ({immediateActions.length})
           </h2>
           <div className="space-y-2">
@@ -790,7 +790,7 @@ export default function AccelerationPage() {
       {/* This Week */}
       {thisWeekActions.length > 0 && (
         <div>
-          <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-tertiary)', letterSpacing: '0.01em' }}>
+          <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-tertiary)', letterSpacing: '0.01em' }}>
             <Clock className="w-3.5 h-3.5" /> This Week ({thisWeekActions.length})
           </h2>
           <div className="space-y-2">
@@ -811,7 +811,7 @@ export default function AccelerationPage() {
       {/* At Risk */}
       {data.atRisk.length > 0 && (activeTab === 'all' || activeTab === 'pending') && (
         <div>
-          <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)', letterSpacing: '0.01em' }}>
+          <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)', letterSpacing: '0.01em' }}>
             <Shield className="w-3.5 h-3.5" /> At Risk ({data.atRisk.length})
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">

@@ -469,10 +469,10 @@ export default function PipelinePage() {
           >
             {metrics.map((m) => (
               <div key={m.label} className="flex flex-col items-center" style={{ minWidth: '4rem' }}>
-                <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontWeight: 500, whiteSpace: 'nowrap' }}>
+                <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontWeight: 400, whiteSpace: 'nowrap' }}>
                   {m.label}
                 </span>
-                <span style={{ fontSize: 'var(--font-size-lg)', fontWeight: 700, color: m.color || 'var(--text-primary)', lineHeight: 1.2 }}>
+                <span style={{ fontSize: 'var(--font-size-lg)', fontWeight: 300, color: m.color || 'var(--text-primary)', lineHeight: 1.2 }}>
                   {m.value}
                 </span>
               </div>
@@ -514,13 +514,13 @@ export default function PipelinePage() {
                   }}
                 >
                   <div className="flex items-center justify-between">
-                    <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '0.01em' }}>
+                    <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-primary)', letterSpacing: '0.01em' }}>
                       {STATUS_LABELS[status]}
                     </span>
                     <span
                       style={{
                         fontSize: '10px',
-                        fontWeight: 700,
+                        fontWeight: 300,
                         padding: '0.125rem 0.375rem',
                         borderRadius: '9999px',
                         ...colors.badge,
@@ -597,13 +597,13 @@ export default function PipelinePage() {
                     }}
                   >
                     <div className="flex items-center justify-between">
-                      <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'var(--text-secondary)', letterSpacing: '0.01em' }}>
+                      <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-secondary)', letterSpacing: '0.01em' }}>
                         {STATUS_LABELS[status]}
                       </span>
                       <span
                         style={{
                           fontSize: '10px',
-                          fontWeight: 700,
+                          fontWeight: 300,
                           padding: '0.125rem 0.375rem',
                           borderRadius: '9999px',
                           ...colors.badge,
@@ -675,7 +675,7 @@ function FilterButton({
         padding: '0.5rem 0.75rem',
         borderRadius: 'var(--radius-lg)',
         fontSize: 'var(--font-size-sm)',
-        fontWeight: 500,
+        fontWeight: 400,
         transition: 'all 150ms ease',
         ...(active
           ? {
@@ -696,7 +696,7 @@ function FilterButton({
             background: 'var(--accent)',
             color: 'var(--text-primary)',
             fontSize: '10px',
-            fontWeight: 700,
+            fontWeight: 300,
             padding: '0.125rem 0.375rem',
             borderRadius: '9999px',
           }}
@@ -730,7 +730,7 @@ function TierFilterButton({
         padding: '0.25rem 0.625rem',
         borderRadius: 'var(--radius-sm)',
         fontSize: 'var(--font-size-xs)',
-        fontWeight: 500,
+        fontWeight: 400,
         transition: 'all 150ms ease',
         ...(active
           ? TIER_STYLES[tier]
@@ -769,7 +769,7 @@ function TypeFilterButton({
         padding: '0.25rem 0.625rem',
         borderRadius: 'var(--radius-sm)',
         fontSize: 'var(--font-size-xs)',
-        fontWeight: 500,
+        fontWeight: 400,
         transition: 'all 150ms ease',
         ...(active
           ? TYPE_STYLES[type]
@@ -806,7 +806,7 @@ function StatCard({
         <span className="metric-label">{label}</span>
       </div>
       <div className="flex items-baseline gap-1.5">
-        <span style={{ fontSize: 'var(--font-size-xl)', fontWeight: 700, color: 'var(--text-primary)' }}>{value}</span>
+        <span style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>{value}</span>
         <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{sub}</span>
       </div>
     </div>
@@ -863,13 +863,13 @@ function InvestorCard({
       >
         <Link href={`/investors/${investor.id}`} className="flex items-center gap-2">
           <GripVertical className="w-3 h-3 flex-shrink-0" style={{ color: hovered ? 'var(--text-muted)' : 'var(--border-strong)' }} />
-          <span className="truncate" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-secondary)' }}>{investor.name}</span>
+          <span className="truncate" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-secondary)' }}>{investor.name}</span>
           <span
             style={{
               padding: '0.125rem 0.375rem',
               borderRadius: 'var(--radius-sm)',
               fontSize: '10px',
-              fontWeight: 500,
+              fontWeight: 400,
               border: '1px solid',
               ...TIER_STYLES[investor.tier],
             }}
@@ -900,7 +900,7 @@ function InvestorCard({
           <span
             style={{
               fontSize: 'var(--font-size-sm)',
-              fontWeight: 500,
+              fontWeight: 400,
               color: hovered ? 'var(--text-primary)' : 'var(--text-secondary)',
               lineHeight: 1.3,
               transition: 'color 150ms ease',
@@ -922,7 +922,7 @@ function InvestorCard({
               padding: '0.125rem 0.375rem',
               borderRadius: 'var(--radius-sm)',
               fontSize: '10px',
-              fontWeight: 500,
+              fontWeight: 400,
               border: '1px solid',
               ...TYPE_STYLES[investor.type as InvestorType],
             }}
@@ -935,7 +935,7 @@ function InvestorCard({
               padding: '0.125rem 0.375rem',
               borderRadius: 'var(--radius-sm)',
               fontSize: '10px',
-              fontWeight: 500,
+              fontWeight: 400,
               border: '1px solid',
               ...TIER_STYLES[investor.tier],
             }}

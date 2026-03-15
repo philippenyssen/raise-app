@@ -343,7 +343,7 @@ export default function ModelPage() {
                     ? {
                         backgroundColor: 'var(--surface-2)',
                         color: 'var(--text-primary)',
-                        fontWeight: 500,
+                        fontWeight: 400,
                         borderBottom: '2px solid var(--accent)',
                       }
                     : {

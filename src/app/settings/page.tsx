@@ -337,7 +337,7 @@ export default function SettingsPage() {
         <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-6)' }}>
           <div className="flex items-center gap-3">
             <Building2 className="w-5 h-5" style={{ color: 'var(--text-tertiary)' }} />
-            <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 600, color: 'var(--text-primary)' }}>Raise Parameters</h2>
+            <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 400, color: 'var(--text-primary)' }}>Raise Parameters</h2>
           </div>
           <button
             onClick={saveRaiseConfig}
@@ -352,7 +352,7 @@ export default function SettingsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {/* Company Name */}
           <div className="md:col-span-2">
-            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>Company Name</label>
+            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>Company Name</label>
             <input
               type="text"
               value={raiseConfig.company_name}
@@ -364,7 +364,7 @@ export default function SettingsPage() {
 
           {/* Round Type */}
           <div>
-            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>Round Type</label>
+            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>Round Type</label>
             <div className="relative">
               <select
                 value={raiseConfig.round_type}
@@ -382,7 +382,7 @@ export default function SettingsPage() {
 
           {/* Currency */}
           <div>
-            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>Currency</label>
+            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>Currency</label>
             <div className="relative">
               <select
                 value={raiseConfig.currency}
@@ -400,7 +400,7 @@ export default function SettingsPage() {
 
           {/* Target Equity Raise */}
           <div>
-            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>
+            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>
               <span className="flex items-center gap-1.5">
                 <DollarSign className="w-3 h-3" />
                 Target Equity Raise
@@ -424,7 +424,7 @@ export default function SettingsPage() {
 
           {/* Target Debt Raise */}
           <div>
-            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>
+            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>
               <span className="flex items-center gap-1.5">
                 <DollarSign className="w-3 h-3" />
                 Target Debt Raise
@@ -448,7 +448,7 @@ export default function SettingsPage() {
 
           {/* Pre-money Valuation */}
           <div>
-            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>
+            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>
               <span className="flex items-center gap-1.5">
                 <Target className="w-3 h-3" />
                 Pre-money Valuation
@@ -472,7 +472,7 @@ export default function SettingsPage() {
 
           {/* Post-money (computed) */}
           <div>
-            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>
+            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>
               Post-money Valuation
             </label>
             <div style={{
@@ -491,7 +491,7 @@ export default function SettingsPage() {
 
           {/* Target Close Date */}
           <div>
-            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>
+            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>
               <span className="flex items-center gap-1.5">
                 <Calendar className="w-3 h-3" />
                 Target Close Date
@@ -507,7 +507,7 @@ export default function SettingsPage() {
 
           {/* Target Investor Count */}
           <div>
-            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>
+            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>
               <span className="flex items-center gap-1.5">
                 <Users className="w-3 h-3" />
                 Target Investor Count
@@ -525,7 +525,7 @@ export default function SettingsPage() {
 
           {/* Minimum Check Size */}
           <div>
-            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>
+            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>
               Minimum Check Size
             </label>
             <div className="relative">
@@ -551,19 +551,19 @@ export default function SettingsPage() {
             <div className="grid grid-cols-3 gap-4" style={{ textAlign: 'center' }}>
               <div>
                 <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '0.125rem' }}>Total Raise</div>
-                <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)' }}>
+                <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
                   {formatCompact(raiseConfig.equity_amount + raiseConfig.debt_amount, raiseConfig.currency)}
                 </div>
               </div>
               <div>
                 <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '0.125rem' }}>Dilution</div>
-                <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)' }}>
+                <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
                   {((raiseConfig.equity_amount / (raiseConfig.pre_money + raiseConfig.equity_amount)) * 100).toFixed(1)}%
                 </div>
               </div>
               <div>
                 <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '0.125rem' }}>Post-money EV</div>
-                <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)' }}>
+                <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
                   {formatCompact(raiseConfig.pre_money + raiseConfig.equity_amount, raiseConfig.currency)}
                 </div>
               </div>
@@ -579,7 +579,7 @@ export default function SettingsPage() {
         <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-6)' }}>
           <div className="flex items-center gap-3">
             <Sliders className="w-5 h-5" style={{ color: 'var(--text-tertiary)' }} />
-            <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 600, color: 'var(--text-primary)' }}>Scoring Weights</h2>
+            <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 400, color: 'var(--text-primary)' }}>Scoring Weights</h2>
           </div>
           <div className="flex items-center gap-2">
             <button
@@ -658,7 +658,7 @@ export default function SettingsPage() {
         <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-6)' }}>
           <div className="flex items-center gap-3">
             <Clock className="w-5 h-5" style={{ color: 'var(--text-tertiary)' }} />
-            <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 600, color: 'var(--text-primary)' }}>Follow-up Cadence</h2>
+            <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 400, color: 'var(--text-primary)' }}>Follow-up Cadence</h2>
           </div>
           <button
             onClick={saveFollowupCadence}
@@ -673,7 +673,7 @@ export default function SettingsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {/* Thank You Delay */}
           <div>
-            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>Thank You Email Delay</label>
+            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>Thank You Email Delay</label>
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -689,7 +689,7 @@ export default function SettingsPage() {
 
           {/* Objection Response Delay */}
           <div>
-            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>Objection Response Delay</label>
+            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>Objection Response Delay</label>
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -705,7 +705,7 @@ export default function SettingsPage() {
 
           {/* Schedule Next Meeting Delay */}
           <div>
-            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>Schedule Next Meeting Delay</label>
+            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>Schedule Next Meeting Delay</label>
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -721,7 +721,7 @@ export default function SettingsPage() {
 
           {/* Re-engagement Delay */}
           <div>
-            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>Re-engagement Delay</label>
+            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>Re-engagement Delay</label>
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -737,7 +737,7 @@ export default function SettingsPage() {
 
           {/* Escalation Delay */}
           <div>
-            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>Escalation Delay</label>
+            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>Escalation Delay</label>
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -753,7 +753,7 @@ export default function SettingsPage() {
 
           {/* Tier 1 Speed Multiplier */}
           <div>
-            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>Tier 1 Speed Multiplier</label>
+            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>Tier 1 Speed Multiplier</label>
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -777,19 +777,19 @@ export default function SettingsPage() {
           <div className="grid grid-cols-3 gap-3" style={{ textAlign: 'center' }}>
             <div style={{ background: 'var(--surface-2)', borderRadius: 'var(--radius-md)', padding: '0.5rem 0.75rem' }}>
               <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Thank you</div>
-              <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)' }}>
+              <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
                 {Math.round(followupCadence.thank_you_delay_hours * followupCadence.tier1_speed_multiplier / 100)}h
               </div>
             </div>
             <div style={{ background: 'var(--surface-2)', borderRadius: 'var(--radius-md)', padding: '0.5rem 0.75rem' }}>
               <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Objection</div>
-              <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)' }}>
+              <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
                 {Math.round(followupCadence.objection_response_delay_hours * followupCadence.tier1_speed_multiplier / 100)}h
               </div>
             </div>
             <div style={{ background: 'var(--surface-2)', borderRadius: 'var(--radius-md)', padding: '0.5rem 0.75rem' }}>
               <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Re-engage</div>
-              <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)' }}>
+              <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
                 {Math.round(followupCadence.reengagement_delay_days * followupCadence.tier1_speed_multiplier / 100)}d
               </div>
             </div>
@@ -809,7 +809,7 @@ export default function SettingsPage() {
         <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-4)' }}>
           <div className="flex items-center gap-3">
             <Key className="w-5 h-5" style={{ color: 'var(--text-tertiary)' }} />
-            <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 600, color: 'var(--text-primary)' }}>Anthropic API Key</h2>
+            <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 400, color: 'var(--text-primary)' }}>Anthropic API Key</h2>
           </div>
           <button
             onClick={testKey}
@@ -827,7 +827,7 @@ export default function SettingsPage() {
             <div className="flex items-start gap-3">
               {statusIcon}
               <div>
-                <div style={{ fontWeight: 500, color: 'var(--text-primary)' }}>{keyTest.message}</div>
+                <div style={{ fontWeight: 400, color: 'var(--text-primary)' }}>{keyTest.message}</div>
                 {keyTest.key && (
                   <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 'var(--space-1)', fontFamily: 'var(--font-mono)' }}>{keyTest.key}</div>
                 )}
@@ -853,7 +853,7 @@ export default function SettingsPage() {
                 borderRadius: 'var(--radius-md)',
                 padding: 'var(--space-4)',
               }} className="space-y-2">
-                <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)' }}>How to fix:</div>
+                <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>How to fix:</div>
                 {Array.isArray(keyTest.fix) ? (
                   <ol className="space-y-1" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' }}>
                     {keyTest.fix.map((step, i) => (
@@ -877,7 +877,7 @@ export default function SettingsPage() {
       <div className="card" style={{ padding: 'var(--space-6)' }}>
         <div className="flex items-center gap-3" style={{ marginBottom: 'var(--space-3)' }}>
           <Settings2 className="w-5 h-5" style={{ color: 'var(--text-tertiary)' }} />
-          <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-tertiary)' }}>IMPORTANT: Claude.ai vs API Credits</h3>
+          <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-tertiary)' }}>IMPORTANT: Claude.ai vs API Credits</h3>
         </div>
         <div className="space-y-2" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
           <p>Anthropic has <strong style={{ color: 'var(--text-secondary)' }}>two separate billing systems</strong>:</p>

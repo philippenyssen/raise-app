@@ -209,7 +209,7 @@ export default function WinLossPage() {
       <div className="card" style={{ padding: 'var(--space-4)' }}>
         <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-4)' }}>
           <span style={{ color: 'var(--accent)' }}><BarChart3 className="w-4 h-4" /></span>
-          <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 600, color: 'var(--text-primary)' }}>
+          <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
             Conversion Funnel
           </h2>
         </div>
@@ -223,10 +223,10 @@ export default function WinLossPage() {
               <div key={stage.stage}>
                 <div className="flex items-center justify-between" style={{ marginBottom: '4px' }}>
                   <div className="flex items-center gap-2">
-                    <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 500, minWidth: '120px' }}>
+                    <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, minWidth: '120px' }}>
                       {stage.stage}
                     </span>
-                    <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', fontWeight: 600 }}>
+                    <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', fontWeight: 400 }}>
                       {stage.count}
                     </span>
                   </div>
@@ -289,7 +289,7 @@ export default function WinLossPage() {
         >
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
             <span style={{ color: 'var(--text-secondary)' }}><CheckCircle className="w-4 h-4" /></span>
-            <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 600, color: 'var(--text-primary)' }}>
+            <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
               Winner Profile
             </h2>
             <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginLeft: 'auto' }}>
@@ -308,7 +308,7 @@ export default function WinLossPage() {
               ].map(row => (
                 <div key={row.label} className="flex items-center justify-between" style={{ padding: 'var(--space-1) 0' }}>
                   <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' }}>{row.label}</span>
-                  <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 500 }}>{row.value}</span>
+                  <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400 }}>{row.value}</span>
                 </div>
               ))}
             </div>
@@ -328,7 +328,7 @@ export default function WinLossPage() {
         >
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
             <span style={{ color: 'var(--text-primary)' }}><XCircle className="w-4 h-4" /></span>
-            <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 600, color: 'var(--text-primary)' }}>
+            <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
               Passer Profile
             </h2>
             <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginLeft: 'auto' }}>
@@ -347,7 +347,7 @@ export default function WinLossPage() {
               ].map(row => (
                 <div key={row.label} className="flex items-center justify-between" style={{ padding: 'var(--space-1) 0' }}>
                   <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' }}>{row.label}</span>
-                  <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 500 }}>{row.value}</span>
+                  <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400 }}>{row.value}</span>
                 </div>
               ))}
             </div>
@@ -365,7 +365,7 @@ export default function WinLossPage() {
         <div className="card" style={{ padding: 'var(--space-4)' }}>
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
             <span style={{ color: 'var(--text-tertiary)' }}><AlertTriangle className="w-4 h-4" /></span>
-            <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 600, color: 'var(--text-primary)' }}>
+            <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
               Pass Reasons
             </h2>
           </div>
@@ -394,7 +394,7 @@ export default function WinLossPage() {
                       <span style={{
                         fontSize: 'var(--font-size-xs)',
                         color: 'var(--text-secondary)',
-                        fontWeight: 600,
+                        fontWeight: 400,
                         fontVariantNumeric: 'tabular-nums',
                       }}>
                         {pr.count}x
@@ -429,7 +429,7 @@ export default function WinLossPage() {
         <div className="card" style={{ padding: 'var(--space-4)' }}>
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
             <span style={{ color: 'var(--accent)' }}><Target className="w-4 h-4" /></span>
-            <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 600, color: 'var(--text-primary)' }}>
+            <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
               Key Predictors
             </h2>
           </div>
@@ -448,13 +448,13 @@ export default function WinLossPage() {
                 onMouseLeave={() => setHoveredRow(null)}
               >
                 <div className="flex items-center justify-between" style={{ marginBottom: '2px' }}>
-                  <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 500 }}>
+                  <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400 }}>
                     {p.signal}
                   </span>
                   <span style={{
                     fontSize: 'var(--font-size-xs)',
                     color: strengthColor(p.strength),
-                    fontWeight: 600,
+                    fontWeight: 400,
                     letterSpacing: '0.01em',
                   }}>
                     {p.strength}
@@ -474,7 +474,7 @@ export default function WinLossPage() {
         <div className="card" style={{ padding: 'var(--space-4)' }}>
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
             <span style={{ color: 'var(--accent)' }}><TrendingUp className="w-4 h-4" /></span>
-            <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 600, color: 'var(--text-primary)' }}>
+            <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
               Distinguishing Factors
             </h2>
             <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginLeft: 'auto' }}>
@@ -492,7 +492,7 @@ export default function WinLossPage() {
                         textAlign: h === 'Factor' ? 'left' : 'right',
                         padding: 'var(--space-2) var(--space-3)',
                         fontSize: 'var(--font-size-xs)',
-                        fontWeight: 500,
+                        fontWeight: 400,
                         color: 'var(--text-muted)',
                         letterSpacing: '0.01em',
                         borderBottom: '1px solid var(--border-subtle)',
@@ -519,7 +519,7 @@ export default function WinLossPage() {
                       padding: 'var(--space-2) var(--space-3)',
                       fontSize: 'var(--font-size-sm)',
                       color: 'var(--text-primary)',
-                      fontWeight: 500,
+                      fontWeight: 400,
                       borderBottom: '1px solid var(--border-subtle)',
                     }}>
                       {f.factor}
@@ -549,7 +549,7 @@ export default function WinLossPage() {
                       fontSize: 'var(--font-size-sm)',
                       color: f.delta > 0 ? 'var(--success)' : f.delta < 0 ? 'var(--danger)' : 'var(--text-muted)',
                       textAlign: 'right',
-                      fontWeight: 600,
+                      fontWeight: 400,
                       fontVariantNumeric: 'tabular-nums',
                       borderBottom: '1px solid var(--border-subtle)',
                     }}>
@@ -562,7 +562,7 @@ export default function WinLossPage() {
                     }}>
                       <span style={{
                         fontSize: 'var(--font-size-xs)',
-                        fontWeight: 600,
+                        fontWeight: 400,
                         color: strengthColor(f.significance),
                         letterSpacing: '0.01em',
                       }}>
@@ -583,7 +583,7 @@ export default function WinLossPage() {
         <div className="card" style={{ padding: 'var(--space-4)' }}>
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
             <span style={{ color: 'var(--accent)' }}><Clock className="w-4 h-4" /></span>
-            <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 600, color: 'var(--text-primary)' }}>
+            <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
               Time Analysis
             </h2>
           </div>
@@ -602,7 +602,7 @@ export default function WinLossPage() {
                 <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '4px' }}>
                   Avg Days to Close
                 </div>
-                <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 700, color: 'var(--text-secondary)' }}>
+                <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-secondary)' }}>
                   {timing.avgDaysToClose}
                 </div>
                 <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
@@ -618,7 +618,7 @@ export default function WinLossPage() {
                 <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '4px' }}>
                   Avg Days to Pass
                 </div>
-                <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 700, color: 'var(--text-primary)' }}>
+                <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>
                   {timing.avgDaysToPass}
                 </div>
                 <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
@@ -635,7 +635,7 @@ export default function WinLossPage() {
                 <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
                   Avg Meetings (Winners)
                 </span>
-                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', fontWeight: 600 }}>
+                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', fontWeight: 400 }}>
                   {summary.avgClosedMeetings}
                 </span>
               </div>
@@ -643,7 +643,7 @@ export default function WinLossPage() {
                 <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
                   Avg Meetings (Passers)
                 </span>
-                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 600 }}>
+                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400 }}>
                   {summary.avgPassedMeetings}
                 </span>
               </div>
@@ -651,7 +651,7 @@ export default function WinLossPage() {
                 <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
                   Avg Enthusiasm (Winners)
                 </span>
-                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', fontWeight: 600 }}>
+                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', fontWeight: 400 }}>
                   {summary.avgClosedEnthusiasm}/5
                 </span>
               </div>
@@ -659,7 +659,7 @@ export default function WinLossPage() {
                 <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
                   Avg Enthusiasm (Passers)
                 </span>
-                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 600 }}>
+                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400 }}>
                   {summary.avgPassedEnthusiasm}/5
                 </span>
               </div>
@@ -671,7 +671,7 @@ export default function WinLossPage() {
         <div className="card" style={{ padding: 'var(--space-4)' }}>
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
             <span style={{ color: 'var(--accent)' }}><Users className="w-4 h-4" /></span>
-            <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 600, color: 'var(--text-primary)' }}>
+            <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
               Performance by Type
             </h2>
           </div>
@@ -691,7 +691,7 @@ export default function WinLossPage() {
                   onMouseLeave={() => setHoveredRow(null)}
                 >
                   <div className="flex items-center justify-between" style={{ marginBottom: '4px' }}>
-                    <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 500 }}>
+                    <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400 }}>
                       {TYPE_LABELS[tp.type] || tp.type}
                     </span>
                     <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
@@ -701,13 +701,13 @@ export default function WinLossPage() {
                   <div className="flex items-center gap-3">
                     <div className="flex items-center gap-1">
                       <span style={{ color: 'var(--text-secondary)' }}><TrendingUp className="w-3 h-3" /></span>
-                      <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', fontWeight: 600 }}>
+                      <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', fontWeight: 400 }}>
                         {tp.closeRate}% close
                       </span>
                     </div>
                     <div className="flex items-center gap-1">
                       <span style={{ color: 'var(--text-primary)' }}><TrendingDown className="w-3 h-3" /></span>
-                      <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', fontWeight: 600 }}>
+                      <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', fontWeight: 400 }}>
                         {tp.passRate}% pass
                       </span>
                     </div>
@@ -733,7 +733,7 @@ export default function WinLossPage() {
           <div className="card" style={{ padding: 'var(--space-4)' }}>
             <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
               <span style={{ color: 'var(--accent)' }}><TrendingDown className="w-4 h-4" /></span>
-              <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 600, color: 'var(--text-primary)' }}>
+              <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
                 Pattern Insights
               </h2>
             </div>
@@ -760,7 +760,7 @@ export default function WinLossPage() {
         <div className="card" style={{ padding: 'var(--space-4)' }}>
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
             <span style={{ color: 'var(--text-tertiary)' }}><Lightbulb className="w-4 h-4" /></span>
-            <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 600, color: 'var(--text-primary)' }}>
+            <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
               Recommendations
             </h2>
           </div>

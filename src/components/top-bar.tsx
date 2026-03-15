@@ -105,7 +105,7 @@ export function TopBar() {
           background: 'var(--surface-2)',
           border: '1px solid var(--border-subtle)',
           fontSize: '10px',
-          fontWeight: 600,
+          fontWeight: 400,
           letterSpacing: '0.02em',
         }}>⌘K</span>
       </button>
@@ -134,7 +134,7 @@ export function TopBar() {
                 background: 'var(--danger)',
                 color: 'var(--surface-0)',
                 fontSize: '9px',
-                fontWeight: 700,
+                fontWeight: 300,
               }}
             >
               {overdue.length}
@@ -156,7 +156,7 @@ export function TopBar() {
             {/* Overdue */}
             {overdue.length > 0 && (
               <div style={{ padding: 'var(--space-3)', borderBottom: '1px solid var(--border-subtle)' }}>
-                <div className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'var(--danger)' }}>
+                <div className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--danger)' }}>
                   <AlertTriangle style={{ width: '13px', height: '13px' }} />
                   Overdue ({overdue.length})
                 </div>
@@ -190,7 +190,7 @@ export function TopBar() {
 
             {/* Upcoming */}
             <div style={{ padding: 'var(--space-3)', borderBottom: '1px solid var(--border-subtle)' }}>
-              <div className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'var(--text-tertiary)' }}>
+              <div className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)' }}>
                 <Clock style={{ width: '13px', height: '13px' }} />
                 Upcoming
               </div>
@@ -225,7 +225,7 @@ export function TopBar() {
 
             {/* Activity */}
             <div style={{ padding: 'var(--space-3)' }}>
-              <div className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'var(--text-tertiary)' }}>
+              <div className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)' }}>
                 <Activity style={{ width: '13px', height: '13px' }} />
                 Recent
               </div>

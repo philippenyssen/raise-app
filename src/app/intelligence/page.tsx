@@ -304,9 +304,9 @@ export default function IntelligencePage() {
                       onMouseEnter={() => setHoveredDealRow(d.id)}
                       onMouseLeave={() => setHoveredDealRow(null)}
                     >
-                      <td style={{ fontWeight: 500, color: 'var(--text-primary)' }}>{d.company}</td>
+                      <td style={{ fontWeight: 400, color: 'var(--text-primary)' }}>{d.company}</td>
                       <td style={{ color: 'var(--text-tertiary)' }}>{d.round}</td>
-                      <td style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>{d.amount}</td>
+                      <td style={{ color: 'var(--text-secondary)', fontWeight: 400 }}>{d.amount}</td>
                       <td style={{ color: 'var(--accent)' }}>{d.valuation}</td>
                       <td className="max-w-40 truncate" style={{ color: 'var(--text-tertiary)' }}>{d.lead_investors}</td>
                       <td style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>{d.date}</td>
@@ -483,7 +483,7 @@ export default function IntelligencePage() {
                           <Link
                             href={`/meetings/new?investor=${b.investor_id}`}
                             style={{
-                              fontSize: '10px', fontWeight: 600, padding: '2px 6px',
+                              fontSize: '10px', fontWeight: 400, padding: '2px 6px',
                               borderRadius: 'var(--radius-sm)', textDecoration: 'none',
                               background: 'var(--accent-muted)', color: 'var(--accent)',
                             }}
@@ -652,7 +652,7 @@ function RecentResearchSection({ briefs }: { briefs: IntelligenceBrief[] }) {
                           padding: '2px 8px', borderRadius: 'var(--radius-sm)',
                           background: 'var(--accent-muted)', color: 'var(--accent)',
                           textDecoration: 'none',
-                          fontWeight: 600,
+                          fontWeight: 400,
                         }}
                       >
                         Schedule Meeting
@@ -664,7 +664,7 @@ function RecentResearchSection({ briefs }: { briefs: IntelligenceBrief[] }) {
                           padding: '2px 8px', borderRadius: 'var(--radius-sm)',
                           background: 'var(--surface-2)', color: 'var(--text-secondary)',
                           textDecoration: 'none',
-                          fontWeight: 600,
+                          fontWeight: 400,
                         }}
                       >
                         Follow-up

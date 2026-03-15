@@ -779,7 +779,7 @@ export default function Dashboard() {
                         className="w-6 h-6 rounded flex items-center justify-center"
                         style={{
                           fontSize: 'var(--font-size-xs)',
-                          fontWeight: 500,
+                          fontWeight: 400,
                           background: i === 0 ? 'var(--accent)' : 'var(--surface-3)',
                           color: i === 0 ? '#fafaf8' : 'var(--text-secondary)',
                         }}
@@ -1303,7 +1303,7 @@ function MomentumBar({ count, total, opacity, label }: {
       {pct >= 15 && (
         <span
           className="absolute inset-0 flex items-center justify-center"
-          style={{ fontSize: '9px', fontWeight: 500, color: opacity > 0.5 ? '#fafaf8' : 'var(--text-secondary)' }}
+          style={{ fontSize: '9px', fontWeight: 400, color: opacity > 0.5 ? '#fafaf8' : 'var(--text-secondary)' }}
         >
           {count}
         </span>
@@ -1317,7 +1317,7 @@ function MomentumLabel({ count, label }: {
 }) {
   return (
     <span className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
-      <span style={{ fontWeight: 500 }}>{count}</span> {label}
+      <span style={{ fontWeight: 400 }}>{count}</span> {label}
     </span>
   );
 }
@@ -1415,13 +1415,13 @@ function VelocityStrip({ velocity }: { velocity: VelocityResponse }) {
 
       <div className="px-5 py-2 flex items-center gap-4" style={{ borderTop: '1px solid var(--border-subtle)' }}>
         <span className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
-          <span style={{ fontWeight: 500 }}>{s.on_track}</span> on track
+          <span style={{ fontWeight: 400 }}>{s.on_track}</span> on track
         </span>
         <span className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
-          <span style={{ fontWeight: 500 }}>{s.behind}</span> behind
+          <span style={{ fontWeight: 400 }}>{s.behind}</span> behind
         </span>
         <span className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-          <span style={{ fontWeight: 500 }}>{s.at_risk}</span> at risk
+          <span style={{ fontWeight: 400 }}>{s.at_risk}</span> at risk
         </span>
       </div>
     </div>

@@ -221,7 +221,7 @@ export default function WorkspacePage() {
               className=""
               style={{
                 fontSize: 'var(--font-size-xs)',
-                fontWeight: 500,
+                fontWeight: 400,
                 color: 'var(--text-tertiary)',
               }}
             >
@@ -254,7 +254,7 @@ export default function WorkspacePage() {
                   className=""
                   style={{
                     fontSize: '10px',
-                    fontWeight: 500,
+                    fontWeight: 400,
                     color: 'var(--text-muted)',
                     padding: '0 var(--space-2)',
                     marginBottom: 'var(--space-1)',
@@ -323,7 +323,7 @@ export default function WorkspacePage() {
               className=""
               style={{
                 fontSize: '10px',
-                fontWeight: 500,
+                fontWeight: 400,
                 color: 'var(--text-muted)',
                 padding: '0 var(--space-2)',
                 marginBottom: 'var(--space-1)',

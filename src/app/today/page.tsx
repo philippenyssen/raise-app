@@ -111,7 +111,7 @@ function renderMarkdown(text: string): React.ReactNode[] {
   const parts = text.split(/(\*\*[^*]+\*\*)/g);
   return parts.map((part, i) => {
     if (part.startsWith('**') && part.endsWith('**')) {
-      return <strong key={i} style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{part.slice(2, -2)}</strong>;
+      return <strong key={i} style={{ color: 'var(--text-primary)', fontWeight: 400 }}>{part.slice(2, -2)}</strong>;
     }
     return <span key={i}>{part}</span>;
   });
@@ -155,14 +155,14 @@ function MeetingCard({ meeting }: { meeting: BriefingMeeting }) {
             background: 'var(--accent-muted)',
           }}
         >
-          <span style={{ color: 'var(--accent)', fontSize: 'var(--font-size-xs)', fontWeight: 700, textAlign: 'center', lineHeight: 1.1 }}>
+          <span style={{ color: 'var(--accent)', fontSize: 'var(--font-size-xs)', fontWeight: 300, textAlign: 'center', lineHeight: 1.1 }}>
             {timeDisplay}
           </span>
         </div>
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>
+            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
               {meeting.investorName}
             </span>
             <span
@@ -170,7 +170,7 @@ function MeetingCard({ meeting }: { meeting: BriefingMeeting }) {
                 fontSize: 'var(--font-size-xs)',
                 padding: '2px 6px',
                 borderRadius: 'var(--radius-sm)',
-                fontWeight: 500,
+                fontWeight: 400,
                 background: 'var(--surface-2)',
                 color: 'var(--text-tertiary)',
               }}
@@ -178,7 +178,7 @@ function MeetingCard({ meeting }: { meeting: BriefingMeeting }) {
               {meeting.type.replace(/_/g, ' ')}
             </span>
             {(meeting.meetingCount ?? 0) > 1 && (
-              <span style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 500 }}>
+              <span style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 400 }}>
                 Meeting #{meeting.meetingCount}
               </span>
             )}
@@ -187,7 +187,7 @@ function MeetingCard({ meeting }: { meeting: BriefingMeeting }) {
                 className="inline-flex items-center gap-0.5"
                 style={{
                   fontSize: '10px',
-                  fontWeight: 500,
+                  fontWeight: 400,
                   color: (meeting.enthusiasm ?? 0) >= 4 ? 'var(--success)' : (meeting.enthusiasm ?? 0) >= 3 ? 'var(--text-secondary)' : 'var(--danger)',
                 }}
               >
@@ -264,7 +264,7 @@ function ActionCard({ action }: { action: UrgentAction }) {
         </div>
 
         <div className="flex-1 min-w-0">
-          <p style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-primary)', lineHeight: 1.4 }}>
+          <p style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', lineHeight: 1.4 }}>
             {renderMarkdown(action.title)}
           </p>
 
@@ -333,7 +333,7 @@ function AlertCard({ alert }: { alert: BriefingAlert }) {
           <Icon className="w-4 h-4" />
         </span>
         <div className="flex-1 min-w-0">
-          <p style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-primary)', lineHeight: 1.4 }}>
+          <p style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', lineHeight: 1.4 }}>
             {renderMarkdown(alert.title)}
           </p>
           <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginTop: '2px' }}>
@@ -345,7 +345,7 @@ function AlertCard({ alert }: { alert: BriefingAlert }) {
           className="shrink-0 flex items-center gap-1 transition-colors"
           style={{
             fontSize: 'var(--font-size-xs)',
-            fontWeight: 500,
+            fontWeight: 400,
             color: style.color,
             textDecoration: 'none',
             padding: '3px 8px',
@@ -685,7 +685,7 @@ export default function TodayPage() {
             <span style={{ color: 'var(--accent)', display: 'flex' }}><Target className="w-4 h-4" /></span>
             <span style={{
               fontSize: 'var(--font-size-lg)',
-              fontWeight: 700,
+              fontWeight: 300,
               fontVariantNumeric: 'tabular-nums',
               color: raiseProgress.isOver ? 'var(--danger)' : raiseProgress.pct >= 75 ? 'var(--warning)' : 'var(--text-primary)',
             }}>
@@ -706,7 +706,7 @@ export default function TodayPage() {
           </div>
           <span style={{
             fontSize: 'var(--font-size-xs)',
-            fontWeight: 600,
+            fontWeight: 400,
             fontVariantNumeric: 'tabular-nums',
             color: raiseProgress.isOver ? 'var(--danger)' : raiseProgress.daysRemaining <= 14 ? 'var(--warning)' : 'var(--text-tertiary)',
             whiteSpace: 'nowrap',
@@ -738,7 +738,7 @@ export default function TodayPage() {
             }}
           >
             <Zap className="w-3.5 h-3.5" style={{ color: 'var(--chart-4)' }} />
-            <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--chart-4)', letterSpacing: '0.01em' }}>Since Yesterday</span>
+            <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--chart-4)', letterSpacing: '0.01em' }}>Since Yesterday</span>
           </div>
           <div className="flex items-center gap-4 flex-wrap" style={{ padding: 'var(--space-3) var(--space-4)' }}>
             {overnight.statusChanges.map((sc, i) => (
@@ -747,7 +747,7 @@ export default function TodayPage() {
                 <Link
                   href={`/investors/${sc.investorId}`}
                   className="transition-colors"
-                  style={{ color: 'var(--accent)', fontWeight: 500, textDecoration: 'none' }}
+                  style={{ color: 'var(--accent)', fontWeight: 400, textDecoration: 'none' }}
                   onMouseEnter={e => { (e.currentTarget as HTMLElement).style.textDecoration = 'underline'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLElement).style.textDecoration = 'none'; }}
                 >
@@ -795,7 +795,7 @@ export default function TodayPage() {
             <span style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--space-3)' }}>
               <Calendar className="w-8 h-8" style={{ color: 'var(--text-muted)' }} />
             </span>
-            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', fontWeight: 500 }}>
+            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', fontWeight: 400 }}>
               No meetings scheduled today
             </p>
             <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginTop: '4px' }}>
@@ -836,7 +836,7 @@ export default function TodayPage() {
             <span style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--space-3)' }}>
               <CheckCircle className="w-8 h-8" style={{ color: 'var(--text-secondary)' }} />
             </span>
-            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', fontWeight: 500 }}>
+            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', fontWeight: 400 }}>
               All caught up!
             </p>
             <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginTop: '4px' }}>
@@ -875,7 +875,7 @@ export default function TodayPage() {
               return (
                 <div key={fu.id} className="card" style={{ padding: 'var(--space-3)', opacity: isProcessing ? 0.5 : 1, transition: 'opacity 150ms' }}>
                   <div className="flex items-center gap-3">
-                    <span className="text-xs px-2 py-0.5 rounded shrink-0" style={{ background: tc.bg, color: tc.color, fontWeight: 500 }}>
+                    <span className="text-xs px-2 py-0.5 rounded shrink-0" style={{ background: tc.bg, color: tc.color, fontWeight: 400 }}>
                       {tc.label}
                     </span>
                     <div className="flex-1 min-w-0">
@@ -887,7 +887,7 @@ export default function TodayPage() {
                           {fu.investor_name}
                         </Link>
                         {isOverdue && (
-                          <span style={{ fontSize: '10px', color: 'var(--text-primary)', fontWeight: 500 }}>Overdue</span>
+                          <span style={{ fontSize: '10px', color: 'var(--text-primary)', fontWeight: 400 }}>Overdue</span>
                         )}
                       </div>
                     </div>
@@ -1023,7 +1023,7 @@ export default function TodayPage() {
 
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <p style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: momentumConfig.color }}>
+              <p style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: momentumConfig.color }}>
                 {momentumConfig.label}
               </p>
               <span
@@ -1034,7 +1034,7 @@ export default function TodayPage() {
                   background: momentumConfig.bg,
                   border: `1px solid ${momentumConfig.border}`,
                   color: momentumConfig.color,
-                  fontWeight: 500,
+                  fontWeight: 400,
                 }}
               >
                 Raise Momentum
@@ -1091,11 +1091,11 @@ export default function TodayPage() {
 
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2" style={{ marginBottom: '4px' }}>
-                <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'var(--accent)', letterSpacing: '0.01em' }}>
+                <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--accent)', letterSpacing: '0.01em' }}>
                   AI Insight
                 </span>
               </div>
-              <p style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.4 }}>
+              <p style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', lineHeight: 1.4 }}>
                 {insight.title}
               </p>
               <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', marginTop: '4px', lineHeight: 1.5 }}>

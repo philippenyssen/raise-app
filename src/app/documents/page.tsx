@@ -302,7 +302,7 @@ export default function DocumentsPage() {
             <div key={type}>
               <h2 className="mb-3" style={{
                 fontSize: 'var(--font-size-xs)',
-                fontWeight: 600,
+                fontWeight: 400,
                 color: 'var(--text-tertiary)',
                 letterSpacing: '0.01em',
 

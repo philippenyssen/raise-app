@@ -49,7 +49,7 @@ export function DocumentViewer({ document, onContentChange, onSave, saving, dirt
         if (boldMatch.index > 0) {
           parts.push(<span key={`${key}-${idx++}`}>{remaining.slice(0, boldMatch.index)}</span>);
         }
-        parts.push(<strong key={`${key}-${idx++}`} style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{boldMatch[1]}</strong>);
+        parts.push(<strong key={`${key}-${idx++}`} style={{ color: 'var(--text-primary)', fontWeight: 400 }}>{boldMatch[1]}</strong>);
         remaining = remaining.slice(boldMatch.index + boldMatch[0].length);
         continue;
       }
@@ -73,10 +73,10 @@ export function DocumentViewer({ document, onContentChange, onSave, saving, dirt
       .split('\n')
       .map((line, i) => {
         const k = `line-${i}`;
-        if (line.startsWith('# ')) return <h1 key={k} style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 700, marginTop: 'var(--space-6)', marginBottom: 'var(--space-3)', color: 'var(--text-primary)' }}>{line.slice(2)}</h1>;
-        if (line.startsWith('## ')) return <h2 key={k} style={{ fontSize: 'var(--font-size-xl)', fontWeight: 600, marginTop: 'var(--space-5)', marginBottom: 'var(--space-2)', color: 'var(--text-primary)' }}>{line.slice(3)}</h2>;
-        if (line.startsWith('### ')) return <h3 key={k} style={{ fontSize: 'var(--font-size-lg)', fontWeight: 500, marginTop: 'var(--space-4)', marginBottom: 'var(--space-1)', color: 'var(--text-secondary)' }}>{line.slice(4)}</h3>;
-        if (line.startsWith('#### ')) return <h4 key={k} style={{ fontSize: 'var(--font-size-base)', fontWeight: 500, marginTop: 'var(--space-3)', marginBottom: 'var(--space-1)', color: 'var(--text-tertiary)' }}>{line.slice(5)}</h4>;
+        if (line.startsWith('# ')) return <h1 key={k} style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 300, marginTop: 'var(--space-6)', marginBottom: 'var(--space-3)', color: 'var(--text-primary)' }}>{line.slice(2)}</h1>;
+        if (line.startsWith('## ')) return <h2 key={k} style={{ fontSize: 'var(--font-size-xl)', fontWeight: 400, marginTop: 'var(--space-5)', marginBottom: 'var(--space-2)', color: 'var(--text-primary)' }}>{line.slice(3)}</h2>;
+        if (line.startsWith('### ')) return <h3 key={k} style={{ fontSize: 'var(--font-size-lg)', fontWeight: 400, marginTop: 'var(--space-4)', marginBottom: 'var(--space-1)', color: 'var(--text-secondary)' }}>{line.slice(4)}</h3>;
+        if (line.startsWith('#### ')) return <h4 key={k} style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, marginTop: 'var(--space-3)', marginBottom: 'var(--space-1)', color: 'var(--text-tertiary)' }}>{line.slice(5)}</h4>;
         if (line.startsWith('- ')) return <li key={k} style={{ marginLeft: 'var(--space-4)', color: 'var(--text-secondary)', lineHeight: 1.7 }}>{renderInline(line.slice(2), k)}</li>;
         if (/^\d+\. /.test(line)) return <li key={k} style={{ marginLeft: 'var(--space-4)', color: 'var(--text-secondary)', lineHeight: 1.7, listStyleType: 'decimal' }}>{renderInline(line.replace(/^\d+\. /, ''), k)}</li>;
         if (line.startsWith('|')) {
@@ -135,7 +135,7 @@ export function DocumentViewer({ document, onContentChange, onSave, saving, dirt
           >
             {document.status}
           </span>
-          <h2 className="truncate" style={{ fontWeight: 500, color: 'var(--text-primary)' }}>{document.title}</h2>
+          <h2 className="truncate" style={{ fontWeight: 400, color: 'var(--text-primary)' }}>{document.title}</h2>
           <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{TYPE_LABELS[document.type] || document.type}</span>
         </div>
         <div className="flex items-center shrink-0" style={{ gap: 'var(--space-2)' }}>

@@ -143,7 +143,7 @@ export default function CompetitivePage() {
               padding: 'var(--space-3) var(--space-4)',
               borderBottom: '1px solid var(--border-subtle)',
               fontSize: 'var(--font-size-xs)',
-              fontWeight: 500,
+              fontWeight: 400,
               color: 'var(--text-muted)',
               letterSpacing: '0.01em',
             }}
@@ -182,7 +182,7 @@ export default function CompetitivePage() {
                       : <ChevronRight className="w-4 h-4" />
                     }
                   </div>
-                  <div style={{ fontWeight: 500, color: 'var(--text-primary)', fontSize: 'var(--font-size-sm)' }}>
+                  <div style={{ fontWeight: 400, color: 'var(--text-primary)', fontSize: 'var(--font-size-sm)' }}>
                     {c.name}
                   </div>
                   <div style={{ textAlign: 'center' }}>
@@ -192,7 +192,7 @@ export default function CompetitivePage() {
                         alignItems: 'center',
                         gap: '4px',
                         fontSize: 'var(--font-size-sm)',
-                        fontWeight: 600,
+                        fontWeight: 400,
                         color: c.mention_count >= 3 ? 'var(--danger)' : c.mention_count >= 2 ? 'var(--warning)' : 'var(--text-secondary)',
                       }}
                     >
@@ -230,7 +230,7 @@ export default function CompetitivePage() {
                       borderBottom: '1px solid var(--border-subtle)',
                     }}
                   >
-                    <div style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-muted)', marginBottom: 'var(--space-2)', letterSpacing: '0.01em' }}>
+                    <div style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-muted)', marginBottom: 'var(--space-2)', letterSpacing: '0.01em' }}>
                       Meeting Context
                     </div>
                     <div className="space-y-2">

@@ -179,7 +179,7 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
       >
         <div className="flex items-center" style={{ gap: 'var(--space-2)' }}>
           <Sparkles style={{ width: '16px', height: '16px', color: 'var(--accent)' }} />
-          <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-primary)' }}>AI Assistant</span>
+          <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>AI Assistant</span>
         </div>
         {messages.length > 0 && (
           <button

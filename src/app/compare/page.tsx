@@ -344,7 +344,7 @@ export default function ComparePage() {
             padding: 'var(--space-2) var(--space-6)',
             borderRadius: 'var(--radius-lg)',
             fontSize: 'var(--font-size-sm)',
-            fontWeight: 500,
+            fontWeight: 400,
             ...(selectedIds.length >= 2 && !comparing
               ? {}
               : {
@@ -438,7 +438,7 @@ export default function ComparePage() {
                         padding: 'var(--space-3) var(--space-4)',
                         fontSize: 'var(--font-size-xs)',
                         color: 'var(--text-muted)',
-                        fontWeight: 500,
+                        fontWeight: 400,
                         minWidth: 160,
                         background: 'var(--surface-1)',
                         borderRight: '1px solid var(--border-subtle)',
@@ -496,7 +496,7 @@ export default function ComparePage() {
                         >
                           <span style={{
                             fontSize: 'var(--font-size-lg)',
-                            fontWeight: 700,
+                            fontWeight: 300,
                             ...scoreStyle(p.score.overall),
                           }}>
                             {p.score.overall}
@@ -520,7 +520,7 @@ export default function ComparePage() {
                             <MomentumIcon momentum={p.convictionTrajectory.trend} />
                             <span style={{
                               fontSize: 'var(--font-size-xs)',
-                              fontWeight: 500,
+                              fontWeight: 400,
                               ...momentumStyle(p.convictionTrajectory.trend),
                             }}>
                               {formatMomentum(p.convictionTrajectory.trend)}
@@ -596,7 +596,7 @@ export default function ComparePage() {
                       <td key={p.investor.id} style={{ padding: 'var(--space-3) var(--space-4)' }}>
                         <div className="flex flex-col gap-1">
                           <div className="flex items-center gap-3" style={{ fontSize: 'var(--font-size-xs)' }}>
-                            <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{p.meetingHistory.totalMeetings} meetings</span>
+                            <span style={{ color: 'var(--text-primary)', fontWeight: 400 }}>{p.meetingHistory.totalMeetings} meetings</span>
                             {p.meetingHistory.daysSinceLastMeeting !== null && (
                               <span style={{
                                 color: p.meetingHistory.daysSinceLastMeeting > 30
@@ -644,7 +644,7 @@ export default function ComparePage() {
                             </span>
                           )}
                           {p.followupStatus.overdueCount > 0 && (
-                            <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>
+                            <span style={{ color: 'var(--text-primary)', fontWeight: 400 }}>
                               {p.followupStatus.overdueCount} overdue
                             </span>
                           )}
@@ -686,7 +686,7 @@ export default function ComparePage() {
                       style={{
                         padding: 'var(--space-4)',
                         fontSize: 'var(--font-size-xs)',
-                        fontWeight: 600,
+                        fontWeight: 400,
                         color: 'var(--text-secondary)',
                         letterSpacing: '0.01em',
                         background: 'var(--surface-1)',
@@ -732,7 +732,7 @@ export default function ComparePage() {
             >
               <div className="flex items-center gap-2">
                 <BarChart3 className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
-                <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)' }}>
+                <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
                   Score Dimension Breakdown
                 </span>
                 <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>8 dimensions</span>
@@ -777,7 +777,7 @@ export default function ComparePage() {
               }}
             >
               <Target className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
-              <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)' }}>
+              <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
                 Decision Matrix
               </span>
             </div>
@@ -956,7 +956,7 @@ function InvestorNameLink({ investor }: { investor: Investor }) {
       className="transition-colors"
       style={{
         fontSize: 'var(--font-size-sm)',
-        fontWeight: 500,
+        fontWeight: 400,
         color: hovered ? 'var(--accent)' : 'var(--text-primary)',
         transition: 'color 150ms ease',
       }}
@@ -976,7 +976,7 @@ function SectionHeader({ label, colSpan }: { label: string; colSpan: number }) {
         style={{
           padding: 'var(--space-2) var(--space-4)',
           fontSize: '10px',
-          fontWeight: 600,
+          fontWeight: 400,
           color: 'var(--text-muted)',
           letterSpacing: '0.08em',
         }}
@@ -1013,7 +1013,7 @@ function StickyLabel({ children }: { children: React.ReactNode }) {
         padding: 'var(--space-3) var(--space-4)',
         fontSize: 'var(--font-size-xs)',
         color: 'var(--text-muted)',
-        fontWeight: 500,
+        fontWeight: 400,
         background: 'var(--surface-0)',
         borderRight: '1px solid var(--border-subtle)',
       }}
@@ -1103,7 +1103,7 @@ function RecommendationBanner({ recommendation }: { recommendation: ComparisonRe
     >
       <Icon className="w-5 h-5 shrink-0 mt-0.5" style={{ color: s.iconColor }} />
       <div>
-        <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-primary)' }}>
+        <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
           {recommendation.text}
         </div>
       </div>
@@ -1203,7 +1203,7 @@ function AccelerationBadge({ status }: { status: AccelerationStatusData }) {
           background: c.bg,
           color: c.color,
           fontSize: 'var(--font-size-xs)',
-          fontWeight: 500,
+          fontWeight: 400,
         }}
       >
         {c.icon}
@@ -1247,7 +1247,7 @@ function DimensionBar({
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between">
-        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', fontWeight: 500 }}>
+        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', fontWeight: 400 }}>
           {dimension}
         </span>
         <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
@@ -1358,12 +1358,12 @@ function VerdictCard({
           fontSize: '10px',
           color: 'var(--text-muted)',
           letterSpacing: '0.08em',
-          fontWeight: 500,
+          fontWeight: 400,
         }}>
           {title}
         </span>
       </div>
-      <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-primary)', marginBottom: 'var(--space-1)' }}>
+      <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', marginBottom: 'var(--space-1)' }}>
         {verdict.name}
       </div>
       <div style={{ fontSize: '10px', color: 'var(--text-muted)', lineHeight: 1.6 }}>
@@ -1379,15 +1379,15 @@ function VerdictCard({
 
 function tierStyle(tier: number): React.CSSProperties {
   switch (tier) {
-    case 1: return { color: 'var(--accent)', fontWeight: 600 };
-    case 2: return { color: 'var(--chart-4)', fontWeight: 600 };
+    case 1: return { color: 'var(--accent)', fontWeight: 400 };
+    case 2: return { color: 'var(--chart-4)', fontWeight: 400 };
     default: return { color: 'var(--text-muted)' };
   }
 }
 
 function statusStyle(status: string): React.CSSProperties {
-  if (status === 'term_sheet' || status === 'closed') return { color: 'var(--text-secondary)', fontWeight: 600 };
-  if (status === 'in_dd') return { color: 'var(--accent)', fontWeight: 500 };
+  if (status === 'term_sheet' || status === 'closed') return { color: 'var(--text-secondary)', fontWeight: 400 };
+  if (status === 'in_dd') return { color: 'var(--accent)', fontWeight: 400 };
   if (status === 'engaged') return { color: 'var(--cat-teal)' };
   if (status === 'passed' || status === 'dropped') return { color: 'var(--text-primary)' };
   return { color: 'var(--text-secondary)' };

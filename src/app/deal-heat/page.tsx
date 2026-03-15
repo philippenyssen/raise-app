@@ -158,7 +158,7 @@ export default function DealHeatPage() {
           </span>
           <span style={{
             fontSize: 'var(--font-size-lg)',
-            fontWeight: 700,
+            fontWeight: 300,
             color: avgHeat >= 80 ? 'var(--text-primary)' : avgHeat >= 60 ? 'var(--text-secondary)' : avgHeat >= 40 ? 'var(--text-tertiary)' : 'var(--text-muted)',
           }}>
             {avgHeat}
@@ -187,10 +187,10 @@ export default function DealHeatPage() {
               onMouseEnter={() => setHoveredFilter(level)}
               onMouseLeave={() => setHoveredFilter(null)}
             >
-              <div style={{ fontSize: 'var(--font-size-xs)', color: cfg.text, fontWeight: 600, letterSpacing: '0.01em' }}>
+              <div style={{ fontSize: 'var(--font-size-xs)', color: cfg.text, fontWeight: 400, letterSpacing: '0.01em' }}>
                 {cfg.label}
               </div>
-              <div style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 700, color: cfg.text, marginTop: 'var(--space-1)' }}>
+              <div style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 300, color: cfg.text, marginTop: 'var(--space-1)' }}>
                 {count}
               </div>
               <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '2px' }}>
@@ -288,7 +288,7 @@ export default function DealHeatPage() {
                     <div className="min-w-0 flex-1">
                       <div style={{
                         fontSize: 'var(--font-size-sm)',
-                        fontWeight: 600,
+                        fontWeight: 400,
                         color: 'var(--text-primary)',
                         whiteSpace: 'nowrap',
                         overflow: 'hidden',
@@ -299,7 +299,7 @@ export default function DealHeatPage() {
                       <div className="flex items-center gap-2" style={{ marginTop: '4px' }}>
                         <span style={{
                           fontSize: '10px',
-                          fontWeight: 600,
+                          fontWeight: 400,
                           letterSpacing: '0.01em',
                           padding: '1px 6px',
                           borderRadius: 'var(--radius-sm)',
@@ -332,7 +332,7 @@ export default function DealHeatPage() {
                     }}>
                       <span style={{
                         fontSize: '14px',
-                        fontWeight: 700,
+                        fontWeight: 300,
                         color: cfg.text,
                         lineHeight: 1,
                       }}>
@@ -345,7 +345,7 @@ export default function DealHeatPage() {
                   <div className="flex items-center gap-2" style={{ marginTop: 'var(--space-3)' }}>
                     <span style={{
                       fontSize: 'var(--font-size-xs)',
-                      fontWeight: 600,
+                      fontWeight: 400,
                       color: cfg.text,
                       letterSpacing: '0.01em',
                     }}>

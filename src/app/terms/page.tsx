@@ -302,7 +302,7 @@ export default function TermsPage() {
                         style={{
                           display: 'inline-block',
                           fontSize: '10px',
-                          fontWeight: 600,
+                          fontWeight: 400,
                           padding: '2px 8px',
                           borderRadius: 'var(--radius-sm)',
                           background: action.bg,

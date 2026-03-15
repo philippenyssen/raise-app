@@ -478,7 +478,7 @@ function QuickCaptureInner() {
                 style={{
                   width: '48px', height: '48px', borderRadius: '50%',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 'var(--font-size-lg)', fontWeight: 600,
+                  fontSize: 'var(--font-size-lg)', fontWeight: 400,
                   cursor: 'pointer',
                   transition: 'all 150ms ease',
                   border: enthusiasm === level ? '2px solid var(--accent)' : '2px solid var(--border-default)',
@@ -493,7 +493,7 @@ function QuickCaptureInner() {
             {enthusiasm > 0 && (
               <span style={{
                 fontSize: 'var(--font-size-sm)', color: 'var(--accent)',
-                fontWeight: 500, marginLeft: 'var(--space-2)',
+                fontWeight: 400, marginLeft: 'var(--space-2)',
                 animation: 'fade-in 200ms ease forwards',
               }}>
                 {ENTHUSIASM_LABELS[enthusiasm - 1]}
@@ -587,7 +587,7 @@ function QuickCaptureInner() {
             border: '1px solid transparent',
             padding: 'var(--space-4) var(--space-6)',
             fontSize: 'var(--font-size-md)',
-            fontWeight: 600,
+            fontWeight: 400,
             width: '100%',
             opacity: (!investorId || !rawNotes.trim()) && !loading ? 0.5 : 1,
             cursor: loading || !investorId || !rawNotes.trim() ? 'not-allowed' : 'pointer',

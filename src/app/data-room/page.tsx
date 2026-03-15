@@ -302,7 +302,7 @@ export default function DataRoomPage() {
         <div
           className="card space-y-4"
         >
-          <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-primary)' }}>
+          <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
             Paste document content
           </h3>
           <div className="flex gap-3">
@@ -384,7 +384,7 @@ export default function DataRoomPage() {
               <div key={cat.value}>
                 <div className="flex items-center gap-3 mb-2">
                   <cat.icon className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
-                  <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-primary)' }}>
+                  <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
                     {cat.label}
                   </span>
                   <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
@@ -467,7 +467,7 @@ function AccessIntelligenceSection({ intelligence, files, expandedInvestor, onTo
           <span style={{ color: 'var(--text-muted)' }}>
             <Eye className="w-5 h-5" />
           </span>
-          <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 600, color: 'var(--text-primary)' }}>
+          <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 400, color: 'var(--text-primary)' }}>
             Access Intelligence
           </h2>
         </div>
@@ -507,7 +507,7 @@ function AccessIntelligenceSection({ intelligence, files, expandedInvestor, onTo
           <span style={{ color: 'var(--text-muted)' }}>
             <TrendingUp className="w-4 h-4" />
           </span>
-          <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>
+          <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
             Most Requested Documents
           </h3>
         </div>
@@ -530,7 +530,7 @@ function AccessIntelligenceSection({ intelligence, files, expandedInvestor, onTo
           <span style={{ color: 'var(--text-muted)' }}>
             <Users className="w-4 h-4" />
           </span>
-          <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>
+          <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
             Per-Investor Document Access
           </h3>
         </div>
@@ -561,7 +561,7 @@ function AccessIntelligenceSection({ intelligence, files, expandedInvestor, onTo
             <span style={{ color: 'var(--text-tertiary)' }}>
               <AlertCircle className="w-4 h-4" />
             </span>
-            <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>
+            <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
               Unreached Investors
             </h3>
             <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
@@ -583,7 +583,7 @@ function AccessIntelligenceSection({ intelligence, files, expandedInvestor, onTo
             <span style={{ color: 'var(--text-muted)' }}>
               <Eye className="w-4 h-4" />
             </span>
-            <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>
+            <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
               Recent Access Log
             </h3>
           </div>
@@ -620,7 +620,7 @@ function StatCard({ label, value, icon, highlight }: {
         <span style={{ color: highlight ? 'var(--warning)' : 'var(--text-muted)' }}>{icon}</span>
         <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{label}</span>
       </div>
-      <span style={{ fontSize: 'var(--font-size-lg)', fontWeight: 600, color: highlight ? 'var(--warning)' : 'var(--text-primary)' }}>
+      <span style={{ fontSize: 'var(--font-size-lg)', fontWeight: 400, color: highlight ? 'var(--warning)' : 'var(--text-primary)' }}>
         {value}
       </span>
     </div>
@@ -646,7 +646,7 @@ function MostRequestedRow({ doc, rank }: {
     >
       <span style={{
         fontSize: 'var(--font-size-xs)',
-        fontWeight: 600,
+        fontWeight: 400,
         color: rank <= 3 ? 'var(--accent)' : 'var(--text-muted)',
         width: '1.5rem',
         textAlign: 'center',
@@ -668,7 +668,7 @@ function MostRequestedRow({ doc, rank }: {
       >
         {doc.category}
       </span>
-      <span className="ml-auto shrink-0" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-secondary)' }}>
+      <span className="ml-auto shrink-0" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-secondary)' }}>
         {doc.access_count} {doc.access_count === 1 ? 'view' : 'views'}
       </span>
     </div>
@@ -706,7 +706,7 @@ function InvestorAccessRow({ investor, expanded, onToggle, onLogAccess, files }:
           ? <ChevronDown className="w-4 h-4 shrink-0" style={{ color: 'var(--text-muted)' }} />
           : <ChevronRight className="w-4 h-4 shrink-0" style={{ color: 'var(--text-muted)' }} />
         }
-        <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-primary)' }}>
+        <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
           {investor.investor_name}
         </span>
         <span
@@ -734,7 +734,7 @@ function InvestorAccessRow({ investor, expanded, onToggle, onLogAccess, files }:
               background: 'var(--accent-muted)',
               padding: '0.125rem var(--space-2)',
               borderRadius: 'var(--radius-sm)',
-              fontWeight: 500,
+              fontWeight: 400,
             }}>
               {investor.recommended_documents.length} to share
             </span>
@@ -746,7 +746,7 @@ function InvestorAccessRow({ investor, expanded, onToggle, onLogAccess, files }:
           {/* Accessed documents */}
           {investor.accessed_documents.length > 0 && (
             <div className="mb-3">
-              <h4 style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 'var(--space-2)' }}>
+              <h4 style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-secondary)', marginBottom: 'var(--space-2)' }}>
                 Documents Accessed
               </h4>
               <div className="flex flex-wrap gap-2">
@@ -771,7 +771,7 @@ function InvestorAccessRow({ investor, expanded, onToggle, onLogAccess, files }:
           {/* Recommended documents */}
           {investor.recommended_documents.length > 0 && (
             <div className="mb-3">
-              <h4 style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 'var(--space-2)' }}>
+              <h4 style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-secondary)', marginBottom: 'var(--space-2)' }}>
                 Recommended to Share
               </h4>
               <div className="space-y-1">
@@ -789,7 +789,7 @@ function InvestorAccessRow({ investor, expanded, onToggle, onLogAccess, files }:
 
           {/* Log access manually */}
           <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 'var(--space-3)', marginTop: 'var(--space-2)' }}>
-            <h4 style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 'var(--space-2)' }}>
+            <h4 style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-secondary)', marginBottom: 'var(--space-2)' }}>
               Log Access
             </h4>
             <div className="flex gap-2">
@@ -902,7 +902,7 @@ function UnreachedInvestorRow({ investor }: {
       <span style={{ color: 'var(--text-tertiary)' }}>
         <AlertCircle className="w-3.5 h-3.5" />
       </span>
-      <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-primary)' }}>
+      <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
         {investor.investor_name}
       </span>
       <span style={{
@@ -943,7 +943,7 @@ function AccessLogRow({ entry }: {
       onMouseLeave={() => setHovered(false)}
     >
       <Eye className="w-3.5 h-3.5 shrink-0" style={{ color: 'var(--text-tertiary)' }} />
-      <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-primary)', minWidth: '8rem' }}>
+      <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', minWidth: '8rem' }}>
         {entry.investor_name}
       </span>
       <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>viewed</span>

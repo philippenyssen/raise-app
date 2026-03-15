@@ -230,7 +230,7 @@ function inlineBadgeStyle(styleObj: React.CSSProperties): React.CSSProperties {
     fontSize: 'var(--font-size-xs)',
     padding: '2px 6px',
     borderRadius: 'var(--radius-sm)',
-    fontWeight: 500,
+    fontWeight: 400,
     lineHeight: 1.5,
     whiteSpace: 'nowrap' as const,
     ...styleObj,
@@ -333,7 +333,7 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimensionData[] }) 
                 key={d.name}
                 style={{
                   fontSize: '9px',
-                  fontWeight: 600,
+                  fontWeight: 400,
                   color: dimensionColor(d.score, d.signal),
                   background: dimensionBg(d.score, d.signal),
                   padding: '1px 4px',
@@ -348,7 +348,7 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimensionData[] }) 
               <span
                 style={{
                   fontSize: '9px',
-                  fontWeight: 600,
+                  fontWeight: 400,
                   color: dimensionColor(weakest.score, weakest.signal),
                   background: dimensionBg(weakest.score, weakest.signal),
                   padding: '1px 4px',
@@ -379,12 +379,12 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimensionData[] }) 
             {dimensions.map(d => (
               <div key={d.name}>
                 <div className="flex items-center justify-between mb-0.5">
-                  <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 500, letterSpacing: '0.01em' }}>
+                  <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 400, letterSpacing: '0.01em' }}>
                     {d.name}
                   </span>
                   <span
                     className="tabular-nums"
-                    style={{ fontSize: '10px', fontWeight: 700, color: dimensionColor(d.score, d.signal) }}
+                    style={{ fontSize: '10px', fontWeight: 300, color: dimensionColor(d.score, d.signal) }}
                   >
                     {d.signal === 'unknown' ? '--' : d.score}
                   </span>
@@ -420,17 +420,17 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimensionData[] }) 
             <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 'var(--space-2)' }}>
               <div className="flex items-center gap-1 mb-1">
                 <span style={{ color: 'var(--text-secondary)' }}><Star className="w-3 h-3" /></span>
-                <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 500, letterSpacing: '0.01em' }}>
+                <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 400, letterSpacing: '0.01em' }}>
                   Strengths
                 </span>
               </div>
               <div className="space-y-1">
                 {topDimensions.map(d => (
                   <div key={d.name} className="flex items-start gap-1.5">
-                    <span style={{ fontSize: '10px', fontWeight: 700, color: dimensionColor(d.score, d.signal), minWidth: '20px' }} className="tabular-nums shrink-0">
+                    <span style={{ fontSize: '10px', fontWeight: 300, color: dimensionColor(d.score, d.signal), minWidth: '20px' }} className="tabular-nums shrink-0">
                       {d.score}
                     </span>
-                    <span style={{ fontSize: '10px', color: 'var(--text-secondary)', fontWeight: 500 }}>
+                    <span style={{ fontSize: '10px', color: 'var(--text-secondary)', fontWeight: 400 }}>
                       {d.name}
                     </span>
                     <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
@@ -447,15 +447,15 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimensionData[] }) 
             <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 'var(--space-2)' }}>
               <div className="flex items-center gap-1 mb-1">
                 <span style={{ color: 'var(--text-tertiary)' }}><Eye className="w-3 h-3" /></span>
-                <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 500, letterSpacing: '0.01em' }}>
+                <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 400, letterSpacing: '0.01em' }}>
                   Needs Attention
                 </span>
               </div>
               <div className="flex items-start gap-1.5">
-                <span style={{ fontSize: '10px', fontWeight: 700, color: dimensionColor(weakest.score, weakest.signal), minWidth: '20px' }} className="tabular-nums shrink-0">
+                <span style={{ fontSize: '10px', fontWeight: 300, color: dimensionColor(weakest.score, weakest.signal), minWidth: '20px' }} className="tabular-nums shrink-0">
                   {weakest.score}
                 </span>
-                <span style={{ fontSize: '10px', color: 'var(--text-secondary)', fontWeight: 500 }}>
+                <span style={{ fontSize: '10px', color: 'var(--text-secondary)', fontWeight: 400 }}>
                   {weakest.name}
                 </span>
                 <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
@@ -509,7 +509,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
               ...rankStyle,
               borderRadius: 'var(--radius-md)',
               fontSize: 'var(--font-size-sm)',
-              fontWeight: 700,
+              fontWeight: 300,
             }}
           >
             {rank}
@@ -522,7 +522,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
                 href={`/investors/${item.investorId}`}
                 onClick={e => e.stopPropagation()}
                 className="transition-colors"
-                style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}
+                style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}
                 onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
                 onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}
               >
@@ -538,7 +538,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
             </div>
 
             {/* Recommended action */}
-            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 500, lineHeight: 1.4, marginTop: '6px' }}>
+            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, lineHeight: 1.4, marginTop: '6px' }}>
               {item.recommendedAction}
             </p>
 
@@ -550,7 +550,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
                 const heat = Math.min(100, Math.max(0, item.focusScore + momentumBonus));
                 const heatColor = heat >= 70 ? 'var(--danger)' : heat >= 45 ? 'var(--warning)' : 'var(--text-muted)';
                 return (
-                  <span className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: heatColor, fontWeight: 600 }} title={`Deal heat: ${heat}/100`}>
+                  <span className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: heatColor, fontWeight: 400 }} title={`Deal heat: ${heat}/100`}>
                     <Flame className="w-3 h-3" />
                     {heat}
                   </span>
@@ -563,7 +563,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
                 {item.daysSinceLastMeeting !== null
                   ? <>
                       {item.lastMeetingType && (
-                        <span style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>
+                        <span style={{ color: 'var(--text-secondary)', fontWeight: 400 }}>
                           {item.lastMeetingType.replace(/_/g, ' ')}
                         </span>
                       )}
@@ -616,7 +616,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
                 <span style={{
                   fontSize: '11px',
                   color: 'var(--text-tertiary)',
-                  fontWeight: 500,
+                  fontWeight: 400,
                   fontStyle: 'italic',
                 }}>
                   Blocker: {item.topObjectionTopic}
@@ -641,7 +641,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
             >
               <span
                 className="tabular-nums"
-                style={{ fontSize: 'var(--font-size-xl)', fontWeight: 700, color: focusScoreColor(item.focusScore) }}
+                style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: focusScoreColor(item.focusScore) }}
               >
                 {item.focusScore}
               </span>
@@ -701,7 +701,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
                 { label: 'Action Readiness', value: item.components.actionReadiness, weight: '10%' },
               ].map(comp => (
                 <div key={comp.label} className="text-center">
-                  <div className="tabular-nums" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 700, color: focusScoreColor(comp.value) }}>{comp.value}</div>
+                  <div className="tabular-nums" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 300, color: focusScoreColor(comp.value) }}>{comp.value}</div>
                   <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '2px' }}>{comp.label}</div>
                   <div style={{ fontSize: '8px', color: 'var(--text-muted)' }}>{comp.weight}</div>
                 </div>
@@ -758,7 +758,7 @@ function QuickWinCard({ item }: { item: FocusItem }) {
         <Link
           href={`/investors/${item.investorId}`}
           className="transition-colors"
-          style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-primary)' }}
+          style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}
           onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
           onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}
         >
@@ -824,7 +824,7 @@ function StaleAlertCard({ item, onReengage }: { item: FocusItem; onReengage: (it
           <Link
             href={`/investors/${item.investorId}`}
             className="transition-colors"
-            style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-primary)' }}
+            style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}
             onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
             onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}
           >
@@ -834,7 +834,7 @@ function StaleAlertCard({ item, onReengage }: { item: FocusItem; onReengage: (it
             {STATUS_LABELS[item.status]}
           </span>
         </div>
-        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', fontWeight: 700 }}>
+        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', fontWeight: 300 }}>
           {item.daysSinceLastMeeting !== null ? `${item.daysSinceLastMeeting}d` : '--'}
         </span>
       </div>
@@ -881,7 +881,7 @@ function AccelerationCard({
             <Link
               href={`/investors/${item.investorId}`}
               className="transition-colors"
-              style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}
+              style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}
               onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
               onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}
             >
@@ -910,7 +910,7 @@ function AccelerationCard({
             <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', opacity: 0.85 }}>
               +{item.expectedLift} pts expected
             </span>
-            <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, ...(URGENCY_STYLE[item.urgency] ?? { color: 'var(--text-tertiary)' }) }}>
+            <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, ...(URGENCY_STYLE[item.urgency] ?? { color: 'var(--text-tertiary)' }) }}>
               {item.urgency === 'immediate' ? 'Act now' : item.urgency === '48h' ? 'Within 48h' : item.urgency === 'this_week' ? 'This week' : 'Next week'}
             </span>
             <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
@@ -948,7 +948,7 @@ function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
         <Link
           href={`/investors/${investor.investorId}`}
           className="transition-colors"
-          style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}
+          style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}
           onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
           onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}
         >
@@ -961,7 +961,7 @@ function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
       </div>
       <div className="flex items-center gap-3 mb-2">
         <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-          Score: <span style={{ color: 'var(--text-secondary)', fontWeight: 700 }}>{investor.score}</span>/100
+          Score: <span style={{ color: 'var(--text-secondary)', fontWeight: 300 }}>{investor.score}</span>/100
         </span>
         <span style={{ fontSize: 'var(--font-size-xs)', ...(MOMENTUM_STYLE[investor.momentum] ?? {}) }}>
           {MOMENTUM_LABELS[investor.momentum]}
@@ -1003,7 +1003,7 @@ function AtRiskCard({ investor }: { investor: InvestorSummary }) {
         <Link
           href={`/investors/${investor.investorId}`}
           className="transition-colors"
-          style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}
+          style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}
           onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
           onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}
         >
@@ -1013,7 +1013,7 @@ function AtRiskCard({ investor }: { investor: InvestorSummary }) {
       </div>
       <div className="flex items-center gap-3 mb-2">
         <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-          Score: <span style={{ color: 'var(--text-primary)', fontWeight: 700 }}>{investor.score}</span>/100
+          Score: <span style={{ color: 'var(--text-primary)', fontWeight: 300 }}>{investor.score}</span>/100
         </span>
         <span style={{ fontSize: 'var(--font-size-xs)', ...(MOMENTUM_STYLE[investor.momentum] ?? {}) }}>
           {MOMENTUM_LABELS[investor.momentum]}
@@ -1057,7 +1057,7 @@ function DeprioritizeSection({ investors }: { investors: InvestorSummary[] }) {
       >
         <div className="flex items-center gap-2">
           <Ban className="w-3.5 h-3.5" style={{ color: 'var(--text-muted)' }} />
-          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontWeight: 500, letterSpacing: '0.08em' }}>
+          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontWeight: 400, letterSpacing: '0.08em' }}>
             Deprioritize ({investors.length})
           </span>
         </div>
@@ -1268,7 +1268,7 @@ export default function FocusPage() {
           {/* Term Sheet Ready */}
           {accelData.termSheetReady.length > 0 && (
             <div>
-              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-secondary)', letterSpacing: '0.08em' }}>
+              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-secondary)', letterSpacing: '0.08em' }}>
                 <CheckCircle className="w-3.5 h-3.5" /> Term Sheet Ready ({accelData.termSheetReady.length})
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -1282,7 +1282,7 @@ export default function FocusPage() {
           {/* Immediate Actions */}
           {immediateActions.length > 0 && (
             <div>
-              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-primary)', letterSpacing: '0.08em' }}>
+              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-primary)', letterSpacing: '0.08em' }}>
                 <AlertTriangle className="w-3.5 h-3.5" /> Immediate ({immediateActions.length})
               </h3>
               <div className="space-y-2">
@@ -1301,7 +1301,7 @@ export default function FocusPage() {
           {/* This Week Actions */}
           {thisWeekActions.length > 0 && (
             <div>
-              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-tertiary)', letterSpacing: '0.08em' }}>
+              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)', letterSpacing: '0.08em' }}>
                 <Clock className="w-3.5 h-3.5" /> This Week ({thisWeekActions.length})
               </h3>
               <div className="space-y-2">
@@ -1320,7 +1320,7 @@ export default function FocusPage() {
           {/* At Risk */}
           {accelData.atRisk.length > 0 && (
             <div>
-              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-primary)', letterSpacing: '0.08em' }}>
+              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-primary)', letterSpacing: '0.08em' }}>
                 <Shield className="w-3.5 h-3.5" /> At Risk ({accelData.atRisk.length})
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -1369,7 +1369,7 @@ export default function FocusPage() {
           {/* Stale Alerts */}
           {staleAlerts.length > 0 && (
             <div>
-              <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-primary)', letterSpacing: '0.08em' }}>
+              <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-primary)', letterSpacing: '0.08em' }}>
                 <AlertTriangle className="w-4 h-4" /> Stale Alerts
               </h2>
               <div className="space-y-2">

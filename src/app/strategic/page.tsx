@@ -313,7 +313,7 @@ export default function StrategicPage() {
                 color: trendCfg.color,
                 border: `1px solid ${trendCfg.border}`,
                 fontSize: 'var(--font-size-xs)',
-                fontWeight: 500,
+                fontWeight: 400,
               }}
             >
               <TrendIcon className="w-3 h-3" />
@@ -323,11 +323,11 @@ export default function StrategicPage() {
           <div className="mt-auto space-y-1.5">
             <div className="flex items-center justify-between" style={{ fontSize: 'var(--font-size-sm)' }}>
               <span style={{ color: 'var(--text-muted)' }}>Meetings/wk</span>
-              <span style={{ color: 'var(--text-primary)', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>{data.raiseVelocity.meetingsPerWeek}</span>
+              <span style={{ color: 'var(--text-primary)', fontWeight: 400, fontVariantNumeric: 'tabular-nums' }}>{data.raiseVelocity.meetingsPerWeek}</span>
             </div>
             <div className="flex items-center justify-between" style={{ fontSize: 'var(--font-size-sm)' }}>
               <span style={{ color: 'var(--text-muted)' }}>Advances/wk</span>
-              <span style={{ color: 'var(--text-primary)', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>{data.raiseVelocity.stageAdvancesPerWeek}</span>
+              <span style={{ color: 'var(--text-primary)', fontWeight: 400, fontVariantNumeric: 'tabular-nums' }}>{data.raiseVelocity.stageAdvancesPerWeek}</span>
             </div>
           </div>
         </div>
@@ -340,7 +340,7 @@ export default function StrategicPage() {
         <div className="card">
           <div className="flex items-center gap-2 mb-4">
             <BarChart3 className="w-4 h-4" style={{ color: 'var(--accent)' }} />
-            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-tertiary)' }}>Health Trend</span>
+            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-tertiary)' }}>Health Trend</span>
             <span className="ml-auto" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{data.historicalSnapshots.length} snapshots</span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -373,14 +373,14 @@ export default function StrategicPage() {
         <div className="card">
           <div className="flex items-center gap-2 mb-4">
             <Activity className="w-4 h-4" style={{ color: 'var(--accent)' }} />
-            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-tertiary)' }}>Temporal Intelligence</span>
+            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-tertiary)' }}>Temporal Intelligence</span>
             <span
               className="badge ml-2"
               style={{
                 ...directionStyle(data.temporalTrends.overallDirection),
                 border: `1px solid`,
                 fontSize: '10px',
-                fontWeight: 500,
+                fontWeight: 400,
               }}
             >
               {data.temporalTrends.overallDirection}
@@ -417,7 +417,7 @@ export default function StrategicPage() {
                   )}
                   <span style={{
                     fontSize: 'var(--font-size-lg)',
-                    fontWeight: 700,
+                    fontWeight: 300,
                     fontVariantNumeric: 'tabular-nums',
                     color:
                       trend.direction === 'improving' ? 'var(--success)' :
@@ -461,14 +461,14 @@ export default function StrategicPage() {
         <div className="card">
           <div className="flex items-center gap-2 mb-4">
             <Clock className="w-4 h-4" style={{ color: 'var(--chart-4)' }} />
-            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-tertiary)' }}>Raise Forecast</span>
+            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-tertiary)' }}>Raise Forecast</span>
             <span
               className="badge ml-2"
               style={{
                 ...confidenceStyle(data.raiseForecast.confidence),
                 border: '1px solid',
                 fontSize: '10px',
-                fontWeight: 500,
+                fontWeight: 400,
               }}
             >
               {data.raiseForecast.confidence} confidence
@@ -485,7 +485,7 @@ export default function StrategicPage() {
               }}
             >
               <div className="metric-label" style={{ marginBottom: 'var(--space-1)' }}>Expected Close</div>
-              <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 700, color: 'var(--chart-4)', fontVariantNumeric: 'tabular-nums' }}>{data.raiseForecast.expectedCloseDate}</div>
+              <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 300, color: 'var(--chart-4)', fontVariantNumeric: 'tabular-nums' }}>{data.raiseForecast.expectedCloseDate}</div>
             </div>
             {/* Nearest close */}
             {data.raiseForecast.nearestClose && (
@@ -497,7 +497,7 @@ export default function StrategicPage() {
                 }}
               >
                 <div className="metric-label" style={{ marginBottom: 'var(--space-1)' }}>Nearest Close</div>
-                <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 700, color: 'var(--accent)', fontVariantNumeric: 'tabular-nums' }}>~{data.raiseForecast.nearestClose.days}d</div>
+                <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 300, color: 'var(--accent)', fontVariantNumeric: 'tabular-nums' }}>~{data.raiseForecast.nearestClose.days}d</div>
                 <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '2px' }}>{data.raiseForecast.nearestClose.name} ({data.raiseForecast.nearestClose.stage})</div>
               </div>
             )}
@@ -534,7 +534,7 @@ export default function StrategicPage() {
                   {data.raiseForecast.investorForecasts.map((f) => (
                     <tr key={f.name} className="table-row">
                       <td className="py-1.5 pr-3">
-                        <Link href={`/dealflow?search=${encodeURIComponent(f.name)}`} style={{ color: 'var(--accent)', textDecoration: 'none', fontWeight: 500 }}>{f.name}</Link>
+                        <Link href={`/dealflow?search=${encodeURIComponent(f.name)}`} style={{ color: 'var(--accent)', textDecoration: 'none', fontWeight: 400 }}>{f.name}</Link>
                       </td>
                       <td className="py-1.5 pr-3" style={{ color: 'var(--text-muted)' }}>{f.stage}</td>
                       <td className="py-1.5 pr-3 text-right" style={{ fontVariantNumeric: 'tabular-nums', color: 'var(--text-secondary)' }}>~{f.days}d</td>
@@ -586,7 +586,7 @@ export default function StrategicPage() {
           }}
         >
           <Target className="w-4 h-4" style={{ color: 'var(--accent)' }} />
-          <h2 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-tertiary)' }}>Strategic Recommendations</h2>
+          <h2 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-tertiary)' }}>Strategic Recommendations</h2>
           <span className="ml-auto" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{data.recommendations.length} actions</span>
         </div>
 
@@ -668,7 +668,7 @@ function RecommendationRow({ rec, isLast }: { rec: StrategicRecommendation; isLa
               padding: '2px 6px',
               borderRadius: 'var(--radius-sm)',
               border: '1px solid',
-              fontWeight: 700,
+              fontWeight: 300,
               ...priorityStyle(rec.priority),
             }}
           >
@@ -688,7 +688,7 @@ function RecommendationRow({ rec, isLast }: { rec: StrategicRecommendation; isLa
         <div className="flex-1 min-w-0">
           {/* Title + category badge */}
           <div className="flex items-center gap-2 flex-wrap mb-1">
-            <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>{rec.title}</h3>
+            <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>{rec.title}</h3>
             <span
               style={{
                 fontSize: '9px',
@@ -729,7 +729,7 @@ function RecommendationRow({ rec, isLast }: { rec: StrategicRecommendation; isLa
               className="ml-auto flex items-center gap-1 transition-colors"
               style={{
                 fontSize: '11px',
-                fontWeight: 600,
+                fontWeight: 400,
                 padding: '3px 10px',
                 borderRadius: 'var(--radius-sm)',
                 background: btnHover ? 'var(--accent)' : 'var(--accent-muted)',
@@ -761,8 +761,8 @@ function GaugeCard({ label, value, suffix, description, barPct, barColor, valueC
   return (
     <div className="card-metric flex flex-col">
       <div className="metric-label" style={{ marginBottom: 'var(--space-1)' }}>{label}</div>
-      <div style={{ fontSize: 'var(--font-size-3xl)', fontWeight: 700, fontVariantNumeric: 'tabular-nums', color: valueColor }}>
-        {value}<span style={{ fontSize: 'var(--font-size-lg)', fontWeight: 500, color: 'var(--text-muted)' }}>{suffix}</span>
+      <div style={{ fontSize: 'var(--font-size-3xl)', fontWeight: 300, fontVariantNumeric: 'tabular-nums', color: valueColor }}>
+        {value}<span style={{ fontSize: 'var(--font-size-lg)', fontWeight: 400, color: 'var(--text-muted)' }}>{suffix}</span>
       </div>
       <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 'var(--space-1)', marginBottom: 'var(--space-3)' }}>{description}</div>
       <div
@@ -815,7 +815,7 @@ function SparklineRow({ label, values, dates, color }: {
       <div className="flex items-center justify-between mb-2">
         <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{label}</span>
         <div className="flex items-center gap-2">
-          <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 700, fontVariantNumeric: 'tabular-nums', color: textColors[color] }}>{latest}</span>
+          <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 300, fontVariantNumeric: 'tabular-nums', color: textColors[color] }}>{latest}</span>
           {delta !== 0 && (
             <span style={{ fontSize: '10px', color: delta > 0 ? 'var(--success)' : 'var(--danger)' }}>
               {delta > 0 ? '+' : ''}{delta}

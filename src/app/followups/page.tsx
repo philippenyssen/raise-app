@@ -434,7 +434,7 @@ function FollowupsContent() {
                             padding: '0.25rem 0.5rem',
                             borderRadius: 'var(--radius-sm)',
                             fontSize: '10px',
-                            fontWeight: 500,
+                            fontWeight: 400,
                             transition: 'all 150ms ease',
                             background: completeForm.conviction_delta === val
                               ? val > 0 ? 'var(--success)' : val < 0 ? 'var(--danger)' : 'var(--accent)'
@@ -595,7 +595,7 @@ function FollowupsContent() {
                   <Timer className="w-2.5 h-2.5" style={{ color: 'var(--accent)' }} />
                 </span>
                 <span style={{ color: 'var(--text-muted)' }}>Send</span>
-                <span style={{ color: 'var(--accent)', fontWeight: 600 }}>
+                <span style={{ color: 'var(--accent)', fontWeight: 400 }}>
                   {item.timing.optimalDayOfWeek} {item.timing.optimalTimeOfDay}
                 </span>
               </div>
@@ -630,7 +630,7 @@ function FollowupsContent() {
                     <VelIcon className="w-2.5 h-2.5" style={{ color: vc.color }} />
                   </span>
                   <span style={{ color: 'var(--text-muted)' }}>Velocity</span>
-                  <span style={{ color: vc.color, fontWeight: 600 }}>{vc.label}</span>
+                  <span style={{ color: vc.color, fontWeight: 400 }}>{vc.label}</span>
                   {item.velocity!.daysSinceLastMeeting !== null && (
                     <span style={{ color: 'var(--text-muted)' }}>
                       ({item.velocity!.daysSinceLastMeeting}d ago)
@@ -659,7 +659,7 @@ function FollowupsContent() {
                   <Network className="w-2.5 h-2.5" style={{ color: 'var(--text-secondary)' }} />
                 </span>
                 <span style={{ color: 'var(--text-muted)' }}>Cascade</span>
-                <span style={{ color: 'var(--text-secondary)', fontWeight: 600 }}>
+                <span style={{ color: 'var(--text-secondary)', fontWeight: 400 }}>
                   {item.cascade.cascadeChainLength} investor{item.cascade.cascadeChainLength !== 1 ? 's' : ''}
                 </span>
               </div>
@@ -679,7 +679,7 @@ function FollowupsContent() {
               }}
             >
               <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-3)' }}>
-                <span className="flex items-center gap-1.5" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'var(--accent)' }}>
+                <span className="flex items-center gap-1.5" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--accent)' }}>
                   <PenLine className="w-3.5 h-3.5" />
                   Draft Message
                 </span>
@@ -720,7 +720,7 @@ function FollowupsContent() {
                     padding: 'var(--space-2) var(--space-3)',
                     fontSize: 'var(--font-size-xs)',
                     color: 'var(--text-primary)',
-                    fontWeight: 500,
+                    fontWeight: 400,
                   }}
                 >
                   {draft.subject}
@@ -810,7 +810,7 @@ function FollowupsContent() {
           }}
         >
           {isOverdue ? (
-            <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>
+            <span style={{ color: 'var(--text-primary)', fontWeight: 400 }}>
               {formatRelativeTime(item.due_at)} — was due {formatDate(item.due_at)}
             </span>
           ) : (
@@ -847,7 +847,7 @@ function FollowupsContent() {
         >
           <div className="flex items-center gap-2">
             {accent === 'red' && <AlertTriangle className="w-4 h-4" style={{ color: 'var(--text-primary)' }} />}
-            <h2 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: accentColorMap[accent] }}>{title}</h2>
+            <h2 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: accentColorMap[accent] }}>{title}</h2>
             <span
               style={{
                 fontSize: 'var(--font-size-xs)',
@@ -975,7 +975,7 @@ function FollowupsContent() {
               padding: '0.375rem 0.75rem',
               borderRadius: 'var(--radius-sm)',
               fontSize: 'var(--font-size-xs)',
-              fontWeight: 500,
+              fontWeight: 400,
               transition: 'all 150ms ease',
               background: filter === f ? 'var(--surface-3)' : 'transparent',
               color: filter === f ? 'var(--text-primary)' : 'var(--text-muted)',
@@ -1025,7 +1025,7 @@ function FollowupsContent() {
           }}
         >
           <SendHorizonal className="w-10 h-10 mx-auto mb-3" style={{ color: 'var(--border-default)' }} />
-          <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)', marginBottom: 'var(--space-1)' }}>
+          <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)', marginBottom: 'var(--space-1)' }}>
             No follow-ups pending
           </h3>
           <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
@@ -1048,7 +1048,7 @@ function FollowupsContent() {
           {renderSection('Next 3 Days', upcoming, upcomingExpanded, setUpcomingExpanded, 'zinc')}
           {later.length > 0 && (
             <div>
-              <h2 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-muted)', marginBottom: 'var(--space-3)' }}>
+              <h2 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-muted)', marginBottom: 'var(--space-3)' }}>
                 Later ({later.length})
               </h2>
               <div className="space-y-2">
@@ -1082,7 +1082,7 @@ function FollowupsContent() {
               padding: 'var(--space-4) var(--space-5)',
             }}
           >
-            <h2 className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 700 }}>
+            <h2 className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 300 }}>
               <Users className="w-4 h-4" style={{ color: 'var(--chart-4)' }} />
               Follow-up Effectiveness
             </h2>
@@ -1119,7 +1119,7 @@ function FollowupsContent() {
                         className="flex items-center gap-0.5"
                         style={{
                           fontSize: 'var(--font-size-xs)',
-                          fontWeight: 500,
+                          fontWeight: 400,
                           color: avgTypeDelta > 0 ? 'var(--success)' : avgTypeDelta < 0 ? 'var(--danger)' : 'var(--text-muted)',
                         }}
                       >

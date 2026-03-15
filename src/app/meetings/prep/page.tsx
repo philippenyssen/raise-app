@@ -1261,7 +1261,7 @@ function ProfileField({ label, value, bold, badge, badgeStyle }: {
           {value}
         </span>
       ) : (
-        <span className="text-sm" style={bold ? { fontWeight: 600, color: 'var(--text-primary)' } : { color: 'var(--text-secondary)' }}>{value}</span>
+        <span className="text-sm" style={bold ? { fontWeight: 400, color: 'var(--text-primary)' } : { color: 'var(--text-secondary)' }}>{value}</span>
       )}
     </div>
   );

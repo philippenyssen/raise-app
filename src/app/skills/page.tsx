@@ -191,7 +191,7 @@ export default function SkillsPage() {
                       >
                         <span style={{
                           color: exec.outcome === 'success' ? 'var(--success)' : exec.outcome === 'partial' ? 'var(--warning)' : 'var(--danger)',
-                          fontWeight: 600,
+                          fontWeight: 400,
                           minWidth: '50px',
                         }}>
                           {exec.outcome}

@@ -168,7 +168,7 @@ function MeetingOutcomeSection({
         }}
       >
         <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-secondary)' }}>
+          <div className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-secondary)' }}>
             <CheckCircle2 className="w-3.5 h-3.5" />
             Outcome Recorded
           </div>
@@ -246,7 +246,7 @@ function MeetingOutcomeSection({
         borderRadius: 'var(--radius-sm)',
       }}
     >
-      <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-primary)', marginBottom: 'var(--space-3)' }}>
+      <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', marginBottom: 'var(--space-3)' }}>
         Meeting Outcome
       </div>
 
@@ -576,7 +576,7 @@ export default function MeetingsPage() {
                     <div className="flex items-center gap-2">
                       <Link
                         href={`/investors/${m.investor_id}`}
-                        style={{ fontWeight: 500, color: 'var(--text-primary)', transition: 'color 150ms ease' }}
+                        style={{ fontWeight: 400, color: 'var(--text-primary)', transition: 'color 150ms ease' }}
                         onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
                         onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}
                       >
@@ -694,7 +694,7 @@ export default function MeetingsPage() {
                       cursor: 'pointer',
                       padding: 0,
                       fontSize: 'var(--font-size-sm)',
-                      fontWeight: 500,
+                      fontWeight: 400,
                       color: hasOutcome ? 'var(--success)' : 'var(--text-tertiary)',
                     }}
                     onMouseEnter={e => (e.currentTarget.style.color = hasOutcome ? 'var(--success)' : 'var(--text-secondary)')}

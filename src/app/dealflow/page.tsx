@@ -338,7 +338,7 @@ export default function DealflowPage() {
               borderBottom: '1px solid var(--border-subtle)',
               fontSize: 'var(--font-size-xs)',
               color: 'var(--text-muted)',
-              fontWeight: 500,
+              fontWeight: 400,
 
               letterSpacing: '0.01em',
             }}
@@ -411,7 +411,7 @@ export default function DealflowPage() {
                       style={{ width: `${Math.min(inv.velocityScore, 100)}%`, background: velocityColor(inv.velocityScore) }}
                     />
                   </div>
-                  <span style={{ color: velocityColor(inv.velocityScore), fontSize: 'var(--font-size-xs)', fontWeight: 600 }}>
+                  <span style={{ color: velocityColor(inv.velocityScore), fontSize: 'var(--font-size-xs)', fontWeight: 400 }}>
                     {inv.velocityScore}
                   </span>
                 </div>

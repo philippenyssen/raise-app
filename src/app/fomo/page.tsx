@@ -114,7 +114,7 @@ function inlineBadgeStyle(styleObj: React.CSSProperties): React.CSSProperties {
     fontSize: 'var(--font-size-xs)',
     padding: '2px 6px',
     borderRadius: 'var(--radius-sm)',
-    fontWeight: 500,
+    fontWeight: 400,
     lineHeight: 1.5,
     whiteSpace: 'nowrap' as const,
     ...styleObj,
@@ -200,7 +200,7 @@ function IntensityMeter({ intensity, description }: { intensity: number; descrip
           <Zap className="w-5 h-5" style={{ color }} />
         </span>
         <div>
-          <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>
+          <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 400, color: 'var(--text-primary)', margin: 0 }}>
             Pipeline FOMO Level
           </h2>
           <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', margin: 0 }}>
@@ -210,10 +210,10 @@ function IntensityMeter({ intensity, description }: { intensity: number; descrip
       </div>
 
       <div className="flex items-end gap-4 mb-3">
-        <span style={{ fontSize: 'var(--font-size-3xl)', fontWeight: 700, color, lineHeight: 1 }}>
+        <span style={{ fontSize: 'var(--font-size-3xl)', fontWeight: 300, color, lineHeight: 1 }}>
           {intensity}
         </span>
-        <span style={{ fontSize: 'var(--font-size-sm)', color, fontWeight: 500, paddingBottom: '4px' }}>
+        <span style={{ fontSize: 'var(--font-size-sm)', color, fontWeight: 400, paddingBottom: '4px' }}>
           / 100 — {label}
         </span>
       </div>
@@ -272,7 +272,7 @@ function StatsRow({ stats, meetingDensity }: { stats: FomoData['stats']; meeting
                 {item.label}
               </span>
             </div>
-            <span style={{ fontSize: 'var(--font-size-xl)', fontWeight: 700, color: 'var(--text-primary)' }}>
+            <span style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>
               {item.value}
             </span>
           </div>
@@ -317,7 +317,7 @@ function PressureCard({ inv }: { inv: InvestorFomo }) {
             <Link
               href={`/investors/${inv.investorId}`}
               className="transition-colors"
-              style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}
+              style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}
               onClick={e => e.stopPropagation()}
               onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
               onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}
@@ -347,7 +347,7 @@ function PressureCard({ inv }: { inv: InvestorFomo }) {
 
         {/* Intensity score */}
         <div className="shrink-0 text-right">
-          <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 700, color, lineHeight: 1 }}>
+          <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 300, color, lineHeight: 1 }}>
             {inv.intensity}
           </div>
           <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '2px' }}>
@@ -400,7 +400,7 @@ function PressureCard({ inv }: { inv: InvestorFomo }) {
           {/* Trigger investors */}
           {inv.triggerInvestors.length > 0 && (
             <div style={{ marginBottom: 'var(--space-3)' }}>
-              <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-muted)', letterSpacing: '0.01em' }}>
+              <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-muted)', letterSpacing: '0.01em' }}>
                 Creating pressure
               </span>
               <div className="flex flex-wrap gap-1.5 mt-1.5">
@@ -482,7 +482,7 @@ function TriggerEventCard({ event }: { event: TriggerEvent }) {
         </span>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-0.5">
-            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-primary)' }}>
+            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
               {event.investorName}
             </span>
             <span style={inlineBadgeStyle(IMPACT_STYLES[event.impactLevel] ?? IMPACT_STYLES.low)}>
@@ -521,7 +521,7 @@ function StrategyCardComponent({ card }: { card: StrategyCard }) {
           <Target className="w-4 h-4" style={{ color: card.priority === 'high' ? 'var(--danger)' : card.priority === 'medium' ? 'var(--warning)' : 'var(--text-muted)' }} />
         </span>
         <div>
-          <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>
+          <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', margin: 0 }}>
             {card.title}
           </h4>
           <span style={inlineBadgeStyle({
@@ -663,7 +663,7 @@ export default function FomoPage() {
               padding: 'var(--space-2) var(--space-3)',
               borderRadius: 'var(--radius-md)',
               fontSize: 'var(--font-size-sm)',
-              fontWeight: 500,
+              fontWeight: 400,
               background: refreshHovered ? 'var(--surface-2)' : 'var(--surface-1)',
               color: 'var(--text-secondary)',
               cursor: 'pointer',
@@ -689,7 +689,7 @@ export default function FomoPage() {
           {/* Pressure Map (main column) */}
           <div className="lg:col-span-2">
             <div className="flex items-center justify-between mb-3">
-              <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>
+              <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)', margin: 0 }}>
                 Pressure Map
               </h2>
               <div className="flex gap-1">
@@ -702,7 +702,7 @@ export default function FomoPage() {
                       padding: '4px 10px',
                       borderRadius: 'var(--radius-sm)',
                       fontSize: 'var(--font-size-xs)',
-                      fontWeight: 500,
+                      fontWeight: 400,
                       border: 'none',
                       cursor: 'pointer',
                       transition: 'all 150ms ease',
@@ -752,7 +752,7 @@ export default function FomoPage() {
           <div className="flex flex-col gap-6">
             {/* FOMO Triggers */}
             <div>
-              <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 600, color: 'var(--text-primary)', margin: '0 0 var(--space-3) 0' }}>
+              <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)', margin: '0 0 var(--space-3) 0' }}>
                 FOMO Triggers
               </h2>
               {data.triggerEvents.length === 0 ? (
@@ -779,7 +779,7 @@ export default function FomoPage() {
 
             {/* Strategy Cards */}
             <div>
-              <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 600, color: 'var(--text-primary)', margin: '0 0 var(--space-3) 0' }}>
+              <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)', margin: '0 0 var(--space-3) 0' }}>
                 Strategy Cards
               </h2>
               {data.strategyCards.length === 0 ? (
@@ -814,12 +814,12 @@ export default function FomoPage() {
             >
               <div className="flex items-center gap-2 mb-2">
                 <Activity className="w-4 h-4" style={{ color: 'var(--accent)' }} />
-                <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>
+                <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', margin: 0 }}>
                   Meeting Cadence
                 </h3>
               </div>
               <div className="flex items-end gap-2 mb-2">
-                <span style={{ fontSize: 'var(--font-size-xl)', fontWeight: 700, color: 'var(--text-primary)' }}>
+                <span style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>
                   {data.meetingDensity.densityScore}
                 </span>
                 <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', paddingBottom: '3px' }}>

@@ -184,7 +184,7 @@ export default function PostMeetingActions({
                   <span style={{ color: 'var(--text-muted)' }}>Status:</span>
                   <span style={{ color: 'var(--text-secondary)' }}>{STATUS_LABELS[data.investor_updates.previous_status!] || data.investor_updates.previous_status}</span>
                   <ArrowRight className="w-3 h-3" style={{ color: 'var(--text-muted)' }} />
-                  <span style={{ color: 'var(--accent)', fontWeight: 500 }}>{STATUS_LABELS[data.investor_updates.suggested_status] || data.investor_updates.suggested_status}</span>
+                  <span style={{ color: 'var(--accent)', fontWeight: 400 }}>{STATUS_LABELS[data.investor_updates.suggested_status] || data.investor_updates.suggested_status}</span>
                 </div>
               )}
               {enthusiasmChanged && (
@@ -195,7 +195,7 @@ export default function PostMeetingActions({
                   <span style={{ color: 'var(--text-muted)' }}>Enthusiasm:</span>
                   <span style={{ color: 'var(--text-secondary)' }}>{data.investor_updates.previous_enthusiasm}/5</span>
                   <ArrowRight className="w-3 h-3" style={{ color: 'var(--text-muted)' }} />
-                  <span style={{ color: enthusiasmColor, fontWeight: 500 }}>
+                  <span style={{ color: enthusiasmColor, fontWeight: 400 }}>
                     {data.investor_updates.enthusiasm}/5
                   </span>
                 </div>

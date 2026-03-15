@@ -248,7 +248,7 @@ export default function EnrichmentPage() {
             style={{
               padding: 'var(--space-2) var(--space-4)',
               fontSize: 'var(--font-size-sm)',
-              fontWeight: 500,
+              fontWeight: 400,
               borderBottom: `2px solid ${tab === t ? 'var(--accent)' : 'transparent'}`,
               color: tab === t ? 'var(--text-primary)' : 'var(--text-muted)',
               background: 'transparent',
@@ -275,7 +275,7 @@ export default function EnrichmentPage() {
               {lastResult.status === 'completed' ? <CheckCircle2 style={{ width: '16px', height: '16px', color: 'var(--text-secondary)' }} /> :
                lastResult.status === 'partial' ? <AlertTriangle style={{ width: '16px', height: '16px', color: 'var(--text-tertiary)' }} /> :
                <XCircle style={{ width: '16px', height: '16px', color: 'var(--text-primary)' }} />}
-              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 500 }}>
+              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400 }}>
                 {lastResult.total_fields} fields enriched from {lastResult.sources_succeeded} sources
               </span>
               <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
@@ -320,7 +320,7 @@ export default function EnrichmentPage() {
                   >
                     <Link
                       href={`/investors/${inv.id}`}
-                      style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 500, textDecoration: 'none' }}
+                      style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, textDecoration: 'none' }}
                     >
                       {inv.name}
                     </Link>
@@ -379,7 +379,7 @@ export default function EnrichmentPage() {
                     />
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-                        <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-primary)' }}>
+                        <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
                           {provider.name}
                         </span>
                         <span style={{
@@ -487,7 +487,7 @@ export default function EnrichmentPage() {
                       <div>
                         <Link
                           href={`/investors/${job.investor_id}`}
-                          style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 500, textDecoration: 'none' }}
+                          style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, textDecoration: 'none' }}
                         >
                           {job.investor_name}
                         </Link>
@@ -528,7 +528,7 @@ function StatCard({ label, value, icon, accent }: { label: string; value: string
         <span style={{ color: accent || 'var(--text-muted)' }}>{icon}</span>
         <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{label}</span>
       </div>
-      <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 700, color: accent || 'var(--text-primary)' }}>
+      <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: accent || 'var(--text-primary)' }}>
         {value}
       </div>
     </div>

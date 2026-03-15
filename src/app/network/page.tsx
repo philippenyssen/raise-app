@@ -141,7 +141,7 @@ export default function NetworkPage() {
         <div className="card p-6 flex items-center gap-3">
           <AlertTriangle className="w-5 h-5 shrink-0" style={{ color: 'var(--text-primary)' }} />
           <div>
-            <p style={{ color: 'var(--text-primary)', fontWeight: 500 }}>Failed to load network data</p>
+            <p style={{ color: 'var(--text-primary)', fontWeight: 400 }}>Failed to load network data</p>
             <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>{error}</p>
           </div>
           <button className="btn-secondary ml-auto" onClick={fetchData}>Retry</button>
@@ -193,10 +193,10 @@ export default function NetworkPage() {
             background: 'var(--accent-muted)',
             borderRadius: 'var(--radius-md)',
           }}>
-            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)', fontWeight: 500 }}>
+            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)', fontWeight: 400 }}>
               Expected Capital
             </span>
-            <p style={{ fontSize: 'var(--font-size-lg)', fontWeight: 700, color: 'var(--text-primary)', marginTop: '2px' }}>
+            <p style={{ fontSize: 'var(--font-size-lg)', fontWeight: 300, color: 'var(--text-primary)', marginTop: '2px' }}>
               {summary.totalExpectedCapitalM > 0 ? `\u20AC${formatCapital(summary.totalExpectedCapitalM)}` : '--'}
             </p>
           </div>
@@ -226,7 +226,7 @@ export default function NetworkPage() {
                 {stat.label}
               </span>
             </div>
-            <p style={{ fontSize: 'var(--font-size-lg)', fontWeight: 600, color: 'var(--text-primary)' }}>
+            <p style={{ fontSize: 'var(--font-size-lg)', fontWeight: 400, color: 'var(--text-primary)' }}>
               {stat.value}
             </p>
           </div>
@@ -243,7 +243,7 @@ export default function NetworkPage() {
         >
           <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" style={{ color: 'var(--text-tertiary)' }} />
           <div className="flex-1">
-            <p style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: 'var(--font-size-sm)' }}>
+            <p style={{ fontWeight: 400, color: 'var(--text-primary)', fontSize: 'var(--font-size-sm)' }}>
               Bottleneck Alert
             </p>
             <p style={{ color: 'var(--text-secondary)', fontSize: 'var(--font-size-sm)', marginTop: '4px' }}>
@@ -312,7 +312,7 @@ export default function NetworkPage() {
                         href={`/investors/${cascade.keystoneId}`}
                         onClick={e => e.stopPropagation()}
                         className="transition-colors"
-                        style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: 'var(--font-size-base)', textDecoration: 'none' }}
+                        style={{ fontWeight: 400, color: 'var(--text-primary)', fontSize: 'var(--font-size-base)', textDecoration: 'none' }}
                         onMouseEnter={e => { e.currentTarget.style.color = 'var(--accent)'; }}
                         onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-primary)'; }}
                       >
@@ -324,7 +324,7 @@ export default function NetworkPage() {
                         borderRadius: 'var(--radius-sm)',
                         background: 'var(--surface-2)',
                         color: 'var(--text-muted)',
-                        fontWeight: 500,
+                        fontWeight: 400,
                       }}>
                         {tierLabel(cascade.keystoneTier)}
                       </span>
@@ -346,13 +346,13 @@ export default function NetworkPage() {
                 <div className="flex items-center gap-4 shrink-0 ml-4">
                   <div style={{ textAlign: 'right' }}>
                     <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Cascade Capital</p>
-                    <p style={{ fontSize: 'var(--font-size-base)', fontWeight: 600, color: 'var(--text-primary)' }}>
+                    <p style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
                       {cascade.expectedCascadeCapitalM > 0 ? `\u20AC${formatCapital(cascade.expectedCascadeCapitalM)}` : '--'}
                     </p>
                   </div>
                   <div style={{ textAlign: 'right' }}>
                     <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Chain</p>
-                    <p style={{ fontSize: 'var(--font-size-base)', fontWeight: 600, color: 'var(--text-primary)' }}>
+                    <p style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
                       {cascade.chainLength}
                     </p>
                   </div>
@@ -410,7 +410,7 @@ export default function NetworkPage() {
                               <span style={{
                                 fontSize: 'var(--font-size-xs)',
                                 color: probColor(link.probability),
-                                fontWeight: 500,
+                                fontWeight: 400,
                                 fontVariantNumeric: 'tabular-nums',
                               }}>
                                 {Math.round(link.probability * 100)}%
@@ -443,7 +443,7 @@ export default function NetworkPage() {
                                       href={`/investors/${link.investorId}`}
                                       className="transition-colors"
                                       style={{
-                                        fontWeight: 500,
+                                        fontWeight: 400,
                                         color: 'var(--text-primary)',
                                         fontSize: 'var(--font-size-sm)',
                                         textDecoration: 'none',
@@ -478,7 +478,7 @@ export default function NetworkPage() {
                                         borderRadius: 'var(--radius-sm)',
                                         background: 'var(--warning-muted)',
                                         color: 'var(--text-tertiary)',
-                                        fontWeight: 600,
+                                        fontWeight: 400,
                                       }}>
                                         BOTTLENECK
                                       </span>
@@ -496,7 +496,7 @@ export default function NetworkPage() {
                                   <p style={{ fontSize: '10px', color: 'var(--text-muted)', }}>Prob</p>
                                   <p style={{
                                     fontSize: 'var(--font-size-sm)',
-                                    fontWeight: 600,
+                                    fontWeight: 400,
                                     color: probColor(link.probability),
                                     fontVariantNumeric: 'tabular-nums',
                                   }}>
@@ -508,7 +508,7 @@ export default function NetworkPage() {
                                     <p style={{ fontSize: '10px', color: 'var(--text-muted)', }}>Expected</p>
                                     <p style={{
                                       fontSize: 'var(--font-size-sm)',
-                                      fontWeight: 600,
+                                      fontWeight: 400,
                                       color: 'var(--text-primary)',
                                       fontVariantNumeric: 'tabular-nums',
                                     }}>
@@ -521,7 +521,7 @@ export default function NetworkPage() {
                                     <p style={{ fontSize: '10px', color: 'var(--text-muted)', }}>Cumulative</p>
                                     <p style={{
                                       fontSize: 'var(--font-size-sm)',
-                                      fontWeight: 500,
+                                      fontWeight: 400,
                                       color: 'var(--text-tertiary)',
                                       fontVariantNumeric: 'tabular-nums',
                                     }}>
@@ -582,7 +582,7 @@ export default function NetworkPage() {
       >
         <div className="flex items-center gap-2 mb-3">
           <span style={{ color: 'var(--text-muted)' }}><TrendingUp className="w-4 h-4" /></span>
-          <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>
+          <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
             Network Summary
           </span>
         </div>
@@ -591,7 +591,7 @@ export default function NetworkPage() {
             <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', letterSpacing: '0.01em' }}>
               Strongest Chain
             </p>
-            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 500, marginTop: '2px' }}>
+            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, marginTop: '2px' }}>
               {summary.strongestChain
                 ? `${summary.strongestChain.name} (\u20AC${formatCapital(summary.strongestChain.capitalM)})`
                 : '--'}
@@ -601,7 +601,7 @@ export default function NetworkPage() {
             <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', letterSpacing: '0.01em' }}>
               Weakest Chain
             </p>
-            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 500, marginTop: '2px' }}>
+            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, marginTop: '2px' }}>
               {summary.weakestChain
                 ? `${summary.weakestChain.name} (\u20AC${formatCapital(summary.weakestChain.capitalM)})`
                 : '--'}
@@ -611,7 +611,7 @@ export default function NetworkPage() {
             <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', letterSpacing: '0.01em' }}>
               Total Raise Forecast
             </p>
-            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--accent)', fontWeight: 600, marginTop: '2px' }}>
+            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--accent)', fontWeight: 400, marginTop: '2px' }}>
               {summary.totalExpectedCapitalM > 0 ? `\u20AC${formatCapital(summary.totalExpectedCapitalM)}` : '--'}
             </p>
           </div>

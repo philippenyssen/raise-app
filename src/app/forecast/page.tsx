@@ -226,7 +226,7 @@ export default function ForecastPage() {
               padding: '4px 12px',
               borderRadius: '9999px',
               fontSize: 'var(--font-size-xs)',
-              fontWeight: 600,
+              fontWeight: 400,
               background: confidenceBg(forecast.confidence),
               color: confidenceColor(forecast.confidence),
               letterSpacing: '0.01em',
@@ -245,7 +245,7 @@ export default function ForecastPage() {
             <span style={{ color: 'var(--accent)' }}>
               <Target className="w-4 h-4" />
             </span>
-            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>
+            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
               Raise Target Progress
             </span>
           </div>
@@ -302,7 +302,7 @@ export default function ForecastPage() {
                 left: '50%',
                 transform: 'translate(-50%, -50%)',
                 fontSize: 'var(--font-size-sm)',
-                fontWeight: 700,
+                fontWeight: 300,
                 color: 'var(--text-primary)',
                 fontVariantNumeric: 'tabular-nums',
                 whiteSpace: 'nowrap',
@@ -329,13 +329,13 @@ export default function ForecastPage() {
           </div>
           {hasExclusions && whatIf && (
             <div className="flex items-center gap-2">
-              <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>
+              <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>
                 -{formatAmount(whatIf.excludedCapital, currency)} ({whatIf.excludedCount} excluded)
               </span>
             </div>
           )}
           <div className="flex items-center gap-2" style={{ marginLeft: 'auto' }}>
-            <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'var(--text-secondary)', fontVariantNumeric: 'tabular-nums' }}>
+            <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-secondary)', fontVariantNumeric: 'tabular-nums' }}>
               {progressPct}% of target
             </span>
           </div>
@@ -365,14 +365,14 @@ export default function ForecastPage() {
                 <span style={{ color: iconColor }}>
                   <Icon className="w-4 h-4" />
                 </span>
-                <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>
+                <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
                   {s.label}
                 </span>
               </div>
               <div
                 style={{
                   fontSize: 'var(--font-size-2xl)',
-                  fontWeight: 700,
+                  fontWeight: 300,
                   color: 'var(--text-primary)',
                   fontVariantNumeric: 'tabular-nums',
                   marginBottom: 'var(--space-1)',
@@ -409,7 +409,7 @@ export default function ForecastPage() {
             <span style={{ color: 'var(--text-tertiary)' }}>
               <Shield className="w-4 h-4" />
             </span>
-            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>
+            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
               Confidence Distribution
             </span>
           </div>
@@ -421,7 +421,7 @@ export default function ForecastPage() {
             <div key={label} style={{ marginBottom: 'var(--space-3)' }}>
               <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-1)' }}>
                 <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>{label}</span>
-                <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color, fontVariantNumeric: 'tabular-nums' }}>
+                <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color, fontVariantNumeric: 'tabular-nums' }}>
                   {count}
                 </span>
               </div>
@@ -447,7 +447,7 @@ export default function ForecastPage() {
             <span style={{ color: 'var(--text-tertiary)' }}>
               <Zap className="w-4 h-4" />
             </span>
-            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>
+            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
               Critical Path
             </span>
           </div>
@@ -483,7 +483,7 @@ export default function ForecastPage() {
                         alignItems: 'center',
                         justifyContent: 'center',
                         fontSize: '10px',
-                        fontWeight: 700,
+                        fontWeight: 300,
                         flexShrink: 0,
                       }}
                     >
@@ -492,7 +492,7 @@ export default function ForecastPage() {
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <Link
                         href={inv ? `/investors/${inv.investorId}` : '#'}
-                        style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textDecoration: 'none', display: 'block' }}
+                        style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textDecoration: 'none', display: 'block' }}
                         className="transition-colors"
                         onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
                         onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-primary)'; }}
@@ -537,7 +537,7 @@ export default function ForecastPage() {
             <span style={{ color: 'var(--text-primary)' }}>
               <AlertTriangle className="w-4 h-4" />
             </span>
-            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>
+            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
               Risk Factors
             </span>
           </div>
@@ -607,7 +607,7 @@ export default function ForecastPage() {
             <span style={{ color: 'var(--text-tertiary)' }}>
               <Clock className="w-4 h-4" />
             </span>
-            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>
+            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
               Investor Timeline
             </span>
             <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginLeft: 'auto' }}>
@@ -615,7 +615,7 @@ export default function ForecastPage() {
                 <button
                   onClick={() => setExcludedIds(new Set())}
                   className="flex items-center gap-1"
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--accent)', fontWeight: 500, fontSize: 'var(--font-size-xs)' }}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--accent)', fontWeight: 400, fontSize: 'var(--font-size-xs)' }}
                 >
                   <RotateCcw className="w-3 h-3" /> Reset what-if
                 </button>
@@ -702,7 +702,7 @@ export default function ForecastPage() {
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 fontSize: '10px',
-                                fontWeight: 700,
+                                fontWeight: 300,
                                 flexShrink: 0,
                                 ...(inv.tier === 1
                                   ? { background: 'var(--accent)', color: 'var(--text-primary)' }
@@ -715,7 +715,7 @@ export default function ForecastPage() {
                             </span>
                             <div>
                               <div className="flex items-center gap-1">
-                                <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-primary)' }}>
+                                <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
                                   {inv.investorName}
                                 </span>
                                 {isCritical && (
@@ -734,7 +734,7 @@ export default function ForecastPage() {
                         <span
                           style={{
                             fontSize: 'var(--font-size-xs)',
-                            fontWeight: 600,
+                            fontWeight: 400,
                             color: isExcluded ? 'var(--text-muted)' : 'var(--text-secondary)',
                             fontVariantNumeric: 'tabular-nums',
                             textDecoration: isExcluded ? 'line-through' : 'none',
@@ -757,7 +757,7 @@ export default function ForecastPage() {
                           style={{
                             fontSize: 'var(--font-size-sm)',
                             fontVariantNumeric: 'tabular-nums',
-                            fontWeight: 600,
+                            fontWeight: 400,
                             color: inv.daysInStage > 30
                               ? 'var(--danger)'
                               : inv.daysInStage > 14
@@ -782,7 +782,7 @@ export default function ForecastPage() {
                           style={{
                             fontSize: 'var(--font-size-sm)',
                             fontVariantNumeric: 'tabular-nums',
-                            fontWeight: 600,
+                            fontWeight: 400,
                             color: inv.predictedDaysToClose > 60
                               ? 'var(--danger)'
                               : inv.predictedDaysToClose > 30
@@ -803,7 +803,7 @@ export default function ForecastPage() {
                             padding: '2px 8px',
                             borderRadius: '9999px',
                             fontSize: 'var(--font-size-xs)',
-                            fontWeight: 500,
+                            fontWeight: 400,
                             background: confidenceBg(inv.confidence),
                             color: confidenceColor(inv.confidence),
                           }}
@@ -869,14 +869,14 @@ export default function ForecastPage() {
               <span style={{ color }}>
                 <Icon className="w-4 h-4" />
               </span>
-              <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>
+              <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
                 {label}
               </span>
               <span
                 style={{
                   marginLeft: 'auto',
                   fontSize: 'var(--font-size-xs)',
-                  fontWeight: 600,
+                  fontWeight: 400,
                   color,
                   fontVariantNumeric: 'tabular-nums',
                 }}
