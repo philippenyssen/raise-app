@@ -71,6 +71,8 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       {children}
       <div
         className="fixed z-[100]"
+        role="status"
+        aria-live="polite"
         style={{
           bottom: 'var(--space-5)',
           right: 'var(--space-5)',
