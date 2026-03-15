@@ -324,7 +324,7 @@ export async function GET() {
     // For each week, check if 3+ investors in same tier dropped momentum
     for (let wi = 1; wi < weeks.length; wi++) {
       const wl = weekLabels[wi];
-      const prevWl = weekLabels[wi - 1];
+      // weekLabels[wi - 1] available if needed for cross-week comparison
 
       // Group drops by tier
       const dropsByTier: Record<number, { name: string; drop: number }[]> = {};

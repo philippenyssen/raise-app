@@ -39,13 +39,13 @@ export async function GET(req: NextRequest) {
     // Load all intelligence sources in parallel
     const [
       meetings,
-      investorObjections,
+      _investorObjections,
       playbook,
       typeQuestionPatterns,
       aggregatedCompetitiveIntel,
       investorRelationships,
-      partners,
-      portfolio,
+      _partners,
+      _portfolio,
     ] = await Promise.all([
       getMeetings(investorId),
       getObjectionsByInvestor(investorId),

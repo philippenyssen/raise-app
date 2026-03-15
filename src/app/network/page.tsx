@@ -38,7 +38,7 @@ export default function NetworkPage() {
   const [error, setError] = useState<string | null>(null);
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
-  const [hoveredCard, setHoveredCard] = useState<string | null>(null);
+  const [, setHoveredCard] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -176,7 +176,6 @@ export default function NetworkPage() {
       <div className="flex flex-col gap-4">
         {cascades.map((cascade) => {
           const isExpanded = expandedCards.has(cascade.keystoneId);
-          const isHovered = hoveredCard === cascade.keystoneId;
 
           return (
             <div

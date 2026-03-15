@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
     // 3. Load all contextual data in parallel (including cross-investor intelligence)
     const [
       meetings,
-      investorObjections,
+      ,
       playbook,
       documents,
       raiseConfig,

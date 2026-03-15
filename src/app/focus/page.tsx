@@ -761,7 +761,7 @@ export default function FocusPage() {
   const [data, setData] = useState<FocusData | null>(null);
   const [accelData, setAccelData] = useState<AccelerationData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [accelLoading, setAccelLoading] = useState(true);
+  const [, setAccelLoading] = useState(true);
   const [executedIds, setExecutedIds] = useState<Set<string>>(new Set());
 
   const fetchData = useCallback(async () => {

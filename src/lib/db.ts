@@ -2057,7 +2057,6 @@ export async function getPipelineRankings(): Promise<PipelineRanking[]> {
   await ensureInitialized();
   const db = getClient();
 
-  const today = new Date().toISOString().split('T')[0];
   const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
 
   // Get today's scores (or most recent)
@@ -5718,7 +5717,6 @@ export async function logForecastPredictions(): Promise<number> {
   let logged = 0;
 
   for (const f of forecast.forecasts) {
-    const today = new Date().toISOString().split('T')[0];
     // Only log one prediction per investor per week
     const existing = await db.execute({
       sql: `SELECT id FROM forecast_log WHERE investor_id = ? AND logged_at >= datetime('now', '-7 days') AND actual_outcome IS NULL`,

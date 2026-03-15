@@ -83,7 +83,7 @@ export default function PipelinePage() {
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [dragId, setDragId] = useState<string | null>(null);
-  const [dragOverCol, setDragOverCol] = useState<string | null>(null);
+  const [, setDragOverCol] = useState<string | null>(null);
   const [filters, setFilters] = useState<{ tiers: Set<number>; types: Set<string> }>({
     tiers: new Set(),
     types: new Set(),});
@@ -401,7 +401,6 @@ export default function PipelinePage() {
           {PIPELINE_STATUSES.map(status => {
             const cards = investorsInStatus(status);
             const colors = COLUMN_COLORS[status];
-            const isOver = dragOverCol === status;
 
             return (
               <div
@@ -462,7 +461,6 @@ export default function PipelinePage() {
             {EXIT_STATUSES.map(status => {
               const cards = investorsInStatus(status);
               const colors = COLUMN_COLORS[status];
-              const isOver = dragOverCol === status;
 
               return (
                 <div

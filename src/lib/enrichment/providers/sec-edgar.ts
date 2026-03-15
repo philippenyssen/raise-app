@@ -6,9 +6,7 @@
 import type { EnrichmentProvider, EnrichmentProviderResult, EnrichmentField } from '../types';
 
 const USER_AGENT = 'RaiseApp/1.0 (fundraise-enrichment; contact@raise-app.com)';
-const EDGAR_BASE = 'https://efts.sec.gov/LATEST';
-const EDGAR_FULL_TEXT = 'https://efts.sec.gov/LATEST/search-index?q=';
-const IAPD_BASE = 'https://api.adviserinfo.sec.gov';
+/* EDGAR/IAPD base URLs used inline in provider methods below */
 
 async function edgarFetch(url: string): Promise<Response> {
   return fetch(url, {
@@ -38,16 +36,7 @@ export const secEdgarFormD: EnrichmentProvider = {
 
     try {
       // EDGAR full-text search for Form D filings mentioning this investor
-      const searchQuery = encodeURIComponent(`"${investorName}" AND formType:"D"`);
-      const searchUrl = `${EDGAR_BASE}/search-index?q=${searchQuery}&dateRange=custom&startdt=2020-01-01&forms=D&hits.hits.total=true&hits.hits._source=file_date,display_names,form_type,file_num,period_of_report`;
-
-      // Use EDGAR EFTS (full-text search system)
-      const eftsUrl = `https://efts.sec.gov/LATEST/search-index?q=%22${encodeURIComponent(investorName)}%22&forms=D&dateRange=custom&startdt=2018-01-01`;
-
-      // Primary: EDGAR company search
-      const companySearchUrl = `https://efts.sec.gov/LATEST/search-index?q=%22${encodeURIComponent(investorName)}%22&forms=D`;
-
-      // Simpler approach: EDGAR full-text search API
+      // EDGAR full-text search API
       const searchRes = await edgarFetch(
         `https://efts.sec.gov/LATEST/search-index?q=%22${encodeURIComponent(investorName)}%22&forms=D&dateRange=custom&startdt=2018-01-01`
       );

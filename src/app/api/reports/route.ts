@@ -75,7 +75,7 @@ function computeHealth(funnel: Awaited<ReturnType<typeof getFunnelMetrics>>, inv
 // ─── REPORT 1: Board Update ──────────────────────────────────────────────────
 
 async function generateBoardUpdate(): Promise<string> {
-  const [investors, meetings, funnel, tasks, accelerationActions] = await Promise.all([getAllInvestors(), getMeetings(), getFunnelMetrics(), getAllTasks(), getAccelerationActions()]);
+  const [investors, meetings, funnel, tasks] = await Promise.all([getAllInvestors(), getMeetings(), getFunnelMetrics(), getAllTasks(), getAccelerationActions()]);
 
   const now = new Date();
   const health = computeHealth(funnel, investors, meetings);

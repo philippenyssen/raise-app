@@ -9,7 +9,7 @@ export async function GET() {
   try {
     const db = getClient();
 
-    const [investorRows, meetingRows, activityRows, statusCountRows, meetingsPerWeekRows, investorsPerWeekRows, configRow] = await Promise.all([
+    const [investorRows, meetingRows, activityRows, statusCountRows, , , configRow] = await Promise.all([
       db.execute(`SELECT id, name, type, tier, status, enthusiasm, created_at, updated_at FROM investors ORDER BY tier ASC, name ASC`),
       db.execute(`SELECT id, investor_id, investor_name, date, type, enthusiasm_score, objections, questions_asked, competitive_intel, engagement_signals, status_after, created_at FROM meetings ORDER BY date DESC`),
       db.execute(`SELECT id, event_type, subject, detail, investor_id, investor_name, created_at FROM activity_log WHERE event_type = 'status_changed' ORDER BY created_at ASC`),

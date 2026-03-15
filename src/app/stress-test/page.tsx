@@ -329,11 +329,6 @@ export default function StressTestPage() {
                 <th className="px-3 py-3">Bottleneck</th></tr></thead>
             <tbody>
               {visibleInvestors.map((f) => {
-                const borderLeftColor = f.closeProbability >= 60
-                  ? 'var(--success)'
-                  : f.closeProbability >= 30
-                  ? 'var(--warning)'
-                  : 'var(--danger)';
                 const MomentumIcon = f.momentum === 'accelerating' ? TrendingUp
                   : f.momentum === 'decelerating' ? TrendingDown
                   : null;

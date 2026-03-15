@@ -70,7 +70,7 @@ export async function POST() {
         const primaryDoc = documents.find(d => ['memo', 'pitch', 'exec_brief', 'one_pager'].includes(d.type)) || documents[0];
         if (primaryDoc) {
           const description = `${pattern.investorCount} investors questioned "${pattern.topic}" but no document adequately covers this topic — create or strengthen content`;
-          const flag = await createDocumentFlag({
+          await createDocumentFlag({
             document_id: primaryDoc.id,
             meeting_id: '',
             investor_id: '',
@@ -95,7 +95,7 @@ export async function POST() {
         // Document covers the topic but multiple investors still questioning it — flag for strengthening
         for (const doc of matchingDocs) {
           const description = `${pattern.investorCount} investors questioned "${pattern.topic}" — strengthen this section (${pattern.questionCount} questions total)`;
-          const flag = await createDocumentFlag({
+          await createDocumentFlag({
             document_id: doc.id,
             meeting_id: '',
             investor_id: '',

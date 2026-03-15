@@ -6,11 +6,7 @@ import type {
   EnrichmentSourceId,
   EnrichmentProvider,
   EnrichmentProviderResult,
-  EnrichmentField,
-  EnrichmentJob,
-  EnrichmentRecord,
   EnrichedInvestorProfile,
-  EnrichmentSourceConfig,
 } from './types';
 
 // Import all providers

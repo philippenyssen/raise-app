@@ -242,7 +242,7 @@ function FollowupsContent() {
   const upcoming = followups.filter(f => f.status === 'pending' && new Date(f.due_at) > todayEnd && new Date(f.due_at) <= in3Days);
   const later = followups.filter(f => f.status === 'pending' && new Date(f.due_at) > in3Days);
   const completed = followups.filter(f => f.status === 'completed');
-  const skipped = followups.filter(f => f.status === 'skipped');
+  /* skipped followups available via: followups.filter(f => f.status === 'skipped') */
 
   // Learning stats
   const completedWithDelta = completed.filter(f => f.conviction_delta !== 0);

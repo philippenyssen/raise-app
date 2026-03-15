@@ -177,7 +177,6 @@ export async function GET() {
 
   if (ctx) {
     // Lifecycle intelligence: are investor snapshots enriched?
-    const hasLifecycle = ctx.investors.some(i => i.daysInCurrentStage > 0 || i.stageHealth !== 'on_track');
     checks.push({
       name: 'lifecycle_intelligence',
       status: ctx.investors.length > 0 ? 'pass' : 'warn',
