@@ -42,7 +42,8 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ error: 'type parameter required (deals|competitors|briefs|partners|portfolio|all)' }, { status: 400 });
     }
   } catch (err) {
-    return NextResponse.json({ error: String(err) }, { status: 500 });
+    console.error('Intelligence GET error:', err);
+    return NextResponse.json({ error: 'Failed to load intelligence data' }, { status: 500 });
   }}
 
 // POST: Create intelligence data or run AI research
@@ -201,11 +202,12 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: 'Unknown action' }, { status: 400 });
     }
   } catch (err) {
-    const msg = String(err);
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error('Intelligence POST error:', err);
     if (msg.includes('credit balance') || msg.includes('too low')) {
       return NextResponse.json({ error: 'Anthropic API: insufficient credits. Check console.anthropic.com/settings/billing.' }, { status: 402 });
     }
-    return NextResponse.json({ error: msg }, { status: 500 });
+    return NextResponse.json({ error: 'Intelligence operation failed' }, { status: 500 });
   }}
 
 // PUT: Update intelligence data
@@ -252,7 +254,8 @@ export async function DELETE(req: NextRequest) {
     }
     return NextResponse.json({ ok: true });
   } catch (err) {
-    return NextResponse.json({ error: String(err) }, { status: 500 });
+    console.error('Intelligence DELETE error:', err);
+    return NextResponse.json({ error: 'Failed to delete intelligence data' }, { status: 500 });
   }}
 
 // Format helpers

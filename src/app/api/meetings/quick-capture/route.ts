@@ -182,6 +182,6 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     console.error('Quick capture failed:', err);
     return NextResponse.json(
-      { error: 'Quick capture failed', detail: String(err) },
+      { error: 'Quick capture failed' },
       { status: 500 },);
   }}
