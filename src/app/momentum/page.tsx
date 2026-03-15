@@ -201,7 +201,7 @@ export default function MomentumPage() {
       <div className="flex-1 flex items-center justify-center min-h-screen" style={stSurface0}>
         <div className="text-center space-y-3">
           <AlertTriangle className="w-8 h-8 mx-auto" style={stTextPrimary} />
-          <p className="text-sm" style={stTextPrimary}>{error || 'No data available'}</p>
+          <p className="text-sm" style={stTextPrimary}>{error || 'Add investors and log meetings to see momentum signals'}</p>
           <button onClick={fetchData} className="text-xs" title="Retry loading momentum data" style={stTextSecondary}>Retry</button></div>
       </div>);
   }
