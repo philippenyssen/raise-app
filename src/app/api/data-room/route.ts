@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
       mime_type: String(mime_type || '').trim(),
       size_bytes: Number(size_bytes) || 0,
       extracted_text: String(extracted_text).slice(0, 100_000),
-      summary: summary ? String(summary) : undefined,
+      summary: summary ? String(summary).trim() : undefined,
     });
 
     emitContextChange('data_room_uploaded', `Uploaded ${filename}`);
