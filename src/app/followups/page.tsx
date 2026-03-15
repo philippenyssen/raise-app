@@ -208,6 +208,7 @@ function FollowupsContent() {
       if (!res.ok) throw new Error('Failed');
       setCompletingId(null);
       setCompleteForm({ outcome: '', conviction_delta: 0 });
+      toast('Follow-up completed', 'success');
       fetchFollowups();
     } catch { toast('Couldn\'t complete follow-up — check your connection and retry', 'error'); }
   }
@@ -436,8 +437,9 @@ function FollowupsContent() {
                   <PenLine className="w-4 h-4" /></button>
                 <button
                   onClick={() => handleQuickComplete(item.id)}
+                  disabled={processingIds.has(item.id)}
                   className="p-1.5 transition-colors"
-                  style={{ borderRadius: 'var(--radius-md)', color: hoveredActionBtn === `complete-${item.id}` ? 'var(--success)' : 'var(--text-muted)', background: hoveredActionBtn === `complete-${item.id}` ? 'var(--success-muted)' : 'transparent', transition: 'all 150ms ease' }}
+                  style={{ borderRadius: 'var(--radius-md)', color: hoveredActionBtn === `complete-${item.id}` ? 'var(--success)' : 'var(--text-muted)', background: hoveredActionBtn === `complete-${item.id}` ? 'var(--success-muted)' : 'transparent', transition: 'all 150ms ease', opacity: processingIds.has(item.id) ? 0.4 : 1 }}
                   onMouseEnter={() => setHoveredActionBtn(`complete-${item.id}`)}
                   onMouseLeave={() => setHoveredActionBtn(null)}
                   title="Quick complete">
@@ -452,8 +454,9 @@ function FollowupsContent() {
                   <TrendingUp className="w-4 h-4" /></button>
                 <button
                   onClick={() => handleSkip(item.id)}
+                  disabled={processingIds.has(item.id)}
                   className="p-1.5 transition-colors"
-                  style={{ borderRadius: 'var(--radius-md)', color: hoveredActionBtn === `skip-${item.id}` ? 'var(--danger)' : 'var(--text-muted)', background: hoveredActionBtn === `skip-${item.id}` ? 'var(--danger-muted)' : 'transparent', transition: 'all 150ms ease' }}
+                  style={{ borderRadius: 'var(--radius-md)', color: hoveredActionBtn === `skip-${item.id}` ? 'var(--danger)' : 'var(--text-muted)', background: hoveredActionBtn === `skip-${item.id}` ? 'var(--danger-muted)' : 'transparent', transition: 'all 150ms ease', opacity: processingIds.has(item.id) ? 0.4 : 1 }}
                   onMouseEnter={() => setHoveredActionBtn(`skip-${item.id}`)}
                   onMouseLeave={() => setHoveredActionBtn(null)}
                   title="Skip">
