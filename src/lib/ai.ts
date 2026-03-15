@@ -279,7 +279,10 @@ ${context.substring(0, 2000)}
 
 Return ONLY the improved text. No explanations, no markdown code blocks, just the improved content.`
     }]});
-  return extractText(response).text || section;
+  const { text, truncated, filtered } = extractText(response);
+  if (filtered) throw new Error('Content filter blocked this section — rephrase sensitive language and retry');
+  if (truncated) throw new Error('Section too long for AI improvement — break into smaller sections and retry');
+  return text || section;
 }
 
 export async function checkConsistency(
@@ -620,5 +623,8 @@ ${content}
 
 Return ONLY the rewritten text. No explanations.`
     }]});
-  return extractText(response).text || content;
+  const { text, truncated, filtered } = extractText(response);
+  if (filtered) throw new Error('Content filter blocked Goldman polish — rephrase sensitive language and retry');
+  if (truncated) throw new Error('Content too long for Goldman polish — break into smaller sections and retry');
+  return text || content;
 }
