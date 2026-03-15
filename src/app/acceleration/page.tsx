@@ -682,7 +682,7 @@ export default function AccelerationPage() {
           <div className="flex items-center gap-2 mb-1" style={{ color: 'var(--text-primary)', fontSize: 'var(--font-size-sm)' }}>
             <AlertTriangle className="w-3.5 h-3.5" /> Immediate
           </div>
-          <div className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>{data.summary.immediate}</div>
+          <div className="text-2xl font-normal" style={{ color: 'var(--text-primary)' }}>{data.summary.immediate}</div>
           <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>need same-day attention</div>
         </div>
         <div
@@ -692,7 +692,7 @@ export default function AccelerationPage() {
           <div className="flex items-center gap-2 mb-1" style={{ color: 'var(--text-tertiary)', fontSize: 'var(--font-size-sm)' }}>
             <Clock className="w-3.5 h-3.5" /> This Week
           </div>
-          <div className="text-2xl font-bold" style={{ color: 'var(--text-tertiary)' }}>{data.summary.this_week}</div>
+          <div className="text-2xl font-normal" style={{ color: 'var(--text-tertiary)' }}>{data.summary.this_week}</div>
           <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>actions for next 7 days</div>
         </div>
         <div
@@ -702,7 +702,7 @@ export default function AccelerationPage() {
           <div className="flex items-center gap-2 mb-1" style={{ color: 'var(--text-secondary)', fontSize: 'var(--font-size-sm)' }}>
             <Rocket className="w-3.5 h-3.5" /> Term Sheet Ready
           </div>
-          <div className="text-2xl font-bold" style={{ color: 'var(--text-secondary)' }}>{data.termSheetReady.length}</div>
+          <div className="text-2xl font-normal" style={{ color: 'var(--text-secondary)' }}>{data.termSheetReady.length}</div>
           <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>ready for the push</div>
         </div>
       </div>

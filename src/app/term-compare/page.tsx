@@ -304,7 +304,7 @@ export default function TermComparePage() {
       {/* Scenario Input Forms */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-xs font-medium  tracking-wider" style={{ color: 'var(--text-tertiary)' }}>
+          <h2 className="text-xs font-normal  tracking-wider" style={{ color: 'var(--text-tertiary)' }}>
             Scenarios ({scenarios.length}/5)
           </h2>
           <div className="flex items-center gap-2">
@@ -313,7 +313,7 @@ export default function TermComparePage() {
                 onClick={addScenario}
                 onMouseEnter={() => setAddHover(true)}
                 onMouseLeave={() => setAddHover(false)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-normal"
                 style={{
                   background: addHover ? 'var(--surface-3)' : 'var(--surface-2)',
                   color: 'var(--text-secondary)',
@@ -328,7 +328,7 @@ export default function TermComparePage() {
               disabled={loading || scenarios.filter(s => s.investor_name && s.pre_money_valuation > 0 && s.investment_amount > 0).length < 2}
               onMouseEnter={() => setCompareHover(true)}
               onMouseLeave={() => setCompareHover(false)}
-              className="btn btn-primary btn-md text-sm font-medium disabled:opacity-40"
+              className="btn btn-primary btn-md text-sm font-normal disabled:opacity-40"
               style={{
                 background: compareHover && !loading ? 'var(--accent-hover)' : 'var(--accent)',
               }}
@@ -353,12 +353,12 @@ export default function TermComparePage() {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <span
-                  className="w-6 h-6 rounded flex items-center justify-center text-xs font-bold"
+                  className="w-6 h-6 rounded flex items-center justify-center text-xs font-normal"
                   style={{ background: 'var(--accent-muted)', color: 'var(--accent)' }}
                 >
                   {idx + 1}
                 </span>
-                <span className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
+                <span className="text-sm font-normal" style={{ color: 'var(--text-secondary)' }}>
                   {scenario.investor_name || `Scenario ${idx + 1}`}
                 </span>
               </div>
@@ -523,7 +523,7 @@ export default function TermComparePage() {
             className="rounded-xl p-5"
             style={{ background: 'var(--surface-0)' }}
           >
-            <h3 className="text-xs font-medium  tracking-wider mb-4" style={{ color: 'var(--text-tertiary)' }}>
+            <h3 className="text-xs font-normal  tracking-wider mb-4" style={{ color: 'var(--text-tertiary)' }}>
               Founder-Friendly Score
             </h3>
             <div className="space-y-3">
@@ -531,7 +531,7 @@ export default function TermComparePage() {
                 .sort((a, b) => b.founder_friendly_score - a.founder_friendly_score)
                 .map(r => (
                   <div key={r.investor_name} className="flex items-center gap-4">
-                    <span className="text-sm font-medium w-40 truncate" style={{ color: 'var(--text-secondary)' }}>
+                    <span className="text-sm font-normal w-40 truncate" style={{ color: 'var(--text-secondary)' }}>
                       {r.investor_name}
                     </span>
                     <div className="flex-1 h-3 rounded-full overflow-hidden" style={{ background: 'var(--surface-2)' }}>
@@ -545,7 +545,7 @@ export default function TermComparePage() {
                       />
                     </div>
                     <span
-                      className="text-sm font-bold tabular-nums w-16 text-right"
+                      className="text-sm font-normal tabular-nums w-16 text-right"
                       style={{ color: scoreColor(r.founder_friendly_score) }}
                     >
                       {r.founder_friendly_score}/100
@@ -560,11 +560,11 @@ export default function TermComparePage() {
             <table className="w-full text-sm">
               <thead className="table-header">
                 <tr>
-                  <th className="text-left px-4 py-3 text-xs font-medium w-44" style={{ color: 'var(--text-muted)' }}>
+                  <th className="text-left px-4 py-3 text-xs font-normal w-44" style={{ color: 'var(--text-muted)' }}>
                     Term
                   </th>
                   {results.results.map(r => (
-                    <th key={r.investor_name} className="text-left px-4 py-3 text-xs font-medium min-w-40" style={{ color: 'var(--text-secondary)' }}>
+                    <th key={r.investor_name} className="text-left px-4 py-3 text-xs font-normal min-w-40" style={{ color: 'var(--text-secondary)' }}>
                       {r.investor_name}
                     </th>
                   ))}
@@ -582,7 +582,7 @@ export default function TermComparePage() {
                     onMouseEnter={() => setHoveredRow(row.label)}
                     onMouseLeave={() => setHoveredRow(null)}
                   >
-                    <td className="px-4 py-2.5 text-xs font-medium" style={{ color: 'var(--text-muted)' }}>
+                    <td className="px-4 py-2.5 text-xs font-normal" style={{ color: 'var(--text-muted)' }}>
                       {row.label}
                     </td>
                     {results.results.map(r => {
@@ -598,13 +598,13 @@ export default function TermComparePage() {
 
                 {/* Score row */}
                 <tr style={{ background: 'var(--surface-1)', borderTop: '2px solid var(--border-strong)' }}>
-                  <td className="px-4 py-3 text-xs font-medium" style={{ color: 'var(--text-tertiary)' }}>
+                  <td className="px-4 py-3 text-xs font-normal" style={{ color: 'var(--text-tertiary)' }}>
                     Founder score
                   </td>
                   {results.results.map(r => (
                     <td key={r.investor_name} className="px-4 py-3">
                       <span
-                        className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-sm font-bold"
+                        className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-sm font-normal"
                         style={{
                           color: scoreColor(r.founder_friendly_score),
                           background: scoreBg(r.founder_friendly_score),
@@ -625,7 +625,7 @@ export default function TermComparePage() {
               className="rounded-xl p-5"
               style={{ background: 'var(--surface-0)' }}
             >
-              <h3 className="text-xs font-medium  tracking-wider mb-4" style={{ color: 'var(--text-tertiary)' }}>
+              <h3 className="text-xs font-normal  tracking-wider mb-4" style={{ color: 'var(--text-tertiary)' }}>
                 Key Observations
               </h3>
               <div className="space-y-3">
@@ -634,7 +634,7 @@ export default function TermComparePage() {
                   const visibleNotes = isExpanded ? r.comparison_notes : r.comparison_notes.slice(0, 2);
                   return (
                     <div key={r.investor_name}>
-                      <div className="text-sm font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>
+                      <div className="text-sm font-normal mb-1.5" style={{ color: 'var(--text-secondary)' }}>
                         {r.investor_name}
                       </div>
                       <div className="space-y-1">
@@ -679,7 +679,7 @@ export default function TermComparePage() {
             className="rounded-xl p-5"
             style={{ background: 'var(--surface-0)' }}
           >
-            <h3 className="text-xs font-medium  tracking-wider mb-4" style={{ color: 'var(--text-tertiary)' }}>
+            <h3 className="text-xs font-normal  tracking-wider mb-4" style={{ color: 'var(--text-tertiary)' }}>
               Ownership Waterfall
             </h3>
             <div className="space-y-4">
@@ -688,7 +688,7 @@ export default function TermComparePage() {
                 return (
                   <div key={r.investor_name}>
                     <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
+                      <span className="text-sm font-normal" style={{ color: 'var(--text-secondary)' }}>
                         {r.investor_name}
                       </span>
                       <span className="text-xs tabular-nums" style={{ color: 'var(--text-muted)' }}>
@@ -697,7 +697,7 @@ export default function TermComparePage() {
                     </div>
                     <div className="flex h-6 rounded-lg overflow-hidden">
                       <div
-                        className="flex items-center justify-center text-xs font-medium"
+                        className="flex items-center justify-center text-xs font-normal"
                         style={{
                           width: `${founderPct}%`,
                           background: 'var(--accent-muted)',
@@ -708,7 +708,7 @@ export default function TermComparePage() {
                         {founderPct >= 15 && `Founders ${founderPct.toFixed(1)}%`}
                       </div>
                       <div
-                        className="flex items-center justify-center text-xs font-medium"
+                        className="flex items-center justify-center text-xs font-normal"
                         style={{
                           width: `${r.ownership_percentage}%`,
                           background: 'var(--warning-muted)',
@@ -785,8 +785,8 @@ function RecoCard({ icon, label, value, bg, border }: {
     >
       {icon}
       <div>
-        <div className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>{label}</div>
-        <div className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{value}</div>
+        <div className="text-xs font-normal" style={{ color: 'var(--text-muted)' }}>{label}</div>
+        <div className="text-sm font-normal" style={{ color: 'var(--text-primary)' }}>{value}</div>
       </div>
     </div>
   );

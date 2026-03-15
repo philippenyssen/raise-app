@@ -84,21 +84,21 @@ export default function SkillsPage() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <div className="card" style={{ padding: 'var(--space-4)' }}>
           <div className="text-xs" style={{ color: 'var(--text-muted)' }}>Active Skills</div>
-          <div className="text-2xl font-bold mt-1" style={{ color: 'var(--text-primary)' }}>{health.length}</div>
+          <div className="text-2xl font-normal mt-1" style={{ color: 'var(--text-primary)' }}>{health.length}</div>
         </div>
         <div className="card" style={{ padding: 'var(--space-4)' }}>
           <div className="text-xs" style={{ color: 'var(--text-muted)' }}>Total Executions</div>
-          <div className="text-2xl font-bold mt-1" style={{ color: 'var(--text-primary)' }}>{totalExecutions}</div>
+          <div className="text-2xl font-normal mt-1" style={{ color: 'var(--text-primary)' }}>{totalExecutions}</div>
         </div>
         <div className="card" style={{ padding: 'var(--space-4)' }}>
           <div className="text-xs" style={{ color: 'var(--text-muted)' }}>Success Rate</div>
-          <div className="text-2xl font-bold mt-1" style={{ color: getHealthColor(overallSuccessRate) }}>
+          <div className="text-2xl font-normal mt-1" style={{ color: getHealthColor(overallSuccessRate) }}>
             {overallSuccessRate}%
           </div>
         </div>
         <div className="card" style={{ padding: 'var(--space-4)' }}>
           <div className="text-xs" style={{ color: 'var(--text-muted)' }}>Parse Success</div>
-          <div className="text-2xl font-bold mt-1" style={{ color: getHealthColor(avgParseRate) }}>
+          <div className="text-2xl font-normal mt-1" style={{ color: getHealthColor(avgParseRate) }}>
             {avgParseRate}%
           </div>
         </div>
@@ -114,7 +114,7 @@ export default function SkillsPage() {
         </div>
       ) : (
         <div className="space-y-2">
-          <div className="text-xs font-medium" style={{ color: 'var(--text-tertiary)', letterSpacing: '0.01em' }}>
+          <div className="text-xs font-normal" style={{ color: 'var(--text-tertiary)', letterSpacing: '0.01em' }}>
             Skill Performance
           </div>
           {health.map(skill => {
@@ -136,7 +136,7 @@ export default function SkillsPage() {
                         : <ChevronRight className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
                       }
                       <div>
-                        <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
+                        <span className="text-sm font-normal" style={{ color: 'var(--text-primary)' }}>
                           {skill.skill_name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                         </span>
                         <span className="text-xs ml-2" style={{ color: 'var(--text-muted)' }}>
@@ -153,7 +153,7 @@ export default function SkillsPage() {
                           : <XCircle className="w-3.5 h-3.5" style={{ color: 'var(--text-primary)' }} />
                         }
                         <span
-                          className="text-xs font-semibold px-2 py-0.5 rounded-full"
+                          className="text-xs font-normal px-2 py-0.5 rounded-full"
                           style={{
                             color: getHealthColor(skill.success_rate),
                             backgroundColor: getHealthBg(skill.success_rate),
@@ -221,7 +221,7 @@ export default function SkillsPage() {
       {/* Recent executions timeline */}
       {executions.length > 0 && (
         <div>
-          <div className="text-xs font-medium mb-2" style={{ color: 'var(--text-tertiary)', letterSpacing: '0.01em' }}>
+          <div className="text-xs font-normal mb-2" style={{ color: 'var(--text-tertiary)', letterSpacing: '0.01em' }}>
             Recent Executions
           </div>
           <div className="space-y-1">
@@ -237,7 +237,7 @@ export default function SkillsPage() {
                     backgroundColor: exec.outcome === 'success' ? 'var(--success)' : exec.outcome === 'partial' ? 'var(--warning)' : 'var(--danger)',
                   }}
                 />
-                <span className="font-medium" style={{ color: 'var(--text-primary)', minWidth: '140px' }}>
+                <span className="font-normal" style={{ color: 'var(--text-primary)', minWidth: '140px' }}>
                   {exec.skill_name.replace(/_/g, ' ')}
                 </span>
                 <span style={{ color: 'var(--text-muted)', minWidth: '60px' }}>v{exec.version}</span>

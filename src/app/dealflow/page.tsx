@@ -268,7 +268,7 @@ export default function DealflowPage() {
               <span style={{ color }}><Icon className="w-3.5 h-3.5" /></span>
               <span style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>{label}</span>
             </div>
-            <div className="text-xl font-bold" style={{ color }}>{count}</div>
+            <div className="text-xl font-normal" style={{ color }}>{count}</div>
           </div>
         ))}
       </div>
@@ -375,13 +375,13 @@ export default function DealflowPage() {
                 {/* Investor */}
                 <div className="flex items-center gap-2.5 min-w-0">
                   <div
-                    className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-xs font-bold"
+                    className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-xs font-normal"
                     style={{ background: heatCfg.bg, color: heatCfg.text, border: `1px solid ${heatCfg.border}` }}
                   >
                     {inv.name.charAt(0)}
                   </div>
                   <div className="min-w-0">
-                    <div className="font-medium truncate" style={{ color: 'var(--text-primary)', fontSize: 'var(--font-size-sm)' }}>
+                    <div className="font-normal truncate" style={{ color: 'var(--text-primary)', fontSize: 'var(--font-size-sm)' }}>
                       {inv.name}
                     </div>
                     <div style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>
@@ -393,7 +393,7 @@ export default function DealflowPage() {
                 {/* Heat Badge */}
                 <div className="flex justify-center">
                   <span
-                    className="px-2 py-0.5 rounded-full text-xs font-bold"
+                    className="px-2 py-0.5 rounded-full text-xs font-normal"
                     style={{ background: heatCfg.bg, color: heatCfg.text, border: `1px solid ${heatCfg.border}` }}
                   >
                     {heatCfg.label}
@@ -482,7 +482,7 @@ export default function DealflowPage() {
       {!loading && !error && filtered.length === 0 && (
         <div className="text-center py-16" style={{ color: 'var(--text-muted)' }}>
           <Users className="w-8 h-8 mx-auto mb-2" />
-          <p className="text-sm font-medium" style={{ color: 'var(--text-secondary)', marginBottom: 'var(--space-1)' }}>
+          <p className="text-sm font-normal" style={{ color: 'var(--text-secondary)', marginBottom: 'var(--space-1)' }}>
             {heatFilter !== 'all' ? `No ${heatFilter} investors` : 'No investors scored yet'}
           </p>
           <p className="text-xs" style={{ color: 'var(--text-muted)' }}>

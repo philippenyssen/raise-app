@@ -8,7 +8,7 @@ export default function DashboardError({ error, reset }: { error: Error & { dige
     <div className="flex flex-col items-center justify-center min-h-[60vh] gap-6 p-8">
       <div className="flex flex-col items-center gap-3">
         <span style={{ color: 'var(--danger)' }}><AlertTriangle size={40} /></span>
-        <h2 style={{ color: 'var(--text-primary)', fontSize: 'var(--font-size-xl)' }} className="font-semibold">
+        <h2 style={{ color: 'var(--text-primary)', fontSize: 'var(--font-size-xl)' }} className="font-normal">
           Dashboard failed to load
         </h2>
         <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }} className="text-center max-w-md">

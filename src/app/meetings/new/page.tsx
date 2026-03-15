@@ -142,7 +142,7 @@ function NewMeetingContent() {
         {/* Investor Quick Profile */}
         {selectedInvestor && (
           <div className="rounded-lg p-4 space-y-2" style={{ background: 'var(--surface-1)' }}>
-            <h3 className="text-xs font-medium" style={{ color: 'var(--text-tertiary)' }}>Investor profile</h3>
+            <h3 className="text-xs font-normal" style={{ color: 'var(--text-tertiary)' }}>Investor profile</h3>
             <div className="grid grid-cols-2 gap-2 text-xs">
               <div><span style={{ color: 'var(--text-muted)' }}>Partner:</span> <span style={{ color: 'var(--text-secondary)' }}>{selectedInvestor.partner || '—'}</span></div>
               <div><span style={{ color: 'var(--text-muted)' }}>Thesis:</span> <span style={{ color: 'var(--text-secondary)' }}>{selectedInvestor.sector_thesis || '—'}</span></div>
@@ -181,7 +181,7 @@ function NewMeetingContent() {
         <button
           type="submit"
           disabled={loading || !form.investor_id || !form.raw_notes}
-          className="px-6 py-3 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+          className="px-6 py-3 rounded-lg text-sm font-normal transition-colors disabled:opacity-50"
           style={{
             background: 'var(--accent)',
             color: 'var(--surface-0)',
@@ -194,7 +194,7 @@ function NewMeetingContent() {
       {/* AI Analysis Result */}
       {result && (
         <div className="rounded-xl p-6 space-y-6">
-          <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>AI Analysis</h2>
+          <h2 className="text-lg font-normal" style={{ color: 'var(--text-primary)' }}>AI Analysis</h2>
 
           {!!(result as Record<string, unknown>).ai_analysis && (
             <div className="rounded-lg p-4" style={{ background: 'var(--accent-muted)', border: '1px solid var(--accent)' }}>
@@ -204,7 +204,7 @@ function NewMeetingContent() {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <h3 className="text-xs font-medium mb-2" style={{ color: 'var(--text-tertiary)' }}>Enthusiasm</h3>
+              <h3 className="text-xs font-normal mb-2" style={{ color: 'var(--text-tertiary)' }}>Enthusiasm</h3>
               <div className="flex items-center gap-2">
                 <div className="flex gap-1">
                   {[1,2,3,4,5].map(n => (
@@ -215,14 +215,14 @@ function NewMeetingContent() {
               </div>
             </div>
             <div>
-              <h3 className="text-xs font-medium mb-2" style={{ color: 'var(--text-tertiary)' }}>Suggested status</h3>
-              <span className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>{String((result as Record<string, unknown>).status_after || '—')}</span>
+              <h3 className="text-xs font-normal mb-2" style={{ color: 'var(--text-tertiary)' }}>Suggested status</h3>
+              <span className="text-sm font-normal" style={{ color: 'var(--text-secondary)' }}>{String((result as Record<string, unknown>).status_after || '—')}</span>
             </div>
           </div>
 
           {!!result.questions_asked && (
             <div>
-              <h3 className="text-xs font-medium mb-2" style={{ color: 'var(--text-tertiary)' }}>Questions asked</h3>
+              <h3 className="text-xs font-normal mb-2" style={{ color: 'var(--text-tertiary)' }}>Questions asked</h3>
               <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>
                 {((() => { try { return JSON.parse(String(result.questions_asked) || '[]'); } catch { return []; } })()).map((q: { text: string; topic: string }, i: number) => (
                   <div key={i} className="flex gap-2 mb-1">
@@ -236,7 +236,7 @@ function NewMeetingContent() {
 
           {!!result.objections && (
             <div>
-              <h3 className="text-xs font-medium mb-2" style={{ color: 'var(--text-tertiary)' }}>Objections</h3>
+              <h3 className="text-xs font-normal mb-2" style={{ color: 'var(--text-tertiary)' }}>Objections</h3>
               <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>
                 {((() => { try { return JSON.parse(String(result.objections) || '[]'); } catch { return []; } })()).map((o: { text: string; severity: string }, i: number) => (
                   <div key={i} className="flex gap-2 mb-1">
@@ -259,7 +259,7 @@ function NewMeetingContent() {
             {form.investor_id && (
               <button
                 onClick={() => router.push(`/investors/${form.investor_id}`)}
-                className="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                className="px-4 py-2 rounded-lg text-sm font-normal transition-colors"
                 style={{
                   background: 'var(--accent-muted)',
                   color: 'var(--accent)',

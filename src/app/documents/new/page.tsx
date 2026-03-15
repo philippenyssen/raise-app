@@ -233,7 +233,7 @@ export default function NewDocumentPage() {
               <div className="flex items-start gap-3">
                 <FileText className="w-5 h-5 mt-0.5 shrink-0" style={{ color: 'var(--text-muted)' }} />
                 <div>
-                  <h3 className="font-medium" style={{ color: 'var(--text-primary)' }}>{template.title}</h3>
+                  <h3 className="font-normal" style={{ color: 'var(--text-primary)' }}>{template.title}</h3>
                   <p className="text-sm mt-0.5" style={{ color: 'var(--text-muted)' }}>{template.description}</p>
                   {template.type === 'custom' && (
                     <input

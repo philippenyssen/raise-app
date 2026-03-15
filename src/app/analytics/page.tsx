@@ -267,7 +267,7 @@ export default function AnalyticsPage() {
         >
           <AlertTriangle className="w-5 h-5 shrink-0" style={{ color: 'var(--text-tertiary)' }} />
           <div>
-            <div className="text-sm font-medium" style={{ color: 'var(--text-tertiary)' }}>
+            <div className="text-sm font-normal" style={{ color: 'var(--text-tertiary)' }}>
               Bottleneck Detected: {funnel.bottleneck.label}
             </div>
             <div className="text-xs mt-0.5" style={{ color: 'var(--text-tertiary)' }}>
@@ -295,7 +295,7 @@ export default function AnalyticsPage() {
         >
           <Clock className="w-5 h-5 shrink-0" style={{ color: risks.timelineRisk.level === 'high' ? 'var(--danger)' : 'var(--warning)' }} />
           <div>
-            <div className="text-sm font-medium" style={{ color: risks.timelineRisk.level === 'high' ? 'var(--danger)' : 'var(--warning)' }}>
+            <div className="text-sm font-normal" style={{ color: risks.timelineRisk.level === 'high' ? 'var(--danger)' : 'var(--warning)' }}>
               Timeline Risk: {risks.timelineRisk.level === 'high' ? 'Critical' : 'Elevated'}
             </div>
             <div className="text-xs mt-0.5" style={{ color: 'var(--text-tertiary)' }}>
@@ -322,7 +322,7 @@ export default function AnalyticsPage() {
         <div className="space-y-6">
           {/* Horizontal funnel bars */}
           <div>
-            <h3 className="text-xs font-semibold  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
+            <h3 className="text-xs font-normal  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
               Pipeline Distribution
             </h3>
             <div className="space-y-2">
@@ -343,7 +343,7 @@ export default function AnalyticsPage() {
                         }}
                       >
                         {stage.count > 0 && (
-                          <span className="text-xs font-bold" style={{ color: 'var(--text-primary)', opacity: 0.9 }}>{stage.count}</span>
+                          <span className="text-xs font-normal" style={{ color: 'var(--text-primary)', opacity: 0.9 }}>{stage.count}</span>
                         )}
                       </div>
                     </div>
@@ -364,7 +364,7 @@ export default function AnalyticsPage() {
                             background: 'var(--danger-muted)',
                           }}
                         >
-                          <span className="text-xs font-bold" style={{ color: 'var(--text-primary)' }}>{funnel.exact['passed']}</span>
+                          <span className="text-xs font-normal" style={{ color: 'var(--text-primary)' }}>{funnel.exact['passed']}</span>
                         </div>
                       </div>
                     </div>
@@ -380,7 +380,7 @@ export default function AnalyticsPage() {
                             background: 'var(--surface-2)',
                           }}
                         >
-                          <span className="text-xs font-bold" style={{ color: 'var(--text-tertiary)' }}>{funnel.exact['dropped']}</span>
+                          <span className="text-xs font-normal" style={{ color: 'var(--text-tertiary)' }}>{funnel.exact['dropped']}</span>
                         </div>
                       </div>
                     </div>
@@ -392,7 +392,7 @@ export default function AnalyticsPage() {
 
           {/* Conversion Rates */}
           <div>
-            <h3 className="text-xs font-semibold  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
+            <h3 className="text-xs font-normal  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
               Stage-to-Stage Conversion
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -402,7 +402,7 @@ export default function AnalyticsPage() {
                     {STAGE_LABELS[cr.from]} {'->'} {STAGE_LABELS[cr.to]}
                   </div>
                   <div
-                    className="text-xl font-bold"
+                    className="text-xl font-normal"
                     style={{
                       color: cr.rate >= 60 ? 'var(--success)' :
                         cr.rate >= 30 ? 'var(--warning)' :
@@ -421,7 +421,7 @@ export default function AnalyticsPage() {
 
           {/* Drop-off Analysis */}
           <div>
-            <h3 className="text-xs font-semibold  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
+            <h3 className="text-xs font-normal  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
               Drop-off by Stage
             </h3>
             <div className="space-y-1.5">
@@ -438,7 +438,7 @@ export default function AnalyticsPage() {
                         background: 'var(--danger-muted)',
                       }}
                     >
-                      <span className="font-medium whitespace-nowrap" style={{ fontSize: '10px', color: 'var(--text-primary)' }}>
+                      <span className="font-normal whitespace-nowrap" style={{ fontSize: '10px', color: 'var(--text-primary)' }}>
                         {d.rate}% ({d.count})
                       </span>
                     </div>
@@ -454,7 +454,7 @@ export default function AnalyticsPage() {
           {/* Average Time in Stage */}
           {Object.keys(funnel.avgTimeInStage).length > 0 && (
             <div>
-              <h3 className="text-xs font-semibold  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
+              <h3 className="text-xs font-normal  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
                 Average Time in Stage (days)
               </h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -462,7 +462,7 @@ export default function AnalyticsPage() {
                   <div key={stage} className="rounded-lg p-3">
                     <div className="mb-1" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{STAGE_LABELS[stage]}</div>
                     <div
-                      className="text-lg font-bold"
+                      className="text-lg font-normal"
                       style={{
                         color: data.avgDays > 14 ? 'var(--danger)' :
                           data.avgDays > 7 ? 'var(--warning)' :
@@ -494,7 +494,7 @@ export default function AnalyticsPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             <div className="rounded-lg p-3">
               <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Meetings This Week</div>
-              <div className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>{velocity.meetingsThisWeek}</div>
+              <div className="text-2xl font-normal" style={{ color: 'var(--text-primary)' }}>{velocity.meetingsThisWeek}</div>
               <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
                 {velocity.meetingsLastWeek > 0 && (
                   <span style={{ color: velocity.meetingsThisWeek >= velocity.meetingsLastWeek ? 'var(--success)' : 'var(--danger)' }}>
@@ -506,13 +506,13 @@ export default function AnalyticsPage() {
             </div>
             <div className="rounded-lg p-3">
               <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Pipeline Velocity</div>
-              <div className="text-2xl font-bold" style={{ color: 'var(--text-tertiary)' }}>{velocity.velocityScore > 0 ? velocity.velocityScore.toFixed(1) : '—'}</div>
+              <div className="text-2xl font-normal" style={{ color: 'var(--text-tertiary)' }}>{velocity.velocityScore > 0 ? velocity.velocityScore.toFixed(1) : '—'}</div>
               <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>weighted score</div>
             </div>
             <div className="rounded-lg p-3">
               <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Days Since Progress</div>
               <div
-                className="text-2xl font-bold"
+                className="text-2xl font-normal"
                 style={{
                   color: velocity.daysSinceProgress === null ? 'var(--text-muted)' :
                     velocity.daysSinceProgress > 7 ? 'var(--danger)' :
@@ -527,7 +527,7 @@ export default function AnalyticsPage() {
             <div className="rounded-lg p-3">
               <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Est. Days to Close</div>
               <div
-                className="text-2xl font-bold"
+                className="text-2xl font-normal"
                 style={{
                   color: velocity.estimatedDaysToClose === null ? 'var(--text-muted)' :
                     velocity.estimatedDaysToClose < 30 ? 'var(--danger)' :
@@ -547,7 +547,7 @@ export default function AnalyticsPage() {
 
           {/* Meetings per week sparkline */}
           <div>
-            <h3 className="text-xs font-semibold  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
+            <h3 className="text-xs font-normal  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
               Meetings Per Week (Last 8 Weeks)
             </h3>
             <SparklineChart data={velocity.meetingsPerWeek} color="var(--accent)" />
@@ -555,7 +555,7 @@ export default function AnalyticsPage() {
 
           {/* Investors added per week */}
           <div>
-            <h3 className="text-xs font-semibold  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
+            <h3 className="text-xs font-normal  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
               New Investors Per Week
             </h3>
             <SparklineChart data={velocity.investorsPerWeek} color="var(--accent-muted)" />
@@ -649,7 +649,7 @@ export default function AnalyticsPage() {
                 {Object.entries(risks.concentrationRisk.breakdown).map(([type, count]) => (
                   <div key={type} className="rounded px-3 py-2">
                     <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{TYPE_LABELS[type] || type}</div>
-                    <div className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>{count}</div>
+                    <div className="text-sm font-normal" style={{ color: 'var(--text-primary)' }}>{count}</div>
                   </div>
                 ))}
               </div>
@@ -670,7 +670,7 @@ export default function AnalyticsPage() {
         <div className="space-y-6">
           {/* Enthusiasm by Type */}
           <div>
-            <h3 className="text-xs font-semibold  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
+            <h3 className="text-xs font-normal  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
               Average Enthusiasm by Investor Type
             </h3>
             {Object.keys(engagement.enthusiasmByType).length === 0 ? (
@@ -684,7 +684,7 @@ export default function AnalyticsPage() {
                       <div className="mb-1" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{TYPE_LABELS[type] || type}</div>
                       <div className="flex items-center gap-2">
                         <span
-                          className="text-lg font-bold"
+                          className="text-lg font-normal"
                           style={{
                             color: data.avg >= 4 ? 'var(--success)' :
                               data.avg >= 3 ? 'var(--accent)' :
@@ -706,7 +706,7 @@ export default function AnalyticsPage() {
           {/* Objection Leaderboard */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <h3 className="text-xs font-semibold  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
+              <h3 className="text-xs font-normal  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
                 Top Objection Topics
               </h3>
               {engagement.topObjections.length === 0 ? (
@@ -731,7 +731,7 @@ export default function AnalyticsPage() {
                             </div>
                           </div>
                         </div>
-                        <span className="text-xs font-medium shrink-0 w-8 text-right" style={{ color: 'var(--text-primary)' }}>
+                        <span className="text-xs font-normal shrink-0 w-8 text-right" style={{ color: 'var(--text-primary)' }}>
                           {obj.count}x
                         </span>
                       </div>
@@ -744,13 +744,13 @@ export default function AnalyticsPage() {
             <div className="space-y-4">
               {/* Objection Resolution */}
               <div>
-                <h3 className="text-xs font-semibold  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
+                <h3 className="text-xs font-normal  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
                   Objection Resolution
                 </h3>
                 <div className="rounded-lg p-4">
                   <div className="flex items-baseline gap-2">
                     <span
-                      className="text-3xl font-bold"
+                      className="text-3xl font-normal"
                       style={{
                         color: engagement.objectionResolutionRate >= 70 ? 'var(--success)' :
                           engagement.objectionResolutionRate >= 40 ? 'var(--warning)' :
@@ -781,11 +781,11 @@ export default function AnalyticsPage() {
 
               {/* Competitive Mentions */}
               <div>
-                <h3 className="text-xs font-semibold  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
+                <h3 className="text-xs font-normal  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
                   Competitive Intelligence
                 </h3>
                 <div className="rounded-lg p-4">
-                  <div className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
+                  <div className="text-2xl font-normal" style={{ color: 'var(--text-primary)' }}>
                     {engagement.competitiveMentions}
                   </div>
                   <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>meetings with competitive mentions</div>
@@ -827,16 +827,16 @@ export default function AnalyticsPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             <div className="rounded-lg p-3">
               <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Passed</div>
-              <div className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>{winLoss.passedCount}</div>
+              <div className="text-2xl font-normal" style={{ color: 'var(--text-primary)' }}>{winLoss.passedCount}</div>
             </div>
             <div className="rounded-lg p-3">
               <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Dropped</div>
-              <div className="text-2xl font-bold" style={{ color: 'var(--text-muted)' }}>{winLoss.droppedCount}</div>
+              <div className="text-2xl font-normal" style={{ color: 'var(--text-muted)' }}>{winLoss.droppedCount}</div>
             </div>
             <div className="rounded-lg p-3">
               <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Attrition Rate</div>
               <div
-                className="text-2xl font-bold"
+                className="text-2xl font-normal"
                 style={{
                   color: winLoss.passRate > 30 ? 'var(--danger)' :
                     winLoss.passRate > 15 ? 'var(--warning)' :
@@ -849,7 +849,7 @@ export default function AnalyticsPage() {
             </div>
             <div className="rounded-lg p-3">
               <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Active</div>
-              <div className="text-2xl font-bold" style={{ color: 'var(--text-secondary)' }}>
+              <div className="text-2xl font-normal" style={{ color: 'var(--text-secondary)' }}>
                 {summary.activeInvestors}
               </div>
             </div>
@@ -858,7 +858,7 @@ export default function AnalyticsPage() {
           {/* Outcomes by Tier */}
           {Object.keys(winLoss.outcomeByTier).length > 0 && (
             <div>
-              <h3 className="text-xs font-semibold  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
+              <h3 className="text-xs font-normal  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
                 Outcomes by Tier
               </h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -906,7 +906,7 @@ export default function AnalyticsPage() {
           {/* Outcomes by Type */}
           {Object.keys(winLoss.outcomeByType).length > 0 && (
             <div>
-              <h3 className="text-xs font-semibold  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
+              <h3 className="text-xs font-normal  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
                 Outcomes by Investor Type
               </h3>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -919,7 +919,7 @@ export default function AnalyticsPage() {
                       <div key={type} className="rounded-lg p-3">
                         <div className="mb-1" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{TYPE_LABELS[type] || type}</div>
                         <div
-                          className="text-lg font-bold"
+                          className="text-lg font-normal"
                           style={{
                             color: retentionRate >= 80 ? 'var(--success)' :
                               retentionRate >= 50 ? 'var(--warning)' :
@@ -941,7 +941,7 @@ export default function AnalyticsPage() {
           {/* Top Pass Reasons */}
           {winLoss.topPassReasons.length > 0 && (
             <div>
-              <h3 className="text-xs font-semibold  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
+              <h3 className="text-xs font-normal  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
                 Top Pass Reasons
               </h3>
               <div className="space-y-1.5">
@@ -949,7 +949,7 @@ export default function AnalyticsPage() {
                   <div key={i} className="flex items-center gap-3 py-1">
                     <span className="text-xs w-4 text-right" style={{ color: 'var(--text-muted)' }}>{i + 1}.</span>
                     <span className="text-sm flex-1" style={{ color: 'var(--text-secondary)' }}>{reason.topic}</span>
-                    <span className="text-xs font-medium" style={{ color: 'var(--text-primary)' }}>{reason.count}x</span>
+                    <span className="text-xs font-normal" style={{ color: 'var(--text-primary)' }}>{reason.count}x</span>
                   </div>
                 ))}
               </div>
@@ -980,10 +980,10 @@ function SummaryCard({
     <div className="rounded-xl px-4 py-3" style={{ background: 'var(--surface-1)' }}>
       <div className="flex items-center gap-2 mb-1">
         <span style={{ color }}>{icon}</span>
-        <span className="font-medium  tracking-wider" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{label}</span>
+        <span className="font-normal  tracking-wider" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{label}</span>
       </div>
       <div className="flex items-baseline gap-1.5">
-        <span className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>{value}</span>
+        <span className="text-xl font-normal" style={{ color: 'var(--text-primary)' }}>{value}</span>
         <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{sub}</span>
       </div>
     </div>
@@ -1010,9 +1010,9 @@ function CollapsibleSection({
       >
         <div className="flex items-center gap-3">
           <span style={{ color: 'var(--text-tertiary)' }}>{icon}</span>
-          <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{title}</span>
+          <span className="text-sm font-normal" style={{ color: 'var(--text-primary)' }}>{title}</span>
           {badge && (
-            <span className="font-bold px-1.5 py-0.5 rounded-full" style={{ fontSize: '10px', background: badge.color, color: 'var(--text-primary)' }}>
+            <span className="font-normal px-1.5 py-0.5 rounded-full" style={{ fontSize: '10px', background: badge.color, color: 'var(--text-primary)' }}>
               {badge.text}
             </span>
           )}
@@ -1044,7 +1044,7 @@ function SparklineChart({
     <div className="flex items-end gap-1.5 h-24">
       {data.map((d, i) => (
         <div key={i} className="flex-1 flex flex-col items-center gap-1">
-          <span className="font-medium" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{d.count}</span>
+          <span className="font-normal" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{d.count}</span>
           <div className="w-full rounded-t relative" style={{ height: '72px', background: 'var(--surface-0)' }}>
             <div
               className="absolute bottom-0 w-full rounded-t transition-all duration-500"
@@ -1118,10 +1118,10 @@ function RiskSection({
     <div className="rounded-lg p-4" style={{ border: `1px solid ${borderColor}` }}>
       <div className="flex items-center gap-2 mb-1">
         <div className="w-2 h-2 rounded-full" style={{ background: dotColor }} />
-        <h4 className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{title}</h4>
+        <h4 className="text-sm font-normal" style={{ color: 'var(--text-primary)' }}>{title}</h4>
         {count > 0 && (
           <span
-            className="font-bold px-1.5 py-0.5 rounded-full"
+            className="font-normal px-1.5 py-0.5 rounded-full"
             style={{ fontSize: '10px', background: badgeBg, color: badgeText }}
           >
             {count}
@@ -1155,7 +1155,7 @@ function StaleInvestorRow({ inv }: { inv: { id: string; name: string; status: st
         <span className="px-1.5 py-0.5 rounded" style={{ fontSize: '10px', ...tierStyle }}>
           T{inv.tier}
         </span>
-        <span className="text-sm font-medium truncate" style={{ color: 'var(--text-primary)' }}>{inv.name}</span>
+        <span className="text-sm font-normal truncate" style={{ color: 'var(--text-primary)' }}>{inv.name}</span>
         <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{STAGE_LABELS[inv.status]}</span>
       </div>
       <div className="flex items-center gap-2 shrink-0">
@@ -1187,7 +1187,7 @@ function DecliningEnthusiasmRow({ inv }: { inv: { id: string; name: string; tier
     >
       <div className="flex items-center gap-3 min-w-0">
         <span className="px-1.5 py-0.5 rounded" style={{ fontSize: '10px', ...tierStyle }}>T{inv.tier}</span>
-        <span className="text-sm font-medium truncate" style={{ color: 'var(--text-primary)' }}>{inv.name}</span>
+        <span className="text-sm font-normal truncate" style={{ color: 'var(--text-primary)' }}>{inv.name}</span>
       </div>
       <div className="flex items-center gap-2 shrink-0">
         <EnthusiasmDots score={inv.previousScore} size="sm" />
@@ -1222,7 +1222,7 @@ function HighTierStuckRow({ inv }: { inv: { id: string; name: string; tier: numb
         >
           T{inv.tier}
         </span>
-        <span className="text-sm font-medium truncate" style={{ color: 'var(--text-primary)' }}>{inv.name}</span>
+        <span className="text-sm font-normal truncate" style={{ color: 'var(--text-primary)' }}>{inv.name}</span>
         <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{STAGE_LABELS[inv.status]}</span>
       </div>
       <div className="flex items-center gap-2 shrink-0">

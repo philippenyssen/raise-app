@@ -306,7 +306,7 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
                       onDoubleClick={() => handleCellDoubleClick(ref)}
                       className={`px-1.5 py-0.5 cursor-cell transition-colors
                         ${isSelected ? 'ring-2 ring-inset' : ''}
-                        ${cell?.bold ? 'font-semibold' : ''}
+                        ${cell?.bold ? 'font-normal' : ''}
                         ${cell?.t === 'n' || (cell?.f && typeof getComputedValue(ref) === 'number') ? 'text-right' : 'text-left'}
                       `}
                       style={{

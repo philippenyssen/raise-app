@@ -210,7 +210,7 @@ export default function DocumentsPage() {
           </Link>
           <Link
             href="/documents/new"
-            className="px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+            className="px-4 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2"
             style={{ backgroundColor: 'var(--accent)', color: 'var(--surface-0)', opacity: hoverStates['newBtn'] ? 0.85 : 1 }}
             onMouseEnter={() => setHover('newBtn', true)}
             onMouseLeave={() => setHover('newBtn', false)}
@@ -223,7 +223,7 @@ export default function DocumentsPage() {
       {/* Document Flags Banner */}
       {showFlags && flags.length > 0 && (
         <div className="rounded-xl p-4 space-y-3" style={{ backgroundColor: 'color-mix(in srgb, var(--warning) 5%, transparent)' }}>
-          <h3 className="text-sm font-medium flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
+          <h3 className="text-sm font-normal flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
             <AlertTriangle className="w-4 h-4" />
             Open Document Flags from Meetings
           </h3>
@@ -232,7 +232,7 @@ export default function DocumentsPage() {
               <div key={flag.id} className="flex items-start gap-3 rounded-lg p-3" style={{ backgroundColor: 'color-mix(in srgb, var(--surface-1) 50%, transparent)' }}>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="text-[10px] px-1.5 py-0.5 rounded font-medium" style={FLAG_TYPE_STYLE_MAP[flag.flag_type] || DEFAULT_FLAG_STYLE}>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded font-normal" style={FLAG_TYPE_STYLE_MAP[flag.flag_type] || DEFAULT_FLAG_STYLE}>
                       {FLAG_TYPE_LABELS[flag.flag_type] || flag.flag_type}
                     </span>
                     <span className="text-xs" style={{ color: 'var(--text-muted)' }}>from {flag.investor_name}</span>
@@ -333,9 +333,9 @@ export default function DocumentsPage() {
                           <Edit3 className="w-4 h-4 shrink-0" style={{ color: 'var(--text-muted)' }} />
                           <div className="min-w-0">
                             <div className="flex items-center gap-2">
-                              <h3 className="font-medium truncate" style={{ color: 'var(--text-primary)' }}>{doc.title}</h3>
+                              <h3 className="font-normal truncate" style={{ color: 'var(--text-primary)' }}>{doc.title}</h3>
                               {docFlags.length > 0 && (
-                                <span className="text-[10px] px-1.5 py-0.5 rounded font-medium shrink-0" style={{ backgroundColor: 'var(--warning-muted)', color: 'var(--text-tertiary)' }}>
+                                <span className="text-[10px] px-1.5 py-0.5 rounded font-normal shrink-0" style={{ backgroundColor: 'var(--warning-muted)', color: 'var(--text-tertiary)' }}>
                                   {docFlags.length} flag{docFlags.length !== 1 ? 's' : ''}
                                 </span>
                               )}
@@ -384,7 +384,7 @@ export default function DocumentsPage() {
           {/* General flags (not tied to a specific document) */}
           {showFlags && generalFlags.length > 0 && (
             <div>
-              <h2 className="text-xs font-medium mb-3  flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
+              <h2 className="text-xs font-normal mb-3  flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
                 <AlertTriangle className="w-3 h-3" /> Unmatched Flags ({generalFlags.length})
               </h2>
               <p className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>
@@ -395,7 +395,7 @@ export default function DocumentsPage() {
                   <div key={flag.id} className="rounded-lg p-3 flex items-start justify-between gap-3" style={{ backgroundColor: 'color-mix(in srgb, var(--surface-1) 50%, transparent)' }}>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="text-[10px] px-1.5 py-0.5 rounded font-medium" style={FLAG_TYPE_STYLE_MAP[flag.flag_type] || DEFAULT_FLAG_STYLE}>
+                        <span className="text-[10px] px-1.5 py-0.5 rounded font-normal" style={FLAG_TYPE_STYLE_MAP[flag.flag_type] || DEFAULT_FLAG_STYLE}>
                           {FLAG_TYPE_LABELS[flag.flag_type] || flag.flag_type}
                         </span>
                         <span className="text-xs" style={{ color: 'var(--text-muted)' }}>from {flag.investor_name}</span>

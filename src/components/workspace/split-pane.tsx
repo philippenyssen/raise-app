@@ -82,7 +82,7 @@ export function SplitPane({ left, right, defaultSplit = 55, minLeft = 30, minRig
         >
           <button
             onClick={() => setActivePane('left')}
-            className="flex flex-1 items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium transition-colors"
+            className="flex flex-1 items-center justify-center gap-2 px-4 py-2.5 text-sm font-normal transition-colors"
             style={{
               background: activePane === 'left' ? 'var(--surface-2)' : 'transparent',
               color: activePane === 'left' ? 'var(--text-primary)' : 'var(--text-tertiary)',
@@ -93,7 +93,7 @@ export function SplitPane({ left, right, defaultSplit = 55, minLeft = 30, minRig
           </button>
           <button
             onClick={() => setActivePane('right')}
-            className="flex flex-1 items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium transition-colors"
+            className="flex flex-1 items-center justify-center gap-2 px-4 py-2.5 text-sm font-normal transition-colors"
             style={{
               background: activePane === 'right' ? 'var(--surface-2)' : 'transparent',
               color: activePane === 'right' ? 'var(--text-primary)' : 'var(--text-tertiary)',

@@ -193,7 +193,7 @@ export default function DocumentEditorPage() {
           <input
             value={title}
             onChange={e => { setTitle(e.target.value); setDirty(true); }}
-            className="text-xl font-bold bg-transparent border-none focus:outline-none focus:ring-0"
+            className="text-xl font-normal bg-transparent border-none focus:outline-none focus:ring-0"
             style={{ color: 'var(--text-primary)' }}
           />
         </div>
@@ -244,7 +244,7 @@ export default function DocumentEditorPage() {
           <button
             onClick={() => save()}
             disabled={saving || !dirty}
-            className="px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-1.5 disabled:opacity-50"
+            className="px-3 py-1.5 rounded-lg text-sm font-normal flex items-center gap-1.5 disabled:opacity-50"
             style={{
               background: 'var(--accent)',
               color: 'var(--surface-0)',
@@ -296,7 +296,7 @@ export default function DocumentEditorPage() {
         {/* AI Panel */}
         <div className="w-72 shrink-0 space-y-3">
           <div className="rounded-xl p-4">
-            <h3 className="text-xs font-medium mb-3 flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
+            <h3 className="text-xs font-normal mb-3 flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
               <Sparkles className="w-3.5 h-3.5" /> AI operations
             </h3>
             {selectedText && (
@@ -335,7 +335,7 @@ export default function DocumentEditorPage() {
           {/* AI Result */}
           {aiResult && (
             <div className="rounded-xl p-4 max-h-96 overflow-y-auto">
-              <h3 className="text-xs font-medium mb-3" style={{ color: 'var(--text-tertiary)' }}>AI result</h3>
+              <h3 className="text-xs font-normal mb-3" style={{ color: 'var(--text-tertiary)' }}>AI result</h3>
 
               {(aiResult.type === 'improve' || aiResult.type === 'goldman') && (
                 <>
@@ -344,7 +344,7 @@ export default function DocumentEditorPage() {
                   </pre>
                   <button
                     onClick={applyAIResult}
-                    className="w-full px-3 py-1.5 rounded-lg text-xs font-medium"
+                    className="w-full px-3 py-1.5 rounded-lg text-xs font-normal"
                     style={{
                       background: applyHovered ? 'var(--success-muted)' : 'var(--success-muted)',
                       color: 'var(--text-secondary)',
@@ -361,7 +361,7 @@ export default function DocumentEditorPage() {
                 <div className="space-y-2">
                   {((aiResult.data as { weaknesses: { claim: string; issue: string; suggestion: string }[] }).weaknesses || []).map((w, i) => (
                     <div key={i} className="text-xs pl-2">
-                      <p className="font-medium" style={{ color: 'var(--text-tertiary)' }}>{w.claim}</p>
+                      <p className="font-normal" style={{ color: 'var(--text-tertiary)' }}>{w.claim}</p>
                       <p className="mt-0.5" style={{ color: 'var(--text-muted)' }}>{w.issue}</p>
                       <p className="mt-0.5" style={{ color: 'var(--text-tertiary)' }}>{w.suggestion}</p>
                     </div>
@@ -378,7 +378,7 @@ export default function DocumentEditorPage() {
                   ) : (
                     ((aiResult.data as { discrepancies: { location: string; issue: string; suggestion: string }[] }).discrepancies || []).map((d, i) => (
                       <div key={i} className="text-xs pl-2">
-                        <p className="font-medium flex items-center gap-1" style={{ color: 'var(--text-primary)' }}>
+                        <p className="font-normal flex items-center gap-1" style={{ color: 'var(--text-primary)' }}>
                           <AlertTriangle className="w-3 h-3" /> {d.location}
                         </p>
                         <p className="mt-0.5" style={{ color: 'var(--text-muted)' }}>{d.issue}</p>
@@ -407,7 +407,7 @@ export default function DocumentEditorPage() {
       {showVersions && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.6)' }} onClick={() => setShowVersions(false)}>
           <div className="rounded-xl p-6 max-w-lg w-full max-h-[70vh] overflow-y-auto" style={{ background: 'var(--surface-1)' }} onClick={e => e.stopPropagation()}>
-            <h2 className="text-lg font-bold mb-4 flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
+            <h2 className="text-lg font-normal mb-4 flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
               <History className="w-5 h-5" /> Version History
             </h2>
             {versions.length === 0 ? (
@@ -448,7 +448,7 @@ function VersionRow({ version: v, onRestore }: { version: Version; onRestore: (v
       onMouseLeave={() => setHovered(false)}
     >
       <div>
-        <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>v{v.version_number}</span>
+        <span className="text-sm font-normal" style={{ color: 'var(--text-primary)' }}>v{v.version_number}</span>
         {v.change_summary && (
           <span className="text-xs ml-2" style={{ color: 'var(--text-muted)' }}>{v.change_summary}</span>
         )}
@@ -485,7 +485,7 @@ function AIButton({ label, desc, loading, onClick }: { label: string; desc: stri
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <div className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>{label}</div>
+      <div className="text-xs font-normal" style={{ color: 'var(--text-secondary)' }}>{label}</div>
       <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{desc}</div>
     </button>
   );
@@ -531,11 +531,11 @@ function MarkdownPreview({ content }: { content: string }) {
     }
 
     if (trimmed.startsWith('# ')) {
-      elements.push(<h1 key={i} className="text-xl font-bold mt-6 mb-2" style={{ color: 'var(--text-primary)' }}>{trimmed.slice(2)}</h1>);
+      elements.push(<h1 key={i} className="text-xl font-normal mt-6 mb-2" style={{ color: 'var(--text-primary)' }}>{trimmed.slice(2)}</h1>);
     } else if (trimmed.startsWith('## ')) {
-      elements.push(<h2 key={i} className="text-lg font-bold mt-5 mb-2" style={{ color: 'var(--text-secondary)' }}>{trimmed.slice(3)}</h2>);
+      elements.push(<h2 key={i} className="text-lg font-normal mt-5 mb-2" style={{ color: 'var(--text-secondary)' }}>{trimmed.slice(3)}</h2>);
     } else if (trimmed.startsWith('### ')) {
-      elements.push(<h3 key={i} className="text-base font-semibold mt-4 mb-1" style={{ color: 'var(--text-secondary)' }}>{trimmed.slice(4)}</h3>);
+      elements.push(<h3 key={i} className="text-base font-normal mt-4 mb-1" style={{ color: 'var(--text-secondary)' }}>{trimmed.slice(4)}</h3>);
     } else if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
       elements.push(
         <li key={i} className="text-sm ml-4 list-disc" style={{ color: 'var(--text-secondary)' }} dangerouslySetInnerHTML={{ __html: renderInline(trimmed.slice(2)) as string }} />

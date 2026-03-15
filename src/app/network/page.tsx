@@ -258,7 +258,7 @@ export default function NetworkPage() {
             <div className="flex items-center gap-2 mt-3">
               <Link
                 href={`/dealflow?search=${encodeURIComponent(bottleneckAlert.bottleneckName)}`}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-normal transition-colors"
                 style={{ background: 'rgba(26, 26, 46, 0.05)', color: 'var(--text-tertiary)', border: '1px solid rgba(26, 26, 46, 0.05)' }}
                 onMouseEnter={e => { e.currentTarget.style.background = 'rgba(26, 26, 46, 0.05)'; }}
                 onMouseLeave={e => { e.currentTarget.style.background = 'rgba(26, 26, 46, 0.05)'; }}
@@ -557,7 +557,7 @@ export default function NetworkPage() {
                         </p>
                         <Link
                           href={`/investors/${cascade.networkBottleneck.investorId}`}
-                          className="inline-flex items-center gap-1 mt-2 px-2.5 py-1 rounded text-[11px] font-medium transition-colors"
+                          className="inline-flex items-center gap-1 mt-2 px-2.5 py-1 rounded text-[11px] font-normal transition-colors"
                           style={{ background: 'rgba(26, 26, 46, 0.05)', color: 'var(--text-tertiary)', border: '1px solid rgba(26, 26, 46, 0.05)' }}
                           onMouseEnter={e => { e.currentTarget.style.background = 'rgba(26, 26, 46, 0.05)'; }}
                           onMouseLeave={e => { e.currentTarget.style.background = 'rgba(26, 26, 46, 0.05)'; }}

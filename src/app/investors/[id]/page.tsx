@@ -279,7 +279,7 @@ export default function InvestorDetailPage() {
           <h1 className="page-title">{investor.name}</h1>
           <div className="flex items-center gap-3 mt-2">
             <span
-              className="px-2 py-0.5 rounded text-xs font-medium"
+              className="px-2 py-0.5 rounded text-xs font-normal"
               style={{
                 background: investor.tier === 1 ? 'var(--accent-muted)' :
                   investor.tier === 2 ? 'var(--accent-muted)' :
@@ -297,7 +297,7 @@ export default function InvestorDetailPage() {
                 setInvestor(prev => prev ? { ...prev, status: newStatus as InvestorStatus } : prev);
                 toast(`Status updated to ${STATUS_LABELS[newStatus as InvestorStatus] || newStatus}`);
               }}
-              className="px-2 py-0.5 rounded text-xs font-medium border-none cursor-pointer focus:outline-none"
+              className="px-2 py-0.5 rounded text-xs font-normal border-none cursor-pointer focus:outline-none"
               style={{
                 backgroundColor: STATUS_COLORS[investor.status],
                 color: 'var(--text-primary)',
@@ -313,7 +313,7 @@ export default function InvestorDetailPage() {
         <div className="flex gap-2">
           <Link
             href={`/meetings/prep?investor=${id}`}
-            className="px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+            className="px-3 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2"
             style={{ background: 'var(--surface-2)', color: 'var(--text-primary)' }}
             onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface-3)')}
             onMouseLeave={e => (e.currentTarget.style.background = 'var(--surface-2)')}
@@ -323,7 +323,7 @@ export default function InvestorDetailPage() {
           <button
             onClick={handleResearch}
             disabled={researching}
-            className="px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+            className="px-3 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2"
             style={{
               background: researching ? 'var(--surface-2)' : 'var(--surface-2)',
               color: researching ? 'var(--text-muted)' : 'var(--text-primary)',
@@ -335,7 +335,7 @@ export default function InvestorDetailPage() {
           </button>
           <Link
             href={`/meetings/new?investor=${id}`}
-            className="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+            className="px-4 py-2 rounded-lg text-sm font-normal transition-colors"
             style={{ background: 'var(--accent)', color: 'var(--text-primary)' }}
             onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
             onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
@@ -369,7 +369,7 @@ export default function InvestorDetailPage() {
           >
             <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" style={{ color: 'var(--text-tertiary)' }} />
             <div className="min-w-0">
-              <div className="text-sm font-medium" style={{ color: 'var(--text-tertiary)' }}>
+              <div className="text-sm font-normal" style={{ color: 'var(--text-tertiary)' }}>
                 Profile {completeness}% complete — fill missing fields to improve scoring accuracy
               </div>
               <div className="text-xs mt-0.5" style={{ color: 'var(--text-tertiary)', opacity: 0.7 }}>
@@ -528,7 +528,7 @@ export default function InvestorDetailPage() {
             >
               <div className="flex items-center gap-2">
                 <SendHorizonal className="w-3.5 h-3.5" style={{ color: overdueItems.length > 0 ? 'var(--danger)' : 'var(--accent)' }} />
-                <span className="text-xs font-medium  tracking-wider" style={{ color: 'var(--text-tertiary)' }}>
+                <span className="text-xs font-normal  tracking-wider" style={{ color: 'var(--text-tertiary)' }}>
                   Pending Actions
                 </span>
                 {overdueItems.length > 0 && (
@@ -629,7 +629,7 @@ export default function InvestorDetailPage() {
       {/* Profile + Process Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="rounded-xl p-5 space-y-3">
-          <h2 className="text-xs font-medium flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
+          <h2 className="text-xs font-normal flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
             <Users className="w-3.5 h-3.5" /> Profile
           </h2>
           <div className="space-y-2 text-sm">
@@ -640,7 +640,7 @@ export default function InvestorDetailPage() {
           </div>
         </div>
         <div className="rounded-xl p-5 space-y-3">
-          <h2 className="text-xs font-medium flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
+          <h2 className="text-xs font-normal flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
             <Target className="w-3.5 h-3.5" /> Process
           </h2>
           <div className="space-y-2 text-sm">
@@ -692,7 +692,7 @@ export default function InvestorDetailPage() {
             <button
               key={t.key}
               onClick={() => setIntelTab(t.key)}
-              className="px-4 py-2.5 text-sm font-medium transition-colors flex items-center gap-2"
+              className="px-4 py-2.5 text-sm font-normal transition-colors flex items-center gap-2"
               style={{
                 borderBottom: intelTab === t.key ? '2px solid var(--accent)' : '2px solid transparent',
                 color: intelTab === t.key ? 'var(--text-primary)' : 'var(--text-muted)',
@@ -713,7 +713,7 @@ export default function InvestorDetailPage() {
               {/* Enthusiasm Trend */}
               {enthusiasmTrend.length > 1 && (
                 <div className="mb-6">
-                  <h3 className="text-xs font-medium mb-3 flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
+                  <h3 className="text-xs font-normal mb-3 flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
                     <Zap className="w-3.5 h-3.5" /> Enthusiasm trend
                   </h3>
                   <div className="flex items-end gap-2 h-20">
@@ -734,7 +734,7 @@ export default function InvestorDetailPage() {
               )}
 
               {/* Meeting History */}
-              <h3 className="text-xs font-medium mb-3 flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
+              <h3 className="text-xs font-normal mb-3 flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
                 <Clock className="w-3.5 h-3.5" /> Meeting history
               </h3>
               {meetings.length === 0 ? (
@@ -746,7 +746,7 @@ export default function InvestorDetailPage() {
                     return (
                       <div key={m.id} className="pb-2">
                         <div className="flex items-center gap-3 mb-1">
-                          <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{m.date}</span>
+                          <span className="text-sm font-normal" style={{ color: 'var(--text-primary)' }}>{m.date}</span>
                           <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{m.type.replace(/_/g, ' ')}</span>
                           <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{m.duration_minutes}min</span>
                           <div className="flex gap-0.5 ml-auto">
@@ -788,7 +788,7 @@ export default function InvestorDetailPage() {
               {/* Objection Summary */}
               {allObjections.length > 0 && (
                 <div className="mt-6">
-                  <h3 className="text-xs font-medium mb-3 flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
+                  <h3 className="text-xs font-normal mb-3 flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
                     <AlertTriangle className="w-3.5 h-3.5" /> All objections
                   </h3>
                   <div className="space-y-2">
@@ -839,7 +839,7 @@ export default function InvestorDetailPage() {
                     <div key={p.id} className="rounded-lg p-4">
                       <div className="flex items-start justify-between">
                         <div>
-                          <h4 className="font-medium" style={{ color: 'var(--text-primary)' }}>{p.name}</h4>
+                          <h4 className="font-normal" style={{ color: 'var(--text-primary)' }}>{p.name}</h4>
                           <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{p.title}</p>
                         </div>
                         <button
@@ -889,12 +889,12 @@ export default function InvestorDetailPage() {
                   <table className="w-full text-sm">
                     <thead style={{ background: 'var(--surface-1)', borderBottom: '1px solid var(--border-default)' }}>
                       <tr>
-                        <th className="text-left px-4 py-2 text-xs font-medium" style={{ color: 'var(--text-muted)' }}>Company</th>
-                        <th className="text-left px-4 py-2 text-xs font-medium" style={{ color: 'var(--text-muted)' }}>Sector</th>
-                        <th className="text-left px-4 py-2 text-xs font-medium" style={{ color: 'var(--text-muted)' }}>Stage</th>
-                        <th className="text-left px-4 py-2 text-xs font-medium" style={{ color: 'var(--text-muted)' }}>Amount</th>
-                        <th className="text-left px-4 py-2 text-xs font-medium" style={{ color: 'var(--text-muted)' }}>Date</th>
-                        <th className="text-left px-4 py-2 text-xs font-medium" style={{ color: 'var(--text-muted)' }}>Status</th>
+                        <th className="text-left px-4 py-2 text-xs font-normal" style={{ color: 'var(--text-muted)' }}>Company</th>
+                        <th className="text-left px-4 py-2 text-xs font-normal" style={{ color: 'var(--text-muted)' }}>Sector</th>
+                        <th className="text-left px-4 py-2 text-xs font-normal" style={{ color: 'var(--text-muted)' }}>Stage</th>
+                        <th className="text-left px-4 py-2 text-xs font-normal" style={{ color: 'var(--text-muted)' }}>Amount</th>
+                        <th className="text-left px-4 py-2 text-xs font-normal" style={{ color: 'var(--text-muted)' }}>Date</th>
+                        <th className="text-left px-4 py-2 text-xs font-normal" style={{ color: 'var(--text-muted)' }}>Status</th>
                         <th className="w-8"></th>
                       </tr>
                     </thead>
@@ -907,7 +907,7 @@ export default function InvestorDetailPage() {
                           onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface-1)')}
                           onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                         >
-                          <td className="px-4 py-2 font-medium" style={{ color: 'var(--text-primary)' }}>{co.company}</td>
+                          <td className="px-4 py-2 font-normal" style={{ color: 'var(--text-primary)' }}>{co.company}</td>
                           <td className="px-4 py-2 text-xs" style={{ color: 'var(--text-tertiary)' }}>{co.sector}</td>
                           <td className="px-4 py-2 text-xs" style={{ color: 'var(--text-tertiary)' }}>{co.stage_invested}</td>
                           <td className="px-4 py-2 text-xs" style={{ color: 'var(--text-secondary)' }}>{co.amount}</td>
@@ -1040,7 +1040,7 @@ export default function InvestorDetailPage() {
                     <div key={b.id} className="rounded-lg p-4">
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-2">
-                          <span className="text-xs px-2 py-0.5 rounded font-medium" style={{ background: 'var(--accent-muted)', color: 'var(--accent)' }}>{b.brief_type}</span>
+                          <span className="text-xs px-2 py-0.5 rounded font-normal" style={{ background: 'var(--accent-muted)', color: 'var(--accent)' }}>{b.brief_type}</span>
                           <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{b.updated_at?.split('T')[0]}</span>
                         </div>
                         <button
@@ -1068,7 +1068,7 @@ export default function InvestorDetailPage() {
       {/* Notes */}
       {investor.notes && (
         <div className="rounded-xl p-5">
-          <h2 className="text-xs font-medium mb-2" style={{ color: 'var(--text-tertiary)' }}>Notes</h2>
+          <h2 className="text-xs font-normal mb-2" style={{ color: 'var(--text-tertiary)' }}>Notes</h2>
           <p className="text-sm" style={{ color: 'var(--text-tertiary)', whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>{investor.notes}</p>
         </div>
       )}
@@ -1092,7 +1092,7 @@ function StatCard({ icon: Icon, label, value, sub, highlight }: { icon: React.Co
         <span style={{ color: highlight ? 'var(--danger)' : 'var(--text-muted)' }}><Icon className="w-3.5 h-3.5" /></span>
         <span className="text-xs truncate" style={{ color: highlight ? 'var(--danger)' : 'var(--text-muted)' }}>{label}</span>
       </div>
-      <div className="text-2xl font-bold" style={{ color: highlight ? 'var(--danger)' : 'var(--text-primary)' }}>{value}</div>
+      <div className="text-2xl font-normal" style={{ color: highlight ? 'var(--danger)' : 'var(--text-primary)' }}>{value}</div>
       <div className="text-xs" style={{ color: highlight ? 'var(--danger)' : 'var(--text-muted)' }}>{sub}</div>
     </div>
   );
@@ -1159,7 +1159,7 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-2">
             <Gauge className="w-4 h-4" style={{ color: 'var(--text-tertiary)' }} />
-            <h2 className="text-xs font-medium  tracking-wider" style={{ color: 'var(--text-tertiary)' }}>Intelligence Score</h2>
+            <h2 className="text-xs font-normal  tracking-wider" style={{ color: 'var(--text-tertiary)' }}>Intelligence Score</h2>
           </div>
           <button
             onClick={onRefresh}
@@ -1177,7 +1177,7 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
         <div className="flex items-center gap-6">
           {/* Overall score -- large number */}
           <div className="flex items-baseline gap-1">
-            <span className="text-5xl font-bold tabular-nums" style={{ color: scoreColor(score.overall) }}>{score.overall}</span>
+            <span className="text-5xl font-normal tabular-nums" style={{ color: scoreColor(score.overall) }}>{score.overall}</span>
             <span className="text-lg" style={{ color: 'var(--text-muted)' }}>/100</span>
           </div>
 
@@ -1188,11 +1188,11 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
           <div className="flex-1 space-y-2">
             <div className="flex items-center gap-2">
               <span style={{ color: momentumConf.color }}><MomentumIcon className="w-4 h-4" /></span>
-              <span className="text-sm font-medium" style={{ color: momentumConf.color }}>{momentumConf.label}</span>
+              <span className="text-sm font-normal" style={{ color: momentumConf.color }}>{momentumConf.label}</span>
             </div>
             <div className="flex items-center gap-2">
               <span
-                className="text-xs px-2 py-0.5 rounded-full font-medium"
+                className="text-xs px-2 py-0.5 rounded-full font-normal"
                 style={{ background: outcomeConf.bg, color: outcomeConf.color }}
               >
                 {outcomeConf.label}
@@ -1205,7 +1205,7 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
             <div className="flex items-start gap-2">
               <Lightbulb className="w-3.5 h-3.5 shrink-0 mt-0.5" style={{ color: 'var(--text-tertiary)' }} />
               <div className="flex-1 min-w-0">
-                <div className="text-[10px] font-medium  mb-0.5" style={{ color: 'var(--text-muted)' }}>Next Action</div>
+                <div className="text-[10px] font-normal  mb-0.5" style={{ color: 'var(--text-muted)' }}>Next Action</div>
                 <div className="flex items-center gap-2">
                   <p className="text-sm leading-snug flex-1" style={{ color: 'var(--text-secondary)' }}>{score.nextBestAction}</p>
                   <Link
@@ -1239,7 +1239,7 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
               <div key={dim.name} className="space-y-1">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>{dim.name}</span>
+                    <span className="text-xs font-normal" style={{ color: 'var(--text-secondary)' }}>{dim.name}</span>
                     <span
                       className="text-[10px] px-1.5 py-0.5 rounded"
                       style={{ background: badge.bg, color: badge.color }}
@@ -1247,7 +1247,7 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
                       {dim.signal}
                     </span>
                   </div>
-                  <span className="text-xs font-bold tabular-nums" style={{ color: scoreColor(dim.score) }}>{dim.score}</span>
+                  <span className="text-xs font-normal tabular-nums" style={{ color: scoreColor(dim.score) }}>{dim.score}</span>
                 </div>
                 <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--surface-2)' }}>
                   <div
@@ -1269,7 +1269,7 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
         <div className="p-5" style={{ borderTop: '1px solid var(--border-default)' }}>
           <div className="flex items-center gap-2 mb-3">
             <ShieldAlert className="w-3.5 h-3.5" style={{ color: 'var(--text-primary)' }} />
-            <h3 className="text-xs font-medium " style={{ color: 'var(--text-tertiary)' }}>Identified Risks</h3>
+            <h3 className="text-xs font-normal " style={{ color: 'var(--text-tertiary)' }}>Identified Risks</h3>
           </div>
           <div className="space-y-1.5">
             {score.risks.map((risk, i) => (
@@ -1332,7 +1332,7 @@ function ConvictionTrajectoryPanel({ trajectory }: { trajectory: ConvictionTraje
       <div className="p-5" style={{ background: 'var(--surface-1)' }}>
         <div className="flex items-center gap-2 mb-4">
           <Activity className="w-4 h-4" style={{ color: 'var(--text-tertiary)' }} />
-          <h2 className="text-xs font-medium  tracking-wider" style={{ color: 'var(--text-tertiary)' }}>Conviction Trajectory</h2>
+          <h2 className="text-xs font-normal  tracking-wider" style={{ color: 'var(--text-tertiary)' }}>Conviction Trajectory</h2>
         </div>
 
         <div className="flex items-center gap-6 flex-wrap">
@@ -1377,7 +1377,7 @@ function ConvictionTrajectoryPanel({ trajectory }: { trajectory: ConvictionTraje
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <span
-                className="text-xs px-2 py-0.5 rounded-full font-medium"
+                className="text-xs px-2 py-0.5 rounded-full font-normal"
                 style={{ background: trend.bg, color: trend.color }}
               >
                 {trend.label}
@@ -1394,7 +1394,7 @@ function ConvictionTrajectoryPanel({ trajectory }: { trajectory: ConvictionTraje
             </div>
             <div className="flex items-center gap-3">
               <span
-                className="text-sm font-medium tabular-nums"
+                className="text-sm font-normal tabular-nums"
                 style={{ color: trajectory.velocityPerWeek > 0 ? 'var(--success)' : trajectory.velocityPerWeek < 0 ? 'var(--warning)' : 'var(--text-tertiary)' }}
               >
                 {trajectory.velocityPerWeek > 0 ? '+' : ''}{trajectory.velocityPerWeek} pts/week
@@ -1407,9 +1407,9 @@ function ConvictionTrajectoryPanel({ trajectory }: { trajectory: ConvictionTraje
 
           {/* Prediction */}
           <div className="space-y-1.5 min-w-0">
-            <div className="text-[10px] font-medium " style={{ color: 'var(--text-muted)' }}>30-Day Prediction</div>
+            <div className="text-[10px] font-normal " style={{ color: 'var(--text-muted)' }}>30-Day Prediction</div>
             <div className="flex items-baseline gap-1">
-              <span className="text-lg font-bold tabular-nums" style={{ color: scoreColor(trajectory.predictedScoreIn30Days) }}>
+              <span className="text-lg font-normal tabular-nums" style={{ color: scoreColor(trajectory.predictedScoreIn30Days) }}>
                 {trajectory.predictedScoreIn30Days}
               </span>
               <span className="text-xs" style={{ color: 'var(--text-muted)' }}>/100</span>
@@ -1546,7 +1546,7 @@ function EnrichmentPanel({
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <Database className="w-3.5 h-3.5" style={{ color: 'var(--text-tertiary)' }} />
-          <span className="text-xs font-medium " style={{ color: 'var(--text-tertiary)' }}>
+          <span className="text-xs font-normal " style={{ color: 'var(--text-tertiary)' }}>
             {records.length} enriched fields across {sortedCategories.length} categories
           </span>
         </div>
@@ -1582,7 +1582,7 @@ function EnrichmentPanel({
             >
               <div className="flex items-center gap-3">
                 <span
-                  className="text-xs px-2 py-0.5 rounded font-medium"
+                  className="text-xs px-2 py-0.5 rounded font-normal"
                   style={{ background: catColor.bg, color: catColor.color }}
                 >
                   {catLabel}
@@ -1619,11 +1619,11 @@ function EnrichmentPanel({
                   >
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-0.5">
-                        <span className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>
+                        <span className="text-xs font-normal" style={{ color: 'var(--text-secondary)' }}>
                           {rec.field_name.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
                         </span>
                         <span
-                          className="text-[10px] px-1.5 py-0.5 rounded font-medium"
+                          className="text-[10px] px-1.5 py-0.5 rounded font-normal"
                           style={{ background: confidenceBg(rec.confidence), color: confidenceColor(rec.confidence) }}
                         >
                           {Math.round(rec.confidence * 100)}%

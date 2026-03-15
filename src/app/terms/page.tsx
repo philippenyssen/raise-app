@@ -154,14 +154,14 @@ export default function TermsPage() {
         <div className="flex items-center gap-2">
           <Link
             href="/term-compare"
-            className="btn btn-secondary btn-md text-sm font-medium"
+            className="btn btn-secondary btn-md text-sm font-normal"
           >
             <Scale className="w-4 h-4" />
             Compare Terms
           </Link>
           <button
             onClick={() => { setShowForm(!showForm); setEditId(null); setForm(EMPTY_TS); }}
-            className="btn btn-primary btn-md text-sm font-medium"
+            className="btn btn-primary btn-md text-sm font-normal"
           >
             + Add Term Sheet
           </button>
@@ -170,7 +170,7 @@ export default function TermsPage() {
 
       {/* Market Standards Reference */}
       <div className="rounded-xl p-5" style={{ background: 'var(--surface-0)' }}>
-        <h3 className="text-xs font-medium mb-3" style={{ color: 'var(--text-tertiary)' }}>Market standards (Series C)</h3>
+        <h3 className="text-xs font-normal mb-3" style={{ color: 'var(--text-tertiary)' }}>Market standards (Series C)</h3>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-xs">
           {Object.entries(MARKET_STANDARDS).map(([key, val]) => (
             <div key={key}>
@@ -184,7 +184,7 @@ export default function TermsPage() {
       {/* Add/Edit Form */}
       {showForm && (
         <form onSubmit={handleSubmit} className="rounded-xl p-6 space-y-4" style={{ background: 'var(--surface-0)' }}>
-          <h3 className="text-sm font-medium" style={{ color: 'var(--text-tertiary)' }}>{editId ? 'Edit' : 'Add'} term sheet</h3>
+          <h3 className="text-sm font-normal" style={{ color: 'var(--text-tertiary)' }}>{editId ? 'Edit' : 'Add'} term sheet</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <TsInput label="Investor" value={form.investor} onChange={v => setForm(f => ({ ...f, investor: v }))} required />
             <TsInput label="Pre-Money Valuation" value={form.valuation} onChange={v => setForm(f => ({ ...f, valuation: v }))} placeholder="e.g., 2.0Bn" />
@@ -206,7 +206,7 @@ export default function TermsPage() {
           </div>
           <TsInput label="Notes" value={form.notes} onChange={v => setForm(f => ({ ...f, notes: v }))} />
           <div className="flex gap-2">
-            <button type="submit" className="btn btn-primary btn-md text-sm font-medium">
+            <button type="submit" className="btn btn-primary btn-md text-sm font-normal">
               {editId ? 'Update' : 'Add'}
             </button>
             <button type="button" onClick={() => { setShowForm(false); setEditId(null); }} className="btn btn-secondary btn-md text-sm">
@@ -222,9 +222,9 @@ export default function TermsPage() {
           <table className="w-full text-sm">
             <thead className="table-header">
               <tr>
-                <th className="text-left px-4 py-3 text-xs font-medium w-40" style={{ color: 'var(--text-muted)' }}>Term</th>
+                <th className="text-left px-4 py-3 text-xs font-normal w-40" style={{ color: 'var(--text-muted)' }}>Term</th>
                 {sheets.map(ts => (
-                  <th key={ts.id} className="text-left px-4 py-3 text-xs font-medium min-w-48" style={{ color: 'var(--text-secondary)' }}>
+                  <th key={ts.id} className="text-left px-4 py-3 text-xs font-normal min-w-48" style={{ color: 'var(--text-secondary)' }}>
                     <div className="flex items-center justify-between gap-2">
                       {ts.investor}
                       <div className="flex gap-1 shrink-0">
@@ -238,7 +238,7 @@ export default function TermsPage() {
                     </div>
                   </th>
                 ))}
-                <th className="text-left px-4 py-3 text-xs font-medium" style={{ color: 'var(--text-muted)' }}>Market Standard</th>
+                <th className="text-left px-4 py-3 text-xs font-normal" style={{ color: 'var(--text-muted)' }}>Market Standard</th>
               </tr>
             </thead>
             <tbody>
@@ -270,12 +270,12 @@ export default function TermsPage() {
               ))}
               {/* Score Row */}
               <tr style={{ background: 'var(--surface-1)', borderTop: '2px solid var(--border-strong)' }}>
-                <td className="px-4 py-3 text-xs font-medium" style={{ color: 'var(--text-tertiary)' }}>Score</td>
+                <td className="px-4 py-3 text-xs font-normal" style={{ color: 'var(--text-tertiary)' }}>Score</td>
                 {sheets.map(ts => {
                   const { score, flags } = scoreSheet(ts);
                   return (
                     <td key={ts.id} className="px-4 py-3">
-                      <div className="text-lg font-bold" style={{ color: getScoreColor(score) }}>
+                      <div className="text-lg font-normal" style={{ color: getScoreColor(score) }}>
                         {score}/100
                       </div>
                       {flags.map((f, i) => (
@@ -288,7 +288,7 @@ export default function TermsPage() {
               </tr>
               {/* Action Row */}
               <tr style={{ background: 'var(--surface-0)', borderTop: '1px solid var(--border-subtle)' }}>
-                <td className="px-4 py-3 text-xs font-medium" style={{ color: 'var(--text-tertiary)' }}>ACTION</td>
+                <td className="px-4 py-3 text-xs font-normal" style={{ color: 'var(--text-tertiary)' }}>ACTION</td>
                 {sheets.map(ts => {
                   const { score, flags } = scoreSheet(ts);
                   const action = score >= 70

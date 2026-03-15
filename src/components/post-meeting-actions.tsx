@@ -159,7 +159,7 @@ export default function PostMeetingActions({
           borderBottom: '1px solid var(--border-subtle)',
         }}
       >
-        <h2 className="text-lg font-bold flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
+        <h2 className="text-lg font-normal flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
           <ClipboardList className="w-5 h-5" style={{ color: 'var(--accent)' }} />
           Post-Meeting Actions
         </h2>
@@ -172,7 +172,7 @@ export default function PostMeetingActions({
         {/* Investor Profile Updates */}
         {(statusChanged || enthusiasmChanged) && (
           <div className="px-5 py-4" style={{ borderBottom: '1px solid color-mix(in srgb, var(--border-subtle) 50%, transparent)' }}>
-            <h3 className="text-xs font-medium mb-3 flex items-center gap-2" style={{ color: 'var(--text-secondary)' }}>
+            <h3 className="text-xs font-normal mb-3 flex items-center gap-2" style={{ color: 'var(--text-secondary)' }}>
               <UserCheck className="w-3.5 h-3.5" /> Investor profile updated
             </h3>
             <div className="flex flex-wrap gap-3">
@@ -209,7 +209,7 @@ export default function PostMeetingActions({
           <div className="px-5 py-4" style={{ borderBottom: '1px solid color-mix(in srgb, var(--border-subtle) 50%, transparent)' }}>
             <button
               onClick={() => setTasksExpanded(!tasksExpanded)}
-              className="w-full flex items-center justify-between text-xs font-medium mb-3"
+              className="w-full flex items-center justify-between text-xs font-normal mb-3"
               style={{ color: 'var(--text-secondary)' }}
             >
               <span className="flex items-center gap-2">
@@ -239,7 +239,7 @@ export default function PostMeetingActions({
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1">
                             <span
-                              className="text-[10px] px-1.5 py-0.5 rounded font-medium "
+                              className="text-[10px] px-1.5 py-0.5 rounded font-normal "
                               style={{
                                 backgroundColor: pStyle.bg,
                                 color: pStyle.color,
@@ -247,7 +247,7 @@ export default function PostMeetingActions({
                             >
                               {task.priority}
                             </span>
-                            <span className="text-sm font-medium truncate" style={{ color: 'var(--text-primary)' }}>{task.title}</span>
+                            <span className="text-sm font-normal truncate" style={{ color: 'var(--text-primary)' }}>{task.title}</span>
                           </div>
                           {task.description && (
                             <p className="text-xs mt-1 line-clamp-2" style={{ color: 'var(--text-muted)' }}>{task.description.split('\n')[0]}</p>
@@ -308,7 +308,7 @@ export default function PostMeetingActions({
           <div className="px-5 py-4" style={{ borderBottom: '1px solid color-mix(in srgb, var(--border-subtle) 50%, transparent)' }}>
             <button
               onClick={() => setFlagsExpanded(!flagsExpanded)}
-              className="w-full flex items-center justify-between text-xs font-medium mb-3"
+              className="w-full flex items-center justify-between text-xs font-normal mb-3"
               style={{ color: 'var(--text-secondary)' }}
             >
               <span className="flex items-center gap-2">
@@ -338,7 +338,7 @@ export default function PostMeetingActions({
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1">
                             <span
-                              className="text-[10px] px-1.5 py-0.5 rounded font-medium"
+                              className="text-[10px] px-1.5 py-0.5 rounded font-normal"
                               style={{ backgroundColor: fStyle.bg, color: fStyle.color }}
                             >
                               {FLAG_TYPE_LABELS[flag.flag_type] || flag.flag_type}

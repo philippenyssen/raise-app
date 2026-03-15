@@ -155,7 +155,7 @@ export default function IntelligencePage() {
       >
         <div className="flex items-center gap-2 mb-2">
           <Search className="w-4 h-4" style={{ color: 'var(--accent)' }} />
-          <span className="text-xs font-medium" style={{ color: 'var(--text-tertiary)' }}>AI Research</span>
+          <span className="text-xs font-normal" style={{ color: 'var(--text-tertiary)' }}>AI Research</span>
         </div>
         <div className="flex gap-2">
           <select
@@ -184,7 +184,7 @@ export default function IntelligencePage() {
             disabled={researching || !researchInput.trim()}
             onMouseEnter={() => setHoveredResearchBtn(true)}
             onMouseLeave={() => setHoveredResearchBtn(false)}
-            className="px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
+            className="px-4 py-2 rounded-lg text-sm font-normal flex items-center gap-2 transition-colors"
             style={{
               background: researching || !researchInput.trim()
                 ? 'var(--surface-3)'
@@ -216,7 +216,7 @@ export default function IntelligencePage() {
           <button
             key={t.key}
             onClick={() => setTab(t.key)}
-            className="px-4 py-2.5 text-sm font-medium flex items-center gap-2"
+            className="px-4 py-2.5 text-sm font-normal flex items-center gap-2"
             style={{
               borderBottom: `2px solid ${tab === t.key ? 'var(--accent)' : 'transparent'}`,
               color: tab === t.key ? 'var(--text-primary)' : 'var(--text-muted)',
@@ -397,7 +397,7 @@ export default function IntelligencePage() {
                       <div className="flex items-center gap-3">
                         <Building2 className="w-5 h-5" style={{ color: 'var(--text-muted)' }} />
                         <div>
-                          <h3 className="font-medium" style={{ color: 'var(--text-primary)' }}>{c.name}</h3>
+                          <h3 className="font-normal" style={{ color: 'var(--text-primary)' }}>{c.name}</h3>
                           <div className="flex gap-2 mt-1">
                             <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{c.sector}</span>
                             {c.hq && <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{c.hq}</span>}
@@ -432,7 +432,7 @@ export default function IntelligencePage() {
                     {c.positioning && <p className="text-xs mt-2 line-clamp-2" style={{ color: 'var(--text-muted)' }}>{c.positioning}</p>}
                     {c.our_advantage && (
                       <div className="mt-2 text-xs">
-                        <span className="font-medium" style={{ color: 'var(--text-secondary)' }}>Our advantage:</span>
+                        <span className="font-normal" style={{ color: 'var(--text-secondary)' }}>Our advantage:</span>
                         <span className="ml-1" style={{ color: 'var(--text-tertiary)' }}>{c.our_advantage}</span>
                       </div>
                     )}
@@ -465,12 +465,12 @@ export default function IntelligencePage() {
                   >
                     <div className="flex items-center gap-3">
                       <span
-                        className="text-xs px-2 py-0.5 rounded font-medium"
+                        className="text-xs px-2 py-0.5 rounded font-normal"
                         style={{ background: briefStyle.background, color: briefStyle.color }}
                       >
                         {b.brief_type}
                       </span>
-                      <span className="font-medium text-sm" style={{ color: 'var(--text-primary)' }}>{b.subject}</span>
+                      <span className="font-normal text-sm" style={{ color: 'var(--text-primary)' }}>{b.subject}</span>
                       <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{b.updated_at?.split('T')[0]}</span>
                       {b.investor_id && (
                         <span className="flex items-center gap-2" onClick={e => e.stopPropagation()}>
@@ -572,7 +572,7 @@ function RecentResearchSection({ briefs }: { briefs: IntelligenceBrief[] }) {
     >
       <div className="px-4 py-3 flex items-center gap-2" style={{ background: 'var(--surface-1)', borderBottom: '1px solid var(--border-default)' }}>
         <Radar className="w-4 h-4" style={{ color: 'var(--accent)' }} />
-        <h2 className="text-xs font-medium  tracking-wider" style={{ color: 'var(--text-tertiary)' }}>
+        <h2 className="text-xs font-normal  tracking-wider" style={{ color: 'var(--text-tertiary)' }}>
           Recent Research
         </h2>
         <span
@@ -605,12 +605,12 @@ function RecentResearchSection({ briefs }: { briefs: IntelligenceBrief[] }) {
                   <Icon className="w-4 h-4" />
                 </span>
                 <span
-                  className="text-[10px] px-1.5 py-0.5 rounded font-medium shrink-0"
+                  className="text-[10px] px-1.5 py-0.5 rounded font-normal shrink-0"
                   style={{ background: briefTypeStyle.background, color: briefTypeStyle.color }}
                 >
                   {brief.brief_type}
                 </span>
-                <span className="text-sm font-medium truncate" style={{ color: 'var(--text-primary)' }}>
+                <span className="text-sm font-normal truncate" style={{ color: 'var(--text-primary)' }}>
                   {brief.subject}
                 </span>
                 <span className="text-xs shrink-0 ml-auto" style={{ color: 'var(--text-muted)' }}>

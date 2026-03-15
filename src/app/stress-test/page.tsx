@@ -264,7 +264,7 @@ export default function StressTestPage() {
       >
         {bannerIcon[data.healthStatus]}
         <div className="flex-1">
-          <div className="text-lg font-semibold" style={bannerTextStyles[data.healthStatus]}>
+          <div className="text-lg font-normal" style={bannerTextStyles[data.healthStatus]}>
             {data.healthMessage}
           </div>
           <div className="flex items-center gap-4 mt-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
@@ -288,7 +288,7 @@ export default function StressTestPage() {
         {/* Close Probability Gauge */}
         <div className="card rounded-xl p-5 flex flex-col items-center justify-center">
           <div className=" tracking-wider" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Close Probability</div>
-          <div className="text-5xl font-bold tabular-nums" style={{ ...probColorStyle(data.closeProbability), marginTop: '0.5rem' }}>
+          <div className="text-5xl font-normal tabular-nums" style={{ ...probColorStyle(data.closeProbability), marginTop: '0.5rem' }}>
             {data.closeProbability}%
           </div>
           <div className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>of hitting EUR {formatEuro(data.target)}</div>
@@ -336,7 +336,7 @@ export default function StressTestPage() {
         >
           <div className="flex items-center gap-2 mb-4">
             <Target className="w-5 h-5" style={{ color: 'var(--text-primary)' }} />
-            <h2 className="text-sm font-semibold " style={{ color: 'var(--text-primary)' }}>
+            <h2 className="text-sm font-normal " style={{ color: 'var(--text-primary)' }}>
               Gap Analysis — EUR {formatEuro(data.shortfall)} Shortfall
             </h2>
           </div>
@@ -355,14 +355,14 @@ export default function StressTestPage() {
                 onMouseLeave={() => setHoveredGap(null)}
               >
                 <span
-                  className="w-6 h-6 rounded flex items-center justify-center text-xs font-bold shrink-0 mt-0.5"
+                  className="w-6 h-6 rounded flex items-center justify-center text-xs font-normal shrink-0 mt-0.5"
                   style={{ background: 'var(--danger-muted)', color: 'var(--text-primary)' }}
                 >
                   {i + 1}
                 </span>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <Link href={`/investors/${gap.id}`} className="text-sm font-medium transition-colors" style={{ color: 'var(--text-primary)' }}>
+                    <Link href={`/investors/${gap.id}`} className="text-sm font-normal transition-colors" style={{ color: 'var(--text-primary)' }}>
                       {gap.name}
                     </Link>
                     <span
@@ -381,7 +381,7 @@ export default function StressTestPage() {
                   </div>
                 </div>
                 <div className="text-right shrink-0">
-                  <div className="text-lg font-bold tabular-nums flex items-center gap-1" style={{ color: 'var(--text-secondary)' }}>
+                  <div className="text-lg font-normal tabular-nums flex items-center gap-1" style={{ color: 'var(--text-secondary)' }}>
                     <ArrowUpRight className="w-4 h-4" />
                     {Math.round(gap.impactDelta)}M
                   </div>
@@ -398,7 +398,7 @@ export default function StressTestPage() {
       {/* ================================================================ */}
       <div className="card rounded-xl overflow-hidden" style={{ padding: 0 }}>
         <div className="p-5 flex items-center justify-between" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-          <h2 className="text-sm font-medium  flex items-center gap-2" style={{ color: 'var(--text-secondary)' }}>
+          <h2 className="text-sm font-normal  flex items-center gap-2" style={{ color: 'var(--text-secondary)' }}>
             <TrendingUp className="w-4 h-4" /> Investor Probability Table
           </h2>
           <div className="flex items-center gap-3">
@@ -463,7 +463,7 @@ export default function StressTestPage() {
                   >
                     <td className="px-4 py-2.5">
                       <div className="flex items-center gap-2">
-                        <Link href={`/investors/${f.id}`} className="font-medium transition-colors truncate max-w-[180px]" style={{ color: 'var(--text-primary)' }}>
+                        <Link href={`/investors/${f.id}`} className="font-normal transition-colors truncate max-w-[180px]" style={{ color: 'var(--text-primary)' }}>
                           {f.name}
                         </Link>
                         <span
@@ -479,7 +479,7 @@ export default function StressTestPage() {
                     </td>
                     <td className="px-3 py-2.5 text-center">
                       {f.enthusiasm > 0 ? (
-                        <span className="text-xs font-medium tabular-nums" style={enthStyle}>{f.enthusiasm}/5</span>
+                        <span className="text-xs font-normal tabular-nums" style={enthStyle}>{f.enthusiasm}/5</span>
                       ) : (
                         <span className="text-xs" style={{ color: 'var(--text-muted)' }}>--</span>
                       )}
@@ -494,12 +494,12 @@ export default function StressTestPage() {
                       <span className="text-xs tabular-nums" style={{ color: 'var(--text-secondary)' }}>{f.checkSizeRange || '--'}</span>
                     </td>
                     <td className="px-3 py-2.5 text-right">
-                      <span className="text-sm font-bold tabular-nums" style={probColorStyle(f.closeProbability)}>
+                      <span className="text-sm font-normal tabular-nums" style={probColorStyle(f.closeProbability)}>
                         {f.closeProbability.toFixed(1)}%
                       </span>
                     </td>
                     <td className="px-3 py-2.5 text-right">
-                      <span className="text-sm font-semibold tabular-nums" style={{ color: 'var(--text-primary)' }}>
+                      <span className="text-sm font-normal tabular-nums" style={{ color: 'var(--text-primary)' }}>
                         {f.expectedValue > 0 ? `EUR ${f.expectedValue.toFixed(1)}M` : '--'}
                       </span>
                     </td>
@@ -545,7 +545,7 @@ export default function StressTestPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Risks */}
         <div className="card">
-          <h2 className="text-sm font-medium  flex items-center gap-2 mb-4" style={{ color: 'var(--text-secondary)' }}>
+          <h2 className="text-sm font-normal  flex items-center gap-2 mb-4" style={{ color: 'var(--text-secondary)' }}>
             <AlertTriangle className="w-4 h-4" /> Risk Scenarios
           </h2>
           {data.risks.length === 0 ? (
@@ -604,7 +604,7 @@ export default function StressTestPage() {
 
         {/* Critical Path */}
         <div className="card">
-          <h2 className="text-sm font-medium  flex items-center gap-2 mb-4" style={{ color: 'var(--text-secondary)' }}>
+          <h2 className="text-sm font-normal  flex items-center gap-2 mb-4" style={{ color: 'var(--text-secondary)' }}>
             <Zap className="w-4 h-4" /> Critical Path
           </h2>
           <div className="mb-4">
@@ -628,7 +628,7 @@ export default function StressTestPage() {
                       onMouseLeave={() => setHoveredCritical(null)}
                     >
                       <span
-                        className="w-5 h-5 rounded flex items-center justify-center font-bold shrink-0"
+                        className="w-5 h-5 rounded flex items-center justify-center font-normal shrink-0"
                         style={{ fontSize: '10px', background: 'var(--accent-muted)', color: 'var(--accent)' }}
                       >
                         {i + 1}
@@ -653,7 +653,7 @@ export default function StressTestPage() {
           <div className="pt-3 flex items-center justify-between" style={{ borderTop: '1px solid var(--border-subtle)' }}>
             <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Total if all close:</span>
             <span
-              className="text-lg font-bold tabular-nums"
+              className="text-lg font-normal tabular-nums"
               style={{ color: data.criticalPath.totalIfAllClose >= data.target ? 'var(--success)' : 'var(--warning)' }}
             >
               EUR {formatEuro(data.criticalPath.totalIfAllClose)}
@@ -686,7 +686,7 @@ export default function StressTestPage() {
         {/* Monte Carlo Confidence Intervals */}
         {data.monteCarlo && (
           <div className="card">
-            <h2 className="text-sm font-medium  flex items-center gap-2 mb-4" style={{ color: 'var(--text-secondary)' }}>
+            <h2 className="text-sm font-normal  flex items-center gap-2 mb-4" style={{ color: 'var(--text-secondary)' }}>
               <BarChart3 className="w-4 h-4" /> Monte Carlo Simulation
             </h2>
             <p className="text-xs mb-4" style={{ color: 'var(--text-muted)' }}>
@@ -705,7 +705,7 @@ export default function StressTestPage() {
                   <div key={label}>
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{label}</span>
-                      <span className="text-sm font-semibold tabular-nums" style={{ color: 'var(--text-secondary)' }}>
+                      <span className="text-sm font-normal tabular-nums" style={{ color: 'var(--text-secondary)' }}>
                         EUR {formatEuro(value)}
                       </span>
                     </div>
@@ -729,7 +729,7 @@ export default function StressTestPage() {
             {/* Probability of reaching target */}
             <div className="pt-3 flex items-center justify-between" style={{ borderTop: '1px solid var(--border-subtle)' }}>
               <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Probability of reaching EUR {formatEuro(data.target)}</span>
-              <span className="text-lg font-bold tabular-nums" style={probColorStyle(data.monteCarlo.probOfTarget)}>
+              <span className="text-lg font-normal tabular-nums" style={probColorStyle(data.monteCarlo.probOfTarget)}>
                 {data.monteCarlo.probOfTarget}%
               </span>
             </div>
@@ -739,7 +739,7 @@ export default function StressTestPage() {
         {/* Calibration Status */}
         {data.calibration && (
           <div className="card">
-            <h2 className="text-sm font-medium  flex items-center gap-2 mb-4" style={{ color: 'var(--text-secondary)' }}>
+            <h2 className="text-sm font-normal  flex items-center gap-2 mb-4" style={{ color: 'var(--text-secondary)' }}>
               <Target className="w-4 h-4" /> Weight Calibration
             </h2>
 
@@ -755,7 +755,7 @@ export default function StressTestPage() {
                 )}
               </div>
               <div>
-                <div className="text-sm font-medium" style={{ color: data.calibration.enabled ? 'var(--success)' : 'var(--text-secondary)' }}>
+                <div className="text-sm font-normal" style={{ color: data.calibration.enabled ? 'var(--success)' : 'var(--text-secondary)' }}>
                   {data.calibration.enabled ? 'Auto-Calibrated' : 'Hardcoded Weights'}
                 </div>
                 <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -825,7 +825,7 @@ function ForecastCard({ label, sublabel, amount, target, color }: {
     >
       <div className=" tracking-wider" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{label}</div>
       <div className="text-xs mb-2" style={{ color: 'var(--text-muted)' }}>{sublabel}</div>
-      <div className="text-3xl font-bold tabular-nums" style={{ color: c.value }}>
+      <div className="text-3xl font-normal tabular-nums" style={{ color: c.value }}>
         EUR {formatEuro(amount)}
       </div>
       <div className="flex items-center gap-2 mt-2">
@@ -845,7 +845,7 @@ function SummaryCard({ label, value }: { label: string; value: string | number }
   return (
     <div className="text-center">
       <div className=" tracking-wider" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{label}</div>
-      <div className="text-xl font-bold tabular-nums mt-1" style={{ color: 'var(--text-secondary)' }}>{value}</div>
+      <div className="text-xl font-normal tabular-nums mt-1" style={{ color: 'var(--text-secondary)' }}>{value}</div>
     </div>
   );
 }

@@ -399,7 +399,7 @@ function MeetingPrepContent() {
 
         {/* Investor selector */}
         <div className="no-print">
-          <label className="text-xs block mb-1.5 font-medium  tracking-wider" style={{ color: 'var(--text-muted)' }}>Select Investor</label>
+          <label className="text-xs block mb-1.5 font-normal  tracking-wider" style={{ color: 'var(--text-muted)' }}>Select Investor</label>
           <div className="relative">
             <select
               value={selectedId}
@@ -443,7 +443,7 @@ function MeetingPrepContent() {
               >
                 <div className="flex items-center gap-2 mb-1">
                   <Sparkles className="w-4 h-4" style={{ color: 'var(--accent)' }} />
-                  <h3 className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
+                  <h3 className="text-sm font-normal" style={{ color: 'var(--text-primary)' }}>
                     Who are you meeting?
                   </h3>
                 </div>
@@ -469,13 +469,13 @@ function MeetingPrepContent() {
                         }}
                       >
                         <div
-                          className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-xs font-bold"
+                          className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-xs font-normal"
                           style={{ background: 'var(--accent-muted)', color: 'var(--accent)' }}
                         >
                           T{inv.tier}
                         </div>
                         <div className="min-w-0 flex-1">
-                          <div className="text-sm font-medium truncate" style={{ color: 'var(--text-primary)' }}>
+                          <div className="text-sm font-normal truncate" style={{ color: 'var(--text-primary)' }}>
                             {inv.name}
                           </div>
                           <div className="flex items-center gap-2">
@@ -535,7 +535,7 @@ function MeetingPrepContent() {
                   onClick={() => setBriefExpanded(!briefExpanded)}
                   className="w-full p-5 flex items-center justify-between no-print"
                 >
-                  <h2 className="text-sm font-semibold  tracking-wider flex items-center gap-2 print-section-title" style={{ color: 'var(--accent)' }}>
+                  <h2 className="text-sm font-normal  tracking-wider flex items-center gap-2 print-section-title" style={{ color: 'var(--accent)' }}>
                     <Sparkles className="w-4 h-4" />
                     Customized Brief for {investor.name} ({TYPE_LABELS[investor.type] || investor.type})
                   </h2>
@@ -545,7 +545,7 @@ function MeetingPrepContent() {
                 </button>
                 {/* Print-only static header */}
                 <div className="hidden print:block p-5 pb-0">
-                  <h2 className="text-sm font-semibold  tracking-wider flex items-center gap-2 print-section-title">
+                  <h2 className="text-sm font-normal  tracking-wider flex items-center gap-2 print-section-title">
                     Customized Brief for {investor.name} ({TYPE_LABELS[investor.type] || investor.type})
                   </h2>
                 </div>
@@ -554,14 +554,14 @@ function MeetingPrepContent() {
                   <div className="px-5 pb-5 space-y-5">
                     {/* Opening Hook */}
                     <div>
-                      <h3 className="text-xs font-medium  tracking-wider mb-2" style={{ color: 'var(--accent)' }}>Opening</h3>
+                      <h3 className="text-xs font-normal  tracking-wider mb-2" style={{ color: 'var(--accent)' }}>Opening</h3>
                       <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{meetingBrief.brief.personalized_opening}</p>
                     </div>
 
                     {/* Narrative Profile */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <h3 className="text-xs font-medium  tracking-wider mb-2" style={{ color: 'var(--accent)' }}>Emphasize</h3>
+                        <h3 className="text-xs font-normal  tracking-wider mb-2" style={{ color: 'var(--accent)' }}>Emphasize</h3>
                         <div className="flex flex-wrap gap-1.5">
                           {meetingBrief.narrative_profile.emphasis.map((e, i) => (
                             <span key={i} className="text-xs px-2 py-1 rounded-md" style={{ background: 'var(--accent-muted)', color: 'var(--accent)' }}>{e}</span>
@@ -569,7 +569,7 @@ function MeetingPrepContent() {
                         </div>
                       </div>
                       <div>
-                        <h3 className="text-xs font-medium  tracking-wider mb-2" style={{ color: 'var(--text-primary)' }}>Avoid</h3>
+                        <h3 className="text-xs font-normal  tracking-wider mb-2" style={{ color: 'var(--text-primary)' }}>Avoid</h3>
                         <div className="flex flex-wrap gap-1.5">
                           {meetingBrief.narrative_profile.avoid_topics.map((t, i) => (
                             <span key={i} className="text-xs px-2 py-1 rounded-md" style={{ background: 'var(--danger-muted)', color: 'var(--text-primary)' }}>{t}</span>
@@ -580,7 +580,7 @@ function MeetingPrepContent() {
 
                     {/* Key Talking Points */}
                     <div>
-                      <h3 className="text-xs font-medium  tracking-wider mb-2 flex items-center gap-1.5" style={{ color: 'var(--accent)' }}>
+                      <h3 className="text-xs font-normal  tracking-wider mb-2 flex items-center gap-1.5" style={{ color: 'var(--accent)' }}>
                         <ListChecks className="w-3.5 h-3.5" />
                         Key Talking Points
                       </h3>
@@ -597,7 +597,7 @@ function MeetingPrepContent() {
                     {/* Key Metrics */}
                     {meetingBrief.brief.metrics_to_highlight.length > 0 && (
                       <div>
-                        <h3 className="text-xs font-medium  tracking-wider mb-2 flex items-center gap-1.5" style={{ color: 'var(--accent)' }}>
+                        <h3 className="text-xs font-normal  tracking-wider mb-2 flex items-center gap-1.5" style={{ color: 'var(--accent)' }}>
                           <Target className="w-3.5 h-3.5" />
                           Key Metrics
                         </h3>
@@ -605,15 +605,15 @@ function MeetingPrepContent() {
                           <table className="w-full text-xs">
                             <thead style={{ background: 'var(--surface-1)', borderBottom: '1px solid var(--border-subtle)' }}>
                               <tr>
-                                <th className="text-left px-3 py-2 font-medium" style={{ color: 'var(--text-muted)' }}>Metric</th>
-                                <th className="text-left px-3 py-2 font-medium" style={{ color: 'var(--text-muted)' }}>Value</th>
-                                <th className="text-left px-3 py-2 font-medium" style={{ color: 'var(--text-muted)' }}>Why It Matters</th>
+                                <th className="text-left px-3 py-2 font-normal" style={{ color: 'var(--text-muted)' }}>Metric</th>
+                                <th className="text-left px-3 py-2 font-normal" style={{ color: 'var(--text-muted)' }}>Value</th>
+                                <th className="text-left px-3 py-2 font-normal" style={{ color: 'var(--text-muted)' }}>Why It Matters</th>
                               </tr>
                             </thead>
                             <tbody>
                               {meetingBrief.brief.metrics_to_highlight.map((m, i) => (
                                 <tr key={i} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-                                  <td className="px-3 py-2 font-medium" style={{ color: 'var(--text-secondary)' }}>{m.metric}</td>
+                                  <td className="px-3 py-2 font-normal" style={{ color: 'var(--text-secondary)' }}>{m.metric}</td>
                                   <td className="px-3 py-2 font-mono" style={{ color: 'var(--accent)' }}>{m.value}</td>
                                   <td className="px-3 py-2" style={{ color: 'var(--text-tertiary)' }}>{m.why}</td>
                                 </tr>
@@ -627,14 +627,14 @@ function MeetingPrepContent() {
                     {/* Anticipated Questions with Answers */}
                     {meetingBrief.brief.anticipated_questions_with_answers.length > 0 && (
                       <div>
-                        <h3 className="text-xs font-medium  tracking-wider mb-2 flex items-center gap-1.5" style={{ color: 'var(--accent)' }}>
+                        <h3 className="text-xs font-normal  tracking-wider mb-2 flex items-center gap-1.5" style={{ color: 'var(--accent)' }}>
                           <MessageCircleQuestion className="w-3.5 h-3.5" />
                           Anticipated Questions + Suggested Answers
                         </h3>
                         <div className="space-y-3">
                           {meetingBrief.brief.anticipated_questions_with_answers.map((qa, i) => (
                             <div key={i} className="rounded-lg p-3">
-                              <p className="text-sm font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>Q: {qa.question}</p>
+                              <p className="text-sm font-normal mb-1.5" style={{ color: 'var(--text-secondary)' }}>Q: {qa.question}</p>
                               <p className="text-xs leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>A: {qa.suggested_answer}</p>
                             </div>
                           ))}
@@ -645,7 +645,7 @@ function MeetingPrepContent() {
                     {/* Data Room Priority */}
                     {meetingBrief.data_room_priority.length > 0 && (
                       <div>
-                        <h3 className="text-xs font-medium  tracking-wider mb-2 flex items-center gap-1.5" style={{ color: 'var(--accent)' }}>
+                        <h3 className="text-xs font-normal  tracking-wider mb-2 flex items-center gap-1.5" style={{ color: 'var(--accent)' }}>
                           <FolderOpen className="w-3.5 h-3.5" />
                           Data Room Priority
                         </h3>
@@ -668,14 +668,14 @@ function MeetingPrepContent() {
                     {/* Previous Meeting + Unresolved Items */}
                     {meetingBrief.brief.previous_meeting_summary && (
                       <div className="pt-4" style={{ borderTop: '1px solid var(--border-subtle)' }}>
-                        <h3 className="text-xs font-medium  tracking-wider mb-2" style={{ color: 'var(--text-muted)' }}>Previous Meeting</h3>
+                        <h3 className="text-xs font-normal  tracking-wider mb-2" style={{ color: 'var(--text-muted)' }}>Previous Meeting</h3>
                         <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>{meetingBrief.brief.previous_meeting_summary}</p>
                       </div>
                     )}
 
                     {meetingBrief.brief.unresolved_items.length > 0 && (
                       <div>
-                        <h3 className="text-xs font-medium  tracking-wider mb-2" style={{ color: 'var(--text-tertiary)' }}>Unresolved Items</h3>
+                        <h3 className="text-xs font-normal  tracking-wider mb-2" style={{ color: 'var(--text-tertiary)' }}>Unresolved Items</h3>
                         <div className="space-y-1.5">
                           {meetingBrief.brief.unresolved_items.map((item, i) => (
                             <div key={i} className="flex items-start gap-2 text-sm">
@@ -692,7 +692,7 @@ function MeetingPrepContent() {
                     {/* Risks to Watch */}
                     {meetingBrief.brief.risks_to_watch.length > 0 && (
                       <div>
-                        <h3 className="text-xs font-medium  tracking-wider mb-2" style={{ color: 'var(--text-primary)' }}>Risks to Watch</h3>
+                        <h3 className="text-xs font-normal  tracking-wider mb-2" style={{ color: 'var(--text-primary)' }}>Risks to Watch</h3>
                         <div className="space-y-1.5">
                           {meetingBrief.brief.risks_to_watch.map((risk, i) => (
                             <div key={i} className="flex items-start gap-2 text-sm">
@@ -708,14 +708,14 @@ function MeetingPrepContent() {
 
                     {/* Recommended Ask */}
                     <div className="pt-4" style={{ borderTop: '1px solid var(--border-subtle)' }}>
-                      <h3 className="text-xs font-medium  tracking-wider mb-2" style={{ color: 'var(--text-secondary)' }}>Recommended Ask</h3>
-                      <p className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>{meetingBrief.brief.recommended_ask}</p>
+                      <h3 className="text-xs font-normal  tracking-wider mb-2" style={{ color: 'var(--text-secondary)' }}>Recommended Ask</h3>
+                      <p className="text-sm font-normal" style={{ color: 'var(--text-secondary)' }}>{meetingBrief.brief.recommended_ask}</p>
                     </div>
 
                     {/* Playbook Insights */}
                     {meetingBrief.playbook_insights.length > 0 && (
                       <div className="pt-4" style={{ borderTop: '1px solid var(--border-subtle)' }}>
-                        <h3 className="text-xs font-medium  tracking-wider mb-2" style={{ color: 'var(--text-tertiary)' }}>Playbook Insights</h3>
+                        <h3 className="text-xs font-normal  tracking-wider mb-2" style={{ color: 'var(--text-tertiary)' }}>Playbook Insights</h3>
                         <div className="space-y-2">
                           {meetingBrief.playbook_insights.map((pi, i) => (
                             <div key={i} className="text-sm">
@@ -733,7 +733,7 @@ function MeetingPrepContent() {
 
                     {/* Tone Guidance */}
                     <div className="pt-4" style={{ borderTop: '1px solid var(--border-subtle)' }}>
-                      <h3 className="text-xs font-medium  tracking-wider mb-2" style={{ color: 'var(--text-muted)' }}>Tone Guidance</h3>
+                      <h3 className="text-xs font-normal  tracking-wider mb-2" style={{ color: 'var(--text-muted)' }}>Tone Guidance</h3>
                       <p className="text-xs italic" style={{ color: 'var(--text-muted)' }}>{meetingBrief.narrative_profile.tone_guidance}</p>
                     </div>
 
@@ -747,7 +747,7 @@ function MeetingPrepContent() {
 
             {/* ============ INVESTOR PROFILE ============ */}
             <section className="rounded-xl p-5 print-card">
-              <h2 className="text-sm font-semibold  tracking-wider mb-4 flex items-center gap-2 print-section-title" style={{ color: 'var(--text-tertiary)' }}>
+              <h2 className="text-sm font-normal  tracking-wider mb-4 flex items-center gap-2 print-section-title" style={{ color: 'var(--text-tertiary)' }}>
                 <span style={{ color: 'var(--accent)' }}><Building2 className="w-4 h-4" /></span>
                 Investor Profile
               </h2>
@@ -777,7 +777,7 @@ function MeetingPrepContent() {
                 <ProfileField label="IC Process" value={investor.ic_process || '—'} />
                 <div>
                   <span className="text-xs block mb-0.5" style={{ color: 'var(--text-muted)' }}>Speed</span>
-                  <span className="text-sm font-medium capitalize" style={SPEED_STYLE[investor.speed] || { color: 'var(--text-tertiary)' }}>
+                  <span className="text-sm font-normal capitalize" style={SPEED_STYLE[investor.speed] || { color: 'var(--text-tertiary)' }}>
                     {investor.speed || '—'}
                   </span>
                 </div>
@@ -811,7 +811,7 @@ function MeetingPrepContent() {
             {/* ============ SUGGESTED TALKING POINTS ============ */}
             {talkingPoints.length > 0 && (
               <section className="rounded-xl p-5 print-card">
-                <h2 className="text-sm font-semibold  tracking-wider mb-4 flex items-center gap-2 print-section-title" style={{ color: 'var(--text-tertiary)' }}>
+                <h2 className="text-sm font-normal  tracking-wider mb-4 flex items-center gap-2 print-section-title" style={{ color: 'var(--text-tertiary)' }}>
                   <span style={{ color: 'var(--text-tertiary)' }}><Zap className="w-4 h-4" /></span>
                   Suggested Talking Points
                 </h2>
@@ -829,7 +829,7 @@ function MeetingPrepContent() {
                           'var(--surface-3)',
                       }} />
                       <div className="flex-1">
-                        <span className="text-xs font-medium px-1.5 py-0.5 rounded mr-2" style={
+                        <span className="text-xs font-normal px-1.5 py-0.5 rounded mr-2" style={
                           tp.category === 'Follow-up' ? { background: 'var(--accent-muted)', color: 'var(--accent)' } :
                           tp.category === 'Objection to preempt' ? { background: 'var(--danger-muted)', color: 'var(--text-primary)' } :
                           tp.category === 'Positive signal' ? { background: 'var(--success-muted)', color: 'var(--text-secondary)' } :
@@ -852,7 +852,7 @@ function MeetingPrepContent() {
             {/* ============ KEY RISKS ============ */}
             {(portfolioConflicts.length > 0 || unresolvedObjections.length > 0 || investor.portfolio_conflicts || enthusiasmTrend === 'declining') && (
               <section className="rounded-xl p-5 print-card" style={{ background: 'var(--danger-muted)' }}>
-                <h2 className="text-sm font-semibold  tracking-wider mb-4 flex items-center gap-2 print-section-title" style={{ color: 'var(--text-primary)' }}>
+                <h2 className="text-sm font-normal  tracking-wider mb-4 flex items-center gap-2 print-section-title" style={{ color: 'var(--text-primary)' }}>
                   <AlertTriangle className="w-4 h-4" />
                   Key Risks to Address
                 </h2>
@@ -863,7 +863,7 @@ function MeetingPrepContent() {
                         <Shield className="w-4 h-4" />
                       </span>
                       <div>
-                        <span className="font-medium" style={{ color: 'var(--text-secondary)' }}>Portfolio Conflict: </span>
+                        <span className="font-normal" style={{ color: 'var(--text-secondary)' }}>Portfolio Conflict: </span>
                         <span style={{ color: 'var(--text-tertiary)' }}>{investor.portfolio_conflicts}</span>
                       </div>
                     </div>
@@ -874,7 +874,7 @@ function MeetingPrepContent() {
                         <Shield className="w-4 h-4" />
                       </span>
                       <div>
-                        <span className="font-medium" style={{ color: 'var(--text-secondary)' }}>Portfolio company overlap: </span>
+                        <span className="font-normal" style={{ color: 'var(--text-secondary)' }}>Portfolio company overlap: </span>
                         <span style={{ color: 'var(--text-tertiary)' }}>{pc.company} ({pc.sector}) -- {pc.relevance}</span>
                       </div>
                     </div>
@@ -889,7 +889,7 @@ function MeetingPrepContent() {
                         <CircleDot className="w-4 h-4" />
                       </span>
                       <div>
-                        <span className="font-medium" style={{ color: 'var(--text-secondary)' }}>
+                        <span className="font-normal" style={{ color: 'var(--text-secondary)' }}>
                           {o.response_effectiveness === 'partial' ? 'Partially addressed' : 'Unresolved'} objection
                           {o.severity === 'showstopper' ? ' (SHOWSTOPPER)' : ''}:
                         </span>{' '}
@@ -904,7 +904,7 @@ function MeetingPrepContent() {
                         <TrendingUp className="w-4 h-4" />
                       </span>
                       <div>
-                        <span className="font-medium" style={{ color: 'var(--text-secondary)' }}>Declining enthusiasm: </span>
+                        <span className="font-normal" style={{ color: 'var(--text-secondary)' }}>Declining enthusiasm: </span>
                         <span style={{ color: 'var(--text-tertiary)' }}>
                           Enthusiasm score has dropped across meetings. Identify what changed and counter it.
                         </span>
@@ -917,7 +917,7 @@ function MeetingPrepContent() {
 
             {/* ============ MEETING HISTORY ============ */}
             <section className="rounded-xl p-5 print-card">
-              <h2 className="text-sm font-semibold  tracking-wider mb-4 flex items-center gap-2 print-section-title" style={{ color: 'var(--text-tertiary)' }}>
+              <h2 className="text-sm font-normal  tracking-wider mb-4 flex items-center gap-2 print-section-title" style={{ color: 'var(--text-tertiary)' }}>
                 <span style={{ color: 'var(--accent)' }}><Calendar className="w-4 h-4" /></span>
                 Meeting History
                 <span className="text-xs font-normal ml-1" style={{ color: 'var(--text-muted)' }}>({meetings.length} meetings)</span>
@@ -939,7 +939,7 @@ function MeetingPrepContent() {
             {/* ============ INTELLIGENCE ============ */}
             {(briefs.length > 0 || partners.length > 0 || portfolio.length > 0) && (
               <section className="rounded-xl p-5 print-card">
-                <h2 className="text-sm font-semibold  tracking-wider mb-4 flex items-center gap-2 print-section-title" style={{ color: 'var(--text-tertiary)' }}>
+                <h2 className="text-sm font-normal  tracking-wider mb-4 flex items-center gap-2 print-section-title" style={{ color: 'var(--text-tertiary)' }}>
                   <span style={{ color: 'var(--accent)' }}><BookOpen className="w-4 h-4" /></span>
                   Intelligence
                 </h2>
@@ -947,12 +947,12 @@ function MeetingPrepContent() {
                 {/* Research briefs */}
                 {briefs.length > 0 && (
                   <div className="mb-4">
-                    <h3 className="text-xs font-medium  tracking-wider mb-2" style={{ color: 'var(--text-muted)' }}>Research Briefs</h3>
+                    <h3 className="text-xs font-normal  tracking-wider mb-2" style={{ color: 'var(--text-muted)' }}>Research Briefs</h3>
                     <div className="space-y-2">
                       {briefs.map(b => (
                         <details key={b.id} className="group rounded-lg overflow-hidden">
                           <summary className="flex items-center gap-2 px-3 py-2 cursor-pointer text-sm">
-                            <span className="text-xs px-1.5 py-0.5 rounded font-medium" style={
+                            <span className="text-xs px-1.5 py-0.5 rounded font-normal" style={
                               b.brief_type === 'investor' ? { background: 'var(--accent-muted)', color: 'var(--accent)' } :
                               b.brief_type === 'competitor' ? { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' } :
                               { background: 'var(--surface-2)', color: 'var(--text-tertiary)' }
@@ -972,13 +972,13 @@ function MeetingPrepContent() {
                 {/* Partner profiles */}
                 {partners.length > 0 && (
                   <div className="mb-4">
-                    <h3 className="text-xs font-medium  tracking-wider mb-2" style={{ color: 'var(--text-muted)' }}>Partner Profiles</h3>
+                    <h3 className="text-xs font-normal  tracking-wider mb-2" style={{ color: 'var(--text-muted)' }}>Partner Profiles</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                       {partners.map(p => (
                         <div key={p.id} className="rounded-lg p-3">
                           <div className="flex items-center gap-2 mb-1">
                             <span style={{ color: 'var(--text-muted)' }}><Users className="w-3.5 h-3.5" /></span>
-                            <span className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>{p.name}</span>
+                            <span className="text-sm font-normal" style={{ color: 'var(--text-secondary)' }}>{p.name}</span>
                           </div>
                           {p.title && <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{p.title}</p>}
                           {p.focus_areas && <p className="text-xs mt-1" style={{ color: 'var(--text-tertiary)' }}>Focus: {p.focus_areas}</p>}
@@ -993,15 +993,15 @@ function MeetingPrepContent() {
                 {/* Portfolio companies */}
                 {portfolio.length > 0 && (
                   <div>
-                    <h3 className="text-xs font-medium  tracking-wider mb-2" style={{ color: 'var(--text-muted)' }}>Portfolio Companies</h3>
+                    <h3 className="text-xs font-normal  tracking-wider mb-2" style={{ color: 'var(--text-muted)' }}>Portfolio Companies</h3>
                     <div className="rounded-lg overflow-hidden">
                       <table className="w-full text-xs">
                         <thead style={{ background: 'var(--surface-1)', borderBottom: '1px solid var(--border-subtle)' }}>
                           <tr>
-                            <th className="text-left px-3 py-2 font-medium" style={{ color: 'var(--text-muted)' }}>Company</th>
-                            <th className="text-left px-3 py-2 font-medium" style={{ color: 'var(--text-muted)' }}>Sector</th>
-                            <th className="text-left px-3 py-2 font-medium" style={{ color: 'var(--text-muted)' }}>Stage</th>
-                            <th className="text-left px-3 py-2 font-medium" style={{ color: 'var(--text-muted)' }}>Relevance</th>
+                            <th className="text-left px-3 py-2 font-normal" style={{ color: 'var(--text-muted)' }}>Company</th>
+                            <th className="text-left px-3 py-2 font-normal" style={{ color: 'var(--text-muted)' }}>Sector</th>
+                            <th className="text-left px-3 py-2 font-normal" style={{ color: 'var(--text-muted)' }}>Stage</th>
+                            <th className="text-left px-3 py-2 font-normal" style={{ color: 'var(--text-muted)' }}>Relevance</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -1010,7 +1010,7 @@ function MeetingPrepContent() {
                               borderBottom: '1px solid var(--border-subtle)',
                               background: pc.relevance?.toLowerCase().includes('conflict') ? 'var(--danger-muted)' : undefined,
                             }}>
-                              <td className="px-3 py-2 font-medium" style={{ color: 'var(--text-secondary)' }}>{pc.company}</td>
+                              <td className="px-3 py-2 font-normal" style={{ color: 'var(--text-secondary)' }}>{pc.company}</td>
                               <td className="px-3 py-2" style={{ color: 'var(--text-muted)' }}>{pc.sector}</td>
                               <td className="px-3 py-2" style={{ color: 'var(--text-muted)' }}>{pc.stage_invested}</td>
                               <td className="px-3 py-2" style={{ color: 'var(--text-tertiary)' }}>{pc.relevance || '—'}</td>
@@ -1026,7 +1026,7 @@ function MeetingPrepContent() {
 
             {/* ============ OPEN TASKS ============ */}
             <section className="rounded-xl p-5 print-card">
-              <h2 className="text-sm font-semibold  tracking-wider mb-4 flex items-center gap-2 print-section-title" style={{ color: 'var(--text-tertiary)' }}>
+              <h2 className="text-sm font-normal  tracking-wider mb-4 flex items-center gap-2 print-section-title" style={{ color: 'var(--text-tertiary)' }}>
                 <span style={{ color: 'var(--text-secondary)' }}><CheckCircle className="w-4 h-4" /></span>
                 Open Tasks
                 <span className="text-xs font-normal ml-1" style={{ color: 'var(--text-muted)' }}>
@@ -1047,7 +1047,7 @@ function MeetingPrepContent() {
                       }} />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className="font-medium" style={{ color: 'var(--text-secondary)' }}>{t.title}</span>
+                          <span className="font-normal" style={{ color: 'var(--text-secondary)' }}>{t.title}</span>
                           <span className="text-xs px-1.5 py-0.5 rounded" style={
                             t.status === 'in_progress' ? { background: 'var(--accent-muted)', color: 'var(--accent)' } : { background: 'var(--surface-2)', color: 'var(--text-muted)' }
                           }>{t.status === 'in_progress' ? 'In Progress' : 'Pending'}</span>
@@ -1079,7 +1079,7 @@ function MeetingPrepContent() {
 
             {/* ============ PRE-MEETING NOTES ============ */}
             <section className="rounded-xl p-5 print-card">
-              <h2 className="text-sm font-semibold  tracking-wider mb-4 flex items-center gap-2 print-section-title" style={{ color: 'var(--text-tertiary)' }}>
+              <h2 className="text-sm font-normal  tracking-wider mb-4 flex items-center gap-2 print-section-title" style={{ color: 'var(--text-tertiary)' }}>
                 <span style={{ color: 'var(--text-tertiary)' }}><MessageSquare className="w-4 h-4" /></span>
                 Pre-Meeting Notes
               </h2>
@@ -1117,7 +1117,7 @@ function GenerateBriefButton({ generating, onClick }: { generating: boolean; onC
     <button
       onClick={onClick}
       disabled={generating}
-      className="no-print px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 disabled:opacity-50"
+      className="no-print px-4 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2 disabled:opacity-50"
       style={{
         background: hovered ? 'var(--accent)' : 'var(--accent)',
         color: 'var(--surface-0)',
@@ -1140,7 +1140,7 @@ function PrintButton({ onClick }: { onClick: () => void }) {
   return (
     <button
       onClick={onClick}
-      className="no-print px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+      className="no-print px-4 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2"
       style={{
         background: hovered ? 'var(--surface-3)' : 'var(--surface-2)',
         color: 'var(--text-primary)',
@@ -1186,7 +1186,7 @@ function MeetingCard({ meeting: m, objs }: { meeting: Meeting; objs: Objection[]
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>{formatDate(m.date)}</span>
+            <span className="text-sm font-normal" style={{ color: 'var(--text-secondary)' }}>{formatDate(m.date)}</span>
             <span className="text-xs px-2 py-0.5 rounded" style={{ background: 'var(--surface-2)', color: 'var(--text-tertiary)' }}>
               {meetingTypeLabel(m.type)}
             </span>
@@ -1220,7 +1220,7 @@ function MeetingCard({ meeting: m, objs }: { meeting: Meeting; objs: Objection[]
 
       {objs.length > 0 && (
         <div className="mt-2">
-          <span className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>Objections: </span>
+          <span className="text-xs font-normal" style={{ color: 'var(--text-muted)' }}>Objections: </span>
           <div className="flex flex-wrap gap-1 mt-1">
             {objs.map((o, i) => (
               <span key={i} className="text-xs px-2 py-0.5 rounded" style={
@@ -1238,7 +1238,7 @@ function MeetingCard({ meeting: m, objs }: { meeting: Meeting; objs: Objection[]
 
       {m.next_steps && (
         <div className="mt-2">
-          <span className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>Next Steps: </span>
+          <span className="text-xs font-normal" style={{ color: 'var(--text-muted)' }}>Next Steps: </span>
           <span className="text-xs" style={{ color: 'var(--text-tertiary)' }}>{m.next_steps}</span>
         </div>
       )}
@@ -1257,7 +1257,7 @@ function ProfileField({ label, value, bold, badge, badgeStyle }: {
     <div>
       <span className="text-xs block mb-0.5" style={{ color: 'var(--text-muted)' }}>{label}</span>
       {badge ? (
-        <span className="text-xs font-medium px-2 py-0.5 rounded" style={badgeStyle || { background: 'var(--surface-2)', color: 'var(--text-tertiary)' }}>
+        <span className="text-xs font-normal px-2 py-0.5 rounded" style={badgeStyle || { background: 'var(--surface-2)', color: 'var(--text-tertiary)' }}>
           {value}
         </span>
       ) : (

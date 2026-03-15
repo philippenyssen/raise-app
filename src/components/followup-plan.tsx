@@ -103,7 +103,7 @@ export default function FollowupPlan({
       >
         <div className="flex items-center gap-2">
           <SendHorizonal className="w-5 h-5" style={{ color: 'var(--accent)' }} />
-          <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>Follow-up Plan</h2>
+          <h2 className="text-lg font-normal" style={{ color: 'var(--text-primary)' }}>Follow-up Plan</h2>
           <span className="text-xs ml-2" style={{ color: 'var(--text-muted)' }}>{pending.length} pending</span>
         </div>
         {expanded
@@ -163,7 +163,7 @@ export default function FollowupPlan({
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-0.5">
                         <span
-                          className="text-[10px] px-1.5 py-0.5 rounded font-medium "
+                          className="text-[10px] px-1.5 py-0.5 rounded font-normal "
                           style={{
                             backgroundColor: isDone
                               ? 'var(--surface-2)'
@@ -204,7 +204,7 @@ export default function FollowupPlan({
                             onClick={() => handleAction(item.id, 'completed')}
                             onMouseEnter={() => setHoveredDone(item.id)}
                             onMouseLeave={() => setHoveredDone(null)}
-                            className="flex items-center gap-1 px-2 py-1 rounded text-[10px] font-medium transition-colors"
+                            className="flex items-center gap-1 px-2 py-1 rounded text-[10px] font-normal transition-colors"
                             style={{
                               backgroundColor: hoveredDone === item.id
                                 ? 'color-mix(in srgb, var(--success) 30%, transparent)'
@@ -218,7 +218,7 @@ export default function FollowupPlan({
                             onClick={() => handleAction(item.id, 'skipped')}
                             onMouseEnter={() => setHoveredSkip(item.id)}
                             onMouseLeave={() => setHoveredSkip(null)}
-                            className="flex items-center gap-1 px-2 py-1 rounded text-[10px] font-medium transition-colors"
+                            className="flex items-center gap-1 px-2 py-1 rounded text-[10px] font-normal transition-colors"
                             style={{
                               backgroundColor: hoveredSkip === item.id ? 'var(--surface-3)' : 'var(--surface-2)',
                               color: 'var(--text-muted)',

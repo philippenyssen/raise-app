@@ -259,7 +259,7 @@ export default function MomentumPage() {
               }}
             >
               <DirIcon className="w-4 h-4" style={{ color: dirConfig.color }} />
-              <span className="text-sm font-medium" style={{ color: dirConfig.color }}>{dirConfig.label}</span>
+              <span className="text-sm font-normal" style={{ color: dirConfig.color }}>{dirConfig.label}</span>
             </div>
           </div>
           <button
@@ -281,7 +281,7 @@ export default function MomentumPage() {
         >
           <div className="flex items-center gap-2 mb-4">
             <Flame className="w-4 h-4" style={{ color: 'var(--text-secondary)' }} />
-            <h2 className="text-sm font-semibold  tracking-wider" style={{ color: 'var(--text-secondary)' }}>Pipeline Momentum &mdash; 8 Week Trend</h2>
+            <h2 className="text-sm font-normal  tracking-wider" style={{ color: 'var(--text-secondary)' }}>Pipeline Momentum &mdash; 8 Week Trend</h2>
           </div>
           <div className="flex items-end gap-2 h-32">
             {data.overallTrend.map((t, i) => {
@@ -308,7 +308,7 @@ export default function MomentumPage() {
         {/* ── Trajectory Early Warning ──────────────────────────────── */}
         {data.trajectoryAlerts && data.trajectoryAlerts.length > 0 && (
           <div className="space-y-2">
-            <h3 className="text-sm font-medium flex items-center gap-2" style={{ color: 'var(--text-secondary)' }}>
+            <h3 className="text-sm font-normal flex items-center gap-2" style={{ color: 'var(--text-secondary)' }}>
               Trajectory Alerts
               <span
                 className="text-[10px] px-1.5 py-0.5 rounded"
@@ -343,8 +343,8 @@ export default function MomentumPage() {
                 >
                   <div className="flex items-center justify-between mb-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-bold ">{labels[alert.type]}</span>
-                      <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{alert.investorName}</span>
+                      <span className="text-[10px] font-normal ">{labels[alert.type]}</span>
+                      <span className="text-sm font-normal" style={{ color: 'var(--text-primary)' }}>{alert.investorName}</span>
                     </div>
                     <div className="flex items-center gap-3 text-xs">
                       <span>Score: {alert.currentScore}</span>
@@ -353,7 +353,7 @@ export default function MomentumPage() {
                         {alert.slopePerWeek >= 0 ? '+' : ''}{alert.slopePerWeek}/wk
                       </span>
                       {alert.daysToThreshold && (
-                        <span className="font-medium">~{alert.daysToThreshold}d to threshold</span>
+                        <span className="font-normal">~{alert.daysToThreshold}d to threshold</span>
                       )}
                     </div>
                   </div>
@@ -362,7 +362,7 @@ export default function MomentumPage() {
                     <div className="flex items-center gap-2 ml-4 shrink-0">
                       <Link
                         href={`/meetings/new?investor=${alert.investorId}`}
-                        className="px-2.5 py-1 rounded text-[11px] font-medium transition-colors"
+                        className="px-2.5 py-1 rounded text-[11px] font-normal transition-colors"
                         style={{ background: 'rgba(27, 42, 74,0.15)', color: 'var(--accent)', border: '1px solid rgba(27, 42, 74,0.25)' }}
                         onMouseEnter={e => { e.currentTarget.style.background = 'rgba(27, 42, 74,0.3)'; }}
                         onMouseLeave={e => { e.currentTarget.style.background = 'rgba(27, 42, 74,0.15)'; }}
@@ -371,7 +371,7 @@ export default function MomentumPage() {
                       </Link>
                       <Link
                         href={`/investors/${alert.investorId}`}
-                        className="px-2.5 py-1 rounded text-[11px] font-medium transition-colors"
+                        className="px-2.5 py-1 rounded text-[11px] font-normal transition-colors"
                         style={{ background: 'var(--surface-2)', color: 'var(--text-secondary)' }}
                         onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-3)'; }}
                         onMouseLeave={e => { e.currentTarget.style.background = 'var(--surface-2)'; }}
@@ -398,7 +398,7 @@ export default function MomentumPage() {
             style={{ borderBottom: '1px solid var(--border-default)' }}
           >
             <Eye className="w-4 h-4" style={{ color: 'var(--accent)' }} />
-            <h2 className="text-sm font-semibold  tracking-wider" style={{ color: 'var(--text-secondary)' }}>Investor Momentum Heatmap</h2>
+            <h2 className="text-sm font-normal  tracking-wider" style={{ color: 'var(--text-secondary)' }}>Investor Momentum Heatmap</h2>
             <span className="ml-auto text-xs" style={{ color: 'var(--text-muted)' }}>{data.matrix.length} active investors &middot; Score 0-100</span>
           </div>
           <div className="overflow-x-auto">
@@ -406,20 +406,20 @@ export default function MomentumPage() {
               <thead>
                 <tr style={{ background: 'var(--surface-1)' }}>
                   <th
-                    className="sticky left-0 z-10 text-left px-4 py-3 font-medium text-xs  tracking-wider min-w-[200px]"
+                    className="sticky left-0 z-10 text-left px-4 py-3 font-normal text-xs  tracking-wider min-w-[200px]"
                     style={{ background: 'var(--surface-1)', color: 'var(--text-muted)' }}
                   >
                     Investor
                   </th>
                   {data.weeks.map(w => (
-                    <th key={w} className="px-2 py-3 font-medium text-xs text-center min-w-[72px]" style={{ color: 'var(--text-muted)' }}>
+                    <th key={w} className="px-2 py-3 font-normal text-xs text-center min-w-[72px]" style={{ color: 'var(--text-muted)' }}>
                       {formatWeekLabel(w)}
                     </th>
                   ))}
-                  <th className="px-3 py-3 font-medium text-xs text-center min-w-[60px]" style={{ color: 'var(--text-muted)' }}>
+                  <th className="px-3 py-3 font-normal text-xs text-center min-w-[60px]" style={{ color: 'var(--text-muted)' }}>
                     &Delta;
                   </th>
-                  <th className="px-2 py-3 font-medium text-xs text-center min-w-[40px]" style={{ color: 'var(--text-muted)' }}>
+                  <th className="px-2 py-3 font-normal text-xs text-center min-w-[40px]" style={{ color: 'var(--text-muted)' }}>
                   </th>
                 </tr>
               </thead>
@@ -455,13 +455,13 @@ export default function MomentumPage() {
                         <div className="flex items-center gap-2">
                           <Link
                             href={`/investors/${inv.investorId}`}
-                            className="font-medium truncate max-w-[120px]"
+                            className="font-normal truncate max-w-[120px]"
                             style={{ color: 'var(--text-primary)' }}
                           >
                             {inv.investorName}
                           </Link>
                           <span
-                            className="px-1.5 py-0.5 rounded text-[10px] font-semibold"
+                            className="px-1.5 py-0.5 rounded text-[10px] font-normal"
                             style={{
                               background: tc.bg,
                               color: tc.color,
@@ -488,7 +488,7 @@ export default function MomentumPage() {
                         return (
                           <td key={ws.week} className="px-1 py-1.5 text-center">
                             <div
-                              className="inline-flex items-center justify-center w-14 h-8 rounded font-mono text-xs font-semibold transition-all"
+                              className="inline-flex items-center justify-center w-14 h-8 rounded font-mono text-xs font-normal transition-all"
                               style={{
                                 ...scoreColorStyle(ws.score),
                                 ...(isAnomalyCell ? {
@@ -505,7 +505,7 @@ export default function MomentumPage() {
                       {/* Delta column */}
                       <td className="px-3 py-2.5 text-center">
                         <div
-                          className="inline-flex items-center gap-0.5 text-xs font-mono font-semibold"
+                          className="inline-flex items-center gap-0.5 text-xs font-mono font-normal"
                           style={{
                             color: delta > 0
                               ? 'var(--success, rgba(27, 42, 74, 0.06))'
@@ -586,7 +586,7 @@ export default function MomentumPage() {
           >
             <div className="flex items-center gap-2 mb-4">
               <Users className="w-4 h-4" style={{ color: 'var(--text-secondary)' }} />
-              <h2 className="text-sm font-semibold  tracking-wider" style={{ color: 'var(--text-secondary)' }}>Cohort Momentum</h2>
+              <h2 className="text-sm font-normal  tracking-wider" style={{ color: 'var(--text-secondary)' }}>Cohort Momentum</h2>
             </div>
             {data.cohorts.length === 0 ? (
               <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No cohort data available.</p>
@@ -603,7 +603,7 @@ export default function MomentumPage() {
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-2">
                           <span
-                            className="px-2 py-0.5 rounded text-xs font-semibold"
+                            className="px-2 py-0.5 rounded text-xs font-normal"
                             style={{
                               background: tc.bg,
                               color: tc.color,
@@ -617,7 +617,7 @@ export default function MomentumPage() {
                           <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{cohort.memberCount} investors</span>
                         </div>
                         <div
-                          className="flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium"
+                          className="flex items-center gap-1 px-2 py-0.5 rounded text-xs font-normal"
                           style={{ background: trendCfg.bg, color: trendCfg.color }}
                         >
                           <TrendIcon className="w-3 h-3" />
@@ -668,10 +668,10 @@ export default function MomentumPage() {
           >
             <div className="flex items-center gap-2 mb-4">
               <Zap className="w-4 h-4" style={{ color: 'var(--text-tertiary)' }} />
-              <h2 className="text-sm font-semibold  tracking-wider" style={{ color: 'var(--text-secondary)' }}>Momentum Anomalies</h2>
+              <h2 className="text-sm font-normal  tracking-wider" style={{ color: 'var(--text-secondary)' }}>Momentum Anomalies</h2>
               {data.anomalies.length > 0 && (
                 <span
-                  className="ml-auto px-2 py-0.5 rounded-full text-xs font-semibold"
+                  className="ml-auto px-2 py-0.5 rounded-full text-xs font-normal"
                   style={{
                     background: 'var(--warning-muted, rgba(138, 136, 128,0.4))',
                     color: 'var(--text-tertiary)',
@@ -722,13 +722,13 @@ export default function MomentumPage() {
                           <div className="flex items-center gap-2 mb-1">
                             <Link
                               href={`/investors/${anomaly.investorId}`}
-                              className="text-sm font-medium"
+                              className="text-sm font-normal"
                               style={{ color: 'var(--text-primary)' }}
                             >
                               {anomaly.investorName}
                             </Link>
                             <span
-                              className="px-1.5 py-0.5 rounded text-[10px] font-semibold"
+                              className="px-1.5 py-0.5 rounded text-[10px] font-normal"
                               style={{
                                 background: tc.bg,
                                 color: tc.color,
@@ -740,7 +740,7 @@ export default function MomentumPage() {
                               {TYPE_LABELS[anomaly.type] || anomaly.type}
                             </span>
                             <span
-                              className="text-xs font-mono font-semibold"
+                              className="text-xs font-mono font-normal"
                               style={{ color: isAbove ? 'var(--success)' : 'var(--danger)' }}
                             >
                               {anomaly.deviation > 0 ? '+' : ''}{anomaly.deviation}pts
@@ -750,7 +750,7 @@ export default function MomentumPage() {
                             <p className="text-xs flex-1" style={{ color: 'var(--text-muted)' }}>{anomaly.message}</p>
                             <Link
                               href={isAbove ? `/meetings/prep?investor=${anomaly.investorId}` : `/meetings/new?investor=${anomaly.investorId}`}
-                              className="ml-3 px-2 py-0.5 rounded text-[10px] font-medium shrink-0 transition-colors"
+                              className="ml-3 px-2 py-0.5 rounded text-[10px] font-normal shrink-0 transition-colors"
                               style={{
                                 background: isAbove ? 'rgba(27, 42, 74,0.3)' : 'rgba(26, 26, 46,0.3)',
                                 color: isAbove ? 'var(--success)' : 'var(--danger)',
@@ -782,9 +782,9 @@ export default function MomentumPage() {
           >
             <div className="flex items-center gap-2 mb-4">
               <AlertTriangle className="w-4 h-4" style={{ color: 'var(--text-primary)' }} />
-              <h2 className="text-sm font-semibold  tracking-wider" style={{ color: 'var(--text-secondary)' }}>Cross-Investor Signals</h2>
+              <h2 className="text-sm font-normal  tracking-wider" style={{ color: 'var(--text-secondary)' }}>Cross-Investor Signals</h2>
               <span
-                className="ml-auto px-2 py-0.5 rounded-full text-xs font-semibold"
+                className="ml-auto px-2 py-0.5 rounded-full text-xs font-normal"
                 style={{
                   background: 'var(--danger-muted, rgba(26, 26, 46,0.4))',
                   color: 'var(--text-primary)',
@@ -846,9 +846,9 @@ export default function MomentumPage() {
           >
             <div className="flex items-center gap-2 mb-4">
               <Clock className="w-4 h-4" style={{ color: 'var(--text-tertiary)' }} />
-              <h2 className="text-sm font-semibold  tracking-wider" style={{ color: 'var(--text-secondary)' }}>Timing Signals</h2>
+              <h2 className="text-sm font-normal  tracking-wider" style={{ color: 'var(--text-secondary)' }}>Timing Signals</h2>
               <span
-                className="ml-auto px-2 py-0.5 rounded-full text-xs font-semibold"
+                className="ml-auto px-2 py-0.5 rounded-full text-xs font-normal"
                 style={{
                   background: 'var(--warning-muted, rgba(138, 136, 128,0.4))',
                   color: 'var(--text-tertiary)',
@@ -890,13 +890,13 @@ export default function MomentumPage() {
                   >
                     <div className="flex items-center gap-2 mb-1.5">
                       <span
-                        className="text-[10px] font-bold "
+                        className="text-[10px] font-normal "
                         style={{ color: typeIconColors[signal.type] || 'var(--text-secondary)' }}
                       >
                         {typeLabels[signal.type] || signal.type}
                       </span>
                       <span
-                        className="text-[9px] px-1.5 py-0.5 rounded font-semibold"
+                        className="text-[9px] px-1.5 py-0.5 rounded font-normal"
                         style={{
                           background: us.bg,
                           color: us.color,
@@ -937,7 +937,7 @@ export default function MomentumPage() {
           >
             <div className="flex items-center gap-2 mb-4">
               <MessageSquare className="w-4 h-4" style={{ color: 'var(--text-secondary)' }} />
-              <h2 className="text-sm font-semibold  tracking-wider" style={{ color: 'var(--text-secondary)' }}>Narrative Health by Type</h2>
+              <h2 className="text-sm font-normal  tracking-wider" style={{ color: 'var(--text-secondary)' }}>Narrative Health by Type</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
               {data.narrativeHealth.map((nh) => {
@@ -959,7 +959,7 @@ export default function MomentumPage() {
                   >
                     <div className="flex items-center justify-between mb-3">
                       <span
-                        className="px-2 py-0.5 rounded text-xs font-semibold"
+                        className="px-2 py-0.5 rounded text-xs font-normal"
                         style={{
                           background: tc.bg,
                           color: tc.color,
@@ -970,13 +970,13 @@ export default function MomentumPage() {
                       >
                         {TYPE_LABELS[nh.investorType] || nh.investorType}
                       </span>
-                      <span className="text-[10px] font-bold " style={{ color: sc.color }}>{sc.label}</span>
+                      <span className="text-[10px] font-normal " style={{ color: sc.color }}>{sc.label}</span>
                     </div>
                     <div className="grid grid-cols-2 gap-2 text-xs">
                       <div>
                         <span style={{ color: 'var(--text-muted)' }}>Enthusiasm</span>
                         <div
-                          className="font-semibold tabular-nums"
+                          className="font-normal tabular-nums"
                           style={{ color: nh.avgEnthusiasm >= 3 ? 'var(--success, rgba(27, 42, 74, 0.06))' : 'var(--danger, rgba(26, 26, 46, 0.06))' }}
                         >
                           {nh.avgEnthusiasm.toFixed(1)}/5
@@ -985,7 +985,7 @@ export default function MomentumPage() {
                       <div>
                         <span style={{ color: 'var(--text-muted)' }}>Conversion</span>
                         <div
-                          className="font-semibold tabular-nums"
+                          className="font-normal tabular-nums"
                           style={{ color: nh.conversionRate >= 20 ? 'var(--success, rgba(27, 42, 74, 0.06))' : 'var(--danger, rgba(26, 26, 46, 0.06))' }}
                         >
                           {nh.conversionRate}%
@@ -999,7 +999,7 @@ export default function MomentumPage() {
                         </div>
                         <Link
                           href="/objections"
-                          className="text-[10px] font-medium shrink-0 ml-2 transition-colors"
+                          className="text-[10px] font-normal shrink-0 ml-2 transition-colors"
                           style={{ color: 'var(--accent)' }}
                           onMouseEnter={e => { e.currentTarget.style.opacity = '0.7'; }}
                           onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}

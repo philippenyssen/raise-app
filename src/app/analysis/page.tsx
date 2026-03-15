@@ -131,7 +131,7 @@ export default function AnalysisPage() {
               >
                 <div className="flex items-center gap-3 mb-3">
                   <span
-                    className="text-lg font-bold "
+                    className="text-lg font-normal "
                     style={{ color: hs.color }}
                   >
                     {data.health.health}
@@ -142,7 +142,7 @@ export default function AnalysisPage() {
                 {data.health.recommendations.length > 0 && (
                   <div>
                     <h4
-                      className="text-xs font-medium mb-2"
+                      className="text-xs font-normal mb-2"
                       style={{ color: 'var(--text-muted)' }}
                     >
                       RECOMMENDATIONS
@@ -167,7 +167,7 @@ export default function AnalysisPage() {
                 className="rounded-xl p-6"
                 style={{  }}
               >
-                <h2 className="text-sm font-medium mb-3" style={{ color: 'var(--text-secondary)' }}>
+                <h2 className="text-sm font-normal mb-3" style={{ color: 'var(--text-secondary)' }}>
                   OVERALL ASSESSMENT
                 </h2>
                 <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
@@ -178,7 +178,7 @@ export default function AnalysisPage() {
               {/* Story Effectiveness */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="rounded-xl p-5" style={{  }}>
-                  <h3 className="text-xs font-medium mb-3" style={{ color: 'var(--text-secondary)' }}>
+                  <h3 className="text-xs font-normal mb-3" style={{ color: 'var(--text-secondary)' }}>
                     LANDING WELL
                   </h3>
                   <ul className="space-y-1.5">
@@ -191,7 +191,7 @@ export default function AnalysisPage() {
                   </ul>
                 </div>
                 <div className="rounded-xl p-5" style={{  }}>
-                  <h3 className="text-xs font-medium mb-3" style={{ color: 'var(--text-tertiary)' }}>
+                  <h3 className="text-xs font-normal mb-3" style={{ color: 'var(--text-tertiary)' }}>
                     GENERATING EXCITEMENT
                   </h3>
                   <ul className="space-y-1.5">
@@ -201,7 +201,7 @@ export default function AnalysisPage() {
                   </ul>
                 </div>
                 <div className="rounded-xl p-5" style={{  }}>
-                  <h3 className="text-xs font-medium mb-3" style={{ color: 'var(--text-primary)' }}>
+                  <h3 className="text-xs font-normal mb-3" style={{ color: 'var(--text-primary)' }}>
                     FALLING FLAT
                   </h3>
                   <ul className="space-y-1.5">
@@ -215,7 +215,7 @@ export default function AnalysisPage() {
               {/* Top Objections with Recommendations */}
               {data.patterns.top_objections.length > 0 && (
                 <div className="rounded-xl p-6" style={{  }}>
-                  <h2 className="text-sm font-medium mb-4" style={{ color: 'var(--text-secondary)' }}>
+                  <h2 className="text-sm font-normal mb-4" style={{ color: 'var(--text-secondary)' }}>
                     Top objections + recommended responses
                   </h2>
                   <div className="space-y-4">
@@ -226,7 +226,7 @@ export default function AnalysisPage() {
                         style={{  }}
                       >
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
+                          <span className="text-sm font-normal" style={{ color: 'var(--text-primary)' }}>
                             {obj.text}
                           </span>
                           <span
@@ -249,7 +249,7 @@ export default function AnalysisPage() {
               {/* Material Changes */}
               {data.patterns.material_changes.length > 0 && (
                 <div className="rounded-xl p-6" style={{  }}>
-                  <h2 className="text-sm font-medium mb-4" style={{ color: 'var(--text-secondary)' }}>
+                  <h2 className="text-sm font-normal mb-4" style={{ color: 'var(--text-secondary)' }}>
                     RECOMMENDED MATERIAL CHANGES
                   </h2>
                   <div className="space-y-3">
@@ -279,7 +279,7 @@ export default function AnalysisPage() {
                     background: 'var(--success-muted)',
                   }}
                 >
-                  <h2 className="text-sm font-medium mb-3" style={{ color: 'var(--text-secondary)' }}>
+                  <h2 className="text-sm font-normal mb-3" style={{ color: 'var(--text-secondary)' }}>
                     CONVERGENCE SIGNALS
                   </h2>
                   <ul className="space-y-1.5">
@@ -294,7 +294,7 @@ export default function AnalysisPage() {
 
               {/* Pricing */}
               <div className="rounded-xl p-6" style={{  }}>
-                <h2 className="text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
+                <h2 className="text-sm font-normal mb-2" style={{ color: 'var(--text-secondary)' }}>
                   PRICING RECEPTION TREND
                 </h2>
                 <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
@@ -307,7 +307,7 @@ export default function AnalysisPage() {
           {/* Raw Objection Data */}
           {data.objections.length > 0 && (
             <div className="rounded-xl p-6" style={{  }}>
-              <h2 className="text-sm font-medium mb-4" style={{ color: 'var(--text-secondary)' }}>
+              <h2 className="text-sm font-normal mb-4" style={{ color: 'var(--text-secondary)' }}>
                 All objections (from database)
               </h2>
               <div className="space-y-2">
@@ -325,7 +325,7 @@ export default function AnalysisPage() {
                         {obj.topic}
                       </span>
                       <span
-                        className="text-xs font-medium"
+                        className="text-xs font-normal"
                         style={{ color: 'var(--text-primary)' }}
                       >
                         {obj.count}x

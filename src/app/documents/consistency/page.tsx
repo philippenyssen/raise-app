@@ -79,7 +79,7 @@ export default function ConsistencyPage() {
         <button
           onClick={fetchConsistency}
           disabled={loading}
-          className="px-4 py-2 disabled:opacity-50 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+          className="px-4 py-2 disabled:opacity-50 rounded-lg text-sm font-normal transition-colors flex items-center gap-2"
           style={{
             background: recheckHovered ? 'var(--surface-3)' : 'var(--surface-2)',
             color: 'var(--text-primary)',
@@ -106,7 +106,7 @@ export default function ConsistencyPage() {
       {error && !loading && (
         <div className="rounded-xl p-6 text-center" style={{ border: '1px solid var(--danger-muted)', background: 'var(--danger-muted)' }}>
           <AlertTriangle className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--text-primary)' }} />
-          <p className="font-medium" style={{ color: 'var(--text-primary)' }}>{error}</p>
+          <p className="font-normal" style={{ color: 'var(--text-primary)' }}>{error}</p>
           <button
             onClick={fetchConsistency}
             className="mt-3 text-sm underline"
@@ -136,7 +136,7 @@ export default function ConsistencyPage() {
               <AlertTriangle className="w-6 h-6 shrink-0" style={{ color: 'var(--text-primary)' }} />
             )}
             <div className="flex-1">
-              <p className="font-medium" style={{ color: result.consistent ? 'var(--success)' : 'var(--danger)' }}>
+              <p className="font-normal" style={{ color: result.consistent ? 'var(--success)' : 'var(--danger)' }}>
                 {result.consistent
                   ? 'All metrics consistent across documents'
                   : `${mismatchCount} inconsistenc${mismatchCount === 1 ? 'y' : 'ies'} found`}
@@ -177,7 +177,7 @@ export default function ConsistencyPage() {
                   ) : (
                     <AlertTriangle className="w-4 h-4 shrink-0" style={{ color: 'var(--text-primary)' }} />
                   )}
-                  <span className="font-medium text-sm" style={{ color: 'var(--text-primary)' }}>{check.metric}</span>
+                  <span className="font-normal text-sm" style={{ color: 'var(--text-primary)' }}>{check.metric}</span>
                   <span
                     className="text-xs px-2 py-0.5 rounded ml-auto"
                     style={{

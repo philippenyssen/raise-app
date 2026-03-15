@@ -145,7 +145,7 @@ export default function TimelinePage() {
         </div>
         <button
           onClick={() => setShowAdd(!showAdd)}
-          className="px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+          className="px-4 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2"
           style={{ backgroundColor: hoverStates['addBtn'] ? 'var(--accent)' : 'var(--accent)', color: 'var(--surface-0)', opacity: hoverStates['addBtn'] ? 0.85 : 1 }}
           onMouseEnter={() => setHover('addBtn', true)}
           onMouseLeave={() => setHover('addBtn', false)}
@@ -162,7 +162,7 @@ export default function TimelinePage() {
           return (
             <div key={phase} className="rounded-xl p-3">
               <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>{PHASE_LABELS[phase]}</div>
-              <div className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>{pDone}/{pTasks.length}</div>
+              <div className="text-lg font-normal" style={{ color: 'var(--text-primary)' }}>{pDone}/{pTasks.length}</div>
               {pTasks.length > 0 && (
                 <div className="w-full h-1.5 rounded-full mt-2" style={{ backgroundColor: 'var(--surface-2)' }}>
                   <div className="h-full rounded-full" style={{ backgroundColor: 'var(--accent)', width: `${(pDone / pTasks.length) * 100}%` }} />
@@ -239,7 +239,7 @@ export default function TimelinePage() {
       <div className="flex gap-1" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
         <button
           onClick={() => setTab('tasks')}
-          className="px-4 py-2.5 text-sm font-medium flex items-center gap-2 transition-colors"
+          className="px-4 py-2.5 text-sm font-normal flex items-center gap-2 transition-colors"
           style={{
             borderBottom: tab === 'tasks' ? '2px solid var(--accent)' : '2px solid transparent',
             color: tab === 'tasks' ? 'var(--text-primary)' : 'var(--text-muted)',
@@ -252,7 +252,7 @@ export default function TimelinePage() {
         </button>
         <button
           onClick={() => setTab('activity')}
-          className="px-4 py-2.5 text-sm font-medium flex items-center gap-2 transition-colors"
+          className="px-4 py-2.5 text-sm font-normal flex items-center gap-2 transition-colors"
           style={{
             borderBottom: tab === 'activity' ? '2px solid var(--accent)' : '2px solid transparent',
             color: tab === 'activity' ? 'var(--text-primary)' : 'var(--text-muted)',
@@ -312,7 +312,7 @@ export default function TimelinePage() {
           ) : (
             Object.entries(tasksByPhase).map(([phase, phaseTasks]) => (
               <div key={phase}>
-                <div className="text-xs font-semibold  tracking-wider px-1 mb-2" style={{ color: 'var(--text-muted)' }}>
+                <div className="text-xs font-normal  tracking-wider px-1 mb-2" style={{ color: 'var(--text-muted)' }}>
                   {PHASE_LABELS[phase as RaisePhase]}
                 </div>
                 <div className="space-y-1">

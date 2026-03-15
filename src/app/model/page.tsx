@@ -400,7 +400,7 @@ export default function ModelPage() {
           {sheets.length === 0 && (
             <button
               onClick={initializeDefaultSheets}
-              className="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5"
+              className="px-3 py-1.5 rounded-lg text-xs font-normal transition-colors flex items-center gap-1.5"
               style={{
                 backgroundColor: 'var(--accent)',
                 color: 'var(--text-primary)',
@@ -418,7 +418,7 @@ export default function ModelPage() {
           <button
             onClick={handleSave}
             disabled={!dirty || saving}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-normal transition-colors"
             style={
               dirty
                 ? { backgroundColor: 'var(--accent)', color: 'var(--text-primary)' }

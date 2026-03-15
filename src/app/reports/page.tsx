@@ -100,7 +100,7 @@ export default function ReportsPage() {
             <span className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'var(--success-muted)' }}>
               <BarChart3 className="w-4 h-4" style={{ color: 'var(--text-secondary)' }} />
             </span>
-            <h2 className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>Board Update</h2>
+            <h2 className="font-normal text-sm" style={{ color: 'var(--text-primary)' }}>Board Update</h2>
           </div>
           <p className="text-xs leading-relaxed mb-4" style={{ color: 'var(--text-muted)' }}>
             Generate a 1-page board update summarizing process health, pipeline funnel, top focus investors, conviction trends, and key risks.
@@ -108,7 +108,7 @@ export default function ReportsPage() {
           <button
             onClick={() => generateReport('board')}
             disabled={loading !== null}
-            className="w-full px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
+            className="w-full px-4 py-2 rounded-lg text-sm font-normal transition-colors flex items-center justify-center gap-2"
             style={{
               backgroundColor: loading !== null ? 'var(--surface-2)' : (hoverStates['boardBtn'] ? 'var(--success)' : 'var(--success)'),
               color: loading !== null ? 'var(--text-muted)' : 'var(--surface-0)',
@@ -128,7 +128,7 @@ export default function ReportsPage() {
             <span className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'color-mix(in srgb, var(--accent) 20%, transparent)' }}>
               <ClipboardList className="w-4 h-4" style={{ color: 'var(--accent)' }} />
             </span>
-            <h2 className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>Weekly Agenda</h2>
+            <h2 className="font-normal text-sm" style={{ color: 'var(--text-primary)' }}>Weekly Agenda</h2>
           </div>
           <p className="text-xs leading-relaxed mb-4" style={{ color: 'var(--text-muted)' }}>
             Generate team priorities and action items for this week, including overdue follow-ups, top objections, and tasks due.
@@ -136,7 +136,7 @@ export default function ReportsPage() {
           <button
             onClick={() => generateReport('team')}
             disabled={loading !== null}
-            className="w-full px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
+            className="w-full px-4 py-2 rounded-lg text-sm font-normal transition-colors flex items-center justify-center gap-2"
             style={{
               backgroundColor: loading !== null ? 'var(--surface-2)' : 'var(--accent)',
               color: loading !== null ? 'var(--text-muted)' : 'var(--surface-0)',
@@ -156,7 +156,7 @@ export default function ReportsPage() {
             <span className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'color-mix(in srgb, var(--accent-muted) 20%, transparent)' }}>
               <Users2 className="w-4 h-4" style={{ color: 'var(--accent-muted)' }} />
             </span>
-            <h2 className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>Investor Brief</h2>
+            <h2 className="font-normal text-sm" style={{ color: 'var(--text-primary)' }}>Investor Brief</h2>
           </div>
           <p className="text-xs leading-relaxed mb-3" style={{ color: 'var(--text-muted)' }}>
             Generate a detailed brief for a specific investor with profile, score, meetings, objections, and assessment.
@@ -177,7 +177,7 @@ export default function ReportsPage() {
           <button
             onClick={() => generateReport('investor_brief')}
             disabled={loading !== null || !selectedInvestor}
-            className="w-full px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
+            className="w-full px-4 py-2 rounded-lg text-sm font-normal transition-colors flex items-center justify-center gap-2"
             style={{
               backgroundColor: (loading !== null || !selectedInvestor) ? 'var(--surface-2)' : 'var(--accent-muted)',
               color: (loading !== null || !selectedInvestor) ? 'var(--text-muted)' : 'var(--surface-0)',
@@ -205,7 +205,7 @@ export default function ReportsPage() {
           {/* Report toolbar */}
           <div className="flex items-center justify-between px-5 py-3" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
             <div className="flex items-center gap-3">
-              <span className="text-sm font-semibold" style={{ color: 'var(--text-secondary)' }}>
+              <span className="text-sm font-normal" style={{ color: 'var(--text-secondary)' }}>
                 {reportTypeLabels[reportType || ''] || 'Report'}
               </span>
               {generatedAt && (
@@ -216,7 +216,7 @@ export default function ReportsPage() {
             </div>
             <button
               onClick={handlePrint}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-normal transition-colors"
               style={{ backgroundColor: hoverStates['printBtn'] ? 'var(--surface-3)' : 'var(--surface-2)', color: 'var(--text-secondary)' }}
               onMouseEnter={() => setHover('printBtn', true)}
               onMouseLeave={() => setHover('printBtn', false)}

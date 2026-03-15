@@ -84,8 +84,8 @@ export default function HealthPage() {
       {/* Convergence Score */}
       <div className="rounded-xl p-6">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-sm font-medium" style={{ color: 'var(--text-tertiary)' }}>Convergence score</h2>
-          <div className="text-4xl font-bold" style={{
+          <h2 className="text-sm font-normal" style={{ color: 'var(--text-tertiary)' }}>Convergence score</h2>
+          <div className="text-4xl font-normal" style={{
             color: score >= 8 ? 'var(--success)' : score >= 5 ? 'var(--warning)' : 'var(--danger)'
           }}>{score}/10</div>
         </div>
@@ -105,7 +105,7 @@ export default function HealthPage() {
                 {convergence[dim.key] && <span className="text-xs" style={{ color: 'var(--text-primary)' }}>&#10003;</span>}
               </button>
               <div className="flex-1">
-                <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{dim.label}</span>
+                <span className="text-sm font-normal" style={{ color: 'var(--text-primary)' }}>{dim.label}</span>
                 <span className="text-xs ml-2" style={{ color: 'var(--text-muted)' }}>{dim.desc}</span>
               </div>
             </div>
@@ -130,7 +130,7 @@ export default function HealthPage() {
 
       {/* Funnel Details */}
       <div className="rounded-xl p-6">
-        <h2 className="text-sm font-medium mb-4" style={{ color: 'var(--text-tertiary)' }}>Pipeline conversion rates</h2>
+        <h2 className="text-sm font-normal mb-4" style={{ color: 'var(--text-tertiary)' }}>Pipeline conversion rates</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {Object.entries(data.funnel.conversion_rates).map(([key, rate]) => {
             const target = data.funnel.targets[key] ?? 50;
@@ -141,7 +141,7 @@ export default function HealthPage() {
                   {key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                 </div>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-2xl font-bold" style={{
+                  <span className="text-2xl font-normal" style={{
                     color: rate >= target ? 'var(--success)' : rate > 0 ? 'var(--warning)' : 'var(--text-muted)'
                   }}>
                     {rate}%
@@ -172,11 +172,11 @@ export default function HealthPage() {
 
       {/* Status Breakdown */}
       <div className="rounded-xl p-6">
-        <h2 className="text-sm font-medium mb-4" style={{ color: 'var(--text-tertiary)' }}>Investor status breakdown</h2>
+        <h2 className="text-sm font-normal mb-4" style={{ color: 'var(--text-tertiary)' }}>Investor status breakdown</h2>
         <div className="grid grid-cols-3 md:grid-cols-5 gap-3 card-stagger">
           {Object.entries(data.statusBreakdown).sort((a, b) => b[1] - a[1]).map(([status, count]) => (
             <div key={status} className="rounded-lg p-3 text-center" style={{ backgroundColor: 'var(--surface-1)' }}>
-              <div className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>{count}</div>
+              <div className="text-lg font-normal" style={{ color: 'var(--text-primary)' }}>{count}</div>
               <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{status.replace(/_/g, ' ')}</div>
             </div>
           ))}
@@ -188,11 +188,11 @@ export default function HealthPage() {
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <Shield className="w-4 h-4" style={{ color: 'var(--accent)' }} />
-            <h2 className="text-sm font-medium" style={{ color: 'var(--text-tertiary)' }}>Intelligence health</h2>
+            <h2 className="text-sm font-normal" style={{ color: 'var(--text-tertiary)' }}>Intelligence health</h2>
           </div>
           {intelVerify && (
             <div
-              className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold"
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-normal"
               style={{
                 backgroundColor: intelVerify.status === 'healthy'
                   ? 'var(--success-muted)'
@@ -248,7 +248,7 @@ export default function HealthPage() {
                   <div key={i} className="flex items-start gap-2 py-1.5 px-3 rounded-lg" style={{ backgroundColor: 'var(--surface-1)' }}>
                     {statusIcon}
                     <div className="flex-1 min-w-0">
-                      <span className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>
+                      <span className="text-xs font-normal" style={{ color: 'var(--text-secondary)' }}>
                         {check.name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                       </span>
                       <p className="text-[10px] truncate" style={{ color: 'var(--text-muted)' }}>{check.detail}</p>
@@ -287,7 +287,7 @@ function MetricCard({ label, value }: { label: string; value: string | number })
   return (
     <div className="rounded-xl p-4">
       <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{label}</div>
-      <div className="text-2xl font-bold mt-1" style={{ color: 'var(--text-primary)' }}>{value}</div>
+      <div className="text-2xl font-normal mt-1" style={{ color: 'var(--text-primary)' }}>{value}</div>
     </div>
   );
 }
