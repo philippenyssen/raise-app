@@ -27,10 +27,15 @@ export function ConfirmModal({
   onCancel,
 }: ConfirmModalProps) {
   const confirmRef = useRef<HTMLButtonElement>(null);
+  const cancelRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    if (open) confirmRef.current?.focus();
-  }, [open]);
+    if (open) {
+      // For danger dialogs, focus cancel to prevent accidental destructive action
+      if (variant === 'danger') cancelRef.current?.focus();
+      else confirmRef.current?.focus();
+    }
+  }, [open, variant]);
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Escape') onCancel();
@@ -83,6 +88,7 @@ export function ConfirmModal({
             <X style={{ width: '16px', height: '16px' }} /></button></div>
         <div className="flex justify-end" style={{ gap: 'var(--space-2)', marginTop: 'var(--space-5)' }}>
           <button
+            ref={cancelRef}
             onClick={onCancel}
             className="btn btn-ghost btn-md">
             {cancelLabel}</button>
