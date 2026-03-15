@@ -62,7 +62,7 @@ export async function POST() {
     return NextResponse.json({ ok: true, seeded: allInvestors.length });
   } catch (error) {
     return NextResponse.json(
-      { ok: false, error: error instanceof Error ? error.message : 'Unknown error' },
+      { ok: false, error: 'Seeding failed' },
       { status: 500 }
     );
   }

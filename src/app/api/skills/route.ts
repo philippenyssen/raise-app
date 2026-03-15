@@ -19,7 +19,8 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ error: 'Invalid view parameter. Use "health" or "executions".' }, { status: 400 });
   } catch (err) {
-    return NextResponse.json({ error: err instanceof Error ? err.message : 'Failed to fetch skill data' }, { status: 500 });
+    console.error('[SKILLS_GET]', err instanceof Error ? err.message : err);
+    return NextResponse.json({ error: 'Failed to fetch skill data' }, { status: 500 });
   }
 }
 
@@ -38,6 +39,7 @@ export async function POST(req: NextRequest) {
     await db.logSkillExecution(body as Parameters<typeof db.logSkillExecution>[0]);
     return NextResponse.json({ success: true });
   } catch (err) {
-    return NextResponse.json({ error: err instanceof Error ? err.message : 'Failed to log skill execution' }, { status: 500 });
+    console.error('[SKILLS_POST]', err instanceof Error ? err.message : err);
+    return NextResponse.json({ error: 'Failed to log skill execution' }, { status: 500 });
   }
 }

@@ -515,7 +515,8 @@ INSTRUCTIONS:
           controller.enqueue(encoder.encode(`data: [DONE]\n\n`));
           controller.close();
         } catch (err) {
-          controller.enqueue(encoder.encode(`data: ${JSON.stringify({ error: err instanceof Error ? err.message : 'Stream error' })}\n\n`));
+          console.error('[WORKSPACE_STREAM]', err instanceof Error ? err.message : err);
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify({ error: 'Stream interrupted' })}\n\n`));
           controller.close();
         }
       },});
