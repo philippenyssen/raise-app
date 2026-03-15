@@ -22,6 +22,12 @@ export async function POST(req: NextRequest) {
   if (!body.title || typeof body.title !== 'string' || !body.title.trim()) {
     return NextResponse.json({ error: 'title is required' }, { status: 400 });
   }
+  const textLimits: Record<string, number> = { title: 500, type: 100, content: 500000 };
+  for (const [field, max] of Object.entries(textLimits)) {
+    if (body[field] && typeof body[field] === 'string' && (body[field] as string).length > max) {
+      return NextResponse.json({ error: `${field} exceeds maximum length of ${max} characters` }, { status: 400 });
+    }
+  }
   const ALLOWED_FIELDS = new Set(['title', 'type', 'content']);
   const filtered = Object.fromEntries(
     Object.entries(body).filter(([k]) => ALLOWED_FIELDS.has(k))

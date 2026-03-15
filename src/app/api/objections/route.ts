@@ -62,6 +62,12 @@ export async function PUT(req: NextRequest) {
   };
 
   if (!id) { return NextResponse.json({ error: 'id required' }, { status: 400 }); }
+  const textLimits: Record<string, number> = { response_text: 10000, investor_name: 255, objection_topic: 500 };
+  for (const [field, max] of Object.entries(textLimits)) {
+    if (filtered[field] && typeof filtered[field] === 'string' && (filtered[field] as string).length > max) {
+      return NextResponse.json({ error: `${field} exceeds maximum length of ${max} characters` }, { status: 400 });
+    }
+  }
 
   await updateObjectionResponse(
     id,

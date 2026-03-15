@@ -110,6 +110,12 @@ export async function POST(req: NextRequest) {
   if (!meeting_id || !investor_id || !action_type || !description || !due_at) {
     return NextResponse.json({ error: 'meeting_id, investor_id, action_type, description, and due_at are required' }, { status: 400 });
   }
+  const textLimits: Record<string, number> = { investor_name: 255, action_type: 100, description: 5000 };
+  for (const [field, max] of Object.entries(textLimits)) {
+    if (body[field] && typeof body[field] === 'string' && (body[field] as string).length > max) {
+      return NextResponse.json({ error: `${field} exceeds maximum length of ${max} characters` }, { status: 400 });
+    }
+  }
   if (isNaN(new Date(due_at).getTime())) {
     return NextResponse.json({ error: 'due_at must be a valid date string' }, { status: 400 });
   }
