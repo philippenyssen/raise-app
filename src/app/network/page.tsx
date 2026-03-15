@@ -67,10 +67,10 @@ export default function NetworkPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center" style={{ minHeight: '60vh' }}>
-        <div className="flex flex-col items-center gap-3">
-          <RefreshCw className="w-5 h-5 animate-spin" style={stTextMuted} />
-          <span style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>Computing network cascades...</span></div>
+      <div className="space-y-6 page-content">
+        <div className="skeleton" style={{ height: '28px', width: '250px' }} />
+        <div className="skeleton" style={{ height: '16px', width: '350px' }} />
+        {[1,2,3].map(i => <div key={i} className="skeleton" style={{ height: '100px', borderRadius: 'var(--radius-xl)' }} />)}
       </div>);
   }
 

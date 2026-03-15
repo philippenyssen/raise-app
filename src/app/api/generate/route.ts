@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
         type,
         content,
       });
-      return NextResponse.json({ ok: true, type, documentId: doc.id, action: 'created' });
+      return NextResponse.json({ ok: true, type, documentId: doc.id, action: 'created' }, { status: 201 });
     }
   } catch (err) {
     console.error('Generation failed:', err);
