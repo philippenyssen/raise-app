@@ -91,9 +91,10 @@ export async function analyzeMeetingNotes(rawNotes: string, investorName: string
   const response = await getAIClient().messages.create({
     model: 'claude-sonnet-4-20250514',
     max_tokens: 4096,
+    system: 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.',
     messages: [{
       role: 'user',
-      content: `You are an expert fundraising process analyst. Analyze these meeting notes from a Series C fundraise meeting.
+      content: `Analyze these meeting notes from a Series C fundraise meeting.
 
 INVESTOR: ${investorName}
 MEETING TYPE: ${meetingType}
@@ -207,11 +208,10 @@ NOTES: ${m.raw_notes.substring(0, 500)}`;
   const response = await getAIClient().messages.create({
     model: 'claude-sonnet-4-20250514',
     max_tokens: 4096,
+    system: 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.',
     messages: [{
       role: 'user',
-      content: `You are a world-class fundraising advisor combining the expertise of Gregg Lemkau (Goldman Sachs), Marc Andreessen (a16z), and Travis Kalanick (process mastery).
-
-Analyze these ${meetings.length} investor meetings from a Series C fundraise and identify patterns:
+      content: `Combining the expertise of Gregg Lemkau (Goldman Sachs), Marc Andreessen (a16z), and Travis Kalanick (process mastery), analyze these ${meetings.length} investor meetings from a Series C fundraise and identify patterns:
 
 ${meetingSummaries}
 
@@ -256,9 +256,10 @@ export async function assessProcessHealth(funnel: Record<string, unknown>, objec
   const response = await getAIClient().messages.create({
     model: 'claude-sonnet-4-20250514',
     max_tokens: 2048,
+    system: 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.',
     messages: [{
       role: 'user',
-      content: `You are a fundraise process health monitor. Assess this Series C process:
+      content: `Assess this Series C fundraise process health:
 
 FUNNEL: ${JSON.stringify(funnel)}
 TOP OBJECTIONS: ${JSON.stringify(objections)}
@@ -287,9 +288,10 @@ export async function improveSection(section: string, instruction: string, conte
   const response = await getAIClient().messages.create({
     model: 'claude-sonnet-4-20250514',
     max_tokens: 4096,
+    system: 'You are a Series C fundraise advisor. Be concise, specific, and actionable. Focus on what matters for closing the deal.',
     messages: [{
       role: 'user',
-      content: `You are an expert investment banking memo writer. Improve the following section of a Series C fundraise document.
+      content: `Improve the following section of a Series C fundraise document in expert investment banking memo style.
 
 INSTRUCTION: ${instruction}
 
@@ -314,9 +316,10 @@ export async function checkConsistency(
   const response = await getAIClient().messages.create({
     model: 'claude-sonnet-4-20250514',
     max_tokens: 4096,
+    system: 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.',
     messages: [{
       role: 'user',
-      content: `You are an IC-grade document reviewer. Check these fundraise documents for numerical inconsistencies, contradictions, and factual discrepancies.
+      content: `As an IC-grade document reviewer, check these fundraise documents for numerical inconsistencies, contradictions, and factual discrepancies.
 
 RAISE CONFIG: ${JSON.stringify(raiseConfig)}
 
@@ -344,9 +347,10 @@ export async function findWeakArguments(content: string): Promise<{ weaknesses: 
   const response = await getAIClient().messages.create({
     model: 'claude-sonnet-4-20250514',
     max_tokens: 4096,
+    system: 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.',
     messages: [{
       role: 'user',
-      content: `You are a skeptical IC member reviewing a Series C investment memo. Find weak arguments, unsourced claims, circular reasoning, and unsubstantiated superlatives.
+      content: `As a skeptical IC member, review this Series C investment memo. Find weak arguments, unsourced claims, circular reasoning, and unsubstantiated superlatives.
 
 DOCUMENT:
 ${content.substring(0, 8000)}
@@ -385,9 +389,10 @@ export async function researchInvestor(investorName: string, context?: string): 
   const response = await getAIClient().messages.create({
     model: 'claude-sonnet-4-20250514',
     max_tokens: 8192,
+    system: 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.',
     messages: [{
       role: 'user',
-      content: `You are a world-class fundraising intelligence analyst. Generate a comprehensive research dossier on this investor for a Series C fundraise in the European space/defense technology sector.
+      content: `Generate a comprehensive research dossier on this investor for a Series C fundraise in the European space/defense technology sector.
 
 INVESTOR: ${investorName}
 ${context ? `ADDITIONAL CONTEXT: ${context}` : ''}
@@ -454,9 +459,10 @@ export async function researchCompetitor(companyName: string, context?: string):
   const response = await getAIClient().messages.create({
     model: 'claude-sonnet-4-20250514',
     max_tokens: 4096,
+    system: 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.',
     messages: [{
       role: 'user',
-      content: `You are a competitive intelligence analyst. Research this company as a competitor to Aerospacelab (European satellite manufacturer, Series C, €51M revenue, €4.1Bn backlog).
+      content: `Research this company as a competitor to Aerospacelab (European satellite manufacturer, Series C, €51M revenue, €4.1Bn backlog).
 
 COMPANY: ${companyName}
 ${context ? `CONTEXT: ${context}` : ''}
@@ -500,9 +506,10 @@ export async function researchMarketDeals(sector: string): Promise<{
   const response = await getAIClient().messages.create({
     model: 'claude-sonnet-4-20250514',
     max_tokens: 4096,
+    system: 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.',
     messages: [{
       role: 'user',
-      content: `You are a capital markets analyst. Research recent fundraising activity in this sector.
+      content: `As a capital markets analyst, research recent fundraising activity in this sector.
 
 SECTOR: ${sector}
 CONTEXT: We are Aerospacelab, raising Series C at €2.0Bn pre-money (€250M equity). European satellite/defense company.
@@ -575,9 +582,10 @@ NEXT STEPS: ${m.next_steps || 'None recorded'}`;
   const response = await getAIClient().messages.create({
     model: 'claude-sonnet-4-20250514',
     max_tokens: 4096,
+    system: 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.',
     messages: [{
       role: 'user',
-      content: `You are a world-class fundraise advisor preparing a 1-page pre-meeting brief for a Series C fundraise.
+      content: `Prepare a 1-page pre-meeting brief for a Series C fundraise.
 
 INVESTOR PROFILE:
 - Name: ${investorData.name}
@@ -635,9 +643,10 @@ export async function polishGoldmanStyle(content: string): Promise<string> {
   const response = await getAIClient().messages.create({
     model: 'claude-sonnet-4-20250514',
     max_tokens: 4096,
+    system: 'You are a Series C fundraise advisor. Be concise, specific, and actionable. Focus on what matters for closing the deal.',
     messages: [{
       role: 'user',
-      content: `You are a Goldman Sachs ECM Managing Director. Rewrite this content in concise, authoritative investment banking memo style:
+      content: `Rewrite this content in Goldman Sachs ECM Managing Director style — concise, authoritative investment banking memo:
 - Short sentences, active voice
 - Lead with the conclusion
 - Numbers first, narrative second
