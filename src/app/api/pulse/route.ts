@@ -828,12 +828,9 @@ export async function GET() {
 
     const convictionPulse = computeConvictionPulse(investors, allMeetings);
 
-    // Layer 5: Intelligence Briefing — synthesize all signals into actionable insights
-    const intelligenceBriefing = await computeIntelligenceBriefing(
-      investors, allMeetings, criticalPath, convictionPulse, processHealth,);
-
-    // Layer 6: Real-time intelligence signals (cycle 34)
-    const [velocityData, cascadeData, rankingData, fomoData, densityData, winLossData] = await Promise.all([
+    // Layer 5 + Layer 6: run intelligence briefing and real-time signals in parallel
+    const [intelligenceBriefing, velocityData, cascadeData, rankingData, fomoData, densityData, winLossData] = await Promise.all([
+      computeIntelligenceBriefing(investors, allMeetings, criticalPath, convictionPulse, processHealth,),
       computeEngagementVelocity().catch(e => { console.error('[PULSE] velocity failed:', e instanceof Error ? e.message : e); return [] as Awaited<ReturnType<typeof computeEngagementVelocity>>; }),
       computeNetworkCascades().catch(e => { console.error('[PULSE] cascades failed:', e instanceof Error ? e.message : e); return [] as Awaited<ReturnType<typeof computeNetworkCascades>>; }),
       getPipelineRankings().catch(e => { console.error('[PULSE] rankings failed:', e instanceof Error ? e.message : e); return [] as Awaited<ReturnType<typeof getPipelineRankings>>; }),
