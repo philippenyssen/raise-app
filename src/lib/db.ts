@@ -574,6 +574,11 @@ async function ensureInitialized() {
   try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_meetings_investor ON meetings(investor_id)`); } catch { /* */ }
   try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_followups_investor ON followups(investor_id)`); } catch { /* */ }
   try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_score_snapshots_investor ON score_snapshots(investor_id)`); } catch { /* */ }
+  try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_tasks_investor ON tasks(investor_id)`); } catch { /* */ }
+  try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_meetings_date ON meetings(date)`); } catch { /* */ }
+  try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_activity_log_investor ON activity_log(investor_id, created_at)`); } catch { /* */ }
+  try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_document_versions_doc ON document_versions(document_id)`); } catch { /* */ }
+  try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_objection_responses_topic ON objection_responses(objection_topic)`); } catch { /* */ }
 
   initialized = true;
 }

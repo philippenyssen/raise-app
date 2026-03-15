@@ -43,9 +43,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
   }
 
-  if (!body.counterparty || typeof body.counterparty !== 'string') {
-    return NextResponse.json({ error: 'counterparty is required' }, { status: 400 });
+  const customer = (body.customer ?? body.counterparty) as string | undefined;
+  if (!customer || typeof customer !== 'string') {
+    return NextResponse.json({ error: 'customer is required' }, { status: 400 });
   }
+  body.customer = customer;
   if (!body.amount_eur || typeof body.amount_eur !== 'number' || body.amount_eur <= 0 || body.amount_eur > 10_000_000_000) {
     return NextResponse.json({ error: 'amount_eur must be a positive number up to 10,000,000,000' }, { status: 400 });
   }

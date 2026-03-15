@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
       title: ((body.title as string) || '').trim(),
       description: ((body.description as string) || '').trim(),
       assignee: ((body.assignee as string) || '').trim(),
-      due_date: (body.due_date as string) || '',
+      due_date: ((body.due_date as string) || '').trim(),
       status: ((body.status as string) || 'pending') as TaskStatus,
       priority: ((body.priority as string) || 'medium') as TaskPriority,
       phase: ((body.phase as string) || 'preparation') as RaisePhase,
