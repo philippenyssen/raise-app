@@ -66,6 +66,7 @@ export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const [overdueCount, setOverdueCount] = useState(0);
   const [todayMeetingCount, setTodayMeetingCount] = useState(0);
+  const [docFlagCount, setDocFlagCount] = useState(0);
 
   useEffect(() => {
     function fetchBadges() {
@@ -87,6 +88,7 @@ export function Sidebar() {
             m.date?.split('T')[0] === today);
           setTodayMeetingCount(todayMeetings.length);})
         .catch(() => {});
+      fetch('/api/document-flags?status=open').then(r => r.ok ? r.json() : []).then(data => { if (Array.isArray(data)) setDocFlagCount(data.length); }).catch(() => {});
     }
     fetchBadges();
     const interval = setInterval(fetchBadges, 3 * 60 * 1000);
@@ -248,6 +250,9 @@ export function Sidebar() {
                           )}
                           {item.href === '/meetings' && todayMeetingCount > 0 && (
                             <span className="ml-auto shrink-0 flex items-center justify-center" style={badgeCountStyle}>{todayMeetingCount > 9 ? '9+' : todayMeetingCount}</span>
+                          )}
+                          {item.href === '/documents' && docFlagCount > 0 && (
+                            <span className="ml-auto shrink-0 flex items-center justify-center" style={badgeCountStyle}>{docFlagCount > 9 ? '9+' : docFlagCount}</span>
                           )}
                         </>
                       )}

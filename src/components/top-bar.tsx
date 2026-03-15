@@ -39,6 +39,7 @@ export function TopBar() {
   const [tasks, setTasks] = useState<UpcomingTask[]>([]);
   const [activity, setActivity] = useState<ActivityItem[]>([]);
   const [open, setOpen] = useState(false);
+  const [raisePct, setRaisePct] = useState<number | null>(null);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -62,6 +63,7 @@ export function TopBar() {
         fetch('/api/tasks?type=activity&limit=5'),]);
       if (tRes.ok) setTasks(await tRes.json());
       if (aRes.ok) setActivity(await aRes.json());
+      fetch('/api/investors').then(r => r.ok ? r.json() : []).then((inv: { status: string }[]) => { if (Array.isArray(inv) && inv.length > 0) { const advanced = inv.filter(i => ['term_sheet', 'closed'].includes(i.status)).length; setRaisePct(Math.round((advanced / inv.length) * 100)); } }).catch(() => {});
     } catch { /* ignore */ }
   }
 
@@ -76,6 +78,7 @@ export function TopBar() {
         padding: 'var(--space-2) var(--space-4)',
         borderBottom: '1px solid var(--border-subtle)',
         background: 'var(--surface-0)',}}>
+      {raisePct !== null && <span style={{ fontSize: '11px', fontWeight: 400, color: 'var(--text-muted)', marginRight: 'var(--space-2)', whiteSpace: 'nowrap' }}>{raisePct}% to close</span>}
       {/* Search trigger */}
       <button
         onClick={() => {

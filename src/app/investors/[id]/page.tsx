@@ -742,7 +742,10 @@ export default function InvestorDetailPage() {
             {editing ? (
               <EditRow label="Partner" value={editForm.partner} onChange={v => setEditForm(f => ({ ...f, partner: v }))} />
             ) : (
-              <Row label="Partner" value={investor.partner} />
+              <div className="flex justify-between">
+                <span style={textMuted}>Partner</span>
+                <span className="text-right max-w-[60%] flex items-center gap-1" style={textSecondary}>{investor.partner || '—'}{investor.partner && <button onClick={() => { navigator.clipboard.writeText(investor.partner); toast('Copied'); }} title="Copy partner name" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: 'var(--text-muted)' }}><ClipboardList className="w-3 h-3" /></button>}</span>
+              </div>
             )}
             <Row label="Fund Size" value={investor.fund_size} />
             {editing ? (

@@ -764,7 +764,10 @@ function InvestorCard({
           {investor.fund_size && (
             <div className="truncate" style={labelMuted}>
               <span style={stTextMuted}>Fund:</span> {investor.fund_size}</div>
-          )}</div>
+          )}
+          {hovered && investor.check_size_range && <div className="truncate" style={labelMuted}><span style={stTextMuted}>Check:</span> {investor.check_size_range}</div>}
+          {hovered && investor.sector_thesis && <div className="truncate" style={labelMuted}><span style={stTextMuted}>Focus:</span> {investor.sector_thesis}</div>}
+        </div>
 
         {/* Quick note + urgency */}
         {(() => { const days = investor.last_meeting_date ? Math.floor((Date.now() - new Date(investor.last_meeting_date).getTime()) / 864e5) : 999; const urgency = (days >= 14 && investor.tier <= 2) || (days >= 10 && ['engaged', 'in_dd', 'term_sheet'].includes(investor.status)) ? 'Urgent' : days >= 7 || investor.tier <= 2 ? 'Normal' : 'Low'; const uClr = urgency === 'Urgent' ? 'var(--danger)' : urgency === 'Normal' ? 'var(--warning)' : 'var(--text-muted)'; const uBg = urgency === 'Urgent' ? 'var(--danger-muted)' : urgency === 'Normal' ? 'var(--warning-muted)' : 'var(--white-8)'; return (
