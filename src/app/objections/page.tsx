@@ -390,7 +390,7 @@ export default function ObjectionsPage() {
       <div className="space-y-6">
         <div>
           <h1 className="page-title">Objection Playbook</h1>
-          <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>Loading...</p>
+          <div className="h-4 w-64 rounded animate-pulse mt-1" style={{ background: 'var(--surface-2)' }} />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {[1, 2, 3].map(i => (
@@ -739,7 +739,7 @@ export default function ObjectionsPage() {
               </select>
 
               {loadingInvestor && (
-                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Loading...</p>
+                <div className="h-4 w-40 rounded animate-pulse" style={{ background: 'var(--surface-2)' }} />
               )}
 
               {selectedInvestor && !loadingInvestor && investorObjections.length === 0 && (

@@ -66,7 +66,13 @@ export default function HealthPage() {
 
   const score = Object.values(convergence).filter(Boolean).length;
 
-  if (!data) return <div className="animate-pulse" style={{ color: 'var(--text-muted)' }}>Loading...</div>;
+  if (!data) return (
+    <div className="page-content space-y-6">
+      <div className="h-8 w-48 rounded animate-pulse" style={{ background: 'var(--surface-2)' }} />
+      <div className="h-5 w-80 rounded animate-pulse" style={{ background: 'var(--surface-2)' }} />
+      {[...Array(3)].map((_, i) => <div key={i} className="h-32 rounded-xl animate-pulse" style={{ background: 'var(--surface-1)' }} />)}
+    </div>
+  );
 
   return (
     <div className="space-y-8 page-content">
