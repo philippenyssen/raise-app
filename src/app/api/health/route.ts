@@ -39,6 +39,19 @@ export async function GET() {
     if (belowTarget >= 3 || (funnel.term_sheets === 0 && funnel.meetings > 15)) health = 'red';
     else if (belowTarget >= 1) health = 'yellow';
 
+    // Average time-in-stage (days since last status change)
+    const now = Date.now();
+    const timeInStage: Record<string, { avg: number; count: number }> = {};
+    for (const inv of investors) {
+      const days = Math.floor((now - new Date(inv.updated_at).getTime()) / 864e5);
+      if (!timeInStage[inv.status]) timeInStage[inv.status] = { avg: 0, count: 0 };
+      timeInStage[inv.status].avg += days;
+      timeInStage[inv.status].count += 1;
+    }
+    for (const key of Object.keys(timeInStage)) {
+      timeInStage[key].avg = Math.round(timeInStage[key].avg / timeInStage[key].count);
+    }
+
     return NextResponse.json({
       funnel,
       convergence,
@@ -49,8 +62,10 @@ export async function GET() {
       topObjections: objections.slice(0, 5),
       totalInvestors: investors.length,
       totalMeetings: meetings.length,
+      timeInStage,
     });
   } catch (e) {
-    return NextResponse.json({ error: e instanceof Error ? e.message : 'Failed to load health data' }, { status: 500 });
+    console.error('[HEALTH_GET]', e instanceof Error ? e.message : e);
+    return NextResponse.json({ error: 'Failed to load health data' }, { status: 500 });
   }
 }

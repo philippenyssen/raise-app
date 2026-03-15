@@ -33,6 +33,7 @@ interface HealthData {
   avgEnthusiasm: number;
   tierBreakdown: Record<string, number>;
   statusBreakdown: Record<string, number>;
+  timeInStage?: Record<string, { avg: number; count: number }>;
 }
 
 const convergenceDimensions = [
@@ -165,6 +166,29 @@ export default function HealthPage() {
               <div className="text-lg font-normal" style={stTextPrimary}>{count}</div>
               <div className="text-xs" style={stTextMuted}>{status.replace(/_/g, ' ')}</div></div>
           ))}</div></div>
+
+      {/* Time in Stage — bottleneck detection */}
+      {data.timeInStage && Object.keys(data.timeInStage).length > 0 && (
+        <div className="rounded-xl p-6">
+          <h2 className="text-sm font-normal mb-4" style={stTextTertiary}>Avg time in stage (days)</h2>
+          <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
+            {Object.entries(data.timeInStage)
+              .filter(([s]) => !['passed', 'dropped'].includes(s))
+              .sort((a, b) => {
+                const order = ['identified', 'contacted', 'nda_signed', 'meeting_scheduled', 'met', 'engaged', 'in_dd', 'term_sheet', 'closed'];
+                return order.indexOf(a[0]) - order.indexOf(b[0]);
+              })
+              .map(([status, { avg, count }]) => {
+                const isBottleneck = avg >= 14 && count >= 2;
+                return (
+                  <div key={status} className="rounded-lg p-3 text-center" style={{ backgroundColor: isBottleneck ? 'var(--warning-muted)' : 'var(--surface-1)' }}>
+                    <div className="text-lg font-normal" style={{ color: isBottleneck ? 'var(--warning)' : 'var(--text-primary)' }}>{avg}d</div>
+                    <div className="text-xs" style={stTextMuted}>{status.replace(/_/g, ' ')}</div>
+                    <div className="text-xs mt-0.5" style={stTextMuted}>{count} investor{count !== 1 ? 's' : ''}</div>
+                  </div>);
+              })}</div>
+        </div>
+      )}
 
       {/* Intelligence Verification Status */}
       <div className="rounded-xl p-6">
