@@ -1497,9 +1497,9 @@ export async function processPostMeetingIntelligence(
       .filter(s => s.length > 5);
 
     if (actionLines.length > 0) {
-      for (const action of actionLines) {
+      const taskResults = await Promise.all(actionLines.map(action => {
         const dueDate = getDueDateForAction(action);
-        results.tasks.push(await createTask({
+        return createTask({
           title: `${action.charAt(0).toUpperCase() + action.slice(1)}`,
           description: `Auto-generated from meeting with ${meeting.investor_name} on ${meeting.date}.\n\nOriginal next steps: ${nextSteps}`,
           assignee: '',
@@ -1510,8 +1510,9 @@ export async function processPostMeetingIntelligence(
           investor_id: meeting.investor_id,
           investor_name: meeting.investor_name,
           auto_generated: true,
-        }));
-      }
+        });
+      }));
+      results.tasks.push(...taskResults);
     } else {
       // Single block of next steps — create one follow-up task
       results.tasks.push(await createTask({
@@ -1584,6 +1585,7 @@ export async function processPostMeetingIntelligence(
     // Get all documents to match against
     const allDocs = await getAllDocuments();
 
+    const flagPromises: Promise<typeof results.document_flags[0]>[] = [];
     for (const objection of objections) {
       const mapping = OBJECTION_TO_DOC_MAP[objection.topic] || OBJECTION_TO_DOC_MAP['execution'];
 
@@ -1592,7 +1594,7 @@ export async function processPostMeetingIntelligence(
 
       if (matchingDocs.length > 0) {
         for (const doc of matchingDocs) {
-          results.document_flags.push(await createDocumentFlag({
+          flagPromises.push(createDocumentFlag({
             document_id: doc.id,
             meeting_id: meeting.id,
             investor_id: meeting.investor_id,
@@ -1606,7 +1608,7 @@ export async function processPostMeetingIntelligence(
         }
       } else {
         // Flag without a specific document — general flag
-        results.document_flags.push(await createDocumentFlag({
+        flagPromises.push(createDocumentFlag({
           document_id: '',
           meeting_id: meeting.id,
           investor_id: meeting.investor_id,
@@ -1619,6 +1621,8 @@ export async function processPostMeetingIntelligence(
         }));
       }
     }
+    const flagResults = await Promise.all(flagPromises);
+    results.document_flags.push(...flagResults);
   } catch { /* skip malformed */ }
 
   // 5. Engagement signal-based flags
@@ -1628,10 +1632,12 @@ export async function processPostMeetingIntelligence(
       slides_that_fell_flat?: string[];
     };
 
+    const engagementFlagPromises: Promise<typeof results.document_flags[0]>[] = [];
+
     if (signals.pricing_reception === 'negative') {
       const pricingDocs = (await getAllDocuments()).filter(d => ['memo', 'exec_brief', 'one_pager', 'deck'].includes(d.type));
       for (const doc of pricingDocs) {
-        results.document_flags.push(await createDocumentFlag({
+        engagementFlagPromises.push(createDocumentFlag({
           document_id: doc.id,
           meeting_id: meeting.id,
           investor_id: meeting.investor_id,
@@ -1648,7 +1654,7 @@ export async function processPostMeetingIntelligence(
     if (signals.slides_that_fell_flat && signals.slides_that_fell_flat.length > 0) {
       const deckDocs = (await getAllDocuments()).filter(d => d.type === 'deck');
       for (const doc of deckDocs) {
-        results.document_flags.push(await createDocumentFlag({
+        engagementFlagPromises.push(createDocumentFlag({
           document_id: doc.id,
           meeting_id: meeting.id,
           investor_id: meeting.investor_id,
@@ -1661,6 +1667,9 @@ export async function processPostMeetingIntelligence(
         }));
       }
     }
+
+    const engagementFlagResults = await Promise.all(engagementFlagPromises);
+    results.document_flags.push(...engagementFlagResults);
   } catch { /* skip malformed */ }
 
   // 6. Update investor profile (auto-advance only if forward move, enthusiasm >= 3, not to closed/term_sheet)

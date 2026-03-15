@@ -627,13 +627,11 @@ function DropdownItem({
   disabled: boolean;
   onToggle: () => void;
 }) {
-  const [hovered, setHovered] = useState(false);
-
   return (
     <button
       onClick={onToggle}
       disabled={disabled}
-      className="w-full flex items-center gap-3 text-left transition-colors"
+      className={`w-full flex items-center gap-3 text-left transition-colors ${!isSelected && !disabled ? 'sidebar-link' : ''}`}
       style={{
         padding: 'var(--space-2) var(--space-4)',
         fontSize: 'var(--font-size-sm)',
@@ -645,12 +643,8 @@ function DropdownItem({
           : 'var(--text-secondary)',
         background: isSelected
           ? 'var(--accent-muted)'
-          : hovered && !disabled
-          ? 'var(--surface-2)'
           : 'transparent',
-        cursor: disabled ? 'not-allowed' : 'pointer', }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}>
+        cursor: disabled ? 'not-allowed' : 'pointer', }}>
       <div
         className="w-4 h-4 flex items-center justify-center shrink-0"
         style={{
@@ -676,8 +670,6 @@ function DropdownItem({
 }
 
 function SelectedPill({ name, onRemove }: { name: string; onRemove: () => void }) {
-  const [hovered, setHovered] = useState(false);
-
   return (
     <span
       className="inline-flex items-center gap-1.5"
@@ -691,48 +683,31 @@ function SelectedPill({ name, onRemove }: { name: string; onRemove: () => void }
       {name}
       <button
         onClick={onRemove}
-        className="transition-colors"
-        style={{
-          color: hovered ? 'var(--text-secondary)' : 'var(--text-muted)',
-          transition: 'color 150ms ease', }}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}>
+        className="icon-delete">
         <X className="w-3.5 h-3.5" /></button>
     </span>);
 }
 
 function ClearAllButton({ onClick }: { onClick: () => void }) {
-  const [hovered, setHovered] = useState(false);
-
   return (
     <button
       onClick={onClick}
-      className="transition-colors"
+      className="icon-delete"
       style={{
         fontSize: 'var(--font-size-xs)',
-        color: hovered ? 'var(--text-secondary)' : 'var(--text-muted)',
-        padding: 'var(--space-1) var(--space-2)',
-        transition: 'color 150ms ease', }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}>
+        padding: 'var(--space-1) var(--space-2)', }}>
       Clear all
     </button>);
 }
 
 function InvestorNameLink({ investor }: { investor: Investor }) {
-  const [hovered, setHovered] = useState(false);
-
   return (
     <Link
       href={`/investors/${investor.id}`}
-      className="transition-colors"
+      className="investor-link"
       style={{
         fontSize: 'var(--font-size-sm)',
-        fontWeight: 400,
-        color: hovered ? 'var(--accent)' : 'var(--text-primary)',
-        transition: 'color 150ms ease', }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}>
+        fontWeight: 400, }}>
       {investor.name}
     </Link>);
 }
@@ -746,16 +721,8 @@ function SectionHeader({ label, colSpan }: { label: string; colSpan: number }) {
 }
 
 function TableRow({ children }: { children: React.ReactNode }) {
-  const [hovered, setHovered] = useState(false);
-
   return (
-    <tr
-      className="table-row transition-colors"
-      style={{
-        background: hovered ? 'var(--surface-1)' : 'transparent',
-        transition: 'background 100ms ease', }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}>
+    <tr className="table-row">
       {children}
     </tr>);
 }
@@ -770,16 +737,8 @@ function StickyLabel({ children }: { children: React.ReactNode }) {
 interface CellData { value: string; style?: React.CSSProperties; wrap?: boolean; render?: React.ReactNode; }
 
 function CompareRow({ label, cells }: { label: string; cells: CellData[] }) {
-  const [hovered, setHovered] = useState(false);
-
   return (
-    <tr
-      className="table-row transition-colors"
-      style={{
-        background: hovered ? 'var(--surface-1)' : 'transparent',
-        transition: 'background 100ms ease', }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}>
+    <tr className="table-row">
       <StickyLabel>{label}</StickyLabel>
       {cells.map((cell, i) => (
         <td key={i} className={cell.wrap ? 'max-w-[220px]' : ''} style={{ padding: 'var(--space-3) var(--space-4)', fontSize: 'var(--font-size-sm)', ...stTextSecondary, ...cell.style }}>

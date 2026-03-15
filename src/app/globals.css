@@ -561,6 +561,14 @@ body {
   color: white;
 }
 
+.investor-link {
+  color: var(--text-primary);
+  transition: color 150ms ease;
+}
+.investor-link:hover {
+  color: var(--accent);
+}
+
 .filter-inactive:hover {
   color: var(--text-secondary) !important;
 }
