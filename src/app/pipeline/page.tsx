@@ -411,7 +411,10 @@ export default function PipelinePage() {
                 <div style={{ padding: '0.625rem 0.75rem', borderTopLeftRadius: 'var(--radius-xl)', borderTopRightRadius: 'var(--radius-xl)', ...colors.header }}>
                   <div className="flex items-center justify-between">
                     <span style={{ ...stFontXs, fontWeight: 400, color: 'var(--text-primary)', letterSpacing: '0.01em' }}>{STATUS_LABELS[status]}</span>
-                    <span style={{ fontSize: '10px', fontWeight: 300, padding: '0.125rem 0.375rem', borderRadius: '9999px', ...colors.badge }}>{cards.length}</span>
+                    <div className="flex items-center gap-1.5">
+                      {cards.length > 0 && (() => { const activePct = Math.round((cards.filter(i => (Date.now() - new Date(i.updated_at).getTime()) < 7 * 864e5).length / cards.length) * 100); return <span title={`${activePct}% active in last 7 days`} style={{ fontSize: '9px', fontWeight: 400, color: activePct >= 70 ? 'var(--success)' : activePct >= 40 ? 'var(--warning)' : 'var(--text-muted)' }}>{activePct}%</span>; })()}
+                      <span style={{ fontSize: '10px', fontWeight: 300, padding: '0.125rem 0.375rem', borderRadius: '9999px', ...colors.badge }}>{cards.length}</span>
+                    </div>
                   </div></div>
 
                 {/* Cards container */}
@@ -677,8 +680,9 @@ function InvestorCard({
     borderRadius: 'var(--radius-lg)',
     cursor: 'grab',
     transition: 'all 150ms ease',
-    boxShadow: isKbSelected ? 'inset 0 0 0 1.5px var(--accent)' : tierGlow,
+    boxShadow: isKbSelected ? 'inset 0 0 0 1.5px var(--accent)' : hovered ? 'var(--shadow-md)' : tierGlow,
     borderLeft: isStale ? '3px solid var(--warning)' : 'none',
+    transform: hovered && !isDragging ? 'translateY(-1px)' : undefined,
     ...(isDragging ? { opacity: 0.5, transform: 'scale(0.95)' } : {}),};
 
   if (compact) {

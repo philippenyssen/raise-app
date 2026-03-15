@@ -370,7 +370,7 @@ export default function Dashboard() {
             Your raise at a glance
             {lastRefresh && (
               <span style={{ marginLeft: 'var(--space-3)', color: 'var(--text-muted)' }}>
-                Updated {lastRefresh.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                Updated {(() => { const m = Math.round((Date.now() - lastRefresh.getTime()) / 60000); return m < 1 ? 'just now' : `${m}m ago`; })()}</span>
             )}</p></div>
         <div className="flex items-center" style={{ gap: 'var(--space-2)' }}>
           <button
@@ -437,7 +437,7 @@ export default function Dashboard() {
             const scoreClr = healthScore >= 70 ? 'var(--success)' : healthScore >= 45 ? 'var(--warning)' : 'var(--danger)';
             return (
               <div className="flex items-center gap-5" style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-4) var(--space-6)' }}>
-                <div style={{ position: 'relative', width: 56, height: 56 }}>
+                <div style={{ position: 'relative', width: 56, height: 56 }} title="Composite fundraise health (velocity 30%, conversion 25%, heat 20%, follow-ups 15%, data quality 10%)">
                   <svg width="56" height="56" viewBox="0 0 56 56"><circle cx="28" cy="28" r="24" fill="none" stroke="var(--surface-3)" strokeWidth="4" /><circle cx="28" cy="28" r="24" fill="none" stroke={scoreClr} strokeWidth="4" strokeLinecap="round" strokeDasharray={`${healthScore * 1.508} 151`} transform="rotate(-90 28 28)" style={{ transition: 'stroke-dasharray 0.6s ease' }} /></svg>
                   <span style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 'var(--font-size-lg)', fontWeight: 300, color: scoreClr, fontVariantNumeric: 'tabular-nums' }}>{healthScore}</span>
                 </div>
@@ -446,8 +446,8 @@ export default function Dashboard() {
                   <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginTop: 2 }}>{healthScore >= 70 ? 'Strong momentum across the board' : healthScore >= 45 ? 'Some areas need attention' : 'Multiple areas require immediate focus'}</div>
                 </div>
                 <div className="flex gap-4">
-                  {[{ l: 'Velocity', v: velScore }, { l: 'Conversion', v: convRate }, { l: 'Heat', v: heatScore }, { l: 'Follow-ups', v: fuRate }, { l: 'Data', v: dqScore }].map(m => (
-                    <div key={m.l} className="text-center" style={{ minWidth: 48 }}>
+                  {[{ l: 'Velocity', v: velScore, t: 'Average pipeline velocity score (0-100)' }, { l: 'Conversion', v: convRate, t: 'Term sheet + closed / total contacted, scaled' }, { l: 'Heat', v: heatScore, t: 'Weighted investor engagement temperature' }, { l: 'Follow-ups', v: fuRate, t: 'Percentage of follow-ups completed on time' }, { l: 'Data', v: dqScore, t: 'Overall data completeness across investor profiles' }].map(m => (
+                    <div key={m.l} className="text-center" style={{ minWidth: 48 }} title={m.t}>
                       <div style={labelTertiary}>{m.l}</div>
                       <div className="tabular-nums" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 300, color: m.v >= 70 ? 'var(--success)' : m.v >= 45 ? 'var(--warning)' : 'var(--danger)', marginTop: 2 }}>{m.v}</div>
                     </div>
@@ -496,7 +496,7 @@ export default function Dashboard() {
                         transition: 'width 0.4s ease',
                       }} /></div>
                     {velocity?.summary?.raise_days_elapsed != null && velocity?.summary?.raise_target_days != null && (
-                      <span style={{
+                      <span title="Days until target close date" style={{
                         fontSize: 'var(--font-size-xs)',
                         color: 'var(--text-tertiary)',
                         whiteSpace: 'nowrap',
