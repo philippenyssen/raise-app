@@ -32,6 +32,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(await getAllTasks(Object.keys(filters).length > 0 ? filters : undefined));
   } catch (err) {
+    console.error('[TASKS_GET]', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }}
 
@@ -71,6 +72,7 @@ export async function POST(req: NextRequest) {
     emitContextChange('task_created', `Task: ${body.title || 'untitled'}`);
     return NextResponse.json(task, { status: 201 });
   } catch (err) {
+    console.error('[TASKS_POST]', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }}
 
@@ -92,6 +94,11 @@ export async function PUT(req: NextRequest) {
     for (const [k, v] of Object.entries(raw)) {
       if (ALLOWED_TASK_FIELDS.has(k)) updates[k] = v;
     }
+
+    const validStatuses = ['pending', 'in_progress', 'done', 'blocked', 'cancelled'];
+    const validPriorities = ['critical', 'high', 'medium', 'low'];
+    if (updates.status && !validStatuses.includes(updates.status as string)) return NextResponse.json({ error: `status must be one of: ${validStatuses.join(', ')}` }, { status: 400 });
+    if (updates.priority && !validPriorities.includes(updates.priority as string)) return NextResponse.json({ error: `priority must be one of: ${validPriorities.join(', ')}` }, { status: 400 });
 
     await updateTask(id, updates);
 
@@ -164,6 +171,7 @@ export async function PUT(req: NextRequest) {
     emitContextChange('task_updated', `Task ${id} ${updates.status === 'done' ? 'completed' : 'updated'}`);
     return NextResponse.json({ ok: true });
   } catch (err) {
+    console.error('[TASKS_PUT]', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }}
 
@@ -174,5 +182,6 @@ export async function DELETE(req: NextRequest) {
     await deleteTask(id);
     return NextResponse.json({ ok: true });
   } catch (err) {
+    console.error('[TASKS_DELETE]', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }}
