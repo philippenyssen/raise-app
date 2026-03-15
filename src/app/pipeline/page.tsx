@@ -271,6 +271,8 @@ export default function PipelinePage() {
       return;
     }
 
+    const previousStatus = investor.status;
+
     // Optimistic update
     setInvestors(prev =>
       prev.map(i => i.id === id ? { ...i, status: newStatus as InvestorStatus } : i)
@@ -286,8 +288,10 @@ export default function PipelinePage() {
       if (!res.ok) throw new Error('Failed to update');
       toast(`${investor.name} moved to ${STATUS_LABELS[newStatus as InvestorStatus]}`);
     } catch {
-      toast('Failed to update status', 'error');
-      fetchInvestors(); // Revert on failure
+      setInvestors(prev =>
+        prev.map(i => i.id === id ? { ...i, status: previousStatus } : i)
+      );
+      toast('Failed to update status — reverted', 'error');
     }
   }, [investors, toast]);
 

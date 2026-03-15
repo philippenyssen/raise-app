@@ -734,20 +734,6 @@ export async function getLatestConvergence() {
   return result.rows.length > 0 ? result.rows[0] : null;
 }
 
-export async function saveConvergence(data: Record<string, unknown>) {
-  await ensureInitialized();
-  await getClient().execute({
-    sql: `INSERT INTO convergence (story, materials, model, investors, objections, pricing, terms, funnel, timeline, team, score, notes)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    args: [
-      data.story ? 1 : 0, data.materials ? 1 : 0, data.model ? 1 : 0,
-      data.investors ? 1 : 0, data.objections ? 1 : 0, data.pricing ? 1 : 0,
-      data.terms ? 1 : 0, data.funnel ? 1 : 0, data.timeline ? 1 : 0,
-      data.team ? 1 : 0, (data.score as number) ?? 0, (data.notes as string) ?? '',
-    ],
-  });
-}
-
 // Analytics
 export async function getObjectionPatterns(): Promise<{ text: string; count: number; topic: string }[]> {
   await ensureInitialized();
@@ -773,15 +759,6 @@ export async function getObjectionPatterns(): Promise<{ text: string; count: num
   return Array.from(objMap.entries())
     .map(([text, data]) => ({ text, count: data.count, topic: data.topic }))
     .sort((a, b) => b.count - a.count);
-}
-
-export async function getEnthusiasmTrend(): Promise<{ date: string; score: number; investor: string }[]> {
-  await ensureInitialized();
-  const result = await getClient().execute(`
-    SELECT date, enthusiasm_score as score, investor_name as investor
-    FROM meetings ORDER BY date ASC
-  `);
-  return result.rows as unknown as { date: string; score: number; investor: string }[];
 }
 
 // Documents
@@ -907,7 +884,7 @@ export async function getAllDataRoomFiles(): Promise<DataRoomFile[]> {
   return result.rows as unknown as DataRoomFile[];
 }
 
-export async function getDataRoomFile(id: string): Promise<DataRoomFile | null> {
+async function getDataRoomFile(id: string): Promise<DataRoomFile | null> {
   await ensureInitialized();
   const result = await getClient().execute({
     sql: 'SELECT * FROM data_room_files WHERE id = ?',
@@ -924,17 +901,6 @@ export async function createDataRoomFile(file: { filename: string; category: str
     args: [id, file.filename, file.category, file.mime_type, file.size_bytes, file.extracted_text, file.summary || ''],
   });
   return (await getDataRoomFile(id))!;
-}
-
-export async function updateDataRoomFile(id: string, updates: { category?: string; summary?: string }) {
-  await ensureInitialized();
-  const sets: string[] = [];
-  const values: InValue[] = [];
-  if (updates.category !== undefined) { sets.push('category = ?'); values.push(updates.category); }
-  if (updates.summary !== undefined) { sets.push('summary = ?'); values.push(updates.summary); }
-  if (sets.length === 0) return;
-  values.push(id);
-  await getClient().execute({ sql: `UPDATE data_room_files SET ${sets.join(', ')} WHERE id = ?`, args: values });
 }
 
 export async function deleteDataRoomFile(id: string) {
@@ -975,15 +941,6 @@ export async function getAllDataRoomAccess(): Promise<DataRoomAccessRecord[]> {
   return result.rows as unknown as DataRoomAccessRecord[];
 }
 
-export async function getDataRoomAccessByInvestor(investorId: string): Promise<DataRoomAccessRecord[]> {
-  await ensureInitialized();
-  const result = await getClient().execute({
-    sql: 'SELECT * FROM data_room_access WHERE investor_id = ? ORDER BY accessed_at DESC',
-    args: [investorId],
-  });
-  return result.rows as unknown as DataRoomAccessRecord[];
-}
-
 // Model Sheets
 export interface ModelSheet {
   id: string;
@@ -1004,7 +961,7 @@ export async function getModelSheets(modelId: string = 'default'): Promise<Model
   return result.rows as unknown as ModelSheet[];
 }
 
-export async function getModelSheet(id: string): Promise<ModelSheet | null> {
+async function getModelSheet(id: string): Promise<ModelSheet | null> {
   await ensureInitialized();
   const result = await getClient().execute({
     sql: 'SELECT * FROM model_sheets WHERE id = ?',
@@ -1065,7 +1022,7 @@ export async function getAllTermSheets(): Promise<TermSheet[]> {
   return result.rows as unknown as TermSheet[];
 }
 
-export async function getTermSheet(id: string): Promise<TermSheet | null> {
+async function getTermSheet(id: string): Promise<TermSheet | null> {
   await ensureInitialized();
   const result = await getClient().execute({
     sql: 'SELECT * FROM term_sheets WHERE id = ?',
@@ -1111,7 +1068,7 @@ export async function getAllMarketDeals(): Promise<MarketDeal[]> {
   return result.rows as unknown as MarketDeal[];
 }
 
-export async function getMarketDeal(id: string): Promise<MarketDeal | null> {
+async function getMarketDeal(id: string): Promise<MarketDeal | null> {
   await ensureInitialized();
   const result = await getClient().execute({ sql: 'SELECT * FROM market_deals WHERE id = ?', args: [id] });
   return result.rows.length > 0 ? (result.rows[0] as unknown as MarketDeal) : null;
@@ -1220,7 +1177,7 @@ export async function getAllCompetitors(): Promise<Competitor[]> {
   return result.rows as unknown as Competitor[];
 }
 
-export async function getCompetitor(id: string): Promise<Competitor | null> {
+async function getCompetitor(id: string): Promise<Competitor | null> {
   await ensureInitialized();
   const result = await getClient().execute({ sql: 'SELECT * FROM competitors WHERE id = ?', args: [id] });
   return result.rows.length > 0 ? (result.rows[0] as unknown as Competitor) : null;
@@ -1269,7 +1226,7 @@ export async function getIntelligenceBriefs(briefType?: string, investorId?: str
   return result.rows as unknown as IntelligenceBrief[];
 }
 
-export async function getIntelligenceBrief(id: string): Promise<IntelligenceBrief | null> {
+async function getIntelligenceBrief(id: string): Promise<IntelligenceBrief | null> {
   await ensureInitialized();
   const result = await getClient().execute({ sql: 'SELECT * FROM intelligence_briefs WHERE id = ?', args: [id] });
   return result.rows.length > 0 ? (result.rows[0] as unknown as IntelligenceBrief) : null;
@@ -1284,16 +1241,6 @@ export async function createIntelligenceBrief(brief: Omit<IntelligenceBrief, 'id
     args: [id, brief.subject, brief.brief_type, brief.content, brief.sources, brief.investor_id || null, now, now],
   });
   return (await getIntelligenceBrief(id))!;
-}
-
-export async function updateIntelligenceBrief(id: string, updates: { content?: string; sources?: string }) {
-  await ensureInitialized();
-  const sets: string[] = ['updated_at = ?'];
-  const values: InValue[] = [new Date().toISOString()];
-  if (updates.content !== undefined) { sets.push('content = ?'); values.push(updates.content); }
-  if (updates.sources !== undefined) { sets.push('sources = ?'); values.push(updates.sources); }
-  values.push(id);
-  await getClient().execute({ sql: `UPDATE intelligence_briefs SET ${sets.join(', ')} WHERE id = ?`, args: values });
 }
 
 export async function deleteIntelligenceBrief(id: string) {
@@ -1473,68 +1420,6 @@ export async function getSkillHealthMetrics(): Promise<Array<{
   }>;
 }
 
-// Auto-generate tasks after meeting
-export async function generatePostMeetingTasks(meeting: Meeting, suggestedStatus: string): Promise<Task[]> {
-  const tasks: Task[] = [];
-  const now = new Date();
-  const in3Days = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-  const in7Days = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-
-  // Always create follow-up task
-  if (meeting.next_steps) {
-    tasks.push(await createTask({
-      title: `Follow up: ${meeting.investor_name}`,
-      description: meeting.next_steps,
-      assignee: '',
-      due_date: in3Days,
-      status: 'pending',
-      priority: 'high',
-      phase: suggestedStatus === 'in_dd' ? 'due_diligence' : suggestedStatus === 'engaged' ? 'management_presentations' : 'outreach',
-      investor_id: meeting.investor_id,
-      investor_name: meeting.investor_name,
-      auto_generated: true,
-    }));
-  }
-
-  // If objections exist, create task to address them in materials
-  try {
-    const objs = JSON.parse(meeting.objections || '[]');
-    const showstoppers = objs.filter((o: { severity: string }) => o.severity === 'showstopper' || o.severity === 'significant');
-    if (showstoppers.length > 0) {
-      tasks.push(await createTask({
-        title: `Address objections from ${meeting.investor_name}`,
-        description: showstoppers.map((o: { text: string; severity: string }) => `[${o.severity}] ${o.text}`).join('\n'),
-        assignee: '',
-        due_date: in7Days,
-        status: 'pending',
-        priority: showstoppers.some((o: { severity: string }) => o.severity === 'showstopper') ? 'critical' : 'high',
-        phase: 'preparation',
-        investor_id: meeting.investor_id,
-        investor_name: meeting.investor_name,
-        auto_generated: true,
-      }));
-    }
-  } catch { /* skip malformed */ }
-
-  // If engaged or DD, create materials preparation task
-  if (suggestedStatus === 'engaged' || suggestedStatus === 'in_dd') {
-    tasks.push(await createTask({
-      title: suggestedStatus === 'in_dd' ? `Prepare DD materials for ${meeting.investor_name}` : `Send follow-up materials to ${meeting.investor_name}`,
-      description: suggestedStatus === 'in_dd' ? 'Prepare data room access, financial model, and DD request list responses.' : 'Send deck, one-pager, or additional requested materials.',
-      assignee: '',
-      due_date: in3Days,
-      status: 'pending',
-      priority: 'high',
-      phase: suggestedStatus === 'in_dd' ? 'due_diligence' : 'management_presentations',
-      investor_id: meeting.investor_id,
-      investor_name: meeting.investor_name,
-      auto_generated: true,
-    }));
-  }
-
-  return tasks;
-}
-
 // Document Flags
 
 export interface DocumentFlag {
@@ -1585,11 +1470,6 @@ export async function updateDocumentFlag(id: string, updates: { status?: string 
       args: [updates.status, id],
     });
   }
-}
-
-export async function deleteDocumentFlag(id: string) {
-  await ensureInitialized();
-  await getClient().execute({ sql: 'DELETE FROM document_flags WHERE id = ?', args: [id] });
 }
 
 // Post-Meeting Intelligence Pipeline
@@ -2722,15 +2602,6 @@ export async function updateAccelerationAction(id: string, updates: { status?: s
   await getClient().execute({ sql: `UPDATE acceleration_actions SET ${sets.join(', ')} WHERE id = ?`, args: values });
 }
 
-export async function getAccelerationHistory(investorId: string): Promise<AccelerationAction[]> {
-  await ensureInitialized();
-  const result = await getClient().execute({
-    sql: 'SELECT * FROM acceleration_actions WHERE investor_id = ? ORDER BY created_at DESC',
-    args: [investorId],
-  });
-  return result.rows as unknown as AccelerationAction[];
-}
-
 // ---------------------------------------------------------------------------
 // Follow-up Actions
 // ---------------------------------------------------------------------------
@@ -2905,12 +2776,7 @@ export async function getRecentFollowupSignals(): Promise<Array<{
   }));
 }
 
-export async function deleteFollowup(id: string): Promise<void> {
-  await ensureInitialized();
-  await getClient().execute({ sql: 'DELETE FROM followup_actions WHERE id = ?', args: [id] });
-}
-
-export async function measureFollowupEfficacy(investorId: string): Promise<void> {
+async function measureFollowupEfficacy(investorId: string): Promise<void> {
   const db = getClient();
 
   // Get completed followups for this investor from last 30 days
@@ -3445,7 +3311,7 @@ export interface InvestorRelationship {
  * Scans market_deals for pipeline investors appearing in lead_investors/other_investors,
  * then cross-references co-investors against the pipeline to find shared deal history.
  */
-export async function detectMarketDealCoInvestors(): Promise<{
+async function detectMarketDealCoInvestors(): Promise<{
   investorName: string;
   investorId: string;
   dealCompany: string;
@@ -3655,7 +3521,7 @@ export async function getInvestorRelationships(investorId: string): Promise<Inve
 /**
  * Get all relationships in the graph, enriched with investor data.
  */
-export async function getInvestorRelationshipsAll(): Promise<InvestorRelationship[]> {
+async function getInvestorRelationshipsAll(): Promise<InvestorRelationship[]> {
   await ensureInitialized();
   const db = getClient();
   const result = await db.execute(`

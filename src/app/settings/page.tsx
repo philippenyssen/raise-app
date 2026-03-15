@@ -339,14 +339,19 @@ export default function SettingsPage() {
             <Building2 className="w-5 h-5" style={{ color: 'var(--text-tertiary)' }} />
             <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 400, color: 'var(--text-primary)' }}>Raise Parameters</h2>
           </div>
-          <button
-            onClick={saveRaiseConfig}
-            disabled={savingRaise || !raiseDirty}
-            className={`btn btn-md ${raiseDirty ? 'btn-primary' : 'btn-secondary'}`}
-          >
-            <Save className={`w-3.5 h-3.5 ${savingRaise ? 'animate-spin' : ''}`} />
-            {savingRaise ? 'Saving...' : raiseDirty ? 'Save Changes' : 'Saved'}
-          </button>
+          <div className="flex items-center gap-2">
+            {raiseDirty && (
+              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)', fontWeight: 400 }}>Unsaved changes</span>
+            )}
+            <button
+              onClick={saveRaiseConfig}
+              disabled={savingRaise || !raiseDirty}
+              className={`btn btn-md ${raiseDirty ? 'btn-primary' : 'btn-secondary'}`}
+            >
+              <Save className={`w-3.5 h-3.5 ${savingRaise ? 'animate-spin' : ''}`} />
+              {savingRaise ? 'Saving...' : raiseDirty ? 'Save Changes' : 'Saved'}
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -592,14 +597,19 @@ export default function SettingsPage() {
               <RotateCcw className="w-3 h-3" />
               Reset to Defaults
             </button>
-            <button
-              onClick={saveScoringWeights}
-              disabled={savingScoring || !scoringDirty}
-              className={`btn btn-md ${scoringDirty ? 'btn-primary' : 'btn-secondary'}`}
-            >
-              <Save className={`w-3.5 h-3.5 ${savingScoring ? 'animate-spin' : ''}`} />
-              {savingScoring ? 'Saving...' : scoringDirty ? 'Save Changes' : 'Saved'}
-            </button>
+            <div className="flex items-center gap-2">
+              {scoringDirty && (
+                <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)', fontWeight: 400 }}>Unsaved changes</span>
+              )}
+              <button
+                onClick={saveScoringWeights}
+                disabled={savingScoring || !scoringDirty}
+                className={`btn btn-md ${scoringDirty ? 'btn-primary' : 'btn-secondary'}`}
+              >
+                <Save className={`w-3.5 h-3.5 ${savingScoring ? 'animate-spin' : ''}`} />
+                {savingScoring ? 'Saving...' : scoringDirty ? 'Save Changes' : 'Saved'}
+              </button>
+            </div>
           </div>
         </div>
 
@@ -660,14 +670,19 @@ export default function SettingsPage() {
             <Clock className="w-5 h-5" style={{ color: 'var(--text-tertiary)' }} />
             <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 400, color: 'var(--text-primary)' }}>Follow-up Cadence</h2>
           </div>
-          <button
-            onClick={saveFollowupCadence}
-            disabled={savingFollowup || !followupDirty}
-            className={`btn btn-md ${followupDirty ? 'btn-primary' : 'btn-secondary'}`}
-          >
-            <Save className={`w-3.5 h-3.5 ${savingFollowup ? 'animate-spin' : ''}`} />
-            {savingFollowup ? 'Saving...' : followupDirty ? 'Save Changes' : 'Saved'}
-          </button>
+          <div className="flex items-center gap-2">
+            {followupDirty && (
+              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)', fontWeight: 400 }}>Unsaved changes</span>
+            )}
+            <button
+              onClick={saveFollowupCadence}
+              disabled={savingFollowup || !followupDirty}
+              className={`btn btn-md ${followupDirty ? 'btn-primary' : 'btn-secondary'}`}
+            >
+              <Save className={`w-3.5 h-3.5 ${savingFollowup ? 'animate-spin' : ''}`} />
+              {savingFollowup ? 'Saving...' : followupDirty ? 'Save Changes' : 'Saved'}
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">

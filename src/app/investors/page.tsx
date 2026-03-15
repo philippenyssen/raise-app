@@ -280,12 +280,18 @@ export default function InvestorsPage() {
         )}
       </div>
 
-      {/* Bulk Actions */}
+      {/* Floating Bulk Action Bar */}
       {selected.size > 0 && (
         <div
           className="flex items-center gap-3"
           style={{
+            position: 'fixed',
+            bottom: 'var(--space-6)',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 50,
             background: 'var(--accent-muted)',
+            boxShadow: 'var(--shadow-lg), inset 0 0 0 1px var(--accent)',
             borderRadius: 'var(--radius-lg)',
             padding: 'var(--space-2) var(--space-4)',
           }}
@@ -293,17 +299,23 @@ export default function InvestorsPage() {
           <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--accent)', fontWeight: 400 }}>
             {selected.size} selected
           </span>
+          <button
+            onClick={() => bulkUpdateStatus('contacted')}
+            className="btn btn-sm btn-primary"
+          >
+            Mark Contacted
+          </button>
           <select
             defaultValue=""
             onChange={e => { if (e.target.value) bulkUpdateStatus(e.target.value); e.target.value = ''; }}
             className="input"
             style={{ width: 'auto', fontSize: 'var(--font-size-xs)', padding: '0.25rem 0.5rem' }}
           >
-            <option value="" disabled>Bulk change status...</option>
+            <option value="" disabled>Other status...</option>
             {Object.entries(STATUS_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
           </select>
           <button onClick={() => setSelected(new Set())} className="btn btn-ghost btn-sm">
-            Deselect all
+            Deselect
           </button>
         </div>
       )}
