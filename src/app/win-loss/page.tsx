@@ -104,7 +104,7 @@ export default function WinLossPage() {
     setError(null);
     fetch('/api/win-loss')
       .then(r => {
-        if (!r.ok) throw new Error(`${r.status}`);
+        if (!r.ok) throw new Error('Could not load win/loss data — refresh to retry');
         return r.json();})
       .then((d: WinLossData) => { setData(d); setLoading(false); })
       .catch(e => { setError(e.message); setLoading(false); });
