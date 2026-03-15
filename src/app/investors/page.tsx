@@ -74,6 +74,7 @@ export default function InvestorsPage() {
     portfolio_conflicts: '', notes: '',});
 
   useEffect(() => { fetchInvestors(); }, []);
+  useEffect(() => { if (showForm) setTimeout(() => { const el = document.querySelector<HTMLInputElement>('#investor-form input'); el?.focus(); }, 50); }, [showForm]);
 
   async function fetchInvestors() {
     setLoading(true);
@@ -276,6 +277,7 @@ export default function InvestorsPage() {
       {/* Add/Edit Form */}
       {showForm && (
         <form
+          id="investor-form"
           onSubmit={handleSubmit}
           className="card-elevated space-y-4">
           <h3 className="section-title">{editId ? 'Edit' : 'Add'} investor</h3>

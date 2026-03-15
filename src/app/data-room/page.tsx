@@ -85,6 +85,8 @@ export default function DataRoomPage() {
     } catch { toast('Could not log access — check your connection and retry', 'error'); }
   }
 
+  useEffect(() => { if (pasteMode) setTimeout(() => { const el = document.querySelector<HTMLInputElement>('#paste-form input'); el?.focus(); }, 50); }, [pasteMode]);
+
   async function handleFileUpload(fileList: FileList) {
     setUploading(true);
     for (const file of Array.from(fileList)) {
@@ -247,6 +249,7 @@ export default function DataRoomPage() {
       {/* Paste mode */}
       {pasteMode && (
         <div
+          id="paste-form"
           className="card space-y-4">
           <h3 style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>Paste document content</h3>
           <div className="flex gap-3">
