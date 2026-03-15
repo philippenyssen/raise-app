@@ -773,9 +773,8 @@ export default function FocusPage() {
         fetch('/api/acceleration'),]);
       if (focusRes.ok) setData(await focusRes.json());
       if (accelRes.ok) setAccelData(await accelRes.json());
-    } catch (err) {
+    } catch {
       toast('Failed to load focus data', 'error');
-      console.error(err);
     } finally {
       setLoading(false);
       setAccelLoading(false);

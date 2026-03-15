@@ -350,9 +350,8 @@ export default function AccelerationPage() {
       } else {
         toast('Failed to load acceleration data', 'error');
       }
-    } catch (err) {
+    } catch {
       toast('Failed to load acceleration data', 'error');
-      console.error(err);
     } finally {
       setLoading(false);
     }

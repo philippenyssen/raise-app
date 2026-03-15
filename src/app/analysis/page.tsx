@@ -61,8 +61,7 @@ export default function AnalysisPage() {
     try {
       const res = await fetch('/api/analyze');
       setData(await res.json());
-    } catch (err) {
-      console.error('Analysis failed:', err);
+    } catch {
       setData({ patterns: null, health: { health: 'red', diagnosis: 'Analysis failed. Please try again.', recommendations: [], risk_factors: [] }, objections: [], funnel: {}, meeting_count: 0, error: 'Failed to run analysis' });
     } finally {
       setLoading(false);
@@ -83,16 +82,14 @@ export default function AnalysisPage() {
 
       {!data && !loading && (
         <div
-          className="rounded-xl p-8 text-center space-y-3"
-          style={{  }}>
+          className="rounded-xl p-8 text-center space-y-3">
           <p style={stTextMuted}>Click &quot;Run Analysis&quot; to analyze patterns across all logged meetings.</p>
           <p className="text-xs" style={stTextMuted}>Requires at least 2 meetings with notes. Uses Claude API.</p></div>
       )}
 
       {loading && (
         <div
-          className="rounded-xl p-8 text-center"
-          style={{  }}>
+          className="rounded-xl p-8 text-center">
           <div className="animate-pulse" style={stTextSecondary}>
             Analyzing {data?.meeting_count ?? '...'} meetings with Claude...</div>
           <p className="text-xs mt-2" style={stTextMuted}>This may take 10-30 seconds</p></div>
