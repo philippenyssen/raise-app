@@ -52,13 +52,14 @@ export async function GET() {
     const weeks = getLastNWeeks(NUM_WEEKS);
     const cutoffDate = weeks[0].toISOString();
 
-    // Fetch all relevant data in parallel
+    // Fetch all relevant data in parallel (including all-meetings for timing correlation)
     const [
       investorRows,
       meetingRows,
       activityRows,
       taskRows,
       followupRows,
+      allMeetingRows,
     ] = await Promise.all([
       db.execute(`
         SELECT id, name, type, tier, status, enthusiasm, created_at, updated_at
@@ -99,7 +100,9 @@ export async function GET() {
           WHERE created_at >= ? OR completed_at >= ?
         `,
         args: [cutoffDate, cutoffDate],
-      }),]);
+      }),
+      db.execute(`SELECT id, investor_id, investor_name, date, type, status_after FROM meetings ORDER BY date ASC`),
+    ]);
 
     const investors = investorRows.rows as unknown as InvestorRow[];
     const meetings = meetingRows.rows as unknown as MeetingRow[];
@@ -544,9 +547,8 @@ export async function GET() {
 
     const timingSignals: TimingSignal[] = [];
 
-    // Fetch ALL meetings (not just within the 8-week window) for timing analysis
-    const allMeetingsResult = await db.execute(`SELECT id, investor_id, investor_name, date, type, status_after FROM meetings ORDER BY date ASC`);
-    const allMeetingsForTiming = allMeetingsResult.rows as unknown as Array<{ id: string; investor_id: string; investor_name: string; date: string; type: string; status_after: string }>;
+    // Reuse all-meetings from initial parallel batch for timing analysis
+    const allMeetingsForTiming = allMeetingRows.rows as unknown as Array<{ id: string; investor_id: string; investor_name: string; date: string; type: string; status_after: string }>;
 
     // (a) Meeting clusters: 3+ different-investor meetings within 5 days = competitive tension
     const meetingDates = allMeetingsForTiming.map(m => ({
