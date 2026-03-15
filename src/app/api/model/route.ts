@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getModelSheets, createModelSheet, updateModelSheet, deleteModelSheet } from '@/lib/db';
+import { getModelSheets, getModelSheet, createModelSheet, updateModelSheet, deleteModelSheet } from '@/lib/db';
 import { emitContextChange } from '@/lib/context-bus';
 
 export async function GET(req: NextRequest) {
@@ -21,9 +21,10 @@ export async function POST(req: NextRequest) {
   } catch {
     return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
   }
-  const { sheet_name, sheet_order, data, model_id } = body as {
-    sheet_name: string; sheet_order: number; data: unknown; model_id: string;
-  };
+  const sheet_name = typeof body.sheet_name === 'string' ? (body.sheet_name as string).trim() : '';
+  const sheet_order = body.sheet_order as number;
+  const data = body.data as unknown;
+  const model_id = typeof body.model_id === 'string' ? (body.model_id as string).trim() : '';
 
   if (!sheet_name) {
     return NextResponse.json({ error: 'sheet_name is required' }, { status: 400 });
@@ -59,9 +60,11 @@ export async function PUT(req: NextRequest) {
   }
   const id = body.id as string | undefined;
   if (!id) return NextResponse.json({ error: 'id is required' }, { status: 400 });
+  const existing = await getModelSheet(id);
+  if (!existing) return NextResponse.json({ error: `Model sheet ${id} not found` }, { status: 404 });
 
   const updates: Record<string, unknown> = {};
-  if (body.sheet_name !== undefined) updates.sheet_name = body.sheet_name;
+  if (body.sheet_name !== undefined) updates.sheet_name = typeof body.sheet_name === 'string' ? body.sheet_name.trim() : body.sheet_name;
   if (body.sheet_order !== undefined) updates.sheet_order = body.sheet_order;
   if (body.data !== undefined) updates.data = typeof body.data === 'string' ? body.data : JSON.stringify(body.data);
 

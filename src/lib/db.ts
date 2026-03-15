@@ -980,7 +980,7 @@ export async function getModelSheets(modelId: string = 'default'): Promise<Model
   return result.rows as unknown as ModelSheet[];
 }
 
-const getModelSheet = (id: string) => genericGetById<ModelSheet>('model_sheets', id);
+export const getModelSheet = (id: string) => genericGetById<ModelSheet>('model_sheets', id);
 
 export async function createModelSheet(sheet: { model_id?: string; sheet_name: string; sheet_order: number; data: string }): Promise<ModelSheet> {
   const id = await genericCreate('model_sheets', {
@@ -1023,7 +1023,7 @@ export async function getAllTermSheets(): Promise<TermSheet[]> {
   return result.rows as unknown as TermSheet[];
 }
 
-const getTermSheet = (id: string) => genericGetById<TermSheet>('term_sheets', id);
+export const getTermSheet = (id: string) => genericGetById<TermSheet>('term_sheets', id);
 
 export async function createTermSheet(ts: Omit<TermSheet, 'id' | 'created_at' | 'updated_at'>): Promise<TermSheet> {
   const id = await genericCreate('term_sheets', ts as Record<string, unknown>);

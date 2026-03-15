@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAllTermSheets, createTermSheet, updateTermSheet, deleteTermSheet } from '@/lib/db';
+import { getAllTermSheets, getTermSheet, createTermSheet, updateTermSheet, deleteTermSheet } from '@/lib/db';
 import { emitContextChange } from '@/lib/context-bus';
 
 const ALLOWED_FIELDS = new Set([
@@ -66,6 +66,8 @@ export async function PUT(req: NextRequest) {
   }
   if (!body.id) return NextResponse.json({ error: 'id is required' }, { status: 400 });
   const { id, ...raw } = body;
+  const existing = await getTermSheet(id as string);
+  if (!existing) return NextResponse.json({ error: `Term sheet ${id} not found` }, { status: 404 });
   const updates: Record<string, unknown> = Object.fromEntries(
     Object.entries(raw).filter(([k]) => ALLOWED_FIELDS.has(k))
   );
