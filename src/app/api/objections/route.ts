@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
   const view = searchParams.get('view'); // 'top' | 'best' | 'investor' | default full playbook
 
   if (view === 'top') {
-    const limit = parseInt(searchParams.get('limit') || '10');
+    const limit = Math.min(Math.max(parseInt(searchParams.get('limit') || '10', 10) || 10, 1), 100);
     const top = await getTopObjections(limit);
     return NextResponse.json(top);
   }

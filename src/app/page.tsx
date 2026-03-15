@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/toast';
 import { fmtDateShort, fmtDate } from '@/lib/format';
 import { cachedFetch } from '@/lib/cache';
@@ -221,6 +222,7 @@ const cardPadding: React.CSSProperties = { borderRadius: 'var(--radius-xl)', pad
 // ---------------------------------------------------------------------------
 
 export default function Dashboard() {
+  const router = useRouter();
   const { toast } = useToast();
   const [data, setData] = useState<HealthData | null>(null);
   const [pulse, setPulse] = useState<PulseData | null>(null);
@@ -294,7 +296,7 @@ export default function Dashboard() {
         const first = pulse?.criticalPath?.topAccelerations?.[0];
         if (first) executeAcceleration(first.id);
       }
-      if (!e.metaKey && !e.ctrlKey && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement)) { if (e.key === 'n') window.location.href = '/meetings/new'; if (e.key === 'r') { e.preventDefault(); fetchData(true); } }
+      if (!e.metaKey && !e.ctrlKey && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement)) { if (e.key === 'n') router.push('/meetings/new'); if (e.key === 'r') { e.preventDefault(); fetchData(true); } }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);

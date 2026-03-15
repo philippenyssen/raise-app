@@ -50,10 +50,7 @@ export class ErrorBoundary extends Component<Props, State> {
               </p>
             )}
             <button
-              onClick={() => {
-                this.setState({ hasError: false, error: null });
-                window.location.reload();
-              }}
+              onClick={() => this.setState({ hasError: false, error: null })}
               className="btn btn-secondary btn-sm"
               style={{ marginTop: 'var(--space-2)' }}
             >
