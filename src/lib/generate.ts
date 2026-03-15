@@ -1,11 +1,4 @@
-import Anthropic from '@anthropic-ai/sdk';
-import { AI_MODEL } from './ai';
-
-let _client: Anthropic | null = null;
-function getClient(): Anthropic {
-  if (!_client) _client = new Anthropic({ timeout: 120_000 });
-  return _client;
-}
+import { AI_MODEL, getAIClient } from './ai';
 
 interface GenerateContext {
   dataRoomContext: string;
@@ -144,7 +137,7 @@ export async function generateDeliverable(
     .map(d => `--- ${d.title} (${d.type}) ---\n${d.content.substring(0, 3000)}`)
     .join('\n\n');
 
-  const response = await getClient().messages.create({
+  const response = await getAIClient().messages.create({
     model: AI_MODEL,
     max_tokens: 16384,
     temperature: 0,
@@ -172,7 +165,7 @@ Generate the document now. Use markdown formatting. Every claim must be traceabl
 export async function generateModelFromContext(
   context: GenerateContext
 ): Promise<Record<string, Record<string, { v: string | number; f?: string; t?: 's' | 'n'; bold?: boolean; bg?: string }>>> {
-  const response = await getClient().messages.create({
+  const response = await getAIClient().messages.create({
     model: AI_MODEL,
     max_tokens: 8192,
     temperature: 0,
