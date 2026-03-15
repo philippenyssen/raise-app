@@ -42,8 +42,8 @@ export async function GET(req: NextRequest) {
 
       const [followups, velocities, cascades] = await Promise.all([
         getFollowups(Object.keys(filters).length > 0 ? filters : undefined),
-        computeEngagementVelocity().catch(() => []),
-        computeNetworkCascades().catch(() => []),]);
+        computeEngagementVelocity().catch(e => { console.error('[FOLLOWUPS] velocity failed:', e instanceof Error ? e.message : e); return [] as Awaited<ReturnType<typeof computeEngagementVelocity>>; }),
+        computeNetworkCascades().catch(e => { console.error('[FOLLOWUPS] cascades failed:', e instanceof Error ? e.message : e); return [] as Awaited<ReturnType<typeof computeNetworkCascades>>; }),]);
 
       const uniqueInvestorIds = [...new Set(followups.map(f => f.investor_id))];
       const timingResults = await Promise.all(
@@ -165,15 +165,20 @@ export async function PUT(req: NextRequest) {
     updates.completed_at = new Date().toISOString();
   }
 
-  await updateFollowup(id as string, updates);
-  emitContextChange('followup_updated', `Follow-up ${id} ${status || 'updated'}`);
+  try {
+    await updateFollowup(id as string, updates);
+    emitContextChange('followup_updated', `Follow-up ${id} ${status || 'updated'}`);
 
-  if (status === 'completed' && conviction_delta !== undefined) {
-    const searchParams = req.nextUrl.searchParams;
-    const invId = (filtered.investor_id as string) || searchParams.get('investor_id');
-    if (invId) {
-      backfillEnthusiasmFromFollowups(invId).catch(() => {/* non-blocking */});
-    }}
+    if (status === 'completed' && conviction_delta !== undefined) {
+      const searchParams = req.nextUrl.searchParams;
+      const invId = (filtered.investor_id as string) || searchParams.get('investor_id');
+      if (invId) {
+        backfillEnthusiasmFromFollowups(invId).catch(e => { console.error('[FOLLOWUPS] backfill failed:', e instanceof Error ? e.message : e); });
+      }}
 
-  return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    console.error('[FOLLOWUPS_PUT]', err instanceof Error ? err.message : err);
+    return NextResponse.json({ error: 'Failed to update follow-up' }, { status: 500 });
+  }
 }
