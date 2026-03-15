@@ -4,11 +4,12 @@ import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { cachedFetch } from '@/lib/cache';
 import { useToast } from '@/components/toast';
+import { CopyButton } from '@/components/copy-button';
 import {
   MessageCircleWarning, ChevronDown, ChevronRight, Shield, AlertTriangle,
   CheckCircle2, Edit3, Save, X, TrendingUp, TrendingDown, Minus,
   Target, User, BarChart3, ArrowUpRight, ArrowDownRight, Clock, Zap,
-  ThumbsUp, ThumbsDown, Activity, Copy, Check, Calendar, ExternalLink,
+  ThumbsUp, ThumbsDown, Activity, Calendar, ExternalLink,
 } from 'lucide-react';
 import { fmtDate } from '@/lib/format';
 import {
@@ -137,35 +138,6 @@ const EFFECTIVENESS_BADGE: Record<string, { style: React.CSSProperties; label: s
 
 function getTopicColor(topic: string) {
   return TOPIC_COLORS[topic] || DEFAULT_TOPIC_COLOR;
-}
-
-function CopyButton({ text }: { text: string }) {
-  const [copied, setCopied] = useState(false);
-  function handleCopy() {
-    navigator.clipboard.writeText(text).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }).catch(() => {});
-  }
-  return (
-    <button
-      onClick={handleCopy}
-      className="flex items-center gap-1 shrink-0 transition-colors"
-      style={{
-        background: 'none',
-        border: 'none',
-        cursor: 'pointer',
-        padding: '2px 6px',
-        borderRadius: 'var(--radius-sm)',
-        fontSize: '10px',
-        fontWeight: 400,
-        color: copied ? 'var(--success)' : 'var(--text-muted)',
-        transition: 'color 150ms ease', }}
-      onMouseEnter={e => { if (!copied) (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; }}
-      onMouseLeave={e => { if (!copied) (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}>
-      {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-      {copied ? 'Copied' : 'Copy'}
-    </button>);
 }
 
 function BestResponseCard({ response }: { response: ObjectionRecord }) {

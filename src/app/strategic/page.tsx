@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { deltaColor, gaugeColor, gaugeColor as gaugeBarColor, labelMuted, labelMuted10, labelSecondary, stAccent, stFontSm, stFontXs, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 import { useToast } from '@/components/toast';
+import { CopyButton } from '@/components/copy-button';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -225,11 +226,7 @@ export default function StrategicPage() {
           <div className="flex items-center gap-2">
             <Activity className="w-4 h-4" style={stAccent} />
             <span className="section-title" style={{ marginBottom: 0 }}>CEO Brief</span></div>
-          <button
-            onClick={() => { navigator.clipboard.writeText(data.ceoBrief); }}
-            className="text-xs px-2 py-1 rounded"
-            style={{ background: 'var(--surface-2)', color: 'var(--text-muted)' }}
-            title="Copy brief to clipboard">Copy</button></div>
+          <CopyButton text={data.ceoBrief} /></div>
         <p style={{ fontSize: 'var(--font-size-lg)', color: 'var(--text-primary)', lineHeight: 1.6 }}>{data.ceoBrief}</p></div>
 
       {/* ================================================================ */}
