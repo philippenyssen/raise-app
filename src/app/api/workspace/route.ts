@@ -375,6 +375,8 @@ export async function POST(req: NextRequest) {
   let body: Record<string, unknown>;
   try { body = await req.json(); } catch { return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 }); }
   const messages = body.messages as { role: string; content: string }[];
+  if (!Array.isArray(messages) || messages.length === 0) return NextResponse.json({ error: 'Messages array is required' }, { status: 400 });
+  if (messages.length > 50) return NextResponse.json({ error: 'Too many messages — start a new conversation' }, { status: 400 });
   const documentId = body.documentId as string | null;
   const documentContent = body.documentContent as string | undefined;
   const documentTitle = body.documentTitle as string | undefined;
