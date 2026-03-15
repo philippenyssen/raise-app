@@ -166,14 +166,14 @@ export default function StrategicPage() {
 
   if (loading) {
     return (
-      <div className="space-y-6">
-        <div className="h-8 w-64 skeleton animate-pulse" style={{ borderRadius: 'var(--radius-md)' }} />
-        <div className="h-32 skeleton animate-pulse" style={{ borderRadius: 'var(--radius-lg)', opacity: 0.5 }} />
+      <div className="space-y-6 page-content">
+        <div className="skeleton" style={{ height: '28px', width: '250px' }} />
+        <div className="skeleton" style={{ height: '120px', borderRadius: 'var(--radius-lg)' }} />
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-36 skeleton animate-pulse" style={{ borderRadius: 'var(--radius-lg)', opacity: 0.5 }} />
+          {[1,2,3,4].map(i => (
+            <div key={i} className="skeleton" style={{ height: '140px', borderRadius: 'var(--radius-lg)' }} />
           ))}</div>
-        <div className="h-64 skeleton animate-pulse" style={{ borderRadius: 'var(--radius-lg)', opacity: 0.5 }} />
+        <div className="skeleton" style={{ height: '250px', borderRadius: 'var(--radius-lg)' }} />
       </div>);
   }
 
