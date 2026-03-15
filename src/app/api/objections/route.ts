@@ -84,7 +84,7 @@ export async function PUT(req: NextRequest) {
           investor_id,
           investor_name: investor_name || '',});
       }
-    } catch { /* non-blocking */ }
+    } catch (e) { console.error('[OBJECTION_ACTIVITY]', e instanceof Error ? e.message : e); }
 
     // Auto-complete follow-ups related to this objection
     try {
@@ -98,7 +98,7 @@ export async function PUT(req: NextRequest) {
               conviction_delta: effectiveness === 'effective' ? 1 : 0,});
           }}
       }
-    } catch { /* non-blocking */ }
+    } catch (e) { console.error('[OBJECTION_FOLLOWUP_RESOLVE]', e instanceof Error ? e.message : e); }
   }
 
   emitContextChange('objection_updated', `Objection ${id} response: ${effectiveness || 'updated'}`);

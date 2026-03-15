@@ -173,7 +173,7 @@ export async function GET() {
         calibration.blendedWeights = blendedWeights;
         calibration.adjustments = adjustments;
       }
-    } catch { /* non-blocking */ }
+    } catch (e) { console.error('[STRESS_CALIBRATION]', e instanceof Error ? e.message : e); }
 
     const [investorRows, allMeetings, activityRows, raiseConfig] = await Promise.all([
       db.execute(`SELECT * FROM investors ORDER BY tier ASC, name ASC`),
@@ -252,7 +252,7 @@ export async function GET() {
     // Log predictions for calibration (non-blocking)
     try {
       for (const f of investorForecasts.slice(0, 20)) await logPrediction(f.id, f.name, f.closeProbability / 100, f.predictedCloseDate);
-    } catch { /* non-blocking */ }
+    } catch (e) { console.error('[STRESS_PREDICTIONS]', e instanceof Error ? e.message : e); }
 
     const totalExpected = investorForecasts.reduce((s, f) => s + f.expectedValue, 0);
     const baseCase = Math.round(totalExpected * 10) / 10;
