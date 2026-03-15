@@ -91,6 +91,20 @@ export async function PUT(req: NextRequest) {
     if (updates.confidence !== undefined && (typeof updates.confidence !== 'number' || updates.confidence < 0 || updates.confidence > 1)) {
       return NextResponse.json({ error: 'confidence must be between 0 and 1' }, { status: 400 });
     }
+    if (updates.annual_amount !== undefined && (typeof updates.annual_amount !== 'number' || updates.annual_amount < 0 || updates.annual_amount > 10_000_000_000)) {
+      return NextResponse.json({ error: 'annual_amount must be a non-negative number up to 10,000,000,000' }, { status: 400 });
+    }
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    if (updates.start_date !== undefined && typeof updates.start_date === 'string' && updates.start_date !== '' && !dateRegex.test(updates.start_date)) {
+      return NextResponse.json({ error: 'start_date must be in YYYY-MM-DD format' }, { status: 400 });
+    }
+    if (updates.end_date !== undefined && typeof updates.end_date === 'string' && updates.end_date !== '' && !dateRegex.test(updates.end_date)) {
+      return NextResponse.json({ error: 'end_date must be in YYYY-MM-DD format' }, { status: 400 });
+    }
+    // Trim string fields
+    for (const k of ['customer', 'program', 'source_doc', 'notes'] as const) {
+      if (typeof updates[k] === 'string') updates[k] = (updates[k] as string).trim();
+    }
     await updateRevenueCommitment(id, updates);
     emitContextChange('commitment_updated', `Commitment ${id} updated`);
     return NextResponse.json({ ok: true });

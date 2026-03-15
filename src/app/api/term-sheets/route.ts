@@ -40,15 +40,15 @@ export async function POST(req: NextRequest) {
       investor: (body.investor as string).trim(),
       valuation: ((body.valuation as string) ?? '').trim(),
       amount: ((body.amount as string) ?? '').trim(),
-      liq_pref: (body.liq_pref as string) ?? '1x non-participating',
-      anti_dilution: (body.anti_dilution as string) ?? 'Broad-based weighted average',
-      board_seats: (body.board_seats as string) ?? '1 + observer',
-      dividends: (body.dividends as string) ?? 'None',
-      protective_provisions: (body.protective_provisions as string) ?? 'Standard',
-      option_pool: (body.option_pool as string) ?? '',
-      exclusivity: (body.exclusivity as string) ?? '',
+      liq_pref: ((body.liq_pref as string) ?? '1x non-participating').trim(),
+      anti_dilution: ((body.anti_dilution as string) ?? 'Broad-based weighted average').trim(),
+      board_seats: ((body.board_seats as string) ?? '1 + observer').trim(),
+      dividends: ((body.dividends as string) ?? 'None').trim(),
+      protective_provisions: ((body.protective_provisions as string) ?? 'Standard').trim(),
+      option_pool: ((body.option_pool as string) ?? '').trim(),
+      exclusivity: ((body.exclusivity as string) ?? '').trim(),
       strategic_value,
-      notes: (body.notes as string) ?? '',
+      notes: ((body.notes as string) ?? '').trim(),
     });
     return NextResponse.json(sheet, { status: 201 });
   } catch (err) {
