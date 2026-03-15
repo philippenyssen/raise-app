@@ -890,7 +890,7 @@ export default function TodayPage() {
                           {fu.investor_name}
                         </Link>
                         {isOverdue && (
-                          <span style={{ fontSize: '10px', color: 'var(--text-primary)', fontWeight: 600 }}>OVERDUE</span>
+                          <span style={{ fontSize: '10px', color: 'var(--text-primary)', fontWeight: 500 }}>Overdue</span>
                         )}
                       </div>
                     </div>

@@ -421,7 +421,7 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimensionData[] }) 
             <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 'var(--space-2)' }}>
               <div className="flex items-center gap-1 mb-1">
                 <span style={{ color: 'var(--text-secondary)' }}><Star className="w-3 h-3" /></span>
-                <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 600, letterSpacing: '0.01em' }}>
+                <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 500, letterSpacing: '0.01em' }}>
                   Strengths
                 </span>
               </div>
@@ -448,7 +448,7 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimensionData[] }) 
             <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 'var(--space-2)' }}>
               <div className="flex items-center gap-1 mb-1">
                 <span style={{ color: 'var(--text-tertiary)' }}><Eye className="w-3 h-3" /></span>
-                <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 600, letterSpacing: '0.01em' }}>
+                <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 500, letterSpacing: '0.01em' }}>
                   Needs Attention
                 </span>
               </div>
