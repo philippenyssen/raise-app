@@ -896,7 +896,7 @@ export default function Dashboard() {
                   {pendingFollowups.slice(0, 5).map((fu) => (
                     <FollowupRow key={fu.id} followup={fu} onComplete={(id) => {
                       setPendingFollowups(prev => prev.filter(f => f.id !== id));
-                      fetch('/api/followups', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, status: 'completed' }) });
+                      fetch('/api/followups', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, status: 'completed' }) }).catch(e => console.error('[FOLLOWUP_COMPLETE]', e instanceof Error ? e.message : e));
                     }} />
                   ))}</div>
               ) : (

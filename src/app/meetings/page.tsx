@@ -44,6 +44,7 @@ function RatingDots({ value, onChange, label }: { value: number | null; onChange
             onMouseEnter={() => setHovered(n)}
             onMouseLeave={() => setHovered(null)}
             disabled={!onChange}
+            aria-label={`Rate ${n} star${n > 1 ? 's' : ''}`}
             style={{ width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: onChange ? 'pointer' : 'default', background: 'none', border: 'none', padding: 0 }}>
             <span style={{
               color: n <= (hovered ?? value ?? 0) ? 'var(--warning)' : 'var(--text-muted)',
@@ -229,6 +230,7 @@ function MeetingOutcomeSection({
               <button
                 type="button"
                 onClick={() => removeObjection(i)}
+                aria-label="Remove objection"
                 style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: 'inherit', display: 'flex' }}>
                 <X className="w-3 h-3" /></button></span>
           ))}</div>
@@ -255,6 +257,7 @@ function MeetingOutcomeSection({
               <button
                 type="button"
                 onClick={() => removeCompetitor(i)}
+                aria-label="Remove competitor"
                 style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: 'inherit', display: 'flex' }}>
                 <X className="w-3 h-3" /></button></span>
           ))}</div>
@@ -548,6 +551,8 @@ export default function MeetingsPage() {
                   <button
                     onClick={() => setExpandedOutcome(isOutcomeExpanded ? null : m.id)}
                     className="flex items-center gap-2 w-full"
+                    aria-expanded={isOutcomeExpanded}
+                    aria-label={hasOutcome ? 'Meeting Outcome' : 'Record Outcome'}
                     style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontSize: 'var(--font-size-sm)', fontWeight: 400, color: hasOutcome ? 'var(--success)' : 'var(--text-tertiary)' }}
                     onMouseEnter={e => (e.currentTarget.style.color = hasOutcome ? 'var(--success)' : 'var(--text-secondary)')}
                     onMouseLeave={e => (e.currentTarget.style.color = hasOutcome ? 'var(--success)' : 'var(--text-tertiary)')}>
