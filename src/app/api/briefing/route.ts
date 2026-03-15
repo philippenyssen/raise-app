@@ -14,6 +14,9 @@ import {
 import { getAIClient, AI_MODEL } from '@/lib/ai';
 import { parseJsonSafe, checkRateLimit } from '@/lib/api-helpers';
 
+let aiSummaryCache: { text: string; ts: number } | null = null;
+const AI_SUMMARY_TTL = 5 * 60_000; // 5 minutes
+
 function getGreeting(): string {
   const hour = new Date().getHours();
   if (hour < 12) return 'Good morning, Philippe';
@@ -341,13 +344,16 @@ export async function GET() {
         recentMeetingCount: recentMeetings.length,
         pipelineVelocity: pipelineFlow?.velocityTrend || 'unknown',};
 
-      const response = await getAIClient().messages.create({
-        model: AI_MODEL,
-        max_tokens: 300,
-        temperature: 0,
-        messages: [{
-          role: 'user',
-          content: `You are a chief of staff for a CEO running a Series C fundraise. Write a 2-3 sentence morning briefing summary. Be direct, actionable, and honest. No fluff.
+      if (aiSummaryCache && Date.now() - aiSummaryCache.ts < AI_SUMMARY_TTL) {
+        todaySummary = aiSummaryCache.text;
+      } else {
+        const response = await getAIClient().messages.create({
+          model: AI_MODEL,
+          max_tokens: 300,
+          temperature: 0,
+          messages: [{
+            role: 'user',
+            content: `You are a chief of staff for a CEO running a Series C fundraise. Write a 2-3 sentence morning briefing summary. Be direct, actionable, and honest. No fluff.
 
 DATA:
 ${JSON.stringify(summaryContext)}
@@ -359,14 +365,16 @@ Rules:
 - If things are going well, say so briefly
 - Use specific numbers
 - No greetings, no sign-offs, just the summary`,
-        }],});
+          }],});
 
-      const block = response.content[0];
-      const text = block?.type === 'text' && block.text ? block.text : '';
-      if (!text || response.stop_reason === 'max_tokens') {
-        console.error('[BRIEFING_AI] Empty or truncated response, stop_reason:', response.stop_reason);
+        const block = response.content[0];
+        const text = block?.type === 'text' && block.text ? block.text : '';
+        if (!text || response.stop_reason === 'max_tokens') {
+          console.error('[BRIEFING_AI] Empty or truncated response, stop_reason:', response.stop_reason);
+        }
+        todaySummary = text || 'Unable to generate summary.';
+        aiSummaryCache = { text: todaySummary, ts: Date.now() };
       }
-      todaySummary = text || 'Unable to generate summary.';
     } catch (e) {
       console.error('[BRIEFING_AI_SUMMARY]', e instanceof Error ? e.message : e);
       // Fallback: deterministic summary without AI
