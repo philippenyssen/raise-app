@@ -32,7 +32,8 @@ export async function GET(req: NextRequest) {
       },
     });
   } catch (err) {
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.error('[COMMITMENTS_GET]', err instanceof Error ? err.message : err);
+    return NextResponse.json({ error: 'Failed to load revenue commitments' }, { status: 500 });
   }
 }
 
@@ -60,7 +61,8 @@ export async function POST(req: NextRequest) {
     emitContextChange('commitment_created', `Revenue commitment: ${(body.counterparty as string) || (body.contract_name as string) || ''}`);
     return NextResponse.json(commitment, { status: 201 });
   } catch (err) {
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.error('[COMMITMENTS_POST]', err instanceof Error ? err.message : err);
+    return NextResponse.json({ error: 'Failed to create revenue commitment' }, { status: 500 });
   }
 }
 
@@ -87,7 +89,8 @@ export async function PUT(req: NextRequest) {
     emitContextChange('commitment_updated', `Commitment ${id} updated`);
     return NextResponse.json({ ok: true });
   } catch (err) {
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.error('[COMMITMENTS_PUT]', err instanceof Error ? err.message : err);
+    return NextResponse.json({ error: 'Failed to update revenue commitment' }, { status: 500 });
   }
 }
 
@@ -98,6 +101,7 @@ export async function DELETE(req: NextRequest) {
     await deleteRevenueCommitment(id);
     return NextResponse.json({ ok: true });
   } catch (err) {
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.error('[COMMITMENTS_DELETE]', err instanceof Error ? err.message : err);
+    return NextResponse.json({ error: 'Failed to delete revenue commitment' }, { status: 500 });
   }
 }
