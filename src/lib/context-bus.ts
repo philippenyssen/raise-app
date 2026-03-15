@@ -43,6 +43,7 @@ import {
 } from './db';
 import type { TemporalTrends, RaiseForecast, ForecastCalibration, WinLossPatterns, ScoreReversal, PipelineRanking, MeetingDensity, FomoDynamic, EngagementVelocity, NetworkCascade } from './db';
 import { groupByInvestorId } from './api-helpers';
+import { fmtEur } from './format';
 
 // ---------------------------------------------------------------------------
 // Context version — monotonically increasing counter
@@ -753,7 +754,6 @@ export function contextToSystemPrompt(ctx: FullContext): string {
 
   // Revenue backlog
   if (ctx.backlogSummary.count > 0) {
-    const fmtEur = (n: number) => n >= 1e9 ? `€${(n/1e9).toFixed(1)}Bn` : `€${(n/1e6).toFixed(0)}M`;
     lines.push(`REVENUE BACKLOG: ${fmtEur(ctx.backlogSummary.totalCommitted)} total, ${fmtEur(ctx.backlogSummary.probabilityWeighted)} probability-weighted (${ctx.backlogSummary.count} commitments)`);
     lines.push('');
   }
