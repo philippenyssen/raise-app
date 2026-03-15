@@ -726,7 +726,7 @@ async function computeIntelligenceBriefing(
             dataSource: 'temporal_trends',});
         }}
     }
-  } catch { /* non-blocking */ }
+  } catch (e) { console.error('[PULSE_TRENDS]', e instanceof Error ? e.message : e); }
 
   // Score reversal insights (cycle 26)
   try {
@@ -740,7 +740,7 @@ async function computeIntelligenceBriefing(
         action: `Investigate score drops immediately — these may indicate loss of conviction. Prioritize direct outreach to ${critical[0].investorName}.`,
         dataSource: 'score_reversals',});
     }
-  } catch { /* non-blocking */ }
+  } catch (e) { console.error('[PULSE_REVERSALS]', e instanceof Error ? e.message : e); }
 
   // Forecast insights (cycle 19)
   try {
@@ -764,7 +764,7 @@ async function computeIntelligenceBriefing(
           action: `Escalate ${criticalStalled[0].investorName} immediately. Schedule a direct call with the decision maker.`,
           dataSource: 'raise_forecast',});
       }}
-  } catch { /* non-blocking */ }
+  } catch (e) { console.error('[PULSE_FORECAST]', e instanceof Error ? e.message : e); }
 
   // Follow-up conviction signals — capitalize on positive momentum (cycle 37)
   if (fullCtx.recentFollowupSignals.length > 0) {

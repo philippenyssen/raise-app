@@ -228,7 +228,7 @@ async function buildQueryFocus(
             reversalData?.delta ?? null,);
           lines.push(`- DEAL HEAT: ${heat.label.toUpperCase()} (${heat.heat}/100) — ${heat.drivers.join(', ')}`);
         }
-      } catch { /* non-blocking — score computation failure doesn't break workspace */ }
+      } catch (e) { console.error('[WORKSPACE_SCORE]', e instanceof Error ? e.message : e); }
 
       lines.push(`Prioritize this investor's data in the KEY INVESTORS section. Use their specific scoring dimensions, deal heat, objection history, trajectory, and meeting patterns to give targeted advice.`);
     }

@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
         body: JSON.stringify({ action: 'enrich', investor_id: investor.id, auto_apply: true }),
         signal: ac.signal,
       }).catch(e => console.error('[AUTO_ENRICH]', e instanceof Error ? e.message : e)).finally(() => clearTimeout(tid));
-    } catch { /* non-blocking */ }
+    } catch (e) { console.error('[AUTO_ENRICH_TRIGGER]', e instanceof Error ? e.message : e); }
 
     return NextResponse.json(investor, { status: 201 });
   } catch (error) {
@@ -128,7 +128,7 @@ export async function PUT(req: NextRequest) {
         const outcome = updates.status as 'closed' | 'passed' | 'dropped';
         await resolvePrediction(id as string, outcome, outcome === 'closed' ? new Date().toISOString().split('T')[0] : undefined);
         await resolveForecastPredictions(id as string, outcome);
-      } catch { /* non-blocking */ }
+      } catch (e) { console.error('[RESOLVE_PREDICTION]', e instanceof Error ? e.message : e); }
     }
 
     emitContextChange('investor_updated', `Updated investor ${id}${updates.status ? ` status=${updates.status}` : ''}`);

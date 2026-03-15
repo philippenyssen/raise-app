@@ -16,6 +16,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     const versions = await getDocumentVersions(id);
     return NextResponse.json(versions);
   } catch (e) {
+    console.error('[DOCUMENT_VERSIONS_GET]', e instanceof Error ? e.message : e);
     return NextResponse.json({ error: e instanceof Error ? e.message : 'Failed to load versions' }, { status: 500 });
   }
 }
