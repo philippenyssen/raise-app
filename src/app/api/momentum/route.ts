@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createAccelerationAction, computeNarrativeSignals } from '@/lib/db';
-import { getClient, stageIndex } from '@/lib/api-helpers';
+import { getClient, stageIndex, groupByInvestorId } from '@/lib/api-helpers';
 import type { InvestorRow, MeetingRow, ActivityRow, TaskRow, FollowupRow } from '@/lib/api-types';
 
 // Get Monday of the week containing a given date
@@ -153,11 +153,7 @@ export async function GET() {
     // Enthusiasm changes by investor and week
     const enthusiasmByInvWeek: Record<string, Record<number, { delta: number }>> = {};
     // Group meetings by investor, ordered by date, compute deltas
-    const meetingsByInvestor: Record<string, MeetingRow[]> = {};
-    meetings.forEach(m => {
-      if (!meetingsByInvestor[m.investor_id]) meetingsByInvestor[m.investor_id] = [];
-      meetingsByInvestor[m.investor_id].push(m);
-    });
+    const meetingsByInvestor = groupByInvestorId(meetings);
     Object.entries(meetingsByInvestor).forEach(([invId, mtgs]) => {
       mtgs.sort((a, b) => a.date.localeCompare(b.date));
       for (let i = 1; i < mtgs.length; i++) {

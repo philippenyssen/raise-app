@@ -17,6 +17,11 @@ import { useToast } from '@/components/toast';
 import { fmtDateShort, fmtDate } from '@/lib/format';
 import { STATUS_LABELS } from '@/lib/constants';
 
+const textMuted = { color: 'var(--text-muted)' } as const;
+const textTertiary = { color: 'var(--text-tertiary)' } as const;
+const textSecondary = { color: 'var(--text-secondary)' } as const;
+const textPrimary = { color: 'var(--text-primary)' } as const;
+
 const STATUS_COLORS: Record<string, string> = {
   identified: 'var(--surface-3)',
   contacted: 'var(--surface-2)',
@@ -101,6 +106,12 @@ interface EnrichmentStatus {
     started_at: string;
     completed_at: string | null;
   } | null;
+}
+
+function severityStyle(severity: string): { background: string; color: string } {
+  if (severity === 'showstopper') return { background: 'var(--danger-muted)', color: 'var(--danger)' };
+  if (severity === 'significant') return { background: 'var(--warning-muted)', color: 'var(--warning)' };
+  return { background: 'var(--surface-2)', color: 'var(--text-muted)' };
 }
 
 type IntelTab = 'overview' | 'partners' | 'portfolio' | 'research' | 'tasks' | 'enrichment';
@@ -348,7 +359,7 @@ export default function InvestorDetailPage() {
   if (!investor) {
     return (
       <div className="text-center py-12">
-        <p style={{ color: 'var(--text-muted)' }}>Investor not found or has been removed.</p>
+        <p style={textMuted}>Investor not found or has been removed.</p>
         <Link
           href="/investors"
           className="text-sm mt-2 block transition-colors"
@@ -379,6 +390,7 @@ export default function InvestorDetailPage() {
     .sort((a, b) => a.date.localeCompare(b.date))
     .map(m => ({ date: m.date, score: m.enthusiasm_score }));
   const latestEnthusiasm = enthusiasmTrend.length > 0 ? enthusiasmTrend[enthusiasmTrend.length - 1].score : 0;
+  const overdueFollowups = followups.filter(f => new Date(f.due_at) < new Date()).length;
 
   return (
     <div className="page-content space-y-6">
@@ -388,7 +400,7 @@ export default function InvestorDetailPage() {
           <Link
             href="/investors"
             className="flex items-center gap-1 text-sm mb-3 transition-colors"
-            style={{ color: 'var(--text-muted)' }}
+            style={textMuted}
             onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
             onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
           >
@@ -460,7 +472,7 @@ export default function InvestorDetailPage() {
                 ))}
               </select>
             )}
-            <span className="text-xs capitalize" style={{ color: 'var(--text-muted)' }}>{investor.type.replace(/_/g, ' ')}</span>
+            <span className="text-xs capitalize" style={textMuted}>{investor.type.replace(/_/g, ' ')}</span>
           </div>
         </div>
         <div className="flex gap-2">
@@ -507,7 +519,7 @@ export default function InvestorDetailPage() {
             disabled={researching}
             className="px-3 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2"
             style={{
-              background: researching ? 'var(--surface-2)' : 'var(--surface-2)',
+              background: 'var(--surface-2)',
               color: researching ? 'var(--text-muted)' : 'var(--text-primary)',
             }}
             onMouseEnter={e => { if (!researching) e.currentTarget.style.background = 'var(--surface-3)'; }}
@@ -549,9 +561,9 @@ export default function InvestorDetailPage() {
             className="flex items-start gap-3 rounded-xl px-4 py-3"
             style={{ background: 'var(--warning-muted)' }}
           >
-            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" style={{ color: 'var(--text-tertiary)' }} />
+            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" style={textTertiary} />
             <div className="min-w-0">
-              <div className="text-sm font-normal" style={{ color: 'var(--text-tertiary)' }}>
+              <div className="text-sm font-normal" style={textTertiary}>
                 Profile {completeness}% complete — fill missing fields to improve scoring accuracy
               </div>
               <div className="text-xs mt-0.5" style={{ color: 'var(--text-tertiary)', opacity: 0.7 }}>
@@ -710,7 +722,7 @@ export default function InvestorDetailPage() {
             >
               <div className="flex items-center gap-2">
                 <SendHorizonal className="w-3.5 h-3.5" style={{ color: overdueItems.length > 0 ? 'var(--danger)' : 'var(--accent)' }} />
-                <span className="text-xs font-normal  tracking-wider" style={{ color: 'var(--text-tertiary)' }}>
+                <span className="text-xs font-normal  tracking-wider" style={textTertiary}>
                   Pending Actions
                 </span>
                 {overdueItems.length > 0 && (
@@ -773,7 +785,7 @@ export default function InvestorDetailPage() {
                     </span>
                     <span
                       className="flex-1 text-sm truncate"
-                      style={{ color: 'var(--text-secondary)' }}
+                      style={textSecondary}
                       title={f.description}
                     >
                       {f.description.split('\n')[0]}
@@ -811,7 +823,7 @@ export default function InvestorDetailPage() {
       {/* Profile + Process Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="rounded-xl p-5 space-y-3">
-          <h2 className="text-xs font-normal flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
+          <h2 className="text-xs font-normal flex items-center gap-2" style={textTertiary}>
             <Users className="w-3.5 h-3.5" /> Profile
           </h2>
           <div className="space-y-2 text-sm">
@@ -834,7 +846,7 @@ export default function InvestorDetailPage() {
           </div>
         </div>
         <div className="rounded-xl p-5 space-y-3">
-          <h2 className="text-xs font-normal flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
+          <h2 className="text-xs font-normal flex items-center gap-2" style={textTertiary}>
             <Target className="w-3.5 h-3.5" /> Process
           </h2>
           <div className="space-y-2 text-sm">
@@ -858,8 +870,8 @@ export default function InvestorDetailPage() {
       {scoreLoading && !score && (
         <div className="rounded-xl p-6">
           <div className="flex items-center gap-3">
-            <Loader2 className="w-4 h-4 animate-spin" style={{ color: 'var(--text-muted)' }} />
-            <span className="text-sm" style={{ color: 'var(--text-muted)' }}>Scoring investor across 11 dimensions...</span>
+            <Loader2 className="w-4 h-4 animate-spin" style={textMuted} />
+            <span className="text-sm" style={textMuted}>Scoring investor across 11 dimensions...</span>
           </div>
         </div>
       )}
@@ -873,7 +885,7 @@ export default function InvestorDetailPage() {
       <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
         <StatCard icon={TrendingUp} label="Enthusiasm" value={`${latestEnthusiasm}/5`} sub="latest reading" />
         <StatCard icon={Calendar} label="Meetings" value={meetings.length} sub="logged" />
-        <StatCard icon={SendHorizonal} label="Follow-ups" value={followups.length} sub={followups.filter(f => new Date(f.due_at) < new Date()).length > 0 ? `${followups.filter(f => new Date(f.due_at) < new Date()).length} overdue` : 'pending'} highlight={followups.filter(f => new Date(f.due_at) < new Date()).length > 0} />
+        <StatCard icon={SendHorizonal} label="Follow-ups" value={followups.length} sub={overdueFollowups > 0 ? `${overdueFollowups} overdue` : 'pending'} highlight={overdueFollowups > 0} />
         <StatCard icon={AlertTriangle} label="Objections" value={allObjections.length} sub="unresolved" />
         <StatCard icon={UserCheck} label="Partners" value={partners.length} sub="profiled" />
         <StatCard icon={Briefcase} label="Portfolio" value={portfolio.length} sub="tracked" />
@@ -914,7 +926,7 @@ export default function InvestorDetailPage() {
               {/* Enthusiasm Trend */}
               {enthusiasmTrend.length > 1 && (
                 <div className="mb-6">
-                  <h3 className="text-xs font-normal mb-3 flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
+                  <h3 className="text-xs font-normal mb-3 flex items-center gap-2" style={textTertiary}>
                     <Zap className="w-3.5 h-3.5" /> Enthusiasm trend
                   </h3>
                   <div className="flex items-end gap-2 h-20">
@@ -927,7 +939,7 @@ export default function InvestorDetailPage() {
                             background: point.score >= 4 ? 'var(--success)' : point.score >= 3 ? 'var(--accent)' : point.score >= 2 ? 'var(--warning)' : 'var(--danger)',
                           }}
                         />
-                        <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{point.date.slice(5)}</span>
+                        <span className="text-xs" style={textMuted}>{point.date.slice(5)}</span>
                       </div>
                     ))}
                   </div>
@@ -935,11 +947,11 @@ export default function InvestorDetailPage() {
               )}
 
               {/* Meeting History */}
-              <h3 className="text-xs font-normal mb-3 flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
+              <h3 className="text-xs font-normal mb-3 flex items-center gap-2" style={textTertiary}>
                 <Clock className="w-3.5 h-3.5" /> Meeting history
               </h3>
               {meetings.length === 0 ? (
-                <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No meetings logged yet. Log your first meeting to start tracking engagement.</p>
+                <p className="text-sm" style={textMuted}>No meetings logged yet. Log your first meeting to start tracking engagement.</p>
               ) : (
                 <div className="space-y-4">
                   {meetings.map(m => {
@@ -947,9 +959,9 @@ export default function InvestorDetailPage() {
                     return (
                       <div key={m.id} className="pb-2">
                         <div className="flex items-center gap-3 mb-1">
-                          <span className="text-sm font-normal" style={{ color: 'var(--text-primary)' }}>{m.date}</span>
-                          <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{m.type.replace(/_/g, ' ')}</span>
-                          <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{m.duration_minutes}min</span>
+                          <span className="text-sm font-normal" style={textPrimary}>{m.date}</span>
+                          <span className="text-xs" style={textMuted}>{m.type.replace(/_/g, ' ')}</span>
+                          <span className="text-xs" style={textMuted}>{m.duration_minutes}min</span>
                           <div className="flex gap-0.5 ml-auto">
                             {[1,2,3,4,5].map(n => (
                               <div
@@ -960,7 +972,7 @@ export default function InvestorDetailPage() {
                             ))}
                           </div>
                         </div>
-                        {m.ai_analysis && <p className="text-sm mb-2" style={{ color: 'var(--text-tertiary)' }}>{m.ai_analysis}</p>}
+                        {m.ai_analysis && <p className="text-sm mb-2" style={textTertiary}>{m.ai_analysis}</p>}
                         {m.next_steps && <p className="text-xs" style={{ color: 'var(--accent)', opacity: 0.7 }}>Next: {m.next_steps}</p>}
                         {objs.length > 0 && (
                           <div className="flex flex-wrap gap-1 mt-2">
@@ -968,14 +980,7 @@ export default function InvestorDetailPage() {
                               <span
                                 key={i}
                                 className="text-xs px-1.5 py-0.5 rounded"
-                                style={{
-                                  background: o.severity === 'showstopper' ? 'var(--danger-muted)' :
-                                    o.severity === 'significant' ? 'var(--warning-muted)' :
-                                    'var(--surface-2)',
-                                  color: o.severity === 'showstopper' ? 'var(--danger)' :
-                                    o.severity === 'significant' ? 'var(--warning)' :
-                                    'var(--text-muted)',
-                                }}
+                                style={severityStyle(o.severity)}
                               >{o.text.length > 40 ? o.text.slice(0, 40) + '...' : o.text}</span>
                             ))}
                           </div>
@@ -989,7 +994,7 @@ export default function InvestorDetailPage() {
               {/* Objection Summary */}
               {allObjections.length > 0 && (
                 <div className="mt-6">
-                  <h3 className="text-xs font-normal mb-3 flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
+                  <h3 className="text-xs font-normal mb-3 flex items-center gap-2" style={textTertiary}>
                     <AlertTriangle className="w-3.5 h-3.5" /> All objections
                   </h3>
                   <div className="space-y-2">
@@ -997,17 +1002,10 @@ export default function InvestorDetailPage() {
                       <div key={i} className="flex items-center gap-3 text-sm">
                         <span
                           className="text-xs px-1.5 py-0.5 rounded shrink-0"
-                          style={{
-                            background: o.severity === 'showstopper' ? 'var(--danger-muted)' :
-                              o.severity === 'significant' ? 'var(--warning-muted)' :
-                              'var(--surface-2)',
-                            color: o.severity === 'showstopper' ? 'var(--danger)' :
-                              o.severity === 'significant' ? 'var(--warning)' :
-                              'var(--text-muted)',
-                          }}
+                          style={severityStyle(o.severity)}
                         >{o.severity}</span>
-                        <span className="flex-1" style={{ color: 'var(--text-secondary)' }}>{o.text}</span>
-                        <span className="text-xs shrink-0" style={{ color: 'var(--text-muted)' }}>{o.date}</span>
+                        <span className="flex-1" style={textSecondary}>{o.text}</span>
+                        <span className="text-xs shrink-0" style={textMuted}>{o.date}</span>
                       </div>
                     ))}
                   </div>
@@ -1020,45 +1018,23 @@ export default function InvestorDetailPage() {
           {intelTab === 'partners' && (
             <div>
               {partners.length === 0 ? (
-                <div className="text-center py-6">
-                  <UserCheck className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--text-muted)' }} />
-                  <p className="text-sm mb-3" style={{ color: 'var(--text-muted)' }}>No partner profiles yet. Run research to pull key decision-makers.</p>
-                  <button
-                    onClick={handleResearch}
-                    disabled={researching}
-                    className="px-3 py-1.5 rounded-lg text-sm flex items-center gap-2 mx-auto transition-colors"
-                    style={{ background: 'var(--accent)', color: 'var(--text-primary)' }}
-                    onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
-                    onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
-                  >
-                    <RefreshCw className="w-3.5 h-3.5" /> Research {investor.name}
-                  </button>
-                </div>
+                <EmptyTabState icon={UserCheck} message="No partner profiles yet. Run research to pull key decision-makers." actionLabel={`Research ${investor.name}`} onAction={handleResearch} loading={researching} />
               ) : (
                 <div className="space-y-4">
                   {partners.map(p => (
                     <div key={p.id} className="rounded-lg p-4">
                       <div className="flex items-start justify-between">
                         <div>
-                          <h4 className="font-normal" style={{ color: 'var(--text-primary)' }}>{p.name}</h4>
-                          <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{p.title}</p>
+                          <h4 className="font-normal" style={textPrimary}>{p.name}</h4>
+                          <p className="text-xs" style={textMuted}>{p.title}</p>
                         </div>
-                        <button
-                          onClick={() => deleteIntelItem('partner', p.id)}
-                          className="transition-colors"
-                          style={{ color: 'var(--text-muted)' }}
-                          onMouseEnter={e => (e.currentTarget.style.color = 'var(--danger)')}
-                          onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
+                        <DeleteBtn onClick={() => deleteIntelItem('partner', p.id)} />
                       </div>
-                      <div className="mt-2 space-y-1 text-xs" style={{ color: 'var(--text-tertiary)' }}>
-                        {p.focus_areas && <p><span style={{ color: 'var(--text-muted)' }}>Focus:</span> {p.focus_areas}</p>}
-                        {p.notable_deals && <p><span style={{ color: 'var(--text-muted)' }}>Deals:</span> {p.notable_deals}</p>}
-                        {p.board_seats && <p><span style={{ color: 'var(--text-muted)' }}>Boards:</span> {p.board_seats}</p>}
-                        {p.background && <p><span style={{ color: 'var(--text-muted)' }}>Background:</span> {p.background}</p>}
-                        {p.relevance_to_us && <p style={{ color: 'var(--accent)' }}><span style={{ color: 'var(--text-muted)' }}>Relevance:</span> {p.relevance_to_us}</p>}
+                      <div className="mt-2 space-y-1 text-xs" style={textTertiary}>
+                        {([['Focus', p.focus_areas], ['Deals', p.notable_deals], ['Boards', p.board_seats], ['Background', p.background]] as const).map(([label, val]) =>
+                          val ? <p key={label}><span style={textMuted}>{label}:</span> {val}</p> : null
+                        )}
+                        {p.relevance_to_us && <p style={{ color: 'var(--accent)' }}><span style={textMuted}>Relevance:</span> {p.relevance_to_us}</p>}
                       </div>
                     </div>
                   ))}
@@ -1071,31 +1047,15 @@ export default function InvestorDetailPage() {
           {intelTab === 'portfolio' && (
             <div>
               {portfolio.length === 0 ? (
-                <div className="text-center py-6">
-                  <Briefcase className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--text-muted)' }} />
-                  <p className="text-sm mb-3" style={{ color: 'var(--text-muted)' }}>No portfolio companies tracked. Run research to identify conflicts and overlap.</p>
-                  <button
-                    onClick={handleResearch}
-                    disabled={researching}
-                    className="px-3 py-1.5 rounded-lg text-sm flex items-center gap-2 mx-auto transition-colors"
-                    style={{ background: 'var(--accent)', color: 'var(--text-primary)' }}
-                    onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
-                    onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
-                  >
-                    <RefreshCw className="w-3.5 h-3.5" /> Research {investor.name}
-                  </button>
-                </div>
+                <EmptyTabState icon={Briefcase} message="No portfolio companies tracked. Run research to identify conflicts and overlap." actionLabel={`Research ${investor.name}`} onAction={handleResearch} loading={researching} />
               ) : (
                 <div className="rounded-lg overflow-hidden">
                   <table className="w-full text-sm">
                     <thead style={{ background: 'var(--surface-1)', borderBottom: '1px solid var(--border-default)' }}>
                       <tr>
-                        <th className="text-left px-4 py-2 text-xs font-normal" style={{ color: 'var(--text-muted)' }}>Company</th>
-                        <th className="text-left px-4 py-2 text-xs font-normal" style={{ color: 'var(--text-muted)' }}>Sector</th>
-                        <th className="text-left px-4 py-2 text-xs font-normal" style={{ color: 'var(--text-muted)' }}>Stage</th>
-                        <th className="text-left px-4 py-2 text-xs font-normal" style={{ color: 'var(--text-muted)' }}>Amount</th>
-                        <th className="text-left px-4 py-2 text-xs font-normal" style={{ color: 'var(--text-muted)' }}>Date</th>
-                        <th className="text-left px-4 py-2 text-xs font-normal" style={{ color: 'var(--text-muted)' }}>Status</th>
+                        {['Company', 'Sector', 'Stage', 'Amount', 'Date', 'Status'].map(h => (
+                          <th key={h} className="text-left px-4 py-2 text-xs font-normal" style={textMuted}>{h}</th>
+                        ))}
                         <th className="w-8"></th>
                       </tr>
                     </thead>
@@ -1108,11 +1068,11 @@ export default function InvestorDetailPage() {
                           onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface-1)')}
                           onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                         >
-                          <td className="px-4 py-2 font-normal" style={{ color: 'var(--text-primary)' }}>{co.company}</td>
-                          <td className="px-4 py-2 text-xs" style={{ color: 'var(--text-tertiary)' }}>{co.sector}</td>
-                          <td className="px-4 py-2 text-xs" style={{ color: 'var(--text-tertiary)' }}>{co.stage_invested}</td>
-                          <td className="px-4 py-2 text-xs" style={{ color: 'var(--text-secondary)' }}>{co.amount}</td>
-                          <td className="px-4 py-2 text-xs" style={{ color: 'var(--text-muted)' }}>{co.date}</td>
+                          <td className="px-4 py-2 font-normal" style={textPrimary}>{co.company}</td>
+                          <td className="px-4 py-2 text-xs" style={textTertiary}>{co.sector}</td>
+                          <td className="px-4 py-2 text-xs" style={textTertiary}>{co.stage_invested}</td>
+                          <td className="px-4 py-2 text-xs" style={textSecondary}>{co.amount}</td>
+                          <td className="px-4 py-2 text-xs" style={textMuted}>{co.date}</td>
                           <td className="px-4 py-2">
                             <span
                               className="text-xs px-1.5 py-0.5 rounded"
@@ -1127,15 +1087,7 @@ export default function InvestorDetailPage() {
                             >{co.status}</span>
                           </td>
                           <td className="px-4 py-2">
-                            <button
-                              onClick={() => deleteIntelItem('portfolio', co.id)}
-                              className="transition-colors"
-                              style={{ color: 'var(--text-muted)' }}
-                              onMouseEnter={e => (e.currentTarget.style.color = 'var(--danger)')}
-                              onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
-                            >
-                              <Trash2 className="w-3 h-3" />
-                            </button>
+                            <DeleteBtn onClick={() => deleteIntelItem('portfolio', co.id)} small />
                           </td>
                         </tr>
                       ))}
@@ -1150,7 +1102,7 @@ export default function InvestorDetailPage() {
           {intelTab === 'tasks' && (
             <div>
               {tasks.length === 0 ? (
-                <p className="text-sm text-center py-6" style={{ color: 'var(--text-muted)' }}>No tasks yet. Tasks are auto-generated from meeting debriefs — log a meeting to get started.</p>
+                <p className="text-sm text-center py-6" style={textMuted}>No tasks yet. Tasks are auto-generated from meeting debriefs — log a meeting to get started.</p>
               ) : (
                 <div className="space-y-2">
                   {tasks.map(t => {
@@ -1183,13 +1135,13 @@ export default function InvestorDetailPage() {
                             {t.status === 'done' && <Check className="w-3 h-3" />}
                           </button>
                           <div className="min-w-0">
-                            <div className={`text-sm truncate ${t.status === 'done' ? 'line-through' : ''}`} style={{ color: 'var(--text-primary)' }}>{t.title}</div>
-                            {t.description && <div className="text-xs truncate" style={{ color: 'var(--text-muted)' }}>{t.description}</div>}
+                            <div className={`text-sm truncate ${t.status === 'done' ? 'line-through' : ''}`} style={textPrimary}>{t.title}</div>
+                            {t.description && <div className="text-xs truncate" style={textMuted}>{t.description}</div>}
                           </div>
                         </div>
                         <div className="flex items-center gap-3 shrink-0">
                           <span className="text-xs" style={{ color: prioColor }}>{t.priority}</span>
-                          <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{t.phase}</span>
+                          <span className="text-xs" style={textMuted}>{t.phase}</span>
                           {t.due_date && <span className="text-xs" style={{ color: overdue ? 'var(--danger)' : 'var(--text-muted)', fontWeight: 400 }}>{t.due_date}</span>}
                         </div>
                       </div>
@@ -1221,20 +1173,7 @@ export default function InvestorDetailPage() {
           {intelTab === 'research' && (
             <div>
               {briefs.length === 0 ? (
-                <div className="text-center py-6">
-                  <BookOpen className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--text-muted)' }} />
-                  <p className="text-sm mb-3" style={{ color: 'var(--text-muted)' }}>No research briefs yet. Run AI research to pull fund strategy, recent deals, and thesis alignment.</p>
-                  <button
-                    onClick={handleResearch}
-                    disabled={researching}
-                    className="px-3 py-1.5 rounded-lg text-sm flex items-center gap-2 mx-auto transition-colors"
-                    style={{ background: 'var(--accent)', color: 'var(--text-primary)' }}
-                    onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
-                    onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
-                  >
-                    {researching ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Researching...</> : <><RefreshCw className="w-3.5 h-3.5" /> Research {investor.name}</>}
-                  </button>
-                </div>
+                <EmptyTabState icon={BookOpen} message="No research briefs yet. Run AI research to pull fund strategy, recent deals, and thesis alignment." actionLabel={`Research ${investor.name}`} onAction={handleResearch} loading={researching} />
               ) : (
                 <div className="space-y-4">
                   {briefs.map(b => (
@@ -1242,19 +1181,11 @@ export default function InvestorDetailPage() {
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-2">
                           <span className="text-xs px-2 py-0.5 rounded font-normal" style={{ background: 'var(--accent-muted)', color: 'var(--accent)' }}>{b.brief_type}</span>
-                          <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{b.updated_at?.split('T')[0]}</span>
+                          <span className="text-xs" style={textMuted}>{b.updated_at?.split('T')[0]}</span>
                         </div>
-                        <button
-                          onClick={() => deleteIntelItem('brief', b.id)}
-                          className="transition-colors"
-                          style={{ color: 'var(--text-muted)' }}
-                          onMouseEnter={e => (e.currentTarget.style.color = 'var(--danger)')}
-                          onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
+                        <DeleteBtn onClick={() => deleteIntelItem('brief', b.id)} />
                       </div>
-                      <div className="prose prose-sm max-w-none whitespace-pre-wrap text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+                      <div className="prose prose-sm max-w-none whitespace-pre-wrap text-sm leading-relaxed" style={textSecondary}>
                         {b.content}
                       </div>
                     </div>
@@ -1269,7 +1200,7 @@ export default function InvestorDetailPage() {
       {/* Notes */}
       {(investor.notes || editing) && (
         <div className="rounded-xl p-5">
-          <h2 className="text-xs font-normal mb-2" style={{ color: 'var(--text-tertiary)' }}>Notes</h2>
+          <h2 className="text-xs font-normal mb-2" style={textTertiary}>Notes</h2>
           {editing ? (
             <textarea
               className="input"
@@ -1290,8 +1221,8 @@ export default function InvestorDetailPage() {
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex justify-between">
-      <span style={{ color: 'var(--text-muted)' }}>{label}</span>
-      <span className="text-right max-w-[60%]" style={{ color: 'var(--text-secondary)' }}>{value || '—'}</span>
+      <span style={textMuted}>{label}</span>
+      <span className="text-right max-w-[60%]" style={textSecondary}>{value || '—'}</span>
     </div>
   );
 }
@@ -1299,7 +1230,7 @@ function Row({ label, value }: { label: string; value: string }) {
 function EditRow({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
   return (
     <div className="flex items-center justify-between gap-3">
-      <span className="shrink-0" style={{ color: 'var(--text-muted)' }}>{label}</span>
+      <span className="shrink-0" style={textMuted}>{label}</span>
       <input
         className="input"
         value={value}
@@ -1307,6 +1238,45 @@ function EditRow({ label, value, onChange }: { label: string; value: string; onC
         style={{ maxWidth: '60%', textAlign: 'right' }}
       />
     </div>
+  );
+}
+
+function EmptyTabState({ icon: Icon, message, actionLabel, onAction, loading }: {
+  icon: React.ComponentType<{ className?: string }>;
+  message: string;
+  actionLabel: string;
+  onAction: () => void;
+  loading?: boolean;
+}) {
+  return (
+    <div className="text-center py-6">
+      <span className="block mx-auto mb-2 w-8" style={textMuted}><Icon className="w-8 h-8" /></span>
+      <p className="text-sm mb-3" style={textMuted}>{message}</p>
+      <button
+        onClick={onAction}
+        disabled={loading}
+        className="px-3 py-1.5 rounded-lg text-sm flex items-center gap-2 mx-auto transition-colors"
+        style={{ background: 'var(--accent)', color: 'var(--text-primary)' }}
+        onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
+        onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+      >
+        {loading ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Researching...</> : <><RefreshCw className="w-3.5 h-3.5" /> {actionLabel}</>}
+      </button>
+    </div>
+  );
+}
+
+function DeleteBtn({ onClick, small }: { onClick: () => void; small?: boolean }) {
+  return (
+    <button
+      onClick={onClick}
+      className="transition-colors"
+      style={textMuted}
+      onMouseEnter={e => (e.currentTarget.style.color = 'var(--danger)')}
+      onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
+    >
+      <Trash2 className={small ? 'w-3 h-3' : 'w-3.5 h-3.5'} />
+    </button>
   );
 }
 
@@ -1348,13 +1318,6 @@ function scoreColor(score: number): string {
   return 'var(--danger)';
 }
 
-function scoreBarColor(score: number): string {
-  if (score >= 70) return 'var(--success)';
-  if (score >= 50) return 'var(--accent)';
-  if (score >= 30) return 'var(--warning)';
-  return 'var(--danger)';
-}
-
 function scoreBorderColor(score: number): string {
   if (score >= 70) return 'var(--success-muted)';
   if (score >= 50) return 'var(--accent-muted)';
@@ -1383,14 +1346,14 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
       <div className="p-5" style={{ background: 'var(--surface-1)' }}>
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-2">
-            <Gauge className="w-4 h-4" style={{ color: 'var(--text-tertiary)' }} />
-            <h2 className="text-xs font-normal  tracking-wider" style={{ color: 'var(--text-tertiary)' }}>Intelligence Score</h2>
+            <Gauge className="w-4 h-4" style={textTertiary} />
+            <h2 className="text-xs font-normal  tracking-wider" style={textTertiary}>Intelligence Score</h2>
           </div>
           <button
             onClick={onRefresh}
             disabled={loading}
             className="transition-colors"
-            style={{ color: 'var(--text-muted)' }}
+            style={textMuted}
             onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-tertiary)')}
             onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
             title="Refresh score"
@@ -1403,7 +1366,7 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
           {/* Overall score -- large number */}
           <div className="flex items-baseline gap-1">
             <span className="text-5xl font-normal tabular-nums" style={{ color: scoreColor(score.overall) }}>{score.overall}</span>
-            <span className="text-lg" style={{ color: 'var(--text-muted)' }}>/100</span>
+            <span className="text-lg" style={textMuted}>/100</span>
           </div>
 
           {/* Divider */}
@@ -1428,11 +1391,11 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
           {/* Next best action */}
           <div className="flex-[2] min-w-0">
             <div className="flex items-start gap-2">
-              <Lightbulb className="w-3.5 h-3.5 shrink-0 mt-0.5" style={{ color: 'var(--text-tertiary)' }} />
+              <Lightbulb className="w-3.5 h-3.5 shrink-0 mt-0.5" style={textTertiary} />
               <div className="flex-1 min-w-0">
-                <div className="text-xs font-normal  mb-0.5" style={{ color: 'var(--text-muted)' }}>Next Action</div>
+                <div className="text-xs font-normal  mb-0.5" style={textMuted}>Next Action</div>
                 <div className="flex items-center gap-2">
-                  <p className="text-sm leading-snug flex-1" style={{ color: 'var(--text-secondary)' }}>{score.nextBestAction}</p>
+                  <p className="text-sm leading-snug flex-1" style={textSecondary}>{score.nextBestAction}</p>
                   <Link
                     href={(() => {
                       const t = score.nextBestAction.toLowerCase();
@@ -1464,7 +1427,7 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
               <div key={dim.name} className="space-y-1">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-normal" style={{ color: 'var(--text-secondary)' }}>{dim.name}</span>
+                    <span className="text-xs font-normal" style={textSecondary}>{dim.name}</span>
                     <span
                       className="text-xs px-1.5 py-0.5 rounded"
                       style={{ background: badge.bg, color: badge.color }}
@@ -1477,10 +1440,10 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
                 <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--surface-2)' }}>
                   <div
                     className="h-full rounded-full transition-all duration-500"
-                    style={{ width: `${dim.score}%`, background: scoreBarColor(dim.score) }}
+                    style={{ width: `${dim.score}%`, background: scoreColor(dim.score) }}
                   />
                 </div>
-                <p className="text-xs leading-snug truncate" title={dim.evidence} style={{ color: 'var(--text-muted)' }}>
+                <p className="text-xs leading-snug truncate" title={dim.evidence} style={textMuted}>
                   {dim.evidence}
                 </p>
               </div>
@@ -1493,14 +1456,14 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
       {score.risks.length > 0 && (
         <div className="p-5" style={{ borderTop: '1px solid var(--border-default)' }}>
           <div className="flex items-center gap-2 mb-3">
-            <ShieldAlert className="w-3.5 h-3.5" style={{ color: 'var(--text-primary)' }} />
-            <h3 className="text-xs font-normal " style={{ color: 'var(--text-tertiary)' }}>Identified Risks</h3>
+            <ShieldAlert className="w-3.5 h-3.5" style={textPrimary} />
+            <h3 className="text-xs font-normal " style={textTertiary}>Identified Risks</h3>
           </div>
           <div className="space-y-1.5">
             {score.risks.map((risk, i) => (
               <div key={i} className="flex items-start gap-2">
                 <span className="w-1 h-1 rounded-full mt-1.5 shrink-0" style={{ background: 'var(--danger)' }} />
-                <p className="text-xs leading-snug" style={{ color: 'var(--text-tertiary)' }}>{risk}</p>
+                <p className="text-xs leading-snug" style={textTertiary}>{risk}</p>
               </div>
             ))}
           </div>
@@ -1556,8 +1519,8 @@ function ConvictionTrajectoryPanel({ trajectory }: { trajectory: ConvictionTraje
     <div className="rounded-xl overflow-hidden">
       <div className="p-5" style={{ background: 'var(--surface-1)' }}>
         <div className="flex items-center gap-2 mb-4">
-          <Activity className="w-4 h-4" style={{ color: 'var(--text-tertiary)' }} />
-          <h2 className="text-xs font-normal  tracking-wider" style={{ color: 'var(--text-tertiary)' }}>Conviction Trajectory</h2>
+          <Activity className="w-4 h-4" style={textTertiary} />
+          <h2 className="text-xs font-normal  tracking-wider" style={textTertiary}>Conviction Trajectory</h2>
         </div>
 
         <div className="flex items-center gap-6 flex-wrap">
@@ -1632,17 +1595,17 @@ function ConvictionTrajectoryPanel({ trajectory }: { trajectory: ConvictionTraje
 
           {/* Prediction */}
           <div className="space-y-1.5 min-w-0">
-            <div className="text-xs font-normal " style={{ color: 'var(--text-muted)' }}>30-Day Prediction</div>
+            <div className="text-xs font-normal " style={textMuted}>30-Day Prediction</div>
             <div className="flex items-baseline gap-1">
               <span className="text-lg font-normal tabular-nums" style={{ color: scoreColor(trajectory.predictedScoreIn30Days) }}>
                 {trajectory.predictedScoreIn30Days}
               </span>
-              <span className="text-xs" style={{ color: 'var(--text-muted)' }}>/100</span>
+              <span className="text-xs" style={textMuted}>/100</span>
             </div>
             {trajectory.predictedTermSheetDate && (
               <div className="text-xs">
                 {trajectory.predictedTermSheetDate === 'now' ? (
-                  <span style={{ color: 'var(--text-secondary)' }}>Term sheet range reached</span>
+                  <span style={textSecondary}>Term sheet range reached</span>
                 ) : (
                   <span style={{ color: 'var(--accent)' }}>
                     Term sheet by ~{fmtDateShort(trajectory.predictedTermSheetDate)}
@@ -1651,7 +1614,7 @@ function ConvictionTrajectoryPanel({ trajectory }: { trajectory: ConvictionTraje
               </div>
             )}
             {!trajectory.predictedTermSheetDate && trajectory.trend !== 'insufficient_data' && (
-              <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
+              <div className="text-xs" style={textMuted}>
                 {trajectory.velocityPerWeek <= 0 ? 'At risk of stalling' : 'Tracking -- more data needed'}
               </div>
             )}
@@ -1693,7 +1656,7 @@ function EnrichmentStatusCard({
     <div className="rounded-xl p-5" style={{ background: 'var(--surface-1)' }}>
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <span style={{ color: 'var(--text-muted)' }}><Database className="w-4 h-4" /></span>
+          <span style={textMuted}><Database className="w-4 h-4" /></span>
           <span className="text-xs font-normal" style={{ color: 'var(--text-tertiary)', letterSpacing: '0.02em' }}>Data Enrichment</span>
         </div>
         <button
@@ -1718,12 +1681,12 @@ function EnrichmentStatusCard({
 
       {!status ? (
         <div className="flex items-center gap-2 py-2">
-          <Loader2 className="w-3.5 h-3.5 animate-spin" style={{ color: 'var(--text-muted)' }} />
-          <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Loading status...</span>
+          <Loader2 className="w-3.5 h-3.5 animate-spin" style={textMuted} />
+          <span className="text-xs" style={textMuted}>Loading status...</span>
         </div>
       ) : !hasData ? (
         <div className="text-center py-3">
-          <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
+          <p className="text-sm" style={textMuted}>
             No enrichment data yet. Run enrichment to pull identity, financials, strategy, and more from 9 public sources.
           </p>
         </div>
@@ -1731,30 +1694,17 @@ function EnrichmentStatusCard({
         <>
           {/* Summary row */}
           <div className="grid grid-cols-4 gap-4 mb-4">
-            <div>
-              <div className="text-xs" style={{ color: 'var(--text-muted)' }}>Last enriched</div>
-              <div className="text-sm font-light" style={{ color: 'var(--text-primary)' }}>
-                {status.last_enriched ? fmtDateShort(status.last_enriched) : 'Never'}
+            {([
+              ['Last enriched', status.last_enriched ? fmtDateShort(status.last_enriched) : 'Never', textPrimary],
+              ['Fields found', status.total_fields, textPrimary],
+              ['Avg confidence', `${status.avg_confidence}%`, textPrimary],
+              ['Category coverage', `${status.categories_covered}/${status.categories_total} (${coveragePct}%)`, { color: coverageColor }],
+            ] as const).map(([label, value, style]) => (
+              <div key={label}>
+                <div className="text-xs" style={textMuted}>{label}</div>
+                <div className="text-sm font-light" style={style}>{value}</div>
               </div>
-            </div>
-            <div>
-              <div className="text-xs" style={{ color: 'var(--text-muted)' }}>Fields found</div>
-              <div className="text-sm font-light" style={{ color: 'var(--text-primary)' }}>
-                {status.total_fields}
-              </div>
-            </div>
-            <div>
-              <div className="text-xs" style={{ color: 'var(--text-muted)' }}>Avg confidence</div>
-              <div className="text-sm font-light" style={{ color: 'var(--text-primary)' }}>
-                {status.avg_confidence}%
-              </div>
-            </div>
-            <div>
-              <div className="text-xs" style={{ color: 'var(--text-muted)' }}>Category coverage</div>
-              <div className="text-sm font-light" style={{ color: coverageColor }}>
-                {status.categories_covered}/{status.categories_total} ({coveragePct}%)
-              </div>
-            </div>
+            ))}
           </div>
 
           {/* Coverage bar */}
@@ -1781,8 +1731,8 @@ function EnrichmentStatusCard({
               className="flex items-center gap-2 rounded-lg px-3 py-2 mb-4"
               style={{ background: 'var(--warning-muted)' }}
             >
-              <AlertTriangle className="w-3 h-3 shrink-0" style={{ color: 'var(--text-tertiary)' }} />
-              <span className="text-xs" style={{ color: 'var(--text-tertiary)' }}>
+              <AlertTriangle className="w-3 h-3 shrink-0" style={textTertiary} />
+              <span className="text-xs" style={textTertiary}>
                 {status.stale_count} field{status.stale_count !== 1 ? 's are' : ' is'} stale and may need refreshing
               </span>
             </div>
@@ -1826,7 +1776,7 @@ function EnrichmentStatusCard({
                           />
                         </span>
                       )}
-                      <span className="text-xs truncate" style={{ color: 'var(--text-secondary)' }}>{p.name}</span>
+                      <span className="text-xs truncate" style={textSecondary}>{p.name}</span>
                       <span
                         className="text-xs px-1.5 py-0.5 rounded shrink-0"
                         style={{
@@ -1840,14 +1790,14 @@ function EnrichmentStatusCard({
                     </div>
                     <div className="flex items-center gap-3 shrink-0">
                       {p.field_count > 0 && (
-                        <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{p.field_count} fields</span>
+                        <span className="text-xs" style={textMuted}>{p.field_count} fields</span>
                       )}
                       {p.last_error && (
                         <span className="text-xs truncate max-w-[120px]" style={{ color: 'var(--danger)' }} title={p.last_error}>
                           {p.last_error.length > 20 ? p.last_error.slice(0, 20) + '...' : p.last_error}
                         </span>
                       )}
-                      <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                      <span className="text-xs" style={textMuted}>
                         {p.last_fetched ? fmtDateShort(p.last_fetched) : st.label}
                       </span>
                     </div>
@@ -1894,18 +1844,11 @@ const CATEGORY_COLORS: Record<string, { bg: string; color: string }> = {
   relationships: { bg: 'var(--accent-muted)', color: 'var(--accent)' },
 };
 
-function confidenceColor(confidence: number): string {
-  if (confidence >= 0.8) return 'var(--success)';
-  if (confidence >= 0.6) return 'var(--accent)';
-  if (confidence >= 0.4) return 'var(--warning)';
-  return 'var(--danger)';
-}
-
-function confidenceBg(confidence: number): string {
-  if (confidence >= 0.8) return 'var(--success-muted)';
-  if (confidence >= 0.6) return 'var(--accent-muted)';
-  if (confidence >= 0.4) return 'var(--warning-muted)';
-  return 'var(--danger-muted)';
+function confidenceStyle(confidence: number): { color: string; bg: string } {
+  if (confidence >= 0.8) return { color: 'var(--success)', bg: 'var(--success-muted)' };
+  if (confidence >= 0.6) return { color: 'var(--accent)', bg: 'var(--accent-muted)' };
+  if (confidence >= 0.4) return { color: 'var(--warning)', bg: 'var(--warning-muted)' };
+  return { color: 'var(--danger)', bg: 'var(--danger-muted)' };
 }
 
 function EnrichmentPanel({
@@ -1927,8 +1870,8 @@ function EnrichmentPanel({
   if (loading) {
     return (
       <div className="flex items-center gap-3 py-6 justify-center">
-        <Loader2 className="w-4 h-4 animate-spin" style={{ color: 'var(--text-muted)' }} />
-        <span className="text-sm" style={{ color: 'var(--text-muted)' }}>Loading enrichment data...</span>
+        <Loader2 className="w-4 h-4 animate-spin" style={textMuted} />
+        <span className="text-sm" style={textMuted}>Loading enrichment data...</span>
       </div>
     );
   }
@@ -1936,8 +1879,8 @@ function EnrichmentPanel({
   if (records.length === 0) {
     return (
       <div className="text-center py-6">
-        <Database className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--text-muted)' }} />
-        <p className="text-sm mb-3" style={{ color: 'var(--text-muted)' }}>No enrichment data yet. Run research to pull financials, strategy, people, and more.</p>
+        <Database className="w-8 h-8 mx-auto mb-2" style={textMuted} />
+        <p className="text-sm mb-3" style={textMuted}>No enrichment data yet. Run research to pull financials, strategy, people, and more.</p>
         <button
           onClick={onRefresh}
           onMouseEnter={() => setHoveredRefresh(true)}
@@ -1970,8 +1913,8 @@ function EnrichmentPanel({
     <div className="space-y-2">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <Database className="w-3.5 h-3.5" style={{ color: 'var(--text-tertiary)' }} />
-          <span className="text-xs font-normal " style={{ color: 'var(--text-tertiary)' }}>
+          <Database className="w-3.5 h-3.5" style={textTertiary} />
+          <span className="text-xs font-normal " style={textTertiary}>
             {records.length} enriched fields across {sortedCategories.length} categories
           </span>
         </div>
@@ -2012,15 +1955,15 @@ function EnrichmentPanel({
                 >
                   {catLabel}
                 </span>
-                <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{catRecords.length} field{catRecords.length !== 1 ? 's' : ''}</span>
+                <span className="text-xs" style={textMuted}>{catRecords.length} field{catRecords.length !== 1 ? 's' : ''}</span>
                 <span
                   className="text-xs px-1.5 py-0.5 rounded"
-                  style={{ background: confidenceBg(avgConfidence), color: confidenceColor(avgConfidence) }}
+                  style={{ background: confidenceStyle(avgConfidence).bg, color: confidenceStyle(avgConfidence).color }}
                 >
                   {Math.round(avgConfidence * 100)}% avg confidence
                 </span>
               </div>
-              <div style={{ color: 'var(--text-muted)' }}>
+              <div style={textMuted}>
                 {isExpanded
                   ? <ChevronDown className="w-4 h-4" />
                   : <ChevronRight className="w-4 h-4" />
@@ -2044,24 +1987,24 @@ function EnrichmentPanel({
                   >
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-0.5">
-                        <span className="text-xs font-normal" style={{ color: 'var(--text-secondary)' }}>
+                        <span className="text-xs font-normal" style={textSecondary}>
                           {rec.field_name.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
                         </span>
                         <span
                           className="text-xs px-1.5 py-0.5 rounded font-normal"
-                          style={{ background: confidenceBg(rec.confidence), color: confidenceColor(rec.confidence) }}
+                          style={{ background: confidenceStyle(rec.confidence).bg, color: confidenceStyle(rec.confidence).color }}
                         >
                           {Math.round(rec.confidence * 100)}%
                         </span>
                       </div>
-                      <p className="text-sm break-words" style={{ color: 'var(--text-primary)' }}>
+                      <p className="text-sm break-words" style={textPrimary}>
                         {rec.field_value.length > 300 ? rec.field_value.slice(0, 300) + '...' : rec.field_value}
                       </p>
                       <div className="flex items-center gap-3 mt-1">
-                        <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                        <span className="text-xs" style={textMuted}>
                           Source: {rec.source_id}
                         </span>
-                        <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                        <span className="text-xs" style={textMuted}>
                           Updated: {rec.fetched_at ? fmtDate(rec.fetched_at) : '—'}
                         </span>
                         {rec.source_url && (

@@ -43,6 +43,7 @@ import {
   getRecentFollowupSignals,
 } from './db';
 import type { TemporalTrends, RaiseForecast, ForecastCalibration, WinLossPatterns, ScoreReversal, PipelineRanking, MeetingDensity, FomoDynamic, EngagementVelocity, NetworkCascade } from './db';
+import { groupByInvestorId } from './api-helpers';
 
 // ---------------------------------------------------------------------------
 // Context version — monotonically increasing counter
@@ -395,11 +396,7 @@ export async function getFullContext(): Promise<FullContext> {
 
   // Build investor snapshots enriched with meeting/task/followup data
   type MeetingRow = { id: string; investor_id: string; date: string; enthusiasm_score: number; objections: string; type: string };
-  const meetingsByInvestor: Record<string, MeetingRow[]> = {};
-  for (const m of allMeetings as MeetingRow[]) {
-    if (!meetingsByInvestor[m.investor_id]) meetingsByInvestor[m.investor_id] = [];
-    meetingsByInvestor[m.investor_id].push(m);
-  }
+  const meetingsByInvestor = groupByInvestorId(allMeetings as MeetingRow[]);
 
   const tasksByInvestor: Record<string, number> = {};
   for (const t of tasks as Array<{ investor_id: string; status: string }>) {

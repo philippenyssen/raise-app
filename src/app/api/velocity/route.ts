@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getClient, stageIndex } from '@/lib/api-helpers';
+import { getClient, stageIndex, groupByInvestorId } from '@/lib/api-helpers';
 import type { InvestorRow, MeetingRow, FollowupRow, ActivityRow } from '@/lib/api-types';
 
 // Stage duration benchmarks in days (cumulative target from first contact)
@@ -77,26 +77,13 @@ export async function GET() {
     const now = new Date();
 
     // Index meetings by investor
-    const meetingsByInvestor: Record<string, MeetingRow[]> = {};
-    for (const m of meetings) {
-      if (!meetingsByInvestor[m.investor_id]) meetingsByInvestor[m.investor_id] = [];
-      meetingsByInvestor[m.investor_id].push(m);
-    }
+    const meetingsByInvestor = groupByInvestorId(meetings);
 
     // Index followups by investor
-    const followupsByInvestor: Record<string, FollowupRow[]> = {};
-    for (const f of followups) {
-      if (!followupsByInvestor[f.investor_id]) followupsByInvestor[f.investor_id] = [];
-      followupsByInvestor[f.investor_id].push(f);
-    }
+    const followupsByInvestor = groupByInvestorId(followups);
 
     // Index status changes by investor
-    const statusChangesByInvestor: Record<string, ActivityRow[]> = {};
-    for (const a of statusChanges) {
-      if (!a.investor_id) continue;
-      if (!statusChangesByInvestor[a.investor_id]) statusChangesByInvestor[a.investor_id] = [];
-      statusChangesByInvestor[a.investor_id].push(a);
-    }
+    const statusChangesByInvestor = groupByInvestorId(statusChanges.filter(a => !!a.investor_id));
 
     // Compute velocity metrics for each investor
     const velocityData = investors.map(inv => {

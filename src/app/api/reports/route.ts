@@ -13,7 +13,7 @@ import {
 } from '@/lib/db';
 import { computeInvestorScore, computeMomentumScore, computeConvictionTrajectory } from '@/lib/scoring';
 import type { Investor, Meeting } from '@/lib/types';
-import { daysBetween, parseJsonSafe, PIPELINE_ORDER } from '@/lib/api-helpers';
+import { daysBetween, parseJsonSafe, PIPELINE_ORDER, groupByInvestorId } from '@/lib/api-helpers';
 import { STATUS_LABELS } from '@/lib/constants';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -156,11 +156,7 @@ async function generateBoardUpdate(): Promise<string> {
   investors.forEach(i => { stageCounts[i.status] = (stageCounts[i.status] || 0) + 1; });
 
   // Conviction trends
-  const meetingsByInvestor: Record<string, Meeting[]> = {};
-  meetings.forEach(m => {
-    if (!meetingsByInvestor[m.investor_id]) meetingsByInvestor[m.investor_id] = [];
-    meetingsByInvestor[m.investor_id].push(m);
-  });
+  const meetingsByInvestor = groupByInvestorId(meetings);
 
   let accelerating = 0, steady = 0, decelerating = 0;
   for (const inv of activeInvestors) {
@@ -370,11 +366,7 @@ async function generateWeeklyAgenda(): Promise<string> {
   const activeInvestors = investors.filter(i => !['passed', 'dropped'].includes(i.status));
 
   // Build meeting lookup
-  const meetingsByInvestor: Record<string, Meeting[]> = {};
-  meetings.forEach(m => {
-    if (!meetingsByInvestor[m.investor_id]) meetingsByInvestor[m.investor_id] = [];
-    meetingsByInvestor[m.investor_id].push(m);
-  });
+  const meetingsByInvestor = groupByInvestorId(meetings);
 
   // Top 5 investors to engage (sort by tier asc, stage desc, enthusiasm desc)
   const toEngage = [...activeInvestors]

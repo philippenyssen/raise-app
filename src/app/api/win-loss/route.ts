@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { computeWinLossPatterns, getFunnelMetrics } from '@/lib/db';
-import { getClient } from '@/lib/api-helpers';
+import { getClient, groupByInvestorId } from '@/lib/api-helpers';
 import type { InvestorRow, MeetingRow, ObjectionRow } from '@/lib/api-types';
 
 export async function GET() {
@@ -112,11 +112,7 @@ export async function GET() {
 
     // ── Time by Stage for Wins vs Losses ────────────────────────────
     // Track meeting count per investor
-    const meetingsByInvestor: Record<string, MeetingRow[]> = {};
-    for (const m of meetings) {
-      if (!meetingsByInvestor[m.investor_id]) meetingsByInvestor[m.investor_id] = [];
-      meetingsByInvestor[m.investor_id].push(m);
-    }
+    const meetingsByInvestor = groupByInvestorId(meetings);
 
     const closedMeetingCounts = closed.map(i => (meetingsByInvestor[i.id] || []).length);
     const passedMeetingCounts = passed.map(i => (meetingsByInvestor[i.id] || []).length);
