@@ -107,10 +107,13 @@ export default function BacklogPage() {
           confidence: parseFloat(form.confidence),
         }),});
       if (!res.ok) throw new Error('Failed');
+      const created = await res.json();
       toast('Commitment added', 'success');
       setShowAdd(false);
       setForm({ customer: '', program: '', contract_type: 'firm', amount_eur: '', start_date: '', end_date: '', annual_amount: '', confidence: '0.9', source_doc: '', notes: '', status: 'active' });
-      fetchData();
+      setCommitments(prev => [created, ...prev]);
+      // Refresh summary in background (no loading spinner)
+      cachedFetch('/api/revenue-commitments').then(r => r.ok ? r.json() : null).then(d => { if (d) setSummary(d.summary); }).catch(() => {});
     } catch {
       toast('Failed to add', 'error');
     }
@@ -120,11 +123,14 @@ export default function BacklogPage() {
   async function handleDelete() {
     if (!deleteTarget) return;
     try {
-      const res = await fetch(`/api/revenue-commitments?id=${deleteTarget}`, { method: 'DELETE' });
+      const targetId = deleteTarget;
+      setDeleteTarget(null);
+      setCommitments(prev => prev.filter(c => c.id !== targetId));
+      const res = await fetch(`/api/revenue-commitments?id=${targetId}`, { method: 'DELETE' });
       if (!res.ok) throw new Error('Failed');
       toast('Deleted', 'warning');
-      setDeleteTarget(null);
-      fetchData();
+      // Refresh summary in background
+      cachedFetch('/api/revenue-commitments').then(r => r.ok ? r.json() : null).then(d => { if (d) setSummary(d.summary); }).catch(() => {});
     } catch {
       toast('Failed to delete', 'error');
     }}
