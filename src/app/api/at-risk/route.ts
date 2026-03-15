@@ -4,8 +4,8 @@ import { detectScoreReversals, computeEngagementVelocity } from '@/lib/db';
 export async function GET() {
   try {
     const [reversals, velocities] = await Promise.all([
-      detectScoreReversals().catch(() => []),
-      computeEngagementVelocity().catch(() => []),
+      detectScoreReversals().catch(e => { console.error('[AT_RISK] reversals failed:', e instanceof Error ? e.message : e); return []; }),
+      computeEngagementVelocity().catch(e => { console.error('[AT_RISK] velocity failed:', e instanceof Error ? e.message : e); return [] as Awaited<ReturnType<typeof computeEngagementVelocity>>; }),
     ]);
 
     const staleInvestors = velocities
@@ -25,6 +25,6 @@ export async function GET() {
     }, { headers: { 'Cache-Control': 'private, max-age=15, stale-while-revalidate=30' } });
   } catch (err) {
     console.error('[AT_RISK_GET]', err instanceof Error ? err.message : err);
-    return NextResponse.json({ scoreReversals: [], staleInvestors: [] });
+    return NextResponse.json({ error: 'Failed to compute at-risk investors' }, { status: 500 });
   }
 }
