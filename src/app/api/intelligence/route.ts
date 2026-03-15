@@ -241,7 +241,7 @@ export async function PUT(req: NextRequest) {
     }
   } catch (err) {
     console.error('[INTELLIGENCE_PUT]', err instanceof Error ? err.message : err);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to update intelligence data' }, { status: 500 });
   }}
 
 // DELETE: Remove intelligence data

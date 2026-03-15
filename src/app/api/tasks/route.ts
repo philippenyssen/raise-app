@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(await getAllTasks(Object.keys(filters).length > 0 ? filters : undefined));
   } catch (err) {
     console.error('[TASKS_GET]', err instanceof Error ? err.message : err);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to process task request' }, { status: 500 });
   }}
 
 export async function POST(req: NextRequest) {
@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(task, { status: 201 });
   } catch (err) {
     console.error('[TASKS_POST]', err instanceof Error ? err.message : err);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to process task request' }, { status: 500 });
   }}
 
 export async function PUT(req: NextRequest) {
@@ -172,7 +172,7 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error('[TASKS_PUT]', err instanceof Error ? err.message : err);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to process task request' }, { status: 500 });
   }}
 
 export async function DELETE(req: NextRequest) {
@@ -183,5 +183,5 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error('[TASKS_DELETE]', err instanceof Error ? err.message : err);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to process task request' }, { status: 500 });
   }}
