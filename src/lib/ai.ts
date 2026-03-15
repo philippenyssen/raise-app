@@ -9,6 +9,26 @@ function getAIClient(): Anthropic {
   return _client;
 }
 
+function logAISkill(
+  skill_name: string,
+  success: boolean,
+  fields_expected: number,
+  fields_extracted: number,
+  opts?: { trigger_source?: string; input_summary?: string; latency_ms?: number },
+) {
+  logSkillExecution({
+    skill_name,
+    skill_type: 'product_ai',
+    ...(opts?.trigger_source && { trigger_source: opts.trigger_source }),
+    ...(opts?.input_summary && { input_summary: opts.input_summary }),
+    outcome: success ? 'success' : 'partial',
+    parse_success: success,
+    fields_extracted,
+    fields_expected,
+    ...(opts?.latency_ms !== undefined && { latency_ms: opts.latency_ms }),
+  }).catch(() => {});
+}
+
 function safeParseJSON<T>(text: string, fallback: T): { parsed: T; success: boolean } {
   try {
     return { parsed: JSON.parse(text), success: true };
@@ -159,17 +179,7 @@ Be rigorous. Don't infer enthusiasm that isn't there. If notes are sparse, flag 
   const extractedFields = success
     ? Object.values(parsed).filter(v => v !== '' && v !== null && (Array.isArray(v) ? v.length > 0 : true)).length
     : 0;
-  logSkillExecution({
-    skill_name: 'analyze_meeting_notes',
-    skill_type: 'product_ai',
-    trigger_source: 'api',
-    input_summary: `${investorName} / ${meetingType} / ${rawNotes.length} chars`,
-    outcome: success ? 'success' : 'partial',
-    parse_success: success,
-    fields_extracted: extractedFields,
-    fields_expected: expectedFields,
-    latency_ms: 0,
-  }).catch(() => {});
+  logAISkill('analyze_meeting_notes', success, expectedFields, extractedFields, { trigger_source: 'api', input_summary: `${investorName} / ${meetingType} / ${rawNotes.length} chars`, latency_ms: 0 });
   return parsed;
 }
 
@@ -233,16 +243,7 @@ Return JSON (no markdown):
     convergence_signals: [] as string[],
   };
   const { parsed, success } = safeParseJSON(text, patternsFallback);
-  logSkillExecution({
-    skill_name: 'analyze_patterns',
-    skill_type: 'product_ai',
-    trigger_source: 'api',
-    input_summary: `${meetings.length} meetings`,
-    outcome: success ? 'success' : 'partial',
-    parse_success: success,
-    fields_extracted: success ? 7 : 0,
-    fields_expected: 7,
-  }).catch(() => {});
+  logAISkill('analyze_patterns', success, 7, success ? 7 : 0, { trigger_source: 'api', input_summary: `${meetings.length} meetings` });
   return parsed;
 }
 
@@ -276,14 +277,7 @@ Return JSON (no markdown):
   const text = response.content[0].type === 'text' ? response.content[0].text : '';
   const healthFallback = { health: 'yellow' as const, diagnosis: 'Insufficient data for assessment.', recommendations: ['Add more meeting data'], risk_factors: [] as string[] };
   const { parsed, success } = safeParseJSON(text, healthFallback);
-  logSkillExecution({
-    skill_name: 'assess_process_health',
-    skill_type: 'product_ai',
-    outcome: success ? 'success' : 'partial',
-    parse_success: success,
-    fields_extracted: success ? 4 : 0,
-    fields_expected: 4,
-  }).catch(() => {});
+  logAISkill('assess_process_health', success, 4, success ? 4 : 0);
   return parsed;
 }
 
@@ -342,14 +336,7 @@ If no discrepancies found, return {"discrepancies": []}.`
 
   const text = response.content[0].type === 'text' ? response.content[0].text : '{"discrepancies":[]}';
   const { parsed, success } = safeParseJSON(text, { discrepancies: [] as { location: string; issue: string; suggestion: string }[] });
-  logSkillExecution({
-    skill_name: 'check_consistency',
-    skill_type: 'product_ai',
-    outcome: success ? 'success' : 'partial',
-    parse_success: success,
-    fields_extracted: success ? (parsed.discrepancies?.length ?? 0) : 0,
-    fields_expected: 1,
-  }).catch(() => {});
+  logAISkill('check_consistency', success, 1, success ? (parsed.discrepancies?.length ?? 0) : 0);
   return parsed;
 }
 
@@ -377,14 +364,7 @@ Be thorough but fair. Flag only genuinely weak arguments, not stylistic preferen
 
   const text = response.content[0].type === 'text' ? response.content[0].text : '{"weaknesses":[]}';
   const { parsed, success } = safeParseJSON(text, { weaknesses: [] as { claim: string; issue: string; suggestion: string }[] });
-  logSkillExecution({
-    skill_name: 'find_weak_arguments',
-    skill_type: 'product_ai',
-    outcome: success ? 'success' : 'partial',
-    parse_success: success,
-    fields_extracted: success ? (parsed.weaknesses?.length ?? 0) : 0,
-    fields_expected: 1,
-  }).catch(() => {});
+  logAISkill('find_weak_arguments', success, 1, success ? (parsed.weaknesses?.length ?? 0) : 0);
   return parsed;
 }
 
@@ -457,16 +437,7 @@ Be specific with real data where you have it. If you're uncertain about specific
     approach_strategy: '',
   };
   const { parsed, success } = safeParseJSON(text, investorFallback);
-  logSkillExecution({
-    skill_name: 'research_investor',
-    skill_type: 'product_ai',
-    trigger_source: 'api',
-    input_summary: investorName,
-    outcome: success ? 'success' : 'partial',
-    parse_success: success,
-    fields_extracted: success ? Object.values(parsed).filter(v => v !== '' && (Array.isArray(v) ? v.length > 0 : true)).length : 0,
-    fields_expected: 10,
-  }).catch(() => {});
+  logAISkill('research_investor', success, 10, success ? Object.values(parsed).filter(v => v !== '' && (Array.isArray(v) ? v.length > 0 : true)).length : 0, { trigger_source: 'api', input_summary: investorName });
   return parsed;
 }
 
@@ -516,15 +487,7 @@ Be specific. Note uncertainty where appropriate.`
   const text = response.content[0].type === 'text' ? response.content[0].text : '';
   const competitorFallback = { overview: '', financials: { revenue: '', employees: '', total_raised: '', last_round: '', last_valuation: '', key_investors: '' }, positioning: '', strengths: [] as string[], weaknesses: [] as string[], our_advantage: '', threat_assessment: '', recent_news: [] as string[] };
   const { parsed, success } = safeParseJSON(text, competitorFallback);
-  logSkillExecution({
-    skill_name: 'research_competitor',
-    skill_type: 'product_ai',
-    input_summary: companyName,
-    outcome: success ? 'success' : 'partial',
-    parse_success: success,
-    fields_extracted: success ? 8 : 0,
-    fields_expected: 8,
-  }).catch(() => {});
+  logAISkill('research_competitor', success, 8, success ? 8 : 0, { input_summary: companyName });
   return parsed;
 }
 
@@ -561,15 +524,7 @@ Focus on 2025-2026 deals. Include space, defense tech, aerospace, satellite, and
   const text = response.content[0].type === 'text' ? response.content[0].text : '';
   const marketFallback = { deals: [] as { company: string; round: string; amount: string; valuation: string; lead: string; date: string; equity_story: string }[], trends: [] as string[], valuation_context: '', implications_for_us: '' };
   const { parsed, success } = safeParseJSON(text, marketFallback);
-  logSkillExecution({
-    skill_name: 'research_market_deals',
-    skill_type: 'product_ai',
-    input_summary: sector,
-    outcome: success ? 'success' : 'partial',
-    parse_success: success,
-    fields_extracted: success ? 4 : 0,
-    fields_expected: 4,
-  }).catch(() => {});
+  logAISkill('research_market_deals', success, 4, success ? 4 : 0, { input_summary: sector });
   return parsed;
 }
 
@@ -672,16 +627,7 @@ Be direct and tactical. This brief should make the meeting 2x more productive.`
     suggested_meeting_arc: 'Standard flow: rapport, thesis alignment, business update, Q&A, next steps.',
   };
   const { parsed, success } = safeParseJSON(text, briefFallback);
-  logSkillExecution({
-    skill_name: 'generate_investor_brief',
-    skill_type: 'product_ai',
-    trigger_source: 'api',
-    input_summary: `${investorData.name} / ${meetingHistory.length} meetings`,
-    outcome: success ? 'success' : 'partial',
-    parse_success: success,
-    fields_extracted: success ? Object.values(parsed).filter(v => v !== '' && (Array.isArray(v) ? v.length > 0 : true)).length : 0,
-    fields_expected: 7,
-  }).catch(() => {});
+  logAISkill('generate_investor_brief', success, 7, success ? Object.values(parsed).filter(v => v !== '' && (Array.isArray(v) ? v.length > 0 : true)).length : 0, { trigger_source: 'api', input_summary: `${investorData.name} / ${meetingHistory.length} meetings` });
   return parsed;
 }
 

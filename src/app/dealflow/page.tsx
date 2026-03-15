@@ -65,14 +65,6 @@ const HEAT_ORDER: Record<string, number> = { hot: 0, warm: 1, cool: 2, cold: 3, 
 
 // ── Helpers ───────────────────────────────────────────────────────────
 
-function velocityColor(_score: number): string {
-  return 'var(--text-primary)';
-}
-
-function trackingColor(_status: string): string {
-  return 'var(--text-secondary)';
-}
-
 function TrendIcon({ trend }: { trend: string }) {
   if (trend === 'up') return <span style={{ color: 'var(--text-secondary)' }}><TrendingUp className="w-4 h-4" /></span>;
   if (trend === 'down') return <span style={{ color: 'var(--text-muted)' }}><TrendingDown className="w-4 h-4" /></span>;
@@ -408,10 +400,10 @@ export default function DealflowPage() {
                   >
                     <div
                       className="h-full rounded-full"
-                      style={{ width: `${Math.min(inv.velocityScore, 100)}%`, background: velocityColor(inv.velocityScore) }}
+                      style={{ width: `${Math.min(inv.velocityScore, 100)}%`, background: 'var(--text-primary)' }}
                     />
                   </div>
-                  <span style={{ color: velocityColor(inv.velocityScore), fontSize: 'var(--font-size-xs)', fontWeight: 400 }}>
+                  <span style={{ color: 'var(--text-primary)', fontSize: 'var(--font-size-xs)', fontWeight: 400 }}>
                     {inv.velocityScore}
                   </span>
                 </div>
@@ -436,7 +428,7 @@ export default function DealflowPage() {
                 <div className="flex justify-center">
                   <span
                     className="w-2 h-2 rounded-full"
-                    style={{ background: trackingColor(inv.trackingStatus) }}
+                    style={{ background: 'var(--text-secondary)' }}
                     title={inv.trackingStatus.replace('_', ' ')}
                   />
                 </div>
