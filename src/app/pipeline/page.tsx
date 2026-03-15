@@ -92,6 +92,8 @@ export default function PipelinePage() {
   const boardRef = useRef<HTMLDivElement>(null);
   const [kbCol, setKbCol] = useState(0);
   const [kbRow, setKbRow] = useState(0);
+  const [compareIds, setCompareIds] = useState<Set<string>>(new Set());
+  const toggleCompare = useCallback((id: string) => setCompareIds(prev => { const next = new Set(prev); if (next.has(id)) next.delete(id); else next.add(id); return next; }), []);
 
   useEffect(() => { fetchInvestors(); cachedFetch('/api/at-risk').then(r => r.ok ? r.json() : null).then(d => { if (d?.scoreReversals) { const m = new Map<string, number>(); d.scoreReversals.forEach((r: { investorId: string; delta: number }) => m.set(r.investorId, r.delta)); setScoreDeltaMap(m); } }).catch(() => {}); }, []);
 
@@ -426,6 +428,8 @@ export default function PipelinePage() {
                       convictionDelta={scoreDeltaMap.get(inv.id) ?? null}
                       isDragging={dragId === inv.id}
                       isKbSelected={selectedId === inv.id}
+                      isCompareSelected={compareIds.has(inv.id)}
+                      onToggleCompare={toggleCompare}
                       onDragStart={handleDragStart}
                       onDragEnd={handleDragEnd} />
                   ))}
@@ -486,6 +490,8 @@ export default function PipelinePage() {
                             compact
                             convictionDelta={scoreDeltaMap.get(inv.id) ?? null}
                             isDragging={dragId === inv.id}
+                            isCompareSelected={compareIds.has(inv.id)}
+                            onToggleCompare={toggleCompare}
                             onDragStart={handleDragStart}
                             onDragEnd={handleDragEnd} />
                         ))}</div>
@@ -497,6 +503,15 @@ export default function PipelinePage() {
                     )}</div>
                 </div>);
             })}</div></div>
+      )}
+
+      {/* ── Compare floating bar ──────────────────────────────── */}
+      {compareIds.size >= 2 && (
+        <div className="flex items-center gap-3" style={{ position: 'fixed', bottom: 'var(--space-6)', left: '50%', transform: 'translateX(-50%)', background: 'var(--surface-2)', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-2) var(--space-4)', boxShadow: 'var(--shadow-lg)', zIndex: 50 }}>
+          <span style={{ ...stFontSm, color: 'var(--text-secondary)' }}>{compareIds.size} selected</span>
+          <Link href={`/compare?ids=${Array.from(compareIds).join(',')}`} className="btn btn-primary btn-sm">Compare</Link>
+          <button onClick={() => setCompareIds(new Set())} className="btn btn-secondary btn-sm">Clear</button>
+        </div>
       )}
     </div>);
 }
@@ -649,6 +664,8 @@ function InvestorCard({
   convictionDelta = null,
   isDragging,
   isKbSelected = false,
+  isCompareSelected = false,
+  onToggleCompare,
   onDragStart,
   onDragEnd,
 }: {
@@ -657,6 +674,8 @@ function InvestorCard({
   convictionDelta?: number | null;
   isDragging: boolean;
   isKbSelected?: boolean;
+  isCompareSelected?: boolean;
+  onToggleCompare?: (id: string) => void;
   onDragStart: (e: React.DragEvent, id: string) => void;
   onDragEnd: (e: React.DragEvent) => void;
 }) {
@@ -680,7 +699,7 @@ function InvestorCard({
     borderRadius: 'var(--radius-lg)',
     cursor: 'grab',
     transition: 'all 150ms ease',
-    boxShadow: isKbSelected ? 'inset 0 0 0 1.5px var(--accent)' : hovered ? 'var(--shadow-md)' : tierGlow,
+    boxShadow: isCompareSelected ? 'inset 0 0 0 1.5px var(--accent)' : isKbSelected ? 'inset 0 0 0 1.5px var(--accent)' : hovered ? 'var(--shadow-md)' : tierGlow,
     borderLeft: isStale ? '3px solid var(--warning)' : 'none',
     transform: hovered && !isDragging ? 'translateY(-1px)' : undefined,
     ...(isDragging ? { opacity: 0.5, transform: 'scale(0.95)' } : {}),};
@@ -697,8 +716,8 @@ function InvestorCard({
         className="transition-colors"
         style={{ ...cardBaseStyle, padding: '0.5rem 0.75rem' }}>
         <Link href={`/investors/${investor.id}`} className="flex items-center gap-2">
-          <GripVertical className="w-3 h-3 flex-shrink-0" style={{ color: hovered ? 'var(--text-muted)' : 'var(--border-strong)' }}
-            />
+          {onToggleCompare && (hovered || isCompareSelected) && <span onClick={e => { e.preventDefault(); e.stopPropagation(); onToggleCompare(investor.id); }} style={{ width: 12, height: 12, borderRadius: 'var(--radius-sm)', border: `1.5px solid ${isCompareSelected ? 'var(--accent)' : 'var(--border-default)'}`, background: isCompareSelected ? 'var(--accent)' : 'transparent', cursor: 'pointer', flexShrink: 0 }} />}
+          <GripVertical className="w-3 h-3 flex-shrink-0" style={{ color: hovered ? 'var(--text-muted)' : 'var(--border-strong)' }} />
           <span className="truncate" style={{ ...stFontXs, fontWeight: 400, color: 'var(--text-secondary)' }}>{investor.name}</span>
           <span style={{ padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-sm)', fontSize: '10px', fontWeight: 400, ...TIER_STYLES[investor.tier] }}>T{investor.tier}</span>
         </Link>
@@ -721,9 +740,10 @@ function InvestorCard({
             <span style={{ ...stFontSm, fontWeight: 400, color: hovered ? 'var(--text-primary)' : 'var(--text-secondary)', lineHeight: 1.3, transition: 'color 150ms ease' }}>{investor.name}</span>
             {completeness < 100 && <span title={`Profile ${completeness}% complete`} style={{ fontSize: '9px', color: complColor, marginLeft: '4px', fontWeight: 400 }}>{completeness}%</span>}
           </div>
-          <GripVertical
-            className="w-3.5 h-3.5 flex-shrink-0 mt-0.5"
-            style={{ color: hovered ? 'var(--text-muted)' : 'var(--border-strong)' }} /></div>
+          <div className="flex items-center gap-1 flex-shrink-0 mt-0.5">
+            {onToggleCompare && <span onClick={e => { e.preventDefault(); e.stopPropagation(); onToggleCompare(investor.id); }} style={{ width: 14, height: 14, borderRadius: 'var(--radius-sm)', border: `1.5px solid ${isCompareSelected ? 'var(--accent)' : 'var(--border-default)'}`, background: isCompareSelected ? 'var(--accent)' : 'transparent', cursor: 'pointer', display: hovered || isCompareSelected ? 'block' : 'none' }} />}
+            <GripVertical className="w-3.5 h-3.5" style={{ color: hovered ? 'var(--text-muted)' : 'var(--border-strong)' }} />
+          </div></div>
 
         {/* Badges row: type + tier */}
         <div className="flex items-center gap-1.5">

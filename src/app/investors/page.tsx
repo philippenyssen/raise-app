@@ -56,7 +56,7 @@ export default function InvestorsPage() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
-  const [filter, setFilter] = useState<{ tier?: number; status?: string; type?: string }>({});
+  const [filter, setFilter] = useState<{ tier?: number; status?: string; type?: string; statusPreset: 'active' | 'passed' | 'all' }>({ statusPreset: 'active' });
   const [searchQuery, setSearchQuery] = useState('');
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null);
@@ -136,6 +136,8 @@ export default function InvestorsPage() {
     if (filter.tier && i.tier !== filter.tier) return false;
     if (filter.status && i.status !== filter.status) return false;
     if (filter.type && i.type !== filter.type) return false;
+    if (filter.statusPreset === 'active' && (i.status === 'passed' || i.status === 'dropped')) return false;
+    if (filter.statusPreset === 'passed' && i.status !== 'passed' && i.status !== 'dropped') return false;
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
       if (!i.name.toLowerCase().includes(q) && !i.partner.toLowerCase().includes(q) && !(i.notes || '').toLowerCase().includes(q)) return false;
@@ -209,33 +211,22 @@ export default function InvestorsPage() {
             placeholder="Find by name, firm, or deal focus..."
             className="input"
             style={{ paddingLeft: '2.25rem' }} /></div>
-        <select
-          value={filter.tier ?? ''}
-          onChange={e => setFilter(f => ({ ...f, tier: e.target.value ? Number(e.target.value) : undefined }))}
-          className="input"
-          style={{ width: 'auto' }}>
-          <option value="">All Tiers</option>
-          <option value="1">Tier 1</option><option value="2">Tier 2</option>
-          <option value="3">Tier 3</option><option value="4">Tier 4</option></select>
-        <select
-          value={filter.status ?? ''}
-          onChange={e => setFilter(f => ({ ...f, status: e.target.value || undefined }))}
-          className="input"
-          style={{ width: 'auto' }}>
-          <option value="">All Statuses</option>
-          {Object.entries(STATUS_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select>
-        <select
-          value={filter.type ?? ''}
-          onChange={e => setFilter(f => ({ ...f, type: e.target.value || undefined }))}
-          className="input"
-          style={{ width: 'auto' }}>
-          <option value="">All Types</option>
-          {Object.entries(TYPE_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select>
-        {(filter.tier || filter.status || filter.type || searchQuery) && (
-          <button
-            onClick={() => { setFilter({}); setSearchQuery(''); }}
-            className="btn btn-ghost btn-sm">
-            Clear</button>
+        {(['active', 'passed', 'all'] as const).map(p => (
+          <button key={p} onClick={() => setFilter(f => ({ ...f, statusPreset: p, status: undefined }))} className="btn btn-sm"
+            style={{ background: filter.statusPreset === p ? 'var(--accent)' : 'var(--surface-2)', color: filter.statusPreset === p ? 'var(--surface-0)' : 'var(--text-secondary)', border: 'none' }}>
+            {p === 'active' ? 'Active' : p === 'passed' ? 'Passed' : 'All'}</button>))}
+        <span style={{ width: 1, height: 20, background: 'var(--border-subtle)', alignSelf: 'center' }} />
+        {Object.entries(TYPE_LABELS).map(([k, v]) => (
+          <button key={k} onClick={() => setFilter(f => ({ ...f, type: f.type === k ? undefined : k }))} className="badge btn-sm"
+            style={{ cursor: 'pointer', background: filter.type === k ? 'var(--accent-muted)' : 'var(--surface-2)', color: filter.type === k ? 'var(--accent)' : 'var(--text-muted)', border: filter.type === k ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            {v}</button>))}
+        <span style={{ width: 1, height: 20, background: 'var(--border-subtle)', alignSelf: 'center' }} />
+        {[1,2,3].map(t => (
+          <button key={t} onClick={() => setFilter(f => ({ ...f, tier: f.tier === t ? undefined : t }))} className="badge btn-sm"
+            style={{ cursor: 'pointer', background: filter.tier === t ? 'var(--accent-muted)' : 'var(--surface-2)', color: filter.tier === t ? 'var(--accent)' : 'var(--text-muted)', border: filter.tier === t ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            T{t}</button>))}
+        {(filter.tier || filter.status || filter.type || filter.statusPreset !== 'active' || searchQuery) && (
+          <button onClick={() => { setFilter({ statusPreset: 'active' }); setSearchQuery(''); }} className="btn btn-ghost btn-sm">Clear</button>
         )}</div>
 
       {/* Floating Bulk Action Bar */}

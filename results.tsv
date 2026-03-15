@@ -34,3 +34,4 @@ f27e70a	100	100	0	keep	product+eng	investor timeline + 16-file compaction (-778 
 6e0980e	100	100	0	keep	product+eng	deal velocity sparkline + 5-file compaction (-1134 lines) = 58613 lines, score 100
 feec852	100	100	0	keep	eng+ai	final compaction 108 files + AI buying signals/red flags (-5243 lines) = 53370 lines, score 100
 c5fe5a2	100	100	0	keep	all	health score + suggested actions + kbd nav + weekly digest = 53489 lines, score 100
+63701e4	100	100	0	keep	design+product	tooltips + relative timestamps + hover + column activity = 53493 lines, score 100
