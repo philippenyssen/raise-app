@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/toast';
@@ -357,7 +357,7 @@ export default function Dashboard() {
   const cv = pulse?.convictionPulse;
   const ov = pulse?.overnight;
 
-  const meetingStreak = (() => { const days = new Set(activity.filter(a => a.event_type === 'meeting').map(a => a.created_at?.split('T')[0])); let s = 0; for (const d = new Date(); s < 365; d.setDate(d.getDate() - 1)) { if (days.has(d.toISOString().split('T')[0])) s++; else if (s > 0) break; } return s; })();
+  const meetingStreak = useMemo(() => { const days = new Set(activity.filter(a => a.event_type === 'meeting').map(a => a.created_at?.split('T')[0])); let s = 0; for (const d = new Date(); s < 365; d.setDate(d.getDate() - 1)) { if (days.has(d.toISOString().split('T')[0])) s++; else if (s > 0) break; } return s; }, [activity]);
   const identifiedCount = data ? data.totalInvestors - data.funnel.contacted - (data.funnel.passed ?? 0) : 0;
   const funnelStages = data ? [
     { label: 'Identified', value: identifiedCount > 0 ? identifiedCount : 0 },
