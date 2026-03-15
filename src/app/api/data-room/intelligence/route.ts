@@ -106,7 +106,7 @@ export async function GET() {
     per_investor_access,
     unreached_investors,
     total_files: files.length,
-    total_access_events: accessRecords.length,});
+    total_access_events: accessRecords.length,}, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
 }
 
 export async function POST(req: NextRequest) {

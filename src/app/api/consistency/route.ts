@@ -130,7 +130,7 @@ export async function GET() {
 
     const consistent = checks.every(c => c.status === 'match');
 
-    return NextResponse.json({ consistent, checks, checkedAt });
+    return NextResponse.json({ consistent, checks, checkedAt }, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
   } catch (error) {
     console.error('[CONSISTENCY_GET]', error instanceof Error ? error.message : error);
     return NextResponse.json(

@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
 
     if (view === 'health') {
       const metrics = await db.getSkillHealthMetrics();
-      return NextResponse.json(metrics);
+      return NextResponse.json(metrics, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
     }
 
     if (view === 'executions') {
