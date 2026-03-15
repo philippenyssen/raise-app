@@ -877,11 +877,11 @@ export async function GET() {
         insights: winLossData.insights.slice(0, 3),
       } : null,};
 
-    // Non-blocking intelligence refresh + daily snapshot
-    const noop = () => {};
-    generateAutoActions().catch(noop);
-    measureActionEffectiveness().catch(noop);
-    logForecastPredictions().catch(noop);
+    // Non-blocking intelligence refresh + daily snapshot (log errors but don't block response)
+    const bg = (label: string) => (e: unknown) => console.error(`[PULSE_BG] ${label}:`, e instanceof Error ? e.message : e);
+    generateAutoActions().catch(bg('autoActions'));
+    measureActionEffectiveness().catch(bg('effectiveness'));
+    logForecastPredictions().catch(bg('predictions'));
     getHealthSnapshots(1).then(snapshots => {
       const today = new Date().toISOString().split('T')[0];
       if (!snapshots.length || snapshots[0].snapshot_date !== today) {
@@ -895,9 +895,9 @@ export async function GET() {
           velocity: processHealth.meetingsThisWeek / Math.max(1, (new Date().getDay() || 7)),
           activeInvestors: active,
           strategicSummary: `${active} active, ${advanced} advanced, health: ${processHealth.health}`,
-        }).catch(noop);
+        }).catch(bg('saveSnapshot'));
       }
-    }).catch(noop);
+    }).catch(bg('healthSnapshots'));
 
     return NextResponse.json({
       overnight,

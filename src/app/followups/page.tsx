@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback, Suspense } from 'react';
+import { useEffect, useState, useCallback, useMemo, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -260,17 +260,25 @@ function FollowupsContent() {
     finally { setProcessingIds(prev => { const n = new Set(prev); n.delete(id); return n; }); }
   }
 
-  // Categorize pending followups
+  // Categorize followups in a single pass (memoized — recomputes only when followups change)
   const now = new Date();
-  const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
-  const in3Days = new Date(now.getTime() + 3 * MS_PER_DAY);
-
-  const overdue = followups.filter(f => f.status === 'pending' && new Date(f.due_at) < now);
-  const dueToday = followups.filter(f => f.status === 'pending' && new Date(f.due_at) >= now && new Date(f.due_at) <= todayEnd);
-  const upcoming = followups.filter(f => f.status === 'pending' && new Date(f.due_at) > todayEnd && new Date(f.due_at) <= in3Days);
-  const later = followups.filter(f => f.status === 'pending' && new Date(f.due_at) > in3Days);
-  const completed = followups.filter(f => f.status === 'completed');
-  /* skipped followups available via: followups.filter(f => f.status === 'skipped') */
+  const { overdue, dueToday, upcoming, later, completed } = useMemo(() => {
+    const n = new Date();
+    const todayEnd = new Date(n.getFullYear(), n.getMonth(), n.getDate(), 23, 59, 59);
+    const in3Days = new Date(n.getTime() + 3 * MS_PER_DAY);
+    const o: typeof followups = [], dt: typeof followups = [], u: typeof followups = [], l: typeof followups = [], c: typeof followups = [];
+    for (const f of followups) {
+      if (f.status === 'completed') { c.push(f); continue; }
+      if (f.status !== 'pending') continue;
+      const due = new Date(f.due_at);
+      if (due < n) o.push(f);
+      else if (due <= todayEnd) dt.push(f);
+      else if (due <= in3Days) u.push(f);
+      else l.push(f);
+    }
+    return { overdue: o, dueToday: dt, upcoming: u, later: l, completed: c };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [followups]);
 
   // Learning stats
   const completedWithDelta = completed.filter(f => f.conviction_delta !== 0);
