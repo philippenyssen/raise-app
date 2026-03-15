@@ -36,3 +36,4 @@ feec852	100	100	0	keep	eng+ai	final compaction 108 files + AI buying signals/red
 c5fe5a2	100	100	0	keep	all	health score + suggested actions + kbd nav + weekly digest = 53489 lines, score 100
 63701e4	100	100	0	keep	design+product	tooltips + relative timestamps + hover + column activity = 53493 lines, score 100
 a597e45	100	100	0	keep	product	pipeline compare selection + investor filter chips = 53504 lines, score 100
+27fcd51	100	100	0	keep	eng+ops	input validation + cachedFetch 5 pages = 53521 lines, score 100

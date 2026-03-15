@@ -194,8 +194,13 @@ export default function InvestorsPage() {
             <Columns3 className="w-3.5 h-3.5" /> Pipeline</Link>
           <Link href="/compare" className="btn btn-secondary btn-md">
             <GitCompare className="w-3.5 h-3.5" /> Compare</Link>
-          <a href="/api/export?type=investors" download className="btn btn-secondary btn-md">
-            <Download className="w-3.5 h-3.5" /> CSV</a>
+          <button onClick={() => {
+            const hdr = ['Name','Partner','Type','Tier','Status','Check Size','Last Meeting'];
+            const rows = filtered.map(i => [i.name,i.partner,i.type,i.tier,STATUS_LABELS[i.status as InvestorStatus]||i.status,i.check_size_range,i.last_meeting_date||''].map(v => `"${String(v ?? '').replace(/"/g,'""')}"`).join(','));
+            const blob = new Blob([hdr.join(',')+'\n'+rows.join('\n')], { type: 'text/csv' });
+            Object.assign(document.createElement('a'), { href: URL.createObjectURL(blob), download: 'investors.csv' }).click();
+          }} className="btn btn-secondary btn-md">
+            <Download className="w-3.5 h-3.5" /> CSV</button>
           <button
             onClick={() => { setShowForm(!showForm); setEditId(null); }}
             className="btn btn-primary btn-md">
