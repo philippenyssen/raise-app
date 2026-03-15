@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import { Bell, Clock, AlertTriangle, Activity, Search } from 'lucide-react';
+import { MS_PER_MINUTE, MS_PER_DAY } from '@/lib/time';
 import { fmtDateShort } from '@/lib/format';
 
 interface UpcomingTask {
@@ -24,7 +25,7 @@ interface ActivityItem {
 
 function timeAgo(dateStr: string): string {
   const diff = Date.now() - new Date(dateStr).getTime();
-  const mins = Math.floor(diff / 60000);
+  const mins = Math.floor(diff / MS_PER_MINUTE);
   if (mins < 1) return 'just now';
   if (mins < 60) return `${mins}m ago`;
   const hours = Math.floor(mins / 60);
@@ -44,7 +45,7 @@ export function TopBar() {
 
   useEffect(() => {
     fetchData();
-    const interval = setInterval(fetchData, 60000);
+    const interval = setInterval(fetchData, MS_PER_MINUTE);
     return () => clearInterval(interval);
   }, []);
 
@@ -151,7 +152,7 @@ export function TopBar() {
                   <AlertTriangle style={{ width: '13px', height: '13px' }} />
                   Overdue ({overdue.length})</div>
                 {overdue.slice(0, 3).map(t => {
-                  const days = Math.ceil((now.getTime() - new Date(t.due_date).getTime()) / 86400000);
+                  const days = Math.ceil((now.getTime() - new Date(t.due_date).getTime()) / MS_PER_DAY);
                   return (
                     <Link
                       key={t.id}

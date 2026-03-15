@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { useToast } from '@/components/toast';
 import { fmtDateFull } from '@/lib/format';
+import { MS_PER_MINUTE, MS_PER_DAY } from '@/lib/time';
 import {
   Calendar, Clock, ArrowRight, ChevronRight, RefreshCw,
   Mail, UserPlus, FileText, AlertTriangle, Zap, TrendingUp,
@@ -397,7 +398,7 @@ export default function TodayPage() {
     fetchBriefing();
     const refreshInterval = setInterval(() => fetchBriefing(true), 5 * 60 * 1000);
     const stalenessInterval = setInterval(() => {
-      setStalenessMinutes(Math.floor((Date.now() - lastFetchedAt.current) / 60000));
+      setStalenessMinutes(Math.floor((Date.now() - lastFetchedAt.current) / MS_PER_MINUTE));
     }, 30000);
     function onKeyDown(e: KeyboardEvent) {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
@@ -600,7 +601,7 @@ export default function TodayPage() {
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
             {overdueFollowups.map(fu => {
-              const daysOver = Math.floor((Date.now() - new Date(fu.due_at).getTime()) / 86400000);
+              const daysOver = Math.floor((Date.now() - new Date(fu.due_at).getTime()) / MS_PER_DAY);
               const isProcessing = completingFollowupId === fu.id;
               return (
                 <div key={fu.id} className="flex items-center gap-3" style={{ padding: 'var(--space-2) 0', opacity: isProcessing ? 0.5 : 1, transition: 'opacity 150ms' }}>

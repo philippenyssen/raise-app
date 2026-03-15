@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { deltaColor, gaugeColor, gaugeColor as gaugeBarColor, labelMuted, labelMuted10, labelSecondary, stAccent, stFontSm, stFontXs, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 import { useToast } from '@/components/toast';
+import { relativeTime } from '@/lib/time';
 import { CopyButton } from '@/components/copy-button';
 
 // ---------------------------------------------------------------------------
@@ -476,7 +477,7 @@ export default function StrategicPage() {
 
       {/* Footer */}
       <div className="text-center" style={{ fontSize: '10px', color: 'var(--text-muted)', padding: 'var(--space-2) 0' }}>
-        Updated {(() => { const mins = Math.floor((Date.now() - new Date(data.generatedAt).getTime()) / 60000); return mins < 1 ? 'just now' : mins < 60 ? `${mins}m ago` : `${Math.floor(mins / 60)}h ago`; })()} — Press R to refresh</div>
+        Updated {relativeTime(data.generatedAt)} — Press R to refresh</div>
     </div>);
 }
 
