@@ -52,9 +52,15 @@ export default function DataRoomPage() {
   const [intelLoading, setIntelLoading] = useState(true);
   const [expandedInvestor, setExpandedInvestor] = useState<string | null>(null);
 
+  const [fetchError, setFetchError] = useState<string | null>(null);
+
   const fetchFiles = useCallback(async () => {
-    const res = await fetch('/api/data-room');
-    setFiles(await res.json());
+    try {
+      const res = await fetch('/api/data-room');
+      if (!res.ok) throw new Error('Failed to load');
+      setFiles(await res.json());
+      setFetchError(null);
+    } catch { setFetchError('Failed to load data room files'); }
     setLoading(false);
   }, []);
 

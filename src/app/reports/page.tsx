@@ -25,7 +25,7 @@ export default function ReportsPage() {
       .then(data => {
         const list = (Array.isArray(data) ? data : data.investors || []) as InvestorOption[];
         setInvestors(list.filter(i => i.status !== 'passed' && i.status !== 'dropped'));})
-      .catch(() => {});
+      .catch(() => { setError('Failed to load investors'); });
   }, []);
 
   async function generateReport(type: string) {
