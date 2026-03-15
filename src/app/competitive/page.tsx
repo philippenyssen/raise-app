@@ -46,6 +46,11 @@ export default function CompetitivePage() {
 
   useEffect(() => { document.title = 'Raise | Competitive Intel'; }, []);
   useEffect(() => { fetchData(); }, []);
+  useEffect(() => {
+    const h = (e: KeyboardEvent) => { if (e.key === 'r' && !e.metaKey && !e.ctrlKey && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement)) { e.preventDefault(); fetchData(); } };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, []);
 
   const handleFilter = () => { fetchData(); };
 
