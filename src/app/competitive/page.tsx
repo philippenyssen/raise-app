@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { Shield, ChevronDown, ChevronRight, Calendar, Users, Hash } from 'lucide-react';
 import { useToast } from '@/components/toast';
 import { relativeTime } from '@/lib/time';
@@ -120,8 +121,12 @@ export default function CompetitivePage() {
         <div className="card" style={{ padding: 'var(--space-8)', textAlign: 'center' }}>
           <div className="space-y-3">
             <Shield className="w-8 h-8 mx-auto" style={stTextMuted} />
+            <p style={{ color: 'var(--text-primary)', fontWeight: 400, marginBottom: '4px' }}>
+              No competitor intelligence yet</p>
             <p style={stTextTertiary}>
-              No competitive mentions recorded yet. Log meeting outcomes with competitor mentions to populate this view.</p></div>
+              When investors mention competitors or alternatives during meetings, log them in your debrief notes. This surfaces patterns in how investors compare you to alternatives.</p>
+            <div className="pt-2">
+              <Link href="/meetings" className="btn btn-primary btn-sm">Log a meeting</Link></div></div>
         </div>
       ) : (
         <div className="card" style={{ overflow: 'hidden' }}>
