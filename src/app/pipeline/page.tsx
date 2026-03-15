@@ -165,6 +165,7 @@ export default function PipelinePage() {
       else if (e.key === 'ArrowDown') { e.preventDefault(); setKbRow(r => { const max = (colGrid[kbCol]?.length ?? 1) - 1; return Math.min(r + 1, max); }); }
       else if (e.key === 'ArrowUp') { e.preventDefault(); setKbRow(r => Math.max(r - 1, 0)); }
       else if (e.key === 'Enter' && selectedId) { e.preventDefault(); router.push(`/investors/${selectedId}`); }
+      else if (e.key === 'r' && !e.metaKey && !e.ctrlKey) { e.preventDefault(); fetchInvestors(); }
     };
     window.addEventListener('keydown', handleKb);
     return () => window.removeEventListener('keydown', handleKb);
