@@ -76,6 +76,7 @@ export async function GET() {
       raw: data,
     });
   } catch (err) {
+    console.error('[TEST_KEY]', err instanceof Error ? err.message : err);
     return NextResponse.json({
       status: 'network_error',
       message: `Could not reach Anthropic API: ${err instanceof Error ? err.message : 'unknown'}`,

@@ -56,6 +56,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       text: `[Binary file: ${filename} (${mime_type}). Paste the text content manually for best results.]`,});
   } catch (err) {
+    console.error('[DATA_ROOM_EXTRACT]', err instanceof Error ? err.message : err);
     return NextResponse.json({
       text: `[File: ${filename}. Text extraction failed — paste content manually.]`,});
   }}
