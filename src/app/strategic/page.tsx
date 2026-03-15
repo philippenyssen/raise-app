@@ -8,6 +8,7 @@ import {
   BarChart3, MessageCircleWarning, Zap, CheckCircle2, ExternalLink,
 } from 'lucide-react';
 import { deltaColor, gaugeColor, gaugeColor as gaugeBarColor, labelMuted, labelMuted10, labelSecondary, stAccent, stFontSm, stFontXs, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
+import { useToast } from '@/components/toast';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -127,6 +128,7 @@ function confidenceStyle(confidence: string): React.CSSProperties {
 // ---------------------------------------------------------------------------
 
 export default function StrategicPage() {
+  const { toast } = useToast();
   const [data, setData] = useState<StrategicData | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -143,7 +145,9 @@ export default function StrategicPage() {
       if (!res.ok) throw new Error('Failed to load strategic data');
       setData(await res.json());
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Unknown error');
+      const msg = e instanceof Error ? e.message : 'Unknown error';
+      setError(msg);
+      if (!silent) toast(msg, 'error');
     } finally {
       setLoading(false);
       setRefreshing(false);
