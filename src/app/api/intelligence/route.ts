@@ -233,18 +233,23 @@ export async function PUT(req: NextRequest) {
       competitor: new Set(['name', 'threat_level', 'strengths', 'weaknesses', 'notes', 'recent_activity']),
       partner: new Set(['name', 'firm', 'relationship_strength', 'notes', 'last_contact']),
     };
+    if (!id) return NextResponse.json({ error: 'id required' }, { status: 400 });
     const allowed = ALLOWED_FIELDS[type];
     if (!allowed) return NextResponse.json({ error: 'type required (deal|competitor|partner)' }, { status: 400 });
     const filtered = Object.fromEntries(Object.entries(body).filter(([k]) => allowed.has(k)));
+    if (Object.keys(filtered).length === 0) return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 });
     switch (type) {
       case 'deal':
         await updateMarketDeal(id, filtered);
+        emitContextChange('intelligence_added', `Updated deal ${id}`);
         return NextResponse.json({ ok: true });
       case 'competitor':
         await updateCompetitor(id, filtered);
+        emitContextChange('intelligence_added', `Updated competitor ${id}`);
         return NextResponse.json({ ok: true });
       case 'partner':
         await updateInvestorPartner(id, filtered);
+        emitContextChange('intelligence_added', `Updated partner ${id}`);
         return NextResponse.json({ ok: true });
       default:
         return NextResponse.json({ error: 'type required (deal|competitor|partner)' }, { status: 400 });
