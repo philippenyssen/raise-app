@@ -40,7 +40,8 @@ export default function DocumentEditorPage() {
   const [applyHovered, setApplyHovered] = useState(false);
 
   useEffect(() => { document.title = 'Raise | Document'; }, []);
-  useEffect(() => {
+  const fetchDocument = useCallback(() => {
+    setLoading(true);
     fetch(`/api/documents/${id}`).then(r => {
       if (!r.ok) throw new Error('Failed to load document');
       return r.json();
@@ -53,6 +54,17 @@ export default function DocumentEditorPage() {
       toast('Could not load document — it may have been deleted', 'error');
       setLoading(false);});
   }, [id, toast]);
+  useEffect(() => { fetchDocument(); }, [fetchDocument]);
+
+  useEffect(() => {
+    const h = (e: KeyboardEvent) => {
+      if (e.key === 'r' && !e.metaKey && !e.ctrlKey && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement)) {
+        e.preventDefault(); fetchDocument();
+      }
+    };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, [fetchDocument]);
 
   const save = useCallback(async (changeSummary?: string) => {
     setSaving(true);
