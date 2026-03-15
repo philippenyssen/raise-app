@@ -87,7 +87,7 @@ export async function POST(req: NextRequest) {
         } else if (trajectory.pattern === 'inflecting') {
           trajectoryContext = `CONVICTION TRAJECTORY INFLECTION: Investor trajectory has changed direction${trajectory.inflectionDate ? ` around ${trajectory.inflectionDate}` : ''}. Pay attention to what caused the shift and adapt accordingly.`;
         }}
-    } catch { /* non-blocking — trajectory is supplementary */ }
+    } catch (e) { console.error('[BRIEF_TRAJECTORY]', e instanceof Error ? e.message : e); }
 
     // 3c. Compute forecast context for this investor (cycle 20)
     let forecastContext = '';
@@ -105,7 +105,7 @@ export async function POST(req: NextRequest) {
         }
         forecastContext += ` Overall raise expected close: ${forecastData.expectedCloseDate} (${forecastData.confidence} confidence).`;
       }
-    } catch { /* non-blocking */ }
+    } catch (e) { console.error('[BRIEF_FORECAST]', e instanceof Error ? e.message : e); }
 
     // 3d. Engagement velocity + FOMO + cascade + win/loss (cycle 35)
     let tacticalContext = '';
@@ -149,7 +149,7 @@ export async function POST(req: NextRequest) {
       if (parts.length > 0) {
         tacticalContext = parts.join('\n');
       }
-    } catch { /* non-blocking */ }
+    } catch (e) { console.error('[BRIEF_TACTICAL]', e instanceof Error ? e.message : e); }
 
     // 4. Extract historical questions from meetings
     const historicalQuestions: string[] = [];

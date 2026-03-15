@@ -133,7 +133,7 @@ export async function POST(req: NextRequest) {
         investor?.type || 'vc',
         JSON.stringify(aiData.questions_asked || []),
         new Date().toISOString().split('T')[0],);
-    } catch { /* non-blocking */ }
+    } catch (e) { console.error('[QUICK_CAPTURE_QUESTIONS]', e instanceof Error ? e.message : e); }
 
     // 7. Activity log (non-blocking)
     try {
@@ -143,7 +143,7 @@ export async function POST(req: NextRequest) {
         detail: (aiData.ai_analysis as string) || '',
         investor_id: investorId,
         investor_name: investorName,});
-    } catch { /* non-blocking */ }
+    } catch (e) { console.error('[QUICK_CAPTURE_ACTIVITY]', e instanceof Error ? e.message : e); }
 
     emitContextChange('meeting_logged', `Quick capture: meeting with ${investorName}`);
 

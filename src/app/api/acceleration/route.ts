@@ -213,16 +213,16 @@ export async function PUT(req: Request) {
         try {
           const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
           await createTask({ title: `[Acceleration] ${description || action_type || 'Follow through'}`, description: `Auto-generated from ${trigger_type || 'acceleration'} action. Expected conviction lift: +${expected_lift || '?'} pts.`, assignee: '', due_date: tomorrow.toISOString().split('T')[0], status: 'in_progress', priority: trigger_type === 'term_sheet_ready' ? 'critical' : 'high', phase: 'management_presentations', investor_id: investor_id || '', investor_name: investor_name || '', auto_generated: true });
-        } catch { /* non-blocking */ }
+        } catch (e) { console.error('[ACCELERATION_TASK]', e instanceof Error ? e.message : e); }
 
         try {
           const followupDue = new Date(); followupDue.setHours(followupDue.getHours() + 24);
           await createFollowup({ meeting_id: '', investor_id: investor_id || '', investor_name: investor_name || '', action_type: trigger_type === 'term_sheet_ready' ? 'schedule_followup' : 'warm_reengagement', description: `Check-in after acceleration action: ${description || action_type}. Did conviction improve?`, due_at: followupDue.toISOString() });
-        } catch { /* non-blocking */ }
+        } catch (e) { console.error('[ACCELERATION_FOLLOWUP]', e instanceof Error ? e.message : e); }
 
         try {
           await logActivity({ event_type: 'acceleration_executed', subject: `Acceleration: ${action_type || trigger_type}`, detail: `${description}. Expected lift: +${expected_lift || '?'} pts.`, investor_id: investor_id || '', investor_name: investor_name || '' });
-        } catch { /* non-blocking */ }
+        } catch (e) { console.error('[ACCELERATION_ACTIVITY]', e instanceof Error ? e.message : e); }
       }}
 
     emitContextChange('acceleration_executed', `Acceleration ${id} ${actionStatus}${body.investor_name ? ` for ${body.investor_name}` : ''}`);
