@@ -41,6 +41,8 @@ function extractText(response: { content: { type: string; text?: string }[]; sto
   if (!text) console.error('[AI_EXTRACT] Non-text or empty block:', block?.type);
   const truncated = response.stop_reason === 'max_tokens';
   const filtered = response.stop_reason === 'content_filter';
+  if (truncated) console.error('[AI_TRUNCATED] Response hit max_tokens — output may be incomplete');
+  if (filtered) console.error('[AI_FILTERED] Response was content-filtered — output may be empty');
   return { text, truncated, filtered };
 }
 
