@@ -10,7 +10,7 @@ export async function GET(
   if (!actions) {
     return NextResponse.json({ error: 'Meeting not found' }, { status: 404 });
   }
-  return NextResponse.json(actions);
+  return NextResponse.json(actions, { headers: { 'Cache-Control': 'private, max-age=15, stale-while-revalidate=30' } });
 }
 
 // Accept or dismiss individual actions

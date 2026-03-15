@@ -6,7 +6,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
     const { id } = await params;
     const doc = await getDocument(id);
     if (!doc) return NextResponse.json({ error: 'Document not found' }, { status: 404 });
-    return NextResponse.json(doc);
+    return NextResponse.json(doc, { headers: { 'Cache-Control': 'private, max-age=15, stale-while-revalidate=30' } });
   } catch (err) {
     console.error('[DOCUMENT_GET]', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: 'Failed to load document' }, { status: 500 });
