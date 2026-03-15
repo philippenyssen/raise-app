@@ -521,7 +521,7 @@ export default function ObjectionsPage() {
                           <div className="flex items-center gap-2">
                             <span
                               className="px-1.5 py-0.5 rounded"
-                              style={{ fontSize: '10px', ...color.bg, ...color.text }}>
+                              style={{ fontSize: 'var(--font-size-xs)', ...color.bg, ...color.text }}>
                               {obj.objection_topic}</span>
                             <span style={labelMuted10}>{obj.count}x raised</span></div>
                           <button
@@ -534,7 +534,7 @@ export default function ObjectionsPage() {
                               background: 'none',
                               border: 'none',
                               cursor: 'pointer',
-                              fontSize: '10px',
+                              fontSize: 'var(--font-size-xs)',
                               fontWeight: 400,
                               color: 'var(--accent)',
                               padding: '1px 4px',
@@ -564,7 +564,7 @@ export default function ObjectionsPage() {
                     const barColor = pct >= 75 ? 'var(--success)' : pct >= 50 ? 'var(--warning)' : 'var(--danger)';
                     return (
                       <div key={group.topic} className="flex items-center gap-2">
-                        <span className="w-20 truncate" style={{ fontSize: '10px', ...color.text }}>{group.topic}</span>
+                        <span className="w-20 truncate" style={{ fontSize: 'var(--font-size-xs)', ...color.text }}>{group.topic}</span>
                         <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={stSurface2}>
                           <div
                             style={{ width: `${pct}%`, background: barColor, height: '100%' }}/></div>
@@ -609,7 +609,7 @@ export default function ObjectionsPage() {
                         href={`/meetings/prep?investor=${selectedInvestor}`}
                         className="flex items-center gap-1 transition-colors"
                         style={{
-                          fontSize: '10px',
+                          fontSize: 'var(--font-size-xs)',
                           fontWeight: 400,
                           color: 'var(--accent)',
                           textDecoration: 'none',
@@ -624,7 +624,7 @@ export default function ObjectionsPage() {
                         href={`/investors/${selectedInvestor}`}
                         className="flex items-center gap-1 transition-colors"
                         style={{
-                          fontSize: '10px',
+                          fontSize: 'var(--font-size-xs)',
                           fontWeight: 400,
                           color: 'var(--text-muted)',
                           textDecoration: 'none',
@@ -644,11 +644,11 @@ export default function ObjectionsPage() {
                         <div className="flex items-center gap-1.5 flex-wrap">
                           <span
                             className="px-1 py-0.5 rounded"
-                            style={{ fontSize: '10px', ...color.bg, ...color.text }}>
+                            style={{ fontSize: 'var(--font-size-xs)', ...color.bg, ...color.text }}>
                             {obj.objection_topic}</span>
                           <span
                             className="px-1 py-0.5 rounded"
-                            style={{ fontSize: '10px', ...effBadge.style }}>
+                            style={{ fontSize: 'var(--font-size-xs)', ...effBadge.style }}>
                             {effBadge.label}</span></div>
                         {obj.response_text && (
                           <p className="leading-relaxed mt-1" style={labelMuted10}>
@@ -677,7 +677,7 @@ export default function ObjectionsPage() {
                             <div key={topic} className="p-2 rounded-lg space-y-1" style={{ background: 'var(--success-muted)', border: '1px solid var(--accent-15)' }}>
                               <span
                                 className="px-1 py-0.5 rounded"
-                                style={{ fontSize: '10px', ...color.bg, ...color.text }}>
+                                style={{ fontSize: 'var(--font-size-xs)', ...color.bg, ...color.text }}>
                                 {topic}</span>
                               <p className="text-xs leading-relaxed" style={stTextTertiary}>{response.response_text}</p>
                               {response.investor_name && (
@@ -909,7 +909,7 @@ function EffectivenessTab({
                         <div className="flex-1 min-w-0">
                           <p className="text-sm truncate" style={stTextPrimary}>{entry.response_text}</p>
                           <div className="flex items-center gap-2 mt-0.5">
-                            <span className="px-1 py-0.5 rounded" style={{ fontSize: '10px', ...color.bg, ...color.text }}>
+                            <span className="px-1 py-0.5 rounded" style={{ fontSize: 'var(--font-size-xs)', ...color.bg, ...color.text }}>
                               {entry.objection_topic}</span>
                             {entry.investor_name && (
                               <span style={labelMuted10}>
@@ -980,7 +980,7 @@ function EffectivenessTab({
                       onMouseLeave={() => setHoveredRow(null)}>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <span className="px-1 py-0.5 rounded" style={{ fontSize: '10px', ...color.bg, ...color.text }}>
+                          <span className="px-1 py-0.5 rounded" style={{ fontSize: 'var(--font-size-xs)', ...color.bg, ...color.text }}>
                             {entry.objection_topic}</span>
                           <span className="text-xs" style={stTextMuted}>Used {entry.times_used}x</span></div>
                         <span className="text-sm font-normal" style={stTextPrimary}>
@@ -1008,7 +1008,7 @@ function EffectivenessTab({
                   return (
                     <div key={i} className="p-2 rounded-lg space-y-1" style={stSurface1}>
                       <div className="flex items-center justify-between">
-                        <span className="px-1.5 py-0.5 rounded" style={{ fontSize: '10px', ...color.bg, ...color.text }}>
+                        <span className="px-1.5 py-0.5 rounded" style={{ fontSize: 'var(--font-size-xs)', ...color.bg, ...color.text }}>
                           {obj.topic}</span>
                         <span className="text-xs font-normal" style={stTextTertiary}>
                           {obj.currentCount}x</span></div>
@@ -1030,7 +1030,7 @@ function EffectivenessTab({
                   return (
                     <div key={i} className="p-2 rounded-lg space-y-1" style={stSurface1}>
                       <div className="flex items-center justify-between">
-                        <span className="px-1.5 py-0.5 rounded" style={{ fontSize: '10px', ...color.bg, ...color.text }}>
+                        <span className="px-1.5 py-0.5 rounded" style={{ fontSize: 'var(--font-size-xs)', ...color.bg, ...color.text }}>
                           {obj.topic}</span>
                         <span className="text-xs" style={stTextSecondary}>
                           Resolved</span></div>
@@ -1056,7 +1056,7 @@ function EffectivenessTab({
                   return (
                     <div key={i} className="p-2 rounded-lg space-y-1" style={stSurface1}>
                       <div className="flex items-center justify-between">
-                        <span className="px-1.5 py-0.5 rounded" style={{ fontSize: '10px', ...color.bg, ...color.text }}>
+                        <span className="px-1.5 py-0.5 rounded" style={{ fontSize: 'var(--font-size-xs)', ...color.bg, ...color.text }}>
                           {obj.topic}</span>
                         <span className="text-xs font-normal" style={stTextPrimary}>
                           {obj.count}x over {Math.round(obj.duration)}wk</span></div>
@@ -1124,7 +1124,7 @@ function EffectivenessTab({
                     const barColor = te.resolution_rate >= 75 ? 'var(--success)' : te.resolution_rate >= 50 ? 'var(--warning)' : 'var(--danger)';
                     return (
                       <div key={te.topic} className="flex items-center gap-2">
-                        <span className="w-20 truncate" style={{ fontSize: '10px', ...color.text }}>{te.topic}</span>
+                        <span className="w-20 truncate" style={{ fontSize: 'var(--font-size-xs)', ...color.text }}>{te.topic}</span>
                         <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={stSurface2}>
                           <div style={{ width: `${te.resolution_rate}%`, background: barColor, height: '100%' }} /></div>
                         <span className="w-8 text-right" style={labelMuted10}>{te.resolution_rate}%</span>

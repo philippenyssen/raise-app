@@ -272,7 +272,7 @@ export default function CommandPalette() {
         onMouseEnter={() => setActiveIndex(idx)}>
         <span className="shrink-0 flex items-center justify-center" style={{ width: '16px', height: '16px', color: isActive ? 'var(--accent)' : 'var(--text-muted)' }}>
           <Icon className="w-4 h-4" /></span>
-        <span style={{ fontSize: '13px' }}>{item.label}</span>
+        <span style={{ fontSize: 'var(--font-size-sm)' }}>{item.label}</span>
         {SHORTCUTS[item.href] && <kbd style={{ marginLeft: 'auto', fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', background: 'var(--surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xs)', padding: '1px 5px' }}>{SHORTCUTS[item.href]}</kbd>}
       </div>);
   }
@@ -291,7 +291,7 @@ export default function CommandPalette() {
         onMouseEnter={() => setActiveIndex(idx)}>
         <span className="shrink-0 flex items-center justify-center" style={{ width: '16px', height: '16px', color: isActive ? 'var(--accent)' : 'var(--text-muted)' }}>
           <Users className="w-4 h-4" /></span>
-        <span style={{ fontSize: '13px' }}>{item.label}</span>
+        <span style={{ fontSize: 'var(--font-size-sm)' }}>{item.label}</span>
       </div>);
   }
 
@@ -310,7 +310,7 @@ export default function CommandPalette() {
         onMouseEnter={() => setActiveIndex(idx)}>
         <span className="shrink-0 flex items-center justify-center" style={{ width: '16px', height: '16px', color: isActive ? 'var(--success)' : 'var(--text-muted)' }}>
           <Icon className="w-4 h-4" /></span>
-        <span style={{ fontSize: '13px' }}>{item.label}</span>
+        <span style={{ fontSize: 'var(--font-size-sm)' }}>{item.label}</span>
       </div>);
   }
 
@@ -329,7 +329,7 @@ export default function CommandPalette() {
         onMouseEnter={() => setActiveIndex(idx)}>
         <span className="shrink-0 flex items-center justify-center" style={{ width: '16px', height: '16px', color: isActive ? 'var(--accent)' : 'var(--text-muted)' }}>
           <Icon className="w-4 h-4" /></span>
-        <span style={{ fontSize: '13px' }}>{item.label}</span>
+        <span style={{ fontSize: 'var(--font-size-sm)' }}>{item.label}</span>
         {SHORTCUTS[item.href] ? <kbd style={{ marginLeft: 'auto', fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', background: 'var(--surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xs)', padding: '1px 5px' }}>{SHORTCUTS[item.href]}</kbd>
           : item.note ? <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginLeft: 'auto' }}>{item.note}</span> : null}
       </div>);
@@ -386,7 +386,7 @@ export default function CommandPalette() {
           {allItems.length === 0 ? (
             <div
               className="flex items-center justify-center"
-              style={{ padding: '32px 16px', color: 'var(--text-muted)', fontSize: '13px' }}>
+              style={{ padding: '32px 16px', color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
               No results</div>
           ) : (
             <>

@@ -610,8 +610,8 @@ export default function Dashboard() {
                     <Link key={w.id} href={`/investors/${w.id}`} className="flex items-center gap-2 shrink-0 transition-colors" style={{ padding: 'var(--space-2) var(--space-3)', borderRadius: 'var(--radius-lg)', background: 'var(--surface-1)' }}
                       onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }} onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-1)'; }}>
                       <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-primary)' }}>{w.name}</span>
-                      <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{STATUS_LABELS[w.status as keyof typeof STATUS_LABELS] ?? w.status}</span>
-                      {daysSince !== null && <span style={{ fontSize: '10px', color: daysSince > 14 ? 'var(--danger)' : 'var(--text-muted)' }}>{daysSince}d</span>}
+                      <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{STATUS_LABELS[w.status as keyof typeof STATUS_LABELS] ?? w.status}</span>
+                      {daysSince !== null && <span style={{ fontSize: 'var(--font-size-xs)', color: daysSince > 14 ? 'var(--danger)' : 'var(--text-muted)' }}>{daysSince}d</span>}
                     </Link>);
                 })}
               </div>);
@@ -1163,7 +1163,7 @@ function MomentumBar({ count, total, opacity, label }: {
       {pct >= 15 && (
         <span
           className="absolute inset-0 flex items-center justify-center"
-          style={{ fontSize: '9px', fontWeight: 400, color: opacity > 0.5 ? 'var(--surface-0)' : 'var(--text-secondary)' }}>
+          style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: opacity > 0.5 ? 'var(--surface-0)' : 'var(--text-secondary)' }}>
           {count}</span>
       )}
     </div>);

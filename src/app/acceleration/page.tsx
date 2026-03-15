@@ -140,12 +140,12 @@ function ActionCard({
 
           {/* Meta row */}
           <div className="flex items-center gap-4 flex-wrap">
-            <span className="flex items-center gap-1" style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+            <span className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
               <Timer className="w-3 h-3" />
               {item.timeEstimate}</span>
-            <span style={{ fontSize: '11px', color: 'var(--text-secondary)', opacity: 0.8 }}>
+            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', opacity: 0.8 }}>
               +{item.expectedLift} pts expected</span>
-            <span style={{ fontSize: '11px', fontWeight: 400, ...(URGENCY_STYLE[item.urgency] ?? { color: 'var(--text-tertiary)' }) }}>
+            <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, ...(URGENCY_STYLE[item.urgency] ?? { color: 'var(--text-tertiary)' }) }}>
               {item.urgency === 'immediate' ? 'Act now' : item.urgency === '48h' ? 'Within 48h' : item.urgency === 'this_week' ? 'This week' : 'Next week'}
             </span>
             <span style={labelMuted10}>
@@ -223,12 +223,12 @@ function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
         <span style={inlineBadgeStyle(STATUS_STYLES[investor.status] ?? STATUS_STYLES.identified)}>
           {STATUS_LABELS[investor.status] ?? investor.status}</span></div>
       <div className="flex items-center gap-3 mb-2">
-        <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
           Score: <span style={{ color: 'var(--text-secondary)', fontWeight: 300 }}>{investor.score}</span>/100</span>
-        <span style={{ fontSize: '11px', ...(MOMENTUM_STYLE[investor.momentum] ?? {}) }}>
+        <span style={{ fontSize: 'var(--font-size-xs)', ...(MOMENTUM_STYLE[investor.momentum] ?? {}) }}>
           {MOMENTUM_LABELS[investor.momentum]}</span>
         <EnthusiasmDots value={investor.enthusiasm} /></div>
-      <p style={{ fontSize: '11px', color: 'var(--text-tertiary)', marginBottom: '12px' }}>{investor.reason}</p>
+      <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginBottom: '12px' }}>{investor.reason}</p>
       <Link
         href={`/investors/${investor.investorId}`}
         className="inline-flex items-center gap-1.5 transition-colors"
@@ -264,15 +264,15 @@ function AtRiskCard({ investor }: { investor: InvestorSummary }) {
         <span style={inlineBadgeStyle(TYPE_STYLES[investor.investorType] ?? TYPE_STYLES.vc)}>
           {TYPE_LABELS[investor.investorType] ?? investor.investorType}</span></div>
       <div className="flex items-center gap-3 mb-2">
-        <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
           Score: <span style={{ color: 'var(--text-secondary)', fontWeight: 300 }}>{investor.score}</span>/100</span>
-        <span style={{ fontSize: '11px', ...(MOMENTUM_STYLE[investor.momentum] ?? {}) }}>
+        <span style={{ fontSize: 'var(--font-size-xs)', ...(MOMENTUM_STYLE[investor.momentum] ?? {}) }}>
           {investor.momentum === 'decelerating' || investor.momentum === 'stalled'
             ? <span className="flex items-center gap-1"><TrendingDown className="w-3 h-3 inline" />{MOMENTUM_LABELS[investor.momentum]}</span>
             : <span className="flex items-center gap-1"><ArrowUpRight className="w-3 h-3 inline" />{MOMENTUM_LABELS[investor.momentum]}</span>
           }</span>
         <EnthusiasmDots value={investor.enthusiasm} /></div>
-      <p style={{ fontSize: '11px', color: 'var(--text-tertiary)' }}>{investor.reason}</p>
+      <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>{investor.reason}</p>
     </div>);
 }
 
@@ -315,11 +315,11 @@ function DeprioritizeSection({ investors }: { investors: InvestorSummary[] }) {
                   onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-tertiary)')}>
                   {inv.investorName}</Link>
                 <TierBadge tier={inv.investorTier} />
-                <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Score: {inv.score}/100</span></div>
-              <span style={{ fontSize: '10px', color: 'var(--text-muted)', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const }}>{inv.reason}</span>
+                <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Score: {inv.score}/100</span></div>
+              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const }}>{inv.reason}</span>
             </div>
           ))}
-          <p style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '8px', paddingTop: '8px', borderTop: '1px solid var(--border-subtle)' }}>
+          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '8px', paddingTop: '8px', borderTop: '1px solid var(--border-subtle)' }}>
             Stop allocating active time to these investors. Move effort to higher-conviction targets.</p></div>
       )}
     </div>);
@@ -556,7 +556,7 @@ export default function AccelerationPage() {
                 className="ml-1.5 rounded-full"
                 style={{
                   padding: '2px 6px',
-                  fontSize: '10px',
+                  fontSize: 'var(--font-size-xs)',
                   background: activeTab === tab.key ? 'var(--accent-muted)' : 'var(--surface-2)',
                   color: activeTab === tab.key ? 'var(--accent)' : 'var(--text-muted)', }}>
                 {tab.count}</span>

@@ -289,7 +289,7 @@ export default function ForecastPage() {
                       padding: 'var(--space-2) var(--space-3)',
                       background: 'var(--surface-1)',
                       borderRadius: 'var(--radius-sm)', }}>
-                    <span style={{ width: '18px', height: '18px', borderRadius: '50%', background: 'var(--warning-muted)', color: 'var(--text-tertiary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 300, flexShrink: 0 }}>
+                    <span style={{ width: '18px', height: '18px', borderRadius: '50%', background: 'var(--warning-muted)', color: 'var(--text-tertiary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 'var(--font-size-xs)', fontWeight: 300, flexShrink: 0 }}>
                       {i + 1}</span>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <Link
@@ -456,7 +456,7 @@ export default function ForecastPage() {
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                fontSize: '10px',
+                                fontSize: 'var(--font-size-xs)',
                                 fontWeight: 300,
                                 flexShrink: 0,
                                 ...(inv.tier === 1
@@ -515,7 +515,7 @@ export default function ForecastPage() {
                           <div style={{ flex: 1, height: '6px', background: 'var(--surface-3)', borderRadius: '3px', overflow: 'hidden' }}>
                             <div style={{ width: maxDaysToClose > 0 ? `${Math.max(4, (inv.predictedDaysToClose / maxDaysToClose) * 100)}%` : '0%', height: '100%', background: confidenceColor(inv.confidence), borderRadius: '3px', transition: 'width 400ms ease', opacity: 0.7 }} />
                           </div>
-                          <span style={{ fontSize: '10px', color: 'var(--text-muted)', minWidth: '32px', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
+                          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', minWidth: '32px', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
                             {inv.predictedDaysToClose}d</span></div></td>
                     </tr>);
                 })}</tbody></table></div>
@@ -565,7 +565,7 @@ export default function ForecastPage() {
                     onMouseLeave={e => { (e.currentTarget as HTMLElement).style.filter = 'none'; }}>
                     <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '60%' }}>
                       {inv.investorName}</span>
-                    <span style={{ fontSize: '10px', color: 'var(--text-muted)', fontVariantNumeric: 'tabular-nums', flexShrink: 0 }}>
+                    <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontVariantNumeric: 'tabular-nums', flexShrink: 0 }}>
                       {STAGE_LABELS[inv.currentStage] || inv.currentStage}</span></Link>
                 ))}</div>
             )}</div>

@@ -472,7 +472,7 @@ export default function MeetingsPage() {
                         <span
                           className="flex items-center gap-1"
                           style={{
-                            fontSize: '10px',
+                            fontSize: 'var(--font-size-xs)',
                             padding: '1px 6px',
                             borderRadius: 'var(--radius-sm)',
                             background: 'var(--surface-2)',
@@ -482,7 +482,7 @@ export default function MeetingsPage() {
                       {stats && stats.count >= 2 && (
                         <span
                           className="flex items-center gap-0.5"
-                          style={{ fontSize: '10px', color: trend.color }}
+                          style={{ fontSize: 'var(--font-size-xs)', color: trend.color }}
                           title={`Enthusiasm ${trend.label.toLowerCase()} (avg ${stats.avgEnthusiasm.toFixed(1)})`}>
                           <TrendIcon className="w-3 h-3" /></span>
                       )}</div>

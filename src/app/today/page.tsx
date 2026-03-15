@@ -146,13 +146,13 @@ function MeetingCard({ meeting }: { meeting: BriefingMeeting }) {
             <span style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>{meeting.investorName}</span>
             <span style={{ ...stFontXs, padding: '2px 6px', borderRadius: 'var(--radius-sm)', fontWeight: 400, background: 'var(--surface-2)', color: 'var(--text-tertiary)' }}>{meeting.type.replace(/_/g, ' ')}</span>
             {(meeting.meetingCount ?? 0) > 1 && (
-              <span style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 400 }}>Meeting #{meeting.meetingCount}</span>
+              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontWeight: 400 }}>Meeting #{meeting.meetingCount}</span>
             )}
             {(meeting.enthusiasm ?? 0) > 0 && (
               <span
                 className="inline-flex items-center gap-0.5"
                 style={{
-                  fontSize: '10px',
+                  fontSize: 'var(--font-size-xs)',
                   fontWeight: 400,
                   color: (meeting.enthusiasm ?? 0) >= 4 ? 'var(--success)' : (meeting.enthusiasm ?? 0) >= 3 ? 'var(--text-secondary)' : 'var(--danger)',
                 }}>
@@ -214,7 +214,7 @@ function ActionCard({ action }: { action: UrgentAction }) {
               <span className="flex items-center gap-1" style={{ ...stFontXs, color: 'var(--accent)' }}>
                 <span style={{ display: 'flex' }}><Users className="w-3 h-3" /></span>{action.investorName}</span>
             )}
-            <span className="badge badge-zinc" style={{ fontSize: '10px' }}>
+            <span className="badge badge-zinc" style={{ fontSize: 'var(--font-size-xs)' }}>
               <span style={{ display: 'flex' }}><Clock className="w-3 h-3" /></span>{action.timeEstimate}</span></div></div>
 
         <Link
@@ -597,7 +597,7 @@ export default function TodayPage() {
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
             <span style={{ color: 'var(--danger)', display: 'flex' }}><AlertTriangle className="w-4 h-4" /></span>
             <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--danger)', letterSpacing: '0.01em' }}>Critical Overdue</span>
-            <span style={{ fontSize: '10px', color: 'var(--text-muted)', marginLeft: 'auto' }}>{overdueFollowups.length} action{overdueFollowups.length > 1 ? 's' : ''}</span>
+            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginLeft: 'auto' }}>{overdueFollowups.length} action{overdueFollowups.length > 1 ? 's' : ''}</span>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
             {overdueFollowups.map(fu => {
@@ -608,11 +608,11 @@ export default function TodayPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <Link href={`/investors/${fu.investor_id}`} style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, textDecoration: 'none' }}>{fu.investor_name}</Link>
-                      <span style={{ fontSize: '10px', padding: '1px 5px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-1)', color: 'var(--text-tertiary)' }}>{fu.action_type.replace(/_/g, ' ')}</span>
-                      <span style={{ fontSize: '10px', color: 'var(--danger)', fontWeight: 400 }}>{daysOver}d overdue</span></div>
-                    <p className="truncate" style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '1px' }}>{fu.description}</p>
+                      <span style={{ fontSize: 'var(--font-size-xs)', padding: '1px 5px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-1)', color: 'var(--text-tertiary)' }}>{fu.action_type.replace(/_/g, ' ')}</span>
+                      <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)', fontWeight: 400 }}>{daysOver}d overdue</span></div>
+                    <p className="truncate" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', marginTop: '1px' }}>{fu.description}</p>
                   </div>
-                  <button onClick={() => handleQuickComplete(fu.id)} disabled={isProcessing} className="btn btn-sm shrink-0" style={{ background: 'var(--surface-0)', color: 'var(--text-secondary)', border: '1px solid var(--border-default)', fontSize: '11px', padding: '3px 10px' }}>
+                  <button onClick={() => handleQuickComplete(fu.id)} disabled={isProcessing} className="btn btn-sm shrink-0" style={{ background: 'var(--surface-0)', color: 'var(--text-secondary)', border: '1px solid var(--border-default)', fontSize: 'var(--font-size-xs)', padding: '3px 10px' }}>
                     Mark Done</button>
                 </div>);
             })}</div></div>
@@ -693,20 +693,20 @@ export default function TodayPage() {
                       <p className="truncate" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)' }}>
                         {fu.description}</p>
                       <div className="flex items-center gap-2" style={{ marginTop: '2px' }}>
-                        <Link href={`/investors/${fu.investor_id}`} style={{ fontSize: '11px', color: 'var(--accent)', textDecoration: 'none' }}>
+                        <Link href={`/investors/${fu.investor_id}`} style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)', textDecoration: 'none' }}>
                           {fu.investor_name}</Link></div></div>
                     <div className="flex items-center gap-1 shrink-0">
                       <button
                         onClick={() => handleQuickComplete(fu.id)}
                         disabled={isProcessing}
                         className="btn btn-sm"
-                        style={{ background: 'var(--success-muted)', color: 'var(--text-secondary)', border: '1px solid var(--accent-8)', fontSize: '11px', padding: '3px 10px' }}>
+                        style={{ background: 'var(--success-muted)', color: 'var(--text-secondary)', border: '1px solid var(--accent-8)', fontSize: 'var(--font-size-xs)', padding: '3px 10px' }}>
                         Done</button>
                       <button
                         onClick={() => handleQuickSkip(fu.id)}
                         disabled={isProcessing}
                         className="btn btn-sm"
-                        style={{ background: 'var(--surface-2)', color: 'var(--text-muted)', fontSize: '11px', padding: '3px 8px' }}>
+                        style={{ background: 'var(--surface-2)', color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)', padding: '3px 8px' }}>
                         Skip</button></div></div>
                 </div>);
             })}</div></div>

@@ -216,7 +216,7 @@ export default function AnalyticsPage() {
             <div className="text-xs font-normal tracking-wider mb-1" style={stTextMuted}>Top Objections</div>
             <div className="flex flex-wrap gap-2">
               {engagement.topObjections.slice(0, 5).map((o, i) => (
-                <span key={i} className="px-2 py-0.5 rounded" style={{ fontSize: '11px', background: 'var(--danger-muted)', color: 'var(--text-secondary)' }}>
+                <span key={i} className="px-2 py-0.5 rounded" style={{ fontSize: 'var(--font-size-xs)', background: 'var(--danger-muted)', color: 'var(--text-secondary)' }}>
                   {o.topic} ({o.count}x)</span>))}</div></div></div>)}
 
       {/* ── Bottleneck Alert ─────────────────────────────────────── */}
@@ -334,8 +334,8 @@ export default function AnalyticsPage() {
                     return (
                       <div key={s.stage} className="flex items-center gap-2 w-full" style={{ maxWidth: '500px' }}>
                         <div className="h-7 rounded flex items-center justify-center transition-all" style={{ width: `${w}%`, margin: '0 auto', background: STAGE_COLORS[s.stage] || 'var(--surface-3)', minWidth: '60px' }}>
-                          <span style={{ fontSize: '10px', color: 'var(--text-primary)' }}>{s.label} ({s.count})</span></div>
-                        {i > 0 && drop > 0 && <span style={{ fontSize: '9px', color: 'var(--danger)', whiteSpace: 'nowrap' }}>-{drop}%</span>}
+                          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)' }}>{s.label} ({s.count})</span></div>
+                        {i > 0 && drop > 0 && <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)', whiteSpace: 'nowrap' }}>-{drop}%</span>}
                       </div>);
                   })}</div></div>);
           })()}
@@ -373,7 +373,7 @@ export default function AnalyticsPage() {
                     <div
                       className="h-full rounded-l flex items-center px-2"
                       style={{ width: `${Math.max(d.rate, 5)}%`, background: 'var(--danger-muted)' }}>
-                      <span className="font-normal whitespace-nowrap" style={{ fontSize: '10px', ...stTextPrimary }}>
+                      <span className="font-normal whitespace-nowrap" style={{ fontSize: 'var(--font-size-xs)', ...stTextPrimary }}>
                         {d.rate}% ({d.count})</span></div></div></div>
               ))}
               {funnel.dropOffRates.every(d => d.rate === 0) && (
@@ -466,7 +466,7 @@ export default function AnalyticsPage() {
           <div>
             <h3 className="text-xs font-normal tracking-wider mb-3" style={stTextMuted}>Daily Activity (4 Weeks)</h3>
             <div className="grid gap-1" style={{ gridTemplateColumns: 'repeat(7, 1fr)' }}>
-              {['M','T','W','T','F','S','S'].map((d, i) => <div key={i} className="text-center" style={{ fontSize: '9px', color: 'var(--text-muted)' }}>{d}</div>)}
+              {['M','T','W','T','F','S','S'].map((d, i) => <div key={i} className="text-center" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{d}</div>)}
               {velocity.dailyActivity.map((d, i) => {
                 const max = Math.max(...velocity.dailyActivity.map(x => x.count), 1);
                 const intensity = d.count / max;
@@ -607,7 +607,7 @@ export default function AnalyticsPage() {
                             <div
                               className="h-full rounded flex items-center px-2"
                               style={{ width: `${Math.max(pct, 15)}%`, background: 'var(--danger-muted)' }}>
-                              <span className="truncate" style={{ fontSize: '11px', ...stTextSecondary }}>{obj.topic}</span></div>
+                              <span className="truncate" style={{ fontSize: 'var(--font-size-xs)', ...stTextSecondary }}>{obj.topic}</span></div>
                           </div></div>
                         <span className="text-xs font-normal shrink-0 w-8 text-right" style={stTextPrimary}>
                           {obj.count}x</span>
@@ -656,7 +656,7 @@ export default function AnalyticsPage() {
                         <span
                           key={c.name}
                           className="px-2 py-1 rounded"
-                          style={{ fontSize: '10px', background: 'var(--surface-2)', color: 'var(--text-tertiary)' }}>
+                          style={{ fontSize: 'var(--font-size-xs)', background: 'var(--surface-2)', color: 'var(--text-tertiary)' }}>
                           {c.name} ({c.count}x)</span>
                       ))}</div>
                   )}</div></div></div></div></div></CollapsibleSection>
@@ -725,7 +725,7 @@ export default function AnalyticsPage() {
                               style={{ width: `${(data.dropped / total) * 100}%`, background: 'var(--surface-3)' }}
                               title={`Dropped: ${data.dropped}`}/>
                           )}</div>
-                        <div className="flex justify-between mt-1.5" style={{ fontSize: '10px' }}>
+                        <div className="flex justify-between mt-1.5" style={{ fontSize: 'var(--font-size-xs)' }}>
                           <span style={stTextSecondary}>{data.active} active</span>
                           <span style={stTextPrimary}>{data.passed + data.dropped} out</span></div>
                       </div>);
@@ -821,7 +821,7 @@ function CollapsibleSection({
           <span style={stTextTertiary}>{icon}</span>
           <span className="text-sm font-normal" style={stTextPrimary}>{title}</span>
           {badge && (
-            <span className="font-normal px-1.5 py-0.5 rounded-full" style={{ fontSize: '10px', background: badge.color, ...stTextPrimary }}>
+            <span className="font-normal px-1.5 py-0.5 rounded-full" style={{ fontSize: 'var(--font-size-xs)', background: badge.color, ...stTextPrimary }}>
               {badge.text}</span>
           )}</div>
         {isOpen ? (
@@ -855,7 +855,7 @@ function SparklineChart({
               style={{
                 height: `${Math.max((d.count / maxVal) * 100, d.count > 0 ? 8 : 0)}%`,
                 background: color, }}/></div>
-          <span className="truncate w-full text-center" style={{ fontSize: '9px', ...stTextMuted }}>{d.week}</span></div>
+          <span className="truncate w-full text-center" style={{ fontSize: 'var(--font-size-xs)', ...stTextMuted }}>{d.week}</span></div>
       ))}
     </div>);
 }
@@ -918,7 +918,7 @@ function RiskSection({
         {count > 0 && (
           <span
             className="font-normal px-1.5 py-0.5 rounded-full"
-            style={{ fontSize: '10px', background: badgeBg, color: badgeText }}>
+            style={{ fontSize: 'var(--font-size-xs)', background: badgeBg, color: badgeText }}>
             {count}</span>
         )}</div>
       <p className="mb-3" style={labelMuted10}>{subtitle}</p>
@@ -943,7 +943,7 @@ function StaleInvestorRow({ inv }: { inv: { id: string; name: string; status: st
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}>
       <div className="flex items-center gap-3 min-w-0">
-        <span className="px-1.5 py-0.5 rounded" style={{ fontSize: '10px', ...tierStyle }}>
+        <span className="px-1.5 py-0.5 rounded" style={{ fontSize: 'var(--font-size-xs)', ...tierStyle }}>
           T{inv.tier}</span>
         <span className="text-sm font-normal truncate" style={stTextPrimary}>{inv.name}</span>
         <span style={labelMuted10}>{STAGE_LABELS[inv.status]}</span></div>
@@ -972,7 +972,7 @@ function DecliningEnthusiasmRow({ inv }: { inv: { id: string; name: string; tier
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}>
       <div className="flex items-center gap-3 min-w-0">
-        <span className="px-1.5 py-0.5 rounded" style={{ fontSize: '10px', ...tierStyle }}>T{inv.tier}</span>
+        <span className="px-1.5 py-0.5 rounded" style={{ fontSize: 'var(--font-size-xs)', ...tierStyle }}>T{inv.tier}</span>
         <span className="text-sm font-normal truncate" style={stTextPrimary}>{inv.name}</span></div>
       <div className="flex items-center gap-2 shrink-0">
         <EnthusiasmDots score={inv.previousScore} size="sm" />
@@ -997,7 +997,7 @@ function HighTierStuckRow({ inv }: { inv: { id: string; name: string; tier: numb
         <span
           className="px-1.5 py-0.5 rounded"
           style={{
-            fontSize: '10px',
+            fontSize: 'var(--font-size-xs)',
             background: 'color-mix(in srgb, var(--accent) 20%, transparent)',
             color: 'var(--accent)',
             border: '1px solid color-mix(in srgb, var(--accent) 30%, transparent)', }}>

@@ -232,7 +232,7 @@ export default function SettingsPage() {
     <div className="space-y-8 max-w-3xl page-content">
       <div>
         <h1 className="page-title" style={{ fontSize: 'var(--font-size-xl)' }}>Settings</h1>
-        <p style={{ ...stTextMuted, ...stFontSm, marginTop: 'var(--space-1)' }}>Raise configuration, scoring weights, follow-up cadence, and API diagnostics. <kbd style={{ padding: '1px 4px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', fontSize: '10px' }}>&#8984;S</kbd> to save.</p>
+        <p style={{ ...stTextMuted, ...stFontSm, marginTop: 'var(--space-1)' }}>Raise configuration, scoring weights, follow-up cadence, and API diagnostics. <kbd style={{ padding: '1px 4px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', fontSize: 'var(--font-size-xs)' }}>&#8984;S</kbd> to save.</p>
       </div>
 
       {/* ================================================================= */}

@@ -216,7 +216,7 @@ export default function WorkspacePage() {
                 <div
                   className=""
                   style={{
-                    fontSize: '10px',
+                    fontSize: 'var(--font-size-xs)',
                     fontWeight: 400,
                     color: 'var(--text-muted)',
                     padding: '0 var(--space-2)',
@@ -270,7 +270,7 @@ export default function WorkspacePage() {
             <div
               className=""
               style={{
-                fontSize: '10px',
+                fontSize: 'var(--font-size-xs)',
                 fontWeight: 400,
                 color: 'var(--text-muted)',
                 padding: '0 var(--space-2)',

@@ -198,7 +198,7 @@ export default function VelocityPage() {
                         <div className="flex items-center gap-2">
                           <span
                             className="tier-badge"
-                            style={{ ...(inv.investor_tier <= 2 ? { background: 'var(--accent)', color: 'var(--text-primary)' } : { background: 'var(--surface-3)', color: 'var(--text-secondary)' }), width: '20px', height: '20px', fontSize: '10px', flexShrink: 0 }}>
+                            style={{ ...(inv.investor_tier <= 2 ? { background: 'var(--accent)', color: 'var(--text-primary)' } : { background: 'var(--surface-3)', color: 'var(--text-secondary)' }), width: '20px', height: '20px', fontSize: 'var(--font-size-xs)', flexShrink: 0 }}>
                             {inv.investor_tier}</span>
                           <div>
                             <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
@@ -276,21 +276,21 @@ export default function VelocityPage() {
                           href={`/meetings/new?investor=${inv.investor_id}`}
                           className="btn btn-sm"
                           onClick={e => e.stopPropagation()}
-                          style={{ background: 'var(--danger-muted)', color: 'var(--text-primary)', border: '1px solid var(--fg-6)', fontSize: '11px', padding: '3px 8px', gap: '4px', display: 'inline-flex', alignItems: 'center' }}>
+                          style={{ background: 'var(--danger-muted)', color: 'var(--text-primary)', border: '1px solid var(--fg-6)', fontSize: 'var(--font-size-xs)', padding: '3px 8px', gap: '4px', display: 'inline-flex', alignItems: 'center' }}>
                           <Phone className="w-3 h-3" /> Rescue</Link>
                       ) : inv.tracking_status === 'behind' ? (
                         <Link
                           href={`/followups?investor=${inv.investor_id}`}
                           className="btn btn-sm"
                           onClick={e => e.stopPropagation()}
-                          style={{ background: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: '1px solid var(--fg-5)', fontSize: '11px', padding: '3px 8px', gap: '4px', display: 'inline-flex', alignItems: 'center' }}>
+                          style={{ background: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: '1px solid var(--fg-5)', fontSize: 'var(--font-size-xs)', padding: '3px 8px', gap: '4px', display: 'inline-flex', alignItems: 'center' }}>
                           <Mail className="w-3 h-3" /> Nudge</Link>
                       ) : (
                         <Link
                           href={`/investors/${inv.investor_id}`}
                           className="btn btn-sm"
                           onClick={e => e.stopPropagation()}
-                          style={{ background: 'var(--surface-2)', color: 'var(--text-muted)', fontSize: '11px', padding: '3px 8px', gap: '4px', display: 'inline-flex', alignItems: 'center' }}>
+                          style={{ background: 'var(--surface-2)', color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)', padding: '3px 8px', gap: '4px', display: 'inline-flex', alignItems: 'center' }}>
                           <Target className="w-3 h-3" /> View</Link>
                       )}</td></tr>
                 ))}</tbody></table></div>

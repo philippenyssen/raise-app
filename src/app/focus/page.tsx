@@ -183,7 +183,7 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
               <span
                 key={d.name}
                 style={{
-                  fontSize: '9px',
+                  fontSize: 'var(--font-size-xs)',
                   fontWeight: 400,
                   color: dimensionColor(d.score, d.signal),
                   background: dimensionBg(d.score, d.signal),
@@ -195,7 +195,7 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
             {weakest && weakest.score < 40 && (
               <span
                 style={{
-                  fontSize: '9px',
+                  fontSize: 'var(--font-size-xs)',
                   fontWeight: 400,
                   color: dimensionColor(weakest.score, weakest.signal),
                   background: dimensionBg(weakest.score, weakest.signal),
@@ -217,11 +217,11 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
             {dimensions.map(d => (
               <div key={d.name}>
                 <div className="flex items-center justify-between mb-0.5">
-                  <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 400, letterSpacing: '0.01em' }}>
+                  <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontWeight: 400, letterSpacing: '0.01em' }}>
                     {d.name}</span>
                   <span
                     className="tabular-nums"
-                    style={{ fontSize: '10px', fontWeight: 300, color: dimensionColor(d.score, d.signal) }}>
+                    style={{ fontSize: 'var(--font-size-xs)', fontWeight: 300, color: dimensionColor(d.score, d.signal) }}>
                     {d.signal === 'unknown' ? '--' : d.score}</span></div>
                 <div
                   style={{
@@ -248,14 +248,14 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
             <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 'var(--space-2)' }}>
               <div className="flex items-center gap-1 mb-1">
                 <span style={stTextSecondary}><Star className="w-3 h-3" /></span>
-                <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 400, letterSpacing: '0.01em' }}>
+                <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontWeight: 400, letterSpacing: '0.01em' }}>
                   Strengths</span></div>
               <div className="space-y-1">
                 {topDimensions.map(d => (
                   <div key={d.name} className="flex items-start gap-1.5">
-                    <span style={{ fontSize: '10px', fontWeight: 300, color: dimensionColor(d.score, d.signal), minWidth: '20px' }} className="tabular-nums shrink-0">
+                    <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 300, color: dimensionColor(d.score, d.signal), minWidth: '20px' }} className="tabular-nums shrink-0">
                       {d.score}</span>
-                    <span style={{ fontSize: '10px', color: 'var(--text-secondary)', fontWeight: 400 }}>
+                    <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', fontWeight: 400 }}>
                       {d.name}</span>
                     <span style={labelMuted10}>
                       {d.evidence}</span></div>
@@ -267,12 +267,12 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
             <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 'var(--space-2)' }}>
               <div className="flex items-center gap-1 mb-1">
                 <span style={stTextTertiary}><Eye className="w-3 h-3" /></span>
-                <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 400, letterSpacing: '0.01em' }}>
+                <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontWeight: 400, letterSpacing: '0.01em' }}>
                   Needs Attention</span></div>
               <div className="flex items-start gap-1.5">
-                <span style={{ fontSize: '10px', fontWeight: 300, color: dimensionColor(weakest.score, weakest.signal), minWidth: '20px' }} className="tabular-nums shrink-0">
+                <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 300, color: dimensionColor(weakest.score, weakest.signal), minWidth: '20px' }} className="tabular-nums shrink-0">
                   {weakest.score}</span>
-                <span style={{ fontSize: '10px', color: 'var(--text-secondary)', fontWeight: 400 }}>
+                <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', fontWeight: 400 }}>
                   {weakest.name}</span>
                 <span style={labelMuted10}>
                   {weakest.evidence}</span></div></div>
@@ -403,7 +403,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
             {item.topObjectionTopic && (
               <div className="flex items-center gap-1.5" style={{ marginTop: '6px' }}>
                 <span style={stTextTertiary}><MessageSquare className="w-3 h-3" /></span>
-                <span style={{ fontSize: '11px', color: 'var(--text-tertiary)', fontWeight: 400, fontStyle: 'italic' }}>
+                <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', fontWeight: 400, fontStyle: 'italic' }}>
                   Blocker: {item.topObjectionTopic}</span></div>
             )}
 
@@ -423,7 +423,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
                 className="tabular-nums"
                 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: focusScoreColor(item.focusScore) }}>
                 {item.focusScore}</span>
-              <span style={{ fontSize: '9px', color: 'var(--text-muted)', letterSpacing: '0.08em' }}>Focus</span></div>
+              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', letterSpacing: '0.08em' }}>Focus</span></div>
             {/* Quick action buttons — always visible for top 3, on hover for rest */}
             {(rank <= 3 || hovered) && (
               <div className="flex items-center gap-1" onClick={e => e.stopPropagation()}>
@@ -457,7 +457,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
         <div className="px-4 py-3 ml-11 space-y-3" style={stBorderTop}>
           {/* Score breakdown */}
           <div>
-            <p style={{ fontSize: '10px', color: 'var(--text-muted)', letterSpacing: '0.08em', marginBottom: '8px' }}>Score Breakdown</p>
+            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', letterSpacing: '0.08em', marginBottom: '8px' }}>Score Breakdown</p>
             <div className="grid grid-cols-5 gap-2">
               {[
                 { label: 'Investor Score', value: item.components.investorScore, weight: '30%' },
@@ -468,14 +468,14 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
               ].map(comp => (
                 <div key={comp.label} className="text-center">
                   <div className="tabular-nums" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 300, color: focusScoreColor(comp.value) }}>{comp.value}</div>
-                  <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '2px' }}>{comp.label}</div>
-                  <div style={{ fontSize: '8px', color: 'var(--text-muted)' }}>{comp.weight}</div></div>
+                  <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '2px' }}>{comp.label}</div>
+                  <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{comp.weight}</div></div>
               ))}</div></div>
 
           {/* Unresolved objections */}
           {item.unresolvedObjections.length > 0 && (
             <div>
-              <p style={{ fontSize: '10px', color: 'var(--text-muted)', letterSpacing: '0.08em', marginBottom: '4px' }}>Unresolved Objections</p>
+              <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', letterSpacing: '0.08em', marginBottom: '4px' }}>Unresolved Objections</p>
               <div className="space-y-1">
                 {item.unresolvedObjections.map((obj, i) => (
                   <div key={i} className="flex items-start gap-1.5" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', opacity: 0.85 }}>
@@ -532,18 +532,18 @@ function QuickWinCard({ item }: { item: FocusItem }) {
         <div className="flex items-center gap-2">
           <span className="flex items-center gap-1" style={labelMuted10}>
             <Timer className="w-3 h-3" /> {item.timeEstimate}</span>
-          <span style={{ fontSize: '10px', color: focusScoreColor(item.focusScore) }}>
+          <span style={{ fontSize: 'var(--font-size-xs)', color: focusScoreColor(item.focusScore) }}>
             Score: {item.focusScore}</span></div>
         <div className="flex items-center gap-1.5">
           <Link
             href={`/meetings/new?investor=${item.investorId}`}
             className="btn btn-primary btn-sm"
-            style={{ fontSize: '10px', padding: '2px 8px', borderRadius: 'var(--radius-sm)' }}>
+            style={{ fontSize: 'var(--font-size-xs)', padding: '2px 8px', borderRadius: 'var(--radius-sm)' }}>
             Schedule</Link>
           <Link
             href={`/investors/${item.investorId}`}
             className="btn btn-secondary btn-sm"
-            style={{ fontSize: '10px', padding: '2px 8px', borderRadius: 'var(--radius-sm)' }}>
+            style={{ fontSize: 'var(--font-size-xs)', padding: '2px 8px', borderRadius: 'var(--radius-sm)' }}>
             Open</Link></div></div>
     </div>);
 }
@@ -668,12 +668,12 @@ function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
         <Link
           href={`/meetings/prep?investor=${investor.investorId}`}
           className="btn btn-primary btn-sm flex-1"
-          style={{ fontSize: '11px' }}>
+          style={{ fontSize: 'var(--font-size-xs)' }}>
           Prep Meeting</Link>
         <Link
           href={`/investors/${investor.investorId}`}
           className="btn btn-secondary btn-sm flex-1"
-          style={{ fontSize: '11px' }}>
+          style={{ fontSize: 'var(--font-size-xs)' }}>
           View Deal</Link></div>
     </div>);
 }
@@ -703,12 +703,12 @@ function AtRiskCard({ investor }: { investor: InvestorSummary }) {
         <Link
           href={`/meetings/new?investor=${investor.investorId}`}
           className="btn btn-sm flex-1 flex items-center justify-center gap-1"
-          style={{ fontSize: '11px', background: 'var(--fg-6)', color: 'var(--text-primary)', border: '1px solid var(--fg-6)' }}>
+          style={{ fontSize: 'var(--font-size-xs)', background: 'var(--fg-6)', color: 'var(--text-primary)', border: '1px solid var(--fg-6)' }}>
           Re-engage</Link>
         <Link
           href={`/investors/${investor.investorId}`}
           className="btn btn-secondary btn-sm flex-1"
-          style={{ fontSize: '11px' }}>
+          style={{ fontSize: 'var(--font-size-xs)' }}>
           View Deal</Link></div>
     </div>);
 }
@@ -747,7 +747,7 @@ function DeprioritizeSection({ investors }: { investors: InvestorSummary[] }) {
                 <TierBadge tier={inv.investorTier} /></div>
               <span style={labelMuted10}>{inv.reason}</span></div>
           ))}
-          <p style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '8px', paddingTop: '8px', borderTop: '1px solid var(--border-subtle)' }}>
+          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '8px', paddingTop: '8px', borderTop: '1px solid var(--border-subtle)' }}>
             Park these for now. Redirect time to higher-conviction conversations.</p></div>
       )}
     </div>);

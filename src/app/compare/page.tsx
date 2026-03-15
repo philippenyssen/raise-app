@@ -419,7 +419,7 @@ export default function ComparePage() {
                               Predicted TS: {p.convictionTrajectory.predictedTermSheetDate}</span>
                           )}
                           {p.convictionTrajectory.predictedTermSheetDate === 'now' && (
-                            <span style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>Ready for term sheet</span>
+                            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>Ready for term sheet</span>
                           )}
                           <span style={labelMuted10}>
                             30d prediction: {p.convictionTrajectory.predictedScoreIn30Days}</span></div></td>
@@ -448,7 +448,7 @@ export default function ComparePage() {
                                 fontWeight: 400,
                                 color: p.objectionProfile.unresolvedCount > 0 ? 'var(--danger)' : 'var(--success)',}}>
                                 {p.objectionProfile.unresolvedCount} unresolved</span></div>
-                            <div className="flex items-center gap-2" style={{ fontSize: '10px' }}>
+                            <div className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-xs)' }}>
                               <span style={stTextMuted}>
                                 Severity: {p.objectionProfile.avgSeverityScore.toFixed(1)}/3</span>
                               <span style={stTextMuted}>
@@ -479,7 +479,7 @@ export default function ComparePage() {
                                 <span
                                   key={type}
                                   style={{
-                                    fontSize: '10px',
+                                    fontSize: 'var(--font-size-xs)',
                                     background: 'var(--surface-2)',
                                     color: 'var(--text-muted)',
                                     padding: '1px 6px',
@@ -509,7 +509,7 @@ export default function ComparePage() {
                             <span style={stTextMuted}>No follow-ups</span>
                           )}</div>
                         {p.followupStatus.avgConvictionDelta !== 0 && (
-                          <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: 2 }}>
+                          <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 2 }}>
                             Avg impact: {p.followupStatus.avgConvictionDelta > 0 ? '+' : ''}{p.followupStatus.avgConvictionDelta} pts
                           </div>
                         )}</td>
@@ -653,7 +653,7 @@ function DropdownItem({
       <span
         className="badge"
         style={{
-          fontSize: '10px',
+          fontSize: 'var(--font-size-xs)',
           ...(investor.tier === 1
             ? { background: 'var(--accent-muted)', color: 'var(--accent)' }
             : investor.tier === 2
@@ -728,7 +728,7 @@ function InvestorNameLink({ investor }: { investor: Investor }) {
 function SectionHeader({ label, colSpan }: { label: string; colSpan: number }) {
   return (
     <tr style={stSurface1}>
-      <td colSpan={colSpan} style={{ padding: 'var(--space-2) var(--space-4)', fontSize: '10px', fontWeight: 400, ...stTextMuted, letterSpacing: '0.08em' }}>
+      <td colSpan={colSpan} style={{ padding: 'var(--space-2) var(--space-4)', fontSize: 'var(--font-size-xs)', fontWeight: 400, ...stTextMuted, letterSpacing: '0.08em' }}>
         {label}</td>
     </tr>);
 }
@@ -846,7 +846,7 @@ function EnthusiasmTrendDots({ trend }: { trend: number[] }) {
                 ? 'var(--danger)'
                 : 'var(--border-strong)',
             }} />
-          <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>{score}</span></div>
+          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{score}</span></div>
       ))}
       {dots.length >= 2 && (
         <div className="ml-1">
@@ -906,7 +906,7 @@ function AccelerationBadge({ status }: { status: AccelerationStatusData }) {
             <span
               key={t}
               style={{
-                fontSize: '9px',
+                fontSize: 'var(--font-size-xs)',
                 color: 'var(--text-muted)',
                 background: 'var(--surface-2)',
                 padding: '1px 4px',
@@ -960,7 +960,7 @@ function DimensionBar({
               <span
                 className="w-7 text-right font-mono"
                 style={{
-                  fontSize: '10px',
+                  fontSize: 'var(--font-size-xs)',
                   color: isWinner ? 'var(--text-primary)' : 'var(--text-muted)',
                   fontWeight: 400, }}>
                 {score}</span>
@@ -1015,11 +1015,11 @@ function VerdictCard({
         background: c.bg, }}>
       <div className="flex items-center gap-2 mb-2">
         <span style={{ color: c.iconColor }}>{icon}</span>
-        <span style={{ fontSize: '10px', color: 'var(--text-muted)', letterSpacing: '0.08em', fontWeight: 400 }}>
+        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', letterSpacing: '0.08em', fontWeight: 400 }}>
           {title}</span></div>
       <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', marginBottom: 'var(--space-1)' }}>
         {verdict.name}</div>
-      <div style={{ fontSize: '10px', color: 'var(--text-muted)', lineHeight: 1.6 }}>
+      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', lineHeight: 1.6 }}>
         {verdict.reason}</div>
     </div>);
 }

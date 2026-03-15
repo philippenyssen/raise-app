@@ -293,7 +293,7 @@ export default function StressTestPage() {
                       {gap.name}</Link>
                     <span
                       className="px-1.5 py-0.5 rounded"
-                      style={{ fontSize: '9px', border: '1px solid', ...tierBadgeStyle(gap.tier) }}>
+                      style={{ fontSize: 'var(--font-size-xs)', border: '1px solid', ...tierBadgeStyle(gap.tier) }}>
                       T{gap.tier}</span>
                     <span style={labelMuted10}>{STATUS_LABELS[gap.status] || gap.status}</span></div>
                   <p className="text-xs mt-1" style={stTextSecondary}>{gap.intervention}</p>
@@ -326,7 +326,7 @@ export default function StressTestPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left " style={{ fontSize: '10px', color: 'var(--text-muted)', borderBottom: '1px solid var(--border-subtle)' }}>
+              <tr className="text-left " style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', borderBottom: '1px solid var(--border-subtle)' }}>
                 <th className="px-4 py-3">Investor</th>
                 <th className="px-3 py-3">Status</th>
                 <th className="px-3 py-3 text-center">Enth.</th>
@@ -370,7 +370,7 @@ export default function StressTestPage() {
                           {f.name}</Link>
                         <span
                           className="px-1 py-0.5 rounded"
-                          style={{ fontSize: '9px', border: '1px solid', ...tierBadgeStyle(f.tier) }}>
+                          style={{ fontSize: 'var(--font-size-xs)', border: '1px solid', ...tierBadgeStyle(f.tier) }}>
                           T{f.tier}</span></div></td>
                     <td className="px-3 py-2.5">
                       <span className="text-xs" style={stTextSecondary}>{STATUS_LABELS[f.status] || f.status}</span></td>
@@ -447,7 +447,7 @@ export default function StressTestPage() {
                       style={{ background: hoveredRisk === i ? 'var(--surface-2)' : 'transparent' }}>
                       <span
                         className="px-1.5 py-0.5 rounded shrink-0 mt-0.5"
-                        style={{ fontSize: '9px', border: '1px solid', ...riskBadgeStyle }}>
+                        style={{ fontSize: 'var(--font-size-xs)', border: '1px solid', ...riskBadgeStyle }}>
                         {risk.probability}</span>
                       <span className="text-sm flex-1" style={stTextSecondary}>{risk.description}</span>
                       {isExpanded ? (
@@ -490,7 +490,7 @@ export default function StressTestPage() {
                       onMouseLeave={() => setHoveredCritical(null)}>
                       <span
                         className="w-5 h-5 rounded flex items-center justify-center font-normal shrink-0"
-                        style={{ fontSize: '10px', background: 'var(--accent-muted)', color: 'var(--accent)' }}>
+                        style={{ fontSize: 'var(--font-size-xs)', background: 'var(--accent-muted)', color: 'var(--accent)' }}>
                         {i + 1}</span>
                       <span className="text-sm flex-1 truncate" style={stTextSecondary}>{name}</span>
                       {investor && (

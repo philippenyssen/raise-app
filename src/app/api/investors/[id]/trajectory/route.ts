@@ -6,15 +6,19 @@ export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const { id } = await params;
+  try {
+    const { id } = await params;
 
-  const investor = await getInvestor(id);
-  if (!investor) {
-    return NextResponse.json({ error: 'Investor not found' }, { status: 404 });
+    const investor = await getInvestor(id);
+    if (!investor) {
+      return NextResponse.json({ error: 'Investor not found' }, { status: 404 });
+    }
+
+    const snapshots = await getScoreSnapshots(id);
+    const trajectory = computeConvictionTrajectory(snapshots);
+
+    return NextResponse.json(trajectory);
+  } catch (e) {
+    return NextResponse.json({ error: e instanceof Error ? e.message : 'Failed to load trajectory' }, { status: 500 });
   }
-
-  const snapshots = await getScoreSnapshots(id);
-  const trajectory = computeConvictionTrajectory(snapshots);
-
-  return NextResponse.json(trajectory);
 }

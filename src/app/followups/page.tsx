@@ -296,7 +296,7 @@ function FollowupsContent() {
               <div className="flex items-center gap-2 mb-1 flex-wrap">
                 <span
                   className="badge"
-                  style={{ fontSize: '10px', background: isOverdue ? 'var(--danger-muted)' : config.bgColor, color: isOverdue ? 'var(--text-tertiary)' : config.color }}>
+                  style={{ fontSize: 'var(--font-size-xs)', background: isOverdue ? 'var(--danger-muted)' : config.bgColor, color: isOverdue ? 'var(--text-tertiary)' : config.color }}>
                   {config.label}</span>
                 <Link
                   href={`/investors/${item.investor_id}`}
@@ -307,7 +307,7 @@ function FollowupsContent() {
                   {item.investor_name}</Link>
                 <span
                   className="flex items-center gap-1"
-                  style={{ fontSize: '10px', color: isOverdue ? 'var(--danger)' : 'var(--text-muted)', fontWeight: 400 }}>
+                  style={{ fontSize: 'var(--font-size-xs)', color: isOverdue ? 'var(--danger)' : 'var(--text-muted)', fontWeight: 400 }}>
                   <Clock className="w-3 h-3" />
                   {formatRelativeTime(item.due_at)}</span></div>
 
@@ -328,7 +328,7 @@ function FollowupsContent() {
 
               {/* Draft preview */}
               {item.status === 'pending' && draftingId !== item.id && (
-                <div className="mt-1.5 flex items-center gap-1.5" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                <div className="mt-1.5 flex items-center gap-1.5" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
                   <Mail className="w-3 h-3" style={{ flexShrink: 0 }} />
                   <span className="truncate">{generateDraft(item).subject}</span></div>
               )}
@@ -383,7 +383,7 @@ function FollowupsContent() {
                           style={{
                             padding: '0.25rem 0.5rem',
                             borderRadius: 'var(--radius-sm)',
-                            fontSize: '10px',
+                            fontSize: 'var(--font-size-xs)',
                             fontWeight: 400,
                             transition: 'all 150ms ease',
                             background: completeForm.conviction_delta === val
@@ -471,7 +471,7 @@ function FollowupsContent() {
             {item.timing && (
               <div
                 className="flex items-center gap-1.5"
-                style={{ fontSize: '10px' }}
+                style={{ fontSize: 'var(--font-size-xs)' }}
                 title={item.timing.reasoning}>
                 <span
                   className="flex items-center justify-center"
@@ -495,7 +495,7 @@ function FollowupsContent() {
               return (
                 <div
                   className="flex items-center gap-1.5"
-                  style={{ fontSize: '10px' }}
+                  style={{ fontSize: 'var(--font-size-xs)' }}
                   title={item.velocity!.signal}>
                   <span
                     className="flex items-center justify-center"
@@ -513,7 +513,7 @@ function FollowupsContent() {
             {item.cascade && item.cascade.cascadeChainLength > 0 && (
               <div
                 className="flex items-center gap-1.5"
-                style={{ fontSize: '10px' }}
+                style={{ fontSize: 'var(--font-size-xs)' }}
                 title={item.cascade.signal}>
                 <span
                   className="flex items-center justify-center"
@@ -541,14 +541,14 @@ function FollowupsContent() {
               {/* Subject */}
               <div style={{ marginBottom: 'var(--space-2)' }}>
                 <div className="flex items-center justify-between" style={{ marginBottom: '4px' }}>
-                  <span style={{ fontSize: '10px', color: 'var(--text-muted)', letterSpacing: '0.01em' }}>Subject</span>
+                  <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', letterSpacing: '0.01em' }}>Subject</span>
                   <button
                     onClick={() => {
                       navigator.clipboard.writeText(draft.subject);
                       setCopiedField(`subject-${item.id}`);
                       setTimeout(() => setCopiedField(null), 2000); }}
                     className="flex items-center gap-1 p-1"
-                    style={{ borderRadius: 'var(--radius-sm)', fontSize: '10px', color: copiedField === `subject-${item.id}` ? 'var(--success)' : 'var(--text-muted)', background: 'transparent', border: 'none', cursor: 'pointer', transition: 'color 150ms ease' }}>
+                    style={{ borderRadius: 'var(--radius-sm)', fontSize: 'var(--font-size-xs)', color: copiedField === `subject-${item.id}` ? 'var(--success)' : 'var(--text-muted)', background: 'transparent', border: 'none', cursor: 'pointer', transition: 'color 150ms ease' }}>
                     {copiedField === `subject-${item.id}` ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                     {copiedField === `subject-${item.id}` ? 'Copied' : 'Copy'}</button></div>
                 <div
@@ -558,14 +558,14 @@ function FollowupsContent() {
               {/* Body */}
               <div>
                 <div className="flex items-center justify-between" style={{ marginBottom: '4px' }}>
-                  <span style={{ fontSize: '10px', color: 'var(--text-muted)', letterSpacing: '0.01em' }}>Body</span>
+                  <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', letterSpacing: '0.01em' }}>Body</span>
                   <button
                     onClick={() => {
                       navigator.clipboard.writeText(draft.body);
                       setCopiedField(`body-${item.id}`);
                       setTimeout(() => setCopiedField(null), 2000); }}
                     className="flex items-center gap-1 p-1"
-                    style={{ borderRadius: 'var(--radius-sm)', fontSize: '10px', color: copiedField === `body-${item.id}` ? 'var(--success)' : 'var(--text-muted)', background: 'transparent', border: 'none', cursor: 'pointer', transition: 'color 150ms ease' }}>
+                    style={{ borderRadius: 'var(--radius-sm)', fontSize: 'var(--font-size-xs)', color: copiedField === `body-${item.id}` ? 'var(--success)' : 'var(--text-muted)', background: 'transparent', border: 'none', cursor: 'pointer', transition: 'color 150ms ease' }}>
                     {copiedField === `body-${item.id}` ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                     {copiedField === `body-${item.id}` ? 'Copied' : 'Copy'}</button></div>
                 <div
@@ -596,7 +596,7 @@ function FollowupsContent() {
         {/* Due date footer */}
         <div
           className="flex items-center justify-between"
-          style={{ padding: '0.5rem var(--space-4)', borderTop: isOverdue ? '1px solid var(--fg-6)' : '1px solid var(--border-subtle)', fontSize: '10px', color: 'var(--text-muted)' }}>
+          style={{ padding: '0.5rem var(--space-4)', borderTop: isOverdue ? '1px solid var(--fg-6)' : '1px solid var(--border-subtle)', fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
           {isOverdue ? (
             <span style={{ color: 'var(--text-primary)', fontWeight: 400 }}>
               {formatRelativeTime(item.due_at)} — was due {fmtDateTime(item.due_at)}</span>
@@ -699,7 +699,7 @@ function FollowupsContent() {
               <span style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>Complete follow-ups to track</span>
             )}</div>
           {bestActionType && (
-            <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: 'var(--space-1)' }}>
+            <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 'var(--space-1)' }}>
               Best: {ACTION_TYPE_CONFIG[bestActionType[0]]?.label || bestActionType[0]}</div>
           )}</div></div>
 
@@ -724,7 +724,7 @@ function FollowupsContent() {
             {f.charAt(0).toUpperCase() + f.slice(1)}
             {f === 'pending' && overdue.length > 0 && (
               <span
-                style={{ marginLeft: '0.375rem', background: 'var(--danger)', color: 'var(--text-primary)', fontSize: '9px', padding: '0 0.25rem', borderRadius: '9999px' }}>
+                style={{ marginLeft: '0.375rem', background: 'var(--danger)', color: 'var(--text-primary)', fontSize: 'var(--font-size-xs)', padding: '0 0.25rem', borderRadius: '9999px' }}>
                 {overdue.length}</span>
             )}</button>
         ))}</div>
@@ -803,7 +803,7 @@ function FollowupsContent() {
             <h2 className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 300 }}>
               <Users className="w-4 h-4" style={{ color: 'var(--chart-4)' }} />
               Follow-up Effectiveness</h2>
-            <p style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: 'var(--space-1)' }}>
+            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 'var(--space-1)' }}>
               Which follow-up types drive the most conviction change?</p></div>
           <div style={{ padding: 'var(--space-4)' }}>
             <div className="space-y-2">

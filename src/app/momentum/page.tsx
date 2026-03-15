@@ -229,7 +229,7 @@ export default function MomentumPage() {
               <DirIcon className="w-4 h-4" style={{ color: dirConfig.color }} />
               <span className="text-sm font-normal" style={{ color: dirConfig.color }}>{dirConfig.label}</span></div></div>
           <div className="flex items-center gap-2">
-            <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
               {relativeTime(data.generatedAt)}</span>
             <button
               onClick={fetchData}

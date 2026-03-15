@@ -228,7 +228,7 @@ export default function DealHeatPage() {
                         {inv.name}</div>
                       <div className="flex items-center gap-2" style={{ marginTop: '4px' }}>
                         <span style={{
-                          fontSize: '10px',
+                          fontSize: 'var(--font-size-xs)',
                           fontWeight: 400,
                           letterSpacing: '0.01em',
                           padding: '1px 6px',
@@ -236,7 +236,7 @@ export default function DealHeatPage() {
                           background: 'var(--surface-2)',
                           color: 'var(--text-secondary)',}}>
                           {TYPE_LABELS[inv.type] || inv.type}</span>
-                        <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
                           T{inv.tier}</span></div></div>
                     {/* Heat score circle */}
                     <div style={{
@@ -251,7 +251,7 @@ export default function DealHeatPage() {
                       border: `2px solid ${cfg.border}`,
                       boxShadow: inv.dealHeat.label === 'hot' ? 'none' : 'none',
                       flexShrink: 0,}}>
-                      <span style={{ fontSize: '14px', fontWeight: 300, color: cfg.text, lineHeight: 1 }}>
+                      <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 300, color: cfg.text, lineHeight: 1 }}>
                         {inv.dealHeat.heat}</span></div></div>
 
                   {/* Heat label */}

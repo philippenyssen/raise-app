@@ -61,6 +61,7 @@ export default function InvestorsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const [hoveredRow, setHoveredRow] = useState<string | null>(null);
   const [hoveredBtn, setHoveredBtn] = useState<string | null>(null);
   const [sortKey, setSortKey] = useState<'name' | 'tier' | 'last_meeting_date' | 'enthusiasm' | null>(null);
@@ -119,6 +120,7 @@ export default function InvestorsPage() {
 
   async function handleDelete() {
     if (!deleteTarget) return;
+    setDeleting(true);
     try {
       const res = await fetch(`/api/investors?id=${deleteTarget.id}`, { method: 'DELETE' });
       if (!res.ok) throw new Error(`Failed (${res.status})`);
@@ -128,6 +130,8 @@ export default function InvestorsPage() {
     } catch {
       toast('Couldn\'t delete investor — try again in a moment', 'error');
       setDeleteTarget(null);
+    } finally {
+      setDeleting(false);
     }}
 
   function startEdit(inv: Investor) {
@@ -444,6 +448,7 @@ export default function InvestorsPage() {
         message={`Permanently delete ${deleteTarget?.name} and all associated meetings, follow-ups, and scoring data? This cannot be undone.`}
         confirmLabel="Delete"
         variant="danger"
+        loading={deleting}
         onConfirm={handleDelete}
         onCancel={() => setDeleteTarget(null)} />
     </div>);

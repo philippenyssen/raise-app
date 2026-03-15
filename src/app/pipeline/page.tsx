@@ -422,8 +422,8 @@ export default function PipelinePage() {
                   <div className="flex items-center justify-between">
                     <span style={{ ...stFontXs, fontWeight: 400, color: 'var(--text-primary)', letterSpacing: '0.01em' }}>{STATUS_LABELS[status]}</span>
                     <div className="flex items-center gap-1.5">
-                      {cards.length > 0 && (() => { const activePct = Math.round((cards.filter(i => (Date.now() - new Date(i.updated_at).getTime()) < 7 * 864e5).length / cards.length) * 100); return <span title={`${activePct}% active in last 7 days`} style={{ fontSize: '9px', fontWeight: 400, color: activePct >= 70 ? 'var(--success)' : activePct >= 40 ? 'var(--warning)' : 'var(--text-muted)' }}>{activePct}%</span>; })()}
-                      <span style={{ fontSize: '10px', fontWeight: 300, padding: '0.125rem 0.375rem', borderRadius: '9999px', ...colors.badge }}>{cards.length}</span>
+                      {cards.length > 0 && (() => { const activePct = Math.round((cards.filter(i => (Date.now() - new Date(i.updated_at).getTime()) < 7 * 864e5).length / cards.length) * 100); return <span title={`${activePct}% active in last 7 days`} style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: activePct >= 70 ? 'var(--success)' : activePct >= 40 ? 'var(--warning)' : 'var(--text-muted)' }}>{activePct}%</span>; })()}
+                      <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 300, padding: '0.125rem 0.375rem', borderRadius: '9999px', ...colors.badge }}>{cards.length}</span>
                     </div>
                   </div></div>
 
@@ -488,7 +488,7 @@ export default function PipelinePage() {
                         {STATUS_LABELS[status]}</span>
                       <span
                         style={{
-                          fontSize: '10px',
+                          fontSize: 'var(--font-size-xs)',
                           fontWeight: 300,
                           padding: '0.125rem 0.375rem',
                           borderRadius: '9999px',
@@ -570,7 +570,7 @@ function FilterButton({
           style={{
             background: 'var(--accent)',
             color: 'var(--text-primary)',
-            fontSize: '10px',
+            fontSize: 'var(--font-size-xs)',
             fontWeight: 300,
             padding: '0.125rem 0.375rem',
             borderRadius: '9999px', }}>
@@ -734,7 +734,7 @@ function InvestorCard({
           {onToggleCompare && (hovered || isCompareSelected) && <span onClick={e => { e.preventDefault(); e.stopPropagation(); onToggleCompare(investor.id); }} style={{ width: 12, height: 12, borderRadius: 'var(--radius-sm)', border: `1.5px solid ${isCompareSelected ? 'var(--accent)' : 'var(--border-default)'}`, background: isCompareSelected ? 'var(--accent)' : 'transparent', cursor: 'pointer', flexShrink: 0 }} />}
           <GripVertical className="w-3 h-3 flex-shrink-0" style={{ color: hovered ? 'var(--text-muted)' : 'var(--border-strong)' }} />
           <span className="truncate" title={investor.name} style={{ ...stFontXs, fontWeight: 400, color: 'var(--text-secondary)' }}>{investor.name}</span>
-          <span style={{ padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-sm)', fontSize: '10px', fontWeight: 400, ...TIER_STYLES[investor.tier] }}>T{investor.tier}</span>
+          <span style={{ padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-sm)', fontSize: 'var(--font-size-xs)', fontWeight: 400, ...TIER_STYLES[investor.tier] }}>T{investor.tier}</span>
         </Link>
       </div>);
   }
@@ -753,7 +753,7 @@ function InvestorCard({
         <div className="flex items-start justify-between gap-1">
           <div className="min-w-0">
             <span style={{ ...stFontSm, fontWeight: 400, color: hovered ? 'var(--text-primary)' : 'var(--text-secondary)', lineHeight: 1.3, transition: 'color 150ms ease' }}>{investor.name}</span>
-            {completeness < 100 && <span title={`Profile ${completeness}% complete`} style={{ fontSize: '9px', color: complColor, marginLeft: '4px', fontWeight: 400 }}>{completeness}%</span>}
+            {completeness < 100 && <span title={`Profile ${completeness}% complete`} style={{ fontSize: 'var(--font-size-xs)', color: complColor, marginLeft: '4px', fontWeight: 400 }}>{completeness}%</span>}
           </div>
           <div className="flex items-center gap-1 flex-shrink-0 mt-0.5">
             {onToggleCompare && <span onClick={e => { e.preventDefault(); e.stopPropagation(); onToggleCompare(investor.id); }} style={{ width: 14, height: 14, borderRadius: 'var(--radius-sm)', border: `1.5px solid ${isCompareSelected ? 'var(--accent)' : 'var(--border-default)'}`, background: isCompareSelected ? 'var(--accent)' : 'transparent', cursor: 'pointer', display: hovered || isCompareSelected ? 'block' : 'none' }} />}
@@ -762,12 +762,12 @@ function InvestorCard({
 
         {/* Badges row: type + tier */}
         <div className="flex items-center gap-1.5">
-          <span className="inline-flex items-center gap-1" style={{ padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-sm)', fontSize: '10px', fontWeight: 400, ...TYPE_STYLES[investor.type as InvestorType] }}>
+          <span className="inline-flex items-center gap-1" style={{ padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-sm)', fontSize: 'var(--font-size-xs)', fontWeight: 400, ...TYPE_STYLES[investor.type as InvestorType] }}>
             <TypeIcon className="w-2.5 h-2.5" />{TYPE_LABELS[investor.type as InvestorType] ?? investor.type}</span>
-          <span style={{ padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-sm)', fontSize: '10px', fontWeight: 400, ...TIER_STYLES[investor.tier] }}>T{investor.tier}</span>
-          {isStale && <span style={{ padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-sm)', fontSize: '10px', fontWeight: 400, background: 'var(--warning-muted)', color: 'var(--warning)' }}>Stale</span>}
-          {convictionDelta !== null && convictionDelta !== 0 && <span style={{ padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-sm)', fontSize: '10px', fontWeight: 400, background: convictionDelta > 0 ? 'var(--success-muted)' : 'var(--warning-muted)', color: convictionDelta > 0 ? 'var(--success)' : 'var(--danger)' }}>{convictionDelta > 0 ? '+' : ''}{convictionDelta}</span>}
-          {(() => { const d = Math.floor((Date.now() - new Date(investor.updated_at).getTime()) / 864e5); return d > 0 ? <span title="Time in current stage" style={{ padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-sm)', fontSize: '10px', fontWeight: 400, color: d >= 14 ? 'var(--warning)' : 'var(--text-muted)', background: 'var(--white-8)' }}>{d}d</span> : null; })()}
+          <span style={{ padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-sm)', fontSize: 'var(--font-size-xs)', fontWeight: 400, ...TIER_STYLES[investor.tier] }}>T{investor.tier}</span>
+          {isStale && <span style={{ padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-sm)', fontSize: 'var(--font-size-xs)', fontWeight: 400, background: 'var(--warning-muted)', color: 'var(--warning)' }}>Stale</span>}
+          {convictionDelta !== null && convictionDelta !== 0 && <span style={{ padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-sm)', fontSize: 'var(--font-size-xs)', fontWeight: 400, background: convictionDelta > 0 ? 'var(--success-muted)' : 'var(--warning-muted)', color: convictionDelta > 0 ? 'var(--success)' : 'var(--danger)' }}>{convictionDelta > 0 ? '+' : ''}{convictionDelta}</span>}
+          {(() => { const d = Math.floor((Date.now() - new Date(investor.updated_at).getTime()) / 864e5); return d > 0 ? <span title="Time in current stage" style={{ padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-sm)', fontSize: 'var(--font-size-xs)', fontWeight: 400, color: d >= 14 ? 'var(--warning)' : 'var(--text-muted)', background: 'var(--white-8)' }}>{d}d</span> : null; })()}
         </div>
 
         {/* Details */}
@@ -787,8 +787,8 @@ function InvestorCard({
         {/* Quick note + urgency */}
         {(() => { const days = investor.last_meeting_date ? Math.floor((Date.now() - new Date(investor.last_meeting_date).getTime()) / 864e5) : 999; const urgency = (days >= 14 && investor.tier <= 2) || (days >= 10 && ['engaged', 'in_dd', 'term_sheet'].includes(investor.status)) ? 'Urgent' : days >= 7 || investor.tier <= 2 ? 'Normal' : 'Low'; const uClr = urgency === 'Urgent' ? 'var(--danger)' : urgency === 'Normal' ? 'var(--warning)' : 'var(--text-muted)'; const uBg = urgency === 'Urgent' ? 'var(--danger-muted)' : urgency === 'Normal' ? 'var(--warning-muted)' : 'var(--white-8)'; return (
           <div className="flex items-center gap-1.5">
-            <span style={{ fontSize: '9px', fontWeight: 400, padding: '1px 5px', borderRadius: 'var(--radius-sm)', background: uBg, color: uClr }}>{urgency}</span>
-            {investor.notes && <span className="truncate" title={investor.notes} style={{ fontSize: '10px', color: 'var(--text-muted)', fontStyle: 'italic', flex: 1 }}>{investor.notes.slice(0, 60)}{investor.notes.length > 60 ? '...' : ''}</span>}
+            <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, padding: '1px 5px', borderRadius: 'var(--radius-sm)', background: uBg, color: uClr }}>{urgency}</span>
+            {investor.notes && <span className="truncate" title={investor.notes} style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontStyle: 'italic', flex: 1 }}>{investor.notes.slice(0, 60)}{investor.notes.length > 60 ? '...' : ''}</span>}
           </div>); })()}
 
         {/* Enthusiasm + last contact row */}
@@ -819,7 +819,7 @@ function InvestorCard({
             const isStale = days >= 14;
             const isWarning = days >= 7 && days < 14;
             return (
-              <span style={{ fontSize: '10px', color: isStale ? 'var(--danger)' : isWarning ? 'var(--warning)' : 'var(--text-muted)', fontWeight: 400 }} title={`Last meeting: ${fmtDate(lastDate)}`}>{days === 0 ? 'Today' : `${days}d ago`}</span>
+              <span style={{ fontSize: 'var(--font-size-xs)', color: isStale ? 'var(--danger)' : isWarning ? 'var(--warning)' : 'var(--text-muted)', fontWeight: 400 }} title={`Last meeting: ${fmtDate(lastDate)}`}>{days === 0 ? 'Today' : `${days}d ago`}</span>
             );
           })()}</div></Link>
 
@@ -833,7 +833,7 @@ function InvestorCard({
             draggable={false}
             className="flex items-center gap-1 flex-1 justify-center transition-colors"
             style={{
-              fontSize: '10px', color: 'var(--text-muted)',
+              fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)',
               padding: '2px 0', borderRadius: 'var(--radius-sm)',
               textDecoration: 'none', }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; (e.currentTarget as HTMLElement).style.background = 'var(--accent-muted)'; }}
@@ -845,7 +845,7 @@ function InvestorCard({
             draggable={false}
             className="flex items-center gap-1 flex-1 justify-center transition-colors"
             style={{
-              fontSize: '10px', color: 'var(--text-muted)',
+              fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)',
               padding: '2px 0', borderRadius: 'var(--radius-sm)',
               textDecoration: 'none', }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; (e.currentTarget as HTMLElement).style.background = 'var(--accent-muted)'; }}
@@ -857,7 +857,7 @@ function InvestorCard({
             draggable={false}
             className="flex items-center gap-1 flex-1 justify-center transition-colors"
             style={{
-              fontSize: '10px', color: 'var(--text-muted)',
+              fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)',
               padding: '2px 0', borderRadius: 'var(--radius-sm)',
               textDecoration: 'none', }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; (e.currentTarget as HTMLElement).style.background = 'var(--accent-muted)'; }}

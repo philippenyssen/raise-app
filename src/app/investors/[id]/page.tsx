@@ -572,7 +572,7 @@ export default function InvestorDetailPage() {
                 'var(--text-secondary)'}}>
               {dealIntel.heat}</span>
             <span style={{
-              fontSize: '9px', fontWeight: 400,
+              fontSize: 'var(--font-size-xs)', fontWeight: 400,
               color: dealIntel.heatLabel === 'hot' ? 'var(--text-primary)' :
                 dealIntel.heatLabel === 'warm' ? 'var(--text-secondary)' :
                 'var(--text-muted)'}}>
@@ -615,7 +615,7 @@ export default function InvestorDetailPage() {
                 href={`/meetings/new?investor=${id}`}
                 className="flex items-center gap-1"
                 style={{
-                  fontSize: '11px', fontWeight: 400, padding: '3px 10px',
+                  fontSize: 'var(--font-size-xs)', fontWeight: 400, padding: '3px 10px',
                   borderRadius: 'var(--radius-sm)', textDecoration: 'none',
                   background: 'var(--danger-muted)', color: 'var(--text-primary)',
                   border: '1px solid var(--fg-6)', }}>
@@ -625,7 +625,7 @@ export default function InvestorDetailPage() {
                 href={`/followups?investor=${id}`}
                 className="flex items-center gap-1"
                 style={{
-                  fontSize: '11px', fontWeight: 400, padding: '3px 10px',
+                  fontSize: 'var(--font-size-xs)', fontWeight: 400, padding: '3px 10px',
                   borderRadius: 'var(--radius-sm)', textDecoration: 'none',
                   background: 'var(--warning-muted)', color: 'var(--text-tertiary)',
                   border: '1px solid var(--fg-5)', }}>
@@ -677,7 +677,7 @@ export default function InvestorDetailPage() {
                 {overdueItems.length > 0 && (
                   <span
                     style={{
-                      fontSize: '10px', fontWeight: 400,
+                      fontSize: 'var(--font-size-xs)', fontWeight: 400,
                       padding: '1px 6px', borderRadius: '9999px',
                       background: 'var(--danger)', color: 'var(--text-primary)', }}>
                     {overdueItems.length} overdue</span>
@@ -686,7 +686,7 @@ export default function InvestorDetailPage() {
                 <Link
                   href={`/followups?investor=${id}`}
                   className="transition-colors"
-                  style={{ fontSize: '11px', color: 'var(--accent)', textDecoration: 'none' }}
+                  style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)', textDecoration: 'none' }}
                   onMouseEnter={e => { e.currentTarget.style.textDecoration = 'underline'; }}
                   onMouseLeave={e => { e.currentTarget.style.textDecoration = 'none'; }}>
                   View all {followups.length}</Link>
@@ -713,11 +713,11 @@ export default function InvestorDetailPage() {
                         background: isOverdue ? 'var(--danger-muted)' : 'var(--surface-2)',
                         color: isOverdue ? 'var(--danger)' : 'var(--text-muted)',
                         fontWeight: 400,
-                        fontSize: '10px', }}>
+                        fontSize: 'var(--font-size-xs)', }}>
                       {timeLabel}</span>
                     <span
                       className="text-xs px-1.5 py-0.5 rounded shrink-0 capitalize"
-                      style={{ background: 'var(--surface-2)', color: 'var(--text-muted)', fontSize: '10px' }}>
+                      style={{ background: 'var(--surface-2)', color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>
                       {f.action_type.replace(/_/g, ' ')}</span>
                     <span
                       className="flex-1 text-sm truncate"
@@ -1274,7 +1274,7 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
                       return `/meetings/new?investor=${investorId}`;
                     })()}
                     className="btn btn-sm shrink-0"
-                    style={{ background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid var(--accent-25)', fontSize: '11px', padding: '3px 10px', gap: '4px', display: 'inline-flex', alignItems: 'center', textDecoration: 'none' }}>
+                    style={{ background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid var(--accent-25)', fontSize: 'var(--font-size-xs)', padding: '3px 10px', gap: '4px', display: 'inline-flex', alignItems: 'center', textDecoration: 'none' }}>
                     Do it <ArrowRight className="w-3 h-3" /></Link></div></div></div></div></div></div>
 
       {/* Score Summary: top & bottom dimensions */}
@@ -1283,8 +1283,8 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
         const top = sorted[0], bottom = sorted[sorted.length - 1];
         return (
           <div className="px-5 py-3 flex gap-6" style={{ borderTop: '1px solid var(--border-default)', background: 'var(--white-4)' }}>
-            <div className="flex items-center gap-1.5 min-w-0 flex-1"><span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--success)', flexShrink: 0 }} /><span className="truncate" style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>Strongest: {top.name} ({top.score})</span></div>
-            <div className="flex items-center gap-1.5 min-w-0 flex-1"><span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--warning)', flexShrink: 0 }} /><span className="truncate" style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>Weakest: {bottom.name} ({bottom.score})</span></div>
+            <div className="flex items-center gap-1.5 min-w-0 flex-1"><span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--success)', flexShrink: 0 }} /><span className="truncate" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>Strongest: {top.name} ({top.score})</span></div>
+            <div className="flex items-center gap-1.5 min-w-0 flex-1"><span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--warning)', flexShrink: 0 }} /><span className="truncate" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>Weakest: {bottom.name} ({bottom.score})</span></div>
           </div>);
       })()}
 
@@ -1590,7 +1590,7 @@ function EnrichmentStatusCard({
                         style={{
                           background: p.type === 'free' ? 'var(--success-muted)' : p.type === 'freemium' ? 'var(--accent-muted)' : 'var(--warning-muted)',
                           color: 'var(--text-muted)',
-                          fontSize: '9px', }}>
+                          fontSize: 'var(--font-size-xs)', }}>
                         {p.type}</span></div>
                     <div className="flex items-center gap-3 shrink-0">
                       {p.field_count > 0 && (

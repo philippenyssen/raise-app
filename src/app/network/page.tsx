@@ -320,14 +320,14 @@ export default function NetworkPage() {
                                       onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-primary)'; }}>
                                       {link.investorName}</Link>
                                     <span style={{
-                                      fontSize: '10px',
+                                      fontSize: 'var(--font-size-xs)',
                                       padding: '0 4px',
                                       borderRadius: 'var(--radius-sm)',
                                       background: 'var(--surface-2)',
                                       color: 'var(--text-muted)',}}>
                                       {tierLabel(link.tier)}</span>
                                     <span style={{
-                                      fontSize: '10px',
+                                      fontSize: 'var(--font-size-xs)',
                                       padding: '0 4px',
                                       borderRadius: 'var(--radius-sm)',
                                       background: 'var(--surface-2)',
@@ -335,7 +335,7 @@ export default function NetworkPage() {
                                       {STATUS_LABELS[link.status] || link.status}</span>
                                     {isBottleneck && (
                                       <span style={{
-                                        fontSize: '10px',
+                                        fontSize: 'var(--font-size-xs)',
                                         padding: '0 4px',
                                         borderRadius: 'var(--radius-sm)',
                                         background: 'var(--warning-muted)',
@@ -349,7 +349,7 @@ export default function NetworkPage() {
                                   )}</div></div>
                               <div className="flex items-center gap-4 shrink-0">
                                 <div style={{ textAlign: 'right' }}>
-                                  <p style={{ fontSize: '10px', color: 'var(--text-muted)', }}>Prob</p>
+                                  <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', }}>Prob</p>
                                   <p style={{
                                     fontSize: 'var(--font-size-sm)',
                                     fontWeight: 400,
@@ -358,7 +358,7 @@ export default function NetworkPage() {
                                     {Math.round(link.probability * 100)}%</p></div>
                                 {link.capitalM > 0 && (
                                   <div style={{ textAlign: 'right' }}>
-                                    <p style={{ fontSize: '10px', color: 'var(--text-muted)', }}>Expected</p>
+                                    <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', }}>Expected</p>
                                     <p style={{
                                       fontSize: 'var(--font-size-sm)',
                                       fontWeight: 400,
@@ -368,7 +368,7 @@ export default function NetworkPage() {
                                 )}
                                 {idx < cascade.cascadeChain.length - 1 && (
                                   <div style={{ textAlign: 'right' }}>
-                                    <p style={{ fontSize: '10px', color: 'var(--text-muted)', }}>Cumulative</p>
+                                    <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', }}>Cumulative</p>
                                     <p style={{
                                       fontSize: 'var(--font-size-sm)',
                                       fontWeight: 400,
