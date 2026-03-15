@@ -561,6 +561,30 @@ body {
   color: white;
 }
 
+.filter-inactive:hover {
+  color: var(--text-secondary) !important;
+}
+
+.action-draft {
+  color: var(--text-muted);
+  background: transparent;
+  transition: all 150ms ease;
+}
+.action-draft:hover {
+  color: var(--chart-4);
+  background: var(--cat-purple-muted);
+}
+
+.action-outcome {
+  color: var(--text-muted);
+  background: transparent;
+  transition: all 150ms ease;
+}
+.action-outcome:hover {
+  color: var(--accent);
+  background: var(--accent-muted);
+}
+
 /* ── Inputs ── */
 .input {
   width: 100%;

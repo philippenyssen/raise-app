@@ -116,8 +116,6 @@ function renderMarkdown(text: string): React.ReactNode[] {
 // ---------------------------------------------------------------------------
 
 function MeetingCard({ meeting }: { meeting: BriefingMeeting }) {
-  const [hovered, setHovered] = useState(false);
-
   const timeDisplay = (() => {
     try {
       const d = new Date(meeting.time);
@@ -130,13 +128,9 @@ function MeetingCard({ meeting }: { meeting: BriefingMeeting }) {
 
   return (
     <div
-      className="card transition-colors"
+      className="card hover-border"
       style={{
-        padding: 'var(--space-4)',
-        borderColor: hovered ? 'var(--border-default)' : 'var(--border-subtle)',
-        transition: 'all 150ms ease', }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}>
+        padding: 'var(--space-4)', }}>
       <div className="flex items-start gap-3">
         <div className="flex items-center justify-center shrink-0" style={{ width: '40px', height: '40px', borderRadius: 'var(--radius-md)', background: 'var(--accent-muted)' }}>
           <span style={{ color: 'var(--accent)', fontSize: 'var(--font-size-xs)', fontWeight: 300, textAlign: 'center', lineHeight: 1.1 }}>
@@ -185,20 +179,15 @@ function MeetingCard({ meeting }: { meeting: BriefingMeeting }) {
 }
 
 function ActionCard({ action }: { action: UrgentAction }) {
-  const [hovered, setHovered] = useState(false);
   const Icon = CATEGORY_ICONS[action.category] || FileText;
   const iconColor = CATEGORY_COLORS[action.category] || 'var(--text-tertiary)';
   const iconBg = CATEGORY_BG[action.category] || 'var(--surface-2)';
 
   return (
     <div
-      className="card transition-colors"
+      className="card hover-border"
       style={{
-        padding: 'var(--space-4)',
-        borderColor: hovered ? 'var(--border-default)' : 'var(--border-subtle)',
-        transition: 'all 150ms ease', }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}>
+        padding: 'var(--space-4)', }}>
       <div className="flex items-start gap-3">
         <div className="flex items-center justify-center shrink-0" style={{ width: '32px', height: '32px', borderRadius: 'var(--radius-md)', background: iconBg }}>
           <span style={{ color: iconColor, display: 'flex' }}>

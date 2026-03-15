@@ -164,7 +164,6 @@ function FollowupsContent() {
   const [overdueExpanded, setOverdueExpanded] = useState(true);
   const [todayExpanded, setTodayExpanded] = useState(true);
   const [upcomingExpanded, setUpcomingExpanded] = useState(true);
-  const [hoveredActionBtn, setHoveredActionBtn] = useState<string | null>(null);
   const [draftingId, setDraftingId] = useState<string | null>(null);
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [processingIds, setProcessingIds] = useState<Set<string>>(new Set());
@@ -456,39 +455,31 @@ function FollowupsContent() {
               <div className="flex gap-1 shrink-0">
                 <button
                   onClick={() => setDraftingId(draftingId === item.id ? null : item.id)}
-                  className="p-1.5 transition-colors"
-                  style={{ borderRadius: 'var(--radius-md)', color: hoveredActionBtn === `draft-${item.id}` || draftingId === item.id ? 'var(--chart-4)' : 'var(--text-muted)', background: hoveredActionBtn === `draft-${item.id}` || draftingId === item.id ? 'var(--cat-purple-muted)' : 'transparent', transition: 'all 150ms ease' }}
-                  onMouseEnter={() => setHoveredActionBtn(`draft-${item.id}`)}
-                  onMouseLeave={() => setHoveredActionBtn(null)}
+                  className={`p-1.5 ${draftingId === item.id ? '' : 'action-draft'}`}
+                  style={{ borderRadius: 'var(--radius-md)', ...(draftingId === item.id ? { color: 'var(--chart-4)', background: 'var(--cat-purple-muted)' } : {}) }}
                   title="Draft message"
                   aria-label="Draft message">
                   <PenLine className="w-4 h-4" /></button>
                 <button
                   onClick={() => handleQuickComplete(item.id)}
                   disabled={processingIds.has(item.id)}
-                  className="p-1.5 transition-colors"
-                  style={{ borderRadius: 'var(--radius-md)', color: hoveredActionBtn === `complete-${item.id}` ? 'var(--success)' : 'var(--text-muted)', background: hoveredActionBtn === `complete-${item.id}` ? 'var(--success-muted)' : 'transparent', transition: 'all 150ms ease', opacity: processingIds.has(item.id) ? 0.4 : 1 }}
-                  onMouseEnter={() => setHoveredActionBtn(`complete-${item.id}`)}
-                  onMouseLeave={() => setHoveredActionBtn(null)}
+                  className="p-1.5 flag-addr"
+                  style={{ borderRadius: 'var(--radius-md)', opacity: processingIds.has(item.id) ? 0.4 : 1 }}
                   title="Quick complete"
                   aria-label="Quick complete">
                   <CheckCircle2 className="w-4 h-4" /></button>
                 <button
                   onClick={() => { setCompletingId(item.id); setCompleteForm({ outcome: '', conviction_delta: 0 }); }}
-                  className="p-1.5 transition-colors"
-                  style={{ borderRadius: 'var(--radius-md)', color: hoveredActionBtn === `outcome-${item.id}` ? 'var(--accent)' : 'var(--text-muted)', background: hoveredActionBtn === `outcome-${item.id}` ? 'var(--accent-muted)' : 'transparent', transition: 'all 150ms ease' }}
-                  onMouseEnter={() => setHoveredActionBtn(`outcome-${item.id}`)}
-                  onMouseLeave={() => setHoveredActionBtn(null)}
+                  className="p-1.5 action-outcome"
+                  style={{ borderRadius: 'var(--radius-md)' }}
                   title="Complete with outcome"
                   aria-label="Complete with outcome">
                   <TrendingUp className="w-4 h-4" /></button>
                 <button
                   onClick={() => handleSkip(item.id)}
                   disabled={processingIds.has(item.id)}
-                  className="p-1.5 transition-colors"
-                  style={{ borderRadius: 'var(--radius-md)', color: hoveredActionBtn === `skip-${item.id}` ? 'var(--danger)' : 'var(--text-muted)', background: hoveredActionBtn === `skip-${item.id}` ? 'var(--danger-muted)' : 'transparent', transition: 'all 150ms ease', opacity: processingIds.has(item.id) ? 0.4 : 1 }}
-                  onMouseEnter={() => setHoveredActionBtn(`skip-${item.id}`)}
-                  onMouseLeave={() => setHoveredActionBtn(null)}
+                  className="p-1.5 remove-btn"
+                  style={{ borderRadius: 'var(--radius-md)', opacity: processingIds.has(item.id) ? 0.4 : 1 }}
                   title="Skip"
                   aria-label="Skip follow-up">
                   <XCircle className="w-4 h-4" /></button></div>

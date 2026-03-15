@@ -554,14 +554,10 @@ function FilterButton({
   count: number;
   onClick: () => void;
 }) {
-  const [hovered, setHovered] = useState(false);
-
   return (
     <button
       onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      className="flex items-center gap-2 transition-colors"
+      className={`flex items-center gap-2 ${active ? '' : 'filter-inactive'}`}
       style={{
         padding: '0.5rem 0.75rem',
         borderRadius: 'var(--radius-lg)',
@@ -574,7 +570,7 @@ function FilterButton({
               color: 'var(--accent)',}
           : {
               background: 'var(--surface-1)',
-              color: hovered ? 'var(--text-secondary)' : 'var(--text-tertiary)',
+              color: 'var(--text-tertiary)',
             }), }}>
       <Filter className="w-3.5 h-3.5" />
       Filters
@@ -602,14 +598,10 @@ function TierFilterButton({
   active: boolean;
   onClick: () => void;
 }) {
-  const [hovered, setHovered] = useState(false);
-
   return (
     <button
       onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      className="transition-colors"
+      className={active ? '' : 'filter-inactive'}
       style={{
         padding: '0.25rem 0.625rem',
         borderRadius: 'var(--radius-sm)',
@@ -620,7 +612,7 @@ function TierFilterButton({
           ? TIER_STYLES[tier]
           : {
               background: 'var(--surface-1)',
-              color: hovered ? 'var(--text-secondary)' : 'var(--text-muted)',
+              color: 'var(--text-muted)',
             }), }}>
       T{tier}
     </button>);
@@ -638,14 +630,10 @@ function TypeFilterButton({
   active: boolean;
   onClick: () => void;
 }) {
-  const [hovered, setHovered] = useState(false);
-
   return (
     <button
       onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      className="transition-colors"
+      className={active ? '' : 'filter-inactive'}
       style={{
         padding: '0.25rem 0.625rem',
         borderRadius: 'var(--radius-sm)',
@@ -656,7 +644,7 @@ function TypeFilterButton({
           ? TYPE_STYLES[type]
           : {
               background: 'var(--surface-1)',
-              color: hovered ? 'var(--text-secondary)' : 'var(--text-muted)',
+              color: 'var(--text-muted)',
             }), }}>
       {label}
     </button>);
