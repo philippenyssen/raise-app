@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAllDocuments, createDocument } from '@/lib/db';
+import { getAllDocumentSummaries, createDocument } from '@/lib/db';
 import { emitContextChange } from '@/lib/context-bus';
 
 export async function GET() {
   try {
-    const documents = await getAllDocuments();
+    const documents = await getAllDocumentSummaries();
     return NextResponse.json(documents, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
   } catch (e) {
     console.error('[DOCUMENTS_GET]', e instanceof Error ? e.message : e);

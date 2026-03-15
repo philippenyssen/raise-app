@@ -62,11 +62,29 @@ export default function WorkspacePage() {
     return () => window.removeEventListener('keydown', h);
   }, [fetchDocs]);
 
-  const doSelectDoc = useCallback((doc: Doc) => {
-    setSelectedDoc(doc);
-    setEditedContent(doc.content);
+  const doSelectDoc = useCallback(async (doc: Doc) => {
     setDirty(false);
     setPendingDoc(null);
+    // If content already loaded, use it; otherwise fetch full doc
+    if (doc.content) {
+      setSelectedDoc(doc);
+      setEditedContent(doc.content);
+    } else {
+      try {
+        const res = await fetch(`/api/documents/${doc.id}`);
+        if (res.ok) {
+          const full = await res.json();
+          setSelectedDoc(full);
+          setEditedContent(full.content || '');
+        } else {
+          setSelectedDoc({ ...doc, content: '' });
+          setEditedContent('');
+        }
+      } catch {
+        setSelectedDoc({ ...doc, content: '' });
+        setEditedContent('');
+      }
+    }
   }, []);
 
   const selectDoc = useCallback((doc: Doc) => {

@@ -612,6 +612,10 @@ async function ensureInitialized() {
   try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_activity_log_investor ON activity_log(investor_id, created_at)`); } catch { /* */ }
   try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_document_versions_doc ON document_versions(document_id)`); } catch { /* */ }
   try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_objection_responses_topic ON objection_responses(objection_topic)`); } catch { /* */ }
+  try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_investors_status ON investors(status)`); } catch { /* */ }
+  try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_tasks_status ON tasks(status)`); } catch { /* */ }
+  try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_followups_status ON followup_actions(status)`); } catch { /* */ }
+  try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_activity_log_type ON activity_log(event_type, created_at)`); } catch { /* */ }
 
   initialized = true;
 }
@@ -854,6 +858,12 @@ export async function getAllDocuments(): Promise<Document[]> {
   return result.rows as unknown as Document[];
 }
 
+export async function getAllDocumentSummaries(): Promise<Omit<Document, 'content'>[]> {
+  await ensureInitialized();
+  const result = await getClient().execute('SELECT id, title, type, status, created_at, updated_at FROM documents ORDER BY updated_at DESC');
+  return result.rows as unknown as Omit<Document, 'content'>[];
+}
+
 export const getDocument = (id: string) => genericGetById<Document>('documents', id);
 
 export async function createDocument(doc: { title: string; type: string; content?: string }): Promise<Document> {
@@ -934,6 +944,12 @@ export async function getAllDataRoomFiles(): Promise<DataRoomFile[]> {
   await ensureInitialized();
   const result = await getClient().execute('SELECT * FROM data_room_files ORDER BY uploaded_at DESC');
   return result.rows as unknown as DataRoomFile[];
+}
+
+export async function getAllDataRoomFileSummaries(): Promise<Omit<DataRoomFile, 'extracted_text'>[]> {
+  await ensureInitialized();
+  const result = await getClient().execute('SELECT id, filename, category, mime_type, size_bytes, summary, uploaded_at FROM data_room_files ORDER BY uploaded_at DESC');
+  return result.rows as unknown as Omit<DataRoomFile, 'extracted_text'>[];
 }
 
 const getDataRoomFile = (id: string) => genericGetById<DataRoomFile>('data_room_files', id);

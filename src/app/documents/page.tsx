@@ -127,8 +127,15 @@ export default function DocumentsPage() {
       toast('Couldn\'t update flag — try again', 'error');
     }}
 
-  function downloadDoc(doc: Doc) {
-    const blob = new Blob([doc.content], { type: 'text/markdown' });
+  async function downloadDoc(doc: Doc) {
+    let content = doc.content || '';
+    if (!content) {
+      try {
+        const res = await fetch(`/api/documents/${doc.id}`);
+        if (res.ok) { const full = await res.json(); content = full.content || ''; }
+      } catch { /* use empty */ }
+    }
+    const blob = new Blob([content], { type: 'text/markdown' });
     const url = URL.createObjectURL(blob);
     const a = window.document.createElement('a');
     a.href = url;
@@ -324,7 +331,7 @@ export default function DocumentsPage() {
                               <span className="flex items-center gap-1">
                                 <Clock className="w-3 h-3" />
                                 {fmtDate(doc.updated_at)}</span>
-                              <span>{doc.content.length.toLocaleString()} chars</span></div></div></div></Link>
+                              {doc.content && <span>{doc.content.length.toLocaleString()} chars</span>}</div></div></div></Link>
                       <div className="flex items-center gap-2 shrink-0 ml-4">
                         <span className="text-xs px-2 py-0.5 rounded" style={STATUS_STYLES[doc.status] || { backgroundColor: 'var(--surface-2)', color: 'var(--text-muted)' }}>
                           {doc.status}</span>

@@ -388,3 +388,4 @@ e5125ed	100	100	0	keep	strategy	parallelize today page — fetch briefing + 4 se
 45e1af2	100	100	0	keep	product	switch 8 more pages to cachedFetch (acceleration, prep, model, data-room, intelligence, stress-test, settings, docs)
 263e4f4	100	100	0	keep	design	convert sidebar badge fetches to cachedFetch, reducing redundant network requests
 42c2fd2	100	100	0	keep	engineering	parallelize 5 API routes (objections, network, strategic, fomo, pulse) + cachedFetch on meetings/capture and meetings/new
+0333250	100	100	0	keep	ai	extract AI system prompt constant (SYS_JSON), cachedFetch on 9 more pages (investors/[id], reports, velocity, timeline, focus, analysis, win-loss, objections, meetings)
