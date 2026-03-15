@@ -395,9 +395,9 @@ TIER: ${ctx.investor.tier}
 STATUS: ${ctx.investor.status}
 ENTHUSIASM: ${ctx.investor.enthusiasm}/5
 KEY PARTNER: ${ctx.investor.partner || 'Unknown'}
-SECTOR THESIS: ${ctx.investor.sector_thesis || 'Not specified'}
-IC PROCESS: ${ctx.investor.ic_process || 'Unknown'}
-NOTES: ${ctx.investor.notes || 'None'}
+SECTOR THESIS: ${(ctx.investor.sector_thesis || 'Not specified').substring(0, 2000)}
+IC PROCESS: ${(ctx.investor.ic_process || 'Unknown').substring(0, 2000)}
+NOTES: ${(ctx.investor.notes || 'None').substring(0, 5000)}
 
 NARRATIVE PROFILE FOR ${ctx.investor.type.toUpperCase()} INVESTORS:
 - Opening hook: ${ctx.narrative.openingHook}

@@ -35,7 +35,10 @@ function logAISkill(
 
 /** Extract text from AI response, flagging truncation and content filtering */
 function extractText(response: { content: { type: string; text?: string }[]; stop_reason: string | null }): { text: string; truncated: boolean; filtered: boolean } {
-  const text = response.content[0]?.type === 'text' ? (response.content[0] as { text: string }).text : '';
+  if (!response.content?.length) { console.error('[AI_EXTRACT] Empty content array from Claude API'); return { text: '', truncated: false, filtered: false }; }
+  const block = response.content[0];
+  const text = block?.type === 'text' && block.text ? block.text : '';
+  if (!text) console.error('[AI_EXTRACT] Non-text or empty block:', block?.type);
   const truncated = response.stop_reason === 'max_tokens';
   const filtered = response.stop_reason === 'content_filter';
   return { text, truncated, filtered };
