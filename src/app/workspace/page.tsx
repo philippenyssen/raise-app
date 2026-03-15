@@ -172,10 +172,12 @@ export default function WorkspacePage() {
 
   if (loading) {
     return (
-      <div className="h-[calc(100vh-4rem)] flex items-center justify-center">
-        <div
-          style={{ color: 'var(--text-tertiary)', fontSize: 'var(--font-size-sm)' }}>
-          Loading workspace...</div>
+      <div className="space-y-4 page-content">
+        <div className="skeleton" style={{ height: '28px', width: '180px' }} />
+        <div className="flex gap-4" style={{ height: 'calc(100vh - 10rem)' }}>
+          <div className="skeleton" style={{ width: '240px', borderRadius: 'var(--radius-lg)' }} />
+          <div className="skeleton flex-1" style={{ borderRadius: 'var(--radius-lg)' }} />
+        </div>
       </div>);
   }
 
@@ -332,6 +334,8 @@ export default function WorkspacePage() {
           onClick={() => setSidebarOpen(true)}
           onMouseEnter={() => setClosedChevronHover(true)}
           onMouseLeave={() => setClosedChevronHover(false)}
+          aria-label="Open document sidebar"
+          title="Open sidebar"
           className="w-8 shrink-0 flex items-center justify-center"
           style={{
             borderRight: '1px solid var(--border-default)',
@@ -342,7 +346,7 @@ export default function WorkspacePage() {
             borderRightWidth: '1px',
             borderRightColor: 'var(--border-default)',
             cursor: 'pointer', }}>
-          <ChevronRight className="w-4 h-4" style={stTextMuted} /></button>
+          <ChevronRight className="w-4 h-4" style={stTextMuted} aria-hidden="true" /></button>
       )}
 
       {/* Split Pane: Document + AI Chat */}
