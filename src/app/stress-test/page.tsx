@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { useToast } from '@/components/toast';
 import { STATUS_LABELS } from '@/lib/constants';
-import { labelMuted10, stAccentBadge, stBorderTop, stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
+import { labelMuted10, stBorderTop, stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 import {
   ShieldAlert, TrendingUp, TrendingDown,
   RefreshCw, AlertTriangle, CheckCircle2, Target,

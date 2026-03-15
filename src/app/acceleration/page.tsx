@@ -12,7 +12,7 @@ import {
   ChevronDown, Play, Ban, XCircle, Rocket, Timer, ArrowUpRight,
   TrendingDown, SkipForward,
 } from 'lucide-react';
-import { labelMuted10, stBorderTop, stSurface1, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
+import { labelMuted10, stBorderTop, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 // ---------------------------------------------------------------------------
 // Constants — style objects using design tokens

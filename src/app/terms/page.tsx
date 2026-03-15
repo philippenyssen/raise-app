@@ -6,7 +6,7 @@ import { cachedFetch } from '@/lib/cache';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
 import Link from 'next/link';
 import { Scale } from 'lucide-react';
-import { scoreColor as getScoreColor, stSurface0, stSurface1, stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
+import { scoreColor as getScoreColor, stSurface0, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 interface TermSheet {
   id: string;

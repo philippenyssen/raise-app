@@ -20,7 +20,6 @@ import {
   getFollowups,
   getObjectionPlaybook,
   getRevenueCommitments,
-  getScoreSnapshots,
   getAccelerationActions,
   getQuestionPatterns,
   getCalibrationData,

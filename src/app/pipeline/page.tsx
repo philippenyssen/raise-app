@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import { fmtDate } from '@/lib/format';
 import { STATUS_LABELS, TYPE_LABELS } from '@/lib/constants';
-import { labelMuted, labelMuted10, stFontSm, stFontXs, stTextMuted, stTextSecondary } from '@/lib/styles';
+import { labelMuted, labelMuted10, stFontSm, stFontXs, stTextMuted } from '@/lib/styles';
 
 // ── Pipeline column order ────────────────────────────────────────────
 const PIPELINE_STATUSES: InvestorStatus[] = [

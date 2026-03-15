@@ -1,6 +1,5 @@
 import type { Investor, Meeting, InvestorPortfolioCo, IntelligenceBrief, Objection, EngagementSignal, ScoreDimension, InvestorScoreData } from './types';
 import type { ScoreSnapshot } from './db';
-import { computeNetworkEffectData } from './db';
 import { clamp, daysBetween, parseJsonSafe, parseMoneyRange, STATUS_PROGRESSION } from './api-helpers';
 
 // ---------------------------------------------------------------------------

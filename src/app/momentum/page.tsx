@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { cachedFetch } from '@/lib/cache';
 import { useToast } from '@/components/toast';
-import { scoreColorStyle, stAccent, stFontSm, stFontXs, stSurface0, stSurface1, stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
+import { scoreColorStyle, stAccent, stSurface0, stSurface1, stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 import {
   Activity, TrendingUp, TrendingDown, Minus, AlertTriangle,
   RefreshCw, Users, ArrowUpRight, ArrowDownRight, Flame,
