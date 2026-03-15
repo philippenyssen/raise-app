@@ -628,8 +628,8 @@ export default function AccelerationPage() {
       {allFiltered.length === 0 && data.termSheetReady.length === 0 && data.atRisk.length === 0 && data.deprioritize.length === 0 && (
         <div className="rounded-xl p-8 text-center space-y-3">
           <CheckCircle className="w-8 h-8 mx-auto" style={stTextSecondary} />
-          <p style={stTextTertiary}>No acceleration actions detected.</p>
-          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>All investors are progressing normally. Check back when new meetings are logged.</p>
+          <p style={stTextTertiary}>Pipeline is on track — no actions needed right now.</p>
+          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>Acceleration actions appear when investors stall, show high urgency, or are ready for a term sheet push.</p>
         </div>
       )}
 
