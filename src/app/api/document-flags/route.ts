@@ -2,14 +2,19 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getDocumentFlags, updateDocumentFlag } from '@/lib/db';
 
 export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const status = searchParams.get('status') ?? undefined;
-  const document_id = searchParams.get('document_id') ?? undefined;
-  const investor_id = searchParams.get('investor_id') ?? undefined;
-  const meeting_id = searchParams.get('meeting_id') ?? undefined;
+  try {
+    const { searchParams } = new URL(req.url);
+    const status = searchParams.get('status') ?? undefined;
+    const document_id = searchParams.get('document_id') ?? undefined;
+    const investor_id = searchParams.get('investor_id') ?? undefined;
+    const meeting_id = searchParams.get('meeting_id') ?? undefined;
 
-  const flags = await getDocumentFlags({ status, document_id, investor_id, meeting_id });
-  return NextResponse.json(flags);
+    const flags = await getDocumentFlags({ status, document_id, investor_id, meeting_id });
+    return NextResponse.json(flags);
+  } catch (err) {
+    console.error('[DOC_FLAGS_GET]', err instanceof Error ? err.message : err);
+    return NextResponse.json({ error: 'Failed to load document flags' }, { status: 500 });
+  }
 }
 
 export async function PUT(req: NextRequest) {

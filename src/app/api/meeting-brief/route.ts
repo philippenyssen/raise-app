@@ -347,6 +347,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(brief);
   } catch (err) {
+    console.error('[MEETING_BRIEF_GET]', err instanceof Error ? err.message : err);
     return NextResponse.json(
       { error: 'Failed to generate meeting brief' },
       { status: 500 },);
