@@ -255,6 +255,9 @@ export default function InvestorsPage() {
             onChange={e => setSearchQuery(e.target.value)}
             placeholder="Find by name, firm, or deal focus..."
             className="input"
+            autoComplete="off"
+            spellCheck={false}
+            aria-label="Search investors"
             style={{ paddingLeft: '2.25rem' }} /></div>
         {(['active', 'passed', 'all'] as const).map(p => (
           <button key={p} onClick={() => setFilter(f => ({ ...f, statusPreset: p, status: undefined }))} className="btn btn-sm"
