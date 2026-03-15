@@ -50,6 +50,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'customer is required' }, { status: 400 });
   }
   body.customer = customer.trim();
+  const textLimits: Record<string, number> = { customer: 255, contract_name: 500, contract_type: 100, notes: 5000 };
+  for (const [field, max] of Object.entries(textLimits)) {
+    if (body[field] && typeof body[field] === 'string' && (body[field] as string).length > max) {
+      return NextResponse.json({ error: `${field} exceeds maximum length of ${max} characters` }, { status: 400 });
+    }
+  }
   if (!body.amount_eur || typeof body.amount_eur !== 'number' || body.amount_eur <= 0 || body.amount_eur > 10_000_000_000) {
     return NextResponse.json({ error: 'amount_eur must be a positive number up to 10,000,000,000' }, { status: 400 });
   }
