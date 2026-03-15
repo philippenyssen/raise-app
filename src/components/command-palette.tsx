@@ -232,7 +232,7 @@ export default function CommandPalette() {
       <div className="fixed inset-0 z-[100] flex items-start justify-center" style={{ background: 'var(--overlay)', backdropFilter: 'blur(4px)', paddingTop: '15vh' }} onClick={() => setShowHelp(false)}>
         <div onClick={e => e.stopPropagation()} style={{ width: '340px', background: 'var(--surface-1)', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-xl)', padding: '20px' }}>
           <div className="flex items-center justify-between" style={{ marginBottom: '16px' }}>
-            <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text-primary)' }}>Keyboard Shortcuts</span>
+            <span style={{ fontSize: '14px', fontWeight: 400, color: 'var(--text-primary)' }}>Keyboard Shortcuts</span>
             <kbd style={{ fontSize: '10px', color: 'var(--text-muted)', background: 'var(--surface-2)', border: '1px solid var(--border-subtle)', borderRadius: '3px', padding: '2px 6px', cursor: 'pointer' }} onClick={() => setShowHelp(false)}>ESC</kbd>
           </div>
           {helpItems.map(([key, desc]) => (
