@@ -9,7 +9,6 @@ import type { EnrichmentSourceId } from '@/lib/enrichment';
 import {
   getInvestor,
   updateInvestor,
-  getAllInvestors,
   createEnrichmentJob,
   updateEnrichmentJob,
   getEnrichmentJobs,

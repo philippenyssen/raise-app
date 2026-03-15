@@ -6,7 +6,7 @@ import {
   Zap, RefreshCw, AlertTriangle, TrendingUp, Users,
   ArrowRight, Clock, Activity, Target, Flame,
 } from 'lucide-react';
-import { getIntensityColor, labelMuted, stAccent, stFontSm, stFontXs, stSurface2, stTextMuted, stTextPrimary, stTextSecondary } from '@/lib/styles';
+import { getIntensityColor, labelMuted, stAccent, stFontSm, stFontXs, stTextPrimary } from '@/lib/styles';
 
 // ---------------------------------------------------------------------------
 // Types

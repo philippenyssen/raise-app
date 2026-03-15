@@ -157,7 +157,6 @@ export default function NewDocumentPage() {
   const [customTitle, setCustomTitle] = useState('');
   const [importContent, setImportContent] = useState('');
   const [showImport, setShowImport] = useState(false);
-  const [hoveredButton, setHoveredButton] = useState<string | null>(null);
   const [hoveredCreate, setHoveredCreate] = useState<string | null>(null);
 
   async function createFromTemplate(template: typeof TEMPLATES[0]) {
@@ -217,9 +216,7 @@ export default function NewDocumentPage() {
           <div
             key={template.type}
             className="rounded-xl p-5 transition-colors"
-            style={{}}
-            onMouseEnter={() => setHoveredButton(template.type)}
-            onMouseLeave={() => setHoveredButton(null)}>
+            style={{}}>
             <div className="flex items-start justify-between">
               <div className="flex items-start gap-3">
                 <FileText className="w-5 h-5 mt-0.5 shrink-0" style={stTextMuted} />

@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import { computeInvestorScore, computeMomentumScore } from '@/lib/scoring';
 import type { Investor, Meeting, Objection, ScoreDimension } from '@/lib/types';
 import { getClient, daysBetween, parseJsonSafe, clamp, loadAllMeetings, loadRaiseConfig, loadAllPortfolios, groupByInvestorId } from '@/lib/api-helpers';
-import { STATUS_LABELS, MEETING_TYPE_LABELS } from '@/lib/constants';
 
 // ---------------------------------------------------------------------------
 // Types

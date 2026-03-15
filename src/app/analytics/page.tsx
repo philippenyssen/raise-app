@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import {
   stTextMuted, stTextTertiary, stTextSecondary, stTextPrimary, stFontSm,
-  stSurface0, stSurface1, stSurface2, stBorderTop,
+  stSurface0, stSurface1, stBorderTop,
   labelMuted10, labelSmMuted, labelTertiary, labelMuted,
 } from '@/lib/styles';
 

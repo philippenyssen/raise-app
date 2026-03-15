@@ -5,7 +5,7 @@ import { useToast } from '@/components/toast';
 import { cachedFetch } from '@/lib/cache';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { Plus, Trash2, DollarSign, ShieldCheck, AlertTriangle, TrendingUp, FileText } from 'lucide-react';
-import { stAccent, stSurface1, stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
+import { stAccent, stSurface1, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 interface Commitment {
   id: string;

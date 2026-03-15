@@ -12,7 +12,7 @@ import {
   ChevronDown, Play, Ban, XCircle, Rocket, Timer, ArrowUpRight,
   TrendingDown, SkipForward,
 } from 'lucide-react';
-import { labelMuted10, stBorderTop, stSurface0, stSurface1, stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
+import { labelMuted10, stBorderTop, stSurface1, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 // ---------------------------------------------------------------------------
 // Constants — style objects using design tokens
@@ -94,7 +94,6 @@ function ActionCard({
   const isExecuted = executedIds.has(item.id);
   const isSkipped = skippedIds.has(item.id);
   const isDone = isExecuted || isSkipped;
-  const [hovered, setHovered] = useState(false);
   const [execHovered, setExecHovered] = useState(false);
   const [skipHovered, setSkipHovered] = useState(false);
 
@@ -114,9 +113,7 @@ function ActionCard({
   return (
     <div
       className="transition-colors"
-      style={cardStyle}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}>
+      style={cardStyle}>
       <div className="flex items-start gap-3">
         <div className="flex-1 min-w-0">
           {/* Header */}

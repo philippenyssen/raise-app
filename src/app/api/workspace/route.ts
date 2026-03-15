@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
-import { getAllDocuments, getInvestor, getMeetings, getInvestorPortfolio, getIntelligenceBriefs, getRaiseConfig, computeNetworkEffectData, computeRaiseForecast, computeEngagementVelocity, detectFomoDynamics, detectScoreReversals } from '@/lib/db';
+import { getAllDocuments, getInvestor, getMeetings, getInvestorPortfolio, getIntelligenceBriefs, getRaiseConfig } from '@/lib/db';
 import { computeInvestorScore, computeDealHeat } from '@/lib/scoring';
 import { getFullContext, contextToSystemPrompt } from '@/lib/context-bus';
 import type { FullContext } from '@/lib/context-bus';

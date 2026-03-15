@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import {
   CheckCircle2, AlertTriangle, XCircle, Shield, RefreshCw,
 } from 'lucide-react';
-import { stAccent, stSurface1, stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
+import { stAccent, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 interface IntelligenceCheck { name: string; status: 'pass' | 'fail' | 'warn'; detail: string; }
 

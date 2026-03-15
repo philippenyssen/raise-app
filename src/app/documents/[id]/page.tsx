@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { useToast } from '@/components/toast';
 import {
@@ -9,7 +9,7 @@ import {
   Clock, History, Eye, Edit3
 } from 'lucide-react';
 import { DocSummaryRecord as Doc } from '@/lib/types';
-import { labelMuted10, stAccent, stSurface1, stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
+import { labelMuted10, stAccent, stSurface1, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 interface Version { id: string; document_id: string; content: string; version_number: number; change_summary: string; created_at: string }
 
@@ -17,7 +17,6 @@ type AIOperation = 'improve' | 'consistency' | 'weak_arguments' | 'goldman';
 
 export default function DocumentEditorPage() {
   const params = useParams();
-  const router = useRouter();
   const { toast } = useToast();
   const id = params.id as string;
 
