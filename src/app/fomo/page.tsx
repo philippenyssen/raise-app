@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
+import { cachedFetch } from '@/lib/cache';
 import Link from 'next/link';
 import {
   Zap, RefreshCw, AlertTriangle, TrendingUp, Users,
@@ -403,7 +404,7 @@ export default function FomoPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch('/api/fomo');
+      const res = await cachedFetch('/api/fomo');
       if (!res.ok) throw new Error('Couldn\'t load FOMO data — try refreshing the page');
       const json = await res.json();
       setData(json);

@@ -63,7 +63,9 @@ export default function AnalysisPage() {
     setLoading(true);
     try {
       const res = await fetch('/api/analyze');
-      setData(await res.json());
+      const result = await res.json();
+      setData(result);
+      if (!result.error) toast('Analysis complete — scroll down to see insights');
     } catch {
       toast('Analysis failed. Ensure you have at least 2 meetings with notes, then retry.', 'error');
       setData({ patterns: null, health: { health: 'red', diagnosis: 'Analysis failed. Please try again.', recommendations: [], risk_factors: [] }, objections: [], funnel: {}, meeting_count: 0, error: 'Failed to run analysis' });

@@ -174,7 +174,7 @@ export default function NewDocumentPage() {
       toast(`Created "${title}"`);
       router.push(`/documents/${doc.id}`);
     } catch (e) {
-      toast(e instanceof Error ? e.message : 'Failed to create document', 'error');
+      toast(e instanceof Error ? e.message : 'Couldn\'t create document — try again', 'error');
       setCreating(false);
     }
   }
