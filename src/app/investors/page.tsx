@@ -102,7 +102,7 @@ export default function InvestorsPage() {
       setForm({ name: '', type: 'vc', tier: 2, partner: '', fund_size: '', check_size_range: '', sector_thesis: '', warm_path: '', ic_process: '', speed: 'medium', portfolio_conflicts: '', notes: '' });
       fetchInvestors();
     } catch {
-      toast('Failed to save investor', 'error');
+      toast('Couldn\'t save investor — check all fields and try again', 'error');
     } finally {
       setSubmitting(false);
     }}
@@ -114,7 +114,7 @@ export default function InvestorsPage() {
       toast(`Status updated to ${STATUS_LABELS[status as InvestorStatus] || status}`);
       fetchInvestors();
     } catch {
-      toast('Failed to update status', 'error');
+      toast('Couldn\'t update status — try again in a moment', 'error');
     }}
 
   async function handleDelete() {
@@ -126,7 +126,7 @@ export default function InvestorsPage() {
       setDeleteTarget(null);
       fetchInvestors();
     } catch {
-      toast('Failed to delete investor', 'error');
+      toast('Couldn\'t delete investor — try again in a moment', 'error');
       setDeleteTarget(null);
     }}
 
@@ -212,7 +212,7 @@ export default function InvestorsPage() {
               const blob = new Blob([hdr.join(',')+'\n'+rows.join('\n')], { type: 'text/csv' });
               Object.assign(document.createElement('a'), { href: URL.createObjectURL(blob), download: 'investors.csv' }).click();
               toast(`Exported ${filtered.length} investors to CSV`);
-            } catch { toast('Failed to export CSV', 'error'); }
+            } catch { toast('Couldn\'t export CSV — try again', 'error'); }
           }} className="btn btn-secondary btn-md">
             <Download className="w-3.5 h-3.5" /> CSV</button>
           <button

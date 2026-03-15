@@ -135,7 +135,7 @@ export default function AnalyticsPage() {
       if (!res.ok) throw new Error(`Server error (${res.status})`);
       setData(await res.json());
     } catch (err) {
-      toast('Failed to load analytics', 'error');
+      toast('Couldn\'t load analytics — try refreshing the page', 'error');
     } finally {
       setLoading(false);
     }}

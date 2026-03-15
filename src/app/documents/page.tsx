@@ -78,7 +78,7 @@ export default function DocumentsPage() {
       if (!res.ok) throw new Error(`Failed (${res.status})`);
       setDocs(await res.json());
     } catch {
-      toast('Failed to load documents', 'error');
+      toast('Couldn\'t load documents — try refreshing the page', 'error');
     } finally {
       setLoading(false);
     }}
@@ -100,7 +100,7 @@ export default function DocumentsPage() {
       setDeleteTarget(null);
       fetchDocs();
     } catch {
-      toast('Failed to delete document', 'error');
+      toast('Couldn\'t delete document — try again in a moment', 'error');
       setDeleteTarget(null);
     } finally {
       setDeleting(false);
@@ -116,7 +116,7 @@ export default function DocumentsPage() {
       setFlags(prev => prev.filter(f => f.id !== flagId));
       toast(action === 'addressed' ? 'Flag marked as addressed' : 'Flag dismissed', 'success');
     } catch {
-      toast('Failed to update flag', 'error');
+      toast('Couldn\'t update flag — try again', 'error');
     }}
 
   function downloadDoc(doc: Doc) {

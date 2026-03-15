@@ -337,10 +337,10 @@ export default function TodayPage() {
         lastFetchedAt.current = Date.now();
         setStalenessMinutes(0);
       } else {
-        if (!silent) toast('Failed to load briefing', 'error');
+        if (!silent) toast('Couldn\'t load today\'s briefing — try refreshing', 'error');
       }
     } catch {
-      if (!silent) toast('Failed to load briefing', 'error');
+      if (!silent) toast('Couldn\'t load today\'s briefing — try refreshing', 'error');
     }
 
     // Non-blocking: fetch velocity (for raise day counter), strategic insight, and pulse
@@ -424,7 +424,7 @@ export default function TodayPage() {
       setDueFollowups(prev => prev.filter(f => f.id !== id));
       toast('Follow-up completed', 'success');
     } catch {
-      toast('Failed to complete', 'error');
+      toast('Couldn\'t complete follow-up — try again', 'error');
     }
     setCompletingFollowupId(null);
   }
@@ -440,7 +440,7 @@ export default function TodayPage() {
       setDueFollowups(prev => prev.filter(f => f.id !== id));
       toast('Follow-up skipped', 'success');
     } catch {
-      toast('Failed to skip', 'error');
+      toast('Couldn\'t skip follow-up — try again', 'error');
     }
     setCompletingFollowupId(null);
   }
