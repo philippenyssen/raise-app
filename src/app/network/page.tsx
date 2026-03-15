@@ -138,7 +138,7 @@ export default function NetworkPage() {
   if (error) {
     return (
       <div className="p-6">
-        <div className="card p-6 flex items-center gap-3" style={{ border: '1px solid var(--danger-muted)' }}>
+        <div className="card p-6 flex items-center gap-3">
           <AlertTriangle className="w-5 h-5 shrink-0" style={{ color: 'var(--text-primary)' }} />
           <div>
             <p style={{ color: 'var(--text-primary)', fontWeight: 500 }}>Failed to load network data</p>
@@ -192,7 +192,6 @@ export default function NetworkPage() {
             padding: 'var(--space-2) var(--space-4)',
             background: 'var(--accent-muted)',
             borderRadius: 'var(--radius-md)',
-            border: '1px solid var(--accent)',
           }}>
             <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)', fontWeight: 500 }}>
               Expected Capital
@@ -220,7 +219,7 @@ export default function NetworkPage() {
           { label: 'Avg Chain Length', value: String(summary.avgChainLength), icon: Link2 },
           { label: 'Strongest Chain', value: summary.strongestChain ? `${summary.strongestChain.name}` : '--', icon: TrendingUp },
         ].map((stat) => (
-          <div key={stat.label} className="card p-4" style={{ border: '1px solid var(--border-subtle)' }}>
+          <div key={stat.label} className="card p-4">
             <div className="flex items-center gap-2 mb-1">
               <span style={{ color: 'var(--text-muted)' }}><stat.icon className="w-3.5 h-3.5" /></span>
               <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', letterSpacing: '0.01em' }}>
@@ -239,7 +238,6 @@ export default function NetworkPage() {
         <div
           className="card p-4 mb-6 flex items-start gap-3"
           style={{
-            border: '1px solid var(--warning)',
             background: 'var(--warning-muted)',
           }}
         >
@@ -284,8 +282,7 @@ export default function NetworkPage() {
               key={cascade.keystoneId}
               className="card transition-colors"
               style={{
-                border: `1px solid ${isHovered ? 'var(--border-strong)' : 'var(--border-subtle)'}`,
-                transition: 'border-color 0.15s ease',
+                transition: 'all 0.15s ease',
               }}
               onMouseEnter={() => setHoveredCard(cascade.keystoneId)}
               onMouseLeave={() => setHoveredCard(null)}
@@ -426,9 +423,7 @@ export default function NetworkPage() {
                               style={{
                                 marginLeft: '24px',
                                 background: isLinkHovered ? 'var(--surface-2)' : 'var(--surface-1)',
-                                border: isBottleneck
-                                  ? '1px solid var(--warning)'
-                                  : `1px solid ${isLinkHovered ? 'var(--border-default)' : 'var(--border-subtle)'}`,
+                                ...(isBottleneck ? { background: 'var(--warning-muted)' } : {}),
                                 transition: 'all 0.15s ease',
                               }}
                               onMouseEnter={() => setHoveredLink(link.investorId)}
@@ -552,7 +547,6 @@ export default function NetworkPage() {
                       className="mt-4 p-3 rounded-md flex items-start gap-2"
                       style={{
                         background: 'var(--warning-muted)',
-                        border: '1px solid var(--warning)',
                       }}
                     >
                       <AlertTriangle className="w-3.5 h-3.5 shrink-0 mt-0.5" style={{ color: 'var(--text-tertiary)' }} />
@@ -584,7 +578,7 @@ export default function NetworkPage() {
       {/* Network Summary Footer */}
       <div
         className="card p-4 mt-6"
-        style={{ border: '1px solid var(--border-subtle)', background: 'var(--surface-1)' }}
+        style={{ background: 'var(--surface-1)' }}
       >
         <div className="flex items-center gap-2 mb-3">
           <span style={{ color: 'var(--text-muted)' }}><TrendingUp className="w-4 h-4" /></span>

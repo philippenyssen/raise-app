@@ -221,14 +221,14 @@ export default function DocumentsPage() {
 
       {/* Document Flags Banner */}
       {showFlags && flags.length > 0 && (
-        <div className="rounded-xl p-4 space-y-3" style={{ border: '1px solid color-mix(in srgb, var(--warning) 20%, transparent)', backgroundColor: 'color-mix(in srgb, var(--warning) 5%, transparent)' }}>
+        <div className="rounded-xl p-4 space-y-3" style={{ backgroundColor: 'color-mix(in srgb, var(--warning) 5%, transparent)' }}>
           <h3 className="text-sm font-medium flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
             <AlertTriangle className="w-4 h-4" />
             Open Document Flags from Meetings
           </h3>
           <div className="space-y-2 max-h-64 overflow-y-auto">
             {flags.map(flag => (
-              <div key={flag.id} className="flex items-start gap-3 rounded-lg p-3" style={{ backgroundColor: 'color-mix(in srgb, var(--surface-1) 50%, transparent)', border: '1px solid var(--border-subtle)' }}>
+              <div key={flag.id} className="flex items-start gap-3 rounded-lg p-3" style={{ backgroundColor: 'color-mix(in srgb, var(--surface-1) 50%, transparent)' }}>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-[10px] px-1.5 py-0.5 rounded font-medium" style={FLAG_TYPE_STYLE_MAP[flag.flag_type] || DEFAULT_FLAG_STYLE}>
@@ -282,7 +282,7 @@ export default function DocumentsPage() {
       )}
 
       {docs.length === 0 ? (
-        <div className="rounded-xl p-8 text-center space-y-3" style={{ border: '1px solid var(--border-subtle)' }}>
+        <div className="rounded-xl p-8 text-center space-y-3">
           <FileText className="w-8 h-8 mx-auto" style={{ color: 'var(--text-muted)' }} />
           <p style={{ color: 'var(--text-muted)' }}>No documents yet.</p>
           <Link
@@ -318,17 +318,11 @@ export default function DocumentsPage() {
                       className="rounded-xl p-4 transition-colors flex items-center justify-between"
                       style={{
                         position: 'relative' as const,
-                        border: docFlags.length > 0
-                          ? '1px solid color-mix(in srgb, var(--warning) 20%, transparent)'
-                          : `1px solid ${hoverStates[docKey] ? 'var(--border-default)' : 'var(--border-subtle)'}`,
                         backgroundColor: docFlags.length > 0
                           ? 'color-mix(in srgb, var(--warning) 3%, transparent)'
                           : hoverStates[docKey]
                             ? 'var(--surface-2)'
                             : 'transparent',
-                        borderLeft: docFlags.length > 0
-                          ? '3px solid var(--warning)'
-                          : '3px solid var(--accent)',
                       }}
                       onMouseEnter={() => setHover(docKey, true)}
                       onMouseLeave={() => setHover(docKey, false)}
@@ -397,7 +391,7 @@ export default function DocumentsPage() {
               </p>
               <div className="space-y-2">
                 {generalFlags.map(flag => (
-                  <div key={flag.id} className="rounded-lg p-3 flex items-start justify-between gap-3" style={{ border: '1px solid color-mix(in srgb, var(--warning) 15%, transparent)', backgroundColor: 'color-mix(in srgb, var(--surface-1) 50%, transparent)' }}>
+                  <div key={flag.id} className="rounded-lg p-3 flex items-start justify-between gap-3" style={{ backgroundColor: 'color-mix(in srgb, var(--surface-1) 50%, transparent)' }}>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
                         <span className="text-[10px] px-1.5 py-0.5 rounded font-medium" style={FLAG_TYPE_STYLE_MAP[flag.flag_type] || DEFAULT_FLAG_STYLE}>

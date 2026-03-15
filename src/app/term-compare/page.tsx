@@ -348,7 +348,6 @@ export default function TermComparePage() {
             key={idx}
             className="rounded-xl p-5"
             style={{
-              border: '1px solid var(--border-default)',
               background: 'var(--surface-0)',
             }}
           >
@@ -523,7 +522,7 @@ export default function TermComparePage() {
           {/* Founder Friendly Score Bar */}
           <div
             className="rounded-xl p-5"
-            style={{ border: '1px solid var(--border-default)', background: 'var(--surface-0)' }}
+            style={{ background: 'var(--surface-0)' }}
           >
             <h3 className="text-xs font-medium  tracking-wider mb-4" style={{ color: 'var(--text-tertiary)' }}>
               Founder-Friendly Score
@@ -558,7 +557,7 @@ export default function TermComparePage() {
           </div>
 
           {/* Comparison Table */}
-          <div className="rounded-xl overflow-x-auto" style={{ border: '1px solid var(--border-default)' }}>
+          <div className="rounded-xl overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="table-header">
                 <tr>
@@ -625,7 +624,7 @@ export default function TermComparePage() {
           {results.results.some(r => r.comparison_notes.length > 0) && (
             <div
               className="rounded-xl p-5"
-              style={{ border: '1px solid var(--border-default)', background: 'var(--surface-0)' }}
+              style={{ background: 'var(--surface-0)' }}
             >
               <h3 className="text-xs font-medium  tracking-wider mb-4" style={{ color: 'var(--text-tertiary)' }}>
                 Key Observations
@@ -679,7 +678,7 @@ export default function TermComparePage() {
           {/* Ownership Waterfall (text-based) */}
           <div
             className="rounded-xl p-5"
-            style={{ border: '1px solid var(--border-default)', background: 'var(--surface-0)' }}
+            style={{ background: 'var(--surface-0)' }}
           >
             <h3 className="text-xs font-medium  tracking-wider mb-4" style={{ color: 'var(--text-tertiary)' }}>
               Ownership Waterfall
@@ -748,7 +747,7 @@ export default function TermComparePage() {
       {!results && scenarios.length >= 2 && scenarios.filter(s => s.investor_name && s.pre_money_valuation > 0 && s.investment_amount > 0).length >= 2 && (
         <div
           className="rounded-xl p-8 text-center"
-          style={{ border: '1px dashed var(--border-default)', color: 'var(--text-muted)' }}
+          style={{ color: 'var(--text-muted)' }}
         >
           <Scale className="w-8 h-8 mx-auto mb-3" style={{ color: 'var(--text-muted)' }} />
           <p className="text-sm">Fill in the scenarios above and click <strong>Compare</strong> to see the analysis.</p>

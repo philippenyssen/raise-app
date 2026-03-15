@@ -95,7 +95,7 @@ export default function ReportsPage() {
       {/* Report Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Board Update */}
-        <div className="rounded-xl p-5" style={{ border: '1px solid var(--border-subtle)', backgroundColor: 'color-mix(in srgb, var(--surface-1) 50%, transparent)' }}>
+        <div className="rounded-xl p-5" style={{ backgroundColor: 'color-mix(in srgb, var(--surface-1) 50%, transparent)' }}>
           <div className="flex items-center gap-3 mb-3">
             <span className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'var(--success-muted)' }}>
               <BarChart3 className="w-4 h-4" style={{ color: 'var(--text-secondary)' }} />
@@ -123,7 +123,7 @@ export default function ReportsPage() {
         </div>
 
         {/* Weekly Agenda */}
-        <div className="rounded-xl p-5" style={{ border: '1px solid var(--border-subtle)', backgroundColor: 'color-mix(in srgb, var(--surface-1) 50%, transparent)' }}>
+        <div className="rounded-xl p-5" style={{ backgroundColor: 'color-mix(in srgb, var(--surface-1) 50%, transparent)' }}>
           <div className="flex items-center gap-3 mb-3">
             <span className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'color-mix(in srgb, var(--accent) 20%, transparent)' }}>
               <ClipboardList className="w-4 h-4" style={{ color: 'var(--accent)' }} />
@@ -151,7 +151,7 @@ export default function ReportsPage() {
         </div>
 
         {/* Investor Brief */}
-        <div className="rounded-xl p-5" style={{ border: '1px solid var(--border-subtle)', backgroundColor: 'color-mix(in srgb, var(--surface-1) 50%, transparent)' }}>
+        <div className="rounded-xl p-5" style={{ backgroundColor: 'color-mix(in srgb, var(--surface-1) 50%, transparent)' }}>
           <div className="flex items-center gap-3 mb-3">
             <span className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'color-mix(in srgb, var(--accent-muted) 20%, transparent)' }}>
               <Users2 className="w-4 h-4" style={{ color: 'var(--accent-muted)' }} />
@@ -201,7 +201,7 @@ export default function ReportsPage() {
 
       {/* Report Display */}
       {reportHtml && (
-        <div className="rounded-xl overflow-hidden" style={{ border: '1px solid var(--border-subtle)', backgroundColor: 'color-mix(in srgb, var(--surface-1) 50%, transparent)' }}>
+        <div className="rounded-xl overflow-hidden" style={{ backgroundColor: 'color-mix(in srgb, var(--surface-1) 50%, transparent)' }}>
           {/* Report toolbar */}
           <div className="flex items-center justify-between px-5 py-3" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
             <div className="flex items-center gap-3">

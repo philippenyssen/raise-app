@@ -202,7 +202,6 @@ export default function StrategicPage() {
         <h1 className="page-title">Strategic Dashboard</h1>
         <div
           style={{
-            border: '1px solid var(--danger-muted)',
             background: 'rgba(27, 42, 74, 0.08)',
             borderRadius: 'var(--radius-lg)',
             padding: 'var(--space-8)',
@@ -482,7 +481,6 @@ export default function StrategicPage() {
               style={{
                 borderRadius: 'var(--radius-md)',
                 padding: 'var(--space-3)',
-                border: '1px solid rgba(90, 90, 122, 0.15)',
                 background: 'rgba(90, 90, 122, 0.04)',
               }}
             >
@@ -495,7 +493,6 @@ export default function StrategicPage() {
                 style={{
                   borderRadius: 'var(--radius-md)',
                   padding: 'var(--space-3)',
-                  border: '1px solid rgba(27, 42, 74, 0.05)',
                   background: 'var(--accent-muted)',
                 }}
               >
@@ -509,7 +506,6 @@ export default function StrategicPage() {
               style={{
                 borderRadius: 'var(--radius-md)',
                 padding: 'var(--space-3)',
-                border: '1px solid var(--border-subtle)',
                 background: 'var(--surface-1)',
               }}
             >
@@ -578,7 +574,6 @@ export default function StrategicPage() {
       {/* ================================================================ */}
       <div
         style={{
-          border: '1px solid var(--border-subtle)',
           borderRadius: 'var(--radius-lg)',
           overflow: 'hidden',
         }}

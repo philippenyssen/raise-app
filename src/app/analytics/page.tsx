@@ -183,7 +183,7 @@ export default function AnalyticsPage() {
     return (
       <div className="space-y-6">
         <h1 className="page-title">Process Analytics</h1>
-        <div className="rounded-xl p-8 text-center space-y-3" style={{ border: '1px solid var(--danger-muted)', background: 'var(--danger-muted)', opacity: 0.3 }}>
+        <div className="rounded-xl p-8 text-center space-y-3" style={{ background: 'var(--danger-muted)', opacity: 0.3 }}>
           <p style={{ color: 'var(--text-tertiary)', fontSize: 'var(--font-size-sm)' }}>Could not load analytics data.</p>
           <button
             onClick={fetchAnalytics}
@@ -263,7 +263,7 @@ export default function AnalyticsPage() {
       {funnel.bottleneck && funnel.bottleneck.count > 2 && (
         <div
           className="rounded-xl px-5 py-4 flex items-center gap-4"
-          style={{ border: '1px solid var(--warning-muted)', background: 'color-mix(in srgb, var(--warning-muted) 20%, transparent)' }}
+          style={{ background: 'color-mix(in srgb, var(--warning-muted) 20%, transparent)' }}
         >
           <AlertTriangle className="w-5 h-5 shrink-0" style={{ color: 'var(--text-tertiary)' }} />
           <div>
@@ -290,7 +290,6 @@ export default function AnalyticsPage() {
         <div
           className="rounded-xl px-5 py-4 flex items-center gap-4"
           style={{
-            border: `1px solid ${risks.timelineRisk.level === 'high' ? 'var(--danger-muted)' : 'var(--warning-muted)'}`,
             background: `color-mix(in srgb, ${risks.timelineRisk.level === 'high' ? 'var(--danger-muted)' : 'var(--warning-muted)'} 20%, transparent)`,
           }}
         >
@@ -398,7 +397,7 @@ export default function AnalyticsPage() {
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {funnel.conversionRates.map(cr => (
-                <div key={`${cr.from}-${cr.to}`} className="rounded-lg p-3" style={{ border: '1px solid var(--border-subtle)' }}>
+                <div key={`${cr.from}-${cr.to}`} className="rounded-lg p-3">
                   <div className="mb-1 truncate" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
                     {STAGE_LABELS[cr.from]} {'->'} {STAGE_LABELS[cr.to]}
                   </div>
@@ -437,7 +436,6 @@ export default function AnalyticsPage() {
                       style={{
                         width: `${Math.max(d.rate, 5)}%`,
                         background: 'var(--danger-muted)',
-                        borderRight: '1px solid color-mix(in srgb, var(--danger) 50%, transparent)',
                       }}
                     >
                       <span className="font-medium whitespace-nowrap" style={{ fontSize: '10px', color: 'var(--text-primary)' }}>
@@ -461,7 +459,7 @@ export default function AnalyticsPage() {
               </h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {Object.entries(funnel.avgTimeInStage).map(([stage, data]) => (
-                  <div key={stage} className="rounded-lg p-3" style={{ border: '1px solid var(--border-subtle)' }}>
+                  <div key={stage} className="rounded-lg p-3">
                     <div className="mb-1" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{STAGE_LABELS[stage]}</div>
                     <div
                       className="text-lg font-bold"
@@ -494,7 +492,7 @@ export default function AnalyticsPage() {
         <div className="space-y-6">
           {/* Key velocity numbers */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <div className="rounded-lg p-3" style={{ border: '1px solid var(--border-subtle)' }}>
+            <div className="rounded-lg p-3">
               <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Meetings This Week</div>
               <div className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>{velocity.meetingsThisWeek}</div>
               <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
@@ -506,12 +504,12 @@ export default function AnalyticsPage() {
                 )}
               </div>
             </div>
-            <div className="rounded-lg p-3" style={{ border: '1px solid var(--border-subtle)' }}>
+            <div className="rounded-lg p-3">
               <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Pipeline Velocity</div>
               <div className="text-2xl font-bold" style={{ color: 'var(--text-tertiary)' }}>{velocity.velocityScore > 0 ? velocity.velocityScore.toFixed(1) : '—'}</div>
               <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>weighted score</div>
             </div>
-            <div className="rounded-lg p-3" style={{ border: '1px solid var(--border-subtle)' }}>
+            <div className="rounded-lg p-3">
               <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Days Since Progress</div>
               <div
                 className="text-2xl font-bold"
@@ -526,7 +524,7 @@ export default function AnalyticsPage() {
               </div>
               <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>last meeting or status change</div>
             </div>
-            <div className="rounded-lg p-3" style={{ border: '1px solid var(--border-subtle)' }}>
+            <div className="rounded-lg p-3">
               <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Est. Days to Close</div>
               <div
                 className="text-2xl font-bold"
@@ -649,7 +647,7 @@ export default function AnalyticsPage() {
               )}
               <div className="flex gap-2 flex-wrap">
                 {Object.entries(risks.concentrationRisk.breakdown).map(([type, count]) => (
-                  <div key={type} className="rounded px-3 py-2" style={{ border: '1px solid var(--border-subtle)' }}>
+                  <div key={type} className="rounded px-3 py-2">
                     <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{TYPE_LABELS[type] || type}</div>
                     <div className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>{count}</div>
                   </div>
@@ -682,7 +680,7 @@ export default function AnalyticsPage() {
                 {Object.entries(engagement.enthusiasmByType)
                   .sort((a, b) => b[1].avg - a[1].avg)
                   .map(([type, data]) => (
-                    <div key={type} className="rounded-lg p-3" style={{ border: '1px solid var(--border-subtle)' }}>
+                    <div key={type} className="rounded-lg p-3">
                       <div className="mb-1" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{TYPE_LABELS[type] || type}</div>
                       <div className="flex items-center gap-2">
                         <span
@@ -749,7 +747,7 @@ export default function AnalyticsPage() {
                 <h3 className="text-xs font-semibold  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
                   Objection Resolution
                 </h3>
-                <div className="rounded-lg p-4" style={{ border: '1px solid var(--border-subtle)' }}>
+                <div className="rounded-lg p-4">
                   <div className="flex items-baseline gap-2">
                     <span
                       className="text-3xl font-bold"
@@ -786,7 +784,7 @@ export default function AnalyticsPage() {
                 <h3 className="text-xs font-semibold  tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
                   Competitive Intelligence
                 </h3>
-                <div className="rounded-lg p-4" style={{ border: '1px solid var(--border-subtle)' }}>
+                <div className="rounded-lg p-4">
                   <div className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
                     {engagement.competitiveMentions}
                   </div>
@@ -801,7 +799,6 @@ export default function AnalyticsPage() {
                             fontSize: '10px',
                             background: 'var(--surface-2)',
                             color: 'var(--text-tertiary)',
-                            border: '1px solid var(--border-subtle)',
                           }}
                         >
                           {c.name} ({c.count}x)
@@ -828,15 +825,15 @@ export default function AnalyticsPage() {
         <div className="space-y-6">
           {/* Overview */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <div className="rounded-lg p-3" style={{ border: '1px solid var(--border-subtle)' }}>
+            <div className="rounded-lg p-3">
               <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Passed</div>
               <div className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>{winLoss.passedCount}</div>
             </div>
-            <div className="rounded-lg p-3" style={{ border: '1px solid var(--border-subtle)' }}>
+            <div className="rounded-lg p-3">
               <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Dropped</div>
               <div className="text-2xl font-bold" style={{ color: 'var(--text-muted)' }}>{winLoss.droppedCount}</div>
             </div>
-            <div className="rounded-lg p-3" style={{ border: '1px solid var(--border-subtle)' }}>
+            <div className="rounded-lg p-3">
               <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Attrition Rate</div>
               <div
                 className="text-2xl font-bold"
@@ -850,7 +847,7 @@ export default function AnalyticsPage() {
                 {winLoss.passRate}%
               </div>
             </div>
-            <div className="rounded-lg p-3" style={{ border: '1px solid var(--border-subtle)' }}>
+            <div className="rounded-lg p-3">
               <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Active</div>
               <div className="text-2xl font-bold" style={{ color: 'var(--text-secondary)' }}>
                 {summary.activeInvestors}
@@ -870,7 +867,7 @@ export default function AnalyticsPage() {
                   .map(([tier, data]) => {
                     const total = data.active + data.passed + data.dropped;
                     return (
-                      <div key={tier} className="rounded-lg p-3" style={{ border: '1px solid var(--border-subtle)' }}>
+                      <div key={tier} className="rounded-lg p-3">
                         <div className="mb-2" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Tier {tier}</div>
                         <div className="h-4 rounded-full overflow-hidden flex" style={{ background: 'var(--surface-0)' }}>
                           {data.active > 0 && (
@@ -919,7 +916,7 @@ export default function AnalyticsPage() {
                     const total = data.active + data.passed + data.dropped;
                     const retentionRate = total > 0 ? Math.round((data.active / total) * 100) : 0;
                     return (
-                      <div key={type} className="rounded-lg p-3" style={{ border: '1px solid var(--border-subtle)' }}>
+                      <div key={type} className="rounded-lg p-3">
                         <div className="mb-1" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{TYPE_LABELS[type] || type}</div>
                         <div
                           className="text-lg font-bold"
@@ -980,7 +977,7 @@ function SummaryCard({
   icon: React.ReactNode; color: string;
 }) {
   return (
-    <div className="rounded-xl px-4 py-3" style={{ border: '1px solid var(--border-subtle)', background: 'var(--surface-1)' }}>
+    <div className="rounded-xl px-4 py-3" style={{ background: 'var(--surface-1)' }}>
       <div className="flex items-center gap-2 mb-1">
         <span style={{ color }}>{icon}</span>
         <span className="font-medium  tracking-wider" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{label}</span>
@@ -1003,7 +1000,7 @@ function CollapsibleSection({
   const [hovered, setHovered] = useState(false);
 
   return (
-    <div className="rounded-xl overflow-hidden" style={{ border: '1px solid var(--border-subtle)' }}>
+    <div className="rounded-xl overflow-hidden">
       <button
         onClick={onToggle}
         onMouseEnter={() => setHovered(true)}

@@ -91,7 +91,6 @@ export default function FollowupPlan({
   return (
     <div
       className="rounded-xl overflow-hidden"
-      style={{ border: '1px solid var(--border-subtle)' }}
     >
       {/* Header */}
       <button

@@ -364,7 +364,7 @@ export default function InvestorDetailPage() {
         return (
           <div
             className="flex items-start gap-3 rounded-xl px-4 py-3"
-            style={{ border: '1px solid var(--warning-muted)', background: 'var(--warning-muted)' }}
+            style={{ background: 'var(--warning-muted)' }}
           >
             <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" style={{ color: 'var(--text-tertiary)' }} />
             <div className="min-w-0">
@@ -515,7 +515,6 @@ export default function InvestorDetailPage() {
           <div
             className="rounded-xl overflow-hidden"
             style={{
-              border: overdueItems.length > 0 ? '1px solid rgba(26, 26, 46, 0.06)' : '1px solid var(--border-default)',
               background: overdueItems.length > 0 ? 'rgba(26, 26, 46, 0.06)' : undefined,
             }}
           >
@@ -628,7 +627,7 @@ export default function InvestorDetailPage() {
 
       {/* Profile + Process Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="rounded-xl p-5 space-y-3" style={{ border: '1px solid var(--border-default)' }}>
+        <div className="rounded-xl p-5 space-y-3">
           <h2 className="text-xs font-medium flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
             <Users className="w-3.5 h-3.5" /> Profile
           </h2>
@@ -639,7 +638,7 @@ export default function InvestorDetailPage() {
             <Row label="Thesis" value={investor.sector_thesis} />
           </div>
         </div>
-        <div className="rounded-xl p-5 space-y-3" style={{ border: '1px solid var(--border-default)' }}>
+        <div className="rounded-xl p-5 space-y-3">
           <h2 className="text-xs font-medium flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
             <Target className="w-3.5 h-3.5" /> Process
           </h2>
@@ -655,7 +654,7 @@ export default function InvestorDetailPage() {
       {/* Intelligence Score */}
       {score && <InvestorScorePanel score={score} loading={scoreLoading} onRefresh={fetchScore} investorId={id} />}
       {scoreLoading && !score && (
-        <div className="rounded-xl p-6" style={{ border: '1px solid var(--border-default)' }}>
+        <div className="rounded-xl p-6">
           <div className="flex items-center gap-3">
             <Loader2 className="w-4 h-4 animate-spin" style={{ color: 'var(--text-muted)' }} />
             <span className="text-sm" style={{ color: 'var(--text-muted)' }}>Scoring investor across 11 dimensions...</span>
@@ -679,7 +678,7 @@ export default function InvestorDetailPage() {
       </div>
 
       {/* Intelligence Tabs */}
-      <div className="rounded-xl overflow-hidden" style={{ border: '1px solid var(--border-default)' }}>
+      <div className="rounded-xl overflow-hidden">
         <div className="flex" style={{ borderBottom: '1px solid var(--border-default)', background: 'var(--surface-1)' }}>
           {([
             { key: 'overview' as IntelTab, label: 'Meetings', icon: Clock },
@@ -744,7 +743,7 @@ export default function InvestorDetailPage() {
                   {meetings.map(m => {
                     const objs = (() => { try { return JSON.parse(m.objections || '[]'); } catch { return []; } })();
                     return (
-                      <div key={m.id} className="pl-4 pb-2" style={{ borderLeft: '2px solid var(--border-default)' }}>
+                      <div key={m.id} className="pb-2">
                         <div className="flex items-center gap-3 mb-1">
                           <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{m.date}</span>
                           <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{m.type.replace(/_/g, ' ')}</span>
@@ -836,7 +835,7 @@ export default function InvestorDetailPage() {
               ) : (
                 <div className="space-y-4">
                   {partners.map(p => (
-                    <div key={p.id} className="rounded-lg p-4" style={{ border: '1px solid var(--border-default)' }}>
+                    <div key={p.id} className="rounded-lg p-4">
                       <div className="flex items-start justify-between">
                         <div>
                           <h4 className="font-medium" style={{ color: 'var(--text-primary)' }}>{p.name}</h4>
@@ -885,7 +884,7 @@ export default function InvestorDetailPage() {
                   </button>
                 </div>
               ) : (
-                <div className="rounded-lg overflow-hidden" style={{ border: '1px solid var(--border-default)' }}>
+                <div className="rounded-lg overflow-hidden">
                   <table className="w-full text-sm">
                     <thead style={{ background: 'var(--surface-1)', borderBottom: '1px solid var(--border-default)' }}>
                       <tr>
@@ -960,7 +959,6 @@ export default function InvestorDetailPage() {
                         key={t.id}
                         className="flex items-center justify-between py-2 px-3 rounded-lg"
                         style={{
-                          border: `1px solid ${t.status === 'done' ? 'var(--border-subtle)' : 'var(--border-default)'}`,
                           opacity: t.status === 'done' ? 0.5 : 1,
                         }}
                       >
@@ -1038,7 +1036,7 @@ export default function InvestorDetailPage() {
               ) : (
                 <div className="space-y-4">
                   {briefs.map(b => (
-                    <div key={b.id} className="rounded-lg p-4" style={{ border: '1px solid var(--border-default)' }}>
+                    <div key={b.id} className="rounded-lg p-4">
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-2">
                           <span className="text-xs px-2 py-0.5 rounded font-medium" style={{ background: 'var(--accent-muted)', color: 'var(--accent)' }}>{b.brief_type}</span>
@@ -1068,7 +1066,7 @@ export default function InvestorDetailPage() {
 
       {/* Notes */}
       {investor.notes && (
-        <div className="rounded-xl p-5" style={{ border: '1px solid var(--border-default)' }}>
+        <div className="rounded-xl p-5">
           <h2 className="text-xs font-medium mb-2" style={{ color: 'var(--text-tertiary)' }}>Notes</h2>
           <p className="text-sm" style={{ color: 'var(--text-tertiary)', whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>{investor.notes}</p>
         </div>
@@ -1088,7 +1086,7 @@ function Row({ label, value }: { label: string; value: string }) {
 
 function StatCard({ icon: Icon, label, value, sub, highlight }: { icon: React.ComponentType<{ className?: string }>; label: string; value: string | number; sub: string; highlight?: boolean }) {
   return (
-    <div className="rounded-xl p-4" style={{ border: highlight ? '1px solid rgba(26, 26, 46, 0.06)' : '1px solid var(--border-default)', background: highlight ? 'rgba(26, 26, 46, 0.06)' : undefined }}>
+    <div className="rounded-xl p-4" style={{ background: highlight ? 'rgba(26, 26, 46, 0.06)' : undefined }}>
       <div className="flex items-center gap-2 mb-1">
         <span style={{ color: highlight ? 'var(--danger)' : 'var(--text-muted)' }}><Icon className="w-3.5 h-3.5" /></span>
         <span className="text-xs truncate" style={{ color: highlight ? 'var(--danger)' : 'var(--text-muted)' }}>{label}</span>
@@ -1329,7 +1327,7 @@ function ConvictionTrajectoryPanel({ trajectory }: { trajectory: ConvictionTraje
     trajectory.trend === 'decelerating' ? 'var(--warning)' : 'var(--accent)';
 
   return (
-    <div className="rounded-xl overflow-hidden" style={{ border: '1px solid var(--border-default)' }}>
+    <div className="rounded-xl overflow-hidden">
       <div className="p-5" style={{ background: 'var(--surface-1)' }}>
         <div className="flex items-center gap-2 mb-4">
           <Activity className="w-4 h-4" style={{ color: 'var(--text-tertiary)' }} />
@@ -1573,7 +1571,7 @@ function EnrichmentPanel({
         const avgConfidence = catRecords.reduce((sum, r) => sum + r.confidence, 0) / catRecords.length;
 
         return (
-          <div key={cat} className="rounded-lg overflow-hidden" style={{ border: '1px solid var(--border-default)' }}>
+          <div key={cat} className="rounded-lg overflow-hidden">
             <button
               onClick={() => onToggleCategory(cat)}
               className="w-full flex items-center justify-between px-4 py-3 transition-colors"

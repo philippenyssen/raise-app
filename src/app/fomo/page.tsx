@@ -100,9 +100,9 @@ const IMPACT_STYLES: Record<string, React.CSSProperties> = {
 };
 
 const PRIORITY_STYLES: Record<string, React.CSSProperties> = {
-  high: { borderLeft: '2px solid var(--border-default)' },
-  medium: { borderLeft: '2px solid var(--border-default)' },
-  low: { borderLeft: '3px solid var(--border-default)' },
+  high: {},
+  medium: {},
+  low: {},
 };
 
 // ---------------------------------------------------------------------------
@@ -185,7 +185,6 @@ function IntensityMeter({ intensity, description }: { intensity: number; descrip
       style={{
         padding: 'var(--space-6)',
         background: 'var(--surface-1)',
-        border: '1px solid var(--border-subtle)',
         borderRadius: 'var(--radius-lg)',
       }}
     >
@@ -264,7 +263,6 @@ function StatsRow({ stats, meetingDensity }: { stats: FomoData['stats']; meeting
             style={{
               padding: 'var(--space-4)',
               background: 'var(--surface-1)',
-              border: '1px solid var(--border-subtle)',
               borderRadius: 'var(--radius-lg)',
             }}
           >
@@ -294,7 +292,6 @@ function PressureCard({ inv }: { inv: InvestorFomo }) {
       style={{
         padding: 'var(--space-4)',
         background: hovered ? 'var(--surface-2)' : 'var(--surface-1)',
-        border: `1px solid ${hovered ? 'var(--border-default)' : 'var(--border-subtle)'}`,
         borderRadius: 'var(--radius-lg)',
         transition: 'all 150ms ease',
         cursor: 'pointer',
@@ -436,7 +433,6 @@ function PressureCard({ inv }: { inv: InvestorFomo }) {
               padding: 'var(--space-3)',
               background: 'var(--surface-0)',
               borderRadius: 'var(--radius-md)',
-              border: '1px solid var(--border-subtle)',
             }}
           >
             <div className="flex items-start gap-2">
@@ -469,7 +465,6 @@ function TriggerEventCard({ event }: { event: TriggerEvent }) {
       style={{
         padding: 'var(--space-3)',
         background: hovered ? 'var(--surface-2)' : 'var(--surface-1)',
-        border: `1px solid ${hovered ? 'var(--border-default)' : 'var(--border-subtle)'}`,
         borderRadius: 'var(--radius-md)',
         transition: 'all 150ms ease',
       }}
@@ -516,7 +511,6 @@ function StrategyCardComponent({ card }: { card: StrategyCard }) {
       style={{
         padding: 'var(--space-4)',
         background: hovered ? 'var(--surface-2)' : 'var(--surface-1)',
-        border: '1px solid var(--border-subtle)',
         borderRadius: 'var(--radius-lg)',
         transition: 'all 150ms ease',
         ...PRIORITY_STYLES[card.priority],
@@ -774,7 +768,6 @@ export default function FomoPage() {
                     color: 'var(--text-muted)',
                     fontSize: 'var(--font-size-sm)',
                     background: 'var(--surface-1)',
-                    border: '1px solid var(--border-subtle)',
                     borderRadius: 'var(--radius-lg)',
                   }}
                 >
@@ -802,7 +795,6 @@ export default function FomoPage() {
                     color: 'var(--text-muted)',
                     fontSize: 'var(--font-size-sm)',
                     background: 'var(--surface-1)',
-                    border: '1px solid var(--border-subtle)',
                     borderRadius: 'var(--radius-lg)',
                   }}
                 >
@@ -822,7 +814,6 @@ export default function FomoPage() {
               style={{
                 padding: 'var(--space-4)',
                 background: 'var(--surface-1)',
-                border: '1px solid var(--border-subtle)',
                 borderRadius: 'var(--radius-lg)',
               }}
             >

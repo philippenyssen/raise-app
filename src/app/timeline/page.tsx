@@ -160,7 +160,7 @@ export default function TimelinePage() {
           const pTasks = tasks.filter(t => t.phase === phase);
           const pDone = pTasks.filter(t => t.status === 'done').length;
           return (
-            <div key={phase} className="rounded-xl p-3" style={{ border: '1px solid var(--border-subtle)' }}>
+            <div key={phase} className="rounded-xl p-3">
               <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>{PHASE_LABELS[phase]}</div>
               <div className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>{pDone}/{pTasks.length}</div>
               {pTasks.length > 0 && (
@@ -175,7 +175,7 @@ export default function TimelinePage() {
 
       {/* Add Task Form */}
       {showAdd && (
-        <form onSubmit={handleAddTask} className="rounded-xl p-4 space-y-3" style={{ border: '1px solid var(--border-subtle)' }}>
+        <form onSubmit={handleAddTask} className="rounded-xl p-4 space-y-3">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div>
               <label className="text-xs block mb-1" style={{ color: 'var(--text-muted)' }}>Title</label>
@@ -305,7 +305,7 @@ export default function TimelinePage() {
 
           {/* Tasks grouped by phase */}
           {Object.keys(tasksByPhase).length === 0 ? (
-            <div className="rounded-xl p-8 text-center" style={{ border: '1px dashed var(--border-subtle)' }}>
+            <div className="rounded-xl p-8 text-center">
               <ListTodo className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--text-muted)' }} />
               <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No tasks yet. Add manually or log a meeting — tasks are auto-generated.</p>
             </div>
@@ -421,7 +421,7 @@ export default function TimelinePage() {
       {tab === 'activity' && (
         <div className="space-y-1">
           {activity.length === 0 ? (
-            <div className="rounded-xl p-8 text-center" style={{ border: '1px dashed var(--border-subtle)' }}>
+            <div className="rounded-xl p-8 text-center">
               <Activity className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--text-muted)' }} />
               <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No activity yet. Events are logged automatically as you use the platform.</p>
             </div>

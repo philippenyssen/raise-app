@@ -150,7 +150,7 @@ export default function PostMeetingActions({
       : 'var(--warning)';
 
   return (
-    <div className="rounded-xl overflow-hidden" style={{ border: '1px solid var(--border-subtle)' }}>
+    <div className="rounded-xl overflow-hidden">
       {/* Header */}
       <div
         className="px-5 py-4"

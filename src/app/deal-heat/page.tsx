@@ -148,7 +148,6 @@ export default function DealHeatPage() {
             padding: 'var(--space-2) var(--space-3)',
             background: 'var(--surface-1)',
             borderRadius: 'var(--radius-md)',
-            border: '1px solid var(--border-subtle)',
           }}
         >
           <span style={{ color: 'var(--text-muted)' }}>
@@ -178,7 +177,6 @@ export default function DealHeatPage() {
               className="card transition-colors"
               style={{
                 padding: 'var(--space-4)',
-                border: `1px solid ${cfg.border}`,
                 background: cfg.bg,
                 cursor: 'pointer',
                 boxShadow: cfg.glow,
@@ -222,7 +220,6 @@ export default function DealHeatPage() {
                 fontSize: 'var(--font-size-sm)',
                 fontWeight: active ? 600 : 400,
                 background: active ? (cfg ? cfg.bg : 'var(--surface-2)') : 'transparent',
-                border: active ? `1px solid ${cfg ? cfg.border : 'var(--border-default)'}` : '1px solid transparent',
                 color: active ? (cfg ? cfg.text : 'var(--text-primary)') : 'var(--text-tertiary)',
                 cursor: 'pointer',
                 transition: 'all 150ms ease',

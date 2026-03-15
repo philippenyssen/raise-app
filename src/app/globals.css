@@ -156,47 +156,45 @@ body {
 
 .card {
   background: var(--surface-1);
-  border: 1px solid var(--border-subtle);
+  border: none;
   border-radius: var(--radius-lg);
   padding: var(--space-5);
-  transition: border-color 250ms ease, box-shadow 250ms ease;
+  transition: box-shadow 250ms ease;
 }
 
 .card-elevated {
   background: var(--surface-1);
-  border: 1px solid var(--border-subtle);
+  border: none;
   border-radius: var(--radius-lg);
   padding: var(--space-5);
+  box-shadow: var(--shadow-sm);
 }
 
 .card:hover, .card-interactive:hover {
-  border-color: var(--border-default);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+  box-shadow: var(--shadow-md);
 }
 
 .card-metric {
   background: var(--surface-1);
-  border: 1px solid var(--border-subtle);
+  border: none;
   border-radius: var(--radius-lg);
   padding: var(--space-5) var(--space-5);
-  transition: border-color 250ms ease, box-shadow 250ms ease;
+  transition: box-shadow 250ms ease;
 }
 .card-metric:hover {
-  border-color: var(--border-default);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+  box-shadow: var(--shadow-md);
 }
 
 .card-interactive {
   background: var(--surface-1);
-  border: 1px solid var(--border-subtle);
+  border: none;
   border-radius: var(--radius-lg);
   padding: var(--space-5);
   cursor: pointer;
-  transition: border-color 200ms ease, box-shadow 200ms ease, transform 200ms ease;
+  transition: box-shadow 200ms ease, transform 200ms ease;
 }
 .card-interactive:hover {
-  border-color: var(--border-default);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+  box-shadow: var(--shadow-md);
 }
 .card-interactive:active {
   transform: scale(0.995);

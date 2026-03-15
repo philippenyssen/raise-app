@@ -285,7 +285,6 @@ export default function WinLossPage() {
           className="card"
           style={{
             padding: 'var(--space-4)',
-            borderLeft: '2px solid var(--border-default)',
           }}
         >
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
@@ -325,7 +324,6 @@ export default function WinLossPage() {
           className="card"
           style={{
             padding: 'var(--space-4)',
-            borderLeft: '2px solid var(--border-default)',
           }}
         >
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
@@ -444,7 +442,6 @@ export default function WinLossPage() {
                   padding: 'var(--space-2) var(--space-3)',
                   borderRadius: 'var(--radius-sm)',
                   background: hoveredRow === `pred-${i}` ? 'var(--surface-2)' : 'var(--surface-1)',
-                  borderLeft: `3px solid ${strengthColor(p.strength)}`,
                   transition: 'background 0.15s',
                 }}
                 onMouseEnter={() => setHoveredRow(`pred-${i}`)}
@@ -750,7 +747,6 @@ export default function WinLossPage() {
                     background: 'var(--surface-1)',
                     fontSize: 'var(--font-size-sm)',
                     color: 'var(--text-secondary)',
-                    borderLeft: '3px solid var(--accent-muted)',
                   }}
                 >
                   {insight}
@@ -780,7 +776,6 @@ export default function WinLossPage() {
                     background: hoveredRow === `rec-${i}` ? 'var(--surface-2)' : 'var(--surface-1)',
                     fontSize: 'var(--font-size-sm)',
                     color: 'var(--text-secondary)',
-                    borderLeft: '2px solid var(--border-default)',
                     transition: 'background 0.15s',
                   }}
                   onMouseEnter={() => setHoveredRow(`rec-${i}`)}

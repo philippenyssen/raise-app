@@ -205,7 +205,6 @@ function ActionCard({
 
   const cardStyle: React.CSSProperties = isDone
     ? {
-        border: '1px solid var(--border-subtle)',
         borderRadius: 'var(--radius-lg)',
         padding: '16px',
         background: 'rgba(26, 26, 46,0.3)',
@@ -213,7 +212,6 @@ function ActionCard({
         transition: 'all 200ms ease',
       }
     : {
-        border: `1px solid ${hovered ? 'var(--border-default)' : 'var(--border-subtle)'}`,
         borderRadius: 'var(--radius-lg)',
         padding: '16px',
         background: 'var(--surface-1)',
@@ -343,7 +341,6 @@ function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
   return (
     <div
       style={{
-        border: '1px solid rgba(27, 42, 74, 0.06)',
         background: 'var(--success-muted)',
         borderRadius: 'var(--radius-lg)',
         padding: '16px',
@@ -404,7 +401,6 @@ function AtRiskCard({ investor }: { investor: InvestorSummary }) {
   return (
     <div
       style={{
-        border: '1px solid rgba(26, 26, 46, 0.05)',
         background: 'rgba(26, 26, 46, 0.05)',
         borderRadius: 'var(--radius-lg)',
         padding: '16px',
@@ -452,7 +448,6 @@ function DeprioritizeSection({ investors }: { investors: InvestorSummary[] }) {
   return (
     <div
       style={{
-        border: '1px solid var(--border-subtle)',
         borderRadius: 'var(--radius-lg)',
         overflow: 'hidden',
       }}
@@ -606,7 +601,7 @@ export default function AccelerationPage() {
     return (
       <div className="space-y-6">
         <h1 className="page-title">Acceleration</h1>
-        <div className="rounded-xl p-8 text-center space-y-3" style={{ border: '1px solid var(--border-subtle)' }}>
+        <div className="rounded-xl p-8 text-center space-y-3">
           <p style={{ color: 'var(--text-tertiary)' }}>Unable to load acceleration data.</p>
           <button
             onClick={fetchData}
@@ -682,7 +677,7 @@ export default function AccelerationPage() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 card-stagger">
         <div
           className="rounded-xl p-4"
-          style={{ border: '1px solid rgba(26, 26, 46, 0.06)', background: 'var(--danger-muted)' }}
+          style={{ background: 'var(--danger-muted)' }}
         >
           <div className="flex items-center gap-2 mb-1" style={{ color: 'var(--text-primary)', fontSize: 'var(--font-size-sm)' }}>
             <AlertTriangle className="w-3.5 h-3.5" /> Immediate
@@ -692,7 +687,7 @@ export default function AccelerationPage() {
         </div>
         <div
           className="rounded-xl p-4"
-          style={{ border: '1px solid rgba(26, 26, 46, 0.05)', background: 'var(--warning-muted)' }}
+          style={{ background: 'var(--warning-muted)' }}
         >
           <div className="flex items-center gap-2 mb-1" style={{ color: 'var(--text-tertiary)', fontSize: 'var(--font-size-sm)' }}>
             <Clock className="w-3.5 h-3.5" /> This Week
@@ -702,7 +697,7 @@ export default function AccelerationPage() {
         </div>
         <div
           className="rounded-xl p-4"
-          style={{ border: '1px solid rgba(27, 42, 74, 0.06)', background: 'var(--success-muted)' }}
+          style={{ background: 'var(--success-muted)' }}
         >
           <div className="flex items-center gap-2 mb-1" style={{ color: 'var(--text-secondary)', fontSize: 'var(--font-size-sm)' }}>
             <Rocket className="w-3.5 h-3.5" /> Term Sheet Ready
@@ -763,7 +758,7 @@ export default function AccelerationPage() {
           <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)', letterSpacing: '0.01em' }}>
             <CheckCircle className="w-3.5 h-3.5" /> Term Sheet Ready ({data.termSheetReady.length})
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3" style={{ borderLeft: '3px solid rgba(27, 42, 74, 0.06)', paddingLeft: '12px' }}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {data.termSheetReady.map(inv => (
               <TermSheetReadyCard key={inv.investorId} investor={inv} />
             ))}
@@ -777,7 +772,7 @@ export default function AccelerationPage() {
           <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-primary)', letterSpacing: '0.01em' }}>
             <AlertTriangle className="w-3.5 h-3.5" /> Immediate Actions ({immediateActions.length})
           </h2>
-          <div className="space-y-2" style={{ borderLeft: '3px solid rgba(26, 26, 46, 0.06)', paddingLeft: '12px' }}>
+          <div className="space-y-2">
             {immediateActions.map(item => (
               <ActionCard
                 key={item.id}
@@ -798,7 +793,7 @@ export default function AccelerationPage() {
           <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-tertiary)', letterSpacing: '0.01em' }}>
             <Clock className="w-3.5 h-3.5" /> This Week ({thisWeekActions.length})
           </h2>
-          <div className="space-y-2" style={{ borderLeft: '3px solid rgba(26, 26, 46, 0.05)', paddingLeft: '12px' }}>
+          <div className="space-y-2">
             {thisWeekActions.map(item => (
               <ActionCard
                 key={item.id}
@@ -819,7 +814,7 @@ export default function AccelerationPage() {
           <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)', letterSpacing: '0.01em' }}>
             <Shield className="w-3.5 h-3.5" /> At Risk ({data.atRisk.length})
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3" style={{ borderLeft: '3px solid rgba(26, 26, 46, 0.05)', paddingLeft: '12px' }}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {data.atRisk.map(inv => (
               <AtRiskCard key={inv.investorId} investor={inv} />
             ))}
@@ -834,7 +829,7 @@ export default function AccelerationPage() {
 
       {/* Empty state for filtered views */}
       {allFiltered.length === 0 && data.termSheetReady.length === 0 && data.atRisk.length === 0 && data.deprioritize.length === 0 && (
-        <div className="rounded-xl p-8 text-center space-y-3" style={{ border: '1px solid var(--border-subtle)' }}>
+        <div className="rounded-xl p-8 text-center space-y-3">
           <CheckCircle className="w-8 h-8 mx-auto" style={{ color: 'var(--text-secondary)' }} />
           <p style={{ color: 'var(--text-tertiary)' }}>No acceleration actions detected.</p>
           <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>All investors are progressing normally. Check back when new meetings are logged.</p>
@@ -842,7 +837,7 @@ export default function AccelerationPage() {
       )}
 
       {activeTab !== 'all' && allFiltered.length === 0 && (
-        <div className="rounded-xl p-6 text-center" style={{ border: '1px solid var(--border-subtle)' }}>
+        <div className="rounded-xl p-6 text-center">
           <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>No {activeTab} actions.</p>
         </div>
       )}

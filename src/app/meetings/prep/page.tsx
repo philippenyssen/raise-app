@@ -442,7 +442,7 @@ function MeetingPrepContent() {
             <div className="space-y-4">
               <div
                 className="rounded-xl p-6"
-                style={{ border: '1px solid var(--border-default)', background: 'var(--surface-1)' }}
+                style={{ background: 'var(--surface-1)' }}
               >
                 <div className="flex items-center gap-2 mb-1">
                   <Sparkles className="w-4 h-4" style={{ color: 'var(--accent)' }} />
@@ -514,7 +514,7 @@ function MeetingPrepContent() {
           );
         })()}
         {!selectedId && !loading && investors.length === 0 && (
-          <div className="rounded-xl p-12 text-center" style={{ border: '1px dashed var(--border-default)' }}>
+          <div className="rounded-xl p-12 text-center">
             <Users className="w-10 h-10 mx-auto mb-3" style={{ color: 'var(--surface-3)' }} />
             <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No investors in pipeline yet.</p>
           </div>
@@ -522,7 +522,7 @@ function MeetingPrepContent() {
 
         {/* Loading prep data */}
         {selectedId && loadingPrep && (
-          <div className="rounded-xl p-12 text-center" style={{ border: '1px solid var(--border-default)' }}>
+          <div className="rounded-xl p-12 text-center">
             <span className="block mx-auto mb-3 w-8 h-8" style={{ color: 'var(--accent)' }}>
               <Loader2 className="w-8 h-8 animate-spin" />
             </span>
@@ -607,7 +607,7 @@ function MeetingPrepContent() {
                           <Target className="w-3.5 h-3.5" />
                           Key Metrics
                         </h3>
-                        <div className="rounded-lg overflow-hidden" style={{ border: '1px solid var(--border-subtle)' }}>
+                        <div className="rounded-lg overflow-hidden">
                           <table className="w-full text-xs">
                             <thead style={{ background: 'var(--surface-1)', borderBottom: '1px solid var(--border-subtle)' }}>
                               <tr>
@@ -639,7 +639,7 @@ function MeetingPrepContent() {
                         </h3>
                         <div className="space-y-3">
                           {meetingBrief.brief.anticipated_questions_with_answers.map((qa, i) => (
-                            <div key={i} className="rounded-lg p-3" style={{ border: '1px solid var(--border-subtle)' }}>
+                            <div key={i} className="rounded-lg p-3">
                               <p className="text-sm font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>Q: {qa.question}</p>
                               <p className="text-xs leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>A: {qa.suggested_answer}</p>
                             </div>
@@ -752,7 +752,7 @@ function MeetingPrepContent() {
             )}
 
             {/* ============ INVESTOR PROFILE ============ */}
-            <section className="rounded-xl p-5 print-card" style={{ border: '1px solid var(--border-default)' }}>
+            <section className="rounded-xl p-5 print-card">
               <h2 className="text-sm font-semibold  tracking-wider mb-4 flex items-center gap-2 print-section-title" style={{ color: 'var(--text-tertiary)' }}>
                 <span style={{ color: 'var(--accent)' }}><Building2 className="w-4 h-4" /></span>
                 Investor Profile
@@ -816,7 +816,7 @@ function MeetingPrepContent() {
 
             {/* ============ SUGGESTED TALKING POINTS ============ */}
             {talkingPoints.length > 0 && (
-              <section className="rounded-xl p-5 print-card" style={{ border: '1px solid var(--border-default)' }}>
+              <section className="rounded-xl p-5 print-card">
                 <h2 className="text-sm font-semibold  tracking-wider mb-4 flex items-center gap-2 print-section-title" style={{ color: 'var(--text-tertiary)' }}>
                   <span style={{ color: 'var(--text-tertiary)' }}><Zap className="w-4 h-4" /></span>
                   Suggested Talking Points
@@ -857,7 +857,7 @@ function MeetingPrepContent() {
 
             {/* ============ KEY RISKS ============ */}
             {(portfolioConflicts.length > 0 || unresolvedObjections.length > 0 || investor.portfolio_conflicts || enthusiasmTrend === 'declining') && (
-              <section className="rounded-xl p-5 print-card" style={{ border: '1px solid var(--danger-muted)', background: 'var(--danger-muted)' }}>
+              <section className="rounded-xl p-5 print-card" style={{ background: 'var(--danger-muted)' }}>
                 <h2 className="text-sm font-semibold  tracking-wider mb-4 flex items-center gap-2 print-section-title" style={{ color: 'var(--text-primary)' }}>
                   <AlertTriangle className="w-4 h-4" />
                   Key Risks to Address
@@ -922,7 +922,7 @@ function MeetingPrepContent() {
             )}
 
             {/* ============ MEETING HISTORY ============ */}
-            <section className="rounded-xl p-5 print-card" style={{ border: '1px solid var(--border-default)' }}>
+            <section className="rounded-xl p-5 print-card">
               <h2 className="text-sm font-semibold  tracking-wider mb-4 flex items-center gap-2 print-section-title" style={{ color: 'var(--text-tertiary)' }}>
                 <span style={{ color: 'var(--accent)' }}><Calendar className="w-4 h-4" /></span>
                 Meeting History
@@ -944,7 +944,7 @@ function MeetingPrepContent() {
 
             {/* ============ INTELLIGENCE ============ */}
             {(briefs.length > 0 || partners.length > 0 || portfolio.length > 0) && (
-              <section className="rounded-xl p-5 print-card" style={{ border: '1px solid var(--border-default)' }}>
+              <section className="rounded-xl p-5 print-card">
                 <h2 className="text-sm font-semibold  tracking-wider mb-4 flex items-center gap-2 print-section-title" style={{ color: 'var(--text-tertiary)' }}>
                   <span style={{ color: 'var(--accent)' }}><BookOpen className="w-4 h-4" /></span>
                   Intelligence
@@ -956,7 +956,7 @@ function MeetingPrepContent() {
                     <h3 className="text-xs font-medium  tracking-wider mb-2" style={{ color: 'var(--text-muted)' }}>Research Briefs</h3>
                     <div className="space-y-2">
                       {briefs.map(b => (
-                        <details key={b.id} className="group rounded-lg overflow-hidden" style={{ border: '1px solid var(--border-subtle)' }}>
+                        <details key={b.id} className="group rounded-lg overflow-hidden">
                           <summary className="flex items-center gap-2 px-3 py-2 cursor-pointer text-sm">
                             <span className="text-xs px-1.5 py-0.5 rounded font-medium" style={
                               b.brief_type === 'investor' ? { background: 'var(--accent-muted)', color: 'var(--accent)' } :
@@ -981,7 +981,7 @@ function MeetingPrepContent() {
                     <h3 className="text-xs font-medium  tracking-wider mb-2" style={{ color: 'var(--text-muted)' }}>Partner Profiles</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                       {partners.map(p => (
-                        <div key={p.id} className="rounded-lg p-3" style={{ border: '1px solid var(--border-subtle)' }}>
+                        <div key={p.id} className="rounded-lg p-3">
                           <div className="flex items-center gap-2 mb-1">
                             <span style={{ color: 'var(--text-muted)' }}><Users className="w-3.5 h-3.5" /></span>
                             <span className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>{p.name}</span>
@@ -1000,7 +1000,7 @@ function MeetingPrepContent() {
                 {portfolio.length > 0 && (
                   <div>
                     <h3 className="text-xs font-medium  tracking-wider mb-2" style={{ color: 'var(--text-muted)' }}>Portfolio Companies</h3>
-                    <div className="rounded-lg overflow-hidden" style={{ border: '1px solid var(--border-subtle)' }}>
+                    <div className="rounded-lg overflow-hidden">
                       <table className="w-full text-xs">
                         <thead style={{ background: 'var(--surface-1)', borderBottom: '1px solid var(--border-subtle)' }}>
                           <tr>
@@ -1031,7 +1031,7 @@ function MeetingPrepContent() {
             )}
 
             {/* ============ OPEN TASKS ============ */}
-            <section className="rounded-xl p-5 print-card" style={{ border: '1px solid var(--border-default)' }}>
+            <section className="rounded-xl p-5 print-card">
               <h2 className="text-sm font-semibold  tracking-wider mb-4 flex items-center gap-2 print-section-title" style={{ color: 'var(--text-tertiary)' }}>
                 <span style={{ color: 'var(--text-secondary)' }}><CheckCircle className="w-4 h-4" /></span>
                 Open Tasks
@@ -1044,7 +1044,7 @@ function MeetingPrepContent() {
               ) : (
                 <div className="space-y-2">
                   {pendingTasks.map(t => (
-                    <div key={t.id} className="flex items-start gap-3 text-sm rounded-lg p-3" style={{ border: '1px solid var(--border-subtle)' }}>
+                    <div key={t.id} className="flex items-start gap-3 text-sm rounded-lg p-3">
                       <span className="shrink-0 mt-1 w-2 h-2 rounded-full" style={{
                         background: t.priority === 'critical' ? 'var(--danger)' :
                           t.priority === 'high' ? 'var(--warning)' :
@@ -1084,7 +1084,7 @@ function MeetingPrepContent() {
             </section>
 
             {/* ============ PRE-MEETING NOTES ============ */}
-            <section className="rounded-xl p-5 print-card" style={{ border: '1px solid var(--border-default)' }}>
+            <section className="rounded-xl p-5 print-card">
               <h2 className="text-sm font-semibold  tracking-wider mb-4 flex items-center gap-2 print-section-title" style={{ color: 'var(--text-tertiary)' }}>
                 <span style={{ color: 'var(--text-tertiary)' }}><MessageSquare className="w-4 h-4" /></span>
                 Pre-Meeting Notes

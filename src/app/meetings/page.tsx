@@ -165,7 +165,6 @@ function MeetingOutcomeSection({
           padding: 'var(--space-3) var(--space-4)',
           background: 'var(--surface-1)',
           borderRadius: 'var(--radius-sm)',
-          border: '1px solid var(--border-subtle)',
         }}
       >
         <div className="flex items-center justify-between mb-2">
@@ -245,7 +244,6 @@ function MeetingOutcomeSection({
         padding: 'var(--space-4)',
         background: 'var(--surface-1)',
         borderRadius: 'var(--radius-sm)',
-        border: '1px solid var(--border-subtle)',
       }}
     >
       <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-primary)', marginBottom: 'var(--space-3)' }}>

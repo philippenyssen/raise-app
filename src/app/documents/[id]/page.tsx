@@ -361,7 +361,7 @@ export default function DocumentEditorPage() {
               {aiResult.type === 'weak_arguments' && (
                 <div className="space-y-2">
                   {((aiResult.data as { weaknesses: { claim: string; issue: string; suggestion: string }[] }).weaknesses || []).map((w, i) => (
-                    <div key={i} className="text-xs pl-2" style={{ borderLeft: '2px solid var(--border-default)' }}>
+                    <div key={i} className="text-xs pl-2">
                       <p className="font-medium" style={{ color: 'var(--text-tertiary)' }}>{w.claim}</p>
                       <p className="mt-0.5" style={{ color: 'var(--text-muted)' }}>{w.issue}</p>
                       <p className="mt-0.5" style={{ color: 'var(--text-tertiary)' }}>{w.suggestion}</p>
@@ -378,7 +378,7 @@ export default function DocumentEditorPage() {
                     </p>
                   ) : (
                     ((aiResult.data as { discrepancies: { location: string; issue: string; suggestion: string }[] }).discrepancies || []).map((d, i) => (
-                      <div key={i} className="text-xs pl-2" style={{ borderLeft: '2px solid var(--border-default)' }}>
+                      <div key={i} className="text-xs pl-2">
                         <p className="font-medium flex items-center gap-1" style={{ color: 'var(--text-primary)' }}>
                           <AlertTriangle className="w-3 h-3" /> {d.location}
                         </p>

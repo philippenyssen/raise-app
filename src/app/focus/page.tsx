@@ -480,7 +480,6 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
   const [hovered, setHovered] = useState(false);
 
   const cardStyle: React.CSSProperties = {
-    border: `1px solid ${rank <= 3 ? 'var(--border-default)' : 'var(--border-subtle)'}`,
     borderRadius: 'var(--radius-lg)',
     background: rank <= 3 ? 'var(--surface-1)' : 'var(--surface-0)',
     transition: 'all 200ms ease',
@@ -815,7 +814,6 @@ function StaleAlertCard({ item, onReengage }: { item: FocusItem; onReengage: (it
   return (
     <div
       style={{
-        border: '1px solid rgba(26, 26, 46, 0.06)',
         background: 'var(--danger-muted)',
         borderRadius: 'var(--radius-lg)',
         padding: 'var(--space-4)',
@@ -941,7 +939,6 @@ function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
   return (
     <div
       style={{
-        border: '1px solid rgba(27, 42, 74, 0.08)',
         background: 'var(--success-muted)',
         borderRadius: 'var(--radius-lg)',
         padding: 'var(--space-4)',
@@ -997,7 +994,6 @@ function AtRiskCard({ investor }: { investor: InvestorSummary }) {
   return (
     <div
       style={{
-        border: '1px solid rgba(26, 26, 46, 0.06)',
         background: 'var(--danger-muted)',
         borderRadius: 'var(--radius-lg)',
         padding: 'var(--space-4)',
@@ -1052,7 +1048,7 @@ function DeprioritizeSection({ investors }: { investors: InvestorSummary[] }) {
   if (investors.length === 0) return null;
 
   return (
-    <div style={{ border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
+    <div style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
       <button
         onClick={() => setExpanded(!expanded)}
         className="w-full flex items-center justify-between p-3 text-left transition-colors"

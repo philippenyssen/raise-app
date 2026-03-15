@@ -277,9 +277,6 @@ export default function MomentumPage() {
           className="rounded-xl p-6"
           style={{
             background: 'var(--surface-1)',
-            borderWidth: '1px',
-            borderStyle: 'solid',
-            borderColor: 'var(--border-default)',
           }}
         >
           <div className="flex items-center gap-2 mb-4">
@@ -394,9 +391,6 @@ export default function MomentumPage() {
           className="rounded-xl overflow-hidden"
           style={{
             background: 'var(--surface-1)',
-            borderWidth: '1px',
-            borderStyle: 'solid',
-            borderColor: 'var(--border-default)',
           }}
         >
           <div
@@ -588,9 +582,6 @@ export default function MomentumPage() {
             className="rounded-xl p-6"
             style={{
               background: 'var(--surface-1)',
-              borderWidth: '1px',
-              borderStyle: 'solid',
-              borderColor: 'var(--border-default)',
             }}
           >
             <div className="flex items-center gap-2 mb-4">
@@ -673,9 +664,6 @@ export default function MomentumPage() {
             className="rounded-xl p-6"
             style={{
               background: 'var(--surface-1)',
-              borderWidth: '1px',
-              borderStyle: 'solid',
-              borderColor: 'var(--border-default)',
             }}
           >
             <div className="flex items-center gap-2 mb-4">
@@ -790,9 +778,6 @@ export default function MomentumPage() {
             className="rounded-xl p-6"
             style={{
               background: 'var(--surface-1)',
-              borderWidth: '1px',
-              borderStyle: 'solid',
-              borderColor: 'var(--border-default)',
             }}
           >
             <div className="flex items-center gap-2 mb-4">
@@ -837,9 +822,6 @@ export default function MomentumPage() {
                             style={{
                               background: 'var(--surface-2)',
                               color: 'var(--text-secondary)',
-                              borderWidth: '1px',
-                              borderStyle: 'solid',
-                              borderColor: 'var(--border-default)',
                             }}
                           >
                             {name}
@@ -860,9 +842,6 @@ export default function MomentumPage() {
             className="rounded-xl p-6"
             style={{
               background: 'var(--surface-1)',
-              borderWidth: '1px',
-              borderStyle: 'solid',
-              borderColor: 'var(--border-default)',
             }}
           >
             <div className="flex items-center gap-2 mb-4">
@@ -906,9 +885,6 @@ export default function MomentumPage() {
                     className="rounded-lg p-3"
                     style={{
                       background: us.bg,
-                      borderWidth: '1px',
-                      borderStyle: 'solid',
-                      borderColor: us.border,
                       color: us.color,
                     }}
                   >
@@ -924,9 +900,6 @@ export default function MomentumPage() {
                         style={{
                           background: us.bg,
                           color: us.color,
-                          borderWidth: '1px',
-                          borderStyle: 'solid',
-                          borderColor: us.border,
                         }}
                       >
                         {signal.urgency.toUpperCase()}
@@ -941,9 +914,6 @@ export default function MomentumPage() {
                           style={{
                             background: 'var(--surface-2)',
                             color: 'var(--text-secondary)',
-                            borderWidth: '1px',
-                            borderStyle: 'solid',
-                            borderColor: 'var(--border-default)',
                           }}
                         >
                           {name}
@@ -963,9 +933,6 @@ export default function MomentumPage() {
             className="rounded-xl p-6"
             style={{
               background: 'var(--surface-1)',
-              borderWidth: '1px',
-              borderStyle: 'solid',
-              borderColor: 'var(--border-default)',
             }}
           >
             <div className="flex items-center gap-2 mb-4">
@@ -988,9 +955,6 @@ export default function MomentumPage() {
                     className="rounded-lg p-4"
                     style={{
                       background: sc.bg,
-                      borderWidth: '1px',
-                      borderStyle: 'solid',
-                      borderColor: 'var(--border-default)',
                     }}
                   >
                     <div className="flex items-center justify-between mb-3">

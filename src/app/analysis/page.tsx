@@ -23,23 +23,20 @@ interface AnalysisData {
   error?: string;
 }
 
-function getHealthStyles(health: string): { border: string; background: string; color: string } {
+function getHealthStyles(health: string): { background: string; color: string } {
   switch (health) {
     case 'green':
       return {
-        border: '1px solid var(--success)',
         background: 'var(--success-muted)',
         color: 'var(--text-secondary)',
       };
     case 'red':
       return {
-        border: '1px solid var(--danger)',
         background: 'var(--danger-muted)',
         color: 'var(--text-primary)',
       };
     default:
       return {
-        border: '1px solid var(--warning)',
         background: 'var(--warning-muted)',
         color: 'var(--text-tertiary)',
       };
@@ -91,7 +88,7 @@ export default function AnalysisPage() {
       {!data && !loading && (
         <div
           className="rounded-xl p-8 text-center space-y-3"
-          style={{ border: '1px solid var(--border-default)' }}
+          style={{  }}
         >
           <p style={{ color: 'var(--text-muted)' }}>Click &quot;Run Analysis&quot; to analyze patterns across all logged meetings.</p>
           <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Requires at least 2 meetings with notes. Uses Claude API.</p>
@@ -101,7 +98,7 @@ export default function AnalysisPage() {
       {loading && (
         <div
           className="rounded-xl p-8 text-center"
-          style={{ border: '1px solid var(--border-default)' }}
+          style={{  }}
         >
           <div className="animate-pulse" style={{ color: 'var(--text-secondary)' }}>
             Analyzing {data?.meeting_count ?? '...'} meetings with Claude...
@@ -117,7 +114,6 @@ export default function AnalysisPage() {
               className="rounded-lg p-4 text-sm"
               style={{
                 background: 'var(--danger-muted)',
-                border: '1px solid var(--danger)',
                 color: 'var(--text-primary)',
               }}
             >
@@ -131,7 +127,7 @@ export default function AnalysisPage() {
             return (
               <div
                 className="rounded-xl p-6"
-                style={{ border: hs.border, background: hs.background }}
+                style={{ background: hs.background }}
               >
                 <div className="flex items-center gap-3 mb-3">
                   <span
@@ -169,7 +165,7 @@ export default function AnalysisPage() {
               {/* Overall Assessment */}
               <div
                 className="rounded-xl p-6"
-                style={{ border: '1px solid var(--border-default)' }}
+                style={{  }}
               >
                 <h2 className="text-sm font-medium mb-3" style={{ color: 'var(--text-secondary)' }}>
                   OVERALL ASSESSMENT
@@ -181,7 +177,7 @@ export default function AnalysisPage() {
 
               {/* Story Effectiveness */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="rounded-xl p-5" style={{ border: '1px solid var(--border-default)' }}>
+                <div className="rounded-xl p-5" style={{  }}>
                   <h3 className="text-xs font-medium mb-3" style={{ color: 'var(--text-secondary)' }}>
                     LANDING WELL
                   </h3>
@@ -194,7 +190,7 @@ export default function AnalysisPage() {
                     )}
                   </ul>
                 </div>
-                <div className="rounded-xl p-5" style={{ border: '1px solid var(--border-default)' }}>
+                <div className="rounded-xl p-5" style={{  }}>
                   <h3 className="text-xs font-medium mb-3" style={{ color: 'var(--text-tertiary)' }}>
                     GENERATING EXCITEMENT
                   </h3>
@@ -204,7 +200,7 @@ export default function AnalysisPage() {
                     ))}
                   </ul>
                 </div>
-                <div className="rounded-xl p-5" style={{ border: '1px solid var(--border-default)' }}>
+                <div className="rounded-xl p-5" style={{  }}>
                   <h3 className="text-xs font-medium mb-3" style={{ color: 'var(--text-primary)' }}>
                     FALLING FLAT
                   </h3>
@@ -218,7 +214,7 @@ export default function AnalysisPage() {
 
               {/* Top Objections with Recommendations */}
               {data.patterns.top_objections.length > 0 && (
-                <div className="rounded-xl p-6" style={{ border: '1px solid var(--border-default)' }}>
+                <div className="rounded-xl p-6" style={{  }}>
                   <h2 className="text-sm font-medium mb-4" style={{ color: 'var(--text-secondary)' }}>
                     Top objections + recommended responses
                   </h2>
@@ -227,7 +223,7 @@ export default function AnalysisPage() {
                       <div
                         key={i}
                         className="pl-4"
-                        style={{ borderLeft: '2px solid var(--border-default)' }}
+                        style={{  }}
                       >
                         <div className="flex items-center gap-2 mb-1">
                           <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
@@ -252,7 +248,7 @@ export default function AnalysisPage() {
 
               {/* Material Changes */}
               {data.patterns.material_changes.length > 0 && (
-                <div className="rounded-xl p-6" style={{ border: '1px solid var(--border-default)' }}>
+                <div className="rounded-xl p-6" style={{  }}>
                   <h2 className="text-sm font-medium mb-4" style={{ color: 'var(--text-secondary)' }}>
                     RECOMMENDED MATERIAL CHANGES
                   </h2>
@@ -280,7 +276,6 @@ export default function AnalysisPage() {
                 <div
                   className="rounded-xl p-6"
                   style={{
-                    border: '1px solid var(--success-muted)',
                     background: 'var(--success-muted)',
                   }}
                 >
@@ -298,7 +293,7 @@ export default function AnalysisPage() {
               )}
 
               {/* Pricing */}
-              <div className="rounded-xl p-6" style={{ border: '1px solid var(--border-default)' }}>
+              <div className="rounded-xl p-6" style={{  }}>
                 <h2 className="text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
                   PRICING RECEPTION TREND
                 </h2>
@@ -311,7 +306,7 @@ export default function AnalysisPage() {
 
           {/* Raw Objection Data */}
           {data.objections.length > 0 && (
-            <div className="rounded-xl p-6" style={{ border: '1px solid var(--border-default)' }}>
+            <div className="rounded-xl p-6" style={{  }}>
               <h2 className="text-sm font-medium mb-4" style={{ color: 'var(--text-secondary)' }}>
                 All objections (from database)
               </h2>

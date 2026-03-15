@@ -82,7 +82,7 @@ export default function HealthPage() {
       </div>
 
       {/* Convergence Score */}
-      <div className="rounded-xl p-6" style={{ border: '1px solid var(--border-default)' }}>
+      <div className="rounded-xl p-6">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-sm font-medium" style={{ color: 'var(--text-tertiary)' }}>Convergence score</h2>
           <div className="text-4xl font-bold" style={{
@@ -129,7 +129,7 @@ export default function HealthPage() {
       </div>
 
       {/* Funnel Details */}
-      <div className="rounded-xl p-6" style={{ border: '1px solid var(--border-default)' }}>
+      <div className="rounded-xl p-6">
         <h2 className="text-sm font-medium mb-4" style={{ color: 'var(--text-tertiary)' }}>Pipeline conversion rates</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {Object.entries(data.funnel.conversion_rates).map(([key, rate]) => {
@@ -171,7 +171,7 @@ export default function HealthPage() {
       </div>
 
       {/* Status Breakdown */}
-      <div className="rounded-xl p-6" style={{ border: '1px solid var(--border-default)' }}>
+      <div className="rounded-xl p-6">
         <h2 className="text-sm font-medium mb-4" style={{ color: 'var(--text-tertiary)' }}>Investor status breakdown</h2>
         <div className="grid grid-cols-3 md:grid-cols-5 gap-3 card-stagger">
           {Object.entries(data.statusBreakdown).sort((a, b) => b[1] - a[1]).map(([status, count]) => (
@@ -184,7 +184,7 @@ export default function HealthPage() {
       </div>
 
       {/* Intelligence Verification Status */}
-      <div className="rounded-xl p-6" style={{ border: '1px solid var(--border-default)' }}>
+      <div className="rounded-xl p-6">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <Shield className="w-4 h-4" style={{ color: 'var(--accent)' }} />
@@ -285,7 +285,7 @@ export default function HealthPage() {
 
 function MetricCard({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="rounded-xl p-4" style={{ border: '1px solid var(--border-default)' }}>
+    <div className="rounded-xl p-4">
       <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{label}</div>
       <div className="text-2xl font-bold mt-1" style={{ color: 'var(--text-primary)' }}>{value}</div>
     </div>

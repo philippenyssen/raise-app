@@ -188,7 +188,7 @@ export default function StressTestPage() {
     return (
       <div className="space-y-8">
         <h1 className="page-title">Process Stress Test</h1>
-        <div className="rounded-xl p-8 text-center space-y-3" style={{ border: '1px solid var(--danger-muted)', background: 'var(--danger-muted)' }}>
+        <div className="rounded-xl p-8 text-center space-y-3" style={{ background: 'var(--danger-muted)' }}>
           <p style={{ color: 'var(--text-secondary)' }}>Could not load stress test data.</p>
           <button
             onClick={() => fetchData()}
@@ -212,9 +212,9 @@ export default function StressTestPage() {
     : data.investorForecasts.slice(0, 15);
 
   const bannerStyles: Record<string, React.CSSProperties> = {
-    green: { borderColor: 'rgba(27, 42, 74, 0.3)', background: 'var(--success-muted)' },
-    yellow: { borderColor: 'rgba(138, 136, 128, 0.3)', background: 'var(--warning-muted)' },
-    red: { borderColor: 'rgba(27, 42, 74, 0.10)', background: 'var(--danger-muted)' },
+    green: { background: 'var(--success-muted)' },
+    yellow: { background: 'var(--warning-muted)' },
+    red: { background: 'var(--danger-muted)' },
   };
   const bannerTextStyles: Record<string, React.CSSProperties> = {
     green: { color: 'var(--text-secondary)' },
@@ -260,7 +260,7 @@ export default function StressTestPage() {
       {/* ================================================================ */}
       <div
         className="rounded-xl p-5 flex items-start gap-4"
-        style={{ border: '1px solid', ...bannerStyles[data.healthStatus] }}
+        style={{ ...bannerStyles[data.healthStatus] }}
       >
         {bannerIcon[data.healthStatus]}
         <div className="flex-1">
@@ -332,7 +332,7 @@ export default function StressTestPage() {
       {data.shortfall && data.shortfall > 0 && data.gapInvestors.length > 0 && (
         <div
           className="rounded-xl p-5"
-          style={{ border: '2px solid rgba(27, 42, 74, 0.08)', background: 'rgba(27, 42, 74, 0.08)' }}
+          style={{ background: 'rgba(27, 42, 74, 0.08)' }}
         >
           <div className="flex items-center gap-2 mb-4">
             <Target className="w-5 h-5" style={{ color: 'var(--text-primary)' }} />
@@ -350,7 +350,6 @@ export default function StressTestPage() {
                 className="flex items-start gap-3 py-3 px-4 rounded-lg transition-colors"
                 style={{
                   background: hoveredGap === gap.id ? 'var(--surface-2)' : 'var(--surface-1)',
-                  border: '1px solid var(--border-subtle)',
                 }}
                 onMouseEnter={() => setHoveredGap(gap.id)}
                 onMouseLeave={() => setHoveredGap(null)}
@@ -456,7 +455,6 @@ export default function StressTestPage() {
                     key={f.id}
                     className="transition-colors"
                     style={{
-                      borderLeft: `2px solid ${borderLeftColor}`,
                       borderBottom: '1px solid var(--border-subtle)',
                       background: hoveredRow === f.id ? 'var(--surface-2)' : 'transparent',
                     }}
@@ -562,7 +560,7 @@ export default function StressTestPage() {
                   ? { color: 'var(--text-tertiary)', background: 'var(--warning-muted)', borderColor: 'rgba(138, 136, 128, 0.3)' }
                   : { color: 'var(--text-secondary)', background: 'rgba(255, 255, 255, 0.1)', borderColor: 'var(--border-subtle)' };
                 return (
-                  <div key={i} className="rounded-lg overflow-hidden" style={{ border: '1px solid var(--border-subtle)' }}>
+                  <div key={i} className="rounded-lg overflow-hidden">
                     <button
                       onClick={() => setExpandedRisks(prev =>
                         prev.includes(i) ? prev.filter(x => x !== i) : [...prev, i]
@@ -662,7 +660,7 @@ export default function StressTestPage() {
             </span>
           </div>
           {data.criticalPath.totalIfAllClose < data.target && (
-            <div className="mt-2 text-xs rounded-lg p-2.5" style={{ color: 'var(--text-primary)', background: 'var(--danger-muted)', border: '1px solid rgba(27, 42, 74, 0.10)' }}>
+            <div className="mt-2 text-xs rounded-lg p-2.5" style={{ color: 'var(--text-primary)', background: 'var(--danger-muted)' }}>
               Even the minimum viable set falls short. Need to add more investors or increase check sizes.
             </div>
           )}
@@ -823,7 +821,7 @@ function ForecastCard({ label, sublabel, amount, target, color }: {
   return (
     <div
       className="rounded-xl p-5"
-      style={{ border: `1px solid ${c.border}`, background: c.bg }}
+      style={{ background: c.bg }}
     >
       <div className=" tracking-wider" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{label}</div>
       <div className="text-xs mb-2" style={{ color: 'var(--text-muted)' }}>{sublabel}</div>

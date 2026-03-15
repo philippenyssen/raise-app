@@ -347,8 +347,7 @@ export default function ForecastPage() {
         {(['worst', 'base', 'best'] as const).map((key) => {
           const s = scenarios[key];
           const isHovered = hoveredScenario === key;
-          const borderColor = key === 'best' ? 'var(--success)' : key === 'base' ? 'var(--accent)' : 'var(--danger)';
-          const iconColor = key === 'best' ? 'var(--success)' : key === 'base' ? 'var(--accent)' : 'var(--danger)';
+          const iconColor = key === 'best' ? 'var(--text-secondary)' : key === 'base' ? 'var(--text-secondary)' : 'var(--text-tertiary)';
           const Icon = key === 'best' ? TrendingUp : key === 'base' ? BarChart3 : AlertTriangle;
           return (
             <div
@@ -356,7 +355,6 @@ export default function ForecastPage() {
               className="card transition-colors"
               style={{
                 padding: 'var(--space-5)',
-                borderTop: `3px solid ${borderColor}`,
                 background: isHovered ? 'var(--surface-1)' : 'var(--surface-0)',
                 transition: 'background 150ms ease',
               }}
@@ -472,7 +470,6 @@ export default function ForecastPage() {
                       padding: 'var(--space-2) var(--space-3)',
                       background: 'var(--surface-1)',
                       borderRadius: 'var(--radius-sm)',
-                      borderLeft: `3px solid var(--warning)`,
                     }}
                   >
                     <span

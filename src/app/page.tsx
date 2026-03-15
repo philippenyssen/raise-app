@@ -359,7 +359,6 @@ export default function Dashboard() {
       <div
         className="text-center"
         style={{
-          border: '1px solid var(--border-default)',
           background: 'var(--surface-1)',
           borderRadius: 'var(--radius-lg)',
           padding: 'var(--space-10)',
@@ -455,7 +454,6 @@ export default function Dashboard() {
         <div
           className="text-center"
           style={{
-            border: '1px solid var(--border-default)',
             borderRadius: 'var(--radius-xl)',
             padding: 'var(--space-12) var(--space-8)',
             background: 'var(--surface-1)',
@@ -491,14 +489,10 @@ export default function Dashboard() {
                   className="transition-colors"
                   style={{
                     background: 'var(--surface-1)',
-                    border: '1px solid var(--border-subtle)',
                     borderRadius: 'var(--radius-xl)',
                     padding: 'var(--space-6)',
                     cursor: 'pointer',
-                    transition: 'border-color 0.2s ease',
                   }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-subtle)'; }}
                 >
                   <div className="flex items-baseline gap-3" style={{ marginBottom: 'var(--space-4)' }}>
                     <span style={{
@@ -579,7 +573,6 @@ export default function Dashboard() {
           })() : (
             <div style={{
               background: 'var(--surface-1)',
-              border: '1px solid var(--border-subtle)',
               borderRadius: 'var(--radius-xl)',
               padding: 'var(--space-6)',
             }}>
@@ -612,13 +605,9 @@ export default function Dashboard() {
               <div
                 className="transition-colors"
                 style={{
-                  border: '1px solid var(--border-subtle)',
                   borderRadius: 'var(--radius-xl)',
                   padding: 'var(--space-5)',
-                  transition: 'border-color 0.2s ease',
                 }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-subtle)'; }}
               >
                 <div className="flex items-center justify-between mb-3">
                   <h2
@@ -665,7 +654,7 @@ export default function Dashboard() {
 
           {/* At Risk Deals */}
           {atRisk && (atRisk.scoreReversals.length > 0 || atRisk.staleInvestors.length > 0) && (
-            <div style={{ border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
+            <div style={{ borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
               <div className="flex items-center justify-between mb-3">
                 <h2 className="section-title flex items-center gap-2">
                   <ShieldAlert className="w-4 h-4" /> At risk
@@ -760,7 +749,7 @@ export default function Dashboard() {
 
           {/* Top Focus Today */}
           {cp && cp.topFocus.length > 0 && (
-            <div style={{ border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
+            <div style={{ borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
               <div className="flex items-center justify-between mb-3">
                 <h2 className="section-title flex items-center gap-2">
                   <Target className="w-4 h-4" /> Top focus today
@@ -826,7 +815,7 @@ export default function Dashboard() {
 
           {/* Overnight + Conviction */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div style={{ border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
+            <div style={{ borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
               <h2 className="section-title flex items-center gap-2 mb-3">
                 <Clock className="w-4 h-4" /> Last 24 hours
               </h2>
@@ -864,7 +853,7 @@ export default function Dashboard() {
               )}
             </div>
 
-            <div style={{ border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
+            <div style={{ borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
               <h2 className="section-title flex items-center gap-2 mb-3">
                 <Activity className="w-4 h-4" /> Conviction radar
               </h2>
@@ -928,7 +917,7 @@ export default function Dashboard() {
 
           {/* Acceleration Alerts */}
           {cp && cp.topAccelerations.length > 0 && (
-            <div style={{ border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
+            <div style={{ borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
               <div className="flex items-center justify-between mb-3">
                 <h2 className="section-title flex items-center gap-2">
                   <Zap className="w-4 h-4" /> Acceleration alerts
@@ -981,7 +970,7 @@ export default function Dashboard() {
 
           {/* Hot Deals + Follow-ups */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div style={{ border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
+            <div style={{ borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
               <div className="flex items-center justify-between mb-3">
                 <h2 className="section-title flex items-center gap-2">
                   <Flame className="w-4 h-4" /> Hot deals
@@ -1004,7 +993,7 @@ export default function Dashboard() {
               )}
             </div>
 
-            <div style={{ border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
+            <div style={{ borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
               <div className="flex items-center justify-between mb-3">
                 <h2 className="section-title flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4" /> Upcoming follow-ups
@@ -1032,7 +1021,7 @@ export default function Dashboard() {
           </div>
 
           {/* Pipeline */}
-          <div style={{ border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
+          <div style={{ borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
             <div className="flex items-center justify-between mb-4">
               <h2 className="section-title">Pipeline</h2>
               <Link href="/pipeline" className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}>
@@ -1078,9 +1067,6 @@ export default function Dashboard() {
                 key={href}
                 href={href}
                 className="group rounded-xl p-4 transition-colors"
-                style={{ border: '1px solid var(--border-subtle)' }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-subtle)'; }}
               >
                 <Icon className="w-5 h-5 mb-2" style={{ color: 'var(--text-tertiary)' }} />
                 <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>{label}</div>
@@ -1094,7 +1080,7 @@ export default function Dashboard() {
 
           {/* Data Quality */}
           {dataQuality && (
-            <div style={{ border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
+            <div style={{ borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
               <div className="flex items-center justify-between mb-3">
                 <h2 className="section-title flex items-center gap-2">
                   <ShieldCheck className="w-4 h-4" /> Data quality
@@ -1151,7 +1137,7 @@ export default function Dashboard() {
 
           {/* Tasks + Activity */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div style={{ border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
+            <div style={{ borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
               <div className="flex items-center justify-between mb-3">
                 <h2 className="section-title flex items-center gap-2">
                   <ClipboardList className="w-4 h-4" /> Upcoming tasks
@@ -1194,7 +1180,7 @@ export default function Dashboard() {
               )}
             </div>
 
-            <div style={{ border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
+            <div style={{ borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
               <div className="flex items-center justify-between mb-3">
                 <h2 className="section-title flex items-center gap-2">
                   <Activity className="w-4 h-4" /> Recent activity
@@ -1256,9 +1242,7 @@ export default function Dashboard() {
                     key={a.href + a.label}
                     href={a.href}
                     className="rounded-xl p-4 transition-colors"
-                    style={{ border: '1px solid var(--border-subtle)', textDecoration: 'none' }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-subtle)'; }}
+                    style={{ textDecoration: 'none' }}
                   >
                     <div className="flex items-center gap-2">
                       <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>{a.label}</span>
@@ -1295,13 +1279,9 @@ function PulseCard({ label, value, sub }: {
       className="transition-colors"
       style={{
         background: 'var(--surface-1)',
-        border: '1px solid var(--border-subtle)',
         borderRadius: 'var(--radius-lg)',
         padding: 'var(--space-4) var(--space-5)',
-        transition: 'border-color 0.2s ease',
       }}
-      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
-      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-subtle)'; }}
     >
       <div className="metric-label" style={{ marginBottom: 'var(--space-1)' }}>{label}</div>
       <div className="metric-value">{value}</div>
@@ -1369,7 +1349,7 @@ function VelocityStrip({ velocity }: { velocity: VelocityResponse }) {
   return (
     <div
       className="rounded-xl overflow-hidden transition-all"
-      style={{ border: '1px solid var(--border-subtle)' }}
+      style={{}}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >

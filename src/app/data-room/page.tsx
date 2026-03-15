@@ -410,7 +410,6 @@ export default function DataRoomPage() {
                 ) : (
                   <div
                     style={{
-                      border: '1px solid var(--border-subtle)',
                       borderRadius: 'var(--radius-md)',
                       padding: 'var(--space-3)',
                       textAlign: 'center',
@@ -693,7 +692,6 @@ function InvestorAccessRow({ investor, expanded, onToggle, onLogAccess, files }:
     <div
       className="transition-colors"
       style={{
-        border: `1px solid ${hovered || expanded ? 'var(--border-default)' : 'var(--border-subtle)'}`,
         borderRadius: 'var(--radius-md)',
         transition: 'border-color 150ms ease',
       }}
@@ -973,9 +971,8 @@ function FileRow({ file, expanded, onToggle, onDelete }: {
     <div
       className="transition-colors"
       style={{
-        border: `1px solid ${hovered ? 'var(--border-default)' : 'var(--border-subtle)'}`,
         borderRadius: 'var(--radius-md)',
-        transition: 'border-color 150ms ease',
+        transition: 'all 150ms ease',
       }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}

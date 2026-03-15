@@ -380,7 +380,6 @@ export default function PipelinePage() {
         <div
           className="flex-shrink-0 space-y-3"
           style={{
-            border: '1px solid var(--border-default)',
             borderRadius: 'var(--radius-xl)',
             padding: 'var(--space-4)',
           }}
@@ -463,7 +462,6 @@ export default function PipelinePage() {
             className="flex items-center gap-6 flex-shrink-0 overflow-x-auto"
             style={{
               padding: 'var(--space-3) var(--space-4)',
-              borderBottom: '1px solid var(--border-default)',
               background: 'var(--surface-1)',
               borderRadius: 'var(--radius-lg)',
             }}
@@ -499,13 +497,7 @@ export default function PipelinePage() {
                 className="w-[260px] flex flex-col"
                 style={{
                   borderRadius: 'var(--radius-xl)',
-                  border: '1px solid',
-                  ...colors.border,
                   transition: 'all 150ms ease',
-                  ...(isOver ? {
-                    boxShadow: '0 none',
-                    borderColor: 'rgba(27, 42, 74, 0.05)',
-                  } : {}),
                 }}
                 onDragOver={e => handleDragOver(e, status)}
                 onDragLeave={handleDragLeave}
@@ -517,8 +509,6 @@ export default function PipelinePage() {
                     padding: '0.625rem 0.75rem',
                     borderTopLeftRadius: 'var(--radius-xl)',
                     borderTopRightRadius: 'var(--radius-xl)',
-                    borderBottom: '1px solid',
-                    ...colors.border,
                     ...colors.header,
                   }}
                 >
@@ -578,7 +568,6 @@ export default function PipelinePage() {
       {EXIT_STATUSES.some(s => investorsInStatus(s).length > 0 || dragId) && (
         <div
           className="flex-shrink-0 pt-4"
-          style={{ borderTop: '1px solid var(--border-default)' }}
         >
           <div className="flex gap-4">
             {EXIT_STATUSES.map(status => {
@@ -592,13 +581,7 @@ export default function PipelinePage() {
                   className="flex-1"
                   style={{
                     borderRadius: 'var(--radius-xl)',
-                    border: '1px solid',
-                    ...colors.border,
                     transition: 'all 150ms ease',
-                    ...(isOver ? {
-                      boxShadow: '0 none',
-                      borderColor: 'rgba(27, 42, 74, 0.05)',
-                    } : {}),
                   }}
                   onDragOver={e => handleDragOver(e, status)}
                   onDragLeave={handleDragLeave}
@@ -609,8 +592,6 @@ export default function PipelinePage() {
                       padding: '0.5rem 0.75rem',
                       borderTopLeftRadius: 'var(--radius-xl)',
                       borderTopRightRadius: 'var(--radius-xl)',
-                      borderBottom: '1px solid',
-                      ...colors.border,
                       ...colors.header,
                     }}
                   >
@@ -695,16 +676,13 @@ function FilterButton({
         fontSize: 'var(--font-size-sm)',
         fontWeight: 500,
         transition: 'all 150ms ease',
-        border: '1px solid',
         ...(active
           ? {
               background: 'var(--accent-muted)',
-              borderColor: 'rgba(27, 42, 74, 0.05)',
               color: 'var(--accent)',
             }
           : {
               background: 'var(--surface-1)',
-              borderColor: hovered ? 'var(--border-strong)' : 'var(--border-default)',
               color: hovered ? 'var(--text-secondary)' : 'var(--text-tertiary)',
             }),
       }}
@@ -753,12 +731,10 @@ function TierFilterButton({
         fontSize: 'var(--font-size-xs)',
         fontWeight: 500,
         transition: 'all 150ms ease',
-        border: '1px solid',
         ...(active
           ? TIER_STYLES[tier]
           : {
               background: 'var(--surface-1)',
-              borderColor: hovered ? 'var(--border-strong)' : 'var(--border-default)',
               color: hovered ? 'var(--text-secondary)' : 'var(--text-muted)',
             }),
       }}
@@ -794,12 +770,10 @@ function TypeFilterButton({
         fontSize: 'var(--font-size-xs)',
         fontWeight: 500,
         transition: 'all 150ms ease',
-        border: '1px solid',
         ...(active
           ? TYPE_STYLES[type]
           : {
               background: 'var(--surface-1)',
-              borderColor: hovered ? 'var(--border-strong)' : 'var(--border-default)',
               color: hovered ? 'var(--text-secondary)' : 'var(--text-muted)',
             }),
       }}
@@ -865,8 +839,6 @@ function InvestorCard({
 
   const cardBaseStyle: React.CSSProperties = {
     background: hovered ? 'var(--surface-2)' : 'var(--surface-1)',
-    border: '1px solid',
-    borderColor: hovered ? 'var(--border-strong)' : 'var(--border-default)',
     borderRadius: 'var(--radius-lg)',
     cursor: 'grab',
     transition: 'all 150ms ease',
@@ -1035,7 +1007,6 @@ function InvestorCard({
       {hovered && (
         <div
           className="flex items-center gap-1 pt-2 mt-2"
-          style={{ borderTop: '1px solid var(--border-subtle)' }}
         >
           <Link
             href={`/meetings/prep?investor=${investor.id}`}

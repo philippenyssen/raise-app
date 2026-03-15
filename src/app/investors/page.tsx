@@ -285,7 +285,6 @@ export default function InvestorsPage() {
           className="flex items-center gap-3"
           style={{
             background: 'var(--accent-muted)',
-            border: '1px solid rgba(27, 42, 74, 0.05)',
             borderRadius: 'var(--radius-lg)',
             padding: 'var(--space-2) var(--space-4)',
           }}
@@ -342,7 +341,6 @@ export default function InvestorsPage() {
       {/* Investor Table */}
       <div
         style={{
-          border: '1px solid var(--border-default)',
           borderRadius: 'var(--radius-lg)',
           overflow: 'hidden',
         }}

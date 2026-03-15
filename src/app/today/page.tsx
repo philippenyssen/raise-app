@@ -553,7 +553,6 @@ export default function TodayPage() {
         <div
           className="text-center"
           style={{
-            border: '1px solid rgba(26, 26, 46, 0.06)',
             background: 'var(--danger-muted)',
             borderRadius: 'var(--radius-lg)',
             padding: 'var(--space-10)',
@@ -680,7 +679,6 @@ export default function TodayPage() {
             padding: 'var(--space-3) var(--space-4)',
             borderRadius: 'var(--radius-lg)',
             background: 'var(--surface-1)',
-            border: `1px solid ${raiseProgress.isOver ? 'rgba(26, 26, 46, 0.06)' : raiseProgress.pct >= 75 ? 'rgba(26, 26, 46, 0.05)' : 'var(--border-subtle)'}`,
           }}
         >
           <div className="flex items-center gap-2 shrink-0">
@@ -728,7 +726,6 @@ export default function TodayPage() {
         <div
           className="rounded-xl"
           style={{
-            border: '1px solid var(--border-subtle)',
             background: 'var(--surface-1)',
             overflow: 'hidden',
           }}
@@ -1073,7 +1070,6 @@ export default function TodayPage() {
         <div
           style={{
             background: 'var(--accent-muted)',
-            border: '1px solid rgba(27, 42, 74, 0.08)',
             borderRadius: 'var(--radius-lg)',
             padding: 'var(--space-4)',
           }}

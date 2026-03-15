@@ -383,8 +383,6 @@ function FollowupsContent() {
                       className="inline-flex items-center gap-0.5"
                       style={{
                         marginLeft: '0.5rem',
-                        borderLeft: '1px solid var(--border-default)',
-                        paddingLeft: '0.5rem',
                         color: item.measured_lift > 0 ? 'var(--success)' : item.measured_lift < 0 ? 'var(--danger)' : 'var(--text-muted)',
                       }}
                     >

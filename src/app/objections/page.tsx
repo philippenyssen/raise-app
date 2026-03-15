@@ -394,7 +394,7 @@ export default function ObjectionsPage() {
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {[1, 2, 3].map(i => (
-            <div key={i} className="h-32 rounded-xl animate-pulse" style={{ background: 'var(--surface-1)', border: '1px solid var(--border-subtle)' }} />
+            <div key={i} className="h-32 rounded-xl animate-pulse" style={{ background: 'var(--surface-1)' }} />
           ))}
         </div>
       </div>
@@ -451,7 +451,7 @@ export default function ObjectionsPage() {
           {/* Main content -- 3 cols */}
           <div className="xl:col-span-3 space-y-4">
             {playbook.length === 0 ? (
-              <div className="rounded-xl p-12 text-center space-y-3" style={{ border: '1px solid var(--border-subtle)', background: 'var(--surface-0)' }}>
+              <div className="rounded-xl p-12 text-center space-y-3" style={{ background: 'var(--surface-0)' }}>
                 <MessageCircleWarning className="w-10 h-10 mx-auto" style={{ color: 'var(--border-default)' }} />
                 <p style={{ color: 'var(--text-muted)' }}>No objections tracked yet.</p>
                 <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -464,7 +464,7 @@ export default function ObjectionsPage() {
                 const isExpanded = expandedTopics.has(group.topic);
 
                 return (
-                  <div key={group.topic} id={`topic-${group.topic}`} className="rounded-xl overflow-hidden" style={{ border: '1px solid', ...color.border }}>
+                  <div key={group.topic} id={`topic-${group.topic}`} className="rounded-xl overflow-hidden" style={{ ...color.border }}>
                     {/* Topic header */}
                     <button
                       onClick={() => toggleTopic(group.topic)}
@@ -518,7 +518,7 @@ export default function ObjectionsPage() {
                     {isExpanded && (
                       <div className="p-4 space-y-3">
                         {group.objections.map((obj) => (
-                          <div key={obj.id} className="rounded-lg p-3 space-y-2" style={{ background: 'var(--surface-1)', border: '1px solid var(--border-subtle)' }}>
+                          <div key={obj.id} className="rounded-lg p-3 space-y-2" style={{ background: 'var(--surface-1)' }}>
                             <div className="flex items-start justify-between gap-3">
                               <div className="flex-1 space-y-1">
                                 <p className="text-sm" style={{ color: 'var(--text-primary)' }}>{obj.objection_text}</p>
@@ -630,7 +630,7 @@ export default function ObjectionsPage() {
           {/* Sidebar -- 1 col */}
           <div className="space-y-4">
             {/* Top Unresolved */}
-            <div className="rounded-xl p-4 space-y-3" style={{ border: '1px solid var(--border-subtle)' }}>
+            <div className="rounded-xl p-4 space-y-3">
               <div className="flex items-center gap-2">
                 <AlertTriangle className="w-4 h-4" style={{ color: 'var(--text-tertiary)' }} />
                 <h3 className="text-xs font-semibold  tracking-wide" style={{ color: 'var(--text-tertiary)' }}>Top Unresolved</h3>
@@ -685,7 +685,7 @@ export default function ObjectionsPage() {
             </div>
 
             {/* Effectiveness summary */}
-            <div className="rounded-xl p-4 space-y-3" style={{ border: '1px solid var(--border-subtle)' }}>
+            <div className="rounded-xl p-4 space-y-3">
               <div className="flex items-center gap-2">
                 <Shield className="w-4 h-4" style={{ color: 'var(--accent)' }} />
                 <h3 className="text-xs font-semibold  tracking-wide" style={{ color: 'var(--text-tertiary)' }}>Coverage</h3>
@@ -717,7 +717,7 @@ export default function ObjectionsPage() {
             </div>
 
             {/* Meeting Prep */}
-            <div className="rounded-xl p-4 space-y-3" style={{ border: '1px solid var(--border-subtle)' }}>
+            <div className="rounded-xl p-4 space-y-3">
               <div className="flex items-center gap-2">
                 <Target className="w-4 h-4" style={{ color: 'var(--text-tertiary)' }} />
                 <h3 className="text-xs font-semibold  tracking-wide" style={{ color: 'var(--text-tertiary)' }}>Meeting Prep</h3>
@@ -911,7 +911,7 @@ function EffectivenessTab({
     return (
       <div className="space-y-4">
         {[1, 2, 3, 4].map(i => (
-          <div key={i} className="h-24 rounded-xl animate-pulse" style={{ background: 'var(--surface-1)', border: '1px solid var(--border-subtle)' }} />
+          <div key={i} className="h-24 rounded-xl animate-pulse" style={{ background: 'var(--surface-1)' }} />
         ))}
       </div>
     );
@@ -919,7 +919,7 @@ function EffectivenessTab({
 
   if (!data) {
     return (
-      <div className="rounded-xl p-12 text-center space-y-3" style={{ border: '1px solid var(--border-subtle)', background: 'var(--surface-0)' }}>
+      <div className="rounded-xl p-12 text-center space-y-3" style={{ background: 'var(--surface-0)' }}>
         <BarChart3 className="w-10 h-10 mx-auto" style={{ color: 'var(--border-default)' }} />
         <p style={{ color: 'var(--text-muted)' }}>No effectiveness data available.</p>
       </div>
@@ -941,7 +941,7 @@ function EffectivenessTab({
     <div className="space-y-6">
       {/* Summary Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="rounded-xl p-4" style={{ background: 'var(--surface-1)', border: '1px solid var(--border-subtle)' }}>
+        <div className="rounded-xl p-4" style={{ background: 'var(--surface-1)' }}>
           <div className="flex items-center gap-2 mb-2">
             <span className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: 'var(--accent-muted)' }}>
               <Activity className="w-3.5 h-3.5" style={{ color: 'var(--accent)' }} />
@@ -952,7 +952,7 @@ function EffectivenessTab({
           <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>{summary.topics_count} topics, {summary.responses_count} responses</p>
         </div>
 
-        <div className="rounded-xl p-4" style={{ background: 'var(--surface-1)', border: '1px solid var(--border-subtle)' }}>
+        <div className="rounded-xl p-4" style={{ background: 'var(--surface-1)' }}>
           <div className="flex items-center gap-2 mb-2">
             <span className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: 'var(--success-muted)' }}>
               <CheckCircle2 className="w-3.5 h-3.5" style={{ color: 'var(--text-secondary)' }} />
@@ -963,7 +963,7 @@ function EffectivenessTab({
           <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>{summary.total_resolved} of {summary.total_objections} resolved</p>
         </div>
 
-        <div className="rounded-xl p-4" style={{ background: 'var(--surface-1)', border: '1px solid var(--border-subtle)' }}>
+        <div className="rounded-xl p-4" style={{ background: 'var(--surface-1)' }}>
           <div className="flex items-center gap-2 mb-2">
             <span className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: 'var(--success-muted)' }}>
               <ThumbsUp className="w-3.5 h-3.5" style={{ color: 'var(--text-secondary)' }} />
@@ -974,7 +974,7 @@ function EffectivenessTab({
           <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>{summary.overall_effectiveness_rate}% of all objections</p>
         </div>
 
-        <div className="rounded-xl p-4" style={{ background: 'var(--surface-1)', border: '1px solid var(--border-subtle)' }}>
+        <div className="rounded-xl p-4" style={{ background: 'var(--surface-1)' }}>
           <div className="flex items-center gap-2 mb-2">
             <span className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: 'var(--danger-muted)' }}>
               <ThumbsDown className="w-3.5 h-3.5" style={{ color: 'var(--text-primary)' }} />
@@ -990,7 +990,7 @@ function EffectivenessTab({
         {/* Main content -- 2 cols */}
         <div className="xl:col-span-2 space-y-6">
           {/* Topic Effectiveness Rankings */}
-          <div className="rounded-xl overflow-hidden" style={{ border: '1px solid var(--border-subtle)' }}>
+          <div className="rounded-xl overflow-hidden">
             <div className="p-4 flex items-center gap-2" style={{ background: 'var(--surface-1)', borderBottom: '1px solid var(--border-subtle)' }}>
               <Target className="w-4 h-4" style={{ color: 'var(--accent)' }} />
               <h3 className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>Effectiveness by Topic</h3>
@@ -1093,7 +1093,7 @@ function EffectivenessTab({
           </div>
 
           {/* Response Leaderboard */}
-          <div className="rounded-xl overflow-hidden" style={{ border: '1px solid var(--border-subtle)' }}>
+          <div className="rounded-xl overflow-hidden">
             <div className="p-4 flex items-center gap-2" style={{ background: 'var(--surface-1)', borderBottom: '1px solid var(--border-subtle)' }}>
               <Zap className="w-4 h-4" style={{ color: 'var(--text-secondary)' }} />
               <h3 className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>Top Performing Responses</h3>
@@ -1169,7 +1169,7 @@ function EffectivenessTab({
                       </button>
                       {isExpanded && (
                         <div className="px-3 pb-3 pl-12 space-y-2">
-                          <div className="p-3 rounded-lg space-y-2" style={{ background: 'var(--surface-1)', border: '1px solid var(--border-subtle)' }}>
+                          <div className="p-3 rounded-lg space-y-2" style={{ background: 'var(--surface-1)' }}>
                             <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Objection:</p>
                             <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>{entry.objection_text}</p>
                             <p className="text-xs mt-2" style={{ color: 'var(--text-muted)' }}>Full response:</p>
@@ -1203,7 +1203,7 @@ function EffectivenessTab({
 
           {/* Worst Performing Responses */}
           {worst_responses.length > 0 && worst_responses.some(r => r.effectiveness_score < 50) && (
-            <div className="rounded-xl overflow-hidden" style={{ border: '1px solid var(--border-subtle)' }}>
+            <div className="rounded-xl overflow-hidden">
               <div className="p-4 flex items-center gap-2" style={{ background: 'var(--danger-muted)', borderBottom: '1px solid var(--border-subtle)' }}>
                 <AlertTriangle className="w-4 h-4" style={{ color: 'var(--text-primary)' }} />
                 <h3 className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>Responses Needing Rework</h3>
@@ -1252,7 +1252,7 @@ function EffectivenessTab({
         <div className="space-y-4">
           {/* Objection Evolution */}
           {evolution.emergingObjections.length > 0 && (
-            <div className="rounded-xl p-4 space-y-3" style={{ border: '1px solid var(--border-subtle)' }}>
+            <div className="rounded-xl p-4 space-y-3">
               <div className="flex items-center gap-2">
                 <TrendingUp className="w-4 h-4" style={{ color: 'var(--text-tertiary)' }} />
                 <h3 className="text-xs font-semibold  tracking-wide" style={{ color: 'var(--text-tertiary)' }}>Emerging</h3>
@@ -1282,7 +1282,7 @@ function EffectivenessTab({
 
           {/* Resolved Objections */}
           {evolution.resolvedObjections.length > 0 && (
-            <div className="rounded-xl p-4 space-y-3" style={{ border: '1px solid var(--border-subtle)' }}>
+            <div className="rounded-xl p-4 space-y-3">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4" style={{ color: 'var(--text-secondary)' }} />
                 <h3 className="text-xs font-semibold  tracking-wide" style={{ color: 'var(--text-tertiary)' }}>Resolved</h3>
@@ -1317,7 +1317,7 @@ function EffectivenessTab({
 
           {/* Persistent Objections */}
           {evolution.persistentObjections.length > 0 && (
-            <div className="rounded-xl p-4 space-y-3" style={{ border: '1px solid var(--border-subtle)' }}>
+            <div className="rounded-xl p-4 space-y-3">
               <div className="flex items-center gap-2">
                 <AlertTriangle className="w-4 h-4" style={{ color: 'var(--text-primary)' }} />
                 <h3 className="text-xs font-semibold  tracking-wide" style={{ color: 'var(--text-tertiary)' }}>Persistent</h3>
@@ -1349,7 +1349,7 @@ function EffectivenessTab({
 
           {/* Heat Map (simplified week view) */}
           {evolution.objectionHeatMap.length > 0 && (
-            <div className="rounded-xl p-4 space-y-3" style={{ border: '1px solid var(--border-subtle)' }}>
+            <div className="rounded-xl p-4 space-y-3">
               <div className="flex items-center gap-2">
                 <BarChart3 className="w-4 h-4" style={{ color: 'var(--accent)' }} />
                 <h3 className="text-xs font-semibold  tracking-wide" style={{ color: 'var(--text-tertiary)' }}>Activity by Week</h3>
@@ -1396,7 +1396,7 @@ function EffectivenessTab({
           )}
 
           {/* Resolution Rate by Topic */}
-          <div className="rounded-xl p-4 space-y-3" style={{ border: '1px solid var(--border-subtle)' }}>
+          <div className="rounded-xl p-4 space-y-3">
             <div className="flex items-center gap-2">
               <Shield className="w-4 h-4" style={{ color: 'var(--accent)' }} />
               <h3 className="text-xs font-semibold  tracking-wide" style={{ color: 'var(--text-tertiary)' }}>Resolution Rate</h3>
