@@ -105,7 +105,7 @@ export default function ForecastPage() {
         <div className="card" style={{ textAlign: 'center', padding: 'var(--space-12)' }}>
           <AlertTriangle className="w-8 h-8 mx-auto mb-3" style={{ color: 'var(--text-muted)' }} />
           <p style={{ color: 'var(--text-primary)', fontSize: 'var(--font-size-sm)', marginBottom: 'var(--space-3)' }}>
-            {error || 'Forecast data could not be loaded. Check your connection and try again.'}</p>
+            {error || 'Forecast data could not be loaded. Ensure investors are added to the pipeline, then try again.'}</p>
           <button onClick={fetchForecast} className="btn btn-secondary btn-sm">Retry</button></div>
       </div>);
   }
@@ -334,7 +334,7 @@ export default function ForecastPage() {
           {forecast.riskFactors.length === 0 ? (
             <div className="flex items-center gap-2" style={{ padding: 'var(--space-3)', background: 'var(--success-muted)', borderRadius: 'var(--radius-sm)' }}>
               <span style={stTextSecondary}><CheckCircle2 className="w-3.5 h-3.5" /></span>
-              <span style={{ ...stFontXs, ...stTextSecondary }}>No significant risks identified</span></div>
+              <span style={{ ...stFontXs, ...stTextSecondary }}>On track — no major risk factors identified</span></div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
               {forecast.riskFactors.map((risk, i) => {

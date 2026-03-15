@@ -714,7 +714,9 @@ function FileRow({ file, expanded, onToggle, onDelete }: {
             cursor: 'pointer',
             padding: 0, }}
           onMouseEnter={() => setDeleteHovered(true)}
-          onMouseLeave={() => setDeleteHovered(false)}>
+          onMouseLeave={() => setDeleteHovered(false)}
+          aria-label="Delete file"
+          title="Delete file">
           <Trash2 className="w-3.5 h-3.5" /></button></div>
       {expanded && (
         <div style={{ borderTop: '1px solid var(--border-subtle)', padding: 'var(--space-3) var(--space-4)' }}>

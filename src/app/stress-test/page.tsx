@@ -146,7 +146,7 @@ export default function StressTestPage() {
       <div className="space-y-8">
         <h1 className="page-title">Process Stress Test</h1>
         <div className="rounded-xl p-8 text-center space-y-3" style={{ background: 'var(--danger-muted)' }}>
-          <p style={stTextSecondary}>Could not load stress test data.</p>
+          <p style={stTextSecondary}>Could not load stress test data. Check your connection and try again.</p>
           <button
             onClick={() => fetchData()}
             onMouseEnter={() => setRetryHover(true)}
@@ -469,7 +469,7 @@ export default function StressTestPage() {
             <Zap className="w-4 h-4" /> Critical Path</h2>
           <div className="mb-4">
             <div className="text-xs mb-2" style={stTextMuted}>
-              Minimum viable set to reach EUR {formatEuro(data.target)} target:</div>
+              Investors who must close to reach the EUR {formatEuro(data.target)} target:</div>
             {data.criticalPath.minimumViableSet.length === 0 ? (
               <p className="text-sm" style={stTextMuted}>No investors with sufficient probability identified.</p>
             ) : (
