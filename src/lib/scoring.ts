@@ -487,8 +487,8 @@ export function computeMomentumScore(
     }
     const firstHalf = gaps.slice(0, Math.ceil(gaps.length / 2));
     const secondHalf = gaps.slice(Math.ceil(gaps.length / 2));
-    const firstAvg = firstHalf.reduce((a, b) => a + b, 0) / firstHalf.length;
-    const secondAvg = secondHalf.reduce((a, b) => a + b, 0) / secondHalf.length;
+    const firstAvg = firstHalf.length > 0 ? firstHalf.reduce((a, b) => a + b, 0) / firstHalf.length : 0;
+    const secondAvg = secondHalf.length > 0 ? secondHalf.reduce((a, b) => a + b, 0) / secondHalf.length : 0;
     if (secondAvg < firstAvg * 0.7) freqTrend = 'up'; // meetings getting closer together
     else if (secondAvg > firstAvg * 1.5) freqTrend = 'down'; // meetings getting further apart
   }

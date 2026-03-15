@@ -322,8 +322,8 @@ Return JSON (no markdown):
 If no discrepancies found, return {"discrepancies": []}.`
     }]});
 
-  const text = response.content[0].type === 'text' ? response.content[0].text : '{"discrepancies":[]}';
-  const { parsed, success } = safeParseJSON(text, { discrepancies: [] as { location: string; issue: string; suggestion: string }[] });
+  const { text } = extractText(response);
+  const { parsed, success } = safeParseJSON(text || '{"discrepancies":[]}', { discrepancies: [] as { location: string; issue: string; suggestion: string }[] });
   logAISkill('check_consistency', success, 1, success ? (parsed.discrepancies?.length ?? 0) : 0);
   return parsed;
 }
@@ -350,8 +350,8 @@ Return JSON (no markdown):
 Be thorough but fair. Flag only genuinely weak arguments, not stylistic preferences.`
     }]});
 
-  const text = response.content[0].type === 'text' ? response.content[0].text : '{"weaknesses":[]}';
-  const { parsed, success } = safeParseJSON(text, { weaknesses: [] as { claim: string; issue: string; suggestion: string }[] });
+  const { text } = extractText(response);
+  const { parsed, success } = safeParseJSON(text || '{"weaknesses":[]}', { weaknesses: [] as { claim: string; issue: string; suggestion: string }[] });
   logAISkill('find_weak_arguments', success, 1, success ? (parsed.weaknesses?.length ?? 0) : 0);
   return parsed;
 }

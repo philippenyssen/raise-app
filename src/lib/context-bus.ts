@@ -529,8 +529,8 @@ export async function getFullContext(): Promise<FullContext> {
     intelligenceSummary: intelligenceContext.substring(0, 3000),
     topObjections,
     backlogSummary: {
-      totalCommitted: activeCommitments.reduce((s, c) => s + c.amount_eur, 0),
-      probabilityWeighted: activeCommitments.reduce((s, c) => s + c.amount_eur * c.confidence, 0),
+      totalCommitted: activeCommitments.reduce((s, c) => s + (Number(c.amount_eur) || 0), 0),
+      probabilityWeighted: activeCommitments.reduce((s, c) => s + (Number(c.amount_eur) || 0) * Math.max(0, Math.min(1, Number(c.confidence) || 0)), 0),
       count: activeCommitments.length,
     },
     pipelineHealth: {
