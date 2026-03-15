@@ -219,7 +219,7 @@ function FollowupsContent() {
       if (!res.ok) throw new Error('Failed');
       setCompletingId(null);
       setCompleteForm({ outcome: '', conviction_delta: 0 });
-      toast('Follow-up completed', 'success');
+      toast('Follow-up completed — conviction score updated', 'success');
       fetchFollowups();
     } catch { toast('Couldn\'t complete follow-up — check your connection and retry', 'error'); }
   }

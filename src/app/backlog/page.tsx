@@ -111,7 +111,7 @@ export default function BacklogPage() {
         }),});
       if (!res.ok) throw new Error('Failed');
       const created = await res.json();
-      toast('Commitment added', 'success');
+      toast(`${form.customer} commitment added — ${form.amount_eur}M tracked`, 'success');
       setShowAdd(false);
       setForm({ customer: '', program: '', contract_type: 'firm', amount_eur: '', start_date: '', end_date: '', annual_amount: '', confidence: '0.9', source_doc: '', notes: '', status: 'active' });
       setCommitments(prev => [created, ...prev]);

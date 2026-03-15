@@ -372,7 +372,7 @@ export default function AccelerationPage() {
         body: JSON.stringify({ id: item.id, status: 'executed' }),});
       if (!res.ok) throw new Error('Failed to mark action as executed');
       setExecutedIds(prev => new Set(prev).add(item.id));
-      toast(`Action executed for ${item.investorName}`, 'success', {
+      toast(`${item.actionType || 'Action'} completed for ${item.investorName}`, 'success', {
         label: 'Undo',
         onClick: () => undoAction(item.id, 'executed'),
       });
@@ -388,7 +388,7 @@ export default function AccelerationPage() {
         body: JSON.stringify({ id: item.id, status: 'skipped' }),});
       if (!res.ok) throw new Error('Failed to mark action as skipped');
       setSkippedIds(prev => new Set(prev).add(item.id));
-      toast(`Action skipped for ${item.investorName}`, 'success', {
+      toast(`Skipped ${item.actionType || 'action'} for ${item.investorName}`, 'success', {
         label: 'Undo',
         onClick: () => undoAction(item.id, 'skipped'),
       });

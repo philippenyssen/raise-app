@@ -423,7 +423,7 @@ export default function TodayPage() {
         body: JSON.stringify({ id, status: 'completed' }),});
       if (!res.ok) throw new Error('Server error');
       setDueFollowups(prev => prev.filter(f => f.id !== id));
-      toast('Follow-up completed', 'success');
+      toast('Follow-up completed — engagement data updated', 'success');
     } catch {
       toast('Couldn\'t complete follow-up — try again', 'error');
     }
