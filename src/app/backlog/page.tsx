@@ -191,7 +191,7 @@ export default function BacklogPage() {
               />
             <input type="number" placeholder="Annual Amount (€M)" value={form.annual_amount} onChange={e => setForm(f => ({ ...f, annual_amount: e.target.value }))} className="input"
               />
-            <input type="number" step="0.05" min="0" max="1" placeholder="Confidence (0.9 = signed)" value={form.confidence} onChange={e => setForm(f => ({ ...f, confidence: e.target.value }))} className="input"
+            <input type="number" step="0.05" min="0" max="1" placeholder="Confidence: 1.0=signed, 0.7=LOI, 0.3=pipeline" value={form.confidence} onChange={e => setForm(f => ({ ...f, confidence: e.target.value }))} className="input" title="1.0 = signed contract, 0.7 = LOI/MOU, 0.5 = verbal, 0.3 = pipeline"
               />
             <input type="date" placeholder="Start Date" value={form.start_date} onChange={e => setForm(f => ({ ...f, start_date: e.target.value }))} className="input"
               />

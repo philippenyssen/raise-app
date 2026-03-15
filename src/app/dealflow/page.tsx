@@ -449,7 +449,7 @@ export default function DealflowPage() {
         <div className="text-center py-16" style={stTextMuted}>
           <Users className="w-8 h-8 mx-auto mb-2" />
           <p className="text-sm font-normal" style={{ color: 'var(--text-secondary)', marginBottom: 'var(--space-1)' }}>
-            {heatFilter !== 'all' ? `No ${heatFilter} investors` : 'No investors scored yet'}</p>
+            {heatFilter !== 'all' ? `No investors in the "${heatFilter}" category right now` : 'No investor activity to display yet'}</p>
           <p className="text-xs" style={stTextMuted}>
             {heatFilter !== 'all' ? (
               <button
@@ -457,7 +457,7 @@ export default function DealflowPage() {
                 style={{ color: 'var(--accent)', textDecoration: 'underline', background: 'none', border: 'none', cursor: 'pointer' }}>
                 Clear filter to see all {investors.length} investors</button>
             ) : (
-              <>Log meetings to start generating heat scores. <Link href="/meetings/new" style={stAccent}>Log a meeting</Link></>
+              <>Heat scores are generated automatically after meetings. <Link href="/meetings/new" style={stAccent}>Log your first meeting</Link></>
             )}</p></div>
       )}
 
