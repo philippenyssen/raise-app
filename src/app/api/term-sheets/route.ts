@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAllTermSheets, createTermSheet, updateTermSheet, deleteTermSheet } from '@/lib/db';
 
+const ALLOWED_FIELDS = new Set([
+  'investor', 'valuation', 'amount', 'liq_pref', 'anti_dilution', 'board_seats',
+  'dividends', 'protective_provisions', 'option_pool', 'exclusivity', 'strategic_value', 'notes',
+]);
+
 export async function GET() {
   try {
     const sheets = await getAllTermSheets();
@@ -53,7 +58,10 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
   }
   if (!body.id) return NextResponse.json({ error: 'id is required' }, { status: 400 });
-  const { id, ...updates } = body;
+  const { id, ...raw } = body;
+  const updates: Record<string, unknown> = Object.fromEntries(
+    Object.entries(raw).filter(([k]) => ALLOWED_FIELDS.has(k))
+  );
   if (updates.strategic_value !== undefined) {
     const rawSV = Number(updates.strategic_value);
     updates.strategic_value = (!isNaN(rawSV) && rawSV >= 1 && rawSV <= 5) ? rawSV : 3;
