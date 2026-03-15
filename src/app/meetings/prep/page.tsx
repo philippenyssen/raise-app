@@ -127,7 +127,7 @@ function MeetingPrepContent() {
         const res = await fetch('/api/investors');
         const data: Investor[] = await res.json();
         setInvestors(data);
-      } catch { /* ignore */ }
+      } catch (e) { console.error('[PREP_INVESTORS]', e instanceof Error ? e.message : e); }
       setLoading(false);
     })();
   }, []);
