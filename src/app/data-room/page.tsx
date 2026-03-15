@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import Link from 'next/link';
 import { useToast } from '@/components/toast';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { FolderOpen, Upload, FileText, Table, Image, Trash2, ChevronDown, ChevronRight, Search, Eye, BarChart3, Users, AlertCircle, Send, TrendingUp } from 'lucide-react';
@@ -527,7 +528,9 @@ function InvestorAccessRow({ investor, expanded, onToggle, onLogAccess, files }:
           ? <ChevronDown className="w-4 h-4 shrink-0" style={stTextMuted} />
           : <ChevronRight className="w-4 h-4 shrink-0" style={stTextMuted} />
         }
-        <span style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>{investor.investor_name}</span>
+        <Link href={`/investors/${investor.investor_id}`} style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)', textDecoration: 'none' }}
+          onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
+          onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}>{investor.investor_name}</Link>
         <span style={{ ...stFontXs, ...stTextMuted, ...stSurface2, padding: '0.125rem var(--space-2)', borderRadius: 'var(--radius-sm)' }}>{STATUS_LABELS[investor.status] || investor.status}</span>
         <span style={labelMuted}>T{investor.tier}</span>
         <div className="ml-auto flex items-center gap-3">
@@ -654,7 +657,9 @@ function UnreachedInvestorRow({ investor }: {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}>
       <span style={stTextTertiary}><AlertCircle className="w-3.5 h-3.5" /></span>
-      <span style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>{investor.investor_name}</span>
+      <Link href={`/investors/${investor.investor_id}`} style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)', textDecoration: 'none' }}
+        onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
+        onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}>{investor.investor_name}</Link>
       <span style={{ ...stFontXs, ...stTextMuted, ...stSurface2, padding: '0.125rem var(--space-2)', borderRadius: 'var(--radius-sm)' }}>{STATUS_LABELS[investor.status] || investor.status}</span>
       <span style={labelMuted}>T{investor.tier}</span>
       {investor.recommended_categories.length > 0 && (
@@ -678,7 +683,9 @@ function AccessLogRow({ entry }: {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}>
       <Eye className="w-3.5 h-3.5 shrink-0" style={stTextTertiary} />
-      <span style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)', minWidth: '8rem' }}>{entry.investor_name}</span>
+      <Link href={`/investors/${entry.investor_id}`} style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)', textDecoration: 'none', minWidth: '8rem' }}
+        onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
+        onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}>{entry.investor_name}</Link>
       <span style={labelMuted}>viewed</span>
       <span className="truncate" style={{ ...stFontSm, ...stTextSecondary }}>{entry.document_title}</span>
       <span className="ml-auto shrink-0" style={{ ...stFontXs, ...stTextTertiary }}>{fmtDateTime(entry.accessed_at)}</span>
