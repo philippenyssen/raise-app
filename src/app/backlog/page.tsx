@@ -160,17 +160,17 @@ export default function BacklogPage() {
       {/* Summary cards */}
       {summary && (
         <div className="grid grid-cols-4 gap-3 card-stagger">
-          <div className="rounded-lg p-4" style={stSurface1}>
+          <div className="rounded-xl p-4" style={stSurface1}>
             <div className="text-xs  font-normal flex items-center gap-1" style={stTextMuted}><DollarSign className="w-3 h-3" /> Total Committed</div>
             <div className="text-2xl font-normal mt-1" style={stTextPrimary}>{formatEur(summary.total_committed_eur)}</div></div>
-          <div className="rounded-lg p-4" style={stSurface1}>
+          <div className="rounded-xl p-4" style={stSurface1}>
             <div className="text-xs  font-normal flex items-center gap-1" style={stTextMuted}><ShieldCheck className="w-3 h-3" /> Probability-Weighted</div>
             <div className="text-2xl font-normal mt-1" style={stTextSecondary}>{formatEur(summary.probability_weighted_eur)}</div>
           </div>
-          <div className="rounded-lg p-4" style={stSurface1}>
+          <div className="rounded-xl p-4" style={stSurface1}>
             <div className="text-xs  font-normal flex items-center gap-1" style={stTextMuted}><TrendingUp className="w-3 h-3" /> Firm Contracts</div>
             <div className="text-2xl font-normal mt-1" style={stAccent}>{formatEur(summary.by_type?.firm || 0)}</div></div>
-          <div className="rounded-lg p-4" style={stSurface1}>
+          <div className="rounded-xl p-4" style={stSurface1}>
             <div className="text-xs  font-normal flex items-center gap-1" style={stTextMuted}><AlertTriangle className="w-3 h-3" /> Pipeline (Unsigned)</div>
             <div className="text-2xl font-normal mt-1" style={stTextTertiary}>{formatEur(summary.by_type?.pipeline || 0)}</div>
           </div></div>

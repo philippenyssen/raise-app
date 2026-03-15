@@ -467,7 +467,7 @@ export default function MomentumPage() {
                   const maxCohortScore = Math.max(...cohort.weeklyAvg.map(w => w.score), 1);
 
                   return (
-                    <div key={cohort.type} className="rounded-lg p-4" style={stSurface2}>
+                    <div key={cohort.type} className="rounded-xl p-4" style={stSurface2}>
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-2">
                           <span
@@ -584,7 +584,7 @@ export default function MomentumPage() {
               {data.crossSignals.map((signal, i) => (
                 <div
                   key={i}
-                  className="rounded-lg p-4"
+                  className="rounded-xl p-4"
                   style={stSurface2}>
                   <div className="flex items-start gap-3">
                     <div className="w-16 flex-shrink-0">
@@ -663,7 +663,7 @@ export default function MomentumPage() {
                 return (
                   <div
                     key={nh.investorType}
-                    className="rounded-lg p-4"
+                    className="rounded-xl p-4"
                     style={{ background: sc.bg }}>
                     <div className="flex items-center justify-between mb-3">
                       <span className="px-2 py-0.5 rounded text-xs font-normal" style={{ background: tc.bg, color: tc.color, boxShadow: `inset 0 0 0 1px ${tc.border}` }}>{TYPE_LABELS[nh.investorType] || nh.investorType}</span>
