@@ -384,13 +384,18 @@ export default function PipelinePage() {
         const convDenom = activeCount + closedCount + passedCount;
         const conversionRate = convDenom > 0 ? ((closedCount / convDenom) * 100).toFixed(1) : '0.0';
 
+        const activeInvestors = filtered.filter(i => !['passed', 'dropped', 'identified'].includes(i.status));
+        const avgDays = activeInvestors.length > 0
+          ? Math.round(activeInvestors.reduce((s, i) => s + Math.floor((Date.now() - new Date(i.created_at).getTime()) / 864e5), 0) / activeInvestors.length)
+          : 0;
+
         const metrics = [
           { label: 'Total', value: String(totalInv) },
           { label: 'Active', value: String(activeCount) },
           { label: 'In DD', value: String(inDdCount) },
           { label: 'Term Sheets', value: String(termSheetCount) },
           { label: 'Closed', value: String(closedCount), color: 'var(--text-secondary)' },
-          { label: 'Pass Rate', value: `${passRate}%`, color: passedCount > 0 ? 'var(--danger)' : undefined },
+          { label: 'Avg Days', value: `${avgDays}d`, color: avgDays > 60 ? 'var(--warning)' : undefined },
           { label: 'Conversion', value: `${conversionRate}%`, color: closedCount > 0 ? 'var(--success)' : undefined },];
 
         return (
