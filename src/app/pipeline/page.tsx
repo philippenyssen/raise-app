@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import type { Investor, InvestorStatus, InvestorType } from '@/lib/types';
 import { useToast } from '@/components/toast';
-import { cachedFetch } from '@/lib/cache';
+import { cachedFetch, invalidateCache } from '@/lib/cache';
 import {
   Users, TrendingUp, Zap, Filter, X, GripVertical,
   Building2, Landmark, Shield, Banknote, Home, Rocket,
@@ -231,6 +231,7 @@ export default function PipelinePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, status: newStatus }),});
       if (!res.ok) throw new Error('Failed to update');
+      invalidateCache('/api/');
       toast(`${investor.name} moved to ${STATUS_LABELS[newStatus as InvestorStatus]}`);
     } catch {
       setInvestors(prev =>

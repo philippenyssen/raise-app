@@ -17,7 +17,7 @@ import { useToast } from '@/components/toast';
 import { fmtDateShort, fmtDate } from '@/lib/format';
 import { STATUS_LABELS, OUTCOME_CONFIG } from '@/lib/constants';
 import { labelMuted, labelSecondary, scoreBorderColor, scoreColor4 as scoreColor, stAccent, stAccentBadge, stBorderTop, stSurface1, stSurface2, stTextMuted as textMuted, stTextPrimary as textPrimary, stTextSecondary as textSecondary, stTextTertiary as textTertiary } from '@/lib/styles';
-import { cachedFetch } from '@/lib/cache';
+import { cachedFetch, invalidateCache } from '@/lib/cache';
 import { MS_PER_DAY } from '@/lib/time';
 
 const STATUS_COLORS: Record<string, string> = {
@@ -432,6 +432,7 @@ export default function InvestorDetailPage() {
                     const res = await fetch('/api/investors', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, status: newStatus }) });
                     if (!res.ok) throw new Error('Failed');
                     setInvestor(prev => prev ? { ...prev, status: newStatus as InvestorStatus } : prev);
+                    invalidateCache('/api/');
                     toast(`Status updated to ${STATUS_LABELS[newStatus as InvestorStatus] || newStatus}`);
                   } catch { toast('Couldn\'t update investor status — refresh and try again', 'error'); }
                 }}
