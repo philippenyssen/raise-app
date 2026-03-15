@@ -113,6 +113,7 @@ export default function InvestorDetailPage() {
   const [enriching, setEnriching] = useState(false);
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
+  const [togglingTaskId, setTogglingTaskId] = useState<string | null>(null);
   const [researching, setResearching] = useState(false);
   const [intelTab, setIntelTab] = useState<IntelTab>('overview');
   const [dealIntel, setDealIntel] = useState<{
@@ -1000,13 +1001,16 @@ export default function InvestorDetailPage() {
                         style={{ opacity: t.status === 'done' ? 0.5 : 1 }}>
                         <div className="flex items-center gap-3 min-w-0">
                           <button
+                            disabled={togglingTaskId === t.id}
                             onClick={async () => {
+                              if (togglingTaskId) return;
+                              setTogglingTaskId(t.id);
                               const newStatus = t.status === 'done' ? 'pending' : 'done';
                               try {
                                 const res = await fetch('/api/tasks', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: t.id, status: newStatus, title: t.title, investor_id: id, investor_name: investor?.name }) });
                                 if (!res.ok) throw new Error('Failed');
                                 fetchData();
-                              } catch { toast('Failed to update task', 'error'); } }}
+                              } catch { toast('Failed to update task', 'error'); } finally { setTogglingTaskId(null); } }}
                             className="w-5 h-5 rounded flex items-center justify-center shrink-0 transition-colors"
                             style={{
                               background: t.status === 'done' ? 'var(--success)' : 'transparent',
