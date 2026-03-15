@@ -49,6 +49,7 @@ export default function TermsPage() {
   const [form, setForm] = useState(EMPTY_TS);
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; investor: string } | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => { document.title = 'Raise | Term Sheets'; }, []);
   useEffect(() => { fetchSheets(); }, []);
@@ -76,6 +77,7 @@ export default function TermsPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setSubmitting(true);
     try {
       if (editId) {
         const res = await fetch('/api/term-sheets', {
@@ -98,7 +100,7 @@ export default function TermsPage() {
       fetchSheets();
     } catch {
       toast('Could not save term sheet — check all fields and try again', 'error');
-    }}
+    } finally { setSubmitting(false); }}
 
   async function handleDelete() {
     if (!deleteTarget) return;
@@ -205,8 +207,8 @@ export default function TermsPage() {
               <div className="text-xs text-center" style={stTextMuted}>{form.strategic_value}/5</div></div></div>
           <TsInput label="Notes" value={form.notes} onChange={v => setForm(f => ({ ...f, notes: v }))} />
           <div className="flex gap-2">
-            <button type="submit" className="btn btn-primary btn-md text-sm font-normal">
-              {editId ? 'Update' : 'Add'}</button>
+            <button type="submit" disabled={submitting} className="btn btn-primary btn-md text-sm font-normal" style={{ opacity: submitting ? 0.6 : 1 }}>
+              {submitting ? 'Saving...' : editId ? 'Update' : 'Add'}</button>
             <button type="button" onClick={() => { setShowForm(false); setEditId(null); }} className="btn btn-secondary btn-md text-sm">
               Cancel</button></div></form>
       )}
