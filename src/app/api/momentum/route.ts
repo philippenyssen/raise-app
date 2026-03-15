@@ -422,7 +422,7 @@ export async function GET() {
         const latestSignal = recentCrossSignals[0];
         await createAccelerationAction({ investor_id: '', investor_name: 'Pipeline-wide', trigger_type: 'competitive_pressure', action_type: 'competitive_signal', description: `Systemic signal: ${latestSignal.description}. Review: (1) competitive landscape changes, (2) narrative/deck adjustments, (3) market timing. Affected: ${latestSignal.affectedInvestors.join(', ')}.`, expected_lift: 10, confidence: 'low', status: 'pending', actual_lift: null, executed_at: null });
       }
-    } catch { /* non-blocking — anomaly actions are best-effort */ }
+    } catch (e) { console.error('[MOMENTUM_ACCEL]', e instanceof Error ? e.message : e); }
 
     // ═══════════════════════════════════════════════════════════════════
     // 5. OVERALL PIPELINE VELOCITY TREND
@@ -507,7 +507,7 @@ export async function GET() {
         // Auto-create critical acceleration action
         try {
           await createAccelerationAction({ investor_id: inv.investorId, investor_name: inv.investorName, trigger_type: 'momentum_cliff', action_type: 'escalation', description: `CRITICAL: Trajectory predicts pass in ${daysToPassThreshold} days. Slope: ${slopePerWeek} pts/wk. Immediate intervention required.`, expected_lift: 15, confidence: 'high', status: 'pending', actual_lift: null, executed_at: null });
-        } catch { /* non-blocking */ }
+        } catch (e) { console.error('[MOMENTUM_CLIFF]', e instanceof Error ? e.message : e); }
       } else if (daysToPassThreshold !== null && daysToPassThreshold <= 21) {
         trajectoryAlerts.push({
           investorId: inv.investorId,
@@ -649,7 +649,7 @@ export async function GET() {
       for (const ts of timingSignals.filter(s => s.type === 'competitive_tension' && s.urgency === 'high')) {
         await createAccelerationAction({ investor_id: '', investor_name: 'Pipeline-wide', trigger_type: 'competitive_pressure', action_type: 'competitive_signal', description: `Timing signal: ${ts.description} Investors: ${ts.investorNames.join(', ')}`, expected_lift: 15, confidence: 'medium', status: 'pending', actual_lift: null, executed_at: null });
       }
-    } catch { /* non-blocking */ }
+    } catch (e) { console.error('[MOMENTUM_TIMING]', e instanceof Error ? e.message : e); }
 
     // ═══════════════════════════════════════════════════════════════════
     // 8. NARRATIVE DRIFT INTEGRATION
@@ -697,7 +697,7 @@ export async function GET() {
             `Narrative struggling with ${invEntry.type} investors (avg enthusiasm: ${signal.avgEnthusiasm}/5, conversion: ${signal.conversionRate}%). ` +
             `Consider type-specific pitch adjustments before re-engagement.`;
         }}
-    } catch { /* non-blocking — narrative signals are best-effort */ }
+    } catch (e) { console.error('[MOMENTUM_NARRATIVE]', e instanceof Error ? e.message : e); }
 
     return NextResponse.json({
       matrix,
