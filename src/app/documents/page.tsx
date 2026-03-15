@@ -63,6 +63,7 @@ export default function DocumentsPage() {
   const [flags, setFlags] = useState<DocFlag[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; title: string } | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const [showFlags, setShowFlags] = useState(true);
   const [hoverStates, setHoverStates] = useState<Record<string, boolean>>({});
 
@@ -91,6 +92,7 @@ export default function DocumentsPage() {
 
   async function handleDelete() {
     if (!deleteTarget) return;
+    setDeleting(true);
     try {
       const res = await fetch(`/api/documents/${deleteTarget.id}`, { method: 'DELETE' });
       if (!res.ok) throw new Error(`Failed (${res.status})`);
@@ -100,6 +102,8 @@ export default function DocumentsPage() {
     } catch {
       toast('Failed to delete document', 'error');
       setDeleteTarget(null);
+    } finally {
+      setDeleting(false);
     }}
 
   async function handleFlagAction(flagId: string, action: 'addressed' | 'dismissed') {
@@ -368,6 +372,7 @@ export default function DocumentsPage() {
         message={`Delete "${deleteTarget?.title}" and all its versions? This cannot be undone.`}
         confirmLabel="Delete"
         variant="danger"
+        loading={deleting}
         onConfirm={handleDelete}
         onCancel={() => setDeleteTarget(null)} />
     </div>);
