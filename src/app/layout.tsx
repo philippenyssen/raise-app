@@ -22,6 +22,9 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 export const metadata: Metadata = {
   title: "Raise | Series C Process Orchestrator",
   description: "AI-powered fundraising process management — track investors, meetings, follow-ups, and deal momentum in one place.",
+  icons: {
+    icon: "/icon.svg",
+  },
   openGraph: {
     title: "Raise | Series C Process Orchestrator",
     description: "AI-powered fundraising process management — track investors, meetings, follow-ups, and deal momentum in one place.",

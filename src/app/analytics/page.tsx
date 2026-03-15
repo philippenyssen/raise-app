@@ -186,7 +186,7 @@ export default function AnalyticsPage() {
             Deep funnel, velocity, and risk analysis</p></div>
         <div className="flex items-center gap-3">
           <span style={labelMuted10}>
-            Updated {new Date(data.generatedAt).toLocaleTimeString()}</span>
+            Updated {(() => { const m = Math.floor((Date.now() - new Date(data.generatedAt).getTime()) / 60000); return m < 1 ? 'just now' : m < 60 ? `${m}m ago` : `${Math.floor(m / 60)}h ago`; })()}</span>
           <button
             onClick={fetchAnalytics}
             onMouseEnter={() => setRefreshHovered(true)}
