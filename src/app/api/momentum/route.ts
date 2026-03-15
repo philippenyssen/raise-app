@@ -3,6 +3,9 @@ import { createAccelerationAction, computeNarrativeSignals } from '@/lib/db';
 import { getClient, stageIndex, groupByInvestorId } from '@/lib/api-helpers';
 import type { InvestorRow, MeetingRow, ActivityRow, TaskRow, FollowupRow } from '@/lib/api-types';
 
+interface TrajectoryAlert { investorId: string; investorName: string; type: 'critical_warning' | 'early_warning' | 'term_sheet_signal'; currentScore: number; predictedScore21d: number; slopePerWeek: number; daysToThreshold: number | null; recommendedAction: string; }
+interface TimingSignal { type: 'competitive_tension' | 'engagement_gap' | 'dd_synchronization'; description: string; investorNames: string[]; urgency: 'high' | 'medium' | 'low'; }
+
 // Get Monday of the week containing a given date
 function getWeekStart(d: Date): Date {
   const day = d.getDay();
@@ -454,7 +457,6 @@ export async function GET() {
     // 6. TRAJECTORY EARLY WARNING SYSTEM
     // ═══════════════════════════════════════════════════════════════════
 
-    interface TrajectoryAlert { investorId: string; investorName: string; type: 'critical_warning' | 'early_warning' | 'term_sheet_signal'; currentScore: number; predictedScore21d: number; slopePerWeek: number; daysToThreshold: number | null; recommendedAction: string; }
     const trajectoryAlerts: TrajectoryAlert[] = [];
 
     for (const inv of matrix) {
@@ -540,7 +542,6 @@ export async function GET() {
     // 7. CROSS-INVESTOR TIMING CORRELATION
     // ═══════════════════════════════════════════════════════════════════
 
-    interface TimingSignal { type: 'competitive_tension' | 'engagement_gap' | 'dd_synchronization'; description: string; investorNames: string[]; urgency: 'high' | 'medium' | 'low'; }
     const timingSignals: TimingSignal[] = [];
 
     // Fetch ALL meetings (not just within the 8-week window) for timing analysis
