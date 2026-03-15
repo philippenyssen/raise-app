@@ -44,11 +44,12 @@ function extractText(response: { content: { type: string; text?: string }[]; sto
 function safeParseJSON<T>(text: string, fallback: T): { parsed: T; success: boolean } {
   try {
     return { parsed: JSON.parse(text), success: true };
-  } catch {
+  } catch (e1) {
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
       try { return { parsed: JSON.parse(jsonMatch[0]), success: true }; } catch { /* fall through */ }
     }
+    console.error('[AI_JSON_PARSE]', e1 instanceof Error ? e1.message : 'Unknown parse error', '| First 200 chars:', text.slice(0, 200));
     return { parsed: fallback, success: false };
   }}
 
