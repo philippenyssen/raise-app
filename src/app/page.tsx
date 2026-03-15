@@ -1306,6 +1306,19 @@ function formatStage(stage: string): string {
   return STATUS_LABELS[stage] || stage.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 }
 
+function Sparkline({ data, width = 80, height = 24 }: { data: number[]; width?: number; height?: number }) {
+  if (!data.length) return null;
+  const max = Math.max(...data, 1);
+  const min = Math.min(...data, 0);
+  const range = max - min || 1;
+  const points = data.map((v, i) => `${(i / (data.length - 1)) * width},${height - ((v - min) / range) * (height - 2) - 1}`).join(' ');
+  return (
+    <svg width={width} height={height} style={{ display: 'inline-block', verticalAlign: 'middle' }}>
+      <polyline points={points} fill="none" stroke="var(--accent)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 function VelocityStrip({ velocity }: { velocity: VelocityResponse }) {
   const s = velocity.summary;
   const progressPct = Math.min(100, Math.round((s.raise_days_elapsed / s.raise_target_days) * 100));
@@ -1318,6 +1331,18 @@ function VelocityStrip({ velocity }: { velocity: VelocityResponse }) {
     : 0;
 
   const trendUp = s.avg_velocity_score >= 50;
+  const sparkData = (() => {
+    const sorted = [...velocity.investors].sort((a, b) => b.days_in_process - a.days_in_process);
+    if (sorted.length < 2) return [];
+    const binCount = 7;
+    const binSize = Math.max(1, Math.ceil(sorted.length / binCount));
+    const bins: number[] = [];
+    for (let i = 0; i < binCount; i++) {
+      const slice = sorted.slice(i * binSize, (i + 1) * binSize);
+      if (slice.length) bins.push(slice.reduce((s, v) => s + v.velocity_score, 0) / slice.length);
+    }
+    return bins;
+  })();
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -1358,9 +1383,12 @@ function VelocityStrip({ velocity }: { velocity: VelocityResponse }) {
           </div>
           <div>
             <div style={labelTertiary}>Velocity score</div>
-            <div className="tabular-nums mt-0.5" style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>
-              {s.avg_velocity_score}
-              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', fontWeight: 300 }}>/100</span>
+            <div className="flex items-center gap-2 mt-0.5">
+              <span className="tabular-nums" style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>
+                {s.avg_velocity_score}
+                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', fontWeight: 300 }}>/100</span>
+              </span>
+              {sparkData.length > 1 && <Sparkline data={sparkData} />}
             </div>
           </div>
           <div>
