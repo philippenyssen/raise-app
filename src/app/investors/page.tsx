@@ -268,16 +268,7 @@ export default function InvestorsPage() {
       {selected.size > 0 && (
         <div
           className="flex items-center gap-3"
-          style={{
-            position: 'fixed',
-            bottom: 'var(--space-6)',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            zIndex: 50,
-            background: 'var(--accent-muted)',
-            boxShadow: 'var(--shadow-lg), inset 0 0 0 1px var(--accent)',
-            borderRadius: 'var(--radius-lg)',
-            padding: 'var(--space-2) var(--space-4)', }}>
+          style={{ position: 'fixed', bottom: 'var(--space-6)', left: '50%', transform: 'translateX(-50%)', zIndex: 50, background: 'var(--accent-muted)', boxShadow: 'var(--shadow-lg), inset 0 0 0 1px var(--accent)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-2) var(--space-4)' }}>
           <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--accent)', fontWeight: 400 }}>
             {selected.size} selected
           </span>
@@ -365,16 +356,7 @@ export default function InvestorsPage() {
                 <tr
                   key={inv.id}
                   className="table-row transition-colors"
-                  style={{
-                    background: isSelected
-                      ? 'var(--accent-muted)'
-                      : isHovered
-                        ? 'var(--surface-2)'
-                        : 'transparent',
-                    borderLeft: isHovered && !isSelected
-                      ? '3px solid var(--accent)'
-                      : '3px solid transparent',
-                    transition: 'background 100ms ease, border-left 100ms ease', }}
+                  style={{ background: isSelected ? 'var(--accent-muted)' : isHovered ? 'var(--surface-2)' : 'transparent', borderLeft: isHovered && !isSelected ? '3px solid var(--accent)' : '3px solid transparent', transition: 'background 100ms ease, border-left 100ms ease' }}
                   onMouseEnter={() => setHoveredRow(inv.id)}
                   onMouseLeave={() => setHoveredRow(null)}>
                   <td style={{ width: '2.5rem', padding: 'var(--space-3) var(--space-4)' }}>
@@ -433,23 +415,7 @@ export default function InvestorsPage() {
                     <select
                       value={inv.status}
                       onChange={e => updateStatus(inv.id, e.target.value)}
-                      style={{
-                        background: (STATUS_STYLES[inv.status] || STATUS_STYLES.identified).background,
-                        color: (STATUS_STYLES[inv.status] || STATUS_STYLES.identified).color,
-                        borderRadius: '9999px',
-                        padding: '0.2rem 1.5rem 0.2rem 0.625rem',
-                        fontSize: 'var(--font-size-xs)',
-                        fontWeight: 400,
-                        border: '1px solid transparent',
-                        cursor: 'pointer',
-                        letterSpacing: '0.01em',
-                        lineHeight: '1.5',
-                        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath d='M3 5l3 3 3-3' stroke='${encodeURIComponent((STATUS_STYLES[inv.status] || STATUS_STYLES.identified).color)}' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`,
-                        backgroundRepeat: 'no-repeat',
-                        backgroundPosition: 'right 0.4rem center',
-                        backgroundSize: '10px',
-                        appearance: 'none',
-                        WebkitAppearance: 'none', }}>
+                      style={{ background: (STATUS_STYLES[inv.status] || STATUS_STYLES.identified).background, color: (STATUS_STYLES[inv.status] || STATUS_STYLES.identified).color, borderRadius: '9999px', padding: '0.2rem 1.5rem 0.2rem 0.625rem', fontSize: 'var(--font-size-xs)', fontWeight: 400, border: '1px solid transparent', cursor: 'pointer', letterSpacing: '0.01em', lineHeight: '1.5', backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath d='M3 5l3 3 3-3' stroke='${encodeURIComponent((STATUS_STYLES[inv.status] || STATUS_STYLES.identified).color)}' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.4rem center', backgroundSize: '10px', appearance: 'none', WebkitAppearance: 'none' }}>
                       {Object.entries(STATUS_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                     </select>
                   </td>
@@ -520,12 +486,7 @@ export default function InvestorsPage() {
         </table>
         </div>
         {filtered.length === 0 && (
-          <div style={{
-            padding: 'var(--space-8)',
-            textAlign: 'center',
-            color: 'var(--text-muted)',
-            fontSize: 'var(--font-size-sm)',
-          }}>
+          <div style={{ padding: 'var(--space-8)', textAlign: 'center', color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
             {investors.length === 0
               ? 'No investors yet. Click "Add Investor" above or seed your pipeline from the dashboard.'
               : 'No investors match your filters — try adjusting or clearing them'}

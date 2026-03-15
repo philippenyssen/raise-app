@@ -29,3 +29,4 @@ a5f2b2a	100	100	0	keep	design+eng	UX polish: loading states + error handling + a
 61110d9	100	100	0	keep	product	Pipeline quick-action link on investor detail = 62496 lines, score 100
 8c9950f	100	100	0	keep	all	data completeness indicator + sidebar/API compaction (-295 lines) = 62201 lines, score 100
 676edc4	100	100	0	keep	product	conviction delta badges + color-coded days remaining = 62207 lines, score 100
+78e3754	100	100	0	keep	eng	compact 5 API routes (-1764 lines) = 60443 lines, score 100

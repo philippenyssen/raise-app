@@ -9,53 +9,11 @@ import {
 import { STATUS_LABELS } from '@/lib/constants';
 import { labelMuted, labelSecondary, probColor, stAccent, stFontSm, stSurface1, stTextMuted, stTextPrimary, stTextTertiary } from '@/lib/styles';
 
-interface CascadeLink {
-  investorId: string;
-  investorName: string;
-  probability: number;
-  cumulativeProbability: number;
-  status: string;
-  tier: number;
-  checkSize: string;
-  capitalM: number;
-  expectedCapitalM: number;
-}
+interface CascadeLink { investorId: string; investorName: string; probability: number; cumulativeProbability: number; status: string; tier: number; checkSize: string; capitalM: number; expectedCapitalM: number }
 
-interface CascadeData {
-  keystoneId: string;
-  keystoneName: string;
-  keystoneTier: number;
-  keystoneStatus: string;
-  keystoneEnthusiasm: number;
-  keystoneCheckSize: string;
-  keystoneCapitalM: number;
-  cascadeChain: CascadeLink[];
-  chainLength: number;
-  totalCascadeProbability: number;
-  totalCascadeCapitalM: number;
-  expectedCascadeCapitalM: number;
-  networkBottleneck: { investorId: string; investorName: string; impactIfPass: number } | null;
-  signal: string;
-}
+interface CascadeData { keystoneId: string; keystoneName: string; keystoneTier: number; keystoneStatus: string; keystoneEnthusiasm: number; keystoneCheckSize: string; keystoneCapitalM: number; cascadeChain: CascadeLink[]; chainLength: number; totalCascadeProbability: number; totalCascadeCapitalM: number; expectedCascadeCapitalM: number; networkBottleneck: { investorId: string; investorName: string; impactIfPass: number } | null; signal: string }
 
-interface NetworkData {
-  cascades: CascadeData[];
-  summary: {
-    totalExpectedCapitalM: number;
-    totalInvestorsConnected: number;
-    avgChainLength: number;
-    keystoneCount: number;
-    strongestChain: { name: string; capitalM: number } | null;
-    weakestChain: { name: string; capitalM: number } | null;
-  };
-  bottleneckAlert: {
-    keystoneName: string;
-    bottleneckName: string;
-    impactIfPass: number;
-    capitalAtRiskM: number;
-  } | null;
-  generatedAt: string;
-}
+interface NetworkData { cascades: CascadeData[]; summary: { totalExpectedCapitalM: number; totalInvestorsConnected: number; avgChainLength: number; keystoneCount: number; strongestChain: { name: string; capitalM: number } | null; weakestChain: { name: string; capitalM: number } | null }; bottleneckAlert: { keystoneName: string; bottleneckName: string; impactIfPass: number; capitalAtRiskM: number } | null; generatedAt: string }
 
 function formatCapital(m: number): string {
   if (m === 0) return '--';

@@ -11,59 +11,13 @@ import { STATUS_LABELS as STAGE_LABELS } from '@/lib/constants';
 import { fmtDate, fmtDateShort } from '@/lib/format';
 import { confidenceBg, confidenceColor, labelMuted, labelMuted10, stAccent, stFontSm, stFontXs, stSurface1, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
-interface InvestorForecast {
-  investorId: string;
-  investorName: string;
-  currentStage: string;
-  tier: number;
-  daysInStage: number;
-  predictedDaysToClose: number;
-  predictedCloseDate: string;
-  confidence: 'high' | 'medium' | 'low';
-  reasoning: string;
-}
+interface InvestorForecast { investorId: string; investorName: string; currentStage: string; tier: number; daysInStage: number; predictedDaysToClose: number; predictedCloseDate: string; confidence: 'high' | 'medium' | 'low'; reasoning: string }
 
-interface RaiseForecast {
-  forecasts: InvestorForecast[];
-  expectedCloseDate: string;
-  expectedAmount: number;
-  confidence: 'high' | 'medium' | 'low';
-  criticalPathInvestors: string[];
-  riskFactors: string[];
-}
+interface RaiseForecast { forecasts: InvestorForecast[]; expectedCloseDate: string; expectedAmount: number; confidence: 'high' | 'medium' | 'low'; criticalPathInvestors: string[]; riskFactors: string[] }
 
-interface Scenario {
-  label: string;
-  description: string;
-  amount: number;
-  investorCount: number;
-  closeDate: string;
-}
+interface Scenario { label: string; description: string; amount: number; investorCount: number; closeDate: string }
 
-interface ForecastData {
-  forecast: RaiseForecast;
-  raiseTarget: number;
-  currency: string;
-  companyName: string;
-  roundType: string;
-  amounts: {
-    committed: number;
-    expected: number;
-    bestCase: number;
-    worstCase: number;
-  };
-  distribution: {
-    high: number;
-    medium: number;
-    low: number;
-  };
-  scenarios: {
-    best: Scenario;
-    base: Scenario;
-    worst: Scenario;
-  };
-  generated_at: string;
-}
+interface ForecastData { forecast: RaiseForecast; raiseTarget: number; currency: string; companyName: string; roundType: string; amounts: { committed: number; expected: number; bestCase: number; worstCase: number }; distribution: { high: number; medium: number; low: number }; scenarios: { best: Scenario; base: Scenario; worst: Scenario }; generated_at: string }
 
 function formatAmount(value: number, currency: string): string {
   const sym = currency === 'USD' ? '$' : currency === 'GBP' ? '\u00a3' : '\u20ac';
@@ -221,50 +175,10 @@ export default function ForecastPage() {
 
         {/* Progress bar with committed + expected */}
         <div style={{ position: 'relative', marginBottom: 'var(--space-3)' }}>
-          <div
-            style={{
-              width: '100%',
-              height: '28px',
-              background: 'var(--surface-2)',
-              borderRadius: 'var(--radius-md)',
-              overflow: 'hidden',
-              position: 'relative', }}>
-            {/* Expected (lighter) */}
-            <div
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                height: '100%',
-                width: `${progressPct}%`,
-                background: 'var(--accent-muted)',
-                borderRadius: 'var(--radius-md)',
-                transition: 'width 600ms ease',
-              }} />
-            {/* Committed (solid) */}
-            <div
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                height: '100%',
-                width: `${committedPct}%`,
-                background: 'var(--accent)',
-                borderRadius: 'var(--radius-md)',
-                transition: 'width 600ms ease',
-              }} />
-            {/* Label inside */}
-            <div
-              style={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                fontSize: 'var(--font-size-sm)',
-                fontWeight: 300,
-                color: 'var(--text-primary)',
-                fontVariantNumeric: 'tabular-nums',
-                whiteSpace: 'nowrap', }}>
+          <div style={{ width: '100%', height: '28px', background: 'var(--surface-2)', borderRadius: 'var(--radius-md)', overflow: 'hidden', position: 'relative' }}>
+            <div style={{ position: 'absolute', top: 0, left: 0, height: '100%', width: `${progressPct}%`, background: 'var(--accent-muted)', borderRadius: 'var(--radius-md)', transition: 'width 600ms ease' }} />
+            <div style={{ position: 'absolute', top: 0, left: 0, height: '100%', width: `${committedPct}%`, background: 'var(--accent)', borderRadius: 'var(--radius-md)', transition: 'width 600ms ease' }} />
+            <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: 'var(--font-size-sm)', fontWeight: 300, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
               {formatAmount(effectiveExpected, currency)} / {targetDisplay}
             </div>
           </div>
@@ -416,19 +330,7 @@ export default function ForecastPage() {
                       padding: 'var(--space-2) var(--space-3)',
                       background: 'var(--surface-1)',
                       borderRadius: 'var(--radius-sm)', }}>
-                    <span
-                      style={{
-                        width: '18px',
-                        height: '18px',
-                        borderRadius: '50%',
-                        background: 'var(--warning-muted)',
-                        color: 'var(--text-tertiary)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '10px',
-                        fontWeight: 300,
-                        flexShrink: 0, }}>
+                    <span style={{ width: '18px', height: '18px', borderRadius: '50%', background: 'var(--warning-muted)', color: 'var(--text-tertiary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 300, flexShrink: 0 }}>
                       {i + 1}
                     </span>
                     <div style={{ flex: 1, minWidth: 0 }}>
@@ -670,16 +572,7 @@ export default function ForecastPage() {
 
                       {/* Days in Stage */}
                       <td style={{ padding: 'var(--space-3) var(--space-4)', textAlign: 'center' }}>
-                        <span
-                          style={{
-                            fontSize: 'var(--font-size-sm)',
-                            fontVariantNumeric: 'tabular-nums',
-                            fontWeight: 400,
-                            color: inv.daysInStage > 30
-                              ? 'var(--danger)'
-                              : inv.daysInStage > 14
-                                ? 'var(--warning)'
-                                : 'var(--text-secondary)', }}>
+                        <span style={{ fontSize: 'var(--font-size-sm)', fontVariantNumeric: 'tabular-nums', fontWeight: 400, color: inv.daysInStage > 30 ? 'var(--danger)' : inv.daysInStage > 14 ? 'var(--warning)' : 'var(--text-secondary)' }}>
                           {inv.daysInStage}d
                         </span>
                       </td>
@@ -693,63 +586,24 @@ export default function ForecastPage() {
 
                       {/* Days Left */}
                       <td style={{ padding: 'var(--space-3) var(--space-4)', textAlign: 'center' }}>
-                        <span
-                          style={{
-                            fontSize: 'var(--font-size-sm)',
-                            fontVariantNumeric: 'tabular-nums',
-                            fontWeight: 400,
-                            color: inv.predictedDaysToClose > 60
-                              ? 'var(--danger)'
-                              : inv.predictedDaysToClose > 30
-                                ? 'var(--warning)'
-                                : 'var(--text-secondary)', }}>
+                        <span style={{ fontSize: 'var(--font-size-sm)', fontVariantNumeric: 'tabular-nums', fontWeight: 400, color: inv.predictedDaysToClose > 60 ? 'var(--danger)' : inv.predictedDaysToClose > 30 ? 'var(--warning)' : 'var(--text-secondary)' }}>
                           {inv.predictedDaysToClose}d
                         </span>
                       </td>
 
                       {/* Confidence */}
                       <td style={{ padding: 'var(--space-3) var(--space-4)', textAlign: 'center' }}>
-                        <span
-                          style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            padding: '2px 8px',
-                            borderRadius: '9999px',
-                            fontSize: 'var(--font-size-xs)',
-                            fontWeight: 400,
-                            background: confidenceBg(inv.confidence),
-                            color: confidenceColor(inv.confidence), }}>
+                        <span style={{ display: 'inline-flex', alignItems: 'center', padding: '2px 8px', borderRadius: '9999px', fontSize: 'var(--font-size-xs)', fontWeight: 400, background: confidenceBg(inv.confidence), color: confidenceColor(inv.confidence) }}>
                           {inv.confidence}
                         </span>
                       </td>
 
-                      {/* Timeline bar */}
                       <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
                         <div className="flex items-center gap-2">
-                          <div
-                            style={{
-                              flex: 1,
-                              height: '6px',
-                              background: 'var(--surface-3)',
-                              borderRadius: '3px',
-                              overflow: 'hidden', }}>
-                            <div
-                              style={{
-                                width: maxDaysToClose > 0 ? `${Math.max(4, (inv.predictedDaysToClose / maxDaysToClose) * 100)}%` : '0%',
-                                height: '100%',
-                                background: confidenceColor(inv.confidence),
-                                borderRadius: '3px',
-                                transition: 'width 400ms ease',
-                                opacity: 0.7,
-                              }} />
+                          <div style={{ flex: 1, height: '6px', background: 'var(--surface-3)', borderRadius: '3px', overflow: 'hidden' }}>
+                            <div style={{ width: maxDaysToClose > 0 ? `${Math.max(4, (inv.predictedDaysToClose / maxDaysToClose) * 100)}%` : '0%', height: '100%', background: confidenceColor(inv.confidence), borderRadius: '3px', transition: 'width 400ms ease', opacity: 0.7 }} />
                           </div>
-                          <span
-                            style={{
-                              fontSize: '10px',
-                              color: 'var(--text-muted)',
-                              minWidth: '32px',
-                              textAlign: 'right',
-                              fontVariantNumeric: 'tabular-nums', }}>
+                          <span style={{ fontSize: '10px', color: 'var(--text-muted)', minWidth: '32px', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
                             {inv.predictedDaysToClose}d
                           </span>
                         </div>

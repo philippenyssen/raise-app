@@ -93,7 +93,7 @@ function severityStyle(severity: string): { background: string; color: string } 
   return { background: 'var(--surface-2)', color: 'var(--text-muted)' };
 }
 
-type IntelTab = 'overview' | 'partners' | 'portfolio' | 'research' | 'tasks' | 'enrichment';
+type IntelTab = 'overview' | 'partners' | 'portfolio' | 'research' | 'tasks' | 'enrichment' | 'timeline';
 
 export default function InvestorDetailPage() {
   const params = useParams();
@@ -851,6 +851,7 @@ export default function InvestorDetailPage() {
             { key: 'tasks' as IntelTab, label: `Tasks (${tasks.filter(t => t.status !== 'done').length})`, icon: ClipboardList },
             { key: 'enrichment' as IntelTab, label: `Enriched (${enrichmentRecords.length})`, icon: Database },
             { key: 'research' as IntelTab, label: `Research (${briefs.length})`, icon: BookOpen },
+            { key: 'timeline' as IntelTab, label: 'Timeline', icon: Activity },
           ]).map(t => (
             <button
               key={t.key}
@@ -1133,6 +1134,47 @@ export default function InvestorDetailPage() {
               )}
             </div>
           )}
+
+          {intelTab === 'timeline' && (() => {
+            const events: { date: string; type: string; icon: typeof Calendar; desc: string }[] = [];
+            meetings.forEach(m => {
+              events.push({ date: m.date, type: 'meeting', icon: Calendar, desc: `${m.type.replace(/_/g, ' ')} — ${m.duration_minutes}min${m.ai_analysis ? ': ' + m.ai_analysis.slice(0, 80) : ''}` });
+            });
+            followups.forEach(f => {
+              events.push({ date: f.due_at.split('T')[0], type: 'followup', icon: Mail, desc: `${f.action_type.replace(/_/g, ' ')}: ${f.description.slice(0, 80)}${f.status === 'pending' ? ' (pending)' : ''}` });
+            });
+            allObjections.forEach(o => {
+              events.push({ date: o.date, type: 'objection', icon: AlertTriangle, desc: `[${o.severity}] ${o.text.slice(0, 80)}` });
+            });
+            if (trajectory?.dataPoints) {
+              trajectory.dataPoints.forEach((dp, i) => {
+                if (i > 0) {
+                  const prev = trajectory.dataPoints[i - 1];
+                  const delta = dp.score - prev.score;
+                  if (Math.abs(delta) >= 0.5) events.push({ date: dp.date.split('T')[0], type: 'score', icon: TrendingUp, desc: `Score ${delta > 0 ? '+' : ''}${delta.toFixed(1)} (${prev.score.toFixed(1)} → ${dp.score.toFixed(1)})` });
+                }
+              });
+            }
+            events.sort((a, b) => b.date.localeCompare(a.date));
+            const iconColor: Record<string, string> = { meeting: 'var(--accent)', followup: 'var(--warning)', objection: 'var(--danger)', score: 'var(--success)' };
+            return (
+              <div>
+                {events.length === 0 ? (
+                  <p className="text-sm py-6 text-center" style={textMuted}>No interactions recorded yet.</p>
+                ) : (
+                  <div className="space-y-0">
+                    {events.map((ev, i) => (
+                      <div key={i} className="flex gap-4 py-2.5" style={{ borderBottom: i < events.length - 1 ? '1px solid var(--border-subtle)' : 'none' }}>
+                        <span className="text-xs shrink-0 w-20 pt-0.5 tabular-nums" style={textMuted}>{ev.date}</span>
+                        <span className="shrink-0 pt-0.5" style={{ color: iconColor[ev.type] || 'var(--text-muted)' }}><ev.icon className="w-3.5 h-3.5" /></span>
+                        <span className="text-sm" style={textSecondary}>{ev.desc}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })()}
         </div>
       </div>
 

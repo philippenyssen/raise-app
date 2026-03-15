@@ -269,14 +269,7 @@ export default function CommandPalette() {
 
   function renderSectionHeader(title: string) {
     return (
-      <div
-        style={{
-          fontSize: '10px',
-          fontWeight: 400,
-          letterSpacing: '0.08em',
-          color: 'var(--text-muted)',
-          padding: '8px 16px 4px',
-        }}>
+      <div style={{ fontSize: '10px', fontWeight: 400, letterSpacing: '0.08em', color: 'var(--text-muted)', padding: '8px 16px 4px' }}>
         {title}
       </div>
     );
@@ -293,16 +286,8 @@ export default function CommandPalette() {
         data-index={idx}
         onClick={() => navigate(item)}
         className="flex items-center gap-3 cursor-pointer"
-        style={{
-          padding: '8px 16px',
-          background: isActive ? 'var(--surface-3)' : 'transparent',
-          color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
-          borderRadius: 'var(--radius-md)',
-          margin: '0 8px',
-          transition: 'background 100ms',
-        }}
-        onMouseEnter={() => setActiveIndex(idx)}
-      >
+        style={{ padding: '8px 16px', background: isActive ? 'var(--surface-3)' : 'transparent', color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)', borderRadius: 'var(--radius-md)', margin: '0 8px', transition: 'background 100ms' }}
+        onMouseEnter={() => setActiveIndex(idx)}>
         <span className="shrink-0 flex items-center justify-center" style={{ width: '16px', height: '16px', color: isActive ? 'var(--accent)' : 'var(--text-muted)' }}>
           <Icon className="w-4 h-4" />
         </span>
@@ -322,16 +307,8 @@ export default function CommandPalette() {
         data-index={idx}
         onClick={() => navigate(item)}
         className="flex items-center gap-3 cursor-pointer"
-        style={{
-          padding: '8px 16px',
-          background: isActive ? 'var(--surface-3)' : 'transparent',
-          color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
-          borderRadius: 'var(--radius-md)',
-          margin: '0 8px',
-          transition: 'background 100ms',
-        }}
-        onMouseEnter={() => setActiveIndex(idx)}
-      >
+        style={{ padding: '8px 16px', background: isActive ? 'var(--surface-3)' : 'transparent', color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)', borderRadius: 'var(--radius-md)', margin: '0 8px', transition: 'background 100ms' }}
+        onMouseEnter={() => setActiveIndex(idx)}>
         <span className="shrink-0 flex items-center justify-center" style={{ width: '16px', height: '16px', color: isActive ? 'var(--accent)' : 'var(--text-muted)' }}>
           <Users className="w-4 h-4" />
         </span>
@@ -351,16 +328,8 @@ export default function CommandPalette() {
         data-index={idx}
         onClick={() => navigate(item)}
         className="flex items-center gap-3 cursor-pointer"
-        style={{
-          padding: '8px 16px',
-          background: isActive ? 'var(--surface-3)' : 'transparent',
-          color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
-          borderRadius: 'var(--radius-md)',
-          margin: '0 8px',
-          transition: 'background 100ms',
-        }}
-        onMouseEnter={() => setActiveIndex(idx)}
-      >
+        style={{ padding: '8px 16px', background: isActive ? 'var(--surface-3)' : 'transparent', color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)', borderRadius: 'var(--radius-md)', margin: '0 8px', transition: 'background 100ms' }}
+        onMouseEnter={() => setActiveIndex(idx)}>
         <span className="shrink-0 flex items-center justify-center" style={{ width: '16px', height: '16px', color: isActive ? 'var(--success)' : 'var(--text-muted)' }}>
           <Icon className="w-4 h-4" />
         </span>
@@ -380,16 +349,8 @@ export default function CommandPalette() {
         data-index={idx}
         onClick={() => navigate(item)}
         className="flex items-center gap-3 cursor-pointer"
-        style={{
-          padding: '8px 16px',
-          background: isActive ? 'var(--surface-3)' : 'transparent',
-          color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
-          borderRadius: 'var(--radius-md)',
-          margin: '0 8px',
-          transition: 'background 100ms',
-        }}
-        onMouseEnter={() => setActiveIndex(idx)}
-      >
+        style={{ padding: '8px 16px', background: isActive ? 'var(--surface-3)' : 'transparent', color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)', borderRadius: 'var(--radius-md)', margin: '0 8px', transition: 'background 100ms' }}
+        onMouseEnter={() => setActiveIndex(idx)}>
         <span className="shrink-0 flex items-center justify-center" style={{ width: '16px', height: '16px', color: isActive ? 'var(--accent)' : 'var(--text-muted)' }}>
           <Icon className="w-4 h-4" />
         </span>

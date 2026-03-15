@@ -19,10 +19,7 @@ const OTHER_DOCS_BUDGET = 8000;
 // ---------------------------------------------------------------------------
 const CACHE_TTL_MS = 30_000; // 30 seconds
 
-interface CacheEntry<T> {
-  value: T;
-  timestamp: number;
-}
+interface CacheEntry<T> { value: T; timestamp: number }
 
 const contextCache = new Map<string, CacheEntry<unknown>>();
 
@@ -63,11 +60,7 @@ function quickHash(input: string): string {
 // Query intent detection + context steering (cycle 15)
 // ---------------------------------------------------------------------------
 
-interface QueryIntent {
-  type: 'investor_specific' | 'strategy' | 'document' | 'objection' | 'general';
-  investorName?: string;
-  investorId?: string;
-}
+interface QueryIntent { type: 'investor_specific' | 'strategy' | 'document' | 'objection' | 'general'; investorName?: string; investorId?: string }
 
 function detectQueryIntent(
   messages: Array<{ role: string; content: string }>,

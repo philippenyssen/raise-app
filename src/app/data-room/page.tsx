@@ -20,35 +20,10 @@ interface DataRoomFile {
 }
 
 interface IntelligenceData {
-  document_access_log: Array<{
-    investor_name: string;
-    investor_id: string;
-    document_id: string;
-    document_title: string;
-    accessed_at: string;
-  }>;
-  most_requested: Array<{
-    document_id: string;
-    document_title: string;
-    category: string;
-    access_count: number;
-  }>;
-  per_investor_access: Array<{
-    investor_id: string;
-    investor_name: string;
-    status: string;
-    tier: number;
-    documents_accessed: number;
-    accessed_documents: Array<{ document_id: string; document_title: string; category: string }>;
-    recommended_documents: Array<{ document_id: string; document_title: string; category: string; reason: string }>;
-  }>;
-  unreached_investors: Array<{
-    investor_id: string;
-    investor_name: string;
-    status: string;
-    tier: number;
-    recommended_categories: string[];
-  }>;
+  document_access_log: Array<{ investor_name: string; investor_id: string; document_id: string; document_title: string; accessed_at: string }>;
+  most_requested: Array<{ document_id: string; document_title: string; category: string; access_count: number }>;
+  per_investor_access: Array<{ investor_id: string; investor_name: string; status: string; tier: number; documents_accessed: number; accessed_documents: Array<{ document_id: string; document_title: string; category: string }>; recommended_documents: Array<{ document_id: string; document_title: string; category: string; reason: string }> }>;
+  unreached_investors: Array<{ investor_id: string; investor_name: string; status: string; tier: number; recommended_categories: string[] }>;
   total_files: number;
   total_access_events: number;
 }
@@ -534,13 +509,7 @@ function MostRequestedRow({ doc, rank }: {
         transition: 'background 150ms ease', }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}>
-      <span style={{
-        fontSize: 'var(--font-size-xs)',
-        fontWeight: 400,
-        color: rank <= 3 ? 'var(--accent)' : 'var(--text-muted)',
-        width: '1.5rem',
-        textAlign: 'center',
-      }}>
+      <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: rank <= 3 ? 'var(--accent)' : 'var(--text-muted)', width: '1.5rem', textAlign: 'center' }}>
         #{rank}
       </span>
       <FileText className="w-3.5 h-3.5 shrink-0" style={stTextTertiary} />
@@ -689,13 +658,7 @@ function RecommendedDocRow({ doc, investorId, onLogAccess }: {
       <span className="truncate" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)' }}>
         {doc.document_title}
       </span>
-      <span style={{
-        fontSize: '0.625rem',
-        color: 'var(--text-muted)',
-        background: 'var(--surface-2)',
-        padding: '0 var(--space-1)',
-        borderRadius: 'var(--radius-sm)',
-      }}>
+      <span style={{ fontSize: '0.625rem', color: 'var(--text-muted)', background: 'var(--surface-2)', padding: '0 var(--space-1)', borderRadius: 'var(--radius-sm)' }}>
         {doc.category}
       </span>
       <button
@@ -808,17 +771,7 @@ function FileRow({ file, expanded, onToggle, onDelete }: {
               {file.summary}
             </p>
           )}
-          <pre
-            style={{
-              fontSize: 'var(--font-size-xs)',
-              color: 'var(--text-tertiary)',
-              fontFamily: 'var(--font-mono)',
-              whiteSpace: 'pre-wrap',
-              maxHeight: '15rem',
-              overflowY: 'auto',
-              background: 'var(--surface-0)',
-              borderRadius: 'var(--radius-md)',
-              padding: 'var(--space-3)', }}>
+          <pre style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)', whiteSpace: 'pre-wrap', maxHeight: '15rem', overflowY: 'auto', background: 'var(--surface-0)', borderRadius: 'var(--radius-md)', padding: 'var(--space-3)' }}>
             {file.extracted_text.substring(0, 5000)}
             {file.extracted_text.length > 5000 && '\n\n... (truncated)'}
           </pre>

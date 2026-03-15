@@ -382,19 +382,8 @@ export default function WinLossPage() {
                         {pr.count}x
                       </span>
                     </div>
-                    <div style={{
-                      height: '4px',
-                      background: 'var(--surface-1)',
-                      borderRadius: '2px',
-                      overflow: 'hidden',
-                    }}>
-                      <div style={{
-                        height: '100%',
-                        width: `${barPct}%`,
-                        background: 'var(--danger)',
-                        borderRadius: '2px',
-                        opacity: 0.7,
-                      }} />
+                    <div style={{ height: '4px', background: 'var(--surface-1)', borderRadius: '2px', overflow: 'hidden' }}>
+                      <div style={{ height: '100%', width: `${barPct}%`, background: 'var(--danger)', borderRadius: '2px', opacity: 0.7 }} />
                     </div>
                   </div>
                 );
@@ -491,44 +480,16 @@ export default function WinLossPage() {
                       transition: 'background 0.15s', }}
                     onMouseEnter={() => setHoveredRow(`df-${i}`)}
                     onMouseLeave={() => setHoveredRow(null)}>
-                    <td style={{
-                      padding: 'var(--space-2) var(--space-3)',
-                      fontSize: 'var(--font-size-sm)',
-                      color: 'var(--text-primary)',
-                      fontWeight: 400,
-                      borderBottom: '1px solid var(--border-subtle)',
-                    }}>
+                    <td style={{ padding: 'var(--space-2) var(--space-3)', fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, borderBottom: '1px solid var(--border-subtle)' }}>
                       {f.factor}
                     </td>
-                    <td style={{
-                      padding: 'var(--space-2) var(--space-3)',
-                      fontSize: 'var(--font-size-sm)',
-                      color: 'var(--text-secondary)',
-                      textAlign: 'right',
-                      fontVariantNumeric: 'tabular-nums',
-                      borderBottom: '1px solid var(--border-subtle)',
-                    }}>
+                    <td style={{ padding: 'var(--space-2) var(--space-3)', fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', textAlign: 'right', fontVariantNumeric: 'tabular-nums', borderBottom: '1px solid var(--border-subtle)' }}>
                       {f.closedAvg}
                     </td>
-                    <td style={{
-                      padding: 'var(--space-2) var(--space-3)',
-                      fontSize: 'var(--font-size-sm)',
-                      color: 'var(--text-primary)',
-                      textAlign: 'right',
-                      fontVariantNumeric: 'tabular-nums',
-                      borderBottom: '1px solid var(--border-subtle)',
-                    }}>
+                    <td style={{ padding: 'var(--space-2) var(--space-3)', fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', textAlign: 'right', fontVariantNumeric: 'tabular-nums', borderBottom: '1px solid var(--border-subtle)' }}>
                       {f.passedAvg}
                     </td>
-                    <td style={{
-                      padding: 'var(--space-2) var(--space-3)',
-                      fontSize: 'var(--font-size-sm)',
-                      color: f.delta > 0 ? 'var(--success)' : f.delta < 0 ? 'var(--danger)' : 'var(--text-muted)',
-                      textAlign: 'right',
-                      fontWeight: 400,
-                      fontVariantNumeric: 'tabular-nums',
-                      borderBottom: '1px solid var(--border-subtle)',
-                    }}>
+                    <td style={{ padding: 'var(--space-2) var(--space-3)', fontSize: 'var(--font-size-sm)', color: f.delta > 0 ? 'var(--success)' : f.delta < 0 ? 'var(--danger)' : 'var(--text-muted)', textAlign: 'right', fontWeight: 400, fontVariantNumeric: 'tabular-nums', borderBottom: '1px solid var(--border-subtle)' }}>
                       {f.delta > 0 ? '+' : ''}{f.delta}
                     </td>
                     <td style={{ padding: 'var(--space-2) var(--space-3)', textAlign: 'right', borderBottom: '1px solid var(--border-subtle)' }}>
@@ -561,12 +522,7 @@ export default function WinLossPage() {
           </div>
           <div className="space-y-3">
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-3)' }}>
-              <div style={{
-                padding: 'var(--space-3)',
-                borderRadius: 'var(--radius-md)',
-                background: 'var(--surface-1)',
-                textAlign: 'center',
-              }}>
+              <div style={{ padding: 'var(--space-3)', borderRadius: 'var(--radius-md)', background: 'var(--surface-1)', textAlign: 'center' }}>
                 <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '4px' }}>
                   Avg Days to Close
                 </div>
@@ -577,12 +533,7 @@ export default function WinLossPage() {
                   Median: {timing.medianDaysToClose}d
                 </div>
               </div>
-              <div style={{
-                padding: 'var(--space-3)',
-                borderRadius: 'var(--radius-md)',
-                background: 'var(--surface-1)',
-                textAlign: 'center',
-              }}>
+              <div style={{ padding: 'var(--space-3)', borderRadius: 'var(--radius-md)', background: 'var(--surface-1)', textAlign: 'center' }}>
                 <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '4px' }}>
                   Avg Days to Pass
                 </div>
@@ -752,12 +703,7 @@ export default function WinLossPage() {
       </div>
 
       {/* Footer */}
-      <div style={{
-        fontSize: 'var(--font-size-xs)',
-        color: 'var(--text-muted)',
-        textAlign: 'right',
-        paddingTop: 'var(--space-2)',
-      }}>
+      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', textAlign: 'right', paddingTop: 'var(--space-2)' }}>
         Generated {data.generatedAt ? new Date(data.generatedAt).toLocaleString() : '-'}
       </div>
     </div>

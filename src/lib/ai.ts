@@ -141,29 +141,9 @@ Be rigorous. Don't infer enthusiasm that isn't there. If notes are sparse, flag 
   const fallback = {
     questions_asked: [] as { text: string; topic: string }[],
     objections: [] as { text: string; severity: string; topic: string }[],
-    engagement_signals: {
-      enthusiasm: 3,
-      asked_about_process: false,
-      asked_about_timeline: false,
-      requested_followup: false,
-      mentioned_competitors: false,
-      pricing_reception: 'not_discussed',
-      slides_that_landed: [] as string[],
-      slides_that_fell_flat: [] as string[],
-      check_size_mentioned: '',
-      ic_process_details: '',
-      co_investors_referenced: [] as string[],
-      portfolio_conflicts_surfaced: [] as string[],
-      competitive_bids_mentioned: [] as string[],
-      followup_commitments: [] as string[],
-      specific_concerns: [] as string[],
-      body_language_at_pricing: 'not_discussed',
-    },
-    competitive_intel: '',
-    next_steps: '',
-    enthusiasm_score: 3,
-    ai_analysis: 'Could not parse meeting notes. Please add more detail.',
-    suggested_status: 'met',
+    engagement_signals: { enthusiasm: 3, asked_about_process: false, asked_about_timeline: false, requested_followup: false, mentioned_competitors: false, pricing_reception: 'not_discussed', slides_that_landed: [] as string[], slides_that_fell_flat: [] as string[], check_size_mentioned: '', ic_process_details: '', co_investors_referenced: [] as string[], portfolio_conflicts_surfaced: [] as string[], competitive_bids_mentioned: [] as string[], followup_commitments: [] as string[], specific_concerns: [] as string[], body_language_at_pricing: 'not_discussed' },
+    competitive_intel: '', next_steps: '', enthusiasm_score: 3,
+    ai_analysis: 'Could not parse meeting notes. Please add more detail.', suggested_status: 'met',
   };
   const expectedFields = 10;
   const { parsed, success } = safeParseJSON(text, fallback);
@@ -233,15 +213,7 @@ Return JSON (no markdown):
   });
 
   const text = response.content[0].type === 'text' ? response.content[0].text : '';
-  const patternsFallback = {
-    top_objections: [] as { text: string; count: number; unique_or_repeated: string; recommendation: string }[],
-    story_effectiveness: { landing: [] as string[], failing: [] as string[], exciting: [] as string[] },
-    investor_velocity: [] as { investor: string; trajectory: string; evidence: string; action: string }[],
-    pricing_trend: 'Not enough data',
-    material_changes: [] as { change: string; priority: string; rationale: string }[],
-    overall_assessment: 'Need more meetings to identify patterns.',
-    convergence_signals: [] as string[],
-  };
+  const patternsFallback = { top_objections: [] as { text: string; count: number; unique_or_repeated: string; recommendation: string }[], story_effectiveness: { landing: [] as string[], failing: [] as string[], exciting: [] as string[] }, investor_velocity: [] as { investor: string; trajectory: string; evidence: string; action: string }[], pricing_trend: 'Not enough data', material_changes: [] as { change: string; priority: string; rationale: string }[], overall_assessment: 'Need more meetings to identify patterns.', convergence_signals: [] as string[] };
   const { parsed, success } = safeParseJSON(text, patternsFallback);
   logAISkill('analyze_patterns', success, 7, success ? 7 : 0, { trigger_source: 'api', input_summary: `${meetings.length} meetings` });
   return parsed;
@@ -429,18 +401,7 @@ Be specific with real data where you have it. If you're uncertain about specific
   });
 
   const text = response.content[0].type === 'text' ? response.content[0].text : '';
-  const investorFallback = {
-    overview: 'Research could not be completed. Try providing more context.',
-    fund_details: { aum: '', vintage: '', strategy: '', hq: '' },
-    key_partners: [] as { name: string; title: string; focus: string; notable_deals: string }[],
-    recent_investments: [] as { company: string; round: string; amount: string; date: string; sector: string }[],
-    investment_thesis: '',
-    ic_process: '',
-    typical_check: '',
-    portfolio_in_sector: [] as { company: string; relevance: string }[],
-    fit_assessment: '',
-    approach_strategy: '',
-  };
+  const investorFallback = { overview: 'Research could not be completed. Try providing more context.', fund_details: { aum: '', vintage: '', strategy: '', hq: '' }, key_partners: [] as { name: string; title: string; focus: string; notable_deals: string }[], recent_investments: [] as { company: string; round: string; amount: string; date: string; sector: string }[], investment_thesis: '', ic_process: '', typical_check: '', portfolio_in_sector: [] as { company: string; relevance: string }[], fit_assessment: '', approach_strategy: '' };
   const { parsed, success } = safeParseJSON(text, investorFallback);
   logAISkill('research_investor', success, 10, success ? Object.values(parsed).filter(v => v !== '' && (Array.isArray(v) ? v.length > 0 : true)).length : 0, { trigger_source: 'api', input_summary: investorName });
   return parsed;

@@ -13,93 +13,28 @@ import { stFontSm, stFontXs, stTextMuted, stTextPrimary, stTextSecondary, stText
 // Types
 // ---------------------------------------------------------------------------
 
-interface KeyTest {
-  status: string;
-  message: string;
-  key?: string;
-  fix?: string | string[];
-  error?: string;
-}
+interface KeyTest { status: string; message: string; key?: string; fix?: string | string[]; error?: string }
 
-interface RaiseConfigForm {
-  company_name: string;
-  round_type: string;
-  equity_amount: number;
-  debt_amount: number;
-  pre_money: number;
-  target_close: string;
-  currency: string;
-  target_investor_count: number;
-  minimum_check_size: number;
-}
+interface RaiseConfigForm { company_name: string; round_type: string; equity_amount: number; debt_amount: number; pre_money: number; target_close: string; currency: string; target_investor_count: number; minimum_check_size: number }
 
-interface ScoringWeightsForm {
-  engagement: number;
-  thesis_fit: number;
-  check_size: number;
-  speed: number;
-  conflict: number;
-  warm_path: number;
-  meeting_quality: number;
-  momentum: number;
-}
+interface ScoringWeightsForm { engagement: number; thesis_fit: number; check_size: number; speed: number; conflict: number; warm_path: number; meeting_quality: number; momentum: number }
 
-interface FollowupCadenceForm {
-  thank_you_delay_hours: number;
-  objection_response_delay_hours: number;
-  schedule_next_meeting_delay_hours: number;
-  reengagement_delay_days: number;
-  escalation_delay_days: number;
-  tier1_speed_multiplier: number;
-}
+interface FollowupCadenceForm { thank_you_delay_hours: number; objection_response_delay_hours: number; schedule_next_meeting_delay_hours: number; reengagement_delay_days: number; escalation_delay_days: number; tier1_speed_multiplier: number }
 
-const DEFAULT_SCORING_WEIGHTS: ScoringWeightsForm = {
-  engagement: 20,
-  thesis_fit: 15,
-  check_size: 10,
-  speed: 10,
-  conflict: 10,
-  warm_path: 10,
-  meeting_quality: 15,
-  momentum: 10,
-};
+const DEFAULT_SCORING_WEIGHTS: ScoringWeightsForm = { engagement: 20, thesis_fit: 15, check_size: 10, speed: 10, conflict: 10, warm_path: 10, meeting_quality: 15, momentum: 10 };
 
-const DEFAULT_FOLLOWUP_CADENCE: FollowupCadenceForm = {
-  thank_you_delay_hours: 2,
-  objection_response_delay_hours: 24,
-  schedule_next_meeting_delay_hours: 48,
-  reengagement_delay_days: 5,
-  escalation_delay_days: 10,
-  tier1_speed_multiplier: 75,
-};
+const DEFAULT_FOLLOWUP_CADENCE: FollowupCadenceForm = { thank_you_delay_hours: 2, objection_response_delay_hours: 24, schedule_next_meeting_delay_hours: 48, reengagement_delay_days: 5, escalation_delay_days: 10, tier1_speed_multiplier: 75 };
 
-const DEFAULT_RAISE_CONFIG: RaiseConfigForm = {
-  company_name: '',
-  round_type: 'Series C',
-  equity_amount: 0,
-  debt_amount: 0,
-  pre_money: 0,
-  target_close: '',
-  currency: 'EUR',
-  target_investor_count: 0,
-  minimum_check_size: 0,
-};
+const DEFAULT_RAISE_CONFIG: RaiseConfigForm = { company_name: '', round_type: 'Series C', equity_amount: 0, debt_amount: 0, pre_money: 0, target_close: '', currency: 'EUR', target_investor_count: 0, minimum_check_size: 0 };
+
+const labelStyle = { ...stFontXs, fontWeight: 400 as const, ...stTextTertiary, marginBottom: '0.375rem' };
 
 const ROUND_TYPES = ['Series A', 'Series B', 'Series C', 'Series D', 'Pre-IPO', 'Bridge'];
 const CURRENCIES = ['EUR', 'USD', 'GBP'];
 
 const CURRENCY_SYMBOLS: Record<string, string> = { EUR: '\u20ac', USD: '$', GBP: '\u00a3' };
 
-const WEIGHT_LABELS: Record<keyof ScoringWeightsForm, string> = {
-  engagement: 'Engagement',
-  thesis_fit: 'Thesis Fit',
-  check_size: 'Check Size Fit',
-  speed: 'Speed Match',
-  conflict: 'Conflict Risk',
-  warm_path: 'Warm Path',
-  meeting_quality: 'Meeting Quality',
-  momentum: 'Momentum',
-};
+const WEIGHT_LABELS: Record<keyof ScoringWeightsForm, string> = { engagement: 'Engagement', thesis_fit: 'Thesis Fit', check_size: 'Check Size Fit', speed: 'Speed Match', conflict: 'Conflict Risk', warm_path: 'Warm Path', meeting_quality: 'Meeting Quality', momentum: 'Momentum' };
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -320,7 +255,7 @@ export default function SettingsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {/* Company Name */}
           <div className="md:col-span-2">
-            <label className="block" style={{ ...stFontXs, fontWeight: 400, ...stTextTertiary, marginBottom: '0.375rem' }}>Company Name</label>
+            <label className="block" style={labelStyle}>Company Name</label>
             <input
               type="text"
               value={raise.data.company_name}
@@ -331,7 +266,7 @@ export default function SettingsPage() {
 
           {/* Round Type */}
           <div>
-            <label className="block" style={{ ...stFontXs, fontWeight: 400, ...stTextTertiary, marginBottom: '0.375rem' }}>Round Type</label>
+            <label className="block" style={labelStyle}>Round Type</label>
             <div className="relative">
               <select
                 value={raise.data.round_type}
@@ -349,7 +284,7 @@ export default function SettingsPage() {
 
           {/* Currency */}
           <div>
-            <label className="block" style={{ ...stFontXs, fontWeight: 400, ...stTextTertiary, marginBottom: '0.375rem' }}>Currency</label>
+            <label className="block" style={labelStyle}>Currency</label>
             <div className="relative">
               <select
                 value={raise.data.currency}
@@ -367,7 +302,7 @@ export default function SettingsPage() {
 
           {/* Target Equity Raise */}
           <div>
-            <label className="block" style={{ ...stFontXs, fontWeight: 400, ...stTextTertiary, marginBottom: '0.375rem' }}>
+            <label className="block" style={labelStyle}>
               <span className="flex items-center gap-1.5">
                 <DollarSign className="w-3 h-3" />
                 Target Equity Raise
@@ -390,7 +325,7 @@ export default function SettingsPage() {
 
           {/* Target Debt Raise */}
           <div>
-            <label className="block" style={{ ...stFontXs, fontWeight: 400, ...stTextTertiary, marginBottom: '0.375rem' }}>
+            <label className="block" style={labelStyle}>
               <span className="flex items-center gap-1.5">
                 <DollarSign className="w-3 h-3" />
                 Target Debt Raise
@@ -413,7 +348,7 @@ export default function SettingsPage() {
 
           {/* Pre-money Valuation */}
           <div>
-            <label className="block" style={{ ...stFontXs, fontWeight: 400, ...stTextTertiary, marginBottom: '0.375rem' }}>
+            <label className="block" style={labelStyle}>
               <span className="flex items-center gap-1.5">
                 <Target className="w-3 h-3" />
                 Pre-money Valuation
@@ -436,17 +371,10 @@ export default function SettingsPage() {
 
           {/* Post-money (computed) */}
           <div>
-            <label className="block" style={{ ...stFontXs, fontWeight: 400, ...stTextTertiary, marginBottom: '0.375rem' }}>
+            <label className="block" style={labelStyle}>
               Post-money Valuation
             </label>
-            <div style={{
-              padding: '0.5rem 0.75rem',
-              background: 'var(--surface-1)',
-              border: '1px solid var(--border-subtle)',
-              borderRadius: 'var(--radius-md)',
-              fontSize: 'var(--font-size-sm)',
-              color: 'var(--text-tertiary)',
-            }}>
+            <div style={{ padding: '0.5rem 0.75rem', background: 'var(--surface-1)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' }}>
               {raise.data.pre_money && raise.data.equity_amount
                 ? formatCompact(raise.data.pre_money + raise.data.equity_amount, raise.data.currency)
                 : '—'}
@@ -455,7 +383,7 @@ export default function SettingsPage() {
 
           {/* Target Close Date */}
           <div>
-            <label className="block" style={{ ...stFontXs, fontWeight: 400, ...stTextTertiary, marginBottom: '0.375rem' }}>
+            <label className="block" style={labelStyle}>
               <span className="flex items-center gap-1.5">
                 <Calendar className="w-3 h-3" />
                 Target Close Date
@@ -470,7 +398,7 @@ export default function SettingsPage() {
 
           {/* Target Investor Count */}
           <div>
-            <label className="block" style={{ ...stFontXs, fontWeight: 400, ...stTextTertiary, marginBottom: '0.375rem' }}>
+            <label className="block" style={labelStyle}>
               <span className="flex items-center gap-1.5">
                 <Users className="w-3 h-3" />
                 Target Investor Count
@@ -487,7 +415,7 @@ export default function SettingsPage() {
 
           {/* Minimum Check Size */}
           <div>
-            <label className="block" style={{ ...stFontXs, fontWeight: 400, ...stTextTertiary, marginBottom: '0.375rem' }}>
+            <label className="block" style={labelStyle}>
               Minimum Check Size
             </label>
             <div className="relative">
@@ -573,11 +501,7 @@ export default function SettingsPage() {
         </div>
 
         {/* Total indicator */}
-        <div className="flex items-center gap-2" style={{
-          marginBottom: 'var(--space-5)',
-          fontSize: 'var(--font-size-sm)',
-          color: weightBalanced ? 'var(--success)' : 'var(--warning)',
-        }}>
+        <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-5)', fontSize: 'var(--font-size-sm)', color: weightBalanced ? 'var(--success)' : 'var(--warning)' }}>
           {weightBalanced ? (
             <CheckCircle className="w-4 h-4" />
           ) : (
@@ -644,7 +568,7 @@ export default function SettingsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {/* Thank You Delay */}
           <div>
-            <label className="block" style={{ ...stFontXs, fontWeight: 400, ...stTextTertiary, marginBottom: '0.375rem' }}>Thank You Email Delay</label>
+            <label className="block" style={labelStyle}>Thank You Email Delay</label>
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -659,7 +583,7 @@ export default function SettingsPage() {
 
           {/* Objection Response Delay */}
           <div>
-            <label className="block" style={{ ...stFontXs, fontWeight: 400, ...stTextTertiary, marginBottom: '0.375rem' }}>Objection Response Delay</label>
+            <label className="block" style={labelStyle}>Objection Response Delay</label>
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -674,7 +598,7 @@ export default function SettingsPage() {
 
           {/* Schedule Next Meeting Delay */}
           <div>
-            <label className="block" style={{ ...stFontXs, fontWeight: 400, ...stTextTertiary, marginBottom: '0.375rem' }}>Schedule Next Meeting Delay</label>
+            <label className="block" style={labelStyle}>Schedule Next Meeting Delay</label>
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -689,7 +613,7 @@ export default function SettingsPage() {
 
           {/* Re-engagement Delay */}
           <div>
-            <label className="block" style={{ ...stFontXs, fontWeight: 400, ...stTextTertiary, marginBottom: '0.375rem' }}>Re-engagement Delay</label>
+            <label className="block" style={labelStyle}>Re-engagement Delay</label>
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -704,7 +628,7 @@ export default function SettingsPage() {
 
           {/* Escalation Delay */}
           <div>
-            <label className="block" style={{ ...stFontXs, fontWeight: 400, ...stTextTertiary, marginBottom: '0.375rem' }}>Escalation Delay</label>
+            <label className="block" style={labelStyle}>Escalation Delay</label>
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -719,7 +643,7 @@ export default function SettingsPage() {
 
           {/* Tier 1 Speed Multiplier */}
           <div>
-            <label className="block" style={{ ...stFontXs, fontWeight: 400, ...stTextTertiary, marginBottom: '0.375rem' }}>Tier 1 Speed Multiplier</label>
+            <label className="block" style={labelStyle}>Tier 1 Speed Multiplier</label>
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -765,12 +689,7 @@ export default function SettingsPage() {
       {/* ================================================================= */}
       {/* 4. API CONFIGURATION                                              */}
       {/* ================================================================= */}
-      <div style={{
-        border: '1px solid',
-        borderRadius: 'var(--radius-lg)',
-        padding: 'var(--space-6)',
-        ...statusStyle,
-      }}>
+      <div style={{ border: '1px solid', borderRadius: 'var(--radius-lg)', padding: 'var(--space-6)', ...statusStyle }}>
         <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-4)' }}>
           <div className="flex items-center gap-3">
             <Key className="w-5 h-5" style={stTextTertiary} />
@@ -799,14 +718,7 @@ export default function SettingsPage() {
             </div>
 
             {keyTest.error && (
-              <div style={{
-                fontSize: 'var(--font-size-xs)',
-                color: 'var(--text-primary)',
-                background: 'var(--danger-muted)',
-                borderRadius: 'var(--radius-md)',
-                padding: 'var(--space-3)',
-                fontFamily: 'var(--font-mono)',
-              }}>
+              <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', background: 'var(--danger-muted)', borderRadius: 'var(--radius-md)', padding: 'var(--space-3)', fontFamily: 'var(--font-mono)' }}>
                 {keyTest.error}
               </div>
             )}

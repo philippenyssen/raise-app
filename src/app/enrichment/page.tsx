@@ -15,57 +15,15 @@ import { labelMuted, labelTertiary, stFontSm, stFontXs, stTextMuted } from '@/li
 // Types
 // ---------------------------------------------------------------------------
 
-interface ProviderInfo {
-  id: string;
-  name: string;
-  type: 'free' | 'freemium' | 'paid';
-  description: string;
-  fields_provided: string[];
-  requires_api_key: boolean;
-  api_key_env?: string;
-  configured: boolean;
-}
+interface ProviderInfo { id: string; name: string; type: 'free' | 'freemium' | 'paid'; description: string; fields_provided: string[]; requires_api_key: boolean; api_key_env?: string; configured: boolean }
 
-interface InvestorOption {
-  id: string;
-  name: string;
-  tier: number;
-  status: string;
-  type: string;
-}
+interface InvestorOption { id: string; name: string; tier: number; status: string; type: string }
 
-interface EnrichmentJobRow {
-  id: string;
-  investor_id: string;
-  investor_name: string;
-  sources: string;
-  status: string;
-  results_count: number;
-  errors: string;
-  started_at: string;
-  completed_at: string | null;
-  created_at: string;
-}
+interface EnrichmentJobRow { id: string; investor_id: string; investor_name: string; sources: string; status: string; results_count: number; errors: string; started_at: string; completed_at: string | null; created_at: string }
 
-interface EnrichmentStats {
-  total_records: number;
-  total_investors_enriched: number;
-  total_jobs: number;
-  records_by_source: { source_id: string; cnt: number }[];
-  records_by_category: { category: string; cnt: number }[];
-  avg_confidence: number;
-  stale_count: number;
-}
+interface EnrichmentStats { total_records: number; total_investors_enriched: number; total_jobs: number; records_by_source: { source_id: string; cnt: number }[]; records_by_category: { category: string; cnt: number }[]; avg_confidence: number; stale_count: number }
 
-interface EnrichResult {
-  job_id: string;
-  status: string;
-  total_fields: number;
-  sources_succeeded: number;
-  sources_failed: number;
-  duration_ms: number;
-  errors: string[];
-}
+interface EnrichResult { job_id: string; status: string; total_fields: number; sources_succeeded: number; sources_failed: number; duration_ms: number; errors: string[] }
 
 // ---------------------------------------------------------------------------
 // Constants

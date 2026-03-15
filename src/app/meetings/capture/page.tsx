@@ -157,10 +157,7 @@ function QuickCaptureInner() {
       <div className="page-content" style={{ maxWidth: '720px', margin: '0 auto' }}>
         {/* Success header */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', marginBottom: 'var(--space-6)' }}>
-          <div style={{
-            width: '40px', height: '40px', borderRadius: '50%',
-            background: 'var(--success-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
+          <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--success-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <span style={stTextSecondary}><CheckCircle2 className="w-5 h-5" /></span>
           </div>
           <div>
@@ -263,47 +260,31 @@ function QuickCaptureInner() {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-3)' }}>
                 {engagementSignals.asked_about_process !== undefined && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-                    <div style={{
-                      width: '8px', height: '8px', borderRadius: '50%',
-                      background: engagementSignals.asked_about_process ? 'var(--success)' : 'var(--border-default)',
-                    }} />
+                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: engagementSignals.asked_about_process ? 'var(--success)' : 'var(--border-default)' }} />
                     <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>Asked about process</span>
                   </div>
                 )}
                 {engagementSignals.asked_about_timeline !== undefined && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-                    <div style={{
-                      width: '8px', height: '8px', borderRadius: '50%',
-                      background: engagementSignals.asked_about_timeline ? 'var(--success)' : 'var(--border-default)',
-                    }} />
+                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: engagementSignals.asked_about_timeline ? 'var(--success)' : 'var(--border-default)' }} />
                     <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>Asked about timeline</span>
                   </div>
                 )}
                 {engagementSignals.requested_followup !== undefined && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-                    <div style={{
-                      width: '8px', height: '8px', borderRadius: '50%',
-                      background: engagementSignals.requested_followup ? 'var(--success)' : 'var(--border-default)',
-                    }} />
+                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: engagementSignals.requested_followup ? 'var(--success)' : 'var(--border-default)' }} />
                     <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>Requested follow-up</span>
                   </div>
                 )}
                 {engagementSignals.mentioned_competitors !== undefined && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-                    <div style={{
-                      width: '8px', height: '8px', borderRadius: '50%',
-                      background: engagementSignals.mentioned_competitors ? 'var(--warning)' : 'var(--border-default)',
-                    }} />
+                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: engagementSignals.mentioned_competitors ? 'var(--warning)' : 'var(--border-default)' }} />
                     <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>Mentioned competitors</span>
                   </div>
                 )}
                 {engagementSignals.body_language_at_pricing && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-                    <div style={{
-                      width: '8px', height: '8px', borderRadius: '50%',
-                      background: engagementSignals.body_language_at_pricing === 'positive' ? 'var(--success)'
-                        : engagementSignals.body_language_at_pricing === 'negative' ? 'var(--danger)' : 'var(--warning)',
-                    }} />
+                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: engagementSignals.body_language_at_pricing === 'positive' ? 'var(--success)' : engagementSignals.body_language_at_pricing === 'negative' ? 'var(--danger)' : 'var(--warning)' }} />
                     <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
                       Pricing reaction: {engagementSignals.body_language_at_pricing}
                     </span>
@@ -392,10 +373,7 @@ function QuickCaptureInner() {
       {/* Header */}
       <div style={{ marginBottom: 'var(--space-6)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
-          <div style={{
-            width: '40px', height: '40px', borderRadius: '50%',
-            background: 'var(--accent-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
+          <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--accent-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <span style={stAccent}><Timer className="w-5 h-5" /></span>
           </div>
           <div>
@@ -452,15 +430,7 @@ function QuickCaptureInner() {
             rows={14}
             placeholder="What happened? What did they say? Any objections? What's the vibe?"
             className="input"
-            style={{
-              fontSize: 'var(--font-size-md)',
-              lineHeight: 1.8,
-              padding: 'var(--space-5)',
-              resize: 'vertical',
-              minHeight: '280px',
-              fontFamily: 'var(--font-sans), system-ui, sans-serif',
-              letterSpacing: '-0.01em',
-            }} />
+            style={{ fontSize: 'var(--font-size-md)', lineHeight: 1.8, padding: 'var(--space-5)', resize: 'vertical', minHeight: '280px', fontFamily: 'var(--font-sans), system-ui, sans-serif', letterSpacing: '-0.01em' }} />
           <div style={{
             display: 'flex', justifyContent: 'space-between', alignItems: 'center',
             marginTop: 'var(--space-1)',
@@ -484,16 +454,7 @@ function QuickCaptureInner() {
                 key={level}
                 type="button"
                 onClick={() => setEnthusiasm(level === enthusiasm ? 0 : level)}
-                style={{
-                  width: '48px', height: '48px', borderRadius: '50%',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 'var(--font-size-lg)', fontWeight: 400,
-                  cursor: 'pointer',
-                  transition: 'all 150ms ease',
-                  border: enthusiasm === level ? '2px solid var(--accent)' : '2px solid var(--border-default)',
-                  background: enthusiasm === level ? 'var(--accent-muted)' : 'var(--surface-1)',
-                  color: enthusiasm === level ? 'var(--accent)' : 'var(--text-tertiary)',
-                  transform: enthusiasm === level ? 'scale(1.1)' : 'scale(1)', }}>
+                style={{ width: '48px', height: '48px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 'var(--font-size-lg)', fontWeight: 400, cursor: 'pointer', transition: 'all 150ms ease', border: enthusiasm === level ? '2px solid var(--accent)' : '2px solid var(--border-default)', background: enthusiasm === level ? 'var(--accent-muted)' : 'var(--surface-1)', color: enthusiasm === level ? 'var(--accent)' : 'var(--text-tertiary)', transform: enthusiasm === level ? 'scale(1.1)' : 'scale(1)' }}>
                 {level}
               </button>
             ))}
@@ -583,16 +544,7 @@ function QuickCaptureInner() {
           type="submit"
           disabled={loading || !investorId || !rawNotes.trim()}
           className="btn btn-lg transition-colors"
-          style={{
-            background: loading ? 'var(--surface-3)' : submitHovered ? 'var(--accent-hover)' : 'var(--accent)',
-            color: loading ? 'var(--text-tertiary)' : 'white',
-            border: '1px solid transparent',
-            padding: 'var(--space-4) var(--space-6)',
-            fontSize: 'var(--font-size-md)',
-            fontWeight: 400,
-            width: '100%',
-            opacity: (!investorId || !rawNotes.trim()) && !loading ? 0.5 : 1,
-            cursor: loading || !investorId || !rawNotes.trim() ? 'not-allowed' : 'pointer', }}
+          style={{ background: loading ? 'var(--surface-3)' : submitHovered ? 'var(--accent-hover)' : 'var(--accent)', color: loading ? 'var(--text-tertiary)' : 'white', border: '1px solid transparent', padding: 'var(--space-4) var(--space-6)', fontSize: 'var(--font-size-md)', fontWeight: 400, width: '100%', opacity: (!investorId || !rawNotes.trim()) && !loading ? 0.5 : 1, cursor: loading || !investorId || !rawNotes.trim() ? 'not-allowed' : 'pointer' }}
           onMouseEnter={() => setSubmitHovered(true)}
           onMouseLeave={() => setSubmitHovered(false)}>
           {loading ? (

@@ -11,14 +11,7 @@ import {
 import { DocSummaryRecord as Doc } from '@/lib/types';
 import { labelMuted10, stAccent, stSurface1, stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
-interface Version {
-  id: string;
-  document_id: string;
-  content: string;
-  version_number: number;
-  change_summary: string;
-  created_at: string;
-}
+interface Version { id: string; document_id: string; content: string; version_number: number; change_summary: string; created_at: string }
 
 type AIOperation = 'improve' | 'consistency' | 'weak_arguments' | 'goldman';
 

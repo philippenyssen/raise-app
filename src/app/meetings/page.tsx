@@ -44,16 +44,7 @@ function RatingDots({ value, onChange, label }: { value: number | null; onChange
             onMouseEnter={() => setHovered(n)}
             onMouseLeave={() => setHovered(null)}
             disabled={!onChange}
-            style={{
-              width: '24px',
-              height: '24px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: onChange ? 'pointer' : 'default',
-              background: 'none',
-              border: 'none',
-              padding: 0, }}>
+            style={{ width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: onChange ? 'pointer' : 'default', background: 'none', border: 'none', padding: 0 }}>
             <span style={{
               color: n <= (hovered ?? value ?? 0) ? 'var(--warning)' : 'var(--text-muted)',
               transition: 'color 100ms ease',
@@ -67,13 +58,7 @@ function RatingDots({ value, onChange, label }: { value: number | null; onChange
   );
 }
 
-interface OutcomeFormData {
-  outcome_rating: number | null;
-  objections_addressed: string[];
-  competitive_mentions: string[];
-  key_takeaway: string;
-  prep_usefulness: number | null;
-}
+interface OutcomeFormData { outcome_rating: number | null; objections_addressed: string[]; competitive_mentions: string[]; key_takeaway: string; prep_usefulness: number | null }
 
 function MeetingOutcomeSection({
   meeting,
@@ -631,15 +616,7 @@ export default function MeetingsPage() {
                 )}
 
                 {m.next_steps && (
-                  <div
-                    className="mt-2"
-                    style={{
-                      fontSize: 'var(--font-size-xs)',
-                      color: 'var(--accent)',
-                      opacity: 0.6,
-                      background: 'var(--accent-muted)',
-                      borderRadius: 'var(--radius-sm)',
-                      padding: '4px 8px', }}>
+                  <div className="mt-2" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)', opacity: 0.6, background: 'var(--accent-muted)', borderRadius: 'var(--radius-sm)', padding: '4px 8px' }}>
                     Next: {m.next_steps}
                   </div>
                 )}
@@ -649,14 +626,7 @@ export default function MeetingsPage() {
                   <button
                     onClick={() => setExpandedOutcome(isOutcomeExpanded ? null : m.id)}
                     className="flex items-center gap-2 w-full"
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      padding: 0,
-                      fontSize: 'var(--font-size-sm)',
-                      fontWeight: 400,
-                      color: hasOutcome ? 'var(--success)' : 'var(--text-tertiary)', }}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontSize: 'var(--font-size-sm)', fontWeight: 400, color: hasOutcome ? 'var(--success)' : 'var(--text-tertiary)' }}
                     onMouseEnter={e => (e.currentTarget.style.color = hasOutcome ? 'var(--success)' : 'var(--text-secondary)')}
                     onMouseLeave={e => (e.currentTarget.style.color = hasOutcome ? 'var(--success)' : 'var(--text-tertiary)')}>
                     {isOutcomeExpanded

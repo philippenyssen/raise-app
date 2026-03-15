@@ -16,31 +16,13 @@ import type { TermScenario, TermScenarioResult } from '@/lib/types';
 
 type ScenarioResult = TermScenarioResult;
 
-interface CompareResponse {
-  results: ScenarioResult[];
-  recommendations: {
-    best_for_founders: string;
-    most_capital: string;
-    highest_effective_valuation: string;
-  };
-  generated_at: string;
-}
+interface CompareResponse { results: ScenarioResult[]; recommendations: { best_for_founders: string; most_capital: string; highest_effective_valuation: string }; generated_at: string }
 
 // ---------------------------------------------------------------------------
 // Defaults
 // ---------------------------------------------------------------------------
 
-const EMPTY_SCENARIO: TermScenario = {
-  investor_name: '',
-  pre_money_valuation: 0,
-  investment_amount: 0,
-  liquidation_preference: 1.0,
-  participation: false,
-  anti_dilution: 'broad',
-  board_seats: 1,
-  pro_rata_rights: true,
-  drag_along_threshold: 66,
-};
+const EMPTY_SCENARIO: TermScenario = { investor_name: '', pre_money_valuation: 0, investment_amount: 0, liquidation_preference: 1.0, participation: false, anti_dilution: 'broad', board_seats: 1, pro_rata_rights: true, drag_along_threshold: 66 };
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -57,8 +39,7 @@ function formatM(n: number): string {
 type CellRating = 'good' | 'bad' | 'neutral';
 
 function ratePref(val: number, allVals: number[]): CellRating {
-  const min = Math.min(...allVals);
-  const max = Math.max(...allVals);
+  const min = Math.min(...allVals), max = Math.max(...allVals);
   if (min === max) return 'neutral';
   if (val === min) return 'good';
   if (val === max) return 'bad';
@@ -66,8 +47,7 @@ function ratePref(val: number, allVals: number[]): CellRating {
 }
 
 function rateHigherIsBetter(val: number, allVals: number[]): CellRating {
-  const min = Math.min(...allVals);
-  const max = Math.max(...allVals);
+  const min = Math.min(...allVals), max = Math.max(...allVals);
   if (min === max) return 'neutral';
   if (val === max) return 'good';
   if (val === min) return 'bad';
@@ -75,8 +55,7 @@ function rateHigherIsBetter(val: number, allVals: number[]): CellRating {
 }
 
 function rateLowerIsBetter(val: number, allVals: number[]): CellRating {
-  const min = Math.min(...allVals);
-  const max = Math.max(...allVals);
+  const min = Math.min(...allVals), max = Math.max(...allVals);
   if (min === max) return 'neutral';
   if (val === min) return 'good';
   if (val === max) return 'bad';
@@ -84,7 +63,6 @@ function rateLowerIsBetter(val: number, allVals: number[]): CellRating {
 }
 
 function cellStyle(rating: CellRating): React.CSSProperties {
-  if (rating === 'good') return { color: 'var(--text-secondary)' };
   if (rating === 'bad') return { color: 'var(--text-primary)' };
   return { color: 'var(--text-secondary)' };
 }
@@ -168,11 +146,7 @@ export default function TermComparePage() {
     none: 'None',
   };
 
-  interface RowDef {
-    label: string;
-    getValue: (r: ScenarioResult) => string;
-    getRating: (r: ScenarioResult, all: ScenarioResult[]) => CellRating;
-  }
+  interface RowDef { label: string; getValue: (r: ScenarioResult) => string; getRating: (r: ScenarioResult, all: ScenarioResult[]) => CellRating }
 
   const tableRows: RowDef[] = [
     {
