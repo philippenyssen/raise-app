@@ -58,6 +58,12 @@ export async function POST(req: NextRequest) {
     if (!filtered.title || typeof filtered.title !== 'string' || !(filtered.title as string).trim()) {
       return NextResponse.json({ error: 'title is required' }, { status: 400 });
     }
+    const textLimits: Record<string, number> = { title: 500, description: 5000, assignee: 255, investor_name: 255 };
+    for (const [field, max] of Object.entries(textLimits)) {
+      if (filtered[field] && typeof filtered[field] === 'string' && (filtered[field] as string).length > max) {
+        return NextResponse.json({ error: `${field} exceeds maximum length of ${max} characters` }, { status: 400 });
+      }
+    }
     const validStatuses = ['pending', 'in_progress', 'done', 'blocked', 'cancelled'];
     const validPriorities = ['critical', 'high', 'medium', 'low'];
     if (filtered.status && !validStatuses.includes(filtered.status as string)) return NextResponse.json({ error: `status must be one of: ${validStatuses.join(', ')}` }, { status: 400 });
