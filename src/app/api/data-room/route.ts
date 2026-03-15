@@ -5,7 +5,7 @@ import { emitContextChange } from '@/lib/context-bus';
 export async function GET() {
   try {
     const files = await getAllDataRoomFiles();
-    return NextResponse.json(files);
+    return NextResponse.json(files, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
   } catch (err) {
     console.error('[DATA_ROOM_GET]', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: 'Failed to load data room files' }, { status: 500 });

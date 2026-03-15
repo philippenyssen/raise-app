@@ -6,7 +6,7 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const modelId = searchParams.get('modelId') || 'default';
     const sheets = await getModelSheets(modelId);
-    return NextResponse.json(sheets);
+    return NextResponse.json(sheets, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
   } catch (err) {
     console.error('[MODEL_GET]', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: 'Failed to load model sheets' }, { status: 500 });
@@ -49,18 +49,16 @@ export async function PUT(req: NextRequest) {
   } catch {
     return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
   }
-  const { id, sheet_name, data, sheet_order } = body as {
-    id: string; sheet_name: string; data: unknown; sheet_order: number;
-  };
-
+  const id = body.id as string | undefined;
   if (!id) return NextResponse.json({ error: 'id is required' }, { status: 400 });
 
+  const updates: Record<string, unknown> = {};
+  if (body.sheet_name !== undefined) updates.sheet_name = body.sheet_name;
+  if (body.sheet_order !== undefined) updates.sheet_order = body.sheet_order;
+  if (body.data !== undefined) updates.data = typeof body.data === 'string' ? body.data : JSON.stringify(body.data);
+
   try {
-    await updateModelSheet(id, {
-      sheet_name,
-      data: typeof data === 'string' ? data : (data ? JSON.stringify(data) : undefined),
-      sheet_order,
-    });
+    await updateModelSheet(id, updates);
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error('[MODEL_PUT]', err instanceof Error ? err.message : err);
