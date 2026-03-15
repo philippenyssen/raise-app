@@ -1,11 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createAccelerationAction, computeNarrativeSignals } from '@/lib/db';
-import { getClient, PIPELINE_ORDER } from '@/lib/api-helpers';
-
-function stageIndex(status: string): number {
-  const idx = PIPELINE_ORDER.indexOf(status);
-  return idx >= 0 ? idx : 0;
-}
+import { getClient, stageIndex } from '@/lib/api-helpers';
+import type { InvestorRow, MeetingRow, ActivityRow, TaskRow, FollowupRow } from '@/lib/api-types';
 
 // Get Monday of the week containing a given date
 function getWeekStart(d: Date): Date {
@@ -46,54 +42,6 @@ function dateToWeekIndex(d: Date, weeks: Date[]): number {
     }
   }
   return -1;
-}
-
-interface InvestorRow {
-  id: string;
-  name: string;
-  type: string;
-  tier: number;
-  status: string;
-  enthusiasm: number;
-  created_at: string;
-  updated_at: string;
-}
-
-interface MeetingRow {
-  id: string;
-  investor_id: string;
-  investor_name: string;
-  date: string;
-  type: string;
-  enthusiasm_score: number;
-  status_after: string;
-  created_at: string;
-}
-
-interface ActivityRow {
-  id: string;
-  event_type: string;
-  subject: string;
-  detail: string;
-  investor_id: string;
-  investor_name: string;
-  created_at: string;
-}
-
-interface TaskRow {
-  id: string;
-  investor_id: string;
-  status: string;
-  updated_at: string;
-  created_at: string;
-}
-
-interface FollowupRow {
-  id: string;
-  investor_id: string;
-  status: string;
-  completed_at: string | null;
-  created_at: string;
 }
 
 export async function GET() {

@@ -2,7 +2,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import { logSkillExecution } from './db';
 
 let _client: Anthropic | null = null;
-function getAIClient(): Anthropic {
+export function getAIClient(): Anthropic {
   if (!_client) {
     _client = new Anthropic();
   }

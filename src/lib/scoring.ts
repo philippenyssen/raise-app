@@ -1,6 +1,7 @@
-import type { Investor, Meeting, InvestorPortfolioCo, IntelligenceBrief, Objection, EngagementSignal, InvestorStatus } from './types';
+import type { Investor, Meeting, InvestorPortfolioCo, IntelligenceBrief, Objection, EngagementSignal } from './types';
 import type { ScoreSnapshot } from './db';
 import { computeNetworkEffectData } from './db';
+import { clamp, daysBetween, parseJsonSafe, parseMoneyRange, STATUS_PROGRESSION } from './api-helpers';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -27,73 +28,12 @@ export interface InvestorScore {
 // Helpers
 // ---------------------------------------------------------------------------
 
-function clamp(n: number, min = 0, max = 100): number {
-  return Math.max(min, Math.min(max, Math.round(n)));
-}
-
 function signal(score: number): 'strong' | 'moderate' | 'weak' | 'unknown' {
   if (score >= 70) return 'strong';
   if (score >= 40) return 'moderate';
   if (score > 0) return 'weak';
   return 'unknown';
 }
-
-function daysBetween(a: string, b: string): number {
-  const da = new Date(a);
-  const db = new Date(b);
-  return Math.abs(da.getTime() - db.getTime()) / (1000 * 60 * 60 * 24);
-}
-
-function parseJsonSafe<T>(raw: string, fallback: T): T {
-  try {
-    return JSON.parse(raw) as T;
-  } catch {
-    return fallback;
-  }
-}
-
-/** Parse a money string like "$50-100M", "€25M", "50M-100M" into [low, high] in millions */
-function parseMoneyRange(s: string): [number, number] | null {
-  if (!s) return null;
-  const cleaned = s.replace(/[€$£,]/g, '').trim().toLowerCase();
-
-  // Try range: "50-100m", "50m-100m"
-  const rangeMatch = cleaned.match(/([\d.]+)\s*m?\s*[-–to]+\s*([\d.]+)\s*m/i);
-  if (rangeMatch) {
-    return [parseFloat(rangeMatch[1]), parseFloat(rangeMatch[2])];
-  }
-
-  // Try single value: "100m", "2b", "500k"
-  const singleMatch = cleaned.match(/([\d.]+)\s*(m|b|k|bn|million|billion)?/i);
-  if (singleMatch) {
-    let val = parseFloat(singleMatch[1]);
-    const unit = (singleMatch[2] || '').toLowerCase();
-    if (unit === 'b' || unit === 'bn' || unit === 'billion') val *= 1000;
-    if (unit === 'k') val /= 1000;
-    // If no unit and value >= 1000, assume it's already in millions (unlikely for check sizes)
-    return [val * 0.8, val * 1.2]; // +/- 20% for single values
-  }
-
-  return null;
-}
-
-// ---------------------------------------------------------------------------
-// Status progression ordering (higher = further along)
-// ---------------------------------------------------------------------------
-
-const STATUS_PROGRESSION: Record<InvestorStatus, number> = {
-  identified: 0,
-  contacted: 1,
-  nda_signed: 2,
-  meeting_scheduled: 3,
-  met: 4,
-  engaged: 5,
-  in_dd: 6,
-  term_sheet: 7,
-  closed: 8,
-  passed: -1,
-  dropped: -1,
-};
 
 // ---------------------------------------------------------------------------
 // Dimension Scorers

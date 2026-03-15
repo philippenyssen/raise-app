@@ -1,33 +1,7 @@
 import { NextResponse } from 'next/server';
 import { computeWinLossPatterns, getFunnelMetrics } from '@/lib/db';
 import { getClient } from '@/lib/api-helpers';
-
-interface InvestorRow {
-  id: string;
-  name: string;
-  type: string;
-  tier: number;
-  status: string;
-  enthusiasm: number;
-  check_size_range: string;
-  notes: string;
-  created_at: string;
-  updated_at: string;
-}
-
-interface MeetingRow {
-  id: string;
-  investor_id: string;
-  date: string;
-  type: string;
-  enthusiasm_score: number;
-}
-
-interface ObjectionRow {
-  investor_id: string;
-  objection_topic: string;
-  objection_text: string;
-}
+import type { InvestorRow, MeetingRow, ObjectionRow } from '@/lib/api-types';
 
 export async function GET() {
   try {

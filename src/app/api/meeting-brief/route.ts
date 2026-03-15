@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Anthropic from '@anthropic-ai/sdk';
 import {
   getInvestor,
   getMeetings,
@@ -21,15 +20,10 @@ import {
   computeNetworkCascades,
   computeWinLossPatterns,
 } from '@/lib/db';
+import { getAIClient } from '@/lib/ai';
 import { computeAdvancedTrajectory } from '@/lib/scoring';
 import { getNarrativeProfile, getAnticipatedQuestions } from '@/lib/investor-narratives';
 import type { InvestorType, Objection } from '@/lib/types';
-
-let _client: Anthropic | null = null;
-function getAIClient(): Anthropic {
-  if (!_client) _client = new Anthropic();
-  return _client;
-}
 
 function safeJsonParse<T>(raw: string | null | undefined, fallback: T): T {
   if (!raw) return fallback;

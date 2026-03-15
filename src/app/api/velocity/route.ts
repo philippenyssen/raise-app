@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { getClient, PIPELINE_ORDER } from '@/lib/api-helpers';
+import { getClient, stageIndex } from '@/lib/api-helpers';
+import type { InvestorRow, MeetingRow, FollowupRow, ActivityRow } from '@/lib/api-types';
 
 // Stage duration benchmarks in days (cumulative target from first contact)
 const STAGE_BENCHMARKS: Record<string, number> = {
@@ -23,45 +24,6 @@ const STAGE_DURATIONS: Record<string, number> = {
   in_dd: 14,
   term_sheet: 7,
 };
-
-function stageIndex(status: string): number {
-  const idx = PIPELINE_ORDER.indexOf(status);
-  return idx >= 0 ? idx : 0;
-}
-
-interface InvestorRow {
-  id: string;
-  name: string;
-  type: string;
-  tier: number;
-  status: string;
-  enthusiasm: number;
-  created_at: string;
-  updated_at: string;
-}
-
-interface MeetingRow {
-  id: string;
-  investor_id: string;
-  date: string;
-  type: string;
-  enthusiasm_score: number;
-  status_after: string;
-}
-
-interface FollowupRow {
-  id: string;
-  investor_id: string;
-  status: string;
-  due_at: string;
-  completed_at: string | null;
-}
-
-interface ActivityRow {
-  investor_id: string;
-  detail: string;
-  created_at: string;
-}
 
 export async function GET() {
   try {

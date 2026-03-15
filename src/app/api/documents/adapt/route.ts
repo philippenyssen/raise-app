@@ -1,14 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Anthropic from '@anthropic-ai/sdk';
 import { getDocument } from '@/lib/db';
+import { getAIClient } from '@/lib/ai';
 import { getNarrativeProfile } from '@/lib/investor-narratives';
 import type { InvestorType } from '@/lib/types';
-
-let _client: Anthropic | null = null;
-function getAIClient(): Anthropic {
-  if (!_client) _client = new Anthropic();
-  return _client;
-}
 
 export interface AdaptationSuggestion {
   section: string;

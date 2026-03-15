@@ -7,3 +7,4 @@ eb53a2a	93	93	0	keep	all	Dead code removal (143 lines) + pipeline error recovery
 65d1eb9	93	93	0	keep	eng+design	Style constants (122 replacements) + delete dead empty-state.tsx + remove FocusItem interface
 13bc963	93	93	0	keep	all	API helpers dedup (-149 lines) + 4 UX fixes (toast, pipeline copy, enthusiasm, dashboard empty)
 958ec8a	93	93	0	keep	eng	Settings form hook (-29) + genericUpdate/Delete/GetById in db.ts (-266) + STATUS_LABELS constant extraction
+dcc1396	93	94	+1	keep	eng	scoring.ts dedup (-57) + API types dedup (-55) + getAIClient consolidation (-15) = score 94

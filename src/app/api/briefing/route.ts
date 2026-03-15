@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import Anthropic from '@anthropic-ai/sdk';
 import {
   getAllInvestors,
   getMeetings,
@@ -12,12 +11,7 @@ import {
   detectFomoDynamics,
   computePipelineFlow,
 } from '@/lib/db';
-
-let _client: Anthropic | null = null;
-function getAIClient(): Anthropic {
-  if (!_client) _client = new Anthropic();
-  return _client;
-}
+import { getAIClient } from '@/lib/ai';
 
 function getGreeting(): string {
   const hour = new Date().getHours();
