@@ -165,9 +165,9 @@ export default function NetworkPage() {
               <Link
                 href={`/dealflow?search=${encodeURIComponent(bottleneckAlert.bottleneckName)}`}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-normal transition-colors"
-                style={{ background: 'var(--fg-5)', color: 'var(--text-tertiary)', border: '1px solid var(--fg-5)' }}
-                onMouseEnter={e => { e.currentTarget.style.background = 'var(--fg-5)'; }}
-                onMouseLeave={e => { e.currentTarget.style.background = 'var(--fg-5)'; }}>
+                style={{ background: 'var(--surface-2)', color: 'var(--text-tertiary)', border: '1px solid var(--border-subtle)' }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-3)'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'var(--surface-2)'; }}>
                 <Calendar className="w-3 h-3" />
                 Engage {bottleneckAlert.bottleneckName}</Link></div></div></div>
       )}
@@ -397,9 +397,9 @@ export default function NetworkPage() {
                         <Link
                           href={`/investors/${cascade.networkBottleneck.investorId}`}
                           className="inline-flex items-center gap-1 mt-2 px-2.5 py-1 rounded text-xs font-normal transition-colors"
-                          style={{ background: 'var(--fg-5)', color: 'var(--text-tertiary)', border: '1px solid var(--fg-5)' }}
-                          onMouseEnter={e => { e.currentTarget.style.background = 'var(--fg-5)'; }}
-                          onMouseLeave={e => { e.currentTarget.style.background = 'var(--fg-5)'; }}>
+                          style={{ background: 'var(--surface-2)', color: 'var(--text-tertiary)', border: '1px solid var(--border-subtle)' }}
+                          onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-3)'; }}
+                          onMouseLeave={e => { e.currentTarget.style.background = 'var(--surface-2)'; }}>
                           Prioritize Engagement
                           <ArrowRight className="w-3 h-3" /></Link></div></div>
                   )}</div>
