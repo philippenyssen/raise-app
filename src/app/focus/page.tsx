@@ -115,7 +115,7 @@ const TYPE_STYLES: Record<string, React.CSSProperties> = {
   sovereign: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
   strategic: { background: 'var(--cat-teal-muted)', color: 'var(--cat-teal)' },
   debt: { background: 'var(--surface-2)', color: 'var(--text-secondary)' },
-  family_office: { background: 'rgba(26, 26, 46, 0.06)', color: 'var(--text-primary)' },
+  family_office: { background: 'var(--fg-6)', color: 'var(--text-primary)' },
 };
 
 const TYPE_LABELS: Record<string, string> = {
@@ -654,7 +654,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
                   href={`/meetings/new?investor=${item.investorId}`}
                   title="Schedule meeting"
                   className="flex items-center justify-center transition-colors"
-                  style={{ width: '28px', height: '28px', borderRadius: 'var(--radius-md)', background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(27, 42, 74, 0.08)', transition: 'all 150ms ease' }}
+                  style={{ width: '28px', height: '28px', borderRadius: 'var(--radius-md)', background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid var(--accent-8)', transition: 'all 150ms ease' }}
                   onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent)'; e.currentTarget.style.color = 'white'; }}
                   onMouseLeave={e => { e.currentTarget.style.background = 'var(--accent-muted)'; e.currentTarget.style.color = 'var(--accent)'; }}
                 >
@@ -1025,7 +1025,7 @@ function AtRiskCard({ investor }: { investor: InvestorSummary }) {
         <Link
           href={`/meetings/new?investor=${investor.investorId}`}
           className="btn btn-sm flex-1 flex items-center justify-center gap-1"
-          style={{ fontSize: '11px', background: 'rgba(26, 26, 46, 0.06)', color: 'var(--text-primary)', border: '1px solid rgba(26, 26, 46, 0.06)' }}
+          style={{ fontSize: '11px', background: 'var(--fg-6)', color: 'var(--text-primary)', border: '1px solid var(--fg-6)' }}
         >
           Re-engage
         </Link>

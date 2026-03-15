@@ -405,7 +405,7 @@ export default function DocumentEditorPage() {
 
       {/* Version History Modal */}
       {showVersions && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.6)' }} onClick={() => setShowVersions(false)}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'var(--overlay-heavy)' }} onClick={() => setShowVersions(false)}>
           <div className="rounded-xl p-6 max-w-lg w-full max-h-[70vh] overflow-y-auto" style={{ background: 'var(--surface-1)' }} onClick={e => e.stopPropagation()}>
             <h2 className="text-lg font-normal mb-4 flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
               <History className="w-5 h-5" /> Version History

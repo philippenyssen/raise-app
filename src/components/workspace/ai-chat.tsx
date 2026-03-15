@@ -243,7 +243,7 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
                 lineHeight: 1.6,
                 background: msg.role === 'user' ? 'var(--accent-muted)' : 'var(--surface-1)',
                 color: msg.role === 'user' ? 'var(--accent)' : 'var(--text-secondary)',
-                border: `1px solid ${msg.role === 'user' ? 'rgba(27, 42, 74, 0.10)' : 'var(--border-subtle)'}`,
+                border: `1px solid ${msg.role === 'user' ? 'var(--accent-10)' : 'var(--border-subtle)'}`,
               }}
             >
               <div className="whitespace-pre-wrap">{msg.content}</div>

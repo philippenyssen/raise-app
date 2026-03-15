@@ -480,7 +480,7 @@ export default function VelocityPage() {
                           style={{
                             background: 'var(--danger-muted)',
                             color: 'var(--text-primary)',
-                            border: '1px solid rgba(26, 26, 46, 0.06)',
+                            border: '1px solid var(--fg-6)',
                             fontSize: '11px',
                             padding: '3px 8px',
                             gap: '4px',
@@ -498,7 +498,7 @@ export default function VelocityPage() {
                           style={{
                             background: 'var(--warning-muted)',
                             color: 'var(--text-tertiary)',
-                            border: '1px solid rgba(26, 26, 46, 0.05)',
+                            border: '1px solid var(--fg-5)',
                             fontSize: '11px',
                             padding: '3px 8px',
                             gap: '4px',

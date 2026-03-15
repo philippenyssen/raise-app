@@ -124,7 +124,7 @@ export function Sidebar() {
       {mobileOpen && (
         <div
           className="md:hidden fixed inset-0 z-40"
-          style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)' }}
+          style={{ background: 'var(--overlay)', backdropFilter: 'blur(4px)' }}
           onClick={() => setMobileOpen(false)}
         />
       )}

@@ -64,7 +64,7 @@ const TYPE_STYLES: Record<string, React.CSSProperties> = {
   sovereign: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
   strategic: { background: 'var(--cat-teal-muted)', color: 'var(--cat-teal)' },
   debt: { background: 'var(--surface-2)', color: 'var(--text-secondary)' },
-  family_office: { background: 'rgba(26, 26, 46, 0.06)', color: 'var(--text-primary)' },
+  family_office: { background: 'var(--fg-6)', color: 'var(--text-primary)' },
 };
 
 const TYPE_LABELS: Record<string, string> = {
@@ -207,7 +207,7 @@ function ActionCard({
     ? {
         borderRadius: 'var(--radius-lg)',
         padding: '16px',
-        background: 'rgba(26, 26, 46,0.3)',
+        background: 'var(--fg-30)',
         opacity: 0.6,
         transition: 'all 200ms ease',
       }
@@ -380,15 +380,15 @@ function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
         className="inline-flex items-center gap-1.5 transition-colors"
         style={{
           padding: '6px 12px',
-          background: 'rgba(27, 42, 74, 0.06)',
-          border: '1px solid rgba(27, 42, 74, 0.06)',
+          background: 'var(--accent-muted)',
+          border: '1px solid var(--accent-muted)',
           borderRadius: 'var(--radius-md)',
           fontSize: 'var(--font-size-sm)',
           color: 'var(--text-secondary)',
           fontWeight: 400,
         }}
-        onMouseEnter={e => (e.currentTarget.style.background = 'rgba(27, 42, 74, 0.08)')}
-        onMouseLeave={e => (e.currentTarget.style.background = 'rgba(27, 42, 74, 0.06)')}
+        onMouseEnter={e => (e.currentTarget.style.background = 'var(--accent-8)')}
+        onMouseLeave={e => (e.currentTarget.style.background = 'var(--accent-muted)')}
       >
         <Rocket className="w-3 h-3" />
         Push for Term Sheet
@@ -401,7 +401,7 @@ function AtRiskCard({ investor }: { investor: InvestorSummary }) {
   return (
     <div
       style={{
-        background: 'rgba(26, 26, 46, 0.05)',
+        background: 'var(--fg-5)',
         borderRadius: 'var(--radius-lg)',
         padding: '16px',
       }}

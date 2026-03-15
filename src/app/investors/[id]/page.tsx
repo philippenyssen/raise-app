@@ -386,12 +386,12 @@ export default function InvestorDetailPage() {
           className="flex items-center gap-4 flex-wrap rounded-xl px-4 py-3"
           style={{
             border: `1px solid ${
-              dealIntel.heatLabel === 'hot' ? 'rgba(26, 26, 46, 0.06)' :
-              dealIntel.heatLabel === 'warm' ? 'rgba(26, 26, 46, 0.05)' :
+              dealIntel.heatLabel === 'hot' ? 'var(--fg-6)' :
+              dealIntel.heatLabel === 'warm' ? 'var(--fg-5)' :
               'var(--border-subtle)'
             }`,
-            background: dealIntel.heatLabel === 'hot' ? 'rgba(26, 26, 46, 0.06)' :
-              dealIntel.heatLabel === 'warm' ? 'rgba(26, 26, 46, 0.05)' :
+            background: dealIntel.heatLabel === 'hot' ? 'var(--fg-6)' :
+              dealIntel.heatLabel === 'warm' ? 'var(--fg-5)' :
               'var(--surface-1)',
           }}
         >
@@ -464,7 +464,7 @@ export default function InvestorDetailPage() {
                   fontSize: '11px', fontWeight: 400, padding: '3px 10px',
                   borderRadius: 'var(--radius-sm)', textDecoration: 'none',
                   background: 'var(--danger-muted)', color: 'var(--text-primary)',
-                  border: '1px solid rgba(26, 26, 46, 0.06)',
+                  border: '1px solid var(--fg-6)',
                 }}
               >
                 <Phone className="w-3 h-3" /> Rescue
@@ -477,7 +477,7 @@ export default function InvestorDetailPage() {
                   fontSize: '11px', fontWeight: 400, padding: '3px 10px',
                   borderRadius: 'var(--radius-sm)', textDecoration: 'none',
                   background: 'var(--warning-muted)', color: 'var(--text-tertiary)',
-                  border: '1px solid rgba(26, 26, 46, 0.05)',
+                  border: '1px solid var(--fg-5)',
                 }}
               >
                 <Mail className="w-3 h-3" /> Nudge
@@ -516,7 +516,7 @@ export default function InvestorDetailPage() {
           <div
             className="rounded-xl overflow-hidden"
             style={{
-              background: overdueItems.length > 0 ? 'rgba(26, 26, 46, 0.06)' : undefined,
+              background: overdueItems.length > 0 ? 'var(--fg-6)' : undefined,
             }}
           >
             <div
@@ -1087,7 +1087,7 @@ function Row({ label, value }: { label: string; value: string }) {
 
 function StatCard({ icon: Icon, label, value, sub, highlight }: { icon: React.ComponentType<{ className?: string }>; label: string; value: string | number; sub: string; highlight?: boolean }) {
   return (
-    <div className="rounded-xl p-4" style={{ background: highlight ? 'rgba(26, 26, 46, 0.06)' : undefined }}>
+    <div className="rounded-xl p-4" style={{ background: highlight ? 'var(--fg-6)' : undefined }}>
       <div className="flex items-center gap-2 mb-1">
         <span style={{ color: highlight ? 'var(--danger)' : 'var(--text-muted)' }}><Icon className="w-3.5 h-3.5" /></span>
         <span className="text-xs truncate" style={{ color: highlight ? 'var(--danger)' : 'var(--text-muted)' }}>{label}</span>
@@ -1219,7 +1219,7 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
                       return `/meetings/new?investor=${investorId}`;
                     })()}
                     className="btn btn-sm shrink-0"
-                    style={{ background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(27, 42, 74, 0.25)', fontSize: '11px', padding: '3px 10px', gap: '4px', display: 'inline-flex', alignItems: 'center', textDecoration: 'none' }}
+                    style={{ background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid var(--accent-25)', fontSize: '11px', padding: '3px 10px', gap: '4px', display: 'inline-flex', alignItems: 'center', textDecoration: 'none' }}
                   >
                     Do it <ArrowRight className="w-3 h-3" />
                   </Link>

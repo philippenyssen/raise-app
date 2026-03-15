@@ -39,7 +39,7 @@ export function ConfirmModal({
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center animate-fade-in"
-      style={{ background: 'rgba(0, 0, 0, 0.7)', backdropFilter: 'blur(4px)' }}
+      style={{ background: 'var(--overlay-heavy)', backdropFilter: 'blur(4px)' }}
       onClick={onCancel}
       onKeyDown={handleKeyDown}
     >
@@ -139,7 +139,7 @@ export function InputModal({
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center animate-fade-in"
-      style={{ background: 'rgba(0, 0, 0, 0.7)', backdropFilter: 'blur(4px)' }}
+      style={{ background: 'var(--overlay-heavy)', backdropFilter: 'blur(4px)' }}
       onClick={onCancel}
       onKeyDown={handleKeyDown}
     >

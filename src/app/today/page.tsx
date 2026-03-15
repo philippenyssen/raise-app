@@ -91,16 +91,16 @@ const CATEGORY_BG: Record<string, string> = {
 };
 
 const ALERT_STYLES: Record<string, { bg: string; border: string; color: string; icon: React.ComponentType<{ className?: string }> }> = {
-  warning: { bg: 'var(--warning-muted)', border: 'rgba(26, 26, 46, 0.05)', color: 'var(--text-tertiary)', icon: AlertTriangle },
-  opportunity: { bg: 'var(--success-muted)', border: 'rgba(27, 42, 74, 0.08)', color: 'var(--text-secondary)', icon: Zap },
-  risk: { bg: 'var(--danger-muted)', border: 'rgba(26, 26, 46, 0.06)', color: 'var(--text-primary)', icon: Shield },
+  warning: { bg: 'var(--warning-muted)', border: 'var(--fg-5)', color: 'var(--text-tertiary)', icon: AlertTriangle },
+  opportunity: { bg: 'var(--success-muted)', border: 'var(--accent-8)', color: 'var(--text-secondary)', icon: Zap },
+  risk: { bg: 'var(--danger-muted)', border: 'var(--fg-6)', color: 'var(--text-primary)', icon: Shield },
 };
 
 const MOMENTUM_CONFIG: Record<string, { color: string; bg: string; border: string; icon: React.ComponentType<{ className?: string }>; label: string }> = {
-  accelerating: { color: 'var(--text-secondary)', bg: 'var(--success-muted)', border: 'rgba(27, 42, 74, 0.08)', icon: TrendingUp, label: 'Accelerating' },
+  accelerating: { color: 'var(--text-secondary)', bg: 'var(--success-muted)', border: 'var(--accent-8)', icon: TrendingUp, label: 'Accelerating' },
   steady: { color: 'var(--text-secondary)', bg: 'var(--surface-2)', border: 'var(--border-default)', icon: Minus, label: 'Steady' },
-  decelerating: { color: 'var(--text-tertiary)', bg: 'var(--warning-muted)', border: 'rgba(26, 26, 46, 0.05)', icon: TrendingDown, label: 'Decelerating' },
-  stalled: { color: 'var(--text-primary)', bg: 'var(--danger-muted)', border: 'rgba(26, 26, 46, 0.06)', icon: TrendingDown, label: 'Stalled' },
+  decelerating: { color: 'var(--text-tertiary)', bg: 'var(--warning-muted)', border: 'var(--fg-5)', icon: TrendingDown, label: 'Decelerating' },
+  stalled: { color: 'var(--text-primary)', bg: 'var(--danger-muted)', border: 'var(--fg-6)', icon: TrendingDown, label: 'Stalled' },
 };
 
 // ---------------------------------------------------------------------------
@@ -350,11 +350,11 @@ function AlertCard({ alert }: { alert: BriefingAlert }) {
             textDecoration: 'none',
             padding: '3px 8px',
             borderRadius: 'var(--radius-sm)',
-            background: 'rgba(0,0,0,0.03)',
+            background: 'var(--fg-3)',
             whiteSpace: 'nowrap',
           }}
-          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(0,0,0,0.06)'; }}
-          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(0,0,0,0.03)'; }}
+          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--fg-6)'; }}
+          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--fg-3)'; }}
         >
           {alertAction}
           <span style={{ display: 'flex' }}><ChevronRight className="w-3 h-3" /></span>
@@ -868,7 +868,7 @@ export default function TodayPage() {
                 data_share: { label: 'Share Docs', color: 'var(--chart-4)', bg: 'var(--cat-purple-muted)' },
                 schedule_followup: { label: 'Schedule', color: 'var(--text-secondary)', bg: 'var(--success-muted)' },
                 warm_reengagement: { label: 'Re-engage', color: 'var(--text-tertiary)', bg: 'var(--warning-muted)' },
-                milestone_update: { label: 'Update', color: 'var(--text-tertiary)', bg: 'rgba(138, 136, 128, 0.08)' },
+                milestone_update: { label: 'Update', color: 'var(--text-tertiary)', bg: 'var(--warn-8)' },
               };
               const tc = typeConfig[fu.action_type] || { label: fu.action_type, color: 'var(--text-tertiary)', bg: 'var(--surface-2)' };
               const isProcessing = completingFollowupId === fu.id;
@@ -896,7 +896,7 @@ export default function TodayPage() {
                         onClick={() => handleQuickComplete(fu.id)}
                         disabled={isProcessing}
                         className="btn btn-sm"
-                        style={{ background: 'var(--success-muted)', color: 'var(--text-secondary)', border: '1px solid rgba(27, 42, 74, 0.08)', fontSize: '11px', padding: '3px 10px' }}
+                        style={{ background: 'var(--success-muted)', color: 'var(--text-secondary)', border: '1px solid var(--accent-8)', fontSize: '11px', padding: '3px 10px' }}
                       >
                         Done
                       </button>
@@ -1081,7 +1081,7 @@ export default function TodayPage() {
                 width: '32px',
                 height: '32px',
                 borderRadius: 'var(--radius-md)',
-                background: 'rgba(27, 42, 74, 0.10)',
+                background: 'var(--accent-10)',
               }}
             >
               <span style={{ color: 'var(--accent)', display: 'flex' }}>

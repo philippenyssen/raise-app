@@ -518,7 +518,7 @@ export default function ForecastPage() {
                           color: 'var(--text-tertiary)',
                           textDecoration: 'none',
                         }}
-                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(26, 26, 46, 0.05)'; }}
+                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--fg-5)'; }}
                         onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--warning-muted)'; }}
                       >
                         <Calendar className="w-3 h-3" />
@@ -575,7 +575,7 @@ export default function ForecastPage() {
                       textDecoration: 'none',
                       transition: 'background 150ms ease',
                     }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(26, 26, 46, 0.06)'; }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--fg-6)'; }}
                     onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--danger-muted)'; }}
                   >
                     <span style={{ color: 'var(--text-primary)', marginTop: '2px', flexShrink: 0 }}>

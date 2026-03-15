@@ -20,7 +20,7 @@ const STATUS_STYLES: Record<string, { background: string; color: string }> = {
   contacted: { background: 'var(--border-strong)', color: 'var(--text-primary)' },
   nda_signed: { background: 'var(--accent-muted)', color: 'var(--accent)' },
   meeting_scheduled: { background: 'var(--accent-muted)', color: 'var(--accent)' },
-  met: { background: 'rgba(27, 42, 74, 0.10)', color: 'var(--accent)' },
+  met: { background: 'var(--accent-10)', color: 'var(--accent)' },
   engaged: { background: 'rgba(90, 90, 122, 0.25)', color: 'var(--chart-4)' },
   in_dd: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
   term_sheet: { background: 'var(--success-muted)', color: 'var(--text-secondary)' },

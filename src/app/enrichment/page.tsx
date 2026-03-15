@@ -71,9 +71,9 @@ interface EnrichResult {
 // ---------------------------------------------------------------------------
 
 const SOURCE_TYPE_STYLES: Record<string, { bg: string; color: string; border: string }> = {
-  free: { bg: 'var(--success-muted)', color: 'var(--text-secondary)', border: 'rgba(27, 42, 74, 0.2)' },
-  freemium: { bg: 'var(--accent-muted)', color: 'var(--accent)', border: 'rgba(27, 42, 74, 0.05)' },
-  paid: { bg: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: 'rgba(138, 136, 128, 0.2)' },
+  free: { bg: 'var(--success-muted)', color: 'var(--text-secondary)', border: 'var(--accent-20)' },
+  freemium: { bg: 'var(--accent-muted)', color: 'var(--accent)', border: 'var(--accent-5)' },
+  paid: { bg: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: 'var(--warn-20)' },
 };
 
 const CATEGORY_ICONS: Record<string, React.ComponentType<{ style?: React.CSSProperties }>> = {
@@ -334,7 +334,7 @@ export default function EnrichmentPage() {
                       style={{
                         background: 'var(--accent-muted)',
                         color: 'var(--accent)',
-                        border: '1px solid rgba(27, 42, 74, 0.2)',
+                        border: '1px solid var(--accent-20)',
                         opacity: enriching === inv.id || bulkEnriching ? 0.4 : 1,
                         fontSize: 'var(--font-size-xs)',
                         padding: '4px 10px',

@@ -16,7 +16,7 @@ type Tab = 'deals' | 'competitors' | 'briefs';
 const THREAT_STYLES: Record<string, { background: string; color: string }> = {
   critical: { background: 'var(--danger-muted)', color: 'var(--text-primary)' },
   high: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
-  medium: { background: 'rgba(138, 136, 128, 0.08)', color: 'var(--text-tertiary)' },
+  medium: { background: 'var(--warn-8)', color: 'var(--text-tertiary)' },
   low: { background: 'var(--success-muted)', color: 'var(--text-secondary)' },
 };
 

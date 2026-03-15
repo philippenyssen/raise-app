@@ -90,15 +90,15 @@ interface StrategicData {
 const CATEGORY_CONFIG: Record<string, { label: string; color: string; bg: string; border: string; icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }> }> = {
   pipeline:  { label: 'Pipeline',  color: 'var(--accent)',    bg: 'var(--accent-muted)',    border: 'var(--border-default)',    icon: Users },
   narrative: { label: 'Narrative', color: 'var(--chart-4)',          bg: 'rgba(90, 90, 122, 0.12)', border: 'rgba(90, 90, 122, 0.4)', icon: MessageCircleWarning },
-  execution: { label: 'Execution', color: 'var(--text-secondary)',   bg: 'var(--success-muted)',   border: 'rgba(27, 42, 74, 0.4)',   icon: Zap },
-  timing:    { label: 'Timing',    color: 'var(--text-tertiary)',   bg: 'var(--warning-muted)',   border: 'rgba(138, 136, 128, 0.4)',  icon: Clock },
-  risk:      { label: 'Risk',      color: 'var(--text-primary)',    bg: 'var(--danger-muted)',    border: 'rgba(27, 42, 74, 0.08)',   icon: Shield },
+  execution: { label: 'Execution', color: 'var(--text-secondary)',   bg: 'var(--success-muted)',   border: 'var(--accent-40)',   icon: Zap },
+  timing:    { label: 'Timing',    color: 'var(--text-tertiary)',   bg: 'var(--warning-muted)',   border: 'var(--warn-40)',  icon: Clock },
+  risk:      { label: 'Risk',      color: 'var(--text-primary)',    bg: 'var(--danger-muted)',    border: 'var(--accent-8)',   icon: Shield },
 };
 
 const TREND_CONFIG = {
-  accelerating: { label: 'Accelerating', icon: TrendingUp,    color: 'var(--text-secondary)',  bg: 'var(--success-muted)',  border: 'rgba(27, 42, 74, 0.4)' },
-  steady:       { label: 'Steady',       icon: Minus,          color: 'var(--text-tertiary)',  bg: 'var(--warning-muted)',  border: 'rgba(138, 136, 128, 0.4)' },
-  decelerating: { label: 'Decelerating', icon: TrendingDown,   color: 'var(--text-primary)',   bg: 'var(--danger-muted)',   border: 'rgba(27, 42, 74, 0.08)' },
+  accelerating: { label: 'Accelerating', icon: TrendingUp,    color: 'var(--text-secondary)',  bg: 'var(--success-muted)',  border: 'var(--accent-40)' },
+  steady:       { label: 'Steady',       icon: Minus,          color: 'var(--text-tertiary)',  bg: 'var(--warning-muted)',  border: 'var(--warn-40)' },
+  decelerating: { label: 'Decelerating', icon: TrendingDown,   color: 'var(--text-primary)',   bg: 'var(--danger-muted)',   border: 'var(--accent-8)' },
 };
 
 function gaugeColor(score: number, invert = false): string {
@@ -124,23 +124,23 @@ function gaugeBarColor(score: number, invert = false): string {
 }
 
 function priorityStyle(p: number): React.CSSProperties {
-  if (p === 1) return { background: 'var(--danger-muted)', color: 'var(--text-primary)', borderColor: 'rgba(27, 42, 74, 0.08)' };
-  if (p === 2) return { background: 'rgba(138, 136, 128, 0.12)', color: 'var(--text-tertiary)', borderColor: 'rgba(138, 136, 128, 0.4)' };
-  if (p === 3) return { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', borderColor: 'rgba(138, 136, 128, 0.4)' };
+  if (p === 1) return { background: 'var(--danger-muted)', color: 'var(--text-primary)', borderColor: 'var(--accent-8)' };
+  if (p === 2) return { background: 'var(--warn-12)', color: 'var(--text-tertiary)', borderColor: 'var(--warn-40)' };
+  if (p === 3) return { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', borderColor: 'var(--warn-40)' };
   return { background: 'var(--surface-2)', color: 'var(--text-tertiary)', borderColor: 'var(--border-default)' };
 }
 
 function directionStyle(direction: string): React.CSSProperties {
-  if (direction === 'improving') return { background: 'var(--success-muted)', color: 'var(--text-secondary)', borderColor: 'rgba(27, 42, 74, 0.4)' };
-  if (direction === 'declining') return { background: 'var(--danger-muted)', color: 'var(--text-primary)', borderColor: 'rgba(27, 42, 74, 0.08)' };
-  if (direction === 'mixed') return { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', borderColor: 'rgba(138, 136, 128, 0.4)' };
+  if (direction === 'improving') return { background: 'var(--success-muted)', color: 'var(--text-secondary)', borderColor: 'var(--accent-40)' };
+  if (direction === 'declining') return { background: 'var(--danger-muted)', color: 'var(--text-primary)', borderColor: 'var(--accent-8)' };
+  if (direction === 'mixed') return { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', borderColor: 'var(--warn-40)' };
   return { background: 'var(--surface-2)', color: 'var(--text-tertiary)', borderColor: 'var(--border-default)' };
 }
 
 function confidenceStyle(confidence: string): React.CSSProperties {
-  if (confidence === 'high') return { background: 'var(--success-muted)', color: 'var(--text-secondary)', borderColor: 'rgba(27, 42, 74, 0.4)' };
-  if (confidence === 'medium') return { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', borderColor: 'rgba(138, 136, 128, 0.4)' };
-  return { background: 'var(--danger-muted)', color: 'var(--text-primary)', borderColor: 'rgba(27, 42, 74, 0.08)' };
+  if (confidence === 'high') return { background: 'var(--success-muted)', color: 'var(--text-secondary)', borderColor: 'var(--accent-40)' };
+  if (confidence === 'medium') return { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', borderColor: 'var(--warn-40)' };
+  return { background: 'var(--danger-muted)', color: 'var(--text-primary)', borderColor: 'var(--accent-8)' };
 }
 
 function deltaColor(delta: number): string {
@@ -202,7 +202,7 @@ export default function StrategicPage() {
         <h1 className="page-title">Strategic Dashboard</h1>
         <div
           style={{
-            background: 'rgba(27, 42, 74, 0.08)',
+            background: 'var(--accent-8)',
             borderRadius: 'var(--radius-lg)',
             padding: 'var(--space-8)',
           }}
@@ -396,13 +396,13 @@ export default function StrategicPage() {
                   borderRadius: 'var(--radius-md)',
                   padding: 'var(--space-3)',
                   border: `1px solid ${
-                    trend.direction === 'improving' ? 'rgba(27, 42, 74, 0.15)' :
-                    trend.direction === 'declining' ? 'rgba(27, 42, 74, 0.08)' :
+                    trend.direction === 'improving' ? 'var(--accent-15)' :
+                    trend.direction === 'declining' ? 'var(--accent-8)' :
                     'var(--border-subtle)'
                   }`,
                   background:
-                    trend.direction === 'improving' ? 'rgba(27, 42, 74, 0.04)' :
-                    trend.direction === 'declining' ? 'rgba(27, 42, 74, 0.08)' :
+                    trend.direction === 'improving' ? 'var(--accent-4)' :
+                    trend.direction === 'declining' ? 'var(--accent-8)' :
                     'var(--surface-1)',
                 }}
               >

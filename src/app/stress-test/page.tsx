@@ -120,7 +120,7 @@ function probBgStyle(p: number): React.CSSProperties {
 
 function tierBadgeStyle(tier: number): React.CSSProperties {
   const styles: Record<number, React.CSSProperties> = {
-    1: { color: 'var(--text-tertiary)', background: 'var(--warning-muted)', borderColor: 'rgba(138, 136, 128, 0.3)' },
+    1: { color: 'var(--text-tertiary)', background: 'var(--warning-muted)', borderColor: 'var(--warn-30)' },
     2: { color: 'var(--accent)', background: 'var(--accent-muted)', borderColor: 'var(--accent-muted)' },
     3: { color: 'var(--text-secondary)', background: 'rgba(255, 255, 255, 0.1)', borderColor: 'var(--border-subtle)' },
     4: { color: 'var(--text-muted)', background: 'rgba(255, 255, 255, 0.1)', borderColor: 'var(--border-subtle)' },
@@ -332,7 +332,7 @@ export default function StressTestPage() {
       {data.shortfall && data.shortfall > 0 && data.gapInvestors.length > 0 && (
         <div
           className="rounded-xl p-5"
-          style={{ background: 'rgba(27, 42, 74, 0.08)' }}
+          style={{ background: 'var(--accent-8)' }}
         >
           <div className="flex items-center gap-2 mb-4">
             <Target className="w-5 h-5" style={{ color: 'var(--text-primary)' }} />
@@ -555,9 +555,9 @@ export default function StressTestPage() {
               {data.risks.map((risk, i) => {
                 const isExpanded = expandedRisks.includes(i);
                 const riskBadgeStyle: React.CSSProperties = risk.probability === 'High'
-                  ? { color: 'var(--text-primary)', background: 'var(--danger-muted)', borderColor: 'rgba(27, 42, 74, 0.10)' }
+                  ? { color: 'var(--text-primary)', background: 'var(--danger-muted)', borderColor: 'var(--accent-10)' }
                   : risk.probability === 'Medium'
-                  ? { color: 'var(--text-tertiary)', background: 'var(--warning-muted)', borderColor: 'rgba(138, 136, 128, 0.3)' }
+                  ? { color: 'var(--text-tertiary)', background: 'var(--warning-muted)', borderColor: 'var(--warn-30)' }
                   : { color: 'var(--text-secondary)', background: 'rgba(255, 255, 255, 0.1)', borderColor: 'var(--border-subtle)' };
                 return (
                   <div key={i} className="rounded-lg overflow-hidden">
@@ -812,9 +812,9 @@ function ForecastCard({ label, sublabel, amount, target, color }: {
 }) {
   const pct = target > 0 ? Math.round((amount / target) * 100) : 0;
   const colorMap: Record<string, { border: string; bg: string; value: string }> = {
-    green: { border: 'rgba(27, 42, 74, 0.25)', bg: 'var(--success-muted)', value: 'var(--success)' },
-    yellow: { border: 'rgba(138, 136, 128, 0.25)', bg: 'var(--warning-muted)', value: 'var(--warning)' },
-    red: { border: 'rgba(27, 42, 74, 0.08)', bg: 'var(--danger-muted)', value: 'var(--danger)' },
+    green: { border: 'var(--accent-25)', bg: 'var(--success-muted)', value: 'var(--success)' },
+    yellow: { border: 'var(--warn-25)', bg: 'var(--warning-muted)', value: 'var(--warning)' },
+    red: { border: 'var(--accent-8)', bg: 'var(--danger-muted)', value: 'var(--danger)' },
   };
   const c = colorMap[color];
 

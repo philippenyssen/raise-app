@@ -101,72 +101,72 @@ type Tab = 'playbook' | 'effectiveness';
 
 const TOPIC_COLORS: Record<string, { bg: React.CSSProperties; text: React.CSSProperties; border: React.CSSProperties; dotColor: string; textColor: string }> = {
   valuation: {
-    bg: { background: 'rgba(27, 42, 74, 0.08)' },
+    bg: { background: 'var(--accent-8)' },
     text: { color: 'var(--accent)' },
-    border: { borderColor: 'rgba(27, 42, 74, 0.15)' },
+    border: { borderColor: 'var(--accent-15)' },
     dotColor: 'var(--accent)',
     textColor: 'var(--accent)',
   },
   competition: {
-    bg: { background: 'rgba(27, 42, 74, 0.06)' },
+    bg: { background: 'var(--accent-muted)' },
     text: { color: 'var(--text-secondary)' },
-    border: { borderColor: 'rgba(27, 42, 74, 0.12)' },
+    border: { borderColor: 'var(--accent-12)' },
     dotColor: 'var(--text-secondary)',
     textColor: 'var(--text-secondary)',
   },
   team: {
-    bg: { background: 'rgba(138, 136, 128, 0.08)' },
+    bg: { background: 'var(--warn-8)' },
     text: { color: 'var(--text-tertiary)' },
-    border: { borderColor: 'rgba(138, 136, 128, 0.15)' },
+    border: { borderColor: 'var(--warn-15)' },
     dotColor: 'var(--text-tertiary)',
     textColor: 'var(--text-tertiary)',
   },
   execution: {
-    bg: { background: 'rgba(27, 42, 74, 0.10)' },
+    bg: { background: 'var(--accent-10)' },
     text: { color: 'var(--accent)' },
-    border: { borderColor: 'rgba(27, 42, 74, 0.18)' },
+    border: { borderColor: 'var(--accent-20)' },
     dotColor: 'var(--accent)',
     textColor: 'var(--accent)',
   },
   financial: {
-    bg: { background: 'rgba(27, 42, 74, 0.05)' },
+    bg: { background: 'var(--accent-5)' },
     text: { color: 'var(--text-secondary)' },
-    border: { borderColor: 'rgba(27, 42, 74, 0.10)' },
+    border: { borderColor: 'var(--accent-10)' },
     dotColor: 'var(--text-secondary)',
     textColor: 'var(--text-secondary)',
   },
   market: {
-    bg: { background: 'rgba(27, 42, 74, 0.07)' },
+    bg: { background: 'var(--accent-8)' },
     text: { color: 'var(--accent)' },
-    border: { borderColor: 'rgba(27, 42, 74, 0.14)' },
+    border: { borderColor: 'var(--accent-15)' },
     dotColor: 'var(--accent)',
     textColor: 'var(--accent)',
   },
   technical: {
-    bg: { background: 'rgba(138, 136, 128, 0.06)' },
+    bg: { background: 'var(--warn-6)' },
     text: { color: 'var(--text-tertiary)' },
-    border: { borderColor: 'rgba(138, 136, 128, 0.12)' },
+    border: { borderColor: 'var(--warn-12)' },
     dotColor: 'var(--text-tertiary)',
     textColor: 'var(--text-tertiary)',
   },
   risk: {
-    bg: { background: 'rgba(26, 26, 46, 0.08)' },
+    bg: { background: 'var(--fg-8)' },
     text: { color: 'var(--text-primary)' },
-    border: { borderColor: 'rgba(26, 26, 46, 0.15)' },
+    border: { borderColor: 'var(--fg-15)' },
     dotColor: 'var(--text-primary)',
     textColor: 'var(--text-primary)',
   },
   timing: {
-    bg: { background: 'rgba(138, 136, 128, 0.07)' },
+    bg: { background: 'var(--warn-8)' },
     text: { color: 'var(--text-tertiary)' },
-    border: { borderColor: 'rgba(138, 136, 128, 0.14)' },
+    border: { borderColor: 'var(--warn-15)' },
     dotColor: 'var(--text-tertiary)',
     textColor: 'var(--text-tertiary)',
   },
   structure: {
-    bg: { background: 'rgba(27, 42, 74, 0.04)' },
+    bg: { background: 'var(--accent-4)' },
     text: { color: 'var(--text-secondary)' },
-    border: { borderColor: 'rgba(27, 42, 74, 0.08)' },
+    border: { borderColor: 'var(--accent-8)' },
     dotColor: 'var(--text-secondary)',
     textColor: 'var(--text-secondary)',
   },
@@ -225,7 +225,7 @@ function CopyButton({ text }: { text: string }) {
 
 function BestResponseCard({ response }: { response: ObjectionRecord }) {
   return (
-    <div className="mx-4 mt-3 p-3 rounded-lg" style={{ background: 'var(--success-muted)', border: '1px solid rgba(27, 42, 74, 0.2)' }}>
+    <div className="mx-4 mt-3 p-3 rounded-lg" style={{ background: 'var(--success-muted)', border: '1px solid var(--accent-20)' }}>
       <div className="flex items-center justify-between mb-1">
         <div className="flex items-center gap-2">
           <CheckCircle2 className="w-3.5 h-3.5" style={{ color: 'var(--text-secondary)' }} />
@@ -481,7 +481,7 @@ export default function ObjectionsPage() {
                         <span className="text-sm font-normal  tracking-wide" style={color.text}>
                           {group.topic}
                         </span>
-                        <span className="text-xs px-2 py-0.5 rounded-full" style={{ color: 'var(--text-muted)', background: 'rgba(26, 26, 46, 0.8)' }}>
+                        <span className="text-xs px-2 py-0.5 rounded-full" style={{ color: 'var(--text-muted)', background: 'var(--fg-80)' }}>
                           {group.count} objection{group.count !== 1 ? 's' : ''}
                         </span>
                       </div>
@@ -766,7 +766,7 @@ export default function ObjectionsPage() {
                           borderRadius: 'var(--radius-sm)',
                           background: 'var(--accent-muted)',
                         }}
-                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(27, 42, 74, 0.08)'; }}
+                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--accent-8)'; }}
                         onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--accent-muted)'; }}
                       >
                         <Calendar className="w-3 h-3" />
@@ -839,7 +839,7 @@ export default function ObjectionsPage() {
                         {bestFromPlaybook.map(({ topic, response }) => {
                           const color = getTopicColor(topic);
                           return (
-                            <div key={topic} className="p-2 rounded-lg space-y-1" style={{ background: 'var(--success-muted)', border: '1px solid rgba(27, 42, 74, 0.15)' }}>
+                            <div key={topic} className="p-2 rounded-lg space-y-1" style={{ background: 'var(--success-muted)', border: '1px solid var(--accent-15)' }}>
                               <span
                                 className="px-1 py-0.5 rounded"
                                 style={{ fontSize: '10px', ...color.bg, ...color.text }}
@@ -1069,7 +1069,7 @@ function EffectivenessTab({
 
                       {/* Best / worst response */}
                       {te.best_response && (
-                        <div className="p-2 rounded-lg" style={{ background: 'var(--success-muted)', border: '1px solid rgba(27, 42, 74, 0.15)' }}>
+                        <div className="p-2 rounded-lg" style={{ background: 'var(--success-muted)', border: '1px solid var(--accent-15)' }}>
                           <div className="flex items-center gap-1 mb-1">
                             <ThumbsUp className="w-3 h-3" style={{ color: 'var(--text-secondary)' }} />
                             <span className="text-xs font-normal" style={{ color: 'var(--text-secondary)' }}>Best response</span>
@@ -1078,7 +1078,7 @@ function EffectivenessTab({
                         </div>
                       )}
                       {te.worst_response && (
-                        <div className="p-2 rounded-lg" style={{ background: 'var(--danger-muted)', border: '1px solid rgba(27, 42, 74, 0.08)' }}>
+                        <div className="p-2 rounded-lg" style={{ background: 'var(--danger-muted)', border: '1px solid var(--accent-8)' }}>
                           <div className="flex items-center gap-1 mb-1">
                             <ThumbsDown className="w-3 h-3" style={{ color: 'var(--text-primary)' }} />
                             <span className="text-xs font-normal" style={{ color: 'var(--text-primary)' }}>Worst response</span>

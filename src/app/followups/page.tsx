@@ -75,7 +75,7 @@ const ACTION_TYPE_CONFIG: Record<string, {
     label: 'Share Materials',
     icon: FolderOpen,
     color: 'var(--text-secondary)',
-    bgColor: 'rgba(27, 42, 74, 0.06)',
+    bgColor: 'var(--accent-muted)',
   },
   schedule_followup: {
     label: 'Schedule Meeting',
@@ -93,7 +93,7 @@ const ACTION_TYPE_CONFIG: Record<string, {
     label: 'Milestone Update',
     icon: Milestone,
     color: 'var(--text-tertiary)',
-    bgColor: 'rgba(138, 136, 128, 0.08)',
+    bgColor: 'var(--warn-8)',
   },
 };
 
@@ -281,8 +281,8 @@ function FollowupsContent() {
         className="card"
         style={{
           padding: 0,
-          borderColor: showOverdueIndicator || isOverdue ? 'rgba(26, 26, 46, 0.06)' : undefined,
-          background: showOverdueIndicator || isOverdue ? 'rgba(26, 26, 46, 0.06)' : undefined,
+          borderColor: showOverdueIndicator || isOverdue ? 'var(--fg-6)' : undefined,
+          background: showOverdueIndicator || isOverdue ? 'var(--fg-6)' : undefined,
           boxShadow: showOverdueIndicator || isOverdue ? '0 none' : undefined,
         }}
       >
@@ -653,7 +653,7 @@ function FollowupsContent() {
                     width: '16px',
                     height: '16px',
                     borderRadius: '50%',
-                    background: 'rgba(27, 42, 74, 0.06)',
+                    background: 'var(--accent-muted)',
                   }}
                 >
                   <Network className="w-2.5 h-2.5" style={{ color: 'var(--text-secondary)' }} />
@@ -673,8 +673,8 @@ function FollowupsContent() {
           return (
             <div
               style={{
-                borderTop: '1px solid rgba(27, 42, 74, 0.08)',
-                background: 'rgba(27, 42, 74, 0.03)',
+                borderTop: '1px solid var(--accent-8)',
+                background: 'var(--accent-3)',
                 padding: 'var(--space-4)',
               }}
             >
@@ -783,7 +783,7 @@ function FollowupsContent() {
                 }}
                 onMouseEnter={e => {
                   if (copiedField !== `all-${item.id}`) {
-                    e.currentTarget.style.background = 'rgba(27, 42, 74, 0.10)';
+                    e.currentTarget.style.background = 'var(--accent-10)';
                   }
                 }}
                 onMouseLeave={e => {
@@ -804,7 +804,7 @@ function FollowupsContent() {
           className="flex items-center justify-between"
           style={{
             padding: '0.5rem var(--space-4)',
-            borderTop: isOverdue ? '1px solid rgba(26, 26, 46, 0.06)' : '1px solid var(--border-subtle)',
+            borderTop: isOverdue ? '1px solid var(--fg-6)' : '1px solid var(--border-subtle)',
             fontSize: '10px',
             color: 'var(--text-muted)',
           }}
@@ -885,7 +885,7 @@ function FollowupsContent() {
           </p>
           {investorFilter && followups.length > 0 && (
             <div className="flex items-center gap-2 mt-2">
-              <span className="text-xs px-2 py-1 rounded-md" style={{ background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid rgba(27, 42, 74, 0.10)' }}>
+              <span className="text-xs px-2 py-1 rounded-md" style={{ background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid var(--accent-10)' }}>
                 Filtered: {followups[0]?.investor_name || 'Selected investor'}
               </span>
               <Link href="/followups" className="text-xs" style={{ color: 'var(--text-muted)', textDecoration: 'underline' }}>

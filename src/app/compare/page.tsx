@@ -490,7 +490,7 @@ export default function ComparePage() {
                             padding: 'var(--space-1) var(--space-3)',
                             borderRadius: 'var(--radius-lg)',
                             ...(p.investor.id === winnerId
-                              ? { background: 'var(--warning-muted)', border: '1px solid rgba(138, 136, 128, 0.3)' }
+                              ? { background: 'var(--warning-muted)', border: '1px solid var(--warn-30)' }
                               : { background: 'var(--surface-2)' }),
                           }}
                         >
@@ -1068,7 +1068,7 @@ function RecommendationBanner({ recommendation }: { recommendation: ComparisonRe
   const styleMap: Record<string, { bg: string; border: string; iconColor: string }> = {
     strong: {
       bg: 'var(--success-muted)',
-      border: 'rgba(27, 42, 74, 0.3)',
+      border: 'var(--accent-30)',
       iconColor: 'var(--success)',
     },
     competitive: {
@@ -1078,7 +1078,7 @@ function RecommendationBanner({ recommendation }: { recommendation: ComparisonRe
     },
     none_ready: {
       bg: 'var(--warning-muted)',
-      border: 'rgba(138, 136, 128, 0.3)',
+      border: 'var(--warn-30)',
       iconColor: 'var(--warning)',
     },
   };
@@ -1166,7 +1166,7 @@ function AccelerationBadge({ status }: { status: AccelerationStatusData }) {
   const config: Record<string, { bg: string; border: string; color: string; icon: React.ReactNode }> = {
     'Term Sheet Ready': {
       bg: 'var(--success-muted)',
-      border: 'rgba(27, 42, 74, 0.3)',
+      border: 'var(--accent-30)',
       color: 'var(--text-secondary)',
       icon: <CheckCircle className="w-3 h-3" />,
     },
@@ -1178,13 +1178,13 @@ function AccelerationBadge({ status }: { status: AccelerationStatusData }) {
     },
     'At Risk': {
       bg: 'var(--warning-muted)',
-      border: 'rgba(138, 136, 128, 0.3)',
+      border: 'var(--warn-30)',
       color: 'var(--text-tertiary)',
       icon: <AlertTriangle className="w-3 h-3" />,
     },
     'Stalled': {
       bg: 'var(--danger-muted)',
-      border: 'rgba(27, 42, 74, 0.10)',
+      border: 'var(--accent-10)',
       color: 'var(--text-primary)',
       icon: <Clock className="w-3 h-3" />,
     },
@@ -1316,7 +1316,7 @@ function VerdictCard({
   const colorMap: Record<string, { bg: string; border: string; iconColor: string }> = {
     success: {
       bg: 'var(--success-muted)',
-      border: 'rgba(27, 42, 74, 0.25)',
+      border: 'var(--accent-25)',
       iconColor: 'var(--success)',
     },
     accent: {
@@ -1325,18 +1325,18 @@ function VerdictCard({
       iconColor: 'var(--accent)',
     },
     purple: {
-      bg: 'rgba(27, 42, 74, 0.06)',
-      border: 'rgba(27, 42, 74, 0.12)',
+      bg: 'var(--accent-muted)',
+      border: 'var(--accent-12)',
       iconColor: 'var(--text-secondary)',
     },
     warning: {
       bg: 'var(--warning-muted)',
-      border: 'rgba(138, 136, 128, 0.25)',
+      border: 'var(--warn-25)',
       iconColor: 'var(--warning)',
     },
     cyan: {
-      bg: 'rgba(138, 136, 128, 0.06)',
-      border: 'rgba(138, 136, 128, 0.12)',
+      bg: 'var(--warn-6)',
+      border: 'var(--warn-12)',
       iconColor: 'var(--text-tertiary)',
     },
   };

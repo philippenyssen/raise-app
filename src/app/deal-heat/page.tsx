@@ -35,11 +35,11 @@ interface DealHeatData {
 type HeatLevel = 'all' | 'hot' | 'warm' | 'cool' | 'cold' | 'frozen';
 
 const HEAT_CONFIG: Record<string, { bg: string; border: string; text: string; glow: string; label: string }> = {
-  hot:    { bg: 'rgba(27, 42, 74, 0.08)', border: 'rgba(27, 42, 74, 0.15)',  text: 'var(--text-primary)', glow: 'none', label: 'Hot' },
-  warm:   { bg: 'rgba(27, 42, 74, 0.06)',  border: 'rgba(27, 42, 74, 0.12)',  text: 'var(--text-secondary)', glow: 'none', label: 'Warm' },
-  cool:   { bg: 'rgba(27, 42, 74, 0.05)', border: 'rgba(27, 42, 74, 0.10)', text: 'var(--text-tertiary)', glow: 'none', label: 'Cool' },
-  cold:   { bg: 'rgba(27, 42, 74, 0.04)', border: 'rgba(27, 42, 74, 0.08)', text: 'var(--text-muted)', glow: 'none', label: 'Cold' },
-  frozen: { bg: 'rgba(27, 42, 74, 0.03)', border: 'rgba(27, 42, 74, 0.06)', text: 'var(--text-muted)', glow: 'none', label: 'Frozen' },
+  hot:    { bg: 'var(--accent-8)', border: 'var(--accent-15)',  text: 'var(--text-primary)', glow: 'none', label: 'Hot' },
+  warm:   { bg: 'var(--accent-muted)',  border: 'var(--accent-12)',  text: 'var(--text-secondary)', glow: 'none', label: 'Warm' },
+  cool:   { bg: 'var(--accent-5)', border: 'var(--accent-10)', text: 'var(--text-tertiary)', glow: 'none', label: 'Cool' },
+  cold:   { bg: 'var(--accent-4)', border: 'var(--accent-8)', text: 'var(--text-muted)', glow: 'none', label: 'Cold' },
+  frozen: { bg: 'var(--accent-3)', border: 'var(--accent-muted)', text: 'var(--text-muted)', glow: 'none', label: 'Frozen' },
 };
 
 const TYPE_LABELS: Record<string, string> = {

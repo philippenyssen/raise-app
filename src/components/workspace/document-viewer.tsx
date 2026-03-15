@@ -19,9 +19,9 @@ interface DocumentViewerProps {
 }
 
 const STATUS_STYLES: Record<string, { bg: string; color: string; border: string }> = {
-  draft: { bg: 'var(--warning-muted)', color: 'var(--warning)', border: 'rgba(138, 136, 128, 0.2)' },
-  review: { bg: 'var(--accent-muted)', color: 'var(--accent)', border: 'rgba(27, 42, 74, 0.2)' },
-  final: { bg: 'var(--success-muted)', color: 'var(--success)', border: 'rgba(27, 42, 74, 0.2)' },
+  draft: { bg: 'var(--warning-muted)', color: 'var(--warning)', border: 'var(--warn-20)' },
+  review: { bg: 'var(--accent-muted)', color: 'var(--accent)', border: 'var(--accent-20)' },
+  final: { bg: 'var(--success-muted)', color: 'var(--success)', border: 'var(--accent-20)' },
 };
 
 const TYPE_LABELS: Record<string, string> = {

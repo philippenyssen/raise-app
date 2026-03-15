@@ -364,7 +364,7 @@ export default function CommandPalette() {
   const portal = createPortal(
     <div
       className="fixed inset-0 z-[100] flex items-start justify-center"
-      style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', paddingTop: '15vh' }}
+      style={{ background: 'var(--overlay)', backdropFilter: 'blur(4px)', paddingTop: '15vh' }}
       onClick={(e) => { if (e.target === e.currentTarget) close(); }}
     >
       <div

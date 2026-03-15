@@ -90,7 +90,7 @@ const TYPE_STYLES: Record<string, React.CSSProperties> = {
   sovereign: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
   strategic: { background: 'var(--cat-teal-muted)', color: 'var(--cat-teal)' },
   debt: { background: 'var(--surface-2)', color: 'var(--text-secondary)' },
-  family_office: { background: 'rgba(26, 26, 46, 0.06)', color: 'var(--text-primary)' },
+  family_office: { background: 'var(--fg-6)', color: 'var(--text-primary)' },
 };
 
 const IMPACT_STYLES: Record<string, React.CSSProperties> = {
