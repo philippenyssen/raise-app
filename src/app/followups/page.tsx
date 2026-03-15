@@ -306,6 +306,13 @@ function FollowupsContent() {
                   {isExpanded ? 'Show less' : 'Show more'}</button>
               )}
 
+              {/* Draft preview */}
+              {item.status === 'pending' && draftingId !== item.id && (
+                <div className="mt-1.5 flex items-center gap-1.5" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                  <Mail className="w-3 h-3" style={{ flexShrink: 0 }} />
+                  <span className="truncate">{generateDraft(item).subject}</span></div>
+              )}
+
               {/* Completed outcome */}
               {item.status === 'completed' && item.outcome && (
                 <div

@@ -588,6 +588,25 @@ export default function Dashboard() {
                   </div></div></div></Link>
           )}
 
+          {/* Watching — Tier 1 active investors */}
+          {dealHeat && (() => {
+            const watching = dealHeat.investors.filter(i => i.tier === 1 && !['passed','dropped'].includes(i.status)).slice(0, 5);
+            if (!watching.length) return null;
+            return (
+              <div className="flex gap-3 overflow-x-auto" style={{ padding: 'var(--space-1) 0' }}>
+                {watching.map(w => {
+                  const daysSince = w.lastMeeting ? Math.round((Date.now() - new Date(w.lastMeeting).getTime()) / 864e5) : null;
+                  return (
+                    <Link key={w.id} href={`/investors/${w.id}`} className="flex items-center gap-2 shrink-0 transition-colors" style={{ padding: 'var(--space-2) var(--space-3)', borderRadius: 'var(--radius-lg)', background: 'var(--surface-1)' }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }} onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-1)'; }}>
+                      <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-primary)' }}>{w.name}</span>
+                      <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{STATUS_LABELS[w.status as keyof typeof STATUS_LABELS] ?? w.status}</span>
+                      {daysSince !== null && <span style={{ fontSize: '10px', color: daysSince > 14 ? 'var(--danger)' : 'var(--text-muted)' }}>{daysSince}d</span>}
+                    </Link>);
+                })}
+              </div>);
+          })()}
+
           {/* At Risk Deals */}
           {sectionErrors.atRisk && !atRisk && <SectionError label="At-risk deals" onRetry={() => fetchSection('atRisk')} />}
           {atRisk && (atRisk.scoreReversals.length > 0 || atRisk.staleInvestors.length > 0) && (

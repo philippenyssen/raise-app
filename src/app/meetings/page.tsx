@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import type { Meeting } from '@/lib/types';
 import { Search, FileSearch, Calendar, Download, ChevronDown, ChevronRight, Star, CheckCircle2, X, TrendingUp, TrendingDown, Minus, Hash } from 'lucide-react';
+import { fmtDateTime } from '@/lib/format';
 import { labelTertiary, stFontSm, stFontXs, stTextMuted, stTextTertiary } from '@/lib/styles';
 
 const MEETING_TYPES = ['all', 'intro', 'management_presentation', 'deep_dive', 'site_visit', 'dd_session', 'negotiation', 'social'] as const;
@@ -482,7 +483,7 @@ export default function MeetingsPage() {
                           <TrendIcon className="w-3 h-3" /></span>
                       )}</div>
                     <div className="flex gap-3 mt-1" style={labelTertiary}>
-                      <span>{m.date}</span>
+                      <span>{fmtDateTime(m.date)}</span>
                       <span style={{ textTransform: 'capitalize' }}>{m.type.replace(/_/g, ' ')}</span>
                       <span>{m.duration_minutes}min</span>
                       {m.attendees && <span>{m.attendees}</span>}</div></div>

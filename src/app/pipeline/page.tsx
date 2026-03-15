@@ -94,6 +94,8 @@ export default function PipelinePage() {
   const [kbRow, setKbRow] = useState(0);
   const [compareIds, setCompareIds] = useState<Set<string>>(new Set());
   const toggleCompare = useCallback((id: string) => setCompareIds(prev => { const next = new Set(prev); if (next.has(id)) next.delete(id); else next.add(id); return next; }), []);
+  const [quickAddCol, setQuickAddCol] = useState<string | null>(null);
+  const [quickAddName, setQuickAddName] = useState('');
 
   useEffect(() => { fetchInvestors(); cachedFetch('/api/at-risk').then(r => r.ok ? r.json() : null).then(d => { if (d?.scoreReversals) { const m = new Map<string, number>(); d.scoreReversals.forEach((r: { investorId: string; delta: number }) => m.set(r.investorId, r.delta)); setScoreDeltaMap(m); } }).catch(() => {}); }, []);
 
@@ -433,7 +435,7 @@ export default function PipelinePage() {
                       onDragStart={handleDragStart}
                       onDragEnd={handleDragEnd} />
                   ))}
-                  {cards.length === 0 && (
+                  {cards.length === 0 && !quickAddCol && (
                     <div
                       className="flex items-center justify-center"
                       style={{ height: '5rem', color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)', textAlign: 'center', padding: '0 var(--space-2)' }}>
@@ -441,6 +443,13 @@ export default function PipelinePage() {
                         : status === 'identified' ? 'Add investors from the table view'
                         : status === 'closed' ? 'Move investors here when signed'
                         : 'Move investors from earlier stages'}</div>
+                  )}
+                  {quickAddCol === status ? (
+                    <input autoFocus value={quickAddName} onChange={e => setQuickAddName(e.target.value)} placeholder="Investor name..." className="input" style={{ fontSize: 'var(--font-size-xs)' }}
+                      onKeyDown={async e => { if (e.key === 'Enter' && quickAddName.trim()) { const res = await fetch('/api/investors', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: quickAddName.trim(), status }) }); if (res.ok) { const inv = await res.json(); setInvestors(prev => [...prev, inv]); setQuickAddName(''); setQuickAddCol(null); toast(`Added ${inv.name}`); } } if (e.key === 'Escape') { setQuickAddCol(null); setQuickAddName(''); } }} onBlur={() => { if (!quickAddName.trim()) { setQuickAddCol(null); setQuickAddName(''); } }} />
+                  ) : (
+                    <button onClick={() => { setQuickAddCol(status); setQuickAddName(''); }} style={{ width: '100%', padding: 'var(--space-1)', fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer', borderRadius: 'var(--radius-sm)' }}
+                      onMouseEnter={e => { e.currentTarget.style.color = 'var(--accent)'; }} onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; }}>+ Add</button>
                   )}</div>
               </div>);
           })}</div></div>
