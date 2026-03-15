@@ -183,10 +183,12 @@ export default function MomentumPage() {
 
   if (loading) {
     return (
-      <div className="flex-1 flex items-center justify-center min-h-screen" style={stSurface0}>
-        <div className="text-center space-y-3">
-          <Activity className="w-8 h-8 animate-pulse mx-auto" style={stAccent} />
-          <p className="text-sm" style={stTextSecondary}>Computing momentum signals...</p></div>
+      <div className="space-y-6 page-content">
+        <div className="skeleton" style={{ height: '28px', width: '220px' }} />
+        <div className="grid grid-cols-3 gap-4">
+          {[1,2,3].map(i => <div key={i} className="skeleton" style={{ height: '100px', borderRadius: 'var(--radius-lg)' }} />)}
+        </div>
+        <div className="skeleton" style={{ height: '300px', borderRadius: 'var(--radius-lg)' }} />
       </div>);
   }
 
@@ -196,7 +198,7 @@ export default function MomentumPage() {
         <div className="text-center space-y-3">
           <AlertTriangle className="w-8 h-8 mx-auto" style={stTextPrimary} />
           <p className="text-sm" style={stTextPrimary}>{error || 'No data available'}</p>
-          <button onClick={fetchData} className="text-xs" style={stTextSecondary}>Retry</button></div>
+          <button onClick={fetchData} className="text-xs" title="Retry loading momentum data" style={stTextSecondary}>Retry</button></div>
       </div>);
   }
 

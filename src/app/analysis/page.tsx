@@ -91,10 +91,11 @@ export default function AnalysisPage() {
       )}
 
       {loading && (
-        <div
-          className="rounded-xl p-8 text-center">
-          <div className="animate-pulse" style={stTextSecondary}>
-            Analyzing {data?.meeting_count ?? '...'} meetings with Claude...</div>
+        <div className="space-y-4">
+          <div className="skeleton" style={{ height: '80px', borderRadius: 'var(--radius-lg)' }} />
+          <div className="grid grid-cols-2 gap-4">
+            {[1,2,3,4].map(i => <div key={i} className="skeleton" style={{ height: '120px', borderRadius: 'var(--radius-lg)' }} />)}
+          </div>
           <p className="text-xs mt-2" style={stTextMuted}>This may take 10-30 seconds</p></div>
       )}
 
