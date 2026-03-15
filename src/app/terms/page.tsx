@@ -57,6 +57,7 @@ export default function TermsPage() {
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && showForm) { setShowForm(false); setEditId(null); }
       if (e.key === 'r' && !e.metaKey && !e.ctrlKey && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement)) { e.preventDefault(); fetchSheets(); }
+      if (e.key === 's' && (e.metaKey || e.ctrlKey) && showForm) { e.preventDefault(); const btn = document.querySelector('button[type="submit"]') as HTMLButtonElement | null; if (btn && !btn.disabled) btn.click(); }
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);

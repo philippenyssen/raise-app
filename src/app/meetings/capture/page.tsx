@@ -88,6 +88,12 @@ function QuickCaptureInner() {
     return () => clearInterval(interval);
   }, [loading]);
 
+  useEffect(() => {
+    const h = (e: KeyboardEvent) => { if (e.key === 's' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); const btn = document.querySelector('button[type="submit"]') as HTMLButtonElement | null; if (btn && !btn.disabled) btn.click(); } };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, []);
+
   const selectedInvestor = investors.find(i => i.id === investorId);
 
   async function handleSubmit(e: React.FormEvent) {

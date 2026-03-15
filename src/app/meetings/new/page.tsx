@@ -45,7 +45,10 @@ function NewMeetingContent() {
     fetch('/api/investors').then(r => r.json()).then(setInvestors).catch(e => console.error('[NEW_MEETING_INVESTORS]', e instanceof Error ? e.message : e));
   }, []);
   useEffect(() => {
-    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape' && result) setResult(null); };
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && result) setResult(null);
+      if (e.key === 's' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); const btn = document.querySelector('button[type="submit"]') as HTMLButtonElement | null; if (btn && !btn.disabled) btn.click(); }
+    };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
   }, [result]);
