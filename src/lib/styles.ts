@@ -177,6 +177,16 @@ export function getHealthBg(rate: number): string {
   return 'var(--danger-muted)';
 }
 
+// Investor type badge styles (shared across pipeline, acceleration, focus pages)
+export const INVESTOR_TYPE_STYLES: Record<string, React.CSSProperties> = {
+  vc: { background: 'var(--accent-muted)', color: 'var(--accent)' },
+  growth: { background: 'var(--cat-purple-muted)', color: 'var(--chart-4)' },
+  sovereign: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
+  strategic: { background: 'var(--cat-teal-muted)', color: 'var(--cat-teal)' },
+  debt: { background: 'var(--surface-2)', color: 'var(--text-secondary)' },
+  family_office: { background: 'var(--fg-6)', color: 'var(--text-primary)' },
+};
+
 // Strength/significance color: strong/moderate/weak or high/medium/low
 export function strengthColor(s: 'strong' | 'moderate' | 'weak' | 'high' | 'medium' | 'low'): string {
   if (s === 'strong' || s === 'high') return 'var(--success)';

@@ -12,7 +12,7 @@ import {
   ChevronDown, Play, Ban, XCircle, Rocket, Timer, ArrowUpRight,
   TrendingDown, SkipForward,
 } from 'lucide-react';
-import { labelMuted10, stBorderTop, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
+import { labelMuted10, stBorderTop, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, INVESTOR_TYPE_STYLES } from '@/lib/styles';
 import { relativeTime } from '@/lib/time';
 import { cachedFetch } from '@/lib/cache';
 
@@ -20,13 +20,7 @@ import { cachedFetch } from '@/lib/cache';
 // Constants — style objects using design tokens
 // ---------------------------------------------------------------------------
 
-const TYPE_STYLES: Record<string, React.CSSProperties> = {
-  vc: { background: 'var(--accent-muted)', color: 'var(--accent)' },
-  growth: { background: 'var(--cat-purple-muted)', color: 'var(--chart-4)' },
-  sovereign: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
-  strategic: { background: 'var(--cat-teal-muted)', color: 'var(--cat-teal)' },
-  debt: { background: 'var(--surface-2)', color: 'var(--text-secondary)' },
-  family_office: { background: 'var(--fg-6)', color: 'var(--text-primary)' },};
+const TYPE_STYLES = INVESTOR_TYPE_STYLES;
 
 const TYPE_LABELS: Record<string, string> = {
   vc: 'VC', growth: 'Growth', sovereign: 'SWF', strategic: 'Strategic',
