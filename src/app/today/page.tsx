@@ -5,10 +5,10 @@ import Link from 'next/link';
 import { useToast } from '@/components/toast';
 import { fmtDateFull } from '@/lib/format';
 import {
-  Sunrise, Calendar, Clock, ArrowRight, ChevronRight, RefreshCw,
+  Calendar, Clock, ArrowRight, ChevronRight, RefreshCw,
   Mail, UserPlus, FileText, AlertTriangle, Zap, TrendingUp,
   TrendingDown, Minus, Users, Shield, Target,
-  CheckCircle, ExternalLink, Sparkles, ArrowUpRight, ArrowDownRight,
+  CheckCircle, Sparkles, ArrowUpRight,
 } from 'lucide-react';
 
 // ---------------------------------------------------------------------------

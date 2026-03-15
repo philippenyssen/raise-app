@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { scoreColorStyle, stTextMuted, stTextSecondary } from '@/lib/styles';
 import {
   Activity, TrendingUp, TrendingDown, Minus, AlertTriangle,
   RefreshCw, Users, ArrowUpRight, ArrowDownRight, Flame,
@@ -107,13 +108,6 @@ const TYPE_COLORS: Record<string, { bg: string; color: string; border: string }>
   family_office: { bg: 'var(--fg-6)',   color: 'var(--text-tertiary)',  border: 'var(--fg-10)' },
 };
 
-function scoreColorStyle(score: number): React.CSSProperties {
-  if (score >= 71) return { background: 'var(--accent-85)', color: 'var(--surface-0)' };
-  if (score >= 51) return { background: 'var(--accent-55)', color: 'var(--surface-0)' };
-  if (score >= 31) return { background: 'var(--warn-40)', color: 'var(--text-primary)' };
-  if (score >= 1)  return { background: 'var(--fg-15)', color: 'var(--text-secondary)' };
-  return { background: 'var(--fg-6)', color: 'var(--text-muted)' };
-}
 
 function scoreBorderStyle(score: number): React.CSSProperties {
   if (score >= 71) return { borderColor: 'var(--accent-30)' };
@@ -182,8 +176,6 @@ const TREND_CONFIG = {
   },
 };
 
-const stTextMuted: React.CSSProperties = { color: 'var(--text-muted)' };
-const stTextSecondary: React.CSSProperties = { color: 'var(--text-secondary)' };
 
 // ── Page Component ────────────────────────────────────────────────────
 

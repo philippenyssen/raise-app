@@ -1,19 +1,12 @@
 import { NextResponse } from 'next/server';
 import { computeInvestorScore, computeMomentumScore } from '@/lib/scoring';
-import type { Investor, Meeting, InvestorPortfolioCo, IntelligenceBrief, Objection } from '@/lib/types';
+import type { Investor, Meeting, Objection, ScoreDimension } from '@/lib/types';
 import { getClient, daysBetween, parseJsonSafe, clamp, loadAllMeetings, loadRaiseConfig, loadAllPortfolios, groupByInvestorId } from '@/lib/api-helpers';
 import { STATUS_LABELS, MEETING_TYPE_LABELS } from '@/lib/constants';
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
-
-interface ScoreDimensionData {
-  name: string;
-  score: number;
-  signal: 'strong' | 'moderate' | 'weak' | 'unknown';
-  evidence: string;
-}
 
 interface FocusItem {
   investorId: string;
@@ -30,7 +23,7 @@ interface FocusItem {
     opportunitySize: number;
     actionReadiness: number;
   };
-  scoringDimensions: ScoreDimensionData[];
+  scoringDimensions: ScoreDimension[];
   recommendedAction: string;
   timeEstimate: string;
   expectedImpact: string;

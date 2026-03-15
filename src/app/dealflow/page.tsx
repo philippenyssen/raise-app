@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import {
-  Activity, Flame, Gauge, Clock, AlertTriangle,
+  Flame, Gauge, AlertTriangle,
   TrendingUp, TrendingDown, Minus, RefreshCw, ArrowRight,
   Users, Filter,
 } from 'lucide-react';

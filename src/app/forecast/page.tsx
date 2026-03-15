@@ -8,6 +8,7 @@ import {
   Calendar, ExternalLink,
 } from 'lucide-react';
 import { STATUS_LABELS as STAGE_LABELS } from '@/lib/constants';
+import { fmtDate, fmtDateShort } from '@/lib/format';
 
 interface InvestorForecast {
   investorId: string;
@@ -83,17 +84,6 @@ function confidenceBg(c: 'high' | 'medium' | 'low'): string {
   return 'var(--danger-muted)';
 }
 
-function formatDate(iso: string): string {
-  if (!iso || iso === 'N/A') return 'N/A';
-  const d = new Date(iso);
-  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-}
-
-function formatShortDate(iso: string): string {
-  if (!iso || iso === 'N/A') return '—';
-  const d = new Date(iso);
-  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
-}
 
 function tierCapital(tier: number): number {
   if (tier === 1) return 50_000_000;
@@ -203,7 +193,7 @@ export default function ForecastPage() {
         <div>
           <h1 className="page-title">Raise Forecast</h1>
           <p className="page-subtitle">
-            {totalActive} active investor{totalActive !== 1 ? 's' : ''} &middot; Expected close {formatDate(forecast.expectedCloseDate)}
+            {totalActive} active investor{totalActive !== 1 ? 's' : ''} &middot; Expected close {fmtDate(forecast.expectedCloseDate)}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -384,7 +374,7 @@ export default function ForecastPage() {
                 }}
               >
                 <span>{s.investorCount} investor{s.investorCount !== 1 ? 's' : ''}</span>
-                <span>{formatShortDate(s.closeDate)}</span>
+                <span>{fmtDateShort(s.closeDate)}</span>
               </div>
             </div>
           );
@@ -761,7 +751,7 @@ export default function ForecastPage() {
                       {/* Predicted Close */}
                       <td style={{ padding: 'var(--space-3) var(--space-4)', textAlign: 'center' }}>
                         <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', fontVariantNumeric: 'tabular-nums' }}>
-                          {formatShortDate(inv.predictedCloseDate)}
+                          {fmtDateShort(inv.predictedCloseDate)}
                         </span>
                       </td>
 

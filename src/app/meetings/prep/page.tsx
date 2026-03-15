@@ -6,7 +6,7 @@ import Link from 'next/link';
 import {
   Users, Calendar, AlertTriangle, CheckCircle, MessageSquare,
   ChevronDown, Printer, Target, Shield, Clock,
-  TrendingUp, Star, FileText, Loader2, BookOpen, Building2,
+  TrendingUp, Loader2, BookOpen, Building2,
   ArrowLeft, Zap, CircleDot, ExternalLink, Sparkles,
   ListChecks, MessageCircleQuestion, FolderOpen, ChevronRight,
 } from 'lucide-react';
@@ -15,6 +15,7 @@ import type {
   IntelligenceBrief, InvestorPartner, InvestorPortfolioCo,
 } from '@/lib/types';
 import { STATUS_LABELS, TYPE_LABELS } from '@/lib/constants';
+import { fmtDate } from '@/lib/format';
 import { useToast } from '@/components/toast';
 
 // ---------- types for the meeting brief ----------
@@ -65,12 +66,6 @@ interface MeetingBrief {
 function safeJsonParse<T>(raw: string | null | undefined, fallback: T): T {
   if (!raw) return fallback;
   try { return JSON.parse(raw) as T; } catch { return fallback; }
-}
-
-function formatDate(iso: string): string {
-  if (!iso) return '—';
-  const d = new Date(iso);
-  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
 function meetingTypeLabel(t: string): string {
@@ -242,7 +237,7 @@ function MeetingPrepContent() {
     if (latestMeeting?.next_steps) {
       points.push({
         category: 'Follow-up',
-        text: `Address next steps from ${formatDate(latestMeeting.date)}: ${latestMeeting.next_steps}`,
+        text: `Address next steps from ${fmtDate(latestMeeting.date)}: ${latestMeeting.next_steps}`,
         priority: 'high',
       });
     }
@@ -883,7 +878,7 @@ function MeetingPrepContent() {
                           {o.severity === 'showstopper' ? ' (SHOWSTOPPER)' : ''}:
                         </span>{' '}
                         <span style={{ color: 'var(--text-tertiary)' }}>{o.text}</span>
-                        <span className="text-xs ml-2" style={{ color: 'var(--text-muted)' }}>from {formatDate(o.meetingDate)}</span>
+                        <span className="text-xs ml-2" style={{ color: 'var(--text-muted)' }}>from {fmtDate(o.meetingDate)}</span>
                       </div>
                     </div>
                   ))}
@@ -1053,7 +1048,7 @@ function MeetingPrepContent() {
                               color: new Date(t.due_date) < new Date() ? 'var(--danger)' : undefined,
                             }}>
                               <Clock className="w-3 h-3" />
-                              {formatDate(t.due_date)}
+                              {fmtDate(t.due_date)}
                               {new Date(t.due_date) < new Date() && ' (overdue)'}
                             </span>
                           )}
@@ -1175,7 +1170,7 @@ function MeetingCard({ meeting: m, objs }: { meeting: Meeting; objs: Objection[]
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-sm font-normal" style={{ color: 'var(--text-secondary)' }}>{formatDate(m.date)}</span>
+            <span className="text-sm font-normal" style={{ color: 'var(--text-secondary)' }}>{fmtDate(m.date)}</span>
             <span className="text-xs px-2 py-0.5 rounded" style={{ background: 'var(--surface-2)', color: 'var(--text-tertiary)' }}>
               {meetingTypeLabel(m.type)}
             </span>

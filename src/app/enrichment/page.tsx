@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import {
   Database, Search, RefreshCw, Loader2, CheckCircle2, XCircle,
-  ChevronDown, ChevronRight, ExternalLink, Shield, Globe, Building2,
+  ChevronDown, ChevronRight, Shield, Globe, Building2,
   Users, Briefcase, FileSearch, Zap, BarChart3, Clock, AlertTriangle,
   Play, Settings, Layers,
 } from 'lucide-react';

@@ -8,7 +8,7 @@ import {
   SendHorizonal, Target, Flame, BarChart3, MessageCircleWarning,
   Globe, BookOpen, FolderOpen, FileText, Settings,
   PlusCircle, Pencil, Mic, ClipboardList, Search,
-  Command, Activity, Shield, TrendingUp, Network,
+  Activity, Shield, TrendingUp, Network,
   Gauge, Award, Zap, Layers, GitCompare, FileBarChart,
   Wrench, Rocket,
 } from 'lucide-react';

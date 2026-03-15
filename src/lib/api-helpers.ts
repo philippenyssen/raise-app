@@ -1,5 +1,5 @@
 import { createClient } from '@libsql/client';
-import type { Investor, Meeting, InvestorPortfolioCo } from '@/lib/types';
+import type { Meeting, InvestorPortfolioCo } from '@/lib/types';
 
 export function getClient() {
   return createClient({

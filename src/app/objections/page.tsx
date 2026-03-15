@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import {
   MessageCircleWarning, ChevronDown, ChevronRight, Shield, AlertTriangle,
-  CheckCircle2, HelpCircle, Edit3, Save, X, TrendingUp, TrendingDown, Minus,
+  CheckCircle2, Edit3, Save, X, TrendingUp, TrendingDown, Minus,
   Target, User, BarChart3, ArrowUpRight, ArrowDownRight, Clock, Zap,
   ThumbsUp, ThumbsDown, Activity, Copy, Check, Calendar, ExternalLink,
 } from 'lucide-react';

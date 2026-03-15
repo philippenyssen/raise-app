@@ -2,10 +2,10 @@
 
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useToast } from '@/components/toast';
-import type { Investor, InvestorType } from '@/lib/types';
+import type { Investor, InvestorType, InvestorScoreData } from '@/lib/types';
 import {
-  ChevronDown, ChevronRight, X, Trophy, ArrowLeft, TrendingUp, TrendingDown,
-  Minus, AlertTriangle, CheckCircle, Clock, Zap, Target, Shield, Users,
+  ChevronDown, X, Trophy, ArrowLeft, TrendingUp, TrendingDown,
+  Minus, AlertTriangle, CheckCircle, Clock, Zap, Target, Shield,
   BarChart3, ArrowUpRight, ArrowDownRight, Loader2,
 } from 'lucide-react';
 import Link from 'next/link';
@@ -14,23 +14,6 @@ import { STATUS_LABELS, TYPE_LABELS, MEETING_TYPE_LABELS } from '@/lib/constants
 // ---------------------------------------------------------------------------
 // API response types
 // ---------------------------------------------------------------------------
-
-interface ScoreDimension {
-  name: string;
-  score: number;
-  signal: string;
-  evidence: string;
-}
-
-interface InvestorScore {
-  overall: number;
-  dimensions: ScoreDimension[];
-  momentum: string;
-  predictedOutcome: string;
-  nextBestAction: string;
-  risks: string[];
-  lastUpdated: string;
-}
 
 interface ConvictionTrajectory {
   dataPoints: { date: string; score: number; enthusiasm: number }[];
@@ -73,7 +56,7 @@ interface AccelerationStatusData {
 
 interface InvestorCompareProfile {
   investor: Investor;
-  score: InvestorScore;
+  score: InvestorScoreData;
   convictionTrajectory: ConvictionTrajectory;
   objectionProfile: ObjectionProfile;
   meetingHistory: MeetingHistorySummary;

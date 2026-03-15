@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Flame, Filter, TrendingUp, Users, Thermometer } from 'lucide-react';
+import { Flame, Filter, TrendingUp, Thermometer } from 'lucide-react';
 import { STATUS_LABELS, TYPE_LABELS } from '@/lib/constants';
 import { DealHeatInvestor } from '@/lib/types';
+import { fmtDateShort } from '@/lib/format';
 
 interface DealHeatData {
   investors: DealHeatInvestor[];
@@ -28,10 +29,6 @@ const HEAT_CONFIG: Record<string, { bg: string; border: string; text: string; gl
   cold:   { bg: 'var(--accent-4)', border: 'var(--accent-8)', text: 'var(--text-muted)', glow: 'none', label: 'Cold' },
   frozen: { bg: 'var(--accent-3)', border: 'var(--accent-muted)', text: 'var(--text-muted)', glow: 'none', label: 'Frozen' },
 };
-
-function formatDate(d: string): string {
-  return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
-}
 
 export default function DealHeatPage() {
   const [data, setData] = useState<DealHeatData | null>(null);
@@ -359,7 +356,7 @@ export default function DealHeatPage() {
                     </div>
                     {inv.lastMeeting && (
                       <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-                        {formatDate(inv.lastMeeting)}
+                        {fmtDateShort(inv.lastMeeting)}
                       </div>
                     )}
                   </div>

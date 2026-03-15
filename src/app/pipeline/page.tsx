@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef, useCallback } from 'react';
 import Link from 'next/link';
-import type { Investor, InvestorStatus, InvestorTier, InvestorType } from '@/lib/types';
+import type { Investor, InvestorStatus, InvestorType } from '@/lib/types';
 import { useToast } from '@/components/toast';
 import {
   Users, TrendingUp, Zap, Filter, X, GripVertical,

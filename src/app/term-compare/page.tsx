@@ -7,6 +7,7 @@ import {
   Plus, Trash2, ArrowLeft, Scale, Trophy, DollarSign,
   ShieldCheck, AlertTriangle, ChevronDown, ChevronUp, Loader2,
 } from 'lucide-react';
+import { scoreColor, scoreBg } from '@/lib/styles';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -78,17 +79,6 @@ function formatM(n: number): string {
   return `${n}M`;
 }
 
-function scoreColor(score: number): string {
-  if (score >= 70) return 'var(--success)';
-  if (score >= 50) return 'var(--warning)';
-  return 'var(--danger)';
-}
-
-function scoreBg(score: number): string {
-  if (score >= 70) return 'var(--success-muted)';
-  if (score >= 50) return 'var(--warning-muted)';
-  return 'var(--danger-muted)';
-}
 
 // Determine if a cell is "best" or "worst" among results for color coding
 type CellRating = 'good' | 'bad' | 'neutral';

@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react';
 import { useToast } from '@/components/toast';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
 import Link from 'next/link';
-import { Scale, Calendar, ExternalLink } from 'lucide-react';
+import { Scale } from 'lucide-react';
+import { scoreColor as getScoreColor } from '@/lib/styles';
 
 interface TermSheet {
   id: string;
@@ -127,11 +128,6 @@ export default function TermsPage() {
     return { score: Math.max(0, Math.min(100, score)), flags };
   }
 
-  function getScoreColor(score: number): string {
-    if (score >= 70) return 'var(--success)';
-    if (score >= 50) return 'var(--warning)';
-    return 'var(--danger)';
-  }
 
   if (loading) {
     return (

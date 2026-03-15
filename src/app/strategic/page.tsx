@@ -7,6 +7,7 @@ import {
   Minus, RefreshCw, AlertTriangle, ArrowRight, Clock,
   BarChart3, MessageCircleWarning, Zap, CheckCircle2, ExternalLink,
 } from 'lucide-react';
+import { gaugeColor, gaugeColor as gaugeBarColor } from '@/lib/styles';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -101,27 +102,6 @@ const TREND_CONFIG = {
   decelerating: { label: 'Decelerating', icon: TrendingDown,   color: 'var(--text-primary)',   bg: 'var(--danger-muted)',   border: 'var(--accent-8)' },
 };
 
-function gaugeColor(score: number, invert = false): string {
-  if (invert) {
-    if (score >= 0.5) return 'var(--danger)';
-    if (score >= 0.25) return 'var(--warning)';
-    return 'var(--success)';
-  }
-  if (score >= 70) return 'var(--success)';
-  if (score >= 40) return 'var(--warning)';
-  return 'var(--danger)';
-}
-
-function gaugeBarColor(score: number, invert = false): string {
-  if (invert) {
-    if (score >= 0.5) return 'var(--danger)';
-    if (score >= 0.25) return 'var(--warning)';
-    return 'var(--success)';
-  }
-  if (score >= 70) return 'var(--success)';
-  if (score >= 40) return 'var(--warning)';
-  return 'var(--danger)';
-}
 
 function priorityStyle(p: number): React.CSSProperties {
   if (p === 1) return { background: 'var(--danger-muted)', color: 'var(--text-primary)', borderColor: 'var(--accent-8)' };

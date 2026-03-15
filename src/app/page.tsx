@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { DealHeatInvestor } from '@/lib/types';
 import { STATUS_LABELS } from '@/lib/constants';
+import { labelTertiary, labelSecondary, labelAccent, labelMuted, stTextTertiary as textTertiary } from '@/lib/styles';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -215,16 +216,7 @@ interface PulseData {
   generatedAt: string;
 }
 
-// ---------------------------------------------------------------------------
-// Shared inline style constants
-// ---------------------------------------------------------------------------
-
-const labelTertiary: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' };
-const labelSecondary: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' };
-const labelAccent: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--accent)' };
-const labelMuted: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' };
 const cardPadding: React.CSSProperties = { borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' };
-const textTertiary: React.CSSProperties = { color: 'var(--text-tertiary)' };
 
 // ---------------------------------------------------------------------------
 // Component

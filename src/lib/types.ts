@@ -1,7 +1,6 @@
 export type InvestorTier = 1 | 2 | 3 | 4;
 export type InvestorType = 'vc' | 'growth' | 'sovereign' | 'strategic' | 'debt' | 'family_office';
 export type InvestorStatus = 'identified' | 'contacted' | 'nda_signed' | 'meeting_scheduled' | 'met' | 'engaged' | 'in_dd' | 'term_sheet' | 'closed' | 'passed' | 'dropped';
-export type ProcessHealth = 'green' | 'yellow' | 'red';
 export type MeetingType = 'intro' | 'management_presentation' | 'deep_dive' | 'site_visit' | 'dd_session' | 'negotiation' | 'social';
 
 export interface Investor {
@@ -69,53 +68,6 @@ export interface EngagementSignal {
   body_language_at_pricing: 'positive' | 'neutral' | 'negative';
   slides_that_landed: string[];
   slides_that_fell_flat: string[];
-}
-
-export interface FunnelMetrics {
-  contacted: number;
-  nda_signed: number;
-  meetings: number;
-  engaged: number;
-  in_dd: number;
-  term_sheets: number;
-  closed: number;
-  passed: number;
-  conversion_rates: {
-    contact_to_meeting: number;
-    meeting_to_engaged: number;
-    engaged_to_dd: number;
-    dd_to_term_sheet: number;
-  };
-  targets: {
-    contact_to_meeting: number;
-    meeting_to_engaged: number;
-    engaged_to_dd: number;
-    dd_to_term_sheet: number;
-  };
-}
-
-export interface ConvergenceScore {
-  story: boolean;
-  materials: boolean;
-  model: boolean;
-  investors: boolean;
-  objections: boolean;
-  pricing: boolean;
-  terms: boolean;
-  funnel: boolean;
-  timeline: boolean;
-  team: boolean;
-  score: number; // out of 10
-}
-
-export interface PatternAnalysis {
-  top_objections: { text: string; count: number; percentage: number }[];
-  top_strengths: { text: string; count: number }[];
-  avg_enthusiasm: number;
-  pricing_reception: 'positive' | 'neutral' | 'negative';
-  conversion_trend: 'improving' | 'stable' | 'declining';
-  material_changes_needed: string[];
-  overall_health: ProcessHealth;
 }
 
 export interface RaiseConfig {
@@ -337,6 +289,23 @@ export interface DocSummaryRecord {
   status: string;
   created_at: string;
   updated_at: string;
+}
+
+export interface ScoreDimension {
+  name: string;
+  score: number;
+  signal: 'strong' | 'moderate' | 'weak' | 'unknown';
+  evidence: string;
+}
+
+export interface InvestorScoreData {
+  overall: number;
+  dimensions: ScoreDimension[];
+  momentum: 'accelerating' | 'steady' | 'decelerating' | 'stalled';
+  predictedOutcome: 'likely_close' | 'possible' | 'long_shot' | 'unlikely';
+  nextBestAction: string;
+  risks: string[];
+  lastUpdated: string;
 }
 
 export interface DealHeatInvestor {

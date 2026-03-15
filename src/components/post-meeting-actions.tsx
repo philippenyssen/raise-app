@@ -6,7 +6,7 @@ import {
   CheckCircle2, XCircle, ClipboardList, FileWarning, UserCheck,
   ChevronDown, ChevronUp, AlertTriangle, Clock, ArrowRight
 } from 'lucide-react';
-import { STATUS_LABELS } from '@/lib/constants';
+import { STATUS_LABELS, PRIORITY_BADGE_STYLES } from '@/lib/constants';
 
 interface TaskAction {
   id: string;
@@ -43,12 +43,7 @@ interface PostMeetingActionsData {
   investor_updates: InvestorUpdate;
 }
 
-const PRIORITY_STYLES: Record<string, { bg: string; color: string; border: string }> = {
-  critical: { bg: 'var(--danger-muted)', color: 'var(--danger)', border: 'color-mix(in srgb, var(--danger) 50%, transparent)' },
-  high: { bg: 'var(--warning-muted)', color: 'var(--warning)', border: 'color-mix(in srgb, var(--warning) 50%, transparent)' },
-  medium: { bg: 'var(--accent-muted)', color: 'var(--accent)', border: 'color-mix(in srgb, var(--accent) 50%, transparent)' },
-  low: { bg: 'var(--surface-2)', color: 'var(--text-secondary)', border: 'var(--border-subtle)' },
-};
+const PRIORITY_STYLES = PRIORITY_BADGE_STYLES;
 
 const FLAG_TYPE_LABELS: Record<string, string> = {
   objection_response: 'Objection Response Needed',

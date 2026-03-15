@@ -8,7 +8,7 @@ import {
   FolderOpen, BookOpen, Globe, Settings,
   Columns3, BarChart3, MessageCircleWarning, Target,
   SendHorizonal, Menu, X, LogOut,
-  ChevronLeft, ChevronRight, Sun, Activity, Flame,
+  ChevronLeft, ChevronRight, Sun, Flame,
   Gauge, Compass,
 } from 'lucide-react';
 

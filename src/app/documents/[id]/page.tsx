@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useToast } from '@/components/toast';
 import {
   ArrowLeft, Save, Sparkles, CheckCircle, AlertTriangle,
-  Clock, History, Eye, Edit3, FileText
+  Clock, History, Eye, Edit3
 } from 'lucide-react';
 import { DocSummaryRecord as Doc } from '@/lib/types';
 

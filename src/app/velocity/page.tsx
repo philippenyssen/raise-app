@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
-  Gauge, Clock, CheckCircle2, XCircle, AlertTriangle,
+  Clock, CheckCircle2, XCircle, AlertTriangle,
   TrendingUp, Users, ArrowRight, Zap, Phone, Mail, Target,
 } from 'lucide-react';
 import { STATUS_LABELS, TYPE_LABELS } from '@/lib/constants';

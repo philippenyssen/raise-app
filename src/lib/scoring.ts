@@ -1,28 +1,14 @@
-import type { Investor, Meeting, InvestorPortfolioCo, IntelligenceBrief, Objection, EngagementSignal } from './types';
+import type { Investor, Meeting, InvestorPortfolioCo, IntelligenceBrief, Objection, EngagementSignal, ScoreDimension, InvestorScoreData } from './types';
 import type { ScoreSnapshot } from './db';
 import { computeNetworkEffectData } from './db';
 import { clamp, daysBetween, parseJsonSafe, parseMoneyRange, STATUS_PROGRESSION } from './api-helpers';
 
 // ---------------------------------------------------------------------------
-// Types
+// Types (re-exported from types.ts)
 // ---------------------------------------------------------------------------
 
-export interface ScoreDimension {
-  name: string;
-  score: number; // 0-100
-  signal: 'strong' | 'moderate' | 'weak' | 'unknown';
-  evidence: string;
-}
-
-export interface InvestorScore {
-  overall: number; // 0-100
-  dimensions: ScoreDimension[];
-  momentum: 'accelerating' | 'steady' | 'decelerating' | 'stalled';
-  predictedOutcome: 'likely_close' | 'possible' | 'long_shot' | 'unlikely';
-  nextBestAction: string;
-  risks: string[];
-  lastUpdated: string;
-}
+export type { ScoreDimension };
+export type InvestorScore = InvestorScoreData;
 
 // ---------------------------------------------------------------------------
 // Helpers

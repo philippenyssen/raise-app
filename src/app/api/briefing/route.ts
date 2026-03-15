@@ -12,6 +12,7 @@ import {
   computePipelineFlow,
 } from '@/lib/db';
 import { getAIClient } from '@/lib/ai';
+import { parseJsonSafe } from '@/lib/api-helpers';
 
 function getGreeting(): string {
   const hour = new Date().getHours();
@@ -22,11 +23,6 @@ function getGreeting(): string {
 
 function todayStr(): string {
   return new Date().toISOString().split('T')[0];
-}
-
-function safeJsonParse<T>(raw: string | null | undefined, fallback: T): T {
-  if (!raw) return fallback;
-  try { return JSON.parse(raw) as T; } catch { return fallback; }
 }
 
 export async function GET() {
@@ -78,7 +74,7 @@ export async function GET() {
     const todayMeetings = allMeetings
       .filter(m => m.date.startsWith(today))
       .map(m => {
-        const objections = safeJsonParse<Array<{ text: string }>>(m.objections, []);
+        const objections = parseJsonSafe<Array<{ text: string }>>(m.objections, []);
         const lastObjection = objections.length > 0 ? objections[objections.length - 1].text : null;
 
         const inv = investors.find(i => i.id === m.investor_id);

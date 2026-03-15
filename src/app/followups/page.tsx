@@ -149,13 +149,6 @@ function formatRelativeTime(dateStr: string): string {
   return `In ${diffDays}d`;
 }
 
-function formatDate(dateStr: string): string {
-  try {
-    return fmtDateTime(dateStr);
-  } catch {
-    return dateStr;
-  }
-}
 
 export default function FollowupsPage() {
   return (
@@ -822,12 +815,12 @@ function FollowupsContent() {
         >
           {isOverdue ? (
             <span style={{ color: 'var(--text-primary)', fontWeight: 400 }}>
-              {formatRelativeTime(item.due_at)} — was due {formatDate(item.due_at)}
+              {formatRelativeTime(item.due_at)} — was due {fmtDateTime(item.due_at)}
             </span>
           ) : (
-            <span>Due: {formatDate(item.due_at)}</span>
+            <span>Due: {fmtDateTime(item.due_at)}</span>
           )}
-          {item.completed_at && <span>Completed: {formatDate(item.completed_at)}</span>}
+          {item.completed_at && <span>Completed: {fmtDateTime(item.completed_at)}</span>}
         </div>
       </div>
     );

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useToast } from '@/components/toast';
 import { STATUS_LABELS } from '@/lib/constants';
 import {
-  ShieldAlert, TrendingUp, TrendingDown, ArrowRight,
+  ShieldAlert, TrendingUp, TrendingDown,
   RefreshCw, AlertTriangle, CheckCircle2, Target,
   Clock, ChevronDown, ChevronUp, Zap, ArrowUpRight,
   BarChart3,

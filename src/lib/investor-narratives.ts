@@ -257,10 +257,3 @@ export function getAnticipatedQuestions(
   const combined = [...new Set([...historicalQuestions, ...profile.anticipatedQuestions])];
   return combined;
 }
-
-/**
- * Returns data room items sorted by priority for a given investor type.
- */
-function getDataRoomPriority(type: InvestorType): string[] {
-  return getNarrativeProfile(type).dataRoomPriority;
-}

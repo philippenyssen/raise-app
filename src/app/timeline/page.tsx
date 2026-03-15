@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import {
   CheckCircle2, Circle, Clock, AlertCircle, Plus, Trash2,
-  ListTodo, Activity, Filter, ChevronDown
+  ListTodo, Activity
 } from 'lucide-react';
 import type { Task, ActivityEvent, TaskStatus, TaskPriority, RaisePhase } from '@/lib/types';
 import { useToast } from '@/components/toast';

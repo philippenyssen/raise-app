@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import type { Investor, Meeting, InvestorPartner, InvestorPortfolioCo, IntelligenceBrief, InvestorStatus, Task } from '@/lib/types';
+import type { Investor, Meeting, InvestorPartner, InvestorPortfolioCo, IntelligenceBrief, InvestorStatus, Task, InvestorScoreData } from '@/lib/types';
 import {
   ArrowLeft, Calendar, TrendingUp, AlertTriangle,
   Clock, Target, Users, Zap, Briefcase, UserCheck, BookOpen,
@@ -15,12 +15,8 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/components/toast';
 import { fmtDateShort, fmtDate } from '@/lib/format';
-import { STATUS_LABELS } from '@/lib/constants';
-
-const textMuted = { color: 'var(--text-muted)' } as const;
-const textTertiary = { color: 'var(--text-tertiary)' } as const;
-const textSecondary = { color: 'var(--text-secondary)' } as const;
-const textPrimary = { color: 'var(--text-primary)' } as const;
+import { STATUS_LABELS, OUTCOME_CONFIG } from '@/lib/constants';
+import { scoreColor4 as scoreColor, scoreBorderColor, stTextMuted as textMuted, stTextTertiary as textTertiary, stTextSecondary as textSecondary, stTextPrimary as textPrimary } from '@/lib/styles';
 
 const STATUS_COLORS: Record<string, string> = {
   identified: 'var(--surface-3)',
@@ -35,23 +31,6 @@ const STATUS_COLORS: Record<string, string> = {
   passed: 'var(--danger)',
   dropped: 'var(--surface-3)',
 };
-
-interface ScoreDimension {
-  name: string;
-  score: number;
-  signal: 'strong' | 'moderate' | 'weak' | 'unknown';
-  evidence: string;
-}
-
-interface InvestorScoreData {
-  overall: number;
-  dimensions: ScoreDimension[];
-  momentum: 'accelerating' | 'steady' | 'decelerating' | 'stalled';
-  predictedOutcome: 'likely_close' | 'possible' | 'long_shot' | 'unlikely';
-  nextBestAction: string;
-  risks: string[];
-  lastUpdated: string;
-}
 
 interface ConvictionTrajectoryData {
   dataPoints: { date: string; score: number; enthusiasm: number }[];
@@ -1297,13 +1276,6 @@ function StatCard({ icon: Icon, label, value, sub, highlight }: { icon: React.Co
 // Intelligence Score Panel
 // ---------------------------------------------------------------------------
 
-const OUTCOME_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
-  likely_close: { label: 'Likely Close', color: 'var(--text-secondary)', bg: 'var(--success-muted)' },
-  possible: { label: 'Possible', color: 'var(--accent)', bg: 'var(--accent-muted)' },
-  long_shot: { label: 'Long Shot', color: 'var(--text-tertiary)', bg: 'var(--warning-muted)' },
-  unlikely: { label: 'Unlikely', color: 'var(--text-primary)', bg: 'var(--danger-muted)' },
-};
-
 const MOMENTUM_CONFIG: Record<string, { label: string; icon: React.ComponentType<{ className?: string }>; color: string }> = {
   accelerating: { label: 'Accelerating', icon: ArrowUpRight, color: 'var(--text-secondary)' },
   steady: { label: 'Steady', icon: ArrowRight, color: 'var(--accent)' },
@@ -1311,19 +1283,6 @@ const MOMENTUM_CONFIG: Record<string, { label: string; icon: React.ComponentType
   stalled: { label: 'Stalled', icon: Minus, color: 'var(--text-primary)' },
 };
 
-function scoreColor(score: number): string {
-  if (score >= 70) return 'var(--success)';
-  if (score >= 50) return 'var(--accent)';
-  if (score >= 30) return 'var(--warning)';
-  return 'var(--danger)';
-}
-
-function scoreBorderColor(score: number): string {
-  if (score >= 70) return 'var(--success-muted)';
-  if (score >= 50) return 'var(--accent-muted)';
-  if (score >= 30) return 'var(--warning-muted)';
-  return 'var(--danger-muted)';
-}
 
 function signalBadge(sig: 'strong' | 'moderate' | 'weak' | 'unknown'): { bg: string; color: string } {
   const config = {

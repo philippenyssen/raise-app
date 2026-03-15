@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { computeInvestorScore, computeMomentumScore } from '@/lib/scoring';
-import type { Investor, Meeting, InvestorPortfolioCo, Objection } from '@/lib/types';
+import type { Investor, Meeting, Objection } from '@/lib/types';
 import { updateAccelerationAction, createTask, createFollowup, createDocumentFlag, logActivity } from '@/lib/db';
 import { emitContextChange } from '@/lib/context-bus';
 import { getClient, daysBetween, parseJsonSafe, STATUS_PROGRESSION, loadAllMeetings, loadRaiseConfig, loadAllPortfolios, groupByInvestorId } from '@/lib/api-helpers';

@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { useToast } from '@/components/toast';
-import { STATUS_LABELS, PIPELINE_STATUS_STYLES, MOMENTUM_STYLES, MOMENTUM_LABELS } from '@/lib/constants';
+import { STATUS_LABELS, PIPELINE_STATUS_STYLES, MOMENTUM_STYLES, MOMENTUM_LABELS, TRIGGER_STYLES, TRIGGER_LABELS, CONFIDENCE_STYLES, URGENCY_STYLE } from '@/lib/constants';
 import {
   AccelerationItem, AccelerationInvestorSummary as InvestorSummary, AccelerationData,
 } from '@/lib/types';
@@ -34,37 +34,6 @@ const TYPE_LABELS: Record<string, string> = {
 const STATUS_STYLES = PIPELINE_STATUS_STYLES;
 const MOMENTUM_STYLE = MOMENTUM_STYLES;
 
-
-const TRIGGER_STYLES: Record<string, React.CSSProperties> = {
-  momentum_cliff: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
-  stall_risk: { background: 'var(--danger-muted)', color: 'var(--text-primary)' },
-  window_closing: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
-  catalyst_match: { background: 'var(--accent-muted)', color: 'var(--accent)' },
-  competitive_pressure: { background: 'var(--cat-purple-muted)', color: 'var(--chart-4)' },
-  term_sheet_ready: { background: 'var(--success-muted)', color: 'var(--text-secondary)' },
-};
-
-const TRIGGER_LABELS: Record<string, string> = {
-  momentum_cliff: 'Momentum Cliff',
-  stall_risk: 'Stall Risk',
-  window_closing: 'Window Closing',
-  catalyst_match: 'Catalyst Match',
-  competitive_pressure: 'Competitive Pressure',
-  term_sheet_ready: 'Term Sheet Ready',
-};
-
-const CONFIDENCE_STYLES: Record<string, React.CSSProperties> = {
-  high: { background: 'var(--success-muted)', color: 'var(--text-secondary)' },
-  medium: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
-  low: { background: 'var(--surface-2)', color: 'var(--text-tertiary)' },
-};
-
-const URGENCY_STYLE: Record<string, React.CSSProperties> = {
-  immediate: { color: 'var(--text-primary)' },
-  '48h': { color: 'var(--text-secondary)' },
-  this_week: { color: 'var(--text-tertiary)' },
-  next_week: { color: 'var(--text-tertiary)' },
-};
 
 type FilterTab = 'all' | 'pending' | 'executed' | 'skipped';
 
