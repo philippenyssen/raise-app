@@ -129,7 +129,7 @@ function QuickCaptureInner() {
       localStorage.removeItem('capture_draft_notes');
       setResult(data);
     } catch {
-      toast('Failed to capture meeting — check your connection and try again', 'error');
+      toast('Could not capture meeting — check your connection and try again', 'error');
     } finally {
       setLoading(false);
     }}
