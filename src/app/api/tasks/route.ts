@@ -50,26 +50,31 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true });
     }
 
-    if (!body.title || typeof body.title !== 'string' || !body.title.trim()) {
+    // Filter to allowed fields
+    const filtered: Record<string, unknown> = Object.fromEntries(
+      Object.entries(body).filter(([k]) => ALLOWED_TASK_FIELDS.has(k) || k === 'auto_generated')
+    );
+
+    if (!filtered.title || typeof filtered.title !== 'string' || !(filtered.title as string).trim()) {
       return NextResponse.json({ error: 'title is required' }, { status: 400 });
     }
     const validStatuses = ['pending', 'in_progress', 'done', 'blocked', 'cancelled'];
     const validPriorities = ['critical', 'high', 'medium', 'low'];
-    if (body.status && !validStatuses.includes(body.status as string)) return NextResponse.json({ error: `status must be one of: ${validStatuses.join(', ')}` }, { status: 400 });
-    if (body.priority && !validPriorities.includes(body.priority as string)) return NextResponse.json({ error: `priority must be one of: ${validPriorities.join(', ')}` }, { status: 400 });
+    if (filtered.status && !validStatuses.includes(filtered.status as string)) return NextResponse.json({ error: `status must be one of: ${validStatuses.join(', ')}` }, { status: 400 });
+    if (filtered.priority && !validPriorities.includes(filtered.priority as string)) return NextResponse.json({ error: `priority must be one of: ${validPriorities.join(', ')}` }, { status: 400 });
     const task = await createTask({
-      title: ((body.title as string) || '').trim(),
-      description: ((body.description as string) || '').trim(),
-      assignee: ((body.assignee as string) || '').trim(),
-      due_date: ((body.due_date as string) || '').trim(),
-      status: ((body.status as string) || 'pending') as TaskStatus,
-      priority: ((body.priority as string) || 'medium') as TaskPriority,
-      phase: ((body.phase as string) || 'preparation') as RaisePhase,
-      investor_id: (body.investor_id as string) || '',
-      investor_name: (body.investor_name as string) || '',
-      auto_generated: (body.auto_generated as boolean) || false,});
+      title: ((filtered.title as string) || '').trim(),
+      description: ((filtered.description as string) || '').trim(),
+      assignee: ((filtered.assignee as string) || '').trim(),
+      due_date: ((filtered.due_date as string) || '').trim(),
+      status: ((filtered.status as string) || 'pending') as TaskStatus,
+      priority: ((filtered.priority as string) || 'medium') as TaskPriority,
+      phase: ((filtered.phase as string) || 'preparation') as RaisePhase,
+      investor_id: (filtered.investor_id as string) || '',
+      investor_name: (filtered.investor_name as string) || '',
+      auto_generated: (filtered.auto_generated as boolean) || false,});
 
-    emitContextChange('task_created', `Task: ${body.title || 'untitled'}`);
+    emitContextChange('task_created', `Task: ${filtered.title || 'untitled'}`);
     return NextResponse.json(task, { status: 201 });
   } catch (err) {
     console.error('[TASKS_POST]', err instanceof Error ? err.message : err);
