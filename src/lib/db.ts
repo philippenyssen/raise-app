@@ -1174,6 +1174,7 @@ export async function updateTask(id: string, updates: Partial<Task>) {
   await genericUpdate('tasks', id, updates as Record<string, unknown>);
 }
 
+export const getTask = (id: string) => genericGetById<Task>('tasks', id);
 export const deleteTask = (id: string) => genericDelete('tasks', id);
 
 export async function getUpcomingTasks(limit: number = 5): Promise<Task[]> {

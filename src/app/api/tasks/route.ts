@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAllTasks, createTask, updateTask, deleteTask, getUpcomingTasks, getActivityLog, logActivity, getDocumentFlags, updateDocumentFlag, createFollowup, getFollowups, updateFollowup } from '@/lib/db';
+import { getAllTasks, getTask, createTask, updateTask, deleteTask, getUpcomingTasks, getActivityLog, logActivity, getDocumentFlags, updateDocumentFlag, createFollowup, getFollowups, updateFollowup } from '@/lib/db';
 import { emitContextChange } from '@/lib/context-bus';
 import type { TaskStatus, TaskPriority, RaisePhase } from '@/lib/types';
 
@@ -110,6 +110,9 @@ export async function PUT(req: NextRequest) {
     const validPriorities = ['critical', 'high', 'medium', 'low'];
     if (updates.status && !validStatuses.includes(updates.status as string)) return NextResponse.json({ error: `status must be one of: ${validStatuses.join(', ')}` }, { status: 400 });
     if (updates.priority && !validPriorities.includes(updates.priority as string)) return NextResponse.json({ error: `priority must be one of: ${validPriorities.join(', ')}` }, { status: 400 });
+
+    const existing = await getTask(id);
+    if (!existing) return NextResponse.json({ error: `Task ${id} not found` }, { status: 404 });
 
     await updateTask(id, updates);
 
