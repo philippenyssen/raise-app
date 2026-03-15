@@ -194,6 +194,15 @@ export default function DealflowPage() {
     return () => clearInterval(interval);
   }, [fetchData]);
 
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement) return;
+      if (e.key === 'r') { e.preventDefault(); fetchData(); }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [fetchData]);
+
   // Sort & filter
   const filtered = investors
     .filter(inv => heatFilter === 'all' || inv.heat === heatFilter)

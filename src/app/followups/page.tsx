@@ -194,6 +194,15 @@ function FollowupsContent() {
     fetchFollowups();
   }, [fetchFollowups]);
 
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement) return;
+      if (e.key === 'r') { e.preventDefault(); fetchFollowups(); }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [fetchFollowups]);
+
   async function handleComplete(id: string) {
     try {
       const res = await fetch('/api/followups', {
