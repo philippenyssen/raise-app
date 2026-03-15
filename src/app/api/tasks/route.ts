@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
     if (phase) filters.phase = phase;
     if (investorId) filters.investor_id = investorId;
 
-    return NextResponse.json(await getAllTasks(Object.keys(filters).length > 0 ? filters : undefined));
+    return NextResponse.json(await getAllTasks(Object.keys(filters).length > 0 ? filters : undefined), { headers: { 'Cache-Control': 'private, max-age=10, stale-while-revalidate=20' } });
   } catch (err) {
     console.error('[TASKS_GET]', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: 'Failed to load tasks' }, { status: 500 });

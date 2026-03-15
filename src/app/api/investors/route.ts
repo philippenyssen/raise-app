@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json(investor);
     }
     const investors = await getAllInvestors();
-    return NextResponse.json(investors);
+    return NextResponse.json(investors, { headers: { 'Cache-Control': 'private, max-age=15, stale-while-revalidate=30' } });
   } catch (error) {
     console.error('[INVESTORS_GET]', error instanceof Error ? error.message : error);
     return NextResponse.json(

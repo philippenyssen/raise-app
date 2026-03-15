@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const investorId = searchParams.get('investor_id') ?? undefined;
     const meetings = await getMeetings(investorId);
-    return NextResponse.json(meetings);
+    return NextResponse.json(meetings, { headers: { 'Cache-Control': 'private, max-age=15, stale-while-revalidate=30' } });
   } catch (error) {
     console.error('[MEETINGS_GET]', error instanceof Error ? error.message : error);
     return NextResponse.json(

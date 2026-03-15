@@ -9,7 +9,7 @@ const ALLOWED_FIELDS = new Set([
 export async function GET() {
   try {
     const sheets = await getAllTermSheets();
-    return NextResponse.json(sheets);
+    return NextResponse.json(sheets, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
   } catch (err) {
     console.error('[TERM_SHEETS_GET]', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: 'Failed to load term sheets' }, { status: 500 });
