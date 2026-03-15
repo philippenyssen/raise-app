@@ -66,16 +66,18 @@ export default function TermsPage() {
     e.preventDefault();
     try {
       if (editId) {
-        await fetch('/api/term-sheets', {
+        const res = await fetch('/api/term-sheets', {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ id: editId, ...form }),});
+        if (!res.ok) throw new Error('Failed');
         toast(`${form.investor} updated`);
       } else {
-        await fetch('/api/term-sheets', {
+        const res = await fetch('/api/term-sheets', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(form),});
+        if (!res.ok) throw new Error('Failed');
         toast(`${form.investor} term sheet added`);
       }
       setShowForm(false);

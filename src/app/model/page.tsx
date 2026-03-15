@@ -227,17 +227,20 @@ export default function ModelPage() {
   }, [toast, fetchSheets]);
 
   const addSheet = useCallback(async (name: string) => {
-    await fetch('/api/model', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        sheet_name: name,
-        sheet_order: sheets.length,
-        data: {},
-      }),});
-    toast(`Added sheet "${name}"`);
-    setShowAddSheet(false);
-    fetchSheets();
+    try {
+      const res = await fetch('/api/model', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sheet_name: name,
+          sheet_order: sheets.length,
+          data: {},
+        }),});
+      if (!res.ok) throw new Error('Failed');
+      toast(`Added sheet "${name}"`);
+      setShowAddSheet(false);
+      fetchSheets();
+    } catch { toast('Failed to add sheet', 'error'); }
   }, [sheets.length, toast, fetchSheets]);
 
   const deleteSheet = useCallback(async (sheet: ModelSheet) => {
