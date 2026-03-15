@@ -197,6 +197,8 @@ export async function PUT(req: Request) {
     if (!id) return NextResponse.json({ error: 'Missing action id' }, { status: 400 });
 
     const actionStatus = (status as string) || 'executed';
+    const validStatuses = ['pending', 'executed', 'skipped', 'dismissed'];
+    if (!validStatuses.includes(actionStatus)) return NextResponse.json({ error: `status must be one of: ${validStatuses.join(', ')}` }, { status: 400 });
     await updateAccelerationAction(id as string, { status: actionStatus, actual_lift: (actual_lift as number) ?? null, executed_at: new Date().toISOString() });
 
     if (actionStatus === 'executed') {
