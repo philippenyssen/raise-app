@@ -207,7 +207,7 @@ export async function GET() {
       const recentSnapshots = await getHealthSnapshots(1);
       const today = new Date().toISOString().split('T')[0];
       if (!recentSnapshots.length || recentSnapshots[0].snapshot_date !== today) {
-        saveHealthSnapshot({ pipelineScore: Math.min(100, pipelineScore), narrativeScore, readinessScore: readiness, velocity: velocity.meetingsPerWeek, activeInvestors: ctx.pipelineHealth.totalActive, strategicSummary: ceoBrief }).catch(() => {});
+        saveHealthSnapshot({ pipelineScore: Math.min(100, pipelineScore), narrativeScore, readinessScore: readiness, velocity: velocity.meetingsPerWeek, activeInvestors: ctx.pipelineHealth.totalActive, strategicSummary: ceoBrief }).catch(e => console.error('[STRATEGIC_SNAPSHOT]', e instanceof Error ? e.message : e));
       }
     } catch (e) { console.error('[HEALTH_SNAPSHOT_SAVE]', e instanceof Error ? e.message : e); }
 

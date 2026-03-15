@@ -65,7 +65,7 @@ export default function HealthPage() {
     cachedFetch('/api/intelligence/verify')
       .then(r => { if (!r.ok) throw new Error(`${r.status}`); return r.json(); })
       .then(setIntelVerify)
-      .catch(() => {})
+      .catch(e => console.error('[HEALTH_INTEL_VERIFY]', e instanceof Error ? e.message : e))
       .finally(() => setIntelLoading(false));
   }
 

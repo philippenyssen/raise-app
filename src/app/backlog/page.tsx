@@ -114,7 +114,7 @@ export default function BacklogPage() {
       setForm({ customer: '', program: '', contract_type: 'firm', amount_eur: '', start_date: '', end_date: '', annual_amount: '', confidence: '0.9', source_doc: '', notes: '', status: 'active' });
       setCommitments(prev => [created, ...prev]);
       // Refresh summary in background (no loading spinner)
-      cachedFetch('/api/revenue-commitments').then(r => r.ok ? r.json() : null).then(d => { if (d) setSummary(d.summary); }).catch(() => {});
+      cachedFetch('/api/revenue-commitments').then(r => r.ok ? r.json() : null).then(d => { if (d) setSummary(d.summary); }).catch(e => console.error('[BACKLOG_SUMMARY]', e instanceof Error ? e.message : e));
     } catch {
       toast('Could not add commitment — check that all fields are filled and try again', 'error');
     }
@@ -132,7 +132,7 @@ export default function BacklogPage() {
       if (!res.ok) throw new Error('Failed');
       toast('Deleted', 'warning');
       // Refresh summary in background
-      cachedFetch('/api/revenue-commitments').then(r => r.ok ? r.json() : null).then(d => { if (d) setSummary(d.summary); }).catch(() => {});
+      cachedFetch('/api/revenue-commitments').then(r => r.ok ? r.json() : null).then(d => { if (d) setSummary(d.summary); }).catch(e => console.error('[BACKLOG_SUMMARY]', e instanceof Error ? e.message : e));
     } catch {
       toast('Could not confirm deletion — refresh to verify current state', 'error');
     } finally { setDeleting(false); }}

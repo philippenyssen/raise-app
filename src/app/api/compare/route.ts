@@ -195,7 +195,7 @@ export async function POST(req: NextRequest) {
       const score = computeInvestorScore(investor, meetings, portfolio, briefs, { targetEquityM, targetCloseDate });
       const engagementDim = score.dimensions.find(d => d.name === 'Engagement');
       const momentumDim = score.dimensions.find(d => d.name === 'Momentum');
-      upsertScoreSnapshot({ investor_id: id, overall_score: score.overall, engagement_score: engagementDim?.score, momentum_score: momentumDim?.score, enthusiasm: investor.enthusiasm, meeting_count: meetings.length, predicted_outcome: score.predictedOutcome }).catch(() => {});
+      upsertScoreSnapshot({ investor_id: id, overall_score: score.overall, engagement_score: engagementDim?.score, momentum_score: momentumDim?.score, enthusiasm: investor.enthusiasm, meeting_count: meetings.length, predicted_outcome: score.predictedOutcome }).catch(e => console.error('[COMPARE_SNAPSHOT]', e instanceof Error ? e.message : e));
 
       return {
         investor, score,

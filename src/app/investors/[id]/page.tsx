@@ -214,7 +214,7 @@ export default function InvestorDetailPage() {
     fetch(`/api/followups?investor_id=${id}&status=pending`)
       .then(r => r.ok ? r.json() : [])
       .then(data => setFollowups(Array.isArray(data) ? data : []))
-      .catch(() => {});
+      .catch(e => console.error('[INVESTOR_FOLLOWUPS]', e instanceof Error ? e.message : e));
     // Non-blocking deal intelligence fetch
     Promise.all([
       fetch('/api/deal-heat').then(r => r.ok ? r.json() : null).catch(() => null),
