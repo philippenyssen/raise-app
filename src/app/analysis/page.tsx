@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useToast } from '@/components/toast';
 import { BarChart3 } from 'lucide-react';
 import { stAccent, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
@@ -60,7 +60,7 @@ export default function AnalysisPage() {
   const [data, setData] = useState<AnalysisData | null>(null);
   const [loading, setLoading] = useState(false);
 
-  async function runAnalysis() {
+  const runAnalysis = useCallback(async () => {
     setLoading(true);
     try {
       const res = await fetch('/api/analyze');
@@ -72,7 +72,18 @@ export default function AnalysisPage() {
       setData({ patterns: null, health: { health: 'red', diagnosis: 'Analysis failed. Please try again.', recommendations: [], risk_factors: [] }, objections: [], funnel: {}, meeting_count: 0, error: 'Failed to run analysis' });
     } finally {
       setLoading(false);
-    }}
+    }
+  }, [toast]);
+
+  useEffect(() => {
+    const h = (e: KeyboardEvent) => {
+      if (e.key === 'r' && !e.metaKey && !e.ctrlKey && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement)) {
+        e.preventDefault(); runAnalysis();
+      }
+    };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, [runAnalysis]);
 
   return (
     <div className="space-y-6 page-content">
