@@ -294,10 +294,14 @@ export default function MeetingsPage() {
   const [expandedOutcome, setExpandedOutcome] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch('/api/meetings')
+    let active = true;
+    const load = () => fetch('/api/meetings')
       .then(r => { if (!r.ok) throw new Error(`${r.status}`); return r.json(); })
-      .then(setMeetings)
-      .catch(() => { setMeetings([]); });
+      .then(d => { if (active) setMeetings(d); })
+      .catch(() => { if (active) setMeetings([]); });
+    load();
+    const id = setInterval(load, 60_000);
+    return () => { active = false; clearInterval(id); };
   }, []);
 
   const filtered = meetings.filter(m => {
