@@ -210,6 +210,7 @@ export function Sidebar() {
                       onClick={() => setMobileOpen(false)}
                       title={collapsed ? item.label : undefined}
                       aria-label={item.label}
+                      aria-current={active ? 'page' : undefined}
                       className="group relative flex items-center rounded-md transition-all duration-150"
                       style={{
                         gap: collapsed ? '0' : 'var(--space-3)',

@@ -728,7 +728,7 @@ function InvestorCard({
         <Link href={`/investors/${investor.id}`} className="flex items-center gap-2">
           {onToggleCompare && (hovered || isCompareSelected) && <span onClick={e => { e.preventDefault(); e.stopPropagation(); onToggleCompare(investor.id); }} style={{ width: 12, height: 12, borderRadius: 'var(--radius-sm)', border: `1.5px solid ${isCompareSelected ? 'var(--accent)' : 'var(--border-default)'}`, background: isCompareSelected ? 'var(--accent)' : 'transparent', cursor: 'pointer', flexShrink: 0 }} />}
           <GripVertical className="w-3 h-3 flex-shrink-0" style={{ color: hovered ? 'var(--text-muted)' : 'var(--border-strong)' }} />
-          <span className="truncate" style={{ ...stFontXs, fontWeight: 400, color: 'var(--text-secondary)' }}>{investor.name}</span>
+          <span className="truncate" title={investor.name} style={{ ...stFontXs, fontWeight: 400, color: 'var(--text-secondary)' }}>{investor.name}</span>
           <span style={{ padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-sm)', fontSize: '10px', fontWeight: 400, ...TIER_STYLES[investor.tier] }}>T{investor.tier}</span>
         </Link>
       </div>);
@@ -768,22 +768,22 @@ function InvestorCard({
         {/* Details */}
         <div className="space-y-1">
           {investor.partner && (
-            <div className="truncate" style={labelMuted}>
+            <div className="truncate" title={investor.partner} style={labelMuted}>
               <span style={stTextMuted}>Partner:</span> {investor.partner}</div>
           )}
           {investor.fund_size && (
-            <div className="truncate" style={labelMuted}>
+            <div className="truncate" title={investor.fund_size} style={labelMuted}>
               <span style={stTextMuted}>Fund:</span> {investor.fund_size}</div>
           )}
-          {hovered && investor.check_size_range && <div className="truncate" style={labelMuted}><span style={stTextMuted}>Check:</span> {investor.check_size_range}</div>}
-          {hovered && investor.sector_thesis && <div className="truncate" style={labelMuted}><span style={stTextMuted}>Focus:</span> {investor.sector_thesis}</div>}
+          {hovered && investor.check_size_range && <div className="truncate" title={investor.check_size_range} style={labelMuted}><span style={stTextMuted}>Check:</span> {investor.check_size_range}</div>}
+          {hovered && investor.sector_thesis && <div className="truncate" title={investor.sector_thesis} style={labelMuted}><span style={stTextMuted}>Focus:</span> {investor.sector_thesis}</div>}
         </div>
 
         {/* Quick note + urgency */}
         {(() => { const days = investor.last_meeting_date ? Math.floor((Date.now() - new Date(investor.last_meeting_date).getTime()) / 864e5) : 999; const urgency = (days >= 14 && investor.tier <= 2) || (days >= 10 && ['engaged', 'in_dd', 'term_sheet'].includes(investor.status)) ? 'Urgent' : days >= 7 || investor.tier <= 2 ? 'Normal' : 'Low'; const uClr = urgency === 'Urgent' ? 'var(--danger)' : urgency === 'Normal' ? 'var(--warning)' : 'var(--text-muted)'; const uBg = urgency === 'Urgent' ? 'var(--danger-muted)' : urgency === 'Normal' ? 'var(--warning-muted)' : 'var(--white-8)'; return (
           <div className="flex items-center gap-1.5">
             <span style={{ fontSize: '9px', fontWeight: 400, padding: '1px 5px', borderRadius: 'var(--radius-sm)', background: uBg, color: uClr }}>{urgency}</span>
-            {investor.notes && <span className="truncate" style={{ fontSize: '10px', color: 'var(--text-muted)', fontStyle: 'italic', flex: 1 }}>{investor.notes.slice(0, 60)}{investor.notes.length > 60 ? '...' : ''}</span>}
+            {investor.notes && <span className="truncate" title={investor.notes} style={{ fontSize: '10px', color: 'var(--text-muted)', fontStyle: 'italic', flex: 1 }}>{investor.notes.slice(0, 60)}{investor.notes.length > 60 ? '...' : ''}</span>}
           </div>); })()}
 
         {/* Enthusiasm + last contact row */}
