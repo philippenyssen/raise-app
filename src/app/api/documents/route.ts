@@ -3,8 +3,12 @@ import { getAllDocuments, createDocument } from '@/lib/db';
 import { emitContextChange } from '@/lib/context-bus';
 
 export async function GET() {
-  const documents = await getAllDocuments();
-  return NextResponse.json(documents, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
+  try {
+    const documents = await getAllDocuments();
+    return NextResponse.json(documents, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
+  } catch {
+    return NextResponse.json({ error: 'Failed to load documents' }, { status: 500 });
+  }
 }
 
 export async function POST(req: NextRequest) {
