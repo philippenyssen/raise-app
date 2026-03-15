@@ -6,6 +6,7 @@ import {
   CheckCircle, XCircle, ArrowDown, Clock, Lightbulb, BarChart3,
 } from 'lucide-react';
 import { labelMuted, stAccent, stFontSm, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, strengthColor } from '@/lib/styles';
+import { fmtDateTime } from '@/lib/format';
 
 // ── Types ─────────────────────────────────────────────────────────────
 
@@ -564,6 +565,6 @@ export default function WinLossPage() {
 
       {/* Footer */}
       <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', textAlign: 'right', paddingTop: 'var(--space-2)' }}>
-        Generated {data.generatedAt ? new Date(data.generatedAt).toLocaleString() : '-'}</div>
+        Generated {data.generatedAt ? fmtDateTime(data.generatedAt) : '-'}</div>
     </div>);
 }

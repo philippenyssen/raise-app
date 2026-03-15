@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { useToast } from '@/components/toast';
+import { fmtDateTime } from '@/lib/format';
 import {
   ArrowLeft, Save, Sparkles, CheckCircle, AlertTriangle,
   Clock, History, Eye, Edit3
@@ -241,7 +242,7 @@ export default function DocumentEditorPage() {
             <span>{content.length.toLocaleString()} characters</span>
             <span className="flex items-center gap-1">
               <Clock className="w-3 h-3" />
-              Last saved: {new Date(doc.updated_at).toLocaleString()}</span></div></div>
+              Last saved: {fmtDateTime(doc.updated_at)}</span></div></div>
 
         {/* AI Panel */}
         <div className="w-72 shrink-0 space-y-3">
@@ -368,7 +369,7 @@ function VersionRow({ version: v, onRestore }: { version: Version; onRestore: (v
           <span className="text-xs ml-2" style={stTextMuted}>{v.change_summary}</span>
         )}
         <div className="text-xs mt-0.5" style={stTextMuted}>
-          {new Date(v.created_at).toLocaleString()} - {v.content.length.toLocaleString()} chars</div></div>
+          {fmtDateTime(v.created_at)} - {v.content.length.toLocaleString()} chars</div></div>
       <button
         onClick={() => onRestore(v)}
         className="text-xs px-2 py-1 rounded"

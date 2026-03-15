@@ -9,6 +9,8 @@ import {
 import { getIntensityColor, labelMuted, stAccent, stFontSm, stFontXs, stTextPrimary } from '@/lib/styles';
 import { MS_PER_HOUR } from '@/lib/time';
 
+import { fmtDateTime } from '@/lib/format';
+
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
@@ -620,6 +622,6 @@ export default function FomoPage() {
         {/* Footer timestamp */}
         <div style={{ marginTop: 'var(--space-6)', paddingTop: 'var(--space-3)', borderTop: '1px solid var(--border-subtle)' }}>
           <span style={labelMuted}>
-            Last computed: {new Date(data.generatedAt).toLocaleString()}</span></div></div>
+            Last computed: {fmtDateTime(data.generatedAt)}</span></div></div>
     </div>);
 }

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { cachedFetch } from '@/lib/cache';
 import { relativeTime } from '@/lib/time';
 import { useToast } from '@/components/toast';
+import { fmtDateTime } from '@/lib/format';
 import { scoreColorStyle, stAccent, stSurface0, stSurface1, stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 import {
   Activity, TrendingUp, TrendingDown, Minus, AlertTriangle,
@@ -697,7 +698,7 @@ export default function MomentumPage() {
         {/* ── Footer ─────────────────────────────────────────────────── */}
         <div className="text-center pb-4">
           <p className="text-xs" style={stTextTertiary}>
-            Generated {data.generatedAt ? new Date(data.generatedAt).toLocaleString() : 'just now'}
+            Generated {data.generatedAt ? fmtDateTime(data.generatedAt) : 'just now'}
             &nbsp;&middot;&nbsp; Momentum = meetings + status changes + enthusiasm shifts + tasks + follow-ups</p></div></div>
     </div>);
 }

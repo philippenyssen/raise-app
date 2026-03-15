@@ -9,6 +9,7 @@ import {
   Play, Settings, Layers,
 } from 'lucide-react';
 import { useToast } from '@/components/toast';
+import { fmtDateTime } from '@/lib/format';
 import { labelMuted, labelTertiary, stFontSm, stFontXs, stTextMuted } from '@/lib/styles';
 
 // ---------------------------------------------------------------------------
@@ -401,7 +402,7 @@ export default function EnrichmentPage() {
                         </div></div></div>
                     <div style={{ textAlign: 'right' }}>
                       <span style={labelMuted}>
-                        {job.completed_at ? new Date(job.completed_at).toLocaleString() : 'Running...'}</span>
+                        {job.completed_at ? fmtDateTime(job.completed_at) : 'Running...'}</span>
                       {errors.length > 0 && (
                         <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', marginTop: '2px' }}>
                           {errors.length} error{errors.length !== 1 ? 's' : ''}</div>

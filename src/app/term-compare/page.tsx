@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { useToast } from '@/components/toast';
+import { fmtDateTime } from '@/lib/format';
 import Link from 'next/link';
 import {
   Plus, Trash2, ArrowLeft, Scale, Trophy, DollarSign,
@@ -546,7 +547,7 @@ export default function TermComparePage() {
 
           {/* Generated timestamp */}
           <div className="text-center py-2" style={labelMuted10}>
-            Generated {new Date(results.generated_at).toLocaleString()}</div>
+            Generated {fmtDateTime(results.generated_at)}</div>
         </>
       )}
 

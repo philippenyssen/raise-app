@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { useToast } from '@/components/toast';
+import { fmtDateTime } from '@/lib/format';
 import { STATUS_LABELS } from '@/lib/constants';
 import { labelMuted10, stBorderTop, stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 import {
@@ -607,7 +608,7 @@ export default function StressTestPage() {
 
       {/* Footer */}
       <div className="text-center py-2" style={labelMuted10}>
-        Generated {new Date(data.generatedAt).toLocaleString()} — Data-driven from live investor pipeline</div>
+        Generated {fmtDateTime(data.generatedAt)} — Data-driven from live investor pipeline</div>
     </div>);
 }
 

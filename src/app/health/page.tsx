@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import {
   CheckCircle2, AlertTriangle, XCircle, Shield, RefreshCw,
 } from 'lucide-react';
+import { fmtDateTime } from '@/lib/format';
 import { stAccent, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 interface IntelligenceCheck { name: string; status: 'pass' | 'fail' | 'warn'; detail: string; }
@@ -231,9 +232,9 @@ export default function HealthPage() {
               <div className="mt-3 pt-3 flex items-center gap-4 text-xs" style={{ borderTop: '1px solid var(--border-default)', color: 'var(--text-muted)' }}>
                 <span>Context v{intelVerify.contextVersion}</span>
                 {intelVerify.contextBuildTimestamp && (
-                  <span>Built {new Date(intelVerify.contextBuildTimestamp).toLocaleString()}</span>
+                  <span>Built {fmtDateTime(intelVerify.contextBuildTimestamp)}</span>
                 )}
-                <span>Verified {new Date(intelVerify.verifiedAt).toLocaleString()}</span></div>
+                <span>Verified {fmtDateTime(intelVerify.verifiedAt)}</span></div>
             )}</div>
         ) : (
           <p className="text-sm" style={stTextMuted}>Intelligence verification unavailable.</p>

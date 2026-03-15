@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { CheckCircle, AlertTriangle, ArrowLeft, RefreshCw } from 'lucide-react';
+import { fmtDateTime } from '@/lib/format';
 import { stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 interface ConsistencyValue { document: string; value: string; }
@@ -119,7 +120,7 @@ export default function ConsistencyPage() {
                 {matchCount > 0 && ` \u00b7 ${matchCount} matching`}
                 {mismatchCount > 0 && ` \u00b7 ${mismatchCount} mismatched`}
                 {' \u00b7 '}
-                {new Date(result.checkedAt).toLocaleString()}</p></div></div>
+                {fmtDateTime(result.checkedAt)}</p></div></div>
 
           {/* No checks */}
           {result.checks.length === 0 && (

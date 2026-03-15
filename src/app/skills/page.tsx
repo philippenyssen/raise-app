@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Activity, AlertTriangle, CheckCircle2, XCircle, ChevronDown, ChevronRight } from 'lucide-react';
 import { useToast } from '@/components/toast';
+import { fmtDateTime } from '@/lib/format';
 import { getHealthBg, getHealthColor, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 interface SkillHealth {
@@ -172,7 +173,7 @@ export default function SkillsPage() {
                         <span className="flex-1 truncate" style={stTextTertiary}>
                           {exec.trigger_source}</span>
                         <span style={stTextMuted}>
-                          {new Date(exec.created_at).toLocaleString()}</span></div>
+                          {fmtDateTime(exec.created_at)}</span></div>
                     ))}</div>
                 )}
               </div>);
@@ -200,7 +201,7 @@ export default function SkillsPage() {
                 <span className="flex-1 truncate" style={stTextTertiary}>
                   {exec.error_message || `${exec.fields_extracted}/${exec.fields_expected} fields`}</span>
                 <span style={stTextMuted}>
-                  {new Date(exec.created_at).toLocaleString()}</span></div>
+                  {fmtDateTime(exec.created_at)}</span></div>
             ))}</div></div>
       )}
     </div>);
