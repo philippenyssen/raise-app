@@ -27,10 +27,12 @@ async function genericUpdate(
   updates: Record<string, unknown>,
   opts?: { exclude?: string[]; autoUpdatedAt?: boolean; booleanFields?: string[] },
 ) {
+  assertIdentifier(table);
   await ensureInitialized();
   const excl = new Set(opts?.exclude ?? ['id', 'created_at']);
   const fields = Object.keys(updates).filter(k => !excl.has(k));
   if (fields.length === 0) return;
+  fields.forEach(assertIdentifier);
   const sets = fields.map(f => `${f} = ?`).join(', ');
   const bools = new Set(opts?.booleanFields ?? []);
   const values = fields.map(f => {
@@ -56,12 +58,18 @@ async function genericDelete(table: string, id: string) {
   await getClient().execute({ sql: `DELETE FROM ${table} WHERE id = ?`, args: [id] });
 }
 
+function assertIdentifier(name: string): void {
+  if (!/^[a-zA-Z_]\w{0,63}$/.test(name)) throw new Error(`Invalid SQL identifier: ${name}`);
+}
+
 async function genericGetByField<T>(
   tableName: string,
   field: string,
   value: string,
   opts?: { orderBy?: string; limit?: number },
 ): Promise<T[]> {
+  assertIdentifier(tableName);
+  assertIdentifier(field);
   await ensureInitialized();
   let sql = `SELECT * FROM ${tableName} WHERE ${field} = ?`;
   if (opts?.orderBy && /^[\w]+(?: (?:ASC|DESC))?(?:, ?[\w]+(?: (?:ASC|DESC))?)*$/i.test(opts.orderBy)) sql += ` ORDER BY ${opts.orderBy}`;
