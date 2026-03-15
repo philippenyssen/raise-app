@@ -98,20 +98,30 @@ export default function ComparePage() {
 
   // Fetch all investors on mount
   useEffect(() => { document.title = 'Raise | Investor Compare'; }, []);
+  const loadInvestors = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/investors');
+      if (!res.ok) throw new Error(`${res.status}`);
+      const data = await res.json();
+      setAllInvestors(data);
+    } catch {
+      toast('Couldn\'t load investors — try refreshing the page', 'error');
+    } finally {
+      setLoading(false);
+    }
+  }, [toast]);
+  useEffect(() => { loadInvestors(); }, [loadInvestors]);
+
   useEffect(() => {
-    async function load() {
-      try {
-        const res = await fetch('/api/investors');
-        if (!res.ok) throw new Error(`${res.status}`);
-        const data = await res.json();
-        setAllInvestors(data);
-      } catch {
-        toast('Couldn\'t load investors — try refreshing the page', 'error');
-      } finally {
-        setLoading(false);
-      }}
-    load();
-  }, []);
+    const h = (e: KeyboardEvent) => {
+      if (e.key === 'r' && !e.metaKey && !e.ctrlKey && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement)) {
+        e.preventDefault(); loadInvestors();
+      }
+    };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, [loadInvestors]);
 
   const runComparison = useCallback(async () => {
     if (selectedIds.length < 2) {
