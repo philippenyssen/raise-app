@@ -1,7 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { logSkillExecution } from './db';
 
-export const AI_MODEL = 'claude-sonnet-4-20250514';
+export const AI_MODEL = 'claude-sonnet-4-6';
 
 let _client: Anthropic | null = null;
 export function getAIClient(): Anthropic {
@@ -116,7 +116,7 @@ INVESTOR: ${investorName}
 MEETING TYPE: ${meetingType}
 
 RAW NOTES:
-${rawNotes}
+${rawNotes.length > 15000 ? rawNotes.substring(0, 15000) + '\n[...truncated — notes exceeded 15,000 chars]' : rawNotes}
 
 Extract structured data in this exact JSON format (no markdown, just pure JSON):
 {
