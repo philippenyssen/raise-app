@@ -21,7 +21,11 @@ export async function POST(req: NextRequest) {
   if (!body.title || typeof body.title !== 'string' || !body.title.trim()) {
     return NextResponse.json({ error: 'title is required' }, { status: 400 });
   }
-  const doc = await createDocument(body as { title: string; type: string; content: string });
-  emitContextChange('document_created', `Created document ${(body.title as string) || ''}`);
+  const ALLOWED_FIELDS = new Set(['title', 'type', 'content']);
+  const filtered = Object.fromEntries(
+    Object.entries(body).filter(([k]) => ALLOWED_FIELDS.has(k))
+  ) as { title: string; type: string; content: string };
+  const doc = await createDocument(filtered);
+  emitContextChange('document_created', `Created document ${filtered.title || ''}`);
   return NextResponse.json(doc, { status: 201 });
 }
