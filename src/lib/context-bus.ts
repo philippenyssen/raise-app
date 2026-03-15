@@ -97,7 +97,10 @@ export type ContextSource =
   | 'commitment_created'
   | 'commitment_updated'
   | 'acceleration_executed'
-  | 'status_changed';
+  | 'status_changed'
+  | 'term_sheet_created'
+  | 'term_sheet_updated'
+  | 'term_sheet_deleted';
 
 interface ContextChange {
   version: number;

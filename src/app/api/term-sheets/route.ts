@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAllTermSheets, createTermSheet, updateTermSheet, deleteTermSheet } from '@/lib/db';
+import { emitContextChange } from '@/lib/context-bus';
 
 const ALLOWED_FIELDS = new Set([
   'investor', 'valuation', 'amount', 'liq_pref', 'anti_dilution', 'board_seats',
@@ -87,6 +88,7 @@ export async function DELETE(req: NextRequest) {
   if (!id) return NextResponse.json({ error: 'id is required' }, { status: 400 });
   try {
     await deleteTermSheet(id);
+    emitContextChange('term_sheet_deleted', `Deleted term sheet ${id}`);
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error('[TERM_SHEETS_DELETE]', err instanceof Error ? err.message : err);
