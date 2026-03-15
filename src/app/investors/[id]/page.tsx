@@ -686,7 +686,7 @@ export default function InvestorDetailPage() {
               <div className="flex items-center gap-2">
                 <SendHorizonal className="w-3.5 h-3.5" style={{ color: overdueItems.length > 0 ? 'var(--danger)' : 'var(--accent)' }}
                   />
-                <span className="text-xs font-normal  tracking-wider" style={textTertiary}>
+                <span className="text-xs font-normal tracking-wider" style={textTertiary}>
                   Pending Actions</span>
                 {overdueItems.length > 0 && (
                   <span
@@ -1238,7 +1238,7 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-2">
             <Gauge className="w-4 h-4" style={textTertiary} />
-            <h2 className="text-xs font-normal  tracking-wider" style={textTertiary}>Intelligence Score</h2></div>
+            <h2 className="text-xs font-normal tracking-wider" style={textTertiary}>Intelligence Score</h2></div>
           <button
             onClick={onRefresh}
             disabled={loading}
@@ -1274,7 +1274,7 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
             <div className="flex items-start gap-2">
               <Lightbulb className="w-3.5 h-3.5 shrink-0 mt-0.5" style={textTertiary} />
               <div className="flex-1 min-w-0">
-                <div className="text-xs font-normal  mb-0.5" style={textMuted}>Next Action</div>
+                <div className="text-xs font-normal mb-0.5" style={textMuted}>Next Action</div>
                 <div className="flex items-center gap-2">
                   <p className="text-sm leading-snug flex-1" style={textSecondary}>{score.nextBestAction}</p>
                   <Link
@@ -1387,7 +1387,7 @@ function ConvictionTrajectoryPanel({ trajectory }: { trajectory: ConvictionTraje
       <div className="p-5" style={stSurface1}>
         <div className="flex items-center gap-2 mb-4">
           <Activity className="w-4 h-4" style={textTertiary} />
-          <h2 className="text-xs font-normal  tracking-wider" style={textTertiary}>Conviction Trajectory</h2></div>
+          <h2 className="text-xs font-normal tracking-wider" style={textTertiary}>Conviction Trajectory</h2></div>
 
         <div className="flex items-center gap-6 flex-wrap">
           {/* Sparkline */}

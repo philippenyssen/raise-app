@@ -269,7 +269,7 @@ export default function AnalyticsPage() {
         <div className="space-y-6">
           {/* Horizontal funnel bars */}
           <div>
-            <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
+            <h3 className="text-xs font-normal tracking-wider mb-3" style={stTextMuted}>
               Pipeline Distribution</h3>
             <div className="space-y-2">
               {summary.pipelineStages.map((stage, idx) => {
@@ -342,7 +342,7 @@ export default function AnalyticsPage() {
 
           {/* Conversion Rates */}
           <div>
-            <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
+            <h3 className="text-xs font-normal tracking-wider mb-3" style={stTextMuted}>
               Stage-to-Stage Conversion</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {funnel.conversionRates.map(cr => (
@@ -362,7 +362,7 @@ export default function AnalyticsPage() {
 
           {/* Drop-off Analysis */}
           <div>
-            <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
+            <h3 className="text-xs font-normal tracking-wider mb-3" style={stTextMuted}>
               Drop-off by Stage</h3>
             <div className="space-y-1.5">
               {funnel.dropOffRates.filter(d => d.rate > 0).map(d => (
@@ -383,7 +383,7 @@ export default function AnalyticsPage() {
           {/* Average Time in Stage */}
           {Object.keys(funnel.avgTimeInStage).length > 0 && (
             <div>
-              <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
+              <h3 className="text-xs font-normal tracking-wider mb-3" style={stTextMuted}>
                 Average Time in Stage (days)</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {Object.entries(funnel.avgTimeInStage).map(([stage, data]) => (
@@ -452,13 +452,13 @@ export default function AnalyticsPage() {
 
           {/* Meetings per week sparkline */}
           <div>
-            <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
+            <h3 className="text-xs font-normal tracking-wider mb-3" style={stTextMuted}>
               Meetings Per Week (Last 8 Weeks)</h3>
             <SparklineChart data={velocity.meetingsPerWeek} color="var(--accent)" /></div>
 
           {/* Investors added per week */}
           <div>
-            <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
+            <h3 className="text-xs font-normal tracking-wider mb-3" style={stTextMuted}>
               New Investors Per Week</h3>
             <SparklineChart data={velocity.investorsPerWeek} color="var(--accent-muted)" /></div>
 
@@ -561,7 +561,7 @@ export default function AnalyticsPage() {
         <div className="space-y-6">
           {/* Enthusiasm by Type */}
           <div>
-            <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
+            <h3 className="text-xs font-normal tracking-wider mb-3" style={stTextMuted}>
               Average Enthusiasm by Investor Type</h3>
             {Object.keys(engagement.enthusiasmByType).length === 0 ? (
               <p style={labelSmMuted}>No enthusiasm data yet. Log meetings to track investor signals.</p>
@@ -589,7 +589,7 @@ export default function AnalyticsPage() {
           {/* Objection Leaderboard */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
+              <h3 className="text-xs font-normal tracking-wider mb-3" style={stTextMuted}>
                 Top Objection Topics</h3>
               {engagement.topObjections.length === 0 ? (
                 <p style={labelSmMuted}>No objections recorded yet.</p>
@@ -618,7 +618,7 @@ export default function AnalyticsPage() {
             <div className="space-y-4">
               {/* Objection Resolution */}
               <div>
-                <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
+                <h3 className="text-xs font-normal tracking-wider mb-3" style={stTextMuted}>
                   Objection Resolution</h3>
                 <div className="rounded-lg p-4">
                   <div className="flex items-baseline gap-2">
@@ -644,7 +644,7 @@ export default function AnalyticsPage() {
 
               {/* Competitive Mentions */}
               <div>
-                <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
+                <h3 className="text-xs font-normal tracking-wider mb-3" style={stTextMuted}>
                   Competitive Intelligence</h3>
                 <div className="rounded-lg p-4">
                   <div className="text-2xl font-normal" style={stTextPrimary}>
@@ -696,7 +696,7 @@ export default function AnalyticsPage() {
           {/* Outcomes by Tier */}
           {Object.keys(winLoss.outcomeByTier).length > 0 && (
             <div>
-              <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
+              <h3 className="text-xs font-normal tracking-wider mb-3" style={stTextMuted}>
                 Outcomes by Tier</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {Object.entries(winLoss.outcomeByTier)
@@ -735,7 +735,7 @@ export default function AnalyticsPage() {
           {/* Outcomes by Type */}
           {Object.keys(winLoss.outcomeByType).length > 0 && (
             <div>
-              <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
+              <h3 className="text-xs font-normal tracking-wider mb-3" style={stTextMuted}>
                 Outcomes by Investor Type</h3>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                 {Object.entries(winLoss.outcomeByType)
@@ -762,7 +762,7 @@ export default function AnalyticsPage() {
           {/* Top Pass Reasons */}
           {winLoss.topPassReasons.length > 0 && (
             <div>
-              <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
+              <h3 className="text-xs font-normal tracking-wider mb-3" style={stTextMuted}>
                 Top Pass Reasons</h3>
               <div className="space-y-1.5">
                 {winLoss.topPassReasons.map((reason, i) => (
@@ -793,7 +793,7 @@ function SummaryCard({
     <div className="rounded-xl px-4 py-3" style={stSurface1}>
       <div className="flex items-center gap-2 mb-1">
         <span style={{ color }}>{icon}</span>
-        <span className="font-normal  tracking-wider" style={labelMuted10}>{label}</span></div>
+        <span className="font-normal tracking-wider" style={labelMuted10}>{label}</span></div>
       <div className="flex items-baseline gap-1.5">
         <span className="text-xl font-normal" style={stTextPrimary}>{value}</span>
         <span style={labelMuted10}>{sub}</span></div>

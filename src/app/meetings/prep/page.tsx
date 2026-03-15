@@ -375,7 +375,7 @@ function MeetingPrepContent() {
 
         {/* Investor selector */}
         <div className="no-print">
-          <label className="text-xs block mb-1.5 font-normal  tracking-wider" style={stTextMuted}>Select Investor</label>
+          <label className="text-xs block mb-1.5 font-normal tracking-wider" style={stTextMuted}>Select Investor</label>
           <div className="relative">
             <select
               value={selectedId}
@@ -505,7 +505,7 @@ function MeetingPrepContent() {
                 <button
                   onClick={() => setBriefExpanded(!briefExpanded)}
                   className="w-full p-5 flex items-center justify-between no-print">
-                  <h2 className="text-sm font-normal  tracking-wider flex items-center gap-2 print-section-title" style={stAccent}>
+                  <h2 className="text-sm font-normal tracking-wider flex items-center gap-2 print-section-title" style={stAccent}>
                     <Sparkles className="w-4 h-4" />
                     Customized Brief for {investor.name} ({TYPE_LABELS[investor.type] || investor.type})</h2>
                   <span style={stAccent}>
@@ -513,27 +513,27 @@ function MeetingPrepContent() {
                 </button>
                 {/* Print-only static header */}
                 <div className="hidden print:block p-5 pb-0">
-                  <h2 className="text-sm font-normal  tracking-wider flex items-center gap-2 print-section-title">
+                  <h2 className="text-sm font-normal tracking-wider flex items-center gap-2 print-section-title">
                     Customized Brief for {investor.name} ({TYPE_LABELS[investor.type] || investor.type})</h2></div>
 
                 {briefExpanded && (
                   <div className="px-5 pb-5 space-y-5">
                     {/* Opening Hook */}
                     <div>
-                      <h3 className="text-xs font-normal  tracking-wider mb-2" style={stAccent}>Opening</h3>
+                      <h3 className="text-xs font-normal tracking-wider mb-2" style={stAccent}>Opening</h3>
                       <p className="text-sm leading-relaxed" style={stTextSecondary}>{meetingBrief.brief.personalized_opening}</p>
                     </div>
 
                     {/* Narrative Profile */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <h3 className="text-xs font-normal  tracking-wider mb-2" style={stAccent}>Emphasize</h3>
+                        <h3 className="text-xs font-normal tracking-wider mb-2" style={stAccent}>Emphasize</h3>
                         <div className="flex flex-wrap gap-1.5">
                           {meetingBrief.narrative_profile.emphasis.map((e, i) => (
                             <span key={i} className="text-xs px-2 py-1 rounded-md" style={stAccentBadge}>{e}</span>
                           ))}</div></div>
                       <div>
-                        <h3 className="text-xs font-normal  tracking-wider mb-2" style={stTextPrimary}>Avoid</h3>
+                        <h3 className="text-xs font-normal tracking-wider mb-2" style={stTextPrimary}>Avoid</h3>
                         <div className="flex flex-wrap gap-1.5">
                           {meetingBrief.narrative_profile.avoid_topics.map((t, i) => (
                             <span key={i} className="text-xs px-2 py-1 rounded-md" style={{ background: 'var(--danger-muted)', ...stTextPrimary }}>{t}</span>
@@ -541,7 +541,7 @@ function MeetingPrepContent() {
 
                     {/* Key Talking Points */}
                     <div>
-                      <h3 className="text-xs font-normal  tracking-wider mb-2 flex items-center gap-1.5" style={stAccent}>
+                      <h3 className="text-xs font-normal tracking-wider mb-2 flex items-center gap-1.5" style={stAccent}>
                         <ListChecks className="w-3.5 h-3.5" />
                         Key Talking Points</h3>
                       <div className="space-y-2">
@@ -554,7 +554,7 @@ function MeetingPrepContent() {
                     {/* Key Metrics */}
                     {meetingBrief.brief.metrics_to_highlight.length > 0 && (
                       <div>
-                        <h3 className="text-xs font-normal  tracking-wider mb-2 flex items-center gap-1.5" style={stAccent}>
+                        <h3 className="text-xs font-normal tracking-wider mb-2 flex items-center gap-1.5" style={stAccent}>
                           <Target className="w-3.5 h-3.5" />
                           Key Metrics</h3>
                         <div className="rounded-lg overflow-hidden">
@@ -577,7 +577,7 @@ function MeetingPrepContent() {
                     {/* Anticipated Questions with Answers */}
                     {meetingBrief.brief.anticipated_questions_with_answers.length > 0 && (
                       <div>
-                        <h3 className="text-xs font-normal  tracking-wider mb-2 flex items-center gap-1.5" style={stAccent}>
+                        <h3 className="text-xs font-normal tracking-wider mb-2 flex items-center gap-1.5" style={stAccent}>
                           <MessageCircleQuestion className="w-3.5 h-3.5" />
                           Anticipated Questions + Suggested Answers</h3>
                         <div className="space-y-3">
@@ -591,7 +591,7 @@ function MeetingPrepContent() {
                     {/* Data Room Priority */}
                     {meetingBrief.data_room_priority.length > 0 && (
                       <div>
-                        <h3 className="text-xs font-normal  tracking-wider mb-2 flex items-center gap-1.5" style={stAccent}>
+                        <h3 className="text-xs font-normal tracking-wider mb-2 flex items-center gap-1.5" style={stAccent}>
                           <FolderOpen className="w-3.5 h-3.5" />
                           Data Room Priority</h3>
                         <div className="space-y-1.5">
@@ -609,13 +609,13 @@ function MeetingPrepContent() {
                     {/* Previous Meeting + Unresolved Items */}
                     {meetingBrief.brief.previous_meeting_summary && (
                       <div className="pt-4" style={stBorderTop}>
-                        <h3 className="text-xs font-normal  tracking-wider mb-2" style={stTextMuted}>Previous Meeting</h3>
+                        <h3 className="text-xs font-normal tracking-wider mb-2" style={stTextMuted}>Previous Meeting</h3>
                         <p className="text-sm" style={stTextTertiary}>{meetingBrief.brief.previous_meeting_summary}</p></div>
                     )}
 
                     {meetingBrief.brief.unresolved_items.length > 0 && (
                       <div>
-                        <h3 className="text-xs font-normal  tracking-wider mb-2" style={stTextTertiary}>Unresolved Items</h3>
+                        <h3 className="text-xs font-normal tracking-wider mb-2" style={stTextTertiary}>Unresolved Items</h3>
                         <div className="space-y-1.5">
                           {meetingBrief.brief.unresolved_items.map((item, i) => (
                             <div key={i} className="flex items-start gap-2 text-sm">
@@ -628,7 +628,7 @@ function MeetingPrepContent() {
                     {/* Risks to Watch */}
                     {meetingBrief.brief.risks_to_watch.length > 0 && (
                       <div>
-                        <h3 className="text-xs font-normal  tracking-wider mb-2" style={stTextPrimary}>Risks to Watch</h3>
+                        <h3 className="text-xs font-normal tracking-wider mb-2" style={stTextPrimary}>Risks to Watch</h3>
                         <div className="space-y-1.5">
                           {meetingBrief.brief.risks_to_watch.map((risk, i) => (
                             <div key={i} className="flex items-start gap-2 text-sm">
@@ -640,13 +640,13 @@ function MeetingPrepContent() {
 
                     {/* Recommended Ask */}
                     <div className="pt-4" style={stBorderTop}>
-                      <h3 className="text-xs font-normal  tracking-wider mb-2" style={stTextSecondary}>Recommended Ask</h3>
+                      <h3 className="text-xs font-normal tracking-wider mb-2" style={stTextSecondary}>Recommended Ask</h3>
                       <p className="text-sm font-normal" style={stTextSecondary}>{meetingBrief.brief.recommended_ask}</p></div>
 
                     {/* Playbook Insights */}
                     {meetingBrief.playbook_insights.length > 0 && (
                       <div className="pt-4" style={stBorderTop}>
-                        <h3 className="text-xs font-normal  tracking-wider mb-2" style={stTextTertiary}>Playbook Insights</h3>
+                        <h3 className="text-xs font-normal tracking-wider mb-2" style={stTextTertiary}>Playbook Insights</h3>
                         <div className="space-y-2">
                           {meetingBrief.playbook_insights.map((pi, i) => (
                             <div key={i} className="text-sm">
@@ -660,7 +660,7 @@ function MeetingPrepContent() {
 
                     {/* Tone Guidance */}
                     <div className="pt-4" style={stBorderTop}>
-                      <h3 className="text-xs font-normal  tracking-wider mb-2" style={stTextMuted}>Tone Guidance</h3>
+                      <h3 className="text-xs font-normal tracking-wider mb-2" style={stTextMuted}>Tone Guidance</h3>
                       <p className="text-xs italic" style={stTextMuted}>{meetingBrief.narrative_profile.tone_guidance}</p></div>
 
                     <div className="text-xs text-right" style={stTextMuted}>
@@ -670,7 +670,7 @@ function MeetingPrepContent() {
 
             {/* ============ INVESTOR PROFILE ============ */}
             <section className="rounded-xl p-5 print-card">
-              <h2 className="text-sm font-normal  tracking-wider mb-4 flex items-center gap-2 print-section-title" style={stTextTertiary}>
+              <h2 className="text-sm font-normal tracking-wider mb-4 flex items-center gap-2 print-section-title" style={stTextTertiary}>
                 <span style={stAccent}><Building2 className="w-4 h-4" /></span>
                 Investor Profile</h2>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -723,7 +723,7 @@ function MeetingPrepContent() {
             {/* ============ SUGGESTED TALKING POINTS ============ */}
             {talkingPoints.length > 0 && (
               <section className="rounded-xl p-5 print-card">
-                <h2 className="text-sm font-normal  tracking-wider mb-4 flex items-center gap-2 print-section-title" style={stTextTertiary}>
+                <h2 className="text-sm font-normal tracking-wider mb-4 flex items-center gap-2 print-section-title" style={stTextTertiary}>
                   <span style={stTextTertiary}><Zap className="w-4 h-4" /></span>
                   Suggested Talking Points</h2>
                 <div className="space-y-2.5">
@@ -758,7 +758,7 @@ function MeetingPrepContent() {
             {/* ============ KEY RISKS ============ */}
             {(portfolioConflicts.length > 0 || unresolvedObjections.length > 0 || investor.portfolio_conflicts || enthusiasmTrend === 'declining') && (
               <section className="rounded-xl p-5 print-card" style={{ background: 'var(--danger-muted)' }}>
-                <h2 className="text-sm font-normal  tracking-wider mb-4 flex items-center gap-2 print-section-title" style={stTextPrimary}>
+                <h2 className="text-sm font-normal tracking-wider mb-4 flex items-center gap-2 print-section-title" style={stTextPrimary}>
                   <AlertTriangle className="w-4 h-4" />
                   Key Risks to Address</h2>
                 <div className="space-y-3">
@@ -806,7 +806,7 @@ function MeetingPrepContent() {
 
             {/* ============ MEETING HISTORY ============ */}
             <section className="rounded-xl p-5 print-card">
-              <h2 className="text-sm font-normal  tracking-wider mb-4 flex items-center gap-2 print-section-title" style={stTextTertiary}>
+              <h2 className="text-sm font-normal tracking-wider mb-4 flex items-center gap-2 print-section-title" style={stTextTertiary}>
                 <span style={stAccent}><Calendar className="w-4 h-4" /></span>
                 Meeting History
                 <span className="text-xs font-normal ml-1" style={stTextMuted}>({meetings.length} meetings)</span></h2>
@@ -824,14 +824,14 @@ function MeetingPrepContent() {
             {/* ============ INTELLIGENCE ============ */}
             {(briefs.length > 0 || partners.length > 0 || portfolio.length > 0) && (
               <section className="rounded-xl p-5 print-card">
-                <h2 className="text-sm font-normal  tracking-wider mb-4 flex items-center gap-2 print-section-title" style={stTextTertiary}>
+                <h2 className="text-sm font-normal tracking-wider mb-4 flex items-center gap-2 print-section-title" style={stTextTertiary}>
                   <span style={stAccent}><BookOpen className="w-4 h-4" /></span>
                   Intelligence</h2>
 
                 {/* Research briefs */}
                 {briefs.length > 0 && (
                   <div className="mb-4">
-                    <h3 className="text-xs font-normal  tracking-wider mb-2" style={stTextMuted}>Research Briefs</h3>
+                    <h3 className="text-xs font-normal tracking-wider mb-2" style={stTextMuted}>Research Briefs</h3>
                     <div className="space-y-2">
                       {briefs.map(b => (
                         <details key={b.id} className="group rounded-lg overflow-hidden">
@@ -851,7 +851,7 @@ function MeetingPrepContent() {
                 {/* Partner profiles */}
                 {partners.length > 0 && (
                   <div className="mb-4">
-                    <h3 className="text-xs font-normal  tracking-wider mb-2" style={stTextMuted}>Partner Profiles</h3>
+                    <h3 className="text-xs font-normal tracking-wider mb-2" style={stTextMuted}>Partner Profiles</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                       {partners.map(p => (
                         <div key={p.id} className="rounded-lg p-3">
@@ -868,7 +868,7 @@ function MeetingPrepContent() {
                 {/* Portfolio companies */}
                 {portfolio.length > 0 && (
                   <div>
-                    <h3 className="text-xs font-normal  tracking-wider mb-2" style={stTextMuted}>Portfolio Companies</h3>
+                    <h3 className="text-xs font-normal tracking-wider mb-2" style={stTextMuted}>Portfolio Companies</h3>
                     <div className="rounded-lg overflow-hidden">
                       <table className="w-full text-xs">
                         <thead style={stSurface1Border}>
@@ -892,7 +892,7 @@ function MeetingPrepContent() {
 
             {/* ============ OPEN TASKS ============ */}
             <section className="rounded-xl p-5 print-card">
-              <h2 className="text-sm font-normal  tracking-wider mb-4 flex items-center gap-2 print-section-title" style={stTextTertiary}>
+              <h2 className="text-sm font-normal tracking-wider mb-4 flex items-center gap-2 print-section-title" style={stTextTertiary}>
                 <span style={stTextSecondary}><CheckCircle className="w-4 h-4" /></span>
                 Open Tasks
                 <span className="text-xs font-normal ml-1" style={stTextMuted}>
@@ -935,7 +935,7 @@ function MeetingPrepContent() {
 
             {/* ============ PRE-MEETING NOTES ============ */}
             <section className="rounded-xl p-5 print-card">
-              <h2 className="text-sm font-normal  tracking-wider mb-4 flex items-center gap-2 print-section-title" style={stTextTertiary}>
+              <h2 className="text-sm font-normal tracking-wider mb-4 flex items-center gap-2 print-section-title" style={stTextTertiary}>
                 <span style={stTextTertiary}><MessageSquare className="w-4 h-4" /></span>
                 Pre-Meeting Notes</h2>
               <textarea

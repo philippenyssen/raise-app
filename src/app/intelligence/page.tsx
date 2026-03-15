@@ -511,7 +511,7 @@ function RecentResearchSection({ briefs }: { briefs: IntelligenceBrief[] }) {
       className="rounded-xl overflow-hidden">
       <div className="px-4 py-3 flex items-center gap-2" style={{ background: 'var(--surface-1)', borderBottom: '1px solid var(--border-default)' }}>
         <Radar className="w-4 h-4" style={stAccent} />
-        <h2 className="text-xs font-normal  tracking-wider" style={stTextTertiary}>
+        <h2 className="text-xs font-normal tracking-wider" style={stTextTertiary}>
           Recent Research</h2>
         <span
           className="text-xs px-1.5 py-0.5 rounded ml-1"

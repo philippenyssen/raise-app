@@ -390,7 +390,7 @@ export default function ObjectionsPage() {
                         ) : (
                           <ChevronRight className="w-4 h-4" style={color.text} />
                         )}
-                        <span className="text-sm font-normal  tracking-wide" style={color.text}>
+                        <span className="text-sm font-normal tracking-wide" style={color.text}>
                           {group.topic}</span>
                         <span className="text-xs px-2 py-0.5 rounded-full" style={{ ...stTextMuted, background: 'var(--fg-80)' }}>
                           {group.count} objection{group.count !== 1 ? 's' : ''}</span></div>
@@ -507,7 +507,7 @@ export default function ObjectionsPage() {
             <div className="rounded-xl p-4 space-y-3">
               <div className="flex items-center gap-2">
                 <AlertTriangle className="w-4 h-4" style={stTextTertiary} />
-                <h3 className="text-xs font-normal  tracking-wide" style={stTextTertiary}>Top Unresolved</h3></div>
+                <h3 className="text-xs font-normal tracking-wide" style={stTextTertiary}>Top Unresolved</h3></div>
               {unresolved.length === 0 ? (
                 <p className="text-xs" style={stTextMuted}>All objections have effective responses.</p>
               ) : (
@@ -551,7 +551,7 @@ export default function ObjectionsPage() {
             <div className="rounded-xl p-4 space-y-3">
               <div className="flex items-center gap-2">
                 <Shield className="w-4 h-4" style={stAccent} />
-                <h3 className="text-xs font-normal  tracking-wide" style={stTextTertiary}>Coverage</h3></div>
+                <h3 className="text-xs font-normal tracking-wide" style={stTextTertiary}>Coverage</h3></div>
               {playbook.length === 0 ? (
                 <p className="text-xs" style={stTextMuted}>Log meetings with objections to build coverage data.</p>
               ) : (
@@ -577,7 +577,7 @@ export default function ObjectionsPage() {
             <div className="rounded-xl p-4 space-y-3">
               <div className="flex items-center gap-2">
                 <Target className="w-4 h-4" style={stTextTertiary} />
-                <h3 className="text-xs font-normal  tracking-wide" style={stTextTertiary}>Meeting Prep</h3></div>
+                <h3 className="text-xs font-normal tracking-wide" style={stTextTertiary}>Meeting Prep</h3></div>
               <p className="text-xs" style={stTextMuted}>Select an investor to see their objection history and what worked with similar investors.</p>
               <select
                 value={selectedInvestor}
@@ -825,7 +825,7 @@ function EffectivenessTab({
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <span
-                            className="text-xs font-normal  tracking-wide px-2 py-1 rounded"
+                            className="text-xs font-normal tracking-wide px-2 py-1 rounded"
                             style={{ ...color.bg, ...color.text }}>
                             {te.topic}</span>
                           <span className="text-xs" style={stTextMuted}>
@@ -1001,7 +1001,7 @@ function EffectivenessTab({
             <div className="rounded-xl p-4 space-y-3">
               <div className="flex items-center gap-2">
                 <TrendingUp className="w-4 h-4" style={stTextTertiary} />
-                <h3 className="text-xs font-normal  tracking-wide" style={stTextTertiary}>Emerging</h3></div>
+                <h3 className="text-xs font-normal tracking-wide" style={stTextTertiary}>Emerging</h3></div>
               <div className="space-y-2">
                 {evolution.emergingObjections.map((obj, i) => {
                   const color = getColor(obj.topic);
@@ -1023,7 +1023,7 @@ function EffectivenessTab({
             <div className="rounded-xl p-4 space-y-3">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4" style={stTextSecondary} />
-                <h3 className="text-xs font-normal  tracking-wide" style={stTextTertiary}>Resolved</h3></div>
+                <h3 className="text-xs font-normal tracking-wide" style={stTextTertiary}>Resolved</h3></div>
               <div className="space-y-2">
                 {evolution.resolvedObjections.map((obj, i) => {
                   const color = getColor(obj.topic);
@@ -1049,7 +1049,7 @@ function EffectivenessTab({
             <div className="rounded-xl p-4 space-y-3">
               <div className="flex items-center gap-2">
                 <AlertTriangle className="w-4 h-4" style={stTextPrimary} />
-                <h3 className="text-xs font-normal  tracking-wide" style={stTextTertiary}>Persistent</h3></div>
+                <h3 className="text-xs font-normal tracking-wide" style={stTextTertiary}>Persistent</h3></div>
               <div className="space-y-2">
                 {evolution.persistentObjections.map((obj, i) => {
                   const color = getColor(obj.topic);
@@ -1073,7 +1073,7 @@ function EffectivenessTab({
             <div className="rounded-xl p-4 space-y-3">
               <div className="flex items-center gap-2">
                 <BarChart3 className="w-4 h-4" style={stAccent} />
-                <h3 className="text-xs font-normal  tracking-wide" style={stTextTertiary}>Activity by Week</h3></div>
+                <h3 className="text-xs font-normal tracking-wide" style={stTextTertiary}>Activity by Week</h3></div>
               {(() => {
                 // Group by week, show last 8 weeks max
                 const weekMap = new Map<string, number>();
@@ -1112,7 +1112,7 @@ function EffectivenessTab({
           <div className="rounded-xl p-4 space-y-3">
             <div className="flex items-center gap-2">
               <Shield className="w-4 h-4" style={stAccent} />
-              <h3 className="text-xs font-normal  tracking-wide" style={stTextTertiary}>Resolution Rate</h3></div>
+              <h3 className="text-xs font-normal tracking-wide" style={stTextTertiary}>Resolution Rate</h3></div>
             {topic_effectiveness.length === 0 ? (
               <p className="text-xs" style={stTextMuted}>Resolution data appears after objections are addressed in follow-ups.</p>
             ) : (

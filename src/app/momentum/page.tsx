@@ -244,7 +244,7 @@ export default function MomentumPage() {
           style={stSurface1}>
           <div className="flex items-center gap-2 mb-4">
             <Flame className="w-4 h-4" style={stTextSecondary} />
-            <h2 className="text-sm font-normal  tracking-wider" style={stTextSecondary}>Pipeline Momentum &mdash; 8 Week Trend</h2>
+            <h2 className="text-sm font-normal tracking-wider" style={stTextSecondary}>Pipeline Momentum &mdash; 8 Week Trend</h2>
           </div>
           <div className="flex items-end gap-2 h-32">
             {data.overallTrend.map((t, i) => {
@@ -325,7 +325,7 @@ export default function MomentumPage() {
             className="flex items-center gap-2 px-6 py-4"
             style={{ borderBottom: '1px solid var(--border-default)' }}>
             <Eye className="w-4 h-4" style={stAccent} />
-            <h2 className="text-sm font-normal  tracking-wider" style={stTextSecondary}>Investor Momentum Heatmap</h2>
+            <h2 className="text-sm font-normal tracking-wider" style={stTextSecondary}>Investor Momentum Heatmap</h2>
             <span className="ml-auto text-xs" style={stTextMuted}>{data.matrix.length} active investors &middot; Score 0-100</span>
           </div>
           <div className="overflow-x-auto">
@@ -455,7 +455,7 @@ export default function MomentumPage() {
             style={{ background: 'var(--surface-1)' }}>
             <div className="flex items-center gap-2 mb-4">
               <Users className="w-4 h-4" style={stTextSecondary} />
-              <h2 className="text-sm font-normal  tracking-wider" style={stTextSecondary}>Cohort Momentum</h2></div>
+              <h2 className="text-sm font-normal tracking-wider" style={stTextSecondary}>Cohort Momentum</h2></div>
             {data.cohorts.length === 0 ? (
               <p className="text-sm" style={stTextMuted}>No cohort data available.</p>
             ) : (
@@ -509,7 +509,7 @@ export default function MomentumPage() {
             style={{ background: 'var(--surface-1)' }}>
             <div className="flex items-center gap-2 mb-4">
               <Zap className="w-4 h-4" style={stTextTertiary} />
-              <h2 className="text-sm font-normal  tracking-wider" style={stTextSecondary}>Momentum Anomalies</h2>
+              <h2 className="text-sm font-normal tracking-wider" style={stTextSecondary}>Momentum Anomalies</h2>
               {data.anomalies.length > 0 && (
                 <span className="ml-auto px-2 py-0.5 rounded-full text-xs font-normal" style={{ background: 'var(--warning-muted)', color: 'var(--text-tertiary)', boxShadow: 'inset 0 0 0 1px var(--warn-40)' }}>{data.anomalies.length}</span>
               )}</div>
@@ -577,7 +577,7 @@ export default function MomentumPage() {
             style={stSurface1}>
             <div className="flex items-center gap-2 mb-4">
               <AlertTriangle className="w-4 h-4" style={stTextPrimary} />
-              <h2 className="text-sm font-normal  tracking-wider" style={stTextSecondary}>Cross-Investor Signals</h2>
+              <h2 className="text-sm font-normal tracking-wider" style={stTextSecondary}>Cross-Investor Signals</h2>
               <span className="ml-auto px-2 py-0.5 rounded-full text-xs font-normal" style={{ background: 'var(--danger-muted, var(--fg-40))', color: 'var(--text-primary)', boxShadow: 'inset 0 0 0 1px var(--fg-40)' }}>{data.crossSignals.length}</span>
             </div>
             <div className="space-y-3">
@@ -605,7 +605,7 @@ export default function MomentumPage() {
             style={stSurface1}>
             <div className="flex items-center gap-2 mb-4">
               <Clock className="w-4 h-4" style={stTextTertiary} />
-              <h2 className="text-sm font-normal  tracking-wider" style={stTextSecondary}>Timing Signals</h2>
+              <h2 className="text-sm font-normal tracking-wider" style={stTextSecondary}>Timing Signals</h2>
               <span className="ml-auto px-2 py-0.5 rounded-full text-xs font-normal" style={{ background: 'var(--warning-muted, var(--warn-40))', color: 'var(--text-tertiary)', boxShadow: 'inset 0 0 0 1px var(--warn-40)' }}>{data.timingSignals.length}</span>
             </div>
             <div className="space-y-2">
@@ -650,7 +650,7 @@ export default function MomentumPage() {
           <div className="rounded-xl p-6" style={stSurface1}>
             <div className="flex items-center gap-2 mb-4">
               <MessageSquare className="w-4 h-4" style={stTextSecondary} />
-              <h2 className="text-sm font-normal  tracking-wider" style={stTextSecondary}>Narrative Health by Type</h2></div>
+              <h2 className="text-sm font-normal tracking-wider" style={stTextSecondary}>Narrative Health by Type</h2></div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
               {data.narrativeHealth.map((nh) => {
                 const tc = TYPE_COLORS[nh.investorType] || TYPE_COLORS.vc;

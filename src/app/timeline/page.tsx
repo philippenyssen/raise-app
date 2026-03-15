@@ -296,7 +296,7 @@ export default function TimelinePage() {
           ) : (
             Object.entries(tasksByPhase).map(([phase, phaseTasks]) => (
               <div key={phase}>
-                <div className="text-xs font-normal  tracking-wider px-1 mb-2" style={stTextMuted}>
+                <div className="text-xs font-normal tracking-wider px-1 mb-2" style={stTextMuted}>
                   {PHASE_LABELS[phase as RaisePhase]}</div>
                 <div className="space-y-1">
                   {phaseTasks.map(task => {

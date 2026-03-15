@@ -219,7 +219,7 @@ export default function TermComparePage() {
       {/* Scenario Input Forms */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-xs font-normal  tracking-wider" style={stTextTertiary}>
+          <h2 className="text-xs font-normal tracking-wider" style={stTextTertiary}>
             Scenarios ({scenarios.length}/5)</h2>
           <div className="flex items-center gap-2">
             {scenarios.length < 5 && (
@@ -386,7 +386,7 @@ export default function TermComparePage() {
           <div
             className="rounded-xl p-5"
             style={stSurface0}>
-            <h3 className="text-xs font-normal  tracking-wider mb-4" style={stTextTertiary}>
+            <h3 className="text-xs font-normal tracking-wider mb-4" style={stTextTertiary}>
               Founder-Friendly Score</h3>
             <div className="space-y-3">
               {results.results
@@ -460,7 +460,7 @@ export default function TermComparePage() {
             <div
               className="rounded-xl p-5"
               style={stSurface0}>
-              <h3 className="text-xs font-normal  tracking-wider mb-4" style={stTextTertiary}>
+              <h3 className="text-xs font-normal tracking-wider mb-4" style={stTextTertiary}>
                 Key Observations</h3>
               <div className="space-y-3">
                 {results.results.filter(r => r.comparison_notes.length > 0).map((r, idx) => {
@@ -506,7 +506,7 @@ export default function TermComparePage() {
           <div
             className="rounded-xl p-5"
             style={stSurface0}>
-            <h3 className="text-xs font-normal  tracking-wider mb-4" style={stTextTertiary}>
+            <h3 className="text-xs font-normal tracking-wider mb-4" style={stTextTertiary}>
               Ownership Waterfall</h3>
             <div className="space-y-4">
               {results.results.map(r => {

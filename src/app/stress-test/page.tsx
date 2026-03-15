@@ -314,7 +314,7 @@ export default function StressTestPage() {
       {/* ================================================================ */}
       <div className="card rounded-xl overflow-hidden" style={{ padding: 0 }}>
         <div className="p-5 flex items-center justify-between" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-          <h2 className="text-sm font-normal  flex items-center gap-2" style={stTextSecondary}>
+          <h2 className="text-sm font-normal flex items-center gap-2" style={stTextSecondary}>
             <TrendingUp className="w-4 h-4" /> Investor Probability Table</h2>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2" style={labelMuted10}>
@@ -422,7 +422,7 @@ export default function StressTestPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Risks */}
         <div className="card">
-          <h2 className="text-sm font-normal  flex items-center gap-2 mb-4" style={stTextSecondary}>
+          <h2 className="text-sm font-normal flex items-center gap-2 mb-4" style={stTextSecondary}>
             <AlertTriangle className="w-4 h-4" /> Risk Scenarios</h2>
           {data.risks.length === 0 ? (
             <p className="text-sm" style={stTextMuted}>No significant risks identified.</p>
@@ -470,7 +470,7 @@ export default function StressTestPage() {
 
         {/* Critical Path */}
         <div className="card">
-          <h2 className="text-sm font-normal  flex items-center gap-2 mb-4" style={stTextSecondary}>
+          <h2 className="text-sm font-normal flex items-center gap-2 mb-4" style={stTextSecondary}>
             <Zap className="w-4 h-4" /> Critical Path</h2>
           <div className="mb-4">
             <div className="text-xs mb-2" style={stTextMuted}>
@@ -532,7 +532,7 @@ export default function StressTestPage() {
         {/* Monte Carlo Confidence Intervals */}
         {data.monteCarlo && (
           <div className="card">
-            <h2 className="text-sm font-normal  flex items-center gap-2 mb-4" style={stTextSecondary}>
+            <h2 className="text-sm font-normal flex items-center gap-2 mb-4" style={stTextSecondary}>
               <BarChart3 className="w-4 h-4" /> Monte Carlo Simulation</h2>
             <p className="text-xs mb-4" style={stTextMuted}>
               {data.monteCarlo.runs.toLocaleString()} simulation runs of probabilistic close outcomes</p>
@@ -573,7 +573,7 @@ export default function StressTestPage() {
         {/* Calibration Status */}
         {data.calibration && (
           <div className="card">
-            <h2 className="text-sm font-normal  flex items-center gap-2 mb-4" style={stTextSecondary}>
+            <h2 className="text-sm font-normal flex items-center gap-2 mb-4" style={stTextSecondary}>
               <Target className="w-4 h-4" /> Weight Calibration</h2>
 
             <div className="flex items-center gap-3 mb-4">
