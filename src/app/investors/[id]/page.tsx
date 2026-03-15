@@ -1289,7 +1289,7 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
                       return `/meetings/new?investor=${investorId}`;
                     })()}
                     className="btn btn-sm shrink-0"
-                    style={{ background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid var(--accent-25)', fontSize: 'var(--font-size-xs)', padding: '3px 10px', gap: '4px', display: 'inline-flex', alignItems: 'center', textDecoration: 'none' }}>
+                    style={{ background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid var(--accent-25)', fontSize: 'var(--font-size-xs)', padding: '3px 10px', gap: 'var(--space-1)', display: 'inline-flex', alignItems: 'center', textDecoration: 'none' }}>
                     Do it <ArrowRight className="w-3 h-3" /></Link></div></div></div></div></div></div>
 
       {/* Score Summary: top & bottom dimensions */}

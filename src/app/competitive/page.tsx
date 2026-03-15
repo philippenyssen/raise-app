@@ -171,7 +171,7 @@ export default function CompetitivePage() {
                       style={{
                         display: 'inline-flex',
                         alignItems: 'center',
-                        gap: '4px',
+                        gap: 'var(--space-1)',
                         fontSize: 'var(--font-size-sm)',
                         fontWeight: 400,
                         color: c.mention_count >= 3 ? 'var(--danger)' : c.mention_count >= 2 ? 'var(--warning)' : 'var(--text-secondary)',

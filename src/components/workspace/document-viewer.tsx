@@ -128,7 +128,7 @@ export function DocumentViewer({ document, onContentChange, onSave, saving, dirt
           <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{TYPE_LABELS[document.type] || document.type}</span>
         </div>
         <div className="flex items-center shrink-0" style={{ gap: 'var(--space-2)' }}>
-          <span className="flex items-center" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', gap: '4px' }}>
+          <span className="flex items-center" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', gap: 'var(--space-1)' }}>
             <Clock style={{ width: '12px', height: '12px' }} />
             {new Date(document.updated_at).toLocaleString()}</span>
           <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>

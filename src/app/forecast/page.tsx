@@ -142,7 +142,7 @@ export default function ForecastPage() {
             style={{
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '6px',
+              gap: 'var(--space-2)',
               padding: '4px 12px',
               borderRadius: '9999px',
               fontSize: 'var(--font-size-xs)',
@@ -547,7 +547,7 @@ export default function ForecastPage() {
               <span style={labelMuted}>
                 No investors at this level</span>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
                 {investors.map(inv => (
                   <Link
                     key={inv.investorId}

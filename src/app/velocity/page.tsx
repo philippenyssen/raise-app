@@ -277,21 +277,21 @@ export default function VelocityPage() {
                           href={`/meetings/new?investor=${inv.investor_id}`}
                           className="btn btn-sm"
                           onClick={e => e.stopPropagation()}
-                          style={{ background: 'var(--danger-muted)', color: 'var(--text-primary)', border: '1px solid var(--fg-6)', fontSize: 'var(--font-size-xs)', padding: '3px 8px', gap: '4px', display: 'inline-flex', alignItems: 'center' }}>
+                          style={{ background: 'var(--danger-muted)', color: 'var(--text-primary)', border: '1px solid var(--fg-6)', fontSize: 'var(--font-size-xs)', padding: '3px 8px', gap: 'var(--space-1)', display: 'inline-flex', alignItems: 'center' }}>
                           <Phone className="w-3 h-3" /> Rescue</Link>
                       ) : inv.tracking_status === 'behind' ? (
                         <Link
                           href={`/followups?investor=${inv.investor_id}`}
                           className="btn btn-sm"
                           onClick={e => e.stopPropagation()}
-                          style={{ background: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: '1px solid var(--fg-5)', fontSize: 'var(--font-size-xs)', padding: '3px 8px', gap: '4px', display: 'inline-flex', alignItems: 'center' }}>
+                          style={{ background: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: '1px solid var(--fg-5)', fontSize: 'var(--font-size-xs)', padding: '3px 8px', gap: 'var(--space-1)', display: 'inline-flex', alignItems: 'center' }}>
                           <Mail className="w-3 h-3" /> Nudge</Link>
                       ) : (
                         <Link
                           href={`/investors/${inv.investor_id}`}
                           className="btn btn-sm"
                           onClick={e => e.stopPropagation()}
-                          style={{ background: 'var(--surface-2)', color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)', padding: '3px 8px', gap: '4px', display: 'inline-flex', alignItems: 'center' }}>
+                          style={{ background: 'var(--surface-2)', color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)', padding: '3px 8px', gap: 'var(--space-1)', display: 'inline-flex', alignItems: 'center' }}>
                           <Target className="w-3 h-3" /> View</Link>
                       )}</td></tr>
                 ))}</tbody></table></div>

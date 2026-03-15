@@ -167,7 +167,7 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
           <button
             onClick={clearChat}
             className="flex items-center transition-colors"
-            style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', gap: '4px' }}
+            style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', gap: 'var(--space-1)' }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; }}
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}>
             <RotateCcw style={{ width: '12px', height: '12px' }} /> Clear</button>
@@ -231,7 +231,7 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
                   <button
                     onClick={() => copyMessage(i)}
                     className="flex items-center transition-colors"
-                    style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', gap: '4px' }}
+                    style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', gap: 'var(--space-1)' }}
                     onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; }}
                     onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}>
                     {copiedIdx === i ? <Check style={{ width: '12px', height: '12px' }} /> : <Copy style={{ width: '12px', height: '12px' }} />}
@@ -240,7 +240,7 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
                     <button
                       onClick={retryLast}
                       className="flex items-center transition-colors"
-                      style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)', gap: '4px' }}>
+                      style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)', gap: 'var(--space-1)' }}>
                       <RotateCcw style={{ width: '12px', height: '12px' }} /> Retry</button>
                   )}</div>
               )}</div></div>

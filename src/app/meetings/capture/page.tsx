@@ -184,7 +184,7 @@ function QuickCaptureInner() {
             <div className="card">
               <p className="section-title" style={{ marginBottom: 'var(--space-2)' }}>Enthusiasm</p>
               <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
-                <div style={{ display: 'flex', gap: '6px' }}>
+                <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
                   {[1, 2, 3, 4, 5].map(n => (
                     <div key={n} style={{
                       width: '12px', height: '12px', borderRadius: '50%',
