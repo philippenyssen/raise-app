@@ -385,7 +385,7 @@ export async function researchInvestor(investorName: string, context?: string): 
       content: `Generate a comprehensive research dossier on this investor for a Series C fundraise in the European space/defense technology sector.
 
 INVESTOR: ${investorName}
-${context ? `ADDITIONAL CONTEXT: ${context}` : ''}
+${context ? `ADDITIONAL CONTEXT: ${context.substring(0, 2000)}` : ''}
 
 OUR COMPANY: Aerospacelab — European vertically-integrated satellite manufacturer. Series C raising €250M equity + €250M debt at €2.0Bn pre-money. €4.1Bn contracted backlog (IRIS2). Revenue: €51M FY2025, projected €120M FY2026.
 
@@ -443,7 +443,7 @@ export async function researchCompetitor(companyName: string, context?: string):
       content: `Research this company as a competitor to Aerospacelab (European satellite manufacturer, Series C, €51M revenue, €4.1Bn backlog).
 
 COMPANY: ${companyName}
-${context ? `CONTEXT: ${context}` : ''}
+${context ? `CONTEXT: ${context.substring(0, 2000)}` : ''}
 
 Return JSON (no markdown):
 {
