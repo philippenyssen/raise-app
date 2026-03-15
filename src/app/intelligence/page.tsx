@@ -55,7 +55,7 @@ export default function IntelligencePage() {
       setDeals(data.deals || []);
       setCompetitors(data.competitors || []);
       setBriefs(data.briefs || []);
-    } catch { /* ignore */ }
+    } catch { toast('Failed to load intelligence data', 'error'); }
     setLoading(false);
   }, []);
 

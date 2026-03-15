@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useToast } from '@/components/toast';
 import { stAccent, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 interface AnalysisData {
@@ -53,6 +54,7 @@ function getPriorityStyles(priority: string): React.CSSProperties {
   }}
 
 export default function AnalysisPage() {
+  const { toast } = useToast();
   const [data, setData] = useState<AnalysisData | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -62,6 +64,7 @@ export default function AnalysisPage() {
       const res = await fetch('/api/analyze');
       setData(await res.json());
     } catch {
+      toast('Analysis failed — check your connection and try again', 'error');
       setData({ patterns: null, health: { health: 'red', diagnosis: 'Analysis failed. Please try again.', recommendations: [], risk_factors: [] }, objections: [], funnel: {}, meeting_count: 0, error: 'Failed to run analysis' });
     } finally {
       setLoading(false);

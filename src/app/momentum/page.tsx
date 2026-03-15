@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { cachedFetch } from '@/lib/cache';
+import { useToast } from '@/components/toast';
 import { scoreColorStyle, stAccent, stFontSm, stFontXs, stSurface0, stSurface1, stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 import {
   Activity, TrendingUp, TrendingDown, Minus, AlertTriangle,
@@ -157,6 +158,7 @@ const TREND_CONFIG = {
 // ── Page Component ────────────────────────────────────────────────────
 
 export default function MomentumPage() {
+  const { toast } = useToast();
   const [data, setData] = useState<MomentumData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -170,7 +172,9 @@ export default function MomentumPage() {
       const json = await res.json();
       setData(json);
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Unknown error');
+      const msg = e instanceof Error ? e.message : 'Unknown error';
+      setError(msg);
+      toast(msg, 'error');
     } finally {
       setLoading(false);
     }};
