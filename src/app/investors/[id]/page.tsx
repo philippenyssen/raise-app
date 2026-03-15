@@ -1081,7 +1081,7 @@ function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex justify-between">
       <span style={{ color: 'var(--text-muted)' }}>{label}</span>
-      <span className="text-right max-w-[60%]" style={{ color: 'var(--text-secondary)' }}>{value || '---'}</span>
+      <span className="text-right max-w-[60%]" style={{ color: 'var(--text-secondary)' }}>{value || '—'}</span>
     </div>
   );
 }
@@ -1638,7 +1638,7 @@ function EnrichmentPanel({
                           Source: {rec.source_id}
                         </span>
                         <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
-                          Updated: {rec.fetched_at ? new Date(rec.fetched_at).toLocaleDateString() : '---'}
+                          Updated: {rec.fetched_at ? new Date(rec.fetched_at).toLocaleDateString() : '—'}
                         </span>
                         {rec.source_url && (
                           <a

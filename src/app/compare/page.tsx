@@ -1260,7 +1260,7 @@ function DimensionBar({
         </span>
         <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
           Winner: <span style={{ color: 'var(--text-secondary)' }}>
-            {profiles.find(p => p.investor.id === winnerId)?.investor.name ?? '---'}
+            {profiles.find(p => p.investor.id === winnerId)?.investor.name ?? '—'}
           </span>
         </span>
       </div>

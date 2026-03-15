@@ -67,7 +67,7 @@ function safeJsonParse<T>(raw: string | null | undefined, fallback: T): T {
 }
 
 function formatDate(iso: string): string {
-  if (!iso) return '---';
+  if (!iso) return '—';
   const d = new Date(iso);
   return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 }
@@ -766,9 +766,9 @@ function MeetingPrepContent() {
                   { background: 'var(--surface-3)', color: 'var(--text-tertiary)' }
                 } />
                 <ProfileField label="Status" value={STATUS_LABELS[investor.status] || investor.status} />
-                <ProfileField label="Fund Size" value={investor.fund_size || '---'} />
-                <ProfileField label="Check Size" value={investor.check_size_range || '---'} />
-                <ProfileField label="Key Partner" value={investor.partner || '---'} />
+                <ProfileField label="Fund Size" value={investor.fund_size || '—'} />
+                <ProfileField label="Check Size" value={investor.check_size_range || '—'} />
+                <ProfileField label="Key Partner" value={investor.partner || '—'} />
                 <div>
                   <span className="text-xs block mb-0.5" style={{ color: 'var(--text-muted)' }}>Enthusiasm</span>
                   <div className="flex items-center gap-1.5">
@@ -780,11 +780,11 @@ function MeetingPrepContent() {
                     <span className="text-xs" style={{ color: 'var(--text-tertiary)' }}>{investor.enthusiasm}/5</span>
                   </div>
                 </div>
-                <ProfileField label="IC Process" value={investor.ic_process || '---'} />
+                <ProfileField label="IC Process" value={investor.ic_process || '—'} />
                 <div>
                   <span className="text-xs block mb-0.5" style={{ color: 'var(--text-muted)' }}>Speed</span>
                   <span className="text-sm font-medium capitalize" style={SPEED_STYLE[investor.speed] || { color: 'var(--text-tertiary)' }}>
-                    {investor.speed || '---'}
+                    {investor.speed || '—'}
                   </span>
                 </div>
               </div>
@@ -1019,7 +1019,7 @@ function MeetingPrepContent() {
                               <td className="px-3 py-2 font-medium" style={{ color: 'var(--text-secondary)' }}>{pc.company}</td>
                               <td className="px-3 py-2" style={{ color: 'var(--text-muted)' }}>{pc.sector}</td>
                               <td className="px-3 py-2" style={{ color: 'var(--text-muted)' }}>{pc.stage_invested}</td>
-                              <td className="px-3 py-2" style={{ color: 'var(--text-tertiary)' }}>{pc.relevance || '---'}</td>
+                              <td className="px-3 py-2" style={{ color: 'var(--text-tertiary)' }}>{pc.relevance || '—'}</td>
                             </tr>
                           ))}
                         </tbody>

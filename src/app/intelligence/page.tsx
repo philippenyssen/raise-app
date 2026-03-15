@@ -726,7 +726,7 @@ function avgRoundSize(deals: MarketDeal[]): string {
     const m = d.amount.match(/[\d.]+/);
     return m ? parseFloat(m[0]) : 0;
   }).filter(n => n > 0);
-  if (amounts.length === 0) return '---';
+  if (amounts.length === 0) return '—';
   const avg = amounts.reduce((a, b) => a + b, 0) / amounts.length;
   return `$${Math.round(avg)}M`;
 }
@@ -738,7 +738,7 @@ function avgValuation(deals: MarketDeal[]): string {
     const n = parseFloat(m[0]);
     return d.valuation.toLowerCase().includes('b') ? n * 1000 : n;
   }).filter(n => n > 0);
-  if (vals.length === 0) return '---';
+  if (vals.length === 0) return '—';
   const avg = vals.reduce((a, b) => a + b, 0) / vals.length;
   return avg >= 1000 ? `$${(avg / 1000).toFixed(1)}Bn` : `$${Math.round(avg)}M`;
 }

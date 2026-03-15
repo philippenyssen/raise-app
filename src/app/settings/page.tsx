@@ -485,7 +485,7 @@ export default function SettingsPage() {
             }}>
               {raiseConfig.pre_money && raiseConfig.equity_amount
                 ? formatCompact(raiseConfig.pre_money + raiseConfig.equity_amount, raiseConfig.currency)
-                : '---'}
+                : '—'}
             </div>
           </div>
 

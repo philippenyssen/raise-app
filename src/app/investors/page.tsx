@@ -441,7 +441,7 @@ export default function InvestorsPage() {
                     </span>
                   </td>
                   <td style={{ padding: 'var(--space-3) var(--space-4)', color: 'var(--text-secondary)' }}>
-                    {inv.partner || '---'}
+                    {inv.partner || '—'}
                   </td>
                   <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
                     <select
@@ -470,7 +470,7 @@ export default function InvestorsPage() {
                     </select>
                   </td>
                   <td style={{ padding: 'var(--space-3) var(--space-4)', color: 'var(--text-secondary)', fontSize: 'var(--font-size-xs)' }}>
-                    {inv.check_size_range || '---'}
+                    {inv.check_size_range || '—'}
                   </td>
                   <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
                     {(() => {
@@ -495,7 +495,7 @@ export default function InvestorsPage() {
                           <div key={n} className={`enthusiasm-dot ${n <= inv.enthusiasm ? 'enthusiasm-dot-filled' : 'enthusiasm-dot-empty'}`} />
                         ))}
                       </div>
-                    ) : <span style={{ color: 'var(--text-muted)' }}>---</span>}
+                    ) : <span style={{ color: 'var(--text-muted)' }}>—</span>}
                   </td>
                   <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
                     <div className="flex gap-1" style={{ opacity: isHovered ? 1 : 0.4, transition: 'opacity 150ms' }}>

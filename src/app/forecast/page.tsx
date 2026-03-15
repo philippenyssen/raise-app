@@ -101,7 +101,7 @@ function formatDate(iso: string): string {
 }
 
 function formatShortDate(iso: string): string {
-  if (!iso || iso === 'N/A') return '---';
+  if (!iso || iso === 'N/A') return '—';
   const d = new Date(iso);
   return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
 }

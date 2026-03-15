@@ -238,7 +238,7 @@ export default function AnalyticsPage() {
         />
         <SummaryCard
           label="Velocity Score"
-          value={velocity.velocityScore > 0 ? velocity.velocityScore.toFixed(1) : '---'}
+          value={velocity.velocityScore > 0 ? velocity.velocityScore.toFixed(1) : '—'}
           sub="tier x stage x signal"
           icon={<Zap className="w-4 h-4" />}
           color="var(--warning)"
@@ -508,7 +508,7 @@ export default function AnalyticsPage() {
             </div>
             <div className="rounded-lg p-3" style={{ border: '1px solid var(--border-subtle)' }}>
               <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Pipeline Velocity</div>
-              <div className="text-2xl font-bold" style={{ color: 'var(--text-tertiary)' }}>{velocity.velocityScore > 0 ? velocity.velocityScore.toFixed(1) : '---'}</div>
+              <div className="text-2xl font-bold" style={{ color: 'var(--text-tertiary)' }}>{velocity.velocityScore > 0 ? velocity.velocityScore.toFixed(1) : '—'}</div>
               <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>weighted score</div>
             </div>
             <div className="rounded-lg p-3" style={{ border: '1px solid var(--border-subtle)' }}>
@@ -522,7 +522,7 @@ export default function AnalyticsPage() {
                     'var(--success)',
                 }}
               >
-                {velocity.daysSinceProgress !== null ? velocity.daysSinceProgress : '---'}
+                {velocity.daysSinceProgress !== null ? velocity.daysSinceProgress : '—'}
               </div>
               <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>last meeting or status change</div>
             </div>
@@ -537,7 +537,7 @@ export default function AnalyticsPage() {
                     'var(--accent)',
                 }}
               >
-                {velocity.estimatedDaysToClose !== null ? velocity.estimatedDaysToClose : '---'}
+                {velocity.estimatedDaysToClose !== null ? velocity.estimatedDaysToClose : '—'}
               </div>
               <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
                 {velocity.onTrack === true && <span style={{ color: 'var(--text-secondary)' }}>On track</span>}
@@ -760,7 +760,7 @@ export default function AnalyticsPage() {
                           'var(--danger)',
                       }}
                     >
-                      {engagement.totalObjections > 0 ? `${engagement.objectionResolutionRate}%` : '---'}
+                      {engagement.totalObjections > 0 ? `${engagement.objectionResolutionRate}%` : '—'}
                     </span>
                     <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>resolved</span>
                   </div>

@@ -420,11 +420,11 @@ function QuickCaptureInner() {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 'var(--space-2)' }}>
               <div>
                 <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Partner</span>
-                <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>{selectedInvestor.partner || '---'}</p>
+                <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>{selectedInvestor.partner || '—'}</p>
               </div>
               <div>
                 <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Check Size</span>
-                <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>{selectedInvestor.check_size_range || '---'}</p>
+                <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>{selectedInvestor.check_size_range || '—'}</p>
               </div>
               <div>
                 <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Status</span>

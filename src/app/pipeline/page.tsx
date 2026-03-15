@@ -355,14 +355,14 @@ export default function PipelinePage() {
         <StatCard
           icon={<TrendingUp className="w-4 h-4" />}
           label="Avg Enthusiasm"
-          value={avgEnthusiasm > 0 ? avgEnthusiasm.toFixed(1) : '---'}
+          value={avgEnthusiasm > 0 ? avgEnthusiasm.toFixed(1) : '—'}
           sub="out of 5"
           iconColor={STAT_ICON_COLORS.purple}
         />
         <StatCard
           icon={<Zap className="w-4 h-4" />}
           label="Pipeline Velocity"
-          value={pipelineVelocity > 0 ? pipelineVelocity.toFixed(1) : '---'}
+          value={pipelineVelocity > 0 ? pipelineVelocity.toFixed(1) : '—'}
           sub="weighted stage avg"
           iconColor={STAT_ICON_COLORS.amber}
         />
