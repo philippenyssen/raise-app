@@ -7,7 +7,8 @@ export async function GET(req: NextRequest) {
     const modelId = searchParams.get('modelId') || 'default';
     const sheets = await getModelSheets(modelId);
     return NextResponse.json(sheets);
-  } catch {
+  } catch (err) {
+    console.error('[MODEL_GET]', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: 'Failed to load model sheets' }, { status: 500 });
   }
 }
@@ -35,7 +36,8 @@ export async function POST(req: NextRequest) {
       data: typeof data === 'string' ? data : JSON.stringify(data || {}),
     });
     return NextResponse.json(sheet, { status: 201 });
-  } catch {
+  } catch (err) {
+    console.error('[MODEL_POST]', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: 'Failed to create model sheet' }, { status: 500 });
   }
 }
@@ -60,7 +62,8 @@ export async function PUT(req: NextRequest) {
       sheet_order,
     });
     return NextResponse.json({ ok: true });
-  } catch {
+  } catch (err) {
+    console.error('[MODEL_PUT]', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: 'Failed to update model sheet' }, { status: 500 });
   }
 }
@@ -72,7 +75,8 @@ export async function DELETE(req: NextRequest) {
   try {
     await deleteModelSheet(id);
     return NextResponse.json({ ok: true });
-  } catch {
+  } catch (err) {
+    console.error('[MODEL_DELETE]', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: 'Failed to delete model sheet' }, { status: 500 });
   }
 }

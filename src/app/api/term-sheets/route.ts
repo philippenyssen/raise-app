@@ -5,7 +5,8 @@ export async function GET() {
   try {
     const sheets = await getAllTermSheets();
     return NextResponse.json(sheets);
-  } catch {
+  } catch (err) {
+    console.error('[TERM_SHEETS_GET]', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: 'Failed to load term sheets' }, { status: 500 });
   }
 }
@@ -38,7 +39,8 @@ export async function POST(req: NextRequest) {
       notes: (body.notes as string) ?? '',
     });
     return NextResponse.json(sheet, { status: 201 });
-  } catch {
+  } catch (err) {
+    console.error('[TERM_SHEETS_POST]', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: 'Failed to create term sheet' }, { status: 500 });
   }
 }
@@ -59,7 +61,8 @@ export async function PUT(req: NextRequest) {
   try {
     await updateTermSheet(id as string, updates);
     return NextResponse.json({ ok: true });
-  } catch {
+  } catch (err) {
+    console.error('[TERM_SHEETS_PUT]', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: 'Failed to update term sheet' }, { status: 500 });
   }
 }
@@ -71,7 +74,8 @@ export async function DELETE(req: NextRequest) {
   try {
     await deleteTermSheet(id);
     return NextResponse.json({ ok: true });
-  } catch {
+  } catch (err) {
+    console.error('[TERM_SHEETS_DELETE]', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: 'Failed to delete term sheet' }, { status: 500 });
   }
 }
