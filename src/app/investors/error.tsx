@@ -22,7 +22,7 @@ export default function InvestorsError({ error, reset }: { error: Error & { dige
         <button onClick={reset} className="btn btn-primary flex items-center gap-2">
           <RefreshCw size={16} /> Try again
         </button>
-        <Link href="/" className="btn btn-secondary">
+        <Link href="/" className="btn btn-secondary btn-md">
           Go to Dashboard
         </Link>
       </div>

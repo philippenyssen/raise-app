@@ -16,8 +16,8 @@ export default function IntelligenceError({ error, reset }: { error: Error & { d
         {error.message || 'An unexpected error occurred.'}
       </p>
       <div className="flex gap-3">
-        <button onClick={reset} className="btn btn-primary">Try again</button>
-        <Link href="/" className="btn btn-secondary">
+        <button onClick={reset} className="btn btn-primary btn-md">Try again</button>
+        <Link href="/" className="btn btn-secondary btn-md">
           Go to Dashboard
         </Link>
       </div>

@@ -346,7 +346,7 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
           <button
             onClick={() => sendMessage(input)}
             disabled={!input.trim() || loading || !documentId}
-            className="btn btn-primary"
+            className="btn btn-primary btn-md"
             style={{
               padding: 'var(--space-2)',
               borderRadius: 'var(--radius-lg)',

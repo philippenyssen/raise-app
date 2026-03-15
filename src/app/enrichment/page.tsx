@@ -219,7 +219,7 @@ export default function EnrichmentPage() {
           <button
             onClick={enrichBulk}
             disabled={bulkEnriching || investors.length === 0}
-            className="btn btn-primary"
+            className="btn btn-primary btn-md"
             style={{ opacity: bulkEnriching || investors.length === 0 ? 0.4 : 1 }}
           >
             {bulkEnriching ? <Loader2 style={{ width: '14px', height: '14px' }} className="animate-spin" /> : <Zap style={{ width: '14px', height: '14px' }} />}

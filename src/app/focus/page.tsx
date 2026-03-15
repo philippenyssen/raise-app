@@ -793,7 +793,7 @@ function QuickWinCard({ item }: { item: FocusItem }) {
         <div className="flex items-center gap-1.5">
           <Link
             href={`/meetings/new?investor=${item.investorId}`}
-            className="btn btn-primary"
+            className="btn btn-primary btn-sm"
             style={{ fontSize: '10px', padding: '2px 8px', borderRadius: 'var(--radius-sm)' }}
           >
             Schedule

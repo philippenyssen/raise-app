@@ -1016,8 +1016,10 @@ function FollowupsContent() {
 
       {/* Content */}
       {loading ? (
-        <div className="text-center py-12" style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
-          Loading follow-ups...
+        <div className="space-y-3">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="rounded-xl animate-pulse" style={{ background: 'var(--surface-1)', height: '72px', border: '1px solid var(--border-subtle)' }} />
+          ))}
         </div>
       ) : followups.length === 0 ? (
         <div
