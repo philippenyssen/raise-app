@@ -1,10 +1,12 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import dynamic from 'next/dynamic';
 import { cachedFetch } from '@/lib/cache';
 import { SplitPane } from '@/components/workspace/split-pane';
-import { DocumentViewer } from '@/components/workspace/document-viewer';
-import { AIChat } from '@/components/workspace/ai-chat';
+
+const DocumentViewer = dynamic(() => import('@/components/workspace/document-viewer').then(m => ({ default: m.DocumentViewer })), { ssr: false });
+const AIChat = dynamic(() => import('@/components/workspace/ai-chat').then(m => ({ default: m.AIChat })), { ssr: false });
 import { useToast } from '@/components/toast';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { DocSummaryRecord as Doc } from '@/lib/types';
