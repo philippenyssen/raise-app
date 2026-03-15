@@ -11,3 +11,4 @@ dcc1396	93	94	+1	keep	eng	scoring.ts dedup (-57) + API types dedup (-55) + getAI
 b955a61	94	94	0	keep	eng	genericCreate helper (-43) + page type dedup (-73) = 65383 lines
 c8b90f2	94	94	0	keep	eng	genericGetByField (-17) + API route data fetch dedup (-34) + groupByInvestorId helper = 65339 lines
 750bac6	94	94	0	keep	eng	groupByInvestorId across 5 files (-27) + investor detail page consolidation (-58) = 65250 lines
+c197856	94	95	+1	keep	eng	pulse/context-bus/16-file consolidation (-264) = 64984 lines, score 95

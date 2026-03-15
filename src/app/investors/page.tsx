@@ -7,7 +7,7 @@ import { useToast } from '@/components/toast';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { Search, Download, GitCompare, Columns3, Clock, Pencil, Trash2 } from 'lucide-react';
 import { fmtDate } from '@/lib/format';
-import { STATUS_LABELS } from '@/lib/constants';
+import { STATUS_LABELS, TYPE_LABELS } from '@/lib/constants';
 
 const STATUS_STYLES: Record<string, { background: string; color: string }> = {
   identified: { background: 'var(--surface-3)', color: 'var(--text-secondary)' },
@@ -21,11 +21,6 @@ const STATUS_STYLES: Record<string, { background: string; color: string }> = {
   closed: { background: 'var(--accent-muted)', color: 'var(--accent)' },
   passed: { background: 'var(--danger-muted)', color: 'var(--text-primary)' },
   dropped: { background: 'var(--surface-2)', color: 'var(--text-muted)' },
-};
-
-const TYPE_LABELS: Record<InvestorType, string> = {
-  vc: 'VC', growth: 'Growth', sovereign: 'Sovereign', strategic: 'Strategic',
-  debt: 'Debt', family_office: 'Family Office',
 };
 
 const COMPLETENESS_FIELDS = ['partner', 'fund_size', 'check_size_range', 'sector_thesis', 'warm_path', 'ic_process', 'portfolio_conflicts'] as const;

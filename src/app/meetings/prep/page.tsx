@@ -14,7 +14,7 @@ import type {
   Investor, Meeting, Task, Objection, EngagementSignal,
   IntelligenceBrief, InvestorPartner, InvestorPortfolioCo,
 } from '@/lib/types';
-import { STATUS_LABELS } from '@/lib/constants';
+import { STATUS_LABELS, TYPE_LABELS } from '@/lib/constants';
 import { useToast } from '@/components/toast';
 
 // ---------- types for the meeting brief ----------
@@ -76,11 +76,6 @@ function formatDate(iso: string): string {
 function meetingTypeLabel(t: string): string {
   return t.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 }
-
-const TYPE_LABELS: Record<string, string> = {
-  vc: 'VC', growth: 'Growth Equity', sovereign: 'Sovereign Wealth',
-  strategic: 'Strategic', debt: 'Debt Provider', family_office: 'Family Office',
-};
 
 const SPEED_STYLE: Record<string, React.CSSProperties> = {
   fast: { color: 'var(--text-secondary)' },

@@ -398,19 +398,15 @@ export async function getFullContext(): Promise<FullContext> {
   type MeetingRow = { id: string; investor_id: string; date: string; enthusiasm_score: number; objections: string; type: string };
   const meetingsByInvestor = groupByInvestorId(allMeetings as MeetingRow[]);
 
-  const tasksByInvestor: Record<string, number> = {};
-  for (const t of tasks as Array<{ investor_id: string; status: string }>) {
-    if (t.investor_id && (t.status === 'pending' || t.status === 'in_progress')) {
-      tasksByInvestor[t.investor_id] = (tasksByInvestor[t.investor_id] || 0) + 1;
+  const countByInvestor = (items: Array<{ investor_id: string; status: string }>, statuses: string[]): Record<string, number> => {
+    const m: Record<string, number> = {};
+    for (const item of items) {
+      if (item.investor_id && statuses.includes(item.status)) m[item.investor_id] = (m[item.investor_id] || 0) + 1;
     }
-  }
-
-  const followupsByInvestor: Record<string, number> = {};
-  for (const f of followups as Array<{ investor_id: string; status: string }>) {
-    if (f.investor_id && f.status === 'pending') {
-      followupsByInvestor[f.investor_id] = (followupsByInvestor[f.investor_id] || 0) + 1;
-    }
-  }
+    return m;
+  };
+  const tasksByInvestor = countByInvestor(tasks as Array<{ investor_id: string; status: string }>, ['pending', 'in_progress']);
+  const followupsByInvestor = countByInvestor(followups as Array<{ investor_id: string; status: string }>, ['pending']);
 
   // Stage health thresholds: expected max days in each stage before it's "slow" or "stalled"
   const stageThresholds: Record<string, { slow: number; stalled: number }> = {
@@ -563,18 +559,14 @@ export async function getFullContext(): Promise<FullContext> {
       })),
 
     // Prediction calibration
-    predictionCalibration: {
-      brierScore: (calibrationData as { brierScore: number }).brierScore,
-      biasDirection: (calibrationData as { biasDirection: string }).biasDirection,
-      resolvedCount: (calibrationData as { resolvedPredictions: number }).resolvedPredictions,
-      calibrationNote: (calibrationData as { biasDirection: string }).biasDirection === 'over_confident'
-        ? 'Our predictions have been systematically over-confident. Treat probabilities with skepticism.'
-        : (calibrationData as { biasDirection: string }).biasDirection === 'under_confident'
-        ? 'Our predictions have been conservative. Actual outcomes have been better than predicted.'
-        : (calibrationData as { resolvedPredictions: number }).resolvedPredictions < 5
-        ? 'Insufficient resolved predictions for calibration. Treat probabilities as rough estimates.'
-        : 'Predictions are reasonably calibrated.',
-    },
+    predictionCalibration: (() => {
+      const cd = calibrationData as { brierScore: number; biasDirection: string; resolvedPredictions: number };
+      const note = cd.biasDirection === 'over_confident' ? 'Our predictions have been systematically over-confident. Treat probabilities with skepticism.'
+        : cd.biasDirection === 'under_confident' ? 'Our predictions have been conservative. Actual outcomes have been better than predicted.'
+        : cd.resolvedPredictions < 5 ? 'Insufficient resolved predictions for calibration. Treat probabilities as rough estimates.'
+        : 'Predictions are reasonably calibrated.';
+      return { brierScore: cd.brierScore, biasDirection: cd.biasDirection, resolvedCount: cd.resolvedPredictions, calibrationNote: note };
+    })(),
 
     // Narrative drift by investor type
     narrativeDrift: (narrativeSignals as Array<{ investorType: string; avgEnthusiasm: number; conversionRate: number; topObjection: string; topQuestionTopic: string; sampleSize: number }>)
@@ -612,49 +604,42 @@ export async function getFullContext(): Promise<FullContext> {
     monteCarlo: null,
 
     // Action effectiveness — learning intelligence
-    actionEffectiveness: actionEffectivenessData ? {
-      overallAvgLift: (actionEffectivenessData as { overallAvgLift: number }).overallAvgLift,
-      bestActionType: (actionEffectivenessData as { ruleEffectiveness: Array<{ actionType: string }> }).ruleEffectiveness.length > 0
-        ? (actionEffectivenessData as { ruleEffectiveness: Array<{ actionType: string; avgLift: number }> }).ruleEffectiveness.sort((a, b) => b.avgLift - a.avgLift)[0].actionType
-        : 'none',
-      worstActionType: (actionEffectivenessData as { ruleEffectiveness: Array<{ actionType: string }> }).ruleEffectiveness.length > 0
-        ? (actionEffectivenessData as { ruleEffectiveness: Array<{ actionType: string; avgLift: number }> }).ruleEffectiveness.sort((a, b) => a.avgLift - b.avgLift)[0].actionType
-        : 'none',
-      totalMeasured: (actionEffectivenessData as { ruleEffectiveness: Array<{ count: number }> }).ruleEffectiveness.reduce((s, r) => s + r.count, 0),
-    } : null,
+    actionEffectiveness: (() => {
+      if (!actionEffectivenessData) return null;
+      const ae = actionEffectivenessData as { overallAvgLift: number; ruleEffectiveness: Array<{ actionType: string; avgLift: number; count: number }> };
+      const rules = ae.ruleEffectiveness;
+      const sorted = [...rules].sort((a, b) => b.avgLift - a.avgLift);
+      return {
+        overallAvgLift: ae.overallAvgLift,
+        bestActionType: sorted.length > 0 ? sorted[0].actionType : 'none',
+        worstActionType: sorted.length > 0 ? sorted[sorted.length - 1].actionType : 'none',
+        totalMeasured: rules.reduce((s, r) => s + r.count, 0),
+      };
+    })(),
 
     // Objection evolution — temporal objection intelligence (cycle 10)
-    objectionEvolution: objectionEvolutionData ? {
-      emerging: (objectionEvolutionData as { emergingObjections: Array<{ topic: string }> }).emergingObjections.map(e => e.topic),
-      persistent: (objectionEvolutionData as { persistentObjections: Array<{ topic: string }> }).persistentObjections.map(p => p.topic),
-      resolvedCount: (objectionEvolutionData as { resolvedObjections: Array<unknown> }).resolvedObjections.length,
-    } : null,
+    objectionEvolution: (() => {
+      if (!objectionEvolutionData) return null;
+      const oe = objectionEvolutionData as { emergingObjections: Array<{ topic: string }>; persistentObjections: Array<{ topic: string }>; resolvedObjections: Array<unknown> };
+      return { emerging: oe.emergingObjections.map(e => e.topic), persistent: oe.persistentObjections.map(p => p.topic), resolvedCount: oe.resolvedObjections.length };
+    })(),
 
     // Strategic health — populated by strategic assessment route, not fetched in bus (cycle 11)
     strategicHealth: null,
 
     // Compound intelligence signals — cross-signal correlation (cycle 13)
-    compoundSignals: (compoundSignalsData as Array<{ signal: string; sources: string[]; confidence: string; recommendation: string }>)
-      .map(cs => ({
-        signal: cs.signal,
-        sources: cs.sources,
-        confidence: cs.confidence,
-        recommendation: cs.recommendation,
-      })),
+    compoundSignals: compoundSignalsData as Array<{ signal: string; sources: string[]; confidence: string; recommendation: string }>,
 
     // Temporal intelligence — health trend analysis (cycle 14)
     temporalTrends: (temporalTrendsData as TemporalTrends | null),
 
     // Pipeline flow — bottleneck and velocity intelligence (cycle 10)
-    pipelineFlow: pipelineFlowData ? {
-      bottleneckStage: (pipelineFlowData as { bottleneckStage: string }).bottleneckStage,
-      velocityTrend: (pipelineFlowData as { velocityTrend: string }).velocityTrend,
-      avgDaysToClose: (() => {
-        const flow = pipelineFlowData as { avgDaysPerStage: Record<string, number> };
-        const allDays = Object.values(flow.avgDaysPerStage).filter(d => d > 0);
-        return allDays.length > 0 ? Math.round(allDays.reduce((a, b) => a + b, 0)) : 0;
-      })(),
-    } : null,
+    pipelineFlow: (() => {
+      if (!pipelineFlowData) return null;
+      const pf = pipelineFlowData as { bottleneckStage: string; velocityTrend: string; avgDaysPerStage: Record<string, number> };
+      const allDays = Object.values(pf.avgDaysPerStage).filter(d => d > 0);
+      return { bottleneckStage: pf.bottleneckStage, velocityTrend: pf.velocityTrend, avgDaysToClose: allDays.length > 0 ? Math.round(allDays.reduce((a, b) => a + b, 0)) : 0 };
+    })(),
 
     // Raise forecast — close date prediction (cycle 18)
     raiseForecast: raiseForecastData ? (() => {
@@ -703,6 +688,12 @@ export async function getFullContext(): Promise<FullContext> {
 
 export function contextToSystemPrompt(ctx: FullContext): string {
   const lines: string[] = [];
+  const addSection = <T>(items: T[], header: string, fmt: (item: T) => string, limit?: number) => {
+    if (items.length === 0) return;
+    lines.push(header);
+    for (const item of (limit ? items.slice(0, limit) : items)) lines.push(fmt(item));
+    lines.push('');
+  };
 
   lines.push('=== FULL FUNDRAISE CONTEXT (auto-updated, most recent data takes precedence) ===');
   lines.push(`Context version: ${ctx.version} | Built: ${ctx.buildTimestamp}`);
@@ -759,14 +750,7 @@ export function contextToSystemPrompt(ctx: FullContext): string {
   }
   lines.push('');
 
-  // Objection landscape
-  if (ctx.topObjections.length > 0) {
-    lines.push('TOP OBJECTIONS:');
-    for (const obj of ctx.topObjections) {
-      lines.push(`- "${obj.topic}" (×${obj.count})${obj.hasEffectiveResponse ? ' ✓ has effective response' : ' ✗ NO effective response'}`);
-    }
-    lines.push('');
-  }
+  addSection(ctx.topObjections, 'TOP OBJECTIONS:', obj => `- "${obj.topic}" (×${obj.count})${obj.hasEffectiveResponse ? ' ✓ has effective response' : ' ✗ NO effective response'}`);
 
   // Revenue backlog
   if (ctx.backlogSummary.count > 0) {
@@ -775,32 +759,9 @@ export function contextToSystemPrompt(ctx: FullContext): string {
     lines.push('');
   }
 
-  // Documents
-  if (ctx.documents.length > 0) {
-    lines.push('DOCUMENTS:');
-    for (const doc of ctx.documents) {
-      lines.push(`- ${doc.title} (${doc.type}, ${doc.status}) — updated ${doc.updatedAt}`);
-    }
-    lines.push('');
-  }
-
-  // Recent activity (last 10, most recent first)
-  if (ctx.recentActivity.length > 0) {
-    lines.push('RECENT ACTIVITY (most recent first):');
-    for (const a of ctx.recentActivity.slice(0, 10)) {
-      lines.push(`  ${a}`);
-    }
-    lines.push('');
-  }
-
-  // Recent context changes
-  if (ctx.recentChanges.length > 0) {
-    lines.push('RECENT CONTEXT CHANGES:');
-    for (const c of ctx.recentChanges.slice(0, 5)) {
-      lines.push(`  [v${c.version}] ${c.timestamp}: ${c.source} — ${c.detail}`);
-    }
-    lines.push('');
-  }
+  addSection(ctx.documents, 'DOCUMENTS:', doc => `- ${doc.title} (${doc.type}, ${doc.status}) — updated ${doc.updatedAt}`);
+  addSection(ctx.recentActivity, 'RECENT ACTIVITY (most recent first):', a => `  ${a}`, 10);
+  addSection(ctx.recentChanges, 'RECENT CONTEXT CHANGES:', c => `  [v${c.version}] ${c.timestamp}: ${c.source} — ${c.detail}`, 5);
 
   // Narrative Health (cross-investor question convergence)
   if (ctx.narrativeWeaknesses.length > 0) {
@@ -826,14 +787,7 @@ export function contextToSystemPrompt(ctx: FullContext): string {
     lines.push('');
   }
 
-  // Proven objection responses
-  if (ctx.provenResponses.length > 0) {
-    lines.push('PROVEN OBJECTION RESPONSES (use these in conversations):');
-    for (const pr of ctx.provenResponses) {
-      lines.push(`- "${pr.topic}": ${pr.bestResponse} (avg +${pr.avgEnthusiasmLift} enthusiasm, used ${pr.timesUsed}x)`);
-    }
-    lines.push('');
-  }
+  addSection(ctx.provenResponses, 'PROVEN OBJECTION RESPONSES (use these in conversations):', pr => `- "${pr.topic}": ${pr.bestResponse} (avg +${pr.avgEnthusiasmLift} enthusiasm, used ${pr.timesUsed}x)`);
 
   // Prediction calibration
   if (ctx.predictionCalibration.resolvedCount > 0) {
@@ -842,14 +796,7 @@ export function contextToSystemPrompt(ctx: FullContext): string {
     lines.push('');
   }
 
-  // Keystone investors (closing one unlocks others)
-  if (ctx.keystoneInvestors.length > 0) {
-    lines.push('KEYSTONE INVESTORS (closing one unlocks others):');
-    for (const ki of ctx.keystoneInvestors) {
-      lines.push(`- ${ki.name} → connected to ${ki.connectionCount} other investors in pipeline (cascade: ${ki.cascadeValue})`);
-    }
-    lines.push('');
-  }
+  addSection(ctx.keystoneInvestors, 'KEYSTONE INVESTORS (closing one unlocks others):', ki => `- ${ki.name} → connected to ${ki.connectionCount} other investors in pipeline (cascade: ${ki.cascadeValue})`);
 
   // Monte Carlo forecast confidence intervals
   if (ctx.monteCarlo) {
@@ -872,11 +819,8 @@ export function contextToSystemPrompt(ctx: FullContext): string {
 
   // Action effectiveness (learning intelligence — what's working)
   if (ctx.actionEffectiveness && ctx.actionEffectiveness.totalMeasured > 0) {
-    lines.push('ACTION EFFECTIVENESS (what\'s working):');
-    lines.push(`- Best action type: ${ctx.actionEffectiveness.bestActionType} (highest avg lift)`);
-    lines.push(`- Worst action type: ${ctx.actionEffectiveness.worstActionType} (lowest avg lift)`);
-    lines.push(`- Overall avg lift: ${ctx.actionEffectiveness.overallAvgLift}`);
-    lines.push(`- Based on ${ctx.actionEffectiveness.totalMeasured} measured outcomes`);
+    const ae = ctx.actionEffectiveness;
+    lines.push(`ACTION EFFECTIVENESS: best=${ae.bestActionType}, worst=${ae.worstActionType}, avg lift=${ae.overallAvgLift} (n=${ae.totalMeasured})`);
     lines.push('');
   }
 
@@ -884,29 +828,18 @@ export function contextToSystemPrompt(ctx: FullContext): string {
   if (ctx.objectionEvolution) {
     const oe = ctx.objectionEvolution;
     if (oe.emerging.length > 0 || oe.persistent.length > 0 || oe.resolvedCount > 0) {
-      lines.push('OBJECTION EVOLUTION (how objections are changing over time):');
-      if (oe.emerging.length > 0) {
-        lines.push(`- EMERGING (new/growing): ${oe.emerging.join(', ')} — these are appearing in recent meetings. Prepare responses proactively.`);
-      }
-      if (oe.persistent.length > 0) {
-        lines.push(`- PERSISTENT (not going away): ${oe.persistent.join(', ')} — current responses are NOT working. Rethink approach for these topics.`);
-      }
-      if (oe.resolvedCount > 0) {
-        lines.push(`- RESOLVED: ${oe.resolvedCount} objection topic(s) have stopped appearing — previous responses worked.`);
-      }
+      lines.push('OBJECTION EVOLUTION:');
+      if (oe.emerging.length > 0) lines.push(`- EMERGING: ${oe.emerging.join(', ')} — prepare responses proactively`);
+      if (oe.persistent.length > 0) lines.push(`- PERSISTENT: ${oe.persistent.join(', ')} — current responses NOT working`);
+      if (oe.resolvedCount > 0) lines.push(`- RESOLVED: ${oe.resolvedCount} topic(s) stopped appearing`);
       lines.push('');
     }
   }
 
-  // Recent follow-up signals — conviction deltas from last 24h (cycle 37)
-  if (ctx.recentFollowupSignals.length > 0) {
-    lines.push('RECENT FOLLOW-UP SIGNALS (conviction movement in last 24h):');
-    for (const sig of ctx.recentFollowupSignals.slice(0, 8)) {
-      const deltaStr = sig.convictionDelta > 0 ? `+${sig.convictionDelta}` : `${sig.convictionDelta}`;
-      lines.push(`- ${sig.investorName || sig.investorId}: ${sig.actionType} → conviction ${deltaStr} (${sig.hoursAgo}h ago)`);
-    }
-    lines.push('');
-  }
+  addSection(ctx.recentFollowupSignals, 'RECENT FOLLOW-UP SIGNALS (conviction movement in last 24h):', sig => {
+    const deltaStr = sig.convictionDelta > 0 ? `+${sig.convictionDelta}` : `${sig.convictionDelta}`;
+    return `- ${sig.investorName || sig.investorId}: ${sig.actionType} → conviction ${deltaStr} (${sig.hoursAgo}h ago)`;
+  }, 8);
 
   // Pipeline flow (bottleneck and velocity intelligence)
   if (ctx.pipelineFlow) {
@@ -1032,14 +965,10 @@ export function contextToSystemPrompt(ctx: FullContext): string {
   }
 
   // Score reversals — significant drops (cycle 26)
-  if (ctx.scoreReversals.length > 0) {
-    lines.push('SCORE REVERSALS (significant score drops since last snapshot):');
-    for (const rev of ctx.scoreReversals) {
-      const severityTag = rev.severity === 'critical' ? 'CRITICAL' : rev.severity === 'warning' ? 'WARNING' : 'NOTABLE';
-      lines.push(`- [${severityTag}] ${rev.investorName}: ${rev.previousScore}→${rev.currentScore} (${rev.delta}) between ${rev.previousDate} and ${rev.currentDate}`);
-    }
-    lines.push('');
-  }
+  addSection(ctx.scoreReversals, 'SCORE REVERSALS (significant score drops since last snapshot):', rev => {
+    const severityTag = rev.severity === 'critical' ? 'CRITICAL' : rev.severity === 'warning' ? 'WARNING' : 'NOTABLE';
+    return `- [${severityTag}] ${rev.investorName}: ${rev.previousScore}→${rev.currentScore} (${rev.delta}) between ${rev.previousDate} and ${rev.currentDate}`;
+  });
 
   // Pipeline rankings — comparative positioning (cycle 26)
   if (ctx.pipelineRankings.length > 0) {
@@ -1094,17 +1023,10 @@ export function contextToSystemPrompt(ctx: FullContext): string {
   const synthesisLines: string[] = [];
 
   // Connect narrative weaknesses to investors with pending follow-ups
-  if (ctx.narrativeWeaknesses.length > 0 && ctx.investors.length > 0) {
-    for (const nw of ctx.narrativeWeaknesses) {
-      const affectedInvestors = ctx.investors.filter(inv =>
-        nw.investorNames.includes(inv.name)
-      );
-      if (affectedInvestors.length > 0) {
-        const nextMeetings = affectedInvestors.filter(inv => inv.pendingFollowups > 0);
-        if (nextMeetings.length > 0) {
-          synthesisLines.push(`URGENT: "${nw.topic}" weakness affects investors with pending follow-ups: ${nextMeetings.map(i => i.name).join(', ')} — address BEFORE next contact`);
-        }
-      }
+  for (const nw of ctx.narrativeWeaknesses) {
+    const withFollowups = ctx.investors.filter(inv => nw.investorNames.includes(inv.name) && inv.pendingFollowups > 0);
+    if (withFollowups.length > 0) {
+      synthesisLines.push(`URGENT: "${nw.topic}" weakness affects investors with pending follow-ups: ${withFollowups.map(i => i.name).join(', ')} — address BEFORE next contact`);
     }
   }
 
@@ -1145,13 +1067,6 @@ export function contextToSystemPrompt(ctx: FullContext): string {
     synthesisLines.push(`STALLED HIGH-VALUE: ${stalledHighValue.map(i => `${i.name} (T${i.tier}, ${i.daysInCurrentStage}d at "${i.status}")`).join(', ')} — these investors have been stuck too long. Either escalate or deprioritize.`);
   }
 
-  // Contradiction: enthusiastic but stalled lifecycle
-  for (const inv of ctx.investors) {
-    if (inv.enthusiasm >= 4 && inv.stageHealth === 'stalled' && inv.tier <= 2) {
-      synthesisLines.push(`LIFECYCLE CONTRADICTION: ${inv.name} has enthusiasm ${inv.enthusiasm}/5 but has been at "${inv.status}" for ${inv.daysInCurrentStage} days — high enthusiasm without progression suggests internal blockers or politeness`);
-    }
-  }
-
   // Temporal trend synthesis: declining metrics feed urgency
   if (ctx.temporalTrends) {
     const declining = ctx.temporalTrends.trends.filter(t => t.direction === 'declining');
@@ -1176,11 +1091,8 @@ export function contextToSystemPrompt(ctx: FullContext): string {
 
   // Contradiction detection: investors with high enthusiasm but no progression
   for (const inv of ctx.investors) {
-    if (inv.meetingCount >= 3 && inv.enthusiasm >= 4) {
-      const earlyStatuses = ['identified', 'contacted', 'nda_signed', 'meeting_scheduled', 'met'];
-      if (earlyStatuses.includes(inv.status)) {
-        synthesisLines.push(`CONTRADICTION: ${inv.name} has enthusiasm ${inv.enthusiasm}/5 after ${inv.meetingCount} meetings but still at "${inv.status}" — possible politeness signal, probe for real conviction`);
-      }
+    if (inv.meetingCount >= 3 && inv.enthusiasm >= 4 && ['identified', 'contacted', 'nda_signed', 'meeting_scheduled', 'met'].includes(inv.status)) {
+      synthesisLines.push(`CONTRADICTION: ${inv.name} has enthusiasm ${inv.enthusiasm}/5 after ${inv.meetingCount} meetings but still at "${inv.status}" — possible politeness signal, probe for real conviction`);
     }
   }
 
@@ -1232,11 +1144,14 @@ export function contextToSystemPrompt(ctx: FullContext): string {
   }
 
   // Meeting density + FOMO synthesis (cycle 27)
-  if (ctx.meetingDensity && ctx.meetingDensity.densityScore < 40 && ctx.fomoDynamics.length > 0) {
-    synthesisLines.push(`MOMENTUM GAP: Meeting density is low (${ctx.meetingDensity.densityScore}/100) but ${ctx.fomoDynamics.length} FOMO trigger(s) exist — use competitive dynamics to schedule meetings this week`);
-  }
-  if (ctx.meetingDensity && ctx.meetingDensity.currentWeekCount === 0 && ctx.investors.filter(i => i.tier <= 2).length >= 3) {
-    synthesisLines.push(`DEAD WEEK: Zero meetings this week with ${ctx.investors.filter(i => i.tier <= 2).length} active T1-2 investors — engagement gap will hurt momentum`);
+  if (ctx.meetingDensity) {
+    if (ctx.meetingDensity.densityScore < 40 && ctx.fomoDynamics.length > 0) {
+      synthesisLines.push(`MOMENTUM GAP: Meeting density is low (${ctx.meetingDensity.densityScore}/100) but ${ctx.fomoDynamics.length} FOMO trigger(s) exist — use competitive dynamics to schedule meetings this week`);
+    }
+    const t12Count = ctx.investors.filter(i => i.tier <= 2).length;
+    if (ctx.meetingDensity.currentWeekCount === 0 && t12Count >= 3) {
+      synthesisLines.push(`DEAD WEEK: Zero meetings this week with ${t12Count} active T1-2 investors — engagement gap will hurt momentum`);
+    }
   }
 
   // Score reversal synthesis: critical drops on T1-2 investors need immediate attention (cycle 26)
@@ -1308,32 +1223,19 @@ export function contextToSystemPrompt(ctx: FullContext): string {
   }
 
   if (synthesisLines.length > 0) {
-    // Cap synthesis lines at 15 to prevent prompt bloat (cycle 30)
-    const cappedSynthesis = synthesisLines.slice(0, 15);
     lines.push('=== INTELLIGENCE SYNTHESIS (reasoning aids) ===');
-    for (const sl of cappedSynthesis) {
-      lines.push(sl);
-    }
-    if (synthesisLines.length > 15) {
-      lines.push(`(${synthesisLines.length - 15} additional synthesis signals omitted for brevity)`);
-    }
+    lines.push(...synthesisLines.slice(0, 15));
+    if (synthesisLines.length > 15) lines.push(`(${synthesisLines.length - 15} additional synthesis signals omitted for brevity)`);
     lines.push('');
   }
 
-  // Prompt size tracking (cycle 30)
   const prompt = lines.join('\n');
-  const charCount = prompt.length;
-  const lineCount = lines.length;
-
-  // If prompt exceeds budget, truncate lower-priority sections
   const MAX_PROMPT_CHARS = 20000;
-  if (charCount > MAX_PROMPT_CHARS) {
-    // Trim from bottom (synthesis gets truncated first, then recent activity)
-    const trimmedLines = lines.slice(0, Math.max(50, Math.floor(lines.length * (MAX_PROMPT_CHARS / charCount))));
-    trimmedLines.push(`\n[Context truncated: ${charCount} chars → ${MAX_PROMPT_CHARS} budget. ${lineCount} lines → ${trimmedLines.length} lines]`);
+  if (prompt.length > MAX_PROMPT_CHARS) {
+    const trimmedLines = lines.slice(0, Math.max(50, Math.floor(lines.length * (MAX_PROMPT_CHARS / prompt.length))));
+    trimmedLines.push(`\n[Context truncated: ${prompt.length} chars → ${MAX_PROMPT_CHARS} budget. ${lines.length} lines → ${trimmedLines.length} lines]`);
     return trimmedLines.join('\n');
   }
-
   return prompt;
 }
 

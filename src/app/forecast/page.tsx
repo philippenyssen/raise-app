@@ -7,6 +7,7 @@ import {
   CheckCircle2, Target, ArrowRight, Users, Zap, ToggleLeft, ToggleRight, RotateCcw,
   Calendar, ExternalLink,
 } from 'lucide-react';
+import { STATUS_LABELS as STAGE_LABELS } from '@/lib/constants';
 
 interface InvestorForecast {
   investorId: string;
@@ -61,18 +62,6 @@ interface ForecastData {
   };
   generated_at: string;
 }
-
-const STAGE_LABELS: Record<string, string> = {
-  identified: 'Identified',
-  contacted: 'Contacted',
-  nda_signed: 'NDA Signed',
-  meeting_scheduled: 'Meeting Set',
-  met: 'Met',
-  engaged: 'Engaged',
-  in_dd: 'In DD',
-  term_sheet: 'Term Sheet',
-  closed: 'Closed',
-};
 
 function formatAmount(value: number, currency: string): string {
   const sym = currency === 'USD' ? '$' : currency === 'GBP' ? '\u00a3' : '\u20ac';

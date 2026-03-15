@@ -1,19 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getClient, PIPELINE_ORDER } from '@/lib/api-helpers';
-
-const STAGE_LABELS: Record<string, string> = {
-  identified: 'Identified',
-  contacted: 'Contacted',
-  nda_signed: 'NDA Signed',
-  meeting_scheduled: 'Meeting Set',
-  met: 'Met',
-  engaged: 'Engaged',
-  in_dd: 'In DD',
-  term_sheet: 'Term Sheet',
-  closed: 'Closed',
-  passed: 'Passed',
-  dropped: 'Dropped',
-};
+import { STATUS_LABELS as STAGE_LABELS } from '@/lib/constants';
 
 // Stage weights for velocity scoring
 const STAGE_WEIGHTS: Record<string, number> = {

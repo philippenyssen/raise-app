@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Flame, Filter, TrendingUp, Users, Thermometer } from 'lucide-react';
-import { STATUS_LABELS } from '@/lib/constants';
+import { STATUS_LABELS, TYPE_LABELS } from '@/lib/constants';
 import { DealHeatInvestor } from '@/lib/types';
 
 interface DealHeatData {
@@ -27,15 +27,6 @@ const HEAT_CONFIG: Record<string, { bg: string; border: string; text: string; gl
   cool:   { bg: 'var(--accent-5)', border: 'var(--accent-10)', text: 'var(--text-tertiary)', glow: 'none', label: 'Cool' },
   cold:   { bg: 'var(--accent-4)', border: 'var(--accent-8)', text: 'var(--text-muted)', glow: 'none', label: 'Cold' },
   frozen: { bg: 'var(--accent-3)', border: 'var(--accent-muted)', text: 'var(--text-muted)', glow: 'none', label: 'Frozen' },
-};
-
-const TYPE_LABELS: Record<string, string> = {
-  vc: 'VC',
-  growth: 'Growth',
-  sovereign: 'Sovereign',
-  strategic: 'Strategic',
-  debt: 'Debt',
-  family_office: 'Family Office',
 };
 
 function formatDate(d: string): string {

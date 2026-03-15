@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { useToast } from '@/components/toast';
-import { STATUS_LABELS } from '@/lib/constants';
+import { STATUS_LABELS, PIPELINE_STATUS_STYLES, MOMENTUM_STYLES, MOMENTUM_LABELS } from '@/lib/constants';
 import {
   AccelerationItem, AccelerationInvestorSummary as InvestorSummary, AccelerationData,
 } from '@/lib/types';
@@ -82,30 +82,9 @@ const TYPE_LABELS: Record<string, string> = {
   debt: 'Debt', family_office: 'Family',
 };
 
-const STATUS_STYLES: Record<string, React.CSSProperties> = {
-  identified: { background: 'var(--surface-2)', color: 'var(--text-tertiary)' },
-  contacted: { background: 'var(--surface-2)', color: 'var(--text-secondary)' },
-  nda_signed: { background: 'var(--accent-muted)', color: 'var(--accent)' },
-  meeting_scheduled: { background: 'var(--accent-muted)', color: 'var(--accent)' },
-  met: { background: 'var(--cat-purple-muted)', color: 'var(--chart-4)' },
-  engaged: { background: 'var(--cat-purple-muted)', color: 'var(--cat-purple)' },
-  in_dd: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
-  term_sheet: { background: 'var(--success-muted)', color: 'var(--text-secondary)' },
-};
+const STATUS_STYLES = PIPELINE_STATUS_STYLES;
+const MOMENTUM_STYLE = MOMENTUM_STYLES;
 
-const MOMENTUM_STYLE: Record<string, React.CSSProperties> = {
-  accelerating: { color: 'var(--text-secondary)' },
-  steady: { color: 'var(--text-tertiary)' },
-  decelerating: { color: 'var(--text-tertiary)' },
-  stalled: { color: 'var(--text-primary)' },
-};
-
-const MOMENTUM_LABELS: Record<string, string> = {
-  accelerating: 'Accelerating',
-  steady: 'Steady',
-  decelerating: 'Decelerating',
-  stalled: 'Stalled',
-};
 
 const TRIGGER_STYLES: Record<string, React.CSSProperties> = {
   momentum_cliff: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' },

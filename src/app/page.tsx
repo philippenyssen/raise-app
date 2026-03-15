@@ -13,6 +13,7 @@ import {
   Calendar, MessageSquare, UserPlus, ArrowUp,
 } from 'lucide-react';
 import { DealHeatInvestor } from '@/lib/types';
+import { STATUS_LABELS } from '@/lib/constants';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -1326,13 +1327,7 @@ function MomentumLabel({ count, label }: {
 }
 
 function formatStage(stage: string): string {
-  const labels: Record<string, string> = {
-    identified: 'Identified', contacted: 'Contacted', nda_signed: 'NDA Signed',
-    meeting_scheduled: 'Meeting Set', met: 'Met', engaged: 'Engaged',
-    in_dd: 'In DD', term_sheet: 'Term Sheet', closed: 'Closed',
-    passed: 'Passed', dropped: 'Dropped',
-  };
-  return labels[stage] || stage.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+  return STATUS_LABELS[stage] || stage.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 }
 
 function VelocityStrip({ velocity }: { velocity: VelocityResponse }) {

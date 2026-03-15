@@ -1,18 +1,7 @@
 import { NextResponse } from 'next/server';
 import { detectFomoDynamics, computeMeetingDensity, computeEngagementVelocity } from '@/lib/db';
-import { getClient } from '@/lib/api-helpers';
-
-const STAGE_RANK: Record<string, number> = {
-  identified: 0, contacted: 1, nda_signed: 2, meeting_scheduled: 3,
-  met: 4, engaged: 5, in_dd: 6, term_sheet: 7, closed: 8,
-  passed: -1, dropped: -1,
-};
-
-const STAGE_LABELS: Record<string, string> = {
-  identified: 'Identified', contacted: 'Contacted', nda_signed: 'NDA Signed',
-  meeting_scheduled: 'Meeting Set', met: 'Met', engaged: 'Engaged',
-  in_dd: 'In DD', term_sheet: 'Term Sheet', closed: 'Closed',
-};
+import { getClient, STATUS_PROGRESSION as STAGE_RANK } from '@/lib/api-helpers';
+import { STATUS_LABELS as STAGE_LABELS } from '@/lib/constants';
 
 export async function GET() {
   try {

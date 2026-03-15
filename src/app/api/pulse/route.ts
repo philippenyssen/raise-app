@@ -3,7 +3,7 @@ import { computeInvestorScore, computeMomentumScore, computeConvictionTrajectory
 import type { ScoreSnapshot } from '@/lib/db';
 import { generateAutoActions, measureActionEffectiveness, saveHealthSnapshot, getHealthSnapshots, computeTemporalTrends, computeRaiseForecast, logForecastPredictions, detectScoreReversals, computeEngagementVelocity, computeNetworkCascades, getPipelineRankings, detectFomoDynamics, computeMeetingDensity, computeWinLossPatterns } from '@/lib/db';
 import type { Investor, Meeting, InvestorPortfolioCo, Objection } from '@/lib/types';
-import { getFullContext } from '@/lib/context-bus';
+import { getFullContext, type FullContext } from '@/lib/context-bus';
 import { getClient, daysBetween, parseJsonSafe, clamp, STATUS_PROGRESSION, loadAllMeetings, loadRaiseConfig, loadAllPortfolios, groupByInvestorId } from '@/lib/api-helpers';
 
 const ACTIVE_STAGES = ['engaged', 'in_dd', 'term_sheet'];
@@ -351,23 +351,15 @@ async function computeCriticalPath(
     db.execute(`SELECT * FROM score_snapshots ORDER BY snapshot_date ASC`),
   ]);
 
-  const taskCountByInvestor: Record<string, number> = {};
-  (taskRows.rows as unknown as Array<{ investor_id: string; count: number }>).forEach(r => {
-    taskCountByInvestor[r.investor_id] = Number(r.count);
-  });
-
-  const flagCountByInvestor: Record<string, number> = {};
-  (flagRows.rows as unknown as Array<{ investor_id: string; count: number }>).forEach(r => {
-    flagCountByInvestor[r.investor_id] = Number(r.count);
-  });
-
+  const toCountMap = (rows: Array<{ investor_id: string; count: number }>): Record<string, number> => {
+    const m: Record<string, number> = {};
+    for (const r of rows) m[r.investor_id] = Number(r.count);
+    return m;
+  };
+  const taskCountByInvestor = toCountMap(taskRows.rows as unknown as Array<{ investor_id: string; count: number }>);
+  const flagCountByInvestor = toCountMap(flagRows.rows as unknown as Array<{ investor_id: string; count: number }>);
   const portfolioByInvestor = groupByInvestorId(allPortfolios);
-
-  const snapshotsByInvestor: Record<string, ScoreSnapshot[]> = {};
-  (snapshotRows.rows as unknown as ScoreSnapshot[]).forEach(s => {
-    if (!snapshotsByInvestor[s.investor_id]) snapshotsByInvestor[s.investor_id] = [];
-    snapshotsByInvestor[s.investor_id].push(s);
-  });
+  const snapshotsByInvestor = groupByInvestorId(snapshotRows.rows as unknown as (ScoreSnapshot & { investor_id: string })[]);
 
   // Compute focus scores for active investors
   const focusItems: FocusCard[] = [];
@@ -533,11 +525,7 @@ function computeConvictionPulse(
   investors: Investor[],
   allMeetings: Meeting[],
 ): ConvictionPulse {
-  const meetingsByInvestor: Record<string, Meeting[]> = {};
-  allMeetings.forEach(m => {
-    if (!meetingsByInvestor[m.investor_id]) meetingsByInvestor[m.investor_id] = [];
-    meetingsByInvestor[m.investor_id].push(m);
-  });
+  const meetingsByInvestor = groupByInvestorId(allMeetings);
 
   let totalEnthusiasm = 0;
   let enthCount = 0;
@@ -699,7 +687,7 @@ async function computeIntelligenceBriefing(
   const insights: InsightItem[] = [];
 
   // Fetch full context for narrative weaknesses, keystones, calibration, timing
-  let fullCtx;
+  let fullCtx: FullContext;
   try {
     fullCtx = await getFullContext();
   } catch {
@@ -739,32 +727,14 @@ async function computeIntelligenceBriefing(
   }
 
   // 3. Timing signals → competitive tension, engagement gaps, DD sync
+  const timingMap: Record<string, { type: 'opportunity' | 'risk'; title: (ts: typeof fullCtx.timingSignals[0]) => string; action: (ts: typeof fullCtx.timingSignals[0]) => string }> = {
+    competitive_tension: { type: 'opportunity', title: ts => `Competitive tension: ${ts.investorNames.length} investors active simultaneously`, action: () => `Leverage competitive tension in conversations. Mention (factually) that multiple investors are in advanced discussions. This creates urgency without pressure.` },
+    engagement_gap: { type: 'risk', title: ts => `Engagement gap: ${ts.investorNames.join(', ')} going silent`, action: ts => `Re-engage ${ts.investorNames.join(', ')} within 48 hours with a value-add update (new data point, competitive intel, or milestone achieved).` },
+    dd_synchronization: { type: 'opportunity', title: ts => `DD synchronization: ${ts.investorNames.length} investors entering DD together`, action: () => `Synchronize DD timelines to create term sheet competition. Share (with permission) that multiple investors are in DD simultaneously.` },
+  };
   for (const ts of fullCtx.timingSignals) {
-    if (ts.type === 'competitive_tension') {
-      insights.push({
-        type: 'opportunity',
-        title: `Competitive tension: ${ts.investorNames.length} investors active simultaneously`,
-        detail: ts.description,
-        action: `Leverage competitive tension in conversations. Mention (factually) that multiple investors are in advanced discussions. This creates urgency without pressure.`,
-        dataSource: 'timing_signals',
-      });
-    } else if (ts.type === 'engagement_gap') {
-      insights.push({
-        type: 'risk',
-        title: `Engagement gap: ${ts.investorNames.join(', ')} going silent`,
-        detail: ts.description,
-        action: `Re-engage ${ts.investorNames.join(', ')} within 48 hours with a value-add update (new data point, competitive intel, or milestone achieved).`,
-        dataSource: 'timing_signals',
-      });
-    } else if (ts.type === 'dd_synchronization') {
-      insights.push({
-        type: 'opportunity',
-        title: `DD synchronization: ${ts.investorNames.length} investors entering DD together`,
-        detail: ts.description,
-        action: `Synchronize DD timelines to create term sheet competition. Share (with permission) that multiple investors are in DD simultaneously.`,
-        dataSource: 'timing_signals',
-      });
-    }
+    const cfg = timingMap[ts.type];
+    if (cfg) insights.push({ type: cfg.type, title: cfg.title(ts), detail: ts.description, action: cfg.action(ts), dataSource: 'timing_signals' });
   }
 
   // 4. Trajectory alerts → declining investors need intervention
@@ -824,11 +794,7 @@ async function computeIntelligenceBriefing(
   }
 
   // 7. Contradiction detection: high enthusiasm + no progression
-  const meetingsByInvestor: Record<string, Meeting[]> = {};
-  allMeetings.forEach(m => {
-    if (!meetingsByInvestor[m.investor_id]) meetingsByInvestor[m.investor_id] = [];
-    meetingsByInvestor[m.investor_id].push(m);
-  });
+  const meetingsByInvestor = groupByInvestorId(allMeetings);
 
   for (const inv of investors) {
     if (['passed', 'dropped', 'closed'].includes(inv.status)) continue;
@@ -1066,34 +1032,27 @@ export async function GET() {
       } : null,
     };
 
-    // Non-blocking intelligence refresh: trigger auto-action generation + measurement
-    // This makes the pulse dashboard the "heartbeat" — every view refreshes intelligence
-    try { generateAutoActions().catch(() => {}); } catch { /* non-blocking */ }
-    try { measureActionEffectiveness().catch(() => {}); } catch { /* non-blocking */ }
-    // Non-blocking: log forecast predictions for calibration learning (cycle 23)
-    try { logForecastPredictions().catch(() => {}); } catch { /* non-blocking */ }
-
-    // Non-blocking: store daily health snapshot if not stored today (cycle 11)
-    try {
-      getHealthSnapshots(1).then(snapshots => {
-        const today = new Date().toISOString().split('T')[0];
-        if (!snapshots.length || snapshots[0].snapshot_date !== today) {
-          const activeInvestors = investors.filter(i => !['passed', 'dropped'].includes(i.status)).length;
-          const advancedCount = investors.filter(i => ['engaged', 'in_dd', 'term_sheet'].includes(i.status)).length;
-          const pScore = Math.min(100, Math.round(activeInvestors * 4 + advancedCount * 10 + convictionPulse.avgEnthusiasm * 4));
-          const nScore = Math.min(100, Math.round(70 - (convictionPulse.decelerating * 5) + (convictionPulse.accelerating * 5)));
-          const rScore = Math.min(100, Math.round(pScore * 0.4 + nScore * 0.3 + (processHealth.dataQualityPct * 0.3)));
-          saveHealthSnapshot({
-            pipelineScore: pScore,
-            narrativeScore: nScore,
-            readinessScore: rScore,
-            velocity: processHealth.meetingsThisWeek / Math.max(1, (new Date().getDay() || 7)),
-            activeInvestors,
-            strategicSummary: `${activeInvestors} active, ${advancedCount} advanced, health: ${processHealth.health}`,
-          }).catch(() => {});
-        }
-      }).catch(() => {});
-    } catch { /* non-blocking */ }
+    // Non-blocking intelligence refresh + daily snapshot
+    const noop = () => {};
+    generateAutoActions().catch(noop);
+    measureActionEffectiveness().catch(noop);
+    logForecastPredictions().catch(noop);
+    getHealthSnapshots(1).then(snapshots => {
+      const today = new Date().toISOString().split('T')[0];
+      if (!snapshots.length || snapshots[0].snapshot_date !== today) {
+        const active = investors.filter(i => !['passed', 'dropped'].includes(i.status)).length;
+        const advanced = investors.filter(i => ['engaged', 'in_dd', 'term_sheet'].includes(i.status)).length;
+        const pScore = Math.min(100, Math.round(active * 4 + advanced * 10 + convictionPulse.avgEnthusiasm * 4));
+        const nScore = Math.min(100, Math.round(70 - (convictionPulse.decelerating * 5) + (convictionPulse.accelerating * 5)));
+        const rScore = Math.min(100, Math.round(pScore * 0.4 + nScore * 0.3 + (processHealth.dataQualityPct * 0.3)));
+        saveHealthSnapshot({
+          pipelineScore: pScore, narrativeScore: nScore, readinessScore: rScore,
+          velocity: processHealth.meetingsThisWeek / Math.max(1, (new Date().getDay() || 7)),
+          activeInvestors: active,
+          strategicSummary: `${active} active, ${advanced} advanced, health: ${processHealth.health}`,
+        }).catch(noop);
+      }
+    }).catch(noop);
 
     return NextResponse.json({
       overnight,

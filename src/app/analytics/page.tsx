@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useToast } from '@/components/toast';
+import { STATUS_LABELS as STAGE_LABELS, TYPE_LABELS } from '@/lib/constants';
 import {
   BarChart3, TrendingUp, AlertTriangle, Users, Clock,
   ArrowRight, RefreshCw, Target, Zap, ShieldAlert,
@@ -103,28 +104,6 @@ const STAGE_COLORS: Record<string, string> = {
   closed: 'var(--text-primary)',
 };
 
-const STAGE_LABELS: Record<string, string> = {
-  identified: 'Identified',
-  contacted: 'Contacted',
-  nda_signed: 'NDA Signed',
-  meeting_scheduled: 'Meeting Set',
-  met: 'Met',
-  engaged: 'Engaged',
-  in_dd: 'In DD',
-  term_sheet: 'Term Sheet',
-  closed: 'Closed',
-  passed: 'Passed',
-  dropped: 'Dropped',
-};
-
-const TYPE_LABELS: Record<string, string> = {
-  vc: 'VC',
-  growth: 'Growth',
-  sovereign: 'Sovereign',
-  strategic: 'Strategic',
-  debt: 'Debt',
-  family_office: 'Family Office',
-};
 
 // ── Main Page ────────────────────────────────────────────────────────
 

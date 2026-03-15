@@ -9,21 +9,7 @@ import {
   BarChart3, ArrowUpRight, ArrowDownRight, Loader2,
 } from 'lucide-react';
 import Link from 'next/link';
-import { STATUS_LABELS } from '@/lib/constants';
-
-// ---------------------------------------------------------------------------
-// Type labels
-// ---------------------------------------------------------------------------
-
-const TYPE_LABELS: Record<InvestorType, string> = {
-  vc: 'VC', growth: 'Growth', sovereign: 'Sovereign', strategic: 'Strategic',
-  debt: 'Debt', family_office: 'Family Office',
-};
-
-const MEETING_TYPE_LABELS: Record<string, string> = {
-  intro: 'Intro', management_presentation: 'Mgmt Pres', deep_dive: 'Deep Dive',
-  site_visit: 'Site Visit', dd_session: 'DD Session', negotiation: 'Negotiation', social: 'Social',
-};
+import { STATUS_LABELS, TYPE_LABELS, MEETING_TYPE_LABELS } from '@/lib/constants';
 
 // ---------------------------------------------------------------------------
 // API response types

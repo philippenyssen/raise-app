@@ -6,7 +6,7 @@ import {
   Gauge, Clock, CheckCircle2, XCircle, AlertTriangle,
   TrendingUp, Users, ArrowRight, Zap, Phone, Mail, Target,
 } from 'lucide-react';
-import { STATUS_LABELS } from '@/lib/constants';
+import { STATUS_LABELS, TYPE_LABELS } from '@/lib/constants';
 
 interface VelocityInvestor {
   investor_id: string;
@@ -56,14 +56,6 @@ const STATUS_COLORS: Record<string, string> = {
   closed: 'var(--accent)',
 };
 
-const TYPE_LABELS: Record<string, string> = {
-  vc: 'VC',
-  growth: 'Growth',
-  sovereign: 'Sovereign',
-  strategic: 'Strategic',
-  debt: 'Debt',
-  family_office: 'Family Office',
-};
 
 function velocityColor(_score: number): string {
   return 'var(--text-primary)';

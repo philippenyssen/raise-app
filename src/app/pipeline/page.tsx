@@ -10,7 +10,7 @@ import {
   Calendar, SendHorizonal, ClipboardList,
 } from 'lucide-react';
 import { fmtDate } from '@/lib/format';
-import { STATUS_LABELS } from '@/lib/constants';
+import { STATUS_LABELS, TYPE_LABELS } from '@/lib/constants';
 
 // ── Pipeline column order ────────────────────────────────────────────
 const PIPELINE_STATUSES: InvestorStatus[] = [
@@ -46,14 +46,6 @@ const TIER_STYLES: Record<number, React.CSSProperties> = {
   4: { background: 'var(--white-8)', color: 'var(--text-muted)', boxShadow: 'inset 0 0 0 1px var(--border-subtle)' },
 };
 
-const TYPE_LABELS: Record<InvestorType, string> = {
-  vc: 'VC',
-  growth: 'Growth',
-  sovereign: 'Sovereign',
-  strategic: 'Strategic',
-  debt: 'Debt',
-  family_office: 'Family Office',
-};
 
 const TYPE_ICONS: Record<InvestorType, React.ComponentType<{ className?: string }>> = {
   vc: Rocket,
