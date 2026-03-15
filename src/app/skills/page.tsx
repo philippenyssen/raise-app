@@ -40,9 +40,10 @@ export default function SkillsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const safeFetch = (url: string) => fetch(url).then(r => { if (!r.ok) throw new Error(`${r.status}`); return r.json(); });
     Promise.all([
-      fetch('/api/skills?view=health').then(r => r.json()),
-      fetch('/api/skills?view=executions&limit=100').then(r => r.json()),
+      safeFetch('/api/skills?view=health'),
+      safeFetch('/api/skills?view=executions&limit=100'),
     ])
       .then(([h, e]) => {
         setHealth(Array.isArray(h) ? h : []);

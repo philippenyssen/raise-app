@@ -60,7 +60,7 @@ export default function HealthPage() {
       .then(setData)
       .catch(() => setHealthError('Failed to load health data'));
     fetch('/api/intelligence/verify')
-      .then(r => r.json())
+      .then(r => { if (!r.ok) throw new Error(`${r.status}`); return r.json(); })
       .then(setIntelVerify)
       .catch(() => {})
       .finally(() => setIntelLoading(false));

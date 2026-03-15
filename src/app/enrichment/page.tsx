@@ -67,11 +67,14 @@ export default function EnrichmentPage() {
 
   const fetchData = useCallback(async () => {
     setLoading(true);
+    const safeFetch = async (url: string, fallback: unknown = []) => {
+      try { const r = await fetch(url); if (!r.ok) return fallback; return r.json(); } catch { return fallback; }
+    };
     const [provRes, invRes, jobRes, statsRes] = await Promise.all([
-      fetch('/api/enrichment?action=providers').then(r => r.json()).catch(() => []),
-      fetch('/api/investors').then(r => r.json()).catch(() => []),
-      fetch('/api/enrichment?action=jobs').then(r => r.json()).catch(() => []),
-      fetch('/api/enrichment?action=stats').then(r => r.json()).catch(() => null),]);
+      safeFetch('/api/enrichment?action=providers'),
+      safeFetch('/api/investors'),
+      safeFetch('/api/enrichment?action=jobs'),
+      safeFetch('/api/enrichment?action=stats', null),]);
     setProviders(Array.isArray(provRes) ? provRes : []);
     const invList = Array.isArray(invRes) ? invRes : invRes?.investors || [];
     setInvestors(invList.filter((i: InvestorOption) => i.status !== 'passed' && i.status !== 'dropped'));

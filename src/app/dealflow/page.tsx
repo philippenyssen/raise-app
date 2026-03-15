@@ -89,10 +89,15 @@ export default function DealflowPage() {
     setLoading(true);
     setError(null);
     try {
+      const safeParse = async (url: string) => {
+        const r = await cachedFetch(url);
+        if (!r.ok) throw new Error(`${url}: ${r.status}`);
+        return r.json();
+      };
       const [velRes, heatRes, momRes] = await Promise.allSettled([
-        cachedFetch('/api/velocity').then(r => r.json()),
-        cachedFetch('/api/deal-heat').then(r => r.json()),
-        cachedFetch('/api/momentum').then(r => r.json()),]);
+        safeParse('/api/velocity'),
+        safeParse('/api/deal-heat'),
+        safeParse('/api/momentum'),]);
 
       const velData = velRes.status === 'fulfilled' ? velRes.value : null;
       const heatData = heatRes.status === 'fulfilled' ? heatRes.value : null;
