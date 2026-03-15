@@ -90,6 +90,7 @@ export default function TimelinePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, status }),});
       if (!res.ok) throw new Error('Failed to update');
+      toast(`Status updated to ${status.replace(/_/g, ' ')}`);
       fetchData();
     } catch { toast('Couldn\'t update status — try again', 'error'); }
   }
