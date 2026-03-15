@@ -234,7 +234,7 @@ body {
   border: none;
   border-radius: var(--radius-lg);
   padding: var(--space-5);
-  transition: box-shadow 250ms ease;
+  transition: box-shadow 200ms ease;
 }
 
 .card-elevated {
@@ -254,7 +254,7 @@ body {
   border: none;
   border-radius: var(--radius-lg);
   padding: var(--space-5) var(--space-5);
-  transition: box-shadow 250ms ease;
+  transition: box-shadow 200ms ease;
 }
 .card-metric:hover {
   box-shadow: var(--shadow-md);
@@ -425,7 +425,7 @@ body {
 
 .table-row {
   border-bottom: 1px solid var(--border-subtle);
-  transition: background 100ms ease;
+  transition: background 150ms ease;
 }
 
 .table-row:hover {
