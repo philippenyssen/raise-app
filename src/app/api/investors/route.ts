@@ -45,6 +45,7 @@ export async function POST(req: NextRequest) {
   if (!body.name || typeof body.name !== 'string' || body.name.trim().length === 0) {
     return NextResponse.json({ error: 'name is required and must be a non-empty string' }, { status: 400 });
   }
+  body.name = (body.name as string).trim();
 
   if (body.tier !== undefined && (typeof body.tier !== 'number' || body.tier < 1 || body.tier > 4)) {
     return NextResponse.json({ error: 'tier must be a number between 1 and 4' }, { status: 400 });
