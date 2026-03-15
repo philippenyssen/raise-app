@@ -15,6 +15,8 @@ export async function GET() {
   const masked = key.substring(0, 12) + '...' + key.substring(key.length - 4);
 
   try {
+    const ac = new AbortController();
+    const tid = setTimeout(() => ac.abort(), 10_000);
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -27,7 +29,9 @@ export async function GET() {
         max_tokens: 5,
         messages: [{ role: 'user', content: 'Say OK' }],
       }),
+      signal: ac.signal,
     });
+    clearTimeout(tid);
 
     const data = await res.json();
 
