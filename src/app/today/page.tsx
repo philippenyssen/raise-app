@@ -525,6 +525,10 @@ export default function TodayPage() {
   const momentumConfig = MOMENTUM_CONFIG[data.momentum] ?? MOMENTUM_CONFIG.steady;
   const MomentumIcon = momentumConfig.icon;
 
+  const todayDate = new Date().toISOString().split('T')[0];
+  const overdueFollowups = dueFollowups.filter(f => f.due_at?.split('T')[0] < todayDate);
+  const dueTodayFollowups = dueFollowups.filter(f => f.due_at?.split('T')[0] === todayDate);
+
   // Derive forecast status from the forecast string
   const forecastLower = data.pipelineSnapshot.forecast.toLowerCase();
   let forecastColor = 'var(--text-secondary)';
@@ -637,6 +641,40 @@ export default function TodayPage() {
       )}
 
       {/* ----------------------------------------------------------------- */}
+      {/* 1.7. Critical Overdue Follow-ups                                  */}
+      {/* ----------------------------------------------------------------- */}
+      {overdueFollowups.length > 0 && (
+        <div style={{ background: 'var(--danger-muted)', borderLeft: '3px solid var(--danger)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-4)' }}>
+          <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
+            <span style={{ color: 'var(--danger)', display: 'flex' }}><AlertTriangle className="w-4 h-4" /></span>
+            <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--danger)', letterSpacing: '0.01em' }}>Critical Overdue</span>
+            <span style={{ fontSize: '10px', color: 'var(--text-muted)', marginLeft: 'auto' }}>{overdueFollowups.length} action{overdueFollowups.length > 1 ? 's' : ''}</span>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+            {overdueFollowups.map(fu => {
+              const daysOver = Math.floor((Date.now() - new Date(fu.due_at).getTime()) / 86400000);
+              const isProcessing = completingFollowupId === fu.id;
+              return (
+                <div key={fu.id} className="flex items-center gap-3" style={{ padding: 'var(--space-2) 0', opacity: isProcessing ? 0.5 : 1, transition: 'opacity 150ms' }}>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <Link href={`/investors/${fu.investor_id}`} style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, textDecoration: 'none' }}>{fu.investor_name}</Link>
+                      <span style={{ fontSize: '10px', padding: '1px 5px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-1)', color: 'var(--text-tertiary)' }}>{fu.action_type.replace(/_/g, ' ')}</span>
+                      <span style={{ fontSize: '10px', color: 'var(--danger)', fontWeight: 400 }}>{daysOver}d overdue</span>
+                    </div>
+                    <p className="truncate" style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '1px' }}>{fu.description}</p>
+                  </div>
+                  <button onClick={() => handleQuickComplete(fu.id)} disabled={isProcessing} className="btn btn-sm shrink-0" style={{ background: 'var(--surface-0)', color: 'var(--text-secondary)', border: '1px solid var(--border-default)', fontSize: '11px', padding: '3px 10px' }}>
+                    Mark Done
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* ----------------------------------------------------------------- */}
       {/* 2. Today's Meetings                                               */}
       {/* ----------------------------------------------------------------- */}
       <div>
@@ -697,7 +735,7 @@ export default function TodayPage() {
       {/* ----------------------------------------------------------------- */}
       {/* 3.5 Due Follow-ups (inline quick-complete)                        */}
       {/* ----------------------------------------------------------------- */}
-      {dueFollowups.length > 0 && (
+      {dueTodayFollowups.length > 0 && (
         <div>
           <div className="flex items-center justify-between">
             <div className="section-title">Follow-ups Due</div>
@@ -706,8 +744,7 @@ export default function TodayPage() {
             </Link>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
-            {dueFollowups.map(fu => {
-              const isOverdue = fu.due_at?.split('T')[0] < new Date().toISOString().split('T')[0];
+            {dueTodayFollowups.map(fu => {
               const typeConfig: Record<string, { label: string; color: string; bg: string }> = {
                 thank_you: { label: 'Thank You', color: 'var(--accent)', bg: 'var(--accent-muted)' },
                 objection_response: { label: 'Objection', color: 'var(--text-primary)', bg: 'var(--danger-muted)' },
@@ -732,9 +769,6 @@ export default function TodayPage() {
                         <Link href={`/investors/${fu.investor_id}`} style={{ fontSize: '11px', color: 'var(--accent)', textDecoration: 'none' }}>
                           {fu.investor_name}
                         </Link>
-                        {isOverdue && (
-                          <span style={{ fontSize: '10px', color: 'var(--text-primary)', fontWeight: 400 }}>Overdue</span>
-                        )}
                       </div>
                     </div>
                     <div className="flex items-center gap-1 shrink-0">

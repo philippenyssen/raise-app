@@ -148,10 +148,12 @@ export async function POST(req: NextRequest) {
 
   emitContextChange('meeting_logged', `Meeting with ${investor_name}`);
 
+  const autoAdvanced = postMeetingActions?.investor_updates?.auto_advanced || null;
   return NextResponse.json({
     ...meeting,
     post_meeting_actions: postMeetingActions,
     followup_plan: followupPlan,
+    auto_advanced: autoAdvanced,
   }, { status: 201 });
   } catch (error) {
     console.error('POST /api/meetings failed:', error);

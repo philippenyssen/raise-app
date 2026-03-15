@@ -1,5 +1,6 @@
 import { createClient, type Client, type InValue } from '@libsql/client';
 import { Investor, Meeting, RaiseConfig, MarketDeal, InvestorPartner, InvestorPortfolioCo, Competitor, IntelligenceBrief, Task, ActivityEvent, type RaisePhase, type TaskPriority, type FollowupAction, type FollowupActionType, type FollowupStatus } from './types';
+import { PIPELINE_ORDER } from './api-helpers';
 
 // Acceleration Action types
 export interface AccelerationAction {
@@ -1389,6 +1390,7 @@ export interface PostMeetingActions {
     suggested_status: string;
     previous_status?: string;
     previous_enthusiasm?: number;
+    auto_advanced?: { from: string; to: string };
   };
 }
 
@@ -1586,16 +1588,24 @@ export async function processPostMeetingIntelligence(
     }
   } catch { /* skip malformed */ }
 
-  // 6. Update investor profile
+  // 6. Update investor profile (auto-advance only if forward move, enthusiasm >= 3, not to closed/term_sheet)
   const investor = await getInvestor(meeting.investor_id);
   if (investor) {
     results.investor_updates.previous_status = investor.status;
     results.investor_updates.previous_enthusiasm = investor.enthusiasm;
+    const enthusiasm = (aiData.enthusiasm_score as number) || investor.enthusiasm;
+    const curIdx = PIPELINE_ORDER.indexOf(investor.status);
+    const newIdx = PIPELINE_ORDER.indexOf(suggestedStatus);
+    const manualOnly = ['closed', 'term_sheet'];
+    const shouldAdvance = newIdx > curIdx && enthusiasm >= 3 && !manualOnly.includes(suggestedStatus);
 
     await updateInvestor(meeting.investor_id, {
-      status: suggestedStatus as Investor['status'],
-      enthusiasm: (aiData.enthusiasm_score as number) || investor.enthusiasm,
+      ...(shouldAdvance ? { status: suggestedStatus as Investor['status'] } : {}),
+      enthusiasm,
     });
+    if (shouldAdvance) {
+      results.investor_updates.auto_advanced = { from: investor.status, to: suggestedStatus };
+    }
   }
 
   // --- Objection Learning: Auto-close objections addressed in this meeting ---

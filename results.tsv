@@ -21,3 +21,4 @@ e2cbc5d	98	100	+2	keep	all	inline style extraction all remaining pages (-1048 li
 99b943b	100	100	0	keep	eng+product	graceful dashboard degradation + SWR cache = 62499 lines, score 100
 306bf5a	100	100	0	keep	product+eng	command palette shortcuts + meeting prep UX + compaction = 62382 lines, score 100
 a5f2b2a	100	100	0	keep	design+eng	UX polish: loading states + error handling + aria-labels = 62400 lines, score 100
+50f07c9	100	100	0	keep	ai	system prompts on all 11 AI calls = 62409 lines, score 100
