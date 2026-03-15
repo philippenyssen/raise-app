@@ -57,7 +57,14 @@ export default function SkillsPage() {
     ? Math.round(health.reduce((s, h) => s + h.parse_success_rate, 0) / health.length)
     : 0;
 
-  if (loading) return <div className="animate-pulse" style={stTextMuted}>Loading skill health...</div>;
+  if (loading) return (
+    <div className="space-y-6 page-content">
+      <div className="skeleton" style={{ width: '200px', height: '28px', borderRadius: 'var(--radius-md)' }} />
+      <div className="grid grid-cols-3 gap-4">
+        {[1,2,3].map(i => <div key={i} className="skeleton" style={{ height: '80px', borderRadius: 'var(--radius-lg)' }} />)}
+      </div>
+      <div className="skeleton" style={{ height: '200px', borderRadius: 'var(--radius-lg)' }} />
+    </div>);
 
   return (
     <div className="space-y-6 page-content">
