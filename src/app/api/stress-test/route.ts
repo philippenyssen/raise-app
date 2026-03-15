@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { computeMomentumScore } from '@/lib/scoring';
 import { logPrediction, getCalibrationData } from '@/lib/db';
 import type { Investor, Meeting } from '@/lib/types';
-import { getClient, daysBetween, PIPELINE_ORDER } from '@/lib/api-helpers';
+import { getClient, daysBetween, PIPELINE_ORDER, loadAllMeetings, loadRaiseConfig, groupByInvestorId } from '@/lib/api-helpers';
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -392,43 +392,25 @@ export async function GET() {
       }
     } catch { /* non-blocking — calibration is best-effort */ }
 
-    const [investorRows, meetingRows, activityRows, configRow] = await Promise.all([
+    const [investorRows, allMeetings, activityRows, raiseConfig] = await Promise.all([
       db.execute(`SELECT * FROM investors ORDER BY tier ASC, name ASC`),
-      db.execute(`SELECT * FROM meetings ORDER BY date DESC`),
+      loadAllMeetings(db),
       db.execute(`
         SELECT investor_id, detail, created_at FROM activity_log
         WHERE event_type = 'status_changed'
         ORDER BY created_at ASC
       `),
-      db.execute(`SELECT value FROM config WHERE key = 'raise_config'`),
+      loadRaiseConfig(db),
     ]);
 
     const investors = investorRows.rows as unknown as Investor[];
-    const allMeetings = meetingRows.rows as unknown as Meeting[];
     const activities = activityRows.rows as unknown as Array<{
       investor_id: string; detail: string; created_at: string;
     }>;
 
-    // Parse raise config
-    let targetEquityM = 250;
-    let targetCloseDate: string | null = null;
-    let companyName = 'Aerospacelab';
-    if (configRow.rows.length > 0) {
-      try {
-        const cfg = JSON.parse(configRow.rows[0].value as string);
-        targetCloseDate = cfg.target_close || null;
-        companyName = cfg.company_name || companyName;
-        const eqStr = (cfg.equity_amount || '').replace(/[^0-9.]/g, '');
-        if (eqStr) targetEquityM = parseFloat(eqStr);
-      } catch { /* ignore */ }
-    }
+    const { targetEquityM, targetCloseDate, companyName } = raiseConfig;
 
-    // Build lookup maps
-    const meetingsByInvestor: Record<string, Meeting[]> = {};
-    allMeetings.forEach(m => {
-      if (!meetingsByInvestor[m.investor_id]) meetingsByInvestor[m.investor_id] = [];
-      meetingsByInvestor[m.investor_id].push(m);
-    });
+    const meetingsByInvestor = groupByInvestorId(allMeetings);
 
     // Compute average stage durations from activity log
     const stageDurations: Record<string, number[]> = {};

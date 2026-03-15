@@ -4,7 +4,7 @@ import type { ScoreSnapshot } from '@/lib/db';
 import { generateAutoActions, measureActionEffectiveness, saveHealthSnapshot, getHealthSnapshots, computeTemporalTrends, computeRaiseForecast, logForecastPredictions, detectScoreReversals, computeEngagementVelocity, computeNetworkCascades, getPipelineRankings, detectFomoDynamics, computeMeetingDensity, computeWinLossPatterns } from '@/lib/db';
 import type { Investor, Meeting, InvestorPortfolioCo, Objection } from '@/lib/types';
 import { getFullContext } from '@/lib/context-bus';
-import { getClient, daysBetween, parseJsonSafe, clamp, STATUS_PROGRESSION } from '@/lib/api-helpers';
+import { getClient, daysBetween, parseJsonSafe, clamp, STATUS_PROGRESSION, loadAllMeetings, loadRaiseConfig, loadAllPortfolios, groupByInvestorId } from '@/lib/api-helpers';
 
 const ACTIVE_STAGES = ['engaged', 'in_dd', 'term_sheet'];
 
@@ -333,15 +333,10 @@ async function computeCriticalPath(
 ): Promise<CriticalPath> {
   const now = new Date().toISOString();
 
-  // Build lookup maps
-  const meetingsByInvestor: Record<string, Meeting[]> = {};
-  allMeetings.forEach(m => {
-    if (!meetingsByInvestor[m.investor_id]) meetingsByInvestor[m.investor_id] = [];
-    meetingsByInvestor[m.investor_id].push(m);
-  });
+  const meetingsByInvestor = groupByInvestorId(allMeetings);
 
   // Get task and flag counts + score snapshots for trajectory
-  const [taskRows, flagRows, portfolioRows, snapshotRows] = await Promise.all([
+  const [taskRows, flagRows, allPortfolios, snapshotRows] = await Promise.all([
     db.execute(`
       SELECT investor_id, COUNT(*) as count FROM tasks
       WHERE status IN ('pending', 'in_progress')
@@ -352,7 +347,7 @@ async function computeCriticalPath(
       WHERE status = 'open'
       GROUP BY investor_id
     `),
-    db.execute(`SELECT * FROM investor_portfolio`),
+    loadAllPortfolios(db),
     db.execute(`SELECT * FROM score_snapshots ORDER BY snapshot_date ASC`),
   ]);
 
@@ -366,11 +361,7 @@ async function computeCriticalPath(
     flagCountByInvestor[r.investor_id] = Number(r.count);
   });
 
-  const portfolioByInvestor: Record<string, InvestorPortfolioCo[]> = {};
-  (portfolioRows.rows as unknown as InvestorPortfolioCo[]).forEach(p => {
-    if (!portfolioByInvestor[p.investor_id]) portfolioByInvestor[p.investor_id] = [];
-    portfolioByInvestor[p.investor_id].push(p);
-  });
+  const portfolioByInvestor = groupByInvestorId(allPortfolios);
 
   const snapshotsByInvestor: Record<string, ScoreSnapshot[]> = {};
   (snapshotRows.rows as unknown as ScoreSnapshot[]).forEach(s => {
@@ -1003,26 +994,14 @@ export async function GET() {
   try {
     const db = getClient();
 
-    const [investorRows, meetingRows, configRow] = await Promise.all([
+    const [investorRows, allMeetings, raiseConfig] = await Promise.all([
       db.execute(`SELECT * FROM investors ORDER BY tier ASC, name ASC`),
-      db.execute(`SELECT * FROM meetings ORDER BY date DESC`),
-      db.execute(`SELECT value FROM config WHERE key = 'raise_config'`),
+      loadAllMeetings(db),
+      loadRaiseConfig(db),
     ]);
 
     const investors = investorRows.rows as unknown as Investor[];
-    const allMeetings = meetingRows.rows as unknown as Meeting[];
-
-    // Parse raise config
-    let targetEquityM = 250;
-    let targetCloseDate: string | null = null;
-    if (configRow.rows.length > 0) {
-      try {
-        const cfg = JSON.parse(configRow.rows[0].value as string);
-        targetCloseDate = cfg.target_close || null;
-        const eqStr = (cfg.equity_amount || '').replace(/[^0-9.]/g, '');
-        if (eqStr) targetEquityM = parseFloat(eqStr);
-      } catch { /* ignore */ }
-    }
+    const { targetEquityM, targetCloseDate } = raiseConfig;
 
     // Run all 4 layers in parallel where possible
     const [overnight, criticalPath, processHealth] = await Promise.all([

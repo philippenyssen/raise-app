@@ -55,6 +55,20 @@ async function genericDelete(table: string, id: string) {
   await getClient().execute({ sql: `DELETE FROM ${table} WHERE id = ?`, args: [id] });
 }
 
+async function genericGetByField<T>(
+  tableName: string,
+  field: string,
+  value: string,
+  opts?: { orderBy?: string; limit?: number },
+): Promise<T[]> {
+  await ensureInitialized();
+  let sql = `SELECT * FROM ${tableName} WHERE ${field} = ?`;
+  if (opts?.orderBy) sql += ` ORDER BY ${opts.orderBy}`;
+  if (opts?.limit) sql += ` LIMIT ${opts.limit}`;
+  const result = await getClient().execute({ sql, args: [value] });
+  return result.rows as unknown as T[];
+}
+
 async function genericCreate(
   tableName: string,
   data: Record<string, unknown>,
@@ -1026,12 +1040,7 @@ export const deleteMarketDeal = (id: string) => genericDelete('market_deals', id
 // Investor Partners
 
 export async function getInvestorPartners(investorId: string): Promise<InvestorPartner[]> {
-  await ensureInitialized();
-  const result = await getClient().execute({
-    sql: 'SELECT * FROM investor_partners WHERE investor_id = ? ORDER BY name ASC',
-    args: [investorId],
-  });
-  return result.rows as unknown as InvestorPartner[];
+  return genericGetByField<InvestorPartner>('investor_partners', 'investor_id', investorId, { orderBy: 'name ASC' });
 }
 
 export async function createInvestorPartner(partner: Omit<InvestorPartner, 'id' | 'created_at' | 'updated_at'>): Promise<InvestorPartner> {
@@ -1048,12 +1057,7 @@ export const deleteInvestorPartner = (id: string) => genericDelete('investor_par
 // Investor Portfolio Companies
 
 export async function getInvestorPortfolio(investorId: string): Promise<InvestorPortfolioCo[]> {
-  await ensureInitialized();
-  const result = await getClient().execute({
-    sql: 'SELECT * FROM investor_portfolio WHERE investor_id = ? ORDER BY date DESC',
-    args: [investorId],
-  });
-  return result.rows as unknown as InvestorPortfolioCo[];
+  return genericGetByField<InvestorPortfolioCo>('investor_portfolio', 'investor_id', investorId, { orderBy: 'date DESC' });
 }
 
 export async function createPortfolioCo(co: Omit<InvestorPortfolioCo, 'id' | 'created_at'>): Promise<InvestorPortfolioCo> {
@@ -1880,12 +1884,7 @@ export async function getBestResponses(topic: string): Promise<ObjectionRecord[]
 }
 
 export async function getObjectionsByInvestor(investorId: string): Promise<ObjectionRecord[]> {
-  await ensureInitialized();
-  const result = await getClient().execute({
-    sql: 'SELECT * FROM objection_responses WHERE investor_id = ? ORDER BY created_at DESC',
-    args: [investorId],
-  });
-  return result.rows as unknown as ObjectionRecord[];
+  return genericGetByField<ObjectionRecord>('objection_responses', 'investor_id', investorId, { orderBy: 'created_at DESC' });
 }
 
 export async function updateObjectionEnthusiasmDelta(investorId: string, enthusiasmDelta: number): Promise<void> {
@@ -1951,12 +1950,7 @@ export async function upsertScoreSnapshot(snapshot: {
 }
 
 export async function getScoreSnapshots(investorId: string, limit: number = 90): Promise<ScoreSnapshot[]> {
-  await ensureInitialized();
-  const result = await getClient().execute({
-    sql: 'SELECT * FROM score_snapshots WHERE investor_id = ? ORDER BY snapshot_date ASC LIMIT ?',
-    args: [investorId, limit],
-  });
-  return result.rows as unknown as ScoreSnapshot[];
+  return genericGetByField<ScoreSnapshot>('score_snapshots', 'investor_id', investorId, { orderBy: 'snapshot_date ASC', limit });
 }
 
 // ---------------------------------------------------------------------------
@@ -6239,12 +6233,7 @@ export async function saveEnrichmentRecords(records: {
 }
 
 export async function getEnrichmentRecords(investorId: string): Promise<EnrichmentRecordRow[]> {
-  await ensureInitialized();
-  const result = await getClient().execute({
-    sql: 'SELECT * FROM enrichment_records WHERE investor_id = ? ORDER BY confidence DESC, fetched_at DESC',
-    args: [investorId],
-  });
-  return result.rows as unknown as EnrichmentRecordRow[];
+  return genericGetByField<EnrichmentRecordRow>('enrichment_records', 'investor_id', investorId, { orderBy: 'confidence DESC, fetched_at DESC' });
 }
 
 export interface EnrichmentRecordRow {

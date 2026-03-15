@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { computeInvestorScore, computeMomentumScore } from '@/lib/scoring';
 import type { Investor, Meeting, InvestorPortfolioCo, IntelligenceBrief, Objection } from '@/lib/types';
-import { getClient, daysBetween, parseJsonSafe, clamp } from '@/lib/api-helpers';
+import { getClient, daysBetween, parseJsonSafe, clamp, loadAllMeetings, loadRaiseConfig, loadAllPortfolios, groupByInvestorId } from '@/lib/api-helpers';
 import { STATUS_LABELS, MEETING_TYPE_LABELS } from '@/lib/constants';
 
 // ---------------------------------------------------------------------------
@@ -365,18 +365,18 @@ export async function GET() {
 
     const [
       investorRows,
-      meetingRows,
+      allMeetings,
       taskRows,
       flagRows,
-      configRow,
-      portfolioRows,
+      raiseConfig,
+      allPortfolios,
     ] = await Promise.all([
       db.execute(`
         SELECT * FROM investors
         WHERE status NOT IN ('passed', 'dropped')
         ORDER BY tier ASC, name ASC
       `),
-      db.execute(`SELECT * FROM meetings ORDER BY date DESC`),
+      loadAllMeetings(db),
       db.execute(`
         SELECT investor_id, COUNT(*) as count FROM tasks
         WHERE status IN ('pending', 'in_progress')
@@ -387,20 +387,14 @@ export async function GET() {
         WHERE status = 'open'
         GROUP BY investor_id
       `),
-      db.execute(`SELECT value FROM config WHERE key = 'raise_config'`),
-      db.execute(`SELECT * FROM investor_portfolio`),
+      loadRaiseConfig(db),
+      loadAllPortfolios(db),
     ]);
 
     const investors = investorRows.rows as unknown as Investor[];
-    const allMeetings = meetingRows.rows as unknown as Meeting[];
     const now = new Date().toISOString();
 
-    // Build lookup maps
-    const meetingsByInvestor: Record<string, Meeting[]> = {};
-    allMeetings.forEach(m => {
-      if (!meetingsByInvestor[m.investor_id]) meetingsByInvestor[m.investor_id] = [];
-      meetingsByInvestor[m.investor_id].push(m);
-    });
+    const meetingsByInvestor = groupByInvestorId(allMeetings);
 
     const taskCountByInvestor: Record<string, number> = {};
     (taskRows.rows as unknown as Array<{ investor_id: string; count: number }>).forEach(r => {
@@ -412,23 +406,9 @@ export async function GET() {
       flagCountByInvestor[r.investor_id] = Number(r.count);
     });
 
-    const portfolioByInvestor: Record<string, InvestorPortfolioCo[]> = {};
-    (portfolioRows.rows as unknown as InvestorPortfolioCo[]).forEach(p => {
-      if (!portfolioByInvestor[p.investor_id]) portfolioByInvestor[p.investor_id] = [];
-      portfolioByInvestor[p.investor_id].push(p);
-    });
+    const portfolioByInvestor = groupByInvestorId(allPortfolios);
 
-    // Parse raise config
-    let targetEquityM = 250; // default
-    let targetCloseDate: string | null = null;
-    if (configRow.rows.length > 0) {
-      try {
-        const cfg = JSON.parse(configRow.rows[0].value as string);
-        targetCloseDate = cfg.target_close || null;
-        const eqStr = (cfg.equity_amount || '').replace(/[^0-9.]/g, '');
-        if (eqStr) targetEquityM = parseFloat(eqStr);
-      } catch { /* ignore */ }
-    }
+    const { targetEquityM, targetCloseDate } = raiseConfig;
 
     // Compute focus items
     const focusItems: FocusItem[] = [];

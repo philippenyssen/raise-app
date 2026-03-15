@@ -1,9 +1,56 @@
 import { createClient } from '@libsql/client';
+import type { Investor, Meeting, InvestorPortfolioCo } from '@/lib/types';
+
 export function getClient() {
   return createClient({
     url: process.env.TURSO_DATABASE_URL || 'file:raise.db',
     authToken: process.env.TURSO_AUTH_TOKEN,
   });
+}
+
+export async function loadAllMeetings(db?: ReturnType<typeof getClient>): Promise<Meeting[]> {
+  const client = db ?? getClient();
+  const result = await client.execute(`SELECT * FROM meetings ORDER BY date DESC`);
+  return result.rows as unknown as Meeting[];
+}
+
+export interface RaiseConfig {
+  targetEquityM: number;
+  targetCloseDate: string | null;
+  companyName: string;
+}
+
+export async function loadRaiseConfig(db?: ReturnType<typeof getClient>): Promise<RaiseConfig> {
+  const client = db ?? getClient();
+  const result = await client.execute(`SELECT value FROM config WHERE key = 'raise_config'`);
+  let targetEquityM = 250;
+  let targetCloseDate: string | null = null;
+  let companyName = 'Aerospacelab';
+  if (result.rows.length > 0) {
+    try {
+      const cfg = JSON.parse(result.rows[0].value as string);
+      targetCloseDate = cfg.target_close || null;
+      companyName = cfg.company_name || companyName;
+      const eqStr = (cfg.equity_amount || '').replace(/[^0-9.]/g, '');
+      if (eqStr) targetEquityM = parseFloat(eqStr);
+    } catch { /* ignore */ }
+  }
+  return { targetEquityM, targetCloseDate, companyName };
+}
+
+export async function loadAllPortfolios(db?: ReturnType<typeof getClient>): Promise<InvestorPortfolioCo[]> {
+  const client = db ?? getClient();
+  const result = await client.execute(`SELECT * FROM investor_portfolio`);
+  return result.rows as unknown as InvestorPortfolioCo[];
+}
+
+export function groupByInvestorId<T extends { investor_id: string }>(items: T[]): Record<string, T[]> {
+  const map: Record<string, T[]> = {};
+  for (const item of items) {
+    if (!map[item.investor_id]) map[item.investor_id] = [];
+    map[item.investor_id].push(item);
+  }
+  return map;
 }
 export function daysBetween(a: string | Date, b: string | Date): number {
   const da = typeof a === 'string' ? new Date(a) : a;
