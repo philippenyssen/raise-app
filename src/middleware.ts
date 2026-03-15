@@ -159,6 +159,10 @@ export async function middleware(req: NextRequest) {
 
   const response = NextResponse.next();
 
+  // Add request ID for tracing
+  const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
+  response.headers.set('X-Request-ID', requestId);
+
   // Add response timing header for API routes
   if (isApiRoute) {
     response.headers.set('X-Response-Time', `${Date.now() - startTime}ms`);
