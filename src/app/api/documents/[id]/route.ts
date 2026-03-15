@@ -20,8 +20,16 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   } catch {
     return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
   }
+  const allowed = ['title', 'content', 'status', 'change_summary'];
+  const updates: Record<string, unknown> = {};
+  for (const key of allowed) {
+    if (key in body) updates[key] = typeof body[key] === 'string' ? (body[key] as string).trim() : body[key];
+  }
+  if (Object.keys(updates).length === 0) {
+    return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 });
+  }
   try {
-    await updateDocument(id, body);
+    await updateDocument(id, updates);
     return NextResponse.json({ ok: true });
   } catch {
     return NextResponse.json({ error: 'Failed to update document' }, { status: 500 });

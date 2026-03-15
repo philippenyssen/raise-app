@@ -244,7 +244,7 @@ export default function DataRoomPage() {
       {/* Search */}
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={stTextMuted} />
-        <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Search files and content..." className="input" style={{ paddingLeft: 'var(--space-10)', paddingRight: 'var(--space-4)', paddingTop: '0.625rem', paddingBottom: '0.625rem', borderRadius: 'var(--radius-lg)' }}
+        <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Search files and content..." className="input" autoComplete="off" spellCheck={false} aria-label="Search data room files" style={{ paddingLeft: 'var(--space-10)', paddingRight: 'var(--space-4)', paddingTop: '0.625rem', paddingBottom: '0.625rem', borderRadius: 'var(--radius-lg)' }}
           /></div>
 
       {/* Paste mode */}

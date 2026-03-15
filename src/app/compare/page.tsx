@@ -224,7 +224,10 @@ export default function ComparePage() {
                     onChange={e => setSearch(e.target.value)}
                     placeholder="Search investors..."
                     className="input"
-                    autoFocus /></div>
+                    autoFocus
+                    autoComplete="off"
+                    spellCheck={false}
+                    aria-label="Search investors" /></div>
                 <div className="overflow-y-auto max-h-56">
                   {filteredInvestors.length === 0 ? (
                     <div style={{ padding: 'var(--space-3) var(--space-4)', fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>

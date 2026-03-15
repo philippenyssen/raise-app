@@ -396,6 +396,9 @@ export default function MeetingsPage() {
             onChange={e => setSearch(e.target.value)}
             placeholder="Search investor or notes..."
             className="input"
+            autoComplete="off"
+            spellCheck={false}
+            aria-label="Search meetings"
             style={{ paddingLeft: 'var(--space-10)' }} /></div>
         <select
           value={typeFilter}
