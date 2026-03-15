@@ -5,10 +5,10 @@ import { CheckCircle, XCircle, AlertTriangle, Info, X } from 'lucide-react';
 
 type ToastType = 'success' | 'error' | 'warning' | 'info';
 
-interface Toast { id: string; message: string; type: ToastType; }
+interface Toast { id: string; message: string; type: ToastType; action?: { label: string; onClick: () => void }; }
 
 interface ToastContextValue {
-  toast: (message: string, type?: ToastType) => void;
+  toast: (message: string, type?: ToastType, action?: { label: string; onClick: () => void }) => void;
 }
 
 const ToastContext = createContext<ToastContextValue>({ toast: () => {} });
@@ -44,9 +44,9 @@ const typeStyles: Record<ToastType, { bg: string; border: string; color: string;
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
-  const toast = useCallback((message: string, type: ToastType = 'success') => {
+  const toast = useCallback((message: string, type: ToastType = 'success', action?: { label: string; onClick: () => void }) => {
     const id = crypto.randomUUID();
-    setToasts(t => [...t, { id, message, type }]);
+    setToasts(t => [...t, { id, message, type, action }]);
 
     // Error toasts persist until manually dismissed
     // Warning toasts get extra time (6s) since they may need attention
@@ -98,6 +98,24 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               }}>
               <Icon className="shrink-0" style={{ width: '16px', height: '16px', color: styles.icon }} />
               <span className="flex-1" style={{ color: 'var(--text-primary)' }}>{t.message}</span>
+              {t.action && (
+                <button
+                  onClick={() => { t.action!.onClick(); dismiss(t.id); }}
+                  className="shrink-0 transition-opacity"
+                  style={{
+                    padding: '2px 8px',
+                    borderRadius: 'var(--radius-sm)',
+                    border: `1px solid ${styles.border}`,
+                    background: 'transparent',
+                    color: styles.color,
+                    fontSize: 'var(--font-size-xs)',
+                    fontWeight: 400,
+                    cursor: 'pointer',
+                  }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = styles.bg; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
+                  {t.action.label}</button>
+              )}
               <button
                 onClick={() => dismiss(t.id)}
                 className="shrink-0 rounded transition-opacity"

@@ -364,7 +364,10 @@ export default function AccelerationPage() {
         body: JSON.stringify({ id: item.id, status: 'executed' }),});
       if (!res.ok) throw new Error('Failed to mark action as executed');
       setExecutedIds(prev => new Set(prev).add(item.id));
-      toast(`Action executed for ${item.investorName}`);
+      toast(`Action executed for ${item.investorName}`, 'success', {
+        label: 'Undo',
+        onClick: () => undoAction(item.id, 'executed'),
+      });
     } catch {
       toast('Failed to update action', 'error');
     }}
@@ -377,9 +380,29 @@ export default function AccelerationPage() {
         body: JSON.stringify({ id: item.id, status: 'skipped' }),});
       if (!res.ok) throw new Error('Failed to mark action as skipped');
       setSkippedIds(prev => new Set(prev).add(item.id));
-      toast(`Action skipped for ${item.investorName}`);
+      toast(`Action skipped for ${item.investorName}`, 'success', {
+        label: 'Undo',
+        onClick: () => undoAction(item.id, 'skipped'),
+      });
     } catch {
       toast('Failed to update action', 'error');
+    }}
+
+  async function undoAction(id: string, fromStatus: 'executed' | 'skipped') {
+    try {
+      const res = await fetch('/api/acceleration', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status: 'pending' }),});
+      if (!res.ok) throw new Error('Failed to undo');
+      if (fromStatus === 'executed') {
+        setExecutedIds(prev => { const next = new Set(prev); next.delete(id); return next; });
+      } else {
+        setSkippedIds(prev => { const next = new Set(prev); next.delete(id); return next; });
+      }
+      toast('Action reverted to pending');
+    } catch {
+      toast('Failed to undo action', 'error');
     }}
 
   // Filter logic
@@ -607,8 +630,10 @@ export default function AccelerationPage() {
       )}
 
       {activeTab !== 'all' && allFiltered.length === 0 && (
-        <div className="rounded-xl p-6 text-center">
-          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>No {activeTab} actions.</p></div>
+        <div className="rounded-xl p-8 text-center space-y-3">
+          {activeTab === 'executed' ? <CheckCircle className="w-8 h-8 mx-auto" style={stTextSecondary} /> : <SkipForward className="w-8 h-8 mx-auto" style={stTextSecondary} />}
+          <p style={stTextTertiary}>No {activeTab} actions yet.</p>
+          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>{activeTab === 'executed' ? 'Execute actions from the pending tab to track what you\'ve done.' : 'Skipped actions will appear here.'}</p></div>
       )}
     </div>);
 }
