@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { cachedFetch } from '@/lib/cache';
 import { relativeTime, MS_PER_MINUTE } from '@/lib/time';
@@ -158,7 +158,7 @@ export default function MomentumPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -172,14 +172,14 @@ export default function MomentumPage() {
       toast(msg, 'error');
     } finally {
       setLoading(false);
-    }};
+    }}, [toast]);
 
   useEffect(() => { document.title = 'Raise | Deal Momentum'; }, []);
   useEffect(() => {
     fetchData();
     const interval = setInterval(() => fetchData(), 5 * MS_PER_MINUTE);
     return () => clearInterval(interval);
-  }, []);
+  }, [fetchData]);
   useEffect(() => {
     const h = (e: KeyboardEvent) => { if (e.key === 'r' && !e.metaKey && !e.ctrlKey && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement)) { e.preventDefault(); fetchData(); } };
     window.addEventListener('keydown', h); return () => window.removeEventListener('keydown', h);
