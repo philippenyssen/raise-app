@@ -1127,6 +1127,12 @@ export async function getInvestorPortfolio(investorId: string): Promise<Investor
   return genericGetByField<InvestorPortfolioCo>('investor_portfolio', 'investor_id', investorId, { orderBy: 'date DESC' });
 }
 
+export async function getAllPortfolios(): Promise<InvestorPortfolioCo[]> {
+  await ensureInitialized();
+  const result = await getClient().execute('SELECT * FROM investor_portfolio ORDER BY date DESC');
+  return result.rows as unknown as InvestorPortfolioCo[];
+}
+
 export async function createPortfolioCo(co: Omit<InvestorPortfolioCo, 'id' | 'created_at'>): Promise<InvestorPortfolioCo> {
   const id = await genericCreate('investor_portfolio', co as Record<string, unknown>, { timestamps: ['created_at'] });
   return (await genericGetById<InvestorPortfolioCo>('investor_portfolio', id))!;

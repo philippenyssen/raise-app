@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getAllInvestors, getMeetings, getInvestorPortfolio, getIntelligenceBriefs, getRaiseConfig, computeNetworkEffectData, computeRaiseForecast, computeEngagementVelocity, detectFomoDynamics, detectScoreReversals } from '@/lib/db';
+import { getAllInvestors, getMeetings, getAllPortfolios, getIntelligenceBriefs, getRaiseConfig, computeNetworkEffectData, computeRaiseForecast, computeEngagementVelocity, detectFomoDynamics, detectScoreReversals } from '@/lib/db';
 import { computeInvestorScore, computeDealHeat } from '@/lib/scoring';
 
 export async function GET() {
@@ -30,13 +30,38 @@ export async function GET() {
   const activeStatuses = new Set(['contacted', 'nda_signed', 'meeting_scheduled', 'met', 'engaged', 'in_dd', 'term_sheet', 'closed']);
   const activeInvestors = investors.filter(inv => activeStatuses.has(inv.status));
 
+  // Batch-fetch all data in 3 queries instead of 3×N per-investor queries
+  const [allMeetings, allBriefs, allPortfolios] = await Promise.all([
+    getMeetings(),
+    getIntelligenceBriefs(),
+    getAllPortfolios(),
+  ]);
+  const meetingsByInvestor = new Map<string, typeof allMeetings>();
+  for (const m of allMeetings) {
+    const list = meetingsByInvestor.get(m.investor_id) ?? [];
+    list.push(m);
+    meetingsByInvestor.set(m.investor_id, list);
+  }
+  const briefsByInvestor = new Map<string, typeof allBriefs>();
+  for (const b of allBriefs) {
+    if (!b.investor_id) continue;
+    const list = briefsByInvestor.get(b.investor_id) ?? [];
+    list.push(b);
+    briefsByInvestor.set(b.investor_id, list);
+  }
+  const portfoliosByInvestor = new Map<string, typeof allPortfolios>();
+  for (const p of allPortfolios) {
+    const list = portfoliosByInvestor.get(p.investor_id) ?? [];
+    list.push(p);
+    portfoliosByInvestor.set(p.investor_id, list);
+  }
+
   const results = await Promise.all(
     activeInvestors.map(async (investor) => {
-      const [meetings, portfolio, briefs, networkData] = await Promise.all([
-        getMeetings(investor.id),
-        getInvestorPortfolio(investor.id),
-        getIntelligenceBriefs(undefined, investor.id),
-        computeNetworkEffectData(investor.id).catch(() => null),]);
+      const meetings = meetingsByInvestor.get(investor.id) ?? [];
+      const briefs = briefsByInvestor.get(investor.id) ?? [];
+      const portfolio = portfoliosByInvestor.get(investor.id) ?? [];
+      const networkData = await computeNetworkEffectData(investor.id).catch(() => null);
 
       let forecastData: { predictedDaysToClose: number; confidence: string; isCriticalPath: boolean; pathProbability: number } | null = null;
       if (raiseForecastData) {
