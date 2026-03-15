@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { cachedFetch } from '@/lib/cache';
 import Link from 'next/link';
 import { Flame, Filter, TrendingUp, Thermometer } from 'lucide-react';
 import { STATUS_LABELS, TYPE_LABELS } from '@/lib/constants';
@@ -41,7 +42,7 @@ export default function DealHeatPage() {
   function fetchDealHeat() {
     setLoading(true);
     setError(null);
-    fetch('/api/deal-heat')
+    cachedFetch('/api/deal-heat')
       .then(res => {
         if (!res.ok) throw new Error(`Server error (${res.status})`);
         return res.json();})

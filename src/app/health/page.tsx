@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { cachedFetch } from '@/lib/cache';
 import {
   CheckCircle2, AlertTriangle, XCircle, Shield, RefreshCw,
 } from 'lucide-react';
@@ -56,11 +57,11 @@ export default function HealthPage() {
 
   function fetchHealth() {
     setHealthError(null);
-    fetch('/api/health')
+    cachedFetch('/api/health')
       .then(r => { if (!r.ok) throw new Error('load failed'); return r.json(); })
       .then(setData)
       .catch(() => setHealthError('Couldn\'t load health data — try refreshing'));
-    fetch('/api/intelligence/verify')
+    cachedFetch('/api/intelligence/verify')
       .then(r => { if (!r.ok) throw new Error(`${r.status}`); return r.json(); })
       .then(setIntelVerify)
       .catch(() => {})

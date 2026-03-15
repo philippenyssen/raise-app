@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import { cachedFetch } from '@/lib/cache';
 import Link from 'next/link';
 import {
   BarChart3, TrendingUp, AlertTriangle, Shield, Clock,
@@ -46,7 +47,7 @@ export default function ForecastPage() {
   function fetchForecast() {
     setLoading(true);
     setError(null);
-    fetch('/api/forecast')
+    cachedFetch('/api/forecast')
       .then(res => {
         if (!res.ok) throw new Error('Couldn\'t load forecast — try refreshing the page');
         return res.json();})

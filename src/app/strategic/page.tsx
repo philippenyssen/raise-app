@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
+import { cachedFetch } from '@/lib/cache';
 import Link from 'next/link';
 import {
   Target, Activity, Shield, Users, TrendingUp, TrendingDown,
@@ -143,7 +144,7 @@ export default function StrategicPage() {
     else setRefreshing(true);
     setError(null);
     try {
-      const res = await fetch('/api/intelligence/strategic');
+      const res = await cachedFetch('/api/intelligence/strategic');
       if (!res.ok) throw new Error('Couldn\'t load strategic data — try refreshing');
       setData(await res.json());
     } catch (e) {
