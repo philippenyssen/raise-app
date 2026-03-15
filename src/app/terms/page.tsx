@@ -148,7 +148,11 @@ export default function TermsPage() {
         <div>
           <h1 className="page-title">Term Sheet Comparison</h1>
           <p className="text-sm mt-1" style={stTextMuted}>
-            Compare and score term sheets side-by-side. {sheets.length} received.</p></div>
+            Compare and score term sheets side-by-side. {sheets.length} received.{sheets.length > 0 && (() => {
+              const newest = sheets.reduce((a, b) => (a.updated_at ?? a.created_at) > (b.updated_at ?? b.created_at) ? a : b);
+              const d = Math.floor((Date.now() - new Date(newest.updated_at ?? newest.created_at).getTime()) / 864e5);
+              return <span style={{ marginLeft: 8, color: d > 7 ? 'var(--warning)' : 'var(--text-muted)' }}>Last updated {d === 0 ? 'today' : d === 1 ? 'yesterday' : `${d}d ago`}</span>;
+            })()}</p></div>
         <div className="flex items-center gap-2">
           <Link
             href="/term-compare"
