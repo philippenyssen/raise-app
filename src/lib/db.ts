@@ -605,7 +605,7 @@ async function ensureInitialized() {
   // Indexes for frequent foreign key lookups
   try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_enrichment_investor ON enrichment_records(investor_id)`); } catch { /* */ }
   try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_meetings_investor ON meetings(investor_id)`); } catch { /* */ }
-  try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_followups_investor ON followups(investor_id)`); } catch { /* */ }
+  try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_followups_investor ON followup_actions(investor_id)`); } catch { /* */ }
   try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_score_snapshots_investor ON score_snapshots(investor_id)`); } catch { /* */ }
   try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_tasks_investor ON tasks(investor_id)`); } catch { /* */ }
   try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_meetings_date ON meetings(date)`); } catch { /* */ }
@@ -615,6 +615,7 @@ async function ensureInitialized() {
   try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_investors_status ON investors(status)`); } catch { /* */ }
   try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_tasks_status ON tasks(status)`); } catch { /* */ }
   try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_followups_status ON followup_actions(status)`); } catch { /* */ }
+  try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_followups_status_due ON followup_actions(status, due_at)`); } catch { /* */ }
   try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_activity_log_type ON activity_log(event_type, created_at)`); } catch { /* */ }
   try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_meetings_investor_date ON meetings(investor_id, date DESC)`); } catch { /* */ }
 
