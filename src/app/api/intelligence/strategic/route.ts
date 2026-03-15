@@ -195,13 +195,13 @@ export async function GET() {
     let historicalSnapshots: { date: string; pipelineScore: number; narrativeScore: number; readinessScore: number; velocity: number; activeInvestors: number }[] = [];
     try {
       historicalSnapshots = (await getHealthSnapshots(30)).map(s => ({ date: s.snapshot_date, pipelineScore: s.pipeline_score, narrativeScore: s.narrative_score, readinessScore: s.readiness_score, velocity: s.velocity, activeInvestors: s.active_investors }));
-    } catch { /* non-blocking */ }
+    } catch (e) { console.error('[HEALTH_SNAPSHOTS]', e instanceof Error ? e.message : e); }
 
     let temporalTrends: TemporalTrends | null = null;
-    try { temporalTrends = await computeTemporalTrends(); } catch { /* non-blocking */ }
+    try { temporalTrends = await computeTemporalTrends(); } catch (e) { console.error('[TEMPORAL_TRENDS]', e instanceof Error ? e.message : e); }
 
     let raiseForecastResult: RaiseForecast | null = null;
-    try { raiseForecastResult = await computeRaiseForecast(); } catch { /* non-blocking */ }
+    try { raiseForecastResult = await computeRaiseForecast(); } catch (e) { console.error('[RAISE_FORECAST]', e instanceof Error ? e.message : e); }
 
     try {
       const recentSnapshots = await getHealthSnapshots(1);
@@ -209,7 +209,7 @@ export async function GET() {
       if (!recentSnapshots.length || recentSnapshots[0].snapshot_date !== today) {
         saveHealthSnapshot({ pipelineScore: Math.min(100, pipelineScore), narrativeScore, readinessScore: readiness, velocity: velocity.meetingsPerWeek, activeInvestors: ctx.pipelineHealth.totalActive, strategicSummary: ceoBrief }).catch(() => {});
       }
-    } catch { /* non-blocking */ }
+    } catch (e) { console.error('[HEALTH_SNAPSHOT_SAVE]', e instanceof Error ? e.message : e); }
 
     const assessment: StrategicAssessment = {
       ceoBrief, raiseVelocity: velocity, narrativeHealthScore: narrativeScore, pipelineConcentrationRisk: concentration,

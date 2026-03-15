@@ -120,7 +120,7 @@ export async function PUT(req: NextRequest) {
             ) {
               await updateDocumentFlag(flag.id, { status: 'addressed' });
             }}
-        } catch { /* non-blocking */ }
+        } catch (e) { console.error('[TASK_FLAG_RESOLVE]', e instanceof Error ? e.message : e); }
 
         // Auto-trigger data_share follow-up if task was about preparing materials
         try {
@@ -140,7 +140,7 @@ export async function PUT(req: NextRequest) {
               description: `Materials ready: "${raw.title}". Send to investor and confirm receipt.`,
               due_at: dueAt.toISOString(),});
           }
-        } catch { /* non-blocking */ }
+        } catch (e) { console.error('[TASK_AUTO_FOLLOWUP]', e instanceof Error ? e.message : e); }
 
         // Auto-complete follow-ups that were waiting for this task
         try {
@@ -154,7 +154,7 @@ export async function PUT(req: NextRequest) {
                 outcome: `Auto-completed: task "${raw.title}" marked done`,
                 conviction_delta: 0,});
             }}
-        } catch { /* non-blocking */ }
+        } catch (e) { console.error('[TASK_AUTO_COMPLETE]', e instanceof Error ? e.message : e); }
       }}
 
     emitContextChange('task_updated', `Task ${id} ${updates.status === 'done' ? 'completed' : 'updated'}`);

@@ -81,7 +81,7 @@ export async function POST(req: NextRequest) {
       detail: (aiData.ai_analysis as string) || '',
       investor_id,
       investor_name,});
-  } catch { /* non-blocking */ }
+  } catch (e) { console.error('[ACTIVITY_LOG]', e instanceof Error ? e.message : e); }
 
   // Generate follow-up choreography
   let followupPlan = null;
@@ -130,7 +130,7 @@ export async function POST(req: NextRequest) {
       investor?.type || 'vc',
       JSON.stringify(aiData.questions_asked || []),
       (typeof date === 'string' ? date : null) || new Date().toISOString().split('T')[0],);
-  } catch { /* non-blocking */ }
+  } catch (e) { console.error('[QUESTION_PATTERNS]', e instanceof Error ? e.message : e); }
 
   emitContextChange('meeting_logged', `Meeting with ${investor_name}`);
 

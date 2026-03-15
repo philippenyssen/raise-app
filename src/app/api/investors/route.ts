@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
     emitContextChange('investor_created', `Created investor ${body.name}`);
 
     // Rebuild relationship graph after creating a new investor (non-blocking)
-    try { buildRelationshipGraph().catch(() => {}); } catch { /* non-blocking */ }
+    try { buildRelationshipGraph().catch(e => console.error('[RELATIONSHIP_GRAPH]', e instanceof Error ? e.message : e)); } catch { /* non-blocking */ }
 
     // Fire-and-forget: trigger enrichment for the newly created investor (5s timeout)
     try {
@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'enrich', investor_id: investor.id, auto_apply: true }),
         signal: ac.signal,
-      }).catch(() => { /* non-blocking enrichment */ }).finally(() => clearTimeout(tid));
+      }).catch(e => console.error('[AUTO_ENRICH]', e instanceof Error ? e.message : e)).finally(() => clearTimeout(tid));
     } catch { /* non-blocking */ }
 
     return NextResponse.json(investor, { status: 201 });
@@ -126,7 +126,7 @@ export async function PUT(req: NextRequest) {
 
     // Rebuild relationship graph when warm_path changes (non-blocking)
     if (updates.warm_path !== undefined) {
-      try { buildRelationshipGraph().catch(() => {}); } catch { /* non-blocking */ }
+      try { buildRelationshipGraph().catch(e => console.error('[RELATIONSHIP_GRAPH]', e instanceof Error ? e.message : e)); } catch { /* non-blocking */ }
     }
 
     return NextResponse.json({ ok: true });
