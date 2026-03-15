@@ -247,7 +247,7 @@ export async function GET() {
         avgPassedMeetings: avg(passedMeetingCounts),
         avgClosedEnthusiasm: closedEnthusiasms.length > 0 ? Math.round(avg(closedEnthusiasms) * 10) / 10 : 0,
         avgPassedEnthusiasm: passedEnthusiasms.length > 0 ? Math.round(avg(passedEnthusiasms) * 10) / 10 : 0,},
-      generatedAt: new Date().toISOString(),});
+      generatedAt: new Date().toISOString(),}, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
   } catch (error) {
     console.error('[WIN_LOSS_GET]', error instanceof Error ? error.message : error);
     return NextResponse.json(

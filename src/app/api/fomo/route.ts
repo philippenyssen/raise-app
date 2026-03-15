@@ -304,7 +304,7 @@ export async function GET() {
         mediumFomoCount: perInvestorFomo.filter(f => f.intensity >= 40 && f.intensity < 70).length,
         lowFomoCount: perInvestorFomo.filter(f => f.intensity > 0 && f.intensity < 40).length,
         zeroFomoCount: perInvestorFomo.filter(f => f.intensity === 0).length,},
-      generatedAt: new Date().toISOString(),});
+      generatedAt: new Date().toISOString(),}, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
   } catch (error) {
     console.error('[FOMO_GET]', error instanceof Error ? error.message : error);
     return NextResponse.json(

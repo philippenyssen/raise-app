@@ -355,7 +355,7 @@ export async function GET() {
         enabled: calibration.enabled, resolvedCount: calibration.resolvedCount, adjustments: calibration.adjustments,
         note: calibration.enabled ? `Weights auto-calibrated from ${calibration.resolvedCount} resolved predictions (70% hardcoded + 30% empirical)` : calibration.resolvedCount > 0 ? `${calibration.resolvedCount} resolved predictions — need 5+ for auto-calibration` : 'No resolved predictions yet — using hardcoded weights',
       },
-      generatedAt: new Date().toISOString(),});
+      generatedAt: new Date().toISOString(),}, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
   } catch (error) {
     console.error('[STRESS_TEST_GET]', error instanceof Error ? error.message : error);
     return NextResponse.json({ error: 'Failed to compute stress test' }, { status: 500 });
