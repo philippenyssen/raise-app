@@ -43,6 +43,9 @@ export function ConfirmModal({
       onClick={onCancel}
       onKeyDown={handleKeyDown}>
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={title}
         className="max-w-sm w-full mx-4 animate-slide-down"
         style={{
           background: 'var(--surface-2)',
@@ -70,6 +73,7 @@ export function ConfirmModal({
           </div>
           <button
             onClick={onCancel}
+            aria-label="Close dialog"
             className="shrink-0 transition-colors"
             style={{ color: 'var(--text-muted)' }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; }}
@@ -129,6 +133,9 @@ export function InputModal({
       onClick={onCancel}
       onKeyDown={handleKeyDown}>
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={title}
         className="max-w-sm w-full mx-4 animate-slide-down"
         style={{
           background: 'var(--surface-2)',

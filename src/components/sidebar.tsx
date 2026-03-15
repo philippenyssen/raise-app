@@ -175,6 +175,7 @@ export function Sidebar() {
 
         {/* Navigation */}
         <nav
+          aria-label="Main navigation"
           className="flex-1 overflow-y-auto"
           style={{ padding: collapsed ? 'var(--space-2)' : 'var(--space-3)' }}>
           {Object.entries(sections).map(([section, items], sIdx) => (
