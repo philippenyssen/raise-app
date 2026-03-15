@@ -9,6 +9,7 @@ import { Search, Download, GitCompare, Columns3, Clock, Pencil, Trash2 } from 'l
 import { fmtDate } from '@/lib/format';
 import { STATUS_LABELS, TYPE_LABELS } from '@/lib/constants';
 import { stTextMuted } from '@/lib/styles';
+import { MS_PER_DAY } from '@/lib/time';
 
 const STATUS_STYLES: Record<string, { background: string; color: string }> = {
   identified: { background: 'var(--surface-3)', color: 'var(--text-secondary)' },
@@ -30,7 +31,7 @@ function daysSince(dateStr: string | null | undefined): number | null {
   const d = new Date(dateStr);
   if (isNaN(d.getTime())) return null;
   const now = new Date();
-  return Math.floor((now.getTime() - d.getTime()) / (1000 * 60 * 60 * 24));
+  return Math.floor((now.getTime() - d.getTime()) / MS_PER_DAY);
 }
 
 function stalenessStyle(days: number | null): { color: string; label: string } {

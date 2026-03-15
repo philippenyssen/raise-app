@@ -8,6 +8,7 @@ import {
   Users, Filter, Download,
 } from 'lucide-react';
 import { cachedFetch } from '@/lib/cache';
+import { MS_PER_DAY } from '@/lib/time';
 import { STATUS_LABELS } from '@/lib/constants';
 import { stAccent, stFontXs, stSurface0, stSurface1, stTextMuted, stTextSecondary } from '@/lib/styles';
 
@@ -68,7 +69,7 @@ function TrendIcon({ trend }: { trend: string }) {
 
 function relativeDate(d: string | null): string {
   if (!d) return 'Never';
-  const days = Math.floor((Date.now() - new Date(d).getTime()) / 86400000);
+  const days = Math.floor((Date.now() - new Date(d).getTime()) / MS_PER_DAY);
   if (days === 0) return 'Today';
   if (days === 1) return 'Yesterday';
   return `${days}d ago`;

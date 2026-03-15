@@ -13,6 +13,7 @@ import {
 import { fmtDateTime } from '@/lib/format';
 import { useToast } from '@/components/toast';
 import { labelAccent, labelMuted, labelMuted10, labelSecondary, stAccent, stTextMuted, stTextPrimary, stTextSecondary } from '@/lib/styles';
+import { MS_PER_HOUR, MS_PER_DAY } from '@/lib/time';
 
 interface TimingIntel { optimalDayOfWeek: string; optimalTimeOfDay: string; reasoning: string; }
 
@@ -121,8 +122,8 @@ function formatRelativeTime(dateStr: string): string {
   const now = new Date();
   const due = new Date(dateStr);
   const diffMs = due.getTime() - now.getTime();
-  const diffHours = Math.round(diffMs / (1000 * 60 * 60));
-  const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
+  const diffHours = Math.round(diffMs / MS_PER_HOUR);
+  const diffDays = Math.round(diffMs / MS_PER_DAY);
 
   if (diffMs < 0) {
     const overdueDays = Math.abs(diffDays);
@@ -235,7 +236,7 @@ function FollowupsContent() {
   // Categorize pending followups
   const now = new Date();
   const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
-  const in3Days = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000);
+  const in3Days = new Date(now.getTime() + 3 * MS_PER_DAY);
 
   const overdue = followups.filter(f => f.status === 'pending' && new Date(f.due_at) < now);
   const dueToday = followups.filter(f => f.status === 'pending' && new Date(f.due_at) >= now && new Date(f.due_at) <= todayEnd);

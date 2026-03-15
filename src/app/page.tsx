@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/toast';
 import { fmtDateShort, fmtDate } from '@/lib/format';
 import { cachedFetch } from '@/lib/cache';
+import { MS_PER_MINUTE, relativeTime } from '@/lib/time';
 import {
   FileText, Sparkles, FolderOpen, Table, ArrowRight, ClipboardList,
   Activity, Download, Columns3, Target, Timer, ShieldCheck,
@@ -285,7 +286,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     fetchData();
-    const interval = setInterval(() => fetchData(true), 5 * 60 * 1000);
+    const interval = setInterval(() => fetchData(true), 5 * MS_PER_MINUTE);
     return () => clearInterval(interval);
   }, [fetchData]);
 
@@ -376,7 +377,7 @@ export default function Dashboard() {
             Your raise at a glance
             {lastRefresh && (
               <span style={{ marginLeft: 'var(--space-3)', color: 'var(--text-muted)' }}>
-                Updated {(() => { const m = Math.round((Date.now() - lastRefresh.getTime()) / 60000); return m < 1 ? 'just now' : `${m}m ago`; })()}</span>
+                Updated {relativeTime(lastRefresh)}</span>
             )}</p></div>
         <div className="flex items-center" style={{ gap: 'var(--space-2)' }}>
           <button onClick={() => setFocusMode(f => !f)} className="btn btn-secondary btn-sm" title="Show only essential sections">

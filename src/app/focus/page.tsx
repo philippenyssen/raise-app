@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { useToast } from '@/components/toast';
+import { MS_PER_DAY } from '@/lib/time';
 import { STATUS_LABELS, PIPELINE_STATUS_STYLES, MOMENTUM_STYLES, MOMENTUM_LABELS, TRIGGER_STYLES, TRIGGER_LABELS, CONFIDENCE_STYLES, URGENCY_STYLE } from '@/lib/constants';
 import {
   AccelerationItem, AccelerationInvestorSummary as InvestorSummary, AccelerationData,
@@ -792,7 +793,7 @@ export default function FocusPage() {
           title: `Re-engage ${item.investorName} — ${item.daysSinceLastMeeting ?? '?'}d since last contact`,
           description: `Process is ${item.momentum}. Last enthusiasm: ${item.enthusiasm}/5.\n\nRecommended: ${item.recommendedAction}`,
           assignee: '',
-          due_date: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+          due_date: new Date(Date.now() + 2 * MS_PER_DAY).toISOString().split('T')[0],
           status: 'pending',
           priority: 'critical',
           phase: 'outreach',

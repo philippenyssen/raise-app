@@ -15,6 +15,7 @@ import type {
   IntelligenceBrief, InvestorPartner, InvestorPortfolioCo,
 } from '@/lib/types';
 import { STATUS_LABELS, TYPE_LABELS } from '@/lib/constants';
+import { MS_PER_DAY, MS_PER_HOUR, MS_PER_MINUTE } from '@/lib/time';
 import { fmtDate } from '@/lib/format';
 import { useToast } from '@/components/toast';
 import { stAccent, stAccentBadge, stAccentBg, stBorderTop, stSurface0, stSurface1, stSurface1Border, stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
@@ -233,8 +234,8 @@ function MeetingPrepContent() {
   const [countdown, setCountdown] = useState('');
   useEffect(() => {
     if (!nextMeeting) { setCountdown(''); return; }
-    const tick = () => { const diff = new Date(nextMeeting.date).getTime() - Date.now(); if (diff <= 0) { setCountdown('Now'); return; } const d = Math.floor(diff / 86400000), h = Math.floor((diff % 86400000) / 3600000), m = Math.floor((diff % 3600000) / 60000); setCountdown(d > 0 ? `${d}d ${h}h` : h > 0 ? `${h}h ${m}m` : `${m}m`); };
-    tick(); const id = setInterval(tick, 60000); return () => clearInterval(id);
+    const tick = () => { const diff = new Date(nextMeeting.date).getTime() - Date.now(); if (diff <= 0) { setCountdown('Now'); return; } const d = Math.floor(diff / MS_PER_DAY), h = Math.floor((diff % MS_PER_DAY) / MS_PER_HOUR), m = Math.floor((diff % MS_PER_HOUR) / MS_PER_MINUTE); setCountdown(d > 0 ? `${d}d ${h}h` : h > 0 ? `${h}h ${m}m` : `${m}m`); };
+    tick(); const id = setInterval(tick, MS_PER_MINUTE); return () => clearInterval(id);
   }, [nextMeeting]);
   const topObjections = useMemo(() => { const sev: Record<string, number> = { showstopper: 3, significant: 2, minor: 1 }; return [...unresolvedObjections].sort((a, b) => (sev[b.severity] ?? 0) - (sev[a.severity] ?? 0)).slice(0, 3); }, [unresolvedObjections]);
 

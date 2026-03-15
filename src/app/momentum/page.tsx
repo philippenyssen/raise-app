@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { cachedFetch } from '@/lib/cache';
+import { relativeTime } from '@/lib/time';
 import { useToast } from '@/components/toast';
 import { scoreColorStyle, stAccent, stSurface0, stSurface1, stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 import {
@@ -224,7 +225,7 @@ export default function MomentumPage() {
               <span className="text-sm font-normal" style={{ color: dirConfig.color }}>{dirConfig.label}</span></div></div>
           <div className="flex items-center gap-2">
             <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
-              {(() => { const mins = Math.floor((Date.now() - new Date(data.generatedAt).getTime()) / 60000); return mins < 1 ? 'Just now' : mins < 60 ? `${mins}m ago` : `${Math.floor(mins / 60)}h ago`; })()}</span>
+              {relativeTime(data.generatedAt)}</span>
             <button
               onClick={fetchData}
               className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors"

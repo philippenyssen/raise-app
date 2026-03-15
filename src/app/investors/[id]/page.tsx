@@ -17,6 +17,7 @@ import { useToast } from '@/components/toast';
 import { fmtDateShort, fmtDate } from '@/lib/format';
 import { STATUS_LABELS, OUTCOME_CONFIG } from '@/lib/constants';
 import { labelMuted, labelSecondary, scoreBorderColor, scoreColor4 as scoreColor, stAccent, stAccentBadge, stBorderTop, stSurface1, stSurface2, stTextMuted as textMuted, stTextPrimary as textPrimary, stTextSecondary as textSecondary, stTextTertiary as textTertiary } from '@/lib/styles';
+import { MS_PER_DAY } from '@/lib/time';
 
 const STATUS_COLORS: Record<string, string> = {
   identified: 'var(--surface-3)',
@@ -492,7 +493,7 @@ export default function InvestorDetailPage() {
       {investor && (() => {
         const suggestions: string[] = [];
         const lastMeeting = meetings.length > 0 ? meetings.sort((a, b) => b.date.localeCompare(a.date))[0] : null;
-        const daysSinceContact = lastMeeting ? Math.floor((Date.now() - new Date(lastMeeting.date).getTime()) / 86400000) : null;
+        const daysSinceContact = lastMeeting ? Math.floor((Date.now() - new Date(lastMeeting.date).getTime()) / MS_PER_DAY) : null;
         if (daysSinceContact !== null && daysSinceContact >= 5) suggestions.push(`Schedule follow-up meeting (last contact ${daysSinceContact} days ago)`);
         else if (daysSinceContact === null && !['identified'].includes(investor.status)) suggestions.push('Log your first meeting to start tracking momentum');
         const unresolvedObjs = allObjections.filter(o => o.severity === 'showstopper' || o.severity === 'significant');
@@ -694,7 +695,7 @@ export default function InvestorDetailPage() {
               {sortedItems.map(f => {
                 const isOverdue = new Date(f.due_at) < now;
                 const diffMs = new Date(f.due_at).getTime() - now.getTime();
-                const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
+                const diffDays = Math.round(diffMs / MS_PER_DAY);
                 const timeLabel = isOverdue
                   ? `${Math.abs(diffDays)}d overdue`
                   : diffDays === 0 ? 'Due today'

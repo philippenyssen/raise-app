@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useToast } from '@/components/toast';
 import { cachedFetch } from '@/lib/cache';
+import { relativeTime } from '@/lib/time';
 import { STATUS_LABELS as STAGE_LABELS, TYPE_LABELS } from '@/lib/constants';
 import {
   BarChart3, TrendingUp, AlertTriangle, Users, Clock,
@@ -190,7 +191,7 @@ export default function AnalyticsPage() {
             Deep funnel, velocity, and risk analysis</p></div>
         <div className="flex items-center gap-3">
           <span style={labelMuted10}>
-            Updated {(() => { const m = Math.floor((Date.now() - new Date(data.generatedAt).getTime()) / 60000); return m < 1 ? 'just now' : m < 60 ? `${m}m ago` : `${Math.floor(m / 60)}h ago`; })()}</span>
+            Updated {relativeTime(data.generatedAt)}</span>
           <button
             onClick={fetchAnalytics}
             onMouseEnter={() => setRefreshHovered(true)}

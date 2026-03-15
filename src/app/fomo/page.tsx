@@ -7,6 +7,7 @@ import {
   ArrowRight, Clock, Activity, Target, Flame,
 } from 'lucide-react';
 import { getIntensityColor, labelMuted, stAccent, stFontSm, stFontXs, stTextPrimary } from '@/lib/styles';
+import { MS_PER_HOUR } from '@/lib/time';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -119,7 +120,7 @@ function formatDate(dateStr: string): string {
   const d = new Date(dateStr);
   const now = new Date();
   const diffMs = now.getTime() - d.getTime();
-  const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
+  const diffHrs = Math.floor(diffMs / MS_PER_HOUR);
   if (diffHrs < 1) return 'Just now';
   if (diffHrs < 24) return `${diffHrs}h ago`;
   const diffDays = Math.floor(diffHrs / 24);
