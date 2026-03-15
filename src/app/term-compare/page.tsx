@@ -367,7 +367,7 @@ export default function TermComparePage() {
                   onClick={() => removeScenario(idx)}
                   onMouseEnter={() => setHoveredRemove(idx)}
                   onMouseLeave={() => setHoveredRemove(null)}
-                  className="flex items-center gap-1 px-2 py-1 rounded text-xs"
+                  className="flex items-center gap-1 px-2 py-1 rounded text-xs transition-colors"
                   style={{
                     color: hoveredRemove === idx ? 'var(--danger)' : 'var(--text-muted)',
                     background: hoveredRemove === idx ? 'var(--danger-muted)' : 'transparent',

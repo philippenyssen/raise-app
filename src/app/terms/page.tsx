@@ -228,10 +228,10 @@ export default function TermsPage() {
                     <div className="flex items-center justify-between gap-2">
                       {ts.investor}
                       <div className="flex gap-1 shrink-0">
-                        <button onClick={() => startEdit(ts)} className="text-[10px]" style={{ color: 'var(--text-muted)' }}
+                        <button onClick={() => startEdit(ts)} className="text-[10px] transition-colors" style={{ color: 'var(--text-muted)' }}
                           onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
                           onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}>Edit</button>
-                        <button onClick={() => setDeleteTarget({ id: ts.id, investor: ts.investor })} className="text-[10px]" style={{ color: 'var(--text-muted)' }}
+                        <button onClick={() => setDeleteTarget({ id: ts.id, investor: ts.investor })} className="text-[10px] transition-colors" style={{ color: 'var(--text-muted)' }}
                           onMouseEnter={e => (e.currentTarget.style.color = 'var(--danger)')}
                           onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}>Del</button>
                       </div>

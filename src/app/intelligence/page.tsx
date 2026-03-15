@@ -184,7 +184,7 @@ export default function IntelligencePage() {
             disabled={researching || !researchInput.trim()}
             onMouseEnter={() => setHoveredResearchBtn(true)}
             onMouseLeave={() => setHoveredResearchBtn(false)}
-            className="px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2"
+            className="px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
             style={{
               background: researching || !researchInput.trim()
                 ? 'var(--surface-3)'
@@ -316,6 +316,7 @@ export default function IntelligencePage() {
                           onClick={() => setDeleteTarget({ type: 'deal', id: d.id, name: d.company })}
                           onMouseEnter={() => setHoveredDeleteBtn(`deal-${d.id}`)}
                           onMouseLeave={() => setHoveredDeleteBtn(null)}
+                          className="transition-colors"
                           style={{
                             color: hoveredDeleteBtn === `deal-${d.id}` ? 'var(--danger)' : 'var(--text-muted)',
                             transition: 'color 150ms ease',
@@ -413,6 +414,7 @@ export default function IntelligencePage() {
                         onClick={() => setDeleteTarget({ type: 'competitor', id: c.id, name: c.name })}
                         onMouseEnter={() => setHoveredDeleteBtn(`comp-${c.id}`)}
                         onMouseLeave={() => setHoveredDeleteBtn(null)}
+                        className="transition-colors"
                         style={{
                           color: hoveredDeleteBtn === `comp-${c.id}` ? 'var(--danger)' : 'var(--text-muted)',
                           transition: 'color 150ms ease',
@@ -496,7 +498,7 @@ export default function IntelligencePage() {
                         onClick={(e) => { e.stopPropagation(); setDeleteTarget({ type: 'brief', id: b.id, name: b.subject }); }}
                         onMouseEnter={() => setHoveredDeleteBtn(`brief-${b.id}`)}
                         onMouseLeave={() => setHoveredDeleteBtn(null)}
-                        className="p-1"
+                        className="p-1 transition-colors"
                         style={{
                           color: hoveredDeleteBtn === `brief-${b.id}` ? 'var(--danger)' : 'var(--text-muted)',
                           transition: 'color 150ms ease',
