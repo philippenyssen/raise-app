@@ -470,7 +470,7 @@ function DeprioritizeSection({ investors }: { investors: InvestorSummary[] }) {
       >
         <div className="flex items-center gap-2">
           <Ban className="w-3.5 h-3.5" style={{ color: 'var(--text-muted)' }} />
-          <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', fontWeight: 500, letterSpacing: '0.05em' }}>
+          <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', fontWeight: 500, letterSpacing: '0.01em' }}>
             Deprioritize ({investors.length})
           </span>
         </div>
@@ -760,7 +760,7 @@ export default function AccelerationPage() {
       {/* Term Sheet Ready */}
       {data.termSheetReady.length > 0 && (activeTab === 'all' || activeTab === 'pending') && (
         <div>
-          <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)', letterSpacing: '0.05em' }}>
+          <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)', letterSpacing: '0.01em' }}>
             <CheckCircle className="w-3.5 h-3.5" /> Term Sheet Ready ({data.termSheetReady.length})
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3" style={{ borderLeft: '3px solid rgba(27, 42, 74, 0.06)', paddingLeft: '12px' }}>
@@ -774,7 +774,7 @@ export default function AccelerationPage() {
       {/* Immediate Actions */}
       {immediateActions.length > 0 && (
         <div>
-          <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-primary)', letterSpacing: '0.05em' }}>
+          <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-primary)', letterSpacing: '0.01em' }}>
             <AlertTriangle className="w-3.5 h-3.5" /> Immediate Actions ({immediateActions.length})
           </h2>
           <div className="space-y-2" style={{ borderLeft: '3px solid rgba(26, 26, 46, 0.06)', paddingLeft: '12px' }}>
@@ -795,7 +795,7 @@ export default function AccelerationPage() {
       {/* This Week */}
       {thisWeekActions.length > 0 && (
         <div>
-          <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-tertiary)', letterSpacing: '0.05em' }}>
+          <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-tertiary)', letterSpacing: '0.01em' }}>
             <Clock className="w-3.5 h-3.5" /> This Week ({thisWeekActions.length})
           </h2>
           <div className="space-y-2" style={{ borderLeft: '3px solid rgba(26, 26, 46, 0.05)', paddingLeft: '12px' }}>
@@ -816,7 +816,7 @@ export default function AccelerationPage() {
       {/* At Risk */}
       {data.atRisk.length > 0 && (activeTab === 'all' || activeTab === 'pending') && (
         <div>
-          <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)', letterSpacing: '0.05em' }}>
+          <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500, color: 'var(--text-secondary)', letterSpacing: '0.01em' }}>
             <Shield className="w-3.5 h-3.5" /> At Risk ({data.atRisk.length})
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3" style={{ borderLeft: '3px solid rgba(26, 26, 46, 0.05)', paddingLeft: '12px' }}>

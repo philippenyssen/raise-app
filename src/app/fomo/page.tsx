@@ -404,7 +404,7 @@ function PressureCard({ inv }: { inv: InvestorFomo }) {
           {/* Trigger investors */}
           {inv.triggerInvestors.length > 0 && (
             <div style={{ marginBottom: 'var(--space-3)' }}>
-              <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-muted)', letterSpacing: '0.06em' }}>
+              <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 500, color: 'var(--text-muted)', letterSpacing: '0.01em' }}>
                 Creating pressure
               </span>
               <div className="flex flex-wrap gap-1.5 mt-1.5">
@@ -550,7 +550,7 @@ function StrategyCardComponent({ card }: { card: StrategyCard }) {
 
       {card.targetInvestors.length > 0 && (
         <div>
-          <span style={{ fontSize: '10px', color: 'var(--text-muted)', letterSpacing: '0.06em' }}>
+          <span style={{ fontSize: '10px', color: 'var(--text-muted)', letterSpacing: '0.01em' }}>
             Target
           </span>
           <div className="flex flex-wrap gap-1 mt-1">

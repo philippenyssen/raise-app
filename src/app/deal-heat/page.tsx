@@ -189,7 +189,7 @@ export default function DealHeatPage() {
               onMouseEnter={() => setHoveredFilter(level)}
               onMouseLeave={() => setHoveredFilter(null)}
             >
-              <div style={{ fontSize: 'var(--font-size-xs)', color: cfg.text, fontWeight: 600, letterSpacing: '0.05em' }}>
+              <div style={{ fontSize: 'var(--font-size-xs)', color: cfg.text, fontWeight: 600, letterSpacing: '0.01em' }}>
                 {cfg.label}
               </div>
               <div style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 700, color: cfg.text, marginTop: 'var(--space-1)' }}>
@@ -303,7 +303,7 @@ export default function DealHeatPage() {
                         <span style={{
                           fontSize: '10px',
                           fontWeight: 600,
-                          letterSpacing: '0.04em',
+                          letterSpacing: '0.01em',
                           padding: '1px 6px',
                           borderRadius: 'var(--radius-sm)',
                           background: 'var(--surface-2)',
@@ -350,7 +350,7 @@ export default function DealHeatPage() {
                       fontSize: 'var(--font-size-xs)',
                       fontWeight: 600,
                       color: cfg.text,
-                      letterSpacing: '0.05em',
+                      letterSpacing: '0.01em',
                     }}>
                       {cfg.label}
                     </span>

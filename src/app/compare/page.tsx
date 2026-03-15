@@ -694,7 +694,7 @@ export default function ComparePage() {
                         fontSize: 'var(--font-size-xs)',
                         fontWeight: 600,
                         color: 'var(--text-secondary)',
-                        letterSpacing: '0.05em',
+                        letterSpacing: '0.01em',
                         background: 'var(--surface-1)',
                         borderRight: '1px solid var(--border-subtle)',
                       }}

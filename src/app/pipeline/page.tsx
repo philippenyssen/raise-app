@@ -523,7 +523,7 @@ export default function PipelinePage() {
                   }}
                 >
                   <div className="flex items-center justify-between">
-                    <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '0.04em' }}>
+                    <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '0.01em' }}>
                       {STATUS_LABELS[status]}
                     </span>
                     <span
@@ -615,7 +615,7 @@ export default function PipelinePage() {
                     }}
                   >
                     <div className="flex items-center justify-between">
-                      <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'var(--text-secondary)', letterSpacing: '0.04em' }}>
+                      <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, color: 'var(--text-secondary)', letterSpacing: '0.01em' }}>
                         {STATUS_LABELS[status]}
                       </span>
                       <span

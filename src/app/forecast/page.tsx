@@ -229,7 +229,7 @@ export default function ForecastPage() {
               fontWeight: 600,
               background: confidenceBg(forecast.confidence),
               color: confidenceColor(forecast.confidence),
-              letterSpacing: '0.04em',
+              letterSpacing: '0.01em',
             }}
           >
             <Shield className="w-3 h-3" />

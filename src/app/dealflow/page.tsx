@@ -340,7 +340,7 @@ export default function DealflowPage() {
               color: 'var(--text-muted)',
               fontWeight: 500,
 
-              letterSpacing: '0.05em',
+              letterSpacing: '0.01em',
             }}
           >
             <div>Investor</div>
