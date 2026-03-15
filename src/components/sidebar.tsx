@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import { cachedFetch } from '@/lib/cache';
 import { MS_PER_MINUTE } from '@/lib/time';
 import {
   LayoutDashboard, Users, Calendar, FileText,
@@ -73,21 +74,21 @@ export function Sidebar() {
     let cancelled = false;
     function fetchBadges() {
       if (cancelled) return;
-      fetch('/api/followups?status=pending')
+      cachedFetch('/api/followups?status=pending')
         .then(r => r.ok ? r.json() : [])
         .then(data => {
           if (cancelled || !Array.isArray(data)) return;
           const today = new Date().toISOString().split('T')[0];
           setOverdueCount(data.filter((f: { due_at: string; status: string }) => f.status === 'pending' && f.due_at?.split('T')[0] < today).length);})
         .catch(() => {});
-      fetch('/api/meetings')
+      cachedFetch('/api/meetings')
         .then(r => r.ok ? r.json() : [])
         .then(data => {
           if (cancelled || !Array.isArray(data)) return;
           const today = new Date().toISOString().split('T')[0];
           setTodayMeetingCount(data.filter((m: { date: string }) => m.date?.split('T')[0] === today).length);})
         .catch(() => {});
-      fetch('/api/document-flags?status=open').then(r => r.ok ? r.json() : []).then(data => { if (!cancelled && Array.isArray(data)) setDocFlagCount(data.length); }).catch(() => {});
+      cachedFetch('/api/document-flags?status=open').then(r => r.ok ? r.json() : []).then(data => { if (!cancelled && Array.isArray(data)) setDocFlagCount(data.length); }).catch(() => {});
     }
     fetchBadges();
     const interval = setInterval(fetchBadges, 3 * MS_PER_MINUTE);
