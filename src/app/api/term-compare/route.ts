@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import type { TermScenario, TermScenarioResult as ScenarioResult } from '@/lib/types';
 
 // ---------------------------------------------------------------------------
@@ -129,7 +129,7 @@ function generateComparisonNotes(s: TermScenario, allScenarios: TermScenario[]):
 // POST handler
 // ---------------------------------------------------------------------------
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   let body: Record<string, unknown>;
   try {
     body = await request.json();

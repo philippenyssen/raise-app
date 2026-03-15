@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { computeInvestorScore, computeMomentumScore } from '@/lib/scoring';
 import type { Investor, Meeting, Objection } from '@/lib/types';
 import { updateAccelerationAction, createTask, createFollowup, logActivity } from '@/lib/db';
@@ -188,7 +188,7 @@ export async function GET() {
 // PUT Handler
 // ---------------------------------------------------------------------------
 
-export async function PUT(req: Request) {
+export async function PUT(req: NextRequest) {
   let body: Record<string, unknown>;
   try { body = await req.json(); } catch { return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 }); }
 
