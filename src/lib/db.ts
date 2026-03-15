@@ -569,6 +569,12 @@ async function ensureInitialized() {
   try { await db.execute(`ALTER TABLE meetings ADD COLUMN key_takeaway TEXT DEFAULT ''`); } catch { /* column already exists */ }
   try { await db.execute(`ALTER TABLE meetings ADD COLUMN prep_usefulness INTEGER DEFAULT NULL`); } catch { /* column already exists */ }
 
+  // Indexes for frequent foreign key lookups
+  try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_enrichment_investor ON enrichment_records(investor_id)`); } catch { /* */ }
+  try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_meetings_investor ON meetings(investor_id)`); } catch { /* */ }
+  try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_followups_investor ON followups(investor_id)`); } catch { /* */ }
+  try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_score_snapshots_investor ON score_snapshots(investor_id)`); } catch { /* */ }
+
   initialized = true;
 }
 
