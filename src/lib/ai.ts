@@ -29,11 +29,12 @@ function logAISkill(
   }).catch(() => {});
 }
 
-/** Extract text from AI response, flagging truncation */
-function extractText(response: { content: { type: string; text?: string }[]; stop_reason: string | null }): { text: string; truncated: boolean } {
+/** Extract text from AI response, flagging truncation and content filtering */
+function extractText(response: { content: { type: string; text?: string }[]; stop_reason: string | null }): { text: string; truncated: boolean; filtered: boolean } {
   const text = response.content[0]?.type === 'text' ? (response.content[0] as { text: string }).text : '';
   const truncated = response.stop_reason === 'max_tokens';
-  return { text, truncated };
+  const filtered = response.stop_reason === 'content_filter';
+  return { text, truncated, filtered };
 }
 
 function safeParseJSON<T>(text: string, fallback: T): { parsed: T; success: boolean } {
@@ -289,7 +290,7 @@ export async function checkConsistency(
 
   const response = await getAIClient().messages.create({
     model: 'claude-sonnet-4-20250514',
-    max_tokens: 4096,
+    max_tokens: 3072,
     temperature: 0,
     system: 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.',
     messages: [{
@@ -319,7 +320,7 @@ If no discrepancies found, return {"discrepancies": []}.`
 export async function findWeakArguments(content: string): Promise<{ weaknesses: { claim: string; issue: string; suggestion: string }[] }> {
   const response = await getAIClient().messages.create({
     model: 'claude-sonnet-4-20250514',
-    max_tokens: 4096,
+    max_tokens: 3072,
     temperature: 0,
     system: 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.',
     messages: [{
