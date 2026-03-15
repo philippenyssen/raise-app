@@ -71,11 +71,12 @@ const PAGES: PageItem[] = [
 const ACTIONS: ActionItem[] = [
   { label: 'Log a meeting', href: '/meetings/new', icon: Pencil, section: 'actions' },
   { label: 'Quick capture', href: '/meetings/capture', icon: Mic, section: 'actions' },
+  { label: 'Pending follow-ups', href: '/followups', icon: SendHorizonal, section: 'actions' },
   { label: 'New investor', href: '/investors', icon: PlusCircle, note: 'Add from investors page', section: 'actions' },
   { label: 'New document', href: '/documents/new', icon: FileText, section: 'actions' },
   { label: 'Meeting prep', href: '/meetings/prep', icon: ClipboardList, section: 'actions' },];
 
-const SHORTCUTS: Record<string, string> = { '/today': '⌘T', '/meetings/new': '⌘N', '/meetings/capture': '⌘J', '/dealflow': '⌘D', '/focus': '⌘F' };
+const SHORTCUTS: Record<string, string> = { '/today': '⌘T', '/meetings/new': '⌘N', '/meetings/capture': '⌘J', '/dealflow': '⌘D', '/focus': '⌘F', '/followups': '⌘L' };
 
 export default function CommandPalette() {
   const [open, setOpen] = useState(false);
@@ -109,6 +110,7 @@ export default function CommandPalette() {
       else if (mod && e.key === 't') { e.preventDefault(); router.push('/today'); }
       else if (mod && e.key === 'd') { e.preventDefault(); router.push('/dealflow'); }
       else if (mod && e.key === 'f') { e.preventDefault(); router.push('/focus'); }
+      else if (mod && e.key === 'l') { e.preventDefault(); router.push('/followups'); }
       else if (mod && e.key === '/') { e.preventDefault(); setShowHelp(prev => !prev); }
     }
     window.addEventListener('keydown', onKeyDown);
