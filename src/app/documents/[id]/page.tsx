@@ -50,7 +50,7 @@ export default function DocumentEditorPage() {
       setTitle(d.title);
       setLoading(false);
     }).catch(() => {
-      toast('Failed to load document', 'error');
+      toast('Could not load document — it may have been deleted', 'error');
       setLoading(false);});
   }, [id, toast]);
 
@@ -67,7 +67,7 @@ export default function DocumentEditorPage() {
       const refreshRes = await fetch(`/api/documents/${id}`);
       if (refreshRes.ok) setDoc(await refreshRes.json());
     } catch {
-      toast('Failed to save document', 'error');
+      toast('Could not save — check your connection and try again', 'error');
     } finally {
       setSaving(false);
     }
@@ -106,7 +106,7 @@ export default function DocumentEditorPage() {
       if (!res.ok) throw new Error('Failed');
       setDoc(d => d ? { ...d, status } : d);
       toast(`Status: ${status}`);
-    } catch { toast('Failed to update status', 'error'); }
+    } catch { toast('Could not update document status — try again', 'error'); }
   }
 
   async function runAI(operation: AIOperation) {

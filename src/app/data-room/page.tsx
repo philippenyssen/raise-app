@@ -171,7 +171,7 @@ export default function DataRoomPage() {
       setPasteContent('');
       setPasteCategory('other');
       setPasteMode(false);
-    } catch { toast('Failed to add document', 'error'); }
+    } catch { toast('Could not add document — check file size and try again', 'error'); }
     setUploading(false);
     fetchFiles();
   }
