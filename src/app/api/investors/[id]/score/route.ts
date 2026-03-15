@@ -16,11 +16,11 @@ export async function GET(
     getInvestorPortfolio(id),
     getIntelligenceBriefs(undefined, id),
     getRaiseConfig(),
-    computeNetworkEffectData(id).catch(() => null),
-    computeRaiseForecast().catch(() => null),
-    computeEngagementVelocity().catch(() => [] as Awaited<ReturnType<typeof computeEngagementVelocity>>),
-    detectFomoDynamics().catch(() => [] as Awaited<ReturnType<typeof detectFomoDynamics>>),
-    detectScoreReversals().catch(() => [] as Awaited<ReturnType<typeof detectScoreReversals>>),]);
+    computeNetworkEffectData(id).catch(e => { console.error('[SCORE] network data failed:', e instanceof Error ? e.message : e); return null; }),
+    computeRaiseForecast().catch(e => { console.error('[SCORE] forecast failed:', e instanceof Error ? e.message : e); return null; }),
+    computeEngagementVelocity().catch(e => { console.error('[SCORE] velocity failed:', e instanceof Error ? e.message : e); return [] as Awaited<ReturnType<typeof computeEngagementVelocity>>; }),
+    detectFomoDynamics().catch(e => { console.error('[SCORE] fomo failed:', e instanceof Error ? e.message : e); return [] as Awaited<ReturnType<typeof detectFomoDynamics>>; }),
+    detectScoreReversals().catch(e => { console.error('[SCORE] reversals failed:', e instanceof Error ? e.message : e); return [] as Awaited<ReturnType<typeof detectScoreReversals>>; }),]);
 
   if (!investor) { return NextResponse.json({ error: 'Investor not found' }, { status: 404 }); }
 
