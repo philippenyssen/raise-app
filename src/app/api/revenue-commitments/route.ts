@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
   try {
     const commitment = await createRevenueCommitment(body as unknown as Parameters<typeof createRevenueCommitment>[0]);
     emitContextChange('commitment_created', `Revenue commitment: ${(body.counterparty as string) || (body.contract_name as string) || ''}`);
-    return NextResponse.json(commitment);
+    return NextResponse.json(commitment, { status: 201 });
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 500 });
   }

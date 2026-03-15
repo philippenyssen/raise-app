@@ -193,6 +193,7 @@ export default function SettingsPage() {
     setTesting(true);
     try {
       const res = await fetch('/api/test-key');
+      if (!res.ok) throw new Error(`Status ${res.status}`);
       setKeyTest(await res.json());
     } catch {
       setKeyTest({ status: 'error', message: 'Could not reach test endpoint' });

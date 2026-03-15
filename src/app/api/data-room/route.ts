@@ -3,8 +3,12 @@ import { getAllDataRoomFiles, createDataRoomFile, deleteDataRoomFile } from '@/l
 import { emitContextChange } from '@/lib/context-bus';
 
 export async function GET() {
-  const files = await getAllDataRoomFiles();
-  return NextResponse.json(files);
+  try {
+    const files = await getAllDataRoomFiles();
+    return NextResponse.json(files);
+  } catch {
+    return NextResponse.json({ error: 'Failed to load data room files' }, { status: 500 });
+  }
 }
 
 export async function POST(req: NextRequest) {
@@ -20,23 +24,31 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'filename and extracted_text are required' }, { status: 400 });
   }
 
-  const file = await createDataRoomFile({
-    filename: String(filename),
-    category: String(category || 'other'),
-    mime_type: String(mime_type || ''),
-    size_bytes: Number(size_bytes) || 0,
-    extracted_text: String(extracted_text),
-    summary: summary ? String(summary) : undefined,
-  });
+  try {
+    const file = await createDataRoomFile({
+      filename: String(filename),
+      category: String(category || 'other'),
+      mime_type: String(mime_type || ''),
+      size_bytes: Number(size_bytes) || 0,
+      extracted_text: String(extracted_text),
+      summary: summary ? String(summary) : undefined,
+    });
 
-  emitContextChange('data_room_uploaded', `Uploaded ${filename}`);
-  return NextResponse.json(file);
+    emitContextChange('data_room_uploaded', `Uploaded ${filename}`);
+    return NextResponse.json(file, { status: 201 });
+  } catch {
+    return NextResponse.json({ error: 'Failed to create data room file' }, { status: 500 });
+  }
 }
 
 export async function DELETE(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const id = searchParams.get('id');
   if (!id) return NextResponse.json({ error: 'id is required' }, { status: 400 });
-  await deleteDataRoomFile(id);
-  return NextResponse.json({ ok: true });
+  try {
+    await deleteDataRoomFile(id);
+    return NextResponse.json({ ok: true });
+  } catch {
+    return NextResponse.json({ error: 'Failed to delete data room file' }, { status: 500 });
+  }
 }

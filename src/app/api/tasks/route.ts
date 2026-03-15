@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
       auto_generated: (body.auto_generated as boolean) || false,});
 
     emitContextChange('task_created', `Task: ${body.title || 'untitled'}`);
-    return NextResponse.json(task);
+    return NextResponse.json(task, { status: 201 });
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 500 });
   }}
