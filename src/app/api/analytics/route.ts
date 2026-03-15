@@ -143,9 +143,17 @@ export async function GET() {
       onTrack = advancedCount > 0 || daysRemaining > 90;
     }
 
+    const dailyActivity: Array<{ date: string; count: number }> = [];
+    for (let d = 27; d >= 0; d--) {
+      const day = new Date(now); day.setDate(day.getDate() - d);
+      const ds = day.toISOString().slice(0, 10);
+      const count = meetings.filter(m => m.date.slice(0, 10) === ds).length + activities.filter(a => a.created_at.slice(0, 10) === ds).length;
+      dailyActivity.push({ date: ds, count });
+    }
+
     const velocity = {
       meetingsPerWeek, investorsPerWeek, velocityScore, daysSinceProgress, estimatedDaysToClose, onTrack,
-      totalMeetings: meetings.length,
+      totalMeetings: meetings.length, dailyActivity,
       meetingsThisWeek: meetingsPerWeek.length > 0 ? meetingsPerWeek[meetingsPerWeek.length - 1].count : 0,
       meetingsLastWeek: meetingsPerWeek.length > 1 ? meetingsPerWeek[meetingsPerWeek.length - 2].count : 0,};
 

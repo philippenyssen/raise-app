@@ -38,6 +38,7 @@ interface AnalyticsData {
     estimatedDaysToClose: number | null;
     onTrack: boolean | null;
     totalMeetings: number;
+    dailyActivity: Array<{ date: string; count: number }>;
     meetingsThisWeek: number;
     meetingsLastWeek: number;
   };
@@ -221,6 +222,17 @@ export default function AnalyticsPage() {
           icon={<Calendar className="w-4 h-4" />}
           color="var(--accent-muted)"/></div>
 
+      {/* ── Top Objections Summary ─────────────────────────────── */}
+      {engagement.topObjections.length > 0 && (
+        <div className="rounded-xl px-5 py-3 flex items-center gap-4" style={stSurface1}>
+          <span style={{ color: 'var(--warning)' }}><AlertTriangle className="w-4 h-4" /></span>
+          <div className="flex-1">
+            <div className="text-xs font-normal tracking-wider mb-1" style={stTextMuted}>Top Objections</div>
+            <div className="flex flex-wrap gap-2">
+              {engagement.topObjections.slice(0, 5).map((o, i) => (
+                <span key={i} className="px-2 py-0.5 rounded" style={{ fontSize: '11px', background: 'var(--danger-muted)', color: 'var(--text-secondary)' }}>
+                  {o.topic} ({o.count}x)</span>))}</div></div></div>)}
+
       {/* ── Bottleneck Alert ─────────────────────────────────────── */}
       {funnel.bottleneck && funnel.bottleneck.count > 2 && (
         <div
@@ -320,6 +332,27 @@ export default function AnalyticsPage() {
                       </div></div>
                   )}</div>
               )}</div></div>
+
+          {/* Conversion Funnel */}
+          {(() => {
+            const stages = summary.pipelineStages.filter(s => !['passed','dropped'].includes(s.stage));
+            const total = stages[0]?.count || 1;
+            return (
+              <div>
+                <h3 className="text-xs font-normal tracking-wider mb-3" style={stTextMuted}>Conversion Funnel</h3>
+                <div className="flex flex-col items-center gap-0.5">
+                  {stages.map((s, i) => {
+                    const w = Math.max(20, (s.count / total) * 100);
+                    const prev = stages[i - 1]?.count || total;
+                    const drop = i > 0 && prev > 0 ? Math.round(((prev - s.count) / prev) * 100) : 0;
+                    return (
+                      <div key={s.stage} className="flex items-center gap-2 w-full" style={{ maxWidth: '500px' }}>
+                        <div className="h-7 rounded flex items-center justify-center transition-all" style={{ width: `${w}%`, margin: '0 auto', background: STAGE_COLORS[s.stage] || 'var(--surface-3)', minWidth: '60px' }}>
+                          <span style={{ fontSize: '10px', color: 'var(--text-primary)' }}>{s.label} ({s.count})</span></div>
+                        {i > 0 && drop > 0 && <span style={{ fontSize: '9px', color: 'var(--danger)', whiteSpace: 'nowrap' }}>-{drop}%</span>}
+                      </div>);
+                  })}</div></div>);
+          })()}
 
           {/* Conversion Rates */}
           <div>
@@ -441,7 +474,18 @@ export default function AnalyticsPage() {
           <div>
             <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
               New Investors Per Week</h3>
-            <SparklineChart data={velocity.investorsPerWeek} color="var(--accent-muted)" /></div></div></CollapsibleSection>
+            <SparklineChart data={velocity.investorsPerWeek} color="var(--accent-muted)" /></div>
+
+          {/* Activity Heatmap */}
+          <div>
+            <h3 className="text-xs font-normal tracking-wider mb-3" style={stTextMuted}>Daily Activity (4 Weeks)</h3>
+            <div className="grid gap-1" style={{ gridTemplateColumns: 'repeat(7, 1fr)' }}>
+              {['M','T','W','T','F','S','S'].map((d, i) => <div key={i} className="text-center" style={{ fontSize: '9px', color: 'var(--text-muted)' }}>{d}</div>)}
+              {velocity.dailyActivity.map((d, i) => {
+                const max = Math.max(...velocity.dailyActivity.map(x => x.count), 1);
+                const intensity = d.count / max;
+                return <div key={i} className="rounded" title={`${d.date}: ${d.count} activities`} style={{ aspectRatio: '1', background: d.count === 0 ? 'var(--surface-1)' : `color-mix(in srgb, var(--accent) ${Math.round(20 + intensity * 80)}%, var(--surface-1))` }} />;
+              })}</div></div></div></CollapsibleSection>
 
       {/* ═══════════════════════════════════════════════════════════
           3. RISK SIGNALS
