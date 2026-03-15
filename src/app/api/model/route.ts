@@ -2,10 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getModelSheets, createModelSheet, updateModelSheet, deleteModelSheet } from '@/lib/db';
 
 export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const modelId = searchParams.get('modelId') || 'default';
-  const sheets = await getModelSheets(modelId);
-  return NextResponse.json(sheets);
+  try {
+    const { searchParams } = new URL(req.url);
+    const modelId = searchParams.get('modelId') || 'default';
+    const sheets = await getModelSheets(modelId);
+    return NextResponse.json(sheets);
+  } catch {
+    return NextResponse.json({ error: 'Failed to load model sheets' }, { status: 500 });
+  }
 }
 
 export async function POST(req: NextRequest) {
@@ -23,14 +27,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'sheet_name is required' }, { status: 400 });
   }
 
-  const sheet = await createModelSheet({
-    model_id: model_id || 'default',
-    sheet_name,
-    sheet_order: sheet_order ?? 0,
-    data: typeof data === 'string' ? data : JSON.stringify(data || {}),
-  });
-
-  return NextResponse.json(sheet);
+  try {
+    const sheet = await createModelSheet({
+      model_id: model_id || 'default',
+      sheet_name,
+      sheet_order: sheet_order ?? 0,
+      data: typeof data === 'string' ? data : JSON.stringify(data || {}),
+    });
+    return NextResponse.json(sheet, { status: 201 });
+  } catch {
+    return NextResponse.json({ error: 'Failed to create model sheet' }, { status: 500 });
+  }
 }
 
 export async function PUT(req: NextRequest) {
@@ -46,19 +53,26 @@ export async function PUT(req: NextRequest) {
 
   if (!id) return NextResponse.json({ error: 'id is required' }, { status: 400 });
 
-  await updateModelSheet(id, {
-    sheet_name,
-    data: typeof data === 'string' ? data : (data ? JSON.stringify(data) : undefined),
-    sheet_order,
-  });
-
-  return NextResponse.json({ ok: true });
+  try {
+    await updateModelSheet(id, {
+      sheet_name,
+      data: typeof data === 'string' ? data : (data ? JSON.stringify(data) : undefined),
+      sheet_order,
+    });
+    return NextResponse.json({ ok: true });
+  } catch {
+    return NextResponse.json({ error: 'Failed to update model sheet' }, { status: 500 });
+  }
 }
 
 export async function DELETE(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const id = searchParams.get('id');
   if (!id) return NextResponse.json({ error: 'id is required' }, { status: 400 });
-  await deleteModelSheet(id);
-  return NextResponse.json({ ok: true });
+  try {
+    await deleteModelSheet(id);
+    return NextResponse.json({ ok: true });
+  } catch {
+    return NextResponse.json({ error: 'Failed to delete model sheet' }, { status: 500 });
+  }
 }
