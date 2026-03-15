@@ -37,3 +37,4 @@ c5fe5a2	100	100	0	keep	all	health score + suggested actions + kbd nav + weekly d
 63701e4	100	100	0	keep	design+product	tooltips + relative timestamps + hover + column activity = 53493 lines, score 100
 a597e45	100	100	0	keep	product	pipeline compare selection + investor filter chips = 53504 lines, score 100
 27fcd51	100	100	0	keep	eng+ops	input validation + cachedFetch 5 pages = 53521 lines, score 100
+7ca6de7	100	100	0	keep	product	CSV export for filtered investors = 53526 lines, score 100

@@ -1254,6 +1254,17 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
                     style={{ background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid var(--accent-25)', fontSize: '11px', padding: '3px 10px', gap: '4px', display: 'inline-flex', alignItems: 'center', textDecoration: 'none' }}>
                     Do it <ArrowRight className="w-3 h-3" /></Link></div></div></div></div></div></div>
 
+      {/* Score Summary: top & bottom dimensions */}
+      {score.dimensions.length > 1 && (() => {
+        const sorted = [...score.dimensions].sort((a, b) => b.score - a.score);
+        const top = sorted[0], bottom = sorted[sorted.length - 1];
+        return (
+          <div className="px-5 py-3 flex gap-6" style={{ borderTop: '1px solid var(--border-default)', background: 'var(--white-4)' }}>
+            <div className="flex items-center gap-1.5 min-w-0 flex-1"><span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--success)', flexShrink: 0 }} /><span className="truncate" style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>Strongest: {top.name} ({top.score})</span></div>
+            <div className="flex items-center gap-1.5 min-w-0 flex-1"><span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--warning)', flexShrink: 0 }} /><span className="truncate" style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>Weakest: {bottom.name} ({bottom.score})</span></div>
+          </div>);
+      })()}
+
       {/* Dimension bars */}
       <div className="p-5" style={{ borderTop: '1px solid var(--border-default)' }}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">
