@@ -46,14 +46,14 @@ const nav: NavItem[] = [
 
 /* ── Sidebar-specific palette (dark navy panel on light page) ── */
 const SB = {
-  bg: '#1a1a2e',
+  bg: 'var(--foreground)',
   bgHover: 'rgba(255,255,255,0.06)',
   bgActive: 'rgba(255,255,255,0.10)',
   border: 'rgba(255,255,255,0.08)',
   text: 'rgba(255,255,255,0.50)',
   textHover: 'rgba(255,255,255,0.75)',
-  textActive: '#fafaf8',
-  accent: '#fafaf8',
+  textActive: 'var(--surface-0)',
+  accent: 'var(--surface-0)',
   muted: 'rgba(255,255,255,0.25)',
   sectionLabel: 'rgba(255,255,255,0.30)',
 };
