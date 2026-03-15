@@ -31,11 +31,11 @@ export default function PostMeetingActions({ data, meetingId, onActionTaken }: {
     setBusyActions(prev => new Set(prev).add(taskId));
     try {
       const res = await fetch(`/api/meetings/${meetingId}/actions`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action_type: 'task', action_id: taskId, operation }) });
-      if (!res.ok) return;
+      if (!res.ok) { console.error('[POST_MEETING_TASK]', res.status); return; }
       if (operation === 'dismiss') setDismissedTasks(prev => new Set(prev).add(taskId));
       else setAcceptedTasks(prev => new Set(prev).add(taskId));
       onActionTaken?.();
-    } catch { /* non-critical UI action */ } finally { setBusyActions(prev => { const n = new Set(prev); n.delete(taskId); return n; }); }
+    } catch (e) { console.error('[POST_MEETING_TASK]', e instanceof Error ? e.message : e); } finally { setBusyActions(prev => { const n = new Set(prev); n.delete(taskId); return n; }); }
   }
 
   async function handleFlagAction(flagId: string, operation: 'accept' | 'dismiss') {
@@ -43,11 +43,11 @@ export default function PostMeetingActions({ data, meetingId, onActionTaken }: {
     setBusyActions(prev => new Set(prev).add(flagId));
     try {
       const res = await fetch(`/api/meetings/${meetingId}/actions`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action_type: 'document_flag', action_id: flagId, operation }) });
-      if (!res.ok) return;
+      if (!res.ok) { console.error('[POST_MEETING_FLAG]', res.status); return; }
       if (operation === 'dismiss') setDismissedFlags(prev => new Set(prev).add(flagId));
       else setAcceptedFlags(prev => new Set(prev).add(flagId));
       onActionTaken?.();
-    } catch { /* non-critical UI action */ } finally { setBusyActions(prev => { const n = new Set(prev); n.delete(flagId); return n; }); }
+    } catch (e) { console.error('[POST_MEETING_FLAG]', e instanceof Error ? e.message : e); } finally { setBusyActions(prev => { const n = new Set(prev); n.delete(flagId); return n; }); }
   }
 
   if (!hasActions && !data.investor_updates.suggested_status) return null;

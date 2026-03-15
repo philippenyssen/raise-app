@@ -167,6 +167,7 @@ function FollowupsContent() {
   const [hoveredActionBtn, setHoveredActionBtn] = useState<string | null>(null);
   const [draftingId, setDraftingId] = useState<string | null>(null);
   const [copiedField, setCopiedField] = useState<string | null>(null);
+  const [processingIds, setProcessingIds] = useState<Set<string>>(new Set());
 
   const fetchFollowups = useCallback(async () => {
     setLoading(true);
@@ -212,6 +213,8 @@ function FollowupsContent() {
   }
 
   async function handleSkip(id: string) {
+    if (processingIds.has(id)) return;
+    setProcessingIds(prev => new Set(prev).add(id));
     try {
       const res = await fetch('/api/followups', {
         method: 'PUT',
@@ -220,9 +223,12 @@ function FollowupsContent() {
       if (!res.ok) throw new Error('Failed');
       fetchFollowups();
     } catch { toast('Couldn\'t skip follow-up — check your connection and retry', 'error'); }
+    finally { setProcessingIds(prev => { const n = new Set(prev); n.delete(id); return n; }); }
   }
 
   async function handleQuickComplete(id: string) {
+    if (processingIds.has(id)) return;
+    setProcessingIds(prev => new Set(prev).add(id));
     try {
       const res = await fetch('/api/followups', {
         method: 'PUT',
@@ -231,6 +237,7 @@ function FollowupsContent() {
       if (!res.ok) throw new Error('Failed');
       fetchFollowups();
     } catch { toast('Couldn\'t complete follow-up — check your connection and retry', 'error'); }
+    finally { setProcessingIds(prev => { const n = new Set(prev); n.delete(id); return n; }); }
   }
 
   // Categorize pending followups

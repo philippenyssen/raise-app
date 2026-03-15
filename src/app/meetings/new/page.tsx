@@ -32,10 +32,10 @@ function NewMeetingContent() {
   const [result, setResult] = useState<Record<string, unknown> | null>(null);
   const [form, setForm] = useState({
     investor_id: preselectedInvestor,
-    date: new Date().toISOString().split('T')[0],
-    type: 'management_presentation',
-    attendees: '',
-    duration_minutes: 60,
+    date: searchParams.get('date') || new Date().toISOString().split('T')[0],
+    type: searchParams.get('type') || 'management_presentation',
+    attendees: searchParams.get('attendees') || '',
+    duration_minutes: Number(searchParams.get('duration')) || 60,
     raw_notes: '',});
   const [viewAllHovered, setViewAllHovered] = useState(false);
   const [logAnotherHovered, setLogAnotherHovered] = useState(false);
