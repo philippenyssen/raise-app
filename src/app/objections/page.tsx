@@ -349,7 +349,11 @@ export default function ObjectionsPage() {
     );
   }
 
-  if (!data) return null;
+  if (!data) return (
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
+      <div className="loading-spinner" />
+    </div>
+  );
 
   const { playbook, unresolved, total_objections, investors } = data;
 

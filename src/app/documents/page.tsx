@@ -248,6 +248,7 @@ export default function DocumentsPage() {
                     onClick={() => handleFlagAction(flag.id, 'addressed')}
                     className="p-1.5 rounded-md transition-colors"
                     title="Mark as addressed"
+                    aria-label="Mark as addressed"
                     style={{ color: hoverStates[`addr-${flag.id}`] ? 'var(--success)' : 'var(--text-muted)', backgroundColor: hoverStates[`addr-${flag.id}`] ? 'var(--success-muted)' : 'transparent' }}
                     onMouseEnter={() => setHover(`addr-${flag.id}`, true)}
                     onMouseLeave={() => setHover(`addr-${flag.id}`, false)}>
@@ -257,6 +258,7 @@ export default function DocumentsPage() {
                     onClick={() => handleFlagAction(flag.id, 'dismissed')}
                     className="p-1.5 rounded-md transition-colors"
                     title="Dismiss"
+                    aria-label="Dismiss"
                     style={{ color: hoverStates[`dism-${flag.id}`] ? 'var(--danger)' : 'var(--text-muted)', backgroundColor: hoverStates[`dism-${flag.id}`] ? 'color-mix(in srgb, var(--danger) 20%, transparent)' : 'transparent' }}
                     onMouseEnter={() => setHover(`dism-${flag.id}`, true)}
                     onMouseLeave={() => setHover(`dism-${flag.id}`, false)}>
@@ -342,6 +344,7 @@ export default function DocumentsPage() {
                           onClick={() => downloadDoc(doc)}
                           className="p-1 rounded transition-colors"
                           title="Download as Markdown"
+                          aria-label="Download as Markdown"
                           style={{ color: hoverStates[`dl-${doc.id}`] ? 'var(--text-secondary)' : 'var(--text-muted)', backgroundColor: hoverStates[`dl-${doc.id}`] ? 'var(--surface-2)' : 'transparent' }}
                           onMouseEnter={() => setHover(`dl-${doc.id}`, true)}
                           onMouseLeave={() => setHover(`dl-${doc.id}`, false)}>
@@ -389,6 +392,7 @@ export default function DocumentsPage() {
                         onClick={() => handleFlagAction(flag.id, 'addressed')}
                         className="p-1.5 rounded-md transition-colors"
                         title="Mark as addressed"
+                        aria-label="Mark as addressed"
                         style={{ color: hoverStates[`gaddr-${flag.id}`] ? 'var(--success)' : 'var(--text-muted)', backgroundColor: hoverStates[`gaddr-${flag.id}`] ? 'var(--success-muted)' : 'transparent' }}
                         onMouseEnter={() => setHover(`gaddr-${flag.id}`, true)}
                         onMouseLeave={() => setHover(`gaddr-${flag.id}`, false)}>
@@ -398,6 +402,7 @@ export default function DocumentsPage() {
                         onClick={() => handleFlagAction(flag.id, 'dismissed')}
                         className="p-1.5 rounded-md transition-colors"
                         title="Dismiss"
+                        aria-label="Dismiss"
                         style={{ color: hoverStates[`gdism-${flag.id}`] ? 'var(--danger)' : 'var(--text-muted)', backgroundColor: hoverStates[`gdism-${flag.id}`] ? 'color-mix(in srgb, var(--danger) 20%, transparent)' : 'transparent' }}
                         onMouseEnter={() => setHover(`gdism-${flag.id}`, true)}
                         onMouseLeave={() => setHover(`gdism-${flag.id}`, false)}>

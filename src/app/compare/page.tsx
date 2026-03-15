@@ -183,13 +183,10 @@ export default function ComparePage() {
 
   if (loading) {
     return (
-      <div className="space-y-6">
-        <div className="h-8 w-64 skeleton animate-pulse" style={{ borderRadius: 'var(--radius-md)' }} />
-        <div className="h-12 w-full skeleton animate-pulse" style={{ borderRadius: 'var(--radius-md)' }} />
-        <div className="space-y-2">
-          {[...Array(8)].map((_, i) => (
-            <div key={i} className="h-10 skeleton animate-pulse" style={{ borderRadius: 'var(--radius-md)' }} />
-          ))}
+      <div className="page-content space-y-6">
+        <div className="p-12 text-center" style={{ borderRadius: 'var(--radius-xl)' }}>
+          <BarChart3 className="w-10 h-10 mx-auto mb-3" style={stTextMuted} />
+          <div style={{ ...stTextMuted, fontSize: 'var(--font-size-sm)' }}>Loading investors... Select at least 2 to compare.</div>
         </div>
       </div>
     );

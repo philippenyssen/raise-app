@@ -236,7 +236,7 @@ export default function BacklogPage() {
                     <td className="px-4 py-3 text-xs" style={stTextMuted}>{c.start_date && c.end_date ? `${c.start_date.slice(0, 7)} → ${c.end_date.slice(0, 7)}` : c.start_date || '—'}</td>
                     <td className="px-4 py-3 text-xs" style={stTextMuted}>{c.source_doc ? <span className="flex items-center gap-1"><FileText className="w-3 h-3" />{c.source_doc}</span> : '—'}</td>
                     <td className="px-4 py-3">
-                      <button onClick={() => setDeleteTarget(c.id)} className="btn btn-ghost p-1 rounded" style={stTextMuted}><Trash2 className="w-3.5 h-3.5" /></button>
+                      <button onClick={() => setDeleteTarget(c.id)} className="btn btn-ghost p-1 rounded" style={stTextMuted} aria-label="Delete commitment" title="Delete commitment"><Trash2 className="w-3.5 h-3.5" /></button>
                     </td>
                   </tr>
                 );

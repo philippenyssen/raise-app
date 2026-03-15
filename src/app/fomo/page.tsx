@@ -505,7 +505,11 @@ export default function FomoPage() {
     );
   }
 
-  if (!data) return null;
+  if (!data) return (
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
+      <div className="loading-spinner" />
+    </div>
+  );
 
   const filteredInvestors = data.perInvestorFomo.filter(inv => {
     if (filterIntensity === 'all') return true;

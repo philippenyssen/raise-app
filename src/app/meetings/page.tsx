@@ -354,7 +354,7 @@ export default function MeetingsPage() {
     fetch('/api/meetings')
       .then(r => { if (!r.ok) throw new Error(`${r.status}`); return r.json(); })
       .then(setMeetings)
-      .catch(() => {/* meetings remain empty */});
+      .catch((err) => { console.error('Failed to load meetings:', err); });
   }, []);
 
   const filtered = meetings.filter(m => {

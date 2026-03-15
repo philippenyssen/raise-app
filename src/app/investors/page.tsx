@@ -487,6 +487,7 @@ export default function InvestorsPage() {
                         onClick={() => startEdit(inv)}
                         className="btn btn-ghost btn-sm"
                         title="Edit investor"
+                        aria-label="Edit investor"
                         style={{
                           fontSize: 'var(--font-size-xs)',
                           padding: '0.3rem 0.5rem',
@@ -500,6 +501,7 @@ export default function InvestorsPage() {
                         onClick={() => setDeleteTarget({ id: inv.id, name: inv.name })}
                         className="btn btn-ghost btn-sm"
                         title="Delete investor"
+                        aria-label="Delete investor"
                         style={{
                           fontSize: 'var(--font-size-xs)',
                           padding: '0.3rem 0.5rem',

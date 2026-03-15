@@ -63,9 +63,15 @@ export default function AnalysisPage() {
 
   async function runAnalysis() {
     setLoading(true);
-    const res = await fetch('/api/analyze');
-    setData(await res.json());
-    setLoading(false);
+    try {
+      const res = await fetch('/api/analyze');
+      setData(await res.json());
+    } catch (err) {
+      console.error('Analysis failed:', err);
+      setData({ patterns: null, health: { health: 'red', diagnosis: 'Analysis failed. Please try again.', recommendations: [], risk_factors: [] }, objections: [], funnel: {}, meeting_count: 0, error: 'Failed to run analysis' });
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
