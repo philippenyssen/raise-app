@@ -59,7 +59,7 @@ export default function DataRoomPage() {
       const res = await fetch('/api/data-room');
       if (!res.ok) throw new Error('Failed to load');
       setFiles(await res.json());
-    } catch { /* data room fetch failed — files remain empty */ }
+    } catch (e) { console.error('[DATA_ROOM_FETCH]', e instanceof Error ? e.message : e); }
     setLoading(false);
   }, []);
 
@@ -69,7 +69,7 @@ export default function DataRoomPage() {
       if (res.ok) {
         setIntelligence(await res.json());
       }
-    } catch { /* silently fail */ }
+    } catch (e) { console.error('[DATA_ROOM_INTEL]', e instanceof Error ? e.message : e); }
     setIntelLoading(false);
   }, []);
 
