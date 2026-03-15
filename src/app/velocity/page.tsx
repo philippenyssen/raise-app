@@ -125,13 +125,17 @@ export default function VelocityPage() {
 
         <div className="grid grid-cols-2 gap-4">
           {/* At Risk */}
-          <div className="card-metric" style={{ padding: 'var(--space-4)' }}>
+          <div className="card-metric" style={{ padding: 'var(--space-4)', ...(summary.at_risk > 0 && summary.at_risk / Math.max(1, summary.on_track + summary.behind + summary.at_risk) > 0.4 ? { border: '1px solid var(--danger)', background: 'var(--danger-muted)' } : {}) }}>
             <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-2)' }}>
               <span style={stTextTertiary}>
                 <XCircle className="w-4 h-4" /></span>
               <span className="metric-label">At Risk</span></div>
             <div className="metric-value">
-              {summary.at_risk}</div></div>
+              {summary.at_risk}</div>
+            {summary.at_risk > 0 && summary.at_risk / Math.max(1, summary.on_track + summary.behind + summary.at_risk) > 0.4 && (
+              <div className="text-xs mt-1" style={{ color: 'var(--danger)' }}>
+                {Math.round(summary.at_risk / (summary.on_track + summary.behind + summary.at_risk) * 100)}% of pipeline at risk</div>
+            )}</div>
 
           {/* Avg Velocity */}
           <div className="card-metric" style={{ padding: 'var(--space-4)' }}>

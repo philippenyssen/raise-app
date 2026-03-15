@@ -82,7 +82,7 @@ export default function NetworkPage() {
           <div>
             <p style={{ color: 'var(--text-primary)', fontWeight: 400 }}>Failed to load network data</p>
             <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>{error}</p></div>
-          <button className="btn-secondary ml-auto" onClick={fetchData}>Retry</button></div>
+          <button className="btn-secondary ml-auto" onClick={fetchData} title="Retry loading network data">Retry</button></div>
       </div>);
   }
 

@@ -45,7 +45,7 @@ export default function SkillsPage() {
       .then(([h, e]) => {
         setHealth(Array.isArray(h) ? h : []);
         setExecutions(Array.isArray(e) ? e : []);})
-      .catch(() => {})
+      .catch(() => { setHealth([]); setExecutions([]); })
       .finally(() => setLoading(false));
   }, []);
 
