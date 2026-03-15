@@ -147,6 +147,7 @@ export async function generateDeliverable(
   const response = await getClient().messages.create({
     model: AI_MODEL,
     max_tokens: 16384,
+    temperature: 0,
     system: prompt.system,
     messages: [{
       role: 'user',
@@ -164,6 +165,7 @@ ${existingContext}` : ''}
 Generate the document now. Use markdown formatting. Every claim must be traceable to the data room context provided. If data is missing, use [PLACEHOLDER: describe what's needed] markers.`,
     }],});
 
+  if (response.stop_reason === 'max_tokens') console.error('[GENERATE_DOC] Response truncated — output may be incomplete');
   return response.content[0].type === 'text' ? response.content[0].text : '';
 }
 
@@ -173,6 +175,7 @@ export async function generateModelFromContext(
   const response = await getClient().messages.create({
     model: AI_MODEL,
     max_tokens: 8192,
+    temperature: 0,
     system: `You are a top-tier financial modeler at Goldman Sachs. You build bottom-up financial models for Series C fundraises. Every number must be derived from unit economics (units × price × probability). You output cell data as JSON.`,
     messages: [{
       role: 'user',
@@ -201,6 +204,7 @@ Row labels in column A.
 Return ONLY valid JSON, no markdown.`,
     }],});
 
+  if (response.stop_reason === 'max_tokens') console.error('[GENERATE_MODEL] Response truncated — JSON may be incomplete');
   const text = response.content[0].type === 'text' ? response.content[0].text : '{}';
   try {
     return JSON.parse(text);
