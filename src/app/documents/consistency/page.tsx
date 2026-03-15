@@ -75,9 +75,9 @@ export default function ConsistencyPage() {
       {/* Loading skeleton */}
       {loading && (
         <div className="space-y-4">
-          <div className="h-16 rounded-xl animate-pulse" style={stSurface2} />
-          {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-32 rounded-xl animate-pulse" style={stSurface2} />
+          <div className="skeleton" style={{ height: '64px', borderRadius: 'var(--radius-xl)' }} />
+          {[1,2,3,4].map(i => (
+            <div key={i} className="skeleton" style={{ height: '120px', borderRadius: 'var(--radius-xl)' }} />
           ))}</div>
       )}
 

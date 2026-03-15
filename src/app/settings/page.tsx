@@ -661,7 +661,7 @@ export default function SettingsPage() {
         )}
 
         {testing && !keyTest && (
-          <div className="animate-pulse" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' }}>Testing API key...</div>
+          <div className="skeleton" style={{ height: '16px', width: '140px' }} />
         )}</div>
 
       {/* Billing info */}

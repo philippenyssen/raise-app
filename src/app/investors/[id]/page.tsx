@@ -318,10 +318,10 @@ export default function InvestorDetailPage() {
 
   if (loading) {
     return (
-      <div className="space-y-6">
-        <div className="h-8 w-48 rounded animate-pulse" style={stSurface2} />
-        <div className="h-32 rounded-xl animate-pulse" style={stSurface1} />
-        <div className="h-64 rounded-xl animate-pulse" style={stSurface1} />
+      <div className="space-y-6 page-content">
+        <div className="skeleton" style={{ height: '28px', width: '200px' }} />
+        <div className="skeleton" style={{ height: '120px', borderRadius: 'var(--radius-xl)' }} />
+        <div className="skeleton" style={{ height: '250px', borderRadius: 'var(--radius-xl)' }} />
       </div>);
   }
 

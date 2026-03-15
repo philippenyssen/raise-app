@@ -326,12 +326,12 @@ function MeetingPrepContent() {
 
   if (loading) {
     return (
-      <div className="space-y-6">
-        <div className="h-8 w-56 rounded animate-pulse" style={stSurface2} />
-        <div className="h-12 rounded-xl animate-pulse" style={stSurface2} />
+      <div className="space-y-6 page-content">
+        <div className="skeleton" style={{ height: '28px', width: '220px' }} />
+        <div className="skeleton" style={{ height: '48px', borderRadius: 'var(--radius-xl)' }} />
         <div className="space-y-3">
-          {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-24 rounded-xl animate-pulse" style={stSurface2} />
+          {[1,2,3,4].map(i => (
+            <div key={i} className="skeleton" style={{ height: '96px', borderRadius: 'var(--radius-xl)' }} />
           ))}</div>
       </div>);
   }
