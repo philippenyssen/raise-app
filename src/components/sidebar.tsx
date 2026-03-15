@@ -112,7 +112,9 @@ export function Sidebar() {
       <button
         onClick={() => setMobileOpen(true)}
         className="md:hidden fixed top-3 left-3 z-50 p-2 rounded-lg"
-        style={{ background: SB.bg, border: `1px solid ${SB.border}` }}>
+        style={{ background: SB.bg, border: `1px solid ${SB.border}` }}
+        aria-label="Open navigation menu"
+        title="Open menu">
         <Menu className="w-4 h-4" style={{ color: SB.textActive }} /></button>
 
       {/* Overlay */}

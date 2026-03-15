@@ -85,6 +85,8 @@ export function TopBar() {
           document.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }));
         }}
         className="hidden md:flex items-center gap-2 rounded-md transition-colors"
+        aria-label="Open search palette"
+        title="Search (⌘K)"
         style={{
           padding: '5px 10px',
           color: 'var(--text-muted)',
