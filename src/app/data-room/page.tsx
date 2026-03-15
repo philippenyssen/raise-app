@@ -49,6 +49,7 @@ export default function DataRoomPage() {
   const [pasteContent, setPasteContent] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; filename: string } | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const [intelligence, setIntelligence] = useState<IntelligenceData | null>(null);
   const [intelLoading, setIntelLoading] = useState(true);
   const [expandedInvestor, setExpandedInvestor] = useState<string | null>(null);
@@ -171,13 +172,15 @@ export default function DataRoomPage() {
 
   async function handleDelete() {
     if (!deleteTarget) return;
+    setDeleting(true);
     try {
       const res = await fetch(`/api/data-room?id=${deleteTarget.id}`, { method: 'DELETE' });
       if (!res.ok) throw new Error('Failed');
       toast(`Deleted "${deleteTarget.filename}"`, 'warning');
       setDeleteTarget(null);
       fetchFiles();
-    } catch { toast('Failed to delete file', 'error'); }
+    } catch { toast('Couldn\'t delete file — check your connection and retry', 'error'); }
+    finally { setDeleting(false); }
   }
 
   function inferCategory(filename: string): string {
@@ -350,6 +353,7 @@ export default function DataRoomPage() {
         message={`Delete "${deleteTarget?.filename}"? This cannot be undone.`}
         confirmLabel="Delete"
         variant="danger"
+        loading={deleting}
         onConfirm={handleDelete}
         onCancel={() => setDeleteTarget(null)} />
     </div>);

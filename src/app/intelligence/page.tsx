@@ -38,6 +38,7 @@ export default function IntelligencePage() {
   const [submitting, setSubmitting] = useState(false);
   const [expandedBrief, setExpandedBrief] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<{ type: string; id: string; name: string } | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const [researchInput, setResearchInput] = useState('');
   const [researchType, setResearchType] = useState<'investor' | 'competitor' | 'market'>('investor');
   const [hoveredDealRow, setHoveredDealRow] = useState<string | null>(null);
@@ -98,13 +99,14 @@ export default function IntelligencePage() {
 
   async function handleDelete() {
     if (!deleteTarget) return;
+    setDeleting(true);
     try {
       const res = await fetch(`/api/intelligence?type=${deleteTarget.type}&id=${deleteTarget.id}`, { method: 'DELETE' });
       if (!res.ok) throw new Error('Failed');
       toast(`Deleted ${deleteTarget.name}`, 'warning');
       setDeleteTarget(null);
       fetchAll();
-    } catch { toast('Failed to delete', 'error'); }
+    } catch { toast('Failed to delete', 'error'); } finally { setDeleting(false); }
   }
 
   async function handleAddDeal(e: React.FormEvent<HTMLFormElement>) {
@@ -483,6 +485,7 @@ export default function IntelligencePage() {
         message={`Delete "${deleteTarget?.name}"? This cannot be undone.`}
         confirmLabel="Delete"
         variant="danger"
+        loading={deleting}
         onConfirm={handleDelete}
         onCancel={() => setDeleteTarget(null)} />
     </div>);

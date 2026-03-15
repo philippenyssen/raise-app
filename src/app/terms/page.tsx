@@ -48,6 +48,7 @@ export default function TermsPage() {
   const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState(EMPTY_TS);
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; investor: string } | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => { fetchSheets(); }, []);
 
@@ -98,6 +99,7 @@ export default function TermsPage() {
 
   async function handleDelete() {
     if (!deleteTarget) return;
+    setDeleting(true);
     try {
       const res = await fetch(`/api/term-sheets?id=${deleteTarget.id}`, { method: 'DELETE' });
       if (!res.ok) throw new Error('Failed');
@@ -105,8 +107,8 @@ export default function TermsPage() {
       setDeleteTarget(null);
       fetchSheets();
     } catch {
-      toast('Failed to delete term sheet', 'error');
-    }}
+      toast('Couldn\'t delete term sheet — check your connection and retry', 'error');
+    } finally { setDeleting(false); }}
 
   function startEdit(ts: TermSheet) {
     setForm({
@@ -303,6 +305,7 @@ export default function TermsPage() {
         message={`Delete the term sheet from "${deleteTarget?.investor}"? This cannot be undone.`}
         confirmLabel="Delete"
         variant="danger"
+        loading={deleting}
         onConfirm={handleDelete}
         onCancel={() => setDeleteTarget(null)} />
     </div>);

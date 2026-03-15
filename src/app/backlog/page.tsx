@@ -63,6 +63,7 @@ export default function BacklogPage() {
   const [showAdd, setShowAdd] = useState(false);
   const [adding, setAdding] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const [form, setForm] = useState({
     customer: '', program: '', contract_type: 'firm', amount_eur: '',
     start_date: '', end_date: '', annual_amount: '', confidence: '0.9',
@@ -122,6 +123,7 @@ export default function BacklogPage() {
 
   async function handleDelete() {
     if (!deleteTarget) return;
+    setDeleting(true);
     try {
       const targetId = deleteTarget;
       setDeleteTarget(null);
@@ -133,7 +135,7 @@ export default function BacklogPage() {
       cachedFetch('/api/revenue-commitments').then(r => r.ok ? r.json() : null).then(d => { if (d) setSummary(d.summary); }).catch(() => {});
     } catch {
       toast('Could not confirm deletion — refresh to verify current state', 'error');
-    }}
+    } finally { setDeleting(false); }}
 
   if (loading) {
     return (
@@ -251,6 +253,7 @@ export default function BacklogPage() {
         message="Remove this revenue commitment? This cannot be undone."
         confirmLabel="Delete"
         variant="danger"
+        loading={deleting}
         onConfirm={handleDelete}
         onCancel={() => setDeleteTarget(null)} />
     </div>);
