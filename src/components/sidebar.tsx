@@ -212,7 +212,7 @@ export function Sidebar() {
                       title={collapsed ? item.label : undefined}
                       aria-label={item.label}
                       aria-current={active ? 'page' : undefined}
-                      className="group relative flex items-center rounded-md transition-all duration-150"
+                      className="group relative flex items-center rounded-md transition-all duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1"
                       style={{
                         gap: collapsed ? '0' : 'var(--space-3)',
                         padding: collapsed ? 'var(--space-2)' : 'var(--space-2) var(--space-3)',
@@ -237,7 +237,7 @@ export function Sidebar() {
                         <div className="absolute left-0 top-1/2 -translate-y-1/2 rounded-r" style={{ width: '2px', height: '16px', background: SB.accent }} />
                       )}
 
-                      <span className="shrink-0 flex items-center justify-center relative" style={{ width: '16px', height: '16px', color: active ? SB.accent : 'inherit' }}>
+                      <span className="shrink-0 flex items-center justify-center relative" style={{ width: '16px', height: '16px', color: active ? SB.accent : 'inherit' }} aria-hidden="true">
                         <Icon className="w-4 h-4" />
                         {collapsed && ((item.href === '/followups' && overdueCount > 0) || (item.href === '/meetings' && todayMeetingCount > 0)) && (
                           <span className="absolute" style={{ top: '-3px', right: '-4px', width: '7px', height: '7px', borderRadius: '50%', background: SB.accent }} />
@@ -298,7 +298,7 @@ export function Sidebar() {
             }}
             onMouseEnter={e => { (e.target as HTMLElement).style.color = SB.textHover; }}
             onMouseLeave={e => { (e.target as HTMLElement).style.color = SB.muted; }}>
-            <LogOut className="w-3.5 h-3.5 shrink-0" />
+            <span aria-hidden="true"><LogOut className="w-3.5 h-3.5 shrink-0" /></span>
             {!collapsed && <span>Sign Out</span>}</button></div></aside>
     </>);
 }
