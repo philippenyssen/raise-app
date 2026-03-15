@@ -67,6 +67,7 @@ function MeetingOutcomeSection({
   const hasOutcome = meeting.outcome_rating !== null && meeting.outcome_rating !== undefined;
   const [editing, setEditing] = useState(!hasOutcome);
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const [newObjection, setNewObjection] = useState('');
   const [newCompetitor, setNewCompetitor] = useState('');
 
@@ -129,8 +130,12 @@ function MeetingOutcomeSection({
           key_takeaway: form.key_takeaway,
           prep_usefulness: form.prep_usefulness,});
         setEditing(false);
+      } else {
+        setSaveError('Could not save outcome — check your connection and retry');
       }
-    } catch { /* ignore */ }
+    } catch {
+      setSaveError('Could not save outcome — check your connection and retry');
+    }
     setSaving(false);
   };
 
@@ -271,9 +276,10 @@ function MeetingOutcomeSection({
             style={{ flex: 1 }} />
           <button onClick={addCompetitor} className="btn btn-secondary btn-md" type="button">Add</button></div></div>
 
+      {saveError && <p style={{ color: 'var(--danger)', fontSize: 'var(--font-size-xs)', marginTop: 'var(--space-2)' }}>{saveError}</p>}
       <div className="flex gap-2 mt-4">
         <button
-          onClick={handleSave}
+          onClick={() => { setSaveError(null); handleSave(); }}
           disabled={saving}
           className="btn btn-primary btn-md">
           {saving ? 'Saving...' : 'Save Outcome'}</button>
