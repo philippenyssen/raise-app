@@ -73,8 +73,9 @@ export async function PUT(req: NextRequest) {
 
   try {
     const id = body.id as string;
-    const { id: _id, ...updates } = body;
     if (!id) return NextResponse.json({ error: 'id required' }, { status: 400 });
+    const ALLOWED = new Set(['customer', 'program', 'contract_type', 'amount_eur', 'start_date', 'end_date', 'annual_amount', 'confidence', 'status', 'source_doc', 'notes']);
+    const updates = Object.fromEntries(Object.entries(body).filter(([k]) => ALLOWED.has(k)));
     await updateRevenueCommitment(id, updates);
     emitContextChange('commitment_updated', `Commitment ${id} updated`);
     return NextResponse.json({ ok: true });

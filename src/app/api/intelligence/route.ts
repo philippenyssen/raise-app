@@ -216,22 +216,30 @@ export async function PUT(req: NextRequest) {
   try {
     const type = body.type as string;
     const id = body.id as string;
-    const { type: _t, id: _i, ...updates } = body;
+    const ALLOWED_FIELDS: Record<string, Set<string>> = {
+      deal: new Set(['name', 'status', 'stage', 'amount', 'notes', 'source', 'sector', 'lead_investor']),
+      competitor: new Set(['name', 'threat_level', 'strengths', 'weaknesses', 'notes', 'recent_activity']),
+      partner: new Set(['name', 'firm', 'relationship_strength', 'notes', 'last_contact']),
+    };
+    const allowed = ALLOWED_FIELDS[type];
+    if (!allowed) return NextResponse.json({ error: 'type required (deal|competitor|partner)' }, { status: 400 });
+    const filtered = Object.fromEntries(Object.entries(body).filter(([k]) => allowed.has(k)));
     switch (type) {
       case 'deal':
-        await updateMarketDeal(id, updates);
+        await updateMarketDeal(id, filtered);
         return NextResponse.json({ ok: true });
       case 'competitor':
-        await updateCompetitor(id, updates);
+        await updateCompetitor(id, filtered);
         return NextResponse.json({ ok: true });
       case 'partner':
-        await updateInvestorPartner(id, updates);
+        await updateInvestorPartner(id, filtered);
         return NextResponse.json({ ok: true });
       default:
         return NextResponse.json({ error: 'type required (deal|competitor|partner)' }, { status: 400 });
     }
   } catch (err) {
-    return NextResponse.json({ error: String(err) }, { status: 500 });
+    console.error('[INTELLIGENCE_PUT]', err instanceof Error ? err.message : err);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }}
 
 // DELETE: Remove intelligence data
