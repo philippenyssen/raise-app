@@ -346,10 +346,10 @@ export default function AccelerationPage() {
       if (res.ok) {
         setData(await res.json());
       } else {
-        toast('Failed to load acceleration data', 'error');
+        toast('Could not load acceleration data — refresh to retry', 'error');
       }
     } catch {
-      toast('Failed to load acceleration data', 'error');
+      toast('Could not load acceleration data — refresh to retry', 'error');
     } finally {
       setLoading(false);
     }

@@ -69,7 +69,7 @@ export default function TermsPage() {
       const res = await cachedFetch('/api/term-sheets');
       setSheets(await res.json());
     } catch {
-      toast('Failed to load term sheets', 'error');
+      toast('Could not load term sheets — refresh to retry', 'error');
     } finally {
       setLoading(false);
     }}

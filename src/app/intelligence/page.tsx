@@ -56,7 +56,7 @@ export default function IntelligencePage() {
       setDeals(data.deals || []);
       setCompetitors(data.competitors || []);
       setBriefs(data.briefs || []);
-    } catch { toast('Failed to load intelligence data', 'error'); }
+    } catch { toast('Could not load intelligence data — refresh to retry', 'error'); }
     setLoading(false);
   }, []);
 
@@ -126,7 +126,7 @@ export default function IntelligencePage() {
       toast('Deal added');
       setShowAddDeal(false);
       fetchAll();
-    } catch { toast('Failed to add deal', 'error'); }
+    } catch { toast('Could not add deal — check all fields and try again', 'error'); }
     setSubmitting(false);
   }
 
@@ -145,7 +145,7 @@ export default function IntelligencePage() {
       toast('Competitor added');
       setShowAddComp(false);
       fetchAll();
-    } catch { toast('Failed to add competitor', 'error'); }
+    } catch { toast('Could not add competitor — check all fields and try again', 'error'); }
     setSubmitting(false);
   }
 
