@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useToast } from '@/components/toast';
 import { cachedFetch } from '@/lib/cache';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
-import { FileText, Plus, Clock, Edit3, Download, ShieldCheck, AlertTriangle, CheckCircle2, XCircle } from 'lucide-react';
+import { FileText, Plus, Clock, Edit3, Download, ShieldCheck, AlertTriangle, CheckCircle2, XCircle, ArrowUpDown } from 'lucide-react';
 import { fmtDate } from '@/lib/format';
 import { DocSummaryRecord as Doc } from '@/lib/types';
 import { stAccent, stTextMuted, stTextPrimary, stTextTertiary } from '@/lib/styles';
@@ -66,6 +66,7 @@ export default function DocumentsPage() {
   const [deleting, setDeleting] = useState(false);
   const [showFlags, setShowFlags] = useState(true);
   const [hoverStates, setHoverStates] = useState<Record<string, boolean>>({});
+  const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'name'>('newest');
 
   const setHover = (key: string, val: boolean) => setHoverStates(prev => ({ ...prev, [key]: val }));
 
@@ -129,13 +130,20 @@ export default function DocumentsPage() {
     URL.revokeObjectURL(url);
   }
 
-  // Group by type
+  const sortDocs = (a: Doc, b: Doc) => {
+    if (sortBy === 'name') return a.title.localeCompare(b.title);
+    const da = new Date(a.updated_at).getTime(), db = new Date(b.updated_at).getTime();
+    return sortBy === 'newest' ? db - da : da - db;
+  };
+
+  // Group by type, sorted within each group
   const grouped = docs.reduce<Record<string, Doc[]>>((acc, doc) => {
     const type = doc.type || 'custom';
     if (!acc[type]) acc[type] = [];
     acc[type].push(doc);
     return acc;
   }, {});
+  for (const type in grouped) grouped[type].sort(sortDocs);
 
   // Count flags per document
   const flagsByDoc = flags.reduce<Record<string, DocFlag[]>>((acc, flag) => {
@@ -170,7 +178,16 @@ export default function DocumentsPage() {
               <span style={{ color: 'var(--text-tertiary)', marginLeft: '0.5rem' }}>
                 {flags.length} open flag{flags.length !== 1 ? 's' : ''}</span>
             )}</p></div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
+          <div className="flex items-center gap-1 text-xs mr-1" style={{ color: 'var(--text-muted)' }}>
+            <ArrowUpDown className="w-3 h-3" />
+            {(['newest', 'oldest', 'name'] as const).map(s => (
+              <button key={s} onClick={() => setSortBy(s)}
+                className="px-2 py-1 rounded-md"
+                style={{ backgroundColor: sortBy === s ? 'var(--surface-3)' : 'transparent', color: sortBy === s ? 'var(--text-secondary)' : 'var(--text-muted)' }}>
+                {s === 'newest' ? 'Newest' : s === 'oldest' ? 'Oldest' : 'A–Z'}</button>
+            ))}
+          </div>
           {flags.length > 0 && (
             <button
               onClick={() => setShowFlags(!showFlags)}
