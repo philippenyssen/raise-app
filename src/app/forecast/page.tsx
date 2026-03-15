@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { STATUS_LABELS as STAGE_LABELS } from '@/lib/constants';
 import { fmtDate, fmtDateShort } from '@/lib/format';
+import { relativeTime } from '@/lib/time';
 import { confidenceBg, confidenceColor, labelMuted, labelMuted10, stAccent, stFontSm, stFontXs, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 interface InvestorForecast { investorId: string; investorName: string; currentStage: string; tier: number; daysInStage: number; predictedDaysToClose: number; predictedCloseDate: string; confidence: 'high' | 'medium' | 'low'; reasoning: string }
@@ -137,6 +138,7 @@ export default function ForecastPage() {
           <h1 className="page-title">Raise Forecast</h1>
           <p className="page-subtitle">
             {totalActive} active investor{totalActive !== 1 ? 's' : ''} &middot; Expected close {fmtDate(forecast.expectedCloseDate)}
+            {data.generated_at && <> &middot; <span style={stTextMuted}>{relativeTime(data.generated_at)}</span></>}
           </p></div>
         <div className="flex items-center gap-2">
           <span

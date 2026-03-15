@@ -16,7 +16,7 @@ import type {
 } from '@/lib/types';
 import { STATUS_LABELS, TYPE_LABELS } from '@/lib/constants';
 import { MS_PER_DAY, MS_PER_HOUR, MS_PER_MINUTE } from '@/lib/time';
-import { fmtDate } from '@/lib/format';
+import { fmtDate, fmtDateTime } from '@/lib/format';
 import { useToast } from '@/components/toast';
 import { stAccent, stAccentBadge, stAccentBg, stBorderTop, stSurface0, stSurface1, stSurface1Border, stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 import { parseJsonSafe } from '@/lib/api-helpers';
@@ -664,7 +664,7 @@ function MeetingPrepContent() {
                       <p className="text-xs italic" style={stTextMuted}>{meetingBrief.narrative_profile.tone_guidance}</p></div>
 
                     <div className="text-xs text-right" style={stTextMuted}>
-                      Generated {new Date(meetingBrief.generated_at).toLocaleString('en-GB')}</div></div>
+                      Generated {fmtDateTime(meetingBrief.generated_at)}</div></div>
                 )}</section>
             )}
 
