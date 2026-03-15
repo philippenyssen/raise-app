@@ -489,6 +489,20 @@ export default function InvestorDetailPage() {
             onMouseLeave={e => (e.currentTarget.style.opacity = '1')}>
             + Log Meeting</Link></div></div>
 
+      {/* Quick Context Strip */}
+      {investor && (
+        <div className="flex items-center gap-4 text-xs" style={{ color: 'var(--text-muted)' }}>
+          {meetings.length > 0 ? (
+            <span>Last meeting: {fmtDate(meetings[0].date)} ({meetings[0].type.replace(/_/g, ' ')})</span>
+          ) : (
+            <span>No meetings yet</span>
+          )}
+          {(() => { const pending = followups.filter(f => f.status === 'pending'); if (!pending.length) return null; const next = pending.sort((a, b) => a.due_at.localeCompare(b.due_at))[0]; const d = Math.ceil((new Date(next.due_at).getTime() - Date.now()) / 864e5); return <span style={{ color: d < 0 ? 'var(--danger)' : d <= 2 ? 'var(--warning)' : 'var(--text-muted)' }}>Next follow-up: {d < 0 ? `${-d}d overdue` : d === 0 ? 'today' : `in ${d}d`}</span>; })()}
+          {meetings.length > 0 && (() => { const d = Math.floor((Date.now() - new Date(meetings[0].date).getTime()) / 864e5); return d >= 7 ? <span style={{ color: d >= 14 ? 'var(--danger)' : 'var(--warning)' }}>{d}d since last contact</span> : null; })()}
+          {latestEnthusiasm > 0 && <span>Enthusiasm: {latestEnthusiasm}/10</span>}
+        </div>
+      )}
+
       {/* Suggested Actions */}
       {investor && (() => {
         const suggestions: string[] = [];
