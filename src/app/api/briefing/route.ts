@@ -344,6 +344,7 @@ export async function GET() {
       const response = await getAIClient().messages.create({
         model: AI_MODEL,
         max_tokens: 300,
+        temperature: 0,
         messages: [{
           role: 'user',
           content: `You are a chief of staff for a CEO running a Series C fundraise. Write a 2-3 sentence morning briefing summary. Be direct, actionable, and honest. No fluff.
@@ -360,8 +361,12 @@ Rules:
 - No greetings, no sign-offs, just the summary`,
         }],});
 
-      const textBlock = response.content.find(c => c.type === 'text') as { type: 'text'; text: string } | undefined;
-      todaySummary = textBlock?.text || 'Unable to generate summary.';
+      const block = response.content[0];
+      const text = block?.type === 'text' && block.text ? block.text : '';
+      if (!text || response.stop_reason === 'max_tokens') {
+        console.error('[BRIEFING_AI] Empty or truncated response, stop_reason:', response.stop_reason);
+      }
+      todaySummary = text || 'Unable to generate summary.';
     } catch {
       // Fallback: deterministic summary without AI
       const parts: string[] = [];

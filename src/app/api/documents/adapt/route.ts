@@ -59,6 +59,7 @@ export async function POST(req: NextRequest) {
     const response = await getAIClient().messages.create({
       model: AI_MODEL,
       max_tokens: 4096,
+      temperature: 0,
       messages: [{
         role: 'user',
         content: `You are an expert fundraising document advisor. Analyze this document and suggest specific modifications to optimize it for a ${typeLabels[investor_type]} investor.
@@ -105,7 +106,9 @@ Rules:
 - Return 5-10 suggestions, ranked by priority.`,
       }],});
 
-    const text = response.content[0].type === 'text' ? response.content[0].text : '{}';
+    const block = response.content[0];
+    const text = block?.type === 'text' && block.text ? block.text : '{}';
+    if (response.stop_reason === 'max_tokens') console.error('[DOC_ADAPT] Response truncated — JSON may be incomplete');
     let result: {
       suggestions: AdaptationSuggestion[];
       overall_assessment: string;
