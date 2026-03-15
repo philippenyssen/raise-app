@@ -8,7 +8,7 @@ import {
   Users, Filter, Download,
 } from 'lucide-react';
 import { cachedFetch } from '@/lib/cache';
-import { MS_PER_DAY, MS_PER_MINUTE } from '@/lib/time';
+import { MS_PER_DAY, MS_PER_MINUTE, relativeTime } from '@/lib/time';
 import { STATUS_LABELS } from '@/lib/constants';
 import { stAccent, stFontXs, stSurface0, stSurface1, stTextMuted, stTextSecondary } from '@/lib/styles';
 
@@ -83,6 +83,7 @@ export default function DealflowPage() {
   const [error, setError] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<SortKey>('heat');
   const [heatFilter, setHeatFilter] = useState<HeatFilter>('all');
+  const [loadedAt, setLoadedAt] = useState<string | null>(null);
   const fetchData = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -184,6 +185,7 @@ export default function DealflowPage() {
       }
 
       setInvestors(Array.from(map.values()));
+      setLoadedAt(new Date().toISOString());
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Couldn\'t load deal flow — check your connection and refresh');
     } finally {
@@ -237,7 +239,7 @@ export default function DealflowPage() {
         <div>
           <h1 className="page-title">Dealflow</h1>
           <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', marginTop: '2px' }}>
-            Investor health: heat, velocity, and momentum in one view</p></div>
+            Investor health: heat, velocity, and momentum in one view{loadedAt && <> &middot; <span style={{ color: 'var(--text-muted)' }}>{relativeTime(loadedAt)}</span></>}</p></div>
         <div className="flex items-center gap-2">
           <button
             onClick={() => {

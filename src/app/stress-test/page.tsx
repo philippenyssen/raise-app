@@ -98,13 +98,6 @@ export default function StressTestPage() {
   const [loadedAt, setLoadedAt] = useState<string | null>(null);
   const [expandedRisks, setExpandedRisks] = useState<number[]>([]);
   const [showAllInvestors, setShowAllInvestors] = useState(false);
-  const [hoveredRow, setHoveredRow] = useState<string | null>(null);
-  const [hoveredRisk, setHoveredRisk] = useState<number | null>(null);
-  const [hoveredGap, setHoveredGap] = useState<string | null>(null);
-  const [hoveredCritical, setHoveredCritical] = useState<number | null>(null);
-  const [refreshHover, setRefreshHover] = useState(false);
-  const [retryHover, setRetryHover] = useState(false);
-  const [showAllHover, setShowAllHover] = useState(false);
 
   const fetchData = useCallback(async (silent = false) => {
     if (!silent) setLoading(true);
@@ -155,13 +148,9 @@ export default function StressTestPage() {
           <p style={stTextSecondary}>Could not load stress test data. If this persists, check Settings to verify your API credentials.</p>
           <button
             onClick={() => fetchData()}
-            onMouseEnter={() => setRetryHover(true)}
-            onMouseLeave={() => setRetryHover(false)}
-            className="px-4 py-2 rounded-lg text-sm transition-colors"
+            className="btn-surface px-4 py-2 rounded-lg text-sm"
             title="Retry loading stress test data"
-            style={{
-              background: retryHover ? 'var(--surface-3)' : 'var(--surface-2)',
-              color: 'var(--text-secondary)', }}>
+            style={{ background: 'var(--surface-2)', color: 'var(--text-secondary)' }}>
             Retry</button></div>
       </div>);
   }
@@ -197,12 +186,8 @@ export default function StressTestPage() {
         <button
           onClick={() => fetchData(true)}
           disabled={refreshing}
-          onMouseEnter={() => setRefreshHover(true)}
-          onMouseLeave={() => setRefreshHover(false)}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs transition-colors disabled:opacity-50"
-          style={{
-            background: refreshHover && !refreshing ? 'var(--surface-3)' : 'var(--surface-2)',
-            color: 'var(--text-secondary)', }}>
+          className="btn-surface flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs disabled:opacity-50"
+          style={{ background: 'var(--surface-2)', color: 'var(--text-secondary)' }}>
           <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
           {refreshing ? 'Refreshing...' : 'Refresh'}</button></div>
 
@@ -281,10 +266,8 @@ export default function StressTestPage() {
             {data.gapInvestors.slice(0, 5).map((gap, i) => (
               <div
                 key={gap.id}
-                className="flex items-start gap-3 py-3 px-4 rounded-lg transition-colors"
-                style={{ background: hoveredGap === gap.id ? 'var(--surface-2)' : 'var(--surface-1)' }}
-                onMouseEnter={() => setHoveredGap(gap.id)}
-                onMouseLeave={() => setHoveredGap(null)}>
+                className="hover-row flex items-start gap-3 py-3 px-4 rounded-lg"
+                style={{ background: 'var(--surface-1)' }}>
                 <span
                   className="w-6 h-6 rounded flex items-center justify-center text-xs font-normal shrink-0 mt-0.5"
                   style={{ background: 'var(--danger-muted)', color: 'var(--text-primary)' }}>
@@ -360,12 +343,7 @@ export default function StressTestPage() {
                 return (
                   <tr
                     key={f.id}
-                    className="transition-colors"
-                    style={{
-                      borderBottom: '1px solid var(--border-subtle)',
-                      background: hoveredRow === f.id ? 'var(--surface-2)' : 'transparent', }}
-                    onMouseEnter={() => setHoveredRow(f.id)}
-                    onMouseLeave={() => setHoveredRow(null)}>
+                    className="table-row">
                     <td className="px-4 py-2.5">
                       <div className="flex items-center gap-2">
                         <Link href={`/investors/${f.id}`} className="font-normal transition-colors truncate max-w-[180px]" style={stTextPrimary}>
@@ -407,10 +385,8 @@ export default function StressTestPage() {
           <div className="p-3 text-center" style={stBorderTop}>
             <button
               onClick={() => setShowAllInvestors(!showAllInvestors)}
-              onMouseEnter={() => setShowAllHover(true)}
-              onMouseLeave={() => setShowAllHover(false)}
-              className="text-xs flex items-center gap-1 mx-auto transition-colors"
-              style={{ color: showAllHover ? 'var(--accent)' : 'var(--accent)' }}>
+              className="text-xs flex items-center gap-1 mx-auto"
+              style={{ color: 'var(--accent)' }}>
               {showAllInvestors ? (
                 <>Show less <ChevronUp className="w-3 h-3" /></>
               ) : (
@@ -443,10 +419,7 @@ export default function StressTestPage() {
                       onClick={() => setExpandedRisks(prev =>
                         prev.includes(i) ? prev.filter(x => x !== i) : [...prev, i]
                       )}
-                      onMouseEnter={() => setHoveredRisk(i)}
-                      onMouseLeave={() => setHoveredRisk(null)}
-                      className="w-full flex items-start gap-3 p-3 transition-colors text-left"
-                      style={{ background: hoveredRisk === i ? 'var(--surface-2)' : 'transparent' }}>
+                      className="hover-row w-full flex items-start gap-3 p-3 text-left">
                       <span
                         className="px-1.5 py-0.5 rounded shrink-0 mt-0.5"
                         style={{ fontSize: 'var(--font-size-xs)', border: '1px solid', ...riskBadgeStyle }}>
@@ -486,10 +459,8 @@ export default function StressTestPage() {
                   return (
                     <div
                       key={i}
-                      className="flex items-center gap-3 py-1.5 px-3 rounded-lg transition-colors"
-                      style={{ background: hoveredCritical === i ? 'var(--surface-3)' : 'var(--surface-2)' }}
-                      onMouseEnter={() => setHoveredCritical(i)}
-                      onMouseLeave={() => setHoveredCritical(null)}>
+                      className="hover-row flex items-center gap-3 py-1.5 px-3 rounded-lg"
+                      style={{ background: 'var(--surface-2)' }}>
                       <span
                         className="w-5 h-5 rounded flex items-center justify-center font-normal shrink-0"
                         style={{ fontSize: 'var(--font-size-xs)', background: 'var(--accent-muted)', color: 'var(--accent)' }}>

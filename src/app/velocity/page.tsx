@@ -8,6 +8,7 @@ import {
   TrendingUp, Users, ArrowRight, Zap, Phone, Mail, Target,
 } from 'lucide-react';
 import { STATUS_LABELS, TYPE_LABELS } from '@/lib/constants';
+import { relativeTime } from '@/lib/time';
 import { labelMuted, labelSecondary, stTextTertiary, trackingBg, trackingColor, velocityColor } from '@/lib/styles';
 
 interface VelocityInvestor { investor_id: string; investor_name: string; investor_type: string; investor_tier: number; status: string; enthusiasm: number; days_in_process: number; days_in_current_stage: number; projected_close_date: string; days_to_target: number; on_track: boolean; tracking_status: 'on_track' | 'behind' | 'at_risk'; bottleneck: string; velocity_score: number; meeting_count: number; meetings_per_week: number; days_since_last_meeting: number }
@@ -28,7 +29,7 @@ export default function VelocityPage() {
   const [data, setData] = useState<VelocityData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [hoveredRow, setHoveredRow] = useState<string | null>(null);
+  const [loadedAt, setLoadedAt] = useState<string | null>(null);
 
   function fetchVelocity() {
     setLoading(true);
@@ -37,7 +38,7 @@ export default function VelocityPage() {
       .then(res => {
         if (!res.ok) throw new Error('Could not load velocity data — refresh to retry');
         return res.json();})
-      .then(d => { setData(d); setLoading(false); })
+      .then(d => { setData(d); setLoading(false); setLoadedAt(new Date().toISOString()); })
       .catch(e => { setError(e.message); setLoading(false); });
   }
 
@@ -83,7 +84,7 @@ export default function VelocityPage() {
         <div>
           <h1 className="page-title">Close in 60</h1>
           <p className="page-subtitle">
-            {summary.total_active} active deal{summary.total_active !== 1 ? 's' : ''} &middot; {summary.avg_days_in_process}d avg time in process
+            {summary.total_active} active deal{summary.total_active !== 1 ? 's' : ''} &middot; {summary.avg_days_in_process}d avg time in process{loadedAt && <> &middot; <span style={{ color: 'var(--text-muted)' }}>{relativeTime(loadedAt)}</span></>}
           </p></div></div>
 
       {/* Raise Progress Bar */}
@@ -191,12 +192,8 @@ export default function VelocityPage() {
                 {investors.map((inv) => (
                   <tr
                     key={inv.investor_id}
-                    className="table-row transition-colors"
-                    style={{
-                      background: hoveredRow === inv.investor_id ? 'var(--surface-1)' : 'transparent',
-                      cursor: 'pointer', }}
-                    onMouseEnter={() => setHoveredRow(inv.investor_id)}
-                    onMouseLeave={() => setHoveredRow(null)}>
+                    className="table-row"
+                    style={{ cursor: 'pointer' }}>
                     {/* Investor Name */}
                     <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
                       <Link
