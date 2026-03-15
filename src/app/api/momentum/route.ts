@@ -53,14 +53,13 @@ export async function GET() {
     const weeks = getLastNWeeks(NUM_WEEKS);
     const cutoffDate = weeks[0].toISOString();
 
-    // Fetch all relevant data in parallel (including all-meetings for timing correlation)
+    // Fetch all relevant data in parallel (single meetings query, filter in-memory)
     const [
       investorRows,
-      meetingRows,
+      allMeetingRows,
       activityRows,
       taskRows,
       followupRows,
-      allMeetingRows,
     ] = await Promise.all([
       db.execute(`
         SELECT id, name, type, tier, status, enthusiasm, created_at, updated_at
@@ -68,15 +67,7 @@ export async function GET() {
         WHERE status NOT IN ('passed', 'dropped')
         ORDER BY tier ASC, name ASC
       `),
-      db.execute({
-        sql: `
-          SELECT id, investor_id, investor_name, date, type, enthusiasm_score, status_after, created_at
-          FROM meetings
-          WHERE date >= ?
-          ORDER BY date ASC
-        `,
-        args: [cutoffDate],
-      }),
+      db.execute(`SELECT id, investor_id, investor_name, date, type, enthusiasm_score, status_after, created_at FROM meetings ORDER BY date ASC`),
       db.execute({
         sql: `
           SELECT id, event_type, subject, detail, investor_id, investor_name, created_at
@@ -102,11 +93,11 @@ export async function GET() {
         `,
         args: [cutoffDate, cutoffDate],
       }),
-      db.execute(`SELECT id, investor_id, investor_name, date, type, status_after FROM meetings ORDER BY date ASC`),
     ]);
 
     const investors = investorRows.rows as unknown as InvestorRow[];
-    const meetings = meetingRows.rows as unknown as MeetingRow[];
+    const allMeetings = allMeetingRows.rows as unknown as MeetingRow[];
+    const meetings = allMeetings.filter(m => m.date >= cutoffDate);
     const activities = activityRows.rows as unknown as ActivityRow[];
     const tasks = taskRows.rows as unknown as TaskRow[];
     const followups = followupRows.rows as unknown as FollowupRow[];
@@ -549,7 +540,7 @@ export async function GET() {
     const timingSignals: TimingSignal[] = [];
 
     // Reuse all-meetings from initial parallel batch for timing analysis
-    const allMeetingsForTiming = allMeetingRows.rows as unknown as Array<{ id: string; investor_id: string; investor_name: string; date: string; type: string; status_after: string }>;
+    const allMeetingsForTiming = allMeetings as unknown as Array<{ id: string; investor_id: string; investor_name: string; date: string; type: string; status_after: string }>;
 
     // (a) Meeting clusters: 3+ different-investor meetings within 5 days = competitive tension
     const meetingDates = allMeetingsForTiming.map(m => ({

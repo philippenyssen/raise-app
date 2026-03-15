@@ -254,9 +254,9 @@ export async function GET() {
     const p90 = Math.round(outcomes[Math.floor(MC_RUNS * 0.90)] * 10) / 10;
     const probOfTarget = Math.round(outcomes.filter(o => o >= targetEquityM).length / MC_RUNS * 100);
 
-    // Log predictions for calibration (non-blocking)
+    // Log predictions for calibration (non-blocking, parallel)
     try {
-      for (const f of investorForecasts.slice(0, 20)) await logPrediction(f.id, f.name, f.closeProbability / 100, f.predictedCloseDate);
+      await Promise.all(investorForecasts.slice(0, 20).map(f => logPrediction(f.id, f.name, f.closeProbability / 100, f.predictedCloseDate)));
     } catch (e) { console.error('[STRESS_PREDICTIONS]', e instanceof Error ? e.message : e); }
 
     const totalExpected = investorForecasts.reduce((s, f) => s + f.expectedValue, 0);

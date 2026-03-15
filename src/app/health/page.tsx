@@ -6,6 +6,7 @@ import {
   CheckCircle2, AlertTriangle, XCircle, Shield, RefreshCw,
 } from 'lucide-react';
 import { fmtDateTime } from '@/lib/format';
+import { relativeTime } from '@/lib/time';
 import { stAccent, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 interface IntelligenceCheck { name: string; status: 'pass' | 'fail' | 'warn'; detail: string; }
@@ -55,6 +56,7 @@ export default function HealthPage() {
   const [intelLoading, setIntelLoading] = useState(true);
 
   const [healthError, setHealthError] = useState<string | null>(null);
+  const [loadedAt, setLoadedAt] = useState<string | null>(null);
 
   function fetchHealth() {
     setHealthError(null);
@@ -64,6 +66,7 @@ export default function HealthPage() {
     ]).then(([healthData, intelData]) => {
       setData(healthData);
       setIntelVerify(intelData);
+      setLoadedAt(new Date().toISOString());
     }).catch(() => setHealthError('Couldn\'t load health data — try refreshing'))
       .finally(() => setIntelLoading(false));
   }
@@ -96,7 +99,7 @@ export default function HealthPage() {
     <div className="space-y-8 page-content">
       <div>
         <h1 className="page-title">Process Health</h1>
-        <p className="text-sm mt-1" style={stTextMuted}>Convergence tracking and process verification</p></div>
+        <p className="text-sm mt-1" style={stTextMuted}>Convergence tracking and process verification{loadedAt && <> &middot; <span style={{ color: 'var(--text-muted)' }}>{relativeTime(loadedAt)}</span></>}</p></div>
 
       {/* Convergence Score */}
       <div className="rounded-xl p-6">
