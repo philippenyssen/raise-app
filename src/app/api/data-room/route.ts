@@ -26,9 +26,9 @@ export async function POST(req: NextRequest) {
 
   try {
     const file = await createDataRoomFile({
-      filename: String(filename),
-      category: String(category || 'other'),
-      mime_type: String(mime_type || ''),
+      filename: String(filename).trim(),
+      category: String(category || 'other').trim(),
+      mime_type: String(mime_type || '').trim(),
       size_bytes: Number(size_bytes) || 0,
       extracted_text: String(extracted_text).slice(0, 100_000),
       summary: summary ? String(summary) : undefined,
