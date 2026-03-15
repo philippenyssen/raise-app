@@ -34,7 +34,7 @@ function NewMeetingContent() {
   const [logAnotherHovered, setLogAnotherHovered] = useState(false);
 
   useEffect(() => {
-    fetch('/api/investors').then(r => r.json()).then(setInvestors);
+    fetch('/api/investors').then(r => r.json()).then(setInvestors).catch(() => {});
   }, []);
 
   const selectedInvestor = investors.find(i => i.id === form.investor_id);
@@ -45,18 +45,22 @@ function NewMeetingContent() {
     setLoading(true);
     setResult(null);
 
-    const res = await fetch('/api/meetings', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        ...form,
-        investor_name: selectedInvestor?.name || 'Unknown',
-        analyze: true,
-      }),});
-
-    const data = await res.json();
-    setResult(data);
-    toast(`Meeting with ${selectedInvestor?.name || 'investor'} logged`);
+    try {
+      const res = await fetch('/api/meetings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...form,
+          investor_name: selectedInvestor?.name || 'Unknown',
+          analyze: true,
+        }),});
+      if (!res.ok) throw new Error(`Server error (${res.status})`);
+      const data = await res.json();
+      setResult(data);
+      toast(`Meeting with ${selectedInvestor?.name || 'investor'} logged`);
+    } catch {
+      toast('Failed to log meeting', 'error');
+    }
     setLoading(false);
   }
 

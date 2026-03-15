@@ -62,7 +62,7 @@ function QuickCaptureInner() {
   const [newCaptureHovered, setNewCaptureHovered] = useState(false);
 
   useEffect(() => {
-    fetch('/api/investors').then(r => r.json()).then(setInvestors);
+    fetch('/api/investors').then(r => r.json()).then(setInvestors).catch(() => {});
   }, []);
 
   useEffect(() => {
