@@ -591,7 +591,6 @@ export default function MeetingsPage() {
                             borderRadius: 'var(--radius-sm)',
                             background: 'var(--surface-2)',
                             color: 'var(--text-muted)',
-                            border: '1px solid var(--border-subtle)',
                           }}
                         >
                           {stats.count} meetings

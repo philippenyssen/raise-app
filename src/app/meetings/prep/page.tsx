@@ -407,11 +407,8 @@ function MeetingPrepContent() {
               className="w-full md:w-96 rounded-lg px-4 py-2.5 text-sm focus:outline-none appearance-none cursor-pointer pr-10"
               style={{
                 background: 'var(--surface-1)',
-                border: '1px solid var(--border-default)',
                 color: 'var(--text-secondary)',
               }}
-              onFocus={e => { e.target.style.borderColor = 'var(--accent)'; }}
-              onBlur={e => { e.target.style.borderColor = 'var(--border-default)'; }}
             >
               <option value="">Select investor for this meeting...</option>
               {investors.map(inv => (
@@ -463,14 +460,11 @@ function MeetingPrepContent() {
                         className="flex items-center gap-3 p-3 rounded-lg text-left transition-colors"
                         style={{
                           background: 'var(--surface-0)',
-                          border: '1px solid var(--border-subtle)',
                         }}
                         onMouseEnter={e => {
-                          e.currentTarget.style.borderColor = 'var(--accent)';
                           e.currentTarget.style.background = 'var(--accent-muted)';
                         }}
                         onMouseLeave={e => {
-                          e.currentTarget.style.borderColor = 'var(--border-subtle)';
                           e.currentTarget.style.background = 'var(--surface-0)';
                         }}
                       >
@@ -1097,11 +1091,8 @@ function MeetingPrepContent() {
                 className="w-full rounded-lg px-4 py-3 text-sm focus:outline-none resize-y"
                 style={{
                   background: 'var(--surface-1)',
-                  border: '1px solid var(--border-default)',
                   color: 'var(--text-secondary)',
                 }}
-                onFocus={e => { e.target.style.borderColor = 'var(--accent)'; }}
-                onBlur={e => { e.target.style.borderColor = 'var(--border-default)'; }}
               />
             </section>
 

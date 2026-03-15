@@ -172,7 +172,6 @@ function MeetingCard({ meeting }: { meeting: BriefingMeeting }) {
                 fontWeight: 500,
                 background: 'var(--surface-2)',
                 color: 'var(--text-tertiary)',
-                border: '1px solid var(--border-default)',
               }}
             >
               {meeting.type.replace(/_/g, ' ')}

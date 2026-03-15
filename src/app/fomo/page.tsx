@@ -331,7 +331,6 @@ function PressureCard({ inv }: { inv: InvestorFomo }) {
             <span style={inlineBadgeStyle({
               background: 'var(--surface-2)',
               color: 'var(--text-tertiary)',
-              border: '1px solid var(--border-default)',
             })}>
               {inv.statusLabel}
             </span>
@@ -414,7 +413,6 @@ function PressureCard({ inv }: { inv: InvestorFomo }) {
                       borderRadius: 'var(--radius-sm)',
                       background: 'var(--surface-2)',
                       color: 'var(--text-secondary)',
-                      border: '1px solid var(--border-default)',
                     }}
                   >
                     {t.name}
@@ -557,7 +555,6 @@ function StrategyCardComponent({ card }: { card: StrategyCard }) {
                   borderRadius: 'var(--radius-sm)',
                   background: 'var(--surface-2)',
                   color: 'var(--text-tertiary)',
-                  border: '1px solid var(--border-default)',
                 }}
               >
                 {name}
@@ -668,7 +665,6 @@ export default function FomoPage() {
               borderRadius: 'var(--radius-md)',
               fontSize: 'var(--font-size-sm)',
               fontWeight: 500,
-              border: '1px solid var(--border-default)',
               background: refreshHovered ? 'var(--surface-2)' : 'var(--surface-1)',
               color: 'var(--text-secondary)',
               cursor: 'pointer',

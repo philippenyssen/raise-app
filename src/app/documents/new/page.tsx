@@ -193,11 +193,9 @@ export default function NewDocumentPage() {
           style={showImport ? {
             background: 'var(--accent-muted)',
             color: 'var(--accent)',
-            border: '1px solid var(--accent)',
           } : {
             background: 'var(--surface-2)',
             color: 'var(--text-tertiary)',
-            border: '1px solid var(--border-default)',
           }}
         >
           <Upload className="w-3.5 h-3.5" /> Import Markdown
@@ -215,11 +213,8 @@ export default function NewDocumentPage() {
             className="w-full rounded-lg px-4 py-3 text-sm font-mono focus:outline-none"
             style={{
               background: 'var(--surface-1)',
-              border: '1px solid var(--border-default)',
               color: 'var(--text-secondary)',
             }}
-            onFocus={e => { e.target.style.borderColor = 'var(--accent)'; }}
-            onBlur={e => { e.target.style.borderColor = 'var(--border-default)'; }}
           />
         </div>
       )}
@@ -230,9 +225,7 @@ export default function NewDocumentPage() {
           <div
             key={template.type}
             className="rounded-xl p-5 transition-colors"
-            style={{
-              border: `1px solid ${hoveredButton === template.type ? 'var(--border-strong)' : 'var(--border-default)'}`,
-            }}
+            style={{}}
             onMouseEnter={() => setHoveredButton(template.type)}
             onMouseLeave={() => setHoveredButton(null)}
           >

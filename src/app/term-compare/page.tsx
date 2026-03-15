@@ -317,7 +317,6 @@ export default function TermComparePage() {
                 style={{
                   background: addHover ? 'var(--surface-3)' : 'var(--surface-2)',
                   color: 'var(--text-secondary)',
-                  border: '1px solid var(--border-default)',
                 }}
               >
                 <Plus className="w-3.5 h-3.5" />

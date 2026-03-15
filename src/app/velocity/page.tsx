@@ -516,7 +516,6 @@ export default function VelocityPage() {
                           style={{
                             background: 'var(--surface-2)',
                             color: 'var(--text-muted)',
-                            border: '1px solid var(--border-default)',
                             fontSize: '11px',
                             padding: '3px 8px',
                             gap: '4px',

@@ -173,11 +173,8 @@ function NewMeetingContent() {
             className="w-full rounded-lg px-4 py-3 text-sm font-mono leading-relaxed focus:outline-none"
             style={{
               background: 'var(--surface-1)',
-              border: '1px solid var(--border-default)',
               color: 'var(--text-secondary)',
             }}
-            onFocus={e => { e.target.style.borderColor = 'var(--accent)'; }}
-            onBlur={e => { e.target.style.borderColor = 'var(--border-default)'; }}
           />
         </div>
 
