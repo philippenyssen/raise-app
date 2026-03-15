@@ -809,6 +809,7 @@ async function computeIntelligenceBriefing(
 // ---------------------------------------------------------------------------
 
 export async function GET() {
+  const t0 = Date.now();
   try {
     const db = getClient();
 
@@ -905,7 +906,7 @@ export async function GET() {
       processHealth,
       intelligenceBriefing,
       realTimeSignals,
-      generatedAt: new Date().toISOString(),}, { headers: { 'Cache-Control': 'private, max-age=15, stale-while-revalidate=30' } });
+      generatedAt: new Date().toISOString(),}, { headers: { 'Cache-Control': 'private, max-age=15, stale-while-revalidate=30', 'Server-Timing': `total;dur=${Date.now() - t0}` } });
   } catch (error) {
     console.error('[PULSE_GET]', error instanceof Error ? error.message : error);
     return NextResponse.json(

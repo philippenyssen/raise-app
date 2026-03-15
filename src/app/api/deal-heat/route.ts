@@ -3,6 +3,7 @@ import { getAllInvestors, getMeetings, getAllPortfolios, getIntelligenceBriefs, 
 import { computeInvestorScore, computeDealHeat } from '@/lib/scoring';
 
 export async function GET() {
+  const t0 = Date.now();
   try {
   const [investors, raiseConfig, raiseForecastData, velocityAll, fomoAll, reversalAll] = await Promise.all([
     getAllInvestors(),
@@ -133,7 +134,7 @@ export async function GET() {
     frozen: results.filter(r => r.dealHeat.label === 'frozen').length,
     total: results.length,};
 
-  return NextResponse.json({ investors: results, counts, generated_at: new Date().toISOString() }, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
+  return NextResponse.json({ investors: results, counts, generated_at: new Date().toISOString() }, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60', 'Server-Timing': `total;dur=${Date.now() - t0}` } });
   } catch (err) {
     console.error('[DEAL_HEAT_GET]', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: 'Failed to compute deal heat' }, { status: 500 });
