@@ -650,6 +650,7 @@ function RecommendationRow({ rec, isLast }: { rec: StrategicRecommendation; isLa
 
   return (
     <div
+      className="transition-colors"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{

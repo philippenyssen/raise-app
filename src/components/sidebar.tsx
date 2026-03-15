@@ -326,7 +326,7 @@ export function Sidebar() {
                                 background: 'rgba(255,255,255,0.15)',
                                 color: SB.textActive,
                                 fontSize: '10px',
-                                fontWeight: 500,
+                                fontWeight: 400,
                                 padding: '0 5px',
                                 lineHeight: 1,
                               }}
@@ -344,7 +344,7 @@ export function Sidebar() {
                                 background: 'rgba(255,255,255,0.15)',
                                 color: SB.textActive,
                                 fontSize: '10px',
-                                fontWeight: 500,
+                                fontWeight: 400,
                                 padding: '0 5px',
                                 lineHeight: 1,
                               }}

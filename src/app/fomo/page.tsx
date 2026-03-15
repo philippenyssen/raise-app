@@ -289,6 +289,7 @@ function PressureCard({ inv }: { inv: InvestorFomo }) {
 
   return (
     <div
+      className="transition-colors"
       style={{
         padding: 'var(--space-4)',
         background: hovered ? 'var(--surface-2)' : 'var(--surface-1)',
@@ -460,6 +461,7 @@ function TriggerEventCard({ event }: { event: TriggerEvent }) {
 
   return (
     <div
+      className="transition-colors"
       style={{
         padding: 'var(--space-3)',
         background: hovered ? 'var(--surface-2)' : 'var(--surface-1)',
@@ -506,6 +508,7 @@ function StrategyCardComponent({ card }: { card: StrategyCard }) {
 
   return (
     <div
+      className="transition-colors"
       style={{
         padding: 'var(--space-4)',
         background: hovered ? 'var(--surface-2)' : 'var(--surface-1)',

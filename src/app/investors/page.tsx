@@ -373,7 +373,7 @@ export default function InvestorsPage() {
               return (
                 <tr
                   key={inv.id}
-                  className="table-row"
+                  className="table-row transition-colors"
                   style={{
                     background: isSelected
                       ? 'var(--accent-muted)'
@@ -395,6 +395,7 @@ export default function InvestorsPage() {
                   <td style={{ padding: 'var(--space-3) var(--space-4)', fontWeight: 400, color: 'var(--text-primary)' }}>
                     <Link
                       href={`/investors/${inv.id}`}
+                      className="transition-colors"
                       style={{ color: 'inherit', textDecoration: 'none', transition: 'color 150ms' }}
                       onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
                       onMouseLeave={e => (e.currentTarget.style.color = 'inherit')}

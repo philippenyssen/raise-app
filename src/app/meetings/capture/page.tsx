@@ -343,7 +343,7 @@ function QuickCaptureInner() {
             {investorId && (
               <Link
                 href={`/investors/${investorId}`}
-                className="btn btn-md"
+                className="btn btn-md transition-colors"
                 style={{
                   background: viewMeetingHovered ? 'var(--accent-hover)' : 'var(--accent)',
                   color: 'var(--text-primary)',
@@ -359,7 +359,7 @@ function QuickCaptureInner() {
             )}
             <button
               onClick={handleReset}
-              className="btn btn-md"
+              className="btn btn-md transition-colors"
               style={{
                 background: newCaptureHovered ? 'var(--surface-3)' : 'var(--surface-2)',
                 color: 'var(--text-primary)',
@@ -580,7 +580,7 @@ function QuickCaptureInner() {
         <button
           type="submit"
           disabled={loading || !investorId || !rawNotes.trim()}
-          className="btn btn-lg"
+          className="btn btn-lg transition-colors"
           style={{
             background: loading ? 'var(--surface-3)' : submitHovered ? 'var(--accent-hover)' : 'var(--accent)',
             color: loading ? 'var(--text-tertiary)' : 'white',

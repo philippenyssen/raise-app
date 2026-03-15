@@ -230,7 +230,7 @@ export default function DocumentEditorPage() {
           </button>
           <button
             onClick={loadVersions}
-            className="p-2 rounded-lg"
+            className="p-2 rounded-lg transition-colors"
             title="Version history"
             style={{
               background: historyHovered ? 'var(--surface-3)' : 'var(--surface-2)',
@@ -344,7 +344,7 @@ export default function DocumentEditorPage() {
                   </pre>
                   <button
                     onClick={applyAIResult}
-                    className="w-full px-3 py-1.5 rounded-lg text-xs font-normal"
+                    className="w-full px-3 py-1.5 rounded-lg text-xs font-normal transition-colors"
                     style={{
                       background: applyHovered ? 'var(--success-muted)' : 'var(--success-muted)',
                       color: 'var(--text-secondary)',
@@ -443,7 +443,7 @@ function VersionRow({ version: v, onRestore }: { version: Version; onRestore: (v
   const [restoreHovered, setRestoreHovered] = useState(false);
   return (
     <div
-      className="flex items-center justify-between p-3 rounded-lg"
+      className="flex items-center justify-between p-3 rounded-lg transition-colors"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >

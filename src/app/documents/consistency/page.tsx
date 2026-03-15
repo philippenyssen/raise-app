@@ -109,7 +109,7 @@ export default function ConsistencyPage() {
           <p className="font-normal" style={{ color: 'var(--text-primary)' }}>{error}</p>
           <button
             onClick={fetchConsistency}
-            className="mt-3 text-sm underline"
+            className="mt-3 text-sm underline transition-colors"
             style={{ color: retryHovered ? 'var(--text-secondary)' : 'var(--text-tertiary)' }}
             onMouseEnter={() => setRetryHovered(true)}
             onMouseLeave={() => setRetryHovered(false)}

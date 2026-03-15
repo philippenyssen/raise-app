@@ -69,7 +69,7 @@ export function ConfirmModal({
             </div>
           )}
           <div className="flex-1 min-w-0">
-            <h3 style={{ fontWeight: 500, color: 'var(--text-primary)', fontSize: 'var(--font-size-base)' }}>{title}</h3>
+            <h3 style={{ fontWeight: 400, color: 'var(--text-primary)', fontSize: 'var(--font-size-base)' }}>{title}</h3>
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)', marginTop: 'var(--space-1)' }}>{message}</p>
           </div>
           <button
@@ -154,7 +154,7 @@ export function InputModal({
         }}
         onClick={e => e.stopPropagation()}
       >
-        <h3 style={{ fontWeight: 500, color: 'var(--text-primary)', marginBottom: 'var(--space-3)' }}>{title}</h3>
+        <h3 style={{ fontWeight: 400, color: 'var(--text-primary)', marginBottom: 'var(--space-3)' }}>{title}</h3>
         <input
           ref={inputRef}
           defaultValue=""

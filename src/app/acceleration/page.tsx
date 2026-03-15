@@ -220,6 +220,7 @@ function ActionCard({
 
   return (
     <div
+      className="transition-colors"
       style={cardStyle}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}

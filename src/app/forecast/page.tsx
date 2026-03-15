@@ -894,6 +894,7 @@ export default function ForecastPage() {
                   <Link
                     key={inv.investorId}
                     href={`/investors/${inv.investorId}`}
+                    className="transition-colors"
                     style={{
                       display: 'flex',
                       alignItems: 'center',

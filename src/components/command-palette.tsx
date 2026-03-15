@@ -232,7 +232,7 @@ export default function CommandPalette() {
       <div
         style={{
           fontSize: '10px',
-          fontWeight: 600,
+          fontWeight: 400,
           letterSpacing: '0.08em',
           color: 'var(--text-muted)',
           padding: '8px 16px 4px',

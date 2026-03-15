@@ -15,7 +15,7 @@ export default function NotFound() {
         textAlign: "center",
       }}
     >
-      <span style={{ fontSize: "var(--font-size-3xl)", fontWeight: 700, letterSpacing: "-0.02em" }}>
+      <span style={{ fontSize: "var(--font-size-3xl)", fontWeight: 300, letterSpacing: "-0.02em", fontFamily: "var(--font-cormorant)" }}>
         404
       </span>
       <p style={{ color: "var(--text-secondary)", fontSize: "var(--font-size-md)", marginTop: "var(--space-2)" }}>
@@ -27,10 +27,10 @@ export default function NotFound() {
           style={{
             padding: "var(--space-2) var(--space-4)",
             background: "var(--accent)",
-            color: "white",
+            color: "var(--surface-0)",
             borderRadius: "var(--radius-md)",
             fontSize: "var(--font-size-sm)",
-            fontWeight: 500,
+            fontWeight: 400,
             textDecoration: "none",
           }}
         >
@@ -45,7 +45,7 @@ export default function NotFound() {
             border: "1px solid var(--border-default)",
             borderRadius: "var(--radius-md)",
             fontSize: "var(--font-size-sm)",
-            fontWeight: 500,
+            fontWeight: 400,
             textDecoration: "none",
           }}
         >

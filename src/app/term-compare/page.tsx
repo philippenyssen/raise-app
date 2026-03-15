@@ -279,7 +279,7 @@ export default function TermComparePage() {
         <div className="flex items-center gap-4">
           <Link
             href="/terms"
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs transition-colors"
             style={{
               background: backHover ? 'var(--surface-3)' : 'var(--surface-2)',
               color: 'var(--text-secondary)',
@@ -313,7 +313,7 @@ export default function TermComparePage() {
                 onClick={addScenario}
                 onMouseEnter={() => setAddHover(true)}
                 onMouseLeave={() => setAddHover(false)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-normal"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-normal transition-colors"
                 style={{
                   background: addHover ? 'var(--surface-3)' : 'var(--surface-2)',
                   color: 'var(--text-secondary)',

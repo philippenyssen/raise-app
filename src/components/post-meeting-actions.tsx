@@ -351,7 +351,7 @@ export default function PostMeetingActions({
                             {flag.document_id && (
                               <Link
                                 href={`/documents/${flag.document_id}`}
-                                className="underline"
+                                className="underline transition-colors"
                                 style={{ color: 'var(--accent)' }}
                                 onMouseEnter={(e) => { (e.target as HTMLElement).style.opacity = '0.8'; }}
                                 onMouseLeave={(e) => { (e.target as HTMLElement).style.opacity = '1'; }}

@@ -377,7 +377,7 @@ export default function WorkspacePage() {
               href="/documents/new"
               onMouseEnter={() => setNewDocHover(true)}
               onMouseLeave={() => setNewDocHover(false)}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 transition-colors"
               style={{
                 padding: 'var(--space-2) var(--space-3)',
                 borderRadius: 'var(--radius-md)',

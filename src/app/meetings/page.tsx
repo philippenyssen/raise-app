@@ -576,6 +576,7 @@ export default function MeetingsPage() {
                     <div className="flex items-center gap-2">
                       <Link
                         href={`/investors/${m.investor_id}`}
+                        className="transition-colors"
                         style={{ fontWeight: 400, color: 'var(--text-primary)', transition: 'color 150ms ease' }}
                         onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
                         onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}

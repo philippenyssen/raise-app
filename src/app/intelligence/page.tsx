@@ -297,7 +297,7 @@ export default function IntelligencePage() {
                   {deals.map(d => (
                     <tr
                       key={d.id}
-                      className="table-row"
+                      className="table-row transition-colors"
                       style={{
                         background: hoveredDealRow === d.id ? 'var(--surface-1)' : 'transparent',
                       }}
@@ -385,7 +385,7 @@ export default function IntelligencePage() {
                 return (
                   <div
                     key={c.id}
-                    className="card"
+                    className="card transition-colors"
                     style={{
                       borderColor: hoveredCompCard === c.id ? 'var(--border-strong)' : undefined,
                       transition: 'border-color 150ms ease',
