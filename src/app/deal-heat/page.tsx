@@ -6,6 +6,7 @@ import { Flame, Filter, TrendingUp, Thermometer } from 'lucide-react';
 import { STATUS_LABELS, TYPE_LABELS } from '@/lib/constants';
 import { DealHeatInvestor } from '@/lib/types';
 import { fmtDateShort } from '@/lib/format';
+import { labelMuted, stTextMuted } from '@/lib/styles';
 
 interface DealHeatData {
   investors: DealHeatInvestor[];
@@ -85,8 +86,7 @@ export default function DealHeatPage() {
           </p>
           <button
             onClick={fetchDealHeat}
-            className="btn btn-secondary btn-sm inline-flex items-center gap-2"
-          >
+            className="btn btn-secondary btn-sm inline-flex items-center gap-2">
             Retry
           </button>
         </div>
@@ -119,13 +119,8 @@ export default function DealHeatPage() {
         </div>
         <div
           className="flex items-center gap-2"
-          style={{
-            padding: 'var(--space-2) var(--space-3)',
-            background: 'var(--surface-1)',
-            borderRadius: 'var(--radius-md)',
-          }}
-        >
-          <span style={{ color: 'var(--text-muted)' }}>
+          style={{ padding: 'var(--space-2) var(--space-3)', background: 'var(--surface-1)', borderRadius: 'var(--radius-md)' }}>
+          <span style={stTextMuted}>
             <Thermometer className="w-4 h-4" />
           </span>
           <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
@@ -156,12 +151,10 @@ export default function DealHeatPage() {
                 cursor: 'pointer',
                 boxShadow: cfg.glow,
                 transition: 'transform 150ms ease',
-                transform: hoveredFilter === level ? 'translateY(-2px)' : 'none',
-              }}
+                transform: hoveredFilter === level ? 'translateY(-2px)' : 'none', }}
               onClick={() => setFilter(filter === level ? 'all' : level)}
               onMouseEnter={() => setHoveredFilter(level)}
-              onMouseLeave={() => setHoveredFilter(null)}
-            >
+              onMouseLeave={() => setHoveredFilter(null)}>
               <div style={{ fontSize: 'var(--font-size-xs)', color: cfg.text, fontWeight: 400, letterSpacing: '0.01em' }}>
                 {cfg.label}
               </div>
@@ -178,7 +171,7 @@ export default function DealHeatPage() {
 
       {/* Filter Bar */}
       <div className="flex items-center gap-2 flex-wrap" style={{ marginBottom: 'var(--space-5)' }}>
-        <span style={{ color: 'var(--text-muted)' }}>
+        <span style={stTextMuted}>
           <Filter className="w-4 h-4" />
         </span>
         {filterButtons.map(fb => {
@@ -197,14 +190,10 @@ export default function DealHeatPage() {
                 background: active ? (cfg ? cfg.bg : 'var(--surface-2)') : 'transparent',
                 color: active ? (cfg ? cfg.text : 'var(--text-primary)') : 'var(--text-tertiary)',
                 cursor: 'pointer',
-                transition: 'all 150ms ease',
-              }}
-            >
+                transition: 'all 150ms ease', }}
+>
               {fb.label}
-              <span style={{
-                fontSize: 'var(--font-size-xs)',
-                opacity: 0.7,
-              }}>
+              <span style={{ fontSize: 'var(--font-size-xs)', opacity: 0 }}>
                 {fb.count}
               </span>
             </button>
@@ -230,8 +219,7 @@ export default function DealHeatPage() {
                 key={inv.id}
                 href={`/investors/${inv.id}`}
                 className="block"
-                style={{ textDecoration: 'none' }}
-              >
+                style={{ textDecoration: 'none' }}>
                 <div
                   className="card transition-colors"
                   style={{
@@ -243,11 +231,9 @@ export default function DealHeatPage() {
                     transform: isHovered ? 'translateY(-3px)' : 'none',
                     cursor: 'pointer',
                     position: 'relative',
-                    overflow: 'hidden',
-                  }}
+                    overflow: 'hidden', }}
                   onMouseEnter={() => setHoveredCard(inv.id)}
-                  onMouseLeave={() => setHoveredCard(null)}
-                >
+                  onMouseLeave={() => setHoveredCard(null)}>
                   {/* Heat bar at top */}
                   <div style={{
                     position: 'absolute',
@@ -283,10 +269,7 @@ export default function DealHeatPage() {
                         }}>
                           {TYPE_LABELS[inv.type] || inv.type}
                         </span>
-                        <span style={{
-                          fontSize: '10px',
-                          color: 'var(--text-muted)',
-                        }}>
+                        <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
                           T{inv.tier}
                         </span>
                       </div>
@@ -326,10 +309,7 @@ export default function DealHeatPage() {
                     }}>
                       {cfg.label}
                     </span>
-                    <span style={{
-                      fontSize: 'var(--font-size-xs)',
-                      color: 'var(--text-muted)',
-                    }}>
+                    <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
                       {STATUS_LABELS[inv.status] || inv.status}
                     </span>
                   </div>
@@ -350,12 +330,12 @@ export default function DealHeatPage() {
 
                   {/* Footer: enthusiasm + last meeting */}
                   <div className="flex items-center justify-between" style={{ marginTop: 'var(--space-3)', paddingTop: 'var(--space-2)', borderTop: '1px solid var(--border-subtle)' }}>
-                    <div className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                    <div className="flex items-center gap-1" style={labelMuted}>
                       <TrendingUp className="w-3 h-3" />
                       <span>{inv.enthusiasm}/5</span>
                     </div>
                     {inv.lastMeeting && (
-                      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                      <div style={labelMuted}>
                         {fmtDateShort(inv.lastMeeting)}
                       </div>
                     )}

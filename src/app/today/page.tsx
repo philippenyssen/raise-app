@@ -10,7 +10,7 @@ import {
   TrendingDown, Minus, Users, Shield, Target,
   CheckCircle, Sparkles, ArrowUpRight,
 } from 'lucide-react';
-import { stTextMuted, stTextTertiary, stTextSecondary, stFontXs, stFontSm, labelMuted, labelTertiary, labelSecondary } from '@/lib/styles';
+import { labelMuted, labelSecondary, labelTertiary, stAccent, stFontSm, stFontXs, stTextMuted, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 // ---------------------------------------------------------------------------
 // Types — match the updated /api/briefing response
@@ -141,11 +141,9 @@ function MeetingCard({ meeting }: { meeting: BriefingMeeting }) {
       style={{
         padding: 'var(--space-4)',
         borderColor: hovered ? 'var(--border-default)' : 'var(--border-subtle)',
-        transition: 'all 150ms ease',
-      }}
+        transition: 'all 150ms ease', }}
       onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
+      onMouseLeave={() => setHovered(false)}>
       <div className="flex items-start gap-3">
         <div className="flex items-center justify-center shrink-0" style={{ width: '40px', height: '40px', borderRadius: 'var(--radius-md)', background: 'var(--accent-muted)' }}>
           <span style={{ color: 'var(--accent)', fontSize: 'var(--font-size-xs)', fontWeight: 300, textAlign: 'center', lineHeight: 1.1 }}>
@@ -167,8 +165,7 @@ function MeetingCard({ meeting }: { meeting: BriefingMeeting }) {
                   fontSize: '10px',
                   fontWeight: 400,
                   color: (meeting.enthusiasm ?? 0) >= 4 ? 'var(--success)' : (meeting.enthusiasm ?? 0) >= 3 ? 'var(--text-secondary)' : 'var(--danger)',
-                }}
-              >
+                }}>
                 {[1, 2, 3, 4, 5].map(n => (
                   <span
                     key={n}
@@ -177,8 +174,7 @@ function MeetingCard({ meeting }: { meeting: BriefingMeeting }) {
                       background: n <= (meeting.enthusiasm ?? 0)
                         ? (meeting.enthusiasm ?? 0) >= 4 ? 'var(--success)' : (meeting.enthusiasm ?? 0) >= 3 ? 'var(--accent)' : 'var(--text-muted)'
                         : 'var(--border-default)',
-                    }}
-                  />
+                    }} />
                 ))}
               </span>
             )}
@@ -190,15 +186,13 @@ function MeetingCard({ meeting }: { meeting: BriefingMeeting }) {
         <div className="flex gap-1.5 shrink-0">
           <Link
             href={meeting.prepLink}
-            className="btn btn-secondary btn-sm"
-          >
+            className="btn btn-secondary btn-sm">
             Prep
           </Link>
           <Link
             href={meeting.captureLink || '/meetings/capture'}
             className="btn btn-ghost btn-sm"
-            style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}
-          >
+            style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>
             Capture
           </Link>
         </div>
@@ -219,11 +213,9 @@ function ActionCard({ action }: { action: UrgentAction }) {
       style={{
         padding: 'var(--space-4)',
         borderColor: hovered ? 'var(--border-default)' : 'var(--border-subtle)',
-        transition: 'all 150ms ease',
-      }}
+        transition: 'all 150ms ease', }}
       onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
+      onMouseLeave={() => setHovered(false)}>
       <div className="flex items-start gap-3">
         <div className="flex items-center justify-center shrink-0" style={{ width: '32px', height: '32px', borderRadius: 'var(--radius-md)', background: iconBg }}>
           <span style={{ color: iconColor, display: 'flex' }}>
@@ -251,8 +243,7 @@ function ActionCard({ action }: { action: UrgentAction }) {
 
         <Link
           href={action.link}
-          className="btn btn-primary btn-sm shrink-0"
-        >
+          className="btn btn-primary btn-sm shrink-0">
           {action.category === 'followup' && action.investorName
             ? `Write to ${action.investorName.split(' ')[0] || 'them'}`
             : action.category === 'outreach'
@@ -303,9 +294,8 @@ function AlertCard({ alert }: { alert: BriefingAlert }) {
         background: style.bg,
         border: `1px solid ${style.border}`,
         borderRadius: 'var(--radius-lg)',
-        padding: 'var(--space-3) var(--space-4)',
-      }}
-    >
+        padding: 'var(--space-3) var(--space-4)', }}
+>
       <div className="flex items-start gap-3">
         <span className="shrink-0 mt-0.5" style={{ color: style.color, display: 'flex' }}>
           <Icon className="w-4 h-4" />
@@ -325,11 +315,9 @@ function AlertCard({ alert }: { alert: BriefingAlert }) {
             padding: '3px 8px',
             borderRadius: 'var(--radius-sm)',
             background: 'var(--fg-3)',
-            whiteSpace: 'nowrap',
-          }}
+            whiteSpace: 'nowrap', }}
           onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--fg-6)'; }}
-          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--fg-3)'; }}
-        >
+          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--fg-3)'; }}>
           {alertAction}
           <span style={{ display: 'flex' }}><ChevronRight className="w-3 h-3" /></span>
         </Link>
@@ -506,7 +494,8 @@ export default function TodayPage() {
         <div>
           <div className="skeleton" style={{ height: '12px', width: '140px', marginBottom: 'var(--space-3)' }} />
           {[...Array(3)].map((_, i) => (
-            <div key={i} className="skeleton" style={{ height: '80px', borderRadius: 'var(--radius-lg)', marginBottom: 'var(--space-2)' }} />
+            <div key={i} className="skeleton" style={{ height: '80px', borderRadius: 'var(--radius-lg)', marginBottom: 'var(--space-2)' }}
+              />
           ))}
         </div>
         <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: 'var(--space-3)' }}>
@@ -556,7 +545,8 @@ export default function TodayPage() {
     <div className="page-content" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)', maxWidth: '860px', position: 'relative' }}>
 
       {refreshing && (
-        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'var(--accent)', borderRadius: '1px', animation: 'pulse 1.5s ease-in-out infinite', zIndex: 10 }} />
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'var(--accent)', borderRadius: '1px', animation: 'pulse 1.5s ease-in-out infinite', zIndex: 10 }}
+          />
       )}
 
       <div className="flex items-start justify-between">
@@ -582,8 +572,7 @@ export default function TodayPage() {
           onClick={() => fetchBriefing(true)}
           className="btn btn-ghost btn-sm shrink-0"
           style={{ opacity: refreshing ? 0.5 : 1 }}
-          disabled={refreshing}
-        >
+          disabled={refreshing}>
           <span style={{ display: 'flex', animation: refreshing ? 'spin 1s linear infinite' : 'none' }}>
             <RefreshCw className="w-3.5 h-3.5" />
           </span>
@@ -601,7 +590,8 @@ export default function TodayPage() {
             <span style={labelMuted}>of {raiseProgress.targetDays}</span>
           </div>
           <div style={{ flex: 1, height: '6px', background: 'var(--surface-3)', borderRadius: '3px', overflow: 'hidden' }}>
-            <div style={{ width: `${raiseProgress.pct}%`, height: '100%', borderRadius: '3px', background: raiseProgress.isOver ? 'var(--danger)' : raiseProgress.pct >= 75 ? 'var(--warning)' : 'var(--accent)', transition: 'width 600ms ease' }} />
+            <div style={{ width: `${raiseProgress.pct}%`, height: '100%', borderRadius: '3px', background: raiseProgress.isOver ? 'var(--danger)' : raiseProgress.pct >= 75 ? 'var(--warning)' : 'var(--accent)', transition: 'width 600ms ease' }}
+              />
           </div>
           <span style={{ ...stFontXs, fontWeight: 400, fontVariantNumeric: 'tabular-nums', color: raiseProgress.isOver ? 'var(--danger)' : raiseProgress.daysRemaining <= 14 ? 'var(--warning)' : 'var(--text-tertiary)', whiteSpace: 'nowrap' }}>{raiseProgress.isOver ? `+${raiseProgress.daysElapsed - raiseProgress.targetDays}d over` : `${raiseProgress.daysRemaining}d left`}</span>
         </div>
@@ -618,29 +608,28 @@ export default function TodayPage() {
           </div>
           <div className="flex items-center gap-4 flex-wrap" style={{ padding: 'var(--space-3) var(--space-4)' }}>
             {overnight.statusChanges.map((sc, i) => (
-              <div key={i} className="flex items-center gap-1.5" style={{ fontSize: 'var(--font-size-xs)' }}>
-                <ArrowUpRight className="w-3 h-3" style={{ color: 'var(--text-secondary)' }} />
+              <div key={i} className="flex items-center gap-1.5" style={stFontXs}>
+                <ArrowUpRight className="w-3 h-3" style={stTextSecondary} />
                 <Link
                   href={`/investors/${sc.investorId}`}
                   className="transition-colors"
                   style={{ color: 'var(--accent)', fontWeight: 400, textDecoration: 'none' }}
                   onMouseEnter={e => { (e.currentTarget as HTMLElement).style.textDecoration = 'underline'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.textDecoration = 'none'; }}
-                >
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.textDecoration = 'none'; }}>
                   {sc.investorName}
                 </Link>
                 <span style={stTextMuted}>{sc.from.replace(/_/g, ' ')} → {sc.to.replace(/_/g, ' ')}</span>
               </div>
             ))}
             {overnight.newMeetings > 0 && (
-              <div className="flex items-center gap-1.5" style={{ fontSize: 'var(--font-size-xs)' }}>
-                <Calendar className="w-3 h-3" style={{ color: 'var(--accent)' }} />
+              <div className="flex items-center gap-1.5" style={stFontXs}>
+                <Calendar className="w-3 h-3" style={stAccent} />
                 <span style={stTextSecondary}>{overnight.newMeetings} new meeting{overnight.newMeetings > 1 ? 's' : ''}</span>
               </div>
             )}
             {overnight.tasksCompleted > 0 && (
-              <div className="flex items-center gap-1.5" style={{ fontSize: 'var(--font-size-xs)' }}>
-                <CheckCircle className="w-3 h-3" style={{ color: 'var(--text-secondary)' }} />
+              <div className="flex items-center gap-1.5" style={stFontXs}>
+                <CheckCircle className="w-3 h-3" style={stTextSecondary} />
                 <span style={stTextSecondary}>{overnight.tasksCompleted} task{overnight.tasksCompleted > 1 ? 's' : ''} completed</span>
               </div>
             )}
@@ -754,16 +743,14 @@ export default function TodayPage() {
                         onClick={() => handleQuickComplete(fu.id)}
                         disabled={isProcessing}
                         className="btn btn-sm"
-                        style={{ background: 'var(--success-muted)', color: 'var(--text-secondary)', border: '1px solid var(--accent-8)', fontSize: '11px', padding: '3px 10px' }}
-                      >
+                        style={{ background: 'var(--success-muted)', color: 'var(--text-secondary)', border: '1px solid var(--accent-8)', fontSize: '11px', padding: '3px 10px' }}>
                         Done
                       </button>
                       <button
                         onClick={() => handleQuickSkip(fu.id)}
                         disabled={isProcessing}
                         className="btn btn-sm"
-                        style={{ background: 'var(--surface-2)', color: 'var(--text-muted)', fontSize: '11px', padding: '3px 8px' }}
-                      >
+                        style={{ background: 'var(--surface-2)', color: 'var(--text-muted)', fontSize: '11px', padding: '3px 8px' }}>
                         Skip
                       </button>
                     </div>
@@ -787,8 +774,7 @@ export default function TodayPage() {
             className="card transition-colors"
             style={{ padding: 'var(--space-4)', textDecoration: 'none' }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-subtle)'; }}
-          >
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-subtle)'; }}>
             <div className="metric-label">Active</div>
             <div className="metric-value" style={{ fontSize: 'var(--font-size-xl)', marginTop: '4px', color: 'var(--text-primary)' }}>
               {data.pipelineSnapshot.totalActive}
@@ -800,8 +786,7 @@ export default function TodayPage() {
             className="card transition-colors"
             style={{ padding: 'var(--space-4)', textDecoration: 'none' }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-subtle)'; }}
-          >
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-subtle)'; }}>
             <div className="metric-label">In DD</div>
             <div className="metric-value" style={{ fontSize: 'var(--font-size-xl)', marginTop: '4px', color: data.pipelineSnapshot.inDD > 0 ? 'var(--warning)' : 'var(--text-muted)' }}>
               {data.pipelineSnapshot.inDD}
@@ -813,8 +798,7 @@ export default function TodayPage() {
             className="card transition-colors"
             style={{ padding: 'var(--space-4)', textDecoration: 'none' }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-subtle)'; }}
-          >
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-subtle)'; }}>
             <div className="metric-label">Term Sheets</div>
             <div className="metric-value" style={{ fontSize: 'var(--font-size-xl)', marginTop: '4px', color: data.pipelineSnapshot.termSheets > 0 ? 'var(--success)' : 'var(--text-muted)' }}>
               {data.pipelineSnapshot.termSheets}
@@ -869,10 +853,9 @@ export default function TodayPage() {
           <Link
             href="/dealflow"
             className="btn btn-ghost btn-sm shrink-0 transition-colors"
-            style={{ color: 'var(--text-tertiary)' }}
+            style={stTextTertiary}
             onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-primary)')}
-            onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-tertiary)')}
-          >
+            onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-tertiary)')}>
             {data.momentum === 'stalled' ? 'Diagnose' : data.momentum === 'decelerating' ? 'Investigate' : 'View dealflow'}
             <span style={{ display: 'flex' }}><ChevronRight className="w-3.5 h-3.5" /></span>
           </Link>
@@ -904,10 +887,9 @@ export default function TodayPage() {
             <Link
               href="/intelligence"
               className="btn btn-ghost btn-sm shrink-0 transition-colors"
-              style={{ color: 'var(--text-secondary)' }}
+              style={stTextSecondary}
               onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
-              onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
-            >
+              onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-secondary)')}>
               See more
               <span style={{ display: 'flex' }}><ChevronRight className="w-3.5 h-3.5" /></span>
             </Link>

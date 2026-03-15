@@ -12,6 +12,7 @@ import type { Investor } from '@/lib/types';
 import PostMeetingActions from '@/components/post-meeting-actions';
 import FollowupPlan from '@/components/followup-plan';
 import { useToast } from '@/components/toast';
+import { labelMuted, stAccent, stFontSm, stTextSecondary } from '@/lib/styles';
 
 const ENTHUSIASM_LABELS = ['Cold', 'Lukewarm', 'Interested', 'Excited', 'All-in'];
 
@@ -160,7 +161,7 @@ function QuickCaptureInner() {
             width: '40px', height: '40px', borderRadius: '50%',
             background: 'var(--success-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
-            <span style={{ color: 'var(--text-secondary)' }}><CheckCircle2 className="w-5 h-5" /></span>
+            <span style={stTextSecondary}><CheckCircle2 className="w-5 h-5" /></span>
           </div>
           <div>
             <h1 className="page-title" style={{ fontSize: 'var(--font-size-xl)' }}>Captured & Processed</h1>
@@ -204,7 +205,7 @@ function QuickCaptureInner() {
             </div>
             <div className="card">
               <p className="section-title" style={{ marginBottom: 'var(--space-2)' }}>Suggested Status</p>
-              <span className="badge badge-blue" style={{ fontSize: 'var(--font-size-sm)' }}>
+              <span className="badge badge-blue" style={stFontSm}>
                 {String(result.status_after || 'met').replace(/_/g, ' ')}
               </span>
             </div>
@@ -330,8 +331,7 @@ function QuickCaptureInner() {
           {postMeetingActions && (
             <PostMeetingActions
               data={postMeetingActions}
-              meetingId={result.id as string}
-            />
+              meetingId={result.id as string} />
           )}
 
           {/* Follow-up Plan */}
@@ -341,16 +341,14 @@ function QuickCaptureInner() {
                 id: string; meeting_id: string; investor_id: string; investor_name: string;
                 action_type: string; description: string; due_at: string; status: string;
                 outcome: string; conviction_delta: number; created_at: string; completed_at: string | null;
-              }[]}
-            />
+              }[]} />
           )}
 
           {investorId && (
             <Link
               href={`/followups?investor=${investorId}`}
               className="btn btn-secondary btn-md"
-              style={{ textDecoration: 'none', width: 'fit-content' }}
-            >
+              style={{ textDecoration: 'none', width: 'fit-content' }}>
               view all follow-ups
             </Link>
           )}
@@ -366,11 +364,9 @@ function QuickCaptureInner() {
                   color: 'var(--text-primary)',
                   border: '1px solid transparent',
                   textDecoration: 'none',
-                  gap: 'var(--space-2)',
-                }}
+                  gap: 'var(--space-2)', }}
                 onMouseEnter={() => setViewMeetingHovered(true)}
-                onMouseLeave={() => setViewMeetingHovered(false)}
-              >
+                onMouseLeave={() => setViewMeetingHovered(false)}>
                 <ExternalLink className="w-3.5 h-3.5" /> View {selectedInvestor?.name || 'Investor'}
               </Link>
             )}
@@ -379,11 +375,9 @@ function QuickCaptureInner() {
               className="btn btn-md transition-colors"
               style={{
                 background: newCaptureHovered ? 'var(--surface-3)' : 'var(--surface-2)',
-                color: 'var(--text-primary)',
-              }}
+                color: 'var(--text-primary)', }}
               onMouseEnter={() => setNewCaptureHovered(true)}
-              onMouseLeave={() => setNewCaptureHovered(false)}
-            >
+              onMouseLeave={() => setNewCaptureHovered(false)}>
               Capture Another
             </button>
           </div>
@@ -402,7 +396,7 @@ function QuickCaptureInner() {
             width: '40px', height: '40px', borderRadius: '50%',
             background: 'var(--accent-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
-            <span style={{ color: 'var(--accent)' }}><Timer className="w-5 h-5" /></span>
+            <span style={stAccent}><Timer className="w-5 h-5" /></span>
           </div>
           <div>
             <h1 className="page-title" style={{ fontSize: 'var(--font-size-xl)' }}>Quick Capture</h1>
@@ -420,8 +414,7 @@ function QuickCaptureInner() {
             onChange={e => setInvestorId(e.target.value)}
             required
             className="input"
-            style={{ cursor: 'pointer' }}
-          >
+            style={{ cursor: 'pointer' }}>
             <option value="">Choose investor for this meeting</option>
             {investors.map(inv => (
               <option key={inv.id} value={inv.id}>{inv.name} (T{inv.tier})</option>
@@ -434,15 +427,15 @@ function QuickCaptureInner() {
           <div className="card" style={{ padding: 'var(--space-3) var(--space-4)' }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 'var(--space-2)' }}>
               <div>
-                <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Partner</span>
+                <span style={labelMuted}>Partner</span>
                 <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>{selectedInvestor.partner || '—'}</p>
               </div>
               <div>
-                <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Check Size</span>
+                <span style={labelMuted}>Check Size</span>
                 <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>{selectedInvestor.check_size_range || '—'}</p>
               </div>
               <div>
-                <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Status</span>
+                <span style={labelMuted}>Status</span>
                 <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>{selectedInvestor.status.replace(/_/g, ' ')}</p>
               </div>
             </div>
@@ -467,14 +460,13 @@ function QuickCaptureInner() {
               minHeight: '280px',
               fontFamily: 'var(--font-sans), system-ui, sans-serif',
               letterSpacing: '-0.01em',
-            }}
-          />
+            }} />
           <div style={{
             display: 'flex', justifyContent: 'space-between', alignItems: 'center',
             marginTop: 'var(--space-1)',
             padding: '0 var(--space-1)',
           }}>
-            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+            <span style={labelMuted}>
               Brain dump everything — AI will structure it
             </span>
             <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontVariantNumeric: 'tabular-nums' }}>
@@ -501,9 +493,8 @@ function QuickCaptureInner() {
                   border: enthusiasm === level ? '2px solid var(--accent)' : '2px solid var(--border-default)',
                   background: enthusiasm === level ? 'var(--accent-muted)' : 'var(--surface-1)',
                   color: enthusiasm === level ? 'var(--accent)' : 'var(--text-tertiary)',
-                  transform: enthusiasm === level ? 'scale(1.1)' : 'scale(1)',
-                }}
-              >
+                  transform: enthusiasm === level ? 'scale(1.1)' : 'scale(1)', }}
+>
                 {level}
               </button>
             ))}
@@ -529,11 +520,9 @@ function QuickCaptureInner() {
               background: detailsHovered ? 'var(--surface-3)' : 'transparent',
               color: 'var(--text-tertiary)',
               width: '100%',
-              justifyContent: 'space-between',
-            }}
+              justifyContent: 'space-between', }}
             onMouseEnter={() => setDetailsHovered(true)}
-            onMouseLeave={() => setDetailsHovered(false)}
-          >
+            onMouseLeave={() => setDetailsHovered(false)}>
             <span style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
               <Clock className="w-3.5 h-3.5" />
               Optional details
@@ -558,8 +547,7 @@ function QuickCaptureInner() {
                   value={meetingType}
                   onChange={e => setMeetingType(e.target.value)}
                   className="input"
-                  style={{ cursor: 'pointer' }}
-                >
+                  style={{ cursor: 'pointer' }}>
                   <option value="intro">Intro Call</option>
                   <option value="management_presentation">Management Presentation</option>
                   <option value="deep_dive">Deep Dive</option>
@@ -577,8 +565,7 @@ function QuickCaptureInner() {
                   onChange={e => setDurationMinutes(Number(e.target.value))}
                   min={5}
                   max={480}
-                  className="input"
-                />
+                  className="input" />
               </div>
               <div>
                 <label className="label" style={{ display: 'block' }}>Date & time</label>
@@ -586,8 +573,7 @@ function QuickCaptureInner() {
                   type="datetime-local"
                   value={meetingDate}
                   onChange={e => setMeetingDate(e.target.value)}
-                  className="input"
-                />
+                  className="input" />
               </div>
             </div>
           )}
@@ -607,11 +593,9 @@ function QuickCaptureInner() {
             fontWeight: 400,
             width: '100%',
             opacity: (!investorId || !rawNotes.trim()) && !loading ? 0.5 : 1,
-            cursor: loading || !investorId || !rawNotes.trim() ? 'not-allowed' : 'pointer',
-          }}
+            cursor: loading || !investorId || !rawNotes.trim() ? 'not-allowed' : 'pointer', }}
           onMouseEnter={() => setSubmitHovered(true)}
-          onMouseLeave={() => setSubmitHovered(false)}
-        >
+          onMouseLeave={() => setSubmitHovered(false)}>
           {loading ? (
             <span style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', justifyContent: 'center' }}>
               <Loader2 className="w-5 h-5" style={{ animation: 'spin 1s linear infinite' }} />

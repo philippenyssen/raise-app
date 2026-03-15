@@ -7,7 +7,7 @@ import {
   Minus, RefreshCw, AlertTriangle, ArrowRight, Clock,
   BarChart3, MessageCircleWarning, Zap, CheckCircle2, ExternalLink,
 } from 'lucide-react';
-import { gaugeColor, gaugeColor as gaugeBarColor, deltaColor, stTextMuted, stTextTertiary, stTextSecondary, stFontXs, stFontSm, labelMuted } from '@/lib/styles';
+import { deltaColor, gaugeColor, gaugeColor as gaugeBarColor, labelMuted, labelMuted10, labelSecondary, stAccent, stFontSm, stFontXs, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -175,15 +175,14 @@ export default function StrategicPage() {
       <div className="space-y-8">
         <h1 className="page-title">Strategic Dashboard</h1>
         <div style={{ background: 'var(--accent-8)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-8)' }} className="text-center space-y-3">
-          <AlertTriangle className="w-8 h-8 mx-auto" style={{ color: 'var(--text-primary)' }} />
-          <p style={{ color: 'var(--text-tertiary)' }}>{error || 'Could not load strategic data.'}</p>
+          <AlertTriangle className="w-8 h-8 mx-auto" style={stTextPrimary} />
+          <p style={stTextTertiary}>{error || 'Could not load strategic data.'}</p>
           <button
             onClick={() => fetchData()}
             onMouseEnter={() => setRetryHover(true)}
             onMouseLeave={() => setRetryHover(false)}
             className="btn btn-sm btn-secondary transition-colors"
-            style={retryHover ? { background: 'var(--surface-3)' } : {}}
-          >
+            style={retryHover ? { background: 'var(--surface-3)' } : {}}>
             Retry
           </button>
         </div>
@@ -203,7 +202,7 @@ export default function StrategicPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="page-title">Strategic Dashboard</h1>
-          <p className="page-subtitle" style={{ fontSize: 'var(--font-size-sm)' }}>Consolidated intelligence assessment</p>
+          <p className="page-subtitle" style={stFontSm}>Consolidated intelligence assessment</p>
         </div>
         <button
           onClick={() => fetchData(true)}
@@ -211,8 +210,7 @@ export default function StrategicPage() {
           onMouseEnter={() => setRefreshHover(true)}
           onMouseLeave={() => setRefreshHover(false)}
           className="btn btn-sm btn-secondary transition-colors"
-          style={{ opacity: refreshing ? 0.5 : 1, ...(refreshHover && !refreshing ? { background: 'var(--surface-3)' } : {}) }}
-        >
+          style={{ opacity: refreshing ? 0.5 : 1, ...(refreshHover && !refreshing ? { background: 'var(--surface-3)' } : {}) }}>
           <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
           {refreshing ? 'Refreshing...' : 'Refresh'}
         </button>
@@ -223,7 +221,7 @@ export default function StrategicPage() {
       {/* ================================================================ */}
       <div className="card">
         <div className="flex items-center gap-2 mb-3">
-          <Activity className="w-4 h-4" style={{ color: 'var(--accent)' }} />
+          <Activity className="w-4 h-4" style={stAccent} />
           <span className="section-title" style={{ marginBottom: 0 }}>CEO Brief</span>
         </div>
         <p style={{ fontSize: 'var(--font-size-lg)', color: 'var(--text-primary)', lineHeight: 1.6 }}>{data.ceoBrief}</p>
@@ -241,9 +239,7 @@ export default function StrategicPage() {
           description="Pipeline depth, narrative, execution, data room"
           barPct={data.fundraiseReadinessScore}
           barColor={gaugeBarColor(data.fundraiseReadinessScore)}
-          valueColor={gaugeColor(data.fundraiseReadinessScore)}
-        />
-
+          valueColor={gaugeColor(data.fundraiseReadinessScore)} />
         {/* Narrative Health */}
         <GaugeCard
           label="Narrative Health"
@@ -252,9 +248,7 @@ export default function StrategicPage() {
           description="Question convergence, objections, enthusiasm"
           barPct={data.narrativeHealthScore}
           barColor={gaugeBarColor(data.narrativeHealthScore)}
-          valueColor={gaugeColor(data.narrativeHealthScore)}
-        />
-
+          valueColor={gaugeColor(data.narrativeHealthScore)} />
         {/* Pipeline Concentration */}
         <GaugeCard
           label="Pipeline Concentration"
@@ -263,9 +257,7 @@ export default function StrategicPage() {
           description={concentrationPct < 25 ? 'Well diversified' : concentrationPct < 40 ? 'Moderate risk' : 'Too concentrated'}
           barPct={concentrationPct}
           barColor={gaugeBarColor(data.pipelineConcentrationRisk, true)}
-          valueColor={gaugeColor(data.pipelineConcentrationRisk, true)}
-        />
-
+          valueColor={gaugeColor(data.pipelineConcentrationRisk, true)} />
         {/* Raise Velocity */}
         <div className="card-metric flex flex-col">
           <div className="metric-label" style={{ marginBottom: 'var(--space-1)' }}>Raise Velocity</div>
@@ -277,19 +269,18 @@ export default function StrategicPage() {
                 color: trendCfg.color,
                 border: `1px solid ${trendCfg.border}`,
                 fontSize: 'var(--font-size-xs)',
-                fontWeight: 400,
-              }}
-            >
+                fontWeight: 400, }}
+>
               <TrendIcon className="w-3 h-3" />
               {trendCfg.label}
             </span>
           </div>
           <div className="mt-auto space-y-1.5">
-            <div className="flex items-center justify-between" style={{ fontSize: 'var(--font-size-sm)' }}>
+            <div className="flex items-center justify-between" style={stFontSm}>
               <span style={stTextMuted}>Meetings/wk</span>
               <span style={{ color: 'var(--text-primary)', fontWeight: 400, fontVariantNumeric: 'tabular-nums' }}>{data.raiseVelocity.meetingsPerWeek}</span>
             </div>
-            <div className="flex items-center justify-between" style={{ fontSize: 'var(--font-size-sm)' }}>
+            <div className="flex items-center justify-between" style={stFontSm}>
               <span style={stTextMuted}>Advances/wk</span>
               <span style={{ color: 'var(--text-primary)', fontWeight: 400, fontVariantNumeric: 'tabular-nums' }}>{data.raiseVelocity.stageAdvancesPerWeek}</span>
             </div>
@@ -303,7 +294,7 @@ export default function StrategicPage() {
       {data.historicalSnapshots.length >= 2 && (
         <div className="card">
           <div className="flex items-center gap-2 mb-4">
-            <BarChart3 className="w-4 h-4" style={{ color: 'var(--accent)' }} />
+            <BarChart3 className="w-4 h-4" style={stAccent} />
             <span style={{ ...stFontSm, fontWeight: 400, ...stTextTertiary }}>Health Trend</span>
             <span className="ml-auto" style={labelMuted}>{data.historicalSnapshots.length} snapshots</span>
           </div>
@@ -312,20 +303,17 @@ export default function StrategicPage() {
               label="Readiness"
               values={data.historicalSnapshots.map(s => s.readinessScore)}
               dates={data.historicalSnapshots.map(s => s.date)}
-              color="success"
-            />
+              color="success" />
             <SparklineRow
               label="Narrative"
               values={data.historicalSnapshots.map(s => s.narrativeScore)}
               dates={data.historicalSnapshots.map(s => s.date)}
-              color="purple"
-            />
+              color="purple" />
             <SparklineRow
               label="Pipeline"
               values={data.historicalSnapshots.map(s => s.pipelineScore)}
               dates={data.historicalSnapshots.map(s => s.date)}
-              color="accent"
-            />
+              color="accent" />
           </div>
         </div>
       )}
@@ -336,7 +324,7 @@ export default function StrategicPage() {
       {data.temporalTrends && data.temporalTrends.trends.length > 0 && (
         <div className="card">
           <div className="flex items-center gap-2 mb-4">
-            <Activity className="w-4 h-4" style={{ color: 'var(--accent)' }} />
+            <Activity className="w-4 h-4" style={stAccent} />
             <span style={{ ...stFontSm, fontWeight: 400, ...stTextTertiary }}>Temporal Intelligence</span>
             <span className="badge ml-2" style={{ ...directionStyle(data.temporalTrends.overallDirection), border: `1px solid`, fontSize: '10px', fontWeight: 400 }}>{data.temporalTrends.overallDirection}</span>
             <span className="ml-auto" style={labelMuted}>{data.temporalTrends.daysOfData} days of data</span>
@@ -357,17 +345,16 @@ export default function StrategicPage() {
                   background:
                     trend.direction === 'improving' ? 'var(--accent-4)' :
                     trend.direction === 'declining' ? 'var(--accent-8)' :
-                    'var(--surface-1)',
-                }}
-              >
+                    'var(--surface-1)', }}
+>
                 <div className="metric-label" style={{ marginBottom: 'var(--space-1)' }}>{trend.metric}</div>
                 <div className="flex items-center gap-1.5">
                   {trend.direction === 'improving' ? (
-                    <TrendingUp className="w-3.5 h-3.5" style={{ color: 'var(--text-secondary)' }} />
+                    <TrendingUp className="w-3.5 h-3.5" style={stTextSecondary} />
                   ) : trend.direction === 'declining' ? (
-                    <TrendingDown className="w-3.5 h-3.5" style={{ color: 'var(--text-primary)' }} />
+                    <TrendingDown className="w-3.5 h-3.5" style={stTextPrimary} />
                   ) : (
-                    <Minus className="w-3.5 h-3.5" style={{ color: 'var(--text-muted)' }} />
+                    <Minus className="w-3.5 h-3.5" style={stTextMuted} />
                   )}
                   <span style={{
                     fontSize: 'var(--font-size-lg)',
@@ -381,13 +368,13 @@ export default function StrategicPage() {
                 </div>
                 <div className="mt-1 space-y-0.5">
                   <div className="flex justify-between" style={{ fontSize: '10px' }}>
-                    <span style={{ color: 'var(--text-muted)' }}>7d</span>
+                    <span style={stTextMuted}>7d</span>
                     <span style={{ color: deltaColor(trend.delta7d) }}>
                       {trend.delta7d > 0 ? '+' : ''}{trend.delta7d}%
                     </span>
                   </div>
                   <div className="flex justify-between" style={{ fontSize: '10px' }}>
-                    <span style={{ color: 'var(--text-muted)' }}>30d</span>
+                    <span style={stTextMuted}>30d</span>
                     <span style={{ color: deltaColor(trend.delta30d) }}>
                       {trend.delta30d > 0 ? '+' : ''}{trend.delta30d}%
                     </span>
@@ -398,7 +385,7 @@ export default function StrategicPage() {
                 </div>
                 {trend.alert && (
                   <div className="flex items-start gap-1" style={{ marginTop: 'var(--space-1)' }}>
-                    <AlertTriangle className="w-2.5 h-2.5 shrink-0 mt-0.5" style={{ color: 'var(--text-primary)' }} />
+                    <AlertTriangle className="w-2.5 h-2.5 shrink-0 mt-0.5" style={stTextPrimary} />
                     <span style={{ fontSize: '9px', color: 'var(--text-primary)', lineHeight: 1.3 }}>{trend.alert}</span>
                   </div>
                 )}
@@ -422,9 +409,8 @@ export default function StrategicPage() {
                 ...confidenceStyle(data.raiseForecast.confidence),
                 border: '1px solid',
                 fontSize: '10px',
-                fontWeight: 400,
-              }}
-            >
+                fontWeight: 400, }}
+>
               {data.raiseForecast.confidence} confidence
             </span>
           </div>
@@ -448,7 +434,7 @@ export default function StrategicPage() {
               <div className="metric-label" style={{ marginBottom: 'var(--space-1)' }}>Critical Path</div>
               <div className="space-y-0.5">
                 {data.raiseForecast.criticalPath.map((name) => (
-                  <div key={name} style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>{name}</div>
+                  <div key={name} style={labelSecondary}>{name}</div>
                 ))}
               </div>
             </div>
@@ -457,7 +443,7 @@ export default function StrategicPage() {
           {/* Investor forecasts table */}
           {data.raiseForecast.investorForecasts.length > 0 && (
             <div className="overflow-x-auto">
-              <table className="w-full" style={{ fontSize: 'var(--font-size-xs)' }}>
+              <table className="w-full" style={stFontXs}>
                 <thead>
                   <tr className="table-header">
                     <th className="text-left py-1.5 pr-3">Investor</th>
@@ -472,7 +458,7 @@ export default function StrategicPage() {
                       <td className="py-1.5 pr-3">
                         <Link href={`/dealflow?search=${encodeURIComponent(f.name)}`} style={{ color: 'var(--accent)', textDecoration: 'none', fontWeight: 400 }}>{f.name}</Link>
                       </td>
-                      <td className="py-1.5 pr-3" style={{ color: 'var(--text-muted)' }}>{f.stage}</td>
+                      <td className="py-1.5 pr-3" style={stTextMuted}>{f.stage}</td>
                       <td className="py-1.5 pr-3 text-right" style={{ fontVariantNumeric: 'tabular-nums', color: 'var(--text-secondary)' }}>~{f.days}d</td>
                       <td className="py-1.5">
                         <span style={{ fontSize: '10px', padding: '2px 6px', borderRadius: 'var(--radius-sm)', ...confidenceStyle(f.confidence) }}>{f.confidence}</span>
@@ -489,7 +475,7 @@ export default function StrategicPage() {
             <div className="space-y-1" style={{ marginTop: 'var(--space-3)' }}>
               {data.raiseForecast.riskFactors.map((rf, i) => (
                 <div key={i} className="flex items-start gap-1.5">
-                  <AlertTriangle className="w-3 h-3 shrink-0 mt-0.5" style={{ color: 'var(--text-tertiary)' }} />
+                  <AlertTriangle className="w-3 h-3 shrink-0 mt-0.5" style={stTextTertiary} />
                   <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', opacity: 0.8 }}>{rf}</span>
                 </div>
               ))}
@@ -502,26 +488,18 @@ export default function StrategicPage() {
       {/* STRATEGIC RECOMMENDATIONS                                        */}
       {/* ================================================================ */}
       <div
-        style={{
-          borderRadius: 'var(--radius-lg)',
-          overflow: 'hidden',
-        }}
-      >
+        style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
         <div
           className="flex items-center gap-2"
-          style={{
-            padding: 'var(--space-5)',
-            borderBottom: '1px solid var(--border-subtle)',
-          }}
-        >
-          <Target className="w-4 h-4" style={{ color: 'var(--accent)' }} />
+          style={{ padding: 'var(--space-5)', borderBottom: '1px solid var(--border-subtle)' }}>
+          <Target className="w-4 h-4" style={stAccent} />
           <h2 style={{ ...stFontSm, fontWeight: 400, ...stTextTertiary }}>Strategic Recommendations</h2>
           <span className="ml-auto" style={labelMuted}>{data.recommendations.length} actions</span>
         </div>
 
         {data.recommendations.length === 0 ? (
           <div className="text-center" style={{ padding: 'var(--space-8)' }}>
-            <CheckCircle2 className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--text-secondary)' }} />
+            <CheckCircle2 className="w-8 h-8 mx-auto mb-2" style={stTextSecondary} />
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' }}>No critical recommendations at this time. Process is on track.</p>
           </div>
         ) : (
@@ -582,8 +560,7 @@ function RecommendationRow({ rec, isLast }: { rec: StrategicRecommendation; isLa
       className="transition-colors"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      style={{ padding: 'var(--space-5)', background: hovered ? 'var(--surface-1)' : 'transparent', transition: 'background 100ms ease', borderBottom: isLast ? 'none' : '1px solid var(--border-subtle)' }}
-    >
+      style={{ padding: 'var(--space-5)', background: hovered ? 'var(--surface-1)' : 'transparent', transition: 'background 100ms ease', borderBottom: isLast ? 'none' : '1px solid var(--border-subtle)' }}>
       <div className="flex items-start gap-4">
         {/* Priority badge */}
         <div className="flex flex-col items-center gap-1.5 shrink-0 pt-0.5">
@@ -604,9 +581,8 @@ function RecommendationRow({ rec, isLast }: { rec: StrategicRecommendation; isLa
                 borderRadius: 'var(--radius-sm)',
                 border: `1px solid ${catCfg.border}`,
                 background: catCfg.bg,
-                color: catCfg.color,
-              }}
-            >
+                color: catCfg.color, }}
+>
               {catCfg.label}
             </span>
           </div>
@@ -616,12 +592,12 @@ function RecommendationRow({ rec, isLast }: { rec: StrategicRecommendation; isLa
 
           {/* Action */}
           <div className="flex items-start gap-1.5 mb-2">
-            <ArrowRight className="w-3 h-3 shrink-0 mt-0.5" style={{ color: 'var(--accent)' }} />
-            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>{rec.action}</p>
+            <ArrowRight className="w-3 h-3 shrink-0 mt-0.5" style={stAccent} />
+            <p style={labelSecondary}>{rec.action}</p>
           </div>
 
           {/* Impact + Deadline + Action button */}
-          <div className="flex items-center gap-4" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+          <div className="flex items-center gap-4" style={labelMuted10}>
             <span className="flex items-center gap-1">
               <TrendingUp className="w-3 h-3" />
               {rec.expectedImpact}
@@ -635,8 +611,7 @@ function RecommendationRow({ rec, isLast }: { rec: StrategicRecommendation; isLa
               onMouseEnter={() => setBtnHover(true)}
               onMouseLeave={() => setBtnHover(false)}
               className="ml-auto flex items-center gap-1 transition-colors"
-              style={{ fontSize: '11px', fontWeight: 400, padding: '3px 10px', borderRadius: 'var(--radius-sm)', background: btnHover ? 'var(--accent)' : 'var(--accent-muted)', color: btnHover ? 'var(--surface-0)' : 'var(--accent)', border: '1px solid var(--accent-muted)', transition: 'all 150ms ease', textDecoration: 'none' }}
-            >
+              style={{ fontSize: '11px', fontWeight: 400, padding: '3px 10px', borderRadius: 'var(--radius-sm)', background: btnHover ? 'var(--accent)' : 'var(--accent-muted)', color: btnHover ? 'var(--surface-0)' : 'var(--accent)', border: '1px solid var(--accent-muted)', transition: 'all 150ms ease', textDecoration: 'none' }}>
               {actionLink.label}
               <ExternalLink className="w-3 h-3" />
             </Link>
@@ -669,10 +644,10 @@ function GaugeCard({ label, value, suffix, description, barPct, barColor, valueC
           height: '8px',
           background: 'var(--surface-3)',
           borderRadius: '9999px',
-          overflow: 'hidden',
-        }}
-      >
-        <div style={{ height: '100%', borderRadius: '9999px', transition: 'all 700ms ease', width: `${Math.min(100, barPct)}%`, background: barColor }} />
+          overflow: 'hidden', }}
+>
+        <div style={{ height: '100%', borderRadius: '9999px', transition: 'all 700ms ease', width: `${Math.min(100, barPct)}%`, background: barColor }}
+          />
       </div>
     </div>
   );
@@ -718,7 +693,8 @@ function SparklineRow({ label, values, dates, color }: {
           const h = max > 0 ? (v / max) * 100 : 0;
           return (
             <div key={dates[i] || i} className="flex-1 relative" style={{ height: '100%' }}>
-              <div className="absolute bottom-0 w-full" style={{ height: `${Math.max(h, 4)}%`, borderRadius: '2px 2px 0 0', background: barColors[color], opacity: 0.7, transition: 'all 200ms ease' }} />
+              <div className="absolute bottom-0 w-full" style={{ height: `${Math.max(h, 4)}%`, borderRadius: '2px 2px 0 0', background: barColors[color], opacity: 0.7, transition: 'all 200ms ease' }}
+                />
             </div>
           );
         })}

@@ -17,11 +17,7 @@ import type {
 import { STATUS_LABELS, TYPE_LABELS } from '@/lib/constants';
 import { fmtDate } from '@/lib/format';
 import { useToast } from '@/components/toast';
-import {
-  stTextMuted, stTextTertiary, stTextSecondary, stTextPrimary, stAccent,
-  stSurface1, stSurface2, stAccentBg, stAccentBadge,
-  stBorderTop, stSurface1Border,
-} from '@/lib/styles';
+import { stAccent, stAccentBadge, stAccentBg, stBorderTop, stSurface0, stSurface1, stSurface1Border, stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 // ---------- types for the meeting brief ----------
 
@@ -441,7 +437,7 @@ function MeetingPrepContent() {
                         key={inv.id}
                         onClick={() => setSelectedId(inv.id)}
                         className="flex items-center gap-3 p-3 rounded-lg text-left transition-colors"
-                        style={{ background: 'var(--surface-0)' }}
+                        style={stSurface0}
                         onMouseEnter={e => {
                           e.currentTarget.style.background = 'var(--accent-muted)'; }}
                         onMouseLeave={e => {
@@ -463,8 +459,7 @@ function MeetingPrepContent() {
                                   <span
                                     key={n}
                                     className="w-1.5 h-1.5 rounded-full inline-block"
-                                    style={{ background: n <= (inv.enthusiasm ?? 0) ? 'var(--accent)' : 'var(--surface-3)' }}
-                                  />
+                                    style={{ background: n <= (inv.enthusiasm ?? 0) ? 'var(--accent)' : 'var(--surface-3)' }} />
                                 ))}
                               </span>
                             )}
@@ -744,7 +739,8 @@ function MeetingPrepContent() {
                   <div className="flex items-center gap-1.5">
                     <div className="flex gap-0.5">
                       {[1,2,3,4,5].map(n => (
-                        <div key={n} className="w-2.5 h-2.5 rounded-full" style={{ background: n <= investor.enthusiasm ? 'var(--accent)' : 'var(--surface-2)' }} />
+                        <div key={n} className="w-2.5 h-2.5 rounded-full" style={{ background: n <= investor.enthusiasm ? 'var(--accent)' : 'var(--surface-2)' }}
+                          />
                       ))}
                     </div>
                     <span className="text-xs" style={stTextTertiary}>{investor.enthusiasm}/5</span>
@@ -1163,7 +1159,8 @@ function MeetingCard({ meeting: m, objs }: { meeting: Meeting; objs: Objection[]
         <div className="flex items-center gap-2 shrink-0">
           <div className="flex gap-0.5" title={`Enthusiasm: ${m.enthusiasm_score}/5`}>
             {[1,2,3,4,5].map(n => (
-              <div key={n} className="w-2 h-2 rounded-full" style={{ background: n <= m.enthusiasm_score ? 'var(--accent)' : 'var(--surface-2)' }} />
+              <div key={n} className="w-2 h-2 rounded-full" style={{ background: n <= m.enthusiasm_score ? 'var(--accent)' : 'var(--surface-2)' }}
+                />
             ))}
           </div>
           <span className="text-xs px-2 py-0.5 rounded" style={

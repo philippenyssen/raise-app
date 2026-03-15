@@ -7,6 +7,7 @@ import { AIChat } from '@/components/workspace/ai-chat';
 import { useToast } from '@/components/toast';
 import { ConfirmModal, InputModal } from '@/components/ui/confirm-modal';
 import { Plus, Save, Table, Trash2 } from 'lucide-react';
+import { stTextTertiary } from '@/lib/styles';
 
 interface ModelSheet {
   id: string;
@@ -315,7 +316,7 @@ export default function ModelPage() {
   if (loading) {
     return (
       <div className="h-[calc(100vh-4rem)] flex items-center justify-center">
-        <div className="text-sm" style={{ color: 'var(--text-tertiary)' }}>Loading model...</div>
+        <div className="text-sm" style={stTextTertiary}>Loading model...</div>
       </div>
     );
   }
@@ -325,11 +326,7 @@ export default function ModelPage() {
       {/* Sheet tabs + toolbar */}
       <div
         className="shrink-0 flex items-center"
-        style={{
-          borderBottom: '1px solid var(--border-default)',
-          backgroundColor: 'var(--surface-0)',
-        }}
-      >
+        style={{ borderBottom: '1px solid var(--border-default)', backgroundColor: 'var(--surface-0)' }}>
         <div className="flex-1 flex items-center overflow-x-auto">
           {sheets.map(sheet => {
             const isActive = sheet.id === activeSheetId;
@@ -348,34 +345,28 @@ export default function ModelPage() {
                       }
                     : {
                         color: 'var(--text-muted)',
-                      }),
-                }}
+                      }), }}
                 onMouseEnter={e => {
                   if (!isActive) {
                     (e.currentTarget as HTMLDivElement).style.color = 'var(--text-secondary)';
                     (e.currentTarget as HTMLDivElement).style.backgroundColor = 'var(--surface-1)';
-                  }
-                }}
+                  } }}
                 onMouseLeave={e => {
                   if (!isActive) {
                     (e.currentTarget as HTMLDivElement).style.color = 'var(--text-muted)';
                     (e.currentTarget as HTMLDivElement).style.backgroundColor = 'transparent';
-                  }
-                }}
-                onClick={() => selectSheet(sheet)}
-              >
+                  } }}
+                onClick={() => selectSheet(sheet)}>
                 <span className="truncate max-w-[120px]">{sheet.sheet_name}</span>
                 <button
                   onClick={e => { e.stopPropagation(); deleteSheet(sheet); }}
                   className="hidden group-hover:block ml-1"
-                  style={{ color: 'var(--text-tertiary)' }}
+                  style={stTextTertiary}
                   onMouseEnter={e => {
-                    (e.currentTarget as HTMLButtonElement).style.color = 'var(--danger)';
-                  }}
+                    (e.currentTarget as HTMLButtonElement).style.color = 'var(--danger)'; }}
                   onMouseLeave={e => {
-                    (e.currentTarget as HTMLButtonElement).style.color = 'var(--text-tertiary)';
-                  }}
-                >
+                    (e.currentTarget as HTMLButtonElement).style.color = 'var(--text-tertiary)'; }}
+>
                   <Trash2 className="w-3 h-3" />
                 </button>
               </div>
@@ -385,14 +376,12 @@ export default function ModelPage() {
             onClick={() => setShowAddSheet(true)}
             className="px-3 py-2 transition-colors"
             title="Add sheet"
-            style={{ color: 'var(--text-tertiary)' }}
+            style={stTextTertiary}
             onMouseEnter={e => {
-              (e.currentTarget as HTMLButtonElement).style.color = 'var(--text-secondary)';
-            }}
+              (e.currentTarget as HTMLButtonElement).style.color = 'var(--text-secondary)'; }}
             onMouseLeave={e => {
-              (e.currentTarget as HTMLButtonElement).style.color = 'var(--text-tertiary)';
-            }}
-          >
+              (e.currentTarget as HTMLButtonElement).style.color = 'var(--text-tertiary)'; }}
+>
             <Plus className="w-4 h-4" />
           </button>
         </div>
@@ -401,17 +390,13 @@ export default function ModelPage() {
             <button
               onClick={initializeDefaultSheets}
               className="px-3 py-1.5 rounded-lg text-xs font-normal transition-colors flex items-center gap-1.5"
-              style={{
-                backgroundColor: 'var(--accent)',
-                color: 'var(--text-primary)',
-              }}
+              style={{ backgroundColor: 'var(--accent)', color: 'var(--text-primary)' }}
               onMouseEnter={e => {
                 (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--accent-muted)';
               }}
               onMouseLeave={e => {
-                (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--accent)';
-              }}
-            >
+                (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--accent)'; }}
+>
               <Table className="w-3.5 h-3.5" /> Initialize Model
             </button>
           )}
@@ -427,14 +412,12 @@ export default function ModelPage() {
             onMouseEnter={e => {
               if (dirty) {
                 (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--accent-muted)';
-              }
-            }}
+              } }}
             onMouseLeave={e => {
               if (dirty) {
                 (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--accent)';
-              }
-            }}
-          >
+              } }}
+>
             <Save className="w-3.5 h-3.5" />
             {saving ? 'Saving...' : dirty ? 'Save' : 'Saved'}
           </button>
@@ -452,21 +435,18 @@ export default function ModelPage() {
                 rows={40}
                 cols={12}
                 allSheets={allSheetsData}
-                activeSheetName={activeSheet.sheet_name}
-              />
+                activeSheetName={activeSheet.sheet_name} />
             }
             right={
               <AIChat
                 documentId={activeSheet.id}
                 documentContent={modelContext}
                 documentTitle={`Financial Model — ${activeSheet.sheet_name}`}
-                onApplyChange={handleApplyModelChange}
-              />
+                onApplyChange={handleApplyModelChange} />
             }
-            defaultSplit={65}
-          />
+            defaultSplit={65} />
         ) : (
-          <div className="h-full flex items-center justify-center" style={{ color: 'var(--text-tertiary)' }}>
+          <div className="h-full flex items-center justify-center" style={stTextTertiary}>
             <div className="text-center space-y-4">
               <Table className="w-12 h-12 mx-auto" />
               <p className="text-sm">{sheets.length === 0 ? 'No model yet. Click "Initialize Model" to create default sheets.' : 'Select a sheet to start editing.'}</p>
@@ -483,8 +463,7 @@ export default function ModelPage() {
         confirmLabel="Discard"
         variant="danger"
         onConfirm={() => { if (confirmState?.target) doSelectSheet(confirmState.target); }}
-        onCancel={() => setConfirmState(null)}
-      />
+        onCancel={() => setConfirmState(null)} />
       <ConfirmModal
         open={confirmState?.type === 'delete'}
         title="Delete sheet"
@@ -492,16 +471,14 @@ export default function ModelPage() {
         confirmLabel="Delete"
         variant="danger"
         onConfirm={doDeleteSheet}
-        onCancel={() => setConfirmState(null)}
-      />
+        onCancel={() => setConfirmState(null)} />
       <InputModal
         open={showAddSheet}
         title="New sheet name"
         placeholder="e.g., SOTP, Cap Table, Scenarios..."
         confirmLabel="Add Sheet"
         onConfirm={addSheet}
-        onCancel={() => setShowAddSheet(false)}
-      />
+        onCancel={() => setShowAddSheet(false)} />
     </div>
   );
 }

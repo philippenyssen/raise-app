@@ -14,7 +14,7 @@ import {
   Rocket, Shield, XCircle, ChevronDown, Play, Ban, BarChart3,
   Star, Eye, Flame, Flag, MessageSquare,
 } from 'lucide-react';
-import { scoreColor as focusScoreColor, scoreBgStyle as focusScoreBgStyle, dimensionColor, dimensionBg, stTextMuted, stTextSecondary, stTextTertiary, stTextPrimary, labelMuted } from '@/lib/styles';
+import { dimensionBg, dimensionColor, labelMuted, labelMuted10, labelSecondary, labelTertiary, scoreBgStyle as focusScoreBgStyle, scoreColor as focusScoreColor, stAccent, stBorderTop, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 interface FocusItem {
   investorId: string;
@@ -94,8 +94,7 @@ function EnthusiasmDots({ value }: { value: number }) {
             background: i <= value
               ? (value >= 4 ? 'var(--success)' : value >= 3 ? 'var(--warning)' : 'var(--danger)')
               : 'var(--border-default)',
-          }}
-        />
+          }} />
       ))}
     </div>
   );
@@ -157,8 +156,7 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
         <button
           onClick={e => { e.stopPropagation(); setExpanded(!expanded); }}
           className="flex items-center gap-1.5 shrink-0"
-          style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
-        >
+          style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
           <span style={stTextMuted}><BarChart3 className="w-3 h-3" /></span>
           <ChevronDown className={`w-3 h-3 transition-transform ${expanded ? 'rotate-180' : ''}`} style={stTextMuted} />
         </button>
@@ -174,9 +172,8 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
                 background: dimensionBg(d.score, d.signal),
                 position: 'relative',
                 overflow: 'hidden',
-                maxWidth: '32px',
-              }}
-            >
+                maxWidth: '32px', }}
+>
               <div
                 style={{
                   position: 'absolute',
@@ -188,8 +185,7 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
                   borderRadius: '3px',
                   opacity: 0.85,
                   transition: 'width 300ms ease',
-                }}
-              />
+                }} />
             </div>
           ))}
         </div>
@@ -206,9 +202,8 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
                   background: dimensionBg(d.score, d.signal),
                   padding: '1px 4px',
                   borderRadius: 'var(--radius-sm)',
-                  whiteSpace: 'nowrap',
-                }}
-              >
+                  whiteSpace: 'nowrap', }}
+>
                 {DIMENSION_SHORT_LABELS[d.name] || d.name.slice(0, 3).toUpperCase()} {d.score}
               </span>
             ))}
@@ -221,9 +216,8 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
                   background: dimensionBg(weakest.score, weakest.signal),
                   padding: '1px 4px',
                   borderRadius: 'var(--radius-sm)',
-                  whiteSpace: 'nowrap',
-                }}
-              >
+                  whiteSpace: 'nowrap', }}
+>
                 {DIMENSION_SHORT_LABELS[weakest.name] || weakest.name.slice(0, 3).toUpperCase()} {weakest.score}
               </span>
             )}
@@ -236,12 +230,7 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
         <div
           className="mt-2 space-y-2"
           onClick={e => e.stopPropagation()}
-          style={{
-            background: 'var(--surface-1)',
-            borderRadius: 'var(--radius-md)',
-            padding: 'var(--space-3)',
-          }}
-        >
+          style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-md)', padding: 'var(--space-3)' }}>
           {/* Full dimension grid */}
           <div className="grid grid-cols-3 sm:grid-cols-4 gap-x-3 gap-y-2">
             {dimensions.map(d => (
@@ -252,8 +241,7 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
                   </span>
                   <span
                     className="tabular-nums"
-                    style={{ fontSize: '10px', fontWeight: 300, color: dimensionColor(d.score, d.signal) }}
-                  >
+                    style={{ fontSize: '10px', fontWeight: 300, color: dimensionColor(d.score, d.signal) }}>
                     {d.signal === 'unknown' ? '--' : d.score}
                   </span>
                 </div>
@@ -263,9 +251,8 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
                     borderRadius: '2px',
                     background: dimensionBg(d.score, d.signal),
                     position: 'relative',
-                    overflow: 'hidden',
-                  }}
-                >
+                    overflow: 'hidden', }}
+>
                   <div
                     style={{
                       position: 'absolute',
@@ -276,8 +263,7 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
                       background: dimensionColor(d.score, d.signal),
                       borderRadius: '2px',
                       opacity: 0.85,
-                    }}
-                  />
+                    }} />
                 </div>
               </div>
             ))}
@@ -301,7 +287,7 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
                     <span style={{ fontSize: '10px', color: 'var(--text-secondary)', fontWeight: 400 }}>
                       {d.name}
                     </span>
-                    <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                    <span style={labelMuted10}>
                       {d.evidence}
                     </span>
                   </div>
@@ -326,7 +312,7 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
                 <span style={{ fontSize: '10px', color: 'var(--text-secondary)', fontWeight: 400 }}>
                   {weakest.name}
                 </span>
-                <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                <span style={labelMuted10}>
                   {weakest.evidence}
                 </span>
               </div>
@@ -362,12 +348,10 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
       className="transition-colors"
       style={cardStyle}
       onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
+      onMouseLeave={() => setHovered(false)}>
       <div
         className="p-4 cursor-pointer"
-        onClick={() => setExpanded(!expanded)}
-      >
+        onClick={() => setExpanded(!expanded)}>
         {/* Main row */}
         <div className="flex items-start gap-3">
           {/* Rank number */}
@@ -377,9 +361,8 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
               ...rankStyle,
               borderRadius: 'var(--radius-md)',
               fontSize: 'var(--font-size-sm)',
-              fontWeight: 300,
-            }}
-          >
+              fontWeight: 300, }}
+>
             {rank}
           </div>
 
@@ -392,8 +375,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
                 className="transition-colors"
                 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}
                 onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
-                onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}
-              >
+                onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}>
                 {item.investorName}
               </Link>
               <span style={inlineBadgeStyle(TYPE_STYLES[item.investorType] ?? TYPE_STYLES.vc)}>
@@ -462,7 +444,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
 
               {/* Pending tasks */}
               {item.pendingTaskCount > 0 && (
-                <span className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
+                <span className="flex items-center gap-1" style={labelTertiary}>
                   <AlertTriangle className="w-3 h-3" />
                   {item.pendingTaskCount} task{item.pendingTaskCount !== 1 ? 's' : ''}
                 </span>
@@ -504,13 +486,11 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
               className="flex flex-col items-center px-3 py-2"
               style={{
                 ...focusScoreBgStyle(item.focusScore),
-                borderRadius: 'var(--radius-md)',
-              }}
-            >
+                borderRadius: 'var(--radius-md)', }}
+>
               <span
                 className="tabular-nums"
-                style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: focusScoreColor(item.focusScore) }}
-              >
+                style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: focusScoreColor(item.focusScore) }}>
                 {item.focusScore}
               </span>
               <span style={{ fontSize: '9px', color: 'var(--text-muted)', letterSpacing: '0.08em' }}>Focus</span>
@@ -524,8 +504,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
                   className="flex items-center justify-center transition-colors"
                   style={{ width: '28px', height: '28px', borderRadius: 'var(--radius-md)', background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid var(--accent-8)', transition: 'all 150ms ease' }}
                   onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent)'; e.currentTarget.style.color = 'white'; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = 'var(--accent-muted)'; e.currentTarget.style.color = 'var(--accent)'; }}
-                >
+                  onMouseLeave={e => { e.currentTarget.style.background = 'var(--accent-muted)'; e.currentTarget.style.color = 'var(--accent)'; }}>
                   <Calendar className="w-3.5 h-3.5" />
                 </Link>
                 <Link
@@ -534,8 +513,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
                   className="flex items-center justify-center transition-colors"
                   style={{ width: '28px', height: '28px', borderRadius: 'var(--radius-md)', background: 'var(--surface-2)', color: 'var(--text-secondary)', transition: 'all 150ms ease' }}
                   onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent-muted)'; e.currentTarget.style.color = 'var(--accent)'; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = 'var(--surface-2)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}
-                >
+                  onMouseLeave={e => { e.currentTarget.style.background = 'var(--surface-2)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}>
                   <Zap className="w-3.5 h-3.5" />
                 </Link>
               </div>
@@ -556,7 +534,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
 
       {/* Expanded details */}
       {expanded && (
-        <div className="px-4 py-3 ml-11 space-y-3" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+        <div className="px-4 py-3 ml-11 space-y-3" style={stBorderTop}>
           {/* Score breakdown */}
           <div>
             <p style={{ fontSize: '10px', color: 'var(--text-muted)', letterSpacing: '0.08em', marginBottom: '8px' }}>Score Breakdown</p>
@@ -597,15 +575,13 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
             <Link
               href={`/meetings/new?investor=${item.investorId}`}
               className="btn btn-primary btn-sm"
-              onClick={e => e.stopPropagation()}
-            >
+              onClick={e => e.stopPropagation()}>
               Schedule Meeting
             </Link>
             <Link
               href={`/investors/${item.investorId}`}
               className="btn btn-secondary btn-sm"
-              onClick={e => e.stopPropagation()}
-            >
+              onClick={e => e.stopPropagation()}>
               Open Investor
             </Link>
           </div>
@@ -619,8 +595,7 @@ function QuickWinCard({ item }: { item: FocusItem }) {
   return (
     <div
       className="card"
-      style={{ padding: 'var(--space-4)' }}
-    >
+      style={{ padding: 'var(--space-4)' }}>
       <div className="flex items-center gap-2 mb-2">
         <Zap className="w-3.5 h-3.5" style={stTextTertiary} />
         <Link
@@ -628,8 +603,7 @@ function QuickWinCard({ item }: { item: FocusItem }) {
           className="transition-colors"
           style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}
           onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
-          onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}
-        >
+          onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}>
           {item.investorName}
         </Link>
         <TierBadge tier={item.investorTier} />
@@ -644,12 +618,12 @@ function QuickWinCard({ item }: { item: FocusItem }) {
       ) : (
         <>
           <p style={{ ...labelMuted, marginBottom: '4px' }}>Opportunity:</p>
-          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>{item.recommendedAction.substring(0, 120)}</p>
+          <p style={labelSecondary}>{item.recommendedAction.substring(0, 120)}</p>
         </>
       )}
       <div className="flex items-center justify-between" style={{ marginTop: '12px' }}>
         <div className="flex items-center gap-2">
-          <span className="flex items-center gap-1" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+          <span className="flex items-center gap-1" style={labelMuted10}>
             <Timer className="w-3 h-3" /> {item.timeEstimate}
           </span>
           <span style={{ fontSize: '10px', color: focusScoreColor(item.focusScore) }}>
@@ -660,15 +634,13 @@ function QuickWinCard({ item }: { item: FocusItem }) {
           <Link
             href={`/meetings/new?investor=${item.investorId}`}
             className="btn btn-primary btn-sm"
-            style={{ fontSize: '10px', padding: '2px 8px', borderRadius: 'var(--radius-sm)' }}
-          >
+            style={{ fontSize: '10px', padding: '2px 8px', borderRadius: 'var(--radius-sm)' }}>
             Schedule
           </Link>
           <Link
             href={`/investors/${item.investorId}`}
             className="btn btn-secondary btn-sm"
-            style={{ fontSize: '10px', padding: '2px 8px', borderRadius: 'var(--radius-sm)' }}
-          >
+            style={{ fontSize: '10px', padding: '2px 8px', borderRadius: 'var(--radius-sm)' }}>
             Open
           </Link>
         </div>
@@ -680,12 +652,7 @@ function QuickWinCard({ item }: { item: FocusItem }) {
 function StaleAlertCard({ item, onReengage }: { item: FocusItem; onReengage: (item: FocusItem) => void }) {
   return (
     <div
-      style={{
-        background: 'var(--danger-muted)',
-        borderRadius: 'var(--radius-lg)',
-        padding: 'var(--space-4)',
-      }}
-    >
+      style={{ background: 'var(--danger-muted)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-4)' }}>
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           <AlertTriangle className="w-3.5 h-3.5" style={stTextPrimary} />
@@ -694,8 +661,7 @@ function StaleAlertCard({ item, onReengage }: { item: FocusItem; onReengage: (it
             className="transition-colors"
             style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, ...stTextPrimary }}
             onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
-            onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}
-          >
+            onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}>
             {item.investorName}
           </Link>
           <span style={inlineBadgeStyle(STATUS_STYLES[item.status] ?? STATUS_STYLES.identified)}>
@@ -716,8 +682,7 @@ function StaleAlertCard({ item, onReengage }: { item: FocusItem; onReengage: (it
       <button
         onClick={() => onReengage(item)}
         className="btn btn-danger btn-sm w-full"
-        style={{ opacity: 0.9 }}
-      >
+        style={{ opacity: 0.9 }}>
         Create Re-engagement Task
       </button>
     </div>
@@ -740,8 +705,7 @@ function AccelerationCard({
   return (
     <div
       className="card"
-      style={{ padding: 'var(--space-4)' }}
-    >
+      style={{ padding: 'var(--space-4)' }}>
       <div className="flex items-start gap-3">
         <div className="flex-1 min-w-0">
           {/* Header: investor name + badges */}
@@ -751,8 +715,7 @@ function AccelerationCard({
               className="transition-colors"
               style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}
               onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
-              onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}
-            >
+              onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}>
               {item.investorName}
             </Link>
             <TierBadge tier={item.investorTier} />
@@ -781,7 +744,7 @@ function AccelerationCard({
             <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, ...(URGENCY_STYLE[item.urgency] ?? { color: 'var(--text-tertiary)' }) }}>
               {item.urgency === 'immediate' ? 'Act now' : item.urgency === '48h' ? 'Within 48h' : item.urgency === 'this_week' ? 'This week' : 'Next week'}
             </span>
-            <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+            <span style={labelMuted10}>
               {item.triggerEvidence}
             </span>
           </div>
@@ -792,8 +755,7 @@ function AccelerationCard({
           onClick={() => onExecute(item)}
           disabled={executing}
           className="btn btn-primary btn-sm shrink-0 flex items-center gap-1.5"
-          style={executing ? { background: 'var(--surface-2)', color: 'var(--text-muted)', cursor: 'default' } : {}}
-        >
+          style={executing ? { background: 'var(--surface-2)', color: 'var(--text-muted)', cursor: 'default' } : {}}>
           <Play className="w-3 h-3" />
           {executing ? 'Done' : 'Execute'}
         </button>
@@ -805,12 +767,7 @@ function AccelerationCard({
 function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
   return (
     <div
-      style={{
-        background: 'var(--success-muted)',
-        borderRadius: 'var(--radius-lg)',
-        padding: 'var(--space-4)',
-      }}
-    >
+      style={{ background: 'var(--success-muted)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-4)' }}>
       <div className="flex items-center gap-2 mb-2">
         <Rocket className="w-3.5 h-3.5" style={stTextSecondary} />
         <Link
@@ -818,8 +775,7 @@ function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
           className="transition-colors"
           style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}
           onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
-          onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}
-        >
+          onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}>
           {investor.investorName}
         </Link>
         <TierBadge tier={investor.investorTier} />
@@ -836,20 +792,18 @@ function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
         </span>
         <EnthusiasmDots value={investor.enthusiasm} />
       </div>
-      <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>{investor.reason}</p>
+      <p style={labelTertiary}>{investor.reason}</p>
       <div className="flex items-center gap-2" style={{ marginTop: '10px' }}>
         <Link
           href={`/meetings/prep?investor=${investor.investorId}`}
           className="btn btn-primary btn-sm flex-1"
-          style={{ fontSize: '11px' }}
-        >
+          style={{ fontSize: '11px' }}>
           Prep Meeting
         </Link>
         <Link
           href={`/investors/${investor.investorId}`}
           className="btn btn-secondary btn-sm flex-1"
-          style={{ fontSize: '11px' }}
-        >
+          style={{ fontSize: '11px' }}>
           View Deal
         </Link>
       </div>
@@ -860,12 +814,7 @@ function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
 function AtRiskCard({ investor }: { investor: InvestorSummary }) {
   return (
     <div
-      style={{
-        background: 'var(--danger-muted)',
-        borderRadius: 'var(--radius-lg)',
-        padding: 'var(--space-4)',
-      }}
-    >
+      style={{ background: 'var(--danger-muted)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-4)' }}>
       <div className="flex items-center gap-2 mb-2">
         <Shield className="w-3.5 h-3.5" style={stTextPrimary} />
         <Link
@@ -873,8 +822,7 @@ function AtRiskCard({ investor }: { investor: InvestorSummary }) {
           className="transition-colors"
           style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}
           onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
-          onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}
-        >
+          onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}>
           {investor.investorName}
         </Link>
         <TierBadge tier={investor.investorTier} />
@@ -888,20 +836,18 @@ function AtRiskCard({ investor }: { investor: InvestorSummary }) {
         </span>
         <EnthusiasmDots value={investor.enthusiasm} />
       </div>
-      <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>{investor.reason}</p>
+      <p style={labelTertiary}>{investor.reason}</p>
       <div className="flex items-center gap-2" style={{ marginTop: '10px' }}>
         <Link
           href={`/meetings/new?investor=${investor.investorId}`}
           className="btn btn-sm flex-1 flex items-center justify-center gap-1"
-          style={{ fontSize: '11px', background: 'var(--fg-6)', color: 'var(--text-primary)', border: '1px solid var(--fg-6)' }}
-        >
+          style={{ fontSize: '11px', background: 'var(--fg-6)', color: 'var(--text-primary)', border: '1px solid var(--fg-6)' }}>
           Re-engage
         </Link>
         <Link
           href={`/investors/${investor.investorId}`}
           className="btn btn-secondary btn-sm flex-1"
-          style={{ fontSize: '11px' }}
-        >
+          style={{ fontSize: '11px' }}>
           View Deal
         </Link>
       </div>
@@ -921,8 +867,7 @@ function DeprioritizeSection({ investors }: { investors: InvestorSummary[] }) {
         className="w-full flex items-center justify-between p-3 text-left transition-colors"
         style={{ background: 'transparent' }}
         onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface-1)')}
-        onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
-      >
+        onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
         <div className="flex items-center gap-2">
           <Ban className="w-3.5 h-3.5" style={stTextMuted} />
           <span style={{ ...labelMuted, fontWeight: 400, letterSpacing: '0.08em' }}>
@@ -932,7 +877,7 @@ function DeprioritizeSection({ investors }: { investors: InvestorSummary[] }) {
         <ChevronDown className={`w-4 h-4 transition-transform ${expanded ? 'rotate-180' : ''}`} style={stTextMuted} />
       </button>
       {expanded && (
-        <div className="p-3 space-y-2" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+        <div className="p-3 space-y-2" style={stBorderTop}>
           {investors.map(inv => (
             <div key={inv.investorId} className="flex items-center justify-between py-1.5">
               <div className="flex items-center gap-2">
@@ -940,15 +885,14 @@ function DeprioritizeSection({ investors }: { investors: InvestorSummary[] }) {
                 <Link
                   href={`/investors/${inv.investorId}`}
                   className="transition-colors"
-                  style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}
+                  style={labelTertiary}
                   onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
-                  onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-tertiary)')}
-                >
+                  onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-tertiary)')}>
                   {inv.investorName}
                 </Link>
                 <TierBadge tier={inv.investorTier} />
               </div>
-              <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{inv.reason}</span>
+              <span style={labelMuted10}>{inv.reason}</span>
             </div>
           ))}
           <p style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '8px', paddingTop: '8px', borderTop: '1px solid var(--border-subtle)' }}>
@@ -1086,8 +1030,7 @@ export default function FocusPage() {
         </div>
         <button
           onClick={fetchData}
-          className="btn btn-secondary btn-sm"
-        >
+          className="btn btn-secondary btn-sm">
           <RefreshCw className="w-3.5 h-3.5" /> Refresh
         </button>
       </div>
@@ -1130,7 +1073,7 @@ export default function FocusPage() {
       {hasAccelerationData && (
         <div className="space-y-4">
           <h2 className="section-title flex items-center gap-2">
-            <Rocket className="w-4 h-4" style={{ color: 'var(--accent)' }} /> Deal Acceleration Engine
+            <Rocket className="w-4 h-4" style={stAccent} /> Deal Acceleration Engine
           </h2>
 
           {/* Term Sheet Ready */}
@@ -1159,8 +1102,7 @@ export default function FocusPage() {
                     key={item.id}
                     item={item}
                     onExecute={handleExecuteAcceleration}
-                    executing={executedIds.has(item.id)}
-                  />
+                    executing={executedIds.has(item.id)} />
                 ))}
               </div>
             </div>
@@ -1178,8 +1120,7 @@ export default function FocusPage() {
                     key={item.id}
                     item={item}
                     onExecute={handleExecuteAcceleration}
-                    executing={executedIds.has(item.id)}
-                  />
+                    executing={executedIds.has(item.id)} />
                 ))}
               </div>
             </div>

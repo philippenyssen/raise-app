@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { CheckCircle, AlertTriangle, ArrowLeft, RefreshCw } from 'lucide-react';
+import { stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 interface ConsistencyValue {
   document: string;
@@ -62,16 +63,14 @@ export default function ConsistencyPage() {
             className="p-2 rounded-lg transition-colors"
             style={{
               color: backHovered ? 'var(--text-secondary)' : 'var(--text-tertiary)',
-              background: backHovered ? 'var(--surface-2)' : 'transparent',
-            }}
+              background: backHovered ? 'var(--surface-2)' : 'transparent', }}
             onMouseEnter={() => setBackHovered(true)}
-            onMouseLeave={() => setBackHovered(false)}
-          >
+            onMouseLeave={() => setBackHovered(false)}>
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
             <h1 className="page-title">Consistency Check</h1>
-            <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
+            <p className="text-sm mt-1" style={stTextMuted}>
               Cross-document metric comparison
             </p>
           </div>
@@ -82,11 +81,9 @@ export default function ConsistencyPage() {
           className="px-4 py-2 disabled:opacity-50 rounded-lg text-sm font-normal transition-colors flex items-center gap-2"
           style={{
             background: recheckHovered ? 'var(--surface-3)' : 'var(--surface-2)',
-            color: 'var(--text-primary)',
-          }}
+            color: 'var(--text-primary)', }}
           onMouseEnter={() => setRecheckHovered(true)}
-          onMouseLeave={() => setRecheckHovered(false)}
-        >
+          onMouseLeave={() => setRecheckHovered(false)}>
           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           Re-check
         </button>
@@ -95,9 +92,9 @@ export default function ConsistencyPage() {
       {/* Loading skeleton */}
       {loading && (
         <div className="space-y-4">
-          <div className="h-16 rounded-xl animate-pulse" style={{ background: 'var(--surface-2)' }} />
+          <div className="h-16 rounded-xl animate-pulse" style={stSurface2} />
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-32 rounded-xl animate-pulse" style={{ background: 'var(--surface-2)' }} />
+            <div key={i} className="h-32 rounded-xl animate-pulse" style={stSurface2} />
           ))}
         </div>
       )}
@@ -105,15 +102,14 @@ export default function ConsistencyPage() {
       {/* Error */}
       {error && !loading && (
         <div className="rounded-xl p-6 text-center" style={{ border: '1px solid var(--danger-muted)', background: 'var(--danger-muted)' }}>
-          <AlertTriangle className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--text-primary)' }} />
-          <p className="font-normal" style={{ color: 'var(--text-primary)' }}>{error}</p>
+          <AlertTriangle className="w-8 h-8 mx-auto mb-2" style={stTextPrimary} />
+          <p className="font-normal" style={stTextPrimary}>{error}</p>
           <button
             onClick={fetchConsistency}
             className="mt-3 text-sm underline transition-colors"
             style={{ color: retryHovered ? 'var(--text-secondary)' : 'var(--text-tertiary)' }}
             onMouseEnter={() => setRetryHovered(true)}
-            onMouseLeave={() => setRetryHovered(false)}
-          >
+            onMouseLeave={() => setRetryHovered(false)}>
             Try again
           </button>
         </div>
@@ -127,13 +123,12 @@ export default function ConsistencyPage() {
             className="rounded-xl p-4 flex items-center gap-3"
             style={{
               border: `1px solid ${result.consistent ? 'var(--success-muted)' : 'var(--danger-muted)'}`,
-              background: result.consistent ? 'var(--success-muted)' : 'var(--danger-muted)',
-            }}
-          >
+              background: result.consistent ? 'var(--success-muted)' : 'var(--danger-muted)', }}
+>
             {result.consistent ? (
-              <CheckCircle className="w-6 h-6 shrink-0" style={{ color: 'var(--text-secondary)' }} />
+              <CheckCircle className="w-6 h-6 shrink-0" style={stTextSecondary} />
             ) : (
-              <AlertTriangle className="w-6 h-6 shrink-0" style={{ color: 'var(--text-primary)' }} />
+              <AlertTriangle className="w-6 h-6 shrink-0" style={stTextPrimary} />
             )}
             <div className="flex-1">
               <p className="font-normal" style={{ color: result.consistent ? 'var(--success)' : 'var(--danger)' }}>
@@ -141,7 +136,7 @@ export default function ConsistencyPage() {
                   ? 'All metrics consistent across documents'
                   : `${mismatchCount} inconsistenc${mismatchCount === 1 ? 'y' : 'ies'} found`}
               </p>
-              <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
+              <p className="text-xs mt-0.5" style={stTextMuted}>
                 {result.checks.length} metric{result.checks.length !== 1 ? 's' : ''} compared
                 {matchCount > 0 && ` \u00b7 ${matchCount} matching`}
                 {mismatchCount > 0 && ` \u00b7 ${mismatchCount} mismatched`}
@@ -154,7 +149,7 @@ export default function ConsistencyPage() {
           {/* No checks */}
           {result.checks.length === 0 && (
             <div className="rounded-xl p-8 text-center">
-              <p style={{ color: 'var(--text-muted)' }}>
+              <p style={stTextMuted}>
                 No shared metrics found across documents. Add at least 2 documents with overlapping metrics to compare.
               </p>
             </div>
@@ -169,22 +164,20 @@ export default function ConsistencyPage() {
                 style={{
                   border: `1px solid ${check.status === 'match' ? 'var(--border-default)' : 'var(--danger-muted)'}`,
                   background: check.status === 'match' ? 'var(--surface-1)' : 'var(--danger-muted)',
-                }}
-              >
+                }}>
                 <div className="flex items-center gap-2 mb-3">
                   {check.status === 'match' ? (
-                    <CheckCircle className="w-4 h-4 shrink-0" style={{ color: 'var(--text-secondary)' }} />
+                    <CheckCircle className="w-4 h-4 shrink-0" style={stTextSecondary} />
                   ) : (
-                    <AlertTriangle className="w-4 h-4 shrink-0" style={{ color: 'var(--text-primary)' }} />
+                    <AlertTriangle className="w-4 h-4 shrink-0" style={stTextPrimary} />
                   )}
-                  <span className="font-normal text-sm" style={{ color: 'var(--text-primary)' }}>{check.metric}</span>
+                  <span className="font-normal text-sm" style={stTextPrimary}>{check.metric}</span>
                   <span
                     className="text-xs px-2 py-0.5 rounded ml-auto"
                     style={{
                       background: check.status === 'match' ? 'var(--success-muted)' : 'var(--danger-muted)',
-                      color: check.status === 'match' ? 'var(--success)' : 'var(--danger)',
-                    }}
-                  >
+                      color: check.status === 'match' ? 'var(--success)' : 'var(--danger)', }}
+>
                     {check.status}
                   </span>
                 </div>
@@ -193,13 +186,11 @@ export default function ConsistencyPage() {
                     <div
                       key={j}
                       className="flex items-center justify-between text-sm px-3 py-2 rounded-lg"
-                      style={{ background: 'var(--surface-2)' }}
-                    >
-                      <span className="truncate mr-3" style={{ color: 'var(--text-tertiary)' }}>{v.document}</span>
+                      style={stSurface2}>
+                      <span className="truncate mr-3" style={stTextTertiary}>{v.document}</span>
                       <span
                         className="font-mono shrink-0"
-                        style={{ color: check.status === 'mismatch' ? 'var(--danger)' : 'var(--text-secondary)' }}
-                      >
+                        style={{ color: check.status === 'mismatch' ? 'var(--danger)' : 'var(--text-secondary)' }}>
                         {v.value}
                       </span>
                     </div>

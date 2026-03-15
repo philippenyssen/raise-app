@@ -6,7 +6,7 @@ import {
   Zap, RefreshCw, AlertTriangle, TrendingUp, Users,
   ArrowRight, Clock, Activity, Target, Flame,
 } from 'lucide-react';
-import { getIntensityColor, stTextMuted, stTextSecondary, stFontXs, stFontSm, stSurface2, labelMuted } from '@/lib/styles';
+import { getIntensityColor, labelMuted, stAccent, stFontSm, stFontXs, stSurface2, stTextMuted, stTextPrimary, stTextSecondary } from '@/lib/styles';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -158,8 +158,7 @@ function EnthusiasmDots({ value }: { value: number }) {
             background: i <= value
               ? (value >= 4 ? 'var(--success)' : value >= 3 ? 'var(--warning)' : 'var(--danger)')
               : 'var(--border-default)',
-          }}
-        />
+          }} />
       ))}
     </div>
   );
@@ -176,8 +175,7 @@ function IntensityMeter({ intensity, description }: { intensity: number; descrip
   return (
     <div
       className="card"
-      style={{ padding: 'var(--space-6)', background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)' }}
-    >
+      style={{ padding: 'var(--space-6)', background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)' }}>
       <div className="flex items-center gap-3 mb-4">
         <span className="flex items-center justify-center" style={{ width: '40px', height: '40px', borderRadius: 'var(--radius-md)', background: 'var(--surface-2)' }}>
           <Zap className="w-5 h-5" style={{ color }} />
@@ -200,17 +198,15 @@ function IntensityMeter({ intensity, description }: { intensity: number; descrip
           background: 'var(--surface-2)',
           borderRadius: '4px',
           overflow: 'hidden',
-          marginBottom: 'var(--space-3)',
-        }}
-      >
+          marginBottom: 'var(--space-3)', }}
+>
         <div
           style={{
             width: `${intensity}%`, height: '100%',
             background: color,
             borderRadius: '4px',
             transition: 'width 0.6s ease-out',
-          }}
-        />
+          }} />
       </div>
 
       <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', lineHeight: 1.6, margin: 0 }}>
@@ -235,8 +231,7 @@ function StatsRow({ stats, meetingDensity }: { stats: FomoData['stats']; meeting
         return (
           <div
             key={item.label}
-            style={{ padding: 'var(--space-4)', background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)' }}
-          >
+            style={{ padding: 'var(--space-4)', background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)' }}>
             <div className="flex items-center gap-2 mb-1">
               <Icon className="w-3.5 h-3.5" style={{ color: item.color }} />
               <span style={labelMuted}>{item.label}</span>
@@ -260,8 +255,7 @@ function PressureCard({ inv }: { inv: InvestorFomo }) {
       style={{ padding: 'var(--space-4)', background: hovered ? 'var(--surface-2)' : 'var(--surface-1)', borderRadius: 'var(--radius-lg)', transition: 'all 150ms ease', cursor: 'pointer' }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      onClick={() => setExpanded(!expanded)}
-    >
+      onClick={() => setExpanded(!expanded)}>
       {/* Header row */}
       <div className="flex items-center gap-3">
         {/* Intensity bar */}
@@ -275,8 +269,7 @@ function PressureCard({ inv }: { inv: InvestorFomo }) {
               style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}
               onClick={e => e.stopPropagation()}
               onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
-              onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}
-            >
+              onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}>
               {inv.investorName}
             </Link>
             <TierBadge tier={inv.tier} />
@@ -313,9 +306,12 @@ function PressureCard({ inv }: { inv: InvestorFomo }) {
 
       {/* Intensity breakdown bar */}
       <div className="flex gap-0.5 mt-3" style={{ height: '4px', borderRadius: '2px', overflow: 'hidden' }}>
-        <div style={{ width: `${inv.advancingScore}%`, background: 'var(--danger)', borderRadius: '2px 0 0 2px' }} title={`Advancing peers: ${inv.advancingScore}`} />
-        <div style={{ width: `${inv.densityScore}%`, background: 'var(--warning)' }} title={`Meeting density: ${inv.densityScore}`} />
-        <div style={{ width: `${inv.connectionScore}%`, background: 'var(--accent)', borderRadius: '0 2px 2px 0' }} title={`Network connections: ${inv.connectionScore}`} />
+        <div style={{ width: `${inv.advancingScore}%`, background: 'var(--danger)', borderRadius: '2px 0 0 2px' }} title={`Advancing peers: ${inv.advancingScore}`}
+          />
+        <div style={{ width: `${inv.densityScore}%`, background: 'var(--warning)' }} title={`Meeting density: ${inv.densityScore}`}
+          />
+        <div style={{ width: `${inv.connectionScore}%`, background: 'var(--accent)', borderRadius: '0 2px 2px 0' }} title={`Network connections: ${inv.connectionScore}`}
+          />
         <div style={{ flex: 1, background: 'var(--surface-3)' }} />
       </div>
       <div className="flex gap-4 mt-1">
@@ -340,9 +336,8 @@ function PressureCard({ inv }: { inv: InvestorFomo }) {
                       padding: '2px 8px',
                       borderRadius: 'var(--radius-sm)',
                       background: 'var(--surface-2)',
-                      color: 'var(--text-secondary)',
-                    }}
-                  >
+                      color: 'var(--text-secondary)', }}
+>
                     {t.name}
                     <span style={{ color: 'var(--text-muted)', marginLeft: '4px' }}>
                       {t.statusLabel}
@@ -357,7 +352,7 @@ function PressureCard({ inv }: { inv: InvestorFomo }) {
           <div style={{ padding: 'var(--space-3)', background: 'var(--surface-0)', borderRadius: 'var(--radius-md)' }}>
             <div className="flex items-start gap-2">
               <span style={{ flexShrink: 0, marginTop: '2px' }}>
-                <Target className="w-3.5 h-3.5" style={{ color: 'var(--accent)' }} />
+                <Target className="w-3.5 h-3.5" style={stAccent} />
               </span>
               <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', lineHeight: 1.6, margin: 0 }}>
                 {inv.recommendation}
@@ -385,8 +380,7 @@ function TriggerEventCard({ event }: { event: TriggerEvent }) {
       className="transition-colors"
       style={{ padding: 'var(--space-3)', background: hovered ? 'var(--surface-2)' : 'var(--surface-1)', borderRadius: 'var(--radius-md)', transition: 'all 150ms ease' }}
       onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
+      onMouseLeave={() => setHovered(false)}>
       <div className="flex items-start gap-3">
         <span className="flex items-center justify-center shrink-0" style={{ width: '28px', height: '28px', borderRadius: 'var(--radius-sm)', ...(IMPACT_STYLES[event.impactLevel] ?? IMPACT_STYLES.low) }}>
           <Icon className="w-3.5 h-3.5" />
@@ -419,14 +413,13 @@ function StrategyCardComponent({ card }: { card: StrategyCard }) {
         background: hovered ? 'var(--surface-2)' : 'var(--surface-1)',
         borderRadius: 'var(--radius-lg)',
         transition: 'all 150ms ease',
-        ...PRIORITY_STYLES[card.priority],
-      }}
+        ...PRIORITY_STYLES[card.priority], }}
       onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
+      onMouseLeave={() => setHovered(false)}>
       <div className="flex items-start gap-2 mb-2">
         <span style={{ flexShrink: 0, marginTop: '2px' }}>
-          <Target className="w-4 h-4" style={{ color: card.priority === 'high' ? 'var(--danger)' : card.priority === 'medium' ? 'var(--warning)' : 'var(--text-muted)' }} />
+          <Target className="w-4 h-4" style={{ color: card.priority === 'high' ? 'var(--danger)' : card.priority === 'medium' ? 'var(--warning)' : 'var(--text-muted)' }}
+            />
         </span>
         <div>
           <h4 style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)', margin: 0 }}>{card.title}</h4>
@@ -491,7 +484,7 @@ export default function FomoPage() {
     return (
       <div className="flex-1 flex items-center justify-center" style={{ minHeight: '60vh' }}>
         <div className="flex flex-col items-center gap-3">
-          <RefreshCw className="w-6 h-6 animate-spin" style={{ color: 'var(--accent)' }} />
+          <RefreshCw className="w-6 h-6 animate-spin" style={stAccent} />
           <span style={{ ...stFontSm, ...stTextMuted }}>Computing FOMO dynamics...</span>
         </div>
       </div>
@@ -502,12 +495,11 @@ export default function FomoPage() {
     return (
       <div className="flex-1 flex items-center justify-center" style={{ minHeight: '60vh' }}>
         <div className="flex flex-col items-center gap-3">
-          <AlertTriangle className="w-6 h-6" style={{ color: 'var(--text-primary)' }} />
+          <AlertTriangle className="w-6 h-6" style={stTextPrimary} />
           <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)' }}>{error}</span>
           <button
             className="btn btn-secondary btn-md"
-            onClick={fetchData}
-          >
+            onClick={fetchData}>
             Retry
           </button>
         </div>
@@ -557,9 +549,8 @@ export default function FomoPage() {
               fontWeight: 400,
               background: refreshHovered ? 'var(--surface-2)' : 'var(--surface-1)',
               color: 'var(--text-secondary)',
-              cursor: 'pointer',
-            }}
-          >
+              cursor: 'pointer', }}
+>
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
             Refresh
           </button>
@@ -604,15 +595,13 @@ export default function FomoPage() {
                       if (filterIntensity !== tab.key) {
                         (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)';
                         (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)';
-                      }
-                    }}
+                      } }}
                     onMouseLeave={e => {
                       if (filterIntensity !== tab.key) {
                         (e.currentTarget as HTMLElement).style.background = 'transparent';
                         (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)';
-                      }
-                    }}
-                  >
+                      } }}
+>
                     {tab.label} ({tab.count})
                   </button>
                 ))}
@@ -626,9 +615,8 @@ export default function FomoPage() {
                     padding: 'var(--space-8)',
                     textAlign: 'center',
                     color: 'var(--text-muted)',
-                    fontSize: 'var(--font-size-sm)',
-                  }}
-                >
+                    fontSize: 'var(--font-size-sm)', }}
+>
                   No investors match this filter.
                 </div>
               ) : (
@@ -654,9 +642,8 @@ export default function FomoPage() {
                     color: 'var(--text-muted)',
                     fontSize: 'var(--font-size-sm)',
                     background: 'var(--surface-1)',
-                    borderRadius: 'var(--radius-lg)',
-                  }}
-                >
+                    borderRadius: 'var(--radius-lg)', }}
+>
                   No recent trigger events detected.
                 </div>
               ) : (
@@ -681,9 +668,8 @@ export default function FomoPage() {
                     color: 'var(--text-muted)',
                     fontSize: 'var(--font-size-sm)',
                     background: 'var(--surface-1)',
-                    borderRadius: 'var(--radius-lg)',
-                  }}
-                >
+                    borderRadius: 'var(--radius-lg)', }}
+>
                   No actionable strategies right now. Add more investors or schedule meetings to generate competitive dynamics.
                 </div>
               ) : (
@@ -697,14 +683,9 @@ export default function FomoPage() {
 
             {/* Meeting Density */}
             <div
-              style={{
-                padding: 'var(--space-4)',
-                background: 'var(--surface-1)',
-                borderRadius: 'var(--radius-lg)',
-              }}
-            >
+              style={{ padding: 'var(--space-4)', background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)' }}>
               <div className="flex items-center gap-2 mb-2">
-                <Activity className="w-4 h-4" style={{ color: 'var(--accent)' }} />
+                <Activity className="w-4 h-4" style={stAccent} />
                 <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', margin: 0 }}>
                   Meeting Cadence
                 </h3>
@@ -723,17 +704,15 @@ export default function FomoPage() {
                   background: 'var(--surface-3)',
                   borderRadius: '2px',
                   overflow: 'hidden',
-                  marginBottom: 'var(--space-2)',
-                }}
-              >
+                  marginBottom: 'var(--space-2)', }}
+>
                 <div
                   style={{
                     width: `${data.meetingDensity.densityScore}%`,
                     height: '100%',
                     background: data.meetingDensity.densityScore >= 70 ? 'var(--success)' : data.meetingDensity.densityScore >= 40 ? 'var(--warning)' : 'var(--danger)',
                     borderRadius: '2px',
-                  }}
-                />
+                  }} />
               </div>
               <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', lineHeight: 1.5, margin: 0 }}>
                 {data.meetingDensity.insight}

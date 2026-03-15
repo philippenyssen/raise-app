@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { STATUS_LABELS as STAGE_LABELS } from '@/lib/constants';
 import { fmtDate, fmtDateShort } from '@/lib/format';
-import { confidenceColor, confidenceBg, stTextMuted, stTextTertiary, stTextSecondary, stFontXs, stFontSm, stSurface1, labelMuted } from '@/lib/styles';
+import { confidenceBg, confidenceColor, labelMuted, labelMuted10, stAccent, stFontSm, stFontXs, stSurface1, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 interface InvestorForecast {
   investorId: string;
@@ -196,9 +196,8 @@ export default function ForecastPage() {
               fontWeight: 400,
               background: confidenceBg(forecast.confidence),
               color: confidenceColor(forecast.confidence),
-              letterSpacing: '0.01em',
-            }}
-          >
+              letterSpacing: '0.01em', }}
+>
             <Shield className="w-3 h-3" />
             {forecast.confidence} confidence
           </span>
@@ -209,7 +208,7 @@ export default function ForecastPage() {
       <div className="card" style={{ marginBottom: 'var(--space-6)', padding: 'var(--space-5)' }}>
         <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-3)' }}>
           <div className="flex items-center gap-2">
-            <span style={{ color: 'var(--accent)' }}><Target className="w-4 h-4" /></span>
+            <span style={stAccent}><Target className="w-4 h-4" /></span>
             <span style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>
               Raise Target Progress
             </span>
@@ -230,9 +229,8 @@ export default function ForecastPage() {
               background: 'var(--surface-2)',
               borderRadius: 'var(--radius-md)',
               overflow: 'hidden',
-              position: 'relative',
-            }}
-          >
+              position: 'relative', }}
+>
             {/* Expected (lighter) */}
             <div
               style={{
@@ -244,8 +242,7 @@ export default function ForecastPage() {
                 background: 'var(--accent-muted)',
                 borderRadius: 'var(--radius-md)',
                 transition: 'width 600ms ease',
-              }}
-            />
+              }} />
             {/* Committed (solid) */}
             <div
               style={{
@@ -257,8 +254,7 @@ export default function ForecastPage() {
                 background: 'var(--accent)',
                 borderRadius: 'var(--radius-md)',
                 transition: 'width 600ms ease',
-              }}
-            />
+              }} />
             {/* Label inside */}
             <div
               style={{
@@ -270,9 +266,8 @@ export default function ForecastPage() {
                 fontWeight: 300,
                 color: 'var(--text-primary)',
                 fontVariantNumeric: 'tabular-nums',
-                whiteSpace: 'nowrap',
-              }}
-            >
+                whiteSpace: 'nowrap', }}
+>
               {formatAmount(effectiveExpected, currency)} / {targetDisplay}
             </div>
           </div>
@@ -321,11 +316,9 @@ export default function ForecastPage() {
               style={{
                 padding: 'var(--space-5)',
                 background: isHovered ? 'var(--surface-1)' : 'var(--surface-0)',
-                transition: 'background 150ms ease',
-              }}
+                transition: 'background 150ms ease', }}
               onMouseEnter={() => setHoveredScenario(key)}
-              onMouseLeave={() => setHoveredScenario(null)}
-            >
+              onMouseLeave={() => setHoveredScenario(null)}>
               <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
                 <span style={{ color: iconColor }}>
                   <Icon className="w-4 h-4" />
@@ -340,9 +333,8 @@ export default function ForecastPage() {
                   fontWeight: 300,
                   color: 'var(--text-primary)',
                   fontVariantNumeric: 'tabular-nums',
-                  marginBottom: 'var(--space-1)',
-                }}
-              >
+                  marginBottom: 'var(--space-1)', }}
+>
                 {formatAmount(s.amount, currency)}
               </div>
               <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-2)' }}>
@@ -356,9 +348,8 @@ export default function ForecastPage() {
                   color: 'var(--text-tertiary)',
                   borderTop: '1px solid var(--border-subtle)',
                   paddingTop: 'var(--space-2)',
-                  marginTop: 'var(--space-2)',
-                }}
-              >
+                  marginTop: 'var(--space-2)', }}
+>
                 <span>{s.investorCount} investor{s.investorCount !== 1 ? 's' : ''}</span>
                 <span>{fmtDateShort(s.closeDate)}</span>
               </div>
@@ -397,8 +388,7 @@ export default function ForecastPage() {
                     borderRadius: '3px',
                     transition: 'width 400ms ease',
                     border: `1px solid ${color}`,
-                  }}
-                />
+                  }} />
               </div>
             </div>
           ))}
@@ -430,9 +420,8 @@ export default function ForecastPage() {
                       gap: 'var(--space-2)',
                       padding: 'var(--space-2) var(--space-3)',
                       background: 'var(--surface-1)',
-                      borderRadius: 'var(--radius-sm)',
-                    }}
-                  >
+                      borderRadius: 'var(--radius-sm)', }}
+>
                     <span
                       style={{
                         width: '18px',
@@ -445,9 +434,8 @@ export default function ForecastPage() {
                         justifyContent: 'center',
                         fontSize: '10px',
                         fontWeight: 300,
-                        flexShrink: 0,
-                      }}
-                    >
+                        flexShrink: 0, }}
+>
                       {i + 1}
                     </span>
                     <div style={{ flex: 1, minWidth: 0 }}>
@@ -456,12 +444,11 @@ export default function ForecastPage() {
                         style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textDecoration: 'none', display: 'block' }}
                         className="transition-colors"
                         onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
-                        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-primary)'; }}
-                      >
+                        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-primary)'; }}>
                         {name}
                       </Link>
                       {inv && (
-                        <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                        <div style={labelMuted10}>
                           {STAGE_LABELS[inv.currentStage] || inv.currentStage} &middot; ~{inv.predictedDaysToClose}d
                         </div>
                       )}
@@ -477,11 +464,9 @@ export default function ForecastPage() {
                           borderRadius: 'var(--radius-sm)',
                           background: 'var(--warning-muted)',
                           color: 'var(--text-tertiary)',
-                          textDecoration: 'none',
-                        }}
+                          textDecoration: 'none', }}
                         onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--fg-5)'; }}
-                        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--warning-muted)'; }}
-                      >
+                        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--warning-muted)'; }}>
                         <Calendar className="w-3 h-3" />
                       </Link>
                     )}
@@ -495,7 +480,7 @@ export default function ForecastPage() {
         {/* Risk Factors */}
         <div className="card" style={{ padding: 'var(--space-5)' }}>
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-4)' }}>
-            <span style={{ color: 'var(--text-primary)' }}><AlertTriangle className="w-4 h-4" /></span>
+            <span style={stTextPrimary}><AlertTriangle className="w-4 h-4" /></span>
             <span style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>
               Risk Factors
             </span>
@@ -528,11 +513,9 @@ export default function ForecastPage() {
                       background: 'var(--danger-muted)',
                       borderRadius: 'var(--radius-sm)',
                       textDecoration: 'none',
-                      transition: 'background 150ms ease',
-                    }}
+                      transition: 'background 150ms ease', }}
                     onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--fg-6)'; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--danger-muted)'; }}
-                  >
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--danger-muted)'; }}>
                     <span style={{ color: 'var(--text-primary)', marginTop: '2px', flexShrink: 0 }}>
                       <AlertTriangle className="w-3 h-3" />
                     </span>
@@ -553,11 +536,7 @@ export default function ForecastPage() {
       {/* Investor Timeline */}
       <div className="card" style={{ padding: 0, overflow: 'hidden', marginBottom: 'var(--space-6)' }}>
         <div
-          style={{
-            padding: 'var(--space-4) var(--space-5)',
-            borderBottom: '1px solid var(--border-subtle)',
-          }}
-        >
+          style={{ padding: 'var(--space-4) var(--space-5)', borderBottom: '1px solid var(--border-subtle)' }}>
           <div className="flex items-center gap-2">
             <span style={stTextTertiary}><Clock className="w-4 h-4" /></span>
             <span style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>
@@ -568,8 +547,7 @@ export default function ForecastPage() {
                 <button
                   onClick={() => setExcludedIds(new Set())}
                   className="flex items-center gap-1"
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--accent)', fontWeight: 400, fontSize: 'var(--font-size-xs)' }}
-                >
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--accent)', fontWeight: 400, fontSize: 'var(--font-size-xs)' }}>
                   <RotateCcw className="w-3 h-3" /> Reset what-if
                 </button>
               ) : (
@@ -614,11 +592,9 @@ export default function ForecastPage() {
                         background: hoveredRow === inv.investorId ? 'var(--surface-1)' : 'transparent',
                         cursor: 'pointer',
                         opacity: isExcluded ? 0.4 : 1,
-                        transition: 'opacity 200ms ease',
-                      }}
+                        transition: 'opacity 200ms ease', }}
                       onMouseEnter={() => setHoveredRow(inv.investorId)}
-                      onMouseLeave={() => setHoveredRow(null)}
-                    >
+                      onMouseLeave={() => setHoveredRow(null)}>
                       {/* What-if toggle */}
                       <td style={{ padding: 'var(--space-3) var(--space-2)', textAlign: 'center' }}>
                         <button
@@ -629,15 +605,13 @@ export default function ForecastPage() {
                               if (next.has(inv.investorId)) next.delete(inv.investorId);
                               else next.add(inv.investorId);
                               return next;
-                            });
-                          }}
+                            }); }}
                           style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
-                          title={isExcluded ? 'Include in forecast' : 'Exclude from forecast (what-if)'}
-                        >
+                          title={isExcluded ? 'Include in forecast' : 'Exclude from forecast (what-if)'}>
                           {isExcluded ? (
-                            <span style={{ color: 'var(--text-muted)' }}><ToggleLeft className="w-5 h-5" /></span>
+                            <span style={stTextMuted}><ToggleLeft className="w-5 h-5" /></span>
                           ) : (
-                            <span style={{ color: 'var(--accent)' }}><ToggleRight className="w-5 h-5" /></span>
+                            <span style={stAccent}><ToggleRight className="w-5 h-5" /></span>
                           )}
                         </button>
                       </td>
@@ -662,8 +636,7 @@ export default function ForecastPage() {
                                   : inv.tier === 2
                                     ? { background: 'var(--accent)', color: 'var(--text-primary)' }
                                     : { background: 'var(--surface-3)', color: 'var(--text-secondary)' }),
-                              }}
-                            >
+                              }}>
                               {inv.tier}
                             </span>
                             <div>
@@ -690,9 +663,8 @@ export default function ForecastPage() {
                             fontWeight: 400,
                             color: isExcluded ? 'var(--text-muted)' : 'var(--text-secondary)',
                             fontVariantNumeric: 'tabular-nums',
-                            textDecoration: isExcluded ? 'line-through' : 'none',
-                          }}
-                        >
+                            textDecoration: isExcluded ? 'line-through' : 'none', }}
+>
                           {formatAmount(estCapital, currency)}
                         </span>
                       </td>
@@ -715,9 +687,8 @@ export default function ForecastPage() {
                               ? 'var(--danger)'
                               : inv.daysInStage > 14
                                 ? 'var(--warning)'
-                                : 'var(--text-secondary)',
-                          }}
-                        >
+                                : 'var(--text-secondary)', }}
+>
                           {inv.daysInStage}d
                         </span>
                       </td>
@@ -740,9 +711,8 @@ export default function ForecastPage() {
                               ? 'var(--danger)'
                               : inv.predictedDaysToClose > 30
                                 ? 'var(--warning)'
-                                : 'var(--text-secondary)',
-                          }}
-                        >
+                                : 'var(--text-secondary)', }}
+>
                           {inv.predictedDaysToClose}d
                         </span>
                       </td>
@@ -758,9 +728,8 @@ export default function ForecastPage() {
                             fontSize: 'var(--font-size-xs)',
                             fontWeight: 400,
                             background: confidenceBg(inv.confidence),
-                            color: confidenceColor(inv.confidence),
-                          }}
-                        >
+                            color: confidenceColor(inv.confidence), }}
+>
                           {inv.confidence}
                         </span>
                       </td>
@@ -774,9 +743,8 @@ export default function ForecastPage() {
                               height: '6px',
                               background: 'var(--surface-3)',
                               borderRadius: '3px',
-                              overflow: 'hidden',
-                            }}
-                          >
+                              overflow: 'hidden', }}
+>
                             <div
                               style={{
                                 width: maxDaysToClose > 0 ? `${Math.max(4, (inv.predictedDaysToClose / maxDaysToClose) * 100)}%` : '0%',
@@ -785,8 +753,7 @@ export default function ForecastPage() {
                                 borderRadius: '3px',
                                 transition: 'width 400ms ease',
                                 opacity: 0.7,
-                              }}
-                            />
+                              }} />
                           </div>
                           <span
                             style={{
@@ -794,9 +761,8 @@ export default function ForecastPage() {
                               color: 'var(--text-muted)',
                               minWidth: '32px',
                               textAlign: 'right',
-                              fontVariantNumeric: 'tabular-nums',
-                            }}
-                          >
+                              fontVariantNumeric: 'tabular-nums', }}
+>
                             {inv.predictedDaysToClose}d
                           </span>
                         </div>
@@ -831,9 +797,8 @@ export default function ForecastPage() {
                   fontSize: 'var(--font-size-xs)',
                   fontWeight: 400,
                   color,
-                  fontVariantNumeric: 'tabular-nums',
-                }}
-              >
+                  fontVariantNumeric: 'tabular-nums', }}
+>
                 {investors.length}
               </span>
             </div>
@@ -856,11 +821,9 @@ export default function ForecastPage() {
                       borderRadius: 'var(--radius-sm)',
                       background: bg,
                       textDecoration: 'none',
-                      transition: 'filter 150ms ease',
-                    }}
+                      transition: 'filter 150ms ease', }}
                     onMouseEnter={e => { (e.currentTarget as HTMLElement).style.filter = 'brightness(1.1)'; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.filter = 'none'; }}
-                  >
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.filter = 'none'; }}>
                     <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '60%' }}>
                       {inv.investorName}
                     </span>
@@ -882,9 +845,8 @@ export default function ForecastPage() {
           marginTop: 'var(--space-6)',
           padding: 'var(--space-3)',
           fontSize: 'var(--font-size-xs)',
-          color: 'var(--text-muted)',
-        }}
-      >
+          color: 'var(--text-muted)', }}
+>
         <span style={stTextTertiary}>
           <Users className="w-3 h-3" />
         </span>
@@ -893,8 +855,7 @@ export default function ForecastPage() {
         <Link
           href="/velocity"
           className="flex items-center gap-1"
-          style={{ color: 'var(--accent)', textDecoration: 'none' }}
-        >
+          style={{ color: 'var(--accent)', textDecoration: 'none' }}>
           View Velocity
           <ArrowRight className="w-3 h-3" />
         </Link>

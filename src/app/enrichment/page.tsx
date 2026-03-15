@@ -9,6 +9,7 @@ import {
   Play, Settings, Layers,
 } from 'lucide-react';
 import { useToast } from '@/components/toast';
+import { labelMuted, labelTertiary, stFontSm, stFontXs, stTextMuted } from '@/lib/styles';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -220,8 +221,7 @@ export default function EnrichmentPage() {
             onClick={enrichBulk}
             disabled={bulkEnriching || investors.length === 0}
             className="btn btn-primary btn-md"
-            style={{ opacity: bulkEnriching || investors.length === 0 ? 0.4 : 1 }}
-          >
+            style={{ opacity: bulkEnriching || investors.length === 0 ? 0.4 : 1 }}>
             {bulkEnriching ? <Loader2 style={{ width: '14px', height: '14px' }} className="animate-spin" /> : <Zap style={{ width: '14px', height: '14px' }} />}
             {bulkEnriching ? 'Enriching All...' : 'Enrich All Investors'}
           </button>
@@ -231,11 +231,16 @@ export default function EnrichmentPage() {
       {/* Stats Row */}
       {stats && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 'var(--space-3)' }}>
-          <StatCard label="Records" value={stats.total_records.toLocaleString()} icon={<Database style={{ width: '14px', height: '14px' }} />} />
-          <StatCard label="Investors Enriched" value={String(stats.total_investors_enriched)} icon={<Users style={{ width: '14px', height: '14px' }} />} />
-          <StatCard label="Jobs Run" value={String(stats.total_jobs)} icon={<RefreshCw style={{ width: '14px', height: '14px' }} />} />
-          <StatCard label="Avg Confidence" value={`${(stats.avg_confidence * 100).toFixed(0)}%`} icon={<Shield style={{ width: '14px', height: '14px' }} />} />
-          <StatCard label="Stale Records" value={String(stats.stale_count)} icon={<AlertTriangle style={{ width: '14px', height: '14px' }} />} accent={stats.stale_count > 0 ? 'var(--warning)' : undefined} />
+          <StatCard label="Records" value={stats.total_records.toLocaleString()} icon={<Database style={{ width: '14px', height: '14px' }} />}
+            />
+          <StatCard label="Investors Enriched" value={String(stats.total_investors_enriched)} icon={<Users style={{ width: '14px', height: '14px' }} />}
+            />
+          <StatCard label="Jobs Run" value={String(stats.total_jobs)} icon={<RefreshCw style={{ width: '14px', height: '14px' }} />}
+            />
+          <StatCard label="Avg Confidence" value={`${(stats.avg_confidence * 100).toFixed(0)}%`} icon={<Shield style={{ width: '14px', height: '14px' }} />}
+            />
+          <StatCard label="Stale Records" value={String(stats.stale_count)} icon={<AlertTriangle style={{ width: '14px', height: '14px' }} />} accent={stats.stale_count > 0 ? 'var(--warning)' : undefined}
+            />
         </div>
       )}
 
@@ -253,9 +258,8 @@ export default function EnrichmentPage() {
               color: tab === t ? 'var(--text-primary)' : 'var(--text-muted)',
               background: 'transparent',
               cursor: 'pointer',
-              display: 'flex', alignItems: 'center', gap: 'var(--space-2)',
-            }}
-          >
+              display: 'flex', alignItems: 'center', gap: 'var(--space-2)', }}
+>
             {t === 'enrich' && <Search style={{ width: '14px', height: '14px' }} />}
             {t === 'sources' && <Settings style={{ width: '14px', height: '14px' }} />}
             {t === 'history' && <Clock style={{ width: '14px', height: '14px' }} />}
@@ -278,7 +282,7 @@ export default function EnrichmentPage() {
               <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400 }}>
                 {lastResult.total_fields} fields enriched from {lastResult.sources_succeeded} sources
               </span>
-              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+              <span style={labelMuted}>
                 ({lastResult.duration_ms}ms)
               </span>
             </div>
@@ -316,17 +320,15 @@ export default function EnrichmentPage() {
                   <div
                     key={inv.id}
                     className="table-row"
-                    style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr auto', gap: 'var(--space-2)', alignItems: 'center', padding: 'var(--space-2) var(--space-4)' }}
-                  >
+                    style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr auto', gap: 'var(--space-2)', alignItems: 'center', padding: 'var(--space-2) var(--space-4)' }}>
                     <Link
                       href={`/investors/${inv.id}`}
-                      style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, textDecoration: 'none' }}
-                    >
+                      style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, textDecoration: 'none' }}>
                       {inv.name}
                     </Link>
-                    <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>{inv.type}</span>
-                    <span className="tier-badge" data-tier={inv.tier} style={{ fontSize: 'var(--font-size-xs)' }}>T{inv.tier}</span>
-                    <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>{inv.status}</span>
+                    <span style={labelTertiary}>{inv.type}</span>
+                    <span className="tier-badge" data-tier={inv.tier} style={stFontXs}>T{inv.tier}</span>
+                    <span style={labelTertiary}>{inv.status}</span>
                     <button
                       onClick={() => enrichSingle(inv.id)}
                       disabled={enriching === inv.id || bulkEnriching}
@@ -337,9 +339,8 @@ export default function EnrichmentPage() {
                         border: '1px solid var(--accent-20)',
                         opacity: enriching === inv.id || bulkEnriching ? 0.4 : 1,
                         fontSize: 'var(--font-size-xs)',
-                        padding: '4px 10px',
-                      }}
-                    >
+                        padding: '4px 10px', }}
+>
                       {enriching === inv.id ? <Loader2 style={{ width: '12px', height: '12px' }} className="animate-spin" /> : <Play style={{ width: '12px', height: '12px' }} />}
                       {enriching === inv.id ? 'Enriching...' : 'Enrich'}
                     </button>
@@ -365,18 +366,15 @@ export default function EnrichmentPage() {
                   style={{
                     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                     padding: 'var(--space-3) var(--space-4)',
-                    cursor: 'pointer',
-                  }}
-                  onClick={() => setExpandedProvider(isExpanded ? null : provider.id)}
-                >
+                    cursor: 'pointer', }}
+                  onClick={() => setExpandedProvider(isExpanded ? null : provider.id)}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
                     <input
                       type="checkbox"
                       checked={isSelected}
                       onChange={(e) => { e.stopPropagation(); toggleSource(provider.id); }}
                       style={{ accentColor: 'var(--accent)' }}
-                      disabled={!provider.configured}
-                    />
+                      disabled={!provider.configured} />
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
                         <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
@@ -408,7 +406,7 @@ export default function EnrichmentPage() {
                       {provider.fields_provided.map(f => {
                         const Icon = CATEGORY_ICONS[f] || Globe;
                         return (
-                          <span key={f} title={f} style={{ color: 'var(--text-muted)' }}>
+                          <span key={f} title={f} style={stTextMuted}>
                             <Icon style={{ width: '12px', height: '12px' }} />
                           </span>
                         );
@@ -429,7 +427,7 @@ export default function EnrichmentPage() {
                       {provider.description}
                     </p>
                     <div style={{ marginTop: 'var(--space-3)', display: 'flex', flexWrap: 'wrap', gap: 'var(--space-2)' }}>
-                      <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Provides:</span>
+                      <span style={labelMuted}>Provides:</span>
                       {provider.fields_provided.map(f => (
                         <span key={f} style={{
                           fontSize: 'var(--font-size-xs)',
@@ -468,7 +466,7 @@ export default function EnrichmentPage() {
           {jobs.length === 0 ? (
             <div className="card" style={{ textAlign: 'center', padding: 'var(--space-8)', color: 'var(--text-muted)' }}>
               <Database style={{ width: '32px', height: '32px', margin: '0 auto var(--space-3)' }} />
-              <p style={{ fontSize: 'var(--font-size-sm)' }}>No enrichment data yet. Select an investor above and click Enrich to gather background intelligence from 9 sources.</p>
+              <p style={stFontSm}>No enrichment data yet. Select an investor above and click Enrich to gather background intelligence from 9 sources.</p>
             </div>
           ) : (
             jobs.map(job => {
@@ -487,8 +485,7 @@ export default function EnrichmentPage() {
                       <div>
                         <Link
                           href={`/investors/${job.investor_id}`}
-                          style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, textDecoration: 'none' }}
-                        >
+                          style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, textDecoration: 'none' }}>
                           {job.investor_name}
                         </Link>
                         <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '2px' }}>
@@ -497,7 +494,7 @@ export default function EnrichmentPage() {
                       </div>
                     </div>
                     <div style={{ textAlign: 'right' }}>
-                      <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                      <span style={labelMuted}>
                         {job.completed_at ? new Date(job.completed_at).toLocaleString() : 'Running...'}
                       </span>
                       {errors.length > 0 && (
@@ -526,7 +523,7 @@ function StatCard({ label, value, icon, accent }: { label: string; value: string
     <div className="card" style={{ padding: 'var(--space-3) var(--space-4)' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', marginBottom: 'var(--space-1)' }}>
         <span style={{ color: accent || 'var(--text-muted)' }}>{icon}</span>
-        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{label}</span>
+        <span style={labelMuted}>{label}</span>
       </div>
       <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: accent || 'var(--text-primary)' }}>
         {value}

@@ -5,7 +5,7 @@ import { useToast } from '@/components/toast';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
 import Link from 'next/link';
 import { Scale } from 'lucide-react';
-import { scoreColor as getScoreColor } from '@/lib/styles';
+import { scoreColor as getScoreColor, stSurface0, stSurface1, stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 interface TermSheet {
   id: string;
@@ -132,8 +132,8 @@ export default function TermsPage() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="h-8 w-48 rounded animate-pulse" style={{ background: 'var(--surface-2)' }} />
-        <div className="h-20 rounded-xl animate-pulse" style={{ background: 'var(--surface-1)' }} />
+        <div className="h-8 w-48 rounded animate-pulse" style={stSurface2} />
+        <div className="h-20 rounded-xl animate-pulse" style={stSurface1} />
       </div>
     );
   }
@@ -143,35 +143,33 @@ export default function TermsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="page-title">Term Sheet Comparison</h1>
-          <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
+          <p className="text-sm mt-1" style={stTextMuted}>
             Compare and score term sheets side-by-side. {sheets.length} received.
           </p>
         </div>
         <div className="flex items-center gap-2">
           <Link
             href="/term-compare"
-            className="btn btn-secondary btn-md text-sm font-normal"
-          >
+            className="btn btn-secondary btn-md text-sm font-normal">
             <Scale className="w-4 h-4" />
             Compare Terms
           </Link>
           <button
             onClick={() => { setShowForm(!showForm); setEditId(null); setForm(EMPTY_TS); }}
-            className="btn btn-primary btn-md text-sm font-normal"
-          >
+            className="btn btn-primary btn-md text-sm font-normal">
             + Add Term Sheet
           </button>
         </div>
       </div>
 
       {/* Market Standards Reference */}
-      <div className="rounded-xl p-5" style={{ background: 'var(--surface-0)' }}>
-        <h3 className="text-xs font-normal mb-3" style={{ color: 'var(--text-tertiary)' }}>Market standards (Series C)</h3>
+      <div className="rounded-xl p-5" style={stSurface0}>
+        <h3 className="text-xs font-normal mb-3" style={stTextTertiary}>Market standards (Series C)</h3>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-xs">
           {Object.entries(MARKET_STANDARDS).map(([key, val]) => (
             <div key={key}>
-              <span style={{ color: 'var(--text-muted)' }}>{key.replace(/_/g, ' ')}:</span>
-              <span className="ml-1" style={{ color: 'var(--text-secondary)' }}>{val}</span>
+              <span style={stTextMuted}>{key.replace(/_/g, ' ')}:</span>
+              <span className="ml-1" style={stTextSecondary}>{val}</span>
             </div>
           ))}
         </div>
@@ -179,25 +177,31 @@ export default function TermsPage() {
 
       {/* Add/Edit Form */}
       {showForm && (
-        <form onSubmit={handleSubmit} className="rounded-xl p-6 space-y-4" style={{ background: 'var(--surface-0)' }}>
-          <h3 className="text-sm font-normal" style={{ color: 'var(--text-tertiary)' }}>{editId ? 'Edit' : 'Add'} term sheet</h3>
+        <form onSubmit={handleSubmit} className="rounded-xl p-6 space-y-4" style={stSurface0}>
+          <h3 className="text-sm font-normal" style={stTextTertiary}>{editId ? 'Edit' : 'Add'} term sheet</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <TsInput label="Investor" value={form.investor} onChange={v => setForm(f => ({ ...f, investor: v }))} required />
-            <TsInput label="Pre-Money Valuation" value={form.valuation} onChange={v => setForm(f => ({ ...f, valuation: v }))} placeholder="e.g., 2.0Bn" />
-            <TsInput label="Investment Amount" value={form.amount} onChange={v => setForm(f => ({ ...f, amount: v }))} placeholder="e.g., 250M" />
+            <TsInput label="Pre-Money Valuation" value={form.valuation} onChange={v => setForm(f => ({ ...f, valuation: v }))} placeholder="e.g., 2.0Bn"
+              />
+            <TsInput label="Investment Amount" value={form.amount} onChange={v => setForm(f => ({ ...f, amount: v }))} placeholder="e.g., 250M"
+              />
             <TsInput label="Liquidation Preference" value={form.liq_pref} onChange={v => setForm(f => ({ ...f, liq_pref: v }))} />
-            <TsInput label="Anti-Dilution" value={form.anti_dilution} onChange={v => setForm(f => ({ ...f, anti_dilution: v }))} />
+            <TsInput label="Anti-Dilution" value={form.anti_dilution} onChange={v => setForm(f => ({ ...f, anti_dilution: v }))}
+              />
             <TsInput label="Board Seats" value={form.board_seats} onChange={v => setForm(f => ({ ...f, board_seats: v }))} />
             <TsInput label="Dividends" value={form.dividends} onChange={v => setForm(f => ({ ...f, dividends: v }))} />
-            <TsInput label="Protective Provisions" value={form.protective_provisions} onChange={v => setForm(f => ({ ...f, protective_provisions: v }))} />
-            <TsInput label="Option Pool" value={form.option_pool} onChange={v => setForm(f => ({ ...f, option_pool: v }))} placeholder="e.g., 12%" />
-            <TsInput label="Exclusivity" value={form.exclusivity} onChange={v => setForm(f => ({ ...f, exclusivity: v }))} placeholder="e.g., 14 days" />
+            <TsInput label="Protective Provisions" value={form.protective_provisions} onChange={v => setForm(f => ({ ...f, protective_provisions: v }))}
+              />
+            <TsInput label="Option Pool" value={form.option_pool} onChange={v => setForm(f => ({ ...f, option_pool: v }))} placeholder="e.g., 12%"
+              />
+            <TsInput label="Exclusivity" value={form.exclusivity} onChange={v => setForm(f => ({ ...f, exclusivity: v }))} placeholder="e.g., 14 days"
+              />
             <div>
               <label className="label block mb-1" style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>Strategic Value (1-5)</label>
               <input type="range" min="1" max="5" value={form.strategic_value}
                 onChange={e => setForm(f => ({ ...f, strategic_value: Number(e.target.value) }))}
                 className="w-full" />
-              <div className="text-xs text-center" style={{ color: 'var(--text-muted)' }}>{form.strategic_value}/5</div>
+              <div className="text-xs text-center" style={stTextMuted}>{form.strategic_value}/5</div>
             </div>
           </div>
           <TsInput label="Notes" value={form.notes} onChange={v => setForm(f => ({ ...f, notes: v }))} />
@@ -218,23 +222,23 @@ export default function TermsPage() {
           <table className="w-full text-sm">
             <thead className="table-header">
               <tr>
-                <th className="text-left px-4 py-3 text-xs font-normal w-40" style={{ color: 'var(--text-muted)' }}>Term</th>
+                <th className="text-left px-4 py-3 text-xs font-normal w-40" style={stTextMuted}>Term</th>
                 {sheets.map(ts => (
-                  <th key={ts.id} className="text-left px-4 py-3 text-xs font-normal min-w-48" style={{ color: 'var(--text-secondary)' }}>
+                  <th key={ts.id} className="text-left px-4 py-3 text-xs font-normal min-w-48" style={stTextSecondary}>
                     <div className="flex items-center justify-between gap-2">
                       {ts.investor}
                       <div className="flex gap-1 shrink-0">
-                        <button onClick={() => startEdit(ts)} className="text-xs transition-colors" style={{ color: 'var(--text-muted)' }}
+                        <button onClick={() => startEdit(ts)} className="text-xs transition-colors" style={stTextMuted}
                           onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
                           onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}>Edit</button>
-                        <button onClick={() => setDeleteTarget({ id: ts.id, investor: ts.investor })} className="text-xs transition-colors" style={{ color: 'var(--text-muted)' }}
+                        <button onClick={() => setDeleteTarget({ id: ts.id, investor: ts.investor })} className="text-xs transition-colors" style={stTextMuted}
                           onMouseEnter={e => (e.currentTarget.style.color = 'var(--danger)')}
                           onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}>Del</button>
                       </div>
                     </div>
                   </th>
                 ))}
-                <th className="text-left px-4 py-3 text-xs font-normal" style={{ color: 'var(--text-muted)' }}>Market Standard</th>
+                <th className="text-left px-4 py-3 text-xs font-normal" style={stTextMuted}>Market Standard</th>
               </tr>
             </thead>
             <tbody>
@@ -250,7 +254,7 @@ export default function TermsPage() {
                 ['Exclusivity', 'exclusivity'],
               ] as const).map(([label, key]) => (
                 <tr key={key} className="table-row">
-                  <td className="px-4 py-2.5 text-xs" style={{ color: 'var(--text-muted)' }}>{label}</td>
+                  <td className="px-4 py-2.5 text-xs" style={stTextMuted}>{label}</td>
                   {sheets.map(ts => {
                     const val = ts[key as keyof TermSheet] as string;
                     const standard = MARKET_STANDARDS[key];
@@ -261,12 +265,12 @@ export default function TermsPage() {
                       </td>
                     );
                   })}
-                  <td className="px-4 py-2.5 text-xs" style={{ color: 'var(--text-muted)' }}>{MARKET_STANDARDS[key] || '\u2014'}</td>
+                  <td className="px-4 py-2.5 text-xs" style={stTextMuted}>{MARKET_STANDARDS[key] || '\u2014'}</td>
                 </tr>
               ))}
               {/* Score Row */}
               <tr style={{ background: 'var(--surface-1)', borderTop: '2px solid var(--border-strong)' }}>
-                <td className="px-4 py-3 text-xs font-normal" style={{ color: 'var(--text-tertiary)' }}>Score</td>
+                <td className="px-4 py-3 text-xs font-normal" style={stTextTertiary}>Score</td>
                 {sheets.map(ts => {
                   const { score, flags } = scoreSheet(ts);
                   return (
@@ -275,16 +279,16 @@ export default function TermsPage() {
                         {score}/100
                       </div>
                       {flags.map((f, i) => (
-                        <div key={i} className="text-xs mt-1" style={{ color: 'var(--text-primary)' }}>{f}</div>
+                        <div key={i} className="text-xs mt-1" style={stTextPrimary}>{f}</div>
                       ))}
                     </td>
                   );
                 })}
-                <td className="px-4 py-3 text-xs" style={{ color: 'var(--text-muted)' }}>Benchmark</td>
+                <td className="px-4 py-3 text-xs" style={stTextMuted}>Benchmark</td>
               </tr>
               {/* Action Row */}
               <tr style={{ background: 'var(--surface-0)', borderTop: '1px solid var(--border-subtle)' }}>
-                <td className="px-4 py-3 text-xs font-normal" style={{ color: 'var(--text-tertiary)' }}>ACTION</td>
+                <td className="px-4 py-3 text-xs font-normal" style={stTextTertiary}>ACTION</td>
                 {sheets.map(ts => {
                   const { score, flags } = scoreSheet(ts);
                   const action = score >= 70
@@ -303,9 +307,8 @@ export default function TermsPage() {
                           borderRadius: 'var(--radius-sm)',
                           background: action.bg,
                           color: action.color,
-                          marginBottom: '4px',
-                        }}
-                      >
+                          marginBottom: '4px', }}
+>
                         {action.label}
                       </span>
                       <div style={{ fontSize: '10px', color: 'var(--text-muted)', lineHeight: 1.4 }}>
@@ -314,7 +317,7 @@ export default function TermsPage() {
                     </td>
                   );
                 })}
-                <td className="px-4 py-3 text-xs" style={{ color: 'var(--text-muted)' }}>—</td>
+                <td className="px-4 py-3 text-xs" style={stTextMuted}>—</td>
               </tr>
             </tbody>
           </table>
@@ -322,7 +325,7 @@ export default function TermsPage() {
       )}
 
       {sheets.length === 0 && !showForm && (
-        <div className="rounded-xl p-8 text-center text-sm" style={{ color: 'var(--text-muted)' }}>
+        <div className="rounded-xl p-8 text-center text-sm" style={stTextMuted}>
           No term sheets yet. Add them as they come in for side-by-side comparison.
         </div>
       )}
@@ -334,8 +337,7 @@ export default function TermsPage() {
         confirmLabel="Delete"
         variant="danger"
         onConfirm={handleDelete}
-        onCancel={() => setDeleteTarget(null)}
-      />
+        onCancel={() => setDeleteTarget(null)} />
     </div>
   );
 }

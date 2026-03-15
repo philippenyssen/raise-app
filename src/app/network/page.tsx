@@ -7,7 +7,7 @@ import {
   TrendingUp, Users, Link2, ChevronDown, ChevronUp, Calendar,
 } from 'lucide-react';
 import { STATUS_LABELS } from '@/lib/constants';
-import { probColor } from '@/lib/styles';
+import { labelMuted, labelSecondary, probColor, stAccent, stFontSm, stSurface1, stTextMuted, stTextPrimary, stTextTertiary } from '@/lib/styles';
 
 interface CascadeLink {
   investorId: string;
@@ -112,7 +112,7 @@ export default function NetworkPage() {
     return (
       <div className="flex items-center justify-center" style={{ minHeight: '60vh' }}>
         <div className="flex flex-col items-center gap-3">
-          <RefreshCw className="w-5 h-5 animate-spin" style={{ color: 'var(--text-muted)' }} />
+          <RefreshCw className="w-5 h-5 animate-spin" style={stTextMuted} />
           <span style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>Computing network cascades...</span>
         </div>
       </div>
@@ -123,7 +123,7 @@ export default function NetworkPage() {
     return (
       <div className="p-6">
         <div className="card p-6 flex items-center gap-3">
-          <AlertTriangle className="w-5 h-5 shrink-0" style={{ color: 'var(--text-primary)' }} />
+          <AlertTriangle className="w-5 h-5 shrink-0" style={stTextPrimary} />
           <div>
             <p style={{ color: 'var(--text-primary)', fontWeight: 400 }}>Failed to load network data</p>
             <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>{error}</p>
@@ -141,15 +141,14 @@ export default function NetworkPage() {
           <h1 className="page-title">Investor Network</h1>
         </div>
         <div className="card p-8 flex flex-col items-center gap-3" style={{ textAlign: 'center' }}>
-          <span style={{ color: 'var(--text-muted)' }}><Link2 className="w-8 h-8" /></span>
+          <span style={stTextMuted}><Link2 className="w-8 h-8" /></span>
           <p style={{ color: 'var(--text-secondary)', fontSize: 'var(--font-size-sm)' }}>
             No network cascades detected. Add investors and log meetings to build cascade effects.
           </p>
           <Link
             href="/investors"
             className="btn btn-primary btn-sm"
-            style={{ marginTop: '4px' }}
-          >
+            style={{ marginTop: '4px' }}>
             Go to Investors
           </Link>
         </div>
@@ -172,11 +171,7 @@ export default function NetworkPage() {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <div style={{
-            padding: 'var(--space-2) var(--space-4)',
-            background: 'var(--accent-muted)',
-            borderRadius: 'var(--radius-md)',
-          }}>
+          <div style={{ padding: 'var(--space-2) var(--space-4)', background: 'var(--accent-muted)', borderRadius: 'var(--radius-md)' }}>
             <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)', fontWeight: 400 }}>
               Expected Capital
             </span>
@@ -187,8 +182,7 @@ export default function NetworkPage() {
           <button
             className="btn-secondary flex items-center gap-2"
             onClick={fetchData}
-            style={{ fontSize: 'var(--font-size-sm)' }}
-          >
+            style={stFontSm}>
             <RefreshCw className="w-3.5 h-3.5" />
             Refresh
           </button>
@@ -205,7 +199,7 @@ export default function NetworkPage() {
         ].map((stat) => (
           <div key={stat.label} className="card p-4">
             <div className="flex items-center gap-2 mb-1">
-              <span style={{ color: 'var(--text-muted)' }}><stat.icon className="w-3.5 h-3.5" /></span>
+              <span style={stTextMuted}><stat.icon className="w-3.5 h-3.5" /></span>
               <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', letterSpacing: '0.01em' }}>
                 {stat.label}
               </span>
@@ -221,11 +215,8 @@ export default function NetworkPage() {
       {bottleneckAlert && (
         <div
           className="card p-4 mb-6 flex items-start gap-3"
-          style={{
-            background: 'var(--warning-muted)',
-          }}
-        >
-          <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" style={{ color: 'var(--text-tertiary)' }} />
+          style={{ background: 'var(--warning-muted)' }}>
+          <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" style={stTextTertiary} />
           <div className="flex-1">
             <p style={{ fontWeight: 400, color: 'var(--text-primary)', fontSize: 'var(--font-size-sm)' }}>
               Bottleneck Alert
@@ -245,8 +236,7 @@ export default function NetworkPage() {
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-normal transition-colors"
                 style={{ background: 'var(--fg-5)', color: 'var(--text-tertiary)', border: '1px solid var(--fg-5)' }}
                 onMouseEnter={e => { e.currentTarget.style.background = 'var(--fg-5)'; }}
-                onMouseLeave={e => { e.currentTarget.style.background = 'var(--fg-5)'; }}
-              >
+                onMouseLeave={e => { e.currentTarget.style.background = 'var(--fg-5)'; }}>
                 <Calendar className="w-3 h-3" />
                 Engage {bottleneckAlert.bottleneckName}
               </Link>
@@ -265,18 +255,14 @@ export default function NetworkPage() {
             <div
               key={cascade.keystoneId}
               className="card transition-colors"
-              style={{
-                transition: 'all 0.15s ease',
-              }}
+              style={{ transition: 'all 0.15s ease' }}
               onMouseEnter={() => setHoveredCard(cascade.keystoneId)}
-              onMouseLeave={() => setHoveredCard(null)}
-            >
+              onMouseLeave={() => setHoveredCard(null)}>
               {/* Card Header */}
               <button
                 className="w-full flex items-center justify-between p-4"
                 onClick={() => toggleCard(cascade.keystoneId)}
-                style={{ cursor: 'pointer', background: 'transparent', border: 'none', textAlign: 'left' }}
-              >
+                style={{ cursor: 'pointer', background: 'transparent', border: 'none', textAlign: 'left' }}>
                 <div className="flex items-center gap-3 min-w-0">
                   <div style={{
                     width: '36px',
@@ -288,7 +274,7 @@ export default function NetworkPage() {
                     justifyContent: 'center',
                     flexShrink: 0,
                   }}>
-                    <Crown className="w-4 h-4" style={{ color: 'var(--accent)' }} />
+                    <Crown className="w-4 h-4" style={stAccent} />
                   </div>
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
@@ -298,8 +284,7 @@ export default function NetworkPage() {
                         className="transition-colors"
                         style={{ fontWeight: 400, color: 'var(--text-primary)', fontSize: 'var(--font-size-base)', textDecoration: 'none' }}
                         onMouseEnter={e => { e.currentTarget.style.color = 'var(--accent)'; }}
-                        onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-primary)'; }}
-                      >
+                        onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-primary)'; }}>
                         {cascade.keystoneName}
                       </Link>
                       <span style={{
@@ -329,18 +314,18 @@ export default function NetworkPage() {
                 </div>
                 <div className="flex items-center gap-4 shrink-0 ml-4">
                   <div style={{ textAlign: 'right' }}>
-                    <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Cascade Capital</p>
+                    <p style={labelMuted}>Cascade Capital</p>
                     <p style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
                       {cascade.expectedCascadeCapitalM > 0 ? `\u20AC${formatCapital(cascade.expectedCascadeCapitalM)}` : '--'}
                     </p>
                   </div>
                   <div style={{ textAlign: 'right' }}>
-                    <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Chain</p>
+                    <p style={labelMuted}>Chain</p>
                     <p style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
                       {cascade.chainLength}
                     </p>
                   </div>
-                  <span style={{ color: 'var(--text-muted)' }}>
+                  <span style={stTextMuted}>
                     {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                   </span>
                 </div>
@@ -351,14 +336,14 @@ export default function NetworkPage() {
                 <div style={{ borderTop: '1px solid var(--border-subtle)', padding: 'var(--space-4)' }}>
                   {/* Keystone Info Row */}
                   <div className="flex items-center gap-2 mb-4">
-                    <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Enthusiasm:</span>
+                    <span style={labelMuted}>Enthusiasm:</span>
                     <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)', letterSpacing: '2px' }}>
                       {enthusiasmDots(cascade.keystoneEnthusiasm)}
                     </span>
                     {cascade.keystoneCheckSize && (
                       <>
                         <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--border-default)', margin: '0 4px' }}>|</span>
-                        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                        <span style={labelMuted}>
                           Check: {cascade.keystoneCheckSize}
                         </span>
                       </>
@@ -366,7 +351,7 @@ export default function NetworkPage() {
                     {cascade.totalCascadeCapitalM > 0 && (
                       <>
                         <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--border-default)', margin: '0 4px' }}>|</span>
-                        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                        <span style={labelMuted}>
                           Total Potential: {'\u20AC'}{formatCapital(cascade.totalCascadeCapitalM)}
                         </span>
                       </>
@@ -408,11 +393,9 @@ export default function NetworkPage() {
                                 marginLeft: '24px',
                                 background: isLinkHovered ? 'var(--surface-2)' : 'var(--surface-1)',
                                 ...(isBottleneck ? { background: 'var(--warning-muted)' } : {}),
-                                transition: 'all 0.15s ease',
-                              }}
+                                transition: 'all 0.15s ease', }}
                               onMouseEnter={() => setHoveredLink(link.investorId)}
-                              onMouseLeave={() => setHoveredLink(null)}
-                            >
+                              onMouseLeave={() => setHoveredLink(null)}>
                               <div className="flex items-center gap-3 min-w-0">
                                 <div style={{
                                   width: '8px',
@@ -430,11 +413,9 @@ export default function NetworkPage() {
                                         fontWeight: 400,
                                         color: 'var(--text-primary)',
                                         fontSize: 'var(--font-size-sm)',
-                                        textDecoration: 'none',
-                                      }}
+                                        textDecoration: 'none', }}
                                       onMouseEnter={e => { e.currentTarget.style.color = 'var(--accent)'; }}
-                                      onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-primary)'; }}
-                                    >
+                                      onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-primary)'; }}>
                                       {link.investorName}
                                     </Link>
                                     <span style={{
@@ -529,13 +510,10 @@ export default function NetworkPage() {
                   {cascade.networkBottleneck && (
                     <div
                       className="mt-4 p-3 rounded-md flex items-start gap-2"
-                      style={{
-                        background: 'var(--warning-muted)',
-                      }}
-                    >
-                      <AlertTriangle className="w-3.5 h-3.5 shrink-0 mt-0.5" style={{ color: 'var(--text-tertiary)' }} />
+                      style={{ background: 'var(--warning-muted)' }}>
+                      <AlertTriangle className="w-3.5 h-3.5 shrink-0 mt-0.5" style={stTextTertiary} />
                       <div className="flex-1">
-                        <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
+                        <p style={labelSecondary}>
                           <strong>{cascade.networkBottleneck.investorName}</strong> is the bottleneck.{' '}
                           If they pass, chain probability impact: <strong>{Math.round(Math.abs(cascade.networkBottleneck.impactIfPass) * 100)}%</strong>.
                         </p>
@@ -544,8 +522,7 @@ export default function NetworkPage() {
                           className="inline-flex items-center gap-1 mt-2 px-2.5 py-1 rounded text-xs font-normal transition-colors"
                           style={{ background: 'var(--fg-5)', color: 'var(--text-tertiary)', border: '1px solid var(--fg-5)' }}
                           onMouseEnter={e => { e.currentTarget.style.background = 'var(--fg-5)'; }}
-                          onMouseLeave={e => { e.currentTarget.style.background = 'var(--fg-5)'; }}
-                        >
+                          onMouseLeave={e => { e.currentTarget.style.background = 'var(--fg-5)'; }}>
                           Prioritize Engagement
                           <ArrowRight className="w-3 h-3" />
                         </Link>
@@ -562,10 +539,9 @@ export default function NetworkPage() {
       {/* Network Summary Footer */}
       <div
         className="card p-4 mt-6"
-        style={{ background: 'var(--surface-1)' }}
-      >
+        style={stSurface1}>
         <div className="flex items-center gap-2 mb-3">
-          <span style={{ color: 'var(--text-muted)' }}><TrendingUp className="w-4 h-4" /></span>
+          <span style={stTextMuted}><TrendingUp className="w-4 h-4" /></span>
           <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
             Network Summary
           </span>

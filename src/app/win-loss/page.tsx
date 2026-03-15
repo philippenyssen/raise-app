@@ -5,7 +5,7 @@ import {
   TrendingDown, TrendingUp, RefreshCw, Users, Target, AlertTriangle,
   CheckCircle, XCircle, ArrowDown, Clock, Lightbulb, BarChart3,
 } from 'lucide-react';
-import { strengthColor } from '@/lib/styles';
+import { labelMuted, stAccent, stFontSm, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, strengthColor } from '@/lib/styles';
 
 // ── Types ─────────────────────────────────────────────────────────────
 
@@ -128,8 +128,8 @@ export default function WinLossPage() {
     return (
       <div className="flex items-center justify-center" style={{ minHeight: '400px' }}>
         <div className="flex items-center gap-3">
-          <RefreshCw className="w-5 h-5 animate-spin" style={{ color: 'var(--text-muted)' }} />
-          <span style={{ color: 'var(--text-secondary)' }}>Analyzing win/loss patterns...</span>
+          <RefreshCw className="w-5 h-5 animate-spin" style={stTextMuted} />
+          <span style={stTextSecondary}>Analyzing win/loss patterns...</span>
         </div>
       </div>
     );
@@ -140,7 +140,7 @@ export default function WinLossPage() {
       <div className="space-y-4">
         <h1 className="page-title">Win/Loss Analysis</h1>
         <div className="card" style={{ padding: 'var(--space-6)', textAlign: 'center' }}>
-          <span style={{ color: 'var(--text-primary)' }}>Failed to load: {error}</span>
+          <span style={stTextPrimary}>Failed to load: {error}</span>
           <div style={{ marginTop: 'var(--space-3)' }}>
             <button onClick={fetchData} className="btn btn-secondary btn-sm">Retry</button>
           </div>
@@ -162,7 +162,7 @@ export default function WinLossPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="page-title">Win/Loss Analysis</h1>
-          <p className="page-subtitle" style={{ fontSize: 'var(--font-size-sm)' }}>
+          <p className="page-subtitle" style={stFontSm}>
             Patterns from closed and passed investors
           </p>
         </div>
@@ -186,11 +186,9 @@ export default function WinLossPage() {
             className={`card-metric transition-colors ${s.variant}`.trim()}
             style={{
               padding: 'var(--space-3)',
-              borderColor: hoveredCard === s.label ? 'var(--border-default)' : undefined,
-            }}
+              borderColor: hoveredCard === s.label ? 'var(--border-default)' : undefined, }}
             onMouseEnter={() => setHoveredCard(s.label)}
-            onMouseLeave={() => setHoveredCard(null)}
-          >
+            onMouseLeave={() => setHoveredCard(null)}>
             <div className="metric-label">{s.label}</div>
             <div className="metric-value" style={{ marginTop: '2px' }}>{s.value}</div>
             {s.sub && (
@@ -203,7 +201,7 @@ export default function WinLossPage() {
       {/* Funnel Visualization */}
       <div className="card" style={{ padding: 'var(--space-4)' }}>
         <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-4)' }}>
-          <span style={{ color: 'var(--accent)' }}><BarChart3 className="w-4 h-4" /></span>
+          <span style={stAccent}><BarChart3 className="w-4 h-4" /></span>
           <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
             Conversion Funnel
           </h2>
@@ -247,9 +245,8 @@ export default function WinLossPage() {
                     background: 'var(--surface-1)',
                     borderRadius: 'var(--radius-sm)',
                     overflow: 'hidden',
-                    position: 'relative',
-                  }}
-                >
+                    position: 'relative', }}
+>
                   <div
                     style={{
                       height: '100%',
@@ -259,12 +256,11 @@ export default function WinLossPage() {
                         : `color-mix(in srgb, var(--accent) ${Math.round(40 + (60 * (funnel.length - i) / funnel.length))}%, transparent)`,
                       borderRadius: 'var(--radius-sm)',
                       transition: 'width 0.6s ease',
-                    }}
-                  />
+                    }} />
                 </div>
                 {i < funnel.length - 1 && (
                   <div className="flex justify-center" style={{ marginTop: '2px', marginBottom: '2px' }}>
-                    <ArrowDown className="w-3 h-3" style={{ color: 'var(--text-muted)' }} />
+                    <ArrowDown className="w-3 h-3" style={stTextMuted} />
                   </div>
                 )}
               </div>
@@ -278,12 +274,9 @@ export default function WinLossPage() {
         {/* Winner Profile */}
         <div
           className="card"
-          style={{
-            padding: 'var(--space-4)',
-          }}
-        >
+          style={{ padding: 'var(--space-4)' }}>
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
-            <span style={{ color: 'var(--text-secondary)' }}><CheckCircle className="w-4 h-4" /></span>
+            <span style={stTextSecondary}><CheckCircle className="w-4 h-4" /></span>
             <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
               Winner Profile
             </h2>
@@ -317,12 +310,9 @@ export default function WinLossPage() {
         {/* Loser Profile */}
         <div
           className="card"
-          style={{
-            padding: 'var(--space-4)',
-          }}
-        >
+          style={{ padding: 'var(--space-4)' }}>
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
-            <span style={{ color: 'var(--text-primary)' }}><XCircle className="w-4 h-4" /></span>
+            <span style={stTextPrimary}><XCircle className="w-4 h-4" /></span>
             <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
               Passer Profile
             </h2>
@@ -359,7 +349,7 @@ export default function WinLossPage() {
         {/* Pass Reasons */}
         <div className="card" style={{ padding: 'var(--space-4)' }}>
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
-            <span style={{ color: 'var(--text-tertiary)' }}><AlertTriangle className="w-4 h-4" /></span>
+            <span style={stTextTertiary}><AlertTriangle className="w-4 h-4" /></span>
             <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
               Pass Reasons
             </h2>
@@ -377,11 +367,9 @@ export default function WinLossPage() {
                       padding: 'var(--space-2)',
                       borderRadius: 'var(--radius-sm)',
                       background: hoveredRow === `pr-${i}` ? 'var(--surface-2)' : 'transparent',
-                      transition: 'background 0.15s',
-                    }}
+                      transition: 'background 0.15s', }}
                     onMouseEnter={() => setHoveredRow(`pr-${i}`)}
-                    onMouseLeave={() => setHoveredRow(null)}
-                  >
+                    onMouseLeave={() => setHoveredRow(null)}>
                     <div className="flex items-center justify-between" style={{ marginBottom: '4px' }}>
                       <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)' }}>
                         {pr.reason}
@@ -423,7 +411,7 @@ export default function WinLossPage() {
         {/* Key Predictors */}
         <div className="card" style={{ padding: 'var(--space-4)' }}>
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
-            <span style={{ color: 'var(--accent)' }}><Target className="w-4 h-4" /></span>
+            <span style={stAccent}><Target className="w-4 h-4" /></span>
             <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
               Key Predictors
             </h2>
@@ -437,11 +425,9 @@ export default function WinLossPage() {
                   padding: 'var(--space-2) var(--space-3)',
                   borderRadius: 'var(--radius-sm)',
                   background: hoveredRow === `pred-${i}` ? 'var(--surface-2)' : 'var(--surface-1)',
-                  transition: 'background 0.15s',
-                }}
+                  transition: 'background 0.15s', }}
                 onMouseEnter={() => setHoveredRow(`pred-${i}`)}
-                onMouseLeave={() => setHoveredRow(null)}
-              >
+                onMouseLeave={() => setHoveredRow(null)}>
                 <div className="flex items-center justify-between" style={{ marginBottom: '2px' }}>
                   <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400 }}>
                     {p.signal}
@@ -468,7 +454,7 @@ export default function WinLossPage() {
       {patterns.distinguishingFactors.length > 0 && (
         <div className="card" style={{ padding: 'var(--space-4)' }}>
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
-            <span style={{ color: 'var(--accent)' }}><TrendingUp className="w-4 h-4" /></span>
+            <span style={stAccent}><TrendingUp className="w-4 h-4" /></span>
             <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
               Distinguishing Factors
             </h2>
@@ -490,9 +476,8 @@ export default function WinLossPage() {
                         fontWeight: 400,
                         color: 'var(--text-muted)',
                         letterSpacing: '0.01em',
-                        borderBottom: '1px solid var(--border-subtle)',
-                      }}
-                    >
+                        borderBottom: '1px solid var(--border-subtle)', }}
+>
                       {h}
                     </th>
                   ))}
@@ -505,11 +490,9 @@ export default function WinLossPage() {
                     className="transition-colors"
                     style={{
                       background: hoveredRow === `df-${i}` ? 'var(--surface-1)' : 'transparent',
-                      transition: 'background 0.15s',
-                    }}
+                      transition: 'background 0.15s', }}
                     onMouseEnter={() => setHoveredRow(`df-${i}`)}
-                    onMouseLeave={() => setHoveredRow(null)}
-                  >
+                    onMouseLeave={() => setHoveredRow(null)}>
                     <td style={{
                       padding: 'var(--space-2) var(--space-3)',
                       fontSize: 'var(--font-size-sm)',
@@ -550,11 +533,7 @@ export default function WinLossPage() {
                     }}>
                       {f.delta > 0 ? '+' : ''}{f.delta}
                     </td>
-                    <td style={{
-                      padding: 'var(--space-2) var(--space-3)',
-                      textAlign: 'right',
-                      borderBottom: '1px solid var(--border-subtle)',
-                    }}>
+                    <td style={{ padding: 'var(--space-2) var(--space-3)', textAlign: 'right', borderBottom: '1px solid var(--border-subtle)' }}>
                       <span style={{
                         fontSize: 'var(--font-size-xs)',
                         fontWeight: 400,
@@ -577,17 +556,13 @@ export default function WinLossPage() {
         {/* Time Analysis */}
         <div className="card" style={{ padding: 'var(--space-4)' }}>
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
-            <span style={{ color: 'var(--accent)' }}><Clock className="w-4 h-4" /></span>
+            <span style={stAccent}><Clock className="w-4 h-4" /></span>
             <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
               Time Analysis
             </h2>
           </div>
           <div className="space-y-3">
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
-              gap: 'var(--space-3)',
-            }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-3)' }}>
               <div style={{
                 padding: 'var(--space-3)',
                 borderRadius: 'var(--radius-md)',
@@ -600,7 +575,7 @@ export default function WinLossPage() {
                 <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-secondary)' }}>
                   {timing.avgDaysToClose}
                 </div>
-                <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                <div style={labelMuted}>
                   Median: {timing.medianDaysToClose}d
                 </div>
               </div>
@@ -616,16 +591,12 @@ export default function WinLossPage() {
                 <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>
                   {timing.avgDaysToPass}
                 </div>
-                <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                <div style={labelMuted}>
                   Median: {timing.medianDaysToPass}d
                 </div>
               </div>
             </div>
-            <div style={{
-              padding: 'var(--space-3)',
-              borderRadius: 'var(--radius-md)',
-              background: 'var(--surface-1)',
-            }}>
+            <div style={{ padding: 'var(--space-3)', borderRadius: 'var(--radius-md)', background: 'var(--surface-1)' }}>
               <div className="flex items-center justify-between">
                 <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
                   Avg Meetings (Winners)
@@ -665,7 +636,7 @@ export default function WinLossPage() {
         {/* Investor Type Performance */}
         <div className="card" style={{ padding: 'var(--space-4)' }}>
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
-            <span style={{ color: 'var(--accent)' }}><Users className="w-4 h-4" /></span>
+            <span style={stAccent}><Users className="w-4 h-4" /></span>
             <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
               Performance by Type
             </h2>
@@ -680,33 +651,31 @@ export default function WinLossPage() {
                     padding: 'var(--space-2) var(--space-3)',
                     borderRadius: 'var(--radius-sm)',
                     background: hoveredRow === `tp-${i}` ? 'var(--surface-2)' : 'var(--surface-1)',
-                    transition: 'background 0.15s',
-                  }}
+                    transition: 'background 0.15s', }}
                   onMouseEnter={() => setHoveredRow(`tp-${i}`)}
-                  onMouseLeave={() => setHoveredRow(null)}
-                >
+                  onMouseLeave={() => setHoveredRow(null)}>
                   <div className="flex items-center justify-between" style={{ marginBottom: '4px' }}>
                     <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400 }}>
                       {TYPE_LABELS[tp.type] || tp.type}
                     </span>
-                    <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                    <span style={labelMuted}>
                       {tp.total} total
                     </span>
                   </div>
                   <div className="flex items-center gap-3">
                     <div className="flex items-center gap-1">
-                      <span style={{ color: 'var(--text-secondary)' }}><TrendingUp className="w-3 h-3" /></span>
+                      <span style={stTextSecondary}><TrendingUp className="w-3 h-3" /></span>
                       <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', fontWeight: 400 }}>
                         {tp.closeRate}% close
                       </span>
                     </div>
                     <div className="flex items-center gap-1">
-                      <span style={{ color: 'var(--text-primary)' }}><TrendingDown className="w-3 h-3" /></span>
+                      <span style={stTextPrimary}><TrendingDown className="w-3 h-3" /></span>
                       <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', fontWeight: 400 }}>
                         {tp.passRate}% pass
                       </span>
                     </div>
-                    <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                    <span style={labelMuted}>
                       {tp.closed}W / {tp.passed}L / {tp.dropped}D
                     </span>
                   </div>
@@ -727,7 +696,7 @@ export default function WinLossPage() {
         {patterns.insights.length > 0 && (
           <div className="card" style={{ padding: 'var(--space-4)' }}>
             <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
-              <span style={{ color: 'var(--accent)' }}><TrendingDown className="w-4 h-4" /></span>
+              <span style={stAccent}><TrendingDown className="w-4 h-4" /></span>
               <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
                 Pattern Insights
               </h2>
@@ -741,9 +710,8 @@ export default function WinLossPage() {
                     borderRadius: 'var(--radius-sm)',
                     background: 'var(--surface-1)',
                     fontSize: 'var(--font-size-sm)',
-                    color: 'var(--text-secondary)',
-                  }}
-                >
+                    color: 'var(--text-secondary)', }}
+>
                   {insight}
                 </div>
               ))}
@@ -754,7 +722,7 @@ export default function WinLossPage() {
         {/* Recommendations */}
         <div className="card" style={{ padding: 'var(--space-4)' }}>
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
-            <span style={{ color: 'var(--text-tertiary)' }}><Lightbulb className="w-4 h-4" /></span>
+            <span style={stTextTertiary}><Lightbulb className="w-4 h-4" /></span>
             <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
               Recommendations
             </h2>
@@ -771,11 +739,9 @@ export default function WinLossPage() {
                     background: hoveredRow === `rec-${i}` ? 'var(--surface-2)' : 'var(--surface-1)',
                     fontSize: 'var(--font-size-sm)',
                     color: 'var(--text-secondary)',
-                    transition: 'background 0.15s',
-                  }}
+                    transition: 'background 0.15s', }}
                   onMouseEnter={() => setHoveredRow(`rec-${i}`)}
-                  onMouseLeave={() => setHoveredRow(null)}
-                >
+                  onMouseLeave={() => setHoveredRow(null)}>
                   {rec}
                 </div>
               ))}

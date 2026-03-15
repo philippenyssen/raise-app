@@ -11,7 +11,7 @@ import {
   PenLine, Copy, Check,
 } from 'lucide-react';
 import { fmtDateTime } from '@/lib/format';
-import { stTextMuted, stTextSecondary, stTextPrimary } from '@/lib/styles';
+import { labelAccent, labelMuted, labelMuted10, labelSecondary, stAccent, stTextMuted, stTextPrimary, stTextSecondary } from '@/lib/styles';
 
 interface TimingIntel {
   optimalDayOfWeek: string;
@@ -305,10 +305,9 @@ function FollowupsContent() {
                 <Link
                   href={`/investors/${item.investor_id}`}
                   className="transition-colors"
-                  style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}
+                  style={labelAccent}
                   onMouseEnter={e => { e.currentTarget.style.color = 'var(--accent)'; }}
-                  onMouseLeave={e => { e.currentTarget.style.color = 'var(--accent)'; }}
-                >
+                  onMouseLeave={e => { e.currentTarget.style.color = 'var(--accent)'; }}>
                   {item.investor_name}
                 </Link>
                 <span
@@ -321,19 +320,17 @@ function FollowupsContent() {
 
               <p
                 className={isExpanded ? 'whitespace-pre-line' : 'line-clamp-2'}
-                style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}
-              >
+                style={labelSecondary}>
                 {item.description}
               </p>
 
               {item.description.includes('\n') && (
                 <button
                   onClick={() => setExpandedId(isExpanded ? null : item.id)}
-                  style={{ fontSize: '10px', color: 'var(--text-muted)' }}
+                  style={labelMuted10}
                   onMouseEnter={e => { e.currentTarget.style.color = 'var(--text-secondary)'; }}
                   onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; }}
-                  className="mt-1 transition-colors"
-                >
+                  className="mt-1 transition-colors">
                   {isExpanded ? 'Show less' : 'Show more'}
                 </button>
               )}
@@ -370,22 +367,19 @@ function FollowupsContent() {
                   <div>
                     <label
                       className="block mb-1"
-                      style={{ fontSize: '10px', color: 'var(--text-muted)' }}
-                    >
+                      style={labelMuted10}>
                       Outcome (what happened?)
                     </label>
                     <input
                       value={completeForm.outcome}
                       onChange={e => setCompleteForm(f => ({ ...f, outcome: e.target.value }))}
                       placeholder="e.g., Sent thank-you, they responded positively..."
-                      className="input"
-                    />
+                      className="input" />
                   </div>
                   <div>
                     <label
                       className="block mb-1"
-                      style={{ fontSize: '10px', color: 'var(--text-muted)' }}
-                    >
+                      style={labelMuted10}>
                       Conviction change (-2 to +2)
                     </label>
                     <div className="flex gap-1">
@@ -405,19 +399,16 @@ function FollowupsContent() {
                               : 'var(--surface-3)',
                             color: completeForm.conviction_delta === val
                               ? 'white'
-                              : 'var(--text-secondary)',
-                          }}
+                              : 'var(--text-secondary)', }}
                           onMouseEnter={e => {
                             if (completeForm.conviction_delta !== val) {
                               e.currentTarget.style.background = 'var(--border-strong)';
-                            }
-                          }}
+                            } }}
                           onMouseLeave={e => {
                             if (completeForm.conviction_delta !== val) {
                               e.currentTarget.style.background = 'var(--surface-3)';
-                            }
-                          }}
-                        >
+                            } }}
+>
                           {val > 0 ? '+' : ''}{val}
                         </button>
                       ))}
@@ -429,14 +420,12 @@ function FollowupsContent() {
                       className="btn btn-sm transition-colors"
                       style={{ background: 'var(--success)', color: 'var(--text-primary)' }}
                       onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent-hover)'; }}
-                      onMouseLeave={e => { e.currentTarget.style.background = 'var(--success)'; }}
-                    >
+                      onMouseLeave={e => { e.currentTarget.style.background = 'var(--success)'; }}>
                       Complete
                     </button>
                     <button
                       onClick={() => { setCompletingId(null); setCompleteForm({ outcome: '', conviction_delta: 0 }); }}
-                      className="btn btn-sm btn-secondary"
-                    >
+                      className="btn btn-sm btn-secondary">
                       Cancel
                     </button>
                   </div>
@@ -453,8 +442,7 @@ function FollowupsContent() {
                   style={{ borderRadius: 'var(--radius-md)', color: hoveredActionBtn === `draft-${item.id}` || draftingId === item.id ? 'var(--chart-4)' : 'var(--text-muted)', background: hoveredActionBtn === `draft-${item.id}` || draftingId === item.id ? 'var(--cat-purple-muted)' : 'transparent', transition: 'all 150ms ease' }}
                   onMouseEnter={() => setHoveredActionBtn(`draft-${item.id}`)}
                   onMouseLeave={() => setHoveredActionBtn(null)}
-                  title="Draft message"
-                >
+                  title="Draft message">
                   <PenLine className="w-4 h-4" />
                 </button>
                 <button
@@ -463,8 +451,7 @@ function FollowupsContent() {
                   style={{ borderRadius: 'var(--radius-md)', color: hoveredActionBtn === `complete-${item.id}` ? 'var(--success)' : 'var(--text-muted)', background: hoveredActionBtn === `complete-${item.id}` ? 'var(--success-muted)' : 'transparent', transition: 'all 150ms ease' }}
                   onMouseEnter={() => setHoveredActionBtn(`complete-${item.id}`)}
                   onMouseLeave={() => setHoveredActionBtn(null)}
-                  title="Quick complete"
-                >
+                  title="Quick complete">
                   <CheckCircle2 className="w-4 h-4" />
                 </button>
                 <button
@@ -473,8 +460,7 @@ function FollowupsContent() {
                   style={{ borderRadius: 'var(--radius-md)', color: hoveredActionBtn === `outcome-${item.id}` ? 'var(--accent)' : 'var(--text-muted)', background: hoveredActionBtn === `outcome-${item.id}` ? 'var(--accent-muted)' : 'transparent', transition: 'all 150ms ease' }}
                   onMouseEnter={() => setHoveredActionBtn(`outcome-${item.id}`)}
                   onMouseLeave={() => setHoveredActionBtn(null)}
-                  title="Complete with outcome"
-                >
+                  title="Complete with outcome">
                   <TrendingUp className="w-4 h-4" />
                 </button>
                 <button
@@ -483,21 +469,20 @@ function FollowupsContent() {
                   style={{ borderRadius: 'var(--radius-md)', color: hoveredActionBtn === `skip-${item.id}` ? 'var(--danger)' : 'var(--text-muted)', background: hoveredActionBtn === `skip-${item.id}` ? 'var(--danger-muted)' : 'transparent', transition: 'all 150ms ease' }}
                   onMouseEnter={() => setHoveredActionBtn(`skip-${item.id}`)}
                   onMouseLeave={() => setHoveredActionBtn(null)}
-                  title="Skip"
-                >
+                  title="Skip">
                   <XCircle className="w-4 h-4" />
                 </button>
               </div>
             )}
 
             {item.status === 'completed' && (
-              <span className="flex items-center gap-1 shrink-0" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
+              <span className="flex items-center gap-1 shrink-0" style={labelSecondary}>
                 <CheckCircle2 className="w-3.5 h-3.5" />
               </span>
             )}
 
             {item.status === 'skipped' && (
-              <span className="flex items-center gap-1 shrink-0" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+              <span className="flex items-center gap-1 shrink-0" style={labelMuted}>
                 <XCircle className="w-3.5 h-3.5" />
               </span>
             )}
@@ -513,12 +498,11 @@ function FollowupsContent() {
               <div
                 className="flex items-center gap-1.5"
                 style={{ fontSize: '10px' }}
-                title={item.timing.reasoning}
-              >
+                title={item.timing.reasoning}>
                 <span
                   className="flex items-center justify-center"
                   style={{ width: '16px', height: '16px', borderRadius: '50%', background: 'var(--accent-muted)' }}>
-                  <Timer className="w-2.5 h-2.5" style={{ color: 'var(--accent)' }} />
+                  <Timer className="w-2.5 h-2.5" style={stAccent} />
                 </span>
                 <span style={stTextMuted}>Send</span>
                 <span style={{ color: 'var(--accent)', fontWeight: 400 }}>
@@ -542,8 +526,7 @@ function FollowupsContent() {
                 <div
                   className="flex items-center gap-1.5"
                   style={{ fontSize: '10px' }}
-                  title={item.velocity!.signal}
-                >
+                  title={item.velocity!.signal}>
                   <span
                     className="flex items-center justify-center"
                     style={{ width: '16px', height: '16px', borderRadius: '50%', background: vc.bg }}>
@@ -563,8 +546,7 @@ function FollowupsContent() {
               <div
                 className="flex items-center gap-1.5"
                 style={{ fontSize: '10px' }}
-                title={item.cascade.signal}
-              >
+                title={item.cascade.signal}>
                 <span
                   className="flex items-center justify-center"
                   style={{ width: '16px', height: '16px', borderRadius: '50%', background: 'var(--accent-muted)' }}>
@@ -590,7 +572,7 @@ function FollowupsContent() {
                   <PenLine className="w-3.5 h-3.5" />
                   Draft Message
                 </span>
-                <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                <span style={labelMuted10}>
                   Edit before sending
                 </span>
               </div>
@@ -603,8 +585,7 @@ function FollowupsContent() {
                     onClick={() => {
                       navigator.clipboard.writeText(draft.subject);
                       setCopiedField(`subject-${item.id}`);
-                      setTimeout(() => setCopiedField(null), 2000);
-                    }}
+                      setTimeout(() => setCopiedField(null), 2000); }}
                     className="flex items-center gap-1 p-1"
                     style={{ borderRadius: 'var(--radius-sm)', fontSize: '10px', color: copiedField === `subject-${item.id}` ? 'var(--success)' : 'var(--text-muted)', background: 'transparent', border: 'none', cursor: 'pointer', transition: 'color 150ms ease' }}>
                     {copiedField === `subject-${item.id}` ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
@@ -625,8 +606,7 @@ function FollowupsContent() {
                     onClick={() => {
                       navigator.clipboard.writeText(draft.body);
                       setCopiedField(`body-${item.id}`);
-                      setTimeout(() => setCopiedField(null), 2000);
-                    }}
+                      setTimeout(() => setCopiedField(null), 2000); }}
                     className="flex items-center gap-1 p-1"
                     style={{ borderRadius: 'var(--radius-sm)', fontSize: '10px', color: copiedField === `body-${item.id}` ? 'var(--success)' : 'var(--text-muted)', background: 'transparent', border: 'none', cursor: 'pointer', transition: 'color 150ms ease' }}>
                     {copiedField === `body-${item.id}` ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
@@ -644,21 +624,18 @@ function FollowupsContent() {
                 onClick={() => {
                   navigator.clipboard.writeText(`Subject: ${draft.subject}\n\n${draft.body}`);
                   setCopiedField(`all-${item.id}`);
-                  setTimeout(() => setCopiedField(null), 2000);
-                }}
+                  setTimeout(() => setCopiedField(null), 2000); }}
                 className="btn btn-sm mt-3 transition-colors"
                 style={{ background: copiedField === `all-${item.id}` ? 'var(--success)' : 'var(--accent-muted)', color: copiedField === `all-${item.id}` ? 'white' : 'var(--accent)', border: 'none', transition: 'all 150ms ease' }}
                 onMouseEnter={e => {
                   if (copiedField !== `all-${item.id}`) {
                     e.currentTarget.style.background = 'var(--accent-10)';
-                  }
-                }}
+                  } }}
                 onMouseLeave={e => {
                   if (copiedField !== `all-${item.id}`) {
                     e.currentTarget.style.background = 'var(--accent-muted)';
-                  }
-                }}
-              >
+                  } }}
+>
                 {copiedField === `all-${item.id}` ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
                 {copiedField === `all-${item.id}` ? 'Copied to clipboard' : 'Copy full message'}
               </button>
@@ -704,8 +681,7 @@ function FollowupsContent() {
       <div>
         <button
           onClick={() => setExpanded(!expanded)}
-          className="w-full flex items-center justify-between mb-3"
-        >
+          className="w-full flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             {accent === 'red' && <AlertTriangle className="w-4 h-4" style={stTextPrimary} />}
             <h2 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: accentColorMap[accent] }}>{title}</h2>
@@ -756,8 +732,7 @@ function FollowupsContent() {
           <div className="metric-label">Overdue</div>
           <div
             className="metric-value mt-1"
-            style={{ color: overdue.length > 0 ? 'var(--danger)' : 'var(--text-muted)' }}
-          >
+            style={{ color: overdue.length > 0 ? 'var(--danger)' : 'var(--text-muted)' }}>
             {overdue.length}
           </div>
         </div>
@@ -765,8 +740,7 @@ function FollowupsContent() {
           <div className="metric-label">Due Today</div>
           <div
             className="metric-value mt-1"
-            style={{ color: dueToday.length > 0 ? 'var(--accent)' : 'var(--text-muted)' }}
-          >
+            style={{ color: dueToday.length > 0 ? 'var(--accent)' : 'var(--text-muted)' }}>
             {dueToday.length}
           </div>
         </div>
@@ -818,14 +792,12 @@ function FollowupsContent() {
             onMouseEnter={e => {
               if (filter !== f) {
                 e.currentTarget.style.color = 'var(--text-secondary)';
-              }
-            }}
+              } }}
             onMouseLeave={e => {
               if (filter !== f) {
                 e.currentTarget.style.color = 'var(--text-muted)';
-              }
-            }}
-          >
+              } }}
+>
             {f.charAt(0).toUpperCase() + f.slice(1)}
             {f === 'pending' && overdue.length > 0 && (
               <span
@@ -849,7 +821,8 @@ function FollowupsContent() {
                     <div className="skeleton" style={{ width: '80px', height: '16px', borderRadius: 'var(--radius-sm)' }} />
                     <div className="skeleton" style={{ width: '100px', height: '14px', borderRadius: 'var(--radius-sm)' }} />
                   </div>
-                  <div className="skeleton" style={{ width: `${70 - i * 8}%`, height: '14px', borderRadius: 'var(--radius-sm)' }} />
+                  <div className="skeleton" style={{ width: `${70 - i * 8}%`, height: '14px', borderRadius: 'var(--radius-sm)' }}
+                    />
                 </div>
               </div>
             </div>
@@ -858,8 +831,7 @@ function FollowupsContent() {
       ) : fetchError ? (
         <div
           className="text-center py-12"
-          style={{ borderRadius: 'var(--radius-xl)' }}
-        >
+          style={{ borderRadius: 'var(--radius-xl)' }}>
           <AlertTriangle className="w-10 h-10 mx-auto mb-3" style={{ color: 'var(--danger)' }} />
           <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', marginBottom: 'var(--space-1)' }}>
             Failed to load follow-ups
@@ -869,8 +841,7 @@ function FollowupsContent() {
           </p>
           <button
             onClick={fetchFollowups}
-            className="btn btn-secondary btn-sm inline-flex items-center gap-2"
-          >
+            className="btn btn-secondary btn-sm inline-flex items-center gap-2">
             <RefreshCw className="w-3.5 h-3.5" />
             Retry
           </button>
@@ -886,10 +857,9 @@ function FollowupsContent() {
             <Link
               href="/meetings/new"
               className="transition-colors"
-              style={{ color: 'var(--accent)' }}
+              style={stAccent}
               onMouseEnter={e => { e.currentTarget.style.color = 'var(--accent)'; }}
-              onMouseLeave={e => { e.currentTarget.style.color = 'var(--accent)'; }}
-            >
+              onMouseLeave={e => { e.currentTarget.style.color = 'var(--accent)'; }}>
               Log a meeting
             </Link>
           </p>
@@ -925,8 +895,7 @@ function FollowupsContent() {
         <div
           style={{ borderRadius: 'var(--radius-xl)', overflow: 'hidden' }}>
           <div
-            style={{ background: 'var(--accent-muted)', borderBottom: '1px solid var(--border-subtle)', padding: 'var(--space-4) var(--space-5)' }}
-          >
+            style={{ background: 'var(--accent-muted)', borderBottom: '1px solid var(--border-subtle)', padding: 'var(--space-4) var(--space-5)' }}>
             <h2 className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 300 }}>
               <Users className="w-4 h-4" style={{ color: 'var(--chart-4)' }} />
               Follow-up Effectiveness
@@ -950,10 +919,10 @@ function FollowupsContent() {
                         style={{ borderRadius: 'var(--radius-sm)', background: config.bgColor }}>
                         <Icon className="w-3.5 h-3.5" style={{ color: config.color }} />
                       </div>
-                      <span className="flex-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
+                      <span className="flex-1" style={labelSecondary}>
                         {config.label}
                       </span>
-                      <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                      <span style={labelMuted}>
                         {stats.count} done
                       </span>
                       <span

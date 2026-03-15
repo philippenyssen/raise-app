@@ -8,6 +8,7 @@ import { useToast } from '@/components/toast';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { DocSummaryRecord as Doc } from '@/lib/types';
 import { FileText, Plus, ChevronRight, Wand2, Loader2 } from 'lucide-react';
+import { labelMuted, stAccent, stTextMuted } from '@/lib/styles';
 
 const TYPE_ORDER = ['teaser', 'exec_summary', 'one_pager', 'exec_brief', 'memo', 'deck', 'dd_memo', 'custom'];
 const TYPE_LABELS: Record<string, string> = {
@@ -179,11 +180,7 @@ export default function WorkspacePage() {
     return (
       <div className="h-[calc(100vh-4rem)] flex items-center justify-center">
         <div
-          style={{
-            color: 'var(--text-tertiary)',
-            fontSize: 'var(--font-size-sm)',
-          }}
-        >
+          style={{ color: 'var(--text-tertiary)', fontSize: 'var(--font-size-sm)' }}>
           Loading workspace...
         </div>
       </div>
@@ -196,26 +193,13 @@ export default function WorkspacePage() {
       {sidebarOpen && (
         <div
           className="w-56 shrink-0 flex flex-col overflow-hidden"
-          style={{
-            borderRight: '1px solid var(--border-default)',
-            background: 'var(--surface-0)',
-          }}
-        >
+          style={{ borderRight: '1px solid var(--border-default)', background: 'var(--surface-0)' }}>
           <div
             className="flex items-center justify-between"
-            style={{
-              padding: 'var(--space-3)',
-              borderBottom: '1px solid var(--border-default)',
-            }}
-          >
+            style={{ padding: 'var(--space-3)', borderBottom: '1px solid var(--border-default)' }}>
             <span
               className=""
-              style={{
-                fontSize: 'var(--font-size-xs)',
-                fontWeight: 400,
-                color: 'var(--text-tertiary)',
-              }}
-            >
+              style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)' }}>
               Deliverables
             </span>
             <button
@@ -229,16 +213,14 @@ export default function WorkspacePage() {
                 border: 'none',
                 cursor: 'pointer',
                 display: 'flex',
-                alignItems: 'center',
-              }}
-            >
+                alignItems: 'center', }}
+>
               <ChevronRight className="w-4 h-4 rotate-180" />
             </button>
           </div>
           <div
             className="flex-1 overflow-y-auto space-y-3"
-            style={{ padding: 'var(--space-2)' }}
-          >
+            style={{ padding: 'var(--space-2)' }}>
             {Object.entries(grouped).map(([type, typeDocs]) => (
               <div key={type}>
                 <div
@@ -248,9 +230,8 @@ export default function WorkspacePage() {
                     fontWeight: 400,
                     color: 'var(--text-muted)',
                     padding: '0 var(--space-2)',
-                    marginBottom: 'var(--space-1)',
-                  }}
-                >
+                    marginBottom: 'var(--space-1)', }}
+>
                   {TYPE_LABELS[type] || type}
                 </div>
                 {typeDocs.map(doc => {
@@ -281,9 +262,8 @@ export default function WorkspacePage() {
                         border: 'none',
                         cursor: 'pointer',
                         display: 'block',
-                        width: '100%',
-                      }}
-                    >
+                        width: '100%', }}
+>
                       <div className="truncate">{doc.title}</div>
                     </button>
                   );
@@ -294,9 +274,8 @@ export default function WorkspacePage() {
               <div className="text-center space-y-2" style={{ padding: 'var(--space-8) 0' }}>
                 <FileText
                   className="w-6 h-6 mx-auto"
-                  style={{ color: 'var(--text-muted)' }}
-                />
-                <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                  style={stTextMuted} />
+                <p style={labelMuted}>
                   No deliverables yet. Generate one below or create a new document.
                 </p>
               </div>
@@ -305,11 +284,7 @@ export default function WorkspacePage() {
           {/* Generate section */}
           <div
             className="space-y-1"
-            style={{
-              padding: 'var(--space-2)',
-              borderTop: '1px solid var(--border-default)',
-            }}
-          >
+            style={{ padding: 'var(--space-2)', borderTop: '1px solid var(--border-default)' }}>
             <div
               className=""
               style={{
@@ -317,9 +292,8 @@ export default function WorkspacePage() {
                 fontWeight: 400,
                 color: 'var(--text-muted)',
                 padding: '0 var(--space-2)',
-                marginBottom: 'var(--space-1)',
-              }}
-            >
+                marginBottom: 'var(--space-1)', }}
+>
               Generate from Data Room
             </div>
             {['teaser', 'exec_summary', 'memo', 'deck', 'dd_memo'].map(type => {
@@ -347,14 +321,12 @@ export default function WorkspacePage() {
                     transition: 'all 150ms ease',
                     opacity: isDisabled ? 0.5 : 1,
                     border: 'none',
-                    cursor: isDisabled ? 'default' : 'pointer',
-                  }}
-                >
+                    cursor: isDisabled ? 'default' : 'pointer', }}
+>
                   {generating === type ? (
                     <Loader2
                       className="w-3.5 h-3.5 animate-spin"
-                      style={{ color: 'var(--accent)' }}
-                    />
+                      style={stAccent} />
                   ) : (
                     <Wand2 className="w-3.5 h-3.5" />
                   )}
@@ -376,9 +348,8 @@ export default function WorkspacePage() {
                 color: newDocHover ? 'var(--text-secondary)' : 'var(--text-tertiary)',
                 background: newDocHover ? 'var(--surface-2)' : 'transparent',
                 transition: 'all 150ms ease',
-                textDecoration: 'none',
-              }}
-            >
+                textDecoration: 'none', }}
+>
               <Plus className="w-4 h-4" /> New Document
             </a>
           </div>
@@ -399,10 +370,9 @@ export default function WorkspacePage() {
             borderRightStyle: 'solid',
             borderRightWidth: '1px',
             borderRightColor: 'var(--border-default)',
-            cursor: 'pointer',
-          }}
-        >
-          <ChevronRight className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
+            cursor: 'pointer', }}
+>
+          <ChevronRight className="w-4 h-4" style={stTextMuted} />
         </button>
       )}
 
@@ -415,19 +385,16 @@ export default function WorkspacePage() {
               onContentChange={handleContentChange}
               onSave={handleSave}
               saving={saving}
-              dirty={dirty}
-            />
+              dirty={dirty} />
           }
           right={
             <AIChat
               documentId={selectedDoc?.id ?? null}
               documentContent={editedContent}
               documentTitle={selectedDoc?.title ?? ''}
-              onApplyChange={handleApplyAIChange}
-            />
+              onApplyChange={handleApplyAIChange} />
           }
-          defaultSplit={58}
-        />
+          defaultSplit={58} />
       </div>
 
       <ConfirmModal
@@ -437,8 +404,7 @@ export default function WorkspacePage() {
         confirmLabel="Discard"
         variant="danger"
         onConfirm={() => { if (pendingDoc) doSelectDoc(pendingDoc); }}
-        onCancel={() => setPendingDoc(null)}
-      />
+        onCancel={() => setPendingDoc(null)} />
     </div>
   );
 }

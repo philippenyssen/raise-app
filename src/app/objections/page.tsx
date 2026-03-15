@@ -474,8 +474,7 @@ export default function ObjectionsPage() {
                                       style={{ ...stAccent, textDecoration: 'none' }}
                                       onClick={e => e.stopPropagation()}
                                       onMouseEnter={e => { (e.currentTarget as HTMLElement).style.textDecoration = 'underline'; }}
-                                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.textDecoration = 'none'; }}
-                                    >
+                                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.textDecoration = 'none'; }}>
                                       <User className="w-3 h-3" />
                                       {obj.investor_name}
                                     </Link>
@@ -696,8 +695,7 @@ export default function ObjectionsPage() {
                           borderRadius: 'var(--radius-sm)',
                           background: 'var(--accent-muted)', }}
                         onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--accent-8)'; }}
-                        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--accent-muted)'; }}
-                      >
+                        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--accent-muted)'; }}>
                         <Calendar className="w-3 h-3" />
                         Prep
                       </Link>
@@ -1065,8 +1063,7 @@ function EffectivenessTab({
                         <div className="flex items-center gap-3 shrink-0">
                           <span
                             className="text-sm font-normal"
-                            style={{ color: entry.effectiveness_score >= 50 ? 'var(--success)' : entry.effectiveness_score >= 25 ? 'var(--warning)' : 'var(--danger)' }}
-                          >
+                            style={{ color: entry.effectiveness_score >= 50 ? 'var(--success)' : entry.effectiveness_score >= 25 ? 'var(--warning)' : 'var(--danger)' }}>
                             {entry.effectiveness_score}%
                           </span>
                           <span className="flex items-center gap-1 text-xs" style={{ color: entry.avg_enthusiasm_delta >= 0 ? 'var(--success)' : 'var(--danger)' }}>
@@ -1295,8 +1292,7 @@ function EffectivenessTab({
                           <div className="flex-1 h-3 rounded overflow-hidden" style={stSurface2}>
                             <div
                               className="h-full rounded"
-                              style={{ width: `${pct}%`, background: 'var(--accent)', transition: 'width 300ms ease' }}
-                            />
+                              style={{ width: `${pct}%`, background: 'var(--accent)', transition: 'width 300ms ease' }} />
                           </div>
                           <span className="w-6 text-right" style={labelMuted10}>
                             {count}

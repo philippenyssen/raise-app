@@ -12,6 +12,7 @@ import {
   ChevronDown, Play, Ban, XCircle, Rocket, Timer, ArrowUpRight,
   TrendingDown, SkipForward,
 } from 'lucide-react';
+import { labelMuted10, stBorderTop, stSurface0, stSurface1, stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 // ---------------------------------------------------------------------------
 // Constants — style objects using design tokens
@@ -64,8 +65,7 @@ function EnthusiasmDots({ value }: { value: number }) {
             background: i <= value
               ? (value >= 4 ? 'var(--success)' : value >= 3 ? 'var(--warning)' : 'var(--danger)')
               : 'var(--border-default)',
-          }}
-        />
+          }} />
       ))}
     </div>
   );
@@ -124,8 +124,7 @@ function ActionCard({
       className="transition-colors"
       style={cardStyle}
       onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
+      onMouseLeave={() => setHovered(false)}>
       <div className="flex items-start gap-3">
         <div className="flex-1 min-w-0">
           {/* Header */}
@@ -135,8 +134,7 @@ function ActionCard({
               className="transition-colors"
               style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}
               onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
-              onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}
-            >
+              onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}>
               {item.investorName}
             </Link>
             <TierBadge tier={item.investorTier} />
@@ -168,7 +166,7 @@ function ActionCard({
             <span style={{ fontSize: '11px', fontWeight: 400, ...(URGENCY_STYLE[item.urgency] ?? { color: 'var(--text-tertiary)' }) }}>
               {item.urgency === 'immediate' ? 'Act now' : item.urgency === '48h' ? 'Within 48h' : item.urgency === 'this_week' ? 'This week' : 'Next week'}
             </span>
-            <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+            <span style={labelMuted10}>
               {item.triggerEvidence}
             </span>
           </div>
@@ -187,9 +185,8 @@ function ActionCard({
                 ...(isExecuted
                   ? { background: 'var(--success-muted)', color: 'var(--text-secondary)' }
                   : { background: 'var(--surface-2)', color: 'var(--text-muted)' }
-                ),
-              }}
-            >
+                ), }}
+>
               {isExecuted ? 'Done' : 'Skipped'}
             </span>
           ) : (
@@ -207,9 +204,8 @@ function ActionCard({
                   fontWeight: 400,
                   color: 'var(--text-primary)',
                   border: 'none',
-                  cursor: 'pointer',
-                }}
-              >
+                  cursor: 'pointer', }}
+>
                 <Play className="w-3 h-3" />
                 Execute
               </button>
@@ -225,9 +221,8 @@ function ActionCard({
                   fontSize: 'var(--font-size-sm)',
                   color: 'var(--text-tertiary)',
                   border: 'none',
-                  cursor: 'pointer',
-                }}
-              >
+                  cursor: 'pointer', }}
+>
                 <SkipForward className="w-3 h-3" />
                 Skip
               </button>
@@ -242,21 +237,15 @@ function ActionCard({
 function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
   return (
     <div
-      style={{
-        background: 'var(--success-muted)',
-        borderRadius: 'var(--radius-lg)',
-        padding: '16px',
-      }}
-    >
+      style={{ background: 'var(--success-muted)', borderRadius: 'var(--radius-lg)', padding: '16px' }}>
       <div className="flex items-center gap-2 mb-2">
-        <Rocket className="w-3.5 h-3.5" style={{ color: 'var(--text-secondary)' }} />
+        <Rocket className="w-3.5 h-3.5" style={stTextSecondary} />
         <Link
           href={`/investors/${investor.investorId}`}
           className="transition-colors"
           style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}
           onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
-          onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}
-        >
+          onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}>
           {investor.investorName}
         </Link>
         <TierBadge tier={investor.investorTier} />
@@ -287,11 +276,9 @@ function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
           borderRadius: 'var(--radius-md)',
           fontSize: 'var(--font-size-sm)',
           color: 'var(--text-secondary)',
-          fontWeight: 400,
-        }}
+          fontWeight: 400, }}
         onMouseEnter={e => (e.currentTarget.style.background = 'var(--accent-8)')}
-        onMouseLeave={e => (e.currentTarget.style.background = 'var(--accent-muted)')}
-      >
+        onMouseLeave={e => (e.currentTarget.style.background = 'var(--accent-muted)')}>
         <Rocket className="w-3 h-3" />
         Push for Term Sheet
       </Link>
@@ -302,21 +289,15 @@ function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
 function AtRiskCard({ investor }: { investor: InvestorSummary }) {
   return (
     <div
-      style={{
-        background: 'var(--fg-5)',
-        borderRadius: 'var(--radius-lg)',
-        padding: '16px',
-      }}
-    >
+      style={{ background: 'var(--fg-5)', borderRadius: 'var(--radius-lg)', padding: '16px' }}>
       <div className="flex items-center gap-2 mb-2">
-        <Shield className="w-3.5 h-3.5" style={{ color: 'var(--text-secondary)' }} />
+        <Shield className="w-3.5 h-3.5" style={stTextSecondary} />
         <Link
           href={`/investors/${investor.investorId}`}
           className="transition-colors"
           style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}
           onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
-          onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}
-        >
+          onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}>
           {investor.investorName}
         </Link>
         <TierBadge tier={investor.investorTier} />
@@ -349,11 +330,7 @@ function DeprioritizeSection({ investors }: { investors: InvestorSummary[] }) {
 
   return (
     <div
-      style={{
-        borderRadius: 'var(--radius-lg)',
-        overflow: 'hidden',
-      }}
-    >
+      style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
       <button
         onClick={() => setExpanded(!expanded)}
         onMouseEnter={() => setHovered(true)}
@@ -362,33 +339,30 @@ function DeprioritizeSection({ investors }: { investors: InvestorSummary[] }) {
         style={{
           background: hovered ? 'var(--surface-1)' : 'transparent',
           border: 'none',
-          cursor: 'pointer',
-        }}
-      >
+          cursor: 'pointer', }}
+>
         <div className="flex items-center gap-2">
-          <Ban className="w-3.5 h-3.5" style={{ color: 'var(--text-muted)' }} />
+          <Ban className="w-3.5 h-3.5" style={stTextMuted} />
           <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', fontWeight: 400, letterSpacing: '0.01em' }}>
             Deprioritize ({investors.length})
           </span>
         </div>
         <ChevronDown
           className={`w-4 h-4 transition-transform ${expanded ? 'rotate-180' : ''}`}
-          style={{ color: 'var(--text-muted)' }}
-        />
+          style={stTextMuted} />
       </button>
       {expanded && (
-        <div className="p-3 space-y-2" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+        <div className="p-3 space-y-2" style={stBorderTop}>
           {investors.map(inv => (
             <div key={inv.investorId} className="flex items-center justify-between py-1.5">
               <div className="flex items-center gap-2">
-                <XCircle className="w-3 h-3" style={{ color: 'var(--text-muted)' }} />
+                <XCircle className="w-3 h-3" style={stTextMuted} />
                 <Link
                   href={`/investors/${inv.investorId}`}
                   className="transition-colors"
                   style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' }}
                   onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
-                  onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-tertiary)')}
-                >
+                  onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-tertiary)')}>
                   {inv.investorName}
                 </Link>
                 <TierBadge tier={inv.investorTier} />
@@ -486,14 +460,14 @@ export default function AccelerationPage() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="h-8 w-64 rounded animate-pulse" style={{ background: 'var(--surface-2)' }} />
+        <div className="h-8 w-64 rounded animate-pulse" style={stSurface2} />
         <div className="grid grid-cols-3 gap-3">
           {[...Array(3)].map((_, i) => (
-            <div key={i} className="h-20 rounded-xl animate-pulse" style={{ background: 'var(--surface-1)' }} />
+            <div key={i} className="h-20 rounded-xl animate-pulse" style={stSurface1} />
           ))}
         </div>
         {[...Array(4)].map((_, i) => (
-          <div key={i} className="h-28 rounded-xl animate-pulse" style={{ background: 'var(--surface-0)' }} />
+          <div key={i} className="h-28 rounded-xl animate-pulse" style={stSurface0} />
         ))}
       </div>
     );
@@ -504,7 +478,7 @@ export default function AccelerationPage() {
       <div className="space-y-6">
         <h1 className="page-title">Acceleration</h1>
         <div className="rounded-xl p-8 text-center space-y-3">
-          <p style={{ color: 'var(--text-tertiary)' }}>Unable to load acceleration data.</p>
+          <p style={stTextTertiary}>Unable to load acceleration data.</p>
           <button
             onClick={fetchData}
             onMouseEnter={() => setRetryHovered(true)}
@@ -516,9 +490,8 @@ export default function AccelerationPage() {
               color: 'var(--text-primary)',
               fontSize: 'var(--font-size-sm)',
               border: 'none',
-              cursor: 'pointer',
-            }}
-          >
+              cursor: 'pointer', }}
+>
             <RefreshCw className="w-3.5 h-3.5" /> Retry
           </button>
         </div>
@@ -550,7 +523,7 @@ export default function AccelerationPage() {
               <> &middot; <span style={{ color: 'var(--text-primary)', fontWeight: 400 }}>{data.summary.immediate} immediate</span></>
             )}
             {data.summary.this_week > 0 && (
-              <> &middot; <span style={{ color: 'var(--text-tertiary)' }}>{data.summary.this_week} this week</span></>
+              <> &middot; <span style={stTextTertiary}>{data.summary.this_week} this week</span></>
             )}
             {data.termSheetReady.length > 0 && (
               <> &middot; <span style={{ color: 'var(--text-secondary)', fontWeight: 400 }}>{data.termSheetReady.length} term sheet ready</span></>
@@ -568,9 +541,8 @@ export default function AccelerationPage() {
             fontSize: 'var(--font-size-sm)',
             color: 'var(--text-secondary)',
             border: 'none',
-            cursor: 'pointer',
-          }}
-        >
+            cursor: 'pointer', }}
+>
           <RefreshCw className="w-3.5 h-3.5" /> Refresh
         </button>
       </div>
@@ -579,32 +551,29 @@ export default function AccelerationPage() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 card-stagger">
         <div
           className="rounded-xl p-4"
-          style={{ background: 'var(--danger-muted)' }}
-        >
+          style={{ background: 'var(--danger-muted)' }}>
           <div className="flex items-center gap-2 mb-1" style={{ color: 'var(--text-primary)', fontSize: 'var(--font-size-sm)' }}>
             <AlertTriangle className="w-3.5 h-3.5" /> Immediate
           </div>
-          <div className="text-2xl font-normal" style={{ color: 'var(--text-primary)' }}>{data.summary.immediate}</div>
+          <div className="text-2xl font-normal" style={stTextPrimary}>{data.summary.immediate}</div>
           <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>need same-day attention</div>
         </div>
         <div
           className="rounded-xl p-4"
-          style={{ background: 'var(--warning-muted)' }}
-        >
+          style={{ background: 'var(--warning-muted)' }}>
           <div className="flex items-center gap-2 mb-1" style={{ color: 'var(--text-tertiary)', fontSize: 'var(--font-size-sm)' }}>
             <Clock className="w-3.5 h-3.5" /> This Week
           </div>
-          <div className="text-2xl font-normal" style={{ color: 'var(--text-tertiary)' }}>{data.summary.this_week}</div>
+          <div className="text-2xl font-normal" style={stTextTertiary}>{data.summary.this_week}</div>
           <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>actions for next 7 days</div>
         </div>
         <div
           className="rounded-xl p-4"
-          style={{ background: 'var(--success-muted)' }}
-        >
+          style={{ background: 'var(--success-muted)' }}>
           <div className="flex items-center gap-2 mb-1" style={{ color: 'var(--text-secondary)', fontSize: 'var(--font-size-sm)' }}>
             <Rocket className="w-3.5 h-3.5" /> Term Sheet Ready
           </div>
-          <div className="text-2xl font-normal" style={{ color: 'var(--text-secondary)' }}>{data.termSheetReady.length}</div>
+          <div className="text-2xl font-normal" style={stTextSecondary}>{data.termSheetReady.length}</div>
           <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>ready for the push</div>
         </div>
       </div>
@@ -633,9 +602,8 @@ export default function AccelerationPage() {
               borderBottomStyle: 'solid' as const,
               borderBottomWidth: '2px',
               borderBottomColor: activeTab === tab.key ? 'var(--accent)' : 'transparent',
-              cursor: 'pointer',
-            }}
-          >
+              cursor: 'pointer', }}
+>
             {tab.label}
             {tab.count > 0 && (
               <span
@@ -644,9 +612,8 @@ export default function AccelerationPage() {
                   padding: '2px 6px',
                   fontSize: '10px',
                   background: activeTab === tab.key ? 'var(--accent-muted)' : 'var(--surface-2)',
-                  color: activeTab === tab.key ? 'var(--accent)' : 'var(--text-muted)',
-                }}
-              >
+                  color: activeTab === tab.key ? 'var(--accent)' : 'var(--text-muted)', }}
+>
                 {tab.count}
               </span>
             )}
@@ -682,8 +649,7 @@ export default function AccelerationPage() {
                 onExecute={handleExecute}
                 onSkip={handleSkip}
                 executedIds={executedIds}
-                skippedIds={skippedIds}
-              />
+                skippedIds={skippedIds} />
             ))}
           </div>
         </div>
@@ -703,8 +669,7 @@ export default function AccelerationPage() {
                 onExecute={handleExecute}
                 onSkip={handleSkip}
                 executedIds={executedIds}
-                skippedIds={skippedIds}
-              />
+                skippedIds={skippedIds} />
             ))}
           </div>
         </div>
@@ -732,8 +697,8 @@ export default function AccelerationPage() {
       {/* Empty state for filtered views */}
       {allFiltered.length === 0 && data.termSheetReady.length === 0 && data.atRisk.length === 0 && data.deprioritize.length === 0 && (
         <div className="rounded-xl p-8 text-center space-y-3">
-          <CheckCircle className="w-8 h-8 mx-auto" style={{ color: 'var(--text-secondary)' }} />
-          <p style={{ color: 'var(--text-tertiary)' }}>No acceleration actions detected.</p>
+          <CheckCircle className="w-8 h-8 mx-auto" style={stTextSecondary} />
+          <p style={stTextTertiary}>No acceleration actions detected.</p>
           <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>All investors are progressing normally. Check back when new meetings are logged.</p>
         </div>
       )}

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import type { Meeting } from '@/lib/types';
 import { Search, FileSearch, Calendar, Download, ChevronDown, ChevronRight, Star, CheckCircle2, X, TrendingUp, TrendingDown, Minus, Hash } from 'lucide-react';
+import { labelTertiary, stFontSm, stFontXs, stTextMuted, stTextTertiary } from '@/lib/styles';
 
 const MEETING_TYPES = ['all', 'intro', 'management_presentation', 'deep_dive', 'site_visit', 'dd_session', 'negotiation', 'social'] as const;
 const STATUS_OPTIONS = ['all', 'met', 'engaged', 'in_dd', 'term_sheet', 'passed'] as const;
@@ -52,9 +53,8 @@ function RatingDots({ value, onChange, label }: { value: number | null; onChange
               cursor: onChange ? 'pointer' : 'default',
               background: 'none',
               border: 'none',
-              padding: 0,
-            }}
-          >
+              padding: 0, }}
+>
             <span style={{
               color: n <= (hovered ?? value ?? 0) ? 'var(--warning)' : 'var(--text-muted)',
               transition: 'color 100ms ease',
@@ -161,12 +161,7 @@ function MeetingOutcomeSection({
   if (!editing && hasOutcome) {
     return (
       <div
-        style={{
-          padding: 'var(--space-3) var(--space-4)',
-          background: 'var(--surface-1)',
-          borderRadius: 'var(--radius-sm)',
-        }}
-      >
+        style={{ padding: 'var(--space-3) var(--space-4)', background: 'var(--surface-1)', borderRadius: 'var(--radius-sm)' }}>
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-secondary)' }}>
             <CheckCircle2 className="w-3.5 h-3.5" />
@@ -176,15 +171,14 @@ function MeetingOutcomeSection({
             onClick={() => setEditing(true)}
             style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)', background: 'none', border: 'none', cursor: 'pointer' }}
             onMouseEnter={e => (e.currentTarget.style.textDecoration = 'underline')}
-            onMouseLeave={e => (e.currentTarget.style.textDecoration = 'none')}
-          >
+            onMouseLeave={e => (e.currentTarget.style.textDecoration = 'none')}>
             Edit
           </button>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3" style={{ fontSize: 'var(--font-size-xs)' }}>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3" style={stFontXs}>
           <div>
-            <div style={{ color: 'var(--text-muted)' }}>Outcome</div>
+            <div style={stTextMuted}>Outcome</div>
             <div className="flex gap-0.5 mt-1">
               {[1,2,3,4,5].map(n => (
                 <span key={n} style={{ color: n <= (meeting.outcome_rating ?? 0) ? 'var(--warning)' : 'var(--text-muted)' }}>
@@ -194,7 +188,7 @@ function MeetingOutcomeSection({
             </div>
           </div>
           <div>
-            <div style={{ color: 'var(--text-muted)' }}>Prep Usefulness</div>
+            <div style={stTextMuted}>Prep Usefulness</div>
             <div className="flex gap-0.5 mt-1">
               {[1,2,3,4,5].map(n => (
                 <span key={n} style={{ color: n <= (meeting.prep_usefulness ?? 0) ? 'var(--accent)' : 'var(--text-muted)' }}>
@@ -204,7 +198,7 @@ function MeetingOutcomeSection({
             </div>
           </div>
           <div className="col-span-2">
-            <div style={{ color: 'var(--text-muted)' }}>Key Takeaway</div>
+            <div style={stTextMuted}>Key Takeaway</div>
             <div style={{ color: 'var(--text-primary)', marginTop: '2px' }}>{meeting.key_takeaway || '-'}</div>
           </div>
         </div>
@@ -240,12 +234,7 @@ function MeetingOutcomeSection({
 
   return (
     <div
-      style={{
-        padding: 'var(--space-4)',
-        background: 'var(--surface-1)',
-        borderRadius: 'var(--radius-sm)',
-      }}
-    >
+      style={{ padding: 'var(--space-4)', background: 'var(--surface-1)', borderRadius: 'var(--radius-sm)' }}>
       <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', marginBottom: 'var(--space-3)' }}>
         Meeting Outcome
       </div>
@@ -254,13 +243,11 @@ function MeetingOutcomeSection({
         <RatingDots
           value={form.outcome_rating}
           onChange={v => setForm(prev => ({ ...prev, outcome_rating: v }))}
-          label="How did it go?"
-        />
+          label="How did it go?" />
         <RatingDots
           value={form.prep_usefulness}
           onChange={v => setForm(prev => ({ ...prev, prep_usefulness: v }))}
-          label="Prep brief usefulness"
-        />
+          label="Prep brief usefulness" />
       </div>
 
       <div className="mt-3">
@@ -271,8 +258,7 @@ function MeetingOutcomeSection({
           value={form.key_takeaway}
           onChange={e => setForm(prev => ({ ...prev, key_takeaway: e.target.value }))}
           placeholder="Most important insight from this meeting..."
-          className="input"
-        />
+          className="input" />
       </div>
 
       <div className="mt-3">
@@ -284,14 +270,12 @@ function MeetingOutcomeSection({
             <span
               key={i}
               className="flex items-center gap-1"
-              style={{ fontSize: 'var(--font-size-xs)', padding: '2px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--success-muted)', color: 'var(--text-secondary)' }}
-            >
+              style={{ fontSize: 'var(--font-size-xs)', padding: '2px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--success-muted)', color: 'var(--text-secondary)' }}>
               {o}
               <button
                 type="button"
                 onClick={() => removeObjection(i)}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: 'inherit', display: 'flex' }}
-              >
+                style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: 'inherit', display: 'flex' }}>
                 <X className="w-3 h-3" />
               </button>
             </span>
@@ -304,8 +288,7 @@ function MeetingOutcomeSection({
             onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addObjection(); } }}
             placeholder="Add objection handled..."
             className="input"
-            style={{ flex: 1 }}
-          />
+            style={{ flex: 1 }} />
           <button onClick={addObjection} className="btn btn-secondary btn-md" type="button">Add</button>
         </div>
       </div>
@@ -319,14 +302,12 @@ function MeetingOutcomeSection({
             <span
               key={i}
               className="flex items-center gap-1"
-              style={{ fontSize: 'var(--font-size-xs)', padding: '2px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--warning-muted)', color: 'var(--text-tertiary)' }}
-            >
+              style={{ fontSize: 'var(--font-size-xs)', padding: '2px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--warning-muted)', color: 'var(--text-tertiary)' }}>
               {c}
               <button
                 type="button"
                 onClick={() => removeCompetitor(i)}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: 'inherit', display: 'flex' }}
-              >
+                style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: 'inherit', display: 'flex' }}>
                 <X className="w-3 h-3" />
               </button>
             </span>
@@ -339,8 +320,7 @@ function MeetingOutcomeSection({
             onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addCompetitor(); } }}
             placeholder="Add competitor name..."
             className="input"
-            style={{ flex: 1 }}
-          />
+            style={{ flex: 1 }} />
           <button onClick={addCompetitor} className="btn btn-secondary btn-md" type="button">Add</button>
         </div>
       </div>
@@ -349,15 +329,13 @@ function MeetingOutcomeSection({
         <button
           onClick={handleSave}
           disabled={saving}
-          className="btn btn-primary btn-md"
-        >
+          className="btn btn-primary btn-md">
           {saving ? 'Saving...' : 'Save Outcome'}
         </button>
         {hasOutcome && (
           <button
             onClick={() => setEditing(false)}
-            className="btn btn-secondary btn-md"
-          >
+            className="btn btn-secondary btn-md">
             Cancel
           </button>
         )}
@@ -441,27 +419,24 @@ export default function MeetingsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="page-title">Meetings</h1>
-          <p className="page-subtitle" style={{ fontSize: 'var(--font-size-sm)' }}>
+          <p className="page-subtitle" style={stFontSm}>
             {meetings.length} meetings with {uniqueInvestors} investors
           </p>
         </div>
         <div className="flex gap-2">
           <Link
             href="/meetings/capture"
-            className="btn btn-secondary btn-md"
-          >
+            className="btn btn-secondary btn-md">
             Quick Capture
           </Link>
           <Link
             href="/meetings/prep"
-            className="btn btn-secondary btn-md"
-          >
+            className="btn btn-secondary btn-md">
             <FileSearch className="w-3.5 h-3.5" /> Meeting Prep
           </Link>
           <Link
             href="/meetings/new"
-            className="btn btn-primary btn-md"
-          >
+            className="btn btn-primary btn-md">
             + Log Meeting
           </Link>
         </div>
@@ -492,21 +467,19 @@ export default function MeetingsPage() {
       {/* Filters */}
       <div className="flex flex-wrap gap-3">
         <div className="relative flex-1 min-w-48">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--text-tertiary)' }} />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={stTextTertiary} />
           <input
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Search investor or notes..."
             className="input"
-            style={{ paddingLeft: 'var(--space-10)' }}
-          />
+            style={{ paddingLeft: 'var(--space-10)' }} />
         </div>
         <select
           value={typeFilter}
           onChange={e => setTypeFilter(e.target.value)}
           className="input"
-          style={{ width: 'auto' }}
-        >
+          style={{ width: 'auto' }}>
           {MEETING_TYPES.map(t => (
             <option key={t} value={t}>{t === 'all' ? 'All types' : t.replace(/_/g, ' ')}</option>
           ))}
@@ -515,8 +488,7 @@ export default function MeetingsPage() {
           value={statusFilter}
           onChange={e => setStatusFilter(e.target.value)}
           className="input"
-          style={{ width: 'auto' }}
-        >
+          style={{ width: 'auto' }}>
           {STATUS_OPTIONS.map(s => (
             <option key={s} value={s}>{s === 'all' ? 'All statuses' : s.replace(/_/g, ' ')}</option>
           ))}
@@ -524,8 +496,7 @@ export default function MeetingsPage() {
         <a
           href="/api/export?type=meetings"
           download
-          className="btn btn-secondary btn-md"
-        >
+          className="btn btn-secondary btn-md">
           <Download className="w-3.5 h-3.5" /> CSV
         </a>
       </div>
@@ -534,11 +505,10 @@ export default function MeetingsPage() {
       {filtered.length === 0 ? (
         <div
           className="card"
-          style={{ padding: 'var(--space-8)', textAlign: 'center' }}
-        >
+          style={{ padding: 'var(--space-8)', textAlign: 'center' }}>
           <div className="space-y-3">
-            <Calendar className="w-8 h-8 mx-auto" style={{ color: 'var(--text-muted)' }} />
-            <p style={{ color: 'var(--text-tertiary)' }}>
+            <Calendar className="w-8 h-8 mx-auto" style={stTextMuted} />
+            <p style={stTextTertiary}>
               {meetings.length === 0 ? 'No meetings logged yet. Start by scheduling your first meeting.' : 'No meetings match your filters — try adjusting them.'}
             </p>
             {meetings.length === 0 && (
@@ -569,8 +539,7 @@ export default function MeetingsPage() {
               <div
                 key={m.id}
                 className="card"
-                style={{ padding: 'var(--space-5)' }}
-              >
+                style={{ padding: 'var(--space-5)' }}>
                 <div className="flex items-start justify-between mb-3">
                   <div>
                     <div className="flex items-center gap-2">
@@ -579,8 +548,7 @@ export default function MeetingsPage() {
                         className="transition-colors"
                         style={{ fontWeight: 400, color: 'var(--text-primary)', transition: 'color 150ms ease' }}
                         onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
-                        onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}
-                      >
+                        onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}>
                         {m.investor_name}
                       </Link>
                       {stats && stats.count > 1 && (
@@ -591,9 +559,8 @@ export default function MeetingsPage() {
                             padding: '1px 6px',
                             borderRadius: 'var(--radius-sm)',
                             background: 'var(--surface-2)',
-                            color: 'var(--text-muted)',
-                          }}
-                        >
+                            color: 'var(--text-muted)', }}
+>
                           {stats.count} meetings
                         </span>
                       )}
@@ -601,13 +568,12 @@ export default function MeetingsPage() {
                         <span
                           className="flex items-center gap-0.5"
                           style={{ fontSize: '10px', color: trend.color }}
-                          title={`Enthusiasm ${trend.label.toLowerCase()} (avg ${stats.avgEnthusiasm.toFixed(1)})`}
-                        >
+                          title={`Enthusiasm ${trend.label.toLowerCase()} (avg ${stats.avgEnthusiasm.toFixed(1)})`}>
                           <TrendIcon className="w-3 h-3" />
                         </span>
                       )}
                     </div>
-                    <div className="flex gap-3 mt-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
+                    <div className="flex gap-3 mt-1" style={labelTertiary}>
                       <span>{m.date}</span>
                       <span style={{ textTransform: 'capitalize' }}>{m.type.replace(/_/g, ' ')}</span>
                       <span>{m.duration_minutes}min</span>
@@ -620,7 +586,7 @@ export default function MeetingsPage() {
                         <div
                           key={n}
                           className={`enthusiasm-dot ${n <= m.enthusiasm_score ? 'enthusiasm-dot-filled' : 'enthusiasm-dot-empty'}`}
-                        />
+                            />
                       ))}
                     </div>
                     <span className={getStatusBadgeClass(m.status_after)}>
@@ -635,9 +601,9 @@ export default function MeetingsPage() {
                   </p>
                 )}
 
-                <div className="flex gap-4" style={{ fontSize: 'var(--font-size-xs)' }}>
+                <div className="flex gap-4" style={stFontXs}>
                   {questions.length > 0 && (
-                    <span style={{ color: 'var(--text-tertiary)' }}>{questions.length} questions</span>
+                    <span style={stTextTertiary}>{questions.length} questions</span>
                   )}
                   {objections.length > 0 && (
                     <span style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{objections.length} objections</span>
@@ -659,9 +625,8 @@ export default function MeetingsPage() {
                           fontSize: 'var(--font-size-xs)',
                           padding: '2px 8px',
                           borderRadius: 'var(--radius-sm)',
-                          ...getObjectionStyle(o.severity),
-                        }}
-                      >
+                          ...getObjectionStyle(o.severity), }}
+>
                         {o.text.length > 50 ? o.text.slice(0, 50) + '...' : o.text}
                       </span>
                     ))}
@@ -677,9 +642,8 @@ export default function MeetingsPage() {
                       opacity: 0.6,
                       background: 'var(--accent-muted)',
                       borderRadius: 'var(--radius-sm)',
-                      padding: '4px 8px',
-                    }}
-                  >
+                      padding: '4px 8px', }}
+>
                     Next: {m.next_steps}
                   </div>
                 )}
@@ -696,11 +660,9 @@ export default function MeetingsPage() {
                       padding: 0,
                       fontSize: 'var(--font-size-sm)',
                       fontWeight: 400,
-                      color: hasOutcome ? 'var(--success)' : 'var(--text-tertiary)',
-                    }}
+                      color: hasOutcome ? 'var(--success)' : 'var(--text-tertiary)', }}
                     onMouseEnter={e => (e.currentTarget.style.color = hasOutcome ? 'var(--success)' : 'var(--text-secondary)')}
-                    onMouseLeave={e => (e.currentTarget.style.color = hasOutcome ? 'var(--success)' : 'var(--text-tertiary)')}
-                  >
+                    onMouseLeave={e => (e.currentTarget.style.color = hasOutcome ? 'var(--success)' : 'var(--text-tertiary)')}>
                     {isOutcomeExpanded
                       ? <ChevronDown className="w-3.5 h-3.5" />
                       : <ChevronRight className="w-3.5 h-3.5" />
@@ -717,8 +679,7 @@ export default function MeetingsPage() {
                     <div className="mt-3">
                       <MeetingOutcomeSection
                         meeting={m}
-                        onSaved={handleOutcomeSaved}
-                      />
+                        onSaved={handleOutcomeSaved} />
                     </div>
                   )}
                 </div>

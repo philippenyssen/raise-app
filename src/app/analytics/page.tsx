@@ -228,8 +228,7 @@ export default function AnalyticsPage() {
           value={String(risks.totalAlerts)}
           sub={risks.totalAlerts === 0 ? 'all clear' : 'need attention'}
           icon={<ShieldAlert className="w-4 h-4" />}
-          color={risks.totalAlerts === 0 ? 'var(--success)' : risks.totalAlerts <= 3 ? 'var(--warning)' : 'var(--danger)'}
-        />
+          color={risks.totalAlerts === 0 ? 'var(--success)' : risks.totalAlerts <= 3 ? 'var(--warning)' : 'var(--danger)'} />
         <SummaryCard
           label="Meetings"
           value={String(velocity.totalMeetings)}
@@ -268,7 +267,8 @@ export default function AnalyticsPage() {
           style={{
             background: `color-mix(in srgb, ${risks.timelineRisk.level === 'high' ? 'var(--danger-muted)' : 'var(--warning-muted)'} 20%, transparent)`,
           }}>
-          <Clock className="w-5 h-5 shrink-0" style={{ color: risks.timelineRisk.level === 'high' ? 'var(--danger)' : 'var(--warning)' }} />
+          <Clock className="w-5 h-5 shrink-0" style={{ color: risks.timelineRisk.level === 'high' ? 'var(--danger)' : 'var(--warning)' }}
+            />
           <div>
             <div className="text-sm font-normal" style={{ color: risks.timelineRisk.level === 'high' ? 'var(--danger)' : 'var(--warning)' }}>
               Timeline Risk: {risks.timelineRisk.level === 'high' ? 'Critical' : 'Elevated'}
@@ -553,8 +553,7 @@ export default function AnalyticsPage() {
             title="Declining Enthusiasm"
             subtitle="Investors whose signal score dropped between meetings"
             count={risks.decliningEnthusiasm.length}
-            severity={risks.decliningEnthusiasm.length > 2 ? 'high' : risks.decliningEnthusiasm.length > 0 ? 'medium' : 'low'}
-          >
+            severity={risks.decliningEnthusiasm.length > 2 ? 'high' : risks.decliningEnthusiasm.length > 0 ? 'medium' : 'low'}>
             {risks.decliningEnthusiasm.length === 0 ? (
               <p style={labelSmMuted}>No declining enthusiasm detected.</p>
             ) : (
@@ -1087,7 +1086,8 @@ function StaleInvestorRow({ inv }: { inv: { id: string; name: string; status: st
             ? `${inv.daysSinceLastMeeting}d ago`
             : 'No meetings'}
         </span>
-        <ArrowRight className="w-3 h-3 transition-colors" style={{ color: hovered ? 'var(--text-tertiary)' : 'var(--text-muted)' }} />
+        <ArrowRight className="w-3 h-3 transition-colors" style={{ color: hovered ? 'var(--text-tertiary)' : 'var(--text-muted)' }}
+          />
       </div>
     </Link>
   );
@@ -1115,7 +1115,8 @@ function DecliningEnthusiasmRow({ inv }: { inv: { id: string; name: string; tier
         <EnthusiasmDots score={inv.previousScore} size="sm" />
         <span className="text-xs" style={stTextMuted}>{'>'}</span>
         <EnthusiasmDots score={inv.currentScore} size="sm" />
-        <ArrowRight className="w-3 h-3 ml-1 transition-colors" style={{ color: hovered ? 'var(--text-tertiary)' : 'var(--text-muted)' }} />
+        <ArrowRight className="w-3 h-3 ml-1 transition-colors" style={{ color: hovered ? 'var(--text-tertiary)' : 'var(--text-muted)' }}
+          />
       </div>
     </Link>
   );
@@ -1148,7 +1149,8 @@ function HighTierStuckRow({ inv }: { inv: { id: string; name: string; tier: numb
         <span className="text-xs" style={stTextTertiary}>
           {inv.daysInStage}d in stage
         </span>
-        <ArrowRight className="w-3 h-3 transition-colors" style={{ color: hovered ? 'var(--text-tertiary)' : 'var(--text-muted)' }} />
+        <ArrowRight className="w-3 h-3 transition-colors" style={{ color: hovered ? 'var(--text-tertiary)' : 'var(--text-muted)' }}
+          />
       </div>
     </Link>
   );

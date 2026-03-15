@@ -8,6 +8,7 @@ import {
 import type { Task, ActivityEvent, TaskStatus, TaskPriority, RaisePhase } from '@/lib/types';
 import { useToast } from '@/components/toast';
 import Link from 'next/link';
+import { stAccent, stTextMuted, stTextPrimary, stTextSecondary } from '@/lib/styles';
 
 const PHASE_LABELS: Record<RaisePhase, string> = {
   preparation: 'Preparation',
@@ -139,7 +140,7 @@ export default function TimelinePage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="page-title">Timeline & Tasks</h1>
-          <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
+          <p className="text-sm mt-1" style={stTextMuted}>
             {pendingCount} pending, {doneCount} done{criticalCount > 0 ? `, ${criticalCount} critical` : ''}
           </p>
         </div>
@@ -148,8 +149,7 @@ export default function TimelinePage() {
           className="px-4 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2"
           style={{ backgroundColor: hoverStates['addBtn'] ? 'var(--accent)' : 'var(--accent)', color: 'var(--surface-0)', opacity: hoverStates['addBtn'] ? 0.85 : 1 }}
           onMouseEnter={() => setHover('addBtn', true)}
-          onMouseLeave={() => setHover('addBtn', false)}
-        >
+          onMouseLeave={() => setHover('addBtn', false)}>
           <Plus className="w-3.5 h-3.5" /> Add Task
         </button>
       </div>
@@ -161,11 +161,12 @@ export default function TimelinePage() {
           const pDone = pTasks.filter(t => t.status === 'done').length;
           return (
             <div key={phase} className="rounded-xl p-3">
-              <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>{PHASE_LABELS[phase]}</div>
-              <div className="text-lg font-normal" style={{ color: 'var(--text-primary)' }}>{pDone}/{pTasks.length}</div>
+              <div className="text-xs mb-1" style={stTextMuted}>{PHASE_LABELS[phase]}</div>
+              <div className="text-lg font-normal" style={stTextPrimary}>{pDone}/{pTasks.length}</div>
               {pTasks.length > 0 && (
                 <div className="w-full h-1.5 rounded-full mt-2" style={{ backgroundColor: 'var(--surface-2)' }}>
-                  <div className="h-full rounded-full" style={{ backgroundColor: 'var(--accent)', width: `${(pDone / pTasks.length) * 100}%` }} />
+                  <div className="h-full rounded-full" style={{ backgroundColor: 'var(--accent)', width: `${(pDone / pTasks.length) * 100}%` }}
+                    />
                 </div>
               )}
             </div>
@@ -178,11 +179,12 @@ export default function TimelinePage() {
         <form onSubmit={handleAddTask} className="rounded-xl p-4 space-y-3">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div>
-              <label className="text-xs block mb-1" style={{ color: 'var(--text-muted)' }}>Title</label>
-              <input name="title" required className="w-full rounded-lg px-3 py-2 text-sm focus:outline-none" style={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }} />
+              <label className="text-xs block mb-1" style={stTextMuted}>Title</label>
+              <input name="title" required className="w-full rounded-lg px-3 py-2 text-sm focus:outline-none" style={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }}
+                />
             </div>
             <div>
-              <label className="text-xs block mb-1" style={{ color: 'var(--text-muted)' }}>Priority</label>
+              <label className="text-xs block mb-1" style={stTextMuted}>Priority</label>
               <select name="priority" defaultValue="medium" className="w-full rounded-lg px-3 py-2 text-sm" style={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }}>
                 <option value="critical">Critical</option>
                 <option value="high">High</option>
@@ -191,27 +193,31 @@ export default function TimelinePage() {
               </select>
             </div>
             <div>
-              <label className="text-xs block mb-1" style={{ color: 'var(--text-muted)' }}>Phase</label>
+              <label className="text-xs block mb-1" style={stTextMuted}>Phase</label>
               <select name="phase" defaultValue="preparation" className="w-full rounded-lg px-3 py-2 text-sm" style={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }}>
                 {PHASE_ORDER.map(p => <option key={p} value={p}>{PHASE_LABELS[p]}</option>)}
               </select>
             </div>
             <div>
-              <label className="text-xs block mb-1" style={{ color: 'var(--text-muted)' }}>Due Date</label>
-              <input name="due_date" type="date" className="w-full rounded-lg px-3 py-2 text-sm" style={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }} />
+              <label className="text-xs block mb-1" style={stTextMuted}>Due Date</label>
+              <input name="due_date" type="date" className="w-full rounded-lg px-3 py-2 text-sm" style={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }}
+                />
             </div>
             <div>
-              <label className="text-xs block mb-1" style={{ color: 'var(--text-muted)' }}>Assignee</label>
-              <input name="assignee" className="w-full rounded-lg px-3 py-2 text-sm" style={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }} />
+              <label className="text-xs block mb-1" style={stTextMuted}>Assignee</label>
+              <input name="assignee" className="w-full rounded-lg px-3 py-2 text-sm" style={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }}
+                />
             </div>
             <div>
-              <label className="text-xs block mb-1" style={{ color: 'var(--text-muted)' }}>Investor</label>
-              <input name="investor_name" placeholder="(optional)" className="w-full rounded-lg px-3 py-2 text-sm" style={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }} />
+              <label className="text-xs block mb-1" style={stTextMuted}>Investor</label>
+              <input name="investor_name" placeholder="(optional)" className="w-full rounded-lg px-3 py-2 text-sm" style={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }}
+                />
             </div>
           </div>
           <div>
-            <label className="text-xs block mb-1" style={{ color: 'var(--text-muted)' }}>Description</label>
-            <input name="description" className="w-full rounded-lg px-3 py-2 text-sm" style={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }} />
+            <label className="text-xs block mb-1" style={stTextMuted}>Description</label>
+            <input name="description" className="w-full rounded-lg px-3 py-2 text-sm" style={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }}
+              />
           </div>
           <div className="flex gap-2">
             <button
@@ -219,16 +225,14 @@ export default function TimelinePage() {
               className="px-3 py-1.5 rounded-lg text-sm transition-colors"
               style={{ backgroundColor: 'var(--accent)', color: 'var(--surface-0)' }}
               onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.85'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}
-            >
+              onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}>
               Create
             </button>
             <button
               type="button"
               onClick={() => setShowAdd(false)}
               className="px-3 py-1.5 rounded-lg text-sm"
-              style={{ backgroundColor: 'var(--surface-2)', color: 'var(--text-secondary)' }}
-            >
+              style={{ backgroundColor: 'var(--surface-2)', color: 'var(--text-secondary)' }}>
               Cancel
             </button>
           </div>
@@ -242,11 +246,9 @@ export default function TimelinePage() {
           className="px-4 py-2.5 text-sm font-normal flex items-center gap-2 transition-colors"
           style={{
             borderBottom: tab === 'tasks' ? '2px solid var(--accent)' : '2px solid transparent',
-            color: tab === 'tasks' ? 'var(--text-primary)' : 'var(--text-muted)',
-          }}
+            color: tab === 'tasks' ? 'var(--text-primary)' : 'var(--text-muted)', }}
           onMouseEnter={(e) => { if (tab !== 'tasks') e.currentTarget.style.color = 'var(--text-secondary)'; }}
-          onMouseLeave={(e) => { if (tab !== 'tasks') e.currentTarget.style.color = 'var(--text-muted)'; }}
-        >
+          onMouseLeave={(e) => { if (tab !== 'tasks') e.currentTarget.style.color = 'var(--text-muted)'; }}>
           <ListTodo className="w-3.5 h-3.5" /> Tasks
           <span className="text-xs px-1.5 py-0.5 rounded" style={{ backgroundColor: 'var(--surface-2)', color: 'var(--text-tertiary)' }}>{tasks.length}</span>
         </button>
@@ -255,11 +257,9 @@ export default function TimelinePage() {
           className="px-4 py-2.5 text-sm font-normal flex items-center gap-2 transition-colors"
           style={{
             borderBottom: tab === 'activity' ? '2px solid var(--accent)' : '2px solid transparent',
-            color: tab === 'activity' ? 'var(--text-primary)' : 'var(--text-muted)',
-          }}
+            color: tab === 'activity' ? 'var(--text-primary)' : 'var(--text-muted)', }}
           onMouseEnter={(e) => { if (tab !== 'activity') e.currentTarget.style.color = 'var(--text-secondary)'; }}
-          onMouseLeave={(e) => { if (tab !== 'activity') e.currentTarget.style.color = 'var(--text-muted)'; }}
-        >
+          onMouseLeave={(e) => { if (tab !== 'activity') e.currentTarget.style.color = 'var(--text-muted)'; }}>
           <Activity className="w-3.5 h-3.5" /> Activity Log
           <span className="text-xs px-1.5 py-0.5 rounded" style={{ backgroundColor: 'var(--surface-2)', color: 'var(--text-tertiary)' }}>{activity.length}</span>
         </button>
@@ -273,8 +273,7 @@ export default function TimelinePage() {
               value={filterPhase}
               onChange={e => setFilterPhase(e.target.value)}
               className="rounded-lg px-3 py-1.5 text-sm"
-              style={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }}
-            >
+              style={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }}>
               <option value="">All Phases</option>
               {PHASE_ORDER.map(p => <option key={p} value={p}>{PHASE_LABELS[p]}</option>)}
             </select>
@@ -282,8 +281,7 @@ export default function TimelinePage() {
               value={filterStatus}
               onChange={e => setFilterStatus(e.target.value)}
               className="rounded-lg px-3 py-1.5 text-sm"
-              style={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }}
-            >
+              style={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }}>
               <option value="">All Statuses</option>
               <option value="pending">Pending</option>
               <option value="in_progress">In Progress</option>
@@ -294,10 +292,9 @@ export default function TimelinePage() {
               <button
                 onClick={() => { setFilterPhase(''); setFilterStatus(''); }}
                 className="text-xs px-2 transition-colors"
-                style={{ color: 'var(--text-muted)' }}
+                style={stTextMuted}
                 onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--text-secondary)'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-muted)'; }}
-              >
+                onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-muted)'; }}>
                 Clear
               </button>
             )}
@@ -306,13 +303,13 @@ export default function TimelinePage() {
           {/* Tasks grouped by phase */}
           {Object.keys(tasksByPhase).length === 0 ? (
             <div className="rounded-xl p-8 text-center">
-              <ListTodo className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--text-muted)' }} />
-              <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No tasks yet. Add manually or log a meeting — tasks are auto-generated.</p>
+              <ListTodo className="w-8 h-8 mx-auto mb-2" style={stTextMuted} />
+              <p className="text-sm" style={stTextMuted}>No tasks yet. Add manually or log a meeting — tasks are auto-generated.</p>
             </div>
           ) : (
             Object.entries(tasksByPhase).map(([phase, phaseTasks]) => (
               <div key={phase}>
-                <div className="text-xs font-normal  tracking-wider px-1 mb-2" style={{ color: 'var(--text-muted)' }}>
+                <div className="text-xs font-normal  tracking-wider px-1 mb-2" style={stTextMuted}>
                   {PHASE_LABELS[phase as RaisePhase]}
                 </div>
                 <div className="space-y-1">
@@ -335,11 +332,9 @@ export default function TimelinePage() {
                             : isOverdue
                             ? 'color-mix(in srgb, var(--danger) 5%, transparent)'
                             : 'transparent',
-                          opacity: task.status === 'done' ? 0.6 : 1,
-                        }}
+                          opacity: task.status === 'done' ? 0.6 : 1, }}
                         onMouseEnter={() => setHover(rowKey, true)}
-                        onMouseLeave={() => setHover(rowKey, false)}
-                      >
+                        onMouseLeave={() => setHover(rowKey, false)}>
                         <button onClick={() => toggleTask(task)} className="shrink-0">
                           <StatusIcon
                             className="w-4 h-4"
@@ -348,15 +343,13 @@ export default function TimelinePage() {
                                 : task.status === 'blocked' ? 'var(--danger)'
                                 : task.status === 'in_progress' ? 'var(--accent)'
                                 : 'var(--text-muted)',
-                            }}
-                          />
+                            }} />
                         </button>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
                             <span
                               className={`text-sm ${task.status === 'done' ? 'line-through' : ''}`}
-                              style={{ color: task.status === 'done' ? 'var(--text-muted)' : 'var(--text-secondary)' }}
-                            >
+                              style={{ color: task.status === 'done' ? 'var(--text-muted)' : 'var(--text-secondary)' }}>
                               {task.title}
                             </span>
                             <span className="text-xs px-1.5 py-0.5 rounded" style={PRIORITY_STYLES[task.priority as TaskPriority]}>
@@ -367,7 +360,7 @@ export default function TimelinePage() {
                             )}
                           </div>
                           {task.description && (
-                            <p className="text-xs mt-0.5 truncate" style={{ color: 'var(--text-muted)' }}>{task.description}</p>
+                            <p className="text-xs mt-0.5 truncate" style={stTextMuted}>{task.description}</p>
                           )}
                         </div>
                         <div className="flex items-center gap-3 shrink-0">
@@ -375,10 +368,9 @@ export default function TimelinePage() {
                             <Link
                               href={`/investors/${task.investor_id}`}
                               className="text-xs transition-colors"
-                              style={{ color: 'var(--accent)' }}
+                              style={stAccent}
                               onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.8'; }}
-                              onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}
-                            >
+                              onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}>
                               {task.investor_name}
                             </Link>
                           )}
@@ -391,8 +383,7 @@ export default function TimelinePage() {
                             value={task.status}
                             onChange={e => updateTaskStatus(task.id, e.target.value)}
                             className="rounded px-1.5 py-0.5 text-xs"
-                            style={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-tertiary)' }}
-                          >
+                            style={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-tertiary)' }}>
                             <option value="pending">Pending</option>
                             <option value="in_progress">In Progress</option>
                             <option value="done">Done</option>
@@ -401,10 +392,9 @@ export default function TimelinePage() {
                           <button
                             onClick={() => deleteTaskById(task.id)}
                             className="transition-colors"
-                            style={{ color: 'var(--text-muted)' }}
+                            style={stTextMuted}
                             onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--danger)'; }}
-                            onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-muted)'; }}
-                          >
+                            onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-muted)'; }}>
                             <Trash2 className="w-3 h-3" />
                           </button>
                         </div>
@@ -422,8 +412,8 @@ export default function TimelinePage() {
         <div className="space-y-1">
           {activity.length === 0 ? (
             <div className="rounded-xl p-8 text-center">
-              <Activity className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--text-muted)' }} />
-              <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No activity yet. Events are logged automatically as you use the platform.</p>
+              <Activity className="w-8 h-8 mx-auto mb-2" style={stTextMuted} />
+              <p className="text-sm" style={stTextMuted}>No activity yet. Events are logged automatically as you use the platform.</p>
             </div>
           ) : (
             activity.map(event => {
@@ -434,22 +424,21 @@ export default function TimelinePage() {
                   className="flex items-start gap-3 px-3 py-2 rounded-lg transition-colors"
                   style={{ backgroundColor: hoverStates[evKey] ? 'color-mix(in srgb, var(--surface-1) 30%, transparent)' : 'transparent' }}
                   onMouseEnter={() => setHover(evKey, true)}
-                  onMouseLeave={() => setHover(evKey, false)}
-                >
+                  onMouseLeave={() => setHover(evKey, false)}>
                   <div className="w-2 h-2 rounded-full mt-1.5 shrink-0" style={{ backgroundColor: 'var(--accent)' }} />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>{event.subject}</span>
+                      <span className="text-sm" style={stTextSecondary}>{event.subject}</span>
                       <span className="text-xs px-1.5 py-0.5 rounded" style={{ backgroundColor: 'var(--surface-2)', color: 'var(--text-muted)' }}>
                         {event.event_type.replace(/_/g, ' ')}
                       </span>
                     </div>
-                    {event.detail && <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{event.detail}</p>}
+                    {event.detail && <p className="text-xs mt-0.5" style={stTextMuted}>{event.detail}</p>}
                     <div className="flex items-center gap-2 mt-0.5">
                       {event.investor_name && (
-                        <span className="text-xs" style={{ color: 'var(--accent)' }}>{event.investor_name}</span>
+                        <span className="text-xs" style={stAccent}>{event.investor_name}</span>
                       )}
-                      <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{event.created_at?.split('T')[0]}</span>
+                      <span className="text-xs" style={stTextMuted}>{event.created_at?.split('T')[0]}</span>
                     </div>
                   </div>
                 </div>

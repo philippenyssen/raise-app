@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { fmtDate } from '@/lib/format';
 import { STATUS_LABELS, TYPE_LABELS } from '@/lib/constants';
-import { stTextMuted, stTextSecondary, stFontXs, stFontSm, labelMuted } from '@/lib/styles';
+import { labelMuted, labelMuted10, stFontSm, stFontXs, stTextMuted, stTextSecondary } from '@/lib/styles';
 
 // ── Pipeline column order ────────────────────────────────────────────
 const PIPELINE_STATUSES: InvestorStatus[] = [
@@ -259,8 +259,7 @@ export default function PipelinePage() {
           <p style={{ ...stFontXs, ...stTextMuted, marginBottom: 'var(--space-4)' }}>{fetchError}</p>
           <button
             onClick={fetchInvestors}
-            className="btn btn-secondary btn-sm"
-          >
+            className="btn btn-secondary btn-sm">
             Retry
           </button>
         </div>
@@ -280,12 +279,10 @@ export default function PipelinePage() {
           <FilterButton
             active={hasActiveFilters}
             count={filters.tiers.size + filters.types.size}
-            onClick={() => setShowFilters(!showFilters)}
-          />
+            onClick={() => setShowFilters(!showFilters)} />
           <Link
             href="/investors"
-            className="btn btn-secondary btn-sm"
-          >
+            className="btn btn-secondary btn-sm">
             Table View
           </Link>
         </div>
@@ -298,42 +295,36 @@ export default function PipelinePage() {
           label="Total Investors"
           value={String(totalCount)}
           sub={`${activeInvestors.length} active`}
-          iconColor={STAT_ICON_COLORS.blue}
-        />
+          iconColor={STAT_ICON_COLORS.blue} />
         <StatCard
           icon={<TrendingUp className="w-4 h-4" />}
           label="Avg Enthusiasm"
           value={avgEnthusiasm > 0 ? avgEnthusiasm.toFixed(1) : '—'}
           sub="out of 5"
-          iconColor={STAT_ICON_COLORS.purple}
-        />
+          iconColor={STAT_ICON_COLORS.purple} />
         <StatCard
           icon={<Zap className="w-4 h-4" />}
           label="Pipeline Velocity"
           value={pipelineVelocity > 0 ? pipelineVelocity.toFixed(1) : '—'}
           sub="weighted stage avg"
-          iconColor={STAT_ICON_COLORS.amber}
-        />
+          iconColor={STAT_ICON_COLORS.amber} />
         <StatCard
           icon={<Building2 className="w-4 h-4" />}
           label="In DD+"
           value={String(filtered.filter(i => ['in_dd', 'term_sheet', 'closed'].includes(i.status)).length)}
           sub="advanced stage"
-          iconColor={STAT_ICON_COLORS.emerald}
-        />
+          iconColor={STAT_ICON_COLORS.emerald} />
       </div>
 
       {/* ── Filter Bar ──────────────────────────────────────────── */}
       {showFilters && (
         <div
           className="flex-shrink-0 space-y-3"
-          style={{ borderRadius: 'var(--radius-xl)', padding: 'var(--space-4)' }}
-        >
+          style={{ borderRadius: 'var(--radius-xl)', padding: 'var(--space-4)' }}>
           <div className="flex items-center justify-between">
             <h3
               className="section-title"
-              style={{ marginBottom: 0 }}
-            >
+              style={{ marginBottom: 0 }}>
               Filters
             </h3>
             {hasActiveFilters && (
@@ -342,8 +333,7 @@ export default function PipelinePage() {
                 className="flex items-center gap-1 transition-colors"
                 style={labelMuted}
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}
-              >
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}>
                 <X className="w-3 h-3" /> Clear all
               </button>
             )}
@@ -357,8 +347,7 @@ export default function PipelinePage() {
                     key={tier}
                     tier={tier}
                     active={filters.tiers.has(tier)}
-                    onClick={() => toggleTier(tier)}
-                  />
+                    onClick={() => toggleTier(tier)} />
                 ))}
               </div>
             </div>
@@ -371,8 +360,7 @@ export default function PipelinePage() {
                     type={key}
                     label={label}
                     active={filters.types.has(key)}
-                    onClick={() => toggleType(key)}
-                  />
+                    onClick={() => toggleType(key)} />
                 ))}
               </div>
             </div>
@@ -405,8 +393,7 @@ export default function PipelinePage() {
         return (
           <div
             className="flex items-center gap-6 flex-shrink-0 overflow-x-auto"
-            style={{ padding: 'var(--space-3) var(--space-4)', background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)' }}
-          >
+            style={{ padding: 'var(--space-3) var(--space-4)', background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)' }}>
             {metrics.map((m) => (
               <div key={m.label} className="flex flex-col items-center" style={{ minWidth: '4rem' }}>
                 <span style={{ ...labelMuted, fontWeight: 400, whiteSpace: 'nowrap' }}>{m.label}</span>
@@ -420,8 +407,7 @@ export default function PipelinePage() {
       {/* ── Kanban Board ────────────────────────────────────────── */}
       <div
         ref={boardRef}
-        className="flex-1 overflow-x-auto overflow-y-hidden pb-4"
-      >
+        className="flex-1 overflow-x-auto overflow-y-hidden pb-4">
         <div className="flex gap-3 h-full min-w-max">
           {PIPELINE_STATUSES.map(status => {
             const cards = investorsInStatus(status);
@@ -435,8 +421,7 @@ export default function PipelinePage() {
                 style={{ borderRadius: 'var(--radius-xl)', transition: 'all 150ms ease' }}
                 onDragOver={e => handleDragOver(e, status)}
                 onDragLeave={handleDragLeave}
-                onDrop={e => handleDrop(e, status)}
-              >
+                onDrop={e => handleDrop(e, status)}>
                 {/* Column header */}
                 <div style={{ padding: '0.625rem 0.75rem', borderTopLeftRadius: 'var(--radius-xl)', borderTopRightRadius: 'var(--radius-xl)', ...colors.header }}>
                   <div className="flex items-center justify-between">
@@ -453,14 +438,12 @@ export default function PipelinePage() {
                       investor={inv}
                       isDragging={dragId === inv.id}
                       onDragStart={handleDragStart}
-                      onDragEnd={handleDragEnd}
-                    />
+                      onDragEnd={handleDragEnd} />
                   ))}
                   {cards.length === 0 && (
                     <div
                       className="flex items-center justify-center"
-                      style={{ height: '5rem', color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)', textAlign: 'center', padding: '0 var(--space-2)' }}
-                    >
+                      style={{ height: '5rem', color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)', textAlign: 'center', padding: '0 var(--space-2)' }}>
                       {dragId ? 'Drop here'
                         : status === 'identified' ? 'Add investors from the table view'
                         : status === 'closed' ? 'Move investors here when signed'
@@ -477,8 +460,7 @@ export default function PipelinePage() {
       {/* ── Exit Row (Passed / Dropped) ─────────────────────────── */}
       {EXIT_STATUSES.some(s => investorsInStatus(s).length > 0 || dragId) && (
         <div
-          className="flex-shrink-0 pt-4"
-        >
+          className="flex-shrink-0 pt-4">
           <div className="flex gap-4">
             {EXIT_STATUSES.map(status => {
               const cards = investorsInStatus(status);
@@ -489,22 +471,17 @@ export default function PipelinePage() {
                 <div
                   key={status}
                   className="flex-1"
-                  style={{
-                    borderRadius: 'var(--radius-xl)',
-                    transition: 'all 150ms ease',
-                  }}
+                  style={{ borderRadius: 'var(--radius-xl)', transition: 'all 150ms ease' }}
                   onDragOver={e => handleDragOver(e, status)}
                   onDragLeave={handleDragLeave}
-                  onDrop={e => handleDrop(e, status)}
-                >
+                  onDrop={e => handleDrop(e, status)}>
                   <div
                     style={{
                       padding: '0.5rem 0.75rem',
                       borderTopLeftRadius: 'var(--radius-xl)',
                       borderTopRightRadius: 'var(--radius-xl)',
-                      ...colors.header,
-                    }}
-                  >
+                      ...colors.header, }}
+>
                     <div className="flex items-center justify-between">
                       <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-secondary)', letterSpacing: '0.01em' }}>
                         {STATUS_LABELS[status]}
@@ -515,9 +492,8 @@ export default function PipelinePage() {
                           fontWeight: 300,
                           padding: '0.125rem 0.375rem',
                           borderRadius: '9999px',
-                          ...colors.badge,
-                        }}
-                      >
+                          ...colors.badge, }}
+>
                         {cards.length}
                       </span>
                     </div>
@@ -532,15 +508,13 @@ export default function PipelinePage() {
                             compact
                             isDragging={dragId === inv.id}
                             onDragStart={handleDragStart}
-                            onDragEnd={handleDragEnd}
-                          />
+                            onDragEnd={handleDragEnd} />
                         ))}
                       </div>
                     ) : (
                       <div
                         className="flex items-center justify-center"
-                        style={{ height: '3rem', color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}
-                      >
+                        style={{ height: '3rem', color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>
                         {dragId ? 'Drop here' : 'None'}
                       </div>
                     )}
@@ -587,9 +561,8 @@ function FilterButton({
           : {
               background: 'var(--surface-1)',
               color: hovered ? 'var(--text-secondary)' : 'var(--text-tertiary)',
-            }),
-      }}
-    >
+            }), }}
+>
       <Filter className="w-3.5 h-3.5" />
       Filters
       {active && (
@@ -600,9 +573,8 @@ function FilterButton({
             fontSize: '10px',
             fontWeight: 300,
             padding: '0.125rem 0.375rem',
-            borderRadius: '9999px',
-          }}
-        >
+            borderRadius: '9999px', }}
+>
           {count}
         </span>
       )}
@@ -639,9 +611,8 @@ function TierFilterButton({
           : {
               background: 'var(--surface-1)',
               color: hovered ? 'var(--text-secondary)' : 'var(--text-muted)',
-            }),
-      }}
-    >
+            }), }}
+>
       T{tier}
     </button>
   );
@@ -678,9 +649,8 @@ function TypeFilterButton({
           : {
               background: 'var(--surface-1)',
               color: hovered ? 'var(--text-secondary)' : 'var(--text-muted)',
-            }),
-      }}
-    >
+            }), }}
+>
       {label}
     </button>
   );
@@ -699,15 +669,14 @@ function StatCard({
   return (
     <div
       className="card-metric"
-      style={{ padding: 'var(--space-3) var(--space-4)' }}
-    >
+      style={{ padding: 'var(--space-3) var(--space-4)' }}>
       <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-1)' }}>
         <span style={{ color: iconColor }}>{icon}</span>
         <span className="metric-label">{label}</span>
       </div>
       <div className="flex items-baseline gap-1.5">
         <span style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>{value}</span>
-        <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{sub}</span>
+        <span style={labelMuted10}>{sub}</span>
       </div>
     </div>
   );
@@ -761,10 +730,10 @@ function InvestorCard({
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         className="transition-colors"
-        style={{ ...cardBaseStyle, padding: '0.5rem 0.75rem' }}
-      >
+        style={{ ...cardBaseStyle, padding: '0.5rem 0.75rem' }}>
         <Link href={`/investors/${investor.id}`} className="flex items-center gap-2">
-          <GripVertical className="w-3 h-3 flex-shrink-0" style={{ color: hovered ? 'var(--text-muted)' : 'var(--border-strong)' }} />
+          <GripVertical className="w-3 h-3 flex-shrink-0" style={{ color: hovered ? 'var(--text-muted)' : 'var(--border-strong)' }}
+            />
           <span className="truncate" style={{ ...stFontXs, fontWeight: 400, color: 'var(--text-secondary)' }}>{investor.name}</span>
           <span style={{ padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-sm)', fontSize: '10px', fontWeight: 400, ...TIER_STYLES[investor.tier] }}>T{investor.tier}</span>
         </Link>
@@ -780,15 +749,13 @@ function InvestorCard({
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       className="transition-colors"
-      style={{ ...cardBaseStyle, padding: 'var(--space-3)' }}
-    >
+      style={{ ...cardBaseStyle, padding: 'var(--space-3)' }}>
       <Link href={`/investors/${investor.id}`} className="block space-y-2.5" draggable={false}>
         <div className="flex items-start justify-between gap-1">
           <span style={{ ...stFontSm, fontWeight: 400, color: hovered ? 'var(--text-primary)' : 'var(--text-secondary)', lineHeight: 1.3, transition: 'color 150ms ease' }}>{investor.name}</span>
           <GripVertical
             className="w-3.5 h-3.5 flex-shrink-0 mt-0.5"
-            style={{ color: hovered ? 'var(--text-muted)' : 'var(--border-strong)' }}
-          />
+            style={{ color: hovered ? 'var(--text-muted)' : 'var(--border-strong)' }} />
         </div>
 
         {/* Badges row: type + tier */}
@@ -803,12 +770,12 @@ function InvestorCard({
         <div className="space-y-1">
           {investor.partner && (
             <div className="truncate" style={labelMuted}>
-              <span style={{ color: 'var(--text-muted)' }}>Partner:</span> {investor.partner}
+              <span style={stTextMuted}>Partner:</span> {investor.partner}
             </div>
           )}
           {investor.fund_size && (
             <div className="truncate" style={labelMuted}>
-              <span style={{ color: 'var(--text-muted)' }}>Fund:</span> {investor.fund_size}
+              <span style={stTextMuted}>Fund:</span> {investor.fund_size}
             </div>
           )}
         </div>
@@ -817,7 +784,7 @@ function InvestorCard({
         <div className="flex items-center justify-between">
           {investor.enthusiasm > 0 ? (
             <div className="flex items-center gap-1.5">
-              <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Signal</span>
+              <span style={labelMuted10}>Signal</span>
               <div className="enthusiasm-dots">
                 {[1, 2, 3, 4, 5].map(n => (
                   <div
@@ -831,15 +798,14 @@ function InvestorCard({
                           ? 'var(--accent)'
                           : 'var(--text-muted)'
                         : 'var(--border-default)',
-                    }}
-                  />
+                    }} />
                 ))}
               </div>
             </div>
           ) : <div />}
           {(() => {
             const lastDate = investor.last_meeting_date;
-            if (!lastDate) return <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>No meetings</span>;
+            if (!lastDate) return <span style={labelMuted10}>No meetings</span>;
             const days = Math.floor((Date.now() - new Date(lastDate).getTime()) / (1000 * 60 * 60 * 24));
             const isStale = days >= 14;
             const isWarning = days >= 7 && days < 14;
@@ -853,8 +819,7 @@ function InvestorCard({
       {/* Quick actions on hover */}
       {hovered && (
         <div
-          className="flex items-center gap-1 pt-2 mt-2"
-        >
+          className="flex items-center gap-1 pt-2 mt-2">
           <Link
             href={`/meetings/prep?investor=${investor.id}`}
             onClick={e => e.stopPropagation()}
@@ -863,11 +828,9 @@ function InvestorCard({
             style={{
               fontSize: '10px', color: 'var(--text-muted)',
               padding: '2px 0', borderRadius: 'var(--radius-sm)',
-              textDecoration: 'none',
-            }}
+              textDecoration: 'none', }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; (e.currentTarget as HTMLElement).style.background = 'var(--accent-muted)'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
-          >
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
             <ClipboardList className="w-3 h-3" /> Prep
           </Link>
           <Link
@@ -878,11 +841,9 @@ function InvestorCard({
             style={{
               fontSize: '10px', color: 'var(--text-muted)',
               padding: '2px 0', borderRadius: 'var(--radius-sm)',
-              textDecoration: 'none',
-            }}
+              textDecoration: 'none', }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; (e.currentTarget as HTMLElement).style.background = 'var(--accent-muted)'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
-          >
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
             <Calendar className="w-3 h-3" /> Log
           </Link>
           <Link
@@ -893,11 +854,9 @@ function InvestorCard({
             style={{
               fontSize: '10px', color: 'var(--text-muted)',
               padding: '2px 0', borderRadius: 'var(--radius-sm)',
-              textDecoration: 'none',
-            }}
+              textDecoration: 'none', }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; (e.currentTarget as HTMLElement).style.background = 'var(--accent-muted)'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
-          >
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
             <SendHorizonal className="w-3 h-3" /> Follow up
           </Link>
         </div>

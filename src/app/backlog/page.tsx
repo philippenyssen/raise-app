@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useToast } from '@/components/toast';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { Plus, Trash2, DollarSign, ShieldCheck, AlertTriangle, TrendingUp, FileText } from 'lucide-react';
+import { stAccent, stSurface1, stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 interface Commitment {
   id: string;
@@ -122,8 +123,8 @@ export default function BacklogPage() {
   if (loading) {
     return (
       <div className="space-y-4">
-        <div className="h-8 w-48 rounded animate-pulse" style={{ background: 'var(--surface-2)' }} />
-        {[...Array(3)].map((_, i) => <div key={i} className="h-16 rounded-xl animate-pulse" style={{ background: 'var(--surface-1)' }} />)}
+        <div className="h-8 w-48 rounded animate-pulse" style={stSurface2} />
+        {[...Array(3)].map((_, i) => <div key={i} className="h-16 rounded-xl animate-pulse" style={stSurface1} />)}
       </div>
     );
   }
@@ -133,7 +134,7 @@ export default function BacklogPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="page-title">Revenue Backlog</h1>
-          <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
+          <p className="text-sm mt-1" style={stTextMuted}>
             {summary?.count || 0} commitments &middot; {formatEur(summary?.total_committed_eur || 0)} total &middot; {formatEur(summary?.probability_weighted_eur || 0)} probability-weighted
           </p>
         </div>
@@ -145,43 +146,52 @@ export default function BacklogPage() {
       {/* Summary cards */}
       {summary && (
         <div className="grid grid-cols-4 gap-3 card-stagger">
-          <div className="rounded-lg p-4" style={{ background: 'var(--surface-1)' }}>
-            <div className="text-xs  font-normal flex items-center gap-1" style={{ color: 'var(--text-muted)' }}><DollarSign className="w-3 h-3" /> Total Committed</div>
-            <div className="text-2xl font-normal mt-1" style={{ color: 'var(--text-primary)' }}>{formatEur(summary.total_committed_eur)}</div>
+          <div className="rounded-lg p-4" style={stSurface1}>
+            <div className="text-xs  font-normal flex items-center gap-1" style={stTextMuted}><DollarSign className="w-3 h-3" /> Total Committed</div>
+            <div className="text-2xl font-normal mt-1" style={stTextPrimary}>{formatEur(summary.total_committed_eur)}</div>
           </div>
-          <div className="rounded-lg p-4" style={{ background: 'var(--surface-1)' }}>
-            <div className="text-xs  font-normal flex items-center gap-1" style={{ color: 'var(--text-muted)' }}><ShieldCheck className="w-3 h-3" /> Probability-Weighted</div>
-            <div className="text-2xl font-normal mt-1" style={{ color: 'var(--text-secondary)' }}>{formatEur(summary.probability_weighted_eur)}</div>
+          <div className="rounded-lg p-4" style={stSurface1}>
+            <div className="text-xs  font-normal flex items-center gap-1" style={stTextMuted}><ShieldCheck className="w-3 h-3" /> Probability-Weighted</div>
+            <div className="text-2xl font-normal mt-1" style={stTextSecondary}>{formatEur(summary.probability_weighted_eur)}</div>
           </div>
-          <div className="rounded-lg p-4" style={{ background: 'var(--surface-1)' }}>
-            <div className="text-xs  font-normal flex items-center gap-1" style={{ color: 'var(--text-muted)' }}><TrendingUp className="w-3 h-3" /> Firm Contracts</div>
-            <div className="text-2xl font-normal mt-1" style={{ color: 'var(--accent)' }}>{formatEur(summary.by_type?.firm || 0)}</div>
+          <div className="rounded-lg p-4" style={stSurface1}>
+            <div className="text-xs  font-normal flex items-center gap-1" style={stTextMuted}><TrendingUp className="w-3 h-3" /> Firm Contracts</div>
+            <div className="text-2xl font-normal mt-1" style={stAccent}>{formatEur(summary.by_type?.firm || 0)}</div>
           </div>
-          <div className="rounded-lg p-4" style={{ background: 'var(--surface-1)' }}>
-            <div className="text-xs  font-normal flex items-center gap-1" style={{ color: 'var(--text-muted)' }}><AlertTriangle className="w-3 h-3" /> Pipeline (Unsigned)</div>
-            <div className="text-2xl font-normal mt-1" style={{ color: 'var(--text-tertiary)' }}>{formatEur(summary.by_type?.pipeline || 0)}</div>
+          <div className="rounded-lg p-4" style={stSurface1}>
+            <div className="text-xs  font-normal flex items-center gap-1" style={stTextMuted}><AlertTriangle className="w-3 h-3" /> Pipeline (Unsigned)</div>
+            <div className="text-2xl font-normal mt-1" style={stTextTertiary}>{formatEur(summary.by_type?.pipeline || 0)}</div>
           </div>
         </div>
       )}
 
       {/* Add form */}
       {showAdd && (
-        <div className="rounded-xl p-4 space-y-3" style={{ background: 'var(--surface-1)' }}>
-          <h3 className="text-sm font-normal" style={{ color: 'var(--text-primary)' }}>Add Revenue Commitment</h3>
+        <div className="rounded-xl p-4 space-y-3" style={stSurface1}>
+          <h3 className="text-sm font-normal" style={stTextPrimary}>Add Revenue Commitment</h3>
           <div className="grid grid-cols-3 gap-3">
-            <input placeholder="Customer" value={form.customer} onChange={e => setForm(f => ({ ...f, customer: e.target.value }))} className="input" />
-            <input placeholder="Program/Contract" value={form.program} onChange={e => setForm(f => ({ ...f, program: e.target.value }))} className="input" />
+            <input placeholder="Customer" value={form.customer} onChange={e => setForm(f => ({ ...f, customer: e.target.value }))} className="input"
+              />
+            <input placeholder="Program/Contract" value={form.program} onChange={e => setForm(f => ({ ...f, program: e.target.value }))} className="input"
+              />
             <select value={form.contract_type} onChange={e => setForm(f => ({ ...f, contract_type: e.target.value }))} className="input">
               {Object.entries(TYPE_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
             </select>
-            <input type="number" placeholder="Total Amount (€M)" value={form.amount_eur} onChange={e => setForm(f => ({ ...f, amount_eur: e.target.value }))} className="input" />
-            <input type="number" placeholder="Annual Amount (€M)" value={form.annual_amount} onChange={e => setForm(f => ({ ...f, annual_amount: e.target.value }))} className="input" />
-            <input type="number" step="0.05" min="0" max="1" placeholder="Confidence (0-1)" value={form.confidence} onChange={e => setForm(f => ({ ...f, confidence: e.target.value }))} className="input" />
-            <input type="date" placeholder="Start Date" value={form.start_date} onChange={e => setForm(f => ({ ...f, start_date: e.target.value }))} className="input" />
-            <input type="date" placeholder="End Date" value={form.end_date} onChange={e => setForm(f => ({ ...f, end_date: e.target.value }))} className="input" />
-            <input placeholder="Source Document" value={form.source_doc} onChange={e => setForm(f => ({ ...f, source_doc: e.target.value }))} className="input" />
+            <input type="number" placeholder="Total Amount (€M)" value={form.amount_eur} onChange={e => setForm(f => ({ ...f, amount_eur: e.target.value }))} className="input"
+              />
+            <input type="number" placeholder="Annual Amount (€M)" value={form.annual_amount} onChange={e => setForm(f => ({ ...f, annual_amount: e.target.value }))} className="input"
+              />
+            <input type="number" step="0.05" min="0" max="1" placeholder="Confidence (0-1)" value={form.confidence} onChange={e => setForm(f => ({ ...f, confidence: e.target.value }))} className="input"
+              />
+            <input type="date" placeholder="Start Date" value={form.start_date} onChange={e => setForm(f => ({ ...f, start_date: e.target.value }))} className="input"
+              />
+            <input type="date" placeholder="End Date" value={form.end_date} onChange={e => setForm(f => ({ ...f, end_date: e.target.value }))} className="input"
+              />
+            <input placeholder="Source Document" value={form.source_doc} onChange={e => setForm(f => ({ ...f, source_doc: e.target.value }))} className="input"
+              />
           </div>
-          <textarea placeholder="Notes" value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} className="input" rows={2} />
+          <textarea placeholder="Notes" value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} className="input" rows={2}
+            />
           <div className="flex gap-2">
             <button onClick={handleAdd} className="btn btn-primary btn-md">Save</button>
             <button onClick={() => setShowAdd(false)} className="btn btn-secondary btn-md">Cancel</button>
@@ -192,9 +202,9 @@ export default function BacklogPage() {
       {/* Commitments table */}
       {commitments.length === 0 ? (
         <div className="rounded-xl p-8 text-center space-y-3">
-          <DollarSign className="w-8 h-8 mx-auto" style={{ color: 'var(--text-muted)' }} />
-          <p style={{ color: 'var(--text-muted)' }}>No revenue commitments tracked yet.</p>
-          <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>Add your contracted backlog to enable auditable drill-down during DD.</p>
+          <DollarSign className="w-8 h-8 mx-auto" style={stTextMuted} />
+          <p style={stTextMuted}>No revenue commitments tracked yet.</p>
+          <p className="text-sm" style={stTextTertiary}>Add your contracted backlog to enable auditable drill-down during DD.</p>
         </div>
       ) : (
         <div className="rounded-xl overflow-hidden">
@@ -217,16 +227,16 @@ export default function BacklogPage() {
                 const conf = confidenceLevel(c.confidence);
                 return (
                   <tr key={c.id} className="table-row">
-                    <td className="px-4 py-3 font-normal" style={{ color: 'var(--text-primary)' }}>{c.customer}</td>
-                    <td className="px-4 py-3" style={{ color: 'var(--text-secondary)' }}>{c.program || '—'}</td>
+                    <td className="px-4 py-3 font-normal" style={stTextPrimary}>{c.customer}</td>
+                    <td className="px-4 py-3" style={stTextSecondary}>{c.program || '—'}</td>
                     <td className="px-4 py-3"><span className="text-xs px-1.5 py-0.5 rounded" style={{ background: 'var(--surface-2)', color: 'var(--text-secondary)' }}>{TYPE_LABELS[c.contract_type] || c.contract_type}</span></td>
-                    <td className="px-4 py-3 text-right font-mono" style={{ color: 'var(--text-primary)' }}>{(c.amount_eur / 1e6).toFixed(0)}</td>
-                    <td className="px-4 py-3 text-right font-mono" style={{ color: 'var(--text-muted)' }}>{c.annual_amount ? (c.annual_amount / 1e6).toFixed(0) : '—'}</td>
+                    <td className="px-4 py-3 text-right font-mono" style={stTextPrimary}>{(c.amount_eur / 1e6).toFixed(0)}</td>
+                    <td className="px-4 py-3 text-right font-mono" style={stTextMuted}>{c.annual_amount ? (c.annual_amount / 1e6).toFixed(0) : '—'}</td>
                     <td className="px-4 py-3 text-center"><span className="text-xs px-1.5 py-0.5 rounded font-normal" style={CONFIDENCE_COLORS[conf]}>{(c.confidence * 100).toFixed(0)}%</span></td>
-                    <td className="px-4 py-3 text-xs" style={{ color: 'var(--text-muted)' }}>{c.start_date && c.end_date ? `${c.start_date.slice(0, 7)} → ${c.end_date.slice(0, 7)}` : c.start_date || '—'}</td>
-                    <td className="px-4 py-3 text-xs" style={{ color: 'var(--text-muted)' }}>{c.source_doc ? <span className="flex items-center gap-1"><FileText className="w-3 h-3" />{c.source_doc}</span> : '—'}</td>
+                    <td className="px-4 py-3 text-xs" style={stTextMuted}>{c.start_date && c.end_date ? `${c.start_date.slice(0, 7)} → ${c.end_date.slice(0, 7)}` : c.start_date || '—'}</td>
+                    <td className="px-4 py-3 text-xs" style={stTextMuted}>{c.source_doc ? <span className="flex items-center gap-1"><FileText className="w-3 h-3" />{c.source_doc}</span> : '—'}</td>
                     <td className="px-4 py-3">
-                      <button onClick={() => setDeleteTarget(c.id)} className="btn btn-ghost p-1 rounded" style={{ color: 'var(--text-muted)' }}><Trash2 className="w-3.5 h-3.5" /></button>
+                      <button onClick={() => setDeleteTarget(c.id)} className="btn btn-ghost p-1 rounded" style={stTextMuted}><Trash2 className="w-3.5 h-3.5" /></button>
                     </td>
                   </tr>
                 );
@@ -243,8 +253,7 @@ export default function BacklogPage() {
         confirmLabel="Delete"
         variant="danger"
         onConfirm={handleDelete}
-        onCancel={() => setDeleteTarget(null)}
-      />
+        onCancel={() => setDeleteTarget(null)} />
     </div>
   );
 }

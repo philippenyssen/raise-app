@@ -8,6 +8,7 @@ import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { Search, Download, GitCompare, Columns3, Clock, Pencil, Trash2 } from 'lucide-react';
 import { fmtDate } from '@/lib/format';
 import { STATUS_LABELS, TYPE_LABELS } from '@/lib/constants';
+import { stTextMuted } from '@/lib/styles';
 
 const STATUS_STYLES: Record<string, { background: string; color: string }> = {
   identified: { background: 'var(--surface-3)', color: 'var(--text-secondary)' },
@@ -212,8 +213,7 @@ export default function InvestorsPage() {
           </a>
           <button
             onClick={() => { setShowForm(!showForm); setEditId(null); }}
-            className="btn btn-primary btn-md"
-          >
+            className="btn btn-primary btn-md">
             + Add Investor
           </button>
         </div>
@@ -222,21 +222,19 @@ export default function InvestorsPage() {
       {/* Search + Filters */}
       <div className="flex gap-2 flex-wrap">
         <div className="relative flex-1 min-w-48">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--text-muted)' }} />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={stTextMuted} />
           <input
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
             placeholder="Find by name, firm, or deal focus..."
             className="input"
-            style={{ paddingLeft: '2.25rem' }}
-          />
+            style={{ paddingLeft: '2.25rem' }} />
         </div>
         <select
           value={filter.tier ?? ''}
           onChange={e => setFilter(f => ({ ...f, tier: e.target.value ? Number(e.target.value) : undefined }))}
           className="input"
-          style={{ width: 'auto' }}
-        >
+          style={{ width: 'auto' }}>
           <option value="">All Tiers</option>
           <option value="1">Tier 1</option><option value="2">Tier 2</option>
           <option value="3">Tier 3</option><option value="4">Tier 4</option>
@@ -245,8 +243,7 @@ export default function InvestorsPage() {
           value={filter.status ?? ''}
           onChange={e => setFilter(f => ({ ...f, status: e.target.value || undefined }))}
           className="input"
-          style={{ width: 'auto' }}
-        >
+          style={{ width: 'auto' }}>
           <option value="">All Statuses</option>
           {Object.entries(STATUS_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
         </select>
@@ -254,16 +251,14 @@ export default function InvestorsPage() {
           value={filter.type ?? ''}
           onChange={e => setFilter(f => ({ ...f, type: e.target.value || undefined }))}
           className="input"
-          style={{ width: 'auto' }}
-        >
+          style={{ width: 'auto' }}>
           <option value="">All Types</option>
           {Object.entries(TYPE_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
         </select>
         {(filter.tier || filter.status || filter.type || searchQuery) && (
           <button
             onClick={() => { setFilter({}); setSearchQuery(''); }}
-            className="btn btn-ghost btn-sm"
-          >
+            className="btn btn-ghost btn-sm">
             Clear
           </button>
         )}
@@ -282,24 +277,21 @@ export default function InvestorsPage() {
             background: 'var(--accent-muted)',
             boxShadow: 'var(--shadow-lg), inset 0 0 0 1px var(--accent)',
             borderRadius: 'var(--radius-lg)',
-            padding: 'var(--space-2) var(--space-4)',
-          }}
-        >
+            padding: 'var(--space-2) var(--space-4)', }}
+>
           <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--accent)', fontWeight: 400 }}>
             {selected.size} selected
           </span>
           <button
             onClick={() => bulkUpdateStatus('contacted')}
-            className="btn btn-sm btn-primary"
-          >
+            className="btn btn-sm btn-primary">
             Mark Contacted
           </button>
           <select
             defaultValue=""
             onChange={e => { if (e.target.value) bulkUpdateStatus(e.target.value); e.target.value = ''; }}
             className="input"
-            style={{ width: 'auto', fontSize: 'var(--font-size-xs)', padding: '0.25rem 0.5rem' }}
-          >
+            style={{ width: 'auto', fontSize: 'var(--font-size-xs)', padding: '0.25rem 0.5rem' }}>
             <option value="" disabled>Other status...</option>
             {Object.entries(STATUS_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
           </select>
@@ -313,18 +305,21 @@ export default function InvestorsPage() {
       {showForm && (
         <form
           onSubmit={handleSubmit}
-          className="card-elevated space-y-4"
-        >
+          className="card-elevated space-y-4">
           <h3 className="section-title">{editId ? 'Edit' : 'Add'} investor</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Input label="Name" value={form.name} onChange={v => setForm(f => ({ ...f, name: v }))} required />
-            <Select label="Type" value={form.type} onChange={v => setForm(f => ({ ...f, type: v as InvestorType }))} options={Object.entries(TYPE_LABELS)} />
-            <Select label="Tier" value={String(form.tier)} onChange={v => setForm(f => ({ ...f, tier: Number(v) as InvestorTier }))} options={[['1','Tier 1'],['2','Tier 2'],['3','Tier 3'],['4','Tier 4']]} />
+            <Select label="Type" value={form.type} onChange={v => setForm(f => ({ ...f, type: v as InvestorType }))} options={Object.entries(TYPE_LABELS)}
+              />
+            <Select label="Tier" value={String(form.tier)} onChange={v => setForm(f => ({ ...f, tier: Number(v) as InvestorTier }))} options={[['1','Tier 1'],['2','Tier 2'],['3','Tier 3'],['4','Tier 4']]}
+              />
             <Input label="Key Partner" value={form.partner} onChange={v => setForm(f => ({ ...f, partner: v }))} />
             <Input label="Fund Size" value={form.fund_size} onChange={v => setForm(f => ({ ...f, fund_size: v }))} />
-            <Input label="Check Size Range" value={form.check_size_range} onChange={v => setForm(f => ({ ...f, check_size_range: v }))} />
+            <Input label="Check Size Range" value={form.check_size_range} onChange={v => setForm(f => ({ ...f, check_size_range: v }))}
+              />
             <Input label="Warm Path" value={form.warm_path} onChange={v => setForm(f => ({ ...f, warm_path: v }))} />
-            <Select label="Speed" value={form.speed} onChange={v => setForm(f => ({ ...f, speed: v as 'fast' | 'medium' | 'slow' }))} options={[['fast','Fast'],['medium','Medium'],['slow','Slow']]} />
+            <Select label="Speed" value={form.speed} onChange={v => setForm(f => ({ ...f, speed: v as 'fast' | 'medium' | 'slow' }))} options={[['fast','Fast'],['medium','Medium'],['slow','Slow']]}
+              />
             <Input label="IC Process" value={form.ic_process} onChange={v => setForm(f => ({ ...f, ic_process: v }))} />
           </div>
           <Input label="Sector Thesis" value={form.sector_thesis} onChange={v => setForm(f => ({ ...f, sector_thesis: v }))} />
@@ -342,11 +337,7 @@ export default function InvestorsPage() {
 
       {/* Investor Table */}
       <div
-        style={{
-          borderRadius: 'var(--radius-lg)',
-          overflow: 'hidden',
-        }}
-      >
+        style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
         <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
         <table style={{ width: '100%', minWidth: '900px', fontSize: 'var(--font-size-sm)' }}>
           <thead className="table-header">
@@ -384,11 +375,9 @@ export default function InvestorsPage() {
                     borderLeft: isHovered && !isSelected
                       ? '3px solid var(--accent)'
                       : '3px solid transparent',
-                    transition: 'background 100ms ease, border-left 100ms ease',
-                  }}
+                    transition: 'background 100ms ease, border-left 100ms ease', }}
                   onMouseEnter={() => setHoveredRow(inv.id)}
-                  onMouseLeave={() => setHoveredRow(null)}
-                >
+                  onMouseLeave={() => setHoveredRow(null)}>
                   <td style={{ width: '2.5rem', padding: 'var(--space-3) var(--space-4)' }}>
                     <input type="checkbox" checked={isSelected} onChange={() => toggleSelect(inv.id)}
                       style={{ accentColor: 'var(--accent)' }} />
@@ -399,8 +388,7 @@ export default function InvestorsPage() {
                       className="transition-colors"
                       style={{ color: 'inherit', textDecoration: 'none', transition: 'color 150ms' }}
                       onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
-                      onMouseLeave={e => (e.currentTarget.style.color = 'inherit')}
-                    >
+                      onMouseLeave={e => (e.currentTarget.style.color = 'inherit')}>
                       {inv.name}
                     </Link>
                   </td>
@@ -412,8 +400,7 @@ export default function InvestorsPage() {
                         <div
                           className="status-dot"
                           style={{ background: dotColor, width: '10px', height: '10px' }}
-                          title={`Data completeness: ${pct}%`}
-                        />
+                          title={`Data completeness: ${pct}%`} />
                       );
                     })()}
                   </td>
@@ -463,9 +450,8 @@ export default function InvestorsPage() {
                         backgroundPosition: 'right 0.4rem center',
                         backgroundSize: '10px',
                         appearance: 'none',
-                        WebkitAppearance: 'none',
-                      }}
-                    >
+                        WebkitAppearance: 'none', }}
+>
                       {Object.entries(STATUS_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                     </select>
                   </td>
@@ -480,8 +466,7 @@ export default function InvestorsPage() {
                         <span
                           className="inline-flex items-center gap-1"
                           style={{ fontSize: 'var(--font-size-xs)', color: s.color, fontWeight: 400 }}
-                          title={inv.last_meeting_date ? fmtDate(inv.last_meeting_date) : 'No meetings yet'}
-                        >
+                          title={inv.last_meeting_date ? fmtDate(inv.last_meeting_date) : 'No meetings yet'}>
                           {days !== null && days > 14 && <Clock className="w-3 h-3" />}
                           {s.label}
                         </span>
@@ -492,10 +477,11 @@ export default function InvestorsPage() {
                     {inv.enthusiasm > 0 ? (
                       <div className="enthusiasm-dots">
                         {[1,2,3,4,5].map(n => (
-                          <div key={n} className={`enthusiasm-dot ${n <= inv.enthusiasm ? 'enthusiasm-dot-filled' : 'enthusiasm-dot-empty'}`} />
+                          <div key={n} className={`enthusiasm-dot ${n <= inv.enthusiasm ? 'enthusiasm-dot-filled' : 'enthusiasm-dot-empty'}`}
+                            />
                         ))}
                       </div>
-                    ) : <span style={{ color: 'var(--text-muted)' }}>—</span>}
+                    ) : <span style={stTextMuted}>—</span>}
                   </td>
                   <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
                     <div className="flex gap-1" style={{ opacity: isHovered ? 1 : 0.4, transition: 'opacity 150ms' }}>
@@ -507,11 +493,9 @@ export default function InvestorsPage() {
                           fontSize: 'var(--font-size-xs)',
                           padding: '0.3rem 0.5rem',
                           color: hoveredBtn === `edit-${inv.id}` ? 'var(--accent)' : 'var(--text-muted)',
-                          borderRadius: 'var(--radius-sm)',
-                        }}
+                          borderRadius: 'var(--radius-sm)', }}
                         onMouseEnter={() => setHoveredBtn(`edit-${inv.id}`)}
-                        onMouseLeave={() => setHoveredBtn(null)}
-                      >
+                        onMouseLeave={() => setHoveredBtn(null)}>
                         <Pencil className="w-3 h-3" />
                       </button>
                       <button
@@ -522,11 +506,9 @@ export default function InvestorsPage() {
                           fontSize: 'var(--font-size-xs)',
                           padding: '0.3rem 0.5rem',
                           color: hoveredBtn === `del-${inv.id}` ? 'var(--danger)' : 'var(--text-muted)',
-                          borderRadius: 'var(--radius-sm)',
-                        }}
+                          borderRadius: 'var(--radius-sm)', }}
                         onMouseEnter={() => setHoveredBtn(`del-${inv.id}`)}
-                        onMouseLeave={() => setHoveredBtn(null)}
-                      >
+                        onMouseLeave={() => setHoveredBtn(null)}>
                         <Trash2 className="w-3 h-3" />
                       </button>
                     </div>
@@ -559,8 +541,7 @@ export default function InvestorsPage() {
         confirmLabel="Delete"
         variant="danger"
         onConfirm={handleDelete}
-        onCancel={() => setDeleteTarget(null)}
-      />
+        onCancel={() => setDeleteTarget(null)} />
     </div>
   );
 }
@@ -571,8 +552,7 @@ function Input({ label, value, onChange, required }: { label: string; value: str
       <label className="label" style={{ display: 'block' }}>{label}</label>
       <input
         value={value} onChange={e => onChange(e.target.value)} required={required}
-        className="input"
-      />
+        className="input" />
     </div>
   );
 }

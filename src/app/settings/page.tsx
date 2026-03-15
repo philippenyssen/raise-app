@@ -7,7 +7,7 @@ import {
   DollarSign, Target, Calendar, Users, ChevronDown,
 } from 'lucide-react';
 import { useToast } from '@/components/toast';
-import { stTextMuted, stTextTertiary, stFontXs, stFontSm } from '@/lib/styles';
+import { stFontSm, stFontXs, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -261,10 +261,10 @@ export default function SettingsPage() {
   const weightBalanced = Math.abs(weightTotal - 100) <= 1;
 
   const statusIcon = keyTest?.status === 'ok'
-    ? <CheckCircle className="w-5 h-5" style={{ color: 'var(--text-secondary)' }} />
+    ? <CheckCircle className="w-5 h-5" style={stTextSecondary} />
     : keyTest?.status === 'credits_issue'
     ? <AlertTriangle className="w-5 h-5" style={stTextTertiary} />
-    : <XCircle className="w-5 h-5" style={{ color: 'var(--text-primary)' }} />;
+    : <XCircle className="w-5 h-5" style={stTextPrimary} />;
 
   const statusStyle: React.CSSProperties = keyTest?.status === 'ok'
     ? { borderColor: 'color-mix(in srgb, var(--success) 40%, transparent)', background: 'var(--success-muted)' }
@@ -281,7 +281,7 @@ export default function SettingsPage() {
         </div>
         <div className="flex items-center gap-3" style={stTextMuted}>
           <RefreshCw className="w-4 h-4 animate-spin" />
-          <span style={{ fontSize: 'var(--font-size-sm)' }}>Loading settings...</span>
+          <span style={stFontSm}>Loading settings...</span>
         </div>
       </div>
     );
@@ -310,8 +310,7 @@ export default function SettingsPage() {
             <button
               onClick={() => raise.save()}
               disabled={raise.saving || !raise.dirty}
-              className={`btn btn-md ${raise.dirty ? 'btn-primary' : 'btn-secondary'}`}
-            >
+              className={`btn btn-md ${raise.dirty ? 'btn-primary' : 'btn-secondary'}`}>
               <Save className={`w-3.5 h-3.5 ${raise.saving ? 'animate-spin' : ''}`} />
               {raise.saving ? 'Saving...' : raise.dirty ? 'Save Changes' : 'Saved'}
             </button>
@@ -327,8 +326,7 @@ export default function SettingsPage() {
               value={raise.data.company_name}
               onChange={e => raise.update('company_name', e.target.value)}
               placeholder="e.g. Aerospacelab"
-              className="input"
-            />
+              className="input" />
           </div>
 
           {/* Round Type */}
@@ -339,13 +337,13 @@ export default function SettingsPage() {
                 value={raise.data.round_type}
                 onChange={e => raise.update('round_type', e.target.value)}
                 className="input"
-                style={{ appearance: 'none', cursor: 'pointer' }}
-              >
+                style={{ appearance: 'none', cursor: 'pointer' }}>
                 {ROUND_TYPES.map(rt => (
                   <option key={rt} value={rt}>{rt}</option>
                 ))}
               </select>
-              <ChevronDown className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={stTextMuted} />
+              <ChevronDown className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={stTextMuted}
+                />
             </div>
           </div>
 
@@ -357,13 +355,13 @@ export default function SettingsPage() {
                 value={raise.data.currency}
                 onChange={e => raise.update('currency', e.target.value)}
                 className="input"
-                style={{ appearance: 'none', cursor: 'pointer' }}
-              >
+                style={{ appearance: 'none', cursor: 'pointer' }}>
                 {CURRENCIES.map(c => (
                   <option key={c} value={c}>{c} ({CURRENCY_SYMBOLS[c]})</option>
                 ))}
               </select>
-              <ChevronDown className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={stTextMuted} />
+              <ChevronDown className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={stTextMuted}
+                />
             </div>
           </div>
 
@@ -381,8 +379,7 @@ export default function SettingsPage() {
                 value={raise.data.equity_amount || ''}
                 onChange={e => raise.update('equity_amount', Number(e.target.value))}
                 placeholder="250000000"
-                className="input"
-              />
+                className="input" />
               {raise.data.equity_amount > 0 && (
                 <span className="absolute right-3 top-1/2 -translate-y-1/2" style={{ ...stFontXs, ...stTextMuted }}>
                   {formatCompact(raise.data.equity_amount, raise.data.currency)}
@@ -405,8 +402,7 @@ export default function SettingsPage() {
                 value={raise.data.debt_amount || ''}
                 onChange={e => raise.update('debt_amount', Number(e.target.value))}
                 placeholder="250000000"
-                className="input"
-              />
+                className="input" />
               {raise.data.debt_amount > 0 && (
                 <span className="absolute right-3 top-1/2 -translate-y-1/2" style={{ ...stFontXs, ...stTextMuted }}>
                   {formatCompact(raise.data.debt_amount, raise.data.currency)}
@@ -429,8 +425,7 @@ export default function SettingsPage() {
                 value={raise.data.pre_money || ''}
                 onChange={e => raise.update('pre_money', Number(e.target.value))}
                 placeholder="2000000000"
-                className="input"
-              />
+                className="input" />
               {raise.data.pre_money > 0 && (
                 <span className="absolute right-3 top-1/2 -translate-y-1/2" style={{ ...stFontXs, ...stTextMuted }}>
                   {formatCompact(raise.data.pre_money, raise.data.currency)}
@@ -470,8 +465,7 @@ export default function SettingsPage() {
               type="date"
               value={raise.data.target_close}
               onChange={e => raise.update('target_close', e.target.value)}
-              className="input [color-scheme:dark]"
-            />
+              className="input [color-scheme:dark]" />
           </div>
 
           {/* Target Investor Count */}
@@ -488,8 +482,7 @@ export default function SettingsPage() {
               onChange={e => raise.update('target_investor_count', Number(e.target.value))}
               placeholder="5"
               min={0}
-              className="input"
-            />
+              className="input" />
           </div>
 
           {/* Minimum Check Size */}
@@ -503,8 +496,7 @@ export default function SettingsPage() {
                 value={raise.data.minimum_check_size || ''}
                 onChange={e => raise.update('minimum_check_size', Number(e.target.value))}
                 placeholder="25000000"
-                className="input"
-              />
+                className="input" />
               {raise.data.minimum_check_size > 0 && (
                 <span className="absolute right-3 top-1/2 -translate-y-1/2" style={{ ...stFontXs, ...stTextMuted }}>
                   {formatCompact(raise.data.minimum_check_size, raise.data.currency)}
@@ -553,10 +545,8 @@ export default function SettingsPage() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => {
-                scoring.replace({ ...DEFAULT_SCORING_WEIGHTS });
-              }}
-              className="btn btn-sm btn-ghost"
-            >
+                scoring.replace({ ...DEFAULT_SCORING_WEIGHTS }); }}
+              className="btn btn-sm btn-ghost">
               <RotateCcw className="w-3 h-3" />
               Reset to Defaults
             </button>
@@ -574,8 +564,7 @@ export default function SettingsPage() {
                   return true;
                 })}
                 disabled={scoring.saving || !scoring.dirty}
-                className={`btn btn-md ${scoring.dirty ? 'btn-primary' : 'btn-secondary'}`}
-              >
+                className={`btn btn-md ${scoring.dirty ? 'btn-primary' : 'btn-secondary'}`}>
                 <Save className={`w-3.5 h-3.5 ${scoring.saving ? 'animate-spin' : ''}`} />
                 {scoring.saving ? 'Saving...' : scoring.dirty ? 'Save Changes' : 'Saved'}
               </button>
@@ -612,8 +601,7 @@ export default function SettingsPage() {
                 value={scoring.data[key]}
                 onChange={e => scoring.update(key, Number(e.target.value))}
                 className="flex-1 h-1.5 cursor-pointer"
-                style={{ accentColor: 'var(--accent)' }}
-              />
+                style={{ accentColor: 'var(--accent)' }} />
               <div className="w-14" style={{ textAlign: 'right' }}>
                 <input
                   type="number"
@@ -622,8 +610,7 @@ export default function SettingsPage() {
                   value={scoring.data[key]}
                   onChange={e => scoring.update(key, Number(e.target.value))}
                   className="input"
-                  style={{ width: '3.5rem', padding: '0.25rem 0.5rem', fontSize: 'var(--font-size-xs)', textAlign: 'right' }}
-                />
+                  style={{ width: '3.5rem', padding: '0.25rem 0.5rem', fontSize: 'var(--font-size-xs)', textAlign: 'right' }} />
               </div>
               <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '1rem' }}>%</span>
             </div>
@@ -647,8 +634,7 @@ export default function SettingsPage() {
             <button
               onClick={() => followup.save()}
               disabled={followup.saving || !followup.dirty}
-              className={`btn btn-md ${followup.dirty ? 'btn-primary' : 'btn-secondary'}`}
-            >
+              className={`btn btn-md ${followup.dirty ? 'btn-primary' : 'btn-secondary'}`}>
               <Save className={`w-3.5 h-3.5 ${followup.saving ? 'animate-spin' : ''}`} />
               {followup.saving ? 'Saving...' : followup.dirty ? 'Save Changes' : 'Saved'}
             </button>
@@ -666,8 +652,7 @@ export default function SettingsPage() {
                 onChange={e => followup.update('thank_you_delay_hours', Number(e.target.value))}
                 min={0}
                 max={72}
-                className="input flex-1"
-              />
+                className="input flex-1" />
               <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '3rem' }}>hours</span>
             </div>
           </div>
@@ -682,8 +667,7 @@ export default function SettingsPage() {
                 onChange={e => followup.update('objection_response_delay_hours', Number(e.target.value))}
                 min={0}
                 max={168}
-                className="input flex-1"
-              />
+                className="input flex-1" />
               <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '3rem' }}>hours</span>
             </div>
           </div>
@@ -698,8 +682,7 @@ export default function SettingsPage() {
                 onChange={e => followup.update('schedule_next_meeting_delay_hours', Number(e.target.value))}
                 min={0}
                 max={168}
-                className="input flex-1"
-              />
+                className="input flex-1" />
               <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '3rem' }}>hours</span>
             </div>
           </div>
@@ -714,8 +697,7 @@ export default function SettingsPage() {
                 onChange={e => followup.update('reengagement_delay_days', Number(e.target.value))}
                 min={1}
                 max={30}
-                className="input flex-1"
-              />
+                className="input flex-1" />
               <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '3rem' }}>days</span>
             </div>
           </div>
@@ -730,8 +712,7 @@ export default function SettingsPage() {
                 onChange={e => followup.update('escalation_delay_days', Number(e.target.value))}
                 min={1}
                 max={60}
-                className="input flex-1"
-              />
+                className="input flex-1" />
               <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '3rem' }}>days</span>
             </div>
           </div>
@@ -746,8 +727,7 @@ export default function SettingsPage() {
                 onChange={e => followup.update('tier1_speed_multiplier', Number(e.target.value))}
                 min={25}
                 max={100}
-                className="input flex-1"
-              />
+                className="input flex-1" />
               <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '3rem' }}>%</span>
             </div>
             <p style={{ ...stFontXs, ...stTextMuted, marginTop: 'var(--space-1)' }}>
@@ -800,8 +780,7 @@ export default function SettingsPage() {
             onClick={testKey}
             disabled={testing}
             className="btn btn-sm btn-secondary"
-            style={{ opacity: testing ? 0.5 : 1 }}
-          >
+            style={{ opacity: testing ? 0.5 : 1 }}>
             <RefreshCw className={`w-3.5 h-3.5 ${testing ? 'animate-spin' : ''}`} />
             Test Key
           </button>
@@ -833,11 +812,7 @@ export default function SettingsPage() {
             )}
 
             {keyTest.fix && (
-              <div style={{
-                background: 'var(--surface-1)',
-                borderRadius: 'var(--radius-md)',
-                padding: 'var(--space-4)',
-              }} className="space-y-2">
+              <div style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-md)', padding: 'var(--space-4)' }} className="space-y-2">
                 <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>How to fix:</div>
                 {Array.isArray(keyTest.fix) ? (
                   <ol className="space-y-1" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' }}>
@@ -865,20 +840,20 @@ export default function SettingsPage() {
           <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-tertiary)' }}>IMPORTANT: Claude.ai vs API Credits</h3>
         </div>
         <div className="space-y-2" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
-          <p>Anthropic has <strong style={{ color: 'var(--text-secondary)' }}>two separate billing systems</strong>:</p>
+          <p>Anthropic has <strong style={stTextSecondary}>two separate billing systems</strong>:</p>
           <ul className="list-disc list-inside space-y-1 ml-2">
-            <li><strong style={{ color: 'var(--text-secondary)' }}>claude.ai</strong> --- subscription credits for the chatbot (Claude Pro/Team)</li>
-            <li><strong style={{ color: 'var(--text-secondary)' }}>console.anthropic.com</strong> --- API credits for programmatic access (what this app uses)</li>
+            <li><strong style={stTextSecondary}>claude.ai</strong> --- subscription credits for the chatbot (Claude Pro/Team)</li>
+            <li><strong style={stTextSecondary}>console.anthropic.com</strong> --- API credits for programmatic access (what this app uses)</li>
           </ul>
-          <p>Credits on claude.ai do <strong style={{ color: 'var(--text-primary)' }}>NOT</strong> apply to API usage. You need credits specifically on <strong style={{ color: 'var(--text-secondary)' }}>console.anthropic.com/settings/billing</strong>.</p>
+          <p>Credits on claude.ai do <strong style={stTextPrimary}>NOT</strong> apply to API usage. You need credits specifically on <strong style={stTextSecondary}>console.anthropic.com/settings/billing</strong>.</p>
           <p style={{ marginTop: 'var(--space-3)' }}>If the test above shows a credits issue:</p>
           <ol className="list-decimal list-inside space-y-1 ml-2">
-            <li>Go to <strong style={{ color: 'var(--text-secondary)' }}>console.anthropic.com/settings/billing</strong></li>
-            <li>Click <strong style={{ color: 'var(--text-secondary)' }}>&ldquo;Add to credit balance&rdquo;</strong> (minimum $5)</li>
-            <li>Then go to <strong style={{ color: 'var(--text-secondary)' }}>console.anthropic.com/settings/keys</strong></li>
-            <li>Create a <strong style={{ color: 'var(--text-secondary)' }}>new API key</strong></li>
-            <li>Update it in your <strong style={{ color: 'var(--text-secondary)' }}>Vercel environment variables</strong></li>
-            <li><strong style={{ color: 'var(--text-secondary)' }}>Redeploy</strong> the app</li>
+            <li>Go to <strong style={stTextSecondary}>console.anthropic.com/settings/billing</strong></li>
+            <li>Click <strong style={stTextSecondary}>&ldquo;Add to credit balance&rdquo;</strong> (minimum $5)</li>
+            <li>Then go to <strong style={stTextSecondary}>console.anthropic.com/settings/keys</strong></li>
+            <li>Create a <strong style={stTextSecondary}>new API key</strong></li>
+            <li>Update it in your <strong style={stTextSecondary}>Vercel environment variables</strong></li>
+            <li><strong style={stTextSecondary}>Redeploy</strong> the app</li>
           </ol>
         </div>
       </div>

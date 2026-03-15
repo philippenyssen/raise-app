@@ -7,7 +7,7 @@ import {
   TrendingUp, Users, ArrowRight, Zap, Phone, Mail, Target,
 } from 'lucide-react';
 import { STATUS_LABELS, TYPE_LABELS } from '@/lib/constants';
-import { velocityColor, trackingColor, trackingBg } from '@/lib/styles';
+import { labelMuted, labelSecondary, stTextTertiary, trackingBg, trackingColor, velocityColor } from '@/lib/styles';
 
 interface VelocityInvestor {
   investor_id: string;
@@ -121,7 +121,7 @@ export default function VelocityPage() {
       <div className="card" style={{ marginBottom: 'var(--space-6)', padding: 'var(--space-4) var(--space-5)' }}>
         <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-2)' }}>
           <div className="flex items-center gap-2">
-            <span style={{ color: 'var(--text-tertiary)' }}>
+            <span style={stTextTertiary}>
               <Clock className="w-4 h-4" />
             </span>
             <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
@@ -139,17 +139,16 @@ export default function VelocityPage() {
               width: `${raiseProgress}%`,
               background: 'var(--accent)',
               borderRadius: '4px',
-            }}
-          />
+            }} />
         </div>
         <div className="flex items-center justify-between" style={{ marginTop: 'var(--space-1)' }}>
-          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+          <span style={labelMuted}>
             Launch
           </span>
-          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+          <span style={labelMuted}>
             {raiseProgress}% elapsed &middot; {Math.max(0, summary.raise_target_days - summary.raise_days_elapsed)}d remaining
           </span>
-          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+          <span style={labelMuted}>
             Target Close
           </span>
         </div>
@@ -161,7 +160,7 @@ export default function VelocityPage() {
           {/* On Track */}
           <div className="card-metric" style={{ padding: 'var(--space-4)' }}>
             <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-2)' }}>
-              <span style={{ color: 'var(--text-tertiary)' }}>
+              <span style={stTextTertiary}>
                 <CheckCircle2 className="w-4 h-4" />
               </span>
               <span className="metric-label">On Track</span>
@@ -174,7 +173,7 @@ export default function VelocityPage() {
           {/* Behind */}
           <div className="card-metric" style={{ padding: 'var(--space-4)' }}>
             <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-2)' }}>
-              <span style={{ color: 'var(--text-tertiary)' }}>
+              <span style={stTextTertiary}>
                 <AlertTriangle className="w-4 h-4" />
               </span>
               <span className="metric-label">Behind</span>
@@ -189,7 +188,7 @@ export default function VelocityPage() {
           {/* At Risk */}
           <div className="card-metric" style={{ padding: 'var(--space-4)' }}>
             <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-2)' }}>
-              <span style={{ color: 'var(--text-tertiary)' }}>
+              <span style={stTextTertiary}>
                 <XCircle className="w-4 h-4" />
               </span>
               <span className="metric-label">At Risk</span>
@@ -202,7 +201,7 @@ export default function VelocityPage() {
           {/* Avg Velocity */}
           <div className="card-metric" style={{ padding: 'var(--space-4)' }}>
             <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-2)' }}>
-              <span style={{ color: 'var(--text-tertiary)' }}>
+              <span style={stTextTertiary}>
                 <TrendingUp className="w-4 h-4" />
               </span>
               <span className="metric-label">Avg Velocity</span>
@@ -217,13 +216,9 @@ export default function VelocityPage() {
       {/* Investor Table */}
       <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
         <div
-          style={{
-            padding: 'var(--space-4) var(--space-5)',
-            borderBottom: '1px solid var(--border-subtle)',
-          }}
-        >
+          style={{ padding: 'var(--space-4) var(--space-5)', borderBottom: '1px solid var(--border-subtle)' }}>
           <div className="flex items-center gap-2">
-            <span style={{ color: 'var(--text-tertiary)' }}>
+            <span style={stTextTertiary}>
               <Users className="w-4 h-4" />
             </span>
             <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
@@ -264,17 +259,14 @@ export default function VelocityPage() {
                     className="table-row transition-colors"
                     style={{
                       background: hoveredRow === inv.investor_id ? 'var(--surface-1)' : 'transparent',
-                      cursor: 'pointer',
-                    }}
+                      cursor: 'pointer', }}
                     onMouseEnter={() => setHoveredRow(inv.investor_id)}
-                    onMouseLeave={() => setHoveredRow(null)}
-                  >
+                    onMouseLeave={() => setHoveredRow(null)}>
                     {/* Investor Name */}
                     <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
                       <Link
                         href={`/investors/${inv.investor_id}`}
-                        style={{ textDecoration: 'none' }}
-                      >
+                        style={{ textDecoration: 'none' }}>
                         <div className="flex items-center gap-2">
                           <span
                             className="tier-badge"
@@ -287,16 +279,15 @@ export default function VelocityPage() {
                               width: '20px',
                               height: '20px',
                               fontSize: '10px',
-                              flexShrink: 0,
-                            }}
-                          >
+                              flexShrink: 0, }}
+>
                             {inv.investor_tier}
                           </span>
                           <div>
                             <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
                               {inv.investor_name}
                             </div>
-                            <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                            <div style={labelMuted}>
                               {TYPE_LABELS[inv.investor_type] || inv.investor_type}
                             </div>
                           </div>
@@ -312,9 +303,8 @@ export default function VelocityPage() {
                           style={{
                             background: STATUS_COLORS[inv.status] || 'var(--text-muted)',
                             boxShadow: `0 0 6px ${STATUS_COLORS[inv.status] || 'var(--text-muted)'}40`,
-                          }}
-                        />
-                        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
+                          }} />
+                        <span style={labelSecondary}>
                           {STATUS_LABELS[inv.status] || inv.status}
                         </span>
                       </div>
@@ -331,9 +321,8 @@ export default function VelocityPage() {
                             ? 'var(--danger)'
                             : inv.days_in_process > 35
                               ? 'var(--warning)'
-                              : 'var(--text-secondary)',
-                        }}
-                      >
+                              : 'var(--text-secondary)', }}
+>
                         {inv.days_in_process}d
                       </span>
                     </td>
@@ -348,9 +337,8 @@ export default function VelocityPage() {
                             ? 'var(--danger)'
                             : inv.days_in_current_stage > 14
                               ? 'var(--warning)'
-                              : 'var(--text-tertiary)',
-                        }}
-                      >
+                              : 'var(--text-tertiary)', }}
+>
                         {inv.days_in_current_stage}d
                       </span>
                     </td>
@@ -377,9 +365,8 @@ export default function VelocityPage() {
                           fontSize: 'var(--font-size-xs)',
                           fontWeight: 400,
                           background: trackingBg(inv.tracking_status),
-                          color: trackingColor(inv.tracking_status),
-                        }}
-                      >
+                          color: trackingColor(inv.tracking_status), }}
+>
                         {inv.tracking_status === 'on_track' ? (
                           <><CheckCircle2 className="w-3 h-3" style={{ marginRight: '4px' }} /> On</>
                         ) : inv.tracking_status === 'behind' ? (
@@ -396,9 +383,8 @@ export default function VelocityPage() {
                         style={{
                           fontSize: 'var(--font-size-xs)',
                           color: inv.bottleneck === 'On pace' ? 'var(--text-muted)' : 'var(--warning)',
-                          lineHeight: 1.4,
-                        }}
-                      >
+                          lineHeight: 1.4, }}
+>
                         {inv.bottleneck}
                       </span>
                     </td>
@@ -412,9 +398,8 @@ export default function VelocityPage() {
                             height: '6px',
                             background: 'var(--surface-3)',
                             borderRadius: '3px',
-                            overflow: 'hidden',
-                          }}
-                        >
+                            overflow: 'hidden', }}
+>
                           <div
                             style={{
                               width: `${inv.velocity_score}%`,
@@ -422,8 +407,7 @@ export default function VelocityPage() {
                               background: velocityColor(inv.velocity_score),
                               borderRadius: '3px',
                               transition: 'width 500ms ease',
-                            }}
-                          />
+                            }} />
                         </div>
                         <span
                           style={{
@@ -432,9 +416,8 @@ export default function VelocityPage() {
                             fontVariantNumeric: 'tabular-nums',
                             color: velocityColor(inv.velocity_score),
                             minWidth: '28px',
-                            textAlign: 'right',
-                          }}
-                        >
+                            textAlign: 'right', }}
+>
                           {inv.velocity_score}
                         </span>
                       </div>
@@ -455,9 +438,8 @@ export default function VelocityPage() {
                             padding: '3px 8px',
                             gap: '4px',
                             display: 'inline-flex',
-                            alignItems: 'center',
-                          }}
-                        >
+                            alignItems: 'center', }}
+>
                           <Phone className="w-3 h-3" /> Rescue
                         </Link>
                       ) : inv.tracking_status === 'behind' ? (
@@ -473,9 +455,8 @@ export default function VelocityPage() {
                             padding: '3px 8px',
                             gap: '4px',
                             display: 'inline-flex',
-                            alignItems: 'center',
-                          }}
-                        >
+                            alignItems: 'center', }}
+>
                           <Mail className="w-3 h-3" /> Nudge
                         </Link>
                       ) : (
@@ -490,9 +471,8 @@ export default function VelocityPage() {
                             padding: '3px 8px',
                             gap: '4px',
                             display: 'inline-flex',
-                            alignItems: 'center',
-                          }}
-                        >
+                            alignItems: 'center', }}
+>
                           <Target className="w-3 h-3" /> View
                         </Link>
                       )}
@@ -512,10 +492,9 @@ export default function VelocityPage() {
           marginTop: 'var(--space-6)',
           padding: 'var(--space-3)',
           fontSize: 'var(--font-size-xs)',
-          color: 'var(--text-muted)',
-        }}
-      >
-        <span style={{ color: 'var(--text-tertiary)' }}>
+          color: 'var(--text-muted)', }}
+>
+        <span style={stTextTertiary}>
           <Zap className="w-3 h-3" />
         </span>
         Velocity scores update in real-time based on meetings, follow-ups, and stage progression
@@ -523,8 +502,7 @@ export default function VelocityPage() {
         <Link
           href="/pipeline"
           className="flex items-center gap-1"
-          style={{ color: 'var(--accent)', textDecoration: 'none' }}
-        >
+          style={{ color: 'var(--accent)', textDecoration: 'none' }}>
           View Pipeline
           <ArrowRight className="w-3 h-3" />
         </Link>

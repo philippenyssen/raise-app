@@ -3,6 +3,7 @@
 import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
+import { stSurface0 } from '@/lib/styles';
 
 function LoginForm() {
   const router = useRouter();
@@ -46,12 +47,7 @@ function LoginForm() {
           placeholder="Enter password"
           autoFocus
           className="input"
-          style={{
-            padding: 'var(--space-3) var(--space-4)',
-            borderRadius: 'var(--radius-lg)',
-            fontSize: 'var(--font-size-sm)',
-          }}
-        />
+          style={{ padding: 'var(--space-3) var(--space-4)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)' }} />
       </div>
 
       {error && (
@@ -66,9 +62,8 @@ function LoginForm() {
           width: '100%',
           borderRadius: 'var(--radius-lg)',
           padding: 'var(--space-3)',
-          opacity: !password || loading ? 0.4 : 1,
-        }}
-      >
+          opacity: !password || loading ? 0.4 : 1, }}
+>
         {loading ? <Loader2 style={{ width: '16px', height: '16px' }} className="animate-spin" /> : null}
         {loading ? 'Authenticating...' : 'Sign In'}
       </button>
@@ -80,8 +75,7 @@ export default function LoginPage() {
   return (
     <div
       className="min-h-screen flex items-center justify-center px-4"
-      style={{ background: 'var(--surface-0)' }}
-    >
+      style={stSurface0}>
       <div className="w-full max-w-sm">
         <div className="text-center" style={{ marginBottom: 'var(--space-8)' }}>
           <div
@@ -91,9 +85,8 @@ export default function LoginPage() {
               height: '48px',
               background: 'var(--accent-muted)',
               borderRadius: 'var(--radius-lg)',
-              marginBottom: 'var(--space-4)',
-            }}
-          >
+              marginBottom: 'var(--space-4)', }}
+>
             <span style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--accent)', letterSpacing: '0.12em', fontFamily: 'var(--font-cormorant), Georgia, serif' }}>R</span>
           </div>
           <h1 style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 300, color: 'var(--text-primary)', letterSpacing: '0.18em', fontFamily: 'var(--font-cormorant), Georgia, serif' }}>

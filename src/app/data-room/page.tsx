@@ -6,7 +6,7 @@ import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { FolderOpen, Upload, FileText, Table, Image, Trash2, ChevronDown, ChevronRight, Search, Eye, BarChart3, Users, AlertCircle, Send, TrendingUp } from 'lucide-react';
 import { fmtDateTime, fmtDate } from '@/lib/format';
 import { STATUS_LABELS } from '@/lib/constants';
-import { stTextMuted, stTextTertiary, stTextSecondary, stFontXs, stFontSm, stSurface2, labelMuted } from '@/lib/styles';
+import { labelMuted, stAccent, stFontSm, stFontXs, stSurface2, stTextMuted, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 interface DataRoomFile {
   id: string;
@@ -241,14 +241,12 @@ export default function DataRoomPage() {
               color: 'var(--accent)',
             } : {
               background: 'var(--surface-2)',
-              color: 'var(--text-secondary)',
-            }}
-          >
+              color: 'var(--text-secondary)', }}
+>
             <FileText className="w-4 h-4" /> Paste Text
           </button>
           <label
-            className="btn btn-primary btn-md flex items-center gap-2 cursor-pointer"
-          >
+            className="btn btn-primary btn-md flex items-center gap-2 cursor-pointer">
             <Upload className="w-4 h-4" /> Upload Files
             <input
               type="file"
@@ -256,8 +254,7 @@ export default function DataRoomPage() {
               accept=".txt,.md,.csv,.json,.xml,.html,.pdf,.doc,.docx,.xls,.xlsx,.pptx,.rtf,.tsv"
               className="hidden"
               onChange={e => e.target.files && handleFileUpload(e.target.files)}
-              disabled={uploading}
-            />
+              disabled={uploading} />
           </label>
         </div>
       </div>
@@ -265,40 +262,38 @@ export default function DataRoomPage() {
       {/* Search */}
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={stTextMuted} />
-        <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Search files and content..." className="input" style={{ paddingLeft: 'var(--space-10)', paddingRight: 'var(--space-4)', paddingTop: '0.625rem', paddingBottom: '0.625rem', borderRadius: 'var(--radius-lg)' }} />
+        <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Search files and content..." className="input" style={{ paddingLeft: 'var(--space-10)', paddingRight: 'var(--space-4)', paddingTop: '0.625rem', paddingBottom: '0.625rem', borderRadius: 'var(--radius-lg)' }}
+          />
       </div>
 
       {/* Paste mode */}
       {pasteMode && (
         <div
-          className="card space-y-4"
-        >
+          className="card space-y-4">
           <h3 style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>Paste document content</h3>
           <div className="flex gap-3">
             <input
               value={pasteFilename}
               onChange={e => setPasteFilename(e.target.value)}
               placeholder="Document name (e.g., Financial Model Notes.txt)"
-              className="input flex-1"
-            />
+              className="input flex-1" />
             <select
               value={pasteCategory}
               onChange={e => setPasteCategory(e.target.value)}
               className="input"
-              style={{ width: 'auto' }}
-            >
+              style={{ width: 'auto' }}>
               {CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
             </select>
           </div>
-          <textarea value={pasteContent} onChange={e => setPasteContent(e.target.value)} placeholder="Paste your document content here..." rows={10} className="input" style={{ fontFamily: 'var(--font-mono)', resize: 'none', padding: 'var(--space-3) var(--space-4)' }} />
+          <textarea value={pasteContent} onChange={e => setPasteContent(e.target.value)} placeholder="Paste your document content here..." rows={10} className="input" style={{ fontFamily: 'var(--font-mono)', resize: 'none', padding: 'var(--space-3) var(--space-4)' }}
+            />
           <div className="flex justify-end gap-2">
             <button onClick={() => setPasteMode(false)} className="btn btn-ghost btn-md">Cancel</button>
             <button
               onClick={handlePasteUpload}
               disabled={!pasteFilename.trim() || !pasteContent.trim() || uploading}
               className="btn btn-primary btn-md"
-              style={{ opacity: (!pasteFilename.trim() || !pasteContent.trim() || uploading) ? 0.5 : 1 }}
-            >
+              style={{ opacity: (!pasteFilename.trim() || !pasteContent.trim() || uploading) ? 0.5 : 1 }}>
               {uploading ? 'Adding...' : 'Add to Data Room'}
             </button>
           </div>
@@ -317,8 +312,7 @@ export default function DataRoomPage() {
               file={file}
               expanded={expandedFile === file.id}
               onToggle={() => setExpandedFile(expandedFile === file.id ? null : file.id)}
-              onDelete={() => setDeleteTarget({ id: file.id, filename: file.filename })}
-            />
+              onDelete={() => setDeleteTarget({ id: file.id, filename: file.filename })} />
           ))}
           {filteredFiles.length === 0 && (
             <p style={{ ...stTextMuted, ...stFontSm, padding: 'var(--space-4) 0', textAlign: 'center' }}>No files match your search.</p>
@@ -347,8 +341,7 @@ export default function DataRoomPage() {
                         file={file}
                         expanded={expandedFile === file.id}
                         onToggle={() => setExpandedFile(expandedFile === file.id ? null : file.id)}
-                        onDelete={() => setDeleteTarget({ id: file.id, filename: file.filename })}
-                      />
+                        onDelete={() => setDeleteTarget({ id: file.id, filename: file.filename })} />
                     ))}
                   </div>
                 ) : (
@@ -369,8 +362,7 @@ export default function DataRoomPage() {
           files={files}
           expandedInvestor={expandedInvestor}
           onToggleInvestor={(id) => setExpandedInvestor(expandedInvestor === id ? null : id)}
-          onLogAccess={handleLogAccess}
-        />
+          onLogAccess={handleLogAccess} />
       )}
 
       <ConfirmModal
@@ -380,8 +372,7 @@ export default function DataRoomPage() {
         confirmLabel="Delete"
         variant="danger"
         onConfirm={handleDelete}
-        onCancel={() => setDeleteTarget(null)}
-      />
+        onCancel={() => setDeleteTarget(null)} />
     </div>
   );
 }
@@ -412,24 +403,20 @@ function AccessIntelligenceSection({ intelligence, files, expandedInvestor, onTo
         <StatCard
           label="Total Access Events"
           value={intelligence.total_access_events.toString()}
-          icon={<BarChart3 className="w-4 h-4" />}
-        />
+          icon={<BarChart3 className="w-4 h-4" />} />
         <StatCard
           label="Investors with Access"
           value={investorsWithAccess.length.toString()}
-          icon={<Users className="w-4 h-4" />}
-        />
+          icon={<Users className="w-4 h-4" />} />
         <StatCard
           label="Unreached Investors"
           value={intelligence.unreached_investors.length.toString()}
           icon={<AlertCircle className="w-4 h-4" />}
-          highlight={intelligence.unreached_investors.length > 0}
-        />
+          highlight={intelligence.unreached_investors.length > 0} />
         <StatCard
           label="Pending Recommendations"
           value={investorsWithRecommendations.length.toString()}
-          icon={<Send className="w-4 h-4" />}
-        />
+          icon={<Send className="w-4 h-4" />} />
       </div>
 
       {/* Most Requested Documents */}
@@ -464,8 +451,7 @@ function AccessIntelligenceSection({ intelligence, files, expandedInvestor, onTo
                 expanded={expandedInvestor === inv.investor_id}
                 onToggle={() => onToggleInvestor(inv.investor_id)}
                 onLogAccess={onLogAccess}
-                files={files}
-              />
+                files={files} />
             ))}
           </div>
         ) : (
@@ -520,11 +506,9 @@ function StatCard({ label, value, icon, highlight }: {
       style={{
         padding: 'var(--space-3) var(--space-4)',
         borderColor: highlight ? 'var(--warning-muted)' : hovered ? 'var(--border-default)' : undefined,
-        transition: 'border-color 150ms ease',
-      }}
+        transition: 'border-color 150ms ease', }}
       onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
+      onMouseLeave={() => setHovered(false)}>
       <div className="flex items-center gap-2 mb-1">
         <span style={{ color: highlight ? 'var(--warning)' : 'var(--text-muted)' }}>{icon}</span>
         <span style={labelMuted}>{label}</span>
@@ -548,11 +532,9 @@ function MostRequestedRow({ doc, rank }: {
         padding: 'var(--space-2) var(--space-3)',
         borderRadius: 'var(--radius-md)',
         background: hovered ? 'var(--surface-1)' : 'transparent',
-        transition: 'background 150ms ease',
-      }}
+        transition: 'background 150ms ease', }}
       onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
+      onMouseLeave={() => setHovered(false)}>
       <span style={{
         fontSize: 'var(--font-size-xs)',
         fontWeight: 400,
@@ -585,18 +567,13 @@ function InvestorAccessRow({ investor, expanded, onToggle, onLogAccess, files }:
   return (
     <div
       className="transition-colors"
-      style={{
-        borderRadius: 'var(--radius-md)',
-        transition: 'border-color 150ms ease',
-      }}
+      style={{ borderRadius: 'var(--radius-md)', transition: 'border-color 150ms ease' }}
       onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
+      onMouseLeave={() => setHovered(false)}>
       <div
         className="flex items-center gap-3 cursor-pointer"
         style={{ padding: 'var(--space-3) var(--space-4)' }}
-        onClick={onToggle}
-      >
+        onClick={onToggle}>
         {expanded
           ? <ChevronDown className="w-4 h-4 shrink-0" style={stTextMuted} />
           : <ChevronRight className="w-4 h-4 shrink-0" style={stTextMuted} />
@@ -646,8 +623,7 @@ function InvestorAccessRow({ investor, expanded, onToggle, onLogAccess, files }:
                     key={doc.document_id}
                     doc={doc}
                     investorId={investor.investor_id}
-                    onLogAccess={onLogAccess}
-                  />
+                    onLogAccess={onLogAccess} />
                 ))}
               </div>
             </div>
@@ -661,8 +637,7 @@ function InvestorAccessRow({ investor, expanded, onToggle, onLogAccess, files }:
                 value={logDocId}
                 onChange={e => setLogDocId(e.target.value)}
                 className="input flex-1"
-                style={{ fontSize: 'var(--font-size-xs)' }}
-              >
+                style={stFontXs}>
                 <option value="">Select a document...</option>
                 {files
                   .filter(f => !investor.accessed_documents.some(d => d.document_id === f.id))
@@ -678,16 +653,14 @@ function InvestorAccessRow({ investor, expanded, onToggle, onLogAccess, files }:
                   border: `1px solid ${logDocId ? 'var(--accent)' : 'var(--border-default)'}`,
                   fontSize: 'var(--font-size-xs)',
                   opacity: logDocId ? 1 : 0.5,
-                  cursor: logDocId ? 'pointer' : 'default',
-                }}
+                  cursor: logDocId ? 'pointer' : 'default', }}
                 disabled={!logDocId}
                 onClick={() => {
                   if (logDocId) {
                     onLogAccess(investor.investor_id, logDocId);
                     setLogDocId('');
-                  }
-                }}
-              >
+                  } }}
+>
                 Log
               </button>
             </div>
@@ -711,12 +684,10 @@ function RecommendedDocRow({ doc, investorId, onLogAccess }: {
         padding: 'var(--space-2) var(--space-3)',
         borderRadius: 'var(--radius-md)',
         background: hovered ? 'var(--surface-1)' : 'transparent',
-        transition: 'background 150ms ease',
-      }}
+        transition: 'background 150ms ease', }}
       onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      <FileText className="w-3.5 h-3.5 shrink-0" style={{ color: 'var(--accent)' }} />
+      onMouseLeave={() => setHovered(false)}>
+      <FileText className="w-3.5 h-3.5 shrink-0" style={stAccent} />
       <span className="truncate" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)' }}>
         {doc.document_title}
       </span>
@@ -737,10 +708,8 @@ function RecommendedDocRow({ doc, investorId, onLogAccess }: {
           background: hovered ? 'var(--accent)' : 'var(--accent-muted)',
           color: hovered ? 'white' : 'var(--accent)',
           border: 'none',
-          transition: 'all 150ms ease',
-        }}
-        onClick={() => onLogAccess(investorId, doc.document_id)}
-      >
+          transition: 'all 150ms ease', }}
+        onClick={() => onLogAccess(investorId, doc.document_id)}>
         Mark shared
       </button>
     </div>
@@ -758,11 +727,9 @@ function UnreachedInvestorRow({ investor }: {
         padding: 'var(--space-2) var(--space-3)',
         borderRadius: 'var(--radius-md)',
         background: hovered ? 'var(--surface-1)' : 'transparent',
-        transition: 'background 150ms ease',
-      }}
+        transition: 'background 150ms ease', }}
       onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
+      onMouseLeave={() => setHovered(false)}>
       <span style={stTextTertiary}><AlertCircle className="w-3.5 h-3.5" /></span>
       <span style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>{investor.investor_name}</span>
       <span style={{ ...stFontXs, ...stTextMuted, ...stSurface2, padding: '0.125rem var(--space-2)', borderRadius: 'var(--radius-sm)' }}>{STATUS_LABELS[investor.status] || investor.status}</span>
@@ -785,11 +752,9 @@ function AccessLogRow({ entry }: {
         padding: 'var(--space-2) var(--space-3)',
         borderRadius: 'var(--radius-md)',
         background: hovered ? 'var(--surface-1)' : 'transparent',
-        transition: 'background 150ms ease',
-      }}
+        transition: 'background 150ms ease', }}
       onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
+      onMouseLeave={() => setHovered(false)}>
       <Eye className="w-3.5 h-3.5 shrink-0" style={stTextTertiary} />
       <span style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)', minWidth: '8rem' }}>{entry.investor_name}</span>
       <span style={labelMuted}>viewed</span>
@@ -811,13 +776,9 @@ function FileRow({ file, expanded, onToggle, onDelete }: {
   return (
     <div
       className="transition-colors"
-      style={{
-        borderRadius: 'var(--radius-md)',
-        transition: 'all 150ms ease',
-      }}
+      style={{ borderRadius: 'var(--radius-md)', transition: 'all 150ms ease' }}
       onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
+      onMouseLeave={() => setHovered(false)}>
       <div className="flex items-center cursor-pointer" style={{ padding: 'var(--space-3) var(--space-4)' }} onClick={onToggle}>
         {expanded
           ? <ChevronDown className="w-4 h-4 shrink-0" style={stTextMuted} />
@@ -836,11 +797,9 @@ function FileRow({ file, expanded, onToggle, onDelete }: {
             background: 'none',
             border: 'none',
             cursor: 'pointer',
-            padding: 0,
-          }}
+            padding: 0, }}
           onMouseEnter={() => setDeleteHovered(true)}
-          onMouseLeave={() => setDeleteHovered(false)}
-        >
+          onMouseLeave={() => setDeleteHovered(false)}>
           <Trash2 className="w-3.5 h-3.5" />
         </button>
       </div>
@@ -861,9 +820,8 @@ function FileRow({ file, expanded, onToggle, onDelete }: {
               overflowY: 'auto',
               background: 'var(--surface-0)',
               borderRadius: 'var(--radius-md)',
-              padding: 'var(--space-3)',
-            }}
-          >
+              padding: 'var(--space-3)', }}
+>
             {file.extracted_text.substring(0, 5000)}
             {file.extracted_text.length > 5000 && '\n\n... (truncated)'}
           </pre>

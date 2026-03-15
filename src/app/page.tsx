@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import { DealHeatInvestor } from '@/lib/types';
 import { STATUS_LABELS } from '@/lib/constants';
-import { labelTertiary, labelSecondary, labelAccent, labelMuted, stTextTertiary as textTertiary } from '@/lib/styles';
+import { labelAccent, labelMuted, labelSecondary, labelTertiary, stAccent, stBorderTop, stSurface2, stTextSecondary, stTextTertiary as textTertiary } from '@/lib/styles';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -354,12 +354,7 @@ export default function Dashboard() {
       <h1 className="page-title">Dashboard</h1>
       <div
         className="text-center"
-        style={{
-          background: 'var(--surface-1)',
-          borderRadius: 'var(--radius-lg)',
-          padding: 'var(--space-10)',
-        }}
-      >
+        style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-10)' }}>
         <p style={{ color: 'var(--text-secondary)', marginBottom: 'var(--space-4)' }}>Could not load dashboard data.</p>
         <button onClick={() => fetchData()} className="btn btn-secondary btn-md">
           Retry
@@ -404,8 +399,7 @@ export default function Dashboard() {
           <button
             onClick={() => fetchData(true)}
             disabled={refreshing}
-            className="btn btn-secondary btn-sm"
-          >
+            className="btn btn-secondary btn-sm">
             <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
             {refreshing ? 'Refreshing...' : 'Refresh'}
           </button>
@@ -419,9 +413,8 @@ export default function Dashboard() {
                 width: '176px',
                 background: 'var(--surface-1)',
                 borderRadius: 'var(--radius-md)',
-                boxShadow: 'var(--shadow-lg)',
-              }}
-            >
+                boxShadow: 'var(--shadow-lg)', }}
+>
               {['investors', 'meetings', 'tasks', 'pipeline', 'activity'].map(t => (
                 <a
                   key={t}
@@ -431,11 +424,9 @@ export default function Dashboard() {
                   style={{
                     padding: 'var(--space-2) var(--space-3)',
                     fontSize: 'var(--font-size-xs)',
-                    color: 'var(--text-secondary)',
-                  }}
+                    color: 'var(--text-secondary)', }}
                   onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; (e.currentTarget as HTMLElement).style.color = 'var(--text-primary)'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; }}
-                >
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; }}>
                   {t} CSV
                 </a>
               ))}
@@ -448,12 +439,7 @@ export default function Dashboard() {
       {data.totalInvestors === 0 && (
         <div
           className="text-center"
-          style={{
-            borderRadius: 'var(--radius-xl)',
-            padding: 'var(--space-12) var(--space-8)',
-            background: 'var(--surface-1)',
-          }}
-        >
+          style={{ borderRadius: 'var(--radius-xl)', padding: 'var(--space-12) var(--space-8)', background: 'var(--surface-1)' }}>
           <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 400, color: 'var(--text-primary)' }}>Initialize Your Fundraise</h2>
           <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', maxWidth: '28rem', margin: 'var(--space-3) auto var(--space-6)' }}>
             Seed the database with ASL Series C investor targets and configuration, or add investors manually.
@@ -462,8 +448,7 @@ export default function Dashboard() {
             <button
               onClick={seedData}
               disabled={seeding}
-              className="btn btn-primary btn-md disabled:opacity-50"
-            >
+              className="btn btn-primary btn-md disabled:opacity-50">
               {seeding ? 'Seeding...' : 'Seed ASL Data'}
             </button>
             <Link href="/investors" className="btn btn-secondary btn-md">
@@ -486,9 +471,8 @@ export default function Dashboard() {
                     background: 'var(--surface-1)',
                     borderRadius: 'var(--radius-xl)',
                     padding: 'var(--space-6)',
-                    cursor: 'pointer',
-                  }}
-                >
+                    cursor: 'pointer', }}
+>
                   <div className="flex items-baseline gap-3" style={{ marginBottom: 'var(--space-4)' }}>
                     <span style={{
                       fontSize: 'var(--font-size-3xl)',
@@ -500,10 +484,7 @@ export default function Dashboard() {
                     }}>
                       €{Math.round(stressTest.forecast.base)}M
                     </span>
-                    <span style={{
-                      fontSize: 'var(--font-size-sm)',
-                      color: 'var(--text-tertiary)',
-                    }}>
+                    <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' }}>
                       of €{stressTest.target}M target
                     </span>
                   </div>
@@ -566,13 +547,11 @@ export default function Dashboard() {
               </Link>
             );
           })() : (
-            <div style={{
-              background: 'var(--surface-1)',
-              borderRadius: 'var(--radius-xl)',
-              padding: 'var(--space-6)',
-            }}>
-              <div className="skeleton" style={{ height: '48px', width: '220px', marginBottom: 'var(--space-4)', borderRadius: 'var(--radius-md)' }} />
-              <div className="skeleton" style={{ height: '4px', width: '100%', marginBottom: 'var(--space-5)', borderRadius: '2px' }} />
+            <div style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-6)' }}>
+              <div className="skeleton" style={{ height: '48px', width: '220px', marginBottom: 'var(--space-4)', borderRadius: 'var(--radius-md)' }}
+                />
+              <div className="skeleton" style={{ height: '4px', width: '100%', marginBottom: 'var(--space-5)', borderRadius: '2px' }}
+                />
               <div className="grid grid-cols-3 gap-4">
                 <div className="skeleton" style={{ height: '40px', borderRadius: 'var(--radius-md)' }} />
                 <div className="skeleton" style={{ height: '40px', borderRadius: 'var(--radius-md)' }} />
@@ -583,10 +562,12 @@ export default function Dashboard() {
 
           {/* Pulse Strip */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 card-stagger">
-            <PulseCard label="Active investors" value={ph?.activeInvestors ?? data.totalInvestors} sub={`${data.totalInvestors} total`} />
+            <PulseCard label="Active investors" value={ph?.activeInvestors ?? data.totalInvestors} sub={`${data.totalInvestors} total`}
+              />
             <PulseCard label="This week" value={ph?.meetingsThisWeek ?? 0} sub="meetings" />
             <PulseCard label="Follow-ups due" value={ph?.overdueFollowups ?? 0} sub="overdue" />
-            <PulseCard label="Data quality" value={`${ph?.dataQualityPct ?? dataQuality?.overallCompleteness ?? 0}%`} sub="completeness" />
+            <PulseCard label="Data quality" value={`${ph?.dataQualityPct ?? dataQuality?.overallCompleteness ?? 0}%`} sub="completeness"
+              />
           </div>
 
           {/* Pipeline Velocity */}
@@ -599,21 +580,15 @@ export default function Dashboard() {
             <Link href="/stress-test" className="block group">
               <div
                 className="transition-colors"
-                style={{
-                  borderRadius: 'var(--radius-xl)',
-                  padding: 'var(--space-5)',
-                }}
-              >
+                style={{ borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
                 <div className="flex items-center justify-between mb-3">
                   <h2
-                    className="section-title flex items-center gap-2"
-                  >
+                    className="section-title flex items-center gap-2">
                     <ShieldAlert className="w-4 h-4" /> Close forecast
                   </h2>
                   <span
                     className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                    style={labelAccent}
-                  >
+                    style={labelAccent}>
                     Full stress test <ArrowRight className="w-3 h-3" />
                   </span>
                 </div>
@@ -665,8 +640,7 @@ export default function Dashboard() {
                     key={`rev-${rev.investorId}`}
                     className="flex items-start gap-3 py-2.5 px-3 rounded-lg transition-colors"
                     onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
-                  >
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
                     <span className="mt-0.5 shrink-0" style={textTertiary}>
                       <TrendingDown className="w-4 h-4" />
                     </span>
@@ -677,8 +651,7 @@ export default function Dashboard() {
                           className="transition-colors truncate"
                           style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}
                           onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
-                          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = ''; }}
-                        >
+                          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = ''; }}>
                           {rev.investorName}
                         </Link>
                         <span style={labelTertiary}>
@@ -691,8 +664,7 @@ export default function Dashboard() {
                     </div>
                     <Link
                       href={`/investors/${rev.investorId}`}
-                      className="shrink-0 btn btn-secondary btn-sm flex items-center gap-1"
-                    >
+                      className="shrink-0 btn btn-secondary btn-sm flex items-center gap-1">
                       Follow up <ChevronRight className="w-3 h-3" />
                     </Link>
                   </div>
@@ -703,8 +675,7 @@ export default function Dashboard() {
                     key={`stale-${inv.investorId}`}
                     className="flex items-start gap-3 py-2.5 px-3 rounded-lg transition-colors"
                     onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
-                  >
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
                     <span className="mt-0.5 shrink-0" style={textTertiary}>
                       {inv.acceleration === 'gone_silent' ? <UserMinus className="w-4 h-4" /> : <CalendarClock className="w-4 h-4" />}
                     </span>
@@ -715,8 +686,7 @@ export default function Dashboard() {
                           className="transition-colors truncate"
                           style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}
                           onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
-                          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = ''; }}
-                        >
+                          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = ''; }}>
                           {inv.investorName}
                         </Link>
                         <span style={labelTertiary}>T{inv.tier}</span>
@@ -732,8 +702,7 @@ export default function Dashboard() {
                     </div>
                     <Link
                       href={`/investors/${inv.investorId}`}
-                      className="shrink-0 btn btn-secondary btn-sm flex items-center gap-1"
-                    >
+                      className="shrink-0 btn btn-secondary btn-sm flex items-center gap-1">
                       Follow up <ChevronRight className="w-3 h-3" />
                     </Link>
                   </div>
@@ -752,8 +721,7 @@ export default function Dashboard() {
                 <Link
                   href="/focus"
                   className="flex items-center gap-1"
-                  style={labelAccent}
-                >
+                  style={labelAccent}>
                   Full priority queue <ArrowRight className="w-3 h-3" />
                 </Link>
               </div>
@@ -768,17 +736,15 @@ export default function Dashboard() {
                       key={item.investorId}
                       className="flex items-center gap-3 py-2 px-3 rounded-lg transition-colors"
                       onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}
-                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
-                    >
+                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
                       <span
                         className="w-6 h-6 rounded flex items-center justify-center"
                         style={{
                           fontSize: 'var(--font-size-xs)',
                           fontWeight: 400,
                           background: i === 0 ? 'var(--accent)' : 'var(--surface-3)',
-                          color: i === 0 ? 'var(--surface-0)' : 'var(--text-secondary)',
-                        }}
-                      >{i + 1}</span>
+                          color: i === 0 ? 'var(--surface-0)' : 'var(--text-secondary)', }}
+>{i + 1}</span>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
                           <Link
@@ -786,8 +752,7 @@ export default function Dashboard() {
                             className="truncate transition-colors"
                             style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}
                             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
-                            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = ''; }}
-                          >
+                            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = ''; }}>
                             {item.investorName}
                           </Link>
                           <span style={labelTertiary}>T{item.tier}</span>
@@ -823,11 +788,11 @@ export default function Dashboard() {
                     </div>
                   ))}
                   {ov.statusChanges.length > 0 && (
-                    <div className="mt-3 pt-3" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                    <div className="mt-3 pt-3" style={stBorderTop}>
                       <div className="mb-1.5" style={labelTertiary}>Stage movements</div>
                       {ov.statusChanges.slice(0, 3).map((sc, i) => (
                         <div key={i} className="flex items-center gap-2 py-1">
-                          <ArrowUpRight className="w-3 h-3 shrink-0" style={{ color: 'var(--accent)' }} />
+                          <ArrowUpRight className="w-3 h-3 shrink-0" style={stAccent} />
                           <span style={labelSecondary}>
                             <span style={{ color: 'var(--text-primary)', fontWeight: 400 }}>{sc.investorName}</span>
                             {' '}{sc.from !== 'unknown' ? `${formatStage(sc.from)} → ` : ''}{formatStage(sc.to)}
@@ -837,7 +802,7 @@ export default function Dashboard() {
                     </div>
                   )}
                   {ov.meetingNames.length > 0 && (
-                    <div className="mt-2 pt-2" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                    <div className="mt-2 pt-2" style={stBorderTop}>
                       <div className="mb-1" style={labelTertiary}>Meetings logged</div>
                       <div style={labelSecondary}>{ov.meetingNames.join(', ')}</div>
                     </div>
@@ -881,7 +846,7 @@ export default function Dashboard() {
                   </div>
 
                   {cv.alerts.length > 0 && (
-                    <div className="mt-2 pt-2" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                    <div className="mt-2 pt-2" style={stBorderTop}>
                       <div className="mb-1.5 flex items-center gap-1" style={labelSecondary}>
                         <AlertTriangle className="w-3 h-3" /> Enthusiasm drops
                       </div>
@@ -892,8 +857,7 @@ export default function Dashboard() {
                             className="transition-colors"
                             style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)' }}
                             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
-                            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-primary)'; }}
-                          >
+                            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-primary)'; }}>
                             {alert.investorName}
                           </Link>
                           <span className="tabular-nums" style={labelSecondary}>
@@ -929,8 +893,7 @@ export default function Dashboard() {
                       key={accel.id}
                       className="flex items-start gap-3 py-2.5 px-3 rounded-lg transition-colors"
                       onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}
-                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
-                    >
+                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
                       <Zap className="w-4 h-4 shrink-0 mt-0.5" style={textTertiary} />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-0.5">
@@ -939,8 +902,7 @@ export default function Dashboard() {
                             className="transition-colors"
                             style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}
                             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
-                            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = ''; }}
-                          >
+                            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = ''; }}>
                             {accel.investorName}
                           </Link>
                           <span style={labelTertiary}>
@@ -953,8 +915,7 @@ export default function Dashboard() {
                       <button
                         onClick={() => executeAcceleration(accel.id)}
                         className="shrink-0 btn btn-secondary btn-sm flex items-center gap-1"
-                        title="⌘E"
-                      >
+                        title="⌘E">
                         Execute <ChevronRight className="w-3 h-3" />
                       </button>
                     </div>
@@ -1032,8 +993,7 @@ export default function Dashboard() {
                   <div key={stage.label} className="w-full flex items-center justify-center" style={{ maxWidth: `${widthPct}%` }}>
                     <div
                       className="w-full rounded-md h-9 flex items-center justify-between px-4"
-                      style={{ background: `rgba(27, 42, 74, ${Math.max(opacity * 0.12, 0.04)})` }}
-                    >
+                      style={{ background: `rgba(27, 42, 74, ${Math.max(opacity * 0.12, 0.04)})` }}>
                       <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-secondary)' }}>{stage.label}</span>
                       <span className="tabular-nums" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>{stage.value}</span>
                     </div>
@@ -1042,7 +1002,7 @@ export default function Dashboard() {
               })}
               {data.funnel.passed > 0 && (
                 <div className="w-full flex items-center justify-center mt-2 pt-2" style={{ maxWidth: '50%', borderTop: '1px solid var(--border-subtle)' }}>
-                  <div className="w-full rounded-md h-7 flex items-center justify-between px-4" style={{ background: 'var(--surface-2)' }}>
+                  <div className="w-full rounded-md h-7 flex items-center justify-between px-4" style={stSurface2}>
                     <span style={labelTertiary}>Passed</span>
                     <span className="tabular-nums" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>{data.funnel.passed}</span>
                   </div>
@@ -1062,8 +1022,7 @@ export default function Dashboard() {
               <Link
                 key={href}
                 href={href}
-                className="group rounded-xl p-4 transition-colors"
-              >
+                className="group rounded-xl p-4 transition-colors">
                 <Icon className="w-5 h-5 mb-2" style={textTertiary} />
                 <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>{label}</div>
                 <div className="mt-1" style={labelMuted}>{sub}</div>
@@ -1096,7 +1055,8 @@ export default function Dashboard() {
                     <div className="metric-label mb-1">Intelligence readiness</div>
                     <div className="flex items-center gap-2">
                       <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--surface-3)' }}>
-                        <div className="h-full rounded-full transition-all duration-500" style={{ width: `${dataQuality.intelligenceReadiness}%`, background: 'var(--accent)' }} />
+                        <div className="h-full rounded-full transition-all duration-500" style={{ width: `${dataQuality.intelligenceReadiness}%`, background: 'var(--accent)' }}
+                          />
                       </div>
                       <span className="tabular-nums" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-secondary)' }}>{dataQuality.intelligenceReadiness}%</span>
                     </div>
@@ -1155,8 +1115,7 @@ export default function Dashboard() {
                         key={t.id}
                         className="flex items-center justify-between py-1.5 px-2 rounded transition-colors"
                         onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}
-                        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
-                      >
+                        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
                         <div className="min-w-0">
                           <div className="truncate" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)' }}>{t.title}</div>
                           {t.investor_name && <div className="truncate" style={labelMuted}>{t.investor_name}</div>}
@@ -1238,8 +1197,7 @@ export default function Dashboard() {
                     key={a.href + a.label}
                     href={a.href}
                     className="rounded-xl p-4 transition-colors"
-                    style={{ textDecoration: 'none' }}
-                  >
+                    style={{ textDecoration: 'none' }}>
                     <div className="flex items-center gap-2">
                       <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>{a.label}</span>
                       {a.count && (
@@ -1273,12 +1231,7 @@ function PulseCard({ label, value, sub }: {
   return (
     <div
       className="transition-colors"
-      style={{
-        background: 'var(--surface-1)',
-        borderRadius: 'var(--radius-lg)',
-        padding: 'var(--space-4) var(--space-5)',
-      }}
-    >
+      style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-4) var(--space-5)' }}>
       <div className="metric-label" style={{ marginBottom: 'var(--space-1)' }}>{label}</div>
       <div className="metric-value">{value}</div>
       <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginTop: '2px' }}>{sub}</div>
@@ -1294,13 +1247,11 @@ function MomentumBar({ count, total, opacity, label }: {
     <div
       className="relative group cursor-default"
       style={{ width: `${pct}%`, background: `rgba(27, 42, 74, ${opacity})`, borderRadius: '2px' }}
-      title={`${label}: ${count}`}
-    >
+      title={`${label}: ${count}`}>
       {pct >= 15 && (
         <span
           className="absolute inset-0 flex items-center justify-center"
-          style={{ fontSize: '9px', fontWeight: 400, color: opacity > 0.5 ? 'var(--surface-0)' : 'var(--text-secondary)' }}
-        >
+          style={{ fontSize: '9px', fontWeight: 400, color: opacity > 0.5 ? 'var(--surface-0)' : 'var(--text-secondary)' }}>
           {count}
         </span>
       )}
@@ -1341,8 +1292,7 @@ function VelocityStrip({ velocity }: { velocity: VelocityResponse }) {
       className="rounded-xl overflow-hidden transition-all"
       style={{}}
       onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
+      onMouseLeave={() => setHovered(false)}>
       <div className="px-5 pt-4 pb-2">
         <div className="flex items-center justify-between mb-3">
           <h2 className="section-title flex items-center gap-2">
@@ -1351,8 +1301,7 @@ function VelocityStrip({ velocity }: { velocity: VelocityResponse }) {
           <Link
             href="/dealflow"
             className="flex items-center gap-1 transition-opacity"
-            style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)', opacity: hovered ? 1 : 0 }}
-          >
+            style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)', opacity: hovered ? 1 : 0 }}>
             Details <ArrowRight className="w-3 h-3" />
           </Link>
         </div>
@@ -1399,11 +1348,10 @@ function VelocityStrip({ velocity }: { velocity: VelocityResponse }) {
             width: `${progressPct}%`,
             background: 'var(--accent)',
             borderRadius: progressPct < 100 ? '0 1px 1px 0' : undefined,
-          }}
-        />
+          }} />
       </div>
 
-      <div className="px-5 py-2 flex items-center gap-4" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+      <div className="px-5 py-2 flex items-center gap-4" style={stBorderTop}>
         <span className="flex items-center gap-1" style={labelSecondary}>
           <span style={{ fontWeight: 400 }}>{s.on_track}</span> on track
         </span>
@@ -1426,8 +1374,7 @@ function HotDealRow({ investor }: { investor: DealHeatInvestor }) {
       className="flex items-center gap-3 py-2 px-3 rounded-lg transition-colors"
       style={{ background: hovered ? 'var(--surface-2)' : 'transparent' }}
       onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
+      onMouseLeave={() => setHovered(false)}>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
           <Link
@@ -1436,9 +1383,8 @@ function HotDealRow({ investor }: { investor: DealHeatInvestor }) {
             style={{
               fontSize: 'var(--font-size-sm)',
               fontWeight: 400,
-              color: hovered ? 'var(--accent)' : 'var(--text-primary)',
-            }}
-          >
+              color: hovered ? 'var(--accent)' : 'var(--text-primary)', }}
+>
             {investor.name}
           </Link>
           <span style={labelTertiary}>T{investor.tier}</span>
@@ -1455,8 +1401,7 @@ function HotDealRow({ investor }: { investor: DealHeatInvestor }) {
           href={`/meetings/new?investor=${investor.id}`}
           onClick={e => e.stopPropagation()}
           className="btn btn-secondary btn-sm"
-          style={{ textDecoration: 'none', fontSize: 'var(--font-size-xs)' }}
-        >
+          style={{ textDecoration: 'none', fontSize: 'var(--font-size-xs)' }}>
           Schedule
         </Link>
       </div>
@@ -1493,8 +1438,7 @@ function FollowupRow({ followup, onComplete }: { followup: FollowupItem; onCompl
       className="flex items-center gap-3 py-2 px-3 rounded-lg transition-colors"
       style={{ background: hovered ? 'var(--surface-2)' : 'transparent', opacity: completing ? 0.5 : 1 }}
       onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
+      onMouseLeave={() => setHovered(false)}>
       {onComplete && (
         <button
           onClick={() => { setCompleting(true); onComplete(followup.id); }}
@@ -1503,13 +1447,11 @@ function FollowupRow({ followup, onComplete }: { followup: FollowupItem; onCompl
             border: '1.5px solid var(--border-default)',
             background: 'transparent',
             cursor: 'pointer',
-            transition: 'all 150ms ease',
-          }}
+            transition: 'all 150ms ease', }}
           onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.background = 'var(--accent-muted)'; }}
           onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border-default)'; e.currentTarget.style.background = 'transparent'; }}
-          title="Mark done"
-        >
-          {completing && <CheckCircle2 className="w-3 h-3" style={{ color: 'var(--accent)' }} />}
+          title="Mark done">
+          {completing && <CheckCircle2 className="w-3 h-3" style={stAccent} />}
         </button>
       )}
       <span className="shrink-0" style={textTertiary}>
@@ -1520,8 +1462,7 @@ function FollowupRow({ followup, onComplete }: { followup: FollowupItem; onCompl
           <Link
             href={`/investors/${followup.investor_id}`}
             className="truncate transition-colors"
-            style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: hovered ? 'var(--accent)' : 'var(--text-primary)' }}
-          >
+            style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: hovered ? 'var(--accent)' : 'var(--text-primary)' }}>
             {followup.investor_name || 'Unknown'}
           </Link>
           <span style={labelTertiary}>
@@ -1548,8 +1489,7 @@ function FollowupRow({ followup, onComplete }: { followup: FollowupItem; onCompl
           href={`/followups?investor=${followup.investor_id}`}
           onClick={e => e.stopPropagation()}
           className="btn btn-secondary btn-sm"
-          style={{ textDecoration: 'none', fontSize: 'var(--font-size-xs)' }}
-        >
+          style={{ textDecoration: 'none', fontSize: 'var(--font-size-xs)' }}>
           Act
         </Link>
       </div>
@@ -1577,8 +1517,7 @@ function ActivityRow({ activity }: { activity: ActivityItem }) {
       className="flex items-start gap-2.5 py-1.5 px-2 rounded transition-colors"
       style={{ background: hovered ? 'var(--surface-2)' : 'transparent' }}
       onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
+      onMouseLeave={() => setHovered(false)}>
       <span className="mt-0.5 shrink-0" style={textTertiary}>
         <Icon className="w-3.5 h-3.5" />
       </span>
@@ -1586,7 +1525,7 @@ function ActivityRow({ activity }: { activity: ActivityItem }) {
         <div className="truncate" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)' }}>{activity.subject}</div>
         <div className="flex items-center gap-2" style={labelMuted}>
           {activity.investor_name && (
-            <span style={{ color: 'var(--text-secondary)' }}>{activity.investor_name}</span>
+            <span style={stTextSecondary}>{activity.investor_name}</span>
           )}
           <span>{activity.event_type.replace(/_/g, ' ')}</span>
           <span>{timeAgo}</span>

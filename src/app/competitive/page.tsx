@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Shield, ChevronDown, ChevronRight, Calendar, Users, Hash } from 'lucide-react';
+import { labelTertiary, stFontSm, stTextMuted, stTextPrimary, stTextTertiary } from '@/lib/styles';
 
 interface CompetitorMeeting {
   meeting_id: string;
@@ -55,7 +56,7 @@ export default function CompetitivePage() {
     <div className="page-content space-y-6">
       <div>
         <h1 className="page-title">Competitive Intelligence</h1>
-        <p className="page-subtitle" style={{ fontSize: 'var(--font-size-sm)' }}>
+        <p className="page-subtitle" style={stFontSm}>
           Competitors mentioned across investor meetings
         </p>
       </div>
@@ -89,8 +90,7 @@ export default function CompetitivePage() {
             value={fromDate}
             onChange={e => setFromDate(e.target.value)}
             className="input"
-            style={{ width: '160px' }}
-          />
+            style={{ width: '160px' }} />
         </div>
         <div>
           <label style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', display: 'block', marginBottom: '4px' }}>To</label>
@@ -99,21 +99,18 @@ export default function CompetitivePage() {
             value={toDate}
             onChange={e => setToDate(e.target.value)}
             className="input"
-            style={{ width: '160px' }}
-          />
+            style={{ width: '160px' }} />
         </div>
         <button
           onClick={handleFilter}
-          className="btn btn-secondary btn-md"
-        >
+          className="btn btn-secondary btn-md">
           Apply Filter
         </button>
         {(fromDate || toDate) && (
           <button
             onClick={() => { setFromDate(''); setToDate(''); setTimeout(fetchData, 0); }}
             className="btn btn-secondary btn-md"
-            style={{ color: 'var(--text-tertiary)' }}
-          >
+            style={stTextTertiary}>
             Clear
           </button>
         )}
@@ -122,13 +119,13 @@ export default function CompetitivePage() {
       {/* Competitor Table */}
       {loading ? (
         <div className="card" style={{ padding: 'var(--space-8)', textAlign: 'center' }}>
-          <p style={{ color: 'var(--text-tertiary)' }}>Loading competitive intelligence...</p>
+          <p style={stTextTertiary}>Loading competitive intelligence...</p>
         </div>
       ) : !data || data.competitors.length === 0 ? (
         <div className="card" style={{ padding: 'var(--space-8)', textAlign: 'center' }}>
           <div className="space-y-3">
-            <Shield className="w-8 h-8 mx-auto" style={{ color: 'var(--text-muted)' }} />
-            <p style={{ color: 'var(--text-tertiary)' }}>
+            <Shield className="w-8 h-8 mx-auto" style={stTextMuted} />
+            <p style={stTextTertiary}>
               No competitive mentions recorded yet. Log meeting outcomes with competitor mentions to populate this view.
             </p>
           </div>
@@ -145,9 +142,8 @@ export default function CompetitivePage() {
               fontSize: 'var(--font-size-xs)',
               fontWeight: 400,
               color: 'var(--text-muted)',
-              letterSpacing: '0.01em',
-            }}
-          >
+              letterSpacing: '0.01em', }}
+>
             <div />
             <div>Competitor</div>
             <div style={{ textAlign: 'center' }}>Mentions</div>
@@ -170,13 +166,11 @@ export default function CompetitivePage() {
                     borderBottom: '1px solid var(--border-subtle)',
                     cursor: 'pointer',
                     background: isHovered ? 'var(--surface-1)' : 'transparent',
-                    transition: 'background 150ms ease',
-                  }}
+                    transition: 'background 150ms ease', }}
                   onClick={() => setExpandedRow(isExpanded ? null : c.name)}
                   onMouseEnter={() => setHoveredRow(c.name)}
-                  onMouseLeave={() => setHoveredRow(null)}
-                >
-                  <div style={{ color: 'var(--text-muted)' }}>
+                  onMouseLeave={() => setHoveredRow(null)}>
+                  <div style={stTextMuted}>
                     {isExpanded
                       ? <ChevronDown className="w-4 h-4" />
                       : <ChevronRight className="w-4 h-4" />
@@ -194,8 +188,7 @@ export default function CompetitivePage() {
                         fontSize: 'var(--font-size-sm)',
                         fontWeight: 400,
                         color: c.mention_count >= 3 ? 'var(--danger)' : c.mention_count >= 2 ? 'var(--warning)' : 'var(--text-secondary)',
-                      }}
-                    >
+                      }}>
                       <span style={{ color: 'inherit' }}><Hash className="w-3 h-3" /></span>
                       {c.mention_count}
                     </span>
@@ -209,14 +202,13 @@ export default function CompetitivePage() {
                           padding: '1px 6px',
                           borderRadius: 'var(--radius-sm)',
                           background: 'var(--surface-2)',
-                          color: 'var(--text-secondary)',
-                        }}
-                      >
+                          color: 'var(--text-secondary)', }}
+>
                         {inv}
                       </span>
                     ))}
                   </div>
-                  <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
+                  <div style={labelTertiary}>
                     {c.latest_mention}
                   </div>
                 </div>
@@ -227,9 +219,8 @@ export default function CompetitivePage() {
                     style={{
                       padding: 'var(--space-3) var(--space-4) var(--space-3) var(--space-10)',
                       background: 'var(--surface-1)',
-                      borderBottom: '1px solid var(--border-subtle)',
-                    }}
-                  >
+                      borderBottom: '1px solid var(--border-subtle)', }}
+>
                     <div style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-muted)', marginBottom: 'var(--space-2)', letterSpacing: '0.01em' }}>
                       Meeting Context
                     </div>
@@ -242,13 +233,12 @@ export default function CompetitivePage() {
                             fontSize: 'var(--font-size-sm)',
                             padding: 'var(--space-2) var(--space-3)',
                             background: 'var(--surface-0)',
-                            borderRadius: 'var(--radius-sm)',
-                          }}
-                        >
-                          <span style={{ color: 'var(--text-muted)' }}><Calendar className="w-3.5 h-3.5" /></span>
+                            borderRadius: 'var(--radius-sm)', }}
+>
+                          <span style={stTextMuted}><Calendar className="w-3.5 h-3.5" /></span>
                           <span style={{ color: 'var(--text-tertiary)', minWidth: '80px' }}>{mtg.date}</span>
-                          <span style={{ color: 'var(--text-muted)' }}><Users className="w-3.5 h-3.5" /></span>
-                          <span style={{ color: 'var(--text-primary)' }}>{mtg.investor_name}</span>
+                          <span style={stTextMuted}><Users className="w-3.5 h-3.5" /></span>
+                          <span style={stTextPrimary}>{mtg.investor_name}</span>
                         </div>
                       ))}
                     </div>

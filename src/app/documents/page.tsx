@@ -7,6 +7,7 @@ import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { FileText, Plus, Clock, Edit3, Download, ShieldCheck, AlertTriangle, CheckCircle2, XCircle } from 'lucide-react';
 import { fmtDate } from '@/lib/format';
 import { DocSummaryRecord as Doc } from '@/lib/types';
+import { stAccent, stTextMuted, stTextPrimary, stTextTertiary } from '@/lib/styles';
 
 interface DocFlag {
   id: string;
@@ -155,7 +156,8 @@ export default function DocumentsPage() {
       <div className="space-y-6">
         <div className="h-8 w-48 rounded animate-pulse" style={{ backgroundColor: 'var(--surface-2)' }} />
         {[...Array(3)].map((_, i) => (
-          <div key={i} className="h-20 rounded-xl animate-pulse" style={{ backgroundColor: 'color-mix(in srgb, var(--surface-2) 50%, transparent)' }} />
+          <div key={i} className="h-20 rounded-xl animate-pulse" style={{ backgroundColor: 'color-mix(in srgb, var(--surface-2) 50%, transparent)' }}
+            />
         ))}
       </div>
     );
@@ -166,7 +168,7 @@ export default function DocumentsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="page-title">Documents</h1>
-          <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
+          <p className="text-sm mt-1" style={stTextMuted}>
             {docs.length} documents
             {flags.length > 0 && (
               <span style={{ color: 'var(--text-tertiary)', marginLeft: '0.5rem' }}>
@@ -185,8 +187,7 @@ export default function DocumentsPage() {
                 : { backgroundColor: hoverStates['flagsBtn'] ? 'var(--surface-3)' : 'var(--surface-2)', color: 'var(--text-tertiary)', border: '1px solid transparent' }
               }
               onMouseEnter={() => setHover('flagsBtn', true)}
-              onMouseLeave={() => setHover('flagsBtn', false)}
-            >
+              onMouseLeave={() => setHover('flagsBtn', false)}>
               <AlertTriangle className="w-3.5 h-3.5" /> {flags.length} Flags
             </button>
           )}
@@ -195,8 +196,7 @@ export default function DocumentsPage() {
             className="px-3 py-2 rounded-lg text-sm transition-colors flex items-center gap-2"
             style={{ backgroundColor: hoverStates['consBtn'] ? 'var(--surface-3)' : 'var(--surface-2)', color: 'var(--text-secondary)' }}
             onMouseEnter={() => setHover('consBtn', true)}
-            onMouseLeave={() => setHover('consBtn', false)}
-          >
+            onMouseLeave={() => setHover('consBtn', false)}>
             <ShieldCheck className="w-3.5 h-3.5" /> Consistency
           </Link>
           <Link
@@ -204,8 +204,7 @@ export default function DocumentsPage() {
             className="px-4 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2"
             style={{ backgroundColor: 'var(--accent)', color: 'var(--surface-0)', opacity: hoverStates['newBtn'] ? 0.85 : 1 }}
             onMouseEnter={() => setHover('newBtn', true)}
-            onMouseLeave={() => setHover('newBtn', false)}
-          >
+            onMouseLeave={() => setHover('newBtn', false)}>
           <Plus className="w-4 h-4" /> New Document
         </Link>
         </div>
@@ -214,7 +213,7 @@ export default function DocumentsPage() {
       {/* Document Flags Banner */}
       {showFlags && flags.length > 0 && (
         <div className="rounded-xl p-4 space-y-3" style={{ backgroundColor: 'color-mix(in srgb, var(--warning) 5%, transparent)' }}>
-          <h3 className="text-sm font-normal flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
+          <h3 className="text-sm font-normal flex items-center gap-2" style={stTextTertiary}>
             <AlertTriangle className="w-4 h-4" />
             Open Document Flags from Meetings
           </h3>
@@ -226,20 +225,19 @@ export default function DocumentsPage() {
                     <span className="text-xs px-1.5 py-0.5 rounded font-normal" style={FLAG_TYPE_STYLE_MAP[flag.flag_type] || DEFAULT_FLAG_STYLE}>
                       {FLAG_TYPE_LABELS[flag.flag_type] || flag.flag_type}
                     </span>
-                    <span className="text-xs" style={{ color: 'var(--text-muted)' }}>from {flag.investor_name}</span>
-                    <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{fmtDate(flag.created_at)}</span>
+                    <span className="text-xs" style={stTextMuted}>from {flag.investor_name}</span>
+                    <span className="text-xs" style={stTextMuted}>{fmtDate(flag.created_at)}</span>
                   </div>
-                  <p className="text-xs line-clamp-2" style={{ color: 'var(--text-tertiary)' }}>{flag.description}</p>
+                  <p className="text-xs line-clamp-2" style={stTextTertiary}>{flag.description}</p>
                   <div className="flex items-center gap-2 mt-1.5">
-                    <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Section: {flag.section_hint}</span>
+                    <span className="text-xs" style={stTextMuted}>Section: {flag.section_hint}</span>
                     {flag.document_id && (
                       <Link
                         href={`/documents/${flag.document_id}`}
                         className="text-xs underline transition-colors"
-                        style={{ color: 'var(--accent)' }}
+                        style={stAccent}
                         onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.8'; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}
-                      >
+                        onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}>
                         Open document
                       </Link>
                     )}
@@ -252,8 +250,7 @@ export default function DocumentsPage() {
                     title="Mark as addressed"
                     style={{ color: hoverStates[`addr-${flag.id}`] ? 'var(--success)' : 'var(--text-muted)', backgroundColor: hoverStates[`addr-${flag.id}`] ? 'var(--success-muted)' : 'transparent' }}
                     onMouseEnter={() => setHover(`addr-${flag.id}`, true)}
-                    onMouseLeave={() => setHover(`addr-${flag.id}`, false)}
-                  >
+                    onMouseLeave={() => setHover(`addr-${flag.id}`, false)}>
                     <CheckCircle2 className="w-4 h-4" />
                   </button>
                   <button
@@ -262,8 +259,7 @@ export default function DocumentsPage() {
                     title="Dismiss"
                     style={{ color: hoverStates[`dism-${flag.id}`] ? 'var(--danger)' : 'var(--text-muted)', backgroundColor: hoverStates[`dism-${flag.id}`] ? 'color-mix(in srgb, var(--danger) 20%, transparent)' : 'transparent' }}
                     onMouseEnter={() => setHover(`dism-${flag.id}`, true)}
-                    onMouseLeave={() => setHover(`dism-${flag.id}`, false)}
-                  >
+                    onMouseLeave={() => setHover(`dism-${flag.id}`, false)}>
                     <XCircle className="w-4 h-4" />
                   </button>
                 </div>
@@ -275,15 +271,14 @@ export default function DocumentsPage() {
 
       {docs.length === 0 ? (
         <div className="rounded-xl p-8 text-center space-y-3">
-          <FileText className="w-8 h-8 mx-auto" style={{ color: 'var(--text-muted)' }} />
-          <p style={{ color: 'var(--text-muted)' }}>No documents yet.</p>
+          <FileText className="w-8 h-8 mx-auto" style={stTextMuted} />
+          <p style={stTextMuted}>No documents yet.</p>
           <Link
             href="/documents/new"
             className="text-sm transition-colors"
-            style={{ color: 'var(--accent)' }}
+            style={stAccent}
             onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.8'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}
-          >
+            onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}>
             Create your first document
           </Link>
         </div>
@@ -314,24 +309,22 @@ export default function DocumentsPage() {
                           ? 'color-mix(in srgb, var(--warning) 3%, transparent)'
                           : hoverStates[docKey]
                             ? 'var(--surface-2)'
-                            : 'transparent',
-                      }}
+                            : 'transparent', }}
                       onMouseEnter={() => setHover(docKey, true)}
-                      onMouseLeave={() => setHover(docKey, false)}
-                    >
+                      onMouseLeave={() => setHover(docKey, false)}>
                       <Link href={`/documents/${doc.id}`} className="flex-1 min-w-0">
                         <div className="flex items-center gap-3">
-                          <Edit3 className="w-4 h-4 shrink-0" style={{ color: 'var(--text-muted)' }} />
+                          <Edit3 className="w-4 h-4 shrink-0" style={stTextMuted} />
                           <div className="min-w-0">
                             <div className="flex items-center gap-2">
-                              <h3 className="font-normal truncate" style={{ color: 'var(--text-primary)' }}>{doc.title}</h3>
+                              <h3 className="font-normal truncate" style={stTextPrimary}>{doc.title}</h3>
                               {docFlags.length > 0 && (
                                 <span className="text-xs px-1.5 py-0.5 rounded font-normal shrink-0" style={{ backgroundColor: 'var(--warning-muted)', color: 'var(--text-tertiary)' }}>
                                   {docFlags.length} flag{docFlags.length !== 1 ? 's' : ''}
                                 </span>
                               )}
                             </div>
-                            <div className="flex items-center gap-3 text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
+                            <div className="flex items-center gap-3 text-xs mt-0.5" style={stTextMuted}>
                               <span className="flex items-center gap-1">
                                 <Clock className="w-3 h-3" />
                                 {fmtDate(doc.updated_at)}
@@ -351,8 +344,7 @@ export default function DocumentsPage() {
                           title="Download as Markdown"
                           style={{ color: hoverStates[`dl-${doc.id}`] ? 'var(--text-secondary)' : 'var(--text-muted)', backgroundColor: hoverStates[`dl-${doc.id}`] ? 'var(--surface-2)' : 'transparent' }}
                           onMouseEnter={() => setHover(`dl-${doc.id}`, true)}
-                          onMouseLeave={() => setHover(`dl-${doc.id}`, false)}
-                        >
+                          onMouseLeave={() => setHover(`dl-${doc.id}`, false)}>
                           <Download className="w-3.5 h-3.5" />
                         </button>
                         <button
@@ -360,8 +352,7 @@ export default function DocumentsPage() {
                           className="text-xs px-2 py-1 rounded transition-colors"
                           style={{ color: hoverStates[`del-${doc.id}`] ? 'var(--danger)' : 'var(--text-muted)', backgroundColor: hoverStates[`del-${doc.id}`] ? 'var(--surface-2)' : 'transparent' }}
                           onMouseEnter={() => setHover(`del-${doc.id}`, true)}
-                          onMouseLeave={() => setHover(`del-${doc.id}`, false)}
-                        >
+                          onMouseLeave={() => setHover(`del-${doc.id}`, false)}>
                           Del
                         </button>
                       </div>
@@ -375,10 +366,10 @@ export default function DocumentsPage() {
           {/* General flags (not tied to a specific document) */}
           {showFlags && generalFlags.length > 0 && (
             <div>
-              <h2 className="text-xs font-normal mb-3  flex items-center gap-2" style={{ color: 'var(--text-tertiary)' }}>
+              <h2 className="text-xs font-normal mb-3  flex items-center gap-2" style={stTextTertiary}>
                 <AlertTriangle className="w-3 h-3" /> Unmatched Flags ({generalFlags.length})
               </h2>
-              <p className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>
+              <p className="text-xs mb-3" style={stTextMuted}>
                 These flags were generated from meeting objections but no matching document type was found. Consider creating content to address them.
               </p>
               <div className="space-y-2">
@@ -389,9 +380,9 @@ export default function DocumentsPage() {
                         <span className="text-xs px-1.5 py-0.5 rounded font-normal" style={FLAG_TYPE_STYLE_MAP[flag.flag_type] || DEFAULT_FLAG_STYLE}>
                           {FLAG_TYPE_LABELS[flag.flag_type] || flag.flag_type}
                         </span>
-                        <span className="text-xs" style={{ color: 'var(--text-muted)' }}>from {flag.investor_name}</span>
+                        <span className="text-xs" style={stTextMuted}>from {flag.investor_name}</span>
                       </div>
-                      <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>{flag.description}</p>
+                      <p className="text-xs" style={stTextTertiary}>{flag.description}</p>
                     </div>
                     <div className="flex gap-1 shrink-0">
                       <button
@@ -400,8 +391,7 @@ export default function DocumentsPage() {
                         title="Mark as addressed"
                         style={{ color: hoverStates[`gaddr-${flag.id}`] ? 'var(--success)' : 'var(--text-muted)', backgroundColor: hoverStates[`gaddr-${flag.id}`] ? 'var(--success-muted)' : 'transparent' }}
                         onMouseEnter={() => setHover(`gaddr-${flag.id}`, true)}
-                        onMouseLeave={() => setHover(`gaddr-${flag.id}`, false)}
-                      >
+                        onMouseLeave={() => setHover(`gaddr-${flag.id}`, false)}>
                         <CheckCircle2 className="w-4 h-4" />
                       </button>
                       <button
@@ -410,8 +400,7 @@ export default function DocumentsPage() {
                         title="Dismiss"
                         style={{ color: hoverStates[`gdism-${flag.id}`] ? 'var(--danger)' : 'var(--text-muted)', backgroundColor: hoverStates[`gdism-${flag.id}`] ? 'color-mix(in srgb, var(--danger) 20%, transparent)' : 'transparent' }}
                         onMouseEnter={() => setHover(`gdism-${flag.id}`, true)}
-                        onMouseLeave={() => setHover(`gdism-${flag.id}`, false)}
-                      >
+                        onMouseLeave={() => setHover(`gdism-${flag.id}`, false)}>
                         <XCircle className="w-4 h-4" />
                       </button>
                     </div>
@@ -430,8 +419,7 @@ export default function DocumentsPage() {
         confirmLabel="Delete"
         variant="danger"
         onConfirm={handleDelete}
-        onCancel={() => setDeleteTarget(null)}
-      />
+        onCancel={() => setDeleteTarget(null)} />
     </div>
   );
 }

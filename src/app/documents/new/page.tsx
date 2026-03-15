@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/toast';
 import { FileText, Upload } from 'lucide-react';
+import { stTextMuted, stTextPrimary } from '@/lib/styles';
 
 const TEMPLATES = [
   {
@@ -182,7 +183,7 @@ export default function NewDocumentPage() {
     <div className="page-content max-w-3xl space-y-6">
       <div>
         <h1 className="page-title">New Document</h1>
-        <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>Choose a template or start blank</p>
+        <p className="text-sm mt-1" style={stTextMuted}>Choose a template or start blank</p>
       </div>
 
       {/* Import Toggle */}
@@ -195,27 +196,22 @@ export default function NewDocumentPage() {
             color: 'var(--accent)',
           } : {
             background: 'var(--surface-2)',
-            color: 'var(--text-tertiary)',
-          }}
-        >
+            color: 'var(--text-tertiary)', }}
+>
           <Upload className="w-3.5 h-3.5" /> Import Markdown
         </button>
       </div>
 
       {showImport && (
         <div className="rounded-xl p-4">
-          <label className="text-xs block mb-2" style={{ color: 'var(--text-muted)' }}>Paste markdown content (will replace template content)</label>
+          <label className="text-xs block mb-2" style={stTextMuted}>Paste markdown content (will replace template content)</label>
           <textarea
             value={importContent}
             onChange={e => setImportContent(e.target.value)}
             rows={8}
             placeholder="Paste your markdown here..."
             className="w-full rounded-lg px-4 py-3 text-sm font-mono focus:outline-none"
-            style={{
-              background: 'var(--surface-1)',
-              color: 'var(--text-secondary)',
-            }}
-          />
+            style={{ background: 'var(--surface-1)', color: 'var(--text-secondary)' }} />
         </div>
       )}
 
@@ -227,14 +223,13 @@ export default function NewDocumentPage() {
             className="rounded-xl p-5 transition-colors"
             style={{}}
             onMouseEnter={() => setHoveredButton(template.type)}
-            onMouseLeave={() => setHoveredButton(null)}
-          >
+            onMouseLeave={() => setHoveredButton(null)}>
             <div className="flex items-start justify-between">
               <div className="flex items-start gap-3">
-                <FileText className="w-5 h-5 mt-0.5 shrink-0" style={{ color: 'var(--text-muted)' }} />
+                <FileText className="w-5 h-5 mt-0.5 shrink-0" style={stTextMuted} />
                 <div>
-                  <h3 className="font-normal" style={{ color: 'var(--text-primary)' }}>{template.title}</h3>
-                  <p className="text-sm mt-0.5" style={{ color: 'var(--text-muted)' }}>{template.description}</p>
+                  <h3 className="font-normal" style={stTextPrimary}>{template.title}</h3>
+                  <p className="text-sm mt-0.5" style={stTextMuted}>{template.description}</p>
                   {template.type === 'custom' && (
                     <input
                       value={customTitle}
@@ -244,11 +239,9 @@ export default function NewDocumentPage() {
                       style={{
                         background: 'var(--surface-1)',
                         border: '1px solid var(--border-default)',
-                        color: 'var(--text-secondary)',
-                      }}
+                        color: 'var(--text-secondary)', }}
                       onFocus={e => { e.target.style.borderColor = 'var(--accent)'; }}
-                      onBlur={e => { e.target.style.borderColor = 'var(--border-default)'; }}
-                    />
+                      onBlur={e => { e.target.style.borderColor = 'var(--border-default)'; }} />
                   )}
                 </div>
               </div>
@@ -258,11 +251,9 @@ export default function NewDocumentPage() {
                 className="px-3 py-1.5 rounded-lg text-sm transition-colors disabled:opacity-50 shrink-0"
                 style={{
                   background: hoveredCreate === template.type ? 'var(--surface-3)' : 'var(--surface-2)',
-                  color: 'var(--text-primary)',
-                }}
+                  color: 'var(--text-primary)', }}
                 onMouseEnter={() => setHoveredCreate(template.type)}
-                onMouseLeave={() => setHoveredCreate(null)}
-              >
+                onMouseLeave={() => setHoveredCreate(null)}>
                 {creating ? 'Creating...' : 'Create'}
               </button>
             </div>
