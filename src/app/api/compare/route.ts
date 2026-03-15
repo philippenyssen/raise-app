@@ -216,5 +216,6 @@ export async function POST(req: NextRequest) {
       verdict: buildVerdict(profiles),
       recommendation: buildRecommendation(profiles),});
   } catch (err) {
+    console.error('[COMPARE_POST]', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: 'Failed to compare investors' }, { status: 500 });
   }}

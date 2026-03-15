@@ -31,6 +31,7 @@ export async function GET() {
       meeting_count: meetings.length,
     });
   } catch (err) {
+    console.error('[ANALYZE_GET]', err instanceof Error ? err.message : err);
     return NextResponse.json({
       patterns: null,
       health: { health: 'yellow', diagnosis: 'AI analysis temporarily unavailable.', recommendations: [], risk_factors: [] },

@@ -97,6 +97,7 @@ export async function GET(req: NextRequest) {
         stats?.count ?? 0, stats?.latest ?? '',];});
     return csvResponse(toCSV(headers, rows), type);
   } catch (e) {
+    console.error('[EXPORT_GET]', e instanceof Error ? e.message : e);
     return NextResponse.json({ error: e instanceof Error ? e.message : 'Failed to export data' }, { status: 500 });
   }
 }

@@ -110,5 +110,6 @@ export async function GET() {
 
   return NextResponse.json({ investors: results, counts, generated_at: new Date().toISOString() });
   } catch (err) {
+    console.error('[DEAL_HEAT_GET]', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: 'Failed to compute deal heat' }, { status: 500 });
   }}

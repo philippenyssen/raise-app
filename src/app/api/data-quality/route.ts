@@ -124,6 +124,7 @@ export async function GET() {
       intelligenceReadiness,
       recommendations,});
   } catch (e) {
+    console.error('[DATA_QUALITY_GET]', e instanceof Error ? e.message : e);
     return NextResponse.json({ error: e instanceof Error ? e.message : 'Failed to compute data quality' }, { status: 500 });
   }
 }
