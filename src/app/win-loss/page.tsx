@@ -113,10 +113,13 @@ export default function WinLossPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center" style={{ minHeight: '400px' }}>
-        <div className="flex items-center gap-3">
-          <RefreshCw className="w-5 h-5 animate-spin" style={stTextMuted} />
-          <span style={stTextSecondary}>Analyzing win/loss patterns...</span></div>
+      <div className="space-y-6 page-content">
+        <div className="skeleton" style={{ height: '28px', width: '220px' }} />
+        <div className="skeleton" style={{ height: '16px', width: '350px' }} />
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {[1,2,3,4].map(i => <div key={i} className="skeleton" style={{ height: '80px', borderRadius: 'var(--radius-xl)' }} />)}
+        </div>
+        <div className="skeleton" style={{ height: '200px', borderRadius: 'var(--radius-xl)' }} />
       </div>);
   }
 

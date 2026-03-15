@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Activity, AlertTriangle, CheckCircle2, XCircle, ChevronDown, ChevronRight } from 'lucide-react';
+import { useToast } from '@/components/toast';
 import { getHealthBg, getHealthColor, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 interface SkillHealth {
@@ -32,6 +33,7 @@ interface SkillExecution {
 }
 
 export default function SkillsPage() {
+  const { toast } = useToast();
   const [health, setHealth] = useState<SkillHealth[]>([]);
   const [executions, setExecutions] = useState<SkillExecution[]>([]);
   const [expanded, setExpanded] = useState<string | null>(null);
@@ -45,7 +47,7 @@ export default function SkillsPage() {
       .then(([h, e]) => {
         setHealth(Array.isArray(h) ? h : []);
         setExecutions(Array.isArray(e) ? e : []);})
-      .catch(() => { setHealth([]); setExecutions([]); })
+      .catch(() => { setHealth([]); setExecutions([]); toast('Failed to load skill health data', 'error'); })
       .finally(() => setLoading(false));
   }, []);
 
