@@ -152,6 +152,12 @@ export default function StrategicPage() {
 
   useEffect(() => {
     fetchData();
+    function onKey(e: KeyboardEvent) {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      if (e.key === 'r' && !e.metaKey && !e.ctrlKey) fetchData(true);
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
   }, [fetchData]);
 
   if (loading) {
@@ -463,7 +469,7 @@ export default function StrategicPage() {
 
       {/* Footer */}
       <div className="text-center" style={{ fontSize: '10px', color: 'var(--text-muted)', padding: 'var(--space-2) 0' }}>
-        Generated {new Date(data.generatedAt).toLocaleString()} — Data-driven from live context bus</div>
+        Updated {(() => { const mins = Math.floor((Date.now() - new Date(data.generatedAt).getTime()) / 60000); return mins < 1 ? 'just now' : mins < 60 ? `${mins}m ago` : `${Math.floor(mins / 60)}h ago`; })()} — Press R to refresh</div>
     </div>);
 }
 

@@ -399,9 +399,15 @@ export default function TodayPage() {
     const stalenessInterval = setInterval(() => {
       setStalenessMinutes(Math.floor((Date.now() - lastFetchedAt.current) / 60000));
     }, 30000);
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      if (e.key === 'r' && !e.metaKey && !e.ctrlKey) fetchBriefing(true);
+    }
+    window.addEventListener('keydown', onKeyDown);
     return () => {
       clearInterval(refreshInterval);
       clearInterval(stalenessInterval);
+      window.removeEventListener('keydown', onKeyDown);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

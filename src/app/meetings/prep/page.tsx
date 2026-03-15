@@ -18,6 +18,7 @@ import { STATUS_LABELS, TYPE_LABELS } from '@/lib/constants';
 import { fmtDate } from '@/lib/format';
 import { useToast } from '@/components/toast';
 import { stAccent, stAccentBadge, stAccentBg, stBorderTop, stSurface0, stSurface1, stSurface1Border, stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
+import { parseJsonSafe } from '@/lib/api-helpers';
 
 // ---------- types for the meeting brief ----------
 
@@ -65,8 +66,7 @@ interface MeetingBrief {
 // ---------- helpers ----------
 
 function safeJsonParse<T>(raw: string | null | undefined, fallback: T): T {
-  if (!raw) return fallback;
-  try { return JSON.parse(raw) as T; } catch { return fallback; }
+  return raw ? parseJsonSafe(raw, fallback) : fallback;
 }
 
 function meetingTypeLabel(t: string): string {

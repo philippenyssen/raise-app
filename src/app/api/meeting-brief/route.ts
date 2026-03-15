@@ -21,14 +21,13 @@ import {
   computeWinLossPatterns,
 } from '@/lib/db';
 import { getAIClient } from '@/lib/ai';
-import { checkRateLimit } from '@/lib/api-helpers';
+import { checkRateLimit, parseJsonSafe } from '@/lib/api-helpers';
 import { computeAdvancedTrajectory } from '@/lib/scoring';
 import { getNarrativeProfile, getAnticipatedQuestions } from '@/lib/investor-narratives';
 import type { InvestorType, Objection } from '@/lib/types';
 
 function safeJsonParse<T>(raw: string | null | undefined, fallback: T): T {
-  if (!raw) return fallback;
-  try { return JSON.parse(raw) as T; } catch { return fallback; }
+  return raw ? parseJsonSafe(raw, fallback) : fallback;
 }
 
 export async function POST(req: NextRequest) {
