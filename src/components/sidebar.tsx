@@ -58,6 +58,11 @@ const SB = {
   sectionLabel: 'var(--white-30)',
 };
 
+const badgeCountStyle: React.CSSProperties = {
+  minWidth: '18px', height: '18px', borderRadius: '9px', background: 'var(--white-15)',
+  color: SB.textActive, fontSize: '10px', fontWeight: 400, padding: '0 5px', lineHeight: 1,
+};
+
 export function Sidebar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -252,45 +257,14 @@ export function Sidebar() {
                           (e.currentTarget as HTMLElement).style.color = SB.text;
                         }
                       }}>
-                      {/* Active indicator */}
                       {active && (
-                        <div
-                          className="absolute left-0 top-1/2 -translate-y-1/2 rounded-r"
-                          style={{
-                            width: '2px',
-                            height: '16px',
-                            background: SB.accent,
-                          }}
-                        />
+                        <div className="absolute left-0 top-1/2 -translate-y-1/2 rounded-r" style={{ width: '2px', height: '16px', background: SB.accent }} />
                       )}
 
                       <span className="shrink-0 flex items-center justify-center relative" style={{ width: '16px', height: '16px', color: active ? SB.accent : 'inherit' }}>
                         <Icon className="w-4 h-4" />
-                        {collapsed && item.href === '/followups' && overdueCount > 0 && (
-                          <span
-                            className="absolute"
-                            style={{
-                              top: '-3px',
-                              right: '-4px',
-                              width: '7px',
-                              height: '7px',
-                              borderRadius: '50%',
-                              background: SB.accent,
-                            }}
-                          />
-                        )}
-                        {collapsed && item.href === '/meetings' && todayMeetingCount > 0 && (
-                          <span
-                            className="absolute"
-                            style={{
-                              top: '-3px',
-                              right: '-4px',
-                              width: '7px',
-                              height: '7px',
-                              borderRadius: '50%',
-                              background: SB.accent,
-                            }}
-                          />
+                        {collapsed && ((item.href === '/followups' && overdueCount > 0) || (item.href === '/meetings' && todayMeetingCount > 0)) && (
+                          <span className="absolute" style={{ top: '-3px', right: '-4px', width: '7px', height: '7px', borderRadius: '50%', background: SB.accent }} />
                         )}
                       </span>
 
@@ -298,64 +272,20 @@ export function Sidebar() {
                         <>
                           <span className="truncate">{item.label}</span>
                           {item.badge === 'hot' && (
-                            <span
-                              className="ml-auto shrink-0"
-                              style={{
-                                width: '5px',
-                                height: '5px',
-                                borderRadius: '50%',
-                                background: SB.accent,
-                              }}
-                            />
+                            <span className="ml-auto shrink-0" style={{ width: '5px', height: '5px', borderRadius: '50%', background: SB.accent }} />
                           )}
                           {item.href === '/followups' && overdueCount > 0 && (
-                            <span
-                              className="ml-auto shrink-0 flex items-center justify-center"
-                              style={{
-                                minWidth: '18px',
-                                height: '18px',
-                                borderRadius: '9px',
-                                background: 'var(--white-15)',
-                                color: SB.textActive,
-                                fontSize: '10px',
-                                fontWeight: 400,
-                                padding: '0 5px',
-                                lineHeight: 1,
-                              }}>
-                              {overdueCount > 9 ? '9+' : overdueCount}
-                            </span>
+                            <span className="ml-auto shrink-0 flex items-center justify-center" style={badgeCountStyle}>{overdueCount > 9 ? '9+' : overdueCount}</span>
                           )}
                           {item.href === '/meetings' && todayMeetingCount > 0 && (
-                            <span
-                              className="ml-auto shrink-0 flex items-center justify-center"
-                              style={{
-                                minWidth: '18px',
-                                height: '18px',
-                                borderRadius: '9px',
-                                background: 'var(--white-15)',
-                                color: SB.textActive,
-                                fontSize: '10px',
-                                fontWeight: 400,
-                                padding: '0 5px',
-                                lineHeight: 1,
-                              }}>
-                              {todayMeetingCount > 9 ? '9+' : todayMeetingCount}
-                            </span>
+                            <span className="ml-auto shrink-0 flex items-center justify-center" style={badgeCountStyle}>{todayMeetingCount > 9 ? '9+' : todayMeetingCount}</span>
                           )}
                         </>
                       )}
 
-                      {/* Tooltip for collapsed */}
                       {collapsed && (
-                        <div
-                          className="absolute left-full ml-2 px-2 py-1 rounded-md opacity-0 pointer-events-none group-hover:opacity-100 whitespace-nowrap z-50 transition-opacity duration-100"
-                          style={{
-                            background: 'var(--foreground)',
-                            border: `1px solid ${SB.border}`,
-                            fontSize: 'var(--font-size-xs)',
-                            color: SB.textActive,
-                            boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
-                          }}>
+                        <div className="absolute left-full ml-2 px-2 py-1 rounded-md opacity-0 pointer-events-none group-hover:opacity-100 whitespace-nowrap z-50 transition-opacity duration-100"
+                          style={{ background: 'var(--foreground)', border: `1px solid ${SB.border}`, fontSize: 'var(--font-size-xs)', color: SB.textActive, boxShadow: '0 4px 16px rgba(0,0,0,0.3)' }}>
                           {item.label}
                         </div>
                       )}
@@ -374,25 +304,8 @@ export function Sidebar() {
             borderTop: `1px solid ${SB.border}`,
           }}>
           {!collapsed && (
-            <div
-              className="flex items-center justify-center"
-              style={{
-                fontSize: '10px',
-                color: SB.muted,
-                padding: '0 var(--space-2) var(--space-2)',
-              }}>
-              <kbd
-                style={{
-                  background: SB.bgHover,
-                  border: `1px solid ${SB.border}`,
-                  borderRadius: '3px',
-                  padding: '1px 5px',
-                  fontSize: '10px',
-                  marginRight: '4px',
-                  color: SB.text,
-                }}>
-                ⌘K
-              </kbd>
+            <div className="flex items-center justify-center" style={{ fontSize: '10px', color: SB.muted, padding: '0 var(--space-2) var(--space-2)' }}>
+              <kbd style={{ background: SB.bgHover, border: `1px solid ${SB.border}`, borderRadius: '3px', padding: '1px 5px', fontSize: '10px', marginRight: '4px', color: SB.text }}>⌘K</kbd>
               to search
             </div>
           )}

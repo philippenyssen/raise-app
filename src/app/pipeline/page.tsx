@@ -698,13 +698,10 @@ function InvestorCard({
     ? Math.floor((Date.now() - new Date(investor.last_meeting_date).getTime()) / (1000 * 60 * 60 * 24)) >= 14
     : false;
 
-  const tierGlow = hovered
-    ? investor.tier === 1
-      ? 'none'
-      : investor.tier === 2
-        ? 'none'
-        : 'none'
-    : 'none';
+  const completeness = Math.round(([investor.name, investor.fund_size, investor.type, investor.tier, investor.check_size_range, investor.partner, investor.last_meeting_date].filter(Boolean).length / 7) * 100);
+  const complColor = completeness >= 80 ? 'var(--success)' : completeness >= 50 ? 'var(--warning)' : 'var(--danger)';
+
+  const tierGlow = 'none';
 
   const cardBaseStyle: React.CSSProperties = {
     background: hovered ? 'var(--surface-2)' : 'var(--surface-1)',
@@ -747,7 +744,10 @@ function InvestorCard({
       style={{ ...cardBaseStyle, padding: 'var(--space-3)' }}>
       <Link href={`/investors/${investor.id}`} className="block space-y-2.5" draggable={false}>
         <div className="flex items-start justify-between gap-1">
-          <span style={{ ...stFontSm, fontWeight: 400, color: hovered ? 'var(--text-primary)' : 'var(--text-secondary)', lineHeight: 1.3, transition: 'color 150ms ease' }}>{investor.name}</span>
+          <div className="min-w-0">
+            <span style={{ ...stFontSm, fontWeight: 400, color: hovered ? 'var(--text-primary)' : 'var(--text-secondary)', lineHeight: 1.3, transition: 'color 150ms ease' }}>{investor.name}</span>
+            {completeness < 100 && <span title={`Profile ${completeness}% complete`} style={{ fontSize: '9px', color: complColor, marginLeft: '4px', fontWeight: 400 }}>{completeness}%</span>}
+          </div>
           <GripVertical
             className="w-3.5 h-3.5 flex-shrink-0 mt-0.5"
             style={{ color: hovered ? 'var(--text-muted)' : 'var(--border-strong)' }} />

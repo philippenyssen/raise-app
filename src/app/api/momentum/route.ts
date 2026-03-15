@@ -294,14 +294,7 @@ export async function GET() {
       family_office: 'Family Office',
     };
 
-    const anomalies: {
-      investorId: string;
-      investorName: string;
-      type: string;
-      deviation: number;
-      direction: 'above' | 'below';
-      message: string;
-    }[] = [];
+    const anomalies: { investorId: string; investorName: string; type: string; deviation: number; direction: 'above' | 'below'; message: string }[] = [];
 
     // For each investor, compare their current week score to their cohort average
     matrix.forEach(inv => {
@@ -342,11 +335,7 @@ export async function GET() {
     // 4. CROSS-INVESTOR SIGNALS
     // ═══════════════════════════════════════════════════════════════════
 
-    const crossSignals: {
-      week: string;
-      description: string;
-      affectedInvestors: string[];
-    }[] = [];
+    const crossSignals: { week: string; description: string; affectedInvestors: string[] }[] = [];
 
     // For each week, check if 3+ investors in same tier dropped momentum
     for (let wi = 1; wi < weeks.length; wi++) {
@@ -448,20 +437,7 @@ export async function GET() {
     try {
       // Negative anomalies (below cohort) → create acceleration action
       for (const anomaly of anomalies.filter(a => a.direction === 'below' && Math.abs(a.deviation) >= 20)) {
-        const dueAt = new Date();
-        dueAt.setDate(dueAt.getDate() + 2); // 48h to investigate
-        await createAccelerationAction({
-          investor_id: anomaly.investorId,
-          investor_name: anomaly.investorName,
-          trigger_type: 'momentum_cliff',
-          action_type: 'warm_reintro',
-          description: `${anomaly.message}. Investigate: competitor news? unresolved objection? internal politics? macro event?`,
-          expected_lift: Math.min(20, Math.abs(anomaly.deviation) * 0.5),
-          confidence: 'medium',
-          status: 'pending',
-          actual_lift: null,
-          executed_at: null,
-        });
+        await createAccelerationAction({ investor_id: anomaly.investorId, investor_name: anomaly.investorName, trigger_type: 'momentum_cliff', action_type: 'warm_reintro', description: `${anomaly.message}. Investigate: competitor news? unresolved objection? internal politics? macro event?`, expected_lift: Math.min(20, Math.abs(anomaly.deviation) * 0.5), confidence: 'medium', status: 'pending', actual_lift: null, executed_at: null });
       }
 
       // Cross-investor signals (systemic drops) → narrative/strategy review
@@ -472,20 +448,7 @@ export async function GET() {
       });
       if (recentCrossSignals.length > 0) {
         const latestSignal = recentCrossSignals[0];
-        const dueAt = new Date();
-        dueAt.setDate(dueAt.getDate() + 3);
-        await createAccelerationAction({
-          investor_id: '',
-          investor_name: 'Pipeline-wide',
-          trigger_type: 'competitive_pressure',
-          action_type: 'competitive_signal',
-          description: `Systemic signal: ${latestSignal.description}. Review: (1) competitive landscape changes, (2) narrative/deck adjustments, (3) market timing. Affected: ${latestSignal.affectedInvestors.join(', ')}.`,
-          expected_lift: 10,
-          confidence: 'low',
-          status: 'pending',
-          actual_lift: null,
-          executed_at: null,
-        });
+        await createAccelerationAction({ investor_id: '', investor_name: 'Pipeline-wide', trigger_type: 'competitive_pressure', action_type: 'competitive_signal', description: `Systemic signal: ${latestSignal.description}. Review: (1) competitive landscape changes, (2) narrative/deck adjustments, (3) market timing. Affected: ${latestSignal.affectedInvestors.join(', ')}.`, expected_lift: 10, confidence: 'low', status: 'pending', actual_lift: null, executed_at: null });
       }
     } catch { /* non-blocking — anomaly actions are best-effort */ }
 
@@ -520,17 +483,7 @@ export async function GET() {
     // 6. TRAJECTORY EARLY WARNING SYSTEM
     // ═══════════════════════════════════════════════════════════════════
 
-    interface TrajectoryAlert {
-      investorId: string;
-      investorName: string;
-      type: 'critical_warning' | 'early_warning' | 'term_sheet_signal';
-      currentScore: number;
-      predictedScore21d: number;
-      slopePerWeek: number;
-      daysToThreshold: number | null;
-      recommendedAction: string;
-    }
-
+    interface TrajectoryAlert { investorId: string; investorName: string; type: 'critical_warning' | 'early_warning' | 'term_sheet_signal'; currentScore: number; predictedScore21d: number; slopePerWeek: number; daysToThreshold: number | null; recommendedAction: string; }
     const trajectoryAlerts: TrajectoryAlert[] = [];
 
     for (const inv of matrix) {
@@ -582,18 +535,7 @@ export async function GET() {
 
         // Auto-create critical acceleration action
         try {
-          await createAccelerationAction({
-            investor_id: inv.investorId,
-            investor_name: inv.investorName,
-            trigger_type: 'momentum_cliff',
-            action_type: 'escalation',
-            description: `CRITICAL: Trajectory predicts pass in ${daysToPassThreshold} days. Slope: ${slopePerWeek} pts/wk. Immediate intervention required.`,
-            expected_lift: 15,
-            confidence: 'high',
-            status: 'pending',
-            actual_lift: null,
-            executed_at: null,
-          });
+          await createAccelerationAction({ investor_id: inv.investorId, investor_name: inv.investorName, trigger_type: 'momentum_cliff', action_type: 'escalation', description: `CRITICAL: Trajectory predicts pass in ${daysToPassThreshold} days. Slope: ${slopePerWeek} pts/wk. Immediate intervention required.`, expected_lift: 15, confidence: 'high', status: 'pending', actual_lift: null, executed_at: null });
         } catch { /* non-blocking */ }
       } else if (daysToPassThreshold !== null && daysToPassThreshold <= 21) {
         trajectoryAlerts.push({
@@ -628,24 +570,12 @@ export async function GET() {
     // 7. CROSS-INVESTOR TIMING CORRELATION
     // ═══════════════════════════════════════════════════════════════════
 
-    interface TimingSignal {
-      type: 'competitive_tension' | 'engagement_gap' | 'dd_synchronization';
-      description: string;
-      investorNames: string[];
-      urgency: 'high' | 'medium' | 'low';
-    }
-
+    interface TimingSignal { type: 'competitive_tension' | 'engagement_gap' | 'dd_synchronization'; description: string; investorNames: string[]; urgency: 'high' | 'medium' | 'low'; }
     const timingSignals: TimingSignal[] = [];
 
     // Fetch ALL meetings (not just within the 8-week window) for timing analysis
-    const allMeetingsResult = await db.execute(`
-      SELECT id, investor_id, investor_name, date, type, status_after
-      FROM meetings
-      ORDER BY date ASC
-    `);
-    const allMeetingsForTiming = allMeetingsResult.rows as unknown as Array<{
-      id: string; investor_id: string; investor_name: string; date: string; type: string; status_after: string;
-    }>;
+    const allMeetingsResult = await db.execute(`SELECT id, investor_id, investor_name, date, type, status_after FROM meetings ORDER BY date ASC`);
+    const allMeetingsForTiming = allMeetingsResult.rows as unknown as Array<{ id: string; investor_id: string; investor_name: string; date: string; type: string; status_after: string }>;
 
     // (a) Meeting clusters: 3+ different-investor meetings within 5 days = competitive tension
     const meetingDates = allMeetingsForTiming.map(m => ({
@@ -758,18 +688,7 @@ export async function GET() {
     // Auto-create acceleration actions for competitive tension signals
     try {
       for (const ts of timingSignals.filter(s => s.type === 'competitive_tension' && s.urgency === 'high')) {
-        await createAccelerationAction({
-          investor_id: '',
-          investor_name: 'Pipeline-wide',
-          trigger_type: 'competitive_pressure',
-          action_type: 'competitive_signal',
-          description: `Timing signal: ${ts.description} Investors: ${ts.investorNames.join(', ')}`,
-          expected_lift: 15,
-          confidence: 'medium',
-          status: 'pending',
-          actual_lift: null,
-          executed_at: null,
-        });
+        await createAccelerationAction({ investor_id: '', investor_name: 'Pipeline-wide', trigger_type: 'competitive_pressure', action_type: 'competitive_signal', description: `Timing signal: ${ts.description} Investors: ${ts.investorNames.join(', ')}`, expected_lift: 15, confidence: 'medium', status: 'pending', actual_lift: null, executed_at: null });
       }
     } catch { /* non-blocking */ }
 
@@ -779,15 +698,7 @@ export async function GET() {
     // Fetch narrative signals and enrich anomalies/alerts with narrative context
     // when the investor's type is "struggling" (avg enthusiasm < 2.5 or conversion < 20%).
 
-    let narrativeHealth: {
-      investorType: string;
-      avgEnthusiasm: number;
-      conversionRate: number;
-      topObjection: string;
-      topQuestionTopic: string;
-      sampleSize: number;
-      status: 'effective' | 'struggling' | 'insufficient_data';
-    }[] = [];
+    let narrativeHealth: { investorType: string; avgEnthusiasm: number; conversionRate: number; topObjection: string; topQuestionTopic: string; sampleSize: number; status: 'effective' | 'struggling' | 'insufficient_data' }[] = [];
 
     try {
       const rawSignals = await computeNarrativeSignals();

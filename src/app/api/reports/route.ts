@@ -48,57 +48,32 @@ const BASE_STYLES = `
   .report-header h1 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 24px; font-weight: 300; letter-spacing: -0.5px; }
   .report-header .subtitle { font-size: 13px; color: #8a8880; margin-top: 4px; }
   .report-header .date { font-size: 12px; color: #8a8880; margin-top: 2px; }
-  .health-badge { display: inline-block; padding: 4px 14px; border-radius: 20px; font-size: 12px; font-weight: 500; letter-spacing: 0.2px; }
-  .health-green { background: #e4e3e0; color: #1a1a2e; }
-  .health-yellow { background: #e4e3e0; color: #1b2a4a; }
-  .health-red { background: #1b2a4a; color: #fafaf8; }
-  .metrics-strip { display: flex; gap: 0; border: 1px solid #e4e3e0; border-radius: 8px; overflow: hidden; margin: 20px 0; }
-  .metric-box { flex: 1; padding: 14px 16px; border-right: 1px solid #e4e3e0; text-align: center; }
-  .metric-box:last-child { border-right: none; }
-  .metric-value { font-size: 24px; font-weight: 700; color: #1a1a2e; }
-  .metric-label { font-size: 11px; color: #8a8880; letter-spacing: 0.2px; margin-top: 2px; }
-  .section { margin-top: 24px; }
-  .section-title { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; color: #1a1a2e; border-bottom: 1px solid #e4e3e0; padding-bottom: 6px; margin-bottom: 12px; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th { text-align: left; padding: 8px 10px; background: #fafaf8; font-weight: 500; font-size: 11px; letter-spacing: 0.2px; color: #8a8880; border-bottom: 2px solid #e4e3e0; }
-  td { padding: 8px 10px; border-bottom: 1px solid #e4e3e0; vertical-align: top; }
-  tr:last-child td { border-bottom: none; }
-  .status-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; }
-  .status-identified { background: #e4e3e0; color: #8a8880; }
-  .status-contacted { background: #e4e3e0; color: #1b2a4a; }
-  .status-met { background: #e4e3e0; color: #1a1a2e; }
-  .status-engaged { background: #1b2a4a; color: #fafaf8; }
-  .status-in_dd { background: #1b2a4a; color: #fafaf8; }
-  .status-term_sheet { background: #1a1a2e; color: #fafaf8; }
-  .status-closed { background: #1a1a2e; color: #fafaf8; }
-  .status-passed { background: #e4e3e0; color: #8a8880; }
-  .status-dropped { background: #e4e3e0; color: #8a8880; }
-  .priority-critical { background: #1a1a2e; color: #fafaf8; }
-  .priority-high { background: #1b2a4a; color: #fafaf8; }
-  .priority-medium { background: #e4e3e0; color: #1b2a4a; }
-  .priority-low { background: #e4e3e0; color: #8a8880; }
-  .enthusiasm { display: inline-block; min-width: 24px; text-align: center; padding: 2px 6px; border-radius: 4px; font-size: 12px; font-weight: 600; }
-  .enth-high { background: #1a1a2e; color: #fafaf8; }
-  .enth-mid { background: #e4e3e0; color: #1b2a4a; }
-  .enth-low { background: #e4e3e0; color: #8a8880; }
-  .risk-item { padding: 8px 12px; background: #e4e3e0; border-left: 3px solid #1a1a2e; border-radius: 0 4px 4px 0; margin-bottom: 8px; font-size: 13px; }
-  .action-item { padding: 8px 12px; background: #e4e3e0; border-left: 3px solid #1b2a4a; border-radius: 0 4px 4px 0; margin-bottom: 8px; font-size: 13px; }
-  .gap-item { padding: 6px 10px; background: #e4e3e0; border-left: 3px solid #8a8880; border-radius: 0 4px 4px 0; margin-bottom: 6px; font-size: 12px; }
-  .conviction-up { color: #1a1a2e; font-weight: 700; }
-  .conviction-down { color: #8a8880; }
-  .conviction-steady { color: #1b2a4a; }
-  .funnel-bar { height: 18px; border-radius: 3px; display: inline-block; vertical-align: middle; }
-  .score-bar { height: 8px; background: #e4e3e0; border-radius: 4px; overflow: hidden; display: inline-block; width: 80px; vertical-align: middle; margin-left: 6px; }
-  .score-fill { height: 100%; border-radius: 4px; }
-  .timestamp { font-size: 11px; color: #8a8880; margin-top: 24px; text-align: right; }
-  .investor-header { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
-  .investor-header h2 { font-size: 18px; font-weight: 700; }
-  .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 24px; font-size: 13px; margin-bottom: 20px; padding: 14px; background: #fafaf8; border: 1px solid #e4e3e0; border-radius: 8px; }
-  .profile-label { color: #8a8880; font-size: 11px; letter-spacing: 0.2px; }
-  .profile-value { font-weight: 500; margin-top: 1px; }
-  .recommendation-box { padding: 16px; border: 2px solid #1b2a4a; border-radius: 8px; background: #fafaf8; margin-top: 20px; }
-  .recommendation-box h3 { font-size: 13px; font-weight: 600; letter-spacing: -0.01em; color: #1a1a2e; margin-bottom: 8px; }
-  .recommendation-box p { font-size: 13px; line-height: 1.6; }
+  .health-badge{display:inline-block;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:500;letter-spacing:.2px}
+  .health-green{background:#e4e3e0;color:#1a1a2e} .health-yellow{background:#e4e3e0;color:#1b2a4a} .health-red{background:#1b2a4a;color:#fafaf8}
+  .metrics-strip{display:flex;gap:0;border:1px solid #e4e3e0;border-radius:8px;overflow:hidden;margin:20px 0}
+  .metric-box{flex:1;padding:14px 16px;border-right:1px solid #e4e3e0;text-align:center} .metric-box:last-child{border-right:none}
+  .metric-value{font-size:24px;font-weight:700;color:#1a1a2e} .metric-label{font-size:11px;color:#8a8880;letter-spacing:.2px;margin-top:2px}
+  .section{margin-top:24px} .section-title{font-size:14px;font-weight:600;letter-spacing:-.01em;color:#1a1a2e;border-bottom:1px solid #e4e3e0;padding-bottom:6px;margin-bottom:12px}
+  table{width:100%;border-collapse:collapse;font-size:13px} th{text-align:left;padding:8px 10px;background:#fafaf8;font-weight:500;font-size:11px;letter-spacing:.2px;color:#8a8880;border-bottom:2px solid #e4e3e0}
+  td{padding:8px 10px;border-bottom:1px solid #e4e3e0;vertical-align:top} tr:last-child td{border-bottom:none}
+  .status-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:500}
+  .status-identified,.status-passed,.status-dropped{background:#e4e3e0;color:#8a8880} .status-contacted{background:#e4e3e0;color:#1b2a4a} .status-met{background:#e4e3e0;color:#1a1a2e}
+  .status-engaged,.status-in_dd{background:#1b2a4a;color:#fafaf8} .status-term_sheet,.status-closed{background:#1a1a2e;color:#fafaf8}
+  .priority-critical{background:#1a1a2e;color:#fafaf8} .priority-high{background:#1b2a4a;color:#fafaf8} .priority-medium{background:#e4e3e0;color:#1b2a4a} .priority-low{background:#e4e3e0;color:#8a8880}
+  .enthusiasm{display:inline-block;min-width:24px;text-align:center;padding:2px 6px;border-radius:4px;font-size:12px;font-weight:600}
+  .enth-high{background:#1a1a2e;color:#fafaf8} .enth-mid{background:#e4e3e0;color:#1b2a4a} .enth-low{background:#e4e3e0;color:#8a8880}
+  .risk-item{padding:8px 12px;background:#e4e3e0;border-left:3px solid #1a1a2e;border-radius:0 4px 4px 0;margin-bottom:8px;font-size:13px}
+  .action-item{padding:8px 12px;background:#e4e3e0;border-left:3px solid #1b2a4a;border-radius:0 4px 4px 0;margin-bottom:8px;font-size:13px}
+  .gap-item{padding:6px 10px;background:#e4e3e0;border-left:3px solid #8a8880;border-radius:0 4px 4px 0;margin-bottom:6px;font-size:12px}
+  .conviction-up{color:#1a1a2e;font-weight:700} .conviction-down{color:#8a8880} .conviction-steady{color:#1b2a4a}
+  .funnel-bar{height:18px;border-radius:3px;display:inline-block;vertical-align:middle}
+  .score-bar{height:8px;background:#e4e3e0;border-radius:4px;overflow:hidden;display:inline-block;width:80px;vertical-align:middle;margin-left:6px} .score-fill{height:100%;border-radius:4px}
+  .timestamp{font-size:11px;color:#8a8880;margin-top:24px;text-align:right}
+  .investor-header{display:flex;align-items:center;gap:16px;margin-bottom:16px} .investor-header h2{font-size:18px;font-weight:700}
+  .profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 24px;font-size:13px;margin-bottom:20px;padding:14px;background:#fafaf8;border:1px solid #e4e3e0;border-radius:8px}
+  .profile-label{color:#8a8880;font-size:11px;letter-spacing:.2px} .profile-value{font-weight:500;margin-top:1px}
+  .recommendation-box{padding:16px;border:2px solid #1b2a4a;border-radius:8px;background:#fafaf8;margin-top:20px}
+  .recommendation-box h3{font-size:13px;font-weight:600;letter-spacing:-.01em;color:#1a1a2e;margin-bottom:8px} .recommendation-box p{font-size:13px;line-height:1.6}
 </style>
 `;
 

@@ -8,44 +8,11 @@ import { getClient, daysBetween, parseJsonSafe, clamp, STATUS_PROGRESSION, loadA
 
 const ACTIVE_STAGES = ['engaged', 'in_dd', 'term_sheet'];
 
-// ---------------------------------------------------------------------------
-// Intelligence Briefing types + builder
-// ---------------------------------------------------------------------------
+interface InsightItem { type: 'critical' | 'opportunity' | 'risk' | 'trend'; title: string; detail: string; action: string; dataSource: string; }
+interface IntelligenceBriefing { insights: InsightItem[]; generatedAt: string; }
 
-interface InsightItem {
-  type: 'critical' | 'opportunity' | 'risk' | 'trend';
-  title: string;
-  detail: string;
-  action: string;
-  dataSource: string;
-}
-
-interface IntelligenceBriefing {
-  insights: InsightItem[];
-  generatedAt: string;
-}
-
-// ---------------------------------------------------------------------------
-// Layer 1: Overnight Changes (24h deltas)
-// ---------------------------------------------------------------------------
-
-interface StatusChange {
-  investorId: string;
-  investorName: string;
-  from: string;
-  to: string;
-  changedAt: string;
-}
-
-interface OvernightChanges {
-  statusChanges: StatusChange[];
-  newMeetings: number;
-  meetingNames: string[];
-  tasksCompleted: number;
-  newTasks: number;
-  newAccelerations: number;
-  activityFeed: string[];
-}
+interface StatusChange { investorId: string; investorName: string; from: string; to: string; changedAt: string; }
+interface OvernightChanges { statusChanges: StatusChange[]; newMeetings: number; meetingNames: string[]; tasksCompleted: number; newTasks: number; newAccelerations: number; activityFeed: string[]; }
 
 async function computeOvernightChanges(db: ReturnType<typeof getClient>): Promise<OvernightChanges> {
   const cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
@@ -148,46 +115,12 @@ async function computeOvernightChanges(db: ReturnType<typeof getClient>): Promis
 // Layer 2: Critical Path (Top 3 Focus + Top 2 Accelerations)
 // ---------------------------------------------------------------------------
 
-interface FocusCard {
-  investorId: string;
-  investorName: string;
-  tier: number;
-  status: string;
-  focusScore: number;
-  recommendedAction: string;
-  timeEstimate: string;
-  momentum: string;
-  momentumArrow: string;
-  enthusiasm: number;
-  trajectoryNote?: string;
-}
+interface FocusCard { investorId: string; investorName: string; tier: number; status: string; focusScore: number; recommendedAction: string; timeEstimate: string; momentum: string; momentumArrow: string; enthusiasm: number; trajectoryNote?: string; }
+interface AccelerationCard { id: string; investorId: string; investorName: string; triggerType: string; actionType: string; description: string; urgency: string; expectedLift: number; confidence: string; }
+interface CriticalPath { topFocus: FocusCard[]; topAccelerations: AccelerationCard[]; }
 
-interface AccelerationCard {
-  id: string;
-  investorId: string;
-  investorName: string;
-  triggerType: string;
-  actionType: string;
-  description: string;
-  urgency: string;
-  expectedLift: number;
-  confidence: string;
-}
-
-interface CriticalPath {
-  topFocus: FocusCard[];
-  topAccelerations: AccelerationCard[];
-}
-
-function getMomentumArrow(momentum: string): string {
-  switch (momentum) {
-    case 'accelerating': return '\u2191'; // up
-    case 'steady': return '\u2192'; // right
-    case 'decelerating': return '\u2198'; // down-right
-    case 'stalled': return '\u2193'; // down
-    default: return '\u2192';
-  }
-}
+const MOMENTUM_ARROWS: Record<string, string> = { accelerating: '\u2191', steady: '\u2192', decelerating: '\u2198', stalled: '\u2193' };
+function getMomentumArrow(momentum: string): string { return MOMENTUM_ARROWS[momentum] || '\u2192'; }
 
 // Focus score computation (simplified from focus route, same logic)
 function computeFocusScore(
@@ -500,26 +433,8 @@ async function computeCriticalPath(
   };
 }
 
-// ---------------------------------------------------------------------------
-// Layer 3: Conviction Pulse
-// ---------------------------------------------------------------------------
-
-interface ConvictionAlert {
-  investorId: string;
-  investorName: string;
-  previousScore: number;
-  currentScore: number;
-  drop: number;
-}
-
-interface ConvictionPulse {
-  avgEnthusiasm: number;
-  accelerating: number;
-  steady: number;
-  decelerating: number;
-  stalled: number;
-  alerts: ConvictionAlert[];
-}
+interface ConvictionAlert { investorId: string; investorName: string; previousScore: number; currentScore: number; drop: number; }
+interface ConvictionPulse { avgEnthusiasm: number; accelerating: number; steady: number; decelerating: number; stalled: number; alerts: ConvictionAlert[]; }
 
 function computeConvictionPulse(
   investors: Investor[],
@@ -588,16 +503,7 @@ function computeConvictionPulse(
 // Layer 4: Process Health Summary
 // ---------------------------------------------------------------------------
 
-interface ProcessHealth {
-  funnel: Record<string, number>;
-  overdueFollowups: number;
-  openDocumentFlags: number;
-  dataQualityPct: number;
-  activeInvestors: number;
-  totalMeetings: number;
-  meetingsThisWeek: number;
-  health: 'green' | 'yellow' | 'red';
-}
+interface ProcessHealth { funnel: Record<string, number>; overdueFollowups: number; openDocumentFlags: number; dataQualityPct: number; activeInvestors: number; totalMeetings: number; meetingsThisWeek: number; health: 'green' | 'yellow' | 'red'; }
 
 async function computeProcessHealth(
   db: ReturnType<typeof getClient>,
