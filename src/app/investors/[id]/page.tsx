@@ -493,6 +493,14 @@ export default function InvestorDetailPage() {
             {researching ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Researching...</> : <><RefreshCw className="w-3.5 h-3.5" /> Research</>}
           </button>
           <Link
+            href="/pipeline"
+            className="px-3 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2"
+            style={{ ...stSurface2, ...textPrimary }}
+            onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface-3)')}
+            onMouseLeave={e => (e.currentTarget.style.background = 'var(--surface-2)')}>
+            <Target className="w-3.5 h-3.5" /> Pipeline
+          </Link>
+          <Link
             href={`/meetings/new?investor=${id}`}
             className="px-4 py-2 rounded-lg text-sm font-normal transition-colors"
             style={{ background: 'var(--accent)', color: 'var(--text-primary)' }}

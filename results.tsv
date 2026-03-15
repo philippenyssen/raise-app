@@ -25,3 +25,4 @@ a5f2b2a	100	100	0	keep	design+eng	UX polish: loading states + error handling + a
 9e94528	100	100	0	keep	workflow+product	auto-advance pipeline + overdue actions on /today = 62455 lines, score 100
 7a2c158	100	100	0	keep	copy+product	pipeline stale badge + time-in-stage + copy fix = 62457 lines, score 100
 8c6a58f	100	100	0	keep	eng+ops	rate limiting AI routes + cache headers = 62477 lines, score 100
+5ef2d5d	100	100	0	keep	data+design	investor staleness colors + win rate metric + design fix = 62488 lines, score 100
