@@ -622,8 +622,7 @@ export default function Dashboard() {
               >
                 <div className="flex items-center justify-between mb-3">
                   <h2
-                    className="flex items-center gap-2"
-                    style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}
+                    className="section-title flex items-center gap-2"
                   >
                     <ShieldAlert className="w-4 h-4" /> Close forecast
                   </h2>
@@ -668,7 +667,7 @@ export default function Dashboard() {
           {atRisk && (atRisk.scoreReversals.length > 0 || atRisk.staleInvestors.length > 0) && (
             <div style={{ border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
               <div className="flex items-center justify-between mb-3">
-                <h2 className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
+                <h2 className="section-title flex items-center gap-2">
                   <ShieldAlert className="w-4 h-4" /> At risk
                 </h2>
                 <span className="tabular-nums" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
@@ -763,7 +762,7 @@ export default function Dashboard() {
           {cp && cp.topFocus.length > 0 && (
             <div style={{ border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
               <div className="flex items-center justify-between mb-3">
-                <h2 className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
+                <h2 className="section-title flex items-center gap-2">
                   <Target className="w-4 h-4" /> Top focus today
                 </h2>
                 <Link
@@ -828,7 +827,7 @@ export default function Dashboard() {
           {/* Overnight + Conviction */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div style={{ border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
-              <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
+              <h2 className="section-title flex items-center gap-2 mb-3">
                 <Clock className="w-4 h-4" /> Last 24 hours
               </h2>
               {ov ? (
@@ -866,7 +865,7 @@ export default function Dashboard() {
             </div>
 
             <div style={{ border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
-              <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
+              <h2 className="section-title flex items-center gap-2 mb-3">
                 <Activity className="w-4 h-4" /> Conviction radar
               </h2>
               {cv ? (
@@ -931,7 +930,7 @@ export default function Dashboard() {
           {cp && cp.topAccelerations.length > 0 && (
             <div style={{ border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
               <div className="flex items-center justify-between mb-3">
-                <h2 className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
+                <h2 className="section-title flex items-center gap-2">
                   <Zap className="w-4 h-4" /> Acceleration alerts
                 </h2>
                 <Link href="/focus" className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}>
@@ -984,7 +983,7 @@ export default function Dashboard() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div style={{ border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
               <div className="flex items-center justify-between mb-3">
-                <h2 className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
+                <h2 className="section-title flex items-center gap-2">
                   <Flame className="w-4 h-4" /> Hot deals
                 </h2>
                 <Link href="/dealflow" className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}>
@@ -1007,7 +1006,7 @@ export default function Dashboard() {
 
             <div style={{ border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
               <div className="flex items-center justify-between mb-3">
-                <h2 className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
+                <h2 className="section-title flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4" /> Upcoming follow-ups
                 </h2>
                 <Link href="/followups" className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}>
@@ -1035,7 +1034,7 @@ export default function Dashboard() {
           {/* Pipeline */}
           <div style={{ border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
             <div className="flex items-center justify-between mb-4">
-              <h2 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>Pipeline</h2>
+              <h2 className="section-title">Pipeline</h2>
               <Link href="/pipeline" className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}>
                 Pipeline view <Columns3 className="w-3 h-3" />
               </Link>
@@ -1097,7 +1096,7 @@ export default function Dashboard() {
           {dataQuality && (
             <div style={{ border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
               <div className="flex items-center justify-between mb-3">
-                <h2 className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
+                <h2 className="section-title flex items-center gap-2">
                   <ShieldCheck className="w-4 h-4" /> Data quality
                 </h2>
                 <Link href="/investors" className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}>
@@ -1154,7 +1153,7 @@ export default function Dashboard() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div style={{ border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
               <div className="flex items-center justify-between mb-3">
-                <h2 className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
+                <h2 className="section-title flex items-center gap-2">
                   <ClipboardList className="w-4 h-4" /> Upcoming tasks
                 </h2>
                 <Link href="/timeline" className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}>
@@ -1197,7 +1196,7 @@ export default function Dashboard() {
 
             <div style={{ border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
               <div className="flex items-center justify-between mb-3">
-                <h2 className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
+                <h2 className="section-title flex items-center gap-2">
                   <Activity className="w-4 h-4" /> Recent activity
                 </h2>
                 <Link href="/timeline" className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}>
@@ -1376,7 +1375,7 @@ function VelocityStrip({ velocity }: { velocity: VelocityResponse }) {
     >
       <div className="px-5 pt-4 pb-2">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
+          <h2 className="section-title flex items-center gap-2">
             <Gauge className="w-4 h-4" /> Pipeline velocity
           </h2>
           <Link
