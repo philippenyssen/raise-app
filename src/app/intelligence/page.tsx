@@ -101,14 +101,21 @@ export default function IntelligencePage() {
 
   async function handleDelete() {
     if (!deleteTarget) return;
+    const target = deleteTarget;
     setDeleting(true);
+    setDeleteTarget(null);
+    // Optimistic removal
+    if (target.type === 'deals') setDeals(prev => prev.filter(d => d.id !== target.id));
+    else if (target.type === 'competitors') setCompetitors(prev => prev.filter(c => c.id !== target.id));
+    else if (target.type === 'briefs') setBriefs(prev => prev.filter(b => b.id !== target.id));
     try {
-      const res = await fetch(`/api/intelligence?type=${deleteTarget.type}&id=${deleteTarget.id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/intelligence?type=${target.type}&id=${target.id}`, { method: 'DELETE' });
       if (!res.ok) throw new Error('Failed');
-      toast(`Deleted ${deleteTarget.name}`, 'warning');
-      setDeleteTarget(null);
+      toast(`Deleted ${target.name}`, 'warning');
+    } catch {
+      toast('Could not delete — restoring item', 'error');
       fetchAll();
-    } catch { toast('Could not delete — check your connection and try again', 'error'); } finally { setDeleting(false); }
+    } finally { setDeleting(false); }
   }
 
   async function handleAddDeal(e: React.FormEvent<HTMLFormElement>) {
