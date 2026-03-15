@@ -178,7 +178,7 @@ export async function GET() {
 
     return NextResponse.json({
       summary: { immediate: accelerations.filter(a => a.urgency === 'immediate').length, this_week: accelerations.filter(a => a.urgency === '48h' || a.urgency === 'this_week').length, total: accelerations.length },
-      accelerations, termSheetReady, atRisk, deprioritize, generatedAt: new Date().toISOString(),});
+      accelerations, termSheetReady, atRisk, deprioritize, generatedAt: new Date().toISOString(),}, { headers: { 'Cache-Control': 'private, max-age=15, stale-while-revalidate=30' } });
   } catch (error) {
     console.error('[ACCELERATION_GET]', error instanceof Error ? error.message : error);
     return NextResponse.json({ error: 'Failed to run acceleration analysis' }, { status: 500 });

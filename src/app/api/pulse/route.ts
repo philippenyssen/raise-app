@@ -905,7 +905,7 @@ export async function GET() {
       processHealth,
       intelligenceBriefing,
       realTimeSignals,
-      generatedAt: new Date().toISOString(),});
+      generatedAt: new Date().toISOString(),}, { headers: { 'Cache-Control': 'private, max-age=15, stale-while-revalidate=30' } });
   } catch (error) {
     console.error('[PULSE_GET]', error instanceof Error ? error.message : error);
     return NextResponse.json(

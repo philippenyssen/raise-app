@@ -114,7 +114,7 @@ export async function GET() {
         impactIfPass: worstBottleneck.networkBottleneck!.impactIfPass,
         capitalAtRiskM: worstBottleneck.expectedCascadeCapitalM,
       } : null,
-      generatedAt: new Date().toISOString(),});
+      generatedAt: new Date().toISOString(),}, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
   } catch (error) {
     console.error('[NETWORK_GET]', error instanceof Error ? error.message : error);
     return NextResponse.json(
