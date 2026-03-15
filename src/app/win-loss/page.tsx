@@ -264,7 +264,7 @@ export default function WinLossPage() {
               ))}</div>
           ) : (
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
-              No closed investors yet. Profiles appear as investors reach term sheet or closed status.</p>
+              No closed deals yet. As investors reach term sheet or closed status, their profiles will appear here with performance insights.</p>
           )}</div>
 
         {/* Loser Profile */}
@@ -294,7 +294,7 @@ export default function WinLossPage() {
               ))}</div>
           ) : (
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
-              No passed investors yet. Profiles appear when investors pass or drop out.</p>
+              No rejections yet. When investors pass, their profile appears here to help identify patterns in what&apos;s not landing.</p>
           )}</div></div>
 
       {/* Pass Reasons + Key Predictors Row */}
@@ -337,7 +337,7 @@ export default function WinLossPage() {
               })}</div>
           ) : (
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
-              No pass reasons recorded yet. Reasons are captured when investors are marked as passed.</p>
+              No pass reasons recorded. When you mark an investor as &quot;Passed&quot; in their profile, add a reason — patterns will surface here.</p>
           )}</div>
 
         {/* Key Predictors */}
@@ -509,7 +509,7 @@ export default function WinLossPage() {
               ))}</div>
           ) : (
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
-              No investor type data available. Add more investors with type classifications to see performance by type.</p>
+              No type data yet. Assign investor types (VC, Growth, SWF, etc.) in investor profiles to unlock performance analysis by type.</p>
           )}</div></div>
 
       {/* Insights + Recommendations */}

@@ -80,7 +80,7 @@ export default function ReportsPage() {
       <div>
         <h1 className="page-title">Reports</h1>
         <p className="text-sm mt-1" style={stTextMuted}>
-          Generate structured reports from your fundraise data</p></div>
+          Generate board updates, weekly agendas, or investor briefs from your fundraise data</p></div>
 
       {/* Report Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -141,7 +141,7 @@ export default function ReportsPage() {
             onChange={e => setSelectedInvestor(e.target.value)}
             className="w-full px-3 py-2 rounded-lg text-sm mb-3 focus:outline-none"
             style={{ backgroundColor: 'var(--surface-2)', border: '1px solid var(--border-default)', color: 'var(--text-secondary)' }}>
-            <option value="">Select investor...</option>
+            <option value="">Choose an investor to brief...</option>
             {investors.map(inv => (
               <option key={inv.id} value={inv.id}>
                 {inv.name} (Tier {inv.tier})</option>
