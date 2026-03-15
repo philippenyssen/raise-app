@@ -43,6 +43,7 @@ export default function TimelinePage() {
   const [activity, setActivity] = useState<ActivityEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
+  const [creating, setCreating] = useState(false);
   const [filterPhase, setFilterPhase] = useState<string>('');
   const [filterStatus, setFilterStatus] = useState<string>('');
   const [hoverStates, setHoverStates] = useState<Record<string, boolean>>({});
@@ -108,6 +109,7 @@ export default function TimelinePage() {
 
   async function handleAddTask(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setCreating(true);
     const fd = new FormData(e.currentTarget);
     const data: Record<string, string> = {};
     fd.forEach((v, k) => { data[k] = v as string; });
@@ -121,6 +123,7 @@ export default function TimelinePage() {
       setShowAdd(false);
       fetchData();
     } catch { toast('Couldn\'t create task — check all fields and retry', 'error'); }
+    setCreating(false);
   }
 
   const filteredTasks = tasks.filter(t => {
@@ -220,11 +223,12 @@ export default function TimelinePage() {
           <div className="flex gap-2">
             <button
               type="submit"
+              disabled={creating}
               className="px-3 py-1.5 rounded-lg text-sm transition-colors"
-              style={{ backgroundColor: 'var(--accent)', color: 'var(--surface-0)' }}
-              onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.85'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}>
-              Create</button>
+              style={{ backgroundColor: 'var(--accent)', color: 'var(--surface-0)', opacity: creating ? 0.6 : 1 }}
+              onMouseEnter={(e) => { if (!creating) e.currentTarget.style.opacity = '0.85'; }}
+              onMouseLeave={(e) => { if (!creating) e.currentTarget.style.opacity = '1'; }}>
+              {creating ? 'Creating...' : 'Create'}</button>
             <button
               type="button"
               onClick={() => setShowAdd(false)}
