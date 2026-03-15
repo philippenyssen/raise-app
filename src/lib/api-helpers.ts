@@ -61,6 +61,15 @@ export function parseJsonSafe<T>(raw: string, fallback: T): T {
   try { return JSON.parse(raw) as T; } catch { return fallback; }
 }
 
+const rateLimitMap = new Map<string, number>();
+export function checkRateLimit(key: string, windowMs = 10000): boolean {
+  const now = Date.now();
+  const last = rateLimitMap.get(key) || 0;
+  if (now - last < windowMs) return false;
+  rateLimitMap.set(key, now);
+  return true;
+}
+
 export function clamp(n: number, min = 0, max = 100): number {
   return Math.max(min, Math.min(max, Math.round(n)));
 }

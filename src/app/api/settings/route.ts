@@ -11,7 +11,7 @@ export async function GET() {
       const raw = await getConfig(key);
       if (raw) { try { results[key] = JSON.parse(raw); } catch { results[key] = null; } } else { results[key] = null; }
     }
-    return NextResponse.json(results);
+    return NextResponse.json(results, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
   } catch (error) {
     console.error('Settings GET error:', error);
     return NextResponse.json({ error: 'Failed to load settings' }, { status: 500 });

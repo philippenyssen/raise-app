@@ -21,6 +21,7 @@ import {
   computeWinLossPatterns,
 } from '@/lib/db';
 import { getAIClient } from '@/lib/ai';
+import { checkRateLimit } from '@/lib/api-helpers';
 import { computeAdvancedTrajectory } from '@/lib/scoring';
 import { getNarrativeProfile, getAnticipatedQuestions } from '@/lib/investor-narratives';
 import type { InvestorType, Objection } from '@/lib/types';
@@ -31,6 +32,9 @@ function safeJsonParse<T>(raw: string | null | undefined, fallback: T): T {
 }
 
 export async function POST(req: NextRequest) {
+  if (!checkRateLimit('meeting-brief')) {
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+  }
   let body: Record<string, unknown>;
   try {
     body = await req.json();

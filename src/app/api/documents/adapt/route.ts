@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDocument } from '@/lib/db';
 import { getAIClient } from '@/lib/ai';
+import { checkRateLimit } from '@/lib/api-helpers';
 import { getNarrativeProfile } from '@/lib/investor-narratives';
 import type { InvestorType } from '@/lib/types';
 
@@ -12,6 +13,9 @@ export interface AdaptationSuggestion {
 }
 
 export async function POST(req: NextRequest) {
+  if (!checkRateLimit('documents-adapt')) {
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+  }
   let body: Record<string, unknown>;
   try {
     body = await req.json();

@@ -69,5 +69,5 @@ export async function GET(req: NextRequest) {
     competitors,
     total_meetings_scanned: filtered.length,
     date_range: { from: from || null, to: to || null },
-  });
+  }, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
 }

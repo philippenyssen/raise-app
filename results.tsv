@@ -23,3 +23,4 @@ e2cbc5d	98	100	+2	keep	all	inline style extraction all remaining pages (-1048 li
 a5f2b2a	100	100	0	keep	design+eng	UX polish: loading states + error handling + aria-labels = 62400 lines, score 100
 50f07c9	100	100	0	keep	ai	system prompts on all 11 AI calls = 62409 lines, score 100
 9e94528	100	100	0	keep	workflow+product	auto-advance pipeline + overdue actions on /today = 62455 lines, score 100
+7a2c158	100	100	0	keep	copy+product	pipeline stale badge + time-in-stage + copy fix = 62457 lines, score 100

@@ -4,7 +4,7 @@ import { emitContextChange } from '@/lib/context-bus';
 
 export async function GET() {
   const documents = await getAllDocuments();
-  return NextResponse.json(documents);
+  return NextResponse.json(documents, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
 }
 
 export async function POST(req: NextRequest) {

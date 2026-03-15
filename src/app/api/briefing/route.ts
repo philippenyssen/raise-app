@@ -12,7 +12,7 @@ import {
   computePipelineFlow,
 } from '@/lib/db';
 import { getAIClient } from '@/lib/ai';
-import { parseJsonSafe } from '@/lib/api-helpers';
+import { parseJsonSafe, checkRateLimit } from '@/lib/api-helpers';
 
 function getGreeting(): string {
   const hour = new Date().getHours();
@@ -26,6 +26,9 @@ function todayStr(): string {
 }
 
 export async function GET() {
+  if (!checkRateLimit('briefing')) {
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+  }
   try {
     // ═══════════════════════════════════════════════════════════════════
     // 1. GATHER ALL DATA (parallel, resilient — each source independent)
