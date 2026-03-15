@@ -55,7 +55,7 @@ export default function ForecastPage() {
       .catch(e => { setError(e.message); setLoading(false); });
   }
 
-  useEffect(() => { document.title = 'Raise | Raise Forecast'; }, []);
+  useEffect(() => { document.title = 'Raise | Forecast'; }, []);
   useEffect(() => { fetchForecast(); }, []);
   useEffect(() => {
     const h = (e: KeyboardEvent) => { if (e.key === 'r' && !e.metaKey && !e.ctrlKey && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement)) { e.preventDefault(); fetchForecast(); } };
