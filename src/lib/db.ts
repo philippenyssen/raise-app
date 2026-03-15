@@ -3047,7 +3047,7 @@ export async function getCalibrationData(): Promise<{
 // Narrative Drift Detection
 // ---------------------------------------------------------------------------
 
-export async function computeNarrativeSignals(): Promise<{
+export function computeNarrativeSignals(): Promise<{
   investorType: string;
   avgEnthusiasm: number;
   conversionRate: number;
@@ -3055,6 +3055,7 @@ export async function computeNarrativeSignals(): Promise<{
   topQuestionTopic: string;
   sampleSize: number;
 }[]> {
+  return cachedCompute('computeNarrativeSignals', 120_000, async () => {
   await ensureInitialized();
   const db = getClient();
 
@@ -3147,6 +3148,7 @@ export async function computeNarrativeSignals(): Promise<{
       topQuestionTopic: topQuestionByType.get(type) || 'none',
       sampleSize: enthusiasm?.sample ?? 0,
     };
+  });
   });
 }
 
@@ -4449,12 +4451,13 @@ export async function generateAutoActions(): Promise<AutoActionResult> {
 // Compound Signal Detection — Cross-signal correlation engine (cycle 13)
 // ---------------------------------------------------------------------------
 
-export async function detectCompoundSignals(): Promise<{
+export function detectCompoundSignals(): Promise<{
   signal: string;
   sources: string[];
   confidence: 'high' | 'very_high';
   recommendation: string;
 }[]> {
+  return cachedCompute('detectCompoundSignals', 120_000, async () => {
   await ensureInitialized();
   const db = getClient();
   const signals: {
@@ -4717,6 +4720,7 @@ export async function detectCompoundSignals(): Promise<{
   } catch { /* non-blocking */ }
 
   return signals;
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -5305,7 +5309,7 @@ export function computeObjectionEvolution(): Promise<{
 // Pipeline Flow Intelligence — stage dwell time, bottlenecks, velocity (Cycle 10)
 // ---------------------------------------------------------------------------
 
-export async function computePipelineFlow(): Promise<{
+export function computePipelineFlow(): Promise<{
   avgDaysPerStage: Record<string, number>;
   bottleneckStage: string;
   bottleneckAvgDays: number;
@@ -5313,6 +5317,7 @@ export async function computePipelineFlow(): Promise<{
   velocityTrend: 'accelerating' | 'steady' | 'decelerating';
   stageHealth: { stage: string; count: number; avgDays: number; conversionRate: number; health: 'healthy' | 'slow' | 'blocked' }[];
 }> {
+  return cachedCompute('computePipelineFlow', 120_000, async () => {
   await ensureInitialized();
   const db = getClient();
 
@@ -5532,6 +5537,7 @@ export async function computePipelineFlow(): Promise<{
     velocityTrend,
     stageHealth,
   };
+  });
 }
 
 // ---------------------------------------------------------------------------
