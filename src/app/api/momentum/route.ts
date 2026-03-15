@@ -46,6 +46,7 @@ function dateToWeekIndex(d: Date, weeks: Date[]): number {
 }
 
 export async function GET() {
+  const t0 = Date.now();
   try {
     const db = getClient();
     const NUM_WEEKS = 8;
@@ -713,7 +714,7 @@ export async function GET() {
       overallTrend,
       overallDirection,
       weeks: weekLabels,
-      generatedAt: new Date().toISOString(),}, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
+      generatedAt: new Date().toISOString(),}, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60', 'Server-Timing': `total;dur=${Date.now() - t0}` } });
   } catch (error) {
     console.error('[MOMENTUM_GET]', error instanceof Error ? error.message : error);
     return NextResponse.json(

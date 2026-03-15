@@ -145,6 +145,7 @@ function estimateProbabilityLift(currentStatus: string): number {
 // ---------------------------------------------------------------------------
 
 export async function GET() {
+  const t0 = Date.now();
   try {
     const db = getClient();
 
@@ -355,7 +356,7 @@ export async function GET() {
         enabled: calibration.enabled, resolvedCount: calibration.resolvedCount, adjustments: calibration.adjustments,
         note: calibration.enabled ? `Weights auto-calibrated from ${calibration.resolvedCount} resolved predictions (70% hardcoded + 30% empirical)` : calibration.resolvedCount > 0 ? `${calibration.resolvedCount} resolved predictions — need 5+ for auto-calibration` : 'No resolved predictions yet — using hardcoded weights',
       },
-      generatedAt: new Date().toISOString(),}, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
+      generatedAt: new Date().toISOString(),}, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60', 'Server-Timing': `total;dur=${Date.now() - t0}` } });
   } catch (error) {
     console.error('[STRESS_TEST_GET]', error instanceof Error ? error.message : error);
     return NextResponse.json({ error: 'Failed to compute stress test' }, { status: 500 });

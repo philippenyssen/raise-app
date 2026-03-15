@@ -24,6 +24,7 @@ const STAGE_DURATIONS: Record<string, number> = {
   term_sheet: 7,};
 
 export async function GET() {
+  const t0 = Date.now();
   try {
     const db = getClient();
 
@@ -263,7 +264,7 @@ export async function GET() {
         avg_days_in_process: avgDaysInProcess,
         raise_days_elapsed: Math.min(raiseDaysElapsed, 90),
         raise_target_days: 60,},
-      generated_at: new Date().toISOString(),}, { headers: { 'Cache-Control': 'private, max-age=15, stale-while-revalidate=30' } });
+      generated_at: new Date().toISOString(),}, { headers: { 'Cache-Control': 'private, max-age=15, stale-while-revalidate=30', 'Server-Timing': `total;dur=${Date.now() - t0}` } });
   } catch (error) {
     console.error('[VELOCITY_GET]', error instanceof Error ? error.message : error);
     return NextResponse.json(

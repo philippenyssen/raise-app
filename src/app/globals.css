@@ -359,8 +359,24 @@ body {
 }
 
 .btn:active { transform: scale(0.98); }
-.btn:disabled { opacity: 0.5; cursor: not-allowed; pointer-events: auto; }
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
+  background-color: var(--surface-2) !important;
+  color: var(--text-muted) !important;
+  border-color: var(--border-subtle) !important;
+}
 .btn:disabled:active { transform: none; }
+.btn-primary:disabled {
+  background-color: var(--surface-2) !important;
+  border-color: var(--border-default) !important;
+}
+.btn-secondary:disabled,
+.btn-ghost:disabled {
+  background-color: transparent !important;
+  border-color: var(--border-subtle) !important;
+}
 
 .btn-sm { padding: 0.375rem 0.75rem; font-size: var(--font-size-xs); }
 .btn-md { padding: 0.5rem 1rem; }
