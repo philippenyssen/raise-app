@@ -948,7 +948,7 @@ export default function Dashboard() {
                 return (
                   <div key={stage.label} className="w-full flex flex-col items-center">
                     {convPct !== null && stage.value > 0 && (
-                      <div className="tabular-nums" style={{ fontSize: '10px', color: 'var(--text-muted)', marginBottom: 1 }}>{convPct}%</div>
+                      <div className="tabular-nums" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 1 }}>{convPct}%</div>
                     )}
                     <div className="w-full flex items-center justify-center" style={{ maxWidth: `${widthPct}%` }}>
                       <div
