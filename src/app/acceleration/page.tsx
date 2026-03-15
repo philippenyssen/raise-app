@@ -13,6 +13,7 @@ import {
   TrendingDown, SkipForward,
 } from 'lucide-react';
 import { labelMuted10, stBorderTop, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
+import { relativeTime } from '@/lib/time';
 
 // ---------------------------------------------------------------------------
 // Constants — style objects using design tokens
@@ -480,6 +481,9 @@ export default function AccelerationPage() {
             )}
             {data.termSheetReady.length > 0 && (
               <> &middot; <span style={{ color: 'var(--text-secondary)', fontWeight: 400 }}>{data.termSheetReady.length} term sheet ready</span></>
+            )}
+            {data.generatedAt && (
+              <> &middot; <span style={stTextMuted}>{relativeTime(data.generatedAt)}</span></>
             )}</p></div>
         <button
           onClick={fetchData}
