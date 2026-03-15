@@ -59,7 +59,7 @@ export async function GET(req: NextRequest) {
     // Get enrichment stats
     if (action === 'stats') {
       const stats = await getEnrichmentStats();
-      return NextResponse.json(stats);
+      return NextResponse.json(stats, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
     }
 
     // Get enrichment status summary for an investor

@@ -182,5 +182,5 @@ export async function GET() {
       overall_effectiveness_rate: overallEffectivenessRate,
       topics_count: playbook.length,
       responses_count: responseLeaderboard.length,
-    },});
+    },}, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
 }

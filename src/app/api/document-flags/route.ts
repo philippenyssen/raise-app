@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
     const meeting_id = searchParams.get('meeting_id') ?? undefined;
 
     const flags = await getDocumentFlags({ status, document_id, investor_id, meeting_id });
-    return NextResponse.json(flags);
+    return NextResponse.json(flags, { headers: { 'Cache-Control': 'private, max-age=15, stale-while-revalidate=30' } });
   } catch (err) {
     console.error('[DOC_FLAGS_GET]', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: 'Failed to load document flags' }, { status: 500 });
