@@ -285,7 +285,7 @@ export async function improveSection(section: string, instruction: string, conte
 INSTRUCTION: ${instruction}
 
 SECTION TO IMPROVE:
-${section}
+${section.substring(0, 8000)}
 
 SURROUNDING CONTEXT (for reference only, do not rewrite this):
 ${context.substring(0, 2000)}
@@ -633,7 +633,7 @@ export async function polishGoldmanStyle(content: string): Promise<string> {
 - CRITICAL: Preserve ALL numbers, dates, and factual claims exactly — only rewrite sentence structure and tone
 
 CONTENT:
-${content}
+${content.substring(0, 10000)}
 
 Return ONLY the rewritten text. No explanations.`
     }]});
