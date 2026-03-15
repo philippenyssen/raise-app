@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import type { Investor, InvestorStatus, InvestorTier, InvestorType } from '@/lib/types';
 import { useToast } from '@/components/toast';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
@@ -52,6 +53,7 @@ function computeCompleteness(inv: Investor): number {
 }
 
 export default function InvestorsPage() {
+  const router = useRouter();
   const { toast } = useToast();
   const [investors, setInvestors] = useState<Investor[]>([]);
   const [loading, setLoading] = useState(true);
@@ -98,6 +100,10 @@ export default function InvestorsPage() {
       const res = await fetch('/api/investors', { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
       if (!res.ok) throw new Error(`Failed (${res.status})`);
       toast(editId ? `${form.name} updated` : `${form.name} added`);
+      if (!editId) {
+        const created = await res.json();
+        if (created?.id) { router.push(`/investors/${created.id}`); return; }
+      }
       setShowForm(false);
       setEditId(null);
       setForm({ name: '', type: 'vc', tier: 2, partner: '', fund_size: '', check_size_range: '', sector_thesis: '', warm_path: '', ic_process: '', speed: 'medium', portfolio_conflicts: '', notes: '' });
