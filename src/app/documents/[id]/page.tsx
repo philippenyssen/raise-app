@@ -97,12 +97,15 @@ export default function DocumentEditorPage() {
   }
 
   async function updateStatus(status: string) {
-    await fetch(`/api/documents/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status }),});
-    setDoc(d => d ? { ...d, status } : d);
-    toast(`Status: ${status}`);
+    try {
+      const res = await fetch(`/api/documents/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status }),});
+      if (!res.ok) throw new Error('Failed');
+      setDoc(d => d ? { ...d, status } : d);
+      toast(`Status: ${status}`);
+    } catch { toast('Failed to update status', 'error'); }
   }
 
   async function runAI(operation: AIOperation) {

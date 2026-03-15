@@ -11,6 +11,7 @@ import {
   PenLine, Copy, Check,
 } from 'lucide-react';
 import { fmtDateTime } from '@/lib/format';
+import { useToast } from '@/components/toast';
 import { labelAccent, labelMuted, labelMuted10, labelSecondary, stAccent, stTextMuted, stTextPrimary, stTextSecondary } from '@/lib/styles';
 
 interface TimingIntel { optimalDayOfWeek: string; optimalTimeOfDay: string; reasoning: string; }
@@ -143,6 +144,7 @@ export default function FollowupsPage() {
 
 function FollowupsContent() {
   const searchParams = useSearchParams();
+  const { toast } = useToast();
   const investorFilter = searchParams.get('investor') || '';
   const [followups, setFollowups] = useState<FollowupItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -184,34 +186,43 @@ function FollowupsContent() {
   }, [fetchFollowups]);
 
   async function handleComplete(id: string) {
-    await fetch('/api/followups', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        id,
-        status: 'completed',
-        outcome: completeForm.outcome,
-        conviction_delta: completeForm.conviction_delta,
-      }),});
-    setCompletingId(null);
-    setCompleteForm({ outcome: '', conviction_delta: 0 });
-    fetchFollowups();
+    try {
+      const res = await fetch('/api/followups', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id,
+          status: 'completed',
+          outcome: completeForm.outcome,
+          conviction_delta: completeForm.conviction_delta,
+        }),});
+      if (!res.ok) throw new Error('Failed');
+      setCompletingId(null);
+      setCompleteForm({ outcome: '', conviction_delta: 0 });
+      fetchFollowups();
+    } catch { toast('Failed to complete follow-up', 'error'); }
   }
 
   async function handleSkip(id: string) {
-    await fetch('/api/followups', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, status: 'skipped' }),});
-    fetchFollowups();
+    try {
+      const res = await fetch('/api/followups', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status: 'skipped' }),});
+      if (!res.ok) throw new Error('Failed');
+      fetchFollowups();
+    } catch { toast('Failed to skip follow-up', 'error'); }
   }
 
   async function handleQuickComplete(id: string) {
-    await fetch('/api/followups', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, status: 'completed' }),});
-    fetchFollowups();
+    try {
+      const res = await fetch('/api/followups', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status: 'completed' }),});
+      if (!res.ok) throw new Error('Failed');
+      fetchFollowups();
+    } catch { toast('Failed to complete follow-up', 'error'); }
   }
 
   // Categorize pending followups
