@@ -6,6 +6,7 @@ import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { FolderOpen, Upload, FileText, Table, Image, Trash2, ChevronDown, ChevronRight, Search, Eye, BarChart3, Users, AlertCircle, Send, TrendingUp } from 'lucide-react';
 import { fmtDateTime, fmtDate } from '@/lib/format';
 import { STATUS_LABELS } from '@/lib/constants';
+import { stTextMuted, stTextTertiary, stTextSecondary, stFontXs, stFontSm, stSurface2, labelMuted } from '@/lib/styles';
 
 interface DataRoomFile {
   id: string;
@@ -229,9 +230,7 @@ export default function DataRoomPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="page-title" style={{ fontSize: 'var(--font-size-xl)' }}>Data Room</h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', marginTop: 'var(--space-1)' }}>
-            {files.length} files — source context for all deliverables
-          </p>
+          <p style={{ ...stTextMuted, ...stFontSm, marginTop: 'var(--space-1)' }}>{files.length} files — source context for all deliverables</p>
         </div>
         <div className="flex gap-2">
           <button
@@ -265,23 +264,8 @@ export default function DataRoomPage() {
 
       {/* Search */}
       <div className="relative">
-        <Search
-          className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4"
-          style={{ color: 'var(--text-muted)' }}
-        />
-        <input
-          value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
-          placeholder="Search files and content..."
-          className="input"
-          style={{
-            paddingLeft: 'var(--space-10)',
-            paddingRight: 'var(--space-4)',
-            paddingTop: '0.625rem',
-            paddingBottom: '0.625rem',
-            borderRadius: 'var(--radius-lg)',
-          }}
-        />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={stTextMuted} />
+        <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Search files and content..." className="input" style={{ paddingLeft: 'var(--space-10)', paddingRight: 'var(--space-4)', paddingTop: '0.625rem', paddingBottom: '0.625rem', borderRadius: 'var(--radius-lg)' }} />
       </div>
 
       {/* Paste mode */}
@@ -289,9 +273,7 @@ export default function DataRoomPage() {
         <div
           className="card space-y-4"
         >
-          <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
-            Paste document content
-          </h3>
+          <h3 style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>Paste document content</h3>
           <div className="flex gap-3">
             <input
               value={pasteFilename}
@@ -308,25 +290,9 @@ export default function DataRoomPage() {
               {CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
             </select>
           </div>
-          <textarea
-            value={pasteContent}
-            onChange={e => setPasteContent(e.target.value)}
-            placeholder="Paste your document content here..."
-            rows={10}
-            className="input"
-            style={{
-              fontFamily: 'var(--font-mono)',
-              resize: 'none',
-              padding: 'var(--space-3) var(--space-4)',
-            }}
-          />
+          <textarea value={pasteContent} onChange={e => setPasteContent(e.target.value)} placeholder="Paste your document content here..." rows={10} className="input" style={{ fontFamily: 'var(--font-mono)', resize: 'none', padding: 'var(--space-3) var(--space-4)' }} />
           <div className="flex justify-end gap-2">
-            <button
-              onClick={() => setPasteMode(false)}
-              className="btn btn-ghost btn-md"
-            >
-              Cancel
-            </button>
+            <button onClick={() => setPasteMode(false)} className="btn btn-ghost btn-md">Cancel</button>
             <button
               onClick={handlePasteUpload}
               disabled={!pasteFilename.trim() || !pasteContent.trim() || uploading}
@@ -355,9 +321,7 @@ export default function DataRoomPage() {
             />
           ))}
           {filteredFiles.length === 0 && (
-            <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', padding: 'var(--space-4) 0', textAlign: 'center' }}>
-              No files match your search.
-            </p>
+            <p style={{ ...stTextMuted, ...stFontSm, padding: 'var(--space-4) 0', textAlign: 'center' }}>No files match your search.</p>
           )}
         </div>
       )}
@@ -370,16 +334,10 @@ export default function DataRoomPage() {
             return (
               <div key={cat.value}>
                 <div className="flex items-center gap-3 mb-2">
-                  <cat.icon className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
-                  <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
-                    {cat.label}
-                  </span>
-                  <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-                    {catFiles.length} files
-                  </span>
-                  <span className="ml-auto" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
-                    {cat.desc}
-                  </span>
+                  <cat.icon className="w-4 h-4" style={stTextMuted} />
+                  <span style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>{cat.label}</span>
+                  <span style={labelMuted}>{catFiles.length} files</span>
+                  <span className="ml-auto" style={{ ...stFontXs, ...stTextTertiary }}>{cat.desc}</span>
                 </div>
                 {catFiles.length > 0 ? (
                   <div className="space-y-1">
@@ -394,16 +352,8 @@ export default function DataRoomPage() {
                     ))}
                   </div>
                 ) : (
-                  <div
-                    style={{
-                      borderRadius: 'var(--radius-md)',
-                      padding: 'var(--space-3)',
-                      textAlign: 'center',
-                    }}
-                  >
-                    <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
-                      No {cat.label.toLowerCase()} files yet
-                    </p>
+                  <div style={{ borderRadius: 'var(--radius-md)', padding: 'var(--space-3)', textAlign: 'center' }}>
+                    <p style={{ ...stFontXs, ...stTextTertiary }}>No {cat.label.toLowerCase()} files yet</p>
                   </div>
                 )}
               </div>
@@ -451,16 +401,10 @@ function AccessIntelligenceSection({ intelligence, files, expandedInvestor, onTo
     <div className="space-y-6" style={{ marginTop: 'var(--space-8)' }}>
       <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 'var(--space-6)' }}>
         <div className="flex items-center gap-3 mb-1">
-          <span style={{ color: 'var(--text-muted)' }}>
-            <Eye className="w-5 h-5" />
-          </span>
-          <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 400, color: 'var(--text-primary)' }}>
-            Access Intelligence
-          </h2>
+          <span style={stTextMuted}><Eye className="w-5 h-5" /></span>
+          <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 400, color: 'var(--text-primary)' }}>Access Intelligence</h2>
         </div>
-        <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
-          Track which investors have accessed which documents and get sharing recommendations
-        </p>
+        <p style={{ ...stTextMuted, ...stFontSm }}>Track which investors have accessed which documents and get sharing recommendations</p>
       </div>
 
       {/* Summary Stats */}
@@ -491,12 +435,8 @@ function AccessIntelligenceSection({ intelligence, files, expandedInvestor, onTo
       {/* Most Requested Documents */}
       <div className="card" style={{ padding: 'var(--space-4)' }}>
         <div className="flex items-center gap-2 mb-3">
-          <span style={{ color: 'var(--text-muted)' }}>
-            <TrendingUp className="w-4 h-4" />
-          </span>
-          <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
-            Most Requested Documents
-          </h3>
+          <span style={stTextMuted}><TrendingUp className="w-4 h-4" /></span>
+          <h3 style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>Most Requested Documents</h3>
         </div>
         {intelligence.most_requested.length > 0 ? (
           <div className="space-y-1">
@@ -505,21 +445,15 @@ function AccessIntelligenceSection({ intelligence, files, expandedInvestor, onTo
             ))}
           </div>
         ) : (
-          <p style={{ color: 'var(--text-tertiary)', fontSize: 'var(--font-size-sm)', textAlign: 'center', padding: 'var(--space-4) 0' }}>
-            No access events recorded yet. Log document access to see rankings.
-          </p>
+          <p style={{ ...stTextTertiary, ...stFontSm, textAlign: 'center', padding: 'var(--space-4) 0' }}>No access events recorded yet. Log document access to see rankings.</p>
         )}
       </div>
 
       {/* Per-Investor Access */}
       <div className="card" style={{ padding: 'var(--space-4)' }}>
         <div className="flex items-center gap-2 mb-3">
-          <span style={{ color: 'var(--text-muted)' }}>
-            <Users className="w-4 h-4" />
-          </span>
-          <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
-            Per-Investor Document Access
-          </h3>
+          <span style={stTextMuted}><Users className="w-4 h-4" /></span>
+          <h3 style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>Per-Investor Document Access</h3>
         </div>
         {intelligence.per_investor_access.length > 0 ? (
           <div className="space-y-1">
@@ -535,9 +469,7 @@ function AccessIntelligenceSection({ intelligence, files, expandedInvestor, onTo
             ))}
           </div>
         ) : (
-          <p style={{ color: 'var(--text-tertiary)', fontSize: 'var(--font-size-sm)', textAlign: 'center', padding: 'var(--space-4) 0' }}>
-            No active investors yet. Add investors in the CRM to see access tracking.
-          </p>
+          <p style={{ ...stTextTertiary, ...stFontSm, textAlign: 'center', padding: 'var(--space-4) 0' }}>No active investors yet. Add investors in the CRM to see access tracking.</p>
         )}
       </div>
 
@@ -545,15 +477,9 @@ function AccessIntelligenceSection({ intelligence, files, expandedInvestor, onTo
       {intelligence.unreached_investors.length > 0 && (
         <div className="card" style={{ padding: 'var(--space-4)' }}>
           <div className="flex items-center gap-2 mb-3">
-            <span style={{ color: 'var(--text-tertiary)' }}>
-              <AlertCircle className="w-4 h-4" />
-            </span>
-            <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
-              Unreached Investors
-            </h3>
-            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-              Active investors who haven&apos;t accessed any documents
-            </span>
+            <span style={stTextTertiary}><AlertCircle className="w-4 h-4" /></span>
+            <h3 style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>Unreached Investors</h3>
+            <span style={labelMuted}>Active investors who haven&apos;t accessed any documents</span>
           </div>
           <div className="space-y-1">
             {intelligence.unreached_investors.map(inv => (
@@ -567,12 +493,8 @@ function AccessIntelligenceSection({ intelligence, files, expandedInvestor, onTo
       {hasActivity && (
         <div className="card" style={{ padding: 'var(--space-4)' }}>
           <div className="flex items-center gap-2 mb-3">
-            <span style={{ color: 'var(--text-muted)' }}>
-              <Eye className="w-4 h-4" />
-            </span>
-            <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
-              Recent Access Log
-            </h3>
+            <span style={stTextMuted}><Eye className="w-4 h-4" /></span>
+            <h3 style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>Recent Access Log</h3>
           </div>
           <div className="space-y-1">
             {intelligence.document_access_log.slice(0, 20).map((entry, idx) => (
@@ -605,7 +527,7 @@ function StatCard({ label, value, icon, highlight }: {
     >
       <div className="flex items-center gap-2 mb-1">
         <span style={{ color: highlight ? 'var(--warning)' : 'var(--text-muted)' }}>{icon}</span>
-        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{label}</span>
+        <span style={labelMuted}>{label}</span>
       </div>
       <span style={{ fontSize: 'var(--font-size-lg)', fontWeight: 400, color: highlight ? 'var(--warning)' : 'var(--text-primary)' }}>
         {value}
@@ -640,24 +562,10 @@ function MostRequestedRow({ doc, rank }: {
       }}>
         #{rank}
       </span>
-      <FileText className="w-3.5 h-3.5 shrink-0" style={{ color: 'var(--text-tertiary)' }} />
-      <span className="truncate" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)' }}>
-        {doc.document_title}
-      </span>
-      <span
-        style={{
-          fontSize: 'var(--font-size-xs)',
-          color: 'var(--text-muted)',
-          background: 'var(--surface-2)',
-          padding: '0.125rem var(--space-2)',
-          borderRadius: 'var(--radius-sm)',
-        }}
-      >
-        {doc.category}
-      </span>
-      <span className="ml-auto shrink-0" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-secondary)' }}>
-        {doc.access_count} {doc.access_count === 1 ? 'view' : 'views'}
-      </span>
+      <FileText className="w-3.5 h-3.5 shrink-0" style={stTextTertiary} />
+      <span className="truncate" style={{ ...stFontSm, color: 'var(--text-primary)' }}>{doc.document_title}</span>
+      <span style={{ ...stFontXs, ...stTextMuted, ...stSurface2, padding: '0.125rem var(--space-2)', borderRadius: 'var(--radius-sm)' }}>{doc.category}</span>
+      <span className="ml-auto shrink-0" style={{ ...stFontXs, fontWeight: 400, ...stTextSecondary }}>{doc.access_count} {doc.access_count === 1 ? 'view' : 'views'}</span>
     </div>
   );
 }
@@ -690,26 +598,12 @@ function InvestorAccessRow({ investor, expanded, onToggle, onLogAccess, files }:
         onClick={onToggle}
       >
         {expanded
-          ? <ChevronDown className="w-4 h-4 shrink-0" style={{ color: 'var(--text-muted)' }} />
-          : <ChevronRight className="w-4 h-4 shrink-0" style={{ color: 'var(--text-muted)' }} />
+          ? <ChevronDown className="w-4 h-4 shrink-0" style={stTextMuted} />
+          : <ChevronRight className="w-4 h-4 shrink-0" style={stTextMuted} />
         }
-        <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
-          {investor.investor_name}
-        </span>
-        <span
-          style={{
-            fontSize: 'var(--font-size-xs)',
-            color: 'var(--text-muted)',
-            background: 'var(--surface-2)',
-            padding: '0.125rem var(--space-2)',
-            borderRadius: 'var(--radius-sm)',
-          }}
-        >
-          {STATUS_LABELS[investor.status] || investor.status}
-        </span>
-        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-          T{investor.tier}
-        </span>
+        <span style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>{investor.investor_name}</span>
+        <span style={{ ...stFontXs, ...stTextMuted, ...stSurface2, padding: '0.125rem var(--space-2)', borderRadius: 'var(--radius-sm)' }}>{STATUS_LABELS[investor.status] || investor.status}</span>
+        <span style={labelMuted}>T{investor.tier}</span>
         <div className="ml-auto flex items-center gap-3">
           <span style={{ fontSize: 'var(--font-size-xs)', color: investor.documents_accessed > 0 ? 'var(--success)' : 'var(--text-tertiary)' }}>
             {investor.documents_accessed} / {files.length} docs ({accessedPct}%)
@@ -733,23 +627,10 @@ function InvestorAccessRow({ investor, expanded, onToggle, onLogAccess, files }:
           {/* Accessed documents */}
           {investor.accessed_documents.length > 0 && (
             <div className="mb-3">
-              <h4 style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-secondary)', marginBottom: 'var(--space-2)' }}>
-                Documents Accessed
-              </h4>
+              <h4 style={{ ...stFontXs, fontWeight: 400, ...stTextSecondary, marginBottom: 'var(--space-2)' }}>Documents Accessed</h4>
               <div className="flex flex-wrap gap-2">
                 {investor.accessed_documents.map(doc => (
-                  <span
-                    key={doc.document_id}
-                    style={{
-                      fontSize: 'var(--font-size-xs)',
-                      color: 'var(--text-secondary)',
-                      background: 'var(--success-muted)',
-                      padding: '0.125rem var(--space-2)',
-                      borderRadius: 'var(--radius-sm)',
-                    }}
-                  >
-                    {doc.document_title}
-                  </span>
+                  <span key={doc.document_id} style={{ ...stFontXs, ...stTextSecondary, background: 'var(--success-muted)', padding: '0.125rem var(--space-2)', borderRadius: 'var(--radius-sm)' }}>{doc.document_title}</span>
                 ))}
               </div>
             </div>
@@ -758,9 +639,7 @@ function InvestorAccessRow({ investor, expanded, onToggle, onLogAccess, files }:
           {/* Recommended documents */}
           {investor.recommended_documents.length > 0 && (
             <div className="mb-3">
-              <h4 style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-secondary)', marginBottom: 'var(--space-2)' }}>
-                Recommended to Share
-              </h4>
+              <h4 style={{ ...stFontXs, fontWeight: 400, ...stTextSecondary, marginBottom: 'var(--space-2)' }}>Recommended to Share</h4>
               <div className="space-y-1">
                 {investor.recommended_documents.map(doc => (
                   <RecommendedDocRow
@@ -776,9 +655,7 @@ function InvestorAccessRow({ investor, expanded, onToggle, onLogAccess, files }:
 
           {/* Log access manually */}
           <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 'var(--space-3)', marginTop: 'var(--space-2)' }}>
-            <h4 style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-secondary)', marginBottom: 'var(--space-2)' }}>
-              Log Access
-            </h4>
+            <h4 style={{ ...stFontXs, fontWeight: 400, ...stTextSecondary, marginBottom: 'var(--space-2)' }}>Log Access</h4>
             <div className="flex gap-2">
               <select
                 value={logDocId}
@@ -886,28 +763,12 @@ function UnreachedInvestorRow({ investor }: {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <span style={{ color: 'var(--text-tertiary)' }}>
-        <AlertCircle className="w-3.5 h-3.5" />
-      </span>
-      <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
-        {investor.investor_name}
-      </span>
-      <span style={{
-        fontSize: 'var(--font-size-xs)',
-        color: 'var(--text-muted)',
-        background: 'var(--surface-2)',
-        padding: '0.125rem var(--space-2)',
-        borderRadius: 'var(--radius-sm)',
-      }}>
-        {STATUS_LABELS[investor.status] || investor.status}
-      </span>
-      <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-        T{investor.tier}
-      </span>
+      <span style={stTextTertiary}><AlertCircle className="w-3.5 h-3.5" /></span>
+      <span style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>{investor.investor_name}</span>
+      <span style={{ ...stFontXs, ...stTextMuted, ...stSurface2, padding: '0.125rem var(--space-2)', borderRadius: 'var(--radius-sm)' }}>{STATUS_LABELS[investor.status] || investor.status}</span>
+      <span style={labelMuted}>T{investor.tier}</span>
       {investor.recommended_categories.length > 0 && (
-        <span className="ml-auto" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
-          Share: {investor.recommended_categories.join(', ')}
-        </span>
+        <span className="ml-auto" style={{ ...stFontXs, ...stTextTertiary }}>Share: {investor.recommended_categories.join(', ')}</span>
       )}
     </div>
   );
@@ -929,17 +790,11 @@ function AccessLogRow({ entry }: {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <Eye className="w-3.5 h-3.5 shrink-0" style={{ color: 'var(--text-tertiary)' }} />
-      <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', minWidth: '8rem' }}>
-        {entry.investor_name}
-      </span>
-      <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>viewed</span>
-      <span className="truncate" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
-        {entry.document_title}
-      </span>
-      <span className="ml-auto shrink-0" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
-        {fmtDateTime(entry.accessed_at)}
-      </span>
+      <Eye className="w-3.5 h-3.5 shrink-0" style={stTextTertiary} />
+      <span style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)', minWidth: '8rem' }}>{entry.investor_name}</span>
+      <span style={labelMuted}>viewed</span>
+      <span className="truncate" style={{ ...stFontSm, ...stTextSecondary }}>{entry.document_title}</span>
+      <span className="ml-auto shrink-0" style={{ ...stFontXs, ...stTextTertiary }}>{fmtDateTime(entry.accessed_at)}</span>
     </div>
   );
 }
@@ -965,19 +820,13 @@ function FileRow({ file, expanded, onToggle, onDelete }: {
     >
       <div className="flex items-center cursor-pointer" style={{ padding: 'var(--space-3) var(--space-4)' }} onClick={onToggle}>
         {expanded
-          ? <ChevronDown className="w-4 h-4 shrink-0" style={{ color: 'var(--text-muted)' }} />
-          : <ChevronRight className="w-4 h-4 shrink-0" style={{ color: 'var(--text-muted)' }} />
+          ? <ChevronDown className="w-4 h-4 shrink-0" style={stTextMuted} />
+          : <ChevronRight className="w-4 h-4 shrink-0" style={stTextMuted} />
         }
-        <FileText className="w-4 h-4 shrink-0 ml-2" style={{ color: 'var(--text-tertiary)' }} />
-        <span className="truncate ml-3" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)' }}>
-          {file.filename}
-        </span>
-        <span className="ml-auto shrink-0" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-          {formatBytes(file.size_bytes)}
-        </span>
-        <span className="shrink-0 ml-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
-          {fmtDate(file.uploaded_at)}
-        </span>
+        <FileText className="w-4 h-4 shrink-0 ml-2" style={stTextTertiary} />
+        <span className="truncate ml-3" style={{ ...stFontSm, color: 'var(--text-primary)' }}>{file.filename}</span>
+        <span className="ml-auto shrink-0" style={labelMuted}>{formatBytes(file.size_bytes)}</span>
+        <span className="shrink-0 ml-3" style={{ ...stFontXs, ...stTextTertiary }}>{fmtDate(file.uploaded_at)}</span>
         <button
           onClick={e => { e.stopPropagation(); onDelete(); }}
           className="ml-3 shrink-0 transition-colors"

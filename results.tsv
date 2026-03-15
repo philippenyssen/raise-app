@@ -15,3 +15,4 @@ c197856	94	95	+1	keep	eng	pulse/context-bus/16-file consolidation (-264) = 64984
 7d8f37c	95	95	0	keep	eng	styles/configs/dead-code consolidation (-156 lines) = 64828 lines
 716922f	95	95	0	keep	eng	dedup interfaces + TOPIC_COLORS compression + helper dedup (-137 lines) = 64691 lines
 1b03202	95	95	0	keep	eng	inline style extraction + color function consolidation (-70 lines) = 64621 lines
+49c03b6	95	96	+1	keep	eng	inline style extraction in 4 pages (-306 lines) = 64315 lines, score 96

@@ -6,7 +6,7 @@ import {
   Zap, RefreshCw, AlertTriangle, TrendingUp, Users,
   ArrowRight, Clock, Activity, Target, Flame,
 } from 'lucide-react';
-import { getIntensityColor } from '@/lib/styles';
+import { getIntensityColor, stTextMuted, stTextSecondary, stFontXs, stFontSm, stSurface2, labelMuted } from '@/lib/styles';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -176,40 +176,21 @@ function IntensityMeter({ intensity, description }: { intensity: number; descrip
   return (
     <div
       className="card"
-      style={{
-        padding: 'var(--space-6)',
-        background: 'var(--surface-1)',
-        borderRadius: 'var(--radius-lg)',
-      }}
+      style={{ padding: 'var(--space-6)', background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)' }}
     >
       <div className="flex items-center gap-3 mb-4">
-        <span
-          className="flex items-center justify-center"
-          style={{
-            width: '40px', height: '40px',
-            borderRadius: 'var(--radius-md)',
-            background: 'var(--surface-2)',
-          }}
-        >
+        <span className="flex items-center justify-center" style={{ width: '40px', height: '40px', borderRadius: 'var(--radius-md)', background: 'var(--surface-2)' }}>
           <Zap className="w-5 h-5" style={{ color }} />
         </span>
         <div>
-          <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 400, color: 'var(--text-primary)', margin: 0 }}>
-            Pipeline FOMO Level
-          </h2>
-          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', margin: 0 }}>
-            Competitive pressure across active investors
-          </p>
+          <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 400, color: 'var(--text-primary)', margin: 0 }}>Pipeline FOMO Level</h2>
+          <p style={{ ...labelMuted, margin: 0 }}>Competitive pressure across active investors</p>
         </div>
       </div>
 
       <div className="flex items-end gap-4 mb-3">
-        <span style={{ fontSize: 'var(--font-size-3xl)', fontWeight: 300, color, lineHeight: 1 }}>
-          {intensity}
-        </span>
-        <span style={{ fontSize: 'var(--font-size-sm)', color, fontWeight: 400, paddingBottom: '4px' }}>
-          / 100 — {label}
-        </span>
+        <span style={{ fontSize: 'var(--font-size-3xl)', fontWeight: 300, color, lineHeight: 1 }}>{intensity}</span>
+        <span style={{ ...stFontSm, color, fontWeight: 400, paddingBottom: '4px' }}>/ 100 — {label}</span>
       </div>
 
       {/* Bar */}
@@ -254,21 +235,13 @@ function StatsRow({ stats, meetingDensity }: { stats: FomoData['stats']; meeting
         return (
           <div
             key={item.label}
-            style={{
-              padding: 'var(--space-4)',
-              background: 'var(--surface-1)',
-              borderRadius: 'var(--radius-lg)',
-            }}
+            style={{ padding: 'var(--space-4)', background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)' }}
           >
             <div className="flex items-center gap-2 mb-1">
               <Icon className="w-3.5 h-3.5" style={{ color: item.color }} />
-              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-                {item.label}
-              </span>
+              <span style={labelMuted}>{item.label}</span>
             </div>
-            <span style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>
-              {item.value}
-            </span>
+            <span style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>{item.value}</span>
           </div>
         );
       })}
@@ -284,13 +257,7 @@ function PressureCard({ inv }: { inv: InvestorFomo }) {
   return (
     <div
       className="transition-colors"
-      style={{
-        padding: 'var(--space-4)',
-        background: hovered ? 'var(--surface-2)' : 'var(--surface-1)',
-        borderRadius: 'var(--radius-lg)',
-        transition: 'all 150ms ease',
-        cursor: 'pointer',
-      }}
+      style={{ padding: 'var(--space-4)', background: hovered ? 'var(--surface-2)' : 'var(--surface-1)', borderRadius: 'var(--radius-lg)', transition: 'all 150ms ease', cursor: 'pointer' }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onClick={() => setExpanded(!expanded)}
@@ -298,14 +265,7 @@ function PressureCard({ inv }: { inv: InvestorFomo }) {
       {/* Header row */}
       <div className="flex items-center gap-3">
         {/* Intensity bar */}
-        <div
-          style={{
-            width: '4px', height: '40px',
-            borderRadius: '2px',
-            background: color,
-            flexShrink: 0,
-          }}
-        />
+        <div style={{ width: '4px', height: '40px', borderRadius: '2px', background: color, flexShrink: 0 }} />
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
@@ -353,35 +313,10 @@ function PressureCard({ inv }: { inv: InvestorFomo }) {
 
       {/* Intensity breakdown bar */}
       <div className="flex gap-0.5 mt-3" style={{ height: '4px', borderRadius: '2px', overflow: 'hidden' }}>
-        <div
-          style={{
-            width: `${inv.advancingScore}%`,
-            background: 'var(--danger)',
-            borderRadius: '2px 0 0 2px',
-          }}
-          title={`Advancing peers: ${inv.advancingScore}`}
-        />
-        <div
-          style={{
-            width: `${inv.densityScore}%`,
-            background: 'var(--warning)',
-          }}
-          title={`Meeting density: ${inv.densityScore}`}
-        />
-        <div
-          style={{
-            width: `${inv.connectionScore}%`,
-            background: 'var(--accent)',
-            borderRadius: '0 2px 2px 0',
-          }}
-          title={`Network connections: ${inv.connectionScore}`}
-        />
-        <div
-          style={{
-            flex: 1,
-            background: 'var(--surface-3)',
-          }}
-        />
+        <div style={{ width: `${inv.advancingScore}%`, background: 'var(--danger)', borderRadius: '2px 0 0 2px' }} title={`Advancing peers: ${inv.advancingScore}`} />
+        <div style={{ width: `${inv.densityScore}%`, background: 'var(--warning)' }} title={`Meeting density: ${inv.densityScore}`} />
+        <div style={{ width: `${inv.connectionScore}%`, background: 'var(--accent)', borderRadius: '0 2px 2px 0' }} title={`Network connections: ${inv.connectionScore}`} />
+        <div style={{ flex: 1, background: 'var(--surface-3)' }} />
       </div>
       <div className="flex gap-4 mt-1">
         <span style={{ fontSize: '10px', color: 'var(--text-primary)' }}>Advancing {inv.advancingScore}</span>
@@ -395,9 +330,7 @@ function PressureCard({ inv }: { inv: InvestorFomo }) {
           {/* Trigger investors */}
           {inv.triggerInvestors.length > 0 && (
             <div style={{ marginBottom: 'var(--space-3)' }}>
-              <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-muted)', letterSpacing: '0.01em' }}>
-                Creating pressure
-              </span>
+              <span style={{ ...labelMuted, fontWeight: 400, letterSpacing: '0.01em' }}>Creating pressure</span>
               <div className="flex flex-wrap gap-1.5 mt-1.5">
                 {inv.triggerInvestors.map(t => (
                   <span
@@ -421,13 +354,7 @@ function PressureCard({ inv }: { inv: InvestorFomo }) {
           )}
 
           {/* Recommendation */}
-          <div
-            style={{
-              padding: 'var(--space-3)',
-              background: 'var(--surface-0)',
-              borderRadius: 'var(--radius-md)',
-            }}
-          >
+          <div style={{ padding: 'var(--space-3)', background: 'var(--surface-0)', borderRadius: 'var(--radius-md)' }}>
             <div className="flex items-start gap-2">
               <span style={{ flexShrink: 0, marginTop: '2px' }}>
                 <Target className="w-3.5 h-3.5" style={{ color: 'var(--accent)' }} />
@@ -456,38 +383,22 @@ function TriggerEventCard({ event }: { event: TriggerEvent }) {
   return (
     <div
       className="transition-colors"
-      style={{
-        padding: 'var(--space-3)',
-        background: hovered ? 'var(--surface-2)' : 'var(--surface-1)',
-        borderRadius: 'var(--radius-md)',
-        transition: 'all 150ms ease',
-      }}
+      style={{ padding: 'var(--space-3)', background: hovered ? 'var(--surface-2)' : 'var(--surface-1)', borderRadius: 'var(--radius-md)', transition: 'all 150ms ease' }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
       <div className="flex items-start gap-3">
-        <span
-          className="flex items-center justify-center shrink-0"
-          style={{
-            width: '28px', height: '28px',
-            borderRadius: 'var(--radius-sm)',
-            ...(IMPACT_STYLES[event.impactLevel] ?? IMPACT_STYLES.low),
-          }}
-        >
+        <span className="flex items-center justify-center shrink-0" style={{ width: '28px', height: '28px', borderRadius: 'var(--radius-sm)', ...(IMPACT_STYLES[event.impactLevel] ?? IMPACT_STYLES.low) }}>
           <Icon className="w-3.5 h-3.5" />
         </span>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-0.5">
-            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
-              {event.investorName}
-            </span>
+            <span style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>{event.investorName}</span>
             <span style={inlineBadgeStyle(IMPACT_STYLES[event.impactLevel] ?? IMPACT_STYLES.low)}>
               {event.impactLevel}
             </span>
           </div>
-          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', lineHeight: 1.5, margin: 0 }}>
-            {event.detail}
-          </p>
+          <p style={{ ...stFontXs, color: 'var(--text-secondary)', lineHeight: 1.5, margin: 0 }}>{event.detail}</p>
         </div>
         <span style={{ fontSize: '10px', color: 'var(--text-muted)', whiteSpace: 'nowrap' as const, flexShrink: 0 }}>
           {formatDate(event.date)}
@@ -518,9 +429,7 @@ function StrategyCardComponent({ card }: { card: StrategyCard }) {
           <Target className="w-4 h-4" style={{ color: card.priority === 'high' ? 'var(--danger)' : card.priority === 'medium' ? 'var(--warning)' : 'var(--text-muted)' }} />
         </span>
         <div>
-          <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', margin: 0 }}>
-            {card.title}
-          </h4>
+          <h4 style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)', margin: 0 }}>{card.title}</h4>
           <span style={inlineBadgeStyle({
             background: card.priority === 'high' ? 'var(--danger-muted)' : card.priority === 'medium' ? 'var(--warning-muted)' : 'var(--surface-2)',
             color: card.priority === 'high' ? 'var(--danger)' : card.priority === 'medium' ? 'var(--warning)' : 'var(--text-tertiary)',
@@ -538,23 +447,10 @@ function StrategyCardComponent({ card }: { card: StrategyCard }) {
 
       {card.targetInvestors.length > 0 && (
         <div>
-          <span style={{ fontSize: '10px', color: 'var(--text-muted)', letterSpacing: '0.01em' }}>
-            Target
-          </span>
+          <span style={{ fontSize: '10px', color: 'var(--text-muted)', letterSpacing: '0.01em' }}>Target</span>
           <div className="flex flex-wrap gap-1 mt-1">
             {card.targetInvestors.map(name => (
-              <span
-                key={name}
-                style={{
-                  fontSize: 'var(--font-size-xs)',
-                  padding: '1px 6px',
-                  borderRadius: 'var(--radius-sm)',
-                  background: 'var(--surface-2)',
-                  color: 'var(--text-tertiary)',
-                }}
-              >
-                {name}
-              </span>
+              <span key={name} style={{ ...stFontXs, padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-tertiary)' }}>{name}</span>
             ))}
           </div>
         </div>
@@ -596,9 +492,7 @@ export default function FomoPage() {
       <div className="flex-1 flex items-center justify-center" style={{ minHeight: '60vh' }}>
         <div className="flex flex-col items-center gap-3">
           <RefreshCw className="w-6 h-6 animate-spin" style={{ color: 'var(--accent)' }} />
-          <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
-            Computing FOMO dynamics...
-          </span>
+          <span style={{ ...stFontSm, ...stTextMuted }}>Computing FOMO dynamics...</span>
         </div>
       </div>
     );
@@ -850,7 +744,7 @@ export default function FomoPage() {
 
         {/* Footer timestamp */}
         <div style={{ marginTop: 'var(--space-6)', paddingTop: 'var(--space-3)', borderTop: '1px solid var(--border-subtle)' }}>
-          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+          <span style={labelMuted}>
             Last computed: {new Date(data.generatedAt).toLocaleString()}
           </span>
         </div>

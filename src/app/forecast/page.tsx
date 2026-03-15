@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { STATUS_LABELS as STAGE_LABELS } from '@/lib/constants';
 import { fmtDate, fmtDateShort } from '@/lib/format';
-import { confidenceColor, confidenceBg } from '@/lib/styles';
+import { confidenceColor, confidenceBg, stTextMuted, stTextTertiary, stTextSecondary, stFontXs, stFontSm, stSurface1, labelMuted } from '@/lib/styles';
 
 interface InvestorForecast {
   investorId: string;
@@ -209,15 +209,13 @@ export default function ForecastPage() {
       <div className="card" style={{ marginBottom: 'var(--space-6)', padding: 'var(--space-5)' }}>
         <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-3)' }}>
           <div className="flex items-center gap-2">
-            <span style={{ color: 'var(--accent)' }}>
-              <Target className="w-4 h-4" />
-            </span>
-            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
+            <span style={{ color: 'var(--accent)' }}><Target className="w-4 h-4" /></span>
+            <span style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>
               Raise Target Progress
             </span>
           </div>
           <div className="flex items-center gap-4">
-            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+            <span style={labelMuted}>
               Target: {targetDisplay}
             </span>
           </div>
@@ -284,13 +282,13 @@ export default function ForecastPage() {
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
             <div style={{ width: '12px', height: '12px', borderRadius: '3px', background: 'var(--accent)' }} />
-            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
+            <span style={{ ...stFontXs, ...stTextTertiary }}>
               Committed: {formatAmount(effectiveCommitted, currency)}
             </span>
           </div>
           <div className="flex items-center gap-2">
             <div style={{ width: '12px', height: '12px', borderRadius: '3px', background: 'var(--accent-muted)' }} />
-            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
+            <span style={{ ...stFontXs, ...stTextTertiary }}>
               Expected (weighted): {formatAmount(effectiveExpected, currency)}
             </span>
           </div>
@@ -332,7 +330,7 @@ export default function ForecastPage() {
                 <span style={{ color: iconColor }}>
                   <Icon className="w-4 h-4" />
                 </span>
-                <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
+                <span style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>
                   {s.label}
                 </span>
               </div>
@@ -373,10 +371,8 @@ export default function ForecastPage() {
         {/* Confidence Distribution */}
         <div className="card" style={{ padding: 'var(--space-5)' }}>
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-4)' }}>
-            <span style={{ color: 'var(--text-tertiary)' }}>
-              <Shield className="w-4 h-4" />
-            </span>
-            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
+            <span style={stTextTertiary}><Shield className="w-4 h-4" /></span>
+            <span style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>
               Confidence Distribution
             </span>
           </div>
@@ -387,7 +383,7 @@ export default function ForecastPage() {
           ].map(({ label, count, color, bg }) => (
             <div key={label} style={{ marginBottom: 'var(--space-3)' }}>
               <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-1)' }}>
-                <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>{label}</span>
+                <span style={{ ...stFontXs, ...stTextSecondary }}>{label}</span>
                 <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color, fontVariantNumeric: 'tabular-nums' }}>
                   {count}
                 </span>
@@ -411,10 +407,8 @@ export default function ForecastPage() {
         {/* Critical Path */}
         <div className="card" style={{ padding: 'var(--space-5)' }}>
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-4)' }}>
-            <span style={{ color: 'var(--text-tertiary)' }}>
-              <Zap className="w-4 h-4" />
-            </span>
-            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
+            <span style={stTextTertiary}><Zap className="w-4 h-4" /></span>
+            <span style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>
               Critical Path
             </span>
           </div>
@@ -422,7 +416,7 @@ export default function ForecastPage() {
             Investors whose delay would delay the raise
           </p>
           {forecast.criticalPathInvestors.length === 0 ? (
-            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>No critical path investors</span>
+            <span style={labelMuted}>No critical path investors</span>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
               {forecast.criticalPathInvestors.map((name, i) => {
@@ -501,21 +495,15 @@ export default function ForecastPage() {
         {/* Risk Factors */}
         <div className="card" style={{ padding: 'var(--space-5)' }}>
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-4)' }}>
-            <span style={{ color: 'var(--text-primary)' }}>
-              <AlertTriangle className="w-4 h-4" />
-            </span>
-            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
+            <span style={{ color: 'var(--text-primary)' }}><AlertTriangle className="w-4 h-4" /></span>
+            <span style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>
               Risk Factors
             </span>
           </div>
           {forecast.riskFactors.length === 0 ? (
             <div className="flex items-center gap-2" style={{ padding: 'var(--space-3)', background: 'var(--success-muted)', borderRadius: 'var(--radius-sm)' }}>
-              <span style={{ color: 'var(--text-secondary)' }}>
-                <CheckCircle2 className="w-3.5 h-3.5" />
-              </span>
-              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
-                No significant risks identified
-              </span>
+              <span style={stTextSecondary}><CheckCircle2 className="w-3.5 h-3.5" /></span>
+              <span style={{ ...stFontXs, ...stTextSecondary }}>No significant risks identified</span>
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
@@ -571,10 +559,8 @@ export default function ForecastPage() {
           }}
         >
           <div className="flex items-center gap-2">
-            <span style={{ color: 'var(--text-tertiary)' }}>
-              <Clock className="w-4 h-4" />
-            </span>
-            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
+            <span style={stTextTertiary}><Clock className="w-4 h-4" /></span>
+            <span style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>
               Investor Timeline
             </span>
             <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginLeft: 'auto' }}>
@@ -682,11 +668,11 @@ export default function ForecastPage() {
                             </span>
                             <div>
                               <div className="flex items-center gap-1">
-                                <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
+                                <span style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>
                                   {inv.investorName}
                                 </span>
                                 {isCritical && (
-                                  <span style={{ color: 'var(--text-tertiary)' }}>
+                                  <span style={stTextTertiary}>
                                     <Zap className="w-3 h-3" />
                                   </span>
                                 )}
@@ -713,7 +699,7 @@ export default function ForecastPage() {
 
                       {/* Stage */}
                       <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
-                        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
+                        <span style={{ ...stFontXs, ...stTextSecondary }}>
                           {STAGE_LABELS[inv.currentStage] || inv.currentStage}
                         </span>
                       </td>
@@ -836,7 +822,7 @@ export default function ForecastPage() {
               <span style={{ color }}>
                 <Icon className="w-4 h-4" />
               </span>
-              <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
+              <span style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>
                 {label}
               </span>
               <span
@@ -852,7 +838,7 @@ export default function ForecastPage() {
               </span>
             </div>
             {investors.length === 0 ? (
-              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+              <span style={labelMuted}>
                 No investors at this level
               </span>
             ) : (
@@ -899,7 +885,7 @@ export default function ForecastPage() {
           color: 'var(--text-muted)',
         }}
       >
-        <span style={{ color: 'var(--text-tertiary)' }}>
+        <span style={stTextTertiary}>
           <Users className="w-3 h-3" />
         </span>
         Forecast updates in real-time based on pipeline stage, tier, enthusiasm, and historical conversion

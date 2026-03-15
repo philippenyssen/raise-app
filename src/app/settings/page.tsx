@@ -7,6 +7,7 @@ import {
   DollarSign, Target, Calendar, Users, ChevronDown,
 } from 'lucide-react';
 import { useToast } from '@/components/toast';
+import { stTextMuted, stTextTertiary, stFontXs, stFontSm } from '@/lib/styles';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -262,7 +263,7 @@ export default function SettingsPage() {
   const statusIcon = keyTest?.status === 'ok'
     ? <CheckCircle className="w-5 h-5" style={{ color: 'var(--text-secondary)' }} />
     : keyTest?.status === 'credits_issue'
-    ? <AlertTriangle className="w-5 h-5" style={{ color: 'var(--text-tertiary)' }} />
+    ? <AlertTriangle className="w-5 h-5" style={stTextTertiary} />
     : <XCircle className="w-5 h-5" style={{ color: 'var(--text-primary)' }} />;
 
   const statusStyle: React.CSSProperties = keyTest?.status === 'ok'
@@ -276,9 +277,9 @@ export default function SettingsPage() {
       <div className="space-y-8 max-w-3xl">
         <div>
           <h1 className="page-title" style={{ fontSize: 'var(--font-size-xl)' }}>Settings</h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', marginTop: 'var(--space-1)' }}>Loading configuration...</p>
+          <p style={{ ...stTextMuted, ...stFontSm, marginTop: 'var(--space-1)' }}>Loading configuration...</p>
         </div>
-        <div className="flex items-center gap-3" style={{ color: 'var(--text-muted)' }}>
+        <div className="flex items-center gap-3" style={stTextMuted}>
           <RefreshCw className="w-4 h-4 animate-spin" />
           <span style={{ fontSize: 'var(--font-size-sm)' }}>Loading settings...</span>
         </div>
@@ -290,7 +291,7 @@ export default function SettingsPage() {
     <div className="space-y-8 max-w-3xl page-content">
       <div>
         <h1 className="page-title" style={{ fontSize: 'var(--font-size-xl)' }}>Settings</h1>
-        <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', marginTop: 'var(--space-1)' }}>Raise configuration, scoring weights, follow-up cadence, and API diagnostics</p>
+        <p style={{ ...stTextMuted, ...stFontSm, marginTop: 'var(--space-1)' }}>Raise configuration, scoring weights, follow-up cadence, and API diagnostics</p>
       </div>
 
       {/* ================================================================= */}
@@ -299,7 +300,7 @@ export default function SettingsPage() {
       <div className="card" style={{ padding: 'var(--space-6)' }}>
         <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-6)' }}>
           <div className="flex items-center gap-3">
-            <Building2 className="w-5 h-5" style={{ color: 'var(--text-tertiary)' }} />
+            <Building2 className="w-5 h-5" style={stTextTertiary} />
             <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 400, color: 'var(--text-primary)' }}>Raise Parameters</h2>
           </div>
           <div className="flex items-center gap-2">
@@ -320,7 +321,7 @@ export default function SettingsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {/* Company Name */}
           <div className="md:col-span-2">
-            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>Company Name</label>
+            <label className="block" style={{ ...stFontXs, fontWeight: 400, ...stTextTertiary, marginBottom: '0.375rem' }}>Company Name</label>
             <input
               type="text"
               value={raise.data.company_name}
@@ -332,7 +333,7 @@ export default function SettingsPage() {
 
           {/* Round Type */}
           <div>
-            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>Round Type</label>
+            <label className="block" style={{ ...stFontXs, fontWeight: 400, ...stTextTertiary, marginBottom: '0.375rem' }}>Round Type</label>
             <div className="relative">
               <select
                 value={raise.data.round_type}
@@ -344,13 +345,13 @@ export default function SettingsPage() {
                   <option key={rt} value={rt}>{rt}</option>
                 ))}
               </select>
-              <ChevronDown className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--text-muted)' }} />
+              <ChevronDown className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={stTextMuted} />
             </div>
           </div>
 
           {/* Currency */}
           <div>
-            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>Currency</label>
+            <label className="block" style={{ ...stFontXs, fontWeight: 400, ...stTextTertiary, marginBottom: '0.375rem' }}>Currency</label>
             <div className="relative">
               <select
                 value={raise.data.currency}
@@ -362,13 +363,13 @@ export default function SettingsPage() {
                   <option key={c} value={c}>{c} ({CURRENCY_SYMBOLS[c]})</option>
                 ))}
               </select>
-              <ChevronDown className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--text-muted)' }} />
+              <ChevronDown className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={stTextMuted} />
             </div>
           </div>
 
           {/* Target Equity Raise */}
           <div>
-            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>
+            <label className="block" style={{ ...stFontXs, fontWeight: 400, ...stTextTertiary, marginBottom: '0.375rem' }}>
               <span className="flex items-center gap-1.5">
                 <DollarSign className="w-3 h-3" />
                 Target Equity Raise
@@ -383,7 +384,7 @@ export default function SettingsPage() {
                 className="input"
               />
               {raise.data.equity_amount > 0 && (
-                <span className="absolute right-3 top-1/2 -translate-y-1/2" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                <span className="absolute right-3 top-1/2 -translate-y-1/2" style={{ ...stFontXs, ...stTextMuted }}>
                   {formatCompact(raise.data.equity_amount, raise.data.currency)}
                 </span>
               )}
@@ -392,7 +393,7 @@ export default function SettingsPage() {
 
           {/* Target Debt Raise */}
           <div>
-            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>
+            <label className="block" style={{ ...stFontXs, fontWeight: 400, ...stTextTertiary, marginBottom: '0.375rem' }}>
               <span className="flex items-center gap-1.5">
                 <DollarSign className="w-3 h-3" />
                 Target Debt Raise
@@ -407,7 +408,7 @@ export default function SettingsPage() {
                 className="input"
               />
               {raise.data.debt_amount > 0 && (
-                <span className="absolute right-3 top-1/2 -translate-y-1/2" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                <span className="absolute right-3 top-1/2 -translate-y-1/2" style={{ ...stFontXs, ...stTextMuted }}>
                   {formatCompact(raise.data.debt_amount, raise.data.currency)}
                 </span>
               )}
@@ -416,7 +417,7 @@ export default function SettingsPage() {
 
           {/* Pre-money Valuation */}
           <div>
-            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>
+            <label className="block" style={{ ...stFontXs, fontWeight: 400, ...stTextTertiary, marginBottom: '0.375rem' }}>
               <span className="flex items-center gap-1.5">
                 <Target className="w-3 h-3" />
                 Pre-money Valuation
@@ -431,7 +432,7 @@ export default function SettingsPage() {
                 className="input"
               />
               {raise.data.pre_money > 0 && (
-                <span className="absolute right-3 top-1/2 -translate-y-1/2" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                <span className="absolute right-3 top-1/2 -translate-y-1/2" style={{ ...stFontXs, ...stTextMuted }}>
                   {formatCompact(raise.data.pre_money, raise.data.currency)}
                 </span>
               )}
@@ -440,7 +441,7 @@ export default function SettingsPage() {
 
           {/* Post-money (computed) */}
           <div>
-            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>
+            <label className="block" style={{ ...stFontXs, fontWeight: 400, ...stTextTertiary, marginBottom: '0.375rem' }}>
               Post-money Valuation
             </label>
             <div style={{
@@ -459,7 +460,7 @@ export default function SettingsPage() {
 
           {/* Target Close Date */}
           <div>
-            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>
+            <label className="block" style={{ ...stFontXs, fontWeight: 400, ...stTextTertiary, marginBottom: '0.375rem' }}>
               <span className="flex items-center gap-1.5">
                 <Calendar className="w-3 h-3" />
                 Target Close Date
@@ -475,7 +476,7 @@ export default function SettingsPage() {
 
           {/* Target Investor Count */}
           <div>
-            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>
+            <label className="block" style={{ ...stFontXs, fontWeight: 400, ...stTextTertiary, marginBottom: '0.375rem' }}>
               <span className="flex items-center gap-1.5">
                 <Users className="w-3 h-3" />
                 Target Investor Count
@@ -493,7 +494,7 @@ export default function SettingsPage() {
 
           {/* Minimum Check Size */}
           <div>
-            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>
+            <label className="block" style={{ ...stFontXs, fontWeight: 400, ...stTextTertiary, marginBottom: '0.375rem' }}>
               Minimum Check Size
             </label>
             <div className="relative">
@@ -505,7 +506,7 @@ export default function SettingsPage() {
                 className="input"
               />
               {raise.data.minimum_check_size > 0 && (
-                <span className="absolute right-3 top-1/2 -translate-y-1/2" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                <span className="absolute right-3 top-1/2 -translate-y-1/2" style={{ ...stFontXs, ...stTextMuted }}>
                   {formatCompact(raise.data.minimum_check_size, raise.data.currency)}
                 </span>
               )}
@@ -546,7 +547,7 @@ export default function SettingsPage() {
       <div className="card" style={{ padding: 'var(--space-6)' }}>
         <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-6)' }}>
           <div className="flex items-center gap-3">
-            <Sliders className="w-5 h-5" style={{ color: 'var(--text-tertiary)' }} />
+            <Sliders className="w-5 h-5" style={stTextTertiary} />
             <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 400, color: 'var(--text-primary)' }}>Scoring Weights</h2>
           </div>
           <div className="flex items-center gap-2">
@@ -636,7 +637,7 @@ export default function SettingsPage() {
       <div className="card" style={{ padding: 'var(--space-6)' }}>
         <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-6)' }}>
           <div className="flex items-center gap-3">
-            <Clock className="w-5 h-5" style={{ color: 'var(--text-tertiary)' }} />
+            <Clock className="w-5 h-5" style={stTextTertiary} />
             <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 400, color: 'var(--text-primary)' }}>Follow-up Cadence</h2>
           </div>
           <div className="flex items-center gap-2">
@@ -657,7 +658,7 @@ export default function SettingsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {/* Thank You Delay */}
           <div>
-            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>Thank You Email Delay</label>
+            <label className="block" style={{ ...stFontXs, fontWeight: 400, ...stTextTertiary, marginBottom: '0.375rem' }}>Thank You Email Delay</label>
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -673,7 +674,7 @@ export default function SettingsPage() {
 
           {/* Objection Response Delay */}
           <div>
-            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>Objection Response Delay</label>
+            <label className="block" style={{ ...stFontXs, fontWeight: 400, ...stTextTertiary, marginBottom: '0.375rem' }}>Objection Response Delay</label>
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -689,7 +690,7 @@ export default function SettingsPage() {
 
           {/* Schedule Next Meeting Delay */}
           <div>
-            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>Schedule Next Meeting Delay</label>
+            <label className="block" style={{ ...stFontXs, fontWeight: 400, ...stTextTertiary, marginBottom: '0.375rem' }}>Schedule Next Meeting Delay</label>
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -705,7 +706,7 @@ export default function SettingsPage() {
 
           {/* Re-engagement Delay */}
           <div>
-            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>Re-engagement Delay</label>
+            <label className="block" style={{ ...stFontXs, fontWeight: 400, ...stTextTertiary, marginBottom: '0.375rem' }}>Re-engagement Delay</label>
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -721,7 +722,7 @@ export default function SettingsPage() {
 
           {/* Escalation Delay */}
           <div>
-            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>Escalation Delay</label>
+            <label className="block" style={{ ...stFontXs, fontWeight: 400, ...stTextTertiary, marginBottom: '0.375rem' }}>Escalation Delay</label>
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -737,7 +738,7 @@ export default function SettingsPage() {
 
           {/* Tier 1 Speed Multiplier */}
           <div>
-            <label className="block" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)', marginBottom: '0.375rem' }}>Tier 1 Speed Multiplier</label>
+            <label className="block" style={{ ...stFontXs, fontWeight: 400, ...stTextTertiary, marginBottom: '0.375rem' }}>Tier 1 Speed Multiplier</label>
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -749,7 +750,7 @@ export default function SettingsPage() {
               />
               <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '3rem' }}>%</span>
             </div>
-            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 'var(--space-1)' }}>
+            <p style={{ ...stFontXs, ...stTextMuted, marginTop: 'var(--space-1)' }}>
               {followup.data.tier1_speed_multiplier}% means Tier 1 investors get follow-ups {100 - followup.data.tier1_speed_multiplier}% faster
             </p>
           </div>
@@ -760,19 +761,19 @@ export default function SettingsPage() {
           <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-2)' }}>Effective Tier 1 cadence:</p>
           <div className="grid grid-cols-3 gap-3" style={{ textAlign: 'center' }}>
             <div style={{ background: 'var(--surface-2)', borderRadius: 'var(--radius-md)', padding: '0.5rem 0.75rem' }}>
-              <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Thank you</div>
+              <div style={{ ...stFontXs, ...stTextMuted }}>Thank you</div>
               <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
                 {Math.round(followup.data.thank_you_delay_hours * followup.data.tier1_speed_multiplier / 100)}h
               </div>
             </div>
             <div style={{ background: 'var(--surface-2)', borderRadius: 'var(--radius-md)', padding: '0.5rem 0.75rem' }}>
-              <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Objection</div>
+              <div style={{ ...stFontXs, ...stTextMuted }}>Objection</div>
               <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
                 {Math.round(followup.data.objection_response_delay_hours * followup.data.tier1_speed_multiplier / 100)}h
               </div>
             </div>
             <div style={{ background: 'var(--surface-2)', borderRadius: 'var(--radius-md)', padding: '0.5rem 0.75rem' }}>
-              <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Re-engage</div>
+              <div style={{ ...stFontXs, ...stTextMuted }}>Re-engage</div>
               <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
                 {Math.round(followup.data.reengagement_delay_days * followup.data.tier1_speed_multiplier / 100)}d
               </div>
@@ -792,7 +793,7 @@ export default function SettingsPage() {
       }}>
         <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-4)' }}>
           <div className="flex items-center gap-3">
-            <Key className="w-5 h-5" style={{ color: 'var(--text-tertiary)' }} />
+            <Key className="w-5 h-5" style={stTextTertiary} />
             <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 400, color: 'var(--text-primary)' }}>Anthropic API Key</h2>
           </div>
           <button
@@ -860,7 +861,7 @@ export default function SettingsPage() {
       {/* Billing info */}
       <div className="card" style={{ padding: 'var(--space-6)' }}>
         <div className="flex items-center gap-3" style={{ marginBottom: 'var(--space-3)' }}>
-          <Settings2 className="w-5 h-5" style={{ color: 'var(--text-tertiary)' }} />
+          <Settings2 className="w-5 h-5" style={stTextTertiary} />
           <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-tertiary)' }}>IMPORTANT: Claude.ai vs API Credits</h3>
         </div>
         <div className="space-y-2" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>

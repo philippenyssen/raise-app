@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { fmtDate } from '@/lib/format';
 import { STATUS_LABELS, TYPE_LABELS } from '@/lib/constants';
+import { stTextMuted, stTextSecondary, stFontXs, stFontSm, labelMuted } from '@/lib/styles';
 
 // ── Pipeline column order ────────────────────────────────────────────
 const PIPELINE_STATUSES: InvestorStatus[] = [
@@ -255,9 +256,7 @@ export default function PipelinePage() {
           <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', marginBottom: 'var(--space-1)' }}>
             Failed to load pipeline
           </h3>
-          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-4)' }}>
-            {fetchError}
-          </p>
+          <p style={{ ...stFontXs, ...stTextMuted, marginBottom: 'var(--space-4)' }}>{fetchError}</p>
           <button
             onClick={fetchInvestors}
             className="btn btn-secondary btn-sm"
@@ -275,9 +274,7 @@ export default function PipelinePage() {
       <div className="flex items-center justify-between flex-shrink-0">
         <div>
           <h1 className="page-title" style={{ fontSize: 'var(--font-size-xl)' }}>Investor Pipeline</h1>
-          <p className="page-subtitle" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', marginTop: 'var(--space-1)' }}>
-            Drag to move through the pipeline
-          </p>
+          <p className="page-subtitle" style={{ ...stFontSm, ...stTextMuted, marginTop: 'var(--space-1)' }}>Drag to move through the pipeline</p>
         </div>
         <div className="flex items-center gap-2">
           <FilterButton
@@ -330,10 +327,7 @@ export default function PipelinePage() {
       {showFilters && (
         <div
           className="flex-shrink-0 space-y-3"
-          style={{
-            borderRadius: 'var(--radius-xl)',
-            padding: 'var(--space-4)',
-          }}
+          style={{ borderRadius: 'var(--radius-xl)', padding: 'var(--space-4)' }}
         >
           <div className="flex items-center justify-between">
             <h3
@@ -346,7 +340,7 @@ export default function PipelinePage() {
               <button
                 onClick={clearFilters}
                 className="flex items-center gap-1 transition-colors"
-                style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}
+                style={labelMuted}
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}
               >
@@ -356,7 +350,7 @@ export default function PipelinePage() {
           </div>
           <div className="flex flex-wrap gap-4">
             <div>
-              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', display: 'block', marginBottom: '0.375rem' }}>Tier</span>
+              <span style={{ ...labelMuted, display: 'block', marginBottom: '0.375rem' }}>Tier</span>
               <div className="flex gap-1.5">
                 {[1, 2, 3, 4].map(tier => (
                   <TierFilterButton
@@ -369,7 +363,7 @@ export default function PipelinePage() {
               </div>
             </div>
             <div>
-              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', display: 'block', marginBottom: '0.375rem' }}>Type</span>
+              <span style={{ ...labelMuted, display: 'block', marginBottom: '0.375rem' }}>Type</span>
               <div className="flex gap-1.5 flex-wrap">
                 {(Object.entries(TYPE_LABELS) as [InvestorType, string][]).map(([key, label]) => (
                   <TypeFilterButton
@@ -411,20 +405,12 @@ export default function PipelinePage() {
         return (
           <div
             className="flex items-center gap-6 flex-shrink-0 overflow-x-auto"
-            style={{
-              padding: 'var(--space-3) var(--space-4)',
-              background: 'var(--surface-1)',
-              borderRadius: 'var(--radius-lg)',
-            }}
+            style={{ padding: 'var(--space-3) var(--space-4)', background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)' }}
           >
             {metrics.map((m) => (
               <div key={m.label} className="flex flex-col items-center" style={{ minWidth: '4rem' }}>
-                <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontWeight: 400, whiteSpace: 'nowrap' }}>
-                  {m.label}
-                </span>
-                <span style={{ fontSize: 'var(--font-size-lg)', fontWeight: 300, color: m.color || 'var(--text-primary)', lineHeight: 1.2 }}>
-                  {m.value}
-                </span>
+                <span style={{ ...labelMuted, fontWeight: 400, whiteSpace: 'nowrap' }}>{m.label}</span>
+                <span style={{ fontSize: 'var(--font-size-lg)', fontWeight: 300, color: m.color || 'var(--text-primary)', lineHeight: 1.2 }}>{m.value}</span>
               </div>
             ))}
           </div>
@@ -446,51 +432,21 @@ export default function PipelinePage() {
               <div
                 key={status}
                 className="w-[260px] flex flex-col"
-                style={{
-                  borderRadius: 'var(--radius-xl)',
-                  transition: 'all 150ms ease',
-                }}
+                style={{ borderRadius: 'var(--radius-xl)', transition: 'all 150ms ease' }}
                 onDragOver={e => handleDragOver(e, status)}
                 onDragLeave={handleDragLeave}
                 onDrop={e => handleDrop(e, status)}
               >
                 {/* Column header */}
-                <div
-                  style={{
-                    padding: '0.625rem 0.75rem',
-                    borderTopLeftRadius: 'var(--radius-xl)',
-                    borderTopRightRadius: 'var(--radius-xl)',
-                    ...colors.header,
-                  }}
-                >
+                <div style={{ padding: '0.625rem 0.75rem', borderTopLeftRadius: 'var(--radius-xl)', borderTopRightRadius: 'var(--radius-xl)', ...colors.header }}>
                   <div className="flex items-center justify-between">
-                    <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-primary)', letterSpacing: '0.01em' }}>
-                      {STATUS_LABELS[status]}
-                    </span>
-                    <span
-                      style={{
-                        fontSize: '10px',
-                        fontWeight: 300,
-                        padding: '0.125rem 0.375rem',
-                        borderRadius: '9999px',
-                        ...colors.badge,
-                      }}
-                    >
-                      {cards.length}
-                    </span>
+                    <span style={{ ...stFontXs, fontWeight: 400, color: 'var(--text-primary)', letterSpacing: '0.01em' }}>{STATUS_LABELS[status]}</span>
+                    <span style={{ fontSize: '10px', fontWeight: 300, padding: '0.125rem 0.375rem', borderRadius: '9999px', ...colors.badge }}>{cards.length}</span>
                   </div>
                 </div>
 
                 {/* Cards container */}
-                <div
-                  className="flex-1 overflow-y-auto p-2 space-y-2"
-                  style={{
-                    ...colors.bg,
-                    borderBottomLeftRadius: 'var(--radius-xl)',
-                    borderBottomRightRadius: 'var(--radius-xl)',
-                    minHeight: '120px',
-                  }}
-                >
+                <div className="flex-1 overflow-y-auto p-2 space-y-2" style={{ ...colors.bg, borderBottomLeftRadius: 'var(--radius-xl)', borderBottomRightRadius: 'var(--radius-xl)', minHeight: '120px' }}>
                   {cards.map(inv => (
                     <InvestorCard
                       key={inv.id}
@@ -566,14 +522,7 @@ export default function PipelinePage() {
                       </span>
                     </div>
                   </div>
-                  <div
-                    className="p-2"
-                    style={{
-                      ...colors.bg,
-                      borderBottomLeftRadius: 'var(--radius-xl)',
-                      borderBottomRightRadius: 'var(--radius-xl)',
-                    }}
-                  >
+                  <div className="p-2" style={{ ...colors.bg, borderBottomLeftRadius: 'var(--radius-xl)', borderBottomRightRadius: 'var(--radius-xl)' }}>
                     {cards.length > 0 ? (
                       <div className="flex flex-wrap gap-2">
                         {cards.map(inv => (
@@ -750,9 +699,7 @@ function StatCard({
   return (
     <div
       className="card-metric"
-      style={{
-        padding: 'var(--space-3) var(--space-4)',
-      }}
+      style={{ padding: 'var(--space-3) var(--space-4)' }}
     >
       <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-1)' }}>
         <span style={{ color: iconColor }}>{icon}</span>
@@ -814,25 +761,12 @@ function InvestorCard({
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         className="transition-colors"
-        style={{
-          ...cardBaseStyle,
-          padding: '0.5rem 0.75rem',
-        }}
+        style={{ ...cardBaseStyle, padding: '0.5rem 0.75rem' }}
       >
         <Link href={`/investors/${investor.id}`} className="flex items-center gap-2">
           <GripVertical className="w-3 h-3 flex-shrink-0" style={{ color: hovered ? 'var(--text-muted)' : 'var(--border-strong)' }} />
-          <span className="truncate" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-secondary)' }}>{investor.name}</span>
-          <span
-            style={{
-              padding: '0.125rem 0.375rem',
-              borderRadius: 'var(--radius-sm)',
-              fontSize: '10px',
-              fontWeight: 400,
-              ...TIER_STYLES[investor.tier],
-            }}
-          >
-            T{investor.tier}
-          </span>
+          <span className="truncate" style={{ ...stFontXs, fontWeight: 400, color: 'var(--text-secondary)' }}>{investor.name}</span>
+          <span style={{ padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-sm)', fontSize: '10px', fontWeight: 400, ...TIER_STYLES[investor.tier] }}>T{investor.tier}</span>
         </Link>
       </div>
     );
@@ -846,25 +780,11 @@ function InvestorCard({
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       className="transition-colors"
-      style={{
-        ...cardBaseStyle,
-        padding: 'var(--space-3)',
-      }}
+      style={{ ...cardBaseStyle, padding: 'var(--space-3)' }}
     >
       <Link href={`/investors/${investor.id}`} className="block space-y-2.5" draggable={false}>
-        {/* Top row: name + drag handle */}
         <div className="flex items-start justify-between gap-1">
-          <span
-            style={{
-              fontSize: 'var(--font-size-sm)',
-              fontWeight: 400,
-              color: hovered ? 'var(--text-primary)' : 'var(--text-secondary)',
-              lineHeight: 1.3,
-              transition: 'color 150ms ease',
-            }}
-          >
-            {investor.name}
-          </span>
+          <span style={{ ...stFontSm, fontWeight: 400, color: hovered ? 'var(--text-primary)' : 'var(--text-secondary)', lineHeight: 1.3, transition: 'color 150ms ease' }}>{investor.name}</span>
           <GripVertical
             className="w-3.5 h-3.5 flex-shrink-0 mt-0.5"
             style={{ color: hovered ? 'var(--text-muted)' : 'var(--border-strong)' }}
@@ -873,41 +793,21 @@ function InvestorCard({
 
         {/* Badges row: type + tier */}
         <div className="flex items-center gap-1.5">
-          <span
-            className="inline-flex items-center gap-1"
-            style={{
-              padding: '0.125rem 0.375rem',
-              borderRadius: 'var(--radius-sm)',
-              fontSize: '10px',
-              fontWeight: 400,
-              ...TYPE_STYLES[investor.type as InvestorType],
-            }}
-          >
-            <TypeIcon className="w-2.5 h-2.5" />
-            {TYPE_LABELS[investor.type as InvestorType] ?? investor.type}
+          <span className="inline-flex items-center gap-1" style={{ padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-sm)', fontSize: '10px', fontWeight: 400, ...TYPE_STYLES[investor.type as InvestorType] }}>
+            <TypeIcon className="w-2.5 h-2.5" />{TYPE_LABELS[investor.type as InvestorType] ?? investor.type}
           </span>
-          <span
-            style={{
-              padding: '0.125rem 0.375rem',
-              borderRadius: 'var(--radius-sm)',
-              fontSize: '10px',
-              fontWeight: 400,
-              ...TIER_STYLES[investor.tier],
-            }}
-          >
-            T{investor.tier}
-          </span>
+          <span style={{ padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-sm)', fontSize: '10px', fontWeight: 400, ...TIER_STYLES[investor.tier] }}>T{investor.tier}</span>
         </div>
 
         {/* Details */}
         <div className="space-y-1">
           {investor.partner && (
-            <div className="truncate" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+            <div className="truncate" style={labelMuted}>
               <span style={{ color: 'var(--text-muted)' }}>Partner:</span> {investor.partner}
             </div>
           )}
           {investor.fund_size && (
-            <div className="truncate" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+            <div className="truncate" style={labelMuted}>
               <span style={{ color: 'var(--text-muted)' }}>Fund:</span> {investor.fund_size}
             </div>
           )}
@@ -944,16 +844,7 @@ function InvestorCard({
             const isStale = days >= 14;
             const isWarning = days >= 7 && days < 14;
             return (
-              <span
-                style={{
-                  fontSize: '10px',
-                  color: isStale ? 'var(--danger)' : isWarning ? 'var(--warning)' : 'var(--text-muted)',
-                  fontWeight: 400,
-                }}
-                title={`Last meeting: ${fmtDate(lastDate)}`}
-              >
-                {days === 0 ? 'Today' : `${days}d ago`}
-              </span>
+              <span style={{ fontSize: '10px', color: isStale ? 'var(--danger)' : isWarning ? 'var(--warning)' : 'var(--text-muted)', fontWeight: 400 }} title={`Last meeting: ${fmtDate(lastDate)}`}>{days === 0 ? 'Today' : `${days}d ago`}</span>
             );
           })()}
         </div>

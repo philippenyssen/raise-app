@@ -10,6 +10,7 @@ import {
   TrendingDown, Minus, Users, Shield, Target,
   CheckCircle, Sparkles, ArrowUpRight,
 } from 'lucide-react';
+import { stTextMuted, stTextTertiary, stTextSecondary, stFontXs, stFontSm, labelMuted, labelTertiary, labelSecondary } from '@/lib/styles';
 
 // ---------------------------------------------------------------------------
 // Types — match the updated /api/briefing response
@@ -146,15 +147,7 @@ function MeetingCard({ meeting }: { meeting: BriefingMeeting }) {
       onMouseLeave={() => setHovered(false)}
     >
       <div className="flex items-start gap-3">
-        <div
-          className="flex items-center justify-center shrink-0"
-          style={{
-            width: '40px',
-            height: '40px',
-            borderRadius: 'var(--radius-md)',
-            background: 'var(--accent-muted)',
-          }}
-        >
+        <div className="flex items-center justify-center shrink-0" style={{ width: '40px', height: '40px', borderRadius: 'var(--radius-md)', background: 'var(--accent-muted)' }}>
           <span style={{ color: 'var(--accent)', fontSize: 'var(--font-size-xs)', fontWeight: 300, textAlign: 'center', lineHeight: 1.1 }}>
             {timeDisplay}
           </span>
@@ -162,25 +155,10 @@ function MeetingCard({ meeting }: { meeting: BriefingMeeting }) {
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
-              {meeting.investorName}
-            </span>
-            <span
-              style={{
-                fontSize: 'var(--font-size-xs)',
-                padding: '2px 6px',
-                borderRadius: 'var(--radius-sm)',
-                fontWeight: 400,
-                background: 'var(--surface-2)',
-                color: 'var(--text-tertiary)',
-              }}
-            >
-              {meeting.type.replace(/_/g, ' ')}
-            </span>
+            <span style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>{meeting.investorName}</span>
+            <span style={{ ...stFontXs, padding: '2px 6px', borderRadius: 'var(--radius-sm)', fontWeight: 400, background: 'var(--surface-2)', color: 'var(--text-tertiary)' }}>{meeting.type.replace(/_/g, ' ')}</span>
             {(meeting.meetingCount ?? 0) > 1 && (
-              <span style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 400 }}>
-                Meeting #{meeting.meetingCount}
-              </span>
+              <span style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 400 }}>Meeting #{meeting.meetingCount}</span>
             )}
             {(meeting.enthusiasm ?? 0) > 0 && (
               <span
@@ -206,9 +184,7 @@ function MeetingCard({ meeting }: { meeting: BriefingMeeting }) {
             )}
           </div>
 
-          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', marginTop: '6px', lineHeight: 1.5 }}>
-            {renderMarkdown(meeting.keyPoint)}
-          </p>
+          <p style={{ ...labelSecondary, marginTop: '6px', lineHeight: 1.5 }}>{renderMarkdown(meeting.keyPoint)}</p>
         </div>
 
         <div className="flex gap-1.5 shrink-0">
@@ -249,47 +225,26 @@ function ActionCard({ action }: { action: UrgentAction }) {
       onMouseLeave={() => setHovered(false)}
     >
       <div className="flex items-start gap-3">
-        <div
-          className="flex items-center justify-center shrink-0"
-          style={{
-            width: '32px',
-            height: '32px',
-            borderRadius: 'var(--radius-md)',
-            background: iconBg,
-          }}
-        >
+        <div className="flex items-center justify-center shrink-0" style={{ width: '32px', height: '32px', borderRadius: 'var(--radius-md)', background: iconBg }}>
           <span style={{ color: iconColor, display: 'flex' }}>
             <Icon className="w-4 h-4" />
           </span>
         </div>
 
         <div className="flex-1 min-w-0">
-          <p style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', lineHeight: 1.4 }}>
-            {renderMarkdown(action.title)}
-          </p>
-
+          <p style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)', lineHeight: 1.4 }}>{renderMarkdown(action.title)}</p>
           {action.description && (
-            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginTop: '2px', lineHeight: 1.5 }}>
-              {renderMarkdown(action.description)}
-            </p>
+            <p style={{ ...labelTertiary, marginTop: '2px', lineHeight: 1.5 }}>{renderMarkdown(action.description)}</p>
           )}
 
           <div className="flex items-center gap-3 flex-wrap" style={{ marginTop: '8px' }}>
             {action.investorName && (
-              <span
-                className="flex items-center gap-1"
-                style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}
-              >
-                <span style={{ display: 'flex' }}><Users className="w-3 h-3" /></span>
-                {action.investorName}
+              <span className="flex items-center gap-1" style={{ ...stFontXs, color: 'var(--accent)' }}>
+                <span style={{ display: 'flex' }}><Users className="w-3 h-3" /></span>{action.investorName}
               </span>
             )}
-            <span
-              className="badge badge-zinc"
-              style={{ fontSize: '10px' }}
-            >
-              <span style={{ display: 'flex' }}><Clock className="w-3 h-3" /></span>
-              {action.timeEstimate}
+            <span className="badge badge-zinc" style={{ fontSize: '10px' }}>
+              <span style={{ display: 'flex' }}><Clock className="w-3 h-3" /></span>{action.timeEstimate}
             </span>
           </div>
         </div>
@@ -356,12 +311,8 @@ function AlertCard({ alert }: { alert: BriefingAlert }) {
           <Icon className="w-4 h-4" />
         </span>
         <div className="flex-1 min-w-0">
-          <p style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', lineHeight: 1.4 }}>
-            {renderMarkdown(alert.title)}
-          </p>
-          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginTop: '2px' }}>
-            {renderMarkdown(alert.detail)}
-          </p>
+          <p style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)', lineHeight: 1.4 }}>{renderMarkdown(alert.title)}</p>
+          <p style={{ ...labelTertiary, marginTop: '2px' }}>{renderMarkdown(alert.detail)}</p>
         </div>
         <Link
           href={alertLink}
@@ -573,15 +524,8 @@ export default function TodayPage() {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-8)', maxWidth: '860px' }}>
         <h1 className="page-title">Morning Briefing</h1>
-        <div
-          className="text-center"
-          style={{
-            background: 'var(--danger-muted)',
-            borderRadius: 'var(--radius-lg)',
-            padding: 'var(--space-10)',
-          }}
-        >
-          <p style={{ color: 'var(--text-secondary)', marginBottom: 'var(--space-4)' }}>Could not load briefing data.</p>
+        <div className="text-center" style={{ background: 'var(--danger-muted)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-10)' }}>
+          <p style={{ ...stTextSecondary, marginBottom: 'var(--space-4)' }}>Could not load briefing data.</p>
           <button onClick={() => fetchBriefing()} className="btn btn-secondary btn-md">
             Retry
           </button>
@@ -612,17 +556,7 @@ export default function TodayPage() {
     <div className="page-content" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)', maxWidth: '860px', position: 'relative' }}>
 
       {refreshing && (
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          height: '2px',
-          background: 'var(--accent)',
-          borderRadius: '1px',
-          animation: 'pulse 1.5s ease-in-out infinite',
-          zIndex: 10,
-        }} />
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'var(--accent)', borderRadius: '1px', animation: 'pulse 1.5s ease-in-out infinite', zIndex: 10 }} />
       )}
 
       <div className="flex items-start justify-between">
@@ -630,52 +564,18 @@ export default function TodayPage() {
           <h1 className="page-title">
             {data.greeting}
           </h1>
-          <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)', marginTop: '2px' }}>
-            {fmtDateFull(new Date())}
-          </p>
+          <p style={{ ...stFontSm, color: 'var(--text-tertiary)', marginTop: '2px' }}>{fmtDateFull(new Date())}</p>
 
           <div className="flex items-center gap-2" style={{ marginTop: '6px' }}>
-            <span style={{
-              fontSize: 'var(--font-size-xs)',
-              color: stalenessMinutes >= 5 ? 'var(--warning)' : 'var(--text-muted)',
-              transition: 'color 300ms ease',
-            }}>
-              {stalenessMinutes < 1 ? 'Updated just now' : `Updated ${stalenessMinutes}m ago`}
-            </span>
-            <button
-              onClick={() => fetchBriefing(true)}
-              disabled={refreshing}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '20px',
-                height: '20px',
-                borderRadius: 'var(--radius-sm)',
-                border: 'none',
-                background: 'transparent',
-                cursor: refreshing ? 'default' : 'pointer',
-                color: stalenessMinutes >= 5 ? 'var(--warning)' : 'var(--text-muted)',
-                opacity: refreshing ? 0.5 : 1,
-                transition: 'color 300ms ease, opacity 150ms ease',
-                padding: 0,
-              }}
-            >
+            <span style={{ ...stFontXs, color: stalenessMinutes >= 5 ? 'var(--warning)' : 'var(--text-muted)', transition: 'color 300ms ease' }}>{stalenessMinutes < 1 ? 'Updated just now' : `Updated ${stalenessMinutes}m ago`}</span>
+            <button onClick={() => fetchBriefing(true)} disabled={refreshing} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '20px', height: '20px', borderRadius: 'var(--radius-sm)', border: 'none', background: 'transparent', cursor: refreshing ? 'default' : 'pointer', color: stalenessMinutes >= 5 ? 'var(--warning)' : 'var(--text-muted)', opacity: refreshing ? 0.5 : 1, transition: 'color 300ms ease, opacity 150ms ease', padding: 0 }}>
               <span style={{ display: 'flex', animation: refreshing ? 'spin 1s linear infinite' : 'none' }}>
                 <RefreshCw className="w-3 h-3" />
               </span>
             </button>
           </div>
 
-          <p style={{
-            fontSize: 'var(--font-size-base)',
-            color: 'var(--text-secondary)',
-            marginTop: 'var(--space-3)',
-            lineHeight: 1.6,
-            maxWidth: '640px',
-          }}>
-            {renderMarkdown(data.todaySummary)}
-          </p>
+          <p style={{ fontSize: 'var(--font-size-base)', color: 'var(--text-secondary)', marginTop: 'var(--space-3)', lineHeight: 1.6, maxWidth: '640px' }}>{renderMarkdown(data.todaySummary)}</p>
         </div>
 
         <button
@@ -694,51 +594,16 @@ export default function TodayPage() {
       {/* 1.5. Raise Day Counter                                            */}
       {/* ----------------------------------------------------------------- */}
       {raiseProgress && (
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 'var(--space-4)',
-            padding: 'var(--space-3) var(--space-4)',
-            borderRadius: 'var(--radius-lg)',
-            background: 'var(--surface-1)',
-          }}
-        >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)', padding: 'var(--space-3) var(--space-4)', borderRadius: 'var(--radius-lg)', background: 'var(--surface-1)' }}>
           <div className="flex items-center gap-2 shrink-0">
             <span style={{ color: 'var(--accent)', display: 'flex' }}><Target className="w-4 h-4" /></span>
-            <span style={{
-              fontSize: 'var(--font-size-lg)',
-              fontWeight: 300,
-              fontVariantNumeric: 'tabular-nums',
-              color: raiseProgress.isOver ? 'var(--danger)' : raiseProgress.pct >= 75 ? 'var(--warning)' : 'var(--text-primary)',
-            }}>
-              Day {raiseProgress.daysElapsed}
-            </span>
-            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-              of {raiseProgress.targetDays}
-            </span>
+            <span style={{ fontSize: 'var(--font-size-lg)', fontWeight: 300, fontVariantNumeric: 'tabular-nums', color: raiseProgress.isOver ? 'var(--danger)' : raiseProgress.pct >= 75 ? 'var(--warning)' : 'var(--text-primary)' }}>Day {raiseProgress.daysElapsed}</span>
+            <span style={labelMuted}>of {raiseProgress.targetDays}</span>
           </div>
           <div style={{ flex: 1, height: '6px', background: 'var(--surface-3)', borderRadius: '3px', overflow: 'hidden' }}>
-            <div style={{
-              width: `${raiseProgress.pct}%`,
-              height: '100%',
-              borderRadius: '3px',
-              background: raiseProgress.isOver ? 'var(--danger)' : raiseProgress.pct >= 75 ? 'var(--warning)' : 'var(--accent)',
-              transition: 'width 600ms ease',
-            }} />
+            <div style={{ width: `${raiseProgress.pct}%`, height: '100%', borderRadius: '3px', background: raiseProgress.isOver ? 'var(--danger)' : raiseProgress.pct >= 75 ? 'var(--warning)' : 'var(--accent)', transition: 'width 600ms ease' }} />
           </div>
-          <span style={{
-            fontSize: 'var(--font-size-xs)',
-            fontWeight: 400,
-            fontVariantNumeric: 'tabular-nums',
-            color: raiseProgress.isOver ? 'var(--danger)' : raiseProgress.daysRemaining <= 14 ? 'var(--warning)' : 'var(--text-tertiary)',
-            whiteSpace: 'nowrap',
-          }}>
-            {raiseProgress.isOver
-              ? `+${raiseProgress.daysElapsed - raiseProgress.targetDays}d over`
-              : `${raiseProgress.daysRemaining}d left`
-            }
-          </span>
+          <span style={{ ...stFontXs, fontWeight: 400, fontVariantNumeric: 'tabular-nums', color: raiseProgress.isOver ? 'var(--danger)' : raiseProgress.daysRemaining <= 14 ? 'var(--warning)' : 'var(--text-tertiary)', whiteSpace: 'nowrap' }}>{raiseProgress.isOver ? `+${raiseProgress.daysElapsed - raiseProgress.targetDays}d over` : `${raiseProgress.daysRemaining}d left`}</span>
         </div>
       )}
 
@@ -746,20 +611,8 @@ export default function TodayPage() {
       {/* 1.6. Overnight Changes                                            */}
       {/* ----------------------------------------------------------------- */}
       {overnight && (overnight.statusChanges.length > 0 || overnight.newMeetings > 0 || overnight.tasksCompleted > 0) && (
-        <div
-          className="rounded-xl"
-          style={{
-            background: 'var(--surface-1)',
-            overflow: 'hidden',
-          }}
-        >
-          <div
-            className="flex items-center gap-2"
-            style={{
-              padding: 'var(--space-3) var(--space-4)',
-              borderBottom: '1px solid var(--border-subtle)',
-            }}
-          >
+        <div className="rounded-xl" style={{ background: 'var(--surface-1)', overflow: 'hidden' }}>
+          <div className="flex items-center gap-2" style={{ padding: 'var(--space-3) var(--space-4)', borderBottom: '1px solid var(--border-subtle)' }}>
             <Zap className="w-3.5 h-3.5" style={{ color: 'var(--chart-4)' }} />
             <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--chart-4)', letterSpacing: '0.01em' }}>Since Yesterday</span>
           </div>
@@ -776,19 +629,19 @@ export default function TodayPage() {
                 >
                   {sc.investorName}
                 </Link>
-                <span style={{ color: 'var(--text-muted)' }}>{sc.from.replace(/_/g, ' ')} → {sc.to.replace(/_/g, ' ')}</span>
+                <span style={stTextMuted}>{sc.from.replace(/_/g, ' ')} → {sc.to.replace(/_/g, ' ')}</span>
               </div>
             ))}
             {overnight.newMeetings > 0 && (
               <div className="flex items-center gap-1.5" style={{ fontSize: 'var(--font-size-xs)' }}>
                 <Calendar className="w-3 h-3" style={{ color: 'var(--accent)' }} />
-                <span style={{ color: 'var(--text-secondary)' }}>{overnight.newMeetings} new meeting{overnight.newMeetings > 1 ? 's' : ''}</span>
+                <span style={stTextSecondary}>{overnight.newMeetings} new meeting{overnight.newMeetings > 1 ? 's' : ''}</span>
               </div>
             )}
             {overnight.tasksCompleted > 0 && (
               <div className="flex items-center gap-1.5" style={{ fontSize: 'var(--font-size-xs)' }}>
                 <CheckCircle className="w-3 h-3" style={{ color: 'var(--text-secondary)' }} />
-                <span style={{ color: 'var(--text-secondary)' }}>{overnight.tasksCompleted} task{overnight.tasksCompleted > 1 ? 's' : ''} completed</span>
+                <span style={stTextSecondary}>{overnight.tasksCompleted} task{overnight.tasksCompleted > 1 ? 's' : ''} completed</span>
               </div>
             )}
           </div>
@@ -808,22 +661,10 @@ export default function TodayPage() {
             ))}
           </div>
         ) : (
-          <div
-            className="card"
-            style={{
-              padding: 'var(--space-6)',
-              textAlign: 'center',
-            }}
-          >
-            <span style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--space-3)' }}>
-              <Calendar className="w-8 h-8" style={{ color: 'var(--text-muted)' }} />
-            </span>
-            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', fontWeight: 400 }}>
-              No meetings scheduled today
-            </p>
-            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginTop: '4px', lineHeight: 1.5 }}>
-              Use the open calendar to schedule follow-ups with your highest-momentum investors, or work through overdue actions.
-            </p>
+          <div className="card" style={{ padding: 'var(--space-6)', textAlign: 'center' }}>
+            <span style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--space-3)' }}><Calendar className="w-8 h-8" style={stTextMuted} /></span>
+            <p style={{ ...stFontSm, color: 'var(--text-secondary)', fontWeight: 400 }}>No meetings scheduled today</p>
+            <p style={{ ...labelTertiary, marginTop: '4px', lineHeight: 1.5 }}>Use the open calendar to schedule follow-ups with your highest-momentum investors, or work through overdue actions.</p>
             <div className="flex items-center justify-center gap-2" style={{ marginTop: 'var(--space-3)' }}>
               <Link href="/focus" className="btn btn-primary btn-sm">
                 Schedule high-momentum follow-ups
@@ -849,24 +690,10 @@ export default function TodayPage() {
             ))}
           </div>
         ) : (
-          <div
-            className="card"
-            style={{
-              padding: 'var(--space-6)',
-              textAlign: 'center',
-            }}
-          >
-            <span style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--space-3)' }}>
-              <CheckCircle className="w-8 h-8" style={{ color: 'var(--text-secondary)' }} />
-            </span>
-            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', fontWeight: 400 }}>
-              No urgent actions right now
-            </p>
-            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginTop: '4px', lineHeight: 1.5 }}>
-              Good time to advance stalled conversations or prepare materials for upcoming deep dives. Check the{' '}
-              <Link href="/focus" style={{ color: 'var(--accent)', textDecoration: 'none' }}>focus queue</Link>
-              {' '}for investors who need a push.
-            </p>
+          <div className="card" style={{ padding: 'var(--space-6)', textAlign: 'center' }}>
+            <span style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--space-3)' }}><CheckCircle className="w-8 h-8" style={stTextSecondary} /></span>
+            <p style={{ ...stFontSm, color: 'var(--text-secondary)', fontWeight: 400 }}>No urgent actions right now</p>
+            <p style={{ ...labelTertiary, marginTop: '4px', lineHeight: 1.5 }}>Good time to advance stalled conversations or prepare materials for upcoming deep dives. Check the{' '}<Link href="/focus" style={{ color: 'var(--accent)', textDecoration: 'none' }}>focus queue</Link>{' '}for investors who need a push.</p>
             <div className="flex items-center justify-center gap-2" style={{ marginTop: 'var(--space-3)' }}>
               <Link href="/pipeline?sort=momentum" className="btn btn-secondary btn-sm">
                 Review stalled investors
@@ -999,14 +826,7 @@ export default function TodayPage() {
               <div className={forecastDotClass} style={{ width: '6px', height: '6px' }} />
               <div className="metric-label">Forecast</div>
             </div>
-            <p style={{
-              fontSize: 'var(--font-size-xs)',
-              color: forecastColor,
-              marginTop: '6px',
-              lineHeight: 1.4,
-            }}>
-              {data.pipelineSnapshot.forecast}
-            </p>
+            <p style={{ ...stFontXs, color: forecastColor, marginTop: '6px', lineHeight: 1.4 }}>{data.pipelineSnapshot.forecast}</p>
           </div>
         </div>
       </div>
@@ -1028,25 +848,9 @@ export default function TodayPage() {
       {/* ----------------------------------------------------------------- */}
       {/* 6. Momentum Indicator                                             */}
       {/* ----------------------------------------------------------------- */}
-      <div
-        style={{
-          background: momentumConfig.bg,
-          border: `1px solid ${momentumConfig.border}`,
-          borderRadius: 'var(--radius-lg)',
-          padding: 'var(--space-4)',
-        }}
-      >
+      <div style={{ background: momentumConfig.bg, border: `1px solid ${momentumConfig.border}`, borderRadius: 'var(--radius-lg)', padding: 'var(--space-4)' }}>
         <div className="flex items-center gap-3">
-          <div
-            className="flex items-center justify-center shrink-0"
-            style={{
-              width: '36px',
-              height: '36px',
-              borderRadius: '50%',
-              background: momentumConfig.bg,
-              border: `1px solid ${momentumConfig.border}`,
-            }}
-          >
+          <div className="flex items-center justify-center shrink-0" style={{ width: '36px', height: '36px', borderRadius: '50%', background: momentumConfig.bg, border: `1px solid ${momentumConfig.border}` }}>
             <span style={{ color: momentumConfig.color, display: 'flex' }}>
               <MomentumIcon className="w-5 h-5" />
             </span>
@@ -1057,28 +861,9 @@ export default function TodayPage() {
               <p style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: momentumConfig.color }}>
                 {momentumConfig.label}
               </p>
-              <span
-                style={{
-                  fontSize: 'var(--font-size-xs)',
-                  padding: '1px 6px',
-                  borderRadius: 'var(--radius-sm)',
-                  background: momentumConfig.bg,
-                  border: `1px solid ${momentumConfig.border}`,
-                  color: momentumConfig.color,
-                  fontWeight: 400,
-                }}
-              >
-                Raise Momentum
-              </span>
+              <span style={{ ...stFontXs, padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: momentumConfig.bg, border: `1px solid ${momentumConfig.border}`, color: momentumConfig.color, fontWeight: 400 }}>Raise Momentum</span>
             </div>
-            <p style={{
-              fontSize: 'var(--font-size-xs)',
-              color: 'var(--text-secondary)',
-              marginTop: '2px',
-              lineHeight: 1.5,
-            }}>
-              {data.momentumChange}
-            </p>
+            <p style={{ ...stFontXs, color: 'var(--text-secondary)', marginTop: '2px', lineHeight: 1.5 }}>{data.momentumChange}</p>
           </div>
 
           <Link
@@ -1098,23 +883,9 @@ export default function TodayPage() {
       {/* 7. AI Insight                                                      */}
       {/* ----------------------------------------------------------------- */}
       {insight && (
-        <div
-          style={{
-            background: 'var(--accent-muted)',
-            borderRadius: 'var(--radius-lg)',
-            padding: 'var(--space-4)',
-          }}
-        >
+        <div style={{ background: 'var(--accent-muted)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-4)' }}>
           <div className="flex items-start gap-3">
-            <div
-              className="flex items-center justify-center shrink-0"
-              style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: 'var(--radius-md)',
-                background: 'var(--accent-10)',
-              }}
-            >
+            <div className="flex items-center justify-center shrink-0" style={{ width: '32px', height: '32px', borderRadius: 'var(--radius-md)', background: 'var(--accent-10)' }}>
               <span style={{ color: 'var(--accent)', display: 'flex' }}>
                 <Sparkles className="w-4 h-4" />
               </span>
@@ -1126,12 +897,8 @@ export default function TodayPage() {
                   AI Insight
                 </span>
               </div>
-              <p style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', lineHeight: 1.4 }}>
-                {insight.title}
-              </p>
-              <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', marginTop: '4px', lineHeight: 1.5 }}>
-                {insight.detail}
-              </p>
+              <p style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)', lineHeight: 1.4 }}>{insight.title}</p>
+              <p style={{ ...stFontXs, color: 'var(--text-secondary)', marginTop: '4px', lineHeight: 1.5 }}>{insight.detail}</p>
             </div>
 
             <Link
