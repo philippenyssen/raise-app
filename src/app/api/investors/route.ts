@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
     if (id) {
       const investor = await getInvestor(id);
       if (!investor) return NextResponse.json({ error: `Investor ${id} not found` }, { status: 404 });
-      return NextResponse.json(investor);
+      return NextResponse.json(investor, { headers: { 'Cache-Control': 'private, max-age=15, stale-while-revalidate=30' } });
     }
     const investors = await getAllInvestors();
     return NextResponse.json(investors, { headers: { 'Cache-Control': 'private, max-age=15, stale-while-revalidate=30' } });

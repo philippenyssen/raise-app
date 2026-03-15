@@ -11,17 +11,17 @@ export async function GET(req: NextRequest) {
   if (view === 'top') {
     const limit = Math.min(Math.max(parseInt(searchParams.get('limit') || '10', 10) || 10, 1), 100);
     const top = await getTopObjections(limit);
-    return NextResponse.json(top);
+    return NextResponse.json(top, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
   }
 
   if (view === 'best' && topic) {
     const best = await getBestResponses(topic);
-    return NextResponse.json(best);
+    return NextResponse.json(best, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
   }
 
   if (view === 'investor' && investorId) {
     const objections = await getObjectionsByInvestor(investorId);
-    return NextResponse.json(objections);
+    return NextResponse.json(objections, { headers: { 'Cache-Control': 'private, max-age=15, stale-while-revalidate=30' } });
   }
 
   // Full playbook

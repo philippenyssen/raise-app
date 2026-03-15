@@ -26,12 +26,12 @@ export async function GET(req: NextRequest) {
 
     if (view === 'overdue') {
       const overdue = await getOverdueFollowups();
-      return NextResponse.json(overdue);
+      return NextResponse.json(overdue, { headers: { 'Cache-Control': 'private, max-age=15, stale-while-revalidate=30' } });
     }
 
     if (view === 'pending') {
       const pending = await getPendingFollowups();
-      return NextResponse.json(pending);
+      return NextResponse.json(pending, { headers: { 'Cache-Control': 'private, max-age=15, stale-while-revalidate=30' } });
     }
 
     if (view === 'intelligence') {
@@ -78,7 +78,7 @@ export async function GET(req: NextRequest) {
         cascade: cascadeMap[f.investor_id] || null,
       }));
 
-      return NextResponse.json(enriched);
+      return NextResponse.json(enriched, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
     }
 
     const filters: { status?: FollowupStatus; investor_id?: string; meeting_id?: string } = {};
