@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
       getIntelligenceBriefs(undefined, investor_id),
       getQuestionPatternsForType(investor.type),
       getAggregatedCompetitiveIntel(),
-      getInvestorRelationships(investor_id).catch(() => []),]);
+      getInvestorRelationships(investor_id).catch(e => { console.error('[BRIEF] relationships failed:', e instanceof Error ? e.message : e); return []; }),]);
 
     // 3b. Compute conviction trajectory for this investor (cycle 11)
     let trajectoryContext = '';
@@ -111,10 +111,10 @@ export async function POST(req: NextRequest) {
     let tacticalContext = '';
     try {
       const [velocities, fomos, cascades, winLoss] = await Promise.all([
-        computeEngagementVelocity().catch(() => []),
-        detectFomoDynamics().catch(() => []),
-        computeNetworkCascades().catch(() => []),
-        computeWinLossPatterns().catch(() => null),]);
+        computeEngagementVelocity().catch(e => { console.error('[BRIEF] velocity failed:', e instanceof Error ? e.message : e); return [] as Awaited<ReturnType<typeof computeEngagementVelocity>>; }),
+        detectFomoDynamics().catch(e => { console.error('[BRIEF] fomo failed:', e instanceof Error ? e.message : e); return [] as Awaited<ReturnType<typeof detectFomoDynamics>>; }),
+        computeNetworkCascades().catch(e => { console.error('[BRIEF] cascades failed:', e instanceof Error ? e.message : e); return [] as Awaited<ReturnType<typeof computeNetworkCascades>>; }),
+        computeWinLossPatterns().catch(e => { console.error('[BRIEF] winloss failed:', e instanceof Error ? e.message : e); return null; }),]);
 
       const parts: string[] = [];
 
