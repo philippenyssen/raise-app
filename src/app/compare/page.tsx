@@ -105,7 +105,7 @@ export default function ComparePage() {
         const data = await res.json();
         setAllInvestors(data);
       } catch {
-        toast('Failed to load investors', 'error');
+        toast('Couldn\'t load investors — try refreshing the page', 'error');
       } finally {
         setLoading(false);
       }}

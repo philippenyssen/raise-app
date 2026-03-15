@@ -25,7 +25,7 @@ export default function ReportsPage() {
       .then(data => {
         const list = (Array.isArray(data) ? data : data.investors || []) as InvestorOption[];
         setInvestors(list.filter(i => i.status !== 'passed' && i.status !== 'dropped'));})
-      .catch(() => { setError('Failed to load investors'); });
+      .catch(() => { setError('Couldn\'t load investors — try refreshing the page'); });
   }, []);
 
   async function generateReport(type: string) {
@@ -48,7 +48,7 @@ export default function ReportsPage() {
       const res = await fetch(url);
       if (!res.ok) {
         const errData = await res.json().catch(() => ({ error: 'Request failed' }));
-        throw new Error(errData.error || 'Failed to generate report');
+        throw new Error(errData.error || 'Couldn\'t generate report — check your API key');
       }
 
       const html = await res.text();
@@ -56,7 +56,7 @@ export default function ReportsPage() {
       setReportType(type);
       setGeneratedAt(new Date().toLocaleString());
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to generate report');
+      setError(err instanceof Error ? err.message : 'Couldn\'t generate report — check your API key');
     } finally {
       setLoading(null);
     }}

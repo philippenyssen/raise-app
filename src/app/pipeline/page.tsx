@@ -116,7 +116,7 @@ export default function PipelinePage() {
       }
       setInvestors(await res.json());
     } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Failed to load investors';
+      const msg = err instanceof Error ? err.message : 'Couldn\'t load investors — check your connection and refresh';
       setFetchError(msg);
       toast(msg, 'error');
     }
@@ -228,7 +228,7 @@ export default function PipelinePage() {
     } catch {
       setInvestors(prev =>
         prev.map(i => i.id === id ? { ...i, status: previousStatus } : i));
-      toast('Failed to update status — reverted', 'error');
+      toast('Couldn\'t update status — change reverted, try again', 'error');
     }
   }, [investors, toast]);
 

@@ -183,7 +183,7 @@ function FollowupsContent() {
       const data = await res.json();
       setFollowups(data);
     } catch (err) {
-      setFetchError(err instanceof Error ? err.message : 'Failed to load follow-ups');
+      setFetchError(err instanceof Error ? err.message : 'Couldn\'t load follow-ups — check your connection and refresh');
     } finally {
       setLoading(false);
     }
@@ -208,7 +208,7 @@ function FollowupsContent() {
       setCompletingId(null);
       setCompleteForm({ outcome: '', conviction_delta: 0 });
       fetchFollowups();
-    } catch { toast('Failed to complete follow-up', 'error'); }
+    } catch { toast('Couldn\'t complete follow-up — check your connection and retry', 'error'); }
   }
 
   async function handleSkip(id: string) {
@@ -219,7 +219,7 @@ function FollowupsContent() {
         body: JSON.stringify({ id, status: 'skipped' }),});
       if (!res.ok) throw new Error('Failed');
       fetchFollowups();
-    } catch { toast('Failed to skip follow-up', 'error'); }
+    } catch { toast('Couldn\'t skip follow-up — check your connection and retry', 'error'); }
   }
 
   async function handleQuickComplete(id: string) {
@@ -230,7 +230,7 @@ function FollowupsContent() {
         body: JSON.stringify({ id, status: 'completed' }),});
       if (!res.ok) throw new Error('Failed');
       fetchFollowups();
-    } catch { toast('Failed to complete follow-up', 'error'); }
+    } catch { toast('Couldn\'t complete follow-up — check your connection and retry', 'error'); }
   }
 
   // Categorize pending followups

@@ -163,7 +163,7 @@ export default function MomentumPage() {
     setError(null);
     try {
       const res = await cachedFetch('/api/momentum');
-      if (!res.ok) throw new Error('Failed to fetch momentum data');
+      if (!res.ok) throw new Error('Couldn\'t load momentum data — try refreshing');
       const json = await res.json();
       setData(json);
     } catch (e) {

@@ -141,11 +141,11 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(true);
 
   const raise = useFormSection<RaiseConfigForm>(
-    'raise_config', DEFAULT_RAISE_CONFIG, toast, 'Raise parameters saved', 'Failed to save raise config',);
+    'raise_config', DEFAULT_RAISE_CONFIG, toast, 'Raise parameters saved', 'Couldn\'t save raise config — try again',);
   const scoring = useFormSection<ScoringWeightsForm>(
-    'scoring_weights', DEFAULT_SCORING_WEIGHTS, toast, 'Scoring weights saved', 'Failed to save scoring weights',);
+    'scoring_weights', DEFAULT_SCORING_WEIGHTS, toast, 'Scoring weights saved', 'Couldn\'t save scoring weights — try again',);
   const followup = useFormSection<FollowupCadenceForm>(
-    'followup_cadence', DEFAULT_FOLLOWUP_CADENCE, toast, 'Follow-up cadence saved', 'Failed to save follow-up cadence',);
+    'followup_cadence', DEFAULT_FOLLOWUP_CADENCE, toast, 'Follow-up cadence saved', 'Couldn\'t save follow-up cadence — try again',);
 
   // Cmd+S / Ctrl+S to save whichever form has unsaved changes
   useEffect(() => {
@@ -177,7 +177,7 @@ export default function SettingsPage() {
         followup.reset({ ...DEFAULT_FOLLOWUP_CADENCE, ...(data.followup_cadence as FollowupCadenceForm) });
       }
     } catch {
-      toast('Failed to load settings', 'error');
+      toast('Couldn\'t load settings — try refreshing the page', 'error');
     } finally {
       setLoading(false);
     }

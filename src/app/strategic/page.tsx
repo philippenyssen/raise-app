@@ -144,7 +144,7 @@ export default function StrategicPage() {
     setError(null);
     try {
       const res = await fetch('/api/intelligence/strategic');
-      if (!res.ok) throw new Error('Failed to load strategic data');
+      if (!res.ok) throw new Error('Couldn\'t load strategic data — try refreshing');
       setData(await res.json());
     } catch (e) {
       const msg = e instanceof Error ? e.message : 'Unknown error';

@@ -47,7 +47,7 @@ export default function WorkspacePage() {
       if (!res.ok) throw new Error(`Failed (${res.status})`);
       setDocs(await res.json());
     } catch {
-      toast('Failed to load documents', 'error');
+      toast('Couldn\'t load documents — try refreshing the page', 'error');
     } finally {
       setLoading(false);
     }
@@ -93,7 +93,7 @@ export default function WorkspacePage() {
       toast('Document saved');
       fetchDocs();
     } catch {
-      toast('Failed to save document', 'error');
+      toast('Couldn\'t save document — try again', 'error');
     } finally {
       setSaving(false);
     }
@@ -135,7 +135,7 @@ export default function WorkspacePage() {
           if (generated) selectDoc(generated);
         }}
     } catch {
-      toast('Generation failed', 'error');
+      toast('Couldn\'t generate deliverable — check your API key and retry', 'error');
     } finally {
       setGenerating(null);
     }

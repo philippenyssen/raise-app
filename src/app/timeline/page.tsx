@@ -80,7 +80,7 @@ export default function TimelinePage() {
       if (!res.ok) throw new Error('Failed to update task');
       toast(newStatus === 'done' ? 'Task completed' : 'Task reopened');
       fetchData();
-    } catch { toast('Failed to update task', 'error'); }
+    } catch { toast('Couldn\'t update task — try again', 'error'); }
   }
 
   async function updateTaskStatus(id: string, status: string) {
@@ -91,7 +91,7 @@ export default function TimelinePage() {
         body: JSON.stringify({ id, status }),});
       if (!res.ok) throw new Error('Failed to update');
       fetchData();
-    } catch { toast('Failed to update status', 'error'); }
+    } catch { toast('Couldn\'t update status — try again', 'error'); }
   }
 
   async function deleteTaskById(id: string) {
@@ -100,7 +100,7 @@ export default function TimelinePage() {
       if (!res.ok) throw new Error('Failed to delete');
       toast('Task deleted');
       fetchData();
-    } catch { toast('Failed to delete task', 'error'); }
+    } catch { toast('Couldn\'t delete task — try again', 'error'); }
   }
 
   async function handleAddTask(e: React.FormEvent<HTMLFormElement>) {
@@ -117,7 +117,7 @@ export default function TimelinePage() {
       toast('Task created');
       setShowAdd(false);
       fetchData();
-    } catch { toast('Failed to create task', 'error'); }
+    } catch { toast('Couldn\'t create task — check all fields and retry', 'error'); }
   }
 
   const filteredTasks = tasks.filter(t => {

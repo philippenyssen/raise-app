@@ -114,10 +114,10 @@ export default function StressTestPage() {
         setData(await res.json());
         setLoadedAt(new Date().toISOString());
       } else {
-        toast('Failed to load stress test data', 'error');
+        toast('Couldn\'t load stress test data — try refreshing', 'error');
       }
     } catch {
-      toast('Failed to load stress test data', 'error');
+      toast('Couldn\'t load stress test data — try refreshing', 'error');
     } finally {
       setLoading(false);
       setRefreshing(false);

@@ -48,7 +48,7 @@ export default function ForecastPage() {
     setError(null);
     fetch('/api/forecast')
       .then(res => {
-        if (!res.ok) throw new Error('Failed to fetch forecast data');
+        if (!res.ok) throw new Error('Couldn\'t load forecast — try refreshing the page');
         return res.json();})
       .then(d => { setData(d); setLoading(false); })
       .catch(e => { setError(e.message); setLoading(false); });

@@ -128,7 +128,7 @@ export default function TermComparePage() {
       setResults(data);
       toast('Term sheet comparison ready — scroll down for analysis');
     } catch {
-      toast('Failed to run comparison', 'error');
+      toast('Couldn\'t run comparison — check your API key in settings', 'error');
     } finally {
       setLoading(false);
     }

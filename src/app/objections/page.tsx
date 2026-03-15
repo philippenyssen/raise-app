@@ -182,7 +182,7 @@ export default function ObjectionsPage() {
       if (!res.ok) throw new Error('Failed to load');
       const json = await res.json();
       setData(json);
-    } catch { toast('Failed to load objections', 'error'); }
+    } catch { toast('Couldn\'t load objections — try refreshing the page', 'error'); }
     setLoading(false);
   }, []);
 
@@ -240,7 +240,7 @@ export default function ObjectionsPage() {
       setEditingId(null);
       loadData();
       if (effectivenessData) loadEffectivenessData();
-    } catch { toast('Failed to save response', 'error'); }
+    } catch { toast('Couldn\'t save response — check your connection and retry', 'error'); }
     setSaving(false);
   }
 
@@ -255,7 +255,7 @@ export default function ObjectionsPage() {
       if (!res.ok) throw new Error('Failed to load');
       const json = await res.json();
       setInvestorObjections(json);
-    } catch { toast('Failed to load investor objections', 'error'); }
+    } catch { toast('Couldn\'t load investor objections — try refreshing', 'error'); }
     setLoadingInvestor(false);
   }
 

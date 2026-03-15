@@ -404,7 +404,7 @@ export default function FomoPage() {
     setError(null);
     try {
       const res = await fetch('/api/fomo');
-      if (!res.ok) throw new Error('Failed to fetch FOMO data');
+      if (!res.ok) throw new Error('Couldn\'t load FOMO data — try refreshing the page');
       const json = await res.json();
       setData(json);
     } catch (err) {

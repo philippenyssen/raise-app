@@ -182,7 +182,7 @@ export default function DealflowPage() {
 
       setInvestors(Array.from(map.values()));
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Failed to load data');
+      setError(e instanceof Error ? e.message : 'Couldn\'t load deal flow — check your connection and refresh');
     } finally {
       setLoading(false);
     }

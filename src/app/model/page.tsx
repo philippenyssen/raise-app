@@ -158,7 +158,7 @@ export default function ModelPage() {
         try { setLocalCells(JSON.parse(data[0].data)); } catch { setLocalCells({}); }
       }
     } catch {
-      toast('Failed to load model', 'error');
+      toast('Couldn\'t load model — try refreshing the page', 'error');
     } finally {
       setLoading(false);
     }
@@ -205,7 +205,7 @@ export default function ModelPage() {
       toast('Sheet saved');
       fetchSheets();
     } catch {
-      toast('Failed to save sheet', 'error');
+      toast('Couldn\'t save sheet — try again', 'error');
     } finally {
       setSaving(false);
     }
@@ -241,7 +241,7 @@ export default function ModelPage() {
       toast(`Added sheet "${name}"`);
       setShowAddSheet(false);
       fetchSheets();
-    } catch { toast('Failed to add sheet', 'error'); }
+    } catch { toast('Couldn\'t add sheet — try again', 'error'); }
   }, [sheets.length, toast, fetchSheets]);
 
   const deleteSheet = useCallback(async (sheet: ModelSheet) => {
@@ -261,7 +261,7 @@ export default function ModelPage() {
       toast(`Deleted "${sheet_name}"`, 'warning');
       setConfirmState(null);
       fetchSheets();
-    } catch { toast('Failed to delete sheet', 'error'); }
+    } catch { toast('Couldn\'t delete sheet — try again', 'error'); }
   }, [confirmState, activeSheetId, toast, fetchSheets]);
 
   // Cmd/Ctrl+S

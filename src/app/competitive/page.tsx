@@ -41,7 +41,7 @@ export default function CompetitivePage() {
     fetch(`/api/competitive${qs ? '?' + qs : ''}`)
       .then(r => { if (!r.ok) throw new Error(`${r.status}`); return r.json(); })
       .then((d: CompetitiveData) => { setData(d); setLoading(false); setLoadedAt(new Date().toISOString()); })
-      .catch(() => { setData(null); setLoading(false); toast('Failed to load competitive intelligence', 'error'); });
+      .catch(() => { setData(null); setLoading(false); toast('Couldn\'t load competitive intelligence — try refreshing', 'error'); });
   };
 
   useEffect(() => { fetchData(); }, []);

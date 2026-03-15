@@ -66,7 +66,7 @@ function NewMeetingContent() {
       setResult(data);
       toast(`Meeting with ${selectedInvestor?.name || 'investor'} logged`);
     } catch {
-      toast('Failed to log meeting', 'error');
+      toast('Couldn\'t log meeting — check your connection and retry', 'error');
     }
     setLoading(false);
   }

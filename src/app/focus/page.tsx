@@ -775,7 +775,7 @@ export default function FocusPage() {
       if (focusRes.ok) setData(await focusRes.json());
       if (accelRes.ok) setAccelData(await accelRes.json());
     } catch {
-      toast('Failed to load focus data', 'error');
+      toast('Couldn\'t load focus data — try refreshing the page', 'error');
     } finally {
       setLoading(false);
       setAccelLoading(false);
@@ -804,7 +804,7 @@ export default function FocusPage() {
       if (!res.ok) throw new Error('Failed to create task');
       toast(`Re-engagement task created for ${item.investorName}`);
     } catch {
-      toast('Failed to create task', 'error');
+      toast('Couldn\'t create task — check your connection and retry', 'error');
     }}
 
   async function handleExecuteAcceleration(item: AccelerationItem) {
@@ -820,7 +820,7 @@ export default function FocusPage() {
       setExecutedIds(prev => new Set(prev).add(item.id));
       toast(`Action executed for ${item.investorName}`);
     } catch {
-      toast('Failed to update action', 'error');
+      toast('Couldn\'t update action — check your connection and retry', 'error');
     }}
 
   if (loading) {

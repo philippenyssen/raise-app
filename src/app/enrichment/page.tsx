@@ -106,7 +106,7 @@ export default function EnrichmentPage() {
       toast(`Enriched: ${data.total_fields} fields from ${data.sources_succeeded} sources`, 'success');
       fetchData();
     } catch (err) {
-      toast(err instanceof Error ? err.message : 'Enrichment failed', 'error');
+      toast(err instanceof Error ? err.message : 'Enrichment failed — check your API key in settings', 'error');
     } finally {
       setEnriching(null);
     }}
@@ -132,7 +132,7 @@ export default function EnrichmentPage() {
       toast(`Bulk enriched ${data.total} investors (${totalFields} total fields)`, 'success');
       fetchData();
     } catch (err) {
-      toast(err instanceof Error ? err.message : 'Bulk enrichment failed', 'error');
+      toast(err instanceof Error ? err.message : 'Bulk enrichment failed — check your API key in settings', 'error');
     } finally {
       setBulkEnriching(false);
     }}
