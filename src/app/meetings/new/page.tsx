@@ -10,7 +10,14 @@ import { stAccent, stSurface1, stTextMuted, stTextPrimary, stTextSecondary, stTe
 
 export default function NewMeetingPage() {
   return (
-    <Suspense fallback={<div className="space-y-6"><div className="h-8 w-48 skeleton animate-pulse" style={{ borderRadius: 'var(--radius-md)' }} /></div>}>
+    <Suspense fallback={
+      <div className="space-y-6 page-content">
+        <div className="skeleton" style={{ height: '28px', width: '200px' }} />
+        <div className="skeleton" style={{ height: '16px', width: '300px' }} />
+        <div className="skeleton" style={{ height: '44px', borderRadius: 'var(--radius-md)' }} />
+        <div className="skeleton" style={{ height: '200px', borderRadius: 'var(--radius-md)' }} />
+        <div className="skeleton" style={{ height: '44px', width: '140px', borderRadius: 'var(--radius-md)' }} />
+      </div>}>
       <NewMeetingContent />
     </Suspense>);
 }
