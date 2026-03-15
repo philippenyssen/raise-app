@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import {
   Flame, Gauge, AlertTriangle,
@@ -83,8 +83,6 @@ export default function DealflowPage() {
   const [error, setError] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<SortKey>('heat');
   const [heatFilter, setHeatFilter] = useState<HeatFilter>('all');
-  const [hoveredRow, setHoveredRow] = useState<string | null>(null);
-
   const fetchData = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -209,8 +207,8 @@ export default function DealflowPage() {
     return () => window.removeEventListener('keydown', handler);
   }, [fetchData]);
 
-  // Sort & filter
-  const filtered = investors
+  // Sort & filter (memoized to avoid re-computation on unrelated state changes)
+  const filtered = useMemo(() => investors
     .filter(inv => heatFilter === 'all' || inv.heat === heatFilter)
     .sort((a, b) => {
       switch (sortBy) {
@@ -220,7 +218,7 @@ export default function DealflowPage() {
         case 'days': return a.daysInProcess - b.daysInProcess;
         case 'name': return a.name.localeCompare(b.name);
         default: return 0;
-      }});
+      }}), [investors, heatFilter, sortBy]);
 
   // Summary counts
   const counts = { hot: 0, warm: 0, cool: 0, cold: 0, frozen: 0, atRisk: 0, onTrack: 0 };
@@ -365,20 +363,16 @@ export default function DealflowPage() {
           {/* Data rows */}
           {filtered.map(inv => {
             const heatCfg = HEAT_CONFIG[inv.heat] || HEAT_CONFIG.cool;
-            const isHovered = hoveredRow === inv.id;
             return (
               <Link
                 key={inv.id}
                 href={`/investors/${inv.id}`}
-                className="grid gap-3 px-4 py-3 items-center transition-colors"
+                className="table-row grid gap-3 px-4 py-3 items-center transition-colors"
                 style={{
                   gridTemplateColumns: '2fr 80px 90px 80px 70px 60px 1.5fr 80px',
                   borderBottom: '1px solid var(--border-subtle)',
-                  background: isHovered ? 'var(--surface-1)' : 'transparent',
                   boxShadow: inv.heat === 'hot' ? heatCfg.glow : 'none',
-                  textDecoration: 'none', }}
-                onMouseEnter={() => setHoveredRow(inv.id)}
-                onMouseLeave={() => setHoveredRow(null)}>
+                  textDecoration: 'none', }}>
                 {/* Investor */}
                 <div className="flex items-center gap-2.5 min-w-0">
                   <div
