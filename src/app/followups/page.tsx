@@ -206,6 +206,12 @@ function FollowupsContent() {
   }, [fetchFollowups]);
 
   async function handleComplete(id: string) {
+    // Optimistic: remove from list immediately
+    const prev = followups;
+    setFollowups(f => f.filter(x => x.id !== id));
+    setCompletingId(null);
+    setCompleteForm({ outcome: '', conviction_delta: 0 });
+    toast('Follow-up completed — conviction score updated', 'success');
     try {
       const res = await fetch('/api/followups', {
         method: 'PUT',
@@ -217,16 +223,15 @@ function FollowupsContent() {
           conviction_delta: completeForm.conviction_delta,
         }),});
       if (!res.ok) throw new Error('Failed');
-      setCompletingId(null);
-      setCompleteForm({ outcome: '', conviction_delta: 0 });
-      toast('Follow-up completed — conviction score updated', 'success');
       fetchFollowups();
-    } catch { toast('Couldn\'t complete follow-up — check your connection and retry', 'error'); }
+    } catch { toast('Couldn\'t complete follow-up — restoring', 'error'); setFollowups(prev); }
   }
 
   async function handleSkip(id: string) {
     if (processingIds.has(id)) return;
     setProcessingIds(prev => new Set(prev).add(id));
+    const prev = followups;
+    setFollowups(f => f.filter(x => x.id !== id));
     try {
       const res = await fetch('/api/followups', {
         method: 'PUT',
@@ -234,13 +239,16 @@ function FollowupsContent() {
         body: JSON.stringify({ id, status: 'skipped' }),});
       if (!res.ok) throw new Error('Failed');
       fetchFollowups();
-    } catch { toast('Couldn\'t skip follow-up — check your connection and retry', 'error'); }
+    } catch { toast('Couldn\'t skip follow-up — restoring', 'error'); setFollowups(prev); }
     finally { setProcessingIds(prev => { const n = new Set(prev); n.delete(id); return n; }); }
   }
 
   async function handleQuickComplete(id: string) {
     if (processingIds.has(id)) return;
     setProcessingIds(prev => new Set(prev).add(id));
+    const prev = followups;
+    setFollowups(f => f.filter(x => x.id !== id));
+    toast('Follow-up completed', 'success');
     try {
       const res = await fetch('/api/followups', {
         method: 'PUT',
@@ -248,7 +256,7 @@ function FollowupsContent() {
         body: JSON.stringify({ id, status: 'completed' }),});
       if (!res.ok) throw new Error('Failed');
       fetchFollowups();
-    } catch { toast('Couldn\'t complete follow-up — check your connection and retry', 'error'); }
+    } catch { toast('Couldn\'t complete follow-up — restoring', 'error'); setFollowups(prev); }
     finally { setProcessingIds(prev => { const n = new Set(prev); n.delete(id); return n; }); }
   }
 

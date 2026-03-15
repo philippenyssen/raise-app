@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
+import { cachedFetch } from '@/lib/cache';
 import Link from 'next/link';
 import { CheckCircle, AlertTriangle, ArrowLeft, RefreshCw } from 'lucide-react';
 import { fmtDateTime } from '@/lib/format';
@@ -24,7 +25,7 @@ export default function ConsistencyPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch('/api/consistency');
+      const res = await cachedFetch('/api/consistency');
       if (!res.ok) throw new Error(`Failed (${res.status})`);
       const data = await res.json();
       if (data.error) throw new Error(data.error);
