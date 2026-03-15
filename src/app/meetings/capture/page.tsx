@@ -45,7 +45,10 @@ function QuickCaptureInner() {
 
   const [investors, setInvestors] = useState<Investor[]>([]);
   const [investorId, setInvestorId] = useState(searchParams.get('investor') || searchParams.get('investor_id') || '');
-  const [rawNotes, setRawNotes] = useState('');
+  const [rawNotes, setRawNotes] = useState(() => {
+    if (typeof window !== 'undefined') return localStorage.getItem('capture_draft_notes') || '';
+    return '';
+  });
   const [enthusiasm, setEnthusiasm] = useState(0);
   const [showDetails, setShowDetails] = useState(false);
   const [meetingType, setMeetingType] = useState('management_presentation');
@@ -70,6 +73,11 @@ function QuickCaptureInner() {
       textareaRef.current.focus();
     }
   }, [result]);
+
+  useEffect(() => {
+    if (rawNotes) localStorage.setItem('capture_draft_notes', rawNotes);
+    else localStorage.removeItem('capture_draft_notes');
+  }, [rawNotes]);
 
   useEffect(() => {
     if (!loading) return;
@@ -111,6 +119,7 @@ function QuickCaptureInner() {
         data.enthusiasm_score = enthusiasm;
       }
       toast('meeting captured and analyzed', 'success');
+      localStorage.removeItem('capture_draft_notes');
       setResult(data);
     } catch {
       toast('Failed to capture meeting — check your connection and try again', 'error');
