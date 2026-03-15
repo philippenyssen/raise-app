@@ -347,7 +347,7 @@ export default function MomentumPage() {
                 {data.matrix.length === 0 ? (
                   <tr>
                     <td colSpan={data.weeks.length + 3} className="px-4 py-12 text-center" style={stTextMuted}>
-                      No active investors found. Add investors and log meetings to see momentum data.</td></tr>
+                      Add investors and log meetings to start tracking momentum signals.</td></tr>
                 ) : data.matrix.map((inv) => {
                   const isAnomaly = anomalyInvestorIds.has(inv.investorId);
                   const tc = TYPE_COLORS[inv.type] || TYPE_COLORS.vc;

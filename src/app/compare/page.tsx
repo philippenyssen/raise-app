@@ -825,7 +825,7 @@ function MomentumIcon({ momentum }: { momentum: string }) {
 }
 
 function EnthusiasmTrendDots({ trend }: { trend: number[] }) {
-  if (trend.length === 0) { return <span style={{ ...stTextMuted, fontSize: 'var(--font-size-xs)' }}>No data</span>; }
+  if (trend.length === 0) { return <span style={{ ...stTextMuted, fontSize: 'var(--font-size-xs)' }}>Not enough meetings</span>; }
 
   const maxDots = 3;
   const dots = trend.slice(-maxDots);

@@ -553,7 +553,7 @@ export default function ObjectionsPage() {
                 <Shield className="w-4 h-4" style={stAccent} />
                 <h3 className="text-xs font-normal  tracking-wide" style={stTextTertiary}>Coverage</h3></div>
               {playbook.length === 0 ? (
-                <p className="text-xs" style={stTextMuted}>No data yet.</p>
+                <p className="text-xs" style={stTextMuted}>Log meetings with objections to build coverage data.</p>
               ) : (
                 <div className="space-y-2">
                   {playbook.map((group) => {
@@ -1114,7 +1114,7 @@ function EffectivenessTab({
               <Shield className="w-4 h-4" style={stAccent} />
               <h3 className="text-xs font-normal  tracking-wide" style={stTextTertiary}>Resolution Rate</h3></div>
             {topic_effectiveness.length === 0 ? (
-              <p className="text-xs" style={stTextMuted}>No data yet.</p>
+              <p className="text-xs" style={stTextMuted}>Resolution data appears after objections are addressed in follow-ups.</p>
             ) : (
               <div className="space-y-2">
                 {topic_effectiveness
