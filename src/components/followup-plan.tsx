@@ -99,8 +99,7 @@ export default function FollowupPlan({
         style={{
           background: 'linear-gradient(to right, var(--accent-muted), var(--accent-muted))',
           borderBottom: '1px solid var(--border-subtle)',
-        }}
-      >
+        }}>
         <div className="flex items-center gap-2">
           <SendHorizonal className="w-5 h-5" style={{ color: 'var(--accent)' }} />
           <h2 className="text-lg font-normal" style={{ color: 'var(--text-primary)' }}>Follow-up Plan</h2>
@@ -148,8 +147,7 @@ export default function FollowupPlan({
                           : isOverdue
                             ? 'var(--danger-muted)'
                             : config.bgColor,
-                      }}
-                    >
+                      }}>
                       {isCompleted ? (
                         <CheckCircle2 className="w-4 h-4" style={{ color: 'var(--success)' }} />
                       ) : isSkipped ? (
@@ -175,8 +173,7 @@ export default function FollowupPlan({
                               : isOverdue
                                 ? 'var(--danger)'
                                 : config.color,
-                          }}
-                        >
+                          }}>
                           {config.label}
                         </span>
                         <span
@@ -184,8 +181,7 @@ export default function FollowupPlan({
                           style={{
                             color: isOverdue ? 'var(--danger)' : 'var(--text-muted)',
                             fontWeight: 400,
-                          }}
-                        >
+                          }}>
                           <Clock className="w-3 h-3" />
                           {timeLabel}
                         </span>
@@ -210,8 +206,7 @@ export default function FollowupPlan({
                                 ? 'color-mix(in srgb, var(--success) 30%, transparent)'
                                 : 'var(--success-muted)',
                               color: 'var(--success)',
-                            }}
-                          >
+                            }}>
                             <CheckCircle2 className="w-3 h-3" /> Done
                           </button>
                           <button
@@ -222,8 +217,7 @@ export default function FollowupPlan({
                             style={{
                               backgroundColor: hoveredSkip === item.id ? 'var(--surface-3)' : 'var(--surface-2)',
                               color: 'var(--text-muted)',
-                            }}
-                          >
+                            }}>
                             <XCircle className="w-3 h-3" /> Skip
                           </button>
                         </div>
@@ -241,8 +235,7 @@ export default function FollowupPlan({
             style={{
               backgroundColor: 'var(--surface-1)',
               borderTop: '1px solid color-mix(in srgb, var(--border-subtle) 50%, transparent)',
-            }}
-          >
+            }}>
             <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
               {pending.length} follow-up{pending.length !== 1 ? 's' : ''} pending
               {handled.length > 0 && ` · ${handled.length} completed/skipped`}

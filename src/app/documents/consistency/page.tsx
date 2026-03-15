@@ -123,8 +123,7 @@ export default function ConsistencyPage() {
             className="rounded-xl p-4 flex items-center gap-3"
             style={{
               border: `1px solid ${result.consistent ? 'var(--success-muted)' : 'var(--danger-muted)'}`,
-              background: result.consistent ? 'var(--success-muted)' : 'var(--danger-muted)', }}
->
+              background: result.consistent ? 'var(--success-muted)' : 'var(--danger-muted)', }}>
             {result.consistent ? (
               <CheckCircle className="w-6 h-6 shrink-0" style={stTextSecondary} />
             ) : (
@@ -176,8 +175,7 @@ export default function ConsistencyPage() {
                     className="text-xs px-2 py-0.5 rounded ml-auto"
                     style={{
                       background: check.status === 'match' ? 'var(--success-muted)' : 'var(--danger-muted)',
-                      color: check.status === 'match' ? 'var(--success)' : 'var(--danger)', }}
->
+                      color: check.status === 'match' ? 'var(--success)' : 'var(--danger)', }}>
                     {check.status}
                   </span>
                 </div>

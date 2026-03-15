@@ -158,8 +158,7 @@ export default function StressTestPage() {
             className="px-4 py-2 rounded-lg text-sm transition-colors"
             style={{
               background: retryHover ? 'var(--surface-3)' : 'var(--surface-2)',
-              color: 'var(--text-secondary)', }}
->
+              color: 'var(--text-secondary)', }}>
             Retry
           </button>
         </div>
@@ -207,8 +206,7 @@ export default function StressTestPage() {
           className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs transition-colors disabled:opacity-50"
           style={{
             background: refreshHover && !refreshing ? 'var(--surface-3)' : 'var(--surface-2)',
-            color: 'var(--text-secondary)', }}
->
+            color: 'var(--text-secondary)', }}>
           <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
           {refreshing ? 'Refreshing...' : 'Refresh'}
         </button>

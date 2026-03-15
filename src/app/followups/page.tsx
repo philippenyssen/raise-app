@@ -407,8 +407,7 @@ function FollowupsContent() {
                           onMouseLeave={e => {
                             if (completeForm.conviction_delta !== val) {
                               e.currentTarget.style.background = 'var(--surface-3)';
-                            } }}
->
+                            } }}>
                           {val > 0 ? '+' : ''}{val}
                         </button>
                       ))}
@@ -634,8 +633,7 @@ function FollowupsContent() {
                 onMouseLeave={e => {
                   if (copiedField !== `all-${item.id}`) {
                     e.currentTarget.style.background = 'var(--accent-muted)';
-                  } }}
->
+                  } }}>
                 {copiedField === `all-${item.id}` ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
                 {copiedField === `all-${item.id}` ? 'Copied to clipboard' : 'Copy full message'}
               </button>
@@ -796,8 +794,7 @@ function FollowupsContent() {
             onMouseLeave={e => {
               if (filter !== f) {
                 e.currentTarget.style.color = 'var(--text-muted)';
-              } }}
->
+              } }}>
             {f.charAt(0).toUpperCase() + f.slice(1)}
             {f === 'pending' && overdue.length > 0 && (
               <span

@@ -291,8 +291,7 @@ export default function ComparePage() {
                   color: 'var(--text-muted)',
                   cursor: 'not-allowed',
                   border: '1px solid transparent',
-                }), }}
->
+                }), }}>
           {comparing ? (
             <><Loader2 className="w-4 h-4 animate-spin" /> Comparing...</>
           ) : (
@@ -365,8 +364,7 @@ export default function ComparePage() {
                         fontWeight: 400,
                         minWidth: 160,
                         background: 'var(--surface-1)',
-                        borderRight: '1px solid var(--border-subtle)', }}
->
+                        borderRight: '1px solid var(--border-subtle)', }}>
                       Metric
                     </th>
                     {compareData.profiles.map(p => (
@@ -414,8 +412,7 @@ export default function ComparePage() {
                             borderRadius: 'var(--radius-lg)',
                             ...(p.investor.id === winnerId
                               ? { background: 'var(--warning-muted)', border: '1px solid var(--warn-30)' }
-                              : { background: 'var(--surface-2)' }), }}
->
+                              : { background: 'var(--surface-2)' }), }}>
                           <span style={{
                             fontSize: 'var(--font-size-lg)',
                             fontWeight: 300,
@@ -541,8 +538,7 @@ export default function ComparePage() {
                                     background: 'var(--surface-2)',
                                     color: 'var(--text-muted)',
                                     padding: '1px 6px',
-                                    borderRadius: 'var(--radius-sm)', }}
->
+                                    borderRadius: 'var(--radius-sm)', }}>
                                   {MEETING_TYPE_LABELS[type] || type} {count > 1 ? `x${count}` : ''}
                                 </span>
                               ))}
@@ -604,8 +600,7 @@ export default function ComparePage() {
                         color: 'var(--text-secondary)',
                         letterSpacing: '0.01em',
                         background: 'var(--surface-1)',
-                        borderRight: '1px solid var(--border-subtle)', }}
->
+                        borderRight: '1px solid var(--border-subtle)', }}>
                       Next Action
                     </td>
                     {compareData.profiles.map(p => (
@@ -664,8 +659,7 @@ export default function ComparePage() {
               style={{
                 padding: 'var(--space-3) var(--space-5)',
                 background: 'var(--surface-1)',
-                borderBottom: '1px solid var(--border-default)', }}
->
+                borderBottom: '1px solid var(--border-default)', }}>
               <Target className="w-4 h-4" style={stTextMuted} />
               <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
                 Decision Matrix
@@ -735,8 +729,7 @@ function DropdownItem({
         style={{
           borderRadius: 'var(--radius-sm)',
           border: isSelected ? '1px solid var(--accent)' : '1px solid var(--border-strong)',
-          background: isSelected ? 'var(--accent)' : 'transparent', }}
->
+          background: isSelected ? 'var(--accent)' : 'transparent', }}>
         {isSelected && (
           <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth={3}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
@@ -752,8 +745,7 @@ function DropdownItem({
             ? { background: 'var(--accent-muted)', color: 'var(--accent)' }
             : investor.tier === 2
             ? { background: 'var(--cat-12)', color: 'var(--chart-4)' }
-            : { background: 'var(--surface-2)', color: 'var(--text-muted)' }), }}
->
+            : { background: 'var(--surface-2)', color: 'var(--text-muted)' }), }}>
         T{investor.tier}
       </span>
     </button>
@@ -772,8 +764,7 @@ function SelectedPill({ name, onRemove }: { name: string; onRemove: () => void }
         borderRadius: 9999,
         padding: 'var(--space-1) var(--space-3)',
         fontSize: 'var(--font-size-sm)',
-        color: 'var(--text-secondary)', }}
->
+        color: 'var(--text-secondary)', }}>
       {name}
       <button
         onClick={onRemove}
@@ -925,8 +916,7 @@ function RecommendationBanner({ recommendation }: { recommendation: ComparisonRe
         borderRadius: 'var(--radius-xl)',
         border: `1px solid ${s.border}`,
         padding: 'var(--space-4)',
-        background: s.bg, }}
->
+        background: s.bg, }}>
       <Icon className="w-5 h-5 shrink-0 mt-0.5" style={{ color: s.iconColor }} />
       <div>
         <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
@@ -1028,8 +1018,7 @@ function AccelerationBadge({ status }: { status: AccelerationStatusData }) {
           background: c.bg,
           color: c.color,
           fontSize: 'var(--font-size-xs)',
-          fontWeight: 400, }}
->
+          fontWeight: 400, }}>
         {c.icon}
         {status.label}
       </span>
@@ -1043,8 +1032,7 @@ function AccelerationBadge({ status }: { status: AccelerationStatusData }) {
                 color: 'var(--text-muted)',
                 background: 'var(--surface-2)',
                 padding: '1px 4px',
-                borderRadius: 'var(--radius-sm)', }}
->
+                borderRadius: 'var(--radius-sm)', }}>
               {t.replace(/_/g, ' ')}
             </span>
           ))}
@@ -1105,8 +1093,7 @@ function DimensionBar({
                 style={{
                   fontSize: '10px',
                   color: isWinner ? 'var(--text-primary)' : 'var(--text-muted)',
-                  fontWeight: 400, }}
->
+                  fontWeight: 400, }}>
                 {score}
               </span>
             </div>
@@ -1166,8 +1153,7 @@ function VerdictCard({
         borderRadius: 'var(--radius-lg)',
         border: `1px solid ${c.border}`,
         padding: 'var(--space-3)',
-        background: c.bg, }}
->
+        background: c.bg, }}>
       <div className="flex items-center gap-2 mb-2">
         <span style={{ color: c.iconColor }}>{icon}</span>
         <span style={{

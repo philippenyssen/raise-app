@@ -185,8 +185,7 @@ function ActionCard({
                 ...(isExecuted
                   ? { background: 'var(--success-muted)', color: 'var(--text-secondary)' }
                   : { background: 'var(--surface-2)', color: 'var(--text-muted)' }
-                ), }}
->
+                ), }}>
               {isExecuted ? 'Done' : 'Skipped'}
             </span>
           ) : (
@@ -204,8 +203,7 @@ function ActionCard({
                   fontWeight: 400,
                   color: 'var(--text-primary)',
                   border: 'none',
-                  cursor: 'pointer', }}
->
+                  cursor: 'pointer', }}>
                 <Play className="w-3 h-3" />
                 Execute
               </button>
@@ -221,8 +219,7 @@ function ActionCard({
                   fontSize: 'var(--font-size-sm)',
                   color: 'var(--text-tertiary)',
                   border: 'none',
-                  cursor: 'pointer', }}
->
+                  cursor: 'pointer', }}>
                 <SkipForward className="w-3 h-3" />
                 Skip
               </button>
@@ -339,8 +336,7 @@ function DeprioritizeSection({ investors }: { investors: InvestorSummary[] }) {
         style={{
           background: hovered ? 'var(--surface-1)' : 'transparent',
           border: 'none',
-          cursor: 'pointer', }}
->
+          cursor: 'pointer', }}>
         <div className="flex items-center gap-2">
           <Ban className="w-3.5 h-3.5" style={stTextMuted} />
           <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', fontWeight: 400, letterSpacing: '0.01em' }}>
@@ -490,8 +486,7 @@ export default function AccelerationPage() {
               color: 'var(--text-primary)',
               fontSize: 'var(--font-size-sm)',
               border: 'none',
-              cursor: 'pointer', }}
->
+              cursor: 'pointer', }}>
             <RefreshCw className="w-3.5 h-3.5" /> Retry
           </button>
         </div>
@@ -541,8 +536,7 @@ export default function AccelerationPage() {
             fontSize: 'var(--font-size-sm)',
             color: 'var(--text-secondary)',
             border: 'none',
-            cursor: 'pointer', }}
->
+            cursor: 'pointer', }}>
           <RefreshCw className="w-3.5 h-3.5" /> Refresh
         </button>
       </div>
@@ -602,8 +596,7 @@ export default function AccelerationPage() {
               borderBottomStyle: 'solid' as const,
               borderBottomWidth: '2px',
               borderBottomColor: activeTab === tab.key ? 'var(--accent)' : 'transparent',
-              cursor: 'pointer', }}
->
+              cursor: 'pointer', }}>
             {tab.label}
             {tab.count > 0 && (
               <span
@@ -612,8 +605,7 @@ export default function AccelerationPage() {
                   padding: '2px 6px',
                   fontSize: '10px',
                   background: activeTab === tab.key ? 'var(--accent-muted)' : 'var(--surface-2)',
-                  color: activeTab === tab.key ? 'var(--accent)' : 'var(--text-muted)', }}
->
+                  color: activeTab === tab.key ? 'var(--accent)' : 'var(--text-muted)', }}>
                 {tab.count}
               </span>
             )}

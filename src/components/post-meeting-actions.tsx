@@ -139,8 +139,7 @@ export default function PostMeetingActions({
         style={{
           background: 'linear-gradient(to right, var(--accent-muted), color-mix(in srgb, var(--accent-muted) 60%, var(--surface-0)))',
           borderBottom: '1px solid var(--border-subtle)',
-        }}
-      >
+        }}>
         <h2 className="text-lg font-normal flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
           <ClipboardList className="w-5 h-5" style={{ color: 'var(--accent)' }} />
           Post-Meeting Actions
@@ -161,8 +160,7 @@ export default function PostMeetingActions({
               {statusChanged && (
                 <div
                   className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm"
-                  style={{ backgroundColor: 'var(--surface-1)' }}
-                >
+                  style={{ backgroundColor: 'var(--surface-1)' }}>
                   <span style={{ color: 'var(--text-muted)' }}>Status:</span>
                   <span style={{ color: 'var(--text-secondary)' }}>{STATUS_LABELS[data.investor_updates.previous_status!] || data.investor_updates.previous_status}</span>
                   <ArrowRight className="w-3 h-3" style={{ color: 'var(--text-muted)' }} />
@@ -172,8 +170,7 @@ export default function PostMeetingActions({
               {enthusiasmChanged && (
                 <div
                   className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm"
-                  style={{ backgroundColor: 'var(--surface-1)' }}
-                >
+                  style={{ backgroundColor: 'var(--surface-1)' }}>
                   <span style={{ color: 'var(--text-muted)' }}>Enthusiasm:</span>
                   <span style={{ color: 'var(--text-secondary)' }}>{data.investor_updates.previous_enthusiasm}/5</span>
                   <ArrowRight className="w-3 h-3" style={{ color: 'var(--text-muted)' }} />
@@ -192,8 +189,7 @@ export default function PostMeetingActions({
             <button
               onClick={() => setTasksExpanded(!tasksExpanded)}
               className="w-full flex items-center justify-between text-xs font-normal mb-3"
-              style={{ color: 'var(--text-secondary)' }}
-            >
+              style={{ color: 'var(--text-secondary)' }}>
               <span className="flex items-center gap-2">
                 <ClipboardList className="w-3.5 h-3.5" /> Generated tasks ({visibleTasks.length})
               </span>
@@ -215,8 +211,7 @@ export default function PostMeetingActions({
                         backgroundColor: isAccepted
                           ? 'color-mix(in srgb, var(--success) 10%, transparent)'
                           : 'var(--surface-1)',
-                      }}
-                    >
+                      }}>
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1">
@@ -225,8 +220,7 @@ export default function PostMeetingActions({
                               style={{
                                 backgroundColor: pStyle.bg,
                                 color: pStyle.color,
-                              }}
-                            >
+                              }}>
                               {task.priority}
                             </span>
                             <span className="text-sm font-normal truncate" style={{ color: 'var(--text-primary)' }}>{task.title}</span>
@@ -291,8 +285,7 @@ export default function PostMeetingActions({
             <button
               onClick={() => setFlagsExpanded(!flagsExpanded)}
               className="w-full flex items-center justify-between text-xs font-normal mb-3"
-              style={{ color: 'var(--text-secondary)' }}
-            >
+              style={{ color: 'var(--text-secondary)' }}>
               <span className="flex items-center gap-2">
                 <FileWarning className="w-3.5 h-3.5" /> Document flags ({visibleFlags.length})
               </span>
@@ -314,15 +307,13 @@ export default function PostMeetingActions({
                         backgroundColor: isAccepted
                           ? 'color-mix(in srgb, var(--success) 10%, transparent)'
                           : 'var(--surface-1)',
-                      }}
-                    >
+                      }}>
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1">
                             <span
                               className="text-xs px-1.5 py-0.5 rounded font-normal"
-                              style={{ backgroundColor: fStyle.bg, color: fStyle.color }}
-                            >
+                              style={{ backgroundColor: fStyle.bg, color: fStyle.color }}>
                               {FLAG_TYPE_LABELS[flag.flag_type] || flag.flag_type}
                             </span>
                             <AlertTriangle className="w-3 h-3" style={{ color: 'color-mix(in srgb, var(--warning) 70%, transparent)' }} />
@@ -336,8 +327,7 @@ export default function PostMeetingActions({
                                 className="underline transition-colors"
                                 style={{ color: 'var(--accent)' }}
                                 onMouseEnter={(e) => { (e.target as HTMLElement).style.opacity = '0.8'; }}
-                                onMouseLeave={(e) => { (e.target as HTMLElement).style.opacity = '1'; }}
-                              >
+                                onMouseLeave={(e) => { (e.target as HTMLElement).style.opacity = '1'; }}>
                                 Open document
                               </Link>
                             )}
@@ -390,8 +380,7 @@ export default function PostMeetingActions({
         {/* Actions summary footer */}
         <div
           className="px-5 py-3 flex items-center justify-between"
-          style={{ backgroundColor: 'var(--surface-1)' }}
-        >
+          style={{ backgroundColor: 'var(--surface-1)' }}>
           <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
             Tasks and flags are saved automatically. View all in Timeline &amp; Tasks.
           </span>

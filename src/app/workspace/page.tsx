@@ -213,8 +213,7 @@ export default function WorkspacePage() {
                 border: 'none',
                 cursor: 'pointer',
                 display: 'flex',
-                alignItems: 'center', }}
->
+                alignItems: 'center', }}>
               <ChevronRight className="w-4 h-4 rotate-180" />
             </button>
           </div>
@@ -230,8 +229,7 @@ export default function WorkspacePage() {
                     fontWeight: 400,
                     color: 'var(--text-muted)',
                     padding: '0 var(--space-2)',
-                    marginBottom: 'var(--space-1)', }}
->
+                    marginBottom: 'var(--space-1)', }}>
                   {TYPE_LABELS[type] || type}
                 </div>
                 {typeDocs.map(doc => {
@@ -262,8 +260,7 @@ export default function WorkspacePage() {
                         border: 'none',
                         cursor: 'pointer',
                         display: 'block',
-                        width: '100%', }}
->
+                        width: '100%', }}>
                       <div className="truncate">{doc.title}</div>
                     </button>
                   );
@@ -292,8 +289,7 @@ export default function WorkspacePage() {
                 fontWeight: 400,
                 color: 'var(--text-muted)',
                 padding: '0 var(--space-2)',
-                marginBottom: 'var(--space-1)', }}
->
+                marginBottom: 'var(--space-1)', }}>
               Generate from Data Room
             </div>
             {['teaser', 'exec_summary', 'memo', 'deck', 'dd_memo'].map(type => {
@@ -321,8 +317,7 @@ export default function WorkspacePage() {
                     transition: 'all 150ms ease',
                     opacity: isDisabled ? 0.5 : 1,
                     border: 'none',
-                    cursor: isDisabled ? 'default' : 'pointer', }}
->
+                    cursor: isDisabled ? 'default' : 'pointer', }}>
                   {generating === type ? (
                     <Loader2
                       className="w-3.5 h-3.5 animate-spin"
@@ -348,8 +343,7 @@ export default function WorkspacePage() {
                 color: newDocHover ? 'var(--text-secondary)' : 'var(--text-tertiary)',
                 background: newDocHover ? 'var(--surface-2)' : 'transparent',
                 transition: 'all 150ms ease',
-                textDecoration: 'none', }}
->
+                textDecoration: 'none', }}>
               <Plus className="w-4 h-4" /> New Document
             </a>
           </div>
@@ -370,8 +364,7 @@ export default function WorkspacePage() {
             borderRightStyle: 'solid',
             borderRightWidth: '1px',
             borderRightColor: 'var(--border-default)',
-            cursor: 'pointer', }}
->
+            cursor: 'pointer', }}>
           <ChevronRight className="w-4 h-4" style={stTextMuted} />
         </button>
       )}

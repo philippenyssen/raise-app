@@ -196,8 +196,7 @@ export default function NewDocumentPage() {
             color: 'var(--accent)',
           } : {
             background: 'var(--surface-2)',
-            color: 'var(--text-tertiary)', }}
->
+            color: 'var(--text-tertiary)', }}>
           <Upload className="w-3.5 h-3.5" /> Import Markdown
         </button>
       </div>

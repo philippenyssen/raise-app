@@ -277,8 +277,7 @@ export default function InvestorsPage() {
             background: 'var(--accent-muted)',
             boxShadow: 'var(--shadow-lg), inset 0 0 0 1px var(--accent)',
             borderRadius: 'var(--radius-lg)',
-            padding: 'var(--space-2) var(--space-4)', }}
->
+            padding: 'var(--space-2) var(--space-4)', }}>
           <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--accent)', fontWeight: 400 }}>
             {selected.size} selected
           </span>
@@ -450,8 +449,7 @@ export default function InvestorsPage() {
                         backgroundPosition: 'right 0.4rem center',
                         backgroundSize: '10px',
                         appearance: 'none',
-                        WebkitAppearance: 'none', }}
->
+                        WebkitAppearance: 'none', }}>
                       {Object.entries(STATUS_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                     </select>
                   </td>

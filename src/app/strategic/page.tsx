@@ -269,8 +269,7 @@ export default function StrategicPage() {
                 color: trendCfg.color,
                 border: `1px solid ${trendCfg.border}`,
                 fontSize: 'var(--font-size-xs)',
-                fontWeight: 400, }}
->
+                fontWeight: 400, }}>
               <TrendIcon className="w-3 h-3" />
               {trendCfg.label}
             </span>
@@ -345,8 +344,7 @@ export default function StrategicPage() {
                   background:
                     trend.direction === 'improving' ? 'var(--accent-4)' :
                     trend.direction === 'declining' ? 'var(--accent-8)' :
-                    'var(--surface-1)', }}
->
+                    'var(--surface-1)', }}>
                 <div className="metric-label" style={{ marginBottom: 'var(--space-1)' }}>{trend.metric}</div>
                 <div className="flex items-center gap-1.5">
                   {trend.direction === 'improving' ? (
@@ -409,8 +407,7 @@ export default function StrategicPage() {
                 ...confidenceStyle(data.raiseForecast.confidence),
                 border: '1px solid',
                 fontSize: '10px',
-                fontWeight: 400, }}
->
+                fontWeight: 400, }}>
               {data.raiseForecast.confidence} confidence
             </span>
           </div>
@@ -581,8 +578,7 @@ function RecommendationRow({ rec, isLast }: { rec: StrategicRecommendation; isLa
                 borderRadius: 'var(--radius-sm)',
                 border: `1px solid ${catCfg.border}`,
                 background: catCfg.bg,
-                color: catCfg.color, }}
->
+                color: catCfg.color, }}>
               {catCfg.label}
             </span>
           </div>
@@ -644,8 +640,7 @@ function GaugeCard({ label, value, suffix, description, barPct, barColor, valueC
           height: '8px',
           background: 'var(--surface-3)',
           borderRadius: '9999px',
-          overflow: 'hidden', }}
->
+          overflow: 'hidden', }}>
         <div style={{ height: '100%', borderRadius: '9999px', transition: 'all 700ms ease', width: `${Math.min(100, barPct)}%`, background: barColor }}
           />
       </div>

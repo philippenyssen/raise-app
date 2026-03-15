@@ -245,8 +245,7 @@ export default function WinLossPage() {
                     background: 'var(--surface-1)',
                     borderRadius: 'var(--radius-sm)',
                     overflow: 'hidden',
-                    position: 'relative', }}
->
+                    position: 'relative', }}>
                   <div
                     style={{
                       height: '100%',
@@ -476,8 +475,7 @@ export default function WinLossPage() {
                         fontWeight: 400,
                         color: 'var(--text-muted)',
                         letterSpacing: '0.01em',
-                        borderBottom: '1px solid var(--border-subtle)', }}
->
+                        borderBottom: '1px solid var(--border-subtle)', }}>
                       {h}
                     </th>
                   ))}
@@ -710,8 +708,7 @@ export default function WinLossPage() {
                     borderRadius: 'var(--radius-sm)',
                     background: 'var(--surface-1)',
                     fontSize: 'var(--font-size-sm)',
-                    color: 'var(--text-secondary)', }}
->
+                    color: 'var(--text-secondary)', }}>
                   {insight}
                 </div>
               ))}

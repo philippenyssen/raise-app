@@ -277,8 +277,7 @@ export default function TermComparePage() {
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-normal transition-colors"
                 style={{
                   background: addHover ? 'var(--surface-3)' : 'var(--surface-2)',
-                  color: 'var(--text-secondary)', }}
->
+                  color: 'var(--text-secondary)', }}>
                 <Plus className="w-3.5 h-3.5" />
                 Add Scenario
               </button>
@@ -323,8 +322,7 @@ export default function TermComparePage() {
                   className="flex items-center gap-1 px-2 py-1 rounded text-xs transition-colors"
                   style={{
                     color: hoveredRemove === idx ? 'var(--danger)' : 'var(--text-muted)',
-                    background: hoveredRemove === idx ? 'var(--danger-muted)' : 'transparent', }}
->
+                    background: hoveredRemove === idx ? 'var(--danger-muted)' : 'transparent', }}>
                   <Trash2 className="w-3 h-3" />
                   Remove
                 </button>
@@ -542,8 +540,7 @@ export default function TermComparePage() {
                         className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-sm font-normal"
                         style={{
                           color: scoreColor(r.founder_friendly_score),
-                          background: scoreBg(r.founder_friendly_score), }}
->
+                          background: scoreBg(r.founder_friendly_score), }}>
                         {r.founder_friendly_score}/100
                       </span>
                     </td>
@@ -634,8 +631,7 @@ export default function TermComparePage() {
                           width: `${founderPct}%`,
                           background: 'var(--accent-muted)',
                           color: 'var(--accent)',
-                          minWidth: founderPct > 10 ? 'auto' : '0', }}
->
+                          minWidth: founderPct > 10 ? 'auto' : '0', }}>
                         {founderPct >= 15 && `Founders ${founderPct.toFixed(1)}%`}
                       </div>
                       <div
@@ -644,8 +640,7 @@ export default function TermComparePage() {
                           width: `${r.ownership_percentage}%`,
                           background: 'var(--warning-muted)',
                           color: 'var(--text-tertiary)',
-                          minWidth: r.ownership_percentage > 5 ? 'auto' : '0', }}
->
+                          minWidth: r.ownership_percentage > 5 ? 'auto' : '0', }}>
                         {r.ownership_percentage >= 8 && `${r.ownership_percentage.toFixed(1)}%`}
                       </div>
                     </div>

@@ -307,8 +307,7 @@ export default function TermsPage() {
                           borderRadius: 'var(--radius-sm)',
                           background: action.bg,
                           color: action.color,
-                          marginBottom: '4px', }}
->
+                          marginBottom: '4px', }}>
                         {action.label}
                       </span>
                       <div style={{ fontSize: '10px', color: 'var(--text-muted)', lineHeight: 1.4 }}>

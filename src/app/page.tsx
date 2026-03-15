@@ -404,8 +404,7 @@ export default function Dashboard() {
                 width: '176px',
                 background: 'var(--surface-1)',
                 borderRadius: 'var(--radius-md)',
-                boxShadow: 'var(--shadow-lg)', }}
->
+                boxShadow: 'var(--shadow-lg)', }}>
               {['investors', 'meetings', 'tasks', 'pipeline', 'activity'].map(t => (
                 <a
                   key={t}
@@ -462,8 +461,7 @@ export default function Dashboard() {
                     background: 'var(--surface-1)',
                     borderRadius: 'var(--radius-xl)',
                     padding: 'var(--space-6)',
-                    cursor: 'pointer', }}
->
+                    cursor: 'pointer', }}>
                   <div className="flex items-baseline gap-3" style={{ marginBottom: 'var(--space-4)' }}>
                     <span style={{
                       fontSize: 'var(--font-size-3xl)',
@@ -1407,8 +1405,7 @@ function HotDealRow({ investor }: { investor: DealHeatInvestor }) {
             style={{
               fontSize: 'var(--font-size-sm)',
               fontWeight: 400,
-              color: hovered ? 'var(--accent)' : 'var(--text-primary)', }}
->
+              color: hovered ? 'var(--accent)' : 'var(--text-primary)', }}>
             {investor.name}
           </Link>
           <span style={labelTertiary}>T{investor.tier}</span>

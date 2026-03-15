@@ -172,8 +172,7 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
                 background: dimensionBg(d.score, d.signal),
                 position: 'relative',
                 overflow: 'hidden',
-                maxWidth: '32px', }}
->
+                maxWidth: '32px', }}>
               <div
                 style={{
                   position: 'absolute',
@@ -202,8 +201,7 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
                   background: dimensionBg(d.score, d.signal),
                   padding: '1px 4px',
                   borderRadius: 'var(--radius-sm)',
-                  whiteSpace: 'nowrap', }}
->
+                  whiteSpace: 'nowrap', }}>
                 {DIMENSION_SHORT_LABELS[d.name] || d.name.slice(0, 3).toUpperCase()} {d.score}
               </span>
             ))}
@@ -216,8 +214,7 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
                   background: dimensionBg(weakest.score, weakest.signal),
                   padding: '1px 4px',
                   borderRadius: 'var(--radius-sm)',
-                  whiteSpace: 'nowrap', }}
->
+                  whiteSpace: 'nowrap', }}>
                 {DIMENSION_SHORT_LABELS[weakest.name] || weakest.name.slice(0, 3).toUpperCase()} {weakest.score}
               </span>
             )}
@@ -251,8 +248,7 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
                     borderRadius: '2px',
                     background: dimensionBg(d.score, d.signal),
                     position: 'relative',
-                    overflow: 'hidden', }}
->
+                    overflow: 'hidden', }}>
                   <div
                     style={{
                       position: 'absolute',
@@ -361,8 +357,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
               ...rankStyle,
               borderRadius: 'var(--radius-md)',
               fontSize: 'var(--font-size-sm)',
-              fontWeight: 300, }}
->
+              fontWeight: 300, }}>
             {rank}
           </div>
 
@@ -486,8 +481,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
               className="flex flex-col items-center px-3 py-2"
               style={{
                 ...focusScoreBgStyle(item.focusScore),
-                borderRadius: 'var(--radius-md)', }}
->
+                borderRadius: 'var(--radius-md)', }}>
               <span
                 className="tabular-nums"
                 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: focusScoreColor(item.focusScore) }}>

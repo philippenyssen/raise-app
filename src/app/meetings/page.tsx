@@ -53,8 +53,7 @@ function RatingDots({ value, onChange, label }: { value: number | null; onChange
               cursor: onChange ? 'pointer' : 'default',
               background: 'none',
               border: 'none',
-              padding: 0, }}
->
+              padding: 0, }}>
             <span style={{
               color: n <= (hovered ?? value ?? 0) ? 'var(--warning)' : 'var(--text-muted)',
               transition: 'color 100ms ease',
@@ -559,8 +558,7 @@ export default function MeetingsPage() {
                             padding: '1px 6px',
                             borderRadius: 'var(--radius-sm)',
                             background: 'var(--surface-2)',
-                            color: 'var(--text-muted)', }}
->
+                            color: 'var(--text-muted)', }}>
                           {stats.count} meetings
                         </span>
                       )}
@@ -625,8 +623,7 @@ export default function MeetingsPage() {
                           fontSize: 'var(--font-size-xs)',
                           padding: '2px 8px',
                           borderRadius: 'var(--radius-sm)',
-                          ...getObjectionStyle(o.severity), }}
->
+                          ...getObjectionStyle(o.severity), }}>
                         {o.text.length > 50 ? o.text.slice(0, 50) + '...' : o.text}
                       </span>
                     ))}
@@ -642,8 +639,7 @@ export default function MeetingsPage() {
                       opacity: 0.6,
                       background: 'var(--accent-muted)',
                       borderRadius: 'var(--radius-sm)',
-                      padding: '4px 8px', }}
->
+                      padding: '4px 8px', }}>
                     Next: {m.next_steps}
                   </div>
                 )}

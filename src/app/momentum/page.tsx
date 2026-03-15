@@ -447,8 +447,7 @@ export default function MomentumPage() {
                                 ...scoreColorStyle(ws.score),
                                 ...(isAnomalyCell ? {
                                   boxShadow: `0 0 0 2px ${anomalyForWeek.direction === 'above' ? 'var(--accent-muted)' : 'var(--fg-6)'}`,
-                                } : {}), }}
->
+                                } : {}), }}>
                               {ws.score}
                             </div>
                           </td>
@@ -635,8 +634,7 @@ export default function MomentumPage() {
                               style={{
                                 background: tc.bg,
                                 color: tc.color,
-                                boxShadow: `inset 0 0 0 1px ${tc.border}`, }}
->
+                                boxShadow: `inset 0 0 0 1px ${tc.border}`, }}>
                               {TYPE_LABELS[anomaly.type] || anomaly.type}
                             </span>
                             <span

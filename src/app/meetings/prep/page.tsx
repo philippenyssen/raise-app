@@ -6,9 +6,9 @@ import Link from 'next/link';
 import {
   Users, Calendar, AlertTriangle, CheckCircle, MessageSquare,
   ChevronDown, Printer, Target, Shield, Clock,
-  TrendingUp, Loader2, BookOpen, Building2,
-  ArrowLeft, Zap, CircleDot, ExternalLink, Sparkles,
-  ListChecks, MessageCircleQuestion, FolderOpen, ChevronRight,
+  TrendingUp, TrendingDown, Minus, Loader2, BookOpen, Building2,
+  ArrowLeft, Zap, CircleDot, ExternalLink, Sparkles, Plus,
+  ListChecks, MessageCircleQuestion, FolderOpen, ChevronRight, Timer,
 } from 'lucide-react';
 import type {
   Investor, Meeting, Task, Objection, EngagementSignal,
@@ -230,6 +230,15 @@ function MeetingPrepContent() {
     () => tasks.filter(t => t.status === 'pending' || t.status === 'in_progress'),
     [tasks],
   );
+
+  const nextMeeting = useMemo(() => { const now = Date.now(); return meetings.filter(m => new Date(m.date).getTime() > now).sort((a, b) => a.date.localeCompare(b.date))[0] ?? null; }, [meetings]);
+  const [countdown, setCountdown] = useState('');
+  useEffect(() => {
+    if (!nextMeeting) { setCountdown(''); return; }
+    const tick = () => { const diff = new Date(nextMeeting.date).getTime() - Date.now(); if (diff <= 0) { setCountdown('Now'); return; } const d = Math.floor(diff / 86400000), h = Math.floor((diff % 86400000) / 3600000), m = Math.floor((diff % 3600000) / 60000); setCountdown(d > 0 ? `${d}d ${h}h` : h > 0 ? `${h}h ${m}m` : `${m}m`); };
+    tick(); const id = setInterval(tick, 60000); return () => clearInterval(id);
+  }, [nextMeeting]);
+  const topObjections = useMemo(() => { const sev: Record<string, number> = { showstopper: 3, significant: 2, minor: 1 }; return [...unresolvedObjections].sort((a, b) => (sev[b.severity] ?? 0) - (sev[a.severity] ?? 0)).slice(0, 3); }, [unresolvedObjections]);
 
   // ---- talking points generation ----
   const talkingPoints = useMemo(() => {
@@ -480,9 +489,12 @@ function MeetingPrepContent() {
           );
         })()}
         {!selectedId && !loading && investors.length === 0 && (
-          <div className="rounded-xl p-12 text-center">
+          <div className="rounded-xl p-12 text-center" style={stSurface1}>
             <Users className="w-10 h-10 mx-auto mb-3" style={{ color: 'var(--surface-3)' }} />
-            <p className="text-sm" style={stTextMuted}>No investors in pipeline yet.</p>
+            <p className="text-sm mb-3" style={stTextMuted}>No investors in pipeline yet.</p>
+            <Link href="/meetings/new" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm" style={{ background: 'var(--accent)', color: 'var(--surface-0)' }}>
+              <Plus className="w-4 h-4" /> Schedule a Meeting
+            </Link>
           </div>
         )}
 
@@ -499,6 +511,35 @@ function MeetingPrepContent() {
         {/* Prep content */}
         {investor && !loadingPrep && (
           <div className="space-y-5">
+
+            {/* ============ AT-A-GLANCE BAR ============ */}
+            {(() => {
+              const divider = { borderLeft: '1px solid var(--border-subtle)', paddingLeft: 'var(--space-4)' };
+              const trendColor = enthusiasmTrend === 'rising' ? 'var(--success)' : enthusiasmTrend === 'declining' ? 'var(--danger)' : 'var(--text-muted)';
+              return (
+                <section className="rounded-xl p-4 flex flex-wrap items-center gap-4" style={{ ...stSurface1, border: '1px solid var(--border-subtle)' }}>
+                  {countdown && nextMeeting ? (
+                    <div className="flex items-center gap-2"><span style={stAccent}><Timer className="w-4 h-4" /></span><div><div className="text-xs" style={stTextMuted}>Next meeting</div><div className="text-sm font-normal" style={stTextPrimary}>{countdown}</div></div></div>
+                  ) : meetings.length === 0 ? (
+                    <div className="flex items-center gap-2"><span style={stTextMuted}><Calendar className="w-4 h-4" /></span><Link href="/meetings/new" className="text-xs" style={stAccent}>Schedule first meeting</Link></div>
+                  ) : null}
+                  {enthusiasmTrend && (
+                    <div className="flex items-center gap-2" style={divider}>
+                      <span style={{ color: trendColor }}>{enthusiasmTrend === 'rising' ? <TrendingUp className="w-4 h-4" /> : enthusiasmTrend === 'declining' ? <TrendingDown className="w-4 h-4" /> : <Minus className="w-4 h-4" />}</span>
+                      <div><div className="text-xs" style={stTextMuted}>Conviction</div><div className="text-sm capitalize" style={{ color: trendColor }}>{enthusiasmTrend}</div></div>
+                    </div>
+                  )}
+                  {topObjections.length > 0 && (
+                    <div className="flex items-start gap-2 flex-1 min-w-[200px]" style={divider}>
+                      <span style={stTextPrimary}><AlertTriangle className="w-4 h-4 mt-0.5" /></span>
+                      <div className="min-w-0"><div className="text-xs mb-1" style={stTextMuted}>Top objections</div>{topObjections.map((o, i) => <div key={i} className="text-xs truncate" style={stTextSecondary}>{o.text}</div>)}</div>
+                    </div>
+                  )}
+                  {!meetingBrief && !generatingBrief && <button onClick={generateBrief} className="ml-auto no-print px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5" style={{ background: 'var(--accent)', color: 'var(--surface-0)' }}><Sparkles className="w-3.5 h-3.5" /> Quick Brief</button>}
+                  {generatingBrief && <span className="ml-auto text-xs flex items-center gap-1.5" style={stTextMuted}><Loader2 className="w-3.5 h-3.5 animate-spin" /> Generating...</span>}
+                </section>
+              );
+            })()}
 
             {/* ============ CUSTOMIZED MEETING BRIEF (AI-generated) ============ */}
             {meetingBrief && (

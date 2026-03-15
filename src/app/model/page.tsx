@@ -365,8 +365,7 @@ export default function ModelPage() {
                   onMouseEnter={e => {
                     (e.currentTarget as HTMLButtonElement).style.color = 'var(--danger)'; }}
                   onMouseLeave={e => {
-                    (e.currentTarget as HTMLButtonElement).style.color = 'var(--text-tertiary)'; }}
->
+                    (e.currentTarget as HTMLButtonElement).style.color = 'var(--text-tertiary)'; }}>
                   <Trash2 className="w-3 h-3" />
                 </button>
               </div>
@@ -380,8 +379,7 @@ export default function ModelPage() {
             onMouseEnter={e => {
               (e.currentTarget as HTMLButtonElement).style.color = 'var(--text-secondary)'; }}
             onMouseLeave={e => {
-              (e.currentTarget as HTMLButtonElement).style.color = 'var(--text-tertiary)'; }}
->
+              (e.currentTarget as HTMLButtonElement).style.color = 'var(--text-tertiary)'; }}>
             <Plus className="w-4 h-4" />
           </button>
         </div>
@@ -395,8 +393,7 @@ export default function ModelPage() {
                 (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--accent-muted)';
               }}
               onMouseLeave={e => {
-                (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--accent)'; }}
->
+                (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--accent)'; }}>
               <Table className="w-3.5 h-3.5" /> Initialize Model
             </button>
           )}
@@ -416,8 +413,7 @@ export default function ModelPage() {
             onMouseLeave={e => {
               if (dirty) {
                 (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--accent)';
-              } }}
->
+              } }}>
             <Save className="w-3.5 h-3.5" />
             {saving ? 'Saving...' : dirty ? 'Save' : 'Saved'}
           </button>

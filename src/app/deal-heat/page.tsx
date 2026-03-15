@@ -190,8 +190,7 @@ export default function DealHeatPage() {
                 background: active ? (cfg ? cfg.bg : 'var(--surface-2)') : 'transparent',
                 color: active ? (cfg ? cfg.text : 'var(--text-primary)') : 'var(--text-tertiary)',
                 cursor: 'pointer',
-                transition: 'all 150ms ease', }}
->
+                transition: 'all 150ms ease', }}>
               {fb.label}
               <span style={{ fontSize: 'var(--font-size-xs)', opacity: 0 }}>
                 {fb.count}

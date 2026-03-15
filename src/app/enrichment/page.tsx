@@ -258,8 +258,7 @@ export default function EnrichmentPage() {
               color: tab === t ? 'var(--text-primary)' : 'var(--text-muted)',
               background: 'transparent',
               cursor: 'pointer',
-              display: 'flex', alignItems: 'center', gap: 'var(--space-2)', }}
->
+              display: 'flex', alignItems: 'center', gap: 'var(--space-2)', }}>
             {t === 'enrich' && <Search style={{ width: '14px', height: '14px' }} />}
             {t === 'sources' && <Settings style={{ width: '14px', height: '14px' }} />}
             {t === 'history' && <Clock style={{ width: '14px', height: '14px' }} />}
@@ -339,8 +338,7 @@ export default function EnrichmentPage() {
                         border: '1px solid var(--accent-20)',
                         opacity: enriching === inv.id || bulkEnriching ? 0.4 : 1,
                         fontSize: 'var(--font-size-xs)',
-                        padding: '4px 10px', }}
->
+                        padding: '4px 10px', }}>
                       {enriching === inv.id ? <Loader2 style={{ width: '12px', height: '12px' }} className="animate-spin" /> : <Play style={{ width: '12px', height: '12px' }} />}
                       {enriching === inv.id ? 'Enriching...' : 'Enrich'}
                     </button>

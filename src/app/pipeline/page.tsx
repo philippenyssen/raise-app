@@ -481,8 +481,7 @@ export default function PipelinePage() {
                       padding: '0.5rem 0.75rem',
                       borderTopLeftRadius: 'var(--radius-xl)',
                       borderTopRightRadius: 'var(--radius-xl)',
-                      ...colors.header, }}
->
+                      ...colors.header, }}>
                     <div className="flex items-center justify-between">
                       <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-secondary)', letterSpacing: '0.01em' }}>
                         {STATUS_LABELS[status]}
@@ -493,8 +492,7 @@ export default function PipelinePage() {
                           fontWeight: 300,
                           padding: '0.125rem 0.375rem',
                           borderRadius: '9999px',
-                          ...colors.badge, }}
->
+                          ...colors.badge, }}>
                         {cards.length}
                       </span>
                     </div>
@@ -562,8 +560,7 @@ function FilterButton({
           : {
               background: 'var(--surface-1)',
               color: hovered ? 'var(--text-secondary)' : 'var(--text-tertiary)',
-            }), }}
->
+            }), }}>
       <Filter className="w-3.5 h-3.5" />
       Filters
       {active && (
@@ -574,8 +571,7 @@ function FilterButton({
             fontSize: '10px',
             fontWeight: 300,
             padding: '0.125rem 0.375rem',
-            borderRadius: '9999px', }}
->
+            borderRadius: '9999px', }}>
           {count}
         </span>
       )}
@@ -612,8 +608,7 @@ function TierFilterButton({
           : {
               background: 'var(--surface-1)',
               color: hovered ? 'var(--text-secondary)' : 'var(--text-muted)',
-            }), }}
->
+            }), }}>
       T{tier}
     </button>
   );
@@ -650,8 +645,7 @@ function TypeFilterButton({
           : {
               background: 'var(--surface-1)',
               color: hovered ? 'var(--text-secondary)' : 'var(--text-muted)',
-            }), }}
->
+            }), }}>
       {label}
     </button>
   );

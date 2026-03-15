@@ -115,8 +115,7 @@ export function Sidebar() {
       <button
         onClick={() => setMobileOpen(true)}
         className="md:hidden fixed top-3 left-3 z-50 p-2 rounded-lg"
-        style={{ background: SB.bg, border: `1px solid ${SB.border}` }}
-      >
+        style={{ background: SB.bg, border: `1px solid ${SB.border}` }}>
         <Menu className="w-4 h-4" style={{ color: SB.textActive }} />
       </button>
 
@@ -141,16 +140,14 @@ export function Sidebar() {
           width: collapsed ? '60px' : '220px',
           background: SB.bg,
           borderRight: `1px solid ${SB.border}`,
-        }}
-      >
+        }}>
         {/* Header */}
         <div
           className="flex items-center justify-between shrink-0"
           style={{
             padding: collapsed ? 'var(--space-4) var(--space-3)' : 'var(--space-5) var(--space-4)',
             borderBottom: `1px solid ${SB.border}`,
-          }}
-        >
+          }}>
           {!collapsed && (
             <div className="min-w-0">
               <h1 style={{
@@ -187,15 +184,13 @@ export function Sidebar() {
               color: SB.muted,
             }}
             onMouseEnter={e => { (e.target as HTMLElement).style.color = SB.textHover; (e.target as HTMLElement).style.background = SB.bgHover; }}
-            onMouseLeave={e => { (e.target as HTMLElement).style.color = SB.muted; (e.target as HTMLElement).style.background = 'transparent'; }}
-          >
+            onMouseLeave={e => { (e.target as HTMLElement).style.color = SB.muted; (e.target as HTMLElement).style.background = 'transparent'; }}>
             {collapsed ? <ChevronRight className="w-3.5 h-3.5" /> : <ChevronLeft className="w-3.5 h-3.5" />}
           </button>
           <button
             onClick={() => setMobileOpen(false)}
             className="md:hidden p-1"
-            style={{ color: SB.textHover }}
-          >
+            style={{ color: SB.textHover }}>
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -203,8 +198,7 @@ export function Sidebar() {
         {/* Navigation */}
         <nav
           className="flex-1 overflow-y-auto"
-          style={{ padding: collapsed ? 'var(--space-2)' : 'var(--space-3)' }}
-        >
+          style={{ padding: collapsed ? 'var(--space-2)' : 'var(--space-3)' }}>
           {Object.entries(sections).map(([section, items], sIdx) => (
             <div key={section} style={{ marginTop: sIdx > 0 ? 'var(--space-4)' : '0' }}>
               {/* Section label */}
@@ -217,8 +211,7 @@ export function Sidebar() {
                     letterSpacing: '0.04em',
                     padding: '0 var(--space-3)',
                     marginBottom: 'var(--space-1)',
-                  }}
-                >
+                  }}>
                   {sectionLabels[section]}
                 </div>
               )}
@@ -258,8 +251,7 @@ export function Sidebar() {
                           (e.currentTarget as HTMLElement).style.background = 'transparent';
                           (e.currentTarget as HTMLElement).style.color = SB.text;
                         }
-                      }}
-                    >
+                      }}>
                       {/* Active indicator */}
                       {active && (
                         <div
@@ -329,8 +321,7 @@ export function Sidebar() {
                                 fontWeight: 400,
                                 padding: '0 5px',
                                 lineHeight: 1,
-                              }}
-                            >
+                              }}>
                               {overdueCount > 9 ? '9+' : overdueCount}
                             </span>
                           )}
@@ -347,8 +338,7 @@ export function Sidebar() {
                                 fontWeight: 400,
                                 padding: '0 5px',
                                 lineHeight: 1,
-                              }}
-                            >
+                              }}>
                               {todayMeetingCount > 9 ? '9+' : todayMeetingCount}
                             </span>
                           )}
@@ -365,8 +355,7 @@ export function Sidebar() {
                             fontSize: 'var(--font-size-xs)',
                             color: SB.textActive,
                             boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
-                          }}
-                        >
+                          }}>
                           {item.label}
                         </div>
                       )}
@@ -383,8 +372,7 @@ export function Sidebar() {
           style={{
             padding: collapsed ? 'var(--space-3) var(--space-2)' : 'var(--space-3) var(--space-4)',
             borderTop: `1px solid ${SB.border}`,
-          }}
-        >
+          }}>
           {!collapsed && (
             <div
               className="flex items-center justify-center"
@@ -392,8 +380,7 @@ export function Sidebar() {
                 fontSize: '10px',
                 color: SB.muted,
                 padding: '0 var(--space-2) var(--space-2)',
-              }}
-            >
+              }}>
               <kbd
                 style={{
                   background: SB.bgHover,
@@ -403,8 +390,7 @@ export function Sidebar() {
                   fontSize: '10px',
                   marginRight: '4px',
                   color: SB.text,
-                }}
-              >
+                }}>
                 ⌘K
               </kbd>
               to search
@@ -424,8 +410,7 @@ export function Sidebar() {
               color: SB.muted,
             }}
             onMouseEnter={e => { (e.target as HTMLElement).style.color = SB.textHover; }}
-            onMouseLeave={e => { (e.target as HTMLElement).style.color = SB.muted; }}
-          >
+            onMouseLeave={e => { (e.target as HTMLElement).style.color = SB.muted; }}>
             <LogOut className="w-3.5 h-3.5 shrink-0" />
             {!collapsed && <span>Sign Out</span>}
           </button>

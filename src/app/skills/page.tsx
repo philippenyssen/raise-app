@@ -144,8 +144,7 @@ export default function SkillsPage() {
                           className="text-xs font-normal px-2 py-0.5 rounded-full"
                           style={{
                             color: getHealthColor(skill.success_rate),
-                            backgroundColor: getHealthBg(skill.success_rate), }}
->
+                            backgroundColor: getHealthBg(skill.success_rate), }}>
                           {skill.success_rate}%
                         </span>
                       </div>

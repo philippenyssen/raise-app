@@ -142,8 +142,7 @@ export default function CompetitivePage() {
               fontSize: 'var(--font-size-xs)',
               fontWeight: 400,
               color: 'var(--text-muted)',
-              letterSpacing: '0.01em', }}
->
+              letterSpacing: '0.01em', }}>
             <div />
             <div>Competitor</div>
             <div style={{ textAlign: 'center' }}>Mentions</div>
@@ -202,8 +201,7 @@ export default function CompetitivePage() {
                           padding: '1px 6px',
                           borderRadius: 'var(--radius-sm)',
                           background: 'var(--surface-2)',
-                          color: 'var(--text-secondary)', }}
->
+                          color: 'var(--text-secondary)', }}>
                         {inv}
                       </span>
                     ))}
@@ -219,8 +217,7 @@ export default function CompetitivePage() {
                     style={{
                       padding: 'var(--space-3) var(--space-4) var(--space-3) var(--space-10)',
                       background: 'var(--surface-1)',
-                      borderBottom: '1px solid var(--border-subtle)', }}
->
+                      borderBottom: '1px solid var(--border-subtle)', }}>
                     <div style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-muted)', marginBottom: 'var(--space-2)', letterSpacing: '0.01em' }}>
                       Meeting Context
                     </div>
@@ -233,8 +230,7 @@ export default function CompetitivePage() {
                             fontSize: 'var(--font-size-sm)',
                             padding: 'var(--space-2) var(--space-3)',
                             background: 'var(--surface-0)',
-                            borderRadius: 'var(--radius-sm)', }}
->
+                            borderRadius: 'var(--radius-sm)', }}>
                           <span style={stTextMuted}><Calendar className="w-3.5 h-3.5" /></span>
                           <span style={{ color: 'var(--text-tertiary)', minWidth: '80px' }}>{mtg.date}</span>
                           <span style={stTextMuted}><Users className="w-3.5 h-3.5" /></span>

@@ -27,8 +27,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               maxWidth: '1200px',
               padding: 'var(--space-8) var(--space-8)',
               paddingLeft: 'max(var(--space-8), 3.5rem)',
-            }}
-          >
+            }}>
             <ErrorBoundary>
               {children}
             </ErrorBoundary>

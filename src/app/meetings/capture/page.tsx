@@ -493,8 +493,7 @@ function QuickCaptureInner() {
                   border: enthusiasm === level ? '2px solid var(--accent)' : '2px solid var(--border-default)',
                   background: enthusiasm === level ? 'var(--accent-muted)' : 'var(--surface-1)',
                   color: enthusiasm === level ? 'var(--accent)' : 'var(--text-tertiary)',
-                  transform: enthusiasm === level ? 'scale(1.1)' : 'scale(1)', }}
->
+                  transform: enthusiasm === level ? 'scale(1.1)' : 'scale(1)', }}>
                 {level}
               </button>
             ))}

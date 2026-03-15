@@ -196,8 +196,7 @@ export default function ForecastPage() {
               fontWeight: 400,
               background: confidenceBg(forecast.confidence),
               color: confidenceColor(forecast.confidence),
-              letterSpacing: '0.01em', }}
->
+              letterSpacing: '0.01em', }}>
             <Shield className="w-3 h-3" />
             {forecast.confidence} confidence
           </span>
@@ -229,8 +228,7 @@ export default function ForecastPage() {
               background: 'var(--surface-2)',
               borderRadius: 'var(--radius-md)',
               overflow: 'hidden',
-              position: 'relative', }}
->
+              position: 'relative', }}>
             {/* Expected (lighter) */}
             <div
               style={{
@@ -266,8 +264,7 @@ export default function ForecastPage() {
                 fontWeight: 300,
                 color: 'var(--text-primary)',
                 fontVariantNumeric: 'tabular-nums',
-                whiteSpace: 'nowrap', }}
->
+                whiteSpace: 'nowrap', }}>
               {formatAmount(effectiveExpected, currency)} / {targetDisplay}
             </div>
           </div>
@@ -333,8 +330,7 @@ export default function ForecastPage() {
                   fontWeight: 300,
                   color: 'var(--text-primary)',
                   fontVariantNumeric: 'tabular-nums',
-                  marginBottom: 'var(--space-1)', }}
->
+                  marginBottom: 'var(--space-1)', }}>
                 {formatAmount(s.amount, currency)}
               </div>
               <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-2)' }}>
@@ -348,8 +344,7 @@ export default function ForecastPage() {
                   color: 'var(--text-tertiary)',
                   borderTop: '1px solid var(--border-subtle)',
                   paddingTop: 'var(--space-2)',
-                  marginTop: 'var(--space-2)', }}
->
+                  marginTop: 'var(--space-2)', }}>
                 <span>{s.investorCount} investor{s.investorCount !== 1 ? 's' : ''}</span>
                 <span>{fmtDateShort(s.closeDate)}</span>
               </div>
@@ -420,8 +415,7 @@ export default function ForecastPage() {
                       gap: 'var(--space-2)',
                       padding: 'var(--space-2) var(--space-3)',
                       background: 'var(--surface-1)',
-                      borderRadius: 'var(--radius-sm)', }}
->
+                      borderRadius: 'var(--radius-sm)', }}>
                     <span
                       style={{
                         width: '18px',
@@ -434,8 +428,7 @@ export default function ForecastPage() {
                         justifyContent: 'center',
                         fontSize: '10px',
                         fontWeight: 300,
-                        flexShrink: 0, }}
->
+                        flexShrink: 0, }}>
                       {i + 1}
                     </span>
                     <div style={{ flex: 1, minWidth: 0 }}>
@@ -663,8 +656,7 @@ export default function ForecastPage() {
                             fontWeight: 400,
                             color: isExcluded ? 'var(--text-muted)' : 'var(--text-secondary)',
                             fontVariantNumeric: 'tabular-nums',
-                            textDecoration: isExcluded ? 'line-through' : 'none', }}
->
+                            textDecoration: isExcluded ? 'line-through' : 'none', }}>
                           {formatAmount(estCapital, currency)}
                         </span>
                       </td>
@@ -687,8 +679,7 @@ export default function ForecastPage() {
                               ? 'var(--danger)'
                               : inv.daysInStage > 14
                                 ? 'var(--warning)'
-                                : 'var(--text-secondary)', }}
->
+                                : 'var(--text-secondary)', }}>
                           {inv.daysInStage}d
                         </span>
                       </td>
@@ -711,8 +702,7 @@ export default function ForecastPage() {
                               ? 'var(--danger)'
                               : inv.predictedDaysToClose > 30
                                 ? 'var(--warning)'
-                                : 'var(--text-secondary)', }}
->
+                                : 'var(--text-secondary)', }}>
                           {inv.predictedDaysToClose}d
                         </span>
                       </td>
@@ -728,8 +718,7 @@ export default function ForecastPage() {
                             fontSize: 'var(--font-size-xs)',
                             fontWeight: 400,
                             background: confidenceBg(inv.confidence),
-                            color: confidenceColor(inv.confidence), }}
->
+                            color: confidenceColor(inv.confidence), }}>
                           {inv.confidence}
                         </span>
                       </td>
@@ -743,8 +732,7 @@ export default function ForecastPage() {
                               height: '6px',
                               background: 'var(--surface-3)',
                               borderRadius: '3px',
-                              overflow: 'hidden', }}
->
+                              overflow: 'hidden', }}>
                             <div
                               style={{
                                 width: maxDaysToClose > 0 ? `${Math.max(4, (inv.predictedDaysToClose / maxDaysToClose) * 100)}%` : '0%',
@@ -761,8 +749,7 @@ export default function ForecastPage() {
                               color: 'var(--text-muted)',
                               minWidth: '32px',
                               textAlign: 'right',
-                              fontVariantNumeric: 'tabular-nums', }}
->
+                              fontVariantNumeric: 'tabular-nums', }}>
                             {inv.predictedDaysToClose}d
                           </span>
                         </div>
@@ -797,8 +784,7 @@ export default function ForecastPage() {
                   fontSize: 'var(--font-size-xs)',
                   fontWeight: 400,
                   color,
-                  fontVariantNumeric: 'tabular-nums', }}
->
+                  fontVariantNumeric: 'tabular-nums', }}>
                 {investors.length}
               </span>
             </div>
@@ -845,8 +831,7 @@ export default function ForecastPage() {
           marginTop: 'var(--space-6)',
           padding: 'var(--space-3)',
           fontSize: 'var(--font-size-xs)',
-          color: 'var(--text-muted)', }}
->
+          color: 'var(--text-muted)', }}>
         <span style={stTextTertiary}>
           <Users className="w-3 h-3" />
         </span>

@@ -88,8 +88,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
           flexDirection: 'column',
           gap: 'var(--space-2)',
           maxWidth: '380px',
-        }}
-      >
+        }}>
         {toasts.map(t => {
           const Icon = icons[t.type];
           const styles = typeStyles[t.type];
@@ -106,8 +105,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                 boxShadow: 'var(--shadow-lg)',
                 fontSize: 'var(--font-size-sm)',
                 color: styles.color,
-              }}
-            >
+              }}>
               <Icon className="shrink-0" style={{ width: '16px', height: '16px', color: styles.icon }} />
               <span className="flex-1" style={{ color: 'var(--text-primary)' }}>{t.message}</span>
               <button
@@ -115,8 +113,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                 className="shrink-0 rounded transition-opacity"
                 style={{ opacity: 0.5, color: styles.color }}
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.opacity = '1'; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.opacity = '0.5'; }}
-              >
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.opacity = '0.5'; }}>
                 <X style={{ width: '14px', height: '14px' }} />
               </button>
             </div>

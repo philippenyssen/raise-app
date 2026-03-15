@@ -294,8 +294,7 @@ function AlertCard({ alert }: { alert: BriefingAlert }) {
         background: style.bg,
         border: `1px solid ${style.border}`,
         borderRadius: 'var(--radius-lg)',
-        padding: 'var(--space-3) var(--space-4)', }}
->
+        padding: 'var(--space-3) var(--space-4)', }}>
       <div className="flex items-start gap-3">
         <span className="shrink-0 mt-0.5" style={{ color: style.color, display: 'flex' }}>
           <Icon className="w-4 h-4" />

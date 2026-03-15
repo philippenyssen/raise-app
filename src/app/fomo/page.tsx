@@ -198,8 +198,7 @@ function IntensityMeter({ intensity, description }: { intensity: number; descrip
           background: 'var(--surface-2)',
           borderRadius: '4px',
           overflow: 'hidden',
-          marginBottom: 'var(--space-3)', }}
->
+          marginBottom: 'var(--space-3)', }}>
         <div
           style={{
             width: `${intensity}%`, height: '100%',
@@ -336,8 +335,7 @@ function PressureCard({ inv }: { inv: InvestorFomo }) {
                       padding: '2px 8px',
                       borderRadius: 'var(--radius-sm)',
                       background: 'var(--surface-2)',
-                      color: 'var(--text-secondary)', }}
->
+                      color: 'var(--text-secondary)', }}>
                     {t.name}
                     <span style={{ color: 'var(--text-muted)', marginLeft: '4px' }}>
                       {t.statusLabel}
@@ -549,8 +547,7 @@ export default function FomoPage() {
               fontWeight: 400,
               background: refreshHovered ? 'var(--surface-2)' : 'var(--surface-1)',
               color: 'var(--text-secondary)',
-              cursor: 'pointer', }}
->
+              cursor: 'pointer', }}>
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
             Refresh
           </button>
@@ -600,8 +597,7 @@ export default function FomoPage() {
                       if (filterIntensity !== tab.key) {
                         (e.currentTarget as HTMLElement).style.background = 'transparent';
                         (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)';
-                      } }}
->
+                      } }}>
                     {tab.label} ({tab.count})
                   </button>
                 ))}
@@ -615,8 +611,7 @@ export default function FomoPage() {
                     padding: 'var(--space-8)',
                     textAlign: 'center',
                     color: 'var(--text-muted)',
-                    fontSize: 'var(--font-size-sm)', }}
->
+                    fontSize: 'var(--font-size-sm)', }}>
                   No investors match this filter.
                 </div>
               ) : (
@@ -642,8 +637,7 @@ export default function FomoPage() {
                     color: 'var(--text-muted)',
                     fontSize: 'var(--font-size-sm)',
                     background: 'var(--surface-1)',
-                    borderRadius: 'var(--radius-lg)', }}
->
+                    borderRadius: 'var(--radius-lg)', }}>
                   No recent trigger events detected.
                 </div>
               ) : (
@@ -668,8 +662,7 @@ export default function FomoPage() {
                     color: 'var(--text-muted)',
                     fontSize: 'var(--font-size-sm)',
                     background: 'var(--surface-1)',
-                    borderRadius: 'var(--radius-lg)', }}
->
+                    borderRadius: 'var(--radius-lg)', }}>
                   No actionable strategies right now. Add more investors or schedule meetings to generate competitive dynamics.
                 </div>
               ) : (
@@ -704,8 +697,7 @@ export default function FomoPage() {
                   background: 'var(--surface-3)',
                   borderRadius: '2px',
                   overflow: 'hidden',
-                  marginBottom: 'var(--space-2)', }}
->
+                  marginBottom: 'var(--space-2)', }}>
                 <div
                   style={{
                     width: `${data.meetingDensity.densityScore}%`,

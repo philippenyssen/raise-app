@@ -437,8 +437,7 @@ export default function InvestorDetailPage() {
                 className="px-2 py-0.5 rounded text-xs font-normal border-none cursor-pointer focus:outline-none"
                 style={{
                   backgroundColor: STATUS_COLORS[investor.status],
-                  color: 'var(--text-primary)', }}
->
+                  color: 'var(--text-primary)', }}>
                 {Object.entries(STATUS_LABELS).map(([val, label]) => (
                   <option key={val} value={val} style={{ background: 'var(--surface-0)', color: 'var(--text-secondary)' }}>{label}</option>
                 ))}
@@ -550,8 +549,7 @@ export default function InvestorDetailPage() {
             }`,
             background: dealIntel.heatLabel === 'hot' ? 'var(--fg-6)' :
               dealIntel.heatLabel === 'warm' ? 'var(--fg-5)' :
-              'var(--surface-1)', }}
->
+              'var(--surface-1)', }}>
           {/* Heat */}
           <div className="flex items-center gap-1.5">
             <Flame className="w-3.5 h-3.5" style={{
@@ -620,8 +618,7 @@ export default function InvestorDetailPage() {
                   fontSize: '11px', fontWeight: 400, padding: '3px 10px',
                   borderRadius: 'var(--radius-sm)', textDecoration: 'none',
                   background: 'var(--danger-muted)', color: 'var(--text-primary)',
-                  border: '1px solid var(--fg-6)', }}
->
+                  border: '1px solid var(--fg-6)', }}>
                 <Phone className="w-3 h-3" /> Rescue
               </Link>
             ) : dealIntel.trackingStatus === 'behind' ? (
@@ -632,8 +629,7 @@ export default function InvestorDetailPage() {
                   fontSize: '11px', fontWeight: 400, padding: '3px 10px',
                   borderRadius: 'var(--radius-sm)', textDecoration: 'none',
                   background: 'var(--warning-muted)', color: 'var(--text-tertiary)',
-                  border: '1px solid var(--fg-5)', }}
->
+                  border: '1px solid var(--fg-5)', }}>
                 <Mail className="w-3 h-3" /> Nudge
               </Link>
             ) : null}
@@ -684,8 +680,7 @@ export default function InvestorDetailPage() {
                     style={{
                       fontSize: '10px', fontWeight: 400,
                       padding: '1px 6px', borderRadius: '9999px',
-                      background: 'var(--danger)', color: 'var(--text-primary)', }}
->
+                      background: 'var(--danger)', color: 'var(--text-primary)', }}>
                     {overdueItems.length} overdue
                   </span>
                 )}
@@ -723,8 +718,7 @@ export default function InvestorDetailPage() {
                         background: isOverdue ? 'var(--danger-muted)' : 'var(--surface-2)',
                         color: isOverdue ? 'var(--danger)' : 'var(--text-muted)',
                         fontWeight: 400,
-                        fontSize: '10px', }}
->
+                        fontSize: '10px', }}>
                       {timeLabel}
                     </span>
                     <span
@@ -1573,8 +1567,7 @@ function EnrichmentStatusCard({
             background: enriching ? 'var(--surface-2)' : hoveredEnrich ? 'var(--accent-hover)' : 'var(--accent)',
             color: enriching ? 'var(--text-muted)' : 'var(--text-primary)',
             cursor: enriching ? 'not-allowed' : 'pointer',
-            transition: 'background 150ms ease', }}
->
+            transition: 'background 150ms ease', }}>
           {enriching
             ? <><Loader2 className="w-3 h-3 animate-spin" /> Enriching...</>
             : <><RefreshCw className="w-3 h-3" /> {hasData ? 'Re-enrich' : 'Enrich'}</>
@@ -1679,8 +1672,7 @@ function EnrichmentStatusCard({
                         style={{
                           background: p.type === 'free' ? 'var(--success-muted)' : p.type === 'freemium' ? 'var(--accent-muted)' : 'var(--warning-muted)',
                           color: 'var(--text-muted)',
-                          fontSize: '9px', }}
->
+                          fontSize: '9px', }}>
                         {p.type}
                       </span>
                     </div>
@@ -1785,8 +1777,7 @@ function EnrichmentPanel({
           style={{
             background: hoveredRefresh ? 'var(--accent-hover)' : 'var(--accent)',
             color: 'var(--text-primary)',
-            transition: 'background 150ms ease', }}
->
+            transition: 'background 150ms ease', }}>
           <RefreshCw className="w-3.5 h-3.5" /> Refresh
         </button>
       </div>
@@ -1820,8 +1811,7 @@ function EnrichmentPanel({
           className="text-xs flex items-center gap-1 transition-colors"
           style={{
             color: hoveredRefresh ? 'var(--text-secondary)' : 'var(--text-muted)',
-            transition: 'color 150ms ease', }}
->
+            transition: 'color 150ms ease', }}>
           <RefreshCw className="w-3 h-3" /> Refresh
         </button>
       </div>

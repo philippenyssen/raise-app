@@ -279,8 +279,7 @@ export default function VelocityPage() {
                               width: '20px',
                               height: '20px',
                               fontSize: '10px',
-                              flexShrink: 0, }}
->
+                              flexShrink: 0, }}>
                             {inv.investor_tier}
                           </span>
                           <div>
@@ -321,8 +320,7 @@ export default function VelocityPage() {
                             ? 'var(--danger)'
                             : inv.days_in_process > 35
                               ? 'var(--warning)'
-                              : 'var(--text-secondary)', }}
->
+                              : 'var(--text-secondary)', }}>
                         {inv.days_in_process}d
                       </span>
                     </td>
@@ -337,8 +335,7 @@ export default function VelocityPage() {
                             ? 'var(--danger)'
                             : inv.days_in_current_stage > 14
                               ? 'var(--warning)'
-                              : 'var(--text-tertiary)', }}
->
+                              : 'var(--text-tertiary)', }}>
                         {inv.days_in_current_stage}d
                       </span>
                     </td>
@@ -365,8 +362,7 @@ export default function VelocityPage() {
                           fontSize: 'var(--font-size-xs)',
                           fontWeight: 400,
                           background: trackingBg(inv.tracking_status),
-                          color: trackingColor(inv.tracking_status), }}
->
+                          color: trackingColor(inv.tracking_status), }}>
                         {inv.tracking_status === 'on_track' ? (
                           <><CheckCircle2 className="w-3 h-3" style={{ marginRight: '4px' }} /> On</>
                         ) : inv.tracking_status === 'behind' ? (
@@ -383,8 +379,7 @@ export default function VelocityPage() {
                         style={{
                           fontSize: 'var(--font-size-xs)',
                           color: inv.bottleneck === 'On pace' ? 'var(--text-muted)' : 'var(--warning)',
-                          lineHeight: 1.4, }}
->
+                          lineHeight: 1.4, }}>
                         {inv.bottleneck}
                       </span>
                     </td>
@@ -398,8 +393,7 @@ export default function VelocityPage() {
                             height: '6px',
                             background: 'var(--surface-3)',
                             borderRadius: '3px',
-                            overflow: 'hidden', }}
->
+                            overflow: 'hidden', }}>
                           <div
                             style={{
                               width: `${inv.velocity_score}%`,
@@ -416,8 +410,7 @@ export default function VelocityPage() {
                             fontVariantNumeric: 'tabular-nums',
                             color: velocityColor(inv.velocity_score),
                             minWidth: '28px',
-                            textAlign: 'right', }}
->
+                            textAlign: 'right', }}>
                           {inv.velocity_score}
                         </span>
                       </div>
@@ -438,8 +431,7 @@ export default function VelocityPage() {
                             padding: '3px 8px',
                             gap: '4px',
                             display: 'inline-flex',
-                            alignItems: 'center', }}
->
+                            alignItems: 'center', }}>
                           <Phone className="w-3 h-3" /> Rescue
                         </Link>
                       ) : inv.tracking_status === 'behind' ? (
@@ -455,8 +447,7 @@ export default function VelocityPage() {
                             padding: '3px 8px',
                             gap: '4px',
                             display: 'inline-flex',
-                            alignItems: 'center', }}
->
+                            alignItems: 'center', }}>
                           <Mail className="w-3 h-3" /> Nudge
                         </Link>
                       ) : (
@@ -471,8 +462,7 @@ export default function VelocityPage() {
                             padding: '3px 8px',
                             gap: '4px',
                             display: 'inline-flex',
-                            alignItems: 'center', }}
->
+                            alignItems: 'center', }}>
                           <Target className="w-3 h-3" /> View
                         </Link>
                       )}
@@ -492,8 +482,7 @@ export default function VelocityPage() {
           marginTop: 'var(--space-6)',
           padding: 'var(--space-3)',
           fontSize: 'var(--font-size-xs)',
-          color: 'var(--text-muted)', }}
->
+          color: 'var(--text-muted)', }}>
         <span style={stTextTertiary}>
           <Zap className="w-3 h-3" />
         </span>

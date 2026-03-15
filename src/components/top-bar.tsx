@@ -77,8 +77,7 @@ export function TopBar() {
         padding: 'var(--space-2) var(--space-4)',
         borderBottom: '1px solid var(--border-subtle)',
         background: 'var(--surface-0)',
-      }}
-    >
+      }}>
       {/* Search trigger */}
       <button
         onClick={() => {
@@ -135,8 +134,7 @@ export function TopBar() {
                 color: 'var(--surface-0)',
                 fontSize: '9px',
                 fontWeight: 300,
-              }}
-            >
+              }}>
               {overdue.length}
             </span>
           )}
@@ -151,8 +149,7 @@ export function TopBar() {
               border: '1px solid var(--border-default)',
               borderRadius: 'var(--radius-lg)',
               boxShadow: 'var(--shadow-xl)',
-            }}
-          >
+            }}>
             {/* Overdue */}
             {overdue.length > 0 && (
               <div style={{ padding: 'var(--space-3)', borderBottom: '1px solid var(--border-subtle)' }}>
@@ -173,8 +170,7 @@ export function TopBar() {
                         fontSize: 'var(--font-size-sm)',
                       }}
                       onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-3)'; }}
-                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
-                    >
+                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
                       <div className="flex items-center justify-between">
                         <span className="truncate" style={{ color: 'var(--text-primary)' }}>{t.title}</span>
                         <span className="shrink-0 ml-2" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)' }}>{days}d overdue</span>
@@ -208,8 +204,7 @@ export function TopBar() {
                       fontSize: 'var(--font-size-sm)',
                     }}
                     onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-3)'; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
-                  >
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
                     <div className="flex items-center justify-between">
                       <span className="truncate" style={{ color: 'var(--text-secondary)' }}>{t.title}</span>
                       {t.due_date && (
@@ -235,8 +230,7 @@ export function TopBar() {
                 activity.map(a => (
                   <div
                     key={a.id}
-                    style={{ padding: 'var(--space-2)', fontSize: 'var(--font-size-xs)' }}
-                  >
+                    style={{ padding: 'var(--space-2)', fontSize: 'var(--font-size-xs)' }}>
                     <div className="truncate" style={{ color: 'var(--text-secondary)' }}>{a.subject}</div>
                     <div style={{ color: 'var(--text-muted)', marginTop: '1px' }}>{timeAgo(a.created_at)}</div>
                   </div>
@@ -255,8 +249,7 @@ export function TopBar() {
                 borderTop: '1px solid var(--border-subtle)',
               }}
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-3)'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
-            >
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
               View all tasks & activity
             </Link>
           </div>

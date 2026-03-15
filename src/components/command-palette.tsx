@@ -86,27 +86,43 @@ const ACTIONS: ActionItem[] = [
   { label: 'Meeting prep', href: '/meetings/prep', icon: ClipboardList, section: 'actions' },
 ];
 
+const SHORTCUTS: Record<string, string> = { '/today': '⌘T', '/meetings/new': '⌘N', '/meetings/capture': '⌘J' };
+
 export default function CommandPalette() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [activeIndex, setActiveIndex] = useState(0);
   const [investors, setInvestors] = useState<{ id: string; name: string }[]>([]);
   const [investorsFetched, setInvestorsFetched] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
-  // Toggle on Cmd+K / Ctrl+K
+  const openWith = useCallback((prefix: string) => {
+    setQuery(prefix);
+    setOpen(true);
+    setTimeout(() => inputRef.current?.focus(), 10);
+  }, []);
+
+  // Global keyboard shortcuts
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        setOpen(prev => !prev);
+      if ((e.target as HTMLElement)?.tagName === 'INPUT' || (e.target as HTMLElement)?.tagName === 'TEXTAREA') {
+        if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); setOpen(prev => !prev); }
+        return;
       }
+      if (e.key === 'Escape') { setShowHelp(false); return; }
+      const mod = e.metaKey || e.ctrlKey;
+      if (mod && e.key === 'k') { e.preventDefault(); setOpen(prev => !prev); }
+      else if (mod && e.key === 'j') { e.preventDefault(); openWith('investor:'); }
+      else if (mod && e.key === 'n') { e.preventDefault(); router.push('/meetings/new'); }
+      else if (mod && e.key === 't') { e.preventDefault(); router.push('/today'); }
+      else if (mod && e.key === '/') { e.preventDefault(); setShowHelp(prev => !prev); }
     }
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, []);
+  }, [router, openWith]);
 
   // Fetch investors once when palette opens
   useEffect(() => {
@@ -137,28 +153,32 @@ export default function CommandPalette() {
   const close = useCallback(() => setOpen(false), []);
 
   const lowerQuery = query.toLowerCase().trim();
+  const investorPrefix = lowerQuery.startsWith('investor:');
+  const actionPrefix = lowerQuery.startsWith('action:');
+  const searchTerm = investorPrefix ? lowerQuery.slice(9).trim() : actionPrefix ? lowerQuery.slice(7).trim() : lowerQuery;
 
   const filteredPages = useMemo(
-    () => PAGES.filter(p => p.label.toLowerCase().includes(lowerQuery)),
-    [lowerQuery]
+    () => (investorPrefix || actionPrefix) ? [] : PAGES.filter(p => p.label.toLowerCase().includes(searchTerm)),
+    [searchTerm, investorPrefix, actionPrefix]
   );
 
   const filteredInvestors = useMemo(() => {
-    if (lowerQuery.length < 2) return [];
+    if (!investorPrefix && searchTerm.length < 2) return [];
+    const term = investorPrefix && searchTerm.length === 0 ? '' : searchTerm;
     return investors
-      .filter(inv => inv.name.toLowerCase().includes(lowerQuery))
-      .slice(0, 5)
+      .filter(inv => term.length === 0 || inv.name.toLowerCase().includes(term))
+      .slice(0, investorPrefix ? 10 : 5)
       .map((inv): InvestorItem => ({
         label: inv.name,
         href: `/investors/${inv.id}`,
         id: inv.id,
         section: 'investors',
       }));
-  }, [lowerQuery, investors]);
+  }, [searchTerm, investors, investorPrefix]);
 
   const filteredActions = useMemo(
-    () => ACTIONS.filter(a => a.label.toLowerCase().includes(lowerQuery)),
-    [lowerQuery]
+    () => investorPrefix ? [] : ACTIONS.filter(a => a.label.toLowerCase().includes(searchTerm)),
+    [searchTerm, investorPrefix]
   );
 
   const investorActions = useMemo((): InvestorActionItem[] => {
@@ -223,6 +243,26 @@ export default function CommandPalette() {
     if (el) el.scrollIntoView({ block: 'nearest' });
   }, [activeIndex]);
 
+  if (showHelp) {
+    const helpItems = [['⌘K', 'Command palette'], ['⌘J', 'Search investors'], ['⌘N', 'New meeting'], ['⌘T', 'Go to Today'], ['⌘/', 'This help']];
+    return createPortal(
+      <div className="fixed inset-0 z-[100] flex items-start justify-center" style={{ background: 'var(--overlay)', backdropFilter: 'blur(4px)', paddingTop: '15vh' }} onClick={() => setShowHelp(false)}>
+        <div onClick={e => e.stopPropagation()} style={{ width: '340px', background: 'var(--surface-1)', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-xl)', padding: '20px' }}>
+          <div className="flex items-center justify-between" style={{ marginBottom: '16px' }}>
+            <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text-primary)' }}>Keyboard Shortcuts</span>
+            <kbd style={{ fontSize: '10px', color: 'var(--text-muted)', background: 'var(--surface-2)', border: '1px solid var(--border-subtle)', borderRadius: '3px', padding: '2px 6px', cursor: 'pointer' }} onClick={() => setShowHelp(false)}>ESC</kbd>
+          </div>
+          {helpItems.map(([key, desc]) => (
+            <div key={key} className="flex items-center justify-between" style={{ padding: '6px 0', borderTop: '1px solid var(--border-subtle)' }}>
+              <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>{desc}</span>
+              <kbd style={{ fontSize: '11px', color: 'var(--text-muted)', background: 'var(--surface-2)', border: '1px solid var(--border-subtle)', borderRadius: '3px', padding: '2px 6px' }}>{key}</kbd>
+            </div>
+          ))}
+          <div style={{ marginTop: '12px', fontSize: '11px', color: 'var(--text-muted)' }}>Type <code style={{ background: 'var(--surface-2)', padding: '1px 4px', borderRadius: '3px' }}>investor:</code> or <code style={{ background: 'var(--surface-2)', padding: '1px 4px', borderRadius: '3px' }}>action:</code> in palette to filter</div>
+        </div>
+      </div>, document.body);
+  }
+
   if (!open) return null;
 
   let globalIdx = -1;
@@ -236,8 +276,7 @@ export default function CommandPalette() {
           letterSpacing: '0.08em',
           color: 'var(--text-muted)',
           padding: '8px 16px 4px',
-        }}
-      >
+        }}>
         {title}
       </div>
     );
@@ -268,6 +307,7 @@ export default function CommandPalette() {
           <Icon className="w-4 h-4" />
         </span>
         <span style={{ fontSize: '13px' }}>{item.label}</span>
+        {SHORTCUTS[item.href] && <kbd style={{ marginLeft: 'auto', fontSize: '10px', color: 'var(--text-muted)', background: 'var(--surface-2)', border: '1px solid var(--border-subtle)', borderRadius: '3px', padding: '1px 5px' }}>{SHORTCUTS[item.href]}</kbd>}
       </div>
     );
   }
@@ -354,9 +394,8 @@ export default function CommandPalette() {
           <Icon className="w-4 h-4" />
         </span>
         <span style={{ fontSize: '13px' }}>{item.label}</span>
-        {item.note && (
-          <span style={{ fontSize: '11px', color: 'var(--text-muted)', marginLeft: 'auto' }}>{item.note}</span>
-        )}
+        {SHORTCUTS[item.href] ? <kbd style={{ marginLeft: 'auto', fontSize: '10px', color: 'var(--text-muted)', background: 'var(--surface-2)', border: '1px solid var(--border-subtle)', borderRadius: '3px', padding: '1px 5px' }}>{SHORTCUTS[item.href]}</kbd>
+          : item.note ? <span style={{ fontSize: '11px', color: 'var(--text-muted)', marginLeft: 'auto' }}>{item.note}</span> : null}
       </div>
     );
   }
@@ -365,8 +404,7 @@ export default function CommandPalette() {
     <div
       className="fixed inset-0 z-[100] flex items-start justify-center"
       style={{ background: 'var(--overlay)', backdropFilter: 'blur(4px)', paddingTop: '15vh' }}
-      onClick={(e) => { if (e.target === e.currentTarget) close(); }}
-    >
+      onClick={(e) => { if (e.target === e.currentTarget) close(); }}>
       <div
         className="w-full flex flex-col overflow-hidden"
         style={{
@@ -376,16 +414,14 @@ export default function CommandPalette() {
           borderRadius: 'var(--radius-lg)',
           boxShadow: 'var(--shadow-xl)',
           maxHeight: '420px',
-        }}
-      >
+        }}>
         {/* Search input */}
         <div
           className="flex items-center gap-3 shrink-0"
           style={{
             padding: '12px 16px',
             borderBottom: '1px solid var(--border-subtle)',
-          }}
-        >
+          }}>
           <span style={{ color: 'var(--text-muted)' }}>
             <Search className="w-4 h-4" />
           </span>
@@ -411,8 +447,7 @@ export default function CommandPalette() {
               border: '1px solid var(--border-subtle)',
               borderRadius: 'var(--radius-md)',
               padding: '2px 6px',
-            }}
-          >
+            }}>
             ESC
           </kbd>
         </div>
@@ -422,8 +457,7 @@ export default function CommandPalette() {
           {allItems.length === 0 ? (
             <div
               className="flex items-center justify-center"
-              style={{ padding: '32px 16px', color: 'var(--text-muted)', fontSize: '13px' }}
-            >
+              style={{ padding: '32px 16px', color: 'var(--text-muted)', fontSize: '13px' }}>
               No results
             </div>
           ) : (
@@ -464,8 +498,7 @@ export default function CommandPalette() {
             borderTop: '1px solid var(--border-subtle)',
             fontSize: '10px',
             color: 'var(--text-muted)',
-          }}
-        >
+          }}>
           <span className="flex items-center gap-1">
             <kbd style={{ background: 'var(--surface-2)', border: '1px solid var(--border-subtle)', borderRadius: '3px', padding: '1px 4px' }}>&uarr;&darr;</kbd>
             navigate
@@ -477,6 +510,10 @@ export default function CommandPalette() {
           <span className="flex items-center gap-1">
             <kbd style={{ background: 'var(--surface-2)', border: '1px solid var(--border-subtle)', borderRadius: '3px', padding: '1px 4px' }}>esc</kbd>
             close
+          </span>
+          <span className="flex items-center gap-1" style={{ marginLeft: 'auto' }}>
+            <kbd style={{ background: 'var(--surface-2)', border: '1px solid var(--border-subtle)', borderRadius: '3px', padding: '1px 4px' }}>⌘/</kbd>
+            all shortcuts
           </span>
         </div>
       </div>

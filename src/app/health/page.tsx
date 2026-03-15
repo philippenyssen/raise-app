@@ -98,8 +98,7 @@ export default function HealthPage() {
                   borderWidth: '2px',
                   borderStyle: 'solid',
                   backgroundColor: convergence[dim.key] ? 'var(--success)' : 'transparent',
-                  borderColor: convergence[dim.key] ? 'var(--success)' : 'var(--border-default)', }}
->
+                  borderColor: convergence[dim.key] ? 'var(--success)' : 'var(--border-default)', }}>
                 {convergence[dim.key] && <span className="text-xs" style={stTextPrimary}>&#10003;</span>}
               </button>
               <div className="flex-1">
@@ -202,8 +201,7 @@ export default function HealthPage() {
                   ? 'var(--success)'
                   : intelVerify.status === 'degraded'
                   ? 'var(--warning)'
-                  : 'var(--danger)', }}
->
+                  : 'var(--danger)', }}>
               {intelVerify.status === 'healthy' && <CheckCircle2 className="w-3 h-3" />}
               {intelVerify.status === 'degraded' && <AlertTriangle className="w-3 h-3" />}
               {intelVerify.status === 'unhealthy' && <XCircle className="w-3 h-3" />}

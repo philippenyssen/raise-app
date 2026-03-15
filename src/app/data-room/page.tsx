@@ -241,8 +241,7 @@ export default function DataRoomPage() {
               color: 'var(--accent)',
             } : {
               background: 'var(--surface-2)',
-              color: 'var(--text-secondary)', }}
->
+              color: 'var(--text-secondary)', }}>
             <FileText className="w-4 h-4" /> Paste Text
           </button>
           <label
@@ -659,8 +658,7 @@ function InvestorAccessRow({ investor, expanded, onToggle, onLogAccess, files }:
                   if (logDocId) {
                     onLogAccess(investor.investor_id, logDocId);
                     setLogDocId('');
-                  } }}
->
+                  } }}>
                 Log
               </button>
             </div>
@@ -820,8 +818,7 @@ function FileRow({ file, expanded, onToggle, onDelete }: {
               overflowY: 'auto',
               background: 'var(--surface-0)',
               borderRadius: 'var(--radius-md)',
-              padding: 'var(--space-3)', }}
->
+              padding: 'var(--space-3)', }}>
             {file.extracted_text.substring(0, 5000)}
             {file.extracted_text.length > 5000 && '\n\n... (truncated)'}
           </pre>

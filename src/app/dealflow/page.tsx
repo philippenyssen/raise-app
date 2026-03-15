@@ -288,8 +288,7 @@ export default function DealflowPage() {
               style={{
                 background: sortBy === s ? 'var(--accent-muted)' : 'transparent',
                 color: sortBy === s ? 'var(--accent)' : 'var(--text-muted)',
-                border: sortBy === s ? '1px solid var(--accent)' : '1px solid transparent', }}
->
+                border: sortBy === s ? '1px solid var(--accent)' : '1px solid transparent', }}>
               {s.charAt(0).toUpperCase() + s.slice(1)}
             </button>
           ))}
@@ -325,8 +324,7 @@ export default function DealflowPage() {
               color: 'var(--text-muted)',
               fontWeight: 400,
 
-              letterSpacing: '0.01em', }}
->
+              letterSpacing: '0.01em', }}>
             <div>Investor</div>
             <div className="text-center">Heat</div>
             <div className="text-center">Velocity</div>

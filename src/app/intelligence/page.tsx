@@ -190,8 +190,7 @@ export default function IntelligencePage() {
               color: researching || !researchInput.trim()
                 ? 'var(--text-muted)'
                 : 'white',
-              transition: 'all 150ms ease', }}
->
+              transition: 'all 150ms ease', }}>
             {researching ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Researching...</> : <><RefreshCw className="w-3.5 h-3.5" /> Research</>}
           </button>
         </div>
@@ -217,8 +216,7 @@ export default function IntelligencePage() {
             style={{
               borderBottom: `2px solid ${tab === t.key ? 'var(--accent)' : 'transparent'}`,
               color: tab === t.key ? 'var(--text-primary)' : 'var(--text-muted)',
-              transition: 'color 150ms ease', }}
->
+              transition: 'color 150ms ease', }}>
             <t.icon className="w-3.5 h-3.5" />
             {t.label}
             <span
@@ -241,8 +239,7 @@ export default function IntelligencePage() {
               className="px-3 py-1.5 rounded-lg text-sm flex items-center gap-1"
               style={{
                 background: hoveredAddBtn ? 'var(--surface-3)' : 'var(--surface-2)',
-                transition: 'background 150ms ease', }}
->
+                transition: 'background 150ms ease', }}>
               <Plus className="w-3.5 h-3.5" /> Add Deal
             </button>
           </div>
@@ -309,8 +306,7 @@ export default function IntelligencePage() {
                           className="transition-colors"
                           style={{
                             color: hoveredDeleteBtn === `deal-${d.id}` ? 'var(--danger)' : 'var(--text-muted)',
-                            transition: 'color 150ms ease', }}
->
+                            transition: 'color 150ms ease', }}>
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       </td>
@@ -333,8 +329,7 @@ export default function IntelligencePage() {
               className="px-3 py-1.5 rounded-lg text-sm flex items-center gap-1"
               style={{
                 background: hoveredAddBtn ? 'var(--surface-3)' : 'var(--surface-2)',
-                transition: 'background 150ms ease', }}
->
+                transition: 'background 150ms ease', }}>
               <Plus className="w-3.5 h-3.5" /> Add Competitor
             </button>
           </div>
@@ -401,8 +396,7 @@ export default function IntelligencePage() {
                         className="transition-colors"
                         style={{
                           color: hoveredDeleteBtn === `comp-${c.id}` ? 'var(--danger)' : 'var(--text-muted)',
-                          transition: 'color 150ms ease', }}
->
+                          transition: 'color 150ms ease', }}>
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </div>
@@ -464,8 +458,7 @@ export default function IntelligencePage() {
                             style={{
                               fontSize: '10px', fontWeight: 400, padding: '2px 6px',
                               borderRadius: 'var(--radius-sm)', textDecoration: 'none',
-                              background: 'var(--accent-muted)', color: 'var(--accent)', }}
->
+                              background: 'var(--accent-muted)', color: 'var(--accent)', }}>
                             Schedule
                           </Link>
                         </span>
@@ -479,8 +472,7 @@ export default function IntelligencePage() {
                         className="p-1 transition-colors"
                         style={{
                           color: hoveredDeleteBtn === `brief-${b.id}` ? 'var(--danger)' : 'var(--text-muted)',
-                          transition: 'color 150ms ease', }}
->
+                          transition: 'color 150ms ease', }}>
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
                       {expandedBrief === b.id
@@ -622,8 +614,7 @@ function RecentResearchSection({ briefs }: { briefs: IntelligenceBrief[] }) {
                           padding: '2px 8px', borderRadius: 'var(--radius-sm)',
                           background: 'var(--accent-muted)', color: 'var(--accent)',
                           textDecoration: 'none',
-                          fontWeight: 400, }}
->
+                          fontWeight: 400, }}>
                         Schedule Meeting
                       </Link>
                       <Link
@@ -633,8 +624,7 @@ function RecentResearchSection({ briefs }: { briefs: IntelligenceBrief[] }) {
                           padding: '2px 8px', borderRadius: 'var(--radius-sm)',
                           background: 'var(--surface-2)', color: 'var(--text-secondary)',
                           textDecoration: 'none',
-                          fontWeight: 400, }}
->
+                          fontWeight: 400, }}>
                         Follow-up
                       </Link>
                     </div>
