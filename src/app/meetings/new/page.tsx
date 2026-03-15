@@ -256,7 +256,7 @@ function NewMeetingContent() {
               onMouseLeave={() => setViewAllHovered(false)}>
               All Meetings</button>
             <button
-              onClick={() => { setResult(null); setForm(f => ({ ...f, raw_notes: '', investor_id: '', attendees: '' })); }}
+              onClick={() => { setResult(null); setForm({ investor_id: '', date: new Date().toISOString().split('T')[0], type: 'management_presentation', attendees: '', duration_minutes: 60, raw_notes: '' }); }}
               className="px-4 py-2 rounded-lg text-sm transition-colors"
               style={{
                 background: logAnotherHovered ? 'var(--surface-3)' : 'var(--surface-2)',

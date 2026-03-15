@@ -66,6 +66,7 @@ export default function InvestorsPage() {
   const [sortKey, setSortKey] = useState<'name' | 'tier' | 'last_meeting_date' | 'enthusiasm' | null>(null);
   const [sortAsc, setSortAsc] = useState(true);
   const [bulkUpdating, setBulkUpdating] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
     name: '', type: 'vc' as InvestorType, tier: 2 as InvestorTier, partner: '',
     fund_size: '', check_size_range: '', sector_thesis: '', warm_path: '',
@@ -88,6 +89,7 @@ export default function InvestorsPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setSubmitting(true);
     try {
       const method = editId ? 'PUT' : 'POST';
       const body = editId ? { id: editId, ...form } : form;
@@ -100,6 +102,8 @@ export default function InvestorsPage() {
       fetchInvestors();
     } catch {
       toast('Failed to save investor', 'error');
+    } finally {
+      setSubmitting(false);
     }}
 
   async function updateStatus(id: string, status: string) {
@@ -292,8 +296,8 @@ export default function InvestorsPage() {
           <Input label="Sector Thesis" value={form.sector_thesis} onChange={v => setForm(f => ({ ...f, sector_thesis: v }))} />
           <Input label="Notes" value={form.notes} onChange={v => setForm(f => ({ ...f, notes: v }))} />
           <div className="flex gap-2">
-            <button type="submit" className="btn btn-primary btn-md">
-              {editId ? 'Update' : 'Add'}</button>
+            <button type="submit" disabled={submitting} className="btn btn-primary btn-md disabled:opacity-50">
+              {submitting ? 'Saving...' : editId ? 'Update' : 'Add'}</button>
             <button type="button" onClick={() => { setShowForm(false); setEditId(null); }} className="btn btn-secondary btn-md">
               Cancel</button></div></form>
       )}
