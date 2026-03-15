@@ -76,9 +76,9 @@ export default function HealthPage() {
 
   if (!data) return (
     <div className="page-content space-y-6">
-      <div className="h-8 w-48 rounded animate-pulse" style={stSurface2} />
-      <div className="h-5 w-80 rounded animate-pulse" style={stSurface2} />
-      {[...Array(3)].map((_, i) => <div key={i} className="h-32 rounded-xl animate-pulse" style={stSurface1} />)}
+      <div className="skeleton" style={{ height: '28px', width: '200px' }} />
+      <div className="skeleton" style={{ height: '16px', width: '350px' }} />
+      {[1,2,3].map(i => <div key={i} className="skeleton" style={{ height: '120px', borderRadius: 'var(--radius-xl)' }} />)}
     </div>);
 
   return (

@@ -126,9 +126,9 @@ export default function TermsPage() {
 
   if (loading) {
     return (
-      <div className="space-y-6">
-        <div className="h-8 w-48 rounded animate-pulse" style={stSurface2} />
-        <div className="h-20 rounded-xl animate-pulse" style={stSurface1} />
+      <div className="space-y-6 page-content">
+        <div className="skeleton" style={{ height: '28px', width: '200px' }} />
+        <div className="skeleton" style={{ height: '80px', borderRadius: 'var(--radius-xl)' }} />
       </div>);
   }
 
