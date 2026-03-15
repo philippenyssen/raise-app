@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { useToast } from '@/components/toast';
+import { fmtDateFull } from '@/lib/format';
 import {
   Sunrise, Calendar, Clock, ArrowRight, ChevronRight, RefreshCw,
   Mail, UserPlus, FileText, AlertTriangle, Zap, TrendingUp,
@@ -607,7 +608,7 @@ export default function TodayPage() {
             {data.greeting}
           </h1>
           <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)', marginTop: '2px' }}>
-            {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+            {fmtDateFull(new Date())}
           </p>
 
           <div className="flex items-center gap-2" style={{ marginTop: '6px' }}>

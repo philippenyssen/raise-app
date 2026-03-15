@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import { Bell, Clock, AlertTriangle, Activity, Search } from 'lucide-react';
+import { fmtDateShort } from '@/lib/format';
 
 interface UpcomingTask {
   id: string;
@@ -31,7 +32,7 @@ function timeAgo(dateStr: string): string {
   const days = Math.floor(hours / 24);
   if (days === 1) return 'yesterday';
   if (days < 7) return `${days}d ago`;
-  return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  return fmtDateShort(dateStr);
 }
 
 export function TopBar() {

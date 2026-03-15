@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useToast } from '@/components/toast';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { FileText, Plus, Clock, Edit3, Download, ShieldCheck, AlertTriangle, CheckCircle2, XCircle } from 'lucide-react';
+import { fmtDate } from '@/lib/format';
 
 interface Doc {
   id: string;
@@ -235,7 +236,7 @@ export default function DocumentsPage() {
                       {FLAG_TYPE_LABELS[flag.flag_type] || flag.flag_type}
                     </span>
                     <span className="text-xs" style={{ color: 'var(--text-muted)' }}>from {flag.investor_name}</span>
-                    <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{new Date(flag.created_at).toLocaleDateString()}</span>
+                    <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{fmtDate(flag.created_at)}</span>
                   </div>
                   <p className="text-xs line-clamp-2" style={{ color: 'var(--text-tertiary)' }}>{flag.description}</p>
                   <div className="flex items-center gap-2 mt-1.5">
@@ -342,7 +343,7 @@ export default function DocumentsPage() {
                             <div className="flex items-center gap-3 text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
                               <span className="flex items-center gap-1">
                                 <Clock className="w-3 h-3" />
-                                {new Date(doc.updated_at).toLocaleDateString()}
+                                {fmtDate(doc.updated_at)}
                               </span>
                               <span>{doc.content.length.toLocaleString()} chars</span>
                             </div>

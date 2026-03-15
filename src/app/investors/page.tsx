@@ -6,6 +6,7 @@ import type { Investor, InvestorStatus, InvestorTier, InvestorType } from '@/lib
 import { useToast } from '@/components/toast';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { Search, Download, GitCompare, Columns3, Clock, Pencil, Trash2 } from 'lucide-react';
+import { fmtDate } from '@/lib/format';
 
 const STATUS_LABELS: Record<InvestorStatus, string> = {
   identified: 'Identified', contacted: 'Contacted', nda_signed: 'NDA Signed',
@@ -477,7 +478,7 @@ export default function InvestorsPage() {
                         <span
                           className="inline-flex items-center gap-1"
                           style={{ fontSize: 'var(--font-size-xs)', color: s.color, fontWeight: days !== null && days > 14 ? 600 : 400 }}
-                          title={inv.last_meeting_date ? new Date(inv.last_meeting_date).toLocaleDateString() : 'No meetings yet'}
+                          title={inv.last_meeting_date ? fmtDate(inv.last_meeting_date) : 'No meetings yet'}
                         >
                           {days !== null && days > 14 && <Clock className="w-3 h-3" />}
                           {s.label}

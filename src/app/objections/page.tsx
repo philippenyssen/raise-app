@@ -8,6 +8,7 @@ import {
   Target, User, BarChart3, ArrowUpRight, ArrowDownRight, Clock, Zap,
   ThumbsUp, ThumbsDown, Activity, Copy, Check, Calendar, ExternalLink,
 } from 'lucide-react';
+import { fmtDate } from '@/lib/format';
 
 interface ObjectionRecord {
   id: string;
@@ -543,7 +544,7 @@ export default function ObjectionsPage() {
                                     </span>
                                   )}
                                   <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                                    {new Date(obj.created_at).toLocaleDateString()}
+                                    {fmtDate(obj.created_at)}
                                   </span>
                                   <span
                                     className="text-xs px-1.5 py-0.5 rounded"
@@ -1062,7 +1063,7 @@ function EffectivenessTab({
                       <div className="flex items-center gap-2">
                         <Clock className="w-3 h-3" style={{ color: 'var(--text-muted)' }} />
                         <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                          First seen {new Date(te.first_seen).toLocaleDateString()} &mdash; Last seen {new Date(te.last_seen).toLocaleDateString()}
+                          First seen {fmtDate(te.first_seen)} &mdash; Last seen {fmtDate(te.last_seen)}
                         </span>
                       </div>
 
@@ -1271,7 +1272,7 @@ function EffectivenessTab({
                         </span>
                       </div>
                       <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                        Since {new Date(obj.firstSeen).toLocaleDateString()} &middot; {obj.growthRate}/wk
+                        Since {fmtDate(obj.firstSeen)} &middot; {obj.growthRate}/wk
                       </p>
                     </div>
                   );
@@ -1301,7 +1302,7 @@ function EffectivenessTab({
                         </span>
                       </div>
                       <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                        Peak: {obj.peakCount}/wk &middot; Last: {new Date(obj.resolvedDate).toLocaleDateString()}
+                        Peak: {obj.peakCount}/wk &middot; Last: {fmtDate(obj.resolvedDate)}
                       </p>
                       {obj.effectiveResponse && (
                         <p className="text-xs leading-relaxed line-clamp-2" style={{ color: 'var(--text-tertiary)' }}>

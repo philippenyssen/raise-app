@@ -10,6 +10,7 @@ import {
   Zap, Timer, Network, ArrowUpRight, ArrowDownRight, Activity,
   PenLine, Copy, Check,
 } from 'lucide-react';
+import { fmtDateTime } from '@/lib/format';
 
 interface TimingIntel {
   optimalDayOfWeek: string;
@@ -150,7 +151,7 @@ function formatRelativeTime(dateStr: string): string {
 
 function formatDate(dateStr: string): string {
   try {
-    return new Date(dateStr).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+    return fmtDateTime(dateStr);
   } catch {
     return dateStr;
   }

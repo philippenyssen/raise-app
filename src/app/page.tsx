@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { useToast } from '@/components/toast';
+import { fmtDateShort, fmtDate } from '@/lib/format';
 import {
   FileText, Sparkles, FolderOpen, Table, ArrowRight, ClipboardList,
   Activity, Download, Columns3, Target, Timer, ShieldCheck,
@@ -1168,7 +1169,7 @@ export default function Dashboard() {
                           <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>{t.priority}</span>
                           {t.due_date && (
                             <span style={{ fontSize: 'var(--font-size-xs)', color: overdue ? 'var(--text-primary)' : 'var(--text-muted)', fontWeight: overdue ? 400 : 300 }}>
-                              {new Date(t.due_date).toLocaleDateString()}
+                              {fmtDate(t.due_date)}
                             </span>
                           )}
                         </div>
@@ -1616,5 +1617,5 @@ function formatTimeAgo(dateStr: string): string {
   if (diffHrs < 24) return `${diffHrs}h ago`;
   const diffDays = Math.round(diffHrs / 24);
   if (diffDays < 7) return `${diffDays}d ago`;
-  return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  return fmtDateShort(date);
 }

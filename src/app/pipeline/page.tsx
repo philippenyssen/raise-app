@@ -9,6 +9,7 @@ import {
   Building2, Landmark, Shield, Banknote, Home, Rocket,
   Calendar, SendHorizonal, ClipboardList,
 } from 'lucide-react';
+import { fmtDate } from '@/lib/format';
 
 // ── Pipeline column order ────────────────────────────────────────────
 const PIPELINE_STATUSES: InvestorStatus[] = [
@@ -994,7 +995,7 @@ function InvestorCard({
                   color: isStale ? 'var(--danger)' : isWarning ? 'var(--warning)' : 'var(--text-muted)',
                   fontWeight: isStale ? 600 : 400,
                 }}
-                title={`Last meeting: ${new Date(lastDate).toLocaleDateString()}`}
+                title={`Last meeting: ${fmtDate(lastDate)}`}
               >
                 {days === 0 ? 'Today' : `${days}d ago`}
               </span>

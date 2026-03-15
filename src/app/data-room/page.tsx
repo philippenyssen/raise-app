@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useToast } from '@/components/toast';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { FolderOpen, Upload, FileText, Table, Image, Trash2, ChevronDown, ChevronRight, Search, Eye, BarChart3, Users, AlertCircle, Send, TrendingUp } from 'lucide-react';
+import { fmtDateTime, fmtDate } from '@/lib/format';
 
 interface DataRoomFile {
   id: string;
@@ -950,7 +951,7 @@ function AccessLogRow({ entry }: {
         {entry.document_title}
       </span>
       <span className="ml-auto shrink-0" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
-        {new Date(entry.accessed_at).toLocaleDateString()} {new Date(entry.accessed_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+        {fmtDateTime(entry.accessed_at)}
       </span>
     </div>
   );
@@ -988,7 +989,7 @@ function FileRow({ file, expanded, onToggle, onDelete }: {
           {formatBytes(file.size_bytes)}
         </span>
         <span className="shrink-0 ml-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
-          {new Date(file.uploaded_at).toLocaleDateString()}
+          {fmtDate(file.uploaded_at)}
         </span>
         <button
           onClick={e => { e.stopPropagation(); onDelete(); }}

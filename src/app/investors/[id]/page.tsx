@@ -13,6 +13,7 @@ import {
   Flame, Phone, Mail, SendHorizonal, CheckCircle2, XCircle,
 } from 'lucide-react';
 import { useToast } from '@/components/toast';
+import { fmtDateShort, fmtDate } from '@/lib/format';
 
 const STATUS_LABELS: Record<InvestorStatus, string> = {
   identified: 'Identified', contacted: 'Contacted', nda_signed: 'NDA Signed',
@@ -1419,7 +1420,7 @@ function ConvictionTrajectoryPanel({ trajectory }: { trajectory: ConvictionTraje
                   <span style={{ color: 'var(--text-secondary)' }}>Term sheet range reached</span>
                 ) : (
                   <span style={{ color: 'var(--accent)' }}>
-                    Term sheet by ~{new Date(trajectory.predictedTermSheetDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                    Term sheet by ~{fmtDateShort(trajectory.predictedTermSheetDate)}
                   </span>
                 )}
               </div>
@@ -1636,7 +1637,7 @@ function EnrichmentPanel({
                           Source: {rec.source_id}
                         </span>
                         <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
-                          Updated: {rec.fetched_at ? new Date(rec.fetched_at).toLocaleDateString() : '—'}
+                          Updated: {rec.fetched_at ? fmtDate(rec.fetched_at) : '—'}
                         </span>
                         {rec.source_url && (
                           <a
