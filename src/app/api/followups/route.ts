@@ -2,6 +2,19 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getFollowups, createFollowup, updateFollowup, getPendingFollowups, getOverdueFollowups, backfillEnthusiasmFromFollowups, computeOptimalFollowupTiming, computeEngagementVelocity, computeNetworkCascades } from '@/lib/db';
 import type { FollowupActionType, FollowupStatus } from '@/lib/types';
 import { emitContextChange } from '@/lib/context-bus';
+import { MS_PER_DAY } from '@/lib/time';
+
+function enrichTemporal<T extends { status: string; due_at: string }>(f: T) {
+  const now = Date.now();
+  const dueTime = new Date(f.due_at).getTime();
+  const isOverdue = f.status === 'pending' && dueTime < now;
+  return {
+    ...f,
+    isOverdue,
+    daysOverdue: isOverdue ? Math.round((now - dueTime) / MS_PER_DAY) : null,
+    daysUntilDue: f.status === 'pending' && !isOverdue ? Math.round((dueTime - now) / MS_PER_DAY) : null,
+  };
+}
 
 export async function GET(req: NextRequest) {
   try {
@@ -59,7 +72,7 @@ export async function GET(req: NextRequest) {
       }
 
       const enriched = followups.map(f => ({
-        ...f,
+        ...enrichTemporal(f),
         timing: timingMap[f.investor_id] || null,
         velocity: velocityMap[f.investor_id] || null,
         cascade: cascadeMap[f.investor_id] || null,
@@ -74,7 +87,7 @@ export async function GET(req: NextRequest) {
     if (meeting_id) filters.meeting_id = meeting_id;
 
     const followups = await getFollowups(Object.keys(filters).length > 0 ? filters : undefined);
-    return NextResponse.json(followups);
+    return NextResponse.json(followups.map(enrichTemporal));
   } catch (error) {
     return NextResponse.json(
       { error: 'Failed to fetch follow-ups', detail: error instanceof Error ? error.message : 'Database error' },
