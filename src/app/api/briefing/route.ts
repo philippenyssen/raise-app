@@ -11,7 +11,7 @@ import {
   detectFomoDynamics,
   computePipelineFlow,
 } from '@/lib/db';
-import { getAIClient } from '@/lib/ai';
+import { getAIClient, AI_MODEL } from '@/lib/ai';
 import { parseJsonSafe, checkRateLimit } from '@/lib/api-helpers';
 
 function getGreeting(): string {
@@ -342,7 +342,7 @@ export async function GET() {
         pipelineVelocity: pipelineFlow?.velocityTrend || 'unknown',};
 
       const response = await getAIClient().messages.create({
-        model: 'claude-sonnet-4-20250514',
+        model: AI_MODEL,
         max_tokens: 300,
         messages: [{
           role: 'user',

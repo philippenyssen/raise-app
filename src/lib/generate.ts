@@ -1,4 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk';
+import { AI_MODEL } from './ai';
 
 let _client: Anthropic | null = null;
 function getClient(): Anthropic {
@@ -144,7 +145,7 @@ export async function generateDeliverable(
     .join('\n\n');
 
   const response = await getClient().messages.create({
-    model: 'claude-sonnet-4-20250514',
+    model: AI_MODEL,
     max_tokens: 16384,
     system: prompt.system,
     messages: [{
@@ -170,7 +171,7 @@ export async function generateModelFromContext(
   context: GenerateContext
 ): Promise<Record<string, Record<string, { v: string | number; f?: string; t?: 's' | 'n'; bold?: boolean; bg?: string }>>> {
   const response = await getClient().messages.create({
-    model: 'claude-sonnet-4-20250514',
+    model: AI_MODEL,
     max_tokens: 8192,
     system: `You are a top-tier financial modeler at Goldman Sachs. You build bottom-up financial models for Series C fundraises. Every number must be derived from unit economics (units × price × probability). You output cell data as JSON.`,
     messages: [{

@@ -20,7 +20,7 @@ import {
   computeNetworkCascades,
   computeWinLossPatterns,
 } from '@/lib/db';
-import { getAIClient } from '@/lib/ai';
+import { getAIClient, AI_MODEL } from '@/lib/ai';
 import { checkRateLimit, parseJsonSafe } from '@/lib/api-helpers';
 import { computeAdvancedTrajectory } from '@/lib/scoring';
 import { getNarrativeProfile, getAnticipatedQuestions } from '@/lib/investor-narratives';
@@ -221,7 +221,7 @@ export async function POST(req: NextRequest) {
       tacticalContext,});
 
     const response = await getAIClient().messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: AI_MODEL,
       max_tokens: 4096,
       messages: [{
         role: 'user',

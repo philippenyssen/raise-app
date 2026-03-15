@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { AI_MODEL } from '@/lib/ai';
 
 export async function GET() {
   const key = process.env.ANTHROPIC_API_KEY;
@@ -22,7 +23,7 @@ export async function GET() {
         'content-type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: AI_MODEL,
         max_tokens: 5,
         messages: [{ role: 'user', content: 'Say OK' }],
       }),

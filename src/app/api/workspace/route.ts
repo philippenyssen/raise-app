@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
+import { AI_MODEL } from '@/lib/ai';
 import { getAllDocuments, getInvestor, getMeetings, getInvestorPortfolio, getIntelligenceBriefs, getRaiseConfig } from '@/lib/db';
 import { computeInvestorScore, computeDealHeat } from '@/lib/scoring';
 import { getFullContext, contextToSystemPrompt } from '@/lib/context-bus';
@@ -493,7 +494,7 @@ INSTRUCTIONS:
 
   try {
     const stream = getClient().messages.stream({
-      model: 'claude-sonnet-4-20250514',
+      model: AI_MODEL,
       max_tokens: 8192,
       system: systemPrompt,
       messages: messages.map((m: { role: string; content: string }) => ({

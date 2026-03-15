@@ -1,6 +1,8 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { logSkillExecution } from './db';
 
+export const AI_MODEL = 'claude-sonnet-4-20250514';
+
 let _client: Anthropic | null = null;
 export function getAIClient(): Anthropic {
   if (!_client) {
@@ -96,7 +98,7 @@ export async function analyzeMeetingNotes(rawNotes: string, investorName: string
   }
 
   const response = await getAIClient().messages.create({
-    model: 'claude-sonnet-4-20250514',
+    model: AI_MODEL,
     max_tokens: 4096,
     temperature: 0,
     system: 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.',
@@ -191,7 +193,7 @@ NOTES: ${m.raw_notes.substring(0, 500)}`;
   }).join('\n---\n');
 
   const response = await getAIClient().messages.create({
-    model: 'claude-sonnet-4-20250514',
+    model: AI_MODEL,
     max_tokens: 4096,
     temperature: 0,
     system: 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.',
@@ -231,7 +233,7 @@ export async function assessProcessHealth(funnel: Record<string, unknown>, objec
   risk_factors: string[];
 }> {
   const response = await getAIClient().messages.create({
-    model: 'claude-sonnet-4-20250514',
+    model: AI_MODEL,
     max_tokens: 2048,
     temperature: 0,
     system: 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.',
@@ -263,7 +265,7 @@ Return JSON (no markdown):
 
 export async function improveSection(section: string, instruction: string, context: string): Promise<string> {
   const response = await getAIClient().messages.create({
-    model: 'claude-sonnet-4-20250514',
+    model: AI_MODEL,
     max_tokens: 4096,
     temperature: 0.3,
     system: 'You are a Series C fundraise advisor. Be concise, specific, and actionable. Focus on what matters for closing the deal.',
@@ -294,7 +296,7 @@ export async function checkConsistency(
   const docSummaries = documents.map(d => `--- ${d.title} ---\n${d.content.substring(0, 3000)}`).join('\n\n');
 
   const response = await getAIClient().messages.create({
-    model: 'claude-sonnet-4-20250514',
+    model: AI_MODEL,
     max_tokens: 3072,
     temperature: 0,
     system: 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.',
@@ -324,7 +326,7 @@ If no discrepancies found, return {"discrepancies": []}.`
 
 export async function findWeakArguments(content: string): Promise<{ weaknesses: { claim: string; issue: string; suggestion: string }[] }> {
   const response = await getAIClient().messages.create({
-    model: 'claude-sonnet-4-20250514',
+    model: AI_MODEL,
     max_tokens: 3072,
     temperature: 0,
     system: 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.',
@@ -365,7 +367,7 @@ export async function researchInvestor(investorName: string, context?: string): 
   approach_strategy: string;
 }> {
   const response = await getAIClient().messages.create({
-    model: 'claude-sonnet-4-20250514',
+    model: AI_MODEL,
     max_tokens: 4096,
     temperature: 0,
     system: 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.',
@@ -423,7 +425,7 @@ export async function researchCompetitor(companyName: string, context?: string):
   recent_news: string[];
 }> {
   const response = await getAIClient().messages.create({
-    model: 'claude-sonnet-4-20250514',
+    model: AI_MODEL,
     max_tokens: 4096,
     temperature: 0,
     system: 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.',
@@ -470,7 +472,7 @@ export async function researchMarketDeals(sector: string): Promise<{
   implications_for_us: string;
 }> {
   const response = await getAIClient().messages.create({
-    model: 'claude-sonnet-4-20250514',
+    model: AI_MODEL,
     max_tokens: 4096,
     temperature: 0,
     system: 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.',
@@ -546,7 +548,7 @@ NEXT STEPS: ${m.next_steps || 'None recorded'}`;
   }).join('\n---\n');
 
   const response = await getAIClient().messages.create({
-    model: 'claude-sonnet-4-20250514',
+    model: AI_MODEL,
     max_tokens: 4096,
     temperature: 0,
     system: 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.',
@@ -606,7 +608,7 @@ Be direct and tactical. This brief should make the meeting 2x more productive.`
 
 export async function polishGoldmanStyle(content: string): Promise<string> {
   const response = await getAIClient().messages.create({
-    model: 'claude-sonnet-4-20250514',
+    model: AI_MODEL,
     max_tokens: 4096,
     temperature: 0.3,
     system: 'You are a Series C fundraise advisor. Be concise, specific, and actionable. Focus on what matters for closing the deal.',

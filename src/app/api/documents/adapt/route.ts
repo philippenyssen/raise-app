@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDocument } from '@/lib/db';
-import { getAIClient } from '@/lib/ai';
+import { getAIClient, AI_MODEL } from '@/lib/ai';
 import { checkRateLimit } from '@/lib/api-helpers';
 import { getNarrativeProfile } from '@/lib/investor-narratives';
 import type { InvestorType } from '@/lib/types';
@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
 
     // Call Claude to analyze the document against the narrative profile
     const response = await getAIClient().messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: AI_MODEL,
       max_tokens: 4096,
       messages: [{
         role: 'user',
