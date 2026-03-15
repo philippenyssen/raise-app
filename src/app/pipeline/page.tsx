@@ -113,7 +113,7 @@ export default function PipelinePage() {
       const res = await cachedFetch('/api/investors');
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.error || `Server error (${res.status})`);
+        throw new Error(errData.error || 'Could not load pipeline data — refresh to retry');
       }
       setInvestors(await res.json());
     } catch (err) {
@@ -276,7 +276,7 @@ export default function PipelinePage() {
         <div style={{ textAlign: 'center' }}>
           <Users className="w-10 h-10 mx-auto mb-3" style={{ color: 'var(--danger)' }} />
           <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', marginBottom: 'var(--space-1)' }}>
-            Failed to load pipeline</h3>
+            Could not load pipeline</h3>
           <p style={{ ...stFontXs, ...stTextMuted, marginBottom: 'var(--space-4)' }}>{fetchError}</p>
           <button
             onClick={fetchInvestors}
