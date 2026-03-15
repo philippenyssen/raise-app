@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Activity, AlertTriangle, CheckCircle2, XCircle, ChevronDown, ChevronRight } from 'lucide-react';
 import { useToast } from '@/components/toast';
 import { fmtDateTime } from '@/lib/format';
@@ -41,7 +41,8 @@ export default function SkillsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => { document.title = 'Raise | Skill Health'; }, []);
-  useEffect(() => {
+  const fetchData = useCallback(() => {
+    setLoading(true);
     const safeFetch = (url: string) => fetch(url).then(r => { if (!r.ok) throw new Error(`${r.status}`); return r.json(); });
     Promise.all([
       safeFetch('/api/skills?view=health'),
@@ -52,7 +53,18 @@ export default function SkillsPage() {
         setExecutions(Array.isArray(e) ? e : []);})
       .catch(() => { setHealth([]); setExecutions([]); toast('Could not load skill health data — refresh to retry', 'error'); })
       .finally(() => setLoading(false));
-  }, []);
+  }, [toast]);
+  useEffect(() => { fetchData(); }, [fetchData]);
+
+  useEffect(() => {
+    const h = (e: KeyboardEvent) => {
+      if (e.key === 'r' && !e.metaKey && !e.ctrlKey && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement)) {
+        e.preventDefault(); fetchData();
+      }
+    };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, [fetchData]);
 
   const overallSuccessRate = health.length > 0
     ? Math.round(health.reduce((s, h) => s + h.success_rate, 0) / health.length)

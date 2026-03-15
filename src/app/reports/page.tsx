@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Printer, Loader2, ClipboardList, Users2, BarChart3 } from 'lucide-react';
 import { stAccent, stTextMuted, stTextPrimary, stTextSecondary } from '@/lib/styles';
 
@@ -20,7 +20,7 @@ export default function ReportsPage() {
   const setHover = (key: string, val: boolean) => setHoverStates(prev => ({ ...prev, [key]: val }));
 
   useEffect(() => { document.title = 'Raise | Reports'; }, []);
-  useEffect(() => {
+  const fetchInvestors = useCallback(() => {
     fetch('/api/investors')
       .then(r => r.json())
       .then(data => {
@@ -28,6 +28,17 @@ export default function ReportsPage() {
         setInvestors(list.filter(i => i.status !== 'passed' && i.status !== 'dropped'));})
       .catch(() => { setError('Couldn\'t load investors — try refreshing the page'); });
   }, []);
+  useEffect(() => { fetchInvestors(); }, [fetchInvestors]);
+
+  useEffect(() => {
+    const h = (e: KeyboardEvent) => {
+      if (e.key === 'r' && !e.metaKey && !e.ctrlKey && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement)) {
+        e.preventDefault(); fetchInvestors();
+      }
+    };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, [fetchInvestors]);
 
   async function generateReport(type: string) {
     setLoading(type);
