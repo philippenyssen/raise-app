@@ -305,6 +305,12 @@ export default function MeetingsPage() {
     return () => { active = false; clearInterval(id); };
   }, []);
 
+  useEffect(() => {
+    const h = (e: KeyboardEvent) => { if (e.key === 'r' && !e.metaKey && !e.ctrlKey && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement)) { e.preventDefault(); fetch('/api/meetings').then(r => r.json()).then(setMeetings).catch(() => {}); } };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, []);
+
   const filtered = meetings.filter(m => {
     if (search && !m.investor_name.toLowerCase().includes(search.toLowerCase()) &&
         !(m.raw_notes || '').toLowerCase().includes(search.toLowerCase())) return false;

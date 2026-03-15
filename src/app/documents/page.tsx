@@ -72,6 +72,11 @@ export default function DocumentsPage() {
 
   useEffect(() => { document.title = 'Raise | Documents'; }, []);
   useEffect(() => { fetchDocs(); fetchFlags(); }, []);
+  useEffect(() => {
+    const h = (e: KeyboardEvent) => { if (e.key === 'r' && !e.metaKey && !e.ctrlKey && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement)) { e.preventDefault(); fetchDocs(); fetchFlags(); } };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, []);
 
   async function fetchDocs() {
     setLoading(true);
