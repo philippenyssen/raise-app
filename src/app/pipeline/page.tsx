@@ -4,6 +4,7 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import type { Investor, InvestorStatus, InvestorType } from '@/lib/types';
 import { useToast } from '@/components/toast';
+import { cachedFetch } from '@/lib/cache';
 import {
   Users, TrendingUp, Zap, Filter, X, GripVertical,
   Building2, Landmark, Shield, Banknote, Home, Rocket,
@@ -101,7 +102,7 @@ export default function PipelinePage() {
     setLoading(true);
     setFetchError(null);
     try {
-      const res = await fetch('/api/investors');
+      const res = await cachedFetch('/api/investors');
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
         throw new Error(errData.error || `Server error (${res.status})`);

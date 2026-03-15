@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { useToast } from '@/components/toast';
 import { fmtDateShort, fmtDate } from '@/lib/format';
+import { cachedFetch } from '@/lib/cache';
 import {
   FileText, Sparkles, FolderOpen, Table, ArrowRight, ClipboardList,
   Activity, Download, Columns3, Target, Timer, ShieldCheck,
@@ -240,45 +241,49 @@ export default function Dashboard() {
   const [seeding, setSeeding] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
+  const [sectionErrors, setSectionErrors] = useState<Record<string, boolean>>({});
+
+  const safeFetch = useCallback(async <T,>(
+    key: string, url: string, setter: (v: T) => void,
+    silent: boolean, transform?: (res: Response) => Promise<T>,
+  ) => {
+    try {
+      const res = await cachedFetch(url, { skipCache: silent });
+      if (!res.ok) throw new Error(`${res.status}`);
+      const val = transform ? await transform(res) : await res.json();
+      setter(val as T);
+      setSectionErrors(prev => {
+        if (!prev[key]) return prev;
+        const next = { ...prev }; delete next[key]; return next;
+      });
+    } catch {
+      setSectionErrors(prev => ({ ...prev, [key]: true }));
+    }
+  }, []);
+
+  const fetchSection = useCallback((key: string, silent = false) => {
+    const map: Record<string, () => Promise<void>> = {
+      health: () => safeFetch('health', '/api/health', setData, silent),
+      pulse: () => safeFetch('pulse', '/api/pulse', setPulse, silent),
+      docs: () => safeFetch('docs', '/api/documents', setDocs, silent),
+      dataRoom: () => safeFetch('dataRoom', '/api/data-room', setDataRoomCount, silent, async r => (await r.json()).length),
+      tasks: () => safeFetch('tasks', '/api/tasks?type=upcoming&limit=5', setTasks, silent),
+      activity: () => safeFetch('activity', '/api/tasks?type=activity&limit=10', setActivity, silent),
+      dataQuality: () => safeFetch('dataQuality', '/api/data-quality', setDataQuality, silent),
+      stressTest: () => safeFetch('stressTest', '/api/stress-test', setStressTest, silent),
+      atRisk: () => safeFetch('atRisk', '/api/at-risk', setAtRisk, silent),
+      dealHeat: () => safeFetch('dealHeat', '/api/deal-heat', setDealHeat, silent),
+      followups: () => safeFetch('followups', '/api/followups?view=pending', setPendingFollowups, silent),
+      velocity: () => safeFetch('velocity', '/api/velocity', setVelocity, silent),
+    };
+    return map[key]?.() ?? Promise.resolve();
+  }, [safeFetch]);
 
   const fetchData = useCallback(async (silent = false) => {
-    if (!silent) setLoading(true);
-    else setRefreshing(true);
-    try {
-      const [healthRes, pulseRes, docsRes, drRes, tasksRes, actRes, dqRes, stRes, arRes, dhRes, fuRes, velRes] = await Promise.all([
-        fetch('/api/health'),
-        fetch('/api/pulse'),
-        fetch('/api/documents'),
-        fetch('/api/data-room'),
-        fetch('/api/tasks?type=upcoming&limit=5'),
-        fetch('/api/tasks?type=activity&limit=10'),
-        fetch('/api/data-quality'),
-        fetch('/api/stress-test'),
-        fetch('/api/at-risk'),
-        fetch('/api/deal-heat'),
-        fetch('/api/followups?view=pending'),
-        fetch('/api/velocity'),
-      ]);
-      if (healthRes.ok) setData(await healthRes.json());
-      if (pulseRes.ok) setPulse(await pulseRes.json());
-      if (docsRes.ok) setDocs(await docsRes.json());
-      if (drRes.ok) setDataRoomCount((await drRes.json()).length);
-      if (tasksRes.ok) setTasks(await tasksRes.json());
-      if (actRes.ok) setActivity(await actRes.json());
-      if (dqRes.ok) setDataQuality(await dqRes.json());
-      if (stRes.ok) setStressTest(await stRes.json());
-      if (arRes.ok) setAtRisk(await arRes.json());
-      if (dhRes.ok) setDealHeat(await dhRes.json());
-      if (fuRes.ok) setPendingFollowups(await fuRes.json());
-      if (velRes.ok) setVelocity(await velRes.json());
-      setLastRefresh(new Date());
-    } catch {
-      if (!silent) toast('Failed to load dashboard data', 'error');
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  }, [toast]);
+    if (!silent) setLoading(true); else setRefreshing(true);
+    await Promise.allSettled(['health','pulse','docs','dataRoom','tasks','activity','dataQuality','stressTest','atRisk','dealHeat','followups','velocity'].map(k => fetchSection(k, silent)));
+    setLastRefresh(new Date()); setLoading(false); setRefreshing(false);
+  }, [fetchSection]);
 
   useEffect(() => {
     fetchData();
@@ -349,28 +354,14 @@ export default function Dashboard() {
     );
   }
 
-  if (!data) return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-8)' }}>
-      <h1 className="page-title">Dashboard</h1>
-      <div
-        className="text-center"
-        style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-10)' }}>
-        <p style={{ color: 'var(--text-secondary)', marginBottom: 'var(--space-4)' }}>Could not load dashboard data.</p>
-        <button onClick={() => fetchData()} className="btn btn-secondary btn-md">
-          Retry
-        </button>
-      </div>
-    </div>
-  );
-
   // Derived data
   const ph = pulse?.processHealth;
   const cp = pulse?.criticalPath;
   const cv = pulse?.convictionPulse;
   const ov = pulse?.overnight;
 
-  const identifiedCount = data.totalInvestors - data.funnel.contacted - (data.funnel.passed ?? 0);
-  const funnelStages = [
+  const identifiedCount = data ? data.totalInvestors - data.funnel.contacted - (data.funnel.passed ?? 0) : 0;
+  const funnelStages = data ? [
     { label: 'Identified', value: identifiedCount > 0 ? identifiedCount : 0 },
     { label: 'Contacted', value: data.funnel.contacted },
     { label: 'Meetings', value: data.funnel.meetings },
@@ -378,7 +369,7 @@ export default function Dashboard() {
     { label: 'In DD', value: data.funnel.in_dd },
     { label: 'Term Sheets', value: data.funnel.term_sheets },
     { label: 'Closed', value: data.funnel.closed },
-  ];
+  ] : [];
 
   return (
     <div className="space-y-8 page-content">
@@ -436,7 +427,7 @@ export default function Dashboard() {
       </div>
 
       {/* Empty State */}
-      {data.totalInvestors === 0 && (
+      {data && data.totalInvestors === 0 && (
         <div
           className="text-center"
           style={{ borderRadius: 'var(--radius-xl)', padding: 'var(--space-12) var(--space-8)', background: 'var(--surface-1)' }}>
@@ -458,7 +449,7 @@ export default function Dashboard() {
         </div>
       )}
 
-      {data.totalInvestors > 0 && (
+      {(!data || data.totalInvestors > 0) && (
         <>
           {/* Raise Progress */}
           {stressTest ? (() => {
@@ -546,7 +537,9 @@ export default function Dashboard() {
                 </div>
               </Link>
             );
-          })() : (
+          })() : sectionErrors.stressTest ? (
+            <SectionError label="Raise progress" onRetry={() => fetchSection('stressTest')} />
+          ) : (
             <div style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-6)' }}>
               <div className="skeleton" style={{ height: '48px', width: '220px', marginBottom: 'var(--space-4)', borderRadius: 'var(--radius-md)' }}
                 />
@@ -561,8 +554,9 @@ export default function Dashboard() {
           )}
 
           {/* Pulse Strip */}
+          {sectionErrors.health && !data && <SectionError label="Health metrics" onRetry={() => fetchSection('health')} />}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 card-stagger">
-            <PulseCard label="Active investors" value={ph?.activeInvestors ?? data.totalInvestors} sub={`${data.totalInvestors} total`}
+            <PulseCard label="Active investors" value={ph?.activeInvestors ?? data?.totalInvestors ?? 0} sub={`${data?.totalInvestors ?? 0} total`}
               />
             <PulseCard label="This week" value={ph?.meetingsThisWeek ?? 0} sub="meetings" />
             <PulseCard label="Follow-ups due" value={ph?.overdueFollowups ?? 0} sub="overdue" />
@@ -571,9 +565,11 @@ export default function Dashboard() {
           </div>
 
           {/* Pipeline Velocity */}
-          {velocity && (
+          {velocity ? (
             <VelocityStrip velocity={velocity} />
-          )}
+          ) : sectionErrors.velocity ? (
+            <SectionError label="Pipeline velocity" onRetry={() => fetchSection('velocity')} />
+          ) : null}
 
           {/* Close Forecast */}
           {stressTest && (
@@ -623,6 +619,7 @@ export default function Dashboard() {
           )}
 
           {/* At Risk Deals */}
+          {sectionErrors.atRisk && !atRisk && <SectionError label="At-risk deals" onRetry={() => fetchSection('atRisk')} />}
           {atRisk && (atRisk.scoreReversals.length > 0 || atRisk.staleInvestors.length > 0) && (
             <div style={cardPadding}>
               <div className="flex items-center justify-between mb-3">
@@ -712,6 +709,7 @@ export default function Dashboard() {
           )}
 
           {/* Top Focus Today */}
+          {sectionErrors.pulse && !pulse && <SectionError label="Pulse data" onRetry={() => fetchSection('pulse')} />}
           {cp && cp.topFocus.length > 0 && (
             <div style={cardPadding}>
               <div className="flex items-center justify-between mb-3">
@@ -936,7 +934,9 @@ export default function Dashboard() {
                   All deals <ArrowRight className="w-3 h-3" />
                 </Link>
               </div>
-              {dealHeat && dealHeat.investors.length > 0 ? (
+              {sectionErrors.dealHeat && !dealHeat ? (
+                <SectionError label="Deal heat" onRetry={() => fetchSection('dealHeat')} />
+              ) : dealHeat && dealHeat.investors.length > 0 ? (
                 <div className="space-y-1.5">
                   {dealHeat.investors.slice(0, 5).map((inv) => (
                     <HotDealRow key={inv.id} investor={inv} />
@@ -959,7 +959,9 @@ export default function Dashboard() {
                   All follow-ups <ArrowRight className="w-3 h-3" />
                 </Link>
               </div>
-              {pendingFollowups.length > 0 ? (
+              {sectionErrors.followups && pendingFollowups.length === 0 ? (
+                <SectionError label="Follow-ups" onRetry={() => fetchSection('followups')} />
+              ) : pendingFollowups.length > 0 ? (
                 <div className="space-y-1.5">
                   {pendingFollowups.slice(0, 5).map((fu) => (
                     <FollowupRow key={fu.id} followup={fu} onComplete={(id) => {
@@ -985,6 +987,9 @@ export default function Dashboard() {
                 Pipeline view <Columns3 className="w-3 h-3" />
               </Link>
             </div>
+            {sectionErrors.health && funnelStages.length === 0 ? (
+              <SectionError label="Pipeline data" onRetry={() => fetchSection('health')} />
+            ) : (
             <div className="flex flex-col items-center space-y-1.5">
               {funnelStages.map((stage, i) => {
                 const widthPct = Math.max(100 - (i * 13), 25);
@@ -1000,15 +1005,16 @@ export default function Dashboard() {
                   </div>
                 );
               })}
-              {data.funnel.passed > 0 && (
+              {(data?.funnel?.passed ?? 0) > 0 && (
                 <div className="w-full flex items-center justify-center mt-2 pt-2" style={{ maxWidth: '50%', borderTop: '1px solid var(--border-subtle)' }}>
                   <div className="w-full rounded-md h-7 flex items-center justify-between px-4" style={stSurface2}>
                     <span style={labelTertiary}>Passed</span>
-                    <span className="tabular-nums" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>{data.funnel.passed}</span>
+                    <span className="tabular-nums" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>{data?.funnel?.passed ?? 0}</span>
                   </div>
                 </div>
               )}
             </div>
+            )}
           </div>
 
           {/* Deliverables */}
@@ -1034,6 +1040,7 @@ export default function Dashboard() {
           </div>
 
           {/* Data Quality */}
+          {sectionErrors.dataQuality && !dataQuality && <SectionError label="Data quality" onRetry={() => fetchSection('dataQuality')} />}
           {dataQuality && (
             <div style={cardPadding}>
               <div className="flex items-center justify-between mb-3">
@@ -1102,7 +1109,9 @@ export default function Dashboard() {
                   All tasks <ArrowRight className="w-3 h-3" />
                 </Link>
               </div>
-              {tasks.length === 0 ? (
+              {sectionErrors.tasks && tasks.length === 0 ? (
+                <SectionError label="Tasks" onRetry={() => fetchSection('tasks')} />
+              ) : tasks.length === 0 ? (
                 <div style={{ padding: 'var(--space-2) 0' }}>
                   <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>No immediate deadlines — <Link href="/meetings/capture" style={{ color: 'var(--accent)', textDecoration: 'none' }}>log a meeting</Link> to generate tasks</p>
                 </div>
@@ -1144,7 +1153,9 @@ export default function Dashboard() {
                   Full log <ArrowRight className="w-3 h-3" />
                 </Link>
               </div>
-              {activity.length === 0 ? (
+              {sectionErrors.activity && activity.length === 0 ? (
+                <SectionError label="Activity" onRetry={() => fetchSection('activity')} />
+              ) : activity.length === 0 ? (
                 <div style={{ padding: 'var(--space-2) 0' }}>
                   <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>No activity recorded yet</p>
                 </div>
@@ -1221,6 +1232,19 @@ export default function Dashboard() {
 // ---------------------------------------------------------------------------
 // Sub-components — monochrome
 // ---------------------------------------------------------------------------
+
+function SectionError({ label, onRetry }: { label: string; onRetry: () => void }) {
+  const [r, setR] = useState(false);
+  return (
+    <div className="flex items-center justify-between py-2.5 px-4 rounded-lg" style={{ background: 'var(--surface-1)' }}>
+      <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>{label} unavailable</span>
+      <button disabled={r} className="btn btn-secondary btn-sm"
+        onClick={async () => { setR(true); await onRetry(); setR(false); }}>
+        <RefreshCw className={`w-3 h-3 ${r ? 'animate-spin' : ''}`} /> {r ? 'Retrying' : 'Retry'}
+      </button>
+    </div>
+  );
+}
 
 function PulseCard({ label, value, sub }: {
   label: string;

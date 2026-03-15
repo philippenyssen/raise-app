@@ -7,6 +7,7 @@ import {
   TrendingUp, TrendingDown, Minus, RefreshCw, ArrowRight,
   Users, Filter,
 } from 'lucide-react';
+import { cachedFetch } from '@/lib/cache';
 import { STATUS_LABELS } from '@/lib/constants';
 import { stAccent, stFontXs, stSurface0, stSurface1, stTextMuted, stTextSecondary } from '@/lib/styles';
 
@@ -90,9 +91,9 @@ export default function DealflowPage() {
     setError(null);
     try {
       const [velRes, heatRes, momRes] = await Promise.allSettled([
-        fetch('/api/velocity').then(r => r.json()),
-        fetch('/api/deal-heat').then(r => r.json()),
-        fetch('/api/momentum').then(r => r.json()),
+        cachedFetch('/api/velocity').then(r => r.json()),
+        cachedFetch('/api/deal-heat').then(r => r.json()),
+        cachedFetch('/api/momentum').then(r => r.json()),
       ]);
 
       const velData = velRes.status === 'fulfilled' ? velRes.value : null;

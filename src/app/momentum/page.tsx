@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { cachedFetch } from '@/lib/cache';
 import { scoreColorStyle, stAccent, stFontSm, stFontXs, stSurface0, stSurface1, stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 import {
   Activity, TrendingUp, TrendingDown, Minus, AlertTriangle,
@@ -188,7 +189,7 @@ export default function MomentumPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch('/api/momentum');
+      const res = await cachedFetch('/api/momentum');
       if (!res.ok) throw new Error('Failed to fetch momentum data');
       const json = await res.json();
       setData(json);

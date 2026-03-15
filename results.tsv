@@ -17,3 +17,4 @@ c197856	94	95	+1	keep	eng	pulse/context-bus/16-file consolidation (-264) = 64984
 1b03202	95	95	0	keep	eng	inline style extraction + color function consolidation (-70 lines) = 64621 lines
 49c03b6	95	96	+1	keep	eng	inline style extraction in 4 pages (-306 lines) = 64315 lines, score 96
 a4899ba	96	98	+2	keep	eng	inline style extraction 5 pages (-671 lines) = 63478 lines, score 98
+e2cbc5d	98	100	+2	keep	all	inline style extraction all remaining pages (-1048 lines) = 62430 lines, PERFECT SCORE 100
