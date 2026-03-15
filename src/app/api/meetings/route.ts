@@ -182,6 +182,8 @@ export async function PUT(req: NextRequest) {
   if (Object.keys(updates).length === 0) { return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 }); }
 
   try {
+    const existing = await getMeeting(id as string);
+    if (!existing) return NextResponse.json({ error: `Meeting ${id} not found` }, { status: 404 });
     await updateMeeting(id as string, updates);
     emitContextChange('meeting_updated', `Meeting ${id} updated`);
     return NextResponse.json({ ok: true });
