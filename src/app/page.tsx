@@ -43,17 +43,6 @@ interface ActivityItem {
   created_at: string;
 }
 
-interface FocusItem {
-  investorId: string;
-  investorName: string;
-  investorType: string;
-  investorTier: number;
-  status: string;
-  focusScore: number;
-  recommendedAction: string;
-  timeEstimate: string;
-}
-
 interface DataQualityData {
   overallCompleteness: number;
   fieldCompleteness: { field: string; category: string; filled: number; total: number; pct: number }[];
@@ -234,6 +223,17 @@ interface PulseData {
   };
   generatedAt: string;
 }
+
+// ---------------------------------------------------------------------------
+// Shared inline style constants
+// ---------------------------------------------------------------------------
+
+const labelTertiary: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' };
+const labelSecondary: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' };
+const labelAccent: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--accent)' };
+const labelMuted: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' };
+const cardPadding: React.CSSProperties = { borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' };
+const textTertiary: React.CSSProperties = { color: 'var(--text-tertiary)' };
 
 // ---------------------------------------------------------------------------
 // Component
@@ -629,32 +629,32 @@ export default function Dashboard() {
                   </h2>
                   <span
                     className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                    style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}
+                    style={labelAccent}
                   >
                     Full stress test <ArrowRight className="w-3 h-3" />
                   </span>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div>
-                    <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>Target</div>
+                    <div style={labelTertiary}>Target</div>
                     <div className="tabular-nums mt-0.5" style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>
                       EUR {stressTest.target >= 1000 ? `${(stressTest.target / 1000).toFixed(1).replace(/\.0$/, '')}Bn` : `${stressTest.target}M`}
                     </div>
                   </div>
                   <div>
-                    <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>Forecast (base)</div>
+                    <div style={labelTertiary}>Forecast (base)</div>
                     <div className="tabular-nums mt-0.5" style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>
                       EUR {stressTest.forecast.base >= 1000 ? `${(stressTest.forecast.base / 1000).toFixed(1).replace(/\.0$/, '')}Bn` : `${Math.round(stressTest.forecast.base)}M`}
                     </div>
                   </div>
                   <div>
-                    <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>Probability</div>
+                    <div style={labelTertiary}>Probability</div>
                     <div className="tabular-nums mt-0.5" style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>
                       {stressTest.closeProbability}%
                     </div>
                   </div>
                   <div>
-                    <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>Status</div>
+                    <div style={labelTertiary}>Status</div>
                     <div className="mt-1" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
                       {stressTest.onTrack ? 'On track' : stressTest.healthStatus === 'red' ? 'Needs attention' : 'Monitor'}
                     </div>
@@ -666,12 +666,12 @@ export default function Dashboard() {
 
           {/* At Risk Deals */}
           {atRisk && (atRisk.scoreReversals.length > 0 || atRisk.staleInvestors.length > 0) && (
-            <div style={{ borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
+            <div style={cardPadding}>
               <div className="flex items-center justify-between mb-3">
                 <h2 className="section-title flex items-center gap-2">
                   <ShieldAlert className="w-4 h-4" /> At risk
                 </h2>
-                <span className="tabular-nums" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
+                <span className="tabular-nums" style={labelTertiary}>
                   {atRisk.scoreReversals.length + atRisk.staleInvestors.length} deal{atRisk.scoreReversals.length + atRisk.staleInvestors.length !== 1 ? 's' : ''}
                 </span>
               </div>
@@ -684,7 +684,7 @@ export default function Dashboard() {
                     onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}
                     onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
                   >
-                    <span className="mt-0.5 shrink-0" style={{ color: 'var(--text-tertiary)' }}>
+                    <span className="mt-0.5 shrink-0" style={textTertiary}>
                       <TrendingDown className="w-4 h-4" />
                     </span>
                     <div className="flex-1 min-w-0">
@@ -698,11 +698,11 @@ export default function Dashboard() {
                         >
                           {rev.investorName}
                         </Link>
-                        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
+                        <span style={labelTertiary}>
                           {rev.severity}
                         </span>
                       </div>
-                      <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
+                      <p style={labelSecondary}>
                         Score {rev.previousScore} → {rev.currentScore} ({rev.delta})
                       </p>
                     </div>
@@ -722,7 +722,7 @@ export default function Dashboard() {
                     onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}
                     onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
                   >
-                    <span className="mt-0.5 shrink-0" style={{ color: 'var(--text-tertiary)' }}>
+                    <span className="mt-0.5 shrink-0" style={textTertiary}>
                       {inv.acceleration === 'gone_silent' ? <UserMinus className="w-4 h-4" /> : <CalendarClock className="w-4 h-4" />}
                     </span>
                     <div className="flex-1 min-w-0">
@@ -736,12 +736,12 @@ export default function Dashboard() {
                         >
                           {inv.investorName}
                         </Link>
-                        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>T{inv.tier}</span>
-                        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
+                        <span style={labelTertiary}>T{inv.tier}</span>
+                        <span style={labelTertiary}>
                           {inv.acceleration === 'gone_silent' ? 'Silent' : 'Slowing'}
                         </span>
                       </div>
-                      <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
+                      <p style={labelSecondary}>
                         {inv.daysSinceLastMeeting !== null
                           ? `No contact in ${inv.daysSinceLastMeeting} days`
                           : inv.signal}
@@ -761,7 +761,7 @@ export default function Dashboard() {
 
           {/* Top Focus Today */}
           {cp && cp.topFocus.length > 0 && (
-            <div style={{ borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
+            <div style={cardPadding}>
               <div className="flex items-center justify-between mb-3">
                 <h2 className="section-title flex items-center gap-2">
                   <Target className="w-4 h-4" /> Top focus today
@@ -769,7 +769,7 @@ export default function Dashboard() {
                 <Link
                   href="/focus"
                   className="flex items-center gap-1"
-                  style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}
+                  style={labelAccent}
                 >
                   Full priority queue <ArrowRight className="w-3 h-3" />
                 </Link>
@@ -807,13 +807,13 @@ export default function Dashboard() {
                           >
                             {item.investorName}
                           </Link>
-                          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>T{item.tier}</span>
-                          <MomentumIcon className="w-3.5 h-3.5" style={{ color: 'var(--text-tertiary)' }} />
+                          <span style={labelTertiary}>T{item.tier}</span>
+                          <MomentumIcon className="w-3.5 h-3.5" style={textTertiary} />
                         </div>
-                        <p className="truncate mt-0.5" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>{item.recommendedAction}</p>
+                        <p className="truncate mt-0.5" style={labelSecondary}>{item.recommendedAction}</p>
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
-                        <span className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
+                        <span className="flex items-center gap-1" style={labelTertiary}>
                           <Timer className="w-3 h-3" /> {item.timeEstimate}
                         </span>
                         <span className="tabular-nums" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>{item.focusScore}</span>
@@ -827,7 +827,7 @@ export default function Dashboard() {
 
           {/* Overnight + Conviction */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div style={{ borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
+            <div style={cardPadding}>
               <h2 className="section-title flex items-center gap-2 mb-3">
                 <Clock className="w-4 h-4" /> Last 24 hours
               </h2>
@@ -841,11 +841,11 @@ export default function Dashboard() {
                   ))}
                   {ov.statusChanges.length > 0 && (
                     <div className="mt-3 pt-3" style={{ borderTop: '1px solid var(--border-subtle)' }}>
-                      <div className="mb-1.5" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>Stage movements</div>
+                      <div className="mb-1.5" style={labelTertiary}>Stage movements</div>
                       {ov.statusChanges.slice(0, 3).map((sc, i) => (
                         <div key={i} className="flex items-center gap-2 py-1">
                           <ArrowUpRight className="w-3 h-3 shrink-0" style={{ color: 'var(--accent)' }} />
-                          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
+                          <span style={labelSecondary}>
                             <span style={{ color: 'var(--text-primary)', fontWeight: 400 }}>{sc.investorName}</span>
                             {' '}{sc.from !== 'unknown' ? `${formatStage(sc.from)} → ` : ''}{formatStage(sc.to)}
                           </span>
@@ -855,8 +855,8 @@ export default function Dashboard() {
                   )}
                   {ov.meetingNames.length > 0 && (
                     <div className="mt-2 pt-2" style={{ borderTop: '1px solid var(--border-subtle)' }}>
-                      <div className="mb-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>Meetings logged</div>
-                      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>{ov.meetingNames.join(', ')}</div>
+                      <div className="mb-1" style={labelTertiary}>Meetings logged</div>
+                      <div style={labelSecondary}>{ov.meetingNames.join(', ')}</div>
                     </div>
                   )}
                 </div>
@@ -865,7 +865,7 @@ export default function Dashboard() {
               )}
             </div>
 
-            <div style={{ borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
+            <div style={cardPadding}>
               <h2 className="section-title flex items-center gap-2 mb-3">
                 <Activity className="w-4 h-4" /> Conviction radar
               </h2>
@@ -882,7 +882,7 @@ export default function Dashboard() {
                   </div>
 
                   <div>
-                    <div className="mb-1.5" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>Momentum distribution</div>
+                    <div className="mb-1.5" style={labelTertiary}>Momentum distribution</div>
                     <div className="flex gap-0.5 h-5 rounded overflow-hidden">
                       {cv.accelerating > 0 && <MomentumBar count={cv.accelerating} total={cv.accelerating + cv.steady + cv.decelerating + cv.stalled} opacity={1} label="Accelerating" />}
                       {cv.steady > 0 && <MomentumBar count={cv.steady} total={cv.accelerating + cv.steady + cv.decelerating + cv.stalled} opacity={0.6} label="Steady" />}
@@ -899,7 +899,7 @@ export default function Dashboard() {
 
                   {cv.alerts.length > 0 && (
                     <div className="mt-2 pt-2" style={{ borderTop: '1px solid var(--border-subtle)' }}>
-                      <div className="mb-1.5 flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
+                      <div className="mb-1.5 flex items-center gap-1" style={labelSecondary}>
                         <AlertTriangle className="w-3 h-3" /> Enthusiasm drops
                       </div>
                       {cv.alerts.map((alert, i) => (
@@ -913,7 +913,7 @@ export default function Dashboard() {
                           >
                             {alert.investorName}
                           </Link>
-                          <span className="tabular-nums" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
+                          <span className="tabular-nums" style={labelSecondary}>
                             {alert.previousScore} → {alert.currentScore} ({-alert.drop})
                           </span>
                         </div>
@@ -929,12 +929,12 @@ export default function Dashboard() {
 
           {/* Acceleration Alerts */}
           {cp && cp.topAccelerations.length > 0 && (
-            <div style={{ borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
+            <div style={cardPadding}>
               <div className="flex items-center justify-between mb-3">
                 <h2 className="section-title flex items-center gap-2">
                   <Zap className="w-4 h-4" /> Acceleration alerts
                 </h2>
-                <Link href="/focus" className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}>
+                <Link href="/focus" className="flex items-center gap-1" style={labelAccent}>
                   All actions <ArrowRight className="w-3 h-3" />
                 </Link>
               </div>
@@ -948,7 +948,7 @@ export default function Dashboard() {
                       onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}
                       onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
                     >
-                      <Zap className="w-4 h-4 shrink-0 mt-0.5" style={{ color: 'var(--text-tertiary)' }} />
+                      <Zap className="w-4 h-4 shrink-0 mt-0.5" style={textTertiary} />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-0.5">
                           <Link
@@ -960,12 +960,12 @@ export default function Dashboard() {
                           >
                             {accel.investorName}
                           </Link>
-                          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
+                          <span style={labelTertiary}>
                             {accel.urgency === 'immediate' ? 'Now' : accel.urgency}
                           </span>
-                          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{triggerLabel}</span>
+                          <span style={labelMuted}>{triggerLabel}</span>
                         </div>
-                        <p className="leading-relaxed" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>{accel.description}</p>
+                        <p className="leading-relaxed" style={labelSecondary}>{accel.description}</p>
                       </div>
                       <button
                         onClick={() => executeAcceleration(accel.id)}
@@ -983,12 +983,12 @@ export default function Dashboard() {
 
           {/* Hot Deals + Follow-ups */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div style={{ borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
+            <div style={cardPadding}>
               <div className="flex items-center justify-between mb-3">
                 <h2 className="section-title flex items-center gap-2">
                   <Flame className="w-4 h-4" /> Hot deals
                 </h2>
-                <Link href="/dealflow" className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}>
+                <Link href="/dealflow" className="flex items-center gap-1" style={labelAccent}>
                   All deals <ArrowRight className="w-3 h-3" />
                 </Link>
               </div>
@@ -1006,12 +1006,12 @@ export default function Dashboard() {
               )}
             </div>
 
-            <div style={{ borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
+            <div style={cardPadding}>
               <div className="flex items-center justify-between mb-3">
                 <h2 className="section-title flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4" /> Upcoming follow-ups
                 </h2>
-                <Link href="/followups" className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}>
+                <Link href="/followups" className="flex items-center gap-1" style={labelAccent}>
                   All follow-ups <ArrowRight className="w-3 h-3" />
                 </Link>
               </div>
@@ -1034,10 +1034,10 @@ export default function Dashboard() {
           </div>
 
           {/* Pipeline */}
-          <div style={{ borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
+          <div style={cardPadding}>
             <div className="flex items-center justify-between mb-4">
               <h2 className="section-title">Pipeline</h2>
-              <Link href="/pipeline" className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}>
+              <Link href="/pipeline" className="flex items-center gap-1" style={labelAccent}>
                 Pipeline view <Columns3 className="w-3 h-3" />
               </Link>
             </div>
@@ -1060,7 +1060,7 @@ export default function Dashboard() {
               {data.funnel.passed > 0 && (
                 <div className="w-full flex items-center justify-center mt-2 pt-2" style={{ maxWidth: '50%', borderTop: '1px solid var(--border-subtle)' }}>
                   <div className="w-full rounded-md h-7 flex items-center justify-between px-4" style={{ background: 'var(--surface-2)' }}>
-                    <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>Passed</span>
+                    <span style={labelTertiary}>Passed</span>
                     <span className="tabular-nums" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>{data.funnel.passed}</span>
                   </div>
                 </div>
@@ -1081,10 +1081,10 @@ export default function Dashboard() {
                 href={href}
                 className="group rounded-xl p-4 transition-colors"
               >
-                <Icon className="w-5 h-5 mb-2" style={{ color: 'var(--text-tertiary)' }} />
+                <Icon className="w-5 h-5 mb-2" style={textTertiary} />
                 <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>{label}</div>
-                <div className="mt-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{sub}</div>
-                <div className="mt-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}>
+                <div className="mt-1" style={labelMuted}>{sub}</div>
+                <div className="mt-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity" style={labelAccent}>
                   Open <ArrowRight className="w-3 h-3" />
                 </div>
               </Link>
@@ -1093,12 +1093,12 @@ export default function Dashboard() {
 
           {/* Data Quality */}
           {dataQuality && (
-            <div style={{ borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
+            <div style={cardPadding}>
               <div className="flex items-center justify-between mb-3">
                 <h2 className="section-title flex items-center gap-2">
                   <ShieldCheck className="w-4 h-4" /> Data quality
                 </h2>
-                <Link href="/investors" className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}>
+                <Link href="/investors" className="flex items-center gap-1" style={labelAccent}>
                   Fix gaps <ArrowRight className="w-3 h-3" />
                 </Link>
               </div>
@@ -1121,26 +1121,26 @@ export default function Dashboard() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <div className="mb-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>Field coverage</div>
+                  <div className="mb-1" style={labelTertiary}>Field coverage</div>
                   {dataQuality.fieldCompleteness
                     .filter(f => f.field !== 'name' && f.field !== 'type' && f.field !== 'tier' && f.field !== 'status')
                     .map(f => (
                     <div key={f.field} className="flex items-center gap-2">
-                      <span className="w-20 truncate" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{f.field.replace(/_/g, ' ')}</span>
+                      <span className="w-20 truncate" style={labelMuted}>{f.field.replace(/_/g, ' ')}</span>
                       <div className="flex-1 h-1 rounded-full overflow-hidden" style={{ background: 'var(--surface-3)' }}>
                         <div className="h-full rounded-full" style={{ width: `${f.pct}%`, background: 'var(--accent)' }} />
                       </div>
-                      <span className="tabular-nums w-8 text-right" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{f.pct}%</span>
+                      <span className="tabular-nums w-8 text-right" style={labelMuted}>{f.pct}%</span>
                     </div>
                   ))}
                 </div>
 
                 <div className="space-y-1.5">
-                  <div className="mb-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>Recommendations</div>
+                  <div className="mb-1" style={labelTertiary}>Recommendations</div>
                   {dataQuality.recommendations.slice(0, 3).map((rec, i) => (
                     <div key={i} className="flex items-start gap-1.5">
                       <span className="w-1 h-1 rounded-full mt-1.5 shrink-0" style={{ background: 'var(--accent)' }} />
-                      <span className="leading-snug" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>{rec}</span>
+                      <span className="leading-snug" style={labelSecondary}>{rec}</span>
                     </div>
                   ))}
                 </div>
@@ -1150,12 +1150,12 @@ export default function Dashboard() {
 
           {/* Tasks + Activity */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div style={{ borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
+            <div style={cardPadding}>
               <div className="flex items-center justify-between mb-3">
                 <h2 className="section-title flex items-center gap-2">
                   <ClipboardList className="w-4 h-4" /> Upcoming tasks
                 </h2>
-                <Link href="/timeline" className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}>
+                <Link href="/timeline" className="flex items-center gap-1" style={labelAccent}>
                   All tasks <ArrowRight className="w-3 h-3" />
                 </Link>
               </div>
@@ -1176,10 +1176,10 @@ export default function Dashboard() {
                       >
                         <div className="min-w-0">
                           <div className="truncate" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)' }}>{t.title}</div>
-                          {t.investor_name && <div className="truncate" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{t.investor_name}</div>}
+                          {t.investor_name && <div className="truncate" style={labelMuted}>{t.investor_name}</div>}
                         </div>
                         <div className="flex items-center gap-2 shrink-0">
-                          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>{t.priority}</span>
+                          <span style={labelTertiary}>{t.priority}</span>
                           {t.due_date && (
                             <span style={{ fontSize: 'var(--font-size-xs)', color: overdue ? 'var(--text-primary)' : 'var(--text-muted)', fontWeight: overdue ? 400 : 300 }}>
                               {fmtDate(t.due_date)}
@@ -1193,12 +1193,12 @@ export default function Dashboard() {
               )}
             </div>
 
-            <div style={{ borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
+            <div style={cardPadding}>
               <div className="flex items-center justify-between mb-3">
                 <h2 className="section-title flex items-center gap-2">
                   <Activity className="w-4 h-4" /> Recent activity
                 </h2>
-                <Link href="/timeline" className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)' }}>
+                <Link href="/timeline" className="flex items-center gap-1" style={labelAccent}>
                   Full log <ArrowRight className="w-3 h-3" />
                 </Link>
               </div>
@@ -1260,12 +1260,12 @@ export default function Dashboard() {
                     <div className="flex items-center gap-2">
                       <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>{a.label}</span>
                       {a.count && (
-                        <span className="tabular-nums" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
+                        <span className="tabular-nums" style={labelTertiary}>
                           {a.count}
                         </span>
                       )}
                     </div>
-                    <div className="mt-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{a.sub}</div>
+                    <div className="mt-1" style={labelMuted}>{a.sub}</div>
                   </Link>
                 ))}
               </div>
@@ -1329,7 +1329,7 @@ function MomentumLabel({ count, label }: {
   count: number; label: string;
 }) {
   return (
-    <span className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
+    <span className="flex items-center gap-1" style={labelSecondary}>
       <span style={{ fontWeight: 400 }}>{count}</span> {label}
     </span>
   );
@@ -1382,30 +1382,30 @@ function VelocityStrip({ velocity }: { velocity: VelocityResponse }) {
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-3">
           <div>
-            <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>Days elapsed</div>
+            <div style={labelTertiary}>Days elapsed</div>
             <div className="tabular-nums mt-0.5" style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>
               {s.raise_days_elapsed}
               <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', fontWeight: 300 }}>/{s.raise_target_days}d</span>
             </div>
           </div>
           <div>
-            <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>Avg mtgs/week</div>
+            <div style={labelTertiary}>Avg mtgs/week</div>
             <div className="flex items-center gap-1.5 mt-0.5">
               <span className="tabular-nums" style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>{avgMeetingsPerWeek}</span>
-              <span style={{ color: 'var(--text-tertiary)' }}>
+              <span style={textTertiary}>
                 {trendUp ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
               </span>
             </div>
           </div>
           <div>
-            <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>Velocity score</div>
+            <div style={labelTertiary}>Velocity score</div>
             <div className="tabular-nums mt-0.5" style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>
               {s.avg_velocity_score}
               <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', fontWeight: 300 }}>/100</span>
             </div>
           </div>
           <div>
-            <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
+            <div style={labelTertiary}>
               {isOverTarget ? 'Over target by' : 'Days remaining'}
             </div>
             <div className="tabular-nums mt-0.5" style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>
@@ -1427,13 +1427,13 @@ function VelocityStrip({ velocity }: { velocity: VelocityResponse }) {
       </div>
 
       <div className="px-5 py-2 flex items-center gap-4" style={{ borderTop: '1px solid var(--border-subtle)' }}>
-        <span className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
+        <span className="flex items-center gap-1" style={labelSecondary}>
           <span style={{ fontWeight: 400 }}>{s.on_track}</span> on track
         </span>
-        <span className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
+        <span className="flex items-center gap-1" style={labelTertiary}>
           <span style={{ fontWeight: 400 }}>{s.behind}</span> behind
         </span>
-        <span className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+        <span className="flex items-center gap-1" style={labelMuted}>
           <span style={{ fontWeight: 400 }}>{s.at_risk}</span> at risk
         </span>
       </div>
@@ -1464,9 +1464,9 @@ function HotDealRow({ investor }: { investor: DealHeatInvestor }) {
           >
             {investor.name}
           </Link>
-          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>T{investor.tier}</span>
+          <span style={labelTertiary}>T{investor.tier}</span>
         </div>
-        <div className="mt-0.5" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+        <div className="mt-0.5" style={labelMuted}>
           {formatStage(investor.status)}
         </div>
       </div>
@@ -1535,7 +1535,7 @@ function FollowupRow({ followup, onComplete }: { followup: FollowupItem; onCompl
           {completing && <CheckCircle2 className="w-3 h-3" style={{ color: 'var(--accent)' }} />}
         </button>
       )}
-      <span className="shrink-0" style={{ color: 'var(--text-tertiary)' }}>
+      <span className="shrink-0" style={textTertiary}>
         <ActionIcon className="w-4 h-4" />
       </span>
       <div className="flex-1 min-w-0">
@@ -1547,11 +1547,11 @@ function FollowupRow({ followup, onComplete }: { followup: FollowupItem; onCompl
           >
             {followup.investor_name || 'Unknown'}
           </Link>
-          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
+          <span style={labelTertiary}>
             {actionLabel[followup.action_type] || followup.action_type.replace(/_/g, ' ')}
           </span>
         </div>
-        <p className="truncate mt-0.5" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
+        <p className="truncate mt-0.5" style={labelSecondary}>
           {followup.description}
         </p>
       </div>
@@ -1602,12 +1602,12 @@ function ActivityRow({ activity }: { activity: ActivityItem }) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <span className="mt-0.5 shrink-0" style={{ color: 'var(--text-tertiary)' }}>
+      <span className="mt-0.5 shrink-0" style={textTertiary}>
         <Icon className="w-3.5 h-3.5" />
       </span>
       <div className="flex-1 min-w-0">
         <div className="truncate" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)' }}>{activity.subject}</div>
-        <div className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+        <div className="flex items-center gap-2" style={labelMuted}>
           {activity.investor_name && (
             <span style={{ color: 'var(--text-secondary)' }}>{activity.investor_name}</span>
           )}

@@ -4,3 +4,4 @@ eb53a2a	93	93	0	keep	all	Dead code removal (143 lines) + pipeline error recovery
 6af25c3	93	93	0	keep	all	scoring.ts dead code (getScoreBreakdown + interfaces) + context-bus dead code + stale investor highlight + Cmd+E shortcut
 046aad0	93	93	0	keep	eng+ai	ai.ts logAISkill consolidation (-55 lines) + dealflow dead functions + pipeline drag opacity cleanup
 91cbcb5	93	93	0	keep	eng	COLUMN_COLORS consolidation (-55 lines) + investor-narratives de-export + dead code cleanup
+65d1eb9	93	93	0	keep	eng+design	Style constants (122 replacements) + delete dead empty-state.tsx + remove FocusItem interface
