@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDocumentFlags, updateDocumentFlag } from '@/lib/db';
+import { emitContextChange } from '@/lib/context-bus';
 
 export async function GET(req: NextRequest) {
   try {
@@ -30,6 +31,12 @@ export async function PUT(req: NextRequest) {
   if (status && !validStatuses.includes(status as string)) {
     return NextResponse.json({ error: `status must be one of: ${validStatuses.join(', ')}` }, { status: 400 });
   }
-  await updateDocumentFlag(id as string, { status: status as string });
-  return NextResponse.json({ ok: true });
+  try {
+    await updateDocumentFlag(id as string, { status: status as string });
+    emitContextChange('document_flag_updated', `Document flag ${id} status=${status}`);
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    console.error('[DOC_FLAGS_PUT]', err instanceof Error ? err.message : err);
+    return NextResponse.json({ error: 'Failed to update document flag' }, { status: 500 });
+  }
 }

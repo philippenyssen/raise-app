@@ -100,7 +100,9 @@ export type ContextSource =
   | 'status_changed'
   | 'term_sheet_created'
   | 'term_sheet_updated'
-  | 'term_sheet_deleted';
+  | 'term_sheet_deleted'
+  | 'document_flag_updated'
+  | 'model_updated';
 
 interface ContextChange {
   version: number;

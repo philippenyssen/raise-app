@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getModelSheets, createModelSheet, updateModelSheet, deleteModelSheet } from '@/lib/db';
+import { emitContextChange } from '@/lib/context-bus';
 
 export async function GET(req: NextRequest) {
   try {
@@ -41,6 +42,7 @@ export async function POST(req: NextRequest) {
       sheet_order: sheet_order ?? 0,
       data: typeof data === 'string' ? data : JSON.stringify(data || {}),
     });
+    emitContextChange('model_updated', `Created model sheet ${sheet_name}`);
     return NextResponse.json(sheet, { status: 201 });
   } catch (err) {
     console.error('[MODEL_POST]', err instanceof Error ? err.message : err);
@@ -65,6 +67,7 @@ export async function PUT(req: NextRequest) {
 
   try {
     await updateModelSheet(id, updates);
+    emitContextChange('model_updated', `Updated model sheet ${id}`);
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error('[MODEL_PUT]', err instanceof Error ? err.message : err);
@@ -78,6 +81,7 @@ export async function DELETE(req: NextRequest) {
   if (!id) return NextResponse.json({ error: 'id is required' }, { status: 400 });
   try {
     await deleteModelSheet(id);
+    emitContextChange('model_updated', `Deleted model sheet ${id}`);
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error('[MODEL_DELETE]', err instanceof Error ? err.message : err);
