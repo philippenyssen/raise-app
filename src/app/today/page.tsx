@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from 'react';
 import Link from 'next/link';
+import { cachedFetch } from '@/lib/cache';
 import { useToast } from '@/components/toast';
 import { fmtDateFull } from '@/lib/format';
 import { MS_PER_MINUTE, MS_PER_DAY } from '@/lib/time';
@@ -330,8 +331,19 @@ export default function TodayPage() {
   const fetchBriefing = useCallback(async (silent = false) => {
     if (!silent) setLoading(true);
     else setRefreshing(true);
+    let stratRes: Response | null = null;
+    let velRes: Response | null = null;
+    let pulseRes: Response | null = null;
+    let fuRes: Response | null = null;
     try {
-      const res = await fetch('/api/briefing');
+      const results = await Promise.all([
+        cachedFetch('/api/briefing'),
+        cachedFetch('/api/intelligence/strategic').catch(() => null),
+        cachedFetch('/api/velocity').catch(() => null),
+        cachedFetch('/api/pulse').catch(() => null),
+        cachedFetch('/api/followups?status=pending').catch(() => null),]);
+      const res = results[0]!;
+      stratRes = results[1]; velRes = results[2]; pulseRes = results[3]; fuRes = results[4];
       if (res.ok) {
         setData(await res.json());
         lastFetchedAt.current = Date.now();
@@ -343,13 +355,8 @@ export default function TodayPage() {
       if (!silent) toast('Couldn\'t load today\'s briefing — try refreshing', 'error');
     }
 
-    // Non-blocking: fetch velocity (for raise day counter), strategic insight, and pulse
+    // Process secondary data (fetched in parallel above)
     try {
-      const [stratRes, velRes, pulseRes, fuRes] = await Promise.all([
-        fetch('/api/intelligence/strategic').catch(() => null),
-        fetch('/api/velocity').catch(() => null),
-        fetch('/api/pulse').catch(() => null),
-        fetch('/api/followups?status=pending').catch(() => null),]);
       if (stratRes?.ok) {
         const stratData = await stratRes.json();
         const rec = stratData.recommendations?.[0];
