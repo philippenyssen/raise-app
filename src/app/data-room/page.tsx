@@ -75,6 +75,11 @@ export default function DataRoomPage() {
 
   useEffect(() => { document.title = 'Raise | Data Room'; }, []);
   useEffect(() => { fetchFiles(); fetchIntelligence(); }, [fetchFiles, fetchIntelligence]);
+  useEffect(() => {
+    const h = (e: KeyboardEvent) => { if (e.key === 'r' && !e.metaKey && !e.ctrlKey && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement)) { e.preventDefault(); fetchFiles(); fetchIntelligence(); } };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, [fetchFiles, fetchIntelligence]);
 
   async function handleLogAccess(investorId: string, documentId: string) {
     try {

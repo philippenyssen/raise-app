@@ -55,6 +55,11 @@ export default function WorkspacePage() {
 
   useEffect(() => { document.title = 'Raise | Workspace'; }, []);
   useEffect(() => { fetchDocs(); }, [fetchDocs]);
+  useEffect(() => {
+    const h = (e: KeyboardEvent) => { if (e.key === 'r' && !e.metaKey && !e.ctrlKey && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement)) { e.preventDefault(); fetchDocs(); } };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, [fetchDocs]);
 
   const doSelectDoc = useCallback((doc: Doc) => {
     setSelectedDoc(doc);

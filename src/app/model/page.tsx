@@ -166,6 +166,11 @@ export default function ModelPage() {
 
   useEffect(() => { document.title = 'Raise | Financial Model'; }, []);
   useEffect(() => { fetchSheets(); }, [fetchSheets]);
+  useEffect(() => {
+    const h = (e: KeyboardEvent) => { if (e.key === 'r' && !e.metaKey && !e.ctrlKey && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement)) { e.preventDefault(); fetchSheets(); } };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, [fetchSheets]);
 
   const doSelectSheet = useCallback((sheet: ModelSheet) => {
     setActiveSheetId(sheet.id);
