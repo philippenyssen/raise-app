@@ -172,7 +172,7 @@ export default function TermsPage() {
 
       {/* Add/Edit Form */}
       {showForm && (
-        <form onSubmit={handleSubmit} className="rounded-xl p-6 space-y-4" style={stSurface0}>
+        <form onSubmit={handleSubmit} className="rounded-xl p-5 space-y-4" style={stSurface0}>
           <h3 className="text-sm font-normal" style={stTextTertiary}>{editId ? 'Edit' : 'Add'} term sheet</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <TsInput label="Investor" value={form.investor} onChange={v => setForm(f => ({ ...f, investor: v }))} required />
@@ -216,10 +216,10 @@ export default function TermsPage() {
                     <div className="flex items-center justify-between gap-2">
                       {ts.investor}
                       <div className="flex gap-1 shrink-0">
-                        <button onClick={() => startEdit(ts)} className="text-xs transition-colors" style={stTextMuted}
+                        <button onClick={() => startEdit(ts)} className="text-xs transition-colors" style={stTextMuted} aria-label={`Edit ${ts.investor} term sheet`}
                           onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
                           onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}>Edit</button>
-                        <button onClick={() => setDeleteTarget({ id: ts.id, investor: ts.investor })} className="text-xs transition-colors" style={stTextMuted}
+                        <button onClick={() => setDeleteTarget({ id: ts.id, investor: ts.investor })} className="text-xs transition-colors" style={stTextMuted} aria-label={`Delete ${ts.investor} term sheet`}
                           onMouseEnter={e => (e.currentTarget.style.color = 'var(--danger)')}
                           onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}>Del</button></div></div></th>
                 ))}
