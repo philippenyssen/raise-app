@@ -217,9 +217,15 @@ export default function StrategicPage() {
       {/* CEO BRIEF                                                        */}
       {/* ================================================================ */}
       <div className="card">
-        <div className="flex items-center gap-2 mb-3">
-          <Activity className="w-4 h-4" style={stAccent} />
-          <span className="section-title" style={{ marginBottom: 0 }}>CEO Brief</span></div>
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <Activity className="w-4 h-4" style={stAccent} />
+            <span className="section-title" style={{ marginBottom: 0 }}>CEO Brief</span></div>
+          <button
+            onClick={() => { navigator.clipboard.writeText(data.ceoBrief); }}
+            className="text-xs px-2 py-1 rounded"
+            style={{ background: 'var(--surface-2)', color: 'var(--text-muted)' }}
+            title="Copy brief to clipboard">Copy</button></div>
         <p style={{ fontSize: 'var(--font-size-lg)', color: 'var(--text-primary)', lineHeight: 1.6 }}>{data.ceoBrief}</p></div>
 
       {/* ================================================================ */}

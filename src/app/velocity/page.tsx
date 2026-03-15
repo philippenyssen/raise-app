@@ -55,8 +55,10 @@ export default function VelocityPage() {
     return (
       <div className="flex-1 p-6" style={{ maxWidth: '1400px', margin: '0 auto' }}>
         <div className="card" style={{ textAlign: 'center', padding: 'var(--space-12)' }}>
-          <span style={{ color: 'var(--text-primary)', fontSize: 'var(--font-size-lg)' }}>
-            {error || 'Failed to load velocity data'}</span></div>
+          <AlertTriangle className="w-8 h-8 mx-auto mb-3" style={{ color: 'var(--text-muted)' }} />
+          <p style={{ color: 'var(--text-primary)', fontSize: 'var(--font-size-sm)', marginBottom: 'var(--space-3)' }}>
+            {error || 'Failed to load velocity data'}</p>
+          <button onClick={() => window.location.reload()} className="btn btn-secondary btn-sm">Retry</button></div>
       </div>);
   }
 
