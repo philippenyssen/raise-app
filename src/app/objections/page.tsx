@@ -205,9 +205,12 @@ export default function ObjectionsPage() {
 
   const loadData = useCallback(async () => {
     setLoading(true);
-    const res = await cachedFetch('/api/objections');
-    const json = await res.json();
-    setData(json);
+    try {
+      const res = await cachedFetch('/api/objections');
+      if (!res.ok) throw new Error('Failed to load');
+      const json = await res.json();
+      setData(json);
+    } catch { toast('Failed to load objections', 'error'); }
     setLoading(false);
   }, []);
 
@@ -247,18 +250,19 @@ export default function ObjectionsPage() {
 
   async function saveEdit(id: string) {
     setSaving(true);
-    await fetch('/api/objections', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, response_text: editResponse, effectiveness: editEffectiveness }),});
-    if (editEffectiveness === 'effective') toast('Objection resolved!', 'success');
-    setEditingId(null);
+    try {
+      const res = await fetch('/api/objections', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, response_text: editResponse, effectiveness: editEffectiveness }),});
+      if (!res.ok) throw new Error('Failed to save');
+      if (editEffectiveness === 'effective') toast('Objection resolved!', 'success');
+      setEditingId(null);
+      loadData();
+      if (effectivenessData) loadEffectivenessData();
+    } catch { toast('Failed to save response', 'error'); }
     setSaving(false);
-    loadData();
-    // Refresh effectiveness data if loaded
-    if (effectivenessData) {
-      loadEffectivenessData();
-    }}
+  }
 
   async function loadInvestorObjections(investorId: string) {
     if (!investorId) {
@@ -266,9 +270,12 @@ export default function ObjectionsPage() {
       return;
     }
     setLoadingInvestor(true);
-    const res = await fetch(`/api/objections?view=investor&investor_id=${investorId}`);
-    const json = await res.json();
-    setInvestorObjections(json);
+    try {
+      const res = await fetch(`/api/objections?view=investor&investor_id=${investorId}`);
+      if (!res.ok) throw new Error('Failed to load');
+      const json = await res.json();
+      setInvestorObjections(json);
+    } catch { toast('Failed to load investor objections', 'error'); }
     setLoadingInvestor(false);
   }
 

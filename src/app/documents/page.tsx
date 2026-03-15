@@ -312,10 +312,12 @@ export default function DocumentsPage() {
                         <button
                           onClick={() => setDeleteTarget({ id: doc.id, title: doc.title })}
                           className="text-xs px-2 py-1 rounded transition-colors"
+                          title="Delete document"
+                          aria-label="Delete document"
                           style={{ color: hoverStates[`del-${doc.id}`] ? 'var(--danger)' : 'var(--text-muted)', backgroundColor: hoverStates[`del-${doc.id}`] ? 'var(--surface-2)' : 'transparent' }}
                           onMouseEnter={() => setHover(`del-${doc.id}`, true)}
                           onMouseLeave={() => setHover(`del-${doc.id}`, false)}>
-                          Del</button></div>
+                          Delete</button></div>
                     </div>);
                 })}</div></div>
           ))}
