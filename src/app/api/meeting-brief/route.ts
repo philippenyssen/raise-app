@@ -224,6 +224,7 @@ export async function POST(req: NextRequest) {
       model: AI_MODEL,
       max_tokens: 4096,
       temperature: 0,
+      system: 'You are a fundraise intelligence AI preparing meeting briefs. Return only valid JSON matching the requested schema. Use empty strings for unknown fields, empty arrays for unknown lists. Never fabricate data — only include information provided in the context.',
       messages: [{
         role: 'user',
         content: contextForAI,

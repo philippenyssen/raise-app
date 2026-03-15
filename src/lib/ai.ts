@@ -276,14 +276,17 @@ Return JSON (no markdown):
 // Document AI Operations
 
 export async function improveSection(section: string, instruction: string, context: string): Promise<string> {
-  const response = await getAIClient().messages.create({
-    model: AI_MODEL,
-    max_tokens: 4096,
-    temperature: 0.3,
-    system: 'You are a Series C fundraise advisor. Be concise, specific, and actionable. Focus on what matters for closing the deal.',
-    messages: [{
-      role: 'user',
-      content: `Improve the following section of a Series C fundraise document in expert investment banking memo style.
+  const _t0 = Date.now();
+  let success = false;
+  try {
+    const response = await getAIClient().messages.create({
+      model: AI_MODEL,
+      max_tokens: 4096,
+      temperature: 0.3,
+      system: 'You are a Series C fundraise advisor. Be concise, specific, and actionable. Focus on what matters for closing the deal.',
+      messages: [{
+        role: 'user',
+        content: `Improve the following section of a Series C fundraise document in expert investment banking memo style.
 
 INSTRUCTION: ${instruction}
 
@@ -294,11 +297,15 @@ SURROUNDING CONTEXT (for reference only, do not rewrite this):
 ${context.substring(0, 2000)}
 
 Return ONLY the improved text. No explanations, no markdown code blocks, just the improved content.`
-    }]});
-  const { text, truncated, filtered } = extractText(response);
-  if (filtered) throw new Error('Content filter blocked this section — rephrase sensitive language and retry');
-  if (truncated) throw new Error('Section too long for AI improvement — break into smaller sections and retry');
-  return text || section;
+      }]});
+    const { text, truncated, filtered } = extractText(response);
+    if (filtered) throw new Error('Content filter blocked this section — rephrase sensitive language and retry');
+    if (truncated) throw new Error('Section too long for AI improvement — break into smaller sections and retry');
+    success = !!text;
+    return text || section;
+  } finally {
+    logAISkill('improve_section', success, 1, success ? 1 : 0, { trigger_source: 'api', input_summary: `${instruction.substring(0, 80)} / ${section.length} chars`, latency_ms: Date.now() - _t0 });
+  }
 }
 
 export async function checkConsistency(
@@ -625,14 +632,17 @@ Be direct and tactical. This brief should make the meeting 2x more productive.`
 }
 
 export async function polishGoldmanStyle(content: string): Promise<string> {
-  const response = await getAIClient().messages.create({
-    model: AI_MODEL,
-    max_tokens: 4096,
-    temperature: 0.3,
-    system: 'You are a Series C fundraise advisor. Be concise, specific, and actionable. Focus on what matters for closing the deal.',
-    messages: [{
-      role: 'user',
-      content: `Rewrite this content in Goldman Sachs ECM Managing Director style — concise, authoritative investment banking memo:
+  const _t0 = Date.now();
+  let success = false;
+  try {
+    const response = await getAIClient().messages.create({
+      model: AI_MODEL,
+      max_tokens: 4096,
+      temperature: 0.3,
+      system: 'You are a Series C fundraise advisor. Be concise, specific, and actionable. Focus on what matters for closing the deal.',
+      messages: [{
+        role: 'user',
+        content: `Rewrite this content in Goldman Sachs ECM Managing Director style — concise, authoritative investment banking memo:
 - Short sentences, active voice
 - Lead with the conclusion
 - Numbers first, narrative second
@@ -645,9 +655,13 @@ CONTENT:
 ${content.substring(0, 10000)}
 
 Return ONLY the rewritten text. No explanations.`
-    }]});
-  const { text, truncated, filtered } = extractText(response);
-  if (filtered) throw new Error('Content filter blocked Goldman polish — rephrase sensitive language and retry');
-  if (truncated) throw new Error('Content too long for Goldman polish — break into smaller sections and retry');
-  return text || content;
+      }]});
+    const { text, truncated, filtered } = extractText(response);
+    if (filtered) throw new Error('Content filter blocked Goldman polish — rephrase sensitive language and retry');
+    if (truncated) throw new Error('Content too long for Goldman polish — break into smaller sections and retry');
+    success = !!text;
+    return text || content;
+  } finally {
+    logAISkill('polish_goldman_style', success, 1, success ? 1 : 0, { trigger_source: 'api', input_summary: `${content.length} chars`, latency_ms: Date.now() - _t0 });
+  }
 }
