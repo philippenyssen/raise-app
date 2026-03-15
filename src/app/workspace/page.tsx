@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { cachedFetch } from '@/lib/cache';
 import { SplitPane } from '@/components/workspace/split-pane';
 import { DocumentViewer } from '@/components/workspace/document-viewer';
 import { AIChat } from '@/components/workspace/ai-chat';
@@ -43,7 +44,7 @@ export default function WorkspacePage() {
 
   const fetchDocs = useCallback(async () => {
     try {
-      const res = await fetch('/api/documents');
+      const res = await cachedFetch('/api/documents');
       if (!res.ok) throw new Error(`Failed (${res.status})`);
       setDocs(await res.json());
     } catch {

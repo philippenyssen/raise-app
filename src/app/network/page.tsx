@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
+import { cachedFetch } from '@/lib/cache';
 import {
   RefreshCw, AlertTriangle, ArrowRight, Crown,
   TrendingUp, Users, Link2, ChevronDown, ChevronUp, Calendar,
@@ -44,7 +45,7 @@ export default function NetworkPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch('/api/network');
+      const res = await cachedFetch('/api/network');
       if (!res.ok) throw new Error('Could not load network data — refresh to retry');
       const json = await res.json();
       setData(json);

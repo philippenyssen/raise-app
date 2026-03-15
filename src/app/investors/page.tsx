@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { cachedFetch } from '@/lib/cache';
 import type { Investor, InvestorStatus, InvestorTier, InvestorType } from '@/lib/types';
 import { useToast } from '@/components/toast';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
@@ -91,7 +92,7 @@ export default function InvestorsPage() {
   async function fetchInvestors() {
     setLoading(true);
     try {
-      const res = await fetch('/api/investors');
+      const res = await cachedFetch('/api/investors');
       if (!res.ok) throw new Error(`Failed (${res.status})`);
       setInvestors(await res.json());
     } catch {

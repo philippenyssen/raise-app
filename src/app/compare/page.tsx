@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useMemo, useCallback } from 'react';
+import { cachedFetch } from '@/lib/cache';
 import { useToast } from '@/components/toast';
 import type { Investor, InvestorType, InvestorScoreData } from '@/lib/types';
 import {
@@ -101,7 +102,7 @@ export default function ComparePage() {
   const loadInvestors = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/investors');
+      const res = await cachedFetch('/api/investors');
       if (!res.ok) throw new Error(`${res.status}`);
       const data = await res.json();
       setAllInvestors(data);
