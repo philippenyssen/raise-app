@@ -86,30 +86,31 @@ function generateDraft(item: FollowupItem): { subject: string; body: string } {
   const name = item.investor_name;
   const desc = item.description.split('\n')[0]; // First line as context
 
+  const firstName = name.split(/[\s&,]/)[0];
   const templates: Record<string, { subject: string; body: string }> = {
     thank_you: {
       subject: `Following up — ${name}`,
-      body: `Dear team,\n\nThank you for taking the time to meet with us. We valued the discussion and your thoughtful questions.\n\n${desc}\n\nWe're happy to provide any additional materials or context that would be helpful for your evaluation. Please don't hesitate to reach out.\n\nBest regards`,
+      body: `Dear ${firstName} and team,\n\nThank you for taking the time to meet with us. We valued the discussion and your thoughtful questions.\n\n${desc}\n\nWe're happy to provide any additional materials or context that would be helpful for your evaluation. Please don't hesitate to reach out.\n\nBest regards`,
     },
     objection_response: {
       subject: `Addressing your questions — ${name}`,
-      body: `Dear team,\n\nFollowing up on the points raised during our discussion. We wanted to provide additional context and data:\n\n${desc}\n\nWe've attached [relevant materials] that address these questions in more detail. Happy to walk through any of this on a call.\n\nBest regards`,
+      body: `Dear ${firstName} and team,\n\nFollowing up on the points raised during our discussion. We wanted to provide additional context and data:\n\n${desc}\n\nWe've attached the relevant materials that address these questions in more detail. Happy to walk through any of this on a call.\n\nBest regards`,
     },
     data_share: {
       subject: `Materials as discussed — ${name}`,
-      body: `Dear team,\n\nAs discussed, please find the requested materials:\n\n${desc}\n\n• [Document/Data 1]\n• [Document/Data 2]\n\nLet us know if you need anything else to support your review.\n\nBest regards`,
+      body: `Dear ${firstName} and team,\n\nAs discussed, please find the requested materials:\n\n${desc}\n\nLet us know if you need anything else to support your review.\n\nBest regards`,
     },
     schedule_followup: {
       subject: `Next steps — ${name}`,
-      body: `Dear team,\n\nThank you again for the productive conversation. We'd love to continue the dialogue and propose scheduling a follow-up.\n\n${desc}\n\nWould any of the following work for your team?\n\n• [Option 1]\n• [Option 2]\n• [Option 3]\n\nHappy to accommodate your schedule.\n\nBest regards`,
+      body: `Dear ${firstName} and team,\n\nThank you again for the productive conversation. We'd love to continue the dialogue and propose scheduling a follow-up.\n\n${desc}\n\nPlease let us know what times work best for your team and we'll coordinate accordingly.\n\nBest regards`,
     },
     warm_reengagement: {
       subject: `Checking in — ${name}`,
-      body: `Dear team,\n\nHope all is well. Wanted to reconnect following our earlier conversations and share some recent developments.\n\n${desc}\n\nWe've made meaningful progress since we last spoke and would welcome the chance to update you. Are you available for a brief call this week?\n\nBest regards`,
+      body: `Dear ${firstName} and team,\n\nHope all is well. Wanted to reconnect following our earlier conversations and share some recent developments.\n\n${desc}\n\nWe've made meaningful progress since we last spoke and would welcome the chance to update you. Are you available for a brief call this week?\n\nBest regards`,
     },
     milestone_update: {
       subject: `Progress update — ${name}`,
-      body: `Dear team,\n\nWanted to share a quick update on our progress since our last interaction:\n\n${desc}\n\nWe believe these developments are relevant to your evaluation and are happy to discuss further at your convenience.\n\nBest regards`,
+      body: `Dear ${firstName} and team,\n\nWanted to share a quick update on our progress since our last interaction:\n\n${desc}\n\nWe believe these developments are relevant to your evaluation and are happy to discuss further at your convenience.\n\nBest regards`,
     },};
 
   return templates[item.action_type] || templates.milestone_update;

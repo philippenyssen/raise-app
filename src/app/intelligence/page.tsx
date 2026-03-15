@@ -183,7 +183,7 @@ export default function IntelligencePage() {
             {researching ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Researching...</> : <><RefreshCw className="w-3.5 h-3.5" /> Research</>}
           </button></div>
         <p className="text-xs mt-2" style={stTextMuted}>
-          AI will generate a comprehensive research dossier and auto-populate relevant data tables.</p></div>
+          AI will generate a comprehensive research dossier and auto-populate relevant data tables. Press <kbd style={{ padding: '1px 4px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', fontSize: '10px' }}>Enter</kbd> to search.</p></div>
 
       {/* Recent Research Section */}
       <RecentResearchSection briefs={briefs} />
