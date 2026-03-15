@@ -512,7 +512,12 @@ export default function Dashboard() {
                         whiteSpace: 'nowrap',
                         fontWeight: 400,}}>
                         Day {velocity.summary.raise_days_elapsed} of {velocity.summary.raise_target_days}</span>
-                    )}</div>
+                    )}
+                    {velocity?.summary?.raise_target_days != null && velocity?.summary?.raise_days_elapsed != null && (() => {
+                      const daysLeft = velocity.summary.raise_target_days - velocity.summary.raise_days_elapsed;
+                      const weeksLeft = Math.ceil(daysLeft / 7);
+                      return daysLeft > 0 ? <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: weeksLeft <= 4 ? 'var(--danger)' : weeksLeft <= 8 ? 'var(--warning)' : 'var(--text-muted)' }}>{weeksLeft}w left</span> : null;
+                    })()}</div>
 
                   <div className="grid grid-cols-3 gap-4">
                     <div>
