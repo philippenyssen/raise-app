@@ -96,9 +96,12 @@ export async function POST(req: NextRequest) {
       // AI Research operations
       case 'research_investor': {
         const name = ((body.name as string) || '').trim();
+        if (!name || name.length < 2) {
+          return NextResponse.json({ error: 'Investor name must be at least 2 characters' }, { status: 400 });
+        }
         const context = body.context as string | undefined;
         const investor_id = body.investor_id as string | undefined;
-        const research = await researchInvestor(name, context);
+        const research = await researchInvestor(name, context?.substring(0, 5000));
 
         // Store as intelligence brief
         const brief = await createIntelligenceBrief({
@@ -108,33 +111,43 @@ export async function POST(req: NextRequest) {
           sources: JSON.stringify(['Claude AI analysis based on training data']),
           investor_id: investor_id || undefined,});
 
-        // Auto-create partner entries if investor_id provided
-        if (investor_id && research.key_partners?.length > 0) {
+        // Auto-create partner entries if investor_id provided (validate AI output before DB insert)
+        if (investor_id && Array.isArray(research.key_partners) && research.key_partners.length > 0) {
           for (const p of research.key_partners) {
-            await createInvestorPartner({
-              investor_id,
-              name: p.name,
-              title: p.title,
-              focus_areas: p.focus,
-              notable_deals: p.notable_deals,
-              board_seats: '',
-              linkedin: '',
-              background: '',
-              relevance_to_us: '',});
+            if (!p.name?.trim()) continue;
+            try {
+              await createInvestorPartner({
+                investor_id,
+                name: p.name.trim().substring(0, 500),
+                title: (p.title || '').trim().substring(0, 200),
+                focus_areas: (p.focus || '').trim().substring(0, 2000),
+                notable_deals: (p.notable_deals || '').trim().substring(0, 2000),
+                board_seats: '',
+                linkedin: '',
+                background: '',
+                relevance_to_us: '',});
+            } catch (e) {
+              console.error('[INTELLIGENCE] Failed to create partner:', p.name, e instanceof Error ? e.message : e);
+            }
           }}
 
-        // Auto-create portfolio entries if investor_id provided
-        if (investor_id && research.recent_investments?.length > 0) {
+        // Auto-create portfolio entries if investor_id provided (validate AI output before DB insert)
+        if (investor_id && Array.isArray(research.recent_investments) && research.recent_investments.length > 0) {
           for (const inv of research.recent_investments) {
-            await createPortfolioCo({
-              investor_id,
-              company: inv.company,
-              sector: inv.sector,
-              stage_invested: inv.round,
-              amount: inv.amount,
-              date: inv.date,
-              status: 'active',
-              relevance: '',});
+            if (!inv.company?.trim()) continue;
+            try {
+              await createPortfolioCo({
+                investor_id,
+                company: inv.company.trim().substring(0, 500),
+                sector: (inv.sector || '').trim().substring(0, 200),
+                stage_invested: (inv.round || '').trim().substring(0, 100),
+                amount: (inv.amount || '').trim().substring(0, 100),
+                date: (inv.date || '').trim().substring(0, 20),
+                status: 'active',
+                relevance: '',});
+            } catch (e) {
+              console.error('[INTELLIGENCE] Failed to create portfolio co:', inv.company, e instanceof Error ? e.message : e);
+            }
           }}
 
         emitContextChange('intelligence_added', `Investor research: ${name}`);
@@ -143,26 +156,30 @@ export async function POST(req: NextRequest) {
 
       case 'research_competitor': {
         const compName = ((body.name as string) || '').trim();
+        if (!compName || compName.length < 2) {
+          return NextResponse.json({ error: 'Competitor name must be at least 2 characters' }, { status: 400 });
+        }
         const compCtx = body.context as string | undefined;
-        const research = await researchCompetitor(compName, compCtx);
+        const research = await researchCompetitor(compName, compCtx?.substring(0, 5000));
 
-        // Auto-create competitor entry
+        // Auto-create competitor entry (truncate AI-generated fields)
+        const fin = research.financials || {} as Record<string, string>;
         const competitor = await createCompetitor({
           name: compName,
           sector: 'Space/Defense',
           hq: '',
-          last_round: research.financials?.last_round || '',
-          last_valuation: research.financials?.last_valuation || '',
-          total_raised: research.financials?.total_raised || '',
-          key_investors: research.financials?.key_investors || '',
-          revenue: research.financials?.revenue || '',
-          employees: research.financials?.employees || '',
-          positioning: research.positioning || '',
-          strengths: research.strengths?.join('; ') || '',
-          weaknesses: research.weaknesses?.join('; ') || '',
+          last_round: (fin.last_round || '').substring(0, 200),
+          last_valuation: (fin.last_valuation || '').substring(0, 200),
+          total_raised: (fin.total_raised || '').substring(0, 200),
+          key_investors: (fin.key_investors || '').substring(0, 500),
+          revenue: (fin.revenue || '').substring(0, 200),
+          employees: (fin.employees || '').substring(0, 100),
+          positioning: (research.positioning || '').substring(0, 2000),
+          strengths: (Array.isArray(research.strengths) ? research.strengths.join('; ') : '').substring(0, 2000),
+          weaknesses: (Array.isArray(research.weaknesses) ? research.weaknesses.join('; ') : '').substring(0, 2000),
           threat_level: research.threat_assessment?.toLowerCase().includes('high') ? 'high' :
                        research.threat_assessment?.toLowerCase().includes('critical') ? 'critical' : 'medium',
-          our_advantage: research.our_advantage || '',});
+          our_advantage: (research.our_advantage || '').substring(0, 2000),});
 
         // Store research brief
         const brief = await createIntelligenceBrief({
@@ -179,22 +196,27 @@ export async function POST(req: NextRequest) {
         const sector = body.sector as string | undefined;
         const research = await researchMarketDeals(sector || 'Space, Defense Technology, Satellites');
 
-        // Auto-create deal entries
-        if (research.deals?.length > 0) {
+        // Auto-create deal entries (validate AI output before DB insert)
+        if (Array.isArray(research.deals) && research.deals.length > 0) {
           for (const d of research.deals) {
-            await createMarketDeal({
-              company: d.company,
-              round: d.round,
-              amount: d.amount,
-              valuation: d.valuation,
-              lead_investors: d.lead,
-              other_investors: '',
-              date: d.date,
-              sector: sector || 'Space/Defense',
-              sub_sector: '',
-              equity_story: d.equity_story,
-              relevance: '',
-              source: 'AI Research',});
+            if (!d.company?.trim()) continue;
+            try {
+              await createMarketDeal({
+                company: d.company.trim().substring(0, 500),
+                round: (d.round || '').trim().substring(0, 100),
+                amount: (d.amount || '').trim().substring(0, 100),
+                valuation: (d.valuation || '').trim().substring(0, 100),
+                lead_investors: (d.lead || '').trim().substring(0, 500),
+                other_investors: '',
+                date: (d.date || '').trim().substring(0, 20),
+                sector: sector || 'Space/Defense',
+                sub_sector: '',
+                equity_story: (d.equity_story || '').trim().substring(0, 2000),
+                relevance: '',
+                source: 'AI Research',});
+            } catch (e) {
+              console.error('[INTELLIGENCE] Failed to create market deal:', d.company, e instanceof Error ? e.message : e);
+            }
           }}
 
         // Store brief
