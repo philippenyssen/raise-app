@@ -103,6 +103,7 @@ export async function analyzeMeetingNotes(rawNotes: string, investorName: string
       suggested_status: 'met',};
   }
 
+  const _t0 = Date.now();
   const response = await getAIClient().messages.create({
     model: AI_MODEL,
     max_tokens: 4096,
@@ -176,7 +177,7 @@ Only count competitive_bids_mentioned when investor named a specific company or 
   const extractedFields = success
     ? Object.values(parsed).filter(v => v !== '' && v !== null && (Array.isArray(v) ? v.length > 0 : true)).length
     : 0;
-  logAISkill('analyze_meeting_notes', success, expectedFields, extractedFields, { trigger_source: 'api', input_summary: `${investorName} / ${meetingType} / ${rawNotes.length} chars`, latency_ms: 0 });
+  logAISkill('analyze_meeting_notes', success, expectedFields, extractedFields, { trigger_source: 'api', input_summary: `${investorName} / ${meetingType} / ${rawNotes.length} chars`, latency_ms: Date.now() - _t0 });
   return parsed;
 }
 
@@ -201,6 +202,7 @@ SIGNALS: ${JSON.stringify(signals).substring(0, 500)}
 NOTES: ${m.raw_notes.substring(0, 500)}`;
   }).join('\n---\n');
 
+  const _t0 = Date.now();
   const response = await getAIClient().messages.create({
     model: AI_MODEL,
     max_tokens: 4096,
@@ -231,7 +233,7 @@ Return JSON (no markdown):
   const { text } = extractText(response);
   const patternsFallback = { top_objections: [] as { text: string; count: number; unique_or_repeated: string; recommendation: string }[], story_effectiveness: { landing: [] as string[], failing: [] as string[], exciting: [] as string[] }, investor_velocity: [] as { investor: string; trajectory: string; evidence: string; action: string }[], pricing_trend: 'Not enough data', material_changes: [] as { change: string; priority: string; rationale: string }[], overall_assessment: 'Need more meetings to identify patterns.', convergence_signals: [] as string[] };
   const { parsed, success } = safeParseJSON(text, patternsFallback);
-  logAISkill('analyze_patterns', success, 7, success ? 7 : 0, { trigger_source: 'api', input_summary: `${meetings.length} meetings` });
+  logAISkill('analyze_patterns', success, 7, success ? 7 : 0, { trigger_source: 'api', input_summary: `${meetings.length} meetings`, latency_ms: Date.now() - _t0 });
   return parsed;
 }
 
@@ -241,6 +243,7 @@ export async function assessProcessHealth(funnel: Record<string, unknown>, objec
   recommendations: string[];
   risk_factors: string[];
 }> {
+  const _t0 = Date.now();
   const response = await getAIClient().messages.create({
     model: AI_MODEL,
     max_tokens: 2048,
@@ -266,7 +269,7 @@ Return JSON (no markdown):
   const { text } = extractText(response);
   const healthFallback = { health: 'yellow' as const, diagnosis: 'Insufficient data for assessment.', recommendations: ['Add more meeting data'], risk_factors: [] as string[] };
   const { parsed, success } = safeParseJSON(text, healthFallback);
-  logAISkill('assess_process_health', success, 4, success ? 4 : 0);
+  logAISkill('assess_process_health', success, 4, success ? 4 : 0, { latency_ms: Date.now() - _t0 });
   return parsed;
 }
 
@@ -304,6 +307,7 @@ export async function checkConsistency(
 ): Promise<{ discrepancies: { location: string; issue: string; suggestion: string }[] }> {
   const docSummaries = documents.map(d => `--- ${d.title} ---\n${d.content.substring(0, 3000)}`).join('\n\n');
 
+  const _t0 = Date.now();
   const response = await getAIClient().messages.create({
     model: AI_MODEL,
     max_tokens: 3072,
@@ -329,11 +333,12 @@ If no discrepancies found, return {"discrepancies": []}.`
 
   const { text } = extractText(response);
   const { parsed, success } = safeParseJSON(text || '{"discrepancies":[]}', { discrepancies: [] as { location: string; issue: string; suggestion: string }[] });
-  logAISkill('check_consistency', success, 1, success ? (parsed.discrepancies?.length ?? 0) : 0);
+  logAISkill('check_consistency', success, 1, success ? (parsed.discrepancies?.length ?? 0) : 0, { latency_ms: Date.now() - _t0 });
   return parsed;
 }
 
 export async function findWeakArguments(content: string): Promise<{ weaknesses: { claim: string; issue: string; suggestion: string }[] }> {
+  const _t0 = Date.now();
   const response = await getAIClient().messages.create({
     model: AI_MODEL,
     max_tokens: 3072,
@@ -357,7 +362,7 @@ Be thorough but fair. Flag only genuinely weak arguments, not stylistic preferen
 
   const { text } = extractText(response);
   const { parsed, success } = safeParseJSON(text || '{"weaknesses":[]}', { weaknesses: [] as { claim: string; issue: string; suggestion: string }[] });
-  logAISkill('find_weak_arguments', success, 1, success ? (parsed.weaknesses?.length ?? 0) : 0);
+  logAISkill('find_weak_arguments', success, 1, success ? (parsed.weaknesses?.length ?? 0) : 0, { latency_ms: Date.now() - _t0 });
   return parsed;
 }
 
@@ -375,6 +380,7 @@ export async function researchInvestor(investorName: string, context?: string): 
   fit_assessment: string;
   approach_strategy: string;
 }> {
+  const _t0 = Date.now();
   const response = await getAIClient().messages.create({
     model: AI_MODEL,
     max_tokens: 4096,
@@ -419,7 +425,7 @@ Be specific with real data where you have it. If you're uncertain about specific
   const { text } = extractText(response);
   const investorFallback = { overview: 'Research could not be completed. Try providing more context.', fund_details: { aum: '', vintage: '', strategy: '', hq: '' }, key_partners: [] as { name: string; title: string; focus: string; notable_deals: string }[], recent_investments: [] as { company: string; round: string; amount: string; date: string; sector: string }[], investment_thesis: '', ic_process: '', typical_check: '', portfolio_in_sector: [] as { company: string; relevance: string }[], fit_assessment: '', approach_strategy: '' };
   const { parsed, success } = safeParseJSON(text, investorFallback);
-  logAISkill('research_investor', success, 10, success ? Object.values(parsed).filter(v => v !== '' && (Array.isArray(v) ? v.length > 0 : true)).length : 0, { trigger_source: 'api', input_summary: investorName });
+  logAISkill('research_investor', success, 10, success ? Object.values(parsed).filter(v => v !== '' && (Array.isArray(v) ? v.length > 0 : true)).length : 0, { trigger_source: 'api', input_summary: investorName, latency_ms: Date.now() - _t0 });
   return parsed;
 }
 
@@ -433,6 +439,7 @@ export async function researchCompetitor(companyName: string, context?: string):
   threat_assessment: string;
   recent_news: string[];
 }> {
+  const _t0 = Date.now();
   const response = await getAIClient().messages.create({
     model: AI_MODEL,
     max_tokens: 4096,
@@ -470,7 +477,7 @@ Be specific. Note uncertainty where appropriate.`
   const { text } = extractText(response);
   const competitorFallback = { overview: '', financials: { revenue: '', employees: '', total_raised: '', last_round: '', last_valuation: '', key_investors: '' }, positioning: '', strengths: [] as string[], weaknesses: [] as string[], our_advantage: '', threat_assessment: '', recent_news: [] as string[] };
   const { parsed, success } = safeParseJSON(text, competitorFallback);
-  logAISkill('research_competitor', success, 8, success ? 8 : 0, { input_summary: companyName });
+  logAISkill('research_competitor', success, 8, success ? 8 : 0, { input_summary: companyName, latency_ms: Date.now() - _t0 });
   return parsed;
 }
 
@@ -480,6 +487,7 @@ export async function researchMarketDeals(sector: string): Promise<{
   valuation_context: string;
   implications_for_us: string;
 }> {
+  const _t0 = Date.now();
   const response = await getAIClient().messages.create({
     model: AI_MODEL,
     max_tokens: 4096,
@@ -508,7 +516,7 @@ Focus on 2025-2026 deals. Include space, defense tech, aerospace, satellite, and
   const { text } = extractText(response);
   const marketFallback = { deals: [] as { company: string; round: string; amount: string; valuation: string; lead: string; date: string; equity_story: string }[], trends: [] as string[], valuation_context: '', implications_for_us: '' };
   const { parsed, success } = safeParseJSON(text, marketFallback);
-  logAISkill('research_market_deals', success, 4, success ? 4 : 0, { input_summary: sector });
+  logAISkill('research_market_deals', success, 4, success ? 4 : 0, { input_summary: sector, latency_ms: Date.now() - _t0 });
   return parsed;
 }
 
@@ -556,6 +564,7 @@ SIGNALS: ${JSON.stringify(signals).substring(0, 500)}
 NEXT STEPS: ${m.next_steps || 'None recorded'}`;
   }).join('\n---\n');
 
+  const _t0 = Date.now();
   const response = await getAIClient().messages.create({
     model: AI_MODEL,
     max_tokens: 4096,
@@ -611,7 +620,7 @@ Be direct and tactical. This brief should make the meeting 2x more productive.`
     opportunities: [] as string[],
     suggested_meeting_arc: 'Standard flow: rapport, thesis alignment, business update, Q&A, next steps.',};
   const { parsed, success } = safeParseJSON(text, briefFallback);
-  logAISkill('generate_investor_brief', success, 7, success ? Object.values(parsed).filter(v => v !== '' && (Array.isArray(v) ? v.length > 0 : true)).length : 0, { trigger_source: 'api', input_summary: `${investorData.name} / ${meetingHistory.length} meetings` });
+  logAISkill('generate_investor_brief', success, 7, success ? Object.values(parsed).filter(v => v !== '' && (Array.isArray(v) ? v.length > 0 : true)).length : 0, { trigger_source: 'api', input_summary: `${investorData.name} / ${meetingHistory.length} meetings`, latency_ms: Date.now() - _t0 });
   return parsed;
 }
 
