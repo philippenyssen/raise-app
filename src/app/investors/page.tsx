@@ -376,7 +376,7 @@ export default function InvestorsPage() {
                         <div
                           className="status-dot"
                           style={{ background: dotColor, width: '10px', height: '10px' }}
-                          title={`Data completeness: ${pct}%`} />);
+                          title={`Profile ${pct}% complete — add partner name, fund size, check size, and sector thesis to improve`} />);
                     })()}</td>
                   <td style={{ padding: 'var(--space-3) var(--space-4)', color: 'var(--text-secondary)' }}>
                     {TYPE_LABELS[inv.type as InvestorType] ?? inv.type}</td>
@@ -475,7 +475,7 @@ export default function InvestorsPage() {
         {filtered.length === 0 && (
           <div style={{ padding: 'var(--space-8)', textAlign: 'center', color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
             {investors.length === 0
-              ? 'No investors yet. Click "Add Investor" above or seed your pipeline from the dashboard.'
+              ? 'No investors yet. Click "Add Investor" above to start building your pipeline.'
               : 'No investors match your filters — try adjusting or clearing them'}
 </div>
         )}</div>

@@ -273,7 +273,7 @@ export default function DocumentsPage() {
       {docs.length === 0 ? (
         <div className="rounded-xl p-8 text-center space-y-3">
           <FileText className="w-8 h-8 mx-auto" style={stTextMuted} />
-          <p style={stTextMuted}>No documents yet.</p>
+          <p style={stTextMuted}>No documents yet. Create your first investment memo, presentation deck, or one-pager to get started.</p>
           <Link
             href="/documents/new"
             className="text-sm transition-colors"
