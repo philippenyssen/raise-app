@@ -47,7 +47,7 @@ export function DocumentViewer({ document, onContentChange, onSave, saving, dirt
         if (boldMatch.index > 0) {
           parts.push(<span key={`${key}-${idx++}`}>{remaining.slice(0, boldMatch.index)}</span>);
         }
-        parts.push(<strong key={`${key}-${idx++}`} style={{ color: 'var(--text-primary)', fontWeight: 400 }}>{boldMatch[1]}</strong>);
+        parts.push(<span key={`${key}-${idx++}`} style={{ color: 'var(--text-primary)' }}>{boldMatch[1]}</span>);
         remaining = remaining.slice(boldMatch.index + boldMatch[0].length);
         continue;
       }

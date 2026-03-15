@@ -258,6 +258,7 @@ export default function InvestorsPage() {
           <select
             defaultValue=""
             disabled={bulkUpdating}
+            aria-label="Bulk update status"
             onChange={e => { if (e.target.value) bulkUpdateStatus(e.target.value); e.target.value = ''; }}
             className="input"
             style={{ width: 'auto', fontSize: 'var(--font-size-xs)', padding: '0.25rem 0.5rem', opacity: bulkUpdating ? 0.5 : 1 }}>
@@ -364,6 +365,7 @@ export default function InvestorsPage() {
                   <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
                     <select
                       value={inv.status}
+                      aria-label={`Status for ${inv.name}`}
                       onChange={e => updateStatus(inv.id, e.target.value)}
                       style={{ background: (STATUS_STYLES[inv.status] || STATUS_STYLES.identified).background, color: (STATUS_STYLES[inv.status] || STATUS_STYLES.identified).color, borderRadius: '9999px', padding: '0.2rem 1.5rem 0.2rem 0.625rem', fontSize: 'var(--font-size-xs)', fontWeight: 400, border: '1px solid transparent', cursor: 'pointer', letterSpacing: '0.01em', lineHeight: '1.5', backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath d='M3 5l3 3 3-3' stroke='${encodeURIComponent((STATUS_STYLES[inv.status] || STATUS_STYLES.identified).color)}' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.4rem center', backgroundSize: '10px', appearance: 'none', WebkitAppearance: 'none' }}>
                       {Object.entries(STATUS_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select></td>
