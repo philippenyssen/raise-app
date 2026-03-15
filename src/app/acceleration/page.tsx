@@ -377,7 +377,7 @@ export default function AccelerationPage() {
         onClick: () => undoAction(item.id, 'executed'),
       });
     } catch {
-      toast('Failed to update action', 'error');
+      toast('Could not mark action as executed — try again', 'error');
     }}
 
   async function handleSkip(item: AccelerationItem) {
@@ -393,7 +393,7 @@ export default function AccelerationPage() {
         onClick: () => undoAction(item.id, 'skipped'),
       });
     } catch {
-      toast('Failed to update action', 'error');
+      toast('Could not skip action — try again', 'error');
     }}
 
   async function undoAction(id: string, fromStatus: 'executed' | 'skipped') {
@@ -410,7 +410,7 @@ export default function AccelerationPage() {
       }
       toast('Action reverted to pending');
     } catch {
-      toast('Failed to undo action', 'error');
+      toast('Could not revert action — refresh and try again', 'error');
     }}
 
   // Filter logic

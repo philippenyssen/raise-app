@@ -334,7 +334,7 @@ export default function Dashboard() {
         fetchData(true);
       }
     } catch {
-      toast('Failed to execute action', 'error');
+      toast('Could not mark action as executed — try again', 'error');
     }}
 
   if (loading) {

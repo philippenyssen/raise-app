@@ -191,7 +191,7 @@ export default function InvestorsPage() {
       setSelected(new Set());
       fetchInvestors();
     } catch {
-      toast('Some updates failed', 'error');
+      toast('Some investor updates failed — refresh to see current state', 'error');
       fetchInvestors();
     } finally { setBulkUpdating(false); }}
 

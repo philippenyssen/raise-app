@@ -96,7 +96,7 @@ export default function TermsPage() {
       setForm(EMPTY_TS);
       fetchSheets();
     } catch {
-      toast('Failed to save term sheet', 'error');
+      toast('Could not save term sheet — check all fields and try again', 'error');
     }}
 
   async function handleDelete() {
