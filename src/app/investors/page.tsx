@@ -62,6 +62,8 @@ export default function InvestorsPage() {
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null);
   const [hoveredRow, setHoveredRow] = useState<string | null>(null);
   const [hoveredBtn, setHoveredBtn] = useState<string | null>(null);
+  const [sortKey, setSortKey] = useState<'name' | 'tier' | 'last_meeting_date' | 'enthusiasm' | null>(null);
+  const [sortAsc, setSortAsc] = useState(true);
   const [form, setForm] = useState({
     name: '', type: 'vc' as InvestorType, tier: 2 as InvestorTier, partner: '',
     fund_size: '', check_size_range: '', sector_thesis: '', warm_path: '',
@@ -142,7 +144,7 @@ export default function InvestorsPage() {
       const q = searchQuery.toLowerCase();
       if (!i.name.toLowerCase().includes(q) && !i.partner.toLowerCase().includes(q) && !(i.notes || '').toLowerCase().includes(q)) return false;
     }
-    return true;});
+    return true;}).sort((a, b) => { if (!sortKey) return 0; const dir = sortAsc ? 1 : -1; if (sortKey === 'name') return dir * a.name.localeCompare(b.name); if (sortKey === 'tier') return dir * (a.tier - b.tier); if (sortKey === 'enthusiasm') return dir * ((a.enthusiasm || 0) - (b.enthusiasm || 0)); return dir * ((a.last_meeting_date || '').localeCompare(b.last_meeting_date || '')); });
 
   async function bulkUpdateStatus(newStatus: string) {
     try {
@@ -263,7 +265,7 @@ export default function InvestorsPage() {
           className="card-elevated space-y-4">
           <h3 className="section-title">{editId ? 'Edit' : 'Add'} investor</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Input label="Name" value={form.name} onChange={v => setForm(f => ({ ...f, name: v }))} required />
+            <div><Input label="Name" value={form.name} onChange={v => setForm(f => ({ ...f, name: v }))} required />{!editId && form.name.length >= 3 && (() => { const q = form.name.toLowerCase(); const match = investors.find(i => i.name.toLowerCase().includes(q)); return match ? <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--warning)' }}>Similar investor exists: {match.name}</span> : null; })()}</div>
             <Select label="Type" value={form.type} onChange={v => setForm(f => ({ ...f, type: v as InvestorType }))} options={Object.entries(TYPE_LABELS)}
               />
             <Select label="Tier" value={String(form.tier)} onChange={v => setForm(f => ({ ...f, tier: Number(v) as InvestorTier }))} options={[['1','Tier 1'],['2','Tier 2'],['3','Tier 3'],['4','Tier 4']]}
@@ -295,16 +297,7 @@ export default function InvestorsPage() {
               <th style={{ width: '2.5rem', padding: 'var(--space-3) var(--space-4)' }}>
                 <input type="checkbox" checked={selected.size === filtered.length && filtered.length > 0} onChange={toggleSelectAll}
                   style={{ accentColor: 'var(--accent)' }} /></th>
-              <th>Investor</th>
-              <th style={{ width: '2rem', padding: 'var(--space-3) var(--space-2)' }} title="Data completeness"></th>
-              <th>Type</th>
-              <th>Tier</th>
-              <th>Partner</th>
-              <th>Status</th>
-              <th>Check Size</th>
-              <th>Last Contact</th>
-              <th>Enthusiasm</th>
-              <th>Actions</th></tr></thead>
+              {([['name','Investor'],['',''],['','Type'],['tier','Tier'],['','Partner'],['','Status'],['','Check Size'],['last_meeting_date','Last Contact'],['enthusiasm','Enthusiasm'],['','Actions']] as const).map(([k, label], i) => <th key={i} style={k ? { cursor: 'pointer', userSelect: 'none', ...(i === 1 ? { width: '2rem', padding: 'var(--space-3) var(--space-2)' } : {}) } : (i === 1 ? { width: '2rem', padding: 'var(--space-3) var(--space-2)' } : {})} title={i === 1 ? 'Data completeness' : undefined} onClick={k ? () => { if (sortKey === k) setSortAsc(!sortAsc); else { setSortKey(k as typeof sortKey); setSortAsc(k === 'name'); } } : undefined}>{label}{sortKey === k ? (sortAsc ? ' \u25B2' : ' \u25BC') : ''}</th>)}</tr></thead>
           <tbody>
             {filtered.map(inv => {
               const isHovered = hoveredRow === inv.id;

@@ -39,3 +39,4 @@ a597e45	100	100	0	keep	product	pipeline compare selection + investor filter chip
 27fcd51	100	100	0	keep	eng+ops	input validation + cachedFetch 5 pages = 53521 lines, score 100
 7ca6de7	100	100	0	keep	product	CSV export for filtered investors = 53526 lines, score 100
 e06bb9a	100	100	0	keep	strategy+product	score breakdown + urgency badge + quick notes = 53544 lines, score 100
+9870bd2	100	100	0	keep	competitive+data	hover intel + raise % + doc flag badge + copy partner = 53558 lines, score 100
