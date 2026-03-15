@@ -122,7 +122,7 @@ export async function GET() {
       worstInvestors,
       bestInvestors,
       intelligenceReadiness,
-      recommendations,});
+      recommendations,}, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
   } catch (e) {
     console.error('[DATA_QUALITY_GET]', e instanceof Error ? e.message : e);
     return NextResponse.json({ error: e instanceof Error ? e.message : 'Failed to compute data quality' }, { status: 500 });

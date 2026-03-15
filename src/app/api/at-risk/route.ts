@@ -22,7 +22,7 @@ export async function GET() {
     return NextResponse.json({
       scoreReversals: reversals,
       staleInvestors,
-    });
+    }, { headers: { 'Cache-Control': 'private, max-age=15, stale-while-revalidate=30' } });
   } catch (err) {
     console.error('[AT_RISK_GET]', err instanceof Error ? err.message : err);
     return NextResponse.json({ scoreReversals: [], staleInvestors: [] });
