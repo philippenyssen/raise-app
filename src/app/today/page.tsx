@@ -517,7 +517,7 @@ export default function TodayPage() {
 
           <div className="flex items-center gap-2" style={{ marginTop: '6px' }}>
             <span style={{ ...stFontXs, color: stalenessMinutes >= 5 ? 'var(--warning)' : 'var(--text-muted)', transition: 'color 300ms ease' }}>{stalenessMinutes < 1 ? 'Updated just now' : `Updated ${stalenessMinutes}m ago`}</span>
-            <button onClick={() => fetchBriefing(true)} disabled={refreshing} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '20px', height: '20px', borderRadius: 'var(--radius-sm)', border: 'none', background: 'transparent', cursor: refreshing ? 'default' : 'pointer', color: stalenessMinutes >= 5 ? 'var(--warning)' : 'var(--text-muted)', opacity: refreshing ? 0.5 : 1, transition: 'color 300ms ease, opacity 150ms ease', padding: 0 }}>
+            <button onClick={() => fetchBriefing(true)} disabled={refreshing} aria-label="Refresh briefing" title="Refresh briefing" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '20px', height: '20px', borderRadius: 'var(--radius-sm)', border: 'none', background: 'transparent', cursor: refreshing ? 'default' : 'pointer', color: stalenessMinutes >= 5 ? 'var(--warning)' : 'var(--text-muted)', opacity: refreshing ? 0.5 : 1, transition: 'color 300ms ease, opacity 150ms ease', padding: 0 }}>
               <span style={{ display: 'flex', animation: refreshing ? 'spin 1s linear infinite' : 'none' }}>
                 <RefreshCw className="w-3 h-3" /></span></button></div>
 
@@ -528,7 +528,9 @@ export default function TodayPage() {
           onClick={() => fetchBriefing(true)}
           className="btn btn-ghost btn-sm shrink-0"
           style={{ opacity: refreshing ? 0.5 : 1 }}
-          disabled={refreshing}>
+          disabled={refreshing}
+          aria-label="Refresh briefing"
+          title="Refresh briefing">
           <span style={{ display: 'flex', animation: refreshing ? 'spin 1s linear infinite' : 'none' }}>
             <RefreshCw className="w-3.5 h-3.5" /></span></button></div>
 

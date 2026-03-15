@@ -308,9 +308,9 @@ export default function DealflowPage() {
 
       {/* Loading state */}
       {loading && !investors.length && (
-        <div className="flex items-center justify-center py-20" style={stTextMuted}>
-          <span><RefreshCw className="w-5 h-5 animate-spin" /></span>
-          <span className="ml-2">Loading dealflow...</span></div>
+        <div className="space-y-3">
+          {[1,2,3,4].map(i => <div key={i} className="skeleton" style={{ height: '56px', borderRadius: 'var(--radius-lg)' }} />)}
+        </div>
       )}
 
       {/* Investor Table */}

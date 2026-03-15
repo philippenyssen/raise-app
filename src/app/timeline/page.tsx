@@ -363,6 +363,7 @@ export default function TimelinePage() {
                             className="transition-colors"
                             style={stTextMuted}
                             title="Delete task"
+                            aria-label="Delete task"
                             onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--danger)'; }}
                             onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-muted)'; }}>
                             <Trash2 className="w-3 h-3" /></button></div>
