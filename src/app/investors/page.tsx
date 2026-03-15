@@ -65,8 +65,6 @@ export default function InvestorsPage() {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null);
   const [deleting, setDeleting] = useState(false);
-  const [hoveredRow, setHoveredRow] = useState<string | null>(null);
-  const [hoveredBtn, setHoveredBtn] = useState<string | null>(null);
   const [sortKey, setSortKey] = useState<'name' | 'tier' | 'last_meeting_date' | 'enthusiasm' | null>(null);
   const [sortAsc, setSortAsc] = useState(true);
   const [bulkUpdating, setBulkUpdating] = useState(false);
@@ -350,15 +348,12 @@ export default function InvestorsPage() {
               {([['name','Investor'],['',''],['','Type'],['tier','Tier'],['','Partner'],['','Status'],['','Check Size'],['last_meeting_date','Last Contact'],['enthusiasm','Enthusiasm'],['','Actions']] as const).map(([k, label], i) => <th key={i} style={k ? { cursor: 'pointer', userSelect: 'none', ...(i === 1 ? { width: '2rem', padding: 'var(--space-3) var(--space-2)' } : {}) } : (i === 1 ? { width: '2rem', padding: 'var(--space-3) var(--space-2)' } : {})} title={i === 1 ? 'Data completeness' : undefined} onClick={k ? () => { if (sortKey === k) setSortAsc(!sortAsc); else { setSortKey(k as typeof sortKey); setSortAsc(k === 'name'); } } : undefined}>{label}{sortKey === k ? (sortAsc ? ' \u25B2' : ' \u25BC') : ''}</th>)}</tr></thead>
           <tbody>
             {filtered.map(inv => {
-              const isHovered = hoveredRow === inv.id;
               const isSelected = selected.has(inv.id);
               return (
                 <tr
                   key={inv.id}
-                  className="table-row transition-colors"
-                  style={{ background: isSelected ? 'var(--accent-muted)' : isHovered ? 'var(--surface-2)' : 'transparent', borderLeft: isHovered && !isSelected ? '3px solid var(--accent)' : '3px solid transparent', transition: 'background 100ms ease, border-left 100ms ease' }}
-                  onMouseEnter={() => setHoveredRow(inv.id)}
-                  onMouseLeave={() => setHoveredRow(null)}>
+                  className="table-row"
+                  style={{ background: isSelected ? 'var(--accent-muted)' : undefined }}>
                   <td style={{ width: '2.5rem', padding: 'var(--space-3) var(--space-4)' }}>
                     <input type="checkbox" checked={isSelected} onChange={() => toggleSelect(inv.id)}
                       style={{ accentColor: 'var(--accent)' }} /></td>
@@ -432,45 +427,27 @@ export default function InvestorsPage() {
                         ))}</div>
                     ) : <span style={stTextMuted}>—</span>}</td>
                   <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
-                    <div className="flex gap-1" style={{ opacity: isHovered ? 1 : 0.4, transition: 'opacity 150ms' }}>
+                    <div className="row-actions flex gap-1">
                       <button
                         onClick={() => startEdit(inv)}
-                        className="btn btn-ghost btn-sm"
+                        className="btn btn-ghost btn-sm icon-accent"
                         title="Edit investor"
                         aria-label="Edit investor"
-                        style={{
-                          fontSize: 'var(--font-size-xs)',
-                          padding: '0.3rem 0.5rem',
-                          color: hoveredBtn === `edit-${inv.id}` ? 'var(--accent)' : 'var(--text-muted)',
-                          borderRadius: 'var(--radius-sm)', }}
-                        onMouseEnter={() => setHoveredBtn(`edit-${inv.id}`)}
-                        onMouseLeave={() => setHoveredBtn(null)}>
+                        style={{ fontSize: 'var(--font-size-xs)', padding: '0.3rem 0.5rem', color: 'var(--text-muted)', borderRadius: 'var(--radius-sm)' }}>
                         <Pencil className="w-3 h-3" /></button>
                       <Link
                         href={`/meetings/new?investor=${inv.id}`}
-                        className="btn btn-ghost btn-sm"
+                        className="btn btn-ghost btn-sm icon-success"
                         title="Log meeting"
                         aria-label="Log meeting"
-                        style={{
-                          fontSize: 'var(--font-size-xs)',
-                          padding: '0.3rem 0.5rem',
-                          color: hoveredBtn === `meet-${inv.id}` ? 'var(--success)' : 'var(--text-muted)',
-                          borderRadius: 'var(--radius-sm)', }}
-                        onMouseEnter={() => setHoveredBtn(`meet-${inv.id}`)}
-                        onMouseLeave={() => setHoveredBtn(null)}>
+                        style={{ fontSize: 'var(--font-size-xs)', padding: '0.3rem 0.5rem', color: 'var(--text-muted)', borderRadius: 'var(--radius-sm)' }}>
                         <Calendar className="w-3 h-3" /></Link>
                       <button
                         onClick={() => setDeleteTarget({ id: inv.id, name: inv.name })}
-                        className="btn btn-ghost btn-sm"
+                        className="btn btn-ghost btn-sm icon-delete"
                         title="Delete investor"
                         aria-label="Delete investor"
-                        style={{
-                          fontSize: 'var(--font-size-xs)',
-                          padding: '0.3rem 0.5rem',
-                          color: hoveredBtn === `del-${inv.id}` ? 'var(--danger)' : 'var(--text-muted)',
-                          borderRadius: 'var(--radius-sm)', }}
-                        onMouseEnter={() => setHoveredBtn(`del-${inv.id}`)}
-                        onMouseLeave={() => setHoveredBtn(null)}>
+                        style={{ fontSize: 'var(--font-size-xs)', padding: '0.3rem 0.5rem', borderRadius: 'var(--radius-sm)' }}>
                         <Trash2 className="w-3 h-3" /></button></div></td>
                 </tr>);
             })}</tbody></table></div>

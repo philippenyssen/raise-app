@@ -464,6 +464,22 @@ body {
   color: var(--danger);
 }
 
+.icon-accent:hover {
+  color: var(--accent) !important;
+}
+
+.icon-success:hover {
+  color: var(--success) !important;
+}
+
+.row-actions {
+  opacity: 0.4;
+  transition: opacity 150ms ease;
+}
+.table-row:hover .row-actions {
+  opacity: 1;
+}
+
 .btn-surface {
   transition: background 150ms ease;
 }

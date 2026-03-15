@@ -40,8 +40,6 @@ export default function ForecastPage() {
   const [data, setData] = useState<ForecastData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [hoveredRow, setHoveredRow] = useState<string | null>(null);
-  const [hoveredScenario, setHoveredScenario] = useState<string | null>(null);
   const [excludedIds, setExcludedIds] = useState<Set<string>>(new Set());
 
   function fetchForecast() {
@@ -195,19 +193,13 @@ export default function ForecastPage() {
       <div className="grid grid-cols-3 gap-4" style={{ marginBottom: 'var(--space-6)' }}>
         {(['worst', 'base', 'best'] as const).map((key) => {
           const s = scenarios[key];
-          const isHovered = hoveredScenario === key;
           const iconColor = key === 'best' ? 'var(--text-secondary)' : key === 'base' ? 'var(--text-secondary)' : 'var(--text-tertiary)';
           const Icon = key === 'best' ? TrendingUp : key === 'base' ? BarChart3 : AlertTriangle;
           return (
             <div
               key={key}
-              className="card transition-colors"
-              style={{
-                padding: 'var(--space-5)',
-                background: isHovered ? 'var(--surface-1)' : 'var(--surface-0)',
-                transition: 'background 150ms ease', }}
-              onMouseEnter={() => setHoveredScenario(key)}
-              onMouseLeave={() => setHoveredScenario(null)}>
+              className="card hover-row"
+              style={{ padding: 'var(--space-5)' }}>
               <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
                 <span style={{ color: iconColor }}>
                   <Icon className="w-4 h-4" /></span>
@@ -417,14 +409,11 @@ export default function ForecastPage() {
                   return (
                     <tr
                       key={inv.investorId}
-                      className="table-row transition-colors"
+                      className="table-row"
                       style={{
-                        background: hoveredRow === inv.investorId ? 'var(--surface-1)' : 'transparent',
                         cursor: 'pointer',
                         opacity: isExcluded ? 0.4 : 1,
-                        transition: 'opacity 200ms ease', }}
-                      onMouseEnter={() => setHoveredRow(inv.investorId)}
-                      onMouseLeave={() => setHoveredRow(null)}>
+                        transition: 'opacity 200ms ease', }}>
                       {/* What-if toggle */}
                       <td style={{ padding: 'var(--space-3) var(--space-2)', textAlign: 'center' }}>
                         <button
