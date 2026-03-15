@@ -219,12 +219,15 @@ export default function MomentumPage() {
               style={{ background: dirConfig.bg, boxShadow: `inset 0 0 0 1px ${dirConfig.border}` }}>
               <DirIcon className="w-4 h-4" style={{ color: dirConfig.color }} />
               <span className="text-sm font-normal" style={{ color: dirConfig.color }}>{dirConfig.label}</span></div></div>
-          <button
-            onClick={fetchData}
-            className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors"
-            style={{ background: 'var(--surface-2)', color: 'var(--text-secondary)' }}>
-            <RefreshCw className="w-4 h-4" />
-            Refresh</button></div>
+          <div className="flex items-center gap-2">
+            <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+              {(() => { const mins = Math.floor((Date.now() - new Date(data.generatedAt).getTime()) / 60000); return mins < 1 ? 'Just now' : mins < 60 ? `${mins}m ago` : `${Math.floor(mins / 60)}h ago`; })()}</span>
+            <button
+              onClick={fetchData}
+              className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors"
+              style={{ background: 'var(--surface-2)', color: 'var(--text-secondary)' }}>
+              <RefreshCw className="w-4 h-4" />
+              Refresh</button></div></div>
 
         {/* ── Overall Trend Line ──────────────────────────────────────── */}
         <div

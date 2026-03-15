@@ -151,13 +151,14 @@ export default function WinLossPage() {
           Refresh</button></div>
 
       {/* Summary Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 card-stagger">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 card-stagger">
         {[
           { label: 'Total Pipeline', value: summary.totalInvestors, sub: `${summary.active} active`, variant: '' },
           { label: 'Closed', value: summary.closed, sub: `${summary.overallCloseRate}% rate` },
           { label: 'Passed', value: summary.passed, sub: null },
           { label: 'Dropped', value: summary.dropped, sub: null },
           { label: 'Avg Days to Close', value: timing.avgDaysToClose, sub: `Median: ${timing.medianDaysToClose}d`, variant: '' },
+          { label: 'Best Type', value: (() => { const best = typePerformance.filter(t => t.total >= 2).sort((a, b) => b.closeRate - a.closeRate)[0]; return best ? (TYPE_LABELS[best.type] || best.type) : '—'; })(), sub: (() => { const best = typePerformance.filter(t => t.total >= 2).sort((a, b) => b.closeRate - a.closeRate)[0]; return best ? `${best.closeRate}% close rate` : null; })() },
         ].map(s => (
           <div
             key={s.label}
