@@ -509,6 +509,8 @@ export default function AccelerationPage() {
         ]).map(tab => (
           <button
             key={tab.key}
+            role="tab"
+            aria-selected={activeTab === tab.key}
             onClick={() => setActiveTab(tab.key)}
             className="transition-colors"
             style={{

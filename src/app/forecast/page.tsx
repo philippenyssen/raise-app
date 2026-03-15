@@ -428,6 +428,7 @@ export default function ForecastPage() {
                               return next;
                             }); }}
                           style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                          aria-label={isExcluded ? 'Include investor in forecast' : 'Exclude investor from forecast'}
                           title={isExcluded ? 'Include in forecast' : 'Exclude from forecast (what-if)'}>
                           {isExcluded ? (
                             <span style={stTextMuted}><ToggleLeft className="w-5 h-5" /></span>

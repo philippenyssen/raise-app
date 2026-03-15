@@ -148,6 +148,7 @@ export default function StressTestPage() {
             onMouseEnter={() => setRetryHover(true)}
             onMouseLeave={() => setRetryHover(false)}
             className="px-4 py-2 rounded-lg text-sm transition-colors"
+            title="Retry loading stress test data"
             style={{
               background: retryHover ? 'var(--surface-3)' : 'var(--surface-2)',
               color: 'var(--text-secondary)', }}>
