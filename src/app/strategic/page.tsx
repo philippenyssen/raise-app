@@ -593,9 +593,9 @@ function GaugeCard({ label, value, suffix, description, barPct, barColor, valueC
         style={{
           height: '8px',
           background: 'var(--surface-3)',
-          borderRadius: '9999px',
+          borderRadius: 'var(--radius-full)',
           overflow: 'hidden', }}>
-        <div style={{ height: '100%', borderRadius: '9999px', transition: 'all 700ms ease', width: `${Math.min(100, barPct)}%`, background: barColor }}
+        <div style={{ height: '100%', borderRadius: 'var(--radius-full)', transition: 'all 700ms ease', width: `${Math.min(100, barPct)}%`, background: barColor }}
           /></div>
     </div>);
 }

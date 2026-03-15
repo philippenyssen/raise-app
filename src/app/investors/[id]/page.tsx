@@ -693,7 +693,7 @@ export default function InvestorDetailPage() {
                   <span
                     style={{
                       fontSize: 'var(--font-size-xs)', fontWeight: 400,
-                      padding: '1px 6px', borderRadius: '9999px',
+                      padding: '1px 6px', borderRadius: 'var(--radius-full)',
                       background: 'var(--danger)', color: 'var(--text-primary)', }}>
                     {overdueItems.length} overdue</span>
                 )}</div>

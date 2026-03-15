@@ -656,7 +656,7 @@ function FollowupsContent() {
             {accent === 'red' && <AlertTriangle className="w-4 h-4" style={stTextPrimary} />}
             <h2 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: accentColorMap[accent] }}>{title}</h2>
             <span
-              style={{ fontSize: 'var(--font-size-xs)', padding: '0.125rem 0.375rem', borderRadius: '9999px', background: accent === 'red' ? 'var(--danger-muted)' : 'var(--surface-3)', color: accent === 'red' ? 'var(--text-tertiary)' : 'var(--text-secondary)' }}>
+              style={{ fontSize: 'var(--font-size-xs)', padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-full)', background: accent === 'red' ? 'var(--danger-muted)' : 'var(--surface-3)', color: accent === 'red' ? 'var(--text-tertiary)' : 'var(--text-secondary)' }}>
               {items.length}</span></div>
           {expanded
             ? <ChevronUp className="w-4 h-4" style={stTextMuted} />
@@ -748,7 +748,7 @@ function FollowupsContent() {
             {f.charAt(0).toUpperCase() + f.slice(1)}
             {f === 'pending' && overdue.length > 0 && (
               <span
-                style={{ marginLeft: '0.375rem', background: 'var(--danger)', color: 'var(--text-primary)', fontSize: 'var(--font-size-xs)', padding: '0 0.25rem', borderRadius: '9999px' }}>
+                style={{ marginLeft: '0.375rem', background: 'var(--danger)', color: 'var(--text-primary)', fontSize: 'var(--font-size-xs)', padding: '0 0.25rem', borderRadius: 'var(--radius-full)' }}>
                 {overdue.length}</span>
             )}</button>
         ))}</div>

@@ -144,7 +144,7 @@ export default function ForecastPage() {
               alignItems: 'center',
               gap: 'var(--space-2)',
               padding: '4px 12px',
-              borderRadius: '9999px',
+              borderRadius: 'var(--radius-full)',
               fontSize: 'var(--font-size-xs)',
               fontWeight: 400,
               background: confidenceBg(forecast.confidence),
@@ -508,7 +508,7 @@ export default function ForecastPage() {
 
                       {/* Confidence */}
                       <td style={{ padding: 'var(--space-3) var(--space-4)', textAlign: 'center' }}>
-                        <span style={{ display: 'inline-flex', alignItems: 'center', padding: '2px 8px', borderRadius: '9999px', fontSize: 'var(--font-size-xs)', fontWeight: 400, background: confidenceBg(inv.confidence), color: confidenceColor(inv.confidence) }}>
+                        <span style={{ display: 'inline-flex', alignItems: 'center', padding: '2px 8px', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', fontWeight: 400, background: confidenceBg(inv.confidence), color: confidenceColor(inv.confidence) }}>
                           {inv.confidence}</span></td>
 
                       <td style={{ padding: 'var(--space-3) var(--space-4)' }}>

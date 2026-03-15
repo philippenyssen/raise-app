@@ -247,7 +247,7 @@ export default function VelocityPage() {
                     {/* On-Track Status */}
                     <td style={{ padding: 'var(--space-3) var(--space-4)', textAlign: 'center' }}>
                       <span
-                        style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', padding: '2px 8px', borderRadius: '9999px', fontSize: 'var(--font-size-xs)', fontWeight: 400, background: trackingBg(inv.tracking_status), color: trackingColor(inv.tracking_status) }}>
+                        style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', padding: '2px 8px', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', fontWeight: 400, background: trackingBg(inv.tracking_status), color: trackingColor(inv.tracking_status) }}>
                         {inv.tracking_status === 'on_track' ? (
                           <><CheckCircle2 className="w-3 h-3" style={{ marginRight: '4px' }} /> On</>
                         ) : inv.tracking_status === 'behind' ? (

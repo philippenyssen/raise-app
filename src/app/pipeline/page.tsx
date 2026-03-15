@@ -435,7 +435,7 @@ export default function PipelinePage() {
                     <span style={{ ...stFontXs, fontWeight: 400, color: 'var(--text-primary)', letterSpacing: '0.01em' }}>{STATUS_LABELS[status]}</span>
                     <div className="flex items-center gap-1.5">
                       {cards.length > 0 && (() => { const activePct = Math.round((cards.filter(i => (Date.now() - new Date(i.updated_at).getTime()) < 7 * 864e5).length / cards.length) * 100); return <span title={`${activePct}% active in last 7 days`} style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: activePct >= 70 ? 'var(--success)' : activePct >= 40 ? 'var(--warning)' : 'var(--text-muted)' }}>{activePct}%</span>; })()}
-                      <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 300, padding: '0.125rem 0.375rem', borderRadius: '9999px', ...colors.badge }}>{cards.length}</span>
+                      <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 300, padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-full)', ...colors.badge }}>{cards.length}</span>
                     </div>
                   </div></div>
 
@@ -503,7 +503,7 @@ export default function PipelinePage() {
                           fontSize: 'var(--font-size-xs)',
                           fontWeight: 300,
                           padding: '0.125rem 0.375rem',
-                          borderRadius: '9999px',
+                          borderRadius: 'var(--radius-full)',
                           ...colors.badge, }}>
                         {cards.length}</span></div></div>
                   <div className="p-2" style={{ ...colors.bg, borderBottomLeftRadius: 'var(--radius-xl)', borderBottomRightRadius: 'var(--radius-xl)' }}>
@@ -585,7 +585,7 @@ function FilterButton({
             fontSize: 'var(--font-size-xs)',
             fontWeight: 300,
             padding: '0.125rem 0.375rem',
-            borderRadius: '9999px', }}>
+            borderRadius: 'var(--radius-full)', }}>
           {count}</span>
       )}
     </button>);
