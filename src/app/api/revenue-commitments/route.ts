@@ -46,8 +46,11 @@ export async function POST(req: NextRequest) {
   if (!body.counterparty || typeof body.counterparty !== 'string') {
     return NextResponse.json({ error: 'counterparty is required' }, { status: 400 });
   }
-  if (!body.amount_eur || typeof body.amount_eur !== 'number') {
-    return NextResponse.json({ error: 'amount_eur is required and must be a number' }, { status: 400 });
+  if (!body.amount_eur || typeof body.amount_eur !== 'number' || body.amount_eur <= 0 || body.amount_eur > 10_000_000_000) {
+    return NextResponse.json({ error: 'amount_eur must be a positive number up to 10,000,000,000' }, { status: 400 });
+  }
+  if (body.confidence !== undefined && (typeof body.confidence !== 'number' || body.confidence < 0 || body.confidence > 1)) {
+    return NextResponse.json({ error: 'confidence must be a number between 0 and 1' }, { status: 400 });
   }
   try {
     const commitment = await createRevenueCommitment(body as unknown as Parameters<typeof createRevenueCommitment>[0]);

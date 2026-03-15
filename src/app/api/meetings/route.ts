@@ -33,8 +33,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: `type must be one of: ${validTypes.join(', ')}` }, { status: 400 });
   }
 
-  if (duration_minutes !== undefined && (typeof duration_minutes !== 'number' || duration_minutes < 1)) {
-    return NextResponse.json({ error: 'duration_minutes must be a positive number' }, { status: 400 });
+  if (duration_minutes !== undefined && (typeof duration_minutes !== 'number' || duration_minutes < 1 || duration_minutes > 480)) {
+    return NextResponse.json({ error: 'duration_minutes must be between 1 and 480' }, { status: 400 });
   }
 
   let aiData: Record<string, unknown> = {};
@@ -190,11 +190,21 @@ export async function PATCH(req: NextRequest) {
     if (!meeting) { return NextResponse.json({ error: `Meeting ${meeting_id} not found` }, { status: 404 }); }
 
     const updates: Record<string, unknown> = {};
-    if (outcome_rating !== undefined) updates.outcome_rating = outcome_rating;
+    if (outcome_rating !== undefined) {
+      if (typeof outcome_rating !== 'number' || outcome_rating < 1 || outcome_rating > 5) {
+        return NextResponse.json({ error: 'outcome_rating must be between 1 and 5' }, { status: 400 });
+      }
+      updates.outcome_rating = outcome_rating;
+    }
     if (objections_addressed !== undefined) updates.objections_addressed = JSON.stringify(objections_addressed);
     if (competitive_mentions !== undefined) updates.competitive_mentions = JSON.stringify(competitive_mentions);
     if (key_takeaway !== undefined) updates.key_takeaway = key_takeaway;
-    if (prep_usefulness !== undefined) updates.prep_usefulness = prep_usefulness;
+    if (prep_usefulness !== undefined) {
+      if (typeof prep_usefulness !== 'number' || prep_usefulness < 1 || prep_usefulness > 5) {
+        return NextResponse.json({ error: 'prep_usefulness must be between 1 and 5' }, { status: 400 });
+      }
+      updates.prep_usefulness = prep_usefulness;
+    }
 
     if (Object.keys(updates).length === 0) { return NextResponse.json({ error: 'No outcome fields provided' }, { status: 400 }); }
 
