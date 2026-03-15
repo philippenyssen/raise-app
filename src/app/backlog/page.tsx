@@ -193,7 +193,7 @@ export default function BacklogPage() {
           <textarea placeholder="Notes" value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} className="input" rows={2}
             />
           <div className="flex gap-2">
-            <button onClick={handleAdd} className="btn btn-primary btn-md">Save</button>
+            <button onClick={handleAdd} className="btn btn-primary btn-md">Add Commitment</button>
             <button onClick={() => setShowAdd(false)} className="btn btn-secondary btn-md">Cancel</button>
           </div>
         </div>

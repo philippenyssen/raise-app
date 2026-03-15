@@ -712,7 +712,7 @@ function InvestorCard({
     cursor: 'grab',
     transition: 'all 150ms ease',
     boxShadow: tierGlow,
-    borderLeft: isStale ? '3px solid var(--danger)' : 'none',
+    borderLeft: isStale ? '3px solid var(--warning)' : 'none',
     ...(isDragging ? { opacity: 0.5, transform: 'scale(0.95)' } : {}),
   };
 
@@ -759,6 +759,8 @@ function InvestorCard({
             <TypeIcon className="w-2.5 h-2.5" />{TYPE_LABELS[investor.type as InvestorType] ?? investor.type}
           </span>
           <span style={{ padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-sm)', fontSize: '10px', fontWeight: 400, ...TIER_STYLES[investor.tier] }}>T{investor.tier}</span>
+          {isStale && <span style={{ padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-sm)', fontSize: '10px', fontWeight: 400, background: 'var(--warning-muted)', color: 'var(--warning)' }}>Stale</span>}
+          {(() => { const d = Math.floor((Date.now() - new Date(investor.updated_at).getTime()) / 864e5); return d > 0 ? <span title="Time in current stage" style={{ padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-sm)', fontSize: '10px', fontWeight: 400, color: d >= 14 ? 'var(--warning)' : 'var(--text-muted)', background: 'var(--white-8)' }}>{d}d</span> : null; })()}
         </div>
 
         {/* Details */}
