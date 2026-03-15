@@ -69,30 +69,28 @@ export function Sidebar() {
   const [docFlagCount, setDocFlagCount] = useState(0);
 
   useEffect(() => {
+    let cancelled = false;
     function fetchBadges() {
+      if (cancelled) return;
       fetch('/api/followups?status=pending')
         .then(r => r.ok ? r.json() : [])
         .then(data => {
-          if (!Array.isArray(data)) return;
+          if (cancelled || !Array.isArray(data)) return;
           const today = new Date().toISOString().split('T')[0];
-          const overdue = data.filter((f: { due_at: string; status: string }) =>
-            f.status === 'pending' && f.due_at?.split('T')[0] < today);
-          setOverdueCount(overdue.length);})
+          setOverdueCount(data.filter((f: { due_at: string; status: string }) => f.status === 'pending' && f.due_at?.split('T')[0] < today).length);})
         .catch(() => {});
       fetch('/api/meetings')
         .then(r => r.ok ? r.json() : [])
         .then(data => {
-          if (!Array.isArray(data)) return;
+          if (cancelled || !Array.isArray(data)) return;
           const today = new Date().toISOString().split('T')[0];
-          const todayMeetings = data.filter((m: { date: string }) =>
-            m.date?.split('T')[0] === today);
-          setTodayMeetingCount(todayMeetings.length);})
+          setTodayMeetingCount(data.filter((m: { date: string }) => m.date?.split('T')[0] === today).length);})
         .catch(() => {});
-      fetch('/api/document-flags?status=open').then(r => r.ok ? r.json() : []).then(data => { if (Array.isArray(data)) setDocFlagCount(data.length); }).catch(() => {});
+      fetch('/api/document-flags?status=open').then(r => r.ok ? r.json() : []).then(data => { if (!cancelled && Array.isArray(data)) setDocFlagCount(data.length); }).catch(() => {});
     }
     fetchBadges();
     const interval = setInterval(fetchBadges, 3 * 60 * 1000);
-    return () => clearInterval(interval);
+    return () => { cancelled = true; clearInterval(interval); };
   }, []);
 
   const sections = nav.reduce<Record<string, NavItem[]>>((acc, item) => {

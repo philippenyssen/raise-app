@@ -44,3 +44,4 @@ e06bb9a	100	100	0	keep	strategy+product	score breakdown + urgency badge + quick 
 6ef1e78	100	100	0	keep	all	pinned investors + meeting times + quick add + draft preview = 53588 lines, score 100
 79342e3	100	100	0	keep	data+product	conversion funnel + activity heatmap + top objections = 53640 lines, score 100
 d477064	100	100	0	keep	product+design	meeting streak + objection toast + kbd hints + focus mode = 53650 lines, score 100
+15e56c6	100	100	0	keep	design+product+ops+copy	heat legend + CSV export + bottleneck hover fix + sidebar cleanup + button copy = 53658 lines, score 100

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import {
   Flame, Gauge, AlertTriangle,
   TrendingUp, TrendingDown, Minus, RefreshCw, ArrowRight,
-  Users, Filter,
+  Users, Filter, Download,
 } from 'lucide-react';
 import { cachedFetch } from '@/lib/cache';
 import { STATUS_LABELS } from '@/lib/constants';
@@ -215,13 +215,24 @@ export default function DealflowPage() {
           <h1 className="page-title">Dealflow</h1>
           <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', marginTop: '2px' }}>
             Investor health: heat, velocity, and momentum in one view</p></div>
-        <button
-          onClick={fetchData}
-          disabled={loading}
-          className="flex items-center gap-2 px-3 py-2 rounded-lg"
-          style={{ background: 'var(--surface-2)', color: 'var(--text-secondary)', fontSize: 'var(--font-size-sm)' }}>
-          <span style={stTextMuted}><RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} /></span>
-          Refresh</button></div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => {
+              const rows = [['Name','Type','Tier','Status','Heat','Velocity','Momentum','Days','Tracking','Bottleneck','Last Meeting']];
+              for (const inv of filtered) rows.push([inv.name, inv.type, String(inv.tier), inv.status, inv.heat, String(inv.velocityScore), String(inv.currentMomentum), String(inv.daysInProcess), inv.trackingStatus, inv.bottleneck, inv.lastMeeting || '']);
+              const blob = new Blob([rows.map(r => r.join('\t')).join('\n')], { type: 'text/tab-separated-values' });
+              const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `dealflow-${new Date().toISOString().split('T')[0]}.tsv`; a.click();
+            }}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg"
+            style={{ background: 'var(--surface-2)', color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
+            <Download className="w-3.5 h-3.5" /> Export</button>
+          <button
+            onClick={fetchData}
+            disabled={loading}
+            className="flex items-center gap-2 px-3 py-2 rounded-lg"
+            style={{ background: 'var(--surface-2)', color: 'var(--text-secondary)', fontSize: 'var(--font-size-sm)' }}>
+            <span style={stTextMuted}><RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} /></span>
+            Refresh</button></div></div>
 
       {/* Summary Strip */}
       <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 mb-6">
@@ -253,6 +264,7 @@ export default function DealflowPage() {
             key={h}
             onClick={() => setHeatFilter(h)}
             className="px-2.5 py-1 rounded-md text-xs"
+            title={h === 'all' ? 'Show all investors' : h === 'hot' ? 'Recent meetings + high enthusiasm' : h === 'warm' ? 'Active engagement, moderate pace' : h === 'cool' ? 'Some contact but losing momentum' : h === 'cold' ? 'No recent activity' : 'No contact in 30+ days'}
             style={{
               background: heatFilter === h ? 'var(--surface-3)' : 'transparent',
               color: heatFilter === h ? 'var(--text-primary)' : 'var(--text-muted)',
@@ -272,6 +284,21 @@ export default function DealflowPage() {
                 border: sortBy === s ? '1px solid var(--accent)' : '1px solid transparent', }}>
               {s.charAt(0).toUpperCase() + s.slice(1)}</button>
           ))}</div></div>
+
+      {/* Heat Legend */}
+      <div className="flex items-center gap-4 mb-4" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+        {[
+          { label: 'Hot', desc: 'Recent meeting + high enthusiasm' },
+          { label: 'Warm', desc: 'Active, moderate pace' },
+          { label: 'Cool', desc: 'Losing momentum' },
+          { label: 'Cold', desc: 'No recent activity' },
+          { label: 'Frozen', desc: '30+ days silent' },
+        ].map(({ label, desc }) => (
+          <span key={label} className="flex items-center gap-1">
+            <span className="w-2 h-2 rounded-full" style={{ background: HEAT_CONFIG[label.toLowerCase()]?.border || 'var(--border-default)' }} />
+            <span style={{ color: 'var(--text-tertiary)' }}>{label}</span>
+            <span>— {desc}</span></span>
+        ))}</div>
 
       {/* Error state */}
       {error && (
@@ -391,7 +418,7 @@ export default function DealflowPage() {
                       className="inline-flex items-center gap-1 transition-colors"
                       style={{ color: 'var(--text-tertiary)', textDecoration: 'none' }}
                       onMouseEnter={e => { e.currentTarget.style.color = 'var(--warning)'; }}
-                      onMouseLeave={e => { e.currentTarget.style.color = 'var(--warning)'; }}>
+                      onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-tertiary)'; }}>
                       <span className="truncate">{inv.bottleneck}</span>
                       <ArrowRight className="w-3 h-3 shrink-0" style={{ opacity: 0.7 }} /></Link>
                   ) : (

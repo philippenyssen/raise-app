@@ -185,7 +185,7 @@ export default function DocumentsPage() {
             style={{ backgroundColor: hoverStates['consBtn'] ? 'var(--surface-3)' : 'var(--surface-2)', color: 'var(--text-secondary)' }}
             onMouseEnter={() => setHover('consBtn', true)}
             onMouseLeave={() => setHover('consBtn', false)}>
-            <ShieldCheck className="w-3.5 h-3.5" /> Consistency</Link>
+            <ShieldCheck className="w-3.5 h-3.5" /> Check Alignment</Link>
           <Link
             href="/documents/new"
             className="px-4 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2"
