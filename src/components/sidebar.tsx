@@ -360,7 +360,7 @@ export function Sidebar() {
                         <div
                           className="absolute left-full ml-2 px-2 py-1 rounded-md opacity-0 pointer-events-none group-hover:opacity-100 whitespace-nowrap z-50 transition-opacity duration-100"
                           style={{
-                            background: '#1a1a2e',
+                            background: 'var(--foreground)',
                             border: `1px solid ${SB.border}`,
                             fontSize: 'var(--font-size-xs)',
                             color: SB.textActive,

@@ -781,7 +781,7 @@ export default function Dashboard() {
                           fontSize: 'var(--font-size-xs)',
                           fontWeight: 400,
                           background: i === 0 ? 'var(--accent)' : 'var(--surface-3)',
-                          color: i === 0 ? '#fafaf8' : 'var(--text-secondary)',
+                          color: i === 0 ? 'var(--surface-0)' : 'var(--text-secondary)',
                         }}
                       >{i + 1}</span>
                       <div className="flex-1 min-w-0">
@@ -1303,7 +1303,7 @@ function MomentumBar({ count, total, opacity, label }: {
       {pct >= 15 && (
         <span
           className="absolute inset-0 flex items-center justify-center"
-          style={{ fontSize: '9px', fontWeight: 400, color: opacity > 0.5 ? '#fafaf8' : 'var(--text-secondary)' }}
+          style={{ fontSize: '9px', fontWeight: 400, color: opacity > 0.5 ? 'var(--surface-0)' : 'var(--text-secondary)' }}
         >
           {count}
         </span>

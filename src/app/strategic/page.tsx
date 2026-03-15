@@ -733,7 +733,7 @@ function RecommendationRow({ rec, isLast }: { rec: StrategicRecommendation; isLa
                 padding: '3px 10px',
                 borderRadius: 'var(--radius-sm)',
                 background: btnHover ? 'var(--accent)' : 'var(--accent-muted)',
-                color: btnHover ? '#fff' : 'var(--accent)',
+                color: btnHover ? 'var(--surface-0)' : 'var(--accent)',
                 border: '1px solid var(--accent-muted)',
                 transition: 'all 150ms ease',
                 textDecoration: 'none',

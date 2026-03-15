@@ -370,7 +370,7 @@ function MeetingPrepContent() {
           h1, h2, h3 { color: #000 !important; }
           .print-bg-white { background: #fff !important; }
           textarea { border: 1px solid #ccc !important; background: #f9f9f9 !important; color: #000 !important; }
-          .print-section-title { font-size: 14px; font-weight: 700; border-bottom: 2px solid #333; padding-bottom: 4px; margin-bottom: 8px; }
+          .print-section-title { font-size: 14px; font-weight: 400; border-bottom: 2px solid #333; padding-bottom: 4px; margin-bottom: 8px; }
           @page { margin: 1.5cm; }
         }
       `}</style>
