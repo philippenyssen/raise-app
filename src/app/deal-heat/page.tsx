@@ -4,21 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Flame, Filter, TrendingUp, Users, Thermometer } from 'lucide-react';
 import { STATUS_LABELS } from '@/lib/constants';
-
-interface DealHeatInvestor {
-  id: string;
-  name: string;
-  type: string;
-  tier: number;
-  status: string;
-  dealHeat: {
-    heat: number;
-    label: 'hot' | 'warm' | 'cool' | 'cold' | 'frozen';
-    drivers: string[];
-  };
-  enthusiasm: number;
-  lastMeeting: string | null;
-}
+import { DealHeatInvestor } from '@/lib/types';
 
 interface DealHeatData {
   investors: DealHeatInvestor[];

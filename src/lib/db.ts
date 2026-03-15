@@ -55,6 +55,26 @@ async function genericDelete(table: string, id: string) {
   await getClient().execute({ sql: `DELETE FROM ${table} WHERE id = ?`, args: [id] });
 }
 
+async function genericCreate(
+  tableName: string,
+  data: Record<string, unknown>,
+  opts?: { timestamps?: string[] },
+): Promise<string> {
+  await ensureInitialized();
+  const id = crypto.randomUUID();
+  const now = new Date().toISOString();
+  const entries = Object.entries(data).filter(([, v]) => v !== undefined);
+  const tsCols = opts?.timestamps ?? ['created_at', 'updated_at'];
+  const cols = ['id', ...entries.map(([k]) => k), ...tsCols];
+  const vals: InValue[] = [id, ...entries.map(([, v]) => v as InValue), ...tsCols.map(() => now)];
+  const placeholders = cols.map(() => '?').join(', ');
+  await getClient().execute({
+    sql: `INSERT INTO ${tableName} (${cols.join(', ')}) VALUES (${placeholders})`,
+    args: vals,
+  });
+  return id;
+}
+
 function getClient(): Client {
   if (!client) {
     client = createClient({
@@ -590,31 +610,21 @@ export async function getAllInvestors(): Promise<Investor[]> {
 export const getInvestor = (id: string) => genericGetById<Investor>('investors', id);
 
 export async function createInvestor(investor: Partial<Investor> & { name: string }): Promise<Investor> {
-  await ensureInitialized();
-  const id = crypto.randomUUID();
-  const now = new Date().toISOString();
-  await getClient().execute({
-    sql: `INSERT INTO investors (id, name, type, tier, status, partner, fund_size, check_size_range, sector_thesis, warm_path, ic_process, speed, portfolio_conflicts, notes, enthusiasm, created_at, updated_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    args: [
-      id,
-      investor.name,
-      investor.type ?? 'vc',
-      investor.tier ?? 2,
-      investor.status ?? 'identified',
-      investor.partner ?? '',
-      investor.fund_size ?? '',
-      investor.check_size_range ?? '',
-      investor.sector_thesis ?? '',
-      investor.warm_path ?? '',
-      investor.ic_process ?? '',
-      investor.speed ?? 'medium',
-      investor.portfolio_conflicts ?? '',
-      investor.notes ?? '',
-      investor.enthusiasm ?? 0,
-      now,
-      now,
-    ],
+  const id = await genericCreate('investors', {
+    name: investor.name,
+    type: investor.type ?? 'vc',
+    tier: investor.tier ?? 2,
+    status: investor.status ?? 'identified',
+    partner: investor.partner ?? '',
+    fund_size: investor.fund_size ?? '',
+    check_size_range: investor.check_size_range ?? '',
+    sector_thesis: investor.sector_thesis ?? '',
+    warm_path: investor.warm_path ?? '',
+    ic_process: investor.ic_process ?? '',
+    speed: investor.speed ?? 'medium',
+    portfolio_conflicts: investor.portfolio_conflicts ?? '',
+    notes: investor.notes ?? '',
+    enthusiasm: investor.enthusiasm ?? 0,
   });
   return (await getInvestor(id))!;
 }
@@ -652,30 +662,23 @@ export async function getMeetings(investorId?: string): Promise<Meeting[]> {
 export const getMeeting = (id: string) => genericGetById<Meeting>('meetings', id);
 
 export async function createMeeting(meeting: Partial<Omit<Meeting, 'id' | 'created_at'>> & { investor_id: string; investor_name: string; date: string }): Promise<Meeting> {
-  await ensureInitialized();
-  const id = crypto.randomUUID();
-  await getClient().execute({
-    sql: `INSERT INTO meetings (id, investor_id, investor_name, date, type, attendees, duration_minutes, raw_notes, questions_asked, objections, engagement_signals, competitive_intel, next_steps, enthusiasm_score, status_after, ai_analysis, created_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
-    args: [
-      id,
-      meeting.investor_id,
-      meeting.investor_name,
-      meeting.date,
-      meeting.type ?? 'intro',
-      meeting.attendees ?? '',
-      meeting.duration_minutes ?? 60,
-      meeting.raw_notes ?? '',
-      meeting.questions_asked ?? '[]',
-      meeting.objections ?? '[]',
-      meeting.engagement_signals ?? '{}',
-      meeting.competitive_intel ?? '',
-      meeting.next_steps ?? '',
-      meeting.enthusiasm_score ?? 3,
-      meeting.status_after ?? 'met',
-      meeting.ai_analysis ?? '',
-    ],
-  });
+  const id = await genericCreate('meetings', {
+    investor_id: meeting.investor_id,
+    investor_name: meeting.investor_name,
+    date: meeting.date,
+    type: meeting.type ?? 'intro',
+    attendees: meeting.attendees ?? '',
+    duration_minutes: meeting.duration_minutes ?? 60,
+    raw_notes: meeting.raw_notes ?? '',
+    questions_asked: meeting.questions_asked ?? '[]',
+    objections: meeting.objections ?? '[]',
+    engagement_signals: meeting.engagement_signals ?? '{}',
+    competitive_intel: meeting.competitive_intel ?? '',
+    next_steps: meeting.next_steps ?? '',
+    enthusiasm_score: meeting.enthusiasm_score ?? 3,
+    status_after: meeting.status_after ?? 'met',
+    ai_analysis: meeting.ai_analysis ?? '',
+  }, { timestamps: ['created_at'] });
   return (await getMeeting(id))!;
 }
 
@@ -795,14 +798,13 @@ export async function getAllDocuments(): Promise<Document[]> {
 export const getDocument = (id: string) => genericGetById<Document>('documents', id);
 
 export async function createDocument(doc: { title: string; type: string; content?: string }): Promise<Document> {
-  await ensureInitialized();
-  const id = crypto.randomUUID();
-  const now = new Date().toISOString();
-  await getClient().execute({
-    sql: `INSERT INTO documents (id, title, type, content, status, created_at, updated_at) VALUES (?, ?, ?, ?, 'draft', ?, ?)`,
-    args: [id, doc.title, doc.type, doc.content || '', now, now],
+  const id = await genericCreate('documents', {
+    title: doc.title,
+    type: doc.type,
+    content: doc.content || '',
+    status: 'draft',
   });
-  // Create initial version
+  const now = new Date().toISOString();
   await getClient().execute({
     sql: `INSERT INTO document_versions (id, document_id, content, version_number, change_summary, created_at) VALUES (?, ?, ?, 1, 'Initial version', ?)`,
     args: [crypto.randomUUID(), id, doc.content || '', now],
@@ -878,12 +880,14 @@ export async function getAllDataRoomFiles(): Promise<DataRoomFile[]> {
 const getDataRoomFile = (id: string) => genericGetById<DataRoomFile>('data_room_files', id);
 
 export async function createDataRoomFile(file: { filename: string; category: string; mime_type: string; size_bytes: number; extracted_text: string; summary?: string }): Promise<DataRoomFile> {
-  await ensureInitialized();
-  const id = crypto.randomUUID();
-  await getClient().execute({
-    sql: `INSERT INTO data_room_files (id, filename, category, mime_type, size_bytes, extracted_text, summary, uploaded_at) VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
-    args: [id, file.filename, file.category, file.mime_type, file.size_bytes, file.extracted_text, file.summary || ''],
-  });
+  const id = await genericCreate('data_room_files', {
+    filename: file.filename,
+    category: file.category,
+    mime_type: file.mime_type,
+    size_bytes: file.size_bytes,
+    extracted_text: file.extracted_text,
+    summary: file.summary || '',
+  }, { timestamps: ['uploaded_at'] });
   return (await getDataRoomFile(id))!;
 }
 
@@ -945,12 +949,11 @@ export async function getModelSheets(modelId: string = 'default'): Promise<Model
 const getModelSheet = (id: string) => genericGetById<ModelSheet>('model_sheets', id);
 
 export async function createModelSheet(sheet: { model_id?: string; sheet_name: string; sheet_order: number; data: string }): Promise<ModelSheet> {
-  await ensureInitialized();
-  const id = crypto.randomUUID();
-  const now = new Date().toISOString();
-  await getClient().execute({
-    sql: `INSERT INTO model_sheets (id, model_id, sheet_name, sheet_order, data, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-    args: [id, sheet.model_id || 'default', sheet.sheet_name, sheet.sheet_order, sheet.data, now, now],
+  const id = await genericCreate('model_sheets', {
+    model_id: sheet.model_id || 'default',
+    sheet_name: sheet.sheet_name,
+    sheet_order: sheet.sheet_order,
+    data: sheet.data,
   });
   return (await getModelSheet(id))!;
 }
@@ -989,14 +992,7 @@ export async function getAllTermSheets(): Promise<TermSheet[]> {
 const getTermSheet = (id: string) => genericGetById<TermSheet>('term_sheets', id);
 
 export async function createTermSheet(ts: Omit<TermSheet, 'id' | 'created_at' | 'updated_at'>): Promise<TermSheet> {
-  await ensureInitialized();
-  const id = crypto.randomUUID();
-  const now = new Date().toISOString();
-  await getClient().execute({
-    sql: `INSERT INTO term_sheets (id, investor, valuation, amount, liq_pref, anti_dilution, board_seats, dividends, protective_provisions, option_pool, exclusivity, strategic_value, notes, created_at, updated_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    args: [id, ts.investor, ts.valuation, ts.amount, ts.liq_pref, ts.anti_dilution, ts.board_seats, ts.dividends, ts.protective_provisions, ts.option_pool, ts.exclusivity, ts.strategic_value, ts.notes, now, now],
-  });
+  const id = await genericCreate('term_sheets', ts as Record<string, unknown>);
   return (await getTermSheet(id))!;
 }
 
@@ -1017,13 +1013,7 @@ export async function getAllMarketDeals(): Promise<MarketDeal[]> {
 const getMarketDeal = (id: string) => genericGetById<MarketDeal>('market_deals', id);
 
 export async function createMarketDeal(deal: Omit<MarketDeal, 'id' | 'created_at' | 'updated_at'>): Promise<MarketDeal> {
-  await ensureInitialized();
-  const id = crypto.randomUUID();
-  const now = new Date().toISOString();
-  await getClient().execute({
-    sql: `INSERT INTO market_deals (id, company, round, amount, valuation, lead_investors, other_investors, date, sector, sub_sector, equity_story, relevance, source, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    args: [id, deal.company, deal.round, deal.amount, deal.valuation, deal.lead_investors, deal.other_investors, deal.date, deal.sector, deal.sub_sector, deal.equity_story, deal.relevance, deal.source, now, now],
-  });
+  const id = await genericCreate('market_deals', deal as Record<string, unknown>);
   return (await getMarketDeal(id))!;
 }
 
@@ -1045,15 +1035,8 @@ export async function getInvestorPartners(investorId: string): Promise<InvestorP
 }
 
 export async function createInvestorPartner(partner: Omit<InvestorPartner, 'id' | 'created_at' | 'updated_at'>): Promise<InvestorPartner> {
-  await ensureInitialized();
-  const id = crypto.randomUUID();
-  const now = new Date().toISOString();
-  await getClient().execute({
-    sql: `INSERT INTO investor_partners (id, investor_id, name, title, focus_areas, notable_deals, board_seats, linkedin, background, relevance_to_us, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    args: [id, partner.investor_id, partner.name, partner.title, partner.focus_areas, partner.notable_deals, partner.board_seats, partner.linkedin, partner.background, partner.relevance_to_us, now, now],
-  });
-  const result = await getClient().execute({ sql: 'SELECT * FROM investor_partners WHERE id = ?', args: [id] });
-  return result.rows[0] as unknown as InvestorPartner;
+  const id = await genericCreate('investor_partners', partner as Record<string, unknown>);
+  return (await genericGetById<InvestorPartner>('investor_partners', id))!;
 }
 
 export async function updateInvestorPartner(id: string, updates: Partial<InvestorPartner>) {
@@ -1074,14 +1057,8 @@ export async function getInvestorPortfolio(investorId: string): Promise<Investor
 }
 
 export async function createPortfolioCo(co: Omit<InvestorPortfolioCo, 'id' | 'created_at'>): Promise<InvestorPortfolioCo> {
-  await ensureInitialized();
-  const id = crypto.randomUUID();
-  await getClient().execute({
-    sql: `INSERT INTO investor_portfolio (id, investor_id, company, sector, stage_invested, amount, date, status, relevance, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
-    args: [id, co.investor_id, co.company, co.sector, co.stage_invested, co.amount, co.date, co.status, co.relevance],
-  });
-  const result = await getClient().execute({ sql: 'SELECT * FROM investor_portfolio WHERE id = ?', args: [id] });
-  return result.rows[0] as unknown as InvestorPortfolioCo;
+  const id = await genericCreate('investor_portfolio', co as Record<string, unknown>, { timestamps: ['created_at'] });
+  return (await genericGetById<InvestorPortfolioCo>('investor_portfolio', id))!;
 }
 
 export const deletePortfolioCo = (id: string) => genericDelete('investor_portfolio', id);
@@ -1097,13 +1074,7 @@ export async function getAllCompetitors(): Promise<Competitor[]> {
 const getCompetitor = (id: string) => genericGetById<Competitor>('competitors', id);
 
 export async function createCompetitor(comp: Omit<Competitor, 'id' | 'created_at' | 'updated_at'>): Promise<Competitor> {
-  await ensureInitialized();
-  const id = crypto.randomUUID();
-  const now = new Date().toISOString();
-  await getClient().execute({
-    sql: `INSERT INTO competitors (id, name, sector, hq, last_round, last_valuation, total_raised, key_investors, revenue, employees, positioning, strengths, weaknesses, threat_level, our_advantage, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    args: [id, comp.name, comp.sector, comp.hq, comp.last_round, comp.last_valuation, comp.total_raised, comp.key_investors, comp.revenue, comp.employees, comp.positioning, comp.strengths, comp.weaknesses, comp.threat_level, comp.our_advantage, now, now],
-  });
+  const id = await genericCreate('competitors', comp as Record<string, unknown>);
   return (await getCompetitor(id))!;
 }
 
@@ -1131,12 +1102,12 @@ export async function getIntelligenceBriefs(briefType?: string, investorId?: str
 const getIntelligenceBrief = (id: string) => genericGetById<IntelligenceBrief>('intelligence_briefs', id);
 
 export async function createIntelligenceBrief(brief: Omit<IntelligenceBrief, 'id' | 'created_at' | 'updated_at'>): Promise<IntelligenceBrief> {
-  await ensureInitialized();
-  const id = crypto.randomUUID();
-  const now = new Date().toISOString();
-  await getClient().execute({
-    sql: `INSERT INTO intelligence_briefs (id, subject, brief_type, content, sources, investor_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-    args: [id, brief.subject, brief.brief_type, brief.content, brief.sources, brief.investor_id || null, now, now],
+  const id = await genericCreate('intelligence_briefs', {
+    subject: brief.subject,
+    brief_type: brief.brief_type,
+    content: brief.content,
+    sources: brief.sources,
+    investor_id: brief.investor_id || null,
   });
   return (await getIntelligenceBrief(id))!;
 }
@@ -1160,15 +1131,19 @@ export async function getAllTasks(filters?: { status?: string; phase?: string; i
 }
 
 export async function createTask(task: Omit<Task, 'id' | 'created_at' | 'updated_at'>): Promise<Task> {
-  await ensureInitialized();
-  const id = crypto.randomUUID();
-  const now = new Date().toISOString();
-  await getClient().execute({
-    sql: `INSERT INTO tasks (id, title, description, assignee, due_date, status, priority, phase, investor_id, investor_name, auto_generated, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    args: [id, task.title, task.description, task.assignee, task.due_date, task.status, task.priority, task.phase, task.investor_id, task.investor_name, task.auto_generated ? 1 : 0, now, now],
+  const id = await genericCreate('tasks', {
+    title: task.title,
+    description: task.description,
+    assignee: task.assignee,
+    due_date: task.due_date,
+    status: task.status,
+    priority: task.priority,
+    phase: task.phase,
+    investor_id: task.investor_id,
+    investor_name: task.investor_name,
+    auto_generated: task.auto_generated ? 1 : 0,
   });
-  const result = await getClient().execute({ sql: 'SELECT * FROM tasks WHERE id = ?', args: [id] });
-  return result.rows[0] as unknown as Task;
+  return (await genericGetById<Task>('tasks', id))!;
 }
 
 export async function updateTask(id: string, updates: Partial<Task>) {
@@ -1332,14 +1307,8 @@ export async function getDocumentFlags(filters?: { status?: string; meeting_id?:
 }
 
 export async function createDocumentFlag(flag: Omit<DocumentFlag, 'id' | 'created_at'>): Promise<DocumentFlag> {
-  await ensureInitialized();
-  const id = crypto.randomUUID();
-  await getClient().execute({
-    sql: `INSERT INTO document_flags (id, document_id, meeting_id, investor_id, investor_name, flag_type, description, section_hint, objection_text, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
-    args: [id, flag.document_id, flag.meeting_id, flag.investor_id, flag.investor_name, flag.flag_type, flag.description, flag.section_hint, flag.objection_text, flag.status],
-  });
-  const result = await getClient().execute({ sql: 'SELECT * FROM document_flags WHERE id = ?', args: [id] });
-  return result.rows[0] as unknown as DocumentFlag;
+  const id = await genericCreate('document_flags', flag as Record<string, unknown>, { timestamps: ['created_at'] });
+  return (await genericGetById<DocumentFlag>('document_flags', id))!;
 }
 
 export async function updateDocumentFlag(id: string, updates: { status?: string }) {
@@ -1841,28 +1810,18 @@ export async function createObjectionRecord(data: {
   effectiveness?: string;
   enthusiasm_at_objection?: number;
 }): Promise<ObjectionRecord> {
-  await ensureInitialized();
-  const id = crypto.randomUUID();
-  const now = new Date().toISOString();
-  await getClient().execute({
-    sql: `INSERT INTO objection_responses (id, objection_text, objection_topic, investor_id, investor_name, meeting_id, response_text, effectiveness, next_meeting_enthusiasm_delta, enthusiasm_at_objection, created_at, updated_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?)`,
-    args: [
-      id,
-      data.objection_text,
-      data.objection_topic,
-      data.investor_id || null,
-      data.investor_name || null,
-      data.meeting_id || null,
-      data.response_text || '',
-      data.effectiveness || 'unknown',
-      data.enthusiasm_at_objection ?? 0,
-      now,
-      now,
-    ],
+  const id = await genericCreate('objection_responses', {
+    objection_text: data.objection_text,
+    objection_topic: data.objection_topic,
+    investor_id: data.investor_id || null,
+    investor_name: data.investor_name || null,
+    meeting_id: data.meeting_id || null,
+    response_text: data.response_text || '',
+    effectiveness: data.effectiveness || 'unknown',
+    next_meeting_enthusiasm_delta: 0,
+    enthusiasm_at_objection: data.enthusiasm_at_objection ?? 0,
   });
-  const result = await getClient().execute({ sql: 'SELECT * FROM objection_responses WHERE id = ?', args: [id] });
-  return result.rows[0] as unknown as ObjectionRecord;
+  return (await genericGetById<ObjectionRecord>('objection_responses', id))!;
 }
 
 export async function updateObjectionResponse(id: string, response: string, effectiveness: string): Promise<void> {
@@ -2433,27 +2392,19 @@ export async function detectFomoDynamics(): Promise<FomoDynamic[]> {
 // ---------------------------------------------------------------------------
 
 export async function createAccelerationAction(action: Omit<AccelerationAction, 'id' | 'created_at'>): Promise<AccelerationAction> {
-  await ensureInitialized();
-  const id = crypto.randomUUID();
-  await getClient().execute({
-    sql: `INSERT INTO acceleration_actions (id, investor_id, investor_name, trigger_type, action_type, description, expected_lift, confidence, status, actual_lift, executed_at, created_at)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
-    args: [
-      id,
-      action.investor_id,
-      action.investor_name ?? null,
-      action.trigger_type,
-      action.action_type,
-      action.description,
-      action.expected_lift,
-      action.confidence,
-      action.status,
-      action.actual_lift ?? null,
-      action.executed_at ?? null,
-    ] as InValue[],
-  });
-  const result = await getClient().execute({ sql: 'SELECT * FROM acceleration_actions WHERE id = ?', args: [id] });
-  return result.rows[0] as unknown as AccelerationAction;
+  const id = await genericCreate('acceleration_actions', {
+    investor_id: action.investor_id,
+    investor_name: action.investor_name ?? null,
+    trigger_type: action.trigger_type,
+    action_type: action.action_type,
+    description: action.description,
+    expected_lift: action.expected_lift,
+    confidence: action.confidence,
+    status: action.status,
+    actual_lift: action.actual_lift ?? null,
+    executed_at: action.executed_at ?? null,
+  }, { timestamps: ['created_at'] });
+  return (await genericGetById<AccelerationAction>('acceleration_actions', id))!;
 }
 
 export async function getAccelerationActions(filters?: { investor_id?: string; status?: string; trigger_type?: string }): Promise<AccelerationAction[]> {
@@ -2486,15 +2437,19 @@ export async function createFollowup(followup: {
   description: string;
   due_at: string;
 }): Promise<FollowupAction> {
-  await ensureInitialized();
-  const id = crypto.randomUUID();
-  await getClient().execute({
-    sql: `INSERT INTO followup_actions (id, meeting_id, investor_id, investor_name, action_type, description, due_at, status, outcome, conviction_delta, created_at, completed_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', '', 0, datetime('now'), NULL)`,
-    args: [id, followup.meeting_id, followup.investor_id, followup.investor_name, followup.action_type, followup.description, followup.due_at],
-  });
-  const result = await getClient().execute({ sql: 'SELECT * FROM followup_actions WHERE id = ?', args: [id] });
-  return result.rows[0] as unknown as FollowupAction;
+  const id = await genericCreate('followup_actions', {
+    meeting_id: followup.meeting_id,
+    investor_id: followup.investor_id,
+    investor_name: followup.investor_name,
+    action_type: followup.action_type,
+    description: followup.description,
+    due_at: followup.due_at,
+    status: 'pending',
+    outcome: '',
+    conviction_delta: 0,
+    completed_at: null,
+  }, { timestamps: ['created_at'] });
+  return (await genericGetById<FollowupAction>('followup_actions', id))!;
 }
 
 export async function getFollowups(filters?: {
@@ -2823,18 +2778,20 @@ export async function createRevenueCommitment(commitment: {
   source_doc?: string;
   notes?: string;
 }): Promise<unknown> {
-  await ensureInitialized();
-  const id = crypto.randomUUID();
-  await getClient().execute({
-    sql: `INSERT INTO revenue_commitments (id, customer, program, contract_type, amount_eur, start_date, end_date, annual_amount, confidence, status, source_doc, notes)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    args: [id, commitment.customer, commitment.program || '', commitment.contract_type || 'firm',
-           commitment.amount_eur, commitment.start_date || null, commitment.end_date || null,
-           commitment.annual_amount || null, commitment.confidence, commitment.status || 'active',
-           commitment.source_doc || '', commitment.notes || ''],
+  const id = await genericCreate('revenue_commitments', {
+    customer: commitment.customer,
+    program: commitment.program || '',
+    contract_type: commitment.contract_type || 'firm',
+    amount_eur: commitment.amount_eur,
+    start_date: commitment.start_date || null,
+    end_date: commitment.end_date || null,
+    annual_amount: commitment.annual_amount || null,
+    confidence: commitment.confidence,
+    status: commitment.status || 'active',
+    source_doc: commitment.source_doc || '',
+    notes: commitment.notes || '',
   });
-  const result = await getClient().execute({ sql: 'SELECT * FROM revenue_commitments WHERE id = ?', args: [id] });
-  return result.rows[0];
+  return (await genericGetById('revenue_commitments', id))!;
 }
 
 export async function updateRevenueCommitment(id: string, updates: Record<string, unknown>): Promise<void> {

@@ -8,16 +8,7 @@ import {
   ArrowLeft, Save, Sparkles, CheckCircle, AlertTriangle,
   Clock, History, Eye, Edit3, FileText
 } from 'lucide-react';
-
-interface Doc {
-  id: string;
-  title: string;
-  type: string;
-  content: string;
-  status: string;
-  created_at: string;
-  updated_at: string;
-}
+import { DocSummaryRecord as Doc } from '@/lib/types';
 
 interface Version {
   id: string;

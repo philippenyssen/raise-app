@@ -5,15 +5,14 @@ import Link from 'next/link';
 import { useToast } from '@/components/toast';
 import { STATUS_LABELS } from '@/lib/constants';
 import {
+  AccelerationItem, AccelerationInvestorSummary as InvestorSummary, AccelerationData,
+} from '@/lib/types';
+import {
   Target, Clock, AlertTriangle, Zap, ChevronRight, RefreshCw,
   Calendar, CheckCircle, ArrowUpRight, TrendingDown, Timer, Users,
   Rocket, Shield, XCircle, ChevronDown, Play, Ban, BarChart3,
   Star, Eye, Flame, Flag, MessageSquare,
 } from 'lucide-react';
-
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
 
 interface ScoreDimensionData {
   name: string;
@@ -62,47 +61,6 @@ interface FocusData {
     followUpsRecommended: number;
     investorCount: number;
   };
-  generatedAt: string;
-}
-
-interface AccelerationItem {
-  id: string;
-  investorId: string;
-  investorName: string;
-  investorTier: number;
-  investorType: string;
-  status: string;
-  enthusiasm: number;
-  score: number;
-  momentum: string;
-  triggerType: string;
-  actionType: string;
-  description: string;
-  expectedLift: number;
-  confidence: string;
-  timeEstimate: string;
-  urgency: string;
-  triggerEvidence: string;
-}
-
-interface InvestorSummary {
-  investorId: string;
-  investorName: string;
-  investorTier: number;
-  investorType: string;
-  status: string;
-  enthusiasm: number;
-  score: number;
-  momentum: string;
-  reason: string;
-}
-
-interface AccelerationData {
-  summary: { immediate: number; this_week: number; total: number };
-  accelerations: AccelerationItem[];
-  termSheetReady: InvestorSummary[];
-  atRisk: InvestorSummary[];
-  deprioritize: InvestorSummary[];
   generatedAt: string;
 }
 

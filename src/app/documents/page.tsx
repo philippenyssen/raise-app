@@ -6,16 +6,7 @@ import { useToast } from '@/components/toast';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { FileText, Plus, Clock, Edit3, Download, ShieldCheck, AlertTriangle, CheckCircle2, XCircle } from 'lucide-react';
 import { fmtDate } from '@/lib/format';
-
-interface Doc {
-  id: string;
-  title: string;
-  type: string;
-  content: string;
-  status: string;
-  created_at: string;
-  updated_at: string;
-}
+import { DocSummaryRecord as Doc } from '@/lib/types';
 
 interface DocFlag {
   id: string;

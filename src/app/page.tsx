@@ -12,6 +12,7 @@ import {
   UserMinus, CalendarClock, Flame, Gauge, CheckCircle2, Mail,
   Calendar, MessageSquare, UserPlus, ArrowUp,
 } from 'lucide-react';
+import { DealHeatInvestor } from '@/lib/types';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -84,17 +85,6 @@ interface StaleInvestorItem {
 interface AtRiskData {
   scoreReversals: ScoreReversalItem[];
   staleInvestors: StaleInvestorItem[];
-}
-
-interface DealHeatInvestor {
-  id: string;
-  name: string;
-  type: string;
-  tier: number;
-  status: string;
-  dealHeat: { heat: number; label: 'hot' | 'warm' | 'cool' | 'cold' | 'frozen'; drivers: string[] };
-  enthusiasm: number;
-  lastMeeting: string | null;
 }
 
 interface DealHeatResponse {

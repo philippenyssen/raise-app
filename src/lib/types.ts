@@ -287,3 +287,65 @@ export interface PostMeetingActions {
     previous_enthusiasm?: number;
   };
 }
+
+export interface AccelerationItem {
+  id: string;
+  investorId: string;
+  investorName: string;
+  investorTier: number;
+  investorType: string;
+  status: string;
+  enthusiasm: number;
+  score: number;
+  momentum: string;
+  triggerType: string;
+  actionType: string;
+  description: string;
+  expectedLift: number;
+  confidence: string;
+  timeEstimate: string;
+  urgency: string;
+  triggerEvidence: string;
+}
+
+export interface AccelerationInvestorSummary {
+  investorId: string;
+  investorName: string;
+  investorTier: number;
+  investorType: string;
+  status: string;
+  enthusiasm: number;
+  score: number;
+  momentum: string;
+  reason: string;
+}
+
+export interface AccelerationData {
+  summary: { immediate: number; this_week: number; total: number };
+  accelerations: AccelerationItem[];
+  termSheetReady: AccelerationInvestorSummary[];
+  atRisk: AccelerationInvestorSummary[];
+  deprioritize: AccelerationInvestorSummary[];
+  generatedAt: string;
+}
+
+export interface DocSummaryRecord {
+  id: string;
+  title: string;
+  type: string;
+  content: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface DealHeatInvestor {
+  id: string;
+  name: string;
+  type: string;
+  tier: number;
+  status: string;
+  dealHeat: { heat: number; label: 'hot' | 'warm' | 'cool' | 'cold' | 'frozen'; drivers: string[] };
+  enthusiasm: number;
+  lastMeeting: string | null;
+}

@@ -6,17 +6,8 @@ import { DocumentViewer } from '@/components/workspace/document-viewer';
 import { AIChat } from '@/components/workspace/ai-chat';
 import { useToast } from '@/components/toast';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
+import { DocSummaryRecord as Doc } from '@/lib/types';
 import { FileText, Plus, ChevronRight, Wand2, Loader2 } from 'lucide-react';
-
-interface Doc {
-  id: string;
-  title: string;
-  type: string;
-  content: string;
-  status: string;
-  created_at: string;
-  updated_at: string;
-}
 
 const TYPE_ORDER = ['teaser', 'exec_summary', 'one_pager', 'exec_brief', 'memo', 'deck', 'dd_memo', 'custom'];
 const TYPE_LABELS: Record<string, string> = {
