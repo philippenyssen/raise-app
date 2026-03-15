@@ -347,10 +347,10 @@ export default function AccelerationPage() {
       if (res.ok) {
         setData(await res.json());
       } else {
-        toast('Could not load acceleration data — refresh to retry', 'error');
+        toast('Couldn\'t load acceleration data — refresh to retry', 'error');
       }
     } catch {
-      toast('Could not load acceleration data — refresh to retry', 'error');
+      toast('Couldn\'t load acceleration data — refresh to retry', 'error');
     } finally {
       setLoading(false);
     }
@@ -378,7 +378,7 @@ export default function AccelerationPage() {
         onClick: () => undoAction(item.id, 'executed'),
       });
     } catch {
-      toast('Could not mark action as executed — try again', 'error');
+      toast('Couldn\'t mark action as executed — try again', 'error');
     }}
 
   async function handleSkip(item: AccelerationItem) {
@@ -394,7 +394,7 @@ export default function AccelerationPage() {
         onClick: () => undoAction(item.id, 'skipped'),
       });
     } catch {
-      toast('Could not skip action — try again', 'error');
+      toast('Couldn\'t skip action — try again', 'error');
     }}
 
   async function undoAction(id: string, fromStatus: 'executed' | 'skipped') {
@@ -411,7 +411,7 @@ export default function AccelerationPage() {
       }
       toast('Action reverted to pending');
     } catch {
-      toast('Could not revert action — refresh and try again', 'error');
+      toast('Couldn\'t revert action — refresh and try again', 'error');
     }}
 
   // Filter logic

@@ -70,7 +70,7 @@ export default function TermsPage() {
       const res = await cachedFetch('/api/term-sheets');
       setSheets(await res.json());
     } catch {
-      toast('Could not load term sheets — refresh to retry', 'error');
+      toast('Couldn\'t load term sheets — refresh to retry', 'error');
     } finally {
       setLoading(false);
     }}
@@ -99,7 +99,7 @@ export default function TermsPage() {
       setForm(EMPTY_TS);
       fetchSheets();
     } catch {
-      toast('Could not save term sheet — check all fields and try again', 'error');
+      toast('Couldn\'t save term sheet — name and valuation are required', 'error');
     } finally { setSubmitting(false); }}
 
   async function handleDelete() {

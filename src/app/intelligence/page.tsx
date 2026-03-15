@@ -57,7 +57,7 @@ export default function IntelligencePage() {
       setDeals(data.deals || []);
       setCompetitors(data.competitors || []);
       setBriefs(data.briefs || []);
-    } catch { toast('Could not load intelligence data — refresh to retry', 'error'); }
+    } catch { toast('Couldn\'t load intelligence data — refresh to retry', 'error'); }
     setLoading(false);
   }, []);
 
@@ -114,7 +114,7 @@ export default function IntelligencePage() {
       if (!res.ok) throw new Error('Failed');
       toast(`Deleted ${target.name}`, 'warning');
     } catch {
-      toast('Could not delete — restoring item', 'error');
+      toast('Couldn\'t delete — restoring item', 'error');
       fetchAll();
     } finally { setDeleting(false); }
   }
@@ -134,7 +134,7 @@ export default function IntelligencePage() {
       toast('Deal added');
       setShowAddDeal(false);
       fetchAll();
-    } catch { toast('Could not add deal — check all fields and try again', 'error'); }
+    } catch { toast('Couldn\'t add deal — company name and amount are required', 'error'); }
     setSubmitting(false);
   }
 
@@ -153,7 +153,7 @@ export default function IntelligencePage() {
       toast('Competitor added');
       setShowAddComp(false);
       fetchAll();
-    } catch { toast('Could not add competitor — check all fields and try again', 'error'); }
+    } catch { toast('Couldn\'t add competitor — name is required', 'error'); }
     setSubmitting(false);
   }
 

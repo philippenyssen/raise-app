@@ -69,7 +69,7 @@ export default function AnalysisPage() {
       setData(result);
       if (!result.error) toast('Analysis complete — scroll down to see insights');
     } catch {
-      toast('Analysis failed. Ensure you have at least 2 meetings with notes, then retry.', 'error');
+      toast('Can\'t analyze yet — log at least 2 meetings with notes to unlock insights', 'error');
       setData({ patterns: null, health: { health: 'red', diagnosis: 'Analysis failed. Please try again.', recommendations: [], risk_factors: [] }, objections: [], funnel: {}, meeting_count: 0, error: 'Failed to run analysis' });
     } finally {
       setLoading(false);
