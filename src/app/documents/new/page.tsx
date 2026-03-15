@@ -165,13 +165,19 @@ export default function NewDocumentPage() {
     const title = template.type === 'custom' ? (customTitle || 'Untitled Document') : template.title;
     const content = showImport && importContent ? importContent : template.content;
 
-    const res = await fetch('/api/documents', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title, type: template.type, content }),});
-    const doc = await res.json();
-    toast(`Created "${title}"`);
-    router.push(`/documents/${doc.id}`);
+    try {
+      const res = await fetch('/api/documents', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, type: template.type, content }),});
+      if (!res.ok) throw new Error(`Server error (${res.status})`);
+      const doc = await res.json();
+      toast(`Created "${title}"`);
+      router.push(`/documents/${doc.id}`);
+    } catch (e) {
+      toast(e instanceof Error ? e.message : 'Failed to create document', 'error');
+      setCreating(false);
+    }
   }
 
   return (
