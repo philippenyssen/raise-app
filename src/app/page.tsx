@@ -938,17 +938,24 @@ export default function Dashboard() {
             {sectionErrors.health && funnelStages.length === 0 ? (
               <SectionError label="Pipeline data" onRetry={() => fetchSection('health')} />
             ) : (
-            <div className="flex flex-col items-center space-y-1.5">
+            <div className="flex flex-col items-center space-y-1">
               {funnelStages.map((stage, i) => {
                 const widthPct = Math.max(100 - (i * 13), 25);
                 const opacity = 1 - (i * 0.08);
+                const prevValue = i > 0 ? funnelStages[i - 1].value : 0;
+                const convPct = prevValue > 0 ? Math.round((stage.value / prevValue) * 100) : null;
                 return (
-                  <div key={stage.label} className="w-full flex items-center justify-center" style={{ maxWidth: `${widthPct}%` }}>
-                    <div
-                      className="w-full rounded-md h-9 flex items-center justify-between px-4"
-                      style={{ background: `rgba(27, 42, 74, ${Math.max(opacity * 0.12, 0.04)})` }}>
-                      <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-secondary)' }}>{stage.label}</span>
-                      <span className="tabular-nums" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>{stage.value}</span>
+                  <div key={stage.label} className="w-full flex flex-col items-center">
+                    {convPct !== null && stage.value > 0 && (
+                      <div className="tabular-nums" style={{ fontSize: '10px', color: 'var(--text-muted)', marginBottom: 1 }}>{convPct}%</div>
+                    )}
+                    <div className="w-full flex items-center justify-center" style={{ maxWidth: `${widthPct}%` }}>
+                      <div
+                        className="w-full rounded-md h-9 flex items-center justify-between px-4"
+                        style={{ background: `rgba(27, 42, 74, ${Math.max(opacity * 0.12, 0.04)})` }}>
+                        <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-secondary)' }}>{stage.label}</span>
+                        <span className="tabular-nums" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>{stage.value}</span>
+                      </div>
                     </div>
                   </div>);
               })}
