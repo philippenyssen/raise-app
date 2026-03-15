@@ -8,7 +8,7 @@ import type { FullContext } from '@/lib/context-bus';
 
 let _client: Anthropic | null = null;
 function getClient(): Anthropic {
-  if (!_client) _client = new Anthropic();
+  if (!_client) _client = new Anthropic({ timeout: 120_000 });
   return _client;
 }
 
