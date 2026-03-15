@@ -303,6 +303,18 @@ export default function Dashboard() {
     return () => clearInterval(interval);
   }, [fetchData]);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'e') {
+        e.preventDefault();
+        const first = pulse?.criticalPath?.topAccelerations?.[0];
+        if (first) executeAcceleration(first.id);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [pulse]);
+
   async function seedData() {
     setSeeding(true);
     try {
@@ -958,6 +970,7 @@ export default function Dashboard() {
                       <button
                         onClick={() => executeAcceleration(accel.id)}
                         className="shrink-0 btn btn-secondary btn-sm flex items-center gap-1"
+                        title="⌘E"
                       >
                         Execute <ChevronRight className="w-3 h-3" />
                       </button>

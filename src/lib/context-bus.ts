@@ -52,10 +52,6 @@ let contextVersion = 0;
 let lastBuildVersion = -1;
 let cachedContext: FullContext | null = null;
 
-export function getContextVersion(): number {
-  return contextVersion;
-}
-
 /**
  * Emit a context change event. Call this after ANY write operation.
  * This invalidates the cached context so the next consumer gets fresh data.
@@ -1344,24 +1340,3 @@ export function contextToSystemPrompt(ctx: FullContext): string {
   return prompt;
 }
 
-/**
- * Get context system stats for monitoring (cycle 30)
- */
-export function getContextStats(ctx: FullContext): {
-  dataSources: number;
-  contextFields: number;
-  investorCount: number;
-  synthesisRules: number;
-  promptChars: number;
-} {
-  const prompt = contextToSystemPrompt(ctx);
-  return {
-    dataSources: 31, // manually tracked
-    contextFields: Object.keys(ctx).length,
-    investorCount: ctx.investors.length,
-    synthesisRules: (prompt.match(/INTELLIGENCE SYNTHESIS/g) || []).length > 0
-      ? (prompt.split('=== INTELLIGENCE SYNTHESIS')[1] || '').split('\n').filter(l => l.trim().length > 0).length
-      : 0,
-    promptChars: prompt.length,
-  };
-}

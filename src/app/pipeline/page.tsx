@@ -864,6 +864,10 @@ function InvestorCard({
   const [hovered, setHovered] = useState(false);
   const TypeIcon = TYPE_ICONS[investor.type as InvestorType] || Building2;
 
+  const isStale = investor.last_meeting_date
+    ? Math.floor((Date.now() - new Date(investor.last_meeting_date).getTime()) / (1000 * 60 * 60 * 24)) >= 14
+    : false;
+
   const tierGlow = hovered
     ? investor.tier === 1
       ? 'none'
@@ -878,6 +882,7 @@ function InvestorCard({
     cursor: 'grab',
     transition: 'all 150ms ease',
     boxShadow: tierGlow,
+    borderLeft: isStale ? '3px solid var(--danger)' : 'none',
     ...(isDragging ? { opacity: 0.5, transform: 'scale(0.95)' } : {}),
   };
 
