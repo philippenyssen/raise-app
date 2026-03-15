@@ -36,7 +36,7 @@ export async function GET() {
       cr.dd_to_term_sheet < funnel.targets.dd_to_term_sheet,
     ].filter(Boolean).length;
 
-    if (belowTarget >= 3 || funnel.term_sheets === 0 && funnel.meetings > 15) health = 'red';
+    if (belowTarget >= 3 || (funnel.term_sheets === 0 && funnel.meetings > 15)) health = 'red';
     else if (belowTarget >= 1) health = 'yellow';
 
     return NextResponse.json({

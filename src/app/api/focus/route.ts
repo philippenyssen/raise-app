@@ -199,7 +199,7 @@ export async function GET() {
 
     const quickWins = focusItems.filter(item =>
       item.focusScore >= 40 && item.focusScore <= 75 &&
-      (item.unresolvedObjections.length === 1 || (item.status === 'nda_signed' || item.status === 'met') && item.momentum !== 'stalled')
+      (item.unresolvedObjections.length === 1 || ((item.status === 'nda_signed' || item.status === 'met') && item.momentum !== 'stalled'))
     ).slice(0, 5);
 
     const engagedStatuses = ['engaged', 'in_dd', 'term_sheet'];
