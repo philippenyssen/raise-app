@@ -52,6 +52,11 @@ export default function DealHeatPage() {
 
   useEffect(() => { document.title = 'Raise | Deal Heat Map'; }, []);
   useEffect(() => { fetchDealHeat(); }, []);
+  useEffect(() => {
+    const h = (e: KeyboardEvent) => { if (e.key === 'r' && !e.metaKey && !e.ctrlKey && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement)) { e.preventDefault(); fetchDealHeat(); } };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, []);
 
   if (loading) {
     return (
