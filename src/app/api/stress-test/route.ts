@@ -32,11 +32,15 @@ function computeCloseProbability(investor: Investor, momentum: string, meetings?
   const statusBase = weights[investor.status] ?? 0;
   if (statusBase === 0) return 0;
 
-  const enthusiasmMultiplier = (investor.enthusiasm || 3) / 5;
   const tierAdj = TIER_ADJUSTMENT[investor.tier] ?? 1.0;
   const momentumAdj = MOMENTUM_ADJUSTMENT[momentum] ?? 0;
-  let prob = statusBase * enthusiasmMultiplier * tierAdj;
+  // Calibrated enthusiasm bias — additive adjustment instead of multiplicative dampening
+  // Enthusiasm 1-2: penalty | 3: neutral baseline | 4-5: confidence boost
+  const enthusiasmBias: Record<number, number> = { 1: -0.15, 2: -0.10, 3: 0, 4: 0.10, 5: 0.20 };
+  const enthAdj = enthusiasmBias[investor.enthusiasm ?? 3] ?? 0;
+  let prob = statusBase * tierAdj;
   prob = prob + (prob * momentumAdj);
+  prob = prob + (prob * enthAdj);
 
   if (meetings && meetings.length > 0) {
     let showstopperCount = 0, unresolvedObjCount = 0;

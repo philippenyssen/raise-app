@@ -616,6 +616,7 @@ async function ensureInitialized() {
   try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_tasks_status ON tasks(status)`); } catch { /* */ }
   try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_followups_status ON followup_actions(status)`); } catch { /* */ }
   try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_activity_log_type ON activity_log(event_type, created_at)`); } catch { /* */ }
+  try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_meetings_investor_date ON meetings(investor_id, date DESC)`); } catch { /* */ }
 
   initialized = true;
 }
