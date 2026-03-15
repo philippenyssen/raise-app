@@ -433,7 +433,8 @@ function FollowupsContent() {
                   style={{ borderRadius: 'var(--radius-md)', color: hoveredActionBtn === `draft-${item.id}` || draftingId === item.id ? 'var(--chart-4)' : 'var(--text-muted)', background: hoveredActionBtn === `draft-${item.id}` || draftingId === item.id ? 'var(--cat-purple-muted)' : 'transparent', transition: 'all 150ms ease' }}
                   onMouseEnter={() => setHoveredActionBtn(`draft-${item.id}`)}
                   onMouseLeave={() => setHoveredActionBtn(null)}
-                  title="Draft message">
+                  title="Draft message"
+                  aria-label="Draft message">
                   <PenLine className="w-4 h-4" /></button>
                 <button
                   onClick={() => handleQuickComplete(item.id)}
@@ -442,7 +443,8 @@ function FollowupsContent() {
                   style={{ borderRadius: 'var(--radius-md)', color: hoveredActionBtn === `complete-${item.id}` ? 'var(--success)' : 'var(--text-muted)', background: hoveredActionBtn === `complete-${item.id}` ? 'var(--success-muted)' : 'transparent', transition: 'all 150ms ease', opacity: processingIds.has(item.id) ? 0.4 : 1 }}
                   onMouseEnter={() => setHoveredActionBtn(`complete-${item.id}`)}
                   onMouseLeave={() => setHoveredActionBtn(null)}
-                  title="Quick complete">
+                  title="Quick complete"
+                  aria-label="Quick complete">
                   <CheckCircle2 className="w-4 h-4" /></button>
                 <button
                   onClick={() => { setCompletingId(item.id); setCompleteForm({ outcome: '', conviction_delta: 0 }); }}
@@ -450,7 +452,8 @@ function FollowupsContent() {
                   style={{ borderRadius: 'var(--radius-md)', color: hoveredActionBtn === `outcome-${item.id}` ? 'var(--accent)' : 'var(--text-muted)', background: hoveredActionBtn === `outcome-${item.id}` ? 'var(--accent-muted)' : 'transparent', transition: 'all 150ms ease' }}
                   onMouseEnter={() => setHoveredActionBtn(`outcome-${item.id}`)}
                   onMouseLeave={() => setHoveredActionBtn(null)}
-                  title="Complete with outcome">
+                  title="Complete with outcome"
+                  aria-label="Complete with outcome">
                   <TrendingUp className="w-4 h-4" /></button>
                 <button
                   onClick={() => handleSkip(item.id)}
@@ -459,7 +462,8 @@ function FollowupsContent() {
                   style={{ borderRadius: 'var(--radius-md)', color: hoveredActionBtn === `skip-${item.id}` ? 'var(--danger)' : 'var(--text-muted)', background: hoveredActionBtn === `skip-${item.id}` ? 'var(--danger-muted)' : 'transparent', transition: 'all 150ms ease', opacity: processingIds.has(item.id) ? 0.4 : 1 }}
                   onMouseEnter={() => setHoveredActionBtn(`skip-${item.id}`)}
                   onMouseLeave={() => setHoveredActionBtn(null)}
-                  title="Skip">
+                  title="Skip"
+                  aria-label="Skip follow-up">
                   <XCircle className="w-4 h-4" /></button></div>
             )}
 
