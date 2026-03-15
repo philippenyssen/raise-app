@@ -213,7 +213,7 @@ export default function ModelPage() {
 
   const initializeDefaultSheets = useCallback(async () => {
     for (let i = 0; i < DEFAULT_SHEETS.length; i++) {
-      await fetch('/api/model', {
+      const res = await fetch('/api/model', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -221,6 +221,7 @@ export default function ModelPage() {
           sheet_order: i,
           data: DEFAULT_SHEETS[i].cells,
         }),});
+      if (!res.ok) throw new Error(`Failed to create sheet ${DEFAULT_SHEETS[i].name}`);
     }
     toast('Model initialized with default sheets');
     await fetchSheets();

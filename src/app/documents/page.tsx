@@ -104,10 +104,11 @@ export default function DocumentsPage() {
 
   async function handleFlagAction(flagId: string, action: 'addressed' | 'dismissed') {
     try {
-      await fetch('/api/document-flags', {
+      const res = await fetch('/api/document-flags', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: flagId, status: action }),});
+      if (!res.ok) throw new Error('Server error');
       setFlags(prev => prev.filter(f => f.id !== flagId));
       toast(action === 'addressed' ? 'Flag marked as addressed' : 'Flag dismissed', 'success');
     } catch {
