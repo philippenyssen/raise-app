@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
         by_type: byType,
         count: active.length,
       },
-    });
+    }, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
   } catch (err) {
     console.error('[COMMITMENTS_GET]', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: 'Failed to load revenue commitments' }, { status: 500 });

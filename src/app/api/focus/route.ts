@@ -223,7 +223,7 @@ export async function GET() {
     return NextResponse.json({
       priorityQueue: focusItems, quickWins, staleAlerts,
       weeklyBudget: { totalHoursRecommended: Math.round(totalHours * 10) / 10, meetingsRecommended: meetingsCount, followUpsRecommended: followUpsCount, investorCount: topItems.length },
-      generatedAt: new Date().toISOString(),});
+      generatedAt: new Date().toISOString(),}, { headers: { 'Cache-Control': 'private, max-age=15, stale-while-revalidate=30' } });
   } catch (error) {
     console.error('[FOCUS_GET]', error instanceof Error ? error.message : error);
     return NextResponse.json({ error: 'Failed to compute focus data' }, { status: 500 });

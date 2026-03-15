@@ -59,7 +59,7 @@ export async function GET() {
           closeDate: committedInvestors.length > 0
             ? committedInvestors[committedInvestors.length - 1].predictedCloseDate
             : 'N/A',},},
-      generated_at: new Date().toISOString(),});
+      generated_at: new Date().toISOString(),}, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
   } catch (error) {
     console.error('[FORECAST_GET]', error instanceof Error ? error.message : error);
     return NextResponse.json(
