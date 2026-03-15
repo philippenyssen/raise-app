@@ -40,8 +40,7 @@ Style: Short sentences. Active voice. Numbers first. No hedging. Bold key metric
 6. **Key Risks** (3 bullets): Honest, specific
 7. **Returns** (table): Bear/Base/Bull — Revenue at exit, MOIC, IRR
 
-Absolute maximum 400 words. Every word must earn its place.`,
-  },
+Absolute maximum 400 words. Every word must earn its place.`,},
 
   memo: {
     system: `You are an IC-grade investment memo writer at a top-10 global VC fund. Your memos are known for being rigorous, honest, and decision-enabling. You write for skeptical IC members who have seen thousands of deals.`,
@@ -58,8 +57,7 @@ Absolute maximum 400 words. Every word must earn its place.`,
 9. **Risk Factors**: Honest, specific, quantified where possible
 10. **Valuation**: Comparable companies, SOTP, return scenarios (Bear/Base/Bull)
 
-Every number must be sourced from the data room. Flag assumptions that are not verifiable. Be direct — no hedging language.`,
-  },
+Every number must be sourced from the data room. Flag assumptions that are not verifiable. Be direct — no hedging language.`,},
 
   dd_memo: {
     system: `You are a senior associate at a leading growth equity fund writing a comprehensive confirmatory due diligence memorandum. This document must be thorough enough to support a $100M+ investment decision and survive LP scrutiny.`,
@@ -81,8 +79,7 @@ Every number must be sourced from the data room. Flag assumptions that are not v
 14. **ESG & Compliance**: Environmental, social, governance assessment
 15. **Appendices**: Org chart, cap table, key contracts summary, patent list
 
-Be exhaustive. Use tables extensively. Cross-reference data room sources. Flag gaps in the data room that need to be filled.`,
-  },
+Be exhaustive. Use tables extensively. Cross-reference data room sources. Flag gaps in the data room that need to be filled.`,},
 
   deck: {
     system: `You are creating a management presentation deck for a Series C fundraise. This is a 30-50 slide equivalent document in markdown format. Each section represents a slide or slide group.`,
@@ -132,8 +129,7 @@ INVESTMENT (slides 29-35):
 - Process & timeline
 
 Use tables, bullet points, and bold metrics. Each slide should have 4-6 key points maximum. Include speaker notes as blockquotes below each slide.`,
-  },
-};
+  },};
 
 export async function generateDeliverable(
   type: string,
@@ -165,8 +161,7 @@ ${existingContext ? `EXISTING DOCUMENTS (for cross-reference and consistency):
 ${existingContext}` : ''}
 
 Generate the document now. Use markdown formatting. Every claim must be traceable to the data room context provided. If data is missing, use [PLACEHOLDER: describe what's needed] markers.`,
-    }],
-  });
+    }],});
 
   return response.content[0].type === 'text' ? response.content[0].text : '';
 }
@@ -203,8 +198,7 @@ Years: 2024A through 2030E (columns B through H).
 Row labels in column A.
 
 Return ONLY valid JSON, no markdown.`,
-    }],
-  });
+    }],});
 
   const text = response.content[0].type === 'text' ? response.content[0].text : '{}';
   try {
@@ -215,5 +209,4 @@ Return ONLY valid JSON, no markdown.`,
       try { return JSON.parse(match[0]); } catch { /* fall through */ }
     }
     return {};
-  }
-}
+  }}

@@ -13,11 +13,7 @@ import {
 import { fmtDateTime } from '@/lib/format';
 import { labelAccent, labelMuted, labelMuted10, labelSecondary, stAccent, stTextMuted, stTextPrimary, stTextSecondary } from '@/lib/styles';
 
-interface TimingIntel {
-  optimalDayOfWeek: string;
-  optimalTimeOfDay: string;
-  reasoning: string;
-}
+interface TimingIntel { optimalDayOfWeek: string; optimalTimeOfDay: string; reasoning: string; }
 
 interface VelocityIntel {
   acceleration: 'accelerating' | 'decelerating' | 'stable' | 'new' | 'gone_silent';
@@ -27,12 +23,7 @@ interface VelocityIntel {
   previousMeetings: number;
 }
 
-interface CascadeIntel {
-  cascadeChainLength: number;
-  signal: string;
-  keystoneName: string;
-  totalCascadeProbability: number;
-}
+interface CascadeIntel { cascadeChainLength: number; signal: string; keystoneName: string; totalCascadeProbability: number; }
 
 interface FollowupItem {
   id: string;
@@ -64,39 +55,32 @@ const ACTION_TYPE_CONFIG: Record<string, {
     label: 'Thank-You Note',
     icon: Mail,
     color: 'var(--accent)',
-    bgColor: 'var(--accent-muted)',
-  },
+    bgColor: 'var(--accent-muted)',},
   objection_response: {
     label: 'Objection Response',
     icon: MessageSquare,
     color: 'var(--text-primary)',
-    bgColor: 'var(--danger-muted)',
-  },
+    bgColor: 'var(--danger-muted)',},
   data_share: {
     label: 'Share Materials',
     icon: FolderOpen,
     color: 'var(--text-secondary)',
-    bgColor: 'var(--accent-muted)',
-  },
+    bgColor: 'var(--accent-muted)',},
   schedule_followup: {
     label: 'Schedule Meeting',
     icon: CalendarPlus,
     color: 'var(--text-secondary)',
-    bgColor: 'var(--success-muted)',
-  },
+    bgColor: 'var(--success-muted)',},
   warm_reengagement: {
     label: 'Re-engagement',
     icon: RefreshCw,
     color: 'var(--text-tertiary)',
-    bgColor: 'var(--warning-muted)',
-  },
+    bgColor: 'var(--warning-muted)',},
   milestone_update: {
     label: 'Milestone Update',
     icon: Milestone,
     color: 'var(--text-tertiary)',
-    bgColor: 'var(--warn-8)',
-  },
-};
+    bgColor: 'var(--warn-8)',},};
 
 function generateDraft(item: FollowupItem): { subject: string; body: string } {
   const name = item.investor_name;
@@ -126,8 +110,7 @@ function generateDraft(item: FollowupItem): { subject: string; body: string } {
     milestone_update: {
       subject: `Progress update — ${name}`,
       body: `Dear team,\n\nWanted to share a quick update on our progress since our last interaction:\n\n${desc}\n\nWe believe these developments are relevant to your evaluation and are happy to discuss further at your convenience.\n\nBest regards`,
-    },
-  };
+    },};
 
   return templates[item.action_type] || templates.milestone_update;
 }
@@ -150,13 +133,11 @@ function formatRelativeTime(dateStr: string): string {
   return `In ${diffDays}d`;
 }
 
-
 export default function FollowupsPage() {
   return (
     <Suspense fallback={<div className="space-y-6"><div className="h-8 w-64 skeleton animate-pulse" style={{ borderRadius: 'var(--radius-md)' }} /></div>}>
       <FollowupsContent />
-    </Suspense>
-  );
+    </Suspense>);
 }
 
 function FollowupsContent() {
@@ -210,8 +191,7 @@ function FollowupsContent() {
         status: 'completed',
         outcome: completeForm.outcome,
         conviction_delta: completeForm.conviction_delta,
-      }),
-    });
+      }),});
     setCompletingId(null);
     setCompleteForm({ outcome: '', conviction_delta: 0 });
     fetchFollowups();
@@ -221,8 +201,7 @@ function FollowupsContent() {
     await fetch('/api/followups', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, status: 'skipped' }),
-    });
+      body: JSON.stringify({ id, status: 'skipped' }),});
     fetchFollowups();
   }
 
@@ -230,8 +209,7 @@ function FollowupsContent() {
     await fetch('/api/followups', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, status: 'completed' }),
-    });
+      body: JSON.stringify({ id, status: 'completed' }),});
     fetchFollowups();
   }
 
@@ -291,8 +269,7 @@ function FollowupsContent() {
             <div
               className="w-8 h-8 flex items-center justify-center shrink-0"
               style={{ borderRadius: '50%', background: isOverdue ? 'var(--danger-muted)' : config.bgColor }}>
-              <Icon className="w-4 h-4" style={{ color: isOverdue ? 'var(--danger)' : config.color }} />
-            </div>
+              <Icon className="w-4 h-4" style={{ color: isOverdue ? 'var(--danger)' : config.color }} /></div>
 
             {/* Content */}
             <div className="flex-1 min-w-0">
@@ -300,29 +277,24 @@ function FollowupsContent() {
                 <span
                   className="badge"
                   style={{ fontSize: '10px', background: isOverdue ? 'var(--danger-muted)' : config.bgColor, color: isOverdue ? 'var(--text-tertiary)' : config.color }}>
-                  {config.label}
-                </span>
+                  {config.label}</span>
                 <Link
                   href={`/investors/${item.investor_id}`}
                   className="transition-colors"
                   style={labelAccent}
                   onMouseEnter={e => { e.currentTarget.style.color = 'var(--accent)'; }}
                   onMouseLeave={e => { e.currentTarget.style.color = 'var(--accent)'; }}>
-                  {item.investor_name}
-                </Link>
+                  {item.investor_name}</Link>
                 <span
                   className="flex items-center gap-1"
                   style={{ fontSize: '10px', color: isOverdue ? 'var(--danger)' : 'var(--text-muted)', fontWeight: 400 }}>
                   <Clock className="w-3 h-3" />
-                  {formatRelativeTime(item.due_at)}
-                </span>
-              </div>
+                  {formatRelativeTime(item.due_at)}</span></div>
 
               <p
                 className={isExpanded ? 'whitespace-pre-line' : 'line-clamp-2'}
                 style={labelSecondary}>
-                {item.description}
-              </p>
+                {item.description}</p>
 
               {item.description.includes('\n') && (
                 <button
@@ -331,8 +303,7 @@ function FollowupsContent() {
                   onMouseEnter={e => { e.currentTarget.style.color = 'var(--text-secondary)'; }}
                   onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; }}
                   className="mt-1 transition-colors">
-                  {isExpanded ? 'Show less' : 'Show more'}
-                </button>
+                  {isExpanded ? 'Show less' : 'Show more'}</button>
               )}
 
               {/* Completed outcome */}
@@ -346,17 +317,14 @@ function FollowupsContent() {
                       className="inline-flex items-center gap-0.5"
                       style={{ marginLeft: '0.5rem', color: item.conviction_delta > 0 ? 'var(--success)' : 'var(--danger)' }}>
                       {item.conviction_delta > 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-                      {item.conviction_delta > 0 ? '+' : ''}{item.conviction_delta}
-                    </span>
+                      {item.conviction_delta > 0 ? '+' : ''}{item.conviction_delta}</span>
                   )}
                   {item.measured_lift !== null && item.measured_lift !== undefined && (
                     <span
                       className="inline-flex items-center gap-0.5"
                       style={{ marginLeft: '0.5rem', color: item.measured_lift > 0 ? 'var(--success)' : item.measured_lift < 0 ? 'var(--danger)' : 'var(--text-muted)' }}>
-                      Measured: {item.measured_lift > 0 ? '+' : ''}{item.measured_lift} enthusiasm
-                    </span>
-                  )}
-                </div>
+                      Measured: {item.measured_lift > 0 ? '+' : ''}{item.measured_lift} enthusiasm</span>
+                  )}</div>
               )}
 
               {/* Completing form */}
@@ -368,20 +336,17 @@ function FollowupsContent() {
                     <label
                       className="block mb-1"
                       style={labelMuted10}>
-                      Outcome (what happened?)
-                    </label>
+                      Outcome (what happened?)</label>
                     <input
                       value={completeForm.outcome}
                       onChange={e => setCompleteForm(f => ({ ...f, outcome: e.target.value }))}
                       placeholder="e.g., Sent thank-you, they responded positively..."
-                      className="input" />
-                  </div>
+                      className="input" /></div>
                   <div>
                     <label
                       className="block mb-1"
                       style={labelMuted10}>
-                      Conviction change (-2 to +2)
-                    </label>
+                      Conviction change (-2 to +2)</label>
                     <div className="flex gap-1">
                       {[-2, -1, 0, 1, 2].map(val => (
                         <button
@@ -408,11 +373,8 @@ function FollowupsContent() {
                             if (completeForm.conviction_delta !== val) {
                               e.currentTarget.style.background = 'var(--surface-3)';
                             } }}>
-                          {val > 0 ? '+' : ''}{val}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+                          {val > 0 ? '+' : ''}{val}</button>
+                      ))}</div></div>
                   <div className="flex gap-2 pt-1">
                     <button
                       onClick={() => handleComplete(item.id)}
@@ -420,17 +382,12 @@ function FollowupsContent() {
                       style={{ background: 'var(--success)', color: 'var(--text-primary)' }}
                       onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent-hover)'; }}
                       onMouseLeave={e => { e.currentTarget.style.background = 'var(--success)'; }}>
-                      Complete
-                    </button>
+                      Complete</button>
                     <button
                       onClick={() => { setCompletingId(null); setCompleteForm({ outcome: '', conviction_delta: 0 }); }}
                       className="btn btn-sm btn-secondary">
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
+                      Cancel</button></div></div>
+              )}</div>
 
             {/* Actions */}
             {item.status === 'pending' && !isCompleting && (
@@ -442,8 +399,7 @@ function FollowupsContent() {
                   onMouseEnter={() => setHoveredActionBtn(`draft-${item.id}`)}
                   onMouseLeave={() => setHoveredActionBtn(null)}
                   title="Draft message">
-                  <PenLine className="w-4 h-4" />
-                </button>
+                  <PenLine className="w-4 h-4" /></button>
                 <button
                   onClick={() => handleQuickComplete(item.id)}
                   className="p-1.5 transition-colors"
@@ -451,8 +407,7 @@ function FollowupsContent() {
                   onMouseEnter={() => setHoveredActionBtn(`complete-${item.id}`)}
                   onMouseLeave={() => setHoveredActionBtn(null)}
                   title="Quick complete">
-                  <CheckCircle2 className="w-4 h-4" />
-                </button>
+                  <CheckCircle2 className="w-4 h-4" /></button>
                 <button
                   onClick={() => { setCompletingId(item.id); setCompleteForm({ outcome: '', conviction_delta: 0 }); }}
                   className="p-1.5 transition-colors"
@@ -460,8 +415,7 @@ function FollowupsContent() {
                   onMouseEnter={() => setHoveredActionBtn(`outcome-${item.id}`)}
                   onMouseLeave={() => setHoveredActionBtn(null)}
                   title="Complete with outcome">
-                  <TrendingUp className="w-4 h-4" />
-                </button>
+                  <TrendingUp className="w-4 h-4" /></button>
                 <button
                   onClick={() => handleSkip(item.id)}
                   className="p-1.5 transition-colors"
@@ -469,24 +423,18 @@ function FollowupsContent() {
                   onMouseEnter={() => setHoveredActionBtn(`skip-${item.id}`)}
                   onMouseLeave={() => setHoveredActionBtn(null)}
                   title="Skip">
-                  <XCircle className="w-4 h-4" />
-                </button>
-              </div>
+                  <XCircle className="w-4 h-4" /></button></div>
             )}
 
             {item.status === 'completed' && (
               <span className="flex items-center gap-1 shrink-0" style={labelSecondary}>
-                <CheckCircle2 className="w-3.5 h-3.5" />
-              </span>
+                <CheckCircle2 className="w-3.5 h-3.5" /></span>
             )}
 
             {item.status === 'skipped' && (
               <span className="flex items-center gap-1 shrink-0" style={labelMuted}>
-                <XCircle className="w-3.5 h-3.5" />
-              </span>
-            )}
-          </div>
-        </div>
+                <XCircle className="w-3.5 h-3.5" /></span>
+            )}</div></div>
 
         {/* Intelligence strip */}
         {item.status === 'pending' && (item.timing || item.velocity || item.cascade) && (
@@ -501,13 +449,10 @@ function FollowupsContent() {
                 <span
                   className="flex items-center justify-center"
                   style={{ width: '16px', height: '16px', borderRadius: '50%', background: 'var(--accent-muted)' }}>
-                  <Timer className="w-2.5 h-2.5" style={stAccent} />
-                </span>
+                  <Timer className="w-2.5 h-2.5" style={stAccent} /></span>
                 <span style={stTextMuted}>Send</span>
                 <span style={{ color: 'var(--accent)', fontWeight: 400 }}>
-                  {item.timing.optimalDayOfWeek} {item.timing.optimalTimeOfDay}
-                </span>
-              </div>
+                  {item.timing.optimalDayOfWeek} {item.timing.optimalTimeOfDay}</span></div>
             )}
 
             {/* Engagement velocity */}
@@ -517,8 +462,7 @@ function FollowupsContent() {
                 decelerating: { color: 'var(--text-primary)', bg: 'var(--danger-muted)', icon: ArrowDownRight, label: 'Falling' },
                 stable: { color: 'var(--text-muted)', bg: 'var(--surface-3)', icon: Activity, label: 'Stable' },
                 new: { color: 'var(--text-tertiary)', bg: 'var(--warning-muted)', icon: Zap, label: 'New' },
-                gone_silent: { color: 'var(--text-primary)', bg: 'var(--danger-muted)', icon: AlertTriangle, label: 'Silent' },
-              };
+                gone_silent: { color: 'var(--text-primary)', bg: 'var(--danger-muted)', icon: AlertTriangle, label: 'Silent' },};
               const vc = velConfig[item.velocity!.acceleration] || velConfig.stable;
               const VelIcon = vc.icon;
               return (
@@ -529,15 +473,13 @@ function FollowupsContent() {
                   <span
                     className="flex items-center justify-center"
                     style={{ width: '16px', height: '16px', borderRadius: '50%', background: vc.bg }}>
-                    <VelIcon className="w-2.5 h-2.5" style={{ color: vc.color }} />
-                  </span>
+                    <VelIcon className="w-2.5 h-2.5" style={{ color: vc.color }} /></span>
                   <span style={stTextMuted}>Velocity</span>
                   <span style={{ color: vc.color, fontWeight: 400 }}>{vc.label}</span>
                   {item.velocity!.daysSinceLastMeeting !== null && (
                     <span style={stTextMuted}>({item.velocity!.daysSinceLastMeeting}d ago)</span>
                   )}
-                </div>
-              );
+                </div>);
             })()}
 
             {/* Network cascade */}
@@ -549,15 +491,11 @@ function FollowupsContent() {
                 <span
                   className="flex items-center justify-center"
                   style={{ width: '16px', height: '16px', borderRadius: '50%', background: 'var(--accent-muted)' }}>
-                  <Network className="w-2.5 h-2.5" style={stTextSecondary} />
-                </span>
+                  <Network className="w-2.5 h-2.5" style={stTextSecondary} /></span>
                 <span style={stTextMuted}>Cascade</span>
                 <span style={{ color: 'var(--text-secondary)', fontWeight: 400 }}>
-                  {item.cascade.cascadeChainLength} investor{item.cascade.cascadeChainLength !== 1 ? 's' : ''}
-                </span>
-              </div>
-            )}
-          </div>
+                  {item.cascade.cascadeChainLength} investor{item.cascade.cascadeChainLength !== 1 ? 's' : ''}</span></div>
+            )}</div>
         )}
 
         {/* Draft message panel */}
@@ -569,12 +507,9 @@ function FollowupsContent() {
               <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-3)' }}>
                 <span className="flex items-center gap-1.5" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--accent)' }}>
                   <PenLine className="w-3.5 h-3.5" />
-                  Draft Message
-                </span>
+                  Draft Message</span>
                 <span style={labelMuted10}>
-                  Edit before sending
-                </span>
-              </div>
+                  Edit before sending</span></div>
 
               {/* Subject */}
               <div style={{ marginBottom: 'var(--space-2)' }}>
@@ -588,14 +523,10 @@ function FollowupsContent() {
                     className="flex items-center gap-1 p-1"
                     style={{ borderRadius: 'var(--radius-sm)', fontSize: '10px', color: copiedField === `subject-${item.id}` ? 'var(--success)' : 'var(--text-muted)', background: 'transparent', border: 'none', cursor: 'pointer', transition: 'color 150ms ease' }}>
                     {copiedField === `subject-${item.id}` ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-                    {copiedField === `subject-${item.id}` ? 'Copied' : 'Copy'}
-                  </button>
-                </div>
+                    {copiedField === `subject-${item.id}` ? 'Copied' : 'Copy'}</button></div>
                 <div
                   style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-md)', padding: 'var(--space-2) var(--space-3)', fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', fontWeight: 400 }}>
-                  {draft.subject}
-                </div>
-              </div>
+                  {draft.subject}</div></div>
 
               {/* Body */}
               <div>
@@ -609,14 +540,10 @@ function FollowupsContent() {
                     className="flex items-center gap-1 p-1"
                     style={{ borderRadius: 'var(--radius-sm)', fontSize: '10px', color: copiedField === `body-${item.id}` ? 'var(--success)' : 'var(--text-muted)', background: 'transparent', border: 'none', cursor: 'pointer', transition: 'color 150ms ease' }}>
                     {copiedField === `body-${item.id}` ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-                    {copiedField === `body-${item.id}` ? 'Copied' : 'Copy'}
-                  </button>
-                </div>
+                    {copiedField === `body-${item.id}` ? 'Copied' : 'Copy'}</button></div>
                 <div
                   style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-md)', padding: 'var(--space-3)', fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', lineHeight: 1.6, whiteSpace: 'pre-line' as const }}>
-                  {draft.body}
-                </div>
-              </div>
+                  {draft.body}</div></div>
 
               {/* Copy all button */}
               <button
@@ -635,10 +562,8 @@ function FollowupsContent() {
                     e.currentTarget.style.background = 'var(--accent-muted)';
                   } }}>
                 {copiedField === `all-${item.id}` ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                {copiedField === `all-${item.id}` ? 'Copied to clipboard' : 'Copy full message'}
-              </button>
-            </div>
-          );
+                {copiedField === `all-${item.id}` ? 'Copied to clipboard' : 'Copy full message'}</button>
+            </div>);
         })()}
 
         {/* Due date footer */}
@@ -647,15 +572,12 @@ function FollowupsContent() {
           style={{ padding: '0.5rem var(--space-4)', borderTop: isOverdue ? '1px solid var(--fg-6)' : '1px solid var(--border-subtle)', fontSize: '10px', color: 'var(--text-muted)' }}>
           {isOverdue ? (
             <span style={{ color: 'var(--text-primary)', fontWeight: 400 }}>
-              {formatRelativeTime(item.due_at)} — was due {fmtDateTime(item.due_at)}
-            </span>
+              {formatRelativeTime(item.due_at)} — was due {fmtDateTime(item.due_at)}</span>
           ) : (
             <span>Due: {fmtDateTime(item.due_at)}</span>
           )}
-          {item.completed_at && <span>Completed: {fmtDateTime(item.completed_at)}</span>}
-        </div>
-      </div>
-    );
+          {item.completed_at && <span>Completed: {fmtDateTime(item.completed_at)}</span>}</div>
+      </div>);
   }
 
   function renderSection(
@@ -672,8 +594,7 @@ function FollowupsContent() {
       red: 'var(--danger)',
       blue: 'var(--accent)',
       zinc: 'var(--text-secondary)',
-      green: 'var(--success)',
-    };
+      green: 'var(--success)',};
 
     return (
       <div>
@@ -685,21 +606,16 @@ function FollowupsContent() {
             <h2 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: accentColorMap[accent] }}>{title}</h2>
             <span
               style={{ fontSize: 'var(--font-size-xs)', padding: '0.125rem 0.375rem', borderRadius: '9999px', background: accent === 'red' ? 'var(--danger-muted)' : 'var(--surface-3)', color: accent === 'red' ? 'var(--text-tertiary)' : 'var(--text-secondary)' }}>
-              {items.length}
-            </span>
-          </div>
+              {items.length}</span></div>
           {expanded
             ? <ChevronUp className="w-4 h-4" style={stTextMuted} />
             : <ChevronDown className="w-4 h-4" style={stTextMuted} />
-          }
-        </button>
+          }</button>
         {expanded && (
           <div className="space-y-2">
-            {items.map(item => renderFollowupCard(item, showOverdue))}
-          </div>
+            {items.map(item => renderFollowupCard(item, showOverdue))}</div>
         )}
-      </div>
-    );
+      </div>);
   }
 
   return (
@@ -709,20 +625,14 @@ function FollowupsContent() {
         <div>
           <h1 className="page-title">Follow-ups</h1>
           <p style={{ ...stTextMuted, fontSize: 'var(--font-size-sm)', marginTop: 'var(--space-1)' }}>
-            Automated follow-up choreography after investor meetings. Track actions, record outcomes, and learn what works.
-          </p>
+            Automated follow-up choreography after investor meetings. Track actions, record outcomes, and learn what works.</p>
           {investorFilter && followups.length > 0 && (
             <div className="flex items-center gap-2 mt-2">
               <span className="text-xs px-2 py-1 rounded-md" style={{ background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid var(--accent-10)' }}>
-                Filtered: {followups[0]?.investor_name || 'Selected investor'}
-              </span>
+                Filtered: {followups[0]?.investor_name || 'Selected investor'}</span>
               <Link href="/followups" className="text-xs" style={{ color: 'var(--text-muted)', textDecoration: 'underline' }}>
-                Show all
-              </Link>
-            </div>
-          )}
-        </div>
-      </div>
+                Show all</Link></div>
+          )}</div></div>
 
       {/* Stats row */}
       <div className="grid grid-cols-3 md:grid-cols-5 gap-3 card-stagger">
@@ -731,30 +641,23 @@ function FollowupsContent() {
           <div
             className="metric-value mt-1"
             style={{ color: overdue.length > 0 ? 'var(--danger)' : 'var(--text-muted)' }}>
-            {overdue.length}
-          </div>
-        </div>
+            {overdue.length}</div></div>
         <div className="card-metric" style={{ padding: 'var(--space-3)' }}>
           <div className="metric-label">Due Today</div>
           <div
             className="metric-value mt-1"
             style={{ color: dueToday.length > 0 ? 'var(--accent)' : 'var(--text-muted)' }}>
-            {dueToday.length}
-          </div>
-        </div>
+            {dueToday.length}</div></div>
         <div className="card-metric" style={{ padding: 'var(--space-3)' }}>
           <div className="metric-label">Completed</div>
-          <div className="metric-value mt-1" style={stTextSecondary}>{completed.length}</div>
-        </div>
+          <div className="metric-value mt-1" style={stTextSecondary}>{completed.length}</div></div>
         <div className="card-metric" style={{ padding: 'var(--space-3)' }}>
           <div className="metric-label">Avg Conviction Change</div>
           <div
             className="metric-value mt-1 flex items-center gap-1"
             style={{ color: avgDelta > 0 ? 'var(--success)' : avgDelta < 0 ? 'var(--danger)' : 'var(--text-muted)' }}>
             {avgDelta > 0 ? <TrendingUp className="w-5 h-5" /> : avgDelta < 0 ? <TrendingDown className="w-5 h-5" /> : <Minus className="w-5 h-5" />}
-            {avgDelta === 0 ? '0' : (avgDelta > 0 ? '+' : '') + avgDelta.toFixed(1)}
-          </div>
-        </div>
+            {avgDelta === 0 ? '0' : (avgDelta > 0 ? '+' : '') + avgDelta.toFixed(1)}</div></div>
         <div className="card-metric" style={{ padding: 'var(--space-3)' }}>
           <div className="metric-label">Measured Efficacy</div>
           <div
@@ -767,15 +670,11 @@ function FollowupsContent() {
               </>
             ) : (
               <span style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>No data</span>
-            )}
-          </div>
+            )}</div>
           {bestActionType && (
             <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: 'var(--space-1)' }}>
-              Best: {ACTION_TYPE_CONFIG[bestActionType[0]]?.label || bestActionType[0]}
-            </div>
-          )}
-        </div>
-      </div>
+              Best: {ACTION_TYPE_CONFIG[bestActionType[0]]?.label || bestActionType[0]}</div>
+          )}</div></div>
 
       {/* Filter tabs */}
       <div
@@ -799,12 +698,9 @@ function FollowupsContent() {
             {f === 'pending' && overdue.length > 0 && (
               <span
                 style={{ marginLeft: '0.375rem', background: 'var(--danger)', color: 'var(--text-primary)', fontSize: '9px', padding: '0 0.25rem', borderRadius: '9999px' }}>
-                {overdue.length}
-              </span>
-            )}
-          </button>
-        ))}
-      </div>
+                {overdue.length}</span>
+            )}</button>
+        ))}</div>
 
       {/* Content */}
       {loading ? (
@@ -819,30 +715,22 @@ function FollowupsContent() {
                     <div className="skeleton" style={{ width: '100px', height: '14px', borderRadius: 'var(--radius-sm)' }} />
                   </div>
                   <div className="skeleton" style={{ width: `${70 - i * 8}%`, height: '14px', borderRadius: 'var(--radius-sm)' }}
-                    />
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+                    /></div></div></div>
+          ))}</div>
       ) : fetchError ? (
         <div
           className="text-center py-12"
           style={{ borderRadius: 'var(--radius-xl)' }}>
           <AlertTriangle className="w-10 h-10 mx-auto mb-3" style={{ color: 'var(--danger)' }} />
           <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', marginBottom: 'var(--space-1)' }}>
-            Failed to load follow-ups
-          </h3>
+            Failed to load follow-ups</h3>
           <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-4)' }}>
-            {fetchError}
-          </p>
+            {fetchError}</p>
           <button
             onClick={fetchFollowups}
             className="btn btn-secondary btn-sm inline-flex items-center gap-2">
             <RefreshCw className="w-3.5 h-3.5" />
-            Retry
-          </button>
-        </div>
+            Retry</button></div>
       ) : followups.length === 0 ? (
         <div
           className="text-center py-12"
@@ -857,10 +745,7 @@ function FollowupsContent() {
               style={stAccent}
               onMouseEnter={e => { e.currentTarget.style.color = 'var(--accent)'; }}
               onMouseLeave={e => { e.currentTarget.style.color = 'var(--accent)'; }}>
-              Log a meeting
-            </Link>
-          </p>
-        </div>
+              Log a meeting</Link></p></div>
       ) : filter === 'pending' ? (
         <div className="space-y-6">
           {renderSection('Overdue', overdue, overdueExpanded, setOverdueExpanded, 'red', true)}
@@ -869,22 +754,17 @@ function FollowupsContent() {
           {later.length > 0 && (
             <div>
               <h2 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-muted)', marginBottom: 'var(--space-3)' }}>
-                Later ({later.length})
-              </h2>
+                Later ({later.length})</h2>
               <div className="space-y-2">
-                {later.map(item => renderFollowupCard(item))}
-              </div>
-            </div>
-          )}
-        </div>
+                {later.map(item => renderFollowupCard(item))}</div></div>
+          )}</div>
       ) : (
         <div className="space-y-2">
           {[...followups].sort((a, b) => {
             const aOverdue = a.status === 'pending' && new Date(a.due_at) < now ? 1 : 0;
             const bOverdue = b.status === 'pending' && new Date(b.due_at) < now ? 1 : 0;
             return bOverdue - aOverdue;
-          }).map(item => renderFollowupCard(item))}
-        </div>
+          }).map(item => renderFollowupCard(item))}</div>
       )}
 
       {/* Learning section */}
@@ -895,12 +775,9 @@ function FollowupsContent() {
             style={{ background: 'var(--accent-muted)', borderBottom: '1px solid var(--border-subtle)', padding: 'var(--space-4) var(--space-5)' }}>
             <h2 className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 300 }}>
               <Users className="w-4 h-4" style={{ color: 'var(--chart-4)' }} />
-              Follow-up Effectiveness
-            </h2>
+              Follow-up Effectiveness</h2>
             <p style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: 'var(--space-1)' }}>
-              Which follow-up types drive the most conviction change?
-            </p>
-          </div>
+              Which follow-up types drive the most conviction change?</p></div>
           <div style={{ padding: 'var(--space-4)' }}>
             <div className="space-y-2">
               {Object.entries(byType)
@@ -914,26 +791,17 @@ function FollowupsContent() {
                       <div
                         className="w-6 h-6 flex items-center justify-center"
                         style={{ borderRadius: 'var(--radius-sm)', background: config.bgColor }}>
-                        <Icon className="w-3.5 h-3.5" style={{ color: config.color }} />
-                      </div>
+                        <Icon className="w-3.5 h-3.5" style={{ color: config.color }} /></div>
                       <span className="flex-1" style={labelSecondary}>
-                        {config.label}
-                      </span>
+                        {config.label}</span>
                       <span style={labelMuted}>
-                        {stats.count} done
-                      </span>
+                        {stats.count} done</span>
                       <span
                         className="flex items-center gap-0.5"
                         style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: avgTypeDelta > 0 ? 'var(--success)' : avgTypeDelta < 0 ? 'var(--danger)' : 'var(--text-muted)' }}>
-                        {avgTypeDelta > 0 ? '+' : ''}{avgTypeDelta.toFixed(1)} avg
-                      </span>
-                    </div>
-                  );
-                })}
-            </div>
-          </div>
-        </div>
+                        {avgTypeDelta > 0 ? '+' : ''}{avgTypeDelta.toFixed(1)} avg</span>
+                    </div>);
+                })}</div></div></div>
       )}
-    </div>
-  );
+    </div>);
 }

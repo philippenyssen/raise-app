@@ -48,8 +48,7 @@ function computeRaiseVelocity(ctx: Awaited<ReturnType<typeof getFullContext>>): 
     if (entry.toLowerCase().includes('moved to') || entry.toLowerCase().includes('status')) {
       if (isRecent) recentAdvances++;
       else if (isOlder) olderAdvances++;
-    }
-  }
+    }}
 
   const meetingsPerWeek = Math.round((recentMeetings / 2) * 10) / 10;
   const stageAdvancesPerWeek = Math.round((recentAdvances / 2) * 10) / 10;
@@ -156,8 +155,7 @@ function generateRecommendations(ctx: Awaited<ReturnType<typeof getFullContext>>
     if (topCascade.networkBottleneck) {
       const bottleneckInv = ctx.investors.find(i => i.id === topCascade.networkBottleneck!.investorId);
       if (bottleneckInv && bottleneckInv.stageHealth !== 'on_track') recs.push({ priority: 2, category: 'risk', title: `Network bottleneck at risk: ${topCascade.networkBottleneck.investorName}`, rationale: `${topCascade.networkBottleneck.investorName} is the bottleneck in ${topCascade.keystoneName}'s cascade chain (${topCascade.cascadeChain.length} downstream investors). Currently ${bottleneckInv.stageHealth}. If this investor passes, the cascade collapses.`, action: `Prioritize ${topCascade.networkBottleneck.investorName} above all others. Allocate CEO time directly. Remove blockers.`, expectedImpact: `Securing this bottleneck unlocks ${topCascade.cascadeChain.length} downstream closes through network effects.`, deadline: 'This week' });
-    }
-  }
+    }}
 
   const highFomo = ctx.fomoDynamics.filter(f => f.fomoIntensity === 'high');
   if (highFomo.length > 0) recs.push({ priority: 2, category: 'timing', title: `FOMO window open: ${highFomo.length} high-intensity competitive trigger(s)`, rationale: `${highFomo.map(f => `${f.advancingInvestor} advancing to ${f.advancingTo}, affecting ${f.affectedInvestors.length} investors`).join('; ')}. Competitive pressure is at peak — this is a time-limited opportunity.`, action: `Contact affected investors within 24 hours with process update: "we're seeing strong momentum in the process." Don't name names but signal urgency.`, expectedImpact: 'FOMO-driven engagement typically compresses decision timelines by 40-60%.', deadline: 'Today' });
@@ -226,12 +224,10 @@ export async function GET() {
           investorForecasts: raiseForecastResult.forecasts.slice(0, 10).map(f => ({ name: f.investorName, stage: f.currentStage, days: f.predictedDaysToClose, confidence: f.confidence })),
         };
       })() : null,
-      generatedAt: new Date().toISOString(),
-    };
+      generatedAt: new Date().toISOString(),};
 
     return NextResponse.json(assessment);
   } catch (error) {
     console.error('Strategic assessment error:', error);
     return NextResponse.json({ error: 'Failed to compute strategic assessment', detail: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 });
-  }
-}
+  }}

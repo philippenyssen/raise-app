@@ -14,10 +14,8 @@ async function edgarFetch(url: string): Promise<Response> {
   return fetch(url, {
     headers: {
       'User-Agent': USER_AGENT,
-      'Accept': 'application/json',
-    },
-    signal: AbortSignal.timeout(15000),
-  });
+      'Accept': 'application/json',},
+    signal: AbortSignal.timeout(15000),});
 }
 
 // ---------------------------------------------------------------------------
@@ -86,10 +84,8 @@ export const secEdgarFormD: EnrichmentProvider = {
                 confidence: 1.0,
                 source_url: `https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&filenum=${fileNum}&type=D&dateb=&owner=include&count=10`,
               });
-            }
-          }
-        }
-      }
+            }}
+        }}
 
       // Also try the EDGAR company search API for CIK lookup
       const cikRes = await edgarFetch(
@@ -106,10 +102,8 @@ export const secEdgarFormD: EnrichmentProvider = {
               field_name: 'sec_entity_name',
               field_value: firstHit.entity_name,
               category: 'identity',
-              confidence: 0.9,
-            });
-          }
-        }
+              confidence: 0.9,});
+          }}
       }
 
       return { source_id: 'sec_edgar_formd', success: true, fields, fetched_at: now };
@@ -119,11 +113,9 @@ export const secEdgarFormD: EnrichmentProvider = {
         success: false,
         fields,
         error: error instanceof Error ? error.message : 'Unknown error',
-        fetched_at: now,
-      };
+        fetched_at: now,};
     }
-  },
-};
+  },};
 
 // ---------------------------------------------------------------------------
 // Form ADV Provider — Investment Adviser registration
@@ -150,10 +142,8 @@ export const secEdgarFormAdv: EnrichmentProvider = {
       const res = await fetch(searchUrl, {
         headers: {
           'User-Agent': USER_AGENT,
-          'Accept': 'application/json',
-        },
-        signal: AbortSignal.timeout(15000),
-      });
+          'Accept': 'application/json',},
+        signal: AbortSignal.timeout(15000),});
 
       if (!res.ok) {
         return { source_id: 'sec_edgar_formadv', success: false, fields, error: `HTTP ${res.status}`, fetched_at: now };
@@ -190,8 +180,7 @@ export const secEdgarFormAdv: EnrichmentProvider = {
           const detailUrl = `https://api.adviserinfo.sec.gov/IAPD/Content/Search/api/Organization/Detail/${crd}`;
           const detailRes = await fetch(detailUrl, {
             headers: { 'User-Agent': USER_AGENT, 'Accept': 'application/json' },
-            signal: AbortSignal.timeout(15000),
-          });
+            signal: AbortSignal.timeout(15000),});
 
           if (detailRes.ok) {
             const detail = await detailRes.json();
@@ -217,8 +206,7 @@ export const secEdgarFormAdv: EnrichmentProvider = {
                 field_name: 'number_of_clients',
                 field_value: String(adv.NumberOfClients || adv.TotalNumberOfAccounts),
                 category: 'financials',
-                confidence: 1.0,
-              });
+                confidence: 1.0,});
             }
 
             // Main office address
@@ -232,10 +220,8 @@ export const secEdgarFormAdv: EnrichmentProvider = {
                   field_name: 'main_office_address',
                   field_value: fullAddr,
                   category: 'contact',
-                  confidence: 1.0,
-                });
-              }
-            }
+                  confidence: 1.0,});
+              }}
 
             // Website
             if (adv.WebsiteAddress) {
@@ -243,8 +229,7 @@ export const secEdgarFormAdv: EnrichmentProvider = {
                 field_name: 'website',
                 field_value: adv.WebsiteAddress,
                 category: 'contact',
-                confidence: 1.0,
-              });
+                confidence: 1.0,});
             }
 
             // SEC registration status
@@ -253,8 +238,7 @@ export const secEdgarFormAdv: EnrichmentProvider = {
                 field_name: 'sec_registered',
                 field_value: String(adv.SECRegistered),
                 category: 'regulatory',
-                confidence: 1.0,
-              });
+                confidence: 1.0,});
             }
 
             // Key personnel from brochures
@@ -273,20 +257,16 @@ export const secEdgarFormAdv: EnrichmentProvider = {
                       confidence: 0.95,
                       source_url: `https://adviserinfo.sec.gov/firm/summary/${crd}`,
                     });
-                  }
-                }
-              }
-            }
-          }
-        }
+                  }}
+              }}
+          }}
 
         // Total results count
         fields.push({
           field_name: 'iapd_results_count',
           field_value: String(results.length),
           category: 'regulatory',
-          confidence: 1.0,
-        });
+          confidence: 1.0,});
       }
 
       return { source_id: 'sec_edgar_formadv', success: true, fields, fetched_at: now };
@@ -296,11 +276,9 @@ export const secEdgarFormAdv: EnrichmentProvider = {
         success: false,
         fields,
         error: error instanceof Error ? error.message : 'Unknown error',
-        fetched_at: now,
-      };
+        fetched_at: now,};
     }
-  },
-};
+  },};
 
 // ---------------------------------------------------------------------------
 // Form 13F Provider — Institutional holdings (quarterly)
@@ -347,16 +325,14 @@ export const secEdgar13F: EnrichmentProvider = {
             field_name: '13f_latest_filing_date',
             field_value: latest.file_date,
             category: 'regulatory',
-            confidence: 1.0,
-          });
+            confidence: 1.0,});
         }
 
         fields.push({
           field_name: '13f_institutional_manager',
           field_value: 'true',
           category: 'identity',
-          confidence: 0.95,
-        });
+          confidence: 0.95,});
       }
 
       return { source_id: 'sec_edgar_13f', success: true, fields, fetched_at: now };
@@ -366,8 +342,6 @@ export const secEdgar13F: EnrichmentProvider = {
         success: false,
         fields,
         error: error instanceof Error ? error.message : 'Unknown error',
-        fetched_at: now,
-      };
+        fetched_at: now,};
     }
-  },
-};
+  },};

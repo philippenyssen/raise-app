@@ -106,9 +106,7 @@ const STAGE_COLORS: Record<string, string> = {
   engaged: 'var(--chart-2)',
   in_dd: 'var(--chart-1)',
   term_sheet: 'var(--accent)',
-  closed: 'var(--text-primary)',
-};
-
+  closed: 'var(--text-primary)',};
 
 // ── Main Page ────────────────────────────────────────────────────────
 
@@ -117,8 +115,7 @@ export default function AnalyticsPage() {
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(
-    new Set(['funnel', 'velocity', 'risks', 'engagement', 'winloss'])
-  );
+    new Set(['funnel', 'velocity', 'risks', 'engagement', 'winloss']));
   const [refreshHovered, setRefreshHovered] = useState(false);
   const [retryHovered, setRetryHovered] = useState(false);
 
@@ -134,16 +131,14 @@ export default function AnalyticsPage() {
       toast('Failed to load analytics', 'error');
     } finally {
       setLoading(false);
-    }
-  }
+    }}
 
   function toggleSection(section: string) {
     setExpandedSections(prev => {
       const next = new Set(prev);
       if (next.has(section)) next.delete(section);
       else next.add(section);
-      return next;
-    });
+      return next;});
   }
 
   // ── Loading ────────────────────────────────────────────────────────
@@ -155,12 +150,10 @@ export default function AnalyticsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {[...Array(4)].map((_, i) => (
             <div key={i} className="h-24 rounded-xl animate-pulse" style={stSurface1} />
-          ))}
-        </div>
+          ))}</div>
         <div className="h-64 rounded-xl animate-pulse" style={stSurface1} />
         <div className="h-48 rounded-xl animate-pulse" style={stSurface1} />
-      </div>
-    );
+      </div>);
   }
 
   if (!data) {
@@ -175,11 +168,8 @@ export default function AnalyticsPage() {
             onMouseLeave={() => setRetryHovered(false)}
             className="px-4 py-2 rounded-lg text-sm transition-colors"
             style={{ background: retryHovered ? 'var(--surface-3)' : 'var(--surface-2)', ...stTextPrimary }}>
-            Retry
-          </button>
-        </div>
-      </div>
-    );
+            Retry</button></div>
+      </div>);
   }
 
   const { funnel, velocity, engagement, risks, winLoss, summary } = data;
@@ -191,23 +181,17 @@ export default function AnalyticsPage() {
         <div>
           <h1 className="page-title">Process Analytics</h1>
           <p className="text-sm mt-1" style={stTextMuted}>
-            Deep funnel, velocity, and risk analysis
-          </p>
-        </div>
+            Deep funnel, velocity, and risk analysis</p></div>
         <div className="flex items-center gap-3">
           <span style={labelMuted10}>
-            Updated {new Date(data.generatedAt).toLocaleTimeString()}
-          </span>
+            Updated {new Date(data.generatedAt).toLocaleTimeString()}</span>
           <button
             onClick={fetchAnalytics}
             onMouseEnter={() => setRefreshHovered(true)}
             onMouseLeave={() => setRefreshHovered(false)}
             className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs transition-colors"
             style={{ background: refreshHovered ? 'var(--surface-3)' : 'var(--surface-2)', ...stTextPrimary }}>
-            <RefreshCw className="w-3.5 h-3.5" /> Refresh
-          </button>
-        </div>
-      </div>
+            <RefreshCw className="w-3.5 h-3.5" /> Refresh</button></div></div>
 
       {/* ── Summary Cards ───────────────────────────────────────── */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 card-stagger">
@@ -234,8 +218,7 @@ export default function AnalyticsPage() {
           value={String(velocity.totalMeetings)}
           sub={`${velocity.meetingsThisWeek} this week`}
           icon={<Calendar className="w-4 h-4" />}
-          color="var(--accent-muted)"/>
-      </div>
+          color="var(--accent-muted)"/></div>
 
       {/* ── Bottleneck Alert ─────────────────────────────────────── */}
       {funnel.bottleneck && funnel.bottleneck.count > 2 && (
@@ -245,19 +228,14 @@ export default function AnalyticsPage() {
           <AlertTriangle className="w-5 h-5 shrink-0" style={stTextTertiary} />
           <div>
             <div className="text-sm font-normal" style={stTextTertiary}>
-              Bottleneck Detected: {funnel.bottleneck.label}
-            </div>
+              Bottleneck Detected: {funnel.bottleneck.label}</div>
             <div className="text-xs mt-0.5" style={stTextTertiary}>
               {funnel.bottleneck.count} investors stuck at this stage.
-              Consider targeted follow-ups to move them forward.
-            </div>
-          </div>
+              Consider targeted follow-ups to move them forward.</div></div>
           <Link
             href="/pipeline"
             className="ml-auto shrink-0 flex items-center gap-1" style={labelTertiary}>
-            Pipeline <ArrowRight className="w-3 h-3" />
-          </Link>
-        </div>
+            Pipeline <ArrowRight className="w-3 h-3" /></Link></div>
       )}
 
       {/* ── Timeline Risk Alert ──────────────────────────────────── */}
@@ -271,17 +249,13 @@ export default function AnalyticsPage() {
             />
           <div>
             <div className="text-sm font-normal" style={{ color: risks.timelineRisk.level === 'high' ? 'var(--danger)' : 'var(--warning)' }}>
-              Timeline Risk: {risks.timelineRisk.level === 'high' ? 'Critical' : 'Elevated'}
-            </div>
+              Timeline Risk: {risks.timelineRisk.level === 'high' ? 'Critical' : 'Elevated'}</div>
             <div className="text-xs mt-0.5" style={stTextTertiary}>
               {risks.timelineRisk.daysRemaining !== null
                 ? `${risks.timelineRisk.daysRemaining} days remaining to target close`
                 : 'No target close date set'}
               {risks.timelineRisk.targetDate && ` (${new Date(risks.timelineRisk.targetDate).toLocaleDateString()})`}.
-              No investors in advanced stages (DD+) yet.
-            </div>
-          </div>
-        </div>
+              No investors in advanced stages (DD+) yet.</div></div></div>
       )}
 
       {/* ═══════════════════════════════════════════════════════════
@@ -297,8 +271,7 @@ export default function AnalyticsPage() {
           {/* Horizontal funnel bars */}
           <div>
             <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
-              Pipeline Distribution
-            </h3>
+              Pipeline Distribution</h3>
             <div className="space-y-2">
               {summary.pipelineStages.map((stage, idx) => {
                 const maxCount = Math.max(...summary.pipelineStages.map(s => s.count), 1);
@@ -306,8 +279,7 @@ export default function AnalyticsPage() {
                 return (
                   <div key={stage.stage} className="flex items-center gap-3">
                     <div className="w-24 text-xs text-right shrink-0" style={stTextTertiary}>
-                      {stage.label}
-                    </div>
+                      {stage.label}</div>
                     <div className="flex-1 h-8 rounded overflow-hidden relative" style={stSurface0}>
                       <div
                         className="h-full rounded transition-all duration-700 ease-out flex items-center px-3"
@@ -316,11 +288,8 @@ export default function AnalyticsPage() {
                           background: STAGE_COLORS[stage.stage] || 'var(--surface-3)', }}>
                         {stage.count > 0 && (
                           <span className="text-xs font-normal" style={{ ...stTextPrimary, opacity: 0.9 }}>{stage.count}</span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                );
+                        )}</div></div>
+                  </div>);
               })}
               {/* Passed / Dropped */}
               {((funnel.exact['passed'] || 0) > 0 || (funnel.exact['dropped'] || 0) > 0) && (
@@ -334,9 +303,7 @@ export default function AnalyticsPage() {
                           style={{
                             width: `${Math.max((funnel.exact['passed'] / Math.max(...summary.pipelineStages.map(s => s.count), 1)) * 100, 8)}%`,
                             background: 'var(--danger-muted)', }}>
-                          <span className="text-xs font-normal" style={stTextPrimary}>{funnel.exact['passed']}</span>
-                        </div>
-                      </div>
+                          <span className="text-xs font-normal" style={stTextPrimary}>{funnel.exact['passed']}</span></div></div>
                     </div>
                   )}
                   {(funnel.exact['dropped'] || 0) > 0 && (
@@ -348,77 +315,56 @@ export default function AnalyticsPage() {
                           style={{
                             width: `${Math.max((funnel.exact['dropped'] / Math.max(...summary.pipelineStages.map(s => s.count), 1)) * 100, 8)}%`,
                             background: 'var(--surface-2)', }}>
-                          <span className="text-xs font-normal" style={stTextTertiary}>{funnel.exact['dropped']}</span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
+                          <span className="text-xs font-normal" style={stTextTertiary}>{funnel.exact['dropped']}</span></div>
+                      </div></div>
+                  )}</div>
+              )}</div></div>
 
           {/* Conversion Rates */}
           <div>
             <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
-              Stage-to-Stage Conversion
-            </h3>
+              Stage-to-Stage Conversion</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {funnel.conversionRates.map(cr => (
                 <div key={`${cr.from}-${cr.to}`} className="rounded-lg p-3">
                   <div className="mb-1 truncate" style={labelMuted10}>
-                    {STAGE_LABELS[cr.from]} {'->'} {STAGE_LABELS[cr.to]}
-                  </div>
+                    {STAGE_LABELS[cr.from]} {'->'} {STAGE_LABELS[cr.to]}</div>
                   <div
                     className="text-xl font-normal"
                     style={{
                       color: cr.rate >= 60 ? 'var(--success)' :
                         cr.rate >= 30 ? 'var(--warning)' :
                         cr.rate > 0 ? 'var(--danger)' : 'var(--text-muted)', }}>
-                    {cr.rate}%
-                  </div>
+                    {cr.rate}%</div>
                   <div style={labelMuted10}>
-                    {cr.fromCount} {'->'} {cr.toCount}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+                    {cr.fromCount} {'->'} {cr.toCount}</div></div>
+              ))}</div></div>
 
           {/* Drop-off Analysis */}
           <div>
             <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
-              Drop-off by Stage
-            </h3>
+              Drop-off by Stage</h3>
             <div className="space-y-1.5">
               {funnel.dropOffRates.filter(d => d.rate > 0).map(d => (
                 <div key={d.stage} className="flex items-center gap-3">
                   <div className="w-24 text-xs text-right shrink-0" style={stTextTertiary}>
-                    {STAGE_LABELS[d.stage]}
-                  </div>
+                    {STAGE_LABELS[d.stage]}</div>
                   <div className="flex-1 h-6 rounded overflow-hidden" style={stSurface0}>
                     <div
                       className="h-full rounded-l flex items-center px-2"
                       style={{ width: `${Math.max(d.rate, 5)}%`, background: 'var(--danger-muted)' }}>
                       <span className="font-normal whitespace-nowrap" style={{ fontSize: '10px', ...stTextPrimary }}>
-                        {d.rate}% ({d.count})
-                      </span>
-                    </div>
-                  </div>
-                </div>
+                        {d.rate}% ({d.count})</span></div></div></div>
               ))}
               {funnel.dropOffRates.every(d => d.rate === 0) && (
                 <p style={labelSmMuted}>No drop-offs detected yet. Add more investors and progress them through stages.</p>
-              )}
-            </div>
-          </div>
+              )}</div></div>
 
           {/* Average Time in Stage */}
           {Object.keys(funnel.avgTimeInStage).length > 0 && (
             <div>
               <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
-                Average Time in Stage (days)
-              </h3>
+                Average Time in Stage (days)</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {Object.entries(funnel.avgTimeInStage).map(([stage, data]) => (
                   <div key={stage} className="rounded-lg p-3">
@@ -429,16 +375,10 @@ export default function AnalyticsPage() {
                         color: data.avgDays > 14 ? 'var(--danger)' :
                           data.avgDays > 7 ? 'var(--warning)' :
                           'var(--success)', }}>
-                      {data.avgDays}d
-                    </div>
-                    <div style={labelMuted10}>n={data.count}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      </CollapsibleSection>
+                      {data.avgDays}d</div>
+                    <div style={labelMuted10}>n={data.count}</div></div>
+                ))}</div></div>
+          )}</div></CollapsibleSection>
 
       {/* ═══════════════════════════════════════════════════════════
           2. VELOCITY METRICS
@@ -458,16 +398,12 @@ export default function AnalyticsPage() {
                 {velocity.meetingsLastWeek > 0 && (
                   <span style={{ color: velocity.meetingsThisWeek >= velocity.meetingsLastWeek ? 'var(--success)' : 'var(--danger)' }}>
                     {velocity.meetingsThisWeek >= velocity.meetingsLastWeek ? '+' : ''}
-                    {velocity.meetingsThisWeek - velocity.meetingsLastWeek} vs last week
-                  </span>
-                )}
-              </div>
-            </div>
+                    {velocity.meetingsThisWeek - velocity.meetingsLastWeek} vs last week</span>
+                )}</div></div>
             <div className="rounded-lg p-3">
               <div style={labelMuted10}>Pipeline Velocity</div>
               <div className="text-2xl font-normal" style={stTextTertiary}>{velocity.velocityScore > 0 ? velocity.velocityScore.toFixed(1) : '—'}</div>
-              <div style={labelMuted10}>weighted score</div>
-            </div>
+              <div style={labelMuted10}>weighted score</div></div>
             <div className="rounded-lg p-3">
               <div style={labelMuted10}>Days Since Progress</div>
               <div
@@ -477,10 +413,8 @@ export default function AnalyticsPage() {
                     velocity.daysSinceProgress > 7 ? 'var(--danger)' :
                     velocity.daysSinceProgress > 3 ? 'var(--warning)' :
                     'var(--success)', }}>
-                {velocity.daysSinceProgress !== null ? velocity.daysSinceProgress : '—'}
-              </div>
-              <div style={labelMuted10}>last meeting or status change</div>
-            </div>
+                {velocity.daysSinceProgress !== null ? velocity.daysSinceProgress : '—'}</div>
+              <div style={labelMuted10}>last meeting or status change</div></div>
             <div className="rounded-lg p-3">
               <div style={labelMuted10}>Est. Days to Close</div>
               <div
@@ -490,33 +424,23 @@ export default function AnalyticsPage() {
                     velocity.estimatedDaysToClose < 30 ? 'var(--danger)' :
                     velocity.estimatedDaysToClose < 60 ? 'var(--warning)' :
                     'var(--accent)', }}>
-                {velocity.estimatedDaysToClose !== null ? velocity.estimatedDaysToClose : '—'}
-              </div>
+                {velocity.estimatedDaysToClose !== null ? velocity.estimatedDaysToClose : '—'}</div>
               <div style={labelMuted10}>
                 {velocity.onTrack === true && <span style={stTextSecondary}>On track</span>}
                 {velocity.onTrack === false && <span style={stTextPrimary}>Behind schedule</span>}
-                {velocity.onTrack === null && 'no target set'}
-              </div>
-            </div>
-          </div>
+                {velocity.onTrack === null && 'no target set'}</div></div></div>
 
           {/* Meetings per week sparkline */}
           <div>
             <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
-              Meetings Per Week (Last 8 Weeks)
-            </h3>
-            <SparklineChart data={velocity.meetingsPerWeek} color="var(--accent)" />
-          </div>
+              Meetings Per Week (Last 8 Weeks)</h3>
+            <SparklineChart data={velocity.meetingsPerWeek} color="var(--accent)" /></div>
 
           {/* Investors added per week */}
           <div>
             <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
-              New Investors Per Week
-            </h3>
-            <SparklineChart data={velocity.investorsPerWeek} color="var(--accent-muted)" />
-          </div>
-        </div>
-      </CollapsibleSection>
+              New Investors Per Week</h3>
+            <SparklineChart data={velocity.investorsPerWeek} color="var(--accent-muted)" /></div></div></CollapsibleSection>
 
       {/* ═══════════════════════════════════════════════════════════
           3. RISK SIGNALS
@@ -543,10 +467,8 @@ export default function AnalyticsPage() {
               <div className="space-y-1.5">
                 {risks.staleInvestors.map(inv => (
                   <StaleInvestorRow key={inv.id} inv={inv} />
-                ))}
-              </div>
-            )}
-          </RiskSection>
+                ))}</div>
+            )}</RiskSection>
 
           {/* Declining Enthusiasm */}
           <RiskSection
@@ -560,10 +482,8 @@ export default function AnalyticsPage() {
               <div className="space-y-1.5">
                 {risks.decliningEnthusiasm.map(inv => (
                   <DecliningEnthusiasmRow key={inv.id} inv={inv} />
-                ))}
-              </div>
-            )}
-          </RiskSection>
+                ))}</div>
+            )}</RiskSection>
 
           {/* High-Tier Stuck */}
           <RiskSection
@@ -577,10 +497,8 @@ export default function AnalyticsPage() {
               <div className="space-y-1.5">
                 {risks.highTierStuck.map(inv => (
                   <HighTierStuckRow key={inv.id} inv={inv} />
-                ))}
-              </div>
-            )}
-          </RiskSection>
+                ))}</div>
+            )}</RiskSection>
 
           {/* Concentration Risk */}
           <RiskSection
@@ -592,21 +510,14 @@ export default function AnalyticsPage() {
               {risks.concentrationRisk.isRisky && (
                 <p style={{ ...stFontSm, ...stTextTertiary }}>
                   {risks.concentrationRisk.maxConcentration}% of active pipeline is {TYPE_LABELS[risks.concentrationRisk.dominantType || ''] || risks.concentrationRisk.dominantType}.
-                  Consider diversifying investor outreach.
-                </p>
+                  Consider diversifying investor outreach.</p>
               )}
               <div className="flex gap-2 flex-wrap">
                 {Object.entries(risks.concentrationRisk.breakdown).map(([type, count]) => (
                   <div key={type} className="rounded px-3 py-2">
                     <div style={labelMuted10}>{TYPE_LABELS[type] || type}</div>
-                    <div className="text-sm font-normal" style={stTextPrimary}>{count}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </RiskSection>
-        </div>
-      </CollapsibleSection>
+                    <div className="text-sm font-normal" style={stTextPrimary}>{count}</div></div>
+                ))}</div></div></RiskSection></div></CollapsibleSection>
 
       {/* ═══════════════════════════════════════════════════════════
           4. ENGAGEMENT INTELLIGENCE
@@ -620,8 +531,7 @@ export default function AnalyticsPage() {
           {/* Enthusiasm by Type */}
           <div>
             <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
-              Average Enthusiasm by Investor Type
-            </h3>
+              Average Enthusiasm by Investor Type</h3>
             {Object.keys(engagement.enthusiasmByType).length === 0 ? (
               <p style={labelSmMuted}>No enthusiasm data yet. Log meetings to track investor signals.</p>
             ) : (
@@ -639,23 +549,17 @@ export default function AnalyticsPage() {
                               data.avg >= 3 ? 'var(--accent)' :
                               data.avg >= 2 ? 'var(--warning)' :
                               'var(--danger)', }}>
-                          {data.avg}
-                        </span>
-                        <EnthusiasmDots score={Math.round(data.avg)} />
-                      </div>
-                      <div className="mt-0.5" style={labelMuted10}>n={data.count}</div>
-                    </div>
-                  ))}
-              </div>
-            )}
-          </div>
+                          {data.avg}</span>
+                        <EnthusiasmDots score={Math.round(data.avg)} /></div>
+                      <div className="mt-0.5" style={labelMuted10}>n={data.count}</div></div>
+                  ))}</div>
+            )}</div>
 
           {/* Objection Leaderboard */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
               <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
-                Top Objection Topics
-              </h3>
+                Top Objection Topics</h3>
               {engagement.topObjections.length === 0 ? (
                 <p style={labelSmMuted}>No objections recorded yet.</p>
               ) : (
@@ -666,33 +570,25 @@ export default function AnalyticsPage() {
                     return (
                       <div key={i} className="flex items-center gap-3">
                         <span className="text-xs w-4 text-right shrink-0" style={stTextMuted}>
-                          {i + 1}.
-                        </span>
+                          {i + 1}.</span>
                         <div className="flex-1 relative">
                           <div className="h-7 rounded overflow-hidden" style={stSurface0}>
                             <div
                               className="h-full rounded flex items-center px-2"
                               style={{ width: `${Math.max(pct, 15)}%`, background: 'var(--danger-muted)' }}>
-                              <span className="truncate" style={{ fontSize: '11px', ...stTextSecondary }}>{obj.topic}</span>
-                            </div>
-                          </div>
-                        </div>
+                              <span className="truncate" style={{ fontSize: '11px', ...stTextSecondary }}>{obj.topic}</span></div>
+                          </div></div>
                         <span className="text-xs font-normal shrink-0 w-8 text-right" style={stTextPrimary}>
-                          {obj.count}x
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
+                          {obj.count}x</span>
+                      </div>);
+                  })}</div>
+              )}</div>
 
             <div className="space-y-4">
               {/* Objection Resolution */}
               <div>
                 <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
-                  Objection Resolution
-                </h3>
+                  Objection Resolution</h3>
                 <div className="rounded-lg p-4">
                   <div className="flex items-baseline gap-2">
                     <span
@@ -702,10 +598,8 @@ export default function AnalyticsPage() {
                           engagement.objectionResolutionRate >= 40 ? 'var(--warning)' :
                           engagement.totalObjections === 0 ? 'var(--text-muted)' :
                           'var(--danger)', }}>
-                      {engagement.totalObjections > 0 ? `${engagement.objectionResolutionRate}%` : '—'}
-                    </span>
-                    <span style={labelMuted}>resolved</span>
-                  </div>
+                      {engagement.totalObjections > 0 ? `${engagement.objectionResolutionRate}%` : '—'}</span>
+                    <span style={labelMuted}>resolved</span></div>
                   <div className="mt-2 h-3 rounded-full overflow-hidden" style={stSurface0}>
                     <div
                       className="h-full rounded-full"
@@ -713,23 +607,17 @@ export default function AnalyticsPage() {
                         width: `${engagement.objectionResolutionRate}%`,
                         background: engagement.objectionResolutionRate >= 70 ? 'var(--success)' :
                           engagement.objectionResolutionRate >= 40 ? 'var(--warning)' :
-                          'var(--danger)', }}/>
-                  </div>
+                          'var(--danger)', }}/></div>
                   <div className="mt-2" style={labelMuted10}>
-                    {engagement.addressedObjections} of {engagement.totalObjections} objections addressed
-                  </div>
-                </div>
-              </div>
+                    {engagement.addressedObjections} of {engagement.totalObjections} objections addressed</div></div></div>
 
               {/* Competitive Mentions */}
               <div>
                 <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
-                  Competitive Intelligence
-                </h3>
+                  Competitive Intelligence</h3>
                 <div className="rounded-lg p-4">
                   <div className="text-2xl font-normal" style={stTextPrimary}>
-                    {engagement.competitiveMentions}
-                  </div>
+                    {engagement.competitiveMentions}</div>
                   <div style={labelMuted10}>meetings with competitive mentions</div>
                   {engagement.topCompetitors.length > 0 && (
                     <div className="mt-3 flex flex-wrap gap-1.5">
@@ -738,17 +626,9 @@ export default function AnalyticsPage() {
                           key={c.name}
                           className="px-2 py-1 rounded"
                           style={{ fontSize: '10px', background: 'var(--surface-2)', color: 'var(--text-tertiary)' }}>
-                          {c.name} ({c.count}x)
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </CollapsibleSection>
+                          {c.name} ({c.count}x)</span>
+                      ))}</div>
+                  )}</div></div></div></div></div></CollapsibleSection>
 
       {/* ═══════════════════════════════════════════════════════════
           5. WIN/LOSS INSIGHTS
@@ -763,12 +643,10 @@ export default function AnalyticsPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             <div className="rounded-lg p-3">
               <div style={labelMuted10}>Passed</div>
-              <div className="text-2xl font-normal" style={stTextPrimary}>{winLoss.passedCount}</div>
-            </div>
+              <div className="text-2xl font-normal" style={stTextPrimary}>{winLoss.passedCount}</div></div>
             <div className="rounded-lg p-3">
               <div style={labelMuted10}>Dropped</div>
-              <div className="text-2xl font-normal" style={stTextMuted}>{winLoss.droppedCount}</div>
-            </div>
+              <div className="text-2xl font-normal" style={stTextMuted}>{winLoss.droppedCount}</div></div>
             <div className="rounded-lg p-3">
               <div style={labelMuted10}>Attrition Rate</div>
               <div
@@ -778,23 +656,17 @@ export default function AnalyticsPage() {
                     winLoss.passRate > 15 ? 'var(--warning)' :
                     winLoss.passRate > 0 ? 'var(--success)' :
                     'var(--text-muted)', }}>
-                {winLoss.passRate}%
-              </div>
-            </div>
+                {winLoss.passRate}%</div></div>
             <div className="rounded-lg p-3">
               <div style={labelMuted10}>Active</div>
               <div className="text-2xl font-normal" style={stTextSecondary}>
-                {summary.activeInvestors}
-              </div>
-            </div>
-          </div>
+                {summary.activeInvestors}</div></div></div>
 
           {/* Outcomes by Tier */}
           {Object.keys(winLoss.outcomeByTier).length > 0 && (
             <div>
               <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
-                Outcomes by Tier
-              </h3>
+                Outcomes by Tier</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {Object.entries(winLoss.outcomeByTier)
                   .sort(([a], [b]) => Number(a) - Number(b))
@@ -821,25 +693,19 @@ export default function AnalyticsPage() {
                               className="h-full"
                               style={{ width: `${(data.dropped / total) * 100}%`, background: 'var(--surface-3)' }}
                               title={`Dropped: ${data.dropped}`}/>
-                          )}
-                        </div>
+                          )}</div>
                         <div className="flex justify-between mt-1.5" style={{ fontSize: '10px' }}>
                           <span style={stTextSecondary}>{data.active} active</span>
-                          <span style={stTextPrimary}>{data.passed + data.dropped} out</span>
-                        </div>
-                      </div>
-                    );
-                  })}
-              </div>
-            </div>
+                          <span style={stTextPrimary}>{data.passed + data.dropped} out</span></div>
+                      </div>);
+                  })}</div></div>
           )}
 
           {/* Outcomes by Type */}
           {Object.keys(winLoss.outcomeByType).length > 0 && (
             <div>
               <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
-                Outcomes by Investor Type
-              </h3>
+                Outcomes by Investor Type</h3>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                 {Object.entries(winLoss.outcomeByType)
                   .sort(([, a], [, b]) => (b.active / (b.active + b.passed + b.dropped)) - (a.active / (a.active + a.passed + a.dropped)))
@@ -855,46 +721,33 @@ export default function AnalyticsPage() {
                             color: retentionRate >= 80 ? 'var(--success)' :
                               retentionRate >= 50 ? 'var(--warning)' :
                               'var(--danger)', }}>
-                          {retentionRate}%
-                        </div>
+                          {retentionRate}%</div>
                         <div style={labelMuted10}>
-                          {data.active} active, {data.passed} passed, {data.dropped} dropped
-                        </div>
-                      </div>
-                    );
-                  })}
-              </div>
-            </div>
+                          {data.active} active, {data.passed} passed, {data.dropped} dropped</div>
+                      </div>);
+                  })}</div></div>
           )}
 
           {/* Top Pass Reasons */}
           {winLoss.topPassReasons.length > 0 && (
             <div>
               <h3 className="text-xs font-normal  tracking-wider mb-3" style={stTextMuted}>
-                Top Pass Reasons
-              </h3>
+                Top Pass Reasons</h3>
               <div className="space-y-1.5">
                 {winLoss.topPassReasons.map((reason, i) => (
                   <div key={i} className="flex items-center gap-3 py-1">
                     <span className="text-xs w-4 text-right" style={stTextMuted}>{i + 1}.</span>
                     <span className="text-sm flex-1" style={stTextSecondary}>{reason.topic}</span>
-                    <span className="text-xs font-normal" style={stTextPrimary}>{reason.count}x</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+                    <span className="text-xs font-normal" style={stTextPrimary}>{reason.count}x</span></div>
+                ))}</div></div>
           )}
 
           {/* Empty state */}
           {winLoss.passedCount === 0 && winLoss.droppedCount === 0 && (
             <p style={labelSmMuted}>
-              No investors have passed or dropped yet. Win/loss insights will appear as the process progresses.
-            </p>
-          )}
-        </div>
-      </CollapsibleSection>
-    </div>
-  );
+              No investors have passed or dropped yet. Win/loss insights will appear as the process progresses.</p>
+          )}</div></CollapsibleSection>
+    </div>);
 }
 
 // ── Subcomponents ──────────────────────────────────────────────────
@@ -909,14 +762,11 @@ function SummaryCard({
     <div className="rounded-xl px-4 py-3" style={stSurface1}>
       <div className="flex items-center gap-2 mb-1">
         <span style={{ color }}>{icon}</span>
-        <span className="font-normal  tracking-wider" style={labelMuted10}>{label}</span>
-      </div>
+        <span className="font-normal  tracking-wider" style={labelMuted10}>{label}</span></div>
       <div className="flex items-baseline gap-1.5">
         <span className="text-xl font-normal" style={stTextPrimary}>{value}</span>
-        <span style={labelMuted10}>{sub}</span>
-      </div>
-    </div>
-  );
+        <span style={labelMuted10}>{sub}</span></div>
+    </div>);
 }
 
 function CollapsibleSection({
@@ -941,23 +791,18 @@ function CollapsibleSection({
           <span className="text-sm font-normal" style={stTextPrimary}>{title}</span>
           {badge && (
             <span className="font-normal px-1.5 py-0.5 rounded-full" style={{ fontSize: '10px', background: badge.color, ...stTextPrimary }}>
-              {badge.text}
-            </span>
-          )}
-        </div>
+              {badge.text}</span>
+          )}</div>
         {isOpen ? (
           <ChevronUp className="w-4 h-4" style={stTextMuted} />
         ) : (
           <ChevronDown className="w-4 h-4" style={stTextMuted} />
-        )}
-      </button>
+        )}</button>
       {isOpen && (
         <div className="px-5 pb-5 pt-4" style={stBorderTop}>
-          {children}
-        </div>
+          {children}</div>
       )}
-    </div>
-  );
+    </div>);
 }
 
 function SparklineChart({
@@ -978,13 +823,10 @@ function SparklineChart({
               className="absolute bottom-0 w-full rounded-t transition-all duration-500"
               style={{
                 height: `${Math.max((d.count / maxVal) * 100, d.count > 0 ? 8 : 0)}%`,
-                background: color, }}/>
-          </div>
-          <span className="truncate w-full text-center" style={{ fontSize: '9px', ...stTextMuted }}>{d.week}</span>
-        </div>
+                background: color, }}/></div>
+          <span className="truncate w-full text-center" style={{ fontSize: '9px', ...stTextMuted }}>{d.week}</span></div>
       ))}
-    </div>
-  );
+    </div>);
 }
 
 function EnthusiasmDots({ score, size = 'md' }: { score: number; size?: 'sm' | 'md' }) {
@@ -1004,8 +846,7 @@ function EnthusiasmDots({ score, size = 'md' }: { score: number; size?: 'sm' | '
                 : 'var(--text-muted)'
               : 'var(--surface-2)', }}/>
       ))}
-    </div>
-  );
+    </div>);
 }
 
 function RiskSection({
@@ -1047,14 +888,11 @@ function RiskSection({
           <span
             className="font-normal px-1.5 py-0.5 rounded-full"
             style={{ fontSize: '10px', background: badgeBg, color: badgeText }}>
-            {count}
-          </span>
-        )}
-      </div>
+            {count}</span>
+        )}</div>
       <p className="mb-3" style={labelMuted10}>{subtitle}</p>
       {children}
-    </div>
-  );
+    </div>);
 }
 
 function StaleInvestorRow({ inv }: { inv: { id: string; name: string; status: string; tier: number; type: string; daysSinceLastMeeting: number | null } }) {
@@ -1075,22 +913,17 @@ function StaleInvestorRow({ inv }: { inv: { id: string; name: string; status: st
       onMouseLeave={() => setHovered(false)}>
       <div className="flex items-center gap-3 min-w-0">
         <span className="px-1.5 py-0.5 rounded" style={{ fontSize: '10px', ...tierStyle }}>
-          T{inv.tier}
-        </span>
+          T{inv.tier}</span>
         <span className="text-sm font-normal truncate" style={stTextPrimary}>{inv.name}</span>
-        <span style={labelMuted10}>{STAGE_LABELS[inv.status]}</span>
-      </div>
+        <span style={labelMuted10}>{STAGE_LABELS[inv.status]}</span></div>
       <div className="flex items-center gap-2 shrink-0">
         <span className="text-xs" style={stTextPrimary}>
           {inv.daysSinceLastMeeting !== null
             ? `${inv.daysSinceLastMeeting}d ago`
-            : 'No meetings'}
-        </span>
+            : 'No meetings'}</span>
         <ArrowRight className="w-3 h-3 transition-colors" style={{ color: hovered ? 'var(--text-tertiary)' : 'var(--text-muted)' }}
-          />
-      </div>
-    </Link>
-  );
+          /></div>
+    </Link>);
 }
 
 function DecliningEnthusiasmRow({ inv }: { inv: { id: string; name: string; tier: number; type: string; previousScore: number; currentScore: number } }) {
@@ -1109,17 +942,14 @@ function DecliningEnthusiasmRow({ inv }: { inv: { id: string; name: string; tier
       onMouseLeave={() => setHovered(false)}>
       <div className="flex items-center gap-3 min-w-0">
         <span className="px-1.5 py-0.5 rounded" style={{ fontSize: '10px', ...tierStyle }}>T{inv.tier}</span>
-        <span className="text-sm font-normal truncate" style={stTextPrimary}>{inv.name}</span>
-      </div>
+        <span className="text-sm font-normal truncate" style={stTextPrimary}>{inv.name}</span></div>
       <div className="flex items-center gap-2 shrink-0">
         <EnthusiasmDots score={inv.previousScore} size="sm" />
         <span className="text-xs" style={stTextMuted}>{'>'}</span>
         <EnthusiasmDots score={inv.currentScore} size="sm" />
         <ArrowRight className="w-3 h-3 ml-1 transition-colors" style={{ color: hovered ? 'var(--text-tertiary)' : 'var(--text-muted)' }}
-          />
-      </div>
-    </Link>
-  );
+          /></div>
+    </Link>);
 }
 
 function HighTierStuckRow({ inv }: { inv: { id: string; name: string; tier: number; status: string; type: string; daysInStage: number } }) {
@@ -1140,18 +970,13 @@ function HighTierStuckRow({ inv }: { inv: { id: string; name: string; tier: numb
             background: 'color-mix(in srgb, var(--accent) 20%, transparent)',
             color: 'var(--accent)',
             border: '1px solid color-mix(in srgb, var(--accent) 30%, transparent)', }}>
-          T{inv.tier}
-        </span>
+          T{inv.tier}</span>
         <span className="text-sm font-normal truncate" style={stTextPrimary}>{inv.name}</span>
-        <span style={labelMuted10}>{STAGE_LABELS[inv.status]}</span>
-      </div>
+        <span style={labelMuted10}>{STAGE_LABELS[inv.status]}</span></div>
       <div className="flex items-center gap-2 shrink-0">
         <span className="text-xs" style={stTextTertiary}>
-          {inv.daysInStage}d in stage
-        </span>
+          {inv.daysInStage}d in stage</span>
         <ArrowRight className="w-3 h-3 transition-colors" style={{ color: hovered ? 'var(--text-tertiary)' : 'var(--text-muted)' }}
-          />
-      </div>
-    </Link>
-  );
+          /></div>
+    </Link>);
 }

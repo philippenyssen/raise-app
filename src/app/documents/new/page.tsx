@@ -65,8 +65,7 @@ const TEMPLATES = [
 ### Return Scenarios
 
 ## Appendices
-`,
-  },
+`,},
   {
     type: 'one_pager',
     title: 'One-Pager',
@@ -106,8 +105,7 @@ const TEMPLATES = [
 1.
 2.
 3.
-`,
-  },
+`,},
   {
     type: 'exec_brief',
     title: 'Executive Brief',
@@ -144,15 +142,13 @@ const TEMPLATES = [
 | Bull | | | |
 
 ## Process & Timeline
-`,
-  },
+`,},
   {
     type: 'custom',
     title: 'Blank Document',
     description: 'Start from scratch',
     content: '',
-  },
-];
+  },];
 
 export default function NewDocumentPage() {
   const router = useRouter();
@@ -172,8 +168,7 @@ export default function NewDocumentPage() {
     const res = await fetch('/api/documents', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title, type: template.type, content }),
-    });
+      body: JSON.stringify({ title, type: template.type, content }),});
     const doc = await res.json();
     toast(`Created "${title}"`);
     router.push(`/documents/${doc.id}`);
@@ -183,8 +178,7 @@ export default function NewDocumentPage() {
     <div className="page-content max-w-3xl space-y-6">
       <div>
         <h1 className="page-title">New Document</h1>
-        <p className="text-sm mt-1" style={stTextMuted}>Choose a template or start blank</p>
-      </div>
+        <p className="text-sm mt-1" style={stTextMuted}>Choose a template or start blank</p></div>
 
       {/* Import Toggle */}
       <div className="flex gap-3">
@@ -197,9 +191,7 @@ export default function NewDocumentPage() {
           } : {
             background: 'var(--surface-2)',
             color: 'var(--text-tertiary)', }}>
-          <Upload className="w-3.5 h-3.5" /> Import Markdown
-        </button>
-      </div>
+          <Upload className="w-3.5 h-3.5" /> Import Markdown</button></div>
 
       {showImport && (
         <div className="rounded-xl p-4">
@@ -210,8 +202,7 @@ export default function NewDocumentPage() {
             rows={8}
             placeholder="Paste your markdown here..."
             className="w-full rounded-lg px-4 py-3 text-sm font-mono focus:outline-none"
-            style={{ background: 'var(--surface-1)', color: 'var(--text-secondary)' }} />
-        </div>
+            style={{ background: 'var(--surface-1)', color: 'var(--text-secondary)' }} /></div>
       )}
 
       {/* Templates */}
@@ -241,9 +232,7 @@ export default function NewDocumentPage() {
                         color: 'var(--text-secondary)', }}
                       onFocus={e => { e.target.style.borderColor = 'var(--accent)'; }}
                       onBlur={e => { e.target.style.borderColor = 'var(--border-default)'; }} />
-                  )}
-                </div>
-              </div>
+                  )}</div></div>
               <button
                 onClick={() => createFromTemplate(template)}
                 disabled={creating}
@@ -253,12 +242,7 @@ export default function NewDocumentPage() {
                   color: 'var(--text-primary)', }}
                 onMouseEnter={() => setHoveredCreate(template.type)}
                 onMouseLeave={() => setHoveredCreate(null)}>
-                {creating ? 'Creating...' : 'Create'}
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+                {creating ? 'Creating...' : 'Create'}</button></div></div>
+        ))}</div>
+    </div>);
 }

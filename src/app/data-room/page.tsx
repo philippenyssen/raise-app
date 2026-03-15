@@ -34,8 +34,7 @@ const CATEGORIES = [
   { value: 'commercial', label: 'Commercial', icon: FolderOpen, desc: 'Customer contracts, pipeline, backlog' },
   { value: 'technical', label: 'Technical', icon: Image, desc: 'Architecture, product roadmap, patents' },
   { value: 'team', label: 'Team', icon: FileText, desc: 'Org chart, bios, employment agreements' },
-  { value: 'other', label: 'Other', icon: FileText, desc: 'Uncategorized documents' },
-];
+  { value: 'other', label: 'Other', icon: FileText, desc: 'Uncategorized documents' },];
 
 export default function DataRoomPage() {
   const { toast } = useToast();
@@ -75,8 +74,7 @@ export default function DataRoomPage() {
     await fetch('/api/data-room/intelligence', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ investor_id: investorId, document_id: documentId }),
-    });
+      body: JSON.stringify({ investor_id: investorId, document_id: documentId }),});
     toast('Access logged');
     fetchIntelligence();
   }
@@ -109,16 +107,14 @@ export default function DataRoomPage() {
               filename: file.name,
               mime_type: file.type,
               base64_content: base64.substring(0, 2000000),
-            }),
-          });
+            }),});
           if (extractRes.ok) {
             const extracted = await extractRes.json();
             text = extracted.text || '';
           }
         } catch {
           text = `[Binary file: ${file.name} (${file.type}, ${file.size} bytes). Text extraction not available — upload the text content separately via Paste.]`;
-        }
-      }
+        }}
 
       await fetch('/api/data-room', {
         method: 'POST',
@@ -129,8 +125,7 @@ export default function DataRoomPage() {
           mime_type: file.type || 'application/octet-stream',
           size_bytes: file.size,
           extracted_text: text.substring(0, 50000),
-        }),
-      });
+        }),});
       toast(`Uploaded "${file.name}"`);
     }
     setUploading(false);
@@ -149,8 +144,7 @@ export default function DataRoomPage() {
         mime_type: 'text/plain',
         size_bytes: pasteContent.length,
         extracted_text: pasteContent.substring(0, 50000),
-      }),
-    });
+      }),});
     toast(`Added "${pasteFilename.trim()}"`);
     setPasteFilename('');
     setPasteContent('');
@@ -196,8 +190,7 @@ export default function DataRoomPage() {
         {[...Array(3)].map((_, i) => (
           <div key={i} className="h-20 skeleton" style={{ borderRadius: 'var(--radius-lg)' }} />
         ))}
-      </div>
-    );
+      </div>);
   }
 
   return (
@@ -217,8 +210,7 @@ export default function DataRoomPage() {
             } : {
               background: 'var(--surface-2)',
               color: 'var(--text-secondary)', }}>
-            <FileText className="w-4 h-4" /> Paste Text
-          </button>
+            <FileText className="w-4 h-4" /> Paste Text</button>
           <label
             className="btn btn-primary btn-md flex items-center gap-2 cursor-pointer">
             <Upload className="w-4 h-4" /> Upload Files
@@ -228,17 +220,13 @@ export default function DataRoomPage() {
               accept=".txt,.md,.csv,.json,.xml,.html,.pdf,.doc,.docx,.xls,.xlsx,.pptx,.rtf,.tsv"
               className="hidden"
               onChange={e => e.target.files && handleFileUpload(e.target.files)}
-              disabled={uploading} />
-          </label>
-        </div>
-      </div>
+              disabled={uploading} /></label></div></div>
 
       {/* Search */}
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={stTextMuted} />
         <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Search files and content..." className="input" style={{ paddingLeft: 'var(--space-10)', paddingRight: 'var(--space-4)', paddingTop: '0.625rem', paddingBottom: '0.625rem', borderRadius: 'var(--radius-lg)' }}
-          />
-      </div>
+          /></div>
 
       {/* Paste mode */}
       {pasteMode && (
@@ -256,9 +244,7 @@ export default function DataRoomPage() {
               onChange={e => setPasteCategory(e.target.value)}
               className="input"
               style={{ width: 'auto' }}>
-              {CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
-            </select>
-          </div>
+              {CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}</select></div>
           <textarea value={pasteContent} onChange={e => setPasteContent(e.target.value)} placeholder="Paste your document content here..." rows={10} className="input" style={{ fontFamily: 'var(--font-mono)', resize: 'none', padding: 'var(--space-3) var(--space-4)' }}
             />
           <div className="flex justify-end gap-2">
@@ -268,18 +254,14 @@ export default function DataRoomPage() {
               disabled={!pasteFilename.trim() || !pasteContent.trim() || uploading}
               className="btn btn-primary btn-md"
               style={{ opacity: (!pasteFilename.trim() || !pasteContent.trim() || uploading) ? 0.5 : 1 }}>
-              {uploading ? 'Adding...' : 'Add to Data Room'}
-            </button>
-          </div>
-        </div>
+              {uploading ? 'Adding...' : 'Add to Data Room'}</button></div></div>
       )}
 
       {/* Search results */}
       {filteredFiles && (
         <div className="space-y-2">
           <h2 className="section-title">
-            Search Results ({filteredFiles.length})
-          </h2>
+            Search Results ({filteredFiles.length})</h2>
           {filteredFiles.map(file => (
             <FileRow
               key={file.id}
@@ -290,8 +272,7 @@ export default function DataRoomPage() {
           ))}
           {filteredFiles.length === 0 && (
             <p style={{ ...stTextMuted, ...stFontSm, padding: 'var(--space-4) 0', textAlign: 'center' }}>No files match your search.</p>
-          )}
-        </div>
+          )}</div>
       )}
 
       {/* Category overview */}
@@ -305,8 +286,7 @@ export default function DataRoomPage() {
                   <cat.icon className="w-4 h-4" style={stTextMuted} />
                   <span style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>{cat.label}</span>
                   <span style={labelMuted}>{catFiles.length} files</span>
-                  <span className="ml-auto" style={{ ...stFontXs, ...stTextTertiary }}>{cat.desc}</span>
-                </div>
+                  <span className="ml-auto" style={{ ...stFontXs, ...stTextTertiary }}>{cat.desc}</span></div>
                 {catFiles.length > 0 ? (
                   <div className="space-y-1">
                     {catFiles.map(file => (
@@ -316,17 +296,13 @@ export default function DataRoomPage() {
                         expanded={expandedFile === file.id}
                         onToggle={() => setExpandedFile(expandedFile === file.id ? null : file.id)}
                         onDelete={() => setDeleteTarget({ id: file.id, filename: file.filename })} />
-                    ))}
-                  </div>
+                    ))}</div>
                 ) : (
                   <div style={{ borderRadius: 'var(--radius-md)', padding: 'var(--space-3)', textAlign: 'center' }}>
-                    <p style={{ ...stFontXs, ...stTextTertiary }}>No {cat.label.toLowerCase()} files yet</p>
-                  </div>
+                    <p style={{ ...stFontXs, ...stTextTertiary }}>No {cat.label.toLowerCase()} files yet</p></div>
                 )}
-              </div>
-            );
-          })}
-        </div>
+              </div>);
+          })}</div>
       )}
 
       {/* Access Intelligence Section */}
@@ -347,8 +323,7 @@ export default function DataRoomPage() {
         variant="danger"
         onConfirm={handleDelete}
         onCancel={() => setDeleteTarget(null)} />
-    </div>
-  );
+    </div>);
 }
 
 function AccessIntelligenceSection({ intelligence, files, expandedInvestor, onToggleInvestor, onLogAccess }: {
@@ -390,32 +365,27 @@ function AccessIntelligenceSection({ intelligence, files, expandedInvestor, onTo
         <StatCard
           label="Pending Recommendations"
           value={investorsWithRecommendations.length.toString()}
-          icon={<Send className="w-4 h-4" />} />
-      </div>
+          icon={<Send className="w-4 h-4" />} /></div>
 
       {/* Most Requested Documents */}
       <div className="card" style={{ padding: 'var(--space-4)' }}>
         <div className="flex items-center gap-2 mb-3">
           <span style={stTextMuted}><TrendingUp className="w-4 h-4" /></span>
-          <h3 style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>Most Requested Documents</h3>
-        </div>
+          <h3 style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>Most Requested Documents</h3></div>
         {intelligence.most_requested.length > 0 ? (
           <div className="space-y-1">
             {intelligence.most_requested.map((doc, idx) => (
               <MostRequestedRow key={doc.document_id} doc={doc} rank={idx + 1} />
-            ))}
-          </div>
+            ))}</div>
         ) : (
           <p style={{ ...stTextTertiary, ...stFontSm, textAlign: 'center', padding: 'var(--space-4) 0' }}>No access events recorded yet. Log document access to see rankings.</p>
-        )}
-      </div>
+        )}</div>
 
       {/* Per-Investor Access */}
       <div className="card" style={{ padding: 'var(--space-4)' }}>
         <div className="flex items-center gap-2 mb-3">
           <span style={stTextMuted}><Users className="w-4 h-4" /></span>
-          <h3 style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>Per-Investor Document Access</h3>
-        </div>
+          <h3 style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>Per-Investor Document Access</h3></div>
         {intelligence.per_investor_access.length > 0 ? (
           <div className="space-y-1">
             {intelligence.per_investor_access.map(inv => (
@@ -426,12 +396,10 @@ function AccessIntelligenceSection({ intelligence, files, expandedInvestor, onTo
                 onToggle={() => onToggleInvestor(inv.investor_id)}
                 onLogAccess={onLogAccess}
                 files={files} />
-            ))}
-          </div>
+            ))}</div>
         ) : (
           <p style={{ ...stTextTertiary, ...stFontSm, textAlign: 'center', padding: 'var(--space-4) 0' }}>No active investors yet. Add investors in the CRM to see access tracking.</p>
-        )}
-      </div>
+        )}</div>
 
       {/* Unreached Investors */}
       {intelligence.unreached_investors.length > 0 && (
@@ -439,14 +407,11 @@ function AccessIntelligenceSection({ intelligence, files, expandedInvestor, onTo
           <div className="flex items-center gap-2 mb-3">
             <span style={stTextTertiary}><AlertCircle className="w-4 h-4" /></span>
             <h3 style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>Unreached Investors</h3>
-            <span style={labelMuted}>Active investors who haven&apos;t accessed any documents</span>
-          </div>
+            <span style={labelMuted}>Active investors who haven&apos;t accessed any documents</span></div>
           <div className="space-y-1">
             {intelligence.unreached_investors.map(inv => (
               <UnreachedInvestorRow key={inv.investor_id} investor={inv} />
-            ))}
-          </div>
-        </div>
+            ))}</div></div>
       )}
 
       {/* Recent Access Log */}
@@ -454,17 +419,13 @@ function AccessIntelligenceSection({ intelligence, files, expandedInvestor, onTo
         <div className="card" style={{ padding: 'var(--space-4)' }}>
           <div className="flex items-center gap-2 mb-3">
             <span style={stTextMuted}><Eye className="w-4 h-4" /></span>
-            <h3 style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>Recent Access Log</h3>
-          </div>
+            <h3 style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>Recent Access Log</h3></div>
           <div className="space-y-1">
             {intelligence.document_access_log.slice(0, 20).map((entry, idx) => (
               <AccessLogRow key={`${entry.investor_id}-${entry.document_id}-${idx}`} entry={entry} />
-            ))}
-          </div>
-        </div>
+            ))}</div></div>
       )}
-    </div>
-  );
+    </div>);
 }
 
 function StatCard({ label, value, icon, highlight }: {
@@ -485,13 +446,10 @@ function StatCard({ label, value, icon, highlight }: {
       onMouseLeave={() => setHovered(false)}>
       <div className="flex items-center gap-2 mb-1">
         <span style={{ color: highlight ? 'var(--warning)' : 'var(--text-muted)' }}>{icon}</span>
-        <span style={labelMuted}>{label}</span>
-      </div>
+        <span style={labelMuted}>{label}</span></div>
       <span style={{ fontSize: 'var(--font-size-lg)', fontWeight: 400, color: highlight ? 'var(--warning)' : 'var(--text-primary)' }}>
-        {value}
-      </span>
-    </div>
-  );
+        {value}</span>
+    </div>);
 }
 
 function MostRequestedRow({ doc, rank }: {
@@ -510,14 +468,12 @@ function MostRequestedRow({ doc, rank }: {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}>
       <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: rank <= 3 ? 'var(--accent)' : 'var(--text-muted)', width: '1.5rem', textAlign: 'center' }}>
-        #{rank}
-      </span>
+        #{rank}</span>
       <FileText className="w-3.5 h-3.5 shrink-0" style={stTextTertiary} />
       <span className="truncate" style={{ ...stFontSm, color: 'var(--text-primary)' }}>{doc.document_title}</span>
       <span style={{ ...stFontXs, ...stTextMuted, ...stSurface2, padding: '0.125rem var(--space-2)', borderRadius: 'var(--radius-sm)' }}>{doc.category}</span>
       <span className="ml-auto shrink-0" style={{ ...stFontXs, fontWeight: 400, ...stTextSecondary }}>{doc.access_count} {doc.access_count === 1 ? 'view' : 'views'}</span>
-    </div>
-  );
+    </div>);
 }
 
 function InvestorAccessRow({ investor, expanded, onToggle, onLogAccess, files }: {
@@ -551,8 +507,7 @@ function InvestorAccessRow({ investor, expanded, onToggle, onLogAccess, files }:
         <span style={labelMuted}>T{investor.tier}</span>
         <div className="ml-auto flex items-center gap-3">
           <span style={{ fontSize: 'var(--font-size-xs)', color: investor.documents_accessed > 0 ? 'var(--success)' : 'var(--text-tertiary)' }}>
-            {investor.documents_accessed} / {files.length} docs ({accessedPct}%)
-          </span>
+            {investor.documents_accessed} / {files.length} docs ({accessedPct}%)</span>
           {investor.recommended_documents.length > 0 && (
             <span style={{
               fontSize: 'var(--font-size-xs)',
@@ -560,13 +515,9 @@ function InvestorAccessRow({ investor, expanded, onToggle, onLogAccess, files }:
               background: 'var(--accent-muted)',
               padding: '0.125rem var(--space-2)',
               borderRadius: 'var(--radius-sm)',
-              fontWeight: 400,
-            }}>
-              {investor.recommended_documents.length} to share
-            </span>
-          )}
-        </div>
-      </div>
+              fontWeight: 400,}}>
+              {investor.recommended_documents.length} to share</span>
+          )}</div></div>
       {expanded && (
         <div style={{ borderTop: '1px solid var(--border-subtle)', padding: 'var(--space-3) var(--space-4)' }}>
           {/* Accessed documents */}
@@ -576,9 +527,7 @@ function InvestorAccessRow({ investor, expanded, onToggle, onLogAccess, files }:
               <div className="flex flex-wrap gap-2">
                 {investor.accessed_documents.map(doc => (
                   <span key={doc.document_id} style={{ ...stFontXs, ...stTextSecondary, background: 'var(--success-muted)', padding: '0.125rem var(--space-2)', borderRadius: 'var(--radius-sm)' }}>{doc.document_title}</span>
-                ))}
-              </div>
-            </div>
+                ))}</div></div>
           )}
 
           {/* Recommended documents */}
@@ -592,9 +541,7 @@ function InvestorAccessRow({ investor, expanded, onToggle, onLogAccess, files }:
                     doc={doc}
                     investorId={investor.investor_id}
                     onLogAccess={onLogAccess} />
-                ))}
-              </div>
-            </div>
+                ))}</div></div>
           )}
 
           {/* Log access manually */}
@@ -611,8 +558,7 @@ function InvestorAccessRow({ investor, expanded, onToggle, onLogAccess, files }:
                   .filter(f => !investor.accessed_documents.some(d => d.document_id === f.id))
                   .map(f => (
                     <option key={f.id} value={f.id}>{f.filename}</option>
-                  ))}
-              </select>
+                  ))}</select>
               <button
                 className="btn btn-md"
                 style={{
@@ -628,14 +574,9 @@ function InvestorAccessRow({ investor, expanded, onToggle, onLogAccess, files }:
                     onLogAccess(investor.investor_id, logDocId);
                     setLogDocId('');
                   } }}>
-                Log
-              </button>
-            </div>
-          </div>
-        </div>
+                Log</button></div></div></div>
       )}
-    </div>
-  );
+    </div>);
 }
 
 function RecommendedDocRow({ doc, investorId, onLogAccess }: {
@@ -656,11 +597,9 @@ function RecommendedDocRow({ doc, investorId, onLogAccess }: {
       onMouseLeave={() => setHovered(false)}>
       <FileText className="w-3.5 h-3.5 shrink-0" style={stAccent} />
       <span className="truncate" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)' }}>
-        {doc.document_title}
-      </span>
+        {doc.document_title}</span>
       <span style={{ fontSize: '0.625rem', color: 'var(--text-muted)', background: 'var(--surface-2)', padding: '0 var(--space-1)', borderRadius: 'var(--radius-sm)' }}>
-        {doc.category}
-      </span>
+        {doc.category}</span>
       <button
         className="ml-auto shrink-0 btn btn-md"
         style={{
@@ -671,10 +610,8 @@ function RecommendedDocRow({ doc, investorId, onLogAccess }: {
           border: 'none',
           transition: 'all 150ms ease', }}
         onClick={() => onLogAccess(investorId, doc.document_id)}>
-        Mark shared
-      </button>
-    </div>
-  );
+        Mark shared</button>
+    </div>);
 }
 
 function UnreachedInvestorRow({ investor }: {
@@ -698,8 +635,7 @@ function UnreachedInvestorRow({ investor }: {
       {investor.recommended_categories.length > 0 && (
         <span className="ml-auto" style={{ ...stFontXs, ...stTextTertiary }}>Share: {investor.recommended_categories.join(', ')}</span>
       )}
-    </div>
-  );
+    </div>);
 }
 
 function AccessLogRow({ entry }: {
@@ -721,8 +657,7 @@ function AccessLogRow({ entry }: {
       <span style={labelMuted}>viewed</span>
       <span className="truncate" style={{ ...stFontSm, ...stTextSecondary }}>{entry.document_title}</span>
       <span className="ml-auto shrink-0" style={{ ...stFontXs, ...stTextTertiary }}>{fmtDateTime(entry.accessed_at)}</span>
-    </div>
-  );
+    </div>);
 }
 
 function FileRow({ file, expanded, onToggle, onDelete }: {
@@ -761,24 +696,18 @@ function FileRow({ file, expanded, onToggle, onDelete }: {
             padding: 0, }}
           onMouseEnter={() => setDeleteHovered(true)}
           onMouseLeave={() => setDeleteHovered(false)}>
-          <Trash2 className="w-3.5 h-3.5" />
-        </button>
-      </div>
+          <Trash2 className="w-3.5 h-3.5" /></button></div>
       {expanded && (
         <div style={{ borderTop: '1px solid var(--border-subtle)', padding: 'var(--space-3) var(--space-4)' }}>
           {file.summary && (
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', marginBottom: 'var(--space-3)' }}>
-              {file.summary}
-            </p>
+              {file.summary}</p>
           )}
           <pre style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)', whiteSpace: 'pre-wrap', maxHeight: '15rem', overflowY: 'auto', background: 'var(--surface-0)', borderRadius: 'var(--radius-md)', padding: 'var(--space-3)' }}>
             {file.extracted_text.substring(0, 5000)}
-            {file.extracted_text.length > 5000 && '\n\n... (truncated)'}
-          </pre>
-        </div>
+            {file.extracted_text.length > 5000 && '\n\n... (truncated)'}</pre></div>
       )}
-    </div>
-  );
+    </div>);
 }
 
 function formatBytes(bytes: number): string {

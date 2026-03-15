@@ -40,8 +40,7 @@ export async function GET(req: NextRequest) {
     unresolved,
     investors: investors.map(i => ({ id: i.id, name: i.name })),
     total_objections: playbook.reduce((sum, t) => sum + t.count, 0),
-    topics_count: playbook.length,
-  });
+    topics_count: playbook.length,});
 }
 
 export async function PUT(req: NextRequest) {
@@ -55,15 +54,12 @@ export async function PUT(req: NextRequest) {
     id: string; response_text: string; effectiveness: string;
   };
 
-  if (!id) {
-    return NextResponse.json({ error: 'id required' }, { status: 400 });
-  }
+  if (!id) { return NextResponse.json({ error: 'id required' }, { status: 400 }); }
 
   await updateObjectionResponse(
     id,
     response_text ?? '',
-    effectiveness ?? 'unknown'
-  );
+    effectiveness ?? 'unknown');
 
   // --- WIRE: Objection Response → Cascade Updates ---
   if (effectiveness === 'effective' || effectiveness === 'partially_effective') {
@@ -79,8 +75,7 @@ export async function PUT(req: NextRequest) {
           subject: `Objection resolved: ${objection_topic || 'unknown topic'}`,
           detail: `Response marked "${effectiveness}". ${response_text ? 'Response: ' + response_text.substring(0, 100) : ''}`,
           investor_id,
-          investor_name: investor_name || '',
-        });
+          investor_name: investor_name || '',});
       }
     } catch { /* non-blocking */ }
 
@@ -93,10 +88,8 @@ export async function PUT(req: NextRequest) {
             await updateFollowup(fu.id, {
               status: 'completed',
               outcome: `Auto-resolved: objection "${objection_topic}" marked ${effectiveness}`,
-              conviction_delta: effectiveness === 'effective' ? 1 : 0,
-            });
-          }
-        }
+              conviction_delta: effectiveness === 'effective' ? 1 : 0,});
+          }}
       }
     } catch { /* non-blocking */ }
   }

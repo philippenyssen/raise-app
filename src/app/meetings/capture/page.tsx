@@ -22,8 +22,7 @@ const AI_THINKING_MESSAGES = [
   'Mapping engagement patterns...',
   'Generating follow-up choreography...',
   'Analyzing sentiment and enthusiasm...',
-  'Cross-referencing investor history...',
-];
+  'Cross-referencing investor history...',];
 
 export default function QuickCapturePage() {
   return (
@@ -33,12 +32,10 @@ export default function QuickCapturePage() {
         <div className="skeleton" style={{ height: '16px', width: '300px', marginBottom: 'var(--space-8)' }} />
         <div className="skeleton" style={{ height: '44px', marginBottom: 'var(--space-5)' }} />
         <div className="skeleton" style={{ height: '280px', marginBottom: 'var(--space-5)' }} />
-        <div className="skeleton" style={{ height: '48px' }} />
-      </div>
+        <div className="skeleton" style={{ height: '48px' }} /></div>
     }>
       <QuickCaptureInner />
-    </Suspense>
-  );
+    </Suspense>);
 }
 
 function QuickCaptureInner() {
@@ -108,8 +105,7 @@ function QuickCaptureInner() {
           attendees: '',
           analyze: true,
           ...(enthusiasm > 0 && { enthusiasm }),
-        }),
-      });
+        }),});
       const data = await res.json();
       if (enthusiasm > 0) {
         data.enthusiasm_score = enthusiasm;
@@ -120,8 +116,7 @@ function QuickCaptureInner() {
       // Non-blocking
     } finally {
       setLoading(false);
-    }
-  }
+    }}
 
   function handleReset() {
     setResult(null);
@@ -158,15 +153,11 @@ function QuickCaptureInner() {
         {/* Success header */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', marginBottom: 'var(--space-6)' }}>
           <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--success-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <span style={stTextSecondary}><CheckCircle2 className="w-5 h-5" /></span>
-          </div>
+            <span style={stTextSecondary}><CheckCircle2 className="w-5 h-5" /></span></div>
           <div>
             <h1 className="page-title" style={{ fontSize: 'var(--font-size-xl)' }}>Captured & Processed</h1>
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)', marginTop: '2px' }}>
-              Meeting with {selectedInvestor?.name || 'investor'} analyzed
-            </p>
-          </div>
-        </div>
+              Meeting with {selectedInvestor?.name || 'investor'} analyzed</p></div></div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-5)' }}>
           {/* AI Summary */}
@@ -175,10 +166,7 @@ function QuickCaptureInner() {
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--space-3)' }}>
                 <span style={{ color: 'var(--accent)', marginTop: '2px' }}><Sparkles className="w-4 h-4" /></span>
                 <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', lineHeight: 1.6 }}>
-                  {String(result.ai_analysis)}
-                </p>
-              </div>
-            </div>
+                  {String(result.ai_analysis)}</p></div></div>
           )}
 
           {/* Enthusiasm + Status row */}
@@ -193,38 +181,26 @@ function QuickCaptureInner() {
                       background: n <= ((result.enthusiasm_score as number) || 0) ? 'var(--accent)' : 'var(--border-default)',
                       transition: 'all 150ms ease',
                     }} />
-                  ))}
-                </div>
+                  ))}</div>
                 <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
-                  {(result.enthusiasm_score as number) || 0}/5
-                </span>
-              </div>
-            </div>
+                  {(result.enthusiasm_score as number) || 0}/5</span></div></div>
             <div className="card">
               <p className="section-title" style={{ marginBottom: 'var(--space-2)' }}>Suggested Status</p>
               <span className="badge badge-blue" style={stFontSm}>
-                {String(result.status_after || 'met').replace(/_/g, ' ')}
-              </span>
-            </div>
-          </div>
+                {String(result.status_after || 'met').replace(/_/g, ' ')}</span></div></div>
 
           {/* Questions */}
           {questions.length > 0 && (
             <div className="card">
               <p className="section-title">
                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-                  <MessageCircle className="w-3.5 h-3.5" /> Questions Asked ({questions.length})
-                </span>
-              </p>
+                  <MessageCircle className="w-3.5 h-3.5" /> Questions Asked ({questions.length})</span></p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
                 {questions.map((q: { text: string; topic: string }, i: number) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--space-2)' }}>
                     <span className="badge badge-zinc" style={{ flexShrink: 0, marginTop: '2px' }}>{q.topic}</span>
-                    <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>{q.text}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+                    <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>{q.text}</span></div>
+                ))}</div></div>
           )}
 
           {/* Objections */}
@@ -232,21 +208,15 @@ function QuickCaptureInner() {
             <div className="card">
               <p className="section-title">
                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-                  <AlertTriangle className="w-3.5 h-3.5" /> Objections ({objections.length})
-                </span>
-              </p>
+                  <AlertTriangle className="w-3.5 h-3.5" /> Objections ({objections.length})</span></p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
                 {objections.map((o: { text: string; severity: string }, i: number) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--space-2)' }}>
                     <span className={`badge ${o.severity === 'showstopper' ? 'badge-red' : o.severity === 'significant' ? 'badge-amber' : 'badge-zinc'}`}
                       style={{ flexShrink: 0, marginTop: '2px' }}>
-                      {o.severity}
-                    </span>
-                    <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>{o.text}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+                      {o.severity}</span>
+                    <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>{o.text}</span></div>
+                ))}</div></div>
           )}
 
           {/* Engagement Signals */}
@@ -254,9 +224,7 @@ function QuickCaptureInner() {
             <div className="card">
               <p className="section-title">
                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-                  <Crosshair className="w-3.5 h-3.5" /> Engagement Signals
-                </span>
-              </p>
+                  <Crosshair className="w-3.5 h-3.5" /> Engagement Signals</span></p>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-3)' }}>
                 {engagementSignals.asked_about_process !== undefined && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
@@ -286,12 +254,8 @@ function QuickCaptureInner() {
                   <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
                     <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: engagementSignals.body_language_at_pricing === 'positive' ? 'var(--success)' : engagementSignals.body_language_at_pricing === 'negative' ? 'var(--danger)' : 'var(--warning)' }} />
                     <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
-                      Pricing reaction: {engagementSignals.body_language_at_pricing}
-                    </span>
-                  </div>
-                )}
-              </div>
-            </div>
+                      Pricing reaction: {engagementSignals.body_language_at_pricing}</span></div>
+                )}</div></div>
           )}
 
           {/* Competitive Intel */}
@@ -299,13 +263,9 @@ function QuickCaptureInner() {
             <div className="card">
               <p className="section-title">
                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-                  <Shield className="w-3.5 h-3.5" /> Competitive Intelligence
-                </span>
-              </p>
+                  <Shield className="w-3.5 h-3.5" /> Competitive Intelligence</span></p>
               <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                {competitiveIntel}
-              </p>
-            </div>
+                {competitiveIntel}</p></div>
           )}
 
           {/* Post-Meeting Actions */}
@@ -330,8 +290,7 @@ function QuickCaptureInner() {
               href={`/followups?investor=${investorId}`}
               className="btn btn-secondary btn-md"
               style={{ textDecoration: 'none', width: 'fit-content' }}>
-              view all follow-ups
-            </Link>
+              view all follow-ups</Link>
           )}
 
           {/* Action buttons */}
@@ -348,8 +307,7 @@ function QuickCaptureInner() {
                   gap: 'var(--space-2)', }}
                 onMouseEnter={() => setViewMeetingHovered(true)}
                 onMouseLeave={() => setViewMeetingHovered(false)}>
-                <ExternalLink className="w-3.5 h-3.5" /> View {selectedInvestor?.name || 'Investor'}
-              </Link>
+                <ExternalLink className="w-3.5 h-3.5" /> View {selectedInvestor?.name || 'Investor'}</Link>
             )}
             <button
               onClick={handleReset}
@@ -359,12 +317,8 @@ function QuickCaptureInner() {
                 color: 'var(--text-primary)', }}
               onMouseEnter={() => setNewCaptureHovered(true)}
               onMouseLeave={() => setNewCaptureHovered(false)}>
-              Capture Another
-            </button>
-          </div>
-        </div>
-      </div>
-    );
+              Capture Another</button></div></div>
+      </div>);
   }
 
   // --- CAPTURE FORM ---
@@ -374,14 +328,10 @@ function QuickCaptureInner() {
       <div style={{ marginBottom: 'var(--space-6)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
           <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--accent-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <span style={stAccent}><Timer className="w-5 h-5" /></span>
-          </div>
+            <span style={stAccent}><Timer className="w-5 h-5" /></span></div>
           <div>
             <h1 className="page-title" style={{ fontSize: 'var(--font-size-xl)' }}>Quick Capture</h1>
-            <p className="page-subtitle">Capture while it&apos;s fresh — AI handles the rest</p>
-          </div>
-        </div>
-      </div>
+            <p className="page-subtitle">Capture while it&apos;s fresh — AI handles the rest</p></div></div></div>
 
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-5)' }}>
         {/* Investor selector */}
@@ -396,9 +346,7 @@ function QuickCaptureInner() {
             <option value="">Choose investor for this meeting</option>
             {investors.map(inv => (
               <option key={inv.id} value={inv.id}>{inv.name} (T{inv.tier})</option>
-            ))}
-          </select>
-        </div>
+            ))}</select></div>
 
         {/* Investor quick profile */}
         {selectedInvestor && (
@@ -415,9 +363,7 @@ function QuickCaptureInner() {
               <div>
                 <span style={labelMuted}>Status</span>
                 <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>{selectedInvestor.status.replace(/_/g, ' ')}</p>
-              </div>
-            </div>
-          </div>
+              </div></div></div>
         )}
 
         {/* The big text area */}
@@ -434,16 +380,11 @@ function QuickCaptureInner() {
           <div style={{
             display: 'flex', justifyContent: 'space-between', alignItems: 'center',
             marginTop: 'var(--space-1)',
-            padding: '0 var(--space-1)',
-          }}>
+            padding: '0 var(--space-1)',}}>
             <span style={labelMuted}>
-              Brain dump everything — AI will structure it
-            </span>
+              Brain dump everything — AI will structure it</span>
             <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontVariantNumeric: 'tabular-nums' }}>
-              {rawNotes.length > 0 ? `${rawNotes.split(/\s+/).filter(Boolean).length} words` : ''}
-            </span>
-          </div>
-        </div>
+              {rawNotes.length > 0 ? `${rawNotes.split(/\s+/).filter(Boolean).length} words` : ''}</span></div></div>
 
         {/* Quick-rate bar */}
         <div>
@@ -455,20 +396,15 @@ function QuickCaptureInner() {
                 type="button"
                 onClick={() => setEnthusiasm(level === enthusiasm ? 0 : level)}
                 style={{ width: '48px', height: '48px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 'var(--font-size-lg)', fontWeight: 400, cursor: 'pointer', transition: 'all 150ms ease', border: enthusiasm === level ? '2px solid var(--accent)' : '2px solid var(--border-default)', background: enthusiasm === level ? 'var(--accent-muted)' : 'var(--surface-1)', color: enthusiasm === level ? 'var(--accent)' : 'var(--text-tertiary)', transform: enthusiasm === level ? 'scale(1.1)' : 'scale(1)' }}>
-                {level}
-              </button>
+                {level}</button>
             ))}
             {enthusiasm > 0 && (
               <span style={{
                 fontSize: 'var(--font-size-sm)', color: 'var(--accent)',
                 fontWeight: 400, marginLeft: 'var(--space-2)',
-                animation: 'fade-in 200ms ease forwards',
-              }}>
-                {ENTHUSIASM_LABELS[enthusiasm - 1]}
-              </span>
-            )}
-          </div>
-        </div>
+                animation: 'fade-in 200ms ease forwards',}}>
+                {ENTHUSIASM_LABELS[enthusiasm - 1]}</span>
+            )}</div></div>
 
         {/* Optional details (collapsible) */}
         <div>
@@ -485,13 +421,11 @@ function QuickCaptureInner() {
             onMouseLeave={() => setDetailsHovered(false)}>
             <span style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
               <Clock className="w-3.5 h-3.5" />
-              Optional details
-            </span>
+              Optional details</span>
             {showDetails
               ? <ChevronUp className="w-3.5 h-3.5" />
               : <ChevronDown className="w-3.5 h-3.5" />
-            }
-          </button>
+            }</button>
 
           {showDetails && (
             <div className="animate-slide-down" style={{
@@ -499,8 +433,7 @@ function QuickCaptureInner() {
               marginTop: 'var(--space-3)',
               padding: 'var(--space-4)',
               background: 'var(--surface-1)',
-              borderRadius: 'var(--radius-lg)',
-            }}>
+              borderRadius: 'var(--radius-lg)',}}>
               <div>
                 <label className="label" style={{ display: 'block' }}>Meeting type</label>
                 <select
@@ -514,9 +447,7 @@ function QuickCaptureInner() {
                   <option value="site_visit">Site Visit</option>
                   <option value="dd_session">DD Session</option>
                   <option value="negotiation">Negotiation</option>
-                  <option value="social">Social / Informal</option>
-                </select>
-              </div>
+                  <option value="social">Social / Informal</option></select></div>
               <div>
                 <label className="label" style={{ display: 'block' }}>Duration (min)</label>
                 <input
@@ -525,19 +456,15 @@ function QuickCaptureInner() {
                   onChange={e => setDurationMinutes(Number(e.target.value))}
                   min={5}
                   max={480}
-                  className="input" />
-              </div>
+                  className="input" /></div>
               <div>
                 <label className="label" style={{ display: 'block' }}>Date & time</label>
                 <input
                   type="datetime-local"
                   value={meetingDate}
                   onChange={e => setMeetingDate(e.target.value)}
-                  className="input" />
-              </div>
-            </div>
-          )}
-        </div>
+                  className="input" /></div></div>
+          )}</div>
 
         {/* Submit button */}
         <button
@@ -550,17 +477,13 @@ function QuickCaptureInner() {
           {loading ? (
             <span style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', justifyContent: 'center' }}>
               <Loader2 className="w-5 h-5" style={{ animation: 'spin 1s linear infinite' }} />
-              {AI_THINKING_MESSAGES[thinkingMsg]}
-            </span>
+              {AI_THINKING_MESSAGES[thinkingMsg]}</span>
           ) : (
             <span style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', justifyContent: 'center' }}>
               <Sparkles className="w-5 h-5" />
               Process & Save
-              <ArrowRight className="w-4 h-4" />
-            </span>
-          )}
-        </button>
-      </form>
+              <ArrowRight className="w-4 h-4" /></span>
+          )}</button></form>
 
       {/* Spinner animation */}
       <style>{`
@@ -569,6 +492,5 @@ function QuickCaptureInner() {
           to { transform: rotate(360deg); }
         }
       `}</style>
-    </div>
-  );
+    </div>);
 }

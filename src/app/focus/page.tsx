@@ -69,19 +69,14 @@ const TYPE_STYLES: Record<string, React.CSSProperties> = {
   sovereign: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
   strategic: { background: 'var(--cat-teal-muted)', color: 'var(--cat-teal)' },
   debt: { background: 'var(--surface-2)', color: 'var(--text-secondary)' },
-  family_office: { background: 'var(--fg-6)', color: 'var(--text-primary)' },
-};
+  family_office: { background: 'var(--fg-6)', color: 'var(--text-primary)' },};
 
 const TYPE_LABELS: Record<string, string> = {
   vc: 'VC', growth: 'Growth', sovereign: 'SWF', strategic: 'Strategic',
-  debt: 'Debt', family_office: 'Family',
-};
+  debt: 'Debt', family_office: 'Family',};
 
 const STATUS_STYLES = PIPELINE_STATUS_STYLES;
 const MOMENTUM_STYLE = MOMENTUM_STYLES;
-
-
-
 
 function EnthusiasmDots({ value }: { value: number }) {
   return (
@@ -96,8 +91,7 @@ function EnthusiasmDots({ value }: { value: number }) {
               : 'var(--border-default)',
           }} />
       ))}
-    </div>
-  );
+    </div>);
 }
 
 function TierBadge({ tier }: { tier: number }) {
@@ -105,8 +99,7 @@ function TierBadge({ tier }: { tier: number }) {
   return (
     <span className={tierClass}>
       {tier}
-    </span>
-  );
+    </span>);
 }
 
 // Shared inline badge style helper
@@ -118,8 +111,7 @@ function inlineBadgeStyle(styleObj: React.CSSProperties): React.CSSProperties {
     fontWeight: 400,
     lineHeight: 1.5,
     whiteSpace: 'nowrap' as const,
-    ...styleObj,
-  };
+    ...styleObj,};
 }
 
 // ---------------------------------------------------------------------------
@@ -137,9 +129,7 @@ const DIMENSION_SHORT_LABELS: Record<string, string> = {
   'Momentum': 'MOM',
   'Network Effect': 'NET',
   'Forecast Alignment': 'FCT',
-  'Engagement Velocity': 'VEL',
-};
-
+  'Engagement Velocity': 'VEL',};
 
 function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
   const [expanded, setExpanded] = useState(false);
@@ -158,8 +148,7 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
           className="flex items-center gap-1.5 shrink-0"
           style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
           <span style={stTextMuted}><BarChart3 className="w-3 h-3" /></span>
-          <ChevronDown className={`w-3 h-3 transition-transform ${expanded ? 'rotate-180' : ''}`} style={stTextMuted} />
-        </button>
+          <ChevronDown className={`w-3 h-3 transition-transform ${expanded ? 'rotate-180' : ''}`} style={stTextMuted} /></button>
         <div className="flex items-center gap-0.5 flex-1">
           {dimensions.map(d => (
             <div
@@ -184,10 +173,8 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
                   borderRadius: '3px',
                   opacity: 0.85,
                   transition: 'width 300ms ease',
-                }} />
-            </div>
-          ))}
-        </div>
+                }} /></div>
+          ))}</div>
         {/* Inline top strengths summary */}
         {!expanded && topDimensions.length > 0 && (
           <div className="flex items-center gap-1.5 shrink-0" style={{ marginLeft: '4px' }}>
@@ -202,8 +189,7 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
                   padding: '1px 4px',
                   borderRadius: 'var(--radius-sm)',
                   whiteSpace: 'nowrap', }}>
-                {DIMENSION_SHORT_LABELS[d.name] || d.name.slice(0, 3).toUpperCase()} {d.score}
-              </span>
+                {DIMENSION_SHORT_LABELS[d.name] || d.name.slice(0, 3).toUpperCase()} {d.score}</span>
             ))}
             {weakest && weakest.score < 40 && (
               <span
@@ -215,12 +201,9 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
                   padding: '1px 4px',
                   borderRadius: 'var(--radius-sm)',
                   whiteSpace: 'nowrap', }}>
-                {DIMENSION_SHORT_LABELS[weakest.name] || weakest.name.slice(0, 3).toUpperCase()} {weakest.score}
-              </span>
-            )}
-          </div>
-        )}
-      </div>
+                {DIMENSION_SHORT_LABELS[weakest.name] || weakest.name.slice(0, 3).toUpperCase()} {weakest.score}</span>
+            )}</div>
+        )}</div>
 
       {/* Expanded detail */}
       {expanded && (
@@ -234,14 +217,11 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
               <div key={d.name}>
                 <div className="flex items-center justify-between mb-0.5">
                   <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 400, letterSpacing: '0.01em' }}>
-                    {d.name}
-                  </span>
+                    {d.name}</span>
                   <span
                     className="tabular-nums"
                     style={{ fontSize: '10px', fontWeight: 300, color: dimensionColor(d.score, d.signal) }}>
-                    {d.signal === 'unknown' ? '--' : d.score}
-                  </span>
-                </div>
+                    {d.signal === 'unknown' ? '--' : d.score}</span></div>
                 <div
                   style={{
                     height: '4px',
@@ -259,11 +239,8 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
                       background: dimensionColor(d.score, d.signal),
                       borderRadius: '2px',
                       opacity: 0.85,
-                    }} />
-                </div>
-              </div>
-            ))}
-          </div>
+                    }} /></div></div>
+            ))}</div>
 
           {/* Strengths */}
           {topDimensions.length > 0 && (
@@ -271,25 +248,17 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
               <div className="flex items-center gap-1 mb-1">
                 <span style={stTextSecondary}><Star className="w-3 h-3" /></span>
                 <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 400, letterSpacing: '0.01em' }}>
-                  Strengths
-                </span>
-              </div>
+                  Strengths</span></div>
               <div className="space-y-1">
                 {topDimensions.map(d => (
                   <div key={d.name} className="flex items-start gap-1.5">
                     <span style={{ fontSize: '10px', fontWeight: 300, color: dimensionColor(d.score, d.signal), minWidth: '20px' }} className="tabular-nums shrink-0">
-                      {d.score}
-                    </span>
+                      {d.score}</span>
                     <span style={{ fontSize: '10px', color: 'var(--text-secondary)', fontWeight: 400 }}>
-                      {d.name}
-                    </span>
+                      {d.name}</span>
                     <span style={labelMuted10}>
-                      {d.evidence}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
+                      {d.evidence}</span></div>
+                ))}</div></div>
           )}
 
           {/* Weakest */}
@@ -298,26 +267,17 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
               <div className="flex items-center gap-1 mb-1">
                 <span style={stTextTertiary}><Eye className="w-3 h-3" /></span>
                 <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 400, letterSpacing: '0.01em' }}>
-                  Needs Attention
-                </span>
-              </div>
+                  Needs Attention</span></div>
               <div className="flex items-start gap-1.5">
                 <span style={{ fontSize: '10px', fontWeight: 300, color: dimensionColor(weakest.score, weakest.signal), minWidth: '20px' }} className="tabular-nums shrink-0">
-                  {weakest.score}
-                </span>
+                  {weakest.score}</span>
                 <span style={{ fontSize: '10px', color: 'var(--text-secondary)', fontWeight: 400 }}>
-                  {weakest.name}
-                </span>
+                  {weakest.name}</span>
                 <span style={labelMuted10}>
-                  {weakest.evidence}
-                </span>
-              </div>
-            </div>
-          )}
-        </div>
+                  {weakest.evidence}</span></div></div>
+          )}</div>
       )}
-    </div>
-  );
+    </div>);
 }
 
 // ---------------------------------------------------------------------------
@@ -332,8 +292,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
     borderRadius: 'var(--radius-lg)',
     background: rank <= 3 ? 'var(--surface-1)' : 'var(--surface-0)',
     transition: 'all 200ms ease',
-    ...(expanded ? { boxShadow: '0 0 0 1px var(--border-default)' } : {}),
-  };
+    ...(expanded ? { boxShadow: '0 0 0 1px var(--border-default)' } : {}),};
 
   const rankStyle: React.CSSProperties = rank <= 3
     ? { background: 'var(--accent)', color: 'var(--text-primary)' }
@@ -358,8 +317,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
               borderRadius: 'var(--radius-md)',
               fontSize: 'var(--font-size-sm)',
               fontWeight: 300, }}>
-            {rank}
-          </div>
+            {rank}</div>
 
           {/* Investor info */}
           <div className="flex-1 min-w-0">
@@ -371,21 +329,16 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
                 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}
                 onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
                 onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}>
-                {item.investorName}
-              </Link>
+                {item.investorName}</Link>
               <span style={inlineBadgeStyle(TYPE_STYLES[item.investorType] ?? TYPE_STYLES.vc)}>
-                {TYPE_LABELS[item.investorType] ?? item.investorType}
-              </span>
+                {TYPE_LABELS[item.investorType] ?? item.investorType}</span>
               <TierBadge tier={item.investorTier} />
               <span style={inlineBadgeStyle(STATUS_STYLES[item.status] ?? STATUS_STYLES.identified)}>
-                {STATUS_LABELS[item.status] ?? item.status}
-              </span>
-            </div>
+                {STATUS_LABELS[item.status] ?? item.status}</span></div>
 
             {/* Recommended action */}
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, lineHeight: 1.4, marginTop: '6px' }}>
-              {item.recommendedAction}
-            </p>
+              {item.recommendedAction}</p>
 
             {/* Meta row */}
             <div className="flex items-center gap-4 flex-wrap" style={{ marginTop: '8px' }}>
@@ -398,8 +351,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
                   <span className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: heatColor, fontWeight: 400 }} title={`Deal heat: ${heat}/100`}>
                     <Flame className="w-3 h-3" />
                     {heat}
-                  </span>
-                );
+                  </span>);
               })()}
 
               {/* Last meeting type + days ago */}
@@ -409,13 +361,11 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
                   ? <>
                       {item.lastMeetingType && (
                         <span style={{ color: 'var(--text-secondary)', fontWeight: 400 }}>
-                          {item.lastMeetingType.replace(/_/g, ' ')}
-                        </span>
+                          {item.lastMeetingType.replace(/_/g, ' ')}</span>
                       )}
                       {' '}{item.daysSinceLastMeeting}d ago
                     </>
-                  : 'No meetings'}
-              </span>
+                  : 'No meetings'}</span>
 
               {/* Momentum */}
               <span className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', ...(MOMENTUM_STYLE[item.momentum] ?? {}) }}>
@@ -423,57 +373,43 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
                   ? <TrendingDown className="w-3 h-3" />
                   : <ArrowUpRight className="w-3 h-3" />
                 }
-                {MOMENTUM_LABELS[item.momentum]}
-              </span>
+                {MOMENTUM_LABELS[item.momentum]}</span>
 
               {/* Enthusiasm */}
               <div className="flex items-center gap-1.5">
-                <EnthusiasmDots value={item.enthusiasm} />
-              </div>
+                <EnthusiasmDots value={item.enthusiasm} /></div>
 
               {/* Time estimate */}
               <span className="flex items-center gap-1" style={labelMuted}>
                 <Timer className="w-3 h-3" />
-                {item.timeEstimate}
-              </span>
+                {item.timeEstimate}</span>
 
               {/* Pending tasks */}
               {item.pendingTaskCount > 0 && (
                 <span className="flex items-center gap-1" style={labelTertiary}>
                   <AlertTriangle className="w-3 h-3" />
-                  {item.pendingTaskCount} task{item.pendingTaskCount !== 1 ? 's' : ''}
-                </span>
+                  {item.pendingTaskCount} task{item.pendingTaskCount !== 1 ? 's' : ''}</span>
               )}
 
               {/* Open flags */}
               {item.openFlagCount > 0 && (
                 <span className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)' }}>
                   <Flag className="w-3 h-3" />
-                  {item.openFlagCount} flag{item.openFlagCount !== 1 ? 's' : ''}
-                </span>
-              )}
-            </div>
+                  {item.openFlagCount} flag{item.openFlagCount !== 1 ? 's' : ''}</span>
+              )}</div>
 
             {/* Top objection — the #1 blocker for this deal */}
             {item.topObjectionTopic && (
               <div className="flex items-center gap-1.5" style={{ marginTop: '6px' }}>
                 <span style={stTextTertiary}><MessageSquare className="w-3 h-3" /></span>
-                <span style={{
-                  fontSize: '11px',
-                  color: 'var(--text-tertiary)',
-                  fontWeight: 400,
-                  fontStyle: 'italic',
-                }}>
-                  Blocker: {item.topObjectionTopic}
-                </span>
-              </div>
+                <span style={{ fontSize: '11px', color: 'var(--text-tertiary)', fontWeight: 400, fontStyle: 'italic' }}>
+                  Blocker: {item.topObjectionTopic}</span></div>
             )}
 
             {/* 11-Dimension Scoring Breakdown */}
             {item.scoringDimensions && item.scoringDimensions.length > 0 && (
               <ScoringBreakdown dimensions={item.scoringDimensions} />
-            )}
-          </div>
+            )}</div>
 
           {/* Focus score + quick actions */}
           <div className="flex flex-col items-center gap-2 shrink-0">
@@ -485,10 +421,8 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
               <span
                 className="tabular-nums"
                 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: focusScoreColor(item.focusScore) }}>
-                {item.focusScore}
-              </span>
-              <span style={{ fontSize: '9px', color: 'var(--text-muted)', letterSpacing: '0.08em' }}>Focus</span>
-            </div>
+                {item.focusScore}</span>
+              <span style={{ fontSize: '9px', color: 'var(--text-muted)', letterSpacing: '0.08em' }}>Focus</span></div>
             {/* Quick action buttons — always visible for top 3, on hover for rest */}
             {(rank <= 3 || hovered) && (
               <div className="flex items-center gap-1" onClick={e => e.stopPropagation()}>
@@ -499,8 +433,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
                   style={{ width: '28px', height: '28px', borderRadius: 'var(--radius-md)', background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid var(--accent-8)', transition: 'all 150ms ease' }}
                   onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent)'; e.currentTarget.style.color = 'white'; }}
                   onMouseLeave={e => { e.currentTarget.style.background = 'var(--accent-muted)'; e.currentTarget.style.color = 'var(--accent)'; }}>
-                  <Calendar className="w-3.5 h-3.5" />
-                </Link>
+                  <Calendar className="w-3.5 h-3.5" /></Link>
                 <Link
                   href={`/meetings/prep?investor=${item.investorId}`}
                   title="Prep meeting"
@@ -508,23 +441,15 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
                   style={{ width: '28px', height: '28px', borderRadius: 'var(--radius-md)', background: 'var(--surface-2)', color: 'var(--text-secondary)', transition: 'all 150ms ease' }}
                   onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent-muted)'; e.currentTarget.style.color = 'var(--accent)'; }}
                   onMouseLeave={e => { e.currentTarget.style.background = 'var(--surface-2)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}>
-                  <Zap className="w-3.5 h-3.5" />
-                </Link>
-              </div>
-            )}
-          </div>
-        </div>
+                  <Zap className="w-3.5 h-3.5" /></Link></div>
+            )}</div></div>
 
         {/* Impact + Risk row */}
         <div className="flex items-start gap-4 ml-11" style={{ marginTop: '10px' }}>
           <p className="flex-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', opacity: 0.85, lineHeight: 1.6 }}>
-            {item.expectedImpact}
-          </p>
+            {item.expectedImpact}</p>
           <p className="flex-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', opacity: 0.75, lineHeight: 1.6 }}>
-            {item.riskIfIgnored}
-          </p>
-        </div>
-      </div>
+            {item.riskIfIgnored}</p></div></div>
 
       {/* Expanded details */}
       {expanded && (
@@ -543,11 +468,8 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
                 <div key={comp.label} className="text-center">
                   <div className="tabular-nums" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 300, color: focusScoreColor(comp.value) }}>{comp.value}</div>
                   <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '2px' }}>{comp.label}</div>
-                  <div style={{ fontSize: '8px', color: 'var(--text-muted)' }}>{comp.weight}</div>
-                </div>
-              ))}
-            </div>
-          </div>
+                  <div style={{ fontSize: '8px', color: 'var(--text-muted)' }}>{comp.weight}</div></div>
+              ))}</div></div>
 
           {/* Unresolved objections */}
           {item.unresolvedObjections.length > 0 && (
@@ -557,11 +479,8 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
                 {item.unresolvedObjections.map((obj, i) => (
                   <div key={i} className="flex items-start gap-1.5" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', opacity: 0.85 }}>
                     <AlertTriangle className="w-3 h-3 shrink-0 mt-0.5" />
-                    {obj}
-                  </div>
-                ))}
-              </div>
-            </div>
+                    {obj}</div>
+                ))}</div></div>
           )}
 
           {/* Actions */}
@@ -570,19 +489,14 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
               href={`/meetings/new?investor=${item.investorId}`}
               className="btn btn-primary btn-sm"
               onClick={e => e.stopPropagation()}>
-              Schedule Meeting
-            </Link>
+              Schedule Meeting</Link>
             <Link
               href={`/investors/${item.investorId}`}
               className="btn btn-secondary btn-sm"
               onClick={e => e.stopPropagation()}>
-              Open Investor
-            </Link>
-          </div>
-        </div>
+              Open Investor</Link></div></div>
       )}
-    </div>
-  );
+    </div>);
 }
 
 function QuickWinCard({ item }: { item: FocusItem }) {
@@ -598,10 +512,8 @@ function QuickWinCard({ item }: { item: FocusItem }) {
           style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}
           onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
           onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}>
-          {item.investorName}
-        </Link>
-        <TierBadge tier={item.investorTier} />
-      </div>
+          {item.investorName}</Link>
+        <TierBadge tier={item.investorTier} /></div>
       {item.unresolvedObjections.length > 0 ? (
         <>
           <p style={{ ...labelMuted, marginBottom: '4px' }}>Blocker:</p>
@@ -618,29 +530,21 @@ function QuickWinCard({ item }: { item: FocusItem }) {
       <div className="flex items-center justify-between" style={{ marginTop: '12px' }}>
         <div className="flex items-center gap-2">
           <span className="flex items-center gap-1" style={labelMuted10}>
-            <Timer className="w-3 h-3" /> {item.timeEstimate}
-          </span>
+            <Timer className="w-3 h-3" /> {item.timeEstimate}</span>
           <span style={{ fontSize: '10px', color: focusScoreColor(item.focusScore) }}>
-            Score: {item.focusScore}
-          </span>
-        </div>
+            Score: {item.focusScore}</span></div>
         <div className="flex items-center gap-1.5">
           <Link
             href={`/meetings/new?investor=${item.investorId}`}
             className="btn btn-primary btn-sm"
             style={{ fontSize: '10px', padding: '2px 8px', borderRadius: 'var(--radius-sm)' }}>
-            Schedule
-          </Link>
+            Schedule</Link>
           <Link
             href={`/investors/${item.investorId}`}
             className="btn btn-secondary btn-sm"
             style={{ fontSize: '10px', padding: '2px 8px', borderRadius: 'var(--radius-sm)' }}>
-            Open
-          </Link>
-        </div>
-      </div>
-    </div>
-  );
+            Open</Link></div></div>
+    </div>);
 }
 
 function StaleAlertCard({ item, onReengage }: { item: FocusItem; onReengage: (item: FocusItem) => void }) {
@@ -656,31 +560,22 @@ function StaleAlertCard({ item, onReengage }: { item: FocusItem; onReengage: (it
             style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, ...stTextPrimary }}
             onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
             onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}>
-            {item.investorName}
-          </Link>
+            {item.investorName}</Link>
           <span style={inlineBadgeStyle(STATUS_STYLES[item.status] ?? STATUS_STYLES.identified)}>
-            {STATUS_LABELS[item.status]}
-          </span>
-        </div>
+            {STATUS_LABELS[item.status]}</span></div>
         <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', fontWeight: 300 }}>
-          {item.daysSinceLastMeeting !== null ? `${item.daysSinceLastMeeting}d` : '--'}
-        </span>
-      </div>
+          {item.daysSinceLastMeeting !== null ? `${item.daysSinceLastMeeting}d` : '--'}</span></div>
       <div className="flex items-center gap-3 mb-3">
         <span style={labelMuted}>Last enthusiasm:</span>
         <EnthusiasmDots value={item.enthusiasm} />
         <span style={{ fontSize: 'var(--font-size-xs)', ...(MOMENTUM_STYLE[item.momentum] ?? {}) }}>
-          {MOMENTUM_LABELS[item.momentum]}
-        </span>
-      </div>
+          {MOMENTUM_LABELS[item.momentum]}</span></div>
       <button
         onClick={() => onReengage(item)}
         className="btn btn-danger btn-sm w-full"
         style={{ opacity: 0.9 }}>
-        Create Re-engagement Task
-      </button>
-    </div>
-  );
+        Create Re-engagement Task</button>
+    </div>);
 }
 
 // ---------------------------------------------------------------------------
@@ -710,39 +605,29 @@ function AccelerationCard({
               style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}
               onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
               onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}>
-              {item.investorName}
-            </Link>
+              {item.investorName}</Link>
             <TierBadge tier={item.investorTier} />
             <span style={inlineBadgeStyle(TRIGGER_STYLES[item.triggerType] ?? TRIGGER_STYLES.stall_risk)}>
-              {TRIGGER_LABELS[item.triggerType] ?? item.triggerType}
-            </span>
+              {TRIGGER_LABELS[item.triggerType] ?? item.triggerType}</span>
             <span style={inlineBadgeStyle(CONFIDENCE_STYLES[item.confidence] ?? CONFIDENCE_STYLES.medium)}>
-              {item.confidence} confidence
-            </span>
-          </div>
+              {item.confidence} confidence</span></div>
 
           {/* Description */}
           <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '8px' }}>
-            {item.description}
-          </p>
+            {item.description}</p>
 
           {/* Meta row */}
           <div className="flex items-center gap-4 flex-wrap">
             <span className="flex items-center gap-1" style={labelMuted}>
               <Timer className="w-3 h-3" />
-              {item.timeEstimate}
-            </span>
+              {item.timeEstimate}</span>
             <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', opacity: 0.85 }}>
-              +{item.expectedLift} pts expected
-            </span>
+              +{item.expectedLift} pts expected</span>
             <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, ...(URGENCY_STYLE[item.urgency] ?? { color: 'var(--text-tertiary)' }) }}>
               {item.urgency === 'immediate' ? 'Act now' : item.urgency === '48h' ? 'Within 48h' : item.urgency === 'this_week' ? 'This week' : 'Next week'}
             </span>
             <span style={labelMuted10}>
-              {item.triggerEvidence}
-            </span>
-          </div>
-        </div>
+              {item.triggerEvidence}</span></div></div>
 
         {/* Execute button */}
         <button
@@ -751,11 +636,8 @@ function AccelerationCard({
           className="btn btn-primary btn-sm shrink-0 flex items-center gap-1.5"
           style={executing ? { background: 'var(--surface-2)', color: 'var(--text-muted)', cursor: 'default' } : {}}>
           <Play className="w-3 h-3" />
-          {executing ? 'Done' : 'Execute'}
-        </button>
-      </div>
-    </div>
-  );
+          {executing ? 'Done' : 'Execute'}</button></div>
+    </div>);
 }
 
 function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
@@ -770,39 +652,29 @@ function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
           style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}
           onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
           onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}>
-          {investor.investorName}
-        </Link>
+          {investor.investorName}</Link>
         <TierBadge tier={investor.investorTier} />
         <span style={inlineBadgeStyle(STATUS_STYLES[investor.status] ?? STATUS_STYLES.identified)}>
-          {STATUS_LABELS[investor.status] ?? investor.status}
-        </span>
-      </div>
+          {STATUS_LABELS[investor.status] ?? investor.status}</span></div>
       <div className="flex items-center gap-3 mb-2">
         <span style={labelMuted}>
-          Score: <span style={{ color: 'var(--text-secondary)', fontWeight: 300 }}>{investor.score}</span>/100
-        </span>
+          Score: <span style={{ color: 'var(--text-secondary)', fontWeight: 300 }}>{investor.score}</span>/100</span>
         <span style={{ fontSize: 'var(--font-size-xs)', ...(MOMENTUM_STYLE[investor.momentum] ?? {}) }}>
-          {MOMENTUM_LABELS[investor.momentum]}
-        </span>
-        <EnthusiasmDots value={investor.enthusiasm} />
-      </div>
+          {MOMENTUM_LABELS[investor.momentum]}</span>
+        <EnthusiasmDots value={investor.enthusiasm} /></div>
       <p style={labelTertiary}>{investor.reason}</p>
       <div className="flex items-center gap-2" style={{ marginTop: '10px' }}>
         <Link
           href={`/meetings/prep?investor=${investor.investorId}`}
           className="btn btn-primary btn-sm flex-1"
           style={{ fontSize: '11px' }}>
-          Prep Meeting
-        </Link>
+          Prep Meeting</Link>
         <Link
           href={`/investors/${investor.investorId}`}
           className="btn btn-secondary btn-sm flex-1"
           style={{ fontSize: '11px' }}>
-          View Deal
-        </Link>
-      </div>
-    </div>
-  );
+          View Deal</Link></div>
+    </div>);
 }
 
 function AtRiskCard({ investor }: { investor: InvestorSummary }) {
@@ -817,36 +689,27 @@ function AtRiskCard({ investor }: { investor: InvestorSummary }) {
           style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}
           onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
           onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}>
-          {investor.investorName}
-        </Link>
-        <TierBadge tier={investor.investorTier} />
-      </div>
+          {investor.investorName}</Link>
+        <TierBadge tier={investor.investorTier} /></div>
       <div className="flex items-center gap-3 mb-2">
         <span style={labelMuted}>
-          Score: <span style={{ color: 'var(--text-primary)', fontWeight: 300 }}>{investor.score}</span>/100
-        </span>
+          Score: <span style={{ color: 'var(--text-primary)', fontWeight: 300 }}>{investor.score}</span>/100</span>
         <span style={{ fontSize: 'var(--font-size-xs)', ...(MOMENTUM_STYLE[investor.momentum] ?? {}) }}>
-          {MOMENTUM_LABELS[investor.momentum]}
-        </span>
-        <EnthusiasmDots value={investor.enthusiasm} />
-      </div>
+          {MOMENTUM_LABELS[investor.momentum]}</span>
+        <EnthusiasmDots value={investor.enthusiasm} /></div>
       <p style={labelTertiary}>{investor.reason}</p>
       <div className="flex items-center gap-2" style={{ marginTop: '10px' }}>
         <Link
           href={`/meetings/new?investor=${investor.investorId}`}
           className="btn btn-sm flex-1 flex items-center justify-center gap-1"
           style={{ fontSize: '11px', background: 'var(--fg-6)', color: 'var(--text-primary)', border: '1px solid var(--fg-6)' }}>
-          Re-engage
-        </Link>
+          Re-engage</Link>
         <Link
           href={`/investors/${investor.investorId}`}
           className="btn btn-secondary btn-sm flex-1"
           style={{ fontSize: '11px' }}>
-          View Deal
-        </Link>
-      </div>
-    </div>
-  );
+          View Deal</Link></div>
+    </div>);
 }
 
 function DeprioritizeSection({ investors }: { investors: InvestorSummary[] }) {
@@ -865,11 +728,8 @@ function DeprioritizeSection({ investors }: { investors: InvestorSummary[] }) {
         <div className="flex items-center gap-2">
           <Ban className="w-3.5 h-3.5" style={stTextMuted} />
           <span style={{ ...labelMuted, fontWeight: 400, letterSpacing: '0.08em' }}>
-            Deprioritize ({investors.length})
-          </span>
-        </div>
-        <ChevronDown className={`w-4 h-4 transition-transform ${expanded ? 'rotate-180' : ''}`} style={stTextMuted} />
-      </button>
+            Deprioritize ({investors.length})</span></div>
+        <ChevronDown className={`w-4 h-4 transition-transform ${expanded ? 'rotate-180' : ''}`} style={stTextMuted} /></button>
       {expanded && (
         <div className="p-3 space-y-2" style={stBorderTop}>
           {investors.map(inv => (
@@ -882,20 +742,14 @@ function DeprioritizeSection({ investors }: { investors: InvestorSummary[] }) {
                   style={labelTertiary}
                   onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
                   onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-tertiary)')}>
-                  {inv.investorName}
-                </Link>
-                <TierBadge tier={inv.investorTier} />
-              </div>
-              <span style={labelMuted10}>{inv.reason}</span>
-            </div>
+                  {inv.investorName}</Link>
+                <TierBadge tier={inv.investorTier} /></div>
+              <span style={labelMuted10}>{inv.reason}</span></div>
           ))}
           <p style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '8px', paddingTop: '8px', borderTop: '1px solid var(--border-subtle)' }}>
-            Park these for now. Redirect time to higher-conviction conversations.
-          </p>
-        </div>
+            Park these for now. Redirect time to higher-conviction conversations.</p></div>
       )}
-    </div>
-  );
+    </div>);
 }
 
 // ---------------------------------------------------------------------------
@@ -916,8 +770,7 @@ export default function FocusPage() {
     try {
       const [focusRes, accelRes] = await Promise.all([
         fetch('/api/focus'),
-        fetch('/api/acceleration'),
-      ]);
+        fetch('/api/acceleration'),]);
       if (focusRes.ok) setData(await focusRes.json());
       if (accelRes.ok) setAccelData(await accelRes.json());
     } catch (err) {
@@ -947,14 +800,12 @@ export default function FocusPage() {
           investor_id: item.investorId,
           investor_name: item.investorName,
           auto_generated: true,
-        }),
-      });
+        }),});
       if (!res.ok) throw new Error('Failed to create task');
       toast(`Re-engagement task created for ${item.investorName}`);
     } catch {
       toast('Failed to create task', 'error');
-    }
-  }
+    }}
 
   async function handleExecuteAcceleration(item: AccelerationItem) {
     try {
@@ -964,15 +815,13 @@ export default function FocusPage() {
         body: JSON.stringify({
           id: item.id,
           status: 'executed',
-        }),
-      });
+        }),});
       if (!res.ok) throw new Error('Failed to mark action as executed');
       setExecutedIds(prev => new Set(prev).add(item.id));
       toast(`Action executed for ${item.investorName}`);
     } catch {
       toast('Failed to update action', 'error');
-    }
-  }
+    }}
 
   if (loading) {
     return (
@@ -981,13 +830,11 @@ export default function FocusPage() {
         <div className="grid grid-cols-4 gap-3">
           {[...Array(4)].map((_, i) => (
             <div key={i} className="skeleton" style={{ height: '80px', borderRadius: 'var(--radius-lg)' }} />
-          ))}
-        </div>
+          ))}</div>
         {[...Array(5)].map((_, i) => (
           <div key={i} className="skeleton" style={{ height: '128px', borderRadius: 'var(--radius-lg)' }} />
         ))}
-      </div>
-    );
+      </div>);
   }
 
   if (!data || data.priorityQueue.length === 0) {
@@ -998,11 +845,8 @@ export default function FocusPage() {
           <p style={stTextTertiary}>No investors in the pipeline yet.</p>
           <p style={{ ...labelMuted, fontSize: 'var(--font-size-sm)', marginTop: '4px' }}>Add investors and log meetings to build your daily priority queue.</p>
           <Link href="/investors" className="btn btn-primary btn-md" style={{ marginTop: '12px', display: 'inline-flex' }}>
-            Go to Pipeline
-          </Link>
-        </div>
-      </div>
-    );
+            Go to Pipeline</Link></div>
+      </div>);
   }
 
   const { priorityQueue, quickWins, staleAlerts, weeklyBudget } = data;
@@ -1019,77 +863,58 @@ export default function FocusPage() {
         <div>
           <h1 className="page-title">CEO Focus</h1>
           <p className="page-subtitle">
-            Investors ranked by urgency and opportunity — {weeklyBudget.totalHoursRecommended}h recommended this week
-          </p>
-        </div>
+            Investors ranked by urgency and opportunity — {weeklyBudget.totalHoursRecommended}h recommended this week</p></div>
         <button
           onClick={fetchData}
           className="btn btn-secondary btn-sm">
-          <RefreshCw className="w-3.5 h-3.5" /> Refresh
-        </button>
-      </div>
+          <RefreshCw className="w-3.5 h-3.5" /> Refresh</button></div>
 
       {/* Weekly Budget Summary */}
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 card-stagger">
         <div className="card-metric" style={{ padding: 'var(--space-4)' }}>
           <div className="flex items-center gap-2 mb-1" style={labelMuted}>
-            <Clock className="w-3.5 h-3.5" /> Total Time
-          </div>
+            <Clock className="w-3.5 h-3.5" /> Total Time</div>
           <div className="metric-value">{weeklyBudget.totalHoursRecommended}h</div>
-          <div className="metric-label" style={{ marginTop: '2px' }}>recommended this week</div>
-        </div>
+          <div className="metric-label" style={{ marginTop: '2px' }}>recommended this week</div></div>
         <div className="card-metric" style={{ padding: 'var(--space-4)' }}>
           <div className="flex items-center gap-2 mb-1" style={labelMuted}>
-            <Calendar className="w-3.5 h-3.5" /> Meetings
-          </div>
+            <Calendar className="w-3.5 h-3.5" /> Meetings</div>
           <div className="metric-value">{weeklyBudget.meetingsRecommended}</div>
-          <div className="metric-label" style={{ marginTop: '2px' }}>calls & meetings</div>
-        </div>
+          <div className="metric-label" style={{ marginTop: '2px' }}>calls & meetings</div></div>
         <div className="card-metric" style={{ padding: 'var(--space-4)' }}>
           <div className="flex items-center gap-2 mb-1" style={labelMuted}>
-            <CheckCircle className="w-3.5 h-3.5" /> Follow-ups
-          </div>
+            <CheckCircle className="w-3.5 h-3.5" /> Follow-ups</div>
           <div className="metric-value">{weeklyBudget.followUpsRecommended}</div>
-          <div className="metric-label" style={{ marginTop: '2px' }}>prep & outreach</div>
-        </div>
+          <div className="metric-label" style={{ marginTop: '2px' }}>prep & outreach</div></div>
         <div className="card-metric" style={{ padding: 'var(--space-4)' }}>
           <div className="flex items-center gap-2 mb-1" style={labelMuted}>
-            <Rocket className="w-3.5 h-3.5" /> Acceleration
-          </div>
+            <Rocket className="w-3.5 h-3.5" /> Acceleration</div>
           <div className="metric-value">{accelData?.summary.total ?? 0}</div>
           <div className="metric-label" style={{ marginTop: '2px' }}>
-            {accelData?.summary.immediate ?? 0} immediate
-          </div>
-        </div>
-      </div>
+            {accelData?.summary.immediate ?? 0} immediate</div></div></div>
 
       {/* Deal Acceleration Engine */}
       {hasAccelerationData && (
         <div className="space-y-4">
           <h2 className="section-title flex items-center gap-2">
-            <Rocket className="w-4 h-4" style={stAccent} /> Deal Acceleration Engine
-          </h2>
+            <Rocket className="w-4 h-4" style={stAccent} /> Deal Acceleration Engine</h2>
 
           {/* Term Sheet Ready */}
           {accelData.termSheetReady.length > 0 && (
             <div>
               <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-secondary)', letterSpacing: '0.08em' }}>
-                <CheckCircle className="w-3.5 h-3.5" /> Term Sheet Ready ({accelData.termSheetReady.length})
-              </h3>
+                <CheckCircle className="w-3.5 h-3.5" /> Term Sheet Ready ({accelData.termSheetReady.length})</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 {accelData.termSheetReady.map(inv => (
                   <TermSheetReadyCard key={inv.investorId} investor={inv} />
-                ))}
-              </div>
-            </div>
+                ))}</div></div>
           )}
 
           {/* Immediate Actions */}
           {immediateActions.length > 0 && (
             <div>
               <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-primary)', letterSpacing: '0.08em' }}>
-                <AlertTriangle className="w-3.5 h-3.5" /> Immediate ({immediateActions.length})
-              </h3>
+                <AlertTriangle className="w-3.5 h-3.5" /> Immediate ({immediateActions.length})</h3>
               <div className="space-y-2">
                 {immediateActions.map(item => (
                   <AccelerationCard
@@ -1097,17 +922,14 @@ export default function FocusPage() {
                     item={item}
                     onExecute={handleExecuteAcceleration}
                     executing={executedIds.has(item.id)} />
-                ))}
-              </div>
-            </div>
+                ))}</div></div>
           )}
 
           {/* This Week Actions */}
           {thisWeekActions.length > 0 && (
             <div>
               <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)', letterSpacing: '0.08em' }}>
-                <Clock className="w-3.5 h-3.5" /> This Week ({thisWeekActions.length})
-              </h3>
+                <Clock className="w-3.5 h-3.5" /> This Week ({thisWeekActions.length})</h3>
               <div className="space-y-2">
                 {thisWeekActions.map(item => (
                   <AccelerationCard
@@ -1115,28 +937,22 @@ export default function FocusPage() {
                     item={item}
                     onExecute={handleExecuteAcceleration}
                     executing={executedIds.has(item.id)} />
-                ))}
-              </div>
-            </div>
+                ))}</div></div>
           )}
 
           {/* At Risk */}
           {accelData.atRisk.length > 0 && (
             <div>
               <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-primary)', letterSpacing: '0.08em' }}>
-                <Shield className="w-3.5 h-3.5" /> At Risk ({accelData.atRisk.length})
-              </h3>
+                <Shield className="w-3.5 h-3.5" /> At Risk ({accelData.atRisk.length})</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 {accelData.atRisk.map(inv => (
                   <AtRiskCard key={inv.investorId} investor={inv} />
-                ))}
-              </div>
-            </div>
+                ))}</div></div>
           )}
 
           {/* Deprioritize */}
-          <DeprioritizeSection investors={accelData.deprioritize} />
-        </div>
+          <DeprioritizeSection investors={accelData.deprioritize} /></div>
       )}
 
       {/* Main content: Priority Queue + Sidebar */}
@@ -1144,14 +960,11 @@ export default function FocusPage() {
         {/* Priority Queue */}
         <div className="lg:col-span-2 space-y-3">
           <h2 className="section-title flex items-center gap-2">
-            <Target className="w-4 h-4" /> Priority Queue
-          </h2>
+            <Target className="w-4 h-4" /> Priority Queue</h2>
           <div className="space-y-2">
             {priorityQueue.map((item, i) => (
               <PriorityQueueItem key={item.investorId} item={item} rank={i + 1} />
-            ))}
-          </div>
-        </div>
+            ))}</div></div>
 
         {/* Sidebar: Quick Wins + Stale Alerts */}
         <div className="space-y-6">
@@ -1159,28 +972,22 @@ export default function FocusPage() {
           {quickWins.length > 0 && (
             <div>
               <h2 className="section-title flex items-center gap-2 mb-3">
-                <Zap className="w-4 h-4" style={stTextTertiary} /> Quick Wins
-              </h2>
+                <Zap className="w-4 h-4" style={stTextTertiary} /> Quick Wins</h2>
               <div className="space-y-2">
                 {quickWins.map(item => (
                   <QuickWinCard key={item.investorId} item={item} />
-                ))}
-              </div>
-            </div>
+                ))}</div></div>
           )}
 
           {/* Stale Alerts */}
           {staleAlerts.length > 0 && (
             <div>
               <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-primary)', letterSpacing: '0.08em' }}>
-                <AlertTriangle className="w-4 h-4" /> Stale Alerts
-              </h2>
+                <AlertTriangle className="w-4 h-4" /> Stale Alerts</h2>
               <div className="space-y-2">
                 {staleAlerts.map(item => (
                   <StaleAlertCard key={item.investorId} item={item} onReengage={handleReengage} />
-                ))}
-              </div>
-            </div>
+                ))}</div></div>
           )}
 
           {/* If no quick wins or stale alerts */}
@@ -1188,11 +995,7 @@ export default function FocusPage() {
             <div className="card" style={{ padding: 'var(--space-6)', textAlign: 'center' }}>
               <CheckCircle className="w-8 h-8 mx-auto mb-2" style={stTextSecondary} />
               <p style={{ fontSize: 'var(--font-size-sm)', ...stTextTertiary }}>All caught up</p>
-              <p style={{ ...labelMuted, marginTop: '4px' }}>No quick wins or stale conversations to flag right now.</p>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
+              <p style={{ ...labelMuted, marginTop: '4px' }}>No quick wins or stale conversations to flag right now.</p></div>
+          )}</div></div>
+    </div>);
 }

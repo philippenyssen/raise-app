@@ -102,7 +102,6 @@ const TREND_CONFIG = {
   decelerating: { label: 'Decelerating', icon: TrendingDown,   color: 'var(--text-primary)',   bg: 'var(--danger-muted)',   border: 'var(--accent-8)' },
 };
 
-
 function priorityStyle(p: number): React.CSSProperties {
   if (p === 1) return { background: 'var(--danger-muted)', color: 'var(--text-primary)', borderColor: 'var(--accent-8)' };
   if (p === 2) return { background: 'var(--warn-12)', color: 'var(--text-tertiary)', borderColor: 'var(--warn-40)' };
@@ -163,11 +162,9 @@ export default function StrategicPage() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[...Array(4)].map((_, i) => (
             <div key={i} className="h-36 skeleton animate-pulse" style={{ borderRadius: 'var(--radius-lg)', opacity: 0.5 }} />
-          ))}
-        </div>
+          ))}</div>
         <div className="h-64 skeleton animate-pulse" style={{ borderRadius: 'var(--radius-lg)', opacity: 0.5 }} />
-      </div>
-    );
+      </div>);
   }
 
   if (error || !data) {
@@ -183,11 +180,8 @@ export default function StrategicPage() {
             onMouseLeave={() => setRetryHover(false)}
             className="btn btn-sm btn-secondary transition-colors"
             style={retryHover ? { background: 'var(--surface-3)' } : {}}>
-            Retry
-          </button>
-        </div>
-      </div>
-    );
+            Retry</button></div>
+      </div>);
   }
 
   const trendCfg = TREND_CONFIG[data.raiseVelocity.trend];
@@ -202,8 +196,7 @@ export default function StrategicPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="page-title">Strategic Dashboard</h1>
-          <p className="page-subtitle" style={stFontSm}>Consolidated intelligence assessment</p>
-        </div>
+          <p className="page-subtitle" style={stFontSm}>Consolidated intelligence assessment</p></div>
         <button
           onClick={() => fetchData(true)}
           disabled={refreshing}
@@ -212,9 +205,7 @@ export default function StrategicPage() {
           className="btn btn-sm btn-secondary transition-colors"
           style={{ opacity: refreshing ? 0.5 : 1, ...(refreshHover && !refreshing ? { background: 'var(--surface-3)' } : {}) }}>
           <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
-          {refreshing ? 'Refreshing...' : 'Refresh'}
-        </button>
-      </div>
+          {refreshing ? 'Refreshing...' : 'Refresh'}</button></div>
 
       {/* ================================================================ */}
       {/* CEO BRIEF                                                        */}
@@ -222,10 +213,8 @@ export default function StrategicPage() {
       <div className="card">
         <div className="flex items-center gap-2 mb-3">
           <Activity className="w-4 h-4" style={stAccent} />
-          <span className="section-title" style={{ marginBottom: 0 }}>CEO Brief</span>
-        </div>
-        <p style={{ fontSize: 'var(--font-size-lg)', color: 'var(--text-primary)', lineHeight: 1.6 }}>{data.ceoBrief}</p>
-      </div>
+          <span className="section-title" style={{ marginBottom: 0 }}>CEO Brief</span></div>
+        <p style={{ fontSize: 'var(--font-size-lg)', color: 'var(--text-primary)', lineHeight: 1.6 }}>{data.ceoBrief}</p></div>
 
       {/* ================================================================ */}
       {/* GAUGE CARDS                                                      */}
@@ -271,9 +260,7 @@ export default function StrategicPage() {
                 fontSize: 'var(--font-size-xs)',
                 fontWeight: 400, }}>
               <TrendIcon className="w-3 h-3" />
-              {trendCfg.label}
-            </span>
-          </div>
+              {trendCfg.label}</span></div>
           <div className="mt-auto space-y-1.5">
             <div className="flex items-center justify-between" style={stFontSm}>
               <span style={stTextMuted}>Meetings/wk</span>
@@ -282,10 +269,7 @@ export default function StrategicPage() {
             <div className="flex items-center justify-between" style={stFontSm}>
               <span style={stTextMuted}>Advances/wk</span>
               <span style={{ color: 'var(--text-primary)', fontWeight: 400, fontVariantNumeric: 'tabular-nums' }}>{data.raiseVelocity.stageAdvancesPerWeek}</span>
-            </div>
-          </div>
-        </div>
-      </div>
+            </div></div></div></div>
 
       {/* ================================================================ */}
       {/* HEALTH TREND SPARKLINE                                           */}
@@ -295,8 +279,7 @@ export default function StrategicPage() {
           <div className="flex items-center gap-2 mb-4">
             <BarChart3 className="w-4 h-4" style={stAccent} />
             <span style={{ ...stFontSm, fontWeight: 400, ...stTextTertiary }}>Health Trend</span>
-            <span className="ml-auto" style={labelMuted}>{data.historicalSnapshots.length} snapshots</span>
-          </div>
+            <span className="ml-auto" style={labelMuted}>{data.historicalSnapshots.length} snapshots</span></div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <SparklineRow
               label="Readiness"
@@ -312,9 +295,7 @@ export default function StrategicPage() {
               label="Pipeline"
               values={data.historicalSnapshots.map(s => s.pipelineScore)}
               dates={data.historicalSnapshots.map(s => s.date)}
-              color="accent" />
-          </div>
-        </div>
+              color="accent" /></div></div>
       )}
 
       {/* ================================================================ */}
@@ -326,8 +307,7 @@ export default function StrategicPage() {
             <Activity className="w-4 h-4" style={stAccent} />
             <span style={{ ...stFontSm, fontWeight: 400, ...stTextTertiary }}>Temporal Intelligence</span>
             <span className="badge ml-2" style={{ ...directionStyle(data.temporalTrends.overallDirection), border: `1px solid`, fontSize: '10px', fontWeight: 400 }}>{data.temporalTrends.overallDirection}</span>
-            <span className="ml-auto" style={labelMuted}>{data.temporalTrends.daysOfData} days of data</span>
-          </div>
+            <span className="ml-auto" style={labelMuted}>{data.temporalTrends.daysOfData} days of data</span></div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
             {data.temporalTrends.trends.map((trend) => (
@@ -362,35 +342,25 @@ export default function StrategicPage() {
                       trend.direction === 'improving' ? 'var(--success)' :
                       trend.direction === 'declining' ? 'var(--danger)' :
                       'var(--text-primary)',
-                  }}>{trend.current}</span>
-                </div>
+                  }}>{trend.current}</span></div>
                 <div className="mt-1 space-y-0.5">
                   <div className="flex justify-between" style={{ fontSize: '10px' }}>
                     <span style={stTextMuted}>7d</span>
                     <span style={{ color: deltaColor(trend.delta7d) }}>
-                      {trend.delta7d > 0 ? '+' : ''}{trend.delta7d}%
-                    </span>
-                  </div>
+                      {trend.delta7d > 0 ? '+' : ''}{trend.delta7d}%</span></div>
                   <div className="flex justify-between" style={{ fontSize: '10px' }}>
                     <span style={stTextMuted}>30d</span>
                     <span style={{ color: deltaColor(trend.delta30d) }}>
-                      {trend.delta30d > 0 ? '+' : ''}{trend.delta30d}%
-                    </span>
-                  </div>
+                      {trend.delta30d > 0 ? '+' : ''}{trend.delta30d}%</span></div>
                   {trend.streak >= 2 && (
                     <div style={{ fontSize: '10px', color: 'var(--text-tertiary)', marginTop: '2px' }}>{trend.streak}-day streak</div>
-                  )}
-                </div>
+                  )}</div>
                 {trend.alert && (
                   <div className="flex items-start gap-1" style={{ marginTop: 'var(--space-1)' }}>
                     <AlertTriangle className="w-2.5 h-2.5 shrink-0 mt-0.5" style={stTextPrimary} />
-                    <span style={{ fontSize: '9px', color: 'var(--text-primary)', lineHeight: 1.3 }}>{trend.alert}</span>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
+                    <span style={{ fontSize: '9px', color: 'var(--text-primary)', lineHeight: 1.3 }}>{trend.alert}</span></div>
+                )}</div>
+            ))}</div></div>
       )}
 
       {/* ================================================================ */}
@@ -408,9 +378,7 @@ export default function StrategicPage() {
                 border: '1px solid',
                 fontSize: '10px',
                 fontWeight: 400, }}>
-              {data.raiseForecast.confidence} confidence
-            </span>
-          </div>
+              {data.raiseForecast.confidence} confidence</span></div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             {/* Expected close */}
@@ -432,10 +400,7 @@ export default function StrategicPage() {
               <div className="space-y-0.5">
                 {data.raiseForecast.criticalPath.map((name) => (
                   <div key={name} style={labelSecondary}>{name}</div>
-                ))}
-              </div>
-            </div>
-          </div>
+                ))}</div></div></div>
 
           {/* Investor forecasts table */}
           {data.raiseForecast.investorForecasts.length > 0 && (
@@ -446,9 +411,7 @@ export default function StrategicPage() {
                     <th className="text-left py-1.5 pr-3">Investor</th>
                     <th className="text-left py-1.5 pr-3">Stage</th>
                     <th className="text-right py-1.5 pr-3">Days to Close</th>
-                    <th className="text-left py-1.5">Confidence</th>
-                  </tr>
-                </thead>
+                    <th className="text-left py-1.5">Confidence</th></tr></thead>
                 <tbody>
                   {data.raiseForecast.investorForecasts.map((f) => (
                     <tr key={f.name} className="table-row">
@@ -459,12 +422,8 @@ export default function StrategicPage() {
                       <td className="py-1.5 pr-3 text-right" style={{ fontVariantNumeric: 'tabular-nums', color: 'var(--text-secondary)' }}>~{f.days}d</td>
                       <td className="py-1.5">
                         <span style={{ fontSize: '10px', padding: '2px 6px', borderRadius: 'var(--radius-sm)', ...confidenceStyle(f.confidence) }}>{f.confidence}</span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                      </td></tr>
+                  ))}</tbody></table></div>
           )}
 
           {/* Risk factors */}
@@ -473,12 +432,9 @@ export default function StrategicPage() {
               {data.raiseForecast.riskFactors.map((rf, i) => (
                 <div key={i} className="flex items-start gap-1.5">
                   <AlertTriangle className="w-3 h-3 shrink-0 mt-0.5" style={stTextTertiary} />
-                  <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', opacity: 0.8 }}>{rf}</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+                  <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', opacity: 0.8 }}>{rf}</span></div>
+              ))}</div>
+          )}</div>
       )}
 
       {/* ================================================================ */}
@@ -491,8 +447,7 @@ export default function StrategicPage() {
           style={{ padding: 'var(--space-5)', borderBottom: '1px solid var(--border-subtle)' }}>
           <Target className="w-4 h-4" style={stAccent} />
           <h2 style={{ ...stFontSm, fontWeight: 400, ...stTextTertiary }}>Strategic Recommendations</h2>
-          <span className="ml-auto" style={labelMuted}>{data.recommendations.length} actions</span>
-        </div>
+          <span className="ml-auto" style={labelMuted}>{data.recommendations.length} actions</span></div>
 
         {data.recommendations.length === 0 ? (
           <div className="text-center" style={{ padding: 'var(--space-8)' }}>
@@ -503,17 +458,13 @@ export default function StrategicPage() {
           <div>
             {data.recommendations.map((rec, i) => (
               <RecommendationRow key={i} rec={rec} isLast={i === data.recommendations.length - 1} />
-            ))}
-          </div>
-        )}
-      </div>
+            ))}</div>
+        )}</div>
 
       {/* Footer */}
       <div className="text-center" style={{ fontSize: '10px', color: 'var(--text-muted)', padding: 'var(--space-2) 0' }}>
-        Generated {new Date(data.generatedAt).toLocaleString()} — Data-driven from live context bus
-      </div>
-    </div>
-  );
+        Generated {new Date(data.generatedAt).toLocaleString()} — Data-driven from live context bus</div>
+    </div>);
 }
 
 // ---------------------------------------------------------------------------
@@ -525,8 +476,7 @@ const ACTION_ROUTES: Record<string, { route: string; label: string }> = {
   narrative: { route: '/objections',   label: 'Fix Narrative' },
   execution: { route: '/focus',        label: 'Open Focus' },
   timing:    { route: '/velocity',     label: 'Check Velocity' },
-  risk:      { route: '/stress-test',  label: 'Stress Test' },
-};
+  risk:      { route: '/stress-test',  label: 'Stress Test' },};
 
 function deriveActionRoute(rec: StrategicRecommendation): { route: string; label: string } {
   const text = `${rec.title} ${rec.action} ${rec.rationale}`.toLowerCase();
@@ -563,9 +513,7 @@ function RecommendationRow({ rec, isLast }: { rec: StrategicRecommendation; isLa
         <div className="flex flex-col items-center gap-1.5 shrink-0 pt-0.5">
           <span style={{ fontSize: '9px', padding: '2px 6px', borderRadius: 'var(--radius-sm)', border: '1px solid', fontWeight: 300, ...priorityStyle(rec.priority) }}>P{rec.priority}</span>
           <div className="w-7 h-7 flex items-center justify-center" style={{ borderRadius: 'var(--radius-sm)', background: catCfg.bg }}>
-            <CatIcon className="w-3.5 h-3.5" style={{ color: catCfg.color }} />
-          </div>
-        </div>
+            <CatIcon className="w-3.5 h-3.5" style={{ color: catCfg.color }} /></div></div>
 
         <div className="flex-1 min-w-0">
           {/* Title + category badge */}
@@ -579,9 +527,7 @@ function RecommendationRow({ rec, isLast }: { rec: StrategicRecommendation; isLa
                 border: `1px solid ${catCfg.border}`,
                 background: catCfg.bg,
                 color: catCfg.color, }}>
-              {catCfg.label}
-            </span>
-          </div>
+              {catCfg.label}</span></div>
 
           {/* Rationale */}
           <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-2)' }}>{rec.rationale}</p>
@@ -589,19 +535,16 @@ function RecommendationRow({ rec, isLast }: { rec: StrategicRecommendation; isLa
           {/* Action */}
           <div className="flex items-start gap-1.5 mb-2">
             <ArrowRight className="w-3 h-3 shrink-0 mt-0.5" style={stAccent} />
-            <p style={labelSecondary}>{rec.action}</p>
-          </div>
+            <p style={labelSecondary}>{rec.action}</p></div>
 
           {/* Impact + Deadline + Action button */}
           <div className="flex items-center gap-4" style={labelMuted10}>
             <span className="flex items-center gap-1">
               <TrendingUp className="w-3 h-3" />
-              {rec.expectedImpact}
-            </span>
+              {rec.expectedImpact}</span>
             <span className="flex items-center gap-1">
               <Clock className="w-3 h-3" />
-              {rec.deadline}
-            </span>
+              {rec.deadline}</span>
             <Link
               href={actionLink.route}
               onMouseEnter={() => setBtnHover(true)}
@@ -609,13 +552,8 @@ function RecommendationRow({ rec, isLast }: { rec: StrategicRecommendation; isLa
               className="ml-auto flex items-center gap-1 transition-colors"
               style={{ fontSize: '11px', fontWeight: 400, padding: '3px 10px', borderRadius: 'var(--radius-sm)', background: btnHover ? 'var(--accent)' : 'var(--accent-muted)', color: btnHover ? 'var(--surface-0)' : 'var(--accent)', border: '1px solid var(--accent-muted)', transition: 'all 150ms ease', textDecoration: 'none' }}>
               {actionLink.label}
-              <ExternalLink className="w-3 h-3" />
-            </Link>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+              <ExternalLink className="w-3 h-3" /></Link></div></div></div>
+    </div>);
 }
 
 function GaugeCard({ label, value, suffix, description, barPct, barColor, valueColor }: {
@@ -642,10 +580,8 @@ function GaugeCard({ label, value, suffix, description, barPct, barColor, valueC
           borderRadius: '9999px',
           overflow: 'hidden', }}>
         <div style={{ height: '100%', borderRadius: '9999px', transition: 'all 700ms ease', width: `${Math.min(100, barPct)}%`, background: barColor }}
-          />
-      </div>
-    </div>
-  );
+          /></div>
+    </div>);
 }
 
 function SparklineRow({ label, values, dates, color }: {
@@ -662,13 +598,11 @@ function SparklineRow({ label, values, dates, color }: {
   const barColors: Record<string, string> = {
     success: 'var(--success)',
     purple: 'var(--accent)',
-    accent: 'var(--accent)',
-  };
+    accent: 'var(--accent)',};
   const textColors: Record<string, string> = {
     success: 'var(--success)',
     purple: 'var(--chart-4)',
-    accent: 'var(--accent)',
-  };
+    accent: 'var(--accent)',};
 
   return (
     <div>
@@ -678,11 +612,8 @@ function SparklineRow({ label, values, dates, color }: {
           <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 300, fontVariantNumeric: 'tabular-nums', color: textColors[color] }}>{latest}</span>
           {delta !== 0 && (
             <span style={{ fontSize: '10px', color: delta > 0 ? 'var(--success)' : 'var(--danger)' }}>
-              {delta > 0 ? '+' : ''}{delta}
-            </span>
-          )}
-        </div>
-      </div>
+              {delta > 0 ? '+' : ''}{delta}</span>
+          )}</div></div>
       <div className="flex items-end gap-0.5 h-8">
         {values.map((v, i) => {
           const h = max > 0 ? (v / max) * 100 : 0;
@@ -690,10 +621,7 @@ function SparklineRow({ label, values, dates, color }: {
             <div key={dates[i] || i} className="flex-1 relative" style={{ height: '100%' }}>
               <div className="absolute bottom-0 w-full" style={{ height: `${Math.max(h, 4)}%`, borderRadius: '2px 2px 0 0', background: barColors[color], opacity: 0.7, transition: 'all 200ms ease' }}
                 />
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
+            </div>);
+        })}</div>
+    </div>);
 }

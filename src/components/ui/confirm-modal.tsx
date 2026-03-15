@@ -41,8 +41,7 @@ export function ConfirmModal({
       className="fixed inset-0 z-50 flex items-center justify-center animate-fade-in"
       style={{ background: 'var(--overlay-heavy)', backdropFilter: 'blur(4px)' }}
       onClick={onCancel}
-      onKeyDown={handleKeyDown}
-    >
+      onKeyDown={handleKeyDown}>
       <div
         className="max-w-sm w-full mx-4 animate-slide-down"
         style={{
@@ -52,8 +51,7 @@ export function ConfirmModal({
           boxShadow: 'var(--shadow-xl)',
           padding: 'var(--space-5)',
         }}
-        onClick={e => e.stopPropagation()}
-      >
+        onClick={e => e.stopPropagation()}>
         <div className="flex items-start" style={{ gap: 'var(--space-3)' }}>
           {variant === 'danger' && (
             <div
@@ -63,10 +61,8 @@ export function ConfirmModal({
                 height: '32px',
                 borderRadius: 'var(--radius-md)',
                 background: 'var(--danger-muted)',
-              }}
-            >
-              <AlertTriangle style={{ width: '16px', height: '16px', color: 'var(--danger)' }} />
-            </div>
+              }}>
+              <AlertTriangle style={{ width: '16px', height: '16px', color: 'var(--danger)' }} /></div>
           )}
           <div className="flex-1 min-w-0">
             <h3 style={{ fontWeight: 400, color: 'var(--text-primary)', fontSize: 'var(--font-size-base)' }}>{title}</h3>
@@ -77,29 +73,19 @@ export function ConfirmModal({
             className="shrink-0 transition-colors"
             style={{ color: 'var(--text-muted)' }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}
-          >
-            <X style={{ width: '16px', height: '16px' }} />
-          </button>
-        </div>
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}>
+            <X style={{ width: '16px', height: '16px' }} /></button></div>
         <div className="flex justify-end" style={{ gap: 'var(--space-2)', marginTop: 'var(--space-5)' }}>
           <button
             onClick={onCancel}
-            className="btn btn-ghost btn-md"
-          >
-            {cancelLabel}
-          </button>
+            className="btn btn-ghost btn-md">
+            {cancelLabel}</button>
           <button
             ref={confirmRef}
             onClick={onConfirm}
-            className={`btn btn-md ${variant === 'danger' ? 'btn-danger' : 'btn-primary'}`}
-          >
-            {confirmLabel}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+            className={`btn btn-md ${variant === 'danger' ? 'btn-danger' : 'btn-primary'}`}>
+            {confirmLabel}</button></div></div>
+    </div>);
 }
 
 interface InputModalProps {
@@ -141,8 +127,7 @@ export function InputModal({
       className="fixed inset-0 z-50 flex items-center justify-center animate-fade-in"
       style={{ background: 'var(--overlay-heavy)', backdropFilter: 'blur(4px)' }}
       onClick={onCancel}
-      onKeyDown={handleKeyDown}
-    >
+      onKeyDown={handleKeyDown}>
       <div
         className="max-w-sm w-full mx-4 animate-slide-down"
         style={{
@@ -152,28 +137,20 @@ export function InputModal({
           boxShadow: 'var(--shadow-xl)',
           padding: 'var(--space-5)',
         }}
-        onClick={e => e.stopPropagation()}
-      >
+        onClick={e => e.stopPropagation()}>
         <h3 style={{ fontWeight: 400, color: 'var(--text-primary)', marginBottom: 'var(--space-3)' }}>{title}</h3>
         <input
           ref={inputRef}
           defaultValue=""
           onChange={e => { valueRef.current = e.target.value; }}
           placeholder={placeholder}
-          className="input"
-        />
+          className="input"/>
         <div className="flex justify-end" style={{ gap: 'var(--space-2)', marginTop: 'var(--space-4)' }}>
           <button onClick={onCancel} className="btn btn-ghost btn-md">
-            Cancel
-          </button>
+            Cancel</button>
           <button
             onClick={() => { if (valueRef.current.trim()) onConfirm(valueRef.current.trim()); }}
-            className="btn btn-primary btn-md"
-          >
-            {confirmLabel}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+            className="btn btn-primary btn-md">
+            {confirmLabel}</button></div></div>
+    </div>);
 }

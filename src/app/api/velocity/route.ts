@@ -11,8 +11,7 @@ const STAGE_BENCHMARKS: Record<string, number> = {
   engaged: 21,
   in_dd: 35,
   term_sheet: 49,
-  closed: 56,
-};
+  closed: 56,};
 
 // Expected days per stage transition
 const STAGE_DURATIONS: Record<string, number> = {
@@ -22,8 +21,7 @@ const STAGE_DURATIONS: Record<string, number> = {
   met: 7,
   engaged: 14,
   in_dd: 14,
-  term_sheet: 7,
-};
+  term_sheet: 7,};
 
 export async function GET() {
   try {
@@ -52,8 +50,7 @@ export async function GET() {
         WHERE event_type = 'status_changed'
         ORDER BY created_at ASC
       `),
-      db.execute(`SELECT value FROM config WHERE key = 'raise_config'`),
-    ]);
+      db.execute(`SELECT value FROM config WHERE key = 'raise_config'`),]);
 
     const investors = investorRows.rows as unknown as InvestorRow[];
     const meetings = meetingRows.rows as unknown as MeetingRow[];
@@ -223,16 +220,14 @@ export async function GET() {
         meeting_count: invMeetings.length,
         meetings_per_week: Math.round(meetingsPerWeek * 10) / 10,
         days_since_last_meeting: daysSinceLastMeeting,
-      };
-    });
+      };});
 
     // Sort by urgency: at_risk first, then behind, then on_track; within each, by days_to_target ascending
     const statusOrder = { at_risk: 0, behind: 1, on_track: 2 };
     velocityData.sort((a, b) => {
       const orderDiff = (statusOrder[a.tracking_status] ?? 2) - (statusOrder[b.tracking_status] ?? 2);
       if (orderDiff !== 0) return orderDiff;
-      return a.days_to_target - b.days_to_target;
-    });
+      return a.days_to_target - b.days_to_target;});
 
     // Summary stats
     const onTrackCount = velocityData.filter(v => v.tracking_status === 'on_track').length;
@@ -267,15 +262,11 @@ export async function GET() {
         avg_velocity_score: avgVelocityScore,
         avg_days_in_process: avgDaysInProcess,
         raise_days_elapsed: Math.min(raiseDaysElapsed, 90),
-        raise_target_days: 60,
-      },
-      generated_at: new Date().toISOString(),
-    });
+        raise_target_days: 60,},
+      generated_at: new Date().toISOString(),});
   } catch (error) {
     console.error('Velocity API error:', error);
     return NextResponse.json(
       { error: 'Failed to compute velocity data', detail: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
-    );
-  }
-}
+      { status: 500 });
+  }}

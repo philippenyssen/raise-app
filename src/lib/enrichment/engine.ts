@@ -35,8 +35,7 @@ export const ALL_PROVIDERS: EnrichmentProvider[] = [
   crunchbaseProvider,
   wikidataProvider,
   openvcProvider,
-  websiteScraperProvider,
-];
+  websiteScraperProvider,];
 
 export const PROVIDER_MAP: Record<EnrichmentSourceId, EnrichmentProvider> = Object.fromEntries(
   ALL_PROVIDERS.map(p => [p.id, p])
@@ -106,8 +105,7 @@ export async function enrichInvestor(
       total_fields: 0,
       sources_succeeded: 0,
       sources_failed: 0,
-      duration_ms: Date.now() - startTime,
-    };
+      duration_ms: Date.now() - startTime,};
   }
 
   // Run providers with concurrency control
@@ -125,9 +123,7 @@ export async function enrichInvestor(
             fields: [],
             error: error instanceof Error ? error.message : 'Provider threw an exception',
             fetched_at: new Date().toISOString(),
-          } as EnrichmentProviderResult))
-      )
-    );
+          } as EnrichmentProviderResult))));
 
     for (const result of batchResults) {
       if (result.status === 'fulfilled') {
@@ -139,10 +135,8 @@ export async function enrichInvestor(
           success: false,
           fields: [],
           error: 'Promise rejected unexpectedly',
-          fetched_at: new Date().toISOString(),
-        });
-      }
-    }
+          fetched_at: new Date().toISOString(),});
+      }}
   }
 
   const succeeded = results.filter(r => r.success).length;
@@ -157,8 +151,7 @@ export async function enrichInvestor(
     total_fields: totalFields,
     sources_succeeded: succeeded,
     sources_failed: failed,
-    duration_ms: Date.now() - startTime,
-  };
+    duration_ms: Date.now() - startTime,};
 }
 
 /**
@@ -190,8 +183,7 @@ export function buildEnrichedProfile(
     last_enriched: new Date().toISOString(),
     overall_confidence: 0,
     fields_enriched: 0,
-    fields_total: 0,
-  };
+    fields_total: 0,};
 
   let totalConfidence = 0;
   let fieldCount = 0;
@@ -212,8 +204,7 @@ export function buildEnrichedProfile(
           if (field.field_name.includes('legal_name') || field.field_name.includes('entity_name') || field.field_name.includes('org_name')) {
             if (!profile.legal_names.includes(field.field_value)) {
               profile.legal_names.push(field.field_value);
-            }
-          }
+            }}
           if (field.field_name.includes('jurisdiction')) profile.jurisdiction = field.field_value;
           if (field.field_name.includes('incorporation_date') || field.field_name === 'founded_date' || field.field_name === 'founded_year') {
             profile.incorporation_date = field.field_value;
@@ -241,14 +232,12 @@ export function buildEnrichedProfile(
             const sectors = field.field_value.split(',').map(s => s.trim()).filter(Boolean);
             for (const s of sectors) {
               if (!profile.target_sectors.includes(s)) profile.target_sectors.push(s);
-            }
-          }
+            }}
           if (field.field_name.includes('stages')) {
             const stages = field.field_value.split(',').map(s => s.trim()).filter(Boolean);
             for (const s of stages) {
               if (!profile.target_stages.includes(s)) profile.target_stages.push(s);
-            }
-          }
+            }}
           break;
 
         case 'people':
@@ -262,25 +251,21 @@ export function buildEnrichedProfile(
                 linkedin: person.linkedin || '',
                 email: person.email || '',
                 notable_deals: person.notable_deals || '',
-                source: result.source_id,
-              });
+                source: result.source_id,});
             } catch {
               // Plain text person name
               profile.partners.push({
                 name: field.field_value,
                 title: '',
                 focus: '',
-                source: result.source_id,
-              });
-            }
-          }
+                source: result.source_id,});
+            }}
           if (field.field_name === 'ceo' || field.field_name === 'founder') {
             profile.partners.push({
               name: field.field_value,
               title: field.field_name === 'ceo' ? 'CEO' : 'Founder',
               focus: '',
-              source: result.source_id,
-            });
+              source: result.source_id,});
           }
           break;
 
@@ -294,15 +279,12 @@ export function buildEnrichedProfile(
                 amount: inv.amount,
                 date: inv.date,
                 sector: inv.sector,
-                source: result.source_id,
-              });
+                source: result.source_id,});
             } catch {
               profile.enriched_investments.push({
                 company: field.field_value,
-                source: result.source_id,
-              });
-            }
-          }
+                source: result.source_id,});
+            }}
           break;
 
         case 'regulatory':
@@ -314,8 +296,7 @@ export function buildEnrichedProfile(
                 company: filing.entities || '',
                 amount: filing.amount,
                 date: filing.date || '',
-                form_url: field.source_url,
-              });
+                form_url: field.source_url,});
             } catch { /* skip */ }
           }
           if (field.field_name === 'iapd_crd_number') profile.cik_number = field.field_value;
@@ -332,8 +313,7 @@ export function buildEnrichedProfile(
               profile.officers.push({ name: officer.name, title: officer.position || officer.role || '' });
             } catch {
               profile.officers.push({ name: field.field_value, title: '' });
-            }
-          }
+            }}
           break;
 
         case 'contact':
@@ -343,8 +323,7 @@ export function buildEnrichedProfile(
           if (field.field_name.includes('address')) {
             if (!profile.office_addresses.includes(field.field_value)) {
               profile.office_addresses.push(field.field_value);
-            }
-          }
+            }}
           if (field.field_name.includes('linkedin_url')) {
             // Could be org or person LinkedIn
           }
@@ -352,11 +331,9 @@ export function buildEnrichedProfile(
             const email = field.field_value;
             if (!profile.partner_emails.find(e => e.email === email)) {
               profile.partner_emails.push({ name: '', email });
-            }
-          }
+            }}
           break;
-      }
-    }
+      }}
   }
 
   profile.fields_enriched = fieldCount;
@@ -369,8 +346,7 @@ export function buildEnrichedProfile(
     const key = p.name.toLowerCase();
     if (seenPartners.has(key)) return false;
     seenPartners.add(key);
-    return true;
-  });
+    return true;});
 
   // Deduplicate investments
   const seenInvestments = new Set<string>();
@@ -378,8 +354,7 @@ export function buildEnrichedProfile(
     const key = inv.company.toLowerCase();
     if (seenInvestments.has(key)) return false;
     seenInvestments.add(key);
-    return true;
-  });
+    return true;});
 
   return profile;
 }
@@ -427,8 +402,7 @@ export function mergeEnrichmentToInvestor(
       }
     } else {
       updates.notes = enrichmentBlock;
-    }
-  }
+    }}
 
   return updates;
 }

@@ -26,8 +26,7 @@ export const openvcProvider: EnrichmentProvider = {
 
       const res = await fetch(searchUrl, {
         headers: { 'Accept': 'application/json' },
-        signal: AbortSignal.timeout(15000),
-      });
+        signal: AbortSignal.timeout(15000),});
 
       if (res.status === 429) {
         return { source_id: 'openvc', success: false, fields, error: 'Rate limited', fetched_at: now, rate_limited: true };
@@ -60,8 +59,7 @@ export const openvcProvider: EnrichmentProvider = {
             field_name: 'investment_thesis',
             field_value: best.thesis || best.description,
             category: 'strategy',
-            confidence: 0.8,
-          });
+            confidence: 0.8,});
         }
 
         if (best.stages && best.stages.length > 0) {
@@ -69,8 +67,7 @@ export const openvcProvider: EnrichmentProvider = {
             field_name: 'target_stages',
             field_value: Array.isArray(best.stages) ? best.stages.join(', ') : best.stages,
             category: 'strategy',
-            confidence: 0.8,
-          });
+            confidence: 0.8,});
         }
 
         if (best.sectors && best.sectors.length > 0) {
@@ -78,8 +75,7 @@ export const openvcProvider: EnrichmentProvider = {
             field_name: 'target_sectors',
             field_value: Array.isArray(best.sectors) ? best.sectors.join(', ') : best.sectors,
             category: 'strategy',
-            confidence: 0.8,
-          });
+            confidence: 0.8,});
         }
 
         if (best.check_min || best.check_max) {
@@ -87,8 +83,7 @@ export const openvcProvider: EnrichmentProvider = {
             field_name: 'check_size_range',
             field_value: `${best.check_min || '?'} - ${best.check_max || '?'}`,
             category: 'process',
-            confidence: 0.75,
-          });
+            confidence: 0.75,});
         }
 
         if (best.location || best.hq) {
@@ -96,8 +91,7 @@ export const openvcProvider: EnrichmentProvider = {
             field_name: 'hq_location',
             field_value: best.location || best.hq,
             category: 'contact',
-            confidence: 0.8,
-          });
+            confidence: 0.8,});
         }
 
         if (best.website) {
@@ -105,10 +99,8 @@ export const openvcProvider: EnrichmentProvider = {
             field_name: 'website',
             field_value: best.website,
             category: 'contact',
-            confidence: 0.85,
-          });
-        }
-      }
+            confidence: 0.85,});
+        }}
 
       return { source_id: 'openvc', success: true, fields, fetched_at: now };
     } catch (error) {
@@ -117,8 +109,6 @@ export const openvcProvider: EnrichmentProvider = {
         success: false,
         fields,
         error: error instanceof Error ? error.message : 'Unknown error',
-        fetched_at: now,
-      };
+        fetched_at: now,};
     }
-  },
-};
+  },};

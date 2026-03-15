@@ -9,9 +9,7 @@ export async function POST(req: NextRequest) {
   }
   const { filename, mime_type, base64_content } = body as { filename: string; mime_type: string; base64_content: string };
 
-  if (!base64_content) {
-    return NextResponse.json({ text: '' });
-  }
+  if (!base64_content) { return NextResponse.json({ text: '' }); }
 
   try {
     // For PDF files, extract text using basic parsing
@@ -47,21 +45,16 @@ export async function POST(req: NextRequest) {
       const text = Buffer.from(base64_content, 'base64').toString('utf-8');
       // Check if it looks like text (no excessive null bytes)
       const nullCount = (text.match(/\0/g) || []).length;
-      if (nullCount / text.length < 0.01) {
-        return NextResponse.json({ text: text.substring(0, 50000) });
-      }
+      if (nullCount / text.length < 0.01) { return NextResponse.json({ text: text.substring(0, 50000) }); }
     } catch { /* not text */ }
 
     return NextResponse.json({
-      text: `[Binary file: ${filename} (${mime_type}). Paste the text content manually for best results.]`,
-    });
+      text: `[Binary file: ${filename} (${mime_type}). Paste the text content manually for best results.]`,});
   } catch (err) {
     console.error('Text extraction error:', err);
     return NextResponse.json({
-      text: `[File: ${filename}. Text extraction failed — paste content manually.]`,
-    });
-  }
-}
+      text: `[File: ${filename}. Text extraction failed — paste content manually.]`,});
+  }}
 
 // Basic PDF text extraction — extracts visible text from PDF stream objects
 function extractPdfText(base64: string): string {
@@ -91,19 +84,15 @@ function extractPdfText(base64: string): string {
         let strMatch;
         while ((strMatch = stringRegex.exec(inner)) !== null) {
           textParts.push(strMatch[1]);
-        }
-      }
+        }}
     }
 
-    if (textParts.length > 0) {
-      return textParts.join(' ').substring(0, 50000);
-    }
+    if (textParts.length > 0) { return textParts.join(' ').substring(0, 50000); }
 
     return `[PDF file with ${Math.round(buffer.length / 1024)}KB. Text extraction found no readable text — the PDF may use scanned images. Paste the content manually for best results.]`;
   } catch {
     return '[PDF text extraction failed. Paste content manually.]';
-  }
-}
+  }}
 
 // Basic DOCX text extraction — DOCX is a ZIP containing XML
 function extractDocxText(base64: string): string {
@@ -133,5 +122,4 @@ function extractDocxText(base64: string): string {
     return `[Word document. Text extraction incomplete — paste content manually for best results.]`;
   } catch {
     return '[DOCX text extraction failed. Paste content manually.]';
-  }
-}
+  }}

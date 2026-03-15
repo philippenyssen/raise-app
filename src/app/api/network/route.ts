@@ -6,9 +6,7 @@ function parseCheckSizeMidpoint(range: string): number {
   if (!range) return 0;
   const cleaned = range.replace(/[€$£,]/g, '').trim().toLowerCase();
   const rangeMatch = cleaned.match(/([\d.]+)\s*m?\s*[-–to]+\s*([\d.]+)\s*m/i);
-  if (rangeMatch) {
-    return (parseFloat(rangeMatch[1]) + parseFloat(rangeMatch[2])) / 2;
-  }
+  if (rangeMatch) { return (parseFloat(rangeMatch[1]) + parseFloat(rangeMatch[2])) / 2; }
   const singleMatch = cleaned.match(/([\d.]+)\s*(m|b|k|bn|million|billion)?/i);
   if (singleMatch) {
     let val = parseFloat(singleMatch[1]);
@@ -26,8 +24,7 @@ export async function GET() {
     const db = getClient();
 
     const investorResult = await db.execute(
-      `SELECT id, name, tier, status, enthusiasm, check_size_range FROM investors WHERE status NOT IN ('passed', 'dropped')`
-    );
+      `SELECT id, name, tier, status, enthusiasm, check_size_range FROM investors WHERE status NOT IN ('passed', 'dropped')`);
     const investorLookup = new Map<string, { name: string; tier: number; status: string; enthusiasm: number; checkSize: string; capitalM: number }>();
     for (const row of investorResult.rows as unknown as Array<{ id: string; name: string; tier: number; status: string; enthusiasm: number; check_size_range: string }>) {
       const capitalM = parseCheckSizeMidpoint(row.check_size_range || '');
@@ -37,8 +34,7 @@ export async function GET() {
         status: row.status,
         enthusiasm: row.enthusiasm,
         checkSize: row.check_size_range || '',
-        capitalM,
-      });
+        capitalM,});
     }
 
     const enrichedCascades = cascades.map(cascade => {
@@ -51,8 +47,7 @@ export async function GET() {
           checkSize: info?.checkSize || '',
           capitalM,
           expectedCapitalM: Math.round(capitalM * link.probability * 100) / 100,
-        };
-      });
+        };});
 
       const totalCascadeCapitalM = chainWithCapital.reduce((sum, l) => sum + l.capitalM, 0);
       const expectedCascadeCapitalM = chainWithCapital.reduce((sum, l) => sum + l.expectedCapitalM, 0);
@@ -72,8 +67,7 @@ export async function GET() {
         expectedCascadeCapitalM: Math.round(expectedCascadeCapitalM * 100) / 100,
         networkBottleneck: cascade.networkBottleneck,
         signal: cascade.signal,
-      };
-    });
+      };});
 
     enrichedCascades.sort((a, b) => b.expectedCascadeCapitalM - a.expectedCascadeCapitalM);
 
@@ -113,21 +107,17 @@ export async function GET() {
         avgChainLength,
         keystoneCount: enrichedCascades.length,
         strongestChain: strongestChain ? { name: strongestChain.keystoneName, capitalM: strongestChain.expectedCascadeCapitalM } : null,
-        weakestChain: weakestChain ? { name: weakestChain.keystoneName, capitalM: weakestChain.expectedCascadeCapitalM } : null,
-      },
+        weakestChain: weakestChain ? { name: weakestChain.keystoneName, capitalM: weakestChain.expectedCascadeCapitalM } : null,},
       bottleneckAlert: worstBottleneck ? {
         keystoneName: worstBottleneck.keystoneName,
         bottleneckName: worstBottleneck.networkBottleneck!.investorName,
         impactIfPass: worstBottleneck.networkBottleneck!.impactIfPass,
         capitalAtRiskM: worstBottleneck.expectedCascadeCapitalM,
       } : null,
-      generatedAt: new Date().toISOString(),
-    });
+      generatedAt: new Date().toISOString(),});
   } catch (error) {
     console.error('Network cascade API error:', error);
     return NextResponse.json(
       { error: 'Failed to compute network cascades', detail: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
-    );
-  }
-}
+      { status: 500 });
+  }}

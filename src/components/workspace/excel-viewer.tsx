@@ -12,10 +12,7 @@ export interface CellData {
   bg?: string;         // background color class
 }
 
-export interface SheetData {
-  name: string;
-  cells: Record<string, CellData>;
-}
+export interface SheetData { name: string; cells: Record<string, CellData>; }
 
 interface ExcelViewerProps {
   cells: Record<string, CellData>;
@@ -92,18 +89,15 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
           }
         } catch {
           // Skip cells that cause errors
-        }
-      });
+        }});
     };
 
     if (allSheets && allSheets.length > 0) {
       allSheets.forEach(sheet => {
-        engine.addSheet(sheet.name);
-      });
+        engine.addSheet(sheet.name);});
       allSheets.forEach(sheet => {
         const sheetCells = sheet.name === displaySheetName ? cells : sheet.cells;
-        populateSheet(sheet.name, sheetCells);
-      });
+        populateSheet(sheet.name, sheetCells);});
     } else {
       engine.addSheet(displaySheetName);
       populateSheet(displaySheetName, cells);
@@ -175,8 +169,7 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
           const ci = colIndex(match[1]);
           const nextRef = `${colLabel(ci + 1)}${match[2]}`;
           setSelectedCell(nextRef);
-        }
-      }
+        }}
     }
   }, [editingCell, selectedCell, handleEditComplete, handleCellDoubleClick]);
 
@@ -193,8 +186,7 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
           return computed.toLocaleString();
         }
         return String(computed);
-      }
-    }
+      }}
 
     if (!cell) return '';
     const val = cell.v;
@@ -217,34 +209,23 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
       className="h-full flex flex-col"
       style={{ backgroundColor: 'var(--surface-0)' }}
       onKeyDown={handleKeyDown}
-      tabIndex={0}
-    >
+      tabIndex={0}>
       {/* Formula bar */}
       <div
         className="shrink-0 px-2 py-1.5 flex items-center gap-2"
-        style={{
-          borderBottom: '1px solid var(--border-subtle)',
-          backgroundColor: 'var(--surface-1)',
-        }}
-      >
+        style={{ borderBottom: '1px solid var(--border-subtle)', backgroundColor: 'var(--surface-1)' }}>
         <div
           className="w-16 text-center text-xs font-mono rounded px-2 py-1 shrink-0"
-          style={{ color: 'var(--text-secondary)', backgroundColor: 'var(--surface-2)' }}
-        >
-          {selectedCell || ''}
-        </div>
+          style={{ color: 'var(--text-secondary)', backgroundColor: 'var(--surface-2)' }}>
+          {selectedCell || ''}</div>
         <div className="text-xs px-1" style={{ color: 'var(--text-muted)' }}>fx</div>
         <div
           className="flex-1 text-sm font-mono rounded px-2 py-1 min-h-[28px]"
           style={{
             color: 'var(--text-secondary)',
             backgroundColor: 'var(--surface-1)',
-            border: '1px solid var(--border-subtle)',
-          }}
-        >
-          {selectedCellData?.f || (selectedCellData ? String(selectedCellData.v ?? '') : '')}
-        </div>
-      </div>
+            border: '1px solid var(--border-subtle)',}}>
+          {selectedCellData?.f || (selectedCellData ? String(selectedCellData.v ?? '') : '')}</div></div>
 
       {/* Grid */}
       <div ref={gridRef} className="flex-1 overflow-auto">
@@ -257,8 +238,7 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
                   backgroundColor: 'var(--surface-1)',
                   border: '1px solid var(--border-subtle)',
                   color: 'var(--text-muted)',
-                }}
-              />
+                }}/>
               {Array.from({ length: cols }, (_, ci) => (
                 <th
                   key={ci}
@@ -266,14 +246,9 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
                   style={{
                     backgroundColor: 'var(--surface-1)',
                     border: '1px solid var(--border-subtle)',
-                    color: 'var(--text-muted)',
-                  }}
-                >
-                  {colLabel(ci)}
-                </th>
-              ))}
-            </tr>
-          </thead>
+                    color: 'var(--text-muted)',}}>
+                  {colLabel(ci)}</th>
+              ))}</tr></thead>
           <tbody>
             {Array.from({ length: rows }, (_, ri) => (
               <tr key={ri}>
@@ -282,11 +257,8 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
                   style={{
                     backgroundColor: 'var(--surface-1)',
                     border: '1px solid var(--border-subtle)',
-                    color: 'var(--text-muted)',
-                  }}
-                >
-                  {ri + 1}
-                </td>
+                    color: 'var(--text-muted)',}}>
+                  {ri + 1}</td>
                 {Array.from({ length: cols }, (_, ci) => {
                   const ref = cellRefStr(ri, ci);
                   const cell = cells[ref];
@@ -316,9 +288,7 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
                           ringColor: 'var(--accent)',
                           boxShadow: 'inset 0 0 0 2px var(--accent)',
                           backgroundColor: 'color-mix(in srgb, var(--surface-2) 30%, transparent)',
-                        } : {}),
-                      }}
-                    >
+                        } : {}),}}>
                       {isEditing ? (
                         <input
                           ref={inputRef}
@@ -326,19 +296,12 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
                           onChange={e => setEditValue(e.target.value)}
                           onBlur={handleEditComplete}
                           className="w-full bg-transparent outline-none font-mono"
-                          style={{ color: 'var(--text-primary)' }}
-                        />
+                          style={{ color: 'var(--text-primary)' }}/>
                       ) : (
                         <span className="block truncate">{formatValue(cell, ref)}</span>
                       )}
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
+                    </td>);
+                })}</tr>
+            ))}</tbody></table></div>
+    </div>);
 }

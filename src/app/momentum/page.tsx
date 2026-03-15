@@ -12,10 +12,7 @@ import {
 
 // ── Types ─────────────────────────────────────────────────────────────
 
-interface WeekScore {
-  week: string;
-  score: number;
-}
+interface WeekScore { week: string; score: number; }
 
 interface InvestorMomentum {
   investorId: string;
@@ -25,12 +22,7 @@ interface InvestorMomentum {
   weeklyScores: WeekScore[];
 }
 
-interface Cohort {
-  type: string;
-  weeklyAvg: WeekScore[];
-  trend: 'heating' | 'cooling' | 'stable';
-  memberCount: number;
-}
+interface Cohort { type: string; weeklyAvg: WeekScore[]; trend: 'heating' | 'cooling' | 'stable'; memberCount: number; }
 
 interface Anomaly {
   investorId: string;
@@ -41,11 +33,7 @@ interface Anomaly {
   message: string;
 }
 
-interface CrossSignal {
-  week: string;
-  description: string;
-  affectedInvestors: string[];
-}
+interface CrossSignal { week: string; description: string; affectedInvestors: string[]; }
 
 interface TrajectoryAlert {
   investorId: string;
@@ -97,8 +85,7 @@ const TYPE_LABELS: Record<string, string> = {
   sovereign: 'SWF',
   strategic: 'Strategic',
   debt: 'Debt',
-  family_office: 'Family',
-};
+  family_office: 'Family',};
 
 const TYPE_COLORS: Record<string, { bg: string; color: string; border: string }> = {
   vc:            { bg: 'var(--accent-muted)',      color: 'var(--accent)',         border: 'var(--accent-15)' },
@@ -106,9 +93,7 @@ const TYPE_COLORS: Record<string, { bg: string; color: string; border: string }>
   sovereign:     { bg: 'var(--warn-8)', color: 'var(--text-tertiary)', border: 'var(--warn-15)' },
   strategic:     { bg: 'var(--accent-4)',   color: 'var(--text-secondary)', border: 'var(--accent-8)' },
   debt:          { bg: 'var(--fg-5)',   color: 'var(--text-tertiary)',  border: 'var(--fg-10)' },
-  family_office: { bg: 'var(--fg-6)',   color: 'var(--text-tertiary)',  border: 'var(--fg-10)' },
-};
-
+  family_office: { bg: 'var(--fg-6)',   color: 'var(--text-tertiary)',  border: 'var(--fg-10)' },};
 
 function scoreBorderStyle(score: number): React.CSSProperties {
   if (score >= 71) return { borderColor: 'var(--accent-30)' };
@@ -138,45 +123,36 @@ const DIRECTION_CONFIG = {
     icon: TrendingUp,
     bg: 'var(--accent-40)',
     color: 'var(--success)',
-    border: 'var(--accent-50)',
-  },
+    border: 'var(--accent-50)',},
   stable: {
     label: 'Stable',
     icon: Minus,
     bg: 'var(--warn-40)',
     color: 'var(--warning)',
-    border: 'var(--warn-50)',
-  },
+    border: 'var(--warn-50)',},
   decelerating: {
     label: 'Decelerating',
     icon: TrendingDown,
     bg: 'var(--fg-40)',
     color: 'var(--danger)',
-    border: 'var(--fg-50)',
-  },
-};
+    border: 'var(--fg-50)',},};
 
 const TREND_CONFIG = {
   heating: {
     label: 'Heating up',
     icon: TrendingUp,
     color: 'var(--success)',
-    bg: 'var(--accent-30)',
-  },
+    bg: 'var(--accent-30)',},
   cooling: {
     label: 'Cooling down',
     icon: TrendingDown,
     color: 'var(--danger)',
-    bg: 'var(--fg-30)',
-  },
+    bg: 'var(--fg-30)',},
   stable: {
     label: 'Stable',
     icon: Minus,
     color: 'var(--text-secondary)',
-    bg: 'var(--fg-30)',
-  },
-};
-
+    bg: 'var(--fg-30)',},};
 
 // ── Page Component ────────────────────────────────────────────────────
 
@@ -197,8 +173,7 @@ export default function MomentumPage() {
       setError(e instanceof Error ? e.message : 'Unknown error');
     } finally {
       setLoading(false);
-    }
-  };
+    }};
 
   useEffect(() => { fetchData(); }, []);
 
@@ -207,10 +182,8 @@ export default function MomentumPage() {
       <div className="flex-1 flex items-center justify-center min-h-screen" style={stSurface0}>
         <div className="text-center space-y-3">
           <Activity className="w-8 h-8 animate-pulse mx-auto" style={stAccent} />
-          <p className="text-sm" style={stTextSecondary}>Computing momentum signals...</p>
-        </div>
-      </div>
-    );
+          <p className="text-sm" style={stTextSecondary}>Computing momentum signals...</p></div>
+      </div>);
   }
 
   if (error || !data) {
@@ -219,10 +192,8 @@ export default function MomentumPage() {
         <div className="text-center space-y-3">
           <AlertTriangle className="w-8 h-8 mx-auto" style={stTextPrimary} />
           <p className="text-sm" style={stTextPrimary}>{error || 'No data available'}</p>
-          <button onClick={fetchData} className="text-xs" style={stTextSecondary}>Retry</button>
-        </div>
-      </div>
-    );
+          <button onClick={fetchData} className="text-xs" style={stTextSecondary}>Retry</button></div>
+      </div>);
   }
 
   const dirConfig = DIRECTION_CONFIG[data.overallDirection];
@@ -242,24 +213,18 @@ export default function MomentumPage() {
             <div>
               <h1 className="page-title">Deal Momentum</h1>
               <p className="text-sm mt-0.5" style={stTextMuted}>
-                Investor behavior patterns &middot; Last 8 weeks
-              </p>
-            </div>
+                Investor behavior patterns &middot; Last 8 weeks</p></div>
             <div
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
               style={{ background: dirConfig.bg, boxShadow: `inset 0 0 0 1px ${dirConfig.border}` }}>
               <DirIcon className="w-4 h-4" style={{ color: dirConfig.color }} />
-              <span className="text-sm font-normal" style={{ color: dirConfig.color }}>{dirConfig.label}</span>
-            </div>
-          </div>
+              <span className="text-sm font-normal" style={{ color: dirConfig.color }}>{dirConfig.label}</span></div></div>
           <button
             onClick={fetchData}
             className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors"
             style={{ background: 'var(--surface-2)', color: 'var(--text-secondary)' }}>
             <RefreshCw className="w-4 h-4" />
-            Refresh
-          </button>
-        </div>
+            Refresh</button></div>
 
         {/* ── Overall Trend Line ──────────────────────────────────────── */}
         <div
@@ -278,14 +243,10 @@ export default function MomentumPage() {
                   <div className="w-full relative" style={{ height: '100px' }}>
                     <div
                       className="absolute bottom-0 w-full rounded-t transition-all duration-500"
-                      style={{ height: `${Math.max(height, 3)}%`, background: trendBarBg(t.score) }} />
-                  </div>
+                      style={{ height: `${Math.max(height, 3)}%`, background: trendBarBg(t.score) }} /></div>
                   <span className="text-xs font-mono" style={stTextMuted}>{formatWeekLabel(t.week)}</span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+                </div>);
+            })}</div></div>
 
         {/* ── Trajectory Early Warning ──────────────────────────────── */}
         {data.trajectoryAlerts && data.trajectoryAlerts.length > 0 && (
@@ -295,20 +256,16 @@ export default function MomentumPage() {
               <span
                 className="text-xs px-1.5 py-0.5 rounded"
                 style={{ background: 'var(--surface-2)', color: 'var(--text-muted)' }}>
-                {data.trajectoryAlerts.length}
-              </span>
-            </h3>
+                {data.trajectoryAlerts.length}</span></h3>
             {data.trajectoryAlerts.map((alert, i) => {
               const colors: Record<string, { bg: string; border: string; color: string }> = {
                 critical_warning:  { border: 'var(--fg-50)',  bg: 'var(--fg-10)',  color: 'var(--danger)' },
                 early_warning:     { border: 'var(--warn-50)',  bg: 'var(--fg-6)',  color: 'var(--text-secondary)' },
-                term_sheet_signal: { border: 'var(--accent-50)',  bg: 'var(--accent-10)',   color: 'var(--success)' },
-              };
+                term_sheet_signal: { border: 'var(--accent-50)',  bg: 'var(--accent-10)',   color: 'var(--success)' },};
               const labels: Record<string, string> = {
                 critical_warning: 'Critical',
                 early_warning: 'Warning',
-                term_sheet_signal: 'Signal',
-              };
+                term_sheet_signal: 'Signal',};
               const c = colors[alert.type] || colors.early_warning;
               return (
                 <div
@@ -318,19 +275,15 @@ export default function MomentumPage() {
                   <div className="flex items-center justify-between mb-1">
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-normal ">{labels[alert.type]}</span>
-                      <span className="text-sm font-normal" style={stTextPrimary}>{alert.investorName}</span>
-                    </div>
+                      <span className="text-sm font-normal" style={stTextPrimary}>{alert.investorName}</span></div>
                     <div className="flex items-center gap-3 text-xs">
                       <span>Score: {alert.currentScore}</span>
                       <span>&rarr; {alert.predictedScore21d} (21d)</span>
                       <span style={{ color: alert.slopePerWeek >= 0 ? 'var(--success)' : 'var(--danger)' }}>
-                        {alert.slopePerWeek >= 0 ? '+' : ''}{alert.slopePerWeek}/wk
-                      </span>
+                        {alert.slopePerWeek >= 0 ? '+' : ''}{alert.slopePerWeek}/wk</span>
                       {alert.daysToThreshold && (
                         <span className="font-normal">~{alert.daysToThreshold}d to threshold</span>
-                      )}
-                    </div>
-                  </div>
+                      )}</div></div>
                   <div className="flex items-center justify-between mt-1.5">
                     <p className="text-xs flex-1" style={stTextSecondary}>{alert.recommendedAction}</p>
                     <div className="flex items-center gap-2 ml-4 shrink-0">
@@ -340,22 +293,16 @@ export default function MomentumPage() {
                         style={{ background: 'var(--accent-15)', color: 'var(--accent)', boxShadow: 'inset 0 0 0 1px var(--accent-25)' }}
                         onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent-30)'; }}
                         onMouseLeave={e => { e.currentTarget.style.background = 'var(--accent-15)'; }}>
-                        Schedule
-                      </Link>
+                        Schedule</Link>
                       <Link
                         href={`/investors/${alert.investorId}`}
                         className="px-2.5 py-1 rounded text-xs font-normal transition-colors"
                         style={{ background: 'var(--surface-2)', color: 'var(--text-secondary)' }}
                         onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-3)'; }}
                         onMouseLeave={e => { e.currentTarget.style.background = 'var(--surface-2)'; }}>
-                        Open
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                        Open</Link></div></div>
+                </div>);
+            })}</div>
         )}
 
         {/* ── Heatmap Table ───────────────────────────────────────────── */}
@@ -376,27 +323,19 @@ export default function MomentumPage() {
                   <th
                     className="sticky left-0 z-10 text-left px-4 py-3 font-normal text-xs  tracking-wider min-w-[200px]"
                     style={{ background: 'var(--surface-1)', color: 'var(--text-muted)' }}>
-                    Investor
-                  </th>
+                    Investor</th>
                   {data.weeks.map(w => (
                     <th key={w} className="px-2 py-3 font-normal text-xs text-center min-w-[72px]" style={stTextMuted}>
-                      {formatWeekLabel(w)}
-                    </th>
+                      {formatWeekLabel(w)}</th>
                   ))}
                   <th className="px-3 py-3 font-normal text-xs text-center min-w-[60px]" style={stTextMuted}>
-                    &Delta;
-                  </th>
-                  <th className="px-2 py-3 font-normal text-xs text-center min-w-[40px]" style={stTextMuted}>
-                  </th>
-                </tr>
-              </thead>
+                    &Delta;</th>
+                  <th className="px-2 py-3 font-normal text-xs text-center min-w-[40px]" style={stTextMuted}></th></tr></thead>
               <tbody>
                 {data.matrix.length === 0 ? (
                   <tr>
                     <td colSpan={data.weeks.length + 3} className="px-4 py-12 text-center" style={stTextMuted}>
-                      No active investors found. Add investors and log meetings to see momentum data.
-                    </td>
-                  </tr>
+                      No active investors found. Add investors and log meetings to see momentum data.</td></tr>
                 ) : data.matrix.map((inv) => {
                   const isAnomaly = anomalyInvestorIds.has(inv.investorId);
                   const tc = TYPE_COLORS[inv.type] || TYPE_COLORS.vc;
@@ -419,24 +358,19 @@ export default function MomentumPage() {
                             href={`/investors/${inv.investorId}`}
                             className="font-normal truncate max-w-[120px]"
                             style={stTextPrimary}>
-                            {inv.investorName}
-                          </Link>
+                            {inv.investorName}</Link>
                           <span
                             className="px-1.5 py-0.5 rounded text-xs font-normal"
                             style={{ background: tc.bg, color: tc.color, boxShadow: `inset 0 0 0 1px ${tc.border}` }}>
-                            {TYPE_LABELS[inv.type] || inv.type}
-                          </span>
+                            {TYPE_LABELS[inv.type] || inv.type}</span>
                           {isAnomaly && (
                             <span title="Anomaly detected"><Zap className="w-3 h-3 flex-shrink-0" style={stTextTertiary} /></span>
-                          )}
-                        </div>
-                      </td>
+                          )}</div></td>
 
                       {/* Weekly score cells */}
                       {inv.weeklyScores.map((ws) => {
                         const anomalyForWeek = data.anomalies.find(
-                          a => a.investorId === inv.investorId
-                        );
+                          a => a.investorId === inv.investorId);
                         const isAnomalyCell = anomalyForWeek && ws.week === data.weeks[data.weeks.length - 1];
 
                         return (
@@ -448,10 +382,8 @@ export default function MomentumPage() {
                                 ...(isAnomalyCell ? {
                                   boxShadow: `0 0 0 2px ${anomalyForWeek.direction === 'above' ? 'var(--accent-muted)' : 'var(--fg-6)'}`,
                                 } : {}), }}>
-                              {ws.score}
-                            </div>
-                          </td>
-                        );
+                              {ws.score}</div>
+                          </td>);
                       })}
 
                       {/* Delta column */}
@@ -464,9 +396,7 @@ export default function MomentumPage() {
                           ) : delta < 0 ? (
                             <ArrowDownRight className="w-3 h-3" />
                           ) : null}
-                          {delta > 0 ? `+${delta}` : delta}
-                        </div>
-                      </td>
+                          {delta > 0 ? `+${delta}` : delta}</div></td>
                       {/* Quick action */}
                       <td className="px-2 py-2.5 text-center">
                         <Link
@@ -476,15 +406,9 @@ export default function MomentumPage() {
                           style={{ background: 'transparent', color: 'var(--text-muted)' }}
                           onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-2)'; e.currentTarget.style.color = 'var(--accent)'; }}
                           onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text-muted)'; }}>
-                          <ChevronRight className="w-3.5 h-3.5" />
-                        </Link>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                          <ChevronRight className="w-3.5 h-3.5" /></Link></td>
+                    </tr>);
+                })}</tbody></table></div>
 
           {/* Legend */}
           <div
@@ -505,14 +429,10 @@ export default function MomentumPage() {
             </div>
             <div className="ml-4 flex items-center gap-1.5">
               <div className="w-4 h-3 rounded" style={{ background: 'var(--surface-2)', boxShadow: '0 none' }} />
-              <span className="text-xs" style={stTextMuted}>Above cohort</span>
-            </div>
+              <span className="text-xs" style={stTextMuted}>Above cohort</span></div>
             <div className="flex items-center gap-1.5">
               <div className="w-4 h-3 rounded" style={{ background: 'var(--surface-2)', boxShadow: '0 none' }} />
-              <span className="text-xs" style={stTextMuted}>Below cohort</span>
-            </div>
-          </div>
-        </div>
+              <span className="text-xs" style={stTextMuted}>Below cohort</span></div></div></div>
 
         {/* ── Cohort Summary + Anomalies Row ──────────────────────────── */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -523,8 +443,7 @@ export default function MomentumPage() {
             style={{ background: 'var(--surface-1)' }}>
             <div className="flex items-center gap-2 mb-4">
               <Users className="w-4 h-4" style={stTextSecondary} />
-              <h2 className="text-sm font-normal  tracking-wider" style={stTextSecondary}>Cohort Momentum</h2>
-            </div>
+              <h2 className="text-sm font-normal  tracking-wider" style={stTextSecondary}>Cohort Momentum</h2></div>
             {data.cohorts.length === 0 ? (
               <p className="text-sm" style={stTextMuted}>No cohort data available.</p>
             ) : (
@@ -542,17 +461,13 @@ export default function MomentumPage() {
                           <span
                             className="px-2 py-0.5 rounded text-xs font-normal"
                             style={{ background: tc.bg, color: tc.color, boxShadow: `inset 0 0 0 1px ${tc.border}` }}>
-                            {TYPE_LABELS[cohort.type] || cohort.type}
-                          </span>
-                          <span className="text-xs" style={stTextMuted}>{cohort.memberCount} investors</span>
-                        </div>
+                            {TYPE_LABELS[cohort.type] || cohort.type}</span>
+                          <span className="text-xs" style={stTextMuted}>{cohort.memberCount} investors</span></div>
                         <div
                           className="flex items-center gap-1 px-2 py-0.5 rounded text-xs font-normal"
                           style={{ background: trendCfg.bg, color: trendCfg.color }}>
                           <TrendIcon className="w-3 h-3" />
-                          {trendCfg.label}
-                        </div>
-                      </div>
+                          {trendCfg.label}</div></div>
 
                       {/* Mini sparkline */}
                       <div className="flex items-end gap-1 h-10">
@@ -563,25 +478,18 @@ export default function MomentumPage() {
                               <div
                                 className="absolute bottom-0 w-full rounded-t"
                                 style={{ height: `${Math.max(h, 5)}%`, background: trendBarBg(ws.score), opacity: 0.7 }} />
-                            </div>
-                          );
-                        })}
-                      </div>
+                            </div>);
+                        })}</div>
 
                       {/* Week labels and scores */}
                       <div className="flex gap-1 mt-1">
                         {cohort.weeklyAvg.map((ws) => (
                           <div key={ws.week} className="flex-1 text-center">
-                            <span className="text-xs font-mono" style={stTextMuted}>{ws.score}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
+                            <span className="text-xs font-mono" style={stTextMuted}>{ws.score}</span></div>
+                        ))}</div>
+                    </div>);
+                })}</div>
+            )}</div>
 
           {/* Anomalies */}
           <div
@@ -592,8 +500,7 @@ export default function MomentumPage() {
               <h2 className="text-sm font-normal  tracking-wider" style={stTextSecondary}>Momentum Anomalies</h2>
               {data.anomalies.length > 0 && (
                 <span className="ml-auto px-2 py-0.5 rounded-full text-xs font-normal" style={{ background: 'var(--warning-muted)', color: 'var(--text-tertiary)', boxShadow: 'inset 0 0 0 1px var(--warn-40)' }}>{data.anomalies.length}</span>
-              )}
-            </div>
+              )}</div>
             {data.anomalies.length === 0 ? (
               <div className="text-center py-8">
                 <Activity className="w-6 h-6 mx-auto mb-2" style={stTextMuted} />
@@ -619,30 +526,25 @@ export default function MomentumPage() {
                             <ArrowUpRight className="w-4 h-4" style={stTextSecondary} />
                           ) : (
                             <ArrowDownRight className="w-4 h-4" style={stTextPrimary} />
-                          )}
-                        </div>
+                          )}</div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1">
                             <Link
                               href={`/investors/${anomaly.investorId}`}
                               className="text-sm font-normal"
                               style={stTextPrimary}>
-                              {anomaly.investorName}
-                            </Link>
+                              {anomaly.investorName}</Link>
                             <span
                               className="px-1.5 py-0.5 rounded text-xs font-normal"
                               style={{
                                 background: tc.bg,
                                 color: tc.color,
                                 boxShadow: `inset 0 0 0 1px ${tc.border}`, }}>
-                              {TYPE_LABELS[anomaly.type] || anomaly.type}
-                            </span>
+                              {TYPE_LABELS[anomaly.type] || anomaly.type}</span>
                             <span
                               className="text-xs font-mono font-normal"
                               style={{ color: isAbove ? 'var(--success)' : 'var(--danger)' }}>
-                              {anomaly.deviation > 0 ? '+' : ''}{anomaly.deviation}pts
-                            </span>
-                          </div>
+                              {anomaly.deviation > 0 ? '+' : ''}{anomaly.deviation}pts</span></div>
                           <div className="flex items-center justify-between mt-1">
                             <p className="text-xs flex-1" style={stTextMuted}>{anomaly.message}</p>
                             <Link
@@ -651,18 +553,10 @@ export default function MomentumPage() {
                               style={{ background: isAbove ? 'var(--accent-30)' : 'var(--fg-30)', color: isAbove ? 'var(--success)' : 'var(--danger)', boxShadow: `inset 0 0 0 1px ${isAbove ? 'var(--accent-40)' : 'var(--fg-40)'}` }}
                               onMouseEnter={e => { e.currentTarget.style.opacity = '0.8'; }}
                               onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}>
-                              {isAbove ? 'Prep Meeting' : 'Re-engage'}
-                            </Link>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        </div>
+                              {isAbove ? 'Prep Meeting' : 'Re-engage'}</Link></div></div></div>
+                    </div>);
+                })}</div>
+            )}</div></div>
 
         {/* ── Cross-Investor Signals ──────────────────────────────────── */}
         {data.crossSignals.length > 0 && (
@@ -682,21 +576,14 @@ export default function MomentumPage() {
                   style={stSurface2}>
                   <div className="flex items-start gap-3">
                     <div className="w-16 flex-shrink-0">
-                      <span className="text-xs font-mono" style={stTextMuted}>{formatWeekLabel(signal.week)}</span>
-                    </div>
+                      <span className="text-xs font-mono" style={stTextMuted}>{formatWeekLabel(signal.week)}</span></div>
                     <div className="flex-1">
                       <p className="text-sm mb-2" style={stTextSecondary}>{signal.description}</p>
                       <div className="flex flex-wrap gap-1">
                         {signal.affectedInvestors.map(name => (
                           <span key={name} className="px-2 py-0.5 rounded text-xs" style={{ background: 'var(--surface-2)', color: 'var(--text-secondary)' }}>{name}</span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+                        ))}</div></div></div></div>
+              ))}</div></div>
         )}
 
         {/* ── Timing Signals ─────────────────────────────────────────── */}
@@ -714,18 +601,15 @@ export default function MomentumPage() {
                 const urgencyStyles: Record<string, { bg: string; border: string; color: string }> = {
                   high:   { bg: 'var(--fg-20)',  border: 'var(--fg-40)',  color: 'var(--danger)' },
                   medium: { bg: 'var(--warn-20)',  border: 'var(--warn-40)',  color: 'var(--warning)' },
-                  low:    { bg: 'var(--fg-40)',   border: 'var(--warn-40)',   color: 'var(--text-secondary)' },
-                };
+                  low:    { bg: 'var(--fg-40)',   border: 'var(--warn-40)',   color: 'var(--text-secondary)' },};
                 const typeLabels: Record<string, string> = {
                   competitive_tension: 'Competitive Tension',
                   engagement_gap: 'Engagement Gap',
-                  dd_synchronization: 'DD Synchronization',
-                };
+                  dd_synchronization: 'DD Synchronization',};
                 const typeIconColors: Record<string, string> = {
                   competitive_tension: 'var(--danger)',
                   engagement_gap: 'var(--text-secondary)',
-                  dd_synchronization: 'var(--success)',
-                };
+                  dd_synchronization: 'var(--success)',};
                 const us = urgencyStyles[signal.urgency] || urgencyStyles.low;
 
                 return (
@@ -737,21 +621,16 @@ export default function MomentumPage() {
                       <span
                         className="text-xs font-normal "
                         style={{ color: typeIconColors[signal.type] || 'var(--text-secondary)' }}>
-                        {typeLabels[signal.type] || signal.type}
-                      </span>
+                        {typeLabels[signal.type] || signal.type}</span>
                       <span className="text-xs px-1.5 py-0.5 rounded font-normal" style={{ background: us.bg, color: us.color }}>{signal.urgency}</span>
                     </div>
                     <p className="text-xs mb-2" style={stTextSecondary}>{signal.description}</p>
                     <div className="flex flex-wrap gap-1">
                       {signal.investorNames.map(name => (
                         <span key={name} className="px-2 py-0.5 rounded text-xs" style={{ background: 'var(--surface-2)', color: 'var(--text-secondary)' }}>{name}</span>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+                      ))}</div>
+                  </div>);
+              })}</div></div>
         )}
 
         {/* ── Narrative Health by Investor Type ─────────────────────── */}
@@ -759,16 +638,14 @@ export default function MomentumPage() {
           <div className="rounded-xl p-6" style={stSurface1}>
             <div className="flex items-center gap-2 mb-4">
               <MessageSquare className="w-4 h-4" style={stTextSecondary} />
-              <h2 className="text-sm font-normal  tracking-wider" style={stTextSecondary}>Narrative Health by Type</h2>
-            </div>
+              <h2 className="text-sm font-normal  tracking-wider" style={stTextSecondary}>Narrative Health by Type</h2></div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
               {data.narrativeHealth.map((nh) => {
                 const tc = TYPE_COLORS[nh.investorType] || TYPE_COLORS.vc;
                 const statusStyles: Record<string, { bg: string; color: string; label: string }> = {
                   effective:         { bg: 'var(--accent-20)',   color: 'var(--success)',  label: 'Effective' },
                   struggling:        { bg: 'var(--fg-20)', color: 'var(--danger)',  label: 'Struggling' },
-                  insufficient_data: { bg: 'var(--fg-40)',  color: 'var(--text-muted)',                   label: 'Low data' },
-                };
+                  insufficient_data: { bg: 'var(--fg-40)',  color: 'var(--text-muted)',                   label: 'Low data' },};
                 const sc = statusStyles[nh.status] || statusStyles.insufficient_data;
 
                 return (
@@ -778,8 +655,7 @@ export default function MomentumPage() {
                     style={{ background: sc.bg }}>
                     <div className="flex items-center justify-between mb-3">
                       <span className="px-2 py-0.5 rounded text-xs font-normal" style={{ background: tc.bg, color: tc.color, boxShadow: `inset 0 0 0 1px ${tc.border}` }}>{TYPE_LABELS[nh.investorType] || nh.investorType}</span>
-                      <span className="text-xs font-normal " style={{ color: sc.color }}>{sc.label}</span>
-                    </div>
+                      <span className="text-xs font-normal " style={{ color: sc.color }}>{sc.label}</span></div>
                     <div className="grid grid-cols-2 gap-2 text-xs">
                       <div>
                         <span style={stTextMuted}>Enthusiasm</span>
@@ -788,46 +664,33 @@ export default function MomentumPage() {
                       <div>
                         <span style={stTextMuted}>Conversion</span>
                         <div className="font-normal tabular-nums" style={{ color: nh.conversionRate >= 20 ? 'var(--success)' : 'var(--danger)' }}>{nh.conversionRate}%</div>
-                      </div>
-                    </div>
+                      </div></div>
                     {nh.topObjection && (
                       <div className="mt-2 flex items-center justify-between">
                         <div className="text-xs" style={stTextMuted}>
-                          Top objection: <span style={stTextSecondary}>{nh.topObjection}</span>
-                        </div>
+                          Top objection: <span style={stTextSecondary}>{nh.topObjection}</span></div>
                         <Link
                           href="/objections"
                           className="text-xs font-normal shrink-0 ml-2 transition-colors"
                           style={stAccent}
                           onMouseEnter={e => { e.currentTarget.style.opacity = '0.7'; }}
                           onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}>
-                          View &rarr;
-                        </Link>
-                      </div>
+                          View &rarr;</Link></div>
                     )}
                     {nh.topQuestionTopic && (
                       <div className="text-xs" style={stTextMuted}>
-                        Top question: <span style={stTextSecondary}>{nh.topQuestionTopic}</span>
-                      </div>
+                        Top question: <span style={stTextSecondary}>{nh.topQuestionTopic}</span></div>
                     )}
                     <div className="mt-1 text-xs" style={stTextMuted}>
-                      {nh.sampleSize} investor{nh.sampleSize !== 1 ? 's' : ''}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+                      {nh.sampleSize} investor{nh.sampleSize !== 1 ? 's' : ''}</div>
+                  </div>);
+              })}</div></div>
         )}
 
         {/* ── Footer ─────────────────────────────────────────────────── */}
         <div className="text-center pb-4">
           <p className="text-xs" style={stTextTertiary}>
             Generated {data.generatedAt ? new Date(data.generatedAt).toLocaleString() : 'just now'}
-            &nbsp;&middot;&nbsp; Momentum = meetings + status changes + enthusiasm shifts + tasks + follow-ups
-          </p>
-        </div>
-      </div>
-    </div>
-  );
+            &nbsp;&middot;&nbsp; Momentum = meetings + status changes + enthusiasm shifts + tasks + follow-ups</p></div></div>
+    </div>);
 }

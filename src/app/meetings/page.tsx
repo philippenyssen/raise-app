@@ -16,8 +16,7 @@ function getStatusBadgeClass(status: string): string {
     case 'term_sheet': return 'badge badge-green';
     case 'passed': return 'badge badge-red';
     default: return 'badge badge-zinc';
-  }
-}
+  }}
 
 function getObjectionStyle(severity: string): React.CSSProperties {
   switch (severity) {
@@ -27,8 +26,7 @@ function getObjectionStyle(severity: string): React.CSSProperties {
       return { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' };
     default:
       return { background: 'var(--surface-3)', color: 'var(--text-tertiary)' };
-  }
-}
+  }}
 
 function RatingDots({ value, onChange, label }: { value: number | null; onChange?: (v: number) => void; label: string }) {
   const [hovered, setHovered] = useState<number | null>(null);
@@ -47,15 +45,11 @@ function RatingDots({ value, onChange, label }: { value: number | null; onChange
             style={{ width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: onChange ? 'pointer' : 'default', background: 'none', border: 'none', padding: 0 }}>
             <span style={{
               color: n <= (hovered ?? value ?? 0) ? 'var(--warning)' : 'var(--text-muted)',
-              transition: 'color 100ms ease',
-            }}>
-              <Star className="w-4 h-4" style={{ fill: n <= (hovered ?? value ?? 0) ? 'currentColor' : 'none' }} />
-            </span>
+              transition: 'color 100ms ease',}}>
+              <Star className="w-4 h-4" style={{ fill: n <= (hovered ?? value ?? 0) ? 'currentColor' : 'none' }} /></span>
           </button>
-        ))}
-      </div>
-    </div>
-  );
+        ))}</div>
+    </div>);
 }
 
 interface OutcomeFormData { outcome_rating: number | null; objections_addressed: string[]; competitive_mentions: string[]; key_takeaway: string; prep_usefulness: number | null }
@@ -85,16 +79,14 @@ function MeetingOutcomeSection({
     objections_addressed: existingObjections,
     competitive_mentions: existingMentions,
     key_takeaway: meeting.key_takeaway || '',
-    prep_usefulness: meeting.prep_usefulness ?? null,
-  });
+    prep_usefulness: meeting.prep_usefulness ?? null,});
 
   const addObjection = () => {
     const val = newObjection.trim();
     if (val && !form.objections_addressed.includes(val)) {
       setForm(prev => ({ ...prev, objections_addressed: [...prev.objections_addressed, val] }));
       setNewObjection('');
-    }
-  };
+    }};
 
   const removeObjection = (idx: number) => {
     setForm(prev => ({ ...prev, objections_addressed: prev.objections_addressed.filter((_, i) => i !== idx) }));
@@ -105,8 +97,7 @@ function MeetingOutcomeSection({
     if (val && !form.competitive_mentions.includes(val)) {
       setForm(prev => ({ ...prev, competitive_mentions: [...prev.competitive_mentions, val] }));
       setNewCompetitor('');
-    }
-  };
+    }};
 
   const removeCompetitor = (idx: number) => {
     setForm(prev => ({ ...prev, competitive_mentions: prev.competitive_mentions.filter((_, i) => i !== idx) }));
@@ -125,8 +116,7 @@ function MeetingOutcomeSection({
           competitive_mentions: form.competitive_mentions,
           key_takeaway: form.key_takeaway,
           prep_usefulness: form.prep_usefulness,
-        }),
-      });
+        }),});
       if (res.ok) {
         onSaved({
           ...meeting,
@@ -134,8 +124,7 @@ function MeetingOutcomeSection({
           objections_addressed: JSON.stringify(form.objections_addressed),
           competitive_mentions: JSON.stringify(form.competitive_mentions),
           key_takeaway: form.key_takeaway,
-          prep_usefulness: form.prep_usefulness,
-        });
+          prep_usefulness: form.prep_usefulness,});
         setEditing(false);
       }
     } catch { /* ignore */ }
@@ -149,16 +138,13 @@ function MeetingOutcomeSection({
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-secondary)' }}>
             <CheckCircle2 className="w-3.5 h-3.5" />
-            Outcome Recorded
-          </div>
+            Outcome Recorded</div>
           <button
             onClick={() => setEditing(true)}
             style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)', background: 'none', border: 'none', cursor: 'pointer' }}
             onMouseEnter={e => (e.currentTarget.style.textDecoration = 'underline')}
             onMouseLeave={e => (e.currentTarget.style.textDecoration = 'none')}>
-            Edit
-          </button>
-        </div>
+            Edit</button></div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3" style={stFontXs}>
           <div>
@@ -168,9 +154,7 @@ function MeetingOutcomeSection({
                 <span key={n} style={{ color: n <= (meeting.outcome_rating ?? 0) ? 'var(--warning)' : 'var(--text-muted)' }}>
                   <Star className="w-3 h-3" style={{ fill: n <= (meeting.outcome_rating ?? 0) ? 'currentColor' : 'none' }} />
                 </span>
-              ))}
-            </div>
-          </div>
+              ))}</div></div>
           <div>
             <div style={stTextMuted}>Prep Usefulness</div>
             <div className="flex gap-0.5 mt-1">
@@ -178,14 +162,10 @@ function MeetingOutcomeSection({
                 <span key={n} style={{ color: n <= (meeting.prep_usefulness ?? 0) ? 'var(--accent)' : 'var(--text-muted)' }}>
                   <Star className="w-3 h-3" style={{ fill: n <= (meeting.prep_usefulness ?? 0) ? 'currentColor' : 'none' }} />
                 </span>
-              ))}
-            </div>
-          </div>
+              ))}</div></div>
           <div className="col-span-2">
             <div style={stTextMuted}>Key Takeaway</div>
-            <div style={{ color: 'var(--text-primary)', marginTop: '2px' }}>{meeting.key_takeaway || '-'}</div>
-          </div>
-        </div>
+            <div style={{ color: 'var(--text-primary)', marginTop: '2px' }}>{meeting.key_takeaway || '-'}</div></div></div>
 
         {existingObjections.length > 0 && (
           <div className="mt-2">
@@ -193,11 +173,8 @@ function MeetingOutcomeSection({
             <div className="flex flex-wrap gap-1">
               {existingObjections.map((o: string, i: number) => (
                 <span key={i} style={{ fontSize: 'var(--font-size-xs)', padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--success-muted)', color: 'var(--text-secondary)' }}>
-                  {o}
-                </span>
-              ))}
-            </div>
-          </div>
+                  {o}</span>
+              ))}</div></div>
         )}
 
         {existingMentions.length > 0 && (
@@ -206,22 +183,17 @@ function MeetingOutcomeSection({
             <div className="flex flex-wrap gap-1">
               {existingMentions.map((c: string, i: number) => (
                 <span key={i} style={{ fontSize: 'var(--font-size-xs)', padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--warning-muted)', color: 'var(--text-tertiary)' }}>
-                  {c}
-                </span>
-              ))}
-            </div>
-          </div>
+                  {c}</span>
+              ))}</div></div>
         )}
-      </div>
-    );
+      </div>);
   }
 
   return (
     <div
       style={{ padding: 'var(--space-4)', background: 'var(--surface-1)', borderRadius: 'var(--radius-sm)' }}>
       <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', marginBottom: 'var(--space-3)' }}>
-        Meeting Outcome
-      </div>
+        Meeting Outcome</div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <RatingDots
@@ -231,24 +203,20 @@ function MeetingOutcomeSection({
         <RatingDots
           value={form.prep_usefulness}
           onChange={v => setForm(prev => ({ ...prev, prep_usefulness: v }))}
-          label="Prep brief usefulness" />
-      </div>
+          label="Prep brief usefulness" /></div>
 
       <div className="mt-3">
         <label style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>
-          Key Takeaway
-        </label>
+          Key Takeaway</label>
         <input
           value={form.key_takeaway}
           onChange={e => setForm(prev => ({ ...prev, key_takeaway: e.target.value }))}
           placeholder="Most important insight from this meeting..."
-          className="input" />
-      </div>
+          className="input" /></div>
 
       <div className="mt-3">
         <label style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>
-          Objections Addressed
-        </label>
+          Objections Addressed</label>
         <div className="flex flex-wrap gap-1 mb-2">
           {form.objections_addressed.map((o, i) => (
             <span
@@ -260,11 +228,8 @@ function MeetingOutcomeSection({
                 type="button"
                 onClick={() => removeObjection(i)}
                 style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: 'inherit', display: 'flex' }}>
-                <X className="w-3 h-3" />
-              </button>
-            </span>
-          ))}
-        </div>
+                <X className="w-3 h-3" /></button></span>
+          ))}</div>
         <div className="flex gap-2">
           <input
             value={newObjection}
@@ -273,14 +238,11 @@ function MeetingOutcomeSection({
             placeholder="Add objection handled..."
             className="input"
             style={{ flex: 1 }} />
-          <button onClick={addObjection} className="btn btn-secondary btn-md" type="button">Add</button>
-        </div>
-      </div>
+          <button onClick={addObjection} className="btn btn-secondary btn-md" type="button">Add</button></div></div>
 
       <div className="mt-3">
         <label style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>
-          Competitors Mentioned by Investor
-        </label>
+          Competitors Mentioned by Investor</label>
         <div className="flex flex-wrap gap-1 mb-2">
           {form.competitive_mentions.map((c, i) => (
             <span
@@ -292,11 +254,8 @@ function MeetingOutcomeSection({
                 type="button"
                 onClick={() => removeCompetitor(i)}
                 style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: 'inherit', display: 'flex' }}>
-                <X className="w-3 h-3" />
-              </button>
-            </span>
-          ))}
-        </div>
+                <X className="w-3 h-3" /></button></span>
+          ))}</div>
         <div className="flex gap-2">
           <input
             value={newCompetitor}
@@ -305,27 +264,21 @@ function MeetingOutcomeSection({
             placeholder="Add competitor name..."
             className="input"
             style={{ flex: 1 }} />
-          <button onClick={addCompetitor} className="btn btn-secondary btn-md" type="button">Add</button>
-        </div>
-      </div>
+          <button onClick={addCompetitor} className="btn btn-secondary btn-md" type="button">Add</button></div></div>
 
       <div className="flex gap-2 mt-4">
         <button
           onClick={handleSave}
           disabled={saving}
           className="btn btn-primary btn-md">
-          {saving ? 'Saving...' : 'Save Outcome'}
-        </button>
+          {saving ? 'Saving...' : 'Save Outcome'}</button>
         {hasOutcome && (
           <button
             onClick={() => setEditing(false)}
             className="btn btn-secondary btn-md">
-            Cancel
-          </button>
-        )}
-      </div>
-    </div>
-  );
+            Cancel</button>
+        )}</div>
+    </div>);
 }
 
 export default function MeetingsPage() {
@@ -347,8 +300,7 @@ export default function MeetingsPage() {
         !(m.raw_notes || '').toLowerCase().includes(search.toLowerCase())) return false;
     if (typeFilter !== 'all' && m.type !== typeFilter) return false;
     if (statusFilter !== 'all' && m.status_after !== statusFilter) return false;
-    return true;
-  });
+    return true;});
 
   // Stats
   const avgEnthusiasm = meetings.length > 0
@@ -391,8 +343,7 @@ export default function MeetingsPage() {
       if (latest.enthusiasm_score > prev.enthusiasm_score) investorStats[invId].trend = 'up';
       else if (latest.enthusiasm_score < prev.enthusiasm_score) investorStats[invId].trend = 'down';
       else investorStats[invId].trend = 'flat';
-    }
-  }
+    }}
 
   const handleOutcomeSaved = (updated: Meeting) => {
     setMeetings(prev => prev.map(m => m.id === updated.id ? updated : m));
@@ -404,49 +355,36 @@ export default function MeetingsPage() {
         <div>
           <h1 className="page-title">Meetings</h1>
           <p className="page-subtitle" style={stFontSm}>
-            {meetings.length} meetings with {uniqueInvestors} investors
-          </p>
-        </div>
+            {meetings.length} meetings with {uniqueInvestors} investors</p></div>
         <div className="flex gap-2">
           <Link
             href="/meetings/capture"
             className="btn btn-secondary btn-md">
-            Quick Capture
-          </Link>
+            Quick Capture</Link>
           <Link
             href="/meetings/prep"
             className="btn btn-secondary btn-md">
-            <FileSearch className="w-3.5 h-3.5" /> Meeting Prep
-          </Link>
+            <FileSearch className="w-3.5 h-3.5" /> Meeting Prep</Link>
           <Link
             href="/meetings/new"
             className="btn btn-primary btn-md">
-            + Log Meeting
-          </Link>
-        </div>
-      </div>
+            + Log Meeting</Link></div></div>
 
       {/* Stats Bar */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 card-stagger">
         <div className="card-metric">
           <div className="metric-label">Total Meetings</div>
-          <div className="metric-value" style={{ marginTop: '2px' }}>{meetings.length}</div>
-        </div>
+          <div className="metric-value" style={{ marginTop: '2px' }}>{meetings.length}</div></div>
         <div className="card-metric">
           <div className="metric-label">Avg Enthusiasm</div>
           <div className="metric-value" style={{ marginTop: '2px' }}>
-            {avgEnthusiasm}<span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>/5</span>
-          </div>
-        </div>
+            {avgEnthusiasm}<span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>/5</span></div></div>
         <div className="card-metric">
           <div className="metric-label">Objections</div>
-          <div className="metric-value" style={{ marginTop: '2px', color: 'var(--text-tertiary)' }}>{totalObjections}</div>
-        </div>
+          <div className="metric-value" style={{ marginTop: '2px', color: 'var(--text-tertiary)' }}>{totalObjections}</div></div>
         <div className="card-metric">
           <div className="metric-label">Unique Investors</div>
-          <div className="metric-value" style={{ marginTop: '2px' }}>{uniqueInvestors}</div>
-        </div>
-      </div>
+          <div className="metric-value" style={{ marginTop: '2px' }}>{uniqueInvestors}</div></div></div>
 
       {/* Filters */}
       <div className="flex flex-wrap gap-3">
@@ -457,8 +395,7 @@ export default function MeetingsPage() {
             onChange={e => setSearch(e.target.value)}
             placeholder="Search investor or notes..."
             className="input"
-            style={{ paddingLeft: 'var(--space-10)' }} />
-        </div>
+            style={{ paddingLeft: 'var(--space-10)' }} /></div>
         <select
           value={typeFilter}
           onChange={e => setTypeFilter(e.target.value)}
@@ -466,8 +403,7 @@ export default function MeetingsPage() {
           style={{ width: 'auto' }}>
           {MEETING_TYPES.map(t => (
             <option key={t} value={t}>{t === 'all' ? 'All types' : t.replace(/_/g, ' ')}</option>
-          ))}
-        </select>
+          ))}</select>
         <select
           value={statusFilter}
           onChange={e => setStatusFilter(e.target.value)}
@@ -475,15 +411,12 @@ export default function MeetingsPage() {
           style={{ width: 'auto' }}>
           {STATUS_OPTIONS.map(s => (
             <option key={s} value={s}>{s === 'all' ? 'All statuses' : s.replace(/_/g, ' ')}</option>
-          ))}
-        </select>
+          ))}</select>
         <a
           href="/api/export?type=meetings"
           download
           className="btn btn-secondary btn-md">
-          <Download className="w-3.5 h-3.5" /> CSV
-        </a>
-      </div>
+          <Download className="w-3.5 h-3.5" /> CSV</a></div>
 
       {/* Meeting List */}
       {filtered.length === 0 ? (
@@ -497,11 +430,8 @@ export default function MeetingsPage() {
             </p>
             {meetings.length === 0 && (
               <Link href="/meetings/new" style={{ color: 'var(--accent)', fontSize: 'var(--font-size-sm)' }}>
-                Log your first meeting debrief
-              </Link>
-            )}
-          </div>
-        </div>
+                Log your first meeting debrief</Link>
+            )}</div></div>
       ) : (
         <div className="space-y-3">
           {filtered.map(m => {
@@ -514,8 +444,7 @@ export default function MeetingsPage() {
               up: { icon: TrendingUp, color: 'var(--text-secondary)', label: 'Rising' },
               down: { icon: TrendingDown, color: 'var(--text-primary)', label: 'Falling' },
               flat: { icon: Minus, color: 'var(--text-muted)', label: 'Flat' },
-              new: { icon: Hash, color: 'var(--text-muted)', label: 'First' },
-            };
+              new: { icon: Hash, color: 'var(--text-muted)', label: 'First' },};
             const trend = stats ? trendConfig[stats.trend] : trendConfig.new;
             const TrendIcon = trend.icon;
 
@@ -533,8 +462,7 @@ export default function MeetingsPage() {
                         style={{ fontWeight: 400, color: 'var(--text-primary)', transition: 'color 150ms ease' }}
                         onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
                         onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}>
-                        {m.investor_name}
-                      </Link>
+                        {m.investor_name}</Link>
                       {stats && stats.count > 1 && (
                         <span
                           className="flex items-center gap-1"
@@ -544,25 +472,20 @@ export default function MeetingsPage() {
                             borderRadius: 'var(--radius-sm)',
                             background: 'var(--surface-2)',
                             color: 'var(--text-muted)', }}>
-                          {stats.count} meetings
-                        </span>
+                          {stats.count} meetings</span>
                       )}
                       {stats && stats.count >= 2 && (
                         <span
                           className="flex items-center gap-0.5"
                           style={{ fontSize: '10px', color: trend.color }}
                           title={`Enthusiasm ${trend.label.toLowerCase()} (avg ${stats.avgEnthusiasm.toFixed(1)})`}>
-                          <TrendIcon className="w-3 h-3" />
-                        </span>
-                      )}
-                    </div>
+                          <TrendIcon className="w-3 h-3" /></span>
+                      )}</div>
                     <div className="flex gap-3 mt-1" style={labelTertiary}>
                       <span>{m.date}</span>
                       <span style={{ textTransform: 'capitalize' }}>{m.type.replace(/_/g, ' ')}</span>
                       <span>{m.duration_minutes}min</span>
-                      {m.attendees && <span>{m.attendees}</span>}
-                    </div>
-                  </div>
+                      {m.attendees && <span>{m.attendees}</span>}</div></div>
                   <div className="flex items-center gap-2">
                     <div className="enthusiasm-dots">
                       {[1,2,3,4,5].map(n => (
@@ -570,18 +493,13 @@ export default function MeetingsPage() {
                           key={n}
                           className={`enthusiasm-dot ${n <= m.enthusiasm_score ? 'enthusiasm-dot-filled' : 'enthusiasm-dot-empty'}`}
                             />
-                      ))}
-                    </div>
+                      ))}</div>
                     <span className={getStatusBadgeClass(m.status_after)}>
-                      {m.status_after.replace(/_/g, ' ')}
-                    </span>
-                  </div>
-                </div>
+                      {m.status_after.replace(/_/g, ' ')}</span></div></div>
 
                 {m.ai_analysis && (
                   <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', marginBottom: 'var(--space-3)' }}>
-                    {m.ai_analysis}
-                  </p>
+                    {m.ai_analysis}</p>
                 )}
 
                 <div className="flex gap-4" style={stFontXs}>
@@ -596,8 +514,7 @@ export default function MeetingsPage() {
                   )}
                   {m.next_steps && (
                     <span style={{ color: 'var(--accent)', opacity: 0.7 }}>Next steps defined</span>
-                  )}
-                </div>
+                  )}</div>
 
                 {objections.length > 0 && (
                   <div className="mt-3 flex flex-wrap gap-1.5">
@@ -609,16 +526,13 @@ export default function MeetingsPage() {
                           padding: '2px 8px',
                           borderRadius: 'var(--radius-sm)',
                           ...getObjectionStyle(o.severity), }}>
-                        {o.text.length > 50 ? o.text.slice(0, 50) + '...' : o.text}
-                      </span>
-                    ))}
-                  </div>
+                        {o.text.length > 50 ? o.text.slice(0, 50) + '...' : o.text}</span>
+                    ))}</div>
                 )}
 
                 {m.next_steps && (
                   <div className="mt-2" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)', opacity: 0.6, background: 'var(--accent-muted)', borderRadius: 'var(--radius-sm)', padding: '4px 8px' }}>
-                    Next: {m.next_steps}
-                  </div>
+                    Next: {m.next_steps}</div>
                 )}
 
                 {/* Meeting Outcome Toggle */}
@@ -636,24 +550,17 @@ export default function MeetingsPage() {
                     {hasOutcome ? 'Meeting Outcome' : 'Record Outcome'}
                     {hasOutcome && (
                       <span style={{ marginLeft: '4px' }}>
-                        <CheckCircle2 className="w-3.5 h-3.5" />
-                      </span>
-                    )}
-                  </button>
+                        <CheckCircle2 className="w-3.5 h-3.5" /></span>
+                    )}</button>
 
                   {isOutcomeExpanded && (
                     <div className="mt-3">
                       <MeetingOutcomeSection
                         meeting={m}
-                        onSaved={handleOutcomeSaved} />
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
+                        onSaved={handleOutcomeSaved} /></div>
+                  )}</div>
+              </div>);
+          })}</div>
       )}
-    </div>
-  );
+    </div>);
 }

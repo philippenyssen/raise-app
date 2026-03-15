@@ -25,12 +25,7 @@ interface MonteCarloData {
   runs: number;
 }
 
-interface CalibrationData {
-  enabled: boolean;
-  resolvedCount: number;
-  adjustments: Record<string, number> | null;
-  note: string;
-}
+interface CalibrationData { enabled: boolean; resolvedCount: number; adjustments: Record<string, number> | null; note: string; }
 
 interface StressTestData {
   target: number;
@@ -84,8 +79,7 @@ function tierBadgeStyle(tier: number): React.CSSProperties {
     1: { color: 'var(--text-tertiary)', background: 'var(--warning-muted)', borderColor: 'var(--warn-30)' },
     2: { color: 'var(--accent)', background: 'var(--accent-muted)', borderColor: 'var(--accent-muted)' },
     3: { color: 'var(--text-secondary)', background: 'var(--white-10)', borderColor: 'var(--border-subtle)' },
-    4: { color: 'var(--text-muted)', background: 'var(--white-10)', borderColor: 'var(--border-subtle)' },
-  };
+    4: { color: 'var(--text-muted)', background: 'var(--white-10)', borderColor: 'var(--border-subtle)' },};
   return styles[tier] ?? styles[3];
 }
 
@@ -138,11 +132,9 @@ export default function StressTestPage() {
         <div className="grid grid-cols-3 gap-4">
           {[...Array(3)].map((_, i) => (
             <div key={i} className="h-28 rounded-xl animate-pulse" style={stSurface2} />
-          ))}
-        </div>
+          ))}</div>
         <div className="h-64 rounded-xl animate-pulse" style={stSurface2} />
-      </div>
-    );
+      </div>);
   }
 
   if (!data) {
@@ -159,11 +151,8 @@ export default function StressTestPage() {
             style={{
               background: retryHover ? 'var(--surface-3)' : 'var(--surface-2)',
               color: 'var(--text-secondary)', }}>
-            Retry
-          </button>
-        </div>
-      </div>
-    );
+            Retry</button></div>
+      </div>);
   }
 
   const visibleInvestors = showAllInvestors
@@ -173,18 +162,15 @@ export default function StressTestPage() {
   const bannerStyles: Record<string, React.CSSProperties> = {
     green: { background: 'var(--success-muted)' },
     yellow: { background: 'var(--warning-muted)' },
-    red: { background: 'var(--danger-muted)' },
-  };
+    red: { background: 'var(--danger-muted)' },};
   const bannerTextStyles: Record<string, React.CSSProperties> = {
     green: { color: 'var(--text-secondary)' },
     yellow: { color: 'var(--text-tertiary)' },
-    red: { color: 'var(--text-primary)' },
-  };
+    red: { color: 'var(--text-primary)' },};
   const bannerIcon = {
     green: <CheckCircle2 className="w-5 h-5 shrink-0" style={stTextSecondary} />,
     yellow: <AlertTriangle className="w-5 h-5 shrink-0" style={stTextTertiary} />,
-    red: <ShieldAlert className="w-5 h-5 shrink-0" style={stTextPrimary} />,
-  };
+    red: <ShieldAlert className="w-5 h-5 shrink-0" style={stTextPrimary} />,};
 
   return (
     <div className="space-y-6 page-content">
@@ -195,9 +181,7 @@ export default function StressTestPage() {
         <div>
           <h1 className="page-title">Process Stress Test</h1>
           <p className="text-sm mt-1" style={stTextMuted}>
-            Probabilistic close forecast — {data.companyName} Series C
-          </p>
-        </div>
+            Probabilistic close forecast — {data.companyName} Series C</p></div>
         <button
           onClick={() => fetchData(true)}
           disabled={refreshing}
@@ -208,9 +192,7 @@ export default function StressTestPage() {
             background: refreshHover && !refreshing ? 'var(--surface-3)' : 'var(--surface-2)',
             color: 'var(--text-secondary)', }}>
           <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
-          {refreshing ? 'Refreshing...' : 'Refresh'}
-        </button>
-      </div>
+          {refreshing ? 'Refreshing...' : 'Refresh'}</button></div>
 
       {/* ================================================================ */}
       {/* HEALTH BANNER                                                    */}
@@ -221,8 +203,7 @@ export default function StressTestPage() {
         {bannerIcon[data.healthStatus]}
         <div className="flex-1">
           <div className="text-lg font-normal" style={bannerTextStyles[data.healthStatus]}>
-            {data.healthMessage}
-          </div>
+            {data.healthMessage}</div>
           <div className="flex items-center gap-4 mt-2 text-sm" style={stTextSecondary}>
             <span>Target: <strong style={stTextPrimary}>EUR {formatEuro(data.target)}</strong></span>
             {data.targetCloseDate && (
@@ -232,10 +213,7 @@ export default function StressTestPage() {
               <span>Est. close: <strong style={{ color: data.onTrack ? 'var(--success)' : 'var(--warning)' }}>
                 {data.estimatedCloseDate}
               </strong></span>
-            )}
-          </div>
-        </div>
-      </div>
+            )}</div></div></div>
 
       {/* ================================================================ */}
       {/* FORECAST STRIP + CLOSE PROBABILITY                               */}
@@ -245,15 +223,12 @@ export default function StressTestPage() {
         <div className="card rounded-xl p-5 flex flex-col items-center justify-center">
           <div className=" tracking-wider" style={labelMuted10}>Close Probability</div>
           <div className="text-5xl font-normal tabular-nums" style={{ ...probColorStyle(data.closeProbability), marginTop: '0.5rem' }}>
-            {data.closeProbability}%
-          </div>
+            {data.closeProbability}%</div>
           <div className="text-xs mt-1" style={stTextMuted}>of hitting EUR {formatEuro(data.target)}</div>
           <div className="w-full h-2 rounded-full mt-3 overflow-hidden" style={stSurface2}>
             <div
               className="h-full rounded-full transition-all duration-700"
-              style={{ ...probBgStyle(data.closeProbability), width: `${Math.min(100, data.closeProbability)}%` }} />
-          </div>
-        </div>
+              style={{ ...probBgStyle(data.closeProbability), width: `${Math.min(100, data.closeProbability)}%` }} /></div></div>
 
         {/* Best Case */}
         <ForecastCard
@@ -275,8 +250,7 @@ export default function StressTestPage() {
           sublabel="Only term sheet+"
           amount={data.forecast.worst}
           target={data.target}
-          color={data.forecast.worst >= data.target * 0.5 ? 'yellow' : 'red'} />
-      </div>
+          color={data.forecast.worst >= data.target * 0.5 ? 'yellow' : 'red'} /></div>
 
       {/* ================================================================ */}
       {/* GAP ANALYSIS (if shortfall)                                      */}
@@ -288,12 +262,9 @@ export default function StressTestPage() {
           <div className="flex items-center gap-2 mb-4">
             <Target className="w-5 h-5" style={stTextPrimary} />
             <h2 className="text-sm font-normal " style={stTextPrimary}>
-              Gap Analysis — EUR {formatEuro(data.shortfall)} Shortfall
-            </h2>
-          </div>
+              Gap Analysis — EUR {formatEuro(data.shortfall)} Shortfall</h2></div>
           <p className="text-sm mb-4" style={stTextSecondary}>
-            Top investors to accelerate to close the gap:
-          </p>
+            Top investors to accelerate to close the gap:</p>
           <div className="space-y-2">
             {data.gapInvestors.slice(0, 5).map((gap, i) => (
               <div
@@ -305,38 +276,27 @@ export default function StressTestPage() {
                 <span
                   className="w-6 h-6 rounded flex items-center justify-center text-xs font-normal shrink-0 mt-0.5"
                   style={{ background: 'var(--danger-muted)', color: 'var(--text-primary)' }}>
-                  {i + 1}
-                </span>
+                  {i + 1}</span>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <Link href={`/investors/${gap.id}`} className="text-sm font-normal transition-colors" style={stTextPrimary}>
-                      {gap.name}
-                    </Link>
+                      {gap.name}</Link>
                     <span
                       className="px-1.5 py-0.5 rounded"
                       style={{ fontSize: '9px', border: '1px solid', ...tierBadgeStyle(gap.tier) }}>
-                      T{gap.tier}
-                    </span>
-                    <span style={labelMuted10}>{STATUS_LABELS[gap.status] || gap.status}</span>
-                  </div>
+                      T{gap.tier}</span>
+                    <span style={labelMuted10}>{STATUS_LABELS[gap.status] || gap.status}</span></div>
                   <p className="text-xs mt-1" style={stTextSecondary}>{gap.intervention}</p>
                   <div className="flex items-center gap-3 mt-1.5" style={labelMuted10}>
                     <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {gap.timeCost}</span>
                     <span>Current: EUR {Math.round(gap.currentExpected)}M</span>
-                    <span style={stTextSecondary}>+EUR {Math.round(gap.impactDelta)}M if accelerated</span>
-                  </div>
-                </div>
+                    <span style={stTextSecondary}>+EUR {Math.round(gap.impactDelta)}M if accelerated</span></div></div>
                 <div className="text-right shrink-0">
                   <div className="text-lg font-normal tabular-nums flex items-center gap-1" style={stTextSecondary}>
                     <ArrowUpRight className="w-4 h-4" />
-                    {Math.round(gap.impactDelta)}M
-                  </div>
-                  <div style={labelMuted10}>potential lift</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+                    {Math.round(gap.impactDelta)}M</div>
+                  <div style={labelMuted10}>potential lift</div></div></div>
+            ))}</div></div>
       )}
 
       {/* ================================================================ */}
@@ -345,17 +305,13 @@ export default function StressTestPage() {
       <div className="card rounded-xl overflow-hidden" style={{ padding: 0 }}>
         <div className="p-5 flex items-center justify-between" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
           <h2 className="text-sm font-normal  flex items-center gap-2" style={stTextSecondary}>
-            <TrendingUp className="w-4 h-4" /> Investor Probability Table
-          </h2>
+            <TrendingUp className="w-4 h-4" /> Investor Probability Table</h2>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2" style={labelMuted10}>
               <span className="w-2 h-2 rounded-full" style={{ background: 'var(--success)' }} /> &gt;60%
               <span className="w-2 h-2 rounded-full ml-2" style={{ background: 'var(--warning)' }} /> 30-60%
-              <span className="w-2 h-2 rounded-full ml-2" style={{ background: 'var(--danger)' }} /> &lt;30%
-            </div>
-            <span className="text-xs" style={stTextMuted}>{data.investorForecasts.length} investors</span>
-          </div>
-        </div>
+              <span className="w-2 h-2 rounded-full ml-2" style={{ background: 'var(--danger)' }} /> &lt;30%</div>
+            <span className="text-xs" style={stTextMuted}>{data.investorForecasts.length} investors</span></div></div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -369,9 +325,7 @@ export default function StressTestPage() {
                 <th className="px-3 py-3 text-right">Close Prob.</th>
                 <th className="px-3 py-3 text-right">Exp. Value</th>
                 <th className="px-3 py-3">Pred. Close</th>
-                <th className="px-3 py-3">Bottleneck</th>
-              </tr>
-            </thead>
+                <th className="px-3 py-3">Bottleneck</th></tr></thead>
             <tbody>
               {visibleInvestors.map((f) => {
                 const borderLeftColor = f.closeProbability >= 60
@@ -408,60 +362,39 @@ export default function StressTestPage() {
                     <td className="px-4 py-2.5">
                       <div className="flex items-center gap-2">
                         <Link href={`/investors/${f.id}`} className="font-normal transition-colors truncate max-w-[180px]" style={stTextPrimary}>
-                          {f.name}
-                        </Link>
+                          {f.name}</Link>
                         <span
                           className="px-1 py-0.5 rounded"
                           style={{ fontSize: '9px', border: '1px solid', ...tierBadgeStyle(f.tier) }}>
-                          T{f.tier}
-                        </span>
-                      </div>
-                    </td>
+                          T{f.tier}</span></div></td>
                     <td className="px-3 py-2.5">
-                      <span className="text-xs" style={stTextSecondary}>{STATUS_LABELS[f.status] || f.status}</span>
-                    </td>
+                      <span className="text-xs" style={stTextSecondary}>{STATUS_LABELS[f.status] || f.status}</span></td>
                     <td className="px-3 py-2.5 text-center">
                       {f.enthusiasm > 0 ? (
                         <span className="text-xs font-normal tabular-nums" style={enthStyle}>{f.enthusiasm}/5</span>
                       ) : (
                         <span className="text-xs" style={stTextMuted}>--</span>
-                      )}
-                    </td>
+                      )}</td>
                     <td className="px-3 py-2.5 text-center">
                       <span className="text-xs flex items-center justify-center gap-1" style={momentumStyle}>
                         {MomentumIcon && <MomentumIcon className="w-3 h-3" />}
-                        {f.momentum}
-                      </span>
-                    </td>
+                        {f.momentum}</span></td>
                     <td className="px-3 py-2.5 text-right">
-                      <span className="text-xs tabular-nums" style={stTextSecondary}>{f.checkSizeRange || '--'}</span>
-                    </td>
+                      <span className="text-xs tabular-nums" style={stTextSecondary}>{f.checkSizeRange || '--'}</span></td>
                     <td className="px-3 py-2.5 text-right">
                       <span className="text-sm font-normal tabular-nums" style={probColorStyle(f.closeProbability)}>
-                        {f.closeProbability.toFixed(1)}%
-                      </span>
-                    </td>
+                        {f.closeProbability.toFixed(1)}%</span></td>
                     <td className="px-3 py-2.5 text-right">
                       <span className="text-sm font-normal tabular-nums" style={stTextPrimary}>
-                        {f.expectedValue > 0 ? `EUR ${f.expectedValue.toFixed(1)}M` : '--'}
-                      </span>
-                    </td>
+                        {f.expectedValue > 0 ? `EUR ${f.expectedValue.toFixed(1)}M` : '--'}</span></td>
                     <td className="px-3 py-2.5">
                       <span className="text-xs tabular-nums" style={stTextSecondary}>
-                        {f.predictedCloseDate || '--'}
-                      </span>
-                    </td>
+                        {f.predictedCloseDate || '--'}</span></td>
                     <td className="px-3 py-2.5">
                       <span className="text-xs truncate max-w-[200px] block" style={stTextMuted}>
-                        {f.bottleneck}
-                      </span>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+                        {f.bottleneck}</span></td>
+                  </tr>);
+              })}</tbody></table></div>
 
         {data.investorForecasts.length > 15 && (
           <div className="p-3 text-center" style={stBorderTop}>
@@ -475,11 +408,8 @@ export default function StressTestPage() {
                 <>Show less <ChevronUp className="w-3 h-3" /></>
               ) : (
                 <>Show all {data.investorForecasts.length} investors <ChevronDown className="w-3 h-3" /></>
-              )}
-            </button>
-          </div>
-        )}
-      </div>
+              )}</button></div>
+        )}</div>
 
       {/* ================================================================ */}
       {/* RISK SCENARIOS + CRITICAL PATH                                   */}
@@ -488,8 +418,7 @@ export default function StressTestPage() {
         {/* Risks */}
         <div className="card">
           <h2 className="text-sm font-normal  flex items-center gap-2 mb-4" style={stTextSecondary}>
-            <AlertTriangle className="w-4 h-4" /> Risk Scenarios
-          </h2>
+            <AlertTriangle className="w-4 h-4" /> Risk Scenarios</h2>
           {data.risks.length === 0 ? (
             <p className="text-sm" style={stTextMuted}>No significant risks identified.</p>
           ) : (
@@ -514,43 +443,33 @@ export default function StressTestPage() {
                       <span
                         className="px-1.5 py-0.5 rounded shrink-0 mt-0.5"
                         style={{ fontSize: '9px', border: '1px solid', ...riskBadgeStyle }}>
-                        {risk.probability}
-                      </span>
+                        {risk.probability}</span>
                       <span className="text-sm flex-1" style={stTextSecondary}>{risk.description}</span>
                       {isExpanded ? (
                         <ChevronUp className="w-4 h-4 shrink-0" style={stTextMuted} />
                       ) : (
                         <ChevronDown className="w-4 h-4 shrink-0" style={stTextMuted} />
-                      )}
-                    </button>
+                      )}</button>
                     {isExpanded && (
                       <div className="px-3 pb-3 space-y-2 pt-2" style={stBorderTop}>
                         <div>
                           <span className="" style={labelMuted10}>Impact</span>
-                          <p className="text-xs mt-0.5" style={stTextSecondary}>{risk.impact}</p>
-                        </div>
+                          <p className="text-xs mt-0.5" style={stTextSecondary}>{risk.impact}</p></div>
                         <div>
                           <span className="" style={labelMuted10}>Mitigation</span>
-                          <p className="text-xs mt-0.5" style={stTextSecondary}>{risk.mitigation}</p>
-                        </div>
-                      </div>
+                          <p className="text-xs mt-0.5" style={stTextSecondary}>{risk.mitigation}</p></div></div>
                     )}
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
+                  </div>);
+              })}</div>
+          )}</div>
 
         {/* Critical Path */}
         <div className="card">
           <h2 className="text-sm font-normal  flex items-center gap-2 mb-4" style={stTextSecondary}>
-            <Zap className="w-4 h-4" /> Critical Path
-          </h2>
+            <Zap className="w-4 h-4" /> Critical Path</h2>
           <div className="mb-4">
             <div className="text-xs mb-2" style={stTextMuted}>
-              Minimum viable set to reach EUR {formatEuro(data.target)} target:
-            </div>
+              Minimum viable set to reach EUR {formatEuro(data.target)} target:</div>
             {data.criticalPath.minimumViableSet.length === 0 ? (
               <p className="text-sm" style={stTextMuted}>No investors with sufficient probability identified.</p>
             ) : (
@@ -567,40 +486,28 @@ export default function StressTestPage() {
                       <span
                         className="w-5 h-5 rounded flex items-center justify-center font-normal shrink-0"
                         style={{ fontSize: '10px', background: 'var(--accent-muted)', color: 'var(--accent)' }}>
-                        {i + 1}
-                      </span>
+                        {i + 1}</span>
                       <span className="text-sm flex-1 truncate" style={stTextSecondary}>{name}</span>
                       {investor && (
                         <div className="flex items-center gap-2 shrink-0">
                           <span className="text-xs tabular-nums" style={probColorStyle(investor.closeProbability)}>
-                            {investor.closeProbability.toFixed(0)}%
-                          </span>
+                            {investor.closeProbability.toFixed(0)}%</span>
                           <span className="text-xs tabular-nums" style={stTextMuted}>
-                            EUR {Math.round(investor.expectedCheck)}M
-                          </span>
-                        </div>
+                            EUR {Math.round(investor.expectedCheck)}M</span></div>
                       )}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
+                    </div>);
+                })}</div>
+            )}</div>
           <div className="pt-3 flex items-center justify-between" style={stBorderTop}>
             <span className="text-xs" style={stTextMuted}>Total if all close:</span>
             <span
               className="text-lg font-normal tabular-nums"
               style={{ color: data.criticalPath.totalIfAllClose >= data.target ? 'var(--success)' : 'var(--warning)' }}>
-              EUR {formatEuro(data.criticalPath.totalIfAllClose)}
-            </span>
-          </div>
+              EUR {formatEuro(data.criticalPath.totalIfAllClose)}</span></div>
           {data.criticalPath.totalIfAllClose < data.target && (
             <div className="mt-2 text-xs rounded-lg p-2.5" style={{ color: 'var(--text-primary)', background: 'var(--danger-muted)' }}>
-              Even the minimum viable set falls short. Need to add more investors or increase check sizes.
-            </div>
-          )}
-        </div>
-      </div>
+              Even the minimum viable set falls short. Need to add more investors or increase check sizes.</div>
+          )}</div></div>
 
       {/* ================================================================ */}
       {/* SUMMARY BAR                                                      */}
@@ -611,9 +518,7 @@ export default function StressTestPage() {
           <SummaryCard label="Avg Close Prob." value={`${data.summary.avgCloseProbability}%`} />
           <SummaryCard label="Passed/Dropped" value={data.summary.totalPassed} />
           <SummaryCard label="Median Check" value={data.summary.medianExpectedCheck > 0 ? `EUR ${Math.round(data.summary.medianExpectedCheck)}M` : '--'}
-            />
-        </div>
-      </div>
+            /></div></div>
 
       {/* ================================================================ */}
       {/* MONTE CARLO + CALIBRATION                                        */}
@@ -623,11 +528,9 @@ export default function StressTestPage() {
         {data.monteCarlo && (
           <div className="card">
             <h2 className="text-sm font-normal  flex items-center gap-2 mb-4" style={stTextSecondary}>
-              <BarChart3 className="w-4 h-4" /> Monte Carlo Simulation
-            </h2>
+              <BarChart3 className="w-4 h-4" /> Monte Carlo Simulation</h2>
             <p className="text-xs mb-4" style={stTextMuted}>
-              {data.monteCarlo.runs.toLocaleString()} simulation runs of probabilistic close outcomes
-            </p>
+              {data.monteCarlo.runs.toLocaleString()} simulation runs of probabilistic close outcomes</p>
 
             {/* P10 / P50 / P90 bars */}
             <div className="space-y-3 mb-4">
@@ -642,9 +545,7 @@ export default function StressTestPage() {
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-xs" style={stTextMuted}>{label}</span>
                       <span className="text-sm font-normal tabular-nums" style={stTextSecondary}>
-                        EUR {formatEuro(value)}
-                      </span>
-                    </div>
+                        EUR {formatEuro(value)}</span></div>
                     <div className="relative h-3 rounded-full overflow-hidden" style={stSurface2}>
                       <div
                         className="h-full rounded-full transition-all duration-700"
@@ -653,29 +554,22 @@ export default function StressTestPage() {
                       <div
                         className="absolute top-0 bottom-0"
                         style={{ left: '100%', width: '2px', background: 'var(--surface-muted)' }}
-                        title={`Target: EUR ${formatEuro(data.target)}`} />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+                        title={`Target: EUR ${formatEuro(data.target)}`} /></div>
+                  </div>);
+              })}</div>
 
             {/* Probability of reaching target */}
             <div className="pt-3 flex items-center justify-between" style={stBorderTop}>
               <span className="text-xs" style={stTextMuted}>Probability of reaching EUR {formatEuro(data.target)}</span>
               <span className="text-lg font-normal tabular-nums" style={probColorStyle(data.monteCarlo.probOfTarget)}>
-                {data.monteCarlo.probOfTarget}%
-              </span>
-            </div>
-          </div>
+                {data.monteCarlo.probOfTarget}%</span></div></div>
         )}
 
         {/* Calibration Status */}
         {data.calibration && (
           <div className="card">
             <h2 className="text-sm font-normal  flex items-center gap-2 mb-4" style={stTextSecondary}>
-              <Target className="w-4 h-4" /> Weight Calibration
-            </h2>
+              <Target className="w-4 h-4" /> Weight Calibration</h2>
 
             <div className="flex items-center gap-3 mb-4">
               <div
@@ -685,17 +579,13 @@ export default function StressTestPage() {
                   <CheckCircle2 className="w-4 h-4" style={stTextSecondary} />
                 ) : (
                   <AlertTriangle className="w-4 h-4" style={stTextMuted} />
-                )}
-              </div>
+                )}</div>
               <div>
                 <div className="text-sm font-normal" style={{ color: data.calibration.enabled ? 'var(--success)' : 'var(--text-secondary)' }}>
-                  {data.calibration.enabled ? 'Auto-Calibrated' : 'Hardcoded Weights'}
-                </div>
+                  {data.calibration.enabled ? 'Auto-Calibrated' : 'Hardcoded Weights'}</div>
                 <div className="text-xs" style={stTextMuted}>
-                  {data.calibration.resolvedCount} resolved prediction{data.calibration.resolvedCount !== 1 ? 's' : ''}
-                </div>
-              </div>
-            </div>
+                  {data.calibration.resolvedCount} resolved prediction{data.calibration.resolvedCount !== 1 ? 's' : ''}</div>
+              </div></div>
 
             <p className="text-xs mb-4" style={stTextMuted}>{data.calibration.note}</p>
 
@@ -710,23 +600,15 @@ export default function StressTestPage() {
                       <span
                         className="font-mono tabular-nums"
                         style={{ color: (adj as number) > 0 ? 'var(--success)' : (adj as number) < 0 ? 'var(--danger)' : 'var(--text-muted)' }}>
-                        {(adj as number) > 0 ? '+' : ''}{((adj as number) * 100).toFixed(1)}%
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
+                        {(adj as number) > 0 ? '+' : ''}{((adj as number) * 100).toFixed(1)}%</span></div>
+                  ))}</div></div>
+            )}</div>
+        )}</div>
 
       {/* Footer */}
       <div className="text-center py-2" style={labelMuted10}>
-        Generated {new Date(data.generatedAt).toLocaleString()} — Data-driven from live investor pipeline
-      </div>
-    </div>
-  );
+        Generated {new Date(data.generatedAt).toLocaleString()} — Data-driven from live investor pipeline</div>
+    </div>);
 }
 
 // ---------------------------------------------------------------------------
@@ -744,8 +626,7 @@ function ForecastCard({ label, sublabel, amount, target, color }: {
   const colorMap: Record<string, { border: string; bg: string; value: string }> = {
     green: { border: 'var(--accent-25)', bg: 'var(--success-muted)', value: 'var(--success)' },
     yellow: { border: 'var(--warn-25)', bg: 'var(--warning-muted)', value: 'var(--warning)' },
-    red: { border: 'var(--accent-8)', bg: 'var(--danger-muted)', value: 'var(--danger)' },
-  };
+    red: { border: 'var(--accent-8)', bg: 'var(--danger-muted)', value: 'var(--danger)' },};
   const c = colorMap[color];
 
   return (
@@ -755,18 +636,14 @@ function ForecastCard({ label, sublabel, amount, target, color }: {
       <div className=" tracking-wider" style={labelMuted10}>{label}</div>
       <div className="text-xs mb-2" style={stTextMuted}>{sublabel}</div>
       <div className="text-3xl font-normal tabular-nums" style={{ color: c.value }}>
-        EUR {formatEuro(amount)}
-      </div>
+        EUR {formatEuro(amount)}</div>
       <div className="flex items-center gap-2 mt-2">
         <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={stSurface2}>
           <div
             className="h-full rounded-full transition-all duration-500"
-            style={{ ...probBgStyle(pct), width: `${Math.min(100, pct)}%` }} />
-        </div>
-        <span className="text-xs tabular-nums" style={stTextMuted}>{pct}%</span>
-      </div>
-    </div>
-  );
+            style={{ ...probBgStyle(pct), width: `${Math.min(100, pct)}%` }} /></div>
+        <span className="text-xs tabular-nums" style={stTextMuted}>{pct}%</span></div>
+    </div>);
 }
 
 function SummaryCard({ label, value }: { label: string; value: string | number }) {
@@ -774,6 +651,5 @@ function SummaryCard({ label, value }: { label: string; value: string | number }
     <div className="text-center">
       <div className=" tracking-wider" style={labelMuted10}>{label}</div>
       <div className="text-xl font-normal tabular-nums mt-1" style={stTextSecondary}>{value}</div>
-    </div>
-  );
+    </div>);
 }

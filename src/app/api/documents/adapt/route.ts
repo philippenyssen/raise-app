@@ -13,9 +13,7 @@ export interface AdaptationSuggestion {
 }
 
 export async function POST(req: NextRequest) {
-  if (!checkRateLimit('documents-adapt')) {
-    return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
-  }
+  if (!checkRateLimit('documents-adapt')) { return NextResponse.json({ error: 'Too many requests' }, { status: 429 }); }
   let body: Record<string, unknown>;
   try {
     body = await req.json();
@@ -30,8 +28,7 @@ export async function POST(req: NextRequest) {
     if (!document_id || !investor_type) {
       return NextResponse.json(
         { error: 'document_id and investor_type are required' },
-        { status: 400 },
-      );
+        { status: 400 },);
     }
 
     // Validate investor type
@@ -39,15 +36,12 @@ export async function POST(req: NextRequest) {
     if (!validTypes.includes(investor_type as InvestorType)) {
       return NextResponse.json(
         { error: `Invalid investor_type. Must be one of: ${validTypes.join(', ')}` },
-        { status: 400 },
-      );
+        { status: 400 },);
     }
 
     // Load document
     const document = await getDocument(document_id);
-    if (!document) {
-      return NextResponse.json({ error: 'Document not found' }, { status: 404 });
-    }
+    if (!document) { return NextResponse.json({ error: 'Document not found' }, { status: 404 }); }
 
     // Get narrative profile
     const narrative = getNarrativeProfile(investor_type as InvestorType);
@@ -59,8 +53,7 @@ export async function POST(req: NextRequest) {
       sovereign: 'Sovereign Wealth Fund',
       strategic: 'Strategic Investor',
       debt: 'Debt Provider',
-      family_office: 'Family Office',
-    };
+      family_office: 'Family Office',};
 
     // Call Claude to analyze the document against the narrative profile
     const response = await getAIClient().messages.create({
@@ -93,8 +86,7 @@ Analyze this document and return JSON (no markdown):
       "suggestion": "Specific, actionable suggestion. Say exactly what to change and why.",
       "priority": "critical|high|medium|low",
       "type": "strengthen|add|remove|reframe"
-    }
-  ],
+    }],
   "overall_assessment": "2-3 sentence overall assessment of how well this document serves ${typeLabels[investor_type]} investors",
   "missing_sections": ["Sections that should be added for this investor type but are currently absent"],
   "strongest_sections": ["Sections that already work well for this investor type"]
@@ -111,8 +103,7 @@ Rules:
 - Type "remove" = content actively hurts with this investor type.
 - Type "reframe" = content is there but positioned wrong.
 - Return 5-10 suggestions, ranked by priority.`,
-      }],
-    });
+      }],});
 
     const text = response.content[0].type === 'text' ? response.content[0].text : '{}';
     let result: {
@@ -124,8 +115,7 @@ Rules:
       suggestions: [],
       overall_assessment: 'Could not analyze document.',
       missing_sections: [],
-      strongest_sections: [],
-    };
+      strongest_sections: [],};
 
     try {
       result = JSON.parse(text);
@@ -133,8 +123,7 @@ Rules:
       const jsonMatch = text.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         try { result = JSON.parse(jsonMatch[0]); } catch { /* use default */ }
-      }
-    }
+      }}
 
     return NextResponse.json({
       document_id,
@@ -144,16 +133,12 @@ Rules:
       narrative_profile: {
         emphasis: narrative.emphasis,
         key_metrics: narrative.keyMetrics,
-        tone_guidance: narrative.toneGuidance,
-      },
+        tone_guidance: narrative.toneGuidance,},
       ...result,
-      generated_at: new Date().toISOString(),
-    });
+      generated_at: new Date().toISOString(),});
   } catch (err) {
     console.error('Document adaptation error:', err);
     return NextResponse.json(
       { error: 'Failed to generate adaptation suggestions' },
-      { status: 500 },
-    );
-  }
-}
+      { status: 500 },);
+  }}

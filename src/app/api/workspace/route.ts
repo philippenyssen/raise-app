@@ -74,26 +74,19 @@ function detectQueryIntent(
     // Match full name or significant portion (3+ chars)
     if (nameLower.length >= 3 && lastUserMsg.includes(nameLower)) {
       return { type: 'investor_specific', investorName: inv.name, investorId: inv.id };
-    }
-  }
+    }}
 
   // Objection/pitch queries
   const objectionKeywords = ['objection', 'pushback', 'concern', 'question they', 'they asked', 'respond to', 'handle', 'counter'];
-  if (objectionKeywords.some(kw => lastUserMsg.includes(kw))) {
-    return { type: 'objection' };
-  }
+  if (objectionKeywords.some(kw => lastUserMsg.includes(kw))) { return { type: 'objection' }; }
 
   // Strategy/overview queries
   const strategyKeywords = ['strategy', 'next steps', 'what should', 'how are we', 'pipeline', 'progress', 'recommend', 'priority', 'priorities', 'focus', 'momentum', 'trajectory', 'health', 'where do we stand'];
-  if (strategyKeywords.some(kw => lastUserMsg.includes(kw))) {
-    return { type: 'strategy' };
-  }
+  if (strategyKeywords.some(kw => lastUserMsg.includes(kw))) { return { type: 'strategy' }; }
 
   // Document queries
   const docKeywords = ['document', 'rewrite', 'improve', 'draft', 'edit', 'memo', 'pitch', 'deck', 'strengthen', 'section'];
-  if (docKeywords.some(kw => lastUserMsg.includes(kw))) {
-    return { type: 'document' };
-  }
+  if (docKeywords.some(kw => lastUserMsg.includes(kw))) { return { type: 'document' }; }
 
   return { type: 'general' };
 }
@@ -129,8 +122,7 @@ async function buildQueryFocus(
 
       // Check compound signals involving this investor
       const relevantSignals = ctx.compoundSignals.filter(cs =>
-        cs.signal.toLowerCase().includes(inv.name.toLowerCase())
-      );
+        cs.signal.toLowerCase().includes(inv.name.toLowerCase()));
       if (relevantSignals.length > 0) {
         lines.push(`- COMPOUND SIGNALS: ${relevantSignals.map(s => s.signal).join('; ')}`);
       }
@@ -157,8 +149,7 @@ async function buildQueryFocus(
 
       // FOMO dynamics affecting this investor (cycle 28)
       const fomoForInvestor = ctx.fomoDynamics.filter(f =>
-        f.affectedInvestors.some(a => a.name === inv.name)
-      );
+        f.affectedInvestors.some(a => a.name === inv.name));
       if (fomoForInvestor.length > 0) {
         lines.push(`- COMPETITIVE PRESSURE: ${fomoForInvestor.map(f => `${f.advancingInvestor} at ${f.advancingTo}`).join(', ')} — use this as leverage`);
       }
@@ -168,8 +159,7 @@ async function buildQueryFocus(
         const lp = ctx.winLossPatterns.loserProfile;
         if (inv.enthusiasm <= lp.avgEnthusiasm && inv.meetingCount >= lp.avgMeetings) {
           lines.push(`- WARNING: Matches historical loser profile (enthusiasm ${inv.enthusiasm}/5 ≤ ${lp.avgEnthusiasm}, ${inv.meetingCount} meetings ≥ ${lp.avgMeetings}) — probe for real conviction`);
-        }
-      }
+        }}
 
       // Score reversal for this investor (cycle 28)
       const reversal = ctx.scoreReversals.find(r => r.investorId === inv.id);
@@ -203,8 +193,7 @@ async function buildQueryFocus(
           getMeetings(inv.id),
           getInvestorPortfolio(inv.id),
           getIntelligenceBriefs(undefined, inv.id),
-          getRaiseConfig(),
-        ]);
+          getRaiseConfig(),]);
         if (investorData) {
           let targetEquityM = 250;
           if (raiseConfig) {
@@ -215,8 +204,7 @@ async function buildQueryFocus(
               const unit = (eqMatch[2] || '').toLowerCase();
               if (unit === 'b' || unit === 'bn' || unit === 'billion') val *= 1000;
               targetEquityM = val;
-            }
-          }
+            }}
           const velocityData = velocity ? { acceleration: velocity.acceleration, recentMeetings: velocity.recentMeetings, previousMeetings: velocity.previousMeetings, daysSinceLastMeeting: velocity.daysSinceLastMeeting } : null;
           const score = computeInvestorScore(investorData, investorMeetings, investorPortfolio, investorBriefs, { targetEquityM, targetCloseDate: raiseConfig?.target_close || null }, null, null, velocityData);
           const strong = score.dimensions.filter(d => d.signal === 'strong');
@@ -236,8 +224,7 @@ async function buildQueryFocus(
             score.overall, score.momentum, inv.enthusiasm,
             velocity?.acceleration || null, fomoForInv?.fomoIntensity || null,
             inv.daysInCurrentStage, inv.stageHealth,
-            reversalData?.delta ?? null,
-          );
+            reversalData?.delta ?? null,);
           lines.push(`- DEAL HEAT: ${heat.label.toUpperCase()} (${heat.heat}/100) — ${heat.drivers.join(', ')}`);
         }
       } catch { /* non-blocking — score computation failure doesn't break workspace */ }
@@ -259,8 +246,7 @@ async function buildQueryFocus(
       lines.push(`- RAISE FORECAST: predicted close ${ctx.raiseForecast.expectedCloseDate} (${ctx.raiseForecast.confidence} confidence)`);
       if (ctx.raiseForecast.criticalPath.length > 0) {
         lines.push(`- CRITICAL PATH: ${ctx.raiseForecast.criticalPath.join(', ')}`);
-      }
-    }
+      }}
     lines.push(`- Pipeline health, temporal trends, raise forecast, compound signals, and strategic recommendations are most relevant.`);
     lines.push(`- Be specific and decisive. Rank priorities by impact. Don't hedge.`);
   } else if (intent.type === 'objection') {
@@ -296,31 +282,27 @@ function buildProactiveIntelligence(ctx: FullContext): string {
         urgency: 10,
         text: `${inv.name} (Tier 1) has been stalled at "${inv.status}" for ${inv.daysInCurrentStage} days — needs immediate intervention or explicit deprioritization decision`,
       });
-    }
-  }
+    }}
 
   // 2. Compound signals requiring action
   for (const cs of ctx.compoundSignals) {
     if (cs.confidence === 'very_high') {
       items.push({ urgency: 9, text: cs.recommendation });
-    }
-  }
+    }}
 
   // 3. Temporal alerts
   if (ctx.temporalTrends) {
     for (const trend of ctx.temporalTrends.trends) {
       if (trend.alert) {
         items.push({ urgency: 7, text: trend.alert });
-      }
-    }
+      }}
   }
 
   // 4. Overdue follow-ups
   if (ctx.pipelineHealth.overdueFollowups > 3) {
     items.push({
       urgency: 8,
-      text: `${ctx.pipelineHealth.overdueFollowups} overdue follow-ups — each day of delay erodes close probability`,
-    });
+      text: `${ctx.pipelineHealth.overdueFollowups} overdue follow-ups — each day of delay erodes close probability`,});
   }
 
   // 5. Emerging objections without responses
@@ -335,8 +317,7 @@ function buildProactiveIntelligence(ctx: FullContext): string {
   if (ctx.pipelineHealth.totalActive < 5) {
     items.push({
       urgency: 7,
-      text: `Only ${ctx.pipelineHealth.totalActive} active investors — pipeline needs diversification`,
-    });
+      text: `Only ${ctx.pipelineHealth.totalActive} active investors — pipeline needs diversification`,});
   }
 
   // 7. Narrative weakness affecting upcoming contacts
@@ -347,24 +328,21 @@ function buildProactiveIntelligence(ctx: FullContext): string {
         urgency: 8,
         text: `"${nw.topic}" weakness — ${affected.map(i => i.name).join(', ')} have pending follow-ups. Address BEFORE next contact.`,
       });
-    }
-  }
+    }}
 
   // 8. Raise forecast risk (cycle 18)
   if (ctx.raiseForecast) {
     if (ctx.raiseForecast.confidence === 'low') {
       items.push({
         urgency: 8,
-        text: `Raise forecast confidence is LOW — insufficient advanced-stage investors to predict a close date reliably`,
-      });
+        text: `Raise forecast confidence is LOW — insufficient advanced-stage investors to predict a close date reliably`,});
     }
     if (ctx.raiseForecast.riskFactors.length >= 3) {
       items.push({
         urgency: 7,
         text: `Raise forecast has ${ctx.raiseForecast.riskFactors.length} risk factors: ${ctx.raiseForecast.riskFactors.slice(0, 2).join('; ')}`,
       });
-    }
-  }
+    }}
 
   if (items.length === 0) return '';
 
@@ -394,11 +372,7 @@ function buildOtherDocsContext(docs: { id: string; title: string; type: string; 
 
 export async function POST(req: NextRequest) {
   let body: Record<string, unknown>;
-  try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
-  }
+  try { body = await req.json(); } catch { return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 }); }
   const messages = body.messages as { role: string; content: string }[];
   const documentId = body.documentId as string | null;
   const documentContent = body.documentContent as string | undefined;
@@ -525,8 +499,7 @@ INSTRUCTIONS:
       messages: messages.map((m: { role: string; content: string }) => ({
         role: m.role as 'user' | 'assistant',
         content: m.content,
-      })),
-    });
+      })),});
 
     const encoder = new TextEncoder();
 
@@ -536,8 +509,7 @@ INSTRUCTIONS:
           for await (const event of stream) {
             if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
               controller.enqueue(encoder.encode(`data: ${JSON.stringify({ text: event.delta.text })}\n\n`));
-            }
-          }
+            }}
           // Send done signal
           controller.enqueue(encoder.encode(`data: [DONE]\n\n`));
           controller.close();
@@ -545,8 +517,7 @@ INSTRUCTIONS:
           controller.enqueue(encoder.encode(`data: ${JSON.stringify({ error: err instanceof Error ? err.message : 'Stream error' })}\n\n`));
           controller.close();
         }
-      },
-    });
+      },});
 
     return new Response(readable, {
       headers: {
@@ -554,8 +525,7 @@ INSTRUCTIONS:
         'Cache-Control': 'no-cache',
         Connection: 'keep-alive',
         'X-Context-Hash': contextHash,
-      },
-    });
+      },});
   } catch (err) {
     console.error('Workspace AI error:', err);
     const msg = err instanceof Error ? err.message : 'AI request failed';
@@ -570,7 +540,5 @@ INSTRUCTIONS:
     }
     return new Response(
       JSON.stringify({ error: userMsg }),
-      { status, headers: { 'Content-Type': 'application/json', 'X-Context-Hash': contextHash } }
-    );
-  }
-}
+      { status, headers: { 'Content-Type': 'application/json', 'X-Context-Hash': contextHash } });
+  }}

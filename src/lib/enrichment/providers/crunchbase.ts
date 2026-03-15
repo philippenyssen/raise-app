@@ -35,8 +35,7 @@ export const crunchbaseProvider: EnrichmentProvider = {
       const searchUrl = `${CB_BASE}/autocompletes?query=${encodeURIComponent(investorName)}&collection_ids=organizations&limit=5&user_key=${apiKey}`;
       const res = await fetch(searchUrl, {
         headers: { 'Accept': 'application/json' },
-        signal: AbortSignal.timeout(15000),
-      });
+        signal: AbortSignal.timeout(15000),});
 
       if (res.status === 401 || res.status === 403) {
         return { source_id: 'crunchbase', success: false, fields, error: 'Invalid API key', fetched_at: now };
@@ -46,16 +45,12 @@ export const crunchbaseProvider: EnrichmentProvider = {
         return { source_id: 'crunchbase', success: false, fields, error: 'Rate limited', fetched_at: now, rate_limited: true };
       }
 
-      if (!res.ok) {
-        return { source_id: 'crunchbase', success: false, fields, error: `HTTP ${res.status}`, fetched_at: now };
-      }
+      if (!res.ok) { return { source_id: 'crunchbase', success: false, fields, error: `HTTP ${res.status}`, fetched_at: now }; }
 
       const data = await res.json();
       const entities = data?.entities || [];
 
-      if (entities.length === 0) {
-        return { source_id: 'crunchbase', success: true, fields, fetched_at: now };
-      }
+      if (entities.length === 0) { return { source_id: 'crunchbase', success: true, fields, fetched_at: now }; }
 
       const bestMatch = entities[0];
       const permalink = bestMatch.identifier?.permalink;
@@ -66,8 +61,7 @@ export const crunchbaseProvider: EnrichmentProvider = {
 
       const orgRes = await fetch(orgUrl, {
         headers: { 'Accept': 'application/json' },
-        signal: AbortSignal.timeout(15000),
-      });
+        signal: AbortSignal.timeout(15000),});
 
       if (orgRes.ok) {
         const orgData = await orgRes.json();
@@ -81,8 +75,7 @@ export const crunchbaseProvider: EnrichmentProvider = {
             field_value: props.short_description,
             category: 'identity',
             confidence: 0.95,
-            source_url: cbUrl,
-          });
+            source_url: cbUrl,});
         }
 
         if (props.founded_on) {
@@ -91,8 +84,7 @@ export const crunchbaseProvider: EnrichmentProvider = {
             field_value: props.founded_on,
             category: 'identity',
             confidence: 0.95,
-            source_url: cbUrl,
-          });
+            source_url: cbUrl,});
         }
 
         if (props.website_url) {
@@ -101,8 +93,7 @@ export const crunchbaseProvider: EnrichmentProvider = {
             field_value: props.website_url,
             category: 'contact',
             confidence: 0.95,
-            source_url: cbUrl,
-          });
+            source_url: cbUrl,});
         }
 
         if (props.linkedin) {
@@ -111,8 +102,7 @@ export const crunchbaseProvider: EnrichmentProvider = {
             field_value: typeof props.linkedin === 'string' ? props.linkedin : props.linkedin.value || '',
             category: 'contact',
             confidence: 0.95,
-            source_url: cbUrl,
-          });
+            source_url: cbUrl,});
         }
 
         // Investor type
@@ -123,8 +113,7 @@ export const crunchbaseProvider: EnrichmentProvider = {
             field_value: types.join(', '),
             category: 'strategy',
             confidence: 0.9,
-            source_url: cbUrl,
-          });
+            source_url: cbUrl,});
         }
 
         // Investment stats
@@ -134,8 +123,7 @@ export const crunchbaseProvider: EnrichmentProvider = {
             field_value: String(props.num_investments_total),
             category: 'portfolio',
             confidence: 0.95,
-            source_url: cbUrl,
-          });
+            source_url: cbUrl,});
         }
 
         if (props.num_exits) {
@@ -144,8 +132,7 @@ export const crunchbaseProvider: EnrichmentProvider = {
             field_value: String(props.num_exits),
             category: 'portfolio',
             confidence: 0.95,
-            source_url: cbUrl,
-          });
+            source_url: cbUrl,});
         }
 
         if (props.num_funds) {
@@ -154,8 +141,7 @@ export const crunchbaseProvider: EnrichmentProvider = {
             field_value: String(props.num_funds),
             category: 'financials',
             confidence: 0.95,
-            source_url: cbUrl,
-          });
+            source_url: cbUrl,});
         }
 
         // Categories / sectors
@@ -168,8 +154,7 @@ export const crunchbaseProvider: EnrichmentProvider = {
             field_value: cats.filter(Boolean).join(', '),
             category: 'strategy',
             confidence: 0.85,
-            source_url: cbUrl,
-          });
+            source_url: cbUrl,});
         }
 
         // Location
@@ -182,8 +167,7 @@ export const crunchbaseProvider: EnrichmentProvider = {
             field_value: locs.filter(Boolean).join(', '),
             category: 'contact',
             confidence: 0.9,
-            source_url: cbUrl,
-          });
+            source_url: cbUrl,});
         }
 
         // Employee count
@@ -193,8 +177,7 @@ export const crunchbaseProvider: EnrichmentProvider = {
             field_value: props.num_employees_enum,
             category: 'identity',
             confidence: 0.9,
-            source_url: cbUrl,
-          });
+            source_url: cbUrl,});
         }
 
         // Recent investments from cards
@@ -212,10 +195,8 @@ export const crunchbaseProvider: EnrichmentProvider = {
               }),
               category: 'portfolio',
               confidence: 0.9,
-              source_url: cbUrl,
-            });
-          }
-        }
+              source_url: cbUrl,});
+          }}
       }
 
       return { source_id: 'crunchbase', success: true, fields, fetched_at: now };
@@ -225,8 +206,6 @@ export const crunchbaseProvider: EnrichmentProvider = {
         success: false,
         fields,
         error: error instanceof Error ? error.message : 'Unknown error',
-        fetched_at: now,
-      };
+        fetched_at: now,};
     }
-  },
-};
+  },};

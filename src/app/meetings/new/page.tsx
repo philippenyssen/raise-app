@@ -12,8 +12,7 @@ export default function NewMeetingPage() {
   return (
     <Suspense fallback={<div className="space-y-6"><div className="h-8 w-48 skeleton animate-pulse" style={{ borderRadius: 'var(--radius-md)' }} /></div>}>
       <NewMeetingContent />
-    </Suspense>
-  );
+    </Suspense>);
 }
 
 function NewMeetingContent() {
@@ -30,8 +29,7 @@ function NewMeetingContent() {
     type: 'management_presentation',
     attendees: '',
     duration_minutes: 60,
-    raw_notes: '',
-  });
+    raw_notes: '',});
   const [viewAllHovered, setViewAllHovered] = useState(false);
   const [logAnotherHovered, setLogAnotherHovered] = useState(false);
 
@@ -54,8 +52,7 @@ function NewMeetingContent() {
         ...form,
         investor_name: selectedInvestor?.name || 'Unknown',
         analyze: true,
-      }),
-    });
+      }),});
 
     const data = await res.json();
     setResult(data);
@@ -74,8 +71,7 @@ function NewMeetingContent() {
       <div>
         <h1 className="page-title">Log Meeting Debrief</h1>
         <p className="text-sm mt-1" style={stTextMuted}>
-          Paste your raw notes. AI extracts objections, buying signals, and next steps, then auto-generates follow-up tasks.
-        </p>
+          Paste your raw notes. AI extracts objections, buying signals, and next steps, then auto-generates follow-up tasks.</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -91,9 +87,7 @@ function NewMeetingContent() {
               <option value="">Select investor...</option>
               {investors.map(inv => (
                 <option key={inv.id} value={inv.id}>{inv.name} (T{inv.tier})</option>
-              ))}
-            </select>
-          </div>
+              ))}</select></div>
           <div>
             <label className="text-xs block mb-1" style={stTextMuted}>Date</label>
             <input
@@ -101,8 +95,7 @@ function NewMeetingContent() {
               onChange={e => setForm(f => ({ ...f, date: e.target.value }))}
               className="w-full rounded-lg px-3 py-2 text-sm"
               style={{ background: 'var(--surface-1)', border: '1px solid var(--border-default)', color: 'var(--text-secondary)' }}
-                />
-          </div>
+                /></div>
           <div>
             <label className="text-xs block mb-1" style={stTextMuted}>Meeting Type</label>
             <select
@@ -116,9 +109,7 @@ function NewMeetingContent() {
               <option value="site_visit">Site Visit</option>
               <option value="dd_session">DD Session</option>
               <option value="negotiation">Negotiation</option>
-              <option value="social">Social / Informal</option>
-            </select>
-          </div>
+              <option value="social">Social / Informal</option></select></div>
           <div>
             <label className="text-xs block mb-1" style={stTextMuted}>Duration (min)</label>
             <input
@@ -126,9 +117,7 @@ function NewMeetingContent() {
               onChange={e => setForm(f => ({ ...f, duration_minutes: Number(e.target.value) }))}
               className="w-full rounded-lg px-3 py-2 text-sm"
               style={{ background: 'var(--surface-1)', border: '1px solid var(--border-default)', color: 'var(--text-secondary)' }}
-                />
-          </div>
-        </div>
+                /></div></div>
 
         <div>
           <label className="text-xs block mb-1" style={stTextMuted}>Attendees</label>
@@ -138,8 +127,7 @@ function NewMeetingContent() {
             placeholder="e.g., Katherine Boyle (a16z), John Smith (Associate)"
             className="w-full rounded-lg px-3 py-2 text-sm"
             style={{ background: 'var(--surface-1)', border: '1px solid var(--border-default)', color: 'var(--text-secondary)' }}
-              />
-        </div>
+              /></div>
 
         {/* Investor Quick Profile */}
         {selectedInvestor && (
@@ -152,8 +140,7 @@ function NewMeetingContent() {
               <div><span style={stTextMuted}>Speed:</span> <span style={stTextSecondary}>{selectedInvestor.speed}</span></div>
               <div><span style={stTextMuted}>Warm Path:</span> <span style={stTextSecondary}>{selectedInvestor.warm_path || '—'}</span></div>
               <div><span style={stTextMuted}>IC Process:</span> <span style={stTextSecondary}>{selectedInvestor.ic_process || '—'}</span></div>
-            </div>
-          </div>
+            </div></div>
         )}
 
         <div>
@@ -173,17 +160,14 @@ function NewMeetingContent() {
 - Next steps: send model + schedule follow-up with their space analyst
 - Overall vibe: cautiously interested, maybe 3.5/5`}
             className="w-full rounded-lg px-4 py-3 text-sm font-mono leading-relaxed focus:outline-none"
-            style={{ background: 'var(--surface-1)', color: 'var(--text-secondary)' }} />
-        </div>
+            style={{ background: 'var(--surface-1)', color: 'var(--text-secondary)' }} /></div>
 
         <button
           type="submit"
           disabled={loading || !form.investor_id || !form.raw_notes}
           className="px-6 py-3 rounded-lg text-sm font-normal transition-colors disabled:opacity-50"
           style={{ background: 'var(--accent)', color: 'var(--surface-0)' }}>
-          {loading ? 'Analyzing notes...' : 'Log & Analyze Debrief'}
-        </button>
-      </form>
+          {loading ? 'Analyzing notes...' : 'Log & Analyze Debrief'}</button></form>
 
       {/* AI Analysis Result */}
       {result && (
@@ -192,8 +176,7 @@ function NewMeetingContent() {
 
           {!!(result as Record<string, unknown>).ai_analysis && (
             <div className="rounded-lg p-4" style={{ background: 'var(--accent-muted)', border: '1px solid var(--accent)' }}>
-              <p className="text-sm" style={stAccent}>{String((result as Record<string, unknown>).ai_analysis)}</p>
-            </div>
+              <p className="text-sm" style={stAccent}>{String((result as Record<string, unknown>).ai_analysis)}</p></div>
           )}
 
           <div className="grid grid-cols-2 gap-4">
@@ -204,16 +187,13 @@ function NewMeetingContent() {
                   {[1,2,3,4,5].map(n => (
                     <div key={n} className="w-4 h-4 rounded-full" style={{ background: n <= ((result as Record<string, number>).enthusiasm_score || 0) ? 'var(--accent)' : 'var(--surface-2)' }}
                       />
-                  ))}
-                </div>
+                  ))}</div>
                 <span className="text-sm" style={stTextTertiary}>{(result as Record<string, number>).enthusiasm_score}/5</span>
-              </div>
-            </div>
+              </div></div>
             <div>
               <h3 className="text-xs font-normal mb-2" style={stTextTertiary}>Suggested status</h3>
               <span className="text-sm font-normal" style={stTextSecondary}>{String((result as Record<string, unknown>).status_after || '—')}</span>
-            </div>
-          </div>
+            </div></div>
 
           {!!result.questions_asked && (
             <div>
@@ -222,11 +202,8 @@ function NewMeetingContent() {
                 {((() => { try { return JSON.parse(String(result.questions_asked) || '[]'); } catch { return []; } })()).map((q: { text: string; topic: string }, i: number) => (
                   <div key={i} className="flex gap-2 mb-1">
                     <span className="text-xs px-1.5 py-0.5 rounded shrink-0" style={{ background: 'var(--surface-2)', color: 'var(--text-muted)' }}>{q.topic}</span>
-                    <span>{q.text}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+                    <span>{q.text}</span></div>
+                ))}</div></div>
           )}
 
           {!!result.objections && (
@@ -243,11 +220,8 @@ function NewMeetingContent() {
                         o.severity === 'significant' ? 'var(--warning)' :
                         'var(--text-muted)',
                     }}>{o.severity}</span>
-                    <span>{o.text}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+                    <span>{o.text}</span></div>
+                ))}</div></div>
           )}
 
           <div className="flex gap-3">
@@ -258,8 +232,7 @@ function NewMeetingContent() {
                 style={{ background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid var(--accent-10)' }}
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--accent-8)'; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--accent-muted)'; }}>
-                View {selectedInvestor?.name || 'Investor'}
-              </button>
+                View {selectedInvestor?.name || 'Investor'}</button>
             )}
             <button
               onClick={() => router.push('/meetings')}
@@ -269,8 +242,7 @@ function NewMeetingContent() {
                 color: 'var(--text-primary)', }}
               onMouseEnter={() => setViewAllHovered(true)}
               onMouseLeave={() => setViewAllHovered(false)}>
-              All Meetings
-            </button>
+              All Meetings</button>
             <button
               onClick={() => { setResult(null); setForm(f => ({ ...f, raw_notes: '', investor_id: '', attendees: '' })); }}
               className="px-4 py-2 rounded-lg text-sm transition-colors"
@@ -279,10 +251,7 @@ function NewMeetingContent() {
                 color: 'var(--text-primary)', }}
               onMouseEnter={() => setLogAnotherHovered(true)}
               onMouseLeave={() => setLogAnotherHovered(false)}>
-              Log Another
-            </button>
-          </div>
-        </div>
+              Log Another</button></div></div>
       )}
 
       {/* Post-Meeting Actions */}
@@ -301,6 +270,5 @@ function NewMeetingContent() {
             outcome: string; conviction_delta: number; created_at: string; completed_at: string | null;
           }[]} />
       )}
-    </div>
-  );
+    </div>);
 }

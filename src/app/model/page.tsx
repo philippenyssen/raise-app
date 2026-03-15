@@ -64,8 +64,7 @@ const DEFAULT_SHEETS = [
       'A27': { v: 'Equity Raise (€M)' }, 'B27': { v: 100, t: 'n' },
       'A28': { v: 'Post-Money (€M)', bold: true }, 'B28': { v: 600, f: '=B26+B27', t: 'n' },
       'A29': { v: 'Ownership %' }, 'B29': { v: 0.167, f: '=B27/B28', t: 'n', fmt: '%' },
-    } as Record<string, CellData>,
-  },
+    } as Record<string, CellData>,},
   {
     name: 'P&L',
     cells: {
@@ -94,8 +93,7 @@ const DEFAULT_SHEETS = [
       'B12': { v: 0, f: '=B5+B10', t: 'n' }, 'C12': { v: 5.9, f: '=C5+C10', t: 'n' }, 'D12': { v: 21.6, f: '=D5+D10', t: 'n' }, 'E12': { v: 46.4, f: '=E5+E10', t: 'n' }, 'F12': { v: 82.1, f: '=F5+F10', t: 'n' }, 'G12': { v: 120.4, f: '=G5+G10', t: 'n' },
       'A13': { v: 'EBITDA Margin %', t: 's' },
       'B13': { v: 0, f: '=B12/B3', t: 'n', fmt: '%' }, 'C13': { v: 0.10, f: '=C12/C3', t: 'n', fmt: '%' }, 'D13': { v: 0.22, f: '=D12/D3', t: 'n', fmt: '%' }, 'E13': { v: 0.30, f: '=E12/E3', t: 'n', fmt: '%' }, 'F13': { v: 0.36, f: '=F12/F3', t: 'n', fmt: '%' }, 'G13': { v: 0.40, f: '=G12/G3', t: 'n', fmt: '%' },
-    } as Record<string, CellData>,
-  },
+    } as Record<string, CellData>,},
   {
     name: 'Returns',
     cells: {
@@ -118,8 +116,7 @@ const DEFAULT_SHEETS = [
       'B14': { v: 150, f: '=B13*$B$7', t: 'n' }, 'C14': { v: 402, f: '=C13*$B$7', t: 'n' }, 'D14': { v: 1000, f: '=D13*$B$7', t: 'n' },
       'A16': { v: 'MOIC', bold: true },
       'B16': { v: 1.5, f: '=B14/$B$5', t: 'n' }, 'C16': { v: 4.0, f: '=C14/$B$5', t: 'n' }, 'D16': { v: 10.0, f: '=D14/$B$5', t: 'n' },
-    } as Record<string, CellData>,
-  },
+    } as Record<string, CellData>,},
   {
     name: 'Scenarios',
     cells: {
@@ -137,8 +134,7 @@ const DEFAULT_SHEETS = [
       'A10': { v: 'MOIC' },
       'B10': { v: 1.5, f: '=B7*0.167/100', t: 'n' }, 'C10': { v: 4.0, f: '=C7*0.167/100', t: 'n' }, 'D10': { v: 10.0, f: '=D7*0.167/100', t: 'n' },
     } as Record<string, CellData>,
-  },
-];
+  },];
 
 export default function ModelPage() {
   const { toast } = useToast();
@@ -191,8 +187,7 @@ export default function ModelPage() {
       [cellRef]: {
         v: formula ? value : (isNaN(Number(value)) ? value : Number(value)),
         f: formula,
-        t: !formula && !isNaN(Number(value)) ? 'n' : 's',
-      },
+        t: !formula && !isNaN(Number(value)) ? 'n' : 's',},
     }));
     setDirty(true);
   }, []);
@@ -204,8 +199,7 @@ export default function ModelPage() {
       const res = await fetch('/api/model', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: activeSheetId, data: JSON.stringify(localCells) }),
-      });
+        body: JSON.stringify({ id: activeSheetId, data: JSON.stringify(localCells) }),});
       if (!res.ok) throw new Error('Save failed');
       setDirty(false);
       toast('Sheet saved');
@@ -226,8 +220,7 @@ export default function ModelPage() {
           sheet_name: DEFAULT_SHEETS[i].name,
           sheet_order: i,
           data: DEFAULT_SHEETS[i].cells,
-        }),
-      });
+        }),});
     }
     toast('Model initialized with default sheets');
     await fetchSheets();
@@ -241,8 +234,7 @@ export default function ModelPage() {
         sheet_name: name,
         sheet_order: sheets.length,
         data: {},
-      }),
-    });
+      }),});
     toast(`Added sheet "${name}"`);
     setShowAddSheet(false);
     fetchSheets();
@@ -271,8 +263,7 @@ export default function ModelPage() {
       if ((e.metaKey || e.ctrlKey) && e.key === 's') {
         e.preventDefault();
         handleSave();
-      }
-    };
+      }};
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
   }, [handleSave]);
@@ -284,8 +275,7 @@ export default function ModelPage() {
     return sheets.map(s => {
       let sheetCells: Record<string, CellData> = {};
       try { sheetCells = JSON.parse(s.data); } catch { /* empty */ }
-      return { name: s.sheet_name, cells: sheetCells };
-    });
+      return { name: s.sheet_name, cells: sheetCells };});
   }, [sheets]);
 
   // Build a structured representation of the active sheet for AI context
@@ -305,8 +295,7 @@ export default function ModelPage() {
     try {
       const updates = JSON.parse(match[1]) as Array<{ ref: string; value: string | number; formula?: string }>;
       updates.forEach(({ ref, value, formula }) => {
-        handleCellChange(ref, String(value), formula || undefined);
-      });
+        handleCellChange(ref, String(value), formula || undefined);});
       toast(`Applied ${updates.length} cell change${updates.length !== 1 ? 's' : ''}`);
     } catch {
       toast('Could not parse AI cell updates', 'error');
@@ -317,8 +306,7 @@ export default function ModelPage() {
     return (
       <div className="h-[calc(100vh-4rem)] flex items-center justify-center">
         <div className="text-sm" style={stTextTertiary}>Loading model...</div>
-      </div>
-    );
+      </div>);
   }
 
   return (
@@ -341,8 +329,7 @@ export default function ModelPage() {
                         backgroundColor: 'var(--surface-2)',
                         color: 'var(--text-primary)',
                         fontWeight: 400,
-                        borderBottom: '2px solid var(--accent)',
-                      }
+                        borderBottom: '2px solid var(--accent)',}
                     : {
                         color: 'var(--text-muted)',
                       }), }}
@@ -366,10 +353,8 @@ export default function ModelPage() {
                     (e.currentTarget as HTMLButtonElement).style.color = 'var(--danger)'; }}
                   onMouseLeave={e => {
                     (e.currentTarget as HTMLButtonElement).style.color = 'var(--text-tertiary)'; }}>
-                  <Trash2 className="w-3 h-3" />
-                </button>
-              </div>
-            );
+                  <Trash2 className="w-3 h-3" /></button>
+              </div>);
           })}
           <button
             onClick={() => setShowAddSheet(true)}
@@ -380,9 +365,7 @@ export default function ModelPage() {
               (e.currentTarget as HTMLButtonElement).style.color = 'var(--text-secondary)'; }}
             onMouseLeave={e => {
               (e.currentTarget as HTMLButtonElement).style.color = 'var(--text-tertiary)'; }}>
-            <Plus className="w-4 h-4" />
-          </button>
-        </div>
+            <Plus className="w-4 h-4" /></button></div>
         <div className="flex items-center gap-2 px-3 shrink-0">
           {sheets.length === 0 && (
             <button
@@ -394,8 +377,7 @@ export default function ModelPage() {
               }}
               onMouseLeave={e => {
                 (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--accent)'; }}>
-              <Table className="w-3.5 h-3.5" /> Initialize Model
-            </button>
+              <Table className="w-3.5 h-3.5" /> Initialize Model</button>
           )}
           <button
             onClick={handleSave}
@@ -415,10 +397,7 @@ export default function ModelPage() {
                 (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--accent)';
               } }}>
             <Save className="w-3.5 h-3.5" />
-            {saving ? 'Saving...' : dirty ? 'Save' : 'Saved'}
-          </button>
-        </div>
-      </div>
+            {saving ? 'Saving...' : dirty ? 'Save' : 'Saved'}</button></div></div>
 
       {/* Split pane: Excel viewer + AI chat */}
       <div className="flex-1">
@@ -446,10 +425,8 @@ export default function ModelPage() {
             <div className="text-center space-y-4">
               <Table className="w-12 h-12 mx-auto" />
               <p className="text-sm">{sheets.length === 0 ? 'No model yet. Click "Initialize Model" to create default sheets.' : 'Select a sheet to start editing.'}</p>
-            </div>
-          </div>
-        )}
-      </div>
+            </div></div>
+        )}</div>
 
       {/* Modals */}
       <ConfirmModal
@@ -475,6 +452,5 @@ export default function ModelPage() {
         confirmLabel="Add Sheet"
         onConfirm={addSheet}
         onCancel={() => setShowAddSheet(false)} />
-    </div>
-  );
+    </div>);
 }

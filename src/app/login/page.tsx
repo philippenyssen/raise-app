@@ -22,8 +22,7 @@ function LoginForm() {
       const res = await fetch('/api/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password }),
-      });
+        body: JSON.stringify({ password }),});
 
       if (res.ok) {
         router.push(redirect);
@@ -34,8 +33,7 @@ function LoginForm() {
       setError('Connection failed');
     } finally {
       setLoading(false);
-    }
-  }
+    }}
 
   return (
     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
@@ -64,10 +62,8 @@ function LoginForm() {
           padding: 'var(--space-3)',
           opacity: !password || loading ? 0.4 : 1, }}>
         {loading ? <Loader2 style={{ width: '16px', height: '16px' }} className="animate-spin" /> : null}
-        {loading ? 'Authenticating...' : 'Sign In'}
-      </button>
-    </form>
-  );
+        {loading ? 'Authenticating...' : 'Sign In'}</button>
+    </form>);
 }
 
 export default function LoginPage() {
@@ -88,17 +84,11 @@ export default function LoginPage() {
             <span style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--accent)', letterSpacing: '0.12em', fontFamily: 'var(--font-cormorant), Georgia, serif' }}>R</span>
           </div>
           <h1 style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 300, color: 'var(--text-primary)', letterSpacing: '0.18em', fontFamily: 'var(--font-cormorant), Georgia, serif' }}>
-            RAISE
-          </h1>
+            RAISE</h1>
           <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', marginTop: 'var(--space-1)' }}>
-            Series C Execution Platform
-          </p>
-        </div>
+            Series C Execution Platform</p></div>
 
         <Suspense fallback={<div style={{ color: 'var(--text-muted)', textAlign: 'center', fontSize: 'var(--font-size-sm)' }}>Loading...</div>}>
-          <LoginForm />
-        </Suspense>
-      </div>
-    </div>
-  );
+          <LoginForm /></Suspense></div>
+    </div>);
 }

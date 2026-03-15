@@ -34,14 +34,12 @@ const TYPE_LABELS: Record<string, string> = {
   framework: 'Framework Agreement',
   loi: 'Letter of Intent',
   pipeline: 'Pipeline (Not Signed)',
-  recurring: 'Recurring Revenue',
-};
+  recurring: 'Recurring Revenue',};
 
 const CONFIDENCE_COLORS: Record<string, React.CSSProperties> = {
   high: { background: 'var(--success-muted)', color: 'var(--text-secondary)' },
   medium: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
-  low: { background: 'var(--danger-muted)', color: 'var(--text-primary)' },
-};
+  low: { background: 'var(--danger-muted)', color: 'var(--text-primary)' },};
 
 function formatEur(n: number): string {
   if (n >= 1e9) return `€${(n / 1e9).toFixed(1)}Bn`;
@@ -66,8 +64,7 @@ export default function BacklogPage() {
   const [form, setForm] = useState({
     customer: '', program: '', contract_type: 'firm', amount_eur: '',
     start_date: '', end_date: '', annual_amount: '', confidence: '0.9',
-    source_doc: '', notes: '', status: 'active',
-  });
+    source_doc: '', notes: '', status: 'active',});
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -97,16 +94,14 @@ export default function BacklogPage() {
           amount_eur: parseFloat(form.amount_eur) * 1e6,
           annual_amount: form.annual_amount ? parseFloat(form.annual_amount) * 1e6 : null,
           confidence: parseFloat(form.confidence),
-        }),
-      });
+        }),});
       toast('Commitment added', 'success');
       setShowAdd(false);
       setForm({ customer: '', program: '', contract_type: 'firm', amount_eur: '', start_date: '', end_date: '', annual_amount: '', confidence: '0.9', source_doc: '', notes: '', status: 'active' });
       fetchData();
     } catch {
       toast('Failed to add', 'error');
-    }
-  }
+    }}
 
   async function handleDelete() {
     if (!deleteTarget) return;
@@ -117,16 +112,14 @@ export default function BacklogPage() {
       fetchData();
     } catch {
       toast('Failed to delete', 'error');
-    }
-  }
+    }}
 
   if (loading) {
     return (
       <div className="space-y-4">
         <div className="h-8 w-48 rounded animate-pulse" style={stSurface2} />
         {[...Array(3)].map((_, i) => <div key={i} className="h-16 rounded-xl animate-pulse" style={stSurface1} />)}
-      </div>
-    );
+      </div>);
   }
 
   return (
@@ -136,33 +129,27 @@ export default function BacklogPage() {
           <h1 className="page-title">Revenue Backlog</h1>
           <p className="text-sm mt-1" style={stTextMuted}>
             {summary?.count || 0} commitments &middot; {formatEur(summary?.total_committed_eur || 0)} total &middot; {formatEur(summary?.probability_weighted_eur || 0)} probability-weighted
-          </p>
-        </div>
+          </p></div>
         <button onClick={() => setShowAdd(!showAdd)} className="btn btn-primary btn-md flex items-center gap-2">
-          <Plus className="w-4 h-4" /> Add Commitment
-        </button>
-      </div>
+          <Plus className="w-4 h-4" /> Add Commitment</button></div>
 
       {/* Summary cards */}
       {summary && (
         <div className="grid grid-cols-4 gap-3 card-stagger">
           <div className="rounded-lg p-4" style={stSurface1}>
             <div className="text-xs  font-normal flex items-center gap-1" style={stTextMuted}><DollarSign className="w-3 h-3" /> Total Committed</div>
-            <div className="text-2xl font-normal mt-1" style={stTextPrimary}>{formatEur(summary.total_committed_eur)}</div>
-          </div>
+            <div className="text-2xl font-normal mt-1" style={stTextPrimary}>{formatEur(summary.total_committed_eur)}</div></div>
           <div className="rounded-lg p-4" style={stSurface1}>
             <div className="text-xs  font-normal flex items-center gap-1" style={stTextMuted}><ShieldCheck className="w-3 h-3" /> Probability-Weighted</div>
             <div className="text-2xl font-normal mt-1" style={stTextSecondary}>{formatEur(summary.probability_weighted_eur)}</div>
           </div>
           <div className="rounded-lg p-4" style={stSurface1}>
             <div className="text-xs  font-normal flex items-center gap-1" style={stTextMuted}><TrendingUp className="w-3 h-3" /> Firm Contracts</div>
-            <div className="text-2xl font-normal mt-1" style={stAccent}>{formatEur(summary.by_type?.firm || 0)}</div>
-          </div>
+            <div className="text-2xl font-normal mt-1" style={stAccent}>{formatEur(summary.by_type?.firm || 0)}</div></div>
           <div className="rounded-lg p-4" style={stSurface1}>
             <div className="text-xs  font-normal flex items-center gap-1" style={stTextMuted}><AlertTriangle className="w-3 h-3" /> Pipeline (Unsigned)</div>
             <div className="text-2xl font-normal mt-1" style={stTextTertiary}>{formatEur(summary.by_type?.pipeline || 0)}</div>
-          </div>
-        </div>
+          </div></div>
       )}
 
       {/* Add form */}
@@ -175,8 +162,7 @@ export default function BacklogPage() {
             <input placeholder="Program/Contract" value={form.program} onChange={e => setForm(f => ({ ...f, program: e.target.value }))} className="input"
               />
             <select value={form.contract_type} onChange={e => setForm(f => ({ ...f, contract_type: e.target.value }))} className="input">
-              {Object.entries(TYPE_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
-            </select>
+              {Object.entries(TYPE_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select>
             <input type="number" placeholder="Total Amount (€M)" value={form.amount_eur} onChange={e => setForm(f => ({ ...f, amount_eur: e.target.value }))} className="input"
               />
             <input type="number" placeholder="Annual Amount (€M)" value={form.annual_amount} onChange={e => setForm(f => ({ ...f, annual_amount: e.target.value }))} className="input"
@@ -188,15 +174,12 @@ export default function BacklogPage() {
             <input type="date" placeholder="End Date" value={form.end_date} onChange={e => setForm(f => ({ ...f, end_date: e.target.value }))} className="input"
               />
             <input placeholder="Source Document" value={form.source_doc} onChange={e => setForm(f => ({ ...f, source_doc: e.target.value }))} className="input"
-              />
-          </div>
+              /></div>
           <textarea placeholder="Notes" value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} className="input" rows={2}
             />
           <div className="flex gap-2">
             <button onClick={handleAdd} className="btn btn-primary btn-md">Add Commitment</button>
-            <button onClick={() => setShowAdd(false)} className="btn btn-secondary btn-md">Cancel</button>
-          </div>
-        </div>
+            <button onClick={() => setShowAdd(false)} className="btn btn-secondary btn-md">Cancel</button></div></div>
       )}
 
       {/* Commitments table */}
@@ -219,9 +202,7 @@ export default function BacklogPage() {
                 <th className="text-center px-4 py-3">Confidence</th>
                 <th className="text-left px-4 py-3">Timeline</th>
                 <th className="text-left px-4 py-3">Source</th>
-                <th className="px-4 py-3"></th>
-              </tr>
-            </thead>
+                <th className="px-4 py-3"></th></tr></thead>
             <tbody>
               {commitments.map(c => {
                 const conf = confidenceLevel(c.confidence);
@@ -238,12 +219,8 @@ export default function BacklogPage() {
                     <td className="px-4 py-3">
                       <button onClick={() => setDeleteTarget(c.id)} className="btn btn-ghost p-1 rounded" style={stTextMuted} aria-label="Delete commitment" title="Delete commitment"><Trash2 className="w-3.5 h-3.5" /></button>
                     </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+                  </tr>);
+              })}</tbody></table></div>
       )}
 
       <ConfirmModal
@@ -254,6 +231,5 @@ export default function BacklogPage() {
         variant="danger"
         onConfirm={handleDelete}
         onCancel={() => setDeleteTarget(null)} />
-    </div>
-  );
+    </div>);
 }

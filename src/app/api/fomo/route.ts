@@ -10,8 +10,7 @@ export async function GET() {
     const [fomos, meetingDensity, velocities] = await Promise.all([
       detectFomoDynamics(),
       computeMeetingDensity(),
-      computeEngagementVelocity(),
-    ]);
+      computeEngagementVelocity(),]);
 
     // Fetch active investors for per-investor FOMO scoring
     const investorResult = await db.execute(`
@@ -100,10 +99,8 @@ export async function GET() {
           triggerInvestors.push({
             name: adv.name,
             status: adv.status,
-            statusLabel: STAGE_LABELS[adv.status] ?? adv.status,
-          });
-        }
-      }
+            statusLabel: STAGE_LABELS[adv.status] ?? adv.status,});
+        }}
 
       // Factor 2: Meeting density around this investor's peers
       let peerMeetingDensity = 0;
@@ -117,8 +114,7 @@ export async function GET() {
       for (const connId of connections) {
         if (advancingInvestorIds.has(connId)) {
           connectedAdvancingCount++;
-        }
-      }
+        }}
 
       // Compute intensity (0-100)
       // - Advancing ahead: up to 40 pts (capped at 4 investors)
@@ -161,8 +157,7 @@ export async function GET() {
         triggerInvestors: triggerInvestors.slice(0, 5),
         connectedAdvancingCount,
         peerMeetingDensity,
-        recommendation,
-      };
+        recommendation,};
     }).filter(Boolean) as Array<{
       investorId: string; investorName: string; tier: number; type: string;
       status: string; statusLabel: string; enthusiasm: number; intensity: number;
@@ -212,8 +207,7 @@ export async function GET() {
         investorName: sc.investor_name,
         detail: sc.detail || `${sc.investor_name} status changed`,
         date: sc.created_at,
-        impactLevel,
-      });
+        impactLevel,});
     }
 
     // Meeting clusters as triggers (3+ meetings in 5 days)
@@ -223,8 +217,7 @@ export async function GET() {
       windowEnd.setDate(windowEnd.getDate() + 5);
       const cluster = sortedMeetings.filter(m =>
         new Date(m.date) >= new Date(sortedMeetings[i].date) &&
-        new Date(m.date) <= windowEnd
-      );
+        new Date(m.date) <= windowEnd);
       const uniqueInvestors = new Set(cluster.map(m => m.investor_name));
       if (uniqueInvestors.size >= 3) {
         triggerEvents.push({
@@ -232,11 +225,9 @@ export async function GET() {
           investorName: `${uniqueInvestors.size} investors`,
           detail: `${uniqueInvestors.size} different investors had meetings within 5 days — competitive tension signal`,
           date: sortedMeetings[i].date,
-          impactLevel: 'high',
-        });
+          impactLevel: 'high',});
         break; // only report the most recent cluster
-      }
-    }
+      }}
 
     // Strategy cards — actionable FOMO leverage suggestions
     const strategyCards: Array<{
@@ -253,10 +244,8 @@ export async function GET() {
           title: `Leverage ${fomo.advancingInvestor}'s progress`,
           description: fomo.recommendation,
           priority: 'high',
-          targetInvestors: fomo.affectedInvestors.map(a => a.name),
-        });
-      }
-    }
+          targetInvestors: fomo.affectedInvestors.map(a => a.name),});
+      }}
 
     // Add meeting density strategy if applicable
     if (meetingDensity.gapWeeks.length >= 2) {
@@ -264,8 +253,7 @@ export async function GET() {
         title: 'Fill meeting gaps to sustain pressure',
         description: `${meetingDensity.gapWeeks.length} weeks with zero meetings in the last 12 weeks. Consistent meeting cadence is essential for maintaining competitive tension. Schedule at least 2 meetings per week.`,
         priority: 'medium',
-        targetInvestors: perInvestorFomo.filter(f => f.intensity < 30).slice(0, 3).map(f => f.investorName),
-      });
+        targetInvestors: perInvestorFomo.filter(f => f.intensity < 30).slice(0, 3).map(f => f.investorName),});
     }
 
     // Add velocity-based strategies
@@ -277,8 +265,7 @@ export async function GET() {
         title: 'Use accelerating investors to re-engage stalling ones',
         description: `${acceleratingInvestors.map(a => a.investorName).slice(0, 2).join(' and ')} ${acceleratingInvestors.length === 1 ? 'is' : 'are'} accelerating. Use this momentum to re-engage ${deceleratingInvestors.map(d => d.investorName).slice(0, 2).join(' and ')} — mention that other parties are progressing.`,
         priority: 'high',
-        targetInvestors: deceleratingInvestors.slice(0, 3).map(d => d.investorName),
-      });
+        targetInvestors: deceleratingInvestors.slice(0, 3).map(d => d.investorName),});
     }
 
     // Add tier-based strategy
@@ -289,8 +276,7 @@ export async function GET() {
         title: 'Cascade Tier 1 momentum to Tier 2',
         description: `Tier 1 investors ${tier1High.map(f => f.investorName).join(', ')} show strong competitive pressure. Reference this dynamic to accelerate Tier 2 investors who are not yet feeling urgency.`,
         priority: 'medium',
-        targetInvestors: tier2Low.slice(0, 3).map(f => f.investorName),
-      });
+        targetInvestors: tier2Low.slice(0, 3).map(f => f.investorName),});
     }
 
     // Sort strategy cards by priority
@@ -309,8 +295,7 @@ export async function GET() {
         avgPerWeek: meetingDensity.avgPerWeek,
         currentWeekCount: meetingDensity.currentWeekCount,
         gapWeeks: meetingDensity.gapWeeks.length,
-        insight: meetingDensity.insight,
-      },
+        insight: meetingDensity.insight,},
       stats: {
         totalInvestors: investors.length,
         advancingCount: advancingInvestorIds.size,
@@ -318,15 +303,11 @@ export async function GET() {
         highFomoCount: perInvestorFomo.filter(f => f.intensity >= 70).length,
         mediumFomoCount: perInvestorFomo.filter(f => f.intensity >= 40 && f.intensity < 70).length,
         lowFomoCount: perInvestorFomo.filter(f => f.intensity > 0 && f.intensity < 40).length,
-        zeroFomoCount: perInvestorFomo.filter(f => f.intensity === 0).length,
-      },
-      generatedAt: new Date().toISOString(),
-    });
+        zeroFomoCount: perInvestorFomo.filter(f => f.intensity === 0).length,},
+      generatedAt: new Date().toISOString(),});
   } catch (error) {
     console.error('FOMO API error:', error);
     return NextResponse.json(
       { error: 'Failed to compute FOMO dynamics', detail: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 },
-    );
-  }
-}
+      { status: 500 },);
+  }}

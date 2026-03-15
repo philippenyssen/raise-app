@@ -136,8 +136,7 @@ export async function GET() {
     const db = getClient();
     const [investorRows, allMeetings, raiseConfig, allPortfolios] = await Promise.all([
       db.execute(`SELECT * FROM investors WHERE status NOT IN ('passed', 'dropped', 'closed') ORDER BY tier ASC, name ASC`),
-      loadAllMeetings(db), loadRaiseConfig(db), loadAllPortfolios(db),
-    ]);
+      loadAllMeetings(db), loadRaiseConfig(db), loadAllPortfolios(db),]);
 
     const investors = investorRows.rows as unknown as Investor[];
     const now = new Date().toISOString();
@@ -170,24 +169,20 @@ export async function GET() {
         if (trigger.triggerType === 'term_sheet_ready') termSheetReady.push(summary);
         else if (trigger.triggerType === 'stall_risk' && trigger.urgency === 'next_week' && trigger.confidence === 'low') deprioritize.push(summary);
         else if ((trigger.triggerType === 'momentum_cliff' || (trigger.triggerType === 'stall_risk' && trigger.urgency !== 'next_week')) && !atRisk.find(r => r.investorId === investor.id)) atRisk.push(summary);
-      }
-    }
+      }}
 
     const urgencyOrder: Record<string, number> = { immediate: 0, '48h': 1, this_week: 2, next_week: 3 };
     accelerations.sort((a, b) => {
       const urgDiff = (urgencyOrder[a.urgency] ?? 3) - (urgencyOrder[b.urgency] ?? 3);
-      return urgDiff !== 0 ? urgDiff : b.expectedLift - a.expectedLift;
-    });
+      return urgDiff !== 0 ? urgDiff : b.expectedLift - a.expectedLift;});
 
     return NextResponse.json({
       summary: { immediate: accelerations.filter(a => a.urgency === 'immediate').length, this_week: accelerations.filter(a => a.urgency === '48h' || a.urgency === 'this_week').length, total: accelerations.length },
-      accelerations, termSheetReady, atRisk, deprioritize, generatedAt: new Date().toISOString(),
-    });
+      accelerations, termSheetReady, atRisk, deprioritize, generatedAt: new Date().toISOString(),});
   } catch (error) {
     console.error('Acceleration analysis error:', error);
     return NextResponse.json({ error: 'Failed to run acceleration analysis', detail: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 });
-  }
-}
+  }}
 
 // ---------------------------------------------------------------------------
 // PUT Handler
@@ -226,13 +221,11 @@ export async function PUT(req: Request) {
         try {
           await logActivity({ event_type: 'acceleration_executed', subject: `Acceleration: ${action_type || trigger_type}`, detail: `${description}. Expected lift: +${expected_lift || '?'} pts.`, investor_id: investor_id || '', investor_name: investor_name || '' });
         } catch { /* non-blocking */ }
-      }
-    }
+      }}
 
     emitContextChange('acceleration_executed', `Acceleration ${id} ${actionStatus}${body.investor_name ? ` for ${body.investor_name}` : ''}`);
     return NextResponse.json({ ok: true });
   } catch (error) {
     console.error('Acceleration update error:', error);
     return NextResponse.json({ error: 'Failed to update acceleration action', detail: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 });
-  }
-}
+  }}

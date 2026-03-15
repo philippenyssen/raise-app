@@ -18,14 +18,12 @@ const THREAT_STYLES: Record<string, { background: string; color: string }> = {
   critical: { background: 'var(--danger-muted)', color: 'var(--text-primary)' },
   high: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
   medium: { background: 'var(--warn-8)', color: 'var(--text-tertiary)' },
-  low: { background: 'var(--success-muted)', color: 'var(--text-secondary)' },
-};
+  low: { background: 'var(--success-muted)', color: 'var(--text-secondary)' },};
 
 const BRIEF_TYPE_STYLES: Record<string, { background: string; color: string }> = {
   investor: { background: 'var(--accent-muted)', color: 'var(--accent)' },
   competitor: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
-  market: { background: 'var(--cat-12)', color: 'var(--chart-4)' },
-};
+  market: { background: 'var(--cat-12)', color: 'var(--chart-4)' },};
 
 export default function IntelligencePage() {
   const { toast } = useToast();
@@ -74,8 +72,7 @@ export default function IntelligencePage() {
                   researchType === 'competitor' ? 'research_competitor' : 'research_market',
           name: researchInput.trim(),
           sector: researchInput.trim(),
-        }),
-      });
+        }),});
       if (!res.ok) throw new Error(await res.text());
       toast(`Research complete: ${researchInput}`, 'success');
       setResearchInput('');
@@ -103,8 +100,7 @@ export default function IntelligencePage() {
     await fetch('/api/intelligence', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'create_deal', data }),
-    });
+      body: JSON.stringify({ action: 'create_deal', data }),});
     toast('Deal added');
     setShowAddDeal(false);
     fetchAll();
@@ -118,8 +114,7 @@ export default function IntelligencePage() {
     await fetch('/api/intelligence', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'create_competitor', data }),
-    });
+      body: JSON.stringify({ action: 'create_competitor', data }),});
     toast('Competitor added');
     setShowAddComp(false);
     fetchAll();
@@ -133,8 +128,7 @@ export default function IntelligencePage() {
         <div className="space-y-2">
           {[...Array(5)].map((_, i) => <div key={i} className="h-14 skeleton rounded" style={{ background: 'var(--surface-2)', opacity: 0.3 }} />)}
         </div>
-      </div>
-    );
+      </div>);
   }
 
   return (
@@ -142,12 +136,9 @@ export default function IntelligencePage() {
       {/* Header */}
       <div>
         <h1 className="page-title flex items-center gap-2">
-          <Globe className="w-6 h-6" style={stAccent} /> Market Intelligence
-        </h1>
+          <Globe className="w-6 h-6" style={stAccent} /> Market Intelligence</h1>
         <p className="text-sm mt-1" style={stTextMuted}>
-          {deals.length} deals tracked, {competitors.length} competitors, {briefs.length} research briefs
-        </p>
-      </div>
+          {deals.length} deals tracked, {competitors.length} competitors, {briefs.length} research briefs</p></div>
 
       {/* AI Research Bar */}
       <div
@@ -155,8 +146,7 @@ export default function IntelligencePage() {
         style={stSurface1}>
         <div className="flex items-center gap-2 mb-2">
           <Search className="w-4 h-4" style={stAccent} />
-          <span className="text-xs font-normal" style={stTextTertiary}>AI Research</span>
-        </div>
+          <span className="text-xs font-normal" style={stTextTertiary}>AI Research</span></div>
         <div className="flex gap-2">
           <select
             value={researchType}
@@ -165,8 +155,7 @@ export default function IntelligencePage() {
             style={{ width: 'auto', padding: '0.5rem 0.75rem' }}>
             <option value="investor">Research Investor</option>
             <option value="competitor">Research Competitor</option>
-            <option value="market">Research Market Deals</option>
-          </select>
+            <option value="market">Research Market Deals</option></select>
           <input
             value={researchInput}
             onChange={e => setResearchInput(e.target.value)}
@@ -192,12 +181,9 @@ export default function IntelligencePage() {
                 : 'white',
               transition: 'all 150ms ease', }}>
             {researching ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Researching...</> : <><RefreshCw className="w-3.5 h-3.5" /> Research</>}
-          </button>
-        </div>
+          </button></div>
         <p className="text-xs mt-2" style={stTextMuted}>
-          AI will generate a comprehensive research dossier and auto-populate relevant data tables.
-        </p>
-      </div>
+          AI will generate a comprehensive research dossier and auto-populate relevant data tables.</p></div>
 
       {/* Recent Research Section */}
       <RecentResearchSection briefs={briefs} />
@@ -222,11 +208,8 @@ export default function IntelligencePage() {
             <span
               className="text-xs px-1.5 py-0.5 rounded"
               style={{ background: 'var(--surface-2)', color: 'var(--text-tertiary)' }}>
-              {t.count}
-            </span>
-          </button>
-        ))}
-      </div>
+              {t.count}</span></button>
+        ))}</div>
 
       {/* Content */}
       {tab === 'deals' && (
@@ -240,9 +223,7 @@ export default function IntelligencePage() {
               style={{
                 background: hoveredAddBtn ? 'var(--surface-3)' : 'var(--surface-2)',
                 transition: 'background 150ms ease', }}>
-              <Plus className="w-3.5 h-3.5" /> Add Deal
-            </button>
-          </div>
+              <Plus className="w-3.5 h-3.5" /> Add Deal</button></div>
 
           {showAddDeal && (
             <form
@@ -257,13 +238,11 @@ export default function IntelligencePage() {
                 <FormField name="date" label="Date" placeholder="2026-03" />
                 <FormField name="sector" label="Sector" placeholder="Space/Defense" />
                 <FormField name="equity_story" label="Equity Story" />
-                <FormField name="source" label="Source" placeholder="TechCrunch, PitchBook..." />
-              </div>
+                <FormField name="source" label="Source" placeholder="TechCrunch, PitchBook..." /></div>
               <div className="flex gap-2">
                 <button type="submit" className="btn btn-primary btn-sm">Add</button>
                 <button type="button" onClick={() => setShowAddDeal(false)} className="btn btn-secondary btn-sm">Cancel</button>
-              </div>
-            </form>
+              </div></form>
           )}
 
           {deals.length === 0 ? (
@@ -280,9 +259,7 @@ export default function IntelligencePage() {
                     <th>Lead</th>
                     <th>Date</th>
                     <th>Sector</th>
-                    <th className="w-8"></th>
-                  </tr>
-                </thead>
+                    <th className="w-8"></th></tr></thead>
                 <tbody>
                   {deals.map(d => (
                     <tr
@@ -307,16 +284,9 @@ export default function IntelligencePage() {
                           style={{
                             color: hoveredDeleteBtn === `deal-${d.id}` ? 'var(--danger)' : 'var(--text-muted)',
                             transition: 'color 150ms ease', }}>
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
+                          <Trash2 className="w-3.5 h-3.5" /></button></td></tr>
+                  ))}</tbody></table></div>
+          )}</div>
       )}
 
       {tab === 'competitors' && (
@@ -330,9 +300,7 @@ export default function IntelligencePage() {
               style={{
                 background: hoveredAddBtn ? 'var(--surface-3)' : 'var(--surface-2)',
                 transition: 'background 150ms ease', }}>
-              <Plus className="w-3.5 h-3.5" /> Add Competitor
-            </button>
-          </div>
+              <Plus className="w-3.5 h-3.5" /> Add Competitor</button></div>
 
           {showAddComp && (
             <form
@@ -347,15 +315,13 @@ export default function IntelligencePage() {
                 <FormField name="total_raised" label="Total Raised" />
                 <FormField name="revenue" label="Revenue" />
                 <FormField name="employees" label="Employees" />
-                <FormField name="key_investors" label="Key Investors" />
-              </div>
+                <FormField name="key_investors" label="Key Investors" /></div>
               <FormField name="positioning" label="Positioning" />
               <FormField name="our_advantage" label="Our Advantage" />
               <div className="flex gap-2">
                 <button type="submit" className="btn btn-primary btn-sm">Add</button>
                 <button type="button" onClick={() => setShowAddComp(false)} className="btn btn-secondary btn-sm">Cancel</button>
-              </div>
-            </form>
+              </div></form>
           )}
 
           {competitors.length === 0 ? (
@@ -384,11 +350,7 @@ export default function IntelligencePage() {
                             <span
                               className="text-xs px-1.5 py-0.5 rounded"
                               style={{ background: threatStyle.background, color: threatStyle.color }}>
-                              {c.threat_level}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
+                              {c.threat_level}</span></div></div></div>
                       <button
                         onClick={() => setDeleteTarget({ type: 'competitor', id: c.id, name: c.name })}
                         onMouseEnter={() => setHoveredDeleteBtn(`comp-${c.id}`)}
@@ -397,9 +359,7 @@ export default function IntelligencePage() {
                         style={{
                           color: hoveredDeleteBtn === `comp-${c.id}` ? 'var(--danger)' : 'var(--text-muted)',
                           transition: 'color 150ms ease', }}>
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
+                        <Trash2 className="w-3.5 h-3.5" /></button></div>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3 text-xs">
                       {c.revenue && <div><span style={stTextMuted}>Revenue:</span> <span style={stTextSecondary}>{c.revenue}</span></div>}
                       {c.last_valuation && <div><span style={stTextMuted}>Valuation:</span> <span style={stAccent}>{c.last_valuation}</span></div>}
@@ -410,15 +370,11 @@ export default function IntelligencePage() {
                     {c.our_advantage && (
                       <div className="mt-2 text-xs">
                         <span className="font-normal" style={stTextSecondary}>Our advantage:</span>
-                        <span className="ml-1" style={stTextTertiary}>{c.our_advantage}</span>
-                      </div>
+                        <span className="ml-1" style={stTextTertiary}>{c.our_advantage}</span></div>
                     )}
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
+                  </div>);
+              })}</div>
+          )}</div>
       )}
 
       {tab === 'briefs' && (
@@ -442,8 +398,7 @@ export default function IntelligencePage() {
                       <span
                         className="text-xs px-2 py-0.5 rounded font-normal"
                         style={{ background: briefStyle.background, color: briefStyle.color }}>
-                        {b.brief_type}
-                      </span>
+                        {b.brief_type}</span>
                       <span className="font-normal text-sm" style={stTextPrimary}>{b.subject}</span>
                       <span className="text-xs" style={stTextMuted}>{b.updated_at?.split('T')[0]}</span>
                       {b.investor_id && (
@@ -451,19 +406,15 @@ export default function IntelligencePage() {
                           <Link
                             href={`/investors/${b.investor_id}`}
                             style={{ color: 'var(--accent)', fontSize: 'var(--font-size-xs)', textDecoration: 'none' }}>
-                            View
-                          </Link>
+                            View</Link>
                           <Link
                             href={`/meetings/new?investor=${b.investor_id}`}
                             style={{
                               fontSize: '10px', fontWeight: 400, padding: '2px 6px',
                               borderRadius: 'var(--radius-sm)', textDecoration: 'none',
                               background: 'var(--accent-muted)', color: 'var(--accent)', }}>
-                            Schedule
-                          </Link>
-                        </span>
-                      )}
-                    </div>
+                            Schedule</Link></span>
+                      )}</div>
                     <div className="flex items-center gap-2">
                       <button
                         onClick={(e) => { e.stopPropagation(); setDeleteTarget({ type: 'brief', id: b.id, name: b.subject }); }}
@@ -473,28 +424,20 @@ export default function IntelligencePage() {
                         style={{
                           color: hoveredDeleteBtn === `brief-${b.id}` ? 'var(--danger)' : 'var(--text-muted)',
                           transition: 'color 150ms ease', }}>
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
+                        <Trash2 className="w-3.5 h-3.5" /></button>
                       {expandedBrief === b.id
                         ? <ChevronDown className="w-4 h-4" style={stTextMuted} />
                         : <ChevronRight className="w-4 h-4" style={stTextMuted} />
-                      }
-                    </div>
-                  </button>
+                      }</div></button>
                   {expandedBrief === b.id && (
                     <div className="px-4 pb-4" style={stBorderTop}>
                       <div
                         className="prose prose-invert prose-sm max-w-none mt-3 whitespace-pre-wrap text-sm leading-relaxed"
                         style={stTextSecondary}>
-                        {b.content}
-                      </div>
-                    </div>
+                        {b.content}</div></div>
                   )}
-                </div>
-              );
-            })
-          )}
-        </div>
+                </div>);})
+          )}</div>
       )}
 
       {/* Summary Stats */}
@@ -504,8 +447,7 @@ export default function IntelligencePage() {
         <StatCard icon={Shield} label="High Threats" value={competitors.filter(c => c.threat_level === 'high' || c.threat_level === 'critical').length}
           />
         <StatCard icon={Target} label="Sector Coverage" value={new Set(deals.map(d => d.sector).filter(Boolean)).size + ' sectors'}
-          />
-      </div>
+          /></div>
 
       <ConfirmModal
         open={!!deleteTarget}
@@ -515,8 +457,7 @@ export default function IntelligencePage() {
         variant="danger"
         onConfirm={handleDelete}
         onCancel={() => setDeleteTarget(null)} />
-    </div>
-  );
+    </div>);
 }
 
 const RECENT_BRIEF_ICONS: Record<string, React.ComponentType<{ className?: string; style?: React.CSSProperties }>> = {
@@ -524,8 +465,7 @@ const RECENT_BRIEF_ICONS: Record<string, React.ComponentType<{ className?: strin
   competitor: Shield,
   market: BarChart3,
   company: Building2,
-  deal: DollarSign,
-};
+  deal: DollarSign,};
 
 function RecentResearchSection({ briefs }: { briefs: IntelligenceBrief[] }) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -541,14 +481,11 @@ function RecentResearchSection({ briefs }: { briefs: IntelligenceBrief[] }) {
       <div className="px-4 py-3 flex items-center gap-2" style={{ background: 'var(--surface-1)', borderBottom: '1px solid var(--border-default)' }}>
         <Radar className="w-4 h-4" style={stAccent} />
         <h2 className="text-xs font-normal  tracking-wider" style={stTextTertiary}>
-          Recent Research
-        </h2>
+          Recent Research</h2>
         <span
           className="text-xs px-1.5 py-0.5 rounded ml-1"
           style={{ background: 'var(--surface-2)', color: 'var(--text-muted)' }}>
-          {recentBriefs.length}
-        </span>
-      </div>
+          {recentBriefs.length}</span></div>
       <div>
         {recentBriefs.map(brief => {
           const Icon = RECENT_BRIEF_ICONS[brief.brief_type] || Globe;
@@ -567,46 +504,37 @@ function RecentResearchSection({ briefs }: { briefs: IntelligenceBrief[] }) {
                 onMouseEnter={() => setHoveredId(brief.id)}
                 onMouseLeave={() => setHoveredId(null)}>
                 <span style={{ color: briefTypeStyle.color }}>
-                  <Icon className="w-4 h-4" />
-                </span>
+                  <Icon className="w-4 h-4" /></span>
                 <span
                   className="text-xs px-1.5 py-0.5 rounded font-normal shrink-0"
                   style={{ background: briefTypeStyle.background, color: briefTypeStyle.color }}>
-                  {brief.brief_type}
-                </span>
+                  {brief.brief_type}</span>
                 <span className="text-sm font-normal truncate" style={stTextPrimary}>
-                  {brief.subject}
-                </span>
+                  {brief.subject}</span>
                 <span className="text-xs shrink-0 ml-auto" style={stTextMuted}>
-                  {brief.updated_at ? brief.updated_at.split('T')[0] : ''}
-                </span>
+                  {brief.updated_at ? brief.updated_at.split('T')[0] : ''}</span>
                 {!isExpanded && (
                   <span className="text-xs truncate max-w-xs hidden md:inline" style={stTextMuted}>
-                    {snippet}
-                  </span>
+                    {snippet}</span>
                 )}
                 <span style={stTextMuted}>
                   {isExpanded
                     ? <ChevronDown className="w-3.5 h-3.5" />
                     : <ChevronRight className="w-3.5 h-3.5" />
-                  }
-                </span>
-              </button>
+                  }</span></button>
               {isExpanded && (
                 <div className="px-4 pb-4 pt-1" style={stBorderTop}>
                   <div
                     className="text-sm leading-relaxed whitespace-pre-wrap"
                     style={stTextSecondary}>
-                    {brief.content}
-                  </div>
+                    {brief.content}</div>
                   {brief.investor_id && (
                     <div className="mt-2 flex items-center gap-3">
                       <Link
                         href={`/investors/${brief.investor_id}`}
                         className="text-xs flex items-center gap-1"
                         style={{ color: 'var(--accent)', textDecoration: 'none' }}>
-                        View Profile
-                      </Link>
+                        View Profile</Link>
                       <Link
                         href={`/meetings/new?investor=${brief.investor_id}`}
                         className="text-xs flex items-center gap-1"
@@ -615,8 +543,7 @@ function RecentResearchSection({ briefs }: { briefs: IntelligenceBrief[] }) {
                           background: 'var(--accent-muted)', color: 'var(--accent)',
                           textDecoration: 'none',
                           fontWeight: 400, }}>
-                        Schedule Meeting
-                      </Link>
+                        Schedule Meeting</Link>
                       <Link
                         href={`/followups?investor=${brief.investor_id}`}
                         className="text-xs flex items-center gap-1"
@@ -625,18 +552,12 @@ function RecentResearchSection({ briefs }: { briefs: IntelligenceBrief[] }) {
                           background: 'var(--surface-2)', color: 'var(--text-secondary)',
                           textDecoration: 'none',
                           fontWeight: 400, }}>
-                        Follow-up
-                      </Link>
-                    </div>
-                  )}
-                </div>
+                        Follow-up</Link></div>
+                  )}</div>
               )}
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
+            </div>);
+        })}</div>
+    </div>);
 }
 
 function FormField({ name, label, placeholder, required }: { name: string; label: string; placeholder?: string; required?: boolean }) {
@@ -648,8 +569,7 @@ function FormField({ name, label, placeholder, required }: { name: string; label
         placeholder={placeholder}
         required={required}
         className="input" />
-    </div>
-  );
+    </div>);
 }
 
 function EmptyState({ message }: { message: string }) {
@@ -659,8 +579,7 @@ function EmptyState({ message }: { message: string }) {
       style={{ border: '1px dashed var(--border-default)' }}>
       <Globe className="w-8 h-8 mx-auto mb-2" style={stTextMuted} />
       <p className="text-sm" style={stTextMuted}>{message}</p>
-    </div>
-  );
+    </div>);
 }
 
 function StatCard({ icon: Icon, label, value }: { icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>; label: string; value: string | number }) {
@@ -668,11 +587,9 @@ function StatCard({ icon: Icon, label, value }: { icon: React.ComponentType<{ cl
     <div className="card-metric">
       <div className="flex items-center gap-2 mb-1">
         <Icon className="w-3.5 h-3.5" style={stTextMuted} />
-        <span className="metric-label">{label}</span>
-      </div>
+        <span className="metric-label">{label}</span></div>
       <div className="metric-value" style={{ marginTop: '2px' }}>{value}</div>
-    </div>
-  );
+    </div>);
 }
 
 function avgRoundSize(deals: MarketDeal[]): string {

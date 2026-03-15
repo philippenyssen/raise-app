@@ -30,8 +30,7 @@ export async function GET(req: NextRequest) {
       const [followups, velocities, cascades] = await Promise.all([
         getFollowups(Object.keys(filters).length > 0 ? filters : undefined),
         computeEngagementVelocity().catch(() => []),
-        computeNetworkCascades().catch(() => []),
-      ]);
+        computeNetworkCascades().catch(() => []),]);
 
       const uniqueInvestorIds = [...new Set(followups.map(f => f.investor_id))];
       const timingResults = await Promise.all(
@@ -39,8 +38,7 @@ export async function GET(req: NextRequest) {
           computeOptimalFollowupTiming(id)
             .then(timing => ({ investorId: id, ...timing }))
             .catch(() => ({ investorId: id, optimalDayOfWeek: 'Tuesday', optimalTimeOfDay: '10:00 AM', reasoning: 'Default — insufficient data.' }))
-        )
-      );
+        ));
       const timingMap: Record<string, { optimalDayOfWeek: string; optimalTimeOfDay: string; reasoning: string }> = {};
       for (const t of timingResults) {
         timingMap[t.investorId] = { optimalDayOfWeek: t.optimalDayOfWeek, optimalTimeOfDay: t.optimalTimeOfDay, reasoning: t.reasoning };
@@ -57,8 +55,7 @@ export async function GET(req: NextRequest) {
         for (const link of c.cascadeChain) {
           if (!cascadeMap[link.investorId]) {
             cascadeMap[link.investorId] = { cascadeChainLength: 0, signal: `Part of ${c.keystoneName}'s network cascade`, keystoneName: c.keystoneName, totalCascadeProbability: link.probability };
-          }
-        }
+          }}
       }
 
       const enriched = followups.map(f => ({
@@ -82,10 +79,8 @@ export async function GET(req: NextRequest) {
     console.error('GET /api/followups failed:', error);
     return NextResponse.json(
       { error: 'Failed to fetch follow-ups', detail: error instanceof Error ? error.message : 'Database error' },
-      { status: 500 }
-    );
-  }
-}
+      { status: 500 });
+  }}
 
 export async function POST(req: NextRequest) {
   let body: Record<string, unknown>;
@@ -109,8 +104,7 @@ export async function POST(req: NextRequest) {
     investor_name: investor_name || '',
     action_type: action_type as FollowupActionType,
     description,
-    due_at,
-  });
+    due_at,});
 
   emitContextChange('followup_created', `Follow-up for ${investor_name || investor_id}: ${action_type}`);
   return NextResponse.json(followup, { status: 201 });
@@ -127,9 +121,7 @@ export async function PUT(req: NextRequest) {
     id: string; status: string; outcome: string; conviction_delta: number;
   };
 
-  if (!id) {
-    return NextResponse.json({ error: 'id is required' }, { status: 400 });
-  }
+  if (!id) { return NextResponse.json({ error: 'id is required' }, { status: 400 }); }
 
   const updates: { status?: FollowupStatus; outcome?: string; conviction_delta?: number; completed_at?: string } = {};
   if (status) updates.status = status as FollowupStatus;
@@ -147,8 +139,7 @@ export async function PUT(req: NextRequest) {
     const invId = (body.investor_id as string) || searchParams.get('investor_id');
     if (invId) {
       backfillEnthusiasmFromFollowups(invId).catch(() => {/* non-blocking */});
-    }
-  }
+    }}
 
   return NextResponse.json({ ok: true });
 }

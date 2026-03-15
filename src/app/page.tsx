@@ -85,10 +85,7 @@ interface StaleInvestorItem {
   signal: string;
 }
 
-interface AtRiskData {
-  scoreReversals: ScoreReversalItem[];
-  staleInvestors: StaleInvestorItem[];
-}
+interface AtRiskData { scoreReversals: ScoreReversalItem[]; staleInvestors: StaleInvestorItem[]; }
 
 interface DealHeatResponse {
   investors: DealHeatInvestor[];
@@ -254,8 +251,7 @@ export default function Dashboard() {
       setter(val as T);
       setSectionErrors(prev => {
         if (!prev[key]) return prev;
-        const next = { ...prev }; delete next[key]; return next;
-      });
+        const next = { ...prev }; delete next[key]; return next;});
     } catch {
       setSectionErrors(prev => ({ ...prev, [key]: true }));
     }
@@ -274,8 +270,7 @@ export default function Dashboard() {
       atRisk: () => safeFetch('atRisk', '/api/at-risk', setAtRisk, silent),
       dealHeat: () => safeFetch('dealHeat', '/api/deal-heat', setDealHeat, silent),
       followups: () => safeFetch('followups', '/api/followups?view=pending', setPendingFollowups, silent),
-      velocity: () => safeFetch('velocity', '/api/velocity', setVelocity, silent),
-    };
+      velocity: () => safeFetch('velocity', '/api/velocity', setVelocity, silent),};
     return map[key]?.() ?? Promise.resolve();
   }, [safeFetch]);
 
@@ -297,8 +292,7 @@ export default function Dashboard() {
         e.preventDefault();
         const first = pulse?.criticalPath?.topAccelerations?.[0];
         if (first) executeAcceleration(first.id);
-      }
-    };
+      }};
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [pulse]);
@@ -326,32 +320,27 @@ export default function Dashboard() {
       const res = await fetch('/api/acceleration', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, status: 'executed' }),
-      });
+        body: JSON.stringify({ id, status: 'executed' }),});
       if (res.ok) {
         toast('Action marked as executed');
         fetchData(true);
       }
     } catch {
       toast('Failed to execute action', 'error');
-    }
-  }
+    }}
 
   if (loading) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
         <div>
           <div className="skeleton" style={{ height: '32px', width: '200px' }} />
-          <div className="skeleton" style={{ height: '16px', width: '280px', marginTop: 'var(--space-2)' }} />
-        </div>
+          <div className="skeleton" style={{ height: '16px', width: '280px', marginTop: 'var(--space-2)' }} /></div>
         <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: 'var(--space-3)' }}>
           {[...Array(4)].map((_, i) => (
             <div key={i} className="skeleton" style={{ height: '88px', borderRadius: 'var(--radius-lg)' }} />
-          ))}
-        </div>
+          ))}</div>
         <div className="skeleton" style={{ height: '140px', borderRadius: 'var(--radius-lg)' }} />
-      </div>
-    );
+      </div>);
   }
 
   // Derived data
@@ -381,23 +370,18 @@ export default function Dashboard() {
             Your raise at a glance
             {lastRefresh && (
               <span style={{ marginLeft: 'var(--space-3)', color: 'var(--text-muted)' }}>
-                Updated {lastRefresh.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-              </span>
-            )}
-          </p>
-        </div>
+                Updated {lastRefresh.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+            )}</p></div>
         <div className="flex items-center" style={{ gap: 'var(--space-2)' }}>
           <button
             onClick={() => fetchData(true)}
             disabled={refreshing}
             className="btn btn-secondary btn-sm">
             <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
-            {refreshing ? 'Refreshing...' : 'Refresh'}
-          </button>
+            {refreshing ? 'Refreshing...' : 'Refresh'}</button>
           <div className="relative group">
             <button className="btn btn-secondary btn-sm">
-              <Download className="w-3.5 h-3.5" /> Export
-            </button>
+              <Download className="w-3.5 h-3.5" /> Export</button>
             <div
               className="absolute right-0 mt-1 py-1 hidden group-hover:block z-10"
               style={{
@@ -417,13 +401,8 @@ export default function Dashboard() {
                     color: 'var(--text-secondary)', }}
                   onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; (e.currentTarget as HTMLElement).style.color = 'var(--text-primary)'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; }}>
-                  {t} CSV
-                </a>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
+                  {t} CSV</a>
+              ))}</div></div></div></div>
 
       {/* Empty State */}
       {data && data.totalInvestors === 0 && (
@@ -432,20 +411,15 @@ export default function Dashboard() {
           style={{ borderRadius: 'var(--radius-xl)', padding: 'var(--space-12) var(--space-8)', background: 'var(--surface-1)' }}>
           <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 400, color: 'var(--text-primary)' }}>Initialize Your Fundraise</h2>
           <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', maxWidth: '28rem', margin: 'var(--space-3) auto var(--space-6)' }}>
-            Seed the database with ASL Series C investor targets and configuration, or add investors manually.
-          </p>
+            Seed the database with ASL Series C investor targets and configuration, or add investors manually.</p>
           <div className="flex justify-center" style={{ gap: 'var(--space-3)' }}>
             <button
               onClick={seedData}
               disabled={seeding}
               className="btn btn-primary btn-md disabled:opacity-50">
-              {seeding ? 'Seeding...' : 'Seed ASL Data'}
-            </button>
+              {seeding ? 'Seeding...' : 'Seed ASL Data'}</button>
             <Link href="/investors" className="btn btn-secondary btn-md">
-              Add Manually
-            </Link>
-          </div>
-        </div>
+              Add Manually</Link></div></div>
       )}
 
       {(!data || data.totalInvestors > 0) && (
@@ -469,14 +443,10 @@ export default function Dashboard() {
                       color: 'var(--text-primary)',
                       lineHeight: 1,
                       letterSpacing: '-0.02em',
-                      fontFamily: 'var(--font-cormorant), Georgia, serif',
-                    }}>
-                      €{Math.round(stressTest.forecast.base)}M
-                    </span>
+                      fontFamily: 'var(--font-cormorant), Georgia, serif',}}>
+                      €{Math.round(stressTest.forecast.base)}M</span>
                     <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' }}>
-                      of €{stressTest.target}M target
-                    </span>
-                  </div>
+                      of €{stressTest.target}M target</span></div>
 
                   <div className="flex items-center gap-3" style={{ marginBottom: 'var(--space-5)' }}>
                     <div style={{
@@ -484,57 +454,40 @@ export default function Dashboard() {
                       height: '4px',
                       borderRadius: '2px',
                       background: 'var(--surface-3)',
-                      overflow: 'hidden',
-                    }}>
+                      overflow: 'hidden',}}>
                       <div style={{
                         width: `${pct}%`,
                         height: '100%',
                         borderRadius: '2px',
                         background: 'var(--accent)',
                         transition: 'width 0.4s ease',
-                      }} />
-                    </div>
+                      }} /></div>
                     {velocity?.summary?.raise_days_elapsed != null && velocity?.summary?.raise_target_days != null && (
                       <span style={{
                         fontSize: 'var(--font-size-xs)',
                         color: 'var(--text-tertiary)',
                         whiteSpace: 'nowrap',
-                        fontWeight: 400,
-                      }}>
-                        Day {velocity.summary.raise_days_elapsed} of {velocity.summary.raise_target_days}
-                      </span>
-                    )}
-                  </div>
+                        fontWeight: 400,}}>
+                        Day {velocity.summary.raise_days_elapsed} of {velocity.summary.raise_target_days}</span>
+                    )}</div>
 
                   <div className="grid grid-cols-3 gap-4">
                     <div>
                       <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginBottom: '4px' }}>
-                        Best case
-                      </div>
+                        Best case</div>
                       <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 300, color: 'var(--text-primary)' }}>
-                        €{Math.round(stressTest.forecast.best)}M
-                      </div>
-                    </div>
+                        €{Math.round(stressTest.forecast.best)}M</div></div>
                     <div>
                       <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginBottom: '4px' }}>
-                        Close probability
-                      </div>
+                        Close probability</div>
                       <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 300, color: 'var(--text-primary)' }}>
-                        {stressTest.closeProbability}%
-                      </div>
-                    </div>
+                        {stressTest.closeProbability}%</div></div>
                     <div>
                       <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginBottom: '4px' }}>
-                        Status
-                      </div>
+                        Status</div>
                       <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 300, color: 'var(--text-primary)' }}>
-                        {stressTest.onTrack ? 'On track' : 'Needs attention'}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            );
+                        {stressTest.onTrack ? 'On track' : 'Needs attention'}</div></div></div></div>
+              </Link>);
           })() : sectionErrors.stressTest ? (
             <SectionError label="Raise progress" onRetry={() => fetchSection('stressTest')} />
           ) : (
@@ -546,9 +499,7 @@ export default function Dashboard() {
               <div className="grid grid-cols-3 gap-4">
                 <div className="skeleton" style={{ height: '40px', borderRadius: 'var(--radius-md)' }} />
                 <div className="skeleton" style={{ height: '40px', borderRadius: 'var(--radius-md)' }} />
-                <div className="skeleton" style={{ height: '40px', borderRadius: 'var(--radius-md)' }} />
-              </div>
-            </div>
+                <div className="skeleton" style={{ height: '40px', borderRadius: 'var(--radius-md)' }} /></div></div>
           )}
 
           {/* Pulse Strip */}
@@ -559,8 +510,7 @@ export default function Dashboard() {
             <PulseCard label="This week" value={ph?.meetingsThisWeek ?? 0} sub="meetings" />
             <PulseCard label="Follow-ups due" value={ph?.overdueFollowups ?? 0} sub="overdue" />
             <PulseCard label="Data quality" value={`${ph?.dataQualityPct ?? dataQuality?.overallCompleteness ?? 0}%`} sub="completeness"
-              />
-          </div>
+              /></div>
 
           {/* Pipeline Velocity */}
           {velocity ? (
@@ -578,42 +528,31 @@ export default function Dashboard() {
                 <div className="flex items-center justify-between mb-3">
                   <h2
                     className="section-title flex items-center gap-2">
-                    <ShieldAlert className="w-4 h-4" /> Close forecast
-                  </h2>
+                    <ShieldAlert className="w-4 h-4" /> Close forecast</h2>
                   <span
                     className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
                     style={labelAccent}>
-                    Full stress test <ArrowRight className="w-3 h-3" />
-                  </span>
-                </div>
+                    Full stress test <ArrowRight className="w-3 h-3" /></span></div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div>
                     <div style={labelTertiary}>Target</div>
                     <div className="tabular-nums mt-0.5" style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>
                       EUR {stressTest.target >= 1000 ? `${(stressTest.target / 1000).toFixed(1).replace(/\.0$/, '')}Bn` : `${stressTest.target}M`}
-                    </div>
-                  </div>
+                    </div></div>
                   <div>
                     <div style={labelTertiary}>Forecast (base)</div>
                     <div className="tabular-nums mt-0.5" style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>
                       EUR {stressTest.forecast.base >= 1000 ? `${(stressTest.forecast.base / 1000).toFixed(1).replace(/\.0$/, '')}Bn` : `${Math.round(stressTest.forecast.base)}M`}
-                    </div>
-                  </div>
+                    </div></div>
                   <div>
                     <div style={labelTertiary}>Probability</div>
                     <div className="tabular-nums mt-0.5" style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>
-                      {stressTest.closeProbability}%
-                    </div>
-                  </div>
+                      {stressTest.closeProbability}%</div></div>
                   <div>
                     <div style={labelTertiary}>Status</div>
                     <div className="mt-1" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
-                      {stressTest.onTrack ? 'On track' : stressTest.healthStatus === 'red' ? 'Needs attention' : 'Monitor'}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </Link>
+                      {stressTest.onTrack ? 'On track' : stressTest.healthStatus === 'red' ? 'Needs attention' : 'Monitor'}</div>
+                  </div></div></div></Link>
           )}
 
           {/* At Risk Deals */}
@@ -622,12 +561,10 @@ export default function Dashboard() {
             <div style={cardPadding}>
               <div className="flex items-center justify-between mb-3">
                 <h2 className="section-title flex items-center gap-2">
-                  <ShieldAlert className="w-4 h-4" /> At risk
-                </h2>
+                  <ShieldAlert className="w-4 h-4" /> At risk</h2>
                 <span className="tabular-nums" style={labelTertiary}>
                   {atRisk.scoreReversals.length + atRisk.staleInvestors.length} deal{atRisk.scoreReversals.length + atRisk.staleInvestors.length !== 1 ? 's' : ''}
-                </span>
-              </div>
+                </span></div>
 
               <div className="space-y-2">
                 {atRisk.scoreReversals.map((rev) => (
@@ -637,8 +574,7 @@ export default function Dashboard() {
                     onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}
                     onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
                     <span className="mt-0.5 shrink-0" style={textTertiary}>
-                      <TrendingDown className="w-4 h-4" />
-                    </span>
+                      <TrendingDown className="w-4 h-4" /></span>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-0.5">
                         <Link
@@ -647,22 +583,15 @@ export default function Dashboard() {
                           style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}
                           onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
                           onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = ''; }}>
-                          {rev.investorName}
-                        </Link>
+                          {rev.investorName}</Link>
                         <span style={labelTertiary}>
-                          {rev.severity}
-                        </span>
-                      </div>
+                          {rev.severity}</span></div>
                       <p style={labelSecondary}>
-                        Score {rev.previousScore} → {rev.currentScore} ({rev.delta})
-                      </p>
-                    </div>
+                        Score {rev.previousScore} → {rev.currentScore} ({rev.delta})</p></div>
                     <Link
                       href={`/investors/${rev.investorId}`}
                       className="shrink-0 btn btn-secondary btn-sm flex items-center gap-1">
-                      Follow up <ChevronRight className="w-3 h-3" />
-                    </Link>
-                  </div>
+                      Follow up <ChevronRight className="w-3 h-3" /></Link></div>
                 ))}
 
                 {atRisk.staleInvestors.map((inv) => (
@@ -682,28 +611,19 @@ export default function Dashboard() {
                           style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}
                           onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
                           onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = ''; }}>
-                          {inv.investorName}
-                        </Link>
+                          {inv.investorName}</Link>
                         <span style={labelTertiary}>T{inv.tier}</span>
                         <span style={labelTertiary}>
-                          {inv.acceleration === 'gone_silent' ? 'Silent' : 'Slowing'}
-                        </span>
-                      </div>
+                          {inv.acceleration === 'gone_silent' ? 'Silent' : 'Slowing'}</span></div>
                       <p style={labelSecondary}>
                         {inv.daysSinceLastMeeting !== null
                           ? `No contact in ${inv.daysSinceLastMeeting} days`
-                          : inv.signal}
-                      </p>
-                    </div>
+                          : inv.signal}</p></div>
                     <Link
                       href={`/investors/${inv.investorId}`}
                       className="shrink-0 btn btn-secondary btn-sm flex items-center gap-1">
-                      Follow up <ChevronRight className="w-3 h-3" />
-                    </Link>
-                  </div>
-                ))}
-              </div>
-            </div>
+                      Follow up <ChevronRight className="w-3 h-3" /></Link></div>
+                ))}</div></div>
           )}
 
           {/* Top Focus Today */}
@@ -712,15 +632,12 @@ export default function Dashboard() {
             <div style={cardPadding}>
               <div className="flex items-center justify-between mb-3">
                 <h2 className="section-title flex items-center gap-2">
-                  <Target className="w-4 h-4" /> Top focus today
-                </h2>
+                  <Target className="w-4 h-4" /> Top focus today</h2>
                 <Link
                   href="/focus"
                   className="flex items-center gap-1"
                   style={labelAccent}>
-                  Full priority queue <ArrowRight className="w-3 h-3" />
-                </Link>
-              </div>
+                  Full priority queue <ArrowRight className="w-3 h-3" /></Link></div>
               <div className="space-y-2">
                 {cp.topFocus.map((item, i) => {
                   const MomentumIcon = item.momentum === 'accelerating' ? TrendingUp
@@ -749,39 +666,30 @@ export default function Dashboard() {
                             style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}
                             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
                             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = ''; }}>
-                            {item.investorName}
-                          </Link>
+                            {item.investorName}</Link>
                           <span style={labelTertiary}>T{item.tier}</span>
-                          <MomentumIcon className="w-3.5 h-3.5" style={textTertiary} />
-                        </div>
-                        <p className="truncate mt-0.5" style={labelSecondary}>{item.recommendedAction}</p>
-                      </div>
+                          <MomentumIcon className="w-3.5 h-3.5" style={textTertiary} /></div>
+                        <p className="truncate mt-0.5" style={labelSecondary}>{item.recommendedAction}</p></div>
                       <div className="flex items-center gap-2 shrink-0">
                         <span className="flex items-center gap-1" style={labelTertiary}>
-                          <Timer className="w-3 h-3" /> {item.timeEstimate}
-                        </span>
+                          <Timer className="w-3 h-3" /> {item.timeEstimate}</span>
                         <span className="tabular-nums" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>{item.focusScore}</span>
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+                    </div>);
+                })}</div></div>
           )}
 
           {/* Overnight + Conviction */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div style={cardPadding}>
               <h2 className="section-title flex items-center gap-2 mb-3">
-                <Clock className="w-4 h-4" /> Last 24 hours
-              </h2>
+                <Clock className="w-4 h-4" /> Last 24 hours</h2>
               {ov ? (
                 <div className="space-y-2.5">
                   {ov.activityFeed.map((item, i) => (
                     <div key={i} className="flex items-start gap-2.5">
                       <span className="w-1 h-1 rounded-full mt-2 shrink-0" style={{ background: 'var(--accent)' }} />
-                      <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)' }}>{item}</span>
-                    </div>
+                      <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)' }}>{item}</span></div>
                   ))}
                   {ov.statusChanges.length > 0 && (
                     <div className="mt-3 pt-3" style={stBorderTop}>
@@ -791,28 +699,21 @@ export default function Dashboard() {
                           <ArrowUpRight className="w-3 h-3 shrink-0" style={stAccent} />
                           <span style={labelSecondary}>
                             <span style={{ color: 'var(--text-primary)', fontWeight: 400 }}>{sc.investorName}</span>
-                            {' '}{sc.from !== 'unknown' ? `${formatStage(sc.from)} → ` : ''}{formatStage(sc.to)}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
+                            {' '}{sc.from !== 'unknown' ? `${formatStage(sc.from)} → ` : ''}{formatStage(sc.to)}</span></div>
+                      ))}</div>
                   )}
                   {ov.meetingNames.length > 0 && (
                     <div className="mt-2 pt-2" style={stBorderTop}>
                       <div className="mb-1" style={labelTertiary}>Meetings logged</div>
-                      <div style={labelSecondary}>{ov.meetingNames.join(', ')}</div>
-                    </div>
-                  )}
-                </div>
+                      <div style={labelSecondary}>{ov.meetingNames.join(', ')}</div></div>
+                  )}</div>
               ) : (
                 <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>Loading overnight data...</p>
-              )}
-            </div>
+              )}</div>
 
             <div style={cardPadding}>
               <h2 className="section-title flex items-center gap-2 mb-3">
-                <Activity className="w-4 h-4" /> Conviction radar
-              </h2>
+                <Activity className="w-4 h-4" /> Conviction radar</h2>
               {cv ? (
                 <div className="space-y-4">
                   <div className="flex items-center gap-4">
@@ -821,9 +722,7 @@ export default function Dashboard() {
                         {cv.avgEnthusiasm.toFixed(1)}
                         <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', fontWeight: 300 }}>/5</span>
                       </div>
-                      <div className="metric-label">Avg enthusiasm</div>
-                    </div>
-                  </div>
+                      <div className="metric-label">Avg enthusiasm</div></div></div>
 
                   <div>
                     <div className="mb-1.5" style={labelTertiary}>Momentum distribution</div>
@@ -837,15 +736,12 @@ export default function Dashboard() {
                       {cv.accelerating > 0 && <MomentumLabel count={cv.accelerating} label="Accelerating" />}
                       {cv.steady > 0 && <MomentumLabel count={cv.steady} label="Steady" />}
                       {cv.decelerating > 0 && <MomentumLabel count={cv.decelerating} label="Decelerating" />}
-                      {cv.stalled > 0 && <MomentumLabel count={cv.stalled} label="Stalled" />}
-                    </div>
-                  </div>
+                      {cv.stalled > 0 && <MomentumLabel count={cv.stalled} label="Stalled" />}</div></div>
 
                   {cv.alerts.length > 0 && (
                     <div className="mt-2 pt-2" style={stBorderTop}>
                       <div className="mb-1.5 flex items-center gap-1" style={labelSecondary}>
-                        <AlertTriangle className="w-3 h-3" /> Enthusiasm drops
-                      </div>
+                        <AlertTriangle className="w-3 h-3" /> Enthusiasm drops</div>
                       {cv.alerts.map((alert, i) => (
                         <div key={i} className="flex items-center justify-between py-1">
                           <Link
@@ -854,33 +750,23 @@ export default function Dashboard() {
                             style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)' }}
                             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
                             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-primary)'; }}>
-                            {alert.investorName}
-                          </Link>
+                            {alert.investorName}</Link>
                           <span className="tabular-nums" style={labelSecondary}>
-                            {alert.previousScore} → {alert.currentScore} ({-alert.drop})
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                            {alert.previousScore} → {alert.currentScore} ({-alert.drop})</span></div>
+                      ))}</div>
+                  )}</div>
               ) : (
                 <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>Loading conviction data...</p>
-              )}
-            </div>
-          </div>
+              )}</div></div>
 
           {/* Acceleration Alerts */}
           {cp && cp.topAccelerations.length > 0 && (
             <div style={cardPadding}>
               <div className="flex items-center justify-between mb-3">
                 <h2 className="section-title flex items-center gap-2">
-                  <Zap className="w-4 h-4" /> Acceleration alerts
-                </h2>
+                  <Zap className="w-4 h-4" /> Acceleration alerts</h2>
                 <Link href="/focus" className="flex items-center gap-1" style={labelAccent}>
-                  All actions <ArrowRight className="w-3 h-3" />
-                </Link>
-              </div>
+                  All actions <ArrowRight className="w-3 h-3" /></Link></div>
               <div className="space-y-2">
                 {cp.topAccelerations.map((accel) => {
                   const triggerLabel = accel.triggerType.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
@@ -899,26 +785,18 @@ export default function Dashboard() {
                             style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}
                             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
                             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = ''; }}>
-                            {accel.investorName}
-                          </Link>
+                            {accel.investorName}</Link>
                           <span style={labelTertiary}>
-                            {accel.urgency === 'immediate' ? 'Now' : accel.urgency}
-                          </span>
-                          <span style={labelMuted}>{triggerLabel}</span>
-                        </div>
-                        <p className="leading-relaxed" style={labelSecondary}>{accel.description}</p>
-                      </div>
+                            {accel.urgency === 'immediate' ? 'Now' : accel.urgency}</span>
+                          <span style={labelMuted}>{triggerLabel}</span></div>
+                        <p className="leading-relaxed" style={labelSecondary}>{accel.description}</p></div>
                       <button
                         onClick={() => executeAcceleration(accel.id)}
                         className="shrink-0 btn btn-secondary btn-sm flex items-center gap-1"
                         title="⌘E">
-                        Execute <ChevronRight className="w-3 h-3" />
-                      </button>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+                        Execute <ChevronRight className="w-3 h-3" /></button>
+                    </div>);
+                })}</div></div>
           )}
 
           {/* Hot Deals + Follow-ups */}
@@ -926,37 +804,29 @@ export default function Dashboard() {
             <div style={cardPadding}>
               <div className="flex items-center justify-between mb-3">
                 <h2 className="section-title flex items-center gap-2">
-                  <Flame className="w-4 h-4" /> Hot deals
-                </h2>
+                  <Flame className="w-4 h-4" /> Hot deals</h2>
                 <Link href="/dealflow" className="flex items-center gap-1" style={labelAccent}>
-                  All deals <ArrowRight className="w-3 h-3" />
-                </Link>
-              </div>
+                  All deals <ArrowRight className="w-3 h-3" /></Link></div>
               {sectionErrors.dealHeat && !dealHeat ? (
                 <SectionError label="Deal heat" onRetry={() => fetchSection('dealHeat')} />
               ) : dealHeat && dealHeat.investors.length > 0 ? (
                 <div className="space-y-1.5">
                   {dealHeat.investors.slice(0, 5).map((inv) => (
                     <HotDealRow key={inv.id} investor={inv} />
-                  ))}
-                </div>
+                  ))}</div>
               ) : (
                 <div style={{ padding: 'var(--space-2) 0' }}>
                   <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>No active deals scored yet</p>
                   <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 'var(--space-1)', opacity: 0.7 }}>Log meetings to generate deal heat scores</p>
                 </div>
-              )}
-            </div>
+              )}</div>
 
             <div style={cardPadding}>
               <div className="flex items-center justify-between mb-3">
                 <h2 className="section-title flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4" /> Upcoming follow-ups
-                </h2>
+                  <CheckCircle2 className="w-4 h-4" /> Upcoming follow-ups</h2>
                 <Link href="/followups" className="flex items-center gap-1" style={labelAccent}>
-                  All follow-ups <ArrowRight className="w-3 h-3" />
-                </Link>
-              </div>
+                  All follow-ups <ArrowRight className="w-3 h-3" /></Link></div>
               {sectionErrors.followups && pendingFollowups.length === 0 ? (
                 <SectionError label="Follow-ups" onRetry={() => fetchSection('followups')} />
               ) : pendingFollowups.length > 0 ? (
@@ -966,25 +836,20 @@ export default function Dashboard() {
                       setPendingFollowups(prev => prev.filter(f => f.id !== id));
                       fetch('/api/followups', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, status: 'completed' }) });
                     }} />
-                  ))}
-                </div>
+                  ))}</div>
               ) : (
                 <div style={{ padding: 'var(--space-2) 0' }}>
                   <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>No pending follow-ups</p>
                   <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 'var(--space-1)', opacity: 0.7 }}>Follow-ups are created after meeting debriefs</p>
                 </div>
-              )}
-            </div>
-          </div>
+              )}</div></div>
 
           {/* Pipeline */}
           <div style={cardPadding}>
             <div className="flex items-center justify-between mb-4">
               <h2 className="section-title">Pipeline</h2>
               <Link href="/pipeline" className="flex items-center gap-1" style={labelAccent}>
-                Pipeline view <Columns3 className="w-3 h-3" />
-              </Link>
-            </div>
+                Pipeline view <Columns3 className="w-3 h-3" /></Link></div>
             {sectionErrors.health && funnelStages.length === 0 ? (
               <SectionError label="Pipeline data" onRetry={() => fetchSection('health')} />
             ) : (
@@ -1000,18 +865,15 @@ export default function Dashboard() {
                       <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-secondary)' }}>{stage.label}</span>
                       <span className="tabular-nums" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>{stage.value}</span>
                     </div>
-                  </div>
-                );
+                  </div>);
               })}
               {(data?.funnel?.passed ?? 0) > 0 && (
                 <div className="w-full flex items-center justify-center mt-2 pt-2" style={{ maxWidth: '50%', borderTop: '1px solid var(--border-subtle)' }}>
                   <div className="w-full rounded-md h-7 flex items-center justify-between px-4" style={stSurface2}>
                     <span style={labelTertiary}>Passed</span>
                     <span className="tabular-nums" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>{data?.funnel?.passed ?? 0}</span>
-                  </div>
-                </div>
-              )}
-            </div>
+                  </div></div>
+              )}</div>
             )}
             {data && data.funnel.contacted > 0 && (() => {
               const wins = (data.funnel.term_sheets ?? 0) + (data.funnel.closed ?? 0);
@@ -1021,10 +883,8 @@ export default function Dashboard() {
                 <div className="flex items-center justify-between mt-3 px-1" style={labelSecondary}>
                   <span className="flex items-center gap-1"><Target className="w-3 h-3" /> Win Rate</span>
                   <span className="tabular-nums" style={{ color }}>{rate}% <span style={stTextMuted}>({wins}/{data.funnel.contacted})</span></span>
-                </div>
-              );
-            })()}
-          </div>
+                </div>);
+            })()}</div>
 
           {/* Deliverables */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -1042,11 +902,8 @@ export default function Dashboard() {
                 <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>{label}</div>
                 <div className="mt-1" style={labelMuted}>{sub}</div>
                 <div className="mt-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity" style={labelAccent}>
-                  Open <ArrowRight className="w-3 h-3" />
-                </div>
-              </Link>
-            ))}
-          </div>
+                  Open <ArrowRight className="w-3 h-3" /></div></Link>
+            ))}</div>
 
           {/* Data Quality */}
           {sectionErrors.dataQuality && !dataQuality && <SectionError label="Data quality" onRetry={() => fetchSection('dataQuality')} />}
@@ -1054,30 +911,23 @@ export default function Dashboard() {
             <div style={cardPadding}>
               <div className="flex items-center justify-between mb-3">
                 <h2 className="section-title flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4" /> Data quality
-                </h2>
+                  <ShieldCheck className="w-4 h-4" /> Data quality</h2>
                 <Link href="/investors" className="flex items-center gap-1" style={labelAccent}>
-                  Fix gaps <ArrowRight className="w-3 h-3" />
-                </Link>
-              </div>
+                  Fix gaps <ArrowRight className="w-3 h-3" /></Link></div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                 <div className="space-y-2">
                   <div>
                     <div className="metric-label mb-1">Overall completeness</div>
-                    <div className="metric-value">{dataQuality.overallCompleteness}%</div>
-                  </div>
+                    <div className="metric-value">{dataQuality.overallCompleteness}%</div></div>
                   <div>
                     <div className="metric-label mb-1">Intelligence readiness</div>
                     <div className="flex items-center gap-2">
                       <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--surface-3)' }}>
                         <div className="h-full rounded-full transition-all duration-500" style={{ width: `${dataQuality.intelligenceReadiness}%`, background: 'var(--accent)' }}
-                          />
-                      </div>
+                          /></div>
                       <span className="tabular-nums" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-secondary)' }}>{dataQuality.intelligenceReadiness}%</span>
-                    </div>
-                  </div>
-                </div>
+                    </div></div></div>
 
                 <div className="space-y-1.5">
                   <div className="mb-1" style={labelTertiary}>Field coverage</div>
@@ -1087,24 +937,17 @@ export default function Dashboard() {
                     <div key={f.field} className="flex items-center gap-2">
                       <span className="w-20 truncate" style={labelMuted}>{f.field.replace(/_/g, ' ')}</span>
                       <div className="flex-1 h-1 rounded-full overflow-hidden" style={{ background: 'var(--surface-3)' }}>
-                        <div className="h-full rounded-full" style={{ width: `${f.pct}%`, background: 'var(--accent)' }} />
-                      </div>
-                      <span className="tabular-nums w-8 text-right" style={labelMuted}>{f.pct}%</span>
-                    </div>
-                  ))}
-                </div>
+                        <div className="h-full rounded-full" style={{ width: `${f.pct}%`, background: 'var(--accent)' }} /></div>
+                      <span className="tabular-nums w-8 text-right" style={labelMuted}>{f.pct}%</span></div>
+                  ))}</div>
 
                 <div className="space-y-1.5">
                   <div className="mb-1" style={labelTertiary}>Recommendations</div>
                   {dataQuality.recommendations.slice(0, 3).map((rec, i) => (
                     <div key={i} className="flex items-start gap-1.5">
                       <span className="w-1 h-1 rounded-full mt-1.5 shrink-0" style={{ background: 'var(--accent)' }} />
-                      <span className="leading-snug" style={labelSecondary}>{rec}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
+                      <span className="leading-snug" style={labelSecondary}>{rec}</span></div>
+                  ))}</div></div></div>
           )}
 
           {/* Tasks + Activity */}
@@ -1112,12 +955,9 @@ export default function Dashboard() {
             <div style={cardPadding}>
               <div className="flex items-center justify-between mb-3">
                 <h2 className="section-title flex items-center gap-2">
-                  <ClipboardList className="w-4 h-4" /> Upcoming tasks
-                </h2>
+                  <ClipboardList className="w-4 h-4" /> Upcoming tasks</h2>
                 <Link href="/timeline" className="flex items-center gap-1" style={labelAccent}>
-                  All tasks <ArrowRight className="w-3 h-3" />
-                </Link>
-              </div>
+                  All tasks <ArrowRight className="w-3 h-3" /></Link></div>
               {sectionErrors.tasks && tasks.length === 0 ? (
                 <SectionError label="Tasks" onRetry={() => fetchSection('tasks')} />
               ) : tasks.length === 0 ? (
@@ -1136,59 +976,44 @@ export default function Dashboard() {
                         onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
                         <div className="min-w-0">
                           <div className="truncate" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)' }}>{t.title}</div>
-                          {t.investor_name && <div className="truncate" style={labelMuted}>{t.investor_name}</div>}
-                        </div>
+                          {t.investor_name && <div className="truncate" style={labelMuted}>{t.investor_name}</div>}</div>
                         <div className="flex items-center gap-2 shrink-0">
                           <span style={labelTertiary}>{t.priority}</span>
                           {t.due_date && (
                             <span style={{ fontSize: 'var(--font-size-xs)', color: overdue ? 'var(--text-primary)' : 'var(--text-muted)', fontWeight: overdue ? 400 : 300 }}>
-                              {fmtDate(t.due_date)}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
+                              {fmtDate(t.due_date)}</span>
+                          )}</div>
+                      </div>);
+                  })}</div>
+              )}</div>
 
             <div style={cardPadding}>
               <div className="flex items-center justify-between mb-3">
                 <h2 className="section-title flex items-center gap-2">
-                  <Activity className="w-4 h-4" /> Recent activity
-                </h2>
+                  <Activity className="w-4 h-4" /> Recent activity</h2>
                 <Link href="/timeline" className="flex items-center gap-1" style={labelAccent}>
-                  Full log <ArrowRight className="w-3 h-3" />
-                </Link>
-              </div>
+                  Full log <ArrowRight className="w-3 h-3" /></Link></div>
               {sectionErrors.activity && activity.length === 0 ? (
                 <SectionError label="Activity" onRetry={() => fetchSection('activity')} />
               ) : activity.length === 0 ? (
                 <div style={{ padding: 'var(--space-2) 0' }}>
-                  <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>No activity recorded yet</p>
-                </div>
+                  <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>No activity recorded yet</p></div>
               ) : (
                 <div className="space-y-1">
                   {activity.slice(0, 10).map(a => (
                     <ActivityRow key={a.id} activity={a} />
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
+                  ))}</div>
+              )}</div></div>
 
           {/* Quick Actions */}
           {(() => {
             const overdueFollowups = pendingFollowups.filter(f => {
               const dueDate = f.due_at?.split('T')[0];
-              return dueDate && dueDate < new Date().toISOString().split('T')[0];
-            });
+              return dueDate && dueDate < new Date().toISOString().split('T')[0];});
             const atRiskCount = (atRisk?.scoreReversals?.length ?? 0) + (atRisk?.staleInvestors?.length ?? 0);
             const overdueTasks = tasks.filter(t => {
               const due = t.due_date?.split('T')[0];
-              return due && due < new Date().toISOString().split('T')[0] && t.priority !== 'low';
-            });
+              return due && due < new Date().toISOString().split('T')[0] && t.priority !== 'low';});
             const completeness = dataQuality?.overallCompleteness ?? 100;
 
             const actions: { href: string; label: string; sub: string; count?: number }[] = [];
@@ -1222,20 +1047,15 @@ export default function Dashboard() {
                       <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>{a.label}</span>
                       {a.count && (
                         <span className="tabular-nums" style={labelTertiary}>
-                          {a.count}
-                        </span>
-                      )}
-                    </div>
-                    <div className="mt-1" style={labelMuted}>{a.sub}</div>
-                  </Link>
+                          {a.count}</span>
+                      )}</div>
+                    <div className="mt-1" style={labelMuted}>{a.sub}</div></Link>
                 ))}
-              </div>
-            );
+              </div>);
           })()}
         </>
       )}
-    </div>
-  );
+    </div>);
 }
 
 // ---------------------------------------------------------------------------
@@ -1249,10 +1069,8 @@ function SectionError({ label, onRetry }: { label: string; onRetry: () => void }
       <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>{label} unavailable</span>
       <button disabled={r} className="btn btn-secondary btn-sm"
         onClick={async () => { setR(true); await onRetry(); setR(false); }}>
-        <RefreshCw className={`w-3 h-3 ${r ? 'animate-spin' : ''}`} /> {r ? 'Retrying' : 'Retry'}
-      </button>
-    </div>
-  );
+        <RefreshCw className={`w-3 h-3 ${r ? 'animate-spin' : ''}`} /> {r ? 'Retrying' : 'Retry'}</button>
+    </div>);
 }
 
 function PulseCard({ label, value, sub }: {
@@ -1268,8 +1086,7 @@ function PulseCard({ label, value, sub }: {
       <div className="metric-label" style={{ marginBottom: 'var(--space-1)' }}>{label}</div>
       <div className="metric-value">{value}</div>
       <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginTop: '2px' }}>{sub}</div>
-    </div>
-  );
+    </div>);
 }
 
 function MomentumBar({ count, total, opacity, label }: {
@@ -1285,11 +1102,9 @@ function MomentumBar({ count, total, opacity, label }: {
         <span
           className="absolute inset-0 flex items-center justify-center"
           style={{ fontSize: '9px', fontWeight: 400, color: opacity > 0.5 ? 'var(--surface-0)' : 'var(--text-secondary)' }}>
-          {count}
-        </span>
+          {count}</span>
       )}
-    </div>
-  );
+    </div>);
 }
 
 function MomentumLabel({ count, label }: {
@@ -1298,8 +1113,7 @@ function MomentumLabel({ count, label }: {
   return (
     <span className="flex items-center gap-1" style={labelSecondary}>
       <span style={{ fontWeight: 400 }}>{count}</span> {label}
-    </span>
-  );
+    </span>);
 }
 
 function formatStage(stage: string): string {
@@ -1315,8 +1129,7 @@ function Sparkline({ data, width = 80, height = 24 }: { data: number[]; width?: 
   return (
     <svg width={width} height={height} style={{ display: 'inline-block', verticalAlign: 'middle' }}>
       <polyline points={points} fill="none" stroke="var(--accent)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
+    </svg>);
 }
 
 function VelocityStrip({ velocity }: { velocity: VelocityResponse }) {
@@ -1354,15 +1167,12 @@ function VelocityStrip({ velocity }: { velocity: VelocityResponse }) {
       <div className="px-5 pt-4 pb-2">
         <div className="flex items-center justify-between mb-3">
           <h2 className="section-title flex items-center gap-2">
-            <Gauge className="w-4 h-4" /> Pipeline velocity
-          </h2>
+            <Gauge className="w-4 h-4" /> Pipeline velocity</h2>
           <Link
             href="/dealflow"
             className="flex items-center gap-1 transition-opacity"
             style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)', opacity: hovered ? 1 : 0 }}>
-            Details <ArrowRight className="w-3 h-3" />
-          </Link>
-        </div>
+            Details <ArrowRight className="w-3 h-3" /></Link></div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-3">
           <div>
@@ -1370,37 +1180,25 @@ function VelocityStrip({ velocity }: { velocity: VelocityResponse }) {
             <div className="tabular-nums mt-0.5" style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>
               {s.raise_days_elapsed}
               <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', fontWeight: 300 }}>/{s.raise_target_days}d</span>
-            </div>
-          </div>
+            </div></div>
           <div>
             <div style={labelTertiary}>Avg mtgs/week</div>
             <div className="flex items-center gap-1.5 mt-0.5">
               <span className="tabular-nums" style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>{avgMeetingsPerWeek}</span>
               <span style={textTertiary}>
-                {trendUp ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
-              </span>
-            </div>
-          </div>
+                {trendUp ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}</span></div></div>
           <div>
             <div style={labelTertiary}>Velocity score</div>
             <div className="flex items-center gap-2 mt-0.5">
               <span className="tabular-nums" style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>
                 {s.avg_velocity_score}
-                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', fontWeight: 300 }}>/100</span>
-              </span>
-              {sparkData.length > 1 && <Sparkline data={sparkData} />}
-            </div>
-          </div>
+                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', fontWeight: 300 }}>/100</span></span>
+              {sparkData.length > 1 && <Sparkline data={sparkData} />}</div></div>
           <div>
             <div style={labelTertiary}>
-              {isOverTarget ? 'Over target by' : 'Days remaining'}
-            </div>
+              {isOverTarget ? 'Over target by' : 'Days remaining'}</div>
             <div className="tabular-nums mt-0.5" style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: isOverTarget ? 'var(--danger)' : daysRemaining < 30 ? 'var(--danger)' : daysRemaining < 60 ? 'var(--warning)' : 'var(--success)' }}>
-              {isOverTarget ? `+${s.raise_days_elapsed - s.raise_target_days}` : daysRemaining}d
-            </div>
-          </div>
-        </div>
-      </div>
+              {isOverTarget ? `+${s.raise_days_elapsed - s.raise_target_days}` : daysRemaining}d</div></div></div></div>
 
       <div style={{ height: '3px', background: 'var(--surface-3)' }}>
         <div
@@ -1409,22 +1207,16 @@ function VelocityStrip({ velocity }: { velocity: VelocityResponse }) {
             width: `${progressPct}%`,
             background: 'var(--accent)',
             borderRadius: progressPct < 100 ? '0 1px 1px 0' : undefined,
-          }} />
-      </div>
+          }} /></div>
 
       <div className="px-5 py-2 flex items-center gap-4" style={stBorderTop}>
         <span className="flex items-center gap-1" style={labelSecondary}>
-          <span style={{ fontWeight: 400 }}>{s.on_track}</span> on track
-        </span>
+          <span style={{ fontWeight: 400 }}>{s.on_track}</span> on track</span>
         <span className="flex items-center gap-1" style={labelTertiary}>
-          <span style={{ fontWeight: 400 }}>{s.behind}</span> behind
-        </span>
+          <span style={{ fontWeight: 400 }}>{s.behind}</span> behind</span>
         <span className="flex items-center gap-1" style={labelMuted}>
-          <span style={{ fontWeight: 400 }}>{s.at_risk}</span> at risk
-        </span>
-      </div>
-    </div>
-  );
+          <span style={{ fontWeight: 400 }}>{s.at_risk}</span> at risk</span></div>
+    </div>);
 }
 
 function HotDealRow({ investor }: { investor: DealHeatInvestor }) {
@@ -1445,28 +1237,20 @@ function HotDealRow({ investor }: { investor: DealHeatInvestor }) {
               fontSize: 'var(--font-size-sm)',
               fontWeight: 400,
               color: hovered ? 'var(--accent)' : 'var(--text-primary)', }}>
-            {investor.name}
-          </Link>
-          <span style={labelTertiary}>T{investor.tier}</span>
-        </div>
+            {investor.name}</Link>
+          <span style={labelTertiary}>T{investor.tier}</span></div>
         <div className="mt-0.5" style={labelMuted}>
-          {formatStage(investor.status)}
-        </div>
-      </div>
+          {formatStage(investor.status)}</div></div>
       <div className="flex items-center gap-2 shrink-0">
         <span className="tabular-nums" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
-          {investor.dealHeat.heat}
-        </span>
+          {investor.dealHeat.heat}</span>
         <Link
           href={`/meetings/new?investor=${investor.id}`}
           onClick={e => e.stopPropagation()}
           className="btn btn-secondary btn-sm"
           style={{ textDecoration: 'none', fontSize: 'var(--font-size-xs)' }}>
-          Schedule
-        </Link>
-      </div>
-    </div>
-  );
+          Schedule</Link></div>
+    </div>);
 }
 
 function FollowupRow({ followup, onComplete }: { followup: FollowupItem; onComplete?: (id: string) => void }) {
@@ -1484,11 +1268,9 @@ function FollowupRow({ followup, onComplete }: { followup: FollowupItem; onCompl
     data_share: 'Data Share',
     schedule_followup: 'Schedule Follow-up',
     warm_reengagement: 'Re-engagement',
-    milestone_update: 'Milestone Update',
-  };
+    milestone_update: 'Milestone Update',};
 
-  const ActionIcon =
-    followup.action_type === 'thank_you' ? Mail :
+  const ActionIcon = followup.action_type === 'thank_you' ? Mail :
     followup.action_type === 'schedule_followup' ? Calendar :
     followup.action_type === 'data_share' ? FileText :
     MessageSquare;
@@ -1511,28 +1293,21 @@ function FollowupRow({ followup, onComplete }: { followup: FollowupItem; onCompl
           onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.background = 'var(--accent-muted)'; }}
           onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border-default)'; e.currentTarget.style.background = 'transparent'; }}
           title="Mark done">
-          {completing && <CheckCircle2 className="w-3 h-3" style={stAccent} />}
-        </button>
+          {completing && <CheckCircle2 className="w-3 h-3" style={stAccent} />}</button>
       )}
       <span className="shrink-0" style={textTertiary}>
-        <ActionIcon className="w-4 h-4" />
-      </span>
+        <ActionIcon className="w-4 h-4" /></span>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
           <Link
             href={`/investors/${followup.investor_id}`}
             className="truncate transition-colors"
             style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: hovered ? 'var(--accent)' : 'var(--text-primary)' }}>
-            {followup.investor_name || 'Unknown'}
-          </Link>
+            {followup.investor_name || 'Unknown'}</Link>
           <span style={labelTertiary}>
-            {actionLabel[followup.action_type] || followup.action_type.replace(/_/g, ' ')}
-          </span>
-        </div>
+            {actionLabel[followup.action_type] || followup.action_type.replace(/_/g, ' ')}</span></div>
         <p className="truncate mt-0.5" style={labelSecondary}>
-          {followup.description}
-        </p>
-      </div>
+          {followup.description}</p></div>
       <div className="shrink-0 flex items-center gap-2">
         <div className="text-right">
           <div className="tabular-nums" style={{ fontSize: 'var(--font-size-xs)', color: isOverdue ? 'var(--text-primary)' : 'var(--text-muted)', fontWeight: isOverdue ? 400 : 300 }}>
@@ -1542,19 +1317,14 @@ function FollowupRow({ followup, onComplete }: { followup: FollowupItem; onCompl
               ? 'Today'
               : daysUntil === 1
               ? 'Tomorrow'
-              : `${daysUntil}d`}
-          </div>
-        </div>
+              : `${daysUntil}d`}</div></div>
         <Link
           href={`/followups?investor=${followup.investor_id}`}
           onClick={e => e.stopPropagation()}
           className="btn btn-secondary btn-sm"
           style={{ textDecoration: 'none', fontSize: 'var(--font-size-xs)' }}>
-          Act
-        </Link>
-      </div>
-    </div>
-  );
+          Act</Link></div>
+    </div>);
 }
 
 function ActivityRow({ activity }: { activity: ActivityItem }) {
@@ -1566,8 +1336,7 @@ function ActivityRow({ activity }: { activity: ActivityItem }) {
     followup_completed: CheckCircle2,
     investor_added: UserPlus,
     followup_created: Mail,
-    meeting_created: Calendar,
-  };
+    meeting_created: Calendar,};
 
   const Icon = eventIcons[activity.event_type] || Activity;
   const timeAgo = formatTimeAgo(activity.created_at);
@@ -1579,8 +1348,7 @@ function ActivityRow({ activity }: { activity: ActivityItem }) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}>
       <span className="mt-0.5 shrink-0" style={textTertiary}>
-        <Icon className="w-3.5 h-3.5" />
-      </span>
+        <Icon className="w-3.5 h-3.5" /></span>
       <div className="flex-1 min-w-0">
         <div className="truncate" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)' }}>{activity.subject}</div>
         <div className="flex items-center gap-2" style={labelMuted}>
@@ -1588,11 +1356,8 @@ function ActivityRow({ activity }: { activity: ActivityItem }) {
             <span style={stTextSecondary}>{activity.investor_name}</span>
           )}
           <span>{activity.event_type.replace(/_/g, ' ')}</span>
-          <span>{timeAgo}</span>
-        </div>
-      </div>
-    </div>
-  );
+          <span>{timeAgo}</span></div></div>
+    </div>);
 }
 
 function formatTimeAgo(dateStr: string): string {

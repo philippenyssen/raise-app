@@ -26,9 +26,7 @@ function todayStr(): string {
 }
 
 export async function GET() {
-  if (!checkRateLimit('briefing')) {
-    return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
-  }
+  if (!checkRateLimit('briefing')) { return NextResponse.json({ error: 'Too many requests' }, { status: 429 }); }
   try {
     // ═══════════════════════════════════════════════════════════════════
     // 1. GATHER ALL DATA (parallel, resilient — each source independent)
@@ -55,8 +53,7 @@ export async function GET() {
       computeTemporalTrends(),
       computeRaiseForecast(),
       detectFomoDynamics(),
-      computePipelineFlow(),
-    ]);
+      computePipelineFlow(),]);
 
     const investors = investorsResult.status === 'fulfilled' ? investorsResult.value : [];
     const allMeetings = meetingsResult.status === 'fulfilled' ? meetingsResult.value : [];
@@ -101,8 +98,7 @@ export async function GET() {
           keyPoint,
           enthusiasm: inv?.enthusiasm ?? 0,
           meetingCount,
-        };
-      });
+        };});
 
     // ═══════════════════════════════════════════════════════════════════
     // 3. PIPELINE SNAPSHOT
@@ -139,8 +135,7 @@ export async function GET() {
       inDD: inDDCount,
       termSheets: termSheetCount,
       totalTarget,
-      forecast: forecastStr,
-    };
+      forecast: forecastStr,};
 
     // ═══════════════════════════════════════════════════════════════════
     // 4. URGENT ACTIONS
@@ -163,8 +158,7 @@ export async function GET() {
         investorName: m.investorName,
         category: 'preparation',
         link: m.prepLink,
-        timeEstimate: '15-30 min',
-      });
+        timeEstimate: '15-30 min',});
     }
 
     // (b) Overdue follow-ups (sorted by oldest first)
@@ -181,8 +175,7 @@ export async function GET() {
         investorName: fu.investor_name,
         category: 'followup',
         link: `/investors/${fu.investor_id}`,
-        timeEstimate: '10-20 min',
-      });
+        timeEstimate: '10-20 min',});
     }
 
     // (c) Compound signals requiring escalation
@@ -193,8 +186,7 @@ export async function GET() {
         investorName: null,
         category: 'escalation',
         link: '/dealflow',
-        timeEstimate: '20-30 min',
-      });
+        timeEstimate: '20-30 min',});
     }
 
     // (d) Stale T1-T2 investors (no meeting in 14+ days, still active mid-funnel+)
@@ -204,15 +196,13 @@ export async function GET() {
     for (const m of allMeetings) {
       if (!meetingsByInvestor[m.investor_id] || m.date > meetingsByInvestor[m.investor_id]) {
         meetingsByInvestor[m.investor_id] = m.date;
-      }
-    }
+      }}
 
     const staleHighTier = investors
       .filter(i =>
         i.tier <= 2 &&
         !['passed', 'dropped', 'closed', 'identified'].includes(i.status) &&
-        (!meetingsByInvestor[i.id] || (now - new Date(meetingsByInvestor[i.id]).getTime()) / msPerDay > 14)
-      )
+        (!meetingsByInvestor[i.id] || (now - new Date(meetingsByInvestor[i.id]).getTime()) / msPerDay > 14))
       .sort((a, b) => a.tier - b.tier)
       .slice(0, 3);
 
@@ -229,14 +219,12 @@ export async function GET() {
         investorName: inv.name,
         category: 'outreach',
         link: `/investors/${inv.id}`,
-        timeEstimate: '10-15 min',
-      });
+        timeEstimate: '10-15 min',});
     }
 
     // Sort: preparation first, then escalation, followup, outreach, meeting
     const categoryOrder: Record<string, number> = {
-      preparation: 0, escalation: 1, followup: 2, outreach: 3, meeting: 4,
-    };
+      preparation: 0, escalation: 1, followup: 2, outreach: 3, meeting: 4,};
     urgentActions.sort((a, b) => (categoryOrder[a.category] ?? 5) - (categoryOrder[b.category] ?? 5));
 
     const topActions = urgentActions.slice(0, 5);
@@ -265,8 +253,7 @@ export async function GET() {
       alerts.push({
         type: 'opportunity',
         title: `FOMO leverage: ${fomo.advancingInvestor} advancing`,
-        detail: fomo.recommendation,
-      });
+        detail: fomo.recommendation,});
     }
 
     // Temporal declining trends -> warning
@@ -275,10 +262,8 @@ export async function GET() {
         alerts.push({
           type: 'warning',
           title: `Trend alert: ${trend.metric}`,
-          detail: trend.alert!,
-        });
-      }
-    }
+          detail: trend.alert!,});
+      }}
 
     // Pipeline bottleneck warning
     if (pipelineFlow && pipelineFlow.bottleneckStage) {
@@ -312,13 +297,11 @@ export async function GET() {
       } else {
         momentum = 'steady';
         momentumChange = 'Holding steady — no significant changes';
-      }
-    }
+      }}
 
     // Check for stalled: no meetings in 7+ days with active pipeline
     const recentMeetings = allMeetings.filter(m => {
-      return (now - new Date(m.date).getTime()) / msPerDay <= 7;
-    });
+      return (now - new Date(m.date).getTime()) / msPerDay <= 7;});
     if (recentMeetings.length === 0 && activeInvestors.length > 0) {
       momentum = 'stalled';
       momentumChange = 'No meetings in the past 7 days — process has stalled';
@@ -329,8 +312,7 @@ export async function GET() {
       momentum = 'accelerating';
       if (!momentumChange.includes('accelerat')) {
         momentumChange = 'Pipeline velocity accelerating' + (momentumChange ? `. ${momentumChange}` : '');
-      }
-    }
+      }}
 
     // ═══════════════════════════════════════════════════════════════════
     // 7. AI-GENERATED SUMMARY
@@ -357,8 +339,7 @@ export async function GET() {
         companyName: config?.company_name || 'Aerospacelab',
         equityTarget: config?.equity_amount || '250M',
         recentMeetingCount: recentMeetings.length,
-        pipelineVelocity: pipelineFlow?.velocityTrend || 'unknown',
-      };
+        pipelineVelocity: pipelineFlow?.velocityTrend || 'unknown',};
 
       const response = await getAIClient().messages.create({
         model: 'claude-sonnet-4-20250514',
@@ -377,8 +358,7 @@ Rules:
 - If things are going well, say so briefly
 - Use specific numbers
 - No greetings, no sign-offs, just the summary`,
-        }],
-      });
+        }],});
 
       todaySummary = response.content[0].type === 'text'
         ? response.content[0].text
@@ -409,13 +389,10 @@ Rules:
       alerts,
       momentum,
       momentumChange,
-      generatedAt: new Date().toISOString(),
-    });
+      generatedAt: new Date().toISOString(),});
   } catch (error) {
     console.error('Briefing API error:', error);
     return NextResponse.json(
       { error: 'Failed to generate briefing', detail: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
-    );
-  }
-}
+      { status: 500 });
+  }}

@@ -4,11 +4,7 @@ import { useEffect, useState } from 'react';
 import { Shield, ChevronDown, ChevronRight, Calendar, Users, Hash } from 'lucide-react';
 import { labelTertiary, stFontSm, stTextMuted, stTextPrimary, stTextTertiary } from '@/lib/styles';
 
-interface CompetitorMeeting {
-  meeting_id: string;
-  investor_name: string;
-  date: string;
-}
+interface CompetitorMeeting { meeting_id: string; investor_name: string; date: string; }
 
 interface CompetitorEntry {
   name: string;
@@ -57,29 +53,22 @@ export default function CompetitivePage() {
       <div>
         <h1 className="page-title">Competitive Intelligence</h1>
         <p className="page-subtitle" style={stFontSm}>
-          Competitors mentioned across investor meetings
-        </p>
-      </div>
+          Competitors mentioned across investor meetings</p></div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 card-stagger">
         <div className="card-metric" style={{ padding: 'var(--space-3)' }}>
           <div className="metric-label">Total Mentions</div>
-          <div className="metric-value" style={{ marginTop: '2px' }}>{totalMentions}</div>
-        </div>
+          <div className="metric-value" style={{ marginTop: '2px' }}>{totalMentions}</div></div>
         <div className="card-metric" style={{ padding: 'var(--space-3)' }}>
           <div className="metric-label">Unique Competitors</div>
-          <div className="metric-value" style={{ marginTop: '2px' }}>{uniqueCompetitors}</div>
-        </div>
+          <div className="metric-value" style={{ marginTop: '2px' }}>{uniqueCompetitors}</div></div>
         <div className="card-metric" style={{ padding: 'var(--space-3)' }}>
           <div className="metric-label">Top Competitor</div>
-          <div className="metric-value" style={{ marginTop: '2px', fontSize: 'var(--font-size-lg)' }}>{topCompetitor}</div>
-        </div>
+          <div className="metric-value" style={{ marginTop: '2px', fontSize: 'var(--font-size-lg)' }}>{topCompetitor}</div></div>
         <div className="card-metric" style={{ padding: 'var(--space-3)' }}>
           <div className="metric-label">Meetings Scanned</div>
-          <div className="metric-value" style={{ marginTop: '2px' }}>{data?.total_meetings_scanned ?? 0}</div>
-        </div>
-      </div>
+          <div className="metric-value" style={{ marginTop: '2px' }}>{data?.total_meetings_scanned ?? 0}</div></div></div>
 
       {/* Date Filters */}
       <div className="flex flex-wrap gap-3 items-end">
@@ -90,8 +79,7 @@ export default function CompetitivePage() {
             value={fromDate}
             onChange={e => setFromDate(e.target.value)}
             className="input"
-            style={{ width: '160px' }} />
-        </div>
+            style={{ width: '160px' }} /></div>
         <div>
           <label style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', display: 'block', marginBottom: '4px' }}>To</label>
           <input
@@ -99,36 +87,29 @@ export default function CompetitivePage() {
             value={toDate}
             onChange={e => setToDate(e.target.value)}
             className="input"
-            style={{ width: '160px' }} />
-        </div>
+            style={{ width: '160px' }} /></div>
         <button
           onClick={handleFilter}
           className="btn btn-secondary btn-md">
-          Apply Filter
-        </button>
+          Apply Filter</button>
         {(fromDate || toDate) && (
           <button
             onClick={() => { setFromDate(''); setToDate(''); setTimeout(fetchData, 0); }}
             className="btn btn-secondary btn-md"
             style={stTextTertiary}>
-            Clear
-          </button>
-        )}
-      </div>
+            Clear</button>
+        )}</div>
 
       {/* Competitor Table */}
       {loading ? (
         <div className="card" style={{ padding: 'var(--space-8)', textAlign: 'center' }}>
-          <p style={stTextTertiary}>Loading competitive intelligence...</p>
-        </div>
+          <p style={stTextTertiary}>Loading competitive intelligence...</p></div>
       ) : !data || data.competitors.length === 0 ? (
         <div className="card" style={{ padding: 'var(--space-8)', textAlign: 'center' }}>
           <div className="space-y-3">
             <Shield className="w-8 h-8 mx-auto" style={stTextMuted} />
             <p style={stTextTertiary}>
-              No competitive mentions recorded yet. Log meeting outcomes with competitor mentions to populate this view.
-            </p>
-          </div>
+              No competitive mentions recorded yet. Log meeting outcomes with competitor mentions to populate this view.</p></div>
         </div>
       ) : (
         <div className="card" style={{ overflow: 'hidden' }}>
@@ -147,8 +128,7 @@ export default function CompetitivePage() {
             <div>Competitor</div>
             <div style={{ textAlign: 'center' }}>Mentions</div>
             <div>Investors</div>
-            <div>Latest</div>
-          </div>
+            <div>Latest</div></div>
 
           {/* Table Rows */}
           {data.competitors.map((c) => {
@@ -173,11 +153,9 @@ export default function CompetitivePage() {
                     {isExpanded
                       ? <ChevronDown className="w-4 h-4" />
                       : <ChevronRight className="w-4 h-4" />
-                    }
-                  </div>
+                    }</div>
                   <div style={{ fontWeight: 400, color: 'var(--text-primary)', fontSize: 'var(--font-size-sm)' }}>
-                    {c.name}
-                  </div>
+                    {c.name}</div>
                   <div style={{ textAlign: 'center' }}>
                     <span
                       style={{
@@ -189,9 +167,7 @@ export default function CompetitivePage() {
                         color: c.mention_count >= 3 ? 'var(--danger)' : c.mention_count >= 2 ? 'var(--warning)' : 'var(--text-secondary)',
                       }}>
                       <span style={{ color: 'inherit' }}><Hash className="w-3 h-3" /></span>
-                      {c.mention_count}
-                    </span>
-                  </div>
+                      {c.mention_count}</span></div>
                   <div className="flex flex-wrap gap-1">
                     {c.investors.map(inv => (
                       <span
@@ -202,14 +178,10 @@ export default function CompetitivePage() {
                           borderRadius: 'var(--radius-sm)',
                           background: 'var(--surface-2)',
                           color: 'var(--text-secondary)', }}>
-                        {inv}
-                      </span>
-                    ))}
-                  </div>
+                        {inv}</span>
+                    ))}</div>
                   <div style={labelTertiary}>
-                    {c.latest_mention}
-                  </div>
-                </div>
+                    {c.latest_mention}</div></div>
 
                 {/* Expanded Detail */}
                 {isExpanded && (
@@ -219,8 +191,7 @@ export default function CompetitivePage() {
                       background: 'var(--surface-1)',
                       borderBottom: '1px solid var(--border-subtle)', }}>
                     <div style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-muted)', marginBottom: 'var(--space-2)', letterSpacing: '0.01em' }}>
-                      Meeting Context
-                    </div>
+                      Meeting Context</div>
                     <div className="space-y-2">
                       {c.meetings.map((mtg, i) => (
                         <div
@@ -234,17 +205,11 @@ export default function CompetitivePage() {
                           <span style={stTextMuted}><Calendar className="w-3.5 h-3.5" /></span>
                           <span style={{ color: 'var(--text-tertiary)', minWidth: '80px' }}>{mtg.date}</span>
                           <span style={stTextMuted}><Users className="w-3.5 h-3.5" /></span>
-                          <span style={stTextPrimary}>{mtg.investor_name}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+                          <span style={stTextPrimary}>{mtg.investor_name}</span></div>
+                      ))}</div></div>
                 )}
-              </div>
-            );
-          })}
-        </div>
+              </div>);
+          })}</div>
       )}
-    </div>
-  );
+    </div>);
 }

@@ -132,8 +132,7 @@ function determineIntervention(investor: Investor, momentum: string): { interven
     case 'in_dd': return { intervention: 'Accelerate DD responses and push for term sheet timeline', timeCost: '1hr prep + 30min call' };
     case 'term_sheet': return { intervention: 'Negotiate key terms and push for close', timeCost: '2hr meeting + 1hr prep' };
     default: return { intervention: 'Review and determine next step', timeCost: '15min review' };
-  }
-}
+  }}
 
 function estimateProbabilityLift(currentStatus: string): number {
   const currentIdx = PIPELINE_ORDER.indexOf(currentStatus);
@@ -170,8 +169,7 @@ export async function GET() {
             const blended = Math.round((0.7 * hardcoded + 0.3 * empirical) * 1000) / 1000;
             blendedWeights[status] = blended;
             adjustments.push({ status, hardcoded, empirical, blended });
-          }
-        }
+          }}
         calibration.blendedWeights = blendedWeights;
         calibration.adjustments = adjustments;
       }
@@ -181,8 +179,7 @@ export async function GET() {
       db.execute(`SELECT * FROM investors ORDER BY tier ASC, name ASC`),
       loadAllMeetings(db),
       db.execute(`SELECT investor_id, detail, created_at FROM activity_log WHERE event_type = 'status_changed' ORDER BY created_at ASC`),
-      loadRaiseConfig(db),
-    ]);
+      loadRaiseConfig(db),]);
 
     const investors = investorRows.rows as unknown as Investor[];
     const activities = activityRows.rows as unknown as Array<{ investor_id: string; detail: string; created_at: string }>;
@@ -197,8 +194,7 @@ export async function GET() {
       if (movedMatch && a.investor_id) {
         if (!stageEntryTimes[a.investor_id]) stageEntryTimes[a.investor_id] = {};
         stageEntryTimes[a.investor_id][movedMatch[1].toLowerCase()] = a.created_at;
-      }
-    });
+      }});
 
     for (const invId of Object.keys(stageEntryTimes)) {
       const entries = stageEntryTimes[invId];
@@ -209,10 +205,8 @@ export async function GET() {
           if (days >= 0 && days < 365) {
             if (!stageDurations[stage]) stageDurations[stage] = [];
             stageDurations[stage].push(days);
-          }
-        }
-      }
-    }
+          }}
+      }}
 
     const avgStageDays: Record<string, number> = {};
     for (const [stage, durations] of Object.entries(stageDurations)) {
@@ -234,8 +228,7 @@ export async function GET() {
         closeProbability: Math.round(closeProbability * 1000) / 10,
         expectedValue: Math.round(closeProbability * expectedCheck * 10) / 10,
         predictedCloseDate: predictedClose ? predictedClose.toISOString().split('T')[0] : null,
-        bottleneck: determineBottleneck(inv, momentum, meetings),
-      });
+        bottleneck: determineBottleneck(inv, momentum, meetings),});
     }
 
     investorForecasts.sort((a, b) => b.expectedValue - a.expectedValue);
@@ -318,8 +311,7 @@ export async function GET() {
       const investorsNotOnTime = investorForecasts.filter(f => f.predictedCloseDate && new Date(f.predictedCloseDate) > new Date(targetCloseDate!));
       if (investorsNotOnTime.length > 0) {
         risks.push({ description: `${investorsNotOnTime.length} investor(s) predicted to close after target date (${targetCloseDate})`, probability: daysToTarget < 60 ? 'High' : 'Medium', impact: `€${Math.round(investorsNotOnTime.reduce((s, f) => s + f.expectedValue, 0))}M at risk of missing timeline`, mitigation: 'Accelerate DD for late investors or identify faster-moving alternatives' });
-      }
-    }
+      }}
     const engagedPlusCount = investorForecasts.filter(f => ['engaged', 'in_dd', 'term_sheet', 'closed'].includes(f.status)).length;
     if (engagedPlusCount < 3) {
       risks.push({ description: `Thin advanced pipeline: only ${engagedPlusCount} investor(s) at engaged+ stage`, probability: 'High', impact: 'Insufficient competitive tension —may result in weaker terms', mitigation: 'Accelerate top-of-funnel investors through to engagement stage' });
@@ -363,10 +355,8 @@ export async function GET() {
         enabled: calibration.enabled, resolvedCount: calibration.resolvedCount, adjustments: calibration.adjustments,
         note: calibration.enabled ? `Weights auto-calibrated from ${calibration.resolvedCount} resolved predictions (70% hardcoded + 30% empirical)` : calibration.resolvedCount > 0 ? `${calibration.resolvedCount} resolved predictions — need 5+ for auto-calibration` : 'No resolved predictions yet — using hardcoded weights',
       },
-      generatedAt: new Date().toISOString(),
-    });
+      generatedAt: new Date().toISOString(),});
   } catch (error) {
     console.error('Stress test computation error:', error);
     return NextResponse.json({ error: 'Failed to compute stress test', detail: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 });
-  }
-}
+  }}

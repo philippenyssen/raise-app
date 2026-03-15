@@ -6,8 +6,7 @@ import { emitContextChange } from '@/lib/context-bus';
 const ALLOWED_UPDATE_FIELDS = new Set([
   'name', 'type', 'tier', 'status', 'partner', 'fund_size', 'check_size_range',
   'sector_thesis', 'warm_path', 'ic_process', 'speed', 'portfolio_conflicts',
-  'notes', 'enthusiasm',
-]);
+  'notes', 'enthusiasm',]);
 
 function filterFields<T extends Record<string, unknown>>(data: T, allowed: Set<string>): Partial<T> {
   const filtered: Record<string, unknown> = {};
@@ -32,10 +31,8 @@ export async function GET(req: NextRequest) {
     console.error('GET /api/investors failed:', error);
     return NextResponse.json(
       { error: 'Failed to fetch investors', detail: error instanceof Error ? error.message : 'Database error' },
-      { status: 500 }
-    );
-  }
-}
+      { status: 500 });
+  }}
 
 export async function POST(req: NextRequest) {
   let body: Record<string, unknown>;
@@ -80,10 +77,8 @@ export async function POST(req: NextRequest) {
     console.error('POST /api/investors failed:', error);
     return NextResponse.json(
       { error: 'Failed to create investor', detail: error instanceof Error ? error.message : 'Database error' },
-      { status: 500 }
-    );
-  }
-}
+      { status: 500 });
+  }}
 
 export async function PUT(req: NextRequest) {
   let body: Record<string, unknown>;
@@ -107,8 +102,7 @@ export async function PUT(req: NextRequest) {
     const enth = rawUpdates.enthusiasm as number;
     if (typeof enth !== 'number' || enth < 0 || enth > 5) {
       return NextResponse.json({ error: 'enthusiasm must be a number between 0 and 5' }, { status: 400 });
-    }
-  }
+    }}
 
   const updates = filterFields(rawUpdates, ALLOWED_UPDATE_FIELDS);
   if (Object.keys(updates).length === 0) {
@@ -139,10 +133,8 @@ export async function PUT(req: NextRequest) {
     console.error('PUT /api/investors failed:', error);
     return NextResponse.json(
       { error: 'Failed to update investor', detail: error instanceof Error ? error.message : 'Database error' },
-      { status: 500 }
-    );
-  }
-}
+      { status: 500 });
+  }}
 
 export async function DELETE(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -151,16 +143,12 @@ export async function DELETE(req: NextRequest) {
 
   try {
     const investor = await getInvestor(id);
-    if (!investor) {
-      return NextResponse.json({ error: `Investor ${id} not found` }, { status: 404 });
-    }
+    if (!investor) { return NextResponse.json({ error: `Investor ${id} not found` }, { status: 404 }); }
     await deleteInvestor(id);
     return NextResponse.json({ ok: true });
   } catch (error) {
     console.error('DELETE /api/investors failed:', error);
     return NextResponse.json(
       { error: 'Failed to delete investor', detail: error instanceof Error ? error.message : 'Database error' },
-      { status: 500 }
-    );
-  }
-}
+      { status: 500 });
+  }}

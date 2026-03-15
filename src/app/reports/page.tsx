@@ -4,12 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Printer, Loader2, ClipboardList, Users2, BarChart3 } from 'lucide-react';
 import { stAccent, stTextMuted, stTextPrimary, stTextSecondary } from '@/lib/styles';
 
-interface InvestorOption {
-  id: string;
-  name: string;
-  tier: number;
-  status: string;
-}
+interface InvestorOption { id: string; name: string; tier: number; status: string; }
 
 export default function ReportsPage() {
   const [investors, setInvestors] = useState<InvestorOption[]>([]);
@@ -29,8 +24,7 @@ export default function ReportsPage() {
       .then(r => r.json())
       .then(data => {
         const list = (Array.isArray(data) ? data : data.investors || []) as InvestorOption[];
-        setInvestors(list.filter(i => i.status !== 'passed' && i.status !== 'dropped'));
-      })
+        setInvestors(list.filter(i => i.status !== 'passed' && i.status !== 'dropped'));})
       .catch(() => {});
   }, []);
 
@@ -65,8 +59,7 @@ export default function ReportsPage() {
       setError(err instanceof Error ? err.message : 'Failed to generate report');
     } finally {
       setLoading(null);
-    }
-  }
+    }}
 
   function handlePrint() {
     if (!iframeRef.current) return;
@@ -74,14 +67,12 @@ export default function ReportsPage() {
     if (iframeWindow) {
       iframeWindow.focus();
       iframeWindow.print();
-    }
-  }
+    }}
 
   const reportTypeLabels: Record<string, string> = {
     board: 'Board Update',
     team: 'Weekly Agenda',
-    investor_brief: 'Investor Brief',
-  };
+    investor_brief: 'Investor Brief',};
 
   return (
     <div className="space-y-6 page-content">
@@ -89,9 +80,7 @@ export default function ReportsPage() {
       <div>
         <h1 className="page-title">Reports</h1>
         <p className="text-sm mt-1" style={stTextMuted}>
-          Generate structured reports from your fundraise data
-        </p>
-      </div>
+          Generate structured reports from your fundraise data</p></div>
 
       {/* Report Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -99,10 +88,8 @@ export default function ReportsPage() {
         <div className="rounded-xl p-5" style={{ backgroundColor: 'color-mix(in srgb, var(--surface-1) 50%, transparent)' }}>
           <div className="flex items-center gap-3 mb-3">
             <span className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'var(--success-muted)' }}>
-              <BarChart3 className="w-4 h-4" style={stTextSecondary} />
-            </span>
-            <h2 className="font-normal text-sm" style={stTextPrimary}>Board Update</h2>
-          </div>
+              <BarChart3 className="w-4 h-4" style={stTextSecondary} /></span>
+            <h2 className="font-normal text-sm" style={stTextPrimary}>Board Update</h2></div>
           <p className="text-xs leading-relaxed mb-4" style={stTextMuted}>
             Generate a 1-page board update summarizing process health, pipeline funnel, top focus investors, conviction trends, and key risks.
           </p>
@@ -117,18 +104,14 @@ export default function ReportsPage() {
             onMouseEnter={() => setHover('boardBtn', true)}
             onMouseLeave={() => setHover('boardBtn', false)}>
             {loading === 'board' ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-            {loading === 'board' ? 'Generating...' : 'Generate'}
-          </button>
-        </div>
+            {loading === 'board' ? 'Generating...' : 'Generate'}</button></div>
 
         {/* Weekly Agenda */}
         <div className="rounded-xl p-5" style={{ backgroundColor: 'color-mix(in srgb, var(--surface-1) 50%, transparent)' }}>
           <div className="flex items-center gap-3 mb-3">
             <span className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'color-mix(in srgb, var(--accent) 20%, transparent)' }}>
-              <ClipboardList className="w-4 h-4" style={stAccent} />
-            </span>
-            <h2 className="font-normal text-sm" style={stTextPrimary}>Weekly Agenda</h2>
-          </div>
+              <ClipboardList className="w-4 h-4" style={stAccent} /></span>
+            <h2 className="font-normal text-sm" style={stTextPrimary}>Weekly Agenda</h2></div>
           <p className="text-xs leading-relaxed mb-4" style={stTextMuted}>
             Generate team priorities and action items for this week, including overdue follow-ups, top objections, and tasks due.
           </p>
@@ -143,21 +126,16 @@ export default function ReportsPage() {
             onMouseEnter={() => setHover('teamBtn', true)}
             onMouseLeave={() => setHover('teamBtn', false)}>
             {loading === 'team' ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-            {loading === 'team' ? 'Generating...' : 'Generate'}
-          </button>
-        </div>
+            {loading === 'team' ? 'Generating...' : 'Generate'}</button></div>
 
         {/* Investor Brief */}
         <div className="rounded-xl p-5" style={{ backgroundColor: 'color-mix(in srgb, var(--surface-1) 50%, transparent)' }}>
           <div className="flex items-center gap-3 mb-3">
             <span className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'color-mix(in srgb, var(--accent-muted) 20%, transparent)' }}>
-              <Users2 className="w-4 h-4" style={{ color: 'var(--accent-muted)' }} />
-            </span>
-            <h2 className="font-normal text-sm" style={stTextPrimary}>Investor Brief</h2>
-          </div>
+              <Users2 className="w-4 h-4" style={{ color: 'var(--accent-muted)' }} /></span>
+            <h2 className="font-normal text-sm" style={stTextPrimary}>Investor Brief</h2></div>
           <p className="text-xs leading-relaxed mb-3" style={stTextMuted}>
-            Generate a detailed brief for a specific investor with profile, score, meetings, objections, and assessment.
-          </p>
+            Generate a detailed brief for a specific investor with profile, score, meetings, objections, and assessment.</p>
           <select
             value={selectedInvestor}
             onChange={e => setSelectedInvestor(e.target.value)}
@@ -166,10 +144,8 @@ export default function ReportsPage() {
             <option value="">Select investor...</option>
             {investors.map(inv => (
               <option key={inv.id} value={inv.id}>
-                {inv.name} (Tier {inv.tier})
-              </option>
-            ))}
-          </select>
+                {inv.name} (Tier {inv.tier})</option>
+            ))}</select>
           <button
             onClick={() => generateReport('investor_brief')}
             disabled={loading !== null || !selectedInvestor}
@@ -181,16 +157,12 @@ export default function ReportsPage() {
             onMouseEnter={() => setHover('invBtn', true)}
             onMouseLeave={() => setHover('invBtn', false)}>
             {loading === 'investor_brief' ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-            {loading === 'investor_brief' ? 'Generating...' : 'Generate'}
-          </button>
-        </div>
-      </div>
+            {loading === 'investor_brief' ? 'Generating...' : 'Generate'}</button></div></div>
 
       {/* Error */}
       {error && (
         <div className="rounded-lg p-4 text-sm" style={{ border: '1px solid var(--danger)', backgroundColor: 'var(--danger-muted)', color: 'var(--text-primary)' }}>
-          {error}
-        </div>
+          {error}</div>
       )}
 
       {/* Report Display */}
@@ -200,14 +172,11 @@ export default function ReportsPage() {
           <div className="flex items-center justify-between px-5 py-3" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
             <div className="flex items-center gap-3">
               <span className="text-sm font-normal" style={stTextSecondary}>
-                {reportTypeLabels[reportType || ''] || 'Report'}
-              </span>
+                {reportTypeLabels[reportType || ''] || 'Report'}</span>
               {generatedAt && (
                 <span className="text-xs" style={stTextMuted}>
-                  Generated {generatedAt}
-                </span>
-              )}
-            </div>
+                  Generated {generatedAt}</span>
+              )}</div>
             <button
               onClick={handlePrint}
               className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-normal transition-colors"
@@ -215,9 +184,7 @@ export default function ReportsPage() {
               onMouseEnter={() => setHover('printBtn', true)}
               onMouseLeave={() => setHover('printBtn', false)}>
               <Printer className="w-3.5 h-3.5" />
-              Print / Save as PDF
-            </button>
-          </div>
+              Print / Save as PDF</button></div>
 
           {/* Iframe to render the HTML report */}
           <iframe
@@ -232,9 +199,7 @@ export default function ReportsPage() {
                 const height = iframeRef.current.contentDocument.documentElement.scrollHeight;
                 iframeRef.current.style.height = Math.max(800, height + 40) + 'px';
               }
-            }} />
-        </div>
+            }} /></div>
       )}
-    </div>
-  );
+    </div>);
 }

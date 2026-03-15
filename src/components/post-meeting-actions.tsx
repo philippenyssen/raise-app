@@ -58,8 +58,7 @@ export default function PostMeetingActions({ data, meetingId, onActionTaken }: {
       <div className="flex gap-1 shrink-0">
         <button onClick={onAccept} onMouseEnter={() => setH(aKey, true)} onMouseLeave={() => setH(aKey, false)} className="p-1.5 rounded-md transition-colors" style={{ color: hovered[aKey] ? 'var(--success)' : 'var(--text-muted)', backgroundColor: hovered[aKey] ? 'var(--success-muted)' : 'transparent' }} title={type === 'flag' ? 'Acknowledge flag' : 'Accept task'}><CheckCircle2 className="w-4 h-4" /></button>
         <button onClick={onDismiss} onMouseEnter={() => setH(dKey, true)} onMouseLeave={() => setH(dKey, false)} className="p-1.5 rounded-md transition-colors" style={{ color: hovered[dKey] ? 'var(--danger)' : 'var(--text-muted)', backgroundColor: hovered[dKey] ? 'var(--danger-muted)' : 'transparent' }} title={type === 'flag' ? 'Dismiss flag' : 'Dismiss task'}><XCircle className="w-4 h-4" /></button>
-      </div>
-    );
+      </div>);
   }
 
   return (
@@ -87,19 +86,15 @@ export default function PostMeetingActions({ data, meetingId, onActionTaken }: {
                   <span style={{ color: 'var(--text-muted)' }}>Enthusiasm:</span>
                   <span style={{ color: 'var(--text-secondary)' }}>{data.investor_updates.previous_enthusiasm}/5</span>
                   <ArrowRight className="w-3 h-3" style={{ color: 'var(--text-muted)' }} />
-                  <span style={{ color: enthusiasmColor, fontWeight: 400 }}>{data.investor_updates.enthusiasm}/5</span>
-                </div>
-              )}
-            </div>
-          </div>
+                  <span style={{ color: enthusiasmColor, fontWeight: 400 }}>{data.investor_updates.enthusiasm}/5</span></div>
+              )}</div></div>
         )}
 
         {visibleTasks.length > 0 && (
           <div className="px-5 py-4" style={{ borderBottom: '1px solid color-mix(in srgb, var(--border-subtle) 50%, transparent)' }}>
             <button onClick={() => setTasksExpanded(!tasksExpanded)} className="w-full flex items-center justify-between text-xs font-normal mb-3" style={{ color: 'var(--text-secondary)' }}>
               <span className="flex items-center gap-2"><ClipboardList className="w-3.5 h-3.5" /> Generated tasks ({visibleTasks.length})</span>
-              {tasksExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-            </button>
+              {tasksExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}</button>
             {tasksExpanded && (
               <div className="space-y-2">
                 {visibleTasks.map(task => {
@@ -116,25 +111,19 @@ export default function PostMeetingActions({ data, meetingId, onActionTaken }: {
                           {task.description && <p className="text-xs mt-1 line-clamp-2" style={{ color: 'var(--text-muted)' }}>{task.description.split('\n')[0]}</p>}
                           <div className="flex items-center gap-3 mt-2 text-xs" style={{ color: 'var(--text-muted)' }}>
                             <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> Due: {task.due_date}</span>
-                            <span className="capitalize">{task.phase.replace(/_/g, ' ')}</span>
-                          </div>
-                        </div>
+                            <span className="capitalize">{task.phase.replace(/_/g, ' ')}</span></div></div>
                         <ActionButtons id={task.id} type="task" isAccepted={isAccepted} onAccept={() => handleTaskAction(task.id, 'accept')} onDismiss={() => handleTaskAction(task.id, 'dismiss')} />
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
+                    </div>);
+                })}</div>
+            )}</div>
         )}
 
         {visibleFlags.length > 0 && (
           <div className="px-5 py-4" style={{ borderBottom: '1px solid color-mix(in srgb, var(--border-subtle) 50%, transparent)' }}>
             <button onClick={() => setFlagsExpanded(!flagsExpanded)} className="w-full flex items-center justify-between text-xs font-normal mb-3" style={{ color: 'var(--text-secondary)' }}>
               <span className="flex items-center gap-2"><FileWarning className="w-3.5 h-3.5" /> Document flags ({visibleFlags.length})</span>
-              {flagsExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-            </button>
+              {flagsExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}</button>
             {flagsExpanded && (
               <div className="space-y-2">
                 {visibleFlags.map(flag => {
@@ -152,16 +141,12 @@ export default function PostMeetingActions({ data, meetingId, onActionTaken }: {
                           <div className="flex items-center gap-3 mt-2 text-xs" style={{ color: 'var(--text-muted)' }}>
                             <span>Section: {flag.section_hint}</span>
                             {flag.document_id && <Link href={`/documents/${flag.document_id}`} className="underline transition-colors" style={{ color: 'var(--accent)' }} onMouseEnter={(e) => { (e.target as HTMLElement).style.opacity = '0.8'; }} onMouseLeave={(e) => { (e.target as HTMLElement).style.opacity = '1'; }}>Open document</Link>}
-                          </div>
-                        </div>
+                          </div></div>
                         <ActionButtons id={flag.id} type="flag" isAccepted={isAccepted} onAccept={() => handleFlagAction(flag.id, 'accept')} onDismiss={() => handleFlagAction(flag.id, 'dismiss')} />
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
+                    </div>);
+                })}</div>
+            )}</div>
         )}
 
         <div className="px-5 py-3 flex items-center justify-between" style={{ backgroundColor: 'var(--surface-1)' }}>
@@ -169,9 +154,6 @@ export default function PostMeetingActions({ data, meetingId, onActionTaken }: {
           <div className="flex gap-2">
             <Link href="/timeline" className="text-xs transition-colors" style={{ color: hovered.viewTasks ? 'color-mix(in srgb, var(--accent) 80%, var(--text-primary))' : 'var(--accent)' }} onMouseEnter={() => setH('viewTasks', true)} onMouseLeave={() => setH('viewTasks', false)}>View Tasks</Link>
             <Link href="/documents" className="text-xs transition-colors" style={{ color: hovered.viewDocs ? 'color-mix(in srgb, var(--accent) 80%, var(--text-primary))' : 'var(--accent)' }} onMouseEnter={() => setH('viewDocs', true)} onMouseLeave={() => setH('viewDocs', false)}>View Documents</Link>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+          </div></div></div>
+    </div>);
 }

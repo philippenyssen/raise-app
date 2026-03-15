@@ -12,8 +12,7 @@ export async function GET() {
       getFunnelMetrics(),
       db.execute(`SELECT id, name, type, tier, status, enthusiasm, check_size_range, notes, created_at, updated_at FROM investors`),
       db.execute(`SELECT id, investor_id, date, type, enthusiasm_score FROM meetings ORDER BY date ASC`),
-      db.execute(`SELECT investor_id, objection_topic, objection_text FROM objection_responses`),
-    ]);
+      db.execute(`SELECT investor_id, objection_topic, objection_text FROM objection_responses`),]);
 
     const investors = allInvestorsResult.rows as unknown as InvestorRow[];
     const meetings = allMeetingsResult.rows as unknown as MeetingRow[];
@@ -55,8 +54,7 @@ export async function GET() {
           passReasons['Other'] = (passReasons['Other'] || 0) + 1;
         } else {
           passReasons['Unknown'] = (passReasons['Unknown'] || 0) + 1;
-        }
-      }
+        }}
     }
 
     const passReasonsRanked = Object.entries(passReasons)
@@ -121,14 +119,12 @@ export async function GET() {
       const invMeetings = meetingsByInvestor[i.id] || [];
       if (invMeetings.length === 0) return i.enthusiasm;
       const lastMeeting = invMeetings[invMeetings.length - 1];
-      return lastMeeting.enthusiasm_score || i.enthusiasm;
-    });
+      return lastMeeting.enthusiasm_score || i.enthusiasm;});
     const passedEnthusiasms = passed.map(i => {
       const invMeetings = meetingsByInvestor[i.id] || [];
       if (invMeetings.length === 0) return i.enthusiasm;
       const lastMeeting = invMeetings[invMeetings.length - 1];
-      return lastMeeting.enthusiasm_score || i.enthusiasm;
-    });
+      return lastMeeting.enthusiasm_score || i.enthusiasm;});
 
     // ── Key Predictors ──────────────────────────────────────────────
     const predictors: { signal: string; description: string; strength: 'strong' | 'moderate' | 'weak' }[] = [];
@@ -140,8 +136,7 @@ export async function GET() {
         predictors.push({
           signal: 'Meeting Count',
           description: `Winners avg ${avgClosedMeetings} meetings vs ${avgPassedMeetings} for passers`,
-          strength: avgClosedMeetings > avgPassedMeetings * 2 ? 'strong' : 'moderate',
-        });
+          strength: avgClosedMeetings > avgPassedMeetings * 2 ? 'strong' : 'moderate',});
       }
 
       const avgClosedEnth = avg(closedEnthusiasms);
@@ -150,8 +145,7 @@ export async function GET() {
         predictors.push({
           signal: 'Enthusiasm',
           description: `Winners avg ${avgClosedEnth}/5 enthusiasm vs ${avgPassedEnth}/5 for passers`,
-          strength: avgClosedEnth - avgPassedEnth >= 2 ? 'strong' : 'moderate',
-        });
+          strength: avgClosedEnth - avgPassedEnth >= 2 ? 'strong' : 'moderate',});
       }
 
       const closedTierAvg = avg(closed.map(i => i.tier));
@@ -160,8 +154,7 @@ export async function GET() {
         predictors.push({
           signal: 'Tier Quality',
           description: `Winners avg Tier ${closedTierAvg.toFixed(1)} vs Tier ${passedTierAvg.toFixed(1)} for passers`,
-          strength: passedTierAvg - closedTierAvg >= 1 ? 'strong' : 'moderate',
-        });
+          strength: passedTierAvg - closedTierAvg >= 1 ? 'strong' : 'moderate',});
       }
 
       // Speed to first meeting
@@ -182,18 +175,15 @@ export async function GET() {
           predictors.push({
             signal: 'Speed to First Meeting',
             description: `Winners had first meeting in ${avgClosedFirst} days vs ${avgPassedFirst} for passers`,
-            strength: avgPassedFirst > avgClosedFirst * 1.5 ? 'strong' : 'moderate',
-          });
-        }
-      }
+            strength: avgPassedFirst > avgClosedFirst * 1.5 ? 'strong' : 'moderate',});
+        }}
     }
 
     if (predictors.length === 0) {
       predictors.push({
         signal: 'Insufficient Data',
         description: 'More closed/passed outcomes needed to identify reliable predictors',
-        strength: 'weak',
-      });
+        strength: 'weak',});
     }
 
     // ── Recommendations ─────────────────────────────────────────────
@@ -241,8 +231,7 @@ export async function GET() {
         avgDaysToClose,
         avgDaysToPass,
         medianDaysToClose: median(closedDays),
-        medianDaysToPass: median(passedDays),
-      },
+        medianDaysToPass: median(passedDays),},
       funnel: funnelStages,
       typePerformance,
       predictors,
@@ -257,15 +246,11 @@ export async function GET() {
         avgClosedMeetings: avg(closedMeetingCounts),
         avgPassedMeetings: avg(passedMeetingCounts),
         avgClosedEnthusiasm: closedEnthusiasms.length > 0 ? Math.round(avg(closedEnthusiasms) * 10) / 10 : 0,
-        avgPassedEnthusiasm: passedEnthusiasms.length > 0 ? Math.round(avg(passedEnthusiasms) * 10) / 10 : 0,
-      },
-      generatedAt: new Date().toISOString(),
-    });
+        avgPassedEnthusiasm: passedEnthusiasms.length > 0 ? Math.round(avg(passedEnthusiasms) * 10) / 10 : 0,},
+      generatedAt: new Date().toISOString(),});
   } catch (error) {
     console.error('Win/Loss API error:', error);
     return NextResponse.json(
       { error: 'Failed to compute win/loss analysis', detail: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 },
-    );
-  }
-}
+      { status: 500 },);
+  }}

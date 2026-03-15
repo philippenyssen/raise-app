@@ -19,8 +19,7 @@ const TYPE_LABELS: Record<string, string> = {
   memo: 'Investment Memo',
   deck: 'Long-Form Deck',
   dd_memo: 'DD Memo',
-  custom: 'Custom',
-};
+  custom: 'Custom',};
 
 export default function WorkspacePage() {
   const { toast } = useToast();
@@ -86,8 +85,7 @@ export default function WorkspacePage() {
       const res = await fetch(`/api/documents/${selectedDoc.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: editedContent, change_summary: 'Updated via workspace' }),
-      });
+        body: JSON.stringify({ content: editedContent, change_summary: 'Updated via workspace' }),});
       if (!res.ok) throw new Error('Save failed');
       const updated = { ...selectedDoc, content: editedContent, updated_at: new Date().toISOString() };
       setSelectedDoc(updated);
@@ -122,8 +120,7 @@ export default function WorkspacePage() {
       const res = await fetch('/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type }),
-      });
+        body: JSON.stringify({ type }),});
       const data = await res.json();
       if (data.error) {
         toast(data.error, 'error');
@@ -136,8 +133,7 @@ export default function WorkspacePage() {
           setDocs(allDocs);
           const generated = allDocs.find((d: Doc) => d.type === type);
           if (generated) selectDoc(generated);
-        }
-      }
+        }}
     } catch {
       toast('Generation failed', 'error');
     } finally {
@@ -155,8 +151,7 @@ export default function WorkspacePage() {
       if ((e.metaKey || e.ctrlKey) && e.key === 'z' && !e.shiftKey) {
         e.preventDefault();
         handleUndo();
-      }
-    };
+      }};
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
   }, [handleSave, handleUndo]);
@@ -165,8 +160,7 @@ export default function WorkspacePage() {
   const sortedDocs = [...docs].sort((a, b) => {
     const ai = TYPE_ORDER.indexOf(a.type);
     const bi = TYPE_ORDER.indexOf(b.type);
-    return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
-  });
+    return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);});
 
   // Group by type
   const grouped = sortedDocs.reduce<Record<string, Doc[]>>((acc, doc) => {
@@ -181,10 +175,8 @@ export default function WorkspacePage() {
       <div className="h-[calc(100vh-4rem)] flex items-center justify-center">
         <div
           style={{ color: 'var(--text-tertiary)', fontSize: 'var(--font-size-sm)' }}>
-          Loading workspace...
-        </div>
-      </div>
-    );
+          Loading workspace...</div>
+      </div>);
   }
 
   return (
@@ -200,8 +192,7 @@ export default function WorkspacePage() {
             <span
               className=""
               style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)' }}>
-              Deliverables
-            </span>
+              Deliverables</span>
             <button
               onClick={() => setSidebarOpen(false)}
               onMouseEnter={() => setChevronHover(true)}
@@ -214,9 +205,7 @@ export default function WorkspacePage() {
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center', }}>
-              <ChevronRight className="w-4 h-4 rotate-180" />
-            </button>
-          </div>
+              <ChevronRight className="w-4 h-4 rotate-180" /></button></div>
           <div
             className="flex-1 overflow-y-auto space-y-3"
             style={{ padding: 'var(--space-2)' }}>
@@ -230,8 +219,7 @@ export default function WorkspacePage() {
                     color: 'var(--text-muted)',
                     padding: '0 var(--space-2)',
                     marginBottom: 'var(--space-1)', }}>
-                  {TYPE_LABELS[type] || type}
-                </div>
+                  {TYPE_LABELS[type] || type}</div>
                 {typeDocs.map(doc => {
                   const isSelected = selectedDoc?.id === doc.id;
                   const isHovered = hoveredDocId === doc.id;
@@ -262,10 +250,8 @@ export default function WorkspacePage() {
                         display: 'block',
                         width: '100%', }}>
                       <div className="truncate">{doc.title}</div>
-                    </button>
-                  );
-                })}
-              </div>
+                    </button>);
+                })}</div>
             ))}
             {docs.length === 0 && (
               <div className="text-center space-y-2" style={{ padding: 'var(--space-8) 0' }}>
@@ -273,11 +259,8 @@ export default function WorkspacePage() {
                   className="w-6 h-6 mx-auto"
                   style={stTextMuted} />
                 <p style={labelMuted}>
-                  No deliverables yet. Generate one below or create a new document.
-                </p>
-              </div>
-            )}
-          </div>
+                  No deliverables yet. Generate one below or create a new document.</p></div>
+            )}</div>
           {/* Generate section */}
           <div
             className="space-y-1"
@@ -290,8 +273,7 @@ export default function WorkspacePage() {
                 color: 'var(--text-muted)',
                 padding: '0 var(--space-2)',
                 marginBottom: 'var(--space-1)', }}>
-              Generate from Data Room
-            </div>
+              Generate from Data Room</div>
             {['teaser', 'exec_summary', 'memo', 'deck', 'dd_memo'].map(type => {
               const exists = docs.some(d => d.type === type);
               const isHovered = hoveredGenType === type;
@@ -326,10 +308,8 @@ export default function WorkspacePage() {
                     <Wand2 className="w-3.5 h-3.5" />
                   )}
                   <span className="truncate">{exists ? 'Regenerate' : 'Generate'} {TYPE_LABELS[type] || type}</span>
-                </button>
-              );
-            })}
-          </div>
+                </button>);
+            })}</div>
           <div style={{ padding: 'var(--space-2)', borderTop: '1px solid var(--border-default)' }}>
             <a
               href="/documents/new"
@@ -344,10 +324,7 @@ export default function WorkspacePage() {
                 background: newDocHover ? 'var(--surface-2)' : 'transparent',
                 transition: 'all 150ms ease',
                 textDecoration: 'none', }}>
-              <Plus className="w-4 h-4" /> New Document
-            </a>
-          </div>
-        </div>
+              <Plus className="w-4 h-4" /> New Document</a></div></div>
       )}
 
       {!sidebarOpen && (
@@ -365,8 +342,7 @@ export default function WorkspacePage() {
             borderRightWidth: '1px',
             borderRightColor: 'var(--border-default)',
             cursor: 'pointer', }}>
-          <ChevronRight className="w-4 h-4" style={stTextMuted} />
-        </button>
+          <ChevronRight className="w-4 h-4" style={stTextMuted} /></button>
       )}
 
       {/* Split Pane: Document + AI Chat */}
@@ -387,8 +363,7 @@ export default function WorkspacePage() {
               documentTitle={selectedDoc?.title ?? ''}
               onApplyChange={handleApplyAIChange} />
           }
-          defaultSplit={58} />
-      </div>
+          defaultSplit={58} /></div>
 
       <ConfirmModal
         open={!!pendingDoc}
@@ -398,6 +373,5 @@ export default function WorkspacePage() {
         variant="danger"
         onConfirm={() => { if (pendingDoc) doSelectDoc(pendingDoc); }}
         onCancel={() => setPendingDoc(null)} />
-    </div>
-  );
+    </div>);
 }

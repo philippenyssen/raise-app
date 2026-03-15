@@ -78,48 +78,37 @@ export function SplitPane({ left, right, defaultSplit = 55, minLeft = 30, minRig
       <div className="flex h-full w-full flex-col overflow-hidden">
         <div
           className="sticky top-0 z-10 flex shrink-0"
-          style={{ borderBottom: '1px solid var(--border-default)', background: 'var(--surface-1)' }}
-        >
+          style={{ borderBottom: '1px solid var(--border-default)', background: 'var(--surface-1)' }}>
           <button
             onClick={() => setActivePane('left')}
             className="flex flex-1 items-center justify-center gap-2 px-4 py-2.5 text-sm font-normal transition-colors"
             style={{
               background: activePane === 'left' ? 'var(--surface-2)' : 'transparent',
               color: activePane === 'left' ? 'var(--text-primary)' : 'var(--text-tertiary)',
-            }}
-          >
+            }}>
             <FileText className="h-4 w-4" />
-            Document
-          </button>
+            Document</button>
           <button
             onClick={() => setActivePane('right')}
             className="flex flex-1 items-center justify-center gap-2 px-4 py-2.5 text-sm font-normal transition-colors"
             style={{
               background: activePane === 'right' ? 'var(--surface-2)' : 'transparent',
               color: activePane === 'right' ? 'var(--text-primary)' : 'var(--text-tertiary)',
-            }}
-          >
+            }}>
             <Sparkles className="h-4 w-4" />
-            Chat
-          </button>
-        </div>
+            Chat</button></div>
         <div className="flex-1 overflow-hidden">
           <div className={`h-full flex-col ${activePane === 'left' ? 'flex' : 'hidden'}`}>
-            {left}
-          </div>
+            {left}</div>
           <div className={`h-full flex-col ${activePane === 'right' ? 'flex' : 'hidden'}`}>
-            {right}
-          </div>
-        </div>
-      </div>
-    );
+            {right}</div></div>
+      </div>);
   }
 
   return (
     <div ref={containerRef} className="flex h-full w-full overflow-hidden" style={{ cursor: dragging ? 'col-resize' : undefined }}>
       <div style={{ width: `${split}%` }} className="h-full overflow-hidden flex flex-col">
-        {left}
-      </div>
+        {left}</div>
       <div
         onMouseDown={handleMouseDown}
         onTouchStart={handleTouchStart}
@@ -129,11 +118,8 @@ export function SplitPane({ left, right, defaultSplit = 55, minLeft = 30, minRig
           background: dragging ? 'var(--accent)' : 'var(--border-subtle)',
         }}
         onMouseEnter={e => { if (!dragging) (e.currentTarget as HTMLElement).style.background = 'var(--border-strong)'; }}
-        onMouseLeave={e => { if (!dragging) (e.currentTarget as HTMLElement).style.background = 'var(--border-subtle)'; }}
-      />
+        onMouseLeave={e => { if (!dragging) (e.currentTarget as HTMLElement).style.background = 'var(--border-subtle)'; }}/>
       <div style={{ width: `${100 - split}%` }} className="h-full overflow-hidden flex flex-col">
-        {right}
-      </div>
-    </div>
-  );
+        {right}</div>
+    </div>);
 }

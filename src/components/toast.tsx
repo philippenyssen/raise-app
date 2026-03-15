@@ -5,11 +5,7 @@ import { CheckCircle, XCircle, AlertTriangle, Info, X } from 'lucide-react';
 
 type ToastType = 'success' | 'error' | 'warning' | 'info';
 
-interface Toast {
-  id: string;
-  message: string;
-  type: ToastType;
-}
+interface Toast { id: string; message: string; type: ToastType; }
 
 interface ToastContextValue {
   toast: (message: string, type?: ToastType) => void;
@@ -28,27 +24,22 @@ const typeStyles: Record<ToastType, { bg: string; border: string; color: string;
     bg: 'var(--success-muted)',
     border: 'var(--accent-20)',
     color: 'var(--success)',
-    icon: 'var(--success)',
-  },
+    icon: 'var(--success)',},
   error: {
     bg: 'var(--danger-muted)',
     border: 'var(--fg-20)',
     color: 'var(--danger)',
-    icon: 'var(--danger)',
-  },
+    icon: 'var(--danger)',},
   warning: {
     bg: 'var(--warning-muted)',
     border: 'var(--warn-20)',
     color: 'var(--warning)',
-    icon: 'var(--warning)',
-  },
+    icon: 'var(--warning)',},
   info: {
     bg: 'var(--accent-muted)',
     border: 'var(--accent-20)',
     color: 'var(--accent)',
-    icon: 'var(--accent)',
-  },
-};
+    icon: 'var(--accent)',},};
 
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
@@ -64,8 +55,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       success: 4000,
       info: 4000,
       warning: 6000,
-      error: null,
-    };
+      error: null,};
     const duration = durations[type];
     if (duration !== null) {
       setTimeout(() => setToasts(t => t.filter(x => x.id !== id)), duration);
@@ -114,12 +104,8 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                 style={{ opacity: 0.5, color: styles.color }}
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.opacity = '1'; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.opacity = '0.5'; }}>
-                <X style={{ width: '14px', height: '14px' }} />
-              </button>
-            </div>
-          );
-        })}
-      </div>
-    </ToastContext.Provider>
-  );
+                <X style={{ width: '14px', height: '14px' }} /></button>
+            </div>);
+        })}</div>
+    </ToastContext.Provider>);
 }

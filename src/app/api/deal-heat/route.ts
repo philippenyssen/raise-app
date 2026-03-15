@@ -10,8 +10,7 @@ export async function GET() {
     computeRaiseForecast().catch(() => null),
     computeEngagementVelocity().catch(() => [] as Awaited<ReturnType<typeof computeEngagementVelocity>>),
     detectFomoDynamics().catch(() => [] as Awaited<ReturnType<typeof detectFomoDynamics>>),
-    detectScoreReversals().catch(() => [] as Awaited<ReturnType<typeof detectScoreReversals>>),
-  ]);
+    detectScoreReversals().catch(() => [] as Awaited<ReturnType<typeof detectScoreReversals>>),]);
 
   let targetEquityM = 250;
   let targetCloseDate: string | null = null;
@@ -37,8 +36,7 @@ export async function GET() {
         getMeetings(investor.id),
         getInvestorPortfolio(investor.id),
         getIntelligenceBriefs(undefined, investor.id),
-        computeNetworkEffectData(investor.id).catch(() => null),
-      ]);
+        computeNetworkEffectData(investor.id).catch(() => null),]);
 
       let forecastData: { predictedDaysToClose: number; confidence: string; isCriticalPath: boolean; pathProbability: number } | null = null;
       if (raiseForecastData) {
@@ -48,10 +46,8 @@ export async function GET() {
             predictedDaysToClose: invForecast.predictedDaysToClose,
             confidence: invForecast.confidence,
             isCriticalPath: raiseForecastData.criticalPathInvestors.includes(investor.name),
-            pathProbability: 0.5,
-          };
-        }
-      }
+            pathProbability: 0.5,};
+        }}
 
       const investorVelocity = velocityAll.find(v => v.investorId === investor.id) || null;
       const velocityData = investorVelocity ? {
@@ -69,13 +65,11 @@ export async function GET() {
         { targetEquityM, targetCloseDate },
         networkData,
         forecastData,
-        velocityData,
-      );
+        velocityData,);
 
       const investorReversal = reversalAll.find(r => r.investorId === investor.id);
       const fomoForInvestor = fomoAll.find(f =>
-        f.affectedInvestors.some(a => a.name === investor.name)
-      );
+        f.affectedInvestors.some(a => a.name === investor.name));
       const daysInStage = Math.max(0, Math.round((Date.now() - new Date(investor.updated_at).getTime()) / (1000 * 60 * 60 * 24)));
       const stageHealth = daysInStage > 30 ? 'stalled' : daysInStage > 14 ? 'slow' : 'on_track';
 
@@ -87,8 +81,7 @@ export async function GET() {
         fomoForInvestor?.fomoIntensity || null,
         daysInStage,
         stageHealth,
-        investorReversal?.delta ?? null,
-      );
+        investorReversal?.delta ?? null,);
 
       const lastMeeting = meetings.length > 0
         ? meetings.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0].date
@@ -103,9 +96,7 @@ export async function GET() {
         dealHeat,
         enthusiasm: investor.enthusiasm ?? 0,
         lastMeeting,
-      };
-    })
-  );
+      };}));
 
   results.sort((a, b) => b.dealHeat.heat - a.dealHeat.heat);
 
@@ -115,11 +106,9 @@ export async function GET() {
     cool: results.filter(r => r.dealHeat.label === 'cool').length,
     cold: results.filter(r => r.dealHeat.label === 'cold').length,
     frozen: results.filter(r => r.dealHeat.label === 'frozen').length,
-    total: results.length,
-  };
+    total: results.length,};
 
   return NextResponse.json({ investors: results, counts, generated_at: new Date().toISOString() });
   } catch (err) {
     return NextResponse.json({ error: 'Failed to compute deal heat', detail: String(err) }, { status: 500 });
-  }
-}
+  }}

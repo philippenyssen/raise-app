@@ -4,11 +4,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { Send, Loader2, Sparkles, RotateCcw, Copy, Check, CheckCircle, XCircle } from 'lucide-react';
 import { VoiceInput } from './voice-input';
 
-interface Message {
-  role: 'user' | 'assistant';
-  content: string;
-  error?: boolean;
-}
+interface Message { role: 'user' | 'assistant'; content: string; error?: boolean; }
 
 interface AIChatProps {
   documentId: string | null;
@@ -17,10 +13,7 @@ interface AIChatProps {
   onApplyChange?: (newContent: string) => void;
 }
 
-interface PendingChange {
-  content: string;
-  messageIdx: number;
-}
+interface PendingChange { content: string; messageIdx: number; }
 
 export function AIChat({ documentId, documentContent, documentTitle, onApplyChange }: AIChatProps) {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -60,8 +53,7 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
           documentId,
           documentContent,
           documentTitle,
-        }),
-      });
+        }),});
 
       if (!res.ok) throw new Error('AI request failed');
 
@@ -95,12 +87,10 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
               setMessages(prev => {
                 const updated = [...prev];
                 updated[assistantIdx] = { role: 'assistant', content: fullText };
-                return updated;
-              });
+                return updated;});
             }
           } catch { /* skip unparseable chunks */ }
-        }
-      }
+        }}
 
       const contentMatch = fullText.match(/<updated_content>([\s\S]*?)<\/updated_content>/);
       const cellMatch = fullText.match(/<cell_updates>([\s\S]*?)<\/cell_updates>/);
@@ -111,16 +101,14 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
         setMessages(prev => {
           const updated = [...prev];
           updated[assistantIdx] = { role: 'assistant', content: cleanResponse };
-          return updated;
-        });
+          return updated;});
         setPendingChange({ content: updatedContent, messageIdx: assistantIdx });
       } else if (cellMatch && onApplyChange) {
         const cleanResponse = fullText.replace(/<cell_updates>[\s\S]*?<\/cell_updates>/, '').trim();
         setMessages(prev => {
           const updated = [...prev];
           updated[assistantIdx] = { role: 'assistant', content: cleanResponse };
-          return updated;
-        });
+          return updated;});
         setPendingChange({ content: fullText, messageIdx: assistantIdx });
       }
     } catch {
@@ -131,8 +119,7 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
         } else {
           updated.push({ role: 'assistant', content: 'Request failed. Click retry to try again.', error: true });
         }
-        return updated;
-      });
+        return updated;});
     } finally {
       setLoading(false);
     }
@@ -150,8 +137,7 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       sendMessage(input);
-    }
-  };
+    }};
 
   const handleVoiceTranscript = (text: string) => {
     setInput(prev => prev + (prev ? ' ' : '') + text);
@@ -172,11 +158,7 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
       {/* Header */}
       <div
         className="shrink-0 flex items-center justify-between"
-        style={{
-          borderBottom: '1px solid var(--border-subtle)',
-          padding: 'var(--space-2) var(--space-4)',
-        }}
-      >
+        style={{ borderBottom: '1px solid var(--border-subtle)', padding: 'var(--space-2) var(--space-4)' }}>
         <div className="flex items-center" style={{ gap: 'var(--space-2)' }}>
           <Sparkles style={{ width: '16px', height: '16px', color: 'var(--accent)' }} />
           <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>AI Assistant</span>
@@ -187,12 +169,9 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
             className="flex items-center transition-colors"
             style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', gap: '4px' }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}
-          >
-            <RotateCcw style={{ width: '12px', height: '12px' }} /> Clear
-          </button>
-        )}
-      </div>
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}>
+            <RotateCcw style={{ width: '12px', height: '12px' }} /> Clear</button>
+        )}</div>
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto" style={{ padding: 'var(--space-4)', display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
@@ -224,12 +203,8 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
                     onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
                     onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-1)'; (e.currentTarget as HTMLElement).style.color = 'var(--text-tertiary)'; (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-subtle)'; }}
                   >
-                    {suggestion}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
+                    {suggestion}</button>
+                ))}</div></div></div>
         )}
 
         {messages.map((msg, i) => (
@@ -243,9 +218,7 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
                 lineHeight: 1.6,
                 background: msg.role === 'user' ? 'var(--accent-muted)' : 'var(--surface-1)',
                 color: msg.role === 'user' ? 'var(--accent)' : 'var(--text-secondary)',
-                border: `1px solid ${msg.role === 'user' ? 'var(--accent-10)' : 'var(--border-subtle)'}`,
-              }}
-            >
+                border: `1px solid ${msg.role === 'user' ? 'var(--accent-10)' : 'var(--border-subtle)'}`,}}>
               <div className="whitespace-pre-wrap">{msg.content}</div>
               {msg.role === 'assistant' && (
                 <div
@@ -254,43 +227,31 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
                     gap: 'var(--space-2)',
                     marginTop: 'var(--space-2)',
                     paddingTop: 'var(--space-2)',
-                    borderTop: '1px solid var(--border-subtle)',
-                  }}
-                >
+                    borderTop: '1px solid var(--border-subtle)',}}>
                   <button
                     onClick={() => copyMessage(i)}
                     className="flex items-center transition-colors"
                     style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', gap: '4px' }}
                     onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}
-                  >
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}>
                     {copiedIdx === i ? <Check style={{ width: '12px', height: '12px' }} /> : <Copy style={{ width: '12px', height: '12px' }} />}
-                    {copiedIdx === i ? 'Copied' : 'Copy'}
-                  </button>
+                    {copiedIdx === i ? 'Copied' : 'Copy'}</button>
                   {msg.error && (
                     <button
                       onClick={retryLast}
                       className="flex items-center transition-colors"
-                      style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)', gap: '4px' }}
-                    >
-                      <RotateCcw style={{ width: '12px', height: '12px' }} /> Retry
-                    </button>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
+                      style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)', gap: '4px' }}>
+                      <RotateCcw style={{ width: '12px', height: '12px' }} /> Retry</button>
+                  )}</div>
+              )}</div></div>
         ))}
 
         {loading && (
           <div className="flex justify-start">
             <div style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-3) var(--space-4)', border: '1px solid var(--border-subtle)' }}>
-              <Loader2 style={{ width: '16px', height: '16px', color: 'var(--accent)' }} className="animate-spin" />
-            </div>
-          </div>
+              <Loader2 style={{ width: '16px', height: '16px', color: 'var(--accent)' }} className="animate-spin" /></div></div>
         )}
-        <div ref={messagesEndRef} />
-      </div>
+        <div ref={messagesEndRef} /></div>
 
       {/* Pending changes banner */}
       {pendingChange && onApplyChange && (
@@ -299,27 +260,19 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
           style={{
             borderTop: '1px solid var(--border-subtle)',
             background: 'var(--accent-muted)',
-            padding: 'var(--space-3) var(--space-4)',
-          }}
-        >
+            padding: 'var(--space-3) var(--space-4)',}}>
           <div className="flex items-center justify-between">
             <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--accent)' }}>AI has proposed edits — review before applying</span>
             <div className="flex" style={{ gap: 'var(--space-2)' }}>
               <button onClick={() => setPendingChange(null)} className="btn btn-ghost btn-sm">
-                <XCircle style={{ width: '14px', height: '14px' }} /> Discard
-              </button>
+                <XCircle style={{ width: '14px', height: '14px' }} /> Discard</button>
               <button
                 onClick={() => {
                   onApplyChange(pendingChange.content);
                   setPendingChange(null);
                 }}
-                className="btn btn-primary btn-sm"
-              >
-                <CheckCircle style={{ width: '14px', height: '14px' }} /> Apply Changes
-              </button>
-            </div>
-          </div>
-        </div>
+                className="btn btn-primary btn-sm">
+                <CheckCircle style={{ width: '14px', height: '14px' }} /> Apply Changes</button></div></div></div>
       )}
 
       {/* Input */}
@@ -340,9 +293,7 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
                 borderRadius: 'var(--radius-lg)',
                 paddingRight: 'var(--space-10)',
                 opacity: loading || !documentId ? 0.5 : 1,
-              }}
-            />
-          </div>
+              }}/></div>
           <button
             onClick={() => sendMessage(input)}
             disabled={!input.trim() || loading || !documentId}
@@ -350,13 +301,7 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
             style={{
               padding: 'var(--space-2)',
               borderRadius: 'var(--radius-lg)',
-              opacity: !input.trim() || loading || !documentId ? 0.3 : 1,
-            }}
-          >
-            <Send style={{ width: '16px', height: '16px' }} />
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+              opacity: !input.trim() || loading || !documentId ? 0.3 : 1,}}>
+            <Send style={{ width: '16px', height: '16px' }} /></button></div></div>
+    </div>);
 }

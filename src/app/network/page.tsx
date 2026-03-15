@@ -62,8 +62,7 @@ export default function NetworkPage() {
       const next = new Set(prev);
       if (next.has(id)) next.delete(id);
       else next.add(id);
-      return next;
-    });
+      return next;});
   };
 
   if (loading) {
@@ -71,10 +70,8 @@ export default function NetworkPage() {
       <div className="flex items-center justify-center" style={{ minHeight: '60vh' }}>
         <div className="flex flex-col items-center gap-3">
           <RefreshCw className="w-5 h-5 animate-spin" style={stTextMuted} />
-          <span style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>Computing network cascades...</span>
-        </div>
-      </div>
-    );
+          <span style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>Computing network cascades...</span></div>
+      </div>);
   }
 
   if (error) {
@@ -84,34 +81,26 @@ export default function NetworkPage() {
           <AlertTriangle className="w-5 h-5 shrink-0" style={stTextPrimary} />
           <div>
             <p style={{ color: 'var(--text-primary)', fontWeight: 400 }}>Failed to load network data</p>
-            <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>{error}</p>
-          </div>
-          <button className="btn-secondary ml-auto" onClick={fetchData}>Retry</button>
-        </div>
-      </div>
-    );
+            <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>{error}</p></div>
+          <button className="btn-secondary ml-auto" onClick={fetchData}>Retry</button></div>
+      </div>);
   }
 
   if (!data || data.cascades.length === 0) {
     return (
       <div className="p-6">
         <div className="mb-6">
-          <h1 className="page-title">Investor Network</h1>
-        </div>
+          <h1 className="page-title">Investor Network</h1></div>
         <div className="card p-8 flex flex-col items-center gap-3" style={{ textAlign: 'center' }}>
           <span style={stTextMuted}><Link2 className="w-8 h-8" /></span>
           <p style={{ color: 'var(--text-secondary)', fontSize: 'var(--font-size-sm)' }}>
-            No network cascades detected. Add investors and log meetings to build cascade effects.
-          </p>
+            No network cascades detected. Add investors and log meetings to build cascade effects.</p>
           <Link
             href="/investors"
             className="btn btn-primary btn-sm"
             style={{ marginTop: '4px' }}>
-            Go to Investors
-          </Link>
-        </div>
-      </div>
-    );
+            Go to Investors</Link></div>
+      </div>);
   }
 
   const { cascades, summary, bottleneckAlert } = data;
@@ -124,28 +113,19 @@ export default function NetworkPage() {
           <div>
             <h1 className="page-title">Investor Network</h1>
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', marginTop: '2px' }}>
-              Cascade effects from keystone investors
-            </p>
-          </div>
-        </div>
+              Cascade effects from keystone investors</p></div></div>
         <div className="flex items-center gap-3">
           <div style={{ padding: 'var(--space-2) var(--space-4)', background: 'var(--accent-muted)', borderRadius: 'var(--radius-md)' }}>
             <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)', fontWeight: 400 }}>
-              Expected Capital
-            </span>
+              Expected Capital</span>
             <p style={{ fontSize: 'var(--font-size-lg)', fontWeight: 300, color: 'var(--text-primary)', marginTop: '2px' }}>
-              {summary.totalExpectedCapitalM > 0 ? `\u20AC${formatCapital(summary.totalExpectedCapitalM)}` : '--'}
-            </p>
-          </div>
+              {summary.totalExpectedCapitalM > 0 ? `\u20AC${formatCapital(summary.totalExpectedCapitalM)}` : '--'}</p></div>
           <button
             className="btn-secondary flex items-center gap-2"
             onClick={fetchData}
             style={stFontSm}>
             <RefreshCw className="w-3.5 h-3.5" />
-            Refresh
-          </button>
-        </div>
-      </div>
+            Refresh</button></div></div>
 
       {/* Summary Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6 card-stagger">
@@ -159,15 +139,10 @@ export default function NetworkPage() {
             <div className="flex items-center gap-2 mb-1">
               <span style={stTextMuted}><stat.icon className="w-3.5 h-3.5" /></span>
               <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', letterSpacing: '0.01em' }}>
-                {stat.label}
-              </span>
-            </div>
+                {stat.label}</span></div>
             <p style={{ fontSize: 'var(--font-size-lg)', fontWeight: 400, color: 'var(--text-primary)' }}>
-              {stat.value}
-            </p>
-          </div>
-        ))}
-      </div>
+              {stat.value}</p></div>
+        ))}</div>
 
       {/* Bottleneck Alert */}
       {bottleneckAlert && (
@@ -177,8 +152,7 @@ export default function NetworkPage() {
           <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" style={stTextTertiary} />
           <div className="flex-1">
             <p style={{ fontWeight: 400, color: 'var(--text-primary)', fontSize: 'var(--font-size-sm)' }}>
-              Bottleneck Alert
-            </p>
+              Bottleneck Alert</p>
             <p style={{ color: 'var(--text-secondary)', fontSize: 'var(--font-size-sm)', marginTop: '4px' }}>
               If <strong>{bottleneckAlert.bottleneckName}</strong> passes, it would collapse{' '}
               <strong>{bottleneckAlert.keystoneName}</strong>&apos;s cascade chain.{' '}
@@ -186,8 +160,7 @@ export default function NetworkPage() {
                 <span>
                   Up to <strong>{'\u20AC'}{formatCapital(bottleneckAlert.capitalAtRiskM)}</strong> in expected capital at risk.
                 </span>
-              )}
-            </p>
+              )}</p>
             <div className="flex items-center gap-2 mt-3">
               <Link
                 href={`/dealflow?search=${encodeURIComponent(bottleneckAlert.bottleneckName)}`}
@@ -196,11 +169,7 @@ export default function NetworkPage() {
                 onMouseEnter={e => { e.currentTarget.style.background = 'var(--fg-5)'; }}
                 onMouseLeave={e => { e.currentTarget.style.background = 'var(--fg-5)'; }}>
                 <Calendar className="w-3 h-3" />
-                Engage {bottleneckAlert.bottleneckName}
-              </Link>
-            </div>
-          </div>
-        </div>
+                Engage {bottleneckAlert.bottleneckName}</Link></div></div></div>
       )}
 
       {/* Keystone Cards */}
@@ -230,10 +199,8 @@ export default function NetworkPage() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    flexShrink: 0,
-                  }}>
-                    <Crown className="w-4 h-4" style={stAccent} />
-                  </div>
+                    flexShrink: 0,}}>
+                    <Crown className="w-4 h-4" style={stAccent} /></div>
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
                       <Link
@@ -243,51 +210,36 @@ export default function NetworkPage() {
                         style={{ fontWeight: 400, color: 'var(--text-primary)', fontSize: 'var(--font-size-base)', textDecoration: 'none' }}
                         onMouseEnter={e => { e.currentTarget.style.color = 'var(--accent)'; }}
                         onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-primary)'; }}>
-                        {cascade.keystoneName}
-                      </Link>
+                        {cascade.keystoneName}</Link>
                       <span style={{
                         fontSize: 'var(--font-size-xs)',
                         padding: '1px 6px',
                         borderRadius: 'var(--radius-sm)',
                         background: 'var(--surface-2)',
                         color: 'var(--text-muted)',
-                        fontWeight: 400,
-                      }}>
-                        {tierLabel(cascade.keystoneTier)}
-                      </span>
+                        fontWeight: 400,}}>
+                        {tierLabel(cascade.keystoneTier)}</span>
                       <span style={{
                         fontSize: 'var(--font-size-xs)',
                         padding: '1px 6px',
                         borderRadius: 'var(--radius-sm)',
                         background: 'var(--surface-2)',
-                        color: 'var(--text-secondary)',
-                      }}>
-                        {STATUS_LABELS[cascade.keystoneStatus] || cascade.keystoneStatus}
-                      </span>
-                    </div>
+                        color: 'var(--text-secondary)',}}>
+                        {STATUS_LABELS[cascade.keystoneStatus] || cascade.keystoneStatus}</span></div>
                     <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '2px' }}>
-                      {cascade.signal}
-                    </p>
-                  </div>
-                </div>
+                      {cascade.signal}</p></div></div>
                 <div className="flex items-center gap-4 shrink-0 ml-4">
                   <div style={{ textAlign: 'right' }}>
                     <p style={labelMuted}>Cascade Capital</p>
                     <p style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
-                      {cascade.expectedCascadeCapitalM > 0 ? `\u20AC${formatCapital(cascade.expectedCascadeCapitalM)}` : '--'}
-                    </p>
+                      {cascade.expectedCascadeCapitalM > 0 ? `\u20AC${formatCapital(cascade.expectedCascadeCapitalM)}` : '--'}</p>
                   </div>
                   <div style={{ textAlign: 'right' }}>
                     <p style={labelMuted}>Chain</p>
                     <p style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
-                      {cascade.chainLength}
-                    </p>
-                  </div>
+                      {cascade.chainLength}</p></div>
                   <span style={stTextMuted}>
-                    {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                  </span>
-                </div>
-              </button>
+                    {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}</span></div></button>
 
               {/* Expanded: Cascade Chain */}
               {isExpanded && (
@@ -296,25 +248,21 @@ export default function NetworkPage() {
                   <div className="flex items-center gap-2 mb-4">
                     <span style={labelMuted}>Enthusiasm:</span>
                     <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)', letterSpacing: '2px' }}>
-                      {enthusiasmDots(cascade.keystoneEnthusiasm)}
-                    </span>
+                      {enthusiasmDots(cascade.keystoneEnthusiasm)}</span>
                     {cascade.keystoneCheckSize && (
                       <>
                         <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--border-default)', margin: '0 4px' }}>|</span>
                         <span style={labelMuted}>
-                          Check: {cascade.keystoneCheckSize}
-                        </span>
+                          Check: {cascade.keystoneCheckSize}</span>
                       </>
                     )}
                     {cascade.totalCascadeCapitalM > 0 && (
                       <>
                         <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--border-default)', margin: '0 4px' }}>|</span>
                         <span style={labelMuted}>
-                          Total Potential: {'\u20AC'}{formatCapital(cascade.totalCascadeCapitalM)}
-                        </span>
+                          Total Potential: {'\u20AC'}{formatCapital(cascade.totalCascadeCapitalM)}</span>
                       </>
-                    )}
-                  </div>
+                    )}</div>
 
                   {/* Cascade Chain Visualization */}
                   {cascade.cascadeChain.length > 0 ? (
@@ -338,11 +286,8 @@ export default function NetworkPage() {
                                 fontSize: 'var(--font-size-xs)',
                                 color: probColor(link.probability),
                                 fontWeight: 400,
-                                fontVariantNumeric: 'tabular-nums',
-                              }}>
-                                {Math.round(link.probability * 100)}%
-                              </span>
-                            </div>
+                                fontVariantNumeric: 'tabular-nums',}}>
+                                {Math.round(link.probability * 100)}%</span></div>
 
                             {/* Investor Row */}
                             <div
@@ -374,26 +319,21 @@ export default function NetworkPage() {
                                         textDecoration: 'none', }}
                                       onMouseEnter={e => { e.currentTarget.style.color = 'var(--accent)'; }}
                                       onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-primary)'; }}>
-                                      {link.investorName}
-                                    </Link>
+                                      {link.investorName}</Link>
                                     <span style={{
                                       fontSize: '10px',
                                       padding: '0 4px',
                                       borderRadius: 'var(--radius-sm)',
                                       background: 'var(--surface-2)',
-                                      color: 'var(--text-muted)',
-                                    }}>
-                                      {tierLabel(link.tier)}
-                                    </span>
+                                      color: 'var(--text-muted)',}}>
+                                      {tierLabel(link.tier)}</span>
                                     <span style={{
                                       fontSize: '10px',
                                       padding: '0 4px',
                                       borderRadius: 'var(--radius-sm)',
                                       background: 'var(--surface-2)',
-                                      color: 'var(--text-secondary)',
-                                    }}>
-                                      {STATUS_LABELS[link.status] || link.status}
-                                    </span>
+                                      color: 'var(--text-secondary)',}}>
+                                      {STATUS_LABELS[link.status] || link.status}</span>
                                     {isBottleneck && (
                                       <span style={{
                                         fontSize: '10px',
@@ -401,19 +341,13 @@ export default function NetworkPage() {
                                         borderRadius: 'var(--radius-sm)',
                                         background: 'var(--warning-muted)',
                                         color: 'var(--text-tertiary)',
-                                        fontWeight: 400,
-                                      }}>
-                                        BOTTLENECK
-                                      </span>
-                                    )}
-                                  </div>
+                                        fontWeight: 400,}}>
+                                        BOTTLENECK</span>
+                                    )}</div>
                                   {link.checkSize && (
                                     <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '2px', display: 'block' }}>
-                                      Check: {link.checkSize}
-                                    </span>
-                                  )}
-                                </div>
-                              </div>
+                                      Check: {link.checkSize}</span>
+                                  )}</div></div>
                               <div className="flex items-center gap-4 shrink-0">
                                 <div style={{ textAlign: 'right' }}>
                                   <p style={{ fontSize: '10px', color: 'var(--text-muted)', }}>Prob</p>
@@ -421,11 +355,8 @@ export default function NetworkPage() {
                                     fontSize: 'var(--font-size-sm)',
                                     fontWeight: 400,
                                     color: probColor(link.probability),
-                                    fontVariantNumeric: 'tabular-nums',
-                                  }}>
-                                    {Math.round(link.probability * 100)}%
-                                  </p>
-                                </div>
+                                    fontVariantNumeric: 'tabular-nums',}}>
+                                    {Math.round(link.probability * 100)}%</p></div>
                                 {link.capitalM > 0 && (
                                   <div style={{ textAlign: 'right' }}>
                                     <p style={{ fontSize: '10px', color: 'var(--text-muted)', }}>Expected</p>
@@ -433,11 +364,8 @@ export default function NetworkPage() {
                                       fontSize: 'var(--font-size-sm)',
                                       fontWeight: 400,
                                       color: 'var(--text-primary)',
-                                      fontVariantNumeric: 'tabular-nums',
-                                    }}>
-                                      {'\u20AC'}{formatCapital(link.expectedCapitalM)}
-                                    </p>
-                                  </div>
+                                      fontVariantNumeric: 'tabular-nums',}}>
+                                      {'\u20AC'}{formatCapital(link.expectedCapitalM)}</p></div>
                                 )}
                                 {idx < cascade.cascadeChain.length - 1 && (
                                   <div style={{ textAlign: 'right' }}>
@@ -446,22 +374,14 @@ export default function NetworkPage() {
                                       fontSize: 'var(--font-size-sm)',
                                       fontWeight: 400,
                                       color: 'var(--text-tertiary)',
-                                      fontVariantNumeric: 'tabular-nums',
-                                    }}>
-                                      {Math.round(link.cumulativeProbability * 100)}%
-                                    </p>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
+                                      fontVariantNumeric: 'tabular-nums',}}>
+                                      {Math.round(link.cumulativeProbability * 100)}%</p></div>
+                                )}</div></div>
+                          </div>);
+                      })}</div>
                   ) : (
                     <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', padding: 'var(--space-3)' }}>
-                      No downstream investors in cascade chain.
-                    </p>
+                      No downstream investors in cascade chain.</p>
                   )}
 
                   {/* Bottleneck detail */}
@@ -482,17 +402,11 @@ export default function NetworkPage() {
                           onMouseEnter={e => { e.currentTarget.style.background = 'var(--fg-5)'; }}
                           onMouseLeave={e => { e.currentTarget.style.background = 'var(--fg-5)'; }}>
                           Prioritize Engagement
-                          <ArrowRight className="w-3 h-3" />
-                        </Link>
-                      </div>
-                    </div>
-                  )}
-                </div>
+                          <ArrowRight className="w-3 h-3" /></Link></div></div>
+                  )}</div>
               )}
-            </div>
-          );
-        })}
-      </div>
+            </div>);
+        })}</div>
 
       {/* Network Summary Footer */}
       <div
@@ -501,40 +415,27 @@ export default function NetworkPage() {
         <div className="flex items-center gap-2 mb-3">
           <span style={stTextMuted}><TrendingUp className="w-4 h-4" /></span>
           <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
-            Network Summary
-          </span>
-        </div>
+            Network Summary</span></div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           <div>
             <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', letterSpacing: '0.01em' }}>
-              Strongest Chain
-            </p>
+              Strongest Chain</p>
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, marginTop: '2px' }}>
               {summary.strongestChain
                 ? `${summary.strongestChain.name} (\u20AC${formatCapital(summary.strongestChain.capitalM)})`
-                : '--'}
-            </p>
-          </div>
+                : '--'}</p></div>
           <div>
             <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', letterSpacing: '0.01em' }}>
-              Weakest Chain
-            </p>
+              Weakest Chain</p>
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, marginTop: '2px' }}>
               {summary.weakestChain
                 ? `${summary.weakestChain.name} (\u20AC${formatCapital(summary.weakestChain.capitalM)})`
-                : '--'}
-            </p>
-          </div>
+                : '--'}</p></div>
           <div>
             <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', letterSpacing: '0.01em' }}>
-              Total Raise Forecast
-            </p>
+              Total Raise Forecast</p>
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--accent)', fontWeight: 400, marginTop: '2px' }}>
-              {summary.totalExpectedCapitalM > 0 ? `\u20AC${formatCapital(summary.totalExpectedCapitalM)}` : '--'}
-            </p>
-          </div>
-        </div>
+              {summary.totalExpectedCapitalM > 0 ? `\u20AC${formatCapital(summary.totalExpectedCapitalM)}` : '--'}</p></div></div>
       </div>
-    </div>
-  );
+    </div>);
 }

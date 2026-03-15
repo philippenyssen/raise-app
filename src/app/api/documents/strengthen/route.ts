@@ -15,8 +15,7 @@ const TOPIC_KEYWORDS: Record<string, string[]> = {
   iris2: ['iris2', 'iris-2', 'constellation', 'esa', 'eu commission'],
   exit: ['exit', 'ipo', 'liquidity', 'return', 'moic', 'multiple on invested'],
   governance: ['governance', 'board', 'reporting', 'rights', 'protection'],
-  dilution: ['dilution', 'ownership', 'cap table', 'anti-dilut'],
-};
+  dilution: ['dilution', 'ownership', 'cap table', 'anti-dilut'],};
 
 /**
  * POST /api/documents/strengthen
@@ -35,8 +34,7 @@ export async function POST() {
       return NextResponse.json({
         flagsCreated: 0,
         message: 'No convergence patterns detected — fewer than 2 investors asking about the same topics',
-        patterns: [],
-      });
+        patterns: [],});
     }
 
     // 2. Fetch all documents
@@ -46,8 +44,7 @@ export async function POST() {
       return NextResponse.json({
         flagsCreated: 0,
         message: 'No documents found in the system',
-        patterns: convergencePatterns.map(p => ({ topic: p.topic, investorCount: p.investorCount })),
-      });
+        patterns: convergencePatterns.map(p => ({ topic: p.topic, investorCount: p.investorCount })),});
     }
 
     // 3. For each convergence pattern, check if any document covers that topic
@@ -66,8 +63,7 @@ export async function POST() {
       // Find documents that contain this topic (search title + content)
       const matchingDocs = documents.filter(doc => {
         const searchText = `${doc.title} ${doc.content}`.toLowerCase();
-        return keywords.some(kw => searchText.includes(kw));
-      });
+        return keywords.some(kw => searchText.includes(kw));});
 
       if (matchingDocs.length === 0) {
         // No document covers this topic at all — flag the first memo/pitch doc
@@ -83,8 +79,7 @@ export async function POST() {
             description,
             section_hint: `Topic: ${pattern.topic}`,
             objection_text: pattern.recentQuestions.slice(0, 2).join('; '),
-            status: 'open',
-          });
+            status: 'open',});
 
           flagsCreated.push({
             documentId: primaryDoc.id,
@@ -92,8 +87,7 @@ export async function POST() {
             topic: pattern.topic,
             investorCount: pattern.investorCount,
             questionCount: pattern.questionCount,
-            description,
-          });
+            description,});
 
           emitContextChange('document_updated', `Auto-flag: "${pattern.topic}" weakness in ${primaryDoc.title} (${pattern.investorCount} investors questioning)`);
         }
@@ -110,8 +104,7 @@ export async function POST() {
             description,
             section_hint: `Topic: ${pattern.topic}`,
             objection_text: pattern.recentQuestions.slice(0, 2).join('; '),
-            status: 'open',
-          });
+            status: 'open',});
 
           flagsCreated.push({
             documentId: doc.id,
@@ -119,12 +112,10 @@ export async function POST() {
             topic: pattern.topic,
             investorCount: pattern.investorCount,
             questionCount: pattern.questionCount,
-            description,
-          });
+            description,});
 
           emitContextChange('document_updated', `Auto-flag: "${pattern.topic}" narrative weakness in ${doc.title} (${pattern.investorCount} investors questioning)`);
-        }
-      }
+        }}
     }
 
     return NextResponse.json({
@@ -136,13 +127,10 @@ export async function POST() {
         investorCount: p.investorCount,
         questionCount: p.questionCount,
         investorNames: p.investorNames,
-      })),
-    });
+      })),});
   } catch (error) {
     console.error('Document strengthen error:', error);
     return NextResponse.json(
       { error: 'Failed to analyze documents for strengthening', detail: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 },
-    );
-  }
-}
+      { status: 500 },);
+  }}

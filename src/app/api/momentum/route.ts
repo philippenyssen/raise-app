@@ -37,9 +37,7 @@ function dateToWeekIndex(d: Date, weeks: Date[]): number {
   for (let i = weeks.length - 1; i >= 0; i--) {
     const weekEnd = new Date(weeks[i]);
     weekEnd.setDate(weekEnd.getDate() + 7);
-    if (ts >= weeks[i].getTime() && ts < weekEnd.getTime()) {
-      return i;
-    }
+    if (ts >= weeks[i].getTime() && ts < weekEnd.getTime()) { return i; }
   }
   return -1;
 }
@@ -98,8 +96,7 @@ export async function GET() {
           WHERE created_at >= ? OR completed_at >= ?
         `,
         args: [cutoffDate, cutoffDate],
-      }),
-    ]);
+      }),]);
 
     const investors = investorRows.rows as unknown as InvestorRow[];
     const meetings = meetingRows.rows as unknown as MeetingRow[];
@@ -117,8 +114,7 @@ export async function GET() {
       const wi = dateToWeekIndex(new Date(m.date), weeks);
       if (wi < 0) return;
       if (!meetingsByInvWeek[m.investor_id]) meetingsByInvWeek[m.investor_id] = {};
-      meetingsByInvWeek[m.investor_id][wi] = (meetingsByInvWeek[m.investor_id][wi] || 0) + 1;
-    });
+      meetingsByInvWeek[m.investor_id][wi] = (meetingsByInvWeek[m.investor_id][wi] || 0) + 1;});
 
     // Status changes by investor and week
     const statusChangesByInvWeek: Record<string, Record<number, { forward: number; backward: number }>> = {};
@@ -165,8 +161,7 @@ export async function GET() {
           if (!enthusiasmByInvWeek[invId][wi]) enthusiasmByInvWeek[invId][wi] = { delta: 0 };
           enthusiasmByInvWeek[invId][wi].delta += delta;
         }
-      }
-    });
+      }});
 
     // Tasks completed by investor and week
     const tasksCompletedByInvWeek: Record<string, Record<number, number>> = {};
@@ -176,8 +171,7 @@ export async function GET() {
       const wi = dateToWeekIndex(new Date(date), weeks);
       if (wi < 0) return;
       if (!tasksCompletedByInvWeek[t.investor_id]) tasksCompletedByInvWeek[t.investor_id] = {};
-      tasksCompletedByInvWeek[t.investor_id][wi] = (tasksCompletedByInvWeek[t.investor_id][wi] || 0) + 1;
-    });
+      tasksCompletedByInvWeek[t.investor_id][wi] = (tasksCompletedByInvWeek[t.investor_id][wi] || 0) + 1;});
 
     // Follow-ups completed by investor and week
     const followupsCompletedByInvWeek: Record<string, Record<number, number>> = {};
@@ -187,8 +181,7 @@ export async function GET() {
       const wi = dateToWeekIndex(new Date(date), weeks);
       if (wi < 0) return;
       if (!followupsCompletedByInvWeek[f.investor_id]) followupsCompletedByInvWeek[f.investor_id] = {};
-      followupsCompletedByInvWeek[f.investor_id][wi] = (followupsCompletedByInvWeek[f.investor_id][wi] || 0) + 1;
-    });
+      followupsCompletedByInvWeek[f.investor_id][wi] = (followupsCompletedByInvWeek[f.investor_id][wi] || 0) + 1;});
 
     // Build momentum matrix
     const weekLabels = weeks.map(w => weekLabel(w));
@@ -225,8 +218,7 @@ export async function GET() {
         return {
           week: weekLabels[wi],
           score: Math.max(0, Math.min(100, score)),
-        };
-      });
+        };});
 
       return {
         investorId: inv.id,
@@ -234,15 +226,13 @@ export async function GET() {
         type: inv.type,
         tier: inv.tier,
         weeklyScores,
-      };
-    });
+      };});
 
     // Sort by current week momentum (descending)
     matrix.sort((a, b) => {
       const aScore = a.weeklyScores[a.weeklyScores.length - 1]?.score || 0;
       const bScore = b.weeklyScores[b.weeklyScores.length - 1]?.score || 0;
-      return bScore - aScore;
-    });
+      return bScore - aScore;});
 
     // ═══════════════════════════════════════════════════════════════════
     // 2. COHORT PATTERNS
@@ -251,8 +241,7 @@ export async function GET() {
     const typeGroups: Record<string, typeof matrix> = {};
     matrix.forEach(inv => {
       if (!typeGroups[inv.type]) typeGroups[inv.type] = [];
-      typeGroups[inv.type].push(inv);
-    });
+      typeGroups[inv.type].push(inv);});
 
     const cohorts = Object.entries(typeGroups).map(([type, members]) => {
       const weeklyAvg = weekLabels.map((wl, wi) => {
@@ -260,8 +249,7 @@ export async function GET() {
         const avg = scores.length > 0
           ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
           : 0;
-        return { week: wl, score: avg };
-      });
+        return { week: wl, score: avg };});
 
       // Determine trend: compare last 2 weeks average to previous 2 weeks average
       const recentAvg = weeklyAvg.length >= 2
@@ -278,8 +266,7 @@ export async function GET() {
       if (diff > 5) trend = 'heating';
       else if (diff < -5) trend = 'cooling';
 
-      return { type, weeklyAvg, trend, memberCount: members.length };
-    });
+      return { type, weeklyAvg, trend, memberCount: members.length };});
 
     // ═══════════════════════════════════════════════════════════════════
     // 3. MOMENTUM ANOMALIES
@@ -291,8 +278,7 @@ export async function GET() {
       sovereign: 'Sovereign Fund',
       strategic: 'Strategic',
       debt: 'Debt Provider',
-      family_office: 'Family Office',
-    };
+      family_office: 'Family Office',};
 
     const anomalies: { investorId: string; investorName: string; type: string; deviation: number; direction: 'above' | 'below'; message: string }[] = [];
 
@@ -323,10 +309,8 @@ export async function GET() {
           type: inv.type,
           deviation: Math.round(deviation),
           direction,
-          message,
-        });
-      }
-    });
+          message,});
+      }});
 
     // Sort anomalies by absolute deviation descending
     anomalies.sort((a, b) => Math.abs(b.deviation) - Math.abs(a.deviation));
@@ -351,18 +335,15 @@ export async function GET() {
         if (drop >= 10) {
           if (!dropsByTier[inv.tier]) dropsByTier[inv.tier] = [];
           dropsByTier[inv.tier].push({ name: inv.investorName, drop });
-        }
-      });
+        }});
 
       Object.entries(dropsByTier).forEach(([tier, drops]) => {
         if (drops.length >= 3) {
           crossSignals.push({
             week: wl,
             description: `${drops.length} Tier ${tier} investors saw momentum drop in week of ${wl} — possible systemic signal (market event? competitor news?)`,
-            affectedInvestors: drops.map(d => d.name),
-          });
-        }
-      });
+            affectedInvestors: drops.map(d => d.name),});
+        }});
 
       // Check for type-based drops
       const dropsByType: Record<string, { name: string; drop: number }[]> = {};
@@ -373,8 +354,7 @@ export async function GET() {
         if (drop >= 10) {
           if (!dropsByType[inv.type]) dropsByType[inv.type] = [];
           dropsByType[inv.type].push({ name: inv.investorName, drop });
-        }
-      });
+        }});
 
       Object.entries(dropsByType).forEach(([type, drops]) => {
         if (drops.length >= 3) {
@@ -385,11 +365,9 @@ export async function GET() {
             crossSignals.push({
               week: wl,
               description: `${drops.length} ${typeLabel} investors had momentum drops in week of ${wl} — cohort-wide cooling`,
-              affectedInvestors: drops.map(d => d.name),
-            });
+              affectedInvestors: drops.map(d => d.name),});
           }
-        }
-      });
+        }});
 
       // Check follower pattern: if one type spikes, does another follow?
       const spikesByType: Record<string, number> = {};
@@ -398,8 +376,7 @@ export async function GET() {
         const prevAvg = c.weeklyAvg[wi - 1]?.score || 0;
         if (currAvg - prevAvg >= 10) {
           spikesByType[c.type] = currAvg - prevAvg;
-        }
-      });
+        }});
 
       if (wi >= 2) {
         const prevSpikeTypes = new Set<string>();
@@ -408,8 +385,7 @@ export async function GET() {
           const prevPrevAvg = c.weeklyAvg[wi - 2]?.score || 0;
           if (prevAvg - prevPrevAvg >= 10) {
             prevSpikeTypes.add(c.type);
-          }
-        });
+          }});
 
         Object.entries(spikesByType).forEach(([type, spike]) => {
           // Check if a different type spiked in the previous week
@@ -420,13 +396,9 @@ export async function GET() {
               crossSignals.push({
                 week: wl,
                 description: `${currLabel} momentum spiked (+${Math.round(spike)}) one week after ${prevLabel} — possible follower pattern`,
-                affectedInvestors: (typeGroups[type] || []).map(m => m.investorName),
-              });
-            }
-          });
-        });
-      }
-    }
+                affectedInvestors: (typeGroups[type] || []).map(m => m.investorName),});
+            }});});
+      }}
 
     // ═══════════════════════════════════════════════════════════════════
     // 4B. AUTO-ACTION: Anomalies → Acceleration Actions (compounding loop)
@@ -461,8 +433,7 @@ export async function GET() {
       const avg = scores.length > 0
         ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
         : 0;
-      return { week: wl, score: avg };
-    });
+      return { week: wl, score: avg };});
 
     // Determine overall direction
     const recentOverall = overallTrend.length >= 2
@@ -559,8 +530,7 @@ export async function GET() {
           daysToThreshold: daysToTermSheet,
           recommendedAction: `OPPORTUNITY: ${inv.investorName} accelerating at +${slopePerWeek} pts/wk. Predicted to reach term sheet readiness in ~${daysToTermSheet} days. Prepare: (1) term sheet framework, (2) board materials, (3) reference calls.`,
         });
-      }
-    }
+      }}
 
     // Sort: critical first, then early_warning, then term_sheet_signal
     const alertOrder = { critical_warning: 0, early_warning: 1, term_sheet_signal: 2 };
@@ -602,17 +572,14 @@ export async function GET() {
         const alreadyExists = timingSignals.some(
           ts => ts.type === 'competitive_tension' &&
                 ts.investorNames.length === investorNames.length &&
-                ts.investorNames.every(n => investorNames.includes(n))
-        );
+                ts.investorNames.every(n => investorNames.includes(n)));
         if (!alreadyExists) {
           timingSignals.push({
             type: 'competitive_tension',
             description: `${cluster.size} different investors met within 5 days around ${anchor.date.toISOString().slice(0, 10)} — competitive tension signal. Use this leverage in conversations.`,
             investorNames,
-            urgency: 'high',
-          });
-        }
-      }
+            urgency: 'high',});
+        }}
     }
 
     // (b) Engagement gaps: investor with meetings, then no meeting for 21+ days = stall risk
@@ -638,10 +605,8 @@ export async function GET() {
           type: 'engagement_gap',
           description: `${lastMeeting.name} had ${sorted.length} meeting(s) but none in ${Math.round(daysSinceLast)} days — stall risk. Re-engage with milestone update.`,
           investorNames: [lastMeeting.name],
-          urgency: daysSinceLast >= 35 ? 'high' : 'medium',
-        });
-      }
-    }
+          urgency: daysSinceLast >= 35 ? 'high' : 'medium',});
+      }}
 
     // (c) DD synchronization: 2+ investors entering DD within 14 days = leverage opportunity
     const ddEntries: { investorId: string; investorName: string; date: Date }[] = [];
@@ -650,17 +615,14 @@ export async function GET() {
         ddEntries.push({
           investorId: m.investor_id,
           investorName: m.investor_name,
-          date: new Date(m.date),
-        });
-      }
-    }
+          date: new Date(m.date),});
+      }}
     // Deduplicate: keep first DD entry per investor
     const ddByInvestor = new Map<string, { investorName: string; date: Date }>();
     for (const entry of ddEntries) {
       if (!ddByInvestor.has(entry.investorId)) {
         ddByInvestor.set(entry.investorId, { investorName: entry.investorName, date: entry.date });
-      }
-    }
+      }}
     const ddList = Array.from(ddByInvestor.values()).sort((a, b) => a.date.getTime() - b.date.getTime());
 
     for (let i = 0; i < ddList.length; i++) {
@@ -672,17 +634,14 @@ export async function GET() {
         const names = synchronized.map(d => d.investorName);
         const alreadyExists = timingSignals.some(
           ts => ts.type === 'dd_synchronization' &&
-                ts.investorNames.every(n => names.includes(n))
-        );
+                ts.investorNames.every(n => names.includes(n)));
         if (!alreadyExists) {
           timingSignals.push({
             type: 'dd_synchronization',
             description: `${synchronized.length} investors entered DD within 14 days (${ddList[i].date.toISOString().slice(0, 10)} window) — leverage opportunity for competitive term sheet pressure.`,
             investorNames: names,
-            urgency: 'high',
-          });
-        }
-      }
+            urgency: 'high',});
+        }}
     }
 
     // Auto-create acceleration actions for competitive tension signals
@@ -716,8 +675,7 @@ export async function GET() {
       for (const nh of narrativeHealth) {
         if (nh.status === 'struggling') {
           strugglingTypes.set(nh.investorType, nh);
-        }
-      }
+        }}
 
       // Enrich anomalies with narrative context when their investor type is struggling
       for (const anomaly of anomalies) {
@@ -727,8 +685,7 @@ export async function GET() {
             `Narrative not landing for ${anomaly.type} investors (avg enthusiasm: ${signal.avgEnthusiasm}/5, conversion: ${signal.conversionRate}%). ` +
             `Top objection: "${signal.topObjection}". Top question: "${signal.topQuestionTopic}". ` +
             `Consider adapting pitch for this investor type.`;
-        }
-      }
+        }}
 
       // Enrich trajectory alerts with narrative context too
       for (const alert of trajectoryAlerts) {
@@ -739,8 +696,7 @@ export async function GET() {
           (alert as unknown as Record<string, unknown>).narrativeContext =
             `Narrative struggling with ${invEntry.type} investors (avg enthusiasm: ${signal.avgEnthusiasm}/5, conversion: ${signal.conversionRate}%). ` +
             `Consider type-specific pitch adjustments before re-engagement.`;
-        }
-      }
+        }}
     } catch { /* non-blocking — narrative signals are best-effort */ }
 
     return NextResponse.json({
@@ -754,13 +710,10 @@ export async function GET() {
       overallTrend,
       overallDirection,
       weeks: weekLabels,
-      generatedAt: new Date().toISOString(),
-    });
+      generatedAt: new Date().toISOString(),});
   } catch (error) {
     console.error('Momentum API error:', error);
     return NextResponse.json(
       { error: 'Failed to compute momentum data', detail: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
-    );
-  }
-}
+      { status: 500 });
+  }}

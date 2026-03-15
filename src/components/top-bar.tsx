@@ -59,8 +59,7 @@ export function TopBar() {
     try {
       const [tRes, aRes] = await Promise.all([
         fetch('/api/tasks?type=upcoming&limit=10'),
-        fetch('/api/tasks?type=activity&limit=5'),
-      ]);
+        fetch('/api/tasks?type=activity&limit=5'),]);
       if (tRes.ok) setTasks(await tRes.json());
       if (aRes.ok) setActivity(await aRes.json());
     } catch { /* ignore */ }
@@ -76,8 +75,7 @@ export function TopBar() {
       style={{
         padding: 'var(--space-2) var(--space-4)',
         borderBottom: '1px solid var(--border-subtle)',
-        background: 'var(--surface-0)',
-      }}>
+        background: 'var(--surface-0)',}}>
       {/* Search trigger */}
       <button
         onClick={() => {
@@ -106,18 +104,13 @@ export function TopBar() {
           fontSize: '10px',
           fontWeight: 400,
           letterSpacing: '0.02em',
-        }}>⌘K</span>
-      </button>
+        }}>⌘K</span></button>
 
       <div ref={ref} className="relative">
         <button
           onClick={() => setOpen(!open)}
           className="relative flex items-center justify-center rounded-md transition-colors"
-          style={{
-            width: '32px',
-            height: '32px',
-            color: 'var(--text-tertiary)',
-          }}
+          style={{ width: '32px', height: '32px', color: 'var(--text-tertiary)' }}
           onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}
           onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-tertiary)'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
         >
@@ -133,12 +126,9 @@ export function TopBar() {
                 background: 'var(--danger)',
                 color: 'var(--surface-0)',
                 fontSize: '9px',
-                fontWeight: 300,
-              }}>
-              {overdue.length}
-            </span>
-          )}
-        </button>
+                fontWeight: 300,}}>
+              {overdue.length}</span>
+          )}</button>
 
         {open && (
           <div
@@ -148,15 +138,13 @@ export function TopBar() {
               background: 'var(--surface-2)',
               border: '1px solid var(--border-default)',
               borderRadius: 'var(--radius-lg)',
-              boxShadow: 'var(--shadow-xl)',
-            }}>
+              boxShadow: 'var(--shadow-xl)',}}>
             {/* Overdue */}
             {overdue.length > 0 && (
               <div style={{ padding: 'var(--space-3)', borderBottom: '1px solid var(--border-subtle)' }}>
                 <div className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--danger)' }}>
                   <AlertTriangle style={{ width: '13px', height: '13px' }} />
-                  Overdue ({overdue.length})
-                </div>
+                  Overdue ({overdue.length})</div>
                 {overdue.slice(0, 3).map(t => {
                   const days = Math.ceil((now.getTime() - new Date(t.due_date).getTime()) / 86400000);
                   return (
@@ -165,10 +153,7 @@ export function TopBar() {
                       href="/timeline"
                       onClick={() => setOpen(false)}
                       className="block rounded-md transition-colors"
-                      style={{
-                        padding: 'var(--space-2)',
-                        fontSize: 'var(--font-size-sm)',
-                      }}
+                      style={{ padding: 'var(--space-2)', fontSize: 'var(--font-size-sm)' }}
                       onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-3)'; }}
                       onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
                       <div className="flex items-center justify-between">
@@ -178,18 +163,15 @@ export function TopBar() {
                       {t.investor_name && (
                         <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '2px' }}>{t.investor_name}</div>
                       )}
-                    </Link>
-                  );
-                })}
-              </div>
+                    </Link>);
+                })}</div>
             )}
 
             {/* Upcoming */}
             <div style={{ padding: 'var(--space-3)', borderBottom: '1px solid var(--border-subtle)' }}>
               <div className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)' }}>
                 <Clock style={{ width: '13px', height: '13px' }} />
-                Upcoming
-              </div>
+                Upcoming</div>
               {upcoming.length === 0 ? (
                 <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', padding: 'var(--space-1) 0' }}>No upcoming tasks</p>
               ) : (
@@ -199,31 +181,23 @@ export function TopBar() {
                     href="/timeline"
                     onClick={() => setOpen(false)}
                     className="block rounded-md transition-colors"
-                    style={{
-                      padding: 'var(--space-2)',
-                      fontSize: 'var(--font-size-sm)',
-                    }}
+                    style={{ padding: 'var(--space-2)', fontSize: 'var(--font-size-sm)' }}
                     onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-3)'; }}
                     onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
                     <div className="flex items-center justify-between">
                       <span className="truncate" style={{ color: 'var(--text-secondary)' }}>{t.title}</span>
                       {t.due_date && (
                         <span className="shrink-0 ml-2" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-                          {timeAgo(t.due_date)}
-                        </span>
-                      )}
-                    </div>
-                  </Link>
+                          {timeAgo(t.due_date)}</span>
+                      )}</div></Link>
                 ))
-              )}
-            </div>
+              )}</div>
 
             {/* Activity */}
             <div style={{ padding: 'var(--space-3)' }}>
               <div className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)' }}>
                 <Activity style={{ width: '13px', height: '13px' }} />
-                Recent
-              </div>
+                Recent</div>
               {activity.length === 0 ? (
                 <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', padding: 'var(--space-1) 0' }}>No recent activity</p>
               ) : (
@@ -232,11 +206,9 @@ export function TopBar() {
                     key={a.id}
                     style={{ padding: 'var(--space-2)', fontSize: 'var(--font-size-xs)' }}>
                     <div className="truncate" style={{ color: 'var(--text-secondary)' }}>{a.subject}</div>
-                    <div style={{ color: 'var(--text-muted)', marginTop: '1px' }}>{timeAgo(a.created_at)}</div>
-                  </div>
+                    <div style={{ color: 'var(--text-muted)', marginTop: '1px' }}>{timeAgo(a.created_at)}</div></div>
                 ))
-              )}
-            </div>
+              )}</div>
 
             <Link
               href="/timeline"
@@ -250,11 +222,7 @@ export function TopBar() {
               }}
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-3)'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
-              View all tasks & activity
-            </Link>
-          </div>
-        )}
-      </div>
-    </div>
-  );
+              View all tasks & activity</Link></div>
+        )}</div>
+    </div>);
 }

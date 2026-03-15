@@ -9,12 +9,7 @@ interface FieldCheck {
   pct: number;
 }
 
-interface InvestorCompleteness {
-  id: string;
-  name: string;
-  completeness: number;
-  missingFields: string[];
-}
+interface InvestorCompleteness { id: string; name: string; completeness: number; missingFields: string[]; }
 
 const FIELD_CONFIG: { field: string; category: 'core' | 'intelligence' | 'relationship' | 'context' }[] = [
   // Core fields
@@ -33,8 +28,7 @@ const FIELD_CONFIG: { field: string; category: 'core' | 'intelligence' | 'relati
   { field: 'speed', category: 'relationship' },
   // Context fields
   { field: 'portfolio_conflicts', category: 'context' },
-  { field: 'notes', category: 'context' },
-];
+  { field: 'notes', category: 'context' },];
 
 function isFieldFilled(value: unknown): boolean {
   if (value === null || value === undefined) return false;
@@ -54,8 +48,7 @@ export async function GET() {
       worstInvestors: [],
       bestInvestors: [],
       intelligenceReadiness: 0,
-      recommendations: ['Add investors to get started.'],
-    });
+      recommendations: ['Add investors to get started.'],});
   }
 
   // Compute field-level completeness
@@ -66,8 +59,7 @@ export async function GET() {
       if (field === 'type' || field === 'tier' || field === 'status') return true;
       return isFieldFilled(val);
     }).length;
-    return { field, category, filled, total, pct: Math.round((filled / total) * 100) };
-  });
+    return { field, category, filled, total, pct: Math.round((filled / total) * 100) };});
 
   // Compute per-investor completeness
   const investorScores: InvestorCompleteness[] = investors.map(inv => {
@@ -81,12 +73,10 @@ export async function GET() {
         filledCount++;
       } else {
         missingFields.push(field);
-      }
-    }
+      }}
 
     const completeness = Math.round((filledCount / checkableFields.length) * 100);
-    return { id: inv.id, name: inv.name, completeness, missingFields };
-  });
+    return { id: inv.id, name: inv.name, completeness, missingFields };});
 
   // Sort for worst and best
   const sorted = [...investorScores].sort((a, b) => a.completeness - b.completeness);
@@ -119,8 +109,7 @@ export async function GET() {
       recommendations.push(`Add ${label} for ${missing} investor${missing > 1 ? 's' : ''} to unlock focus optimization`);
     } else {
       recommendations.push(`Complete ${label} for ${missing} investor${missing > 1 ? 's' : ''} for better risk assessment`);
-    }
-  }
+    }}
 
   if (intelligenceReadiness < 50) {
     recommendations.push('Intelligence readiness is below 50% -- scoring and focus features will be unreliable');
@@ -132,6 +121,5 @@ export async function GET() {
     worstInvestors,
     bestInvestors,
     intelligenceReadiness,
-    recommendations,
-  });
+    recommendations,});
 }

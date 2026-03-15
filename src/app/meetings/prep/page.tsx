@@ -76,8 +76,7 @@ function meetingTypeLabel(t: string): string {
 const SPEED_STYLE: Record<string, React.CSSProperties> = {
   fast: { color: 'var(--text-secondary)' },
   medium: { color: 'var(--text-tertiary)' },
-  slow: { color: 'var(--text-primary)' },
-};
+  slow: { color: 'var(--text-primary)' },};
 
 // ---------- main page ----------
 
@@ -85,8 +84,7 @@ export default function MeetingPrepPage() {
   return (
     <Suspense fallback={<div className="space-y-6"><div className="h-8 w-48 skeleton animate-pulse" style={{ borderRadius: 'var(--radius-md)' }} /></div>}>
       <MeetingPrepContent />
-    </Suspense>
-  );
+    </Suspense>);
 }
 
 function MeetingPrepContent() {
@@ -158,8 +156,7 @@ function MeetingPrepContent() {
       setLoadingPrep(false);
     }).catch(() => {
       toast('Failed to load prep data', 'error');
-      setLoadingPrep(false);
-    });
+      setLoadingPrep(false);});
   }, [selectedId, toast]);
 
   const investor = useMemo(() => investors.find(i => i.id === selectedId), [investors, selectedId]);
@@ -172,8 +169,7 @@ function MeetingPrepContent() {
       const res = await fetch('/api/meeting-brief', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ investor_id: selectedId }),
-      });
+        body: JSON.stringify({ investor_id: selectedId }),});
       if (!res.ok) {
         const err = await res.json();
         throw new Error(err.error || 'Failed to generate brief');
@@ -194,15 +190,13 @@ function MeetingPrepContent() {
     const out: (Objection & { meetingDate: string })[] = [];
     meetings.forEach(m => {
       const objs = safeJsonParse<Objection[]>(m.objections, []);
-      objs.forEach(o => out.push({ ...o, meetingDate: m.date }));
-    });
+      objs.forEach(o => out.push({ ...o, meetingDate: m.date }));});
     return out;
   }, [meetings]);
 
   const unresolvedObjections = useMemo(
     () => allObjections.filter(o => o.response_effectiveness !== 'resolved'),
-    [allObjections],
-  );
+    [allObjections],);
 
   const latestMeeting = useMemo(() => meetings[0] ?? null, [meetings]);
 
@@ -223,13 +217,11 @@ function MeetingPrepContent() {
 
   const portfolioConflicts = useMemo(
     () => portfolio.filter(p => p.relevance && p.relevance.toLowerCase().includes('conflict')),
-    [portfolio],
-  );
+    [portfolio],);
 
   const pendingTasks = useMemo(
     () => tasks.filter(t => t.status === 'pending' || t.status === 'in_progress'),
-    [tasks],
-  );
+    [tasks],);
 
   const nextMeeting = useMemo(() => { const now = Date.now(); return meetings.filter(m => new Date(m.date).getTime() > now).sort((a, b) => a.date.localeCompare(b.date))[0] ?? null; }, [meetings]);
   const [countdown, setCountdown] = useState('');
@@ -248,17 +240,14 @@ function MeetingPrepContent() {
       points.push({
         category: 'Follow-up',
         text: `Address next steps from ${fmtDate(latestMeeting.date)}: ${latestMeeting.next_steps}`,
-        priority: 'high',
-      });
+        priority: 'high',});
     }
 
     unresolvedObjections.forEach(o => {
       points.push({
         category: 'Objection to preempt',
         text: `${o.text}${o.severity === 'showstopper' ? ' (SHOWSTOPPER)' : o.severity === 'significant' ? ' (significant)' : ''}`,
-        priority: o.severity === 'showstopper' ? 'high' : o.severity === 'significant' ? 'high' : 'medium',
-      });
-    });
+        priority: o.severity === 'showstopper' ? 'high' : o.severity === 'significant' ? 'high' : 'medium',});});
 
     if (engagementSignals) {
       if (engagementSignals.asked_about_process) {
@@ -274,57 +263,49 @@ function MeetingPrepContent() {
         points.push({
           category: 'Build on strength',
           text: `Topics that resonated: ${engagementSignals.slides_that_landed.join(', ')}`,
-          priority: 'medium',
-        });
+          priority: 'medium',});
       }
       if (engagementSignals.slides_that_fell_flat?.length > 0) {
         points.push({
           category: 'Improve delivery',
           text: `Topics that fell flat previously: ${engagementSignals.slides_that_fell_flat.join(', ')} — rework these.`,
-          priority: 'medium',
-        });
+          priority: 'medium',});
       }
       if (engagementSignals.mentioned_competitors) {
         points.push({ category: 'Competitive intel', text: 'They mentioned competitors — prepare differentiation talking points.', priority: 'high' });
-      }
-    }
+      }}
 
     if (portfolioConflicts.length > 0) {
       points.push({
         category: 'Risk',
         text: `Portfolio conflict with: ${portfolioConflicts.map(c => c.company).join(', ')} — be prepared to address overlap.`,
-        priority: 'high',
-      });
+        priority: 'high',});
     }
 
     if (pendingTasks.length > 0) {
       points.push({
         category: 'Open items',
         text: `${pendingTasks.length} open tasks for this investor — ensure all deliverables are ready.`,
-        priority: 'medium',
-      });
+        priority: 'medium',});
     }
 
     if (enthusiasmTrend === 'declining') {
       points.push({
         category: 'Warning',
         text: 'Enthusiasm has been declining across meetings. Focus on re-engagement and new data points.',
-        priority: 'high',
-      });
+        priority: 'high',});
     } else if (enthusiasmTrend === 'rising') {
       points.push({
         category: 'Momentum',
         text: 'Enthusiasm trend is positive. Push for next milestone (DD access, term sheet discussion).',
-        priority: 'medium',
-      });
+        priority: 'medium',});
     }
 
     if (investor?.ic_process) {
       points.push({
         category: 'Process',
         text: `IC process: ${investor.ic_process}. Understand where we are in their pipeline.`,
-        priority: 'low',
-      });
+        priority: 'low',});
     }
 
     return points;
@@ -345,10 +326,8 @@ function MeetingPrepContent() {
         <div className="space-y-3">
           {[...Array(4)].map((_, i) => (
             <div key={i} className="h-24 rounded-xl animate-pulse" style={stSurface2} />
-          ))}
-        </div>
-      </div>
-    );
+          ))}</div>
+      </div>);
   }
 
   return (
@@ -374,22 +353,18 @@ function MeetingPrepContent() {
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div className="flex items-center gap-3">
             <Link href="/meetings" className="transition-colors no-print" style={stTextMuted}>
-              <ArrowLeft className="w-5 h-5" />
-            </Link>
+              <ArrowLeft className="w-5 h-5" /></Link>
             <div>
               <h1 className="page-title">Meeting Prep</h1>
               <p className="text-sm mt-0.5" style={stTextMuted}>AI-generated brief with talking points, objections to preempt, and data room priorities</p>
-            </div>
-          </div>
+            </div></div>
           <div className="flex items-center gap-2">
             {investor && (
               <>
                 <GenerateBriefButton generating={generatingBrief} onClick={generateBrief} />
                 <PrintButton onClick={handlePrint} />
               </>
-            )}
-          </div>
-        </div>
+            )}</div></div>
 
         {/* Investor selector */}
         <div className="no-print">
@@ -403,26 +378,19 @@ function MeetingPrepContent() {
               <option value="">Select investor for this meeting...</option>
               {investors.map(inv => (
                 <option key={inv.id} value={inv.id}>
-                  {inv.name} -- {TYPE_LABELS[inv.type] || inv.type} (T{inv.tier})
-                </option>
-              ))}
-            </select>
+                  {inv.name} -- {TYPE_LABELS[inv.type] || inv.type} (T{inv.tier})</option>
+              ))}</select>
             <span className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={stTextMuted}>
-              <ChevronDown className="w-4 h-4" />
-            </span>
-          </div>
-        </div>
+              <ChevronDown className="w-4 h-4" /></span></div></div>
 
         {/* No investor selected — smart suggestions */}
         {!selectedId && !loading && investors.length > 0 && (() => {
           // Prioritize: active investors sorted by tier then enthusiasm descending
           const active = investors.filter(i =>
-            !['passed', 'dropped', 'closed', 'identified'].includes(i.status)
-          );
+            !['passed', 'dropped', 'closed', 'identified'].includes(i.status));
           const byPriority = [...active].sort((a, b) => {
             if (a.tier !== b.tier) return a.tier - b.tier;
-            return (b.enthusiasm ?? 0) - (a.enthusiasm ?? 0);
-          });
+            return (b.enthusiasm ?? 0) - (a.enthusiasm ?? 0);});
           const suggested = byPriority.slice(0, 6);
 
           return (
@@ -432,9 +400,7 @@ function MeetingPrepContent() {
                 <div className="flex items-center gap-2 mb-1">
                   <Sparkles className="w-4 h-4" style={stAccent} />
                   <h3 className="text-sm font-normal" style={stTextPrimary}>
-                    Who are you meeting?
-                  </h3>
-                </div>
+                    Who are you meeting?</h3></div>
                 <p className="text-xs mb-4" style={stTextMuted}>
                   Select an investor above or quick-pick from your active pipeline. AI will generate a personalized brief with talking points, objection prep, and data room priorities.
                 </p>
@@ -454,12 +420,10 @@ function MeetingPrepContent() {
                         <div
                           className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-xs font-normal"
                           style={stAccentBadge}>
-                          T{inv.tier}
-                        </div>
+                          T{inv.tier}</div>
                         <div className="min-w-0 flex-1">
                           <div className="text-sm font-normal truncate" style={stTextPrimary}>
-                            {inv.name}
-                          </div>
+                            {inv.name}</div>
                           <div className="flex items-center gap-2">
                             <span className="text-xs" style={stTextMuted}>{statusLabel}</span>
                             {(inv.enthusiasm ?? 0) > 0 && (
@@ -469,43 +433,31 @@ function MeetingPrepContent() {
                                     key={n}
                                     className="w-1.5 h-1.5 rounded-full inline-block"
                                     style={{ background: n <= (inv.enthusiasm ?? 0) ? 'var(--accent)' : 'var(--surface-3)' }} />
-                                ))}
-                              </span>
-                            )}
-                          </div>
-                        </div>
+                                ))}</span>
+                            )}</div></div>
                         <ChevronRight className="w-3.5 h-3.5 shrink-0" style={stTextMuted} />
-                      </button>
-                    );
-                  })}
-                </div>
+                      </button>);
+                  })}</div>
                 {active.length > 6 && (
                   <p className="text-xs mt-3 text-center" style={stTextMuted}>
-                    + {active.length - 6} more in pipeline — use the dropdown above to search
-                  </p>
-                )}
-              </div>
-            </div>
-          );
+                    + {active.length - 6} more in pipeline — use the dropdown above to search</p>
+                )}</div>
+            </div>);
         })()}
         {!selectedId && !loading && investors.length === 0 && (
           <div className="rounded-xl p-12 text-center" style={stSurface1}>
             <Users className="w-10 h-10 mx-auto mb-3" style={{ color: 'var(--surface-3)' }} />
             <p className="text-sm mb-3" style={stTextMuted}>No investors in pipeline yet.</p>
             <Link href="/meetings/new" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm" style={{ background: 'var(--accent)', color: 'var(--surface-0)' }}>
-              <Plus className="w-4 h-4" /> Schedule a Meeting
-            </Link>
-          </div>
+              <Plus className="w-4 h-4" /> Schedule a Meeting</Link></div>
         )}
 
         {/* Loading prep data */}
         {selectedId && loadingPrep && (
           <div className="rounded-xl p-12 text-center">
             <span className="block mx-auto mb-3 w-8 h-8" style={stAccent}>
-              <Loader2 className="w-8 h-8 animate-spin" />
-            </span>
-            <p className="text-sm" style={stTextMuted}>Loading meeting history, objections, and tasks...</p>
-          </div>
+              <Loader2 className="w-8 h-8 animate-spin" /></span>
+            <p className="text-sm" style={stTextMuted}>Loading meeting history, objections, and tasks...</p></div>
         )}
 
         {/* Prep content */}
@@ -537,8 +489,7 @@ function MeetingPrepContent() {
                   )}
                   {!meetingBrief && !generatingBrief && <button onClick={generateBrief} className="ml-auto no-print px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5" style={{ background: 'var(--accent)', color: 'var(--surface-0)' }}><Sparkles className="w-3.5 h-3.5" /> Quick Brief</button>}
                   {generatingBrief && <span className="ml-auto text-xs flex items-center gap-1.5" style={stTextMuted}><Loader2 className="w-3.5 h-3.5 animate-spin" /> Generating...</span>}
-                </section>
-              );
+                </section>);
             })()}
 
             {/* ============ CUSTOMIZED MEETING BRIEF (AI-generated) ============ */}
@@ -549,18 +500,14 @@ function MeetingPrepContent() {
                   className="w-full p-5 flex items-center justify-between no-print">
                   <h2 className="text-sm font-normal  tracking-wider flex items-center gap-2 print-section-title" style={stAccent}>
                     <Sparkles className="w-4 h-4" />
-                    Customized Brief for {investor.name} ({TYPE_LABELS[investor.type] || investor.type})
-                  </h2>
+                    Customized Brief for {investor.name} ({TYPE_LABELS[investor.type] || investor.type})</h2>
                   <span style={stAccent}>
-                    <ChevronRight className={`w-4 h-4 transition-transform ${briefExpanded ? 'rotate-90' : ''}`} />
-                  </span>
+                    <ChevronRight className={`w-4 h-4 transition-transform ${briefExpanded ? 'rotate-90' : ''}`} /></span>
                 </button>
                 {/* Print-only static header */}
                 <div className="hidden print:block p-5 pb-0">
                   <h2 className="text-sm font-normal  tracking-wider flex items-center gap-2 print-section-title">
-                    Customized Brief for {investor.name} ({TYPE_LABELS[investor.type] || investor.type})
-                  </h2>
-                </div>
+                    Customized Brief for {investor.name} ({TYPE_LABELS[investor.type] || investor.type})</h2></div>
 
                 {briefExpanded && (
                   <div className="px-5 pb-5 space-y-5">
@@ -577,63 +524,47 @@ function MeetingPrepContent() {
                         <div className="flex flex-wrap gap-1.5">
                           {meetingBrief.narrative_profile.emphasis.map((e, i) => (
                             <span key={i} className="text-xs px-2 py-1 rounded-md" style={stAccentBadge}>{e}</span>
-                          ))}
-                        </div>
-                      </div>
+                          ))}</div></div>
                       <div>
                         <h3 className="text-xs font-normal  tracking-wider mb-2" style={stTextPrimary}>Avoid</h3>
                         <div className="flex flex-wrap gap-1.5">
                           {meetingBrief.narrative_profile.avoid_topics.map((t, i) => (
                             <span key={i} className="text-xs px-2 py-1 rounded-md" style={{ background: 'var(--danger-muted)', ...stTextPrimary }}>{t}</span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
+                          ))}</div></div></div>
 
                     {/* Key Talking Points */}
                     <div>
                       <h3 className="text-xs font-normal  tracking-wider mb-2 flex items-center gap-1.5" style={stAccent}>
                         <ListChecks className="w-3.5 h-3.5" />
-                        Key Talking Points
-                      </h3>
+                        Key Talking Points</h3>
                       <div className="space-y-2">
                         {meetingBrief.brief.key_talking_points.map((point, i) => (
                           <div key={i} className="flex items-start gap-2.5 text-sm">
                             <span className="shrink-0 mt-1.5 w-1.5 h-1.5 rounded-full" style={{ background: 'var(--accent)' }} />
-                            <span style={stTextSecondary}>{point}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
+                            <span style={stTextSecondary}>{point}</span></div>
+                        ))}</div></div>
 
                     {/* Key Metrics */}
                     {meetingBrief.brief.metrics_to_highlight.length > 0 && (
                       <div>
                         <h3 className="text-xs font-normal  tracking-wider mb-2 flex items-center gap-1.5" style={stAccent}>
                           <Target className="w-3.5 h-3.5" />
-                          Key Metrics
-                        </h3>
+                          Key Metrics</h3>
                         <div className="rounded-lg overflow-hidden">
                           <table className="w-full text-xs">
                             <thead style={stSurface1Border}>
                               <tr>
                                 <th className="text-left px-3 py-2 font-normal" style={stTextMuted}>Metric</th>
                                 <th className="text-left px-3 py-2 font-normal" style={stTextMuted}>Value</th>
-                                <th className="text-left px-3 py-2 font-normal" style={stTextMuted}>Why It Matters</th>
-                              </tr>
+                                <th className="text-left px-3 py-2 font-normal" style={stTextMuted}>Why It Matters</th></tr>
                             </thead>
                             <tbody>
                               {meetingBrief.brief.metrics_to_highlight.map((m, i) => (
                                 <tr key={i} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
                                   <td className="px-3 py-2 font-normal" style={stTextSecondary}>{m.metric}</td>
                                   <td className="px-3 py-2 font-mono" style={stAccent}>{m.value}</td>
-                                  <td className="px-3 py-2" style={stTextTertiary}>{m.why}</td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
+                                  <td className="px-3 py-2" style={stTextTertiary}>{m.why}</td></tr>
+                              ))}</tbody></table></div></div>
                     )}
 
                     {/* Anticipated Questions with Answers */}
@@ -641,17 +572,13 @@ function MeetingPrepContent() {
                       <div>
                         <h3 className="text-xs font-normal  tracking-wider mb-2 flex items-center gap-1.5" style={stAccent}>
                           <MessageCircleQuestion className="w-3.5 h-3.5" />
-                          Anticipated Questions + Suggested Answers
-                        </h3>
+                          Anticipated Questions + Suggested Answers</h3>
                         <div className="space-y-3">
                           {meetingBrief.brief.anticipated_questions_with_answers.map((qa, i) => (
                             <div key={i} className="rounded-lg p-3">
                               <p className="text-sm font-normal mb-1.5" style={stTextSecondary}>Q: {qa.question}</p>
-                              <p className="text-xs leading-relaxed" style={stTextTertiary}>A: {qa.suggested_answer}</p>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
+                              <p className="text-xs leading-relaxed" style={stTextTertiary}>A: {qa.suggested_answer}</p></div>
+                          ))}</div></div>
                     )}
 
                     {/* Data Room Priority */}
@@ -659,8 +586,7 @@ function MeetingPrepContent() {
                       <div>
                         <h3 className="text-xs font-normal  tracking-wider mb-2 flex items-center gap-1.5" style={stAccent}>
                           <FolderOpen className="w-3.5 h-3.5" />
-                          Data Room Priority
-                        </h3>
+                          Data Room Priority</h3>
                         <div className="space-y-1.5">
                           {meetingBrief.data_room_priority.map((dr, i) => (
                             <div key={i} className="flex items-center gap-2 text-sm">
@@ -668,21 +594,16 @@ function MeetingPrepContent() {
                               <span style={stTextSecondary}>{dr.category}</span>
                               {dr.documents.length > 0 && (
                                 <span className="text-xs" style={stTextMuted}>
-                                  ({dr.documents.map(d => d.title).join(', ')})
-                                </span>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
+                                  ({dr.documents.map(d => d.title).join(', ')})</span>
+                              )}</div>
+                          ))}</div></div>
                     )}
 
                     {/* Previous Meeting + Unresolved Items */}
                     {meetingBrief.brief.previous_meeting_summary && (
                       <div className="pt-4" style={stBorderTop}>
                         <h3 className="text-xs font-normal  tracking-wider mb-2" style={stTextMuted}>Previous Meeting</h3>
-                        <p className="text-sm" style={stTextTertiary}>{meetingBrief.brief.previous_meeting_summary}</p>
-                      </div>
+                        <p className="text-sm" style={stTextTertiary}>{meetingBrief.brief.previous_meeting_summary}</p></div>
                     )}
 
                     {meetingBrief.brief.unresolved_items.length > 0 && (
@@ -692,13 +613,9 @@ function MeetingPrepContent() {
                           {meetingBrief.brief.unresolved_items.map((item, i) => (
                             <div key={i} className="flex items-start gap-2 text-sm">
                               <span className="shrink-0 mt-0.5" style={stTextTertiary}>
-                                <AlertTriangle className="w-3.5 h-3.5" />
-                              </span>
-                              <span style={stTextSecondary}>{item}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
+                                <AlertTriangle className="w-3.5 h-3.5" /></span>
+                              <span style={stTextSecondary}>{item}</span></div>
+                          ))}</div></div>
                     )}
 
                     {/* Risks to Watch */}
@@ -709,20 +626,15 @@ function MeetingPrepContent() {
                           {meetingBrief.brief.risks_to_watch.map((risk, i) => (
                             <div key={i} className="flex items-start gap-2 text-sm">
                               <span className="shrink-0 mt-0.5" style={stTextPrimary}>
-                                <Shield className="w-3.5 h-3.5" />
-                              </span>
-                              <span style={stTextTertiary}>{risk}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
+                                <Shield className="w-3.5 h-3.5" /></span>
+                              <span style={stTextTertiary}>{risk}</span></div>
+                          ))}</div></div>
                     )}
 
                     {/* Recommended Ask */}
                     <div className="pt-4" style={stBorderTop}>
                       <h3 className="text-xs font-normal  tracking-wider mb-2" style={stTextSecondary}>Recommended Ask</h3>
-                      <p className="text-sm font-normal" style={stTextSecondary}>{meetingBrief.brief.recommended_ask}</p>
-                    </div>
+                      <p className="text-sm font-normal" style={stTextSecondary}>{meetingBrief.brief.recommended_ask}</p></div>
 
                     {/* Playbook Insights */}
                     {meetingBrief.playbook_insights.length > 0 && (
@@ -732,37 +644,28 @@ function MeetingPrepContent() {
                           {meetingBrief.playbook_insights.map((pi, i) => (
                             <div key={i} className="text-sm">
                               <span className="text-xs px-1.5 py-0.5 rounded mr-2" style={stAccentBadge}>
-                                {pi.topic} ({pi.count}x)
-                              </span>
+                                {pi.topic} ({pi.count}x)</span>
                               {pi.bestResponse && (
                                 <span className="text-xs" style={stTextTertiary}>Best response: {pi.bestResponse}</span>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
+                              )}</div>
+                          ))}</div></div>
                     )}
 
                     {/* Tone Guidance */}
                     <div className="pt-4" style={stBorderTop}>
                       <h3 className="text-xs font-normal  tracking-wider mb-2" style={stTextMuted}>Tone Guidance</h3>
-                      <p className="text-xs italic" style={stTextMuted}>{meetingBrief.narrative_profile.tone_guidance}</p>
-                    </div>
+                      <p className="text-xs italic" style={stTextMuted}>{meetingBrief.narrative_profile.tone_guidance}</p></div>
 
                     <div className="text-xs text-right" style={stTextMuted}>
-                      Generated {new Date(meetingBrief.generated_at).toLocaleString('en-GB')}
-                    </div>
-                  </div>
-                )}
-              </section>
+                      Generated {new Date(meetingBrief.generated_at).toLocaleString('en-GB')}</div></div>
+                )}</section>
             )}
 
             {/* ============ INVESTOR PROFILE ============ */}
             <section className="rounded-xl p-5 print-card">
               <h2 className="text-sm font-normal  tracking-wider mb-4 flex items-center gap-2 print-section-title" style={stTextTertiary}>
                 <span style={stAccent}><Building2 className="w-4 h-4" /></span>
-                Investor Profile
-              </h2>
+                Investor Profile</h2>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <ProfileField label="Name" value={investor.name} bold />
                 <ProfileField label="Type" value={TYPE_LABELS[investor.type] || investor.type} />
@@ -782,58 +685,45 @@ function MeetingPrepContent() {
                       {[1,2,3,4,5].map(n => (
                         <div key={n} className="w-2.5 h-2.5 rounded-full" style={{ background: n <= investor.enthusiasm ? 'var(--accent)' : 'var(--surface-2)' }}
                           />
-                      ))}
-                    </div>
-                    <span className="text-xs" style={stTextTertiary}>{investor.enthusiasm}/5</span>
-                  </div>
-                </div>
+                      ))}</div>
+                    <span className="text-xs" style={stTextTertiary}>{investor.enthusiasm}/5</span></div></div>
                 <ProfileField label="IC Process" value={investor.ic_process || '—'} />
                 <div>
                   <span className="text-xs block mb-0.5" style={stTextMuted}>Speed</span>
                   <span className="text-sm font-normal capitalize" style={SPEED_STYLE[investor.speed] || { color: 'var(--text-tertiary)' }}>
-                    {investor.speed || '—'}
-                  </span>
-                </div>
-              </div>
+                    {investor.speed || '—'}</span></div></div>
               {investor.sector_thesis && (
                 <div className="mt-4 pt-3" style={stBorderTop}>
                   <span className="text-xs" style={stTextMuted}>Sector Thesis: </span>
-                  <span className="text-sm" style={stTextSecondary}>{investor.sector_thesis}</span>
-                </div>
+                  <span className="text-sm" style={stTextSecondary}>{investor.sector_thesis}</span></div>
               )}
               {investor.warm_path && (
                 <div className="mt-2">
                   <span className="text-xs" style={stTextMuted}>Warm Path: </span>
-                  <span className="text-sm" style={stTextSecondary}>{investor.warm_path}</span>
-                </div>
+                  <span className="text-sm" style={stTextSecondary}>{investor.warm_path}</span></div>
               )}
               {investor.portfolio_conflicts && (
                 <div className="mt-2">
                   <span className="text-xs" style={stTextMuted}>Portfolio Conflicts: </span>
-                  <span className="text-sm" style={stTextPrimary}>{investor.portfolio_conflicts}</span>
-                </div>
+                  <span className="text-sm" style={stTextPrimary}>{investor.portfolio_conflicts}</span></div>
               )}
               {investor.notes && (
                 <div className="mt-2">
                   <span className="text-xs" style={stTextMuted}>Notes: </span>
-                  <span className="text-sm" style={stTextTertiary}>{investor.notes}</span>
-                </div>
-              )}
-            </section>
+                  <span className="text-sm" style={stTextTertiary}>{investor.notes}</span></div>
+              )}</section>
 
             {/* ============ SUGGESTED TALKING POINTS ============ */}
             {talkingPoints.length > 0 && (
               <section className="rounded-xl p-5 print-card">
                 <h2 className="text-sm font-normal  tracking-wider mb-4 flex items-center gap-2 print-section-title" style={stTextTertiary}>
                   <span style={stTextTertiary}><Zap className="w-4 h-4" /></span>
-                  Suggested Talking Points
-                </h2>
+                  Suggested Talking Points</h2>
                 <div className="space-y-2.5">
                   {talkingPoints
                     .sort((a, b) => {
                       const order = { high: 0, medium: 1, low: 2 };
-                      return order[a.priority] - order[b.priority];
-                    })
+                      return order[a.priority] - order[b.priority];})
                     .map((tp, i) => (
                     <div key={i} className="flex items-start gap-3 text-sm">
                       <span className="shrink-0 mt-0.5 w-2 h-2 rounded-full" style={{
@@ -854,12 +744,8 @@ function MeetingPrepContent() {
                           tp.category === 'Momentum' ? { background: 'var(--success-muted)', color: 'var(--text-secondary)' } :
                           { background: 'var(--surface-2)', color: 'var(--text-tertiary)' }
                         }>{tp.category}</span>
-                        <span style={stTextSecondary}>{tp.text}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </section>
+                        <span style={stTextSecondary}>{tp.text}</span></div></div>
+                  ))}</div></section>
             )}
 
             {/* ============ KEY RISKS ============ */}
@@ -867,30 +753,23 @@ function MeetingPrepContent() {
               <section className="rounded-xl p-5 print-card" style={{ background: 'var(--danger-muted)' }}>
                 <h2 className="text-sm font-normal  tracking-wider mb-4 flex items-center gap-2 print-section-title" style={stTextPrimary}>
                   <AlertTriangle className="w-4 h-4" />
-                  Key Risks to Address
-                </h2>
+                  Key Risks to Address</h2>
                 <div className="space-y-3">
                   {investor.portfolio_conflicts && (
                     <div className="flex items-start gap-2 text-sm">
                       <span className="shrink-0 mt-0.5" style={stTextPrimary}>
-                        <Shield className="w-4 h-4" />
-                      </span>
+                        <Shield className="w-4 h-4" /></span>
                       <div>
                         <span className="font-normal" style={stTextSecondary}>Portfolio Conflict: </span>
-                        <span style={stTextTertiary}>{investor.portfolio_conflicts}</span>
-                      </div>
-                    </div>
+                        <span style={stTextTertiary}>{investor.portfolio_conflicts}</span></div></div>
                   )}
                   {portfolioConflicts.map((pc, i) => (
                     <div key={i} className="flex items-start gap-2 text-sm">
                       <span className="shrink-0 mt-0.5" style={stTextTertiary}>
-                        <Shield className="w-4 h-4" />
-                      </span>
+                        <Shield className="w-4 h-4" /></span>
                       <div>
                         <span className="font-normal" style={stTextSecondary}>Portfolio company overlap: </span>
-                        <span style={stTextTertiary}>{pc.company} ({pc.sector}) -- {pc.relevance}</span>
-                      </div>
-                    </div>
+                        <span style={stTextTertiary}>{pc.company} ({pc.sector}) -- {pc.relevance}</span></div></div>
                   ))}
                   {unresolvedObjections.map((o, i) => (
                     <div key={i} className="flex items-start gap-2 text-sm">
@@ -898,33 +777,24 @@ function MeetingPrepContent() {
                         color: o.severity === 'showstopper' ? 'var(--danger)' :
                           o.severity === 'significant' ? 'var(--warning)' :
                           'var(--text-muted)',}}>
-                        <CircleDot className="w-4 h-4" />
-                      </span>
+                        <CircleDot className="w-4 h-4" /></span>
                       <div>
                         <span className="font-normal" style={stTextSecondary}>
                           {o.response_effectiveness === 'partial' ? 'Partially addressed' : 'Unresolved'} objection
                           {o.severity === 'showstopper' ? ' (SHOWSTOPPER)' : ''}:
                         </span>{' '}
                         <span style={stTextTertiary}>{o.text}</span>
-                        <span className="text-xs ml-2" style={stTextMuted}>from {fmtDate(o.meetingDate)}</span>
-                      </div>
-                    </div>
+                        <span className="text-xs ml-2" style={stTextMuted}>from {fmtDate(o.meetingDate)}</span></div></div>
                   ))}
                   {enthusiasmTrend === 'declining' && (
                     <div className="flex items-start gap-2 text-sm">
                       <span className="shrink-0 mt-0.5 rotate-180" style={stTextPrimary}>
-                        <TrendingUp className="w-4 h-4" />
-                      </span>
+                        <TrendingUp className="w-4 h-4" /></span>
                       <div>
                         <span className="font-normal" style={stTextSecondary}>Declining enthusiasm: </span>
                         <span style={stTextTertiary}>
-                          Enthusiasm score has dropped across meetings. Identify what changed and counter it.
-                        </span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </section>
+                          Enthusiasm score has dropped across meetings. Identify what changed and counter it.</span></div></div>
+                  )}</div></section>
             )}
 
             {/* ============ MEETING HISTORY ============ */}
@@ -932,8 +802,7 @@ function MeetingPrepContent() {
               <h2 className="text-sm font-normal  tracking-wider mb-4 flex items-center gap-2 print-section-title" style={stTextTertiary}>
                 <span style={stAccent}><Calendar className="w-4 h-4" /></span>
                 Meeting History
-                <span className="text-xs font-normal ml-1" style={stTextMuted}>({meetings.length} meetings)</span>
-              </h2>
+                <span className="text-xs font-normal ml-1" style={stTextMuted}>({meetings.length} meetings)</span></h2>
               {meetings.length === 0 ? (
                 <p className="text-sm" style={stTextMuted}>No previous meetings recorded with this investor.</p>
               ) : (
@@ -941,20 +810,16 @@ function MeetingPrepContent() {
                   {meetings.map(m => {
                     const objs = safeJsonParse<Objection[]>(m.objections, []);
                     return (
-                      <MeetingCard key={m.id} meeting={m} objs={objs} />
-                    );
-                  })}
-                </div>
-              )}
-            </section>
+                      <MeetingCard key={m.id} meeting={m} objs={objs} />);
+                  })}</div>
+              )}</section>
 
             {/* ============ INTELLIGENCE ============ */}
             {(briefs.length > 0 || partners.length > 0 || portfolio.length > 0) && (
               <section className="rounded-xl p-5 print-card">
                 <h2 className="text-sm font-normal  tracking-wider mb-4 flex items-center gap-2 print-section-title" style={stTextTertiary}>
                   <span style={stAccent}><BookOpen className="w-4 h-4" /></span>
-                  Intelligence
-                </h2>
+                  Intelligence</h2>
 
                 {/* Research briefs */}
                 {briefs.length > 0 && (
@@ -970,15 +835,10 @@ function MeetingPrepContent() {
                               { background: 'var(--surface-2)', color: 'var(--text-tertiary)' }
                             }>{b.brief_type}</span>
                             <span style={stTextSecondary}>{b.subject}</span>
-                            <span className="text-xs ml-auto" style={stTextMuted}>{b.updated_at?.split('T')[0]}</span>
-                          </summary>
+                            <span className="text-xs ml-auto" style={stTextMuted}>{b.updated_at?.split('T')[0]}</span></summary>
                           <div className="px-3 pb-3 text-xs whitespace-pre-wrap leading-relaxed pt-2" style={{ ...stTextTertiary, ...stBorderTop }}>
-                            {b.content}
-                          </div>
-                        </details>
-                      ))}
-                    </div>
-                  </div>
+                            {b.content}</div></details>
+                      ))}</div></div>
                 )}
 
                 {/* Partner profiles */}
@@ -990,16 +850,12 @@ function MeetingPrepContent() {
                         <div key={p.id} className="rounded-lg p-3">
                           <div className="flex items-center gap-2 mb-1">
                             <span style={stTextMuted}><Users className="w-3.5 h-3.5" /></span>
-                            <span className="text-sm font-normal" style={stTextSecondary}>{p.name}</span>
-                          </div>
+                            <span className="text-sm font-normal" style={stTextSecondary}>{p.name}</span></div>
                           {p.title && <p className="text-xs" style={stTextMuted}>{p.title}</p>}
                           {p.focus_areas && <p className="text-xs mt-1" style={stTextTertiary}>Focus: {p.focus_areas}</p>}
                           {p.notable_deals && <p className="text-xs mt-0.5" style={stTextTertiary}>Deals: {p.notable_deals}</p>}
-                          {p.relevance_to_us && <p className="text-xs mt-0.5" style={stAccent}>{p.relevance_to_us}</p>}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+                          {p.relevance_to_us && <p className="text-xs mt-0.5" style={stAccent}>{p.relevance_to_us}</p>}</div>
+                      ))}</div></div>
                 )}
 
                 {/* Portfolio companies */}
@@ -1013,27 +869,18 @@ function MeetingPrepContent() {
                             <th className="text-left px-3 py-2 font-normal" style={stTextMuted}>Company</th>
                             <th className="text-left px-3 py-2 font-normal" style={stTextMuted}>Sector</th>
                             <th className="text-left px-3 py-2 font-normal" style={stTextMuted}>Stage</th>
-                            <th className="text-left px-3 py-2 font-normal" style={stTextMuted}>Relevance</th>
-                          </tr>
-                        </thead>
+                            <th className="text-left px-3 py-2 font-normal" style={stTextMuted}>Relevance</th></tr></thead>
                         <tbody>
                           {portfolio.map(pc => (
                             <tr key={pc.id} style={{
                               borderBottom: '1px solid var(--border-subtle)',
-                              background: pc.relevance?.toLowerCase().includes('conflict') ? 'var(--danger-muted)' : undefined,
-                            }}>
+                              background: pc.relevance?.toLowerCase().includes('conflict') ? 'var(--danger-muted)' : undefined,}}>
                               <td className="px-3 py-2 font-normal" style={stTextSecondary}>{pc.company}</td>
                               <td className="px-3 py-2" style={stTextMuted}>{pc.sector}</td>
                               <td className="px-3 py-2" style={stTextMuted}>{pc.stage_invested}</td>
-                              <td className="px-3 py-2" style={stTextTertiary}>{pc.relevance || '—'}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                )}
-              </section>
+                              <td className="px-3 py-2" style={stTextTertiary}>{pc.relevance || '—'}</td></tr>
+                          ))}</tbody></table></div></div>
+                )}</section>
             )}
 
             {/* ============ OPEN TASKS ============ */}
@@ -1042,9 +889,7 @@ function MeetingPrepContent() {
                 <span style={stTextSecondary}><CheckCircle className="w-4 h-4" /></span>
                 Open Tasks
                 <span className="text-xs font-normal ml-1" style={stTextMuted}>
-                  ({pendingTasks.length} pending)
-                </span>
-              </h2>
+                  ({pendingTasks.length} pending)</span></h2>
               {pendingTasks.length === 0 ? (
                 <p className="text-sm" style={stTextMuted}>No pending tasks for this investor.</p>
               ) : (
@@ -1067,8 +912,7 @@ function MeetingPrepContent() {
                             t.priority === 'critical' ? { background: 'var(--danger-muted)', color: 'var(--text-primary)' } :
                             t.priority === 'high' ? { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' } :
                             { background: 'var(--surface-2)', color: 'var(--text-muted)' }
-                          }>{t.priority}</span>
-                        </div>
+                          }>{t.priority}</span></div>
                         {t.description && <p className="text-xs mt-0.5" style={stTextMuted}>{t.description}</p>}
                         <div className="flex gap-3 text-xs mt-1" style={stTextMuted}>
                           {t.due_date && (
@@ -1076,44 +920,32 @@ function MeetingPrepContent() {
                               color: new Date(t.due_date) < new Date() ? 'var(--danger)' : undefined,}}>
                               <Clock className="w-3 h-3" />
                               {fmtDate(t.due_date)}
-                              {new Date(t.due_date) < new Date() && ' (overdue)'}
-                            </span>
+                              {new Date(t.due_date) < new Date() && ' (overdue)'}</span>
                           )}
-                          {t.assignee && <span>{t.assignee}</span>}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </section>
+                          {t.assignee && <span>{t.assignee}</span>}</div></div></div>
+                  ))}</div>
+              )}</section>
 
             {/* ============ PRE-MEETING NOTES ============ */}
             <section className="rounded-xl p-5 print-card">
               <h2 className="text-sm font-normal  tracking-wider mb-4 flex items-center gap-2 print-section-title" style={stTextTertiary}>
                 <span style={stTextTertiary}><MessageSquare className="w-4 h-4" /></span>
-                Pre-Meeting Notes
-              </h2>
+                Pre-Meeting Notes</h2>
               <textarea
                 value={notes}
                 onChange={e => setNotes(e.target.value)}
                 placeholder="Jot down your agenda, questions to ask, points to emphasize, materials to bring..."
                 rows={6}
                 className="w-full rounded-lg px-4 py-3 text-sm focus:outline-none resize-y"
-                style={{ background: 'var(--surface-1)', color: 'var(--text-secondary)' }}/>
-            </section>
+                style={{ background: 'var(--surface-1)', color: 'var(--text-secondary)' }}/></section>
 
             {/* ============ QUICK LINKS (no-print) ============ */}
             <div className="flex flex-wrap gap-2 no-print">
               <QuickLink href={`/investors/${investor.id}`} icon={<ExternalLink className="w-3 h-3" />} label="Investor Detail" />
               <QuickLink href="/meetings/new" icon={<Calendar className="w-3 h-3" />} label="Log New Meeting" />
-              <QuickLink href="/intelligence" icon={<BookOpen className="w-3 h-3" />} label="Intelligence Hub" />
-            </div>
-          </div>
-        )}
-      </div>
-    </>
-  );
+              <QuickLink href="/intelligence" icon={<BookOpen className="w-3 h-3" />} label="Intelligence Hub" /></div></div>
+        )}</div>
+    </>);
 }
 
 // ---------- small components ----------
@@ -1136,8 +968,7 @@ function GenerateBriefButton({ generating, onClick }: { generating: boolean; onC
         <Sparkles className="w-4 h-4" />
       )}
       {generating ? 'Generating...' : 'Generate Brief'}
-    </button>
-  );
+    </button>);
 }
 
 function PrintButton({ onClick }: { onClick: () => void }) {
@@ -1153,8 +984,7 @@ function PrintButton({ onClick }: { onClick: () => void }) {
       onMouseLeave={() => setHovered(false)}>
       <Printer className="w-4 h-4" />
       Print
-    </button>
-  );
+    </button>);
 }
 
 function QuickLink({ href, icon, label }: { href: string; icon: React.ReactNode; label: string }) {
@@ -1169,8 +999,7 @@ function QuickLink({ href, icon, label }: { href: string; icon: React.ReactNode;
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}>
       {icon} {label}
-    </Link>
-  );
+    </Link>);
 }
 
 function MeetingCard({ meeting: m, objs }: { meeting: Meeting; objs: Objection[] }) {
@@ -1187,32 +1016,26 @@ function MeetingCard({ meeting: m, objs }: { meeting: Meeting; objs: Objection[]
           <div className="flex items-center gap-2 flex-wrap">
             <span className="text-sm font-normal" style={stTextSecondary}>{fmtDate(m.date)}</span>
             <span className="text-xs px-2 py-0.5 rounded" style={{ ...stSurface2, ...stTextTertiary }}>
-              {meetingTypeLabel(m.type)}
-            </span>
+              {meetingTypeLabel(m.type)}</span>
             {m.duration_minutes > 0 && (
               <span className="text-xs" style={stTextMuted}>{m.duration_minutes}min</span>
             )}
             {m.attendees && (
               <span className="text-xs" style={stTextMuted}>{m.attendees}</span>
-            )}
-          </div>
-        </div>
+            )}</div></div>
         <div className="flex items-center gap-2 shrink-0">
           <div className="flex gap-0.5" title={`Enthusiasm: ${m.enthusiasm_score}/5`}>
             {[1,2,3,4,5].map(n => (
               <div key={n} className="w-2 h-2 rounded-full" style={{ background: n <= m.enthusiasm_score ? 'var(--accent)' : 'var(--surface-2)' }}
                 />
-            ))}
-          </div>
+            ))}</div>
           <span className="text-xs px-2 py-0.5 rounded" style={
             m.status_after === 'engaged' ? { background: 'var(--accent-muted)', color: 'var(--accent)' } :
             m.status_after === 'in_dd' ? { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' } :
             m.status_after === 'term_sheet' ? { background: 'var(--success-muted)', color: 'var(--text-secondary)' } :
             m.status_after === 'passed' ? { background: 'var(--danger-muted)', color: 'var(--text-primary)' } :
             { background: 'var(--surface-2)', color: 'var(--text-tertiary)' }
-          }>{STATUS_LABELS[m.status_after] || m.status_after}</span>
-        </div>
-      </div>
+          }>{STATUS_LABELS[m.status_after] || m.status_after}</span></div></div>
 
       {m.ai_analysis && (
         <p className="text-xs mt-2 line-clamp-2" style={stTextTertiary}>{m.ai_analysis}</p>
@@ -1229,21 +1052,16 @@ function MeetingCard({ meeting: m, objs }: { meeting: Meeting; objs: Objection[]
                 { background: 'var(--surface-2)', color: 'var(--text-muted)' }
               }>
                 {o.text.length > 60 ? o.text.slice(0, 60) + '...' : o.text}
-                {o.response_effectiveness === 'resolved' ? ' [resolved]' : ''}
-              </span>
-            ))}
-          </div>
-        </div>
+                {o.response_effectiveness === 'resolved' ? ' [resolved]' : ''}</span>
+            ))}</div></div>
       )}
 
       {m.next_steps && (
         <div className="mt-2">
           <span className="text-xs font-normal" style={stTextMuted}>Next Steps: </span>
-          <span className="text-xs" style={stTextTertiary}>{m.next_steps}</span>
-        </div>
+          <span className="text-xs" style={stTextTertiary}>{m.next_steps}</span></div>
       )}
-    </div>
-  );
+    </div>);
 }
 
 function ProfileField({ label, value, bold, badge, badgeStyle }: {
@@ -1258,11 +1076,9 @@ function ProfileField({ label, value, bold, badge, badgeStyle }: {
       <span className="text-xs block mb-0.5" style={stTextMuted}>{label}</span>
       {badge ? (
         <span className="text-xs font-normal px-2 py-0.5 rounded" style={badgeStyle || { background: 'var(--surface-2)', color: 'var(--text-tertiary)' }}>
-          {value}
-        </span>
+          {value}</span>
       ) : (
         <span className="text-sm" style={bold ? { fontWeight: 400, color: 'var(--text-primary)' } : { color: 'var(--text-secondary)' }}>{value}</span>
       )}
-    </div>
-  );
+    </div>);
 }

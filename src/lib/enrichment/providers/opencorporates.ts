@@ -30,8 +30,7 @@ export const opencorporatesProvider: EnrichmentProvider = {
 
       const res = await fetch(searchUrl, {
         headers: { 'Accept': 'application/json' },
-        signal: AbortSignal.timeout(15000),
-      });
+        signal: AbortSignal.timeout(15000),});
 
       if (res.status === 429) {
         return { source_id: 'opencorporates', success: false, fields, error: 'Rate limited', fetched_at: now, rate_limited: true };
@@ -55,8 +54,7 @@ export const opencorporatesProvider: EnrichmentProvider = {
             field_value: best.name,
             category: 'identity',
             confidence: 0.85,
-            source_url: ocUrl,
-          });
+            source_url: ocUrl,});
         }
 
         if (best.company_number) {
@@ -65,8 +63,7 @@ export const opencorporatesProvider: EnrichmentProvider = {
             field_value: best.company_number,
             category: 'identity',
             confidence: 1.0,
-            source_url: ocUrl,
-          });
+            source_url: ocUrl,});
         }
 
         if (best.jurisdiction_code) {
@@ -75,8 +72,7 @@ export const opencorporatesProvider: EnrichmentProvider = {
             field_value: best.jurisdiction_code,
             category: 'identity',
             confidence: 1.0,
-            source_url: ocUrl,
-          });
+            source_url: ocUrl,});
         }
 
         if (best.incorporation_date) {
@@ -85,8 +81,7 @@ export const opencorporatesProvider: EnrichmentProvider = {
             field_value: best.incorporation_date,
             category: 'identity',
             confidence: 1.0,
-            source_url: ocUrl,
-          });
+            source_url: ocUrl,});
         }
 
         if (best.company_type) {
@@ -95,8 +90,7 @@ export const opencorporatesProvider: EnrichmentProvider = {
             field_value: best.company_type,
             category: 'corporate',
             confidence: 1.0,
-            source_url: ocUrl,
-          });
+            source_url: ocUrl,});
         }
 
         if (best.current_status) {
@@ -105,8 +99,7 @@ export const opencorporatesProvider: EnrichmentProvider = {
             field_value: best.current_status,
             category: 'corporate',
             confidence: 1.0,
-            source_url: ocUrl,
-          });
+            source_url: ocUrl,});
         }
 
         if (best.registered_address) {
@@ -120,10 +113,8 @@ export const opencorporatesProvider: EnrichmentProvider = {
               field_value: fullAddr,
               category: 'contact',
               confidence: 1.0,
-              source_url: ocUrl,
-            });
-          }
-        }
+              source_url: ocUrl,});
+          }}
 
         // Officers (if available in response)
         if (best.officers && Array.isArray(best.officers)) {
@@ -139,10 +130,8 @@ export const opencorporatesProvider: EnrichmentProvider = {
               }),
               category: 'people',
               confidence: 0.9,
-              source_url: ocUrl,
-            });
-          }
-        }
+              source_url: ocUrl,});
+          }}
 
         // Also store total results for context
         fields.push({
@@ -150,8 +139,7 @@ export const opencorporatesProvider: EnrichmentProvider = {
           field_value: String(companies.length),
           category: 'identity',
           confidence: 1.0,
-          source_url: ocUrl,
-        });
+          source_url: ocUrl,});
 
         // Try to get detailed company data if we have the URL
         if (best.opencorporates_url) {
@@ -171,8 +159,7 @@ export const opencorporatesProvider: EnrichmentProvider = {
                     field_value: company.branch,
                     category: 'corporate',
                     confidence: 1.0,
-                    source_url: ocUrl,
-                  });
+                    source_url: ocUrl,});
                 }
 
                 // Industry codes
@@ -185,8 +172,7 @@ export const opencorporatesProvider: EnrichmentProvider = {
                     }))),
                     category: 'identity',
                     confidence: 1.0,
-                    source_url: ocUrl,
-                  });
+                    source_url: ocUrl,});
                 }
 
                 // Previous names
@@ -196,14 +182,11 @@ export const opencorporatesProvider: EnrichmentProvider = {
                     field_value: JSON.stringify(company.previous_names.map((pn: { company_name: string }) => pn.company_name)),
                     category: 'identity',
                     confidence: 1.0,
-                    source_url: ocUrl,
-                  });
-                }
-              }
+                    source_url: ocUrl,});
+                }}
             }
           } catch { /* detail fetch failed, continue with search results */ }
-        }
-      }
+        }}
 
       return { source_id: 'opencorporates', success: true, fields, fetched_at: now };
     } catch (error) {
@@ -212,8 +195,6 @@ export const opencorporatesProvider: EnrichmentProvider = {
         success: false,
         fields,
         error: error instanceof Error ? error.message : 'Unknown error',
-        fetched_at: now,
-      };
+        fetched_at: now,};
     }
-  },
-};
+  },};

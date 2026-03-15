@@ -49,14 +49,12 @@ function buildObjectionProfile(meetings: Meeting[]): ObjectionProfile {
       if (o.response_effectiveness === 'unresolved') unresolvedCount++;
       if (o.response_effectiveness === 'resolved') resolvedCount++;
       severitySum += o.severity === 'showstopper' ? 3 : o.severity === 'significant' ? 2 : 1;
-    }
-  }
+    }}
 
   return {
     totalCount, byTopic, unresolvedCount,
     avgSeverityScore: totalCount > 0 ? Math.round((severitySum / totalCount) * 10) / 10 : 0,
-    resolutionRate: totalCount > 0 ? Math.round((resolvedCount / totalCount) * 100) : 0,
-  };
+    resolutionRate: totalCount > 0 ? Math.round((resolvedCount / totalCount) * 100) : 0,};
 }
 
 function buildMeetingHistory(meetings: Meeting[]): MeetingHistorySummary {
@@ -72,8 +70,7 @@ function buildMeetingHistory(meetings: Meeting[]): MeetingHistorySummary {
     lastMeetingDate: latest?.date ?? null,
     lastMeetingType: latest?.type ?? null,
     daysSinceLastMeeting: latest ? Math.round(daysBetween(latest.date, now)) : null,
-    meetingTypes, enthusiasmTrend,
-  };
+    meetingTypes, enthusiasmTrend,};
 }
 
 function buildFollowupStatus(followups: FollowupAction[]): FollowupStatus {
@@ -107,8 +104,7 @@ function buildDecisionMatrix(profiles: InvestorCompareProfile[]): DecisionMatrix
       scores[p.investor.id] = s;
       if (s > maxScore) { maxScore = s; winnerId = p.investor.id; winnerName = p.investor.name; }
     }
-    return { dimension: dimName, winnerId, winnerName, scores };
-  });
+    return { dimension: dimName, winnerId, winnerName, scores };});
 }
 
 function buildVerdict(profiles: InvestorCompareProfile[]): ComparisonVerdict {
@@ -193,8 +189,7 @@ export async function POST(req: NextRequest) {
     const profilePromises = investorIds.map(async (id): Promise<InvestorCompareProfile | null> => {
       const [investor, meetings, portfolio, briefs, snapshots, followups, accActions] = await Promise.all([
         getInvestor(id), getMeetings(id), getInvestorPortfolio(id), getIntelligenceBriefs(undefined, id),
-        getScoreSnapshots(id), getFollowups({ investor_id: id }), getAccelerationActions({ investor_id: id }),
-      ]);
+        getScoreSnapshots(id), getFollowups({ investor_id: id }), getAccelerationActions({ investor_id: id }),]);
       if (!investor) return null;
 
       const score = computeInvestorScore(investor, meetings, portfolio, briefs, { targetEquityM, targetCloseDate });
@@ -210,8 +205,7 @@ export async function POST(req: NextRequest) {
         followupStatus: buildFollowupStatus(followups),
         accelerationStatus: buildAccelerationStatus(investor, score.momentum, score.overall, accActions),
         recommendedAction: score.nextBestAction,
-      };
-    });
+      };});
 
     const profiles = (await Promise.all(profilePromises)).filter((p): p is InvestorCompareProfile => p !== null);
     if (profiles.length < 2) return NextResponse.json({ error: 'Could not find enough valid investors. At least 2 required.' }, { status: 404 });
@@ -220,9 +214,7 @@ export async function POST(req: NextRequest) {
       profiles,
       decisionMatrix: buildDecisionMatrix(profiles),
       verdict: buildVerdict(profiles),
-      recommendation: buildRecommendation(profiles),
-    });
+      recommendation: buildRecommendation(profiles),});
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 500 });
-  }
-}
+  }}

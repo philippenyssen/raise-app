@@ -27,16 +27,9 @@ interface Profile {
   commonTypes: string;
 }
 
-interface PassReason {
-  reason: string;
-  count: number;
-}
+interface PassReason { reason: string; count: number; }
 
-interface FunnelStage {
-  stage: string;
-  count: number;
-  dropOff: number;
-}
+interface FunnelStage { stage: string; count: number; dropOff: number; }
 
 interface TypePerf {
   type: string;
@@ -48,11 +41,7 @@ interface TypePerf {
   passRate: number;
 }
 
-interface Predictor {
-  signal: string;
-  description: string;
-  strength: 'strong' | 'moderate' | 'weak';
-}
+interface Predictor { signal: string; description: string; strength: 'strong' | 'moderate' | 'weak'; }
 
 interface WinLossData {
   patterns: {
@@ -98,8 +87,7 @@ const TYPE_LABELS: Record<string, string> = {
   sovereign: 'SWF',
   strategic: 'Strategic',
   debt: 'Debt',
-  family_office: 'Family Office',
-};
+  family_office: 'Family Office',};
 
 // ── Page ──────────────────────────────────────────────────────────────
 
@@ -116,8 +104,7 @@ export default function WinLossPage() {
     fetch('/api/win-loss')
       .then(r => {
         if (!r.ok) throw new Error(`${r.status}`);
-        return r.json();
-      })
+        return r.json();})
       .then((d: WinLossData) => { setData(d); setLoading(false); })
       .catch(e => { setError(e.message); setLoading(false); });
   };
@@ -129,10 +116,8 @@ export default function WinLossPage() {
       <div className="flex items-center justify-center" style={{ minHeight: '400px' }}>
         <div className="flex items-center gap-3">
           <RefreshCw className="w-5 h-5 animate-spin" style={stTextMuted} />
-          <span style={stTextSecondary}>Analyzing win/loss patterns...</span>
-        </div>
-      </div>
-    );
+          <span style={stTextSecondary}>Analyzing win/loss patterns...</span></div>
+      </div>);
   }
 
   if (error) {
@@ -142,11 +127,8 @@ export default function WinLossPage() {
         <div className="card" style={{ padding: 'var(--space-6)', textAlign: 'center' }}>
           <span style={stTextPrimary}>Failed to load: {error}</span>
           <div style={{ marginTop: 'var(--space-3)' }}>
-            <button onClick={fetchData} className="btn btn-secondary btn-sm">Retry</button>
-          </div>
-        </div>
-      </div>
-    );
+            <button onClick={fetchData} className="btn btn-secondary btn-sm">Retry</button></div></div>
+      </div>);
   }
 
   if (!data) return null;
@@ -163,14 +145,10 @@ export default function WinLossPage() {
         <div>
           <h1 className="page-title">Win/Loss Analysis</h1>
           <p className="page-subtitle" style={stFontSm}>
-            Patterns from closed and passed investors
-          </p>
-        </div>
+            Patterns from closed and passed investors</p></div>
         <button onClick={fetchData} className="btn btn-secondary btn-sm" style={{ gap: 'var(--space-2)' }}>
           <RefreshCw className="w-3.5 h-3.5" />
-          Refresh
-        </button>
-      </div>
+          Refresh</button></div>
 
       {/* Summary Stats */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3 card-stagger">
@@ -193,19 +171,15 @@ export default function WinLossPage() {
             <div className="metric-value" style={{ marginTop: '2px' }}>{s.value}</div>
             {s.sub && (
               <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '2px' }}>{s.sub}</div>
-            )}
-          </div>
-        ))}
-      </div>
+            )}</div>
+        ))}</div>
 
       {/* Funnel Visualization */}
       <div className="card" style={{ padding: 'var(--space-4)' }}>
         <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-4)' }}>
           <span style={stAccent}><BarChart3 className="w-4 h-4" /></span>
           <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
-            Conversion Funnel
-          </h2>
-        </div>
+            Conversion Funnel</h2></div>
         <div className="space-y-2">
           {funnel.map((stage, i) => {
             const pct = funnelMax > 0 ? (stage.count / funnelMax) * 100 : 0;
@@ -217,28 +191,21 @@ export default function WinLossPage() {
                 <div className="flex items-center justify-between" style={{ marginBottom: '4px' }}>
                   <div className="flex items-center gap-2">
                     <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, minWidth: '120px' }}>
-                      {stage.stage}
-                    </span>
+                      {stage.stage}</span>
                     <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', fontWeight: 400 }}>
-                      {stage.count}
-                    </span>
-                  </div>
+                      {stage.count}</span></div>
                   <div className="flex items-center gap-3">
                     {i > 0 && (
                       <span style={{
                         fontSize: 'var(--font-size-xs)',
                         color: conversionPct >= 50 ? 'var(--success)' : conversionPct >= 25 ? 'var(--warning)' : 'var(--danger)',
                       }}>
-                        {conversionPct}% from prev
-                      </span>
+                        {conversionPct}% from prev</span>
                     )}
                     {stage.dropOff > 0 && (
                       <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)' }}>
-                        {stage.dropOff}% drop-off
-                      </span>
-                    )}
-                  </div>
-                </div>
+                        {stage.dropOff}% drop-off</span>
+                    )}</div></div>
                 <div
                   style={{
                     height: '24px',
@@ -255,18 +222,13 @@ export default function WinLossPage() {
                         : `color-mix(in srgb, var(--accent) ${Math.round(40 + (60 * (funnel.length - i) / funnel.length))}%, transparent)`,
                       borderRadius: 'var(--radius-sm)',
                       transition: 'width 0.6s ease',
-                    }} />
-                </div>
+                    }} /></div>
                 {i < funnel.length - 1 && (
                   <div className="flex justify-center" style={{ marginTop: '2px', marginBottom: '2px' }}>
-                    <ArrowDown className="w-3 h-3" style={stTextMuted} />
-                  </div>
+                    <ArrowDown className="w-3 h-3" style={stTextMuted} /></div>
                 )}
-              </div>
-            );
-          })}
-        </div>
-      </div>
+              </div>);
+          })}</div></div>
 
       {/* Winner vs Loser Profile */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -277,12 +239,9 @@ export default function WinLossPage() {
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
             <span style={stTextSecondary}><CheckCircle className="w-4 h-4" /></span>
             <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
-              Winner Profile
-            </h2>
+              Winner Profile</h2>
             <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginLeft: 'auto' }}>
-              {summary.closed} investors
-            </span>
-          </div>
+              {summary.closed} investors</span></div>
           {patterns.winnerProfile ? (
             <div className="space-y-2">
               {[
@@ -297,14 +256,11 @@ export default function WinLossPage() {
                   <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' }}>{row.label}</span>
                   <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400 }}>{row.value}</span>
                 </div>
-              ))}
-            </div>
+              ))}</div>
           ) : (
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
-              No closed investors yet
-            </p>
-          )}
-        </div>
+              No closed investors yet</p>
+          )}</div>
 
         {/* Loser Profile */}
         <div
@@ -313,12 +269,9 @@ export default function WinLossPage() {
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
             <span style={stTextPrimary}><XCircle className="w-4 h-4" /></span>
             <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
-              Passer Profile
-            </h2>
+              Passer Profile</h2>
             <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginLeft: 'auto' }}>
-              {summary.passed} investors
-            </span>
-          </div>
+              {summary.passed} investors</span></div>
           {patterns.loserProfile ? (
             <div className="space-y-2">
               {[
@@ -333,15 +286,11 @@ export default function WinLossPage() {
                   <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' }}>{row.label}</span>
                   <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400 }}>{row.value}</span>
                 </div>
-              ))}
-            </div>
+              ))}</div>
           ) : (
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
-              No passed investors yet
-            </p>
-          )}
-        </div>
-      </div>
+              No passed investors yet</p>
+          )}</div></div>
 
       {/* Pass Reasons + Key Predictors Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -350,9 +299,7 @@ export default function WinLossPage() {
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
             <span style={stTextTertiary}><AlertTriangle className="w-4 h-4" /></span>
             <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
-              Pass Reasons
-            </h2>
-          </div>
+              Pass Reasons</h2></div>
           {passReasons.length > 0 ? (
             <div className="space-y-2">
               {passReasons.map((pr, i) => {
@@ -371,39 +318,29 @@ export default function WinLossPage() {
                     onMouseLeave={() => setHoveredRow(null)}>
                     <div className="flex items-center justify-between" style={{ marginBottom: '4px' }}>
                       <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)' }}>
-                        {pr.reason}
-                      </span>
+                        {pr.reason}</span>
                       <span style={{
                         fontSize: 'var(--font-size-xs)',
                         color: 'var(--text-secondary)',
                         fontWeight: 400,
-                        fontVariantNumeric: 'tabular-nums',
-                      }}>
-                        {pr.count}x
-                      </span>
-                    </div>
+                        fontVariantNumeric: 'tabular-nums',}}>
+                        {pr.count}x</span></div>
                     <div style={{ height: '4px', background: 'var(--surface-1)', borderRadius: '2px', overflow: 'hidden' }}>
                       <div style={{ height: '100%', width: `${barPct}%`, background: 'var(--danger)', borderRadius: '2px', opacity: 0.7 }} />
                     </div>
-                  </div>
-                );
-              })}
-            </div>
+                  </div>);
+              })}</div>
           ) : (
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
-              No pass data available yet
-            </p>
-          )}
-        </div>
+              No pass data available yet</p>
+          )}</div>
 
         {/* Key Predictors */}
         <div className="card" style={{ padding: 'var(--space-4)' }}>
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
             <span style={stAccent}><Target className="w-4 h-4" /></span>
             <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
-              Key Predictors
-            </h2>
-          </div>
+              Key Predictors</h2></div>
           <div className="space-y-3">
             {predictors.map((p, i) => (
               <div
@@ -418,25 +355,16 @@ export default function WinLossPage() {
                 onMouseLeave={() => setHoveredRow(null)}>
                 <div className="flex items-center justify-between" style={{ marginBottom: '2px' }}>
                   <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400 }}>
-                    {p.signal}
-                  </span>
+                    {p.signal}</span>
                   <span style={{
                     fontSize: 'var(--font-size-xs)',
                     color: strengthColor(p.strength),
                     fontWeight: 400,
-                    letterSpacing: '0.01em',
-                  }}>
-                    {p.strength}
-                  </span>
-                </div>
+                    letterSpacing: '0.01em',}}>
+                    {p.strength}</span></div>
                 <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', margin: 0 }}>
-                  {p.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+                  {p.description}</p></div>
+            ))}</div></div></div>
 
       {/* Distinguishing Factors */}
       {patterns.distinguishingFactors.length > 0 && (
@@ -444,12 +372,9 @@ export default function WinLossPage() {
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
             <span style={stAccent}><TrendingUp className="w-4 h-4" /></span>
             <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
-              Distinguishing Factors
-            </h2>
+              Distinguishing Factors</h2>
             <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginLeft: 'auto' }}>
-              Winners vs Passers
-            </span>
-          </div>
+              Winners vs Passers</span></div>
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
@@ -465,11 +390,8 @@ export default function WinLossPage() {
                         color: 'var(--text-muted)',
                         letterSpacing: '0.01em',
                         borderBottom: '1px solid var(--border-subtle)', }}>
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
+                      {h}</th>
+                  ))}</tr></thead>
               <tbody>
                 {patterns.distinguishingFactors.map((f, i) => (
                   <tr
@@ -481,33 +403,21 @@ export default function WinLossPage() {
                     onMouseEnter={() => setHoveredRow(`df-${i}`)}
                     onMouseLeave={() => setHoveredRow(null)}>
                     <td style={{ padding: 'var(--space-2) var(--space-3)', fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, borderBottom: '1px solid var(--border-subtle)' }}>
-                      {f.factor}
-                    </td>
+                      {f.factor}</td>
                     <td style={{ padding: 'var(--space-2) var(--space-3)', fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', textAlign: 'right', fontVariantNumeric: 'tabular-nums', borderBottom: '1px solid var(--border-subtle)' }}>
-                      {f.closedAvg}
-                    </td>
+                      {f.closedAvg}</td>
                     <td style={{ padding: 'var(--space-2) var(--space-3)', fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', textAlign: 'right', fontVariantNumeric: 'tabular-nums', borderBottom: '1px solid var(--border-subtle)' }}>
-                      {f.passedAvg}
-                    </td>
+                      {f.passedAvg}</td>
                     <td style={{ padding: 'var(--space-2) var(--space-3)', fontSize: 'var(--font-size-sm)', color: f.delta > 0 ? 'var(--success)' : f.delta < 0 ? 'var(--danger)' : 'var(--text-muted)', textAlign: 'right', fontWeight: 400, fontVariantNumeric: 'tabular-nums', borderBottom: '1px solid var(--border-subtle)' }}>
-                      {f.delta > 0 ? '+' : ''}{f.delta}
-                    </td>
+                      {f.delta > 0 ? '+' : ''}{f.delta}</td>
                     <td style={{ padding: 'var(--space-2) var(--space-3)', textAlign: 'right', borderBottom: '1px solid var(--border-subtle)' }}>
                       <span style={{
                         fontSize: 'var(--font-size-xs)',
                         fontWeight: 400,
                         color: strengthColor(f.significance),
-                        letterSpacing: '0.01em',
-                      }}>
-                        {f.significance}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+                        letterSpacing: '0.01em',}}>
+                        {f.significance}</span></td></tr>
+                ))}</tbody></table></div></div>
       )}
 
       {/* Time Analysis + Investor Type Performance */}
@@ -517,79 +427,51 @@ export default function WinLossPage() {
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
             <span style={stAccent}><Clock className="w-4 h-4" /></span>
             <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
-              Time Analysis
-            </h2>
-          </div>
+              Time Analysis</h2></div>
           <div className="space-y-3">
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-3)' }}>
               <div style={{ padding: 'var(--space-3)', borderRadius: 'var(--radius-md)', background: 'var(--surface-1)', textAlign: 'center' }}>
                 <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '4px' }}>
-                  Avg Days to Close
-                </div>
+                  Avg Days to Close</div>
                 <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-secondary)' }}>
-                  {timing.avgDaysToClose}
-                </div>
+                  {timing.avgDaysToClose}</div>
                 <div style={labelMuted}>
-                  Median: {timing.medianDaysToClose}d
-                </div>
-              </div>
+                  Median: {timing.medianDaysToClose}d</div></div>
               <div style={{ padding: 'var(--space-3)', borderRadius: 'var(--radius-md)', background: 'var(--surface-1)', textAlign: 'center' }}>
                 <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '4px' }}>
-                  Avg Days to Pass
-                </div>
+                  Avg Days to Pass</div>
                 <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>
-                  {timing.avgDaysToPass}
-                </div>
+                  {timing.avgDaysToPass}</div>
                 <div style={labelMuted}>
-                  Median: {timing.medianDaysToPass}d
-                </div>
-              </div>
-            </div>
+                  Median: {timing.medianDaysToPass}d</div></div></div>
             <div style={{ padding: 'var(--space-3)', borderRadius: 'var(--radius-md)', background: 'var(--surface-1)' }}>
               <div className="flex items-center justify-between">
                 <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
-                  Avg Meetings (Winners)
-                </span>
+                  Avg Meetings (Winners)</span>
                 <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', fontWeight: 400 }}>
-                  {summary.avgClosedMeetings}
-                </span>
-              </div>
+                  {summary.avgClosedMeetings}</span></div>
               <div className="flex items-center justify-between" style={{ marginTop: 'var(--space-1)' }}>
                 <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
-                  Avg Meetings (Passers)
-                </span>
+                  Avg Meetings (Passers)</span>
                 <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400 }}>
-                  {summary.avgPassedMeetings}
-                </span>
-              </div>
+                  {summary.avgPassedMeetings}</span></div>
               <div className="flex items-center justify-between" style={{ marginTop: 'var(--space-1)' }}>
                 <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
-                  Avg Enthusiasm (Winners)
-                </span>
+                  Avg Enthusiasm (Winners)</span>
                 <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', fontWeight: 400 }}>
-                  {summary.avgClosedEnthusiasm}/5
-                </span>
-              </div>
+                  {summary.avgClosedEnthusiasm}/5</span></div>
               <div className="flex items-center justify-between" style={{ marginTop: 'var(--space-1)' }}>
                 <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
-                  Avg Enthusiasm (Passers)
-                </span>
+                  Avg Enthusiasm (Passers)</span>
                 <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400 }}>
-                  {summary.avgPassedEnthusiasm}/5
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
+                  {summary.avgPassedEnthusiasm}/5</span></div></div></div></div>
 
         {/* Investor Type Performance */}
         <div className="card" style={{ padding: 'var(--space-4)' }}>
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
             <span style={stAccent}><Users className="w-4 h-4" /></span>
             <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
-              Performance by Type
-            </h2>
-          </div>
+              Performance by Type</h2></div>
           {typePerformance.length > 0 ? (
             <div className="space-y-2">
               {typePerformance.map((tp, i) => (
@@ -605,39 +487,25 @@ export default function WinLossPage() {
                   onMouseLeave={() => setHoveredRow(null)}>
                   <div className="flex items-center justify-between" style={{ marginBottom: '4px' }}>
                     <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400 }}>
-                      {TYPE_LABELS[tp.type] || tp.type}
-                    </span>
+                      {TYPE_LABELS[tp.type] || tp.type}</span>
                     <span style={labelMuted}>
-                      {tp.total} total
-                    </span>
-                  </div>
+                      {tp.total} total</span></div>
                   <div className="flex items-center gap-3">
                     <div className="flex items-center gap-1">
                       <span style={stTextSecondary}><TrendingUp className="w-3 h-3" /></span>
                       <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', fontWeight: 400 }}>
-                        {tp.closeRate}% close
-                      </span>
-                    </div>
+                        {tp.closeRate}% close</span></div>
                     <div className="flex items-center gap-1">
                       <span style={stTextPrimary}><TrendingDown className="w-3 h-3" /></span>
                       <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', fontWeight: 400 }}>
-                        {tp.passRate}% pass
-                      </span>
-                    </div>
+                        {tp.passRate}% pass</span></div>
                     <span style={labelMuted}>
-                      {tp.closed}W / {tp.passed}L / {tp.dropped}D
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
+                      {tp.closed}W / {tp.passed}L / {tp.dropped}D</span></div></div>
+              ))}</div>
           ) : (
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
-              No investor type data available
-            </p>
-          )}
-        </div>
-      </div>
+              No investor type data available</p>
+          )}</div></div>
 
       {/* Insights + Recommendations */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -647,9 +515,7 @@ export default function WinLossPage() {
             <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
               <span style={stAccent}><TrendingDown className="w-4 h-4" /></span>
               <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
-                Pattern Insights
-              </h2>
-            </div>
+                Pattern Insights</h2></div>
             <div className="space-y-2">
               {patterns.insights.map((insight, i) => (
                 <div
@@ -660,11 +526,8 @@ export default function WinLossPage() {
                     background: 'var(--surface-1)',
                     fontSize: 'var(--font-size-sm)',
                     color: 'var(--text-secondary)', }}>
-                  {insight}
-                </div>
-              ))}
-            </div>
-          </div>
+                  {insight}</div>
+              ))}</div></div>
         )}
 
         {/* Recommendations */}
@@ -672,9 +535,7 @@ export default function WinLossPage() {
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
             <span style={stTextTertiary}><Lightbulb className="w-4 h-4" /></span>
             <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
-              Recommendations
-            </h2>
-          </div>
+              Recommendations</h2></div>
           {recommendations.length > 0 ? (
             <div className="space-y-2">
               {recommendations.map((rec, i) => (
@@ -690,22 +551,15 @@ export default function WinLossPage() {
                     transition: 'background 0.15s', }}
                   onMouseEnter={() => setHoveredRow(`rec-${i}`)}
                   onMouseLeave={() => setHoveredRow(null)}>
-                  {rec}
-                </div>
-              ))}
-            </div>
+                  {rec}</div>
+              ))}</div>
           ) : (
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
-              Recommendations will appear as more outcomes are recorded
-            </p>
-          )}
-        </div>
-      </div>
+              Recommendations will appear as more outcomes are recorded</p>
+          )}</div></div>
 
       {/* Footer */}
       <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', textAlign: 'right', paddingTop: 'var(--space-2)' }}>
-        Generated {data.generatedAt ? new Date(data.generatedAt).toLocaleString() : '-'}
-      </div>
-    </div>
-  );
+        Generated {data.generatedAt ? new Date(data.generatedAt).toLocaleString() : '-'}</div>
+    </div>);
 }

@@ -21,9 +21,7 @@ const STATUS_COLORS: Record<string, string> = {
   engaged: 'var(--text-primary)',
   in_dd: 'var(--text-primary)',
   term_sheet: 'var(--accent)',
-  closed: 'var(--accent)',
-};
-
+  closed: 'var(--accent)',};
 
 export default function VelocityPage() {
   const [data, setData] = useState<VelocityData | null>(null);
@@ -35,8 +33,7 @@ export default function VelocityPage() {
     fetch('/api/velocity')
       .then(res => {
         if (!res.ok) throw new Error('Failed to fetch velocity data');
-        return res.json();
-      })
+        return res.json();})
       .then(d => { setData(d); setLoading(false); })
       .catch(e => { setError(e.message); setLoading(false); });
   }, []);
@@ -45,16 +42,13 @@ export default function VelocityPage() {
     return (
       <div className="flex-1 p-6" style={{ maxWidth: '1400px', margin: '0 auto' }}>
         <div className="flex items-center gap-3" style={{ marginBottom: 'var(--space-8)' }}>
-          <div className="skeleton" style={{ width: '200px', height: '32px' }} />
-        </div>
+          <div className="skeleton" style={{ width: '200px', height: '32px' }} /></div>
         <div className="grid grid-cols-4 gap-4" style={{ marginBottom: 'var(--space-6)' }}>
           {[1, 2, 3, 4].map(i => (
             <div key={i} className="card skeleton" style={{ height: '100px' }} />
-          ))}
-        </div>
+          ))}</div>
         <div className="card skeleton" style={{ height: '400px' }} />
-      </div>
-    );
+      </div>);
   }
 
   if (error || !data) {
@@ -62,11 +56,8 @@ export default function VelocityPage() {
       <div className="flex-1 p-6" style={{ maxWidth: '1400px', margin: '0 auto' }}>
         <div className="card" style={{ textAlign: 'center', padding: 'var(--space-12)' }}>
           <span style={{ color: 'var(--text-primary)', fontSize: 'var(--font-size-lg)' }}>
-            {error || 'Failed to load velocity data'}
-          </span>
-        </div>
-      </div>
-    );
+            {error || 'Failed to load velocity data'}</span></div>
+      </div>);
   }
 
   const { investors, summary } = data;
@@ -80,25 +71,18 @@ export default function VelocityPage() {
           <h1 className="page-title">Close in 60</h1>
           <p className="page-subtitle">
             {summary.total_active} active deal{summary.total_active !== 1 ? 's' : ''} &middot; {summary.avg_days_in_process}d avg time in process
-          </p>
-        </div>
-      </div>
+          </p></div></div>
 
       {/* Raise Progress Bar */}
       <div className="card" style={{ marginBottom: 'var(--space-6)', padding: 'var(--space-4) var(--space-5)' }}>
         <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-2)' }}>
           <div className="flex items-center gap-2">
             <span style={stTextTertiary}>
-              <Clock className="w-4 h-4" />
-            </span>
+              <Clock className="w-4 h-4" /></span>
             <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
-              Raise Timeline
-            </span>
-          </div>
+              Raise Timeline</span></div>
           <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' }}>
-            Day {summary.raise_days_elapsed} of {summary.raise_target_days}
-          </span>
-        </div>
+            Day {summary.raise_days_elapsed} of {summary.raise_target_days}</span></div>
         <div className="progress-track" style={{ height: '8px', borderRadius: '4px' }}>
           <div
             className="progress-fill"
@@ -106,20 +90,15 @@ export default function VelocityPage() {
               width: `${raiseProgress}%`,
               background: 'var(--accent)',
               borderRadius: '4px',
-            }} />
-        </div>
+            }} /></div>
         <div className="flex items-center justify-between" style={{ marginTop: 'var(--space-1)' }}>
           <span style={labelMuted}>
-            Launch
-          </span>
+            Launch</span>
           <span style={labelMuted}>
             {raiseProgress}% elapsed &middot; {Math.max(0, summary.raise_target_days - summary.raise_days_elapsed)}d remaining
           </span>
           <span style={labelMuted}>
-            Target Close
-          </span>
-        </div>
-      </div>
+            Target Close</span></div></div>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-2 gap-4 card-stagger" style={{ marginBottom: 'var(--space-6)' }}>
@@ -128,57 +107,38 @@ export default function VelocityPage() {
           <div className="card-metric" style={{ padding: 'var(--space-4)' }}>
             <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-2)' }}>
               <span style={stTextTertiary}>
-                <CheckCircle2 className="w-4 h-4" />
-              </span>
-              <span className="metric-label">On Track</span>
-            </div>
+                <CheckCircle2 className="w-4 h-4" /></span>
+              <span className="metric-label">On Track</span></div>
             <div className="metric-value">
-              {summary.on_track}
-            </div>
-          </div>
+              {summary.on_track}</div></div>
 
           {/* Behind */}
           <div className="card-metric" style={{ padding: 'var(--space-4)' }}>
             <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-2)' }}>
               <span style={stTextTertiary}>
-                <AlertTriangle className="w-4 h-4" />
-              </span>
-              <span className="metric-label">Behind</span>
-            </div>
+                <AlertTriangle className="w-4 h-4" /></span>
+              <span className="metric-label">Behind</span></div>
             <div className="metric-value">
-              {summary.behind}
-            </div>
-          </div>
-        </div>
+              {summary.behind}</div></div></div>
 
         <div className="grid grid-cols-2 gap-4">
           {/* At Risk */}
           <div className="card-metric" style={{ padding: 'var(--space-4)' }}>
             <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-2)' }}>
               <span style={stTextTertiary}>
-                <XCircle className="w-4 h-4" />
-              </span>
-              <span className="metric-label">At Risk</span>
-            </div>
+                <XCircle className="w-4 h-4" /></span>
+              <span className="metric-label">At Risk</span></div>
             <div className="metric-value">
-              {summary.at_risk}
-            </div>
-          </div>
+              {summary.at_risk}</div></div>
 
           {/* Avg Velocity */}
           <div className="card-metric" style={{ padding: 'var(--space-4)' }}>
             <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-2)' }}>
               <span style={stTextTertiary}>
-                <TrendingUp className="w-4 h-4" />
-              </span>
-              <span className="metric-label">Avg Velocity</span>
-            </div>
+                <TrendingUp className="w-4 h-4" /></span>
+              <span className="metric-label">Avg Velocity</span></div>
             <div className="metric-value">
-              {summary.avg_velocity_score}
-            </div>
-          </div>
-        </div>
-      </div>
+              {summary.avg_velocity_score}</div></div></div></div>
 
       {/* Investor Table */}
       <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
@@ -186,23 +146,16 @@ export default function VelocityPage() {
           style={{ padding: 'var(--space-4) var(--space-5)', borderBottom: '1px solid var(--border-subtle)' }}>
           <div className="flex items-center gap-2">
             <span style={stTextTertiary}>
-              <Users className="w-4 h-4" />
-            </span>
+              <Users className="w-4 h-4" /></span>
             <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
-              Deal Velocity Tracker
-            </span>
+              Deal Velocity Tracker</span>
             <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginLeft: 'auto' }}>
-              Sorted by urgency
-            </span>
-          </div>
-        </div>
+              Sorted by urgency</span></div></div>
 
         {investors.length === 0 ? (
           <div style={{ padding: 'var(--space-12)', textAlign: 'center' }}>
             <span style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
-              No active investors in pipeline. Add investors to track velocity.
-            </span>
-          </div>
+              No active investors in pipeline. Add investors to track velocity.</span></div>
         ) : (
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -216,9 +169,7 @@ export default function VelocityPage() {
                   <th style={{ minWidth: '70px', textAlign: 'center' }}>Status</th>
                   <th style={{ minWidth: '200px' }}>Bottleneck</th>
                   <th style={{ minWidth: '120px' }}>Velocity</th>
-                  <th style={{ minWidth: '90px', textAlign: 'center' }}>Action</th>
-                </tr>
-              </thead>
+                  <th style={{ minWidth: '90px', textAlign: 'center' }}>Action</th></tr></thead>
               <tbody>
                 {investors.map((inv) => (
                   <tr
@@ -238,19 +189,12 @@ export default function VelocityPage() {
                           <span
                             className="tier-badge"
                             style={{ ...(inv.investor_tier <= 2 ? { background: 'var(--accent)', color: 'var(--text-primary)' } : { background: 'var(--surface-3)', color: 'var(--text-secondary)' }), width: '20px', height: '20px', fontSize: '10px', flexShrink: 0 }}>
-                            {inv.investor_tier}
-                          </span>
+                            {inv.investor_tier}</span>
                           <div>
                             <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
-                              {inv.investor_name}
-                            </div>
+                              {inv.investor_name}</div>
                             <div style={labelMuted}>
-                              {TYPE_LABELS[inv.investor_type] || inv.investor_type}
-                            </div>
-                          </div>
-                        </div>
-                      </Link>
-                    </td>
+                              {TYPE_LABELS[inv.investor_type] || inv.investor_type}</div></div></div></Link></td>
 
                     {/* Stage */}
                     <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
@@ -262,26 +206,19 @@ export default function VelocityPage() {
                             boxShadow: `0 0 6px ${STATUS_COLORS[inv.status] || 'var(--text-muted)'}40`,
                           }} />
                         <span style={labelSecondary}>
-                          {STATUS_LABELS[inv.status] || inv.status}
-                        </span>
-                      </div>
-                    </td>
+                          {STATUS_LABELS[inv.status] || inv.status}</span></div></td>
 
                     {/* Days in Process */}
                     <td style={{ padding: 'var(--space-3) var(--space-4)', textAlign: 'center' }}>
                       <span
                         style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, fontVariantNumeric: 'tabular-nums', color: inv.days_in_process > 50 ? 'var(--danger)' : inv.days_in_process > 35 ? 'var(--warning)' : 'var(--text-secondary)' }}>
-                        {inv.days_in_process}d
-                      </span>
-                    </td>
+                        {inv.days_in_process}d</span></td>
 
                     {/* Days in Stage */}
                     <td style={{ padding: 'var(--space-3) var(--space-4)', textAlign: 'center' }}>
                       <span
                         style={{ fontSize: 'var(--font-size-sm)', fontVariantNumeric: 'tabular-nums', color: inv.days_in_current_stage > 21 ? 'var(--danger)' : inv.days_in_current_stage > 14 ? 'var(--warning)' : 'var(--text-tertiary)' }}>
-                        {inv.days_in_current_stage}d
-                      </span>
-                    </td>
+                        {inv.days_in_current_stage}d</span></td>
 
                     {/* Projected Close */}
                     <td style={{ padding: 'var(--space-3) var(--space-4)', textAlign: 'center' }}>
@@ -289,9 +226,7 @@ export default function VelocityPage() {
                         {new Date(inv.projected_close_date).toLocaleDateString('en-GB', {
                           day: 'numeric',
                           month: 'short',
-                        })}
-                      </span>
-                    </td>
+                        })}</span></td>
 
                     {/* On-Track Status */}
                     <td style={{ padding: 'var(--space-3) var(--space-4)', textAlign: 'center' }}>
@@ -303,9 +238,7 @@ export default function VelocityPage() {
                           <><AlertTriangle className="w-3 h-3" style={{ marginRight: '4px' }} /> Late</>
                         ) : (
                           <><XCircle className="w-3 h-3" style={{ marginRight: '4px' }} /> Risk</>
-                        )}
-                      </span>
-                    </td>
+                        )}</span></td>
 
                     {/* Bottleneck */}
                     <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
@@ -314,9 +247,7 @@ export default function VelocityPage() {
                           fontSize: 'var(--font-size-xs)',
                           color: inv.bottleneck === 'On pace' ? 'var(--text-muted)' : 'var(--warning)',
                           lineHeight: 1.4, }}>
-                        {inv.bottleneck}
-                      </span>
-                    </td>
+                        {inv.bottleneck}</span></td>
 
                     {/* Velocity Score Bar */}
                     <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
@@ -326,10 +257,7 @@ export default function VelocityPage() {
                         </div>
                         <span
                           style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, fontVariantNumeric: 'tabular-nums', color: velocityColor(inv.velocity_score), minWidth: '28px', textAlign: 'right' }}>
-                          {inv.velocity_score}
-                        </span>
-                      </div>
-                    </td>
+                          {inv.velocity_score}</span></div></td>
 
                     {/* Action */}
                     <td style={{ padding: 'var(--space-3) var(--space-4)', textAlign: 'center' }}>
@@ -339,41 +267,31 @@ export default function VelocityPage() {
                           className="btn btn-sm"
                           onClick={e => e.stopPropagation()}
                           style={{ background: 'var(--danger-muted)', color: 'var(--text-primary)', border: '1px solid var(--fg-6)', fontSize: '11px', padding: '3px 8px', gap: '4px', display: 'inline-flex', alignItems: 'center' }}>
-                          <Phone className="w-3 h-3" /> Rescue
-                        </Link>
+                          <Phone className="w-3 h-3" /> Rescue</Link>
                       ) : inv.tracking_status === 'behind' ? (
                         <Link
                           href={`/followups?investor=${inv.investor_id}`}
                           className="btn btn-sm"
                           onClick={e => e.stopPropagation()}
                           style={{ background: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: '1px solid var(--fg-5)', fontSize: '11px', padding: '3px 8px', gap: '4px', display: 'inline-flex', alignItems: 'center' }}>
-                          <Mail className="w-3 h-3" /> Nudge
-                        </Link>
+                          <Mail className="w-3 h-3" /> Nudge</Link>
                       ) : (
                         <Link
                           href={`/investors/${inv.investor_id}`}
                           className="btn btn-sm"
                           onClick={e => e.stopPropagation()}
                           style={{ background: 'var(--surface-2)', color: 'var(--text-muted)', fontSize: '11px', padding: '3px 8px', gap: '4px', display: 'inline-flex', alignItems: 'center' }}>
-                          <Target className="w-3 h-3" /> View
-                        </Link>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+                          <Target className="w-3 h-3" /> View</Link>
+                      )}</td></tr>
+                ))}</tbody></table></div>
+        )}</div>
 
       {/* Footer hint */}
       <div
         className="flex items-center justify-center gap-2"
         style={{ marginTop: 'var(--space-6)', padding: 'var(--space-3)', fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
         <span style={stTextTertiary}>
-          <Zap className="w-3 h-3" />
-        </span>
+          <Zap className="w-3 h-3" /></span>
         Velocity scores update in real-time based on meetings, follow-ups, and stage progression
         <span style={{ margin: '0 var(--space-2)', color: 'var(--border-default)' }}>|</span>
         <Link
@@ -381,9 +299,6 @@ export default function VelocityPage() {
           className="flex items-center gap-1"
           style={{ color: 'var(--accent)', textDecoration: 'none' }}>
           View Pipeline
-          <ArrowRight className="w-3 h-3" />
-        </Link>
-      </div>
-    </div>
-  );
+          <ArrowRight className="w-3 h-3" /></Link></div>
+    </div>);
 }

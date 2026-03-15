@@ -32,27 +32,17 @@ function safeJsonParse<T>(raw: string | null | undefined, fallback: T): T {
 }
 
 export async function POST(req: NextRequest) {
-  if (!checkRateLimit('meeting-brief')) {
-    return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
-  }
+  if (!checkRateLimit('meeting-brief')) { return NextResponse.json({ error: 'Too many requests' }, { status: 429 }); }
   let body: Record<string, unknown>;
-  try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
-  }
+  try { body = await req.json(); } catch { return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 }); }
 
   try {
     const investor_id = body.investor_id as string;
-    if (!investor_id) {
-      return NextResponse.json({ error: 'investor_id is required' }, { status: 400 });
-    }
+    if (!investor_id) { return NextResponse.json({ error: 'investor_id is required' }, { status: 400 }); }
 
     // 1. Load investor profile
     const investor = await getInvestor(investor_id);
-    if (!investor) {
-      return NextResponse.json({ error: 'Investor not found' }, { status: 404 });
-    }
+    if (!investor) { return NextResponse.json({ error: 'Investor not found' }, { status: 404 }); }
 
     // 2. Get narrative profile for this investor type
     const narrative = getNarrativeProfile(investor.type as InvestorType);
@@ -81,8 +71,7 @@ export async function POST(req: NextRequest) {
       getIntelligenceBriefs(undefined, investor_id),
       getQuestionPatternsForType(investor.type),
       getAggregatedCompetitiveIntel(),
-      getInvestorRelationships(investor_id).catch(() => []),
-    ]);
+      getInvestorRelationships(investor_id).catch(() => []),]);
 
     // 3b. Compute conviction trajectory for this investor (cycle 11)
     let trajectoryContext = '';
@@ -98,8 +87,7 @@ export async function POST(req: NextRequest) {
           trajectoryContext = `CONVICTION TRAJECTORY POSITIVE: Investor is accelerating (+${trajectory.velocityPerWeek} pts/week). Lean into the momentum — push for next concrete commitment (DD, term sheet, timeline).`;
         } else if (trajectory.pattern === 'inflecting') {
           trajectoryContext = `CONVICTION TRAJECTORY INFLECTION: Investor trajectory has changed direction${trajectory.inflectionDate ? ` around ${trajectory.inflectionDate}` : ''}. Pay attention to what caused the shift and adapt accordingly.`;
-        }
-      }
+        }}
     } catch { /* non-blocking — trajectory is supplementary */ }
 
     // 3c. Compute forecast context for this investor (cycle 20)
@@ -127,8 +115,7 @@ export async function POST(req: NextRequest) {
         computeEngagementVelocity().catch(() => []),
         detectFomoDynamics().catch(() => []),
         computeNetworkCascades().catch(() => []),
-        computeWinLossPatterns().catch(() => null),
-      ]);
+        computeWinLossPatterns().catch(() => null),]);
 
       const parts: string[] = [];
 
@@ -138,8 +125,7 @@ export async function POST(req: NextRequest) {
         parts.push(`VELOCITY: ${thisVelocity.acceleration.toUpperCase()} — ${thisVelocity.signal}`);
         if (thisVelocity.daysSinceLastMeeting && thisVelocity.avgDaysBetweenMeetings && thisVelocity.daysSinceLastMeeting > thisVelocity.avgDaysBetweenMeetings * 1.5) {
           parts.push(`SILENCE RISK: ${thisVelocity.daysSinceLastMeeting}d since last meeting (avg: ${thisVelocity.avgDaysBetweenMeetings}d). Push to lock next meeting before this one ends.`);
-        }
-      }
+        }}
 
       // FOMO pressure on this investor
       const fomoForThis = fomos.find(f => f.affectedInvestors.some(a => a.name === investor.name));
@@ -159,8 +145,7 @@ export async function POST(req: NextRequest) {
         const highSig = winLoss.distinguishingFactors.filter(f => f.significance === 'high');
         if (highSig.length > 0) {
           parts.push(`WIN PREDICTORS: Key factors that distinguish closers from passers: ${highSig.map(f => `${f.factor} (closed avg: ${f.closedAvg}, passed avg: ${f.passedAvg})`).join('; ')}`);
-        }
-      }
+        }}
 
       if (parts.length > 0) {
         tacticalContext = parts.join('\n');
@@ -181,14 +166,12 @@ export async function POST(req: NextRequest) {
         addressed: o.addressed,
         response_effectiveness: o.response_effectiveness,
         meetingDate: m.date,
-      }));
-    });
+      }));});
 
     // 5. Get anticipated questions (merged: type-specific + historical)
     const anticipatedQuestions = getAnticipatedQuestions(
       investor.type as InvestorType,
-      historicalQuestions,
-    );
+      historicalQuestions,);
 
     // 6. Find best responses from the playbook for similar objections
     const relevantPlaybook = playbook
@@ -214,8 +197,7 @@ export async function POST(req: NextRequest) {
     const documentsByType = new Map<string, { id: string; title: string; type: string; updated_at: string }[]>();
     documents.forEach(d => {
       if (!documentsByType.has(d.type)) documentsByType.set(d.type, []);
-      documentsByType.get(d.type)!.push({ id: d.id, title: d.title, type: d.type, updated_at: d.updated_at });
-    });
+      documentsByType.get(d.type)!.push({ id: d.id, title: d.title, type: d.type, updated_at: d.updated_at });});
 
     // 9. Generate personalized brief with Claude (now with cross-investor intelligence + trajectory)
     const contextForAI = buildAIContext({
@@ -237,8 +219,7 @@ export async function POST(req: NextRequest) {
       investorRelationships,
       trajectoryContext,
       forecastContext,
-      tacticalContext,
-    });
+      tacticalContext,});
 
     const response = await getAIClient().messages.create({
       model: 'claude-sonnet-4-20250514',
@@ -246,8 +227,7 @@ export async function POST(req: NextRequest) {
       messages: [{
         role: 'user',
         content: contextForAI,
-      }],
-    });
+      }],});
 
     const aiSummary = response.content[0].type === 'text' ? response.content[0].text : '';
 
@@ -271,8 +251,7 @@ export async function POST(req: NextRequest) {
       previous_meeting_summary: null,
       unresolved_items: [] as string[],
       risks_to_watch: [] as string[],
-      recommended_ask: 'Push for next milestone in process.',
-    };
+      recommended_ask: 'Push for next milestone in process.',};
     try {
       briefContent = JSON.parse(aiSummary);
     } catch {
@@ -281,8 +260,7 @@ export async function POST(req: NextRequest) {
         try { briefContent = JSON.parse(jsonMatch[0]); } catch { briefContent = briefFallback; }
       } else {
         briefContent = briefFallback;
-      }
-    }
+      }}
 
     // 11. Assemble the full brief
     const brief = {
@@ -296,25 +274,21 @@ export async function POST(req: NextRequest) {
         partner: investor.partner,
         fund_size: investor.fund_size,
         check_size_range: investor.check_size_range,
-        sector_thesis: investor.sector_thesis,
-      },
+        sector_thesis: investor.sector_thesis,},
       narrative_profile: {
         opening_hook: narrative.openingHook,
         emphasis: narrative.emphasis,
         tone_guidance: narrative.toneGuidance,
-        avoid_topics: narrative.avoidTopics,
-      },
+        avoid_topics: narrative.avoidTopics,},
       brief: briefContent,
       data_room_priority: narrative.dataRoomPriority.map(category => {
         const matchingDocs = documents.filter(d => {
           const catLower = category.toLowerCase();
           return d.title.toLowerCase().includes(catLower) ||
-            d.type.toLowerCase().includes(catLower.split(' ')[0]);
-        });
+            d.type.toLowerCase().includes(catLower.split(' ')[0]);});
         return {
           category,
-          documents: matchingDocs.map(d => ({ id: d.id, title: d.title, type: d.type })),
-        };
+          documents: matchingDocs.map(d => ({ id: d.id, title: d.title, type: d.type })),};
       }),
       playbook_insights: relevantPlaybook,
       meeting_history: {
@@ -335,8 +309,7 @@ export async function POST(req: NextRequest) {
         enthusiasm_trajectory: meetings.map(m => ({
           date: m.date,
           score: m.enthusiasm_score,
-        })).reverse(),
-      },
+        })).reverse(),},
       partners: partners.map(p => ({
         name: p.name,
         title: p.title,
@@ -367,20 +340,16 @@ export async function POST(req: NextRequest) {
           relationship_type: r.relationship_type,
           their_status: r.investor_a_id === investor_id ? r.investor_b_status : r.investor_a_status,
           their_enthusiasm: r.investor_a_id === investor_id ? r.investor_b_enthusiasm : r.investor_a_enthusiasm,
-        })),
-      },
-      generated_at: new Date().toISOString(),
-    };
+        })),},
+      generated_at: new Date().toISOString(),};
 
     return NextResponse.json(brief);
   } catch (err) {
     console.error('Meeting brief generation error:', err);
     return NextResponse.json(
       { error: 'Failed to generate meeting brief' },
-      { status: 500 },
-    );
-  }
-}
+      { status: 500 },);
+  }}
 
 // Build the prompt for the AI personalization step
 function buildAIContext(ctx: {
@@ -497,8 +466,7 @@ Generate a JSON meeting brief (no markdown, pure JSON):
   "personalized_opening": "A 2-3 sentence personalized opening hook for THIS specific investor, incorporating their thesis, history, and the narrative profile.",
   "key_talking_points": ["3-5 specific talking points tailored to this investor type and their history with us"],
   "metrics_to_highlight": [
-    {"metric": "metric name", "value": "the actual value or range", "why": "why this metric matters to THIS investor"}
-  ],
+    {"metric": "metric name", "value": "the actual value or range", "why": "why this metric matters to THIS investor"}],
   "anticipated_questions_with_answers": [
     {"question": "anticipated question", "suggested_answer": "A concise, specific suggested answer with data points. 2-3 sentences max."}
   ],

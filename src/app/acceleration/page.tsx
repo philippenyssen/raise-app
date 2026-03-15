@@ -24,17 +24,14 @@ const TYPE_STYLES: Record<string, React.CSSProperties> = {
   sovereign: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
   strategic: { background: 'var(--cat-teal-muted)', color: 'var(--cat-teal)' },
   debt: { background: 'var(--surface-2)', color: 'var(--text-secondary)' },
-  family_office: { background: 'var(--fg-6)', color: 'var(--text-primary)' },
-};
+  family_office: { background: 'var(--fg-6)', color: 'var(--text-primary)' },};
 
 const TYPE_LABELS: Record<string, string> = {
   vc: 'VC', growth: 'Growth', sovereign: 'SWF', strategic: 'Strategic',
-  debt: 'Debt', family_office: 'Family',
-};
+  debt: 'Debt', family_office: 'Family',};
 
 const STATUS_STYLES = PIPELINE_STATUS_STYLES;
 const MOMENTUM_STYLE = MOMENTUM_STYLES;
-
 
 type FilterTab = 'all' | 'pending' | 'executed' | 'skipped';
 
@@ -50,8 +47,7 @@ function inlineBadgeStyle(styleObj: React.CSSProperties): React.CSSProperties {
     fontWeight: 400,
     lineHeight: 1.5,
     whiteSpace: 'nowrap' as const,
-    ...styleObj,
-  };
+    ...styleObj,};
 }
 
 function EnthusiasmDots({ value }: { value: number }) {
@@ -67,8 +63,7 @@ function EnthusiasmDots({ value }: { value: number }) {
               : 'var(--border-default)',
           }} />
       ))}
-    </div>
-  );
+    </div>);
 }
 
 function TierBadge({ tier }: { tier: number }) {
@@ -76,8 +71,7 @@ function TierBadge({ tier }: { tier: number }) {
   return (
     <span className={tierClass}>
       {tier}
-    </span>
-  );
+    </span>);
 }
 
 // ---------------------------------------------------------------------------
@@ -110,14 +104,12 @@ function ActionCard({
         padding: '16px',
         background: 'var(--fg-30)',
         opacity: 0.6,
-        transition: 'all 200ms ease',
-      }
+        transition: 'all 200ms ease',}
     : {
         borderRadius: 'var(--radius-lg)',
         padding: '16px',
         background: 'var(--surface-1)',
-        transition: 'all 200ms ease',
-      };
+        transition: 'all 200ms ease',};
 
   return (
     <div
@@ -135,42 +127,31 @@ function ActionCard({
               style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}
               onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
               onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}>
-              {item.investorName}
-            </Link>
+              {item.investorName}</Link>
             <TierBadge tier={item.investorTier} />
             <span style={inlineBadgeStyle(TRIGGER_STYLES[item.triggerType] ?? TRIGGER_STYLES.stall_risk)}>
-              {TRIGGER_LABELS[item.triggerType] ?? item.triggerType}
-            </span>
+              {TRIGGER_LABELS[item.triggerType] ?? item.triggerType}</span>
             <span style={inlineBadgeStyle(CONFIDENCE_STYLES[item.confidence] ?? CONFIDENCE_STYLES.medium)}>
-              {item.confidence} confidence
-            </span>
+              {item.confidence} confidence</span>
             <span style={inlineBadgeStyle(STATUS_STYLES[item.status] ?? STATUS_STYLES.identified)}>
-              {STATUS_LABELS[item.status] ?? item.status}
-            </span>
-          </div>
+              {STATUS_LABELS[item.status] ?? item.status}</span></div>
 
           {/* Description */}
           <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '8px' }}>
-            {item.description}
-          </p>
+            {item.description}</p>
 
           {/* Meta row */}
           <div className="flex items-center gap-4 flex-wrap">
             <span className="flex items-center gap-1" style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
               <Timer className="w-3 h-3" />
-              {item.timeEstimate}
-            </span>
+              {item.timeEstimate}</span>
             <span style={{ fontSize: '11px', color: 'var(--text-secondary)', opacity: 0.8 }}>
-              +{item.expectedLift} pts expected
-            </span>
+              +{item.expectedLift} pts expected</span>
             <span style={{ fontSize: '11px', fontWeight: 400, ...(URGENCY_STYLE[item.urgency] ?? { color: 'var(--text-tertiary)' }) }}>
               {item.urgency === 'immediate' ? 'Act now' : item.urgency === '48h' ? 'Within 48h' : item.urgency === 'this_week' ? 'This week' : 'Next week'}
             </span>
             <span style={labelMuted10}>
-              {item.triggerEvidence}
-            </span>
-          </div>
-        </div>
+              {item.triggerEvidence}</span></div></div>
 
         {/* Action buttons */}
         <div className="shrink-0 flex flex-col gap-1.5">
@@ -186,8 +167,7 @@ function ActionCard({
                   ? { background: 'var(--success-muted)', color: 'var(--text-secondary)' }
                   : { background: 'var(--surface-2)', color: 'var(--text-muted)' }
                 ), }}>
-              {isExecuted ? 'Done' : 'Skipped'}
-            </span>
+              {isExecuted ? 'Done' : 'Skipped'}</span>
           ) : (
             <>
               <button
@@ -205,8 +185,7 @@ function ActionCard({
                   border: 'none',
                   cursor: 'pointer', }}>
                 <Play className="w-3 h-3" />
-                Execute
-              </button>
+                Execute</button>
               <button
                 onClick={() => onSkip(item)}
                 onMouseEnter={() => setSkipHovered(true)}
@@ -221,14 +200,10 @@ function ActionCard({
                   border: 'none',
                   cursor: 'pointer', }}>
                 <SkipForward className="w-3 h-3" />
-                Skip
-              </button>
+                Skip</button>
             </>
-          )}
-        </div>
-      </div>
-    </div>
-  );
+          )}</div></div>
+    </div>);
 }
 
 function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
@@ -243,25 +218,18 @@ function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
           style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}
           onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
           onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}>
-          {investor.investorName}
-        </Link>
+          {investor.investorName}</Link>
         <TierBadge tier={investor.investorTier} />
         <span style={inlineBadgeStyle(TYPE_STYLES[investor.investorType] ?? TYPE_STYLES.vc)}>
-          {TYPE_LABELS[investor.investorType] ?? investor.investorType}
-        </span>
+          {TYPE_LABELS[investor.investorType] ?? investor.investorType}</span>
         <span style={inlineBadgeStyle(STATUS_STYLES[investor.status] ?? STATUS_STYLES.identified)}>
-          {STATUS_LABELS[investor.status] ?? investor.status}
-        </span>
-      </div>
+          {STATUS_LABELS[investor.status] ?? investor.status}</span></div>
       <div className="flex items-center gap-3 mb-2">
         <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-          Score: <span style={{ color: 'var(--text-secondary)', fontWeight: 300 }}>{investor.score}</span>/100
-        </span>
+          Score: <span style={{ color: 'var(--text-secondary)', fontWeight: 300 }}>{investor.score}</span>/100</span>
         <span style={{ fontSize: '11px', ...(MOMENTUM_STYLE[investor.momentum] ?? {}) }}>
-          {MOMENTUM_LABELS[investor.momentum]}
-        </span>
-        <EnthusiasmDots value={investor.enthusiasm} />
-      </div>
+          {MOMENTUM_LABELS[investor.momentum]}</span>
+        <EnthusiasmDots value={investor.enthusiasm} /></div>
       <p style={{ fontSize: '11px', color: 'var(--text-tertiary)', marginBottom: '12px' }}>{investor.reason}</p>
       <Link
         href={`/investors/${investor.investorId}`}
@@ -277,10 +245,8 @@ function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
         onMouseEnter={e => (e.currentTarget.style.background = 'var(--accent-8)')}
         onMouseLeave={e => (e.currentTarget.style.background = 'var(--accent-muted)')}>
         <Rocket className="w-3 h-3" />
-        Push for Term Sheet
-      </Link>
-    </div>
-  );
+        Push for Term Sheet</Link>
+    </div>);
 }
 
 function AtRiskCard({ investor }: { investor: InvestorSummary }) {
@@ -295,28 +261,21 @@ function AtRiskCard({ investor }: { investor: InvestorSummary }) {
           style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}
           onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
           onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}>
-          {investor.investorName}
-        </Link>
+          {investor.investorName}</Link>
         <TierBadge tier={investor.investorTier} />
         <span style={inlineBadgeStyle(TYPE_STYLES[investor.investorType] ?? TYPE_STYLES.vc)}>
-          {TYPE_LABELS[investor.investorType] ?? investor.investorType}
-        </span>
-      </div>
+          {TYPE_LABELS[investor.investorType] ?? investor.investorType}</span></div>
       <div className="flex items-center gap-3 mb-2">
         <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-          Score: <span style={{ color: 'var(--text-secondary)', fontWeight: 300 }}>{investor.score}</span>/100
-        </span>
+          Score: <span style={{ color: 'var(--text-secondary)', fontWeight: 300 }}>{investor.score}</span>/100</span>
         <span style={{ fontSize: '11px', ...(MOMENTUM_STYLE[investor.momentum] ?? {}) }}>
           {investor.momentum === 'decelerating' || investor.momentum === 'stalled'
             ? <span className="flex items-center gap-1"><TrendingDown className="w-3 h-3 inline" />{MOMENTUM_LABELS[investor.momentum]}</span>
             : <span className="flex items-center gap-1"><ArrowUpRight className="w-3 h-3 inline" />{MOMENTUM_LABELS[investor.momentum]}</span>
-          }
-        </span>
-        <EnthusiasmDots value={investor.enthusiasm} />
-      </div>
+          }</span>
+        <EnthusiasmDots value={investor.enthusiasm} /></div>
       <p style={{ fontSize: '11px', color: 'var(--text-tertiary)' }}>{investor.reason}</p>
-    </div>
-  );
+    </div>);
 }
 
 function DeprioritizeSection({ investors }: { investors: InvestorSummary[] }) {
@@ -340,13 +299,10 @@ function DeprioritizeSection({ investors }: { investors: InvestorSummary[] }) {
         <div className="flex items-center gap-2">
           <Ban className="w-3.5 h-3.5" style={stTextMuted} />
           <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', fontWeight: 400, letterSpacing: '0.01em' }}>
-            Deprioritize ({investors.length})
-          </span>
-        </div>
+            Deprioritize ({investors.length})</span></div>
         <ChevronDown
           className={`w-4 h-4 transition-transform ${expanded ? 'rotate-180' : ''}`}
-          style={stTextMuted} />
-      </button>
+          style={stTextMuted} /></button>
       {expanded && (
         <div className="p-3 space-y-2" style={stBorderTop}>
           {investors.map(inv => (
@@ -359,21 +315,16 @@ function DeprioritizeSection({ investors }: { investors: InvestorSummary[] }) {
                   style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' }}
                   onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
                   onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-tertiary)')}>
-                  {inv.investorName}
-                </Link>
+                  {inv.investorName}</Link>
                 <TierBadge tier={inv.investorTier} />
-                <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Score: {inv.score}/100</span>
-              </div>
+                <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Score: {inv.score}/100</span></div>
               <span style={{ fontSize: '10px', color: 'var(--text-muted)', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const }}>{inv.reason}</span>
             </div>
           ))}
           <p style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '8px', paddingTop: '8px', borderTop: '1px solid var(--border-subtle)' }}>
-            Stop allocating active time to these investors. Move effort to higher-conviction targets.
-          </p>
-        </div>
+            Stop allocating active time to these investors. Move effort to higher-conviction targets.</p></div>
       )}
-    </div>
-  );
+    </div>);
 }
 
 // ---------------------------------------------------------------------------
@@ -414,30 +365,26 @@ export default function AccelerationPage() {
       const res = await fetch('/api/acceleration', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: item.id, status: 'executed' }),
-      });
+        body: JSON.stringify({ id: item.id, status: 'executed' }),});
       if (!res.ok) throw new Error('Failed to mark action as executed');
       setExecutedIds(prev => new Set(prev).add(item.id));
       toast(`Action executed for ${item.investorName}`);
     } catch {
       toast('Failed to update action', 'error');
-    }
-  }
+    }}
 
   async function handleSkip(item: AccelerationItem) {
     try {
       const res = await fetch('/api/acceleration', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: item.id, status: 'skipped' }),
-      });
+        body: JSON.stringify({ id: item.id, status: 'skipped' }),});
       if (!res.ok) throw new Error('Failed to mark action as skipped');
       setSkippedIds(prev => new Set(prev).add(item.id));
       toast(`Action skipped for ${item.investorName}`);
     } catch {
       toast('Failed to update action', 'error');
-    }
-  }
+    }}
 
   // Filter logic
   function filterActions(actions: AccelerationItem[]): AccelerationItem[] {
@@ -450,8 +397,7 @@ export default function AccelerationPage() {
         return actions.filter(a => skippedIds.has(a.id));
       default:
         return actions;
-    }
-  }
+    }}
 
   if (loading) {
     return (
@@ -460,13 +406,11 @@ export default function AccelerationPage() {
         <div className="grid grid-cols-3 gap-3">
           {[...Array(3)].map((_, i) => (
             <div key={i} className="h-20 rounded-xl animate-pulse" style={stSurface1} />
-          ))}
-        </div>
+          ))}</div>
         {[...Array(4)].map((_, i) => (
           <div key={i} className="h-28 rounded-xl animate-pulse" style={stSurface0} />
         ))}
-      </div>
-    );
+      </div>);
   }
 
   if (!data) {
@@ -487,19 +431,14 @@ export default function AccelerationPage() {
               fontSize: 'var(--font-size-sm)',
               border: 'none',
               cursor: 'pointer', }}>
-            <RefreshCw className="w-3.5 h-3.5" /> Retry
-          </button>
-        </div>
-      </div>
-    );
+            <RefreshCw className="w-3.5 h-3.5" /> Retry</button></div>
+      </div>);
   }
 
   const immediateActions = filterActions(
-    data.accelerations.filter(a => a.urgency === 'immediate')
-  );
+    data.accelerations.filter(a => a.urgency === 'immediate'));
   const thisWeekActions = filterActions(
-    data.accelerations.filter(a => a.urgency === '48h' || a.urgency === 'this_week')
-  );
+    data.accelerations.filter(a => a.urgency === '48h' || a.urgency === 'this_week'));
   const allFiltered = filterActions(data.accelerations);
 
   const pendingCount = data.accelerations.filter(a => !executedIds.has(a.id) && !skippedIds.has(a.id)).length;
@@ -522,9 +461,7 @@ export default function AccelerationPage() {
             )}
             {data.termSheetReady.length > 0 && (
               <> &middot; <span style={{ color: 'var(--text-secondary)', fontWeight: 400 }}>{data.termSheetReady.length} term sheet ready</span></>
-            )}
-          </p>
-        </div>
+            )}</p></div>
         <button
           onClick={fetchData}
           onMouseEnter={() => setRefreshHovered(true)}
@@ -537,9 +474,7 @@ export default function AccelerationPage() {
             color: 'var(--text-secondary)',
             border: 'none',
             cursor: 'pointer', }}>
-          <RefreshCw className="w-3.5 h-3.5" /> Refresh
-        </button>
-      </div>
+          <RefreshCw className="w-3.5 h-3.5" /> Refresh</button></div>
 
       {/* Summary cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 card-stagger">
@@ -547,30 +482,23 @@ export default function AccelerationPage() {
           className="rounded-xl p-4"
           style={{ background: 'var(--danger-muted)' }}>
           <div className="flex items-center gap-2 mb-1" style={{ color: 'var(--text-primary)', fontSize: 'var(--font-size-sm)' }}>
-            <AlertTriangle className="w-3.5 h-3.5" /> Immediate
-          </div>
+            <AlertTriangle className="w-3.5 h-3.5" /> Immediate</div>
           <div className="text-2xl font-normal" style={stTextPrimary}>{data.summary.immediate}</div>
-          <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>need same-day attention</div>
-        </div>
+          <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>need same-day attention</div></div>
         <div
           className="rounded-xl p-4"
           style={{ background: 'var(--warning-muted)' }}>
           <div className="flex items-center gap-2 mb-1" style={{ color: 'var(--text-tertiary)', fontSize: 'var(--font-size-sm)' }}>
-            <Clock className="w-3.5 h-3.5" /> This Week
-          </div>
+            <Clock className="w-3.5 h-3.5" /> This Week</div>
           <div className="text-2xl font-normal" style={stTextTertiary}>{data.summary.this_week}</div>
-          <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>actions for next 7 days</div>
-        </div>
+          <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>actions for next 7 days</div></div>
         <div
           className="rounded-xl p-4"
           style={{ background: 'var(--success-muted)' }}>
           <div className="flex items-center gap-2 mb-1" style={{ color: 'var(--text-secondary)', fontSize: 'var(--font-size-sm)' }}>
-            <Rocket className="w-3.5 h-3.5" /> Term Sheet Ready
-          </div>
+            <Rocket className="w-3.5 h-3.5" /> Term Sheet Ready</div>
           <div className="text-2xl font-normal" style={stTextSecondary}>{data.termSheetReady.length}</div>
-          <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>ready for the push</div>
-        </div>
-      </div>
+          <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>ready for the push</div></div></div>
 
       {/* Filter tabs */}
       <div className="flex items-center gap-1 pb-px" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
@@ -606,33 +534,26 @@ export default function AccelerationPage() {
                   fontSize: '10px',
                   background: activeTab === tab.key ? 'var(--accent-muted)' : 'var(--surface-2)',
                   color: activeTab === tab.key ? 'var(--accent)' : 'var(--text-muted)', }}>
-                {tab.count}
-              </span>
-            )}
-          </button>
-        ))}
-      </div>
+                {tab.count}</span>
+            )}</button>
+        ))}</div>
 
       {/* Term Sheet Ready */}
       {data.termSheetReady.length > 0 && (activeTab === 'all' || activeTab === 'pending') && (
         <div>
           <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)', letterSpacing: '0.01em' }}>
-            <CheckCircle className="w-3.5 h-3.5" /> Term Sheet Ready ({data.termSheetReady.length})
-          </h2>
+            <CheckCircle className="w-3.5 h-3.5" /> Term Sheet Ready ({data.termSheetReady.length})</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {data.termSheetReady.map(inv => (
               <TermSheetReadyCard key={inv.investorId} investor={inv} />
-            ))}
-          </div>
-        </div>
+            ))}</div></div>
       )}
 
       {/* Immediate Actions */}
       {immediateActions.length > 0 && (
         <div>
           <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', letterSpacing: '0.01em' }}>
-            <AlertTriangle className="w-3.5 h-3.5" /> Immediate Actions ({immediateActions.length})
-          </h2>
+            <AlertTriangle className="w-3.5 h-3.5" /> Immediate Actions ({immediateActions.length})</h2>
           <div className="space-y-2">
             {immediateActions.map(item => (
               <ActionCard
@@ -642,17 +563,14 @@ export default function AccelerationPage() {
                 onSkip={handleSkip}
                 executedIds={executedIds}
                 skippedIds={skippedIds} />
-            ))}
-          </div>
-        </div>
+            ))}</div></div>
       )}
 
       {/* This Week */}
       {thisWeekActions.length > 0 && (
         <div>
           <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-tertiary)', letterSpacing: '0.01em' }}>
-            <Clock className="w-3.5 h-3.5" /> This Week ({thisWeekActions.length})
-          </h2>
+            <Clock className="w-3.5 h-3.5" /> This Week ({thisWeekActions.length})</h2>
           <div className="space-y-2">
             {thisWeekActions.map(item => (
               <ActionCard
@@ -662,23 +580,18 @@ export default function AccelerationPage() {
                 onSkip={handleSkip}
                 executedIds={executedIds}
                 skippedIds={skippedIds} />
-            ))}
-          </div>
-        </div>
+            ))}</div></div>
       )}
 
       {/* At Risk */}
       {data.atRisk.length > 0 && (activeTab === 'all' || activeTab === 'pending') && (
         <div>
           <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)', letterSpacing: '0.01em' }}>
-            <Shield className="w-3.5 h-3.5" /> At Risk ({data.atRisk.length})
-          </h2>
+            <Shield className="w-3.5 h-3.5" /> At Risk ({data.atRisk.length})</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {data.atRisk.map(inv => (
               <AtRiskCard key={inv.investorId} investor={inv} />
-            ))}
-          </div>
-        </div>
+            ))}</div></div>
       )}
 
       {/* Deprioritize */}
@@ -697,9 +610,7 @@ export default function AccelerationPage() {
 
       {activeTab !== 'all' && allFiltered.length === 0 && (
         <div className="rounded-xl p-6 text-center">
-          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>No {activeTab} actions.</p>
-        </div>
+          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>No {activeTab} actions.</p></div>
       )}
-    </div>
-  );
+    </div>);
 }

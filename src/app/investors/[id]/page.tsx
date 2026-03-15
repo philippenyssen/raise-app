@@ -29,8 +29,7 @@ const STATUS_COLORS: Record<string, string> = {
   term_sheet: 'var(--success)',
   closed: 'var(--success)',
   passed: 'var(--danger)',
-  dropped: 'var(--surface-3)',
-};
+  dropped: 'var(--surface-3)',};
 
 interface ConvictionTrajectoryData {
   dataPoints: { date: string; score: number; enthusiasm: number }[];
@@ -175,8 +174,7 @@ export default function InvestorDetailPage() {
       const res = await fetch('/api/enrichment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'enrich', investor_id: id, auto_apply: true }),
-      });
+        body: JSON.stringify({ action: 'enrich', investor_id: id, auto_apply: true }),});
       if (!res.ok) throw new Error(await res.text());
       const data = await res.json();
       toast(`Enrichment complete: ${data.total_fields} fields from ${data.sources_succeeded} sources`, 'success');
@@ -197,8 +195,7 @@ export default function InvestorDetailPage() {
         fetch(`/api/intelligence?type=partners&investor_id=${id}`).then(r => r.json()).catch(() => []),
         fetch(`/api/intelligence?type=portfolio&investor_id=${id}`).then(r => r.json()).catch(() => []),
         fetch(`/api/intelligence?type=briefs&investor_id=${id}`).then(r => r.json()).catch(() => []),
-        fetch(`/api/tasks?investor_id=${id}`).then(r => r.json()).catch(() => []),
-      ]);
+        fetch(`/api/tasks?investor_id=${id}`).then(r => r.json()).catch(() => []),]);
       setInvestor(invRes);
       setMeetings(mtgRes);
       setPartners(Array.isArray(partRes) ? partRes : []);
@@ -230,10 +227,8 @@ export default function InvestorDetailPage() {
           trackingStatus: velInv?.tracking_status ?? 'unknown',
           bottleneck: velInv?.bottleneck ?? '',
           daysInProcess: velInv?.days_in_process ?? 0,
-          velocityScore: velInv?.velocity_score ?? 0,
-        });
-      }
-    });
+          velocityScore: velInv?.velocity_score ?? 0,});
+      }});
   }, [fetchData, fetchScore, fetchEnrichment, fetchEnrichmentStatus, id]);
 
   async function handleResearch() {
@@ -248,8 +243,7 @@ export default function InvestorDetailPage() {
           name: investor.name,
           investor_id: id,
           context: `Type: ${investor.type}, Fund size: ${investor.fund_size}, Key partner: ${investor.partner}, Thesis: ${investor.sector_thesis}`,
-        }),
-      });
+        }),});
       if (!res.ok) throw new Error(await res.text());
       toast('Research complete', 'success');
       fetchData();
@@ -267,8 +261,7 @@ export default function InvestorDetailPage() {
       fetchData();
     } catch {
       toast('Failed to delete item', 'error');
-    }
-  }
+    }}
 
   function startEdit() {
     if (!investor) return;
@@ -279,8 +272,7 @@ export default function InvestorDetailPage() {
       status: investor.status || 'identified',
       check_size_range: investor.check_size_range || '',
       sector_thesis: investor.sector_thesis || '',
-      notes: investor.notes || '',
-    });
+      notes: investor.notes || '',});
     setEditing(true);
   }
 
@@ -304,8 +296,7 @@ export default function InvestorDetailPage() {
           check_size_range: editForm.check_size_range,
           sector_thesis: editForm.sector_thesis,
           notes: editForm.notes,
-        }),
-      });
+        }),});
       if (!res.ok) throw new Error(await res.text());
       setInvestor(prev => prev ? {
         ...prev,
@@ -331,8 +322,7 @@ export default function InvestorDetailPage() {
         <div className="h-8 w-48 rounded animate-pulse" style={stSurface2} />
         <div className="h-32 rounded-xl animate-pulse" style={stSurface1} />
         <div className="h-64 rounded-xl animate-pulse" style={stSurface1} />
-      </div>
-    );
+      </div>);
   }
 
   if (!investor) {
@@ -345,10 +335,8 @@ export default function InvestorDetailPage() {
           style={stAccent}
           onMouseEnter={e => (e.currentTarget.style.opacity = '0.8')}
           onMouseLeave={e => (e.currentTarget.style.opacity = '1')}>
-          Back to Pipeline
-        </Link>
-      </div>
-    );
+          Back to Pipeline</Link>
+      </div>);
   }
 
   const allObjections: { text: string; severity: string; topic: string; date: string }[] = [];
@@ -361,8 +349,7 @@ export default function InvestorDetailPage() {
     try {
       const qs = JSON.parse(m.questions_asked || '[]');
       qs.forEach((q: { text: string; topic: string }) => { allQuestions.push({ ...q, date: m.date }); });
-    } catch { /* skip */ }
-  });
+    } catch { /* skip */ }});
 
   const enthusiasmTrend = meetings
     .sort((a, b) => a.date.localeCompare(b.date))
@@ -381,8 +368,7 @@ export default function InvestorDetailPage() {
             style={textMuted}
             onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
             onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}>
-            <ArrowLeft className="w-3.5 h-3.5" /> Back to CRM
-          </Link>
+            <ArrowLeft className="w-3.5 h-3.5" /> Back to CRM</Link>
           {editing ? (
             <input
               className="input"
@@ -401,8 +387,7 @@ export default function InvestorDetailPage() {
                 style={{ width: 'auto', padding: '2px 8px', fontSize: 'var(--font-size-xs)' }}>
                 {[1, 2, 3, 4].map(t => (
                   <option key={t} value={t}>Tier {t}</option>
-                ))}
-              </select>
+                ))}</select>
             ) : (
               <span
                 className="px-2 py-0.5 rounded text-xs font-normal"
@@ -423,8 +408,7 @@ export default function InvestorDetailPage() {
                 style={{ width: 'auto', padding: '2px 8px', fontSize: 'var(--font-size-xs)' }}>
                 {Object.entries(STATUS_LABELS).map(([val, label]) => (
                   <option key={val} value={val}>{label}</option>
-                ))}
-              </select>
+                ))}</select>
             ) : (
               <select
                 value={investor.status}
@@ -440,12 +424,9 @@ export default function InvestorDetailPage() {
                   color: 'var(--text-primary)', }}>
                 {Object.entries(STATUS_LABELS).map(([val, label]) => (
                   <option key={val} value={val} style={{ background: 'var(--surface-0)', color: 'var(--text-secondary)' }}>{label}</option>
-                ))}
-              </select>
+                ))}</select>
             )}
-            <span className="text-xs capitalize" style={textMuted}>{investor.type.replace(/_/g, ' ')}</span>
-          </div>
-        </div>
+            <span className="text-xs capitalize" style={textMuted}>{investor.type.replace(/_/g, ' ')}</span></div></div>
         <div className="flex gap-2">
           {editing ? (
             <>
@@ -454,14 +435,12 @@ export default function InvestorDetailPage() {
                 disabled={saving}
                 className="btn btn-primary btn-md flex items-center gap-2">
                 {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
-                {saving ? 'Saving...' : 'Save'}
-              </button>
+                {saving ? 'Saving...' : 'Save'}</button>
               <button
                 onClick={cancelEdit}
                 disabled={saving}
                 className="btn btn-ghost btn-md flex items-center gap-2">
-                <X className="w-3.5 h-3.5" /> Cancel
-              </button>
+                <X className="w-3.5 h-3.5" /> Cancel</button>
             </>
           ) : (
             <button
@@ -470,8 +449,7 @@ export default function InvestorDetailPage() {
               style={{ ...stSurface2, ...textPrimary }}
               onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface-3)')}
               onMouseLeave={e => (e.currentTarget.style.background = 'var(--surface-2)')}>
-              <Pencil className="w-3.5 h-3.5" /> Edit
-            </button>
+              <Pencil className="w-3.5 h-3.5" /> Edit</button>
           )}
           <Link
             href={`/meetings/prep?investor=${id}`}
@@ -479,8 +457,7 @@ export default function InvestorDetailPage() {
             style={{ ...stSurface2, ...textPrimary }}
             onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface-3)')}
             onMouseLeave={e => (e.currentTarget.style.background = 'var(--surface-2)')}>
-            <FileSearch className="w-3.5 h-3.5" /> Prep Meeting
-          </Link>
+            <FileSearch className="w-3.5 h-3.5" /> Prep Meeting</Link>
           <button
             onClick={handleResearch}
             disabled={researching}
@@ -498,18 +475,14 @@ export default function InvestorDetailPage() {
             style={{ ...stSurface2, ...textPrimary }}
             onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface-3)')}
             onMouseLeave={e => (e.currentTarget.style.background = 'var(--surface-2)')}>
-            <Target className="w-3.5 h-3.5" /> Pipeline
-          </Link>
+            <Target className="w-3.5 h-3.5" /> Pipeline</Link>
           <Link
             href={`/meetings/new?investor=${id}`}
             className="px-4 py-2 rounded-lg text-sm font-normal transition-colors"
             style={{ background: 'var(--accent)', color: 'var(--text-primary)' }}
             onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
             onMouseLeave={e => (e.currentTarget.style.opacity = '1')}>
-            + Log Meeting
-          </Link>
-        </div>
-      </div>
+            + Log Meeting</Link></div></div>
 
       {/* Data Quality Banner */}
       {investor && (() => {
@@ -520,12 +493,10 @@ export default function InvestorDetailPage() {
           { field: 'sector_thesis', label: 'sector thesis' },
           { field: 'warm_path', label: 'warm path' },
           { field: 'ic_process', label: 'IC process' },
-          { field: 'portfolio_conflicts', label: 'portfolio conflicts' },
-        ];
+          { field: 'portfolio_conflicts', label: 'portfolio conflicts' },];
         const missing = checkFields.filter(f => {
           const val = (investor as unknown as Record<string, unknown>)[f.field];
-          return !val || (typeof val === 'string' && val.trim() === '');
-        });
+          return !val || (typeof val === 'string' && val.trim() === '');});
         const completeness = Math.round(((checkFields.length - missing.length) / checkFields.length) * 100);
         if (completeness >= 80) return null;
         return (
@@ -535,14 +506,10 @@ export default function InvestorDetailPage() {
             <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" style={textTertiary} />
             <div className="min-w-0">
               <div className="text-sm font-normal" style={textTertiary}>
-                Profile {completeness}% complete — fill missing fields to improve scoring accuracy
-              </div>
+                Profile {completeness}% complete — fill missing fields to improve scoring accuracy</div>
               <div className="text-xs mt-0.5" style={{ color: 'var(--text-tertiary)', opacity: 0.7 }}>
-                Missing: {missing.map(f => f.label).join(', ')}
-              </div>
-            </div>
-          </div>
-        );
+                Missing: {missing.map(f => f.label).join(', ')}</div></div>
+          </div>);
       })()}
 
       {/* Deal Intelligence Strip */}
@@ -569,19 +536,14 @@ export default function InvestorDetailPage() {
               fontSize: 'var(--font-size-sm)', fontWeight: 300, fontVariantNumeric: 'tabular-nums',
               color: dealIntel.heatLabel === 'hot' ? 'var(--text-primary)' :
                 dealIntel.heatLabel === 'warm' ? 'var(--text-secondary)' :
-                'var(--text-secondary)'
-            }}>
-              {dealIntel.heat}
-            </span>
+                'var(--text-secondary)'}}>
+              {dealIntel.heat}</span>
             <span style={{
               fontSize: '9px', fontWeight: 400,
               color: dealIntel.heatLabel === 'hot' ? 'var(--text-primary)' :
                 dealIntel.heatLabel === 'warm' ? 'var(--text-secondary)' :
-                'var(--text-muted)'
-            }}>
-              {dealIntel.heatLabel}
-            </span>
-          </div>
+                'var(--text-muted)'}}>
+              {dealIntel.heatLabel}</span></div>
 
           <span style={{ color: 'var(--border-default)' }}>|</span>
 
@@ -595,9 +557,7 @@ export default function InvestorDetailPage() {
               }} />
             <span style={labelSecondary}>
               {dealIntel.trackingStatus === 'on_track' ? 'On Track' :
-                dealIntel.trackingStatus === 'behind' ? 'Behind' : 'At Risk'}
-            </span>
-          </div>
+                dealIntel.trackingStatus === 'behind' ? 'Behind' : 'At Risk'}</span></div>
 
           <span style={{ color: 'var(--border-default)' }}>|</span>
 
@@ -611,8 +571,7 @@ export default function InvestorDetailPage() {
             <>
               <span style={{ color: 'var(--border-default)' }}>|</span>
               <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', fontStyle: 'italic' }}>
-                {dealIntel.bottleneck}
-              </span>
+                {dealIntel.bottleneck}</span>
             </>
           )}
 
@@ -627,8 +586,7 @@ export default function InvestorDetailPage() {
                   borderRadius: 'var(--radius-sm)', textDecoration: 'none',
                   background: 'var(--danger-muted)', color: 'var(--text-primary)',
                   border: '1px solid var(--fg-6)', }}>
-                <Phone className="w-3 h-3" /> Rescue
-              </Link>
+                <Phone className="w-3 h-3" /> Rescue</Link>
             ) : dealIntel.trackingStatus === 'behind' ? (
               <Link
                 href={`/followups?investor=${id}`}
@@ -638,11 +596,8 @@ export default function InvestorDetailPage() {
                   borderRadius: 'var(--radius-sm)', textDecoration: 'none',
                   background: 'var(--warning-muted)', color: 'var(--text-tertiary)',
                   border: '1px solid var(--fg-5)', }}>
-                <Mail className="w-3 h-3" /> Nudge
-              </Link>
-            ) : null}
-          </div>
-        </div>
+                <Mail className="w-3 h-3" /> Nudge</Link>
+            ) : null}</div></div>
       )}
 
       {/* Pending Actions — inline follow-ups */}
@@ -656,8 +611,7 @@ export default function InvestorDetailPage() {
           await fetch('/api/followups', {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: fId, status: 'completed' }),
-          });
+            body: JSON.stringify({ id: fId, status: 'completed' }),});
           setFollowups(prev => prev.filter(f => f.id !== fId));
         }
 
@@ -665,8 +619,7 @@ export default function InvestorDetailPage() {
           await fetch('/api/followups', {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: fId, status: 'skipped' }),
-          });
+            body: JSON.stringify({ id: fId, status: 'skipped' }),});
           setFollowups(prev => prev.filter(f => f.id !== fId));
         }
 
@@ -681,18 +634,15 @@ export default function InvestorDetailPage() {
                 <SendHorizonal className="w-3.5 h-3.5" style={{ color: overdueItems.length > 0 ? 'var(--danger)' : 'var(--accent)' }}
                   />
                 <span className="text-xs font-normal  tracking-wider" style={textTertiary}>
-                  Pending Actions
-                </span>
+                  Pending Actions</span>
                 {overdueItems.length > 0 && (
                   <span
                     style={{
                       fontSize: '10px', fontWeight: 400,
                       padding: '1px 6px', borderRadius: '9999px',
                       background: 'var(--danger)', color: 'var(--text-primary)', }}>
-                    {overdueItems.length} overdue
-                  </span>
-                )}
-              </div>
+                    {overdueItems.length} overdue</span>
+                )}</div>
               {followups.length > 5 && (
                 <Link
                   href={`/followups?investor=${id}`}
@@ -700,10 +650,8 @@ export default function InvestorDetailPage() {
                   style={{ fontSize: '11px', color: 'var(--accent)', textDecoration: 'none' }}
                   onMouseEnter={e => { e.currentTarget.style.textDecoration = 'underline'; }}
                   onMouseLeave={e => { e.currentTarget.style.textDecoration = 'none'; }}>
-                  View all {followups.length}
-                </Link>
-              )}
-            </div>
+                  View all {followups.length}</Link>
+              )}</div>
             <div style={{ padding: 'var(--space-2) var(--space-4)' }}>
               {sortedItems.map(f => {
                 const isOverdue = new Date(f.due_at) < now;
@@ -727,19 +675,16 @@ export default function InvestorDetailPage() {
                         color: isOverdue ? 'var(--danger)' : 'var(--text-muted)',
                         fontWeight: 400,
                         fontSize: '10px', }}>
-                      {timeLabel}
-                    </span>
+                      {timeLabel}</span>
                     <span
                       className="text-xs px-1.5 py-0.5 rounded shrink-0 capitalize"
                       style={{ background: 'var(--surface-2)', color: 'var(--text-muted)', fontSize: '10px' }}>
-                      {f.action_type.replace(/_/g, ' ')}
-                    </span>
+                      {f.action_type.replace(/_/g, ' ')}</span>
                     <span
                       className="flex-1 text-sm truncate"
                       style={textSecondary}
                       title={f.description}>
-                      {f.description.split('\n')[0]}
-                    </span>
+                      {f.description.split('\n')[0]}</span>
                     <div className="flex gap-1 shrink-0">
                       <button
                         onClick={() => quickComplete(f.id)}
@@ -748,8 +693,7 @@ export default function InvestorDetailPage() {
                         onMouseEnter={e => { e.currentTarget.style.color = 'var(--success)'; e.currentTarget.style.background = 'var(--success-muted)'; }}
                         onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.background = 'transparent'; }}
                         title="Mark done">
-                        <CheckCircle2 className="w-3.5 h-3.5" />
-                      </button>
+                        <CheckCircle2 className="w-3.5 h-3.5" /></button>
                       <button
                         onClick={() => quickSkip(f.id)}
                         className="p-1 rounded transition-colors"
@@ -757,23 +701,17 @@ export default function InvestorDetailPage() {
                         onMouseEnter={e => { e.currentTarget.style.color = 'var(--danger)'; e.currentTarget.style.background = 'var(--danger-muted)'; }}
                         onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.background = 'transparent'; }}
                         title="Skip">
-                        <XCircle className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        );
+                        <XCircle className="w-3.5 h-3.5" /></button></div>
+                  </div>);
+              })}</div>
+          </div>);
       })()}
 
       {/* Profile + Process Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="rounded-xl p-5 space-y-3">
           <h2 className="text-xs font-normal flex items-center gap-2" style={textTertiary}>
-            <Users className="w-3.5 h-3.5" /> Profile
-          </h2>
+            <Users className="w-3.5 h-3.5" /> Profile</h2>
           <div className="space-y-2 text-sm">
             {editing ? (
               <EditRow label="Partner" value={editForm.partner} onChange={v => setEditForm(f => ({ ...f, partner: v }))} />
@@ -792,21 +730,15 @@ export default function InvestorDetailPage() {
                 />
             ) : (
               <Row label="Thesis" value={investor.sector_thesis} />
-            )}
-          </div>
-        </div>
+            )}</div></div>
         <div className="rounded-xl p-5 space-y-3">
           <h2 className="text-xs font-normal flex items-center gap-2" style={textTertiary}>
-            <Target className="w-3.5 h-3.5" /> Process
-          </h2>
+            <Target className="w-3.5 h-3.5" /> Process</h2>
           <div className="space-y-2 text-sm">
             <Row label="Warm Path" value={investor.warm_path} />
             <Row label="IC Process" value={investor.ic_process} />
             <Row label="Speed" value={investor.speed} />
-            <Row label="Conflicts" value={investor.portfolio_conflicts} />
-          </div>
-        </div>
-      </div>
+            <Row label="Conflicts" value={investor.portfolio_conflicts} /></div></div></div>
 
       {/* Enrichment Status */}
       <EnrichmentStatusCard
@@ -820,9 +752,7 @@ export default function InvestorDetailPage() {
         <div className="rounded-xl p-6">
           <div className="flex items-center gap-3">
             <Loader2 className="w-4 h-4 animate-spin" style={textMuted} />
-            <span className="text-sm" style={textMuted}>Scoring investor across 11 dimensions...</span>
-          </div>
-        </div>
+            <span className="text-sm" style={textMuted}>Scoring investor across 11 dimensions...</span></div></div>
       )}
 
       {/* Conviction Trajectory */}
@@ -838,8 +768,7 @@ export default function InvestorDetailPage() {
           />
         <StatCard icon={AlertTriangle} label="Objections" value={allObjections.length} sub="unresolved" />
         <StatCard icon={UserCheck} label="Partners" value={partners.length} sub="profiled" />
-        <StatCard icon={Briefcase} label="Portfolio" value={portfolio.length} sub="tracked" />
-      </div>
+        <StatCard icon={Briefcase} label="Portfolio" value={portfolio.length} sub="tracked" /></div>
 
       {/* Intelligence Tabs */}
       <div className="rounded-xl overflow-hidden">
@@ -863,10 +792,8 @@ export default function InvestorDetailPage() {
               onMouseEnter={e => { if (intelTab !== t.key) e.currentTarget.style.color = 'var(--text-secondary)'; }}
               onMouseLeave={e => { if (intelTab !== t.key) e.currentTarget.style.color = 'var(--text-muted)'; }}>
               <t.icon className="w-3.5 h-3.5" />
-              {t.label}
-            </button>
-          ))}
-        </div>
+              {t.label}</button>
+          ))}</div>
 
         <div className="p-5">
           {/* Meetings Tab */}
@@ -876,8 +803,7 @@ export default function InvestorDetailPage() {
               {enthusiasmTrend.length > 1 && (
                 <div className="mb-6">
                   <h3 className="text-xs font-normal mb-3 flex items-center gap-2" style={textTertiary}>
-                    <Zap className="w-3.5 h-3.5" /> Enthusiasm trend
-                  </h3>
+                    <Zap className="w-3.5 h-3.5" /> Enthusiasm trend</h3>
                   <div className="flex items-end gap-2 h-20">
                     {enthusiasmTrend.map((point, i) => (
                       <div key={i} className="flex-1 flex flex-col items-center gap-1">
@@ -887,17 +813,13 @@ export default function InvestorDetailPage() {
                             height: `${(point.score / 5) * 100}%`,
                             background: point.score >= 4 ? 'var(--success)' : point.score >= 3 ? 'var(--accent)' : point.score >= 2 ? 'var(--warning)' : 'var(--danger)',
                           }} />
-                        <span className="text-xs" style={textMuted}>{point.date.slice(5)}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                        <span className="text-xs" style={textMuted}>{point.date.slice(5)}</span></div>
+                    ))}</div></div>
               )}
 
               {/* Meeting History */}
               <h3 className="text-xs font-normal mb-3 flex items-center gap-2" style={textTertiary}>
-                <Clock className="w-3.5 h-3.5" /> Meeting history
-              </h3>
+                <Clock className="w-3.5 h-3.5" /> Meeting history</h3>
               {meetings.length === 0 ? (
                 <p className="text-sm" style={textMuted}>No meetings logged yet. Log your first meeting to start tracking engagement.</p>
               ) : (
@@ -916,9 +838,7 @@ export default function InvestorDetailPage() {
                                 key={n}
                                 className="w-1.5 h-1.5 rounded-full"
                                 style={{ background: n <= m.enthusiasm_score ? 'var(--accent)' : 'var(--surface-2)' }} />
-                            ))}
-                          </div>
-                        </div>
+                            ))}</div></div>
                         {m.ai_analysis && <p className="text-sm mb-2" style={textTertiary}>{m.ai_analysis}</p>}
                         {m.next_steps && <p className="text-xs" style={{ color: 'var(--accent)', opacity: 0.7 }}>Next: {m.next_steps}</p>}
                         {objs.length > 0 && (
@@ -929,21 +849,17 @@ export default function InvestorDetailPage() {
                                 className="text-xs px-1.5 py-0.5 rounded"
                                 style={severityStyle(o.severity)}
                               >{o.text.length > 40 ? o.text.slice(0, 40) + '...' : o.text}</span>
-                            ))}
-                          </div>
+                            ))}</div>
                         )}
-                      </div>
-                    );
-                  })}
-                </div>
+                      </div>);
+                  })}</div>
               )}
 
               {/* Objection Summary */}
               {allObjections.length > 0 && (
                 <div className="mt-6">
                   <h3 className="text-xs font-normal mb-3 flex items-center gap-2" style={textTertiary}>
-                    <AlertTriangle className="w-3.5 h-3.5" /> All objections
-                  </h3>
+                    <AlertTriangle className="w-3.5 h-3.5" /> All objections</h3>
                   <div className="space-y-2">
                     {allObjections.map((o, i) => (
                       <div key={i} className="flex items-center gap-3 text-sm">
@@ -952,13 +868,9 @@ export default function InvestorDetailPage() {
                           style={severityStyle(o.severity)}
                         >{o.severity}</span>
                         <span className="flex-1" style={textSecondary}>{o.text}</span>
-                        <span className="text-xs shrink-0" style={textMuted}>{o.date}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
+                        <span className="text-xs shrink-0" style={textMuted}>{o.date}</span></div>
+                    ))}</div></div>
+              )}</div>
           )}
 
           {/* Partners Tab */}
@@ -974,21 +886,16 @@ export default function InvestorDetailPage() {
                       <div className="flex items-start justify-between">
                         <div>
                           <h4 className="font-normal" style={textPrimary}>{p.name}</h4>
-                          <p className="text-xs" style={textMuted}>{p.title}</p>
-                        </div>
-                        <DeleteBtn onClick={() => deleteIntelItem('partner', p.id)} />
-                      </div>
+                          <p className="text-xs" style={textMuted}>{p.title}</p></div>
+                        <DeleteBtn onClick={() => deleteIntelItem('partner', p.id)} /></div>
                       <div className="mt-2 space-y-1 text-xs" style={textTertiary}>
                         {([['Focus', p.focus_areas], ['Deals', p.notable_deals], ['Boards', p.board_seats], ['Background', p.background]] as const).map(([label, val]) =>
                           val ? <p key={label}><span style={textMuted}>{label}:</span> {val}</p> : null
                         )}
                         {p.relevance_to_us && <p style={stAccent}><span style={textMuted}>Relevance:</span> {p.relevance_to_us}</p>}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+                      </div></div>
+                  ))}</div>
+              )}</div>
           )}
 
           {/* Portfolio Tab */}
@@ -1005,9 +912,7 @@ export default function InvestorDetailPage() {
                         {['Company', 'Sector', 'Stage', 'Amount', 'Date', 'Status'].map(h => (
                           <th key={h} className="text-left px-4 py-2 text-xs font-normal" style={textMuted}>{h}</th>
                         ))}
-                        <th className="w-8"></th>
-                      </tr>
-                    </thead>
+                        <th className="w-8"></th></tr></thead>
                     <tbody>
                       {portfolio.map(co => (
                         <tr
@@ -1031,18 +936,11 @@ export default function InvestorDetailPage() {
                                 color: co.status === 'active' ? 'var(--success)' :
                                   co.status === 'exited' ? 'var(--accent)' :
                                   'var(--danger)', }}
->{co.status}</span>
-                          </td>
+>{co.status}</span></td>
                           <td className="px-4 py-2">
-                            <DeleteBtn onClick={() => deleteIntelItem('portfolio', co.id)} small />
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
+                            <DeleteBtn onClick={() => deleteIntelItem('portfolio', co.id)} small /></td></tr>
+                      ))}</tbody></table></div>
+              )}</div>
           )}
 
           {/* Tasks Tab */}
@@ -1073,24 +971,19 @@ export default function InvestorDetailPage() {
                               color: 'var(--text-primary)', }}
                             onMouseEnter={e => { if (t.status !== 'done') e.currentTarget.style.borderColor = 'var(--border-strong)'; }}
                             onMouseLeave={e => { if (t.status !== 'done') e.currentTarget.style.borderColor = 'var(--border-default)'; }}>
-                            {t.status === 'done' && <Check className="w-3 h-3" />}
-                          </button>
+                            {t.status === 'done' && <Check className="w-3 h-3" />}</button>
                           <div className="min-w-0">
                             <div className={`text-sm truncate ${t.status === 'done' ? 'line-through' : ''}`} style={textPrimary}>{t.title}</div>
-                            {t.description && <div className="text-xs truncate" style={textMuted}>{t.description}</div>}
-                          </div>
+                            {t.description && <div className="text-xs truncate" style={textMuted}>{t.description}</div>}</div>
                         </div>
                         <div className="flex items-center gap-3 shrink-0">
                           <span className="text-xs" style={{ color: prioColor }}>{t.priority}</span>
                           <span className="text-xs" style={textMuted}>{t.phase}</span>
                           {t.due_date && <span className="text-xs" style={{ color: overdue ? 'var(--danger)' : 'var(--text-muted)', fontWeight: 400 }}>{t.due_date}</span>}
                         </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
+                      </div>);
+                  })}</div>
+              )}</div>
           )}
 
           {/* Enriched Intelligence Tab */}
@@ -1121,18 +1014,12 @@ export default function InvestorDetailPage() {
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-2">
                           <span className="text-xs px-2 py-0.5 rounded font-normal" style={stAccentBadge}>{b.brief_type}</span>
-                          <span className="text-xs" style={textMuted}>{b.updated_at?.split('T')[0]}</span>
-                        </div>
-                        <DeleteBtn onClick={() => deleteIntelItem('brief', b.id)} />
-                      </div>
+                          <span className="text-xs" style={textMuted}>{b.updated_at?.split('T')[0]}</span></div>
+                        <DeleteBtn onClick={() => deleteIntelItem('brief', b.id)} /></div>
                       <div className="prose prose-sm max-w-none whitespace-pre-wrap text-sm leading-relaxed" style={textSecondary}>
-                        {b.content}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+                        {b.content}</div></div>
+                  ))}</div>
+              )}</div>
           )}
 
           {intelTab === 'timeline' && (() => {
@@ -1152,8 +1039,7 @@ export default function InvestorDetailPage() {
                   const prev = trajectory.dataPoints[i - 1];
                   const delta = dp.score - prev.score;
                   if (Math.abs(delta) >= 0.5) events.push({ date: dp.date.split('T')[0], type: 'score', icon: TrendingUp, desc: `Score ${delta > 0 ? '+' : ''}${delta.toFixed(1)} (${prev.score.toFixed(1)} → ${dp.score.toFixed(1)})` });
-                }
-              });
+                }});
             }
             events.sort((a, b) => b.date.localeCompare(a.date));
             const iconColor: Record<string, string> = { meeting: 'var(--accent)', followup: 'var(--warning)', objection: 'var(--danger)', score: 'var(--success)' };
@@ -1167,16 +1053,11 @@ export default function InvestorDetailPage() {
                       <div key={i} className="flex gap-4 py-2.5" style={{ borderBottom: i < events.length - 1 ? '1px solid var(--border-subtle)' : 'none' }}>
                         <span className="text-xs shrink-0 w-20 pt-0.5 tabular-nums" style={textMuted}>{ev.date}</span>
                         <span className="shrink-0 pt-0.5" style={{ color: iconColor[ev.type] || 'var(--text-muted)' }}><ev.icon className="w-3.5 h-3.5" /></span>
-                        <span className="text-sm" style={textSecondary}>{ev.desc}</span>
-                      </div>
-                    ))}
-                  </div>
+                        <span className="text-sm" style={textSecondary}>{ev.desc}</span></div>
+                    ))}</div>
                 )}
-              </div>
-            );
-          })()}
-        </div>
-      </div>
+              </div>);
+          })()}</div></div>
 
       {/* Notes */}
       {(investor.notes || editing) && (
@@ -1191,11 +1072,9 @@ export default function InvestorDetailPage() {
               style={{ resize: 'vertical', lineHeight: 1.6 }} />
           ) : (
             <p className="text-sm" style={{ color: 'var(--text-tertiary)', whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>{investor.notes}</p>
-          )}
-        </div>
+          )}</div>
       )}
-    </div>
-  );
+    </div>);
 }
 
 function Row({ label, value }: { label: string; value: string }) {
@@ -1203,8 +1082,7 @@ function Row({ label, value }: { label: string; value: string }) {
     <div className="flex justify-between">
       <span style={textMuted}>{label}</span>
       <span className="text-right max-w-[60%]" style={textSecondary}>{value || '—'}</span>
-    </div>
-  );
+    </div>);
 }
 
 function EditRow({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
@@ -1216,8 +1094,7 @@ function EditRow({ label, value, onChange }: { label: string; value: string; onC
         value={value}
         onChange={e => onChange(e.target.value)}
         style={{ maxWidth: '60%', textAlign: 'right' }} />
-    </div>
-  );
+    </div>);
 }
 
 function EmptyTabState({ icon: Icon, message, actionLabel, onAction, loading }: {
@@ -1240,8 +1117,7 @@ function EmptyTabState({ icon: Icon, message, actionLabel, onAction, loading }: 
         onMouseLeave={e => (e.currentTarget.style.opacity = '1')}>
         {loading ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Researching...</> : <><RefreshCw className="w-3.5 h-3.5" /> {actionLabel}</>}
       </button>
-    </div>
-  );
+    </div>);
 }
 
 function DeleteBtn({ onClick, small }: { onClick: () => void; small?: boolean }) {
@@ -1253,8 +1129,7 @@ function DeleteBtn({ onClick, small }: { onClick: () => void; small?: boolean })
       onMouseEnter={e => (e.currentTarget.style.color = 'var(--danger)')}
       onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}>
       <Trash2 className={small ? 'w-3 h-3' : 'w-3.5 h-3.5'} />
-    </button>
-  );
+    </button>);
 }
 
 function StatCard({ icon: Icon, label, value, sub, highlight }: { icon: React.ComponentType<{ className?: string }>; label: string; value: string | number; sub: string; highlight?: boolean }) {
@@ -1266,8 +1141,7 @@ function StatCard({ icon: Icon, label, value, sub, highlight }: { icon: React.Co
       </div>
       <div className="text-2xl font-normal" style={{ color: highlight ? 'var(--danger)' : 'var(--text-primary)' }}>{value}</div>
       <div className="text-xs" style={{ color: highlight ? 'var(--danger)' : 'var(--text-muted)' }}>{sub}</div>
-    </div>
-  );
+    </div>);
 }
 
 // ---------------------------------------------------------------------------
@@ -1278,17 +1152,14 @@ const MOMENTUM_CONFIG: Record<string, { label: string; icon: React.ComponentType
   accelerating: { label: 'Accelerating', icon: ArrowUpRight, color: 'var(--text-secondary)' },
   steady: { label: 'Steady', icon: ArrowRight, color: 'var(--accent)' },
   decelerating: { label: 'Decelerating', icon: ArrowDownRight, color: 'var(--text-tertiary)' },
-  stalled: { label: 'Stalled', icon: Minus, color: 'var(--text-primary)' },
-};
-
+  stalled: { label: 'Stalled', icon: Minus, color: 'var(--text-primary)' },};
 
 function signalBadge(sig: 'strong' | 'moderate' | 'weak' | 'unknown'): { bg: string; color: string } {
   const config = {
     strong: { bg: 'var(--success-muted)', color: 'var(--text-secondary)' },
     moderate: { bg: 'var(--accent-muted)', color: 'var(--accent)' },
     weak: { bg: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
-    unknown: { bg: 'var(--surface-2)', color: 'var(--text-muted)' },
-  };
+    unknown: { bg: 'var(--surface-2)', color: 'var(--text-muted)' },};
   return config[sig];
 }
 
@@ -1304,8 +1175,7 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-2">
             <Gauge className="w-4 h-4" style={textTertiary} />
-            <h2 className="text-xs font-normal  tracking-wider" style={textTertiary}>Intelligence Score</h2>
-          </div>
+            <h2 className="text-xs font-normal  tracking-wider" style={textTertiary}>Intelligence Score</h2></div>
           <button
             onClick={onRefresh}
             disabled={loading}
@@ -1314,16 +1184,13 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
             onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-tertiary)')}
             onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
             title="Refresh score">
-            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
-          </button>
-        </div>
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} /></button></div>
 
         <div className="flex items-center gap-6">
           {/* Overall score -- large number */}
           <div className="flex items-baseline gap-1">
             <span className="text-5xl font-normal tabular-nums" style={{ color: scoreColor(score.overall) }}>{score.overall}</span>
-            <span className="text-lg" style={textMuted}>/100</span>
-          </div>
+            <span className="text-lg" style={textMuted}>/100</span></div>
 
           {/* Divider */}
           <div className="w-px h-14" style={{ background: 'var(--border-default)' }} />
@@ -1332,16 +1199,12 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
           <div className="flex-1 space-y-2">
             <div className="flex items-center gap-2">
               <span style={{ color: momentumConf.color }}><MomentumIcon className="w-4 h-4" /></span>
-              <span className="text-sm font-normal" style={{ color: momentumConf.color }}>{momentumConf.label}</span>
-            </div>
+              <span className="text-sm font-normal" style={{ color: momentumConf.color }}>{momentumConf.label}</span></div>
             <div className="flex items-center gap-2">
               <span
                 className="text-xs px-2 py-0.5 rounded-full font-normal"
                 style={{ background: outcomeConf.bg, color: outcomeConf.color }}>
-                {outcomeConf.label}
-              </span>
-            </div>
-          </div>
+                {outcomeConf.label}</span></div></div>
 
           {/* Next best action */}
           <div className="flex-[2] min-w-0">
@@ -1363,14 +1226,7 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
                     })()}
                     className="btn btn-sm shrink-0"
                     style={{ background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid var(--accent-25)', fontSize: '11px', padding: '3px 10px', gap: '4px', display: 'inline-flex', alignItems: 'center', textDecoration: 'none' }}>
-                    Do it <ArrowRight className="w-3 h-3" />
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+                    Do it <ArrowRight className="w-3 h-3" /></Link></div></div></div></div></div></div>
 
       {/* Dimension bars */}
       <div className="p-5" style={{ borderTop: '1px solid var(--border-default)' }}>
@@ -1385,44 +1241,32 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
                     <span
                       className="text-xs px-1.5 py-0.5 rounded"
                       style={{ background: badge.bg, color: badge.color }}>
-                      {dim.signal}
-                    </span>
-                  </div>
+                      {dim.signal}</span></div>
                   <span className="text-xs font-normal tabular-nums" style={{ color: scoreColor(dim.score) }}>{dim.score}</span>
                 </div>
                 <div className="h-1.5 rounded-full overflow-hidden" style={stSurface2}>
                   <div
                     className="h-full rounded-full transition-all duration-500"
-                    style={{ width: `${dim.score}%`, background: scoreColor(dim.score) }} />
-                </div>
+                    style={{ width: `${dim.score}%`, background: scoreColor(dim.score) }} /></div>
                 <p className="text-xs leading-snug truncate" title={dim.evidence} style={textMuted}>
-                  {dim.evidence}
-                </p>
-              </div>
-            );
-          })}
-        </div>
-      </div>
+                  {dim.evidence}</p>
+              </div>);
+          })}</div></div>
 
       {/* Risks */}
       {score.risks.length > 0 && (
         <div className="p-5" style={{ borderTop: '1px solid var(--border-default)' }}>
           <div className="flex items-center gap-2 mb-3">
             <ShieldAlert className="w-3.5 h-3.5" style={textPrimary} />
-            <h3 className="text-xs font-normal " style={textTertiary}>Identified Risks</h3>
-          </div>
+            <h3 className="text-xs font-normal " style={textTertiary}>Identified Risks</h3></div>
           <div className="space-y-1.5">
             {score.risks.map((risk, i) => (
               <div key={i} className="flex items-start gap-2">
                 <span className="w-1 h-1 rounded-full mt-1.5 shrink-0" style={{ background: 'var(--danger)' }} />
-                <p className="text-xs leading-snug" style={textTertiary}>{risk}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+                <p className="text-xs leading-snug" style={textTertiary}>{risk}</p></div>
+            ))}</div></div>
       )}
-    </div>
-  );
+    </div>);
 }
 
 // ---------------------------------------------------------------------------
@@ -1433,14 +1277,12 @@ const TREND_CONFIG: Record<string, { label: string; color: string; bg: string }>
   accelerating: { label: 'Accelerating', color: 'var(--text-secondary)', bg: 'var(--success-muted)' },
   steady: { label: 'Steady', color: 'var(--accent)', bg: 'var(--accent-muted)' },
   decelerating: { label: 'Decelerating', color: 'var(--text-tertiary)', bg: 'var(--warning-muted)' },
-  insufficient_data: { label: 'Insufficient Data', color: 'var(--text-tertiary)', bg: 'var(--surface-2)' },
-};
+  insufficient_data: { label: 'Insufficient Data', color: 'var(--text-tertiary)', bg: 'var(--surface-2)' },};
 
 const CONFIDENCE_CONFIG: Record<string, { label: string; dots: number }> = {
   high: { label: 'High confidence', dots: 3 },
   medium: { label: 'Medium confidence', dots: 2 },
-  low: { label: 'Low confidence', dots: 1 },
-};
+  low: { label: 'Low confidence', dots: 1 },};
 
 function ConvictionTrajectoryPanel({ trajectory }: { trajectory: ConvictionTrajectoryData }) {
   const trend = TREND_CONFIG[trajectory.trend] || TREND_CONFIG.insufficient_data;
@@ -1461,8 +1303,7 @@ function ConvictionTrajectoryPanel({ trajectory }: { trajectory: ConvictionTraje
   const sparklinePoints = points.map((p, i) => {
     const x = padding + (i / Math.max(points.length - 1, 1)) * (chartWidth - padding * 2);
     const y = chartHeight - padding - ((p.score - minScore) / range) * (chartHeight - padding * 2);
-    return { x, y, score: p.score, date: p.date };
-  });
+    return { x, y, score: p.score, date: p.date };});
 
   const trendLineColor = trajectory.trend === 'accelerating' ? 'var(--accent)' :
     trajectory.trend === 'decelerating' ? 'var(--warning)' : 'var(--accent)';
@@ -1472,8 +1313,7 @@ function ConvictionTrajectoryPanel({ trajectory }: { trajectory: ConvictionTraje
       <div className="p-5" style={stSurface1}>
         <div className="flex items-center gap-2 mb-4">
           <Activity className="w-4 h-4" style={textTertiary} />
-          <h2 className="text-xs font-normal  tracking-wider" style={textTertiary}>Conviction Trajectory</h2>
-        </div>
+          <h2 className="text-xs font-normal  tracking-wider" style={textTertiary}>Conviction Trajectory</h2></div>
 
         <div className="flex items-center gap-6 flex-wrap">
           {/* Sparkline */}
@@ -1484,8 +1324,7 @@ function ConvictionTrajectoryPanel({ trajectory }: { trajectory: ConvictionTraje
                 const y = chartHeight - padding - ((v - minScore) / range) * (chartHeight - padding * 2);
                 return (
                   <line key={v} x1={padding} y1={y} x2={chartWidth - padding} y2={y}
-                    stroke="var(--border-subtle)" strokeWidth="1" strokeDasharray="3,3" />
-                );
+                    stroke="var(--border-subtle)" strokeWidth="1" strokeDasharray="3,3" />);
               })}
 
               {/* Trend line */}
@@ -1503,11 +1342,8 @@ function ConvictionTrajectoryPanel({ trajectory }: { trajectory: ConvictionTraje
               {sparklinePoints.map((p, i) => (
                 <circle key={i} cx={p.x} cy={p.y} r="3"
                   fill={trendLineColor} stroke="var(--surface-0)" strokeWidth="1.5">
-                  <title>{p.date}: {p.score}/100</title>
-                </circle>
-              ))}
-            </svg>
-          </div>
+                  <title>{p.date}: {p.score}/100</title></circle>
+              ))}</svg></div>
 
           {/* Divider */}
           <div className="w-px h-12 hidden md:block" style={{ background: 'var(--border-default)' }} />
@@ -1518,25 +1354,19 @@ function ConvictionTrajectoryPanel({ trajectory }: { trajectory: ConvictionTraje
               <span
                 className="text-xs px-2 py-0.5 rounded-full font-normal"
                 style={{ background: trend.bg, color: trend.color }}>
-                {trend.label}
-              </span>
+                {trend.label}</span>
               <div className="flex gap-0.5" title={confidence.label}>
                 {[1, 2, 3].map(n => (
                   <div
                     key={n}
                     className="w-1.5 h-1.5 rounded-full"
                     style={{ background: n <= confidence.dots ? 'var(--text-tertiary)' : 'var(--surface-2)' }} />
-                ))}
-              </div>
-            </div>
+                ))}</div></div>
             <div className="flex items-center gap-3">
               <span
                 className="text-sm font-normal tabular-nums"
                 style={{ color: trajectory.velocityPerWeek > 0 ? 'var(--success)' : trajectory.velocityPerWeek < 0 ? 'var(--warning)' : 'var(--text-tertiary)' }}>
-                {trajectory.velocityPerWeek > 0 ? '+' : ''}{trajectory.velocityPerWeek} pts/week
-              </span>
-            </div>
-          </div>
+                {trajectory.velocityPerWeek > 0 ? '+' : ''}{trajectory.velocityPerWeek} pts/week</span></div></div>
 
           {/* Divider */}
           <div className="w-px h-12 hidden md:block" style={{ background: 'var(--border-default)' }} />
@@ -1546,31 +1376,22 @@ function ConvictionTrajectoryPanel({ trajectory }: { trajectory: ConvictionTraje
             <div className="text-xs font-normal " style={textMuted}>30-Day Prediction</div>
             <div className="flex items-baseline gap-1">
               <span className="text-lg font-normal tabular-nums" style={{ color: scoreColor(trajectory.predictedScoreIn30Days) }}>
-                {trajectory.predictedScoreIn30Days}
-              </span>
-              <span className="text-xs" style={textMuted}>/100</span>
-            </div>
+                {trajectory.predictedScoreIn30Days}</span>
+              <span className="text-xs" style={textMuted}>/100</span></div>
             {trajectory.predictedTermSheetDate && (
               <div className="text-xs">
                 {trajectory.predictedTermSheetDate === 'now' ? (
                   <span style={textSecondary}>Term sheet range reached</span>
                 ) : (
                   <span style={stAccent}>
-                    Term sheet by ~{fmtDateShort(trajectory.predictedTermSheetDate)}
-                  </span>
-                )}
-              </div>
+                    Term sheet by ~{fmtDateShort(trajectory.predictedTermSheetDate)}</span>
+                )}</div>
             )}
             {!trajectory.predictedTermSheetDate && trajectory.trend !== 'insufficient_data' && (
               <div className="text-xs" style={textMuted}>
-                {trajectory.velocityPerWeek <= 0 ? 'At risk of stalling' : 'Tracking -- more data needed'}
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+                {trajectory.velocityPerWeek <= 0 ? 'At risk of stalling' : 'Tracking -- more data needed'}</div>
+            )}</div></div></div>
+    </div>);
 }
 
 // ---------------------------------------------------------------------------
@@ -1581,8 +1402,7 @@ const PROVIDER_STATUS_ICON: Record<string, { color: string; label: string }> = {
   success: { color: 'var(--success)', label: 'Data found' },
   failed: { color: 'var(--danger)', label: 'Failed' },
   pending: { color: 'var(--text-muted)', label: 'Not yet run' },
-  unconfigured: { color: 'var(--text-muted)', label: 'No API key' },
-};
+  unconfigured: { color: 'var(--text-muted)', label: 'No API key' },};
 
 function EnrichmentStatusCard({
   status,
@@ -1621,20 +1441,16 @@ function EnrichmentStatusCard({
           {enriching
             ? <><Loader2 className="w-3 h-3 animate-spin" /> Enriching...</>
             : <><RefreshCw className="w-3 h-3" /> {hasData ? 'Re-enrich' : 'Enrich'}</>
-          }
-        </button>
-      </div>
+          }</button></div>
 
       {!status ? (
         <div className="flex items-center gap-2 py-2">
           <Loader2 className="w-3.5 h-3.5 animate-spin" style={textMuted} />
-          <span className="text-xs" style={textMuted}>Loading status...</span>
-        </div>
+          <span className="text-xs" style={textMuted}>Loading status...</span></div>
       ) : !hasData ? (
         <div className="text-center py-3">
           <p className="text-sm" style={textMuted}>
-            No enrichment data yet. Run enrichment to pull identity, financials, strategy, and more from 9 public sources.
-          </p>
+            No enrichment data yet. Run enrichment to pull identity, financials, strategy, and more from 9 public sources.</p>
         </div>
       ) : (
         <>
@@ -1648,10 +1464,8 @@ function EnrichmentStatusCard({
             ] as const).map(([label, value, style]) => (
               <div key={label}>
                 <div className="text-xs" style={textMuted}>{label}</div>
-                <div className="text-sm font-light" style={style}>{value}</div>
-              </div>
-            ))}
-          </div>
+                <div className="text-sm font-light" style={style}>{value}</div></div>
+            ))}</div>
 
           {/* Coverage bar */}
           <div className="mb-4">
@@ -1665,9 +1479,7 @@ function EnrichmentStatusCard({
                   height: '100%',
                   background: coverageColor,
                   transition: 'width 300ms ease',
-                }} />
-            </div>
-          </div>
+                }} /></div></div>
 
           {/* Stale warning */}
           {status.stale_count > 0 && (
@@ -1676,9 +1488,7 @@ function EnrichmentStatusCard({
               style={{ background: 'var(--warning-muted)' }}>
               <AlertTriangle className="w-3 h-3 shrink-0" style={textTertiary} />
               <span className="text-xs" style={textTertiary}>
-                {status.stale_count} field{status.stale_count !== 1 ? 's are' : ' is'} stale and may need refreshing
-              </span>
-            </div>
+                {status.stale_count} field{status.stale_count !== 1 ? 's are' : ' is'} stale and may need refreshing</span></div>
           )}
 
           {/* Provider toggle */}
@@ -1689,8 +1499,7 @@ function EnrichmentStatusCard({
             onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
             onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}>
             {showProviders ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
-            {status.providers.length} providers ({status.providers.filter(p => p.status === 'success').length} with data)
-          </button>
+            {status.providers.length} providers ({status.providers.filter(p => p.status === 'success').length} with data)</button>
 
           {/* Provider details */}
           {showProviders && (
@@ -1713,8 +1522,7 @@ function EnrichmentStatusCard({
                         <span className="w-3 h-3 shrink-0 flex items-center justify-center">
                           <span
                             className="w-1.5 h-1.5 rounded-full"
-                            style={{ background: st.color }} />
-                        </span>
+                            style={{ background: st.color }} /></span>
                       )}
                       <span className="text-xs truncate" style={textSecondary}>{p.name}</span>
                       <span
@@ -1723,31 +1531,23 @@ function EnrichmentStatusCard({
                           background: p.type === 'free' ? 'var(--success-muted)' : p.type === 'freemium' ? 'var(--accent-muted)' : 'var(--warning-muted)',
                           color: 'var(--text-muted)',
                           fontSize: '9px', }}>
-                        {p.type}
-                      </span>
-                    </div>
+                        {p.type}</span></div>
                     <div className="flex items-center gap-3 shrink-0">
                       {p.field_count > 0 && (
                         <span className="text-xs" style={textMuted}>{p.field_count} fields</span>
                       )}
                       {p.last_error && (
                         <span className="text-xs truncate max-w-[120px]" style={{ color: 'var(--danger)' }} title={p.last_error}>
-                          {p.last_error.length > 20 ? p.last_error.slice(0, 20) + '...' : p.last_error}
-                        </span>
+                          {p.last_error.length > 20 ? p.last_error.slice(0, 20) + '...' : p.last_error}</span>
                       )}
                       <span className="text-xs" style={textMuted}>
-                        {p.last_fetched ? fmtDateShort(p.last_fetched) : st.label}
-                      </span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+                        {p.last_fetched ? fmtDateShort(p.last_fetched) : st.label}</span></div>
+                  </div>);
+              })}</div>
           )}
         </>
       )}
-    </div>
-  );
+    </div>);
 }
 
 // ---------------------------------------------------------------------------
@@ -1765,8 +1565,7 @@ const CATEGORY_LABELS: Record<string, string> = {
   regulatory: 'Regulatory',
   corporate: 'Corporate',
   media: 'Media',
-  relationships: 'Relationships',
-};
+  relationships: 'Relationships',};
 
 const CATEGORY_COLORS: Record<string, { bg: string; color: string }> = {
   identity: { bg: 'var(--surface-2)', color: 'var(--text-tertiary)' },
@@ -1779,8 +1578,7 @@ const CATEGORY_COLORS: Record<string, { bg: string; color: string }> = {
   regulatory: { bg: 'var(--danger-muted)', color: 'var(--text-primary)' },
   corporate: { bg: 'var(--surface-2)', color: 'var(--text-tertiary)' },
   media: { bg: 'var(--cat-12)', color: 'var(--chart-4)' },
-  relationships: { bg: 'var(--accent-muted)', color: 'var(--accent)' },
-};
+  relationships: { bg: 'var(--accent-muted)', color: 'var(--accent)' },};
 
 function confidenceStyle(confidence: number): { color: string; bg: string } {
   if (confidence >= 0.8) return { color: 'var(--success)', bg: 'var(--success-muted)' };
@@ -1810,8 +1608,7 @@ function EnrichmentPanel({
       <div className="flex items-center gap-3 py-6 justify-center">
         <Loader2 className="w-4 h-4 animate-spin" style={textMuted} />
         <span className="text-sm" style={textMuted}>Loading enrichment data...</span>
-      </div>
-    );
+      </div>);
   }
 
   if (records.length === 0) {
@@ -1828,10 +1625,8 @@ function EnrichmentPanel({
             background: hoveredRefresh ? 'var(--accent-hover)' : 'var(--accent)',
             color: 'var(--text-primary)',
             transition: 'background 150ms ease', }}>
-          <RefreshCw className="w-3.5 h-3.5" /> Refresh
-        </button>
-      </div>
-    );
+          <RefreshCw className="w-3.5 h-3.5" /> Refresh</button>
+      </div>);
   }
 
   // Group records by category
@@ -1851,9 +1646,7 @@ function EnrichmentPanel({
         <div className="flex items-center gap-2">
           <Database className="w-3.5 h-3.5" style={textTertiary} />
           <span className="text-xs font-normal " style={textTertiary}>
-            {records.length} enriched fields across {sortedCategories.length} categories
-          </span>
-        </div>
+            {records.length} enriched fields across {sortedCategories.length} categories</span></div>
         <button
           onClick={onRefresh}
           onMouseEnter={() => setHoveredRefresh(true)}
@@ -1862,9 +1655,7 @@ function EnrichmentPanel({
           style={{
             color: hoveredRefresh ? 'var(--text-secondary)' : 'var(--text-muted)',
             transition: 'color 150ms ease', }}>
-          <RefreshCw className="w-3 h-3" /> Refresh
-        </button>
-      </div>
+          <RefreshCw className="w-3 h-3" /> Refresh</button></div>
 
       {sortedCategories.map(cat => {
         const catRecords = grouped[cat];
@@ -1885,22 +1676,17 @@ function EnrichmentPanel({
                 <span
                   className="text-xs px-2 py-0.5 rounded font-normal"
                   style={{ background: catColor.bg, color: catColor.color }}>
-                  {catLabel}
-                </span>
+                  {catLabel}</span>
                 <span className="text-xs" style={textMuted}>{catRecords.length} field{catRecords.length !== 1 ? 's' : ''}</span>
                 <span
                   className="text-xs px-1.5 py-0.5 rounded"
                   style={{ background: confidenceStyle(avgConfidence).bg, color: confidenceStyle(avgConfidence).color }}>
-                  {Math.round(avgConfidence * 100)}% avg confidence
-                </span>
-              </div>
+                  {Math.round(avgConfidence * 100)}% avg confidence</span></div>
               <div style={textMuted}>
                 {isExpanded
                   ? <ChevronDown className="w-4 h-4" />
                   : <ChevronRight className="w-4 h-4" />
-                }
-              </div>
-            </button>
+                }</div></button>
 
             {isExpanded && (
               <div style={stBorderTop}>
@@ -1917,24 +1703,18 @@ function EnrichmentPanel({
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-0.5">
                         <span className="text-xs font-normal" style={textSecondary}>
-                          {rec.field_name.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
-                        </span>
+                          {rec.field_name.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}</span>
                         <span
                           className="text-xs px-1.5 py-0.5 rounded font-normal"
                           style={{ background: confidenceStyle(rec.confidence).bg, color: confidenceStyle(rec.confidence).color }}>
-                          {Math.round(rec.confidence * 100)}%
-                        </span>
-                      </div>
+                          {Math.round(rec.confidence * 100)}%</span></div>
                       <p className="text-sm break-words" style={textPrimary}>
-                        {rec.field_value.length > 300 ? rec.field_value.slice(0, 300) + '...' : rec.field_value}
-                      </p>
+                        {rec.field_value.length > 300 ? rec.field_value.slice(0, 300) + '...' : rec.field_value}</p>
                       <div className="flex items-center gap-3 mt-1">
                         <span className="text-xs" style={textMuted}>
-                          Source: {rec.source_id}
-                        </span>
+                          Source: {rec.source_id}</span>
                         <span className="text-xs" style={textMuted}>
-                          Updated: {rec.fetched_at ? fmtDate(rec.fetched_at) : '—'}
-                        </span>
+                          Updated: {rec.fetched_at ? fmtDate(rec.fetched_at) : '—'}</span>
                         {rec.source_url && (
                           <a
                             href={rec.source_url}
@@ -1943,18 +1723,11 @@ function EnrichmentPanel({
                             className="text-xs flex items-center gap-0.5"
                             style={stAccent}
                             onClick={e => e.stopPropagation()}>
-                            <ExternalLink className="w-2.5 h-2.5" /> Link
-                          </a>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                            <ExternalLink className="w-2.5 h-2.5" /> Link</a>
+                        )}</div></div></div>
+                ))}</div>
             )}
-          </div>
-        );
+          </div>);
       })}
-    </div>
-  );
+    </div>);
 }

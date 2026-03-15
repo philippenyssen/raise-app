@@ -349,12 +349,7 @@ export interface GapInvestor {
   impactDelta: number;
 }
 
-export interface RiskItem {
-  description: string;
-  probability: string;
-  impact: string;
-  mitigation: string;
-}
+export interface RiskItem { description: string; probability: string; impact: string; mitigation: string; }
 
 // Term-compare shared types
 

@@ -29,20 +29,16 @@ function getHealthStyles(health: string): { background: string; color: string } 
     case 'green':
       return {
         background: 'var(--success-muted)',
-        color: 'var(--text-secondary)',
-      };
+        color: 'var(--text-secondary)',};
     case 'red':
       return {
         background: 'var(--danger-muted)',
-        color: 'var(--text-primary)',
-      };
+        color: 'var(--text-primary)',};
     default:
       return {
         background: 'var(--warning-muted)',
-        color: 'var(--text-tertiary)',
-      };
-  }
-}
+        color: 'var(--text-tertiary)',};
+  }}
 
 function getPriorityStyles(priority: string): React.CSSProperties {
   switch (priority) {
@@ -54,8 +50,7 @@ function getPriorityStyles(priority: string): React.CSSProperties {
       return { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' };
     default:
       return { background: 'var(--surface-2)', color: 'var(--text-muted)' };
-  }
-}
+  }}
 
 export default function AnalysisPage() {
   const [data, setData] = useState<AnalysisData | null>(null);
@@ -71,8 +66,7 @@ export default function AnalysisPage() {
       setData({ patterns: null, health: { health: 'red', diagnosis: 'Analysis failed. Please try again.', recommendations: [], risk_factors: [] }, objections: [], funnel: {}, meeting_count: 0, error: 'Failed to run analysis' });
     } finally {
       setLoading(false);
-    }
-  }
+    }}
 
   return (
     <div className="space-y-6 page-content">
@@ -80,24 +74,19 @@ export default function AnalysisPage() {
         <div>
           <h1 className="page-title">AI Pattern Analysis</h1>
           <p className="text-sm mt-1" style={stTextMuted}>
-            Claude analyzes your meetings to find what&apos;s working and what needs to change.
-          </p>
-        </div>
+            Claude analyzes your meetings to find what&apos;s working and what needs to change.</p></div>
         <button
           onClick={runAnalysis}
           disabled={loading}
           className="btn btn-primary btn-md disabled:opacity-50">
-          {loading ? 'Analyzing...' : 'Run Analysis'}
-        </button>
-      </div>
+          {loading ? 'Analyzing...' : 'Run Analysis'}</button></div>
 
       {!data && !loading && (
         <div
           className="rounded-xl p-8 text-center space-y-3"
           style={{  }}>
           <p style={stTextMuted}>Click &quot;Run Analysis&quot; to analyze patterns across all logged meetings.</p>
-          <p className="text-xs" style={stTextMuted}>Requires at least 2 meetings with notes. Uses Claude API.</p>
-        </div>
+          <p className="text-xs" style={stTextMuted}>Requires at least 2 meetings with notes. Uses Claude API.</p></div>
       )}
 
       {loading && (
@@ -105,10 +94,8 @@ export default function AnalysisPage() {
           className="rounded-xl p-8 text-center"
           style={{  }}>
           <div className="animate-pulse" style={stTextSecondary}>
-            Analyzing {data?.meeting_count ?? '...'} meetings with Claude...
-          </div>
-          <p className="text-xs mt-2" style={stTextMuted}>This may take 10-30 seconds</p>
-        </div>
+            Analyzing {data?.meeting_count ?? '...'} meetings with Claude...</div>
+          <p className="text-xs mt-2" style={stTextMuted}>This may take 10-30 seconds</p></div>
       )}
 
       {data && !loading && (
@@ -117,8 +104,7 @@ export default function AnalysisPage() {
             <div
               className="rounded-lg p-4 text-sm"
               style={{ background: 'var(--danger-muted)', color: 'var(--text-primary)' }}>
-              {data.error}
-            </div>
+              {data.error}</div>
           )}
 
           {/* Health Status */}
@@ -132,29 +118,22 @@ export default function AnalysisPage() {
                   <span
                     className="text-lg font-normal "
                     style={{ color: hs.color }}>
-                    {data.health.health}
-                  </span>
-                  <span className="text-sm" style={stTextSecondary}>Process Health</span>
-                </div>
+                    {data.health.health}</span>
+                  <span className="text-sm" style={stTextSecondary}>Process Health</span></div>
                 <p className="text-sm mb-4" style={stTextSecondary}>{data.health.diagnosis}</p>
                 {data.health.recommendations.length > 0 && (
                   <div>
                     <h4
                       className="text-xs font-normal mb-2"
                       style={stTextMuted}>
-                      RECOMMENDATIONS
-                    </h4>
+                      RECOMMENDATIONS</h4>
                     <ul className="space-y-1">
                       {data.health.recommendations.map((r, i) => (
                         <li key={i} className="text-sm flex gap-2" style={stTextSecondary}>
-                          <span className="shrink-0" style={stAccent}>-</span> {r}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                          <span className="shrink-0" style={stAccent}>-</span> {r}</li>
+                      ))}</ul></div>
                 )}
-              </div>
-            );
+              </div>);
           })()}
 
           {data.patterns && (
@@ -164,56 +143,42 @@ export default function AnalysisPage() {
                 className="rounded-xl p-6"
                 style={{  }}>
                 <h2 className="text-sm font-normal mb-3" style={stTextSecondary}>
-                  OVERALL ASSESSMENT
-                </h2>
+                  OVERALL ASSESSMENT</h2>
                 <p className="text-sm" style={stTextSecondary}>
-                  {data.patterns.overall_assessment}
-                </p>
-              </div>
+                  {data.patterns.overall_assessment}</p></div>
 
               {/* Story Effectiveness */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="rounded-xl p-5" style={{  }}>
                   <h3 className="text-xs font-normal mb-3" style={stTextSecondary}>
-                    LANDING WELL
-                  </h3>
+                    LANDING WELL</h3>
                   <ul className="space-y-1.5">
                     {data.patterns.story_effectiveness.landing.map((s, i) => (
                       <li key={i} className="text-sm" style={stTextSecondary}>{s}</li>
                     ))}
                     {data.patterns.story_effectiveness.landing.length === 0 && (
                       <li className="text-sm" style={stTextMuted}>No strong signals yet</li>
-                    )}
-                  </ul>
-                </div>
+                    )}</ul></div>
                 <div className="rounded-xl p-5" style={{  }}>
                   <h3 className="text-xs font-normal mb-3" style={stTextTertiary}>
-                    GENERATING EXCITEMENT
-                  </h3>
+                    GENERATING EXCITEMENT</h3>
                   <ul className="space-y-1.5">
                     {data.patterns.story_effectiveness.exciting.map((s, i) => (
                       <li key={i} className="text-sm" style={stTextSecondary}>{s}</li>
-                    ))}
-                  </ul>
-                </div>
+                    ))}</ul></div>
                 <div className="rounded-xl p-5" style={{  }}>
                   <h3 className="text-xs font-normal mb-3" style={stTextPrimary}>
-                    FALLING FLAT
-                  </h3>
+                    FALLING FLAT</h3>
                   <ul className="space-y-1.5">
                     {data.patterns.story_effectiveness.failing.map((s, i) => (
                       <li key={i} className="text-sm" style={stTextSecondary}>{s}</li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
+                    ))}</ul></div></div>
 
               {/* Top Objections with Recommendations */}
               {data.patterns.top_objections.length > 0 && (
                 <div className="rounded-xl p-6" style={{  }}>
                   <h2 className="text-sm font-normal mb-4" style={stTextSecondary}>
-                    Top objections + recommended responses
-                  </h2>
+                    Top objections + recommended responses</h2>
                   <div className="space-y-4">
                     {data.patterns.top_objections.map((obj, i) => (
                       <div
@@ -222,43 +187,31 @@ export default function AnalysisPage() {
                         style={{  }}>
                         <div className="flex items-center gap-2 mb-1">
                           <span className="text-sm font-normal" style={stTextPrimary}>
-                            {obj.text}
-                          </span>
+                            {obj.text}</span>
                           <span
                             className="text-xs px-1.5 py-0.5 rounded"
                             style={{ background: 'var(--danger-muted)', color: 'var(--text-primary)' }}>
-                            {obj.count}x
-                          </span>
-                        </div>
-                        <p className="text-xs" style={stTextMuted}>{obj.recommendation}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                            {obj.count}x</span></div>
+                        <p className="text-xs" style={stTextMuted}>{obj.recommendation}</p></div>
+                    ))}</div></div>
               )}
 
               {/* Material Changes */}
               {data.patterns.material_changes.length > 0 && (
                 <div className="rounded-xl p-6" style={{  }}>
                   <h2 className="text-sm font-normal mb-4" style={stTextSecondary}>
-                    RECOMMENDED MATERIAL CHANGES
-                  </h2>
+                    RECOMMENDED MATERIAL CHANGES</h2>
                   <div className="space-y-3">
                     {data.patterns.material_changes.map((mc, i) => (
                       <div key={i} className="flex gap-3 items-start">
                         <span
                           className="text-xs px-1.5 py-0.5 rounded shrink-0 mt-0.5"
                           style={getPriorityStyles(mc.priority)}>
-                          {mc.priority}
-                        </span>
+                          {mc.priority}</span>
                         <div>
                           <p className="text-sm" style={stTextSecondary}>{mc.change}</p>
-                          <p className="text-xs mt-0.5" style={stTextMuted}>{mc.rationale}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                          <p className="text-xs mt-0.5" style={stTextMuted}>{mc.rationale}</p></div></div>
+                    ))}</div></div>
               )}
 
               {/* Convergence Signals */}
@@ -267,27 +220,20 @@ export default function AnalysisPage() {
                   className="rounded-xl p-6"
                   style={{ background: 'var(--success-muted)' }}>
                   <h2 className="text-sm font-normal mb-3" style={stTextSecondary}>
-                    CONVERGENCE SIGNALS
-                  </h2>
+                    CONVERGENCE SIGNALS</h2>
                   <ul className="space-y-1.5">
                     {data.patterns.convergence_signals.map((s, i) => (
                       <li key={i} className="text-sm flex gap-2" style={stTextSecondary}>
-                        <span className="shrink-0" style={stTextSecondary}>+</span> {s}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                        <span className="shrink-0" style={stTextSecondary}>+</span> {s}</li>
+                    ))}</ul></div>
               )}
 
               {/* Pricing */}
               <div className="rounded-xl p-6" style={{  }}>
                 <h2 className="text-sm font-normal mb-2" style={stTextSecondary}>
-                  PRICING RECEPTION TREND
-                </h2>
+                  PRICING RECEPTION TREND</h2>
                 <p className="text-sm" style={stTextSecondary}>
-                  {data.patterns.pricing_trend}
-                </p>
-              </div>
+                  {data.patterns.pricing_trend}</p></div>
             </>
           )}
 
@@ -295,8 +241,7 @@ export default function AnalysisPage() {
           {data.objections.length > 0 && (
             <div className="rounded-xl p-6" style={{  }}>
               <h2 className="text-sm font-normal mb-4" style={stTextSecondary}>
-                All objections (from database)
-              </h2>
+                All objections (from database)</h2>
               <div className="space-y-2">
                 {data.objections.map((obj, i) => (
                   <div key={i} className="flex items-center justify-between text-sm">
@@ -305,21 +250,13 @@ export default function AnalysisPage() {
                       <span
                         className="text-xs px-1.5 py-0.5 rounded"
                         style={{ background: 'var(--surface-2)', color: 'var(--text-muted)' }}>
-                        {obj.topic}
-                      </span>
+                        {obj.topic}</span>
                       <span
                         className="text-xs font-normal"
                         style={stTextPrimary}>
-                        {obj.count}x
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
+                        {obj.count}x</span></div></div>
+                ))}</div></div>
+          )}</div>
       )}
-    </div>
-  );
+    </div>);
 }

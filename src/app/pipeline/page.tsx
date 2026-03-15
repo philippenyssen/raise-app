@@ -17,8 +17,7 @@ import { labelMuted, labelMuted10, stFontSm, stFontXs, stTextMuted, stTextSecond
 // ── Pipeline column order ────────────────────────────────────────────
 const PIPELINE_STATUSES: InvestorStatus[] = [
   'identified', 'contacted', 'nda_signed', 'meeting_scheduled',
-  'met', 'engaged', 'in_dd', 'term_sheet', 'closed',
-];
+  'met', 'engaged', 'in_dd', 'term_sheet', 'closed',];
 
 const EXIT_STATUSES: InvestorStatus[] = ['passed', 'dropped'];
 
@@ -45,9 +44,7 @@ const TIER_STYLES: Record<number, React.CSSProperties> = {
   1: { background: 'var(--accent-muted)', color: 'var(--accent)', boxShadow: 'inset 0 0 0 1px var(--accent-muted)' },
   2: { background: 'var(--accent-8)', color: 'var(--text-secondary)', boxShadow: 'inset 0 0 0 1px var(--accent-10)' },
   3: { background: 'var(--white-12)', color: 'var(--text-secondary)', boxShadow: 'inset 0 0 0 1px var(--border-default)' },
-  4: { background: 'var(--white-8)', color: 'var(--text-muted)', boxShadow: 'inset 0 0 0 1px var(--border-subtle)' },
-};
-
+  4: { background: 'var(--white-8)', color: 'var(--text-muted)', boxShadow: 'inset 0 0 0 1px var(--border-subtle)' },};
 
 const TYPE_ICONS: Record<InvestorType, React.ComponentType<{ className?: string }>> = {
   vc: Rocket,
@@ -55,8 +52,7 @@ const TYPE_ICONS: Record<InvestorType, React.ComponentType<{ className?: string 
   sovereign: Landmark,
   strategic: Shield,
   debt: Banknote,
-  family_office: Home,
-};
+  family_office: Home,};
 
 const TYPE_STYLES: Record<InvestorType, React.CSSProperties> = {
   vc: { background: 'var(--accent-muted)', color: 'var(--accent)', boxShadow: 'inset 0 0 0 1px var(--accent-muted)' },
@@ -64,23 +60,20 @@ const TYPE_STYLES: Record<InvestorType, React.CSSProperties> = {
   sovereign: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', boxShadow: 'inset 0 0 0 1px var(--warn-30)' },
   strategic: { background: 'var(--success-muted)', color: 'var(--text-secondary)', boxShadow: 'inset 0 0 0 1px var(--accent-30)' },
   debt: { background: 'var(--warn-12)', color: 'var(--text-tertiary)', boxShadow: 'inset 0 0 0 1px var(--warn-30)' },
-  family_office: { background: 'var(--accent-8)', color: 'var(--text-primary)', boxShadow: 'inset 0 0 0 1px var(--accent-10)' },
-};
+  family_office: { background: 'var(--accent-8)', color: 'var(--text-primary)', boxShadow: 'inset 0 0 0 1px var(--accent-10)' },};
 
 // ── Pipeline velocity stage weights ──────────────────────────────────
 const STAGE_WEIGHTS: Record<InvestorStatus, number> = {
   identified: 0, contacted: 1, nda_signed: 2, meeting_scheduled: 3,
   met: 4, engaged: 5, in_dd: 6, term_sheet: 8, closed: 10,
-  passed: 0, dropped: 0,
-};
+  passed: 0, dropped: 0,};
 
 // ── Stat icon color map ──────────────────────────────────────────────
 const STAT_ICON_COLORS: Record<string, string> = {
   blue: 'var(--accent)',
   purple: 'var(--accent)',
   amber: 'var(--warning)',
-  emerald: 'var(--success)',
-};
+  emerald: 'var(--success)',};
 
 export default function PipelinePage() {
   const { toast } = useToast();
@@ -91,8 +84,7 @@ export default function PipelinePage() {
   const [dragOverCol, setDragOverCol] = useState<string | null>(null);
   const [filters, setFilters] = useState<{ tiers: Set<number>; types: Set<string> }>({
     tiers: new Set(),
-    types: new Set(),
-  });
+    types: new Set(),});
   const [showFilters, setShowFilters] = useState(false);
   const [scoreDeltaMap, setScoreDeltaMap] = useState<Map<string, number>>(new Map());
   const boardRef = useRef<HTMLDivElement>(null);
@@ -121,8 +113,7 @@ export default function PipelinePage() {
   const filtered = investors.filter(inv => {
     if (filters.tiers.size > 0 && !filters.tiers.has(inv.tier)) return false;
     if (filters.types.size > 0 && !filters.types.has(inv.type)) return false;
-    return true;
-  });
+    return true;});
 
   const hasActiveFilters = filters.tiers.size > 0 || filters.types.size > 0;
 
@@ -130,16 +121,14 @@ export default function PipelinePage() {
     setFilters(f => {
       const next = new Set(f.tiers);
       if (next.has(tier)) next.delete(tier); else next.add(tier);
-      return { ...f, tiers: next };
-    });
+      return { ...f, tiers: next };});
   }
 
   function toggleType(type: string) {
     setFilters(f => {
       const next = new Set(f.types);
       if (next.has(type)) next.delete(type); else next.add(type);
-      return { ...f, types: next };
-    });
+      return { ...f, types: next };});
   }
 
   function clearFilters() {
@@ -194,22 +183,19 @@ export default function PipelinePage() {
 
     // Optimistic update
     setInvestors(prev =>
-      prev.map(i => i.id === id ? { ...i, status: newStatus as InvestorStatus } : i)
-    );
+      prev.map(i => i.id === id ? { ...i, status: newStatus as InvestorStatus } : i));
     setDragId(null);
 
     try {
       const res = await fetch('/api/investors', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, status: newStatus }),
-      });
+        body: JSON.stringify({ id, status: newStatus }),});
       if (!res.ok) throw new Error('Failed to update');
       toast(`${investor.name} moved to ${STATUS_LABELS[newStatus as InvestorStatus]}`);
     } catch {
       setInvestors(prev =>
-        prev.map(i => i.id === id ? { ...i, status: previousStatus } : i)
-      );
+        prev.map(i => i.id === id ? { ...i, status: previousStatus } : i));
       toast('Failed to update status — reverted', 'error');
     }
   }, [investors, toast]);
@@ -221,8 +207,7 @@ export default function PipelinePage() {
       .sort((a, b) => {
         // Sort by tier first (lower = better), then by enthusiasm (higher = better)
         if (a.tier !== b.tier) return a.tier - b.tier;
-        return (b.enthusiasm || 0) - (a.enthusiasm || 0);
-      });
+        return (b.enthusiasm || 0) - (a.enthusiasm || 0);});
   }
 
   // ── Loading state ────────────────────────────────────────────────
@@ -233,20 +218,16 @@ export default function PipelinePage() {
         <div className="flex gap-3">
           {[...Array(3)].map((_, i) => (
             <div key={i} className="skeleton" style={{ height: '5rem', width: '9rem', borderRadius: 'var(--radius-lg)' }} />
-          ))}
-        </div>
+          ))}</div>
         <div className="flex gap-4 overflow-hidden">
           {[...Array(5)].map((_, i) => (
             <div key={i} className="space-y-3" style={{ minWidth: '260px' }}>
               <div className="skeleton" style={{ height: '2.5rem', borderRadius: 'var(--radius-lg)' }} />
               {[...Array(Math.max(0, 3 - i))].map((_, j) => (
                 <div key={j} className="skeleton" style={{ height: '7rem', borderRadius: 'var(--radius-lg)' }} />
-              ))}
-            </div>
-          ))}
-        </div>
-      </div>
-    );
+              ))}</div>
+          ))}</div>
+      </div>);
   }
 
   // ── Error state ─────────────────────────────────────────────────
@@ -256,17 +237,13 @@ export default function PipelinePage() {
         <div style={{ textAlign: 'center' }}>
           <Users className="w-10 h-10 mx-auto mb-3" style={{ color: 'var(--danger)' }} />
           <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', marginBottom: 'var(--space-1)' }}>
-            Failed to load pipeline
-          </h3>
+            Failed to load pipeline</h3>
           <p style={{ ...stFontXs, ...stTextMuted, marginBottom: 'var(--space-4)' }}>{fetchError}</p>
           <button
             onClick={fetchInvestors}
             className="btn btn-secondary btn-sm">
-            Retry
-          </button>
-        </div>
-      </div>
-    );
+            Retry</button></div>
+      </div>);
   }
 
   return (
@@ -285,10 +262,7 @@ export default function PipelinePage() {
           <Link
             href="/investors"
             className="btn btn-secondary btn-sm">
-            Table View
-          </Link>
-        </div>
-      </div>
+            Table View</Link></div></div>
 
       {/* ── Summary Stats ───────────────────────────────────────── */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 flex-shrink-0 card-stagger">
@@ -315,8 +289,7 @@ export default function PipelinePage() {
           label="In DD+"
           value={String(filtered.filter(i => ['in_dd', 'term_sheet', 'closed'].includes(i.status)).length)}
           sub="advanced stage"
-          iconColor={STAT_ICON_COLORS.emerald} />
-      </div>
+          iconColor={STAT_ICON_COLORS.emerald} /></div>
 
       {/* ── Filter Bar ──────────────────────────────────────────── */}
       {showFilters && (
@@ -327,8 +300,7 @@ export default function PipelinePage() {
             <h3
               className="section-title"
               style={{ marginBottom: 0 }}>
-              Filters
-            </h3>
+              Filters</h3>
             {hasActiveFilters && (
               <button
                 onClick={clearFilters}
@@ -336,10 +308,8 @@ export default function PipelinePage() {
                 style={labelMuted}
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}>
-                <X className="w-3 h-3" /> Clear all
-              </button>
-            )}
-          </div>
+                <X className="w-3 h-3" /> Clear all</button>
+            )}</div>
           <div className="flex flex-wrap gap-4">
             <div>
               <span style={{ ...labelMuted, display: 'block', marginBottom: '0.375rem' }}>Tier</span>
@@ -350,9 +320,7 @@ export default function PipelinePage() {
                     tier={tier}
                     active={filters.tiers.has(tier)}
                     onClick={() => toggleTier(tier)} />
-                ))}
-              </div>
-            </div>
+                ))}</div></div>
             <div>
               <span style={{ ...labelMuted, display: 'block', marginBottom: '0.375rem' }}>Type</span>
               <div className="flex gap-1.5 flex-wrap">
@@ -363,11 +331,7 @@ export default function PipelinePage() {
                     label={label}
                     active={filters.types.has(key)}
                     onClick={() => toggleType(key)} />
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
+                ))}</div></div></div></div>
       )}
 
       {/* ── Pipeline Summary Strip ──────────────────────────────── */}
@@ -389,8 +353,7 @@ export default function PipelinePage() {
           { label: 'Term Sheets', value: String(termSheetCount) },
           { label: 'Closed', value: String(closedCount), color: 'var(--text-secondary)' },
           { label: 'Pass Rate', value: `${passRate}%`, color: passedCount > 0 ? 'var(--danger)' : undefined },
-          { label: 'Conversion', value: `${conversionRate}%`, color: closedCount > 0 ? 'var(--success)' : undefined },
-        ];
+          { label: 'Conversion', value: `${conversionRate}%`, color: closedCount > 0 ? 'var(--success)' : undefined },];
 
         return (
           <div
@@ -402,8 +365,7 @@ export default function PipelinePage() {
                 <span style={{ fontSize: 'var(--font-size-lg)', fontWeight: 300, color: m.color || 'var(--text-primary)', lineHeight: 1.2 }}>{m.value}</span>
               </div>
             ))}
-          </div>
-        );
+          </div>);
       })()}
 
       {/* ── Kanban Board ────────────────────────────────────────── */}
@@ -429,8 +391,7 @@ export default function PipelinePage() {
                   <div className="flex items-center justify-between">
                     <span style={{ ...stFontXs, fontWeight: 400, color: 'var(--text-primary)', letterSpacing: '0.01em' }}>{STATUS_LABELS[status]}</span>
                     <span style={{ fontSize: '10px', fontWeight: 300, padding: '0.125rem 0.375rem', borderRadius: '9999px', ...colors.badge }}>{cards.length}</span>
-                  </div>
-                </div>
+                  </div></div>
 
                 {/* Cards container */}
                 <div className="flex-1 overflow-y-auto p-2 space-y-2" style={{ ...colors.bg, borderBottomLeftRadius: 'var(--radius-xl)', borderBottomRightRadius: 'var(--radius-xl)', minHeight: '120px' }}>
@@ -450,15 +411,10 @@ export default function PipelinePage() {
                       {dragId ? 'Drop here'
                         : status === 'identified' ? 'Add investors from the table view'
                         : status === 'closed' ? 'Move investors here when signed'
-                        : 'Move investors from earlier stages'}
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
+                        : 'Move investors from earlier stages'}</div>
+                  )}</div>
+              </div>);
+          })}</div></div>
 
       {/* ── Exit Row (Passed / Dropped) ─────────────────────────── */}
       {EXIT_STATUSES.some(s => investorsInStatus(s).length > 0 || dragId) && (
@@ -486,8 +442,7 @@ export default function PipelinePage() {
                       ...colors.header, }}>
                     <div className="flex items-center justify-between">
                       <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-secondary)', letterSpacing: '0.01em' }}>
-                        {STATUS_LABELS[status]}
-                      </span>
+                        {STATUS_LABELS[status]}</span>
                       <span
                         style={{
                           fontSize: '10px',
@@ -495,10 +450,7 @@ export default function PipelinePage() {
                           padding: '0.125rem 0.375rem',
                           borderRadius: '9999px',
                           ...colors.badge, }}>
-                        {cards.length}
-                      </span>
-                    </div>
-                  </div>
+                        {cards.length}</span></div></div>
                   <div className="p-2" style={{ ...colors.bg, borderBottomLeftRadius: 'var(--radius-xl)', borderBottomRightRadius: 'var(--radius-xl)' }}>
                     {cards.length > 0 ? (
                       <div className="flex flex-wrap gap-2">
@@ -511,24 +463,17 @@ export default function PipelinePage() {
                             isDragging={dragId === inv.id}
                             onDragStart={handleDragStart}
                             onDragEnd={handleDragEnd} />
-                        ))}
-                      </div>
+                        ))}</div>
                     ) : (
                       <div
                         className="flex items-center justify-center"
                         style={{ height: '3rem', color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>
-                        {dragId ? 'Drop here' : 'None'}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+                        {dragId ? 'Drop here' : 'None'}</div>
+                    )}</div>
+                </div>);
+            })}</div></div>
       )}
-    </div>
-  );
+    </div>);
 }
 
 // ── Filter Button Component ──────────────────────────────────────────
@@ -558,8 +503,7 @@ function FilterButton({
         ...(active
           ? {
               background: 'var(--accent-muted)',
-              color: 'var(--accent)',
-            }
+              color: 'var(--accent)',}
           : {
               background: 'var(--surface-1)',
               color: hovered ? 'var(--text-secondary)' : 'var(--text-tertiary)',
@@ -575,11 +519,9 @@ function FilterButton({
             fontWeight: 300,
             padding: '0.125rem 0.375rem',
             borderRadius: '9999px', }}>
-          {count}
-        </span>
+          {count}</span>
       )}
-    </button>
-  );
+    </button>);
 }
 
 // ── Tier Filter Button Component ──────────────────────────────────────
@@ -613,8 +555,7 @@ function TierFilterButton({
               color: hovered ? 'var(--text-secondary)' : 'var(--text-muted)',
             }), }}>
       T{tier}
-    </button>
-  );
+    </button>);
 }
 
 // ── Type Filter Button Component ──────────────────────────────────────
@@ -650,8 +591,7 @@ function TypeFilterButton({
               color: hovered ? 'var(--text-secondary)' : 'var(--text-muted)',
             }), }}>
       {label}
-    </button>
-  );
+    </button>);
 }
 
 // ── Stat Card Component ──────────────────────────────────────────────
@@ -670,14 +610,11 @@ function StatCard({
       style={{ padding: 'var(--space-3) var(--space-4)' }}>
       <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-1)' }}>
         <span style={{ color: iconColor }}>{icon}</span>
-        <span className="metric-label">{label}</span>
-      </div>
+        <span className="metric-label">{label}</span></div>
       <div className="flex items-baseline gap-1.5">
         <span style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>{value}</span>
-        <span style={labelMuted10}>{sub}</span>
-      </div>
-    </div>
-  );
+        <span style={labelMuted10}>{sub}</span></div>
+    </div>);
 }
 
 // ── Investor Card Component ──────────────────────────────────────────
@@ -715,8 +652,7 @@ function InvestorCard({
     transition: 'all 150ms ease',
     boxShadow: tierGlow,
     borderLeft: isStale ? '3px solid var(--warning)' : 'none',
-    ...(isDragging ? { opacity: 0.5, transform: 'scale(0.95)' } : {}),
-  };
+    ...(isDragging ? { opacity: 0.5, transform: 'scale(0.95)' } : {}),};
 
   if (compact) {
     return (
@@ -734,8 +670,7 @@ function InvestorCard({
           <span className="truncate" style={{ ...stFontXs, fontWeight: 400, color: 'var(--text-secondary)' }}>{investor.name}</span>
           <span style={{ padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-sm)', fontSize: '10px', fontWeight: 400, ...TIER_STYLES[investor.tier] }}>T{investor.tier}</span>
         </Link>
-      </div>
-    );
+      </div>);
   }
 
   return (
@@ -755,14 +690,12 @@ function InvestorCard({
           </div>
           <GripVertical
             className="w-3.5 h-3.5 flex-shrink-0 mt-0.5"
-            style={{ color: hovered ? 'var(--text-muted)' : 'var(--border-strong)' }} />
-        </div>
+            style={{ color: hovered ? 'var(--text-muted)' : 'var(--border-strong)' }} /></div>
 
         {/* Badges row: type + tier */}
         <div className="flex items-center gap-1.5">
           <span className="inline-flex items-center gap-1" style={{ padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-sm)', fontSize: '10px', fontWeight: 400, ...TYPE_STYLES[investor.type as InvestorType] }}>
-            <TypeIcon className="w-2.5 h-2.5" />{TYPE_LABELS[investor.type as InvestorType] ?? investor.type}
-          </span>
+            <TypeIcon className="w-2.5 h-2.5" />{TYPE_LABELS[investor.type as InvestorType] ?? investor.type}</span>
           <span style={{ padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-sm)', fontSize: '10px', fontWeight: 400, ...TIER_STYLES[investor.tier] }}>T{investor.tier}</span>
           {isStale && <span style={{ padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-sm)', fontSize: '10px', fontWeight: 400, background: 'var(--warning-muted)', color: 'var(--warning)' }}>Stale</span>}
           {convictionDelta !== null && convictionDelta !== 0 && <span style={{ padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-sm)', fontSize: '10px', fontWeight: 400, background: convictionDelta > 0 ? 'var(--success-muted)' : 'var(--warning-muted)', color: convictionDelta > 0 ? 'var(--success)' : 'var(--danger)' }}>{convictionDelta > 0 ? '+' : ''}{convictionDelta}</span>}
@@ -773,15 +706,12 @@ function InvestorCard({
         <div className="space-y-1">
           {investor.partner && (
             <div className="truncate" style={labelMuted}>
-              <span style={stTextMuted}>Partner:</span> {investor.partner}
-            </div>
+              <span style={stTextMuted}>Partner:</span> {investor.partner}</div>
           )}
           {investor.fund_size && (
             <div className="truncate" style={labelMuted}>
-              <span style={stTextMuted}>Fund:</span> {investor.fund_size}
-            </div>
-          )}
-        </div>
+              <span style={stTextMuted}>Fund:</span> {investor.fund_size}</div>
+          )}</div>
 
         {/* Enthusiasm + last contact row */}
         <div className="flex items-center justify-between">
@@ -802,9 +732,7 @@ function InvestorCard({
                           : 'var(--text-muted)'
                         : 'var(--border-default)',
                     }} />
-                ))}
-              </div>
-            </div>
+                ))}</div></div>
           ) : <div />}
           {(() => {
             const lastDate = investor.last_meeting_date;
@@ -815,9 +743,7 @@ function InvestorCard({
             return (
               <span style={{ fontSize: '10px', color: isStale ? 'var(--danger)' : isWarning ? 'var(--warning)' : 'var(--text-muted)', fontWeight: 400 }} title={`Last meeting: ${fmtDate(lastDate)}`}>{days === 0 ? 'Today' : `${days}d ago`}</span>
             );
-          })()}
-        </div>
-      </Link>
+          })()}</div></Link>
 
       {/* Quick actions on hover */}
       {hovered && (
@@ -834,8 +760,7 @@ function InvestorCard({
               textDecoration: 'none', }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; (e.currentTarget as HTMLElement).style.background = 'var(--accent-muted)'; }}
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
-            <ClipboardList className="w-3 h-3" /> Prep
-          </Link>
+            <ClipboardList className="w-3 h-3" /> Prep</Link>
           <Link
             href={`/meetings/new?investor=${investor.id}`}
             onClick={e => e.stopPropagation()}
@@ -847,8 +772,7 @@ function InvestorCard({
               textDecoration: 'none', }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; (e.currentTarget as HTMLElement).style.background = 'var(--accent-muted)'; }}
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
-            <Calendar className="w-3 h-3" /> Log
-          </Link>
+            <Calendar className="w-3 h-3" /> Log</Link>
           <Link
             href={`/followups?investor=${investor.id}`}
             onClick={e => e.stopPropagation()}
@@ -860,10 +784,7 @@ function InvestorCard({
               textDecoration: 'none', }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; (e.currentTarget as HTMLElement).style.background = 'var(--accent-muted)'; }}
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
-            <SendHorizonal className="w-3 h-3" /> Follow up
-          </Link>
-        </div>
+            <SendHorizonal className="w-3 h-3" /> Follow up</Link></div>
       )}
-    </div>
-  );
+    </div>);
 }

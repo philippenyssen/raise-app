@@ -101,8 +101,7 @@ export async function GET() {
       last_seen: lastSeen,
       trend,
       best_response: bestObj?.response_text || null,
-      worst_response: worstObj?.response_text || null,
-    });
+      worst_response: worstObj?.response_text || null,});
   }
 
   // Build per-response effectiveness leaderboard
@@ -130,10 +129,8 @@ export async function GET() {
           objection_text: obj.objection_text,
           investor_name: obj.investor_name,
           deltas: [obj.next_meeting_enthusiasm_delta],
-          created_at: obj.created_at,
-        });
-      }
-    }
+          created_at: obj.created_at,});
+      }}
   }
 
   for (const [, data] of responseMap) {
@@ -155,15 +152,13 @@ export async function GET() {
       neutral_outcomes: neutral,
       effectiveness_score: score,
       avg_enthusiasm_delta: avgDelta,
-      created_at: data.created_at,
-    });
+      created_at: data.created_at,});
   }
 
   // Sort leaderboard: best first (by effectiveness score, then avg delta)
   responseLeaderboard.sort((a, b) => {
     if (b.effectiveness_score !== a.effectiveness_score) return b.effectiveness_score - a.effectiveness_score;
-    return b.avg_enthusiasm_delta - a.avg_enthusiasm_delta;
-  });
+    return b.avg_enthusiasm_delta - a.avg_enthusiasm_delta;});
 
   // Overall stats
   const totalObjections = playbook.reduce((s, g) => s + g.count, 0);
@@ -187,6 +182,5 @@ export async function GET() {
       overall_effectiveness_rate: overallEffectivenessRate,
       topics_count: playbook.length,
       responses_count: responseLeaderboard.length,
-    },
-  });
+    },});
 }

@@ -5,8 +5,7 @@ export async function GET() {
   try {
     const [forecast, raiseConfig] = await Promise.all([
       computeRaiseForecast(),
-      getRaiseConfig(),
-    ]);
+      getRaiseConfig(),]);
 
     const equityAmount = parseMoneyString(raiseConfig?.equity_amount);
     const targetAmount = equityAmount || 250;
@@ -32,13 +31,11 @@ export async function GET() {
         committed: committedAmount,
         expected: committedAmount + expectedAmount,
         bestCase: bestCaseAmount,
-        worstCase: worstCaseAmount,
-      },
+        worstCase: worstCaseAmount,},
       distribution: {
         high: highConfidence.length,
         medium: mediumConfidence.length,
-        low: lowConfidence.length,
-      },
+        low: lowConfidence.length,},
       scenarios: {
         best: {
           label: 'Best Case',
@@ -47,15 +44,13 @@ export async function GET() {
           investorCount: forecast.forecasts.length,
           closeDate: forecast.forecasts.length > 0
             ? forecast.forecasts[forecast.forecasts.length - 1].predictedCloseDate
-            : forecast.expectedCloseDate,
-        },
+            : forecast.expectedCloseDate,},
         base: {
           label: 'Base Case',
           description: 'Weighted by confidence',
           amount: committedAmount + expectedAmount,
           investorCount: committedInvestors.length + highConfidence.filter(f => !committedInvestors.includes(f)).length + Math.round(mediumConfidence.length * 0.5),
-          closeDate: forecast.expectedCloseDate,
-        },
+          closeDate: forecast.expectedCloseDate,},
         worst: {
           label: 'Worst Case',
           description: 'Only committed investors',
@@ -63,19 +58,14 @@ export async function GET() {
           investorCount: committedInvestors.length,
           closeDate: committedInvestors.length > 0
             ? committedInvestors[committedInvestors.length - 1].predictedCloseDate
-            : 'N/A',
-        },
-      },
-      generated_at: new Date().toISOString(),
-    });
+            : 'N/A',},},
+      generated_at: new Date().toISOString(),});
   } catch (error) {
     console.error('Forecast API error:', error);
     return NextResponse.json(
       { error: 'Failed to compute forecast', detail: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
-    );
-  }
-}
+      { status: 500 });
+  }}
 
 function parseMoneyString(s: unknown): number {
   if (typeof s === 'number') return s;

@@ -22,12 +22,7 @@ import {
 } from '@/lib/db';
 import { getClient } from '@/lib/api-helpers';
 
-interface HealthCheck {
-  name: string;
-  status: 'pass' | 'fail' | 'warn';
-  detail: string;
-  category: string;
-}
+interface HealthCheck { name: string; status: 'pass' | 'fail' | 'warn'; detail: string; category: string; }
 
 export async function GET() {
   const checks: HealthCheck[] = [];
@@ -44,15 +39,13 @@ export async function GET() {
       name: 'context_bus_build',
       status: 'pass',
       detail: `Context built successfully at version ${ctx.version}`,
-      category: 'infrastructure',
-    });
+      category: 'infrastructure',});
   } catch (err) {
     checks.push({
       name: 'context_bus_build',
       status: 'fail',
       detail: `Context bus failed: ${err instanceof Error ? err.message : 'Unknown error'}`,
-      category: 'infrastructure',
-    });
+      category: 'infrastructure',});
   }
 
   // (1b) Data freshness
@@ -63,8 +56,7 @@ export async function GET() {
       name: 'data_freshness',
       status: ageMinutes < 60 ? 'pass' : ageMinutes < 1440 ? 'warn' : 'fail',
       detail: `Context version: ${ctx.version}, built ${ageMinutes} minute(s) ago`,
-      category: 'infrastructure',
-    });
+      category: 'infrastructure',});
   }
 
   // =========================================================================
@@ -76,8 +68,7 @@ export async function GET() {
   const tables = [
     'question_patterns', 'prediction_log', 'investor_relationships',
     'narrative_signals', 'acceleration_actions', 'health_snapshots',
-    'score_snapshots', 'forecast_log',
-  ];
+    'score_snapshots', 'forecast_log',];
 
   for (const table of tables) {
     try {
@@ -88,17 +79,14 @@ export async function GET() {
         name: `table_${table}`,
         status: cnt > 0 ? 'pass' : 'warn',
         detail: `${table}: ${cnt} record(s)`,
-        category: 'database',
-      });
+        category: 'database',});
     } catch (err) {
       checks.push({
         name: `table_${table}`,
         status: 'fail',
         detail: `Failed to query ${table}: ${err instanceof Error ? err.message : 'Unknown'}`,
-        category: 'database',
-      });
-    }
-  }
+        category: 'database',});
+    }}
 
   // =========================================================================
   // CATEGORY 3: Context Bus Fields (all 22 fields from cycles 1-18)
@@ -129,8 +117,7 @@ export async function GET() {
       { field: 'meetingDensity', cycle: 27 },
       { field: 'fomoDynamics', cycle: 27 },
       { field: 'engagementVelocity', cycle: 29 },
-      { field: 'networkCascades', cycle: 32 },
-    ];
+      { field: 'networkCascades', cycle: 32 },];
 
     for (const { field, cycle } of expectedFields) {
       const value = ctx[field];
@@ -141,10 +128,8 @@ export async function GET() {
         detail: present
           ? `${field}: present (${Array.isArray(value) ? value.length + ' items' : typeof value}) [cycle ${cycle}]`
           : `${field}: null — may indicate no data yet [cycle ${cycle}]`,
-        category: 'context_bus',
-      });
-    }
-  }
+        category: 'context_bus',});
+    }}
 
   // =========================================================================
   // CATEGORY 4: Intelligence Functions (all callable)
@@ -168,8 +153,7 @@ export async function GET() {
     { name: 'computeMeetingDensity', fn: () => computeMeetingDensity(), cycle: 27 },
     { name: 'detectFomoDynamics', fn: () => detectFomoDynamics(), cycle: 27 },
     { name: 'computeEngagementVelocity', fn: () => computeEngagementVelocity(), cycle: 29 },
-    { name: 'computeNetworkCascades', fn: () => computeNetworkCascades(), cycle: 32 },
-  ];
+    { name: 'computeNetworkCascades', fn: () => computeNetworkCascades(), cycle: 32 },];
 
   for (const fc of functionChecks) {
     try {
@@ -178,17 +162,14 @@ export async function GET() {
         name: `fn_${fc.name}`,
         status: 'pass',
         detail: `${fc.name}() returned ${Array.isArray(result) ? result.length + ' items' : result !== null ? 'data' : 'null'} [cycle ${fc.cycle}]`,
-        category: 'functions',
-      });
+        category: 'functions',});
     } catch (err) {
       checks.push({
         name: `fn_${fc.name}`,
         status: 'fail',
         detail: `${fc.name}() failed: ${err instanceof Error ? err.message : 'Unknown'} [cycle ${fc.cycle}]`,
-        category: 'functions',
-      });
-    }
-  }
+        category: 'functions',});
+    }}
 
   // =========================================================================
   // CATEGORY 5: Intelligence Quality Checks
@@ -203,16 +184,14 @@ export async function GET() {
       detail: ctx.investors.length > 0
         ? `${ctx.investors.length} investor snapshots, ${ctx.investors.filter(i => i.stageHealth === 'stalled').length} stalled, ${ctx.investors.filter(i => i.stageHealth === 'slow').length} slow [cycle 16]`
         : 'No active investors in pipeline [cycle 16]',
-      category: 'quality',
-    });
+      category: 'quality',});
 
     // Compound signals producing output
     checks.push({
       name: 'compound_signal_output',
       status: 'pass', // compound signals may legitimately be empty
       detail: `${ctx.compoundSignals.length} compound signal(s) detected [cycle 13]`,
-      category: 'quality',
-    });
+      category: 'quality',});
 
     // Forecast quality
     if (ctx.raiseForecast) {
@@ -220,8 +199,7 @@ export async function GET() {
         name: 'forecast_quality',
         status: ctx.raiseForecast.confidence === 'high' ? 'pass' : ctx.raiseForecast.confidence === 'medium' ? 'pass' : 'warn',
         detail: `Forecast confidence: ${ctx.raiseForecast.confidence}, expected close: ${ctx.raiseForecast.expectedCloseDate}, ${ctx.raiseForecast.criticalPath.length} on critical path [cycle 18]`,
-        category: 'quality',
-      });
+        category: 'quality',});
     }
 
     // Forecast calibration quality (cycle 23)
@@ -231,8 +209,7 @@ export async function GET() {
         name: 'forecast_calibration',
         status: fc.biasDirection !== 'insufficient_data' ? 'pass' : fc.totalPredictions > 0 ? 'warn' : 'warn',
         detail: `${fc.totalPredictions} predictions logged, ${fc.resolvedPredictions} resolved, bias: ${fc.biasDirection}${fc.biasDirection !== 'insufficient_data' ? ` (avg ${fc.avgAccuracyDelta}d off)` : ''} [cycle 23]`,
-        category: 'quality',
-      });
+        category: 'quality',});
     }
 
     // System prompt serialization check
@@ -242,24 +219,20 @@ export async function GET() {
       const sections = [
         'PIPELINE:', 'KEY INVESTORS', 'RAISE FORECAST', 'TEMPORAL TRENDS',
         'COMPOUND INTELLIGENCE', 'INTELLIGENCE SYNTHESIS', 'FORECAST CALIBRATION', 'WIN/LOSS',
-        'NETWORK CASCADES',
-      ];
+        'NETWORK CASCADES',];
       const found = sections.filter(s => prompt.includes(s));
       checks.push({
         name: 'system_prompt_sections',
         status: found.length >= 3 ? 'pass' : 'warn',
         detail: `System prompt: ${found.length}/${sections.length} expected sections present (${prompt.length} chars) [cycles 2-18]`,
-        category: 'quality',
-      });
+        category: 'quality',});
     } catch (err) {
       checks.push({
         name: 'system_prompt_sections',
         status: 'fail',
         detail: `System prompt serialization failed: ${err instanceof Error ? err.message : 'Unknown'}`,
-        category: 'quality',
-      });
-    }
-  }
+        category: 'quality',});
+    }}
 
   // Summary
   const passCount = checks.filter(c => c.status === 'pass').length;
@@ -275,8 +248,7 @@ export async function GET() {
     categoryHealth[cat] = {
       pass: catChecks.filter(c => c.status === 'pass').length,
       warn: catChecks.filter(c => c.status === 'warn').length,
-      fail: catChecks.filter(c => c.status === 'fail').length,
-    };
+      fail: catChecks.filter(c => c.status === 'fail').length,};
   }
 
   return NextResponse.json({
@@ -287,6 +259,5 @@ export async function GET() {
     tableCounts,
     contextVersion: ctx?.version ?? null,
     contextBuildTimestamp: ctx?.buildTimestamp ?? null,
-    verifiedAt: new Date().toISOString(),
-  });
+    verifiedAt: new Date().toISOString(),});
 }

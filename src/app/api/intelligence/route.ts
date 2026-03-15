@@ -35,8 +35,7 @@ export async function GET(req: NextRequest) {
         const [deals, competitors, briefs] = await Promise.all([
           getAllMarketDeals(),
           getAllCompetitors(),
-          getIntelligenceBriefs(),
-        ]);
+          getIntelligenceBriefs(),]);
         return NextResponse.json({ deals, competitors, briefs });
       }
       default:
@@ -44,17 +43,12 @@ export async function GET(req: NextRequest) {
     }
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 500 });
-  }
-}
+  }}
 
 // POST: Create intelligence data or run AI research
 export async function POST(req: NextRequest) {
   let body: Record<string, unknown>;
-  try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
-  }
+  try { body = await req.json(); } catch { return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 }); }
 
   try {
     const action = body.action as string;
@@ -101,8 +95,7 @@ export async function POST(req: NextRequest) {
           brief_type: 'investor',
           content: formatInvestorResearch(name, research),
           sources: JSON.stringify(['Claude AI analysis based on training data']),
-          investor_id: investor_id || undefined,
-        });
+          investor_id: investor_id || undefined,});
 
         // Auto-create partner entries if investor_id provided
         if (investor_id && research.key_partners?.length > 0) {
@@ -116,10 +109,8 @@ export async function POST(req: NextRequest) {
               board_seats: '',
               linkedin: '',
               background: '',
-              relevance_to_us: '',
-            });
-          }
-        }
+              relevance_to_us: '',});
+          }}
 
         // Auto-create portfolio entries if investor_id provided
         if (investor_id && research.recent_investments?.length > 0) {
@@ -132,10 +123,8 @@ export async function POST(req: NextRequest) {
               amount: inv.amount,
               date: inv.date,
               status: 'active',
-              relevance: '',
-            });
-          }
-        }
+              relevance: '',});
+          }}
 
         emitContextChange('intelligence_added', `Investor research: ${name}`);
         return NextResponse.json({ brief, research });
@@ -162,16 +151,14 @@ export async function POST(req: NextRequest) {
           weaknesses: research.weaknesses?.join('; ') || '',
           threat_level: research.threat_assessment?.toLowerCase().includes('high') ? 'high' :
                        research.threat_assessment?.toLowerCase().includes('critical') ? 'critical' : 'medium',
-          our_advantage: research.our_advantage || '',
-        });
+          our_advantage: research.our_advantage || '',});
 
         // Store research brief
         const brief = await createIntelligenceBrief({
           subject: compName,
           brief_type: 'competitor',
           content: formatCompetitorResearch(compName, research),
-          sources: JSON.stringify(['Claude AI analysis based on training data']),
-        });
+          sources: JSON.stringify(['Claude AI analysis based on training data']),});
 
         emitContextChange('intelligence_added', `Competitor research: ${compName}`);
         return NextResponse.json({ competitor, brief, research });
@@ -196,18 +183,15 @@ export async function POST(req: NextRequest) {
               sub_sector: '',
               equity_story: d.equity_story,
               relevance: '',
-              source: 'AI Research',
-            });
-          }
-        }
+              source: 'AI Research',});
+          }}
 
         // Store brief
         const brief = await createIntelligenceBrief({
           subject: `Market Deals: ${sector || 'Space/Defense'}`,
           brief_type: 'market',
           content: formatMarketResearch(research),
-          sources: JSON.stringify(['Claude AI analysis based on training data']),
-        });
+          sources: JSON.stringify(['Claude AI analysis based on training data']),});
 
         emitContextChange('intelligence_added', `Market research: ${sector || 'Space/Defense'}`);
         return NextResponse.json({ brief, research });
@@ -222,17 +206,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Anthropic API: insufficient credits. Check console.anthropic.com/settings/billing.' }, { status: 402 });
     }
     return NextResponse.json({ error: msg }, { status: 500 });
-  }
-}
+  }}
 
 // PUT: Update intelligence data
 export async function PUT(req: NextRequest) {
   let body: Record<string, unknown>;
-  try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
-  }
+  try { body = await req.json(); } catch { return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 }); }
 
   try {
     const type = body.type as string;
@@ -253,8 +232,7 @@ export async function PUT(req: NextRequest) {
     }
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 500 });
-  }
-}
+  }}
 
 // DELETE: Remove intelligence data
 export async function DELETE(req: NextRequest) {
@@ -275,8 +253,7 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ ok: true });
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 500 });
-  }
-}
+  }}
 
 // Format helpers
 function formatInvestorResearch(name: string, r: Awaited<ReturnType<typeof researchInvestor>>): string {

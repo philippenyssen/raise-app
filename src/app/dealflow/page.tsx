@@ -50,13 +50,11 @@ const HEAT_CONFIG: Record<string, { bg: string; border: string; text: string; gl
   warm:   { bg: 'var(--accent-muted)',  border: 'var(--accent-12)',  text: 'var(--text-secondary)', glow: 'none', label: 'Warm' },
   cool:   { bg: 'var(--accent-5)', border: 'var(--accent-10)', text: 'var(--text-tertiary)', glow: 'none', label: 'Cool' },
   cold:   { bg: 'var(--accent-4)', border: 'var(--accent-8)', text: 'var(--text-muted)', glow: 'none', label: 'Cold' },
-  frozen: { bg: 'var(--accent-3)', border: 'var(--accent-muted)', text: 'var(--text-muted)', glow: 'none', label: 'Frozen' },
-};
+  frozen: { bg: 'var(--accent-3)', border: 'var(--accent-muted)', text: 'var(--text-muted)', glow: 'none', label: 'Frozen' },};
 
 const TYPE_LABELS: Record<string, string> = {
   vc: 'VC', growth: 'Growth', sovereign: 'SWF', strategic: 'Strategic',
-  debt: 'Debt', family_office: 'Family',
-};
+  debt: 'Debt', family_office: 'Family',};
 
 const HEAT_ORDER: Record<string, number> = { hot: 0, warm: 1, cool: 2, cold: 3, frozen: 4 };
 
@@ -93,8 +91,7 @@ export default function DealflowPage() {
       const [velRes, heatRes, momRes] = await Promise.allSettled([
         cachedFetch('/api/velocity').then(r => r.json()),
         cachedFetch('/api/deal-heat').then(r => r.json()),
-        cachedFetch('/api/momentum').then(r => r.json()),
-      ]);
+        cachedFetch('/api/momentum').then(r => r.json()),]);
 
       const velData = velRes.status === 'fulfilled' ? velRes.value : null;
       const heatData = heatRes.status === 'fulfilled' ? heatRes.value : null;
@@ -126,10 +123,8 @@ export default function DealflowPage() {
             previousMomentum: 0,
             enthusiasm: inv.enthusiasm ?? 0,
             lastMeeting: null,
-            daysSinceLastMeeting: inv.days_since_last_meeting ?? 999,
-          });
-        }
-      }
+            daysSinceLastMeeting: inv.days_since_last_meeting ?? 999,});
+        }}
 
       // Merge heat data
       if (heatData?.investors) {
@@ -161,10 +156,8 @@ export default function DealflowPage() {
               previousMomentum: 0,
               enthusiasm: inv.enthusiasm ?? 0,
               lastMeeting: inv.lastMeeting,
-              daysSinceLastMeeting: 999,
-            });
-          }
-        }
+              daysSinceLastMeeting: 999,});
+          }}
       }
 
       // Merge momentum data
@@ -178,8 +171,7 @@ export default function DealflowPage() {
             existing.currentMomentum = current;
             existing.previousMomentum = prev;
             existing.trend = current > prev + 5 ? 'up' : current < prev - 5 ? 'down' : 'flat';
-          }
-        }
+          }}
       }
 
       setInvestors(Array.from(map.values()));
@@ -203,8 +195,7 @@ export default function DealflowPage() {
         case 'days': return a.daysInProcess - b.daysInProcess;
         case 'name': return a.name.localeCompare(b.name);
         default: return 0;
-      }
-    });
+      }});
 
   // Summary counts
   const counts = { hot: 0, warm: 0, cool: 0, cold: 0, frozen: 0, atRisk: 0, onTrack: 0 };
@@ -223,18 +214,14 @@ export default function DealflowPage() {
         <div>
           <h1 className="page-title">Dealflow</h1>
           <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', marginTop: '2px' }}>
-            Investor health: heat, velocity, and momentum in one view
-          </p>
-        </div>
+            Investor health: heat, velocity, and momentum in one view</p></div>
         <button
           onClick={fetchData}
           disabled={loading}
           className="flex items-center gap-2 px-3 py-2 rounded-lg"
           style={{ background: 'var(--surface-2)', color: 'var(--text-secondary)', fontSize: 'var(--font-size-sm)' }}>
           <span style={stTextMuted}><RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} /></span>
-          Refresh
-        </button>
-      </div>
+          Refresh</button></div>
 
       {/* Summary Strip */}
       <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 mb-6">
@@ -253,18 +240,14 @@ export default function DealflowPage() {
             style={stSurface1}>
             <div className="flex items-center justify-center gap-1.5 mb-1">
               <span style={{ color }}><Icon className="w-3.5 h-3.5" /></span>
-              <span style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>{label}</span>
-            </div>
-            <div className="text-xl font-normal" style={{ color }}>{count}</div>
-          </div>
-        ))}
-      </div>
+              <span style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>{label}</span></div>
+            <div className="text-xl font-normal" style={{ color }}>{count}</div></div>
+        ))}</div>
 
       {/* Controls */}
       <div className="flex items-center gap-3 mb-4">
         <div className="flex items-center gap-1.5" style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>
-          <span><Filter className="w-3 h-3" /></span> Heat:
-        </div>
+          <span><Filter className="w-3 h-3" /></span> Heat:</div>
         {(['all', 'hot', 'warm', 'cool', 'cold', 'frozen'] as HeatFilter[]).map(h => (
           <button
             key={h}
@@ -273,10 +256,8 @@ export default function DealflowPage() {
             style={{
               background: heatFilter === h ? 'var(--surface-3)' : 'transparent',
               color: heatFilter === h ? 'var(--text-primary)' : 'var(--text-muted)',
-              border: heatFilter === h ? '1px solid var(--border-default)' : '1px solid transparent',
-            }}>
-            {h === 'all' ? 'All' : h.charAt(0).toUpperCase() + h.slice(1)}
-          </button>
+              border: heatFilter === h ? '1px solid var(--border-default)' : '1px solid transparent',}}>
+            {h === 'all' ? 'All' : h.charAt(0).toUpperCase() + h.slice(1)}</button>
         ))}
         <div style={{ marginLeft: 'auto' }} className="flex items-center gap-1.5">
           <span style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>Sort:</span>
@@ -289,25 +270,20 @@ export default function DealflowPage() {
                 background: sortBy === s ? 'var(--accent-muted)' : 'transparent',
                 color: sortBy === s ? 'var(--accent)' : 'var(--text-muted)',
                 border: sortBy === s ? '1px solid var(--accent)' : '1px solid transparent', }}>
-              {s.charAt(0).toUpperCase() + s.slice(1)}
-            </button>
-          ))}
-        </div>
-      </div>
+              {s.charAt(0).toUpperCase() + s.slice(1)}</button>
+          ))}</div></div>
 
       {/* Error state */}
       {error && (
         <div className="rounded-lg p-4 mb-4" style={{ background: 'var(--danger-muted)', border: '1px solid var(--danger)', color: 'var(--text-primary)' }}>
-          {error}
-        </div>
+          {error}</div>
       )}
 
       {/* Loading state */}
       {loading && !investors.length && (
         <div className="flex items-center justify-center py-20" style={stTextMuted}>
           <span><RefreshCw className="w-5 h-5 animate-spin" /></span>
-          <span className="ml-2">Loading dealflow...</span>
-        </div>
+          <span className="ml-2">Loading dealflow...</span></div>
       )}
 
       {/* Investor Table */}
@@ -332,8 +308,7 @@ export default function DealflowPage() {
             <div className="text-center">Days</div>
             <div className="text-center">Track</div>
             <div>Bottleneck</div>
-            <div className="text-center">Last Meet</div>
-          </div>
+            <div className="text-center">Last Meet</div></div>
 
           {/* Data rows */}
           {filtered.map(inv => {
@@ -357,16 +332,12 @@ export default function DealflowPage() {
                   <div
                     className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-xs font-normal"
                     style={{ background: heatCfg.bg, color: heatCfg.text, border: `1px solid ${heatCfg.border}` }}>
-                    {inv.name.charAt(0)}
-                  </div>
+                    {inv.name.charAt(0)}</div>
                   <div className="min-w-0">
                     <div className="font-normal truncate" style={{ color: 'var(--text-primary)', fontSize: 'var(--font-size-sm)' }}>
-                      {inv.name}
-                    </div>
+                      {inv.name}</div>
                     <div style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>
-                      {TYPE_LABELS[inv.type] || inv.type} · T{inv.tier} · {STATUS_LABELS[inv.status] || inv.status}
-                    </div>
-                  </div>
+                      {TYPE_LABELS[inv.type] || inv.type} · T{inv.tier} · {STATUS_LABELS[inv.status] || inv.status}</div></div>
                 </div>
 
                 {/* Heat Badge */}
@@ -374,9 +345,7 @@ export default function DealflowPage() {
                   <span
                     className="px-2 py-0.5 rounded-full text-xs font-normal"
                     style={{ background: heatCfg.bg, color: heatCfg.text, border: `1px solid ${heatCfg.border}` }}>
-                    {heatCfg.label}
-                  </span>
-                </div>
+                    {heatCfg.label}</span></div>
 
                 {/* Velocity Score */}
                 <div className="flex items-center justify-center gap-1.5">
@@ -385,36 +354,28 @@ export default function DealflowPage() {
                     style={{ background: 'var(--surface-3)' }}>
                     <div
                       className="h-full rounded-full"
-                      style={{ width: `${Math.min(inv.velocityScore, 100)}%`, background: 'var(--text-primary)' }} />
-                  </div>
+                      style={{ width: `${Math.min(inv.velocityScore, 100)}%`, background: 'var(--text-primary)' }} /></div>
                   <span style={{ color: 'var(--text-primary)', fontSize: 'var(--font-size-xs)', fontWeight: 400 }}>
-                    {inv.velocityScore}
-                  </span>
-                </div>
+                    {inv.velocityScore}</span></div>
 
                 {/* Momentum Trend */}
                 <div className="flex items-center justify-center gap-1">
                   <TrendIcon trend={inv.trend} />
                   <span style={{
                     color: inv.trend === 'up' ? 'var(--success)' : inv.trend === 'down' ? 'var(--danger)' : 'var(--text-muted)',
-                    fontSize: 'var(--font-size-xs)',
-                  }}>
-                    {inv.currentMomentum > 0 ? inv.currentMomentum.toFixed(0) : '—'}
-                  </span>
-                </div>
+                    fontSize: 'var(--font-size-xs)',}}>
+                    {inv.currentMomentum > 0 ? inv.currentMomentum.toFixed(0) : '—'}</span></div>
 
                 {/* Days in Process */}
                 <div className="text-center" style={{ fontSize: 'var(--font-size-sm)', color: inv.daysInProcess > 45 ? 'var(--danger)' : 'var(--text-secondary)' }}>
-                  {inv.daysInProcess > 0 ? `${inv.daysInProcess}d` : '—'}
-                </div>
+                  {inv.daysInProcess > 0 ? `${inv.daysInProcess}d` : '—'}</div>
 
                 {/* Tracking Status */}
                 <div className="flex justify-center">
                   <span
                     className="w-2 h-2 rounded-full"
                     style={{ background: 'var(--text-secondary)' }}
-                    title={inv.trackingStatus.replace('_', ' ')} />
-                </div>
+                    title={inv.trackingStatus.replace('_', ' ')} /></div>
 
                 {/* Bottleneck */}
                 <div className="truncate" style={stFontXs} onClick={e => e.preventDefault()}>
@@ -432,24 +393,18 @@ export default function DealflowPage() {
                       onMouseEnter={e => { e.currentTarget.style.color = 'var(--warning)'; }}
                       onMouseLeave={e => { e.currentTarget.style.color = 'var(--warning)'; }}>
                       <span className="truncate">{inv.bottleneck}</span>
-                      <ArrowRight className="w-3 h-3 shrink-0" style={{ opacity: 0.7 }} />
-                    </Link>
+                      <ArrowRight className="w-3 h-3 shrink-0" style={{ opacity: 0.7 }} /></Link>
                   ) : (
                     <span style={stTextMuted}>—</span>
-                  )}
-                </div>
+                  )}</div>
 
                 {/* Last Meeting */}
                 <div className="text-center" style={{
                   fontSize: 'var(--font-size-xs)',
-                  color: inv.daysSinceLastMeeting > 14 ? 'var(--danger)' : 'var(--text-muted)',
-                }}>
-                  {relativeDate(inv.lastMeeting)}
-                </div>
-              </Link>
-            );
-          })}
-        </div>
+                  color: inv.daysSinceLastMeeting > 14 ? 'var(--danger)' : 'var(--text-muted)',}}>
+                  {relativeDate(inv.lastMeeting)}</div>
+              </Link>);
+          })}</div>
       )}
 
       {/* Empty state */}
@@ -457,29 +412,23 @@ export default function DealflowPage() {
         <div className="text-center py-16" style={stTextMuted}>
           <Users className="w-8 h-8 mx-auto mb-2" />
           <p className="text-sm font-normal" style={{ color: 'var(--text-secondary)', marginBottom: 'var(--space-1)' }}>
-            {heatFilter !== 'all' ? `No ${heatFilter} investors` : 'No investors scored yet'}
-          </p>
+            {heatFilter !== 'all' ? `No ${heatFilter} investors` : 'No investors scored yet'}</p>
           <p className="text-xs" style={stTextMuted}>
             {heatFilter !== 'all' ? (
               <button
                 onClick={() => setHeatFilter('all')}
                 style={{ color: 'var(--accent)', textDecoration: 'underline', background: 'none', border: 'none', cursor: 'pointer' }}>
-                Clear filter to see all {investors.length} investors
-              </button>
+                Clear filter to see all {investors.length} investors</button>
             ) : (
               <>Log meetings to start generating heat scores. <Link href="/meetings/new" style={stAccent}>Log a meeting</Link></>
-            )}
-          </p>
-        </div>
+            )}</p></div>
       )}
 
       {/* Footer info */}
       {investors.length > 0 && (
         <div className="flex items-center justify-between mt-4" style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>
           <span>{filtered.length} of {investors.length} investors</span>
-          <span>Combines heat, velocity, and momentum data</span>
-        </div>
+          <span>Combines heat, velocity, and momentum data</span></div>
       )}
-    </div>
-  );
+    </div>);
 }

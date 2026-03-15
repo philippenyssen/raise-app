@@ -28,8 +28,7 @@ export const wikidataProvider: EnrichmentProvider = {
 
       const searchRes = await fetch(searchUrl, {
         headers: { 'User-Agent': 'RaiseApp/1.0 (fundraise-enrichment)' },
-        signal: AbortSignal.timeout(15000),
-      });
+        signal: AbortSignal.timeout(15000),});
 
       if (!searchRes.ok) {
         return { source_id: 'wikidata', success: false, fields, error: `HTTP ${searchRes.status}`, fetched_at: now };
@@ -38,9 +37,7 @@ export const wikidataProvider: EnrichmentProvider = {
       const searchData = await searchRes.json();
       const results = searchData?.search || [];
 
-      if (results.length === 0) {
-        return { source_id: 'wikidata', success: true, fields, fetched_at: now };
-      }
+      if (results.length === 0) { return { source_id: 'wikidata', success: true, fields, fetched_at: now }; }
 
       // Find the best match (look for investment/financial entity)
       const entityId = results[0].id;
@@ -51,8 +48,7 @@ export const wikidataProvider: EnrichmentProvider = {
         field_value: entityId,
         category: 'identity',
         confidence: 0.8,
-        source_url: wdUrl,
-      });
+        source_url: wdUrl,});
 
       if (results[0].description) {
         fields.push({
@@ -60,8 +56,7 @@ export const wikidataProvider: EnrichmentProvider = {
           field_value: results[0].description,
           category: 'identity',
           confidence: 0.85,
-          source_url: wdUrl,
-        });
+          source_url: wdUrl,});
       }
 
       // Fetch entity details via SPARQL for richer data
@@ -94,10 +89,8 @@ export const wikidataProvider: EnrichmentProvider = {
       const sparqlRes = await fetch(sparqlUrl, {
         headers: {
           'User-Agent': 'RaiseApp/1.0 (fundraise-enrichment)',
-          'Accept': 'application/sparql-results+json',
-        },
-        signal: AbortSignal.timeout(15000),
-      });
+          'Accept': 'application/sparql-results+json',},
+        signal: AbortSignal.timeout(15000),});
 
       if (sparqlRes.ok) {
         const sparqlData = await sparqlRes.json();
@@ -117,8 +110,7 @@ export const wikidataProvider: EnrichmentProvider = {
           'chief executive officer': { category: 'people', field: 'ceo' },
           'board member': { category: 'people', field: 'board_member' },
           'total revenue': { category: 'financials', field: 'total_revenue' },
-          'total assets': { category: 'financials', field: 'total_assets' },
-        };
+          'total assets': { category: 'financials', field: 'total_assets' },};
 
         for (const binding of bindings) {
           const propLabel = binding.propLabel?.value?.toLowerCase() || '';
@@ -137,10 +129,8 @@ export const wikidataProvider: EnrichmentProvider = {
               field_value: valueLabel,
               category: mapping.category,
               confidence: 0.85,
-              source_url: wdUrl,
-            });
-          }
-        }
+              source_url: wdUrl,});
+          }}
       }
 
       return { source_id: 'wikidata', success: true, fields, fetched_at: now };
@@ -150,8 +140,6 @@ export const wikidataProvider: EnrichmentProvider = {
         success: false,
         fields,
         error: error instanceof Error ? error.message : 'Unknown error',
-        fetched_at: now,
-      };
+        fetched_at: now,};
     }
-  },
-};
+  },};

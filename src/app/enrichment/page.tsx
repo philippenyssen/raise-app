@@ -32,8 +32,7 @@ interface EnrichResult { job_id: string; status: string; total_fields: number; s
 const SOURCE_TYPE_STYLES: Record<string, { bg: string; color: string; border: string }> = {
   free: { bg: 'var(--success-muted)', color: 'var(--text-secondary)', border: 'var(--accent-20)' },
   freemium: { bg: 'var(--accent-muted)', color: 'var(--accent)', border: 'var(--accent-5)' },
-  paid: { bg: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: 'var(--warn-20)' },
-};
+  paid: { bg: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: 'var(--warn-20)' },};
 
 const CATEGORY_ICONS: Record<string, React.ComponentType<{ style?: React.CSSProperties }>> = {
   identity: Building2,
@@ -46,8 +45,7 @@ const CATEGORY_ICONS: Record<string, React.ComponentType<{ style?: React.CSSProp
   regulatory: Shield,
   corporate: Building2,
   media: FileSearch,
-  relationships: Users,
-};
+  relationships: Users,};
 
 // ---------------------------------------------------------------------------
 // Component
@@ -73,8 +71,7 @@ export default function EnrichmentPage() {
       fetch('/api/enrichment?action=providers').then(r => r.json()).catch(() => []),
       fetch('/api/investors').then(r => r.json()).catch(() => []),
       fetch('/api/enrichment?action=jobs').then(r => r.json()).catch(() => []),
-      fetch('/api/enrichment?action=stats').then(r => r.json()).catch(() => null),
-    ]);
+      fetch('/api/enrichment?action=stats').then(r => r.json()).catch(() => null),]);
     setProviders(Array.isArray(provRes) ? provRes : []);
     const invList = Array.isArray(invRes) ? invRes : invRes?.investors || [];
     setInvestors(invList.filter((i: InvestorOption) => i.status !== 'passed' && i.status !== 'dropped'));
@@ -97,8 +94,7 @@ export default function EnrichmentPage() {
           investor_id: investorId,
           sources: selectedSources.size > 0 ? [...selectedSources] : undefined,
           auto_apply: true,
-        }),
-      });
+        }),});
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Enrichment failed');
 
@@ -109,8 +105,7 @@ export default function EnrichmentPage() {
       toast(err instanceof Error ? err.message : 'Enrichment failed', 'error');
     } finally {
       setEnriching(null);
-    }
-  }
+    }}
 
   async function enrichBulk() {
     setBulkEnriching(true);
@@ -125,8 +120,7 @@ export default function EnrichmentPage() {
           investor_ids: ids,
           sources: selectedSources.size > 0 ? [...selectedSources] : undefined,
           auto_apply: true,
-        }),
-      });
+        }),});
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Bulk enrichment failed');
 
@@ -137,16 +131,14 @@ export default function EnrichmentPage() {
       toast(err instanceof Error ? err.message : 'Bulk enrichment failed', 'error');
     } finally {
       setBulkEnriching(false);
-    }
-  }
+    }}
 
   function toggleSource(id: string) {
     setSelectedSources(prev => {
       const next = new Set(prev);
       if (next.has(id)) next.delete(id);
       else next.add(id);
-      return next;
-    });
+      return next;});
   }
 
   const configuredCount = providers.filter(p => p.configured).length;
@@ -160,8 +152,7 @@ export default function EnrichmentPage() {
           {[...Array(4)].map((_, i) => <div key={i} className="skeleton" style={{ height: '80px', borderRadius: 'var(--radius-lg)' }} />)}
         </div>
         <div className="skeleton" style={{ height: '400px', borderRadius: 'var(--radius-lg)' }} />
-      </div>
-    );
+      </div>);
   }
 
   return (
@@ -171,9 +162,7 @@ export default function EnrichmentPage() {
         <div>
           <h1 className="page-title">Data Enrichment</h1>
           <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', marginTop: 'var(--space-1)' }}>
-            {configuredCount} sources active ({freeCount} free) &middot; {investors.length} investors in pipeline
-          </p>
-        </div>
+            {configuredCount} sources active ({freeCount} free) &middot; {investors.length} investors in pipeline</p></div>
         <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
           <button
             onClick={enrichBulk}
@@ -181,10 +170,7 @@ export default function EnrichmentPage() {
             className="btn btn-primary btn-md"
             style={{ opacity: bulkEnriching || investors.length === 0 ? 0.4 : 1 }}>
             {bulkEnriching ? <Loader2 style={{ width: '14px', height: '14px' }} className="animate-spin" /> : <Zap style={{ width: '14px', height: '14px' }} />}
-            {bulkEnriching ? 'Enriching All...' : 'Enrich All Investors'}
-          </button>
-        </div>
-      </div>
+            {bulkEnriching ? 'Enriching All...' : 'Enrich All Investors'}</button></div></div>
 
       {/* Stats Row */}
       {stats && (
@@ -198,8 +184,7 @@ export default function EnrichmentPage() {
           <StatCard label="Avg Confidence" value={`${(stats.avg_confidence * 100).toFixed(0)}%`} icon={<Shield style={{ width: '14px', height: '14px' }} />}
             />
           <StatCard label="Stale Records" value={String(stats.stale_count)} icon={<AlertTriangle style={{ width: '14px', height: '14px' }} />} accent={stats.stale_count > 0 ? 'var(--warning)' : undefined}
-            />
-        </div>
+            /></div>
       )}
 
       {/* Tabs */}
@@ -222,37 +207,28 @@ export default function EnrichmentPage() {
             {t === 'history' && <Clock style={{ width: '14px', height: '14px' }} />}
             {t === 'enrich' ? 'Enrich' : t === 'sources' ? `Sources (${configuredCount}/${providers.length})` : `History (${jobs.length})`}
           </button>
-        ))}
-      </div>
+        ))}</div>
 
       {/* Last Result Banner */}
       {lastResult && (
         <div className="card" style={{
           background: lastResult.status === 'completed' ? 'var(--success-muted)' : lastResult.status === 'partial' ? 'var(--warning-muted)' : 'var(--danger-muted)',
-          padding: 'var(--space-3) var(--space-4)',
-        }}>
+          padding: 'var(--space-3) var(--space-4)',}}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
               {lastResult.status === 'completed' ? <CheckCircle2 style={{ width: '16px', height: '16px', color: 'var(--text-secondary)' }} /> :
                lastResult.status === 'partial' ? <AlertTriangle style={{ width: '16px', height: '16px', color: 'var(--text-tertiary)' }} /> :
                <XCircle style={{ width: '16px', height: '16px', color: 'var(--text-primary)' }} />}
               <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400 }}>
-                {lastResult.total_fields} fields enriched from {lastResult.sources_succeeded} sources
-              </span>
+                {lastResult.total_fields} fields enriched from {lastResult.sources_succeeded} sources</span>
               <span style={labelMuted}>
-                ({lastResult.duration_ms}ms)
-              </span>
-            </div>
+                ({lastResult.duration_ms}ms)</span></div>
             <button onClick={() => setLastResult(null)} style={{ color: 'var(--text-muted)', cursor: 'pointer', background: 'none', border: 'none' }}>
-              <XCircle style={{ width: '14px', height: '14px' }} />
-            </button>
-          </div>
+              <XCircle style={{ width: '14px', height: '14px' }} /></button></div>
           {lastResult.errors.length > 0 && (
             <div style={{ marginTop: 'var(--space-2)', fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
-              {lastResult.errors.map((e, i) => <div key={i}>{e}</div>)}
-            </div>
-          )}
-        </div>
+              {lastResult.errors.map((e, i) => <div key={i}>{e}</div>)}</div>
+          )}</div>
       )}
 
       {/* Enrich Tab */}
@@ -265,13 +241,11 @@ export default function EnrichmentPage() {
               <span>Type</span>
               <span>Tier</span>
               <span>Status</span>
-              <span style={{ textAlign: 'right' }}>Actions</span>
-            </div>
+              <span style={{ textAlign: 'right' }}>Actions</span></div>
             <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
               {investors.length === 0 ? (
                 <div style={{ padding: 'var(--space-8)', textAlign: 'center', color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
-                  No investors in pipeline. Add investors first.
-                </div>
+                  No investors in pipeline. Add investors first.</div>
               ) : (
                 investors.map(inv => (
                   <div
@@ -281,8 +255,7 @@ export default function EnrichmentPage() {
                     <Link
                       href={`/investors/${inv.id}`}
                       style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, textDecoration: 'none' }}>
-                      {inv.name}
-                    </Link>
+                      {inv.name}</Link>
                     <span style={labelTertiary}>{inv.type}</span>
                     <span className="tier-badge" data-tier={inv.tier} style={stFontXs}>T{inv.tier}</span>
                     <span style={labelTertiary}>{inv.status}</span>
@@ -298,14 +271,9 @@ export default function EnrichmentPage() {
                         fontSize: 'var(--font-size-xs)',
                         padding: '4px 10px', }}>
                       {enriching === inv.id ? <Loader2 style={{ width: '12px', height: '12px' }} className="animate-spin" /> : <Play style={{ width: '12px', height: '12px' }} />}
-                      {enriching === inv.id ? 'Enriching...' : 'Enrich'}
-                    </button>
-                  </div>
+                      {enriching === inv.id ? 'Enriching...' : 'Enrich'}</button></div>
                 ))
-              )}
-            </div>
-          </div>
-        </div>
+              )}</div></div></div>
       )}
 
       {/* Sources Tab */}
@@ -334,29 +302,22 @@ export default function EnrichmentPage() {
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
                         <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
-                          {provider.name}
-                        </span>
+                          {provider.name}</span>
                         <span style={{
                           fontSize: 'var(--font-size-xs)',
                           padding: '1px 6px',
                           borderRadius: 'var(--radius-sm)',
                           background: typeStyle.bg,
                           color: typeStyle.color,
-                          border: `1px solid ${typeStyle.border}`,
-                        }}>
-                          {provider.type}
-                        </span>
+                          border: `1px solid ${typeStyle.border}`,}}>
+                          {provider.type}</span>
                         {provider.configured ? (
                           <CheckCircle2 style={{ width: '12px', height: '12px', color: 'var(--text-secondary)' }} />
                         ) : (
                           <XCircle style={{ width: '12px', height: '12px', color: 'var(--text-muted)' }} />
-                        )}
-                      </div>
+                        )}</div>
                       <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '2px' }}>
-                        {provider.description.slice(0, 120)}{provider.description.length > 120 ? '...' : ''}
-                      </p>
-                    </div>
-                  </div>
+                        {provider.description.slice(0, 120)}{provider.description.length > 120 ? '...' : ''}</p></div></div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
                     <div style={{ display: 'flex', gap: 'var(--space-1)' }}>
                       {provider.fields_provided.map(f => {
@@ -364,24 +325,18 @@ export default function EnrichmentPage() {
                         return (
                           <span key={f} title={f} style={stTextMuted}>
                             <Icon style={{ width: '12px', height: '12px' }} />
-                          </span>
-                        );
-                      })}
-                    </div>
+                          </span>);
+                      })}</div>
                     {isExpanded ? <ChevronDown style={{ width: '14px', height: '14px', color: 'var(--text-muted)' }} /> :
-                      <ChevronRight style={{ width: '14px', height: '14px', color: 'var(--text-muted)' }} />}
-                  </div>
-                </div>
+                      <ChevronRight style={{ width: '14px', height: '14px', color: 'var(--text-muted)' }} />}</div></div>
 
                 {isExpanded && (
                   <div style={{
                     padding: 'var(--space-3) var(--space-4)',
                     borderTop: '1px solid var(--border-subtle)',
-                    background: 'var(--surface-1)',
-                  }}>
+                    background: 'var(--surface-1)',}}>
                     <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                      {provider.description}
-                    </p>
+                      {provider.description}</p>
                     <div style={{ marginTop: 'var(--space-3)', display: 'flex', flexWrap: 'wrap', gap: 'var(--space-2)' }}>
                       <span style={labelMuted}>Provides:</span>
                       {provider.fields_provided.map(f => (
@@ -390,12 +345,9 @@ export default function EnrichmentPage() {
                           padding: '2px 8px',
                           borderRadius: 'var(--radius-sm)',
                           background: 'var(--surface-2)',
-                          color: 'var(--text-tertiary)',
-                        }}>
-                          {f}
-                        </span>
-                      ))}
-                    </div>
+                          color: 'var(--text-tertiary)',}}>
+                          {f}</span>
+                      ))}</div>
                     {provider.requires_api_key && !provider.configured && (
                       <div style={{
                         marginTop: 'var(--space-3)',
@@ -403,17 +355,13 @@ export default function EnrichmentPage() {
                         background: 'var(--warning-muted)',
                         borderRadius: 'var(--radius-md)',
                         fontSize: 'var(--font-size-xs)',
-                        color: 'var(--text-tertiary)',
-                      }}>
+                        color: 'var(--text-tertiary)',}}>
                         Requires API key: set <code style={{ background: 'var(--surface-3)', padding: '0 4px', borderRadius: '3px' }}>{provider.api_key_env}</code> in your environment
                       </div>
-                    )}
-                  </div>
+                    )}</div>
                 )}
-              </div>
-            );
-          })}
-        </div>
+              </div>);
+          })}</div>
       )}
 
       {/* History Tab */}
@@ -442,32 +390,21 @@ export default function EnrichmentPage() {
                         <Link
                           href={`/investors/${job.investor_id}`}
                           style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, textDecoration: 'none' }}>
-                          {job.investor_name}
-                        </Link>
+                          {job.investor_name}</Link>
                         <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '2px' }}>
                           {job.results_count} fields &middot; {sources.length > 0 ? `${sources.length} sources` : 'all sources'}
-                        </div>
-                      </div>
-                    </div>
+                        </div></div></div>
                     <div style={{ textAlign: 'right' }}>
                       <span style={labelMuted}>
-                        {job.completed_at ? new Date(job.completed_at).toLocaleString() : 'Running...'}
-                      </span>
+                        {job.completed_at ? new Date(job.completed_at).toLocaleString() : 'Running...'}</span>
                       {errors.length > 0 && (
                         <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', marginTop: '2px' }}>
-                          {errors.length} error{errors.length !== 1 ? 's' : ''}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              );
-            })
-          )}
-        </div>
+                          {errors.length} error{errors.length !== 1 ? 's' : ''}</div>
+                      )}</div></div>
+                </div>);})
+          )}</div>
       )}
-    </div>
-  );
+    </div>);
 }
 
 // ---------------------------------------------------------------------------
@@ -479,11 +416,8 @@ function StatCard({ label, value, icon, accent }: { label: string; value: string
     <div className="card" style={{ padding: 'var(--space-3) var(--space-4)' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', marginBottom: 'var(--space-1)' }}>
         <span style={{ color: accent || 'var(--text-muted)' }}>{icon}</span>
-        <span style={labelMuted}>{label}</span>
-      </div>
+        <span style={labelMuted}>{label}</span></div>
       <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: accent || 'var(--text-primary)' }}>
-        {value}
-      </div>
-    </div>
-  );
+        {value}</div>
+    </div>);
 }

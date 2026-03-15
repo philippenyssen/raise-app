@@ -4,8 +4,7 @@ import type { Meeting, InvestorPortfolioCo } from '@/lib/types';
 export function getClient() {
   return createClient({
     url: process.env.TURSO_DATABASE_URL || 'file:raise.db',
-    authToken: process.env.TURSO_AUTH_TOKEN,
-  });
+    authToken: process.env.TURSO_AUTH_TOKEN,});
 }
 
 export async function loadAllMeetings(db?: ReturnType<typeof getClient>): Promise<Meeting[]> {
@@ -14,11 +13,7 @@ export async function loadAllMeetings(db?: ReturnType<typeof getClient>): Promis
   return result.rows as unknown as Meeting[];
 }
 
-export interface RaiseConfig {
-  targetEquityM: number;
-  targetCloseDate: string | null;
-  companyName: string;
-}
+export interface RaiseConfig { targetEquityM: number; targetCloseDate: string | null; companyName: string; }
 
 export async function loadRaiseConfig(db?: ReturnType<typeof getClient>): Promise<RaiseConfig> {
   const client = db ?? getClient();
@@ -76,8 +71,7 @@ export function clamp(n: number, min = 0, max = 100): number {
 
 export const PIPELINE_ORDER = [
   'identified', 'contacted', 'nda_signed', 'meeting_scheduled',
-  'met', 'engaged', 'in_dd', 'term_sheet', 'closed',
-];
+  'met', 'engaged', 'in_dd', 'term_sheet', 'closed',];
 
 export function stageIndex(status: string): number {
   const idx = PIPELINE_ORDER.indexOf(status);
@@ -87,17 +81,14 @@ export function stageIndex(status: string): number {
 export const STATUS_PROGRESSION: Record<string, number> = {
   identified: 0, contacted: 1, nda_signed: 2, meeting_scheduled: 3,
   met: 4, engaged: 5, in_dd: 6, term_sheet: 7, closed: 8,
-  passed: -1, dropped: -1,
-};
+  passed: -1, dropped: -1,};
 
 export function parseMoneyRange(s: string): [number, number] | null {
   if (!s) return null;
   const cleaned = s.replace(/[€$£,]/g, '').trim().toLowerCase();
 
   const rangeMatch = cleaned.match(/([\d.]+)\s*m?\s*[-–to]+\s*([\d.]+)\s*m/i);
-  if (rangeMatch) {
-    return [parseFloat(rangeMatch[1]), parseFloat(rangeMatch[2])];
-  }
+  if (rangeMatch) { return [parseFloat(rangeMatch[1]), parseFloat(rangeMatch[2])]; }
 
   const singleMatch = cleaned.match(/([\d.]+)\s*(m|b|k|bn|million|billion)?/i);
   if (singleMatch) {

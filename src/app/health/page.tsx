@@ -6,11 +6,7 @@ import {
 } from 'lucide-react';
 import { stAccent, stSurface1, stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
-interface IntelligenceCheck {
-  name: string;
-  status: 'pass' | 'fail' | 'warn';
-  detail: string;
-}
+interface IntelligenceCheck { name: string; status: 'pass' | 'fail' | 'warn'; detail: string; }
 
 interface IntelligenceVerification {
   status: 'healthy' | 'degraded' | 'unhealthy';
@@ -47,8 +43,7 @@ const convergenceDimensions = [
   { key: 'terms', label: 'Term Alignment', desc: 'Term sheets comparable and acceptable' },
   { key: 'funnel', label: 'Funnel Health', desc: 'Conversion rates above target' },
   { key: 'timeline', label: 'Timeline', desc: 'On track for planned close date' },
-  { key: 'team', label: 'Team Execution', desc: 'Everyone executing without friction' },
-];
+  { key: 'team', label: 'Team Execution', desc: 'Everyone executing without friction' },];
 
 export default function HealthPage() {
   const [data, setData] = useState<HealthData | null>(null);
@@ -72,15 +67,13 @@ export default function HealthPage() {
       <div className="h-8 w-48 rounded animate-pulse" style={stSurface2} />
       <div className="h-5 w-80 rounded animate-pulse" style={stSurface2} />
       {[...Array(3)].map((_, i) => <div key={i} className="h-32 rounded-xl animate-pulse" style={stSurface1} />)}
-    </div>
-  );
+    </div>);
 
   return (
     <div className="space-y-8 page-content">
       <div>
         <h1 className="page-title">Process Health</h1>
-        <p className="text-sm mt-1" style={stTextMuted}>Convergence tracking and process verification</p>
-      </div>
+        <p className="text-sm mt-1" style={stTextMuted}>Convergence tracking and process verification</p></div>
 
       {/* Convergence Score */}
       <div className="rounded-xl p-6">
@@ -99,15 +92,11 @@ export default function HealthPage() {
                   borderStyle: 'solid',
                   backgroundColor: convergence[dim.key] ? 'var(--success)' : 'transparent',
                   borderColor: convergence[dim.key] ? 'var(--success)' : 'var(--border-default)', }}>
-                {convergence[dim.key] && <span className="text-xs" style={stTextPrimary}>&#10003;</span>}
-              </button>
+                {convergence[dim.key] && <span className="text-xs" style={stTextPrimary}>&#10003;</span>}</button>
               <div className="flex-1">
                 <span className="text-sm font-normal" style={stTextPrimary}>{dim.label}</span>
-                <span className="text-xs ml-2" style={stTextMuted}>{dim.desc}</span>
-              </div>
-            </div>
-          ))}
-        </div>
+                <span className="text-xs ml-2" style={stTextMuted}>{dim.desc}</span></div></div>
+          ))}</div>
         <div className="mt-6 pt-4" style={{ borderTop: '1px solid var(--border-default)' }}>
           <div className="h-3 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--surface-1)' }}>
             <div
@@ -115,14 +104,11 @@ export default function HealthPage() {
               style={{
                 width: `${score * 10}%`,
                 backgroundColor: score >= 8 ? 'var(--success)' : score >= 5 ? 'var(--warning)' : 'var(--danger)',
-              }} />
-          </div>
+              }} /></div>
           <div className="flex justify-between text-xs mt-1" style={stTextMuted}>
             <span>Not ready</span>
-            <span>{score >= 8 ? 'Ready for term sheet deadline' : score >= 5 ? 'Getting closer' : 'More work needed'}</span>
-          </div>
-        </div>
-      </div>
+            <span>{score >= 8 ? 'Ready for term sheet deadline' : score >= 5 ? 'Getting closer' : 'More work needed'}</span></div>
+        </div></div>
 
       {/* Funnel Details */}
       <div className="rounded-xl p-6">
@@ -134,18 +120,14 @@ export default function HealthPage() {
             return (
               <div key={key} className="rounded-lg p-4" style={{ backgroundColor: 'var(--surface-1)' }}>
                 <div className="text-xs mb-2" style={stTextMuted}>
-                  {key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                </div>
+                  {key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</div>
                 <div className="flex items-baseline gap-2">
                   <span className="text-2xl font-normal" style={{ color: rate >= target ? 'var(--success)' : rate > 0 ? 'var(--warning)' : 'var(--text-muted)' }}>
-                    {rate}%
-                  </span>
+                    {rate}%</span>
                   {rate > 0 && (
                     <span className="text-xs" style={{ color: delta >= 0 ? 'var(--success)' : 'var(--danger)' }}>
-                      {delta >= 0 ? '+' : ''}{delta}pp
-                    </span>
-                  )}
-                </div>
+                      {delta >= 0 ? '+' : ''}{delta}pp</span>
+                  )}</div>
                 <div className="text-xs mt-1" style={stTextMuted}>target: {target}%</div>
                 <div className="mt-2 h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--surface-2)' }}>
                   <div
@@ -153,13 +135,9 @@ export default function HealthPage() {
                     style={{
                       width: `${Math.min(rate, 100)}%`,
                       backgroundColor: rate >= target ? 'var(--success)' : 'var(--warning)',
-                    }} />
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
+                    }} /></div>
+              </div>);
+          })}</div></div>
 
       {/* Status Breakdown */}
       <div className="rounded-xl p-6">
@@ -168,19 +146,15 @@ export default function HealthPage() {
           {Object.entries(data.statusBreakdown).sort((a, b) => b[1] - a[1]).map(([status, count]) => (
             <div key={status} className="rounded-lg p-3 text-center" style={{ backgroundColor: 'var(--surface-1)' }}>
               <div className="text-lg font-normal" style={stTextPrimary}>{count}</div>
-              <div className="text-xs" style={stTextMuted}>{status.replace(/_/g, ' ')}</div>
-            </div>
-          ))}
-        </div>
-      </div>
+              <div className="text-xs" style={stTextMuted}>{status.replace(/_/g, ' ')}</div></div>
+          ))}</div></div>
 
       {/* Intelligence Verification Status */}
       <div className="rounded-xl p-6">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <Shield className="w-4 h-4" style={stAccent} />
-            <h2 className="text-sm font-normal" style={stTextTertiary}>Intelligence health</h2>
-          </div>
+            <h2 className="text-sm font-normal" style={stTextTertiary}>Intelligence health</h2></div>
           {intelVerify && (
             <div
               className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-normal"
@@ -205,16 +179,13 @@ export default function HealthPage() {
               {intelVerify.status === 'healthy' && <CheckCircle2 className="w-3 h-3" />}
               {intelVerify.status === 'degraded' && <AlertTriangle className="w-3 h-3" />}
               {intelVerify.status === 'unhealthy' && <XCircle className="w-3 h-3" />}
-              {intelVerify.status.charAt(0).toUpperCase() + intelVerify.status.slice(1)}
-            </div>
-          )}
-        </div>
+              {intelVerify.status.charAt(0).toUpperCase() + intelVerify.status.slice(1)}</div>
+          )}</div>
 
         {intelLoading ? (
           <div className="flex items-center gap-2 py-4">
             <RefreshCw className="w-4 h-4 animate-spin" style={stTextMuted} />
-            <span className="text-sm" style={stTextMuted}>Verifying intelligence systems...</span>
-          </div>
+            <span className="text-sm" style={stTextMuted}>Verifying intelligence systems...</span></div>
         ) : intelVerify ? (
           <div>
             <p className="text-xs mb-3" style={stTextMuted}>{intelVerify.summary}</p>
@@ -225,8 +196,7 @@ export default function HealthPage() {
                     ? 'var(--success)'
                     : check.status === 'warn'
                     ? 'var(--warning)'
-                    : 'var(--danger)',
-                };
+                    : 'var(--danger)',};
                 const statusIcon = check.status === 'pass'
                   ? <CheckCircle2 className="w-3.5 h-3.5 shrink-0" style={iconStyle} />
                   : check.status === 'warn'
@@ -238,38 +208,29 @@ export default function HealthPage() {
                     {statusIcon}
                     <div className="flex-1 min-w-0">
                       <span className="text-xs font-normal" style={stTextSecondary}>
-                        {check.name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                      </span>
-                      <p className="text-xs truncate" style={stTextMuted}>{check.detail}</p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+                        {check.name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</span>
+                      <p className="text-xs truncate" style={stTextMuted}>{check.detail}</p></div>
+                  </div>);
+              })}</div>
             {intelVerify.contextVersion && (
               <div className="mt-3 pt-3 flex items-center gap-4 text-xs" style={{ borderTop: '1px solid var(--border-default)', color: 'var(--text-muted)' }}>
                 <span>Context v{intelVerify.contextVersion}</span>
                 {intelVerify.contextBuildTimestamp && (
                   <span>Built {new Date(intelVerify.contextBuildTimestamp).toLocaleString()}</span>
                 )}
-                <span>Verified {new Date(intelVerify.verifiedAt).toLocaleString()}</span>
-              </div>
-            )}
-          </div>
+                <span>Verified {new Date(intelVerify.verifiedAt).toLocaleString()}</span></div>
+            )}</div>
         ) : (
           <p className="text-sm" style={stTextMuted}>Intelligence verification unavailable.</p>
-        )}
-      </div>
+        )}</div>
 
       {/* Key Metrics Summary */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <MetricCard label="Total Investors" value={data.totalInvestors} />
         <MetricCard label="Total Meetings" value={data.totalMeetings} />
         <MetricCard label="Avg Enthusiasm" value={`${data.avgEnthusiasm}/5`} />
-        <MetricCard label="Convergence" value={`${score}/10`} />
-      </div>
-    </div>
-  );
+        <MetricCard label="Convergence" value={`${score}/10`} /></div>
+    </div>);
 }
 
 function MetricCard({ label, value }: { label: string; value: string | number }) {
@@ -277,6 +238,5 @@ function MetricCard({ label, value }: { label: string; value: string | number })
     <div className="rounded-xl p-4">
       <div className="text-xs" style={stTextMuted}>{label}</div>
       <div className="text-2xl font-normal mt-1" style={stTextPrimary}>{value}</div>
-    </div>
-  );
+    </div>);
 }

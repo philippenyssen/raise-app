@@ -41,8 +41,7 @@ const nav: NavItem[] = [
   { href: '/documents', label: 'Documents', icon: BookOpen, section: 'TOOLS' },
   { href: '/data-room', label: 'Data Room', icon: FolderOpen, section: 'TOOLS' },
   { href: '/terms', label: 'Terms', icon: FileText, section: 'TOOLS' },
-  { href: '/settings', label: 'Settings', icon: Settings, section: 'TOOLS' },
-];
+  { href: '/settings', label: 'Settings', icon: Settings, section: 'TOOLS' },];
 
 /* ── Sidebar-specific palette (dark navy panel on light page) ── */
 const SB = {
@@ -55,13 +54,11 @@ const SB = {
   textActive: 'var(--surface-0)',
   accent: 'var(--surface-0)',
   muted: 'var(--white-25)',
-  sectionLabel: 'var(--white-30)',
-};
+  sectionLabel: 'var(--white-30)',};
 
 const badgeCountStyle: React.CSSProperties = {
   minWidth: '18px', height: '18px', borderRadius: '9px', background: 'var(--white-15)',
-  color: SB.textActive, fontSize: '10px', fontWeight: 400, padding: '0 5px', lineHeight: 1,
-};
+  color: SB.textActive, fontSize: '10px', fontWeight: 400, padding: '0 5px', lineHeight: 1,};
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -78,10 +75,8 @@ export function Sidebar() {
           if (!Array.isArray(data)) return;
           const today = new Date().toISOString().split('T')[0];
           const overdue = data.filter((f: { due_at: string; status: string }) =>
-            f.status === 'pending' && f.due_at?.split('T')[0] < today
-          );
-          setOverdueCount(overdue.length);
-        })
+            f.status === 'pending' && f.due_at?.split('T')[0] < today);
+          setOverdueCount(overdue.length);})
         .catch(() => {});
       fetch('/api/meetings')
         .then(r => r.ok ? r.json() : [])
@@ -89,10 +84,8 @@ export function Sidebar() {
           if (!Array.isArray(data)) return;
           const today = new Date().toISOString().split('T')[0];
           const todayMeetings = data.filter((m: { date: string }) =>
-            m.date?.split('T')[0] === today
-          );
-          setTodayMeetingCount(todayMeetings.length);
-        })
+            m.date?.split('T')[0] === today);
+          setTodayMeetingCount(todayMeetings.length);})
         .catch(() => {});
     }
     fetchBadges();
@@ -111,8 +104,7 @@ export function Sidebar() {
     DAILY: '',
     EXECUTE: 'Execution',
     ANALYZE: 'Analysis',
-    TOOLS: 'Tools',
-  };
+    TOOLS: 'Tools',};
 
   return (
     <>
@@ -121,16 +113,14 @@ export function Sidebar() {
         onClick={() => setMobileOpen(true)}
         className="md:hidden fixed top-3 left-3 z-50 p-2 rounded-lg"
         style={{ background: SB.bg, border: `1px solid ${SB.border}` }}>
-        <Menu className="w-4 h-4" style={{ color: SB.textActive }} />
-      </button>
+        <Menu className="w-4 h-4" style={{ color: SB.textActive }} /></button>
 
       {/* Overlay */}
       {mobileOpen && (
         <div
           className="md:hidden fixed inset-0 z-40"
           style={{ background: 'var(--overlay)', backdropFilter: 'blur(4px)' }}
-          onClick={() => setMobileOpen(false)}
-        />
+          onClick={() => setMobileOpen(false)}/>
       )}
 
       {/* Sidebar — dark navy panel */}
@@ -141,18 +131,13 @@ export function Sidebar() {
           transform transition-all duration-200 ease-in-out
           ${mobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
         `}
-        style={{
-          width: collapsed ? '60px' : '220px',
-          background: SB.bg,
-          borderRight: `1px solid ${SB.border}`,
-        }}>
+        style={{ width: collapsed ? '60px' : '220px', background: SB.bg, borderRight: `1px solid ${SB.border}` }}>
         {/* Header */}
         <div
           className="flex items-center justify-between shrink-0"
           style={{
             padding: collapsed ? 'var(--space-4) var(--space-3)' : 'var(--space-5) var(--space-4)',
-            borderBottom: `1px solid ${SB.border}`,
-          }}>
+            borderBottom: `1px solid ${SB.border}`,}}>
           {!collapsed && (
             <div className="min-w-0">
               <h1 style={{
@@ -160,14 +145,10 @@ export function Sidebar() {
                 letterSpacing: '0.22em',
                 fontSize: '13px',
                 fontWeight: 300,
-                fontFamily: 'var(--font-cormorant), Georgia, serif',
-              }}>
-                RAISE
-              </h1>
+                fontFamily: 'var(--font-cormorant), Georgia, serif',}}>
+                RAISE</h1>
               <p style={{ fontSize: '10px', color: SB.muted, marginTop: '2px', letterSpacing: '0.08em', fontWeight: 300 }}>
-                Series C
-              </p>
-            </div>
+                Series C</p></div>
           )}
           {collapsed && (
             <div className="w-full flex justify-center">
@@ -177,28 +158,20 @@ export function Sidebar() {
                 fontWeight: 300,
                 fontFamily: 'var(--font-cormorant), Georgia, serif',
                 fontSize: '14px',
-              }}>R</span>
-            </div>
+              }}>R</span></div>
           )}
           <button
             onClick={() => mobileOpen ? setMobileOpen(false) : setCollapsed(!collapsed)}
             className="hidden md:flex items-center justify-center shrink-0 rounded-md transition-colors"
-            style={{
-              width: '24px',
-              height: '24px',
-              color: SB.muted,
-            }}
+            style={{ width: '24px', height: '24px', color: SB.muted }}
             onMouseEnter={e => { (e.target as HTMLElement).style.color = SB.textHover; (e.target as HTMLElement).style.background = SB.bgHover; }}
             onMouseLeave={e => { (e.target as HTMLElement).style.color = SB.muted; (e.target as HTMLElement).style.background = 'transparent'; }}>
-            {collapsed ? <ChevronRight className="w-3.5 h-3.5" /> : <ChevronLeft className="w-3.5 h-3.5" />}
-          </button>
+            {collapsed ? <ChevronRight className="w-3.5 h-3.5" /> : <ChevronLeft className="w-3.5 h-3.5" />}</button>
           <button
             onClick={() => setMobileOpen(false)}
             className="md:hidden p-1"
             style={{ color: SB.textHover }}>
-            <X className="w-4 h-4" />
-          </button>
-        </div>
+            <X className="w-4 h-4" /></button></div>
 
         {/* Navigation */}
         <nav
@@ -215,10 +188,8 @@ export function Sidebar() {
                     color: SB.sectionLabel,
                     letterSpacing: '0.04em',
                     padding: '0 var(--space-3)',
-                    marginBottom: 'var(--space-1)',
-                  }}>
-                  {sectionLabels[section]}
-                </div>
+                    marginBottom: 'var(--space-1)',}}>
+                  {sectionLabels[section]}</div>
               )}
               {collapsed && sIdx > 0 && (
                 <div style={{ height: '1px', background: SB.border, margin: '0 var(--space-2) var(--space-2)' }} />
@@ -255,8 +226,7 @@ export function Sidebar() {
                         if (!active) {
                           (e.currentTarget as HTMLElement).style.background = 'transparent';
                           (e.currentTarget as HTMLElement).style.color = SB.text;
-                        }
-                      }}>
+                        }}}>
                       {active && (
                         <div className="absolute left-0 top-1/2 -translate-y-1/2 rounded-r" style={{ width: '2px', height: '16px', background: SB.accent }} />
                       )}
@@ -265,8 +235,7 @@ export function Sidebar() {
                         <Icon className="w-4 h-4" />
                         {collapsed && ((item.href === '/followups' && overdueCount > 0) || (item.href === '/meetings' && todayMeetingCount > 0)) && (
                           <span className="absolute" style={{ top: '-3px', right: '-4px', width: '7px', height: '7px', borderRadius: '50%', background: SB.accent }} />
-                        )}
-                      </span>
+                        )}</span>
 
                       {!collapsed && (
                         <>
@@ -286,28 +255,21 @@ export function Sidebar() {
                       {collapsed && (
                         <div className="absolute left-full ml-2 px-2 py-1 rounded-md opacity-0 pointer-events-none group-hover:opacity-100 whitespace-nowrap z-50 transition-opacity duration-100"
                           style={{ background: 'var(--foreground)', border: `1px solid ${SB.border}`, fontSize: 'var(--font-size-xs)', color: SB.textActive, boxShadow: '0 4px 16px rgba(0,0,0,0.3)' }}>
-                          {item.label}
-                        </div>
+                          {item.label}</div>
                       )}
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-          ))}
-        </nav>
+                    </Link>);
+                })}</div></div>
+          ))}</nav>
 
         {/* Footer */}
         <div
           style={{
             padding: collapsed ? 'var(--space-3) var(--space-2)' : 'var(--space-3) var(--space-4)',
-            borderTop: `1px solid ${SB.border}`,
-          }}>
+            borderTop: `1px solid ${SB.border}`,}}>
           {!collapsed && (
             <div className="flex items-center justify-center" style={{ fontSize: '10px', color: SB.muted, padding: '0 var(--space-2) var(--space-2)' }}>
               <kbd style={{ background: SB.bgHover, border: `1px solid ${SB.border}`, borderRadius: '3px', padding: '1px 5px', fontSize: '10px', marginRight: '4px', color: SB.text }}>⌘K</kbd>
-              to search
-            </div>
+              to search</div>
           )}
           <button
             onClick={async () => {
@@ -325,10 +287,6 @@ export function Sidebar() {
             onMouseEnter={e => { (e.target as HTMLElement).style.color = SB.textHover; }}
             onMouseLeave={e => { (e.target as HTMLElement).style.color = SB.muted; }}>
             <LogOut className="w-3.5 h-3.5 shrink-0" />
-            {!collapsed && <span>Sign Out</span>}
-          </button>
-        </div>
-      </aside>
-    </>
-  );
+            {!collapsed && <span>Sign Out</span>}</button></div></aside>
+    </>);
 }

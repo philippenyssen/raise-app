@@ -5,8 +5,7 @@ import type { TaskStatus, TaskPriority, RaisePhase } from '@/lib/types';
 
 const ALLOWED_TASK_FIELDS = new Set([
   'title', 'description', 'assignee', 'due_date', 'status', 'priority',
-  'phase', 'investor_id', 'investor_name',
-]);
+  'phase', 'investor_id', 'investor_name',]);
 
 export async function GET(req: NextRequest) {
   try {
@@ -34,8 +33,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(await getAllTasks(Object.keys(filters).length > 0 ? filters : undefined));
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 500 });
-  }
-}
+  }}
 
 export async function POST(req: NextRequest) {
   let body: Record<string, unknown>;
@@ -61,15 +59,13 @@ export async function POST(req: NextRequest) {
       phase: ((body.phase as string) || 'preparation') as RaisePhase,
       investor_id: (body.investor_id as string) || '',
       investor_name: (body.investor_name as string) || '',
-      auto_generated: (body.auto_generated as boolean) || false,
-    });
+      auto_generated: (body.auto_generated as boolean) || false,});
 
     emitContextChange('task_created', `Task: ${body.title || 'untitled'}`);
     return NextResponse.json(task);
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 500 });
-  }
-}
+  }}
 
 export async function PUT(req: NextRequest) {
   let body: Record<string, unknown>;
@@ -102,8 +98,7 @@ export async function PUT(req: NextRequest) {
         subject: (raw.title as string) || 'Task completed',
         detail: '',
         investor_id: investorId,
-        investor_name: investorName,
-      });
+        investor_name: investorName,});
 
       // --- WIRE: Task Done → Document Flags + Follow-ups ---
       if (investorId) {
@@ -121,8 +116,7 @@ export async function PUT(req: NextRequest) {
               taskTitle.includes(flagSection) || flagDesc.includes('prepare')
             ) {
               await updateDocumentFlag(flag.id, { status: 'addressed' });
-            }
-          }
+            }}
         } catch { /* non-blocking */ }
 
         // Auto-trigger data_share follow-up if task was about preparing materials
@@ -141,8 +135,7 @@ export async function PUT(req: NextRequest) {
               investor_name: investorName,
               action_type: 'data_share',
               description: `Materials ready: "${raw.title}". Send to investor and confirm receipt.`,
-              due_at: dueAt.toISOString(),
-            });
+              due_at: dueAt.toISOString(),});
           }
         } catch { /* non-blocking */ }
 
@@ -156,20 +149,16 @@ export async function PUT(req: NextRequest) {
               await updateFollowup(fu.id, {
                 status: 'completed',
                 outcome: `Auto-completed: task "${raw.title}" marked done`,
-                conviction_delta: 0,
-              });
-            }
-          }
+                conviction_delta: 0,});
+            }}
         } catch { /* non-blocking */ }
-      }
-    }
+      }}
 
     emitContextChange('task_updated', `Task ${id} ${updates.status === 'done' ? 'completed' : 'updated'}`);
     return NextResponse.json({ ok: true });
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 500 });
-  }
-}
+  }}
 
 export async function DELETE(req: NextRequest) {
   const id = req.nextUrl.searchParams.get('id');
@@ -179,5 +168,4 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ ok: true });
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 500 });
-  }
-}
+  }}

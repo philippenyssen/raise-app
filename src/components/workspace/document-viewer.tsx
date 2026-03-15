@@ -21,8 +21,7 @@ interface DocumentViewerProps {
 const STATUS_STYLES: Record<string, { bg: string; color: string; border: string }> = {
   draft: { bg: 'var(--warning-muted)', color: 'var(--warning)', border: 'var(--warn-20)' },
   review: { bg: 'var(--accent-muted)', color: 'var(--accent)', border: 'var(--accent-20)' },
-  final: { bg: 'var(--success-muted)', color: 'var(--success)', border: 'var(--accent-20)' },
-};
+  final: { bg: 'var(--success-muted)', color: 'var(--success)', border: 'var(--accent-20)' },};
 
 const TYPE_LABELS: Record<string, string> = {
   teaser: 'Teaser',
@@ -32,8 +31,7 @@ const TYPE_LABELS: Record<string, string> = {
   dd_memo: 'DD Memo',
   custom: 'Document',
   one_pager: 'One-Pager',
-  exec_brief: 'Executive Brief',
-};
+  exec_brief: 'Executive Brief',};
 
 export function DocumentViewer({ document, onContentChange, onSave, saving, dirty }: DocumentViewerProps) {
   const [mode, setMode] = useState<'preview' | 'edit'>('preview');
@@ -87,14 +85,12 @@ export function DocumentViewer({ document, onContentChange, onSave, saving, dirt
               {cells.map((cell, j) => (
                 <div key={j} className="flex-1" style={{ padding: 'var(--space-1) var(--space-3)', fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>{renderInline(cell.trim(), `${k}-${j}`)}</div>
               ))}
-            </div>
-          );
+            </div>);
         }
         if (line.startsWith('> ')) return <blockquote key={k} style={{ borderLeft: '2px solid var(--accent)', paddingLeft: 'var(--space-4)', color: 'var(--text-tertiary)', fontStyle: 'italic', margin: 'var(--space-2) 0' }}>{line.slice(2)}</blockquote>;
         if (line.match(/^---+$/)) return <hr key={k} style={{ border: 'none', borderBottom: '1px solid var(--border-subtle)', margin: 'var(--space-4) 0' }} />;
         if (line.trim() === '') return <div key={k} style={{ height: 'var(--space-3)' }} />;
-        return <p key={k} style={{ color: 'var(--text-secondary)', lineHeight: 1.7 }}>{renderInline(line, k)}</p>;
-      });
+        return <p key={k} style={{ color: 'var(--text-secondary)', lineHeight: 1.7 }}>{renderInline(line, k)}</p>;});
   }, [renderInline]);
 
   if (!document) {
@@ -102,10 +98,8 @@ export function DocumentViewer({ document, onContentChange, onSave, saving, dirt
       <div className="h-full flex items-center justify-center" style={{ color: 'var(--text-muted)' }}>
         <div className="text-center" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--space-3)' }}>
           <FileText style={{ width: '48px', height: '48px' }} />
-          <p style={{ fontSize: 'var(--font-size-sm)' }}>Select a deliverable from the sidebar, or generate one</p>
-        </div>
-      </div>
-    );
+          <p style={{ fontSize: 'var(--font-size-sm)' }}>Select a deliverable from the sidebar, or generate one</p></div>
+      </div>);
   }
 
   const statusStyle = STATUS_STYLES[document.status] || { bg: 'var(--surface-2)', color: 'var(--text-muted)', border: 'var(--border-default)' };
@@ -119,9 +113,7 @@ export function DocumentViewer({ document, onContentChange, onSave, saving, dirt
           borderBottom: '1px solid var(--border-subtle)',
           padding: 'var(--space-2) var(--space-4)',
           background: 'var(--surface-0)',
-          backdropFilter: 'blur(8px)',
-        }}
-      >
+          backdropFilter: 'blur(8px)',}}>
         <div className="flex items-center min-w-0" style={{ gap: 'var(--space-3)' }}>
           <span
             style={{
@@ -130,22 +122,17 @@ export function DocumentViewer({ document, onContentChange, onSave, saving, dirt
               borderRadius: 'var(--radius-sm)',
               border: `1px solid ${statusStyle.border}`,
               background: statusStyle.bg,
-              color: statusStyle.color,
-            }}
-          >
-            {document.status}
-          </span>
+              color: statusStyle.color,}}>
+            {document.status}</span>
           <h2 className="truncate" style={{ fontWeight: 400, color: 'var(--text-primary)' }}>{document.title}</h2>
           <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{TYPE_LABELS[document.type] || document.type}</span>
         </div>
         <div className="flex items-center shrink-0" style={{ gap: 'var(--space-2)' }}>
           <span className="flex items-center" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', gap: '4px' }}>
             <Clock style={{ width: '12px', height: '12px' }} />
-            {new Date(document.updated_at).toLocaleString()}
-          </span>
+            {new Date(document.updated_at).toLocaleString()}</span>
           <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-            {document.content.length.toLocaleString()} chars
-          </span>
+            {document.content.length.toLocaleString()} chars</span>
           <div style={{ width: '1px', height: '16px', background: 'var(--border-subtle)' }} />
           <button
             onClick={() => setMode(mode === 'preview' ? 'edit' : 'preview')}
@@ -157,8 +144,7 @@ export function DocumentViewer({ document, onContentChange, onSave, saving, dirt
             }}
             onMouseEnter={e => { if (mode !== 'edit') { (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; } }}
             onMouseLeave={e => { if (mode !== 'edit') { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; (e.currentTarget as HTMLElement).style.background = 'transparent'; } }}
-            title={mode === 'preview' ? 'Edit' : 'Preview'}
-          >
+            title={mode === 'preview' ? 'Edit' : 'Preview'}>
             {mode === 'preview' ? <Edit3 style={{ width: '16px', height: '16px' }} /> : <Eye style={{ width: '16px', height: '16px' }} />}
           </button>
           <button
@@ -168,12 +154,9 @@ export function DocumentViewer({ document, onContentChange, onSave, saving, dirt
             style={{
               background: dirty ? 'var(--accent)' : 'var(--surface-2)',
               color: dirty ? 'white' : 'var(--text-muted)',
-              border: dirty ? 'none' : '1px solid var(--border-default)',
-            }}
-          >
+              border: dirty ? 'none' : '1px solid var(--border-default)',}}>
             <Save style={{ width: '14px', height: '14px' }} />
-            {saving ? 'Saving...' : dirty ? 'Save' : 'Saved'}
-          </button>
+            {saving ? 'Saving...' : dirty ? 'Save' : 'Saved'}</button>
           <button
             onClick={() => {
               const blob = new Blob([document.content], { type: 'text/markdown' });
@@ -188,12 +171,8 @@ export function DocumentViewer({ document, onContentChange, onSave, saving, dirt
             style={{ padding: '6px', color: 'var(--text-muted)' }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
-            title="Export as Markdown"
-          >
-            <Download style={{ width: '16px', height: '16px' }} />
-          </button>
-        </div>
-      </div>
+            title="Export as Markdown">
+            <Download style={{ width: '16px', height: '16px' }} /></button></div></div>
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto">
@@ -210,14 +189,10 @@ export function DocumentViewer({ document, onContentChange, onSave, saving, dirt
               fontFamily: 'monospace',
               lineHeight: 1.7,
             }}
-            spellCheck={false}
-          />
+            spellCheck={false}/>
         ) : (
           <div style={{ padding: 'var(--space-6) var(--space-8)', maxWidth: '56rem' }}>
-            {renderMarkdown(document.content)}
-          </div>
-        )}
-      </div>
-    </div>
-  );
+            {renderMarkdown(document.content)}</div>
+        )}</div>
+    </div>);
 }

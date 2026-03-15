@@ -39,15 +39,13 @@ export const websiteScraperProvider: EnrichmentProvider = {
           const testRes = await fetch(guess, {
             method: 'HEAD',
             redirect: 'follow',
-            signal: AbortSignal.timeout(5000),
-          });
+            signal: AbortSignal.timeout(5000),});
           if (testRes.ok) {
             fields.push({
               field_name: 'discovered_website',
               field_value: guess,
               category: 'contact',
-              confidence: 0.6,
-            });
+              confidence: 0.6,});
             return await scrapeWebsite(guess, fields, now);
           }
         } catch { /* not reachable */ }
@@ -57,8 +55,7 @@ export const websiteScraperProvider: EnrichmentProvider = {
     }
 
     return await scrapeWebsite(websiteUrl, fields, now);
-  },
-};
+  },};
 
 async function scrapeWebsite(
   baseUrl: string,
@@ -70,11 +67,9 @@ async function scrapeWebsite(
     const mainRes = await fetch(baseUrl, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (compatible; RaiseApp/1.0; fundraise-enrichment)',
-        'Accept': 'text/html',
-      },
+        'Accept': 'text/html',},
       redirect: 'follow',
-      signal: AbortSignal.timeout(10000),
-    });
+      signal: AbortSignal.timeout(10000),});
 
     if (!mainRes.ok) {
       return { source_id: 'website_scraper', success: false, fields, error: `HTTP ${mainRes.status}`, fetched_at: now };
@@ -90,8 +85,7 @@ async function scrapeWebsite(
         field_value: metaDesc[1],
         category: 'strategy',
         confidence: 0.85,
-        source_url: baseUrl,
-      });
+        source_url: baseUrl,});
     }
 
     // Extract title
@@ -102,8 +96,7 @@ async function scrapeWebsite(
         field_value: titleMatch[1].trim(),
         category: 'identity',
         confidence: 0.9,
-        source_url: baseUrl,
-      });
+        source_url: baseUrl,});
     }
 
     // Extract social links
@@ -114,8 +107,7 @@ async function scrapeWebsite(
         field_value: linkedinMatch[1],
         category: 'contact',
         confidence: 0.95,
-        source_url: baseUrl,
-      });
+        source_url: baseUrl,});
     }
 
     const twitterMatch = html.match(/href="(https?:\/\/(?:www\.)?(?:twitter|x)\.com\/[^"]*?)"/i);
@@ -125,26 +117,22 @@ async function scrapeWebsite(
         field_value: twitterMatch[1],
         category: 'contact',
         confidence: 0.95,
-        source_url: baseUrl,
-      });
+        source_url: baseUrl,});
     }
 
     // Extract email addresses
     const emailMatches = html.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g);
     if (emailMatches) {
       const uniqueEmails = [...new Set(emailMatches)].filter(e =>
-        !e.includes('example') && !e.includes('sentry') && !e.includes('webpack')
-      );
+        !e.includes('example') && !e.includes('sentry') && !e.includes('webpack'));
       for (const email of uniqueEmails.slice(0, 3)) {
         fields.push({
           field_name: `email_${email.replace(/[@.]/g, '_')}`,
           field_value: email,
           category: 'contact',
           confidence: 0.8,
-          source_url: baseUrl,
-        });
-      }
-    }
+          source_url: baseUrl,});
+      }}
 
     // Find portfolio/team page links
     const portfolioLinks = html.match(/href="([^"]*(?:portfolio|companies|investments)[^"]*)"/gi) || [];
@@ -161,11 +149,9 @@ async function scrapeWebsite(
           const portfolioRes = await fetch(portfolioUrl, {
             headers: {
               'User-Agent': 'Mozilla/5.0 (compatible; RaiseApp/1.0; fundraise-enrichment)',
-              'Accept': 'text/html',
-            },
+              'Accept': 'text/html',},
             redirect: 'follow',
-            signal: AbortSignal.timeout(10000),
-          });
+            signal: AbortSignal.timeout(10000),});
 
           if (portfolioRes.ok) {
             const portfolioHtml = await portfolioRes.text();
@@ -181,15 +167,11 @@ async function scrapeWebsite(
                     field_value: name,
                     category: 'portfolio',
                     confidence: 0.7,
-                    source_url: portfolioUrl,
-                  });
-                }
-              }
-            }
-          }
+                    source_url: portfolioUrl,});
+                }}
+            }}
         } catch { /* portfolio page not accessible */ }
-      }
-    }
+      }}
 
     // Try scraping team page
     if (teamLinks.length > 0) {
@@ -202,11 +184,9 @@ async function scrapeWebsite(
           const teamRes = await fetch(teamUrl, {
             headers: {
               'User-Agent': 'Mozilla/5.0 (compatible; RaiseApp/1.0; fundraise-enrichment)',
-              'Accept': 'text/html',
-            },
+              'Accept': 'text/html',},
             redirect: 'follow',
-            signal: AbortSignal.timeout(10000),
-          });
+            signal: AbortSignal.timeout(10000),});
 
           if (teamRes.ok) {
             const teamHtml = await teamRes.text();
@@ -221,15 +201,11 @@ async function scrapeWebsite(
                     field_value: name,
                     category: 'people',
                     confidence: 0.65,
-                    source_url: teamUrl,
-                  });
-                }
-              }
-            }
-          }
+                    source_url: teamUrl,});
+                }}
+            }}
         } catch { /* team page not accessible */ }
-      }
-    }
+      }}
 
     return { source_id: 'website_scraper', success: true, fields, fetched_at: now };
   } catch (error) {
@@ -238,7 +214,5 @@ async function scrapeWebsite(
       success: false,
       fields,
       error: error instanceof Error ? error.message : 'Unknown error',
-      fetched_at: now,
-    };
-  }
-}
+      fetched_at: now,};
+  }}

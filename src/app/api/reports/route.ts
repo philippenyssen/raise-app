@@ -111,8 +111,7 @@ async function generateBoardUpdate(): Promise<string> {
     const invMeetings = meetingsByInvestor[inv.id] || [];
     if (invMeetings.length === 0) return true;
     const latest = invMeetings.sort((a, b) => b.date.localeCompare(a.date))[0];
-    return daysBetween(latest.date, now.toISOString()) > 14;
-  });
+    return daysBetween(latest.date, now.toISOString()) > 14;});
   if (staleEngaged.length > 0) risksArr.push(`${staleEngaged.length} engaged investor${staleEngaged.length > 1 ? 's' : ''} with no contact in 14+ days: ${staleEngaged.map(i => i.name).join(', ')}`);
   if (decelerating > 2) risksArr.push(`${decelerating} investors showing declining enthusiasm --- review objections and re-engagement strategy`);
   const pendingCriticalTasks = tasks.filter(t => t.priority === 'critical' && t.status === 'pending');
@@ -146,12 +145,10 @@ async function generateBoardUpdate(): Promise<string> {
   <div class="report-header">
     <h1>Series C Fundraise &mdash; Board Update</h1>
     <div class="subtitle">Confidential &mdash; Internal Use Only</div>
-    <div class="date">${fmtDate(now)}</div>
-  </div>
+    <div class="date">${fmtDate(now)}</div></div>
   <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px;">
     <span style="font-weight:600;font-size:13px;">Process Health:</span>
-    <span class="health-badge health-${health.level}">${health.label}</span>
-  </div>
+    <span class="health-badge health-${health.level}">${health.label}</span></div>
   <div class="metrics-strip">
     <div class="metric-box"><div class="metric-value">${investors.length}</div><div class="metric-label">Total Investors</div></div>
     <div class="metric-box"><div class="metric-value">${activeInvestors.length}</div><div class="metric-label">Active Pipeline</div></div>
@@ -164,8 +161,7 @@ async function generateBoardUpdate(): Promise<string> {
     <table><thead><tr><th>Stage</th><th>Count</th><th>Distribution</th></tr></thead><tbody>${pipelineRows}</tbody></table>
     <div style="font-size:11px;color:#999;margin-top:8px;">
       Conversion: Contact&rarr;Meeting ${funnel.conversion_rates.contact_to_meeting}% &bull; Meeting&rarr;Engaged ${funnel.conversion_rates.meeting_to_engaged}% &bull; Engaged&rarr;DD ${funnel.conversion_rates.engaged_to_dd}% &bull; DD&rarr;TS ${funnel.conversion_rates.dd_to_term_sheet}%
-    </div>
-  </div>
+    </div></div>
   <div class="section">
     <div class="section-title">Top Focus Investors</div>
     <table><thead><tr><th>Investor</th><th>Status</th><th>Enthusiasm</th><th>Recommended Action</th></tr></thead><tbody>${focusRows || '<tr><td colspan="4" style="color:#999;">No tier 1-2 active investors</td></tr>'}</tbody></table>
@@ -176,15 +172,12 @@ async function generateBoardUpdate(): Promise<string> {
       <div class="metric-box"><div class="metric-value conviction-up">${accelerating}</div><div class="metric-label">Accelerating</div></div>
       <div class="metric-box"><div class="metric-value conviction-steady">${steady}</div><div class="metric-label">Steady</div></div>
       <div class="metric-box"><div class="metric-value conviction-down">${decelerating}</div><div class="metric-label">Decelerating</div></div>
-    </div>
-  </div>
+    </div></div>
   ${risksArr.length > 0 ? `<div class="section"><div class="section-title">Key Risks</div>${risksArr.map(r => `<div class="risk-item">${r}</div>`).join('')}</div>` : ''}
   <div class="section">
     <div class="section-title">Next Steps</div>
-    ${nextSteps.map((s, i) => `<div class="action-item"><strong>${i + 1}.</strong> ${s}</div>`).join('')}
-  </div>
-  <div class="timestamp">Generated ${now.toISOString().replace('T', ' ').substring(0, 19)} UTC</div>
-</div>
+    ${nextSteps.map((s, i) => `<div class="action-item"><strong>${i + 1}.</strong> ${s}</div>`).join('')}</div>
+  <div class="timestamp">Generated ${now.toISOString().replace('T', ' ').substring(0, 19)} UTC</div></div>
 </body></html>`;
 }
 
@@ -229,9 +222,7 @@ async function generateWeeklyAgenda(): Promise<string> {
     objs.forEach(o => {
       const topic = o.topic || 'general';
       if (!recentObjections[topic]) recentObjections[topic] = { count: 0, bestResponse: '' };
-      recentObjections[topic].count++;
-    });
-  });
+      recentObjections[topic].count++;});});
   playbook.forEach(entry => {
     if (recentObjections[entry.topic] && entry.best_response) recentObjections[entry.topic].bestResponse = entry.best_response.response_text.substring(0, 120) + '...';
   });
@@ -264,8 +255,7 @@ async function generateWeeklyAgenda(): Promise<string> {
   <div class="report-header">
     <h1>Weekly Fundraise Agenda</h1>
     <div class="subtitle">Week of ${weekOf(now)}</div>
-    <div class="date">${fmtDate(now)}</div>
-  </div>
+    <div class="date">${fmtDate(now)}</div></div>
   <div class="section">
     <div class="section-title">This Week's Focus &mdash; Top Investors to Engage</div>
     <table><thead><tr><th>Investor</th><th>Status</th><th>Action</th><th>Time Est.</th></tr></thead><tbody>${engageRows}</tbody></table>
@@ -277,11 +267,9 @@ async function generateWeeklyAgenda(): Promise<string> {
     ${criticalTasks.length > 0 ? `<div style="margin-bottom:12px;"><div style="font-size:12px;font-weight:600;margin-bottom:6px;"><span class="status-badge priority-critical">Critical</span> (${criticalTasks.length})</div><table><thead><tr><th>Task</th><th>Investor</th><th>Due</th></tr></thead><tbody>${taskRows(criticalTasks)}</tbody></table></div>` : ''}
     ${highTasks.length > 0 ? `<div style="margin-bottom:12px;"><div style="font-size:12px;font-weight:600;margin-bottom:6px;"><span class="status-badge priority-high">High</span> (${highTasks.length})</div><table><thead><tr><th>Task</th><th>Investor</th><th>Due</th></tr></thead><tbody>${taskRows(highTasks)}</tbody></table></div>` : ''}
     ${mediumTasks.length > 0 ? `<div style="margin-bottom:12px;"><div style="font-size:12px;font-weight:600;margin-bottom:6px;"><span class="status-badge priority-medium">Medium</span> (${mediumTasks.length})</div><table><thead><tr><th>Task</th><th>Investor</th><th>Due</th></tr></thead><tbody>${taskRows(mediumTasks, 3)}</tbody></table></div>` : ''}
-    ${pendingTasks.length === 0 ? '<div style="color:#999;font-size:13px;">No pending tasks</div>' : ''}
-  </div>
+    ${pendingTasks.length === 0 ? '<div style="color:#999;font-size:13px;">No pending tasks</div>' : ''}</div>
   ${gaps.length > 0 ? `<div class="section"><div class="section-title">Data Quality &mdash; Fields to Fill</div>${gaps.slice(0, 5).map(g => `<div class="gap-item">${g}</div>`).join('')}</div>` : ''}
-  <div class="timestamp">Generated ${now.toISOString().replace('T', ' ').substring(0, 19)} UTC</div>
-</div>
+  <div class="timestamp">Generated ${now.toISOString().replace('T', ' ').substring(0, 19)} UTC</div></div>
 </body></html>`;
 }
 
@@ -346,8 +334,7 @@ async function generateInvestorBrief(investorId: string): Promise<string> {
   <div class="report-header">
     <h1>${investor.name} &mdash; Status Brief</h1>
     <div class="subtitle">Confidential Investor Assessment</div>
-    <div class="date">${fmtDate(now)}</div>
-  </div>
+    <div class="date">${fmtDate(now)}</div></div>
   <div class="profile-grid">
     <div><div class="profile-label">Type</div><div class="profile-value" style="text-transform:capitalize;">${investor.type.replace(/_/g, ' ')}</div></div>
     <div><div class="profile-label">Tier</div><div class="profile-value">Tier ${investor.tier}</div></div>
@@ -366,18 +353,15 @@ async function generateInvestorBrief(investorId: string): Promise<string> {
   </div>
   <div class="section">
     <div class="section-title">Score Breakdown</div>
-    <table><thead><tr><th>Dimension</th><th>Score</th><th>Bar</th></tr></thead><tbody>${dimRows}</tbody></table>
-  </div>
+    <table><thead><tr><th>Dimension</th><th>Score</th><th>Bar</th></tr></thead><tbody>${dimRows}</tbody></table></div>
   ${meetings.length > 0 ? `<div class="section"><div class="section-title">Meeting History</div><table><thead><tr><th>Date</th><th>Type</th><th>Enthusiasm</th><th>Key Takeaway</th></tr></thead><tbody>${meetingRows}</tbody></table></div>` : ''}
   ${objections.length > 0 ? `<div class="section"><div class="section-title">Objections (${objections.length})</div><table><thead><tr><th>Topic</th><th>Objection</th><th>Response</th><th>Effectiveness</th></tr></thead><tbody>${objectionRows}</tbody></table></div>` : ''}
   ${followups.length > 0 ? `<div class="section"><div class="section-title">Follow-ups</div><table><thead><tr><th>Action</th><th>Due</th><th>Status</th></tr></thead><tbody>${followupRows}</tbody></table></div>` : ''}
   ${accelerationActions.length > 0 ? `<div class="section"><div class="section-title">Acceleration Triggers</div><table><thead><tr><th>Trigger</th><th>Recommendation</th><th>Status</th></tr></thead><tbody>${accelRows}</tbody></table></div>` : ''}
   <div class="recommendation-box">
     <h3>Assessment &amp; Recommendation</h3>
-    <p>${recommendation}</p>
-  </div>
-  <div class="timestamp">Generated ${now.toISOString().replace('T', ' ').substring(0, 19)} UTC</div>
-</div>
+    <p>${recommendation}</p></div>
+  <div class="timestamp">Generated ${now.toISOString().replace('T', ' ').substring(0, 19)} UTC</div></div>
 </body></html>`;
 }
 
@@ -405,5 +389,4 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     console.error('Report generation error:', error);
     return NextResponse.json({ error: 'Failed to generate report', detail: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 });
-  }
-}
+  }}

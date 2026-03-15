@@ -17,8 +17,7 @@ const PHASE_LABELS: Record<RaisePhase, string> = {
   due_diligence: 'Due Diligence',
   term_sheets: 'Term Sheets',
   negotiation: 'Negotiation',
-  closing: 'Closing',
-};
+  closing: 'Closing',};
 
 const PHASE_ORDER: RaisePhase[] = ['preparation', 'outreach', 'management_presentations', 'due_diligence', 'term_sheets', 'negotiation', 'closing'];
 
@@ -27,15 +26,13 @@ const STATUS_ICONS: Record<TaskStatus, React.ComponentType<{ className?: string;
   in_progress: Clock,
   done: CheckCircle2,
   blocked: AlertCircle,
-  cancelled: Circle,
-};
+  cancelled: Circle,};
 
 const PRIORITY_STYLES: Record<TaskPriority, React.CSSProperties> = {
   critical: { backgroundColor: 'color-mix(in srgb, var(--danger) 20%, transparent)', color: 'var(--text-primary)' },
   high: { backgroundColor: 'color-mix(in srgb, var(--warning) 20%, transparent)', color: 'var(--text-tertiary)' },
   medium: { backgroundColor: 'color-mix(in srgb, var(--accent) 20%, transparent)', color: 'var(--accent)' },
-  low: { backgroundColor: 'var(--surface-2)', color: 'var(--text-muted)' },
-};
+  low: { backgroundColor: 'var(--surface-2)', color: 'var(--text-muted)' },};
 
 type ViewTab = 'tasks' | 'activity';
 
@@ -56,8 +53,7 @@ export default function TimelinePage() {
     setLoading(true);
     const [taskRes, actRes] = await Promise.all([
       fetch('/api/tasks').then(r => r.json()).catch(() => []),
-      fetch('/api/tasks?type=activity&limit=30').then(r => r.json()).catch(() => []),
-    ]);
+      fetch('/api/tasks?type=activity&limit=30').then(r => r.json()).catch(() => []),]);
     setTasks(Array.isArray(taskRes) ? taskRes : []);
     setActivity(Array.isArray(actRes) ? actRes : []);
     setLoading(false);
@@ -80,8 +76,7 @@ export default function TimelinePage() {
     await fetch('/api/tasks', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, status }),
-    });
+      body: JSON.stringify({ id, status }),});
     fetchData();
   }
 
@@ -99,8 +94,7 @@ export default function TimelinePage() {
     await fetch('/api/tasks', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
+      body: JSON.stringify(data),});
     toast('Task created');
     setShowAdd(false);
     fetchData();
@@ -109,8 +103,7 @@ export default function TimelinePage() {
   const filteredTasks = tasks.filter(t => {
     if (filterPhase && t.phase !== filterPhase) return false;
     if (filterStatus && t.status !== filterStatus) return false;
-    return true;
-  });
+    return true;});
 
   // Group tasks by phase
   const tasksByPhase = PHASE_ORDER.reduce<Record<string, Task[]>>((acc, phase) => {
@@ -130,8 +123,7 @@ export default function TimelinePage() {
         <div className="space-y-2">
           {[...Array(6)].map((_, i) => <div key={i} className="h-12 rounded animate-pulse" style={{ backgroundColor: 'color-mix(in srgb, var(--surface-2) 30%, transparent)' }} />)}
         </div>
-      </div>
-    );
+      </div>);
   }
 
   return (
@@ -141,18 +133,14 @@ export default function TimelinePage() {
         <div>
           <h1 className="page-title">Timeline & Tasks</h1>
           <p className="text-sm mt-1" style={stTextMuted}>
-            {pendingCount} pending, {doneCount} done{criticalCount > 0 ? `, ${criticalCount} critical` : ''}
-          </p>
-        </div>
+            {pendingCount} pending, {doneCount} done{criticalCount > 0 ? `, ${criticalCount} critical` : ''}</p></div>
         <button
           onClick={() => setShowAdd(!showAdd)}
           className="px-4 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2"
           style={{ backgroundColor: hoverStates['addBtn'] ? 'var(--accent)' : 'var(--accent)', color: 'var(--surface-0)', opacity: hoverStates['addBtn'] ? 0.85 : 1 }}
           onMouseEnter={() => setHover('addBtn', true)}
           onMouseLeave={() => setHover('addBtn', false)}>
-          <Plus className="w-3.5 h-3.5" /> Add Task
-        </button>
-      </div>
+          <Plus className="w-3.5 h-3.5" /> Add Task</button></div>
 
       {/* Quick Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -166,13 +154,10 @@ export default function TimelinePage() {
               {pTasks.length > 0 && (
                 <div className="w-full h-1.5 rounded-full mt-2" style={{ backgroundColor: 'var(--surface-2)' }}>
                   <div className="h-full rounded-full" style={{ backgroundColor: 'var(--accent)', width: `${(pDone / pTasks.length) * 100}%` }}
-                    />
-                </div>
+                    /></div>
               )}
-            </div>
-          );
-        })}
-      </div>
+            </div>);
+        })}</div>
 
       {/* Add Task Form */}
       {showAdd && (
@@ -181,44 +166,34 @@ export default function TimelinePage() {
             <div>
               <label className="text-xs block mb-1" style={stTextMuted}>Title</label>
               <input name="title" required className="w-full rounded-lg px-3 py-2 text-sm focus:outline-none" style={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }}
-                />
-            </div>
+                /></div>
             <div>
               <label className="text-xs block mb-1" style={stTextMuted}>Priority</label>
               <select name="priority" defaultValue="medium" className="w-full rounded-lg px-3 py-2 text-sm" style={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }}>
                 <option value="critical">Critical</option>
                 <option value="high">High</option>
                 <option value="medium">Medium</option>
-                <option value="low">Low</option>
-              </select>
-            </div>
+                <option value="low">Low</option></select></div>
             <div>
               <label className="text-xs block mb-1" style={stTextMuted}>Phase</label>
               <select name="phase" defaultValue="preparation" className="w-full rounded-lg px-3 py-2 text-sm" style={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }}>
-                {PHASE_ORDER.map(p => <option key={p} value={p}>{PHASE_LABELS[p]}</option>)}
-              </select>
-            </div>
+                {PHASE_ORDER.map(p => <option key={p} value={p}>{PHASE_LABELS[p]}</option>)}</select></div>
             <div>
               <label className="text-xs block mb-1" style={stTextMuted}>Due Date</label>
               <input name="due_date" type="date" className="w-full rounded-lg px-3 py-2 text-sm" style={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }}
-                />
-            </div>
+                /></div>
             <div>
               <label className="text-xs block mb-1" style={stTextMuted}>Assignee</label>
               <input name="assignee" className="w-full rounded-lg px-3 py-2 text-sm" style={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }}
-                />
-            </div>
+                /></div>
             <div>
               <label className="text-xs block mb-1" style={stTextMuted}>Investor</label>
               <input name="investor_name" placeholder="(optional)" className="w-full rounded-lg px-3 py-2 text-sm" style={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }}
-                />
-            </div>
-          </div>
+                /></div></div>
           <div>
             <label className="text-xs block mb-1" style={stTextMuted}>Description</label>
             <input name="description" className="w-full rounded-lg px-3 py-2 text-sm" style={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }}
-              />
-          </div>
+              /></div>
           <div className="flex gap-2">
             <button
               type="submit"
@@ -226,17 +201,13 @@ export default function TimelinePage() {
               style={{ backgroundColor: 'var(--accent)', color: 'var(--surface-0)' }}
               onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.85'; }}
               onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}>
-              Create
-            </button>
+              Create</button>
             <button
               type="button"
               onClick={() => setShowAdd(false)}
               className="px-3 py-1.5 rounded-lg text-sm"
               style={{ backgroundColor: 'var(--surface-2)', color: 'var(--text-secondary)' }}>
-              Cancel
-            </button>
-          </div>
-        </form>
+              Cancel</button></div></form>
       )}
 
       {/* Tabs */}
@@ -262,8 +233,7 @@ export default function TimelinePage() {
           onMouseLeave={(e) => { if (tab !== 'activity') e.currentTarget.style.color = 'var(--text-muted)'; }}>
           <Activity className="w-3.5 h-3.5" /> Activity Log
           <span className="text-xs px-1.5 py-0.5 rounded" style={{ backgroundColor: 'var(--surface-2)', color: 'var(--text-tertiary)' }}>{activity.length}</span>
-        </button>
-      </div>
+        </button></div>
 
       {tab === 'tasks' && (
         <div className="space-y-4">
@@ -275,8 +245,7 @@ export default function TimelinePage() {
               className="rounded-lg px-3 py-1.5 text-sm"
               style={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }}>
               <option value="">All Phases</option>
-              {PHASE_ORDER.map(p => <option key={p} value={p}>{PHASE_LABELS[p]}</option>)}
-            </select>
+              {PHASE_ORDER.map(p => <option key={p} value={p}>{PHASE_LABELS[p]}</option>)}</select>
             <select
               value={filterStatus}
               onChange={e => setFilterStatus(e.target.value)}
@@ -286,8 +255,7 @@ export default function TimelinePage() {
               <option value="pending">Pending</option>
               <option value="in_progress">In Progress</option>
               <option value="done">Done</option>
-              <option value="blocked">Blocked</option>
-            </select>
+              <option value="blocked">Blocked</option></select>
             {(filterPhase || filterStatus) && (
               <button
                 onClick={() => { setFilterPhase(''); setFilterStatus(''); }}
@@ -295,10 +263,8 @@ export default function TimelinePage() {
                 style={stTextMuted}
                 onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--text-secondary)'; }}
                 onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-muted)'; }}>
-                Clear
-              </button>
-            )}
-          </div>
+                Clear</button>
+            )}</div>
 
           {/* Tasks grouped by phase */}
           {Object.keys(tasksByPhase).length === 0 ? (
@@ -310,8 +276,7 @@ export default function TimelinePage() {
             Object.entries(tasksByPhase).map(([phase, phaseTasks]) => (
               <div key={phase}>
                 <div className="text-xs font-normal  tracking-wider px-1 mb-2" style={stTextMuted}>
-                  {PHASE_LABELS[phase as RaisePhase]}
-                </div>
+                  {PHASE_LABELS[phase as RaisePhase]}</div>
                 <div className="space-y-1">
                   {phaseTasks.map(task => {
                     const StatusIcon = STATUS_ICONS[task.status as TaskStatus] || Circle;
@@ -343,26 +308,21 @@ export default function TimelinePage() {
                                 : task.status === 'blocked' ? 'var(--danger)'
                                 : task.status === 'in_progress' ? 'var(--accent)'
                                 : 'var(--text-muted)',
-                            }} />
-                        </button>
+                            }} /></button>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
                             <span
                               className={`text-sm ${task.status === 'done' ? 'line-through' : ''}`}
                               style={{ color: task.status === 'done' ? 'var(--text-muted)' : 'var(--text-secondary)' }}>
-                              {task.title}
-                            </span>
+                              {task.title}</span>
                             <span className="text-xs px-1.5 py-0.5 rounded" style={PRIORITY_STYLES[task.priority as TaskPriority]}>
-                              {task.priority}
-                            </span>
+                              {task.priority}</span>
                             {task.auto_generated && (
                               <span className="text-xs px-1.5 py-0.5 rounded" style={{ backgroundColor: 'color-mix(in srgb, var(--accent-muted) 20%, transparent)', color: 'var(--accent-muted)' }}>auto</span>
-                            )}
-                          </div>
+                            )}</div>
                           {task.description && (
                             <p className="text-xs mt-0.5 truncate" style={stTextMuted}>{task.description}</p>
-                          )}
-                        </div>
+                          )}</div>
                         <div className="flex items-center gap-3 shrink-0">
                           {task.investor_name && (
                             <Link
@@ -371,13 +331,11 @@ export default function TimelinePage() {
                               style={stAccent}
                               onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.8'; }}
                               onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}>
-                              {task.investor_name}
-                            </Link>
+                              {task.investor_name}</Link>
                           )}
                           {task.due_date && (
                             <span className="text-xs" style={{ color: isOverdue ? 'var(--danger)' : 'var(--text-muted)', fontWeight: 400 }}>
-                              {task.due_date}
-                            </span>
+                              {task.due_date}</span>
                           )}
                           <select
                             value={task.status}
@@ -387,25 +345,18 @@ export default function TimelinePage() {
                             <option value="pending">Pending</option>
                             <option value="in_progress">In Progress</option>
                             <option value="done">Done</option>
-                            <option value="blocked">Blocked</option>
-                          </select>
+                            <option value="blocked">Blocked</option></select>
                           <button
                             onClick={() => deleteTaskById(task.id)}
                             className="transition-colors"
                             style={stTextMuted}
                             onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--danger)'; }}
                             onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-muted)'; }}>
-                            <Trash2 className="w-3 h-3" />
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
+                            <Trash2 className="w-3 h-3" /></button></div>
+                      </div>);
+                  })}</div></div>
             ))
-          )}
-        </div>
+          )}</div>
       )}
 
       {tab === 'activity' && (
@@ -430,23 +381,15 @@ export default function TimelinePage() {
                     <div className="flex items-center gap-2">
                       <span className="text-sm" style={stTextSecondary}>{event.subject}</span>
                       <span className="text-xs px-1.5 py-0.5 rounded" style={{ backgroundColor: 'var(--surface-2)', color: 'var(--text-muted)' }}>
-                        {event.event_type.replace(/_/g, ' ')}
-                      </span>
-                    </div>
+                        {event.event_type.replace(/_/g, ' ')}</span></div>
                     {event.detail && <p className="text-xs mt-0.5" style={stTextMuted}>{event.detail}</p>}
                     <div className="flex items-center gap-2 mt-0.5">
                       {event.investor_name && (
                         <span className="text-xs" style={stAccent}>{event.investor_name}</span>
                       )}
-                      <span className="text-xs" style={stTextMuted}>{event.created_at?.split('T')[0]}</span>
-                    </div>
-                  </div>
-                </div>
-              );
-            })
-          )}
-        </div>
+                      <span className="text-xs" style={stTextMuted}>{event.created_at?.split('T')[0]}</span></div></div>
+                </div>);})
+          )}</div>
       )}
-    </div>
-  );
+    </div>);
 }

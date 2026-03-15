@@ -28,8 +28,7 @@ const HEAT_CONFIG: Record<string, { bg: string; border: string; text: string; gl
   warm:   { bg: 'var(--accent-muted)',  border: 'var(--accent-12)',  text: 'var(--text-secondary)', glow: 'none', label: 'Warm' },
   cool:   { bg: 'var(--accent-5)', border: 'var(--accent-10)', text: 'var(--text-tertiary)', glow: 'none', label: 'Cool' },
   cold:   { bg: 'var(--accent-4)', border: 'var(--accent-8)', text: 'var(--text-muted)', glow: 'none', label: 'Cold' },
-  frozen: { bg: 'var(--accent-3)', border: 'var(--accent-muted)', text: 'var(--text-muted)', glow: 'none', label: 'Frozen' },
-};
+  frozen: { bg: 'var(--accent-3)', border: 'var(--accent-muted)', text: 'var(--text-muted)', glow: 'none', label: 'Frozen' },};
 
 export default function DealHeatPage() {
   const [data, setData] = useState<DealHeatData | null>(null);
@@ -45,8 +44,7 @@ export default function DealHeatPage() {
     fetch('/api/deal-heat')
       .then(res => {
         if (!res.ok) throw new Error(`Server error (${res.status})`);
-        return res.json();
-      })
+        return res.json();})
       .then(d => { setData(d); setLoading(false); })
       .catch(e => { setError(e.message); setLoading(false); });
   }
@@ -57,20 +55,16 @@ export default function DealHeatPage() {
     return (
       <div className="flex-1 p-6" style={{ maxWidth: '1400px', margin: '0 auto' }}>
         <div className="flex items-center gap-3" style={{ marginBottom: 'var(--space-8)' }}>
-          <div className="skeleton" style={{ width: '240px', height: '32px' }} />
-        </div>
+          <div className="skeleton" style={{ width: '240px', height: '32px' }} /></div>
         <div className="grid grid-cols-5 gap-3" style={{ marginBottom: 'var(--space-6)' }}>
           {[1, 2, 3, 4, 5].map(i => (
             <div key={i} className="card skeleton" style={{ height: '80px' }} />
-          ))}
-        </div>
+          ))}</div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
             <div key={i} className="card skeleton" style={{ height: '160px' }} />
-          ))}
-        </div>
-      </div>
-    );
+          ))}</div>
+      </div>);
   }
 
   if (error || !data) {
@@ -79,19 +73,14 @@ export default function DealHeatPage() {
         <div className="card" style={{ textAlign: 'center', padding: 'var(--space-12)' }}>
           <Flame className="w-10 h-10 mx-auto mb-3" style={{ color: 'var(--danger)' }} />
           <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', marginBottom: 'var(--space-1)' }}>
-            Failed to load deal heat data
-          </h3>
+            Failed to load deal heat data</h3>
           <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-4)' }}>
-            {error || 'An unexpected error occurred'}
-          </p>
+            {error || 'An unexpected error occurred'}</p>
           <button
             onClick={fetchDealHeat}
             className="btn btn-secondary btn-sm inline-flex items-center gap-2">
-            Retry
-          </button>
-        </div>
-      </div>
-    );
+            Retry</button></div>
+      </div>);
   }
 
   const { investors, counts } = data;
@@ -104,8 +93,7 @@ export default function DealHeatPage() {
     { level: 'warm', label: 'Warm', count: counts.warm },
     { level: 'cool', label: 'Cool', count: counts.cool },
     { level: 'cold', label: 'Cold', count: counts.cold },
-    { level: 'frozen', label: 'Frozen', count: counts.frozen },
-  ];
+    { level: 'frozen', label: 'Frozen', count: counts.frozen },];
 
   return (
     <div className="flex-1 p-6 page-content" style={{ maxWidth: '1400px', margin: '0 auto' }}>
@@ -114,27 +102,20 @@ export default function DealHeatPage() {
         <div>
           <h1 className="page-title">Deal Heat Map</h1>
           <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', marginTop: '2px' }}>
-            Composite deal temperature across {counts.total} active investors
-          </p>
-        </div>
+            Composite deal temperature across {counts.total} active investors</p></div>
         <div
           className="flex items-center gap-2"
           style={{ padding: 'var(--space-2) var(--space-3)', background: 'var(--surface-1)', borderRadius: 'var(--radius-md)' }}>
           <span style={stTextMuted}>
-            <Thermometer className="w-4 h-4" />
-          </span>
+            <Thermometer className="w-4 h-4" /></span>
           <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
-            Avg Heat:
-          </span>
+            Avg Heat:</span>
           <span style={{
             fontSize: 'var(--font-size-lg)',
             fontWeight: 300,
             color: avgHeat >= 80 ? 'var(--text-primary)' : avgHeat >= 60 ? 'var(--text-secondary)' : avgHeat >= 40 ? 'var(--text-tertiary)' : 'var(--text-muted)',
           }}>
-            {avgHeat}
-          </span>
-        </div>
-      </div>
+            {avgHeat}</span></div></div>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-5 gap-3 card-stagger" style={{ marginBottom: 'var(--space-6)' }}>
@@ -156,24 +137,18 @@ export default function DealHeatPage() {
               onMouseEnter={() => setHoveredFilter(level)}
               onMouseLeave={() => setHoveredFilter(null)}>
               <div style={{ fontSize: 'var(--font-size-xs)', color: cfg.text, fontWeight: 400, letterSpacing: '0.01em' }}>
-                {cfg.label}
-              </div>
+                {cfg.label}</div>
               <div style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 300, color: cfg.text, marginTop: 'var(--space-1)' }}>
-                {count}
-              </div>
+                {count}</div>
               <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '2px' }}>
-                {count === 1 ? 'investor' : 'investors'}
-              </div>
-            </div>
-          );
-        })}
-      </div>
+                {count === 1 ? 'investor' : 'investors'}</div>
+            </div>);
+        })}</div>
 
       {/* Filter Bar */}
       <div className="flex items-center gap-2 flex-wrap" style={{ marginBottom: 'var(--space-5)' }}>
         <span style={stTextMuted}>
-          <Filter className="w-4 h-4" />
-        </span>
+          <Filter className="w-4 h-4" /></span>
         {filterButtons.map(fb => {
           const active = filter === fb.level;
           const cfg = fb.level !== 'all' ? HEAT_CONFIG[fb.level] : null;
@@ -193,20 +168,15 @@ export default function DealHeatPage() {
                 transition: 'all 150ms ease', }}>
               {fb.label}
               <span style={{ fontSize: 'var(--font-size-xs)', opacity: 0 }}>
-                {fb.count}
-              </span>
-            </button>
-          );
-        })}
-      </div>
+                {fb.count}</span>
+            </button>);
+        })}</div>
 
       {/* Heat Grid */}
       {filtered.length === 0 ? (
         <div className="card" style={{ textAlign: 'center', padding: 'var(--space-12)' }}>
           <span style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-lg)' }}>
-            No investors at this heat level
-          </span>
-        </div>
+            No investors at this heat level</span></div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {filtered.map(inv => {
@@ -252,10 +222,8 @@ export default function DealHeatPage() {
                         color: 'var(--text-primary)',
                         whiteSpace: 'nowrap',
                         overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                      }}>
-                        {inv.name}
-                      </div>
+                        textOverflow: 'ellipsis',}}>
+                        {inv.name}</div>
                       <div className="flex items-center gap-2" style={{ marginTop: '4px' }}>
                         <span style={{
                           fontSize: '10px',
@@ -264,15 +232,10 @@ export default function DealHeatPage() {
                           padding: '1px 6px',
                           borderRadius: 'var(--radius-sm)',
                           background: 'var(--surface-2)',
-                          color: 'var(--text-secondary)',
-                        }}>
-                          {TYPE_LABELS[inv.type] || inv.type}
-                        </span>
+                          color: 'var(--text-secondary)',}}>
+                          {TYPE_LABELS[inv.type] || inv.type}</span>
                         <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
-                          T{inv.tier}
-                        </span>
-                      </div>
-                    </div>
+                          T{inv.tier}</span></div></div>
                     {/* Heat score circle */}
                     <div style={{
                       width: '44px',
@@ -285,33 +248,16 @@ export default function DealHeatPage() {
                       background: cfg.bg,
                       border: `2px solid ${cfg.border}`,
                       boxShadow: inv.dealHeat.label === 'hot' ? 'none' : 'none',
-                      flexShrink: 0,
-                    }}>
-                      <span style={{
-                        fontSize: '14px',
-                        fontWeight: 300,
-                        color: cfg.text,
-                        lineHeight: 1,
-                      }}>
-                        {inv.dealHeat.heat}
-                      </span>
-                    </div>
-                  </div>
+                      flexShrink: 0,}}>
+                      <span style={{ fontSize: '14px', fontWeight: 300, color: cfg.text, lineHeight: 1 }}>
+                        {inv.dealHeat.heat}</span></div></div>
 
                   {/* Heat label */}
                   <div className="flex items-center gap-2" style={{ marginTop: 'var(--space-3)' }}>
-                    <span style={{
-                      fontSize: 'var(--font-size-xs)',
-                      fontWeight: 400,
-                      color: cfg.text,
-                      letterSpacing: '0.01em',
-                    }}>
-                      {cfg.label}
-                    </span>
+                    <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: cfg.text, letterSpacing: '0.01em' }}>
+                      {cfg.label}</span>
                     <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-                      {STATUS_LABELS[inv.status] || inv.status}
-                    </span>
-                  </div>
+                      {STATUS_LABELS[inv.status] || inv.status}</span></div>
 
                   {/* Top driver */}
                   {topDriver && (
@@ -321,30 +267,21 @@ export default function DealHeatPage() {
                       color: 'var(--text-tertiary)',
                       whiteSpace: 'nowrap',
                       overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                    }}>
-                      {topDriver}
-                    </div>
+                      textOverflow: 'ellipsis',}}>
+                      {topDriver}</div>
                   )}
 
                   {/* Footer: enthusiasm + last meeting */}
                   <div className="flex items-center justify-between" style={{ marginTop: 'var(--space-3)', paddingTop: 'var(--space-2)', borderTop: '1px solid var(--border-subtle)' }}>
                     <div className="flex items-center gap-1" style={labelMuted}>
                       <TrendingUp className="w-3 h-3" />
-                      <span>{inv.enthusiasm}/5</span>
-                    </div>
+                      <span>{inv.enthusiasm}/5</span></div>
                     {inv.lastMeeting && (
                       <div style={labelMuted}>
-                        {fmtDateShort(inv.lastMeeting)}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </Link>
-            );
-          })}
-        </div>
+                        {fmtDateShort(inv.lastMeeting)}</div>
+                    )}</div></div>
+              </Link>);
+          })}</div>
       )}
-    </div>
-  );
+    </div>);
 }

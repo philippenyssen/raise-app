@@ -13,19 +13,9 @@ import {
   Wrench, Rocket,
 } from 'lucide-react';
 
-interface PageItem {
-  label: string;
-  href: string;
-  icon: React.ComponentType<{ className?: string }>;
-  section: 'pages';
-}
+interface PageItem { label: string; href: string; icon: React.ComponentType<{ className?: string }>; section: 'pages'; }
 
-interface InvestorItem {
-  label: string;
-  href: string;
-  id: string;
-  section: 'investors';
-}
+interface InvestorItem { label: string; href: string; id: string; section: 'investors'; }
 
 interface ActionItem {
   label: string;
@@ -75,16 +65,14 @@ const PAGES: PageItem[] = [
   { label: 'Enrichment', href: '/enrichment', icon: Wrench, section: 'pages' },
   { label: 'Workspace', href: '/workspace', icon: Pencil, section: 'pages' },
   { label: 'Competitive', href: '/competitive', icon: Award, section: 'pages' },
-  { label: 'Analytics', href: '/analytics', icon: Activity, section: 'pages' },
-];
+  { label: 'Analytics', href: '/analytics', icon: Activity, section: 'pages' },];
 
 const ACTIONS: ActionItem[] = [
   { label: 'Log a meeting', href: '/meetings/new', icon: Pencil, section: 'actions' },
   { label: 'Quick capture', href: '/meetings/capture', icon: Mic, section: 'actions' },
   { label: 'New investor', href: '/investors', icon: PlusCircle, note: 'Add from investors page', section: 'actions' },
   { label: 'New document', href: '/documents/new', icon: FileText, section: 'actions' },
-  { label: 'Meeting prep', href: '/meetings/prep', icon: ClipboardList, section: 'actions' },
-];
+  { label: 'Meeting prep', href: '/meetings/prep', icon: ClipboardList, section: 'actions' },];
 
 const SHORTCUTS: Record<string, string> = { '/today': '⌘T', '/meetings/new': '⌘N', '/meetings/capture': '⌘J' };
 
@@ -133,8 +121,7 @@ export default function CommandPalette() {
           if (Array.isArray(data)) {
             setInvestors(data.map(inv => ({ id: inv.id, name: inv.name })));
           }
-          setInvestorsFetched(true);
-        })
+          setInvestorsFetched(true);})
         .catch(() => setInvestorsFetched(true));
     }
   }, [open, investorsFetched]);
@@ -159,8 +146,7 @@ export default function CommandPalette() {
 
   const filteredPages = useMemo(
     () => (investorPrefix || actionPrefix) ? [] : PAGES.filter(p => p.label.toLowerCase().includes(searchTerm)),
-    [searchTerm, investorPrefix, actionPrefix]
-  );
+    [searchTerm, investorPrefix, actionPrefix]);
 
   const filteredInvestors = useMemo(() => {
     if (!investorPrefix && searchTerm.length < 2) return [];
@@ -178,8 +164,7 @@ export default function CommandPalette() {
 
   const filteredActions = useMemo(
     () => investorPrefix ? [] : ACTIONS.filter(a => a.label.toLowerCase().includes(searchTerm)),
-    [searchTerm, investorPrefix]
-  );
+    [searchTerm, investorPrefix]);
 
   const investorActions = useMemo((): InvestorActionItem[] => {
     if (filteredInvestors.length === 0) return [];
@@ -193,8 +178,7 @@ export default function CommandPalette() {
 
   const allItems: PaletteItem[] = useMemo(
     () => [...filteredPages, ...investorActions, ...filteredInvestors, ...filteredActions],
-    [filteredPages, investorActions, filteredInvestors, filteredActions]
-  );
+    [filteredPages, investorActions, filteredInvestors, filteredActions]);
 
   // Clamp active index
   useEffect(() => {
@@ -229,8 +213,7 @@ export default function CommandPalette() {
         e.preventDefault();
         if (allItems[activeIndex]) {
           navigate(allItems[activeIndex]);
-        }
-      }
+        }}
     }
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
@@ -271,8 +254,7 @@ export default function CommandPalette() {
     return (
       <div style={{ fontSize: '10px', fontWeight: 400, letterSpacing: '0.08em', color: 'var(--text-muted)', padding: '8px 16px 4px' }}>
         {title}
-      </div>
-    );
+      </div>);
   }
 
   function renderPageItem(item: PageItem) {
@@ -289,12 +271,10 @@ export default function CommandPalette() {
         style={{ padding: '8px 16px', background: isActive ? 'var(--surface-3)' : 'transparent', color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)', borderRadius: 'var(--radius-md)', margin: '0 8px', transition: 'background 100ms' }}
         onMouseEnter={() => setActiveIndex(idx)}>
         <span className="shrink-0 flex items-center justify-center" style={{ width: '16px', height: '16px', color: isActive ? 'var(--accent)' : 'var(--text-muted)' }}>
-          <Icon className="w-4 h-4" />
-        </span>
+          <Icon className="w-4 h-4" /></span>
         <span style={{ fontSize: '13px' }}>{item.label}</span>
         {SHORTCUTS[item.href] && <kbd style={{ marginLeft: 'auto', fontSize: '10px', color: 'var(--text-muted)', background: 'var(--surface-2)', border: '1px solid var(--border-subtle)', borderRadius: '3px', padding: '1px 5px' }}>{SHORTCUTS[item.href]}</kbd>}
-      </div>
-    );
+      </div>);
   }
 
   function renderInvestorItem(item: InvestorItem) {
@@ -310,11 +290,9 @@ export default function CommandPalette() {
         style={{ padding: '8px 16px', background: isActive ? 'var(--surface-3)' : 'transparent', color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)', borderRadius: 'var(--radius-md)', margin: '0 8px', transition: 'background 100ms' }}
         onMouseEnter={() => setActiveIndex(idx)}>
         <span className="shrink-0 flex items-center justify-center" style={{ width: '16px', height: '16px', color: isActive ? 'var(--accent)' : 'var(--text-muted)' }}>
-          <Users className="w-4 h-4" />
-        </span>
+          <Users className="w-4 h-4" /></span>
         <span style={{ fontSize: '13px' }}>{item.label}</span>
-      </div>
-    );
+      </div>);
   }
 
   function renderInvestorActionItem(item: InvestorActionItem) {
@@ -331,11 +309,9 @@ export default function CommandPalette() {
         style={{ padding: '8px 16px', background: isActive ? 'var(--surface-3)' : 'transparent', color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)', borderRadius: 'var(--radius-md)', margin: '0 8px', transition: 'background 100ms' }}
         onMouseEnter={() => setActiveIndex(idx)}>
         <span className="shrink-0 flex items-center justify-center" style={{ width: '16px', height: '16px', color: isActive ? 'var(--success)' : 'var(--text-muted)' }}>
-          <Icon className="w-4 h-4" />
-        </span>
+          <Icon className="w-4 h-4" /></span>
         <span style={{ fontSize: '13px' }}>{item.label}</span>
-      </div>
-    );
+      </div>);
   }
 
   function renderActionItem(item: ActionItem) {
@@ -352,13 +328,11 @@ export default function CommandPalette() {
         style={{ padding: '8px 16px', background: isActive ? 'var(--surface-3)' : 'transparent', color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)', borderRadius: 'var(--radius-md)', margin: '0 8px', transition: 'background 100ms' }}
         onMouseEnter={() => setActiveIndex(idx)}>
         <span className="shrink-0 flex items-center justify-center" style={{ width: '16px', height: '16px', color: isActive ? 'var(--accent)' : 'var(--text-muted)' }}>
-          <Icon className="w-4 h-4" />
-        </span>
+          <Icon className="w-4 h-4" /></span>
         <span style={{ fontSize: '13px' }}>{item.label}</span>
         {SHORTCUTS[item.href] ? <kbd style={{ marginLeft: 'auto', fontSize: '10px', color: 'var(--text-muted)', background: 'var(--surface-2)', border: '1px solid var(--border-subtle)', borderRadius: '3px', padding: '1px 5px' }}>{SHORTCUTS[item.href]}</kbd>
           : item.note ? <span style={{ fontSize: '11px', color: 'var(--text-muted)', marginLeft: 'auto' }}>{item.note}</span> : null}
-      </div>
-    );
+      </div>);
   }
 
   const portal = createPortal(
@@ -374,18 +348,13 @@ export default function CommandPalette() {
           border: '1px solid var(--border-default)',
           borderRadius: 'var(--radius-lg)',
           boxShadow: 'var(--shadow-xl)',
-          maxHeight: '420px',
-        }}>
+          maxHeight: '420px',}}>
         {/* Search input */}
         <div
           className="flex items-center gap-3 shrink-0"
-          style={{
-            padding: '12px 16px',
-            borderBottom: '1px solid var(--border-subtle)',
-          }}>
+          style={{ padding: '12px 16px', borderBottom: '1px solid var(--border-subtle)' }}>
           <span style={{ color: 'var(--text-muted)' }}>
-            <Search className="w-4 h-4" />
-          </span>
+            <Search className="w-4 h-4" /></span>
           <input
             ref={inputRef}
             type="text"
@@ -398,8 +367,7 @@ export default function CommandPalette() {
               color: 'var(--text-primary)',
               fontSize: '14px',
               border: 'none',
-            }}
-          />
+            }}/>
           <kbd
             style={{
               fontSize: '10px',
@@ -407,11 +375,8 @@ export default function CommandPalette() {
               background: 'var(--surface-2)',
               border: '1px solid var(--border-subtle)',
               borderRadius: 'var(--radius-md)',
-              padding: '2px 6px',
-            }}>
-            ESC
-          </kbd>
-        </div>
+              padding: '2px 6px',}}>
+            ESC</kbd></div>
 
         {/* Results */}
         <div ref={listRef} className="flex-1 overflow-y-auto" style={{ padding: '4px 0' }}>
@@ -419,37 +384,31 @@ export default function CommandPalette() {
             <div
               className="flex items-center justify-center"
               style={{ padding: '32px 16px', color: 'var(--text-muted)', fontSize: '13px' }}>
-              No results
-            </div>
+              No results</div>
           ) : (
             <>
               {filteredPages.length > 0 && (
                 <div>
                   {renderSectionHeader('Pages')}
-                  {filteredPages.map(item => renderPageItem(item))}
-                </div>
+                  {filteredPages.map(item => renderPageItem(item))}</div>
               )}
               {investorActions.length > 0 && (
                 <div>
                   {renderSectionHeader('Quick Actions')}
-                  {investorActions.map(item => renderInvestorActionItem(item))}
-                </div>
+                  {investorActions.map(item => renderInvestorActionItem(item))}</div>
               )}
               {filteredInvestors.length > 0 && (
                 <div>
                   {renderSectionHeader('Investors')}
-                  {filteredInvestors.map(item => renderInvestorItem(item))}
-                </div>
+                  {filteredInvestors.map(item => renderInvestorItem(item))}</div>
               )}
               {filteredActions.length > 0 && (
                 <div>
                   {renderSectionHeader('Actions')}
-                  {filteredActions.map(item => renderActionItem(item))}
-                </div>
+                  {filteredActions.map(item => renderActionItem(item))}</div>
               )}
             </>
-          )}
-        </div>
+          )}</div>
 
         {/* Footer hint */}
         <div
@@ -458,29 +417,21 @@ export default function CommandPalette() {
             padding: '8px 16px',
             borderTop: '1px solid var(--border-subtle)',
             fontSize: '10px',
-            color: 'var(--text-muted)',
-          }}>
+            color: 'var(--text-muted)',}}>
           <span className="flex items-center gap-1">
             <kbd style={{ background: 'var(--surface-2)', border: '1px solid var(--border-subtle)', borderRadius: '3px', padding: '1px 4px' }}>&uarr;&darr;</kbd>
-            navigate
-          </span>
+            navigate</span>
           <span className="flex items-center gap-1">
             <kbd style={{ background: 'var(--surface-2)', border: '1px solid var(--border-subtle)', borderRadius: '3px', padding: '1px 4px' }}>&crarr;</kbd>
-            select
-          </span>
+            select</span>
           <span className="flex items-center gap-1">
             <kbd style={{ background: 'var(--surface-2)', border: '1px solid var(--border-subtle)', borderRadius: '3px', padding: '1px 4px' }}>esc</kbd>
-            close
-          </span>
+            close</span>
           <span className="flex items-center gap-1" style={{ marginLeft: 'auto' }}>
             <kbd style={{ background: 'var(--surface-2)', border: '1px solid var(--border-subtle)', borderRadius: '3px', padding: '1px 4px' }}>⌘/</kbd>
-            all shortcuts
-          </span>
-        </div>
-      </div>
+            all shortcuts</span></div></div>
     </div>,
-    document.body
-  );
+    document.body);
 
   return portal;
 }

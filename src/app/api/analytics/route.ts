@@ -16,8 +16,7 @@ export async function GET() {
       db.execute(`SELECT status, COUNT(*) as count FROM investors GROUP BY status`),
       db.execute(`SELECT strftime('%Y-W%W', date) as week, COUNT(*) as count FROM meetings WHERE date >= date('now', '-56 days') GROUP BY week ORDER BY week ASC`),
       db.execute(`SELECT strftime('%Y-W%W', created_at) as week, COUNT(*) as count FROM investors WHERE created_at >= date('now', '-56 days') GROUP BY week ORDER BY week ASC`),
-      db.execute(`SELECT value FROM config WHERE key = 'raise_config'`),
-    ]);
+      db.execute(`SELECT value FROM config WHERE key = 'raise_config'`),]);
 
     const investors = investorRows.rows as unknown as Array<{ id: string; name: string; type: string; tier: number; status: string; enthusiasm: number; created_at: string; updated_at: string }>;
     const meetings = meetingRows.rows as unknown as Array<{ id: string; investor_id: string; investor_name: string; date: string; type: string; enthusiasm_score: number; objections: string; questions_asked: string; competitive_intel: string; engagement_signals: string; status_after: string; created_at: string }>;
@@ -37,8 +36,7 @@ export async function GET() {
 
     const funnelCumulative: Record<string, number> = {};
     PIPELINE_ORDER.forEach((stage, idx) => {
-      funnelCumulative[stage] = investors.filter(inv => PIPELINE_ORDER.indexOf(inv.status) >= idx).length;
-    });
+      funnelCumulative[stage] = investors.filter(inv => PIPELINE_ORDER.indexOf(inv.status) >= idx).length;});
 
     const funnelExact: Record<string, number> = {};
     PIPELINE_ORDER.forEach(stage => { funnelExact[stage] = statusCounts[stage] || 0; });
@@ -73,8 +71,7 @@ export async function GET() {
           if (!stageEntryTimes[a.investor_id]) stageEntryTimes[a.investor_id] = {};
           stageEntryTimes[a.investor_id][newStatus] = a.created_at;
         }
-      }
-    });
+      }});
 
     const avgTimeInStage: Record<string, { avgDays: number; count: number }> = {};
     for (const stage of PIPELINE_ORDER) {
@@ -89,18 +86,15 @@ export async function GET() {
             if (entries[nextStage]) {
               const days = (new Date(entries[nextStage]).getTime() - new Date(entries[stage]).getTime()) / (1000 * 60 * 60 * 24);
               if (days >= 0 && days < 365) durations.push(days);
-            }
-          }
-        }
-      }
+            }}
+        }}
       if (durations.length > 0) avgTimeInStage[stage] = { avgDays: Math.round((durations.reduce((a, b) => a + b, 0) / durations.length) * 10) / 10, count: durations.length };
     }
 
     const midFunnelStages = ['contacted', 'nda_signed', 'meeting_scheduled', 'met', 'engaged', 'in_dd'];
     let bottleneckStage = '', bottleneckCount = 0;
     midFunnelStages.forEach(stage => {
-      if ((funnelExact[stage] || 0) > bottleneckCount) { bottleneckCount = funnelExact[stage] || 0; bottleneckStage = stage; }
-    });
+      if ((funnelExact[stage] || 0) > bottleneckCount) { bottleneckCount = funnelExact[stage] || 0; bottleneckStage = stage; }});
 
     const funnel = {
       cumulative: funnelCumulative, exact: funnelExact, conversionRates, dropOffRates, avgTimeInStage,
@@ -153,8 +147,7 @@ export async function GET() {
       meetingsPerWeek, investorsPerWeek, velocityScore, daysSinceProgress, estimatedDaysToClose, onTrack,
       totalMeetings: meetings.length,
       meetingsThisWeek: meetingsPerWeek.length > 0 ? meetingsPerWeek[meetingsPerWeek.length - 1].count : 0,
-      meetingsLastWeek: meetingsPerWeek.length > 1 ? meetingsPerWeek[meetingsPerWeek.length - 2].count : 0,
-    };
+      meetingsLastWeek: meetingsPerWeek.length > 1 ? meetingsPerWeek[meetingsPerWeek.length - 2].count : 0,};
 
     // ═══════════════════════════════════════════════════════════════════
     // 3. ENGAGEMENT INTELLIGENCE
@@ -166,8 +159,7 @@ export async function GET() {
       if (inv.enthusiasm > 0) {
         if (!typeGroups[inv.type]) typeGroups[inv.type] = [];
         typeGroups[inv.type].push(inv.enthusiasm);
-      }
-    });
+      }});
     Object.entries(typeGroups).forEach(([type, scores]) => {
       enthusiasmByType[type] = { avg: Math.round((scores.reduce((a, b) => a + b, 0) / scores.length) * 10) / 10, count: scores.length };
     });
@@ -186,8 +178,7 @@ export async function GET() {
           if (o.addressed || o.response_effectiveness === 'resolved') addressedObjections++;
           allObjections.push({ text: o.text || '', topic, severity: o.severity || 'minor', addressed: o.addressed || o.response_effectiveness === 'resolved' || false });
         });
-      } catch { /* skip malformed */ }
-    });
+      } catch { /* skip malformed */ }});
 
     const topObjections = Object.entries(objectionTopics).map(([topic, count]) => ({ topic, count })).sort((a, b) => b.count - a.count).slice(0, 10);
     const objectionResolutionRate = totalObjections > 0 ? Math.round((addressedObjections / totalObjections) * 100) : 0;
@@ -199,10 +190,8 @@ export async function GET() {
       if (intel.trim().length > 0) {
         competitiveMentions++;
         intel.split(/[\s,;.]+/).filter(w => w.length > 2).forEach(w => {
-          if (w[0] === w[0].toUpperCase() && w !== 'The' && w !== 'They') competitorNames[w] = (competitorNames[w] || 0) + 1;
-        });
-      }
-    });
+          if (w[0] === w[0].toUpperCase() && w !== 'The' && w !== 'They') competitorNames[w] = (competitorNames[w] || 0) + 1;});
+      }});
 
     const engagement = {
       enthusiasmByType,
@@ -230,15 +219,13 @@ export async function GET() {
         const lastDate = lastMeeting ? new Date(lastMeeting) : null;
         const daysSince = lastDate ? Math.round((now.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24)) : null;
         if (!lastDate || lastDate < twoWeeksAgo) staleInvestors.push({ id: inv.id, name: inv.name, status: inv.status, tier: inv.tier, type: inv.type, lastMeetingDate: lastMeeting || null, daysSinceLastMeeting: daysSince });
-      }
-    });
+      }});
 
     const decliningEnthusiasm: Array<{ id: string; name: string; tier: number; type: string; previousScore: number; currentScore: number; trend: string }> = [];
     const meetingsByInvestorAll: Record<string, Array<{ date: string; score: number }>> = {};
     meetings.forEach(m => {
       if (!meetingsByInvestorAll[m.investor_id]) meetingsByInvestorAll[m.investor_id] = [];
-      meetingsByInvestorAll[m.investor_id].push({ date: m.date, score: m.enthusiasm_score });
-    });
+      meetingsByInvestorAll[m.investor_id].push({ date: m.date, score: m.enthusiasm_score });});
 
     Object.entries(meetingsByInvestorAll).forEach(([invId, mtgs]) => {
       if (mtgs.length >= 2) {
@@ -248,16 +235,14 @@ export async function GET() {
           const inv = investors.find(i => i.id === invId);
           if (inv && !['passed', 'dropped'].includes(inv.status)) decliningEnthusiasm.push({ id: inv.id, name: inv.name, tier: inv.tier, type: inv.type, previousScore: previous.score, currentScore: latest.score, trend: `${previous.score} -> ${latest.score}` });
         }
-      }
-    });
+      }});
 
     const highTierStuck: Array<{ id: string; name: string; tier: number; status: string; type: string; daysInStage: number }> = [];
     investors.forEach(inv => {
       if (inv.tier <= 2 && !['passed', 'dropped', 'closed', 'term_sheet'].includes(inv.status)) {
         const daysInStage = Math.round((now.getTime() - new Date(inv.updated_at).getTime()) / (1000 * 60 * 60 * 24));
         if (daysInStage > 14) highTierStuck.push({ id: inv.id, name: inv.name, tier: inv.tier, status: inv.status, type: inv.type, daysInStage });
-      }
-    });
+      }});
 
     const investorsByType: Record<string, number> = {};
     activeInvestors.forEach(inv => { investorsByType[inv.type] = (investorsByType[inv.type] || 0) + 1; });
@@ -297,8 +282,7 @@ export async function GET() {
           const objs = JSON.parse(invMeetings[0].objections || '[]') as Array<{ topic: string; text: string }>;
           objs.forEach(o => { passReasons[o.topic || 'general'] = (passReasons[o.topic || 'general'] || 0) + 1; });
         } catch { /* skip */ }
-      }
-    });
+      }});
 
     const passStageDistribution: Record<string, number> = {};
     exitedInvestors.forEach(inv => {
@@ -309,8 +293,7 @@ export async function GET() {
           const match = (lastActive.detail || lastActive.subject).match(/(?:moved to|->)\s*(\w+)/i);
           if (match) passStageDistribution[match[1]] = (passStageDistribution[match[1]] || 0) + 1;
         }
-      }
-    });
+      }});
 
     const outcomeByTier: Record<number, { active: number; passed: number; dropped: number }> = {};
     const outcomeByType: Record<string, { active: number; passed: number; dropped: number }> = {};
@@ -323,15 +306,13 @@ export async function GET() {
       if (!outcomeByType[inv.type]) outcomeByType[inv.type] = { active: 0, passed: 0, dropped: 0 };
       if (inv.status === 'passed') outcomeByType[inv.type].passed++;
       else if (inv.status === 'dropped') outcomeByType[inv.type].dropped++;
-      else outcomeByType[inv.type].active++;
-    });
+      else outcomeByType[inv.type].active++;});
 
     const winLoss = {
       passedCount: passedInvestors.length, droppedCount: droppedInvestors.length,
       passRate: investors.length > 0 ? Math.round((exitedInvestors.length / investors.length) * 100) : 0,
       topPassReasons: Object.entries(passReasons).map(([topic, count]) => ({ topic, count })).sort((a, b) => b.count - a.count).slice(0, 5),
-      passStageDistribution, outcomeByTier, outcomeByType,
-    };
+      passStageDistribution, outcomeByTier, outcomeByType,};
 
     // ═══════════════════════════════════════════════════════════════════
     // 6. SUMMARY STATS
@@ -339,12 +320,10 @@ export async function GET() {
 
     const summary = {
       totalInvestors: investors.length, activeInvestors: activeInvestors.length, totalMeetings: meetings.length, avgEnthusiasm: engagement.avgEnthusiasm,
-      pipelineStages: PIPELINE_ORDER.map(stage => ({ stage, label: STAGE_LABELS[stage], count: funnelExact[stage] || 0 })),
-    };
+      pipelineStages: PIPELINE_ORDER.map(stage => ({ stage, label: STAGE_LABELS[stage], count: funnelExact[stage] || 0 })),};
 
     return NextResponse.json({ funnel, velocity, engagement, risks, winLoss, summary, generatedAt: new Date().toISOString() });
   } catch (error) {
     console.error('Analytics error:', error);
     return NextResponse.json({ error: 'Failed to compute analytics', detail: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 });
-  }
-}
+  }}

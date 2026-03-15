@@ -75,8 +75,7 @@ export async function GET(req: NextRequest) {
       for (const rec of records) {
         if (!latestFetchBySource[rec.source_id] || rec.fetched_at > latestFetchBySource[rec.source_id]) {
           latestFetchBySource[rec.source_id] = rec.fetched_at;
-        }
-      }
+        }}
 
       // Determine last enrichment date overall
       const lastEnriched = records.length > 0
@@ -135,8 +134,7 @@ export async function GET(req: NextRequest) {
             : hasData ? 'success' as const
             : lastError ? 'failed' as const
             : 'pending' as const,
-        };
-      });
+        };});
 
       return NextResponse.json({
         investor_id: investorId,
@@ -155,8 +153,7 @@ export async function GET(req: NextRequest) {
           results_count: lastJob.results_count,
           started_at: lastJob.started_at,
           completed_at: lastJob.completed_at,
-        } : null,
-      });
+        } : null,});
     }
 
     // Get enriched profile for an investor
@@ -176,8 +173,7 @@ export async function GET(req: NextRequest) {
           field_value: rec.field_value,
           category: rec.category,
           confidence: rec.confidence,
-          source_url: rec.source_url,
-        });
+          source_url: rec.source_url,});
       }
 
       const results = Object.values(bySource).map(s => ({
@@ -195,17 +191,12 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     console.error('Enrichment GET error:', error);
     return NextResponse.json({ error: 'Internal error' }, { status: 500 });
-  }
-}
+  }}
 
 // POST — trigger enrichment
 export async function POST(req: NextRequest) {
   let body: Record<string, unknown>;
-  try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
-  }
+  try { body = await req.json(); } catch { return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 }); }
 
   try {
     const action = body.action as string | undefined;
@@ -227,8 +218,7 @@ export async function POST(req: NextRequest) {
         investor_id: investor.id,
         investor_name: investor.name,
         sources: sources || [],
-        status: 'running',
-      });
+        status: 'running',});
 
       // Build existing data map for providers
       const existingData: Record<string, string> = {};
@@ -239,8 +229,7 @@ export async function POST(req: NextRequest) {
 
       // Run enrichment
       const result = await enrichInvestor(investor.name, existingData, {
-        sources: (sources?.length ?? 0) > 0 ? sources : undefined,
-      });
+        sources: (sources?.length ?? 0) > 0 ? sources : undefined,});
 
       // Store results
       const allFields = result.results.flatMap(r =>
@@ -253,8 +242,7 @@ export async function POST(req: NextRequest) {
           confidence: f.confidence,
           source_url: f.source_url || '',
           fetched_at: r.fetched_at,
-        }))
-      );
+        })));
 
       if (allFields.length > 0) {
         await saveEnrichmentRecords(allFields);
@@ -286,10 +274,8 @@ export async function POST(req: NextRequest) {
                 board_seats: '',
                 linkedin: partner.linkedin || '',
                 background: '',
-                relevance_to_us: '',
-              });
-            }
-          }
+                relevance_to_us: '',});
+            }}
         }
 
         // Auto-create portfolio records
@@ -307,12 +293,9 @@ export async function POST(req: NextRequest) {
                 amount: inv.amount || '',
                 date: inv.date || '',
                 status: 'active',
-                relevance: '',
-              });
-            }
-          }
-        }
-      }
+                relevance: '',});
+            }}
+        }}
 
       // Update job
       const errors = result.results.filter(r => !r.success).map(r => `${r.source_id}: ${r.error}`);
@@ -320,8 +303,7 @@ export async function POST(req: NextRequest) {
         status: result.status,
         results_count: result.total_fields,
         errors,
-        completed_at: new Date().toISOString(),
-      });
+        completed_at: new Date().toISOString(),});
 
       return NextResponse.json({
         job_id: jobId,
@@ -331,8 +313,7 @@ export async function POST(req: NextRequest) {
         sources_failed: result.sources_failed,
         duration_ms: result.duration_ms,
         profile,
-        errors,
-      });
+        errors,});
     }
 
     // Bulk enrich multiple investors
@@ -350,8 +331,7 @@ export async function POST(req: NextRequest) {
         }
 
         const result = await enrichInvestor(investor.name, existingData, {
-          sources: (sources?.length ?? 0) > 0 ? sources : undefined,
-        });
+          sources: (sources?.length ?? 0) > 0 ? sources : undefined,});
 
         const allFields = result.results.flatMap(r =>
           r.fields.map(f => ({
@@ -363,8 +343,7 @@ export async function POST(req: NextRequest) {
             confidence: f.confidence,
             source_url: f.source_url || '',
             fetched_at: r.fetched_at,
-          }))
-        );
+          })));
 
         if (allFields.length > 0) {
           await saveEnrichmentRecords(allFields);
@@ -376,15 +355,13 @@ export async function POST(req: NextRequest) {
           const updates = mergeEnrichmentToInvestor(profile, existingData);
           if (Object.keys(updates).length > 0) {
             await updateInvestor(investor.id, updates);
-          }
-        }
+          }}
 
         results.push({
           investor_id: investor.id,
           investor_name: investor.name,
           status: result.status,
-          fields: result.total_fields,
-        });
+          fields: result.total_fields,});
 
         // Small delay between investors to respect rate limits
         await new Promise(resolve => setTimeout(resolve, 500));
@@ -397,17 +374,14 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error('Enrichment POST error:', error);
     return NextResponse.json({ error: 'Internal error' }, { status: 500 });
-  }
-}
+  }}
 
 // DELETE — clear enrichment data
 export async function DELETE(req: NextRequest) {
   const investorId = req.nextUrl.searchParams.get('investor_id');
   const sourceId = req.nextUrl.searchParams.get('source_id');
 
-  if (!investorId) {
-    return NextResponse.json({ error: 'investor_id required' }, { status: 400 });
-  }
+  if (!investorId) { return NextResponse.json({ error: 'investor_id required' }, { status: 400 }); }
 
   try {
     await deleteEnrichmentRecords(investorId, sourceId || undefined);
@@ -415,5 +389,4 @@ export async function DELETE(req: NextRequest) {
   } catch (error) {
     console.error('Enrichment DELETE error:', error);
     return NextResponse.json({ error: 'Internal error' }, { status: 500 });
-  }
-}
+  }}

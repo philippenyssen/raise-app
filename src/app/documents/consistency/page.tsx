@@ -5,22 +5,11 @@ import Link from 'next/link';
 import { CheckCircle, AlertTriangle, ArrowLeft, RefreshCw } from 'lucide-react';
 import { stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
-interface ConsistencyValue {
-  document: string;
-  value: string;
-}
+interface ConsistencyValue { document: string; value: string; }
 
-interface ConsistencyCheck {
-  metric: string;
-  values: ConsistencyValue[];
-  status: 'match' | 'mismatch';
-}
+interface ConsistencyCheck { metric: string; values: ConsistencyValue[]; status: 'match' | 'mismatch'; }
 
-interface ConsistencyResult {
-  consistent: boolean;
-  checks: ConsistencyCheck[];
-  checkedAt: string;
-}
+interface ConsistencyResult { consistent: boolean; checks: ConsistencyCheck[]; checkedAt: string; }
 
 export default function ConsistencyPage() {
   const [result, setResult] = useState<ConsistencyResult | null>(null);
@@ -66,15 +55,11 @@ export default function ConsistencyPage() {
               background: backHovered ? 'var(--surface-2)' : 'transparent', }}
             onMouseEnter={() => setBackHovered(true)}
             onMouseLeave={() => setBackHovered(false)}>
-            <ArrowLeft className="w-5 h-5" />
-          </Link>
+            <ArrowLeft className="w-5 h-5" /></Link>
           <div>
             <h1 className="page-title">Consistency Check</h1>
             <p className="text-sm mt-1" style={stTextMuted}>
-              Cross-document metric comparison
-            </p>
-          </div>
-        </div>
+              Cross-document metric comparison</p></div></div>
         <button
           onClick={fetchConsistency}
           disabled={loading}
@@ -85,9 +70,7 @@ export default function ConsistencyPage() {
           onMouseEnter={() => setRecheckHovered(true)}
           onMouseLeave={() => setRecheckHovered(false)}>
           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-          Re-check
-        </button>
-      </div>
+          Re-check</button></div>
 
       {/* Loading skeleton */}
       {loading && (
@@ -95,8 +78,7 @@ export default function ConsistencyPage() {
           <div className="h-16 rounded-xl animate-pulse" style={stSurface2} />
           {[...Array(4)].map((_, i) => (
             <div key={i} className="h-32 rounded-xl animate-pulse" style={stSurface2} />
-          ))}
-        </div>
+          ))}</div>
       )}
 
       {/* Error */}
@@ -110,9 +92,7 @@ export default function ConsistencyPage() {
             style={{ color: retryHovered ? 'var(--text-secondary)' : 'var(--text-tertiary)' }}
             onMouseEnter={() => setRetryHovered(true)}
             onMouseLeave={() => setRetryHovered(false)}>
-            Try again
-          </button>
-        </div>
+            Try again</button></div>
       )}
 
       {/* Results */}
@@ -133,25 +113,19 @@ export default function ConsistencyPage() {
               <p className="font-normal" style={{ color: result.consistent ? 'var(--success)' : 'var(--danger)' }}>
                 {result.consistent
                   ? 'All metrics consistent across documents'
-                  : `${mismatchCount} inconsistenc${mismatchCount === 1 ? 'y' : 'ies'} found`}
-              </p>
+                  : `${mismatchCount} inconsistenc${mismatchCount === 1 ? 'y' : 'ies'} found`}</p>
               <p className="text-xs mt-0.5" style={stTextMuted}>
                 {result.checks.length} metric{result.checks.length !== 1 ? 's' : ''} compared
                 {matchCount > 0 && ` \u00b7 ${matchCount} matching`}
                 {mismatchCount > 0 && ` \u00b7 ${mismatchCount} mismatched`}
                 {' \u00b7 '}
-                {new Date(result.checkedAt).toLocaleString()}
-              </p>
-            </div>
-          </div>
+                {new Date(result.checkedAt).toLocaleString()}</p></div></div>
 
           {/* No checks */}
           {result.checks.length === 0 && (
             <div className="rounded-xl p-8 text-center">
               <p style={stTextMuted}>
-                No shared metrics found across documents. Add at least 2 documents with overlapping metrics to compare.
-              </p>
-            </div>
+                No shared metrics found across documents. Add at least 2 documents with overlapping metrics to compare.</p></div>
           )}
 
           {/* Check cards */}
@@ -162,8 +136,7 @@ export default function ConsistencyPage() {
                 className="rounded-xl p-4"
                 style={{
                   border: `1px solid ${check.status === 'match' ? 'var(--border-default)' : 'var(--danger-muted)'}`,
-                  background: check.status === 'match' ? 'var(--surface-1)' : 'var(--danger-muted)',
-                }}>
+                  background: check.status === 'match' ? 'var(--surface-1)' : 'var(--danger-muted)',}}>
                 <div className="flex items-center gap-2 mb-3">
                   {check.status === 'match' ? (
                     <CheckCircle className="w-4 h-4 shrink-0" style={stTextSecondary} />
@@ -176,9 +149,7 @@ export default function ConsistencyPage() {
                     style={{
                       background: check.status === 'match' ? 'var(--success-muted)' : 'var(--danger-muted)',
                       color: check.status === 'match' ? 'var(--success)' : 'var(--danger)', }}>
-                    {check.status}
-                  </span>
-                </div>
+                    {check.status}</span></div>
                 <div className="space-y-1.5">
                   {check.values.map((v, j) => (
                     <div
@@ -189,16 +160,10 @@ export default function ConsistencyPage() {
                       <span
                         className="font-mono shrink-0"
                         style={{ color: check.status === 'mismatch' ? 'var(--danger)' : 'var(--text-secondary)' }}>
-                        {v.value}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
+                        {v.value}</span></div>
+                  ))}</div></div>
+            ))}</div>
         </>
       )}
-    </div>
-  );
+    </div>);
 }

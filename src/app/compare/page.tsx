@@ -42,18 +42,9 @@ interface MeetingHistorySummary {
   enthusiasmTrend: number[];
 }
 
-interface FollowupStatusData {
-  pendingCount: number;
-  overdueCount: number;
-  completedCount: number;
-  avgConvictionDelta: number;
-}
+interface FollowupStatusData { pendingCount: number; overdueCount: number; completedCount: number; avgConvictionDelta: number; }
 
-interface AccelerationStatusData {
-  label: string;
-  activeTriggers: string[];
-  pendingActions: number;
-}
+interface AccelerationStatusData { label: string; activeTriggers: string[]; pendingActions: number; }
 
 interface InvestorCompareProfile {
   investor: Investor;
@@ -66,12 +57,7 @@ interface InvestorCompareProfile {
   recommendedAction: string;
 }
 
-interface DecisionMatrixEntry {
-  dimension: string;
-  winnerId: string;
-  winnerName: string;
-  scores: Record<string, number>;
-}
+interface DecisionMatrixEntry { dimension: string; winnerId: string; winnerName: string; scores: Record<string, number>; }
 
 interface ComparisonVerdict {
   mostLikelyToClose: { id: string; name: string; reason: string } | null;
@@ -122,8 +108,7 @@ export default function ComparePage() {
         toast('Failed to load investors', 'error');
       } finally {
         setLoading(false);
-      }
-    }
+      }}
     load();
   }, []);
 
@@ -138,8 +123,7 @@ export default function ComparePage() {
       const res = await fetch('/api/compare', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ investor_ids: selectedIds }),
-      });
+        body: JSON.stringify({ investor_ids: selectedIds }),});
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         throw new Error(err.error || `${res.status}`);
@@ -160,8 +144,7 @@ export default function ComparePage() {
         toast('Maximum 4 investors for comparison', 'warning');
         return prev;
       }
-      return [...prev, id];
-    });
+      return [...prev, id];});
     setCompareData(null);
   }
 
@@ -171,8 +154,7 @@ export default function ComparePage() {
   }
 
   const filteredInvestors = allInvestors.filter(i =>
-    i.name.toLowerCase().includes(search.toLowerCase())
-  );
+    i.name.toLowerCase().includes(search.toLowerCase()));
 
   // Find the winner (highest overall score)
   const winnerId = useMemo(() => {
@@ -188,8 +170,7 @@ export default function ComparePage() {
           <BarChart3 className="w-10 h-10 mx-auto mb-3" style={stTextMuted} />
           <div style={{ ...stTextMuted, fontSize: 'var(--font-size-sm)' }}>Loading investors... Select at least 2 to compare.</div>
         </div>
-      </div>
-    );
+      </div>);
   }
 
   return (
@@ -202,15 +183,12 @@ export default function ComparePage() {
           style={{ ...stTextMuted, transition: 'color 150ms ease' }}
           onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
           onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}>
-          <ArrowLeft className="w-5 h-5" />
-        </Link>
+          <ArrowLeft className="w-5 h-5" /></Link>
         <div className="flex-1">
           <h1 className="page-title" style={{ fontSize: 'var(--font-size-xl)' }}>
-            Investor Comparison Engine
-          </h1>
+            Investor Comparison Engine</h1>
           <p style={{ ...stTextMuted, fontSize: 'var(--font-size-sm)', marginTop: 'var(--space-1)' }}>Select 2-4 investors, then hit Compare for a full decision breakdown</p>
-        </div>
-      </div>
+        </div></div>
 
       {/* Selection + Compare button */}
       <div className="flex flex-col md:flex-row gap-3">
@@ -246,28 +224,21 @@ export default function ComparePage() {
                     onChange={e => setSearch(e.target.value)}
                     placeholder="Search investors..."
                     className="input"
-                    autoFocus />
-                </div>
+                    autoFocus /></div>
                 <div className="overflow-y-auto max-h-56">
                   {filteredInvestors.length === 0 ? (
                     <div style={{ padding: 'var(--space-3) var(--space-4)', fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
-                      No investors found
-                    </div>
+                      No investors found</div>
                   ) : (
                     filteredInvestors.map(inv => {
                       const isSelected = selectedIds.includes(inv.id);
                       const disabled = !isSelected && selectedIds.length >= 4;
                       return (
                         <DropdownItem key={inv.id} investor={inv} isSelected={isSelected} disabled={disabled} onToggle={() => { if (!disabled) toggleInvestor(inv.id); }}
-                          />
-                      );
-                    })
-                  )}
-                </div>
-              </div>
+                          />);})
+                  )}</div></div>
             </>
-          )}
-        </div>
+          )}</div>
 
         {/* Compare button */}
         <button
@@ -293,9 +264,7 @@ export default function ComparePage() {
             <><Loader2 className="w-4 h-4 animate-spin" /> Comparing...</>
           ) : (
             <><BarChart3 className="w-4 h-4" /> Compare</>
-          )}
-        </button>
-      </div>
+          )}</button></div>
 
       {/* Selected pills */}
       {selectedIds.length > 0 && (
@@ -304,11 +273,9 @@ export default function ComparePage() {
             const inv = allInvestors.find(i => i.id === id);
             if (!inv) return null;
             return (
-              <SelectedPill key={id} name={inv.name} onRemove={() => removeInvestor(id)} />
-            );
+              <SelectedPill key={id} name={inv.name} onRemove={() => removeInvestor(id)} />);
           })}
-          <ClearAllButton onClick={() => { setSelectedIds([]); setCompareData(null); }} />
-        </div>
+          <ClearAllButton onClick={() => { setSelectedIds([]); setCompareData(null); }} /></div>
       )}
 
       {/* Empty state */}
@@ -319,8 +286,7 @@ export default function ComparePage() {
           <BarChart3 className="w-10 h-10 mx-auto mb-3" style={stTextMuted} />
           <div style={{ ...stTextMuted, fontSize: 'var(--font-size-sm)' }}>
             {selectedIds.length < 2 ? 'Select at least 2 investors from the dropdown above, then click Compare.' : 'Click Compare to run the full analysis.'}
-          </div>
-        </div>
+          </div></div>
       )}
 
       {/* Loading state */}
@@ -362,20 +328,15 @@ export default function ComparePage() {
                         minWidth: 160,
                         background: 'var(--surface-1)',
                         borderRight: '1px solid var(--border-subtle)', }}>
-                      Metric
-                    </th>
+                      Metric</th>
                     {compareData.profiles.map(p => (
                       <th key={p.investor.id} className="text-left" style={{ padding: 'var(--space-3) var(--space-4)', minWidth: 200 }}>
                         <div className="flex items-center gap-2">
                           <InvestorNameLink investor={p.investor} />
                           {p.investor.id === winnerId && (
                             <Trophy className="w-4 h-4 shrink-0" style={stTextTertiary} />
-                          )}
-                        </div>
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
+                          )}</div></th>
+                    ))}</tr></thead>
 
                 <tbody>
                   {/* -- Basic Info -- */}
@@ -410,21 +371,13 @@ export default function ComparePage() {
                             ...(p.investor.id === winnerId
                               ? { background: 'var(--warning-muted)', border: '1px solid var(--warn-30)' }
                               : { background: 'var(--surface-2)' }), }}>
-                          <span style={{
-                            fontSize: 'var(--font-size-lg)',
-                            fontWeight: 300,
-                            ...scoreStyle(p.score.overall),
-                          }}>
-                            {p.score.overall}
-                          </span>
+                          <span style={{ fontSize: 'var(--font-size-lg)', fontWeight: 300, ...scoreStyle(p.score.overall) }}>
+                            {p.score.overall}</span>
                           <span style={labelMuted10}>/100</span>
                           {p.investor.id === winnerId && (
                             <Trophy className="w-3.5 h-3.5" style={stTextTertiary} />
-                          )}
-                        </div>
-                      </td>
-                    ))}
-                  </TableRow>
+                          )}</div></td>
+                    ))}</TableRow>
 
                   {/* -- Conviction Trajectory -- */}
                   <TableRow>
@@ -437,41 +390,31 @@ export default function ComparePage() {
                             <span style={{
                               fontSize: 'var(--font-size-xs)',
                               fontWeight: 400,
-                              ...momentumStyle(p.convictionTrajectory.trend),
-                            }}>
-                              {formatMomentum(p.convictionTrajectory.trend)}
-                            </span>
+                              ...momentumStyle(p.convictionTrajectory.trend),}}>
+                              {formatMomentum(p.convictionTrajectory.trend)}</span>
                             {p.convictionTrajectory.velocityPerWeek !== 0 && (
                               <span style={labelMuted10}>
                                 {p.convictionTrajectory.velocityPerWeek > 0 ? '+' : ''}{p.convictionTrajectory.velocityPerWeek} pts/wk
                               </span>
-                            )}
-                          </div>
+                            )}</div>
                           {p.convictionTrajectory.predictedTermSheetDate && p.convictionTrajectory.predictedTermSheetDate !== 'now' && (
                             <span style={labelMuted10}>
-                              Predicted TS: {p.convictionTrajectory.predictedTermSheetDate}
-                            </span>
+                              Predicted TS: {p.convictionTrajectory.predictedTermSheetDate}</span>
                           )}
                           {p.convictionTrajectory.predictedTermSheetDate === 'now' && (
                             <span style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>Ready for term sheet</span>
                           )}
                           <span style={labelMuted10}>
-                            30d prediction: {p.convictionTrajectory.predictedScoreIn30Days}
-                          </span>
-                        </div>
-                      </td>
-                    ))}
-                  </TableRow>
+                            30d prediction: {p.convictionTrajectory.predictedScoreIn30Days}</span></div></td>
+                    ))}</TableRow>
 
                   {/* -- Enthusiasm Trend -- */}
                   <TableRow>
                     <StickyLabel>Enthusiasm Trend</StickyLabel>
                     {compareData.profiles.map(p => (
                       <td key={p.investor.id} style={{ padding: 'var(--space-3) var(--space-4)' }}>
-                        <EnthusiasmTrendDots trend={p.meetingHistory.enthusiasmTrend} />
-                      </td>
-                    ))}
-                  </TableRow>
+                        <EnthusiasmTrendDots trend={p.meetingHistory.enthusiasmTrend} /></td>
+                    ))}</TableRow>
 
                   {/* -- Objections -- */}
                   <TableRow>
@@ -486,24 +429,15 @@ export default function ComparePage() {
                               <span style={stTextSecondary}>{p.objectionProfile.totalCount} total</span>
                               <span style={{
                                 fontWeight: 400,
-                                color: p.objectionProfile.unresolvedCount > 0 ? 'var(--danger)' : 'var(--success)',
-                              }}>
-                                {p.objectionProfile.unresolvedCount} unresolved
-                              </span>
-                            </div>
+                                color: p.objectionProfile.unresolvedCount > 0 ? 'var(--danger)' : 'var(--success)',}}>
+                                {p.objectionProfile.unresolvedCount} unresolved</span></div>
                             <div className="flex items-center gap-2" style={{ fontSize: '10px' }}>
                               <span style={stTextMuted}>
-                                Severity: {p.objectionProfile.avgSeverityScore.toFixed(1)}/3
-                              </span>
+                                Severity: {p.objectionProfile.avgSeverityScore.toFixed(1)}/3</span>
                               <span style={stTextMuted}>
-                                Resolved: {p.objectionProfile.resolutionRate}%
-                              </span>
-                            </div>
-                          </div>
-                        )}
-                      </td>
-                    ))}
-                  </TableRow>
+                                Resolved: {p.objectionProfile.resolutionRate}%</span></div></div>
+                        )}</td>
+                    ))}</TableRow>
 
                   {/* -- Meeting Engagement -- */}
                   <TableRow>
@@ -519,12 +453,9 @@ export default function ComparePage() {
                                   ? 'var(--danger)'
                                   : p.meetingHistory.daysSinceLastMeeting > 14
                                   ? 'var(--warning)'
-                                  : 'var(--success)',
-                              }}>
-                                {p.meetingHistory.daysSinceLastMeeting}d ago
-                              </span>
-                            )}
-                          </div>
+                                  : 'var(--success)',}}>
+                                {p.meetingHistory.daysSinceLastMeeting}d ago</span>
+                            )}</div>
                           {Object.keys(p.meetingHistory.meetingTypes).length > 0 && (
                             <div className="flex flex-wrap gap-1">
                               {Object.entries(p.meetingHistory.meetingTypes).map(([type, count]) => (
@@ -536,15 +467,10 @@ export default function ComparePage() {
                                     color: 'var(--text-muted)',
                                     padding: '1px 6px',
                                     borderRadius: 'var(--radius-sm)', }}>
-                                  {MEETING_TYPE_LABELS[type] || type} {count > 1 ? `x${count}` : ''}
-                                </span>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      </td>
-                    ))}
-                  </TableRow>
+                                  {MEETING_TYPE_LABELS[type] || type} {count > 1 ? `x${count}` : ''}</span>
+                              ))}</div>
+                          )}</div></td>
+                    ))}</TableRow>
 
                   {/* -- Follow-up Health -- */}
                   <TableRow>
@@ -557,34 +483,28 @@ export default function ComparePage() {
                           )}
                           {p.followupStatus.overdueCount > 0 && (
                             <span style={{ color: 'var(--text-primary)', fontWeight: 400 }}>
-                              {p.followupStatus.overdueCount} overdue
-                            </span>
+                              {p.followupStatus.overdueCount} overdue</span>
                           )}
                           {p.followupStatus.completedCount > 0 && (
                             <span style={stTextSecondary}>{p.followupStatus.completedCount} done</span>
                           )}
                           {p.followupStatus.pendingCount === 0 && p.followupStatus.overdueCount === 0 && p.followupStatus.completedCount === 0 && (
                             <span style={stTextMuted}>No follow-ups</span>
-                          )}
-                        </div>
+                          )}</div>
                         {p.followupStatus.avgConvictionDelta !== 0 && (
                           <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: 2 }}>
                             Avg impact: {p.followupStatus.avgConvictionDelta > 0 ? '+' : ''}{p.followupStatus.avgConvictionDelta} pts
                           </div>
-                        )}
-                      </td>
-                    ))}
-                  </TableRow>
+                        )}</td>
+                    ))}</TableRow>
 
                   {/* -- Acceleration Status -- */}
                   <TableRow>
                     <StickyLabel>Acceleration Status</StickyLabel>
                     {compareData.profiles.map(p => (
                       <td key={p.investor.id} style={{ padding: 'var(--space-3) var(--space-4)' }}>
-                        <AccelerationBadge status={p.accelerationStatus} />
-                      </td>
-                    ))}
-                  </TableRow>
+                        <AccelerationBadge status={p.accelerationStatus} /></td>
+                    ))}</TableRow>
 
                   {/* -- Recommended Action -- */}
                   <tr style={{ background: 'var(--surface-1)', borderTop: '2px solid var(--border-strong)' }}>
@@ -598,20 +518,12 @@ export default function ComparePage() {
                         letterSpacing: '0.01em',
                         background: 'var(--surface-1)',
                         borderRight: '1px solid var(--border-subtle)', }}>
-                      Next Action
-                    </td>
+                      Next Action</td>
                     {compareData.profiles.map(p => (
                       <td key={p.investor.id} style={{ padding: 'var(--space-4)' }}>
                         <span className="line-clamp-3" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                          {p.recommendedAction}
-                        </span>
-                      </td>
-                    ))}
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+                          {p.recommendedAction}</span></td>
+                    ))}</tr></tbody></table></div></div>
 
           {/* -- Score Dimension Breakdown (collapsible) -- */}
           <div
@@ -629,23 +541,18 @@ export default function ComparePage() {
               <div className="flex items-center gap-2">
                 <BarChart3 className="w-4 h-4" style={stTextMuted} />
                 <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
-                  Score Dimension Breakdown
-                </span>
-                <span style={labelMuted10}>8 dimensions</span>
-              </div>
+                  Score Dimension Breakdown</span>
+                <span style={labelMuted10}>8 dimensions</span></div>
               <ChevronDown className={`w-4 h-4 transition-transform ${dimensionsExpanded ? 'rotate-180' : ''}`} style={stTextMuted}
-                />
-            </button>
+                /></button>
 
             {dimensionsExpanded && (
               <div className="space-y-3" style={{ padding: 'var(--space-4)', borderTop: '1px solid var(--border-default)' }}>
                 {compareData.decisionMatrix.map(entry => (
                   <DimensionBar key={entry.dimension} dimension={entry.dimension} profiles={compareData.profiles} winnerId={entry.winnerId} scores={entry.scores}
                     />
-                ))}
-              </div>
-            )}
-          </div>
+                ))}</div>
+            )}</div>
 
           {/* -- Decision Matrix -- */}
           <div
@@ -659,9 +566,7 @@ export default function ComparePage() {
                 borderBottom: '1px solid var(--border-default)', }}>
               <Target className="w-4 h-4" style={stTextMuted} />
               <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
-                Decision Matrix
-              </span>
-            </div>
+                Decision Matrix</span></div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3" style={{ padding: 'var(--space-4)' }}>
               <VerdictCard icon={<CheckCircle className="w-4 h-4" />} title="Most Likely to Close" verdict={compareData.verdict.mostLikelyToClose} color="success"
                 />
@@ -672,14 +577,10 @@ export default function ComparePage() {
               <VerdictCard icon={<TrendingUp className="w-4 h-4" />} title="Best Momentum" verdict={compareData.verdict.bestMomentum} color="warning"
                 />
               <VerdictCard icon={<ArrowUpRight className="w-4 h-4" />} title="Highest Check Potential" verdict={compareData.verdict.highestCheckPotential} color="cyan"
-                />
-            </div>
-          </div>
-
-        </div>
+                /></div></div>
+</div>
       )}
-    </div>
-  );
+    </div>);
 }
 
 // ============================================================================
@@ -729,10 +630,8 @@ function DropdownItem({
           background: isSelected ? 'var(--accent)' : 'transparent', }}>
         {isSelected && (
           <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth={3}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-          </svg>
-        )}
-      </div>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+        )}</div>
       <span className="flex-1">{investor.name}</span>
       <span
         className="badge"
@@ -743,10 +642,8 @@ function DropdownItem({
             : investor.tier === 2
             ? { background: 'var(--cat-12)', color: 'var(--chart-4)' }
             : { background: 'var(--surface-2)', color: 'var(--text-muted)' }), }}>
-        T{investor.tier}
-      </span>
-    </button>
-  );
+        T{investor.tier}</span>
+    </button>);
 }
 
 function SelectedPill({ name, onRemove }: { name: string; onRemove: () => void }) {
@@ -771,10 +668,8 @@ function SelectedPill({ name, onRemove }: { name: string; onRemove: () => void }
           transition: 'color 150ms ease', }}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}>
-        <X className="w-3.5 h-3.5" />
-      </button>
-    </span>
-  );
+        <X className="w-3.5 h-3.5" /></button>
+    </span>);
 }
 
 function ClearAllButton({ onClick }: { onClick: () => void }) {
@@ -792,8 +687,7 @@ function ClearAllButton({ onClick }: { onClick: () => void }) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}>
       Clear all
-    </button>
-  );
+    </button>);
 }
 
 function InvestorNameLink({ investor }: { investor: Investor }) {
@@ -811,18 +705,15 @@ function InvestorNameLink({ investor }: { investor: Investor }) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}>
       {investor.name}
-    </Link>
-  );
+    </Link>);
 }
 
 function SectionHeader({ label, colSpan }: { label: string; colSpan: number }) {
   return (
     <tr style={stSurface1}>
       <td colSpan={colSpan} style={{ padding: 'var(--space-2) var(--space-4)', fontSize: '10px', fontWeight: 400, ...stTextMuted, letterSpacing: '0.08em' }}>
-        {label}
-      </td>
-    </tr>
-  );
+        {label}</td>
+    </tr>);
 }
 
 function TableRow({ children }: { children: React.ReactNode }) {
@@ -837,24 +728,17 @@ function TableRow({ children }: { children: React.ReactNode }) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}>
       {children}
-    </tr>
-  );
+    </tr>);
 }
 
 function StickyLabel({ children }: { children: React.ReactNode }) {
   return (
     <td className="sticky left-0" style={{ padding: 'var(--space-3) var(--space-4)', ...labelMuted, fontWeight: 400, background: 'var(--surface-0)', borderRight: '1px solid var(--border-subtle)' }}>
       {children}
-    </td>
-  );
+    </td>);
 }
 
-interface CellData {
-  value: string;
-  style?: React.CSSProperties;
-  wrap?: boolean;
-  render?: React.ReactNode;
-}
+interface CellData { value: string; style?: React.CSSProperties; wrap?: boolean; render?: React.ReactNode; }
 
 function CompareRow({ label, cells }: { label: string; cells: CellData[] }) {
   const [hovered, setHovered] = useState(false);
@@ -872,11 +756,9 @@ function CompareRow({ label, cells }: { label: string; cells: CellData[] }) {
         <td key={i} className={cell.wrap ? 'max-w-[220px]' : ''} style={{ padding: 'var(--space-3) var(--space-4)', fontSize: 'var(--font-size-sm)', ...stTextSecondary, ...cell.style }}>
           {cell.render ?? (
             <span className={cell.wrap ? 'line-clamp-3' : ''}>{cell.value}</span>
-          )}
-        </td>
+          )}</td>
       ))}
-    </tr>
-  );
+    </tr>);
 }
 
 function RecommendationBanner({ recommendation }: { recommendation: ComparisonRecommendation }) {
@@ -884,19 +766,15 @@ function RecommendationBanner({ recommendation }: { recommendation: ComparisonRe
     strong: {
       bg: 'var(--success-muted)',
       border: 'var(--accent-30)',
-      iconColor: 'var(--success)',
-    },
+      iconColor: 'var(--success)',},
     competitive: {
       bg: 'var(--accent-muted)',
       border: 'var(--accent-muted)',
-      iconColor: 'var(--accent)',
-    },
+      iconColor: 'var(--accent)',},
     none_ready: {
       bg: 'var(--warning-muted)',
       border: 'var(--warn-30)',
-      iconColor: 'var(--warning)',
-    },
-  };
+      iconColor: 'var(--warning)',},};
 
   const s = styleMap[recommendation.type] ?? styleMap.competitive;
 
@@ -917,11 +795,8 @@ function RecommendationBanner({ recommendation }: { recommendation: ComparisonRe
       <Icon className="w-5 h-5 shrink-0 mt-0.5" style={{ color: s.iconColor }} />
       <div>
         <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
-          {recommendation.text}
-        </div>
-      </div>
-    </div>
-  );
+          {recommendation.text}</div></div>
+    </div>);
 }
 
 function MomentumIcon({ momentum }: { momentum: string }) {
@@ -933,9 +808,7 @@ function MomentumIcon({ momentum }: { momentum: string }) {
 }
 
 function EnthusiasmTrendDots({ trend }: { trend: number[] }) {
-  if (trend.length === 0) {
-    return <span style={{ ...stTextMuted, fontSize: 'var(--font-size-xs)' }}>No data</span>;
-  }
+  if (trend.length === 0) { return <span style={{ ...stTextMuted, fontSize: 'var(--font-size-xs)' }}>No data</span>; }
 
   const maxDots = 3;
   const dots = trend.slice(-maxDots);
@@ -956,8 +829,7 @@ function EnthusiasmTrendDots({ trend }: { trend: number[] }) {
                 ? 'var(--danger)'
                 : 'var(--border-strong)',
             }} />
-          <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>{score}</span>
-        </div>
+          <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>{score}</span></div>
       ))}
       {dots.length >= 2 && (
         <div className="ml-1">
@@ -967,11 +839,9 @@ function EnthusiasmTrendDots({ trend }: { trend: number[] }) {
             <ArrowDownRight className="w-3 h-3" style={stTextPrimary} />
           ) : (
             <Minus className="w-3 h-3" style={stTextMuted} />
-          )}
-        </div>
+          )}</div>
       )}
-    </div>
-  );
+    </div>);
 }
 
 function AccelerationBadge({ status }: { status: AccelerationStatusData }) {
@@ -980,27 +850,22 @@ function AccelerationBadge({ status }: { status: AccelerationStatusData }) {
       bg: 'var(--success-muted)',
       border: 'var(--accent-30)',
       color: 'var(--text-secondary)',
-      icon: <CheckCircle className="w-3 h-3" />,
-    },
+      icon: <CheckCircle className="w-3 h-3" />,},
     'Active': {
       bg: 'var(--accent-muted)',
       border: 'var(--accent-muted)',
       color: 'var(--accent)',
-      icon: <Zap className="w-3 h-3" />,
-    },
+      icon: <Zap className="w-3 h-3" />,},
     'At Risk': {
       bg: 'var(--warning-muted)',
       border: 'var(--warn-30)',
       color: 'var(--text-tertiary)',
-      icon: <AlertTriangle className="w-3 h-3" />,
-    },
+      icon: <AlertTriangle className="w-3 h-3" />,},
     'Stalled': {
       bg: 'var(--danger-muted)',
       border: 'var(--accent-10)',
       color: 'var(--text-primary)',
-      icon: <Clock className="w-3 h-3" />,
-    },
-  };
+      icon: <Clock className="w-3 h-3" />,},};
 
   const c = config[status.label] || config['Active'];
 
@@ -1017,8 +882,7 @@ function AccelerationBadge({ status }: { status: AccelerationStatusData }) {
           fontSize: 'var(--font-size-xs)',
           fontWeight: 400, }}>
         {c.icon}
-        {status.label}
-      </span>
+        {status.label}</span>
       {status.activeTriggers.length > 0 && (
         <div className="flex flex-wrap gap-1">
           {status.activeTriggers.map(t => (
@@ -1030,13 +894,10 @@ function AccelerationBadge({ status }: { status: AccelerationStatusData }) {
                 background: 'var(--surface-2)',
                 padding: '1px 4px',
                 borderRadius: 'var(--radius-sm)', }}>
-              {t.replace(/_/g, ' ')}
-            </span>
-          ))}
-        </div>
+              {t.replace(/_/g, ' ')}</span>
+          ))}</div>
       )}
-    </div>
-  );
+    </div>);
 }
 
 function DimensionBar({
@@ -1056,14 +917,10 @@ function DimensionBar({
     <div className="space-y-1.5">
       <div className="flex items-center justify-between">
         <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', fontWeight: 400 }}>
-          {dimension}
-        </span>
+          {dimension}</span>
         <span style={labelMuted10}>
           Winner: <span style={stTextSecondary}>
-            {profiles.find(p => p.investor.id === winnerId)?.investor.name ?? '—'}
-          </span>
-        </span>
-      </div>
+            {profiles.find(p => p.investor.id === winnerId)?.investor.name ?? '—'}</span></span></div>
       <div className="space-y-1">
         {profiles.map((p, idx) => {
           const score = scores[p.investor.id] ?? 0;
@@ -1071,8 +928,7 @@ function DimensionBar({
           return (
             <div key={p.investor.id} className="flex items-center gap-2">
               <span className="w-20 truncate" style={labelMuted10}>
-                {p.investor.name}
-              </span>
+                {p.investor.name}</span>
               <div
                 className="flex-1 h-3 overflow-hidden"
                 style={{ background: 'var(--surface-2)', borderRadius: 9999 }}>
@@ -1083,22 +939,17 @@ function DimensionBar({
                     borderRadius: 9999,
                     transition: 'width 300ms ease',
                     background: isWinner ? barColors[idx % barColors.length] : 'var(--border-strong)',
-                  }} />
-              </div>
+                  }} /></div>
               <span
                 className="w-7 text-right font-mono"
                 style={{
                   fontSize: '10px',
                   color: isWinner ? 'var(--text-primary)' : 'var(--text-muted)',
                   fontWeight: 400, }}>
-                {score}
-              </span>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
+                {score}</span>
+            </div>);
+        })}</div>
+    </div>);
 }
 
 function VerdictCard({
@@ -1118,29 +969,23 @@ function VerdictCard({
     success: {
       bg: 'var(--success-muted)',
       border: 'var(--accent-25)',
-      iconColor: 'var(--success)',
-    },
+      iconColor: 'var(--success)',},
     accent: {
       bg: 'var(--accent-muted)',
       border: 'var(--accent-muted)',
-      iconColor: 'var(--accent)',
-    },
+      iconColor: 'var(--accent)',},
     purple: {
       bg: 'var(--accent-muted)',
       border: 'var(--accent-12)',
-      iconColor: 'var(--text-secondary)',
-    },
+      iconColor: 'var(--text-secondary)',},
     warning: {
       bg: 'var(--warning-muted)',
       border: 'var(--warn-25)',
-      iconColor: 'var(--warning)',
-    },
+      iconColor: 'var(--warning)',},
     cyan: {
       bg: 'var(--warn-6)',
       border: 'var(--warn-12)',
-      iconColor: 'var(--text-tertiary)',
-    },
-  };
+      iconColor: 'var(--text-tertiary)',},};
 
   const c = colorMap[color] ?? colorMap.accent;
 
@@ -1153,23 +998,13 @@ function VerdictCard({
         background: c.bg, }}>
       <div className="flex items-center gap-2 mb-2">
         <span style={{ color: c.iconColor }}>{icon}</span>
-        <span style={{
-          fontSize: '10px',
-          color: 'var(--text-muted)',
-          letterSpacing: '0.08em',
-          fontWeight: 400,
-        }}>
-          {title}
-        </span>
-      </div>
+        <span style={{ fontSize: '10px', color: 'var(--text-muted)', letterSpacing: '0.08em', fontWeight: 400 }}>
+          {title}</span></div>
       <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', marginBottom: 'var(--space-1)' }}>
-        {verdict.name}
-      </div>
+        {verdict.name}</div>
       <div style={{ fontSize: '10px', color: 'var(--text-muted)', lineHeight: 1.6 }}>
-        {verdict.reason}
-      </div>
-    </div>
-  );
+        {verdict.reason}</div>
+    </div>);
 }
 
 // ============================================================================
@@ -1181,8 +1016,7 @@ function tierStyle(tier: number): React.CSSProperties {
     case 1: return { color: 'var(--accent)', fontWeight: 400 };
     case 2: return { color: 'var(--chart-4)', fontWeight: 400 };
     default: return { color: 'var(--text-muted)' };
-  }
-}
+  }}
 
 function statusStyle(status: string): React.CSSProperties {
   if (status === 'term_sheet' || status === 'closed') return { color: 'var(--text-secondary)', fontWeight: 400 };

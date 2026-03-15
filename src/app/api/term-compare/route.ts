@@ -143,15 +143,13 @@ export async function POST(request: Request) {
     if (!scenarios || !Array.isArray(scenarios) || scenarios.length < 1) {
       return NextResponse.json(
         { error: 'At least 1 scenario required' },
-        { status: 400 },
-      );
+        { status: 400 },);
     }
 
     if (scenarios.length > 5) {
       return NextResponse.json(
         { error: 'Maximum 5 scenarios allowed' },
-        { status: 400 },
-      );
+        { status: 400 },);
     }
 
     // Validate each scenario
@@ -159,10 +157,8 @@ export async function POST(request: Request) {
       if (!s.investor_name || s.pre_money_valuation <= 0 || s.investment_amount <= 0) {
         return NextResponse.json(
           { error: `Invalid scenario for "${s.investor_name || 'unnamed'}": name, pre-money, and investment amount are required` },
-          { status: 400 },
-        );
-      }
-    }
+          { status: 400 },);
+      }}
 
     // Assume 100% founder ownership pre-round for dilution calculation
     const founderOwnershipPreRound = 100;
@@ -191,8 +187,7 @@ export async function POST(request: Request) {
         pro_rata_rights: s.pro_rata_rights,
         drag_along_threshold: s.drag_along_threshold,
         comparison_notes: notes,
-      };
-    });
+      };});
 
     // Determine best-for-founders and most-capital-friendly
     const bestForFounders = [...results].sort((a, b) => b.founder_friendly_score - a.founder_friendly_score)[0];
@@ -204,15 +199,11 @@ export async function POST(request: Request) {
       recommendations: {
         best_for_founders: bestForFounders.investor_name,
         most_capital: mostCapital.investor_name,
-        highest_effective_valuation: highestValuation.investor_name,
-      },
-      generated_at: new Date().toISOString(),
-    });
+        highest_effective_valuation: highestValuation.investor_name,},
+      generated_at: new Date().toISOString(),});
   } catch (error) {
     console.error('Term compare error:', error);
     return NextResponse.json(
       { error: 'Failed to compare term sheets', detail: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 },
-    );
-  }
-}
+      { status: 500 },);
+  }}

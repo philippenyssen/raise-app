@@ -31,14 +31,10 @@ import {
 export async function GET(req: NextRequest) {
   try {
     const investorId = req.nextUrl.searchParams.get('investor_id');
-    if (!investorId) {
-      return NextResponse.json({ error: 'investor_id is required' }, { status: 400 });
-    }
+    if (!investorId) { return NextResponse.json({ error: 'investor_id is required' }, { status: 400 }); }
 
     const investor = await getInvestor(investorId);
-    if (!investor) {
-      return NextResponse.json({ error: 'Investor not found' }, { status: 404 });
-    }
+    if (!investor) { return NextResponse.json({ error: 'Investor not found' }, { status: 404 }); }
 
     // Load all intelligence sources in parallel
     const [
@@ -58,8 +54,7 @@ export async function GET(req: NextRequest) {
       getAggregatedCompetitiveIntel(),
       getInvestorRelationships(investorId).catch(() => []),
       getInvestorPartners(investorId).catch(() => []),
-      getInvestorPortfolio(investorId).catch(() => []),
-    ]);
+      getInvestorPortfolio(investorId).catch(() => []),]);
 
     // Get proven responses for the top objection topics
     const topObjectionTopics = playbook.slice(0, 10).map(p => p.topic);
@@ -78,10 +73,8 @@ export async function GET(req: NextRequest) {
               text: o.text,
               severity: o.severity,
               topic: o.topic,
-              meetingDate: m.date,
-            });
-          }
-        }
+              meetingDate: m.date,});
+          }}
       } catch { /* skip malformed */ }
     }
 
@@ -96,8 +89,7 @@ export async function GET(req: NextRequest) {
         theirEnthusiasm: isA ? (r.investor_b_enthusiasm || 0) : (r.investor_a_enthusiasm || 0),
         strength: r.strength,
         evidence: r.evidence,
-      };
-    });
+      };});
 
     // Build the meeting prep intelligence response
     const prepIntel = {
@@ -108,8 +100,7 @@ export async function GET(req: NextRequest) {
         tier: investor.tier,
         status: investor.status,
         enthusiasm: investor.enthusiasm,
-        partner: investor.partner,
-      },
+        partner: investor.partner,},
 
       // Cross-investor question patterns: "Investors of type X typically ask about..."
       questionPatterns: {
@@ -121,8 +112,7 @@ export async function GET(req: NextRequest) {
           frequency: p.questionCount,
           exampleQuestions: p.exampleQuestions,
           prepGuidance: `Prepare specific data points for "${p.topic}" — ${p.questionCount} ${investor.type} investors have asked about this`,
-        })),
-      },
+        })),},
 
       // Proven responses: "When asked about [topic], this response worked best"
       provenResponses: {
@@ -137,8 +127,7 @@ export async function GET(req: NextRequest) {
           guidance: r.enthusiasmLift > 0
             ? `This response lifted enthusiasm by +${r.enthusiasmLift} — use it or adapt it`
             : 'Effective response — consider adapting to this investor',
-        })),
-      },
+        })),},
 
       // Competitive intel: aggregated from all meetings
       competitiveIntel: {
@@ -156,8 +145,7 @@ export async function GET(req: NextRequest) {
             : c.mentionCount >= 2
             ? `Multiple investors have mentioned this — be ready to address`
             : `Mentioned by ${c.investors.join(', ')} — may come up`,
-        })),
-      },
+        })),},
 
       // Network connections: how this investor relates to others in pipeline
       networkConnections: {
@@ -173,8 +161,7 @@ export async function GET(req: NextRequest) {
             : c.theirStatus === 'passed'
             ? `${c.relatedInvestor} has passed — be prepared if asked about this`
             : `${c.relatedInvestor} is in process (${c.theirStatus}) — neutral reference`,
-        })),
-      },
+        })),},
 
       // Unresolved objections from prior meetings with this investor
       unresolvedObjections: {
@@ -188,10 +175,8 @@ export async function GET(req: NextRequest) {
             ...o,
             suggestedResponse: proven
               ? `Proven response (${proven.effectiveness}): ${proven.bestResponse}`
-              : 'No proven response — prepare a targeted answer',
-          };
-        }),
-      },
+              : 'No proven response — prepare a targeted answer',};
+        }),},
 
       // Meeting history context
       meetingHistory: {
@@ -205,8 +190,7 @@ export async function GET(req: NextRequest) {
         enthusiasmTrajectory: meetings.map(m => ({
           date: m.date,
           score: m.enthusiasm_score,
-        })).reverse(),
-      },
+        })).reverse(),},
 
       // Tactical intelligence: velocity, FOMO, cascades, win/loss (cycle 35)
       tacticalIntelligence: await (async () => {
@@ -215,8 +199,7 @@ export async function GET(req: NextRequest) {
             computeEngagementVelocity().catch(() => []),
             detectFomoDynamics().catch(() => []),
             computeNetworkCascades().catch(() => []),
-            computeWinLossPatterns().catch(() => null),
-          ]);
+            computeWinLossPatterns().catch(() => null),]);
 
           const thisVelocity = velocities.find(v => v.investorId === investorId);
           const fomoForThis = fomos.find(f => f.affectedInvestors.some(a => a.name === investor.name));
@@ -243,20 +226,16 @@ export async function GET(req: NextRequest) {
             winLossSignal: winLoss ? {
               keyPredictors: winLoss.distinguishingFactors.filter(f => f.significance === 'high').slice(0, 3).map(f => ({ factor: f.factor, closedAvg: f.closedAvg, passedAvg: f.passedAvg })),
               insights: winLoss.insights.slice(0, 2),
-            } : null,
-          };
+            } : null,};
         } catch { return null; }
       })(),
 
-      generatedAt: new Date().toISOString(),
-    };
+      generatedAt: new Date().toISOString(),};
 
     return NextResponse.json(prepIntel);
   } catch (err) {
     console.error('Meeting prep intelligence error:', err);
     return NextResponse.json(
       { error: 'Failed to generate meeting prep intelligence' },
-      { status: 500 },
-    );
-  }
-}
+      { status: 500 },);
+  }}

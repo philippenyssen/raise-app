@@ -19,12 +19,9 @@ export async function GET(
     computeRaiseForecast().catch(() => null),
     computeEngagementVelocity().catch(() => [] as Awaited<ReturnType<typeof computeEngagementVelocity>>),
     detectFomoDynamics().catch(() => [] as Awaited<ReturnType<typeof detectFomoDynamics>>),
-    detectScoreReversals().catch(() => [] as Awaited<ReturnType<typeof detectScoreReversals>>),
-  ]);
+    detectScoreReversals().catch(() => [] as Awaited<ReturnType<typeof detectScoreReversals>>),]);
 
-  if (!investor) {
-    return NextResponse.json({ error: 'Investor not found' }, { status: 404 });
-  }
+  if (!investor) { return NextResponse.json({ error: 'Investor not found' }, { status: 404 }); }
 
   // Parse raise config for scoring context
   let targetEquityM = 250; // default: €250M
@@ -54,8 +51,7 @@ export async function GET(
         isCriticalPath: raiseForecastData.criticalPathInvestors.includes(investor?.name || ''),
         pathProbability: 0.5, // derived from pipeline flow conversion rates
       };
-    }
-  }
+    }}
 
   // Find this investor's velocity data (cycle 31)
   const investorVelocity = velocityAll.find(v => v.investorId === id) || null;
@@ -74,15 +70,13 @@ export async function GET(
     { targetEquityM, targetCloseDate },
     networkData,
     forecastData,
-    velocityData,
-  );
+    velocityData,);
 
   // Compute Deal Heat composite (cycle 31)
   const investorReversal = reversalAll.find(r => r.investorId === id);
   // Check if this investor is a FOMO target (appears in any FomoDynamic's affected list)
   const fomoForInvestor = fomoAll.find(f =>
-    f.affectedInvestors.some(a => a.name === investor.name)
-  );
+    f.affectedInvestors.some(a => a.name === investor.name));
   // Approximate days in current stage from updated_at
   const daysInStage = Math.max(0, Math.round((Date.now() - new Date(investor.updated_at).getTime()) / (1000 * 60 * 60 * 24)));
   const stageHealth = daysInStage > 30 ? 'stalled' : daysInStage > 14 ? 'slow' : 'on_track';
@@ -94,8 +88,7 @@ export async function GET(
     fomoForInvestor?.fomoIntensity || null,
     daysInStage,
     stageHealth,
-    investorReversal?.delta ?? null,
-  );
+    investorReversal?.delta ?? null,);
 
   // Auto-capture score snapshot (1 per investor per day, upsert)
   const engagementDim = score.dimensions.find(d => d.name === 'Engagement');

@@ -29,8 +29,7 @@ const EMPTY_TS = {
   investor: '', valuation: '', amount: '', liq_pref: '1x non-participating',
   anti_dilution: 'Broad-based weighted average', board_seats: '1 + observer',
   dividends: 'None', protective_provisions: 'Standard', option_pool: '',
-  exclusivity: '', strategic_value: 3, notes: '',
-};
+  exclusivity: '', strategic_value: 3, notes: '',};
 
 const MARKET_STANDARDS: Record<string, string> = {
   liq_pref: '1x non-participating',
@@ -38,8 +37,7 @@ const MARKET_STANDARDS: Record<string, string> = {
   board_seats: '1 investor seat + 1 observer',
   dividends: 'Non-cumulative or none',
   protective_provisions: 'Standard set (new issuance, sale, liquidation)',
-  option_pool: '10-15% post-money',
-};
+  option_pool: '10-15% post-money',};
 
 export default function TermsPage() {
   const { toast } = useToast();
@@ -61,8 +59,7 @@ export default function TermsPage() {
       toast('Failed to load term sheets', 'error');
     } finally {
       setLoading(false);
-    }
-  }
+    }}
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -71,15 +68,13 @@ export default function TermsPage() {
         await fetch('/api/term-sheets', {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id: editId, ...form }),
-        });
+          body: JSON.stringify({ id: editId, ...form }),});
         toast(`${form.investor} updated`);
       } else {
         await fetch('/api/term-sheets', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(form),
-        });
+          body: JSON.stringify(form),});
         toast(`${form.investor} term sheet added`);
       }
       setShowForm(false);
@@ -88,8 +83,7 @@ export default function TermsPage() {
       fetchSheets();
     } catch {
       toast('Failed to save term sheet', 'error');
-    }
-  }
+    }}
 
   async function handleDelete() {
     if (!deleteTarget) return;
@@ -100,8 +94,7 @@ export default function TermsPage() {
       fetchSheets();
     } catch {
       toast('Failed to delete term sheet', 'error');
-    }
-  }
+    }}
 
   function startEdit(ts: TermSheet) {
     setForm({
@@ -109,8 +102,7 @@ export default function TermsPage() {
       liq_pref: ts.liq_pref, anti_dilution: ts.anti_dilution,
       board_seats: ts.board_seats, dividends: ts.dividends,
       protective_provisions: ts.protective_provisions, option_pool: ts.option_pool,
-      exclusivity: ts.exclusivity, strategic_value: ts.strategic_value, notes: ts.notes,
-    });
+      exclusivity: ts.exclusivity, strategic_value: ts.strategic_value, notes: ts.notes,});
     setEditId(ts.id);
     setShowForm(true);
   }
@@ -128,14 +120,12 @@ export default function TermsPage() {
     return { score: Math.max(0, Math.min(100, score)), flags };
   }
 
-
   if (loading) {
     return (
       <div className="space-y-6">
         <div className="h-8 w-48 rounded animate-pulse" style={stSurface2} />
         <div className="h-20 rounded-xl animate-pulse" style={stSurface1} />
-      </div>
-    );
+      </div>);
   }
 
   return (
@@ -144,23 +134,17 @@ export default function TermsPage() {
         <div>
           <h1 className="page-title">Term Sheet Comparison</h1>
           <p className="text-sm mt-1" style={stTextMuted}>
-            Compare and score term sheets side-by-side. {sheets.length} received.
-          </p>
-        </div>
+            Compare and score term sheets side-by-side. {sheets.length} received.</p></div>
         <div className="flex items-center gap-2">
           <Link
             href="/term-compare"
             className="btn btn-secondary btn-md text-sm font-normal">
             <Scale className="w-4 h-4" />
-            Compare Terms
-          </Link>
+            Compare Terms</Link>
           <button
             onClick={() => { setShowForm(!showForm); setEditId(null); setForm(EMPTY_TS); }}
             className="btn btn-primary btn-md text-sm font-normal">
-            + Add Term Sheet
-          </button>
-        </div>
-      </div>
+            + Add Term Sheet</button></div></div>
 
       {/* Market Standards Reference */}
       <div className="rounded-xl p-5" style={stSurface0}>
@@ -169,11 +153,8 @@ export default function TermsPage() {
           {Object.entries(MARKET_STANDARDS).map(([key, val]) => (
             <div key={key}>
               <span style={stTextMuted}>{key.replace(/_/g, ' ')}:</span>
-              <span className="ml-1" style={stTextSecondary}>{val}</span>
-            </div>
-          ))}
-        </div>
-      </div>
+              <span className="ml-1" style={stTextSecondary}>{val}</span></div>
+          ))}</div></div>
 
       {/* Add/Edit Form */}
       {showForm && (
@@ -186,8 +167,7 @@ export default function TermsPage() {
             <TsInput label="Investment Amount" value={form.amount} onChange={v => setForm(f => ({ ...f, amount: v }))} placeholder="e.g., 250M"
               />
             <TsInput label="Liquidation Preference" value={form.liq_pref} onChange={v => setForm(f => ({ ...f, liq_pref: v }))} />
-            <TsInput label="Anti-Dilution" value={form.anti_dilution} onChange={v => setForm(f => ({ ...f, anti_dilution: v }))}
-              />
+            <TsInput label="Anti-Dilution" value={form.anti_dilution} onChange={v => setForm(f => ({ ...f, anti_dilution: v }))}/>
             <TsInput label="Board Seats" value={form.board_seats} onChange={v => setForm(f => ({ ...f, board_seats: v }))} />
             <TsInput label="Dividends" value={form.dividends} onChange={v => setForm(f => ({ ...f, dividends: v }))} />
             <TsInput label="Protective Provisions" value={form.protective_provisions} onChange={v => setForm(f => ({ ...f, protective_provisions: v }))}
@@ -201,19 +181,13 @@ export default function TermsPage() {
               <input type="range" min="1" max="5" value={form.strategic_value}
                 onChange={e => setForm(f => ({ ...f, strategic_value: Number(e.target.value) }))}
                 className="w-full" />
-              <div className="text-xs text-center" style={stTextMuted}>{form.strategic_value}/5</div>
-            </div>
-          </div>
+              <div className="text-xs text-center" style={stTextMuted}>{form.strategic_value}/5</div></div></div>
           <TsInput label="Notes" value={form.notes} onChange={v => setForm(f => ({ ...f, notes: v }))} />
           <div className="flex gap-2">
             <button type="submit" className="btn btn-primary btn-md text-sm font-normal">
-              {editId ? 'Update' : 'Add'}
-            </button>
+              {editId ? 'Update' : 'Add'}</button>
             <button type="button" onClick={() => { setShowForm(false); setEditId(null); }} className="btn btn-secondary btn-md text-sm">
-              Cancel
-            </button>
-          </div>
-        </form>
+              Cancel</button></div></form>
       )}
 
       {/* Comparison Table */}
@@ -233,14 +207,9 @@ export default function TermsPage() {
                           onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}>Edit</button>
                         <button onClick={() => setDeleteTarget({ id: ts.id, investor: ts.investor })} className="text-xs transition-colors" style={stTextMuted}
                           onMouseEnter={e => (e.currentTarget.style.color = 'var(--danger)')}
-                          onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}>Del</button>
-                      </div>
-                    </div>
-                  </th>
+                          onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}>Del</button></div></div></th>
                 ))}
-                <th className="text-left px-4 py-3 text-xs font-normal" style={stTextMuted}>Market Standard</th>
-              </tr>
-            </thead>
+                <th className="text-left px-4 py-3 text-xs font-normal" style={stTextMuted}>Market Standard</th></tr></thead>
             <tbody>
               {([
                 ['Valuation', 'valuation'],
@@ -262,11 +231,9 @@ export default function TermsPage() {
                     return (
                       <td key={ts.id} className="px-4 py-2.5 text-xs" style={{ color: isStandard ? 'var(--success)' : 'var(--text-secondary)' }}>
                         {val || '\u2014'}
-                      </td>
-                    );
+                      </td>);
                   })}
-                  <td className="px-4 py-2.5 text-xs" style={stTextMuted}>{MARKET_STANDARDS[key] || '\u2014'}</td>
-                </tr>
+                  <td className="px-4 py-2.5 text-xs" style={stTextMuted}>{MARKET_STANDARDS[key] || '\u2014'}</td></tr>
               ))}
               {/* Score Row */}
               <tr style={{ background: 'var(--surface-1)', borderTop: '2px solid var(--border-strong)' }}>
@@ -276,16 +243,13 @@ export default function TermsPage() {
                   return (
                     <td key={ts.id} className="px-4 py-3">
                       <div className="text-lg font-normal" style={{ color: getScoreColor(score) }}>
-                        {score}/100
-                      </div>
+                        {score}/100</div>
                       {flags.map((f, i) => (
                         <div key={i} className="text-xs mt-1" style={stTextPrimary}>{f}</div>
                       ))}
-                    </td>
-                  );
+                    </td>);
                 })}
-                <td className="px-4 py-3 text-xs" style={stTextMuted}>Benchmark</td>
-              </tr>
+                <td className="px-4 py-3 text-xs" style={stTextMuted}>Benchmark</td></tr>
               {/* Action Row */}
               <tr style={{ background: 'var(--surface-0)', borderTop: '1px solid var(--border-subtle)' }}>
                 <td className="px-4 py-3 text-xs font-normal" style={stTextTertiary}>ACTION</td>
@@ -308,25 +272,17 @@ export default function TermsPage() {
                           background: action.bg,
                           color: action.color,
                           marginBottom: '4px', }}>
-                        {action.label}
-                      </span>
+                        {action.label}</span>
                       <div style={{ fontSize: '10px', color: 'var(--text-muted)', lineHeight: 1.4 }}>
-                        {action.advice}
-                      </div>
-                    </td>
-                  );
+                        {action.advice}</div>
+                    </td>);
                 })}
-                <td className="px-4 py-3 text-xs" style={stTextMuted}>—</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+                <td className="px-4 py-3 text-xs" style={stTextMuted}>—</td></tr></tbody></table></div>
       )}
 
       {sheets.length === 0 && !showForm && (
         <div className="rounded-xl p-8 text-center text-sm" style={stTextMuted}>
-          No term sheets yet. Add them as they come in for side-by-side comparison.
-        </div>
+          No term sheets yet. Add them as they come in for side-by-side comparison.</div>
       )}
 
       <ConfirmModal
@@ -337,8 +293,7 @@ export default function TermsPage() {
         variant="danger"
         onConfirm={handleDelete}
         onCancel={() => setDeleteTarget(null)} />
-    </div>
-  );
+    </div>);
 }
 
 function TsInput({ label, value, onChange, required, placeholder }: {
@@ -349,6 +304,5 @@ function TsInput({ label, value, onChange, required, placeholder }: {
       <label className="label block mb-1" style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>{label}</label>
       <input value={value} onChange={e => onChange(e.target.value)} required={required} placeholder={placeholder}
         className="input" />
-    </div>
-  );
+    </div>);
 }

@@ -34,12 +34,10 @@ export function VoiceInput({ onTranscript, disabled }: VoiceInputProps) {
       for (let i = event.resultIndex; i < event.results.length; i++) {
         if (event.results[i].isFinal) {
           finalTranscript += event.results[i][0].transcript;
-        }
-      }
+        }}
       if (finalTranscript) {
         onTranscript(finalTranscript);
-      }
-    };
+      }};
 
     recognition.onerror = () => {
       setListening(false);
@@ -75,13 +73,11 @@ export function VoiceInput({ onTranscript, disabled }: VoiceInputProps) {
     color: 'var(--danger)',
     borderWidth: '1px',
     borderStyle: 'solid',
-    borderColor: 'color-mix(in srgb, var(--danger) 30%, transparent)',
-  };
+    borderColor: 'color-mix(in srgb, var(--danger) 30%, transparent)',};
 
   const idleStyle: React.CSSProperties = {
     color: hovered ? 'var(--text-secondary)' : 'var(--text-muted)',
-    backgroundColor: hovered ? 'var(--surface-2)' : 'transparent',
-  };
+    backgroundColor: hovered ? 'var(--surface-2)' : 'transparent',};
 
   return (
     <button
@@ -91,11 +87,9 @@ export function VoiceInput({ onTranscript, disabled }: VoiceInputProps) {
       onMouseLeave={() => setHovered(false)}
       className={`p-2 rounded-lg transition-all ${listening ? 'animate-pulse' : ''} disabled:opacity-50`}
       style={listening ? listeningStyle : idleStyle}
-      title={listening ? 'Stop listening' : 'Voice input'}
-    >
+      title={listening ? 'Stop listening' : 'Voice input'}>
       {listening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
-    </button>
-  );
+    </button>);
 }
 
 // Web Speech API types are not in default TS lib — we use `any` for cross-browser compat

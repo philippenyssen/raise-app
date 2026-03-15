@@ -37,8 +37,7 @@ export const companiesHouseProvider: EnrichmentProvider = {
       const searchUrl = `${CH_BASE}/search/companies?q=${encodeURIComponent(investorName)}&items_per_page=5`;
       const res = await fetch(searchUrl, {
         headers: { 'Authorization': authHeader, 'Accept': 'application/json' },
-        signal: AbortSignal.timeout(15000),
-      });
+        signal: AbortSignal.timeout(15000),});
 
       if (res.status === 429) {
         return { source_id: 'companies_house', success: false, fields, error: 'Rate limited', fetched_at: now, rate_limited: true };
@@ -61,16 +60,14 @@ export const companiesHouseProvider: EnrichmentProvider = {
           field_value: best.title || '',
           category: 'identity',
           confidence: 0.85,
-          source_url: chUrl,
-        });
+          source_url: chUrl,});
 
         fields.push({
           field_name: 'uk_company_number',
           field_value: companyNumber,
           category: 'identity',
           confidence: 1.0,
-          source_url: chUrl,
-        });
+          source_url: chUrl,});
 
         if (best.company_status) {
           fields.push({
@@ -78,8 +75,7 @@ export const companiesHouseProvider: EnrichmentProvider = {
             field_value: best.company_status,
             category: 'corporate',
             confidence: 1.0,
-            source_url: chUrl,
-          });
+            source_url: chUrl,});
         }
 
         if (best.company_type) {
@@ -88,8 +84,7 @@ export const companiesHouseProvider: EnrichmentProvider = {
             field_value: best.company_type,
             category: 'corporate',
             confidence: 1.0,
-            source_url: chUrl,
-          });
+            source_url: chUrl,});
         }
 
         if (best.date_of_creation) {
@@ -98,8 +93,7 @@ export const companiesHouseProvider: EnrichmentProvider = {
             field_value: best.date_of_creation,
             category: 'identity',
             confidence: 1.0,
-            source_url: chUrl,
-          });
+            source_url: chUrl,});
         }
 
         if (best.registered_office_address) {
@@ -111,16 +105,14 @@ export const companiesHouseProvider: EnrichmentProvider = {
             field_value: fullAddr,
             category: 'contact',
             confidence: 1.0,
-            source_url: chUrl,
-          });
+            source_url: chUrl,});
         }
 
         // Fetch officers
         try {
           const officersRes = await fetch(`${CH_BASE}/company/${companyNumber}/officers`, {
             headers: { 'Authorization': authHeader, 'Accept': 'application/json' },
-            signal: AbortSignal.timeout(15000),
-          });
+            signal: AbortSignal.timeout(15000),});
 
           if (officersRes.ok) {
             const officersData = await officersRes.json();
@@ -138,18 +130,15 @@ export const companiesHouseProvider: EnrichmentProvider = {
                 }),
                 category: 'people',
                 confidence: 1.0,
-                source_url: chUrl,
-              });
-            }
-          }
+                source_url: chUrl,});
+            }}
         } catch { /* officers fetch failed */ }
 
         // Fetch persons with significant control (PSC)
         try {
           const pscRes = await fetch(`${CH_BASE}/company/${companyNumber}/persons-with-significant-control`, {
             headers: { 'Authorization': authHeader, 'Accept': 'application/json' },
-            signal: AbortSignal.timeout(15000),
-          });
+            signal: AbortSignal.timeout(15000),});
 
           if (pscRes.ok) {
             const pscData = await pscRes.json();
@@ -166,10 +155,8 @@ export const companiesHouseProvider: EnrichmentProvider = {
                 }),
                 category: 'people',
                 confidence: 1.0,
-                source_url: chUrl,
-              });
-            }
-          }
+                source_url: chUrl,});
+            }}
         } catch { /* PSC fetch failed */ }
       }
 
@@ -180,8 +167,6 @@ export const companiesHouseProvider: EnrichmentProvider = {
         success: false,
         fields,
         error: error instanceof Error ? error.message : 'Unknown error',
-        fetched_at: now,
-      };
+        fetched_at: now,};
     }
-  },
-};
+  },};

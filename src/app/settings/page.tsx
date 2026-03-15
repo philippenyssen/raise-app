@@ -60,8 +60,7 @@ function parseExistingRaiseConfig(raw: Record<string, unknown> | null): RaiseCon
     target_close: (raw.target_close as string) || '',
     currency: (raw.currency as string) || 'EUR',
     target_investor_count: Number(raw.target_investor_count) || 0,
-    minimum_check_size: Number(raw.minimum_check_size) || 0,
-  };
+    minimum_check_size: Number(raw.minimum_check_size) || 0,};
 }
 
 function parseMoneyString(s: unknown): number {
@@ -107,8 +106,7 @@ function useFormSection<T extends object>(
       const res = await fetch('/api/settings', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ key: settingsKey, value: data }),
-      });
+        body: JSON.stringify({ key: settingsKey, value: data }),});
       if (!res.ok) {
         const err = await res.json();
         throw new Error(err.error || 'Save failed');
@@ -143,14 +141,11 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(true);
 
   const raise = useFormSection<RaiseConfigForm>(
-    'raise_config', DEFAULT_RAISE_CONFIG, toast, 'Raise parameters saved', 'Failed to save raise config',
-  );
+    'raise_config', DEFAULT_RAISE_CONFIG, toast, 'Raise parameters saved', 'Failed to save raise config',);
   const scoring = useFormSection<ScoringWeightsForm>(
-    'scoring_weights', DEFAULT_SCORING_WEIGHTS, toast, 'Scoring weights saved', 'Failed to save scoring weights',
-  );
+    'scoring_weights', DEFAULT_SCORING_WEIGHTS, toast, 'Scoring weights saved', 'Failed to save scoring weights',);
   const followup = useFormSection<FollowupCadenceForm>(
-    'followup_cadence', DEFAULT_FOLLOWUP_CADENCE, toast, 'Follow-up cadence saved', 'Failed to save follow-up cadence',
-  );
+    'followup_cadence', DEFAULT_FOLLOWUP_CADENCE, toast, 'Follow-up cadence saved', 'Failed to save follow-up cadence',);
 
   const loadSettings = useCallback(async () => {
     try {
@@ -189,8 +184,7 @@ export default function SettingsPage() {
       setKeyTest({ status: 'error', message: 'Could not reach test endpoint' });
     } finally {
       setTesting(false);
-    }
-  }
+    }}
 
   const weightTotal = Object.values(scoring.data).reduce((a, b) => a + b, 0);
   const weightBalanced = Math.abs(weightTotal - 100) <= 1;
@@ -212,14 +206,11 @@ export default function SettingsPage() {
       <div className="space-y-8 max-w-3xl">
         <div>
           <h1 className="page-title" style={{ fontSize: 'var(--font-size-xl)' }}>Settings</h1>
-          <p style={{ ...stTextMuted, ...stFontSm, marginTop: 'var(--space-1)' }}>Loading configuration...</p>
-        </div>
+          <p style={{ ...stTextMuted, ...stFontSm, marginTop: 'var(--space-1)' }}>Loading configuration...</p></div>
         <div className="flex items-center gap-3" style={stTextMuted}>
           <RefreshCw className="w-4 h-4 animate-spin" />
-          <span style={stFontSm}>Loading settings...</span>
-        </div>
-      </div>
-    );
+          <span style={stFontSm}>Loading settings...</span></div>
+      </div>);
   }
 
   return (
@@ -247,10 +238,7 @@ export default function SettingsPage() {
               disabled={raise.saving || !raise.dirty}
               className={`btn btn-md ${raise.dirty ? 'btn-primary' : 'btn-secondary'}`}>
               <Save className={`w-3.5 h-3.5 ${raise.saving ? 'animate-spin' : ''}`} />
-              {raise.saving ? 'Saving...' : raise.dirty ? 'Save Changes' : 'Saved'}
-            </button>
-          </div>
-        </div>
+              {raise.saving ? 'Saving...' : raise.dirty ? 'Save Changes' : 'Saved'}</button></div></div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {/* Company Name */}
@@ -261,8 +249,7 @@ export default function SettingsPage() {
               value={raise.data.company_name}
               onChange={e => raise.update('company_name', e.target.value)}
               placeholder="e.g. Aerospacelab"
-              className="input" />
-          </div>
+              className="input" /></div>
 
           {/* Round Type */}
           <div>
@@ -275,12 +262,9 @@ export default function SettingsPage() {
                 style={{ appearance: 'none', cursor: 'pointer' }}>
                 {ROUND_TYPES.map(rt => (
                   <option key={rt} value={rt}>{rt}</option>
-                ))}
-              </select>
-              <ChevronDown className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={stTextMuted}
-                />
-            </div>
-          </div>
+                ))}</select>
+              <ChevronDown className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={stTextMuted}/>
+            </div></div>
 
           {/* Currency */}
           <div>
@@ -293,21 +277,16 @@ export default function SettingsPage() {
                 style={{ appearance: 'none', cursor: 'pointer' }}>
                 {CURRENCIES.map(c => (
                   <option key={c} value={c}>{c} ({CURRENCY_SYMBOLS[c]})</option>
-                ))}
-              </select>
-              <ChevronDown className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={stTextMuted}
-                />
-            </div>
-          </div>
+                ))}</select>
+              <ChevronDown className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={stTextMuted}/>
+            </div></div>
 
           {/* Target Equity Raise */}
           <div>
             <label className="block" style={labelStyle}>
               <span className="flex items-center gap-1.5">
                 <DollarSign className="w-3 h-3" />
-                Target Equity Raise
-              </span>
-            </label>
+                Target Equity Raise</span></label>
             <div className="relative">
               <input
                 type="number"
@@ -317,20 +296,15 @@ export default function SettingsPage() {
                 className="input" />
               {raise.data.equity_amount > 0 && (
                 <span className="absolute right-3 top-1/2 -translate-y-1/2" style={{ ...stFontXs, ...stTextMuted }}>
-                  {formatCompact(raise.data.equity_amount, raise.data.currency)}
-                </span>
-              )}
-            </div>
-          </div>
+                  {formatCompact(raise.data.equity_amount, raise.data.currency)}</span>
+              )}</div></div>
 
           {/* Target Debt Raise */}
           <div>
             <label className="block" style={labelStyle}>
               <span className="flex items-center gap-1.5">
                 <DollarSign className="w-3 h-3" />
-                Target Debt Raise
-              </span>
-            </label>
+                Target Debt Raise</span></label>
             <div className="relative">
               <input
                 type="number"
@@ -340,20 +314,15 @@ export default function SettingsPage() {
                 className="input" />
               {raise.data.debt_amount > 0 && (
                 <span className="absolute right-3 top-1/2 -translate-y-1/2" style={{ ...stFontXs, ...stTextMuted }}>
-                  {formatCompact(raise.data.debt_amount, raise.data.currency)}
-                </span>
-              )}
-            </div>
-          </div>
+                  {formatCompact(raise.data.debt_amount, raise.data.currency)}</span>
+              )}</div></div>
 
           {/* Pre-money Valuation */}
           <div>
             <label className="block" style={labelStyle}>
               <span className="flex items-center gap-1.5">
                 <Target className="w-3 h-3" />
-                Pre-money Valuation
-              </span>
-            </label>
+                Pre-money Valuation</span></label>
             <div className="relative">
               <input
                 type="number"
@@ -363,61 +332,48 @@ export default function SettingsPage() {
                 className="input" />
               {raise.data.pre_money > 0 && (
                 <span className="absolute right-3 top-1/2 -translate-y-1/2" style={{ ...stFontXs, ...stTextMuted }}>
-                  {formatCompact(raise.data.pre_money, raise.data.currency)}
-                </span>
-              )}
-            </div>
-          </div>
+                  {formatCompact(raise.data.pre_money, raise.data.currency)}</span>
+              )}</div></div>
 
           {/* Post-money (computed) */}
           <div>
             <label className="block" style={labelStyle}>
-              Post-money Valuation
-            </label>
+              Post-money Valuation</label>
             <div style={{ padding: '0.5rem 0.75rem', background: 'var(--surface-1)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' }}>
               {raise.data.pre_money && raise.data.equity_amount
                 ? formatCompact(raise.data.pre_money + raise.data.equity_amount, raise.data.currency)
-                : '—'}
-            </div>
-          </div>
+                : '—'}</div></div>
 
           {/* Target Close Date */}
           <div>
             <label className="block" style={labelStyle}>
               <span className="flex items-center gap-1.5">
                 <Calendar className="w-3 h-3" />
-                Target Close Date
-              </span>
-            </label>
+                Target Close Date</span></label>
             <input
               type="date"
               value={raise.data.target_close}
               onChange={e => raise.update('target_close', e.target.value)}
-              className="input [color-scheme:dark]" />
-          </div>
+              className="input [color-scheme:dark]" /></div>
 
           {/* Target Investor Count */}
           <div>
             <label className="block" style={labelStyle}>
               <span className="flex items-center gap-1.5">
                 <Users className="w-3 h-3" />
-                Target Investor Count
-              </span>
-            </label>
+                Target Investor Count</span></label>
             <input
               type="number"
               value={raise.data.target_investor_count || ''}
               onChange={e => raise.update('target_investor_count', Number(e.target.value))}
               placeholder="5"
               min={0}
-              className="input" />
-          </div>
+              className="input" /></div>
 
           {/* Minimum Check Size */}
           <div>
             <label className="block" style={labelStyle}>
-              Minimum Check Size
-            </label>
+              Minimum Check Size</label>
             <div className="relative">
               <input
                 type="number"
@@ -427,12 +383,8 @@ export default function SettingsPage() {
                 className="input" />
               {raise.data.minimum_check_size > 0 && (
                 <span className="absolute right-3 top-1/2 -translate-y-1/2" style={{ ...stFontXs, ...stTextMuted }}>
-                  {formatCompact(raise.data.minimum_check_size, raise.data.currency)}
-                </span>
-              )}
-            </div>
-          </div>
-        </div>
+                  {formatCompact(raise.data.minimum_check_size, raise.data.currency)}</span>
+              )}</div></div></div>
 
         {/* Summary row */}
         {raise.data.equity_amount > 0 && raise.data.pre_money > 0 && (
@@ -441,25 +393,16 @@ export default function SettingsPage() {
               <div>
                 <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '0.125rem' }}>Total Raise</div>
                 <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
-                  {formatCompact(raise.data.equity_amount + raise.data.debt_amount, raise.data.currency)}
-                </div>
-              </div>
+                  {formatCompact(raise.data.equity_amount + raise.data.debt_amount, raise.data.currency)}</div></div>
               <div>
                 <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '0.125rem' }}>Dilution</div>
                 <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
-                  {((raise.data.equity_amount / (raise.data.pre_money + raise.data.equity_amount)) * 100).toFixed(1)}%
-                </div>
-              </div>
+                  {((raise.data.equity_amount / (raise.data.pre_money + raise.data.equity_amount)) * 100).toFixed(1)}%</div></div>
               <div>
                 <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '0.125rem' }}>Post-money EV</div>
                 <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
-                  {formatCompact(raise.data.pre_money + raise.data.equity_amount, raise.data.currency)}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
+                  {formatCompact(raise.data.pre_money + raise.data.equity_amount, raise.data.currency)}</div></div></div></div>
+        )}</div>
 
       {/* ================================================================= */}
       {/* 2. SCORING WEIGHTS                                                */}
@@ -476,8 +419,7 @@ export default function SettingsPage() {
                 scoring.replace({ ...DEFAULT_SCORING_WEIGHTS }); }}
               className="btn btn-sm btn-ghost">
               <RotateCcw className="w-3 h-3" />
-              Reset to Defaults
-            </button>
+              Reset to Defaults</button>
             <div className="flex items-center gap-2">
               {scoring.dirty && (
                 <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)', fontWeight: 400 }}>Unsaved changes</span>
@@ -494,11 +436,7 @@ export default function SettingsPage() {
                 disabled={scoring.saving || !scoring.dirty}
                 className={`btn btn-md ${scoring.dirty ? 'btn-primary' : 'btn-secondary'}`}>
                 <Save className={`w-3.5 h-3.5 ${scoring.saving ? 'animate-spin' : ''}`} />
-                {scoring.saving ? 'Saving...' : scoring.dirty ? 'Save Changes' : 'Saved'}
-              </button>
-            </div>
-          </div>
-        </div>
+                {scoring.saving ? 'Saving...' : scoring.dirty ? 'Save Changes' : 'Saved'}</button></div></div></div>
 
         {/* Total indicator */}
         <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-5)', fontSize: 'var(--font-size-sm)', color: weightBalanced ? 'var(--success)' : 'var(--warning)' }}>
@@ -509,9 +447,7 @@ export default function SettingsPage() {
           )}
           <span>
             Total: {weightTotal}%
-            {!weightBalanced && ` (must equal 100%)`}
-          </span>
-        </div>
+            {!weightBalanced && ` (must equal 100%)`}</span></div>
 
         <div className="space-y-4">
           {(Object.keys(WEIGHT_LABELS) as Array<keyof ScoringWeightsForm>).map(key => (
@@ -536,11 +472,8 @@ export default function SettingsPage() {
                   className="input"
                   style={{ width: '3.5rem', padding: '0.25rem 0.5rem', fontSize: 'var(--font-size-xs)', textAlign: 'right' }} />
               </div>
-              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '1rem' }}>%</span>
-            </div>
-          ))}
-        </div>
-      </div>
+              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '1rem' }}>%</span></div>
+          ))}</div></div>
 
       {/* ================================================================= */}
       {/* 3. FOLLOW-UP CADENCE                                              */}
@@ -560,10 +493,7 @@ export default function SettingsPage() {
               disabled={followup.saving || !followup.dirty}
               className={`btn btn-md ${followup.dirty ? 'btn-primary' : 'btn-secondary'}`}>
               <Save className={`w-3.5 h-3.5 ${followup.saving ? 'animate-spin' : ''}`} />
-              {followup.saving ? 'Saving...' : followup.dirty ? 'Save Changes' : 'Saved'}
-            </button>
-          </div>
-        </div>
+              {followup.saving ? 'Saving...' : followup.dirty ? 'Save Changes' : 'Saved'}</button></div></div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {/* Thank You Delay */}
@@ -577,8 +507,7 @@ export default function SettingsPage() {
                 min={0}
                 max={72}
                 className="input flex-1" />
-              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '3rem' }}>hours</span>
-            </div>
+              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '3rem' }}>hours</span></div>
           </div>
 
           {/* Objection Response Delay */}
@@ -592,8 +521,7 @@ export default function SettingsPage() {
                 min={0}
                 max={168}
                 className="input flex-1" />
-              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '3rem' }}>hours</span>
-            </div>
+              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '3rem' }}>hours</span></div>
           </div>
 
           {/* Schedule Next Meeting Delay */}
@@ -607,8 +535,7 @@ export default function SettingsPage() {
                 min={0}
                 max={168}
                 className="input flex-1" />
-              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '3rem' }}>hours</span>
-            </div>
+              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '3rem' }}>hours</span></div>
           </div>
 
           {/* Re-engagement Delay */}
@@ -622,9 +549,7 @@ export default function SettingsPage() {
                 min={1}
                 max={30}
                 className="input flex-1" />
-              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '3rem' }}>days</span>
-            </div>
-          </div>
+              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '3rem' }}>days</span></div></div>
 
           {/* Escalation Delay */}
           <div>
@@ -637,9 +562,7 @@ export default function SettingsPage() {
                 min={1}
                 max={60}
                 className="input flex-1" />
-              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '3rem' }}>days</span>
-            </div>
-          </div>
+              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '3rem' }}>days</span></div></div>
 
           {/* Tier 1 Speed Multiplier */}
           <div>
@@ -652,13 +575,10 @@ export default function SettingsPage() {
                 min={25}
                 max={100}
                 className="input flex-1" />
-              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '3rem' }}>%</span>
-            </div>
+              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '3rem' }}>%</span></div>
             <p style={{ ...stFontXs, ...stTextMuted, marginTop: 'var(--space-1)' }}>
               {followup.data.tier1_speed_multiplier}% means Tier 1 investors get follow-ups {100 - followup.data.tier1_speed_multiplier}% faster
-            </p>
-          </div>
-        </div>
+            </p></div></div>
 
         {/* Cadence summary */}
         <div style={{ marginTop: 'var(--space-5)', paddingTop: 'var(--space-4)', borderTop: '1px solid var(--border-subtle)' }}>
@@ -667,24 +587,17 @@ export default function SettingsPage() {
             <div style={{ background: 'var(--surface-2)', borderRadius: 'var(--radius-md)', padding: '0.5rem 0.75rem' }}>
               <div style={{ ...stFontXs, ...stTextMuted }}>Thank you</div>
               <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
-                {Math.round(followup.data.thank_you_delay_hours * followup.data.tier1_speed_multiplier / 100)}h
-              </div>
-            </div>
+                {Math.round(followup.data.thank_you_delay_hours * followup.data.tier1_speed_multiplier / 100)}h</div></div>
             <div style={{ background: 'var(--surface-2)', borderRadius: 'var(--radius-md)', padding: '0.5rem 0.75rem' }}>
               <div style={{ ...stFontXs, ...stTextMuted }}>Objection</div>
               <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
-                {Math.round(followup.data.objection_response_delay_hours * followup.data.tier1_speed_multiplier / 100)}h
-              </div>
+                {Math.round(followup.data.objection_response_delay_hours * followup.data.tier1_speed_multiplier / 100)}h</div>
             </div>
             <div style={{ background: 'var(--surface-2)', borderRadius: 'var(--radius-md)', padding: '0.5rem 0.75rem' }}>
               <div style={{ ...stFontXs, ...stTextMuted }}>Re-engage</div>
               <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
-                {Math.round(followup.data.reengagement_delay_days * followup.data.tier1_speed_multiplier / 100)}d
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+                {Math.round(followup.data.reengagement_delay_days * followup.data.tier1_speed_multiplier / 100)}d</div></div>
+          </div></div></div>
 
       {/* ================================================================= */}
       {/* 4. API CONFIGURATION                                              */}
@@ -701,9 +614,7 @@ export default function SettingsPage() {
             className="btn btn-sm btn-secondary"
             style={{ opacity: testing ? 0.5 : 1 }}>
             <RefreshCw className={`w-3.5 h-3.5 ${testing ? 'animate-spin' : ''}`} />
-            Test Key
-          </button>
-        </div>
+            Test Key</button></div>
 
         {keyTest && (
           <div className="space-y-3">
@@ -713,14 +624,11 @@ export default function SettingsPage() {
                 <div style={{ fontWeight: 400, color: 'var(--text-primary)' }}>{keyTest.message}</div>
                 {keyTest.key && (
                   <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 'var(--space-1)', fontFamily: 'var(--font-mono)' }}>{keyTest.key}</div>
-                )}
-              </div>
-            </div>
+                )}</div></div>
 
             {keyTest.error && (
               <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', background: 'var(--danger-muted)', borderRadius: 'var(--radius-md)', padding: 'var(--space-3)', fontFamily: 'var(--font-mono)' }}>
-                {keyTest.error}
-              </div>
+                {keyTest.error}</div>
             )}
 
             {keyTest.fix && (
@@ -730,20 +638,16 @@ export default function SettingsPage() {
                   <ol className="space-y-1" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' }}>
                     {keyTest.fix.map((step, i) => (
                       <li key={i}>{step}</li>
-                    ))}
-                  </ol>
+                    ))}</ol>
                 ) : (
                   <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' }}>{keyTest.fix}</p>
-                )}
-              </div>
-            )}
-          </div>
+                )}</div>
+            )}</div>
         )}
 
         {testing && !keyTest && (
           <div className="animate-pulse" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' }}>Testing API key...</div>
-        )}
-      </div>
+        )}</div>
 
       {/* Billing info */}
       <div className="card" style={{ padding: 'var(--space-6)' }}>
@@ -765,10 +669,6 @@ export default function SettingsPage() {
             <li>Then go to <strong style={stTextSecondary}>console.anthropic.com/settings/keys</strong></li>
             <li>Create a <strong style={stTextSecondary}>new API key</strong></li>
             <li>Update it in your <strong style={stTextSecondary}>Vercel environment variables</strong></li>
-            <li><strong style={stTextSecondary}>Redeploy</strong> the app</li>
-          </ol>
-        </div>
-      </div>
-    </div>
-  );
+            <li><strong style={stTextSecondary}>Redeploy</strong> the app</li></ol></div></div>
+    </div>);
 }

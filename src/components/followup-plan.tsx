@@ -12,8 +12,7 @@ const ACTION_TYPE_CONFIG: Record<string, ActionTypeConfig> = {
   data_share: { label: 'Share Materials', icon: FolderOpen, color: 'var(--accent)', bgColor: 'var(--accent-muted)' },
   schedule_followup: { label: 'Schedule Meeting', icon: CalendarPlus, color: 'var(--success)', bgColor: 'var(--success-muted)' },
   warm_reengagement: { label: 'Re-engagement', icon: RefreshCw, color: 'var(--warning)', bgColor: 'var(--warning-muted)' },
-  milestone_update: { label: 'Milestone Update', icon: Milestone, color: 'var(--warning)', bgColor: 'var(--warning-muted)' },
-};
+  milestone_update: { label: 'Milestone Update', icon: Milestone, color: 'var(--warning)', bgColor: 'var(--warning-muted)' },};
 
 function formatRelativeTime(dateStr: string): string {
   const diffMs = new Date(dateStr).getTime() - Date.now();
@@ -51,8 +50,7 @@ export default function FollowupPlan({ followups, showInvestorName = false }: { 
         <div className="flex items-center gap-2">
           <SendHorizonal className="w-5 h-5" style={{ color: 'var(--accent)' }} />
           <h2 className="text-lg font-normal" style={{ color: 'var(--text-primary)' }}>Follow-up Plan</h2>
-          <span className="text-xs ml-2" style={{ color: 'var(--text-muted)' }}>{pending.length} pending</span>
-        </div>
+          <span className="text-xs ml-2" style={{ color: 'var(--text-muted)' }}>{pending.length} pending</span></div>
         {expanded ? <ChevronUp className="w-4 h-4" style={{ color: 'var(--text-muted)' }} /> : <ChevronDown className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />}
       </button>
 
@@ -78,8 +76,7 @@ export default function FollowupPlan({ followups, showInvestorName = false }: { 
                     <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: bgColor }}>
                       {isCompleted ? <CheckCircle2 className="w-4 h-4" style={{ color: 'var(--success)' }} />
                         : isSkipped ? <XCircle className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
-                        : <Icon className="w-4 h-4" style={{ color: iconColor }} />}
-                    </div>
+                        : <Icon className="w-4 h-4" style={{ color: iconColor }} />}</div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-0.5">
                         <span className="text-xs px-1.5 py-0.5 rounded font-normal " style={{ backgroundColor: bgColor, color: labelColor }}>{config.label}</span>
@@ -92,18 +89,12 @@ export default function FollowupPlan({ followups, showInvestorName = false }: { 
                           <button onClick={() => handleAction(item.id, 'completed')} onMouseEnter={() => setHoveredDone(item.id)} onMouseLeave={() => setHoveredDone(null)} className="flex items-center gap-1 px-2 py-1 rounded text-xs font-normal transition-colors" style={{ backgroundColor: hoveredDone === item.id ? 'color-mix(in srgb, var(--success) 30%, transparent)' : 'var(--success-muted)', color: 'var(--success)' }}><CheckCircle2 className="w-3 h-3" /> Done</button>
                           <button onClick={() => handleAction(item.id, 'skipped')} onMouseEnter={() => setHoveredSkip(item.id)} onMouseLeave={() => setHoveredSkip(null)} className="flex items-center gap-1 px-2 py-1 rounded text-xs font-normal transition-colors" style={{ backgroundColor: hoveredSkip === item.id ? 'var(--surface-3)' : 'var(--surface-2)', color: 'var(--text-muted)' }}><XCircle className="w-3 h-3" /> Skip</button>
                         </div>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+                      )}</div>
+                  </div>);
+              })}</div></div>
           <div className="px-5 py-3" style={{ backgroundColor: 'var(--surface-1)', borderTop: '1px solid color-mix(in srgb, var(--border-subtle) 50%, transparent)' }}>
             <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{pending.length} follow-up{pending.length !== 1 ? 's' : ''} pending{handled.length > 0 && ` · ${handled.length} completed/skipped`}</span>
-          </div>
-        </div>
+          </div></div>
       )}
-    </div>
-  );
+    </div>);
 }

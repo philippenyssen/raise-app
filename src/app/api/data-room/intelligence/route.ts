@@ -12,15 +12,13 @@ const STAGE_RECOMMENDATIONS: Record<string, string[]> = {
   term_sheet: ['financial', 'legal', 'commercial', 'technical', 'team', 'other'],
   closed: ['financial', 'legal', 'commercial', 'technical', 'team', 'other'],
   passed: [],
-  dropped: [],
-};
+  dropped: [],};
 
 export async function GET() {
   const [files, accessRecords, investors] = await Promise.all([
     getAllDataRoomFiles(),
     getAllDataRoomAccess(),
-    getAllInvestors(),
-  ]);
+    getAllInvestors(),]);
 
   const fileMap = new Map(files.map(f => [f.id, f]));
 
@@ -33,8 +31,7 @@ export async function GET() {
       document_id: r.document_id,
       document_title: doc?.filename || 'Unknown',
       accessed_at: r.accessed_at,
-    };
-  });
+    };});
 
   const docAccessCounts: Record<string, number> = {};
   for (const r of accessRecords) {
@@ -50,8 +47,7 @@ export async function GET() {
         document_title: doc?.filename || 'Unknown',
         category: doc?.category || 'other',
         access_count: count,
-      };
-    });
+      };});
 
   const activeStatuses = new Set(['contacted', 'nda_signed', 'meeting_scheduled', 'met', 'engaged', 'in_dd', 'term_sheet', 'closed']);
   const activeInvestors = investors.filter(i => activeStatuses.has(i.status));
@@ -70,8 +66,7 @@ export async function GET() {
         document_id: docId,
         document_title: doc?.filename || 'Unknown',
         category: doc?.category || 'other',
-      };
-    });
+      };});
 
     const recommendedCategories = STAGE_RECOMMENDATIONS[inv.status] || [];
     const accessedCategories = new Set(accessed_documents.map(d => d.category));
@@ -93,8 +88,7 @@ export async function GET() {
       documents_accessed: accessed_documents.length,
       accessed_documents,
       recommended_documents,
-    };
-  });
+    };});
 
   const unreached_investors = activeInvestors
     .filter(inv => !investorAccessedDocs[inv.id] || investorAccessedDocs[inv.id].size === 0)
@@ -112,8 +106,7 @@ export async function GET() {
     per_investor_access,
     unreached_investors,
     total_files: files.length,
-    total_access_events: accessRecords.length,
-  });
+    total_access_events: accessRecords.length,});
 }
 
 export async function POST(req: NextRequest) {

@@ -37,8 +37,7 @@ export async function POST(req: NextRequest) {
     if (!investorId || !investorName || !rawNotes) {
       return NextResponse.json(
         { error: 'investorId, investorName, and rawNotes are required' },
-        { status: 400 },
-      );
+        { status: 400 },);
     }
 
     // 1. AI extraction — infer meeting type and enthusiasm if not provided
@@ -78,8 +77,7 @@ export async function POST(req: NextRequest) {
       next_steps: (aiData.next_steps as string) || '',
       enthusiasm_score: finalEnthusiasm,
       status_after: finalStatus,
-      ai_analysis: (aiData.ai_analysis as string) || '',
-    });
+      ai_analysis: (aiData.ai_analysis as string) || '',});
 
     // 3. Run post-meeting intelligence pipeline (non-blocking failures)
     let intelligenceSummary = '';
@@ -118,18 +116,15 @@ export async function POST(req: NextRequest) {
           const delta = (meeting.enthusiasm_score || 3) - (prevMeeting.enthusiasm_score || 3);
           if (delta !== 0) {
             await updateObjectionEnthusiasmDelta(investorId, delta);
-          }
-        }
+          }}
         for (const obj of objections) {
           await createObjectionRecord({
             objection_text: obj.text,
             objection_topic: obj.topic || 'general',
             investor_id: investorId,
             investor_name: investorName,
-            meeting_id: meeting.id,
-          });
-        }
-      }
+            meeting_id: meeting.id,});
+        }}
     } catch (err) {
       console.error('Objection tracking failed:', err);
     }
@@ -143,8 +138,7 @@ export async function POST(req: NextRequest) {
         investorName,
         investor?.type || 'vc',
         JSON.stringify(aiData.questions_asked || []),
-        new Date().toISOString().split('T')[0],
-      );
+        new Date().toISOString().split('T')[0],);
     } catch { /* non-blocking */ }
 
     // 7. Activity log (non-blocking)
@@ -154,8 +148,7 @@ export async function POST(req: NextRequest) {
         subject: `Quick capture: ${finalType} with ${investorName}`,
         detail: (aiData.ai_analysis as string) || '',
         investor_id: investorId,
-        investor_name: investorName,
-      });
+        investor_name: investorName,});
     } catch { /* non-blocking */ }
 
     emitContextChange('meeting_logged', `Quick capture: meeting with ${investorName}`);
@@ -182,8 +175,7 @@ export async function POST(req: NextRequest) {
         signals: signalsSummary,
         competitiveIntel: (aiData.competitive_intel as string) || '',
         nextSteps: (aiData.next_steps as string) || '',
-        suggestedStatusUpdate: finalStatus !== 'met' ? finalStatus : null,
-      },
+        suggestedStatusUpdate: finalStatus !== 'met' ? finalStatus : null,},
       followups,
       intelligence: intelligenceSummary,
     }, { status: 201 });
@@ -191,7 +183,5 @@ export async function POST(req: NextRequest) {
     console.error('Quick capture failed:', err);
     return NextResponse.json(
       { error: 'Quick capture failed', detail: String(err) },
-      { status: 500 },
-    );
-  }
-}
+      { status: 500 },);
+  }}

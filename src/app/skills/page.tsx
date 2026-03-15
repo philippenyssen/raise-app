@@ -44,8 +44,7 @@ export default function SkillsPage() {
     ])
       .then(([h, e]) => {
         setHealth(Array.isArray(h) ? h : []);
-        setExecutions(Array.isArray(e) ? e : []);
-      })
+        setExecutions(Array.isArray(e) ? e : []);})
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
@@ -65,33 +64,24 @@ export default function SkillsPage() {
       <div>
         <h1 className="page-title">Skill Health</h1>
         <p className="text-sm mt-1" style={stTextMuted}>
-          Monitor and evolve product AI skills — observe, inspect, amend, evaluate
-        </p>
-      </div>
+          Monitor and evolve product AI skills — observe, inspect, amend, evaluate</p></div>
 
       {/* Overview metrics */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <div className="card" style={{ padding: 'var(--space-4)' }}>
           <div className="text-xs" style={stTextMuted}>Active Skills</div>
-          <div className="text-2xl font-normal mt-1" style={stTextPrimary}>{health.length}</div>
-        </div>
+          <div className="text-2xl font-normal mt-1" style={stTextPrimary}>{health.length}</div></div>
         <div className="card" style={{ padding: 'var(--space-4)' }}>
           <div className="text-xs" style={stTextMuted}>Total Executions</div>
-          <div className="text-2xl font-normal mt-1" style={stTextPrimary}>{totalExecutions}</div>
-        </div>
+          <div className="text-2xl font-normal mt-1" style={stTextPrimary}>{totalExecutions}</div></div>
         <div className="card" style={{ padding: 'var(--space-4)' }}>
           <div className="text-xs" style={stTextMuted}>Success Rate</div>
           <div className="text-2xl font-normal mt-1" style={{ color: getHealthColor(overallSuccessRate) }}>
-            {overallSuccessRate}%
-          </div>
-        </div>
+            {overallSuccessRate}%</div></div>
         <div className="card" style={{ padding: 'var(--space-4)' }}>
           <div className="text-xs" style={stTextMuted}>Parse Success</div>
           <div className="text-2xl font-normal mt-1" style={{ color: getHealthColor(avgParseRate) }}>
-            {avgParseRate}%
-          </div>
-        </div>
-      </div>
+            {avgParseRate}%</div></div></div>
 
       {/* Skill health table */}
       {health.length === 0 ? (
@@ -99,13 +89,11 @@ export default function SkillsPage() {
           <Activity className="w-8 h-8 mx-auto mb-3" style={stTextMuted} />
           <p style={stTextTertiary}>
             No skill executions yet. Skills start logging automatically when AI features are used — run a meeting analysis, investor research, or enrichment to begin tracking.
-          </p>
-        </div>
+          </p></div>
       ) : (
         <div className="space-y-2">
           <div className="text-xs font-normal" style={{ color: 'var(--text-tertiary)', letterSpacing: '0.01em' }}>
-            Skill Performance
-          </div>
+            Skill Performance</div>
           {health.map(skill => {
             const isExpanded = expanded === skill.skill_name;
             const skillExecs = executions.filter(e => e.skill_name === skill.skill_name);
@@ -125,13 +113,9 @@ export default function SkillsPage() {
                       }
                       <div>
                         <span className="text-sm font-normal" style={stTextPrimary}>
-                          {skill.skill_name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                        </span>
+                          {skill.skill_name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</span>
                         <span className="text-xs ml-2" style={stTextMuted}>
-                          {skill.total_executions} runs
-                        </span>
-                      </div>
-                    </div>
+                          {skill.total_executions} runs</span></div></div>
                     <div className="flex items-center gap-4">
                       <div className="flex items-center gap-1.5">
                         {skill.success_rate >= 90
@@ -145,14 +129,9 @@ export default function SkillsPage() {
                           style={{
                             color: getHealthColor(skill.success_rate),
                             backgroundColor: getHealthBg(skill.success_rate), }}>
-                          {skill.success_rate}%
-                        </span>
-                      </div>
+                          {skill.success_rate}%</span></div>
                       <span className="text-xs" style={stTextMuted}>
-                        parse: {skill.parse_success_rate}%
-                      </span>
-                    </div>
-                  </div>
+                        parse: {skill.parse_success_rate}%</span></div></div>
 
                   {/* Mini progress bar */}
                   <div className="mt-2 h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--surface-2)' }}>
@@ -161,9 +140,7 @@ export default function SkillsPage() {
                       style={{
                         width: `${skill.success_rate}%`,
                         backgroundColor: getHealthColor(skill.success_rate),
-                      }} />
-                  </div>
-                </button>
+                      }} /></div></button>
 
                 {/* Expanded execution history */}
                 {isExpanded && skillExecs.length > 0 && (
@@ -176,38 +153,27 @@ export default function SkillsPage() {
                         <span style={{
                           color: exec.outcome === 'success' ? 'var(--success)' : exec.outcome === 'partial' ? 'var(--warning)' : 'var(--danger)',
                           fontWeight: 400,
-                          minWidth: '50px',
-                        }}>
-                          {exec.outcome}
-                        </span>
+                          minWidth: '50px',}}>
+                          {exec.outcome}</span>
                         <span style={{ color: 'var(--text-muted)', minWidth: '80px' }}>
-                          {exec.fields_extracted}/{exec.fields_expected} fields
-                        </span>
+                          {exec.fields_extracted}/{exec.fields_expected} fields</span>
                         <span style={{ color: exec.parse_success ? 'var(--success)' : 'var(--danger)', minWidth: '60px' }}>
-                          {exec.parse_success ? 'parsed' : 'parse fail'}
-                        </span>
+                          {exec.parse_success ? 'parsed' : 'parse fail'}</span>
                         <span className="flex-1 truncate" style={stTextTertiary}>
-                          {exec.trigger_source}
-                        </span>
+                          {exec.trigger_source}</span>
                         <span style={stTextMuted}>
-                          {new Date(exec.created_at).toLocaleString()}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
+                          {new Date(exec.created_at).toLocaleString()}</span></div>
+                    ))}</div>
                 )}
-              </div>
-            );
-          })}
-        </div>
+              </div>);
+          })}</div>
       )}
 
       {/* Recent executions timeline */}
       {executions.length > 0 && (
         <div>
           <div className="text-xs font-normal mb-2" style={{ color: 'var(--text-tertiary)', letterSpacing: '0.01em' }}>
-            Recent Executions
-          </div>
+            Recent Executions</div>
           <div className="space-y-1">
             {executions.slice(0, 20).map(exec => (
               <div
@@ -219,20 +185,13 @@ export default function SkillsPage() {
                   style={{ backgroundColor: exec.outcome === 'success' ? 'var(--success)' : exec.outcome === 'partial' ? 'var(--warning)' : 'var(--danger)' }}
                     />
                 <span className="font-normal" style={{ color: 'var(--text-primary)', minWidth: '140px' }}>
-                  {exec.skill_name.replace(/_/g, ' ')}
-                </span>
+                  {exec.skill_name.replace(/_/g, ' ')}</span>
                 <span style={{ color: 'var(--text-muted)', minWidth: '60px' }}>v{exec.version}</span>
                 <span className="flex-1 truncate" style={stTextTertiary}>
-                  {exec.error_message || `${exec.fields_extracted}/${exec.fields_expected} fields`}
-                </span>
+                  {exec.error_message || `${exec.fields_extracted}/${exec.fields_expected} fields`}</span>
                 <span style={stTextMuted}>
-                  {new Date(exec.created_at).toLocaleString()}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
+                  {new Date(exec.created_at).toLocaleString()}</span></div>
+            ))}</div></div>
       )}
-    </div>
-  );
+    </div>);
 }

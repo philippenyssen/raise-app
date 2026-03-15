@@ -45,11 +45,7 @@ interface PipelineSnapshot {
   forecast: string;
 }
 
-interface BriefingAlert {
-  type: 'warning' | 'opportunity' | 'risk';
-  title: string;
-  detail: string;
-}
+interface BriefingAlert { type: 'warning' | 'opportunity' | 'risk'; title: string; detail: string; }
 
 interface BriefingData {
   greeting: string;
@@ -72,30 +68,26 @@ const CATEGORY_ICONS: Record<string, React.ComponentType<{ className?: string }>
   outreach: UserPlus,
   preparation: FileText,
   escalation: AlertTriangle,
-  meeting: Calendar,
-};
+  meeting: Calendar,};
 
 const CATEGORY_COLORS: Record<string, string> = {
   followup: 'var(--accent)',
   outreach: 'var(--chart-4)',
   preparation: 'var(--cat-teal)',
   escalation: 'var(--danger)',
-  meeting: 'var(--warning)',
-};
+  meeting: 'var(--warning)',};
 
 const CATEGORY_BG: Record<string, string> = {
   followup: 'var(--accent-muted)',
   outreach: 'var(--cat-purple-muted)',
   preparation: 'var(--cat-teal-muted)',
   escalation: 'var(--danger-muted)',
-  meeting: 'var(--warning-muted)',
-};
+  meeting: 'var(--warning-muted)',};
 
 const ALERT_STYLES: Record<string, { bg: string; border: string; color: string; icon: React.ComponentType<{ className?: string }> }> = {
   warning: { bg: 'var(--warning-muted)', border: 'var(--fg-5)', color: 'var(--text-tertiary)', icon: AlertTriangle },
   opportunity: { bg: 'var(--success-muted)', border: 'var(--accent-8)', color: 'var(--text-secondary)', icon: Zap },
-  risk: { bg: 'var(--danger-muted)', border: 'var(--fg-6)', color: 'var(--text-primary)', icon: Shield },
-};
+  risk: { bg: 'var(--danger-muted)', border: 'var(--fg-6)', color: 'var(--text-primary)', icon: Shield },};
 
 const MOMENTUM_CONFIG: Record<string, { color: string; bg: string; border: string; icon: React.ComponentType<{ className?: string }>; label: string }> = {
   accelerating: { color: 'var(--text-secondary)', bg: 'var(--success-muted)', border: 'var(--accent-8)', icon: TrendingUp, label: 'Accelerating' },
@@ -114,8 +106,7 @@ function renderMarkdown(text: string): React.ReactNode[] {
     if (part.startsWith('**') && part.endsWith('**')) {
       return <strong key={i} style={{ color: 'var(--text-primary)', fontWeight: 400 }}>{part.slice(2, -2)}</strong>;
     }
-    return <span key={i}>{part}</span>;
-  });
+    return <span key={i}>{part}</span>;});
 }
 
 // ---------------------------------------------------------------------------
@@ -147,9 +138,7 @@ function MeetingCard({ meeting }: { meeting: BriefingMeeting }) {
       <div className="flex items-start gap-3">
         <div className="flex items-center justify-center shrink-0" style={{ width: '40px', height: '40px', borderRadius: 'var(--radius-md)', background: 'var(--accent-muted)' }}>
           <span style={{ color: 'var(--accent)', fontSize: 'var(--font-size-xs)', fontWeight: 300, textAlign: 'center', lineHeight: 1.1 }}>
-            {timeDisplay}
-          </span>
-        </div>
+            {timeDisplay}</span></div>
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
@@ -175,30 +164,22 @@ function MeetingCard({ meeting }: { meeting: BriefingMeeting }) {
                         ? (meeting.enthusiasm ?? 0) >= 4 ? 'var(--success)' : (meeting.enthusiasm ?? 0) >= 3 ? 'var(--accent)' : 'var(--text-muted)'
                         : 'var(--border-default)',
                     }} />
-                ))}
-              </span>
-            )}
-          </div>
+                ))}</span>
+            )}</div>
 
-          <p style={{ ...labelSecondary, marginTop: '6px', lineHeight: 1.5 }}>{renderMarkdown(meeting.keyPoint)}</p>
-        </div>
+          <p style={{ ...labelSecondary, marginTop: '6px', lineHeight: 1.5 }}>{renderMarkdown(meeting.keyPoint)}</p></div>
 
         <div className="flex gap-1.5 shrink-0">
           <Link
             href={meeting.prepLink}
             className="btn btn-secondary btn-sm">
-            Prep
-          </Link>
+            Prep</Link>
           <Link
             href={meeting.captureLink || '/meetings/capture'}
             className="btn btn-ghost btn-sm"
             style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>
-            Capture
-          </Link>
-        </div>
-      </div>
-    </div>
-  );
+            Capture</Link></div></div>
+    </div>);
 }
 
 function ActionCard({ action }: { action: UrgentAction }) {
@@ -219,9 +200,7 @@ function ActionCard({ action }: { action: UrgentAction }) {
       <div className="flex items-start gap-3">
         <div className="flex items-center justify-center shrink-0" style={{ width: '32px', height: '32px', borderRadius: 'var(--radius-md)', background: iconBg }}>
           <span style={{ color: iconColor, display: 'flex' }}>
-            <Icon className="w-4 h-4" />
-          </span>
-        </div>
+            <Icon className="w-4 h-4" /></span></div>
 
         <div className="flex-1 min-w-0">
           <p style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)', lineHeight: 1.4 }}>{renderMarkdown(action.title)}</p>
@@ -232,14 +211,10 @@ function ActionCard({ action }: { action: UrgentAction }) {
           <div className="flex items-center gap-3 flex-wrap" style={{ marginTop: '8px' }}>
             {action.investorName && (
               <span className="flex items-center gap-1" style={{ ...stFontXs, color: 'var(--accent)' }}>
-                <span style={{ display: 'flex' }}><Users className="w-3 h-3" /></span>{action.investorName}
-              </span>
+                <span style={{ display: 'flex' }}><Users className="w-3 h-3" /></span>{action.investorName}</span>
             )}
             <span className="badge badge-zinc" style={{ fontSize: '10px' }}>
-              <span style={{ display: 'flex' }}><Clock className="w-3 h-3" /></span>{action.timeEstimate}
-            </span>
-          </div>
-        </div>
+              <span style={{ display: 'flex' }}><Clock className="w-3 h-3" /></span>{action.timeEstimate}</span></div></div>
 
         <Link
           href={action.link}
@@ -255,11 +230,8 @@ function ActionCard({ action }: { action: UrgentAction }) {
             : action.category === 'meeting'
             ? 'Open prep'
             : 'Take action'}
-          <span style={{ display: 'flex' }}><ArrowRight className="w-3 h-3" /></span>
-        </Link>
-      </div>
-    </div>
-  );
+          <span style={{ display: 'flex' }}><ArrowRight className="w-3 h-3" /></span></Link></div>
+    </div>);
 }
 
 function AlertCard({ alert }: { alert: BriefingAlert }) {
@@ -297,12 +269,10 @@ function AlertCard({ alert }: { alert: BriefingAlert }) {
         padding: 'var(--space-3) var(--space-4)', }}>
       <div className="flex items-start gap-3">
         <span className="shrink-0 mt-0.5" style={{ color: style.color, display: 'flex' }}>
-          <Icon className="w-4 h-4" />
-        </span>
+          <Icon className="w-4 h-4" /></span>
         <div className="flex-1 min-w-0">
           <p style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)', lineHeight: 1.4 }}>{renderMarkdown(alert.title)}</p>
-          <p style={{ ...labelTertiary, marginTop: '2px' }}>{renderMarkdown(alert.detail)}</p>
-        </div>
+          <p style={{ ...labelTertiary, marginTop: '2px' }}>{renderMarkdown(alert.detail)}</p></div>
         <Link
           href={alertLink}
           className="shrink-0 flex items-center gap-1 transition-colors"
@@ -318,11 +288,8 @@ function AlertCard({ alert }: { alert: BriefingAlert }) {
           onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--fg-6)'; }}
           onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--fg-3)'; }}>
           {alertAction}
-          <span style={{ display: 'flex' }}><ChevronRight className="w-3 h-3" /></span>
-        </Link>
-      </div>
-    </div>
-  );
+          <span style={{ display: 'flex' }}><ChevronRight className="w-3 h-3" /></span></Link></div>
+    </div>);
 }
 
 // ---------------------------------------------------------------------------
@@ -381,15 +348,13 @@ export default function TodayPage() {
         fetch('/api/intelligence/strategic').catch(() => null),
         fetch('/api/velocity').catch(() => null),
         fetch('/api/pulse').catch(() => null),
-        fetch('/api/followups?status=pending').catch(() => null),
-      ]);
+        fetch('/api/followups?status=pending').catch(() => null),]);
       if (stratRes?.ok) {
         const stratData = await stratRes.json();
         const rec = stratData.recommendations?.[0];
         if (rec) {
           setInsight({ title: rec.title, detail: rec.rationale ?? rec.action, priority: String(rec.priority) });
-        }
-      }
+        }}
       if (velRes?.ok) {
         const velData = await velRes.json();
         const elapsed = velData.summary?.raise_days_elapsed ?? 0;
@@ -399,8 +364,7 @@ export default function TodayPage() {
           targetDays: target,
           daysRemaining: Math.max(0, target - elapsed),
           pct: Math.min(100, Math.round((elapsed / target) * 100)),
-          isOver: elapsed > target,
-        });
+          isOver: elapsed > target,});
       }
       if (pulseRes?.ok) {
         const pulseData = await pulseRes.json();
@@ -410,17 +374,14 @@ export default function TodayPage() {
             newMeetings: pulseData.overnight.newMeetings ?? 0,
             meetingNames: pulseData.overnight.meetingNames ?? [],
             tasksCompleted: pulseData.overnight.tasksCompleted ?? 0,
-            activityFeed: pulseData.overnight.activityFeed ?? [],
-          });
-        }
-      }
+            activityFeed: pulseData.overnight.activityFeed ?? [],});
+        }}
       if (fuRes?.ok) {
         const fuData = await fuRes.json();
         const today = new Date().toISOString().split('T')[0];
         const due = (Array.isArray(fuData) ? fuData : []).filter((f: { due_at: string; status: string }) => {
           const dueDate = f.due_at?.split('T')[0];
-          return f.status === 'pending' && dueDate && dueDate <= today;
-        });
+          return f.status === 'pending' && dueDate && dueDate <= today;});
         setDueFollowups(due);
       }
     } catch {
@@ -451,8 +412,7 @@ export default function TodayPage() {
       await fetch('/api/followups', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, status: 'completed' }),
-      });
+        body: JSON.stringify({ id, status: 'completed' }),});
       setDueFollowups(prev => prev.filter(f => f.id !== id));
       toast('Follow-up completed', 'success');
     } catch {
@@ -467,8 +427,7 @@ export default function TodayPage() {
       await fetch('/api/followups', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, status: 'skipped' }),
-      });
+        body: JSON.stringify({ id, status: 'skipped' }),});
       setDueFollowups(prev => prev.filter(f => f.id !== id));
       toast('Follow-up skipped', 'success');
     } catch {
@@ -484,28 +443,23 @@ export default function TodayPage() {
         <div>
           <div className="skeleton" style={{ height: '36px', width: '320px' }} />
           <div className="skeleton" style={{ height: '16px', width: '220px', marginTop: 'var(--space-2)' }} />
-          <div className="skeleton" style={{ height: '14px', width: '480px', marginTop: 'var(--space-3)' }} />
-        </div>
+          <div className="skeleton" style={{ height: '14px', width: '480px', marginTop: 'var(--space-3)' }} /></div>
         <div>
           <div className="skeleton" style={{ height: '12px', width: '140px', marginBottom: 'var(--space-3)' }} />
-          <div className="skeleton" style={{ height: '88px', borderRadius: 'var(--radius-lg)' }} />
-        </div>
+          <div className="skeleton" style={{ height: '88px', borderRadius: 'var(--radius-lg)' }} /></div>
         <div>
           <div className="skeleton" style={{ height: '12px', width: '140px', marginBottom: 'var(--space-3)' }} />
           {[...Array(3)].map((_, i) => (
             <div key={i} className="skeleton" style={{ height: '80px', borderRadius: 'var(--radius-lg)', marginBottom: 'var(--space-2)' }}
               />
-          ))}
-        </div>
+          ))}</div>
         <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: 'var(--space-3)' }}>
           {[...Array(4)].map((_, i) => (
             <div key={i} className="skeleton" style={{ height: '72px', borderRadius: 'var(--radius-lg)' }} />
-          ))}
-        </div>
+          ))}</div>
         <div className="skeleton" style={{ height: '64px', borderRadius: 'var(--radius-lg)' }} />
         <div className="skeleton" style={{ height: '56px', borderRadius: 'var(--radius-lg)' }} />
-      </div>
-    );
+      </div>);
   }
 
   if (!data) {
@@ -515,11 +469,8 @@ export default function TodayPage() {
         <div className="text-center" style={{ background: 'var(--danger-muted)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-10)' }}>
           <p style={{ ...stTextSecondary, marginBottom: 'var(--space-4)' }}>Could not load briefing data.</p>
           <button onClick={() => fetchBriefing()} className="btn btn-secondary btn-md">
-            Retry
-          </button>
-        </div>
-      </div>
-    );
+            Retry</button></div>
+      </div>);
   }
 
   const momentumConfig = MOMENTUM_CONFIG[data.momentum] ?? MOMENTUM_CONFIG.steady;
@@ -555,18 +506,14 @@ export default function TodayPage() {
       <div className="flex items-start justify-between">
         <div>
           <h1 className="page-title">
-            {data.greeting}
-          </h1>
+            {data.greeting}</h1>
           <p style={{ ...stFontSm, color: 'var(--text-tertiary)', marginTop: '2px' }}>{fmtDateFull(new Date())}</p>
 
           <div className="flex items-center gap-2" style={{ marginTop: '6px' }}>
             <span style={{ ...stFontXs, color: stalenessMinutes >= 5 ? 'var(--warning)' : 'var(--text-muted)', transition: 'color 300ms ease' }}>{stalenessMinutes < 1 ? 'Updated just now' : `Updated ${stalenessMinutes}m ago`}</span>
             <button onClick={() => fetchBriefing(true)} disabled={refreshing} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '20px', height: '20px', borderRadius: 'var(--radius-sm)', border: 'none', background: 'transparent', cursor: refreshing ? 'default' : 'pointer', color: stalenessMinutes >= 5 ? 'var(--warning)' : 'var(--text-muted)', opacity: refreshing ? 0.5 : 1, transition: 'color 300ms ease, opacity 150ms ease', padding: 0 }}>
               <span style={{ display: 'flex', animation: refreshing ? 'spin 1s linear infinite' : 'none' }}>
-                <RefreshCw className="w-3 h-3" />
-              </span>
-            </button>
-          </div>
+                <RefreshCw className="w-3 h-3" /></span></button></div>
 
           <p style={{ fontSize: 'var(--font-size-base)', color: 'var(--text-secondary)', marginTop: 'var(--space-3)', lineHeight: 1.6, maxWidth: '640px' }}>{renderMarkdown(data.todaySummary)}</p>
         </div>
@@ -577,10 +524,7 @@ export default function TodayPage() {
           style={{ opacity: refreshing ? 0.5 : 1 }}
           disabled={refreshing}>
           <span style={{ display: 'flex', animation: refreshing ? 'spin 1s linear infinite' : 'none' }}>
-            <RefreshCw className="w-3.5 h-3.5" />
-          </span>
-        </button>
-      </div>
+            <RefreshCw className="w-3.5 h-3.5" /></span></button></div>
 
       {/* ----------------------------------------------------------------- */}
       {/* 1.5. Raise Day Counter                                            */}
@@ -590,12 +534,10 @@ export default function TodayPage() {
           <div className="flex items-center gap-2 shrink-0">
             <span style={{ color: 'var(--accent)', display: 'flex' }}><Target className="w-4 h-4" /></span>
             <span style={{ fontSize: 'var(--font-size-lg)', fontWeight: 300, fontVariantNumeric: 'tabular-nums', color: raiseProgress.isOver ? 'var(--danger)' : raiseProgress.pct >= 75 ? 'var(--warning)' : 'var(--text-primary)' }}>Day {raiseProgress.daysElapsed}</span>
-            <span style={labelMuted}>of {raiseProgress.targetDays}</span>
-          </div>
+            <span style={labelMuted}>of {raiseProgress.targetDays}</span></div>
           <div style={{ flex: 1, height: '6px', background: 'var(--surface-3)', borderRadius: '3px', overflow: 'hidden' }}>
             <div style={{ width: `${raiseProgress.pct}%`, height: '100%', borderRadius: '3px', background: raiseProgress.isOver ? 'var(--danger)' : raiseProgress.pct >= 75 ? 'var(--warning)' : 'var(--accent)', transition: 'width 600ms ease' }}
-              />
-          </div>
+              /></div>
           <span style={{ ...stFontXs, fontWeight: 400, fontVariantNumeric: 'tabular-nums', color: raiseProgress.isOver ? 'var(--danger)' : raiseProgress.daysRemaining <= 14 ? 'var(--warning)' : 'var(--text-tertiary)', whiteSpace: 'nowrap' }}>{raiseProgress.isOver ? `+${raiseProgress.daysElapsed - raiseProgress.targetDays}d over` : `${raiseProgress.daysRemaining}d left`}</span>
         </div>
       )}
@@ -619,10 +561,8 @@ export default function TodayPage() {
                   style={{ color: 'var(--accent)', fontWeight: 400, textDecoration: 'none' }}
                   onMouseEnter={e => { (e.currentTarget as HTMLElement).style.textDecoration = 'underline'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLElement).style.textDecoration = 'none'; }}>
-                  {sc.investorName}
-                </Link>
-                <span style={stTextMuted}>{sc.from.replace(/_/g, ' ')} → {sc.to.replace(/_/g, ' ')}</span>
-              </div>
+                  {sc.investorName}</Link>
+                <span style={stTextMuted}>{sc.from.replace(/_/g, ' ')} → {sc.to.replace(/_/g, ' ')}</span></div>
             ))}
             {overnight.newMeetings > 0 && (
               <div className="flex items-center gap-1.5" style={stFontXs}>
@@ -635,9 +575,7 @@ export default function TodayPage() {
                 <CheckCircle className="w-3 h-3" style={stTextSecondary} />
                 <span style={stTextSecondary}>{overnight.tasksCompleted} task{overnight.tasksCompleted > 1 ? 's' : ''} completed</span>
               </div>
-            )}
-          </div>
-        </div>
+            )}</div></div>
       )}
 
       {/* ----------------------------------------------------------------- */}
@@ -660,18 +598,13 @@ export default function TodayPage() {
                     <div className="flex items-center gap-2">
                       <Link href={`/investors/${fu.investor_id}`} style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, textDecoration: 'none' }}>{fu.investor_name}</Link>
                       <span style={{ fontSize: '10px', padding: '1px 5px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-1)', color: 'var(--text-tertiary)' }}>{fu.action_type.replace(/_/g, ' ')}</span>
-                      <span style={{ fontSize: '10px', color: 'var(--danger)', fontWeight: 400 }}>{daysOver}d overdue</span>
-                    </div>
+                      <span style={{ fontSize: '10px', color: 'var(--danger)', fontWeight: 400 }}>{daysOver}d overdue</span></div>
                     <p className="truncate" style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '1px' }}>{fu.description}</p>
                   </div>
                   <button onClick={() => handleQuickComplete(fu.id)} disabled={isProcessing} className="btn btn-sm shrink-0" style={{ background: 'var(--surface-0)', color: 'var(--text-secondary)', border: '1px solid var(--border-default)', fontSize: '11px', padding: '3px 10px' }}>
-                    Mark Done
-                  </button>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+                    Mark Done</button>
+                </div>);
+            })}</div></div>
       )}
 
       {/* ----------------------------------------------------------------- */}
@@ -684,8 +617,7 @@ export default function TodayPage() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
             {data.todayMeetings.map((meeting, idx) => (
               <MeetingCard key={idx} meeting={meeting} />
-            ))}
-          </div>
+            ))}</div>
         ) : (
           <div className="card" style={{ padding: 'var(--space-6)', textAlign: 'center' }}>
             <span style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--space-3)' }}><Calendar className="w-8 h-8" style={stTextMuted} /></span>
@@ -693,15 +625,10 @@ export default function TodayPage() {
             <p style={{ ...labelTertiary, marginTop: '4px', lineHeight: 1.5 }}>Use the open calendar to schedule follow-ups with your highest-momentum investors, or work through overdue actions.</p>
             <div className="flex items-center justify-center gap-2" style={{ marginTop: 'var(--space-3)' }}>
               <Link href="/focus" className="btn btn-primary btn-sm">
-                Schedule high-momentum follow-ups
-              </Link>
+                Schedule high-momentum follow-ups</Link>
               <Link href="/followups" className="btn btn-secondary btn-sm">
-                Clear overdue actions
-              </Link>
-            </div>
-          </div>
-        )}
-      </div>
+                Clear overdue actions</Link></div></div>
+        )}</div>
 
       {/* ----------------------------------------------------------------- */}
       {/* 3. Priority Actions                                               */}
@@ -713,8 +640,7 @@ export default function TodayPage() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
             {data.urgentActions.map((action, idx) => (
               <ActionCard key={idx} action={action} />
-            ))}
-          </div>
+            ))}</div>
         ) : (
           <div className="card" style={{ padding: 'var(--space-6)', textAlign: 'center' }}>
             <span style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--space-3)' }}><CheckCircle className="w-8 h-8" style={stTextSecondary} /></span>
@@ -722,15 +648,10 @@ export default function TodayPage() {
             <p style={{ ...labelTertiary, marginTop: '4px', lineHeight: 1.5 }}>Good time to advance stalled conversations or prepare materials for upcoming deep dives. Check the{' '}<Link href="/focus" style={{ color: 'var(--accent)', textDecoration: 'none' }}>focus queue</Link>{' '}for investors who need a push.</p>
             <div className="flex items-center justify-center gap-2" style={{ marginTop: 'var(--space-3)' }}>
               <Link href="/pipeline?sort=momentum" className="btn btn-secondary btn-sm">
-                Review stalled investors
-              </Link>
+                Review stalled investors</Link>
               <Link href="/intelligence" className="btn btn-secondary btn-sm">
-                Refresh competitive intel
-              </Link>
-            </div>
-          </div>
-        )}
-      </div>
+                Refresh competitive intel</Link></div></div>
+        )}</div>
 
       {/* ----------------------------------------------------------------- */}
       {/* 3.5 Due Follow-ups (inline quick-complete)                        */}
@@ -740,9 +661,7 @@ export default function TodayPage() {
           <div className="flex items-center justify-between">
             <div className="section-title">Follow-ups Due</div>
             <Link href="/followups" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', textDecoration: 'underline' }}>
-              View all
-            </Link>
-          </div>
+              View all</Link></div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
             {dueTodayFollowups.map(fu => {
               const typeConfig: Record<string, { label: string; color: string; bg: string }> = {
@@ -751,48 +670,35 @@ export default function TodayPage() {
                 data_share: { label: 'Share Docs', color: 'var(--chart-4)', bg: 'var(--cat-purple-muted)' },
                 schedule_followup: { label: 'Schedule', color: 'var(--text-secondary)', bg: 'var(--success-muted)' },
                 warm_reengagement: { label: 'Re-engage', color: 'var(--text-tertiary)', bg: 'var(--warning-muted)' },
-                milestone_update: { label: 'Update', color: 'var(--text-tertiary)', bg: 'var(--warn-8)' },
-              };
+                milestone_update: { label: 'Update', color: 'var(--text-tertiary)', bg: 'var(--warn-8)' },};
               const tc = typeConfig[fu.action_type] || { label: fu.action_type, color: 'var(--text-tertiary)', bg: 'var(--surface-2)' };
               const isProcessing = completingFollowupId === fu.id;
               return (
                 <div key={fu.id} className="card" style={{ padding: 'var(--space-3)', opacity: isProcessing ? 0.5 : 1, transition: 'opacity 150ms' }}>
                   <div className="flex items-center gap-3">
                     <span className="text-xs px-2 py-0.5 rounded shrink-0" style={{ background: tc.bg, color: tc.color, fontWeight: 400 }}>
-                      {tc.label}
-                    </span>
+                      {tc.label}</span>
                     <div className="flex-1 min-w-0">
                       <p className="truncate" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)' }}>
-                        {fu.description}
-                      </p>
+                        {fu.description}</p>
                       <div className="flex items-center gap-2" style={{ marginTop: '2px' }}>
                         <Link href={`/investors/${fu.investor_id}`} style={{ fontSize: '11px', color: 'var(--accent)', textDecoration: 'none' }}>
-                          {fu.investor_name}
-                        </Link>
-                      </div>
-                    </div>
+                          {fu.investor_name}</Link></div></div>
                     <div className="flex items-center gap-1 shrink-0">
                       <button
                         onClick={() => handleQuickComplete(fu.id)}
                         disabled={isProcessing}
                         className="btn btn-sm"
                         style={{ background: 'var(--success-muted)', color: 'var(--text-secondary)', border: '1px solid var(--accent-8)', fontSize: '11px', padding: '3px 10px' }}>
-                        Done
-                      </button>
+                        Done</button>
                       <button
                         onClick={() => handleQuickSkip(fu.id)}
                         disabled={isProcessing}
                         className="btn btn-sm"
                         style={{ background: 'var(--surface-2)', color: 'var(--text-muted)', fontSize: '11px', padding: '3px 8px' }}>
-                        Skip
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+                        Skip</button></div></div>
+                </div>);
+            })}</div></div>
       )}
 
       {/* ----------------------------------------------------------------- */}
@@ -810,9 +716,7 @@ export default function TodayPage() {
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-subtle)'; }}>
             <div className="metric-label">Active</div>
             <div className="metric-value" style={{ fontSize: 'var(--font-size-xl)', marginTop: '4px', color: 'var(--text-primary)' }}>
-              {data.pipelineSnapshot.totalActive}
-            </div>
-          </Link>
+              {data.pipelineSnapshot.totalActive}</div></Link>
 
           <Link
             href="/pipeline?stage=in_dd"
@@ -822,9 +726,7 @@ export default function TodayPage() {
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-subtle)'; }}>
             <div className="metric-label">In DD</div>
             <div className="metric-value" style={{ fontSize: 'var(--font-size-xl)', marginTop: '4px', color: data.pipelineSnapshot.inDD > 0 ? 'var(--warning)' : 'var(--text-muted)' }}>
-              {data.pipelineSnapshot.inDD}
-            </div>
-          </Link>
+              {data.pipelineSnapshot.inDD}</div></Link>
 
           <Link
             href="/pipeline?stage=term_sheet"
@@ -834,19 +736,14 @@ export default function TodayPage() {
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-subtle)'; }}>
             <div className="metric-label">Term Sheets</div>
             <div className="metric-value" style={{ fontSize: 'var(--font-size-xl)', marginTop: '4px', color: data.pipelineSnapshot.termSheets > 0 ? 'var(--success)' : 'var(--text-muted)' }}>
-              {data.pipelineSnapshot.termSheets}
-            </div>
-          </Link>
+              {data.pipelineSnapshot.termSheets}</div></Link>
 
           <div className="card" style={{ padding: 'var(--space-4)' }}>
             <div className="flex items-center gap-1.5">
               <div className={forecastDotClass} style={{ width: '6px', height: '6px' }} />
-              <div className="metric-label">Forecast</div>
-            </div>
+              <div className="metric-label">Forecast</div></div>
             <p style={{ ...stFontXs, color: forecastColor, marginTop: '6px', lineHeight: 1.4 }}>{data.pipelineSnapshot.forecast}</p>
-          </div>
-        </div>
-      </div>
+          </div></div></div>
 
       {/* ----------------------------------------------------------------- */}
       {/* 5. Alerts                                                         */}
@@ -857,9 +754,7 @@ export default function TodayPage() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
             {data.alerts.map((alert, idx) => (
               <AlertCard key={idx} alert={alert} />
-            ))}
-          </div>
-        </div>
+            ))}</div></div>
       )}
 
       {/* ----------------------------------------------------------------- */}
@@ -869,15 +764,12 @@ export default function TodayPage() {
         <div className="flex items-center gap-3">
           <div className="flex items-center justify-center shrink-0" style={{ width: '36px', height: '36px', borderRadius: '50%', background: momentumConfig.bg, border: `1px solid ${momentumConfig.border}` }}>
             <span style={{ color: momentumConfig.color, display: 'flex' }}>
-              <MomentumIcon className="w-5 h-5" />
-            </span>
-          </div>
+              <MomentumIcon className="w-5 h-5" /></span></div>
 
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
               <p style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: momentumConfig.color }}>
-                {momentumConfig.label}
-              </p>
+                {momentumConfig.label}</p>
               <span style={{ ...stFontXs, padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: momentumConfig.bg, border: `1px solid ${momentumConfig.border}`, color: momentumConfig.color, fontWeight: 400 }}>Raise Momentum</span>
             </div>
             <p style={{ ...stFontXs, color: 'var(--text-secondary)', marginTop: '2px', lineHeight: 1.5 }}>{data.momentumChange}</p>
@@ -890,10 +782,7 @@ export default function TodayPage() {
             onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-primary)')}
             onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-tertiary)')}>
             {data.momentum === 'stalled' ? 'Diagnose' : data.momentum === 'decelerating' ? 'Investigate' : 'View dealflow'}
-            <span style={{ display: 'flex' }}><ChevronRight className="w-3.5 h-3.5" /></span>
-          </Link>
-        </div>
-      </div>
+            <span style={{ display: 'flex' }}><ChevronRight className="w-3.5 h-3.5" /></span></Link></div></div>
 
       {/* ----------------------------------------------------------------- */}
       {/* 7. AI Insight                                                      */}
@@ -903,16 +792,12 @@ export default function TodayPage() {
           <div className="flex items-start gap-3">
             <div className="flex items-center justify-center shrink-0" style={{ width: '32px', height: '32px', borderRadius: 'var(--radius-md)', background: 'var(--accent-10)' }}>
               <span style={{ color: 'var(--accent)', display: 'flex' }}>
-                <Sparkles className="w-4 h-4" />
-              </span>
-            </div>
+                <Sparkles className="w-4 h-4" /></span></div>
 
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2" style={{ marginBottom: '4px' }}>
                 <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--accent)', letterSpacing: '0.01em' }}>
-                  AI Insight
-                </span>
-              </div>
+                  AI Insight</span></div>
               <p style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)', lineHeight: 1.4 }}>{insight.title}</p>
               <p style={{ ...stFontXs, color: 'var(--text-secondary)', marginTop: '4px', lineHeight: 1.5 }}>{insight.detail}</p>
             </div>
@@ -924,14 +809,10 @@ export default function TodayPage() {
               onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
               onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-secondary)')}>
               See more
-              <span style={{ display: 'flex' }}><ChevronRight className="w-3.5 h-3.5" /></span>
-            </Link>
-          </div>
-        </div>
+              <span style={{ display: 'flex' }}><ChevronRight className="w-3.5 h-3.5" /></span></Link></div></div>
       )}
 
       {/* Footer spacer */}
       <div style={{ height: 'var(--space-4)' }} />
-    </div>
-  );
+    </div>);
 }

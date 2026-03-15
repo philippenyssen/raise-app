@@ -131,8 +131,7 @@ function determineRecommendedAction(
       return { action: `Schedule site visit or deep dive with ${partner} to deepen engagement`, timeEstimate: '1hr meeting', expectedImpact: `Site visits convert at 2x the rate of remote meetings`, riskIfIgnored: `Engagement without deepening stalls at the "interested but not committed" stage` };
     }
     default: return { action: `Review and update status for ${partner} --- determine appropriate next step`, timeEstimate: '15min review', expectedImpact: `Keeping pipeline current prevents missed opportunities`, riskIfIgnored: `Stale pipeline data leads to misallocated CEO time` };
-  }
-}
+  }}
 
 // ---------------------------------------------------------------------------
 // Main GET handler
@@ -145,8 +144,7 @@ export async function GET() {
       db.execute(`SELECT * FROM investors WHERE status NOT IN ('passed', 'dropped') ORDER BY tier ASC, name ASC`),
       loadAllMeetings(db), db.execute(`SELECT investor_id, COUNT(*) as count FROM tasks WHERE status IN ('pending', 'in_progress') GROUP BY investor_id`),
       db.execute(`SELECT investor_id, COUNT(*) as count FROM document_flags WHERE status = 'open' GROUP BY investor_id`),
-      loadRaiseConfig(db), loadAllPortfolios(db),
-    ]);
+      loadRaiseConfig(db), loadAllPortfolios(db),]);
 
     const investors = investorRows.rows as unknown as Investor[];
     const now = new Date().toISOString();
@@ -195,8 +193,7 @@ export async function GET() {
         expectedImpact: actionResult.expectedImpact, riskIfIgnored: actionResult.riskIfIgnored,
         daysSinceLastMeeting, lastMeetingDate: latestMeeting?.date ?? null,
         lastMeetingType: latestMeeting?.type ?? null, momentum,
-        pendingTaskCount, openFlagCount, unresolvedObjections: unresolvedObjections.slice(0, 3), topObjectionTopic,
-      });
+        pendingTaskCount, openFlagCount, unresolvedObjections: unresolvedObjections.slice(0, 3), topObjectionTopic,});
     }
 
     focusItems.sort((a, b) => b.focusScore - a.focusScore);
@@ -227,10 +224,8 @@ export async function GET() {
     return NextResponse.json({
       priorityQueue: focusItems, quickWins, staleAlerts,
       weeklyBudget: { totalHoursRecommended: Math.round(totalHours * 10) / 10, meetingsRecommended: meetingsCount, followUpsRecommended: followUpsCount, investorCount: topItems.length },
-      generatedAt: new Date().toISOString(),
-    });
+      generatedAt: new Date().toISOString(),});
   } catch (error) {
     console.error('Focus computation error:', error);
     return NextResponse.json({ error: 'Failed to compute focus data', detail: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 });
-  }
-}
+  }}

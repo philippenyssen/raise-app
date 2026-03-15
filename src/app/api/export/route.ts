@@ -26,8 +26,7 @@ function csvResponse(csv: string, type: string): NextResponse {
     headers: {
       'Content-Type': 'text/csv',
       'Content-Disposition': `attachment; filename=raise-${type}-${date}.csv`,
-    },
-  });
+    },});
 }
 
 export async function GET(req: NextRequest) {
@@ -37,8 +36,7 @@ export async function GET(req: NextRequest) {
   if (!type || !VALID_TYPES.includes(type)) {
     return NextResponse.json(
       { error: `Invalid type parameter. Must be one of: ${VALID_TYPES.join(', ')}` },
-      { status: 400 },
-    );
+      { status: 400 },);
   }
 
   if (type === 'investors') {
@@ -46,8 +44,7 @@ export async function GET(req: NextRequest) {
     const headers = ['name', 'type', 'tier', 'status', 'partner', 'fund_size', 'check_size_range', 'enthusiasm', 'notes', 'created_at'];
     const rows = investors.map(inv => [
       inv.name, inv.type, inv.tier, inv.status, inv.partner, inv.fund_size,
-      inv.check_size_range, inv.enthusiasm, inv.notes, inv.created_at,
-    ]);
+      inv.check_size_range, inv.enthusiasm, inv.notes, inv.created_at,]);
     return csvResponse(toCSV(headers, rows), type);
   }
 
@@ -56,8 +53,7 @@ export async function GET(req: NextRequest) {
     const headers = ['investor_name', 'date', 'type', 'duration_minutes', 'enthusiasm_score', 'next_steps', 'status_after', 'raw_notes'];
     const rows = meetings.map(m => [
       m.investor_name, m.date, m.type, m.duration_minutes, m.enthusiasm_score,
-      m.next_steps, m.status_after, m.raw_notes,
-    ]);
+      m.next_steps, m.status_after, m.raw_notes,]);
     return csvResponse(toCSV(headers, rows), type);
   }
 
@@ -66,8 +62,7 @@ export async function GET(req: NextRequest) {
     const headers = ['title', 'status', 'priority', 'phase', 'investor_name', 'due_date', 'assignee', 'description'];
     const rows = tasks.map(t => [
       t.title, t.status, t.priority, t.phase, t.investor_name, t.due_date,
-      t.assignee, t.description,
-    ]);
+      t.assignee, t.description,]);
     return csvResponse(toCSV(headers, rows), type);
   }
 
@@ -75,8 +70,7 @@ export async function GET(req: NextRequest) {
     const events = await getActivityLog(10000);
     const headers = ['event_type', 'subject', 'detail', 'investor_name', 'created_at'];
     const rows = events.map(e => [
-      e.event_type, e.subject, e.detail, e.investor_name, e.created_at,
-    ]);
+      e.event_type, e.subject, e.detail, e.investor_name, e.created_at,]);
     return csvResponse(toCSV(headers, rows), type);
   }
 
@@ -92,16 +86,13 @@ export async function GET(req: NextRequest) {
     } else {
       entry.count += 1;
       if (m.date > entry.latest) entry.latest = m.date;
-    }
-  }
+    }}
 
   const headers = ['name', 'status', 'tier', 'type', 'enthusiasm', 'fund_size', 'meetings_count', 'latest_meeting_date'];
   const rows = investors.map(inv => {
     const stats = meetingsByInvestor.get(inv.id);
     return [
       inv.name, inv.status, inv.tier, inv.type, inv.enthusiasm, inv.fund_size,
-      stats?.count ?? 0, stats?.latest ?? '',
-    ];
-  });
+      stats?.count ?? 0, stats?.latest ?? '',];});
   return csvResponse(toCSV(headers, rows), type);
 }
