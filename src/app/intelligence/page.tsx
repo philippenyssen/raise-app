@@ -154,7 +154,7 @@ export default function IntelligencePage() {
         <div className="h-8 w-64 skeleton" style={stSurface2} />
         <div className="h-20 skeleton rounded-xl" style={{ background: 'var(--surface-2)', opacity: 0.5 }} />
         <div className="space-y-2">
-          {[...Array(5)].map((_, i) => <div key={i} className="h-14 skeleton rounded" style={{ background: 'var(--surface-2)', opacity: 0.3 }} />)}
+          {[...Array(5)].map((_, i) => <div key={i} className="h-14 skeleton rounded" style={{ background: 'var(--surface-2)' }} />)}
         </div>
       </div>);
   }

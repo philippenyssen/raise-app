@@ -167,7 +167,7 @@ export default function AnalyticsPage() {
     return (
       <div className="space-y-6">
         <h1 className="page-title">Process Analytics</h1>
-        <div className="rounded-xl p-8 text-center space-y-3" style={{ background: 'var(--danger-muted)', opacity: 0.3 }}>
+        <div className="rounded-xl p-8 text-center space-y-3" style={{ background: 'var(--danger-muted)' }}>
           <p style={{ ...stTextTertiary, ...stFontSm }}>Could not load analytics data.</p>
           <button
             onClick={fetchAnalytics}
