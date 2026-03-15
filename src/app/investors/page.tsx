@@ -279,9 +279,10 @@ export default function InvestorsPage() {
         <form
           id="investor-form"
           onSubmit={handleSubmit}
+          onKeyDown={e => { if (e.key === 'Escape') { e.preventDefault(); setShowForm(false); setEditId(null); } }}
           className="card-elevated space-y-4">
           <h3 className="section-title">{editId ? 'Edit' : 'Add'} investor</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4" onKeyDown={e => { if (e.key === 'Escape') { setShowForm(false); setEditId(null); } }}>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div><Input label="Name" value={form.name} onChange={v => setForm(f => ({ ...f, name: v }))} required autoFocus />{!editId && form.name.length >= 3 && (() => { const q = form.name.toLowerCase(); const match = investors.find(i => i.name.toLowerCase().includes(q)); return match ? <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--warning)' }}>Similar investor exists: {match.name}</span> : null; })()}</div>
             <Select label="Type" value={form.type} onChange={v => setForm(f => ({ ...f, type: v as InvestorType }))} options={Object.entries(TYPE_LABELS)}
               />
