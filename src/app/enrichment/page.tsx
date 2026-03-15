@@ -59,6 +59,7 @@ export default function EnrichmentPage() {
   const [jobs, setJobs] = useState<EnrichmentJobRow[]>([]);
   const [stats, setStats] = useState<EnrichmentStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
   const [enriching, setEnriching] = useState<string | null>(null); // investor_id being enriched
   const [bulkEnriching, setBulkEnriching] = useState(false);
   const [selectedSources, setSelectedSources] = useState<Set<string>>(new Set());
@@ -68,14 +69,17 @@ export default function EnrichmentPage() {
 
   const fetchData = useCallback(async () => {
     setLoading(true);
+    setFetchError(false);
+    let failures = 0;
     const safeFetch = async (url: string, fallback: unknown = []) => {
-      try { const r = await fetch(url); if (!r.ok) return fallback; return r.json(); } catch { return fallback; }
+      try { const r = await fetch(url); if (!r.ok) { failures++; return fallback; } return r.json(); } catch { failures++; return fallback; }
     };
     const [provRes, invRes, jobRes, statsRes] = await Promise.all([
       safeFetch('/api/enrichment?action=providers'),
       safeFetch('/api/investors'),
       safeFetch('/api/enrichment?action=jobs'),
       safeFetch('/api/enrichment?action=stats', null),]);
+    if (failures >= 3) setFetchError(true);
     setProviders(Array.isArray(provRes) ? provRes : []);
     const invList = Array.isArray(invRes) ? invRes : invRes?.investors || [];
     setInvestors(invList.filter((i: InvestorOption) => i.status !== 'passed' && i.status !== 'dropped'));
@@ -168,6 +172,12 @@ export default function EnrichmentPage() {
 
   return (
     <div className="page-content" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
+      {fetchError && (
+        <div className="rounded-lg p-4" style={{ background: 'var(--danger-muted)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
+            Enrichment data failed to load. If this persists, check Settings for API credentials.</span>
+          <button onClick={fetchData} className="btn btn-secondary btn-sm">Retry</button></div>
+      )}
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div>
