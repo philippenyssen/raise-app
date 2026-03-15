@@ -77,7 +77,7 @@ export default function BacklogPage() {
       setCommitments(data.commitments);
       setSummary(data.summary);
     } catch {
-      toast('Failed to load backlog', 'error');
+      toast('Could not load revenue commitments — check your connection and refresh', 'error');
     } finally {
       setLoading(false);
     }
@@ -115,7 +115,7 @@ export default function BacklogPage() {
       // Refresh summary in background (no loading spinner)
       cachedFetch('/api/revenue-commitments').then(r => r.ok ? r.json() : null).then(d => { if (d) setSummary(d.summary); }).catch(() => {});
     } catch {
-      toast('Failed to add', 'error');
+      toast('Could not add commitment — check that all fields are filled and try again', 'error');
     }
     setAdding(false);
   }
@@ -132,7 +132,7 @@ export default function BacklogPage() {
       // Refresh summary in background
       cachedFetch('/api/revenue-commitments').then(r => r.ok ? r.json() : null).then(d => { if (d) setSummary(d.summary); }).catch(() => {});
     } catch {
-      toast('Failed to delete', 'error');
+      toast('Could not confirm deletion — refresh to verify current state', 'error');
     }}
 
   if (loading) {
