@@ -96,14 +96,6 @@ const TYPE_COLORS: Record<string, { bg: string; color: string; border: string }>
   debt:          { bg: 'var(--fg-5)',   color: 'var(--text-tertiary)',  border: 'var(--fg-10)' },
   family_office: { bg: 'var(--fg-6)',   color: 'var(--text-tertiary)',  border: 'var(--fg-10)' },};
 
-function scoreBorderStyle(score: number): React.CSSProperties {
-  if (score >= 71) return { borderColor: 'var(--accent-30)' };
-  if (score >= 51) return { borderColor: 'var(--accent-20)' };
-  if (score >= 31) return { borderColor: 'var(--warn-15)' };
-  if (score >= 1)  return { borderColor: 'var(--fg-10)' };
-  return { borderColor: 'var(--border-subtle)' };
-}
-
 function trendBarBg(score: number): string {
   if (score >= 50) return 'var(--accent-75)';
   if (score >= 30) return 'var(--accent-40)';

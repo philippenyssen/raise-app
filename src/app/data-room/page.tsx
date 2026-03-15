@@ -52,15 +52,12 @@ export default function DataRoomPage() {
   const [intelLoading, setIntelLoading] = useState(true);
   const [expandedInvestor, setExpandedInvestor] = useState<string | null>(null);
 
-  const [fetchError, setFetchError] = useState<string | null>(null);
-
   const fetchFiles = useCallback(async () => {
     try {
       const res = await fetch('/api/data-room');
       if (!res.ok) throw new Error('Failed to load');
       setFiles(await res.json());
-      setFetchError(null);
-    } catch { setFetchError('Failed to load data room files'); }
+    } catch { /* data room fetch failed — files remain empty */ }
     setLoading(false);
   }, []);
 
@@ -511,7 +508,6 @@ function InvestorAccessRow({ investor, expanded, onToggle, onLogAccess, files }:
   onLogAccess: (investorId: string, documentId: string) => void;
   files: DataRoomFile[];
 }) {
-  const [hovered, setHovered] = useState(false);
   const [logDocId, setLogDocId] = useState('');
 
   const accessedPct = files.length > 0 ? Math.round((investor.documents_accessed / files.length) * 100) : 0;
@@ -519,9 +515,7 @@ function InvestorAccessRow({ investor, expanded, onToggle, onLogAccess, files }:
   return (
     <div
       className="transition-colors"
-      style={{ borderRadius: 'var(--radius-md)', transition: 'border-color 150ms ease' }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}>
+      style={{ borderRadius: 'var(--radius-md)', transition: 'border-color 150ms ease' }}>
       <div
         className="flex items-center gap-3 cursor-pointer"
         style={{ padding: 'var(--space-3) var(--space-4)' }}
@@ -694,15 +688,12 @@ function FileRow({ file, expanded, onToggle, onDelete }: {
   onToggle: () => void;
   onDelete: () => void;
 }) {
-  const [hovered, setHovered] = useState(false);
   const [deleteHovered, setDeleteHovered] = useState(false);
 
   return (
     <div
       className="transition-colors"
-      style={{ borderRadius: 'var(--radius-md)', transition: 'all 150ms ease' }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}>
+      style={{ borderRadius: 'var(--radius-md)', transition: 'all 150ms ease' }}>
       <div className="flex items-center cursor-pointer" style={{ padding: 'var(--space-3) var(--space-4)' }} onClick={onToggle}>
         {expanded
           ? <ChevronDown className="w-4 h-4 shrink-0" style={stTextMuted} />

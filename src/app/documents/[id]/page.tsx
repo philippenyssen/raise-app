@@ -358,13 +358,10 @@ export default function DocumentEditorPage() {
 }
 
 function VersionRow({ version: v, onRestore }: { version: Version; onRestore: (v: Version) => void }) {
-  const [hovered, setHovered] = useState(false);
   const [restoreHovered, setRestoreHovered] = useState(false);
   return (
     <div
-      className="flex items-center justify-between p-3 rounded-lg transition-colors"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}>
+      className="flex items-center justify-between p-3 rounded-lg transition-colors">
       <div>
         <span className="text-sm font-normal" style={stTextPrimary}>v{v.version_number}</span>
         {v.change_summary && (
