@@ -5,7 +5,7 @@ import { emitContextChange } from '@/lib/context-bus';
 
 export async function GET(req: NextRequest) {
   try {
-    const { searchParams } = new URL(req.url);
+    const searchParams = req.nextUrl.searchParams;
     const investorId = searchParams.get('investor_id') ?? undefined;
     const meetings = await getMeetings(investorId);
     return NextResponse.json(meetings, { headers: { 'Cache-Control': 'private, max-age=15, stale-while-revalidate=30' } });

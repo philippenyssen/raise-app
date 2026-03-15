@@ -10,7 +10,7 @@ interface CompetitorEntry {
 }
 
 export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
+  const searchParams = req.nextUrl.searchParams;
   const from = searchParams.get('from');
   const to = searchParams.get('to');
 

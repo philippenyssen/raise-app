@@ -3,7 +3,7 @@ import { getModelSheets, createModelSheet, updateModelSheet, deleteModelSheet } 
 
 export async function GET(req: NextRequest) {
   try {
-    const { searchParams } = new URL(req.url);
+    const searchParams = req.nextUrl.searchParams;
     const modelId = searchParams.get('modelId') || 'default';
     const sheets = await getModelSheets(modelId);
     return NextResponse.json(sheets, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
@@ -73,7 +73,7 @@ export async function PUT(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
+  const searchParams = req.nextUrl.searchParams;
   const id = searchParams.get('id');
   if (!id) return NextResponse.json({ error: 'id is required' }, { status: 400 });
   try {

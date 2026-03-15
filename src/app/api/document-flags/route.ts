@@ -3,7 +3,7 @@ import { getDocumentFlags, updateDocumentFlag } from '@/lib/db';
 
 export async function GET(req: NextRequest) {
   try {
-    const { searchParams } = new URL(req.url);
+    const searchParams = req.nextUrl.searchParams;
     const status = searchParams.get('status') ?? undefined;
     const document_id = searchParams.get('document_id') ?? undefined;
     const investor_id = searchParams.get('investor_id') ?? undefined;

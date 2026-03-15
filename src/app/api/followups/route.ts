@@ -18,7 +18,7 @@ function enrichTemporal<T extends { status: string; due_at: string }>(f: T) {
 
 export async function GET(req: NextRequest) {
   try {
-    const { searchParams } = new URL(req.url);
+    const searchParams = req.nextUrl.searchParams;
     const status = searchParams.get('status') as FollowupStatus | null;
     const investor_id = searchParams.get('investor_id');
     const meeting_id = searchParams.get('meeting_id');
@@ -169,7 +169,7 @@ export async function PUT(req: NextRequest) {
   emitContextChange('followup_updated', `Follow-up ${id} ${status || 'updated'}`);
 
   if (status === 'completed' && conviction_delta !== undefined) {
-    const { searchParams } = new URL(req.url);
+    const searchParams = req.nextUrl.searchParams;
     const invId = (filtered.investor_id as string) || searchParams.get('investor_id');
     if (invId) {
       backfillEnthusiasmFromFollowups(invId).catch(() => {/* non-blocking */});

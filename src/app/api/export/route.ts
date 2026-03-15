@@ -30,7 +30,7 @@ function csvResponse(csv: string, type: string): NextResponse {
 
 export async function GET(req: NextRequest) {
   try {
-    const { searchParams } = new URL(req.url);
+    const searchParams = req.nextUrl.searchParams;
     const type = searchParams.get('type') as ExportType | null;
 
     if (!type || !VALID_TYPES.includes(type)) {

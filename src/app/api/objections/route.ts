@@ -3,7 +3,7 @@ import { getObjectionPlaybook, updateObjectionResponse, getTopObjections, getBes
 import { emitContextChange } from '@/lib/context-bus';
 
 export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
+  const searchParams = req.nextUrl.searchParams;
   const investorId = searchParams.get('investor_id');
   const topic = searchParams.get('topic');
   const view = searchParams.get('view'); // 'top' | 'best' | 'investor' | default full playbook

@@ -18,7 +18,7 @@ function filterFields<T extends Record<string, unknown>>(data: T, allowed: Set<s
 
 export async function GET(req: NextRequest) {
   try {
-    const { searchParams } = new URL(req.url);
+    const searchParams = req.nextUrl.searchParams;
     const id = searchParams.get('id');
     if (id) {
       const investor = await getInvestor(id);
@@ -147,7 +147,7 @@ export async function PUT(req: NextRequest) {
   }}
 
 export async function DELETE(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
+  const searchParams = req.nextUrl.searchParams;
   const id = searchParams.get('id');
   if (!id) return NextResponse.json({ error: 'id query parameter is required' }, { status: 400 });
 

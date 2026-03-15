@@ -4,7 +4,7 @@ import { getDocumentVersions, getDocumentVersion } from '@/lib/db';
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
-    const { searchParams } = new URL(req.url);
+    const searchParams = req.nextUrl.searchParams;
     const versionId = searchParams.get('version_id');
 
     if (versionId) {

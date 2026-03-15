@@ -368,7 +368,7 @@ async function generateInvestorBrief(investorId: string): Promise<string> {
 // ─── GET Handler ─────────────────────────────────────────────────────────────
 
 export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
+  const searchParams = req.nextUrl.searchParams;
   const type = searchParams.get('type');
   const investorId = searchParams.get('investor_id');
 
