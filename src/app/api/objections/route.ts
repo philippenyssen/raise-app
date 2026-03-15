@@ -40,7 +40,7 @@ export async function GET(req: NextRequest) {
     unresolved,
     investors: investors.map(i => ({ id: i.id, name: i.name })),
     total_objections: playbook.reduce((sum, t) => sum + t.count, 0),
-    topics_count: playbook.length,});
+    topics_count: playbook.length,}, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
 }
 
 export async function PUT(req: NextRequest) {

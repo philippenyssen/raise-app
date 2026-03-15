@@ -108,7 +108,7 @@ export async function GET() {
     frozen: results.filter(r => r.dealHeat.label === 'frozen').length,
     total: results.length,};
 
-  return NextResponse.json({ investors: results, counts, generated_at: new Date().toISOString() });
+  return NextResponse.json({ investors: results, counts, generated_at: new Date().toISOString() }, { headers: { 'Cache-Control': 'private, max-age=15, stale-while-revalidate=30' } });
   } catch (err) {
     console.error('[DEAL_HEAT_GET]', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: 'Failed to compute deal heat' }, { status: 500 });

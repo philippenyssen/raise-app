@@ -330,7 +330,7 @@ export async function GET() {
       totalInvestors: investors.length, activeInvestors: activeInvestors.length, totalMeetings: meetings.length, avgEnthusiasm: engagement.avgEnthusiasm,
       pipelineStages: PIPELINE_ORDER.map(stage => ({ stage, label: STAGE_LABELS[stage], count: funnelExact[stage] || 0 })),};
 
-    return NextResponse.json({ funnel, velocity, engagement, risks, winLoss, summary, generatedAt: new Date().toISOString() });
+    return NextResponse.json({ funnel, velocity, engagement, risks, winLoss, summary, generatedAt: new Date().toISOString() }, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
   } catch (error) {
     console.error('[ANALYTICS_GET]', error instanceof Error ? error.message : error);
     return NextResponse.json({ error: 'Failed to compute analytics' }, { status: 500 });

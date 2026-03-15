@@ -87,7 +87,7 @@ export async function GET(req: NextRequest) {
     if (meeting_id) filters.meeting_id = meeting_id;
 
     const followups = await getFollowups(Object.keys(filters).length > 0 ? filters : undefined);
-    return NextResponse.json(followups.map(enrichTemporal));
+    return NextResponse.json(followups.map(enrichTemporal), { headers: { 'Cache-Control': 'private, max-age=15, stale-while-revalidate=30' } });
   } catch (error) {
     console.error('[FOLLOWUPS_GET]', error instanceof Error ? error.message : error);
     return NextResponse.json(
