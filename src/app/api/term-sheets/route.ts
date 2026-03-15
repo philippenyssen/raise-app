@@ -52,6 +52,10 @@ export async function PUT(req: NextRequest) {
   }
   if (!body.id) return NextResponse.json({ error: 'id is required' }, { status: 400 });
   const { id, ...updates } = body;
+  if (updates.strategic_value !== undefined) {
+    const rawSV = Number(updates.strategic_value);
+    updates.strategic_value = (!isNaN(rawSV) && rawSV >= 1 && rawSV <= 5) ? rawSV : 3;
+  }
   try {
     await updateTermSheet(id as string, updates);
     return NextResponse.json({ ok: true });

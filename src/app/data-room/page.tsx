@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { useToast } from '@/components/toast';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
@@ -193,12 +193,12 @@ export default function DataRoomPage() {
     return 'other';
   }
 
-  const grouped = files.reduce<Record<string, DataRoomFile[]>>((acc, file) => {
+  const grouped = useMemo(() => files.reduce<Record<string, DataRoomFile[]>>((acc, file) => {
     const cat = file.category || 'other';
     if (!acc[cat]) acc[cat] = [];
     acc[cat].push(file);
     return acc;
-  }, {});
+  }, {}), [files]);
 
   const filteredFiles = searchQuery
     ? files.filter(f => f.filename.toLowerCase().includes(searchQuery.toLowerCase()) || f.extracted_text.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -247,7 +247,7 @@ export default function DataRoomPage() {
       {/* Search */}
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={stTextMuted} />
-        <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Search files and content..." className="input" autoComplete="off" spellCheck={false} aria-label="Search data room files" style={{ paddingLeft: 'var(--space-10)', paddingRight: 'var(--space-4)', paddingTop: '0.625rem', paddingBottom: '0.625rem', borderRadius: 'var(--radius-lg)' }}
+        <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} onKeyDown={e => { if (e.key === 'Escape') { setSearchQuery(''); e.preventDefault(); } }} placeholder="Search files and content..." className="input" autoComplete="off" spellCheck={false} aria-label="Search data room files" style={{ paddingLeft: 'var(--space-10)', paddingRight: 'var(--space-4)', paddingTop: '0.625rem', paddingBottom: '0.625rem', borderRadius: 'var(--radius-lg)' }}
           /></div>
 
       {/* Paste mode */}
