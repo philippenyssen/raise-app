@@ -264,9 +264,9 @@ export async function GET() {
     let estimatedCloseDate: string | null = null;
     const forecastsWithDates = investorForecasts.filter(f => f.predictedCloseDate && f.expectedValue > 0);
     if (forecastsWithDates.length > 0) {
-      const weightedSum = forecastsWithDates.reduce((s, f) => s + new Date(f.predictedCloseDate!).getTime() * f.expectedValue, 0);
+      const weightedSum = forecastsWithDates.reduce((s, f) => { const t = new Date(f.predictedCloseDate!).getTime(); return isNaN(t) ? s : s + t * f.expectedValue; }, 0);
       const totalWeight = forecastsWithDates.reduce((s, f) => s + f.expectedValue, 0);
-      if (totalWeight > 0) estimatedCloseDate = new Date(weightedSum / totalWeight).toISOString().split('T')[0];
+      if (totalWeight > 0 && !isNaN(weightedSum)) { try { estimatedCloseDate = new Date(weightedSum / totalWeight).toISOString().split('T')[0]; } catch { /* invalid date */ } }
     }
 
     let onTrack = true;

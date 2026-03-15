@@ -6,9 +6,10 @@ export async function GET(req: NextRequest) {
   try {
     const status = req.nextUrl.searchParams.get('status') || undefined;
     const confidenceMin = req.nextUrl.searchParams.get('confidence_min');
+    const parsedConfMin = confidenceMin ? parseFloat(confidenceMin) : undefined;
     const commitments = await getRevenueCommitments({
       status,
-      confidence_min: confidenceMin ? parseFloat(confidenceMin) : undefined,
+      confidence_min: parsedConfMin !== undefined && !isNaN(parsedConfMin) && parsedConfMin >= 0 && parsedConfMin <= 1 ? parsedConfMin : undefined,
     });
 
     // Compute summary
