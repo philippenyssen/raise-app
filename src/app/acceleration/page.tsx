@@ -101,13 +101,13 @@ function ActionCard({
   const cardStyle: React.CSSProperties = isDone
     ? {
         borderRadius: 'var(--radius-lg)',
-        padding: '16px',
+        padding: 'var(--space-4)',
         background: 'var(--fg-30)',
         opacity: 0.6,
         transition: 'all 200ms ease',}
     : {
         borderRadius: 'var(--radius-lg)',
-        padding: '16px',
+        padding: 'var(--space-4)',
         background: 'var(--surface-1)',
         transition: 'all 200ms ease',};
 
@@ -207,7 +207,7 @@ function ActionCard({
 function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
   return (
     <div
-      style={{ background: 'var(--success-muted)', borderRadius: 'var(--radius-lg)', padding: '16px' }}>
+      style={{ background: 'var(--success-muted)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-4)' }}>
       <div className="flex items-center gap-2 mb-2">
         <Rocket className="w-3.5 h-3.5" style={stTextSecondary} />
         <Link
@@ -250,7 +250,7 @@ function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
 function AtRiskCard({ investor }: { investor: InvestorSummary }) {
   return (
     <div
-      style={{ background: 'var(--fg-5)', borderRadius: 'var(--radius-lg)', padding: '16px' }}>
+      style={{ background: 'var(--fg-5)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-4)' }}>
       <div className="flex items-center gap-2 mb-2">
         <Shield className="w-3.5 h-3.5" style={stTextSecondary} />
         <Link

@@ -8,7 +8,7 @@ export default function SettingsLoading() {
       </div>
 
       {/* Raise Parameters card */}
-      <div className="rounded-xl" style={{ padding: '24px' }}>
+      <div className="rounded-xl" style={{ padding: 'var(--space-6)' }}>
         <div className="skeleton rounded mb-6" style={{ width: '180px', height: '22px' }} />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {Array.from({ length: 8 }).map((_, i) => (
@@ -21,7 +21,7 @@ export default function SettingsLoading() {
       </div>
 
       {/* Scoring Weights card */}
-      <div className="rounded-xl" style={{ padding: '24px' }}>
+      <div className="rounded-xl" style={{ padding: 'var(--space-6)' }}>
         <div className="skeleton rounded mb-6" style={{ width: '160px', height: '22px' }} />
         <div className="space-y-4">
           {Array.from({ length: 6 }).map((_, i) => (
