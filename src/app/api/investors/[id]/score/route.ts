@@ -105,7 +105,7 @@ export async function GET(
     predicted_outcome: score.predictedOutcome,
   }).catch(() => { /* snapshot capture is non-blocking */ });
 
-  return NextResponse.json({ ...score, dealHeat });
+  return NextResponse.json({ ...score, dealHeat }, { headers: { 'Cache-Control': 'private, max-age=15, stale-while-revalidate=30' } });
   } catch (e) {
     return NextResponse.json({ error: e instanceof Error ? e.message : 'Failed to compute investor score' }, { status: 500 });
   }

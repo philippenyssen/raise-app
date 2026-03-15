@@ -17,7 +17,7 @@ export async function GET(
     const snapshots = await getScoreSnapshots(id);
     const trajectory = computeConvictionTrajectory(snapshots);
 
-    return NextResponse.json(trajectory);
+    return NextResponse.json(trajectory, { headers: { 'Cache-Control': 'private, max-age=15, stale-while-revalidate=30' } });
   } catch (e) {
     return NextResponse.json({ error: e instanceof Error ? e.message : 'Failed to load trajectory' }, { status: 500 });
   }

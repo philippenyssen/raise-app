@@ -232,7 +232,7 @@ export async function GET(req: NextRequest) {
 
       generatedAt: new Date().toISOString(),};
 
-    return NextResponse.json(prepIntel);
+    return NextResponse.json(prepIntel, { headers: { 'Cache-Control': 'private, max-age=15, stale-while-revalidate=30' } });
   } catch (err) {
     console.error('[MEETING_PREP_POST]', err instanceof Error ? err.message : err);
     return NextResponse.json(
