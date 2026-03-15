@@ -831,12 +831,12 @@ export async function GET() {
 
     // Layer 6: Real-time intelligence signals (cycle 34)
     const [velocityData, cascadeData, rankingData, fomoData, densityData, winLossData] = await Promise.all([
-      computeEngagementVelocity().catch(() => []),
-      computeNetworkCascades().catch(() => []),
-      getPipelineRankings().catch(() => []),
-      detectFomoDynamics().catch(() => []),
-      computeMeetingDensity().catch(() => null),
-      computeWinLossPatterns().catch(() => null),]);
+      computeEngagementVelocity().catch(e => { console.error('[PULSE] velocity failed:', e instanceof Error ? e.message : e); return [] as Awaited<ReturnType<typeof computeEngagementVelocity>>; }),
+      computeNetworkCascades().catch(e => { console.error('[PULSE] cascades failed:', e instanceof Error ? e.message : e); return [] as Awaited<ReturnType<typeof computeNetworkCascades>>; }),
+      getPipelineRankings().catch(e => { console.error('[PULSE] rankings failed:', e instanceof Error ? e.message : e); return [] as Awaited<ReturnType<typeof getPipelineRankings>>; }),
+      detectFomoDynamics().catch(e => { console.error('[PULSE] fomo failed:', e instanceof Error ? e.message : e); return [] as Awaited<ReturnType<typeof detectFomoDynamics>>; }),
+      computeMeetingDensity().catch(e => { console.error('[PULSE] density failed:', e instanceof Error ? e.message : e); return null; }),
+      computeWinLossPatterns().catch(e => { console.error('[PULSE] winloss failed:', e instanceof Error ? e.message : e); return null; }),]);
 
     const realTimeSignals = {
       investorMomentum: {
