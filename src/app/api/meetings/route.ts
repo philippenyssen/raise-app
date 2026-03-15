@@ -207,9 +207,18 @@ export async function PATCH(req: NextRequest) {
       }
       updates.outcome_rating = outcome_rating;
     }
-    if (objections_addressed !== undefined) updates.objections_addressed = JSON.stringify(objections_addressed);
-    if (competitive_mentions !== undefined) updates.competitive_mentions = JSON.stringify(competitive_mentions);
-    if (key_takeaway !== undefined) updates.key_takeaway = key_takeaway;
+    if (objections_addressed !== undefined) {
+      if (!Array.isArray(objections_addressed)) return NextResponse.json({ error: 'objections_addressed must be an array' }, { status: 400 });
+      updates.objections_addressed = JSON.stringify(objections_addressed);
+    }
+    if (competitive_mentions !== undefined) {
+      if (!Array.isArray(competitive_mentions)) return NextResponse.json({ error: 'competitive_mentions must be an array' }, { status: 400 });
+      updates.competitive_mentions = JSON.stringify(competitive_mentions);
+    }
+    if (key_takeaway !== undefined) {
+      if (typeof key_takeaway !== 'string') return NextResponse.json({ error: 'key_takeaway must be a string' }, { status: 400 });
+      updates.key_takeaway = (key_takeaway as string).trim();
+    }
     if (prep_usefulness !== undefined) {
       if (typeof prep_usefulness !== 'number' || prep_usefulness < 1 || prep_usefulness > 5) {
         return NextResponse.json({ error: 'prep_usefulness must be between 1 and 5' }, { status: 400 });
