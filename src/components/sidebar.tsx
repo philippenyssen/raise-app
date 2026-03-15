@@ -57,7 +57,7 @@ const SB = {
   sectionLabel: 'var(--white-30)',};
 
 const badgeCountStyle: React.CSSProperties = {
-  minWidth: '18px', height: '18px', borderRadius: '9px', background: 'var(--white-15)',
+  minWidth: '18px', height: '18px', borderRadius: 'var(--radius-xl)', background: 'var(--white-15)',
   color: SB.textActive, fontSize: '10px', fontWeight: 400, padding: '0 5px', lineHeight: 1,};
 
 export function Sidebar() {
@@ -276,7 +276,7 @@ export function Sidebar() {
             borderTop: `1px solid ${SB.border}`,}}>
           {!collapsed && (
             <div className="flex items-center justify-center" style={{ fontSize: '10px', color: SB.muted, padding: '0 var(--space-2) var(--space-2)' }}>
-              <kbd style={{ background: SB.bgHover, border: `1px solid ${SB.border}`, borderRadius: '3px', padding: '1px 5px', fontSize: '10px', marginRight: '4px', color: SB.text }}>⌘K</kbd>
+              <kbd style={{ background: SB.bgHover, border: `1px solid ${SB.border}`, borderRadius: 'var(--radius-xs)', padding: '1px 5px', fontSize: '10px', marginRight: '4px', color: SB.text }}>⌘K</kbd>
               to search</div>
           )}
           <button

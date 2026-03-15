@@ -103,7 +103,7 @@ export function TopBar() {
         <span>Search</span>
         <span style={{
           padding: '1px 5px',
-          borderRadius: '4px',
+          borderRadius: 'var(--radius-xs)',
           background: 'var(--surface-2)',
           border: '1px solid var(--border-subtle)',
           fontSize: '10px',
