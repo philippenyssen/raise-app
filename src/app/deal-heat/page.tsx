@@ -85,6 +85,7 @@ export default function DealHeatPage() {
             {error || 'An unexpected error occurred'}</p>
           <button
             onClick={fetchDealHeat}
+            disabled={loading}
             className="btn btn-secondary btn-sm inline-flex items-center gap-2">
             Retry</button></div>
       </div>);

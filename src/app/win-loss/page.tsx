@@ -156,9 +156,9 @@ export default function WinLossPage() {
           <h1 className="page-title">Win/Loss Analysis</h1>
           <p className="page-subtitle" style={stFontSm}>
             Patterns from closed and passed investors</p></div>
-        <button onClick={fetchData} className="btn btn-secondary btn-sm" style={{ gap: 'var(--space-2)' }}>
+        <button onClick={fetchData} disabled={loading} className="btn btn-secondary btn-sm" style={{ gap: 'var(--space-2)', opacity: loading ? 0.6 : 1 }}>
           <RefreshCw className="w-3.5 h-3.5" />
-          Refresh</button></div>
+          {loading ? 'Refreshing...' : 'Refresh'}</button></div>
 
       {/* Summary Stats */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 card-stagger">

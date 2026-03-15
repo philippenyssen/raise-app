@@ -68,7 +68,7 @@ export default function VelocityPage() {
           <AlertTriangle className="w-8 h-8 mx-auto mb-3" style={{ color: 'var(--text-muted)' }} />
           <p style={{ color: 'var(--text-primary)', fontSize: 'var(--font-size-sm)', marginBottom: 'var(--space-3)' }}>
             {error || 'Could not load velocity data — refresh to retry'}</p>
-          <button onClick={fetchVelocity} className="btn btn-secondary btn-sm" title="Retry loading velocity data">Retry</button></div>
+          <button onClick={fetchVelocity} disabled={loading} className="btn btn-secondary btn-sm" title="Retry loading velocity data">Retry</button></div>
       </div>);
   }
 

@@ -58,14 +58,13 @@ export default function HealthPage() {
 
   function fetchHealth() {
     setHealthError(null);
-    cachedFetch('/api/health')
-      .then(r => { if (!r.ok) throw new Error('load failed'); return r.json(); })
-      .then(setData)
-      .catch(() => setHealthError('Couldn\'t load health data — try refreshing'));
-    cachedFetch('/api/intelligence/verify')
-      .then(r => { if (!r.ok) throw new Error(`${r.status}`); return r.json(); })
-      .then(setIntelVerify)
-      .catch(e => console.error('[HEALTH_INTEL_VERIFY]', e instanceof Error ? e.message : e))
+    Promise.all([
+      cachedFetch('/api/health').then(r => { if (!r.ok) throw new Error('load failed'); return r.json(); }),
+      cachedFetch('/api/intelligence/verify').then(r => { if (!r.ok) throw new Error(`${r.status}`); return r.json(); }).catch(e => { console.error('[HEALTH_INTEL_VERIFY]', e instanceof Error ? e.message : e); return null; }),
+    ]).then(([healthData, intelData]) => {
+      setData(healthData);
+      setIntelVerify(intelData);
+    }).catch(() => setHealthError('Couldn\'t load health data — try refreshing'))
       .finally(() => setIntelLoading(false));
   }
 
