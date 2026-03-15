@@ -87,10 +87,13 @@ export default function IntelligencePage() {
 
   async function handleDelete() {
     if (!deleteTarget) return;
-    await fetch(`/api/intelligence?type=${deleteTarget.type}&id=${deleteTarget.id}`, { method: 'DELETE' });
-    toast(`Deleted ${deleteTarget.name}`, 'warning');
-    setDeleteTarget(null);
-    fetchAll();
+    try {
+      const res = await fetch(`/api/intelligence?type=${deleteTarget.type}&id=${deleteTarget.id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Failed');
+      toast(`Deleted ${deleteTarget.name}`, 'warning');
+      setDeleteTarget(null);
+      fetchAll();
+    } catch { toast('Failed to delete', 'error'); }
   }
 
   async function handleAddDeal(e: React.FormEvent<HTMLFormElement>) {

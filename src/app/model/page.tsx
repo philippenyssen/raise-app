@@ -247,14 +247,17 @@ export default function ModelPage() {
   const doDeleteSheet = useCallback(async () => {
     if (!confirmState?.target) return;
     const { id, sheet_name } = confirmState.target;
-    await fetch(`/api/model?id=${id}`, { method: 'DELETE' });
-    if (activeSheetId === id) {
-      setActiveSheetId(null);
-      setLocalCells({});
-    }
-    toast(`Deleted "${sheet_name}"`, 'warning');
-    setConfirmState(null);
-    fetchSheets();
+    try {
+      const res = await fetch(`/api/model?id=${id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Failed');
+      if (activeSheetId === id) {
+        setActiveSheetId(null);
+        setLocalCells({});
+      }
+      toast(`Deleted "${sheet_name}"`, 'warning');
+      setConfirmState(null);
+      fetchSheets();
+    } catch { toast('Failed to delete sheet', 'error'); }
   }, [confirmState, activeSheetId, toast, fetchSheets]);
 
   // Cmd/Ctrl+S

@@ -162,10 +162,13 @@ export default function DataRoomPage() {
 
   async function handleDelete() {
     if (!deleteTarget) return;
-    await fetch(`/api/data-room?id=${deleteTarget.id}`, { method: 'DELETE' });
-    toast(`Deleted "${deleteTarget.filename}"`, 'warning');
-    setDeleteTarget(null);
-    fetchFiles();
+    try {
+      const res = await fetch(`/api/data-room?id=${deleteTarget.id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Failed');
+      toast(`Deleted "${deleteTarget.filename}"`, 'warning');
+      setDeleteTarget(null);
+      fetchFiles();
+    } catch { toast('Failed to delete file', 'error'); }
   }
 
   function inferCategory(filename: string): string {

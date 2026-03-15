@@ -89,7 +89,8 @@ export default function TermsPage() {
   async function handleDelete() {
     if (!deleteTarget) return;
     try {
-      await fetch(`/api/term-sheets?id=${deleteTarget.id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/term-sheets?id=${deleteTarget.id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Failed');
       toast('Term sheet deleted', 'warning');
       setDeleteTarget(null);
       fetchSheets();
