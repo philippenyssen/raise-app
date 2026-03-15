@@ -40,6 +40,7 @@ import {
   computeEngagementVelocity,
   computeNetworkCascades,
   getRecentFollowupSignals,
+  invalidateComputeCache,
 } from './db';
 import type { TemporalTrends, RaiseForecast, ForecastCalibration, WinLossPatterns, ScoreReversal, PipelineRanking, MeetingDensity, FomoDynamic, EngagementVelocity, NetworkCascade } from './db';
 import { groupByInvestorId } from './api-helpers';
@@ -60,6 +61,7 @@ let cachedContext: FullContext | null = null;
 export function emitContextChange(source: ContextSource, detail?: string): void {
   contextVersion++;
   cachedContext = null; // invalidate
+  invalidateComputeCache(); // clear expensive computation cache on data change
 
   // Track what changed for incremental consumers
   recentChanges.push({

@@ -21,6 +21,31 @@ export interface AccelerationAction {
 let client: Client;
 let initialized = false;
 
+// In-memory TTL cache for expensive computations — prevents redundant DB queries
+// across multiple API routes hitting the same function within the TTL window
+const _computeCache = new Map<string, { data: unknown; expires: number; pending?: Promise<unknown> }>();
+
+function cachedCompute<T>(key: string, ttlMs: number, fn: () => Promise<T>): Promise<T> {
+  const now = Date.now();
+  const entry = _computeCache.get(key);
+  if (entry && entry.expires > now) return Promise.resolve(entry.data as T);
+  if (entry?.pending) return entry.pending as Promise<T>;
+  const promise = fn().then(result => {
+    _computeCache.set(key, { data: result, expires: now + ttlMs });
+    return result;
+  }).catch(err => {
+    _computeCache.delete(key);
+    throw err;
+  });
+  _computeCache.set(key, { data: null, expires: 0, pending: promise });
+  return promise;
+}
+
+export function invalidateComputeCache(keyPrefix?: string) {
+  if (!keyPrefix) { _computeCache.clear(); return; }
+  for (const k of _computeCache.keys()) { if (k.startsWith(keyPrefix)) _computeCache.delete(k); }
+}
+
 async function genericUpdate(
   table: string,
   id: string,
@@ -2009,7 +2034,8 @@ export interface PipelineRanking {
   status: string;
 }
 
-export async function detectScoreReversals(): Promise<ScoreReversal[]> {
+export function detectScoreReversals(): Promise<ScoreReversal[]> {
+  return cachedCompute('detectScoreReversals', 60_000, async () => {
   await ensureInitialized();
   const db = getClient();
 
@@ -2071,9 +2097,11 @@ export async function detectScoreReversals(): Promise<ScoreReversal[]> {
   reversals.sort((a, b) => sevOrder[a.severity] - sevOrder[b.severity] || a.delta - b.delta);
 
   return reversals;
+  });
 }
 
-export async function getPipelineRankings(): Promise<PipelineRanking[]> {
+export function getPipelineRankings(): Promise<PipelineRanking[]> {
+  return cachedCompute('getPipelineRankings', 60_000, async () => {
   await ensureInitialized();
   const db = getClient();
 
@@ -2125,6 +2153,7 @@ export async function getPipelineRankings(): Promise<PipelineRanking[]> {
   });
 
   return rankings;
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -2149,7 +2178,8 @@ export interface FomoDynamic {
   recommendation: string;
 }
 
-export async function computeMeetingDensity(): Promise<MeetingDensity> {
+export function computeMeetingDensity(): Promise<MeetingDensity> {
+  return cachedCompute('computeMeetingDensity', 60_000, async () => {
   await ensureInitialized();
   const db = getClient();
 
@@ -2215,6 +2245,7 @@ export async function computeMeetingDensity(): Promise<MeetingDensity> {
     densityScore,
     insight,
   };
+  });
 }
 
 function getISOWeek(date: Date): string {
@@ -2238,7 +2269,8 @@ export interface EngagementVelocity {
   signal: string;
 }
 
-export async function computeEngagementVelocity(): Promise<EngagementVelocity[]> {
+export function computeEngagementVelocity(): Promise<EngagementVelocity[]> {
+  return cachedCompute('computeEngagementVelocity', 60_000, async () => {
   await ensureInitialized();
   const db = getClient();
 
@@ -2327,9 +2359,11 @@ export async function computeEngagementVelocity(): Promise<EngagementVelocity[]>
   velocities.sort((a, b) => accOrder[a.acceleration] - accOrder[b.acceleration] || a.tier - b.tier);
 
   return velocities;
+  });
 }
 
-export async function detectFomoDynamics(): Promise<FomoDynamic[]> {
+export function detectFomoDynamics(): Promise<FomoDynamic[]> {
+  return cachedCompute('detectFomoDynamics', 60_000, async () => {
   await ensureInitialized();
   const db = getClient();
 
@@ -2408,6 +2442,7 @@ export async function detectFomoDynamics(): Promise<FomoDynamic[]> {
   fomos.sort((a, b) => intOrder[a.fomoIntensity] - intOrder[b.fomoIntensity]);
 
   return fomos;
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -3483,7 +3518,8 @@ export interface NetworkCascade {
   signal: string;
 }
 
-export async function computeNetworkCascades(): Promise<NetworkCascade[]> {
+export function computeNetworkCascades(): Promise<NetworkCascade[]> {
+  return cachedCompute('computeNetworkCascades', 60_000, async () => {
   const keystones = await getKeystoneInvestors();
   if (keystones.length === 0) return [];
 
@@ -3568,6 +3604,7 @@ export async function computeNetworkCascades(): Promise<NetworkCascade[]> {
   }
 
   return cascades.sort((a, b) => b.cascadeChain.length - a.cascadeChain.length);
+  });
 }
 
 /**
@@ -5082,12 +5119,13 @@ export async function getAutoActionEffectiveness(): Promise<{
 // Objection Evolution — temporal intelligence on how objections change (Cycle 10)
 // ---------------------------------------------------------------------------
 
-export async function computeObjectionEvolution(): Promise<{
+export function computeObjectionEvolution(): Promise<{
   emergingObjections: { topic: string; firstSeen: string; growthRate: number; currentCount: number }[];
   resolvedObjections: { topic: string; peakCount: number; resolvedDate: string; effectiveResponse: string }[];
   persistentObjections: { topic: string; count: number; duration: number; avgEnthusiasmImpact: number }[];
   objectionHeatMap: { topic: string; week: string; count: number }[];
 }> {
+  return cachedCompute('computeObjectionEvolution', 120_000, async () => {
   await ensureInitialized();
   const db = getClient();
 
@@ -5260,6 +5298,7 @@ export async function computeObjectionEvolution(): Promise<{
     persistentObjections,
     objectionHeatMap,
   };
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -5572,7 +5611,8 @@ export interface RaiseForecast {
   riskFactors: string[];
 }
 
-export async function computeRaiseForecast(): Promise<RaiseForecast> {
+export function computeRaiseForecast(): Promise<RaiseForecast> {
+  return cachedCompute('computeRaiseForecast', 60_000, async () => {
   await ensureInitialized();
   const db = getClient();
 
@@ -5719,6 +5759,7 @@ export async function computeRaiseForecast(): Promise<RaiseForecast> {
     criticalPathInvestors,
     riskFactors,
   };
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -5904,7 +5945,8 @@ export interface WinLossPatterns {
   insights: string[];
 }
 
-export async function computeWinLossPatterns(): Promise<WinLossPatterns> {
+export function computeWinLossPatterns(): Promise<WinLossPatterns> {
+  return cachedCompute('computeWinLossPatterns', 120_000, async () => {
   await ensureInitialized();
   const db = getClient();
 
@@ -6049,6 +6091,7 @@ export async function computeWinLossPatterns(): Promise<WinLossPatterns> {
     } : null,
     insights,
   };
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -6074,7 +6117,8 @@ export interface TemporalTrends {
   alertCount: number;
 }
 
-export async function computeTemporalTrends(): Promise<TemporalTrends> {
+export function computeTemporalTrends(): Promise<TemporalTrends> {
+  return cachedCompute('computeTemporalTrends', 60_000, async () => {
   await ensureInitialized();
   const db = getClient();
 
@@ -6177,6 +6221,7 @@ export async function computeTemporalTrends(): Promise<TemporalTrends> {
   const alertCount = trends.filter(t => t.alert !== null).length;
 
   return { trends, overallDirection, daysOfData, alertCount };
+  });
 }
 
 // ---------------------------------------------------------------------------
