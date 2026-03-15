@@ -1367,7 +1367,7 @@ function VelocityStrip({ velocity }: { velocity: VelocityResponse }) {
             <div style={labelTertiary}>
               {isOverTarget ? 'Over target by' : 'Days remaining'}
             </div>
-            <div className="tabular-nums mt-0.5" style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>
+            <div className="tabular-nums mt-0.5" style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: isOverTarget ? 'var(--danger)' : daysRemaining < 30 ? 'var(--danger)' : daysRemaining < 60 ? 'var(--warning)' : 'var(--success)' }}>
               {isOverTarget ? `+${s.raise_days_elapsed - s.raise_target_days}` : daysRemaining}d
             </div>
           </div>

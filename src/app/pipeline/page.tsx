@@ -94,9 +94,10 @@ export default function PipelinePage() {
     types: new Set(),
   });
   const [showFilters, setShowFilters] = useState(false);
+  const [scoreDeltaMap, setScoreDeltaMap] = useState<Map<string, number>>(new Map());
   const boardRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => { fetchInvestors(); }, []);
+  useEffect(() => { fetchInvestors(); cachedFetch('/api/at-risk').then(r => r.ok ? r.json() : null).then(d => { if (d?.scoreReversals) { const m = new Map<string, number>(); d.scoreReversals.forEach((r: { investorId: string; delta: number }) => m.set(r.investorId, r.delta)); setScoreDeltaMap(m); } }).catch(() => {}); }, []);
 
   async function fetchInvestors() {
     setLoading(true);
@@ -437,6 +438,7 @@ export default function PipelinePage() {
                     <InvestorCard
                       key={inv.id}
                       investor={inv}
+                      convictionDelta={scoreDeltaMap.get(inv.id) ?? null}
                       isDragging={dragId === inv.id}
                       onDragStart={handleDragStart}
                       onDragEnd={handleDragEnd} />
@@ -505,6 +507,7 @@ export default function PipelinePage() {
                             key={inv.id}
                             investor={inv}
                             compact
+                            convictionDelta={scoreDeltaMap.get(inv.id) ?? null}
                             isDragging={dragId === inv.id}
                             onDragStart={handleDragStart}
                             onDragEnd={handleDragEnd} />
@@ -681,12 +684,14 @@ function StatCard({
 function InvestorCard({
   investor,
   compact = false,
+  convictionDelta = null,
   isDragging,
   onDragStart,
   onDragEnd,
 }: {
   investor: Investor;
   compact?: boolean;
+  convictionDelta?: number | null;
   isDragging: boolean;
   onDragStart: (e: React.DragEvent, id: string) => void;
   onDragEnd: (e: React.DragEvent) => void;
@@ -760,6 +765,7 @@ function InvestorCard({
           </span>
           <span style={{ padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-sm)', fontSize: '10px', fontWeight: 400, ...TIER_STYLES[investor.tier] }}>T{investor.tier}</span>
           {isStale && <span style={{ padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-sm)', fontSize: '10px', fontWeight: 400, background: 'var(--warning-muted)', color: 'var(--warning)' }}>Stale</span>}
+          {convictionDelta !== null && convictionDelta !== 0 && <span style={{ padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-sm)', fontSize: '10px', fontWeight: 400, background: convictionDelta > 0 ? 'var(--success-muted)' : 'var(--warning-muted)', color: convictionDelta > 0 ? 'var(--success)' : 'var(--danger)' }}>{convictionDelta > 0 ? '+' : ''}{convictionDelta}</span>}
           {(() => { const d = Math.floor((Date.now() - new Date(investor.updated_at).getTime()) / 864e5); return d > 0 ? <span title="Time in current stage" style={{ padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-sm)', fontSize: '10px', fontWeight: 400, color: d >= 14 ? 'var(--warning)' : 'var(--text-muted)', background: 'var(--white-8)' }}>{d}d</span> : null; })()}
         </div>
 
