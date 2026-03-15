@@ -65,6 +65,7 @@ interface StressTestSummary {
   onTrack: boolean;
   healthStatus: 'green' | 'yellow' | 'red';
   healthMessage: string;
+  gapInvestors?: { id: string; name: string; intervention: string; impactDelta: number }[];
 }
 
 interface ScoreReversalItem {
@@ -596,6 +597,23 @@ export default function Dashboard() {
                     <div className="mt-1" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
                       {stressTest.onTrack ? 'On track' : stressTest.healthStatus === 'red' ? 'Needs attention' : 'Monitor'}</div>
                   </div></div></div></Link>
+          )}
+
+          {/* Gap Closers — top investors to accelerate */}
+          {!focusMode && stressTest?.gapInvestors && stressTest.gapInvestors.length > 0 && !stressTest.onTrack && (
+            <div style={{ ...cardPadding, borderLeft: '3px solid var(--warning)' }}>
+              <h2 className="section-title flex items-center gap-2 mb-2">
+                <Target className="w-4 h-4" /> Close the gap</h2>
+              <div className="space-y-1">
+                {stressTest.gapInvestors.slice(0, 3).map(g => (
+                  <Link key={g.id} href={`/investors/${g.id}`} className="flex items-center justify-between py-1.5 transition-colors rounded px-2"
+                    style={{ fontSize: 'var(--font-size-sm)' }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
+                    <span style={{ color: 'var(--text-primary)', fontWeight: 400 }}>{g.name}</span>
+                    <span style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>{g.intervention}</span>
+                    <span style={{ color: 'var(--success)', fontWeight: 400, fontSize: 'var(--font-size-xs)' }}>+€{g.impactDelta}M</span>
+                  </Link>))}</div></div>
           )}
 
           {/* Watching — Tier 1 active investors */}
