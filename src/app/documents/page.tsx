@@ -392,7 +392,7 @@ export default function DocumentsPage() {
       <ConfirmModal
         open={!!deleteTarget}
         title="Delete document"
-        message={`Delete "${deleteTarget?.title}" and all its versions? This cannot be undone.`}
+        message={`Permanently delete "${deleteTarget?.title}" and its entire version history? All content, edits, and associated flags will be removed and cannot be recovered.`}
         confirmLabel="Delete"
         variant="danger"
         loading={deleting}
