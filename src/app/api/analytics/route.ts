@@ -332,6 +332,5 @@ export async function GET() {
 
     return NextResponse.json({ funnel, velocity, engagement, risks, winLoss, summary, generatedAt: new Date().toISOString() });
   } catch (error) {
-    console.error('Analytics error:', error);
     return NextResponse.json({ error: 'Failed to compute analytics', detail: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 });
   }}

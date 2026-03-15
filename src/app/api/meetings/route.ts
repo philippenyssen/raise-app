@@ -10,7 +10,6 @@ export async function GET(req: NextRequest) {
     const meetings = await getMeetings(investorId);
     return NextResponse.json(meetings);
   } catch (error) {
-    console.error('GET /api/meetings failed:', error);
     return NextResponse.json(
       { error: 'Failed to fetch meetings', detail: error instanceof Error ? error.message : 'Database error' },
       { status: 500 });
@@ -43,7 +42,6 @@ export async function POST(req: NextRequest) {
     try {
       aiData = await analyzeMeetingNotes(raw_notes as string, investor_name as string, (type as string) || 'intro');
     } catch (err) {
-      console.error('AI analysis failed:', err);
     }}
 
   try {
@@ -71,7 +69,6 @@ export async function POST(req: NextRequest) {
     const investorTier = investor?.tier ?? 2;
     postMeetingActions = await processPostMeetingIntelligence(meeting, aiData, investorTier);
   } catch (err) {
-    console.error('Post-meeting intelligence pipeline failed:', err);
   }
 
   // Log activity
@@ -91,7 +88,6 @@ export async function POST(req: NextRequest) {
     const tier = investor?.tier ?? 2;
     followupPlan = await generateFollowupChoreography(meeting, aiData, tier);
   } catch (err) {
-    console.error('Follow-up choreography generation failed:', err);
   }
 
   // Auto-populate objection_responses from extracted objections
@@ -118,7 +114,6 @@ export async function POST(req: NextRequest) {
           meeting_id: meeting.id,});
       }}
   } catch (err) {
-    console.error('Objection playbook auto-population failed:', err);
   }
 
   // Extract and store question patterns for cross-investor analysis
@@ -143,7 +138,6 @@ export async function POST(req: NextRequest) {
     auto_advanced: autoAdvanced,
   }, { status: 201 });
   } catch (error) {
-    console.error('POST /api/meetings failed:', error);
     return NextResponse.json(
       { error: 'Failed to create meeting', detail: error instanceof Error ? error.message : 'Database error' },
       { status: 500 });
@@ -176,7 +170,6 @@ export async function PUT(req: NextRequest) {
     emitContextChange('meeting_updated', `Meeting ${id} updated`);
     return NextResponse.json({ ok: true });
   } catch (error) {
-    console.error('PUT /api/meetings failed:', error);
     return NextResponse.json(
       { error: 'Failed to update meeting', detail: error instanceof Error ? error.message : 'Database error' },
       { status: 500 });
@@ -220,7 +213,6 @@ export async function PATCH(req: NextRequest) {
 
     return NextResponse.json({ ok: true });
   } catch (error) {
-    console.error('PATCH /api/meetings failed:', error);
     return NextResponse.json(
       { error: 'Failed to update meeting outcome', detail: error instanceof Error ? error.message : 'Database error' },
       { status: 500 });

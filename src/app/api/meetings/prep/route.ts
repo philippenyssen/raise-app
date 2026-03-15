@@ -234,7 +234,6 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(prepIntel);
   } catch (err) {
-    console.error('Meeting prep intelligence error:', err);
     return NextResponse.json(
       { error: 'Failed to generate meeting prep intelligence' },
       { status: 500 },);

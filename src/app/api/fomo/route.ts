@@ -306,7 +306,6 @@ export async function GET() {
         zeroFomoCount: perInvestorFomo.filter(f => f.intensity === 0).length,},
       generatedAt: new Date().toISOString(),});
   } catch (error) {
-    console.error('FOMO API error:', error);
     return NextResponse.json(
       { error: 'Failed to compute FOMO dynamics', detail: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 },);

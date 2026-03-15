@@ -46,7 +46,6 @@ export async function POST(req: NextRequest) {
     try {
       aiData = await analyzeMeetingNotes(rawNotes, investorName, inferredType);
     } catch (err) {
-      console.error('AI analysis failed, proceeding with raw data:', err);
     }
 
     // Apply user overrides — explicit values take precedence over AI inference
@@ -92,7 +91,6 @@ export async function POST(req: NextRequest) {
         intelligenceSummary += `, suggested status: ${actions.investor_updates.suggested_status}`;
       }
     } catch (err) {
-      console.error('Post-meeting intelligence pipeline failed:', err);
       intelligenceSummary = 'Intelligence pipeline failed — tasks not generated';
     }
 
@@ -103,7 +101,6 @@ export async function POST(req: NextRequest) {
       const tier = investor?.tier ?? 2;
       followups = await generateFollowupChoreography(meeting, aiData, tier);
     } catch (err) {
-      console.error('Follow-up choreography generation failed:', err);
     }
 
     // 5. Objection tracking + enthusiasm delta (non-blocking)
@@ -126,7 +123,6 @@ export async function POST(req: NextRequest) {
             meeting_id: meeting.id,});
         }}
     } catch (err) {
-      console.error('Objection tracking failed:', err);
     }
 
     // 6. Question pattern extraction (non-blocking)
@@ -180,7 +176,6 @@ export async function POST(req: NextRequest) {
       intelligence: intelligenceSummary,
     }, { status: 201 });
   } catch (err) {
-    console.error('Quick capture failed:', err);
     return NextResponse.json(
       { error: 'Quick capture failed' },
       { status: 500 },);

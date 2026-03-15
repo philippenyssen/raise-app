@@ -76,7 +76,6 @@ export async function GET(req: NextRequest) {
     const followups = await getFollowups(Object.keys(filters).length > 0 ? filters : undefined);
     return NextResponse.json(followups);
   } catch (error) {
-    console.error('GET /api/followups failed:', error);
     return NextResponse.json(
       { error: 'Failed to fetch follow-ups', detail: error instanceof Error ? error.message : 'Database error' },
       { status: 500 });

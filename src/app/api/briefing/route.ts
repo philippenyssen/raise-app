@@ -391,7 +391,6 @@ Rules:
       momentumChange,
       generatedAt: new Date().toISOString(),});
   } catch (error) {
-    console.error('Briefing API error:', error);
     return NextResponse.json(
       { error: 'Failed to generate briefing', detail: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 });

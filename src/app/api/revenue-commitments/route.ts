@@ -31,7 +31,6 @@ export async function GET(req: NextRequest) {
       },
     });
   } catch (err) {
-    console.error('Revenue commitments API error:', err);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -55,7 +54,6 @@ export async function POST(req: NextRequest) {
     emitContextChange('commitment_created', `Revenue commitment: ${(body.counterparty as string) || (body.contract_name as string) || ''}`);
     return NextResponse.json(commitment, { status: 201 });
   } catch (err) {
-    console.error('Revenue commitments API error:', err);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -76,7 +74,6 @@ export async function PUT(req: NextRequest) {
     emitContextChange('commitment_updated', `Commitment ${id} updated`);
     return NextResponse.json({ ok: true });
   } catch (err) {
-    console.error('Revenue commitments API error:', err);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -88,7 +85,6 @@ export async function DELETE(req: NextRequest) {
     await deleteRevenueCommitment(id);
     return NextResponse.json({ ok: true });
   } catch (err) {
-    console.error('Revenue commitments API error:', err);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

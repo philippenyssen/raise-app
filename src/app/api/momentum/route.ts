@@ -712,7 +712,6 @@ export async function GET() {
       weeks: weekLabels,
       generatedAt: new Date().toISOString(),});
   } catch (error) {
-    console.error('Momentum API error:', error);
     return NextResponse.json(
       { error: 'Failed to compute momentum data', detail: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 });

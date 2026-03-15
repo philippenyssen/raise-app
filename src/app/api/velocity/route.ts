@@ -265,7 +265,6 @@ export async function GET() {
         raise_target_days: 60,},
       generated_at: new Date().toISOString(),});
   } catch (error) {
-    console.error('Velocity API error:', error);
     return NextResponse.json(
       { error: 'Failed to compute velocity data', detail: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 });

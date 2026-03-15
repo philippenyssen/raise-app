@@ -61,7 +61,6 @@ export async function GET() {
             : 'N/A',},},
       generated_at: new Date().toISOString(),});
   } catch (error) {
-    console.error('Forecast API error:', error);
     return NextResponse.json(
       { error: 'Failed to compute forecast', detail: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 });

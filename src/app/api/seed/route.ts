@@ -61,7 +61,6 @@ export async function POST() {
 
     return NextResponse.json({ ok: true, seeded: allInvestors.length });
   } catch (error) {
-    console.error('Seed error:', error);
     return NextResponse.json(
       { ok: false, error: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }

@@ -70,7 +70,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true, type, documentId: doc.id, action: 'created' }, { status: 201 });
     }
   } catch (err) {
-    console.error('Generation failed:', err);
     const msg = err instanceof Error ? err.message : 'Generation failed';
     // Detect billing/authentication errors and provide clear guidance
     if (msg.includes('credit balance') || msg.includes('too low')) {

@@ -527,7 +527,6 @@ INSTRUCTIONS:
         'X-Context-Hash': contextHash,
       },});
   } catch (err) {
-    console.error('Workspace AI error:', err);
     const msg = err instanceof Error ? err.message : 'AI request failed';
     let status = 500;
     let userMsg = msg;

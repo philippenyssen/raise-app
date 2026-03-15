@@ -48,7 +48,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
     return NextResponse.json({ result });
   } catch (err) {
-    console.error('AI operation failed:', err);
     return NextResponse.json(
       { error: err instanceof Error ? err.message : 'AI operation failed' },
       { status: 500 }

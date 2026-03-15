@@ -137,7 +137,6 @@ Rules:
       ...result,
       generated_at: new Date().toISOString(),});
   } catch (err) {
-    console.error('Document adaptation error:', err);
     return NextResponse.json(
       { error: 'Failed to generate adaptation suggestions' },
       { status: 500 },);

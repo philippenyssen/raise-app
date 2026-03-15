@@ -387,6 +387,5 @@ export async function GET(req: NextRequest) {
 
     return new NextResponse(html, { status: 200, headers: { 'Content-Type': 'text/html; charset=utf-8' } });
   } catch (error) {
-    console.error('Report generation error:', error);
     return NextResponse.json({ error: 'Failed to generate report', detail: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 });
   }}

@@ -188,7 +188,6 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ error: 'Invalid action. Use: providers, records, jobs, stats, status, profile' }, { status: 400 });
   } catch (error) {
-    console.error('Enrichment GET error:', error);
     return NextResponse.json({ error: 'Internal error' }, { status: 500 });
   }}
 
@@ -371,7 +370,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ error: 'Invalid action. Use: enrich, bulk_enrich' }, { status: 400 });
   } catch (error) {
-    console.error('Enrichment POST error:', error);
     return NextResponse.json({ error: 'Internal error' }, { status: 500 });
   }}
 
@@ -386,6 +384,5 @@ export async function DELETE(req: NextRequest) {
     await deleteEnrichmentRecords(investorId, sourceId || undefined);
     return NextResponse.json({ ok: true });
   } catch (error) {
-    console.error('Enrichment DELETE error:', error);
     return NextResponse.json({ error: 'Internal error' }, { status: 500 });
   }}

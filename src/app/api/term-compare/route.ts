@@ -202,7 +202,6 @@ export async function POST(request: Request) {
         highest_effective_valuation: highestValuation.investor_name,},
       generated_at: new Date().toISOString(),});
   } catch (error) {
-    console.error('Term compare error:', error);
     return NextResponse.json(
       { error: 'Failed to compare term sheets', detail: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 },);

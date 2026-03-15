@@ -32,7 +32,6 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(await getAllTasks(Object.keys(filters).length > 0 ? filters : undefined));
   } catch (err) {
-    console.error('Tasks API error:', err);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }}
 
@@ -68,7 +67,6 @@ export async function POST(req: NextRequest) {
     emitContextChange('task_created', `Task: ${body.title || 'untitled'}`);
     return NextResponse.json(task, { status: 201 });
   } catch (err) {
-    console.error('Tasks API error:', err);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }}
 
@@ -162,7 +160,6 @@ export async function PUT(req: NextRequest) {
     emitContextChange('task_updated', `Task ${id} ${updates.status === 'done' ? 'completed' : 'updated'}`);
     return NextResponse.json({ ok: true });
   } catch (err) {
-    console.error('Tasks API error:', err);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }}
 
@@ -173,6 +170,5 @@ export async function DELETE(req: NextRequest) {
     await deleteTask(id);
     return NextResponse.json({ ok: true });
   } catch (err) {
-    console.error('Tasks API error:', err);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }}

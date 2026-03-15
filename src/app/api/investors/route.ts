@@ -28,7 +28,6 @@ export async function GET(req: NextRequest) {
     const investors = await getAllInvestors();
     return NextResponse.json(investors);
   } catch (error) {
-    console.error('GET /api/investors failed:', error);
     return NextResponse.json(
       { error: 'Failed to fetch investors', detail: error instanceof Error ? error.message : 'Database error' },
       { status: 500 });
@@ -77,7 +76,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(investor, { status: 201 });
   } catch (error) {
-    console.error('POST /api/investors failed:', error);
     return NextResponse.json(
       { error: 'Failed to create investor', detail: error instanceof Error ? error.message : 'Database error' },
       { status: 500 });
@@ -133,7 +131,6 @@ export async function PUT(req: NextRequest) {
 
     return NextResponse.json({ ok: true });
   } catch (error) {
-    console.error('PUT /api/investors failed:', error);
     return NextResponse.json(
       { error: 'Failed to update investor', detail: error instanceof Error ? error.message : 'Database error' },
       { status: 500 });
@@ -150,7 +147,6 @@ export async function DELETE(req: NextRequest) {
     await deleteInvestor(id);
     return NextResponse.json({ ok: true });
   } catch (error) {
-    console.error('DELETE /api/investors failed:', error);
     return NextResponse.json(
       { error: 'Failed to delete investor', detail: error instanceof Error ? error.message : 'Database error' },
       { status: 500 });
