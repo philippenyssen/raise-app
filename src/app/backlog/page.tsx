@@ -165,9 +165,9 @@ export default function BacklogPage() {
         <div className="rounded-xl p-4 space-y-3" style={stSurface1}>
           <h3 className="text-sm font-normal" style={stTextPrimary}>Add Revenue Commitment</h3>
           <div className="grid grid-cols-3 gap-3">
-            <input placeholder="Customer" value={form.customer} onChange={e => setForm(f => ({ ...f, customer: e.target.value }))} className="input"
+            <input placeholder="e.g., ESA, Belgian MoD" value={form.customer} onChange={e => setForm(f => ({ ...f, customer: e.target.value }))} className="input"
               />
-            <input placeholder="Program/Contract" value={form.program} onChange={e => setForm(f => ({ ...f, program: e.target.value }))} className="input"
+            <input placeholder="e.g., IRIS2 Phase 2" value={form.program} onChange={e => setForm(f => ({ ...f, program: e.target.value }))} className="input"
               />
             <select value={form.contract_type} onChange={e => setForm(f => ({ ...f, contract_type: e.target.value }))} className="input">
               {Object.entries(TYPE_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select>
@@ -175,13 +175,13 @@ export default function BacklogPage() {
               />
             <input type="number" placeholder="Annual Amount (€M)" value={form.annual_amount} onChange={e => setForm(f => ({ ...f, annual_amount: e.target.value }))} className="input"
               />
-            <input type="number" step="0.05" min="0" max="1" placeholder="Confidence (0-1)" value={form.confidence} onChange={e => setForm(f => ({ ...f, confidence: e.target.value }))} className="input"
+            <input type="number" step="0.05" min="0" max="1" placeholder="Confidence (0.9 = signed)" value={form.confidence} onChange={e => setForm(f => ({ ...f, confidence: e.target.value }))} className="input"
               />
             <input type="date" placeholder="Start Date" value={form.start_date} onChange={e => setForm(f => ({ ...f, start_date: e.target.value }))} className="input"
               />
             <input type="date" placeholder="End Date" value={form.end_date} onChange={e => setForm(f => ({ ...f, end_date: e.target.value }))} className="input"
               />
-            <input placeholder="Source Document" value={form.source_doc} onChange={e => setForm(f => ({ ...f, source_doc: e.target.value }))} className="input"
+            <input placeholder="e.g., signed contract, LOI" value={form.source_doc} onChange={e => setForm(f => ({ ...f, source_doc: e.target.value }))} className="input"
               /></div>
           <textarea placeholder="Notes" value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} className="input" rows={2}
             />

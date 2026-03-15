@@ -80,9 +80,9 @@ export default function DataRoomPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ investor_id: investorId, document_id: documentId }),});
       if (!res.ok) throw new Error('Failed');
-      toast('Access logged');
+      toast('Document access logged');
       fetchIntelligence();
-    } catch { toast('Failed to log access', 'error'); }
+    } catch { toast('Could not log access — check your connection and retry', 'error'); }
   }
 
   async function handleFileUpload(fileList: FileList) {
@@ -287,7 +287,7 @@ export default function DataRoomPage() {
               onDelete={() => setDeleteTarget({ id: file.id, filename: file.filename })} />
           ))}
           {filteredFiles.length === 0 && (
-            <p style={{ ...stTextMuted, ...stFontSm, padding: 'var(--space-4) 0', textAlign: 'center' }}>No files match your search.</p>
+            <p style={{ ...stTextMuted, ...stFontSm, padding: 'var(--space-4) 0', textAlign: 'center' }}>No files match your search. Try a different keyword or upload the document you need.</p>
           )}</div>
       )}
 
@@ -596,7 +596,7 @@ function InvestorAccessRow({ investor, expanded, onToggle, onLogAccess, files }:
                     onLogAccess(investor.investor_id, logDocId);
                     setLogDocId('');
                   } }}>
-                Log</button></div></div></div>
+                Log access</button></div></div></div>
       )}
     </div>);
 }
@@ -632,7 +632,7 @@ function RecommendedDocRow({ doc, investorId, onLogAccess }: {
           border: 'none',
           transition: 'all 150ms ease', }}
         onClick={() => onLogAccess(investorId, doc.document_id)}>
-        Mark shared</button>
+        Mark as shared</button>
     </div>);
 }
 

@@ -443,7 +443,7 @@ export default function SettingsPage() {
                 onClick={() => scoring.save(() => {
                   const total = Object.values(scoring.data).reduce((a, b) => a + b, 0);
                   if (Math.abs(total - 100) > 1) {
-                    toast(`Weights must sum to 100% (currently ${total}%)`, 'warning');
+                    toast(`Weights sum to ${total}% — adjust to reach exactly 100% before saving`, 'warning');
                     return false;
                   }
                   return true;

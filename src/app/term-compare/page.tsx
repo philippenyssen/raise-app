@@ -108,7 +108,7 @@ export default function TermComparePage() {
     // Validate
     const valid = scenarios.filter(s => s.investor_name && s.pre_money_valuation > 0 && s.investment_amount > 0);
     if (valid.length < 2) {
-      toast('Add at least 2 complete scenarios to compare', 'warning');
+      toast('Need at least 2 scenarios with investor name and valuation to compare', 'warning');
       return;
     }
 
@@ -125,7 +125,7 @@ export default function TermComparePage() {
       }
       const data: CompareResponse = await res.json();
       setResults(data);
-      toast('Comparison complete');
+      toast('Term sheet comparison ready — scroll down for analysis');
     } catch {
       toast('Failed to run comparison', 'error');
     } finally {

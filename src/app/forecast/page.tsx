@@ -101,7 +101,7 @@ export default function ForecastPage() {
         <div className="card" style={{ textAlign: 'center', padding: 'var(--space-12)' }}>
           <AlertTriangle className="w-8 h-8 mx-auto mb-3" style={{ color: 'var(--text-muted)' }} />
           <p style={{ color: 'var(--text-primary)', fontSize: 'var(--font-size-sm)', marginBottom: 'var(--space-3)' }}>
-            {error || 'Failed to load forecast data'}</p>
+            {error || 'Forecast data could not be loaded. Check your connection and try again.'}</p>
           <button onClick={fetchForecast} className="btn btn-secondary btn-sm">Retry</button></div>
       </div>);
   }
@@ -272,7 +272,7 @@ export default function ForecastPage() {
           <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-3)' }}>
             Investors whose delay would delay the raise</p>
           {forecast.criticalPathInvestors.length === 0 ? (
-            <span style={labelMuted}>No critical path investors</span>
+            <span style={labelMuted}>No bottlenecks — all investors progressing on schedule</span>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
               {forecast.criticalPathInvestors.map((name, i) => {
@@ -391,7 +391,7 @@ export default function ForecastPage() {
         {sortedByDate.length === 0 ? (
           <div style={{ padding: 'var(--space-12)', textAlign: 'center' }}>
             <span style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
-              No active investors in pipeline. Add investors to generate a forecast.</span></div>
+              Add investors to see your raise trajectory, timing gaps, and close probabilities.</span></div>
         ) : (
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
