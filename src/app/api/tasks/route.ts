@@ -98,7 +98,7 @@ export async function PUT(req: NextRequest) {
   try {
     const id = body.id as string;
     const { id: _id, ...raw } = body;
-    if (!id) return NextResponse.json({ error: 'id required' }, { status: 400 });
+    if (!id) return NextResponse.json({ error: 'id is required' }, { status: 400 });
 
     // Filter to allowed fields
     const updates: Record<string, unknown> = {};
@@ -188,7 +188,7 @@ export async function PUT(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   const id = req.nextUrl.searchParams.get('id');
-  if (!id) return NextResponse.json({ error: 'id required' }, { status: 400 });
+  if (!id) return NextResponse.json({ error: 'id is required' }, { status: 400 });
   try {
     await deleteTask(id);
     return NextResponse.json({ ok: true });

@@ -82,7 +82,7 @@ export async function PUT(req: NextRequest) {
 
   try {
     const id = body.id as string;
-    if (!id) return NextResponse.json({ error: 'id required' }, { status: 400 });
+    if (!id) return NextResponse.json({ error: 'id is required' }, { status: 400 });
     const ALLOWED = new Set(['customer', 'program', 'contract_type', 'amount_eur', 'start_date', 'end_date', 'annual_amount', 'confidence', 'status', 'source_doc', 'notes']);
     const updates = Object.fromEntries(Object.entries(body).filter(([k]) => ALLOWED.has(k)));
     if (updates.amount_eur !== undefined && (typeof updates.amount_eur !== 'number' || updates.amount_eur <= 0 || updates.amount_eur > 10_000_000_000)) {
@@ -102,7 +102,7 @@ export async function PUT(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   const id = req.nextUrl.searchParams.get('id');
-  if (!id) return NextResponse.json({ error: 'id required' }, { status: 400 });
+  if (!id) return NextResponse.json({ error: 'id is required' }, { status: 400 });
   try {
     await deleteRevenueCommitment(id);
     return NextResponse.json({ ok: true });

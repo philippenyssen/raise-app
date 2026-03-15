@@ -61,7 +61,7 @@ export async function PUT(req: NextRequest) {
     id: string; response_text: string; effectiveness: string;
   };
 
-  if (!id) { return NextResponse.json({ error: 'id required' }, { status: 400 }); }
+  if (!id) { return NextResponse.json({ error: 'id is required' }, { status: 400 }); }
   const textLimits: Record<string, number> = { response_text: 10000, investor_name: 255, objection_topic: 500 };
   for (const [field, max] of Object.entries(textLimits)) {
     if (filtered[field] && typeof filtered[field] === 'string' && (filtered[field] as string).length > max) {

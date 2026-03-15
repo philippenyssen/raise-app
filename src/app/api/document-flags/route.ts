@@ -25,7 +25,7 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
   }
   const { id, status } = body;
-  if (!id) return NextResponse.json({ error: 'id required' }, { status: 400 });
+  if (!id) return NextResponse.json({ error: 'id is required' }, { status: 400 });
   const validStatuses = ['open', 'addressed', 'resolved'];
   if (status && !validStatuses.includes(status as string)) {
     return NextResponse.json({ error: `status must be one of: ${validStatuses.join(', ')}` }, { status: 400 });
