@@ -195,7 +195,7 @@ export async function analyzePatterns(meetings: { raw_notes: string; objections:
     return `
 DATE: ${m.date} | INVESTOR: ${m.investor_name} | ENTHUSIASM: ${m.enthusiasm_score}/5
 OBJECTIONS: ${objs.map((o) => o.text).join('; ') || 'None recorded'}
-SIGNALS: ${JSON.stringify(signals)}
+SIGNALS: ${JSON.stringify(signals).substring(0, 500)}
 NOTES: ${m.raw_notes.substring(0, 500)}`;
   }).join('\n---\n');
 
@@ -311,7 +311,7 @@ export async function checkConsistency(
       role: 'user',
       content: `As an IC-grade document reviewer, check these fundraise documents for numerical inconsistencies, contradictions, and factual discrepancies.
 
-RAISE CONFIG: ${JSON.stringify(raiseConfig)}
+RAISE CONFIG: ${JSON.stringify(raiseConfig).substring(0, 2000)}
 
 DOCUMENTS:
 ${docSummaries}
@@ -550,7 +550,7 @@ export async function generateInvestorBrief(
     return `DATE: ${m.date} | TYPE: ${m.type} | ENTHUSIASM: ${m.enthusiasm_score}/5
 NOTES: ${m.raw_notes.substring(0, 600)}
 OBJECTIONS: ${objs.map(o => `[${o.severity}] ${o.text}`).join('; ') || 'None'}
-SIGNALS: ${JSON.stringify(signals)}
+SIGNALS: ${JSON.stringify(signals).substring(0, 500)}
 NEXT STEPS: ${m.next_steps || 'None recorded'}`;
   }).join('\n---\n');
 
