@@ -890,7 +890,7 @@ export default function InvestorDetailPage() {
               <h3 className="text-xs font-normal mb-3 flex items-center gap-2" style={textTertiary}>
                 <Clock className="w-3.5 h-3.5" /> Meeting history</h3>
               {meetings.length === 0 ? (
-                <p className="text-sm" style={textMuted}>No meetings logged yet. Log your first meeting to start tracking engagement.</p>
+                <p className="text-sm" style={textMuted}>No meetings logged yet.{' '}<Link href={`/meetings/new?investor=${investor.id}`} style={{ color: 'var(--accent)', textDecoration: 'none' }}>Log a meeting</Link>{' '}to start tracking engagement and generate AI-powered follow-ups.</p>
               ) : (
                 <div className="space-y-4">
                   {meetings.map(m => {
@@ -1016,7 +1016,7 @@ export default function InvestorDetailPage() {
           {intelTab === 'tasks' && (
             <div>
               {tasks.length === 0 ? (
-                <p className="text-sm text-center py-6" style={textMuted}>No tasks yet. Tasks are auto-generated from meeting debriefs — log a meeting to get started.</p>
+                <p className="text-sm text-center py-6" style={textMuted}>No tasks yet. Tasks are auto-generated when you{' '}<Link href={`/meetings/new?investor=${investor.id}`} style={{ color: 'var(--accent)', textDecoration: 'none' }}>log a meeting debrief</Link>.</p>
               ) : (
                 <div className="space-y-2">
                   {tasks.map(t => {
@@ -1121,7 +1121,7 @@ export default function InvestorDetailPage() {
             return (
               <div>
                 {events.length === 0 ? (
-                  <p className="text-sm py-6 text-center" style={textMuted}>No interactions recorded yet.</p>
+                  <p className="text-sm py-6 text-center" style={textMuted}>No interactions recorded yet. Meetings, follow-ups, and score changes will appear here.</p>
                 ) : (
                   <div className="space-y-0">
                     {events.map((ev, i) => (

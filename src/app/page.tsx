@@ -343,6 +343,24 @@ export default function Dashboard() {
       toast('Couldn\'t mark action as executed — try again', 'error');
     }}
 
+  // Derived data — must be before any early return to avoid conditional hook calls
+  const ph = pulse?.processHealth;
+  const cp = pulse?.criticalPath;
+  const cv = pulse?.convictionPulse;
+  const ov = pulse?.overnight;
+
+  const meetingStreak = useMemo(() => { const days = new Set(activity.filter(a => a.event_type === 'meeting').map(a => a.created_at?.split('T')[0])); if (days.size === 0) return 0; let s = 0; for (const d = new Date(); s < 365; d.setDate(d.getDate() - 1)) { if (days.has(d.toISOString().split('T')[0])) s++; else if (s > 0) break; else if (s === 0 && d.getTime() < Date.now() - 366 * 864e5) break; } return s; }, [activity]);
+  const identifiedCount = data ? data.totalInvestors - data.funnel.contacted - (data.funnel.passed ?? 0) : 0;
+  const funnelStages = data ? [
+    { label: 'Identified', value: identifiedCount > 0 ? identifiedCount : 0 },
+    { label: 'Contacted', value: data.funnel.contacted },
+    { label: 'Meetings', value: data.funnel.meetings },
+    { label: 'Engaged', value: data.funnel.engaged },
+    { label: 'In DD', value: data.funnel.in_dd },
+    { label: 'Term Sheets', value: data.funnel.term_sheets },
+    { label: 'Closed', value: data.funnel.closed },
+  ] : [];
+
   if (loading) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
@@ -356,24 +374,6 @@ export default function Dashboard() {
         <div className="skeleton" style={{ height: '140px', borderRadius: 'var(--radius-lg)' }} />
       </div>);
   }
-
-  // Derived data
-  const ph = pulse?.processHealth;
-  const cp = pulse?.criticalPath;
-  const cv = pulse?.convictionPulse;
-  const ov = pulse?.overnight;
-
-  const meetingStreak = useMemo(() => { const days = new Set(activity.filter(a => a.event_type === 'meeting').map(a => a.created_at?.split('T')[0])); let s = 0; for (const d = new Date(); s < 365; d.setDate(d.getDate() - 1)) { if (days.has(d.toISOString().split('T')[0])) s++; else if (s > 0) break; } return s; }, [activity]);
-  const identifiedCount = data ? data.totalInvestors - data.funnel.contacted - (data.funnel.passed ?? 0) : 0;
-  const funnelStages = data ? [
-    { label: 'Identified', value: identifiedCount > 0 ? identifiedCount : 0 },
-    { label: 'Contacted', value: data.funnel.contacted },
-    { label: 'Meetings', value: data.funnel.meetings },
-    { label: 'Engaged', value: data.funnel.engaged },
-    { label: 'In DD', value: data.funnel.in_dd },
-    { label: 'Term Sheets', value: data.funnel.term_sheets },
-    { label: 'Closed', value: data.funnel.closed },
-  ] : [];
 
   return (
     <div className="space-y-8 page-content">
