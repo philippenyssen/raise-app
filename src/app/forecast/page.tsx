@@ -379,8 +379,10 @@ export default function ForecastPage() {
               {hasExclusions ? (
                 <button
                   onClick={() => setExcludedIds(new Set())}
-                  className="flex items-center gap-1"
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--accent)', fontWeight: 400, fontSize: 'var(--font-size-xs)' }}>
+                  className="flex items-center gap-1 transition-opacity"
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--accent)', fontWeight: 400, fontSize: 'var(--font-size-xs)' }}
+                  onMouseEnter={e => { e.currentTarget.style.opacity = '0.7'; }}
+                  onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}>
                   <RotateCcw className="w-3 h-3" /> Reset what-if</button>
               ) : (
                 'Click toggles to model what-if scenarios'
