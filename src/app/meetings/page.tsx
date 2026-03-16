@@ -11,6 +11,8 @@ import { labelMuted, labelTertiary, stFontSm, stFontXs, stTextMuted, stTextTerti
 import { relativeTime } from '@/lib/time';
 import { EmptyState } from '@/components/ui/empty-state';
 import { CopyButton } from '@/components/copy-button';
+import { STATUS_LABELS } from '@/lib/constants';
+import { invalidateCache } from '@/lib/cache';
 
 const labelMutedMb4 = { ...labelMuted, marginBottom: 'var(--space-1)' } as const;
 const labelBlockMutedMb4 = { ...labelMuted, display: 'block', marginBottom: 'var(--space-1)' } as const;
@@ -332,8 +334,17 @@ export default function MeetingsPage() {
   const [expandedOutcome, setExpandedOutcome] = useState<string | null>(null);
   const [loadedAt, setLoadedAt] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [editingStatusId, setEditingStatusId] = useState<string | null>(null);
+  const [statusUpdating, setStatusUpdating] = useState(false);
 
   useEffect(() => { document.title = 'Raise | Meetings'; }, []);
+  // Close status dropdown on outside click
+  useEffect(() => {
+    if (!editingStatusId) return;
+    const close = () => setEditingStatusId(null);
+    const timer = setTimeout(() => document.addEventListener('click', close), 0);
+    return () => { clearTimeout(timer); document.removeEventListener('click', close); };
+  }, [editingStatusId]);
   useEffect(() => {
     let active = true;
     let interval: ReturnType<typeof setInterval> | null = null;
@@ -341,8 +352,9 @@ export default function MeetingsPage() {
       .then(r => { if (!r.ok) throw new Error(`${r.status}`); return r.json(); })
       .then(d => { if (active) { setMeetings(d); setLoadedAt(new Date().toISOString()); setLoading(false); } })
       .catch(() => { if (active) { setMeetings([]); setLoading(false); } });
-    const start = () => { load(); interval = setInterval(load, 60_000); };
-    const onVis = () => { if (document.hidden) { if (interval) { clearInterval(interval); interval = null; } } else { start(); } };
+    const stop = () => { if (interval) { clearInterval(interval); interval = null; } };
+    const start = () => { stop(); load(); interval = setInterval(load, 60_000); };
+    const onVis = () => { if (document.hidden) stop(); else start(); };
     start();
     document.addEventListener('visibilitychange', onVis);
     return () => { active = false; if (interval) clearInterval(interval); document.removeEventListener('visibilitychange', onVis); };
@@ -353,6 +365,27 @@ export default function MeetingsPage() {
     window.addEventListener('keydown', h);
     return () => window.removeEventListener('keydown', h);
   }, []);
+
+  const PIPELINE_STATUSES = ['identified', 'contacted', 'nda_signed', 'meeting_scheduled', 'met', 'engaged', 'in_dd', 'term_sheet', 'closed', 'passed'] as const;
+
+  async function updateInvestorStatus(investorId: string, meetingId: string, newStatus: string) {
+    setStatusUpdating(true);
+    try {
+      const res = await fetch('/api/investors', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: investorId, status: newStatus }),
+      });
+      if (!res.ok) throw new Error('Failed');
+      // Update local meeting status_after optimistically
+      setMeetings(prev => prev.map(m => m.id === meetingId ? { ...m, status_after: newStatus } : m));
+      invalidateCache();
+    } catch (e) {
+      console.error('[STATUS_UPDATE]', e instanceof Error ? e.message : e);
+    }
+    setStatusUpdating(false);
+    setEditingStatusId(null);
+  }
 
   const filtered = useMemo(() => meetings.filter(m => {
     if (search && !m.investor_name.toLowerCase().includes(search.toLowerCase()) &&
@@ -547,8 +580,41 @@ export default function MeetingsPage() {
                           className={`enthusiasm-dot ${n <= m.enthusiasm_score ? 'enthusiasm-dot-filled' : 'enthusiasm-dot-empty'}`}
                             />
                       ))}</div>
-                    <span className={getStatusBadgeClass(m.status_after)}>
-                      {m.status_after.replace(/_/g, ' ')}</span></div></div>
+                    <div style={{ position: 'relative' }}>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); setEditingStatusId(editingStatusId === m.id ? null : m.id); }}
+                        className={getStatusBadgeClass(m.status_after)}
+                        style={{ cursor: 'pointer', border: 'none', fontSize: 'var(--font-size-xs)' }}
+                        title="Click to update investor status">
+                        {m.status_after.replace(/_/g, ' ')}</button>
+                      {editingStatusId === m.id && (
+                        <div style={{
+                          position: 'absolute', right: 0, top: '100%', marginTop: 'var(--space-1)',
+                          background: 'var(--surface-1)', border: '1px solid var(--border-default)',
+                          borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-lg)',
+                          zIndex: 50, minWidth: '160px', padding: 'var(--space-1)',
+                        }}>
+                          {PIPELINE_STATUSES.map(st => (
+                            <button
+                              key={st}
+                              disabled={statusUpdating}
+                              onClick={(e) => { e.stopPropagation(); updateInvestorStatus(m.investor_id, m.id, st); }}
+                              style={{
+                                display: 'block', width: '100%', textAlign: 'left' as const,
+                                padding: 'var(--space-1) var(--space-3)', border: 'none', cursor: 'pointer',
+                                fontSize: 'var(--font-size-xs)', borderRadius: 'var(--radius-sm)',
+                                background: st === m.status_after ? 'var(--accent-muted)' : 'transparent',
+                                color: st === m.status_after ? 'var(--accent)' : 'var(--text-secondary)',
+                                fontWeight: st === m.status_after ? 400 : 300,
+                              }}
+                              onMouseEnter={e => { (e.target as HTMLElement).style.background = 'var(--surface-2)'; }}
+                              onMouseLeave={e => { (e.target as HTMLElement).style.background = st === m.status_after ? 'var(--accent-muted)' : 'transparent'; }}>
+                              {(STATUS_LABELS as Record<string, string>)[st] || st}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div></div></div>
 
                 {m.ai_analysis && (
                   <div className="flex items-start gap-2" style={{ marginBottom: 'var(--space-3)' }}>
