@@ -7,7 +7,7 @@ import type { Investor, InvestorStatus, InvestorType } from '@/lib/types';
 import { useToast } from '@/components/toast';
 import { cachedFetch, invalidateCache } from '@/lib/cache';
 import {
-  Users, TrendingUp, Zap, Filter, X, GripVertical,
+  Users, TrendingUp, Zap, Filter, X, GripVertical, Download,
   Building2, Landmark, Shield, Banknote, Home, Rocket,
   Calendar, SendHorizonal, ClipboardList,
 } from 'lucide-react';
@@ -323,6 +323,11 @@ export default function PipelinePage() {
             active={hasActiveFilters}
             count={filters.tiers.size + filters.types.size}
             onClick={() => setShowFilters(!showFilters)} />
+          <a
+            href="/api/export?type=pipeline"
+            download
+            className="btn btn-secondary btn-sm">
+            <Download className="w-3.5 h-3.5" /> CSV</a>
           <Link
             href="/investors"
             className="btn btn-secondary btn-sm">
