@@ -19,6 +19,10 @@ import {
 import { dimensionBg, dimensionColor, inlineBadgeStyle, labelMuted, labelMuted10, labelSecondary, labelTertiary, scoreBgStyle as focusScoreBgStyle, scoreColor as focusScoreColor, stAccent, stBorderTop, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, INVESTOR_TYPE_STYLES } from '@/lib/styles';
 import { TierBadge, EnthusiasmDots } from '@/components/shared';
 
+const cardPad4 = { padding: 'var(--space-4)' } as const;
+const mt10 = { marginTop: '10px' } as const;
+const dimLabel = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontWeight: 400, letterSpacing: '0.01em' } as const;
+
 interface FocusItem {
   investorId: string;
   investorName: string;
@@ -102,7 +106,7 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
   const weakest = sorted.length > 0 ? sorted[sorted.length - 1] : null;
 
   return (
-    <div style={{ marginTop: '10px' }}>
+    <div style={mt10}>
       {/* Compact bar visualization */}
       <div className="flex items-center gap-1">
         <button
@@ -178,7 +182,7 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
             {dimensions.map(d => (
               <div key={d.name}>
                 <div className="flex items-center justify-between mb-0.5">
-                  <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontWeight: 400, letterSpacing: '0.01em' }}>
+                  <span style={dimLabel}>
                     {d.name}</span>
                   <span
                     className="tabular-nums"
@@ -209,7 +213,7 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
             <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 'var(--space-2)' }}>
               <div className="flex items-center gap-1 mb-1">
                 <span style={stTextSecondary}><Star className="w-3 h-3" /></span>
-                <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontWeight: 400, letterSpacing: '0.01em' }}>
+                <span style={dimLabel}>
                   Strengths</span></div>
               <div className="space-y-1">
                 {topDimensions.map(d => (
@@ -228,7 +232,7 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
             <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 'var(--space-2)' }}>
               <div className="flex items-center gap-1 mb-1">
                 <span style={stTextTertiary}><Eye className="w-3 h-3" /></span>
-                <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontWeight: 400, letterSpacing: '0.01em' }}>
+                <span style={dimLabel}>
                   Needs Attention</span></div>
               <div className="flex items-start gap-1.5">
                 <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 300, color: dimensionColor(weakest.score, weakest.signal), minWidth: '20px' }} className="tabular-nums shrink-0">
@@ -396,7 +400,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
                   <Zap className="w-3.5 h-3.5" /></Link></div></div></div>
 
         {/* Impact + Risk row */}
-        <div className="flex items-start gap-4 ml-11" style={{ marginTop: '10px' }}>
+        <div className="flex items-start gap-4 ml-11" style={mt10}>
           <p className="flex-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', opacity: 0.85, lineHeight: 1.6 }}>
             {item.expectedImpact}</p>
           <p className="flex-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', opacity: 0.75, lineHeight: 1.6 }}>
@@ -454,7 +458,7 @@ function QuickWinCard({ item }: { item: FocusItem }) {
   return (
     <div
       className="card"
-      style={{ padding: 'var(--space-4)' }}>
+      style={cardPad4}>
       <div className="flex items-center gap-2 mb-2">
         <Zap className="w-3.5 h-3.5" style={stTextTertiary} />
         <Link
@@ -541,7 +545,7 @@ function AccelerationCard({
   return (
     <div
       className="card"
-      style={{ padding: 'var(--space-4)' }}>
+      style={cardPad4}>
       <div className="flex items-start gap-3">
         <div className="flex-1 min-w-0">
           {/* Header: investor name + badges */}
@@ -606,7 +610,7 @@ function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
           {MOMENTUM_LABELS[investor.momentum]}</span>
         <EnthusiasmDots value={investor.enthusiasm} /></div>
       <p style={labelTertiary}>{investor.reason}</p>
-      <div className="flex items-center gap-2" style={{ marginTop: '10px' }}>
+      <div className="flex items-center gap-2" style={mt10}>
         <Link
           href={`/meetings/prep?investor=${investor.investorId}`}
           className="btn btn-primary btn-sm flex-1"
@@ -639,7 +643,7 @@ function AtRiskCard({ investor }: { investor: InvestorSummary }) {
           {MOMENTUM_LABELS[investor.momentum]}</span>
         <EnthusiasmDots value={investor.enthusiasm} /></div>
       <p style={labelTertiary}>{investor.reason}</p>
-      <div className="flex items-center gap-2" style={{ marginTop: '10px' }}>
+      <div className="flex items-center gap-2" style={mt10}>
         <Link
           href={`/meetings/new?investor=${investor.investorId}`}
           className="btn btn-sm flex-1 flex items-center justify-center gap-1"
@@ -814,22 +818,22 @@ export default function FocusPage() {
 
       {/* Weekly Budget Summary */}
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 card-stagger">
-        <div className="card-metric" style={{ padding: 'var(--space-4)' }}>
+        <div className="card-metric" style={cardPad4}>
           <div className="flex items-center gap-2 mb-1" style={labelMuted}>
             <Clock className="w-3.5 h-3.5" /> Total Time</div>
           <div className="metric-value">{weeklyBudget.totalHoursRecommended}h</div>
           <div className="metric-label" style={{ marginTop: '2px' }}>recommended this week</div></div>
-        <div className="card-metric" style={{ padding: 'var(--space-4)' }}>
+        <div className="card-metric" style={cardPad4}>
           <div className="flex items-center gap-2 mb-1" style={labelMuted}>
             <Calendar className="w-3.5 h-3.5" /> Meetings</div>
           <div className="metric-value">{weeklyBudget.meetingsRecommended}</div>
           <div className="metric-label" style={{ marginTop: '2px' }}>calls & meetings</div></div>
-        <div className="card-metric" style={{ padding: 'var(--space-4)' }}>
+        <div className="card-metric" style={cardPad4}>
           <div className="flex items-center gap-2 mb-1" style={labelMuted}>
             <CheckCircle className="w-3.5 h-3.5" /> Follow-ups</div>
           <div className="metric-value">{weeklyBudget.followUpsRecommended}</div>
           <div className="metric-label" style={{ marginTop: '2px' }}>prep & outreach</div></div>
-        <div className="card-metric" style={{ padding: 'var(--space-4)' }}>
+        <div className="card-metric" style={cardPad4}>
           <div className="flex items-center gap-2 mb-1" style={labelMuted}>
             <Rocket className="w-3.5 h-3.5" /> Acceleration</div>
           <div className="metric-value">{accelData?.summary.total ?? 0}</div>

@@ -13,6 +13,13 @@ import { fmtDate, fmtDateShort } from '@/lib/format';
 import { relativeTime } from '@/lib/time';
 import { confidenceBg, confidenceColor, labelMuted, labelMuted10, stAccent, stFontSm, stFontXs, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
+const mbSpace3 = { marginBottom: 'var(--space-3)' } as const;
+const mbSpace6 = { marginBottom: 'var(--space-6)' } as const;
+const padSpace5 = { padding: 'var(--space-5)' } as const;
+const fontSmPrimary = { ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' } as const;
+const cellPad34 = { padding: 'var(--space-3) var(--space-4)' } as const;
+const progressTrack = { flex: 1, height: '6px', background: 'var(--surface-3)', borderRadius: '3px', overflow: 'hidden' } as const;
+
 interface InvestorForecast { investorId: string; investorName: string; currentStage: string; tier: number; daysInStage: number; predictedDaysToClose: number; predictedCloseDate: string; confidence: 'high' | 'medium' | 'low'; reasoning: string }
 
 interface RaiseForecast { forecasts: InvestorForecast[]; expectedCloseDate: string; expectedAmount: number; confidence: 'high' | 'medium' | 'low'; criticalPathInvestors: string[]; riskFactors: string[] }
@@ -87,7 +94,7 @@ export default function ForecastPage() {
         <div className="flex items-center gap-3" style={{ marginBottom: 'var(--space-8)' }}>
           <div className="skeleton" style={{ width: '200px', height: '32px' }} /></div>
         <div className="card skeleton" style={{ height: '120px', marginBottom: 'var(--space-6)' }} />
-        <div className="grid grid-cols-3 gap-4" style={{ marginBottom: 'var(--space-6)' }}>
+        <div className="grid grid-cols-3 gap-4" style={mbSpace6}>
           {[1, 2, 3].map(i => (
             <div key={i} className="card skeleton" style={{ height: '140px' }} />
           ))}</div>
@@ -128,7 +135,7 @@ export default function ForecastPage() {
   return (
     <div className="page-content flex-1 p-6" style={{ maxWidth: '1400px', margin: '0 auto' }}>
       {/* Header */}
-      <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-6)' }}>
+      <div className="flex items-center justify-between" style={mbSpace6}>
         <div>
           <h1 className="page-title">Raise Forecast</h1>
           <p className="page-subtitle">
@@ -153,10 +160,10 @@ export default function ForecastPage() {
 
       {/* Raise Target Progress */}
       <div className="card" style={{ marginBottom: 'var(--space-6)', padding: 'var(--space-5)' }}>
-        <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-3)' }}>
+        <div className="flex items-center justify-between" style={mbSpace3}>
           <div className="flex items-center gap-2">
             <span style={stAccent}><Target className="w-4 h-4" /></span>
-            <span style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>
+            <span style={fontSmPrimary}>
               Raise Target Progress</span></div>
           <div className="flex items-center gap-4">
             <span style={labelMuted}>
@@ -190,7 +197,7 @@ export default function ForecastPage() {
               {progressPct}% of target</span></div></div></div>
 
       {/* Scenario Cards */}
-      <div className="grid grid-cols-3 gap-4" style={{ marginBottom: 'var(--space-6)' }}>
+      <div className="grid grid-cols-3 gap-4" style={mbSpace6}>
         {(['worst', 'base', 'best'] as const).map((key) => {
           const s = scenarios[key];
           const iconColor = key === 'best' ? 'var(--text-secondary)' : key === 'base' ? 'var(--text-secondary)' : 'var(--text-tertiary)';
@@ -199,11 +206,11 @@ export default function ForecastPage() {
             <div
               key={key}
               className="card hover-row"
-              style={{ padding: 'var(--space-5)' }}>
-              <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
+              style={padSpace5}>
+              <div className="flex items-center gap-2" style={mbSpace3}>
                 <span style={{ color: iconColor }}>
                   <Icon className="w-4 h-4" /></span>
-                <span style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>
+                <span style={fontSmPrimary}>
                   {s.label}</span></div>
               <div
                 style={{
@@ -229,19 +236,19 @@ export default function ForecastPage() {
             </div>);
         })}</div>
 
-      <div className="grid grid-cols-3 gap-4" style={{ marginBottom: 'var(--space-6)' }}>
+      <div className="grid grid-cols-3 gap-4" style={mbSpace6}>
         {/* Confidence Distribution */}
-        <div className="card" style={{ padding: 'var(--space-5)' }}>
+        <div className="card" style={padSpace5}>
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-4)' }}>
             <span style={stTextTertiary}><Shield className="w-4 h-4" /></span>
-            <span style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>
+            <span style={fontSmPrimary}>
               Confidence Distribution</span></div>
           {[
             { label: 'High', count: distribution.high, color: 'var(--text-secondary)', bg: 'var(--success-muted)' },
             { label: 'Medium', count: distribution.medium, color: 'var(--text-tertiary)', bg: 'var(--warning-muted)' },
             { label: 'Low', count: distribution.low, color: 'var(--text-primary)', bg: 'var(--danger-muted)' },
           ].map(({ label, count, color, bg }) => (
-            <div key={label} style={{ marginBottom: 'var(--space-3)' }}>
+            <div key={label} style={mbSpace3}>
               <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-1)' }}>
                 <span style={{ ...stFontXs, ...stTextSecondary }}>{label}</span>
                 <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color, fontVariantNumeric: 'tabular-nums' }}>
@@ -259,10 +266,10 @@ export default function ForecastPage() {
           ))}</div>
 
         {/* Critical Path */}
-        <div className="card" style={{ padding: 'var(--space-5)' }}>
+        <div className="card" style={padSpace5}>
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-4)' }}>
             <span style={stTextTertiary}><Zap className="w-4 h-4" /></span>
-            <span style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>
+            <span style={fontSmPrimary}>
               Critical Path</span></div>
           <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-3)' }}>
             Investors whose delay would delay the raise</p>
@@ -313,10 +320,10 @@ export default function ForecastPage() {
           )}</div>
 
         {/* Risk Factors */}
-        <div className="card" style={{ padding: 'var(--space-5)' }}>
+        <div className="card" style={padSpace5}>
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-4)' }}>
             <span style={stTextPrimary}><AlertTriangle className="w-4 h-4" /></span>
-            <span style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>
+            <span style={fontSmPrimary}>
               Risk Factors</span></div>
           {forecast.riskFactors.length === 0 ? (
             <div className="flex items-center gap-2" style={{ padding: 'var(--space-3)', background: 'var(--success-muted)', borderRadius: 'var(--radius-sm)' }}>
@@ -361,7 +368,7 @@ export default function ForecastPage() {
           style={{ padding: 'var(--space-4) var(--space-5)', borderBottom: '1px solid var(--border-subtle)' }}>
           <div className="flex items-center gap-2">
             <span style={stTextTertiary}><Clock className="w-4 h-4" /></span>
-            <span style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>
+            <span style={fontSmPrimary}>
               Investor Timeline</span>
             <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginLeft: 'auto' }}>
               {hasExclusions ? (
@@ -426,7 +433,7 @@ export default function ForecastPage() {
                           )}</button></td>
 
                       {/* Investor */}
-                      <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
+                      <td style={cellPad34}>
                         <Link href={`/investors/${inv.investorId}`} style={{ textDecoration: 'none' }}>
                           <div className="flex items-center gap-2">
                             <span
@@ -448,7 +455,7 @@ export default function ForecastPage() {
                               {inv.tier}</span>
                             <div>
                               <div className="flex items-center gap-1">
-                                <span style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>
+                                <span style={fontSmPrimary}>
                                   {inv.investorName}</span>
                                 {isCritical && (
                                   <span style={stTextTertiary}>
@@ -467,7 +474,7 @@ export default function ForecastPage() {
                           {formatAmount(estCapital, currency)}</span></td>
 
                       {/* Stage */}
-                      <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
+                      <td style={cellPad34}>
                         <span style={{ ...stFontXs, ...stTextSecondary }}>
                           {STAGE_LABELS[inv.currentStage] || inv.currentStage}</span></td>
 
@@ -491,9 +498,9 @@ export default function ForecastPage() {
                         <span style={{ display: 'inline-flex', alignItems: 'center', padding: '2px 8px', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', fontWeight: 400, background: confidenceBg(inv.confidence), color: confidenceColor(inv.confidence) }}>
                           {inv.confidence}</span></td>
 
-                      <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
+                      <td style={cellPad34}>
                         <div className="flex items-center gap-2">
-                          <div style={{ flex: 1, height: '6px', background: 'var(--surface-3)', borderRadius: '3px', overflow: 'hidden' }}>
+                          <div style={progressTrack}>
                             <div style={{ width: maxDaysToClose > 0 ? `${Math.max(4, (inv.predictedDaysToClose / maxDaysToClose) * 100)}%` : '0%', height: '100%', background: confidenceColor(inv.confidence), borderRadius: '3px', transition: 'width 400ms ease', opacity: 0.7 }} />
                           </div>
                           <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', minWidth: '32px', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
@@ -503,17 +510,17 @@ export default function ForecastPage() {
         )}</div>
 
       {/* Confidence Groups */}
-      <div className="grid grid-cols-3 gap-4" style={{ marginBottom: 'var(--space-6)' }}>
+      <div className="grid grid-cols-3 gap-4" style={mbSpace6}>
         {[
           { label: 'High Confidence', investors: highConfInvestors, color: 'var(--text-secondary)', bg: 'var(--success-muted)', icon: CheckCircle2 },
           { label: 'Medium Confidence', investors: medConfInvestors, color: 'var(--text-tertiary)', bg: 'var(--warning-muted)', icon: Clock },
           { label: 'Low Confidence', investors: lowConfInvestors, color: 'var(--text-primary)', bg: 'var(--danger-muted)', icon: AlertTriangle },
         ].map(({ label, investors, color, bg, icon: Icon }) => (
           <div key={label} className="card" style={{ padding: 'var(--space-4)' }}>
-            <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
+            <div className="flex items-center gap-2" style={mbSpace3}>
               <span style={{ color }}>
                 <Icon className="w-4 h-4" /></span>
-              <span style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>
+              <span style={fontSmPrimary}>
                 {label}</span>
               <span
                 style={{

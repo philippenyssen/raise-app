@@ -240,7 +240,7 @@ export default function TermComparePage() {
           <div
             key={idx}
             className="rounded-xl p-5"
-            style={{ background: 'var(--surface-0)' }}>
+            style={stSurface0}>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <span
