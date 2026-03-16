@@ -98,8 +98,9 @@ async function genericGetByField<T>(
   await ensureInitialized();
   let sql = `SELECT * FROM ${tableName} WHERE ${field} = ?`;
   if (opts?.orderBy && /^[\w]+(?: (?:ASC|DESC))?(?:, ?[\w]+(?: (?:ASC|DESC))?)*$/i.test(opts.orderBy)) sql += ` ORDER BY ${opts.orderBy}`;
-  if (opts?.limit && Number.isInteger(opts.limit) && opts.limit > 0) sql += ` LIMIT ${opts.limit}`;
-  const result = await getClient().execute({ sql, args: [value] });
+  const args: (string | number)[] = [value];
+  if (opts?.limit && Number.isInteger(opts.limit) && opts.limit > 0) { sql += ` LIMIT ?`; args.push(opts.limit); }
+  const result = await getClient().execute({ sql, args });
   return result.rows as unknown as T[];
 }
 
