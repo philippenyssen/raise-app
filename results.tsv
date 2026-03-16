@@ -660,3 +660,4 @@ db4500e	100	100	0	pass	Workflow+Automation	perf: extract 6 style constants from 
 671	2026-03-16T12:20:49Z	workflow	workflow: copy-to-clipboard button on AI meeting briefs	100	-	Workflow+Automation
 672	2026-03-16T12:22:17Z	copy	copy: clearer backlog empty state + reports error messages	100	-	Copywriting
 673	2026-03-16T12:25:25Z	ops	ops: deduplicate investor lookup in meetings POST	100	-	Reliability+Ops
+674	2026-03-16T12:27:09Z	feature	competitive: 'recent' badge for competitors mentioned in last 7 days	100	-	Competitive

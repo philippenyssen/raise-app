@@ -189,8 +189,10 @@ export default function CompetitivePage() {
                     {c.investors.map(inv => (
                       <span key={inv} style={investorTagStyle}>{inv}</span>
                     ))}</div>
-                  <div style={labelTertiary}>
-                    {c.latest_mention}</div></div>
+                  <div className="flex items-center gap-1.5" style={labelTertiary}>
+                    {c.latest_mention}
+                    {c.latest_mention && (Date.now() - new Date(c.latest_mention).getTime()) < 7 * 864e5 && <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)', fontWeight: 400 }}>recent</span>}
+                  </div></div>
 
                 {/* Expanded Detail */}
                 {isExpanded && (
