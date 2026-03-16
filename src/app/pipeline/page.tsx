@@ -468,7 +468,7 @@ export default function PipelinePage() {
                   <div className="flex items-center justify-between">
                     <span style={colHeaderLabel}>{STATUS_LABELS[status]}</span>
                     <div className="flex items-center gap-1.5">
-                      {cards.length > 0 && (() => { const activePct = Math.round((cards.filter(i => (Date.now() - new Date(i.updated_at).getTime()) < 7 * 864e5).length / cards.length) * 100); return <span title={`${activePct}% active in last 7 days`} style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: activePct >= 70 ? 'var(--success)' : activePct >= 40 ? 'var(--warning)' : 'var(--text-muted)' }}>{activePct}%</span>; })()}
+                      {cards.length > 0 && <ActivePct cards={cards} />}
                       <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 300, padding: 'var(--space-0) var(--space-1)', borderRadius: 'var(--radius-full)', ...colors.badge }}>{cards.length}</span>
                     </div>
                   </div></div>
@@ -727,6 +727,11 @@ function lastMeetingLabel(lastDate: string | null | undefined): string {
   if (!lastDate) return 'No meetings';
   const days = Math.floor((Date.now() - new Date(lastDate).getTime()) / (1000 * 60 * 60 * 24));
   return days === 0 ? 'Today' : `${days}d ago`;
+}
+
+function ActivePct({ cards }: { cards: { updated_at: string }[] }) {
+  const activePct = Math.round((cards.filter(i => (Date.now() - new Date(i.updated_at).getTime()) < 7 * 864e5).length / cards.length) * 100);
+  return <span title={`${activePct}% active in last 7 days`} style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: activePct >= 70 ? 'var(--success)' : activePct >= 40 ? 'var(--warning)' : 'var(--text-muted)' }}>{activePct}%</span>;
 }
 
 // ── Investor Card Component ──────────────────────────────────────────

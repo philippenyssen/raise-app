@@ -652,3 +652,4 @@ db4500e	100	100	0	pass	Workflow+Automation	perf: extract 6 style constants from 
 8909886	100	100	0	✓	CEO/Strategy	Fix misleading compare empty state title, add error description to acceleration error state
 664	2026-03-16T12:04:57Z	fix	fix: React error #310 — moved useMemo before early returns in momentum/forecast/acceleration	100	618297e	Performance+Stability
 665	2026-03-16T12:07:12Z	fix	fix: React error #310 — moved useMemo before early returns in today/focus/fomo	100	10c78e2	Performance+Stability
+666	2026-03-16T12:10:36Z	perf	perf: extract inline IIFE from pipeline kanban column headers	100	-	Product+Performance
