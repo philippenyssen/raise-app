@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { cachedFetch } from '@/lib/cache';
+import { EmptyState } from '@/components/ui/empty-state';
 import { relativeTime, MS_PER_MINUTE } from '@/lib/time';
 import { useToast } from '@/components/toast';
 import { fmtDateTime } from '@/lib/format';
@@ -238,10 +239,11 @@ export default function MomentumPage() {
   if (error || !data) {
     return (
       <div className="flex-1 flex items-center justify-center min-h-screen" style={stSurface0}>
-        <div className="text-center space-y-3">
-          <AlertTriangle className="w-8 h-8 mx-auto" style={stTextPrimary} />
-          <p className="text-sm" style={stTextPrimary}>{error || 'Add investors and log meetings to see momentum signals'}</p>
-          <button onClick={fetchData} className="text-xs" title="Retry loading momentum data" style={stTextSecondary}>Retry</button></div>
+        <EmptyState
+          icon={AlertTriangle}
+          title={error ? 'Could not load momentum data' : 'No momentum data yet'}
+          description={error || 'Add investors and log meetings to see momentum signals.'}
+          action={{ label: 'Retry', onClick: fetchData }} />
       </div>);
   }
 

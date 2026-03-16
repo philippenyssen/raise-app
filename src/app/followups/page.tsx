@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, useMemo, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { EmptyState } from '@/components/ui/empty-state';
 import {
   SendHorizonal, Clock, CheckCircle2, XCircle, AlertTriangle,
   Mail, MessageSquare, FolderOpen, CalendarPlus, RefreshCw, Milestone,
@@ -790,17 +791,11 @@ function FollowupsContent() {
             <RefreshCw className="w-3.5 h-3.5" />
             Retry</button></div>
       ) : followups.length === 0 ? (
-        <div
-          className="text-center py-12"
-          style={{ borderRadius: 'var(--radius-xl)' }}>
-          <SendHorizonal className="w-10 h-10 mx-auto mb-3" style={{ color: 'var(--border-default)' }} />
-          <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, ...stTextSecondary, marginBottom: 'var(--space-1)' }}>No follow-ups pending</h3>
-          <p style={{ fontSize: 'var(--font-size-xs)', ...stTextMuted }}>
-            Follow-ups are created automatically after meetings.{' '}
-            <Link
-              href="/meetings/new"
-              style={stAccent}>
-              Log a meeting</Link></p></div>
+        <EmptyState
+          icon={SendHorizonal}
+          title="No follow-ups pending"
+          description="Follow-ups are created automatically after meetings."
+          action={{ label: 'Log a meeting', href: '/meetings/new' }} />
       ) : filter === 'pending' ? (
         <div className="space-y-6">
           {renderSection('Overdue', overdue, overdueExpanded, setOverdueExpanded, 'red', true)}

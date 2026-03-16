@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { cachedFetch } from '@/lib/cache';
 import { useToast } from '@/components/toast';
+import { EmptyState } from '@/components/ui/empty-state';
 import { BarChart3 } from 'lucide-react';
 import { stAccent, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
@@ -101,11 +102,11 @@ export default function AnalysisPage() {
           {loading ? 'Analyzing...' : 'Run Analysis'}</button></div>
 
       {!data && !loading && (
-        <div
-          className="rounded-xl p-8 text-center space-y-3">
-          <BarChart3 className="w-8 h-8 mx-auto" style={stTextMuted} />
-          <p style={stTextMuted}>Click &quot;Run Analysis&quot; to analyze patterns across all logged meetings.</p>
-          <p className="text-xs" style={stTextMuted}>Requires at least 2 meetings with notes. Uses Claude API.</p></div>
+        <EmptyState
+          icon={BarChart3}
+          title="No analysis yet"
+          description="Click &quot;Run Analysis&quot; to find patterns across your meetings. Requires at least 2 meetings with notes."
+          action={{ label: 'Run Analysis', onClick: runAnalysis }} />
       )}
 
       {loading && (
