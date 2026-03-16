@@ -109,6 +109,7 @@ export default function AnalysisPage() {
 
       {loading && (
         <div className="space-y-4">
+          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>Analyzing fundraise patterns...</p>
           <div className="skeleton" style={{ height: '80px', borderRadius: 'var(--radius-lg)' }} />
           <div className="grid grid-cols-2 gap-4">
             {[1,2,3,4].map(i => <div key={i} className="skeleton" style={{ height: '120px', borderRadius: 'var(--radius-lg)' }} />)}

@@ -23,6 +23,8 @@ interface CompetitiveData {
   date_range: { from: string | null; to: string | null };
 }
 
+const investorTagStyle: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-secondary)' };
+
 export default function CompetitivePage() {
   const { toast } = useToast();
   const [data, setData] = useState<CompetitiveData | null>(null);
@@ -116,6 +118,7 @@ export default function CompetitivePage() {
       {/* Competitor Table */}
       {loading ? (
         <div className="space-y-3">
+          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>Loading competitive signals...</p>
           {[1,2,3].map(i => <div key={i} className="skeleton" style={{ height: '48px', borderRadius: 'var(--radius-lg)' }} />)}
         </div>
       ) : !data || data.competitors.length === 0 ? (
@@ -186,15 +189,7 @@ export default function CompetitivePage() {
                       {c.mention_count}</span></div>
                   <div className="flex flex-wrap gap-1">
                     {c.investors.map(inv => (
-                      <span
-                        key={inv}
-                        style={{
-                          fontSize: 'var(--font-size-xs)',
-                          padding: '1px 6px',
-                          borderRadius: 'var(--radius-sm)',
-                          background: 'var(--surface-2)',
-                          color: 'var(--text-secondary)', }}>
-                        {inv}</span>
+                      <span key={inv} style={investorTagStyle}>{inv}</span>
                     ))}</div>
                   <div style={labelTertiary}>
                     {c.latest_mention}</div></div>
