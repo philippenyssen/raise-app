@@ -664,3 +664,4 @@ db4500e	100	100	0	pass	Workflow+Automation	perf: extract 6 style constants from 
 675	2026-03-16T12:28:57Z	strategy	strategy: move Pipeline Pulse above-the-fold on Today page	100	-	CEO+Strategy
 676	2026-03-16T12:30:38Z	product	product: unsaved changes dot indicator in workspace sidebar	100	-	Product
 677	2026-03-16T12:31:56Z	design	design: wider gap on analytics summary cards grid	100	-	Design+UX
+678	2026-03-16T12:33:33Z	perf	perf: extract score components array to module scope in focus page	100	-	Engineering

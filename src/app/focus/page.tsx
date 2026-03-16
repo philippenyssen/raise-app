@@ -33,6 +33,13 @@ const alertCardDanger: React.CSSProperties = { ...alertCardBase, background: 'va
 const impactTextStyle: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', opacity: 0.85, lineHeight: 1.6 };
 const riskTextStyle: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', opacity: 0.75, lineHeight: 1.6 };
 const metricLabelMt: React.CSSProperties = { marginTop: 'var(--space-0)' };
+const SCORE_COMPONENTS: readonly { label: string; key: 'investorScore' | 'urgency' | 'momentumRisk' | 'opportunitySize' | 'actionReadiness'; weight: string }[] = [
+  { label: 'Investor Score', key: 'investorScore', weight: '30%' },
+  { label: 'Urgency', key: 'urgency', weight: '25%' },
+  { label: 'Momentum Risk', key: 'momentumRisk', weight: '20%' },
+  { label: 'Opportunity Size', key: 'opportunitySize', weight: '15%' },
+  { label: 'Action Readiness', key: 'actionReadiness', weight: '10%' },
+];
 
 interface FocusItem {
   investorId: string;
@@ -413,15 +420,9 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
           <div>
             <p style={{ ...labelMutedWide, marginBottom: 'var(--space-2)' }}>Score Breakdown</p>
             <div className="grid grid-cols-5 gap-2">
-              {[
-                { label: 'Investor Score', value: item.components.investorScore, weight: '30%' },
-                { label: 'Urgency', value: item.components.urgency, weight: '25%' },
-                { label: 'Momentum Risk', value: item.components.momentumRisk, weight: '20%' },
-                { label: 'Opportunity Size', value: item.components.opportunitySize, weight: '15%' },
-                { label: 'Action Readiness', value: item.components.actionReadiness, weight: '10%' },
-              ].map(comp => (
-                <div key={comp.label} className="text-center">
-                  <div className="tabular-nums" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 300, color: focusScoreColor(comp.value) }}>{comp.value}</div>
+              {SCORE_COMPONENTS.map(comp => (
+                <div key={comp.key} className="text-center">
+                  <div className="tabular-nums" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 300, color: focusScoreColor(item.components[comp.key]) }}>{item.components[comp.key]}</div>
                   <div style={{ ...labelMuted, marginTop: 'var(--space-0)' }}>{comp.label}</div>
                   <div style={labelMuted}>{comp.weight}</div></div>
               ))}</div></div>
