@@ -9,9 +9,7 @@ import {
 } from 'lucide-react';
 import { STATUS_LABELS, TYPE_LABELS } from '@/lib/constants';
 import { relativeTime } from '@/lib/time';
-import { labelMuted, labelSecondary, maxWidthCenter, stTextTertiary, trackingBg, trackingColor, velocityColor } from '@/lib/styles';
-
-const tdCentered = { padding: 'var(--space-3) var(--space-4)', textAlign: 'center' as const } as const;
+import { cellCenter, labelMuted, labelSecondary, maxWidthCenter, stTextTertiary, trackingBg, trackingColor, velocityColor } from '@/lib/styles';
 const mbSpace2 = { marginBottom: 'var(--space-2)' } as const;
 
 interface VelocityInvestor { investor_id: string; investor_name: string; investor_type: string; investor_tier: number; status: string; enthusiasm: number; days_in_process: number; days_in_current_stage: number; projected_close_date: string; days_to_target: number; on_track: boolean; tracking_status: 'on_track' | 'behind' | 'at_risk'; bottleneck: string; velocity_score: number; meeting_count: number; meetings_per_week: number; days_since_last_meeting: number }
@@ -227,19 +225,19 @@ export default function VelocityPage() {
                           {STATUS_LABELS[inv.status] || inv.status}</span></div></td>
 
                     {/* Days in Process */}
-                    <td style={tdCentered}>
+                    <td style={cellCenter}>
                       <span
                         style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, fontVariantNumeric: 'tabular-nums', color: inv.days_in_process > 50 ? 'var(--danger)' : inv.days_in_process > 35 ? 'var(--warning)' : 'var(--text-secondary)' }}>
                         {inv.days_in_process}d</span></td>
 
                     {/* Days in Stage */}
-                    <td style={tdCentered}>
+                    <td style={cellCenter}>
                       <span
                         style={{ fontSize: 'var(--font-size-sm)', fontVariantNumeric: 'tabular-nums', color: inv.days_in_current_stage > 21 ? 'var(--danger)' : inv.days_in_current_stage > 14 ? 'var(--warning)' : 'var(--text-tertiary)' }}>
                         {inv.days_in_current_stage}d</span></td>
 
                     {/* Projected Close */}
-                    <td style={tdCentered}>
+                    <td style={cellCenter}>
                       <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', fontVariantNumeric: 'tabular-nums' }}>
                         {new Date(inv.projected_close_date).toLocaleDateString('en-GB', {
                           day: 'numeric',
@@ -247,7 +245,7 @@ export default function VelocityPage() {
                         })}</span></td>
 
                     {/* On-Track Status */}
-                    <td style={tdCentered}>
+                    <td style={cellCenter}>
                       <span
                         style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', padding: '2px 8px', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', fontWeight: 400, background: trackingBg(inv.tracking_status), color: trackingColor(inv.tracking_status) }}>
                         {inv.tracking_status === 'on_track' ? (
@@ -278,7 +276,7 @@ export default function VelocityPage() {
                           {inv.velocity_score}</span></div></td>
 
                     {/* Action */}
-                    <td style={tdCentered}>
+                    <td style={cellCenter}>
                       {inv.tracking_status === 'at_risk' ? (
                         <Link
                           href={`/meetings/new?investor=${inv.investor_id}`}

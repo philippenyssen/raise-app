@@ -12,12 +12,11 @@ import {
   TrendingDown, Minus, Users, Shield, Target,
   CheckCircle, Sparkles, ArrowUpRight,
 } from 'lucide-react';
-import { labelMuted, labelSecondary, labelTertiary, stAccent, stFontSm, stFontXs, stTextMuted, stTextSecondary, stTextTertiary } from '@/lib/styles';
+import { flexColGap2, labelMuted, labelSecondary, labelTertiary, stAccent, stFontSm, stFontXs, stTextMuted, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 // ---------------------------------------------------------------------------
 // Extracted style constants (avoid re-allocation each render)
 // ---------------------------------------------------------------------------
-const flexColGap2 = { display: 'flex', flexDirection: 'column' as const, gap: 'var(--space-2)' } as const;
 const linkCardPad = { padding: 'var(--space-4)', textDecoration: 'none' as const } as const;
 const emptyStatePad = { padding: 'var(--space-6)', textAlign: 'center' as const } as const;
 const emptyStateIcon = { display: 'flex', justifyContent: 'center', marginBottom: 'var(--space-3)' } as const;
