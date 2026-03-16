@@ -44,6 +44,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'duration_minutes must be between 1 and 480' }, { status: 400 });
   }
 
+  // Validate date early — before expensive AI analysis
+  const dateStr = typeof date === 'string' ? date : new Date().toISOString().split('T')[0];
+  if (!/^\d{4}-\d{2}-\d{2}/.test(dateStr) || isNaN(new Date(dateStr).getTime())) {
+    return NextResponse.json({ error: 'date must be a valid YYYY-MM-DD format' }, { status: 400 });
+  }
+
   let aiData: Record<string, unknown> = {};
   if (analyze && raw_notes) {
     try {
@@ -72,10 +78,6 @@ export async function POST(req: NextRequest) {
       console.error('[MEETING_AI_ANALYSIS]', err instanceof Error ? err.message : err);
     }}
 
-  const dateStr = (date as string) || new Date().toISOString().split('T')[0];
-  if (!/^\d{4}-\d{2}-\d{2}/.test(dateStr) || isNaN(new Date(dateStr).getTime())) {
-    return NextResponse.json({ error: 'date must be a valid YYYY-MM-DD format' }, { status: 400 });
-  }
   try {
   // Deduplication: check for identical meeting created in last 60 seconds
   const recentMeetings = await getMeetings(investor_id as string, 5);
