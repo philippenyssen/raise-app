@@ -530,6 +530,13 @@ export default function PipelinePage() {
                       style={emptyColPlaceholder}>
                       {dragId ? 'Drop here'
                         : status === 'identified' ? 'Add investors from the table view'
+                        : status === 'contacted' ? 'Drag investors here once you\'ve reached out'
+                        : status === 'nda_signed' ? 'Drag here after NDA is signed'
+                        : status === 'meeting_scheduled' ? 'Drag here once a meeting is booked'
+                        : status === 'met' ? 'Drag here after the first meeting'
+                        : status === 'engaged' ? 'Active conversations with follow-up momentum'
+                        : status === 'in_dd' ? 'Investors doing due diligence on the company'
+                        : status === 'term_sheet' ? 'Drag here when a term sheet is received'
                         : status === 'closed' ? 'Move investors here when signed'
                         : 'Move investors from earlier stages'}</div>
                   )}
