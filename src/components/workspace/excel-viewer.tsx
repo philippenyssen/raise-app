@@ -57,6 +57,8 @@ interface ExcelViewerPropsWithSheets extends ExcelViewerProps {
 
 export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allSheets, activeSheetName, onSheetChange }: ExcelViewerPropsWithSheets) {
   const [selectedCell, setSelectedCell] = useState<string | null>(null);
+  const [selectionRange, setSelectionRange] = useState<{ start: string; end: string } | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
   const [editingCell, setEditingCell] = useState<string | null>(null);
   const [editValue, setEditValue] = useState('');
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; ref: string } | null>(null);
@@ -135,7 +137,51 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
 
   const handleCellClick = useCallback((ref: string) => {
     setSelectedCell(ref);
+    setSelectionRange(null);
   }, []);
+
+  const handleCellMouseDown = useCallback((ref: string, e: React.MouseEvent) => {
+    if (e.button !== 0 || editingCell) return;
+    setSelectedCell(ref);
+    setSelectionRange({ start: ref, end: ref });
+    setIsDragging(true);
+  }, [editingCell]);
+
+  const handleCellMouseEnter = useCallback((ref: string) => {
+    if (!isDragging || !selectionRange) return;
+    setSelectionRange(prev => prev ? { ...prev, end: ref } : null);
+  }, [isDragging, selectionRange]);
+
+  useEffect(() => {
+    if (!isDragging) return;
+    const handler = () => setIsDragging(false);
+    window.addEventListener('mouseup', handler);
+    return () => window.removeEventListener('mouseup', handler);
+  }, [isDragging]);
+
+  // Get all cells in selection range
+  const selectedRangeCells = useMemo(() => {
+    if (!selectionRange) return [];
+    const start = parseCellRef(selectionRange.start);
+    const end = parseCellRef(selectionRange.end);
+    if (!start || !end) return [];
+    const minRow = Math.min(start.row, end.row);
+    const maxRow = Math.max(start.row, end.row);
+    const minCol = Math.min(start.col, end.col);
+    const maxCol = Math.max(start.col, end.col);
+    const refs: string[] = [];
+    for (let r = minRow; r <= maxRow; r++) {
+      for (let c = minCol; c <= maxCol; c++) {
+        refs.push(cellRefStr(r, c));
+      }
+    }
+    return refs;
+  }, [selectionRange]);
+
+  const isInRange = useCallback((ref: string) => {
+    if (selectedRangeCells.length <= 1) return false;
+    return selectedRangeCells.includes(ref);
+  }, [selectedRangeCells]);
 
   const handleCellDoubleClick = useCallback((ref: string) => {
     const cell = cells[ref];
@@ -274,18 +320,22 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
   // Parse selected cell for header highlighting
   const selectedParsed = useMemo(() => selectedCell ? parseCellRef(selectedCell) : null, [selectedCell]);
 
-  // Compute aggregate stats for selected cell value (SUM/AVG/COUNT for numeric)
+  // Compute aggregate stats for selected cells (SUM/AVG/COUNT for numeric)
   const selectedStats = useMemo(() => {
-    if (!selectedCell) return null;
-    const cell = cells[selectedCell];
-    if (!cell) return null;
-    const computed = getComputedValue(selectedCell);
-    const val = computed !== null ? computed : cell.v;
-    if (typeof val === 'number') {
-      return { sum: val, avg: val, count: 1 };
+    const refs = selectedRangeCells.length > 1 ? selectedRangeCells : (selectedCell ? [selectedCell] : []);
+    if (refs.length === 0) return null;
+    const nums: number[] = [];
+    for (const ref of refs) {
+      const cell = cells[ref];
+      if (!cell) continue;
+      const computed = getComputedValue(ref);
+      const val = computed !== null ? computed : cell.v;
+      if (typeof val === 'number') nums.push(val);
     }
-    return null;
-  }, [selectedCell, cells, getComputedValue]);
+    if (nums.length === 0) return null;
+    const sum = nums.reduce((a, b) => a + b, 0);
+    return { sum, avg: sum / nums.length, count: nums.length };
+  }, [selectedCell, selectedRangeCells, cells, getComputedValue]);
 
   const selectedCellData = selectedCell ? cells[selectedCell] : null;
   const [formulaBarValue, setFormulaBarValue] = useState('');
@@ -387,6 +437,7 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
                   const cell = cells[ref];
                   const isSelected = ref === selectedCell;
                   const isEditing = ref === editingCell;
+                  const inRange = isInRange(ref);
 
                   const cellColor = !cell
                     ? 'var(--text-muted)'
@@ -398,6 +449,8 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
                     <td
                       key={ci}
                       onClick={() => handleCellClick(ref)}
+                      onMouseDown={(e) => handleCellMouseDown(ref, e)}
+                      onMouseEnter={() => handleCellMouseEnter(ref)}
                       onDoubleClick={() => handleCellDoubleClick(ref)}
                       onContextMenu={(e) => handleContextMenu(e, ref)}
                       className={`px-1.5 py-0.5 cursor-cell transition-colors
@@ -412,7 +465,11 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
                           ringColor: 'var(--accent)',
                           boxShadow: 'inset 0 0 0 2px var(--accent)',
                           backgroundColor: 'color-mix(in srgb, var(--surface-2) 30%, transparent)',
-                        } : {}),}}>
+                        } : {}),
+                        ...(inRange && !isSelected ? {
+                          backgroundColor: 'color-mix(in srgb, var(--accent-muted) 40%, transparent)',
+                        } : {}),
+                      }}>
                       {isEditing ? (
                         <input
                           ref={inputRef}

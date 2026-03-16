@@ -382,7 +382,10 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
             <span style={{ fontSize: '10px', color: 'var(--text-muted)', paddingLeft: '4px' }}>{idx + 1}</span>
             <div
               onClick={() => goToSlide(idx)}
-              style={idx === activeIdx ? slidePreviewActive : slidePreviewStyle}
+              style={{
+                ...(idx === activeIdx ? slidePreviewActive : slidePreviewStyle),
+                background: slide.background || 'var(--surface-0)',
+              }}
             >
               <div style={{ transform: 'scale(0.15)', transformOrigin: 'top left', width: '666%', height: '666%', position: 'relative', pointerEvents: 'none' }}>
                 {renderSlideContent(slide, 1)}

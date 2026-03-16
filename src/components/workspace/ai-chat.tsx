@@ -180,6 +180,34 @@ function renderMarkdown(text: string): React.ReactNode {
       continue;
     }
 
+    // Horizontal rule
+    if (line.match(/^[-*_]{3,}\s*$/)) {
+      blocks.push(<hr key={blocks.length} style={{ border: 'none', borderTop: '1px solid var(--border-subtle)', margin: '8px 0' }} />);
+      i++;
+      continue;
+    }
+
+    // Blockquote
+    if (line.startsWith('> ')) {
+      const quoteLines: string[] = [];
+      while (i < lines.length && lines[i].startsWith('> ')) {
+        quoteLines.push(lines[i].slice(2));
+        i++;
+      }
+      blocks.push(
+        <blockquote key={blocks.length} style={{
+          borderLeft: '3px solid var(--accent)',
+          paddingLeft: '12px',
+          margin: '6px 0',
+          color: 'var(--text-tertiary)',
+          fontStyle: 'italic',
+        }}>
+          {quoteLines.map((ql, qi) => <div key={qi}>{inlineFormat(ql)}</div>)}
+        </blockquote>
+      );
+      continue;
+    }
+
     // Empty line
     if (line.trim() === '') {
       i++;
