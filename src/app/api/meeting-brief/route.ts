@@ -487,7 +487,7 @@ Generate a JSON meeting brief (no markdown, pure JSON):
   "previous_meeting_summary": "1-2 sentence summary of where we left off (null if no previous meetings)",
   "unresolved_items": ["List of specific unresolved items from previous interactions that MUST be addressed"],
   "risks_to_watch": ["Specific risks to monitor during this meeting — body language cues, topics to avoid, potential landmines"],
-  "recommended_ask": "What specific ask or next step should we push for at the end of this meeting"
+  "recommended_ask": "What specific ask or next step should we push for at the end of this meeting — be URGENT if investor has been in the same stage for >21 days (push for timeline commitment or next meeting date lock)"
 }
 
 Be specific and actionable. Reference real data from the context. Do not be generic.`;
