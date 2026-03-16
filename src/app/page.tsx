@@ -1182,7 +1182,7 @@ function SectionError({ label, onRetry }: { label: string; onRetry: () => void }
     <div className="flex items-center justify-between py-2.5 px-4 rounded-lg" style={stSurface1}>
       <span style={textSmSecondary}>{label} unavailable</span>
       <button disabled={r} className="btn btn-secondary btn-sm"
-        onClick={async () => { setR(true); await onRetry(); setR(false); }}>
+        onClick={async () => { setR(true); try { await onRetry(); } catch (e) { console.warn('[RETRY]', e instanceof Error ? e.message : e); } finally { setR(false); } }}>
         <RefreshCw className={`w-3 h-3 ${r ? 'animate-spin' : ''}`} /> {r ? 'Retrying' : 'Retry'}</button>
     </div>);
 }

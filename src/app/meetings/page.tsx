@@ -348,7 +348,7 @@ export default function MeetingsPage() {
   }, []);
 
   useEffect(() => {
-    const h = (e: KeyboardEvent) => { if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement) return; if (e.key === 'r' && !e.metaKey && !e.ctrlKey) { e.preventDefault(); cachedFetch('/api/meetings').then(r => r.json()).then(setMeetings).catch(() => {}); } if (e.key === 'n' && !e.metaKey && !e.ctrlKey) { e.preventDefault(); router.push('/meetings/new'); } };
+    const h = (e: KeyboardEvent) => { if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement) return; if (e.key === 'r' && !e.metaKey && !e.ctrlKey) { e.preventDefault(); cachedFetch('/api/meetings').then(r => r.json()).then(setMeetings).catch(e => console.warn('[MEETINGS_REFRESH]', e instanceof Error ? e.message : e)); } if (e.key === 'n' && !e.metaKey && !e.ctrlKey) { e.preventDefault(); router.push('/meetings/new'); } };
     window.addEventListener('keydown', h);
     return () => window.removeEventListener('keydown', h);
   }, []);

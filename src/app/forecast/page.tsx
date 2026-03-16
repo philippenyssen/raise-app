@@ -32,6 +32,8 @@ const tierLowStyle: React.CSSProperties = { ...tierBadgeBase, background: 'var(-
 const scenarioAmount: React.CSSProperties = { fontSize: 'var(--font-size-2xl)', fontWeight: 300, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums', marginBottom: 'var(--space-1)' };
 const scenarioFooter: React.CSSProperties = { display: 'flex', justifyContent: 'space-between', fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', borderTop: '1px solid var(--border-subtle)', paddingTop: 'var(--space-2)', marginTop: 'var(--space-2)' };
 const distBarTrack: React.CSSProperties = { height: '6px', background: 'var(--surface-3)', borderRadius: '3px', overflow: 'hidden' };
+const distBarFillBase: React.CSSProperties = { height: '100%', borderRadius: '3px', transition: 'width 400ms ease' };
+const mbSpace1: React.CSSProperties = { marginBottom: 'var(--space-1)' };
 const progressBarTrack: React.CSSProperties = { width: '100%', height: '28px', background: 'var(--surface-2)', borderRadius: 'var(--radius-md)', overflow: 'hidden', position: 'relative' };
 const progressBarLabel: React.CSSProperties = { position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: 'var(--font-size-sm)', fontWeight: 300, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' };
 const legendDotCommitted: React.CSSProperties = { width: '12px', height: '12px', borderRadius: '3px', background: 'var(--accent)' };
@@ -274,18 +276,16 @@ export default function ForecastPage() {
             const count = distribution[key];
             return (
             <div key={label} style={mbSpace3}>
-              <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-1)' }}>
+              <div className="flex items-center justify-between" style={mbSpace1}>
                 <span style={labelSecondary}>{label}</span>
                 <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color, fontVariantNumeric: 'tabular-nums' }}>
                   {count}</span></div>
               <div style={distBarTrack}>
                 <div
                   style={{
+                    ...distBarFillBase,
                     width: totalActive > 0 ? `${(count / totalActive) * 100}%` : '0%',
-                    height: '100%',
                     background: bg,
-                    borderRadius: '3px',
-                    transition: 'width 400ms ease',
                     border: `1px solid ${color}`,
                   }} /></div></div>
           ); })}</div>
