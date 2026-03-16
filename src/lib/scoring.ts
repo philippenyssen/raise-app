@@ -83,6 +83,10 @@ function computeEngagementScore(
     if (signals.pricing_reception === 'positive') signalPts += 4;
     else if (signals.pricing_reception === 'negative') signalPts -= 3;
     if (signals.mentioned_competitors) signalPts += 3;
+    const landed = Array.isArray(signals.slides_that_landed) ? signals.slides_that_landed.length : 0;
+    const flat = Array.isArray(signals.slides_that_fell_flat) ? signals.slides_that_fell_flat.length : 0;
+    if (landed > 0) signalPts += Math.min(3, landed);
+    if (flat > landed) signalPts -= 1;
   }
   signalPts = Math.max(0, Math.min(25, signalPts));
 
