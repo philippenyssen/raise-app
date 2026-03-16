@@ -340,7 +340,7 @@ export default function DealflowPage() {
         ))}</div>
 
       {/* Controls */}
-      <div className="flex items-center gap-3 mb-4">
+      <div className="flex flex-wrap items-center gap-3 mb-4">
         <div className="flex items-center gap-1.5" style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>
           <span><Filter className="w-3 h-3" /></span> Heat:</div>
         {(['all', 'hot', 'warm', 'cool', 'cold', 'frozen'] as HeatFilter[]).map(h => (
@@ -364,7 +364,7 @@ export default function DealflowPage() {
           ))}</div></div>
 
       {/* Heat Legend */}
-      <div className="flex items-center gap-4 mb-4" style={labelMuted}>
+      <div className="flex flex-wrap items-center gap-4 mb-4" style={labelMuted}>
         {[
           { label: 'Hot', desc: 'Recent meeting + high enthusiasm' },
           { label: 'Warm', desc: 'Active, moderate pace' },
@@ -396,6 +396,8 @@ export default function DealflowPage() {
       {/* Investor Table */}
       {filtered.length > 0 && (
         <div className="rounded-xl overflow-hidden" style={stSurface0}>
+          <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+            <div style={{ minWidth: '780px' }}>
           {/* Header row */}
           <div
             className="grid gap-3 px-4 py-2.5"
@@ -503,7 +505,10 @@ export default function DealflowPage() {
                 <div className="text-center" style={inv.daysSinceLastMeeting > 14 ? dfLastMeetStale : dfLastMeetNormal}>
                   {relativeDate(inv.lastMeeting)}</div>
               </Link>);
-          })}</div>
+          })}
+          </div>{/* end minWidth */}
+          </div>{/* end overflowX */}
+        </div>
       )}
 
       {/* Empty state */}
