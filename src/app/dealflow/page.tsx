@@ -70,6 +70,18 @@ const dfDaysOverdue = { fontSize: 'var(--font-size-sm)', color: 'var(--danger)' 
 const dfLastMeetNormal = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' } as const;
 const dfLastMeetStale = { fontSize: 'var(--font-size-xs)', color: 'var(--danger)' } as const;
 const dfVelFill = { background: 'var(--text-primary)' } as const;
+const dfHeaderSubtitle: React.CSSProperties = { color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', marginTop: 'var(--space-0)' };
+const dfExportBtnBase: React.CSSProperties = { background: 'var(--surface-2)', color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' };
+const dfRefreshBtn: React.CSSProperties = { background: 'var(--surface-2)', color: 'var(--text-secondary)', fontSize: 'var(--font-size-sm)' };
+const dfHeatLegendLabel = { color: 'var(--text-tertiary)' } as const;
+const dfErrorAlert: React.CSSProperties = { background: 'var(--danger-muted)', border: '1px solid var(--danger)', color: 'var(--text-primary)' };
+const dfLoadingText: React.CSSProperties = { color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' };
+const dfTableHeader: React.CSSProperties = { gridTemplateColumns: '2fr 80px 90px 80px 70px 60px 1.5fr 80px', background: 'var(--surface-1)', borderBottom: '1px solid var(--border-subtle)', fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontWeight: 400, letterSpacing: '0.01em' };
+const dfTrackingDot = { background: 'var(--text-secondary)' } as const;
+const dfBottleneckLink: React.CSSProperties = { color: 'var(--text-tertiary)', textDecoration: 'none' };
+const dfEmptyStateText: React.CSSProperties = { color: 'var(--text-secondary)', marginBottom: 'var(--space-1)' };
+const dfClearFilterBtn: React.CSSProperties = { color: 'var(--accent)', textDecoration: 'underline', background: 'none', border: 'none', cursor: 'pointer' };
+const dfFooterInfo: React.CSSProperties = { color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' };
 
 function heatBtnStyle(active: boolean): React.CSSProperties {
   return { background: active ? 'var(--surface-3)' : 'transparent', color: active ? 'var(--text-primary)' : 'var(--text-muted)', border: active ? '1px solid var(--border-default)' : '1px solid transparent' };
@@ -274,8 +286,8 @@ export default function DealflowPage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="page-title">Dealflow</h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', marginTop: 'var(--space-0)' }}>
-            Investor health: heat, velocity, and momentum in one view{loadedAt && <> &middot; <span style={{ color: 'var(--text-muted)' }}>{relativeTime(loadedAt)}</span></>}</p></div>
+          <p style={dfHeaderSubtitle}>
+            Investor health: heat, velocity, and momentum in one view{loadedAt && <> &middot; <span style={stTextMuted}>{relativeTime(loadedAt)}</span></>}</p></div>
         <div className="flex items-center gap-2">
           <button
             onClick={() => {
@@ -286,13 +298,13 @@ export default function DealflowPage() {
             }}
             disabled={loading || !filtered.length}
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg"
-            style={{ background: 'var(--surface-2)', color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', opacity: loading || !filtered.length ? 0.5 : 1 }}>
+            style={{ ...dfExportBtnBase, opacity: loading || !filtered.length ? 0.5 : 1 }}>
             <Download className="w-3.5 h-3.5" /> Export</button>
           <button
             onClick={fetchData}
             disabled={loading}
             className="flex items-center gap-2 px-3 py-2 rounded-lg"
-            style={{ background: 'var(--surface-2)', color: 'var(--text-secondary)', fontSize: 'var(--font-size-sm)' }}>
+            style={dfRefreshBtn}>
             <span style={stTextMuted}><RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} /></span>
             Refresh</button></div></div>
 
@@ -344,13 +356,13 @@ export default function DealflowPage() {
         ].map(({ label, desc }) => (
           <span key={label} className="flex items-center gap-1">
             <span className="w-2 h-2 rounded-full" style={{ background: HEAT_CONFIG[label.toLowerCase()]?.border || 'var(--border-default)' }} />
-            <span style={{ color: 'var(--text-tertiary)' }}>{label}</span>
+            <span style={dfHeatLegendLabel}>{label}</span>
             <span>— {desc}</span></span>
         ))}</div>
 
       {/* Error state */}
       {error && (
-        <div role="alert" className="rounded-lg p-4 mb-4 flex items-center justify-between" style={{ background: 'var(--danger-muted)', border: '1px solid var(--danger)', color: 'var(--text-primary)' }}>
+        <div role="alert" className="rounded-lg p-4 mb-4 flex items-center justify-between" style={dfErrorAlert}>
           <span style={{ fontSize: 'var(--font-size-sm)' }}>{error}</span>
           <button onClick={() => fetchData()} className="btn btn-secondary btn-sm">Retry</button></div>
       )}
@@ -358,7 +370,7 @@ export default function DealflowPage() {
       {/* Loading state */}
       {loading && !investors.length && (
         <div className="space-y-3">
-          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>Loading investor health signals...</p>
+          <p style={dfLoadingText}>Loading investor health signals...</p>
           {[1,2,3,4].map(i => <div key={i} className="skeleton" style={skelRow} />)}
         </div>
       )}
@@ -369,15 +381,7 @@ export default function DealflowPage() {
           {/* Header row */}
           <div
             className="grid gap-3 px-4 py-2.5"
-            style={{
-              gridTemplateColumns: '2fr 80px 90px 80px 70px 60px 1.5fr 80px',
-              background: 'var(--surface-1)',
-              borderBottom: '1px solid var(--border-subtle)',
-              fontSize: 'var(--font-size-xs)',
-              color: 'var(--text-muted)',
-              fontWeight: 400,
-
-              letterSpacing: '0.01em', }}>
+            style={dfTableHeader}>
             <div>Investor</div>
             <div className="text-center">Heat</div>
             <div className="text-center">Velocity</div>
@@ -441,7 +445,7 @@ export default function DealflowPage() {
                 <div className="flex justify-center">
                   <span
                     className="w-2 h-2 rounded-full"
-                    style={{ background: 'var(--text-secondary)' }}
+                    style={dfTrackingDot}
                     title={inv.trackingStatus.replace('_', ' ')} /></div>
 
                 {/* Bottleneck */}
@@ -456,7 +460,7 @@ export default function DealflowPage() {
                         `/investors/${inv.id}`
                       }
                       className="inline-flex items-center gap-1 transition-colors hover-text-warning"
-                      style={{ color: 'var(--text-tertiary)', textDecoration: 'none' }}>
+                      style={dfBottleneckLink}>
                       <span className="truncate">{inv.bottleneck}</span>
                       <ArrowRight className="w-3 h-3 shrink-0" style={{ opacity: 0.7 }} /></Link>
                   ) : (
@@ -474,13 +478,13 @@ export default function DealflowPage() {
       {!loading && !error && filtered.length === 0 && (
         <div className="text-center py-16" style={stTextMuted}>
           <Users className="w-8 h-8 mx-auto mb-2" />
-          <p className="text-sm font-normal" style={{ color: 'var(--text-secondary)', marginBottom: 'var(--space-1)' }}>
+          <p className="text-sm font-normal" style={dfEmptyStateText}>
             {heatFilter !== 'all' ? `No investors in the "${heatFilter}" category right now` : 'No investor activity to display yet'}</p>
           <p className="text-xs" style={stTextMuted}>
             {heatFilter !== 'all' ? (
               <button
                 onClick={() => setHeatFilter('all')}
-                style={{ color: 'var(--accent)', textDecoration: 'underline', background: 'none', border: 'none', cursor: 'pointer' }}>
+                style={dfClearFilterBtn}>
                 Clear filter to see all {investors.length} investors</button>
             ) : (
               <>Heat scores are generated automatically after meetings. <Link href="/meetings/new" style={stAccent}>Log your first meeting</Link></>
@@ -489,7 +493,7 @@ export default function DealflowPage() {
 
       {/* Footer info */}
       {investors.length > 0 && (
-        <div className="flex items-center justify-between mt-4" style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>
+        <div className="flex items-center justify-between mt-4" style={dfFooterInfo}>
           <span>{filtered.length} of {investors.length} investors</span>
           <span>Combines heat, velocity, and momentum data</span></div>
       )}
