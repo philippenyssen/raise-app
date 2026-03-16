@@ -22,6 +22,8 @@ import { TierBadge, EnthusiasmDots } from '@/components/shared';
 const mt10 = { marginTop: 'var(--space-3)' } as const;
 const dimLabel = { ...labelMutedTight, fontWeight: 400 } as const;
 const objItemStyle = { fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', opacity: 0.85 } as const;
+const dimScoreStyle: React.CSSProperties = { fontSize: 'var(--font-size-xs)', fontWeight: 300, minWidth: '20px' };
+const dimNameStyle: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', fontWeight: 400 };
 
 interface FocusItem {
   investorId: string;
@@ -173,7 +175,7 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
                     {d.name}</span>
                   <span
                     className="tabular-nums"
-                    style={{ fontSize: 'var(--font-size-xs)', fontWeight: 300, color: dimensionColor(d.score, d.signal) }}>
+                    style={{ ...dimScoreStyle, color: dimensionColor(d.score, d.signal) }}>
                     {d.signal === 'unknown' ? '--' : d.score}</span></div>
                 <div
                   style={{
@@ -205,9 +207,9 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
               <div className="space-y-1">
                 {topDimensions.map(d => (
                   <div key={d.name} className="flex items-start gap-1.5">
-                    <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 300, color: dimensionColor(d.score, d.signal), minWidth: '20px' }} className="tabular-nums shrink-0">
+                    <span style={{ ...dimScoreStyle, color: dimensionColor(d.score, d.signal), minWidth: '20px' }} className="tabular-nums shrink-0">
                       {d.score}</span>
-                    <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', fontWeight: 400 }}>
+                    <span style={dimNameStyle}>
                       {d.name}</span>
                     <span style={labelMuted10}>
                       {d.evidence}</span></div>
@@ -222,9 +224,9 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
                 <span style={dimLabel}>
                   Needs Attention</span></div>
               <div className="flex items-start gap-1.5">
-                <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 300, color: dimensionColor(weakest.score, weakest.signal), minWidth: '20px' }} className="tabular-nums shrink-0">
+                <span style={{ ...dimScoreStyle, color: dimensionColor(weakest.score, weakest.signal), minWidth: '20px' }} className="tabular-nums shrink-0">
                   {weakest.score}</span>
-                <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', fontWeight: 400 }}>
+                <span style={dimNameStyle}>
                   {weakest.name}</span>
                 <span style={labelMuted10}>
                   {weakest.evidence}</span></div></div>
