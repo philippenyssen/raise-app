@@ -171,7 +171,7 @@ export default function BacklogPage() {
             }}
             disabled={!commitments.length}
             className="btn btn-secondary btn-md">
-            <Download className="w-3.5 h-3.5" /> CSV</button>
+            <Download className="w-3.5 h-3.5" /> Export</button>
           <button onClick={() => setShowAdd(!showAdd)} className="btn btn-primary btn-md flex items-center gap-2">
             <Plus className="w-4 h-4" /> Add Commitment</button></div></div>
 
