@@ -20,6 +20,8 @@ const textSecSm = { fontSize: 'var(--font-size-sm)', color: 'var(--text-secondar
 const completedOutcomeBox = { background: 'var(--surface-2)', borderRadius: 'var(--radius-sm)', padding: '0.375rem 0.5rem', fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' } as const;
 const completingFormBox = { background: 'var(--surface-2)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-3)' } as const;
 const cardInnerPad = { padding: 'var(--space-4)' } as const;
+const smallDot = { width: '16px', height: '16px', borderRadius: '50%', background: 'var(--accent-muted)' } as const;
+const footerRow = { padding: '0.375rem var(--space-4)', borderTop: '1px solid var(--border-subtle)', display: 'flex', gap: 'var(--space-3)', flexWrap: 'wrap' as const, alignItems: 'center', background: 'var(--surface-1)' } as const;
 
 interface TimingIntel { optimalDayOfWeek: string; optimalTimeOfDay: string; reasoning: string; }
 
@@ -497,7 +499,7 @@ function FollowupsContent() {
         {/* Intelligence strip */}
         {item.status === 'pending' && (item.timing || item.velocity || item.cascade) && (
           <div
-            style={{ padding: '0.375rem var(--space-4)', borderTop: '1px solid var(--border-subtle)', display: 'flex', gap: 'var(--space-3)', flexWrap: 'wrap', alignItems: 'center', background: 'var(--surface-1)' }}>
+            style={footerRow}>
             {/* Optimal timing */}
             {item.timing && (
               <div
@@ -506,7 +508,7 @@ function FollowupsContent() {
                 title={item.timing.reasoning}>
                 <span
                   className="flex items-center justify-center"
-                  style={{ width: '16px', height: '16px', borderRadius: '50%', background: 'var(--accent-muted)' }}>
+                  style={smallDot}>
                   <Timer className="w-2.5 h-2.5" style={stAccent} /></span>
                 <span style={stTextMuted}>Send</span>
                 <span style={{ color: 'var(--accent)', fontWeight: 400 }}>
@@ -548,7 +550,7 @@ function FollowupsContent() {
                 title={item.cascade.signal}>
                 <span
                   className="flex items-center justify-center"
-                  style={{ width: '16px', height: '16px', borderRadius: '50%', background: 'var(--accent-muted)' }}>
+                  style={smallDot}>
                   <Network className="w-2.5 h-2.5" style={stTextSecondary} /></span>
                 <span style={stTextMuted}>Cascade</span>
                 <span style={{ color: 'var(--text-secondary)', fontWeight: 400 }}>

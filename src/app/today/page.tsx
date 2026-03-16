@@ -15,6 +15,19 @@ import {
 import { labelMuted, labelSecondary, labelTertiary, stAccent, stFontSm, stFontXs, stTextMuted, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 // ---------------------------------------------------------------------------
+// Extracted style constants (avoid re-allocation each render)
+// ---------------------------------------------------------------------------
+const flexColGap2 = { display: 'flex', flexDirection: 'column' as const, gap: 'var(--space-2)' } as const;
+const linkCardPad = { padding: 'var(--space-4)', textDecoration: 'none' as const } as const;
+const emptyStatePad = { padding: 'var(--space-6)', textAlign: 'center' as const } as const;
+const emptyStateIcon = { display: 'flex', justifyContent: 'center', marginBottom: 'var(--space-3)' } as const;
+const textBodySm = { ...stFontSm, fontWeight: 400, color: 'var(--text-primary)', lineHeight: 1.4 } as const;
+const labelTertiaryLine = { ...labelTertiary, marginTop: '2px', lineHeight: 1.5 } as const;
+const flexIcon = { display: 'flex' } as const;
+const gridGap3 = { gap: 'var(--space-3)' } as const;
+const cardPad4 = { padding: 'var(--space-4)' } as const;
+
+// ---------------------------------------------------------------------------
 // Types — match the updated /api/briefing response
 // ---------------------------------------------------------------------------
 
@@ -129,8 +142,7 @@ function MeetingCard({ meeting }: { meeting: BriefingMeeting }) {
   return (
     <div
       className="card hover-border"
-      style={{
-        padding: 'var(--space-4)', }}>
+      style={cardPad4}>
       <div className="flex items-start gap-3">
         <div className="flex items-center justify-center shrink-0" style={{ width: '40px', height: '40px', borderRadius: 'var(--radius-md)', background: 'var(--accent-muted)' }}>
           <span style={{ color: 'var(--accent)', fontSize: 'var(--font-size-xs)', fontWeight: 300, textAlign: 'center', lineHeight: 1.1 }}>
@@ -186,26 +198,25 @@ function ActionCard({ action }: { action: UrgentAction }) {
   return (
     <div
       className="card hover-border"
-      style={{
-        padding: 'var(--space-4)', }}>
+      style={cardPad4}>
       <div className="flex items-start gap-3">
         <div className="flex items-center justify-center shrink-0" style={{ width: '32px', height: '32px', borderRadius: 'var(--radius-md)', background: iconBg }}>
-          <span style={{ color: iconColor, display: 'flex' }}>
+          <span style={{ color: iconColor, ...flexIcon }}>
             <Icon className="w-4 h-4" /></span></div>
 
         <div className="flex-1 min-w-0">
-          <p style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)', lineHeight: 1.4 }}>{renderMarkdown(action.title)}</p>
+          <p style={textBodySm}>{renderMarkdown(action.title)}</p>
           {action.description && (
-            <p style={{ ...labelTertiary, marginTop: '2px', lineHeight: 1.5 }}>{renderMarkdown(action.description)}</p>
+            <p style={labelTertiaryLine}>{renderMarkdown(action.description)}</p>
           )}
 
           <div className="flex items-center gap-3 flex-wrap" style={{ marginTop: '8px' }}>
             {action.investorName && (
               <span className="flex items-center gap-1" style={{ ...stFontXs, color: 'var(--accent)' }}>
-                <span style={{ display: 'flex' }}><Users className="w-3 h-3" /></span>{action.investorName}</span>
+                <span style={flexIcon}><Users className="w-3 h-3" /></span>{action.investorName}</span>
             )}
             <span className="badge badge-zinc" style={{ fontSize: 'var(--font-size-xs)' }}>
-              <span style={{ display: 'flex' }}><Clock className="w-3 h-3" /></span>{action.timeEstimate}</span></div></div>
+              <span style={flexIcon}><Clock className="w-3 h-3" /></span>{action.timeEstimate}</span></div></div>
 
         <Link
           href={action.link}
@@ -221,7 +232,7 @@ function ActionCard({ action }: { action: UrgentAction }) {
             : action.category === 'meeting'
             ? 'Open prep'
             : 'Take action'}
-          <span style={{ display: 'flex' }}><ArrowRight className="w-3 h-3" /></span></Link></div>
+          <span style={flexIcon}><ArrowRight className="w-3 h-3" /></span></Link></div>
     </div>);
 }
 
@@ -259,14 +270,14 @@ function AlertCard({ alert }: { alert: BriefingAlert }) {
         borderRadius: 'var(--radius-lg)',
         padding: 'var(--space-3) var(--space-4)', }}>
       <div className="flex items-start gap-3">
-        <span className="shrink-0 mt-0.5" style={{ color: style.color, display: 'flex' }}>
+        <span className="shrink-0 mt-0.5" style={{ color: style.color, ...flexIcon }}>
           <Icon className="w-4 h-4" /></span>
         <div className="flex-1 min-w-0">
-          <p style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)', lineHeight: 1.4 }}>{renderMarkdown(alert.title)}</p>
+          <p style={textBodySm}>{renderMarkdown(alert.title)}</p>
           <p style={{ ...labelTertiary, marginTop: '2px' }}>{renderMarkdown(alert.detail)}</p></div>
         <Link
           href={alertLink}
-          className="shrink-0 flex items-center gap-1 transition-colors"
+          className="shrink-0 flex items-center gap-1 transition-colors hover-bg-fg6"
           style={{
             fontSize: 'var(--font-size-xs)',
             fontWeight: 400,
@@ -275,11 +286,9 @@ function AlertCard({ alert }: { alert: BriefingAlert }) {
             padding: '3px 8px',
             borderRadius: 'var(--radius-sm)',
             background: 'var(--fg-3)',
-            whiteSpace: 'nowrap', }}
-          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--fg-6)'; }}
-          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--fg-3)'; }}>
+            whiteSpace: 'nowrap', }}>
           {alertAction}
-          <span style={{ display: 'flex' }}><ChevronRight className="w-3 h-3" /></span></Link></div>
+          <span style={flexIcon}><ChevronRight className="w-3 h-3" /></span></Link></div>
     </div>);
 }
 
@@ -522,7 +531,7 @@ export default function TodayPage() {
           <div className="flex items-center gap-2" style={{ marginTop: '6px' }}>
             <span style={{ ...stFontXs, color: stalenessMinutes >= 5 ? 'var(--warning)' : 'var(--text-muted)', transition: 'color 300ms ease' }}>{stalenessMinutes < 1 ? 'Updated just now' : `Updated ${stalenessMinutes}m ago`}</span>
             <button onClick={() => fetchBriefing(true)} disabled={refreshing} aria-label="Refresh briefing" title="Refresh briefing" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '20px', height: '20px', borderRadius: 'var(--radius-sm)', border: 'none', background: 'transparent', cursor: refreshing ? 'default' : 'pointer', color: stalenessMinutes >= 5 ? 'var(--warning)' : 'var(--text-muted)', opacity: refreshing ? 0.5 : 1, transition: 'color 300ms ease, opacity 150ms ease', padding: 0 }}>
-              <span style={{ display: 'flex', animation: refreshing ? 'spin 1s linear infinite' : 'none' }}>
+              <span style={{ ...flexIcon, animation: refreshing ? 'spin 1s linear infinite' : 'none' }}>
                 <RefreshCw className="w-3 h-3" /></span></button></div>
 
           <p style={{ fontSize: 'var(--font-size-base)', color: 'var(--text-secondary)', marginTop: 'var(--space-3)', lineHeight: 1.6, maxWidth: '640px' }}>{renderMarkdown(data.todaySummary)}</p>
@@ -535,7 +544,7 @@ export default function TodayPage() {
           disabled={refreshing}
           aria-label="Refresh briefing"
           title="Refresh briefing">
-          <span style={{ display: 'flex', animation: refreshing ? 'spin 1s linear infinite' : 'none' }}>
+          <span style={{ ...flexIcon, animation: refreshing ? 'spin 1s linear infinite' : 'none' }}>
             <RefreshCw className="w-3.5 h-3.5" /></span></button></div>
 
       {/* ----------------------------------------------------------------- */}
@@ -544,7 +553,7 @@ export default function TodayPage() {
       {raiseProgress && (
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)', padding: 'var(--space-3) var(--space-4)', borderRadius: 'var(--radius-lg)', background: 'var(--surface-1)' }}>
           <div className="flex items-center gap-2 shrink-0">
-            <span style={{ color: 'var(--accent)', display: 'flex' }}><Target className="w-4 h-4" /></span>
+            <span style={{ color: 'var(--accent)', ...flexIcon }}><Target className="w-4 h-4" /></span>
             <span style={{ fontSize: 'var(--font-size-lg)', fontWeight: 300, fontVariantNumeric: 'tabular-nums', color: raiseProgress.isOver ? 'var(--danger)' : raiseProgress.pct >= 75 ? 'var(--warning)' : 'var(--text-primary)' }}>Day {raiseProgress.daysElapsed}</span>
             <span style={labelMuted}>of {raiseProgress.targetDays}</span></div>
           <div style={{ flex: 1, height: '6px', background: 'var(--surface-3)', borderRadius: '3px', overflow: 'hidden' }}>
@@ -564,8 +573,8 @@ export default function TodayPage() {
             <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--chart-4)', letterSpacing: '0.01em' }}>Since Yesterday</span>
           </div>
           <div className="flex items-center gap-4 flex-wrap" style={{ padding: 'var(--space-3) var(--space-4)' }}>
-            {overnight.statusChanges.map((sc, i) => (
-              <div key={i} className="flex items-center gap-1.5" style={stFontXs}>
+            {overnight.statusChanges.map(sc => (
+              <div key={`${sc.investorId}-${sc.from}-${sc.to}`} className="flex items-center gap-1.5" style={stFontXs}>
                 <ArrowUpRight className="w-3 h-3" style={stTextSecondary} />
                 <Link
                   href={`/investors/${sc.investorId}`}
@@ -594,11 +603,11 @@ export default function TodayPage() {
       {overdueFollowups.length > 0 && (
         <div style={{ background: 'var(--danger-muted)', borderLeft: '3px solid var(--danger)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-4)' }}>
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
-            <span style={{ color: 'var(--danger)', display: 'flex' }}><AlertTriangle className="w-4 h-4" /></span>
+            <span style={{ color: 'var(--danger)', ...flexIcon }}><AlertTriangle className="w-4 h-4" /></span>
             <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--danger)', letterSpacing: '0.01em' }}>Critical Overdue</span>
             <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginLeft: 'auto' }}>{overdueFollowups.length} action{overdueFollowups.length > 1 ? 's' : ''}</span>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+          <div style={flexColGap2}>
             {overdueFollowups.map(fu => {
               const daysOver = Math.floor((Date.now() - new Date(fu.due_at).getTime()) / MS_PER_DAY);
               const isProcessing = completingFollowupId === fu.id;
@@ -624,13 +633,13 @@ export default function TodayPage() {
         <div className="section-title">Today&apos;s Meetings</div>
 
         {data.todayMeetings.length > 0 ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+          <div style={flexColGap2}>
             {data.todayMeetings.map((meeting, idx) => (
               <MeetingCard key={idx} meeting={meeting} />
             ))}</div>
         ) : (
-          <div className="card" style={{ padding: 'var(--space-6)', textAlign: 'center' }}>
-            <span style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--space-3)' }}><Calendar className="w-8 h-8" style={stTextMuted} /></span>
+          <div className="card" style={emptyStatePad}>
+            <span style={emptyStateIcon}><Calendar className="w-8 h-8" style={stTextMuted} /></span>
             <p style={{ ...stFontSm, color: 'var(--text-secondary)', fontWeight: 400 }}>No meetings scheduled today</p>
             <p style={{ ...labelTertiary, marginTop: '4px', lineHeight: 1.5 }}>Use the open calendar to schedule follow-ups with your highest-momentum investors, or work through overdue actions.</p>
             <div className="flex items-center justify-center gap-2" style={{ marginTop: 'var(--space-3)' }}>
@@ -647,13 +656,13 @@ export default function TodayPage() {
         <div className="section-title">Priority Actions</div>
 
         {data.urgentActions.length > 0 ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+          <div style={flexColGap2}>
             {data.urgentActions.map((action, idx) => (
               <ActionCard key={idx} action={action} />
             ))}</div>
         ) : (
-          <div className="card" style={{ padding: 'var(--space-6)', textAlign: 'center' }}>
-            <span style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--space-3)' }}><CheckCircle className="w-8 h-8" style={stTextSecondary} /></span>
+          <div className="card" style={emptyStatePad}>
+            <span style={emptyStateIcon}><CheckCircle className="w-8 h-8" style={stTextSecondary} /></span>
             <p style={{ ...stFontSm, color: 'var(--text-secondary)', fontWeight: 400 }}>No urgent actions right now</p>
             <p style={{ ...labelTertiary, marginTop: '4px', lineHeight: 1.5 }}>Good time to advance stalled conversations or prepare materials for upcoming deep dives. Check the{' '}<Link href="/focus" style={{ color: 'var(--accent)', textDecoration: 'none' }}>focus queue</Link>{' '}for investors who need a push.</p>
             <div className="flex items-center justify-center gap-2" style={{ marginTop: 'var(--space-3)' }}>
@@ -672,7 +681,7 @@ export default function TodayPage() {
             <div className="section-title">Follow-ups Due</div>
             <Link href="/followups" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', textDecoration: 'underline' }}>
               View all</Link></div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+          <div style={flexColGap2}>
             {dueTodayFollowups.map(fu => {
               const typeConfig: Record<string, { label: string; color: string; bg: string }> = {
                 thank_you: { label: 'Thank You', color: 'var(--accent)', bg: 'var(--accent-muted)' },
@@ -717,11 +726,11 @@ export default function TodayPage() {
       <div>
         <div className="section-title">Pipeline Pulse</div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: 'var(--space-3)' }}>
+        <div className="grid grid-cols-2 lg:grid-cols-4" style={gridGap3}>
           <Link
             href="/pipeline"
             className="card hover-border"
-            style={{ padding: 'var(--space-4)', textDecoration: 'none' }}>
+            style={linkCardPad}>
             <div className="metric-label">Active</div>
             <div className="metric-value" style={{ fontSize: 'var(--font-size-xl)', marginTop: '4px', color: 'var(--text-primary)' }}>
               {data.pipelineSnapshot.totalActive}</div></Link>
@@ -729,7 +738,7 @@ export default function TodayPage() {
           <Link
             href="/pipeline?stage=in_dd"
             className="card hover-border"
-            style={{ padding: 'var(--space-4)', textDecoration: 'none' }}>
+            style={linkCardPad}>
             <div className="metric-label">In DD</div>
             <div className="metric-value" style={{ fontSize: 'var(--font-size-xl)', marginTop: '4px', color: data.pipelineSnapshot.inDD > 0 ? 'var(--warning)' : 'var(--text-muted)' }}>
               {data.pipelineSnapshot.inDD}</div></Link>
@@ -737,12 +746,12 @@ export default function TodayPage() {
           <Link
             href="/pipeline?stage=term_sheet"
             className="card hover-border"
-            style={{ padding: 'var(--space-4)', textDecoration: 'none' }}>
+            style={linkCardPad}>
             <div className="metric-label">Term Sheets</div>
             <div className="metric-value" style={{ fontSize: 'var(--font-size-xl)', marginTop: '4px', color: data.pipelineSnapshot.termSheets > 0 ? 'var(--success)' : 'var(--text-muted)' }}>
               {data.pipelineSnapshot.termSheets}</div></Link>
 
-          <div className="card" style={{ padding: 'var(--space-4)' }}>
+          <div className="card" style={cardPad4}>
             <div className="flex items-center gap-1.5">
               <div className={forecastDotClass} style={{ width: '6px', height: '6px' }} />
               <div className="metric-label">Forecast</div></div>
@@ -761,7 +770,7 @@ export default function TodayPage() {
         return (
           <div>
             <div className="section-title">This Week</div>
-            <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: 'var(--space-3)' }}>
+            <div className="grid grid-cols-2 lg:grid-cols-4" style={gridGap3}>
               {[
                 { label: 'Meetings', value: weekMeetings, icon: Calendar, color: 'var(--accent)' },
                 { label: 'New investors', value: weekNewInvestors, icon: UserPlus, color: 'var(--chart-4)' },
@@ -772,7 +781,7 @@ export default function TodayPage() {
                 return (
                   <div key={m.label} className="card" style={{ padding: 'var(--space-3) var(--space-4)' }}>
                     <div className="flex items-center gap-2">
-                      <span style={{ color: m.color, display: 'flex' }}><Icon className="w-3.5 h-3.5" /></span>
+                      <span style={{ color: m.color, ...flexIcon }}><Icon className="w-3.5 h-3.5" /></span>
                       <span style={labelMuted}>{m.label}</span></div>
                     <div className="tabular-nums" style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)', marginTop: 4 }}>{m.value}</div>
                   </div>);
@@ -786,7 +795,7 @@ export default function TodayPage() {
       {data.alerts.length > 0 && (
         <div>
           <div className="section-title">Alerts</div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+          <div style={flexColGap2}>
             {data.alerts.map((alert, idx) => (
               <AlertCard key={idx} alert={alert} />
             ))}</div></div>
@@ -798,7 +807,7 @@ export default function TodayPage() {
       <div style={{ background: momentumConfig.bg, border: `1px solid ${momentumConfig.border}`, borderRadius: 'var(--radius-lg)', padding: 'var(--space-4)' }}>
         <div className="flex items-center gap-3">
           <div className="flex items-center justify-center shrink-0" style={{ width: '36px', height: '36px', borderRadius: '50%', background: momentumConfig.bg, border: `1px solid ${momentumConfig.border}` }}>
-            <span style={{ color: momentumConfig.color, display: 'flex' }}>
+            <span style={{ color: momentumConfig.color, ...flexIcon }}>
               <MomentumIcon className="w-5 h-5" /></span></div>
 
           <div className="flex-1 min-w-0">
@@ -815,7 +824,7 @@ export default function TodayPage() {
             className="btn btn-ghost btn-sm shrink-0 sidebar-link"
             style={stTextTertiary}>
             {data.momentum === 'stalled' ? 'Diagnose' : data.momentum === 'decelerating' ? 'Investigate' : 'View dealflow'}
-            <span style={{ display: 'flex' }}><ChevronRight className="w-3.5 h-3.5" /></span></Link></div></div>
+            <span style={flexIcon}><ChevronRight className="w-3.5 h-3.5" /></span></Link></div></div>
 
       {/* ----------------------------------------------------------------- */}
       {/* 7. AI Insight                                                      */}
@@ -824,14 +833,14 @@ export default function TodayPage() {
         <div style={{ background: 'var(--accent-muted)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-4)' }}>
           <div className="flex items-start gap-3">
             <div className="flex items-center justify-center shrink-0" style={{ width: '32px', height: '32px', borderRadius: 'var(--radius-md)', background: 'var(--accent-10)' }}>
-              <span style={{ color: 'var(--accent)', display: 'flex' }}>
+              <span style={{ color: 'var(--accent)', ...flexIcon }}>
                 <Sparkles className="w-4 h-4" /></span></div>
 
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2" style={{ marginBottom: '4px' }}>
                 <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--accent)', letterSpacing: '0.01em' }}>
                   AI Insight</span></div>
-              <p style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)', lineHeight: 1.4 }}>{insight.title}</p>
+              <p style={textBodySm}>{insight.title}</p>
               <p style={{ ...stFontXs, color: 'var(--text-secondary)', marginTop: '4px', lineHeight: 1.5 }}>{insight.detail}</p>
             </div>
 
@@ -840,7 +849,7 @@ export default function TodayPage() {
               className="btn btn-ghost btn-sm shrink-0 investor-link"
               style={stTextSecondary}>
               See more
-              <span style={{ display: 'flex' }}><ChevronRight className="w-3.5 h-3.5" /></span></Link></div></div>
+              <span style={flexIcon}><ChevronRight className="w-3.5 h-3.5" /></span></Link></div></div>
       )}
 
       {/* Footer spacer */}
