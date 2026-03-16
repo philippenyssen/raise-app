@@ -438,8 +438,9 @@ export default function TodayPage() {
   useEffect(() => { document.title = 'Raise | Morning Briefing'; }, []);
   useEffect(() => {
     let refreshInterval: ReturnType<typeof setInterval> | null = null;
-    const startRefresh = () => { fetchBriefing(); refreshInterval = setInterval(() => fetchBriefing(true), 5 * MS_PER_MINUTE); };
-    const onVis = () => { if (document.hidden) { if (refreshInterval) { clearInterval(refreshInterval); refreshInterval = null; } } else { startRefresh(); } };
+    const stopRefresh = () => { if (refreshInterval) { clearInterval(refreshInterval); refreshInterval = null; } };
+    const startRefresh = () => { stopRefresh(); fetchBriefing(); refreshInterval = setInterval(() => fetchBriefing(true), 5 * MS_PER_MINUTE); };
+    const onVis = () => { if (document.hidden) stopRefresh(); else startRefresh(); };
     startRefresh();
     document.addEventListener('visibilitychange', onVis);
     const stalenessInterval = setInterval(() => {
