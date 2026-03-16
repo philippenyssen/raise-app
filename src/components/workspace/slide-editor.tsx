@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useCallback, useRef } from 'react';
-import { ChevronLeft, ChevronRight, Plus, Trash2, Type, StickyNote, Copy } from 'lucide-react';
+import { useState, useCallback, useRef, useEffect } from 'react';
+import { ChevronLeft, ChevronRight, Plus, Trash2, Type, StickyNote, Copy, Play, X } from 'lucide-react';
 
 export interface SlideElement {
   id: string;
@@ -128,8 +128,44 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
   const [showNotes, setShowNotes] = useState(false);
   const [dragIdx, setDragIdx] = useState<number | null>(null);
   const [dragOverIdx, setDragOverIdx] = useState<number | null>(null);
+  const [presenting, setPresenting] = useState(false);
+  const [presentIdx, setPresentIdx] = useState(0);
+  const presentRef = useRef<HTMLDivElement>(null);
 
   const activeSlide = slides[activeIdx] || null;
+
+  // Presentation mode keyboard navigation
+  useEffect(() => {
+    if (!presenting) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        setPresentIdx(prev => Math.min(prev + 1, slides.length - 1));
+      } else if (e.key === 'ArrowLeft' || e.key === 'Backspace') {
+        e.preventDefault();
+        setPresentIdx(prev => Math.max(prev - 1, 0));
+      } else if (e.key === 'Escape') {
+        setPresenting(false);
+        window.document.exitFullscreen?.().catch(() => {});
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [presenting, slides.length]);
+
+  const startPresentation = useCallback(() => {
+    setPresentIdx(activeIdx);
+    setPresenting(true);
+    setTimeout(() => {
+      presentRef.current?.requestFullscreen?.().catch(() => {});
+    }, 50);
+  }, [activeIdx]);
+
+  useEffect(() => {
+    const handler = () => { if (!window.document.fullscreenElement) setPresenting(false); };
+    window.document.addEventListener('fullscreenchange', handler);
+    return () => window.document.removeEventListener('fullscreenchange', handler);
+  }, []);
 
   const goToSlide = useCallback((idx: number) => {
     if (idx >= 0 && idx < slides.length) {
@@ -350,6 +386,15 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
                 <StickyNote className="w-3.5 h-3.5" /> Notes
               </button>
               <div style={{ width: '1px', height: '16px', background: 'var(--border-subtle)' }} />
+              <button
+                onClick={startPresentation}
+                className="btn btn-primary btn-sm"
+                title="Present"
+                style={{ fontSize: 'var(--font-size-xs)' }}
+              >
+                <Play className="w-3 h-3" /> Present
+              </button>
+              <div style={{ width: '1px', height: '16px', background: 'var(--border-subtle)' }} />
               <button onClick={duplicateSlide} className="btn btn-ghost btn-sm" title="Duplicate Slide" style={{ fontSize: 'var(--font-size-xs)' }}>
                 <Copy className="w-3.5 h-3.5" />
               </button>
@@ -477,6 +522,77 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
           </button>
         </div>
       </div>
+
+      {/* Presentation mode overlay */}
+      {presenting && (
+        <div
+          ref={presentRef}
+          className="fixed inset-0 z-50 flex items-center justify-center"
+          style={{ background: '#000', cursor: 'none' }}
+          onClick={(e) => {
+            // Click right half = next, left half = prev
+            const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            if (clickX > rect.width / 2) {
+              setPresentIdx(prev => Math.min(prev + 1, slides.length - 1));
+            } else {
+              setPresentIdx(prev => Math.max(prev - 1, 0));
+            }
+          }}
+        >
+          {/* Slide content */}
+          <div style={{
+            aspectRatio: '16/9',
+            background: 'white',
+            width: '100vw',
+            maxHeight: '100vh',
+            position: 'relative',
+            overflow: 'hidden',
+          }}>
+            {slides[presentIdx] && renderSlideContent(slides[presentIdx], 2.5)}
+          </div>
+
+          {/* Slide counter */}
+          <div style={{
+            position: 'absolute',
+            bottom: '16px',
+            right: '24px',
+            color: 'rgba(255,255,255,0.4)',
+            fontSize: '14px',
+          }}>
+            {presentIdx + 1} / {slides.length}
+          </div>
+
+          {/* Exit button */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setPresenting(false);
+              window.document.exitFullscreen?.().catch(() => {});
+            }}
+            style={{
+              position: 'absolute',
+              top: '16px',
+              right: '16px',
+              background: 'rgba(0,0,0,0.5)',
+              color: 'white',
+              border: 'none',
+              borderRadius: '50%',
+              width: '36px',
+              height: '36px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              opacity: 0.5,
+            }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.opacity = '1'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.opacity = '0.5'; }}
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }
