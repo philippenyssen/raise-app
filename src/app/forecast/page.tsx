@@ -27,6 +27,18 @@ const critPathAction = { width: '24px', height: '24px', borderRadius: 'var(--rad
 const confGroupName = { fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '60%' } as const;
 const confGroupStage = { ...labelMuted, fontVariantNumeric: 'tabular-nums', flexShrink: 0 } as const;
 
+const DIST_CONFIG = [
+  { label: 'High', key: 'high' as const, color: 'var(--text-secondary)', bg: 'var(--success-muted)' },
+  { label: 'Medium', key: 'medium' as const, color: 'var(--text-tertiary)', bg: 'var(--warning-muted)' },
+  { label: 'Low', key: 'low' as const, color: 'var(--text-primary)', bg: 'var(--danger-muted)' },
+] as const;
+
+const CONF_GROUP_CONFIG = [
+  { label: 'High Confidence', key: 'high' as const, color: 'var(--text-secondary)', bg: 'var(--success-muted)', icon: CheckCircle2 },
+  { label: 'Medium Confidence', key: 'medium' as const, color: 'var(--text-tertiary)', bg: 'var(--warning-muted)', icon: Clock },
+  { label: 'Low Confidence', key: 'low' as const, color: 'var(--text-primary)', bg: 'var(--danger-muted)', icon: AlertTriangle },
+] as const;
+
 interface InvestorForecast { investorId: string; investorName: string; currentStage: string; tier: number; daysInStage: number; predictedDaysToClose: number; predictedCloseDate: string; confidence: 'high' | 'medium' | 'low'; reasoning: string }
 
 interface RaiseForecast { forecasts: InvestorForecast[]; expectedCloseDate: string; expectedAmount: number; confidence: 'high' | 'medium' | 'low'; criticalPathInvestors: string[]; riskFactors: string[] }
@@ -257,11 +269,9 @@ export default function ForecastPage() {
             <span style={stTextTertiary}><Shield className="w-4 h-4" /></span>
             <span style={fontSmPrimary}>
               Confidence Distribution</span></div>
-          {[
-            { label: 'High', count: distribution.high, color: 'var(--text-secondary)', bg: 'var(--success-muted)' },
-            { label: 'Medium', count: distribution.medium, color: 'var(--text-tertiary)', bg: 'var(--warning-muted)' },
-            { label: 'Low', count: distribution.low, color: 'var(--text-primary)', bg: 'var(--danger-muted)' },
-          ].map(({ label, count, color, bg }) => (
+          {DIST_CONFIG.map(({ label, key, color, bg }) => {
+            const count = distribution[key];
+            return (
             <div key={label} style={mbSpace3}>
               <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-1)' }}>
                 <span style={labelSecondary}>{label}</span>
@@ -277,7 +287,7 @@ export default function ForecastPage() {
                     transition: 'width 400ms ease',
                     border: `1px solid ${color}`,
                   }} /></div></div>
-          ))}</div>
+          ); })}</div>
 
         {/* Critical Path */}
         <div className="card" style={padSpace5}>
@@ -513,11 +523,9 @@ export default function ForecastPage() {
 
       {/* Confidence Groups */}
       <div className="grid grid-cols-3 gap-4" style={mbSpace6}>
-        {[
-          { label: 'High Confidence', investors: highConfInvestors, color: 'var(--text-secondary)', bg: 'var(--success-muted)', icon: CheckCircle2 },
-          { label: 'Medium Confidence', investors: medConfInvestors, color: 'var(--text-tertiary)', bg: 'var(--warning-muted)', icon: Clock },
-          { label: 'Low Confidence', investors: lowConfInvestors, color: 'var(--text-primary)', bg: 'var(--danger-muted)', icon: AlertTriangle },
-        ].map(({ label, investors, color, bg, icon: Icon }) => (
+        {CONF_GROUP_CONFIG.map(({ label, key, color, bg, icon: Icon }) => {
+          const investors = key === 'high' ? highConfInvestors : key === 'medium' ? medConfInvestors : lowConfInvestors;
+          return (
           <div key={label} className="card" style={{ padding: 'var(--space-4)' }}>
             <div className="flex items-center gap-2" style={mbSpace3}>
               <span style={{ color }}>
@@ -556,7 +564,7 @@ export default function ForecastPage() {
                       {STAGE_LABELS[inv.currentStage] || inv.currentStage}</span></Link>
                 ))}</div>
             )}</div>
-        ))}</div>
+        ); })}</div>
 
       {/* Footer */}
       <div

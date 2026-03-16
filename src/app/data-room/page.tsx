@@ -8,12 +8,13 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { FolderOpen, Upload, FileText, Table, Image, Trash2, ChevronDown, ChevronRight, Search, Eye, BarChart3, Users, AlertCircle, Send, TrendingUp } from 'lucide-react';
 import { fmtDateTime, fmtDate } from '@/lib/format';
 import { STATUS_LABELS } from '@/lib/constants';
-import { labelMuted, labelSecondary, skelCardSm, stAccent, stFontSm, stFontXs, stSurface2, stTextMuted, stTextSecondary, stTextTertiary, textSmMuted, textSmSecondary, textSmTertiary } from '@/lib/styles';
+import { labelMuted, labelSecondary, labelTertiary, skelCardSm, stAccent, stFontSm, stFontXs, stSurface2, stTextMuted, stTextSecondary, stTextTertiary, textSmMuted, textSmSecondary, textSmTertiary } from '@/lib/styles';
 import { cachedFetch } from '@/lib/cache';
 
 const fontSmPrimary = { ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' } as const;
-const labelXsTertiary = { ...stFontXs, ...stTextTertiary } as const;
+const labelXsTertiary = labelTertiary;
 const sectionHeading: React.CSSProperties = { ...stFontXs, fontWeight: 400, ...stTextSecondary, marginBottom: 'var(--space-2)' } as const;
+const badgeMuted: React.CSSProperties = { ...stFontXs, ...stTextMuted, ...stSurface2, padding: '0.125rem var(--space-2)', borderRadius: 'var(--radius-sm)' } as const;
 
 interface DataRoomFile {
   id: string;
@@ -531,7 +532,7 @@ function MostRequestedRow({ doc, rank }: {
         #{rank}</span>
       <FileText className="w-3.5 h-3.5 shrink-0" style={stTextTertiary} />
       <span className="truncate" style={{ ...stFontSm, color: 'var(--text-primary)' }}>{doc.document_title}</span>
-      <span style={{ ...stFontXs, ...stTextMuted, ...stSurface2, padding: '0.125rem var(--space-2)', borderRadius: 'var(--radius-sm)' }}>{doc.category}</span>
+      <span style={badgeMuted}>{doc.category}</span>
       <span className="ml-auto shrink-0" style={{ ...labelSecondary, fontWeight: 400 }}>{doc.access_count} {doc.access_count === 1 ? 'view' : 'views'}</span>
     </div>);
 }
@@ -560,7 +561,7 @@ function InvestorAccessRow({ investor, expanded, onToggle, onLogAccess, files }:
           : <ChevronRight className="w-4 h-4 shrink-0" style={stTextMuted} />
         }
         <Link href={`/investors/${investor.investor_id}`} className="investor-link" style={{ ...stFontSm, fontWeight: 400, textDecoration: 'none' }}>{investor.investor_name}</Link>
-        <span style={{ ...stFontXs, ...stTextMuted, ...stSurface2, padding: '0.125rem var(--space-2)', borderRadius: 'var(--radius-sm)' }}>{STATUS_LABELS[investor.status] || investor.status}</span>
+        <span style={badgeMuted}>{STATUS_LABELS[investor.status] || investor.status}</span>
         <span style={labelMuted}>T{investor.tier}</span>
         <div className="ml-auto flex items-center gap-3">
           <span style={{ fontSize: 'var(--font-size-xs)', color: investor.documents_accessed > 0 ? 'var(--success)' : 'var(--text-tertiary)' }}>
@@ -674,7 +675,7 @@ function UnreachedInvestorRow({ investor }: {
         borderRadius: 'var(--radius-md)', }}>
       <span style={stTextTertiary}><AlertCircle className="w-3.5 h-3.5" /></span>
       <Link href={`/investors/${investor.investor_id}`} className="investor-link" style={{ ...stFontSm, fontWeight: 400, textDecoration: 'none' }}>{investor.investor_name}</Link>
-      <span style={{ ...stFontXs, ...stTextMuted, ...stSurface2, padding: '0.125rem var(--space-2)', borderRadius: 'var(--radius-sm)' }}>{STATUS_LABELS[investor.status] || investor.status}</span>
+      <span style={badgeMuted}>{STATUS_LABELS[investor.status] || investor.status}</span>
       <span style={labelMuted}>T{investor.tier}</span>
       {investor.recommended_categories.length > 0 && (
         <span className="ml-auto" style={labelXsTertiary}>Share: {investor.recommended_categories.join(', ')}</span>
