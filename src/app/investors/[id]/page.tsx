@@ -161,6 +161,11 @@ export default function InvestorDetailPage() {
     nextSteps: { action: string; priority: 'critical' | 'high' | 'normal'; rationale: string }[];
     context: { daysInStage: number; expectedDaysInStage: number; stageOverdue: boolean; totalMeetings: number; recentMeetings: number; unresolvedObjections: number; peerComparison: { avgPeerEnthusiasm: number; relativePosition: string } | null };
   } | null>(null);
+  const [calibration, setCalibration] = useState<{
+    totalPredictions: number; resolvedPredictions: number; brierScore: number;
+    biasDirection: 'over_confident' | 'under_confident' | 'calibrated' | 'insufficient_data';
+    byStatus: { status: string; avgPredicted: number; actualRate: number; count: number }[];
+  } | null>(null);
 
   const handleCompose = useCallback(async (type?: string) => {
     setComposing(true);
@@ -185,14 +190,16 @@ export default function InvestorDetailPage() {
 
   const fetchScore = useCallback(async () => {
     setScoreLoading(true);
-    const [scoreRes, trajRes, predRes] = await Promise.all([
+    const [scoreRes, trajRes, predRes, calRes] = await Promise.all([
       cachedFetch(`/api/investors/${id}/score`).catch(e => { console.warn('[INVESTOR_SCORE]', e instanceof Error ? e.message : e); return null; }),
       cachedFetch(`/api/investors/${id}/trajectory`).catch(e => { console.warn('[INVESTOR_TRAJECTORY]', e instanceof Error ? e.message : e); return null; }),
       cachedFetch(`/api/investors/${id}/predict`).catch(e => { console.warn('[INVESTOR_PREDICT]', e instanceof Error ? e.message : e); return null; }),
+      cachedFetch('/api/calibration').catch(e => { console.warn('[CALIBRATION]', e instanceof Error ? e.message : e); return null; }),
     ]);
     if (scoreRes?.ok) { setScore(await scoreRes.json()); }
     if (trajRes?.ok) { setTrajectory(await trajRes.json()); }
     if (predRes?.ok) { setPrediction(await predRes.json()); }
+    if (calRes?.ok) { setCalibration(await calRes.json()); }
     setScoreLoading(false);
   }, [id]);
 
@@ -695,6 +702,20 @@ export default function InvestorDetailPage() {
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* Model accuracy */}
+          {calibration && calibration.biasDirection !== 'insufficient_data' && (
+            <div style={{ padding: 'var(--space-2) var(--space-3)', background: 'var(--surface-0)', borderRadius: 'var(--radius-md)', marginBottom: 'var(--space-3)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                Model accuracy: {Math.round((1 - calibration.brierScore) * 100)}% &middot; {calibration.resolvedPredictions} resolved prediction{calibration.resolvedPredictions !== 1 ? 's' : ''}
+              </span>
+              <span style={{ fontSize: '10px', padding: '0 4px', borderRadius: 'var(--radius-sm)',
+                background: calibration.biasDirection === 'calibrated' ? 'var(--success-muted)' : 'var(--warning-muted)',
+                color: calibration.biasDirection === 'calibrated' ? 'var(--success)' : 'var(--warning)' }}>
+                {calibration.biasDirection === 'calibrated' ? 'well-calibrated' : calibration.biasDirection === 'over_confident' ? 'tends optimistic' : 'tends conservative'}
+              </span>
             </div>
           )}
 
