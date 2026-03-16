@@ -317,7 +317,7 @@ export default function DealflowPage() {
             disabled={loading || !filtered.length}
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg"
             style={{ ...dfExportBtnBase, opacity: loading || !filtered.length ? 0.5 : 1 }}>
-            <Download className="w-3.5 h-3.5" /> Export</button>
+            <Download className="w-3.5 h-3.5" /> Export CSV</button>
           <button
             onClick={fetchData}
             disabled={loading}
@@ -511,15 +511,15 @@ export default function DealflowPage() {
         <div className="text-center py-16" style={stTextMuted}>
           <Users className="w-8 h-8 mx-auto mb-2" />
           <p className="text-sm font-normal" style={dfEmptyStateText}>
-            {heatFilter !== 'all' ? `No investors showing as "${heatFilter}" right now` : 'No deal signals yet — the dealflow dashboard populates after you log meetings'}</p>
+            {heatFilter !== 'all' ? `No investors match the "${heatFilter}" filter` : 'No deal signals yet'}</p>
           <p className="text-xs" style={stTextMuted}>
             {heatFilter !== 'all' ? (
               <button
                 onClick={() => setHeatFilter('all')}
                 style={dfClearFilterBtn}>
-                Clear filter to see all {investors.length} investors</button>
+                Show all {investors.length} investors</button>
             ) : (
-              <>Heat scores are generated automatically after meetings. <Link href="/meetings/new" style={stAccent}>Log your first meeting</Link></>
+              <>Signals build automatically from meetings. <Link href="/meetings/capture" style={stAccent}>Log a meeting</Link> to get started.</>
             )}</p></div>
       )}
 

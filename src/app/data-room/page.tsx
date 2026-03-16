@@ -298,7 +298,7 @@ export default function DataRoomPage() {
               className="input"
               style={{ width: 'auto' }}>
               {CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}</select></div>
-          <textarea value={pasteContent} onChange={e => setPasteContent(e.target.value)} placeholder="Paste your document content here..." rows={10} className="input" style={pasteTextareaStyle} maxLength={50000}
+          <textarea value={pasteContent} onChange={e => setPasteContent(e.target.value)} placeholder="Paste document text, markdown, or plain content (max 50KB)..." rows={10} className="input" style={pasteTextareaStyle} maxLength={50000}
             />
           <div className="flex justify-end gap-2">
             <button onClick={() => setPasteMode(false)} className="btn btn-ghost btn-md">Cancel</button>

@@ -208,7 +208,7 @@ export default function PipelinePage() {
       else if (e.key === 'ArrowDown') { e.preventDefault(); setKbRow(r => { const max = (colGrid[kbCol]?.length ?? 1) - 1; return Math.min(r + 1, max); }); }
       else if (e.key === 'ArrowUp') { e.preventDefault(); setKbRow(r => Math.max(r - 1, 0)); }
       else if (e.key === 'Enter' && selectedId) { e.preventDefault(); router.push(`/investors/${selectedId}`); }
-      else if (e.key === '/' && !e.metaKey && !e.ctrlKey) { e.preventDefault(); const el = document.querySelector<HTMLInputElement>('input[placeholder="Search investors..."]'); el?.focus(); }
+      else if (e.key === '/' && !e.metaKey && !e.ctrlKey) { e.preventDefault(); const el = document.querySelector<HTMLInputElement>('input[placeholder="Name, firm, or sector..."]'); el?.focus(); }
       else if (e.key === 'Escape') { setSearchQuery(''); setShowStaleOnly(false); }
       else if (e.key === 'r' && !e.metaKey && !e.ctrlKey) { e.preventDefault(); fetchInvestors(); }
     };
@@ -339,7 +339,7 @@ export default function PipelinePage() {
               type="text"
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              placeholder="Search investors..."
+              placeholder="Name, firm, or sector..."
               className="input"
               style={{ fontSize: 'var(--font-size-xs)', paddingLeft: 'var(--space-7)', paddingRight: searchQuery ? 'var(--space-7)' : 'var(--space-2)', width: '180px', height: '32px' }} />
             {searchQuery && (

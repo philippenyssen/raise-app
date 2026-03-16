@@ -239,7 +239,7 @@ export default function TermComparePage() {
                   background: 'var(--surface-2)',
                   color: 'var(--text-secondary)', }}>
                 <Plus className="w-3.5 h-3.5" />
-                Add Scenario</button>
+                Add Term Sheet</button>
             )}
             <button
               onClick={runComparison}

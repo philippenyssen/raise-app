@@ -373,7 +373,7 @@ export default function InvestorsPage() {
           <Input label="Notes" value={form.notes} onChange={v => setForm(f => ({ ...f, notes: v }))} />
           <div className="flex gap-2">
             <button type="submit" disabled={submitting} className="btn btn-primary btn-md disabled:opacity-50">
-              {submitting ? 'Saving...' : editId ? 'Update' : 'Add'}</button>
+              {submitting ? 'Saving...' : editId ? 'Save Changes' : 'Add Investor'}</button>
             <button type="button" onClick={() => { setShowForm(false); setEditId(null); }} className="btn btn-secondary btn-md">
               Cancel</button></div></form>
       )}
@@ -471,8 +471,9 @@ export default function InvestorsPage() {
         {filtered.length === 0 && (
           <EmptyState
             icon={Users}
-            title={investors.length === 0 ? 'Your pipeline starts here' : 'No investors match these filters'}
-            description={investors.length === 0 ? 'Add your first investor to start tracking engagement, scoring fit, and building momentum across your fundraise.' : 'Broaden your search or clear filters to see all investors.'} />
+            title={investors.length === 0 ? 'Add your first investor' : 'No investors match these filters'}
+            description={investors.length === 0 ? 'Start building your pipeline — add an investor to track engagement, score fit, and build momentum.' : 'Broaden your search or clear filters to see all investors.'}
+            action={investors.length === 0 ? { label: 'Add Investor', onClick: () => setShowForm(true) } : undefined} />
         )}</div>
 
       <ConfirmModal

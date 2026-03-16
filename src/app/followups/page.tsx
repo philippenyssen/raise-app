@@ -800,9 +800,9 @@ function FollowupsContent() {
       ) : followups.length === 0 ? (
         <EmptyState
           icon={SendHorizonal}
-          title="No follow-ups pending"
-          description="Follow-ups are generated automatically when you log meetings with AI analysis. Each meeting creates targeted actions — thank yous, objection responses, and document shares."
-          action={{ label: 'Log your first meeting', href: '/meetings/new' }} />
+          title="No follow-ups yet"
+          description="Follow-ups are auto-generated when you log meetings with AI analysis enabled."
+          action={{ label: 'Log a meeting', href: '/meetings/capture' }} />
       ) : filter === 'pending' ? (
         <div className="space-y-6">
           {renderSection('Overdue', overdue, overdueExpanded, setOverdueExpanded, 'red', true)}
