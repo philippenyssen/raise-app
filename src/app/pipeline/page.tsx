@@ -155,18 +155,20 @@ export default function PipelinePage() {
   }
 
   // ── Stats ────────────────────────────────────────────────────────
-  const { activeInvestors, totalCount, avgEnthusiasm, pipelineVelocity } = useMemo(() => {
+  const { activeInvestors, totalCount, avgEnthusiasm, pipelineVelocity, advancedCount } = useMemo(() => {
     const active = filtered.filter(i => !EXIT_STATUSES.includes(i.status));
-    let enthSum = 0, enthCount = 0, velSum = 0;
+    let enthSum = 0, enthCount = 0, velSum = 0, adv = 0;
     for (const i of active) {
       if (i.enthusiasm > 0) { enthSum += i.enthusiasm; enthCount++; }
       velSum += STAGE_WEIGHTS[i.status as InvestorStatus] || 0;
+      if (['in_dd', 'term_sheet', 'closed'].includes(i.status)) adv++;
     }
     return {
       activeInvestors: active,
       totalCount: filtered.length,
       avgEnthusiasm: enthCount > 0 ? enthSum / enthCount : 0,
       pipelineVelocity: active.length > 0 ? velSum / active.length : 0,
+      advancedCount: adv,
     };
   }, [filtered]);
 
@@ -251,14 +253,21 @@ export default function PipelinePage() {
     }
   }, [investors, toast]);
 
-  // ── Group investors by status ─────────────────────────────────────
+  // ── Group investors by status (memoized once) ───────────────────
+  const statusGrid = useMemo(() => {
+    const grid = new Map<string, Investor[]>();
+    for (const s of [...PIPELINE_STATUSES, ...EXIT_STATUSES]) grid.set(s, []);
+    for (const i of filtered) {
+      const arr = grid.get(i.status);
+      if (arr) arr.push(i);
+    }
+    const sorter = (a: Investor, b: Investor) => a.tier !== b.tier ? a.tier - b.tier : (b.enthusiasm || 0) - (a.enthusiasm || 0);
+    for (const arr of grid.values()) arr.sort(sorter);
+    return grid;
+  }, [filtered]);
+
   function investorsInStatus(status: InvestorStatus): Investor[] {
-    return filtered
-      .filter(i => i.status === status)
-      .sort((a, b) => {
-        // Sort by tier first (lower = better), then by enthusiasm (higher = better)
-        if (a.tier !== b.tier) return a.tier - b.tier;
-        return (b.enthusiasm || 0) - (a.enthusiasm || 0);});
+    return statusGrid.get(status) || [];
   }
 
   // ── Loading state ────────────────────────────────────────────────
@@ -338,7 +347,7 @@ export default function PipelinePage() {
         <StatCard
           icon={<Building2 className="w-4 h-4" />}
           label="In DD+"
-          value={String(filtered.filter(i => ['in_dd', 'term_sheet', 'closed'].includes(i.status)).length)}
+          value={String(advancedCount)}
           sub="advanced stage"
           iconColor={STAT_ICON_COLORS.emerald} /></div>
 

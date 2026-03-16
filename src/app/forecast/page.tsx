@@ -19,6 +19,12 @@ const padSpace5 = { padding: 'var(--space-5)' } as const;
 const fontSmPrimary = { ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' } as const;
 const cellPad34 = { padding: 'var(--space-3) var(--space-4)' } as const;
 const progressTrack = { flex: 1, height: '6px', background: 'var(--surface-3)', borderRadius: '3px', overflow: 'hidden' } as const;
+const critPathItem = { display: 'flex', alignItems: 'center', gap: 'var(--space-2)', padding: 'var(--space-2) var(--space-3)', background: 'var(--surface-1)', borderRadius: 'var(--radius-sm)' } as const;
+const critPathBadge = { width: '18px', height: '18px', borderRadius: '50%', background: 'var(--warning-muted)', color: 'var(--text-tertiary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 'var(--font-size-xs)', fontWeight: 300, flexShrink: 0 } as const;
+const critPathLink = { fontSize: 'var(--font-size-xs)', fontWeight: 400, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textDecoration: 'none', display: 'block' } as const;
+const critPathAction = { width: '24px', height: '24px', borderRadius: 'var(--radius-sm)', background: 'var(--warning-muted)', color: 'var(--text-tertiary)', textDecoration: 'none' } as const;
+const confGroupName = { fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '60%' } as const;
+const confGroupStage = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontVariantNumeric: 'tabular-nums', flexShrink: 0 } as const;
 
 interface InvestorForecast { investorId: string; investorName: string; currentStage: string; tier: number; daysInStage: number; predictedDaysToClose: number; predictedCloseDate: string; confidence: 'high' | 'medium' | 'low'; reasoning: string }
 
@@ -290,19 +296,13 @@ export default function ForecastPage() {
                 return (
                   <div
                     key={name}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 'var(--space-2)',
-                      padding: 'var(--space-2) var(--space-3)',
-                      background: 'var(--surface-1)',
-                      borderRadius: 'var(--radius-sm)', }}>
-                    <span style={{ width: '18px', height: '18px', borderRadius: '50%', background: 'var(--warning-muted)', color: 'var(--text-tertiary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 'var(--font-size-xs)', fontWeight: 300, flexShrink: 0 }}>
+                    style={critPathItem}>
+                    <span style={critPathBadge}>
                       {i + 1}</span>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <Link
                         href={inv ? `/investors/${inv.investorId}` : '#'}
-                        style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textDecoration: 'none', display: 'block' }}
+                        style={critPathLink}
                         className="investor-link">
                         {name}</Link>
                       {inv && (
@@ -314,13 +314,7 @@ export default function ForecastPage() {
                         href={`/meetings/new?investor=${inv.investorId}`}
                         title="Schedule meeting"
                         className="flex items-center justify-center shrink-0 hover-bg-fg5"
-                        style={{
-                          width: '24px',
-                          height: '24px',
-                          borderRadius: 'var(--radius-sm)',
-                          background: 'var(--warning-muted)',
-                          color: 'var(--text-tertiary)',
-                          textDecoration: 'none', }}>
+                        style={critPathAction}>
                         <Calendar className="w-3 h-3" /></Link>
                     )}
                   </div>);
@@ -556,9 +550,9 @@ export default function ForecastPage() {
                       borderRadius: 'var(--radius-sm)',
                       background: bg,
                       textDecoration: 'none', }}>
-                    <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '60%' }}>
+                    <span style={confGroupName}>
                       {inv.investorName}</span>
-                    <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontVariantNumeric: 'tabular-nums', flexShrink: 0 }}>
+                    <span style={confGroupStage}>
                       {STAGE_LABELS[inv.currentStage] || inv.currentStage}</span></Link>
                 ))}</div>
             )}</div>
