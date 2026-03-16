@@ -689,6 +689,31 @@ function enthusiasmDotBg(n: number, enthusiasm: number): string {
   return enthusiasm >= 4 ? 'var(--success)' : enthusiasm >= 3 ? 'var(--accent)' : 'var(--text-muted)';
 }
 
+const urgencyBadgeBase: React.CSSProperties = { fontSize: 'var(--font-size-xs)', fontWeight: 400, padding: '1px 5px', borderRadius: 'var(--radius-sm)' };
+const noteStyle: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontStyle: 'italic', flex: 1 };
+const lastMeetingBase: React.CSSProperties = { fontSize: 'var(--font-size-xs)', fontWeight: 400 };
+
+function computeUrgency(lastMeetingDate: string | null | undefined, tier: number, status: string): { label: string; color: string; bg: string } {
+  const days = lastMeetingDate ? Math.floor((Date.now() - new Date(lastMeetingDate).getTime()) / 864e5) : 999;
+  const isUrgent = (days >= 14 && tier <= 2) || (days >= 10 && ['engaged', 'in_dd', 'term_sheet'].includes(status));
+  const isNormal = days >= 7 || tier <= 2;
+  if (isUrgent) return { label: 'Urgent', color: 'var(--danger)', bg: 'var(--danger-muted)' };
+  if (isNormal) return { label: 'Normal', color: 'var(--warning)', bg: 'var(--warning-muted)' };
+  return { label: 'Low', color: 'var(--text-muted)', bg: 'var(--white-8)' };
+}
+
+function lastMeetingColor(lastDate: string | null | undefined): string {
+  if (!lastDate) return 'var(--text-muted)';
+  const days = Math.floor((Date.now() - new Date(lastDate).getTime()) / (1000 * 60 * 60 * 24));
+  return days >= 14 ? 'var(--danger)' : days >= 7 ? 'var(--warning)' : 'var(--text-muted)';
+}
+
+function lastMeetingLabel(lastDate: string | null | undefined): string {
+  if (!lastDate) return 'No meetings';
+  const days = Math.floor((Date.now() - new Date(lastDate).getTime()) / (1000 * 60 * 60 * 24));
+  return days === 0 ? 'Today' : `${days}d ago`;
+}
+
 // ── Investor Card Component ──────────────────────────────────────────
 function InvestorCard({
   investor,
@@ -795,10 +820,10 @@ function InvestorCard({
         </div>
 
         {/* Quick note + urgency */}
-        {(() => { const days = investor.last_meeting_date ? Math.floor((Date.now() - new Date(investor.last_meeting_date).getTime()) / 864e5) : 999; const urgency = (days >= 14 && investor.tier <= 2) || (days >= 10 && ['engaged', 'in_dd', 'term_sheet'].includes(investor.status)) ? 'Urgent' : days >= 7 || investor.tier <= 2 ? 'Normal' : 'Low'; const uClr = urgency === 'Urgent' ? 'var(--danger)' : urgency === 'Normal' ? 'var(--warning)' : 'var(--text-muted)'; const uBg = urgency === 'Urgent' ? 'var(--danger-muted)' : urgency === 'Normal' ? 'var(--warning-muted)' : 'var(--white-8)'; return (
+        {(() => { const u = computeUrgency(investor.last_meeting_date, investor.tier, investor.status); return (
           <div className="flex items-center gap-1.5">
-            <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, padding: '1px 5px', borderRadius: 'var(--radius-sm)', background: uBg, color: uClr }}>{urgency}</span>
-            {investor.notes && <span className="truncate" title={investor.notes} style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontStyle: 'italic', flex: 1 }}>{investor.notes.slice(0, 60)}{investor.notes.length > 60 ? '...' : ''}</span>}
+            <span style={{ ...urgencyBadgeBase, background: u.bg, color: u.color }}>{u.label}</span>
+            {investor.notes && <span className="truncate" title={investor.notes} style={noteStyle}>{investor.notes.slice(0, 60)}{investor.notes.length > 60 ? '...' : ''}</span>}
           </div>); })()}
 
         {/* Enthusiasm + last contact row */}
@@ -811,16 +836,7 @@ function InvestorCard({
                   <div key={n} className="enthusiasm-dot" style={{ background: enthusiasmDotBg(n, investor.enthusiasm) }} />
                 ))}</div></div>
           ) : <div />}
-          {(() => {
-            const lastDate = investor.last_meeting_date;
-            if (!lastDate) return <span style={labelMuted10}>No meetings</span>;
-            const days = Math.floor((Date.now() - new Date(lastDate).getTime()) / (1000 * 60 * 60 * 24));
-            const isStale = days >= 14;
-            const isWarning = days >= 7 && days < 14;
-            return (
-              <span style={{ fontSize: 'var(--font-size-xs)', color: isStale ? 'var(--danger)' : isWarning ? 'var(--warning)' : 'var(--text-muted)', fontWeight: 400 }} title={`Last meeting: ${fmtDate(lastDate)}`}>{days === 0 ? 'Today' : `${days}d ago`}</span>
-            );
-          })()}</div></Link>
+          <span style={{ ...lastMeetingBase, color: lastMeetingColor(investor.last_meeting_date) }} title={investor.last_meeting_date ? `Last meeting: ${fmtDate(investor.last_meeting_date)}` : undefined}>{lastMeetingLabel(investor.last_meeting_date)}</span></div></Link>
 
       {/* Quick actions on hover */}
         <div
