@@ -125,10 +125,11 @@ export default function PipelinePage() {
   }
 
   // ── Filtering ────────────────────────────────────────────────────
-  const filtered = investors.filter(inv => {
+  const filtered = useMemo(() => investors.filter(inv => {
     if (filters.tiers.size > 0 && !filters.tiers.has(inv.tier)) return false;
     if (filters.types.size > 0 && !filters.types.has(inv.type)) return false;
-    return true;});
+    return true;
+  }), [investors, filters]);
 
   const hasActiveFilters = filters.tiers.size > 0 || filters.types.size > 0;
 

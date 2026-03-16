@@ -26,6 +26,13 @@ const metricLgPrimary = { fontSize: 'var(--font-size-lg)', fontWeight: 300, colo
 const labelXsTertiary4 = { fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginBottom: '4px' } as const;
 const unitSmMuted = { fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', fontWeight: 300 } as const;
 
+const skelWrap = { display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' } as const;
+const skelTitle = { height: '32px', width: '200px' } as const;
+const skelSubtitle = { height: '16px', width: '280px', marginTop: 'var(--space-2)' } as const;
+const skelGrid = { gap: 'var(--space-3)' } as const;
+const skelCard = { height: '88px', borderRadius: 'var(--radius-lg)' } as const;
+const skelBanner = { height: '140px', borderRadius: 'var(--radius-lg)' } as const;
+
 function scoreColor(v: number): string {
   return v >= 70 ? 'var(--success)' : v >= 45 ? 'var(--warning)' : 'var(--danger)';
 }
@@ -378,15 +385,15 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
+      <div style={skelWrap}>
         <div>
-          <div className="skeleton" style={{ height: '32px', width: '200px' }} />
-          <div className="skeleton" style={{ height: '16px', width: '280px', marginTop: 'var(--space-2)' }} /></div>
-        <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: 'var(--space-3)' }}>
+          <div className="skeleton" style={skelTitle} />
+          <div className="skeleton" style={skelSubtitle} /></div>
+        <div className="grid grid-cols-2 lg:grid-cols-4" style={skelGrid}>
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="skeleton" style={{ height: '88px', borderRadius: 'var(--radius-lg)' }} />
+            <div key={i} className="skeleton" style={skelCard} />
           ))}</div>
-        <div className="skeleton" style={{ height: '140px', borderRadius: 'var(--radius-lg)' }} />
+        <div className="skeleton" style={skelBanner} />
       </div>);
   }
 
