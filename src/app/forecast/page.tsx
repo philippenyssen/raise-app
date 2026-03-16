@@ -60,7 +60,7 @@ export default function ForecastPage() {
     setError(null);
     cachedFetch('/api/forecast')
       .then(res => {
-        if (!res.ok) throw new Error('Couldn\'t load forecast — try refreshing the page');
+        if (!res.ok) throw new Error('Unable to load forecast — add investors to your pipeline, then refresh');
         return res.json();})
       .then(d => { setData(d); setLoading(false); })
       .catch(e => { setError(e.message); setLoading(false); });

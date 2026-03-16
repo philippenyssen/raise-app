@@ -327,8 +327,8 @@ export default function DataRoomPage() {
       {!filteredFiles && files.length === 0 && (
         <div className="rounded-xl p-8 text-center space-y-3">
           <FolderOpen className="w-8 h-8 mx-auto" style={stTextMuted} />
-          <p style={stTextMuted}>No files in your data room yet.</p>
-          <p className="text-sm" style={stTextTertiary}>Upload financial models, legal docs, and pitch materials to enable AI-powered due diligence support.</p>
+          <p style={stTextMuted}>Your data room is empty.</p>
+          <p className="text-sm" style={stTextTertiary}>Upload financial models, legal docs, and pitch materials — AI will extract key terms and flag due diligence gaps automatically.</p>
         </div>
       )}
 

@@ -15,6 +15,8 @@ const progressTrackBg = { backgroundColor: 'var(--surface-2)' } as const;
 const tabCountBadge = { backgroundColor: 'var(--surface-2)', color: 'var(--text-tertiary)' } as const;
 const autoGenBadge = { backgroundColor: 'color-mix(in srgb, var(--accent-muted) 20%, transparent)', color: 'var(--accent-muted)' } as const;
 const filterSelectStyle = { backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' } as const;
+const taskStatusSelect = { backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-tertiary)' } as const;
+const eventTypeBadge = { backgroundColor: 'var(--surface-2)', color: 'var(--text-muted)' } as const;
 
 function taskRowStyle(status: string, isOverdue: boolean): React.CSSProperties {
   if (status === 'done') return {
@@ -370,7 +372,7 @@ export default function TimelinePage() {
                             value={task.status}
                             onChange={e => updateTaskStatus(task.id, e.target.value)}
                             className="rounded px-1.5 py-0.5 text-xs"
-                            style={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-tertiary)' }}>
+                            style={taskStatusSelect}>
                             <option value="pending">Pending</option>
                             <option value="in_progress">In Progress</option>
                             <option value="done">Done</option>
@@ -404,7 +406,7 @@ export default function TimelinePage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <span className="text-sm" style={stTextSecondary}>{event.subject}</span>
-                      <span className="text-xs px-1.5 py-0.5 rounded" style={{ backgroundColor: 'var(--surface-2)', color: 'var(--text-muted)' }}>
+                      <span className="text-xs px-1.5 py-0.5 rounded" style={eventTypeBadge}>
                         {event.event_type.replace(/_/g, ' ')}</span></div>
                     {event.detail && <p className="text-xs mt-0.5" style={stTextMuted}>{event.detail}</p>}
                     <div className="flex items-center gap-2 mt-0.5">
