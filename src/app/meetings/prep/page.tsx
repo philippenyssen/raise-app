@@ -27,6 +27,18 @@ const skeletonCardLg = { height: '96px', borderRadius: 'var(--radius-xl)' } as c
 const accentDot = { background: 'var(--accent)' } as const;
 const dangerMutedBadge = { background: 'var(--danger-muted)' } as const;
 const borderSubtleRow = { borderBottom: '1px solid var(--border-subtle)' } as const;
+const badgeFallback = { background: 'var(--surface-2)', color: 'var(--text-tertiary)' } as const;
+const TP_CATEGORY_STYLES: Record<string, React.CSSProperties> = {
+  'Follow-up': { background: 'var(--accent-muted)', color: 'var(--accent)' },
+  'Objection to preempt': { background: 'var(--danger-muted)', color: 'var(--text-primary)' },
+  'Positive signal': { background: 'var(--success-muted)', color: 'var(--text-secondary)' },
+  'Build on strength': { background: 'var(--success-muted)', color: 'var(--text-secondary)' },
+  'Improve delivery': { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
+  'Competitive intel': { background: 'var(--accent-muted)', color: 'var(--accent)' },
+  Risk: { background: 'var(--danger-muted)', color: 'var(--text-primary)' },
+  Warning: { background: 'var(--danger-muted)', color: 'var(--text-primary)' },
+  Momentum: { background: 'var(--success-muted)', color: 'var(--text-secondary)' },
+};
 
 // ---------- types for the meeting brief ----------
 
@@ -718,7 +730,7 @@ function MeetingPrepContent() {
                 <ProfileField label="IC Process" value={investor.ic_process || '—'} />
                 <div>
                   <span className="text-xs block mb-0.5" style={stTextMuted}>Speed</span>
-                  <span className="text-sm font-normal capitalize" style={SPEED_STYLE[investor.speed] || { color: 'var(--text-tertiary)' }}>
+                  <span className="text-sm font-normal capitalize" style={SPEED_STYLE[investor.speed] || stTextTertiary}>
                     {investor.speed || '—'}</span></div></div>
               {investor.sector_thesis && (
                 <div className="mt-4 pt-3" style={stBorderTop}>
@@ -757,16 +769,7 @@ function MeetingPrepContent() {
                       }} />
                       <div className="flex-1">
                         <span className="text-xs font-normal px-1.5 py-0.5 rounded mr-2" style={
-                          tp.category === 'Follow-up' ? { background: 'var(--accent-muted)', color: 'var(--accent)' } :
-                          tp.category === 'Objection to preempt' ? { background: 'var(--danger-muted)', color: 'var(--text-primary)' } :
-                          tp.category === 'Positive signal' ? { background: 'var(--success-muted)', color: 'var(--text-secondary)' } :
-                          tp.category === 'Build on strength' ? { background: 'var(--success-muted)', color: 'var(--text-secondary)' } :
-                          tp.category === 'Improve delivery' ? { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' } :
-                          tp.category === 'Competitive intel' ? { background: 'var(--accent-muted)', color: 'var(--accent)' } :
-                          tp.category === 'Risk' ? { background: 'var(--danger-muted)', color: 'var(--text-primary)' } :
-                          tp.category === 'Warning' ? { background: 'var(--danger-muted)', color: 'var(--text-primary)' } :
-                          tp.category === 'Momentum' ? { background: 'var(--success-muted)', color: 'var(--text-secondary)' } :
-                          { background: 'var(--surface-2)', color: 'var(--text-tertiary)' }
+                          TP_CATEGORY_STYLES[tp.category] || badgeFallback
                         }>{tp.category}</span>
                         <span style={stTextSecondary}>{tp.text}</span></div></div>
                   ))}</div></section>
@@ -1087,7 +1090,7 @@ function ProfileField({ label, value, bold, badge, badgeStyle }: {
     <div>
       <span className="text-xs block mb-0.5" style={stTextMuted}>{label}</span>
       {badge ? (
-        <span className="text-xs font-normal px-2 py-0.5 rounded" style={badgeStyle || { background: 'var(--surface-2)', color: 'var(--text-tertiary)' }}>
+        <span className="text-xs font-normal px-2 py-0.5 rounded" style={badgeStyle || badgeFallback}>
           {value}</span>
       ) : (
         <span className="text-sm" style={bold ? { fontWeight: 400, color: 'var(--text-primary)' } : { color: 'var(--text-secondary)' }}>{value}</span>

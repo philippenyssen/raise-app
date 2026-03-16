@@ -29,6 +29,7 @@ const tdSmMuted = { color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' 
 const briefViewLink = { color: 'var(--accent)', fontSize: 'var(--font-size-xs)', textDecoration: 'none' } as const;
 const briefScheduleLink: React.CSSProperties = { fontSize: 'var(--font-size-xs)', fontWeight: 400, padding: 'var(--space-0) var(--space-1)', borderRadius: 'var(--radius-sm)', textDecoration: 'none', background: 'var(--accent-muted)', color: 'var(--accent)' };
 
+const BRIEF_TYPE_FALLBACK = { background: 'var(--surface-2)', color: 'var(--text-tertiary)' } as const;
 const BRIEF_TYPE_STYLES: Record<string, { background: string; color: string }> = {
   investor: { background: 'var(--accent-muted)', color: 'var(--accent)' },
   competitor: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
@@ -392,7 +393,7 @@ export default function IntelligencePage() {
             <EmptyState icon={BookOpen} title="No intelligence briefs yet" description="Generate investor dossiers, market analysis, and competitive briefs. Type a company or topic in the Research bar above." />
           ) : (
             briefs.map(b => {
-              const briefStyle = BRIEF_TYPE_STYLES[b.brief_type] || { background: 'var(--surface-2)', color: 'var(--text-tertiary)' };
+              const briefStyle = BRIEF_TYPE_STYLES[b.brief_type] || BRIEF_TYPE_FALLBACK;
               return (
                 <div key={b.id} className="rounded-xl overflow-hidden">
                   <button
@@ -484,7 +485,7 @@ function RecentResearchSection({ briefs }: { briefs: IntelligenceBrief[] }) {
       <div>
         {recentBriefs.map(brief => {
           const Icon = RECENT_BRIEF_ICONS[brief.brief_type] || Globe;
-          const briefTypeStyle = BRIEF_TYPE_STYLES[brief.brief_type] || { background: 'var(--surface-2)', color: 'var(--text-tertiary)' };
+          const briefTypeStyle = BRIEF_TYPE_STYLES[brief.brief_type] || BRIEF_TYPE_FALLBACK;
           const isExpanded = expandedId === brief.id;
           const snippet = brief.content.length > 120 ? brief.content.slice(0, 120) + '...' : brief.content;
 
@@ -492,6 +493,7 @@ function RecentResearchSection({ briefs }: { briefs: IntelligenceBrief[] }) {
             <div key={brief.id} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
               <button
                 onClick={() => setExpandedId(isExpanded ? null : brief.id)}
+                aria-expanded={isExpanded}
                 className="hover-row w-full flex items-center gap-3 px-4 py-2.5 text-left">
                 <span style={{ color: briefTypeStyle.color }}>
                   <Icon className="w-4 h-4" /></span>
@@ -553,8 +555,9 @@ function RecentResearchSection({ briefs }: { briefs: IntelligenceBrief[] }) {
 function FormField({ name, label, placeholder, required }: { name: string; label: string; placeholder?: string; required?: boolean }) {
   return (
     <div>
-      <label className="text-xs block mb-1" style={stTextMuted}>{label}</label>
+      <label htmlFor={`intel-${name}`} className="text-xs block mb-1" style={stTextMuted}>{label}</label>
       <input
+        id={`intel-${name}`}
         name={name}
         placeholder={placeholder}
         required={required}
