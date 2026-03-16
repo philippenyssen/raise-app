@@ -33,6 +33,7 @@ interface DocumentViewerProps {
   onContentChange: (content: string) => void;
   onSave: () => void;
   onDelete?: () => void;
+  onTitleChange?: (title: string) => void;
   saving: boolean;
   dirty: boolean;
 }
@@ -116,9 +117,11 @@ interface DocVersion {
   created_at: string;
 }
 
-export function DocumentViewer({ document, onContentChange, onSave, onDelete, saving, dirty }: DocumentViewerProps) {
+export function DocumentViewer({ document, onContentChange, onSave, onDelete, onTitleChange, saving, dirty }: DocumentViewerProps) {
   const [mode, setMode] = useState<'visual' | 'source'>('visual');
   const [exporting, setExporting] = useState(false);
+  const [editingTitle, setEditingTitle] = useState(false);
+  const [titleValue, setTitleValue] = useState('');
   const [showVersions, setShowVersions] = useState(false);
   const [versions, setVersions] = useState<DocVersion[]>([]);
   const [loadingVersions, setLoadingVersions] = useState(false);
@@ -268,9 +271,44 @@ export function DocumentViewer({ document, onContentChange, onSave, onDelete, sa
           >
             {document.status}
           </span>
-          <h2 className="truncate" style={{ fontWeight: 400, color: 'var(--text-primary)' }}>
-            {document.title}
-          </h2>
+          {editingTitle && onTitleChange ? (
+            <input
+              autoFocus
+              value={titleValue}
+              onChange={e => setTitleValue(e.target.value)}
+              onBlur={() => {
+                if (titleValue.trim() && titleValue !== document.title) {
+                  onTitleChange(titleValue.trim());
+                }
+                setEditingTitle(false);
+              }}
+              onKeyDown={e => {
+                if (e.key === 'Enter') {
+                  if (titleValue.trim() && titleValue !== document.title) {
+                    onTitleChange(titleValue.trim());
+                  }
+                  setEditingTitle(false);
+                }
+                if (e.key === 'Escape') setEditingTitle(false);
+              }}
+              className="input"
+              style={{ fontWeight: 400, padding: '2px 6px', minWidth: '120px', maxWidth: '300px' }}
+            />
+          ) : (
+            <h2
+              className="truncate"
+              style={{ fontWeight: 400, color: 'var(--text-primary)', cursor: onTitleChange ? 'pointer' : 'default' }}
+              onClick={() => {
+                if (onTitleChange) {
+                  setTitleValue(document.title);
+                  setEditingTitle(true);
+                }
+              }}
+              title={onTitleChange ? 'Click to rename' : undefined}
+            >
+              {document.title}
+            </h2>
+          )}
           <span style={labelMuted}>{TYPE_LABELS[document.type] || document.type}</span>
         </div>
         <div className="flex items-center shrink-0" style={{ gap: 'var(--space-2)' }}>

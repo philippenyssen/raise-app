@@ -221,6 +221,24 @@ export default function WorkspacePage() {
     }
   }, [toast, fetchDocs, selectDoc]);
 
+  const handleTitleChange = useCallback(async (newTitle: string) => {
+    if (!selectedDoc) return;
+    try {
+      const res = await fetch(`/api/documents/${selectedDoc.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: newTitle }),
+      });
+      if (!res.ok) throw new Error('Rename failed');
+      setSelectedDoc({ ...selectedDoc, title: newTitle });
+      toast('Title updated');
+      fetchDocs();
+    } catch (e) {
+      console.warn('[WORKSPACE_RENAME]', e instanceof Error ? e.message : e);
+      toast('Failed to rename', 'error');
+    }
+  }, [selectedDoc, toast, fetchDocs]);
+
   const handleDelete = useCallback(async () => {
     if (!selectedDoc) return;
     try {
@@ -391,6 +409,7 @@ export default function WorkspacePage() {
               onContentChange={handleContentChange}
               onSave={handleSave}
               onDelete={() => setDeleteConfirm(true)}
+              onTitleChange={handleTitleChange}
               saving={saving}
               dirty={dirty} />
           }
