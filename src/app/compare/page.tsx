@@ -193,7 +193,7 @@ export default function ComparePage() {
   if (loading) {
     return (
       <div className="page-content space-y-6">
-        <EmptyState icon={BarChart3} title="Loading investors..." description="Select at least 2 to compare." />
+        <EmptyState icon={BarChart3} title="Select investors to compare" description="Choose at least 2 investors from your pipeline to generate a side-by-side analysis of fit, engagement, and terms." />
       </div>);
   }
 

@@ -373,7 +373,7 @@ export default function AccelerationPage() {
     return (
       <div className="space-y-6">
         <h1 className="page-title">Acceleration</h1>
-        <EmptyState icon={AlertTriangle} title="Unable to load acceleration data" action={{ label: 'Retry', onClick: fetchData }} />
+        <EmptyState icon={AlertTriangle} title="Unable to load acceleration data" description="The server may be temporarily unavailable. Check your connection and retry." action={{ label: 'Retry', onClick: fetchData }} />
       </div>);
   }
 
