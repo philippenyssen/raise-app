@@ -116,7 +116,7 @@ export default function AnalysisPage() {
           <div className="grid grid-cols-2 gap-4">
             {[1,2,3,4].map(i => <div key={i} className="skeleton" style={skelCardLg} />)}
           </div>
-          <p className="text-xs mt-2" style={stTextMuted}>This may take 10-30 seconds</p></div>
+          <p className="text-xs mt-2" style={stTextMuted}>This usually takes 15-20 seconds</p></div>
       )}
 
       {data && !loading && (

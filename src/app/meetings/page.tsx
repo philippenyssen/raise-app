@@ -492,7 +492,7 @@ export default function MeetingsPage() {
         <EmptyState
           icon={Calendar}
           title={meetings.length === 0 ? 'No meetings logged yet' : 'No meetings match your filters'}
-          description={meetings.length === 0 ? 'Start by scheduling your first meeting.' : 'Try adjusting your filters.'}
+          description={meetings.length === 0 ? 'After each investor meeting, log the outcome to track momentum and uncover patterns.' : 'Try adjusting your filters.'}
           action={meetings.length === 0 ? { label: 'Log your first meeting', href: '/meetings/new' } : undefined} />
       ) : (
         <div className="space-y-3">

@@ -24,6 +24,15 @@ const dimLabel = { ...labelMutedTight, fontWeight: 400 } as const;
 const objItemStyle = { fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', opacity: 0.85 } as const;
 const dimScoreStyle: React.CSSProperties = { fontSize: 'var(--font-size-xs)', fontWeight: 300, minWidth: '20px' };
 const dimNameStyle: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', fontWeight: 400 };
+const iconBoxBase = { width: '28px', height: '28px', borderRadius: 'var(--radius-md)' } as const;
+const iconBoxAccent: React.CSSProperties = { ...iconBoxBase, background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid var(--accent-8)' };
+const iconBoxSurface: React.CSSProperties = { ...iconBoxBase, background: 'var(--surface-2)', color: 'var(--text-secondary)' };
+const alertCardBase = { borderRadius: 'var(--radius-lg)', padding: 'var(--space-4)' } as const;
+const alertCardSuccess: React.CSSProperties = { ...alertCardBase, background: 'var(--success-muted)' };
+const alertCardDanger: React.CSSProperties = { ...alertCardBase, background: 'var(--danger-muted)' };
+const impactTextStyle: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', opacity: 0.85, lineHeight: 1.6 };
+const riskTextStyle: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', opacity: 0.75, lineHeight: 1.6 };
+const metricLabelMt: React.CSSProperties = { marginTop: 'var(--space-0)' };
 
 interface FocusItem {
   investorId: string;
@@ -381,20 +390,20 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
                   href={`/meetings/new?investor=${item.investorId}`}
                   title="Schedule meeting"
                   className="flex items-center justify-center hover-accent-fill"
-                  style={{ width: '28px', height: '28px', borderRadius: 'var(--radius-md)', background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid var(--accent-8)' }}>
+                  style={iconBoxAccent}>
                   <Calendar className="w-3.5 h-3.5" /></Link>
                 <Link
                   href={`/meetings/prep?investor=${item.investorId}`}
                   title="Prep meeting"
                   className="flex items-center justify-center hover-accent-subtle"
-                  style={{ width: '28px', height: '28px', borderRadius: 'var(--radius-md)', background: 'var(--surface-2)', color: 'var(--text-secondary)' }}>
+                  style={iconBoxSurface}>
                   <Zap className="w-3.5 h-3.5" /></Link></div></div></div>
 
         {/* Impact + Risk row */}
         <div className="flex items-start gap-4 ml-11" style={mt10}>
-          <p className="flex-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', opacity: 0.85, lineHeight: 1.6 }}>
+          <p className="flex-1" style={impactTextStyle}>
             {item.expectedImpact}</p>
-          <p className="flex-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', opacity: 0.75, lineHeight: 1.6 }}>
+          <p className="flex-1" style={riskTextStyle}>
             {item.riskIfIgnored}</p></div></div>
 
       {/* Expanded details */}
@@ -494,7 +503,7 @@ function QuickWinCard({ item }: { item: FocusItem }) {
 function StaleAlertCard({ item, onReengage }: { item: FocusItem; onReengage: (item: FocusItem) => void }) {
   return (
     <div
-      style={{ background: 'var(--danger-muted)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-4)' }}>
+      style={alertCardDanger}>
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           <AlertTriangle className="w-3.5 h-3.5" style={stTextPrimary} />
@@ -583,7 +592,7 @@ function AccelerationCard({
 function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
   return (
     <div
-      style={{ background: 'var(--success-muted)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-4)' }}>
+      style={alertCardSuccess}>
       <div className="flex items-center gap-2 mb-2">
         <Rocket className="w-3.5 h-3.5" style={stTextSecondary} />
         <Link
@@ -618,7 +627,7 @@ function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
 function AtRiskCard({ investor }: { investor: InvestorSummary }) {
   return (
     <div
-      style={{ background: 'var(--danger-muted)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-4)' }}>
+      style={alertCardDanger}>
       <div className="flex items-center gap-2 mb-2">
         <Shield className="w-3.5 h-3.5" style={stTextPrimary} />
         <Link
@@ -827,22 +836,22 @@ export default function FocusPage() {
           <div className="flex items-center gap-2 mb-1" style={labelMuted}>
             <Clock className="w-3.5 h-3.5" /> Total Time</div>
           <div className="metric-value">{weeklyBudget.totalHoursRecommended}h</div>
-          <div className="metric-label" style={{ marginTop: 'var(--space-0)' }}>recommended this week</div></div>
+          <div className="metric-label" style={metricLabelMt}>recommended this week</div></div>
         <div className="card-metric" style={cardPad4}>
           <div className="flex items-center gap-2 mb-1" style={labelMuted}>
             <Calendar className="w-3.5 h-3.5" /> Meetings</div>
           <div className="metric-value">{weeklyBudget.meetingsRecommended}</div>
-          <div className="metric-label" style={{ marginTop: 'var(--space-0)' }}>calls & meetings</div></div>
+          <div className="metric-label" style={metricLabelMt}>calls & meetings</div></div>
         <div className="card-metric" style={cardPad4}>
           <div className="flex items-center gap-2 mb-1" style={labelMuted}>
             <CheckCircle className="w-3.5 h-3.5" /> Follow-ups</div>
           <div className="metric-value">{weeklyBudget.followUpsRecommended}</div>
-          <div className="metric-label" style={{ marginTop: 'var(--space-0)' }}>prep & outreach</div></div>
+          <div className="metric-label" style={metricLabelMt}>prep & outreach</div></div>
         <div className="card-metric" style={cardPad4}>
           <div className="flex items-center gap-2 mb-1" style={labelMuted}>
             <Rocket className="w-3.5 h-3.5" /> Acceleration</div>
           <div className="metric-value">{accelData?.summary.total ?? 0}</div>
-          <div className="metric-label" style={{ marginTop: 'var(--space-0)' }}>
+          <div className="metric-label" style={metricLabelMt}>
             {accelData?.summary.immediate ?? 0} immediate</div></div></div>
 
       {/* Deal Acceleration Engine */}
