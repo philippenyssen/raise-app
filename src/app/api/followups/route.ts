@@ -7,6 +7,7 @@ import { MS_PER_DAY } from '@/lib/time';
 function enrichTemporal<T extends { status: string; due_at: string }>(f: T) {
   const now = Date.now();
   const dueTime = new Date(f.due_at).getTime();
+  if (isNaN(dueTime)) return { ...f, isOverdue: false, daysOverdue: null, daysUntilDue: null };
   const isOverdue = f.status === 'pending' && dueTime < now;
   return {
     ...f,
