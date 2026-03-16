@@ -12,12 +12,10 @@ import {
   ChevronDown, Play, Ban, XCircle, Rocket, Timer, ArrowUpRight,
   TrendingDown, SkipForward,
 } from 'lucide-react';
-import { inlineBadgeStyle, labelMuted10, stBorderTop, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, INVESTOR_TYPE_STYLES } from '@/lib/styles';
+import { inlineBadgeStyle, labelMuted10, stBorderTop, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, textSmMuted, INVESTOR_TYPE_STYLES } from '@/lib/styles';
 import { TierBadge, EnthusiasmDots } from '@/components/shared';
 import { relativeTime } from '@/lib/time';
 import { cachedFetch } from '@/lib/cache';
-
-const textSmMuted = { fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' } as const;
 const textSm400 = { fontSize: 'var(--font-size-sm)', fontWeight: 400 } as const;
 const tabBtnBase: React.CSSProperties = { padding: '8px 12px', fontSize: 'var(--font-size-sm)', fontWeight: 400, marginBottom: '-1px', background: 'transparent', border: 'none', borderBottomStyle: 'solid', borderBottomWidth: '2px', cursor: 'pointer' };
 

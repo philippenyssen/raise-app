@@ -6,14 +6,12 @@ import {
   TrendingDown, TrendingUp, RefreshCw, Users, Target, AlertTriangle,
   CheckCircle, XCircle, ArrowDown, Clock, Lightbulb, BarChart3,
 } from 'lucide-react';
-import { labelMuted, stAccent, stFontSm, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, strengthColor } from '@/lib/styles';
+import { cardPad4, labelMuted, stAccent, stFontSm, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, strengthColor, textSmMuted } from '@/lib/styles';
 import { fmtDateTime } from '@/lib/format';
 
-const textSmMuted = { fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' } as const;
 const textSmTertiary = { fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' } as const;
 const textSmPrimary400 = { fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400 } as const;
 const textBaseNormal = { fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' } as const;
-const cardPad4 = { padding: 'var(--space-4)' } as const;
 const textSmSecNormal = { fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', fontWeight: 400 } as const;
 const mbSpace3 = { marginBottom: 'var(--space-3)' } as const;
 const funnelBarContainer: React.CSSProperties = { height: '24px', background: 'var(--surface-1)', borderRadius: 'var(--radius-sm)', overflow: 'hidden', position: 'relative' };

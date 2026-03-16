@@ -12,7 +12,7 @@ import {
   TrendingDown, Minus, Users, Shield, Target,
   CheckCircle, Sparkles, ArrowUpRight,
 } from 'lucide-react';
-import { flexColGap2, labelMuted, labelSecondary, labelTertiary, stAccent, stFontSm, stFontXs, stTextMuted, stTextSecondary, stTextTertiary } from '@/lib/styles';
+import { cardPad4, flexColGap2, labelMuted, labelSecondary, labelTertiary, stAccent, stFontSm, stFontXs, stTextMuted, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 // ---------------------------------------------------------------------------
 // Extracted style constants (avoid re-allocation each render)
@@ -24,7 +24,6 @@ const textBodySm = { ...stFontSm, fontWeight: 400, color: 'var(--text-primary)',
 const labelTertiaryLine = { ...labelTertiary, marginTop: '2px', lineHeight: 1.5 } as const;
 const flexIcon = { display: 'flex' } as const;
 const gridGap3 = { gap: 'var(--space-3)' } as const;
-const cardPad4 = { padding: 'var(--space-4)' } as const;
 const metricCardPad: React.CSSProperties = { padding: 'var(--space-3) var(--space-4)' };
 const metricValue: React.CSSProperties = { fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)', marginTop: 4 };
 
