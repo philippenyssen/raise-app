@@ -597,7 +597,12 @@ export default function InvestorDetailPage() {
             href={`/meetings/new?investor=${id}`}
             className="px-4 py-2 rounded-lg text-sm font-normal transition-colors btn-accent-hover"
             style={{ background: 'var(--accent)', color: 'var(--text-primary)' }}>
-            + Log Meeting</Link></div></div>
+            + Log Meeting</Link>
+          <Link
+            href={`/meetings/prep?investor=${id}`}
+            className="px-4 py-2 rounded-lg text-sm font-normal transition-colors"
+            style={{ background: 'var(--surface-2)', color: 'var(--text-secondary)', border: '1px solid var(--border-subtle)' }}>
+            Prep Meeting</Link></div></div>
 
       {/* Quick Context Strip */}
       {investor && (

@@ -228,6 +228,14 @@ function MeetingOutcomeSection({
                   {c}</span>
               ))}</div></div>
         )}
+
+        {/* Post-outcome navigation */}
+        <div className="flex gap-2 mt-3" style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 'var(--space-3)' }}>
+          <Link href={`/meetings/prep?investor=${meeting.investor_id}`} className="btn btn-primary btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--space-1)', textDecoration: 'none' }}>
+            Prep next meeting</Link>
+          <Link href={`/investors/${meeting.investor_id}`} className="btn btn-secondary btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--space-1)', textDecoration: 'none' }}>
+            View {meeting.investor_name}</Link>
+        </div>
       </div>);
   }
 
