@@ -79,8 +79,13 @@ async function genericUpdate(
   const bools = new Set(opts?.booleanFields ?? []);
   const values = fields.map(f => {
     const v = updates[f];
+    if (v === undefined) return null;
+    if (v === null) return null;
     if (bools.has(f) || typeof v === 'boolean') return v ? 1 : 0;
-    return v as InValue;
+    if (typeof v === 'string' || typeof v === 'number') return v;
+    // Reject object/array/function — prevents silent data corruption
+    console.error(`[DB] genericUpdate: field "${f}" has unsupported type ${typeof v}, coercing to string`);
+    return String(v);
   });
   const suffix = opts?.autoUpdatedAt !== false ? `, updated_at = datetime('now')` : '';
   await getClient().execute({

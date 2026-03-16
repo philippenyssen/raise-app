@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
         } catch (e) { console.error('[BATCH_RESOLVE]', e instanceof Error ? e.message : e); }
       }
 
-      logActivity({ event_type: 'status_changed', subject: item.investor_id, detail: `Batch update: status → ${item.status}`, investor_id: item.investor_id, investor_name: '' }).catch(() => {});
+      logActivity({ event_type: 'status_changed', subject: item.investor_id, detail: `Batch update: status → ${item.status}`, investor_id: item.investor_id, investor_name: '' }).catch(e => console.error('[BATCH_ACTIVITY]', e instanceof Error ? e.message : e));
       results.push({ investor_id: item.investor_id, success: true });
     } catch (err) {
       results.push({ investor_id: item.investor_id, success: false, error: err instanceof Error ? err.message : 'Unknown error' });
