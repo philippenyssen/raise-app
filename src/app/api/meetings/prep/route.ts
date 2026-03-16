@@ -14,7 +14,10 @@ import {
   detectFomoDynamics,
   computeNetworkCascades,
   computeWinLossPatterns,
+  getEnrichmentRecords,
 } from '@/lib/db';
+import { buildEnrichedProfile } from '@/lib/enrichment';
+import type { EnrichmentSourceId, EnrichmentFieldCategory } from '@/lib/enrichment';
 
 /**
  * Meeting Prep Intelligence API
@@ -46,6 +49,7 @@ export async function GET(req: NextRequest) {
       investorRelationships,
       _partners,
       _portfolio,
+      enrichmentRecords,
     ] = await Promise.all([
       getMeetings(investorId),
       getObjectionsByInvestor(investorId),
@@ -54,7 +58,8 @@ export async function GET(req: NextRequest) {
       getAggregatedCompetitiveIntel(),
       getInvestorRelationships(investorId).catch(() => []),
       getInvestorPartners(investorId).catch(() => []),
-      getInvestorPortfolio(investorId).catch(() => []),]);
+      getInvestorPortfolio(investorId).catch(() => []),
+      getEnrichmentRecords(investorId).catch(() => []),]);
 
     // Get proven responses for the top objection topics
     const topObjectionTopics = playbook.slice(0, 10).map(p => p.topic);
@@ -191,6 +196,50 @@ export async function GET(req: NextRequest) {
           date: m.date,
           score: m.enthusiasm_score,
         })).reverse(),},
+
+      // Enriched investor profile from data providers (SEC, Crunchbase, etc.)
+      enrichedProfile: (() => {
+        if (enrichmentRecords.length === 0) {
+          return { summary: 'No enrichment data available — run enrichment on this investor for deeper intel', fields: [] };
+        }
+        // Build enriched profile from stored records
+        const bySource: Record<string, { source_id: string; fields: { field_name: string; field_value: string; category: string; confidence: number; source_url: string }[]; fetched_at: string }> = {};
+        for (const rec of enrichmentRecords) {
+          if (!bySource[rec.source_id]) {
+            bySource[rec.source_id] = { source_id: rec.source_id, fields: [], fetched_at: rec.fetched_at };
+          }
+          bySource[rec.source_id].fields.push({
+            field_name: rec.field_name, field_value: rec.field_value,
+            category: rec.category, confidence: rec.confidence, source_url: rec.source_url,
+          });
+        }
+        const results = Object.values(bySource).map(s => ({
+          source_id: s.source_id as EnrichmentSourceId,
+          success: true,
+          fields: s.fields.map(f => ({ ...f, category: f.category as EnrichmentFieldCategory })),
+          fetched_at: s.fetched_at,
+        }));
+        const profile = buildEnrichedProfile(investorId, investor.name, results);
+        // Surface the most useful fields for meeting prep
+        const highConfFields = enrichmentRecords
+          .filter(r => r.confidence >= 0.7)
+          .sort((a, b) => b.confidence - a.confidence);
+        const keyFields: { field: string; value: string; source: string; confidence: number }[] = [];
+        const priorityFields = ['aum', 'fund_size', 'investment_strategy', 'key_persons', 'ceo', 'founders', 'board_members', 'portfolio_companies', 'investment_categories', 'num_investments_total', 'num_exits', 'recent_investments', 'headquarters', 'office_address', 'psc_names', 'officers'];
+        const seen = new Set<string>();
+        for (const fieldName of priorityFields) {
+          const rec = highConfFields.find(r => r.field_name === fieldName && !seen.has(r.field_name));
+          if (rec) {
+            seen.add(rec.field_name);
+            keyFields.push({ field: rec.field_name.replace(/_/g, ' '), value: rec.field_value.substring(0, 300), source: rec.source_id, confidence: rec.confidence });
+          }
+        }
+        const sourceCount = new Set(enrichmentRecords.map(r => r.source_id)).size;
+        return {
+          summary: `${enrichmentRecords.length} enriched field(s) from ${sourceCount} source(s) — ${keyFields.length} key fields for meeting prep`,
+          fields: keyFields,
+        };
+      })(),
 
       // Tactical intelligence: velocity, FOMO, cascades, win/loss (cycle 35)
       tacticalIntelligence: await (async () => {

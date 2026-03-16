@@ -19,6 +19,7 @@ import {
   detectFomoDynamics,
   computeNetworkCascades,
   computeWinLossPatterns,
+  getEnrichmentRecords,
 } from '@/lib/db';
 import { getAIClient, AI_MODEL } from '@/lib/ai';
 import { checkRateLimit, parseJsonSafe } from '@/lib/api-helpers';
@@ -28,6 +29,16 @@ import type { InvestorType, Objection } from '@/lib/types';
 
 function safeJsonParse<T>(raw: string | null | undefined, fallback: T): T {
   return raw ? parseJsonSafe(raw, fallback) : fallback;
+}
+
+function buildEnrichmentContext(records: { field_name: string; field_value: string; category: string; confidence: number }[]): string {
+  const highConf = records.filter(r => r.confidence >= 0.7).sort((a, b) => b.confidence - a.confidence);
+  if (highConf.length === 0) return '';
+  const priorityFields = ['aum', 'fund_size', 'investment_strategy', 'investment_categories', 'key_persons', 'ceo', 'founders', 'board_members', 'portfolio_companies', 'num_investments_total', 'num_exits', 'recent_investments', 'headquarters', 'office_address', 'legal_name', 'psc_names', 'officers'];
+  const selected = highConf.filter(r => priorityFields.includes(r.field_name)).slice(0, 12);
+  if (selected.length === 0) return '';
+  const lines = selected.map(r => `  ${r.field_name.replace(/_/g, ' ')}: ${r.field_value.substring(0, 200)}`);
+  return `\nENRICHED INVESTOR DATA (from SEC, Crunchbase, public records):\n${lines.join('\n')}`;
 }
 
 export async function POST(req: NextRequest) {
@@ -59,6 +70,7 @@ export async function POST(req: NextRequest) {
       typeQuestionPatterns,
       aggregatedCompetitiveIntel,
       investorRelationships,
+      enrichmentRecords,
     ] = await Promise.all([
       getMeetings(investor_id),
       getObjectionsByInvestor(investor_id),
@@ -70,7 +82,8 @@ export async function POST(req: NextRequest) {
       getIntelligenceBriefs(undefined, investor_id),
       getQuestionPatternsForType(investor.type),
       getAggregatedCompetitiveIntel(),
-      getInvestorRelationships(investor_id).catch(e => { console.error('[BRIEF] relationships failed:', e instanceof Error ? e.message : e); return []; }),]);
+      getInvestorRelationships(investor_id).catch(e => { console.error('[BRIEF] relationships failed:', e instanceof Error ? e.message : e); return []; }),
+      getEnrichmentRecords(investor_id).catch(() => []),]);
 
     // 3b. Compute conviction trajectory for this investor (cycle 11)
     let trajectoryContext = '';
@@ -218,7 +231,8 @@ export async function POST(req: NextRequest) {
       investorRelationships,
       trajectoryContext,
       forecastContext,
-      tacticalContext,});
+      tacticalContext,
+      enrichmentContext: enrichmentRecords.length > 0 ? buildEnrichmentContext(enrichmentRecords) : '',});
 
     const response = await getAIClient().messages.create({
       model: AI_MODEL,
@@ -386,6 +400,7 @@ function buildAIContext(ctx: {
   trajectoryContext?: string;
   forecastContext?: string;
   tacticalContext?: string;
+  enrichmentContext?: string;
 }): string {
   const meetingHistory = ctx.meetings.slice(0, 5).map(m =>
     `Date: ${m.date} | Type: ${m.type} | Enthusiasm: ${m.enthusiasm_score}/5\nAnalysis: ${m.ai_analysis}\nNext Steps: ${m.next_steps}`
@@ -474,6 +489,8 @@ ${ctx.forecastContext}` : ''}
 ${ctx.tacticalContext ? `REAL-TIME TACTICAL INTELLIGENCE:
 ${ctx.tacticalContext}
 Use these signals to calibrate urgency: if velocity is decelerating, push for commitment NOW. If FOMO pressure exists, mention process momentum. If a keystone is closing, frame the syndicate narrative.` : ''}
+
+${ctx.enrichmentContext || ''}
 
 Generate a JSON meeting brief (no markdown, pure JSON):
 {
