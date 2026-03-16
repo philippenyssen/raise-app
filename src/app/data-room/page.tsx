@@ -226,7 +226,7 @@ export default function DataRoomPage() {
     return (
       <div className="space-y-4 page-content">
         <div className="skeleton" style={{ height: '28px', width: '200px' }} />
-        <div className="skeleton" style={{ height: '16px', width: '350px' }} />
+        <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Preparing data room...</p>
         {[1,2,3].map(i => (
           <div key={i} className="skeleton" style={{ height: '80px', borderRadius: 'var(--radius-lg)' }} />
         ))}

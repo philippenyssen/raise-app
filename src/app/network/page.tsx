@@ -77,7 +77,7 @@ export default function NetworkPage() {
     return (
       <div className="space-y-6 page-content">
         <div className="skeleton" style={{ height: '28px', width: '250px' }} />
-        <div className="skeleton" style={{ height: '16px', width: '350px' }} />
+        <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Mapping network cascade effects...</p>
         {[1,2,3].map(i => <div key={i} className="skeleton" style={{ height: '100px', borderRadius: 'var(--radius-xl)' }} />)}
       </div>);
   }

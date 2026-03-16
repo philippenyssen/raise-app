@@ -386,7 +386,7 @@ export default function FomoPage() {
     return (
       <div className="space-y-6 page-content">
         <div className="skeleton" style={{ height: '28px', width: '220px' }} />
-        <div className="skeleton" style={{ height: '16px', width: '350px' }} />
+        <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Analyzing competitive pressure dynamics...</p>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {[1,2,3,4].map(i => <div key={i} className="skeleton" style={{ height: '80px', borderRadius: 'var(--radius-xl)' }} />)}
         </div>

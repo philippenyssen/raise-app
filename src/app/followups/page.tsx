@@ -149,7 +149,7 @@ export default function FollowupsPage() {
     <Suspense fallback={
       <div className="space-y-6 page-content">
         <div className="skeleton" style={{ height: '28px', width: '200px' }} />
-        <div className="skeleton" style={{ height: '16px', width: '320px' }} />
+        <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Loading your action items...</p>
         <div className="space-y-2">
           {[1,2,3,4].map(i => <div key={i} className="skeleton" style={{ height: '52px', borderRadius: 'var(--radius-md)' }} />)}
         </div>

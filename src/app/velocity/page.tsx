@@ -58,6 +58,7 @@ export default function VelocityPage() {
       <div className="flex-1 p-6 page-content" style={{ maxWidth: '1400px', margin: '0 auto' }}>
         <div className="flex items-center gap-3" style={{ marginBottom: 'var(--space-8)' }}>
           <div className="skeleton" style={{ width: '200px', height: '32px' }} /></div>
+        <p className="text-xs" style={{ color: 'var(--text-muted)', marginBottom: 'var(--space-3)' }}>Tracking deal pace and conversion velocity...</p>
         <div className="grid grid-cols-4 gap-4" style={{ marginBottom: 'var(--space-6)' }}>
           {[1, 2, 3, 4].map(i => (
             <div key={i} className="card skeleton" style={{ height: '100px' }} />
