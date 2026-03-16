@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Printer, Loader2, ClipboardList, Users2, BarChart3 } from 'lucide-react';
 import { stAccent, stTextMuted, stTextPrimary, stTextSecondary } from '@/lib/styles';
 import { cachedFetch } from '@/lib/cache';
@@ -24,7 +24,7 @@ export default function ReportsPage() {
       .then(data => {
         const list = (Array.isArray(data) ? data : data.investors || []) as InvestorOption[];
         setInvestors(list.filter(i => i.status !== 'passed' && i.status !== 'dropped'));})
-      .catch(() => { setError('Couldn\'t load investors — try refreshing the page'); });
+      .catch(e => { console.warn('[REPORTS_INVESTORS]', e instanceof Error ? e.message : e); setError('Couldn\'t load investors — try refreshing the page'); });
   }, []);
   useEffect(() => { fetchInvestors(); }, [fetchInvestors]);
 
@@ -57,7 +57,7 @@ export default function ReportsPage() {
 
       const res = await fetch(url);
       if (!res.ok) {
-        const errData = await res.json().catch(() => ({ error: 'Request failed' }));
+        const errData = await res.json().catch(e => { console.warn('[REPORTS_PARSE]', e instanceof Error ? e.message : e); return { error: 'Request failed' }; });
         throw new Error(errData.error || 'Couldn\'t generate report — check your API key');
       }
 
@@ -78,6 +78,8 @@ export default function ReportsPage() {
       iframeWindow.focus();
       iframeWindow.print();
     }}
+
+  const investorById = useMemo(() => new Map(investors.map(i => [i.id, i])), [investors]);
 
   const reportTypeLabels: Record<string, string> = {
     board: 'Board Update',
@@ -158,7 +160,7 @@ export default function ReportsPage() {
               backgroundColor: (loading !== null || !selectedInvestor) ? 'var(--surface-2)' : 'var(--accent-muted)',
               color: (loading !== null || !selectedInvestor) ? 'var(--text-muted)' : 'var(--surface-0)', }}>
             {loading === 'investor_brief' ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-            {loading === 'investor_brief' ? 'Generating...' : selectedInvestor ? `Brief ${investors.find(i => i.id === selectedInvestor)?.name || 'investor'}` : 'Select an investor'}</button></div></div>
+            {loading === 'investor_brief' ? 'Generating...' : selectedInvestor ? `Brief ${investorById.get(selectedInvestor)?.name || 'investor'}` : 'Select an investor'}</button></div></div>
 
       {/* Error */}
       {error && (

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { Activity, AlertTriangle, CheckCircle2, XCircle, ChevronDown, ChevronRight } from 'lucide-react';
 import { useToast } from '@/components/toast';
 import { fmtDateTime } from '@/lib/format';
@@ -32,6 +32,25 @@ interface SkillExecution {
   user_accepted: number;
   created_at: string;
 }
+
+const execRowBg: React.CSSProperties = { backgroundColor: 'var(--surface-1)' };
+const execFieldSpan: React.CSSProperties = { color: 'var(--text-muted)', minWidth: '80px' };
+
+function outcomeStyle(outcome: string): React.CSSProperties {
+  const color = outcome === 'success' ? 'var(--success)' : outcome === 'partial' ? 'var(--warning)' : 'var(--danger)';
+  return { color, fontWeight: 400, minWidth: '50px' };
+}
+
+function parseStatusStyle(parsed: number): React.CSSProperties {
+  return { color: parsed ? 'var(--success)' : 'var(--danger)', minWidth: '60px' };
+}
+
+function outcomeDotBg(outcome: string): React.CSSProperties {
+  return { backgroundColor: outcome === 'success' ? 'var(--success)' : outcome === 'partial' ? 'var(--warning)' : 'var(--danger)' };
+}
+
+const execNameStyle: React.CSSProperties = { color: 'var(--text-primary)', minWidth: '140px' };
+const execVersionStyle: React.CSSProperties = { color: 'var(--text-muted)', minWidth: '60px' };
 
 export default function SkillsPage() {
   const { toast } = useToast();
@@ -65,6 +84,16 @@ export default function SkillsPage() {
     window.addEventListener('keydown', h);
     return () => window.removeEventListener('keydown', h);
   }, [fetchData]);
+
+  const execsBySkill = useMemo(() => {
+    const map = new Map<string, SkillExecution[]>();
+    for (const e of executions) {
+      let arr = map.get(e.skill_name);
+      if (!arr) { arr = []; map.set(e.skill_name, arr); }
+      arr.push(e);
+    }
+    return map;
+  }, [executions]);
 
   const overallSuccessRate = health.length > 0
     ? Math.round(health.reduce((s, h) => s + h.success_rate, 0) / health.length)
@@ -120,7 +149,7 @@ export default function SkillsPage() {
             Skill Performance</div>
           {health.map(skill => {
             const isExpanded = expanded === skill.skill_name;
-            const skillExecs = executions.filter(e => e.skill_name === skill.skill_name);
+            const skillExecs = execsBySkill.get(skill.skill_name) || [];
             return (
               <div key={skill.skill_name}>
                 <button
@@ -171,15 +200,12 @@ export default function SkillsPage() {
                       <div
                         key={exec.id}
                         className="flex items-center gap-3 py-2 px-3 rounded-lg text-xs"
-                        style={{ backgroundColor: 'var(--surface-1)' }}>
-                        <span style={{
-                          color: exec.outcome === 'success' ? 'var(--success)' : exec.outcome === 'partial' ? 'var(--warning)' : 'var(--danger)',
-                          fontWeight: 400,
-                          minWidth: '50px',}}>
+                        style={execRowBg}>
+                        <span style={outcomeStyle(exec.outcome)}>
                           {exec.outcome}</span>
-                        <span style={{ color: 'var(--text-muted)', minWidth: '80px' }}>
+                        <span style={execFieldSpan}>
                           {exec.fields_extracted}/{exec.fields_expected} fields</span>
-                        <span style={{ color: exec.parse_success ? 'var(--success)' : 'var(--danger)', minWidth: '60px' }}>
+                        <span style={parseStatusStyle(exec.parse_success)}>
                           {exec.parse_success ? 'parsed' : 'parse fail'}</span>
                         <span className="flex-1 truncate" style={stTextTertiary}>
                           {exec.trigger_source}</span>
@@ -201,14 +227,14 @@ export default function SkillsPage() {
               <div
                 key={exec.id}
                 className="flex items-center gap-3 py-2 px-4 rounded-lg text-xs"
-                style={{ backgroundColor: 'var(--surface-1)' }}>
+                style={execRowBg}>
                 <div
                   className="w-2 h-2 rounded-full shrink-0"
-                  style={{ backgroundColor: exec.outcome === 'success' ? 'var(--success)' : exec.outcome === 'partial' ? 'var(--warning)' : 'var(--danger)' }}
+                  style={outcomeDotBg(exec.outcome)}
                     />
-                <span className="font-normal" style={{ color: 'var(--text-primary)', minWidth: '140px' }}>
+                <span className="font-normal" style={execNameStyle}>
                   {exec.skill_name.replace(/_/g, ' ')}</span>
-                <span style={{ color: 'var(--text-muted)', minWidth: '60px' }}>v{exec.version}</span>
+                <span style={execVersionStyle}>v{exec.version}</span>
                 <span className="flex-1 truncate" style={stTextTertiary}>
                   {exec.error_message || `${exec.fields_extracted}/${exec.fields_expected} fields`}</span>
                 <span style={stTextMuted}>
