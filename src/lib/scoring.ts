@@ -193,10 +193,12 @@ function computeThesisFitScore(
 function computeCheckSizeFitScore(
   investor: Investor,
   targetEquityM: number, // total raise in millions
+  meetings?: Meeting[],
 ): ScoreDimension {
   const checkRange = parseMoneyRange(investor.check_size_range);
   if (!checkRange) {
-    return { name: 'Check Size Fit', score: 0, signal: 'unknown', evidence: 'No check size data available' };
+    const hasEngagement = (meetings?.length ?? 0) > 0;
+    return { name: 'Check Size Fit', score: hasEngagement ? 35 : 0, signal: hasEngagement ? 'weak' : 'unknown', evidence: hasEngagement ? 'Check size unknown but investor engaged' : 'No check size data available' };
   }
 
   const [low, high] = checkRange;
@@ -928,7 +930,7 @@ export function computeInvestorScore(
   // Compute all dimensions
   const engagement = computeEngagementScore(investor, meetings);
   const thesisFit = computeThesisFitScore(investor, portfolio);
-  const checkSizeFit = computeCheckSizeFitScore(investor, raiseConfig.targetEquityM);
+  const checkSizeFit = computeCheckSizeFitScore(investor, raiseConfig.targetEquityM, meetings);
   const speedMatch = computeSpeedMatchScore(investor, raiseConfig.targetCloseDate);
   const conflictRisk = computeConflictRiskScore(investor, portfolio);
   const warmPath = computeWarmPathScore(investor);

@@ -655,3 +655,4 @@ db4500e	100	100	0	pass	Workflow+Automation	perf: extract 6 style constants from 
 666	2026-03-16T12:10:36Z	perf	perf: extract inline IIFE from pipeline kanban column headers	100	-	Product+Performance
 667	2026-03-16T12:12:55Z	ux	ux: objection topic hover feedback + pipeline active filter ring	100	-	Design+UX
 668	2026-03-16T12:14:51Z	fix	fix: stale closure in stress-test keyboard handler	100	-	Engineering
+669	2026-03-16T12:16:59Z	intel	intel: check size scoring accounts for engagement when data missing	100	-	AI+Intelligence
