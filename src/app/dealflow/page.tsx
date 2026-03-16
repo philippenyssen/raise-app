@@ -58,6 +58,13 @@ const TYPE_LABELS: Record<string, string> = {
   debt: 'Debt', family_office: 'Family',};
 
 const HEAT_ORDER: Record<string, number> = { hot: 0, warm: 1, cool: 2, cold: 3, frozen: 4 };
+const dfRowBase = { gridTemplateColumns: '2fr 80px 90px 80px 70px 60px 1.5fr 80px', borderBottom: '1px solid var(--border-subtle)', textDecoration: 'none' } as const;
+const dfNamePrimary = { color: 'var(--text-primary)', fontSize: 'var(--font-size-sm)' } as const;
+const dfNameSub = { color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' } as const;
+const dfVelBar = { background: 'var(--surface-3)' } as const;
+const dfVelLabel = { color: 'var(--text-primary)', fontSize: 'var(--font-size-xs)', fontWeight: 400 } as const;
+const dfTrendFontXs = { fontSize: 'var(--font-size-xs)' } as const;
+const dfSummaryLabel = { color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' } as const;
 
 function heatBtnStyle(active: boolean): React.CSSProperties {
   return { background: active ? 'var(--surface-3)' : 'transparent', color: active ? 'var(--text-primary)' : 'var(--text-muted)', border: active ? '1px solid var(--border-default)' : '1px solid transparent' };
@@ -293,7 +300,7 @@ export default function DealflowPage() {
             style={stSurface1}>
             <div className="flex items-center justify-center gap-1.5 mb-1">
               <span style={{ color }}><Icon className="w-3.5 h-3.5" /></span>
-              <span style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>{label}</span></div>
+              <span style={dfSummaryLabel}>{label}</span></div>
             <div className="text-xl font-normal" style={{ color }}>{count}</div></div>
         ))}</div>
 
@@ -383,11 +390,7 @@ export default function DealflowPage() {
                 key={inv.id}
                 href={`/investors/${inv.id}`}
                 className="table-row grid gap-3 px-4 py-3 items-center transition-colors"
-                style={{
-                  gridTemplateColumns: '2fr 80px 90px 80px 70px 60px 1.5fr 80px',
-                  borderBottom: '1px solid var(--border-subtle)',
-                  boxShadow: inv.heat === 'hot' ? heatCfg.glow : 'none',
-                  textDecoration: 'none', }}>
+                style={{ ...dfRowBase, boxShadow: inv.heat === 'hot' ? heatCfg.glow : 'none' }}>
                 {/* Investor */}
                 <div className="flex items-center gap-2.5 min-w-0">
                   <div
@@ -395,9 +398,9 @@ export default function DealflowPage() {
                     style={{ background: heatCfg.bg, color: heatCfg.text, border: `1px solid ${heatCfg.border}` }}>
                     {inv.name.charAt(0)}</div>
                   <div className="min-w-0">
-                    <div className="font-normal truncate" style={{ color: 'var(--text-primary)', fontSize: 'var(--font-size-sm)' }}>
+                    <div className="font-normal truncate" style={dfNamePrimary}>
                       {inv.name}</div>
-                    <div style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>
+                    <div style={dfNameSub}>
                       {TYPE_LABELS[inv.type] || inv.type} · T{inv.tier} · {STATUS_LABELS[inv.status] || inv.status}</div></div>
                 </div>
 
@@ -412,19 +415,17 @@ export default function DealflowPage() {
                 <div className="flex items-center justify-center gap-1.5">
                   <div
                     className="w-10 h-1.5 rounded-full overflow-hidden"
-                    style={{ background: 'var(--surface-3)' }}>
+                    style={dfVelBar}>
                     <div
                       className="h-full rounded-full"
                       style={{ width: `${Math.min(inv.velocityScore, 100)}%`, background: 'var(--text-primary)' }} /></div>
-                  <span style={{ color: 'var(--text-primary)', fontSize: 'var(--font-size-xs)', fontWeight: 400 }}>
+                  <span style={dfVelLabel}>
                     {inv.velocityScore}</span></div>
 
                 {/* Momentum Trend */}
                 <div className="flex items-center justify-center gap-1">
                   <TrendIcon trend={inv.trend} />
-                  <span style={{
-                    color: inv.trend === 'up' ? 'var(--success)' : inv.trend === 'down' ? 'var(--danger)' : 'var(--text-muted)',
-                    fontSize: 'var(--font-size-xs)',}}>
+                  <span style={{ ...dfTrendFontXs, color: inv.trend === 'up' ? 'var(--success)' : inv.trend === 'down' ? 'var(--danger)' : 'var(--text-muted)' }}>
                     {inv.currentMomentum > 0 ? inv.currentMomentum.toFixed(0) : '—'}</span></div>
 
                 {/* Days in Process */}
