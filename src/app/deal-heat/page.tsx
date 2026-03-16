@@ -83,17 +83,7 @@ export default function DealHeatPage() {
   if (error || !data) {
     return (
       <div className="flex-1 p-6 page-content" style={maxWidthCenter}>
-        <div className="card" style={{ textAlign: 'center', padding: 'var(--space-12)' }}>
-          <Flame className="w-10 h-10 mx-auto mb-3" style={{ color: 'var(--danger)' }} />
-          <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', marginBottom: 'var(--space-1)' }}>
-            Couldn&apos;t load deal heat data</h3>
-          <p style={{ ...labelMuted, marginBottom: 'var(--space-4)' }}>
-            {error || 'An unexpected error occurred'}</p>
-          <button
-            onClick={fetchDealHeat}
-            disabled={loading}
-            className="btn btn-secondary btn-sm inline-flex items-center gap-2">
-            Retry</button></div>
+        <EmptyState icon={Flame} title="Couldn't load deal heat data" description={error || 'An unexpected error occurred'} action={{ label: 'Retry', onClick: fetchDealHeat }} />
       </div>);
   }
 

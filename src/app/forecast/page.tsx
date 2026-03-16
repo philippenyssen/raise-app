@@ -392,9 +392,7 @@ export default function ForecastPage() {
               )}</span></div></div>
 
         {sortedByDate.length === 0 ? (
-          <div style={{ padding: 'var(--space-12)', textAlign: 'center' }}>
-            <span style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
-              Add investors to forecast close dates, spot bottlenecks, and stress-test your timeline.</span></div>
+          <EmptyState icon={Calendar} title="No forecasts yet" description="Add investors to forecast close dates, spot bottlenecks, and stress-test your timeline." />
         ) : (
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>

@@ -939,10 +939,7 @@ export default function FocusPage() {
 
           {/* If no quick wins or stale alerts */}
           {quickWins.length === 0 && staleAlerts.length === 0 && (
-            <div className="card" style={{ padding: 'var(--space-6)', textAlign: 'center' }}>
-              <CheckCircle className="w-8 h-8 mx-auto mb-2" style={stTextSecondary} />
-              <p style={{ fontSize: 'var(--font-size-sm)', ...stTextTertiary }}>All caught up</p>
-              <p style={{ ...labelMuted, marginTop: '4px' }}>No quick wins or stale conversations to flag right now.</p></div>
+            <EmptyState icon={CheckCircle} title="All caught up" description="No quick wins or stale conversations to flag right now." />
           )}</div></div>
     </div>);
 }

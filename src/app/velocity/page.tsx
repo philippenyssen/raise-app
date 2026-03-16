@@ -83,11 +83,7 @@ export default function VelocityPage() {
   if (error || !data) {
     return (
       <div className="flex-1 p-6 page-content" style={maxWidthCenter}>
-        <div className="card" style={{ textAlign: 'center', padding: 'var(--space-12)' }}>
-          <AlertTriangle className="w-8 h-8 mx-auto mb-3" style={{ color: 'var(--text-muted)' }} />
-          <p style={{ color: 'var(--text-primary)', fontSize: 'var(--font-size-sm)', marginBottom: 'var(--space-3)' }}>
-            {error || 'Could not load velocity data — refresh to retry'}</p>
-          <button onClick={fetchVelocity} disabled={loading} className="btn btn-secondary btn-sm" title="Retry loading velocity data">Retry</button></div>
+        <EmptyState icon={AlertTriangle} title="Could not load velocity data" description={error || 'Refresh to retry'} action={{ label: 'Retry', onClick: fetchVelocity }} />
       </div>);
   }
 

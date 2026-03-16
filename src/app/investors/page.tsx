@@ -7,7 +7,8 @@ import { cachedFetch, invalidateCache } from '@/lib/cache';
 import type { Investor, InvestorStatus, InvestorTier, InvestorType } from '@/lib/types';
 import { useToast } from '@/components/toast';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
-import { Search, Download, GitCompare, Columns3, Clock, Pencil, Trash2, Calendar } from 'lucide-react';
+import { Search, Download, GitCompare, Columns3, Clock, Pencil, Trash2, Calendar, Users } from 'lucide-react';
+import { EmptyState } from '@/components/ui/empty-state';
 import { fmtDate } from '@/lib/format';
 import { STATUS_LABELS, TYPE_LABELS } from '@/lib/constants';
 import { stTextMuted } from '@/lib/styles';
@@ -456,11 +457,10 @@ export default function InvestorsPage() {
                 </tr>);
             })}</tbody></table></div>
         {filtered.length === 0 && (
-          <div style={{ padding: 'var(--space-8)', textAlign: 'center', color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
-            {investors.length === 0
-              ? 'No investors yet. Click "Add Investor" above to start building your pipeline.'
-              : 'No investors match your filters — try adjusting or clearing them'}
-</div>
+          <EmptyState
+            icon={Users}
+            title={investors.length === 0 ? 'No investors yet' : 'No investors match your filters'}
+            description={investors.length === 0 ? 'Click "Add Investor" above to start building your pipeline.' : 'Try adjusting or clearing your filters.'} />
         )}</div>
 
       <ConfirmModal
