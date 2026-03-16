@@ -329,7 +329,7 @@ export default function TimelinePage() {
 
           {/* Tasks grouped by phase */}
           {Object.keys(tasksByPhase).length === 0 ? (
-            <EmptyState icon={ListTodo} title="No tasks yet" description="Add manually or log a meeting — tasks are auto-generated." />
+            <EmptyState icon={ListTodo} title={filterPhase || filterStatus ? 'No matching tasks' : 'No tasks yet'} description={filterPhase || filterStatus ? 'Try adjusting or clearing your filters.' : 'Add manually or log a meeting — tasks are auto-generated.'} />
           ) : (
             Object.entries(tasksByPhase).map(([phase, phaseTasks]) => (
               <div key={phase}>
