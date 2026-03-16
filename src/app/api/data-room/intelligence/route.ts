@@ -125,6 +125,11 @@ export async function POST(req: NextRequest) {
   if (!investor_id || !document_id) {
     return NextResponse.json({ error: 'investor_id and document_id are required' }, { status: 400 });
   }
-  const record = await logDataRoomAccess(investor_id as string, document_id as string);
-  return NextResponse.json(record);
+  try {
+    const record = await logDataRoomAccess(investor_id as string, document_id as string);
+    return NextResponse.json(record);
+  } catch (error) {
+    console.error('[DR_INTEL_POST]', error instanceof Error ? error.message : error);
+    return NextResponse.json({ error: 'Failed to log data room access' }, { status: 500 });
+  }
 }
