@@ -597,7 +597,28 @@ export default function TodayPage() {
       )}
 
       {/* ----------------------------------------------------------------- */}
-      {/* 1.6. Overnight Changes                                            */}
+      {/* 1.6. Pipeline Pulse (moved above overnight for CEO hierarchy)      */}
+      {/* ----------------------------------------------------------------- */}
+      <div>
+        <div className="section-title">Pipeline Pulse</div>
+        <div className="grid grid-cols-2 lg:grid-cols-4" style={gridGap3}>
+          <Link href="/pipeline" className="card hover-border" style={linkCardPad}>
+            <div className="metric-label">Active</div>
+            <div className="metric-value" style={{ fontSize: 'var(--font-size-xl)', marginTop: 'var(--space-1)', color: 'var(--text-primary)' }}>{data.pipelineSnapshot.totalActive}</div></Link>
+          <Link href="/pipeline?stage=in_dd" className="card hover-border" style={linkCardPad}>
+            <div className="metric-label">In DD</div>
+            <div className="metric-value" style={{ fontSize: 'var(--font-size-xl)', marginTop: 'var(--space-1)', color: data.pipelineSnapshot.inDD > 0 ? 'var(--warning)' : 'var(--text-muted)' }}>{data.pipelineSnapshot.inDD}</div></Link>
+          <Link href="/pipeline?stage=term_sheet" className="card hover-border" style={linkCardPad}>
+            <div className="metric-label">Term Sheets</div>
+            <div className="metric-value" style={{ fontSize: 'var(--font-size-xl)', marginTop: 'var(--space-1)', color: data.pipelineSnapshot.termSheets > 0 ? 'var(--success)' : 'var(--text-muted)' }}>{data.pipelineSnapshot.termSheets}</div></Link>
+          <div className="card" style={cardPad4}>
+            <div className="flex items-center gap-1.5">
+              <div className={forecastDotClass} style={{ width: '6px', height: '6px' }} />
+              <div className="metric-label">Forecast</div></div>
+            <p style={{ ...stFontXs, color: forecastColor, marginTop: 'var(--space-1)', lineHeight: 1.4 }}>{data.pipelineSnapshot.forecast}</p></div></div></div>
+
+      {/* ----------------------------------------------------------------- */}
+      {/* 1.7. Overnight Changes                                            */}
       {/* ----------------------------------------------------------------- */}
       {overnight && (overnight.statusChanges.length > 0 || overnight.newMeetings > 0 || overnight.tasksCompleted > 0) && (
         <div className="rounded-xl" style={{ background: 'var(--surface-1)', overflow: 'hidden' }}>
@@ -746,43 +767,7 @@ export default function TodayPage() {
             })}</div></div>
       )}
 
-      {/* ----------------------------------------------------------------- */}
-      {/* 4. Pipeline Pulse                                                 */}
-      {/* ----------------------------------------------------------------- */}
-      <div>
-        <div className="section-title">Pipeline Pulse</div>
-
-        <div className="grid grid-cols-2 lg:grid-cols-4" style={gridGap3}>
-          <Link
-            href="/pipeline"
-            className="card hover-border"
-            style={linkCardPad}>
-            <div className="metric-label">Active</div>
-            <div className="metric-value" style={{ fontSize: 'var(--font-size-xl)', marginTop: 'var(--space-1)', color: 'var(--text-primary)' }}>
-              {data.pipelineSnapshot.totalActive}</div></Link>
-
-          <Link
-            href="/pipeline?stage=in_dd"
-            className="card hover-border"
-            style={linkCardPad}>
-            <div className="metric-label">In DD</div>
-            <div className="metric-value" style={{ fontSize: 'var(--font-size-xl)', marginTop: 'var(--space-1)', color: data.pipelineSnapshot.inDD > 0 ? 'var(--warning)' : 'var(--text-muted)' }}>
-              {data.pipelineSnapshot.inDD}</div></Link>
-
-          <Link
-            href="/pipeline?stage=term_sheet"
-            className="card hover-border"
-            style={linkCardPad}>
-            <div className="metric-label">Term Sheets</div>
-            <div className="metric-value" style={{ fontSize: 'var(--font-size-xl)', marginTop: 'var(--space-1)', color: data.pipelineSnapshot.termSheets > 0 ? 'var(--success)' : 'var(--text-muted)' }}>
-              {data.pipelineSnapshot.termSheets}</div></Link>
-
-          <div className="card" style={cardPad4}>
-            <div className="flex items-center gap-1.5">
-              <div className={forecastDotClass} style={{ width: '6px', height: '6px' }} />
-              <div className="metric-label">Forecast</div></div>
-            <p style={{ ...stFontXs, color: forecastColor, marginTop: 'var(--space-1)', lineHeight: 1.4 }}>{data.pipelineSnapshot.forecast}</p>
-          </div></div></div>
+      {/* Pipeline Pulse — moved to earlier section */}
 
       {/* ----------------------------------------------------------------- */}
       {/* 4.5. This Week Summary                                            */}
