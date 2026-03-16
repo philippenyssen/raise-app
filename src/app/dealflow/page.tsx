@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import {
   Flame, Gauge, AlertTriangle,
   TrendingUp, TrendingDown, Minus, RefreshCw, ArrowRight,
@@ -88,6 +89,27 @@ const dfEmptyStateText: React.CSSProperties = { color: 'var(--text-secondary)', 
 const dfClearFilterBtn: React.CSSProperties = { color: 'var(--accent)', textDecoration: 'underline', background: 'none', border: 'none', cursor: 'pointer' };
 const dfFooterInfo: React.CSSProperties = { color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' };
 
+// ── Tab System (consolidated views) ──────────────────────────────────
+type DealflowTab = 'overview' | 'momentum' | 'velocity' | 'actions';
+const DEALFLOW_TABS: { key: DealflowTab; label: string }[] = [
+  { key: 'overview', label: 'Overview' },
+  { key: 'momentum', label: 'Momentum' },
+  { key: 'velocity', label: 'Velocity' },
+  { key: 'actions', label: 'Actions' },
+];
+const dfTabBase: React.CSSProperties = { padding: 'var(--space-2) var(--space-4)', fontSize: 'var(--font-size-sm)', fontWeight: 300, background: 'transparent', border: 'none', borderBottom: '2px solid transparent', cursor: 'pointer', color: 'var(--text-muted)' };
+const dfTabActiveStyle: React.CSSProperties = { ...dfTabBase, color: 'var(--text-primary)', borderBottomColor: 'var(--accent)', fontWeight: 400 };
+
+const MomentumView = dynamic(() => import('@/app/momentum/page'), {
+  loading: () => <div className="p-6"><div className="skeleton" style={{ height: '400px', borderRadius: 'var(--radius-lg)' }} /></div>,
+});
+const VelocityView = dynamic(() => import('@/app/velocity/page'), {
+  loading: () => <div className="p-6"><div className="skeleton" style={{ height: '400px', borderRadius: 'var(--radius-lg)' }} /></div>,
+});
+const AccelerationView = dynamic(() => import('@/app/acceleration/page'), {
+  loading: () => <div className="p-6"><div className="skeleton" style={{ height: '400px', borderRadius: 'var(--radius-lg)' }} /></div>,
+});
+
 function heatBtnStyle(active: boolean): React.CSSProperties {
   return { background: active ? 'var(--surface-3)' : 'transparent', color: active ? 'var(--text-primary)' : 'var(--text-muted)', border: active ? '1px solid var(--border-default)' : '1px solid transparent' };
 }
@@ -121,6 +143,7 @@ export default function DealflowPage() {
   const [sortBy, setSortBy] = useState<SortKey>('heat');
   const [heatFilter, setHeatFilter] = useState<HeatFilter>('all');
   const [loadedAt, setLoadedAt] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<DealflowTab>('overview');
   const fetchData = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -335,6 +358,15 @@ export default function DealflowPage() {
             <span style={stTextMuted}><RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} /></span>
             Refresh</button></div></div>
 
+      {/* Tab Bar */}
+      <div className="flex gap-1 mb-6" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+        {DEALFLOW_TABS.map(tab => (
+          <button key={tab.key} onClick={() => setActiveTab(tab.key)} style={activeTab === tab.key ? dfTabActiveStyle : dfTabBase}>
+            {tab.label}</button>
+        ))}
+      </div>
+
+      {activeTab === 'overview' ? (<>
       {/* Summary Strip */}
       <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 mb-6">
         {summaryStripItems.map(({ label, count, color, icon: Icon }) => (
@@ -555,6 +587,13 @@ export default function DealflowPage() {
         <div className="flex items-center justify-between mt-4" style={dfFooterInfo}>
           <span>{filtered.length} of {investors.length} investors</span>
           <span>Combines heat, velocity, and momentum data</span></div>
+      )}
+      </>) : activeTab === 'momentum' ? (
+        <MomentumView />
+      ) : activeTab === 'velocity' ? (
+        <VelocityView />
+      ) : (
+        <AccelerationView />
       )}
     </div>);
 }

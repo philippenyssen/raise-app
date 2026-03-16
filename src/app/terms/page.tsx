@@ -6,11 +6,29 @@ import { cachedFetch } from '@/lib/cache';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { EmptyState } from '@/components/ui/empty-state';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { Scale } from 'lucide-react';
 import { scoreColor as getScoreColor, labelMuted, stSurface0, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 const scoreRowStyle = { background: 'var(--surface-1)', borderTop: '2px solid var(--border-strong)' } as const;
 const actionRowStyle = { background: 'var(--surface-0)', borderTop: '1px solid var(--border-subtle)' } as const;
+
+// ── Tab System (consolidated views) ──────────────────────────────────
+type TermsTab = 'sheets' | 'compare' | 'stress-test';
+const TERMS_TABS: { key: TermsTab; label: string }[] = [
+  { key: 'sheets', label: 'Sheets' },
+  { key: 'compare', label: 'Compare' },
+  { key: 'stress-test', label: 'Stress Test' },
+];
+const tsTabBase: React.CSSProperties = { padding: 'var(--space-2) var(--space-4)', fontSize: 'var(--font-size-sm)', fontWeight: 300, background: 'transparent', border: 'none', borderBottom: '2px solid transparent', cursor: 'pointer', color: 'var(--text-muted)' };
+const tsTabActiveStyle: React.CSSProperties = { ...tsTabBase, color: 'var(--text-primary)', borderBottomColor: 'var(--accent)', fontWeight: 400 };
+
+const TermCompareView = dynamic(() => import('@/app/term-compare/page'), {
+  loading: () => <div className="p-6"><div className="skeleton" style={{ height: '400px', borderRadius: 'var(--radius-lg)' }} /></div>,
+});
+const StressTestView = dynamic(() => import('@/app/stress-test/page'), {
+  loading: () => <div className="p-6"><div className="skeleton" style={{ height: '400px', borderRadius: 'var(--radius-lg)' }} /></div>,
+});
 
 interface TermSheet {
   id: string;
@@ -54,6 +72,7 @@ export default function TermsPage() {
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; investor: string } | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [activeTab, setActiveTab] = useState<TermsTab>('sheets');
 
   const lastUpdatedLabel = useMemo(() => {
     if (sheets.length === 0) return null;
@@ -167,22 +186,27 @@ export default function TermsPage() {
     <div className="space-y-6 page-content">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="page-title">Term Sheet Comparison</h1>
+          <h1 className="page-title">Terms</h1>
           <p className="text-sm mt-1" style={stTextMuted}>
-            Compare and score term sheets side-by-side. {sheets.length} received.{lastUpdatedLabel && (
+            Term sheets, comparison, and close forecast. {sheets.length} received.{lastUpdatedLabel && (
               <span style={{ marginLeft: 8, color: lastUpdatedLabel.color }}>Last updated {lastUpdatedLabel.text}</span>
             )}</p></div>
-        <div className="flex items-center gap-2">
-          <Link
-            href="/term-compare"
-            className="btn btn-secondary btn-md text-sm font-normal">
-            <Scale className="w-4 h-4" />
-            Compare Terms</Link>
+        {activeTab === 'sheets' && (
           <button
             onClick={() => { setShowForm(!showForm); setEditId(null); setForm(EMPTY_TS); }}
             className="btn btn-primary btn-md text-sm font-normal">
-            + Add Term Sheet</button></div></div>
+            + Add Term Sheet</button>
+        )}</div>
 
+      {/* Tab Bar */}
+      <div className="flex gap-1" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+        {TERMS_TABS.map(tab => (
+          <button key={tab.key} onClick={() => setActiveTab(tab.key)} style={activeTab === tab.key ? tsTabActiveStyle : tsTabBase}>
+            {tab.label}</button>
+        ))}
+      </div>
+
+      {activeTab === 'sheets' ? (<>
       {/* Market Standards Reference */}
       <div className="rounded-xl p-5" style={stSurface0}>
         <h3 className="text-xs font-normal mb-3" style={stTextTertiary}>Market standards (Series C)</h3>
@@ -329,6 +353,11 @@ export default function TermsPage() {
         loading={deleting}
         onConfirm={handleDelete}
         onCancel={() => setDeleteTarget(null)} />
+      </>) : activeTab === 'compare' ? (
+        <TermCompareView />
+      ) : (
+        <StressTestView />
+      )}
     </div>);
 }
 

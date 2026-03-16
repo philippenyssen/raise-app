@@ -6,15 +6,13 @@ import { useState, useEffect } from 'react';
 import { cachedFetch } from '@/lib/cache';
 import { MS_PER_MINUTE } from '@/lib/time';
 import {
-  LayoutDashboard, Users, Calendar, CalendarDays, FileText,
-  BookOpen, Settings,
-  Columns3,
-  SendHorizonal, Menu, X, LogOut,
+  Users, CalendarDays, FileText,
+  Settings, Columns3,
+  Menu, X, LogOut,
   ChevronLeft, ChevronRight, Sun, Flame,
-  Compass, Target, Swords, MessageCircleWarning, Zap,
-  Sparkles, FolderOpen, FileBarChart, Globe, Newspaper, BarChart3, Crosshair,
-  Calculator, CircleDot, RotateCcw, Scale,
-  TrendingUp, Gauge, FlaskConical, GitCompareArrows, Rocket,
+  Compass, Swords, MessageCircleWarning,
+  FolderOpen, FileBarChart,
+  CircleDot,
 } from 'lucide-react';
 
 interface NavItem {
@@ -26,42 +24,23 @@ interface NavItem {
 }
 
 const nav: NavItem[] = [
-  // Core — daily command center
-  { href: '/today', label: 'Today', icon: Sun, section: 'CORE', badge: 'hot' },
-  { href: '/', label: 'Dashboard', icon: LayoutDashboard, section: 'CORE' },
-  { href: '/pipeline', label: 'Pipeline', icon: Columns3, section: 'CORE' },
-  { href: '/investors', label: 'Investors', icon: Users, section: 'CORE' },
-  // Execute — running the fundraise
-  { href: '/calendar', label: 'Calendar', icon: CalendarDays, section: 'EXECUTE' },
-  { href: '/meetings', label: 'Meetings', icon: Calendar, section: 'EXECUTE' },
-  { href: '/followups', label: 'Follow-ups', icon: SendHorizonal, section: 'EXECUTE' },
-  { href: '/focus', label: 'Focus', icon: Target, section: 'EXECUTE' },
-  { href: '/decide', label: 'Decide', icon: CircleDot, section: 'EXECUTE' },
-  { href: '/targeting', label: 'Targeting', icon: Crosshair, section: 'EXECUTE' },
-  // Analyze — intelligence and strategy
-  { href: '/dealflow', label: 'Dealflow', icon: Flame, section: 'ANALYZE' },
-  { href: '/intelligence', label: 'Intelligence', icon: Zap, section: 'ANALYZE' },
-  { href: '/competitive', label: 'Competitive', icon: Swords, section: 'ANALYZE' },
-  { href: '/objections', label: 'Objections', icon: MessageCircleWarning, section: 'ANALYZE' },
-  { href: '/strategic', label: 'Strategic', icon: Compass, section: 'ANALYZE' },
-  { href: '/network', label: 'Network', icon: Globe, section: 'ANALYZE' },
-  { href: '/benchmarking', label: 'Benchmarks', icon: BarChart3, section: 'ANALYZE' },
-  { href: '/win-loss', label: 'Win/Loss', icon: Scale, section: 'ANALYZE' },
-  { href: '/momentum', label: 'Momentum', icon: TrendingUp, section: 'ANALYZE' },
-  { href: '/velocity', label: 'Velocity', icon: Gauge, section: 'ANALYZE' },
-  { href: '/acceleration', label: 'Acceleration', icon: Rocket, section: 'ANALYZE' },
-  { href: '/win-back', label: 'Win-Back', icon: RotateCcw, section: 'ANALYZE' },
-  // Workspace — materials and tools
-  { href: '/workspace', label: 'Workspace', icon: Sparkles, section: 'WORKSPACE' },
-  { href: '/documents', label: 'Documents', icon: BookOpen, section: 'WORKSPACE' },
-  { href: '/data-room', label: 'Data Room', icon: FolderOpen, section: 'WORKSPACE' },
-  { href: '/terms', label: 'Terms', icon: FileText, section: 'WORKSPACE' },
-  { href: '/deal-mechanics', label: 'Deal Mechanics', icon: Calculator, section: 'WORKSPACE' },
-  { href: '/term-compare', label: 'Term Compare', icon: GitCompareArrows, section: 'WORKSPACE' },
-  { href: '/stress-test', label: 'Stress Test', icon: FlaskConical, section: 'WORKSPACE' },
-  { href: '/digest', label: 'Digest', icon: Newspaper, section: 'WORKSPACE' },
-  { href: '/reports', label: 'Reports', icon: FileBarChart, section: 'WORKSPACE' },
-  { href: '/settings', label: 'Settings', icon: Settings, section: 'WORKSPACE' },];
+  // Daily
+  { href: '/today', label: 'Today', icon: Sun, section: 'DAILY' },
+  { href: '/calendar', label: 'Calendar', icon: CalendarDays, section: 'DAILY' },
+  // Pipeline
+  { href: '/pipeline', label: 'Pipeline', icon: Columns3, section: 'PIPELINE' },
+  { href: '/investors', label: 'Investors', icon: Users, section: 'PIPELINE' },
+  { href: '/dealflow', label: 'Dealflow', icon: Flame, section: 'PIPELINE' },
+  { href: '/decide', label: 'Decide', icon: CircleDot, section: 'PIPELINE' },
+  // Intelligence
+  { href: '/strategic', label: 'Strategic', icon: Compass, section: 'INTEL' },
+  { href: '/competitive', label: 'Competitive', icon: Swords, section: 'INTEL' },
+  { href: '/objections', label: 'Objections', icon: MessageCircleWarning, section: 'INTEL' },
+  // Materials
+  { href: '/data-room', label: 'Data Room', icon: FolderOpen, section: 'TOOLS' },
+  { href: '/terms', label: 'Terms', icon: FileText, section: 'TOOLS' },
+  { href: '/reports', label: 'Reports', icon: FileBarChart, section: 'TOOLS' },
+  { href: '/settings', label: 'Settings', icon: Settings, section: 'TOOLS' },];
 
 /* ── Sidebar-specific palette (dark navy panel on light page) ── */
 const SB = {
