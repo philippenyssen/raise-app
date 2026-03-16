@@ -31,8 +31,8 @@ const tierHighStyle: React.CSSProperties = { ...tierBadgeBase, background: 'var(
 const tierLowStyle: React.CSSProperties = { ...tierBadgeBase, background: 'var(--surface-3)', color: 'var(--text-secondary)' };
 const scenarioAmount: React.CSSProperties = { fontSize: 'var(--font-size-2xl)', fontWeight: 300, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums', marginBottom: 'var(--space-1)' };
 const scenarioFooter: React.CSSProperties = { display: 'flex', justifyContent: 'space-between', fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', borderTop: '1px solid var(--border-subtle)', paddingTop: 'var(--space-2)', marginTop: 'var(--space-2)' };
-const distBarTrack: React.CSSProperties = { height: '6px', background: 'var(--surface-3)', borderRadius: '3px', overflow: 'hidden' };
-const distBarFillBase: React.CSSProperties = { height: '100%', borderRadius: '3px', transition: 'width 400ms ease' };
+const distBarTrack: React.CSSProperties = { height: '6px', background: 'var(--surface-3)', borderRadius: 'var(--radius-sm)', overflow: 'hidden' };
+const distBarFillBase: React.CSSProperties = { height: '100%', borderRadius: 'var(--radius-sm)', transition: 'width 400ms ease' };
 const mbSpace1: React.CSSProperties = { marginBottom: 'var(--space-1)' };
 const progressBarTrack: React.CSSProperties = { width: '100%', height: '28px', background: 'var(--surface-2)', borderRadius: 'var(--radius-md)', overflow: 'hidden', position: 'relative' };
 const progressBarLabel: React.CSSProperties = { position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: 'var(--font-size-sm)', fontWeight: 300, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' };
@@ -490,7 +490,7 @@ export default function ForecastPage() {
                       <td style={cellPad34}>
                         <div className="flex items-center gap-2">
                           <div style={progressTrack}>
-                            <div style={{ width: maxDaysToClose > 0 ? `${Math.max(4, (inv.predictedDaysToClose / maxDaysToClose) * 100)}%` : '0%', height: '100%', background: confidenceColor(inv.confidence), borderRadius: '3px', transition: 'width 400ms ease', opacity: 0.7 }} />
+                            <div style={{ ...distBarFillBase, width: maxDaysToClose > 0 ? `${Math.max(4, (inv.predictedDaysToClose / maxDaysToClose) * 100)}%` : '0%', background: confidenceColor(inv.confidence), opacity: 0.7 }} />
                           </div>
                           <span style={{ ...labelMuted, minWidth: '32px', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
                             {inv.predictedDaysToClose}d</span></div></td>

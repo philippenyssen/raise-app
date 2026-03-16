@@ -18,7 +18,7 @@ import { TierBadge, EnthusiasmDots } from '@/components/shared';
 import { relativeTime } from '@/lib/time';
 import { cachedFetch } from '@/lib/cache';
 const textSm400 = { fontSize: 'var(--font-size-sm)', fontWeight: 400 } as const;
-const tabBtnBase: React.CSSProperties = { padding: '8px 12px', fontSize: 'var(--font-size-sm)', fontWeight: 400, marginBottom: '-1px', background: 'transparent', border: 'none', borderBottomStyle: 'solid', borderBottomWidth: '2px', cursor: 'pointer' };
+const tabBtnBase: React.CSSProperties = { padding: 'var(--space-2) var(--space-3)', fontSize: 'var(--font-size-sm)', fontWeight: 400, marginBottom: '-1px', background: 'transparent', border: 'none', borderBottomStyle: 'solid', borderBottomWidth: '2px', cursor: 'pointer' };
 const tabBtnActive: React.CSSProperties = { ...tabBtnBase, color: 'var(--accent)', borderBottomColor: 'var(--accent)' };
 const tabBtnInactive: React.CSSProperties = { ...tabBtnBase, color: 'var(--text-muted)', borderBottomColor: 'transparent' };
 const tabCountActive = { padding: '2px 6px', fontSize: 'var(--font-size-xs)', background: 'var(--accent-muted)', color: 'var(--accent)' } as const;
@@ -78,7 +78,7 @@ function ActionCard({
               {STATUS_LABELS[item.status] ?? item.status}</span></div>
 
           {/* Description */}
-          <p style={{ ...textSmSecondary, lineHeight: 1.6, marginBottom: '8px' }}>
+          <p style={{ ...textSmSecondary, lineHeight: 1.6, marginBottom: 'var(--space-2)' }}>
             {item.description}</p>
 
           {/* Meta row */}
@@ -100,7 +100,7 @@ function ActionCard({
             <span
               className="flex items-center justify-center"
               style={{
-                padding: '8px 12px',
+                padding: 'var(--space-2) var(--space-3)',
                 borderRadius: 'var(--radius-md)',
                 fontSize: 'var(--font-size-sm)',
                 fontWeight: 400,
@@ -115,7 +115,7 @@ function ActionCard({
                 onClick={() => onExecute(item)}
                 className="btn btn-primary flex items-center gap-1.5"
                 style={{
-                  padding: '8px 12px',
+                  padding: 'var(--space-2) var(--space-3)',
                   borderRadius: 'var(--radius-md)',
                   fontSize: 'var(--font-size-sm)',
                   fontWeight: 400, }}>
@@ -125,7 +125,7 @@ function ActionCard({
                 onClick={() => onSkip(item)}
                 className="flex items-center gap-1.5 btn-surface"
                 style={{
-                  padding: '8px 12px',
+                  padding: 'var(--space-2) var(--space-3)',
                   background: 'var(--surface-2)',
                   borderRadius: 'var(--radius-md)',
                   fontSize: 'var(--font-size-sm)',
@@ -417,7 +417,7 @@ export default function AccelerationPage() {
           onClick={fetchData}
           className="flex items-center gap-2 rounded-lg btn-surface"
           style={{
-            padding: '8px 12px',
+            padding: 'var(--space-2) var(--space-3)',
             background: 'var(--surface-2)',
             fontSize: 'var(--font-size-sm)',
             color: 'var(--text-secondary)',

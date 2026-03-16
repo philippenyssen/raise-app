@@ -32,7 +32,7 @@ const DEFAULT_FOLLOWUP_CADENCE: FollowupCadenceForm = { thank_you_delay_hours: 2
 
 const DEFAULT_RAISE_CONFIG: RaiseConfigForm = { company_name: '', round_type: 'Series C', equity_amount: 0, debt_amount: 0, pre_money: 0, target_close: '', currency: 'EUR', target_investor_count: 0, minimum_check_size: 0 };
 
-const labelStyle = { ...stFontXs, fontWeight: 400 as const, ...stTextTertiary, marginBottom: '0.375rem' };
+const labelStyle = { ...stFontXs, fontWeight: 400 as const, ...stTextTertiary, marginBottom: 'var(--space-1)' };
 const sectionCardPad = { padding: 'var(--space-6)' } as const;
 const sectionHeaderMb = { marginBottom: 'var(--space-6)' } as const;
 const h2Style = { fontSize: 'var(--font-size-lg)', fontWeight: 400, color: 'var(--text-primary)' } as const;
@@ -431,15 +431,15 @@ export default function SettingsPage() {
           <div style={{ marginTop: 'var(--space-5)', paddingTop: 'var(--space-4)', borderTop: '1px solid var(--border-subtle)' }}>
             <div className="grid grid-cols-3 gap-4" style={{ textAlign: 'center' }}>
               <div>
-                <div style={{ ...labelMuted, marginBottom: '0.125rem' }}>Total Raise</div>
+                <div style={{ ...labelMuted, marginBottom: 'var(--space-0)' }}>Total Raise</div>
                 <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
                   {formatCompact(raise.data.equity_amount + raise.data.debt_amount, raise.data.currency)}</div></div>
               <div>
-                <div style={{ ...labelMuted, marginBottom: '0.125rem' }}>Dilution</div>
+                <div style={{ ...labelMuted, marginBottom: 'var(--space-0)' }}>Dilution</div>
                 <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
                   {((raise.data.equity_amount / (raise.data.pre_money + raise.data.equity_amount)) * 100).toFixed(1)}%</div></div>
               <div>
-                <div style={{ ...labelMuted, marginBottom: '0.125rem' }}>Post-money EV</div>
+                <div style={{ ...labelMuted, marginBottom: 'var(--space-0)' }}>Post-money EV</div>
                 <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
                   {formatCompact(raise.data.pre_money + raise.data.equity_amount, raise.data.currency)}</div></div></div></div>
         )}</div>
