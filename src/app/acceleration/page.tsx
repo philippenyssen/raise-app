@@ -369,15 +369,8 @@ export default function AccelerationPage() {
       </div>);
   }
 
-  if (!data) {
-    return (
-      <div className="space-y-6">
-        <h1 className="page-title">Acceleration</h1>
-        <EmptyState icon={AlertTriangle} title="Unable to load acceleration data" description="The server may be temporarily unavailable. Check your connection and retry." action={{ label: 'Retry', onClick: fetchData }} />
-      </div>);
-  }
-
   const { immediateActions, thisWeekActions, allFiltered, pendingCount } = useMemo(() => {
+    if (!data) return { immediateActions: [] as AccelerationItem[], thisWeekActions: [] as AccelerationItem[], allFiltered: [] as AccelerationItem[], pendingCount: 0 };
     const immediate: AccelerationItem[] = [];
     const week: AccelerationItem[] = [];
     let pending = 0;
@@ -392,7 +385,15 @@ export default function AccelerationPage() {
       allFiltered: filterActions(data.accelerations),
       pendingCount: pending,
     };
-  }, [data.accelerations, activeTab, executedIds, skippedIds]);
+  }, [data, activeTab, executedIds, skippedIds]);
+
+  if (!data) {
+    return (
+      <div className="space-y-6">
+        <h1 className="page-title">Acceleration</h1>
+        <EmptyState icon={AlertTriangle} title="Unable to load acceleration data" description="The server may be temporarily unavailable. Check your connection and retry." action={{ label: 'Retry', onClick: fetchData }} />
+      </div>);
+  }
   const executedCount = executedIds.size;
   const skippedCount = skippedIds.size;
 

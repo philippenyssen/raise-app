@@ -236,6 +236,15 @@ export default function MomentumPage() {
     window.addEventListener('keydown', h); return () => window.removeEventListener('keydown', h);
   }, []);
 
+  const maxOverall = useMemo(() => data ? Math.max(...data.overallTrend.map(t => t.score), 1) : 1, [data]);
+  const anomalyInvestorIds = useMemo(() => data ? new Set(data.anomalies.map(a => a.investorId)) : new Set<string>(), [data]);
+  const anomalyByInvestor = useMemo(() => {
+    if (!data) return new Map();
+    const map = new Map<string, typeof data.anomalies[0]>();
+    for (const a of data.anomalies) map.set(a.investorId, a);
+    return map;
+  }, [data]);
+
   if (loading) {
     return (
       <div className="space-y-6 page-content">
@@ -261,15 +270,6 @@ export default function MomentumPage() {
 
   const dirConfig = DIRECTION_CONFIG[data.overallDirection];
   const DirIcon = dirConfig.icon;
-  const maxOverall = useMemo(() => Math.max(...data.overallTrend.map(t => t.score), 1), [data.overallTrend]);
-
-  // Identify anomaly investor IDs for highlighting in the heatmap (memoized — O(n) Set build)
-  const anomalyInvestorIds = useMemo(() => new Set(data.anomalies.map(a => a.investorId)), [data.anomalies]);
-  const anomalyByInvestor = useMemo(() => {
-    const map = new Map<string, typeof data.anomalies[0]>();
-    for (const a of data.anomalies) map.set(a.investorId, a);
-    return map;
-  }, [data.anomalies]);
 
   return (
     <div className="flex-1 overflow-y-auto page-content" style={stSurface0}>
