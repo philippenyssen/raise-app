@@ -66,6 +66,7 @@ export interface EngagementSignal {
   requested_followup: boolean;
   mentioned_competitors: boolean;
   body_language_at_pricing: 'positive' | 'neutral' | 'negative';
+  pricing_reception: 'positive' | 'neutral' | 'negative' | 'not_discussed';
   slides_that_landed: string[];
   slides_that_fell_flat: string[];
 }

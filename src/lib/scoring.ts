@@ -79,6 +79,7 @@ function computeEngagementScore(
     if (signals.asked_about_timeline) signalPts += 4;
     if (signals.requested_followup) signalPts += 5;
     if (signals.body_language_at_pricing === 'positive') signalPts += 4;
+    if (signals.pricing_reception === 'positive') signalPts += 4;
     if (signals.mentioned_competitors) signalPts += 3;
   }
   signalPts = Math.min(25, signalPts);
