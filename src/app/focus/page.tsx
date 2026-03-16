@@ -774,6 +774,19 @@ export default function FocusPage() {
       toast('Couldn\'t update action — check your connection and retry', 'error');
     }}
 
+  // Group acceleration items by urgency — must be before early returns (React hooks ordering)
+  const { immediateActions, thisWeekActions } = useMemo(() => {
+    const accels = accelData?.accelerations ?? [];
+    const immediate: typeof accels = [];
+    const week: typeof accels = [];
+    for (const a of accels) {
+      if (executedIds.has(a.id)) continue;
+      if (a.urgency === 'immediate') immediate.push(a);
+      else if (a.urgency === '48h' || a.urgency === 'this_week') week.push(a);
+    }
+    return { immediateActions: immediate, thisWeekActions: week };
+  }, [accelData?.accelerations, executedIds]);
+
   if (loading) {
     return (
       <div className="space-y-6">
@@ -802,19 +815,6 @@ export default function FocusPage() {
   }
 
   const { priorityQueue, quickWins, staleAlerts, weeklyBudget } = data;
-
-  // Group acceleration items by urgency
-  const { immediateActions, thisWeekActions } = useMemo(() => {
-    const accels = accelData?.accelerations ?? [];
-    const immediate: typeof accels = [];
-    const week: typeof accels = [];
-    for (const a of accels) {
-      if (executedIds.has(a.id)) continue;
-      if (a.urgency === 'immediate') immediate.push(a);
-      else if (a.urgency === '48h' || a.urgency === 'this_week') week.push(a);
-    }
-    return { immediateActions: immediate, thisWeekActions: week };
-  }, [accelData?.accelerations, executedIds]);
   const hasAccelerationData = accelData && accelData.accelerations.length > 0;
 
   return (

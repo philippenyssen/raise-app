@@ -384,6 +384,23 @@ export default function FomoPage() {
     return () => window.removeEventListener('keydown', h);
   }, [fetchData]);
 
+  const filteredInvestors = useMemo(() => data ? data.perInvestorFomo.filter(inv => {
+    if (filterIntensity === 'all') return true;
+    if (filterIntensity === 'high') return inv.intensity >= 70;
+    if (filterIntensity === 'medium') return inv.intensity >= 40 && inv.intensity < 70;
+    if (filterIntensity === 'low') return inv.intensity > 0 && inv.intensity < 40;
+    if (filterIntensity === 'none') return inv.intensity === 0;
+    return true;
+  }) : [], [data, filterIntensity]);
+
+  const filterTabs = useMemo((): { key: typeof filterIntensity; label: string; count: number }[] => data ? [
+    { key: 'all', label: 'All', count: data.perInvestorFomo.length },
+    { key: 'high', label: 'High', count: data.stats.highFomoCount },
+    { key: 'medium', label: 'Medium', count: data.stats.mediumFomoCount },
+    { key: 'low', label: 'Low', count: data.stats.lowFomoCount },
+    { key: 'none', label: 'None', count: data.stats.zeroFomoCount },
+  ] : [], [data, filterIntensity]);
+
   if (loading && !data) {
     return (
       <div className="space-y-6 page-content">
@@ -413,23 +430,6 @@ export default function FomoPage() {
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
       <div className="loading-spinner" />
     </div>);
-
-  const filteredInvestors = useMemo(() => data.perInvestorFomo.filter(inv => {
-    if (filterIntensity === 'all') return true;
-    if (filterIntensity === 'high') return inv.intensity >= 70;
-    if (filterIntensity === 'medium') return inv.intensity >= 40 && inv.intensity < 70;
-    if (filterIntensity === 'low') return inv.intensity > 0 && inv.intensity < 40;
-    if (filterIntensity === 'none') return inv.intensity === 0;
-    return true;
-  }), [data.perInvestorFomo, filterIntensity]);
-
-  const filterTabs = useMemo((): { key: typeof filterIntensity; label: string; count: number }[] => [
-    { key: 'all', label: 'All', count: data.perInvestorFomo.length },
-    { key: 'high', label: 'High', count: data.stats.highFomoCount },
-    { key: 'medium', label: 'Medium', count: data.stats.mediumFomoCount },
-    { key: 'low', label: 'Low', count: data.stats.lowFomoCount },
-    { key: 'none', label: 'None', count: data.stats.zeroFomoCount },
-  ], [data.perInvestorFomo.length, data.stats.highFomoCount, data.stats.mediumFomoCount, data.stats.lowFomoCount, data.stats.zeroFomoCount]);
 
   return (
     <div className="flex-1 overflow-y-auto page-content" style={{ padding: 'var(--space-6)' }}>

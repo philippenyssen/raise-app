@@ -480,6 +480,18 @@ export default function TodayPage() {
     setCompletingFollowupId(null);
   }
 
+  const todayDate = new Date().toISOString().split('T')[0];
+  const { overdueFollowups, dueTodayFollowups } = useMemo(() => {
+    const overdue: typeof dueFollowups = [];
+    const dueToday: typeof dueFollowups = [];
+    for (const f of dueFollowups) {
+      const d = f.due_at?.split('T')[0];
+      if (d && d < todayDate) overdue.push(f);
+      else if (d === todayDate) dueToday.push(f);
+    }
+    return { overdueFollowups: overdue, dueTodayFollowups: dueToday };
+  }, [dueFollowups, todayDate]);
+
   // Loading skeleton
   if (loading) {
     return (
@@ -519,18 +531,6 @@ export default function TodayPage() {
 
   const momentumConfig = MOMENTUM_CONFIG[data.momentum] ?? MOMENTUM_CONFIG.steady;
   const MomentumIcon = momentumConfig.icon;
-
-  const todayDate = new Date().toISOString().split('T')[0];
-  const { overdueFollowups, dueTodayFollowups } = useMemo(() => {
-    const overdue: typeof dueFollowups = [];
-    const dueToday: typeof dueFollowups = [];
-    for (const f of dueFollowups) {
-      const d = f.due_at?.split('T')[0];
-      if (d && d < todayDate) overdue.push(f);
-      else if (d === todayDate) dueToday.push(f);
-    }
-    return { overdueFollowups: overdue, dueTodayFollowups: dueToday };
-  }, [dueFollowups, todayDate]);
 
   // Derive forecast status from the forecast string
   const forecastLower = data.pipelineSnapshot.forecast.toLowerCase();
