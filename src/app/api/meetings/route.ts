@@ -74,11 +74,14 @@ export async function POST(req: NextRequest) {
     status_after: (aiData.suggested_status as string) || 'met',
     ai_analysis: (aiData.ai_analysis as string) || '',});
 
+  // Fetch investor once for post-meeting pipeline
+  let investorData: Awaited<ReturnType<typeof getInvestor>> | null = null;
+  try { investorData = await getInvestor(investor_id); } catch (e) { console.error('[INVESTOR_FETCH]', e instanceof Error ? e.message : e); }
+  const investorTier = investorData?.tier ?? 2;
+
   // Run post-meeting intelligence pipeline
   let postMeetingActions = null;
   try {
-    const investor = await getInvestor(investor_id);
-    const investorTier = investor?.tier ?? 2;
     postMeetingActions = await processPostMeetingIntelligence(meeting, aiData, investorTier);
   } catch (err) {
     console.error('[POST_MEETING_INTEL]', err instanceof Error ? err.message : err);
@@ -97,9 +100,7 @@ export async function POST(req: NextRequest) {
   // Generate follow-up choreography
   let followupPlan = null;
   try {
-    const investor = await getInvestor(investor_id);
-    const tier = investor?.tier ?? 2;
-    followupPlan = await generateFollowupChoreography(meeting, aiData, tier);
+    followupPlan = await generateFollowupChoreography(meeting, aiData, investorTier);
   } catch (err) {
     console.error('[FOLLOWUP_CHOREOGRAPHY]', err instanceof Error ? err.message : err);
   }
