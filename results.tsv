@@ -663,3 +663,4 @@ db4500e	100	100	0	pass	Workflow+Automation	perf: extract 6 style constants from 
 674	2026-03-16T12:27:09Z	feature	competitive: 'recent' badge for competitors mentioned in last 7 days	100	-	Competitive
 675	2026-03-16T12:28:57Z	strategy	strategy: move Pipeline Pulse above-the-fold on Today page	100	-	CEO+Strategy
 676	2026-03-16T12:30:38Z	product	product: unsaved changes dot indicator in workspace sidebar	100	-	Product
+677	2026-03-16T12:31:56Z	design	design: wider gap on analytics summary cards grid	100	-	Design+UX
