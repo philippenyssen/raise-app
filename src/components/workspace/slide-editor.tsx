@@ -148,7 +148,9 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
   const [presenting, setPresenting] = useState(false);
   const [presentIdx, setPresentIdx] = useState(0);
   const [showBgPicker, setShowBgPicker] = useState(false);
+  const [draggingElement, setDraggingElement] = useState<{ id: string; startX: number; startY: number; origX: number; origY: number } | null>(null);
   const presentRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLDivElement>(null);
 
   const activeSlide = slides[activeIdx] || null;
 
@@ -260,6 +262,45 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
     });
     onChange(updated);
   }, [slides, activeIdx, onChange]);
+
+  const handleElementDragStart = useCallback((e: React.MouseEvent, el: SlideElement) => {
+    if (!canvasRef.current || !editable) return;
+    e.preventDefault();
+    e.stopPropagation();
+    setDraggingElement({ id: el.id, startX: e.clientX, startY: e.clientY, origX: el.x ?? 5, origY: el.y ?? 10 });
+  }, [editable]);
+
+  useEffect(() => {
+    if (!draggingElement || !canvasRef.current) return;
+    const canvas = canvasRef.current;
+    const rect = canvas.getBoundingClientRect();
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const dx = ((e.clientX - draggingElement.startX) / rect.width) * 100;
+      const dy = ((e.clientY - draggingElement.startY) / rect.height) * 100;
+      const newX = Math.max(0, Math.min(95, draggingElement.origX + dx));
+      const newY = Math.max(0, Math.min(95, draggingElement.origY + dy));
+
+      const updated = slides.map((slide, i) => {
+        if (i !== activeIdx) return slide;
+        return { ...slide, elements: slide.elements.map(el =>
+          el.id === draggingElement.id ? { ...el, x: Math.round(newX), y: Math.round(newY) } : el
+        )};
+      });
+      onChange(updated);
+    };
+
+    const handleMouseUp = () => {
+      setDraggingElement(null);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [draggingElement, slides, activeIdx, onChange]);
 
   const setSlideBackground = useCallback((bg: string) => {
     const updated = slides.map((slide, i) => {
@@ -481,21 +522,28 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
 
         {/* Slide canvas */}
         <div className="flex-1 flex items-center justify-center overflow-auto" style={{ padding: 'var(--space-6)' }}>
-          <div style={{ ...slideCanvasStyle, background: activeSlide?.background || 'white' }}>
+          <div ref={canvasRef} style={{ ...slideCanvasStyle, background: activeSlide?.background || 'white' }}>
             {activeSlide && activeSlide.elements.map(el => {
               const style = getElementStyle(el);
               const isEditing = editingElement === el.id;
+              const isDragging = draggingElement?.id === el.id;
 
               return (
                 <div
                   key={el.id}
                   style={{
                     ...style,
-                    cursor: editable ? 'text' : 'default',
+                    cursor: isDragging ? 'grabbing' : editable ? (isEditing ? 'text' : 'grab') : 'default',
                     ...(isEditing ? { outline: '2px solid var(--accent)', outlineOffset: '2px', borderRadius: '2px' } : {}),
+                    ...(isDragging ? { opacity: 0.8, zIndex: 10 } : {}),
+                  }}
+                  onMouseDown={(e) => {
+                    if (editable && !isEditing) {
+                      handleElementDragStart(e, el);
+                    }
                   }}
                   onClick={(e) => {
-                    if (editable) {
+                    if (editable && !isDragging) {
                       e.stopPropagation();
                       setEditingElement(el.id);
                     }

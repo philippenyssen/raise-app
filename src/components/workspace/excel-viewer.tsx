@@ -234,6 +234,8 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
     return String(val);
   };
 
+  // Parse selected cell for header highlighting
+  const selectedParsed = useMemo(() => selectedCell ? parseCellRef(selectedCell) : null, [selectedCell]);
   const selectedCellData = selectedCell ? cells[selectedCell] : null;
   const [formulaBarValue, setFormulaBarValue] = useState('');
   const [editingFormulaBar, setEditingFormulaBar] = useState(false);
@@ -302,25 +304,32 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
                   border: '1px solid var(--border-subtle)',
                   color: 'var(--text-muted)',
                 }}/>
-              {Array.from({ length: cols }, (_, ci) => (
-                <th
-                  key={ci}
-                  className="min-w-[90px] text-center py-1 font-normal"
-                  style={{
-                    backgroundColor: 'var(--surface-1)',
-                    border: '1px solid var(--border-subtle)',
-                    color: 'var(--text-muted)',}}>
-                  {colLabel(ci)}</th>
-              ))}</tr></thead>
+              {Array.from({ length: cols }, (_, ci) => {
+                const isHighlighted = selectedParsed?.col === ci;
+                return (
+                  <th
+                    key={ci}
+                    className="min-w-[90px] text-center py-1 font-normal"
+                    style={{
+                      backgroundColor: isHighlighted ? 'var(--accent-muted)' : 'var(--surface-1)',
+                      border: '1px solid var(--border-subtle)',
+                      color: isHighlighted ? 'var(--accent)' : 'var(--text-muted)',
+                    }}>
+                    {colLabel(ci)}</th>
+                );
+              })}</tr></thead>
           <tbody>
-            {Array.from({ length: rows }, (_, ri) => (
+            {Array.from({ length: rows }, (_, ri) => {
+              const isRowHighlighted = selectedParsed?.row === ri;
+              return (
               <tr key={ri}>
                 <td
                   className="text-center py-0.5 font-normal sticky left-0 z-10 text-xs"
                   style={{
-                    backgroundColor: 'var(--surface-1)',
+                    backgroundColor: isRowHighlighted ? 'var(--accent-muted)' : 'var(--surface-1)',
                     border: '1px solid var(--border-subtle)',
-                    color: 'var(--text-muted)',}}>
+                    color: isRowHighlighted ? 'var(--accent)' : 'var(--text-muted)',
+                  }}>
                   {ri + 1}</td>
                 {Array.from({ length: cols }, (_, ci) => {
                   const ref = cellRefStr(ri, ci);
@@ -341,7 +350,7 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
                       onDoubleClick={() => handleCellDoubleClick(ref)}
                       className={`px-1.5 py-0.5 cursor-cell transition-colors
                         ${isSelected ? 'ring-2 ring-inset' : ''}
-                        ${cell?.bold ? 'font-normal' : ''}
+                        ${cell?.bold ? 'font-semibold' : ''}
                         ${cell?.t === 'n' || (cell?.f && typeof getComputedValue(ref) === 'number') ? 'text-right' : 'text-left'}
                       `}
                       style={{
@@ -365,7 +374,8 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
                       )}
                     </td>);
                 })}</tr>
-            ))}</tbody></table></div>
+              );
+            })}</tbody></table></div>
 
       {/* Sheet tabs */}
       {allSheets && allSheets.length > 1 && (

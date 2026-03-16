@@ -6,7 +6,7 @@ import { VoiceInput } from './voice-input';
 import { textSmMuted } from '@/lib/styles';
 import { useMemo } from 'react';
 
-interface Message { role: 'user' | 'assistant'; content: string; error?: boolean; }
+interface Message { role: 'user' | 'assistant'; content: string; error?: boolean; timestamp?: number; }
 
 interface AIChatProps {
   documentId: string | null;
@@ -265,7 +265,7 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
   const sendMessage = useCallback(async (text: string) => {
     if (!text.trim() || loading) return;
 
-    const userMessage: Message = { role: 'user', content: text.trim() };
+    const userMessage: Message = { role: 'user', content: text.trim(), timestamp: Date.now() };
     const newMessages = [...messages, userMessage];
     setMessages(newMessages);
     setInput('');
@@ -296,7 +296,7 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
       let fullText = '';
       const assistantIdx = newMessages.length;
 
-      setMessages(prev => [...prev, { role: 'assistant', content: '' }]);
+      setMessages(prev => [...prev, { role: 'assistant', content: '', timestamp: Date.now() }]);
 
       let buffer = '';
       while (true) {
@@ -546,6 +546,12 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
                       className="flex items-center transition-colors"
                       style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)', gap: 'var(--space-1)' }}>
                       <RotateCcw style={{ width: '12px', height: '12px' }} /> Retry</button>
+                  )}
+                  <span className="flex-1" />
+                  {msg.timestamp && (
+                    <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                      {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </span>
                   )}</div>
               )}</div></div>
         ))}
