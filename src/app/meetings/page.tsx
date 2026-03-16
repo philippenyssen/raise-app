@@ -8,6 +8,7 @@ import type { Meeting } from '@/lib/types';
 import { Search, FileSearch, Calendar, Download, ChevronDown, ChevronRight, Star, CheckCircle2, X, TrendingUp, TrendingDown, Minus, Hash } from 'lucide-react';
 import { fmtDateTime } from '@/lib/format';
 import { labelMuted, labelTertiary, stFontSm, stFontXs, stTextMuted, stTextTertiary, textSmMuted, textSmSecondary } from '@/lib/styles';
+import { relativeTime } from '@/lib/time';
 import { EmptyState } from '@/components/ui/empty-state';
 import { CopyButton } from '@/components/copy-button';
 
@@ -328,6 +329,7 @@ export default function MeetingsPage() {
   const [typeFilter, setTypeFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
   const [expandedOutcome, setExpandedOutcome] = useState<string | null>(null);
+  const [loadedAt, setLoadedAt] = useState<string | null>(null);
 
   useEffect(() => { document.title = 'Raise | Meetings'; }, []);
   useEffect(() => {
@@ -335,7 +337,7 @@ export default function MeetingsPage() {
     let interval: ReturnType<typeof setInterval> | null = null;
     const load = () => cachedFetch('/api/meetings')
       .then(r => { if (!r.ok) throw new Error(`${r.status}`); return r.json(); })
-      .then(d => { if (active) setMeetings(d); })
+      .then(d => { if (active) { setMeetings(d); setLoadedAt(new Date().toISOString()); } })
       .catch(() => { if (active) setMeetings([]); });
     const start = () => { load(); interval = setInterval(load, 60_000); };
     const onVis = () => { if (document.hidden) { if (interval) { clearInterval(interval); interval = null; } } else { start(); } };
@@ -400,7 +402,8 @@ export default function MeetingsPage() {
         <div>
           <h1 className="page-title">Meetings</h1>
           <p className="page-subtitle" style={stFontSm}>
-            {filtered.length === meetings.length ? `${meetings.length} meetings with ${uniqueInvestors} investors` : `${filtered.length} of ${meetings.length} meetings`}</p></div>
+            {filtered.length === meetings.length ? `${meetings.length} meetings with ${uniqueInvestors} investors` : `${filtered.length} of ${meetings.length} meetings`}
+            {loadedAt && <> &middot; <span style={{ color: 'var(--text-muted)' }}>{relativeTime(loadedAt)}</span></>}</p></div>
         <div className="flex gap-2">
           <Link
             href="/meetings/capture"
