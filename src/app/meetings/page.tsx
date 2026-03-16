@@ -261,7 +261,7 @@ function MeetingOutcomeSection({
         <input
           value={form.key_takeaway}
           onChange={e => setForm(prev => ({ ...prev, key_takeaway: e.target.value }))}
-          placeholder="Most important insight from this meeting..."
+          placeholder="e.g., Needs board approval before IC, interested in co-lead structure"
           className="input" /></div>
 
       <div className="mt-3">
@@ -286,7 +286,7 @@ function MeetingOutcomeSection({
             value={newObjection}
             onChange={e => setNewObjection(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addObjection(); } }}
-            placeholder="Add objection handled..."
+            placeholder="e.g., Valuation too high, wants 2x liquidation pref"
             className="input"
             style={{ flex: 1 }} />
           <button onClick={addObjection} className="btn btn-secondary btn-md" type="button">Add</button></div></div>
@@ -313,7 +313,7 @@ function MeetingOutcomeSection({
             value={newCompetitor}
             onChange={e => setNewCompetitor(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addCompetitor(); } }}
-            placeholder="Add competitor name..."
+            placeholder="e.g., Sequoia, a16z growth"
             className="input"
             style={{ flex: 1 }} />
           <button onClick={addCompetitor} className="btn btn-secondary btn-md" type="button">Add</button></div></div>

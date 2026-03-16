@@ -431,7 +431,7 @@ function FollowupsContent() {
                     <input
                       value={completeForm.outcome}
                       onChange={e => setCompleteForm(f => ({ ...f, outcome: e.target.value }))}
-                      placeholder="e.g., Sent thank-you, they responded positively..."
+                      placeholder="e.g., Escalated to MD, committed €5M pending IC"
                       className="input" /></div>
                   <div>
                     <label

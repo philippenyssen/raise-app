@@ -272,9 +272,9 @@ export default function InvestorsPage() {
           <p className="page-subtitle">{filtered.length === investors.length ? `${investors.length} investors tracked` : `${filtered.length} of ${investors.length} investors`}{loadedAt ? ` · Updated ${relativeTime(loadedAt)}` : ''}</p></div>
         <div className="flex gap-2">
           <Link href="/pipeline" className="btn btn-secondary btn-md">
-            <Columns3 className="w-3.5 h-3.5" /> Pipeline</Link>
+            <Columns3 className="w-3.5 h-3.5" /> Kanban View</Link>
           <Link href="/compare" className="btn btn-secondary btn-md">
-            <GitCompare className="w-3.5 h-3.5" /> Compare</Link>
+            <GitCompare className="w-3.5 h-3.5" /> Compare Investors</Link>
           <button onClick={() => {
             try {
               const hdr = ['Name','Partner','Type','Tier','Status','Check Size','Last Meeting'];
@@ -284,7 +284,7 @@ export default function InvestorsPage() {
               toast(`Exported ${filtered.length} investors to CSV`);
             } catch (e) { console.warn('[INVESTOR_CSV]', e instanceof Error ? e.message : e); toast('Couldn\'t export CSV — try again', 'error'); }
           }} className="btn btn-secondary btn-md">
-            <Download className="w-3.5 h-3.5" /> CSV</button>
+            <Download className="w-3.5 h-3.5" /> Export CSV</button>
           <button
             onClick={() => { setShowForm(!showForm); setEditId(null); }}
             className="btn btn-primary btn-md">
@@ -471,8 +471,8 @@ export default function InvestorsPage() {
         {filtered.length === 0 && (
           <EmptyState
             icon={Users}
-            title={investors.length === 0 ? 'Add your first investor' : 'No investors match these filters'}
-            description={investors.length === 0 ? 'Start building your pipeline — add an investor to track engagement, score fit, and build momentum.' : 'Broaden your search or clear filters to see all investors.'}
+            title={investors.length === 0 ? 'Add your first investor' : 'No investors match your search'}
+            description={investors.length === 0 ? 'Start building your pipeline — add an investor to track engagement, score fit, and build momentum.' : 'Try removing a filter, searching by partner name, or changing tier selection.'}
             action={investors.length === 0 ? { label: 'Add Investor', onClick: () => setShowForm(true) } : undefined} />
         )}</div>
 
