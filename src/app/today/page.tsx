@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import Link from 'next/link';
 import { cachedFetch } from '@/lib/cache';
 import { useToast } from '@/components/toast';
@@ -496,8 +496,16 @@ export default function TodayPage() {
   const MomentumIcon = momentumConfig.icon;
 
   const todayDate = new Date().toISOString().split('T')[0];
-  const overdueFollowups = dueFollowups.filter(f => f.due_at?.split('T')[0] < todayDate);
-  const dueTodayFollowups = dueFollowups.filter(f => f.due_at?.split('T')[0] === todayDate);
+  const { overdueFollowups, dueTodayFollowups } = useMemo(() => {
+    const overdue: typeof dueFollowups = [];
+    const dueToday: typeof dueFollowups = [];
+    for (const f of dueFollowups) {
+      const d = f.due_at?.split('T')[0];
+      if (d && d < todayDate) overdue.push(f);
+      else if (d === todayDate) dueToday.push(f);
+    }
+    return { overdueFollowups: overdue, dueTodayFollowups: dueToday };
+  }, [dueFollowups, todayDate]);
 
   // Derive forecast status from the forecast string
   const forecastLower = data.pipelineSnapshot.forecast.toLowerCase();

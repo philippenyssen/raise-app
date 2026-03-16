@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { cachedFetch } from '@/lib/cache';
 import Link from 'next/link';
 import { useToast } from '@/components/toast';
@@ -100,10 +100,11 @@ const DIMENSION_SHORT_LABELS: Record<string, string> = {
 function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
   const [expanded, setExpanded] = useState(false);
 
-  const known = dimensions.filter(d => d.signal !== 'unknown');
-  const sorted = [...known].sort((a, b) => b.score - a.score);
-  const topDimensions = sorted.slice(0, 3);
-  const weakest = sorted.length > 0 ? sorted[sorted.length - 1] : null;
+  const { sorted, topDimensions, weakest } = useMemo(() => {
+    const known = dimensions.filter(d => d.signal !== 'unknown');
+    const s = [...known].sort((a, b) => b.score - a.score);
+    return { sorted: s, topDimensions: s.slice(0, 3), weakest: s.length > 0 ? s[s.length - 1] : null };
+  }, [dimensions]);
 
   return (
     <div style={mt10}>
@@ -799,8 +800,17 @@ export default function FocusPage() {
   const { priorityQueue, quickWins, staleAlerts, weeklyBudget } = data;
 
   // Group acceleration items by urgency
-  const immediateActions = accelData?.accelerations.filter(a => a.urgency === 'immediate' && !executedIds.has(a.id)) ?? [];
-  const thisWeekActions = accelData?.accelerations.filter(a => (a.urgency === '48h' || a.urgency === 'this_week') && !executedIds.has(a.id)) ?? [];
+  const { immediateActions, thisWeekActions } = useMemo(() => {
+    const accels = accelData?.accelerations ?? [];
+    const immediate: typeof accels = [];
+    const week: typeof accels = [];
+    for (const a of accels) {
+      if (executedIds.has(a.id)) continue;
+      if (a.urgency === 'immediate') immediate.push(a);
+      else if (a.urgency === '48h' || a.urgency === 'this_week') week.push(a);
+    }
+    return { immediateActions: immediate, thisWeekActions: week };
+  }, [accelData?.accelerations, executedIds]);
   const hasAccelerationData = accelData && accelData.accelerations.length > 0;
 
   return (
