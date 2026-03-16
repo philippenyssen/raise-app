@@ -602,7 +602,12 @@ export default function InvestorDetailPage() {
             href={`/meetings/prep?investor=${id}`}
             className="px-4 py-2 rounded-lg text-sm font-normal transition-colors"
             style={{ background: 'var(--surface-2)', color: 'var(--text-secondary)', border: '1px solid var(--border-subtle)' }}>
-            Prep Meeting</Link></div></div>
+            Prep Meeting</Link>
+          <Link
+            href={`/followups?investor=${id}`}
+            className="px-3 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-1.5"
+            style={{ background: 'var(--surface-2)', color: 'var(--text-secondary)', border: '1px solid var(--border-subtle)' }}>
+            <SendHorizonal className="w-3.5 h-3.5" /> Follow-ups</Link></div></div>
 
       {/* Quick Context Strip */}
       {investor && (

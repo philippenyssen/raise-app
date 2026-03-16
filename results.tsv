@@ -776,3 +776,4 @@ b4a0052	100	100	0	keep	product	Dashboard strategic overhaul: AI narrative brief 
 788	2026-03-16T18:53:01Z	Competitive Edge	sidebar: add win/loss page to ANALYZE nav section — hidden page now discoverable	src/components/sidebar.tsx	pass
 789	2026-03-16T18:55:08Z	Reliability & Ops	dealflow: surface partial API failure warning banner instead of silently dropping data	src/app/dealflow/page.tsx	pass
 790	2026-03-16T18:56:36Z	CEO & Strategy	dealflow: readiness column now shows level label (Ready/Active/Stalled/Cold) under score	src/app/dealflow/page.tsx	pass
+791	2026-03-16T18:58:08Z	Product Manager	investor detail: add Follow-ups CTA in header action buttons	src/app/investors/[id]/page.tsx	pass
