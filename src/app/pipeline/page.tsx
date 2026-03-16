@@ -901,7 +901,7 @@ function InvestorCard({
         {(() => { const u = computeUrgency(investor.last_meeting_date, investor.tier, investor.status); return (
           <div className="flex items-center gap-1.5">
             <span style={{ ...urgencyBadgeBase, background: u.bg, color: u.color }}>{u.label}</span>
-            {investor.notes && <span className="truncate" title={investor.notes} style={noteStyle}>{investor.notes.slice(0, 60)}{investor.notes.length > 60 ? '...' : ''}</span>}
+            {investor.notes && !investor.notes.startsWith('---') && <span className="truncate" title={investor.notes} style={noteStyle}>{investor.notes.slice(0, 60)}{investor.notes.length > 60 ? '...' : ''}</span>}
           </div>); })()}
 
         {/* Enthusiasm + last contact row */}

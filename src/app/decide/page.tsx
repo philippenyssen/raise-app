@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Target, ArrowRight, Clock, AlertTriangle, TrendingUp, Copy, Check, RefreshCw, Zap, Users, MinusCircle } from 'lucide-react';
 import { cachedFetch, invalidateCache } from '@/lib/cache';
 
@@ -35,6 +36,7 @@ const textSecondary: React.CSSProperties = { color: 'var(--text-secondary)' };
 const textMuted: React.CSSProperties = { color: 'var(--text-muted)' };
 
 export default function DecidePage() {
+  const router = useRouter();
   const [data, setData] = useState<DecideData | null>(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
@@ -184,6 +186,7 @@ export default function DecidePage() {
                 key={inv.id}
                 onMouseEnter={() => setHoveredCard(inv.id)}
                 onMouseLeave={() => setHoveredCard(null)}
+                onClick={(e) => { if (!(e.target as HTMLElement).closest('a, button')) router.push(`/investors/${inv.id}`); }}
                 style={{
                   background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-4)',
                   border: `1px solid ${idx === 0 ? 'var(--accent)' : hoveredCard === inv.id ? 'var(--border-default)' : 'var(--border-subtle)'}`,
