@@ -24,6 +24,9 @@ const TYPE_LABELS: Record<string, string> = {
   dd_memo: 'DD Memo',
   custom: 'Custom',};
 
+const docBtnBase: React.CSSProperties = { padding: 'var(--space-1) var(--space-2)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-sm)', border: 'none', cursor: 'pointer', display: 'block', width: '100%' };
+const genBtnBase: React.CSSProperties = { padding: 'var(--space-1) var(--space-2)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', border: 'none' };
+
 export default function WorkspacePage() {
   const { toast } = useToast();
   const [docs, setDocs] = useState<Doc[]>([]);
@@ -250,16 +253,7 @@ export default function WorkspacePage() {
                       key={doc.id}
                       onClick={() => selectDoc(doc)}
                       className={`w-full text-left ${isSelected ? '' : 'sidebar-link'}`}
-                      style={{
-                        padding: 'var(--space-1) var(--space-2)',
-                        borderRadius: 'var(--radius-md)',
-                        fontSize: 'var(--font-size-sm)',
-                        background: isSelected ? 'var(--surface-2)' : undefined,
-                        color: isSelected ? 'var(--text-primary)' : undefined,
-                        border: 'none',
-                        cursor: 'pointer',
-                        display: 'block',
-                        width: '100%', }}>
+                      style={{ ...docBtnBase, background: isSelected ? 'var(--surface-2)' : undefined, color: isSelected ? 'var(--text-primary)' : undefined }}>
                       <div className="truncate">{doc.title}</div>
                     </button>);
                 })}</div>
@@ -294,14 +288,7 @@ export default function WorkspacePage() {
                   onClick={() => generateDeliverable(type)}
                   disabled={isDisabled}
                   className="w-full flex items-center gap-2 sidebar-link"
-                  style={{
-                    padding: 'var(--space-1) var(--space-2)',
-                    borderRadius: 'var(--radius-md)',
-                    fontSize: 'var(--font-size-xs)',
-                    color: 'var(--text-muted)',
-                    opacity: isDisabled ? 0.5 : 1,
-                    border: 'none',
-                    cursor: isDisabled ? 'default' : 'pointer', }}>
+                  style={{ ...genBtnBase, opacity: isDisabled ? 0.5 : 1, cursor: isDisabled ? 'default' : 'pointer' }}>
                   {generating === type ? (
                     <Loader2
                       className="w-3.5 h-3.5 animate-spin"
