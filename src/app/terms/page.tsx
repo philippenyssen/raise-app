@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useToast } from '@/components/toast';
 import { cachedFetch } from '@/lib/cache';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
+import { EmptyState } from '@/components/ui/empty-state';
 import Link from 'next/link';
 import { Scale } from 'lucide-react';
 import { scoreColor as getScoreColor, labelMuted, stSurface0, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
@@ -313,8 +314,10 @@ export default function TermsPage() {
       )}
 
       {sheets.length === 0 && !showForm && (
-        <div className="rounded-xl p-8 text-center text-sm" style={stTextMuted}>
-          No term sheets yet. Add them as they come in for side-by-side comparison.</div>
+        <EmptyState
+          icon={Scale}
+          title="No term sheets yet"
+          description="Add them as they come in for side-by-side comparison." />
       )}
 
       <ConfirmModal

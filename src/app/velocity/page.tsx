@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { EmptyState } from '@/components/ui/empty-state';
 import { cachedFetch } from '@/lib/cache';
 import Link from 'next/link';
 import {
@@ -187,11 +188,11 @@ export default function VelocityPage() {
               Sorted by urgency</span></div></div>
 
         {investors.length === 0 ? (
-          <div className="card flex flex-col items-center gap-3" style={{ padding: 'var(--space-8)', textAlign: 'center' }}>
-            <span style={{ color: 'var(--text-muted)' }}><Users className="w-8 h-8" /></span>
-            <p style={{ color: 'var(--text-secondary)', fontSize: 'var(--font-size-sm)' }}>
-              No active investors in pipeline. Add investors to start tracking velocity.</p>
-            <Link href="/investors" className="btn btn-primary btn-sm">Go to Investors</Link></div>
+          <EmptyState
+            icon={Users}
+            title="No active investors in pipeline"
+            description="Add investors to start tracking velocity."
+            action={{ label: 'Go to Investors', href: '/investors' }} />
         ) : (
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>

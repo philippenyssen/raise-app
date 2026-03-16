@@ -73,6 +73,7 @@ function cellStyle(rating: CellRating): React.CSSProperties {
 
 export default function TermComparePage() {
   useEffect(() => { document.title = 'Raise | Term Compare'; }, []);
+
   const { toast } = useToast();
   const [scenarios, setScenarios] = useState<TermScenario[]>([{ ...EMPTY_SCENARIO }]);
   const [results, setResults] = useState<CompareResponse | null>(null);
@@ -130,6 +131,16 @@ export default function TermComparePage() {
       setLoading(false);
     }
   }, [scenarios, toast]);
+
+  useEffect(() => {
+    const h = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement) return;
+      if (e.key === 'a' && !e.metaKey && !e.ctrlKey) { e.preventDefault(); addScenario(); }
+      if (e.key === 'r' && !e.metaKey && !e.ctrlKey) { e.preventDefault(); runComparison(); }
+    };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, [addScenario, runComparison]);
 
   // -------------------------------------------------------------------------
   // Comparison table row definitions

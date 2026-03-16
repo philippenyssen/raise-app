@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { cachedFetch } from '@/lib/cache';
 import { useToast } from '@/components/toast';
 import { CopyButton } from '@/components/copy-button';
+import { EmptyState } from '@/components/ui/empty-state';
 import {
   MessageCircleWarning, ChevronDown, ChevronRight, Shield, AlertTriangle,
   CheckCircle2, Edit3, Save, X, TrendingUp, TrendingDown, Minus,
@@ -374,12 +375,11 @@ export default function ObjectionsPage() {
           {/* Main content -- 3 cols */}
           <div className="xl:col-span-3 space-y-4">
             {playbook.length === 0 ? (
-              <div className="rounded-xl p-12 text-center space-y-3" style={stSurface0}>
-                <MessageCircleWarning className="w-10 h-10 mx-auto" style={{ color: 'var(--border-default)' }} />
-                <p style={stTextMuted}>No objections tracked yet.</p>
-                <p className="text-xs" style={stTextMuted}>
-                  Log meetings with AI analysis to automatically capture investor concerns and build your response playbook.</p>
-                <Link href="/meetings/capture" className="text-xs mt-1 inline-block" style={{ color: 'var(--accent)', textDecoration: 'none' }}>Log a meeting &rarr;</Link></div>
+              <EmptyState
+                icon={MessageCircleWarning}
+                title="No objections tracked yet"
+                description="Log meetings with AI analysis to automatically capture investor concerns and build your response playbook."
+                action={{ label: 'Log a meeting', href: '/meetings/capture' }} />
             ) : (
               playbook.map((group) => {
                 const color = getTopicColor(group.topic);

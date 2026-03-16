@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
+import { EmptyState } from '@/components/ui/empty-state';
 import Link from 'next/link';
 import { useToast } from '@/components/toast';
 import { cachedFetch } from '@/lib/cache';
@@ -266,14 +267,11 @@ export default function DocumentsPage() {
       )}
 
       {docs.length === 0 ? (
-        <div className="rounded-xl p-8 text-center space-y-3">
-          <FileText className="w-8 h-8 mx-auto" style={stTextMuted} />
-          <p style={stTextMuted}>No documents yet. Create your first investment memo, presentation deck, or one-pager to get started.</p>
-          <Link
-            href="/documents/new"
-            className="text-sm hover-opacity-link"
-            style={stAccent}>
-            Create your first document</Link></div>
+        <EmptyState
+          icon={FileText}
+          title="No documents yet"
+          description="Create your first investment memo, presentation deck, or one-pager to get started."
+          action={{ label: 'Create your first document', href: '/documents/new' }} />
       ) : (
         <div className="space-y-8">
           {Object.entries(grouped).map(([type, typeDocs]) => (

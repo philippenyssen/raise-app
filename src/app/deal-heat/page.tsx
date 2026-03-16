@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
+import { EmptyState } from '@/components/ui/empty-state';
 import { cachedFetch } from '@/lib/cache';
 import Link from 'next/link';
 import { Flame, Filter, TrendingUp, Thermometer } from 'lucide-react';
@@ -179,10 +180,10 @@ export default function DealHeatPage() {
 
       {/* Heat Grid */}
       {filtered.length === 0 ? (
-        <div className="card" style={{ textAlign: 'center', padding: 'var(--space-12)' }}>
-          <span style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-lg)' }}>
-            No investors at this heat level</span>
-          <p className="text-sm mt-2" style={{ color: 'var(--text-tertiary)' }}>Try a different heat filter or check your active pipeline.</p></div>
+          <EmptyState
+            icon={Thermometer}
+            title="No investors at this heat level"
+            description="Try a different heat filter or check your active pipeline." />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {filtered.map(inv => {
