@@ -436,3 +436,4 @@ c4199df	100	100	0	keep	copy+ops	eliminate 27 hover useStates across 15 files (ob
 a9453dc	100	100	0	keep	competitive+engineering	parallelize 3 db.ts heavy loops + memoize analytics/dealflow renders
 5efbe68	100	100	0	keep	ceo+strategy	convert pipeline InvestorCard hover to CSS + dealflow export guard
 d0a8295	100	100	0	keep	product+design	a11y aria-labels on pipeline cards + eliminate last JS hover handlers
+214b2f0	100	100	0	keep	engineering+reliability	consolidate TierBadge/EnthusiasmDots/inlineBadgeStyle + 20 DOM hover→CSS

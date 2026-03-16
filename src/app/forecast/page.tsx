@@ -287,10 +287,8 @@ export default function ForecastPage() {
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <Link
                         href={inv ? `/investors/${inv.investorId}` : '#'}
-                        style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textDecoration: 'none', display: 'block' }}
-                        className="transition-colors"
-                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
-                        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-primary)'; }}>
+                        style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textDecoration: 'none', display: 'block' }}
+                        className="investor-link">
                         {name}</Link>
                       {inv && (
                         <div style={labelMuted10}>

@@ -345,10 +345,8 @@ export default function InvestorDetailPage() {
         <p style={textMuted}>Investor not found or has been removed.</p>
         <Link
           href="/investors"
-          className="text-sm mt-2 block transition-colors"
-          style={stAccent}
-          onMouseEnter={e => (e.currentTarget.style.opacity = '0.8')}
-          onMouseLeave={e => (e.currentTarget.style.opacity = '1')}>
+          className="text-sm mt-2 block transition-colors btn-accent-hover"
+          style={stAccent}>
           Back to Pipeline</Link>
       </div>);
   }
@@ -378,10 +376,8 @@ export default function InvestorDetailPage() {
         <div>
           <Link
             href="/investors"
-            className="flex items-center gap-1 text-sm mb-3 transition-colors"
-            style={textMuted}
-            onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
-            onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}>
+            className="flex items-center gap-1 text-sm mb-3 sidebar-link"
+            style={textMuted}>
             <ArrowLeft className="w-3.5 h-3.5" /> Back to CRM</Link>
           {editing ? (
             <input
@@ -463,43 +459,33 @@ export default function InvestorDetailPage() {
           ) : (
             <button
               onClick={startEdit}
-              className="px-3 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2"
-              style={{ ...stSurface2, ...textPrimary }}
-              onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface-3)')}
-              onMouseLeave={e => (e.currentTarget.style.background = 'var(--surface-2)')}>
+              className="px-3 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2 btn-surface"
+              style={{ ...stSurface2, ...textPrimary }}>
               <Pencil className="w-3.5 h-3.5" /> Edit</button>
           )}
           <Link
             href={`/meetings/prep?investor=${id}`}
-            className="px-3 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2"
-            style={{ ...stSurface2, ...textPrimary }}
-            onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface-3)')}
-            onMouseLeave={e => (e.currentTarget.style.background = 'var(--surface-2)')}>
+            className="px-3 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2 btn-surface"
+            style={{ ...stSurface2, ...textPrimary }}>
             <FileSearch className="w-3.5 h-3.5" /> Prep Meeting</Link>
           <button
             onClick={handleResearch}
             disabled={researching}
-            className="px-3 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2"
+            className="px-3 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2 btn-surface"
             style={{
               background: 'var(--surface-2)',
-              color: researching ? 'var(--text-muted)' : 'var(--text-primary)', }}
-            onMouseEnter={e => { if (!researching) e.currentTarget.style.background = 'var(--surface-3)'; }}
-            onMouseLeave={e => { if (!researching) e.currentTarget.style.background = 'var(--surface-2)'; }}>
+              color: researching ? 'var(--text-muted)' : 'var(--text-primary)', }}>
             {researching ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Researching...</> : <><RefreshCw className="w-3.5 h-3.5" /> Research</>}
           </button>
           <Link
             href="/pipeline"
-            className="px-3 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2"
-            style={{ ...stSurface2, ...textPrimary }}
-            onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface-3)')}
-            onMouseLeave={e => (e.currentTarget.style.background = 'var(--surface-2)')}>
+            className="px-3 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2 btn-surface"
+            style={{ ...stSurface2, ...textPrimary }}>
             <Target className="w-3.5 h-3.5" /> Pipeline</Link>
           <Link
             href={`/meetings/new?investor=${id}`}
-            className="px-4 py-2 rounded-lg text-sm font-normal transition-colors"
-            style={{ background: 'var(--accent)', color: 'var(--text-primary)' }}
-            onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
-            onMouseLeave={e => (e.currentTarget.style.opacity = '1')}>
+            className="px-4 py-2 rounded-lg text-sm font-normal transition-colors btn-accent-hover"
+            style={{ background: 'var(--accent)', color: 'var(--text-primary)' }}>
             + Log Meeting</Link></div></div>
 
       {/* Quick Context Strip */}
@@ -712,10 +698,8 @@ export default function InvestorDetailPage() {
               {followups.length > 5 && (
                 <Link
                   href={`/followups?investor=${id}`}
-                  className="transition-colors"
-                  style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)', textDecoration: 'none' }}
-                  onMouseEnter={e => { e.currentTarget.style.textDecoration = 'underline'; }}
-                  onMouseLeave={e => { e.currentTarget.style.textDecoration = 'none'; }}>
+                  className="investor-link"
+                  style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)', textDecoration: 'none' }}>
                   View all {followups.length}</Link>
               )}</div>
             <div style={{ padding: 'var(--space-2) var(--space-4)' }}>
@@ -854,12 +838,10 @@ export default function InvestorDetailPage() {
             <button
               key={t.key}
               onClick={() => setIntelTab(t.key)}
-              className="px-4 py-2.5 text-sm font-normal transition-colors flex items-center gap-2"
+              className={`px-4 py-2.5 text-sm font-normal transition-colors flex items-center gap-2 ${intelTab !== t.key ? 'sidebar-link' : ''}`}
               style={{
                 borderBottom: intelTab === t.key ? '2px solid var(--accent)' : '2px solid transparent',
-                color: intelTab === t.key ? 'var(--text-primary)' : 'var(--text-muted)', }}
-              onMouseEnter={e => { if (intelTab !== t.key) e.currentTarget.style.color = 'var(--text-secondary)'; }}
-              onMouseLeave={e => { if (intelTab !== t.key) e.currentTarget.style.color = 'var(--text-muted)'; }}>
+                color: intelTab === t.key ? 'var(--text-primary)' : 'var(--text-muted)', }}>
               <t.icon className="w-3.5 h-3.5" />
               {t.label}</button>
           ))}</div>
@@ -986,10 +968,8 @@ export default function InvestorDetailPage() {
                       {portfolio.map(co => (
                         <tr
                           key={co.id}
-                          className="transition-colors"
-                          style={{ borderBottom: '1px solid var(--border-subtle)' }}
-                          onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface-1)')}
-                          onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
+                          className="hover-row"
+                          style={{ borderBottom: '1px solid var(--border-subtle)' }}>
                           <td className="px-4 py-2 font-normal" style={textPrimary}>{co.company}</td>
                           <td className="px-4 py-2 text-xs" style={textTertiary}>{co.sector}</td>
                           <td className="px-4 py-2 text-xs" style={textTertiary}>{co.stage_invested}</td>
@@ -1039,13 +1019,11 @@ export default function InvestorDetailPage() {
                                 if (!res.ok) throw new Error('Failed');
                                 fetchData();
                               } catch { toast('Couldn\'t toggle task — refresh and try again', 'error'); } finally { setTogglingTaskId(null); } }}
-                            className="w-5 h-5 rounded flex items-center justify-center shrink-0 transition-colors"
+                            className={`w-5 h-5 rounded flex items-center justify-center shrink-0 transition-colors ${t.status !== 'done' ? 'hover-border' : ''}`}
                             style={{
                               background: t.status === 'done' ? 'var(--success)' : 'transparent',
                               border: t.status === 'done' ? '2px solid var(--success)' : '2px solid var(--border-default)',
-                              color: 'var(--text-primary)', }}
-                            onMouseEnter={e => { if (t.status !== 'done') e.currentTarget.style.borderColor = 'var(--border-strong)'; }}
-                            onMouseLeave={e => { if (t.status !== 'done') e.currentTarget.style.borderColor = 'var(--border-default)'; }}>
+                              color: 'var(--text-primary)', }}>
                             {t.status === 'done' && <Check className="w-3 h-3" />}</button>
                           <div className="min-w-0">
                             <div className={`text-sm truncate ${t.status === 'done' ? 'line-through' : ''}`} style={textPrimary}>{t.title}</div>
@@ -1186,10 +1164,8 @@ function EmptyTabState({ icon: Icon, message, actionLabel, onAction, loading }: 
       <button
         onClick={onAction}
         disabled={loading}
-        className="px-3 py-1.5 rounded-lg text-sm flex items-center gap-2 mx-auto transition-colors"
-        style={{ background: 'var(--accent)', color: 'var(--text-primary)' }}
-        onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
-        onMouseLeave={e => (e.currentTarget.style.opacity = '1')}>
+        className="px-3 py-1.5 rounded-lg text-sm flex items-center gap-2 mx-auto transition-colors btn-accent-hover"
+        style={{ background: 'var(--accent)', color: 'var(--text-primary)' }}>
         {loading ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Researching...</> : <><RefreshCw className="w-3.5 h-3.5" /> {actionLabel}</>}
       </button>
     </div>);
@@ -1200,10 +1176,7 @@ function DeleteBtn({ onClick, small }: { onClick: () => void; small?: boolean })
     <button
       aria-label="Delete item"
       onClick={onClick}
-      className="transition-colors"
-      style={textMuted}
-      onMouseEnter={e => (e.currentTarget.style.color = 'var(--danger)')}
-      onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}>
+      className="icon-delete">
       <Trash2 className={small ? 'w-3 h-3' : 'w-3.5 h-3.5'} />
     </button>);
 }
@@ -1255,10 +1228,8 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
           <button
             onClick={onRefresh}
             disabled={loading}
-            className="transition-colors"
+            className="sidebar-link"
             style={textMuted}
-            onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-tertiary)')}
-            onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
             title="Refresh score">
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} /></button></div>
 
@@ -1579,10 +1550,8 @@ function EnrichmentStatusCard({
           {/* Provider toggle */}
           <button
             onClick={() => setShowProviders(!showProviders)}
-            className="flex items-center gap-1.5 text-xs transition-colors w-full"
-            style={{ color: 'var(--text-muted)', transition: 'color 150ms ease' }}
-            onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
-            onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}>
+            className="flex items-center gap-1.5 text-xs sidebar-link w-full"
+            style={{ color: 'var(--text-muted)' }}>
             {showProviders ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
             {status.providers.length} providers ({status.providers.filter(p => p.status === 'success').length} with data)</button>
 
@@ -1594,10 +1563,7 @@ function EnrichmentStatusCard({
                 return (
                   <div
                     key={p.id}
-                    className="flex items-center justify-between py-1.5 px-2 rounded"
-                    style={{ transition: 'background 150ms ease' }}
-                    onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface-2)')}
-                    onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
+                    className="flex items-center justify-between py-1.5 px-2 rounded hover-surface-2">
                     <div className="flex items-center gap-2 min-w-0">
                       {p.status === 'success' ? (
                         <CheckCircle2 className="w-3 h-3 shrink-0" style={{ color: st.color }} />
@@ -1746,10 +1712,8 @@ function EnrichmentPanel({
           <div key={cat} className="rounded-lg overflow-hidden">
             <button
               onClick={() => onToggleCategory(cat)}
-              className="w-full flex items-center justify-between px-4 py-3 transition-colors"
-              style={{ background: isExpanded ? 'var(--surface-1)' : 'transparent', transition: 'background 150ms ease' }}
-              onMouseEnter={e => { if (!isExpanded) e.currentTarget.style.background = 'var(--surface-1)'; }}
-              onMouseLeave={e => { if (!isExpanded) e.currentTarget.style.background = 'transparent'; }}>
+              className="w-full flex items-center justify-between px-4 py-3 hover-row"
+              style={{ background: isExpanded ? 'var(--surface-1)' : 'transparent' }}>
               <div className="flex items-center gap-3">
                 <span
                   className="text-xs px-2 py-0.5 rounded font-normal"

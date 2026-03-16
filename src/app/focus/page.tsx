@@ -284,10 +284,8 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
               <Link
                 href={`/investors/${item.investorId}`}
                 onClick={e => e.stopPropagation()}
-                className="transition-colors"
-                style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}
-                onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
-                onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}>
+                className="investor-link"
+                style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}>
                 {item.investorName}</Link>
               <span style={inlineBadgeStyle(TYPE_STYLES[item.investorType] ?? TYPE_STYLES.vc)}>
                 {TYPE_LABELS[item.investorType] ?? item.investorType}</span>
@@ -465,10 +463,8 @@ function QuickWinCard({ item }: { item: FocusItem }) {
         <Zap className="w-3.5 h-3.5" style={stTextTertiary} />
         <Link
           href={`/investors/${item.investorId}`}
-          className="transition-colors"
-          style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}
-          onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
-          onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}>
+          className="investor-link"
+          style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}>
           {item.investorName}</Link>
         <TierBadge tier={item.investorTier} /></div>
       {item.unresolvedObjections.length > 0 ? (
@@ -513,10 +509,8 @@ function StaleAlertCard({ item, onReengage }: { item: FocusItem; onReengage: (it
           <AlertTriangle className="w-3.5 h-3.5" style={stTextPrimary} />
           <Link
             href={`/investors/${item.investorId}`}
-            className="transition-colors"
-            style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, ...stTextPrimary }}
-            onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
-            onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}>
+            className="investor-link"
+            style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}>
             {item.investorName}</Link>
           <span style={inlineBadgeStyle(STATUS_STYLES[item.status] ?? STATUS_STYLES.identified)}>
             {STATUS_LABELS[item.status]}</span></div>
@@ -558,10 +552,8 @@ function AccelerationCard({
           <div className="flex items-center gap-2 flex-wrap mb-1.5">
             <Link
               href={`/investors/${item.investorId}`}
-              className="transition-colors"
-              style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}
-              onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
-              onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}>
+              className="investor-link"
+              style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}>
               {item.investorName}</Link>
             <TierBadge tier={item.investorTier} />
             <span style={inlineBadgeStyle(TRIGGER_STYLES[item.triggerType] ?? TRIGGER_STYLES.stall_risk)}>
@@ -605,10 +597,8 @@ function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
         <Rocket className="w-3.5 h-3.5" style={stTextSecondary} />
         <Link
           href={`/investors/${investor.investorId}`}
-          className="transition-colors"
-          style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}
-          onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
-          onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}>
+          className="investor-link"
+          style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}>
           {investor.investorName}</Link>
         <TierBadge tier={investor.investorTier} />
         <span style={inlineBadgeStyle(STATUS_STYLES[investor.status] ?? STATUS_STYLES.identified)}>
@@ -642,10 +632,8 @@ function AtRiskCard({ investor }: { investor: InvestorSummary }) {
         <Shield className="w-3.5 h-3.5" style={stTextPrimary} />
         <Link
           href={`/investors/${investor.investorId}`}
-          className="transition-colors"
-          style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}
-          onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
-          onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}>
+          className="investor-link"
+          style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}>
           {investor.investorName}</Link>
         <TierBadge tier={investor.investorTier} /></div>
       <div className="flex items-center gap-3 mb-2">
@@ -678,10 +666,8 @@ function DeprioritizeSection({ investors }: { investors: InvestorSummary[] }) {
     <div style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
       <button
         onClick={() => setExpanded(!expanded)}
-        className="w-full flex items-center justify-between p-3 text-left transition-colors"
-        style={{ background: 'transparent' }}
-        onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface-1)')}
-        onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
+        className="w-full flex items-center justify-between p-3 text-left hover-row"
+        style={{ background: 'transparent' }}>
         <div className="flex items-center gap-2">
           <Ban className="w-3.5 h-3.5" style={stTextMuted} />
           <span style={{ ...labelMuted, fontWeight: 400, letterSpacing: '0.08em' }}>
@@ -695,10 +681,8 @@ function DeprioritizeSection({ investors }: { investors: InvestorSummary[] }) {
                 <XCircle className="w-3 h-3" style={stTextMuted} />
                 <Link
                   href={`/investors/${inv.investorId}`}
-                  className="transition-colors"
-                  style={labelTertiary}
-                  onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
-                  onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-tertiary)')}>
+                  className="investor-link"
+                  style={labelTertiary}>
                   {inv.investorName}</Link>
                 <TierBadge tier={inv.investorTier} /></div>
               <span style={labelMuted10}>{inv.reason}</span></div>

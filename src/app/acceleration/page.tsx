@@ -81,10 +81,8 @@ function ActionCard({
           <div className="flex items-center gap-2 flex-wrap mb-1.5">
             <Link
               href={`/investors/${item.investorId}`}
-              className="transition-colors"
-              style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}
-              onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
-              onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}>
+              className="investor-link"
+              style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}>
               {item.investorName}</Link>
             <TierBadge tier={item.investorTier} />
             <span style={inlineBadgeStyle(TRIGGER_STYLES[item.triggerType] ?? TRIGGER_STYLES.stall_risk)}>
@@ -164,10 +162,8 @@ function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
         <Rocket className="w-3.5 h-3.5" style={stTextSecondary} />
         <Link
           href={`/investors/${investor.investorId}`}
-          className="transition-colors"
-          style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}
-          onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
-          onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}>
+          className="investor-link"
+          style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}>
           {investor.investorName}</Link>
         <TierBadge tier={investor.investorTier} />
         <span style={inlineBadgeStyle(TYPE_STYLES[investor.investorType] ?? TYPE_STYLES.vc)}>
@@ -183,7 +179,7 @@ function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
       <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginBottom: '12px' }}>{investor.reason}</p>
       <Link
         href={`/investors/${investor.investorId}`}
-        className="inline-flex items-center gap-1.5 transition-colors"
+        className="inline-flex items-center gap-1.5 btn-surface"
         style={{
           padding: '6px 12px',
           background: 'var(--accent-muted)',
@@ -191,9 +187,7 @@ function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
           borderRadius: 'var(--radius-md)',
           fontSize: 'var(--font-size-sm)',
           color: 'var(--text-secondary)',
-          fontWeight: 400, }}
-        onMouseEnter={e => (e.currentTarget.style.background = 'var(--accent-8)')}
-        onMouseLeave={e => (e.currentTarget.style.background = 'var(--accent-muted)')}>
+          fontWeight: 400, }}>
         <Rocket className="w-3 h-3" />
         Push for Term Sheet</Link>
     </div>);
@@ -207,10 +201,8 @@ function AtRiskCard({ investor }: { investor: InvestorSummary }) {
         <Shield className="w-3.5 h-3.5" style={stTextSecondary} />
         <Link
           href={`/investors/${investor.investorId}`}
-          className="transition-colors"
-          style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}
-          onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
-          onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}>
+          className="investor-link"
+          style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}>
           {investor.investorName}</Link>
         <TierBadge tier={investor.investorTier} />
         <span style={inlineBadgeStyle(TYPE_STYLES[investor.investorType] ?? TYPE_STYLES.vc)}>
@@ -257,10 +249,8 @@ function DeprioritizeSection({ investors }: { investors: InvestorSummary[] }) {
                 <XCircle className="w-3 h-3" style={stTextMuted} />
                 <Link
                   href={`/investors/${inv.investorId}`}
-                  className="transition-colors"
-                  style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' }}
-                  onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
-                  onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-tertiary)')}>
+                  className="investor-link"
+                  style={{ fontSize: 'var(--font-size-sm)' }}>
                   {inv.investorName}</Link>
                 <TierBadge tier={inv.investorTier} />
                 <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Score: {inv.score}/100</span></div>

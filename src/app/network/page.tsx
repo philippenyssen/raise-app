@@ -209,10 +209,8 @@ export default function NetworkPage() {
                       <Link
                         href={`/investors/${cascade.keystoneId}`}
                         onClick={e => e.stopPropagation()}
-                        className="transition-colors"
-                        style={{ fontWeight: 400, color: 'var(--text-primary)', fontSize: 'var(--font-size-base)', textDecoration: 'none' }}
-                        onMouseEnter={e => { e.currentTarget.style.color = 'var(--accent)'; }}
-                        onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-primary)'; }}>
+                        className="investor-link"
+                        style={{ fontWeight: 400, fontSize: 'var(--font-size-base)', textDecoration: 'none' }}>
                         {cascade.keystoneName}</Link>
                       <span style={{
                         fontSize: 'var(--font-size-xs)',
@@ -310,14 +308,11 @@ export default function NetworkPage() {
                                   <div className="flex items-center gap-2">
                                     <Link
                                       href={`/investors/${link.investorId}`}
-                                      className="transition-colors"
+                                      className="investor-link"
                                       style={{
                                         fontWeight: 400,
-                                        color: 'var(--text-primary)',
                                         fontSize: 'var(--font-size-sm)',
-                                        textDecoration: 'none', }}
-                                      onMouseEnter={e => { e.currentTarget.style.color = 'var(--accent)'; }}
-                                      onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-primary)'; }}>
+                                        textDecoration: 'none', }}>
                                       {link.investorName}</Link>
                                     <span style={{
                                       fontSize: 'var(--font-size-xs)',

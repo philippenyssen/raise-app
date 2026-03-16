@@ -334,10 +334,7 @@ function FollowupsContent() {
                   {config.label}</span>
                 <Link
                   href={`/investors/${item.investor_id}`}
-                  className="transition-colors"
-                  style={labelAccent}
-                  onMouseEnter={e => { e.currentTarget.style.color = 'var(--accent)'; }}
-                  onMouseLeave={e => { e.currentTarget.style.color = 'var(--accent)'; }}>
+                  style={labelAccent}>
                   {item.investor_name}</Link>
                 <span
                   className="flex items-center gap-1"
@@ -354,9 +351,7 @@ function FollowupsContent() {
                 <button
                   onClick={() => setExpandedId(isExpanded ? null : item.id)}
                   style={labelMuted10}
-                  onMouseEnter={e => { e.currentTarget.style.color = 'var(--text-secondary)'; }}
-                  onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; }}
-                  className="mt-1 transition-colors">
+                  className="mt-1 sidebar-link">
                   {isExpanded ? 'Show less' : 'Show more'}</button>
               )}
 
@@ -439,10 +434,8 @@ function FollowupsContent() {
                   <div className="flex gap-2 pt-1">
                     <button
                       onClick={() => handleComplete(item.id)}
-                      className="btn btn-sm transition-colors"
-                      style={{ background: 'var(--success)', color: 'var(--text-primary)' }}
-                      onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent-hover)'; }}
-                      onMouseLeave={e => { e.currentTarget.style.background = 'var(--success)'; }}>
+                      className="btn btn-sm btn-accent-hover"
+                      style={{ background: 'var(--success)', color: 'var(--text-primary)' }}>
                       Complete</button>
                     <button
                       onClick={() => { setCompletingId(null); setCompleteForm({ outcome: '', conviction_delta: 0 }); }}
@@ -742,17 +735,9 @@ function FollowupsContent() {
         {(['pending', 'all', 'completed', 'skipped'] as const).map(f => (
           <button
             key={f}
-            className="transition-colors"
+            className={`transition-colors ${filter !== f ? 'filter-inactive' : ''}`}
             onClick={() => setFilter(f)}
-            style={{ padding: '0.375rem 0.75rem', borderRadius: 'var(--radius-sm)', fontSize: 'var(--font-size-xs)', fontWeight: 400, transition: 'all 150ms ease', background: filter === f ? 'var(--surface-3)' : 'transparent', color: filter === f ? 'var(--text-primary)' : 'var(--text-muted)' }}
-            onMouseEnter={e => {
-              if (filter !== f) {
-                e.currentTarget.style.color = 'var(--text-secondary)';
-              } }}
-            onMouseLeave={e => {
-              if (filter !== f) {
-                e.currentTarget.style.color = 'var(--text-muted)';
-              } }}>
+            style={{ padding: '0.375rem 0.75rem', borderRadius: 'var(--radius-sm)', fontSize: 'var(--font-size-xs)', fontWeight: 400, transition: 'all 150ms ease', background: filter === f ? 'var(--surface-3)' : 'transparent', color: filter === f ? 'var(--text-primary)' : 'var(--text-muted)' }}>
             {f.charAt(0).toUpperCase() + f.slice(1)}
             {f === 'pending' && overdue.length > 0 && (
               <span
@@ -800,10 +785,7 @@ function FollowupsContent() {
             Follow-ups are created automatically after meetings.{' '}
             <Link
               href="/meetings/new"
-              className="transition-colors"
-              style={stAccent}
-              onMouseEnter={e => { e.currentTarget.style.color = 'var(--accent)'; }}
-              onMouseLeave={e => { e.currentTarget.style.color = 'var(--accent)'; }}>
+              style={stAccent}>
               Log a meeting</Link></p></div>
       ) : filter === 'pending' ? (
         <div className="space-y-6">

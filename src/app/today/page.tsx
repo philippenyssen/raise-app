@@ -565,10 +565,8 @@ export default function TodayPage() {
                 <ArrowUpRight className="w-3 h-3" style={stTextSecondary} />
                 <Link
                   href={`/investors/${sc.investorId}`}
-                  className="transition-colors"
-                  style={{ color: 'var(--accent)', fontWeight: 400, textDecoration: 'none' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.textDecoration = 'underline'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.textDecoration = 'none'; }}>
+                  className="investor-link"
+                  style={{ color: 'var(--accent)', fontWeight: 400, textDecoration: 'none' }}>
                   {sc.investorName}</Link>
                 <span style={stTextMuted}>{sc.from.replace(/_/g, ' ')} → {sc.to.replace(/_/g, ' ')}</span></div>
             ))}
@@ -718,30 +716,24 @@ export default function TodayPage() {
         <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: 'var(--space-3)' }}>
           <Link
             href="/pipeline"
-            className="card transition-colors"
-            style={{ padding: 'var(--space-4)', textDecoration: 'none' }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-subtle)'; }}>
+            className="card hover-border"
+            style={{ padding: 'var(--space-4)', textDecoration: 'none' }}>
             <div className="metric-label">Active</div>
             <div className="metric-value" style={{ fontSize: 'var(--font-size-xl)', marginTop: '4px', color: 'var(--text-primary)' }}>
               {data.pipelineSnapshot.totalActive}</div></Link>
 
           <Link
             href="/pipeline?stage=in_dd"
-            className="card transition-colors"
-            style={{ padding: 'var(--space-4)', textDecoration: 'none' }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-subtle)'; }}>
+            className="card hover-border"
+            style={{ padding: 'var(--space-4)', textDecoration: 'none' }}>
             <div className="metric-label">In DD</div>
             <div className="metric-value" style={{ fontSize: 'var(--font-size-xl)', marginTop: '4px', color: data.pipelineSnapshot.inDD > 0 ? 'var(--warning)' : 'var(--text-muted)' }}>
               {data.pipelineSnapshot.inDD}</div></Link>
 
           <Link
             href="/pipeline?stage=term_sheet"
-            className="card transition-colors"
-            style={{ padding: 'var(--space-4)', textDecoration: 'none' }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-subtle)'; }}>
+            className="card hover-border"
+            style={{ padding: 'var(--space-4)', textDecoration: 'none' }}>
             <div className="metric-label">Term Sheets</div>
             <div className="metric-value" style={{ fontSize: 'var(--font-size-xl)', marginTop: '4px', color: data.pipelineSnapshot.termSheets > 0 ? 'var(--success)' : 'var(--text-muted)' }}>
               {data.pipelineSnapshot.termSheets}</div></Link>
@@ -816,10 +808,8 @@ export default function TodayPage() {
 
           <Link
             href="/dealflow"
-            className="btn btn-ghost btn-sm shrink-0 transition-colors"
-            style={stTextTertiary}
-            onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-primary)')}
-            onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-tertiary)')}>
+            className="btn btn-ghost btn-sm shrink-0 sidebar-link"
+            style={stTextTertiary}>
             {data.momentum === 'stalled' ? 'Diagnose' : data.momentum === 'decelerating' ? 'Investigate' : 'View dealflow'}
             <span style={{ display: 'flex' }}><ChevronRight className="w-3.5 h-3.5" /></span></Link></div></div>
 
@@ -843,10 +833,8 @@ export default function TodayPage() {
 
             <Link
               href="/intelligence"
-              className="btn btn-ghost btn-sm shrink-0 transition-colors"
-              style={stTextSecondary}
-              onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
-              onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-secondary)')}>
+              className="btn btn-ghost btn-sm shrink-0 investor-link"
+              style={stTextSecondary}>
               See more
               <span style={{ display: 'flex' }}><ChevronRight className="w-3.5 h-3.5" /></span></Link></div></div>
       )}
