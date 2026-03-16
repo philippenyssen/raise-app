@@ -17,9 +17,9 @@ import { fmtDateTime } from '@/lib/format';
 const cardSurface1 = { padding: 'var(--space-4)', background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)' } as const;
 const textXlLight = { fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' } as const;
 const sectionHeading = { fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)', margin: '0 0 var(--space-3) 0' } as const;
-const filterTabBase: React.CSSProperties = { padding: '4px 10px', borderRadius: 'var(--radius-sm)', fontSize: 'var(--font-size-xs)', fontWeight: 400, border: 'none', cursor: 'pointer' };
-const triggerBadge = { fontSize: 'var(--font-size-xs)', padding: '2px 8px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-secondary)' } as const;
-const targetBadge: React.CSSProperties = { ...stFontXs, padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-tertiary)' };
+const filterTabBase: React.CSSProperties = { padding: 'var(--space-1) var(--space-2)', borderRadius: 'var(--radius-sm)', fontSize: 'var(--font-size-xs)', fontWeight: 400, border: 'none', cursor: 'pointer' };
+const triggerBadge = { fontSize: 'var(--font-size-xs)', padding: 'var(--space-0) var(--space-2)', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-secondary)' } as const;
+const targetBadge: React.CSSProperties = { ...stFontXs, padding: 'var(--space-0) var(--space-1)', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-tertiary)' };
 
 // ---------------------------------------------------------------------------
 // Types

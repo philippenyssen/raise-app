@@ -18,9 +18,9 @@ const tierBadgeLow: React.CSSProperties = { ...tierBadgeBase, background: 'var(-
 const tabNumBase: React.CSSProperties = { fontSize: 'var(--font-size-sm)', fontWeight: 400, fontVariantNumeric: 'tabular-nums' };
 function daysProcessColor(days: number): string { return days > 50 ? 'var(--danger)' : days > 35 ? 'var(--warning)' : 'var(--text-secondary)'; }
 function daysStageColor(days: number): string { return days > 21 ? 'var(--danger)' : days > 14 ? 'var(--warning)' : 'var(--text-tertiary)'; }
-const trackingBadgeBase: React.CSSProperties = { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', padding: '2px 8px', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', fontWeight: 400 };
-const velocityBarTrack: React.CSSProperties = { flex: 1, height: '6px', background: 'var(--surface-3)', borderRadius: '3px', overflow: 'hidden' };
-const actionBtnBase: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '3px 8px', gap: 'var(--space-1)', display: 'inline-flex', alignItems: 'center' };
+const trackingBadgeBase: React.CSSProperties = { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', padding: 'var(--space-0) var(--space-2)', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', fontWeight: 400 };
+const velocityBarTrack: React.CSSProperties = { flex: 1, height: '6px', background: 'var(--surface-3)', borderRadius: 'var(--radius-sm)', overflow: 'hidden' };
+const actionBtnBase: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: 'var(--space-1) var(--space-2)', gap: 'var(--space-1)', display: 'inline-flex', alignItems: 'center' };
 const rescueBtnStyle: React.CSSProperties = { ...actionBtnBase, background: 'var(--danger-muted)', color: 'var(--text-primary)', border: '1px solid var(--fg-6)' };
 const nudgeBtnStyle: React.CSSProperties = { ...actionBtnBase, background: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: '1px solid var(--fg-5)' };
 const projDateStyle: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', fontVariantNumeric: 'tabular-nums' };
