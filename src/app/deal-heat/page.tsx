@@ -116,7 +116,7 @@ export default function DealHeatPage() {
         <div>
           <h1 className="page-title">Deal Heat Map</h1>
           <p style={{ ...textSmMuted, marginTop: 'var(--space-0)' }}>
-            Composite deal temperature across {counts.total} active investors</p></div>
+            {counts.total} investors &middot; {counts.hot + counts.warm} warm or hot</p></div>
         <div
           className="flex items-center gap-2"
           style={{ padding: 'var(--space-2) var(--space-3)', background: 'var(--surface-1)', borderRadius: 'var(--radius-md)' }}>
