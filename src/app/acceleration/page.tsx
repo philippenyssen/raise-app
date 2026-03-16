@@ -540,7 +540,7 @@ export default function AccelerationPage() {
 
       {/* Empty state for filtered views */}
       {allFiltered.length === 0 && data.termSheetReady.length === 0 && data.atRisk.length === 0 && data.deprioritize.length === 0 && (
-        <EmptyState icon={CheckCircle} title="No acceleration triggers detected" description="Pipeline is healthy. Actions appear when investors stall, show high urgency, or are ready for a term sheet push." />
+        <EmptyState icon={CheckCircle} title="No acceleration triggers detected" description="Your pipeline is on track. Actions appear here when investors stall, show urgency, or are ready for a term sheet push." />
       )}
 
       {activeTab !== 'all' && allFiltered.length === 0 && (
