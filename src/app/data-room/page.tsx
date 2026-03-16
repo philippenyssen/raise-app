@@ -75,7 +75,11 @@ export default function DataRoomPage() {
   }, []);
 
   useEffect(() => { document.title = 'Raise | Data Room'; }, []);
-  useEffect(() => { fetchFiles(); fetchIntelligence(); }, [fetchFiles, fetchIntelligence]);
+  useEffect(() => {
+    fetchFiles(); fetchIntelligence();
+    const interval = setInterval(() => { fetchFiles(); fetchIntelligence(); }, 5 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, [fetchFiles, fetchIntelligence]);
   useEffect(() => {
     const h = (e: KeyboardEvent) => { if (e.key === 'r' && !e.metaKey && !e.ctrlKey && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement)) { e.preventDefault(); fetchFiles(); fetchIntelligence(); } };
     window.addEventListener('keydown', h);

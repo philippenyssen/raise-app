@@ -333,8 +333,9 @@ export default function DealflowPage() {
 
       {/* Error state */}
       {error && (
-        <div className="rounded-lg p-4 mb-4" style={{ background: 'var(--danger-muted)', border: '1px solid var(--danger)', color: 'var(--text-primary)' }}>
-          {error}</div>
+        <div className="rounded-lg p-4 mb-4 flex items-center justify-between" style={{ background: 'var(--danger-muted)', border: '1px solid var(--danger)', color: 'var(--text-primary)' }}>
+          <span style={{ fontSize: 'var(--font-size-sm)' }}>{error}</span>
+          <button onClick={() => fetchData()} className="btn btn-secondary btn-sm">Retry</button></div>
       )}
 
       {/* Loading state */}

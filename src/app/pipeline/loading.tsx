@@ -1,9 +1,13 @@
 export default function PipelineLoading() {
   const columns = [
+    { label: 72, cards: 2 },
     { label: 80, cards: 3 },
-    { label: 72, cards: 4 },
-    { label: 64, cards: 2 },
+    { label: 64, cards: 4 },
+    { label: 72, cards: 2 },
     { label: 88, cards: 3 },
+    { label: 56, cards: 1 },
+    { label: 80, cards: 2 },
+    { label: 64, cards: 1 },
     { label: 72, cards: 1 },
   ];
 
