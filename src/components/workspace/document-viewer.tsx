@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
-import { FileText, Eye, Edit3, Save, Clock, Download, FileSpreadsheet, Presentation, FileType, History, Trash2, Search, X, Copy, Maximize2, Minimize2 } from 'lucide-react';
+import { FileText, Eye, Edit3, Save, Clock, Download, FileSpreadsheet, Presentation, FileType, History, Trash2, Search, X, Copy, Maximize2, Minimize2, Keyboard, List } from 'lucide-react';
 import { labelMuted, textSmSecondary } from '@/lib/styles';
 
 // Dynamically import heavy editor components
@@ -134,6 +134,8 @@ export function DocumentViewer({ document, onContentChange, onSave, onDelete, on
   const [replaceQuery, setReplaceQuery] = useState('');
   const [findCount, setFindCount] = useState(0);
   const [fullscreen, setFullscreen] = useState(false);
+  const [showShortcuts, setShowShortcuts] = useState(false);
+  const [showOutline, setShowOutline] = useState(false);
   const findInputRef = useRef<HTMLInputElement>(null);
   const versionDropdownRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -233,6 +235,19 @@ export function DocumentViewer({ document, onContentChange, onSave, onDelete, on
 
   const format = useMemo(() => document ? detectFormat(document) : 'richtext', [document]);
   const exportFormats = useMemo(() => getExportFormats(format), [format]);
+
+  // Document outline (headings)
+  const outline = useMemo(() => {
+    if (!document || format !== 'richtext') return [];
+    const headingRegex = /<h([1-3])[^>]*>(.*?)<\/h[1-3]>/gi;
+    const matches: { level: number; text: string; index: number }[] = [];
+    let match;
+    while ((match = headingRegex.exec(document.content)) !== null) {
+      const text = match[2].replace(/<[^>]+>/g, '').trim();
+      if (text) matches.push({ level: parseInt(match[1]), text, index: match.index });
+    }
+    return matches;
+  }, [document, format]);
 
   // Word/character count
   const docStats = useMemo(() => {
@@ -627,6 +642,26 @@ export function DocumentViewer({ document, onContentChange, onSave, onDelete, on
             </button>
           ))}
 
+          {/* Outline toggle */}
+          {(format === 'richtext' || format === 'markdown') && outline.length > 0 && (
+            <button
+              onClick={() => setShowOutline(!showOutline)}
+              className="rounded transition-colors"
+              style={{
+                padding: '6px',
+                background: showOutline ? 'var(--accent-muted)' : 'transparent',
+                color: showOutline ? 'var(--accent)' : 'var(--text-muted)',
+                border: 'none',
+                cursor: 'pointer',
+              }}
+              onMouseEnter={e => { if (!showOutline) { (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}}
+              onMouseLeave={e => { if (!showOutline) { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}}
+              title="Document outline"
+            >
+              <List style={{ width: '14px', height: '14px' }} />
+            </button>
+          )}
+
           {/* Find/Replace toggle */}
           {(format === 'richtext' || format === 'markdown') && (
             <button
@@ -669,6 +704,24 @@ export function DocumentViewer({ document, onContentChange, onSave, onDelete, on
               <Copy style={{ width: '14px', height: '14px' }} />
             </button>
           )}
+
+          {/* Keyboard shortcuts */}
+          <button
+            onClick={() => setShowShortcuts(!showShortcuts)}
+            className="rounded transition-colors"
+            style={{
+              padding: '6px',
+              background: 'transparent',
+              color: 'var(--text-muted)',
+              border: 'none',
+              cursor: 'pointer',
+            }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+            title="Keyboard shortcuts"
+          >
+            <Keyboard style={{ width: '14px', height: '14px' }} />
+          </button>
 
           {/* Delete button */}
           {onDelete && (
@@ -753,7 +806,46 @@ export function DocumentViewer({ document, onContentChange, onSave, onDelete, on
       )}
 
       {/* Content area */}
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1 overflow-hidden flex">
+        {/* Document outline sidebar */}
+        {showOutline && outline.length > 0 && (
+          <div
+            className="shrink-0 overflow-y-auto"
+            style={{
+              width: '200px',
+              borderRight: '1px solid var(--border-subtle)',
+              background: 'var(--surface-0)',
+              padding: 'var(--space-2)',
+            }}
+          >
+            <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', padding: 'var(--space-1) var(--space-2)', marginBottom: 'var(--space-1)' }}>
+              Outline
+            </div>
+            {outline.map((item, i) => (
+              <button
+                key={i}
+                className="w-full text-left truncate"
+                style={{
+                  padding: '4px 8px',
+                  paddingLeft: `${8 + (item.level - 1) * 12}px`,
+                  fontSize: 'var(--font-size-xs)',
+                  color: 'var(--text-secondary)',
+                  background: 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
+                  borderRadius: 'var(--radius-sm)',
+                }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+                title={item.text}
+              >
+                {item.text}
+              </button>
+            ))}
+          </div>
+        )}
+
+        <div className="flex-1 overflow-hidden">
         {format === 'spreadsheet' ? (
           <ExcelViewer
             cells={spreadsheetCells}
@@ -785,7 +877,62 @@ export function DocumentViewer({ document, onContentChange, onSave, onDelete, on
             onChange={onContentChange}
           />
         )}
+        </div>
       </div>
+
+      {/* Keyboard shortcuts overlay */}
+      {showShortcuts && (
+        <div
+          className="absolute inset-0 z-50 flex items-center justify-center"
+          style={{ background: 'rgba(0,0,0,0.5)' }}
+          onClick={() => setShowShortcuts(false)}
+        >
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{
+              background: 'var(--surface-1)',
+              borderRadius: 'var(--radius-lg)',
+              border: '1px solid var(--border-default)',
+              boxShadow: 'var(--shadow-xl)',
+              padding: 'var(--space-6)',
+              width: '360px',
+              maxHeight: '80vh',
+              overflow: 'auto',
+            }}
+          >
+            <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-4)' }}>
+              <h3 style={{ fontWeight: 500, color: 'var(--text-primary)' }}>Keyboard Shortcuts</h3>
+              <button onClick={() => setShowShortcuts(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}>
+                <X style={{ width: '16px', height: '16px' }} />
+              </button>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+              {[
+                ['Cmd + S', 'Save document'],
+                ['Cmd + Z', 'Undo'],
+                ['Cmd + F', 'Find & Replace'],
+                ['Escape', 'Close panel'],
+                ['Enter', 'Edit cell (spreadsheet)'],
+                ['Tab', 'Next cell (spreadsheet)'],
+                ['R', 'Refresh documents'],
+              ].map(([key, desc]) => (
+                <div key={key} className="flex items-center justify-between" style={{ padding: '4px 0' }}>
+                  <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>{desc}</span>
+                  <kbd style={{
+                    fontSize: 'var(--font-size-xs)',
+                    padding: '2px 6px',
+                    borderRadius: 'var(--radius-sm)',
+                    background: 'var(--surface-2)',
+                    border: '1px solid var(--border-subtle)',
+                    color: 'var(--text-muted)',
+                    fontFamily: 'monospace',
+                  }}>{key}</kbd>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
