@@ -1108,6 +1108,152 @@ select option {
 @keyframes data-refresh { from { opacity: 0.6; } to { opacity: 1; } }
 .data-refreshed { animation: data-refresh 400ms ease forwards; }
 
+/* ── TipTap Rich Text Editor ── */
+.rich-text-content {
+  font-family: 'DM Sans', -apple-system, sans-serif;
+  font-weight: 300;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.rich-text-content h1 {
+  font-size: var(--font-size-2xl);
+  font-weight: 300;
+  color: var(--text-primary);
+  margin-top: var(--space-6);
+  margin-bottom: var(--space-3);
+}
+
+.rich-text-content h2 {
+  font-size: var(--font-size-xl);
+  font-weight: 400;
+  color: var(--text-primary);
+  margin-top: var(--space-5);
+  margin-bottom: var(--space-2);
+}
+
+.rich-text-content h3 {
+  font-size: var(--font-size-lg);
+  font-weight: 400;
+  color: var(--text-secondary);
+  margin-top: var(--space-4);
+  margin-bottom: var(--space-1);
+}
+
+.rich-text-content h4 {
+  font-size: var(--font-size-base);
+  font-weight: 400;
+  color: var(--text-tertiary);
+  margin-top: var(--space-3);
+  margin-bottom: var(--space-1);
+}
+
+.rich-text-content p {
+  margin-bottom: var(--space-2);
+}
+
+.rich-text-content p.is-editor-empty:first-child::before {
+  color: var(--text-muted);
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.rich-text-content strong { color: var(--text-primary); font-weight: 400; }
+.rich-text-content em { font-style: italic; }
+.rich-text-content u { text-decoration: underline; }
+.rich-text-content s { text-decoration: line-through; color: var(--text-muted); }
+
+.rich-text-content mark {
+  background: var(--warning-muted);
+  padding: 1px 4px;
+  border-radius: 2px;
+}
+
+.rich-text-content code {
+  background: var(--surface-2);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  font-family: monospace;
+  font-size: 0.88em;
+  color: var(--accent);
+}
+
+.rich-text-content pre {
+  background: var(--surface-2);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  margin: var(--space-3) 0;
+}
+
+.rich-text-content pre code {
+  background: none;
+  padding: 0;
+  color: var(--text-secondary);
+}
+
+.rich-text-content blockquote {
+  border-left: 3px solid var(--accent);
+  padding-left: var(--space-4);
+  color: var(--text-tertiary);
+  font-style: italic;
+  margin: var(--space-3) 0;
+}
+
+.rich-text-content ul {
+  list-style-type: disc;
+  padding-left: var(--space-5);
+  margin: var(--space-2) 0;
+}
+
+.rich-text-content ol {
+  list-style-type: decimal;
+  padding-left: var(--space-5);
+  margin: var(--space-2) 0;
+}
+
+.rich-text-content li { margin-bottom: var(--space-1); }
+.rich-text-content li p { margin-bottom: 0; }
+
+.rich-text-content hr {
+  border: none;
+  border-top: 1px solid var(--border-subtle);
+  margin: var(--space-4) 0;
+}
+
+.rich-text-content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: var(--space-3) 0;
+}
+
+.rich-text-content th,
+.rich-text-content td {
+  border: 1px solid var(--border-default);
+  padding: var(--space-2) var(--space-3);
+  text-align: left;
+  font-size: var(--font-size-sm);
+  min-width: 80px;
+}
+
+.rich-text-content th {
+  background: var(--surface-2);
+  font-weight: 400;
+  color: var(--text-primary);
+}
+
+.rich-text-content td {
+  color: var(--text-secondary);
+}
+
+.rich-text-content .selectedCell {
+  background: var(--accent-muted);
+}
+
+.tiptap:focus { outline: none; }
+
 @media print {
   nav, aside, header, button, .btn, [data-sidebar] { display: none !important; }
   main { margin: 0 !important; padding: 0 !important; max-width: 100% !important; width: 100% !important; }
