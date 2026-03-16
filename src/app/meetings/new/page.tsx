@@ -212,7 +212,7 @@ function NewMeetingContent() {
           disabled={loading || !form.investor_id || !form.raw_notes}
           className="px-6 py-3 rounded-lg text-sm font-normal transition-colors disabled:opacity-50"
           style={{ background: 'var(--accent)', color: 'var(--surface-0)' }}>
-          {loading ? 'Analyzing notes...' : 'Log & Analyze Debrief'}</button></form>
+          {loading ? 'Analyzing... (15-20s)' : 'Save & AI Analyze'}</button></form>
 
       {/* AI Analysis Result */}
       {result && (
