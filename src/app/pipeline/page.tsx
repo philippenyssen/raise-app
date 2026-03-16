@@ -695,7 +695,6 @@ function InvestorCard({
   onDragStart: (e: React.DragEvent, id: string) => void;
   onDragEnd: (e: React.DragEvent) => void;
 }) {
-  const [hovered, setHovered] = useState(false);
   const TypeIcon = TYPE_ICONS[investor.type as InvestorType] || Building2;
   const cardRef = useRef<HTMLDivElement>(null);
 
@@ -708,16 +707,12 @@ function InvestorCard({
   const completeness = Math.round(([investor.name, investor.fund_size, investor.type, investor.tier, investor.check_size_range, investor.partner, investor.last_meeting_date].filter(Boolean).length / 7) * 100);
   const complColor = completeness >= 80 ? 'var(--success)' : completeness >= 50 ? 'var(--warning)' : 'var(--danger)';
 
-  const tierGlow = 'none';
-
   const cardBaseStyle: React.CSSProperties = {
-    background: hovered || isKbSelected ? 'var(--surface-2)' : 'var(--surface-1)',
+    background: isKbSelected ? 'var(--surface-2)' : 'var(--surface-1)',
     borderRadius: 'var(--radius-lg)',
     cursor: 'grab',
-    transition: 'all 150ms ease',
-    boxShadow: isCompareSelected ? 'inset 0 0 0 1.5px var(--accent)' : isKbSelected ? 'inset 0 0 0 1.5px var(--accent)' : hovered ? 'var(--shadow-md)' : tierGlow,
+    boxShadow: isCompareSelected ? 'inset 0 0 0 1.5px var(--accent)' : isKbSelected ? 'inset 0 0 0 1.5px var(--accent)' : 'none',
     borderLeft: isStale ? '3px solid var(--warning)' : 'none',
-    transform: hovered && !isDragging ? 'translateY(-1px)' : undefined,
     ...(isDragging ? { opacity: 0.5, transform: 'scale(0.95)' } : {}),};
 
   if (compact) {
@@ -727,13 +722,11 @@ function InvestorCard({
         draggable
         onDragStart={e => onDragStart(e, investor.id)}
         onDragEnd={onDragEnd}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-        className="transition-colors"
+        className="pipeline-card"
         style={{ ...cardBaseStyle, padding: '0.5rem 0.75rem' }}>
         <Link href={`/investors/${investor.id}`} className="flex items-center gap-2">
-          {onToggleCompare && (hovered || isCompareSelected) && <span onClick={e => { e.preventDefault(); e.stopPropagation(); onToggleCompare(investor.id); }} style={{ width: 12, height: 12, borderRadius: 'var(--radius-sm)', border: `1.5px solid ${isCompareSelected ? 'var(--accent)' : 'var(--border-default)'}`, background: isCompareSelected ? 'var(--accent)' : 'transparent', cursor: 'pointer', flexShrink: 0 }} />}
-          <GripVertical className="w-3 h-3 flex-shrink-0" style={{ color: hovered ? 'var(--text-muted)' : 'var(--border-strong)' }} />
+          {onToggleCompare && <span className={`card-compare${isCompareSelected ? ' selected' : ''}`} onClick={e => { e.preventDefault(); e.stopPropagation(); onToggleCompare(investor.id); }} style={{ width: 12, height: 12, borderRadius: 'var(--radius-sm)', border: `1.5px solid ${isCompareSelected ? 'var(--accent)' : 'var(--border-default)'}`, background: isCompareSelected ? 'var(--accent)' : 'transparent', cursor: 'pointer', flexShrink: 0 }} />}
+          <GripVertical className="w-3 h-3 flex-shrink-0 card-grip" />
           <span className="truncate" title={investor.name} style={{ ...stFontXs, fontWeight: 400, color: 'var(--text-secondary)' }}>{investor.name}</span>
           <span style={{ ...badgeSmall, ...TIER_STYLES[investor.tier] }}>T{investor.tier}</span>
         </Link>
@@ -746,19 +739,17 @@ function InvestorCard({
       draggable
       onDragStart={e => onDragStart(e, investor.id)}
       onDragEnd={onDragEnd}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      className="transition-colors"
+      className="pipeline-card"
       style={{ ...cardBaseStyle, padding: 'var(--space-3)' }}>
       <Link href={`/investors/${investor.id}`} className="block space-y-2.5" draggable={false}>
         <div className="flex items-start justify-between gap-1">
           <div className="min-w-0">
-            <span style={{ ...stFontSm, fontWeight: 400, color: hovered ? 'var(--text-primary)' : 'var(--text-secondary)', lineHeight: 1.3, transition: 'color 150ms ease' }}>{investor.name}</span>
+            <span className="card-name" style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-secondary)', lineHeight: 1.3 }}>{investor.name}</span>
             {completeness < 100 && <span title={`Profile ${completeness}% complete`} style={{ fontSize: 'var(--font-size-xs)', color: complColor, marginLeft: '4px', fontWeight: 400 }}>{completeness}%</span>}
           </div>
           <div className="flex items-center gap-1 flex-shrink-0 mt-0.5">
-            {onToggleCompare && <span onClick={e => { e.preventDefault(); e.stopPropagation(); onToggleCompare(investor.id); }} style={{ width: 14, height: 14, borderRadius: 'var(--radius-sm)', border: `1.5px solid ${isCompareSelected ? 'var(--accent)' : 'var(--border-default)'}`, background: isCompareSelected ? 'var(--accent)' : 'transparent', cursor: 'pointer', display: hovered || isCompareSelected ? 'block' : 'none' }} />}
-            <GripVertical className="w-3.5 h-3.5" style={{ color: hovered ? 'var(--text-muted)' : 'var(--border-strong)' }} />
+            {onToggleCompare && <span className={`card-compare${isCompareSelected ? ' selected' : ''}`} onClick={e => { e.preventDefault(); e.stopPropagation(); onToggleCompare(investor.id); }} style={{ width: 14, height: 14, borderRadius: 'var(--radius-sm)', border: `1.5px solid ${isCompareSelected ? 'var(--accent)' : 'var(--border-default)'}`, background: isCompareSelected ? 'var(--accent)' : 'transparent', cursor: 'pointer' }} />}
+            <GripVertical className="w-3.5 h-3.5 card-grip" />
           </div></div>
 
         {/* Badges row: type + tier */}
@@ -781,8 +772,8 @@ function InvestorCard({
             <div className="truncate" title={investor.fund_size} style={labelMuted}>
               <span style={stTextMuted}>Fund:</span> {investor.fund_size}</div>
           )}
-          {hovered && investor.check_size_range && <div className="truncate" title={investor.check_size_range} style={labelMuted}><span style={stTextMuted}>Check:</span> {investor.check_size_range}</div>}
-          {hovered && investor.sector_thesis && <div className="truncate" title={investor.sector_thesis} style={labelMuted}><span style={stTextMuted}>Focus:</span> {investor.sector_thesis}</div>}
+          {investor.check_size_range && <div className="truncate card-detail-hover" title={investor.check_size_range} style={labelMuted}><span style={stTextMuted}>Check:</span> {investor.check_size_range}</div>}
+          {investor.sector_thesis && <div className="truncate card-detail-hover" title={investor.sector_thesis} style={labelMuted}><span style={stTextMuted}>Focus:</span> {investor.sector_thesis}</div>}
         </div>
 
         {/* Quick note + urgency */}
@@ -825,9 +816,8 @@ function InvestorCard({
           })()}</div></Link>
 
       {/* Quick actions on hover */}
-      {hovered && (
         <div
-          className="flex items-center gap-1 pt-2 mt-2">
+          className="flex items-center gap-1 pt-2 mt-2 card-detail-hover">
           <Link
             href={`/meetings/prep?investor=${investor.id}`}
             onClick={e => e.stopPropagation()}
@@ -864,6 +854,5 @@ function InvestorCard({
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; (e.currentTarget as HTMLElement).style.background = 'var(--accent-muted)'; }}
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
             <SendHorizonal className="w-3 h-3" /> Follow up</Link></div>
-      )}
     </div>);
 }

@@ -261,8 +261,9 @@ export default function DealflowPage() {
               const blob = new Blob([rows.map(r => r.join('\t')).join('\n')], { type: 'text/tab-separated-values' });
               const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `dealflow-${new Date().toISOString().split('T')[0]}.tsv`; a.click();
             }}
+            disabled={loading || !filtered.length}
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg"
-            style={{ background: 'var(--surface-2)', color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
+            style={{ background: 'var(--surface-2)', color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', opacity: loading || !filtered.length ? 0.5 : 1 }}>
             <Download className="w-3.5 h-3.5" /> Export</button>
           <button
             onClick={fetchData}

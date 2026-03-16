@@ -644,6 +644,42 @@ body {
   opacity: 1;
 }
 
+/* Pipeline card hover — eliminates useState from 50+ kanban cards */
+.pipeline-card {
+  transition: all 150ms ease;
+}
+.pipeline-card:hover {
+  background: var(--surface-2) !important;
+  box-shadow: var(--shadow-md) !important;
+  transform: translateY(-1px);
+}
+.pipeline-card .card-name {
+  transition: color 150ms ease;
+}
+.pipeline-card:hover .card-name {
+  color: var(--text-primary) !important;
+}
+.pipeline-card .card-grip {
+  color: var(--border-strong);
+  transition: color 150ms ease;
+}
+.pipeline-card:hover .card-grip {
+  color: var(--text-muted);
+}
+.pipeline-card .card-compare {
+  display: none;
+}
+.pipeline-card:hover .card-compare,
+.pipeline-card .card-compare.selected {
+  display: block;
+}
+.pipeline-card .card-detail-hover {
+  display: none;
+}
+.pipeline-card:hover .card-detail-hover {
+  display: block;
+}
+
 .action-draft {
   color: var(--text-muted);
   background: transparent;
