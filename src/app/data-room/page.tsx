@@ -102,7 +102,7 @@ export default function DataRoomPage() {
       if (!res.ok) throw new Error('Failed');
       toast('Access logged — investor engagement data updated');
       fetchIntelligence();
-    } catch { toast('Could not log access — check your connection and retry', 'error'); }
+    } catch (e) { console.warn('[DR_LOG_ACCESS]', e instanceof Error ? e.message : e); toast('Could not log access — check your connection and retry', 'error'); }
   }
 
   useEffect(() => { if (pasteMode) setTimeout(() => { const el = document.querySelector<HTMLInputElement>('#paste-form input'); el?.focus(); }, 50); }, [pasteMode]);
@@ -140,7 +140,8 @@ export default function DataRoomPage() {
             const extracted = await extractRes.json();
             text = extracted.text || '';
           }
-        } catch {
+        } catch (e) {
+          console.warn('[DR_EXTRACT]', e instanceof Error ? e.message : e);
           text = `[Binary file: ${file.name} (${file.type}, ${file.size} bytes). Text extraction not available — upload the text content separately via Paste.]`;
         }}
 
@@ -157,7 +158,7 @@ export default function DataRoomPage() {
           }),});
         if (!res.ok) throw new Error('Failed');
         toast(`Uploaded "${file.name}"`);
-      } catch { toast(`Could not upload "${file.name}" — check file size and format, then retry`, 'error'); }
+      } catch (e) { console.warn('[DR_UPLOAD]', e instanceof Error ? e.message : e); toast(`Could not upload "${file.name}" — check file size and format, then retry`, 'error'); }
     }
     setUploading(false);
     fetchFiles();
@@ -183,7 +184,7 @@ export default function DataRoomPage() {
       setPasteContent('');
       setPasteCategory('other');
       setPasteMode(false);
-    } catch { toast('Could not add document — check file size and try again', 'error'); }
+    } catch (e) { console.warn('[DR_PASTE]', e instanceof Error ? e.message : e); toast('Could not add document — check file size and try again', 'error'); }
     setUploading(false);
     fetchFiles();
   }
@@ -197,7 +198,7 @@ export default function DataRoomPage() {
       toast(`Deleted "${deleteTarget.filename}"`, 'warning');
       setDeleteTarget(null);
       fetchFiles();
-    } catch { toast('Couldn\'t delete file — check your connection and retry', 'error'); }
+    } catch (e) { console.warn('[DR_DELETE]', e instanceof Error ? e.message : e); toast('Couldn\'t delete file — check your connection and retry', 'error'); }
     finally { setDeleting(false); }
   }
 

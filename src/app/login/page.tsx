@@ -30,7 +30,8 @@ function LoginForm() {
       } else {
         setError('Invalid password');
       }
-    } catch {
+    } catch (e) {
+      console.warn('[LOGIN]', e instanceof Error ? e.message : e);
       setError('Connection failed');
     } finally {
       setLoading(false);

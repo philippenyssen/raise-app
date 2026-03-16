@@ -88,7 +88,8 @@ function NewMeetingContent() {
       const data = await res.json();
       setResult(data);
       toast(`Meeting with ${selectedInvestor?.name || 'investor'} logged`);
-    } catch {
+    } catch (e) {
+      console.warn('[NEW_MEETING]', e instanceof Error ? e.message : e);
       toast('Couldn\'t log meeting — check your connection and retry', 'error');
     }
     setLoading(false);

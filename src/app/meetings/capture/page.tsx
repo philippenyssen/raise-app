@@ -140,7 +140,8 @@ function QuickCaptureInner() {
       toast('meeting captured and analyzed', 'success');
       localStorage.removeItem('capture_draft_notes');
       setResult(data);
-    } catch {
+    } catch (e) {
+      console.warn('[CAPTURE_MEETING]', e instanceof Error ? e.message : e);
       toast('Could not capture meeting — check your connection and try again', 'error');
     } finally {
       setLoading(false);

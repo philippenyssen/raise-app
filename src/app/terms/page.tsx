@@ -78,7 +78,8 @@ export default function TermsPage() {
     try {
       const res = await cachedFetch('/api/term-sheets');
       setSheets(await res.json());
-    } catch {
+    } catch (e) {
+      console.warn('[TERMS_FETCH]', e instanceof Error ? e.message : e);
       toast('Couldn\'t load term sheets — refresh to retry', 'error');
     } finally {
       setLoading(false);
@@ -107,7 +108,8 @@ export default function TermsPage() {
       setEditId(null);
       setForm(EMPTY_TS);
       fetchSheets();
-    } catch {
+    } catch (e) {
+      console.warn('[TERMS_SAVE]', e instanceof Error ? e.message : e);
       toast('Couldn\'t save term sheet — name and valuation are required', 'error');
     } finally { setSubmitting(false); }}
 
@@ -120,7 +122,8 @@ export default function TermsPage() {
       toast('Term sheet deleted', 'warning');
       setDeleteTarget(null);
       fetchSheets();
-    } catch {
+    } catch (e) {
+      console.warn('[TERMS_DELETE]', e instanceof Error ? e.message : e);
       toast('Couldn\'t delete term sheet — check your connection and retry', 'error');
     } finally { setDeleting(false); }}
 

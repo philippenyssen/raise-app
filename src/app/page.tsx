@@ -279,7 +279,8 @@ export default function Dashboard() {
       setSectionErrors(prev => {
         if (!prev[key]) return prev;
         const next = { ...prev }; delete next[key]; return next;});
-    } catch {
+    } catch (e) {
+      console.warn(`[DASH_${key.toUpperCase()}]`, e instanceof Error ? e.message : e);
       setSectionErrors(prev => ({ ...prev, [key]: true }));
     }
   }, []);
@@ -364,7 +365,8 @@ export default function Dashboard() {
         toast('Action marked as executed');
         fetchData(true);
       }
-    } catch {
+    } catch (e) {
+      console.warn('[DASH_ACCEL]', e instanceof Error ? e.message : e);
       toast('Couldn\'t mark action as executed — try again', 'error');
     }}
 

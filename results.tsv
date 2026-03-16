@@ -440,3 +440,78 @@ d0a8295	100	100	0	keep	product+design	a11y aria-labels on pipeline cards + elimi
 6c3f07b	100	100	0	keep	ai+intelligence	convert 48 DOM hover handlers to CSS across 12 files
 f3998ed	100	100	0	keep	data+enrichment	convert 15 DOM hover handlers to CSS across 8 files
 5b68172	100	100	0	keep	competitive	extract 25 inline style objects to module-level constants in page.tsx
+f047d0c	100	100	0	keep	ops+reliability	extract scoreColor/timeColor helpers + 9 style constants in page.tsx
+68b78d8	100	100	0	keep	product	dealflow retry button + data-room auto-refresh + pipeline skeleton 9 columns
+508306d	100	100	0	keep	design+engineering	global-error CSS vars + pipeline useMemo + dashboard skeleton constants
+4913131	100	100	0	keep	ai+data	scoring constant extraction + AI prompt dedup + safeParseJSON in 2 functions
+94d4b22	100	100	0	keep	workflow+copy	visibility-based polling + followups style constants
+ce0dc94	100	100	0	keep	competitive+ops	followup error revert + check-complete CSS + pipeline visibility polling
+4962d5b	100	100	0	keep	ceo+product	meeting form validation + dealflow tier sort
+7fd6247	100	100	0	keep	engineering+design	visibility polling on 3 pages + meetings style constant
+6796a99	100	100	0	keep	ai+workflow	convert 11 DOM hover handlers to CSS in timeline + momentum
+c5ef288	100	100	0	keep	data+competitive	eliminate ALL 18 remaining DOM hover handlers across 12 files — zero left
+9846c5c	100	100	0	keep	ops+engineering	replace index-based keys with stable keys in 3 files (6 lists)
+4638340	100	100	0	keep	copy+product	extract ~21 inline style objects to constants in win-loss + acceleration
+5653a10	100	100	0	pass	workflow+competitive	extract 9+2 style constants in today+followups, fix hover+key in today
+8dea6ab	100	100	0	pass	ceo+product	extract 6 style constants in settings, 3+StatCard in investors/[id]
+34a823d	100	100	0	pass	design+engineering	extract 10 style constants across forecast/focus/term-compare (~38 objects)
+d74b819	100	100	0	pass	ai+data	extract 6 style constants across win-loss/enrichment/capture (~53 objects)
+6b2e47d	100	100	0	pass	ops+reliability	extract 5 style constants across velocity/compare/fomo (~21 objects)
+7bc8bd4	100	100	0	pass	copy+competitive	extract 5 style constants across data-room/strategic/network (~26 objects)
+c6120c3	100	100	0	pass	engineering+product	extract/replace style constants in analytics/meetings/momentum (~10 objects)
+546f201	100	100	0	pass	ai+workflow	useMemo for filter/sort in today (1) and focus (2) — single-pass splits
+8746477	100	100	0	pass	data+competitive	useMemo 6 derived computations in investors/[id] — timeline/followups/objections/tasks
+5a8787d	100	100	0	pass	ops+reliability	single-pass pipeline stats (7→1 filter) + memoized forecast confidence split
+ff903b0	100	100	0	pass	copy+design	useMemo acceleration (4→1 filter) + empty state CTAs + loading context
+b7322b5	100	100	0	pass	engineering+product	compare empty state clarity + strategic loading label + objections CTA
+9e1cdc8	100	100	0	pass	ai+data	extract icon14/icon12 to styles.ts — 20 inline objects eliminated in enrichment
+4e2df25	100	100	0	pass	workflow+competitive	visibility polling meetings + capture 16 style objects extracted
+1719a7b	100	100	0	pass	ceo+strategy	home page style constant replacement + strategic gap analysis
+191bf72	100	100	0	pass	design+ux	loading context labels for analytics/focus/forecast skeleton states
+8e957a2	100	100	0	pass	ai+engineering	useMemo bestType in win-loss (dedupe 2→1) + objections loading label
+5f2941b	100	100	0	pass	ops+reliability	loading context labels for 7 skeleton states (followups/momentum/network/data-room/velocity/fomo/win-loss)
+9486e21	100	100	0	pass	copy+product	useMemo objections 3 memos (worst/sorted/heatmap) + shared style constants (maxWidthCenter/cellCenter) + dealflow loading label
+dfb519d	100	100	0	pass	design+ux	useMemo followups stats (6 computations) + maxWidthCenter across deal-heat/velocity/forecast (7 inline objects)
+1e8d2a1	100	100	0	pass	engineering+ai	useMemo fomo (filteredInvestors+filterTabs) + compare (filteredInvestors) + sectionHeading const
+db0b836	100	100	0	pass	workflow+competitive	useMemo momentum (maxOverall+anomalyIds) + analytics (3 sort chains) + strategic (dedupe dates)
+34926fd	100	100	0	pass	ceo+strategy	useMemo home health score (7 values) + watching filter + today typeConfig to module-level
+fd97ea1	100	100	0	pass	product+design	replace local style dupes: velocity tdCentered→cellCenter (6x), today flexColGap2→shared import
+c5be900	100	100	0	pass	ai+data	useMemo investors (complex filter+sort) + timeline (5→2 filter passes) + deal-heat (filter+avgHeat)
+2ca743d	100	100	0	pass	copy+competitive	perf: memoize filter/sort in health, meetings/prep, intelligence
+c4aff72	100	100	0	pass	design+ux	perf: memoize meetings stats/momentum + workspace doc sort/group
+0f20478	100	100	0	pass	engineering+ai	perf: extract module-level constants in meetings + pipeline
+31d68c9	100	100	0	pass	workflow+data	perf: memoize competitive stats + data-room filters/size
+43d237f	100	100	0	pass	ceo+strategy	perf: extract style constants in win-loss + acceleration
+f0e5c1d	100	100	0	pass	product+copy	perf+ux: loading context labels + investor tag style extraction
+badbd35	100	100	0	pass	ops+reliability	perf: extract doc/gen button base styles in workspace
+3412334	100	100	0	pass	ai+competitive	perf: extract filter/sort button styles in fomo + dealflow
+93f087d	100	100	0	pass	design+engineering	perf: extract metric/tab styles in today + objections
+ca39b0f	100	100	0	pass	workflow+product	perf: extract pipeline card urgency/lastMeeting helpers
+d4dd763	100	100	0	pass	copy+ops	perf: consolidate cardPad4 + textSmMuted to shared styles
+1120a80	100	100	0	pass	ceo+data	perf: extract pipeline metric + quick action link styles
+6923675	100	100	0	pass	product+design	Extract useMemo + constants in capture, new-meeting, network (3 IIFE→useMemo, 8 constants, 10+ inline replacements)
+45760b3	100	100	0	pass	engineering+ai	Extract 5 lookup tables in momentum, tier/days helpers in velocity, sidebar error logging
+805366b	100	100	0	pass	workflow+data	Extract inline styles in enrichment (4 constants) + stress-test (2 banner style records)
+979d644	100	100	0	pass	ceo+strategy	Extract trendCardStyle + remove IIFE in strategic, momentum/enthusiasm helpers in stress-test
+f0166fb	100	100	0	pass	product+copy	Convert IIFE date math to useMemo in terms page
+e09bbf9	100	100	0	pass	design+ux	Extract 7 style constants in velocity investor table (tracking badge, velocity bar, action buttons)
+74d0529	100	100	0	pass	ops+reliability	Fix O(n²) anomaly search in momentum heatmap → O(1) Map lookup
+3173bfc	100	100	0	pass	ai+competitive	Extract filter + conviction button base styles in followups (9 buttons optimized)
+a11be48	100	100	0	pass	data+workflow	perf: extract taskRowStyle + statusIconColor helpers in timeline page
+a7032be	100	100	0	pass	copy+competitive	perf: fix O(n²) filter in skills page + add error logging in reports
+b07ad74	100	100	0	pass	ceo+strategy	perf: memoize document grouping + extract deal-heat card styles
+10b9fd7	100	100	0	pass	product+design	perf: eliminate IIFEs + extract tier badge/action styles in investors
+b5d40cd	100	100	0	pass	engineering+ai	perf: extract sheet tab + save button styles in model page
+7b2c467	100	100	0	pass	workflow+data	fix: add error logging to 10 silent catch blocks across 4 files
+78a736d	100	100	0	pass	ops+reliability	perf: fix O(n²) critical path lookup + hoist tier styles + error logging
+d744b61	100	100	0	pass	ai+competitive	fix: add context-tagged error logging to 10 catch blocks
+a6b94ba	100	100	0	pass	design+ux	fix: add error logging to 8 catch blocks in workspace + today pages
+a90eac6	100	100	0	pass	product+copy	Add console.warn to 20 remaining silent catches (investors, investor detail, documents, model, enrichment)
+8a33410	100	100	0	pass	engineering+ai	Memoize pipeline statusGrid (O(11n log n)→O(n)), extract 7 forecast style constants from .map() loops
+8c20150	100	100	0	pass	workflow+data	Extract 8 dealflow table row inline styles to module constants, reducing per-render allocations
+e8e9f95	100	100	0	pass	copy+competitive	Extract 5 today overdue styles to constants, rewrite 3 intelligence empty states for clarity
+e65278e	100	100	0	pass	ceo+strategy	Extract compare meetingTypeBadge + meetings trendConfig to module level, codebase audit clean
+bd510e1	100	100	0	pass	product+design	Extract TREND_CONFIG, OBJ_TABS, VEL_CONFIG, ACCENT_COLOR_MAP from render loops
+01a10cb	100	100	0	pass	engineering+ai	Optimize momentum 10K+ cell styles, extract strategic trendValueBase + win-loss funnelStageName
+f8221b8	100	100	0	pass	workflow+data	Use cachedFetch in enrichment safeFetch, parallelize documents fetchDocs+fetchFlags
+a21ead4	100	100	0	pass	ops+reliability	Extract PRIORITY_COLORS, EVENT_TYPE_COLORS from render loops, glanceDivider from IIFE

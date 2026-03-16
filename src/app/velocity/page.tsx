@@ -186,9 +186,11 @@ export default function VelocityPage() {
               Sorted by urgency</span></div></div>
 
         {investors.length === 0 ? (
-          <div style={{ padding: 'var(--space-12)', textAlign: 'center' }}>
-            <span style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
-              No active investors in pipeline. Add investors to track velocity.</span></div>
+          <div className="card flex flex-col items-center gap-3" style={{ padding: 'var(--space-8)', textAlign: 'center' }}>
+            <span style={{ color: 'var(--text-muted)' }}><Users className="w-8 h-8" /></span>
+            <p style={{ color: 'var(--text-secondary)', fontSize: 'var(--font-size-sm)' }}>
+              No active investors in pipeline. Add investors to start tracking velocity.</p>
+            <Link href="/investors" className="btn btn-primary btn-sm">Go to Investors</Link></div>
         ) : (
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>

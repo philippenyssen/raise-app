@@ -73,7 +73,8 @@ export default function DocumentEditorPage() {
       toast('Saved');
       const refreshRes = await fetch(`/api/documents/${id}`);
       if (refreshRes.ok) setDoc(await refreshRes.json());
-    } catch {
+    } catch (e) {
+      console.warn('[DOC_SAVE]', e instanceof Error ? e.message : e);
       toast('Could not save — check your connection and try again', 'error');
     } finally {
       setSaving(false);
@@ -113,7 +114,7 @@ export default function DocumentEditorPage() {
       if (!res.ok) throw new Error('Failed');
       setDoc(d => d ? { ...d, status } : d);
       toast(`Status: ${status}`);
-    } catch { toast('Could not update document status — try again', 'error'); }
+    } catch (e) { console.warn('[DOC_STATUS]', e instanceof Error ? e.message : e); toast('Could not update document status — try again', 'error'); }
   }
 
   async function runAI(operation: AIOperation) {
@@ -135,7 +136,8 @@ export default function DocumentEditorPage() {
         setAiResult({ type: operation, data: data.result });
         toast('AI analysis complete');
       }
-    } catch {
+    } catch (e) {
+      console.warn('[DOC_AI]', e instanceof Error ? e.message : e);
       toast('AI operation failed', 'error');
     }
     setAiLoading(false);

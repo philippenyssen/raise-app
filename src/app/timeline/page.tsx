@@ -102,7 +102,7 @@ export default function TimelinePage() {
       if (!res.ok) throw new Error('Failed to update task');
       toast(newStatus === 'done' ? 'Task completed' : 'Task reopened');
       fetchData();
-    } catch { toast('Couldn\'t update task — try again', 'error'); }
+    } catch (e) { console.warn('[TIMELINE_TOGGLE]', e instanceof Error ? e.message : e); toast('Couldn\'t update task — try again', 'error'); }
   }
 
   async function updateTaskStatus(id: string, status: string) {
@@ -114,7 +114,7 @@ export default function TimelinePage() {
       if (!res.ok) throw new Error('Failed to update');
       toast(`Status updated to ${status.replace(/_/g, ' ')}`);
       fetchData();
-    } catch { toast('Couldn\'t update status — try again', 'error'); }
+    } catch (e) { console.warn('[TIMELINE_STATUS]', e instanceof Error ? e.message : e); toast('Couldn\'t update status — try again', 'error'); }
   }
 
   async function deleteTaskById(id: string) {
@@ -123,7 +123,7 @@ export default function TimelinePage() {
       if (!res.ok) throw new Error('Failed to delete');
       toast('Task deleted');
       fetchData();
-    } catch { toast('Couldn\'t delete task — try again', 'error'); }
+    } catch (e) { console.warn('[TIMELINE_DELETE]', e instanceof Error ? e.message : e); toast('Couldn\'t delete task — try again', 'error'); }
   }
 
   async function handleAddTask(e: React.FormEvent<HTMLFormElement>) {
@@ -141,7 +141,7 @@ export default function TimelinePage() {
       toast('Task created');
       setShowAdd(false);
       fetchData();
-    } catch { toast('Couldn\'t create task — check all fields and retry', 'error'); }
+    } catch (e) { console.warn('[TIMELINE_CREATE]', e instanceof Error ? e.message : e); toast('Couldn\'t create task — check all fields and retry', 'error'); }
     setCreating(false);
   }
 

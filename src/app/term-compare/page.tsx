@@ -123,7 +123,8 @@ export default function TermComparePage() {
       const data: CompareResponse = await res.json();
       setResults(data);
       toast('Term sheet comparison ready — scroll down for analysis');
-    } catch {
+    } catch (e) {
+      console.warn('[TERM_COMPARE]', e instanceof Error ? e.message : e);
       toast('Couldn\'t run comparison — check your API key in settings', 'error');
     } finally {
       setLoading(false);

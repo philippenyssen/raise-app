@@ -89,7 +89,7 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
                 updated[assistantIdx] = { role: 'assistant', content: fullText };
                 return updated;});
             }
-          } catch { /* skip unparseable chunks */ }
+          } catch (e) { console.warn('[AICHAT_CHUNK]', e instanceof Error ? e.message : e); }
         }}
 
       const contentMatch = fullText.match(/<updated_content>([\s\S]*?)<\/updated_content>/);
@@ -111,7 +111,8 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
           return updated;});
         setPendingChange({ content: fullText, messageIdx: assistantIdx });
       }
-    } catch {
+    } catch (e) {
+      console.warn('[AICHAT_SEND]', e instanceof Error ? e.message : e);
       setMessages(prev => {
         const updated = [...prev];
         if (updated.length > 0 && updated[updated.length - 1].role === 'assistant') {

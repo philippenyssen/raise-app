@@ -184,7 +184,8 @@ export default function SettingsPage() {
       if (data.followup_cadence) {
         followup.reset({ ...DEFAULT_FOLLOWUP_CADENCE, ...(data.followup_cadence as FollowupCadenceForm) });
       }
-    } catch {
+    } catch (e) {
+      console.warn('[SETTINGS_LOAD]', e instanceof Error ? e.message : e);
       toast('Couldn\'t load settings — try refreshing the page', 'error');
     } finally {
       setLoading(false);
@@ -208,7 +209,8 @@ export default function SettingsPage() {
       const res = await fetch('/api/test-key');
       if (!res.ok) throw new Error(`Status ${res.status}`);
       setKeyTest(await res.json());
-    } catch {
+    } catch (e) {
+      console.warn('[SETTINGS_KEY_TEST]', e instanceof Error ? e.message : e);
       setKeyTest({ status: 'error', message: 'Could not reach test endpoint' });
     } finally {
       setTesting(false);

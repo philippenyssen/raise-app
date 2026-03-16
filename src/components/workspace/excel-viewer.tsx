@@ -87,8 +87,8 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
           } else if (cell.v !== undefined && cell.v !== '') {
             engine.setCellContents({ sheet: sheetId, row, col }, cell.v);
           }
-        } catch {
-          // Skip cells that cause errors
+        } catch (e) {
+          console.warn('[EXCEL_CELL]', e instanceof Error ? e.message : e);
         }});
     };
 
@@ -116,7 +116,8 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
       if (val === null || val === undefined) return null;
       if (typeof val === 'object' && 'type' in val) return '#ERROR'; // CellError
       return val as string | number;
-    } catch {
+    } catch (e) {
+      console.warn('[EXCEL_COMPUTE]', e instanceof Error ? e.message : e);
       return null;
     }
   }, [hf, displaySheetName]);
