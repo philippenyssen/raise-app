@@ -4,16 +4,16 @@ import { useEffect, useState, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/toast';
-import { fmtDateShort, fmtDate } from '@/lib/format';
+import { fmtDateShort } from '@/lib/format';
 import { cachedFetch } from '@/lib/cache';
 import { MS_PER_MINUTE, relativeTime } from '@/lib/time';
 import {
-  FileText, Sparkles, FolderOpen, Table, ArrowRight, ClipboardList,
-  Activity, Download, Columns3, Target, Timer, ShieldCheck,
+  FileText, Sparkles, ArrowRight,
+  Activity, Download, Columns3, Target, Timer,
   RefreshCw, Zap, TrendingUp, TrendingDown, Minus, AlertTriangle,
   ChevronRight, Clock, ArrowUpRight, ArrowDownRight, ShieldAlert,
   UserMinus, CalendarClock, Flame, Gauge, CheckCircle2, Mail,
-  Calendar, MessageSquare, UserPlus, ArrowUp,
+  Calendar, MessageSquare,
 } from 'lucide-react';
 import { DealHeatInvestor } from '@/lib/types';
 import { STATUS_LABELS } from '@/lib/constants';
@@ -44,14 +44,6 @@ function timeColor(daysOrWeeks: number, lowThresh: number, highThresh: number): 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
-
-interface DocSummary {
-  id: string;
-  title: string;
-  type: string;
-  status: string;
-  updated_at: string;
-}
 
 interface UpcomingTask {
   id: string;
@@ -250,8 +242,6 @@ export default function Dashboard() {
   const { toast } = useToast();
   const [data, setData] = useState<HealthData | null>(null);
   const [pulse, setPulse] = useState<PulseData | null>(null);
-  const [docs, setDocs] = useState<DocSummary[]>([]);
-  const [dataRoomCount, setDataRoomCount] = useState(0);
   const [tasks, setTasks] = useState<UpcomingTask[]>([]);
   const [activity, setActivity] = useState<ActivityItem[]>([]);
   const [dataQuality, setDataQuality] = useState<DataQualityData | null>(null);
@@ -266,6 +256,7 @@ export default function Dashboard() {
   const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
   const [sectionErrors, setSectionErrors] = useState<Record<string, boolean>>({});
   const [focusMode, setFocusMode] = useState(false);
+  const [narrativeBrief, setNarrativeBrief] = useState<string | null>(null);
 
   const safeFetch = useCallback(async <T,>(
     key: string, url: string, setter: (v: T) => void,
@@ -289,8 +280,6 @@ export default function Dashboard() {
     const map: Record<string, () => Promise<void>> = {
       health: () => safeFetch('health', '/api/health', setData, silent),
       pulse: () => safeFetch('pulse', '/api/pulse', setPulse, silent),
-      docs: () => safeFetch('docs', '/api/documents', setDocs, silent),
-      dataRoom: () => safeFetch('dataRoom', '/api/data-room/count', setDataRoomCount, silent, async r => (await r.json()).count),
       tasks: () => safeFetch('tasks', '/api/tasks?type=upcoming&limit=5', setTasks, silent),
       activity: () => safeFetch('activity', '/api/tasks?type=activity&limit=10', setActivity, silent),
       dataQuality: () => safeFetch('dataQuality', '/api/data-quality', setDataQuality, silent),
@@ -298,7 +287,8 @@ export default function Dashboard() {
       atRisk: () => safeFetch('atRisk', '/api/at-risk', setAtRisk, silent),
       dealHeat: () => safeFetch('dealHeat', '/api/deal-heat', setDealHeat, silent),
       followups: () => safeFetch('followups', '/api/followups?view=pending', setPendingFollowups, silent),
-      velocity: () => safeFetch('velocity', '/api/velocity', setVelocity, silent),};
+      velocity: () => safeFetch('velocity', '/api/velocity', setVelocity, silent),
+      briefing: () => safeFetch<{ todaySummary?: string }>('briefing', '/api/briefing', (d) => { if (d && typeof d === 'object' && 'todaySummary' in d) setNarrativeBrief((d as { todaySummary?: string }).todaySummary ?? null); }, silent),};
     return map[key]?.() ?? Promise.resolve();
   }, [safeFetch]);
 
@@ -306,7 +296,7 @@ export default function Dashboard() {
     if (!silent) setLoading(true); else setRefreshing(true);
     // Critical path: load essential data first (health + pulse + stressTest)
     const critical = ['health', 'pulse', 'stressTest'];
-    const secondary = ['docs','dataRoom','tasks','activity','dataQuality','atRisk','dealHeat','followups','velocity'];
+    const secondary = ['tasks','activity','dataQuality','atRisk','dealHeat','followups','velocity','briefing'];
     await Promise.allSettled(critical.map(k => fetchSection(k, silent)));
     setLoading(false); // Unblock render after critical data loads
     // Load remaining sections in background — each renders as it arrives
@@ -465,6 +455,29 @@ export default function Dashboard() {
                   {t} CSV</a>
               ))}</div></div></div></div>
 
+      {/* AI Narrative Brief — strategic synthesis at a glance */}
+      {narrativeBrief && (
+        <div
+          style={{
+            background: 'var(--surface-1)',
+            borderRadius: 'var(--radius-xl)',
+            padding: 'var(--space-5) var(--space-6)',
+            borderLeft: '3px solid var(--accent)',
+          }}>
+          <div className="flex items-start gap-3">
+            <span className="shrink-0 mt-0.5" style={{ color: 'var(--accent)' }}>
+              <Sparkles className="w-4 h-4" /></span>
+            <p style={{
+              fontSize: 'var(--font-size-sm)',
+              color: 'var(--text-primary)',
+              fontWeight: 300,
+              lineHeight: 1.6,
+              margin: 0,
+            }}>{narrativeBrief}</p>
+          </div>
+        </div>
+      )}
+
       {/* Empty State */}
       {data && data.totalInvestors === 0 && (
         <div
@@ -611,41 +624,7 @@ export default function Dashboard() {
             <SectionError label="Pipeline velocity" onRetry={() => fetchSection('velocity')} />
           ) : null)}
 
-          {/* Close Forecast */}
-          {!focusMode && stressTest && (
-            <Link href="/stress-test" className="block group">
-              <div
-                className="transition-colors"
-                style={{ borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)' }}>
-                <div className="flex items-center justify-between mb-3">
-                  <h2
-                    className="section-title flex items-center gap-2">
-                    <ShieldAlert className="w-4 h-4" /> Close forecast</h2>
-                  <span
-                    className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                    style={labelAccent}>
-                    Full stress test <ArrowRight className="w-3 h-3" /></span></div>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div>
-                    <div style={labelTertiary}>Target</div>
-                    <div className="tabular-nums mt-0.5" style={metricXlPrimary}>
-                      EUR {stressTest.target >= 1000 ? `${(stressTest.target / 1000).toFixed(1).replace(/\.0$/, '')}Bn` : `${stressTest.target}M`}
-                    </div></div>
-                  <div>
-                    <div style={labelTertiary}>Forecast (base)</div>
-                    <div className="tabular-nums mt-0.5" style={metricXlPrimary}>
-                      EUR {stressTest.forecast.base >= 1000 ? `${(stressTest.forecast.base / 1000).toFixed(1).replace(/\.0$/, '')}Bn` : `${Math.round(stressTest.forecast.base)}M`}
-                    </div></div>
-                  <div>
-                    <div style={labelTertiary}>Probability</div>
-                    <div className="tabular-nums mt-0.5" style={metricXlPrimary}>
-                      {stressTest.closeProbability}%</div></div>
-                  <div>
-                    <div style={labelTertiary}>Status</div>
-                    <div className="mt-1" style={textSmPrimary}>
-                      {stressTest.onTrack ? 'On track' : stressTest.healthStatus === 'red' ? 'Needs attention' : 'Monitor'}</div>
-                  </div></div></div></Link>
-          )}
+          {/* Close Forecast removed — data already shown in Raise Progress above */}
 
           {/* Gap Closers — top investors to accelerate */}
           {!focusMode && stressTest?.gapInvestors && stressTest.gapInvestors.length > 0 && !stressTest.onTrack && (
@@ -1002,122 +981,11 @@ export default function Dashboard() {
                 </div>);
             })()}</div>}
 
-          {/* Deliverables */}
-          {!focusMode && <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            {[
-              { href: '/workspace', Icon: Sparkles, label: 'Workspace', sub: docs.length > 0 ? `${docs.length} document${docs.length !== 1 ? 's' : ''}` : 'Create deliverables' },
-              { href: '/data-room', Icon: FolderOpen, label: 'Data Room', sub: dataRoomCount > 0 ? `${dataRoomCount} file${dataRoomCount !== 1 ? 's' : ''} uploaded` : 'Upload source materials' },
-              { href: '/model', Icon: Table, label: 'Financial Model', sub: 'Build & refine with AI' },
-              { href: '/documents', Icon: FileText, label: 'Documents', sub: docs.length > 0 ? `${docs.filter(d => d.status === 'draft').length} drafts` : 'Version history' },
-            ].map(({ href, Icon, label, sub }) => (
-              <Link
-                key={href}
-                href={href}
-                className="group rounded-xl p-4 transition-colors">
-                <Icon className="w-5 h-5 mb-2" style={textTertiary} />
-                <div style={textSmPrimary}>{label}</div>
-                <div className="mt-1" style={labelMuted}>{sub}</div>
-                <div className="mt-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity" style={labelAccent}>
-                  Open <ArrowRight className="w-3 h-3" /></div></Link>
-            ))}</div>}
+          {/* Deliverables removed — accessible via sidebar and command palette */}
 
-          {/* Data Quality */}
-          {!focusMode && sectionErrors.dataQuality && !dataQuality && <SectionError label="Data quality" onRetry={() => fetchSection('dataQuality')} />}
-          {!focusMode && dataQuality && (
-            <div style={cardPadding}>
-              <div className="flex items-center justify-between mb-3">
-                <h2 className="section-title flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4" /> Data quality</h2>
-                <Link href="/investors" className="flex items-center gap-1" style={labelAccent}>
-                  Fix gaps <ArrowRight className="w-3 h-3" /></Link></div>
+          {/* Data Quality removed — diagnostic view surfaced in Quick Actions when completeness < 70% */}
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                <div className="space-y-2">
-                  <div>
-                    <div className="metric-label mb-1">Overall completeness</div>
-                    <div className="metric-value">{dataQuality.overallCompleteness}%</div></div>
-                  <div>
-                    <div className="metric-label mb-1">Intelligence readiness</div>
-                    <div className="flex items-center gap-2">
-                      <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--surface-3)' }}>
-                        <div className="h-full rounded-full transition-all duration-500" style={{ width: `${dataQuality.intelligenceReadiness}%`, background: 'var(--accent)' }}
-                          /></div>
-                      <span className="tabular-nums" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-secondary)' }}>{dataQuality.intelligenceReadiness}%</span>
-                    </div></div></div>
-
-                <div className="space-y-1.5">
-                  <div className="mb-1" style={labelTertiary}>Field coverage</div>
-                  {dataQuality.fieldCompleteness
-                    .filter(f => f.field !== 'name' && f.field !== 'type' && f.field !== 'tier' && f.field !== 'status')
-                    .map(f => (
-                    <div key={f.field} className="flex items-center gap-2">
-                      <span className="w-20 truncate" style={labelMuted}>{f.field.replace(/_/g, ' ')}</span>
-                      <div className="flex-1 h-1 rounded-full overflow-hidden" style={{ background: 'var(--surface-3)' }}>
-                        <div className="h-full rounded-full" style={{ width: `${f.pct}%`, background: 'var(--accent)' }} /></div>
-                      <span className="tabular-nums w-8 text-right" style={labelMuted}>{f.pct}%</span></div>
-                  ))}</div>
-
-                <div className="space-y-1.5">
-                  <div className="mb-1" style={labelTertiary}>Recommendations</div>
-                  {dataQuality.recommendations.slice(0, 3).map((rec, i) => (
-                    <div key={i} className="flex items-start gap-1.5">
-                      <span className="w-1 h-1 rounded-full mt-1.5 shrink-0" style={{ background: 'var(--accent)' }} />
-                      <span className="leading-snug" style={labelSecondary}>{rec}</span></div>
-                  ))}</div></div></div>
-          )}
-
-          {/* Tasks + Activity */}
-          {!focusMode && <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div style={cardPadding}>
-              <div className="flex items-center justify-between mb-3">
-                <h2 className="section-title flex items-center gap-2">
-                  <ClipboardList className="w-4 h-4" /> Upcoming tasks</h2>
-                <Link href="/timeline" className="flex items-center gap-1" style={labelAccent}>
-                  All tasks <ArrowRight className="w-3 h-3" /></Link></div>
-              {sectionErrors.tasks && tasks.length === 0 ? (
-                <SectionError label="Tasks" onRetry={() => fetchSection('tasks')} />
-              ) : tasks.length === 0 ? (
-                <div style={{ padding: 'var(--space-2) 0' }}>
-                  <p style={labelSmMuted}>No immediate deadlines — <Link href="/meetings/capture" style={{ color: 'var(--accent)', textDecoration: 'none' }}>log a meeting</Link> to generate tasks</p>
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  {tasks.map(t => {
-                    const overdue = t.due_date && new Date(t.due_date) < new Date();
-                    return (
-                      <div
-                        key={t.id}
-                        className="flex items-center justify-between py-1.5 px-2 rounded transition-colors hover-surface-2">
-                        <div className="min-w-0">
-                          <div className="truncate" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)' }}>{t.title}</div>
-                          {t.investor_name && <div className="truncate" style={labelMuted}>{t.investor_name}</div>}</div>
-                        <div className="flex items-center gap-2 shrink-0">
-                          <span style={labelTertiary}>{t.priority}</span>
-                          {t.due_date && (
-                            <span style={{ fontSize: 'var(--font-size-xs)', color: overdue ? 'var(--danger)' : 'var(--text-muted)', fontWeight: overdue ? 400 : 300 }}>
-                              {overdue ? `${fmtDate(t.due_date)} (overdue)` : fmtDate(t.due_date)}</span>
-                          )}</div>
-                      </div>);
-                  })}</div>
-              )}</div>
-
-            <div style={cardPadding}>
-              <div className="flex items-center justify-between mb-3">
-                <h2 className="section-title flex items-center gap-2">
-                  <Activity className="w-4 h-4" /> Recent activity</h2>
-                <Link href="/timeline" className="flex items-center gap-1" style={labelAccent}>
-                  Full log <ArrowRight className="w-3 h-3" /></Link></div>
-              {sectionErrors.activity && activity.length === 0 ? (
-                <SectionError label="Activity" onRetry={() => fetchSection('activity')} />
-              ) : activity.length === 0 ? (
-                <div style={{ padding: 'var(--space-2) 0' }}>
-                  <p style={labelSmMuted}>No activity recorded yet</p></div>
-              ) : (
-                <div className="space-y-1">
-                  {activity.slice(0, 10).map(a => (
-                    <ActivityRow key={a.id} activity={a} />
-                  ))}</div>
-              )}</div></div>}
+          {/* Tasks + Activity removed — accessible via Today page and /timeline */}
 
           {/* Quick Actions */}
           {(() => {
@@ -1423,44 +1291,3 @@ function FollowupRow({ followup, onComplete }: { followup: FollowupItem; onCompl
     </div>);
 }
 
-const EVENT_ICONS: Record<string, typeof Activity> = {
-  meeting_logged: Calendar,
-  status_changed: ArrowUp,
-  followup_completed: CheckCircle2,
-  investor_added: UserPlus,
-  followup_created: Mail,
-  meeting_created: Calendar,
-};
-
-function ActivityRow({ activity }: { activity: ActivityItem }) {
-  const Icon = EVENT_ICONS[activity.event_type] || Activity;
-  const timeAgo = formatTimeAgo(activity.created_at);
-
-  return (
-    <div className="table-row flex items-start gap-2.5 py-1.5 px-2 rounded transition-colors">
-      <span className="mt-0.5 shrink-0" style={textTertiary}>
-        <Icon className="w-3.5 h-3.5" /></span>
-      <div className="flex-1 min-w-0">
-        <div className="truncate" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)' }}>{activity.subject}</div>
-        <div className="flex items-center gap-2" style={labelMuted}>
-          {activity.investor_name && (
-            <span style={stTextSecondary}>{activity.investor_name}</span>
-          )}
-          <span>{activity.event_type.replace(/_/g, ' ')}</span>
-          <span>{timeAgo}</span></div></div>
-    </div>);
-}
-
-function formatTimeAgo(dateStr: string): string {
-  const now = new Date();
-  const date = new Date(dateStr);
-  const diffMs = now.getTime() - date.getTime();
-  const diffMins = Math.round(diffMs / 60000);
-  if (diffMins < 1) return 'just now';
-  if (diffMins < 60) return `${diffMins}m ago`;
-  const diffHrs = Math.round(diffMins / 60);
-  if (diffHrs < 24) return `${diffHrs}h ago`;
-  const diffDays = Math.round(diffHrs / 24);
-  if (diffDays < 7) return `${diffDays}d ago`;
-  return fmtDateShort(date);
-}
