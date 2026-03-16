@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { cachedFetch } from '@/lib/cache';
 import Link from 'next/link';
 import {
@@ -287,7 +287,9 @@ export default function StrategicPage() {
       {/* ================================================================ */}
       {/* HEALTH TREND SPARKLINE                                           */}
       {/* ================================================================ */}
-      {data.historicalSnapshots.length >= 2 && (
+      {data.historicalSnapshots.length >= 2 && (() => {
+        const snapDates = data.historicalSnapshots.map(s => s.date);
+        return (
         <div className="card">
           <div className="flex items-center gap-2 mb-4">
             <BarChart3 className="w-4 h-4" style={stAccent} />
@@ -297,19 +299,19 @@ export default function StrategicPage() {
             <SparklineRow
               label="Readiness"
               values={data.historicalSnapshots.map(s => s.readinessScore)}
-              dates={data.historicalSnapshots.map(s => s.date)}
+              dates={snapDates}
               color="success" />
             <SparklineRow
               label="Narrative"
               values={data.historicalSnapshots.map(s => s.narrativeScore)}
-              dates={data.historicalSnapshots.map(s => s.date)}
+              dates={snapDates}
               color="purple" />
             <SparklineRow
               label="Pipeline"
               values={data.historicalSnapshots.map(s => s.pipelineScore)}
-              dates={data.historicalSnapshots.map(s => s.date)}
-              color="accent" /></div></div>
-      )}
+              dates={snapDates}
+              color="accent" /></div></div>);
+      })()}
 
       {/* ================================================================ */}
       {/* TEMPORAL TRENDS (cycle 14)                                        */}

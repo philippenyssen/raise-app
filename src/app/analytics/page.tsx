@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useToast } from '@/components/toast';
 import { cachedFetch } from '@/lib/cache';
@@ -179,7 +179,21 @@ export default function AnalyticsPage() {
   }
 
   const { funnel, velocity, engagement, risks, winLoss, summary } = data;
-  const maxStageCount = Math.max(...(summary.pipelineStages?.map(s => s.count) ?? []), 1);
+  const maxStageCount = useMemo(() => Math.max(...(summary.pipelineStages?.map(s => s.count) ?? []), 1), [summary.pipelineStages]);
+
+  // Pre-sort expensive Object.entries chains
+  const sortedEnthusiasmByType = useMemo(
+    () => Object.entries(engagement.enthusiasmByType).sort((a, b) => b[1].avg - a[1].avg),
+    [engagement.enthusiasmByType]
+  );
+  const sortedOutcomeByTier = useMemo(
+    () => Object.entries(winLoss.outcomeByTier).sort(([a], [b]) => Number(a) - Number(b)),
+    [winLoss.outcomeByTier]
+  );
+  const sortedOutcomeByType = useMemo(
+    () => Object.entries(winLoss.outcomeByType).sort(([, a], [, b]) => (b.active / (b.active + b.passed + b.dropped)) - (a.active / (a.active + a.passed + a.dropped))),
+    [winLoss.outcomeByType]
+  );
 
   return (
     <div className="space-y-6 pb-12 page-content">
@@ -564,9 +578,7 @@ export default function AnalyticsPage() {
               <p style={labelSmMuted}>No enthusiasm data yet. Log meetings to track investor signals.</p>
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {Object.entries(engagement.enthusiasmByType)
-                  .sort((a, b) => b[1].avg - a[1].avg)
-                  .map(([type, data]) => (
+                {sortedEnthusiasmByType.map(([type, data]) => (
                     <div key={type} className="rounded-lg p-3">
                       <div className="mb-1" style={labelMuted10}>{TYPE_LABELS[type] || type}</div>
                       <div className="flex items-center gap-2">
@@ -696,9 +708,7 @@ export default function AnalyticsPage() {
               <h3 className="text-xs font-normal tracking-wider mb-3" style={stTextMuted}>
                 Outcomes by Tier</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {Object.entries(winLoss.outcomeByTier)
-                  .sort(([a], [b]) => Number(a) - Number(b))
-                  .map(([tier, data]) => {
+                {sortedOutcomeByTier.map(([tier, data]) => {
                     const total = data.active + data.passed + data.dropped;
                     return (
                       <div key={tier} className="rounded-lg p-3">
@@ -735,9 +745,7 @@ export default function AnalyticsPage() {
               <h3 className="text-xs font-normal tracking-wider mb-3" style={stTextMuted}>
                 Outcomes by Investor Type</h3>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {Object.entries(winLoss.outcomeByType)
-                  .sort(([, a], [, b]) => (b.active / (b.active + b.passed + b.dropped)) - (a.active / (a.active + a.passed + a.dropped)))
-                  .map(([type, data]) => {
+                {sortedOutcomeByType.map(([type, data]) => {
                     const total = data.active + data.passed + data.dropped;
                     const retentionRate = total > 0 ? Math.round((data.active / total) * 100) : 0;
                     return (

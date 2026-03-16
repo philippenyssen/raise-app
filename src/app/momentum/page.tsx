@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { cachedFetch } from '@/lib/cache';
 import { relativeTime, MS_PER_MINUTE } from '@/lib/time';
@@ -214,10 +214,10 @@ export default function MomentumPage() {
 
   const dirConfig = DIRECTION_CONFIG[data.overallDirection];
   const DirIcon = dirConfig.icon;
-  const maxOverall = Math.max(...data.overallTrend.map(t => t.score), 1);
+  const maxOverall = useMemo(() => Math.max(...data.overallTrend.map(t => t.score), 1), [data.overallTrend]);
 
-  // Identify anomaly investor IDs for highlighting in the heatmap
-  const anomalyInvestorIds = new Set(data.anomalies.map(a => a.investorId));
+  // Identify anomaly investor IDs for highlighting in the heatmap (memoized — O(n) Set build)
+  const anomalyInvestorIds = useMemo(() => new Set(data.anomalies.map(a => a.investorId)), [data.anomalies]);
 
   return (
     <div className="flex-1 overflow-y-auto page-content" style={stSurface0}>
