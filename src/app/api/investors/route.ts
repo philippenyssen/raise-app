@@ -154,6 +154,13 @@ export async function PUT(req: NextRequest) {
         closed: [
           { title: `Post-close onboarding for ${name}`, description: 'Send welcome package, schedule board introductions, update cap table.', priority: 'medium', phase: 'closing', due_days: 5 },
         ],
+        passed: [
+          { title: `Post-mortem: why ${name} passed`, description: 'Document the pass reason, key objections, and lessons learned. Update competitive intel if relevant.', priority: 'high', phase: 'preparation', due_days: 2 },
+          { title: `Archive ${name} for potential re-engagement`, description: 'Record timing, relationship contacts, and conditions under which re-engagement would make sense.', priority: 'medium', phase: 'preparation', due_days: 5 },
+        ],
+        dropped: [
+          { title: `Document drop reason for ${name}`, description: 'Record why this investor was dropped and whether re-engagement is possible in future rounds.', priority: 'medium', phase: 'preparation', due_days: 5 },
+        ],
       };
       const tasks = statusTasks[updates.status as string];
       if (tasks) {

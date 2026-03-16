@@ -10,6 +10,7 @@ import {
   computeRaiseForecast,
   detectFomoDynamics,
   computePipelineFlow,
+  getAllTasks,
 } from '@/lib/db';
 import { getAIClient, AI_MODEL } from '@/lib/ai';
 import { parseJsonSafe, checkRateLimit } from '@/lib/api-helpers';
@@ -46,6 +47,7 @@ export async function GET() {
       forecastResult,
       fomoResult,
       pipelineResult,
+      tasksResult,
     ] = await Promise.allSettled([
       getAllInvestors(),
       getMeetings(),
@@ -56,7 +58,8 @@ export async function GET() {
       computeTemporalTrends(),
       computeRaiseForecast(),
       detectFomoDynamics(),
-      computePipelineFlow(),]);
+      computePipelineFlow(),
+      getAllTasks({ status: 'pending' }),]);
 
     const investors = investorsResult.status === 'fulfilled' ? investorsResult.value : [];
     const allMeetings = meetingsResult.status === 'fulfilled' ? meetingsResult.value : [];
@@ -67,6 +70,7 @@ export async function GET() {
     const trends = trendsResult.status === 'fulfilled' ? trendsResult.value : null;
     const forecast = forecastResult.status === 'fulfilled' ? forecastResult.value : null;
     const fomos = fomoResult.status === 'fulfilled' ? fomoResult.value : [];
+    const allTasks = tasksResult.status === 'fulfilled' ? tasksResult.value : [];
     const pipelineFlow = pipelineResult.status === 'fulfilled' ? pipelineResult.value : null;
 
     // ═══════════════════════════════════════════════════════════════════
@@ -224,6 +228,21 @@ export async function GET() {
         category: 'outreach',
         link: `/investors/${inv.id}`,
         timeEstimate: '10-15 min',});
+    }
+
+    // Surface auto-generated tasks from last 48h
+    const cutoff48h = Date.now() - 48 * 3600_000;
+    const recentAutoTasks = allTasks.filter(t =>
+      t.auto_generated && t.status === 'pending' && new Date(t.created_at).getTime() > cutoff48h
+    );
+    for (const t of recentAutoTasks.slice(0, 3)) {
+      urgentActions.push({
+        title: t.title,
+        description: t.description,
+        investorName: t.investor_name || '',
+        category: t.priority === 'critical' || t.priority === 'high' ? 'preparation' : 'followup',
+        link: `/timeline`,
+        timeEstimate: '5-15 min',});
     }
 
     // Sort: preparation first, then escalation, followup, outreach, meeting
