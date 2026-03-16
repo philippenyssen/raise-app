@@ -427,8 +427,8 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
             <div>
               <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', letterSpacing: '0.08em', marginBottom: '4px' }}>Unresolved Objections</p>
               <div className="space-y-1">
-                {item.unresolvedObjections.map((obj, i) => (
-                  <div key={i} className="flex items-start gap-1.5" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', opacity: 0.85 }}>
+                {item.unresolvedObjections.map((obj) => (
+                  <div key={obj} className="flex items-start gap-1.5" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', opacity: 0.85 }}>
                     <AlertTriangle className="w-3 h-3 shrink-0 mt-0.5" />
                     {obj}</div>
                 ))}</div></div>

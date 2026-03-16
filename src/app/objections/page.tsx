@@ -513,10 +513,10 @@ export default function ObjectionsPage() {
                 <p className="text-xs" style={stTextMuted}>All objections have effective responses.</p>
               ) : (
                 <div className="space-y-2">
-                  {unresolved.map((obj, i) => {
+                  {unresolved.map((obj) => {
                     const color = getTopicColor(obj.objection_topic);
                     return (
-                      <div key={i} className="p-2 rounded-lg space-y-1" style={stSurface1}>
+                      <div key={obj.objection_text} className="p-2 rounded-lg space-y-1" style={stSurface1}>
                         <p className="text-xs line-clamp-2" style={stTextSecondary}>{obj.objection_text}</p>
                         <div className="flex items-center justify-between gap-2">
                           <div className="flex items-center gap-2">
@@ -985,10 +985,10 @@ function EffectivenessTab({
                 <TrendingUp className="w-4 h-4" style={stTextTertiary} />
                 <h3 className="text-xs font-normal tracking-wide" style={stTextTertiary}>Emerging</h3></div>
               <div className="space-y-2">
-                {evolution.emergingObjections.map((obj, i) => {
+                {evolution.emergingObjections.map((obj) => {
                   const color = getColor(obj.topic);
                   return (
-                    <div key={i} className="p-2 rounded-lg space-y-1" style={stSurface1}>
+                    <div key={obj.topic} className="p-2 rounded-lg space-y-1" style={stSurface1}>
                       <div className="flex items-center justify-between">
                         <span className="px-1.5 py-0.5 rounded" style={{ fontSize: 'var(--font-size-xs)', ...color.bg, ...color.text }}>
                           {obj.topic}</span>
@@ -1007,10 +1007,10 @@ function EffectivenessTab({
                 <CheckCircle2 className="w-4 h-4" style={stTextSecondary} />
                 <h3 className="text-xs font-normal tracking-wide" style={stTextTertiary}>Resolved</h3></div>
               <div className="space-y-2">
-                {evolution.resolvedObjections.map((obj, i) => {
+                {evolution.resolvedObjections.map((obj) => {
                   const color = getColor(obj.topic);
                   return (
-                    <div key={i} className="p-2 rounded-lg space-y-1" style={stSurface1}>
+                    <div key={obj.topic} className="p-2 rounded-lg space-y-1" style={stSurface1}>
                       <div className="flex items-center justify-between">
                         <span className="px-1.5 py-0.5 rounded" style={{ fontSize: 'var(--font-size-xs)', ...color.bg, ...color.text }}>
                           {obj.topic}</span>
@@ -1033,10 +1033,10 @@ function EffectivenessTab({
                 <AlertTriangle className="w-4 h-4" style={stTextPrimary} />
                 <h3 className="text-xs font-normal tracking-wide" style={stTextTertiary}>Persistent</h3></div>
               <div className="space-y-2">
-                {evolution.persistentObjections.map((obj, i) => {
+                {evolution.persistentObjections.map((obj) => {
                   const color = getColor(obj.topic);
                   return (
-                    <div key={i} className="p-2 rounded-lg space-y-1" style={stSurface1}>
+                    <div key={obj.topic} className="p-2 rounded-lg space-y-1" style={stSurface1}>
                       <div className="flex items-center justify-between">
                         <span className="px-1.5 py-0.5 rounded" style={{ fontSize: 'var(--font-size-xs)', ...color.bg, ...color.text }}>
                           {obj.topic}</span>

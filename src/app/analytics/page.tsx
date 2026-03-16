@@ -463,10 +463,10 @@ export default function AnalyticsPage() {
             <h3 className="text-xs font-normal tracking-wider mb-3" style={stTextMuted}>Daily Activity (4 Weeks)</h3>
             <div className="grid gap-1" style={{ gridTemplateColumns: 'repeat(7, 1fr)' }}>
               {['M','T','W','T','F','S','S'].map((d, i) => <div key={i} className="text-center" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{d}</div>)}
-              {velocity.dailyActivity.map((d, i) => {
+              {velocity.dailyActivity.map((d) => {
                 const max = Math.max(...velocity.dailyActivity.map(x => x.count), 1);
                 const intensity = d.count / max;
-                return <div key={i} className="rounded" title={`${d.date}: ${d.count} activities`} style={{ aspectRatio: '1', background: d.count === 0 ? 'var(--surface-1)' : `color-mix(in srgb, var(--accent) ${Math.round(20 + intensity * 80)}%, var(--surface-1))` }} />;
+                return <div key={d.date} className="rounded" title={`${d.date}: ${d.count} activities`} style={{ aspectRatio: '1', background: d.count === 0 ? 'var(--surface-1)' : `color-mix(in srgb, var(--accent) ${Math.round(20 + intensity * 80)}%, var(--surface-1))` }} />;
               })}</div></div></div></CollapsibleSection>
 
       {/* ═══════════════════════════════════════════════════════════
