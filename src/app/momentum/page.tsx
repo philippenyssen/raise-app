@@ -251,6 +251,11 @@ export default function MomentumPage() {
 
   // Identify anomaly investor IDs for highlighting in the heatmap (memoized — O(n) Set build)
   const anomalyInvestorIds = useMemo(() => new Set(data.anomalies.map(a => a.investorId)), [data.anomalies]);
+  const anomalyByInvestor = useMemo(() => {
+    const map = new Map<string, typeof data.anomalies[0]>();
+    for (const a of data.anomalies) map.set(a.investorId, a);
+    return map;
+  }, [data.anomalies]);
 
   return (
     <div className="flex-1 overflow-y-auto page-content" style={stSurface0}>
@@ -409,8 +414,7 @@ export default function MomentumPage() {
 
                       {/* Weekly score cells */}
                       {inv.weeklyScores.map((ws) => {
-                        const anomalyForWeek = data.anomalies.find(
-                          a => a.investorId === inv.investorId);
+                        const anomalyForWeek = anomalyByInvestor.get(inv.investorId);
                         const isAnomalyCell = anomalyForWeek && ws.week === data.weeks[data.weeks.length - 1];
 
                         return (
