@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
-import { FileText, Eye, Edit3, Save, Clock, Download, FileSpreadsheet, Presentation, FileType } from 'lucide-react';
+import { FileText, Eye, Edit3, Save, Clock, Download, FileSpreadsheet, Presentation, FileType, History } from 'lucide-react';
 import { labelMuted, textSmSecondary } from '@/lib/styles';
 
 // Dynamically import heavy editor components
@@ -108,9 +108,59 @@ function getExportFormats(format: DocFormat): { ext: string; label: string; icon
   }
 }
 
+interface DocVersion {
+  id: string;
+  version_number: number;
+  change_summary: string;
+  created_at: string;
+}
+
 export function DocumentViewer({ document, onContentChange, onSave, saving, dirty }: DocumentViewerProps) {
   const [mode, setMode] = useState<'visual' | 'source'>('visual');
   const [exporting, setExporting] = useState(false);
+  const [showVersions, setShowVersions] = useState(false);
+  const [versions, setVersions] = useState<DocVersion[]>([]);
+  const [loadingVersions, setLoadingVersions] = useState(false);
+  const versionDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close version dropdown on outside click
+  useEffect(() => {
+    if (!showVersions) return;
+    const handler = (e: MouseEvent) => {
+      if (versionDropdownRef.current && !versionDropdownRef.current.contains(e.target as Node)) {
+        setShowVersions(false);
+      }
+    };
+    window.document.addEventListener('mousedown', handler);
+    return () => window.document.removeEventListener('mousedown', handler);
+  }, [showVersions]);
+
+  const loadVersions = useCallback(async () => {
+    if (!document) return;
+    setLoadingVersions(true);
+    try {
+      const res = await fetch(`/api/documents/${document.id}/versions`);
+      if (res.ok) {
+        const data = await res.json();
+        setVersions(data);
+      }
+    } catch { /* ignore */ }
+    finally { setLoadingVersions(false); }
+  }, [document]);
+
+  const restoreVersion = useCallback(async (versionId: string) => {
+    if (!document) return;
+    try {
+      const res = await fetch(`/api/documents/${document.id}/versions?version_id=${versionId}`);
+      if (res.ok) {
+        const version = await res.json();
+        if (version.content) {
+          onContentChange(version.content);
+          setShowVersions(false);
+        }
+      }
+    } catch { /* ignore */ }
+  }, [document, onContentChange]);
 
   const format = useMemo(() => document ? detectFormat(document) : 'richtext', [document]);
   const exportFormats = useMemo(() => getExportFormats(format), [format]);
@@ -277,6 +327,111 @@ export function DocumentViewer({ document, onContentChange, onSave, saving, dirt
             <Save style={{ width: '14px', height: '14px' }} />
             {saving ? 'Saving...' : dirty ? 'Save' : 'Saved'}
           </button>
+
+          {/* Version history */}
+          <div className="relative" ref={versionDropdownRef}>
+            <button
+              onClick={() => {
+                if (!showVersions) loadVersions();
+                setShowVersions(!showVersions);
+              }}
+              className="rounded transition-colors"
+              style={{
+                padding: '6px',
+                background: showVersions ? 'var(--accent-muted)' : 'transparent',
+                color: showVersions ? 'var(--accent)' : 'var(--text-muted)',
+                border: 'none',
+                cursor: 'pointer',
+              }}
+              onMouseEnter={e => {
+                if (!showVersions) {
+                  (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)';
+                  (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)';
+                }
+              }}
+              onMouseLeave={e => {
+                if (!showVersions) {
+                  (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)';
+                  (e.currentTarget as HTMLElement).style.background = 'transparent';
+                }
+              }}
+              title="Version history"
+            >
+              <History style={{ width: '16px', height: '16px' }} />
+            </button>
+            {showVersions && (
+              <div
+                className="absolute z-50"
+                style={{
+                  top: '100%',
+                  right: 0,
+                  marginTop: '4px',
+                  width: '280px',
+                  background: 'var(--surface-1)',
+                  border: '1px solid var(--border-default)',
+                  borderRadius: 'var(--radius-lg)',
+                  boxShadow: 'var(--shadow-lg)',
+                  maxHeight: '300px',
+                  overflow: 'auto',
+                }}
+              >
+                <div style={{ padding: 'var(--space-2) var(--space-3)', borderBottom: '1px solid var(--border-subtle)' }}>
+                  <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                    Version History
+                  </span>
+                </div>
+                {loadingVersions ? (
+                  <div style={{ padding: 'var(--space-4)', textAlign: 'center', fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                    Loading...
+                  </div>
+                ) : versions.length === 0 ? (
+                  <div style={{ padding: 'var(--space-4)', textAlign: 'center', fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                    No versions saved yet
+                  </div>
+                ) : (
+                  versions.map((v, i) => (
+                    <button
+                      key={v.id}
+                      onClick={() => restoreVersion(v.id)}
+                      className="w-full text-left"
+                      style={{
+                        padding: 'var(--space-2) var(--space-3)',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '2px',
+                        borderBottom: i < versions.length - 1 ? '1px solid var(--border-subtle)' : 'none',
+                        background: 'transparent',
+                        border: 'none',
+                        cursor: 'pointer',
+                        borderBottomStyle: i < versions.length - 1 ? 'solid' : 'none',
+                        borderBottomWidth: i < versions.length - 1 ? '1px' : '0',
+                        borderBottomColor: 'var(--border-subtle)',
+                      }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+                    >
+                      <div className="flex items-center justify-between" style={{ width: '100%' }}>
+                        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)' }}>
+                          v{v.version_number}
+                          {i === 0 && <span style={{ marginLeft: '4px', color: 'var(--accent)', fontSize: '10px' }}>current</span>}
+                        </span>
+                        <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                          {new Date(v.created_at).toLocaleDateString()} {new Date(v.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                      </div>
+                      {v.change_summary && (
+                        <span className="truncate" style={{ fontSize: '10px', color: 'var(--text-muted)', maxWidth: '100%' }}>
+                          {v.change_summary}
+                        </span>
+                      )}
+                    </button>
+                  ))
+                )}
+              </div>
+            )}
+          </div>
+
+          <div style={{ width: '1px', height: '16px', background: 'var(--border-subtle)' }} />
 
           {/* Export buttons */}
           {exportFormats.map(({ ext, label, icon: Icon }) => (
