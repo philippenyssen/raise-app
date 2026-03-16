@@ -25,6 +25,8 @@ const labelTertiaryLine = { ...labelTertiary, marginTop: '2px', lineHeight: 1.5 
 const flexIcon = { display: 'flex' } as const;
 const gridGap3 = { gap: 'var(--space-3)' } as const;
 const cardPad4 = { padding: 'var(--space-4)' } as const;
+const metricCardPad: React.CSSProperties = { padding: 'var(--space-3) var(--space-4)' };
+const metricValue: React.CSSProperties = { fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)', marginTop: 4 };
 
 // ---------------------------------------------------------------------------
 // Types — match the updated /api/briefing response
@@ -788,11 +790,11 @@ export default function TodayPage() {
               ].map(m => {
                 const Icon = m.icon;
                 return (
-                  <div key={m.label} className="card" style={{ padding: 'var(--space-3) var(--space-4)' }}>
+                  <div key={m.label} className="card" style={metricCardPad}>
                     <div className="flex items-center gap-2">
                       <span style={{ color: m.color, ...flexIcon }}><Icon className="w-3.5 h-3.5" /></span>
                       <span style={labelMuted}>{m.label}</span></div>
-                    <div className="tabular-nums" style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)', marginTop: 4 }}>{m.value}</div>
+                    <div className="tabular-nums" style={metricValue}>{m.value}</div>
                   </div>);
               })}
             </div></div>);

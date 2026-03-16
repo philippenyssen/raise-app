@@ -136,6 +136,10 @@ const EFFECTIVENESS_BADGE: Record<string, { style: React.CSSProperties; label: s
   ineffective: { style: { background: 'var(--danger-muted)', color: 'var(--text-primary)' }, label: 'Ineffective' },
   unknown: { style: { background: 'var(--surface-2)', color: 'var(--text-muted)' }, label: 'Unknown' },};
 
+function objTabStyle(active: boolean): React.CSSProperties {
+  return { borderBottom: `2px solid ${active ? 'var(--accent)' : 'transparent'}`, color: active ? 'var(--text-primary)' : 'var(--text-muted)', transition: 'color 150ms ease' };
+}
+
 function getTopicColor(topic: string) {
   return TOPIC_COLORS[topic] || DEFAULT_TOPIC_COLOR;
 }
@@ -355,10 +359,7 @@ export default function ObjectionsPage() {
             key={t.key}
             onClick={() => setTab(t.key)}
             className="px-4 py-2.5 text-sm font-normal flex items-center gap-2"
-            style={{
-              borderBottom: `2px solid ${tab === t.key ? 'var(--accent)' : 'transparent'}`,
-              color: tab === t.key ? 'var(--text-primary)' : 'var(--text-muted)',
-              transition: 'color 150ms ease', }}>
+            style={objTabStyle(tab === t.key)}>
             <t.icon className="w-3.5 h-3.5" />
             {t.label}</button>
         ))}</div>
