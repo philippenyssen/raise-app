@@ -65,8 +65,8 @@ export function TopBar() {
         cachedFetch('/api/tasks?type=activity&limit=5'),]);
       if (tRes.ok) setTasks(await tRes.json());
       if (aRes.ok) setActivity(await aRes.json());
-      cachedFetch('/api/investors').then(r => r.ok ? r.json() : []).then((inv: { status: string }[]) => { if (Array.isArray(inv) && inv.length > 0) { const advanced = inv.filter(i => ['term_sheet', 'closed'].includes(i.status)).length; setRaisePct(Math.round((advanced / inv.length) * 100)); } }).catch(() => {});
-    } catch { /* ignore */ }
+      cachedFetch('/api/investors').then(r => r.ok ? r.json() : []).then((inv: { status: string }[]) => { if (Array.isArray(inv) && inv.length > 0) { const advanced = inv.filter(i => ['term_sheet', 'closed'].includes(i.status)).length; setRaisePct(Math.round((advanced / inv.length) * 100)); } }).catch(e => console.warn('[TOPBAR_RAISE]', e instanceof Error ? e.message : e));
+    } catch (e) { console.warn('[TOPBAR_FETCH]', e instanceof Error ? e.message : e); }
   }
 
   const now = new Date();

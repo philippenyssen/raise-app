@@ -394,8 +394,8 @@ export default function EnrichmentPage() {
             jobs.map(job => {
               let sources: string[] = [];
               let errors: string[] = [];
-              try { sources = JSON.parse(job.sources || '[]'); } catch { /* use default */ }
-              try { errors = JSON.parse(job.errors || '[]'); } catch { /* use default */ }
+              try { sources = JSON.parse(job.sources || '[]'); } catch (e) { console.warn('[ENRICH_SOURCES]', e instanceof Error ? e.message : e); }
+              try { errors = JSON.parse(job.errors || '[]'); } catch (e) { console.warn('[ENRICH_ERRORS]', e instanceof Error ? e.message : e); }
               return (
                 <div key={job.id} className="card" style={{ padding: 'var(--space-3) var(--space-4)' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

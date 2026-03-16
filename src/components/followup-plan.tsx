@@ -43,7 +43,7 @@ export default function FollowupPlan({ followups, showInvestorName = false }: { 
       if (!res.ok) return;
       if (action === 'completed') setCompletedIds(prev => new Set(prev).add(id));
       else setSkippedIds(prev => new Set(prev).add(id));
-    } catch { /* non-blocking */ } finally { setBusyId(null); }
+    } catch (e) { console.warn('[FOLLOWUP_ACTION]', e instanceof Error ? e.message : e); } finally { setBusyId(null); }
   }
 
   return (

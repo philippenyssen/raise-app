@@ -143,7 +143,7 @@ export default function InvestorDetailPage() {
         const data = await res.json();
         setScore(data);
       }
-    } catch { /* ignore score errors */ }
+    } catch (e) { console.warn('[INVESTOR_SCORE]', e instanceof Error ? e.message : e); }
     setScoreLoading(false);
     // Fetch trajectory after score (score may create a snapshot)
     try {
@@ -151,7 +151,7 @@ export default function InvestorDetailPage() {
       if (trajRes.ok) {
         setTrajectory(await trajRes.json());
       }
-    } catch { /* ignore trajectory errors */ }
+    } catch (e) { console.warn('[INVESTOR_TRAJECTORY]', e instanceof Error ? e.message : e); }
   }, [id]);
 
   const fetchEnrichment = useCallback(async () => {
@@ -162,7 +162,7 @@ export default function InvestorDetailPage() {
         const data = await res.json();
         setEnrichmentRecords(Array.isArray(data) ? data : []);
       }
-    } catch { /* ignore enrichment errors */ }
+    } catch (e) { console.warn('[INVESTOR_ENRICHMENT]', e instanceof Error ? e.message : e); }
     setEnrichmentLoading(false);
   }, [id]);
 
@@ -172,7 +172,7 @@ export default function InvestorDetailPage() {
       if (res.ok) {
         setEnrichmentStatus(await res.json());
       }
-    } catch { /* ignore */ }
+    } catch (e) { console.warn('[INVESTOR_ENRICH_STATUS]', e instanceof Error ? e.message : e); }
   }, [id]);
 
   const triggerEnrichment = useCallback(async () => {
@@ -209,7 +209,7 @@ export default function InvestorDetailPage() {
       setPortfolio(Array.isArray(portRes) ? portRes : []);
       setBriefs(Array.isArray(briefRes) ? briefRes : []);
       setTasks(Array.isArray(taskRes) ? taskRes : []);
-    } catch { /* ignore */ }
+    } catch (e) { console.warn('[INVESTOR_DATA]', e instanceof Error ? e.message : e); }
     setLoading(false);
   }, [id]);
 
