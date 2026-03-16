@@ -107,8 +107,8 @@ export default function AnalysisPage() {
       {!data && !loading && (
         <EmptyState
           icon={BarChart3}
-          title="No analysis yet"
-          description="Click &quot;Run Analysis&quot; to find patterns across your meetings. Requires at least 2 meetings with notes."
+          title="Fundraise pattern analysis"
+          description="Surfaces what's working, what's stalling, and which investor types convert fastest. Requires at least 2 meetings with notes to detect meaningful patterns."
           action={{ label: 'Run Analysis', onClick: runAnalysis }} />
       )}
 

@@ -825,9 +825,9 @@ export default function FocusPage() {
         <h1 className="page-title">CEO Focus</h1>
         <EmptyState
           icon={Target}
-          title="No investors in the pipeline yet"
-          description="Add investors and log meetings to build your daily priority queue."
-          action={{ label: 'Go to Pipeline', href: '/investors' }} />
+          title="Your daily priority queue is empty"
+          description="The focus queue ranks investors by urgency, momentum risk, and opportunity size. Add investors and log meetings to generate your prioritized action list."
+          action={{ label: 'Add investors to your pipeline', href: '/investors' }} />
       </div>);
   }
 

@@ -12,7 +12,7 @@ export default function FollowupsError({ error, reset }: { error: Error & { dige
           Follow-ups failed to load
         </h2>
         <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }} className="text-center max-w-md">
-          {error.message || 'Something went wrong loading follow-ups.'}
+          {error.message || 'Follow-up actions couldn\'t load. Your action items are safe — retry to reload your pending and overdue follow-ups.'}
         </p>
         {error.digest && (
           <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>ID: {error.digest}</p>

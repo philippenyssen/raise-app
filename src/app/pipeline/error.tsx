@@ -12,7 +12,7 @@ export default function PipelineError({ error, reset }: { error: Error & { diges
           Pipeline failed to load
         </h2>
         <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }} className="text-center max-w-md">
-          {error.message || 'Something went wrong loading the pipeline view.'}
+          {error.message || 'Your investor pipeline couldn\'t load. Check your connection and retry — if this persists, the database may be temporarily unavailable.'}
         </p>
         {error.digest && (
           <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>ID: {error.digest}</p>

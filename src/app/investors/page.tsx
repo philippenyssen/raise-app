@@ -462,8 +462,8 @@ export default function InvestorsPage() {
         {filtered.length === 0 && (
           <EmptyState
             icon={Users}
-            title={investors.length === 0 ? 'No investors yet' : 'No investors match your filters'}
-            description={investors.length === 0 ? 'Click "Add Investor" above to start building your pipeline.' : 'Try adjusting or clearing your filters.'} />
+            title={investors.length === 0 ? 'Your pipeline starts here' : 'No investors match these filters'}
+            description={investors.length === 0 ? 'Add your first investor to start tracking engagement, scoring fit, and building momentum across your fundraise.' : 'Broaden your search or clear filters to see all investors.'} />
         )}</div>
 
       <ConfirmModal

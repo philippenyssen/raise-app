@@ -249,9 +249,9 @@ export default function CompetitivePage() {
       ) : !data || data.competitors.length === 0 ? (
         <EmptyState
           icon={Shield}
-          title="No competitor intelligence yet"
-          description="When investors mention competitors during meetings, log them in your debrief notes. This surfaces patterns in how investors compare you."
-          action={{ label: 'Log a meeting', href: '/meetings' }} />
+          title="Competitive intelligence builds from meetings"
+          description="Every time an investor mentions a competitor during a meeting, that data feeds this dashboard. You'll see which competitors come up most, who's raising, and how investors benchmark you. Log meetings with detailed notes to populate this view."
+          action={{ label: 'Log a meeting', href: '/meetings/capture' }} />
       ) : (
         <div className="card" style={{ overflow: 'hidden' }}>
           {/* Table Header */}

@@ -123,9 +123,9 @@ export default function NetworkPage() {
           <h1 className="page-title">Investor Network</h1></div>
         <EmptyState
           icon={Link2}
-          title="No network cascades detected"
-          description="Add investors and log meetings to build cascade effects."
-          action={{ label: 'Go to Investors', href: '/investors' }} />
+          title="No network cascades detected yet"
+          description="Cascade effects emerge when investors share relationships — co-investors, board connections, or LP overlap. Add investors and track their connections to see how one commitment can trigger a chain reaction across your pipeline."
+          action={{ label: 'Build your pipeline', href: '/investors' }} />
       </div>);
   }
 

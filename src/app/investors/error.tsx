@@ -12,7 +12,7 @@ export default function InvestorsError({ error, reset }: { error: Error & { dige
           Investors failed to load
         </h2>
         <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }} className="text-center max-w-md">
-          {error.message || 'Something went wrong loading investor data.'}
+          {error.message || 'Investor data couldn\'t load. Check your connection and retry — your data is safe, this is a loading issue.'}
         </p>
         {error.digest && (
           <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>ID: {error.digest}</p>

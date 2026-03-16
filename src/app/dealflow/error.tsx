@@ -13,7 +13,7 @@ export default function DealflowError({ error, reset }: { error: Error & { diges
         Dealflow failed to load
       </h2>
       <p className="mb-6 text-sm" style={{ color: 'var(--text-muted)' }}>
-        {error.message || 'An unexpected error occurred.'}
+        {error.message || 'Deal health data couldn\'t compute. This usually resolves on retry — your investor data is unaffected.'}
       </p>
       <div className="flex gap-3">
         <button onClick={reset} className="btn btn-primary btn-md">Retry</button>

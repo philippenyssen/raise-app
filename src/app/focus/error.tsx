@@ -12,7 +12,7 @@ export default function FocusError({ error, reset }: { error: Error & { digest?:
           Focus Mode failed to load
         </h2>
         <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }} className="text-center max-w-md">
-          {error.message || 'Something went wrong loading focus mode.'}
+          {error.message || 'The focus queue couldn\'t compute investor priorities. This is usually a temporary database issue — retry to reload.'}
         </p>
         {error.digest && (
           <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>ID: {error.digest}</p>

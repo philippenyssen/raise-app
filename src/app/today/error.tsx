@@ -12,7 +12,7 @@ export default function TodayError({ error, reset }: { error: Error & { digest?:
           Today&apos;s Brief failed to load
         </h2>
         <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }} className="text-center max-w-md">
-          {error.message || 'Something went wrong loading your daily brief.'}
+          {error.message || 'Your morning briefing couldn\'t load. This is usually a temporary connection issue — retry or refresh the page.'}
         </p>
         {error.digest && (
           <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>ID: {error.digest}</p>

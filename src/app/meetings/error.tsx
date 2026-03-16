@@ -12,7 +12,7 @@ export default function MeetingsError({ error, reset }: { error: Error & { diges
           Meetings failed to load
         </h2>
         <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }} className="text-center max-w-md">
-          {error.message || 'Something went wrong loading meetings.'}
+          {error.message || 'Meeting history couldn\'t load. Your meeting data is safe — this is a temporary loading issue. Retry to reload.'}
         </p>
         {error.digest && (
           <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>ID: {error.digest}</p>
