@@ -386,6 +386,25 @@ export default function Dashboard() {
     { label: 'Closed', value: data.funnel.closed },
   ] : [];
 
+  // Memoize health score computation (7 derived values)
+  const healthScoreMemo = useMemo(() => {
+    const velScore = velocity ? Math.min(100, Math.round(velocity.summary.avg_velocity_score)) : 0;
+    const convRate = data && data.funnel.contacted > 0 ? Math.min(100, Math.round(((data.funnel.term_sheets + data.funnel.closed) / data.funnel.contacted) * 100 * 5)) : 0;
+    const heatScore = dealHeat ? Math.min(100, Math.round((dealHeat.counts.hot * 100 + dealHeat.counts.warm * 70 + dealHeat.counts.cool * 40) / Math.max(dealHeat.counts.total, 1))) : 0;
+    const totalFollowups = pendingFollowups.length;
+    const overdueCount = pendingFollowups.filter(f => f.due_at && f.due_at.split('T')[0] < new Date().toISOString().split('T')[0]).length;
+    const fuRate = totalFollowups > 0 ? Math.round(((totalFollowups - overdueCount) / totalFollowups) * 100) : 100;
+    const dqScore = dataQuality?.overallCompleteness ?? (ph?.dataQualityPct ?? 0);
+    const hs = Math.round(velScore * 0.30 + convRate * 0.25 + heatScore * 0.20 + fuRate * 0.15 + dqScore * 0.10);
+    return { healthScore: hs, scoreClr: scoreColor(hs), velScore, convRate, heatScore, fuRate, dqScore };
+  }, [velocity, data, dealHeat, pendingFollowups, dataQuality, ph]);
+
+  // Memoize watching investors (tier 1 active, top 5)
+  const watchingInvestors = useMemo(
+    () => dealHeat?.investors.filter(i => i.tier === 1 && !['passed','dropped'].includes(i.status)).slice(0, 5) ?? [],
+    [dealHeat]
+  );
+
   if (loading) {
     return (
       <div style={skelWrap}>
@@ -466,15 +485,7 @@ export default function Dashboard() {
         <>
           {/* Fundraise Health Score */}
           {(() => {
-            const velScore = velocity ? Math.min(100, Math.round(velocity.summary.avg_velocity_score)) : 0;
-            const convRate = data && data.funnel.contacted > 0 ? Math.min(100, Math.round(((data.funnel.term_sheets + data.funnel.closed) / data.funnel.contacted) * 100 * 5)) : 0;
-            const heatScore = dealHeat ? Math.min(100, Math.round((dealHeat.counts.hot * 100 + dealHeat.counts.warm * 70 + dealHeat.counts.cool * 40) / Math.max(dealHeat.counts.total, 1))) : 0;
-            const totalFollowups = pendingFollowups.length;
-            const overdueCount = pendingFollowups.filter(f => f.due_at && f.due_at.split('T')[0] < new Date().toISOString().split('T')[0]).length;
-            const fuRate = totalFollowups > 0 ? Math.round(((totalFollowups - overdueCount) / totalFollowups) * 100) : 100;
-            const dqScore = dataQuality?.overallCompleteness ?? (ph?.dataQualityPct ?? 0);
-            const healthScore = Math.round(velScore * 0.30 + convRate * 0.25 + heatScore * 0.20 + fuRate * 0.15 + dqScore * 0.10);
-            const scoreClr = scoreColor(healthScore);
+            const { healthScore, scoreClr, velScore, convRate, heatScore, fuRate, dqScore } = healthScoreMemo;
             return (
               <div className="flex items-center gap-5" style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-4) var(--space-6)' }}>
                 <div style={{ position: 'relative', width: 56, height: 56 }} title="Composite fundraise health (velocity 30%, conversion 25%, heat 20%, follow-ups 15%, data quality 10%)">
@@ -650,12 +661,10 @@ export default function Dashboard() {
           )}
 
           {/* Watching — Tier 1 active investors */}
-          {!focusMode && dealHeat && (() => {
-            const watching = dealHeat.investors.filter(i => i.tier === 1 && !['passed','dropped'].includes(i.status)).slice(0, 5);
-            if (!watching.length) return null;
+          {!focusMode && dealHeat && watchingInvestors.length > 0 && (() => {
             return (
               <div className="flex gap-3 overflow-x-auto" style={{ padding: 'var(--space-1) 0' }}>
-                {watching.map(w => {
+                {watchingInvestors.map(w => {
                   const daysSince = w.lastMeeting ? Math.round((Date.now() - new Date(w.lastMeeting).getTime()) / 864e5) : null;
                   return (
                     <Link key={w.id} href={`/investors/${w.id}`} className="flex items-center gap-2 shrink-0 transition-colors hover-surface-2" style={{ padding: 'var(--space-2) var(--space-3)', borderRadius: 'var(--radius-lg)', background: 'var(--surface-1)' }}>

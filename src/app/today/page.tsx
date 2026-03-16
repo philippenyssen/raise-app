@@ -99,6 +99,15 @@ const CATEGORY_BG: Record<string, string> = {
   escalation: 'var(--danger-muted)',
   meeting: 'var(--warning-muted)',};
 
+const FOLLOWUP_TYPE_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
+  thank_you: { label: 'Thank You', color: 'var(--accent)', bg: 'var(--accent-muted)' },
+  objection_response: { label: 'Objection', color: 'var(--text-primary)', bg: 'var(--danger-muted)' },
+  data_share: { label: 'Share Docs', color: 'var(--chart-4)', bg: 'var(--cat-purple-muted)' },
+  schedule_followup: { label: 'Schedule', color: 'var(--text-secondary)', bg: 'var(--success-muted)' },
+  warm_reengagement: { label: 'Re-engage', color: 'var(--text-tertiary)', bg: 'var(--warning-muted)' },
+  milestone_update: { label: 'Update', color: 'var(--text-tertiary)', bg: 'var(--warn-8)' },
+};
+
 const ALERT_STYLES: Record<string, { bg: string; border: string; color: string; icon: React.ComponentType<{ className?: string }> }> = {
   warning: { bg: 'var(--warning-muted)', border: 'var(--fg-5)', color: 'var(--text-tertiary)', icon: AlertTriangle },
   opportunity: { bg: 'var(--success-muted)', border: 'var(--accent-8)', color: 'var(--text-secondary)', icon: Zap },
@@ -691,14 +700,7 @@ export default function TodayPage() {
               View all</Link></div>
           <div style={flexColGap2}>
             {dueTodayFollowups.map(fu => {
-              const typeConfig: Record<string, { label: string; color: string; bg: string }> = {
-                thank_you: { label: 'Thank You', color: 'var(--accent)', bg: 'var(--accent-muted)' },
-                objection_response: { label: 'Objection', color: 'var(--text-primary)', bg: 'var(--danger-muted)' },
-                data_share: { label: 'Share Docs', color: 'var(--chart-4)', bg: 'var(--cat-purple-muted)' },
-                schedule_followup: { label: 'Schedule', color: 'var(--text-secondary)', bg: 'var(--success-muted)' },
-                warm_reengagement: { label: 'Re-engage', color: 'var(--text-tertiary)', bg: 'var(--warning-muted)' },
-                milestone_update: { label: 'Update', color: 'var(--text-tertiary)', bg: 'var(--warn-8)' },};
-              const tc = typeConfig[fu.action_type] || { label: fu.action_type, color: 'var(--text-tertiary)', bg: 'var(--surface-2)' };
+              const tc = FOLLOWUP_TYPE_CONFIG[fu.action_type] || { label: fu.action_type, color: 'var(--text-tertiary)', bg: 'var(--surface-2)' };
               const isProcessing = completingFollowupId === fu.id;
               return (
                 <div key={fu.id} className="card" style={{ padding: 'var(--space-3)', opacity: isProcessing ? 0.5 : 1, transition: 'opacity 150ms' }}>
@@ -773,7 +775,7 @@ export default function TodayPage() {
         const weekMeetings = data.todayMeetings.length + (overnight?.newMeetings ?? 0);
         const weekStageChanges = overnight?.statusChanges?.length ?? 0;
         const weekTasksDone = overnight?.tasksCompleted ?? 0;
-        const weekNewInvestors = overnight?.statusChanges?.filter(sc => sc.from === 'unknown' || sc.from === 'identified')?.length ?? 0;
+        const weekNewInvestors = overnight?.statusChanges?.filter((sc: { from: string }) => sc.from === 'unknown' || sc.from === 'identified')?.length ?? 0;
         if (weekMeetings + weekStageChanges + weekTasksDone === 0) return null;
         return (
           <div>
