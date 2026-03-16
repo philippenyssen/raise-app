@@ -407,6 +407,7 @@ export default function StressTestPage() {
           <div className="p-3 text-center" style={stBorderTop}>
             <button
               onClick={() => setShowAllInvestors(!showAllInvestors)}
+              aria-expanded={showAllInvestors}
               className="text-xs flex items-center gap-1 mx-auto"
               style={{ color: 'var(--accent)' }}>
               {showAllInvestors ? (

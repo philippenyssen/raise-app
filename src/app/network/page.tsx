@@ -24,6 +24,15 @@ const probDot: React.CSSProperties = { width: '8px', height: '8px', borderRadius
 const checkSizeLabel = { ...labelMuted, marginTop: 'var(--space-0)', display: 'block' as const } as const;
 const investorLinkStyle = { fontWeight: 400, fontSize: 'var(--font-size-sm)', textDecoration: 'none' } as const;
 const arrowConnector = { color: 'var(--text-muted)', marginLeft: '-10px' } as const;
+const dividerPipe: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--border-default)', margin: '0 var(--space-1)' };
+const buttonSurface: React.CSSProperties = { background: 'var(--surface-2)', color: 'var(--text-tertiary)', border: '1px solid var(--border-subtle)' };
+const statValueLg: React.CSSProperties = { fontSize: 'var(--font-size-lg)', fontWeight: 400, color: 'var(--text-primary)' };
+const statValueBase: React.CSSProperties = { fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' };
+const warningBg = { background: 'var(--warning-muted)' } as const;
+const cardHeaderBtn: React.CSSProperties = { cursor: 'pointer', background: 'transparent', border: 'none', textAlign: 'left' };
+const summaryStatText: React.CSSProperties = { fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, marginTop: 'var(--space-0)' };
+const summaryStatAccent: React.CSSProperties = { ...summaryStatText, color: 'var(--accent)' };
+const summaryTitleText: React.CSSProperties = { fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' };
 
 interface CascadeLink { investorId: string; investorName: string; probability: number; cumulativeProbability: number; status: string; tier: number; checkSize: string; capitalM: number; expectedCapitalM: number }
 
@@ -158,7 +167,7 @@ export default function NetworkPage() {
               <span style={stTextMuted}><stat.icon className="w-3.5 h-3.5" /></span>
               <span style={labelMutedTight}>
                 {stat.label}</span></div>
-            <p style={{ fontSize: 'var(--font-size-lg)', fontWeight: 400, color: 'var(--text-primary)' }}>
+            <p style={statValueLg}>
               {stat.value}</p></div>
         ))}</div>
 
@@ -166,7 +175,7 @@ export default function NetworkPage() {
       {bottleneckAlert && (
         <div
           className="card p-4 mb-6 flex items-start gap-3"
-          style={{ background: 'var(--warning-muted)' }}>
+          style={warningBg}>
           <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" style={stTextTertiary} />
           <div className="flex-1">
             <p style={{ fontWeight: 400, color: 'var(--text-primary)', fontSize: 'var(--font-size-sm)' }}>
@@ -183,7 +192,7 @@ export default function NetworkPage() {
               <Link
                 href={`/dealflow?search=${encodeURIComponent(bottleneckAlert.bottleneckName)}`}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-normal transition-colors btn-surface"
-                style={{ background: 'var(--surface-2)', color: 'var(--text-tertiary)', border: '1px solid var(--border-subtle)' }}>
+                style={buttonSurface}>
                 <Calendar className="w-3 h-3" />
                 Engage {bottleneckAlert.bottleneckName}</Link></div></div></div>
       )}
@@ -203,7 +212,7 @@ export default function NetworkPage() {
                 className="w-full flex items-center justify-between p-4"
                 onClick={() => toggleCard(cascade.keystoneId)}
                 aria-expanded={expandedCards.has(cascade.keystoneId)}
-                style={{ cursor: 'pointer', background: 'transparent', border: 'none', textAlign: 'left' }}>
+                style={cardHeaderBtn}>
                 <div className="flex items-center gap-3 min-w-0">
                   <div style={keystoneAvatar}>
                     <Crown className="w-4 h-4" style={stAccent} /></div>
@@ -224,12 +233,12 @@ export default function NetworkPage() {
                 <div className="flex items-center gap-4 shrink-0 ml-4">
                   <div style={textRight}>
                     <p style={labelMuted}>Cascade Capital</p>
-                    <p style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
+                    <p style={statValueBase}>
                       {cascade.expectedCascadeCapitalM > 0 ? `\u20AC${formatCapital(cascade.expectedCascadeCapitalM)}` : '--'}</p>
                   </div>
                   <div style={textRight}>
                     <p style={labelMuted}>Chain</p>
-                    <p style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
+                    <p style={statValueBase}>
                       {cascade.chainLength}</p></div>
                   <span style={stTextMuted}>
                     {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}</span></div></button>
@@ -244,14 +253,14 @@ export default function NetworkPage() {
                       {enthusiasmDots(cascade.keystoneEnthusiasm)}</span>
                     {cascade.keystoneCheckSize && (
                       <>
-                        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--border-default)', margin: '0 var(--space-1)' }}>|</span>
+                        <span style={dividerPipe}>|</span>
                         <span style={labelMuted}>
                           Check: {cascade.keystoneCheckSize}</span>
                       </>
                     )}
                     {cascade.totalCascadeCapitalM > 0 && (
                       <>
-                        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--border-default)', margin: '0 var(--space-1)' }}>|</span>
+                        <span style={dividerPipe}>|</span>
                         <span style={labelMuted}>
                           Total Potential: {'\u20AC'}{formatCapital(cascade.totalCascadeCapitalM)}</span>
                       </>
@@ -328,7 +337,7 @@ export default function NetworkPage() {
                   {cascade.networkBottleneck && (
                     <div
                       className="mt-4 p-3 rounded-md flex items-start gap-2"
-                      style={{ background: 'var(--warning-muted)' }}>
+                      style={warningBg}>
                       <AlertTriangle className="w-3.5 h-3.5 shrink-0 mt-0.5" style={stTextTertiary} />
                       <div className="flex-1">
                         <p style={labelSecondary}>
@@ -338,7 +347,7 @@ export default function NetworkPage() {
                         <Link
                           href={`/investors/${cascade.networkBottleneck.investorId}`}
                           className="inline-flex items-center gap-1 mt-2 px-2.5 py-1 rounded text-xs font-normal transition-colors btn-surface"
-                          style={{ background: 'var(--surface-2)', color: 'var(--text-tertiary)', border: '1px solid var(--border-subtle)' }}>
+                          style={buttonSurface}>
                           Prioritize Engagement
                           <ArrowRight className="w-3 h-3" /></Link></div></div>
                   )}</div>
@@ -352,27 +361,27 @@ export default function NetworkPage() {
         style={stSurface1}>
         <div className="flex items-center gap-2 mb-3">
           <span style={stTextMuted}><TrendingUp className="w-4 h-4" /></span>
-          <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
+          <span style={summaryTitleText}>
             Network Summary</span></div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           <div>
             <p style={labelMutedTight}>
               Strongest Chain</p>
-            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, marginTop: 'var(--space-0)' }}>
+            <p style={summaryStatText}>
               {summary.strongestChain
                 ? `${summary.strongestChain.name} (\u20AC${formatCapital(summary.strongestChain.capitalM)})`
                 : '--'}</p></div>
           <div>
             <p style={labelMutedTight}>
               Weakest Chain</p>
-            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, marginTop: 'var(--space-0)' }}>
+            <p style={summaryStatText}>
               {summary.weakestChain
                 ? `${summary.weakestChain.name} (\u20AC${formatCapital(summary.weakestChain.capitalM)})`
                 : '--'}</p></div>
           <div>
             <p style={labelMutedTight}>
               Total Raise Forecast</p>
-            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--accent)', fontWeight: 400, marginTop: 'var(--space-0)' }}>
+            <p style={summaryStatAccent}>
               {summary.totalExpectedCapitalM > 0 ? `\u20AC${formatCapital(summary.totalExpectedCapitalM)}` : '--'}</p></div></div>
       </div>
     </div>);

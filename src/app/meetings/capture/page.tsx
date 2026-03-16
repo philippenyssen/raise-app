@@ -435,6 +435,7 @@ function QuickCaptureInner() {
           <button
             type="button"
             onClick={() => setShowDetails(!showDetails)}
+            aria-expanded={showDetails}
             className="btn btn-md btn-surface"
             style={{
               background: 'transparent',
