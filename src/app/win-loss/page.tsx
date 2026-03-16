@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { cachedFetch } from '@/lib/cache';
 import {
   TrendingDown, TrendingUp, RefreshCw, Users, Target, AlertTriangle,
@@ -154,6 +154,7 @@ export default function WinLossPage() {
 
   // Funnel max for width calculation
   const funnelMax = Math.max(...funnel.map(f => f.count), 1);
+  const bestType = useMemo(() => typePerformance.filter(t => t.total >= 2).sort((a, b) => b.closeRate - a.closeRate)[0] ?? null, [typePerformance]);
 
   return (
     <div className="page-content space-y-6">
@@ -175,7 +176,7 @@ export default function WinLossPage() {
           { label: 'Passed', value: summary.passed, sub: null },
           { label: 'Dropped', value: summary.dropped, sub: null },
           { label: 'Avg Days to Close', value: timing.avgDaysToClose, sub: `Median: ${timing.medianDaysToClose}d`, variant: '' },
-          { label: 'Best Type', value: (() => { const best = typePerformance.filter(t => t.total >= 2).sort((a, b) => b.closeRate - a.closeRate)[0]; return best ? (TYPE_LABELS[best.type] || best.type) : '—'; })(), sub: (() => { const best = typePerformance.filter(t => t.total >= 2).sort((a, b) => b.closeRate - a.closeRate)[0]; return best ? `${best.closeRate}% close rate` : null; })() },
+          { label: 'Best Type', value: bestType ? (TYPE_LABELS[bestType.type] || bestType.type) : '—', sub: bestType ? `${bestType.closeRate}% close rate` : null },
         ].map(s => (
           <div
             key={s.label}

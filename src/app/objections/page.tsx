@@ -316,6 +316,7 @@ export default function ObjectionsPage() {
         <div>
           <h1 className="page-title">Objection Playbook</h1>
           <div className="skeleton mt-1" style={{ height: '16px', width: '250px' }} /></div>
+        <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Analyzing objection patterns and response effectiveness...</p>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {[1, 2, 3].map(i => (
             <div key={i} className="skeleton" style={{ height: '120px', borderRadius: 'var(--radius-xl)' }} />
