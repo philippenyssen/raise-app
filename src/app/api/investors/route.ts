@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAllInvestors, getInvestor, createInvestor, updateInvestor, deleteInvestor, resolvePrediction, resolveForecastPredictions, buildRelationshipGraph } from '@/lib/db';
+import { getAllInvestors, getInvestor, createInvestor, updateInvestor, deleteInvestor, resolvePrediction, resolveForecastPredictions, buildRelationshipGraph, createTask, logActivity } from '@/lib/db';
 import { emitContextChange } from '@/lib/context-bus';
 
 // Allowlisted fields that can be updated via API
@@ -133,6 +133,44 @@ export async function PUT(req: NextRequest) {
           await resolveForecastPredictions(id as string, outcome);
         }
       } catch (e) { console.error('[RESOLVE_PREDICTION]', e instanceof Error ? e.message : e); }
+    }
+
+    // Auto-create tasks on key status transitions
+    if (updates.status) {
+      const investor = await getInvestor(id as string).catch(() => null);
+      const name = investor?.name || id;
+      const statusTasks: Record<string, { title: string; description: string; priority: 'high' | 'medium'; phase: import('@/lib/types').RaisePhase; due_days: number }[]> = {
+        nda_signed: [
+          { title: `Prepare data room access for ${name}`, description: 'NDA signed — grant data room access and send introductory materials.', priority: 'high', phase: 'outreach', due_days: 1 },
+        ],
+        in_dd: [
+          { title: `Prepare DD materials for ${name}`, description: 'Investor entering due diligence. Ensure financials, cap table, and legal docs are current.', priority: 'high', phase: 'due_diligence', due_days: 2 },
+          { title: `Schedule DD sessions with ${name}`, description: 'Coordinate management presentations and technical deep-dives.', priority: 'medium', phase: 'due_diligence', due_days: 3 },
+        ],
+        term_sheet: [
+          { title: `Review term sheet from ${name}`, description: 'Term sheet received. Review economics, governance, and protective provisions with counsel.', priority: 'high', phase: 'negotiation', due_days: 1 },
+          { title: `Compare ${name} terms against other offers`, description: 'Run term comparison analysis and update deal mechanics page.', priority: 'high', phase: 'negotiation', due_days: 2 },
+        ],
+        closed: [
+          { title: `Post-close onboarding for ${name}`, description: 'Send welcome package, schedule board introductions, update cap table.', priority: 'medium', phase: 'closing', due_days: 5 },
+        ],
+      };
+      const tasks = statusTasks[updates.status as string];
+      if (tasks) {
+        for (const t of tasks) {
+          try {
+            await createTask({
+              title: t.title, description: t.description, assignee: '',
+              due_date: new Date(Date.now() + t.due_days * 864e5).toISOString().split('T')[0],
+              status: 'pending', priority: t.priority, phase: t.phase,
+              investor_id: id as string, investor_name: name, auto_generated: true,
+            });
+          } catch (e) { console.error('[STATUS_TASK]', e instanceof Error ? e.message : e); }
+        }
+        try {
+          await logActivity({ event_type: 'status_changed', subject: `${name} moved to ${updates.status}`, detail: `${tasks.length} task(s) auto-created`, investor_id: id as string, investor_name: name });
+        } catch (e) { console.error('[STATUS_ACTIVITY]', e instanceof Error ? e.message : e); }
+      }
     }
 
     emitContextChange('investor_updated', `Updated investor ${id}${updates.status ? ` status=${updates.status}` : ''}`);
