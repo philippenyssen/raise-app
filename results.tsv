@@ -786,3 +786,4 @@ b4a0052	100	100	0	keep	product	Dashboard strategic overhaul: AI narrative brief 
 798	2026-03-16T19:12:46Z	Competitive Edge	strategic: add per-investor readiness scores to forecast table with color-coded levels	src/app/strategic/page.tsx	pass
 799	2026-03-16T19:14:22Z	Reliability & Ops	apiFetch: add 30s default timeout via AbortSignal to prevent indefinite hangs	src/lib/api-fetch.ts	pass
 800	2026-03-16T19:16:10Z	CEO & Strategy	decide: add inline context reason under each focus investor name (warning/stale/conviction/action)	src/app/decide/page.tsx	pass
+801	2026-03-16T19:20:12Z	Product Manager	calendar: add 'Log' meeting capture button on event cards with investor+date context	src/app/calendar/page.tsx	pass

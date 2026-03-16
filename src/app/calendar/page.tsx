@@ -2,11 +2,12 @@
 
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { cachedFetch } from '@/lib/cache';
 import {
   Calendar, ChevronLeft, ChevronRight, Clock,
   Users, SendHorizonal, CheckSquare, AlertTriangle,
-  RefreshCw,
+  RefreshCw, NotebookPen,
 } from 'lucide-react';
 import { labelMuted, labelTertiary, stFontSm, stFontXs, stTextMuted, stTextSecondary, stTextTertiary, cardPad4, flexColGap2 } from '@/lib/styles';
 
@@ -109,6 +110,7 @@ function getDaysInMonthGrid(year: number, month: number): Date[] {
 // Component
 // ---------------------------------------------------------------------------
 export default function CalendarPage() {
+  const router = useRouter();
   const [data, setData] = useState<CalendarData | null>(null);
   const [loading, setLoading] = useState(true);
   const [viewDate, setViewDate] = useState(() => new Date());
@@ -383,11 +385,23 @@ export default function CalendarPage() {
                       <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, lineHeight: 1.4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {ev.title}
                       </div>
-                      <div style={{ ...labelTertiary, marginTop: '2px' }}>
-                        {ev.investorName}
-                        {ev.meta.duration && <> · {ev.meta.duration}min</>}
-                        {ev.meta.location && <> · {String(ev.meta.location)}</>}
-                        {ev.meta.priority && <> · {String(ev.meta.priority)} priority</>}
+                      <div className="flex items-center justify-between" style={{ marginTop: '2px' }}>
+                        <div style={labelTertiary}>
+                          {ev.investorName}
+                          {ev.meta.duration && <> · {ev.meta.duration}min</>}
+                          {ev.meta.location && <> · {String(ev.meta.location)}</>}
+                          {ev.meta.priority && <> · {String(ev.meta.priority)} priority</>}
+                        </div>
+                        {ev.investorId && ev.type === 'meeting' && (
+                          <button
+                            onClick={e => { e.preventDefault(); e.stopPropagation(); router.push(`/meetings/new?investor=${ev.investorId}&date=${ev.date}`); }}
+                            style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)', background: 'none', border: 'none', cursor: 'pointer', padding: '2px 6px', borderRadius: 'var(--radius-sm)', display: 'flex', alignItems: 'center', gap: '4px', whiteSpace: 'nowrap' }}
+                            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'var(--accent-muted)'; }}
+                            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'none'; }}
+                          >
+                            <NotebookPen className="w-3 h-3" /> Log
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>
