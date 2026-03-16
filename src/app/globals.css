@@ -503,7 +503,7 @@ body {
 }
 
 .row-actions {
-  opacity: 0.4;
+  opacity: 0.7;
   transition: opacity 150ms ease;
 }
 .table-row:hover .row-actions {
