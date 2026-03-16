@@ -122,6 +122,40 @@ interface FollowupItem {
   completed_at: string | null;
 }
 
+interface BottleneckInvestor {
+  id: string;
+  name: string;
+  tier: number;
+  daysInStage: number;
+  expectedDays: number;
+  overdueFactor: number;
+  enthusiasm: number;
+  daysSinceLastMeeting: number;
+  hasOverdueFollowups: boolean;
+  suggestedAction: string;
+}
+
+interface StageBottleneck {
+  stage: string;
+  totalInvestors: number;
+  stuckCount: number;
+  avgDaysInStage: number;
+  expectedDays: number;
+  stuckInvestors: BottleneckInvestor[];
+}
+
+interface BottleneckResponse {
+  bottlenecks: StageBottleneck[];
+  summary: {
+    totalActive: number;
+    totalStuck: number;
+    stuckPct: number;
+    worstStage: string | null;
+    worstStageCount: number;
+  };
+  generated_at: string;
+}
+
 interface VelocityInvestor {
   investor_id: string;
   investor_name: string;
@@ -250,6 +284,7 @@ export default function Dashboard() {
   const [dealHeat, setDealHeat] = useState<DealHeatResponse | null>(null);
   const [pendingFollowups, setPendingFollowups] = useState<FollowupItem[]>([]);
   const [velocity, setVelocity] = useState<VelocityResponse | null>(null);
+  const [bottlenecks, setBottlenecks] = useState<BottleneckResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [seeding, setSeeding] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -288,6 +323,7 @@ export default function Dashboard() {
       dealHeat: () => safeFetch('dealHeat', '/api/deal-heat', setDealHeat, silent),
       followups: () => safeFetch('followups', '/api/followups?view=pending', setPendingFollowups, silent),
       velocity: () => safeFetch('velocity', '/api/velocity', setVelocity, silent),
+      bottlenecks: () => safeFetch('bottlenecks', '/api/bottlenecks', setBottlenecks, silent),
       briefing: () => safeFetch<{ todaySummary?: string }>('briefing', '/api/briefing', (d) => { if (d && typeof d === 'object' && 'todaySummary' in d) setNarrativeBrief((d as { todaySummary?: string }).todaySummary ?? null); }, silent),};
     return map[key]?.() ?? Promise.resolve();
   }, [safeFetch]);
@@ -296,7 +332,7 @@ export default function Dashboard() {
     if (!silent) setLoading(true); else setRefreshing(true);
     // Critical path: load essential data first (health + pulse + stressTest)
     const critical = ['health', 'pulse', 'stressTest'];
-    const secondary = ['tasks','activity','dataQuality','atRisk','dealHeat','followups','velocity','briefing'];
+    const secondary = ['tasks','activity','dataQuality','atRisk','dealHeat','followups','velocity','bottlenecks','briefing'];
     await Promise.allSettled(critical.map(k => fetchSection(k, silent)));
     setLoading(false); // Unblock render after critical data loads
     // Load remaining sections in background — each renders as it arrives
@@ -624,7 +660,52 @@ export default function Dashboard() {
             <SectionError label="Pipeline velocity" onRetry={() => fetchSection('velocity')} />
           ) : null)}
 
-          {/* Close Forecast removed — data already shown in Raise Progress above */}
+          {/* Pipeline Bottlenecks — where investors are stuck */}
+          {!focusMode && bottlenecks && bottlenecks.summary.totalStuck > 0 && (
+            <div style={{ ...cardPadding, borderLeft: '3px solid var(--warning)' }}>
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="section-title flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4" /> Pipeline bottlenecks</h2>
+                <span className="tabular-nums" style={labelTertiary}>
+                  {bottlenecks.summary.totalStuck} stuck / {bottlenecks.summary.totalActive} active</span></div>
+
+              <div className="space-y-3">
+                {bottlenecks.bottlenecks.filter(b => b.stuckCount > 0).map(b => (
+                  <div key={b.stage}>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <div className="flex items-center gap-2">
+                        <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
+                          {STATUS_LABELS[b.stage as keyof typeof STATUS_LABELS] ?? b.stage.replace(/_/g, ' ')}</span>
+                        <span className="tabular-nums" style={{
+                          fontSize: 'var(--font-size-xs)',
+                          color: b.avgDaysInStage > b.expectedDays * 2 ? 'var(--danger)' : 'var(--warning)',
+                        }}>avg {b.avgDaysInStage}d / {b.expectedDays}d expected</span>
+                      </div>
+                      <span className="tabular-nums" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)' }}>
+                        {b.stuckCount} stuck</span>
+                    </div>
+                    <div className="space-y-1">
+                      {b.stuckInvestors.slice(0, 3).map(inv => (
+                        <Link key={inv.id} href={`/investors/${inv.id}`}
+                          className="flex items-center gap-3 py-1.5 px-2 rounded-lg transition-colors hover-surface-2"
+                          style={{ textDecoration: 'none' }}>
+                          <span style={labelTertiary}>T{inv.tier}</span>
+                          <span className="flex-1 min-w-0 truncate" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 300 }}>
+                            {inv.name}</span>
+                          <span className="truncate hidden sm:block" style={{ ...labelSecondary, maxWidth: '220px' }}>
+                            {inv.suggestedAction}</span>
+                          <span className="tabular-nums shrink-0" style={{
+                            fontSize: 'var(--font-size-xs)',
+                            color: inv.overdueFactor > 3 ? 'var(--danger)' : 'var(--warning)',
+                          }}>{inv.daysInStage}d</span>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Gap Closers — top investors to accelerate */}
           {!focusMode && stressTest?.gapInvestors && stressTest.gapInvestors.length > 0 && !stressTest.onTrack && (
