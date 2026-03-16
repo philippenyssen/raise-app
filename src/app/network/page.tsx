@@ -155,7 +155,7 @@ export default function NetworkPage() {
           <div key={stat.label} className="card p-4">
             <div className="flex items-center gap-2 mb-1">
               <span style={stTextMuted}><stat.icon className="w-3.5 h-3.5" /></span>
-              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', letterSpacing: '0.01em' }}>
+              <span style={{ ...labelMuted, letterSpacing: '0.01em' }}>
                 {stat.label}</span></div>
             <p style={{ fontSize: 'var(--font-size-lg)', fontWeight: 400, color: 'var(--text-primary)' }}>
               {stat.value}</p></div>
@@ -217,7 +217,7 @@ export default function NetworkPage() {
                         {tierLabel(cascade.keystoneTier)}</span>
                       <span style={keystoneBadgeSecondary}>
                         {STATUS_LABELS[cascade.keystoneStatus] || cascade.keystoneStatus}</span></div>
-                    <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '2px' }}>
+                    <p style={{ ...labelMuted, marginTop: '2px' }}>
                       {cascade.signal}</p></div></div>
                 <div className="flex items-center gap-4 shrink-0 ml-4">
                   <div style={textRight}>
@@ -354,21 +354,21 @@ export default function NetworkPage() {
             Network Summary</span></div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           <div>
-            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', letterSpacing: '0.01em' }}>
+            <p style={{ ...labelMuted, letterSpacing: '0.01em' }}>
               Strongest Chain</p>
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, marginTop: '2px' }}>
               {summary.strongestChain
                 ? `${summary.strongestChain.name} (\u20AC${formatCapital(summary.strongestChain.capitalM)})`
                 : '--'}</p></div>
           <div>
-            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', letterSpacing: '0.01em' }}>
+            <p style={{ ...labelMuted, letterSpacing: '0.01em' }}>
               Weakest Chain</p>
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, marginTop: '2px' }}>
               {summary.weakestChain
                 ? `${summary.weakestChain.name} (\u20AC${formatCapital(summary.weakestChain.capitalM)})`
                 : '--'}</p></div>
           <div>
-            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', letterSpacing: '0.01em' }}>
+            <p style={{ ...labelMuted, letterSpacing: '0.01em' }}>
               Total Raise Forecast</p>
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--accent)', fontWeight: 400, marginTop: '2px' }}>
               {summary.totalExpectedCapitalM > 0 ? `\u20AC${formatCapital(summary.totalExpectedCapitalM)}` : '--'}</p></div></div>

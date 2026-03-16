@@ -404,7 +404,7 @@ function QuickCaptureInner() {
             padding: '0 var(--space-1)',}}>
             <span style={labelMuted}>
               Brain dump everything — AI will structure it</span>
-            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontVariantNumeric: 'tabular-nums' }}>
+            <span style={{ ...labelMuted, fontVariantNumeric: 'tabular-nums' }}>
               {rawNotes.length > 0 ? `${rawNotes.split(/\s+/).filter(Boolean).length} words` : ''}</span></div></div>
 
         {/* Quick-rate bar */}

@@ -10,7 +10,7 @@ import {
 import { cachedFetch } from '@/lib/cache';
 import { MS_PER_DAY, MS_PER_MINUTE, relativeTime } from '@/lib/time';
 import { STATUS_LABELS, TYPE_LABELS_SHORT as TYPE_LABELS } from '@/lib/constants';
-import { stAccent, stFontXs, stSurface0, stSurface1, stTextMuted, stTextSecondary } from '@/lib/styles';
+import { labelMuted, stAccent, stFontXs, stSurface0, stSurface1, stTextMuted, stTextSecondary } from '@/lib/styles';
 
 // ── Types ─────────────────────────────────────────────────────────────
 
@@ -326,7 +326,7 @@ export default function DealflowPage() {
           ))}</div></div>
 
       {/* Heat Legend */}
-      <div className="flex items-center gap-4 mb-4" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+      <div className="flex items-center gap-4 mb-4" style={labelMuted}>
         {[
           { label: 'Hot', desc: 'Recent meeting + high enthusiasm' },
           { label: 'Warm', desc: 'Active, moderate pace' },

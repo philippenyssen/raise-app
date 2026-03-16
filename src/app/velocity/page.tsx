@@ -194,7 +194,7 @@ export default function VelocityPage() {
               <Users className="w-4 h-4" /></span>
             <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
               Deal Velocity Tracker</span>
-            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginLeft: 'auto' }}>
+            <span style={{ ...labelMuted, marginLeft: 'auto' }}>
               Sorted by urgency</span></div></div>
 
         {investors.length === 0 ? (
@@ -332,7 +332,7 @@ export default function VelocityPage() {
       {/* Footer hint */}
       <div
         className="flex items-center justify-center gap-2"
-        style={{ marginTop: 'var(--space-6)', padding: 'var(--space-3)', fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+        style={{ marginTop: 'var(--space-6)', padding: 'var(--space-3)', ...labelMuted }}>
         <span style={stTextTertiary}>
           <Zap className="w-3 h-3" /></span>
         Velocity scores update in real-time based on meetings, follow-ups, and stage progression

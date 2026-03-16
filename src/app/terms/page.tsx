@@ -306,7 +306,7 @@ export default function TermsPage() {
                           color: action.color,
                           marginBottom: '4px', }}>
                         {action.label}</span>
-                      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', lineHeight: 1.4 }}>
+                      <div style={{ ...labelMuted, lineHeight: 1.4 }}>
                         {action.advice}</div>
                     </td>);
                 })}

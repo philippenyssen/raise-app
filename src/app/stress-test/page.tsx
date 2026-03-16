@@ -6,7 +6,7 @@ import { useToast } from '@/components/toast';
 import { fmtDateTime } from '@/lib/format';
 import { relativeTime } from '@/lib/time';
 import { STATUS_LABELS } from '@/lib/constants';
-import { labelMuted10, stBorderTop, stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
+import { labelMuted, labelMuted10, stBorderTop, stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 import {
   ShieldAlert, TrendingUp, TrendingDown,
   RefreshCw, AlertTriangle, CheckCircle2, Target,
@@ -341,7 +341,7 @@ export default function StressTestPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left " style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', borderBottom: '1px solid var(--border-subtle)' }}>
+              <tr className="text-left " style={{ ...labelMuted, borderBottom: '1px solid var(--border-subtle)' }}>
                 <th className="px-4 py-3">Investor</th>
                 <th className="px-3 py-3">Status</th>
                 <th className="px-3 py-3 text-center">Enth.</th>

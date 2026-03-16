@@ -369,7 +369,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
                 className="tabular-nums"
                 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: focusScoreColor(item.focusScore) }}>
                 {item.focusScore}</span>
-              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', letterSpacing: '0.08em' }}>Focus</span></div>
+              <span style={{ ...labelMuted, letterSpacing: '0.08em' }}>Focus</span></div>
             {/* Quick action buttons — always visible for top 3, on hover for rest */}
               <div className={`flex items-center gap-1${rank > 3 ? ' hover-show-actions' : ''}`} onClick={e => e.stopPropagation()}>
                 <Link
@@ -397,7 +397,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
         <div className="px-4 py-3 ml-11 space-y-3" style={stBorderTop}>
           {/* Score breakdown */}
           <div>
-            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', letterSpacing: '0.08em', marginBottom: '8px' }}>Score Breakdown</p>
+            <p style={{ ...labelMuted, letterSpacing: '0.08em', marginBottom: '8px' }}>Score Breakdown</p>
             <div className="grid grid-cols-5 gap-2">
               {[
                 { label: 'Investor Score', value: item.components.investorScore, weight: '30%' },
@@ -408,14 +408,14 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
               ].map(comp => (
                 <div key={comp.label} className="text-center">
                   <div className="tabular-nums" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 300, color: focusScoreColor(comp.value) }}>{comp.value}</div>
-                  <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '2px' }}>{comp.label}</div>
+                  <div style={{ ...labelMuted, marginTop: '2px' }}>{comp.label}</div>
                   <div style={labelMuted}>{comp.weight}</div></div>
               ))}</div></div>
 
           {/* Unresolved objections */}
           {item.unresolvedObjections.length > 0 && (
             <div>
-              <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', letterSpacing: '0.08em', marginBottom: '4px' }}>Unresolved Objections</p>
+              <p style={{ ...labelMuted, letterSpacing: '0.08em', marginBottom: '4px' }}>Unresolved Objections</p>
               <div className="space-y-1">
                 {item.unresolvedObjections.map((obj) => (
                   <div key={obj} className="flex items-start gap-1.5" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', opacity: 0.85 }}>
@@ -673,7 +673,7 @@ function DeprioritizeSection({ investors }: { investors: InvestorSummary[] }) {
                 <TierBadge tier={inv.investorTier} /></div>
               <span style={labelMuted10}>{inv.reason}</span></div>
           ))}
-          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '8px', paddingTop: '8px', borderTop: '1px solid var(--border-subtle)' }}>
+          <p style={{ ...labelMuted, marginTop: '8px', paddingTop: '8px', borderTop: '1px solid var(--border-subtle)' }}>
             Park these for now. Redirect time to higher-conviction conversations.</p></div>
       )}
     </div>);

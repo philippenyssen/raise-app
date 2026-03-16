@@ -12,7 +12,7 @@ import {
   ChevronDown, Play, Ban, XCircle, Rocket, Timer, ArrowUpRight,
   TrendingDown, SkipForward,
 } from 'lucide-react';
-import { inlineBadgeStyle, labelMuted10, stBorderTop, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, textSmMuted, INVESTOR_TYPE_STYLES } from '@/lib/styles';
+import { inlineBadgeStyle, labelMuted, labelMuted10, stBorderTop, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, textSmMuted, INVESTOR_TYPE_STYLES } from '@/lib/styles';
 import { TierBadge, EnthusiasmDots } from '@/components/shared';
 import { relativeTime } from '@/lib/time';
 import { cachedFetch } from '@/lib/cache';
@@ -238,10 +238,10 @@ function DeprioritizeSection({ investors }: { investors: InvestorSummary[] }) {
                   {inv.investorName}</Link>
                 <TierBadge tier={inv.investorTier} />
                 <span style={labelMuted10}>Score: {inv.score}/100</span></div>
-              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const }}>{inv.reason}</span>
+              <span style={{ ...labelMuted, maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const }}>{inv.reason}</span>
             </div>
           ))}
-          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '8px', paddingTop: '8px', borderTop: '1px solid var(--border-subtle)' }}>
+          <p style={{ ...labelMuted, marginTop: '8px', paddingTop: '8px', borderTop: '1px solid var(--border-subtle)' }}>
             Stop allocating active time to these investors. Move effort to higher-conviction targets.</p></div>
       )}
     </div>);
