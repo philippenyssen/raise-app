@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import { fmtDateTime } from '@/lib/format';
 import { useToast } from '@/components/toast';
-import { labelAccent, labelMuted, labelMuted10, labelSecondary, stAccent, stTextMuted, stTextPrimary, stTextSecondary, textSmSecondary } from '@/lib/styles';
+import { cardPad4, labelAccent, labelMuted, labelMuted10, labelSecondary, stAccent, stTextMuted, stTextPrimary, stTextSecondary } from '@/lib/styles';
 import { cachedFetch } from '@/lib/cache';
 
 const filterBtnBase: React.CSSProperties = { borderRadius: 'var(--radius-sm)', fontSize: 'var(--font-size-xs)', fontWeight: 400, transition: 'all 150ms ease' };
@@ -21,7 +21,6 @@ const convictionBtnBase: React.CSSProperties = { ...filterBtnBase, padding: '0.2
 const filterTabBase: React.CSSProperties = { ...filterBtnBase, padding: '0.375rem 0.75rem' };
 import { MS_PER_HOUR, MS_PER_DAY } from '@/lib/time';
 
-const textSecSm = textSmSecondary;
 const skelItemStyle = { height: '52px', borderRadius: 'var(--radius-md)' } as const;
 const completedOutcomeBox = { background: 'var(--surface-2)', borderRadius: 'var(--radius-sm)', padding: '0.375rem 0.5rem', fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' } as const;
 const completingFormBox = { background: 'var(--surface-2)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-3)' } as const;
@@ -39,7 +38,7 @@ const ACCENT_COLOR_MAP: Record<string, string> = {
   green: 'var(--success)',
 };
 const dangerBadgePill = { marginLeft: '0.375rem', background: 'var(--danger)', color: 'var(--text-primary)', fontSize: 'var(--font-size-xs)', padding: '0 0.25rem', borderRadius: 'var(--radius-full)' } as const;
-const cardInnerPad = { padding: 'var(--space-4)' } as const;
+const cardInnerPad = cardPad4;
 const smallDot = { width: '16px', height: '16px', borderRadius: '50%', background: 'var(--accent-muted)' } as const;
 const footerRow = { padding: '0.375rem var(--space-4)', borderTop: '1px solid var(--border-subtle)', display: 'flex', gap: 'var(--space-3)', flexWrap: 'wrap' as const, alignItems: 'center', background: 'var(--surface-1)' } as const;
 

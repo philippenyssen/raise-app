@@ -194,7 +194,8 @@ export const maxWidthCenter: React.CSSProperties = { maxWidth: '1400px', margin:
 export const flexColGap2: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' } as const;
 
 // Table cell alignment
-export const cellCenter: React.CSSProperties = { padding: 'var(--space-3) var(--space-4)', textAlign: 'center' } as const;
+export const cellPad: React.CSSProperties = { padding: 'var(--space-3) var(--space-4)' } as const;
+export const cellCenter: React.CSSProperties = { ...cellPad, textAlign: 'center' } as const;
 
 // Card padding (shared across today, focus, acceleration, win-loss)
 export const cardPad4: React.CSSProperties = { padding: 'var(--space-4)' } as const;

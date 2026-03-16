@@ -7,8 +7,6 @@ import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Plus, Trash2, DollarSign, ShieldCheck, AlertTriangle, TrendingUp, FileText, Download } from 'lucide-react';
 import { skelRow, stAccent, stSurface1, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
-
-const skeletonRow = skelRow;
 const typeBadgeStyle = { background: 'var(--surface-2)', color: 'var(--text-secondary)' } as const;
 
 interface Commitment {
@@ -151,7 +149,7 @@ export default function BacklogPage() {
       <div className="space-y-4 page-content">
         <div className="skeleton" style={{ height: '28px', width: '200px' }} />
         <div className="skeleton" style={{ height: '16px', width: '350px' }} />
-        {[1,2,3].map(i => <div key={i} className="skeleton" style={skeletonRow} />)}
+        {[1,2,3].map(i => <div key={i} className="skeleton" style={skelRow} />)}
       </div>);
   }
 

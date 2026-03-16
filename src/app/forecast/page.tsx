@@ -12,13 +12,13 @@ import {
 import { STATUS_LABELS as STAGE_LABELS } from '@/lib/constants';
 import { fmtDate, fmtDateShort } from '@/lib/format';
 import { relativeTime } from '@/lib/time';
-import { confidenceBg, confidenceColor, labelMuted, labelMuted10, maxWidthCenter, cellCenter, stAccent, stFontSm, stFontXs, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
+import { cellPad, confidenceBg, confidenceColor, labelMuted, labelMuted10, maxWidthCenter, cellCenter, stAccent, stFontSm, stFontXs, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 const mbSpace3 = { marginBottom: 'var(--space-3)' } as const;
 const mbSpace6 = { marginBottom: 'var(--space-6)' } as const;
 const padSpace5 = { padding: 'var(--space-5)' } as const;
 const fontSmPrimary = { ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' } as const;
-const cellPad34 = { padding: 'var(--space-3) var(--space-4)' } as const;
+const cellPad34 = cellPad;
 const progressTrack = { flex: 1, height: '6px', background: 'var(--surface-3)', borderRadius: '3px', overflow: 'hidden' } as const;
 const critPathItem = { display: 'flex', alignItems: 'center', gap: 'var(--space-2)', padding: 'var(--space-2) var(--space-3)', background: 'var(--surface-1)', borderRadius: 'var(--radius-sm)' } as const;
 const critPathBadge = { width: '18px', height: '18px', borderRadius: '50%', background: 'var(--warning-muted)', color: 'var(--text-tertiary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 'var(--font-size-xs)', fontWeight: 300, flexShrink: 0 } as const;
