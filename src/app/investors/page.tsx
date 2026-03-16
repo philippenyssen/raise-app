@@ -73,7 +73,7 @@ const TIER_BADGE_STYLES: Record<number, React.CSSProperties> = {
 };
 const TIER_BADGE_DEFAULT: React.CSSProperties = { background: 'var(--surface-2)', color: 'var(--text-muted)' };
 
-const rowActionBtn: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '0.3rem 0.5rem', color: 'var(--text-muted)', borderRadius: 'var(--radius-sm)' };
+const rowActionBtn: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: 'var(--space-1) var(--space-2)', color: 'var(--text-muted)', borderRadius: 'var(--radius-sm)' };
 
 export default function InvestorsPage() {
   const router = useRouter();
@@ -330,7 +330,7 @@ export default function InvestorsPage() {
             aria-label="Bulk update status"
             onChange={e => { if (e.target.value) bulkUpdateStatus(e.target.value); e.target.value = ''; }}
             className="input"
-            style={{ width: 'auto', fontSize: 'var(--font-size-xs)', padding: '0.25rem 0.5rem', opacity: bulkUpdating ? 0.5 : 1 }}>
+            style={{ width: 'auto', fontSize: 'var(--font-size-xs)', padding: 'var(--space-1) var(--space-2)', opacity: bulkUpdating ? 0.5 : 1 }}>
             <option value="" disabled>Other status...</option>
             {Object.entries(STATUS_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select>
           <button onClick={() => setSelected(new Set())} className="btn btn-ghost btn-sm">

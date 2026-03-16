@@ -376,7 +376,7 @@ export default function PipelinePage() {
             )}</div>
           <div className="flex flex-wrap gap-4">
             <div>
-              <span style={{ ...labelMuted, display: 'block', marginBottom: '0.375rem' }}>Tier</span>
+              <span style={{ ...labelMuted, display: 'block', marginBottom: 'var(--space-1)' }}>Tier</span>
               <div className="flex gap-1.5">
                 {[1, 2, 3, 4].map(tier => (
                   <TierFilterButton
@@ -386,7 +386,7 @@ export default function PipelinePage() {
                     onClick={() => toggleTier(tier)} />
                 ))}</div></div>
             <div>
-              <span style={{ ...labelMuted, display: 'block', marginBottom: '0.375rem' }}>Type</span>
+              <span style={{ ...labelMuted, display: 'block', marginBottom: 'var(--space-1)' }}>Type</span>
               <div className="flex gap-1.5 flex-wrap">
                 {(Object.entries(TYPE_LABELS) as [InvestorType, string][]).map(([key, label]) => (
                   <TypeFilterButton
@@ -459,12 +459,12 @@ export default function PipelinePage() {
                 onDragLeave={handleDragLeave}
                 onDrop={e => handleDrop(e, status)}>
                 {/* Column header */}
-                <div style={{ padding: '0.625rem 0.75rem', borderTopLeftRadius: 'var(--radius-xl)', borderTopRightRadius: 'var(--radius-xl)', ...colors.header }}>
+                <div style={{ padding: 'var(--space-2) var(--space-3)', borderTopLeftRadius: 'var(--radius-xl)', borderTopRightRadius: 'var(--radius-xl)', ...colors.header }}>
                   <div className="flex items-center justify-between">
                     <span style={{ ...stFontXs, fontWeight: 400, color: 'var(--text-primary)', letterSpacing: '0.01em' }}>{STATUS_LABELS[status]}</span>
                     <div className="flex items-center gap-1.5">
                       {cards.length > 0 && (() => { const activePct = Math.round((cards.filter(i => (Date.now() - new Date(i.updated_at).getTime()) < 7 * 864e5).length / cards.length) * 100); return <span title={`${activePct}% active in last 7 days`} style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: activePct >= 70 ? 'var(--success)' : activePct >= 40 ? 'var(--warning)' : 'var(--text-muted)' }}>{activePct}%</span>; })()}
-                      <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 300, padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-full)', ...colors.badge }}>{cards.length}</span>
+                      <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 300, padding: 'var(--space-0) var(--space-1)', borderRadius: 'var(--radius-full)', ...colors.badge }}>{cards.length}</span>
                     </div>
                   </div></div>
 
@@ -530,7 +530,7 @@ export default function PipelinePage() {
                         style={{
                           fontSize: 'var(--font-size-xs)',
                           fontWeight: 300,
-                          padding: '0.125rem 0.375rem',
+                          padding: 'var(--space-0) var(--space-1)',
                           borderRadius: 'var(--radius-full)',
                           ...colors.badge, }}>
                         {cards.length}</span></div></div>
@@ -595,7 +595,7 @@ function FilterButton({
             color: 'var(--text-primary)',
             fontSize: 'var(--font-size-xs)',
             fontWeight: 300,
-            padding: '0.125rem 0.375rem',
+            padding: 'var(--space-0) var(--space-1)',
             borderRadius: 'var(--radius-full)', }}>
           {count}</span>
       )}
@@ -617,7 +617,7 @@ function TierFilterButton({
       onClick={onClick}
       className={active ? '' : 'filter-inactive'}
       style={{
-        padding: '0.25rem 0.625rem',
+        padding: 'var(--space-1) var(--space-2)',
         borderRadius: 'var(--radius-sm)',
         fontSize: 'var(--font-size-xs)',
         fontWeight: 400,
@@ -649,7 +649,7 @@ function TypeFilterButton({
       onClick={onClick}
       className={active ? '' : 'filter-inactive'}
       style={{
-        padding: '0.25rem 0.625rem',
+        padding: 'var(--space-1) var(--space-2)',
         borderRadius: 'var(--radius-sm)',
         fontSize: 'var(--font-size-xs)',
         fontWeight: 400,
