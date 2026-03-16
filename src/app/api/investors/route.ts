@@ -123,11 +123,15 @@ export async function PUT(req: NextRequest) {
     await updateInvestor(id as string, updates);
 
     // Resolve predictions when investor reaches terminal state
+    // Re-read status to avoid race condition with concurrent updates
     if (updates.status && ['passed', 'dropped', 'closed'].includes(updates.status as string)) {
       try {
-        const outcome = updates.status as 'closed' | 'passed' | 'dropped';
-        await resolvePrediction(id as string, outcome, outcome === 'closed' ? new Date().toISOString().split('T')[0] : undefined);
-        await resolveForecastPredictions(id as string, outcome);
+        const current = await getInvestor(id as string);
+        if (current && current.status === updates.status) {
+          const outcome = updates.status as 'closed' | 'passed' | 'dropped';
+          await resolvePrediction(id as string, outcome, outcome === 'closed' ? new Date().toISOString().split('T')[0] : undefined);
+          await resolveForecastPredictions(id as string, outcome);
+        }
       } catch (e) { console.error('[RESOLVE_PREDICTION]', e instanceof Error ? e.message : e); }
     }
 

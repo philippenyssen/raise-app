@@ -24,6 +24,22 @@ let initialized = false;
 // In-memory TTL cache for expensive computations — prevents redundant DB queries
 // across multiple API routes hitting the same function within the TTL window
 const _computeCache = new Map<string, { data: unknown; expires: number; pending?: Promise<unknown> }>();
+const MAX_COMPUTE_CACHE = 1000;
+
+function evictComputeCache() {
+  if (_computeCache.size <= MAX_COMPUTE_CACHE) return;
+  const now = Date.now();
+  for (const [k, v] of _computeCache) {
+    if (v.expires > 0 && v.expires <= now) _computeCache.delete(k);
+  }
+  if (_computeCache.size > MAX_COMPUTE_CACHE) {
+    const sorted = [..._computeCache.entries()]
+      .filter(([, v]) => !v.pending)
+      .sort((a, b) => a[1].expires - b[1].expires);
+    const toRemove = sorted.slice(0, _computeCache.size - MAX_COMPUTE_CACHE);
+    for (const [k] of toRemove) _computeCache.delete(k);
+  }
+}
 
 function cachedCompute<T>(key: string, ttlMs: number, fn: () => Promise<T>): Promise<T> {
   const now = Date.now();
@@ -32,6 +48,7 @@ function cachedCompute<T>(key: string, ttlMs: number, fn: () => Promise<T>): Pro
   if (entry?.pending) return entry.pending as Promise<T>;
   const promise = fn().then(result => {
     _computeCache.set(key, { data: result, expires: now + ttlMs });
+    evictComputeCache();
     return result;
   }).catch(err => {
     _computeCache.delete(key);
