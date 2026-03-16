@@ -981,9 +981,9 @@ export default function InvestorDetailPage() {
                     <thead style={{ background: 'var(--surface-1)', borderBottom: '1px solid var(--border-default)' }}>
                       <tr>
                         {['Company', 'Sector', 'Stage', 'Amount', 'Date', 'Status'].map(h => (
-                          <th key={h} className="text-left px-4 py-2 text-xs font-normal" style={textMuted}>{h}</th>
+                          <th scope="col" key={h} className="text-left px-4 py-2 text-xs font-normal" style={textMuted}>{h}</th>
                         ))}
-                        <th className="w-8"></th></tr></thead>
+                        <th scope="col" className="w-8"></th></tr></thead>
                     <tbody>
                       {portfolio.map(co => (
                         <tr

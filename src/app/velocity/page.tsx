@@ -204,15 +204,15 @@ export default function VelocityPage() {
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
                 <tr className="table-header">
-                  <th style={{ minWidth: '180px' }}>Investor</th>
-                  <th style={{ minWidth: '100px' }}>Stage</th>
-                  <th style={{ minWidth: '80px', textAlign: 'center' }}>Days In</th>
-                  <th style={{ minWidth: '80px', textAlign: 'center' }}>In Stage</th>
-                  <th style={{ minWidth: '100px', textAlign: 'center' }}>Proj. Close</th>
-                  <th style={{ minWidth: '70px', textAlign: 'center' }}>Status</th>
-                  <th style={{ minWidth: '200px' }}>Bottleneck</th>
-                  <th style={{ minWidth: '120px' }}>Velocity</th>
-                  <th style={{ minWidth: '90px', textAlign: 'center' }}>Action</th></tr></thead>
+                  <th scope="col" style={{ minWidth: '180px' }}>Investor</th>
+                  <th scope="col" style={{ minWidth: '100px' }}>Stage</th>
+                  <th scope="col" style={{ minWidth: '80px', textAlign: 'center' }}>Days In</th>
+                  <th scope="col" style={{ minWidth: '80px', textAlign: 'center' }}>In Stage</th>
+                  <th scope="col" style={{ minWidth: '100px', textAlign: 'center' }}>Proj. Close</th>
+                  <th scope="col" style={{ minWidth: '70px', textAlign: 'center' }}>Status</th>
+                  <th scope="col" style={{ minWidth: '200px' }}>Bottleneck</th>
+                  <th scope="col" style={{ minWidth: '120px' }}>Velocity</th>
+                  <th scope="col" style={{ minWidth: '90px', textAlign: 'center' }}>Action</th></tr></thead>
               <tbody>
                 {investors.map((inv) => (
                   <tr

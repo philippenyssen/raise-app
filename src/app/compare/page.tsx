@@ -362,7 +362,7 @@ export default function ComparePage() {
                         borderRight: '1px solid var(--border-subtle)', }}>
                       Metric</th>
                     {compareData.profiles.map(p => (
-                      <th key={p.investor.id} className="text-left" style={compareThBase}>
+                      <th scope="col" key={p.investor.id} className="text-left" style={compareThBase}>
                         <div className="flex items-center gap-2">
                           <InvestorNameLink investor={p.investor} />
                           {p.investor.id === winnerId && (

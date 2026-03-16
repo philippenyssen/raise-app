@@ -419,10 +419,10 @@ export default function StrategicPage() {
               <table className="w-full" style={stFontXs}>
                 <thead>
                   <tr className="table-header">
-                    <th className="text-left py-1.5 pr-3">Investor</th>
-                    <th className="text-left py-1.5 pr-3">Stage</th>
-                    <th className="text-right py-1.5 pr-3">Days to Close</th>
-                    <th className="text-left py-1.5">Confidence</th></tr></thead>
+                    <th scope="col" className="text-left py-1.5 pr-3">Investor</th>
+                    <th scope="col" className="text-left py-1.5 pr-3">Stage</th>
+                    <th scope="col" className="text-right py-1.5 pr-3">Days to Close</th>
+                    <th scope="col" className="text-left py-1.5">Confidence</th></tr></thead>
                 <tbody>
                   {data.raiseForecast.investorForecasts.map((f) => (
                     <tr key={f.name} className="table-row">

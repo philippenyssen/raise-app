@@ -372,12 +372,12 @@ export default function MomentumPage() {
                     style={{ background: 'var(--surface-1)', color: 'var(--text-muted)' }}>
                     Investor</th>
                   {data.weeks.map(w => (
-                    <th key={w} className="px-2 py-3 font-normal text-xs text-center min-w-[72px]" style={stTextMuted}>
+                    <th scope="col" key={w} className="px-2 py-3 font-normal text-xs text-center min-w-[72px]" style={stTextMuted}>
                       {formatWeekLabel(w)}</th>
                   ))}
-                  <th className="px-3 py-3 font-normal text-xs text-center min-w-[60px]" style={stTextMuted}>
+                  <th scope="col" className="px-3 py-3 font-normal text-xs text-center min-w-[60px]" style={stTextMuted}>
                     &Delta;</th>
-                  <th className="px-2 py-3 font-normal text-xs text-center min-w-[40px]" style={stTextMuted}></th></tr></thead>
+                  <th scope="col" className="px-2 py-3 font-normal text-xs text-center min-w-[40px]" style={stTextMuted}></th></tr></thead>
               <tbody>
                 {data.matrix.length === 0 ? (
                   <tr>

@@ -411,10 +411,10 @@ export default function TermComparePage() {
             <table className="w-full text-sm">
               <thead className="table-header">
                 <tr>
-                  <th className="text-left px-4 py-3 text-xs font-normal w-44" style={stTextMuted}>
+                  <th scope="col" className="text-left px-4 py-3 text-xs font-normal w-44" style={stTextMuted}>
                     Term</th>
                   {results.results.map(r => (
-                    <th key={r.investor_name} className="text-left px-4 py-3 text-xs font-normal min-w-40" style={stTextSecondary}>
+                    <th scope="col" key={r.investor_name} className="text-left px-4 py-3 text-xs font-normal min-w-40" style={stTextSecondary}>
                       {r.investor_name}</th>
                   ))}</tr></thead>
               <tbody>

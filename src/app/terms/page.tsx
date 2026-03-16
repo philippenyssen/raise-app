@@ -233,16 +233,16 @@ export default function TermsPage() {
           <table className="w-full text-sm">
             <thead className="table-header">
               <tr>
-                <th className="text-left px-4 py-3 text-xs font-normal w-40" style={stTextMuted}>Term</th>
+                <th scope="col" className="text-left px-4 py-3 text-xs font-normal w-40" style={stTextMuted}>Term</th>
                 {sheets.map(ts => (
-                  <th key={ts.id} className="text-left px-4 py-3 text-xs font-normal min-w-48" style={stTextSecondary}>
+                  <th scope="col" key={ts.id} className="text-left px-4 py-3 text-xs font-normal min-w-48" style={stTextSecondary}>
                     <div className="flex items-center justify-between gap-2">
                       {ts.investor}
                       <div className="flex gap-1 shrink-0">
                         <button onClick={() => startEdit(ts)} className="text-xs tab-hover" style={stTextMuted} aria-label={`Edit ${ts.investor} term sheet`}>Edit</button>
                         <button onClick={() => setDeleteTarget({ id: ts.id, investor: ts.investor })} className="text-xs transition-colors icon-delete" aria-label={`Delete ${ts.investor} term sheet`}>Del</button></div></div></th>
                 ))}
-                <th className="text-left px-4 py-3 text-xs font-normal" style={stTextMuted}>Market Standard</th></tr></thead>
+                <th scope="col" className="text-left px-4 py-3 text-xs font-normal" style={stTextMuted}>Market Standard</th></tr></thead>
             <tbody>
               {([
                 ['Valuation', 'valuation'],

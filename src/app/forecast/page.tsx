@@ -390,15 +390,15 @@ export default function ForecastPage() {
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
                 <tr className="table-header">
-                  <th style={{ minWidth: '40px', textAlign: 'center', width: '40px' }}></th>
-                  <th style={{ minWidth: '180px' }}>Investor</th>
-                  <th style={{ minWidth: '80px', textAlign: 'right' }}>Est. Capital</th>
-                  <th style={{ minWidth: '100px' }}>Stage</th>
-                  <th style={{ minWidth: '80px', textAlign: 'center' }}>Days in Stage</th>
-                  <th style={{ minWidth: '100px', textAlign: 'center' }}>Predicted Close</th>
-                  <th style={{ minWidth: '80px', textAlign: 'center' }}>Days Left</th>
-                  <th style={{ minWidth: '80px', textAlign: 'center' }}>Confidence</th>
-                  <th style={{ minWidth: '180px' }}>Timeline</th></tr></thead>
+                  <th scope="col" style={{ minWidth: '40px', textAlign: 'center', width: '40px' }}></th>
+                  <th scope="col" style={{ minWidth: '180px' }}>Investor</th>
+                  <th scope="col" style={{ minWidth: '80px', textAlign: 'right' }}>Est. Capital</th>
+                  <th scope="col" style={{ minWidth: '100px' }}>Stage</th>
+                  <th scope="col" style={{ minWidth: '80px', textAlign: 'center' }}>Days in Stage</th>
+                  <th scope="col" style={{ minWidth: '100px', textAlign: 'center' }}>Predicted Close</th>
+                  <th scope="col" style={{ minWidth: '80px', textAlign: 'center' }}>Days Left</th>
+                  <th scope="col" style={{ minWidth: '80px', textAlign: 'center' }}>Confidence</th>
+                  <th scope="col" style={{ minWidth: '180px' }}>Timeline</th></tr></thead>
               <tbody>
                 {sortedByDate.map((inv) => {
                   const isCritical = forecast.criticalPathInvestors.includes(inv.investorName);

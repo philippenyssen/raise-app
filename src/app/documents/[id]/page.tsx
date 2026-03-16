@@ -426,7 +426,7 @@ function MarkdownPreview({ content }: { content: string }) {
       elements.push(
         <table key={`table-${i}`} className="w-full text-sm my-2" style={{ borderCollapse: 'collapse' }}>
           <thead>
-            <tr>{tableRows[0]?.map((h, j) => <th key={j} className="px-2 py-1 text-left text-xs" style={thStyle}>{h}</th>)}</tr>
+            <tr>{tableRows[0]?.map((h, j) => <th scope="col" key={j} className="px-2 py-1 text-left text-xs" style={thStyle}>{h}</th>)}</tr>
           </thead>
           <tbody>
             {tableRows.slice(1).map((row, ri) => (

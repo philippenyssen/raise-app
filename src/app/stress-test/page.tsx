@@ -343,15 +343,15 @@ export default function StressTestPage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="text-left " style={{ ...labelMuted, borderBottom: '1px solid var(--border-subtle)' }}>
-                <th className="px-4 py-3">Investor</th>
-                <th className="px-3 py-3">Status</th>
-                <th className="px-3 py-3 text-center">Enth.</th>
-                <th className="px-3 py-3 text-center">Momentum</th>
-                <th className="px-3 py-3 text-right">Check Range</th>
-                <th className="px-3 py-3 text-right">Close Prob.</th>
-                <th className="px-3 py-3 text-right">Exp. Value</th>
-                <th className="px-3 py-3">Pred. Close</th>
-                <th className="px-3 py-3">Bottleneck</th></tr></thead>
+                <th scope="col" className="px-4 py-3">Investor</th>
+                <th scope="col" className="px-3 py-3">Status</th>
+                <th scope="col" className="px-3 py-3 text-center">Enth.</th>
+                <th scope="col" className="px-3 py-3 text-center">Momentum</th>
+                <th scope="col" className="px-3 py-3 text-right">Check Range</th>
+                <th scope="col" className="px-3 py-3 text-right">Close Prob.</th>
+                <th scope="col" className="px-3 py-3 text-right">Exp. Value</th>
+                <th scope="col" className="px-3 py-3">Pred. Close</th>
+                <th scope="col" className="px-3 py-3">Bottleneck</th></tr></thead>
             <tbody>
               {visibleInvestors.map((f) => {
                 const MomentumIcon = f.momentum === 'accelerating' ? TrendingUp

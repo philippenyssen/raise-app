@@ -582,9 +582,9 @@ function MeetingPrepContent() {
                           <table className="w-full text-xs">
                             <thead style={stSurface1Border}>
                               <tr>
-                                <th className="text-left px-3 py-2 font-normal" style={stTextMuted}>Metric</th>
-                                <th className="text-left px-3 py-2 font-normal" style={stTextMuted}>Value</th>
-                                <th className="text-left px-3 py-2 font-normal" style={stTextMuted}>Why It Matters</th></tr>
+                                <th scope="col" className="text-left px-3 py-2 font-normal" style={stTextMuted}>Metric</th>
+                                <th scope="col" className="text-left px-3 py-2 font-normal" style={stTextMuted}>Value</th>
+                                <th scope="col" className="text-left px-3 py-2 font-normal" style={stTextMuted}>Why It Matters</th></tr>
                             </thead>
                             <tbody>
                               {meetingBrief.brief.metrics_to_highlight.map((m, i) => (
@@ -890,10 +890,10 @@ function MeetingPrepContent() {
                       <table className="w-full text-xs">
                         <thead style={stSurface1Border}>
                           <tr>
-                            <th className="text-left px-3 py-2 font-normal" style={stTextMuted}>Company</th>
-                            <th className="text-left px-3 py-2 font-normal" style={stTextMuted}>Sector</th>
-                            <th className="text-left px-3 py-2 font-normal" style={stTextMuted}>Stage</th>
-                            <th className="text-left px-3 py-2 font-normal" style={stTextMuted}>Relevance</th></tr></thead>
+                            <th scope="col" className="text-left px-3 py-2 font-normal" style={stTextMuted}>Company</th>
+                            <th scope="col" className="text-left px-3 py-2 font-normal" style={stTextMuted}>Sector</th>
+                            <th scope="col" className="text-left px-3 py-2 font-normal" style={stTextMuted}>Stage</th>
+                            <th scope="col" className="text-left px-3 py-2 font-normal" style={stTextMuted}>Relevance</th></tr></thead>
                         <tbody>
                           {portfolio.map(pc => (
                             <tr key={pc.id} style={{

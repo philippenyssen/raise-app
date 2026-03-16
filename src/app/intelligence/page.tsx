@@ -288,7 +288,7 @@ export default function IntelligencePage() {
                     <th>Lead</th>
                     <th>Date</th>
                     <th>Sector</th>
-                    <th className="w-8"></th></tr></thead>
+                    <th scope="col" className="w-8"></th></tr></thead>
                 <tbody>
                   {deals.map(d => (
                     <tr

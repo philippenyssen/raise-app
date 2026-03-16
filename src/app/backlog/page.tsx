@@ -236,15 +236,15 @@ export default function BacklogPage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="table-header">
-                <th className="text-left px-4 py-3">Customer</th>
-                <th className="text-left px-4 py-3">Program</th>
-                <th className="text-left px-4 py-3">Type</th>
-                <th className="text-right px-4 py-3">Total (€M)</th>
-                <th className="text-right px-4 py-3">Annual (€M)</th>
-                <th className="text-center px-4 py-3">Confidence</th>
-                <th className="text-left px-4 py-3">Timeline</th>
-                <th className="text-left px-4 py-3">Source</th>
-                <th className="px-4 py-3"></th></tr></thead>
+                <th scope="col" className="text-left px-4 py-3">Customer</th>
+                <th scope="col" className="text-left px-4 py-3">Program</th>
+                <th scope="col" className="text-left px-4 py-3">Type</th>
+                <th scope="col" className="text-right px-4 py-3">Total (€M)</th>
+                <th scope="col" className="text-right px-4 py-3">Annual (€M)</th>
+                <th scope="col" className="text-center px-4 py-3">Confidence</th>
+                <th scope="col" className="text-left px-4 py-3">Timeline</th>
+                <th scope="col" className="text-left px-4 py-3">Source</th>
+                <th scope="col" className="px-4 py-3"></th></tr></thead>
             <tbody>
               {commitments.map(c => {
                 const conf = confidenceLevel(c.confidence);

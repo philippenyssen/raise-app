@@ -373,11 +373,11 @@ export default function InvestorsPage() {
         <table style={{ width: '100%', minWidth: '900px', fontSize: 'var(--font-size-sm)' }}>
           <thead className="table-header">
             <tr>
-              <th style={{ width: '2.5rem', padding: 'var(--space-3) var(--space-4)' }}>
+              <th scope="col" style={{ width: '2.5rem', padding: 'var(--space-3) var(--space-4)' }}>
                 <input type="checkbox" checked={selected.size === filtered.length && filtered.length > 0} onChange={toggleSelectAll}
                   aria-label="Select all investors"
                   style={{ accentColor: 'var(--accent)' }} /></th>
-              {([['name','Investor'],['',''],['','Type'],['tier','Tier'],['','Partner'],['','Status'],['','Check Size'],['last_meeting_date','Last Contact'],['enthusiasm','Enthusiasm'],['','Actions']] as const).map(([k, label], i) => <th key={i} style={k ? { cursor: 'pointer', userSelect: 'none', ...(i === 1 ? { width: '2rem', padding: 'var(--space-3) var(--space-2)' } : {}) } : (i === 1 ? { width: '2rem', padding: 'var(--space-3) var(--space-2)' } : {})} title={i === 1 ? 'Data completeness' : undefined} onClick={k ? () => { if (sortKey === k) setSortAsc(!sortAsc); else { setSortKey(k as typeof sortKey); setSortAsc(k === 'name'); } } : undefined}>{label}{sortKey === k ? (sortAsc ? ' \u25B2' : ' \u25BC') : ''}</th>)}</tr></thead>
+              {([['name','Investor'],['',''],['','Type'],['tier','Tier'],['','Partner'],['','Status'],['','Check Size'],['last_meeting_date','Last Contact'],['enthusiasm','Enthusiasm'],['','Actions']] as const).map(([k, label], i) => <th scope="col" key={i} style={k ? { cursor: 'pointer', userSelect: 'none', ...(i === 1 ? { width: '2rem', padding: 'var(--space-3) var(--space-2)' } : {}) } : (i === 1 ? { width: '2rem', padding: 'var(--space-3) var(--space-2)' } : {})} title={i === 1 ? 'Data completeness' : undefined} onClick={k ? () => { if (sortKey === k) setSortAsc(!sortAsc); else { setSortKey(k as typeof sortKey); setSortAsc(k === 'name'); } } : undefined}>{label}{sortKey === k ? (sortAsc ? ' \u25B2' : ' \u25BC') : ''}</th>)}</tr></thead>
           <tbody>
             {filtered.map(inv => {
               const isSelected = selected.has(inv.id);
