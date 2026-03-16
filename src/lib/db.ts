@@ -2043,6 +2043,12 @@ export async function getObjectionsByInvestor(investorId: string): Promise<Objec
   return genericGetByField<ObjectionRecord>('objection_responses', 'investor_id', investorId, { orderBy: 'created_at DESC' });
 }
 
+export async function getAllObjections(): Promise<ObjectionRecord[]> {
+  await ensureInitialized();
+  const result = await getClient().execute({ sql: 'SELECT * FROM objection_responses ORDER BY created_at DESC', args: [] });
+  return result.rows as unknown as ObjectionRecord[];
+}
+
 export async function updateObjectionEnthusiasmDelta(investorId: string, enthusiasmDelta: number): Promise<void> {
   await ensureInitialized();
   // Update the most recent objections for this investor that don't yet have a delta

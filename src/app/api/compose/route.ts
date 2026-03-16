@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
     }
 
     let objections: { objection_text: string; objection_topic: string; effectiveness: string }[] = [];
-    try { objections = await getObjectionsByInvestor(investorId); } catch { /* empty */ }
+    try { objections = await getObjectionsByInvestor(investorId); } catch (err) { console.error('[COMPOSE_OBJECTIONS]', err instanceof Error ? err.message : err); }
 
     const stageCtx = STAGE_CONTEXT[investor.status] ?? STAGE_CONTEXT.contacted;
     const sortedMeetings = [...allMeetings].sort((a, b) => b.date.localeCompare(a.date));

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getAllInvestors, getMeetings, getFollowups, getObjectionsByInvestor, getDataRoomFileCount } from '@/lib/db';
+import { getAllInvestors, getMeetings, getFollowups, getAllObjections, getDataRoomFileCount } from '@/lib/db';
 
 interface ReadinessResult {
   investorId: string;
@@ -20,10 +20,11 @@ interface ReadinessResult {
 
 export async function GET() {
   try {
-    const [investors, allMeetings, allFollowups, dataRoomCount] = await Promise.all([
+    const [investors, allMeetings, allFollowups, allObjections, dataRoomCount] = await Promise.all([
       getAllInvestors(),
       getMeetings(),
       getFollowups(),
+      getAllObjections(),
       getDataRoomFileCount(),
     ]);
 
@@ -44,15 +45,21 @@ export async function GET() {
       followupsByInvestor.set(f.investor_id, list);
     }
 
+    const objectionsByInvestor = new Map<string, typeof allObjections>();
+    for (const o of allObjections) {
+      if (!o.investor_id) continue;
+      const list = objectionsByInvestor.get(o.investor_id) ?? [];
+      list.push(o);
+      objectionsByInvestor.set(o.investor_id, list);
+    }
+
     const now = Date.now();
     const today = new Date().toISOString().split('T')[0];
 
-    const results: ReadinessResult[] = await Promise.all(
-      activeInvestors.map(async (inv) => {
+    const results: ReadinessResult[] = activeInvestors.map((inv) => {
         const meetings = meetingsByInvestor.get(inv.id) ?? [];
         const followups = followupsByInvestor.get(inv.id) ?? [];
-        let objections: { effectiveness: string; response_text: string }[] = [];
-        try { objections = await getObjectionsByInvestor(inv.id); } catch { /* empty */ }
+        const objections = objectionsByInvestor.get(inv.id) ?? [];
 
         const blockingFactors: string[] = [];
 
@@ -154,8 +161,7 @@ export async function GET() {
           blockingFactors: blockingFactors.slice(0, 3),
           readinessLevel,
         };
-      })
-    );
+    });
 
     results.sort((a, b) => b.readinessScore - a.readinessScore);
 
