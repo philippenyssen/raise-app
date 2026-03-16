@@ -17,6 +17,11 @@ const sectionHeading: React.CSSProperties = { ...labelSecondary, fontWeight: 400
 const badgeMuted: React.CSSProperties = { ...labelMuted, ...stSurface2, padding: 'var(--space-0) var(--space-2)', borderRadius: 'var(--radius-sm)' } as const;
 const accessedDocBadge: React.CSSProperties = { ...labelSecondary, background: 'var(--success-muted)', padding: 'var(--space-0) var(--space-2)', borderRadius: 'var(--radius-sm)' };
 const recommendCountBadge: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--accent)', background: 'var(--accent-muted)', padding: 'var(--space-0) var(--space-2)', borderRadius: 'var(--radius-sm)', fontWeight: 400 };
+const extractedTextPreStyle: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)', whiteSpace: 'pre-wrap', maxHeight: '15rem', overflowY: 'auto', background: 'var(--surface-0)', borderRadius: 'var(--radius-md)', padding: 'var(--space-3)' };
+const searchInputStyle: React.CSSProperties = { paddingLeft: 'var(--space-10)', paddingRight: 'var(--space-4)', paddingTop: 'var(--space-2)', paddingBottom: 'var(--space-2)', borderRadius: 'var(--radius-lg)' };
+const pasteTextareaStyle: React.CSSProperties = { fontFamily: 'var(--font-mono)', resize: 'none', padding: 'var(--space-3) var(--space-4)' };
+const recommendedCategoryBadge: React.CSSProperties = { ...labelMuted, background: 'var(--surface-2)', padding: '0 var(--space-1)', borderRadius: 'var(--radius-sm)' };
+const deleteButtonResetStyle: React.CSSProperties = { background: 'none', border: 'none', cursor: 'pointer', padding: 0 };
 
 interface DataRoomFile {
   id: string;
@@ -276,7 +281,7 @@ export default function DataRoomPage() {
       {/* Search */}
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={stTextMuted} />
-        <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} onKeyDown={e => { if (e.key === 'Escape') { setSearchQuery(''); e.preventDefault(); } }} placeholder="Search files and content..." className="input" autoComplete="off" spellCheck={false} aria-label="Search data room files" style={{ paddingLeft: 'var(--space-10)', paddingRight: 'var(--space-4)', paddingTop: 'var(--space-2)', paddingBottom: 'var(--space-2)', borderRadius: 'var(--radius-lg)' }}
+        <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} onKeyDown={e => { if (e.key === 'Escape') { setSearchQuery(''); e.preventDefault(); } }} placeholder="Search files and content..." className="input" autoComplete="off" spellCheck={false} aria-label="Search data room files" style={searchInputStyle}
           /></div>
 
       {/* Paste mode */}
@@ -299,7 +304,7 @@ export default function DataRoomPage() {
               className="input"
               style={{ width: 'auto' }}>
               {CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}</select></div>
-          <textarea value={pasteContent} onChange={e => setPasteContent(e.target.value)} placeholder="Paste your document content here..." rows={10} className="input" style={{ fontFamily: 'var(--font-mono)', resize: 'none', padding: 'var(--space-3) var(--space-4)' }} maxLength={50000}
+          <textarea value={pasteContent} onChange={e => setPasteContent(e.target.value)} placeholder="Paste your document content here..." rows={10} className="input" style={pasteTextareaStyle} maxLength={50000}
             />
           <div className="flex justify-end gap-2">
             <button onClick={() => setPasteMode(false)} className="btn btn-ghost btn-md">Cancel</button>
@@ -652,7 +657,7 @@ function RecommendedDocRow({ doc, investorId, onLogAccess }: {
       <FileText className="w-3.5 h-3.5 shrink-0" style={stAccent} />
       <span className="truncate" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)' }}>
         {doc.document_title}</span>
-      <span style={{ ...labelMuted, background: 'var(--surface-2)', padding: '0 var(--space-1)', borderRadius: 'var(--radius-sm)' }}>
+      <span style={recommendedCategoryBadge}>
         {doc.category}</span>
       <button
         className="ml-auto shrink-0 btn btn-md share-btn"
@@ -722,11 +727,7 @@ function FileRow({ file, expanded, onToggle, onDelete }: {
         <button
           onClick={e => { e.stopPropagation(); onDelete(); }}
           className="ml-3 shrink-0 icon-delete"
-          style={{
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            padding: 0, }}
+          style={deleteButtonResetStyle}
           aria-label="Delete file"
           title="Delete file">
           <Trash2 className="w-3.5 h-3.5" /></button></div>
@@ -736,7 +737,7 @@ function FileRow({ file, expanded, onToggle, onDelete }: {
             <p style={{ ...textSmSecondary, marginBottom: 'var(--space-3)' }}>
               {file.summary}</p>
           )}
-          <pre style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)', whiteSpace: 'pre-wrap', maxHeight: '15rem', overflowY: 'auto', background: 'var(--surface-0)', borderRadius: 'var(--radius-md)', padding: 'var(--space-3)' }}>
+          <pre style={extractedTextPreStyle}>
             {file.extracted_text.substring(0, 5000)}
             {file.extracted_text.length > 5000 && '\n\n... (truncated)'}</pre></div>
       )}

@@ -19,6 +19,9 @@ const autoGenBadge = { backgroundColor: 'color-mix(in srgb, var(--accent-muted) 
 const filterSelectStyle = { backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' } as const;
 const taskStatusSelect = { backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-tertiary)' } as const;
 const eventTypeBadge = { backgroundColor: 'var(--surface-2)', color: 'var(--text-muted)' } as const;
+const cancelBtnStyle = { backgroundColor: 'var(--surface-2)', color: 'var(--text-secondary)' } as const;
+const activityDotBg = { backgroundColor: 'var(--accent)' } as const;
+const tabDividerStyle: React.CSSProperties = { borderBottom: '1px solid var(--border-subtle)' };
 
 function taskRowStyle(status: string, isOverdue: boolean): React.CSSProperties {
   if (status === 'done') return {
@@ -228,7 +231,7 @@ export default function TimelinePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div>
               <label className="text-xs block mb-1" style={stTextMuted}>Title</label>
-              <input name="title" required className="w-full rounded-lg px-3 py-2 text-sm focus:outline-none" style={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }}
+              <input name="title" required className="w-full rounded-lg px-3 py-2 text-sm focus:outline-none" style={filterSelectStyle}
                 /></div>
             <div>
               <label className="text-xs block mb-1" style={stTextMuted}>Priority</label>
@@ -243,19 +246,19 @@ export default function TimelinePage() {
                 {PHASE_ORDER.map(p => <option key={p} value={p}>{PHASE_LABELS[p]}</option>)}</select></div>
             <div>
               <label className="text-xs block mb-1" style={stTextMuted}>Due Date</label>
-              <input name="due_date" type="date" className="w-full rounded-lg px-3 py-2 text-sm" style={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }}
+              <input name="due_date" type="date" className="w-full rounded-lg px-3 py-2 text-sm" style={filterSelectStyle}
                 /></div>
             <div>
               <label className="text-xs block mb-1" style={stTextMuted}>Assignee</label>
-              <input name="assignee" className="w-full rounded-lg px-3 py-2 text-sm" style={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }}
+              <input name="assignee" className="w-full rounded-lg px-3 py-2 text-sm" style={filterSelectStyle}
                 /></div>
             <div>
               <label className="text-xs block mb-1" style={stTextMuted}>Investor</label>
-              <input name="investor_name" placeholder="(optional)" className="w-full rounded-lg px-3 py-2 text-sm" style={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }}
+              <input name="investor_name" placeholder="(optional)" className="w-full rounded-lg px-3 py-2 text-sm" style={filterSelectStyle}
                 /></div></div>
           <div>
             <label className="text-xs block mb-1" style={stTextMuted}>Description</label>
-            <input name="description" className="w-full rounded-lg px-3 py-2 text-sm" style={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }}
+            <input name="description" className="w-full rounded-lg px-3 py-2 text-sm" style={filterSelectStyle}
               /></div>
           <div className="flex gap-2">
             <button
@@ -268,12 +271,12 @@ export default function TimelinePage() {
               type="button"
               onClick={() => setShowAdd(false)}
               className="px-3 py-1.5 rounded-lg text-sm"
-              style={{ backgroundColor: 'var(--surface-2)', color: 'var(--text-secondary)' }}>
+              style={cancelBtnStyle}>
               Cancel</button></div></form>
       )}
 
       {/* Tabs */}
-      <div className="flex gap-1" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+      <div className="flex gap-1" style={tabDividerStyle}>
         <button
           onClick={() => setTab('tasks')}
           className={`px-4 py-2.5 text-sm font-normal flex items-center gap-2 transition-colors ${tab !== 'tasks' ? 'tab-hover' : ''}`}
@@ -403,7 +406,7 @@ export default function TimelinePage() {
                 <div
                   key={event.id}
                   className="flex items-start gap-3 px-3 py-2 rounded-lg hover-row-activity">
-                  <div className="w-2 h-2 rounded-full mt-1.5 shrink-0" style={{ backgroundColor: 'var(--accent)' }} />
+                  <div className="w-2 h-2 rounded-full mt-1.5 shrink-0" style={activityDotBg} />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <span className="text-sm" style={stTextSecondary}>{event.subject}</span>
