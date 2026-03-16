@@ -780,3 +780,4 @@ b4a0052	100	100	0	keep	product	Dashboard strategic overhaul: AI narrative brief 
 792	2026-03-16T19:00:39Z	Design & UX	pipeline: add drag-over visual feedback on kanban columns (dashed accent outline + tinted bg)	src/app/pipeline/page.tsx	pass
 793	2026-03-16T19:02:18Z	Engineering	meetings API: move date validation before AI analysis to avoid wasting compute on invalid requests	src/app/api/meetings/route.ts	pass
 794	2026-03-16T19:04:54Z	AI & Intelligence	briefing: aggregate competitive intel from meeting signals (co-investors, competitive bids, check sizes, conflicts) into alerts + AI context	src/app/api/briefing/route.ts	pass
+795	2026-03-16T19:06:28Z	Data Enrichment	enrichment: validate partner/portfolio fields before auto-apply writes (name, type, length guards)	src/app/api/enrichment/route.ts	pass

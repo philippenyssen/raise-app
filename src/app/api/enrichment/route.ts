@@ -266,20 +266,26 @@ export async function POST(req: NextRequest) {
           const existingNames = new Set(existingPartners.map(p => p.name.toLowerCase()));
 
           for (const partner of profile.partners) {
-            if (!existingNames.has(partner.name.toLowerCase()) && (partner.confidence ?? 1) >= MIN_PARTNER_CONFIDENCE) {
+            // Validate required fields before writing
+            if (!partner.name || typeof partner.name !== 'string' || partner.name.trim().length < 2) {
+              console.warn(`[ENRICH_SKIP] Invalid partner name "${partner.name}" for ${investor.name}`);
+              continue;
+            }
+            const pName = partner.name.trim();
+            if (!existingNames.has(pName.toLowerCase()) && (partner.confidence ?? 1) >= MIN_PARTNER_CONFIDENCE) {
               await createInvestorPartner({
                 investor_id: investor.id,
-                name: partner.name,
-                title: partner.title,
-                focus_areas: partner.focus,
-                notable_deals: partner.notable_deals || '',
+                name: pName,
+                title: typeof partner.title === 'string' ? partner.title.slice(0, 255) : '',
+                focus_areas: typeof partner.focus === 'string' ? partner.focus.slice(0, 1000) : '',
+                notable_deals: typeof partner.notable_deals === 'string' ? partner.notable_deals.slice(0, 1000) : '',
                 board_seats: '',
-                linkedin: partner.linkedin || '',
+                linkedin: typeof partner.linkedin === 'string' ? partner.linkedin.slice(0, 500) : '',
                 background: '',
                 relevance_to_us: '',
                 source: partner.source || '',});
-            } else if (!existingNames.has(partner.name.toLowerCase())) {
-              console.warn(`[ENRICH_SKIP] Low confidence (${(partner.confidence ?? 0).toFixed(2)}) partner "${partner.name}" for ${investor.name}`);
+            } else if (!existingNames.has(pName.toLowerCase())) {
+              console.warn(`[ENRICH_SKIP] Low confidence (${(partner.confidence ?? 0).toFixed(2)}) partner "${pName}" for ${investor.name}`);
             }}
         }
 
@@ -292,16 +298,22 @@ export async function POST(req: NextRequest) {
           const created = new Set<string>();
 
           for (const inv of profile.enriched_investments.slice(0, 20)) {
-            const key = inv.company ? norm(inv.company) : '';
+            // Validate required fields before writing
+            if (!inv.company || typeof inv.company !== 'string' || inv.company.trim().length < 2) {
+              console.warn(`[ENRICH_SKIP] Invalid portfolio company name "${inv.company}" for ${investor.name}`);
+              continue;
+            }
+            const companyName = inv.company.trim();
+            const key = norm(companyName);
             if (key && !existingCompanies.has(key) && !created.has(key) && (inv.confidence ?? 1) >= MIN_PORTFOLIO_CONFIDENCE) {
               created.add(key);
               await createPortfolioCo({
                 investor_id: investor.id,
-                company: inv.company,
-                sector: inv.sector || '',
-                stage_invested: inv.round || '',
-                amount: inv.amount || '',
-                date: inv.date || '',
+                company: companyName.slice(0, 255),
+                sector: typeof inv.sector === 'string' ? inv.sector.slice(0, 255) : '',
+                stage_invested: typeof inv.round === 'string' ? inv.round.slice(0, 100) : '',
+                amount: typeof inv.amount === 'string' ? inv.amount.slice(0, 100) : '',
+                date: typeof inv.date === 'string' ? inv.date.slice(0, 20) : '',
                 status: 'active',
                 relevance: '',
                 source: inv.source || '',});
