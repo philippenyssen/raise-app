@@ -291,8 +291,8 @@ export default function DealflowPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => {
-              const rows = [['Name','Type','Tier','Status','Heat','Velocity','Momentum','Days','Tracking','Bottleneck','Last Meeting']];
-              for (const inv of filtered) rows.push([inv.name, inv.type, String(inv.tier), inv.status, inv.heat, String(inv.velocityScore), String(inv.currentMomentum), String(inv.daysInProcess), inv.trackingStatus, inv.bottleneck, inv.lastMeeting || '']);
+              const rows = [['Name','Type','Tier','Status','Heat','Velocity','Momentum','Days','Tracking','Bottleneck','Enthusiasm','Days Since Meeting','Last Meeting']];
+              for (const inv of filtered) rows.push([inv.name, inv.type, String(inv.tier), inv.status, inv.heat, String(inv.velocityScore), String(inv.currentMomentum), String(inv.daysInProcess), inv.trackingStatus, inv.bottleneck, String(inv.enthusiasm), String(inv.daysSinceLastMeeting), inv.lastMeeting || '']);
               const blob = new Blob([rows.map(r => r.join('\t')).join('\n')], { type: 'text/tab-separated-values' });
               const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `dealflow-${new Date().toISOString().split('T')[0]}.tsv`; a.click();
             }}
