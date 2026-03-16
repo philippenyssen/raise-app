@@ -99,15 +99,16 @@ function detectWindowClosing(investor: Investor, meetings: Meeting[], targetClos
   return { id: `wc_${investor.id}_${Date.now()}`, investorId: investor.id, investorName: investor.name, investorTier: investor.tier, investorType: investor.type, status: investor.status, enthusiasm: investor.enthusiasm, score: 0, momentum: 'steady', triggerType: 'window_closing', actionType: 'data_update', description: `${partner} is in "${investor.status}" with ~${Math.round(daysToClose)}d until target close. At current pace, they need ~${estimatedDaysNeeded}d to reach term sheet. Accelerate by sharing complete data room access and offering reference calls to compress the DD timeline.`, expectedLift: 10, confidence: 'medium', timeEstimate: '1hr', urgency: daysToClose < 45 ? 'immediate' : '48h', triggerEvidence: `${Math.round(daysToClose)}d to target close, ~${estimatedDaysNeeded}d needed at current pace` };
 }
 
-function detectCompetitivePressure(investor: Investor, meetings: Meeting[], allInvestors: Investor[], now: string): AccelerationItem | null {
+function detectCompetitivePressureFast(investor: Investor, tierStatusMap: Map<number, { investor: Investor; statusIdx: number }[]>, now: string): AccelerationItem | null {
   const statusIdx = STATUS_PROGRESSION[investor.status] ?? 0;
   if (statusIdx <= 0 || statusIdx >= 7) return null;
 
-  const recentAccelerators = allInvestors.filter(other => other.id !== investor.id && other.tier === investor.tier && (STATUS_PROGRESSION[other.status] ?? 0) > statusIdx && daysBetween(other.updated_at, now) <= 7);
+  const sameTier = tierStatusMap.get(investor.tier) || [];
+  const recentAccelerators = sameTier.filter(o => o.investor.id !== investor.id && o.statusIdx > statusIdx && daysBetween(o.investor.updated_at, now) <= 7);
   if (recentAccelerators.length === 0) return null;
 
   const partner = investor.partner || investor.name;
-  const movingNames = recentAccelerators.slice(0, 2).map(i => `a Tier ${i.tier} investor`).join(' and ');
+  const movingNames = recentAccelerators.slice(0, 2).map(i => `a Tier ${i.investor.tier} investor`).join(' and ');
 
   return { id: `cp_${investor.id}_${Date.now()}`, investorId: investor.id, investorName: investor.name, investorTier: investor.tier, investorType: investor.type, status: investor.status, enthusiasm: investor.enthusiasm, score: 0, momentum: 'steady', triggerType: 'competitive_pressure', actionType: 'competitive_signal', description: `${movingNames} recently advanced to a later stage. Mention process momentum to ${partner} without naming specifics --- competitive dynamics create urgency that generic follow-ups cannot.`, expectedLift: 10, confidence: 'medium', timeEstimate: '15min', urgency: '48h', triggerEvidence: `${recentAccelerators.length} peer investor(s) in Tier ${investor.tier} moved forward in last 7d` };
 }
@@ -149,14 +150,26 @@ export async function GET() {
     const atRisk: InvestorSummary[] = [];
     const deprioritize: InvestorSummary[] = [];
 
-    for (const investor of investors) {
+    // Pre-compute: sort meetings once per investor, cache scores
+    const precomputed = investors.map(investor => {
       const meetings = meetingsByInvestor[investor.id] || [];
       const portfolio = portfolioByInvestor[investor.id] || [];
       const investorScore = computeInvestorScore(investor, meetings, portfolio, [], { targetEquityM, targetCloseDate });
       const { momentum } = computeMomentumScore(investor, meetings);
-      const score = investorScore.overall;
+      return { investor, meetings, score: investorScore.overall, momentum };
+    });
 
-      const triggers: (AccelerationItem | null)[] = [detectMomentumCliff(investor, meetings), detectStallRisk(investor, meetings, now), detectWindowClosing(investor, meetings, targetCloseDate, now), detectCompetitivePressure(investor, meetings, investors, now), detectTermSheetReadiness(investor, meetings, score, momentum)];
+    // Pre-bucket investors by tier+status for competitive pressure detection
+    const tierStatusMap = new Map<number, { investor: Investor; statusIdx: number }[]>();
+    for (const { investor } of precomputed) {
+      const statusIdx = STATUS_PROGRESSION[investor.status] ?? 0;
+      const arr = tierStatusMap.get(investor.tier) || [];
+      arr.push({ investor, statusIdx });
+      tierStatusMap.set(investor.tier, arr);
+    }
+
+    for (const { investor, meetings, score, momentum } of precomputed) {
+      const triggers: (AccelerationItem | null)[] = [detectMomentumCliff(investor, meetings), detectStallRisk(investor, meetings, now), detectWindowClosing(investor, meetings, targetCloseDate, now), detectCompetitivePressureFast(investor, tierStatusMap, now), detectTermSheetReadiness(investor, meetings, score, momentum)];
 
       for (const trigger of triggers) {
         if (!trigger) continue;
