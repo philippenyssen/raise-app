@@ -17,12 +17,12 @@ import { cardPad4, labelAccent, labelMuted, labelMuted10, labelMutedTight, label
 import { cachedFetch } from '@/lib/cache';
 
 const filterBtnBase: React.CSSProperties = { borderRadius: 'var(--radius-sm)', fontSize: 'var(--font-size-xs)', fontWeight: 400, transition: 'all 150ms ease' };
-const convictionBtnBase: React.CSSProperties = { ...filterBtnBase, padding: '0.25rem 0.5rem' };
-const filterTabBase: React.CSSProperties = { ...filterBtnBase, padding: '0.375rem 0.75rem' };
+const convictionBtnBase: React.CSSProperties = { ...filterBtnBase, padding: 'var(--space-1) var(--space-2)' };
+const filterTabBase: React.CSSProperties = { ...filterBtnBase, padding: 'var(--space-1) var(--space-3)' };
 import { MS_PER_HOUR, MS_PER_DAY } from '@/lib/time';
 
 const skelItemStyle = { height: '52px', borderRadius: 'var(--radius-md)' } as const;
-const completedOutcomeBox = { background: 'var(--surface-2)', borderRadius: 'var(--radius-sm)', padding: '0.375rem 0.5rem', fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' } as const;
+const completedOutcomeBox = { background: 'var(--surface-2)', borderRadius: 'var(--radius-sm)', padding: 'var(--space-1) var(--space-2)', fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' } as const;
 const completingFormBox = { background: 'var(--surface-2)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-3)' } as const;
 const draftSubjectBox: React.CSSProperties = { background: 'var(--surface-1)', borderRadius: 'var(--radius-md)', padding: 'var(--space-2) var(--space-3)', fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', fontWeight: 400 };
 const draftBodyBox: React.CSSProperties = { background: 'var(--surface-1)', borderRadius: 'var(--radius-md)', padding: 'var(--space-3)', fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', lineHeight: 1.6, whiteSpace: 'pre-line' };
@@ -39,10 +39,10 @@ const ACCENT_COLOR_MAP: Record<string, string> = {
   zinc: 'var(--text-secondary)',
   green: 'var(--success)',
 };
-const dangerBadgePill = { marginLeft: '0.375rem', background: 'var(--danger)', color: 'var(--text-primary)', fontSize: 'var(--font-size-xs)', padding: '0 0.25rem', borderRadius: 'var(--radius-full)' } as const;
+const dangerBadgePill = { marginLeft: 'var(--space-1)', background: 'var(--danger)', color: 'var(--text-primary)', fontSize: 'var(--font-size-xs)', padding: '0 var(--space-1)', borderRadius: 'var(--radius-full)' } as const;
 const cardInnerPad = cardPad4;
 const smallDot = { width: '16px', height: '16px', borderRadius: '50%', background: 'var(--accent-muted)' } as const;
-const footerRow = { padding: '0.375rem var(--space-4)', borderTop: '1px solid var(--border-subtle)', display: 'flex', gap: 'var(--space-3)', flexWrap: 'wrap' as const, alignItems: 'center', background: 'var(--surface-1)' } as const;
+const footerRow = { padding: 'var(--space-1) var(--space-4)', borderTop: '1px solid var(--border-subtle)', display: 'flex', gap: 'var(--space-3)', flexWrap: 'wrap' as const, alignItems: 'center', background: 'var(--surface-1)' } as const;
 
 interface TimingIntel { optimalDayOfWeek: string; optimalTimeOfDay: string; reasoning: string; }
 
@@ -401,14 +401,14 @@ function FollowupsContent() {
                   {item.conviction_delta !== 0 && (
                     <span
                       className="inline-flex items-center gap-0.5"
-                      style={{ marginLeft: '0.5rem', color: item.conviction_delta > 0 ? 'var(--success)' : 'var(--danger)' }}>
+                      style={{ marginLeft: 'var(--space-2)', color: item.conviction_delta > 0 ? 'var(--success)' : 'var(--danger)' }}>
                       {item.conviction_delta > 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
                       {item.conviction_delta > 0 ? '+' : ''}{item.conviction_delta}</span>
                   )}
                   {item.measured_lift !== null && item.measured_lift !== undefined && (
                     <span
                       className="inline-flex items-center gap-0.5"
-                      style={{ marginLeft: '0.5rem', color: item.measured_lift > 0 ? 'var(--success)' : item.measured_lift < 0 ? 'var(--danger)' : 'var(--text-muted)' }}>
+                      style={{ marginLeft: 'var(--space-2)', color: item.measured_lift > 0 ? 'var(--success)' : item.measured_lift < 0 ? 'var(--danger)' : 'var(--text-muted)' }}>
                       Measured: {item.measured_lift > 0 ? '+' : ''}{item.measured_lift} enthusiasm</span>
                   )}</div>
               )}
@@ -641,7 +641,7 @@ function FollowupsContent() {
         {/* Due date footer */}
         <div
           className="flex items-center justify-between"
-          style={{ padding: '0.5rem var(--space-4)', borderTop: isOverdue ? '1px solid var(--fg-6)' : '1px solid var(--border-subtle)', ...labelMuted }}>
+          style={{ padding: 'var(--space-2) var(--space-4)', borderTop: isOverdue ? '1px solid var(--fg-6)' : '1px solid var(--border-subtle)', ...labelMuted }}>
           {isOverdue ? (
             <span style={{ color: 'var(--text-primary)', fontWeight: 400 }}>
               {formatRelativeTime(item.due_at)} — was due {fmtDateTime(item.due_at)}</span>
@@ -673,7 +673,7 @@ function FollowupsContent() {
             {accent === 'red' && <AlertTriangle className="w-4 h-4" style={stTextPrimary} />}
             <h2 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: accentColorMap[accent] }}>{title}</h2>
             <span
-              style={{ fontSize: 'var(--font-size-xs)', padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-full)', background: accent === 'red' ? 'var(--danger-muted)' : 'var(--surface-3)', color: accent === 'red' ? 'var(--text-tertiary)' : 'var(--text-secondary)' }}>
+              style={{ fontSize: 'var(--font-size-xs)', padding: 'var(--space-0) var(--space-1)', borderRadius: 'var(--radius-full)', background: accent === 'red' ? 'var(--danger-muted)' : 'var(--surface-3)', color: accent === 'red' ? 'var(--text-tertiary)' : 'var(--text-secondary)' }}>
               {items.length}</span></div>
           {expanded
             ? <ChevronUp className="w-4 h-4" style={stTextMuted} />

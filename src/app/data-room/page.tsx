@@ -14,9 +14,9 @@ import { cachedFetch } from '@/lib/cache';
 const fontSmPrimary = { ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' } as const;
 const labelXsTertiary = labelTertiary;
 const sectionHeading: React.CSSProperties = { ...labelSecondary, fontWeight: 400, marginBottom: 'var(--space-2)' } as const;
-const badgeMuted: React.CSSProperties = { ...labelMuted, ...stSurface2, padding: '0.125rem var(--space-2)', borderRadius: 'var(--radius-sm)' } as const;
-const accessedDocBadge: React.CSSProperties = { ...labelSecondary, background: 'var(--success-muted)', padding: '0.125rem var(--space-2)', borderRadius: 'var(--radius-sm)' };
-const recommendCountBadge: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--accent)', background: 'var(--accent-muted)', padding: '0.125rem var(--space-2)', borderRadius: 'var(--radius-sm)', fontWeight: 400 };
+const badgeMuted: React.CSSProperties = { ...labelMuted, ...stSurface2, padding: 'var(--space-0) var(--space-2)', borderRadius: 'var(--radius-sm)' } as const;
+const accessedDocBadge: React.CSSProperties = { ...labelSecondary, background: 'var(--success-muted)', padding: 'var(--space-0) var(--space-2)', borderRadius: 'var(--radius-sm)' };
+const recommendCountBadge: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--accent)', background: 'var(--accent-muted)', padding: 'var(--space-0) var(--space-2)', borderRadius: 'var(--radius-sm)', fontWeight: 400 };
 
 interface DataRoomFile {
   id: string;
@@ -276,7 +276,7 @@ export default function DataRoomPage() {
       {/* Search */}
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={stTextMuted} />
-        <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} onKeyDown={e => { if (e.key === 'Escape') { setSearchQuery(''); e.preventDefault(); } }} placeholder="Search files and content..." className="input" autoComplete="off" spellCheck={false} aria-label="Search data room files" style={{ paddingLeft: 'var(--space-10)', paddingRight: 'var(--space-4)', paddingTop: '0.625rem', paddingBottom: '0.625rem', borderRadius: 'var(--radius-lg)' }}
+        <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} onKeyDown={e => { if (e.key === 'Escape') { setSearchQuery(''); e.preventDefault(); } }} placeholder="Search files and content..." className="input" autoComplete="off" spellCheck={false} aria-label="Search data room files" style={{ paddingLeft: 'var(--space-10)', paddingRight: 'var(--space-4)', paddingTop: 'var(--space-2)', paddingBottom: 'var(--space-2)', borderRadius: 'var(--radius-lg)' }}
           /></div>
 
       {/* Paste mode */}
@@ -652,7 +652,7 @@ function RecommendedDocRow({ doc, investorId, onLogAccess }: {
         className="ml-auto shrink-0 btn btn-md share-btn"
         style={{
           fontSize: 'var(--font-size-xs)',
-          padding: '0.125rem var(--space-2)',
+          padding: 'var(--space-0) var(--space-2)',
           border: 'none', }}
         onClick={() => onLogAccess(investorId, doc.document_id)}>
         Mark as shared</button>

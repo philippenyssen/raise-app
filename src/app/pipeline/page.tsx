@@ -67,7 +67,7 @@ const TYPE_STYLES: Record<InvestorType, React.CSSProperties> = {
   family_office: { background: 'var(--accent-8)', color: 'var(--text-primary)', boxShadow: 'inset 0 0 0 1px var(--accent-10)' },};
 
 const compareBarStyle: React.CSSProperties = { position: 'fixed', bottom: 'var(--space-6)', left: '50%', transform: 'translateX(-50%)', background: 'var(--surface-2)', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-2) var(--space-4)', boxShadow: 'var(--shadow-lg)', zIndex: 50 };
-const filterBtnBase: React.CSSProperties = { padding: '0.5rem 0.75rem', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', fontWeight: 400, transition: 'all 150ms ease' };
+const filterBtnBase: React.CSSProperties = { padding: 'var(--space-2) var(--space-3)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', fontWeight: 400, transition: 'all 150ms ease' };
 const filterBtnActive: React.CSSProperties = { ...filterBtnBase, background: 'var(--accent-muted)', color: 'var(--accent)' };
 const filterBtnInactive: React.CSSProperties = { ...filterBtnBase, background: 'var(--surface-1)', color: 'var(--text-tertiary)' };
 
@@ -519,7 +519,7 @@ export default function PipelinePage() {
                   onDrop={e => handleDrop(e, status)}>
                   <div
                     style={{
-                      padding: '0.5rem 0.75rem',
+                      padding: 'var(--space-2) var(--space-3)',
                       borderTopLeftRadius: 'var(--radius-xl)',
                       borderTopRightRadius: 'var(--radius-xl)',
                       ...colors.header, }}>
@@ -563,7 +563,7 @@ export default function PipelinePage() {
       {compareIds.size >= 2 && (
         <div className="flex items-center gap-3" style={compareBarStyle}>
           <span style={{ ...stFontSm, color: 'var(--text-secondary)' }}>{compareIds.size} selected</span>
-          <select aria-label="Move selected investors to status" defaultValue="" onChange={async e => { if (!e.target.value) return; const s = e.target.value; try { await Promise.all(Array.from(compareIds).map(id => fetch('/api/investors', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, status: s }) }).then(r => { if (!r.ok) throw new Error('Failed'); }))); toast(`Moved ${compareIds.size} to ${STATUS_LABELS[s as InvestorStatus]}`); setCompareIds(new Set()); fetchInvestors(); } catch { toast('Couldn\'t move investors — try again', 'error'); } e.target.value = ''; }} className="input" style={{ width: 'auto', fontSize: 'var(--font-size-xs)', padding: '0.25rem 0.5rem' }}><option value="" disabled>Move to...</option>{Object.entries(STATUS_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select>
+          <select aria-label="Move selected investors to status" defaultValue="" onChange={async e => { if (!e.target.value) return; const s = e.target.value; try { await Promise.all(Array.from(compareIds).map(id => fetch('/api/investors', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, status: s }) }).then(r => { if (!r.ok) throw new Error('Failed'); }))); toast(`Moved ${compareIds.size} to ${STATUS_LABELS[s as InvestorStatus]}`); setCompareIds(new Set()); fetchInvestors(); } catch { toast('Couldn\'t move investors — try again', 'error'); } e.target.value = ''; }} className="input" style={{ width: 'auto', fontSize: 'var(--font-size-xs)', padding: 'var(--space-1) var(--space-2)' }}><option value="" disabled>Move to...</option>{Object.entries(STATUS_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select>
           <Link href={`/compare?ids=${Array.from(compareIds).join(',')}`} className="btn btn-primary btn-sm">Compare</Link>
           <button onClick={() => setCompareIds(new Set())} className="btn btn-secondary btn-sm">Clear</button>
         </div>
@@ -775,7 +775,7 @@ function InvestorCard({
         onDragEnd={onDragEnd}
         aria-label={`${investor.name} — ${investor.status}`}
         className="pipeline-card"
-        style={{ ...cardBaseStyle, padding: '0.5rem 0.75rem' }}>
+        style={{ ...cardBaseStyle, padding: 'var(--space-2) var(--space-3)' }}>
         <Link href={`/investors/${investor.id}`} className="flex items-center gap-2">
           {onToggleCompare && <span role="checkbox" aria-checked={isCompareSelected} aria-label={`Compare ${investor.name}`} className={`card-compare${isCompareSelected ? ' selected' : ''}`} tabIndex={0} onClick={e => { e.preventDefault(); e.stopPropagation(); onToggleCompare(investor.id); }} onKeyDown={e => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); onToggleCompare(investor.id); } }} style={{ width: 12, height: 12, borderRadius: 'var(--radius-sm)', border: `1.5px solid ${isCompareSelected ? 'var(--accent)' : 'var(--border-default)'}`, background: isCompareSelected ? 'var(--accent)' : 'transparent', cursor: 'pointer', flexShrink: 0 }} />}
           <GripVertical className="w-3 h-3 flex-shrink-0 card-grip" aria-hidden="true" />
