@@ -21,6 +21,11 @@ const funnelStageName = { fontSize: 'var(--font-size-sm)', color: 'var(--text-pr
 const mb4 = { marginBottom: 'var(--space-1)' } as const;
 const typeCardStyle: React.CSSProperties = { padding: 'var(--space-2) var(--space-3)', borderRadius: 'var(--radius-sm)', background: 'var(--surface-1)' };
 const insightCardStyle: React.CSSProperties = { padding: 'var(--space-2) var(--space-3)', borderRadius: 'var(--radius-sm)', background: 'var(--surface-1)', ...textSmSecondary };
+const timingStatCard: React.CSSProperties = { padding: 'var(--space-3)', borderRadius: 'var(--radius-md)', background: 'var(--surface-1)', textAlign: 'center' };
+const timingStatCardNocenter: React.CSSProperties = { padding: 'var(--space-3)', borderRadius: 'var(--radius-md)', background: 'var(--surface-1)' };
+const timingGridLayout: React.CSSProperties = { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-3)' };
+const xlStatSecondary: React.CSSProperties = { fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-secondary)' };
+const xlStatPrimary: React.CSSProperties = { fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' };
 const closeRateLabel = { fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', fontWeight: 400 } as const;
 const passRateLabel = { fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', fontWeight: 400 } as const;
 const countBadgeStyle: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', fontWeight: 400, fontVariantNumeric: 'tabular-nums' };
@@ -440,22 +445,22 @@ export default function WinLossPage() {
             <h2 style={textBaseNormal}>
               Time Analysis</h2></div>
           <div className="space-y-3">
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-3)' }}>
-              <div style={{ padding: 'var(--space-3)', borderRadius: 'var(--radius-md)', background: 'var(--surface-1)', textAlign: 'center' }}>
+            <div style={timingGridLayout}>
+              <div style={timingStatCard}>
                 <div style={{ ...labelMuted, marginBottom: 'var(--space-1)' }}>
                   Avg Days to Close</div>
-                <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-secondary)' }}>
+                <div style={xlStatSecondary}>
                   {timing.avgDaysToClose}</div>
                 <div style={labelMuted}>
                   Median: {timing.medianDaysToClose}d</div></div>
-              <div style={{ padding: 'var(--space-3)', borderRadius: 'var(--radius-md)', background: 'var(--surface-1)', textAlign: 'center' }}>
+              <div style={timingStatCard}>
                 <div style={{ ...labelMuted, marginBottom: 'var(--space-1)' }}>
                   Avg Days to Pass</div>
-                <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>
+                <div style={xlStatPrimary}>
                   {timing.avgDaysToPass}</div>
                 <div style={labelMuted}>
                   Median: {timing.medianDaysToPass}d</div></div></div>
-            <div style={{ padding: 'var(--space-3)', borderRadius: 'var(--radius-md)', background: 'var(--surface-1)' }}>
+            <div style={timingStatCardNocenter}>
               <div className="flex items-center justify-between">
                 <span style={textSmSecondary}>
                   Avg Meetings (Winners)</span>

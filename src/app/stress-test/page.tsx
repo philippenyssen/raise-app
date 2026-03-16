@@ -427,7 +427,7 @@ export default function StressTestPage() {
           <h2 className="text-sm font-normal flex items-center gap-2 mb-4" style={stTextSecondary}>
             <AlertTriangle className="w-4 h-4" /> Risk Scenarios</h2>
           {data.risks.length === 0 ? (
-            <EmptyState icon={AlertTriangle} title="No significant risks flagged" description="Keep monitoring as your pipeline evolves." />
+            <EmptyState icon={AlertTriangle} title="No significant risks flagged" description="All clear for now. Risks appear when investors stall, enthusiasm drops, or timeline bottlenecks form." />
           ) : (
             <div className="space-y-2">
               {data.risks.map((risk, i) => {

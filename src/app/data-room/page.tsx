@@ -455,7 +455,7 @@ function AccessIntelligenceSection({ intelligence, files, expandedInvestor, onTo
               <MostRequestedRow key={doc.document_id} doc={doc} rank={idx + 1} />
             ))}</div>
         ) : (
-          <EmptyState icon={Eye} title="No access events yet" description="Log document access to see rankings." />
+          <EmptyState icon={Eye} title="No access events yet" description="Share documents with investors and log access to see who's engaging with your materials." />
         )}</div>
 
       {/* Per-Investor Access */}
@@ -475,7 +475,7 @@ function AccessIntelligenceSection({ intelligence, files, expandedInvestor, onTo
                 files={files} />
             ))}</div>
         ) : (
-          <EmptyState icon={Users} title="No active investors yet" description="Add investors in the CRM to see access tracking." />
+          <EmptyState icon={Users} title="No active investors yet" description="Add investors in the CRM to track which documents they access and get sharing recommendations." />
         )}</div>
 
       {/* Unreached Investors */}
