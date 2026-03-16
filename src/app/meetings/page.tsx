@@ -78,7 +78,8 @@ function RatingDots({ value, onChange, label }: { value: number | null; onChange
             style={{ ...ratingBtnBase, cursor: onChange ? 'pointer' : 'default' }}>
             <span style={{
               color: n <= (hovered ?? value ?? 0) ? 'var(--warning)' : 'var(--text-muted)',
-              transition: 'color 100ms ease',}}>
+              transform: onChange && hovered === n ? 'scale(1.2)' : 'scale(1)',
+              transition: 'color 100ms ease, transform 100ms ease',}}>
               <Star className="w-4 h-4" style={{ fill: n <= (hovered ?? value ?? 0) ? 'currentColor' : 'none' }} /></span>
           </button>
         ))}</div>
