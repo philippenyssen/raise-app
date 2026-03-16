@@ -17,6 +17,10 @@ const mbSpace3 = { marginBottom: 'var(--space-3)' } as const;
 const funnelBarContainer: React.CSSProperties = { height: '24px', background: 'var(--surface-1)', borderRadius: 'var(--radius-sm)', overflow: 'hidden', position: 'relative' };
 const funnelStageName = { fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, minWidth: '120px' } as const;
 const mb4 = { marginBottom: '4px' } as const;
+const typeCardStyle: React.CSSProperties = { padding: 'var(--space-2) var(--space-3)', borderRadius: 'var(--radius-sm)', background: 'var(--surface-1)' };
+const insightCardStyle: React.CSSProperties = { padding: 'var(--space-2) var(--space-3)', borderRadius: 'var(--radius-sm)', background: 'var(--surface-1)', fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' };
+const closeRateLabel = { fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', fontWeight: 400 } as const;
+const passRateLabel = { fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', fontWeight: 400 } as const;
 
 // ── Types ─────────────────────────────────────────────────────────────
 
@@ -477,11 +481,8 @@ export default function WinLossPage() {
                 <div
                   key={tp.type}
                   className="hover-surface-2"
-                  style={{
-                    padding: 'var(--space-2) var(--space-3)',
-                    borderRadius: 'var(--radius-sm)',
-                    background: 'var(--surface-1)', }}>
-                  <div className="flex items-center justify-between" style={{ marginBottom: '4px' }}>
+                  style={typeCardStyle}>
+                  <div className="flex items-center justify-between" style={mb4}>
                     <span style={textSmPrimary400}>
                       {TYPE_LABELS[tp.type] || tp.type}</span>
                     <span style={labelMuted}>
@@ -489,11 +490,11 @@ export default function WinLossPage() {
                   <div className="flex items-center gap-3">
                     <div className="flex items-center gap-1">
                       <span style={stTextSecondary}><TrendingUp className="w-3 h-3" /></span>
-                      <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', fontWeight: 400 }}>
+                      <span style={closeRateLabel}>
                         {tp.closeRate}% close</span></div>
                     <div className="flex items-center gap-1">
                       <span style={stTextPrimary}><TrendingDown className="w-3 h-3" /></span>
-                      <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', fontWeight: 400 }}>
+                      <span style={passRateLabel}>
                         {tp.passRate}% pass</span></div>
                     <span style={labelMuted}>
                       {tp.closed}W / {tp.passed}L / {tp.dropped}D</span></div></div>
@@ -516,12 +517,7 @@ export default function WinLossPage() {
               {patterns.insights.map((insight, i) => (
                 <div
                   key={i}
-                  style={{
-                    padding: 'var(--space-2) var(--space-3)',
-                    borderRadius: 'var(--radius-sm)',
-                    background: 'var(--surface-1)',
-                    fontSize: 'var(--font-size-sm)',
-                    color: 'var(--text-secondary)', }}>
+                  style={insightCardStyle}>
                   {insight}</div>
               ))}</div></div>
         )}
@@ -538,12 +534,7 @@ export default function WinLossPage() {
                 <div
                   key={i}
                   className="hover-surface-2"
-                  style={{
-                    padding: 'var(--space-2) var(--space-3)',
-                    borderRadius: 'var(--radius-sm)',
-                    background: 'var(--surface-1)',
-                    fontSize: 'var(--font-size-sm)',
-                    color: 'var(--text-secondary)', }}>
+                  style={insightCardStyle}>
                   {rec}</div>
               ))}</div>
           ) : (

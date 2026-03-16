@@ -18,6 +18,10 @@ const investorRowGrid: React.CSSProperties = { display: 'grid', gridTemplateColu
 const enrichBtnBase: React.CSSProperties = { background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid var(--accent-20)', fontSize: 'var(--font-size-xs)', padding: '4px 10px' };
 const fieldTagStyle: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '2px 8px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-tertiary)' };
 const investorLinkStyle: React.CSSProperties = { fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, textDecoration: 'none' };
+const expandPanelStyle: React.CSSProperties = { padding: 'var(--space-3) var(--space-4)', borderTop: '1px solid var(--border-subtle)', background: 'var(--surface-1)' };
+const expandDescStyle = { fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', lineHeight: 1.6 } as const;
+const expandProvidesRow: React.CSSProperties = { marginTop: 'var(--space-3)', display: 'flex', flexWrap: 'wrap', gap: 'var(--space-2)' };
+const apiKeyWarn: React.CSSProperties = { marginTop: 'var(--space-3)', padding: 'var(--space-2) var(--space-3)', background: 'var(--warning-muted)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' };
 
 // ---------------------------------------------------------------------------
 // Types
@@ -355,26 +359,17 @@ export default function EnrichmentPage() {
                       <ChevronRight style={{ ...icon14, color: 'var(--text-muted)' }} />}</div></div>
 
                 {isExpanded && (
-                  <div style={{
-                    padding: 'var(--space-3) var(--space-4)',
-                    borderTop: '1px solid var(--border-subtle)',
-                    background: 'var(--surface-1)',}}>
-                    <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+                  <div style={expandPanelStyle}>
+                    <p style={expandDescStyle}>
                       {provider.description}</p>
-                    <div style={{ marginTop: 'var(--space-3)', display: 'flex', flexWrap: 'wrap', gap: 'var(--space-2)' }}>
+                    <div style={expandProvidesRow}>
                       <span style={labelMuted}>Provides:</span>
                       {provider.fields_provided.map(f => (
                         <span key={f} style={fieldTagStyle}>
                           {f}</span>
                       ))}</div>
                     {provider.requires_api_key && !provider.configured && (
-                      <div style={{
-                        marginTop: 'var(--space-3)',
-                        padding: 'var(--space-2) var(--space-3)',
-                        background: 'var(--warning-muted)',
-                        borderRadius: 'var(--radius-md)',
-                        fontSize: 'var(--font-size-xs)',
-                        color: 'var(--text-tertiary)',}}>
+                      <div style={apiKeyWarn}>
                         Requires API key: set <code style={{ background: 'var(--surface-3)', padding: '0 4px', borderRadius: '3px' }}>{provider.api_key_env}</code> in your environment
                       </div>
                     )}</div>
