@@ -23,6 +23,10 @@ import { parseJsonSafe } from '@/lib/api-helpers';
 import { cachedFetch } from '@/lib/cache';
 
 const glanceDivider = { borderLeft: '1px solid var(--border-subtle)', paddingLeft: 'var(--space-4)' } as const;
+const skeletonCardLg = { height: '96px', borderRadius: 'var(--radius-xl)' } as const;
+const accentDot = { background: 'var(--accent)' } as const;
+const dangerMutedBadge = { background: 'var(--danger-muted)' } as const;
+const borderSubtleRow = { borderBottom: '1px solid var(--border-subtle)' } as const;
 
 // ---------- types for the meeting brief ----------
 
@@ -151,7 +155,7 @@ function MeetingPrepContent() {
     setLoadingPrep(true);
     setMeetingBrief(null);
 
-    const safeFetch = (url: string) => fetch(url).then(r => r.ok ? r.json() : []).catch(() => []);
+    const safeFetch = (url: string) => cachedFetch(url).then(r => r.ok ? r.json() : []).catch(() => []);
     Promise.all([
       safeFetch(`/api/meetings?investor_id=${selectedId}`),
       safeFetch(`/api/tasks?investor_id=${selectedId}`),
@@ -347,7 +351,7 @@ function MeetingPrepContent() {
         <div className="skeleton" style={{ height: '48px', borderRadius: 'var(--radius-xl)' }} />
         <div className="space-y-3">
           {[1,2,3,4].map(i => (
-            <div key={i} className="skeleton" style={{ height: '96px', borderRadius: 'var(--radius-xl)' }} />
+            <div key={i} className="skeleton" style={skeletonCardLg} />
           ))}</div>
       </div>);
   }
@@ -545,7 +549,7 @@ function MeetingPrepContent() {
                         <h3 className="text-xs font-normal tracking-wider mb-2" style={stTextPrimary}>Avoid</h3>
                         <div className="flex flex-wrap gap-1.5">
                           {meetingBrief.narrative_profile.avoid_topics.map((t, i) => (
-                            <span key={i} className="text-xs px-2 py-1 rounded-md" style={{ background: 'var(--danger-muted)', ...stTextPrimary }}>{t}</span>
+                            <span key={i} className="text-xs px-2 py-1 rounded-md" style={{ ...dangerMutedBadge, ...stTextPrimary }}>{t}</span>
                           ))}</div></div></div>
 
                     {/* Key Talking Points */}
@@ -556,7 +560,7 @@ function MeetingPrepContent() {
                       <div className="space-y-2">
                         {meetingBrief.brief.key_talking_points.map((point, i) => (
                           <div key={i} className="flex items-start gap-2.5 text-sm">
-                            <span className="shrink-0 mt-1.5 w-1.5 h-1.5 rounded-full" style={{ background: 'var(--accent)' }} />
+                            <span className="shrink-0 mt-1.5 w-1.5 h-1.5 rounded-full" style={accentDot} />
                             <span style={stTextSecondary}>{point}</span></div>
                         ))}</div></div>
 
@@ -576,7 +580,7 @@ function MeetingPrepContent() {
                             </thead>
                             <tbody>
                               {meetingBrief.brief.metrics_to_highlight.map((m, i) => (
-                                <tr key={i} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+                                <tr key={i} style={borderSubtleRow}>
                                   <td className="px-3 py-2 font-normal" style={stTextSecondary}>{m.metric}</td>
                                   <td className="px-3 py-2 font-mono" style={stAccent}>{m.value}</td>
                                   <td className="px-3 py-2" style={stTextTertiary}>{m.why}</td></tr>
