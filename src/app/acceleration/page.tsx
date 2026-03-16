@@ -286,7 +286,8 @@ export default function AccelerationPage() {
       } else {
         toast('Couldn\'t load acceleration data — refresh to retry', 'error');
       }
-    } catch {
+    } catch (e) {
+      console.warn('[ACCEL_FETCH]', e instanceof Error ? e.message : e);
       toast('Couldn\'t load acceleration data — refresh to retry', 'error');
     } finally {
       setLoading(false);
@@ -314,7 +315,8 @@ export default function AccelerationPage() {
         label: 'Undo',
         onClick: () => undoAction(item.id, 'executed'),
       });
-    } catch {
+    } catch (e) {
+      console.warn('[ACCEL_EXECUTE]', e instanceof Error ? e.message : e);
       toast('Couldn\'t mark action as executed — try again', 'error');
     }}
 
@@ -330,7 +332,8 @@ export default function AccelerationPage() {
         label: 'Undo',
         onClick: () => undoAction(item.id, 'skipped'),
       });
-    } catch {
+    } catch (e) {
+      console.warn('[ACCEL_SKIP]', e instanceof Error ? e.message : e);
       toast('Couldn\'t skip action — try again', 'error');
     }}
 
@@ -347,7 +350,8 @@ export default function AccelerationPage() {
         setSkippedIds(prev => { const next = new Set(prev); next.delete(id); return next; });
       }
       toast('Action reverted to pending');
-    } catch {
+    } catch (e) {
+      console.warn('[ACCEL_UNDO]', e instanceof Error ? e.message : e);
       toast('Couldn\'t revert action — refresh and try again', 'error');
     }}
 

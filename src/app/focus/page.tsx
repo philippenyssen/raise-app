@@ -713,7 +713,8 @@ export default function FocusPage() {
         cachedFetch('/api/acceleration'),]);
       if (focusRes.ok) setData(await focusRes.json());
       if (accelRes.ok) setAccelData(await accelRes.json());
-    } catch {
+    } catch (e) {
+      console.warn('[FOCUS_FETCH]', e instanceof Error ? e.message : e);
       toast('Couldn\'t load focus data — try refreshing the page', 'error');
     } finally {
       setLoading(false);
@@ -749,7 +750,8 @@ export default function FocusPage() {
         }),});
       if (!res.ok) throw new Error('Failed to create task');
       toast(`Re-engagement task created for ${item.investorName}`);
-    } catch {
+    } catch (e) {
+      console.warn('[FOCUS_TASK]', e instanceof Error ? e.message : e);
       toast('Couldn\'t create task — check your connection and retry', 'error');
     }}
 
@@ -765,7 +767,8 @@ export default function FocusPage() {
       if (!res.ok) throw new Error('Failed to mark action as executed');
       setExecutedIds(prev => new Set(prev).add(item.id));
       toast(`Action executed for ${item.investorName}`);
-    } catch {
+    } catch (e) {
+      console.warn('[FOCUS_ACCEL]', e instanceof Error ? e.message : e);
       toast('Couldn\'t update action — check your connection and retry', 'error');
     }}
 

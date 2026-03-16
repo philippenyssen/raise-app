@@ -77,7 +77,8 @@ export default function BacklogPage() {
       const data = await res.json();
       setCommitments(data.commitments);
       setSummary(data.summary);
-    } catch {
+    } catch (e) {
+      console.warn('[BACKLOG_FETCH]', e instanceof Error ? e.message : e);
       toast('Could not load revenue commitments — check your connection and refresh', 'error');
     } finally {
       setLoading(false);
@@ -117,7 +118,8 @@ export default function BacklogPage() {
       setCommitments(prev => [created, ...prev]);
       // Refresh summary in background (no loading spinner)
       cachedFetch('/api/revenue-commitments').then(r => r.ok ? r.json() : null).then(d => { if (d) setSummary(d.summary); }).catch(e => console.error('[BACKLOG_SUMMARY]', e instanceof Error ? e.message : e));
-    } catch {
+    } catch (e) {
+      console.warn('[BACKLOG_ADD]', e instanceof Error ? e.message : e);
       toast('Could not add commitment — check that all fields are filled and try again', 'error');
     }
     setAdding(false);
@@ -135,7 +137,8 @@ export default function BacklogPage() {
       toast('Commitment removed from backlog', 'warning');
       // Refresh summary in background
       cachedFetch('/api/revenue-commitments').then(r => r.ok ? r.json() : null).then(d => { if (d) setSummary(d.summary); }).catch(e => console.error('[BACKLOG_SUMMARY]', e instanceof Error ? e.message : e));
-    } catch {
+    } catch (e) {
+      console.warn('[BACKLOG_DELETE]', e instanceof Error ? e.message : e);
       toast('Could not confirm deletion — refresh to verify current state', 'error');
     } finally { setDeleting(false); }}
 
