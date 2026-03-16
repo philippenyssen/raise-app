@@ -142,7 +142,7 @@ export default function InvestorsPage() {
       fetchInvestors();
     } catch (e) {
       console.warn('[INVESTOR_SAVE]', e instanceof Error ? e.message : e);
-      toast('Couldn\'t save investor — check all fields and try again', 'error');
+      toast('Couldn\'t save — ensure investor name is filled and try again', 'error');
     } finally {
       setSubmitting(false);
     }}
@@ -163,7 +163,7 @@ export default function InvestorsPage() {
       fetchInvestors();
     } catch (e) {
       console.warn('[INVESTOR_STATUS]', e instanceof Error ? e.message : e);
-      toast('Couldn\'t update status — try again in a moment', 'error');
+      toast('Status update failed — the server may be busy, wait a moment and retry', 'error');
     }}
 
   async function handleDelete() {
@@ -221,7 +221,7 @@ export default function InvestorsPage() {
       fetchInvestors();
     } catch (e) {
       console.warn('[INVESTOR_BULK]', e instanceof Error ? e.message : e);
-      toast('Some investor updates failed — refresh to see current state', 'error');
+      toast(`Some of ${selected.size} updates failed — refresh to check which ones saved`, 'error');
       fetchInvestors();
     } finally { setBulkUpdating(false); }}
 

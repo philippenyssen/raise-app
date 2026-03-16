@@ -50,7 +50,7 @@ export default function DocumentEditorPage() {
       setTitle(d.title);
       setLoading(false);
     }).catch(() => {
-      toast('Could not load document — it may have been deleted', 'error');
+      toast('Document not found — it may have been deleted or moved', 'error');
       setLoading(false);});
   }, [id, toast]);
   useEffect(() => { fetchDocument(); }, [fetchDocument]);

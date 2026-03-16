@@ -244,7 +244,7 @@ export default function NewDocumentPage() {
                 style={{
                   background: 'var(--surface-2)',
                   color: 'var(--text-primary)', }}>
-                {creating ? 'Creating...' : 'Create'}</button></div></div>
+                {creating ? 'Creating document...' : 'Create Document'}</button></div></div>
         ))}</div>
     </div>);
 }

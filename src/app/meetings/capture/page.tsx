@@ -142,7 +142,7 @@ function QuickCaptureInner() {
       setResult(data);
     } catch (e) {
       console.warn('[CAPTURE_MEETING]', e instanceof Error ? e.message : e);
-      toast('Could not capture meeting — check your connection and try again', 'error');
+      toast('Meeting capture failed — check your connection or API key in settings', 'error');
     } finally {
       setLoading(false);
     }}
