@@ -363,7 +363,7 @@ export default function MeetingsPage() {
   }), [meetings, search, typeFilter, statusFilter]);
 
   // Stats + per-investor engagement intelligence (single memo)
-  const { avgEnthusiasm, totalObjections, uniqueInvestors, investorStats, meetingsByInvestor, momentumUp, momentumDown } = useMemo(() => {
+  const { avgEnthusiasm, totalObjections, uniqueInvestors, investorStats, meetingsByInvestor, momentumUp, momentumDown, thisWeek } = useMemo(() => {
     const avg = meetings.length > 0 ? (meetings.reduce((s, m) => s + m.enthusiasm_score, 0) / meetings.length).toFixed(1) : '0';
     let objCount = 0;
     const investorIds = new Set<string>();
@@ -391,7 +391,9 @@ export default function MeetingsPage() {
     }
     const up = Object.entries(stats).filter(([, s]) => s.trend === 'up').map(([id, s]) => ({ id, name: byInvestor[id]?.[0]?.investor_name || id, score: s.latestEnthusiasm })).sort((a, b) => b.score - a.score).slice(0, 3);
     const down = Object.entries(stats).filter(([, s]) => s.trend === 'down').map(([id, s]) => ({ id, name: byInvestor[id]?.[0]?.investor_name || id, score: s.latestEnthusiasm })).sort((a, b) => a.score - b.score).slice(0, 3);
-    return { avgEnthusiasm: avg, totalObjections: objCount, uniqueInvestors: investorIds.size, investorStats: stats, meetingsByInvestor: byInvestor, momentumUp: up, momentumDown: down };
+    const weekAgo = Date.now() - 7 * 86400000;
+    const thisWeek = meetings.filter(m => new Date(m.date).getTime() >= weekAgo).length;
+    return { avgEnthusiasm: avg, totalObjections: objCount, uniqueInvestors: investorIds.size, investorStats: stats, meetingsByInvestor: byInvestor, momentumUp: up, momentumDown: down, thisWeek };
   }, [meetings]);
 
   const handleOutcomeSaved = useCallback((updated: Meeting) => {
@@ -430,8 +432,8 @@ export default function MeetingsPage() {
       {/* Stats Bar */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 card-stagger">
         <div className="card-metric">
-          <div className="metric-label">Total Meetings</div>
-          <div className="metric-value" style={{ marginTop: 'var(--space-0)' }}>{meetings.length}</div></div>
+          <div className="metric-label">This Week</div>
+          <div className="metric-value" style={{ marginTop: 'var(--space-0)' }}>{thisWeek}<span style={textSmMuted}>/{meetings.length}</span></div></div>
         <div className="card-metric">
           <div className="metric-label">Avg Enthusiasm</div>
           <div className="metric-value" style={{ marginTop: 'var(--space-0)' }}>
