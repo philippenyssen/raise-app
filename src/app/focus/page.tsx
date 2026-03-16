@@ -130,7 +130,7 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
           ))}</div>
         {/* Inline top strengths summary */}
         {!expanded && topDimensions.length > 0 && (
-          <div className="flex items-center gap-1.5 shrink-0" style={{ marginLeft: '4px' }}>
+          <div className="flex items-center gap-1.5 shrink-0" style={{ marginLeft: 'var(--space-1)' }}>
             {topDimensions.slice(0, 2).map(d => (
               <span
                 key={d.name}
@@ -139,7 +139,7 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
                   fontWeight: 400,
                   color: dimensionColor(d.score, d.signal),
                   background: dimensionBg(d.score, d.signal),
-                  padding: '1px 4px',
+                  padding: 'var(--space-0) var(--space-1)',
                   borderRadius: 'var(--radius-sm)',
                   whiteSpace: 'nowrap', }}>
                 {DIMENSION_SHORT_LABELS[d.name] || d.name.slice(0, 3).toUpperCase()} {d.score}</span>
@@ -151,7 +151,7 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
                   fontWeight: 400,
                   color: dimensionColor(weakest.score, weakest.signal),
                   background: dimensionBg(weakest.score, weakest.signal),
-                  padding: '1px 4px',
+                  padding: 'var(--space-0) var(--space-1)',
                   borderRadius: 'var(--radius-sm)',
                   whiteSpace: 'nowrap', }}>
                 {DIMENSION_SHORT_LABELS[weakest.name] || weakest.name.slice(0, 3).toUpperCase()} {weakest.score}</span>
@@ -285,11 +285,11 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
                 {STATUS_LABELS[item.status] ?? item.status}</span></div>
 
             {/* Recommended action */}
-            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, lineHeight: 1.4, marginTop: '6px' }}>
+            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, lineHeight: 1.4, marginTop: 'var(--space-1)' }}>
               {item.recommendedAction}</p>
 
             {/* Meta row */}
-            <div className="flex items-center gap-4 flex-wrap" style={{ marginTop: '8px' }}>
+            <div className="flex items-center gap-4 flex-wrap" style={{ marginTop: 'var(--space-2)' }}>
               {/* Deal heat — composite of focus score + momentum */}
               {(() => {
                 const momentumBonus = item.momentum === 'accelerating' ? 15 : item.momentum === 'steady' ? 0 : item.momentum === 'decelerating' ? -10 : -20;
@@ -398,7 +398,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
         <div className="px-4 py-3 ml-11 space-y-3" style={stBorderTop}>
           {/* Score breakdown */}
           <div>
-            <p style={{ ...labelMutedWide, marginBottom: '8px' }}>Score Breakdown</p>
+            <p style={{ ...labelMutedWide, marginBottom: 'var(--space-2)' }}>Score Breakdown</p>
             <div className="grid grid-cols-5 gap-2">
               {[
                 { label: 'Investor Score', value: item.components.investorScore, weight: '30%' },
@@ -416,7 +416,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
           {/* Unresolved objections */}
           {item.unresolvedObjections.length > 0 && (
             <div>
-              <p style={{ ...labelMutedWide, marginBottom: '4px' }}>Unresolved Objections</p>
+              <p style={{ ...labelMutedWide, marginBottom: 'var(--space-1)' }}>Unresolved Objections</p>
               <div className="space-y-1">
                 {item.unresolvedObjections.map((obj) => (
                   <div key={obj} className="flex items-start gap-1.5" style={objItemStyle}>
@@ -456,18 +456,18 @@ function QuickWinCard({ item }: { item: FocusItem }) {
         <TierBadge tier={item.investorTier} /></div>
       {item.unresolvedObjections.length > 0 ? (
         <>
-          <p style={{ ...labelMuted, marginBottom: '4px' }}>Blocker:</p>
-          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', opacity: 0.85, marginBottom: '8px' }}>{item.unresolvedObjections[0]}</p>
-          <p style={{ ...labelMuted, marginBottom: '4px' }}>Resolution:</p>
+          <p style={{ ...labelMuted, marginBottom: 'var(--space-1)' }}>Blocker:</p>
+          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', opacity: 0.85, marginBottom: 'var(--space-2)' }}>{item.unresolvedObjections[0]}</p>
+          <p style={{ ...labelMuted, marginBottom: 'var(--space-1)' }}>Resolution:</p>
           <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', opacity: 0.85 }} title={item.recommendedAction}>{item.recommendedAction.length > 140 ? item.recommendedAction.substring(0, 137) + '...' : item.recommendedAction}</p>
         </>
       ) : (
         <>
-          <p style={{ ...labelMuted, marginBottom: '4px' }}>Opportunity:</p>
+          <p style={{ ...labelMuted, marginBottom: 'var(--space-1)' }}>Opportunity:</p>
           <p style={labelSecondary} title={item.recommendedAction}>{item.recommendedAction.length > 140 ? item.recommendedAction.substring(0, 137) + '...' : item.recommendedAction}</p>
         </>
       )}
-      <div className="flex items-center justify-between" style={{ marginTop: '12px' }}>
+      <div className="flex items-center justify-between" style={{ marginTop: 'var(--space-3)' }}>
         <div className="flex items-center gap-2">
           <span className="flex items-center gap-1" style={labelMuted10}>
             <Timer className="w-3 h-3" /> {item.timeEstimate}</span>
