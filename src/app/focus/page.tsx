@@ -740,7 +740,7 @@ export default function FocusPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          title: `Re-engage ${item.investorName} — ${item.daysSinceLastMeeting ?? '?'}d since last contact`,
+          title: `Re-engage ${item.investorName}${item.daysSinceLastMeeting != null ? ` — ${item.daysSinceLastMeeting}d since last contact` : ''}`,
           description: `Process is ${item.momentum}. Last enthusiasm: ${item.enthusiasm}/5.\n\nRecommended: ${item.recommendedAction}`,
           assignee: '',
           due_date: new Date(Date.now() + 2 * MS_PER_DAY).toISOString().split('T')[0],

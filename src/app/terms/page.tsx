@@ -317,7 +317,7 @@ export default function TermsPage() {
         <EmptyState
           icon={Scale}
           title="No term sheets yet"
-          description="Add them as they come in for side-by-side comparison." />
+          description="When you receive a term sheet, add it here to track terms, compare across investors, and run AI-powered negotiation analysis." />
       )}
 
       <ConfirmModal
