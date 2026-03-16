@@ -148,6 +148,7 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
   const [presenting, setPresenting] = useState(false);
   const [presentIdx, setPresentIdx] = useState(0);
   const [showBgPicker, setShowBgPicker] = useState(false);
+  const [canvasZoom, setCanvasZoom] = useState(100);
   const [draggingElement, setDraggingElement] = useState<{ id: string; startX: number; startY: number; origX: number; origY: number } | null>(null);
   const presentRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -547,7 +548,7 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
 
         {/* Slide canvas */}
         <div className="flex-1 flex items-center justify-center overflow-auto" style={{ padding: 'var(--space-6)' }}>
-          <div ref={canvasRef} style={{ ...slideCanvasStyle, background: activeSlide?.background || 'white' }}>
+          <div ref={canvasRef} style={{ ...slideCanvasStyle, background: activeSlide?.background || 'white', transform: `scale(${canvasZoom / 100})`, transformOrigin: 'center center' }}>
             {activeSlide && activeSlide.elements.map(el => {
               const style = getElementStyle(el);
               const isEditing = editingElement === el.id;
@@ -727,6 +728,35 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
           >
             <ChevronRight className="w-4 h-4" />
           </button>
+          <div style={{ width: '1px', height: '16px', background: 'var(--border-subtle)', margin: '0 4px' }} />
+          <button
+            onClick={() => setCanvasZoom(z => Math.max(50, z - 10))}
+            className="btn btn-ghost btn-sm"
+            style={{ fontSize: '11px', padding: '2px 6px' }}
+            disabled={canvasZoom <= 50}
+          >
+            -
+          </button>
+          <span style={{ fontSize: '10px', color: 'var(--text-muted)', minWidth: '32px', textAlign: 'center' }}>
+            {canvasZoom}%
+          </span>
+          <button
+            onClick={() => setCanvasZoom(z => Math.min(200, z + 10))}
+            className="btn btn-ghost btn-sm"
+            style={{ fontSize: '11px', padding: '2px 6px' }}
+            disabled={canvasZoom >= 200}
+          >
+            +
+          </button>
+          {canvasZoom !== 100 && (
+            <button
+              onClick={() => setCanvasZoom(100)}
+              className="btn btn-ghost btn-sm"
+              style={{ fontSize: '10px', padding: '2px 4px', color: 'var(--text-muted)' }}
+            >
+              Reset
+            </button>
+          )}
         </div>
       </div>
 

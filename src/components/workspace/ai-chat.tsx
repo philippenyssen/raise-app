@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { Send, Loader2, Sparkles, RotateCcw, Copy, Check, CheckCircle, XCircle, Square, Search, X } from 'lucide-react';
+import { Send, Loader2, Sparkles, RotateCcw, Copy, Check, CheckCircle, XCircle, Square, Search, X, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { VoiceInput } from './voice-input';
 import { textSmMuted } from '@/lib/styles';
 import { useMemo } from 'react';
@@ -314,6 +314,7 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
   const [followUps, setFollowUps] = useState<SuggestedFollowUp[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearch, setShowSearch] = useState(false);
+  const [ratings, setRatings] = useState<Record<number, 'up' | 'down'>>({});
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -679,6 +680,28 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
                       style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)', gap: 'var(--space-1)' }}>
                       <RotateCcw style={{ width: '12px', height: '12px' }} /> Retry</button>
                   )}
+                  <div className="flex items-center" style={{ gap: '2px' }}>
+                    <button
+                      onClick={() => setRatings(prev => ({ ...prev, [i]: prev[i] === 'up' ? undefined as unknown as 'up' : 'up' }))}
+                      style={{
+                        background: 'none', border: 'none', cursor: 'pointer', padding: '2px', display: 'flex',
+                        color: ratings[i] === 'up' ? 'var(--success)' : 'var(--text-muted)',
+                      }}
+                      title="Helpful"
+                    >
+                      <ThumbsUp style={{ width: '11px', height: '11px' }} />
+                    </button>
+                    <button
+                      onClick={() => setRatings(prev => ({ ...prev, [i]: prev[i] === 'down' ? undefined as unknown as 'down' : 'down' }))}
+                      style={{
+                        background: 'none', border: 'none', cursor: 'pointer', padding: '2px', display: 'flex',
+                        color: ratings[i] === 'down' ? 'var(--danger)' : 'var(--text-muted)',
+                      }}
+                      title="Not helpful"
+                    >
+                      <ThumbsDown style={{ width: '11px', height: '11px' }} />
+                    </button>
+                  </div>
                   <span className="flex-1" />
                   {msg.timestamp && (
                     <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>

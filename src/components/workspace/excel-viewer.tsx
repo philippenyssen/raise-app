@@ -335,6 +335,13 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
     ];
   }, [contextMenu, cells, handleCellDoubleClick, onCellChange]);
 
+  // Auto-scroll to selected cell when navigating with arrows
+  useEffect(() => {
+    if (!selectedCell || !gridRef.current) return;
+    const cellEl = gridRef.current.querySelector(`[data-ref="${selectedCell}"]`) as HTMLElement | null;
+    if (cellEl) cellEl.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  }, [selectedCell]);
+
   // Parse selected cell for header highlighting
   const selectedParsed = useMemo(() => selectedCell ? parseCellRef(selectedCell) : null, [selectedCell]);
 
@@ -466,6 +473,7 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
                   return (
                     <td
                       key={ci}
+                      data-ref={ref}
                       onClick={() => handleCellClick(ref)}
                       onMouseDown={(e) => handleCellMouseDown(ref, e)}
                       onMouseEnter={() => handleCellMouseEnter(ref)}
