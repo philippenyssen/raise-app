@@ -11,6 +11,14 @@ import { STATUS_LABELS } from '@/lib/constants';
 import { labelMuted, labelSecondary, probColor, stAccent, stFontSm, stSurface1, stTextMuted, stTextPrimary, stTextTertiary } from '@/lib/styles';
 
 const textRight = { textAlign: 'right' as const } as const;
+const keystoneAvatar: React.CSSProperties = { width: '36px', height: '36px', borderRadius: 'var(--radius-md)', background: 'var(--accent-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 };
+const chainBadgeMuted: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '0 4px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-muted)' };
+const chainBadgeSecondary: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '0 4px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-secondary)' };
+const connectorLine: React.CSSProperties = { width: '2px', height: '16px', background: 'var(--border-default)', marginLeft: '7px' };
+const bottleneckBadge: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '0 4px', borderRadius: 'var(--radius-sm)', background: 'var(--warning-muted)', color: 'var(--text-tertiary)', fontWeight: 400 };
+const tabNumSm: React.CSSProperties = { fontSize: 'var(--font-size-sm)', fontWeight: 400, fontVariantNumeric: 'tabular-nums' };
+const keystoneBadgeMuted: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-muted)', fontWeight: 400 };
+const keystoneBadgeSecondary: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-secondary)' };
 
 interface CascadeLink { investorId: string; investorName: string; probability: number; cumulativeProbability: number; status: string; tier: number; checkSize: string; capitalM: number; expectedCapitalM: number }
 
@@ -194,15 +202,7 @@ export default function NetworkPage() {
                 onClick={() => toggleCard(cascade.keystoneId)}
                 style={{ cursor: 'pointer', background: 'transparent', border: 'none', textAlign: 'left' }}>
                 <div className="flex items-center gap-3 min-w-0">
-                  <div style={{
-                    width: '36px',
-                    height: '36px',
-                    borderRadius: 'var(--radius-md)',
-                    background: 'var(--accent-muted)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,}}>
+                  <div style={keystoneAvatar}>
                     <Crown className="w-4 h-4" style={stAccent} /></div>
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
@@ -212,20 +212,9 @@ export default function NetworkPage() {
                         className="investor-link"
                         style={{ fontWeight: 400, fontSize: 'var(--font-size-base)', textDecoration: 'none' }}>
                         {cascade.keystoneName}</Link>
-                      <span style={{
-                        fontSize: 'var(--font-size-xs)',
-                        padding: '1px 6px',
-                        borderRadius: 'var(--radius-sm)',
-                        background: 'var(--surface-2)',
-                        color: 'var(--text-muted)',
-                        fontWeight: 400,}}>
+                      <span style={keystoneBadgeMuted}>
                         {tierLabel(cascade.keystoneTier)}</span>
-                      <span style={{
-                        fontSize: 'var(--font-size-xs)',
-                        padding: '1px 6px',
-                        borderRadius: 'var(--radius-sm)',
-                        background: 'var(--surface-2)',
-                        color: 'var(--text-secondary)',}}>
+                      <span style={keystoneBadgeSecondary}>
                         {STATUS_LABELS[cascade.keystoneStatus] || cascade.keystoneStatus}</span></div>
                     <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '2px' }}>
                       {cascade.signal}</p></div></div>
@@ -275,18 +264,9 @@ export default function NetworkPage() {
                           <div key={link.investorId}>
                             {/* Arrow connector */}
                             <div className="flex items-center gap-2 py-1" style={{ paddingLeft: '16px' }}>
-                              <div style={{
-                                width: '2px',
-                                height: '16px',
-                                background: 'var(--border-default)',
-                                marginLeft: '7px',
-                              }} />
+                              <div style={connectorLine} />
                               <ArrowRight className="w-3 h-3" style={{ color: 'var(--text-muted)', marginLeft: '-10px' }} />
-                              <span style={{
-                                fontSize: 'var(--font-size-xs)',
-                                color: probColor(link.probability),
-                                fontWeight: 400,
-                                fontVariantNumeric: 'tabular-nums',}}>
+                              <span style={{ ...tabNumSm, fontSize: 'var(--font-size-xs)', color: probColor(link.probability) }}>
                                 {Math.round(link.probability * 100)}%</span></div>
 
                             {/* Investor Row */}
@@ -297,13 +277,7 @@ export default function NetworkPage() {
                                 background: isBottleneck ? 'var(--warning-muted)' : 'var(--surface-1)',
                                 transition: 'all 0.15s ease', }}>
                               <div className="flex items-center gap-3 min-w-0">
-                                <div style={{
-                                  width: '8px',
-                                  height: '8px',
-                                  borderRadius: '50%',
-                                  background: probColor(link.probability),
-                                  flexShrink: 0,
-                                }} />
+                                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: probColor(link.probability), flexShrink: 0 }} />
                                 <div className="min-w-0">
                                   <div className="flex items-center gap-2">
                                     <Link
@@ -314,28 +288,12 @@ export default function NetworkPage() {
                                         fontSize: 'var(--font-size-sm)',
                                         textDecoration: 'none', }}>
                                       {link.investorName}</Link>
-                                    <span style={{
-                                      fontSize: 'var(--font-size-xs)',
-                                      padding: '0 4px',
-                                      borderRadius: 'var(--radius-sm)',
-                                      background: 'var(--surface-2)',
-                                      color: 'var(--text-muted)',}}>
+                                    <span style={chainBadgeMuted}>
                                       {tierLabel(link.tier)}</span>
-                                    <span style={{
-                                      fontSize: 'var(--font-size-xs)',
-                                      padding: '0 4px',
-                                      borderRadius: 'var(--radius-sm)',
-                                      background: 'var(--surface-2)',
-                                      color: 'var(--text-secondary)',}}>
+                                    <span style={chainBadgeSecondary}>
                                       {STATUS_LABELS[link.status] || link.status}</span>
                                     {isBottleneck && (
-                                      <span style={{
-                                        fontSize: 'var(--font-size-xs)',
-                                        padding: '0 4px',
-                                        borderRadius: 'var(--radius-sm)',
-                                        background: 'var(--warning-muted)',
-                                        color: 'var(--text-tertiary)',
-                                        fontWeight: 400,}}>
+                                      <span style={bottleneckBadge}>
                                         BOTTLENECK</span>
                                     )}</div>
                                   {link.checkSize && (
@@ -344,31 +302,19 @@ export default function NetworkPage() {
                                   )}</div></div>
                               <div className="flex items-center gap-4 shrink-0">
                                 <div style={textRight}>
-                                  <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', }}>Prob</p>
-                                  <p style={{
-                                    fontSize: 'var(--font-size-sm)',
-                                    fontWeight: 400,
-                                    color: probColor(link.probability),
-                                    fontVariantNumeric: 'tabular-nums',}}>
+                                  <p style={labelMuted}>Prob</p>
+                                  <p style={{ ...tabNumSm, color: probColor(link.probability) }}>
                                     {Math.round(link.probability * 100)}%</p></div>
                                 {link.capitalM > 0 && (
                                   <div style={textRight}>
-                                    <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', }}>Expected</p>
-                                    <p style={{
-                                      fontSize: 'var(--font-size-sm)',
-                                      fontWeight: 400,
-                                      color: 'var(--text-primary)',
-                                      fontVariantNumeric: 'tabular-nums',}}>
+                                    <p style={labelMuted}>Expected</p>
+                                    <p style={{ ...tabNumSm, color: 'var(--text-primary)' }}>
                                       {'\u20AC'}{formatCapital(link.expectedCapitalM)}</p></div>
                                 )}
                                 {idx < cascade.cascadeChain.length - 1 && (
                                   <div style={textRight}>
-                                    <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', }}>Cumulative</p>
-                                    <p style={{
-                                      fontSize: 'var(--font-size-sm)',
-                                      fontWeight: 400,
-                                      color: 'var(--text-tertiary)',
-                                      fontVariantNumeric: 'tabular-nums',}}>
+                                    <p style={labelMuted}>Cumulative</p>
+                                    <p style={{ ...tabNumSm, color: 'var(--text-tertiary)' }}>
                                       {Math.round(link.cumulativeProbability * 100)}%</p></div>
                                 )}</div></div>
                           </div>);

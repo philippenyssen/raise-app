@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, Suspense } from 'react';
+import { useEffect, useMemo, useState, Suspense } from 'react';
 import { cachedFetch } from '@/lib/cache';
 import { useRouter, useSearchParams } from 'next/navigation';
 import type { Investor } from '@/lib/types';
@@ -8,6 +8,13 @@ import PostMeetingActions from '@/components/post-meeting-actions';
 import FollowupPlan from '@/components/followup-plan';
 import { useToast } from '@/components/toast';
 import { stAccent, stSurface1, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
+
+function severityBadgeStyle(severity: string): React.CSSProperties {
+  return {
+    background: severity === 'showstopper' ? 'var(--danger-muted)' : severity === 'significant' ? 'var(--warning-muted)' : 'var(--surface-2)',
+    color: severity === 'showstopper' ? 'var(--danger)' : severity === 'significant' ? 'var(--warning)' : 'var(--text-muted)',
+  };
+}
 
 export default function NewMeetingPage() {
   return (
@@ -53,6 +60,13 @@ function NewMeetingContent() {
   }, [result]);
 
   const selectedInvestor = investors.find(i => i.id === form.investor_id);
+
+  const parsedQuestions = useMemo(() => {
+    try { return JSON.parse(String(result?.questions_asked || '[]')); } catch { return []; }
+  }, [result?.questions_asked]);
+  const parsedObjections = useMemo(() => {
+    try { return JSON.parse(String(result?.objections || '[]')); } catch { return []; }
+  }, [result?.objections]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -220,7 +234,7 @@ function NewMeetingContent() {
             <div>
               <h3 className="text-xs font-normal mb-2" style={stTextTertiary}>Questions asked</h3>
               <div className="text-sm" style={stTextSecondary}>
-                {((() => { try { return JSON.parse(String(result.questions_asked) || '[]'); } catch { return []; } })()).map((q: { text: string; topic: string }, i: number) => (
+                {parsedQuestions.map((q: { text: string; topic: string }, i: number) => (
                   <div key={i} className="flex gap-2 mb-1">
                     <span className="text-xs px-1.5 py-0.5 rounded shrink-0" style={{ background: 'var(--surface-2)', color: 'var(--text-muted)' }}>{q.topic}</span>
                     <span>{q.text}</span></div>
@@ -231,16 +245,9 @@ function NewMeetingContent() {
             <div>
               <h3 className="text-xs font-normal mb-2" style={stTextTertiary}>Objections</h3>
               <div className="text-sm" style={stTextSecondary}>
-                {((() => { try { return JSON.parse(String(result.objections) || '[]'); } catch { return []; } })()).map((o: { text: string; severity: string }, i: number) => (
+                {parsedObjections.map((o: { text: string; severity: string }, i: number) => (
                   <div key={i} className="flex gap-2 mb-1">
-                    <span className="text-xs px-1.5 py-0.5 rounded shrink-0" style={{
-                      background: o.severity === 'showstopper' ? 'var(--danger-muted)' :
-                        o.severity === 'significant' ? 'var(--warning-muted)' :
-                        'var(--surface-2)',
-                      color: o.severity === 'showstopper' ? 'var(--danger)' :
-                        o.severity === 'significant' ? 'var(--warning)' :
-                        'var(--text-muted)',
-                    }}>{o.severity}</span>
+                    <span className="text-xs px-1.5 py-0.5 rounded shrink-0" style={severityBadgeStyle(o.severity)}>{o.severity}</span>
                     <span>{o.text}</span></div>
                 ))}</div></div>
           )}

@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { cachedFetch } from '@/lib/cache';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -98,6 +98,16 @@ function QuickCaptureInner() {
 
   const selectedInvestor = investors.find(i => i.id === investorId);
 
+  const parsedQuestions = useMemo(() => {
+    try { return JSON.parse(String(result?.questions_asked || '[]')); } catch { return []; }
+  }, [result?.questions_asked]);
+  const parsedObjections = useMemo(() => {
+    try { return JSON.parse(String(result?.objections || '[]')); } catch { return []; }
+  }, [result?.objections]);
+  const parsedEngagement = useMemo(() => {
+    try { return JSON.parse(String(result?.engagement_signals || '{}')); } catch { return {}; }
+  }, [result?.engagement_signals]);
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!investorId || !rawNotes.trim()) return;
@@ -155,15 +165,9 @@ function QuickCaptureInner() {
 
   // --- RESULTS VIEW ---
   if (result) {
-    const questions = (() => {
-      try { return JSON.parse(String(result.questions_asked || '[]')); } catch { return []; }
-    })();
-    const objections = (() => {
-      try { return JSON.parse(String(result.objections || '[]')); } catch { return []; }
-    })();
-    const engagementSignals = (() => {
-      try { return JSON.parse(String(result.engagement_signals || '{}')); } catch { return {}; }
-    })();
+    const questions = parsedQuestions;
+    const objections = parsedObjections;
+    const engagementSignals = parsedEngagement;
     const competitiveIntel = String(result.competitive_intel || '');
 
     return (
