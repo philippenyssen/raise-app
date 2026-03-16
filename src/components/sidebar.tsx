@@ -13,6 +13,7 @@ import {
   ChevronLeft, ChevronRight, Sun, Flame,
   Compass, Target, Swords, MessageCircleWarning, Zap,
   Sparkles, FolderOpen, FileBarChart, Globe, Newspaper, BarChart3, Crosshair,
+  Calculator,
 } from 'lucide-react';
 
 interface NavItem {
@@ -48,6 +49,7 @@ const nav: NavItem[] = [
   { href: '/documents', label: 'Documents', icon: BookOpen, section: 'WORKSPACE' },
   { href: '/data-room', label: 'Data Room', icon: FolderOpen, section: 'WORKSPACE' },
   { href: '/terms', label: 'Terms', icon: FileText, section: 'WORKSPACE' },
+  { href: '/deal-mechanics', label: 'Deal Mechanics', icon: Calculator, section: 'WORKSPACE', badge: 'new' },
   { href: '/digest', label: 'Digest', icon: Newspaper, section: 'WORKSPACE' },
   { href: '/reports', label: 'Reports', icon: FileBarChart, section: 'WORKSPACE' },
   { href: '/settings', label: 'Settings', icon: Settings, section: 'WORKSPACE' },];
