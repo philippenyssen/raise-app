@@ -37,6 +37,8 @@ interface HealthData {
   timeInStage?: Record<string, { avg: number; count: number }>;
 }
 
+const bgSurface1 = { backgroundColor: 'var(--surface-1)' } as const;
+
 const convergenceDimensions = [
   { key: 'story', label: 'Story Convergence', desc: 'Objection patterns stable, all pre-answered' },
   { key: 'materials', label: 'Materials Quality', desc: 'Zero cross-document inconsistencies' },
@@ -128,7 +130,7 @@ export default function HealthPage() {
                 <span className="text-xs ml-2" style={stTextMuted}>{dim.desc}</span></div></div>
           ))}</div>
         <div className="mt-6 pt-4" style={{ borderTop: '1px solid var(--border-default)' }}>
-          <div className="h-3 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--surface-1)' }}>
+          <div className="h-3 rounded-full overflow-hidden" style={bgSurface1}>
             <div
               className="h-full rounded-full transition-all duration-500"
               style={{
@@ -148,7 +150,7 @@ export default function HealthPage() {
             const target = data.funnel.targets[key] ?? 50;
             const delta = rate - target;
             return (
-              <div key={key} className="rounded-lg p-4" style={{ backgroundColor: 'var(--surface-1)' }}>
+              <div key={key} className="rounded-lg p-4" style={bgSurface1}>
                 <div className="text-xs mb-2" style={stTextMuted}>
                   {key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</div>
                 <div className="flex items-baseline gap-2">
@@ -174,7 +176,7 @@ export default function HealthPage() {
         <h2 className="text-sm font-normal mb-4" style={stTextTertiary}>Investor status breakdown</h2>
         <div className="grid grid-cols-3 md:grid-cols-5 gap-3 card-stagger">
           {Object.entries(data.statusBreakdown).sort((a, b) => b[1] - a[1]).map(([status, count]) => (
-            <div key={status} className="rounded-lg p-3 text-center" style={{ backgroundColor: 'var(--surface-1)' }}>
+            <div key={status} className="rounded-lg p-3 text-center" style={bgSurface1}>
               <div className="text-lg font-normal" style={stTextPrimary}>{count}</div>
               <div className="text-xs" style={stTextMuted}>{status.replace(/_/g, ' ')}</div></div>
           ))}</div></div>
@@ -251,7 +253,7 @@ export default function HealthPage() {
                   : <XCircle className="w-3.5 h-3.5 shrink-0" style={iconStyle} />;
 
                 return (
-                  <div key={i} className="flex items-start gap-2 py-1.5 px-3 rounded-lg" style={{ backgroundColor: 'var(--surface-1)' }}>
+                  <div key={i} className="flex items-start gap-2 py-1.5 px-3 rounded-lg" style={bgSurface1}>
                     {statusIcon}
                     <div className="flex-1 min-w-0">
                       <span className="text-xs font-normal" style={stTextSecondary}>

@@ -21,6 +21,10 @@ const THREAT_STYLES: Record<string, { background: string; color: string }> = {
   medium: { background: 'var(--warn-8)', color: 'var(--text-tertiary)' },
   low: { background: 'var(--success-muted)', color: 'var(--text-secondary)' },};
 
+const tdCompany = { fontWeight: 400, color: 'var(--text-primary)' } as const;
+const tdAmount = { color: 'var(--text-secondary)', fontWeight: 400 } as const;
+const tdSmMuted = { color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' } as const;
+
 const BRIEF_TYPE_STYLES: Record<string, { background: string; color: string }> = {
   investor: { background: 'var(--accent-muted)', color: 'var(--accent)' },
   competitor: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
@@ -286,13 +290,13 @@ export default function IntelligencePage() {
                     <tr
                       key={d.id}
                       className="table-row">
-                      <td style={{ fontWeight: 400, color: 'var(--text-primary)' }}>{d.company}</td>
+                      <td style={tdCompany}>{d.company}</td>
                       <td style={stTextTertiary}>{d.round}</td>
-                      <td style={{ color: 'var(--text-secondary)', fontWeight: 400 }}>{d.amount}</td>
+                      <td style={tdAmount}>{d.amount}</td>
                       <td style={stAccent}>{d.valuation}</td>
                       <td className="max-w-40 truncate" style={stTextTertiary}>{d.lead_investors}</td>
-                      <td style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>{d.date}</td>
-                      <td style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>{d.sector}</td>
+                      <td style={tdSmMuted}>{d.date}</td>
+                      <td style={tdSmMuted}>{d.sector}</td>
                       <td>
                         <button
                           aria-label={`Delete deal ${d.company}`}
