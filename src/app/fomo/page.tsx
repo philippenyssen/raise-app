@@ -15,6 +15,7 @@ import { fmtDateTime } from '@/lib/format';
 const cardSurface1 = { padding: 'var(--space-4)', background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)' } as const;
 const textXlLight = { fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' } as const;
 const sectionHeading = { fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)', margin: '0 0 var(--space-3) 0' } as const;
+const filterTabBase: React.CSSProperties = { padding: '4px 10px', borderRadius: 'var(--radius-sm)', fontSize: 'var(--font-size-xs)', fontWeight: 400, border: 'none', cursor: 'pointer' };
 
 // ---------------------------------------------------------------------------
 // Types
@@ -473,16 +474,7 @@ export default function FomoPage() {
                     key={tab.key}
                     className={filterIntensity !== tab.key ? 'hover-filter-tab' : ''}
                     onClick={() => setFilterIntensity(tab.key)}
-                    style={{
-                      padding: '4px 10px',
-                      borderRadius: 'var(--radius-sm)',
-                      fontSize: 'var(--font-size-xs)',
-                      fontWeight: 400,
-                      border: 'none',
-                      cursor: 'pointer',
-                      background: filterIntensity === tab.key ? 'var(--surface-3)' : 'transparent',
-                      color: filterIntensity === tab.key ? 'var(--text-primary)' : 'var(--text-muted)',
-                    }}>
+                    style={{ ...filterTabBase, background: filterIntensity === tab.key ? 'var(--surface-3)' : 'transparent', color: filterIntensity === tab.key ? 'var(--text-primary)' : 'var(--text-muted)' }}>
                     {tab.label} ({tab.count})</button>
                 ))}</div></div>
 

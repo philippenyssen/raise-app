@@ -59,6 +59,13 @@ const TYPE_LABELS: Record<string, string> = {
 
 const HEAT_ORDER: Record<string, number> = { hot: 0, warm: 1, cool: 2, cold: 3, frozen: 4 };
 
+function heatBtnStyle(active: boolean): React.CSSProperties {
+  return { background: active ? 'var(--surface-3)' : 'transparent', color: active ? 'var(--text-primary)' : 'var(--text-muted)', border: active ? '1px solid var(--border-default)' : '1px solid transparent' };
+}
+function sortBtnStyle(active: boolean): React.CSSProperties {
+  return { background: active ? 'var(--accent-muted)' : 'transparent', color: active ? 'var(--accent)' : 'var(--text-muted)', border: active ? '1px solid var(--accent)' : '1px solid transparent' };
+}
+
 // ── Helpers ───────────────────────────────────────────────────────────
 
 function TrendIcon({ trend }: { trend: string }) {
@@ -300,10 +307,7 @@ export default function DealflowPage() {
             onClick={() => setHeatFilter(h)}
             className="px-2.5 py-1 rounded-md text-xs"
             title={h === 'all' ? 'Show all investors' : h === 'hot' ? 'Recent meetings + high enthusiasm' : h === 'warm' ? 'Active engagement, moderate pace' : h === 'cool' ? 'Some contact but losing momentum' : h === 'cold' ? 'No recent activity' : 'No contact in 30+ days'}
-            style={{
-              background: heatFilter === h ? 'var(--surface-3)' : 'transparent',
-              color: heatFilter === h ? 'var(--text-primary)' : 'var(--text-muted)',
-              border: heatFilter === h ? '1px solid var(--border-default)' : '1px solid transparent',}}>
+            style={heatBtnStyle(heatFilter === h)}>
             {h === 'all' ? 'All' : h.charAt(0).toUpperCase() + h.slice(1)}</button>
         ))}
         <div style={{ marginLeft: 'auto' }} className="flex items-center gap-1.5">
@@ -313,10 +317,7 @@ export default function DealflowPage() {
               key={s}
               onClick={() => setSortBy(s)}
               className="px-2.5 py-1 rounded-md text-xs"
-              style={{
-                background: sortBy === s ? 'var(--accent-muted)' : 'transparent',
-                color: sortBy === s ? 'var(--accent)' : 'var(--text-muted)',
-                border: sortBy === s ? '1px solid var(--accent)' : '1px solid transparent', }}>
+              style={sortBtnStyle(sortBy === s)}>
               {s.charAt(0).toUpperCase() + s.slice(1)}</button>
           ))}</div></div>
 
