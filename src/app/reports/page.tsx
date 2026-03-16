@@ -69,7 +69,7 @@ export default function ReportsPage() {
       const res = await cachedFetch(url);
       if (!res.ok) {
         const errData = await res.json().catch(e => { console.warn('[REPORTS_PARSE]', e instanceof Error ? e.message : e); return { error: 'Request failed' }; });
-        throw new Error(errData.error || 'Couldn\'t generate report — check your API key');
+        throw new Error(errData.error || 'Report generation failed — verify your API key is valid and try again');
       }
 
       const html = await res.text();
@@ -77,7 +77,7 @@ export default function ReportsPage() {
       setReportType(type);
       setGeneratedAt(new Date().toLocaleString());
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Couldn\'t generate report — check your API key');
+      setError(err instanceof Error ? err.message : 'Report generation failed — verify your API key is valid and try again');
     } finally {
       setLoading(null);
     }}

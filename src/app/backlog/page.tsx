@@ -230,7 +230,7 @@ export default function BacklogPage() {
         <EmptyState
           icon={DollarSign}
           title="No revenue commitments tracked yet"
-          description="Add your contracted backlog to enable auditable drill-down during DD." />
+          description="Add signed contracts, frameworks, and LOIs to build revenue visibility for due diligence." />
       ) : (
         <div className="rounded-xl overflow-hidden">
           <table className="w-full text-sm" aria-label="Revenue backlog and contracts">
