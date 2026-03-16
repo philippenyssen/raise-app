@@ -7,7 +7,7 @@ import { cachedFetch, invalidateCache } from '@/lib/cache';
 import type { Investor, InvestorStatus, InvestorTier, InvestorType } from '@/lib/types';
 import { useToast } from '@/components/toast';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
-import { Search, Download, GitCompare, Columns3, Clock, Pencil, Trash2, Calendar, Users } from 'lucide-react';
+import { Search, Download, GitCompare, Columns3, Clock, Pencil, Trash2, Calendar, Users, Mail, ArrowRight, AlertTriangle, Send } from 'lucide-react';
 import { EmptyState } from '@/components/ui/empty-state';
 import { fmtDate } from '@/lib/format';
 import { STATUS_LABELS, TYPE_LABELS } from '@/lib/constants';
@@ -65,6 +65,74 @@ function completenessDotColor(pct: number): string {
   if (pct >= 50) return 'var(--warning)';
   return 'var(--danger)';
 }
+
+type NextAction = {
+  label: string;
+  href: string;
+  icon: React.ComponentType<{ className?: string }>;
+  color: string;
+  bg: string;
+  urgency: 'critical' | 'high' | 'normal';
+};
+
+function computeNextAction(inv: Investor): NextAction {
+  const days = daysSince(inv.last_meeting_date);
+  const completeness = computeCompleteness(inv);
+  const isTerminal = inv.status === 'passed' || inv.status === 'dropped' || inv.status === 'closed';
+
+  if (isTerminal) {
+    return { label: 'View', href: `/investors/${inv.id}`, icon: ArrowRight, color: 'var(--text-muted)', bg: 'var(--surface-2)', urgency: 'normal' };
+  }
+
+  // Critical: stale T1/T2 investor (no contact >14 days)
+  if (days !== null && days > 14 && inv.tier <= 2) {
+    return { label: 'Re-engage', href: `/investors/${inv.id}?compose=warm_reengagement`, icon: AlertTriangle, color: 'var(--danger)', bg: 'var(--danger-muted)', urgency: 'critical' };
+  }
+
+  // High: stale any tier (no contact >14 days)
+  if (days !== null && days > 14) {
+    return { label: 'Follow up', href: `/investors/${inv.id}?compose=follow_up`, icon: Mail, color: 'var(--warning)', bg: 'var(--warning-muted)', urgency: 'high' };
+  }
+
+  // Status-driven actions
+  if (inv.status === 'identified') {
+    return { label: 'Reach out', href: `/investors/${inv.id}?compose=initial_outreach`, icon: Send, color: 'var(--accent)', bg: 'var(--accent-muted)', urgency: 'normal' };
+  }
+
+  if (inv.status === 'contacted' || inv.status === 'nda_signed') {
+    return { label: 'Schedule meeting', href: `/meetings/new?investor=${inv.id}`, icon: Calendar, color: 'var(--accent)', bg: 'var(--accent-muted)', urgency: 'normal' };
+  }
+
+  if (inv.status === 'meeting_scheduled') {
+    return { label: 'Prep meeting', href: `/investors/${inv.id}?tab=overview`, icon: Calendar, color: 'var(--accent)', bg: 'var(--accent-muted)', urgency: 'normal' };
+  }
+
+  if (inv.status === 'met' && days !== null && days <= 3) {
+    return { label: 'Send thank you', href: `/investors/${inv.id}?compose=thank_you`, icon: Mail, color: 'var(--success)', bg: 'var(--success-muted)', urgency: 'high' };
+  }
+
+  if (inv.status === 'engaged') {
+    return { label: 'Advance to DD', href: `/investors/${inv.id}`, icon: ArrowRight, color: 'var(--accent)', bg: 'var(--accent-muted)', urgency: 'normal' };
+  }
+
+  if (inv.status === 'in_dd') {
+    return { label: 'Track DD', href: `/investors/${inv.id}`, icon: ArrowRight, color: 'var(--warning)', bg: 'var(--warning-muted)', urgency: 'normal' };
+  }
+
+  if (inv.status === 'term_sheet') {
+    return { label: 'Review terms', href: `/investors/${inv.id}`, icon: ArrowRight, color: 'var(--success)', bg: 'var(--success-muted)', urgency: 'high' };
+  }
+
+  // Low completeness — fill in profile
+  if (completeness < 50) {
+    return { label: 'Complete profile', href: `/investors/${inv.id}`, icon: Pencil, color: 'var(--text-tertiary)', bg: 'var(--surface-2)', urgency: 'normal' };
+  }
+
+  // Default: log a meeting
+  return { label: 'Log meeting', href: `/meetings/new?investor=${inv.id}`, icon: Calendar, color: 'var(--text-secondary)', bg: 'var(--surface-2)', urgency: 'normal' };
+}
+
+const nextActionBtn: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: 'var(--space-1) var(--space-2)', borderRadius: 'var(--radius-sm)', border: 'none', cursor: 'pointer', fontWeight: 400, display: 'inline-flex', alignItems: 'center', gap: '4px', textDecoration: 'none', whiteSpace: 'nowrap', lineHeight: '1.4' };
 
 const TIER_BADGE_STYLES: Record<number, React.CSSProperties> = {
   1: { boxShadow: 'none, none' },
@@ -392,7 +460,7 @@ export default function InvestorsPage() {
                 <input type="checkbox" checked={selected.size === filtered.length && filtered.length > 0} onChange={toggleSelectAll}
                   aria-label="Select all investors"
                   style={{ accentColor: 'var(--accent)' }} /></th>
-              {([['name','Investor'],['','Profile'],['','Type'],['tier','Tier'],['','Partner'],['status','Status'],['','Check Size'],['last_meeting_date','Last Contact'],['enthusiasm','Enthusiasm'],['','Actions']] as const).map(([k, label], i) => <th scope="col" key={i} style={k ? { cursor: 'pointer', userSelect: 'none', ...(i === 1 ? { width: '2.5rem', padding: 'var(--space-3) var(--space-2)' } : {}) } : (i === 1 ? { width: '2.5rem', padding: 'var(--space-3) var(--space-2)' } : {})} title={i === 1 ? 'Data completeness' : undefined} onClick={k ? () => { if (sortKey === k) setSortAsc(!sortAsc); else { setSortKey(k as typeof sortKey); setSortAsc(k === 'name'); } } : undefined}>{label}{sortKey === k ? (sortAsc ? ' \u25B2' : ' \u25BC') : ''}</th>)}</tr></thead>
+              {([['name','Investor'],['','Profile'],['','Type'],['tier','Tier'],['','Partner'],['status','Status'],['','Check Size'],['last_meeting_date','Last Contact'],['enthusiasm','Enthusiasm'],['','Next Step']] as const).map(([k, label], i) => <th scope="col" key={i} style={k ? { cursor: 'pointer', userSelect: 'none', ...(i === 1 ? { width: '2.5rem', padding: 'var(--space-3) var(--space-2)' } : {}) } : (i === 1 ? { width: '2.5rem', padding: 'var(--space-3) var(--space-2)' } : {})} title={i === 1 ? 'Data completeness' : undefined} onClick={k ? () => { if (sortKey === k) setSortAsc(!sortAsc); else { setSortKey(k as typeof sortKey); setSortAsc(k === 'name'); } } : undefined}>{label}{sortKey === k ? (sortAsc ? ' \u25B2' : ' \u25BC') : ''}</th>)}</tr></thead>
           <tbody>
             {filtered.map(inv => {
               const isSelected = selected.has(inv.id);
@@ -452,28 +520,35 @@ export default function InvestorsPage() {
                         ))}</div>
                     ) : <span style={stTextMuted}>—</span>}</td>
                   <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
-                    <div className="row-actions flex gap-1">
-                      <button
-                        onClick={() => startEdit(inv)}
-                        className="btn btn-ghost btn-sm icon-accent"
-                        title="Edit investor"
-                        aria-label="Edit investor"
-                        style={rowActionBtn}>
-                        <Pencil className="w-3 h-3" /></button>
-                      <Link
-                        href={`/meetings/new?investor=${inv.id}`}
-                        className="btn btn-ghost btn-sm icon-success"
-                        title="Log meeting"
-                        aria-label="Log meeting"
-                        style={rowActionBtn}>
-                        <Calendar className="w-3 h-3" /></Link>
-                      <button
-                        onClick={() => setDeleteTarget({ id: inv.id, name: inv.name })}
-                        className="btn btn-ghost btn-sm icon-delete"
-                        title="Delete investor"
-                        aria-label="Delete investor"
-                        style={rowActionBtn}>
-                        <Trash2 className="w-3 h-3" /></button></div></td>
+                    {(() => {
+                      const action = computeNextAction(inv);
+                      const Icon = action.icon;
+                      return (
+                        <div className="flex items-center gap-1">
+                          <Link
+                            href={action.href}
+                            className="inline-flex items-center gap-1 rounded-md transition-opacity hover:opacity-80"
+                            style={{ ...nextActionBtn, background: action.bg, color: action.color, fontWeight: action.urgency === 'critical' ? 500 : 400 }}
+                            title={action.label}>
+                            <Icon className="w-3 h-3" />
+                            {action.label}</Link>
+                          <div className="row-actions flex gap-0.5">
+                            <button
+                              onClick={() => startEdit(inv)}
+                              className="btn btn-ghost btn-sm icon-accent"
+                              title="Edit"
+                              aria-label="Edit investor"
+                              style={rowActionBtn}>
+                              <Pencil className="w-3 h-3" /></button>
+                            <button
+                              onClick={() => setDeleteTarget({ id: inv.id, name: inv.name })}
+                              className="btn btn-ghost btn-sm icon-delete"
+                              title="Delete"
+                              aria-label="Delete investor"
+                              style={rowActionBtn}>
+                              <Trash2 className="w-3 h-3" /></button></div>
+                        </div>);
+                    })()}</td>
                 </tr>);
             })}</tbody></table></div>
         {filtered.length === 0 && (
