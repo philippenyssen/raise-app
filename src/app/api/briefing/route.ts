@@ -338,6 +338,58 @@ export async function GET() {
       }}
 
     // ═══════════════════════════════════════════════════════════════════
+    // 6B. COMPETITIVE INTELLIGENCE (from meeting engagement signals)
+    // ═══════════════════════════════════════════════════════════════════
+
+    const competitiveIntel: { coInvestors: string[]; competitiveBids: string[]; checkSizesHeard: string[]; portfolioConflicts: string[] } = {
+      coInvestors: [], competitiveBids: [], checkSizesHeard: [], portfolioConflicts: [],
+    };
+    // Scan recent meetings (last 30 days) for engagement signals
+    const recentWindow = allMeetings.filter(m => (now - new Date(m.date).getTime()) / msPerDay <= 30);
+    for (const m of recentWindow) {
+      try {
+        const signals = JSON.parse(m.engagement_signals || '{}');
+        if (Array.isArray(signals.co_investors_referenced)) {
+          for (const ref of signals.co_investors_referenced) {
+            const name = typeof ref === 'string' ? ref : ref?.name;
+            if (name && !competitiveIntel.coInvestors.includes(name)) competitiveIntel.coInvestors.push(name);
+          }
+        }
+        if (Array.isArray(signals.competitive_bids_mentioned)) {
+          for (const bid of signals.competitive_bids_mentioned) {
+            const desc = typeof bid === 'string' ? bid : bid?.name || bid?.description;
+            if (desc && !competitiveIntel.competitiveBids.includes(desc)) competitiveIntel.competitiveBids.push(desc);
+          }
+        }
+        if (signals.check_size_mentioned) {
+          competitiveIntel.checkSizesHeard.push(`${m.investor_name}: ${signals.check_size_mentioned}`);
+        }
+        if (Array.isArray(signals.portfolio_conflicts_surfaced)) {
+          for (const c of signals.portfolio_conflicts_surfaced) {
+            const desc = typeof c === 'string' ? c : c?.name;
+            if (desc && !competitiveIntel.portfolioConflicts.includes(desc)) competitiveIntel.portfolioConflicts.push(desc);
+          }
+        }
+      } catch { /* engagement_signals may not be valid JSON */ }
+    }
+
+    // Surface competitive intel as alerts
+    if (competitiveIntel.competitiveBids.length > 0) {
+      alerts.push({
+        type: 'warning',
+        title: `Competitive deals mentioned: ${competitiveIntel.competitiveBids.length}`,
+        detail: `Investors referenced: ${competitiveIntel.competitiveBids.slice(0, 3).join(', ')}. Monitor positioning.`,
+      });
+    }
+    if (competitiveIntel.portfolioConflicts.length > 0) {
+      alerts.push({
+        type: 'risk',
+        title: `Portfolio conflicts flagged: ${competitiveIntel.portfolioConflicts.length}`,
+        detail: `Conflicts: ${competitiveIntel.portfolioConflicts.slice(0, 3).join(', ')}. May block investment.`,
+      });
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
     // 7. AI-GENERATED SUMMARY
     // ═══════════════════════════════════════════════════════════════════
 
@@ -362,7 +414,13 @@ export async function GET() {
         companyName: config?.company_name || 'Aerospacelab',
         equityTarget: config?.equity_amount || '250M',
         recentMeetingCount: recentMeetings.length,
-        pipelineVelocity: pipelineFlow?.velocityTrend || 'unknown',};
+        pipelineVelocity: pipelineFlow?.velocityTrend || 'unknown',
+        competitiveIntel: {
+          coInvestorsMentioned: competitiveIntel.coInvestors.slice(0, 5),
+          competitiveBids: competitiveIntel.competitiveBids.slice(0, 3),
+          checkSizesHeard: competitiveIntel.checkSizesHeard.slice(0, 5),
+          portfolioConflicts: competitiveIntel.portfolioConflicts.slice(0, 3),
+        },};
 
       if (aiSummaryCache && Date.now() - aiSummaryCache.ts < AI_SUMMARY_TTL) {
         todaySummary = aiSummaryCache.text;
@@ -422,6 +480,7 @@ Rules:
       alerts,
       momentum,
       momentumChange,
+      competitiveIntel: (competitiveIntel.coInvestors.length + competitiveIntel.competitiveBids.length + competitiveIntel.checkSizesHeard.length + competitiveIntel.portfolioConflicts.length) > 0 ? competitiveIntel : null,
       generatedAt: new Date().toISOString(),}, { headers: { 'Cache-Control': 'private, max-age=15, stale-while-revalidate=30' } });
   } catch (error) {
     console.error('[BRIEFING_GET]', error instanceof Error ? error.message : error);
