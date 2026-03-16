@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { STATUS_LABELS, TYPE_LABELS, MEETING_TYPE_LABELS } from '@/lib/constants';
-import { cellPad, labelMuted, labelMuted10, labelMutedWide, stAccent, stFontSm, stFontXs, stSurface1, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, textSmMuted } from '@/lib/styles';
+import { cellPad, labelMuted, labelMuted10, labelMutedWide, stAccent, stFontSm, stFontXs, stSurface1, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, textSmMuted, textSmSecondary } from '@/lib/styles';
 
 const compareCellBase: React.CSSProperties = { ...cellPad, fontSize: 'var(--font-size-sm)', ...stTextSecondary };
 const compareThBase = { padding: 'var(--space-3) var(--space-4)', minWidth: 200 } as const;
@@ -189,7 +189,7 @@ export default function ComparePage() {
       <div className="page-content space-y-6">
         <div className="p-12 text-center" style={{ borderRadius: 'var(--radius-xl)' }}>
           <BarChart3 className="w-10 h-10 mx-auto mb-3" style={stTextMuted} />
-          <div style={{ ...stTextMuted, fontSize: 'var(--font-size-sm)' }}>Loading investors... Select at least 2 to compare.</div>
+          <div style={textSmMuted}>Loading investors... Select at least 2 to compare.</div>
         </div>
       </div>);
   }
@@ -206,7 +206,7 @@ export default function ComparePage() {
         <div className="flex-1">
           <h1 className="page-title" style={{ fontSize: 'var(--font-size-xl)' }}>
             Investor Comparison Engine</h1>
-          <p style={{ ...stTextMuted, fontSize: 'var(--font-size-sm)', marginTop: 'var(--space-1)' }}>Select 2-4 investors, then hit Compare for a full decision breakdown</p>
+          <p style={{ ...textSmMuted, marginTop: 'var(--space-1)' }}>Select 2-4 investors, then hit Compare for a full decision breakdown</p>
         </div></div>
 
       {/* Selection + Compare button */}
@@ -318,7 +318,7 @@ export default function ComparePage() {
           className="p-12 text-center"
           style={{ borderRadius: 'var(--radius-xl)' }}>
           <BarChart3 className="w-10 h-10 mx-auto mb-3" style={stTextMuted} />
-          <div style={{ ...stTextMuted, fontSize: 'var(--font-size-sm)' }}>
+          <div style={textSmMuted}>
             {selectedIds.length < 2 ? 'Select 2-4 investors above, then Compare to see decision likelihood, momentum, risk, and recommendation.' : `${selectedIds.length} investors selected — click Compare to analyze across 8 dimensions.`}
           </div></div>
       )}
@@ -329,7 +329,7 @@ export default function ComparePage() {
           className="p-8 text-center"
           style={{ borderRadius: 'var(--radius-xl)' }}>
           <Loader2 className="w-6 h-6 animate-spin mx-auto mb-3" style={stAccent} />
-          <div style={{ ...stTextSecondary, fontSize: 'var(--font-size-sm)' }}>Analyzing investors across 8 dimensions...</div>
+          <div style={textSmSecondary}>Analyzing investors across 8 dimensions...</div>
         </div>
       )}
 
@@ -521,7 +521,7 @@ export default function ComparePage() {
                             <span style={stTextMuted}>No follow-ups</span>
                           )}</div>
                         {p.followupStatus.avgConvictionDelta !== 0 && (
-                          <div style={{ ...labelMuted, marginTop: 2 }}>
+                          <div style={heatCounterStyle}>
                             Avg impact: {p.followupStatus.avgConvictionDelta > 0 ? '+' : ''}{p.followupStatus.avgConvictionDelta} pts
                           </div>
                         )}</td>
@@ -795,7 +795,7 @@ function MomentumIcon({ momentum }: { momentum: string }) {
 }
 
 function EnthusiasmTrendDots({ trend }: { trend: number[] }) {
-  if (trend.length === 0) { return <span style={{ ...stTextMuted, fontSize: 'var(--font-size-xs)' }}>Not enough meetings</span>; }
+  if (trend.length === 0) { return <span style={labelMuted}>Not enough meetings</span>; }
 
   const maxDots = 3;
   const dots = trend.slice(-maxDots);
