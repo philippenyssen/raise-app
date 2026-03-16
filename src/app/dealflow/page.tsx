@@ -491,12 +491,17 @@ export default function DealflowPage() {
                     title={inv.trackingStatus.replace('_', ' ')} /></div>
 
                 {/* Readiness */}
-                <div className="flex items-center justify-center gap-1" title={inv.blockingFactors.length > 0 ? `Blockers: ${inv.blockingFactors.join(', ')}` : 'No blockers identified'}>
+                <div className="flex flex-col items-center justify-center" title={inv.blockingFactors.length > 0 ? `Blockers: ${inv.blockingFactors.join(', ')}` : 'No blockers identified'}>
                   <span className="tabular-nums" style={{
                     fontSize: 'var(--font-size-xs)',
                     fontWeight: 400,
-                    color: inv.readinessScore >= 70 ? 'var(--success)' : inv.readinessScore >= 45 ? 'var(--warning)' : 'var(--text-muted)',
+                    color: inv.readinessLevel === 'ready' ? 'var(--success)' : inv.readinessLevel === 'progressing' ? 'var(--warning)' : 'var(--text-muted)',
                   }}>{inv.readinessScore}</span>
+                  <span style={{
+                    fontSize: '9px',
+                    color: inv.readinessLevel === 'ready' ? 'var(--success)' : inv.readinessLevel === 'progressing' ? 'var(--warning)' : 'var(--text-muted)',
+                    letterSpacing: '0.02em',
+                  }}>{inv.readinessLevel === 'ready' ? 'Ready' : inv.readinessLevel === 'progressing' ? 'Active' : inv.readinessLevel === 'stalled' ? 'Stalled' : 'Cold'}</span>
                 </div>
 
                 {/* Bottleneck */}
