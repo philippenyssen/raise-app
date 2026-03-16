@@ -152,7 +152,7 @@ export async function POST(req: NextRequest) {
     post_meeting_actions: postMeetingActions,
     followup_plan: followupPlan,
     auto_advanced: autoAdvanced,
-  }, { status: 201 });
+  }, { status: 201, headers: { 'Cache-Control': 'no-store' } });
   } catch (error) {
     console.error('[MEETINGS_POST]', error instanceof Error ? error.message : error);
     return NextResponse.json(
