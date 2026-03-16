@@ -98,6 +98,7 @@ export default function DocumentEditorPage() {
 
   async function loadVersions() {
     const res = await cachedFetch(`/api/documents/${id}/versions`);
+    if (!res.ok) return;
     setVersions(await res.json());
     setShowVersions(true);
   }
