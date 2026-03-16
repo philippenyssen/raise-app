@@ -703,6 +703,9 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
                     </button>
                   </div>
                   <span className="flex-1" />
+                  <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                    {msg.content.split(/\s+/).filter(Boolean).length} words
+                  </span>
                   {msg.timestamp && (
                     <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
                       {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}

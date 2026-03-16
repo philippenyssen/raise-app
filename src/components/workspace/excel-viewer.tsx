@@ -538,7 +538,7 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
                       onMouseEnter={() => handleCellMouseEnter(ref)}
                       onDoubleClick={() => handleCellDoubleClick(ref)}
                       onContextMenu={(e) => handleContextMenu(e, ref)}
-                      className={`px-1.5 py-0.5 cursor-cell transition-colors
+                      className={`px-1.5 py-0.5 cursor-cell transition-colors relative
                         ${isSelected ? 'ring-2 ring-inset' : ''}
                         ${cell?.bold ? 'font-semibold' : ''}
                         ${cell?.t === 'n' || (cell?.f && typeof getComputedValue(ref) === 'number') ? 'text-right' : 'text-left'}
@@ -564,7 +564,21 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
                           className="w-full bg-transparent outline-none font-mono"
                           style={{ color: 'var(--text-primary)' }}/>
                       ) : (
-                        <span className="block truncate">{formatValue(cell, ref)}</span>
+                        <>
+                          <span className="block truncate">{formatValue(cell, ref)}</span>
+                          {isSelected && !editingCell && (
+                            <div style={{
+                              position: 'absolute',
+                              bottom: '-3px',
+                              right: '-3px',
+                              width: '6px',
+                              height: '6px',
+                              background: 'var(--accent)',
+                              cursor: 'crosshair',
+                              zIndex: 2,
+                            }} />
+                          )}
+                        </>
                       )}
                     </td>);
                 })}</tr>
