@@ -10,7 +10,7 @@ import {
 import { cachedFetch } from '@/lib/cache';
 import { MS_PER_DAY, MS_PER_MINUTE, relativeTime } from '@/lib/time';
 import { STATUS_LABELS, TYPE_LABELS_SHORT as TYPE_LABELS } from '@/lib/constants';
-import { labelMuted, stAccent, stFontXs, stSurface0, stSurface1, stTextMuted, stTextSecondary } from '@/lib/styles';
+import { labelMuted, skelRow, stAccent, stFontXs, stSurface0, stSurface1, stTextMuted, stTextSecondary } from '@/lib/styles';
 
 // ── Types ─────────────────────────────────────────────────────────────
 
@@ -351,7 +351,7 @@ export default function DealflowPage() {
       {loading && !investors.length && (
         <div className="space-y-3">
           <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>Loading investor health signals...</p>
-          {[1,2,3,4].map(i => <div key={i} className="skeleton" style={{ height: '56px', borderRadius: 'var(--radius-lg)' }} />)}
+          {[1,2,3,4].map(i => <div key={i} className="skeleton" style={skelRow} />)}
         </div>
       )}
 

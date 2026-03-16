@@ -9,7 +9,7 @@ import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { FileText, Plus, Clock, Edit3, Download, ShieldCheck, AlertTriangle, CheckCircle2, XCircle, ArrowUpDown } from 'lucide-react';
 import { fmtDate } from '@/lib/format';
 import { DocSummaryRecord as Doc } from '@/lib/types';
-import { stAccent, stTextMuted, stTextPrimary, stTextTertiary } from '@/lib/styles';
+import { skelCardSm, stAccent, stTextMuted, stTextPrimary, stTextTertiary } from '@/lib/styles';
 
 interface DocFlag {
   id: string;
@@ -178,7 +178,7 @@ export default function DocumentsPage() {
       <div className="space-y-6 page-content">
         <div className="skeleton" style={{ height: '28px', width: '200px' }} />
         {[1,2,3].map(i => (
-          <div key={i} className="skeleton" style={{ height: '80px', borderRadius: 'var(--radius-xl)' }} />
+          <div key={i} className="skeleton" style={skelCardSm} />
         ))}
       </div>);
   }

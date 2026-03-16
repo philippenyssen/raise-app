@@ -29,6 +29,7 @@ const metricValue: React.CSSProperties = { fontSize: 'var(--font-size-xl)', font
 const overdueInvLink = { fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, textDecoration: 'none' } as const;
 const overdueBadge = { fontSize: 'var(--font-size-xs)', padding: '1px 5px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-1)', color: 'var(--text-tertiary)' } as const;
 const overdueDanger = { fontSize: 'var(--font-size-xs)', color: 'var(--danger)', fontWeight: 400 } as const;
+const enthusiasmDotBase = { width: '5px', height: '5px', borderRadius: '50%', display: 'inline-block' } as const;
 const overdueDesc = { fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', marginTop: '1px' } as const;
 const overdueDoneBtn = { background: 'var(--surface-0)', color: 'var(--text-secondary)', border: '1px solid var(--border-default)', fontSize: 'var(--font-size-xs)', padding: '3px 10px' } as const;
 const emptyStateText = { ...stFontSm, color: 'var(--text-secondary)', fontWeight: 400 } as const;
@@ -182,7 +183,7 @@ function MeetingCard({ meeting }: { meeting: BriefingMeeting }) {
                   <span
                     key={n}
                     style={{
-                      width: '5px', height: '5px', borderRadius: '50%', display: 'inline-block',
+                      ...enthusiasmDotBase,
                       background: n <= (meeting.enthusiasm ?? 0)
                         ? (meeting.enthusiasm ?? 0) >= 4 ? 'var(--success)' : (meeting.enthusiasm ?? 0) >= 3 ? 'var(--accent)' : 'var(--text-muted)'
                         : 'var(--border-default)',

@@ -29,7 +29,7 @@ export default function PostMeetingActions({ data, meetingId, onActionTaken }: {
     setBusyActions(prev => new Set(prev).add(taskId));
     try {
       const res = await fetch(`/api/meetings/${meetingId}/actions`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action_type: 'task', action_id: taskId, operation }) });
-      if (!res.ok) { console.error('[POST_MEETING_TASK]', res.status); return; }
+      if (!res.ok) { console.error('[POST_MEETING_TASK]', `status ${res.status}`); return; }
       if (operation === 'dismiss') setDismissedTasks(prev => new Set(prev).add(taskId));
       else setAcceptedTasks(prev => new Set(prev).add(taskId));
       onActionTaken?.();
@@ -41,7 +41,7 @@ export default function PostMeetingActions({ data, meetingId, onActionTaken }: {
     setBusyActions(prev => new Set(prev).add(flagId));
     try {
       const res = await fetch(`/api/meetings/${meetingId}/actions`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action_type: 'document_flag', action_id: flagId, operation }) });
-      if (!res.ok) { console.error('[POST_MEETING_FLAG]', res.status); return; }
+      if (!res.ok) { console.error('[POST_MEETING_FLAG]', `status ${res.status}`); return; }
       if (operation === 'dismiss') setDismissedFlags(prev => new Set(prev).add(flagId));
       else setAcceptedFlags(prev => new Set(prev).add(flagId));
       onActionTaken?.();
