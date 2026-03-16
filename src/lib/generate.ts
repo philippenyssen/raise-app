@@ -162,6 +162,68 @@ Generate the document now. Use markdown formatting. Every claim must be traceabl
   return response.content[0].type === 'text' ? response.content[0].text : '';
 }
 
+export async function generateDeckAsSlides(
+  context: GenerateContext
+): Promise<string> {
+  const response = await getAIClient().messages.create({
+    model: AI_MODEL,
+    max_tokens: 16384,
+    temperature: 0,
+    system: `You are a McKinsey partner creating a Series C fundraise management presentation. Output slides as a JSON array. Each slide has: id (UUID string), layout ("title"|"title_content"|"section"|"two_column"|"blank"), and elements array. Each element has: id (UUID), type ("title"|"subtitle"|"body"|"bullet"|"number"), content (string), x (% from left, 5-10), y (% from top), width (% width, 80-90), fontSize (optional, e.g. "2.5em" for titles, "1em" for body).
+
+For bullet elements, use newlines to separate items. For number elements, use a key metric value like "€734M" or "4.3x".`,
+    messages: [{
+      role: 'user',
+      content: `Create a 15-20 slide management presentation for this Series C fundraise.
+
+SLIDE STRUCTURE:
+1. Title slide: Company name + tagline + round details
+2. The Pitch: One sentence + 3 key metrics
+3. Three Beliefs: 3 testable assertions
+4-5. Company overview + milestones
+6-7. Product + technology differentiation
+8-9. Market size + dynamics
+10-11. Business model + revenue streams
+12-13. Financial performance + projections
+14. Use of proceeds
+15-16. Returns scenario (Bear/Base/Bull)
+17. Team
+18. Risk factors
+19. Why now + timeline
+20. Process & contact
+
+DATA ROOM:
+${context.dataRoomContext.substring(0, 25000)}
+
+RAISE CONFIG:
+${context.raiseConfig}
+
+Return ONLY a valid JSON array of slide objects. No markdown, no explanation.`,
+    }],
+  });
+
+  if (response.stop_reason === 'max_tokens') console.error('[GENERATE_DECK] Response truncated');
+  const text = response.content[0].type === 'text' ? response.content[0].text : '[]';
+
+  // Extract JSON from response
+  try {
+    return JSON.stringify(JSON.parse(text), null, 2);
+  } catch {
+    const match = text.match(/\[[\s\S]*\]/);
+    if (match) {
+      try { return JSON.stringify(JSON.parse(match[0]), null, 2); } catch { /* fall through */ }
+    }
+    return '[]';
+  }
+}
+
+export async function generateSpreadsheetDoc(
+  context: GenerateContext
+): Promise<string> {
+  const cells = await generateModelFromContext(context);
+  return JSON.stringify(cells, null, 2);
+}
+
 export async function generateModelFromContext(
   context: GenerateContext
 ): Promise<Record<string, Record<string, { v: string | number; f?: string; t?: 's' | 'n'; bold?: boolean; bg?: string }>>> {

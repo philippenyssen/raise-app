@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getRaiseConfig, getAllDocuments, getDataRoomContext, createDocument, updateDocument, getModelSheets, updateModelSheet, getConfig } from '@/lib/db';
-import { generateDeliverable, generateModelFromContext } from '@/lib/generate';
+import { generateDeliverable, generateModelFromContext, generateDeckAsSlides, generateSpreadsheetDoc } from '@/lib/generate';
 
 export async function POST(req: NextRequest) {
   let body: Record<string, unknown>;
@@ -93,13 +93,44 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true, type: 'model', sheetsUpdated: 1 });
     }
 
+    // Generate deck as slide format (JSON)
+    if (type === 'deck') {
+      const slideContent = await generateDeckAsSlides(context);
+      const existing = allDocs.find(d => d.type === 'presentation' || d.type === 'deck');
+      if (existing) {
+        await updateDocument(existing.id, {
+          content: slideContent,
+          change_summary: `AI-generated deck from data room (${new Date().toISOString()})`,
+        });
+        return NextResponse.json({ ok: true, type: 'presentation', documentId: existing.id, action: 'updated' });
+      } else {
+        const doc = await createDocument({ title: 'Management Presentation', type: 'presentation', content: slideContent });
+        return NextResponse.json({ ok: true, type: 'presentation', documentId: doc.id, action: 'created' }, { status: 201 });
+      }
+    }
+
+    // Generate spreadsheet model as document
+    if (type === 'spreadsheet_model') {
+      const cellContent = await generateSpreadsheetDoc(context);
+      const existing = allDocs.find(d => d.type === 'model');
+      if (existing) {
+        await updateDocument(existing.id, {
+          content: cellContent,
+          change_summary: `AI-generated model from data room (${new Date().toISOString()})`,
+        });
+        return NextResponse.json({ ok: true, type: 'model', documentId: existing.id, action: 'updated' });
+      } else {
+        const doc = await createDocument({ title: 'Financial Model', type: 'model', content: cellContent });
+        return NextResponse.json({ ok: true, type: 'model', documentId: doc.id, action: 'created' }, { status: 201 });
+      }
+    }
+
     // Generate document
     const TYPE_TITLES: Record<string, string> = {
       teaser: 'Series C Teaser',
       exec_summary: 'Executive Summary',
       memo: 'Investment Memorandum',
       dd_memo: 'Confirmatory DD Memorandum',
-      deck: 'Management Presentation',
     };
 
     const content = await generateDeliverable(type, context);

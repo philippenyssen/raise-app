@@ -15,15 +15,17 @@ import { FileText, Plus, ChevronRight, Wand2, Loader2 } from 'lucide-react';
 import { labelMuted, stAccent, stTextMuted } from '@/lib/styles';
 import { EmptyState } from '@/components/ui/empty-state';
 
-const TYPE_ORDER = ['teaser', 'exec_summary', 'one_pager', 'exec_brief', 'memo', 'deck', 'dd_memo', 'custom'];
+const TYPE_ORDER = ['teaser', 'exec_summary', 'one_pager', 'exec_brief', 'memo', 'presentation', 'deck', 'dd_memo', 'model', 'custom'];
 const TYPE_LABELS: Record<string, string> = {
   teaser: 'Teaser',
   exec_summary: 'Executive Summary',
   one_pager: 'One-Pager',
   exec_brief: 'Executive Brief',
   memo: 'Investment Memo',
+  presentation: 'Presentation',
   deck: 'Long-Form Deck',
   dd_memo: 'DD Memo',
+  model: 'Financial Model',
   custom: 'Custom',};
 
 const docBtnBase: React.CSSProperties = { padding: 'var(--space-1) var(--space-2)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-sm)', border: 'none', cursor: 'pointer', display: 'block', width: '100%' };
@@ -291,24 +293,26 @@ export default function WorkspacePage() {
             style={sectionDividerStyle}>
             <div style={typeGroupLabel}>
               Generate from Data Room</div>
-            {['teaser', 'exec_summary', 'memo', 'deck', 'dd_memo'].map(type => {
-              const exists = docs.some(d => d.type === type);
+            {['teaser', 'exec_summary', 'memo', 'deck', 'dd_memo', 'spreadsheet_model'].map(genType => {
+              const checkType = genType === 'deck' ? 'presentation' : genType === 'spreadsheet_model' ? 'model' : genType;
+              const exists = docs.some(d => d.type === checkType || d.type === genType);
               const isDisabled = generating !== null;
+              const label = genType === 'spreadsheet_model' ? 'Financial Model' : TYPE_LABELS[genType] || genType;
               return (
                 <button
-                  key={type}
-                  onClick={() => generateDeliverable(type)}
+                  key={genType}
+                  onClick={() => generateDeliverable(genType)}
                   disabled={isDisabled}
                   className="w-full flex items-center gap-2 sidebar-link"
                   style={isDisabled ? genBtnDisabled : genBtnEnabled}>
-                  {generating === type ? (
+                  {generating === genType ? (
                     <Loader2
                       className="w-3.5 h-3.5 animate-spin"
                       style={stAccent} />
                   ) : (
                     <Wand2 className="w-3.5 h-3.5" />
                   )}
-                  <span className="truncate">{exists ? 'Regenerate' : 'Generate'} {TYPE_LABELS[type] || type}</span>
+                  <span className="truncate">{exists ? 'Regenerate' : 'Generate'} {label}</span>
                 </button>);
             })}</div>
           <div style={sectionDividerStyle}>
