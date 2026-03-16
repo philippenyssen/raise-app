@@ -8,7 +8,7 @@ import {
   ChevronDown, Printer, Target, Shield, Clock,
   TrendingUp, TrendingDown, Minus, Loader2, BookOpen, Building2,
   ArrowLeft, Zap, CircleDot, ExternalLink, Sparkles, Plus,
-  ListChecks, MessageCircleQuestion, FolderOpen, ChevronRight, Timer,
+  ListChecks, MessageCircleQuestion, FolderOpen, ChevronRight, Timer, Copy,
 } from 'lucide-react';
 import type {
   Investor, Meeting, Task, Objection, EngagementSignal,
@@ -543,8 +543,10 @@ function MeetingPrepContent() {
                   <h2 className="text-sm font-normal tracking-wider flex items-center gap-2 print-section-title" style={stAccent}>
                     <Sparkles className="w-4 h-4" />
                     Customized Brief for {investor.name} ({TYPE_LABELS[investor.type] || investor.type})</h2>
-                  <span style={stAccent}>
-                    <ChevronRight className={`w-4 h-4 transition-transform ${briefExpanded ? 'rotate-90' : ''}`} /></span>
+                  <div className="flex items-center gap-2">
+                    <button onClick={e => { e.stopPropagation(); const el = e.currentTarget.closest('section')?.querySelector('[data-brief-content]'); if (el) { navigator.clipboard.writeText(el.textContent || ''); toast('Brief copied to clipboard'); } }} className="btn btn-ghost btn-sm no-print" title="Copy brief"><Copy className="w-3.5 h-3.5" /></button>
+                    <span style={stAccent}><ChevronRight className={`w-4 h-4 transition-transform ${briefExpanded ? 'rotate-90' : ''}`} /></span>
+                  </div>
                 </button>
                 {/* Print-only static header */}
                 <div className="hidden print:block p-5 pb-0">
@@ -552,7 +554,7 @@ function MeetingPrepContent() {
                     Customized Brief for {investor.name} ({TYPE_LABELS[investor.type] || investor.type})</h2></div>
 
                 {briefExpanded && (
-                  <div className="px-5 pb-5 space-y-5">
+                  <div className="px-5 pb-5 space-y-5" data-brief-content>
                     {/* Opening Hook */}
                     <div>
                       <h3 className="text-xs font-normal tracking-wider mb-2" style={stAccent}>Opening</h3>

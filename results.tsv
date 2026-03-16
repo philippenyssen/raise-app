@@ -657,3 +657,4 @@ db4500e	100	100	0	pass	Workflow+Automation	perf: extract 6 style constants from 
 668	2026-03-16T12:14:51Z	fix	fix: stale closure in stress-test keyboard handler	100	-	Engineering
 669	2026-03-16T12:16:59Z	intel	intel: check size scoring accounts for engagement when data missing	100	-	AI+Intelligence
 670	2026-03-16T12:18:45Z	enrich	enrich: fuzzy dedup on portfolio auto-creation from enrichment	100	-	DataEnrichment
+671	2026-03-16T12:20:49Z	workflow	workflow: copy-to-clipboard button on AI meeting briefs	100	-	Workflow+Automation
