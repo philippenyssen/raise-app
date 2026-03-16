@@ -39,9 +39,13 @@ interface DealflowInvestor {
   enthusiasm: number;
   lastMeeting: string | null;
   daysSinceLastMeeting: number;
+  // Readiness
+  readinessScore: number;
+  readinessLevel: 'ready' | 'progressing' | 'stalled' | 'cold';
+  blockingFactors: string[];
 }
 
-type SortKey = 'heat' | 'velocity' | 'momentum' | 'days' | 'name' | 'tier';
+type SortKey = 'heat' | 'velocity' | 'momentum' | 'days' | 'name' | 'tier' | 'readiness';
 type HeatFilter = 'all' | 'hot' | 'warm' | 'cool' | 'cold' | 'frozen';
 
 // ── Config ────────────────────────────────────────────────────────────
@@ -55,7 +59,7 @@ const HEAT_CONFIG: Record<string, { bg: string; border: string; text: string; gl
 
 
 const HEAT_ORDER: Record<string, number> = { hot: 0, warm: 1, cool: 2, cold: 3, frozen: 4 };
-const dfRowBase = { gridTemplateColumns: '2fr 80px 90px 80px 70px 60px 1.5fr 80px', borderBottom: '1px solid var(--border-subtle)', textDecoration: 'none' } as const;
+const dfRowBase = { gridTemplateColumns: '2fr 80px 90px 80px 70px 60px 80px 1.5fr 80px', borderBottom: '1px solid var(--border-subtle)', textDecoration: 'none' } as const;
 const dfNamePrimary = { color: 'var(--text-primary)', fontSize: 'var(--font-size-sm)' } as const;
 const dfNameSub = { color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' } as const;
 const dfVelBar = { background: 'var(--surface-3)' } as const;
@@ -76,7 +80,7 @@ const dfRefreshBtn: React.CSSProperties = { background: 'var(--surface-2)', colo
 const dfHeatLegendLabel = { color: 'var(--text-tertiary)' } as const;
 const dfErrorAlert: React.CSSProperties = { background: 'var(--danger-muted)', border: '1px solid var(--danger)', color: 'var(--text-primary)' };
 const dfLoadingText: React.CSSProperties = { color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' };
-const dfTableHeader: React.CSSProperties = { gridTemplateColumns: '2fr 80px 90px 80px 70px 60px 1.5fr 80px', background: 'var(--surface-1)', borderBottom: '1px solid var(--border-subtle)', fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontWeight: 400, letterSpacing: '0.01em' };
+const dfTableHeader: React.CSSProperties = { gridTemplateColumns: '2fr 80px 90px 80px 70px 60px 80px 1.5fr 80px', background: 'var(--surface-1)', borderBottom: '1px solid var(--border-subtle)', fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontWeight: 400, letterSpacing: '0.01em' };
 const dfTrackingDot = { background: 'var(--text-secondary)' } as const;
 const dfBottleneckLink: React.CSSProperties = { color: 'var(--text-tertiary)', textDecoration: 'none' };
 const dfEmptyStateText: React.CSSProperties = { color: 'var(--text-secondary)', marginBottom: 'var(--space-1)' };
@@ -124,10 +128,11 @@ export default function DealflowPage() {
         if (!r.ok) throw new Error(`${url}: ${r.status}`);
         return r.json();
       };
-      const [velRes, heatRes, momRes] = await Promise.allSettled([
+      const [velRes, heatRes, momRes, readyRes] = await Promise.allSettled([
         safeParse('/api/velocity'),
         safeParse('/api/deal-heat'),
-        safeParse('/api/momentum'),]);
+        safeParse('/api/momentum'),
+        safeParse('/api/readiness'),]);
 
       const unwrap = <T,>(r: PromiseSettledResult<T>, label: string): T | null => {
         if (r.status === 'fulfilled') return r.value;
@@ -137,6 +142,7 @@ export default function DealflowPage() {
       const velData = unwrap(velRes, 'velocity');
       const heatData = unwrap(heatRes, 'deal-heat');
       const momData = unwrap(momRes, 'momentum');
+      const readyData = unwrap(readyRes, 'readiness');
 
       // Build a map keyed by investor id/name
       const map = new Map<string, DealflowInvestor>();
@@ -164,7 +170,10 @@ export default function DealflowPage() {
             previousMomentum: 0,
             enthusiasm: inv.enthusiasm ?? 0,
             lastMeeting: null,
-            daysSinceLastMeeting: inv.days_since_last_meeting ?? 999,});
+            daysSinceLastMeeting: inv.days_since_last_meeting ?? 999,
+            readinessScore: 0,
+            readinessLevel: 'cold',
+            blockingFactors: [],});
         }}
 
       // Merge heat data
@@ -197,7 +206,10 @@ export default function DealflowPage() {
               previousMomentum: 0,
               enthusiasm: inv.enthusiasm ?? 0,
               lastMeeting: inv.lastMeeting,
-              daysSinceLastMeeting: 999,});
+              daysSinceLastMeeting: 999,
+              readinessScore: 0,
+              readinessLevel: 'cold',
+              blockingFactors: [],});
           }}
       }
 
@@ -212,6 +224,17 @@ export default function DealflowPage() {
             existing.currentMomentum = current;
             existing.previousMomentum = prev;
             existing.trend = current > prev + 5 ? 'up' : current < prev - 5 ? 'down' : 'flat';
+          }}
+      }
+
+      // Merge readiness data
+      if (readyData?.investors) {
+        for (const inv of readyData.investors) {
+          const existing = map.get(inv.investorId);
+          if (existing) {
+            existing.readinessScore = inv.readinessScore ?? 0;
+            existing.readinessLevel = inv.readinessLevel ?? 'cold';
+            existing.blockingFactors = inv.blockingFactors ?? [];
           }}
       }
 
@@ -254,6 +277,7 @@ export default function DealflowPage() {
         case 'days': return a.daysInProcess - b.daysInProcess;
         case 'name': return a.name.localeCompare(b.name);
         case 'tier': return a.tier - b.tier;
+        case 'readiness': return b.readinessScore - a.readinessScore;
         default: return 0;
       }}), [investors, heatFilter, sortBy]);
 
@@ -336,7 +360,7 @@ export default function DealflowPage() {
         ))}
         <div style={{ marginLeft: 'auto' }} className="flex items-center gap-1.5">
           <span style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>Sort:</span>
-          {(['heat', 'velocity', 'momentum', 'days', 'tier', 'name'] as SortKey[]).map(s => (
+          {(['heat', 'velocity', 'momentum', 'readiness', 'days', 'tier', 'name'] as SortKey[]).map(s => (
             <button
               key={s}
               onClick={() => setSortBy(s)}
@@ -388,6 +412,7 @@ export default function DealflowPage() {
             <div className="text-center">Trend</div>
             <div className="text-center">Days</div>
             <div className="text-center">Track</div>
+            <div className="text-center">Ready</div>
             <div>Bottleneck</div>
             <div className="text-center">Last Meet</div></div>
 
@@ -447,6 +472,15 @@ export default function DealflowPage() {
                     className="w-2 h-2 rounded-full"
                     style={dfTrackingDot}
                     title={inv.trackingStatus.replace('_', ' ')} /></div>
+
+                {/* Readiness */}
+                <div className="flex items-center justify-center gap-1" title={inv.blockingFactors.length > 0 ? `Blockers: ${inv.blockingFactors.join(', ')}` : 'No blockers identified'}>
+                  <span className="tabular-nums" style={{
+                    fontSize: 'var(--font-size-xs)',
+                    fontWeight: 400,
+                    color: inv.readinessScore >= 70 ? 'var(--success)' : inv.readinessScore >= 45 ? 'var(--warning)' : 'var(--text-muted)',
+                  }}>{inv.readinessScore}</span>
+                </div>
 
                 {/* Bottleneck */}
                 <div className="truncate" style={stFontXs} onClick={e => e.preventDefault()}>

@@ -343,6 +343,10 @@ export default function TodayPage() {
     action_type: string; description: string; due_at: string; status: string;
   }[]>([]);
   const [completingFollowupId, setCompletingFollowupId] = useState<string | null>(null);
+  const [readinessAlerts, setReadinessAlerts] = useState<{
+    investorId: string; investorName: string; readinessScore: number;
+    readinessLevel: string; blockingFactors: string[];
+  }[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [stalenessMinutes, setStalenessMinutes] = useState(0);
@@ -355,15 +359,17 @@ export default function TodayPage() {
     let velRes: Response | null = null;
     let pulseRes: Response | null = null;
     let fuRes: Response | null = null;
+    let readyRes: Response | null = null;
     try {
       const results = await Promise.all([
         cachedFetch('/api/briefing'),
         cachedFetch('/api/intelligence/strategic').catch(() => null),
         cachedFetch('/api/velocity').catch(() => null),
         cachedFetch('/api/pulse').catch(() => null),
-        cachedFetch('/api/followups?status=pending').catch(() => null),]);
+        cachedFetch('/api/followups?status=pending').catch(() => null),
+        cachedFetch('/api/readiness').catch(() => null),]);
       const res = results[0]!;
-      stratRes = results[1]; velRes = results[2]; pulseRes = results[3]; fuRes = results[4];
+      stratRes = results[1]; velRes = results[2]; pulseRes = results[3]; fuRes = results[4]; readyRes = results[5];
       if (res.ok) {
         setData(await res.json());
         lastFetchedAt.current = Date.now();
@@ -412,6 +418,13 @@ export default function TodayPage() {
           const dueDate = f.due_at?.split('T')[0];
           return f.status === 'pending' && dueDate && dueDate <= today;});
         setDueFollowups(due);
+      }
+      if (readyRes?.ok) {
+        const readyData = await readyRes.json();
+        const stalled = (readyData.investors ?? []).filter((r: { readinessLevel: string; tier: number }) =>
+          (r.readinessLevel === 'stalled' || r.readinessLevel === 'cold') && r.tier <= 2
+        ).slice(0, 5);
+        setReadinessAlerts(stalled);
       }
     } catch (e) {
       console.warn('[TODAY_SECONDARY]', e instanceof Error ? e.message : e);
@@ -840,6 +853,42 @@ export default function TodayPage() {
       {/* ----------------------------------------------------------------- */}
       {/* 7. AI Insight                                                      */}
       {/* ----------------------------------------------------------------- */}
+      {/* Readiness Alerts — investors that need attention */}
+      {readinessAlerts.length > 0 && (
+        <div style={{ borderRadius: 'var(--radius-lg)', padding: 'var(--space-4)', background: 'var(--surface-1)' }}>
+          <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-3)' }}>
+            <div className="flex items-center gap-2">
+              <span style={{ color: 'var(--warning)', ...flexIcon }}>
+                <Target className="w-4 h-4" /></span>
+              <span style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>
+                Readiness alerts</span>
+              <span style={{ ...stFontXs, color: 'var(--text-muted)' }}>
+                {readinessAlerts.length} investor{readinessAlerts.length !== 1 ? 's' : ''} stalled</span></div>
+            <Link href="/dealflow?sort=readiness" className="btn btn-ghost btn-sm shrink-0 investor-link" style={stTextSecondary}>
+              View all <span style={flexIcon}><ChevronRight className="w-3.5 h-3.5" /></span></Link></div>
+          <div style={flexColGap2}>
+            {readinessAlerts.map(r => (
+              <Link key={r.investorId} href={`/investors/${r.investorId}`}
+                className="flex items-center gap-3 py-2 px-3 rounded-lg transition-colors hover-surface-2"
+                style={{ textDecoration: 'none' }}>
+                <span className="tabular-nums shrink-0" style={{
+                  fontSize: 'var(--font-size-sm)', fontWeight: 400,
+                  color: r.readinessScore >= 45 ? 'var(--warning)' : 'var(--danger)',
+                }}>{r.readinessScore}</span>
+                <div className="flex-1 min-w-0">
+                  <span style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>{r.investorName}</span>
+                  {r.blockingFactors.length > 0 && (
+                    <p className="truncate" style={{ ...stFontXs, color: 'var(--text-tertiary)', ...mtSpace0 }}>
+                      {r.blockingFactors[0]}</p>
+                  )}
+                </div>
+                <span style={flexIcon}><ArrowUpRight className="w-3.5 h-3.5" style={{ color: 'var(--text-muted)' }} /></span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
       {insight && (
         <div style={{ background: 'var(--accent-muted)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-4)' }}>
           <div className="flex items-start gap-3">
