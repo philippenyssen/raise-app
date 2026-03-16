@@ -117,12 +117,14 @@ export default function DealflowPage() {
   const [investors, setInvestors] = useState<DealflowInvestor[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [failedSources, setFailedSources] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState<SortKey>('heat');
   const [heatFilter, setHeatFilter] = useState<HeatFilter>('all');
   const [loadedAt, setLoadedAt] = useState<string | null>(null);
   const fetchData = useCallback(async () => {
     setLoading(true);
     setError(null);
+    setFailedSources([]);
     try {
       const safeParse = async (url: string) => {
         const r = await cachedFetch(url);
@@ -144,6 +146,13 @@ export default function DealflowPage() {
       const heatData = unwrap(heatRes, 'deal-heat');
       const momData = unwrap(momRes, 'momentum');
       const readyData = unwrap(readyRes, 'readiness');
+
+      const failed: string[] = [];
+      if (!velData) failed.push('Velocity');
+      if (!heatData) failed.push('Deal Heat');
+      if (!momData) failed.push('Momentum');
+      if (!readyData) failed.push('Readiness');
+      setFailedSources(failed);
 
       // Build a map keyed by investor id/name
       const map = new Map<string, DealflowInvestor>();
@@ -338,6 +347,14 @@ export default function DealflowPage() {
               <span style={dfSummaryLabel}>{label}</span></div>
             <div className="text-xl font-normal" style={{ color }}>{count}</div></div>
         ))}</div>
+
+      {/* Partial failure warning */}
+      {failedSources.length > 0 && !loading && (
+        <div className="flex items-center gap-2 rounded-lg px-4 py-2.5 mb-4 text-sm" style={{ background: 'var(--warning-muted)', border: '1px solid var(--warning)', color: 'var(--text-secondary)' }}>
+          <span style={{ color: 'var(--warning)' }}><AlertTriangle className="w-4 h-4" /></span>
+          <span>Partial data — {failedSources.join(', ')} unavailable.
+            <button onClick={fetchData} className="ml-1 underline" style={{ color: 'var(--warning)', background: 'none', border: 'none', cursor: 'pointer' }}>Retry</button></span></div>
+      )}
 
       {/* Controls */}
       <div className="flex flex-wrap items-center gap-3 mb-4">
