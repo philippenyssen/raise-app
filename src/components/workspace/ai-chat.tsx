@@ -780,15 +780,22 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
             padding: 'var(--space-3) var(--space-4)',}}>
           <div className="flex items-center justify-between">
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--accent)' }}>
-                {documentType === 'model' || documentType === 'spreadsheet'
-                  ? 'AI has proposed cell updates'
-                  : documentType === 'presentation' || documentType === 'deck'
-                  ? 'AI has proposed slide changes'
-                  : 'AI has proposed edits'}
-              </span>
+              <div className="flex items-center" style={{ gap: 'var(--space-2)' }}>
+                <div style={{
+                  width: '8px', height: '8px', borderRadius: '50%',
+                  background: 'var(--accent)',
+                  animation: 'typingBounce 2s ease-in-out infinite',
+                }} />
+                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--accent)' }}>
+                  {documentType === 'model' || documentType === 'spreadsheet'
+                    ? 'AI has proposed cell updates'
+                    : documentType === 'presentation' || documentType === 'deck'
+                    ? 'AI has proposed slide changes'
+                    : 'AI has proposed edits'}
+                </span>
+              </div>
               {pendingChange.summary && (
-                <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginLeft: '18px' }}>
                   {pendingChange.summary}
                 </span>
               )}

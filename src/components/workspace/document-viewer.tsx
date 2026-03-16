@@ -893,6 +893,25 @@ export function DocumentViewer({ document, onContentChange, onSave, onDelete, on
         </div>
       </div>
 
+      {/* Word count bar for rich text */}
+      {format === 'richtext' && document && (
+        <div
+          className="shrink-0 flex items-center justify-between"
+          style={{
+            padding: '2px var(--space-4)',
+            borderTop: '1px solid var(--border-subtle)',
+            background: 'var(--surface-1)',
+            fontSize: '10px',
+            color: 'var(--text-muted)',
+          }}>
+          <div className="flex items-center" style={{ gap: 'var(--space-3)' }}>
+            <span>{document.content.replace(/<[^>]+>/g, '').split(/\s+/).filter(Boolean).length} words</span>
+            <span>{document.content.replace(/<[^>]+>/g, '').length} chars</span>
+          </div>
+          <span>{dirty ? 'Unsaved changes' : saving ? 'Saving...' : 'Saved'}</span>
+        </div>
+      )}
+
       {/* Keyboard shortcuts overlay */}
       {showShortcuts && (
         <div
