@@ -784,3 +784,4 @@ b4a0052	100	100	0	keep	product	Dashboard strategic overhaul: AI narrative brief 
 796	2026-03-16T19:08:42Z	Workflow & Automation	meeting prep: pass investor ID through all 'Log Meeting' links to avoid manual re-selection	src/app/meetings/prep/page.tsx	pass
 797	2026-03-16T19:10:26Z	Copywriting	copy: actionable error messages, concrete placeholders, specific button labels across 3 pages	src/app/api/focus/route.ts,src/app/data-room/page.tsx,src/app/pipeline/page.tsx	pass
 798	2026-03-16T19:12:46Z	Competitive Edge	strategic: add per-investor readiness scores to forecast table with color-coded levels	src/app/strategic/page.tsx	pass
+799	2026-03-16T19:14:22Z	Reliability & Ops	apiFetch: add 30s default timeout via AbortSignal to prevent indefinite hangs	src/lib/api-fetch.ts	pass

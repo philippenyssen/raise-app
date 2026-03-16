@@ -7,8 +7,11 @@ export class ApiError extends Error {
   }
 }
 
+const DEFAULT_TIMEOUT_MS = 30_000;
+
 export async function apiFetch<T = unknown>(url: string, opts?: RequestInit): Promise<T> {
-  const res = await fetch(url, opts);
+  const signal = opts?.signal ?? AbortSignal.timeout(DEFAULT_TIMEOUT_MS);
+  const res = await fetch(url, { ...opts, signal });
   if (!res.ok) {
     let message = `Request failed (${res.status})`;
     try {
@@ -21,7 +24,8 @@ export async function apiFetch<T = unknown>(url: string, opts?: RequestInit): Pr
 }
 
 export async function apiFetchRaw(url: string, opts?: RequestInit): Promise<Response> {
-  const res = await fetch(url, opts);
+  const signal = opts?.signal ?? AbortSignal.timeout(DEFAULT_TIMEOUT_MS);
+  const res = await fetch(url, { ...opts, signal });
   if (!res.ok) {
     let message = `Request failed (${res.status})`;
     try {
