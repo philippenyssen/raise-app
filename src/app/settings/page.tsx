@@ -210,7 +210,7 @@ export default function SettingsPage() {
   async function testKey() {
     setTesting(true);
     try {
-      const res = await fetch('/api/test-key');
+      const res = await cachedFetch('/api/test-key');
       if (!res.ok) throw new Error(`Status ${res.status}`);
       setKeyTest(await res.json());
     } catch (e) {

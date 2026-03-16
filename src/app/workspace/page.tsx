@@ -72,7 +72,7 @@ export default function WorkspacePage() {
       setEditedContent(doc.content);
     } else {
       try {
-        const res = await fetch(`/api/documents/${doc.id}`);
+        const res = await cachedFetch(`/api/documents/${doc.id}`);
         if (res.ok) {
           const full = await res.json();
           setSelectedDoc(full);
@@ -155,7 +155,7 @@ export default function WorkspacePage() {
       } else {
         toast(`Generated ${TYPE_LABELS[type] || type} — ${data.action}`);
         // Single fetch to refresh and select the generated doc
-        const refreshRes = await fetch('/api/documents');
+        const refreshRes = await cachedFetch('/api/documents');
         if (refreshRes.ok) {
           const allDocs: Doc[] = await refreshRes.json();
           setDocs(allDocs);

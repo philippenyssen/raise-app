@@ -267,7 +267,7 @@ export default function ObjectionsPage() {
     }
     setLoadingInvestor(true);
     try {
-      const res = await fetch(`/api/objections?view=investor&investor_id=${investorId}`);
+      const res = await cachedFetch(`/api/objections?view=investor&investor_id=${investorId}`);
       if (!res.ok) throw new Error('Failed to load');
       const json = await res.json();
       setInvestorObjections(json);

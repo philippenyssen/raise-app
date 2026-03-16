@@ -132,7 +132,7 @@ export default function DocumentsPage() {
     let content = doc.content || '';
     if (!content) {
       try {
-        const res = await fetch(`/api/documents/${doc.id}`);
+        const res = await cachedFetch(`/api/documents/${doc.id}`);
         if (res.ok) { const full = await res.json(); content = full.content || ''; }
       } catch (e) { console.warn('[DOC_DOWNLOAD]', e instanceof Error ? e.message : e); }
     }
