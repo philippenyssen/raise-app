@@ -220,10 +220,8 @@ export default function TimelinePage() {
             <button
               type="submit"
               disabled={creating}
-              className="px-3 py-1.5 rounded-lg text-sm transition-colors"
-              style={{ backgroundColor: 'var(--accent)', color: 'var(--surface-0)', opacity: creating ? 0.6 : 1 }}
-              onMouseEnter={(e) => { if (!creating) e.currentTarget.style.opacity = '0.85'; }}
-              onMouseLeave={(e) => { if (!creating) e.currentTarget.style.opacity = '1'; }}>
+              className="px-3 py-1.5 rounded-lg text-sm btn-accent-hover"
+              style={{ backgroundColor: 'var(--accent)', color: 'var(--surface-0)', opacity: creating ? 0.6 : 1 }}>
               {creating ? 'Creating...' : 'Create'}</button>
             <button
               type="button"
@@ -237,23 +235,19 @@ export default function TimelinePage() {
       <div className="flex gap-1" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
         <button
           onClick={() => setTab('tasks')}
-          className="px-4 py-2.5 text-sm font-normal flex items-center gap-2 transition-colors"
+          className={`px-4 py-2.5 text-sm font-normal flex items-center gap-2 transition-colors ${tab !== 'tasks' ? 'tab-hover' : ''}`}
           style={{
             borderBottom: tab === 'tasks' ? '2px solid var(--accent)' : '2px solid transparent',
-            color: tab === 'tasks' ? 'var(--text-primary)' : 'var(--text-muted)', }}
-          onMouseEnter={(e) => { if (tab !== 'tasks') e.currentTarget.style.color = 'var(--text-secondary)'; }}
-          onMouseLeave={(e) => { if (tab !== 'tasks') e.currentTarget.style.color = 'var(--text-muted)'; }}>
+            color: tab === 'tasks' ? 'var(--text-primary)' : 'var(--text-muted)', }}>
           <ListTodo className="w-3.5 h-3.5" /> Tasks
           <span className="text-xs px-1.5 py-0.5 rounded" style={{ backgroundColor: 'var(--surface-2)', color: 'var(--text-tertiary)' }}>{tasks.length}</span>
         </button>
         <button
           onClick={() => setTab('activity')}
-          className="px-4 py-2.5 text-sm font-normal flex items-center gap-2 transition-colors"
+          className={`px-4 py-2.5 text-sm font-normal flex items-center gap-2 transition-colors ${tab !== 'activity' ? 'tab-hover' : ''}`}
           style={{
             borderBottom: tab === 'activity' ? '2px solid var(--accent)' : '2px solid transparent',
-            color: tab === 'activity' ? 'var(--text-primary)' : 'var(--text-muted)', }}
-          onMouseEnter={(e) => { if (tab !== 'activity') e.currentTarget.style.color = 'var(--text-secondary)'; }}
-          onMouseLeave={(e) => { if (tab !== 'activity') e.currentTarget.style.color = 'var(--text-muted)'; }}>
+            color: tab === 'activity' ? 'var(--text-primary)' : 'var(--text-muted)', }}>
           <Activity className="w-3.5 h-3.5" /> Activity Log
           <span className="text-xs px-1.5 py-0.5 rounded" style={{ backgroundColor: 'var(--surface-2)', color: 'var(--text-tertiary)' }}>{activity.length}</span>
         </button></div>
@@ -282,10 +276,8 @@ export default function TimelinePage() {
             {(filterPhase || filterStatus) && (
               <button
                 onClick={() => { setFilterPhase(''); setFilterStatus(''); }}
-                className="text-xs px-2 transition-colors"
-                style={stTextMuted}
-                onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--text-secondary)'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-muted)'; }}>
+                className="text-xs px-2 tab-hover"
+                style={stTextMuted}>
                 Clear</button>
             )}</div>
 
@@ -347,10 +339,8 @@ export default function TimelinePage() {
                           {task.investor_name && (
                             <Link
                               href={`/investors/${task.investor_id}`}
-                              className="text-xs transition-colors"
-                              style={stAccent}
-                              onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.8'; }}
-                              onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}>
+                              className="text-xs hover-opacity-link"
+                              style={stAccent}>
                               {task.investor_name}</Link>
                           )}
                           {task.due_date && (
@@ -368,12 +358,9 @@ export default function TimelinePage() {
                             <option value="blocked">Blocked</option></select>
                           <button
                             onClick={() => deleteTaskById(task.id)}
-                            className="transition-colors"
-                            style={stTextMuted}
+                            className="icon-delete"
                             title="Delete task"
-                            aria-label="Delete task"
-                            onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--danger)'; }}
-                            onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-muted)'; }}>
+                            aria-label="Delete task">
                             <Trash2 className="w-3 h-3" /></button></div>
                       </div>);
                   })}</div></div>

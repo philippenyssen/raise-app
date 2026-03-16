@@ -305,17 +305,13 @@ export default function MomentumPage() {
                     <div className="flex items-center gap-2 ml-4 shrink-0">
                       <Link
                         href={`/meetings/new?investor=${alert.investorId}`}
-                        className="px-2.5 py-1 rounded text-xs font-normal transition-colors"
-                        style={{ background: 'var(--accent-15)', color: 'var(--accent)', boxShadow: 'inset 0 0 0 1px var(--accent-25)' }}
-                        onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent-30)'; }}
-                        onMouseLeave={e => { e.currentTarget.style.background = 'var(--accent-15)'; }}>
+                        className="px-2.5 py-1 rounded text-xs font-normal hover-accent-bg"
+                        style={{ background: 'var(--accent-15)', color: 'var(--accent)', boxShadow: 'inset 0 0 0 1px var(--accent-25)' }}>
                         Schedule</Link>
                       <Link
                         href={`/investors/${alert.investorId}`}
-                        className="px-2.5 py-1 rounded text-xs font-normal transition-colors"
-                        style={{ background: 'var(--surface-2)', color: 'var(--text-secondary)' }}
-                        onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-3)'; }}
-                        onMouseLeave={e => { e.currentTarget.style.background = 'var(--surface-2)'; }}>
+                        className="px-2.5 py-1 rounded text-xs font-normal btn-surface"
+                        style={{ background: 'var(--surface-2)', color: 'var(--text-secondary)' }}>
                         Open</Link></div></div>
                 </div>);
             })}</div>
@@ -418,10 +414,8 @@ export default function MomentumPage() {
                         <Link
                           href={delta < -5 ? `/meetings/new?investor=${inv.investorId}` : `/investors/${inv.investorId}`}
                           title={delta < -5 ? 'Schedule meeting — momentum dropping' : 'View investor'}
-                          className="inline-flex items-center justify-center w-6 h-6 rounded transition-colors"
-                          style={{ background: 'transparent', color: 'var(--text-muted)' }}
-                          onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-2)'; e.currentTarget.style.color = 'var(--accent)'; }}
-                          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text-muted)'; }}>
+                          className="inline-flex items-center justify-center w-6 h-6 rounded hover-chevron-action"
+                          style={{ background: 'transparent', color: 'var(--text-muted)' }}>
                           <ChevronRight className="w-3.5 h-3.5" /></Link></td>
                     </tr>);
                 })}</tbody></table></div>
@@ -565,10 +559,8 @@ export default function MomentumPage() {
                             <p className="text-xs flex-1" style={stTextMuted}>{anomaly.message}</p>
                             <Link
                               href={isAbove ? `/meetings/prep?investor=${anomaly.investorId}` : `/meetings/new?investor=${anomaly.investorId}`}
-                              className="ml-3 px-2 py-0.5 rounded text-xs font-normal shrink-0 transition-colors"
-                              style={{ background: isAbove ? 'var(--accent-30)' : 'var(--fg-30)', color: isAbove ? 'var(--success)' : 'var(--danger)', boxShadow: `inset 0 0 0 1px ${isAbove ? 'var(--accent-40)' : 'var(--fg-40)'}` }}
-                              onMouseEnter={e => { e.currentTarget.style.opacity = '0.8'; }}
-                              onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}>
+                              className="ml-3 px-2 py-0.5 rounded text-xs font-normal shrink-0 hover-opacity-link"
+                              style={{ background: isAbove ? 'var(--accent-30)' : 'var(--fg-30)', color: isAbove ? 'var(--success)' : 'var(--danger)', boxShadow: `inset 0 0 0 1px ${isAbove ? 'var(--accent-40)' : 'var(--fg-40)'}` }}>
                               {isAbove ? 'Prep Meeting' : 'Re-engage'}</Link></div></div></div>
                     </div>);
                 })}</div>
@@ -687,10 +679,8 @@ export default function MomentumPage() {
                           Top objection: <span style={stTextSecondary}>{nh.topObjection}</span></div>
                         <Link
                           href="/objections"
-                          className="text-xs font-normal shrink-0 ml-2 transition-colors"
-                          style={stAccent}
-                          onMouseEnter={e => { e.currentTarget.style.opacity = '0.7'; }}
-                          onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}>
+                          className="text-xs font-normal shrink-0 ml-2 hover-opacity-70"
+                          style={stAccent}>
                           View &rarr;</Link></div>
                     )}
                     {nh.topQuestionTopic && (

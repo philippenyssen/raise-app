@@ -613,6 +613,38 @@ body {
 .btn-accent-hover:hover {
   opacity: 0.85;
 }
+.btn-accent-hover:disabled:hover {
+  opacity: 0.55;
+}
+
+.hover-opacity-link {
+  transition: opacity 150ms ease;
+}
+.hover-opacity-link:hover {
+  opacity: 0.8;
+}
+
+.hover-accent-bg {
+  transition: background 150ms ease;
+}
+.hover-accent-bg:hover {
+  background: var(--accent-30) !important;
+}
+
+.hover-chevron-action {
+  transition: background 150ms ease, color 150ms ease;
+}
+.hover-chevron-action:hover {
+  background: var(--surface-2) !important;
+  color: var(--accent) !important;
+}
+
+.hover-opacity-70 {
+  transition: opacity 150ms ease;
+}
+.hover-opacity-70:hover {
+  opacity: 0.7;
+}
 
 .task-row-hover {
   transition: border-color 150ms ease;
