@@ -165,13 +165,23 @@ Extract structured data in this exact JSON format (no markdown, just pure JSON):
   "competitive_intel": "Any intelligence gathered about competitors, market, other investors. Include: other deals they are looking at, market sentiment they shared, intel about other funds' activity in the sector.",
   "next_steps": "Clear next steps from both sides, with owners and deadlines if mentioned",
   "enthusiasm_score": 3,
+  "enthusiasm_trajectory": "improving|stalled|declining|first_meeting",
+  "calibration_note": "Brief reason for enthusiasm score given trajectory context",
   "ai_analysis": "2-3 sentence analysis of the meeting quality and investor interest level. Be direct and honest. Note what's missing from the notes that would be valuable to capture.",
   "suggested_status": "met|engaged|in_dd|passed"
 }
 
 Enthusiasm scale: 1=Cold/polite 2=Lukewarm 3=Interested 4=Excited 5=Ready to term sheet
 
-CALIBRATION: If prior enthusiasm scores are provided, calibrate relative to trajectory. A "neutral" response from someone who was previously at 4 is declining (score 2-3). A "neutral" response on a first meeting is standard (score 3). If open objections from prior meetings are addressed in this meeting, that's a positive signal. If they're repeated without resolution, that's a warning.
+ENTHUSIASM CALIBRATION RULES:
+- First meeting (no prior scores): score purely on meeting signals. 3 = baseline interested.
+- Returning meetings (prior scores exist): score relative to trajectory direction.
+  * IMPROVING trajectory (score rising): a neutral meeting is a stall, score same or -1 from prior.
+  * DECLINING trajectory (score dropping): even a "fine" meeting is a red flag if no active re-engagement. Score 2 unless strong positive signals.
+  * STALLED trajectory (same score ×2+ meetings): only give higher score if new concrete commitments emerge.
+- Open objections from prior meetings addressed here = +1 signal. Same objections repeated without resolution = -1 signal.
+- Set "enthusiasm_trajectory" to: "improving" (score > prior), "stalled" (score == prior), "declining" (score < prior), or "first_meeting".
+- Set "calibration_note" to a brief 1-sentence reason for your score choice given the trajectory context.
 
 Be rigorous. Don't infer enthusiasm that isn't there. If notes are sparse, flag what's missing. Empty arrays and empty strings are preferred over fabricated data.
 Only count explicit objections (pushback, concern, disagreement), not questions or requests for information.
