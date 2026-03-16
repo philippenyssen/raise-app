@@ -93,6 +93,7 @@ export default function ForecastPage() {
       <div className="flex-1 p-6 page-content" style={{ maxWidth: '1400px', margin: '0 auto' }}>
         <div className="flex items-center gap-3" style={{ marginBottom: 'var(--space-8)' }}>
           <div className="skeleton" style={{ width: '200px', height: '32px' }} /></div>
+        <p className="text-xs" style={{ color: 'var(--text-muted)', marginBottom: 'var(--space-3)' }}>Calculating close probabilities and timelines...</p>
         <div className="card skeleton" style={{ height: '120px', marginBottom: 'var(--space-6)' }} />
         <div className="grid grid-cols-3 gap-4" style={mbSpace6}>
           {[1, 2, 3].map(i => (

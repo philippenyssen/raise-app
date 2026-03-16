@@ -154,6 +154,7 @@ export default function AnalyticsPage() {
     return (
       <div className="space-y-6 page-content">
         <div className="skeleton" style={{ height: '28px', width: '250px' }} />
+        <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Computing pipeline analytics...</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {[1,2,3,4].map(i => (
             <div key={i} className="skeleton" style={{ height: '96px', borderRadius: 'var(--radius-xl)' }} />

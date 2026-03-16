@@ -775,6 +775,7 @@ export default function FocusPage() {
     return (
       <div className="space-y-6">
         <div className="skeleton" style={{ height: '32px', width: '192px' }} />
+        <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Ranking investors by priority...</p>
         <div className="grid grid-cols-4 gap-3">
           {[...Array(4)].map((_, i) => (
             <div key={i} className="skeleton" style={{ height: '80px', borderRadius: 'var(--radius-lg)' }} />
