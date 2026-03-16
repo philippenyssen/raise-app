@@ -249,21 +249,24 @@ export function buildEnrichedProfile(
                 linkedin: person.linkedin || '',
                 email: person.email || '',
                 notable_deals: person.notable_deals || '',
-                source: result.source_id,});
+                source: result.source_id,
+                confidence: field.confidence,});
             } catch {
               console.warn(`[ENRICH_PARSE] ${result.source_id} partner: ${field.field_value.slice(0, 80)}`);
               profile.partners.push({
                 name: field.field_value,
                 title: '',
                 focus: '',
-                source: result.source_id,});
+                source: result.source_id,
+                confidence: field.confidence,});
             }}
           if (field.field_name === 'ceo' || field.field_name === 'founder') {
             profile.partners.push({
               name: field.field_value,
               title: field.field_name === 'ceo' ? 'CEO' : 'Founder',
               focus: '',
-              source: result.source_id,});
+              source: result.source_id,
+              confidence: field.confidence,});
           }
           break;
 
@@ -277,11 +280,13 @@ export function buildEnrichedProfile(
                 amount: inv.amount,
                 date: inv.date,
                 sector: inv.sector,
-                source: result.source_id,});
+                source: result.source_id,
+                confidence: field.confidence,});
             } catch {
               profile.enriched_investments.push({
                 company: field.field_value,
-                source: result.source_id,});
+                source: result.source_id,
+                confidence: field.confidence,});
             }}
           break;
 

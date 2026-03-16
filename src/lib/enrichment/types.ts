@@ -141,6 +141,7 @@ export interface EnrichedInvestorProfile {
     email?: string;
     notable_deals?: string;
     source: EnrichmentSourceId;
+    confidence?: number;
   }[];
 
   // Portfolio (from enrichment, separate from manually-entered investor_portfolio)
@@ -151,6 +152,7 @@ export interface EnrichedInvestorProfile {
     date?: string;
     sector?: string;
     source: EnrichmentSourceId;
+    confidence?: number;
   }[];
 
   // Regulatory

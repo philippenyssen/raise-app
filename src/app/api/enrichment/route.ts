@@ -259,13 +259,14 @@ export async function POST(req: NextRequest) {
           await updateInvestor(investor.id, updates);
         }
 
-        // Auto-create partner records
+        // Auto-create partner records (confidence gate: ≥0.7)
+        const MIN_PARTNER_CONFIDENCE = 0.7;
         if (profile.partners.length > 0) {
           const existingPartners = await getInvestorPartners(investor.id);
           const existingNames = new Set(existingPartners.map(p => p.name.toLowerCase()));
 
           for (const partner of profile.partners) {
-            if (!existingNames.has(partner.name.toLowerCase())) {
+            if (!existingNames.has(partner.name.toLowerCase()) && (partner.confidence ?? 1) >= MIN_PARTNER_CONFIDENCE) {
               await createInvestorPartner({
                 investor_id: investor.id,
                 name: partner.name,
@@ -277,10 +278,13 @@ export async function POST(req: NextRequest) {
                 background: '',
                 relevance_to_us: '',
                 source: partner.source || '',});
+            } else if (!existingNames.has(partner.name.toLowerCase())) {
+              console.warn(`[ENRICH_SKIP] Low confidence (${(partner.confidence ?? 0).toFixed(2)}) partner "${partner.name}" for ${investor.name}`);
             }}
         }
 
-        // Auto-create portfolio records (fuzzy dedup by normalized name)
+        // Auto-create portfolio records (confidence gate: ≥0.65, fuzzy dedup)
+        const MIN_PORTFOLIO_CONFIDENCE = 0.65;
         if (profile.enriched_investments.length > 0) {
           const norm = (s: string) => s.toLowerCase().replace(/[^\w]/g, '');
           const existingPortfolio = await getInvestorPortfolio(investor.id);
@@ -289,7 +293,7 @@ export async function POST(req: NextRequest) {
 
           for (const inv of profile.enriched_investments.slice(0, 20)) {
             const key = inv.company ? norm(inv.company) : '';
-            if (key && !existingCompanies.has(key) && !created.has(key)) {
+            if (key && !existingCompanies.has(key) && !created.has(key) && (inv.confidence ?? 1) >= MIN_PORTFOLIO_CONFIDENCE) {
               created.add(key);
               await createPortfolioCo({
                 investor_id: investor.id,
