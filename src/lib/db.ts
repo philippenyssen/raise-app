@@ -735,6 +735,7 @@ export async function deleteInvestor(id: string) {
 
 // Meetings
 export async function getMeetings(investorId?: string, limit = 200, offset = 0): Promise<Meeting[]> {
+  limit = Math.min(Math.max(1, limit), 2000);
   await ensureInitialized();
   if (investorId) {
     const result = await getClient().execute({
@@ -882,7 +883,7 @@ export interface DocumentVersion {
 
 export async function getAllDocuments(): Promise<Document[]> {
   await ensureInitialized();
-  const result = await getClient().execute('SELECT * FROM documents ORDER BY updated_at DESC');
+  const result = await getClient().execute('SELECT * FROM documents ORDER BY updated_at DESC LIMIT 500');
   return result.rows as unknown as Document[];
 }
 

@@ -75,7 +75,7 @@ export async function GET() {
 
     const today = todayStr();
     const todayMeetings = allMeetings
-      .filter(m => m.date.startsWith(today))
+      .filter(m => m.date?.startsWith(today))
       .map(m => {
         const objections = parseJsonSafe<Array<{ text: string }>>(m.objections, []);
         const lastObjection = objections.length > 0 ? objections[objections.length - 1].text : null;
@@ -197,6 +197,7 @@ export async function GET() {
     const msPerDay = 1000 * 60 * 60 * 24;
     const meetingsByInvestor: Record<string, string> = {};
     for (const m of allMeetings) {
+      if (!m.date) continue;
       if (!meetingsByInvestor[m.investor_id] || m.date > meetingsByInvestor[m.investor_id]) {
         meetingsByInvestor[m.investor_id] = m.date;
       }}
