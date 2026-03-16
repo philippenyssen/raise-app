@@ -108,5 +108,5 @@ export async function PUT(req: NextRequest) {
   }
 
   emitContextChange('objection_updated', `Objection ${id} response: ${effectiveness || 'updated'}`);
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true }, { headers: { 'Cache-Control': 'no-store' } });
 }

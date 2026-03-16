@@ -821,11 +821,20 @@ export async function GET() {
     const investors = investorRows.rows as unknown as Investor[];
     const { targetEquityM, targetCloseDate } = raiseConfig;
 
-    // Run all 4 layers in parallel where possible
+    // Run all 4 layers in parallel with graceful fallbacks
     const [overnight, criticalPath, processHealth] = await Promise.all([
-      computeOvernightChanges(db),
-      computeCriticalPath(db, investors, allMeetings, targetEquityM, targetCloseDate),
-      computeProcessHealth(db, investors, allMeetings),]);
+      computeOvernightChanges(db).catch(e => {
+        console.error('[PULSE_OVERNIGHT]', e instanceof Error ? e.message : e);
+        return { statusChanges: [], newMeetings: 0, meetingNames: [] as string[], tasksCompleted: 0, newTasks: 0, newAccelerations: 0, activityFeed: [] as string[] } as Awaited<ReturnType<typeof computeOvernightChanges>>;
+      }),
+      computeCriticalPath(db, investors, allMeetings, targetEquityM, targetCloseDate).catch(e => {
+        console.error('[PULSE_CRITICAL_PATH]', e instanceof Error ? e.message : e);
+        return { topFocus: [], topAccelerations: [] } as Awaited<ReturnType<typeof computeCriticalPath>>;
+      }),
+      computeProcessHealth(db, investors, allMeetings).catch(e => {
+        console.error('[PULSE_PROCESS_HEALTH]', e instanceof Error ? e.message : e);
+        return { funnel: {}, overdueFollowups: 0, openDocumentFlags: 0, dataQualityPct: 0, activeInvestors: 0, totalMeetings: 0, meetingsThisWeek: 0, health: 'red' } as Awaited<ReturnType<typeof computeProcessHealth>>;
+      }),]);
 
     const convictionPulse = computeConvictionPulse(investors, allMeetings);
 
