@@ -6375,7 +6375,7 @@ export async function saveEnrichmentRecords(records: {
   const stmts = records.map(record => ({
     sql: `INSERT OR REPLACE INTO enrichment_records (id, investor_id, source_id, field_name, field_value, category, confidence, source_url, fetched_at, stale_after)
           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    args: [crypto.randomUUID(), record.investor_id, record.source_id, record.field_name, record.field_value, record.category, record.confidence, record.source_url || '', record.fetched_at, staleDate],
+    args: [crypto.randomUUID(), record.investor_id, record.source_id, record.field_name, record.field_value, record.category, Math.max(0, Math.min(1, record.confidence)), record.source_url || '', record.fetched_at, staleDate],
   }));
   await db.batch(stmts);
 }
