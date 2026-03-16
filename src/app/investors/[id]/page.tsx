@@ -1020,7 +1020,28 @@ export default function InvestorDetailPage() {
       <EnrichmentStatusCard
         status={enrichmentStatus}
         enriching={enriching}
-        onEnrich={triggerEnrichment} />
+        onEnrich={triggerEnrichment}
+        onRefreshStale={async () => {
+          setEnriching(true);
+          try {
+            const res = await fetch('/api/enrichment', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ action: 'refresh_stale', investor_id: id, auto_apply: true }),
+            });
+            if (res.ok) {
+              const data = await res.json();
+              toast(`Refreshed ${data.stale_sources_refreshed?.length || 0} source(s), ${data.new_fields || 0} fields updated`);
+              invalidateCache(`/api/enrichment?action=status&investor_id=${id}`);
+              invalidateCache(`/api/enrichment?action=records&investor_id=${id}`);
+              const statusRes = await cachedFetch(`/api/enrichment?action=status&investor_id=${id}`, { skipCache: true });
+              if (statusRes.ok) setEnrichmentStatus(await statusRes.json());
+              const recRes = await cachedFetch(`/api/enrichment?action=records&investor_id=${id}`, { skipCache: true });
+              if (recRes.ok) setEnrichmentRecords(await recRes.json());
+            } else { toast('Failed to refresh stale data', 'error'); }
+          } catch { toast('Failed to refresh stale data', 'error'); }
+          setEnriching(false);
+        }} />
 
       {/* Intelligence Score */}
       {score && <InvestorScorePanel score={score} loading={scoreLoading} onRefresh={fetchScore} investorId={id} />}
@@ -1671,10 +1692,12 @@ function EnrichmentStatusCard({
   status,
   enriching,
   onEnrich,
+  onRefreshStale,
 }: {
   status: EnrichmentStatus | null;
   enriching: boolean;
   onEnrich: () => void;
+  onRefreshStale?: () => void;
 }) {
   const [showProviders, setShowProviders] = useState(false);
 
@@ -1742,14 +1765,24 @@ function EnrichmentStatusCard({
                   transition: 'width 300ms ease',
                 }} /></div></div>
 
-          {/* Stale warning */}
+          {/* Stale warning + refresh */}
           {status.stale_count > 0 && (
             <div
               className="flex items-center gap-2 rounded-lg px-3 py-2 mb-4"
               style={{ background: 'var(--warning-muted)' }}>
               <AlertTriangle className="w-3 h-3 shrink-0" style={textTertiary} />
-              <span className="text-xs" style={textTertiary}>
-                {status.stale_count} field{status.stale_count !== 1 ? 's are' : ' is'} stale and may need refreshing</span></div>
+              <span className="text-xs flex-1" style={textTertiary}>
+                {status.stale_count} field{status.stale_count !== 1 ? 's are' : ' is'} stale and may need refreshing</span>
+              {onRefreshStale && (
+                <button
+                  className="btn btn-secondary btn-sm flex items-center gap-1"
+                  disabled={enriching}
+                  onClick={onRefreshStale}
+                  style={{ fontSize: 'var(--font-size-xs)', whiteSpace: 'nowrap' }}>
+                  {enriching ? <Loader2 className="w-3 h-3 animate-spin" /> : <RefreshCw className="w-3 h-3" />}
+                  Refresh</button>
+              )}
+            </div>
           )}
 
           {/* Provider toggle */}

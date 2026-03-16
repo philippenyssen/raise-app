@@ -375,7 +375,75 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ results, total: results.length });
     }
 
-    return NextResponse.json({ error: 'Invalid action. Use: enrich, bulk_enrich' }, { status: 400 });
+    // Refresh stale enrichment data for an investor
+    if (action === 'refresh_stale' && investor_id) {
+      const investor = await getInvestor(investor_id);
+      if (!investor) return NextResponse.json({ error: 'Investor not found' }, { status: 404 });
+
+      // Find which sources have stale data
+      const records = await getEnrichmentRecords(investor_id);
+      const now = new Date().toISOString();
+      const staleRecords = records.filter(r => r.stale_after && r.stale_after < now);
+
+      if (staleRecords.length === 0) {
+        return NextResponse.json({ status: 'fresh', message: 'No stale data to refresh', stale_count: 0 });
+      }
+
+      // Find unique stale sources to re-run
+      const staleSources = [...new Set(staleRecords.map(r => r.source_id))] as EnrichmentSourceId[];
+
+      // Delete stale records first
+      for (const sourceId of staleSources) {
+        await deleteEnrichmentRecords(investor_id, sourceId);
+      }
+
+      // Re-enrich with only stale sources
+      const existingData: Record<string, string> = {};
+      for (const key of Object.keys(investor) as (keyof Investor)[]) {
+        const val = investor[key];
+        if (typeof val === 'string' && val) existingData[key] = val;
+      }
+
+      const result = await enrichInvestor(investor.name, existingData, { sources: staleSources });
+
+      const allFields = result.results.flatMap(r =>
+        r.fields.map(f => ({
+          investor_id: investor.id,
+          source_id: r.source_id,
+          field_name: f.field_name,
+          field_value: f.field_value,
+          category: f.category,
+          confidence: f.confidence,
+          source_url: f.source_url || '',
+          fetched_at: r.fetched_at,
+        })));
+
+      if (allFields.length > 0) {
+        await saveEnrichmentRecords(allFields);
+      }
+
+      // Auto-apply refreshed data
+      if (auto_apply !== false) {
+        const profile = buildEnrichedProfile(investor.id, investor.name, result.results);
+        const updates = mergeEnrichmentToInvestor(profile, existingData);
+        if (Object.keys(updates).length > 0) {
+          await updateInvestor(investor.id, updates);
+        }
+      }
+
+      emitContextChange('investor_updated', `Refreshed ${staleSources.length} stale sources for ${investor.name}`);
+
+      return NextResponse.json({
+        status: 'refreshed',
+        stale_sources_refreshed: staleSources,
+        new_fields: result.total_fields,
+        sources_succeeded: result.sources_succeeded,
+        sources_failed: result.sources_failed,
+        duration_ms: result.duration_ms,
+      });
+    }
+
+    return NextResponse.json({ error: 'Invalid action. Use: enrich, bulk_enrich, refresh_stale' }, { status: 400 });
   } catch (error) {
     console.error('[ENRICHMENT_POST]', error instanceof Error ? error.message : error);
     return NextResponse.json({ error: 'Enrichment operation failed' }, { status: 500 });
