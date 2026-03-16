@@ -66,6 +66,7 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
   const [colWidths, setColWidths] = useState<Record<number, number>>({});
   const [resizingCol, setResizingCol] = useState<{ col: number; startX: number; startWidth: number } | null>(null);
   const [showShortcuts, setShowShortcuts] = useState(false);
+  const [sortCol, setSortCol] = useState<{ col: number; asc: boolean } | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 
@@ -368,6 +369,24 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
     return () => { window.removeEventListener('mousemove', handleMouseMove); window.removeEventListener('mouseup', handleMouseUp); };
   }, [resizingCol]);
 
+  // Sorted row order
+  const sortedRowIndices = useMemo(() => {
+    const indices = Array.from({ length: rows }, (_, i) => i);
+    if (!sortCol) return indices;
+    return indices.sort((a, b) => {
+      const refA = cellRefStr(a, sortCol.col);
+      const refB = cellRefStr(b, sortCol.col);
+      const cellA = cells[refA];
+      const cellB = cells[refB];
+      const valA = cellA?.v ?? '';
+      const valB = cellB?.v ?? '';
+      let cmp = 0;
+      if (typeof valA === 'number' && typeof valB === 'number') cmp = valA - valB;
+      else cmp = String(valA).localeCompare(String(valB));
+      return sortCol.asc ? cmp : -cmp;
+    });
+  }, [sortCol, cells, rows]);
+
   // Auto-scroll to selected cell when navigating with arrows
   useEffect(() => {
     if (!selectedCell || !gridRef.current) return;
@@ -477,7 +496,15 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
                       border: '1px solid var(--border-subtle)',
                       color: isHighlighted ? 'var(--accent)' : 'var(--text-muted)',
                     }}>
-                    {colLabel(ci)}
+                    <span
+                      onClick={() => setSortCol(prev => prev?.col === ci ? { col: ci, asc: !prev.asc } : { col: ci, asc: true })}
+                      style={{ cursor: 'pointer', userSelect: 'none' }}
+                    >
+                      {colLabel(ci)}
+                      {sortCol?.col === ci && (
+                        <span style={{ marginLeft: '2px', fontSize: '8px' }}>{sortCol.asc ? '▲' : '▼'}</span>
+                      )}
+                    </span>
                     <div
                       onMouseDown={(e) => {
                         e.preventDefault();
@@ -496,7 +523,7 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
                 );
               })}</tr></thead>
           <tbody>
-            {Array.from({ length: rows }, (_, ri) => {
+            {sortedRowIndices.map((ri) => {
               const isRowHighlighted = selectedParsed?.row === ri;
               return (
               <tr key={ri}>
