@@ -669,3 +669,4 @@ db4500e	100	100	0	pass	Workflow+Automation	perf: extract 6 style constants from 
 680	2026-03-16T12:36:22Z	enrich	enrich: skip empty/null fields + log parse failures in engine	100	-	DataEnrichment
 681	2026-03-16T12:37:45Z	workflow	workflow: context-aware empty state in timeline filter view	100	-	Workflow
 682	2026-03-16T12:38:56Z	copy	copy: clearer model + skills empty states	100	-	Copywriting
+683	2026-03-16T12:40:33Z	ops	ops: validate due_date in tasks POST to prevent invalid dates	100	-	Reliability+Ops
