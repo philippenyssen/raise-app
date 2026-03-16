@@ -28,6 +28,13 @@ const TYPE_LABELS: Record<string, string> = {
 const docBtnBase: React.CSSProperties = { padding: 'var(--space-1) var(--space-2)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-sm)', border: 'none', cursor: 'pointer', display: 'block', width: '100%' };
 const genBtnBase: React.CSSProperties = { padding: 'var(--space-1) var(--space-2)', borderRadius: 'var(--radius-md)', ...labelMuted, border: 'none' };
 const typeGroupLabel = { fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-muted)', padding: '0 var(--space-2)', marginBottom: 'var(--space-1)' } as const;
+const docBtnActive: React.CSSProperties = { ...docBtnBase, background: 'var(--surface-2)', color: 'var(--text-primary)' };
+const genBtnEnabled: React.CSSProperties = { ...genBtnBase, opacity: 1, cursor: 'pointer' };
+const genBtnDisabled: React.CSSProperties = { ...genBtnBase, opacity: 0.5, cursor: 'default' };
+const sectionDividerStyle: React.CSSProperties = { padding: 'var(--space-2)', borderTop: '1px solid var(--border-default)' };
+const closeSidebarBtnStyle: React.CSSProperties = { background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' };
+const sidebarOpenBtnStyle: React.CSSProperties = { background: 'transparent', border: 'none', borderRightStyle: 'solid', borderRightWidth: '1px', borderRightColor: 'var(--border-default)', cursor: 'pointer' };
+const newDocLinkStyle: React.CSSProperties = { padding: 'var(--space-2) var(--space-3)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-sm)', textDecoration: 'none' };
 
 export default function WorkspacePage() {
   const { toast } = useToast();
@@ -232,12 +239,7 @@ export default function WorkspacePage() {
               onClick={() => setSidebarOpen(false)}
               className="icon-delete"
               aria-label="Close sidebar"
-              style={{
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center', }}>
+              style={closeSidebarBtnStyle}>
               <ChevronRight className="w-4 h-4 rotate-180" /></button></div>
           <div
             className="flex-1 overflow-y-auto space-y-3"
@@ -253,7 +255,7 @@ export default function WorkspacePage() {
                       key={doc.id}
                       onClick={() => selectDoc(doc)}
                       className={`w-full text-left ${isSelected ? '' : 'sidebar-link'}`}
-                      style={{ ...docBtnBase, background: isSelected ? 'var(--surface-2)' : undefined, color: isSelected ? 'var(--text-primary)' : undefined }}>
+                      style={isSelected ? docBtnActive : docBtnBase}>
                       <div className="truncate">{doc.title}</div>
                     </button>);
                 })}</div>
@@ -267,7 +269,7 @@ export default function WorkspacePage() {
           {/* Generate section */}
           <div
             className="space-y-1"
-            style={{ padding: 'var(--space-2)', borderTop: '1px solid var(--border-default)' }}>
+            style={sectionDividerStyle}>
             <div style={typeGroupLabel}>
               Generate from Data Room</div>
             {['teaser', 'exec_summary', 'memo', 'deck', 'dd_memo'].map(type => {
@@ -279,7 +281,7 @@ export default function WorkspacePage() {
                   onClick={() => generateDeliverable(type)}
                   disabled={isDisabled}
                   className="w-full flex items-center gap-2 sidebar-link"
-                  style={{ ...genBtnBase, opacity: isDisabled ? 0.5 : 1, cursor: isDisabled ? 'default' : 'pointer' }}>
+                  style={isDisabled ? genBtnDisabled : genBtnEnabled}>
                   {generating === type ? (
                     <Loader2
                       className="w-3.5 h-3.5 animate-spin"
@@ -290,15 +292,11 @@ export default function WorkspacePage() {
                   <span className="truncate">{exists ? 'Regenerate' : 'Generate'} {TYPE_LABELS[type] || type}</span>
                 </button>);
             })}</div>
-          <div style={{ padding: 'var(--space-2)', borderTop: '1px solid var(--border-default)' }}>
+          <div style={sectionDividerStyle}>
             <a
               href="/documents/new"
               className="flex items-center gap-2 sidebar-link"
-              style={{
-                padding: 'var(--space-2) var(--space-3)',
-                borderRadius: 'var(--radius-md)',
-                fontSize: 'var(--font-size-sm)',
-                textDecoration: 'none', }}>
+              style={newDocLinkStyle}>
               <Plus className="w-4 h-4" /> New Document</a></div></div>
       )}
 
@@ -308,13 +306,7 @@ export default function WorkspacePage() {
           aria-label="Open document sidebar"
           title="Open sidebar"
           className="w-8 shrink-0 flex items-center justify-center btn-surface"
-          style={{
-            background: 'transparent',
-            border: 'none',
-            borderRightStyle: 'solid',
-            borderRightWidth: '1px',
-            borderRightColor: 'var(--border-default)',
-            cursor: 'pointer', }}>
+          style={sidebarOpenBtnStyle}>
           <ChevronRight className="w-4 h-4" style={stTextMuted} aria-hidden="true" /></button>
       )}
 

@@ -29,6 +29,10 @@ const sheetTabActive: React.CSSProperties = { ...sheetTabBase, backgroundColor: 
 const sheetTabInactive: React.CSSProperties = { ...sheetTabBase, color: 'var(--text-muted)' };
 const saveBtnDirty: React.CSSProperties = { backgroundColor: 'var(--accent)', color: 'var(--text-primary)' };
 const saveBtnClean: React.CSSProperties = { backgroundColor: 'var(--surface-2)', color: 'var(--text-muted)' };
+const sheetHeaderStyle: React.CSSProperties = { borderBottom: '1px solid var(--border-default)', backgroundColor: 'var(--surface-0)' };
+const loadingSkeletonTabStyle: React.CSSProperties = { height: '40px', marginBottom: 'var(--space-2)' };
+const loadingSkeletonMainStyle: React.CSSProperties = { borderRadius: 'var(--radius-md)' };
+const initBtnStyle: React.CSSProperties = { backgroundColor: 'var(--accent)', color: 'var(--text-primary)' };
 
 // Default sheets for a Series C financial model
 // Blue font = input assumptions, formulas flow through automatically
@@ -335,8 +339,8 @@ export default function ModelPage() {
   if (loading) {
     return (
       <div className="h-[calc(100vh-4rem)] flex flex-col">
-        <div className="skeleton" style={{ height: '40px', marginBottom: 'var(--space-2)' }} />
-        <div className="flex-1 skeleton" style={{ borderRadius: 'var(--radius-md)' }} />
+        <div className="skeleton" style={loadingSkeletonTabStyle} />
+        <div className="flex-1 skeleton" style={loadingSkeletonMainStyle} />
       </div>);
   }
 
@@ -345,7 +349,7 @@ export default function ModelPage() {
       {/* Sheet tabs + toolbar */}
       <div
         className="shrink-0 flex items-center"
-        style={{ borderBottom: '1px solid var(--border-default)', backgroundColor: 'var(--surface-0)' }}>
+        style={sheetHeaderStyle}>
         <div className="flex-1 flex items-center overflow-x-auto">
           {sheets.map(sheet => {
             const isActive = sheet.id === activeSheetId;
@@ -393,7 +397,7 @@ export default function ModelPage() {
             <button
               onClick={initializeDefaultSheets}
               className="px-3 py-1.5 rounded-lg text-xs font-normal transition-colors flex items-center gap-1.5"
-              style={{ backgroundColor: 'var(--accent)', color: 'var(--text-primary)' }}
+              style={initBtnStyle}
               onMouseEnter={e => {
                 (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--accent-muted)';
               }}
