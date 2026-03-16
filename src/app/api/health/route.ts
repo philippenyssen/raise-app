@@ -43,7 +43,9 @@ export async function GET() {
     const now = Date.now();
     const timeInStage: Record<string, { avg: number; count: number }> = {};
     for (const inv of investors) {
-      const days = Math.floor((now - new Date(inv.updated_at).getTime()) / 864e5);
+      const updatedTime = new Date(inv.updated_at).getTime();
+      if (isNaN(updatedTime)) continue;
+      const days = Math.floor((now - updatedTime) / 864e5);
       if (!timeInStage[inv.status]) timeInStage[inv.status] = { avg: 0, count: 0 };
       timeInStage[inv.status].avg += days;
       timeInStage[inv.status].count += 1;
