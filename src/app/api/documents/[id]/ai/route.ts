@@ -14,7 +14,11 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const section = body.section as string | undefined;
   const instruction = body.instruction as string | undefined;
 
-  const doc = await getDocument(id);
+  let doc;
+  try { doc = await getDocument(id); } catch (err) {
+    console.error('[DOC_AI_DB]', err instanceof Error ? err.message : err);
+    return NextResponse.json({ error: 'Database error fetching document' }, { status: 500 });
+  }
   if (!doc) return NextResponse.json({ error: 'Document not found' }, { status: 404 });
 
   try {
