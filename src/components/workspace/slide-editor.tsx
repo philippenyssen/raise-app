@@ -279,8 +279,19 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
     const handleMouseMove = (e: MouseEvent) => {
       const dx = ((e.clientX - draggingElement.startX) / rect.width) * 100;
       const dy = ((e.clientY - draggingElement.startY) / rect.height) * 100;
-      const newX = Math.max(0, Math.min(95, draggingElement.origX + dx));
-      const newY = Math.max(0, Math.min(95, draggingElement.origY + dy));
+      let newX = Math.max(0, Math.min(95, draggingElement.origX + dx));
+      let newY = Math.max(0, Math.min(95, draggingElement.origY + dy));
+
+      // Snap to center guides (5% snap zone)
+      const centerX = 50;
+      const centerY = 50;
+      if (Math.abs(newX - centerX) < 3) newX = centerX;
+      if (Math.abs(newY - centerY) < 3) newY = centerY;
+      // Snap to edges
+      if (newX < 3) newX = 0;
+      if (newY < 3) newY = 0;
+      if (newX > 92) newX = 95;
+      if (newY > 92) newY = 95;
 
       const updated = slides.map((slide, i) => {
         if (i !== activeIdx) return slide;
@@ -549,6 +560,13 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
         {/* Slide canvas */}
         <div className="flex-1 flex items-center justify-center overflow-auto" style={{ padding: 'var(--space-6)' }}>
           <div ref={canvasRef} style={{ ...slideCanvasStyle, background: activeSlide?.background || 'white', transform: `scale(${canvasZoom / 100})`, transformOrigin: 'center center' }}>
+            {/* Alignment guides shown during drag */}
+            {draggingElement && (
+              <>
+                <div style={{ position: 'absolute', left: '50%', top: 0, bottom: 0, width: '1px', background: 'rgba(59,130,246,0.3)', pointerEvents: 'none', zIndex: 5 }} />
+                <div style={{ position: 'absolute', top: '50%', left: 0, right: 0, height: '1px', background: 'rgba(59,130,246,0.3)', pointerEvents: 'none', zIndex: 5 }} />
+              </>
+            )}
             {activeSlide && activeSlide.elements.map(el => {
               const style = getElementStyle(el);
               const isEditing = editingElement === el.id;

@@ -515,11 +515,19 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
                   const isEditing = ref === editingCell;
                   const inRange = isInRange(ref);
 
-                  const cellColor = !cell
-                    ? 'var(--text-muted)'
-                    : cell.f
-                      ? 'var(--accent)'
-                      : 'var(--text-secondary)';
+                  // Conditional formatting: negative numbers in red, formulas in accent
+                  let cellColor = 'var(--text-muted)';
+                  if (cell) {
+                    if (cell.f) {
+                      const computed = getComputedValue(ref);
+                      if (typeof computed === 'number' && computed < 0) cellColor = 'var(--danger)';
+                      else cellColor = 'var(--accent)';
+                    } else if (cell.t === 'n' && typeof cell.v === 'number' && cell.v < 0) {
+                      cellColor = 'var(--danger)';
+                    } else {
+                      cellColor = 'var(--text-secondary)';
+                    }
+                  }
 
                   return (
                     <td
