@@ -430,6 +430,7 @@ export default function PipelinePage() {
           { label: 'In DD', value: String(inDdCount) },
           { label: 'Term Sheets', value: String(termSheetCount) },
           { label: 'Closed', value: String(closedCount), color: 'var(--text-secondary)' },
+          { label: 'Passed', value: String(passedCount), color: passedCount > 0 ? 'var(--text-muted)' : undefined },
           { label: 'Avg Days', value: `${avgDays}d`, color: avgDays > 60 ? 'var(--warning)' : undefined },
           { label: 'Conversion', value: `${conversionRate}%`, color: closedCount > 0 ? 'var(--success)' : undefined },];
 
