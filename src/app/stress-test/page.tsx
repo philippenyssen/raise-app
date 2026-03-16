@@ -250,7 +250,7 @@ export default function StressTestPage() {
         {/* Close Probability Gauge */}
         <div className="card rounded-xl p-5 flex flex-col items-center justify-center">
           <div className=" tracking-wider" style={labelMuted10}>Close Probability</div>
-          <div className="text-5xl font-normal tabular-nums" style={{ ...probColorStyle(data.closeProbability), marginTop: '0.5rem' }}>
+          <div className="text-5xl font-normal tabular-nums" style={{ ...probColorStyle(data.closeProbability), marginTop: 'var(--space-2)' }}>
             {data.closeProbability}%</div>
           <div className="text-xs mt-1" style={stTextMuted}>of hitting EUR {formatEuro(data.target)}</div>
           <div className="w-full h-2 rounded-full mt-3 overflow-hidden" style={stSurface2}>

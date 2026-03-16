@@ -275,7 +275,7 @@ export default function NetworkPage() {
                             <div
                               className={`flex items-center justify-between rounded-md p-3 ${isBottleneck ? '' : 'link-row-hover'}`}
                               style={{
-                                marginLeft: '24px',
+                                marginLeft: 'var(--space-6)',
                                 background: isBottleneck ? 'var(--warning-muted)' : 'var(--surface-1)',
                                 transition: 'all 0.15s ease', }}>
                               <div className="flex items-center gap-3 min-w-0">

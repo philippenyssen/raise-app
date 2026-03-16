@@ -672,7 +672,7 @@ function SelectedPill({ name, onRemove }: { name: string; onRemove: () => void }
       style={{
         background: 'var(--surface-2)',
         border: '1px solid var(--border-strong)',
-        borderRadius: 9999,
+        borderRadius: 'var(--radius-full)',
         padding: 'var(--space-1) var(--space-3)',
         fontSize: 'var(--font-size-sm)',
         color: 'var(--text-secondary)', }}>
@@ -916,12 +916,12 @@ function DimensionBar({
                 {p.investor.name}</span>
               <div
                 className="flex-1 h-3 overflow-hidden"
-                style={{ background: 'var(--surface-2)', borderRadius: 9999 }}>
+                style={{ background: 'var(--surface-2)', borderRadius: 'var(--radius-full)' }}>
                 <div
                   className="h-full"
                   style={{
                     width: `${score}%`,
-                    borderRadius: 9999,
+                    borderRadius: 'var(--radius-full)',
                     transition: 'width 300ms ease',
                     background: isWinner ? barColors[idx % barColors.length] : 'var(--border-strong)',
                   }} /></div>
