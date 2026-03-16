@@ -128,15 +128,50 @@ function renderSlideContent(slide: Slide, scale: number = 1): React.ReactNode {
   });
 }
 
-function createDefaultSlide(): Slide {
-  return {
-    id: crypto.randomUUID(),
-    layout: 'title_content',
+const slideTemplates: Record<string, { label: string; create: () => Slide }> = {
+  title_content: { label: 'Title + Content', create: () => ({
+    id: crypto.randomUUID(), layout: 'title_content',
     elements: [
       { id: crypto.randomUUID(), type: 'title', content: 'New Slide', x: 5, y: 5, width: 90 },
       { id: crypto.randomUUID(), type: 'body', content: 'Add your content here...', x: 5, y: 25, width: 90 },
     ],
-  };
+  })},
+  title_only: { label: 'Title Only', create: () => ({
+    id: crypto.randomUUID(), layout: 'title',
+    elements: [
+      { id: crypto.randomUUID(), type: 'title', content: 'Section Title', x: 5, y: 35, width: 90, fontSize: '2.5em' },
+      { id: crypto.randomUUID(), type: 'subtitle', content: 'Subtitle goes here', x: 5, y: 55, width: 90 },
+    ],
+  })},
+  two_column: { label: 'Two Column', create: () => ({
+    id: crypto.randomUUID(), layout: 'two_column',
+    elements: [
+      { id: crypto.randomUUID(), type: 'title', content: 'Comparison', x: 5, y: 5, width: 90 },
+      { id: crypto.randomUUID(), type: 'body', content: 'Left column content', x: 5, y: 25, width: 42 },
+      { id: crypto.randomUUID(), type: 'body', content: 'Right column content', x: 52, y: 25, width: 42 },
+    ],
+  })},
+  big_number: { label: 'Big Number', create: () => ({
+    id: crypto.randomUUID(), layout: 'blank',
+    elements: [
+      { id: crypto.randomUUID(), type: 'number', content: '$4.3Bn', x: 10, y: 20, width: 80, fontSize: '4em' },
+      { id: crypto.randomUUID(), type: 'subtitle', content: 'Key metric description', x: 10, y: 60, width: 80 },
+    ],
+  })},
+  bullets: { label: 'Bullet List', create: () => ({
+    id: crypto.randomUUID(), layout: 'title_content',
+    elements: [
+      { id: crypto.randomUUID(), type: 'title', content: 'Key Points', x: 5, y: 5, width: 90 },
+      { id: crypto.randomUUID(), type: 'bullet', content: '- First point\n- Second point\n- Third point\n- Fourth point', x: 5, y: 25, width: 90 },
+    ],
+  })},
+  blank: { label: 'Blank', create: () => ({
+    id: crypto.randomUUID(), layout: 'blank', elements: [],
+  })},
+};
+
+function createDefaultSlide(): Slide {
+  return slideTemplates.title_content.create();
 }
 
 export function SlideEditor({ slides, onChange, editable = true }: SlideEditorProps) {
@@ -148,6 +183,7 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
   const [presenting, setPresenting] = useState(false);
   const [presentIdx, setPresentIdx] = useState(0);
   const [showBgPicker, setShowBgPicker] = useState(false);
+  const [showTemplatePicker, setShowTemplatePicker] = useState(false);
   const [canvasZoom, setCanvasZoom] = useState(100);
   const [draggingElement, setDraggingElement] = useState<{ id: string; startX: number; startY: number; origX: number; origY: number } | null>(null);
   const presentRef = useRef<HTMLDivElement>(null);
@@ -419,23 +455,70 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
           </div>
         ))}
         {editable && (
-          <button
-            onClick={addSlide}
-            className="flex items-center justify-center"
-            style={{
-              aspectRatio: '16/9',
-              border: '1px dashed var(--border-default)',
-              borderRadius: 'var(--radius-md)',
-              color: 'var(--text-muted)',
-              background: 'transparent',
-              cursor: 'pointer',
-              fontSize: 'var(--font-size-xs)',
-            }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--accent)'; (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}
-          >
-            <Plus className="w-4 h-4" />
-          </button>
+          <div className="relative">
+            <button
+              onClick={() => setShowTemplatePicker(!showTemplatePicker)}
+              className="flex items-center justify-center w-full"
+              style={{
+                aspectRatio: '16/9',
+                border: '1px dashed var(--border-default)',
+                borderRadius: 'var(--radius-md)',
+                color: 'var(--text-muted)',
+                background: 'transparent',
+                cursor: 'pointer',
+                fontSize: 'var(--font-size-xs)',
+              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--accent)'; (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)'; (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}
+            >
+              <Plus className="w-4 h-4" />
+            </button>
+            {showTemplatePicker && (
+              <div style={{
+                position: 'absolute',
+                left: '100%',
+                top: 0,
+                marginLeft: '4px',
+                background: 'var(--surface-1)',
+                border: '1px solid var(--border-default)',
+                borderRadius: 'var(--radius-lg)',
+                boxShadow: 'var(--shadow-lg)',
+                padding: 'var(--space-2)',
+                width: '160px',
+                zIndex: 50,
+              }}>
+                <div style={{ fontSize: '10px', color: 'var(--text-muted)', padding: '2px 8px', marginBottom: '4px' }}>Choose layout</div>
+                {Object.entries(slideTemplates).map(([key, tmpl]) => (
+                  <button
+                    key={key}
+                    onClick={() => {
+                      const newSlide = tmpl.create();
+                      const updated = [...slides, newSlide];
+                      onChange(updated);
+                      setActiveIdx(updated.length - 1);
+                      setShowTemplatePicker(false);
+                    }}
+                    style={{
+                      display: 'block',
+                      width: '100%',
+                      textAlign: 'left',
+                      padding: '4px 8px',
+                      fontSize: 'var(--font-size-xs)',
+                      border: 'none',
+                      background: 'transparent',
+                      cursor: 'pointer',
+                      borderRadius: 'var(--radius-sm)',
+                      color: 'var(--text-secondary)',
+                    }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+                  >
+                    {tmpl.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         )}
       </div>
 
