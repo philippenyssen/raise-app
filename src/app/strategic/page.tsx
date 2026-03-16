@@ -16,6 +16,10 @@ import { CopyButton } from '@/components/copy-button';
 const mbSpace1 = { marginBottom: 'var(--space-1)' } as const;
 const fontSmTertiary = { ...stFontSm, fontWeight: 400, ...stTextTertiary } as const;
 const trendValueBase = { fontSize: 'var(--font-size-lg)', fontWeight: 300, fontVariantNumeric: 'tabular-nums' } as const;
+const trendDeltaRow = { fontSize: 'var(--font-size-xs)' } as const;
+const trendStreakLabel = { fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginTop: '2px' } as const;
+const trendAlertWrap = { marginTop: 'var(--space-1)' } as const;
+const trendAlertText = { fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', lineHeight: 1.3 } as const;
 
 // ---------------------------------------------------------------------------
 // Types
@@ -351,21 +355,21 @@ export default function StrategicPage() {
                       'var(--text-primary)',
                   }}>{trend.current}</span></div>
                 <div className="mt-1 space-y-0.5">
-                  <div className="flex justify-between" style={{ fontSize: 'var(--font-size-xs)' }}>
+                  <div className="flex justify-between" style={trendDeltaRow}>
                     <span style={stTextMuted}>7d</span>
                     <span style={{ color: deltaColor(trend.delta7d) }}>
                       {trend.delta7d > 0 ? '+' : ''}{trend.delta7d}%</span></div>
-                  <div className="flex justify-between" style={{ fontSize: 'var(--font-size-xs)' }}>
+                  <div className="flex justify-between" style={trendDeltaRow}>
                     <span style={stTextMuted}>30d</span>
                     <span style={{ color: deltaColor(trend.delta30d) }}>
                       {trend.delta30d > 0 ? '+' : ''}{trend.delta30d}%</span></div>
                   {trend.streak >= 2 && (
-                    <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginTop: '2px' }}>{trend.streak}-day streak</div>
+                    <div style={trendStreakLabel}>{trend.streak}-day streak</div>
                   )}</div>
                 {trend.alert && (
-                  <div className="flex items-start gap-1" style={{ marginTop: 'var(--space-1)' }}>
+                  <div className="flex items-start gap-1" style={trendAlertWrap}>
                     <AlertTriangle className="w-2.5 h-2.5 shrink-0 mt-0.5" style={stTextPrimary} />
-                    <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', lineHeight: 1.3 }}>{trend.alert}</span></div>
+                    <span style={trendAlertText}>{trend.alert}</span></div>
                 )}</div>
             ))}</div></div>
       )}
