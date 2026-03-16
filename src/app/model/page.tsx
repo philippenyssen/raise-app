@@ -11,6 +11,7 @@ import { useToast } from '@/components/toast';
 import { ConfirmModal, InputModal } from '@/components/ui/confirm-modal';
 import { Plus, Save, Table, Trash2 } from 'lucide-react';
 import { stTextTertiary } from '@/lib/styles';
+import { EmptyState } from '@/components/ui/empty-state';
 import { cachedFetch } from '@/lib/cache';
 
 interface ModelSheet {
@@ -438,11 +439,10 @@ export default function ModelPage() {
             }
             defaultSplit={65} />
         ) : (
-          <div className="h-full flex items-center justify-center" style={stTextTertiary}>
-            <div className="text-center space-y-4">
-              <Table className="w-12 h-12 mx-auto" />
-              <p className="text-sm">{sheets.length === 0 ? 'No model yet. Click "Initialize Model" to create default sheets.' : 'Select a sheet to start editing.'}</p>
-            </div></div>
+          <EmptyState
+            icon={Table}
+            title={sheets.length === 0 ? 'No model yet' : 'Select a sheet'}
+            description={sheets.length === 0 ? 'Click "Initialize Model" to create default sheets.' : 'Select a sheet from the left panel to start editing.'} />
         )}</div>
 
       {/* Modals */}

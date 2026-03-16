@@ -8,6 +8,7 @@ import {
 import { fmtDateTime } from '@/lib/format';
 import { relativeTime } from '@/lib/time';
 import { skelCardLg, stAccent, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
+import { EmptyState } from '@/components/ui/empty-state';
 
 interface IntelligenceCheck { name: string; status: 'pass' | 'fail' | 'warn'; detail: string; }
 
@@ -88,10 +89,8 @@ export default function HealthPage() {
     [data?.timeInStage]);
 
   if (healthError) return (
-    <div className="page-content space-y-6 text-center py-12">
-      <AlertTriangle className="w-10 h-10 mx-auto" style={{ color: 'var(--danger)' }} />
-      <p style={stTextMuted}>{healthError}</p>
-      <button onClick={fetchHealth} className="btn btn-secondary btn-sm">Retry</button>
+    <div className="page-content">
+      <EmptyState icon={AlertTriangle} title="Could not load health data" description={healthError} action={{ label: 'Retry', onClick: fetchHealth }} />
     </div>);
 
   if (!data) return (
