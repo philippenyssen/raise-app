@@ -773,3 +773,4 @@ b4a0052	100	100	0	keep	product	Dashboard strategic overhaul: AI narrative brief 
 785	2026-03-16T18:43:41Z	Data Enrichment	confidence gating on auto-create partners (≥0.7) and portfolio companies (≥0.65) — propagate confidence from field to partner/investment objects, warn on skipped low-confidence entries	3 files changed	build pass
 786	2026-03-16T18:46:10Z	Workflow & Automation	auto-create post-mortem tasks on passed/dropped status transitions + surface auto-generated tasks in daily briefing urgent actions	2 files changed	build pass
 787	2026-03-16T18:48:04Z	Copywriting	improved meeting capture: error toast with 50-word threshold, placeholder with concrete example input, button labels with AI duration hint	3 files changed	build pass
+788	2026-03-16T18:53:01Z	Competitive Edge	sidebar: add win/loss page to ANALYZE nav section — hidden page now discoverable	src/components/sidebar.tsx	pass
