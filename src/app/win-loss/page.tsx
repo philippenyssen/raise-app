@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
+import Link from 'next/link';
 import { cachedFetch } from '@/lib/cache';
 import { relativeTime } from '@/lib/time';
 import {
@@ -554,6 +555,16 @@ export default function WinLossPage() {
             <p style={textSmMuted}>
               Recommendations will appear as more outcomes are recorded</p>
           )}</div></div>
+
+      {/* Next Actions */}
+      <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap', paddingTop: 'var(--space-2)', borderTop: '1px solid var(--border-subtle)' }}>
+        <Link href="/objections" className="btn btn-secondary btn-sm" style={{ textDecoration: 'none', fontSize: 'var(--font-size-xs)' }}>
+          Refine objection responses</Link>
+        <Link href="/decide" className="btn btn-secondary btn-sm" style={{ textDecoration: 'none', fontSize: 'var(--font-size-xs)' }}>
+          Re-prioritize pipeline</Link>
+        <Link href="/meetings/prep" className="btn btn-secondary btn-sm" style={{ textDecoration: 'none', fontSize: 'var(--font-size-xs)' }}>
+          Prep next meeting</Link>
+      </div>
 
       {/* Footer */}
       <div style={{ ...labelMuted, textAlign: 'right', paddingTop: 'var(--space-2)' }}>
