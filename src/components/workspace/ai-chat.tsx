@@ -196,6 +196,9 @@ function inlineFormat(text: string): React.ReactNode {
   return parts.length === 1 ? parts[0] : <>{parts}</>;
 }
 
+// Per-document message history (persists across document switches)
+const docMessageCache = new Map<string, Message[]>();
+
 export function AIChat({ documentId, documentContent, documentTitle, documentType, onApplyChange }: AIChatProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -205,6 +208,22 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+  const prevDocIdRef = useRef<string | null>(null);
+
+  // Persist messages when switching documents
+  useEffect(() => {
+    // Save current messages for previous doc
+    if (prevDocIdRef.current && prevDocIdRef.current !== documentId && messages.length > 0) {
+      docMessageCache.set(prevDocIdRef.current, messages);
+    }
+    // Load messages for new doc
+    if (documentId && documentId !== prevDocIdRef.current) {
+      const cached = docMessageCache.get(documentId);
+      setMessages(cached || []);
+      setPendingChange(null);
+    }
+    prevDocIdRef.current = documentId;
+  }, [documentId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
