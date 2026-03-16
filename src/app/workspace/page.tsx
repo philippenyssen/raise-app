@@ -12,6 +12,7 @@ import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { DocSummaryRecord as Doc } from '@/lib/types';
 import { FileText, Plus, ChevronRight, Wand2, Loader2 } from 'lucide-react';
 import { labelMuted, stAccent, stTextMuted } from '@/lib/styles';
+import { EmptyState } from '@/components/ui/empty-state';
 
 const TYPE_ORDER = ['teaser', 'exec_summary', 'one_pager', 'exec_brief', 'memo', 'deck', 'dd_memo', 'custom'];
 const TYPE_LABELS: Record<string, string> = {
@@ -257,12 +258,10 @@ export default function WorkspacePage() {
                 })}</div>
             ))}
             {docs.length === 0 && (
-              <div className="text-center space-y-2" style={{ padding: 'var(--space-8) 0' }}>
-                <FileText
-                  className="w-6 h-6 mx-auto"
-                  style={stTextMuted} />
-                <p style={labelMuted}>
-                  No deliverables yet. Generate one below or create a new document.</p></div>
+              <EmptyState
+                icon={FileText}
+                title="No deliverables yet"
+                description="Generate one below or create a new document." />
             )}</div>
           {/* Generate section */}
           <div

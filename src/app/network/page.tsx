@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { cachedFetch } from '@/lib/cache';
+import { EmptyState } from '@/components/ui/empty-state';
 import {
   RefreshCw, AlertTriangle, ArrowRight, Crown,
   TrendingUp, Users, Link2, ChevronDown, ChevronUp, Calendar,
@@ -111,15 +112,11 @@ export default function NetworkPage() {
       <div className="p-6">
         <div className="mb-6">
           <h1 className="page-title">Investor Network</h1></div>
-        <div className="card p-8 flex flex-col items-center gap-3" style={{ textAlign: 'center' }}>
-          <span style={stTextMuted}><Link2 className="w-8 h-8" /></span>
-          <p style={{ color: 'var(--text-secondary)', fontSize: 'var(--font-size-sm)' }}>
-            No network cascades detected. Add investors and log meetings to build cascade effects.</p>
-          <Link
-            href="/investors"
-            className="btn btn-primary btn-sm"
-            style={{ marginTop: '4px' }}>
-            Go to Investors</Link></div>
+        <EmptyState
+          icon={Link2}
+          title="No network cascades detected"
+          description="Add investors and log meetings to build cascade effects."
+          action={{ label: 'Go to Investors', href: '/investors' }} />
       </div>);
   }
 

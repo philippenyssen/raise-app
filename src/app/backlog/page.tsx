@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useToast } from '@/components/toast';
 import { cachedFetch } from '@/lib/cache';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
+import { EmptyState } from '@/components/ui/empty-state';
 import { Plus, Trash2, DollarSign, ShieldCheck, AlertTriangle, TrendingUp, FileText } from 'lucide-react';
 import { stAccent, stSurface1, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
@@ -217,11 +218,10 @@ export default function BacklogPage() {
 
       {/* Commitments table */}
       {commitments.length === 0 ? (
-        <div className="rounded-xl p-8 text-center space-y-3">
-          <DollarSign className="w-8 h-8 mx-auto" style={stTextMuted} />
-          <p style={stTextMuted}>No revenue commitments tracked yet.</p>
-          <p className="text-sm" style={stTextTertiary}>Add your contracted backlog to enable auditable drill-down during DD.</p>
-        </div>
+        <EmptyState
+          icon={DollarSign}
+          title="No revenue commitments tracked yet"
+          description="Add your contracted backlog to enable auditable drill-down during DD." />
       ) : (
         <div className="rounded-xl overflow-hidden">
           <table className="w-full text-sm">

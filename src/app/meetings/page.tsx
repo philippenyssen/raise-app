@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { cachedFetch } from '@/lib/cache';
 import Link from 'next/link';
@@ -8,11 +8,13 @@ import type { Meeting } from '@/lib/types';
 import { Search, FileSearch, Calendar, Download, ChevronDown, ChevronRight, Star, CheckCircle2, X, TrendingUp, TrendingDown, Minus, Hash } from 'lucide-react';
 import { fmtDateTime } from '@/lib/format';
 import { labelTertiary, stFontSm, stFontXs, stTextMuted, stTextTertiary } from '@/lib/styles';
+import { EmptyState } from '@/components/ui/empty-state';
 import { CopyButton } from '@/components/copy-button';
 
 const labelMutedMb4 = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '4px' } as const;
 const labelBlockMutedMb4 = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' } as const;
 const ratingBtnBase: React.CSSProperties = { width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'none', border: 'none', padding: 0 };
+const meetingCountBadge = { fontSize: 'var(--font-size-xs)', padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-muted)' } as const;
 const objectionBadge: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--success-muted)', color: 'var(--text-secondary)' };
 const competitorBadge: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--warning-muted)', color: 'var(--text-tertiary)' };
 const competitorFormBadge: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '2px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--warning-muted)', color: 'var(--text-tertiary)' };
@@ -382,9 +384,9 @@ export default function MeetingsPage() {
     return { momentumUp: up, momentumDown: down };
   }, [investorStats, meetingsByInvestor]);
 
-  const handleOutcomeSaved = (updated: Meeting) => {
+  const handleOutcomeSaved = useCallback((updated: Meeting) => {
     setMeetings(prev => prev.map(m => m.id === updated.id ? updated : m));
-  };
+  }, []);
 
   return (
     <div className="page-content space-y-6">
@@ -468,18 +470,11 @@ export default function MeetingsPage() {
 
       {/* Meeting List */}
       {filtered.length === 0 ? (
-        <div
-          className="card"
-          style={{ padding: 'var(--space-8)', textAlign: 'center' }}>
-          <div className="space-y-3">
-            <Calendar className="w-8 h-8 mx-auto" style={stTextMuted} />
-            <p style={stTextTertiary}>
-              {meetings.length === 0 ? 'No meetings logged yet. Start by scheduling your first meeting.' : 'No meetings match your filters — try adjusting them.'}
-            </p>
-            {meetings.length === 0 && (
-              <Link href="/meetings/new" style={{ color: 'var(--accent)', fontSize: 'var(--font-size-sm)' }}>
-                Log your first meeting debrief</Link>
-            )}</div></div>
+        <EmptyState
+          icon={Calendar}
+          title={meetings.length === 0 ? 'No meetings logged yet' : 'No meetings match your filters'}
+          description={meetings.length === 0 ? 'Start by scheduling your first meeting.' : 'Try adjusting your filters.'}
+          action={meetings.length === 0 ? { label: 'Log your first meeting', href: '/meetings/new' } : undefined} />
       ) : (
         <div className="space-y-3">
           {filtered.map(m => {
@@ -507,12 +502,7 @@ export default function MeetingsPage() {
                       {stats && stats.count > 1 && (
                         <span
                           className="flex items-center gap-1"
-                          style={{
-                            fontSize: 'var(--font-size-xs)',
-                            padding: '1px 6px',
-                            borderRadius: 'var(--radius-sm)',
-                            background: 'var(--surface-2)',
-                            color: 'var(--text-muted)', }}>
+                          style={meetingCountBadge}>
                           {stats.count} meetings</span>
                       )}
                       {stats && stats.count >= 2 && (
