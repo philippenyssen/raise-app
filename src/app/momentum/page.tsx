@@ -487,9 +487,7 @@ export default function MomentumPage() {
               <Users className="w-4 h-4" style={stTextSecondary} />
               <h2 className="text-sm font-normal tracking-wider" style={stTextSecondary}>Cohort Momentum</h2></div>
             {data.cohorts.length === 0 ? (
-              <div className="text-center py-6">
-                <Users className="w-6 h-6 mx-auto mb-2" style={stTextMuted} />
-                <p className="text-sm" style={stTextMuted}>No cohort data yet. Add more investors to see momentum patterns by type.</p></div>
+              <EmptyState icon={Users} title="No cohort data yet" description="Add more investors to see momentum patterns by type." />
             ) : (
               <div className="space-y-3">
                 {data.cohorts.map(cohort => {
@@ -546,11 +544,7 @@ export default function MomentumPage() {
                 <span className="ml-auto px-2 py-0.5 rounded-full text-xs font-normal" style={anomalyBadgeStyle}>{data.anomalies.length}</span>
               )}</div>
             {data.anomalies.length === 0 ? (
-              <div className="text-center py-8">
-                <Activity className="w-6 h-6 mx-auto mb-2" style={stTextMuted} />
-                <p className="text-sm" style={stTextMuted}>No anomalies detected.</p>
-                <p className="text-xs mt-1" style={stTextTertiary}>All investors are tracking near their cohort averages.</p>
-              </div>
+              <EmptyState icon={Activity} title="No anomalies detected" description="All investors are tracking near their cohort averages." />
             ) : (
               <div className="space-y-2">
                 {data.anomalies.map((anomaly, i) => {

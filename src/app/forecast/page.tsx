@@ -26,6 +26,9 @@ const critPathLink = { fontSize: 'var(--font-size-xs)', fontWeight: 400, overflo
 const critPathAction = { width: '24px', height: '24px', borderRadius: 'var(--radius-sm)', background: 'var(--warning-muted)', color: 'var(--text-tertiary)', textDecoration: 'none' } as const;
 const confGroupName = { fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '60%' } as const;
 const confGroupStage = { ...labelMuted, fontVariantNumeric: 'tabular-nums', flexShrink: 0 } as const;
+const tierBadgeBase: React.CSSProperties = { width: '20px', height: '20px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 'var(--font-size-xs)', fontWeight: 300, flexShrink: 0 };
+const tierHighStyle: React.CSSProperties = { ...tierBadgeBase, background: 'var(--accent)', color: 'var(--text-primary)' };
+const tierLowStyle: React.CSSProperties = { ...tierBadgeBase, background: 'var(--surface-3)', color: 'var(--text-secondary)' };
 
 const DIST_CONFIG = [
   { label: 'High', key: 'high' as const, color: 'var(--text-secondary)', bg: 'var(--success-muted)' },
@@ -444,22 +447,7 @@ export default function ForecastPage() {
                       <td style={cellPad34}>
                         <Link href={`/investors/${inv.investorId}`} style={{ textDecoration: 'none' }}>
                           <div className="flex items-center gap-2">
-                            <span
-                              style={{
-                                width: '20px',
-                                height: '20px',
-                                borderRadius: '50%',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                fontSize: 'var(--font-size-xs)',
-                                fontWeight: 300,
-                                flexShrink: 0,
-                                ...(inv.tier === 1
-                                  ? { background: 'var(--accent)', color: 'var(--text-primary)' }
-                                  : inv.tier === 2
-                                    ? { background: 'var(--accent)', color: 'var(--text-primary)' }
-                                    : { background: 'var(--surface-3)', color: 'var(--text-secondary)' }),}}>
+                            <span style={inv.tier <= 2 ? tierHighStyle : tierLowStyle}>
                               {inv.tier}</span>
                             <div>
                               <div className="flex items-center gap-1">
