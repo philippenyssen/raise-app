@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import { cardPad4, dimensionBg, dimensionColor, inlineBadgeStyle, labelMuted, labelMuted10, labelMutedTight, labelMutedWide, labelSecondary, labelTertiary, scoreBgStyle as focusScoreBgStyle, scoreColor as focusScoreColor, skelCardSm, stAccent, stBorderTop, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, INVESTOR_TYPE_STYLES } from '@/lib/styles';
 import { TierBadge, EnthusiasmDots } from '@/components/shared';
-const mt10 = { marginTop: '10px' } as const;
+const mt10 = { marginTop: 'var(--space-3)' } as const;
 const dimLabel = { ...labelMutedTight, fontWeight: 400 } as const;
 const objItemStyle = { fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', opacity: 0.85 } as const;
 
@@ -178,7 +178,7 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
                 <div
                   style={{
                     height: '4px',
-                    borderRadius: '2px',
+                    borderRadius: 'var(--radius-sm)',
                     background: dimensionBg(d.score, d.signal),
                     position: 'relative',
                     overflow: 'hidden', }}>
@@ -190,7 +190,7 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
                       bottom: 0,
                       width: `${d.signal === 'unknown' ? 0 : d.score}%`,
                       background: dimensionColor(d.score, d.signal),
-                      borderRadius: '2px',
+                      borderRadius: 'var(--radius-sm)',
                       opacity: 0.85,
                     }} /></div></div>
             ))}</div>

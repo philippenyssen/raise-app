@@ -23,7 +23,7 @@ const textSmPrimary = { fontSize: 'var(--font-size-sm)', fontWeight: 400, color:
 const textSmLink = { fontSize: 'var(--font-size-sm)', fontWeight: 400 } as const;
 const metricXlPrimary = { fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' } as const;
 const metricLgPrimary = { fontSize: 'var(--font-size-lg)', fontWeight: 300, color: 'var(--text-primary)' } as const;
-const labelXsTertiary4 = { fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginBottom: '4px' } as const;
+const labelXsTertiary4 = { fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginBottom: 'var(--space-1)' } as const;
 const unitSmMuted = { fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', fontWeight: 300 } as const;
 
 const skelWrap = { display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' } as const;
@@ -538,13 +538,13 @@ export default function Dashboard() {
                     <div style={{
                       flex: 1,
                       height: '4px',
-                      borderRadius: '2px',
+                      borderRadius: 'var(--radius-sm)',
                       background: 'var(--surface-3)',
                       overflow: 'hidden',}}>
                       <div style={{
                         width: `${pct}%`,
                         height: '100%',
-                        borderRadius: '2px',
+                        borderRadius: 'var(--radius-sm)',
                         background: 'var(--accent)',
                         transition: 'width 0.4s ease',
                       }} /></div>
@@ -585,7 +585,7 @@ export default function Dashboard() {
             <div style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-6)' }}>
               <div className="skeleton" style={{ height: '48px', width: '220px', marginBottom: 'var(--space-4)', borderRadius: 'var(--radius-md)' }}
                 />
-              <div className="skeleton" style={{ height: '4px', width: '100%', marginBottom: 'var(--space-5)', borderRadius: '2px' }}
+              <div className="skeleton" style={{ height: '4px', width: '100%', marginBottom: 'var(--space-5)', borderRadius: 'var(--radius-sm)' }}
                 />
               <div className="grid grid-cols-3 gap-4">
                 <div className="skeleton" style={{ height: '40px', borderRadius: 'var(--radius-md)' }} />
@@ -1199,7 +1199,7 @@ function PulseCard({ label, value, sub }: {
       style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-4) var(--space-5)' }}>
       <div className="metric-label" style={{ marginBottom: 'var(--space-1)' }}>{label}</div>
       <div className="metric-value">{value}</div>
-      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginTop: '2px' }}>{sub}</div>
+      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginTop: 'var(--space-0)' }}>{sub}</div>
     </div>);
 }
 
@@ -1210,7 +1210,7 @@ function MomentumBar({ count, total, opacity, label }: {
   return (
     <div
       className="relative group cursor-default"
-      style={{ width: `${pct}%`, background: `rgba(27, 42, 74, ${opacity})`, borderRadius: '2px' }}
+      style={{ width: `${pct}%`, background: `rgba(27, 42, 74, ${opacity})`, borderRadius: 'var(--radius-sm)' }}
       title={`${label}: ${count}`}>
       {pct >= 15 && (
         <span
