@@ -305,13 +305,16 @@ export default function MeetingsPage() {
   useEffect(() => { document.title = 'Raise | Meetings'; }, []);
   useEffect(() => {
     let active = true;
+    let interval: ReturnType<typeof setInterval> | null = null;
     const load = () => cachedFetch('/api/meetings')
       .then(r => { if (!r.ok) throw new Error(`${r.status}`); return r.json(); })
       .then(d => { if (active) setMeetings(d); })
       .catch(() => { if (active) setMeetings([]); });
-    load();
-    const id = setInterval(load, 60_000);
-    return () => { active = false; clearInterval(id); };
+    const start = () => { load(); interval = setInterval(load, 60_000); };
+    const onVis = () => { if (document.hidden) { if (interval) { clearInterval(interval); interval = null; } } else { start(); } };
+    start();
+    document.addEventListener('visibilitychange', onVis);
+    return () => { active = false; if (interval) clearInterval(interval); document.removeEventListener('visibilitychange', onVis); };
   }, []);
 
   useEffect(() => {

@@ -16,6 +16,9 @@ import { useToast } from '@/components/toast';
 import { labelMuted, stAccent, stFontSm, stTextSecondary } from '@/lib/styles';
 
 const fontSmSec = { fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' } as const;
+const flexRowGap2 = { display: 'flex', alignItems: 'center', gap: 'var(--space-2)' } as const;
+const dotBase = { width: '8px', height: '8px', borderRadius: '50%' } as const;
+const inlineFlexGap2 = { display: 'inline-flex', alignItems: 'center', gap: 'var(--space-2)' } as const;
 
 const ENTHUSIASM_LABELS = ['Cold', 'Lukewarm', 'Interested', 'Excited', 'All-in'];
 
@@ -208,7 +211,7 @@ function QuickCaptureInner() {
           {questions.length > 0 && (
             <div className="card">
               <p className="section-title">
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+                <span style={inlineFlexGap2}>
                   <MessageCircle className="w-3.5 h-3.5" /> Questions Asked ({questions.length})</span></p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
                 {questions.map((q: { text: string; topic: string }, i: number) => (
@@ -222,7 +225,7 @@ function QuickCaptureInner() {
           {objections.length > 0 && (
             <div className="card">
               <p className="section-title">
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+                <span style={inlineFlexGap2}>
                   <AlertTriangle className="w-3.5 h-3.5" /> Objections ({objections.length})</span></p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
                 {objections.map((o: { text: string; severity: string }, i: number) => (
@@ -238,36 +241,36 @@ function QuickCaptureInner() {
           {Object.keys(engagementSignals).length > 0 && (
             <div className="card">
               <p className="section-title">
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+                <span style={inlineFlexGap2}>
                   <Crosshair className="w-3.5 h-3.5" /> Engagement Signals</span></p>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-3)' }}>
                 {engagementSignals.asked_about_process !== undefined && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: engagementSignals.asked_about_process ? 'var(--success)' : 'var(--border-default)' }} />
+                  <div style={flexRowGap2}>
+                    <div style={{ ...dotBase, background: engagementSignals.asked_about_process ? 'var(--success)' : 'var(--border-default)' }} />
                     <span style={fontSmSec}>Asked about process</span>
                   </div>
                 )}
                 {engagementSignals.asked_about_timeline !== undefined && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: engagementSignals.asked_about_timeline ? 'var(--success)' : 'var(--border-default)' }} />
+                  <div style={flexRowGap2}>
+                    <div style={{ ...dotBase, background: engagementSignals.asked_about_timeline ? 'var(--success)' : 'var(--border-default)' }} />
                     <span style={fontSmSec}>Asked about timeline</span>
                   </div>
                 )}
                 {engagementSignals.requested_followup !== undefined && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: engagementSignals.requested_followup ? 'var(--success)' : 'var(--border-default)' }} />
+                  <div style={flexRowGap2}>
+                    <div style={{ ...dotBase, background: engagementSignals.requested_followup ? 'var(--success)' : 'var(--border-default)' }} />
                     <span style={fontSmSec}>Requested follow-up</span>
                   </div>
                 )}
                 {engagementSignals.mentioned_competitors !== undefined && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: engagementSignals.mentioned_competitors ? 'var(--warning)' : 'var(--border-default)' }} />
+                  <div style={flexRowGap2}>
+                    <div style={{ ...dotBase, background: engagementSignals.mentioned_competitors ? 'var(--warning)' : 'var(--border-default)' }} />
                     <span style={fontSmSec}>Mentioned competitors</span>
                   </div>
                 )}
                 {engagementSignals.body_language_at_pricing && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: engagementSignals.body_language_at_pricing === 'positive' ? 'var(--success)' : engagementSignals.body_language_at_pricing === 'negative' ? 'var(--danger)' : 'var(--warning)' }} />
+                  <div style={flexRowGap2}>
+                    <div style={{ ...dotBase, background: engagementSignals.body_language_at_pricing === 'positive' ? 'var(--success)' : engagementSignals.body_language_at_pricing === 'negative' ? 'var(--danger)' : 'var(--warning)' }} />
                     <span style={fontSmSec}>
                       Pricing reaction: {engagementSignals.body_language_at_pricing}</span></div>
                 )}</div></div>
@@ -277,7 +280,7 @@ function QuickCaptureInner() {
           {competitiveIntel && (
             <div className="card">
               <p className="section-title">
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+                <span style={inlineFlexGap2}>
                   <Shield className="w-3.5 h-3.5" /> Competitive Intelligence</span></p>
               <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
                 {competitiveIntel}</p></div>
@@ -432,7 +435,7 @@ function QuickCaptureInner() {
               color: 'var(--text-tertiary)',
               width: '100%',
               justifyContent: 'space-between', }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+            <span style={flexRowGap2}>
               <Clock className="w-3.5 h-3.5" />
               Optional details</span>
             {showDetails
@@ -490,7 +493,7 @@ function QuickCaptureInner() {
               <Loader2 className="w-5 h-5" style={{ animation: 'spin 1s linear infinite' }} />
               {AI_THINKING_MESSAGES[thinkingMsg]}</span>
           ) : (
-            <span style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', justifyContent: 'center' }}>
+            <span style={{ ...flexRowGap2, justifyContent: 'center' }}>
               <Sparkles className="w-5 h-5" />
               Process & Save
               <ArrowRight className="w-4 h-4" /></span>
