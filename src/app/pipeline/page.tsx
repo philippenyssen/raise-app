@@ -798,7 +798,7 @@ function InvestorCard({
         <div className="flex items-start justify-between gap-1">
           <div className="min-w-0">
             <span className="card-name" style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-secondary)', lineHeight: 1.3 }}>{investor.name}</span>
-            {completeness < 100 && <span title={`Profile ${completeness}% complete`} style={{ fontSize: 'var(--font-size-xs)', color: complColor, marginLeft: '4px', fontWeight: 400 }}>{completeness}%</span>}
+            {completeness < 100 && <span title={`Profile ${completeness}% complete`} style={{ fontSize: 'var(--font-size-xs)', color: complColor, marginLeft: 'var(--space-1)', fontWeight: 400 }}>{completeness}%</span>}
           </div>
           <div className="flex items-center gap-1 flex-shrink-0 mt-0.5">
             {onToggleCompare && <span role="checkbox" aria-checked={isCompareSelected} aria-label={`Compare ${investor.name}`} className={`card-compare${isCompareSelected ? ' selected' : ''}`} tabIndex={0} onClick={e => { e.preventDefault(); e.stopPropagation(); onToggleCompare(investor.id); }} onKeyDown={e => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); onToggleCompare(investor.id); } }} style={{ width: 14, height: 14, borderRadius: 'var(--radius-sm)', border: `1.5px solid ${isCompareSelected ? 'var(--accent)' : 'var(--border-default)'}`, background: isCompareSelected ? 'var(--accent)' : 'transparent', cursor: 'pointer' }} />}

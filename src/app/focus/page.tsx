@@ -477,12 +477,12 @@ function QuickWinCard({ item }: { item: FocusItem }) {
           <Link
             href={`/meetings/new?investor=${item.investorId}`}
             className="btn btn-primary btn-sm"
-            style={{ fontSize: 'var(--font-size-xs)', padding: '2px 8px', borderRadius: 'var(--radius-sm)' }}>
+            style={{ fontSize: 'var(--font-size-xs)', padding: 'var(--space-0) var(--space-2)', borderRadius: 'var(--radius-sm)' }}>
             Schedule</Link>
           <Link
             href={`/investors/${item.investorId}`}
             className="btn btn-secondary btn-sm"
-            style={{ fontSize: 'var(--font-size-xs)', padding: '2px 8px', borderRadius: 'var(--radius-sm)' }}>
+            style={{ fontSize: 'var(--font-size-xs)', padding: 'var(--space-0) var(--space-2)', borderRadius: 'var(--radius-sm)' }}>
             Open</Link></div></div>
     </div>);
 }
@@ -549,7 +549,7 @@ function AccelerationCard({
               {item.confidence} confidence</span></div>
 
           {/* Description */}
-          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '8px' }}>
+          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: 'var(--space-2)' }}>
             {item.description}</p>
 
           {/* Meta row */}
@@ -674,7 +674,7 @@ function DeprioritizeSection({ investors }: { investors: InvestorSummary[] }) {
                 <TierBadge tier={inv.investorTier} /></div>
               <span style={labelMuted10}>{inv.reason}</span></div>
           ))}
-          <p style={{ ...labelMuted, marginTop: '8px', paddingTop: '8px', borderTop: '1px solid var(--border-subtle)' }}>
+          <p style={{ ...labelMuted, marginTop: 'var(--space-2)', paddingTop: 'var(--space-2)', borderTop: '1px solid var(--border-subtle)' }}>
             Park these for now. Redirect time to higher-conviction conversations.</p></div>
       )}
     </div>);
@@ -823,22 +823,22 @@ export default function FocusPage() {
           <div className="flex items-center gap-2 mb-1" style={labelMuted}>
             <Clock className="w-3.5 h-3.5" /> Total Time</div>
           <div className="metric-value">{weeklyBudget.totalHoursRecommended}h</div>
-          <div className="metric-label" style={{ marginTop: '2px' }}>recommended this week</div></div>
+          <div className="metric-label" style={{ marginTop: 'var(--space-0)' }}>recommended this week</div></div>
         <div className="card-metric" style={cardPad4}>
           <div className="flex items-center gap-2 mb-1" style={labelMuted}>
             <Calendar className="w-3.5 h-3.5" /> Meetings</div>
           <div className="metric-value">{weeklyBudget.meetingsRecommended}</div>
-          <div className="metric-label" style={{ marginTop: '2px' }}>calls & meetings</div></div>
+          <div className="metric-label" style={{ marginTop: 'var(--space-0)' }}>calls & meetings</div></div>
         <div className="card-metric" style={cardPad4}>
           <div className="flex items-center gap-2 mb-1" style={labelMuted}>
             <CheckCircle className="w-3.5 h-3.5" /> Follow-ups</div>
           <div className="metric-value">{weeklyBudget.followUpsRecommended}</div>
-          <div className="metric-label" style={{ marginTop: '2px' }}>prep & outreach</div></div>
+          <div className="metric-label" style={{ marginTop: 'var(--space-0)' }}>prep & outreach</div></div>
         <div className="card-metric" style={cardPad4}>
           <div className="flex items-center gap-2 mb-1" style={labelMuted}>
             <Rocket className="w-3.5 h-3.5" /> Acceleration</div>
           <div className="metric-value">{accelData?.summary.total ?? 0}</div>
-          <div className="metric-label" style={{ marginTop: '2px' }}>
+          <div className="metric-label" style={{ marginTop: 'var(--space-0)' }}>
             {accelData?.summary.immediate ?? 0} immediate</div></div></div>
 
       {/* Deal Acceleration Engine */}
