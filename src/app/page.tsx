@@ -13,7 +13,7 @@ import {
   RefreshCw, Zap, TrendingUp, TrendingDown, Minus, AlertTriangle,
   ChevronRight, Clock, ArrowUpRight, ArrowDownRight, ShieldAlert,
   UserMinus, CalendarClock, Flame, Gauge, CheckCircle2, Mail,
-  Calendar, MessageSquare,
+  Calendar, MessageSquare, ClipboardList, ShieldCheck, FolderOpen,
 } from 'lucide-react';
 import { DealHeatInvestor } from '@/lib/types';
 import { STATUS_LABELS } from '@/lib/constants';
@@ -981,11 +981,141 @@ export default function Dashboard() {
                 </div>);
             })()}</div>}
 
-          {/* Deliverables removed — accessible via sidebar and command palette */}
+          {/* Deliverables — quick access to key workspace items */}
+          {!focusMode && (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+              {[
+                { href: '/data-room', label: 'Data Room', icon: FolderOpen },
+                { href: '/workspace', label: 'Workspace', icon: Sparkles },
+                { href: '/documents', label: 'Documents', icon: FileText },
+                { href: '/reports', label: 'Reports', icon: Activity },
+                { href: '/model', label: 'Financial Model', icon: Columns3 },
+              ].map(d => (
+                <Link key={d.href} href={d.href} className="flex items-center gap-2 rounded-lg transition-colors hover-surface-2"
+                  style={{ padding: 'var(--space-3) var(--space-4)', background: 'var(--surface-1)', textDecoration: 'none' }}>
+                  <d.icon className="w-4 h-4 shrink-0" style={{ color: 'var(--text-tertiary)' }} />
+                  <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 300 }}>{d.label}</span>
+                </Link>
+              ))}
+            </div>
+          )}
 
-          {/* Data Quality removed — diagnostic view surfaced in Quick Actions when completeness < 70% */}
+          {/* Tasks + Activity */}
+          {!focusMode && <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div style={cardPadding}>
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="section-title flex items-center gap-2">
+                  <ClipboardList className="w-4 h-4" /> Upcoming tasks</h2>
+                <Link href="/focus" className="flex items-center gap-1" style={labelAccent}>
+                  All tasks <ArrowRight className="w-3 h-3" /></Link></div>
+              {sectionErrors.tasks && tasks.length === 0 ? (
+                <SectionError label="Tasks" onRetry={() => fetchSection('tasks')} />
+              ) : tasks.length > 0 ? (
+                <div className="space-y-1.5">
+                  {tasks.slice(0, 5).map(task => {
+                    const due = task.due_date?.split('T')[0];
+                    const isOverdue = due && due < new Date().toISOString().split('T')[0];
+                    return (
+                      <div key={task.id} className="flex items-start gap-2.5 py-2 px-3 rounded-lg transition-colors hover-surface-2">
+                        <span className="mt-0.5 w-2 h-2 rounded-full shrink-0" style={{
+                          background: task.priority === 'high' ? 'var(--danger)' : task.priority === 'medium' ? 'var(--warning)' : 'var(--text-muted)'
+                        }} />
+                        <div className="flex-1 min-w-0">
+                          <div className="truncate" style={textSmPrimary}>{task.title}</div>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            {task.investor_name && <span style={labelTertiary}>{task.investor_name}</span>}
+                            {due && <span className="tabular-nums" style={{
+                              fontSize: 'var(--font-size-xs)',
+                              color: isOverdue ? 'var(--danger)' : 'var(--text-muted)',
+                              fontWeight: isOverdue ? 400 : 300,
+                            }}>{isOverdue ? 'Overdue' : fmtDateShort(due)}</span>}
+                          </div>
+                        </div>
+                      </div>);
+                  })}
+                </div>
+              ) : (
+                <p style={labelSmMuted}>No upcoming tasks</p>
+              )}</div>
 
-          {/* Tasks + Activity removed — accessible via Today page and /timeline */}
+            <div style={cardPadding}>
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="section-title flex items-center gap-2">
+                  <Activity className="w-4 h-4" /> Recent activity</h2>
+                <Link href="/timeline" className="flex items-center gap-1" style={labelAccent}>
+                  Timeline <ArrowRight className="w-3 h-3" /></Link></div>
+              {sectionErrors.activity && activity.length === 0 ? (
+                <SectionError label="Activity" onRetry={() => fetchSection('activity')} />
+              ) : activity.length > 0 ? (
+                <div className="space-y-1.5">
+                  {activity.slice(0, 6).map(item => (
+                    <div key={item.id} className="flex items-start gap-2.5 py-1.5">
+                      <span className="w-1 h-1 rounded-full mt-2 shrink-0" style={{ background: 'var(--accent)' }} />
+                      <div className="flex-1 min-w-0">
+                        <div className="truncate" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 300 }}>
+                          {item.subject}</div>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          {item.investor_name && <span style={labelTertiary}>{item.investor_name}</span>}
+                          <span style={labelMuted}>{relativeTime(new Date(item.created_at))}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p style={labelSmMuted}>No recent activity</p>
+              )}</div>
+          </div>}
+
+          {/* Data Quality */}
+          {!focusMode && dataQuality && (
+            <div style={cardPadding}>
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="section-title flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4" /> Data quality</h2>
+                <span className="tabular-nums" style={{
+                  fontSize: 'var(--font-size-sm)',
+                  fontWeight: 400,
+                  color: scoreColor(dataQuality.overallCompleteness),
+                }}>{dataQuality.overallCompleteness}%</span></div>
+
+              <div className="mb-3" style={{ height: '4px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-3)' }}>
+                <div style={{
+                  width: `${dataQuality.overallCompleteness}%`,
+                  height: '100%',
+                  borderRadius: 'var(--radius-sm)',
+                  background: scoreColor(dataQuality.overallCompleteness),
+                  transition: 'width 0.4s ease',
+                }} /></div>
+
+              {dataQuality.worstInvestors.length > 0 && (
+                <div className="mb-2">
+                  <div className="mb-1" style={labelTertiary}>Needs attention</div>
+                  <div className="space-y-1">
+                    {dataQuality.worstInvestors.slice(0, 3).map(inv => (
+                      <Link key={inv.id} href={`/investors/${inv.id}`}
+                        className="flex items-center justify-between py-1 px-2 rounded transition-colors hover-surface-2"
+                        style={{ textDecoration: 'none' }}>
+                        <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 300 }}>{inv.name}</span>
+                        <span className="tabular-nums" style={{ fontSize: 'var(--font-size-xs)', color: scoreColor(inv.completeness) }}>{inv.completeness}%</span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {dataQuality.recommendations.length > 0 && (
+                <div className="mt-2 pt-2" style={stBorderTop}>
+                  {dataQuality.recommendations.slice(0, 2).map((rec, i) => (
+                    <div key={i} className="flex items-start gap-2 py-1">
+                      <AlertTriangle className="w-3 h-3 shrink-0 mt-0.5" style={{ color: 'var(--warning)' }} />
+                      <span style={labelSecondary}>{rec}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Quick Actions */}
           {(() => {

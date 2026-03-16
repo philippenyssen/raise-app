@@ -12,6 +12,7 @@ import {
   SendHorizonal, Menu, X, LogOut,
   ChevronLeft, ChevronRight, Sun, Flame,
   Compass, Target, Swords, MessageCircleWarning, Zap,
+  Sparkles, FolderOpen, FileBarChart, Globe,
 } from 'lucide-react';
 
 interface NavItem {
@@ -23,7 +24,7 @@ interface NavItem {
 }
 
 const nav: NavItem[] = [
-  // Core — what you use every day
+  // Core — daily command center
   { href: '/today', label: 'Today', icon: Sun, section: 'CORE', badge: 'hot' },
   { href: '/', label: 'Dashboard', icon: LayoutDashboard, section: 'CORE' },
   { href: '/pipeline', label: 'Pipeline', icon: Columns3, section: 'CORE' },
@@ -38,9 +39,13 @@ const nav: NavItem[] = [
   { href: '/competitive', label: 'Competitive', icon: Swords, section: 'ANALYZE' },
   { href: '/objections', label: 'Objections', icon: MessageCircleWarning, section: 'ANALYZE' },
   { href: '/strategic', label: 'Strategic', icon: Compass, section: 'ANALYZE' },
-  // Workspace — materials and configuration
+  { href: '/network', label: 'Network', icon: Globe, section: 'ANALYZE' },
+  // Workspace — materials and tools
+  { href: '/workspace', label: 'Workspace', icon: Sparkles, section: 'WORKSPACE' },
   { href: '/documents', label: 'Documents', icon: BookOpen, section: 'WORKSPACE' },
+  { href: '/data-room', label: 'Data Room', icon: FolderOpen, section: 'WORKSPACE' },
   { href: '/terms', label: 'Terms', icon: FileText, section: 'WORKSPACE' },
+  { href: '/reports', label: 'Reports', icon: FileBarChart, section: 'WORKSPACE' },
   { href: '/settings', label: 'Settings', icon: Settings, section: 'WORKSPACE' },];
 
 /* ── Sidebar-specific palette (dark navy panel on light page) ── */
