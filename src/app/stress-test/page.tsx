@@ -8,6 +8,8 @@ import { relativeTime } from '@/lib/time';
 import { STATUS_LABELS } from '@/lib/constants';
 import { labelMuted, labelMuted10, skelCardMd, stBorderTop, stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 import { EmptyState } from '@/components/ui/empty-state';
+const gapItemBg = { background: 'var(--surface-1)' } as const;
+const gapRankBadge = { background: 'var(--danger-muted)', color: 'var(--text-primary)' } as const;
 import {
   ShieldAlert, TrendingUp, TrendingDown,
   RefreshCw, AlertTriangle, CheckCircle2, Target,
@@ -298,10 +300,10 @@ export default function StressTestPage() {
               <div
                 key={gap.id}
                 className="hover-row flex items-start gap-3 py-3 px-4 rounded-lg"
-                style={{ background: 'var(--surface-1)' }}>
+                style={gapItemBg}>
                 <span
                   className="w-6 h-6 rounded flex items-center justify-center text-xs font-normal shrink-0 mt-0.5"
-                  style={{ background: 'var(--danger-muted)', color: 'var(--text-primary)' }}>
+                  style={gapRankBadge}>
                   {i + 1}</span>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">

@@ -38,6 +38,7 @@ const progressBarTrack: React.CSSProperties = { width: '100%', height: '28px', b
 const progressBarLabel: React.CSSProperties = { position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: 'var(--font-size-sm)', fontWeight: 300, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' };
 const legendDotCommitted: React.CSSProperties = { width: '12px', height: '12px', borderRadius: 'var(--radius-sm)', background: 'var(--accent)' };
 const legendDotExpected: React.CSSProperties = { width: '12px', height: '12px', borderRadius: 'var(--radius-sm)', background: 'var(--accent-muted)' };
+const critPathNameCol = { flex: 1, minWidth: 0 } as const;
 
 const DIST_CONFIG = [
   { label: 'High', key: 'high' as const, color: 'var(--text-secondary)', bg: 'var(--success-muted)' },
@@ -310,7 +311,7 @@ export default function ForecastPage() {
                     style={critPathItem}>
                     <span style={critPathBadge}>
                       {i + 1}</span>
-                    <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={critPathNameCol}>
                       <Link
                         href={inv ? `/investors/${inv.investorId}` : '#'}
                         style={critPathLink}

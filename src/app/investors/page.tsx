@@ -74,6 +74,7 @@ const TIER_BADGE_STYLES: Record<number, React.CSSProperties> = {
 const TIER_BADGE_DEFAULT: React.CSSProperties = { background: 'var(--surface-2)', color: 'var(--text-muted)' };
 
 const rowActionBtn: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: 'var(--space-1) var(--space-2)', color: 'var(--text-muted)', borderRadius: 'var(--radius-sm)' };
+const skelLoadingRow = { height: '3rem' } as const;
 
 export default function InvestorsPage() {
   const router = useRouter();
@@ -249,7 +250,7 @@ export default function InvestorsPage() {
         <div className="skeleton" style={{ height: '2rem', width: '12rem' }} />
         <div className="space-y-2">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="skeleton" style={{ height: '3rem' }} />
+            <div key={i} className="skeleton" style={skelLoadingRow} />
           ))}</div>
       </div>);
   }

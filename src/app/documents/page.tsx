@@ -10,6 +10,10 @@ import { FileText, Plus, Clock, Edit3, Download, ShieldCheck, AlertTriangle, Che
 import { fmtDate } from '@/lib/format';
 import { DocSummaryRecord as Doc } from '@/lib/types';
 import { skelCardSm, stAccent, stTextMuted, stTextPrimary, stTextTertiary } from '@/lib/styles';
+const sortBtnActive = { backgroundColor: 'var(--surface-3)', color: 'var(--text-secondary)' } as const;
+const sortBtnInactive = { backgroundColor: 'transparent', color: 'var(--text-muted)' } as const;
+const flagBtnActive = { backgroundColor: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: '1px solid color-mix(in srgb, var(--warning) 30%, transparent)' } as const;
+const flagBtnInactive = { backgroundColor: 'var(--surface-2)', color: 'var(--text-tertiary)', border: '1px solid transparent' } as const;
 
 interface DocFlag {
   id: string;
@@ -200,7 +204,7 @@ export default function DocumentsPage() {
             {(['newest', 'oldest', 'name'] as const).map(s => (
               <button key={s} onClick={() => setSortBy(s)}
                 className="px-2 py-1 rounded-md"
-                style={{ backgroundColor: sortBy === s ? 'var(--surface-3)' : 'transparent', color: sortBy === s ? 'var(--text-secondary)' : 'var(--text-muted)' }}>
+                style={sortBy === s ? sortBtnActive : sortBtnInactive}>
                 {s === 'newest' ? 'Newest' : s === 'oldest' ? 'Oldest' : 'A–Z'}</button>
             ))}
           </div>
@@ -208,10 +212,7 @@ export default function DocumentsPage() {
             <button
               onClick={() => setShowFlags(!showFlags)}
               className="px-3 py-2 rounded-lg text-sm transition-colors flex items-center gap-2"
-              style={showFlags
-                ? { backgroundColor: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: '1px solid color-mix(in srgb, var(--warning) 30%, transparent)' }
-                : { backgroundColor: 'var(--surface-2)', color: 'var(--text-tertiary)', border: '1px solid transparent' }
-              }>
+              style={showFlags ? flagBtnActive : flagBtnInactive}>
               <AlertTriangle className="w-3.5 h-3.5" /> {flags.length} Flags</button>
           )}
           <Link
