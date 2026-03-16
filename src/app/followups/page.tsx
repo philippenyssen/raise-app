@@ -15,6 +15,12 @@ import { useToast } from '@/components/toast';
 import { labelAccent, labelMuted, labelMuted10, labelSecondary, stAccent, stTextMuted, stTextPrimary, stTextSecondary } from '@/lib/styles';
 import { MS_PER_HOUR, MS_PER_DAY } from '@/lib/time';
 
+const textMutedXs = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' } as const;
+const textSecSm = { fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' } as const;
+const completedOutcomeBox = { background: 'var(--surface-2)', borderRadius: 'var(--radius-sm)', padding: '0.375rem 0.5rem', fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' } as const;
+const completingFormBox = { background: 'var(--surface-2)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-3)' } as const;
+const cardInnerPad = { padding: 'var(--space-4)' } as const;
+
 interface TimingIntel { optimalDayOfWeek: string; optimalTimeOfDay: string; reasoning: string; }
 
 interface VelocityIntel {
@@ -317,7 +323,7 @@ function FollowupsContent() {
         key={item.id}
         className="card"
         style={{ padding: 0, borderColor: showOverdueIndicator || isOverdue ? 'var(--fg-6)' : undefined, background: showOverdueIndicator || isOverdue ? 'var(--fg-6)' : undefined, boxShadow: showOverdueIndicator || isOverdue ? '0 none' : undefined }}>
-        <div style={{ padding: 'var(--space-4)' }}>
+        <div style={cardInnerPad}>
           <div className="flex items-start gap-3">
             {/* Icon */}
             <div
@@ -357,7 +363,7 @@ function FollowupsContent() {
 
               {/* Draft preview */}
               {item.status === 'pending' && draftingId !== item.id && (
-                <div className="mt-1.5 flex items-center gap-1.5" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                <div className="mt-1.5 flex items-center gap-1.5" style={textMutedXs}>
                   <Mail className="w-3 h-3" style={{ flexShrink: 0 }} />
                   <span className="truncate">{generateDraft(item).subject}</span></div>
               )}
@@ -366,7 +372,7 @@ function FollowupsContent() {
               {item.status === 'completed' && item.outcome && (
                 <div
                   className="mt-2"
-                  style={{ background: 'var(--surface-2)', borderRadius: 'var(--radius-sm)', padding: '0.375rem 0.5rem', fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>
+                  style={completedOutcomeBox}>
                   <span style={stTextMuted}>Outcome:</span> {item.outcome}
                   {item.conviction_delta !== 0 && (
                     <span
@@ -387,7 +393,7 @@ function FollowupsContent() {
               {isCompleting && (
                 <div
                   className="mt-3 space-y-2"
-                  style={{ background: 'var(--surface-2)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-3)' }}>
+                  style={completingFormBox}>
                   <div>
                     <label
                       className="block mb-1"

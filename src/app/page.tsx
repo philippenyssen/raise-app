@@ -315,9 +315,12 @@ export default function Dashboard() {
 
   useEffect(() => { document.title = 'Raise | Dashboard'; }, []);
   useEffect(() => {
-    fetchData();
-    const interval = setInterval(() => fetchData(true), 5 * MS_PER_MINUTE);
-    return () => clearInterval(interval);
+    let interval: ReturnType<typeof setInterval> | null = null;
+    const start = () => { fetchData(); interval = setInterval(() => fetchData(true), 5 * MS_PER_MINUTE); };
+    const onVisChange = () => { if (document.hidden) { if (interval) { clearInterval(interval); interval = null; } } else { start(); } };
+    start();
+    document.addEventListener('visibilitychange', onVisChange);
+    return () => { if (interval) clearInterval(interval); document.removeEventListener('visibilitychange', onVisChange); };
   }, [fetchData]);
 
   useEffect(() => {
