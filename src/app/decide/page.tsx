@@ -209,6 +209,13 @@ export default function DecidePage() {
                         <span style={{ fontSize: '10px', padding: '0 4px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', ...textSecondary }}>
                           {STATUS_LABELS[inv.status] || inv.status}</span>
                       </div>
+                      <p style={{ fontSize: 'var(--font-size-xs)', color: inv.signals.some(s => s.type === 'warning') ? 'var(--warning)' : 'var(--text-tertiary)', marginTop: '4px', lineHeight: 1.3 }}>
+                        {inv.signals.find(s => s.type === 'warning')?.label
+                          || (inv.daysSinceContact !== null && inv.daysSinceContact >= 7 ? `${inv.daysSinceContact}d since contact — re-engage`
+                          : inv.enthusiasm >= 4 ? 'High conviction — push for commitment'
+                          : inv.pendingFollowups > 0 ? `${inv.pendingFollowups} follow-up${inv.pendingFollowups > 1 ? 's' : ''} pending`
+                          : inv.action.length <= 80 ? inv.action
+                          : inv.action.slice(0, 77) + '...')}</p>
                     </div>
                   </div>
                   <div style={{ textAlign: 'right' }}>
