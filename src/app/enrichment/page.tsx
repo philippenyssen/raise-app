@@ -13,6 +13,7 @@ import { useToast } from '@/components/toast';
 import { fmtDateTime } from '@/lib/format';
 import { labelMuted, labelTertiary, skelCardSm, stFontSm, stFontXs, stTextMuted, icon14, icon12, textSmMuted, textSmSecondary } from '@/lib/styles';
 import { EmptyState } from '@/components/ui/empty-state';
+import { relativeTime } from '@/lib/time';
 
 const flexCenterGap2 = { display: 'flex', alignItems: 'center', gap: 'var(--space-2)' } as const;
 const investorRowGrid: React.CSSProperties = { display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr auto', gap: 'var(--space-2)', alignItems: 'center', padding: 'var(--space-2) var(--space-4)' };
@@ -78,6 +79,7 @@ export default function EnrichmentPage() {
   const [expandedProvider, setExpandedProvider] = useState<string | null>(null);
   const [lastResult, setLastResult] = useState<EnrichResult | null>(null);
   const [tab, setTab] = useState<'enrich' | 'sources' | 'history'>('enrich');
+  const [loadedAt, setLoadedAt] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -97,6 +99,7 @@ export default function EnrichmentPage() {
     setInvestors(invList.filter((i: InvestorOption) => i.status !== 'passed' && i.status !== 'dropped'));
     setJobs(Array.isArray(jobRes) ? jobRes : []);
     setStats(statsRes);
+    setLoadedAt(new Date().toISOString());
     setLoading(false);
   }, []);
 
@@ -195,7 +198,7 @@ export default function EnrichmentPage() {
         <div>
           <h1 className="page-title">Data Enrichment</h1>
           <p style={{ ...textSmMuted, marginTop: 'var(--space-1)' }}>
-            {configuredCount} sources active ({freeCount} free) &middot; {investors.length} investors in pipeline</p></div>
+            {configuredCount} sources active ({freeCount} free) &middot; {investors.length} investors in pipeline{loadedAt ? ` · ${relativeTime(loadedAt)}` : ''}</p></div>
         <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
           <button
             onClick={enrichBulk}

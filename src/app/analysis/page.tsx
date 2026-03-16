@@ -5,6 +5,7 @@ import { cachedFetch } from '@/lib/cache';
 import { useToast } from '@/components/toast';
 import { EmptyState } from '@/components/ui/empty-state';
 import { BarChart3 } from 'lucide-react';
+import { relativeTime } from '@/lib/time';
 import { skelCardLg, skelCardSm, stAccent, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 interface AnalysisData {
@@ -61,6 +62,7 @@ export default function AnalysisPage() {
   const { toast } = useToast();
   const [data, setData] = useState<AnalysisData | null>(null);
   const [loading, setLoading] = useState(false);
+  const [loadedAt, setLoadedAt] = useState<string | null>(null);
 
   const runAnalysis = useCallback(async () => {
     setLoading(true);
@@ -68,6 +70,7 @@ export default function AnalysisPage() {
       const res = await cachedFetch('/api/analyze');
       const result = await res.json();
       setData(result);
+      setLoadedAt(new Date().toISOString());
       if (!result.error) toast('Analysis complete — scroll down to see insights');
     } catch (e) {
       console.warn('[ANALYSIS]', e instanceof Error ? e.message : e);
@@ -94,7 +97,7 @@ export default function AnalysisPage() {
         <div>
           <h1 className="page-title">AI Pattern Analysis</h1>
           <p className="text-sm mt-1" style={stTextMuted}>
-            Claude analyzes your meetings to find what&apos;s working and what needs to change.</p></div>
+            Claude analyzes your meetings to find what&apos;s working and what needs to change.{loadedAt ? ` · ${relativeTime(loadedAt)}` : ''}</p></div>
         <button
           onClick={runAnalysis}
           disabled={loading}

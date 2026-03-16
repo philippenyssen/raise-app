@@ -13,6 +13,7 @@ import { EmptyState } from '@/components/ui/empty-state';
 import Link from 'next/link';
 import { stAccent, stBorderTop, stSurface1, stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 import { cachedFetch } from '@/lib/cache';
+import { relativeTime } from '@/lib/time';
 
 type Tab = 'deals' | 'competitors' | 'briefs';
 
@@ -51,6 +52,7 @@ export default function IntelligencePage() {
   const [deleting, setDeleting] = useState(false);
   const [researchInput, setResearchInput] = useState('');
   const [researchType, setResearchType] = useState<'investor' | 'competitor' | 'market'>('investor');
+  const [loadedAt, setLoadedAt] = useState<string | null>(null);
 
   const fetchAll = useCallback(async () => {
     setLoading(true);
@@ -60,6 +62,7 @@ export default function IntelligencePage() {
       setDeals(data.deals || []);
       setCompetitors(data.competitors || []);
       setBriefs(data.briefs || []);
+      setLoadedAt(new Date().toISOString());
     } catch (e) { console.warn('[INTEL_FETCH]', e instanceof Error ? e.message : e); toast('Couldn\'t load intelligence data — refresh to retry', 'error'); }
     setLoading(false);
   }, []);
@@ -182,7 +185,7 @@ export default function IntelligencePage() {
         <h1 className="page-title flex items-center gap-2">
           <Globe className="w-6 h-6" style={stAccent} /> Market Intelligence</h1>
         <p className="text-sm mt-1" style={stTextMuted}>
-          {deals.length} deals tracked, {competitors.length} competitors, {briefs.length} research briefs</p></div>
+          {deals.length} deals tracked, {competitors.length} competitors, {briefs.length} research briefs{loadedAt ? ` · ${relativeTime(loadedAt)}` : ''}</p></div>
 
       {/* AI Research Bar */}
       <div
