@@ -191,10 +191,8 @@ export default function ComparePage() {
       <div className="flex items-center gap-3">
         <Link
           href="/investors"
-          className="transition-colors"
-          style={{ ...stTextMuted, transition: 'color 150ms ease' }}
-          onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
-          onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}>
+          className="icon-delete transition-colors"
+          style={{ transition: 'color 150ms ease' }}>
           <ArrowLeft className="w-5 h-5" /></Link>
         <div className="flex-1">
           <h1 className="page-title" style={{ fontSize: 'var(--font-size-xl)' }}>
@@ -208,15 +206,13 @@ export default function ComparePage() {
         <div className="relative flex-1">
           <button
             onClick={() => setDropdownOpen(!dropdownOpen)}
-            className="w-full flex items-center justify-between transition-colors"
+            className="w-full flex items-center justify-between transition-colors hover-border"
             style={{
               background: 'var(--surface-0)',
               borderRadius: 'var(--radius-lg)',
               padding: 'var(--space-2) var(--space-4)',
               fontSize: 'var(--font-size-sm)',
-              color: 'var(--text-secondary)', }}
-            onMouseEnter={e => (e.currentTarget.style.borderColor = 'var(--border-strong)')}
-            onMouseLeave={e => (e.currentTarget.style.borderColor = 'var(--border-default)')}>
+              color: 'var(--text-secondary)', }}>
             <span style={selectedIds.length === 0 ? stTextMuted : undefined}>
               {selectedIds.length === 0 ? 'Select investors to compare...' : `${selectedIds.length} investor${selectedIds.length > 1 ? 's' : ''} selected`}
             </span>
@@ -560,13 +556,11 @@ export default function ComparePage() {
             style={{ borderRadius: 'var(--radius-xl)' }}>
             <button
               onClick={() => setDimensionsExpanded(!dimensionsExpanded)}
-              className="w-full flex items-center justify-between transition-colors"
+              className="w-full flex items-center justify-between transition-colors hover-surface-2"
               style={{
                 padding: 'var(--space-3) var(--space-5)',
                 background: 'var(--surface-1)',
-                transition: 'background 150ms ease', }}
-              onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface-2)')}
-              onMouseLeave={e => (e.currentTarget.style.background = 'var(--surface-1)')}>
+                transition: 'background 150ms ease', }}>
               <div className="flex items-center gap-2">
                 <BarChart3 className="w-4 h-4" style={stTextMuted} />
                 <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>

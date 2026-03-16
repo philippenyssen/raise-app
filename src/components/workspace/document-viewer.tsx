@@ -167,10 +167,8 @@ export function DocumentViewer({ document, onContentChange, onSave, saving, dirt
               a.click();
               URL.revokeObjectURL(url);
             }}
-            className="rounded transition-colors"
-            style={{ padding: '6px', color: 'var(--text-muted)' }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+            className="rounded transition-colors icon-delete"
+            style={{ padding: '6px' }}
             title="Export as Markdown">
             <Download style={{ width: '16px', height: '16px' }} /></button></div></div>
 

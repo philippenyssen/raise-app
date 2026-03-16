@@ -166,10 +166,8 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
         {messages.length > 0 && (
           <button
             onClick={clearChat}
-            className="flex items-center transition-colors"
-            style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', gap: 'var(--space-1)' }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}>
+            className="flex items-center transition-colors icon-delete"
+            style={{ fontSize: 'var(--font-size-xs)', gap: 'var(--space-1)' }}>
             <RotateCcw style={{ width: '12px', height: '12px' }} /> Clear</button>
         )}</div>
 
@@ -230,10 +228,8 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
                     borderTop: '1px solid var(--border-subtle)',}}>
                   <button
                     onClick={() => copyMessage(i)}
-                    className="flex items-center transition-colors"
-                    style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', gap: 'var(--space-1)' }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}>
+                    className="flex items-center transition-colors icon-delete"
+                    style={{ fontSize: 'var(--font-size-xs)', gap: 'var(--space-1)' }}>
                     {copiedIdx === i ? <Check style={{ width: '12px', height: '12px' }} /> : <Copy style={{ width: '12px', height: '12px' }} />}
                     {copiedIdx === i ? 'Copied' : 'Copy'}</button>
                   {msg.error && (

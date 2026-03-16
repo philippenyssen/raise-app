@@ -360,10 +360,8 @@ export default function InvestorsPage() {
                   <td style={{ padding: 'var(--space-3) var(--space-4)', fontWeight: 400, color: 'var(--text-primary)' }}>
                     <Link
                       href={`/investors/${inv.id}`}
-                      className="transition-colors"
-                      style={{ color: 'inherit', textDecoration: 'none', transition: 'color 150ms' }}
-                      onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
-                      onMouseLeave={e => (e.currentTarget.style.color = 'inherit')}>
+                      className="investor-link"
+                      style={{ textDecoration: 'none', transition: 'color 150ms' }}>
                       {inv.name}</Link></td>
                   <td style={{ width: '2rem', padding: 'var(--space-3) var(--space-2)' }}>
                     {(() => {

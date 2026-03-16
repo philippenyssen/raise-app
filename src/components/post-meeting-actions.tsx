@@ -145,7 +145,7 @@ export default function PostMeetingActions({ data, meetingId, onActionTaken }: {
                           <p className="text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>{flag.description}</p>
                           <div className="flex items-center gap-3 mt-2 text-xs" style={{ color: 'var(--text-muted)' }}>
                             <span>Section: {flag.section_hint}</span>
-                            {flag.document_id && <Link href={`/documents/${flag.document_id}`} className="underline transition-colors" style={{ color: 'var(--accent)' }} onMouseEnter={(e) => { (e.target as HTMLElement).style.opacity = '0.8'; }} onMouseLeave={(e) => { (e.target as HTMLElement).style.opacity = '1'; }}>Open document</Link>}
+                            {flag.document_id && <Link href={`/documents/${flag.document_id}`} className="underline transition-colors btn-accent-hover" style={{ color: 'var(--accent)' }}>Open document</Link>}
                           </div></div>
                         <ActionButtons id={flag.id} type="flag" isAccepted={isAccepted} onAccept={() => handleFlagAction(flag.id, 'accept')} onDismiss={() => handleFlagAction(flag.id, 'dismiss')} />
                       </div>

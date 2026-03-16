@@ -81,10 +81,7 @@ export function ConfirmModal({
           <button
             onClick={onCancel}
             aria-label="Close dialog"
-            className="shrink-0 transition-colors"
-            style={{ color: 'var(--text-muted)' }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}>
+            className="shrink-0 transition-colors icon-delete">
             <X style={{ width: '16px', height: '16px' }} /></button></div>
         <div className="flex justify-end" style={{ gap: 'var(--space-2)', marginTop: 'var(--space-5)' }}>
           <button
