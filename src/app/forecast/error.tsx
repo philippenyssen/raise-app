@@ -16,7 +16,7 @@ export default function ForecastError({ error, reset }: { error: Error & { diges
         {error.message || 'An unexpected error occurred.'}
       </p>
       <div className="flex gap-3">
-        <button onClick={reset} className="btn btn-primary btn-md">Try again</button>
+        <button onClick={reset} className="btn btn-primary btn-md">Retry</button>
         <Link href="/" className="btn btn-secondary btn-md">
           Go to Dashboard
         </Link>

@@ -14,7 +14,7 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
             onClick={reset}
             style={{ padding: '8px 20px', background: 'var(--accent)', color: 'var(--surface-0)', border: 'none', borderRadius: 'var(--radius-md)', cursor: 'pointer', fontSize: 'var(--font-size-sm)' }}
           >
-            Try again
+            Retry
           </button>
         </div>
       </body>

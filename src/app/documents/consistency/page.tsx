@@ -90,7 +90,7 @@ export default function ConsistencyPage() {
             onClick={fetchConsistency}
             className="mt-3 text-sm underline tab-hover"
             style={{ color: 'var(--text-tertiary)' }}>
-            Try again</button></div>
+            Retry</button></div>
       )}
 
       {/* Results */}

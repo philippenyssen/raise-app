@@ -116,7 +116,7 @@ export default function ForecastPage() {
           icon={AlertTriangle}
           title="Unable to load forecast"
           description={error || 'Add investors to your pipeline, then refresh.'}
-          action={{ label: 'Reload forecast', onClick: fetchForecast }} />
+          action={{ label: 'Retry', onClick: fetchForecast }} />
       </div>);
   }
 
