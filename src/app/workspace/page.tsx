@@ -11,7 +11,7 @@ const AIChat = dynamic(() => import('@/components/workspace/ai-chat').then(m => 
 import { useToast } from '@/components/toast';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { DocSummaryRecord as Doc } from '@/lib/types';
-import { FileText, Plus, ChevronRight, Wand2, Loader2 } from 'lucide-react';
+import { FileText, Plus, ChevronRight, Wand2, Loader2, FilePlus } from 'lucide-react';
 import { labelMuted, stAccent, stTextMuted } from '@/lib/styles';
 import { EmptyState } from '@/components/ui/empty-state';
 
@@ -53,6 +53,7 @@ export default function WorkspacePage() {
   const [contentHistory, setContentHistory] = useState<string[]>([]);
   const [pendingDoc, setPendingDoc] = useState<Doc | null>(null);
   const [autoSelected, setAutoSelected] = useState(false);
+  const [creatingDoc, setCreatingDoc] = useState(false);
 
   const fetchDocs = useCallback(async () => {
     try {
@@ -197,6 +198,28 @@ export default function WorkspacePage() {
     }
   }, [toast, fetchDocs, selectDoc]);
 
+  const createNewDocument = useCallback(async () => {
+    setCreatingDoc(true);
+    try {
+      const res = await fetch('/api/documents', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: 'New Document', type: 'custom', content: '<h1>New Document</h1>\n<p>Start writing here...</p>' }),
+      });
+      if (!res.ok) throw new Error('Failed to create');
+      const doc = await res.json();
+      toast('Document created');
+      const refreshed = await fetchDocs();
+      const created = refreshed.find((d: Doc) => d.id === doc.id);
+      if (created) selectDoc(created);
+    } catch (e) {
+      console.warn('[WORKSPACE_CREATE]', e instanceof Error ? e.message : e);
+      toast('Failed to create document', 'error');
+    } finally {
+      setCreatingDoc(false);
+    }
+  }, [toast, fetchDocs, selectDoc]);
+
   // Keyboard shortcuts: Cmd/Ctrl+S to save, Cmd/Ctrl+Z to undo
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -315,7 +338,15 @@ export default function WorkspacePage() {
                   <span className="truncate">{exists ? 'Regenerate' : 'Generate'} {label}</span>
                 </button>);
             })}</div>
-          <div style={sectionDividerStyle}>
+          <div className="space-y-1" style={sectionDividerStyle}>
+            <button
+              onClick={createNewDocument}
+              disabled={creatingDoc}
+              className="w-full flex items-center gap-2 sidebar-link"
+              style={genBtnEnabled}>
+              <FilePlus className="w-3.5 h-3.5" />
+              <span className="truncate">New Blank Document</span>
+            </button>
             <a
               href="/context"
               className="flex items-center gap-2 sidebar-link"
