@@ -17,6 +17,9 @@ import { TierBadge, EnthusiasmDots } from '@/components/shared';
 import { relativeTime } from '@/lib/time';
 import { cachedFetch } from '@/lib/cache';
 
+const textSmMuted = { fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' } as const;
+const textSm400 = { fontSize: 'var(--font-size-sm)', fontWeight: 400 } as const;
+
 // ---------------------------------------------------------------------------
 // Constants — style objects using design tokens
 // ---------------------------------------------------------------------------
@@ -442,21 +445,21 @@ export default function AccelerationPage() {
           <div className="flex items-center gap-2 mb-1" style={{ color: 'var(--text-primary)', fontSize: 'var(--font-size-sm)' }}>
             <AlertTriangle className="w-3.5 h-3.5" /> Immediate</div>
           <div className="text-2xl font-normal" style={stTextPrimary}>{data.summary.immediate}</div>
-          <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>need same-day attention</div></div>
+          <div style={textSmMuted}>need same-day attention</div></div>
         <div
           className="rounded-xl p-4"
           style={{ background: 'var(--warning-muted)' }}>
           <div className="flex items-center gap-2 mb-1" style={{ color: 'var(--text-tertiary)', fontSize: 'var(--font-size-sm)' }}>
             <Clock className="w-3.5 h-3.5" /> This Week</div>
           <div className="text-2xl font-normal" style={stTextTertiary}>{data.summary.this_week}</div>
-          <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>actions for next 7 days</div></div>
+          <div style={textSmMuted}>actions for next 7 days</div></div>
         <div
           className="rounded-xl p-4"
           style={{ background: 'var(--success-muted)' }}>
           <div className="flex items-center gap-2 mb-1" style={{ color: 'var(--text-secondary)', fontSize: 'var(--font-size-sm)' }}>
             <Rocket className="w-3.5 h-3.5" /> Term Sheet Ready</div>
           <div className="text-2xl font-normal" style={stTextSecondary}>{data.termSheetReady.length}</div>
-          <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>ready for the push</div></div></div>
+          <div style={textSmMuted}>ready for the push</div></div></div>
 
       {/* Filter tabs */}
       <div className="flex items-center gap-1 pb-px" style={{ borderBottom: '1px solid var(--border-subtle)' }}>

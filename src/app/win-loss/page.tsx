@@ -9,6 +9,10 @@ import {
 import { labelMuted, stAccent, stFontSm, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, strengthColor } from '@/lib/styles';
 import { fmtDateTime } from '@/lib/format';
 
+const textSmMuted = { fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' } as const;
+const textSmTertiary = { fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' } as const;
+const textSmPrimary400 = { fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400 } as const;
+
 // ── Types ─────────────────────────────────────────────────────────────
 
 interface DistinguishingFactor {
@@ -260,12 +264,12 @@ export default function WinLossPage() {
                 { label: 'Common Types', value: patterns.winnerProfile.commonTypes },
               ].map(row => (
                 <div key={row.label} className="flex items-center justify-between" style={{ padding: 'var(--space-1) 0' }}>
-                  <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' }}>{row.label}</span>
-                  <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400 }}>{row.value}</span>
+                  <span style={textSmTertiary}>{row.label}</span>
+                  <span style={textSmPrimary400}>{row.value}</span>
                 </div>
               ))}</div>
           ) : (
-            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
+            <p style={textSmMuted}>
               No closed deals yet. As investors reach term sheet or closed status, their profiles will appear here with performance insights.</p>
           )}</div>
 
@@ -290,12 +294,12 @@ export default function WinLossPage() {
                 { label: 'Common Types', value: patterns.loserProfile.commonTypes },
               ].map(row => (
                 <div key={row.label} className="flex items-center justify-between" style={{ padding: 'var(--space-1) 0' }}>
-                  <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' }}>{row.label}</span>
-                  <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400 }}>{row.value}</span>
+                  <span style={textSmTertiary}>{row.label}</span>
+                  <span style={textSmPrimary400}>{row.value}</span>
                 </div>
               ))}</div>
           ) : (
-            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
+            <p style={textSmMuted}>
               No rejections yet. When investors pass, their profile appears here to help identify patterns in what&apos;s not landing.</p>
           )}</div></div>
 
@@ -334,7 +338,7 @@ export default function WinLossPage() {
                   </div>);
               })}</div>
           ) : (
-            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
+            <p style={textSmMuted}>
               No pass reasons recorded. When you mark an investor as &quot;Passed&quot; in their profile, add a reason — patterns will surface here.</p>
           )}</div>
 
@@ -354,7 +358,7 @@ export default function WinLossPage() {
                   borderRadius: 'var(--radius-sm)',
                   background: 'var(--surface-1)', }}>
                 <div className="flex items-center justify-between" style={{ marginBottom: '2px' }}>
-                  <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400 }}>
+                  <span style={textSmPrimary400}>
                     {p.signal}</span>
                   <span style={{
                     fontSize: 'var(--font-size-xs)',
@@ -448,7 +452,7 @@ export default function WinLossPage() {
               <div className="flex items-center justify-between" style={{ marginTop: 'var(--space-1)' }}>
                 <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
                   Avg Meetings (Passers)</span>
-                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400 }}>
+                <span style={textSmPrimary400}>
                   {summary.avgPassedMeetings}</span></div>
               <div className="flex items-center justify-between" style={{ marginTop: 'var(--space-1)' }}>
                 <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
@@ -458,7 +462,7 @@ export default function WinLossPage() {
               <div className="flex items-center justify-between" style={{ marginTop: 'var(--space-1)' }}>
                 <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
                   Avg Enthusiasm (Passers)</span>
-                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400 }}>
+                <span style={textSmPrimary400}>
                   {summary.avgPassedEnthusiasm}/5</span></div></div></div></div>
 
         {/* Investor Type Performance */}
@@ -478,7 +482,7 @@ export default function WinLossPage() {
                     borderRadius: 'var(--radius-sm)',
                     background: 'var(--surface-1)', }}>
                   <div className="flex items-center justify-between" style={{ marginBottom: '4px' }}>
-                    <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400 }}>
+                    <span style={textSmPrimary400}>
                       {TYPE_LABELS[tp.type] || tp.type}</span>
                     <span style={labelMuted}>
                       {tp.total} total</span></div>
@@ -495,7 +499,7 @@ export default function WinLossPage() {
                       {tp.closed}W / {tp.passed}L / {tp.dropped}D</span></div></div>
               ))}</div>
           ) : (
-            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
+            <p style={textSmMuted}>
               No type data yet. Assign investor types (VC, Growth, SWF, etc.) in investor profiles to unlock performance analysis by type.</p>
           )}</div></div>
 
@@ -543,7 +547,7 @@ export default function WinLossPage() {
                   {rec}</div>
               ))}</div>
           ) : (
-            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
+            <p style={textSmMuted}>
               Recommendations will appear as more outcomes are recorded</p>
           )}</div></div>
 
