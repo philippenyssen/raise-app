@@ -118,7 +118,7 @@ export async function GET(req: NextRequest) {
             const errors = JSON.parse(lastJob.errors || '[]');
             const providerError = errors.find((e: string) => e.startsWith(p.provider.id + ':'));
             if (providerError) lastError = providerError.replace(p.provider.id + ': ', '');
-          } catch { /* ignore */ }
+          } catch (e) { console.warn('[ENRICH_ERR_PARSE]', e instanceof Error ? e.message : e); }
         }
 
         return {

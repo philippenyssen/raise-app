@@ -51,7 +51,7 @@ function computeCloseProbability(investor: Investor, momentum: string, meetings?
           if (o.severity === 'showstopper' && !o.resolved) showstopperCount++;
           if (!o.resolved) unresolvedObjCount++;
         }
-      } catch { /* skip */ }
+      } catch (e) { console.warn('[STRESS_OBJ_PARSE]', e instanceof Error ? e.message : e); }
     }
     if (showstopperCount > 0) prob *= Math.max(0.3, 1 - showstopperCount * 0.20);
     else if (unresolvedObjCount > 2) prob *= Math.max(0.5, 1 - unresolvedObjCount * 0.05);
@@ -76,7 +76,7 @@ function computeCloseProbability(investor: Investor, momentum: string, meetings?
         const signals = JSON.parse(m.engagement_signals || '{}');
         if (signals.asked_about_process) processSignals++;
         if (signals.asked_about_timeline) processSignals++;
-      } catch { /* skip */ }
+      } catch (e) { console.warn('[STRESS_SIGNAL_PARSE]', e instanceof Error ? e.message : e); }
     }
     if (processSignals >= 2) prob = Math.min(1, prob * 1.08);
   }

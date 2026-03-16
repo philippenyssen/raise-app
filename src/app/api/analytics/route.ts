@@ -289,7 +289,7 @@ export async function GET() {
         try {
           const objs = JSON.parse(invMeetings[0].objections || '[]') as Array<{ topic: string; text: string }>;
           objs.forEach(o => { passReasons[o.topic || 'general'] = (passReasons[o.topic || 'general'] || 0) + 1; });
-        } catch { /* skip */ }
+        } catch (e) { console.warn('[ANALYTICS_OBJ_PARSE]', e instanceof Error ? e.message : e); }
       }});
 
     const passStageDistribution: Record<string, number> = {};
