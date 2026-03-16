@@ -14,6 +14,12 @@ const labelBlockMutedMb4 = { fontSize: 'var(--font-size-xs)', color: 'var(--text
 const ratingBtnBase: React.CSSProperties = { width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'none', border: 'none', padding: 0 };
 const objectionBadge: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--success-muted)', color: 'var(--text-secondary)' };
 const competitorBadge: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--warning-muted)', color: 'var(--text-tertiary)' };
+const trendConfig = {
+  up: { icon: TrendingUp, color: 'var(--text-secondary)', label: 'Rising' },
+  down: { icon: TrendingDown, color: 'var(--text-primary)', label: 'Falling' },
+  flat: { icon: Minus, color: 'var(--text-muted)', label: 'Flat' },
+  new: { icon: Hash, color: 'var(--text-muted)', label: 'First' },
+} as const;
 
 const MEETING_TYPES = ['all', 'intro', 'management_presentation', 'deep_dive', 'site_visit', 'dd_session', 'negotiation', 'social'] as const;
 const STATUS_OPTIONS = ['all', 'met', 'engaged', 'in_dd', 'term_sheet', 'passed'] as const;
@@ -140,7 +146,8 @@ function MeetingOutcomeSection({
       } else {
         setSaveError('Could not save outcome — check your connection and retry');
       }
-    } catch {
+    } catch (e) {
+      console.warn('[MEETING_OUTCOME]', e instanceof Error ? e.message : e);
       setSaveError('Could not save outcome — check your connection and retry');
     }
     setSaving(false);
@@ -342,7 +349,7 @@ export default function MeetingsPage() {
     const byInvestor: Record<string, Meeting[]> = {};
     const stats: Record<string, { count: number; trend: 'up' | 'down' | 'flat' | 'new'; latestEnthusiasm: number; avgEnthusiasm: number }> = {};
     for (const m of meetings) {
-      try { objCount += JSON.parse(m.objections || '[]').length; } catch {}
+      try { objCount += JSON.parse(m.objections || '[]').length; } catch (e) { console.warn('[MEETINGS_OBJ_PARSE]', e instanceof Error ? e.message : e); }
       investorIds.add(m.investor_id);
       if (!byInvestor[m.investor_id]) byInvestor[m.investor_id] = [];
       byInvestor[m.investor_id].push(m);
@@ -476,11 +483,6 @@ export default function MeetingsPage() {
             const isOutcomeExpanded = expandedOutcome === m.id;
             const hasOutcome = m.outcome_rating !== null && m.outcome_rating !== undefined;
             const stats = investorStats[m.investor_id];
-            const trendConfig = {
-              up: { icon: TrendingUp, color: 'var(--text-secondary)', label: 'Rising' },
-              down: { icon: TrendingDown, color: 'var(--text-primary)', label: 'Falling' },
-              flat: { icon: Minus, color: 'var(--text-muted)', label: 'Flat' },
-              new: { icon: Hash, color: 'var(--text-muted)', label: 'First' },};
             const trend = stats ? trendConfig[stats.trend] : trendConfig.new;
             const TrendIcon = trend.icon;
 

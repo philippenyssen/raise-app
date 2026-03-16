@@ -14,6 +14,7 @@ import { STATUS_LABELS, TYPE_LABELS, MEETING_TYPE_LABELS } from '@/lib/constants
 import { labelMuted, labelMuted10, stAccent, stFontSm, stFontXs, stSurface1, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 const cellPad34 = { padding: 'var(--space-3) var(--space-4)' } as const;
+const meetingTypeBadge = { fontSize: 'var(--font-size-xs)', background: 'var(--surface-2)', color: 'var(--text-muted)', padding: '1px 6px', borderRadius: 'var(--radius-sm)' } as const;
 
 // ---------------------------------------------------------------------------
 // API response types
@@ -108,7 +109,8 @@ export default function ComparePage() {
       if (!res.ok) throw new Error(`${res.status}`);
       const data = await res.json();
       setAllInvestors(data);
-    } catch {
+    } catch (e) {
+      console.warn('[COMPARE_LOAD]', e instanceof Error ? e.message : e);
       toast('Couldn\'t load investors — try refreshing the page', 'error');
     } finally {
       setLoading(false);
@@ -488,12 +490,7 @@ export default function ComparePage() {
                               {Object.entries(p.meetingHistory.meetingTypes).map(([type, count]) => (
                                 <span
                                   key={type}
-                                  style={{
-                                    fontSize: 'var(--font-size-xs)',
-                                    background: 'var(--surface-2)',
-                                    color: 'var(--text-muted)',
-                                    padding: '1px 6px',
-                                    borderRadius: 'var(--radius-sm)', }}>
+                                  style={meetingTypeBadge}>
                                   {MEETING_TYPE_LABELS[type] || type} {count > 1 ? `x${count}` : ''}</span>
                               ))}</div>
                           )}</div></td>
