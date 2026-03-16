@@ -15,6 +15,9 @@ import { cachedFetch } from '@/lib/cache';
 
 interface Version { id: string; document_id: string; content: string; version_number: number; change_summary: string; created_at: string }
 
+const thStyle = { border: '1px solid var(--border-strong)', color: 'var(--text-tertiary)' } as const;
+const tdStyle = { border: '1px solid var(--border-default)' } as const;
+
 type AIOperation = 'improve' | 'consistency' | 'weak_arguments' | 'goldman';
 
 export default function DocumentEditorPage() {
@@ -423,11 +426,11 @@ function MarkdownPreview({ content }: { content: string }) {
       elements.push(
         <table key={`table-${i}`} className="w-full text-sm my-2" style={{ borderCollapse: 'collapse' }}>
           <thead>
-            <tr>{tableRows[0]?.map((h, j) => <th key={j} className="px-2 py-1 text-left text-xs" style={{ border: '1px solid var(--border-strong)', color: 'var(--text-tertiary)' }}>{h}</th>)}</tr>
+            <tr>{tableRows[0]?.map((h, j) => <th key={j} className="px-2 py-1 text-left text-xs" style={thStyle}>{h}</th>)}</tr>
           </thead>
           <tbody>
             {tableRows.slice(1).map((row, ri) => (
-              <tr key={ri}>{row.map((cell, ci) => <td key={ci} className="px-2 py-1 text-xs" style={{ border: '1px solid var(--border-default)' }}>{cell}</td>)}</tr>
+              <tr key={ri}>{row.map((cell, ci) => <td key={ci} className="px-2 py-1 text-xs" style={tdStyle}>{cell}</td>)}</tr>
             ))}</tbody>
         </table>);
       tableRows = [];

@@ -139,21 +139,13 @@ export default function InvestorDetailPage() {
 
   const fetchScore = useCallback(async () => {
     setScoreLoading(true);
-    try {
-      const res = await cachedFetch(`/api/investors/${id}/score`);
-      if (res.ok) {
-        const data = await res.json();
-        setScore(data);
-      }
-    } catch (e) { console.warn('[INVESTOR_SCORE]', e instanceof Error ? e.message : e); }
+    const [scoreRes, trajRes] = await Promise.all([
+      cachedFetch(`/api/investors/${id}/score`).catch(e => { console.warn('[INVESTOR_SCORE]', e instanceof Error ? e.message : e); return null; }),
+      cachedFetch(`/api/investors/${id}/trajectory`).catch(e => { console.warn('[INVESTOR_TRAJECTORY]', e instanceof Error ? e.message : e); return null; }),
+    ]);
+    if (scoreRes?.ok) { setScore(await scoreRes.json()); }
+    if (trajRes?.ok) { setTrajectory(await trajRes.json()); }
     setScoreLoading(false);
-    // Fetch trajectory after score (score may create a snapshot)
-    try {
-      const trajRes = await cachedFetch(`/api/investors/${id}/trajectory`);
-      if (trajRes.ok) {
-        setTrajectory(await trajRes.json());
-      }
-    } catch (e) { console.warn('[INVESTOR_TRAJECTORY]', e instanceof Error ? e.message : e); }
   }, [id]);
 
   const fetchEnrichment = useCallback(async () => {
@@ -187,8 +179,7 @@ export default function InvestorDetailPage() {
       if (!res.ok) throw new Error(await res.text());
       const data = await res.json();
       toast(`Enrichment complete: ${data.total_fields} fields from ${data.sources_succeeded} sources`, 'success');
-      fetchEnrichment();
-      fetchEnrichmentStatus();
+      Promise.all([fetchEnrichment(), fetchEnrichmentStatus()]);
     } catch (err) {
       toast(`Enrichment failed: ${err}`, 'error');
     }
