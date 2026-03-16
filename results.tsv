@@ -777,3 +777,4 @@ b4a0052	100	100	0	keep	product	Dashboard strategic overhaul: AI narrative brief 
 789	2026-03-16T18:55:08Z	Reliability & Ops	dealflow: surface partial API failure warning banner instead of silently dropping data	src/app/dealflow/page.tsx	pass
 790	2026-03-16T18:56:36Z	CEO & Strategy	dealflow: readiness column now shows level label (Ready/Active/Stalled/Cold) under score	src/app/dealflow/page.tsx	pass
 791	2026-03-16T18:58:08Z	Product Manager	investor detail: add Follow-ups CTA in header action buttons	src/app/investors/[id]/page.tsx	pass
+792	2026-03-16T19:00:39Z	Design & UX	pipeline: add drag-over visual feedback on kanban columns (dashed accent outline + tinted bg)	src/app/pipeline/page.tsx	pass

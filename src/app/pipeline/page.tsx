@@ -98,7 +98,7 @@ export default function PipelinePage() {
   const [loadedAt, setLoadedAt] = useState<string | null>(null);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [dragId, setDragId] = useState<string | null>(null);
-  const [, setDragOverCol] = useState<string | null>(null);
+  const [dragOverCol, setDragOverCol] = useState<string | null>(null);
   const [filters, setFilters] = useState<{ tiers: Set<number>; types: Set<string> }>({
     tiers: new Set(),
     types: new Set(),});
@@ -496,7 +496,7 @@ export default function PipelinePage() {
               <div
                 key={status}
                 className="w-[260px] flex flex-col"
-                style={{ borderRadius: 'var(--radius-xl)', transition: 'all 150ms ease' }}
+                style={{ borderRadius: 'var(--radius-xl)', transition: 'all 150ms ease', outline: dragOverCol === status ? '2px dashed var(--accent)' : 'none', outlineOffset: '-2px' }}
                 onDragOver={e => handleDragOver(e, status)}
                 onDragLeave={handleDragLeave}
                 onDrop={e => handleDrop(e, status)}>
@@ -511,7 +511,7 @@ export default function PipelinePage() {
                   </div></div>
 
                 {/* Cards container */}
-                <div className="flex-1 overflow-y-auto p-2 space-y-2" style={{ ...colors.bg, borderBottomLeftRadius: 'var(--radius-xl)', borderBottomRightRadius: 'var(--radius-xl)', minHeight: '120px' }}>
+                <div className="flex-1 overflow-y-auto p-2 space-y-2" style={{ ...colors.bg, borderBottomLeftRadius: 'var(--radius-xl)', borderBottomRightRadius: 'var(--radius-xl)', minHeight: '120px', background: dragOverCol === status ? 'var(--accent-muted)' : undefined }}>
                   {cards.map(inv => (
                     <InvestorCard
                       key={inv.id}
@@ -555,7 +555,7 @@ export default function PipelinePage() {
                 <div
                   key={status}
                   className="flex-1"
-                  style={{ borderRadius: 'var(--radius-xl)', transition: 'all 150ms ease' }}
+                  style={{ borderRadius: 'var(--radius-xl)', transition: 'all 150ms ease', outline: dragOverCol === status ? '2px dashed var(--accent)' : 'none', outlineOffset: '-2px' }}
                   onDragOver={e => handleDragOver(e, status)}
                   onDragLeave={handleDragLeave}
                   onDrop={e => handleDrop(e, status)}>
