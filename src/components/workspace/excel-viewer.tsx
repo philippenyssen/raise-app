@@ -453,6 +453,32 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
         </div>
       )}
 
+      {/* Status bar */}
+      <div
+        className="shrink-0 flex items-center justify-between"
+        style={{
+          borderTop: '1px solid var(--border-subtle)',
+          backgroundColor: 'var(--surface-1)',
+          padding: '2px var(--space-3)',
+          minHeight: '24px',
+        }}>
+        <div className="flex items-center" style={{ gap: 'var(--space-3)', fontSize: '10px', color: 'var(--text-muted)' }}>
+          {selectedCell && cells[selectedCell] && (
+            <>
+              {cells[selectedCell]?.f && <span>Formula</span>}
+              {cells[selectedCell]?.t === 'n' && <span>Number</span>}
+              {cells[selectedCell]?.t === 's' && <span>Text</span>}
+              {cells[selectedCell]?.bold && <span>Bold</span>}
+              {cells[selectedCell]?.fmt && <span>Fmt: {cells[selectedCell].fmt}</span>}
+            </>
+          )}
+          <span>{Object.keys(cells).length} cells</span>
+        </div>
+        <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+          {editingCell ? 'Enter to confirm · Esc to cancel' : selectedCell ? 'Enter to edit · Arrows to navigate · Type to input · Del to clear' : 'Click a cell to start'}
+        </div>
+      </div>
+
       {/* Sheet tabs */}
       {allSheets && allSheets.length > 1 && (
         <div

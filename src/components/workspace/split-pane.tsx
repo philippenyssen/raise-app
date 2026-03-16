@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { FileText, Sparkles } from 'lucide-react';
+import { FileText, Sparkles, PanelRightOpen, PanelRightClose } from 'lucide-react';
 
 function useIsMobile(breakpoint = 768) {
   const [isMobile, setIsMobile] = useState(false);
@@ -30,8 +30,21 @@ export function SplitPane({ left, right, defaultSplit = 55, minLeft = 30, minRig
   const [split, setSplit] = useState(defaultSplit);
   const [dragging, setDragging] = useState(false);
   const [activePane, setActivePane] = useState<'left' | 'right'>('left');
+  const [rightCollapsed, setRightCollapsed] = useState(false);
+  const [savedSplit, setSavedSplit] = useState(defaultSplit);
   const containerRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
+
+  const toggleRightPanel = useCallback(() => {
+    if (rightCollapsed) {
+      setSplit(savedSplit);
+      setRightCollapsed(false);
+    } else {
+      setSavedSplit(split);
+      setSplit(100);
+      setRightCollapsed(true);
+    }
+  }, [rightCollapsed, split, savedSplit]);
 
   const calcSplit = useCallback((clientX: number) => {
     if (!containerRef.current) return;
@@ -107,19 +120,47 @@ export function SplitPane({ left, right, defaultSplit = 55, minLeft = 30, minRig
 
   return (
     <div ref={containerRef} className="flex h-full w-full overflow-hidden" style={{ cursor: dragging ? 'col-resize' : undefined }}>
-      <div style={{ width: `${split}%` }} className="h-full overflow-hidden flex flex-col">
-        {left}</div>
-      <div
-        onMouseDown={handleMouseDown}
-        onTouchStart={handleTouchStart}
-        className="shrink-0 cursor-col-resize transition-colors touch-none"
-        style={{
-          width: '4px',
-          background: dragging ? 'var(--accent)' : 'var(--border-subtle)',
-        }}
-        onMouseEnter={e => { if (!dragging) (e.currentTarget as HTMLElement).style.background = 'var(--border-strong)'; }}
-        onMouseLeave={e => { if (!dragging) (e.currentTarget as HTMLElement).style.background = 'var(--border-subtle)'; }}/>
-      <div style={{ width: `${100 - split}%` }} className="h-full overflow-hidden flex flex-col">
-        {right}</div>
+      <div style={{ width: rightCollapsed ? '100%' : `${split}%` }} className="h-full overflow-hidden flex flex-col relative">
+        {left}
+        {/* Toggle button for AI chat panel */}
+        <button
+          onClick={toggleRightPanel}
+          className="absolute z-20"
+          style={{
+            top: '8px',
+            right: '8px',
+            padding: '4px',
+            borderRadius: 'var(--radius-sm)',
+            background: 'var(--surface-1)',
+            border: '1px solid var(--border-subtle)',
+            cursor: 'pointer',
+            color: 'var(--text-muted)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; (e.currentTarget as HTMLElement).style.borderColor = 'var(--accent)'; }}
+          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-subtle)'; }}
+          title={rightCollapsed ? 'Show AI chat' : 'Hide AI chat'}
+        >
+          {rightCollapsed ? <PanelRightOpen className="w-4 h-4" /> : <PanelRightClose className="w-4 h-4" />}
+        </button>
+      </div>
+      {!rightCollapsed && (
+        <>
+          <div
+            onMouseDown={handleMouseDown}
+            onTouchStart={handleTouchStart}
+            className="shrink-0 cursor-col-resize transition-colors touch-none"
+            style={{
+              width: '4px',
+              background: dragging ? 'var(--accent)' : 'var(--border-subtle)',
+            }}
+            onMouseEnter={e => { if (!dragging) (e.currentTarget as HTMLElement).style.background = 'var(--border-strong)'; }}
+            onMouseLeave={e => { if (!dragging) (e.currentTarget as HTMLElement).style.background = 'var(--border-subtle)'; }}/>
+          <div style={{ width: `${100 - split}%` }} className="h-full overflow-hidden flex flex-col">
+            {right}</div>
+        </>
+      )}
     </div>);
 }
