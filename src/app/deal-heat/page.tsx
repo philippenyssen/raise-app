@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { cachedFetch } from '@/lib/cache';
 import Link from 'next/link';
 import { Flame, Filter, TrendingUp, Thermometer } from 'lucide-react';
@@ -90,8 +90,8 @@ export default function DealHeatPage() {
   }
 
   const { investors, counts } = data;
-  const filtered = filter === 'all' ? investors : investors.filter(inv => inv.dealHeat.label === filter);
-  const avgHeat = investors.length > 0 ? Math.round(investors.reduce((s, i) => s + i.dealHeat.heat, 0) / investors.length) : 0;
+  const filtered = useMemo(() => filter === 'all' ? investors : investors.filter(inv => inv.dealHeat.label === filter), [investors, filter]);
+  const avgHeat = useMemo(() => investors.length > 0 ? Math.round(investors.reduce((s, i) => s + i.dealHeat.heat, 0) / investors.length) : 0, [investors]);
 
   const filterButtons: { level: HeatLevel; label: string; count: number }[] = [
     { level: 'all', label: 'All', count: counts.total },

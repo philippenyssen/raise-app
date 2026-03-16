@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { cachedFetch, invalidateCache } from '@/lib/cache';
@@ -167,7 +167,7 @@ export default function InvestorsPage() {
     setShowForm(true);
   }
 
-  const filtered = investors.filter(i => {
+  const filtered = useMemo(() => investors.filter(i => {
     if (filter.tier && i.tier !== filter.tier) return false;
     if (filter.status && i.status !== filter.status) return false;
     if (filter.type && i.type !== filter.type) return false;
@@ -177,7 +177,9 @@ export default function InvestorsPage() {
       const q = searchQuery.toLowerCase();
       if (!i.name.toLowerCase().includes(q) && !i.partner.toLowerCase().includes(q) && !(i.notes || '').toLowerCase().includes(q)) return false;
     }
-    return true;}).sort((a, b) => { if (!sortKey) return 0; const dir = sortAsc ? 1 : -1; if (sortKey === 'name') return dir * a.name.localeCompare(b.name); if (sortKey === 'tier') return dir * (a.tier - b.tier); if (sortKey === 'enthusiasm') return dir * ((a.enthusiasm || 0) - (b.enthusiasm || 0)); return dir * ((a.last_meeting_date || '').localeCompare(b.last_meeting_date || '')); });
+    return true;
+  }).sort((a, b) => { if (!sortKey) return 0; const dir = sortAsc ? 1 : -1; if (sortKey === 'name') return dir * a.name.localeCompare(b.name); if (sortKey === 'tier') return dir * (a.tier - b.tier); if (sortKey === 'enthusiasm') return dir * ((a.enthusiasm || 0) - (b.enthusiasm || 0)); return dir * ((a.last_meeting_date || '').localeCompare(b.last_meeting_date || '')); }),
+  [investors, filter, searchQuery, sortKey, sortAsc]);
 
   async function bulkUpdateStatus(newStatus: string) {
     if (bulkUpdating) return;

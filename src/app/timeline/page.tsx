@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { cachedFetch } from '@/lib/cache';
 import {
   CheckCircle2, Circle, Clock, AlertCircle, Plus, Trash2,
@@ -124,21 +124,30 @@ export default function TimelinePage() {
     setCreating(false);
   }
 
-  const filteredTasks = tasks.filter(t => {
-    if (filterPhase && t.phase !== filterPhase) return false;
-    if (filterStatus && t.status !== filterStatus) return false;
-    return true;});
+  const { filteredTasks, tasksByPhase } = useMemo(() => {
+    const ft = tasks.filter(t => {
+      if (filterPhase && t.phase !== filterPhase) return false;
+      if (filterStatus && t.status !== filterStatus) return false;
+      return true;
+    });
+    const byPhase: Record<string, Task[]> = {};
+    for (const t of ft) {
+      if (!byPhase[t.phase]) byPhase[t.phase] = [];
+      byPhase[t.phase].push(t);
+    }
+    return { filteredTasks: ft, tasksByPhase: byPhase };
+  }, [tasks, filterPhase, filterStatus]);
 
-  // Group tasks by phase
-  const tasksByPhase = PHASE_ORDER.reduce<Record<string, Task[]>>((acc, phase) => {
-    const phaseTasks = filteredTasks.filter(t => t.phase === phase);
-    if (phaseTasks.length > 0) acc[phase] = phaseTasks;
-    return acc;
-  }, {});
-
-  const pendingCount = tasks.filter(t => t.status === 'pending' || t.status === 'in_progress').length;
-  const doneCount = tasks.filter(t => t.status === 'done').length;
-  const criticalCount = tasks.filter(t => t.priority === 'critical' && t.status !== 'done').length;
+  // Single-pass task stats
+  const { pendingCount, doneCount, criticalCount } = useMemo(() => {
+    let pending = 0, done = 0, critical = 0;
+    for (const t of tasks) {
+      if (t.status === 'pending' || t.status === 'in_progress') pending++;
+      if (t.status === 'done') done++;
+      if (t.priority === 'critical' && t.status !== 'done') critical++;
+    }
+    return { pendingCount: pending, doneCount: done, criticalCount: critical };
+  }, [tasks]);
 
   if (loading) {
     return (
