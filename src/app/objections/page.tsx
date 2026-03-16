@@ -605,7 +605,7 @@ export default function ObjectionsPage() {
               )}
 
               {selectedInvestor && !loadingInvestor && investorObjections.length === 0 && (
-                <p className="text-xs" style={stTextMuted}>No objections recorded for this investor.</p>
+                <EmptyState icon={MessageCircleWarning} title="No objections recorded" description="Objections from this investor will appear here once logged." />
               )}
 
               {selectedInvestor && !loadingInvestor && investorObjections.length > 0 && (

@@ -382,10 +382,7 @@ export default function EnrichmentPage() {
       {tab === 'history' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
           {jobs.length === 0 ? (
-            <div className="card" style={{ textAlign: 'center', padding: 'var(--space-8)', color: 'var(--text-muted)' }}>
-              <Database style={{ width: '32px', height: '32px', margin: '0 auto var(--space-3)' }} />
-              <p style={stFontSm}>No enrichment data yet. Select an investor above and click Enrich to gather background intelligence from 9 sources.</p>
-            </div>
+            <EmptyState icon={Database} title="No enrichment data yet" description="Select an investor above and click Enrich to gather background intelligence from 9 sources." />
           ) : (
             jobs.map(job => {
               let sources: string[] = [];

@@ -15,6 +15,8 @@ const fontSmPrimary = { ...stFontSm, fontWeight: 400, color: 'var(--text-primary
 const labelXsTertiary = labelTertiary;
 const sectionHeading: React.CSSProperties = { ...labelSecondary, fontWeight: 400, marginBottom: 'var(--space-2)' } as const;
 const badgeMuted: React.CSSProperties = { ...labelMuted, ...stSurface2, padding: '0.125rem var(--space-2)', borderRadius: 'var(--radius-sm)' } as const;
+const accessedDocBadge: React.CSSProperties = { ...labelSecondary, background: 'var(--success-muted)', padding: '0.125rem var(--space-2)', borderRadius: 'var(--radius-sm)' };
+const recommendCountBadge: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--accent)', background: 'var(--accent-muted)', padding: '0.125rem var(--space-2)', borderRadius: 'var(--radius-sm)', fontWeight: 400 };
 
 interface DataRoomFile {
   id: string;
@@ -360,8 +362,7 @@ export default function DataRoomPage() {
                         onDelete={() => setDeleteTarget({ id: file.id, filename: file.filename })} />
                     ))}</div>
                 ) : (
-                  <div style={{ borderRadius: 'var(--radius-md)', padding: 'var(--space-3)', textAlign: 'center' }}>
-                    <p style={labelXsTertiary}>No {cat.label.toLowerCase()} files yet</p></div>
+                  <EmptyState title={`No ${cat.label.toLowerCase()} files yet`} description="Upload files to populate this category." />
                 )}
               </div>);
           })}</div>
@@ -448,7 +449,7 @@ function AccessIntelligenceSection({ intelligence, files, expandedInvestor, onTo
               <MostRequestedRow key={doc.document_id} doc={doc} rank={idx + 1} />
             ))}</div>
         ) : (
-          <p style={{ ...textSmTertiary, textAlign: 'center', padding: 'var(--space-4) 0' }}>No access events recorded yet. Log document access to see rankings.</p>
+          <EmptyState icon={Eye} title="No access events yet" description="Log document access to see rankings." />
         )}</div>
 
       {/* Per-Investor Access */}
@@ -468,7 +469,7 @@ function AccessIntelligenceSection({ intelligence, files, expandedInvestor, onTo
                 files={files} />
             ))}</div>
         ) : (
-          <p style={{ ...textSmTertiary, textAlign: 'center', padding: 'var(--space-4) 0' }}>No active investors yet. Add investors in the CRM to see access tracking.</p>
+          <EmptyState icon={Users} title="No active investors yet" description="Add investors in the CRM to see access tracking." />
         )}</div>
 
       {/* Unreached Investors */}
@@ -567,13 +568,7 @@ function InvestorAccessRow({ investor, expanded, onToggle, onLogAccess, files }:
           <span style={{ fontSize: 'var(--font-size-xs)', color: investor.documents_accessed > 0 ? 'var(--success)' : 'var(--text-tertiary)' }}>
             {investor.documents_accessed} / {files.length} docs ({accessedPct}%)</span>
           {investor.recommended_documents.length > 0 && (
-            <span style={{
-              fontSize: 'var(--font-size-xs)',
-              color: 'var(--accent)',
-              background: 'var(--accent-muted)',
-              padding: '0.125rem var(--space-2)',
-              borderRadius: 'var(--radius-sm)',
-              fontWeight: 400,}}>
+            <span style={recommendCountBadge}>
               {investor.recommended_documents.length} to share</span>
           )}</div></div>
       {expanded && (
@@ -584,7 +579,7 @@ function InvestorAccessRow({ investor, expanded, onToggle, onLogAccess, files }:
               <h4 style={sectionHeading}>Documents Accessed</h4>
               <div className="flex flex-wrap gap-2">
                 {investor.accessed_documents.map(doc => (
-                  <span key={doc.document_id} style={{ ...labelSecondary, background: 'var(--success-muted)', padding: '0.125rem var(--space-2)', borderRadius: 'var(--radius-sm)' }}>{doc.document_title}</span>
+                  <span key={doc.document_id} style={accessedDocBadge}>{doc.document_title}</span>
                 ))}</div></div>
           )}
 
