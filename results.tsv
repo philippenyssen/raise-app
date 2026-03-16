@@ -438,3 +438,4 @@ a9453dc	100	100	0	keep	competitive+engineering	parallelize 3 db.ts heavy loops +
 d0a8295	100	100	0	keep	product+design	a11y aria-labels on pipeline cards + eliminate last JS hover handlers
 214b2f0	100	100	0	keep	engineering+reliability	consolidate TierBadge/EnthusiasmDots/inlineBadgeStyle + 20 DOM hover→CSS
 6c3f07b	100	100	0	keep	ai+intelligence	convert 48 DOM hover handlers to CSS across 12 files
+f3998ed	100	100	0	keep	data+enrichment	convert 15 DOM hover handlers to CSS across 8 files

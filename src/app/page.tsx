@@ -17,7 +17,11 @@ import {
 } from 'lucide-react';
 import { DealHeatInvestor } from '@/lib/types';
 import { STATUS_LABELS } from '@/lib/constants';
-import { labelAccent, labelMuted, labelSecondary, labelTertiary, stAccent, stBorderTop, stSurface2, stTextMuted, stTextSecondary, stTextTertiary as textTertiary } from '@/lib/styles';
+import { labelAccent, labelMuted, labelSecondary, labelSmMuted, labelTertiary, stAccent, stBorderTop, stSurface2, stTextMuted, stTextSecondary, stTextTertiary as textTertiary } from '@/lib/styles';
+
+const textSmPrimary = { fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' } as const;
+const textSmLink = { fontSize: 'var(--font-size-sm)', fontWeight: 400 } as const;
+const metricXlPrimary = { fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' } as const;
 
 // ---------------------------------------------------------------------------
 // Types
@@ -457,7 +461,7 @@ export default function Dashboard() {
                   <span style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 'var(--font-size-lg)', fontWeight: 300, color: scoreClr, fontVariantNumeric: 'tabular-nums' }}>{healthScore}</span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>Fundraise Health</div>
+                  <div style={textSmPrimary}>Fundraise Health</div>
                   <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginTop: 2 }}>{healthScore >= 70 ? 'Strong momentum across the board' : healthScore >= 45 ? 'Some areas need attention' : 'Multiple areas require immediate focus'}</div>
                 </div>
                 <div className="flex gap-4">
@@ -590,21 +594,21 @@ export default function Dashboard() {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div>
                     <div style={labelTertiary}>Target</div>
-                    <div className="tabular-nums mt-0.5" style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>
+                    <div className="tabular-nums mt-0.5" style={metricXlPrimary}>
                       EUR {stressTest.target >= 1000 ? `${(stressTest.target / 1000).toFixed(1).replace(/\.0$/, '')}Bn` : `${stressTest.target}M`}
                     </div></div>
                   <div>
                     <div style={labelTertiary}>Forecast (base)</div>
-                    <div className="tabular-nums mt-0.5" style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>
+                    <div className="tabular-nums mt-0.5" style={metricXlPrimary}>
                       EUR {stressTest.forecast.base >= 1000 ? `${(stressTest.forecast.base / 1000).toFixed(1).replace(/\.0$/, '')}Bn` : `${Math.round(stressTest.forecast.base)}M`}
                     </div></div>
                   <div>
                     <div style={labelTertiary}>Probability</div>
-                    <div className="tabular-nums mt-0.5" style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>
+                    <div className="tabular-nums mt-0.5" style={metricXlPrimary}>
                       {stressTest.closeProbability}%</div></div>
                   <div>
                     <div style={labelTertiary}>Status</div>
-                    <div className="mt-1" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
+                    <div className="mt-1" style={textSmPrimary}>
                       {stressTest.onTrack ? 'On track' : stressTest.healthStatus === 'red' ? 'Needs attention' : 'Monitor'}</div>
                   </div></div></div></Link>
           )}
@@ -665,7 +669,7 @@ export default function Dashboard() {
                         <Link
                           href={`/investors/${rev.investorId}`}
                           className="transition-colors truncate investor-link"
-                          style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}>
+                          style={textSmLink}>
                           {rev.investorName}</Link>
                         <span style={labelTertiary}>
                           {rev.severity}</span></div>
@@ -689,7 +693,7 @@ export default function Dashboard() {
                         <Link
                           href={`/investors/${inv.investorId}`}
                           className="transition-colors truncate investor-link"
-                          style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}>
+                          style={textSmLink}>
                           {inv.investorName}</Link>
                         <span style={labelTertiary}>T{inv.tier}</span>
                         <span style={labelTertiary}>
@@ -740,7 +744,7 @@ export default function Dashboard() {
                           <Link
                             href={`/investors/${item.investorId}`}
                             className="truncate transition-colors investor-link"
-                            style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}>
+                            style={textSmLink}>
                             {item.investorName}</Link>
                           <span style={labelTertiary}>T{item.tier}</span>
                           <MomentumIcon className="w-3.5 h-3.5" style={textTertiary} /></div>
@@ -748,7 +752,7 @@ export default function Dashboard() {
                       <div className="flex items-center gap-2 shrink-0">
                         <span className="flex items-center gap-1" style={labelTertiary}>
                           <Timer className="w-3 h-3" /> {item.timeEstimate}</span>
-                        <span className="tabular-nums" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>{item.focusScore}</span>
+                        <span className="tabular-nums" style={textSmPrimary}>{item.focusScore}</span>
                       </div>
                     </div>);
                 })}</div></div>
@@ -783,7 +787,7 @@ export default function Dashboard() {
                       <div style={labelSecondary}>{ov.meetingNames.join(', ')}</div></div>
                   )}</div>
               ) : (
-                <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>Loading overnight data...</p>
+                <p style={labelSmMuted}>Loading overnight data...</p>
               )}</div>
 
             <div style={cardPadding}>
@@ -829,7 +833,7 @@ export default function Dashboard() {
                       ))}</div>
                   )}</div>
               ) : (
-                <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>Loading conviction data...</p>
+                <p style={labelSmMuted}>Loading conviction data...</p>
               )}</div></div>}
 
           {/* Acceleration Alerts */}
@@ -853,7 +857,7 @@ export default function Dashboard() {
                           <Link
                             href={`/investors/${accel.investorId}`}
                             className="transition-colors investor-link"
-                            style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}>
+                            style={textSmLink}>
                             {accel.investorName}</Link>
                           <span style={labelTertiary}>
                             {accel.urgency === 'immediate' ? 'Now' : accel.urgency}</span>
@@ -885,7 +889,7 @@ export default function Dashboard() {
                   ))}</div>
               ) : (
                 <div style={{ padding: 'var(--space-2) 0' }}>
-                  <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>No active deals scored yet</p>
+                  <p style={labelSmMuted}>No active deals scored yet</p>
                   <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 'var(--space-1)', opacity: 0.7 }}>Log meetings to generate deal heat scores</p>
                 </div>
               )}</div>
@@ -908,7 +912,7 @@ export default function Dashboard() {
                   ))}</div>
               ) : (
                 <div style={{ padding: 'var(--space-2) 0' }}>
-                  <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>No pending follow-ups</p>
+                  <p style={labelSmMuted}>No pending follow-ups</p>
                   <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 'var(--space-1)', opacity: 0.7 }}>Follow-ups are created after meeting debriefs</p>
                 </div>
               )}</div></div>}
@@ -938,7 +942,7 @@ export default function Dashboard() {
                         className="w-full rounded-md h-9 flex items-center justify-between px-4"
                         style={{ background: `rgba(27, 42, 74, ${Math.max(opacity * 0.12, 0.04)})` }}>
                         <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-secondary)' }}>{stage.label}</span>
-                        <span className="tabular-nums" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>{stage.value}</span>
+                        <span className="tabular-nums" style={textSmPrimary}>{stage.value}</span>
                       </div>
                     </div>
                   </div>);
@@ -975,7 +979,7 @@ export default function Dashboard() {
                 href={href}
                 className="group rounded-xl p-4 transition-colors">
                 <Icon className="w-5 h-5 mb-2" style={textTertiary} />
-                <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>{label}</div>
+                <div style={textSmPrimary}>{label}</div>
                 <div className="mt-1" style={labelMuted}>{sub}</div>
                 <div className="mt-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity" style={labelAccent}>
                   Open <ArrowRight className="w-3 h-3" /></div></Link>
@@ -1038,7 +1042,7 @@ export default function Dashboard() {
                 <SectionError label="Tasks" onRetry={() => fetchSection('tasks')} />
               ) : tasks.length === 0 ? (
                 <div style={{ padding: 'var(--space-2) 0' }}>
-                  <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>No immediate deadlines — <Link href="/meetings/capture" style={{ color: 'var(--accent)', textDecoration: 'none' }}>log a meeting</Link> to generate tasks</p>
+                  <p style={labelSmMuted}>No immediate deadlines — <Link href="/meetings/capture" style={{ color: 'var(--accent)', textDecoration: 'none' }}>log a meeting</Link> to generate tasks</p>
                 </div>
               ) : (
                 <div className="space-y-2">
@@ -1071,7 +1075,7 @@ export default function Dashboard() {
                 <SectionError label="Activity" onRetry={() => fetchSection('activity')} />
               ) : activity.length === 0 ? (
                 <div style={{ padding: 'var(--space-2) 0' }}>
-                  <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>No activity recorded yet</p></div>
+                  <p style={labelSmMuted}>No activity recorded yet</p></div>
               ) : (
                 <div className="space-y-1">
                   {activity.slice(0, 10).map(a => (
@@ -1118,7 +1122,7 @@ export default function Dashboard() {
                     className="rounded-xl p-4 transition-colors"
                     style={{ textDecoration: 'none' }}>
                     <div className="flex items-center gap-2">
-                      <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>{a.label}</span>
+                      <span style={textSmPrimary}>{a.label}</span>
                       {a.count && (
                         <span className="tabular-nums" style={labelTertiary}>
                           {a.count}</span>
@@ -1245,20 +1249,20 @@ function VelocityStrip({ velocity }: { velocity: VelocityResponse }) {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-3">
           <div>
             <div style={labelTertiary}>Days elapsed</div>
-            <div className="tabular-nums mt-0.5" style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>
+            <div className="tabular-nums mt-0.5" style={metricXlPrimary}>
               {s.raise_days_elapsed}
               <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', fontWeight: 300 }}>/{s.raise_target_days}d</span>
             </div></div>
           <div>
             <div style={labelTertiary}>Avg mtgs/week</div>
             <div className="flex items-center gap-1.5 mt-0.5">
-              <span className="tabular-nums" style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>{avgMeetingsPerWeek}</span>
+              <span className="tabular-nums" style={metricXlPrimary}>{avgMeetingsPerWeek}</span>
               <span style={textTertiary}>
                 {trendUp ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}</span></div></div>
           <div>
             <div style={labelTertiary}>Velocity score</div>
             <div className="flex items-center gap-2 mt-0.5">
-              <span className="tabular-nums" style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>
+              <span className="tabular-nums" style={metricXlPrimary}>
                 {s.avg_velocity_score}
                 <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', fontWeight: 300 }}>/100</span></span>
               {sparkData.length > 1 && <Sparkline data={sparkData} />}</div></div>
@@ -1297,14 +1301,14 @@ function HotDealRow({ investor }: { investor: DealHeatInvestor }) {
           <Link
             href={`/investors/${investor.id}`}
             className="truncate transition-colors investor-link"
-            style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}>
+            style={textSmLink}>
             {investor.name}</Link>
           <span style={labelTertiary}>T{investor.tier}</span></div>
         <div className="mt-0.5 flex items-center gap-2" style={labelMuted}>
           <span>{formatStage(investor.status)}</span>
           {daysSilent !== null && daysSilent >= 7 && <span style={{ color: daysSilent >= 14 ? 'var(--danger)' : 'var(--warning)', fontSize: 'var(--font-size-xs)' }}>{daysSilent}d silent</span>}</div></div>
       <div className="flex items-center gap-2 shrink-0">
-        <span className="tabular-nums" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
+        <span className="tabular-nums" style={textSmPrimary}>
           {investor.dealHeat.heat}</span>
         <Link
           href={`/meetings/new?investor=${investor.id}`}
@@ -1362,7 +1366,7 @@ function FollowupRow({ followup, onComplete }: { followup: FollowupItem; onCompl
           <Link
             href={`/investors/${followup.investor_id}`}
             className="truncate transition-colors investor-link"
-            style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}>
+            style={textSmLink}>
             {followup.investor_name || 'Unknown'}</Link>
           <span style={labelTertiary}>
             {ACTION_LABELS[followup.action_type] || followup.action_type.replace(/_/g, ' ')}</span></div>
