@@ -272,7 +272,7 @@ export default function HealthPage() {
                 <span>Verified {fmtDateTime(intelVerify.verifiedAt)}</span></div>
             )}</div>
         ) : (
-          <p className="text-sm" style={stTextMuted}>Intelligence verification unavailable.</p>
+          <p className="text-sm" style={stTextMuted}>Intelligence verification failed — refresh the page to retry.</p>
         )}</div>
 
       {/* Key Metrics Summary */}
