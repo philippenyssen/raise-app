@@ -157,6 +157,17 @@ export async function GET() {
       narrative += ` ${atRisk.length} investor${atRisk.length > 1 ? 's' : ''} going cold (14+ days no contact).`;
     }
 
+    // Deprioritization candidates: low score + stale + low enthusiasm
+    const deprioritize = scored
+      .filter(s => s.focusScore < 15 && s.enthusiasm <= 2.5 && s.daysSinceContact !== null && s.daysSinceContact > 21)
+      .slice(0, 5)
+      .map(s => ({
+        ...s,
+        deprioritizeReason: s.daysSinceContact! > 30
+          ? `${s.daysSinceContact}d since contact, enthusiasm ${s.enthusiasm}/5 — consider formally passing`
+          : `Low engagement (score ${s.focusScore}), enthusiasm ${s.enthusiasm}/5 — reallocate time to higher-conviction investors`,
+      }));
+
     if (targetClose) {
       const daysToTarget = Math.floor((new Date(targetClose).getTime() - now) / 864e5);
       if (daysToTarget > 0) narrative += ` Target close in ${daysToTarget} days.`;
@@ -164,6 +175,7 @@ export async function GET() {
 
     return NextResponse.json({
       focusRanking: top,
+      deprioritize,
       narrative,
       stats: { totalActive, inDD, termSheets, engaged, atRisk: atRisk.length, totalPipeline: investors.length },
       generatedAt: new Date().toISOString(),

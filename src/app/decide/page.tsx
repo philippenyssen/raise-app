@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
-import { Target, ArrowRight, Clock, AlertTriangle, TrendingUp, Copy, Check, RefreshCw, Zap, Users } from 'lucide-react';
+import { Target, ArrowRight, Clock, AlertTriangle, TrendingUp, Copy, Check, RefreshCw, Zap, Users, MinusCircle } from 'lucide-react';
 import { cachedFetch, invalidateCache } from '@/lib/cache';
 
 const STATUS_LABELS: Record<string, string> = {
@@ -18,8 +18,13 @@ interface FocusInvestor {
   pendingFollowups: number; pendingTasks: number;
 }
 
+interface DeprioritizeInvestor extends FocusInvestor {
+  deprioritizeReason: string;
+}
+
 interface DecideData {
   focusRanking: FocusInvestor[];
+  deprioritize: DeprioritizeInvestor[];
   narrative: string;
   stats: { totalActive: number; inDD: number; termSheets: number; engaged: number; atRisk: number; totalPipeline: number };
   generatedAt: string;
@@ -85,7 +90,7 @@ export default function DecidePage() {
     );
   }
 
-  const { focusRanking, narrative, stats, generatedAt } = data;
+  const { focusRanking, deprioritize, narrative, stats, generatedAt } = data;
 
   return (
     <div className="page-content" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
@@ -247,6 +252,34 @@ export default function DecidePage() {
           )}
         </div>
       </div>
+
+      {/* Deprioritize Section */}
+      {deprioritize && deprioritize.length > 0 && (
+        <div>
+          <h2 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, ...textPrimary, marginBottom: 'var(--space-3)' }}>
+            Consider deprioritizing</h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+            {deprioritize.map(inv => (
+              <div key={inv.id} style={{
+                background: 'var(--surface-0)', borderRadius: 'var(--radius-md)', padding: 'var(--space-3)',
+                border: '1px solid var(--border-subtle)', display: 'flex', alignItems: 'center', gap: 'var(--space-3)',
+              }}>
+                <MinusCircle className="w-3.5 h-3.5 shrink-0" style={{ color: 'var(--text-muted)' }} />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div className="flex items-center gap-2">
+                    <Link href={`/investors/${inv.id}`} style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-secondary)', textDecoration: 'none' }}>
+                      {inv.name}</Link>
+                    <span style={{ fontSize: '10px', padding: '0 4px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', ...textMuted }}>T{inv.tier}</span>
+                    <span style={{ fontSize: '10px', ...textMuted }}>{STATUS_LABELS[inv.status] || inv.status}</span>
+                  </div>
+                  <p style={{ fontSize: '10px', ...textMuted, marginTop: '2px' }}>{inv.deprioritizeReason}</p>
+                </div>
+                <span style={{ fontSize: 'var(--font-size-xs)', ...textMuted, whiteSpace: 'nowrap' }}>{inv.focusScore} pts</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
