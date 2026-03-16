@@ -323,9 +323,37 @@ export function DocumentViewer({ document, onContentChange, onSave, onDelete, on
   if (!document) {
     return (
       <div className="h-full flex items-center justify-center" style={{ color: 'var(--text-muted)' }}>
-        <div className="text-center" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--space-3)' }}>
-          <FileText style={{ width: '48px', height: '48px' }} />
-          <p style={{ fontSize: 'var(--font-size-sm)' }}>Select a deliverable from the sidebar, or generate one</p>
+        <div className="text-center" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--space-4)', maxWidth: '320px' }}>
+          <FileText style={{ width: '48px', height: '48px', opacity: 0.5 }} />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>No document selected</p>
+            <p style={{ fontSize: 'var(--font-size-xs)' }}>Select a deliverable from the sidebar, or create a new one</p>
+          </div>
+          <div className="flex flex-wrap justify-center" style={{ gap: 'var(--space-2)', marginTop: 'var(--space-2)' }}>
+            {[
+              { icon: FileText, label: 'Document', tip: 'Rich text editor' },
+              { icon: FileSpreadsheet, label: 'Spreadsheet', tip: 'Cell-based editor' },
+              { icon: Presentation, label: 'Deck', tip: 'Slide editor' },
+            ].map(item => (
+              <div
+                key={item.label}
+                className="flex flex-col items-center"
+                style={{
+                  padding: 'var(--space-3)',
+                  borderRadius: 'var(--radius-md)',
+                  border: '1px solid var(--border-subtle)',
+                  background: 'var(--surface-1)',
+                  width: '90px',
+                  gap: '4px',
+                  opacity: 0.6,
+                }}
+              >
+                <item.icon style={{ width: '20px', height: '20px' }} />
+                <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{item.label}</span>
+                <span style={{ fontSize: '9px' }}>{item.tip}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     );
