@@ -349,6 +349,7 @@ export default function WorkspacePage() {
               documentId={selectedDoc?.id ?? null}
               documentContent={editedContent}
               documentTitle={selectedDoc?.title ?? ''}
+              documentType={selectedDoc?.type}
               onApplyChange={handleApplyAIChange} />
           }
           defaultSplit={58} /></div>

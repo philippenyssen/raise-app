@@ -11,12 +11,13 @@ interface AIChatProps {
   documentId: string | null;
   documentContent: string;
   documentTitle: string;
+  documentType?: string;
   onApplyChange?: (newContent: string) => void;
 }
 
 interface PendingChange { content: string; messageIdx: number; }
 
-export function AIChat({ documentId, documentContent, documentTitle, onApplyChange }: AIChatProps) {
+export function AIChat({ documentId, documentContent, documentTitle, documentType, onApplyChange }: AIChatProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -54,6 +55,7 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
           documentId,
           documentContent,
           documentTitle,
+          documentType,
         }),});
 
       if (!res.ok) throw new Error('AI request failed');
@@ -95,6 +97,7 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
 
       const contentMatch = fullText.match(/<updated_content>([\s\S]*?)<\/updated_content>/);
       const cellMatch = fullText.match(/<cell_updates>([\s\S]*?)<\/cell_updates>/);
+      const slideMatch = fullText.match(/<slide_updates>([\s\S]*?)<\/slide_updates>/);
 
       if (contentMatch) {
         const updatedContent = contentMatch[1].trim();
@@ -104,13 +107,63 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
           updated[assistantIdx] = { role: 'assistant', content: cleanResponse };
           return updated;});
         setPendingChange({ content: updatedContent, messageIdx: assistantIdx });
-      } else if (cellMatch && onApplyChange) {
+      } else if (cellMatch) {
+        // Merge cell updates into existing spreadsheet content
         const cleanResponse = fullText.replace(/<cell_updates>[\s\S]*?<\/cell_updates>/, '').trim();
         setMessages(prev => {
           const updated = [...prev];
           updated[assistantIdx] = { role: 'assistant', content: cleanResponse };
           return updated;});
-        setPendingChange({ content: fullText, messageIdx: assistantIdx });
+        try {
+          const cellUpdates = JSON.parse(cellMatch[1].trim());
+          const existing = documentContent ? JSON.parse(documentContent) : {};
+          const cells = existing.cells || existing;
+          // Apply each cell update
+          for (const update of Array.isArray(cellUpdates) ? cellUpdates : Object.entries(cellUpdates).map(([ref, val]) => ({ ref, ...(val as object) }))) {
+            const ref = update.ref || update.cell;
+            if (!ref) continue;
+            cells[ref] = {
+              v: update.formula ? update.value : (isNaN(Number(update.value)) ? update.value : Number(update.value)),
+              ...(update.formula ? { f: update.formula } : {}),
+              t: isNaN(Number(update.value)) ? 's' : 'n',
+              ...(update.bold ? { bold: true } : {}),
+            };
+          }
+          const merged = existing.cells ? { ...existing, cells } : cells;
+          setPendingChange({ content: JSON.stringify(merged, null, 2), messageIdx: assistantIdx });
+        } catch {
+          // If parsing fails, don't apply
+          console.warn('[AICHAT] Failed to parse cell_updates');
+        }
+      } else if (slideMatch) {
+        // Merge slide updates into existing presentation content
+        const cleanResponse = fullText.replace(/<slide_updates>[\s\S]*?<\/slide_updates>/, '').trim();
+        setMessages(prev => {
+          const updated = [...prev];
+          updated[assistantIdx] = { role: 'assistant', content: cleanResponse };
+          return updated;});
+        try {
+          const slideUpdates = JSON.parse(slideMatch[1].trim());
+          if (Array.isArray(slideUpdates)) {
+            // Full slide array replacement
+            setPendingChange({ content: JSON.stringify(slideUpdates, null, 2), messageIdx: assistantIdx });
+          } else if (slideUpdates.action === 'update' && slideUpdates.slides) {
+            // Partial update: merge specific slides
+            const existing = documentContent ? JSON.parse(documentContent) : [];
+            const slides = Array.isArray(existing) ? existing : existing.slides || [];
+            for (const updated of slideUpdates.slides) {
+              const idx = slides.findIndex((s: { id: string }) => s.id === updated.id);
+              if (idx >= 0) {
+                slides[idx] = { ...slides[idx], ...updated };
+              } else {
+                slides.push(updated);
+              }
+            }
+            setPendingChange({ content: JSON.stringify(slides, null, 2), messageIdx: assistantIdx });
+          }
+        } catch {
+          console.warn('[AICHAT] Failed to parse slide_updates');
+        }
       }
     } catch (e) {
       console.warn('[AICHAT_SEND]', e instanceof Error ? e.message : e);
@@ -125,7 +178,7 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
     } finally {
       setLoading(false);
     }
-  }, [messages, loading, documentId, documentContent, documentTitle]);
+  }, [messages, loading, documentId, documentContent, documentTitle, documentType]);
 
   const retryLast = useCallback(() => {
     const lastUserIdx = messages.findLastIndex(m => m.role === 'user');
@@ -181,13 +234,25 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
               <p style={textSmMuted}>Edit, critique, or rewrite any section of this document</p>
               <div className="flex flex-wrap gap-2 justify-center">
-                {[
+                {(documentType === 'model' || documentType === 'spreadsheet' ? [
+                  'Add a sensitivity analysis row',
+                  'Check formulas for errors',
+                  'Add revenue bridge assumptions',
+                  'Recalculate growth rates',
+                  'Add unit economics breakdown',
+                ] : documentType === 'presentation' || documentType === 'deck' ? [
+                  'Add a market size slide',
+                  'Improve the title slide',
+                  'Add speaker notes',
+                  'Strengthen the returns slide',
+                  'Add a competitive landscape slide',
+                ] : [
                   'Make the executive summary more concise',
                   'Add quantitative evidence to the TAM section',
                   'Rewrite in Goldman style',
                   'Find weak arguments',
                   'Check for inconsistencies',
-                ].map((suggestion) => (
+                ]).map((suggestion) => (
                   <button
                     key={suggestion}
                     onClick={() => sendMessage(suggestion)}
@@ -283,7 +348,7 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder={documentId ? 'e.g. "Sharpen the risk factors" or "Rewrite Section 3 for a growth equity IC"' : 'Select a document first...'}
+              placeholder={!documentId ? 'Select a document first...' : documentType === 'model' || documentType === 'spreadsheet' ? 'e.g. "Add bear case assumptions" or "Fix the COGS formula"' : documentType === 'presentation' || documentType === 'deck' ? 'e.g. "Add a TAM slide" or "Make the title more impactful"' : 'e.g. "Sharpen the risk factors" or "Rewrite Section 3 for a growth equity IC"'}
               disabled={loading || !documentId}
               rows={1}
               maxLength={5000}

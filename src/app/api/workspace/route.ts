@@ -380,6 +380,7 @@ export async function POST(req: NextRequest) {
   const documentId = body.documentId as string | null;
   const documentContent = body.documentContent as string | undefined;
   const documentTitle = body.documentTitle as string | undefined;
+  const documentType = body.documentType as string | undefined;
 
   const fullCtx = await getFullContext();
 
@@ -414,7 +415,7 @@ You are an expert fundraising advisor and document specialist embedded in a Seri
 
 ${fullContextStr}
 
-CURRENT DOCUMENT: "${documentTitle}" (${documentId ? 'loaded' : 'none selected'})
+CURRENT DOCUMENT: "${documentTitle}" (type: ${documentType || 'unknown'}, ${documentId ? 'loaded' : 'none selected'})
 ${documentContent ? `\nDOCUMENT CONTENT:\n${documentContent.substring(0, 60000)}` : ''}
 
 OTHER DOCUMENTS IN THIS RAISE:
@@ -427,9 +428,31 @@ MARKET INTELLIGENCE (deals, competitors, research briefs):
 ${fullCtx.intelligenceSummary}
 
 INSTRUCTIONS:
+${documentType === 'model' || documentType === 'spreadsheet' ? `
+DOCUMENT FORMAT: SPREADSHEET (JSON cell data)
+1. When the user asks to modify the spreadsheet, provide your analysis AND the cell changes.
+2. Wrap cell changes in <cell_updates>[{"ref":"A1","value":"new value","formula":"=B1+C1"},{"ref":"B2","value":1000}]</cell_updates> tags.
+   - Each object needs: "ref" (cell reference like "A1"), "value" (display value)
+   - Optional: "formula" (Excel formula string), "bold" (boolean)
+   - Only include cells that CHANGE, not the entire sheet
+3. For adding new rows/columns, include all new cells in the update array.
+4. Formulas should reference other cells (e.g., "=SUM(B2:B10)") and use standard Excel syntax.
+` : documentType === 'presentation' || documentType === 'deck' ? `
+DOCUMENT FORMAT: SLIDES (JSON slide array)
+1. When the user asks to modify slides, provide your analysis AND the slide changes.
+2. Wrap slide changes in <slide_updates>[...slides...]</slide_updates> tags.
+   - For replacing all slides: provide the full array of slide objects
+   - For updating specific slides: use {"action":"update","slides":[{"id":"existing-id","elements":[...]}]}
+   - Each slide: {"id":"uuid","layout":"title_content","elements":[...],"notes":"speaker notes"}
+   - Each element: {"id":"uuid","type":"title|subtitle|body|bullet|number","content":"text","x":5,"y":10,"width":90}
+   - x/y/width are percentages. fontSize is optional (e.g., "2.5em")
+3. For bullet elements, separate items with newlines in the content string.
+` : `
+DOCUMENT FORMAT: RICH TEXT (HTML)
 1. When the user asks you to improve, rewrite, or change the document, respond with your analysis AND include the full updated document content.
 2. When providing updated content, wrap it in <updated_content>...</updated_content> tags so the system can extract and apply it.
-3. For financial model changes, wrap cell updates in <cell_updates>[{"ref":"A1","value":"new value","formula":"=B1+C1"}]</cell_updates> tags.
+3. The content is HTML. Use proper HTML tags: <h1>, <h2>, <p>, <strong>, <em>, <ul>, <ol>, <li>, <blockquote>, <table>, etc.
+`}
 4. Be direct, specific, and IC-grade in your feedback. No hedging.
 5. Every suggestion should make the document more compelling, more accurate, or more concise.
 6. When asked to "rewrite in Goldman style": short sentences, active voice, numbers first, no hedging, bold key metrics.
