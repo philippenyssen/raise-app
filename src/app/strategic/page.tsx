@@ -20,6 +20,7 @@ const trendDeltaRow = { fontSize: 'var(--font-size-xs)' } as const;
 const trendStreakLabel = { fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginTop: 'var(--space-0)' } as const;
 const investorLinkStyle = { color: 'var(--accent)', textDecoration: 'none', fontWeight: 400 } as const;
 const daysNumericStyle = { fontVariantNumeric: 'tabular-nums', color: 'var(--text-secondary)' } as const;
+const numPrimaryStyle = { color: 'var(--text-primary)', fontWeight: 400, fontVariantNumeric: 'tabular-nums' } as const;
 const riskFactorText = { fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', opacity: 0.8 } as const;
 const trendAlertWrap = { marginTop: 'var(--space-1)' } as const;
 const trendAlertText = { fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', lineHeight: 1.3 } as const;
@@ -291,11 +292,11 @@ export default function StrategicPage() {
           <div className="mt-auto space-y-1.5">
             <div className="flex items-center justify-between" style={stFontSm}>
               <span style={stTextMuted}>Meetings/wk</span>
-              <span style={{ color: 'var(--text-primary)', fontWeight: 400, fontVariantNumeric: 'tabular-nums' }}>{data.raiseVelocity.meetingsPerWeek}</span>
+              <span style={numPrimaryStyle}>{data.raiseVelocity.meetingsPerWeek}</span>
             </div>
             <div className="flex items-center justify-between" style={stFontSm}>
               <span style={stTextMuted}>Advances/wk</span>
-              <span style={{ color: 'var(--text-primary)', fontWeight: 400, fontVariantNumeric: 'tabular-nums' }}>{data.raiseVelocity.stageAdvancesPerWeek}</span>
+              <span style={numPrimaryStyle}>{data.raiseVelocity.stageAdvancesPerWeek}</span>
             </div></div></div></div>
 
       {/* ================================================================ */}
