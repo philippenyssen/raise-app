@@ -88,7 +88,7 @@ export async function POST(req: NextRequest) {
       raw_notes: rawNotes,
       questions_asked: JSON.stringify(aiData.questions_asked || []),
       objections: JSON.stringify(aiData.objections || []),
-      engagement_signals: JSON.stringify(aiData.engagement_signals || {}),
+      engagement_signals: JSON.stringify({ ...(aiData.engagement_signals || {}), decision_drivers: aiData.decision_drivers || undefined }),
       competitive_intel: (aiData.competitive_intel as string) || '',
       next_steps: (aiData.next_steps as string) || '',
       enthusiasm_score: finalEnthusiasm,

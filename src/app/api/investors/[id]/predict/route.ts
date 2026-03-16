@@ -98,6 +98,21 @@ export async function GET(
       else if (thisVelocity.signal === 'gone_silent') closeProbability *= 0.5;
     }
 
+    // Decision driver signals from recent meetings
+    for (const m of sortedMeetings.slice(0, 3)) {
+      try {
+        const signals = JSON.parse(m.engagement_signals || '{}');
+        const dd = signals?.decision_drivers;
+        if (dd) {
+          if (dd.commitment_language && dd.commitment_language.length > 0) closeProbability *= 1.15;
+          if (dd.ic_readiness === 'scheduled' || dd.ic_readiness === 'approved') closeProbability *= 1.12;
+          else if (dd.ic_readiness === 'preparing_memo') closeProbability *= 1.05;
+          if (dd.timeline_specificity === 'specific') closeProbability *= 1.08;
+          break; // Only use most recent meeting's drivers
+        }
+      } catch { /* engagement_signals may not be valid JSON */ }
+    }
+
     // Score trend from snapshots
     let scoreTrend: 'rising' | 'falling' | 'stable' = 'stable';
     if (snapshots.length >= 2) {
