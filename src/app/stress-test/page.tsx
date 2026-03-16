@@ -100,6 +100,12 @@ function enthusiasmColor(enthusiasm: number): string {
   return 'var(--text-primary)';
 }
 
+const cpRowBg = { background: 'var(--surface-2)' } as const;
+const cpRankBadge = { fontSize: 'var(--font-size-xs)', background: 'var(--accent-muted)', color: 'var(--accent)' } as const;
+const riskBadgeHigh: React.CSSProperties = { color: 'var(--text-primary)', background: 'var(--danger-muted)', borderColor: 'var(--accent-10)' };
+const riskBadgeMedium: React.CSSProperties = { color: 'var(--text-tertiary)', background: 'var(--warning-muted)', borderColor: 'var(--warn-30)' };
+const riskBadgeLow: React.CSSProperties = { color: 'var(--text-secondary)', background: 'var(--white-10)', borderColor: 'var(--border-subtle)' };
+
 const TIER_STYLES: Record<number, React.CSSProperties> = {
   1: { color: 'var(--text-tertiary)', background: 'var(--warning-muted)', borderColor: 'var(--warn-30)' },
   2: { color: 'var(--accent)', background: 'var(--accent-muted)', borderColor: 'var(--accent-muted)' },
@@ -423,11 +429,7 @@ export default function StressTestPage() {
             <div className="space-y-2">
               {data.risks.map((risk, i) => {
                 const isExpanded = expandedRisks.includes(i);
-                const riskBadgeStyle: React.CSSProperties = risk.probability === 'High'
-                  ? { color: 'var(--text-primary)', background: 'var(--danger-muted)', borderColor: 'var(--accent-10)' }
-                  : risk.probability === 'Medium'
-                  ? { color: 'var(--text-tertiary)', background: 'var(--warning-muted)', borderColor: 'var(--warn-30)' }
-                  : { color: 'var(--text-secondary)', background: 'var(--white-10)', borderColor: 'var(--border-subtle)' };
+                const riskBadgeStyle = risk.probability === 'High' ? riskBadgeHigh : risk.probability === 'Medium' ? riskBadgeMedium : riskBadgeLow;
                 return (
                   <div key={i} className="rounded-lg overflow-hidden">
                     <button
@@ -477,10 +479,10 @@ export default function StressTestPage() {
                     <div
                       key={i}
                       className="hover-row flex items-center gap-3 py-1.5 px-3 rounded-lg"
-                      style={{ background: 'var(--surface-2)' }}>
+                      style={cpRowBg}>
                       <span
                         className="w-5 h-5 rounded flex items-center justify-center font-normal shrink-0"
-                        style={{ fontSize: 'var(--font-size-xs)', background: 'var(--accent-muted)', color: 'var(--accent)' }}>
+                        style={cpRankBadge}>
                         {i + 1}</span>
                       <span className="text-sm flex-1 truncate" style={stTextSecondary}>{name}</span>
                       {investor && (

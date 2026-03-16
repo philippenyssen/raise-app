@@ -25,6 +25,9 @@ interface CompetitiveData {
 }
 
 const investorTagStyle: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-secondary)' };
+const compGridRow: React.CSSProperties = { gridTemplateColumns: '32px 1fr 80px 1fr 120px', padding: 'var(--space-3) var(--space-4)', borderBottom: '1px solid var(--border-subtle)', cursor: 'pointer' };
+const mtgRowStyle = { fontSize: 'var(--font-size-sm)', padding: 'var(--space-2) var(--space-3)', background: 'var(--surface-0)', borderRadius: 'var(--radius-sm)' } as const;
+const mtgDateStyle = { color: 'var(--text-tertiary)', minWidth: '80px' } as const;
 
 export default function CompetitivePage() {
   const { toast } = useToast();
@@ -160,11 +163,7 @@ export default function CompetitivePage() {
               <div key={c.name}>
                 <div
                   className="grid items-center hover-row"
-                  style={{
-                    gridTemplateColumns: '32px 1fr 80px 1fr 120px',
-                    padding: 'var(--space-3) var(--space-4)',
-                    borderBottom: '1px solid var(--border-subtle)',
-                    cursor: 'pointer', }}
+                  style={compGridRow}
                   onClick={() => setExpandedRow(isExpanded ? null : c.name)}
                   role="button"
                   aria-expanded={isExpanded}
@@ -209,13 +208,9 @@ export default function CompetitivePage() {
                         <div
                           key={i}
                           className="flex items-center gap-3"
-                          style={{
-                            fontSize: 'var(--font-size-sm)',
-                            padding: 'var(--space-2) var(--space-3)',
-                            background: 'var(--surface-0)',
-                            borderRadius: 'var(--radius-sm)', }}>
+                          style={mtgRowStyle}>
                           <span style={stTextMuted}><Calendar className="w-3.5 h-3.5" /></span>
-                          <span style={{ color: 'var(--text-tertiary)', minWidth: '80px' }}>{mtg.date}</span>
+                          <span style={mtgDateStyle}>{mtg.date}</span>
                           <span style={stTextMuted}><Users className="w-3.5 h-3.5" /></span>
                           <span style={stTextPrimary}>{mtg.investor_name}</span></div>
                       ))}</div></div>
