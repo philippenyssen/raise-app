@@ -13,6 +13,8 @@ import {
   Zap, Eye, Clock, MessageSquare, ChevronRight,
 } from 'lucide-react';
 
+const bgSurface2Sec = { background: 'var(--surface-2)', color: 'var(--text-secondary)' } as const;
+
 // ── Types ─────────────────────────────────────────────────────────────
 
 interface WeekScore { week: string; score: number; }
@@ -238,7 +240,7 @@ export default function MomentumPage() {
             <button
               onClick={fetchData}
               className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors"
-              style={{ background: 'var(--surface-2)', color: 'var(--text-secondary)' }}>
+              style={bgSurface2Sec}>
               <RefreshCw className="w-4 h-4" />
               Refresh</button></div></div>
 
@@ -311,7 +313,7 @@ export default function MomentumPage() {
                       <Link
                         href={`/investors/${alert.investorId}`}
                         className="px-2.5 py-1 rounded text-xs font-normal btn-surface"
-                        style={{ background: 'var(--surface-2)', color: 'var(--text-secondary)' }}>
+                        style={bgSurface2Sec}>
                         Open</Link></div></div>
                 </div>);
             })}</div>
@@ -589,7 +591,7 @@ export default function MomentumPage() {
                       <p className="text-sm mb-2" style={stTextSecondary}>{signal.description}</p>
                       <div className="flex flex-wrap gap-1">
                         {signal.affectedInvestors.map(name => (
-                          <span key={name} className="px-2 py-0.5 rounded text-xs" style={{ background: 'var(--surface-2)', color: 'var(--text-secondary)' }}>{name}</span>
+                          <span key={name} className="px-2 py-0.5 rounded text-xs" style={bgSurface2Sec}>{name}</span>
                         ))}</div></div></div></div>
               ))}</div></div>
         )}
@@ -635,7 +637,7 @@ export default function MomentumPage() {
                     <p className="text-xs mb-2" style={stTextSecondary}>{signal.description}</p>
                     <div className="flex flex-wrap gap-1">
                       {signal.investorNames.map(name => (
-                        <span key={name} className="px-2 py-0.5 rounded text-xs" style={{ background: 'var(--surface-2)', color: 'var(--text-secondary)' }}>{name}</span>
+                        <span key={name} className="px-2 py-0.5 rounded text-xs" style={bgSurface2Sec}>{name}</span>
                       ))}</div>
                   </div>);
               })}</div></div>

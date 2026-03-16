@@ -920,7 +920,7 @@ function StaleInvestorRow({ inv }: { inv: { id: string; name: string; status: st
           {inv.daysSinceLastMeeting !== null
             ? `${inv.daysSinceLastMeeting}d ago`
             : 'No meetings'}</span>
-        <ArrowRight className="w-3 h-3 transition-colors" style={{ color: 'var(--text-muted)' }}
+        <ArrowRight className="w-3 h-3 transition-colors" style={stTextMuted}
           /></div>
     </Link>);
 }
@@ -941,7 +941,7 @@ function DecliningEnthusiasmRow({ inv }: { inv: { id: string; name: string; tier
         <EnthusiasmDots score={inv.previousScore} size="sm" />
         <span className="text-xs" style={stTextMuted}>{'>'}</span>
         <EnthusiasmDots score={inv.currentScore} size="sm" />
-        <ArrowRight className="w-3 h-3 ml-1 transition-colors" style={{ color: 'var(--text-muted)' }}
+        <ArrowRight className="w-3 h-3 ml-1 transition-colors" style={stTextMuted}
           /></div>
     </Link>);
 }
@@ -965,7 +965,7 @@ function HighTierStuckRow({ inv }: { inv: { id: string; name: string; tier: numb
       <div className="flex items-center gap-2 shrink-0">
         <span className="text-xs" style={stTextTertiary}>
           {inv.daysInStage}d in stage</span>
-        <ArrowRight className="w-3 h-3 transition-colors" style={{ color: 'var(--text-muted)' }}
+        <ArrowRight className="w-3 h-3 transition-colors" style={stTextMuted}
           /></div>
     </Link>);
 }

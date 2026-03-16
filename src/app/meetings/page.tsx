@@ -10,6 +10,7 @@ import { labelTertiary, stFontSm, stFontXs, stTextMuted, stTextTertiary } from '
 import { CopyButton } from '@/components/copy-button';
 
 const labelMutedMb4 = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '4px' } as const;
+const labelBlockMutedMb4 = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' } as const;
 
 const MEETING_TYPES = ['all', 'intro', 'management_presentation', 'deep_dive', 'site_visit', 'dd_session', 'negotiation', 'social'] as const;
 const STATUS_OPTIONS = ['all', 'met', 'engaged', 'in_dd', 'term_sheet', 'passed'] as const;
@@ -216,7 +217,7 @@ function MeetingOutcomeSection({
           label="Prep brief usefulness" /></div>
 
       <div className="mt-3">
-        <label style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>
+        <label style={labelBlockMutedMb4}>
           Key Takeaway</label>
         <input
           value={form.key_takeaway}
@@ -225,7 +226,7 @@ function MeetingOutcomeSection({
           className="input" /></div>
 
       <div className="mt-3">
-        <label style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>
+        <label style={labelBlockMutedMb4}>
           Objections Addressed</label>
         <div className="flex flex-wrap gap-1 mb-2">
           {form.objections_addressed.map((o, i) => (
@@ -252,7 +253,7 @@ function MeetingOutcomeSection({
           <button onClick={addObjection} className="btn btn-secondary btn-md" type="button">Add</button></div></div>
 
       <div className="mt-3">
-        <label style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>
+        <label style={labelBlockMutedMb4}>
           Competitors Mentioned by Investor</label>
         <div className="flex flex-wrap gap-1 mb-2">
           {form.competitive_mentions.map((c, i) => (
