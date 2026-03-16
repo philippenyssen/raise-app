@@ -417,8 +417,8 @@ export default function PipelinePage() {
             className="flex items-center gap-6 flex-shrink-0 overflow-x-auto"
             style={{ padding: 'var(--space-3) var(--space-4)', background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)' }}>
             {metrics.map((m) => (
-              <div key={m.label} className="flex flex-col items-center" style={{ minWidth: '4rem' }}>
-                <span style={{ ...labelMuted, fontWeight: 400, whiteSpace: 'nowrap' }}>{m.label}</span>
+              <div key={m.label} className="flex flex-col items-center" style={metricColStyle}>
+                <span style={metricLabelStyle}>{m.label}</span>
                 <span style={{ fontSize: 'var(--font-size-lg)', fontWeight: 300, color: m.color || 'var(--text-primary)', lineHeight: 1.2 }}>{m.value}</span>
               </div>
             ))}
@@ -692,6 +692,9 @@ function enthusiasmDotBg(n: number, enthusiasm: number): string {
 const urgencyBadgeBase: React.CSSProperties = { fontSize: 'var(--font-size-xs)', fontWeight: 400, padding: '1px 5px', borderRadius: 'var(--radius-sm)' };
 const noteStyle: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontStyle: 'italic', flex: 1 };
 const lastMeetingBase: React.CSSProperties = { fontSize: 'var(--font-size-xs)', fontWeight: 400 };
+const metricLabelStyle: React.CSSProperties = { ...labelMuted, fontWeight: 400, whiteSpace: 'nowrap' };
+const metricColStyle: React.CSSProperties = { minWidth: '4rem' };
+const quickActionLink: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', padding: '2px 0', borderRadius: 'var(--radius-sm)', textDecoration: 'none' };
 
 function computeUrgency(lastMeetingDate: string | null | undefined, tier: number, status: string): { label: string; color: string; bg: string } {
   const days = lastMeetingDate ? Math.floor((Date.now() - new Date(lastMeetingDate).getTime()) / 864e5) : 999;
@@ -847,10 +850,7 @@ function InvestorCard({
             draggable={false}
             aria-label={`Prep meeting with ${investor.name}`}
             className="flex items-center gap-1 flex-1 justify-center sidebar-link"
-            style={{
-              fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)',
-              padding: '2px 0', borderRadius: 'var(--radius-sm)',
-              textDecoration: 'none', }}>
+            style={quickActionLink}>
             <ClipboardList className="w-3 h-3" /> Prep</Link>
           <Link
             href={`/meetings/new?investor=${investor.id}`}
@@ -858,10 +858,7 @@ function InvestorCard({
             draggable={false}
             aria-label={`Log meeting with ${investor.name}`}
             className="flex items-center gap-1 flex-1 justify-center sidebar-link"
-            style={{
-              fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)',
-              padding: '2px 0', borderRadius: 'var(--radius-sm)',
-              textDecoration: 'none', }}>
+            style={quickActionLink}>
             <Calendar className="w-3 h-3" /> Log</Link>
           <Link
             href={`/followups?investor=${investor.id}`}
@@ -869,10 +866,7 @@ function InvestorCard({
             draggable={false}
             aria-label={`Follow up with ${investor.name}`}
             className="flex items-center gap-1 flex-1 justify-center sidebar-link"
-            style={{
-              fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)',
-              padding: '2px 0', borderRadius: 'var(--radius-sm)',
-              textDecoration: 'none', }}>
+            style={quickActionLink}>
             <SendHorizonal className="w-3 h-3" /> Follow up</Link></div>
     </div>);
 }
