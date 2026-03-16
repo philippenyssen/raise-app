@@ -22,6 +22,10 @@ export const TYPE_LABELS: Record<InvestorType | string, string> = {
   debt: 'Debt Provider',
   family_office: 'Family Office',};
 
+export const TYPE_LABELS_SHORT: Record<string, string> = {
+  vc: 'VC', growth: 'Growth', sovereign: 'SWF', strategic: 'Strategic',
+  debt: 'Debt', family_office: 'Family',};
+
 export const MEETING_TYPE_LABELS: Record<MeetingType | string, string> = {
   intro: 'Intro',
   management_presentation: 'Mgmt Presentation',

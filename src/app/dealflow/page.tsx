@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { cachedFetch } from '@/lib/cache';
 import { MS_PER_DAY, MS_PER_MINUTE, relativeTime } from '@/lib/time';
-import { STATUS_LABELS } from '@/lib/constants';
+import { STATUS_LABELS, TYPE_LABELS_SHORT as TYPE_LABELS } from '@/lib/constants';
 import { stAccent, stFontXs, stSurface0, stSurface1, stTextMuted, stTextSecondary } from '@/lib/styles';
 
 // ── Types ─────────────────────────────────────────────────────────────
@@ -53,9 +53,6 @@ const HEAT_CONFIG: Record<string, { bg: string; border: string; text: string; gl
   cold:   { bg: 'var(--accent-4)', border: 'var(--accent-8)', text: 'var(--text-muted)', glow: 'none', label: 'Cold' },
   frozen: { bg: 'var(--accent-3)', border: 'var(--accent-muted)', text: 'var(--text-muted)', glow: 'none', label: 'Frozen' },};
 
-const TYPE_LABELS: Record<string, string> = {
-  vc: 'VC', growth: 'Growth', sovereign: 'SWF', strategic: 'Strategic',
-  debt: 'Debt', family_office: 'Family',};
 
 const HEAT_ORDER: Record<string, number> = { hot: 0, warm: 1, cool: 2, cold: 3, frozen: 4 };
 const dfRowBase = { gridTemplateColumns: '2fr 80px 90px 80px 70px 60px 1.5fr 80px', borderBottom: '1px solid var(--border-subtle)', textDecoration: 'none' } as const;

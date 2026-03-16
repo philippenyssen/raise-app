@@ -5,7 +5,7 @@ import { cachedFetch } from '@/lib/cache';
 import Link from 'next/link';
 import { useToast } from '@/components/toast';
 import { MS_PER_DAY } from '@/lib/time';
-import { STATUS_LABELS, PIPELINE_STATUS_STYLES, MOMENTUM_STYLES, MOMENTUM_LABELS, TRIGGER_STYLES, TRIGGER_LABELS, CONFIDENCE_STYLES, URGENCY_STYLE } from '@/lib/constants';
+import { STATUS_LABELS, PIPELINE_STATUS_STYLES, MOMENTUM_STYLES, MOMENTUM_LABELS, TRIGGER_STYLES, TRIGGER_LABELS, CONFIDENCE_STYLES, URGENCY_STYLE, TYPE_LABELS_SHORT as TYPE_LABELS } from '@/lib/constants';
 import {
   AccelerationItem, AccelerationInvestorSummary as InvestorSummary, AccelerationData,
   ScoreDimension,
@@ -70,9 +70,6 @@ interface FocusData {
 
 const TYPE_STYLES = INVESTOR_TYPE_STYLES;
 
-const TYPE_LABELS: Record<string, string> = {
-  vc: 'VC', growth: 'Growth', sovereign: 'SWF', strategic: 'Strategic',
-  debt: 'Debt', family_office: 'Family',};
 
 const STATUS_STYLES = PIPELINE_STATUS_STYLES;
 const MOMENTUM_STYLE = MOMENTUM_STYLES;

@@ -12,6 +12,7 @@ import {
   RefreshCw, Users, ArrowUpRight, ArrowDownRight, Flame,
   Zap, Eye, Clock, MessageSquare, ChevronRight,
 } from 'lucide-react';
+import { TYPE_LABELS_SHORT as TYPE_LABELS } from '@/lib/constants';
 
 const bgSurface2Sec = { background: 'var(--surface-2)', color: 'var(--text-secondary)' } as const;
 const barContainerH100 = { height: '100px' } as const;
@@ -123,13 +124,6 @@ interface MomentumData {
 
 // ── Helpers ───────────────────────────────────────────────────────────
 
-const TYPE_LABELS: Record<string, string> = {
-  vc: 'VC',
-  growth: 'Growth',
-  sovereign: 'SWF',
-  strategic: 'Strategic',
-  debt: 'Debt',
-  family_office: 'Family',};
 
 const TYPE_COLORS: Record<string, { bg: string; color: string; border: string }> = {
   vc:            { bg: 'var(--accent-muted)',      color: 'var(--accent)',         border: 'var(--accent-15)' },

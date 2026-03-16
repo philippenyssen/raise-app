@@ -10,6 +10,7 @@ import {
 import { getIntensityColor, inlineBadgeStyle, labelMuted, stAccent, stFontSm, stFontXs, stTextPrimary } from '@/lib/styles';
 import { TierBadge, EnthusiasmDots } from '@/components/shared';
 import { MS_PER_HOUR } from '@/lib/time';
+import { TYPE_LABELS_SHORT as TYPE_LABELS } from '@/lib/constants';
 import { fmtDateTime } from '@/lib/format';
 
 const cardSurface1 = { padding: 'var(--space-4)', background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)' } as const;
@@ -80,9 +81,6 @@ interface FomoData {
 // Style constants
 // ---------------------------------------------------------------------------
 
-const TYPE_LABELS: Record<string, string> = {
-  vc: 'VC', growth: 'Growth', sovereign: 'SWF', strategic: 'Strategic',
-  debt: 'Debt', family_office: 'Family',};
 
 const TYPE_STYLES: Record<string, React.CSSProperties> = {
   vc: { background: 'var(--accent-muted)', color: 'var(--accent)' },
