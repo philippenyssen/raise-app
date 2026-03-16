@@ -23,6 +23,8 @@ import { MS_PER_DAY } from '@/lib/time';
 const selectCompact = { width: 'auto', padding: '2px 8px', fontSize: 'var(--font-size-xs)' } as const;
 const pipeDivider = { color: 'var(--border-default)' } as const;
 const vDivider = { background: 'var(--border-default)' } as const;
+const PRIORITY_COLORS: Record<string, string> = { critical: 'var(--danger)', high: 'var(--warning)', medium: 'var(--warning)', low: 'var(--text-muted)' };
+const EVENT_TYPE_COLORS: Record<string, string> = { meeting: 'var(--accent)', followup: 'var(--warning)', objection: 'var(--danger)', score: 'var(--success)' };
 
 const STATUS_COLORS: Record<string, string> = {
   identified: 'var(--surface-3)',
@@ -1028,7 +1030,7 @@ export default function InvestorDetailPage() {
                 <div className="space-y-2">
                   {tasks.map(t => {
                     const overdue = t.due_date && new Date(t.due_date) < new Date() && t.status !== 'done';
-                    const prioColor = { critical: 'var(--danger)', high: 'var(--warning)', medium: 'var(--warning)', low: 'var(--text-muted)' }[t.priority] || 'var(--text-muted)';
+                    const prioColor = PRIORITY_COLORS[t.priority] || 'var(--text-muted)';
                     return (
                       <div
                         key={t.id}
@@ -1103,7 +1105,7 @@ export default function InvestorDetailPage() {
           )}
 
           {intelTab === 'timeline' && (() => {
-            const iconColor: Record<string, string> = { meeting: 'var(--accent)', followup: 'var(--warning)', objection: 'var(--danger)', score: 'var(--success)' };
+            const iconColor = EVENT_TYPE_COLORS;
             return (
               <div>
                 {timelineEvents.length === 0 ? (

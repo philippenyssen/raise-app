@@ -22,6 +22,8 @@ import { stAccent, stAccentBadge, stAccentBg, stBorderTop, stSurface0, stSurface
 import { parseJsonSafe } from '@/lib/api-helpers';
 import { cachedFetch } from '@/lib/cache';
 
+const glanceDivider = { borderLeft: '1px solid var(--border-subtle)', paddingLeft: 'var(--space-4)' } as const;
+
 // ---------- types for the meeting brief ----------
 
 interface MeetingBrief {
@@ -480,7 +482,7 @@ function MeetingPrepContent() {
 
             {/* ============ AT-A-GLANCE BAR ============ */}
             {(() => {
-              const divider = { borderLeft: '1px solid var(--border-subtle)', paddingLeft: 'var(--space-4)' };
+              const divider = glanceDivider;
               const trendColor = enthusiasmTrend === 'rising' ? 'var(--success)' : enthusiasmTrend === 'declining' ? 'var(--danger)' : 'var(--text-muted)';
               return (
                 <section className="rounded-xl p-4 flex flex-wrap items-center gap-4" style={{ ...stSurface1, border: '1px solid var(--border-subtle)' }}>
