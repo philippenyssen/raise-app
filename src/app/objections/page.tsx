@@ -19,6 +19,11 @@ import {
   stBgMuted, stAccentBg, stBorderTop, stBorderSubtle, labelMuted10, skelCardLg,
 } from '@/lib/styles';
 
+const successCardStyle: React.CSSProperties = { background: 'var(--success-muted)', border: '1px solid var(--accent-15)' };
+const dangerCardStyle: React.CSSProperties = { background: 'var(--danger-muted)', border: '1px solid var(--accent-8)' };
+const reworkHeaderStyle: React.CSSProperties = { background: 'var(--danger-muted)', borderBottom: '1px solid var(--border-subtle)' };
+const alertSuccessStyle: React.CSSProperties = { background: 'var(--success-muted)', border: '1px solid var(--accent-20)' };
+
 const TREND_CONFIG = {
   improving: { icon: ArrowUpRight, color: 'var(--text-secondary)', bg: 'var(--success-muted)', label: 'Improving' },
   declining: { icon: ArrowDownRight, color: 'var(--text-primary)', bg: 'var(--danger-muted)', label: 'Declining' },
@@ -158,7 +163,7 @@ function getTopicColor(topic: string) {
 
 function BestResponseCard({ response }: { response: ObjectionRecord }) {
   return (
-    <div className="mx-4 mt-3 p-3 rounded-lg" style={{ background: 'var(--success-muted)', border: '1px solid var(--accent-20)' }}>
+    <div className="mx-4 mt-3 p-3 rounded-lg" style={alertSuccessStyle}>
       <div className="flex items-center justify-between mb-1">
         <div className="flex items-center gap-2">
           <CheckCircle2 className="w-3.5 h-3.5" style={stTextSecondary} />
@@ -686,7 +691,7 @@ export default function ObjectionsPage() {
                         {bestFromPlaybook.map(({ topic, response }) => {
                           const color = getTopicColor(topic);
                           return (
-                            <div key={topic} className="p-2 rounded-lg space-y-1" style={{ background: 'var(--success-muted)', border: '1px solid var(--accent-15)' }}>
+                            <div key={topic} className="p-2 rounded-lg space-y-1" style={successCardStyle}>
                               <span
                                 className="px-1 py-0.5 rounded"
                                 style={{ fontSize: 'var(--font-size-xs)', ...color.bg, ...color.text }}>
@@ -881,14 +886,14 @@ function EffectivenessTab({
 
                       {/* Best / worst response */}
                       {te.best_response && (
-                        <div className="p-2 rounded-lg" style={{ background: 'var(--success-muted)', border: '1px solid var(--accent-15)' }}>
+                        <div className="p-2 rounded-lg" style={successCardStyle}>
                           <div className="flex items-center gap-1 mb-1">
                             <ThumbsUp className="w-3 h-3" style={stTextSecondary} />
                             <span className="text-xs font-normal" style={stTextSecondary}>Best response</span></div>
                           <p className="text-xs leading-relaxed line-clamp-2" style={stTextSecondary}>{te.best_response}</p></div>
                       )}
                       {te.worst_response && (
-                        <div className="p-2 rounded-lg" style={{ background: 'var(--danger-muted)', border: '1px solid var(--accent-8)' }}>
+                        <div className="p-2 rounded-lg" style={dangerCardStyle}>
                           <div className="flex items-center gap-1 mb-1">
                             <ThumbsDown className="w-3 h-3" style={stTextPrimary} />
                             <span className="text-xs font-normal" style={stTextPrimary}>Worst response</span></div>
@@ -977,7 +982,7 @@ function EffectivenessTab({
           {/* Worst Performing Responses */}
           {worstNeedingRework.length > 0 && (
             <div className="rounded-xl overflow-hidden">
-              <div className="p-4 flex items-center gap-2" style={{ background: 'var(--danger-muted)', borderBottom: '1px solid var(--border-subtle)' }}>
+              <div className="p-4 flex items-center gap-2" style={reworkHeaderStyle}>
                 <AlertTriangle className="w-4 h-4" style={stTextPrimary} />
                 <h3 className="text-sm font-normal" style={stTextPrimary}>Responses Needing Rework</h3></div>
               <div>

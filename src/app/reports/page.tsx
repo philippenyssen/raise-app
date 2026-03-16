@@ -9,6 +9,12 @@ const reportCardBg = { backgroundColor: 'color-mix(in srgb, var(--surface-1) 50%
 const selectStyle = { backgroundColor: 'var(--surface-2)', border: '1px solid var(--border-default)', color: 'var(--text-secondary)' } as const;
 const errorBoxStyle: React.CSSProperties = { border: '1px solid var(--danger)', backgroundColor: 'var(--danger-muted)', color: 'var(--text-primary)' };
 const printBtnStyle = { backgroundColor: 'var(--surface-2)', color: 'var(--text-secondary)' } as const;
+const boardIconBg: React.CSSProperties = { backgroundColor: 'var(--success-muted)' };
+const weeklyIconBg: React.CSSProperties = { backgroundColor: 'color-mix(in srgb, var(--accent) 20%, transparent)' };
+const briefIconBg: React.CSSProperties = { backgroundColor: 'color-mix(in srgb, var(--accent-muted) 20%, transparent)' };
+const briefIconColor: React.CSSProperties = { color: 'var(--accent-muted)' };
+const reportToolbarDivider: React.CSSProperties = { borderBottom: '1px solid var(--border-subtle)' };
+const reportIframeStyle: React.CSSProperties = { minHeight: '800px', border: 'none', backgroundColor: 'var(--surface-0)' };
 
 interface InvestorOption { id: string; name: string; tier: number; status: string; }
 
@@ -104,7 +110,7 @@ export default function ReportsPage() {
         {/* Board Update */}
         <div className="rounded-xl p-5" style={reportCardBg}>
           <div className="flex items-center gap-3 mb-3">
-            <span className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'var(--success-muted)' }}>
+            <span className="w-8 h-8 rounded-lg flex items-center justify-center" style={boardIconBg}>
               <BarChart3 className="w-4 h-4" style={stTextSecondary} /></span>
             <h2 className="font-normal text-sm" style={stTextPrimary}>Board Update</h2></div>
           <p className="text-xs leading-relaxed mb-4" style={stTextMuted}>
@@ -123,7 +129,7 @@ export default function ReportsPage() {
         {/* Weekly Agenda */}
         <div className="rounded-xl p-5" style={reportCardBg}>
           <div className="flex items-center gap-3 mb-3">
-            <span className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'color-mix(in srgb, var(--accent) 20%, transparent)' }}>
+            <span className="w-8 h-8 rounded-lg flex items-center justify-center" style={weeklyIconBg}>
               <ClipboardList className="w-4 h-4" style={stAccent} /></span>
             <h2 className="font-normal text-sm" style={stTextPrimary}>Weekly Agenda</h2></div>
           <p className="text-xs leading-relaxed mb-4" style={stTextMuted}>
@@ -142,8 +148,8 @@ export default function ReportsPage() {
         {/* Investor Brief */}
         <div className="rounded-xl p-5" style={reportCardBg}>
           <div className="flex items-center gap-3 mb-3">
-            <span className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'color-mix(in srgb, var(--accent-muted) 20%, transparent)' }}>
-              <Users2 className="w-4 h-4" style={{ color: 'var(--accent-muted)' }} /></span>
+            <span className="w-8 h-8 rounded-lg flex items-center justify-center" style={briefIconBg}>
+              <Users2 className="w-4 h-4" style={briefIconColor} /></span>
             <h2 className="font-normal text-sm" style={stTextPrimary}>Investor Brief</h2></div>
           <p className="text-xs leading-relaxed mb-3" style={stTextMuted}>
             Generate a detailed brief for a specific investor with profile, score, meetings, objections, and assessment.</p>
@@ -178,7 +184,7 @@ export default function ReportsPage() {
       {reportHtml && (
         <div className="rounded-xl overflow-hidden" style={reportCardBg}>
           {/* Report toolbar */}
-          <div className="flex items-center justify-between px-5 py-3" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+          <div className="flex items-center justify-between px-5 py-3" style={reportToolbarDivider}>
             <div className="flex items-center gap-3">
               <span className="text-sm font-normal" style={stTextSecondary}>
                 {reportTypeLabels[reportType || ''] || 'Report'}</span>
@@ -198,7 +204,7 @@ export default function ReportsPage() {
             ref={iframeRef}
             srcDoc={reportHtml}
             className="w-full"
-            style={{ minHeight: '800px', border: 'none', backgroundColor: 'var(--surface-0)' }}
+            style={reportIframeStyle}
             title="Report Preview"
             onLoad={() => {
               // Auto-resize iframe to fit content
