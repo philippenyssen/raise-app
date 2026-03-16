@@ -287,31 +287,32 @@ function FollowupsContent() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [followups]);
 
-  // Learning stats
-  const completedWithDelta = completed.filter(f => f.conviction_delta !== 0);
-  const avgDelta = completedWithDelta.length > 0
-    ? completedWithDelta.reduce((acc, f) => acc + f.conviction_delta, 0) / completedWithDelta.length
-    : 0;
-  const byType = completed.reduce<Record<string, { count: number; totalDelta: number }>>((acc, f) => {
-    if (!acc[f.action_type]) acc[f.action_type] = { count: 0, totalDelta: 0 };
-    acc[f.action_type].count++;
-    acc[f.action_type].totalDelta += f.conviction_delta;
-    return acc;
-  }, {});
-
-  // Measured efficacy stats (from actual enthusiasm deltas post-followup)
-  const withMeasuredLift = completed.filter(f => f.measured_lift !== null && f.measured_lift !== undefined);
-  const avgMeasuredLift = withMeasuredLift.length > 0
-    ? withMeasuredLift.reduce((acc, f) => acc + (f.measured_lift || 0), 0) / withMeasuredLift.length
-    : null;
-  const bestActionType = Object.entries(
-    withMeasuredLift.reduce<Record<string, { count: number; totalLift: number }>>((acc, f) => {
-      if (!acc[f.action_type]) acc[f.action_type] = { count: 0, totalLift: 0 };
+  // Learning stats — memoized to avoid filter/reduce/sort on every render
+  const { completedWithDelta, avgDelta, byType, withMeasuredLift, avgMeasuredLift, bestActionType } = useMemo(() => {
+    const cwd = completed.filter(f => f.conviction_delta !== 0);
+    const ad = cwd.length > 0
+      ? cwd.reduce((acc, f) => acc + f.conviction_delta, 0) / cwd.length
+      : 0;
+    const bt = completed.reduce<Record<string, { count: number; totalDelta: number }>>((acc, f) => {
+      if (!acc[f.action_type]) acc[f.action_type] = { count: 0, totalDelta: 0 };
       acc[f.action_type].count++;
-      acc[f.action_type].totalLift += f.measured_lift || 0;
+      acc[f.action_type].totalDelta += f.conviction_delta;
       return acc;
-    }, {})
-  ).sort((a, b) => (b[1].totalLift / b[1].count) - (a[1].totalLift / a[1].count))[0];
+    }, {});
+    const wml = completed.filter(f => f.measured_lift !== null && f.measured_lift !== undefined);
+    const aml = wml.length > 0
+      ? wml.reduce((acc, f) => acc + (f.measured_lift || 0), 0) / wml.length
+      : null;
+    const bat = Object.entries(
+      wml.reduce<Record<string, { count: number; totalLift: number }>>((acc, f) => {
+        if (!acc[f.action_type]) acc[f.action_type] = { count: 0, totalLift: 0 };
+        acc[f.action_type].count++;
+        acc[f.action_type].totalLift += f.measured_lift || 0;
+        return acc;
+      }, {})
+    ).sort((a, b) => (b[1].totalLift / b[1].count) - (a[1].totalLift / a[1].count))[0];
+    return { completedWithDelta: cwd, avgDelta: ad, byType: bt, withMeasuredLift: wml, avgMeasuredLift: aml, bestActionType: bat };
+  }, [completed]);
 
   function renderFollowupCard(item: FollowupItem, showOverdueIndicator = false) {
     const config = ACTION_TYPE_CONFIG[item.action_type] || ACTION_TYPE_CONFIG.milestone_update;

@@ -7,7 +7,7 @@ import { Flame, Filter, TrendingUp, Thermometer } from 'lucide-react';
 import { STATUS_LABELS, TYPE_LABELS } from '@/lib/constants';
 import { DealHeatInvestor } from '@/lib/types';
 import { fmtDateShort } from '@/lib/format';
-import { labelMuted, stTextMuted } from '@/lib/styles';
+import { labelMuted, maxWidthCenter, stTextMuted } from '@/lib/styles';
 
 interface DealHeatData {
   investors: DealHeatInvestor[];
@@ -58,7 +58,7 @@ export default function DealHeatPage() {
 
   if (loading) {
     return (
-      <div className="flex-1 p-6 page-content" style={{ maxWidth: '1400px', margin: '0 auto' }}>
+      <div className="flex-1 p-6 page-content" style={maxWidthCenter}>
         <div className="flex items-center gap-3" style={{ marginBottom: 'var(--space-8)' }}>
           <div className="skeleton" style={{ width: '240px', height: '32px' }} /></div>
         <div className="grid grid-cols-5 gap-3" style={{ marginBottom: 'var(--space-6)' }}>
@@ -74,7 +74,7 @@ export default function DealHeatPage() {
 
   if (error || !data) {
     return (
-      <div className="flex-1 p-6 page-content" style={{ maxWidth: '1400px', margin: '0 auto' }}>
+      <div className="flex-1 p-6 page-content" style={maxWidthCenter}>
         <div className="card" style={{ textAlign: 'center', padding: 'var(--space-12)' }}>
           <Flame className="w-10 h-10 mx-auto mb-3" style={{ color: 'var(--danger)' }} />
           <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', marginBottom: 'var(--space-1)' }}>
@@ -102,7 +102,7 @@ export default function DealHeatPage() {
     { level: 'frozen', label: 'Frozen', count: counts.frozen },];
 
   return (
-    <div className="flex-1 p-6 page-content" style={{ maxWidth: '1400px', margin: '0 auto' }}>
+    <div className="flex-1 p-6 page-content" style={maxWidthCenter}>
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-4" style={{ marginBottom: 'var(--space-6)' }}>
         <div>

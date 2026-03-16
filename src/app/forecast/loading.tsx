@@ -1,6 +1,8 @@
+const maxWidthCenter = { maxWidth: '1400px', margin: '0 auto' } as const;
+
 export default function ForecastLoading() {
   return (
-    <div className="flex-1 p-6 page-content" style={{ maxWidth: '1400px', margin: '0 auto' }}>
+    <div className="flex-1 p-6 page-content" style={maxWidthCenter}>
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <div className="skeleton rounded" style={{ width: '200px', height: '32px' }} />

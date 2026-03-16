@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { STATUS_LABELS, TYPE_LABELS } from '@/lib/constants';
 import { relativeTime } from '@/lib/time';
-import { labelMuted, labelSecondary, stTextTertiary, trackingBg, trackingColor, velocityColor } from '@/lib/styles';
+import { labelMuted, labelSecondary, maxWidthCenter, stTextTertiary, trackingBg, trackingColor, velocityColor } from '@/lib/styles';
 
 const tdCentered = { padding: 'var(--space-3) var(--space-4)', textAlign: 'center' as const } as const;
 const mbSpace2 = { marginBottom: 'var(--space-2)' } as const;
@@ -55,7 +55,7 @@ export default function VelocityPage() {
 
   if (loading) {
     return (
-      <div className="flex-1 p-6 page-content" style={{ maxWidth: '1400px', margin: '0 auto' }}>
+      <div className="flex-1 p-6 page-content" style={maxWidthCenter}>
         <div className="flex items-center gap-3" style={{ marginBottom: 'var(--space-8)' }}>
           <div className="skeleton" style={{ width: '200px', height: '32px' }} /></div>
         <p className="text-xs" style={{ color: 'var(--text-muted)', marginBottom: 'var(--space-3)' }}>Tracking deal pace and conversion velocity...</p>
@@ -69,7 +69,7 @@ export default function VelocityPage() {
 
   if (error || !data) {
     return (
-      <div className="flex-1 p-6 page-content" style={{ maxWidth: '1400px', margin: '0 auto' }}>
+      <div className="flex-1 p-6 page-content" style={maxWidthCenter}>
         <div className="card" style={{ textAlign: 'center', padding: 'var(--space-12)' }}>
           <AlertTriangle className="w-8 h-8 mx-auto mb-3" style={{ color: 'var(--text-muted)' }} />
           <p style={{ color: 'var(--text-primary)', fontSize: 'var(--font-size-sm)', marginBottom: 'var(--space-3)' }}>
@@ -82,7 +82,7 @@ export default function VelocityPage() {
   const raiseProgress = Math.min(100, Math.round((summary.raise_days_elapsed / summary.raise_target_days) * 100));
 
   return (
-    <div className="page-content flex-1 p-6" style={{ maxWidth: '1400px', margin: '0 auto' }}>
+    <div className="page-content flex-1 p-6" style={maxWidthCenter}>
       {/* Header */}
       <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-6)' }}>
         <div>
