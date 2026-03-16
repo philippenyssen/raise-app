@@ -41,7 +41,7 @@ interface DealflowInvestor {
   daysSinceLastMeeting: number;
 }
 
-type SortKey = 'heat' | 'velocity' | 'momentum' | 'days' | 'name';
+type SortKey = 'heat' | 'velocity' | 'momentum' | 'days' | 'name' | 'tier';
 type HeatFilter = 'all' | 'hot' | 'warm' | 'cool' | 'cold' | 'frozen';
 
 // ── Config ────────────────────────────────────────────────────────────
@@ -219,6 +219,7 @@ export default function DealflowPage() {
         case 'momentum': return b.currentMomentum - a.currentMomentum;
         case 'days': return a.daysInProcess - b.daysInProcess;
         case 'name': return a.name.localeCompare(b.name);
+        case 'tier': return a.tier - b.tier;
         default: return 0;
       }}), [investors, heatFilter, sortBy]);
 
@@ -304,7 +305,7 @@ export default function DealflowPage() {
         ))}
         <div style={{ marginLeft: 'auto' }} className="flex items-center gap-1.5">
           <span style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>Sort:</span>
-          {(['heat', 'velocity', 'momentum', 'days', 'name'] as SortKey[]).map(s => (
+          {(['heat', 'velocity', 'momentum', 'days', 'tier', 'name'] as SortKey[]).map(s => (
             <button
               key={s}
               onClick={() => setSortBy(s)}

@@ -56,7 +56,8 @@ function NewMeetingContent() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!form.investor_id || !form.raw_notes) return;
+    if (!form.investor_id || !form.raw_notes.trim()) return;
+    if (form.duration_minutes <= 0) { toast('Duration must be positive', 'error'); return; }
     setLoading(true);
     setResult(null);
 
