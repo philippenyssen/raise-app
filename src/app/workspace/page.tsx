@@ -221,6 +221,24 @@ export default function WorkspacePage() {
     }
   }, [toast, fetchDocs, selectDoc]);
 
+  const handleStatusChange = useCallback(async (newStatus: string) => {
+    if (!selectedDoc) return;
+    try {
+      const res = await fetch(`/api/documents/${selectedDoc.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      });
+      if (!res.ok) throw new Error('Status update failed');
+      setSelectedDoc({ ...selectedDoc, status: newStatus });
+      toast(`Status: ${newStatus}`);
+      fetchDocs();
+    } catch (e) {
+      console.warn('[WORKSPACE_STATUS]', e instanceof Error ? e.message : e);
+      toast('Failed to update status', 'error');
+    }
+  }, [selectedDoc, toast, fetchDocs]);
+
   const handleTitleChange = useCallback(async (newTitle: string) => {
     if (!selectedDoc) return;
     try {
@@ -410,6 +428,7 @@ export default function WorkspacePage() {
               onSave={handleSave}
               onDelete={() => setDeleteConfirm(true)}
               onTitleChange={handleTitleChange}
+              onStatusChange={handleStatusChange}
               saving={saving}
               dirty={dirty} />
           }

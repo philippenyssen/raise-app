@@ -34,6 +34,7 @@ interface DocumentViewerProps {
   onSave: () => void;
   onDelete?: () => void;
   onTitleChange?: (title: string) => void;
+  onStatusChange?: (status: string) => void;
   saving: boolean;
   dirty: boolean;
 }
@@ -117,7 +118,9 @@ interface DocVersion {
   created_at: string;
 }
 
-export function DocumentViewer({ document, onContentChange, onSave, onDelete, onTitleChange, saving, dirty }: DocumentViewerProps) {
+const STATUS_CYCLE = ['draft', 'review', 'final'];
+
+export function DocumentViewer({ document, onContentChange, onSave, onDelete, onTitleChange, onStatusChange, saving, dirty }: DocumentViewerProps) {
   const [mode, setMode] = useState<'visual' | 'source'>('visual');
   const [exporting, setExporting] = useState(false);
   const [editingTitle, setEditingTitle] = useState(false);
@@ -260,6 +263,13 @@ export function DocumentViewer({ document, onContentChange, onSave, onDelete, on
       >
         <div className="flex items-center min-w-0" style={{ gap: 'var(--space-3)' }}>
           <span
+            onClick={() => {
+              if (onStatusChange) {
+                const currentIdx = STATUS_CYCLE.indexOf(document.status);
+                const nextStatus = STATUS_CYCLE[(currentIdx + 1) % STATUS_CYCLE.length];
+                onStatusChange(nextStatus);
+              }
+            }}
             style={{
               fontSize: 'var(--font-size-xs)',
               padding: '2px 8px',
@@ -267,7 +277,9 @@ export function DocumentViewer({ document, onContentChange, onSave, onDelete, on
               border: `1px solid ${statusStyle.border}`,
               background: statusStyle.bg,
               color: statusStyle.color,
+              cursor: onStatusChange ? 'pointer' : 'default',
             }}
+            title={onStatusChange ? 'Click to change status' : undefined}
           >
             {document.status}
           </span>
