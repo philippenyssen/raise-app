@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
-import { FileText, Eye, Edit3, Save, Clock, Download, FileSpreadsheet, Presentation, FileType, History } from 'lucide-react';
+import { FileText, Eye, Edit3, Save, Clock, Download, FileSpreadsheet, Presentation, FileType, History, Trash2 } from 'lucide-react';
 import { labelMuted, textSmSecondary } from '@/lib/styles';
 
 // Dynamically import heavy editor components
@@ -32,6 +32,7 @@ interface DocumentViewerProps {
   } | null;
   onContentChange: (content: string) => void;
   onSave: () => void;
+  onDelete?: () => void;
   saving: boolean;
   dirty: boolean;
 }
@@ -115,7 +116,7 @@ interface DocVersion {
   created_at: string;
 }
 
-export function DocumentViewer({ document, onContentChange, onSave, saving, dirty }: DocumentViewerProps) {
+export function DocumentViewer({ document, onContentChange, onSave, onDelete, saving, dirty }: DocumentViewerProps) {
   const [mode, setMode] = useState<'visual' | 'source'>('visual');
   const [exporting, setExporting] = useState(false);
   const [showVersions, setShowVersions] = useState(false);
@@ -466,6 +467,35 @@ export function DocumentViewer({ document, onContentChange, onSave, saving, dirt
               .{ext}
             </button>
           ))}
+
+          {/* Delete button */}
+          {onDelete && (
+            <>
+              <div style={{ width: '1px', height: '16px', background: 'var(--border-subtle)' }} />
+              <button
+                onClick={onDelete}
+                className="rounded transition-colors"
+                style={{
+                  padding: '6px',
+                  background: 'transparent',
+                  color: 'var(--text-muted)',
+                  border: 'none',
+                  cursor: 'pointer',
+                }}
+                onMouseEnter={e => {
+                  (e.currentTarget as HTMLElement).style.color = 'var(--danger)';
+                  (e.currentTarget as HTMLElement).style.background = 'var(--danger-muted, rgba(239,68,68,0.1))';
+                }}
+                onMouseLeave={e => {
+                  (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)';
+                  (e.currentTarget as HTMLElement).style.background = 'transparent';
+                }}
+                title="Delete document"
+              >
+                <Trash2 style={{ width: '14px', height: '14px' }} />
+              </button>
+            </>
+          )}
         </div>
       </div>
 

@@ -54,6 +54,7 @@ export default function WorkspacePage() {
   const [pendingDoc, setPendingDoc] = useState<Doc | null>(null);
   const [autoSelected, setAutoSelected] = useState(false);
   const [creatingDoc, setCreatingDoc] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState(false);
 
   const fetchDocs = useCallback(async () => {
     try {
@@ -220,6 +221,23 @@ export default function WorkspacePage() {
     }
   }, [toast, fetchDocs, selectDoc]);
 
+  const handleDelete = useCallback(async () => {
+    if (!selectedDoc) return;
+    try {
+      const res = await fetch(`/api/documents/${selectedDoc.id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Delete failed');
+      setSelectedDoc(null);
+      setEditedContent('');
+      setDirty(false);
+      setDeleteConfirm(false);
+      toast('Document deleted');
+      fetchDocs();
+    } catch (e) {
+      console.warn('[WORKSPACE_DELETE]', e instanceof Error ? e.message : e);
+      toast('Failed to delete document', 'error');
+    }
+  }, [selectedDoc, toast, fetchDocs]);
+
   // Keyboard shortcuts: Cmd/Ctrl+S to save, Cmd/Ctrl+Z to undo
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -372,6 +390,7 @@ export default function WorkspacePage() {
               document={selectedDoc ? { ...selectedDoc, content: editedContent } : null}
               onContentChange={handleContentChange}
               onSave={handleSave}
+              onDelete={() => setDeleteConfirm(true)}
               saving={saving}
               dirty={dirty} />
           }
@@ -393,5 +412,14 @@ export default function WorkspacePage() {
         variant="danger"
         onConfirm={() => { if (pendingDoc) doSelectDoc(pendingDoc); }}
         onCancel={() => setPendingDoc(null)} />
+
+      <ConfirmModal
+        open={deleteConfirm}
+        title="Delete document"
+        message={`Delete "${selectedDoc?.title}"? This cannot be undone.`}
+        confirmLabel="Delete"
+        variant="danger"
+        onConfirm={handleDelete}
+        onCancel={() => setDeleteConfirm(false)} />
     </div>);
 }
