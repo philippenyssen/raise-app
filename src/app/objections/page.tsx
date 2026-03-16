@@ -746,10 +746,7 @@ function EffectivenessTab({
 
   if (!data) {
     return (
-      <div className="rounded-xl p-12 text-center space-y-3" style={stSurface0}>
-        <BarChart3 className="w-10 h-10 mx-auto" style={{ color: 'var(--border-default)' }} />
-        <p style={stTextMuted}>Log objection responses in meetings to measure messaging effectiveness across investor types.</p>
-      </div>);
+      <EmptyState icon={BarChart3} title="No messaging data yet" description="Log objection responses in meetings to measure messaging effectiveness across investor types." />);
   }
 
   const { topic_effectiveness, response_leaderboard, worst_responses, evolution, summary } = data;
@@ -833,8 +830,7 @@ function EffectivenessTab({
               <h3 className="text-sm font-normal" style={stTextPrimary}>Effectiveness by Topic</h3></div>
             <div className="divide-y" style={stBorderSubtle}>
               {topic_effectiveness.length === 0 ? (
-                <div className="p-8 text-center">
-                  <p className="text-sm" style={stTextMuted}>Log objection responses to see effectiveness by topic. Topics are created from meeting notes.</p></div>
+                <EmptyState title="No topic data yet" description="Log objection responses to see effectiveness by topic." />
               ) : (
                 topic_effectiveness.map((te) => {
                   const color = getColor(te.topic);
@@ -907,8 +903,7 @@ function EffectivenessTab({
               <span className="text-xs px-1.5 py-0.5 rounded" style={{ ...stSurface2, ...stTextMuted }}>
                 {response_leaderboard.length}</span></div>
             {response_leaderboard.length === 0 ? (
-              <div className="p-8 text-center">
-                <p className="text-sm" style={stTextMuted}>No responses with outcome data yet.</p></div>
+              <EmptyState title="No responses with outcome data yet" />
             ) : (
               <div>
                 {response_leaderboard.slice(0, 10).map((entry, idx) => {

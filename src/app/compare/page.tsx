@@ -12,6 +12,7 @@ import {
 import Link from 'next/link';
 import { STATUS_LABELS, TYPE_LABELS, MEETING_TYPE_LABELS } from '@/lib/constants';
 import { cellPad, labelMuted, labelMuted10, labelMutedWide, stAccent, stFontSm, stFontXs, stSurface1, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, textSmMuted, textSmSecondary } from '@/lib/styles';
+import { EmptyState } from '@/components/ui/empty-state';
 
 const compareCellBase: React.CSSProperties = { ...cellPad, fontSize: 'var(--font-size-sm)', ...stTextSecondary };
 const compareThBase = { padding: 'var(--space-3) var(--space-4)', minWidth: 200 } as const;
@@ -187,10 +188,7 @@ export default function ComparePage() {
   if (loading) {
     return (
       <div className="page-content space-y-6">
-        <div className="p-12 text-center" style={{ borderRadius: 'var(--radius-xl)' }}>
-          <BarChart3 className="w-10 h-10 mx-auto mb-3" style={stTextMuted} />
-          <div style={textSmMuted}>Loading investors... Select at least 2 to compare.</div>
-        </div>
+        <EmptyState icon={BarChart3} title="Loading investors..." description="Select at least 2 to compare." />
       </div>);
   }
 
