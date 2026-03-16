@@ -12,7 +12,7 @@ import {
   SendHorizonal, Menu, X, LogOut,
   ChevronLeft, ChevronRight, Sun, Flame,
   Compass, Target, Swords, MessageCircleWarning, Zap,
-  Sparkles, FolderOpen, FileBarChart, Globe, Newspaper,
+  Sparkles, FolderOpen, FileBarChart, Globe, Newspaper, BarChart3,
 } from 'lucide-react';
 
 interface NavItem {
@@ -41,6 +41,7 @@ const nav: NavItem[] = [
   { href: '/objections', label: 'Objections', icon: MessageCircleWarning, section: 'ANALYZE' },
   { href: '/strategic', label: 'Strategic', icon: Compass, section: 'ANALYZE' },
   { href: '/network', label: 'Network', icon: Globe, section: 'ANALYZE' },
+  { href: '/benchmarking', label: 'Benchmarks', icon: BarChart3, section: 'ANALYZE' },
   // Workspace — materials and tools
   { href: '/workspace', label: 'Workspace', icon: Sparkles, section: 'WORKSPACE' },
   { href: '/documents', label: 'Documents', icon: BookOpen, section: 'WORKSPACE' },
