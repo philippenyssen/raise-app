@@ -344,10 +344,8 @@ export default function PipelinePage() {
             {hasActiveFilters && (
               <button
                 onClick={clearFilters}
-                className="flex items-center gap-1 transition-colors"
-                style={labelMuted}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}>
+                className="flex items-center gap-1 icon-delete"
+                style={{ fontSize: 'var(--font-size-xs)' }}>
                 <X className="w-3 h-3" /> Clear all</button>
             )}</div>
           <div className="flex flex-wrap gap-4">
@@ -467,8 +465,7 @@ export default function PipelinePage() {
                     <input autoFocus value={quickAddName} onChange={e => setQuickAddName(e.target.value)} placeholder="Investor name..." className="input" style={{ fontSize: 'var(--font-size-xs)' }}
                       onKeyDown={async e => { if (e.key === 'Enter' && quickAddName.trim()) { try { const res = await fetch('/api/investors', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: quickAddName.trim(), status }) }); if (!res.ok) throw new Error('Failed'); const inv = await res.json(); setInvestors(prev => [...prev, inv]); setQuickAddName(''); setQuickAddCol(null); toast(`Added ${inv.name}`); } catch { toast('Could not add investor — try again', 'error'); } } if (e.key === 'Escape') { setQuickAddCol(null); setQuickAddName(''); } }} onBlur={() => { if (!quickAddName.trim()) { setQuickAddCol(null); setQuickAddName(''); } }} />
                   ) : (
-                    <button onClick={() => { setQuickAddCol(status); setQuickAddName(''); }} style={{ width: '100%', padding: 'var(--space-1)', fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer', borderRadius: 'var(--radius-sm)' }}
-                      onMouseEnter={e => { e.currentTarget.style.color = 'var(--accent)'; }} onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; }}>+ Add</button>
+                    <button onClick={() => { setQuickAddCol(status); setQuickAddName(''); }} className="icon-delete" style={{ width: '100%', padding: 'var(--space-1)', fontSize: 'var(--font-size-xs)', background: 'none', border: 'none', cursor: 'pointer', borderRadius: 'var(--radius-sm)' }}>+ Add</button>
                   )}</div>
               </div>);
           })}</div></div>
@@ -722,11 +719,12 @@ function InvestorCard({
         draggable
         onDragStart={e => onDragStart(e, investor.id)}
         onDragEnd={onDragEnd}
+        aria-label={`${investor.name} — ${investor.status}`}
         className="pipeline-card"
         style={{ ...cardBaseStyle, padding: '0.5rem 0.75rem' }}>
         <Link href={`/investors/${investor.id}`} className="flex items-center gap-2">
-          {onToggleCompare && <span className={`card-compare${isCompareSelected ? ' selected' : ''}`} onClick={e => { e.preventDefault(); e.stopPropagation(); onToggleCompare(investor.id); }} style={{ width: 12, height: 12, borderRadius: 'var(--radius-sm)', border: `1.5px solid ${isCompareSelected ? 'var(--accent)' : 'var(--border-default)'}`, background: isCompareSelected ? 'var(--accent)' : 'transparent', cursor: 'pointer', flexShrink: 0 }} />}
-          <GripVertical className="w-3 h-3 flex-shrink-0 card-grip" />
+          {onToggleCompare && <span role="checkbox" aria-checked={isCompareSelected} aria-label={`Compare ${investor.name}`} className={`card-compare${isCompareSelected ? ' selected' : ''}`} onClick={e => { e.preventDefault(); e.stopPropagation(); onToggleCompare(investor.id); }} style={{ width: 12, height: 12, borderRadius: 'var(--radius-sm)', border: `1.5px solid ${isCompareSelected ? 'var(--accent)' : 'var(--border-default)'}`, background: isCompareSelected ? 'var(--accent)' : 'transparent', cursor: 'pointer', flexShrink: 0 }} />}
+          <GripVertical className="w-3 h-3 flex-shrink-0 card-grip" aria-hidden="true" />
           <span className="truncate" title={investor.name} style={{ ...stFontXs, fontWeight: 400, color: 'var(--text-secondary)' }}>{investor.name}</span>
           <span style={{ ...badgeSmall, ...TIER_STYLES[investor.tier] }}>T{investor.tier}</span>
         </Link>
@@ -739,6 +737,7 @@ function InvestorCard({
       draggable
       onDragStart={e => onDragStart(e, investor.id)}
       onDragEnd={onDragEnd}
+      aria-label={`${investor.name} — ${investor.status}`}
       className="pipeline-card"
       style={{ ...cardBaseStyle, padding: 'var(--space-3)' }}>
       <Link href={`/investors/${investor.id}`} className="block space-y-2.5" draggable={false}>
@@ -748,8 +747,8 @@ function InvestorCard({
             {completeness < 100 && <span title={`Profile ${completeness}% complete`} style={{ fontSize: 'var(--font-size-xs)', color: complColor, marginLeft: '4px', fontWeight: 400 }}>{completeness}%</span>}
           </div>
           <div className="flex items-center gap-1 flex-shrink-0 mt-0.5">
-            {onToggleCompare && <span className={`card-compare${isCompareSelected ? ' selected' : ''}`} onClick={e => { e.preventDefault(); e.stopPropagation(); onToggleCompare(investor.id); }} style={{ width: 14, height: 14, borderRadius: 'var(--radius-sm)', border: `1.5px solid ${isCompareSelected ? 'var(--accent)' : 'var(--border-default)'}`, background: isCompareSelected ? 'var(--accent)' : 'transparent', cursor: 'pointer' }} />}
-            <GripVertical className="w-3.5 h-3.5 card-grip" />
+            {onToggleCompare && <span role="checkbox" aria-checked={isCompareSelected} aria-label={`Compare ${investor.name}`} className={`card-compare${isCompareSelected ? ' selected' : ''}`} onClick={e => { e.preventDefault(); e.stopPropagation(); onToggleCompare(investor.id); }} style={{ width: 14, height: 14, borderRadius: 'var(--radius-sm)', border: `1.5px solid ${isCompareSelected ? 'var(--accent)' : 'var(--border-default)'}`, background: isCompareSelected ? 'var(--accent)' : 'transparent', cursor: 'pointer' }} />}
+            <GripVertical className="w-3.5 h-3.5 card-grip" aria-hidden="true" />
           </div></div>
 
         {/* Badges row: type + tier */}
@@ -822,37 +821,34 @@ function InvestorCard({
             href={`/meetings/prep?investor=${investor.id}`}
             onClick={e => e.stopPropagation()}
             draggable={false}
-            className="flex items-center gap-1 flex-1 justify-center transition-colors"
+            aria-label={`Prep meeting with ${investor.name}`}
+            className="flex items-center gap-1 flex-1 justify-center sidebar-link"
             style={{
               fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)',
               padding: '2px 0', borderRadius: 'var(--radius-sm)',
-              textDecoration: 'none', }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; (e.currentTarget as HTMLElement).style.background = 'var(--accent-muted)'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
+              textDecoration: 'none', }}>
             <ClipboardList className="w-3 h-3" /> Prep</Link>
           <Link
             href={`/meetings/new?investor=${investor.id}`}
             onClick={e => e.stopPropagation()}
             draggable={false}
-            className="flex items-center gap-1 flex-1 justify-center transition-colors"
+            aria-label={`Log meeting with ${investor.name}`}
+            className="flex items-center gap-1 flex-1 justify-center sidebar-link"
             style={{
               fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)',
               padding: '2px 0', borderRadius: 'var(--radius-sm)',
-              textDecoration: 'none', }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; (e.currentTarget as HTMLElement).style.background = 'var(--accent-muted)'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
+              textDecoration: 'none', }}>
             <Calendar className="w-3 h-3" /> Log</Link>
           <Link
             href={`/followups?investor=${investor.id}`}
             onClick={e => e.stopPropagation()}
             draggable={false}
-            className="flex items-center gap-1 flex-1 justify-center transition-colors"
+            aria-label={`Follow up with ${investor.name}`}
+            className="flex items-center gap-1 flex-1 justify-center sidebar-link"
             style={{
               fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)',
               padding: '2px 0', borderRadius: 'var(--radius-sm)',
-              textDecoration: 'none', }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; (e.currentTarget as HTMLElement).style.background = 'var(--accent-muted)'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
+              textDecoration: 'none', }}>
             <SendHorizonal className="w-3 h-3" /> Follow up</Link></div>
     </div>);
 }
