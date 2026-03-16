@@ -68,7 +68,7 @@ const TYPE_STYLES: Record<InvestorType, React.CSSProperties> = {
 
 const compareBarStyle: React.CSSProperties = { position: 'fixed', bottom: 'var(--space-6)', left: '50%', transform: 'translateX(-50%)', background: 'var(--surface-2)', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-2) var(--space-4)', boxShadow: 'var(--shadow-lg)', zIndex: 50 };
 const filterBtnBase: React.CSSProperties = { padding: 'var(--space-2) var(--space-3)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', fontWeight: 400, transition: 'all 150ms ease' };
-const filterBtnActive: React.CSSProperties = { ...filterBtnBase, background: 'var(--accent-muted)', color: 'var(--accent)' };
+const filterBtnActive: React.CSSProperties = { ...filterBtnBase, background: 'var(--accent-muted)', color: 'var(--accent)', boxShadow: 'inset 0 0 0 1px var(--accent)' };
 const filterBtnInactive: React.CSSProperties = { ...filterBtnBase, background: 'var(--surface-1)', color: 'var(--text-tertiary)' };
 
 // ── Pipeline velocity stage weights ──────────────────────────────────

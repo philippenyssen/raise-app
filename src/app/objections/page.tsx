@@ -397,7 +397,9 @@ export default function ObjectionsPage() {
                       onClick={() => toggleTopic(group.topic)}
                       aria-expanded={isExpanded}
                       className="w-full flex items-center justify-between p-4 transition-all"
-                      style={{ ...color.bg }}>
+                      style={{ ...color.bg, cursor: 'pointer' }}
+                      onMouseEnter={e => { e.currentTarget.style.opacity = '0.85'; }}
+                      onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}>
                       <div className="flex items-center gap-3">
                         {isExpanded ? (
                           <ChevronDown className="w-4 h-4" style={color.text} />
