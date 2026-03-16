@@ -18,6 +18,12 @@ import { relativeTime } from '@/lib/time';
 import { cachedFetch } from '@/lib/cache';
 const textSm400 = { fontSize: 'var(--font-size-sm)', fontWeight: 400 } as const;
 const tabBtnBase: React.CSSProperties = { padding: '8px 12px', fontSize: 'var(--font-size-sm)', fontWeight: 400, marginBottom: '-1px', background: 'transparent', border: 'none', borderBottomStyle: 'solid', borderBottomWidth: '2px', cursor: 'pointer' };
+const tabBtnActive: React.CSSProperties = { ...tabBtnBase, color: 'var(--accent)', borderBottomColor: 'var(--accent)' };
+const tabBtnInactive: React.CSSProperties = { ...tabBtnBase, color: 'var(--text-muted)', borderBottomColor: 'transparent' };
+const tabCountActive = { padding: '2px 6px', fontSize: 'var(--font-size-xs)', background: 'var(--accent-muted)', color: 'var(--accent)' } as const;
+const tabCountInactive = { padding: '2px 6px', fontSize: 'var(--font-size-xs)', background: 'var(--surface-2)', color: 'var(--text-muted)' } as const;
+const skeletonSm = { height: '80px', borderRadius: 'var(--radius-xl)' } as const;
+const skeletonMd = { height: '100px', borderRadius: 'var(--radius-xl)' } as const;
 
 // ---------------------------------------------------------------------------
 // Constants — style objects using design tokens
@@ -375,10 +381,10 @@ export default function AccelerationPage() {
         <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Analyzing pipeline for acceleration opportunities...</p>
         <div className="grid grid-cols-3 gap-3">
           {[1,2,3].map(i => (
-            <div key={i} className="skeleton" style={{ height: '80px', borderRadius: 'var(--radius-xl)' }} />
+            <div key={i} className="skeleton" style={skeletonSm} />
           ))}</div>
         {[1,2,3,4].map(i => (
-          <div key={i} className="skeleton" style={{ height: '100px', borderRadius: 'var(--radius-xl)' }} />
+          <div key={i} className="skeleton" style={skeletonMd} />
         ))}
       </div>);
   }
@@ -488,16 +494,12 @@ export default function AccelerationPage() {
             aria-selected={activeTab === tab.key}
             onClick={() => setActiveTab(tab.key)}
             className="transition-colors"
-            style={{ ...tabBtnBase, color: activeTab === tab.key ? 'var(--accent)' : 'var(--text-muted)', borderBottomColor: activeTab === tab.key ? 'var(--accent)' : 'transparent' }}>
+            style={activeTab === tab.key ? tabBtnActive : tabBtnInactive}>
             {tab.label}
             {tab.count > 0 && (
               <span
                 className="ml-1.5 rounded-full"
-                style={{
-                  padding: '2px 6px',
-                  fontSize: 'var(--font-size-xs)',
-                  background: activeTab === tab.key ? 'var(--accent-muted)' : 'var(--surface-2)',
-                  color: activeTab === tab.key ? 'var(--accent)' : 'var(--text-muted)', }}>
+                style={activeTab === tab.key ? tabCountActive : tabCountInactive}>
                 {tab.count}</span>
             )}</button>
         ))}</div>
