@@ -28,6 +28,7 @@ const accentDot = { background: 'var(--accent)' } as const;
 const dangerMutedBadge = { background: 'var(--danger-muted)' } as const;
 const borderSubtleRow = { borderBottom: '1px solid var(--border-subtle)' } as const;
 const badgeFallback = { background: 'var(--surface-2)', color: 'var(--text-tertiary)' } as const;
+const btnAccentPrimary: React.CSSProperties = { background: 'var(--accent)', color: 'var(--surface-0)' };
 const TP_CATEGORY_STYLES: Record<string, React.CSSProperties> = {
   'Follow-up': { background: 'var(--accent-muted)', color: 'var(--accent)' },
   'Objection to preempt': { background: 'var(--danger-muted)', color: 'var(--text-primary)' },
@@ -489,7 +490,7 @@ function MeetingPrepContent() {
           <div className="rounded-xl p-12 text-center" style={stSurface1}>
             <Users className="w-10 h-10 mx-auto mb-3" style={{ color: 'var(--surface-3)' }} />
             <p className="text-sm mb-3" style={stTextMuted}>No investors in pipeline yet.</p>
-            <Link href="/meetings/new" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm" style={{ background: 'var(--accent)', color: 'var(--surface-0)' }}>
+            <Link href="/meetings/new" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm" style={btnAccentPrimary}>
               <Plus className="w-4 h-4" /> Schedule a Meeting</Link></div>
         )}
 
@@ -528,7 +529,7 @@ function MeetingPrepContent() {
                       <div className="min-w-0"><div className="text-xs mb-1" style={stTextMuted}>Top objections</div>{topObjections.map((o, i) => <div key={i} className="text-xs truncate" style={stTextSecondary}>{o.text}</div>)}</div>
                     </div>
                   )}
-                  {!meetingBrief && !generatingBrief && <button onClick={generateBrief} className="ml-auto no-print px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5" style={{ background: 'var(--accent)', color: 'var(--surface-0)' }}><Sparkles className="w-3.5 h-3.5" /> Quick Brief</button>}
+                  {!meetingBrief && !generatingBrief && <button onClick={generateBrief} className="ml-auto no-print px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5" style={btnAccentPrimary}><Sparkles className="w-3.5 h-3.5" /> Quick Brief</button>}
                   {generatingBrief && <span className="ml-auto text-xs flex items-center gap-1.5" style={stTextMuted}><Loader2 className="w-3.5 h-3.5 animate-spin" /> Generating...</span>}
                 </section>);
             })()}

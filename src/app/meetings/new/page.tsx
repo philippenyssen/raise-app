@@ -9,6 +9,11 @@ import FollowupPlan from '@/components/followup-plan';
 import { useToast } from '@/components/toast';
 import { stAccent, stSurface1, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
+const formInputStyle: React.CSSProperties = { background: 'var(--surface-1)', border: '1px solid var(--border-default)', color: 'var(--text-secondary)' };
+const questionTopicBadge: React.CSSProperties = { background: 'var(--surface-2)', color: 'var(--text-muted)' };
+const btnSecondary: React.CSSProperties = { background: 'var(--surface-2)', color: 'var(--text-primary)' };
+const btnAccentOutline: React.CSSProperties = { background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid var(--accent-10)' };
+
 function severityBadgeStyle(severity: string): React.CSSProperties {
   return {
     background: severity === 'showstopper' ? 'var(--danger-muted)' : severity === 'significant' ? 'var(--warning-muted)' : 'var(--surface-2)',
@@ -122,7 +127,7 @@ function NewMeetingContent() {
               autoFocus
               aria-label="Select investor"
               className="w-full rounded-lg px-3 py-2 text-sm"
-              style={{ background: 'var(--surface-1)', border: '1px solid var(--border-default)', color: 'var(--text-secondary)' }}>
+              style={formInputStyle}>
               <option value="">Select investor...</option>
               {investors.map(inv => (
                 <option key={inv.id} value={inv.id}>{inv.name} (T{inv.tier})</option>
@@ -133,7 +138,7 @@ function NewMeetingContent() {
               type="date" value={form.date}
               onChange={e => setForm(f => ({ ...f, date: e.target.value }))}
               className="w-full rounded-lg px-3 py-2 text-sm"
-              style={{ background: 'var(--surface-1)', border: '1px solid var(--border-default)', color: 'var(--text-secondary)' }}
+              style={formInputStyle}
                 /></div>
           <div>
             <label className="text-xs block mb-1" style={stTextMuted}>Meeting Type</label>
@@ -142,7 +147,7 @@ function NewMeetingContent() {
               onChange={e => setForm(f => ({ ...f, type: e.target.value }))}
               aria-label="Meeting type"
               className="w-full rounded-lg px-3 py-2 text-sm"
-              style={{ background: 'var(--surface-1)', border: '1px solid var(--border-default)', color: 'var(--text-secondary)' }}>
+              style={formInputStyle}>
               <option value="intro">Intro Call</option>
               <option value="management_presentation">Management Presentation</option>
               <option value="deep_dive">Deep Dive</option>
@@ -156,7 +161,7 @@ function NewMeetingContent() {
               type="number" value={form.duration_minutes}
               onChange={e => setForm(f => ({ ...f, duration_minutes: Number(e.target.value) }))}
               className="w-full rounded-lg px-3 py-2 text-sm"
-              style={{ background: 'var(--surface-1)', border: '1px solid var(--border-default)', color: 'var(--text-secondary)' }}
+              style={formInputStyle}
                 /></div></div>
 
         <div>
@@ -166,7 +171,7 @@ function NewMeetingContent() {
             onChange={e => setForm(f => ({ ...f, attendees: e.target.value }))}
             placeholder="e.g., Katherine Boyle (a16z), John Smith (Associate)"
             className="w-full rounded-lg px-3 py-2 text-sm"
-            style={{ background: 'var(--surface-1)', border: '1px solid var(--border-default)', color: 'var(--text-secondary)' }}
+            style={formInputStyle}
               /></div>
 
         {/* Investor Quick Profile */}
@@ -241,7 +246,7 @@ function NewMeetingContent() {
               <div className="text-sm" style={stTextSecondary}>
                 {parsedQuestions.map((q: { text: string; topic: string }, i: number) => (
                   <div key={i} className="flex gap-2 mb-1">
-                    <span className="text-xs px-1.5 py-0.5 rounded shrink-0" style={{ background: 'var(--surface-2)', color: 'var(--text-muted)' }}>{q.topic}</span>
+                    <span className="text-xs px-1.5 py-0.5 rounded shrink-0" style={questionTopicBadge}>{q.topic}</span>
                     <span>{q.text}</span></div>
                 ))}</div></div>
           )}
@@ -262,7 +267,7 @@ function NewMeetingContent() {
               <button
                 onClick={() => router.push(`/investors/${form.investor_id}`)}
                 className="px-4 py-2 rounded-lg text-sm font-normal transition-colors"
-                style={{ background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid var(--accent-10)' }}
+                style={btnAccentOutline}
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--accent-8)'; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--accent-muted)'; }}>
                 View {selectedInvestor?.name || 'Investor'}</button>
@@ -270,16 +275,12 @@ function NewMeetingContent() {
             <button
               onClick={() => router.push('/meetings')}
               className="px-4 py-2 rounded-lg text-sm btn-surface transition-colors"
-              style={{
-                background: 'var(--surface-2)',
-                color: 'var(--text-primary)', }}>
+              style={btnSecondary}>
               All Meetings</button>
             <button
               onClick={() => { setResult(null); setForm({ investor_id: '', date: new Date().toISOString().split('T')[0], type: 'management_presentation', attendees: '', duration_minutes: 60, raw_notes: '' }); }}
               className="px-4 py-2 rounded-lg text-sm btn-surface transition-colors"
-              style={{
-                background: 'var(--surface-2)',
-                color: 'var(--text-primary)', }}>
+              style={btnSecondary}>
               Log Another</button></div></div>
       )}
 

@@ -25,6 +25,9 @@ const pipeDivider = { color: 'var(--border-default)' } as const;
 const vDivider = { background: 'var(--border-default)' } as const;
 const PRIORITY_COLORS: Record<string, string> = { critical: 'var(--danger)', high: 'var(--warning)', medium: 'var(--warning)', low: 'var(--text-muted)' };
 const EVENT_TYPE_COLORS: Record<string, string> = { meeting: 'var(--accent)', followup: 'var(--warning)', objection: 'var(--danger)', score: 'var(--success)' };
+const ctaLinkBtnStyle: React.CSSProperties = { background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid var(--accent-25)', fontSize: 'var(--font-size-xs)', padding: 'var(--space-1) var(--space-2)', gap: 'var(--space-1)', display: 'inline-flex', alignItems: 'center', textDecoration: 'none' };
+const scoreDotSuccess: React.CSSProperties = { width: 6, height: 6, borderRadius: '50%', background: 'var(--success)', flexShrink: 0 };
+const scoreDotWarning: React.CSSProperties = { width: 6, height: 6, borderRadius: '50%', background: 'var(--warning)', flexShrink: 0 };
 
 const STATUS_COLORS: Record<string, string> = {
   identified: 'var(--surface-3)',
@@ -1278,7 +1281,7 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
                       return `/meetings/new?investor=${investorId}`;
                     })()}
                     className="btn btn-sm shrink-0"
-                    style={{ background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid var(--accent-25)', fontSize: 'var(--font-size-xs)', padding: 'var(--space-1) var(--space-2)', gap: 'var(--space-1)', display: 'inline-flex', alignItems: 'center', textDecoration: 'none' }}>
+                    style={ctaLinkBtnStyle}>
                     Do it <ArrowRight className="w-3 h-3" /></Link></div></div></div></div></div></div>
 
       {/* Score Summary: top & bottom dimensions */}
@@ -1287,8 +1290,8 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
         const top = sorted[0], bottom = sorted[sorted.length - 1];
         return (
           <div className="px-5 py-3 flex gap-6" style={{ borderTop: '1px solid var(--border-default)', background: 'var(--white-4)' }}>
-            <div className="flex items-center gap-1.5 min-w-0 flex-1"><span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--success)', flexShrink: 0 }} /><span className="truncate" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>Strongest: {top.name} ({top.score})</span></div>
-            <div className="flex items-center gap-1.5 min-w-0 flex-1"><span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--warning)', flexShrink: 0 }} /><span className="truncate" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>Weakest: {bottom.name} ({bottom.score})</span></div>
+            <div className="flex items-center gap-1.5 min-w-0 flex-1"><span style={scoreDotSuccess} /><span className="truncate" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>Strongest: {top.name} ({top.score})</span></div>
+            <div className="flex items-center gap-1.5 min-w-0 flex-1"><span style={scoreDotWarning} /><span className="truncate" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>Weakest: {bottom.name} ({bottom.score})</span></div>
           </div>);
       })()}
 
