@@ -149,7 +149,7 @@ export default function TargetingPage() {
       </div>
 
       {/* Key Metrics */}
-      <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(4, 1fr)', marginBottom: 'var(--space-5)' }}>
+      <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', marginBottom: 'var(--space-5)' }}>
         {[
           { icon: Users, label: 'Active Investors', value: s.activeCount },
           { icon: Target, label: 'High Probability', value: s.highProbCount, sub: '≥40% close rate' },

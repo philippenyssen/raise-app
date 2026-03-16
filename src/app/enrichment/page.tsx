@@ -179,7 +179,7 @@ export default function EnrichmentPage() {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
         <div className="skeleton" style={{ height: '32px', width: '200px' }} />
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 'var(--space-4)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 'var(--space-4)' }}>
           {[...Array(4)].map((_, i) => <div key={i} className="skeleton" style={skelCardSm} />)}
         </div>
         <div className="skeleton" style={{ height: '400px', borderRadius: 'var(--radius-lg)' }} />

@@ -33,6 +33,7 @@ export default function DecidePage() {
   const [data, setData] = useState<DecideData | null>(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [hoveredCard, setHoveredCard] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -66,7 +67,7 @@ export default function DecidePage() {
       <div className="page-content" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
         <div className="skeleton" style={{ height: '32px', width: '200px' }} />
         <div className="skeleton" style={{ height: '80px', borderRadius: 'var(--radius-lg)' }} />
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 'var(--space-4)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 'var(--space-3)' }}>
           {[...Array(4)].map((_, i) => <div key={i} className="skeleton" style={{ height: '80px', borderRadius: 'var(--radius-lg)' }} />)}
         </div>
         {[...Array(3)].map((_, i) => <div key={i} className="skeleton" style={{ height: '120px', borderRadius: 'var(--radius-lg)' }} />)}
@@ -174,11 +175,18 @@ export default function DecidePage() {
             </div>
           ) : (
             focusRanking.map((inv, idx) => (
-              <div key={inv.id} style={{
-                background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-4)',
-                border: `1px solid ${idx === 0 ? 'var(--accent)' : 'var(--border-subtle)'}`,
-                ...(idx === 0 ? { boxShadow: '0 0 0 1px var(--accent-muted)' } : {}),
-              }}>
+              <div
+                key={inv.id}
+                onMouseEnter={() => setHoveredCard(inv.id)}
+                onMouseLeave={() => setHoveredCard(null)}
+                style={{
+                  background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-4)',
+                  border: `1px solid ${idx === 0 ? 'var(--accent)' : hoveredCard === inv.id ? 'var(--border-default)' : 'var(--border-subtle)'}`,
+                  cursor: 'pointer',
+                  transition: 'border-color 0.15s, box-shadow 0.15s',
+                  ...(idx === 0 ? { boxShadow: '0 0 0 1px var(--accent-muted)' } : {}),
+                  ...(hoveredCard === inv.id && idx !== 0 ? { boxShadow: 'var(--shadow-sm)' } : {}),
+                }}>
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
                     <div style={{
