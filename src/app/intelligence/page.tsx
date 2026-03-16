@@ -31,6 +31,10 @@ const briefViewLink = { color: 'var(--accent)', fontSize: 'var(--font-size-xs)',
 const briefScheduleLink: React.CSSProperties = { fontSize: 'var(--font-size-xs)', fontWeight: 400, padding: 'var(--space-0) var(--space-1)', borderRadius: 'var(--radius-sm)', textDecoration: 'none', background: 'var(--accent-muted)', color: 'var(--accent)' };
 
 const BRIEF_TYPE_FALLBACK = { background: 'var(--surface-2)', color: 'var(--text-tertiary)' } as const;
+const accentLinkStyle: React.CSSProperties = { color: 'var(--accent)', textDecoration: 'none' };
+const scheduleLinkStyle: React.CSSProperties = { padding: 'var(--space-0) var(--space-2)', borderRadius: 'var(--radius-sm)', background: 'var(--accent-muted)', color: 'var(--accent)', textDecoration: 'none', fontWeight: 400 };
+const followUpLinkStyle: React.CSSProperties = { padding: 'var(--space-0) var(--space-2)', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: 400 };
+const tabBadgeStyle = { background: 'var(--surface-2)', color: 'var(--text-tertiary)' } as const;
 const BRIEF_TYPE_STYLES: Record<string, { background: string; color: string }> = {
   investor: { background: 'var(--accent-muted)', color: 'var(--accent)' },
   competitor: { background: 'var(--warning-muted)', color: 'var(--text-tertiary)' },
@@ -245,7 +249,7 @@ export default function IntelligencePage() {
             {t.label}
             <span
               className="text-xs px-1.5 py-0.5 rounded"
-              style={{ background: 'var(--surface-2)', color: 'var(--text-tertiary)' }}>
+              style={tabBadgeStyle}>
               {t.count}</span></button>
         ))}</div>
 
@@ -529,25 +533,17 @@ function RecentResearchSection({ briefs }: { briefs: IntelligenceBrief[] }) {
                       <Link
                         href={`/investors/${brief.investor_id}`}
                         className="text-xs flex items-center gap-1"
-                        style={{ color: 'var(--accent)', textDecoration: 'none' }}>
+                        style={accentLinkStyle}>
                         View Profile</Link>
                       <Link
                         href={`/meetings/new?investor=${brief.investor_id}`}
                         className="text-xs flex items-center gap-1"
-                        style={{
-                          padding: 'var(--space-0) var(--space-2)', borderRadius: 'var(--radius-sm)',
-                          background: 'var(--accent-muted)', color: 'var(--accent)',
-                          textDecoration: 'none',
-                          fontWeight: 400, }}>
+                        style={scheduleLinkStyle}>
                         Schedule Meeting</Link>
                       <Link
                         href={`/followups?investor=${brief.investor_id}`}
                         className="text-xs flex items-center gap-1"
-                        style={{
-                          padding: 'var(--space-0) var(--space-2)', borderRadius: 'var(--radius-sm)',
-                          background: 'var(--surface-2)', color: 'var(--text-secondary)',
-                          textDecoration: 'none',
-                          fontWeight: 400, }}>
+                        style={followUpLinkStyle}>
                         Follow-up</Link></div>
                   )}</div>
               )}

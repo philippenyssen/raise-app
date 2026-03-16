@@ -108,6 +108,7 @@ const cpRankBadge = { fontSize: 'var(--font-size-xs)', background: 'var(--accent
 const riskBadgeHigh: React.CSSProperties = { color: 'var(--text-primary)', background: 'var(--danger-muted)', borderColor: 'var(--accent-10)' };
 const riskBadgeMedium: React.CSSProperties = { color: 'var(--text-tertiary)', background: 'var(--warning-muted)', borderColor: 'var(--warn-30)' };
 const riskBadgeLow: React.CSSProperties = { color: 'var(--text-secondary)', background: 'var(--white-10)', borderColor: 'var(--border-subtle)' };
+const monteCarloTargetMarker: React.CSSProperties = { left: '100%', width: '2px', background: 'var(--surface-muted)' };
 
 const TIER_STYLES: Record<number, React.CSSProperties> = {
   1: { color: 'var(--text-tertiary)', background: 'var(--warning-muted)', borderColor: 'var(--warn-30)' },
@@ -551,7 +552,7 @@ export default function StressTestPage() {
                       {/* Target marker */}
                       <div
                         className="absolute top-0 bottom-0"
-                        style={{ left: '100%', width: '2px', background: 'var(--surface-muted)' }}
+                        style={monteCarloTargetMarker}
                         title={`Target: EUR ${formatEuro(data.target)}`} /></div>
                   </div>);
               })}</div>
