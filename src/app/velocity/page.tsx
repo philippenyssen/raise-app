@@ -5,7 +5,7 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { cachedFetch } from '@/lib/cache';
 import Link from 'next/link';
 import {
-  Clock, CheckCircle2, XCircle, AlertTriangle,
+  Clock, CheckCircle2, XCircle, AlertTriangle, Download,
   TrendingUp, Users, ArrowRight, Zap, Phone, Mail, Target,
 } from 'lucide-react';
 import { STATUS_LABELS, TYPE_LABELS } from '@/lib/constants';
@@ -102,7 +102,17 @@ export default function VelocityPage() {
           <h1 className="page-title">Close in 60</h1>
           <p className="page-subtitle">
             {summary.total_active} active deal{summary.total_active !== 1 ? 's' : ''} &middot; {summary.avg_days_in_process}d avg time in process{loadedAt && <> &middot; <span style={{ color: 'var(--text-muted)' }}>{relativeTime(loadedAt)}</span></>}
-          </p></div></div>
+          </p></div>
+        <button
+          onClick={() => {
+            const rows = [['Name','Type','Tier','Status','Enthusiasm','Days in Process','Projected Close','Tracking','Bottleneck']];
+            for (const inv of investors) rows.push([inv.investor_name, inv.investor_type, String(inv.investor_tier), inv.status, String(inv.enthusiasm), String(inv.days_in_process), inv.projected_close_date || '', inv.tracking_status, inv.bottleneck]);
+            const blob = new Blob([rows.map(r => r.join('\t')).join('\n')], { type: 'text/tab-separated-values' });
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `velocity-${new Date().toISOString().split('T')[0]}.tsv`; a.click();
+          }}
+          disabled={!investors.length}
+          className="btn btn-secondary btn-md">
+          <Download className="w-3.5 h-3.5" /> CSV</button></div>
 
       {/* Raise Progress Bar */}
       <div className="card" style={{ marginBottom: 'var(--space-6)', padding: 'var(--space-4) var(--space-5)' }}>

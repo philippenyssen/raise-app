@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { cachedFetch } from '@/lib/cache';
 import Link from 'next/link';
+import { EmptyState } from '@/components/ui/empty-state';
 import {
   BarChart3, TrendingUp, AlertTriangle, Shield, Clock,
   CheckCircle2, Target, ArrowRight, Users, Zap, ToggleLeft, ToggleRight, RotateCcw,
@@ -111,11 +112,11 @@ export default function ForecastPage() {
   if (error || !data) {
     return (
       <div className="flex-1 p-6 page-content" style={maxWidthCenter}>
-        <div className="card" style={{ textAlign: 'center', padding: 'var(--space-12)' }}>
-          <AlertTriangle className="w-8 h-8 mx-auto mb-3" style={{ color: 'var(--text-muted)' }} />
-          <p style={{ color: 'var(--text-primary)', fontSize: 'var(--font-size-sm)', marginBottom: 'var(--space-3)' }}>
-            {error || 'No forecast yet — add investors to your pipeline first, then come back to see close projections.'}</p>
-          <button onClick={fetchForecast} className="btn btn-secondary btn-sm">Reload forecast</button></div>
+        <EmptyState
+          icon={AlertTriangle}
+          title="Unable to load forecast"
+          description={error || 'Add investors to your pipeline, then refresh.'}
+          action={{ label: 'Reload forecast', onClick: fetchForecast }} />
       </div>);
   }
 

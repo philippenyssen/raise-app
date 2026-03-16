@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { useToast } from '@/components/toast';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
+import { EmptyState } from '@/components/ui/empty-state';
 import { FolderOpen, Upload, FileText, Table, Image, Trash2, ChevronDown, ChevronRight, Search, Eye, BarChart3, Users, AlertCircle, Send, TrendingUp } from 'lucide-react';
 import { fmtDateTime, fmtDate } from '@/lib/format';
 import { STATUS_LABELS } from '@/lib/constants';
@@ -325,11 +326,10 @@ export default function DataRoomPage() {
 
       {/* Empty state — no files uploaded yet */}
       {!filteredFiles && files.length === 0 && (
-        <div className="rounded-xl p-8 text-center space-y-3">
-          <FolderOpen className="w-8 h-8 mx-auto" style={stTextMuted} />
-          <p style={stTextMuted}>Your data room is empty.</p>
-          <p className="text-sm" style={stTextTertiary}>Upload financial models, legal docs, and pitch materials — AI will extract key terms and flag due diligence gaps automatically.</p>
-        </div>
+        <EmptyState
+          icon={FolderOpen}
+          title="Your data room is empty"
+          description="Upload financial models, legal docs, and pitch materials — AI will extract key terms and flag due diligence gaps automatically." />
       )}
 
       {/* Category overview */}

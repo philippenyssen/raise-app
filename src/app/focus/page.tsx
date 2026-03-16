@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback, useMemo } from 'react';
 import { cachedFetch } from '@/lib/cache';
 import Link from 'next/link';
 import { useToast } from '@/components/toast';
+import { EmptyState } from '@/components/ui/empty-state';
 import { MS_PER_DAY } from '@/lib/time';
 import { STATUS_LABELS, PIPELINE_STATUS_STYLES, MOMENTUM_STYLES, MOMENTUM_LABELS, TRIGGER_STYLES, TRIGGER_LABELS, CONFIDENCE_STYLES, URGENCY_STYLE, TYPE_LABELS_SHORT as TYPE_LABELS } from '@/lib/constants';
 import {
@@ -777,11 +778,11 @@ export default function FocusPage() {
     return (
       <div className="space-y-6">
         <h1 className="page-title">CEO Focus</h1>
-        <div className="card" style={{ padding: 'var(--space-8)', textAlign: 'center' }}>
-          <p style={stTextTertiary}>No investors in the pipeline yet.</p>
-          <p style={{ ...labelMuted, fontSize: 'var(--font-size-sm)', marginTop: '4px' }}>Add investors and log meetings to build your daily priority queue.</p>
-          <Link href="/investors" className="btn btn-primary btn-md" style={{ marginTop: '12px', display: 'inline-flex' }}>
-            Go to Pipeline</Link></div>
+        <EmptyState
+          icon={Target}
+          title="No investors in the pipeline yet"
+          description="Add investors and log meetings to build your daily priority queue."
+          action={{ label: 'Go to Pipeline', href: '/investors' }} />
       </div>);
   }
 

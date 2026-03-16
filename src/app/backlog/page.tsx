@@ -5,7 +5,7 @@ import { useToast } from '@/components/toast';
 import { cachedFetch } from '@/lib/cache';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { EmptyState } from '@/components/ui/empty-state';
-import { Plus, Trash2, DollarSign, ShieldCheck, AlertTriangle, TrendingUp, FileText } from 'lucide-react';
+import { Plus, Trash2, DollarSign, ShieldCheck, AlertTriangle, TrendingUp, FileText, Download } from 'lucide-react';
 import { stAccent, stSurface1, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 const skeletonRow = { height: '64px', borderRadius: 'var(--radius-lg)' } as const;
@@ -163,8 +163,19 @@ export default function BacklogPage() {
           <p className="text-sm mt-1" style={stTextMuted}>
             {summary?.count || 0} commitments &middot; {formatEur(summary?.total_committed_eur || 0)} total &middot; {formatEur(summary?.probability_weighted_eur || 0)} probability-weighted
           </p></div>
-        <button onClick={() => setShowAdd(!showAdd)} className="btn btn-primary btn-md flex items-center gap-2">
-          <Plus className="w-4 h-4" /> Add Commitment</button></div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => {
+              const rows = [['Customer','Program','Type','Amount EUR','Start','End','Confidence','Source']];
+              for (const c of commitments) rows.push([c.customer, c.program, c.contract_type, String(c.amount_eur), c.start_date, c.end_date, String(c.confidence), c.source_doc]);
+              const blob = new Blob([rows.map(r => r.join('\t')).join('\n')], { type: 'text/tab-separated-values' });
+              const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `backlog-${new Date().toISOString().split('T')[0]}.tsv`; a.click();
+            }}
+            disabled={!commitments.length}
+            className="btn btn-secondary btn-md">
+            <Download className="w-3.5 h-3.5" /> CSV</button>
+          <button onClick={() => setShowAdd(!showAdd)} className="btn btn-primary btn-md flex items-center gap-2">
+            <Plus className="w-4 h-4" /> Add Commitment</button></div></div>
 
       {/* Summary cards */}
       {summary && (
