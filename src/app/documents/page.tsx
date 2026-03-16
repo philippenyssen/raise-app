@@ -69,9 +69,9 @@ export default function DocumentsPage() {
   const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'name'>('newest');
 
   useEffect(() => { document.title = 'Raise | Documents'; }, []);
-  useEffect(() => { fetchDocs(); fetchFlags(); }, []);
+  useEffect(() => { Promise.all([fetchDocs(), fetchFlags()]); }, []);
   useEffect(() => {
-    const h = (e: KeyboardEvent) => { if (e.key === 'r' && !e.metaKey && !e.ctrlKey && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement)) { e.preventDefault(); fetchDocs(); fetchFlags(); } };
+    const h = (e: KeyboardEvent) => { if (e.key === 'r' && !e.metaKey && !e.ctrlKey && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement)) { e.preventDefault(); Promise.all([fetchDocs(), fetchFlags()]); } };
     window.addEventListener('keydown', h);
     return () => window.removeEventListener('keydown', h);
   }, []);
