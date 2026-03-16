@@ -7,12 +7,11 @@ import { cachedFetch } from '@/lib/cache';
 import { MS_PER_MINUTE } from '@/lib/time';
 import {
   LayoutDashboard, Users, Calendar, FileText,
-  FolderOpen, BookOpen, Globe, Settings,
-  Columns3, BarChart3, MessageCircleWarning, Target,
+  BookOpen, Settings,
+  Columns3,
   SendHorizonal, Menu, X, LogOut,
   ChevronLeft, ChevronRight, Sun, Flame,
-  Gauge, Compass, Zap, TrendingUp, Swords,
-  ClipboardList, Activity, Thermometer,
+  Compass,
 } from 'lucide-react';
 
 interface NavItem {
@@ -24,33 +23,21 @@ interface NavItem {
 }
 
 const nav: NavItem[] = [
-  // Daily — what you use every day
-  { href: '/today', label: 'Today', icon: Sun, section: 'DAILY', badge: 'hot' },
-  { href: '/', label: 'Dashboard', icon: LayoutDashboard, section: 'DAILY' },
-  { href: '/pipeline', label: 'Pipeline', icon: Columns3, section: 'DAILY' },
-  { href: '/investors', label: 'Investors', icon: Users, section: 'DAILY' },
-  // Execution — running the fundraise
+  // Core — what you use every day
+  { href: '/today', label: 'Today', icon: Sun, section: 'CORE', badge: 'hot' },
+  { href: '/', label: 'Dashboard', icon: LayoutDashboard, section: 'CORE' },
+  { href: '/pipeline', label: 'Pipeline', icon: Columns3, section: 'CORE' },
+  { href: '/investors', label: 'Investors', icon: Users, section: 'CORE' },
+  // Execute — running the fundraise
   { href: '/meetings', label: 'Meetings', icon: Calendar, section: 'EXECUTE' },
   { href: '/followups', label: 'Follow-ups', icon: SendHorizonal, section: 'EXECUTE' },
-  { href: '/focus', label: 'Focus', icon: Target, section: 'EXECUTE' },
-  { href: '/acceleration', label: 'Acceleration', icon: Zap, section: 'EXECUTE' },
-  { href: '/velocity', label: 'Velocity', icon: Gauge, section: 'EXECUTE' },
-  // Analysis — understanding what's happening
-  { href: '/strategic', label: 'Strategic', icon: Compass, section: 'ANALYZE' },
+  // Analyze — consolidated intelligence
   { href: '/dealflow', label: 'Dealflow', icon: Flame, section: 'ANALYZE' },
-  { href: '/momentum', label: 'Momentum', icon: TrendingUp, section: 'ANALYZE' },
-  { href: '/deal-heat', label: 'Deal Heat', icon: Thermometer, section: 'ANALYZE' },
-  { href: '/forecast', label: 'Forecast', icon: BarChart3, section: 'ANALYZE' },
-  { href: '/competitive', label: 'Competitive', icon: Swords, section: 'ANALYZE' },
-  { href: '/objections', label: 'Objections', icon: MessageCircleWarning, section: 'ANALYZE' },
-  { href: '/intelligence', label: 'Intelligence', icon: Globe, section: 'ANALYZE' },
-  // Tools — materials and configuration
-  { href: '/documents', label: 'Documents', icon: BookOpen, section: 'TOOLS' },
-  { href: '/data-room', label: 'Data Room', icon: FolderOpen, section: 'TOOLS' },
-  { href: '/reports', label: 'Reports', icon: ClipboardList, section: 'TOOLS' },
-  { href: '/terms', label: 'Terms', icon: FileText, section: 'TOOLS' },
-  { href: '/health', label: 'Health', icon: Activity, section: 'TOOLS' },
-  { href: '/settings', label: 'Settings', icon: Settings, section: 'TOOLS' },];
+  { href: '/strategic', label: 'Strategic', icon: Compass, section: 'ANALYZE' },
+  // Workspace — materials and configuration
+  { href: '/documents', label: 'Documents', icon: BookOpen, section: 'WORKSPACE' },
+  { href: '/terms', label: 'Terms', icon: FileText, section: 'WORKSPACE' },
+  { href: '/settings', label: 'Settings', icon: Settings, section: 'WORKSPACE' },];
 
 /* ── Sidebar-specific palette (dark navy panel on light page) ── */
 const SB = {
@@ -110,10 +97,10 @@ export function Sidebar() {
   }, {});
 
   const sectionLabels: Record<string, string> = {
-    DAILY: '',
-    EXECUTE: 'Execution',
-    ANALYZE: 'Analysis',
-    TOOLS: 'Tools',};
+    CORE: '',
+    EXECUTE: 'Execute',
+    ANALYZE: 'Analyze',
+    WORKSPACE: 'Workspace',};
 
   return (
     <>
