@@ -167,7 +167,8 @@ export default function ModelPage() {
         setActiveSheetId(data[0].id);
         try { setLocalCells(JSON.parse(data[0].data)); } catch { setLocalCells({}); }
       }
-    } catch {
+    } catch (e) {
+      console.warn('[MODEL_FETCH]', e instanceof Error ? e.message : e);
       toast('Couldn\'t load model — try refreshing the page', 'error');
     } finally {
       setLoading(false);
@@ -223,7 +224,8 @@ export default function ModelPage() {
       setDirty(false);
       toast('Sheet saved');
       fetchSheets();
-    } catch {
+    } catch (e) {
+      console.warn('[MODEL_SAVE]', e instanceof Error ? e.message : e);
       toast('Couldn\'t save sheet — try again', 'error');
     } finally {
       setSaving(false);
@@ -260,7 +262,7 @@ export default function ModelPage() {
       toast(`Added sheet "${name}"`);
       setShowAddSheet(false);
       fetchSheets();
-    } catch { toast('Couldn\'t add sheet — try again', 'error'); }
+    } catch (e) { console.warn('[MODEL_ADD]', e instanceof Error ? e.message : e); toast('Couldn\'t add sheet — try again', 'error'); }
   }, [sheets.length, toast, fetchSheets]);
 
   const deleteSheet = useCallback(async (sheet: ModelSheet) => {
@@ -280,7 +282,7 @@ export default function ModelPage() {
       toast(`Deleted "${sheet_name}"`, 'warning');
       setConfirmState(null);
       fetchSheets();
-    } catch { toast('Couldn\'t delete sheet — try again', 'error'); }
+    } catch (e) { console.warn('[MODEL_DELETE]', e instanceof Error ? e.message : e); toast('Couldn\'t delete sheet — try again', 'error'); }
   }, [confirmState, activeSheetId, toast, fetchSheets]);
 
   // Cmd/Ctrl+S
@@ -323,7 +325,8 @@ export default function ModelPage() {
       updates.forEach(({ ref, value, formula }) => {
         handleCellChange(ref, String(value), formula || undefined);});
       toast(`Applied ${updates.length} cell change${updates.length !== 1 ? 's' : ''}`);
-    } catch {
+    } catch (e) {
+      console.warn('[MODEL_AI_CELLS]', e instanceof Error ? e.message : e);
       toast('Could not parse AI cell updates', 'error');
     }
   }, [handleCellChange, toast]);

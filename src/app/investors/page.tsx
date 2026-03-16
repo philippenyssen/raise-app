@@ -108,7 +108,8 @@ export default function InvestorsPage() {
       const res = await cachedFetch('/api/investors');
       if (!res.ok) throw new Error(`Failed (${res.status})`);
       setInvestors(await res.json());
-    } catch {
+    } catch (e) {
+      console.warn('[INVESTOR_FETCH]', e instanceof Error ? e.message : e);
       toast('Couldn\'t load investors — check your connection and refresh', 'error');
     } finally {
       setLoading(false);
@@ -131,7 +132,8 @@ export default function InvestorsPage() {
       setEditId(null);
       setForm({ name: '', type: 'vc', tier: 2, partner: '', fund_size: '', check_size_range: '', sector_thesis: '', warm_path: '', ic_process: '', speed: 'medium', portfolio_conflicts: '', notes: '' });
       fetchInvestors();
-    } catch {
+    } catch (e) {
+      console.warn('[INVESTOR_SAVE]', e instanceof Error ? e.message : e);
       toast('Couldn\'t save investor — check all fields and try again', 'error');
     } finally {
       setSubmitting(false);
@@ -151,7 +153,8 @@ export default function InvestorsPage() {
       invalidateCache('/api/');
       toast(`Status updated to ${STATUS_LABELS[status as InvestorStatus] || status}`);
       fetchInvestors();
-    } catch {
+    } catch (e) {
+      console.warn('[INVESTOR_STATUS]', e instanceof Error ? e.message : e);
       toast('Couldn\'t update status — try again in a moment', 'error');
     }}
 
@@ -164,7 +167,8 @@ export default function InvestorsPage() {
       toast('Investor deleted', 'warning');
       setDeleteTarget(null);
       fetchInvestors();
-    } catch {
+    } catch (e) {
+      console.warn('[INVESTOR_DELETE]', e instanceof Error ? e.message : e);
       toast('Couldn\'t delete investor — try again in a moment', 'error');
       setDeleteTarget(null);
     } finally {
@@ -207,7 +211,8 @@ export default function InvestorsPage() {
       toast(`Updated ${selected.size} investors to ${STATUS_LABELS[newStatus as InvestorStatus] || newStatus}`);
       setSelected(new Set());
       fetchInvestors();
-    } catch {
+    } catch (e) {
+      console.warn('[INVESTOR_BULK]', e instanceof Error ? e.message : e);
       toast('Some investor updates failed — refresh to see current state', 'error');
       fetchInvestors();
     } finally { setBulkUpdating(false); }}
@@ -255,7 +260,7 @@ export default function InvestorsPage() {
               const blob = new Blob([hdr.join(',')+'\n'+rows.join('\n')], { type: 'text/csv' });
               Object.assign(document.createElement('a'), { href: URL.createObjectURL(blob), download: 'investors.csv' }).click();
               toast(`Exported ${filtered.length} investors to CSV`);
-            } catch { toast('Couldn\'t export CSV — try again', 'error'); }
+            } catch (e) { console.warn('[INVESTOR_CSV]', e instanceof Error ? e.message : e); toast('Couldn\'t export CSV — try again', 'error'); }
           }} className="btn btn-secondary btn-md">
             <Download className="w-3.5 h-3.5" /> CSV</button>
           <button

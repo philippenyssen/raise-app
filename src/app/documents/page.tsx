@@ -82,7 +82,8 @@ export default function DocumentsPage() {
       const res = await cachedFetch('/api/documents');
       if (!res.ok) throw new Error(`Failed (${res.status})`);
       setDocs(await res.json());
-    } catch {
+    } catch (e) {
+      console.warn('[DOC_FETCH]', e instanceof Error ? e.message : e);
       toast('Couldn\'t load documents — try refreshing the page', 'error');
     } finally {
       setLoading(false);
@@ -105,7 +106,8 @@ export default function DocumentsPage() {
       const res = await fetch(`/api/documents/${target.id}`, { method: 'DELETE' });
       if (!res.ok) throw new Error(`Failed (${res.status})`);
       toast('Document deleted', 'warning');
-    } catch {
+    } catch (e) {
+      console.warn('[DOC_DELETE]', e instanceof Error ? e.message : e);
       toast('Couldn\'t delete document — restoring', 'error');
       fetchDocs();
     } finally {
@@ -121,7 +123,8 @@ export default function DocumentsPage() {
       if (!res.ok) throw new Error('Server error');
       setFlags(prev => prev.filter(f => f.id !== flagId));
       toast(action === 'addressed' ? 'Flag marked as addressed' : 'Flag dismissed', 'success');
-    } catch {
+    } catch (e) {
+      console.warn('[DOC_FLAG]', e instanceof Error ? e.message : e);
       toast('Couldn\'t update flag — try again', 'error');
     }}
 

@@ -277,7 +277,8 @@ export default function InvestorDetailPage() {
       const res = await fetch(`/api/intelligence?type=${type}&id=${itemId}`, { method: 'DELETE' });
       if (!res.ok) throw new Error(`Failed (${res.status})`);
       fetchData();
-    } catch {
+    } catch (e) {
+      console.warn('[DETAIL_INTEL_DEL]', e instanceof Error ? e.message : e);
       toast('Couldn\'t delete intel item — try again', 'error');
     }}
 
@@ -466,7 +467,7 @@ export default function InvestorDetailPage() {
                     setInvestor(prev => prev ? { ...prev, status: newStatus as InvestorStatus } : prev);
                     invalidateCache('/api/');
                     toast(`Status updated to ${STATUS_LABELS[newStatus as InvestorStatus] || newStatus}`);
-                  } catch { toast('Couldn\'t update investor status — refresh and try again', 'error'); }
+                  } catch (e) { console.warn('[DETAIL_STATUS]', e instanceof Error ? e.message : e); toast('Couldn\'t update investor status — refresh and try again', 'error'); }
                 }}
                 className="px-2 py-0.5 rounded text-xs font-normal border-none cursor-pointer focus:outline-none"
                 style={{
@@ -693,7 +694,7 @@ export default function InvestorDetailPage() {
               body: JSON.stringify({ id: fId, status: 'completed' }),});
             if (!res.ok) throw new Error('Failed');
             setFollowups(prev => prev.filter(f => f.id !== fId));
-          } catch { toast('Couldn\'t complete follow-up — try again', 'error'); }
+          } catch (e) { console.warn('[DETAIL_FU_DONE]', e instanceof Error ? e.message : e); toast('Couldn\'t complete follow-up — try again', 'error'); }
         }
 
         async function quickSkip(fId: string) {
@@ -704,7 +705,7 @@ export default function InvestorDetailPage() {
               body: JSON.stringify({ id: fId, status: 'skipped' }),});
             if (!res.ok) throw new Error('Failed');
             setFollowups(prev => prev.filter(f => f.id !== fId));
-          } catch { toast('Couldn\'t skip follow-up — try again', 'error'); }
+          } catch (e) { console.warn('[DETAIL_FU_SKIP]', e instanceof Error ? e.message : e); toast('Couldn\'t skip follow-up — try again', 'error'); }
         }
 
         return (
@@ -1044,7 +1045,7 @@ export default function InvestorDetailPage() {
                                 const res = await fetch('/api/tasks', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: t.id, status: newStatus, title: t.title, investor_id: id, investor_name: investor?.name }) });
                                 if (!res.ok) throw new Error('Failed');
                                 fetchData();
-                              } catch { toast('Couldn\'t toggle task — refresh and try again', 'error'); } finally { setTogglingTaskId(null); } }}
+                              } catch (e) { console.warn('[DETAIL_TASK]', e instanceof Error ? e.message : e); toast('Couldn\'t toggle task — refresh and try again', 'error'); } finally { setTogglingTaskId(null); } }}
                             className={`w-5 h-5 rounded flex items-center justify-center shrink-0 transition-colors ${t.status !== 'done' ? 'hover-border' : ''}`}
                             style={{
                               background: t.status === 'done' ? 'var(--success)' : 'transparent',

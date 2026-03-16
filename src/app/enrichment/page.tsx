@@ -78,7 +78,7 @@ export default function EnrichmentPage() {
     setFetchError(false);
     let failures = 0;
     const safeFetch = async (url: string, fallback: unknown = []) => {
-      try { const r = await fetch(url); if (!r.ok) { failures++; return fallback; } return r.json(); } catch { failures++; return fallback; }
+      try { const r = await fetch(url); if (!r.ok) { failures++; return fallback; } return r.json(); } catch (e) { console.warn('[ENRICH_FETCH]', e instanceof Error ? e.message : e); failures++; return fallback; }
     };
     const [provRes, invRes, jobRes, statsRes] = await Promise.all([
       safeFetch('/api/enrichment?action=providers'),
