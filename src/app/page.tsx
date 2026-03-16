@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import { DealHeatInvestor } from '@/lib/types';
 import { STATUS_LABELS } from '@/lib/constants';
-import { labelAccent, labelMuted, labelSecondary, labelSmMuted, labelTertiary, stAccent, stBorderTop, stSurface2, stTextMuted, stTextSecondary, stTextTertiary as textTertiary } from '@/lib/styles';
+import { labelAccent, labelMuted, labelSecondary, labelSmMuted, labelTertiary, stAccent, stBorderTop, stSurface1, stSurface2, stTextMuted, stTextSecondary, stTextTertiary as textTertiary } from '@/lib/styles';
 
 const textSmPrimary = { fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' } as const;
 const textSmLink = { fontSize: 'var(--font-size-sm)', fontWeight: 400 } as const;
@@ -660,7 +660,7 @@ export default function Dashboard() {
                   return (
                     <Link key={w.id} href={`/investors/${w.id}`} className="flex items-center gap-2 shrink-0 transition-colors hover-surface-2" style={{ padding: 'var(--space-2) var(--space-3)', borderRadius: 'var(--radius-lg)', background: 'var(--surface-1)' }}>
                       <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-primary)' }}>{w.name}</span>
-                      <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{STATUS_LABELS[w.status as keyof typeof STATUS_LABELS] ?? w.status}</span>
+                      <span style={labelMuted}>{STATUS_LABELS[w.status as keyof typeof STATUS_LABELS] ?? w.status}</span>
                       {daysSince !== null && <span style={{ fontSize: 'var(--font-size-xs)', color: daysSince > 14 ? 'var(--danger)' : 'var(--text-muted)' }}>{daysSince}d</span>}
                     </Link>);
                 })}
@@ -1168,7 +1168,7 @@ export default function Dashboard() {
 function SectionError({ label, onRetry }: { label: string; onRetry: () => void }) {
   const [r, setR] = useState(false);
   return (
-    <div className="flex items-center justify-between py-2.5 px-4 rounded-lg" style={{ background: 'var(--surface-1)' }}>
+    <div className="flex items-center justify-between py-2.5 px-4 rounded-lg" style={stSurface1}>
       <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>{label} unavailable</span>
       <button disabled={r} className="btn btn-secondary btn-sm"
         onClick={async () => { setR(true); await onRetry(); setR(false); }}>
