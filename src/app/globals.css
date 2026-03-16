@@ -425,7 +425,7 @@ body {
 
 /* ── Tables ── sentence case headers */
 .table-header {
-  background: var(--surface-0);
+  background: var(--surface-1);
   border-bottom: 1px solid var(--border-default);
   position: sticky;
   top: 0;
@@ -435,8 +435,9 @@ body {
 .table-header th {
   font-size: var(--font-size-xs);
   font-weight: 400;
-  color: var(--text-secondary);
-  letter-spacing: 0.01em;
+  color: var(--text-tertiary);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   padding: var(--space-3) var(--space-4);
   text-align: left;
 }
@@ -447,7 +448,7 @@ body {
 }
 
 .table-row:hover {
-  background: var(--fg-3);
+  background: var(--surface-1);
 }
 
 .table-row td {

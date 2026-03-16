@@ -380,7 +380,7 @@ export default function InvestorsPage() {
                 <input type="checkbox" checked={selected.size === filtered.length && filtered.length > 0} onChange={toggleSelectAll}
                   aria-label="Select all investors"
                   style={{ accentColor: 'var(--accent)' }} /></th>
-              {([['name','Investor'],['',''],['','Type'],['tier','Tier'],['','Partner'],['status','Status'],['','Check Size'],['last_meeting_date','Last Contact'],['enthusiasm','Enthusiasm'],['','Actions']] as const).map(([k, label], i) => <th scope="col" key={i} style={k ? { cursor: 'pointer', userSelect: 'none', ...(i === 1 ? { width: '2rem', padding: 'var(--space-3) var(--space-2)' } : {}) } : (i === 1 ? { width: '2rem', padding: 'var(--space-3) var(--space-2)' } : {})} title={i === 1 ? 'Data completeness' : undefined} onClick={k ? () => { if (sortKey === k) setSortAsc(!sortAsc); else { setSortKey(k as typeof sortKey); setSortAsc(k === 'name'); } } : undefined}>{label}{sortKey === k ? (sortAsc ? ' \u25B2' : ' \u25BC') : ''}</th>)}</tr></thead>
+              {([['name','Investor'],['','Profile'],['','Type'],['tier','Tier'],['','Partner'],['status','Status'],['','Check Size'],['last_meeting_date','Last Contact'],['enthusiasm','Enthusiasm'],['','Actions']] as const).map(([k, label], i) => <th scope="col" key={i} style={k ? { cursor: 'pointer', userSelect: 'none', ...(i === 1 ? { width: '2.5rem', padding: 'var(--space-3) var(--space-2)' } : {}) } : (i === 1 ? { width: '2.5rem', padding: 'var(--space-3) var(--space-2)' } : {})} title={i === 1 ? 'Data completeness' : undefined} onClick={k ? () => { if (sortKey === k) setSortAsc(!sortAsc); else { setSortKey(k as typeof sortKey); setSortAsc(k === 'name'); } } : undefined}>{label}{sortKey === k ? (sortAsc ? ' \u25B2' : ' \u25BC') : ''}</th>)}</tr></thead>
           <tbody>
             {filtered.map(inv => {
               const isSelected = selected.has(inv.id);
@@ -398,11 +398,11 @@ export default function InvestorsPage() {
                       className="investor-link"
                       style={{ textDecoration: 'none', transition: 'color 150ms' }}>
                       {inv.name}</Link></td>
-                  <td style={{ width: '2rem', padding: 'var(--space-3) var(--space-2)' }}>
-                    <div
-                      className="status-dot"
-                      style={{ background: completenessDotColor(computeCompleteness(inv)), width: '10px', height: '10px' }}
-                      title={`Profile ${computeCompleteness(inv)}% complete — add partner name, fund size, check size, and sector thesis to improve`} /></td>
+                  <td style={{ width: '2.5rem', padding: 'var(--space-3) var(--space-2)', textAlign: 'center' }}>
+                    <span
+                      style={{ fontSize: '10px', fontVariantNumeric: 'tabular-nums', color: completenessDotColor(computeCompleteness(inv)), fontWeight: 400 }}
+                      title={`Profile ${computeCompleteness(inv)}% complete — add partner name, fund size, check size, and sector thesis to improve`}>
+                      {computeCompleteness(inv)}%</span></td>
                   <td style={{ padding: 'var(--space-3) var(--space-4)', color: 'var(--text-secondary)' }}>
                     {TYPE_LABELS[inv.type as InvestorType] ?? inv.type}</td>
                   <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
