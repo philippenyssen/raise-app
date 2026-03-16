@@ -231,6 +231,7 @@ export default function WorkspacePage() {
             <button
               onClick={() => setSidebarOpen(false)}
               className="icon-delete"
+              aria-label="Close sidebar"
               style={{
                 background: 'none',
                 border: 'none',

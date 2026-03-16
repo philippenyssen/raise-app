@@ -497,7 +497,8 @@ export default function ObjectionsPage() {
                                     {saving ? 'Saving...' : 'Save'}</button>
                                   <button
                                     onClick={() => setEditingId(null)}
-                                    className="btn btn-ghost btn-sm">
+                                    className="btn btn-ghost btn-sm"
+                                    aria-label="Cancel editing">
                                     <X className="w-3.5 h-3.5" /></button></div></div>
                             ) : obj.response_text ? (
                               <div className="pt-1" style={stBorderTop}>

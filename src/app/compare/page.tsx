@@ -681,7 +681,8 @@ function SelectedPill({ name, onRemove }: { name: string; onRemove: () => void }
       {name}
       <button
         onClick={onRemove}
-        className="icon-delete">
+        className="icon-delete"
+        aria-label={`Remove ${name}`}>
         <X className="w-3.5 h-3.5" /></button>
     </span>);
 }
