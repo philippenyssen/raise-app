@@ -97,6 +97,59 @@ function renderMarkdown(text: string): React.ReactNode {
       continue;
     }
 
+    // Table
+    if (line.includes('|') && line.trim().startsWith('|')) {
+      const tableRows: string[][] = [];
+      let hasHeader = false;
+      while (i < lines.length && lines[i].trim().startsWith('|')) {
+        const row = lines[i].trim();
+        if (row.match(/^\|[\s\-:|]+\|$/)) {
+          hasHeader = tableRows.length === 1;
+          i++;
+          continue;
+        }
+        const cells = row.split('|').filter((_, ci, arr) => ci > 0 && ci < arr.length - 1).map(c => c.trim());
+        tableRows.push(cells);
+        i++;
+      }
+      if (tableRows.length > 0) {
+        blocks.push(
+          <div key={blocks.length} style={{ overflow: 'auto', margin: '6px 0' }}>
+            <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: '0.85em' }}>
+              {hasHeader && tableRows.length > 0 && (
+                <thead>
+                  <tr>
+                    {tableRows[0].map((cell, ci) => (
+                      <th key={ci} style={{
+                        padding: '4px 8px',
+                        borderBottom: '2px solid var(--border-default)',
+                        textAlign: 'left',
+                        fontWeight: 600,
+                        whiteSpace: 'nowrap',
+                      }}>{inlineFormat(cell)}</th>
+                    ))}
+                  </tr>
+                </thead>
+              )}
+              <tbody>
+                {tableRows.slice(hasHeader ? 1 : 0).map((row, ri) => (
+                  <tr key={ri}>
+                    {row.map((cell, ci) => (
+                      <td key={ci} style={{
+                        padding: '3px 8px',
+                        borderBottom: '1px solid var(--border-subtle)',
+                      }}>{inlineFormat(cell)}</td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        );
+      }
+      continue;
+    }
+
     // Bullet list
     if (line.match(/^[-*]\s/)) {
       const items: string[] = [];
@@ -460,11 +513,21 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
           <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>AI Assistant</span>
         </div>
         {messages.length > 0 && (
-          <button
-            onClick={clearChat}
-            className="flex items-center transition-colors icon-delete"
-            style={{ fontSize: 'var(--font-size-xs)', gap: 'var(--space-1)' }}>
-            <RotateCcw style={{ width: '12px', height: '12px' }} /> Clear</button>
+          <div className="flex items-center" style={{ gap: 'var(--space-2)' }}>
+            <button
+              onClick={() => {
+                const text = messages.map(m => `${m.role === 'user' ? 'You' : 'AI'}: ${m.content}`).join('\n\n');
+                navigator.clipboard.writeText(text);
+              }}
+              className="flex items-center transition-colors icon-delete"
+              style={{ fontSize: 'var(--font-size-xs)', gap: 'var(--space-1)' }}>
+              <Copy style={{ width: '12px', height: '12px' }} /> Copy all</button>
+            <button
+              onClick={clearChat}
+              className="flex items-center transition-colors icon-delete"
+              style={{ fontSize: 'var(--font-size-xs)', gap: 'var(--space-1)' }}>
+              <RotateCcw style={{ width: '12px', height: '12px' }} /> Clear</button>
+          </div>
         )}</div>
 
       {/* Messages */}

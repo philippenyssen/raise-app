@@ -697,15 +697,19 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
             }
           }}
         >
-          {/* Slide content */}
-          <div style={{
-            aspectRatio: '16/9',
-            background: slides[presentIdx]?.background || 'white',
-            width: '100vw',
-            maxHeight: '100vh',
-            position: 'relative',
-            overflow: 'hidden',
-          }}>
+          {/* Slide content with fade transition */}
+          <div
+            key={presentIdx}
+            style={{
+              aspectRatio: '16/9',
+              background: slides[presentIdx]?.background || 'white',
+              width: '100vw',
+              maxHeight: '100vh',
+              position: 'relative',
+              overflow: 'hidden',
+              animation: 'slideFadeIn 0.35s ease-out',
+            }}
+          >
             {slides[presentIdx] && renderSlideContent(slides[presentIdx], 2.5)}
           </div>
 

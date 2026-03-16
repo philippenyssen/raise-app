@@ -273,6 +273,20 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
 
   // Parse selected cell for header highlighting
   const selectedParsed = useMemo(() => selectedCell ? parseCellRef(selectedCell) : null, [selectedCell]);
+
+  // Compute aggregate stats for selected cell value (SUM/AVG/COUNT for numeric)
+  const selectedStats = useMemo(() => {
+    if (!selectedCell) return null;
+    const cell = cells[selectedCell];
+    if (!cell) return null;
+    const computed = getComputedValue(selectedCell);
+    const val = computed !== null ? computed : cell.v;
+    if (typeof val === 'number') {
+      return { sum: val, avg: val, count: 1 };
+    }
+    return null;
+  }, [selectedCell, cells, getComputedValue]);
+
   const selectedCellData = selectedCell ? cells[selectedCell] : null;
   const [formulaBarValue, setFormulaBarValue] = useState('');
   const [editingFormulaBar, setEditingFormulaBar] = useState(false);
@@ -474,8 +488,13 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
           )}
           <span>{Object.keys(cells).length} cells</span>
         </div>
-        <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
-          {editingCell ? 'Enter to confirm · Esc to cancel' : selectedCell ? 'Enter to edit · Arrows to navigate · Type to input · Del to clear' : 'Click a cell to start'}
+        <div className="flex items-center" style={{ gap: 'var(--space-3)', fontSize: '10px', color: 'var(--text-muted)' }}>
+          {selectedStats && (
+            <span style={{ color: 'var(--text-secondary)', fontFamily: 'monospace' }}>
+              SUM: {selectedStats.sum.toLocaleString()} · AVG: {selectedStats.avg.toLocaleString(undefined, { maximumFractionDigits: 2 })} · COUNT: {selectedStats.count}
+            </span>
+          )}
+          <span>{editingCell ? 'Enter to confirm · Esc to cancel' : selectedCell ? 'Enter to edit · Arrows to navigate · Type to input · Del to clear' : 'Click a cell to start'}</span>
         </div>
       </div>
 
