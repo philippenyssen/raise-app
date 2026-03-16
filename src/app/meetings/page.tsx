@@ -20,6 +20,14 @@ const competitorBadge: React.CSSProperties = { fontSize: 'var(--font-size-xs)', 
 const competitorFormBadge: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '2px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--warning-muted)', color: 'var(--text-tertiary)' };
 const objectionFormBadge: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '2px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--success-muted)', color: 'var(--text-secondary)' };
 const removeBtnInline: React.CSSProperties = { background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: 'inherit', display: 'flex' };
+const outcomeCardStyle: React.CSSProperties = { padding: 'var(--space-3) var(--space-4)', background: 'var(--surface-1)', borderRadius: 'var(--radius-sm)' };
+const outcomeCardEditStyle: React.CSSProperties = { padding: 'var(--space-4)', background: 'var(--surface-1)', borderRadius: 'var(--radius-sm)' };
+const outcomeHeaderLabel: React.CSSProperties = { fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-secondary)' };
+const editBtnStyle: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--accent)', background: 'none', border: 'none', cursor: 'pointer' };
+const formTitleStyle: React.CSSProperties = { fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', marginBottom: 'var(--space-3)' };
+const nextStepsBadge: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--accent)', opacity: 0.6, background: 'var(--accent-muted)', borderRadius: 'var(--radius-sm)', padding: '4px 8px' };
+const outcomeToggleBase: React.CSSProperties = { background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontSize: 'var(--font-size-sm)', fontWeight: 400 };
+const outcomeSeparator: React.CSSProperties = { borderTop: '1px solid var(--border-subtle)', paddingTop: 'var(--space-3)' };
 const trendConfig = {
   up: { icon: TrendingUp, color: 'var(--text-secondary)', label: 'Rising' },
   down: { icon: TrendingDown, color: 'var(--text-primary)', label: 'Falling' },
@@ -162,15 +170,15 @@ function MeetingOutcomeSection({
   if (!editing && hasOutcome) {
     return (
       <div
-        style={{ padding: 'var(--space-3) var(--space-4)', background: 'var(--surface-1)', borderRadius: 'var(--radius-sm)' }}>
+        style={outcomeCardStyle}>
         <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-secondary)' }}>
+          <div className="flex items-center gap-2" style={outcomeHeaderLabel}>
             <CheckCircle2 className="w-3.5 h-3.5" />
             Outcome Recorded</div>
           <button
             onClick={() => setEditing(true)}
             className="hover-underline"
-            style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)', background: 'none', border: 'none', cursor: 'pointer' }}>
+            style={editBtnStyle}>
             Edit</button></div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3" style={stFontXs}>
@@ -218,8 +226,8 @@ function MeetingOutcomeSection({
 
   return (
     <div
-      style={{ padding: 'var(--space-4)', background: 'var(--surface-1)', borderRadius: 'var(--radius-sm)' }}>
-      <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', marginBottom: 'var(--space-3)' }}>
+      style={outcomeCardEditStyle}>
+      <div style={formTitleStyle}>
         Meeting Outcome</div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -564,19 +572,19 @@ export default function MeetingsPage() {
                 )}
 
                 {m.next_steps && (
-                  <div className="mt-2 flex items-center gap-2" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)', opacity: 0.6, background: 'var(--accent-muted)', borderRadius: 'var(--radius-sm)', padding: '4px 8px' }}>
+                  <div className="mt-2 flex items-center gap-2" style={nextStepsBadge}>
                     <span style={{ flex: 1 }}>Next: {m.next_steps}</span>
                     <CopyButton text={m.next_steps} label="" style={{ background: 'transparent', opacity: 1 }} /></div>
                 )}
 
                 {/* Meeting Outcome Toggle */}
-                <div className="mt-3" style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 'var(--space-3)' }}>
+                <div className="mt-3" style={outcomeSeparator}>
                   <button
                     onClick={() => setExpandedOutcome(isOutcomeExpanded ? null : m.id)}
                     className={`flex items-center gap-2 w-full${hasOutcome ? '' : ' hover-text-secondary'}`}
                     aria-expanded={isOutcomeExpanded}
                     aria-label={hasOutcome ? 'Meeting Outcome' : 'Record Outcome'}
-                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontSize: 'var(--font-size-sm)', fontWeight: 400, color: hasOutcome ? 'var(--success)' : 'var(--text-tertiary)' }}>
+                    style={{ ...outcomeToggleBase, color: hasOutcome ? 'var(--success)' : 'var(--text-tertiary)' }}>
                     {isOutcomeExpanded
                       ? <ChevronDown className="w-3.5 h-3.5" />
                       : <ChevronRight className="w-3.5 h-3.5" />
