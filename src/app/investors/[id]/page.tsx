@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import type { Investor, Meeting, InvestorPartner, InvestorPortfolioCo, IntelligenceBrief, InvestorStatus, Task, InvestorScoreData } from '@/lib/types';
@@ -355,23 +355,55 @@ export default function InvestorDetailPage() {
       </div>);
   }
 
-  const allObjections: { text: string; severity: string; topic: string; date: string }[] = [];
-  const allQuestions: { text: string; topic: string; date: string }[] = [];
-  meetings.forEach(m => {
-    try {
-      const objs = JSON.parse(m.objections || '[]');
-      objs.forEach((o: { text: string; severity: string; topic: string }) => { allObjections.push({ ...o, date: m.date }); });
-    } catch { /* skip */ }
-    try {
-      const qs = JSON.parse(m.questions_asked || '[]');
-      qs.forEach((q: { text: string; topic: string }) => { allQuestions.push({ ...q, date: m.date }); });
-    } catch { /* skip */ }});
-
-  const enthusiasmTrend = meetings
-    .sort((a, b) => a.date.localeCompare(b.date))
-    .map(m => ({ date: m.date, score: m.enthusiasm_score }));
-  const latestEnthusiasm = enthusiasmTrend.length > 0 ? enthusiasmTrend[enthusiasmTrend.length - 1].score : 0;
-  const overdueFollowups = followups.filter(f => new Date(f.due_at) < new Date()).length;
+  const { allObjections, allQuestions, enthusiasmTrend, latestEnthusiasm } = useMemo(() => {
+    const objs: { text: string; severity: string; topic: string; date: string }[] = [];
+    const qs: { text: string; topic: string; date: string }[] = [];
+    meetings.forEach(m => {
+      try {
+        const parsed = JSON.parse(m.objections || '[]');
+        parsed.forEach((o: { text: string; severity: string; topic: string }) => { objs.push({ ...o, date: m.date }); });
+      } catch { /* skip */ }
+      try {
+        const parsed = JSON.parse(m.questions_asked || '[]');
+        parsed.forEach((q: { text: string; topic: string }) => { qs.push({ ...q, date: m.date }); });
+      } catch { /* skip */ }});
+    const trend = [...meetings].sort((a, b) => a.date.localeCompare(b.date)).map(m => ({ date: m.date, score: m.enthusiasm_score }));
+    const latest = trend.length > 0 ? trend[trend.length - 1].score : 0;
+    return { allObjections: objs, allQuestions: qs, enthusiasmTrend: trend, latestEnthusiasm: latest };
+  }, [meetings]);
+  const overdueFollowups = useMemo(() => followups.filter(f => new Date(f.due_at) < new Date()).length, [followups]);
+  const activeTasks = useMemo(() => tasks.filter(t => t.status !== 'done').length, [tasks]);
+  const { pendingFollowupItems, overdueItems } = useMemo(() => {
+    const overdue: typeof followups = [];
+    const upcoming: typeof followups = [];
+    for (const f of followups) {
+      if (new Date(f.due_at) < new Date()) overdue.push(f);
+      else upcoming.push(f);
+    }
+    return { pendingFollowupItems: [...overdue, ...upcoming].slice(0, 5), overdueItems: overdue };
+  }, [followups]);
+  const timelineEvents = useMemo(() => {
+    const events: { date: string; type: string; icon: typeof Calendar; desc: string }[] = [];
+    meetings.forEach(m => {
+      events.push({ date: m.date, type: 'meeting', icon: Calendar, desc: `${m.type.replace(/_/g, ' ')} — ${m.duration_minutes}min${m.ai_analysis ? ': ' + m.ai_analysis.slice(0, 80) : ''}` });
+    });
+    followups.forEach(f => {
+      events.push({ date: f.due_at.split('T')[0], type: 'followup', icon: Mail, desc: `${f.action_type.replace(/_/g, ' ')}: ${f.description.slice(0, 80)}${f.status === 'pending' ? ' (pending)' : ''}` });
+    });
+    allObjections.forEach(o => {
+      events.push({ date: o.date, type: 'objection', icon: AlertTriangle, desc: `[${o.severity}] ${o.text.slice(0, 80)}` });
+    });
+    if (trajectory?.dataPoints) {
+      trajectory.dataPoints.forEach((dp, i) => {
+        if (i > 0) {
+          const prev = trajectory.dataPoints[i - 1];
+          const delta = dp.score - prev.score;
+          if (Math.abs(delta) >= 0.5) events.push({ date: dp.date.split('T')[0], type: 'score', icon: TrendingUp, desc: `Score ${delta > 0 ? '+' : ''}${delta.toFixed(1)} (${prev.score.toFixed(1)} → ${dp.score.toFixed(1)})` });
+        }});
+    }
+    events.sort((a, b) => b.date.localeCompare(a.date));
+    return events;
+  }, [meetings, followups, allObjections, trajectory]);
 
   return (
     <div className="page-content space-y-6">
@@ -651,12 +683,8 @@ export default function InvestorDetailPage() {
       )}
 
       {/* Pending Actions — inline follow-ups */}
-      {followups.length > 0 && (() => {
+      {pendingFollowupItems.length > 0 && (() => {
         const now = new Date();
-        const overdueItems = followups.filter(f => new Date(f.due_at) < now);
-        const upcomingItems = followups.filter(f => new Date(f.due_at) >= now);
-        const sortedItems = [...overdueItems, ...upcomingItems].slice(0, 5);
-
         async function quickComplete(fId: string) {
           try {
             const res = await fetch('/api/followups', {
@@ -707,7 +735,7 @@ export default function InvestorDetailPage() {
                   View all {followups.length}</Link>
               )}</div>
             <div style={{ padding: 'var(--space-2) var(--space-4)' }}>
-              {sortedItems.map(f => {
+              {pendingFollowupItems.map(f => {
                 const isOverdue = new Date(f.due_at) < now;
                 const diffMs = new Date(f.due_at).getTime() - now.getTime();
                 const diffDays = Math.round(diffMs / MS_PER_DAY);
@@ -828,7 +856,7 @@ export default function InvestorDetailPage() {
             { key: 'overview' as IntelTab, label: 'Meetings', icon: Clock },
             { key: 'partners' as IntelTab, label: `Partners (${partners.length})`, icon: UserCheck },
             { key: 'portfolio' as IntelTab, label: `Portfolio (${portfolio.length})`, icon: Briefcase },
-            { key: 'tasks' as IntelTab, label: `Tasks (${tasks.filter(t => t.status !== 'done').length})`, icon: ClipboardList },
+            { key: 'tasks' as IntelTab, label: `Tasks (${activeTasks})`, icon: ClipboardList },
             { key: 'enrichment' as IntelTab, label: `Enriched (${enrichmentRecords.length})`, icon: Database },
             { key: 'research' as IntelTab, label: `Research (${briefs.length})`, icon: BookOpen },
             { key: 'timeline' as IntelTab, label: 'Timeline', icon: Activity },
@@ -1074,34 +1102,15 @@ export default function InvestorDetailPage() {
           )}
 
           {intelTab === 'timeline' && (() => {
-            const events: { date: string; type: string; icon: typeof Calendar; desc: string }[] = [];
-            meetings.forEach(m => {
-              events.push({ date: m.date, type: 'meeting', icon: Calendar, desc: `${m.type.replace(/_/g, ' ')} — ${m.duration_minutes}min${m.ai_analysis ? ': ' + m.ai_analysis.slice(0, 80) : ''}` });
-            });
-            followups.forEach(f => {
-              events.push({ date: f.due_at.split('T')[0], type: 'followup', icon: Mail, desc: `${f.action_type.replace(/_/g, ' ')}: ${f.description.slice(0, 80)}${f.status === 'pending' ? ' (pending)' : ''}` });
-            });
-            allObjections.forEach(o => {
-              events.push({ date: o.date, type: 'objection', icon: AlertTriangle, desc: `[${o.severity}] ${o.text.slice(0, 80)}` });
-            });
-            if (trajectory?.dataPoints) {
-              trajectory.dataPoints.forEach((dp, i) => {
-                if (i > 0) {
-                  const prev = trajectory.dataPoints[i - 1];
-                  const delta = dp.score - prev.score;
-                  if (Math.abs(delta) >= 0.5) events.push({ date: dp.date.split('T')[0], type: 'score', icon: TrendingUp, desc: `Score ${delta > 0 ? '+' : ''}${delta.toFixed(1)} (${prev.score.toFixed(1)} → ${dp.score.toFixed(1)})` });
-                }});
-            }
-            events.sort((a, b) => b.date.localeCompare(a.date));
             const iconColor: Record<string, string> = { meeting: 'var(--accent)', followup: 'var(--warning)', objection: 'var(--danger)', score: 'var(--success)' };
             return (
               <div>
-                {events.length === 0 ? (
+                {timelineEvents.length === 0 ? (
                   <p className="text-sm py-6 text-center" style={textMuted}>No interactions recorded yet. Meetings, follow-ups, and score changes will appear here.</p>
                 ) : (
                   <div className="space-y-0">
-                    {events.map((ev, i) => (
-                      <div key={i} className="flex gap-4 py-2.5" style={{ borderBottom: i < events.length - 1 ? '1px solid var(--border-subtle)' : 'none' }}>
+                    {timelineEvents.map((ev, i) => (
+                      <div key={i} className="flex gap-4 py-2.5" style={{ borderBottom: i < timelineEvents.length - 1 ? '1px solid var(--border-subtle)' : 'none' }}>
                         <span className="text-xs shrink-0 w-20 pt-0.5 tabular-nums" style={textMuted}>{ev.date}</span>
                         <span className="shrink-0 pt-0.5" style={{ color: iconColor[ev.type] || 'var(--text-muted)' }}><ev.icon className="w-3.5 h-3.5" /></span>
                         <span className="text-sm" style={textSecondary}>{ev.desc}</span></div>
