@@ -11,6 +11,9 @@ import { CopyButton } from '@/components/copy-button';
 
 const labelMutedMb4 = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '4px' } as const;
 const labelBlockMutedMb4 = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' } as const;
+const ratingBtnBase: React.CSSProperties = { width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'none', border: 'none', padding: 0 };
+const objectionBadge: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--success-muted)', color: 'var(--text-secondary)' };
+const competitorBadge: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--warning-muted)', color: 'var(--text-tertiary)' };
 
 const MEETING_TYPES = ['all', 'intro', 'management_presentation', 'deep_dive', 'site_visit', 'dd_session', 'negotiation', 'social'] as const;
 const STATUS_OPTIONS = ['all', 'met', 'engaged', 'in_dd', 'term_sheet', 'passed'] as const;
@@ -49,7 +52,7 @@ function RatingDots({ value, onChange, label }: { value: number | null; onChange
             onMouseLeave={() => setHovered(null)}
             disabled={!onChange}
             aria-label={`Rate ${n} star${n > 1 ? 's' : ''}`}
-            style={{ width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: onChange ? 'pointer' : 'default', background: 'none', border: 'none', padding: 0 }}>
+            style={{ ...ratingBtnBase, cursor: onChange ? 'pointer' : 'default' }}>
             <span style={{
               color: n <= (hovered ?? value ?? 0) ? 'var(--warning)' : 'var(--text-muted)',
               transition: 'color 100ms ease',}}>
@@ -183,7 +186,7 @@ function MeetingOutcomeSection({
             <div style={labelMutedMb4}>Objections Addressed</div>
             <div className="flex flex-wrap gap-1">
               {existingObjections.map((o: string, i: number) => (
-                <span key={i} style={{ fontSize: 'var(--font-size-xs)', padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--success-muted)', color: 'var(--text-secondary)' }}>
+                <span key={i} style={objectionBadge}>
                   {o}</span>
               ))}</div></div>
         )}
@@ -193,7 +196,7 @@ function MeetingOutcomeSection({
             <div style={labelMutedMb4}>Competitors Mentioned</div>
             <div className="flex flex-wrap gap-1">
               {existingMentions.map((c: string, i: number) => (
-                <span key={i} style={{ fontSize: 'var(--font-size-xs)', padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--warning-muted)', color: 'var(--text-tertiary)' }}>
+                <span key={i} style={competitorBadge}>
                   {c}</span>
               ))}</div></div>
         )}

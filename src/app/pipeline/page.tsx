@@ -684,6 +684,11 @@ function StatCard({
     </div>);
 }
 
+function enthusiasmDotBg(n: number, enthusiasm: number): string {
+  if (n > enthusiasm) return 'var(--border-default)';
+  return enthusiasm >= 4 ? 'var(--success)' : enthusiasm >= 3 ? 'var(--accent)' : 'var(--text-muted)';
+}
+
 // ── Investor Card Component ──────────────────────────────────────────
 function InvestorCard({
   investor,
@@ -803,18 +808,7 @@ function InvestorCard({
               <span style={labelMuted10}>Signal</span>
               <div className="enthusiasm-dots">
                 {[1, 2, 3, 4, 5].map(n => (
-                  <div
-                    key={n}
-                    className="enthusiasm-dot"
-                    style={{
-                      background: n <= investor.enthusiasm
-                        ? investor.enthusiasm >= 4
-                          ? 'var(--success)'
-                          : investor.enthusiasm >= 3
-                          ? 'var(--accent)'
-                          : 'var(--text-muted)'
-                        : 'var(--border-default)',
-                    }} />
+                  <div key={n} className="enthusiasm-dot" style={{ background: enthusiasmDotBg(n, investor.enthusiasm) }} />
                 ))}</div></div>
           ) : <div />}
           {(() => {
