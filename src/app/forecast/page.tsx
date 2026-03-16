@@ -123,14 +123,21 @@ export default function ForecastPage() {
   const progressPct = raiseTarget > 0 ? Math.min(100, Math.round((effectiveExpected / raiseTarget) * 100)) : 0;
   const committedPct = raiseTarget > 0 ? Math.min(100, Math.round((effectiveCommitted / raiseTarget) * 100)) : 0;
 
-  const highConfInvestors = forecast.forecasts.filter(f => f.confidence === 'high');
-  const medConfInvestors = forecast.forecasts.filter(f => f.confidence === 'medium');
-  const lowConfInvestors = forecast.forecasts.filter(f => f.confidence === 'low');
-
-  const sortedByDate = [...forecast.forecasts].sort(
-    (a, b) => new Date(a.predictedCloseDate).getTime() - new Date(b.predictedCloseDate).getTime());
-
-  const maxDaysToClose = Math.max(...forecast.forecasts.map(f => f.predictedDaysToClose), 1);
+  const { highConfInvestors, medConfInvestors, lowConfInvestors, sortedByDate, maxDaysToClose } = useMemo(() => {
+    const high: typeof forecast.forecasts = [];
+    const med: typeof forecast.forecasts = [];
+    const low: typeof forecast.forecasts = [];
+    let maxDays = 1;
+    for (const f of forecast.forecasts) {
+      if (f.confidence === 'high') high.push(f);
+      else if (f.confidence === 'medium') med.push(f);
+      else low.push(f);
+      if (f.predictedDaysToClose > maxDays) maxDays = f.predictedDaysToClose;
+    }
+    const sorted = [...forecast.forecasts].sort(
+      (a, b) => new Date(a.predictedCloseDate).getTime() - new Date(b.predictedCloseDate).getTime());
+    return { highConfInvestors: high, medConfInvestors: med, lowConfInvestors: low, sortedByDate: sorted, maxDaysToClose: maxDays };
+  }, [forecast.forecasts]);
 
   return (
     <div className="page-content flex-1 p-6" style={{ maxWidth: '1400px', margin: '0 auto' }}>

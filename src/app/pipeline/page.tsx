@@ -155,14 +155,20 @@ export default function PipelinePage() {
   }
 
   // ── Stats ────────────────────────────────────────────────────────
-  const activeInvestors = filtered.filter(i => !EXIT_STATUSES.includes(i.status));
-  const totalCount = filtered.length;
-  const avgEnthusiasm = activeInvestors.length > 0
-    ? activeInvestors.reduce((sum, i) => sum + (i.enthusiasm || 0), 0) / activeInvestors.filter(i => i.enthusiasm > 0).length || 0
-    : 0;
-  const pipelineVelocity = activeInvestors.length > 0
-    ? activeInvestors.reduce((sum, i) => sum + STAGE_WEIGHTS[i.status as InvestorStatus], 0) / activeInvestors.length
-    : 0;
+  const { activeInvestors, totalCount, avgEnthusiasm, pipelineVelocity } = useMemo(() => {
+    const active = filtered.filter(i => !EXIT_STATUSES.includes(i.status));
+    let enthSum = 0, enthCount = 0, velSum = 0;
+    for (const i of active) {
+      if (i.enthusiasm > 0) { enthSum += i.enthusiasm; enthCount++; }
+      velSum += STAGE_WEIGHTS[i.status as InvestorStatus] || 0;
+    }
+    return {
+      activeInvestors: active,
+      totalCount: filtered.length,
+      avgEnthusiasm: enthCount > 0 ? enthSum / enthCount : 0,
+      pipelineVelocity: active.length > 0 ? velSum / active.length : 0,
+    };
+  }, [filtered]);
 
   // ── Keyboard navigation ────────────────────────────────────────
   const colGrid = useMemo(() => PIPELINE_STATUSES.map(s => filtered.filter(i => i.status === s).sort((a, b) => a.tier !== b.tier ? a.tier - b.tier : (b.enthusiasm || 0) - (a.enthusiasm || 0))), [filtered]);
@@ -379,19 +385,23 @@ export default function PipelinePage() {
       {/* ── Pipeline Summary Strip ──────────────────────────────── */}
       {(() => {
         const totalInv = filtered.length;
-        const activeCount = filtered.filter(i => !['passed', 'dropped'].includes(i.status)).length;
-        const inDdCount = filtered.filter(i => i.status === 'in_dd').length;
-        const termSheetCount = filtered.filter(i => i.status === 'term_sheet').length;
-        const closedCount = filtered.filter(i => i.status === 'closed').length;
-        const passedCount = filtered.filter(i => i.status === 'passed').length;
-        const passRate = totalInv > 0 ? ((passedCount / totalInv) * 100).toFixed(1) : '0.0';
+        let activeCount = 0, inDdCount = 0, termSheetCount = 0, closedCount = 0, passedCount = 0, engagedDaysSum = 0, engagedCount = 0;
+        const now = Date.now();
+        for (const i of filtered) {
+          if (i.status === 'passed') { passedCount++; continue; }
+          if (i.status === 'dropped') continue;
+          activeCount++;
+          if (i.status === 'in_dd') inDdCount++;
+          else if (i.status === 'term_sheet') termSheetCount++;
+          else if (i.status === 'closed') closedCount++;
+          if (i.status !== 'identified') {
+            engagedDaysSum += Math.floor((now - new Date(i.created_at).getTime()) / 864e5);
+            engagedCount++;
+          }
+        }
         const convDenom = activeCount + closedCount + passedCount;
         const conversionRate = convDenom > 0 ? ((closedCount / convDenom) * 100).toFixed(1) : '0.0';
-
-        const activeInvestors = filtered.filter(i => !['passed', 'dropped', 'identified'].includes(i.status));
-        const avgDays = activeInvestors.length > 0
-          ? Math.round(activeInvestors.reduce((s, i) => s + Math.floor((Date.now() - new Date(i.created_at).getTime()) / 864e5), 0) / activeInvestors.length)
-          : 0;
+        const avgDays = engagedCount > 0 ? Math.round(engagedDaysSum / engagedCount) : 0;
 
         const metrics = [
           { label: 'Total', value: String(totalInv) },
