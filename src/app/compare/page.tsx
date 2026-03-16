@@ -17,10 +17,10 @@ import { EmptyState } from '@/components/ui/empty-state';
 const compareCellBase: React.CSSProperties = { ...cellPad, fontSize: 'var(--font-size-sm)', ...stTextSecondary };
 const compareThBase = { padding: 'var(--space-3) var(--space-4)', minWidth: 200 } as const;
 const stickyLabelStyle: React.CSSProperties = { padding: 'var(--space-3) var(--space-4)', ...labelMuted, fontWeight: 400, background: 'var(--surface-0)', borderRight: '1px solid var(--border-subtle)' };
-const heatCounterStyle = { ...labelMuted, marginTop: '2px' } as const;
+const heatCounterStyle = { ...labelMuted, marginTop: 'var(--space-0)' } as const;
 
 const cellPad34 = cellPad;
-const meetingTypeBadge = { fontSize: 'var(--font-size-xs)', background: 'var(--surface-2)', color: 'var(--text-muted)', padding: '1px 6px', borderRadius: 'var(--radius-sm)' } as const;
+const meetingTypeBadge = { fontSize: 'var(--font-size-xs)', background: 'var(--surface-2)', color: 'var(--text-muted)', padding: 'var(--space-0) var(--space-1)', borderRadius: 'var(--radius-sm)' } as const;
 
 // ---------------------------------------------------------------------------
 // API response types

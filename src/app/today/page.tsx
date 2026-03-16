@@ -27,11 +27,11 @@ const gridGap3 = { gap: 'var(--space-3)' } as const;
 const metricCardPad: React.CSSProperties = { padding: 'var(--space-3) var(--space-4)' };
 const metricValue: React.CSSProperties = { fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)', marginTop: 4 };
 const overdueInvLink = { fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, textDecoration: 'none' } as const;
-const overdueBadge = { fontSize: 'var(--font-size-xs)', padding: '1px 5px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-1)', color: 'var(--text-tertiary)' } as const;
+const overdueBadge = { fontSize: 'var(--font-size-xs)', padding: 'var(--space-0) var(--space-1)', borderRadius: 'var(--radius-sm)', background: 'var(--surface-1)', color: 'var(--text-tertiary)' } as const;
 const overdueDanger = { fontSize: 'var(--font-size-xs)', color: 'var(--danger)', fontWeight: 400 } as const;
 const enthusiasmDotBase = { width: '5px', height: '5px', borderRadius: '50%', display: 'inline-block' } as const;
 const overdueDesc = { fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', marginTop: '1px' } as const;
-const overdueDoneBtn = { background: 'var(--surface-0)', color: 'var(--text-secondary)', border: '1px solid var(--border-default)', fontSize: 'var(--font-size-xs)', padding: '3px 10px' } as const;
+const overdueDoneBtn = { background: 'var(--surface-0)', color: 'var(--text-secondary)', border: '1px solid var(--border-default)', fontSize: 'var(--font-size-xs)', padding: 'var(--space-1) var(--space-2)' } as const;
 const emptyStateText = { ...stFontSm, color: 'var(--text-secondary)', fontWeight: 400 } as const;
 
 // ---------------------------------------------------------------------------
@@ -167,7 +167,7 @@ function MeetingCard({ meeting }: { meeting: BriefingMeeting }) {
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
             <span style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>{meeting.investorName}</span>
-            <span style={{ ...stFontXs, padding: '2px 6px', borderRadius: 'var(--radius-sm)', fontWeight: 400, background: 'var(--surface-2)', color: 'var(--text-tertiary)' }}>{meeting.type.replace(/_/g, ' ')}</span>
+            <span style={{ ...stFontXs, padding: 'var(--space-0) var(--space-1)', borderRadius: 'var(--radius-sm)', fontWeight: 400, background: 'var(--surface-2)', color: 'var(--text-tertiary)' }}>{meeting.type.replace(/_/g, ' ')}</span>
             {(meeting.meetingCount ?? 0) > 1 && (
               <span style={{ ...labelMuted, fontWeight: 400 }}>Meeting #{meeting.meetingCount}</span>
             )}
@@ -299,7 +299,7 @@ function AlertCard({ alert }: { alert: BriefingAlert }) {
             fontWeight: 400,
             color: style.color,
             textDecoration: 'none',
-            padding: '3px 8px',
+            padding: 'var(--space-1) var(--space-2)',
             borderRadius: 'var(--radius-sm)',
             background: 'var(--fg-3)',
             whiteSpace: 'nowrap', }}>
@@ -728,13 +728,13 @@ export default function TodayPage() {
                         onClick={() => handleQuickComplete(fu.id)}
                         disabled={isProcessing}
                         className="btn btn-sm"
-                        style={{ background: 'var(--success-muted)', color: 'var(--text-secondary)', border: '1px solid var(--accent-8)', fontSize: 'var(--font-size-xs)', padding: '3px 10px' }}>
+                        style={{ background: 'var(--success-muted)', color: 'var(--text-secondary)', border: '1px solid var(--accent-8)', fontSize: 'var(--font-size-xs)', padding: 'var(--space-1) var(--space-2)' }}>
                         Done</button>
                       <button
                         onClick={() => handleQuickSkip(fu.id)}
                         disabled={isProcessing}
                         className="btn btn-sm"
-                        style={{ background: 'var(--surface-2)', color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)', padding: '3px 8px' }}>
+                        style={{ background: 'var(--surface-2)', color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)', padding: 'var(--space-1) var(--space-2)' }}>
                         Skip</button></div></div>
                 </div>);
             })}</div></div>
@@ -834,7 +834,7 @@ export default function TodayPage() {
             <div className="flex items-center gap-2">
               <p style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: momentumConfig.color }}>
                 {momentumConfig.label}</p>
-              <span style={{ ...stFontXs, padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: momentumConfig.bg, border: `1px solid ${momentumConfig.border}`, color: momentumConfig.color, fontWeight: 400 }}>Raise Momentum</span>
+              <span style={{ ...stFontXs, padding: 'var(--space-0) var(--space-1)', borderRadius: 'var(--radius-sm)', background: momentumConfig.bg, border: `1px solid ${momentumConfig.border}`, color: momentumConfig.color, fontWeight: 400 }}>Raise Momentum</span>
             </div>
             <p style={{ ...stFontXs, color: 'var(--text-secondary)', marginTop: '2px', lineHeight: 1.5 }}>{data.momentumChange}</p>
           </div>

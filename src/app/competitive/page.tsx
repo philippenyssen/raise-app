@@ -25,7 +25,7 @@ interface CompetitiveData {
   date_range: { from: string | null; to: string | null };
 }
 
-const investorTagStyle: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-secondary)' };
+const investorTagStyle: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: 'var(--space-0) var(--space-1)', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-secondary)' };
 const compGridRow: React.CSSProperties = { gridTemplateColumns: '32px 1fr 80px 1fr 120px', padding: 'var(--space-3) var(--space-4)', borderBottom: '1px solid var(--border-subtle)', cursor: 'pointer' };
 const mtgRowStyle = { fontSize: 'var(--font-size-sm)', padding: 'var(--space-2) var(--space-3)', background: 'var(--surface-0)', borderRadius: 'var(--radius-sm)' } as const;
 const mtgDateStyle = { color: 'var(--text-tertiary)', minWidth: '80px' } as const;

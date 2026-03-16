@@ -13,15 +13,15 @@ import { labelMuted, labelMutedTight, labelSecondary, probColor, skelCardMd, stA
 
 const textRight = { textAlign: 'right' as const } as const;
 const keystoneAvatar: React.CSSProperties = { width: '36px', height: '36px', borderRadius: 'var(--radius-md)', background: 'var(--accent-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 };
-const chainBadgeMuted: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '0 4px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-muted)' };
-const chainBadgeSecondary: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '0 4px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-secondary)' };
+const chainBadgeMuted: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '0 var(--space-1)', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-muted)' };
+const chainBadgeSecondary: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '0 var(--space-1)', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-secondary)' };
 const connectorLine: React.CSSProperties = { width: '2px', height: '16px', background: 'var(--border-default)', marginLeft: '7px' };
-const bottleneckBadge: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '0 4px', borderRadius: 'var(--radius-sm)', background: 'var(--warning-muted)', color: 'var(--text-tertiary)', fontWeight: 400 };
+const bottleneckBadge: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '0 var(--space-1)', borderRadius: 'var(--radius-sm)', background: 'var(--warning-muted)', color: 'var(--text-tertiary)', fontWeight: 400 };
 const tabNumSm: React.CSSProperties = { fontSize: 'var(--font-size-sm)', fontWeight: 400, fontVariantNumeric: 'tabular-nums' };
-const keystoneBadgeMuted: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-muted)', fontWeight: 400 };
-const keystoneBadgeSecondary: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-secondary)' };
+const keystoneBadgeMuted: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: 'var(--space-0) var(--space-1)', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-muted)', fontWeight: 400 };
+const keystoneBadgeSecondary: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: 'var(--space-0) var(--space-1)', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-secondary)' };
 const probDot: React.CSSProperties = { width: '8px', height: '8px', borderRadius: '50%', flexShrink: 0 };
-const checkSizeLabel = { ...labelMuted, marginTop: '2px', display: 'block' as const } as const;
+const checkSizeLabel = { ...labelMuted, marginTop: 'var(--space-0)', display: 'block' as const } as const;
 const investorLinkStyle = { fontWeight: 400, fontSize: 'var(--font-size-sm)', textDecoration: 'none' } as const;
 const arrowConnector = { color: 'var(--text-muted)', marginLeft: '-10px' } as const;
 
