@@ -359,7 +359,7 @@ export default function MeetingsPage() {
   }), [meetings, search, typeFilter, statusFilter]);
 
   // Stats + per-investor engagement intelligence (single memo)
-  const { avgEnthusiasm, totalObjections, uniqueInvestors, investorStats, meetingsByInvestor } = useMemo(() => {
+  const { avgEnthusiasm, totalObjections, uniqueInvestors, investorStats, meetingsByInvestor, momentumUp, momentumDown } = useMemo(() => {
     const avg = meetings.length > 0 ? (meetings.reduce((s, m) => s + m.enthusiasm_score, 0) / meetings.length).toFixed(1) : '0';
     let objCount = 0;
     const investorIds = new Set<string>();
@@ -385,14 +385,10 @@ export default function MeetingsPage() {
         else stats[invId].trend = 'flat';
       }
     }
-    return { avgEnthusiasm: avg, totalObjections: objCount, uniqueInvestors: investorIds.size, investorStats: stats, meetingsByInvestor: byInvestor };
+    const up = Object.entries(stats).filter(([, s]) => s.trend === 'up').map(([id, s]) => ({ id, name: byInvestor[id]?.[0]?.investor_name || id, score: s.latestEnthusiasm })).sort((a, b) => b.score - a.score).slice(0, 3);
+    const down = Object.entries(stats).filter(([, s]) => s.trend === 'down').map(([id, s]) => ({ id, name: byInvestor[id]?.[0]?.investor_name || id, score: s.latestEnthusiasm })).sort((a, b) => a.score - b.score).slice(0, 3);
+    return { avgEnthusiasm: avg, totalObjections: objCount, uniqueInvestors: investorIds.size, investorStats: stats, meetingsByInvestor: byInvestor, momentumUp: up, momentumDown: down };
   }, [meetings]);
-
-  const { momentumUp, momentumDown } = useMemo(() => {
-    const up = Object.entries(investorStats).filter(([, s]) => s.trend === 'up').map(([id, s]) => ({ id, name: meetingsByInvestor[id]?.[0]?.investor_name || id, score: s.latestEnthusiasm })).sort((a, b) => b.score - a.score).slice(0, 3);
-    const down = Object.entries(investorStats).filter(([, s]) => s.trend === 'down').map(([id, s]) => ({ id, name: meetingsByInvestor[id]?.[0]?.investor_name || id, score: s.latestEnthusiasm })).sort((a, b) => a.score - b.score).slice(0, 3);
-    return { momentumUp: up, momentumDown: down };
-  }, [investorStats, meetingsByInvestor]);
 
   const handleOutcomeSaved = useCallback((updated: Meeting) => {
     setMeetings(prev => prev.map(m => m.id === updated.id ? updated : m));
