@@ -24,6 +24,8 @@ import { MS_PER_HOUR, MS_PER_DAY } from '@/lib/time';
 const skelItemStyle = { height: '52px', borderRadius: 'var(--radius-md)' } as const;
 const completedOutcomeBox = { background: 'var(--surface-2)', borderRadius: 'var(--radius-sm)', padding: '0.375rem 0.5rem', fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' } as const;
 const completingFormBox = { background: 'var(--surface-2)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-3)' } as const;
+const draftSubjectBox: React.CSSProperties = { background: 'var(--surface-1)', borderRadius: 'var(--radius-md)', padding: 'var(--space-2) var(--space-3)', fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', fontWeight: 400 };
+const draftBodyBox: React.CSSProperties = { background: 'var(--surface-1)', borderRadius: 'var(--radius-md)', padding: 'var(--space-3)', fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', lineHeight: 1.6, whiteSpace: 'pre-line' };
 const VEL_CONFIG: Record<string, { color: string; bg: string; icon: typeof ArrowUpRight; label: string }> = {
   accelerating: { color: 'var(--text-secondary)', bg: 'var(--success-muted)', icon: ArrowUpRight, label: 'Rising' },
   decelerating: { color: 'var(--text-primary)', bg: 'var(--danger-muted)', icon: ArrowDownRight, label: 'Falling' },
@@ -595,7 +597,7 @@ function FollowupsContent() {
                     {copiedField === `subject-${item.id}` ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                     {copiedField === `subject-${item.id}` ? 'Copied' : 'Copy'}</button></div>
                 <div
-                  style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-md)', padding: 'var(--space-2) var(--space-3)', fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', fontWeight: 400 }}>
+                  style={draftSubjectBox}>
                   {draft.subject}</div></div>
 
               {/* Body */}
@@ -612,7 +614,7 @@ function FollowupsContent() {
                     {copiedField === `body-${item.id}` ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                     {copiedField === `body-${item.id}` ? 'Copied' : 'Copy'}</button></div>
                 <div
-                  style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-md)', padding: 'var(--space-3)', fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', lineHeight: 1.6, whiteSpace: 'pre-line' as const }}>
+                  style={draftBodyBox}>
                   {draft.body}</div></div>
 
               {/* Copy all button */}
