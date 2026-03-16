@@ -12,7 +12,7 @@ import {
   SendHorizonal, Menu, X, LogOut,
   ChevronLeft, ChevronRight, Sun, Flame,
   Compass, Target, Swords, MessageCircleWarning, Zap,
-  Sparkles, FolderOpen, FileBarChart, Globe, Newspaper, BarChart3,
+  Sparkles, FolderOpen, FileBarChart, Globe, Newspaper, BarChart3, Crosshair,
 } from 'lucide-react';
 
 interface NavItem {
@@ -34,6 +34,7 @@ const nav: NavItem[] = [
   { href: '/meetings', label: 'Meetings', icon: Calendar, section: 'EXECUTE' },
   { href: '/followups', label: 'Follow-ups', icon: SendHorizonal, section: 'EXECUTE' },
   { href: '/focus', label: 'Focus', icon: Target, section: 'EXECUTE' },
+  { href: '/targeting', label: 'Targeting', icon: Crosshair, section: 'EXECUTE' },
   // Analyze — intelligence and strategy
   { href: '/dealflow', label: 'Dealflow', icon: Flame, section: 'ANALYZE' },
   { href: '/intelligence', label: 'Intelligence', icon: Zap, section: 'ANALYZE' },
