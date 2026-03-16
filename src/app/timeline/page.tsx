@@ -11,6 +11,11 @@ import { useToast } from '@/components/toast';
 import Link from 'next/link';
 import { stAccent, stTextMuted, stTextPrimary, stTextSecondary } from '@/lib/styles';
 
+const progressTrackBg = { backgroundColor: 'var(--surface-2)' } as const;
+const tabCountBadge = { backgroundColor: 'var(--surface-2)', color: 'var(--text-tertiary)' } as const;
+const autoGenBadge = { backgroundColor: 'color-mix(in srgb, var(--accent-muted) 20%, transparent)', color: 'var(--accent-muted)' } as const;
+const filterSelectStyle = { backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' } as const;
+
 function taskRowStyle(status: string, isOverdue: boolean): React.CSSProperties {
   if (status === 'done') return {
     border: '1px solid color-mix(in srgb, var(--border-subtle) 30%, transparent)',
@@ -204,7 +209,7 @@ export default function TimelinePage() {
               <div className="text-xs mb-1" style={stTextMuted}>{PHASE_LABELS[phase]}</div>
               <div className="text-lg font-normal" style={stTextPrimary}>{pDone}/{pTasks.length}</div>
               {pTasks.length > 0 && (
-                <div className="w-full h-1.5 rounded-full mt-2" style={{ backgroundColor: 'var(--surface-2)' }}>
+                <div className="w-full h-1.5 rounded-full mt-2" style={progressTrackBg}>
                   <div className="h-full rounded-full" style={{ backgroundColor: 'var(--accent)', width: `${(pDone / pTasks.length) * 100}%` }}
                     /></div>
               )}
@@ -221,14 +226,14 @@ export default function TimelinePage() {
                 /></div>
             <div>
               <label className="text-xs block mb-1" style={stTextMuted}>Priority</label>
-              <select name="priority" defaultValue="medium" className="w-full rounded-lg px-3 py-2 text-sm" style={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }}>
+              <select name="priority" defaultValue="medium" className="w-full rounded-lg px-3 py-2 text-sm" style={filterSelectStyle}>
                 <option value="critical">Critical</option>
                 <option value="high">High</option>
                 <option value="medium">Medium</option>
                 <option value="low">Low</option></select></div>
             <div>
               <label className="text-xs block mb-1" style={stTextMuted}>Phase</label>
-              <select name="phase" defaultValue="preparation" className="w-full rounded-lg px-3 py-2 text-sm" style={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }}>
+              <select name="phase" defaultValue="preparation" className="w-full rounded-lg px-3 py-2 text-sm" style={filterSelectStyle}>
                 {PHASE_ORDER.map(p => <option key={p} value={p}>{PHASE_LABELS[p]}</option>)}</select></div>
             <div>
               <label className="text-xs block mb-1" style={stTextMuted}>Due Date</label>
@@ -270,7 +275,7 @@ export default function TimelinePage() {
             borderBottom: tab === 'tasks' ? '2px solid var(--accent)' : '2px solid transparent',
             color: tab === 'tasks' ? 'var(--text-primary)' : 'var(--text-muted)', }}>
           <ListTodo className="w-3.5 h-3.5" /> Tasks
-          <span className="text-xs px-1.5 py-0.5 rounded" style={{ backgroundColor: 'var(--surface-2)', color: 'var(--text-tertiary)' }}>{tasks.length}</span>
+          <span className="text-xs px-1.5 py-0.5 rounded" style={tabCountBadge}>{tasks.length}</span>
         </button>
         <button
           onClick={() => setTab('activity')}
@@ -279,7 +284,7 @@ export default function TimelinePage() {
             borderBottom: tab === 'activity' ? '2px solid var(--accent)' : '2px solid transparent',
             color: tab === 'activity' ? 'var(--text-primary)' : 'var(--text-muted)', }}>
           <Activity className="w-3.5 h-3.5" /> Activity Log
-          <span className="text-xs px-1.5 py-0.5 rounded" style={{ backgroundColor: 'var(--surface-2)', color: 'var(--text-tertiary)' }}>{activity.length}</span>
+          <span className="text-xs px-1.5 py-0.5 rounded" style={tabCountBadge}>{activity.length}</span>
         </button></div>
 
       {tab === 'tasks' && (
@@ -290,14 +295,14 @@ export default function TimelinePage() {
               value={filterPhase}
               onChange={e => setFilterPhase(e.target.value)}
               className="rounded-lg px-3 py-1.5 text-sm"
-              style={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }}>
+              style={filterSelectStyle}>
               <option value="">All Phases</option>
               {PHASE_ORDER.map(p => <option key={p} value={p}>{PHASE_LABELS[p]}</option>)}</select>
             <select
               value={filterStatus}
               onChange={e => setFilterStatus(e.target.value)}
               className="rounded-lg px-3 py-1.5 text-sm"
-              style={{ backgroundColor: 'var(--surface-1)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }}>
+              style={filterSelectStyle}>
               <option value="">All Statuses</option>
               <option value="pending">Pending</option>
               <option value="in_progress">In Progress</option>
@@ -344,7 +349,7 @@ export default function TimelinePage() {
                             <span className="text-xs px-1.5 py-0.5 rounded" style={PRIORITY_STYLES[task.priority as TaskPriority]}>
                               {task.priority}</span>
                             {task.auto_generated && (
-                              <span className="text-xs px-1.5 py-0.5 rounded" style={{ backgroundColor: 'color-mix(in srgb, var(--accent-muted) 20%, transparent)', color: 'var(--accent-muted)' }}>auto</span>
+                              <span className="text-xs px-1.5 py-0.5 rounded" style={autoGenBadge}>auto</span>
                             )}</div>
                           {task.description && (
                             <p className="text-xs mt-0.5 truncate" style={stTextMuted}>{task.description}</p>

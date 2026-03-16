@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { DocSummaryRecord as Doc } from '@/lib/types';
 import { labelMuted10, stAccent, stSurface1, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
+import { cachedFetch } from '@/lib/cache';
 
 interface Version { id: string; document_id: string; content: string; version_number: number; change_summary: string; created_at: string }
 
@@ -37,7 +38,7 @@ export default function DocumentEditorPage() {
   useEffect(() => { document.title = 'Raise | Document'; }, []);
   const fetchDocument = useCallback(() => {
     setLoading(true);
-    fetch(`/api/documents/${id}`).then(r => {
+    cachedFetch(`/api/documents/${id}`).then(r => {
       if (!r.ok) throw new Error('Failed to load document');
       return r.json();
     }).then(d => {

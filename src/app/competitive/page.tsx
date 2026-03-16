@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
 import { Shield, ChevronDown, ChevronRight, Calendar, Users, Hash } from 'lucide-react';
 import { useToast } from '@/components/toast';
+import { cachedFetch } from '@/lib/cache';
 import { relativeTime } from '@/lib/time';
 import { labelTertiary, stFontSm, stTextMuted, stTextPrimary, stTextTertiary } from '@/lib/styles';
 
@@ -40,7 +41,7 @@ export default function CompetitivePage() {
     if (fromDate) params.set('from', fromDate);
     if (toDate) params.set('to', toDate);
     const qs = params.toString();
-    fetch(`/api/competitive${qs ? '?' + qs : ''}`)
+    cachedFetch(`/api/competitive${qs ? '?' + qs : ''}`)
       .then(r => { if (!r.ok) throw new Error(`${r.status}`); return r.json(); })
       .then((d: CompetitiveData) => { setData(d); setLoading(false); setLoadedAt(new Date().toISOString()); })
       .catch(() => { setData(null); setLoading(false); toast('Couldn\'t load competitive intelligence — try refreshing', 'error'); });
