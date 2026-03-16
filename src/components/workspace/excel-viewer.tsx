@@ -63,6 +63,8 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
   const [editValue, setEditValue] = useState('');
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; ref: string } | null>(null);
   const [clipboard, setClipboard] = useState<{ ref: string; value: string; formula?: string } | null>(null);
+  const [colWidths, setColWidths] = useState<Record<number, number>>({});
+  const [resizingCol, setResizingCol] = useState<{ col: number; startX: number; startWidth: number } | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 
@@ -332,8 +334,34 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
         navigator.clipboard.writeText(val).catch(() => {});
         setContextMenu(null);
       }},
+      { label: '─────', action: () => setContextMenu(null) },
+      { label: 'Format: %', action: () => {
+        if (cell) onCellChange(contextMenu.ref, String(cell.v), cell.f);
+        setContextMenu(null);
+      }},
+      { label: 'Format: $', action: () => {
+        if (cell) onCellChange(contextMenu.ref, String(cell.v), cell.f);
+        setContextMenu(null);
+      }},
+      { label: 'Format: #,##0', action: () => {
+        if (cell) onCellChange(contextMenu.ref, String(cell.v), cell.f);
+        setContextMenu(null);
+      }},
     ];
-  }, [contextMenu, cells, handleCellDoubleClick, onCellChange]);
+  }, [contextMenu, cells, handleCellDoubleClick, onCellChange, formatValue]);
+
+  // Column resize drag handler
+  useEffect(() => {
+    if (!resizingCol) return;
+    const handleMouseMove = (e: MouseEvent) => {
+      const newWidth = Math.max(50, resizingCol.startWidth + (e.clientX - resizingCol.startX));
+      setColWidths(prev => ({ ...prev, [resizingCol.col]: newWidth }));
+    };
+    const handleMouseUp = () => setResizingCol(null);
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+    return () => { window.removeEventListener('mousemove', handleMouseMove); window.removeEventListener('mouseup', handleMouseUp); };
+  }, [resizingCol]);
 
   // Auto-scroll to selected cell when navigating with arrows
   useEffect(() => {
@@ -432,16 +460,34 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
                 }}/>
               {Array.from({ length: cols }, (_, ci) => {
                 const isHighlighted = selectedParsed?.col === ci;
+                const w = colWidths[ci] || 90;
                 return (
                   <th
                     key={ci}
-                    className="min-w-[90px] text-center py-1 font-normal"
+                    className="text-center py-1 font-normal relative"
                     style={{
+                      minWidth: `${w}px`,
+                      width: `${w}px`,
                       backgroundColor: isHighlighted ? 'var(--accent-muted)' : 'var(--surface-1)',
                       border: '1px solid var(--border-subtle)',
                       color: isHighlighted ? 'var(--accent)' : 'var(--text-muted)',
                     }}>
-                    {colLabel(ci)}</th>
+                    {colLabel(ci)}
+                    <div
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setResizingCol({ col: ci, startX: e.clientX, startWidth: w });
+                      }}
+                      style={{
+                        position: 'absolute',
+                        right: 0,
+                        top: 0,
+                        bottom: 0,
+                        width: '4px',
+                        cursor: 'col-resize',
+                      }}
+                    /></th>
                 );
               })}</tr></thead>
           <tbody>
@@ -528,24 +574,28 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
           }}
         >
           {contextMenuActions.map((item, i) => (
-            <button
-              key={i}
-              onClick={item.action}
-              className="w-full text-left"
-              style={{
-                padding: '6px 12px',
-                fontSize: 'var(--font-size-xs)',
-                color: 'var(--text-secondary)',
-                background: 'transparent',
-                border: 'none',
-                cursor: 'pointer',
-                display: 'block',
-              }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
-            >
-              {item.label}
-            </button>
+            item.label.startsWith('─') ? (
+              <div key={i} style={{ height: '1px', background: 'var(--border-subtle)', margin: '2px 0' }} />
+            ) : (
+              <button
+                key={i}
+                onClick={item.action}
+                className="w-full text-left"
+                style={{
+                  padding: '6px 12px',
+                  fontSize: 'var(--font-size-xs)',
+                  color: 'var(--text-secondary)',
+                  background: 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
+                  display: 'block',
+                }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+              >
+                {item.label}
+              </button>
+            )
           ))}
         </div>
       )}
