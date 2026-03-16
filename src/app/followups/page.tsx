@@ -13,6 +13,10 @@ import {
 import { fmtDateTime } from '@/lib/format';
 import { useToast } from '@/components/toast';
 import { labelAccent, labelMuted, labelMuted10, labelSecondary, stAccent, stTextMuted, stTextPrimary, stTextSecondary } from '@/lib/styles';
+
+const filterBtnBase: React.CSSProperties = { borderRadius: 'var(--radius-sm)', fontSize: 'var(--font-size-xs)', fontWeight: 400, transition: 'all 150ms ease' };
+const convictionBtnBase: React.CSSProperties = { ...filterBtnBase, padding: '0.25rem 0.5rem' };
+const filterTabBase: React.CSSProperties = { ...filterBtnBase, padding: '0.375rem 0.75rem' };
 import { MS_PER_HOUR, MS_PER_DAY } from '@/lib/time';
 
 const textMutedXs = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' } as const;
@@ -419,11 +423,7 @@ function FollowupsContent() {
                           className="transition-colors"
                           onClick={() => setCompleteForm(f => ({ ...f, conviction_delta: val }))}
                           style={{
-                            padding: '0.25rem 0.5rem',
-                            borderRadius: 'var(--radius-sm)',
-                            fontSize: 'var(--font-size-xs)',
-                            fontWeight: 400,
-                            transition: 'all 150ms ease',
+                            ...convictionBtnBase,
                             background: completeForm.conviction_delta === val
                               ? val > 0 ? 'var(--success)' : val < 0 ? 'var(--danger)' : 'var(--accent)'
                               : 'var(--surface-3)',
@@ -746,7 +746,7 @@ function FollowupsContent() {
             key={f}
             className={`transition-colors ${filter !== f ? 'filter-inactive' : ''}`}
             onClick={() => setFilter(f)}
-            style={{ padding: '0.375rem 0.75rem', borderRadius: 'var(--radius-sm)', fontSize: 'var(--font-size-xs)', fontWeight: 400, transition: 'all 150ms ease', background: filter === f ? 'var(--surface-3)' : 'transparent', color: filter === f ? 'var(--text-primary)' : 'var(--text-muted)' }}>
+            style={{ ...filterTabBase, background: filter === f ? 'var(--surface-3)' : 'transparent', color: filter === f ? 'var(--text-primary)' : 'var(--text-muted)' }}>
             {f.charAt(0).toUpperCase() + f.slice(1)}
             {f === 'pending' && overdue.length > 0 && (
               <span
