@@ -144,7 +144,7 @@ export default function SkillsPage() {
 
       {/* Skill health table */}
       {health.length === 0 ? (
-        <EmptyState icon={Activity} title="No skill executions yet" description="Skills start logging automatically when AI features are used — run a meeting analysis, investor research, or enrichment to begin tracking." />
+        <EmptyState icon={Activity} title="No skill executions yet" description="AI skill executions appear here after you run analyses — try meeting intelligence, investor research, or enrichment to populate this view." />
       ) : (
         <div className="space-y-2">
           <div className="text-xs font-normal" style={{ color: 'var(--text-tertiary)', letterSpacing: '0.01em' }}>

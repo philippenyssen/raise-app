@@ -445,8 +445,8 @@ export default function ModelPage() {
         ) : (
           <EmptyState
             icon={Table}
-            title={sheets.length === 0 ? 'No model yet' : 'Select a sheet'}
-            description={sheets.length === 0 ? 'Click "Initialize Model" to create default sheets.' : 'Select a sheet from the left panel to start editing.'} />
+            title={sheets.length === 0 ? 'Financial model not started' : 'Select a sheet'}
+            description={sheets.length === 0 ? 'Click "Initialize Model" to create valuation, cap table, and scenario sheets.' : 'Select a sheet from the left panel to start editing.'} />
         )}</div>
 
       {/* Modals */}
