@@ -791,3 +791,4 @@ b4a0052	100	100	0	keep	product	Dashboard strategic overhaul: AI narrative brief 
 803	2026-03-16T19:23:29Z	Engineering	meetings API: eliminate 3 redundant DB queries by caching investor+meetings fetches at handler top	src/app/api/meetings/route.ts	pass
 804	2026-03-16T19:24:52Z	AI & Intelligence	ai: structured enthusiasm trajectory calibration rules + new trajectory/calibration_note output fields	src/lib/ai.ts	pass
 805	2026-03-16T19:26:50Z	Data Enrichment	enrichment bulk: add exponential backoff + circuit breaker on rate-limited providers	src/app/api/enrichment/route.ts	pass
+806	2026-03-16T19:28:48Z	Workflow & Automation	follow-up plan: make investor names clickable links to investor detail page	src/components/followup-plan.tsx	pass

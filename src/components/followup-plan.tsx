@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { SendHorizonal, Clock, CheckCircle2, XCircle, Mail, MessageSquare, FolderOpen, CalendarPlus, RefreshCw, Milestone, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface FollowupItem { id: string; meeting_id: string; investor_id: string; investor_name: string; action_type: string; description: string; due_at: string; status: string; outcome: string; conviction_delta: number; created_at: string; completed_at: string | null }
@@ -83,7 +84,11 @@ export default function FollowupPlan({ followups, showInvestorName = false }: { 
                       <div className="flex items-center gap-2 mb-0.5">
                         <span className="text-xs px-1.5 py-0.5 rounded font-normal " style={{ backgroundColor: bgColor, color: labelColor }}>{config.label}</span>
                         <span className="text-xs flex items-center gap-1" style={{ color: isOverdue ? 'var(--danger)' : 'var(--text-muted)', fontWeight: 400 }}><Clock className="w-3 h-3" />{timeLabel}</span>
-                        {showInvestorName && <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{item.investor_name}</span>}
+                        {showInvestorName && item.investor_id && (
+                          <Link href={`/investors/${item.investor_id}`} className="text-xs" style={{ color: 'var(--accent)', textDecoration: 'none' }}
+                            onClick={e => e.stopPropagation()}>{item.investor_name}</Link>
+                        )}
+                        {showInvestorName && !item.investor_id && <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{item.investor_name}</span>}
                       </div>
                       <p className="text-xs line-clamp-2 whitespace-pre-line" style={{ color: 'var(--text-secondary)' }}>{item.description.split('\n')[0]}</p>
                       {!isDone && (
