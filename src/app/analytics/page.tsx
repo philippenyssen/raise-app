@@ -177,6 +177,7 @@ export default function AnalyticsPage() {
   }
 
   const { funnel, velocity, engagement, risks, winLoss, summary } = data;
+  const maxStageCount = Math.max(...(summary.pipelineStages?.map(s => s.count) ?? []), 1);
 
   return (
     <div className="space-y-6 pb-12 page-content">
@@ -268,8 +269,7 @@ export default function AnalyticsPage() {
               Pipeline Distribution</h3>
             <div className="space-y-2">
               {summary.pipelineStages.map((stage, idx) => {
-                const maxCount = Math.max(...summary.pipelineStages.map(s => s.count), 1);
-                const pct = (stage.count / maxCount) * 100;
+                const pct = (stage.count / maxStageCount) * 100;
                 return (
                   <div key={stage.stage} className="flex items-center gap-3">
                     <div className="w-24 text-xs text-right shrink-0" style={stTextTertiary}>
@@ -295,7 +295,7 @@ export default function AnalyticsPage() {
                         <div
                           className="h-full rounded flex items-center px-3"
                           style={{
-                            width: `${Math.max((funnel.exact['passed'] / Math.max(...summary.pipelineStages.map(s => s.count), 1)) * 100, 8)}%`,
+                            width: `${Math.max((funnel.exact['passed'] / maxStageCount) * 100, 8)}%`,
                             background: 'var(--danger-muted)', }}>
                           <span className="text-xs font-normal" style={stTextPrimary}>{funnel.exact['passed']}</span></div></div>
                     </div>
@@ -307,7 +307,7 @@ export default function AnalyticsPage() {
                         <div
                           className="h-full rounded flex items-center px-3"
                           style={{
-                            width: `${Math.max((funnel.exact['dropped'] / Math.max(...summary.pipelineStages.map(s => s.count), 1)) * 100, 8)}%`,
+                            width: `${Math.max((funnel.exact['dropped'] / maxStageCount) * 100, 8)}%`,
                             background: 'var(--surface-2)', }}>
                           <span className="text-xs font-normal" style={stTextTertiary}>{funnel.exact['dropped']}</span></div>
                       </div></div>

@@ -1732,62 +1732,63 @@ export async function processPostMeetingIntelligence(
     await Promise.all(objectionUpdatePromises);
   } catch { /* non-blocking objection learning */ }
 
-  // --- Followup Efficacy: Measure lift from recent followups ---
-  try {
-    await measureFollowupEfficacy(meeting.investor_id);
-  } catch { /* non-blocking */ }
+  // --- Run followup efficacy, narrative cascade, and compound signal detection in parallel ---
+  // All three are independent non-blocking operations
+  await Promise.all([
+    // Followup Efficacy: Measure lift from recent followups
+    measureFollowupEfficacy(meeting.investor_id).catch(() => { /* non-blocking */ }),
 
-  // --- Compound cascade: meeting intelligence feeds into broader analysis (cycle 13) ---
-  try {
-    // Re-check narrative health after new data point
-    const narrativeSignals = await computeNarrativeSignals();
-    const investorType = investor?.type || 'vc';
-    const typeSignal = narrativeSignals.find(s => s.investorType === investorType);
+    // Compound cascade: meeting intelligence feeds into broader analysis (cycle 13)
+    (async () => {
+      const narrativeSignals = await computeNarrativeSignals();
+      const investorType = investor?.type || 'vc';
+      const typeSignal = narrativeSignals.find(s => s.investorType === investorType);
 
-    // If this investor type is struggling, auto-create action
-    if (typeSignal && typeSignal.avgEnthusiasm < 2.5) {
-      const existingActions = await getAccelerationActions();
-      const hasTypeAction = existingActions.some(a =>
-        a.description.includes(investorType) && a.status === 'pending'
-      );
-      if (!hasTypeAction) {
+      // If this investor type is struggling, auto-create action
+      if (typeSignal && typeSignal.avgEnthusiasm < 2.5) {
+        const existingActions = await getAccelerationActions();
+        const hasTypeAction = existingActions.some(a =>
+          a.description.includes(investorType) && a.status === 'pending'
+        );
+        if (!hasTypeAction) {
+          await createAccelerationAction({
+            investor_id: `narrative_${investorType}`,
+            investor_name: null,
+            trigger_type: 'catalyst_match',
+            action_type: 'data_update',
+            description: `[AUTO] "${investorType}" investors averaging ${typeSignal.avgEnthusiasm.toFixed(1)}/5 enthusiasm after latest meeting — adapt pitch for this investor type`,
+            expected_lift: 7,
+            confidence: 'medium',
+            status: 'pending',
+            actual_lift: null,
+            executed_at: null,
+          });
+        }
+      }
+    })().catch(() => { /* non-blocking */ }),
+
+    // Compound cascade: detect compound signals and auto-create high-confidence actions (cycle 13)
+    (async () => {
+      const compoundSignals = await detectCompoundSignals();
+      const veryHighSignals = compoundSignals.filter(s => s.confidence === 'very_high');
+      for (const cs of veryHighSignals.slice(0, 3)) {
+        // Extract investor name from signal for dedup
+        const syntheticId = `compound_${cs.sources.join('_')}_${Date.now()}`;
         await createAccelerationAction({
-          investor_id: `narrative_${investorType}`,
+          investor_id: syntheticId,
           investor_name: null,
           trigger_type: 'catalyst_match',
-          action_type: 'data_update',
-          description: `[AUTO] "${investorType}" investors averaging ${typeSignal.avgEnthusiasm.toFixed(1)}/5 enthusiasm after latest meeting — adapt pitch for this investor type`,
-          expected_lift: 7,
-          confidence: 'medium',
+          action_type: 'escalation',
+          description: `[AUTO-COMPOUND] ${cs.recommendation}`,
+          expected_lift: 15,
+          confidence: 'high',
           status: 'pending',
           actual_lift: null,
           executed_at: null,
         });
       }
-    }
-  } catch { /* non-blocking */ }
-
-  // --- Compound cascade: detect compound signals and auto-create high-confidence actions (cycle 13) ---
-  try {
-    const compoundSignals = await detectCompoundSignals();
-    const veryHighSignals = compoundSignals.filter(s => s.confidence === 'very_high');
-    for (const cs of veryHighSignals.slice(0, 3)) {
-      // Extract investor name from signal for dedup
-      const syntheticId = `compound_${cs.sources.join('_')}_${Date.now()}`;
-      await createAccelerationAction({
-        investor_id: syntheticId,
-        investor_name: null,
-        trigger_type: 'catalyst_match',
-        action_type: 'escalation',
-        description: `[AUTO-COMPOUND] ${cs.recommendation}`,
-        expected_lift: 15,
-        confidence: 'high',
-        status: 'pending',
-        actual_lift: null,
-        executed_at: null,
-      });
-    }
-  } catch { /* non-blocking */ }
+    })().catch(() => { /* non-blocking */ }),
+  ]);
 
   return results;
 }
@@ -4522,14 +4523,28 @@ export function detectCompoundSignals(): Promise<{
     const activeInvestors = investorsResult.rows as unknown as Array<{ id: string; name: string; status: string }>;
     const now = Date.now();
 
-    for (const inv of activeInvestors) {
+    const convergentResults = await Promise.all(activeInvestors.map(async (inv) => {
       const convergentSources: string[] = [];
 
-      // Check declining trajectory
-      const snapsResult = await db.execute({
-        sql: `SELECT overall_score, snapshot_date FROM score_snapshots WHERE investor_id = ? AND snapshot_date >= date('now', '-21 days') ORDER BY snapshot_date ASC`,
-        args: [inv.id],
-      });
+      // Run 3 independent DB queries in parallel
+      const [snapsResult, lastMeetingResult, objResult] = await Promise.all([
+        // Check declining trajectory
+        db.execute({
+          sql: `SELECT overall_score, snapshot_date FROM score_snapshots WHERE investor_id = ? AND snapshot_date >= date('now', '-21 days') ORDER BY snapshot_date ASC`,
+          args: [inv.id],
+        }),
+        // Check engagement gap (21+ days since last meeting)
+        db.execute({
+          sql: `SELECT MAX(date) as last_date FROM meetings WHERE investor_id = ?`,
+          args: [inv.id],
+        }),
+        // Check unresolved objections
+        db.execute({
+          sql: `SELECT COUNT(*) as count FROM objection_responses WHERE investor_id = ? AND (effectiveness IS NULL OR effectiveness = 'unknown' OR effectiveness = 'ineffective')`,
+          args: [inv.id],
+        }),
+      ]);
+
       const snaps = snapsResult.rows as unknown as Array<{ overall_score: number; snapshot_date: string }>;
       if (snaps.length >= 2) {
         const first = snaps[0];
@@ -4544,11 +4559,6 @@ export function detectCompoundSignals(): Promise<{
         }
       }
 
-      // Check engagement gap (21+ days since last meeting)
-      const lastMeetingResult = await db.execute({
-        sql: `SELECT MAX(date) as last_date FROM meetings WHERE investor_id = ?`,
-        args: [inv.id],
-      });
       const lastDate = (lastMeetingResult.rows[0] as unknown as { last_date: string | null }).last_date;
       if (lastDate) {
         const daysSince = Math.round((now - new Date(lastDate).getTime()) / (1000 * 60 * 60 * 24));
@@ -4557,31 +4567,31 @@ export function detectCompoundSignals(): Promise<{
         }
       }
 
-      // Check unresolved objections
-      const objResult = await db.execute({
-        sql: `SELECT COUNT(*) as count FROM objection_responses WHERE investor_id = ? AND (effectiveness IS NULL OR effectiveness = 'unknown' OR effectiveness = 'ineffective')`,
-        args: [inv.id],
-      });
       const unresolvedCount = Number((objResult.rows[0] as unknown as { count: number }).count);
       if (unresolvedCount >= 2) {
         convergentSources.push('unresolved_objections');
       }
 
       if (convergentSources.length >= 3) {
-        signals.push({
+        return {
           signal: `${inv.name}: convergent decline detected — declining trajectory + engagement gap + unresolved objections all point to likely pass`,
           sources: convergentSources,
-          confidence: 'very_high',
+          confidence: 'very_high' as const,
           recommendation: `Schedule direct call with ${inv.name}'s partner immediately — if no progress in 7 days, reallocate effort to higher-probability investors`,
-        });
+        };
       } else if (convergentSources.length === 2) {
-        signals.push({
+        return {
           signal: `${inv.name}: early decline warning — ${convergentSources.join(' + ')} detected`,
           sources: convergentSources,
-          confidence: 'high',
+          confidence: 'high' as const,
           recommendation: `Proactively reach out to ${inv.name} before full disengagement — address the ${convergentSources.includes('unresolved_objections') ? 'unresolved objections' : 'communication gap'} first`,
-        });
+        };
       }
+      return null;
+    }));
+
+    for (const result of convergentResults) {
+      if (result) signals.push(result);
     }
   } catch { /* non-blocking */ }
 
@@ -4593,14 +4603,23 @@ export function detectCompoundSignals(): Promise<{
     );
     const advancedInvestors = investorsResult.rows as unknown as Array<{ id: string; name: string; status: string; enthusiasm: number }>;
 
-    for (const inv of advancedInvestors) {
+    const closeResults = await Promise.all(advancedInvestors.map(async (inv) => {
       const closeSources: string[] = [];
 
-      // Check accelerating or positive trajectory
-      const snapsResult = await db.execute({
-        sql: `SELECT overall_score, snapshot_date FROM score_snapshots WHERE investor_id = ? AND snapshot_date >= date('now', '-21 days') ORDER BY snapshot_date ASC`,
-        args: [inv.id],
-      });
+      // Run 2 independent DB queries in parallel (trajectory + objections)
+      const [snapsResult, objResult] = await Promise.all([
+        // Check accelerating or positive trajectory
+        db.execute({
+          sql: `SELECT overall_score, snapshot_date FROM score_snapshots WHERE investor_id = ? AND snapshot_date >= date('now', '-21 days') ORDER BY snapshot_date ASC`,
+          args: [inv.id],
+        }),
+        // No unresolved objections
+        db.execute({
+          sql: `SELECT COUNT(*) as count FROM objection_responses WHERE investor_id = ? AND (effectiveness IS NULL OR effectiveness = 'unknown' OR effectiveness = 'ineffective')`,
+          args: [inv.id],
+        }),
+      ]);
+
       const snaps = snapsResult.rows as unknown as Array<{ overall_score: number; snapshot_date: string }>;
       if (snaps.length >= 2) {
         const first = snaps[0];
@@ -4625,31 +4644,31 @@ export function detectCompoundSignals(): Promise<{
         closeSources.push('advanced_stage');
       }
 
-      // No unresolved objections
-      const objResult = await db.execute({
-        sql: `SELECT COUNT(*) as count FROM objection_responses WHERE investor_id = ? AND (effectiveness IS NULL OR effectiveness = 'unknown' OR effectiveness = 'ineffective')`,
-        args: [inv.id],
-      });
       const unresolvedCount = Number((objResult.rows[0] as unknown as { count: number }).count);
       if (unresolvedCount === 0) {
         closeSources.push('no_objections');
       }
 
       if (closeSources.length >= 4) {
-        signals.push({
+        return {
           signal: `${inv.name}: all signals point to READY TO CLOSE — accelerating trajectory, high enthusiasm, advanced stage, no objections`,
           sources: closeSources,
-          confidence: 'very_high',
+          confidence: 'very_high' as const,
           recommendation: `Push for term sheet / commitment with ${inv.name} NOW — all indicators aligned. Delay risks losing momentum.`,
-        });
+        };
       } else if (closeSources.length >= 3) {
-        signals.push({
+        return {
           signal: `${inv.name}: strong close indicators — ${closeSources.join(', ')}`,
           sources: closeSources,
-          confidence: 'high',
+          confidence: 'high' as const,
           recommendation: `Prioritize ${inv.name} for close — address any remaining gap (${['accelerating_trajectory', 'high_enthusiasm', 'advanced_stage', 'no_objections'].filter(s => !closeSources.includes(s)).join(', ') || 'none'}) to accelerate`,
-        });
+        };
       }
+      return null;
+    }));
+
+    for (const result of closeResults) {
+      if (result) signals.push(result);
     }
   } catch { /* non-blocking */ }
 
@@ -4920,7 +4939,7 @@ export async function measureActionEffectiveness(): Promise<{
   let measured = 0;
   const liftsByType: Record<string, { total: number; count: number }> = {};
 
-  for (const action of unmeasuredActions) {
+  const actionResults = await Promise.all(unmeasuredActions.map(async (action) => {
     // Skip synthetic investor IDs (narrative_* patterns) — no investor-level measurement possible
     if (action.investor_id.startsWith('narrative_')) {
       // For narrative-type actions, mark with neutral lift (can't measure directly)
@@ -4928,47 +4947,45 @@ export async function measureActionEffectiveness(): Promise<{
         sql: `UPDATE acceleration_actions SET actual_lift = 0 WHERE id = ?`,
         args: [action.id],
       });
-      measured++;
-      if (!liftsByType[action.action_type]) liftsByType[action.action_type] = { total: 0, count: 0 };
-      liftsByType[action.action_type].total += 0;
-      liftsByType[action.action_type].count++;
-      continue;
+      return { measured: true, lift: 0, actionType: action.action_type };
     }
 
     const executedAt = action.executed_at;
-    if (!executedAt) continue;
+    if (!executedAt) return null; // skip
 
-    // Find the last meeting BEFORE execution
-    const beforeResult = await db.execute({
-      sql: `SELECT enthusiasm_score FROM meetings
-            WHERE investor_id = ? AND date < ?
-            ORDER BY date DESC LIMIT 1`,
-      args: [action.investor_id, executedAt],
-    });
+    // Run 4 independent DB queries in parallel
+    const [beforeResult, afterResult, invResult, newMeetingsResult] = await Promise.all([
+      // Find the last meeting BEFORE execution
+      db.execute({
+        sql: `SELECT enthusiasm_score FROM meetings
+              WHERE investor_id = ? AND date < ?
+              ORDER BY date DESC LIMIT 1`,
+        args: [action.investor_id, executedAt],
+      }),
+      // Find the first meeting AFTER execution
+      db.execute({
+        sql: `SELECT enthusiasm_score FROM meetings
+              WHERE investor_id = ? AND date > ?
+              ORDER BY date ASC LIMIT 1`,
+        args: [action.investor_id, executedAt],
+      }),
+      // Check if investor status progressed
+      db.execute({
+        sql: `SELECT status FROM investors WHERE id = ?`,
+        args: [action.investor_id],
+      }),
+      // Check if any new meetings were scheduled after execution
+      db.execute({
+        sql: `SELECT COUNT(*) as count FROM meetings
+              WHERE investor_id = ? AND date > ?`,
+        args: [action.investor_id, executedAt],
+      }),
+    ]);
 
-    // Find the first meeting AFTER execution
-    const afterResult = await db.execute({
-      sql: `SELECT enthusiasm_score FROM meetings
-            WHERE investor_id = ? AND date > ?
-            ORDER BY date ASC LIMIT 1`,
-      args: [action.investor_id, executedAt],
-    });
-
-    // Check if investor status progressed
-    const invResult = await db.execute({
-      sql: `SELECT status FROM investors WHERE id = ?`,
-      args: [action.investor_id],
-    });
     const currentStatus = invResult.rows.length > 0
       ? (invResult.rows[0] as unknown as { status: string }).status
       : null;
 
-    // Check if any new meetings were scheduled after execution
-    const newMeetingsResult = await db.execute({
-      sql: `SELECT COUNT(*) as count FROM meetings
-            WHERE investor_id = ? AND date > ?`,
-      args: [action.investor_id, executedAt],
-    });
     const newMeetingCount = Number((newMeetingsResult.rows[0] as unknown as { count: number }).count);
 
     // Compute lift score (-10 to +20)
@@ -5029,7 +5046,7 @@ export async function measureActionEffectiveness(): Promise<{
       // Check if enough time has passed (14+ days) — if so, neutral lift
       const execDate = new Date(executedAt);
       const daysSinceExec = (Date.now() - execDate.getTime()) / (1000 * 60 * 60 * 24);
-      if (daysSinceExec < 14) continue; // Not enough time, skip for now
+      if (daysSinceExec < 14) return null; // Not enough time, skip for now
       // If 14+ days with no interaction, that's a signal of low effectiveness
       lift = -2;
     }
@@ -5043,10 +5060,16 @@ export async function measureActionEffectiveness(): Promise<{
       args: [lift, action.id],
     });
 
+    return { measured: true, lift, actionType: action.action_type };
+  }));
+
+  // Aggregate results from parallel executions
+  for (const result of actionResults) {
+    if (!result) continue;
     measured++;
-    if (!liftsByType[action.action_type]) liftsByType[action.action_type] = { total: 0, count: 0 };
-    liftsByType[action.action_type].total += lift;
-    liftsByType[action.action_type].count++;
+    if (!liftsByType[result.actionType]) liftsByType[result.actionType] = { total: 0, count: 0 };
+    liftsByType[result.actionType].total += result.lift;
+    liftsByType[result.actionType].count++;
   }
 
   // Also include previously measured actions for the aggregation

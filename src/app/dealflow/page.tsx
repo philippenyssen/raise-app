@@ -222,13 +222,26 @@ export default function DealflowPage() {
         default: return 0;
       }}), [investors, heatFilter, sortBy]);
 
-  // Summary counts
-  const counts = { hot: 0, warm: 0, cool: 0, cold: 0, frozen: 0, atRisk: 0, onTrack: 0 };
-  for (const inv of investors) {
-    counts[inv.heat as keyof typeof counts]++;
-    if (inv.trackingStatus === 'at_risk') counts.atRisk++;
-    if (inv.trackingStatus === 'on_track') counts.onTrack++;
-  }
+  // Summary counts (memoized to avoid recomputing on filter/sort changes)
+  const counts = useMemo(() => {
+    const c = { hot: 0, warm: 0, cool: 0, cold: 0, frozen: 0, atRisk: 0, onTrack: 0 };
+    for (const inv of investors) {
+      c[inv.heat as keyof typeof c]++;
+      if (inv.trackingStatus === 'at_risk') c.atRisk++;
+      if (inv.trackingStatus === 'on_track') c.onTrack++;
+    }
+    return c;
+  }, [investors]);
+
+  const summaryStripItems = useMemo(() => [
+    { label: 'Hot', count: counts.hot, color: HEAT_CONFIG.hot.text, icon: Flame },
+    { label: 'Warm', count: counts.warm, color: HEAT_CONFIG.warm.text, icon: Flame },
+    { label: 'Cool', count: counts.cool, color: HEAT_CONFIG.cool.text, icon: Flame },
+    { label: 'Cold', count: counts.cold, color: HEAT_CONFIG.cold.text, icon: Flame },
+    { label: 'Frozen', count: counts.frozen, color: HEAT_CONFIG.frozen.text, icon: Flame },
+    { label: 'On Track', count: counts.onTrack, color: 'var(--text-secondary)', icon: Gauge },
+    { label: 'At Risk', count: counts.atRisk, color: 'var(--text-primary)', icon: AlertTriangle },
+  ], [counts]);
 
   // ── Render ────────────────────────────────────────────────────────
 
@@ -261,15 +274,7 @@ export default function DealflowPage() {
 
       {/* Summary Strip */}
       <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 mb-6">
-        {[
-          { label: 'Hot', count: counts.hot, color: HEAT_CONFIG.hot.text, icon: Flame },
-          { label: 'Warm', count: counts.warm, color: HEAT_CONFIG.warm.text, icon: Flame },
-          { label: 'Cool', count: counts.cool, color: HEAT_CONFIG.cool.text, icon: Flame },
-          { label: 'Cold', count: counts.cold, color: HEAT_CONFIG.cold.text, icon: Flame },
-          { label: 'Frozen', count: counts.frozen, color: HEAT_CONFIG.frozen.text, icon: Flame },
-          { label: 'On Track', count: counts.onTrack, color: 'var(--text-secondary)', icon: Gauge },
-          { label: 'At Risk', count: counts.atRisk, color: 'var(--text-primary)', icon: AlertTriangle },
-        ].map(({ label, count, color, icon: Icon }) => (
+        {summaryStripItems.map(({ label, count, color, icon: Icon }) => (
           <div
             key={label}
             className="rounded-lg p-3 text-center"
