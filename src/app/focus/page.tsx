@@ -517,7 +517,7 @@ function QuickWinCard({ item }: { item: FocusItem }) {
     </div>);
 }
 
-function StaleAlertCard({ item, onReengage }: { item: FocusItem; onReengage: (item: FocusItem) => void }) {
+function StaleAlertCard({ item, onReengage, pending }: { item: FocusItem; onReengage: (item: FocusItem) => void; pending?: boolean }) {
   return (
     <div
       style={alertCardDanger}>
@@ -540,9 +540,10 @@ function StaleAlertCard({ item, onReengage }: { item: FocusItem; onReengage: (it
           {MOMENTUM_LABELS[item.momentum]}</span></div>
       <button
         onClick={() => onReengage(item)}
+        disabled={pending}
         className="btn btn-danger btn-sm w-full"
-        style={{ opacity: 0.9 }}>
-        Create Re-engagement Task</button>
+        style={pending ? { opacity: 0.5, cursor: 'default' } : { opacity: 0.9 }}>
+        {pending ? 'Creating...' : 'Create Re-engagement Task'}</button>
     </div>);
 }
 
@@ -602,7 +603,8 @@ function AccelerationCard({
           className="btn btn-primary btn-sm shrink-0 flex items-center gap-1.5"
           style={executing ? { background: 'var(--surface-2)', color: 'var(--text-muted)', cursor: 'default' } : {}}>
           <Play className="w-3 h-3" />
-          {executing ? 'Done' : 'Execute'}</button></div>
+          {executing ? 'Done' : 'Execute'}
+        </button></div>
     </div>);
 }
 
@@ -721,6 +723,7 @@ export default function FocusPage() {
   const [loading, setLoading] = useState(true);
   const [, setAccelLoading] = useState(true);
   const [executedIds, setExecutedIds] = useState<Set<string>>(new Set());
+  const [pendingIds, setPendingIds] = useState<Set<string>>(new Set());
   const [loadedAt, setLoadedAt] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
@@ -751,6 +754,9 @@ export default function FocusPage() {
   }, [fetchData]);
 
   async function handleReengage(item: FocusItem) {
+    const key = `reengage-${item.investorId}`;
+    if (pendingIds.has(key)) return;
+    setPendingIds(prev => new Set(prev).add(key));
     try {
       const res = await fetch('/api/tasks', {
         method: 'POST',
@@ -772,9 +778,13 @@ export default function FocusPage() {
     } catch (e) {
       console.warn('[FOCUS_TASK]', e instanceof Error ? e.message : e);
       toast('Couldn\'t create task — check your connection and retry', 'error');
+    } finally {
+      setPendingIds(prev => { const next = new Set(prev); next.delete(key); return next; });
     }}
 
   async function handleExecuteAcceleration(item: AccelerationItem) {
+    if (pendingIds.has(item.id)) return;
+    setPendingIds(prev => new Set(prev).add(item.id));
     try {
       const res = await fetch('/api/acceleration', {
         method: 'PUT',
@@ -789,6 +799,8 @@ export default function FocusPage() {
     } catch (e) {
       console.warn('[FOCUS_ACCEL]', e instanceof Error ? e.message : e);
       toast('Couldn\'t update action — check your connection and retry', 'error');
+    } finally {
+      setPendingIds(prev => { const next = new Set(prev); next.delete(item.id); return next; });
     }}
 
   // Group acceleration items by urgency — must be before early returns (React hooks ordering)
@@ -899,7 +911,7 @@ export default function FocusPage() {
                     key={item.id}
                     item={item}
                     onExecute={handleExecuteAcceleration}
-                    executing={executedIds.has(item.id)} />
+                    executing={executedIds.has(item.id) || pendingIds.has(item.id)} />
                 ))}</div></div>
           )}
 
@@ -914,7 +926,7 @@ export default function FocusPage() {
                     key={item.id}
                     item={item}
                     onExecute={handleExecuteAcceleration}
-                    executing={executedIds.has(item.id)} />
+                    executing={executedIds.has(item.id) || pendingIds.has(item.id)} />
                 ))}</div></div>
           )}
 
@@ -964,7 +976,7 @@ export default function FocusPage() {
                 <AlertTriangle className="w-4 h-4" /> Stale Alerts</h2>
               <div className="space-y-2">
                 {staleAlerts.map(item => (
-                  <StaleAlertCard key={item.investorId} item={item} onReengage={handleReengage} />
+                  <StaleAlertCard key={item.investorId} item={item} onReengage={handleReengage} pending={pendingIds.has(`reengage-${item.investorId}`)} />
                 ))}</div></div>
           )}
 

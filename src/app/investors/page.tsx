@@ -215,19 +215,28 @@ export default function InvestorsPage() {
   async function bulkUpdateStatus(newStatus: string) {
     if (bulkUpdating) return;
     setBulkUpdating(true);
-    try {
-      for (const id of selected) {
+    const ids = [...selected];
+    const succeeded: string[] = [];
+    const failed: string[] = [];
+    for (const id of ids) {
+      try {
         const res = await fetch('/api/investors', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, status: newStatus }) });
-        if (!res.ok) throw new Error(`Failed for ${id}`);
-      }
-      toast(`Updated ${selected.size} investors to ${STATUS_LABELS[newStatus as InvestorStatus] || newStatus}`);
+        if (res.ok) succeeded.push(id); else failed.push(id);
+      } catch { failed.push(id); }
+    }
+    if (failed.length === 0) {
+      toast(`Updated ${succeeded.length} investors to ${STATUS_LABELS[newStatus as InvestorStatus] || newStatus}`);
       setSelected(new Set());
-      fetchInvestors();
-    } catch (e) {
-      console.warn('[INVESTOR_BULK]', e instanceof Error ? e.message : e);
-      toast(`Some of ${selected.size} updates failed — refresh to check which ones saved`, 'error');
-      fetchInvestors();
-    } finally { setBulkUpdating(false); }}
+    } else if (succeeded.length === 0) {
+      toast(`All ${ids.length} updates failed — check your connection and retry`, 'error');
+    } else {
+      const failedNames = failed.map(id => investors.find(i => i.id === id)?.name || id).join(', ');
+      toast(`Updated ${succeeded.length} of ${ids.length} — failed: ${failedNames}`, 'error');
+      setSelected(new Set(failed));
+    }
+    fetchInvestors();
+    setBulkUpdating(false);
+  }
 
   const toggleSelect = useCallback((id: string) => {
     setSelected(prev => {
