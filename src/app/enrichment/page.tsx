@@ -129,10 +129,16 @@ export default function EnrichmentPage() {
       if (!res.ok) throw new Error(data.error || 'Enrichment failed');
 
       setLastResult(data);
-      toast(`Enriched: ${data.total_fields} fields from ${data.sources_succeeded} sources`, 'success');
+      if (data.sources_failed > 0 && data.sources_succeeded > 0) {
+        toast(`${data.total_fields} fields from ${data.sources_succeeded} sources · ${data.sources_failed} source${data.sources_failed > 1 ? 's' : ''} failed`, 'warning');
+      } else if (data.sources_failed > 0 && data.sources_succeeded === 0) {
+        toast(`All ${data.sources_failed} sources failed — check provider details below`, 'error');
+      } else {
+        toast(`Enriched: ${data.total_fields} fields from ${data.sources_succeeded} sources`, 'success');
+      }
       fetchData();
     } catch (err) {
-      toast(err instanceof Error ? err.message : 'Enrichment failed — check your API key in settings', 'error');
+      toast(err instanceof Error ? err.message : 'Enrichment failed — check provider configuration', 'error');
     } finally {
       setEnriching(null);
     }}
@@ -265,8 +271,17 @@ export default function EnrichmentPage() {
             <button onClick={() => setLastResult(null)} aria-label="Dismiss result" title="Dismiss" style={{ color: 'var(--text-muted)', cursor: 'pointer', background: 'none', border: 'none' }}>
               <XCircle style={icon14} /></button></div>
           {lastResult.errors.length > 0 && (
-            <div style={{ marginTop: 'var(--space-2)', fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
-              {lastResult.errors.map((e, i) => <div key={i}>{e}</div>)}</div>
+            <div style={{ marginTop: 'var(--space-2)', fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+              {lastResult.errors.map((e, i) => {
+                const isTimeout = e.toLowerCase().includes('timeout');
+                const isRateLimit = e.toLowerCase().includes('rate') || e.includes('429');
+                const isAuth = e.toLowerCase().includes('401') || e.toLowerCase().includes('auth') || e.toLowerCase().includes('api key');
+                const label = isTimeout ? 'Timeout' : isRateLimit ? 'Rate limited' : isAuth ? 'Auth error' : 'Error';
+                return <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-1)' }}>
+                  <span style={{ padding: '0 4px', borderRadius: 'var(--radius-sm)', background: isAuth ? 'var(--danger-muted)' : 'var(--surface-2)', color: isAuth ? 'var(--danger)' : 'var(--text-muted)', fontSize: '10px', fontWeight: 400 }}>{label}</span>
+                  <span>{e}</span>
+                </div>;
+              })}</div>
           )}</div>
       )}
 
