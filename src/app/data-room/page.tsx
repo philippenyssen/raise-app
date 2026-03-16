@@ -10,6 +10,9 @@ import { STATUS_LABELS } from '@/lib/constants';
 import { labelMuted, stAccent, stFontSm, stFontXs, stSurface2, stTextMuted, stTextSecondary, stTextTertiary } from '@/lib/styles';
 import { cachedFetch } from '@/lib/cache';
 
+const fontSmPrimary = { ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' } as const;
+const labelXsTertiary = { ...stFontXs, ...stTextTertiary } as const;
+
 interface DataRoomFile {
   id: string;
   filename: string;
@@ -270,7 +273,7 @@ export default function DataRoomPage() {
         <div
           id="paste-form"
           className="card space-y-4">
-          <h3 style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>Paste document content</h3>
+          <h3 style={fontSmPrimary}>Paste document content</h3>
           <div className="flex gap-3">
             <input
               value={pasteFilename}
@@ -332,9 +335,9 @@ export default function DataRoomPage() {
               <div key={cat.value}>
                 <div className="flex items-center gap-3 mb-2">
                   <cat.icon className="w-4 h-4" style={stTextMuted} />
-                  <span style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>{cat.label}</span>
+                  <span style={fontSmPrimary}>{cat.label}</span>
                   <span style={labelMuted}>{catFiles.length} files</span>
-                  <span className="ml-auto" style={{ ...stFontXs, ...stTextTertiary }}>{cat.desc}</span></div>
+                  <span className="ml-auto" style={labelXsTertiary}>{cat.desc}</span></div>
                 {catFiles.length > 0 ? (
                   <div className="space-y-1">
                     {catFiles.map(file => (
@@ -347,7 +350,7 @@ export default function DataRoomPage() {
                     ))}</div>
                 ) : (
                   <div style={{ borderRadius: 'var(--radius-md)', padding: 'var(--space-3)', textAlign: 'center' }}>
-                    <p style={{ ...stFontXs, ...stTextTertiary }}>No {cat.label.toLowerCase()} files yet</p></div>
+                    <p style={labelXsTertiary}>No {cat.label.toLowerCase()} files yet</p></div>
                 )}
               </div>);
           })}</div>
@@ -420,7 +423,7 @@ function AccessIntelligenceSection({ intelligence, files, expandedInvestor, onTo
       <div className="card" style={{ padding: 'var(--space-4)' }}>
         <div className="flex items-center gap-2 mb-3">
           <span style={stTextMuted}><TrendingUp className="w-4 h-4" /></span>
-          <h3 style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>Most Requested Documents</h3></div>
+          <h3 style={fontSmPrimary}>Most Requested Documents</h3></div>
         {intelligence.most_requested.length > 0 ? (
           <div className="space-y-1">
             {intelligence.most_requested.map((doc, idx) => (
@@ -434,7 +437,7 @@ function AccessIntelligenceSection({ intelligence, files, expandedInvestor, onTo
       <div className="card" style={{ padding: 'var(--space-4)' }}>
         <div className="flex items-center gap-2 mb-3">
           <span style={stTextMuted}><Users className="w-4 h-4" /></span>
-          <h3 style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>Per-Investor Document Access</h3></div>
+          <h3 style={fontSmPrimary}>Per-Investor Document Access</h3></div>
         {intelligence.per_investor_access.length > 0 ? (
           <div className="space-y-1">
             {intelligence.per_investor_access.map(inv => (
@@ -455,7 +458,7 @@ function AccessIntelligenceSection({ intelligence, files, expandedInvestor, onTo
         <div className="card" style={{ padding: 'var(--space-4)' }}>
           <div className="flex items-center gap-2 mb-3">
             <span style={stTextTertiary}><AlertCircle className="w-4 h-4" /></span>
-            <h3 style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>Unreached Investors</h3>
+            <h3 style={fontSmPrimary}>Unreached Investors</h3>
             <span style={labelMuted}>Active investors who haven&apos;t accessed any documents</span></div>
           <div className="space-y-1">
             {intelligence.unreached_investors.map(inv => (
@@ -468,7 +471,7 @@ function AccessIntelligenceSection({ intelligence, files, expandedInvestor, onTo
         <div className="card" style={{ padding: 'var(--space-4)' }}>
           <div className="flex items-center gap-2 mb-3">
             <span style={stTextMuted}><Eye className="w-4 h-4" /></span>
-            <h3 style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>Recent Access Log</h3></div>
+            <h3 style={fontSmPrimary}>Recent Access Log</h3></div>
           <div className="space-y-1">
             {intelligence.document_access_log.slice(0, 20).map((entry, idx) => (
               <AccessLogRow key={`${entry.investor_id}-${entry.document_id}-${idx}`} entry={entry} />
@@ -657,7 +660,7 @@ function UnreachedInvestorRow({ investor }: {
       <span style={{ ...stFontXs, ...stTextMuted, ...stSurface2, padding: '0.125rem var(--space-2)', borderRadius: 'var(--radius-sm)' }}>{STATUS_LABELS[investor.status] || investor.status}</span>
       <span style={labelMuted}>T{investor.tier}</span>
       {investor.recommended_categories.length > 0 && (
-        <span className="ml-auto" style={{ ...stFontXs, ...stTextTertiary }}>Share: {investor.recommended_categories.join(', ')}</span>
+        <span className="ml-auto" style={labelXsTertiary}>Share: {investor.recommended_categories.join(', ')}</span>
       )}
     </div>);
 }
@@ -675,7 +678,7 @@ function AccessLogRow({ entry }: {
       <Link href={`/investors/${entry.investor_id}`} className="investor-link" style={{ ...stFontSm, fontWeight: 400, textDecoration: 'none', minWidth: '8rem' }}>{entry.investor_name}</Link>
       <span style={labelMuted}>viewed</span>
       <span className="truncate" style={{ ...stFontSm, ...stTextSecondary }}>{entry.document_title}</span>
-      <span className="ml-auto shrink-0" style={{ ...stFontXs, ...stTextTertiary }}>{fmtDateTime(entry.accessed_at)}</span>
+      <span className="ml-auto shrink-0" style={labelXsTertiary}>{fmtDateTime(entry.accessed_at)}</span>
     </div>);
 }
 
@@ -696,7 +699,7 @@ function FileRow({ file, expanded, onToggle, onDelete }: {
         <FileText className="w-4 h-4 shrink-0 ml-2" style={stTextTertiary} />
         <span className="truncate ml-3" style={{ ...stFontSm, color: 'var(--text-primary)' }}>{file.filename}</span>
         <span className="ml-auto shrink-0" style={labelMuted}>{formatBytes(file.size_bytes)}</span>
-        <span className="shrink-0 ml-3" style={{ ...stFontXs, ...stTextTertiary }}>{fmtDate(file.uploaded_at)}</span>
+        <span className="shrink-0 ml-3" style={labelXsTertiary}>{fmtDate(file.uploaded_at)}</span>
         <button
           onClick={e => { e.stopPropagation(); onDelete(); }}
           className="ml-3 shrink-0 icon-delete"

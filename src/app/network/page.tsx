@@ -10,6 +10,8 @@ import {
 import { STATUS_LABELS } from '@/lib/constants';
 import { labelMuted, labelSecondary, probColor, stAccent, stFontSm, stSurface1, stTextMuted, stTextPrimary, stTextTertiary } from '@/lib/styles';
 
+const textRight = { textAlign: 'right' as const } as const;
+
 interface CascadeLink { investorId: string; investorName: string; probability: number; cumulativeProbability: number; status: string; tier: number; checkSize: string; capitalM: number; expectedCapitalM: number }
 
 interface CascadeData { keystoneId: string; keystoneName: string; keystoneTier: number; keystoneStatus: string; keystoneEnthusiasm: number; keystoneCheckSize: string; keystoneCapitalM: number; cascadeChain: CascadeLink[]; chainLength: number; totalCascadeProbability: number; totalCascadeCapitalM: number; expectedCascadeCapitalM: number; networkBottleneck: { investorId: string; investorName: string; impactIfPass: number } | null; signal: string }
@@ -228,12 +230,12 @@ export default function NetworkPage() {
                     <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '2px' }}>
                       {cascade.signal}</p></div></div>
                 <div className="flex items-center gap-4 shrink-0 ml-4">
-                  <div style={{ textAlign: 'right' }}>
+                  <div style={textRight}>
                     <p style={labelMuted}>Cascade Capital</p>
                     <p style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
                       {cascade.expectedCascadeCapitalM > 0 ? `\u20AC${formatCapital(cascade.expectedCascadeCapitalM)}` : '--'}</p>
                   </div>
-                  <div style={{ textAlign: 'right' }}>
+                  <div style={textRight}>
                     <p style={labelMuted}>Chain</p>
                     <p style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
                       {cascade.chainLength}</p></div>
@@ -341,7 +343,7 @@ export default function NetworkPage() {
                                       Check: {link.checkSize}</span>
                                   )}</div></div>
                               <div className="flex items-center gap-4 shrink-0">
-                                <div style={{ textAlign: 'right' }}>
+                                <div style={textRight}>
                                   <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', }}>Prob</p>
                                   <p style={{
                                     fontSize: 'var(--font-size-sm)',
@@ -350,7 +352,7 @@ export default function NetworkPage() {
                                     fontVariantNumeric: 'tabular-nums',}}>
                                     {Math.round(link.probability * 100)}%</p></div>
                                 {link.capitalM > 0 && (
-                                  <div style={{ textAlign: 'right' }}>
+                                  <div style={textRight}>
                                     <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', }}>Expected</p>
                                     <p style={{
                                       fontSize: 'var(--font-size-sm)',
@@ -360,7 +362,7 @@ export default function NetworkPage() {
                                       {'\u20AC'}{formatCapital(link.expectedCapitalM)}</p></div>
                                 )}
                                 {idx < cascade.cascadeChain.length - 1 && (
-                                  <div style={{ textAlign: 'right' }}>
+                                  <div style={textRight}>
                                     <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', }}>Cumulative</p>
                                     <p style={{
                                       fontSize: 'var(--font-size-sm)',

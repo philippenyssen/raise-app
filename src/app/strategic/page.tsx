@@ -13,6 +13,9 @@ import { useToast } from '@/components/toast';
 import { relativeTime } from '@/lib/time';
 import { CopyButton } from '@/components/copy-button';
 
+const mbSpace1 = { marginBottom: 'var(--space-1)' } as const;
+const fontSmTertiary = { ...stFontSm, fontWeight: 400, ...stTextTertiary } as const;
+
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
@@ -258,7 +261,7 @@ export default function StrategicPage() {
           valueColor={gaugeColor(data.pipelineConcentrationRisk, true)} />
         {/* Raise Velocity */}
         <div className="card-metric flex flex-col">
-          <div className="metric-label" style={{ marginBottom: 'var(--space-1)' }}>Raise Velocity</div>
+          <div className="metric-label" style={mbSpace1}>Raise Velocity</div>
           <div className="flex items-center gap-2 mb-2">
             <span
               className="badge"
@@ -287,7 +290,7 @@ export default function StrategicPage() {
         <div className="card">
           <div className="flex items-center gap-2 mb-4">
             <BarChart3 className="w-4 h-4" style={stAccent} />
-            <span style={{ ...stFontSm, fontWeight: 400, ...stTextTertiary }}>Health Trend</span>
+            <span style={fontSmTertiary}>Health Trend</span>
             <span className="ml-auto" style={labelMuted}>{data.historicalSnapshots.length} snapshots</span></div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <SparklineRow
@@ -314,7 +317,7 @@ export default function StrategicPage() {
         <div className="card">
           <div className="flex items-center gap-2 mb-4">
             <Activity className="w-4 h-4" style={stAccent} />
-            <span style={{ ...stFontSm, fontWeight: 400, ...stTextTertiary }}>Temporal Intelligence</span>
+            <span style={fontSmTertiary}>Temporal Intelligence</span>
             <span className="badge ml-2" style={{ ...directionStyle(data.temporalTrends.overallDirection), border: `1px solid`, fontSize: 'var(--font-size-xs)', fontWeight: 400 }}>{data.temporalTrends.overallDirection}</span>
             <span className="ml-auto" style={labelMuted}>{data.temporalTrends.daysOfData} days of data</span></div>
 
@@ -334,7 +337,7 @@ export default function StrategicPage() {
                     trend.direction === 'improving' ? 'var(--accent-4)' :
                     trend.direction === 'declining' ? 'var(--accent-8)' :
                     'var(--surface-1)', }}>
-                <div className="metric-label" style={{ marginBottom: 'var(--space-1)' }}>{trend.metric}</div>
+                <div className="metric-label" style={mbSpace1}>{trend.metric}</div>
                 <div className="flex items-center gap-1.5">
                   {trend.direction === 'improving' ? (
                     <TrendingUp className="w-3.5 h-3.5" style={stTextSecondary} />
@@ -379,7 +382,7 @@ export default function StrategicPage() {
         <div className="card">
           <div className="flex items-center gap-2 mb-4">
             <Clock className="w-4 h-4" style={{ color: 'var(--chart-4)' }} />
-            <span style={{ ...stFontSm, fontWeight: 400, ...stTextTertiary }}>Raise Forecast</span>
+            <span style={fontSmTertiary}>Raise Forecast</span>
             <span
               className="badge ml-2"
               style={{
@@ -392,20 +395,20 @@ export default function StrategicPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             {/* Expected close */}
             <div style={{ borderRadius: 'var(--radius-md)', padding: 'var(--space-3)', background: 'var(--cat-4)' }}>
-              <div className="metric-label" style={{ marginBottom: 'var(--space-1)' }}>Expected Close</div>
+              <div className="metric-label" style={mbSpace1}>Expected Close</div>
               <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 300, color: 'var(--chart-4)', fontVariantNumeric: 'tabular-nums' }}>{data.raiseForecast.expectedCloseDate}</div>
             </div>
             {/* Nearest close */}
             {data.raiseForecast.nearestClose && (
               <div style={{ borderRadius: 'var(--radius-md)', padding: 'var(--space-3)', background: 'var(--accent-muted)' }}>
-                <div className="metric-label" style={{ marginBottom: 'var(--space-1)' }}>Nearest Close</div>
+                <div className="metric-label" style={mbSpace1}>Nearest Close</div>
                 <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 300, color: 'var(--accent)', fontVariantNumeric: 'tabular-nums' }}>~{data.raiseForecast.nearestClose.days}d</div>
                 <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '2px' }}>{data.raiseForecast.nearestClose.name} ({data.raiseForecast.nearestClose.stage})</div>
               </div>
             )}
             {/* Critical path */}
             <div style={{ borderRadius: 'var(--radius-md)', padding: 'var(--space-3)', background: 'var(--surface-1)' }}>
-              <div className="metric-label" style={{ marginBottom: 'var(--space-1)' }}>Critical Path</div>
+              <div className="metric-label" style={mbSpace1}>Critical Path</div>
               <div className="space-y-0.5">
                 {data.raiseForecast.criticalPath.map((name) => (
                   <div key={name} style={labelSecondary}>{name}</div>
@@ -455,7 +458,7 @@ export default function StrategicPage() {
           className="flex items-center gap-2"
           style={{ padding: 'var(--space-5)', borderBottom: '1px solid var(--border-subtle)' }}>
           <Target className="w-4 h-4" style={stAccent} />
-          <h2 style={{ ...stFontSm, fontWeight: 400, ...stTextTertiary }}>Strategic Recommendations</h2>
+          <h2 style={fontSmTertiary}>Strategic Recommendations</h2>
           <span className="ml-auto" style={labelMuted}>{data.recommendations.length} actions</span></div>
 
         {data.recommendations.length === 0 ? (
@@ -570,7 +573,7 @@ function GaugeCard({ label, value, suffix, description, barPct, barColor, valueC
 }) {
   return (
     <div className="card-metric flex flex-col">
-      <div className="metric-label" style={{ marginBottom: 'var(--space-1)' }}>{label}</div>
+      <div className="metric-label" style={mbSpace1}>{label}</div>
       <div style={{ fontSize: 'var(--font-size-3xl)', fontWeight: 300, fontVariantNumeric: 'tabular-nums', color: valueColor }}>
         {value}<span style={{ fontSize: 'var(--font-size-lg)', fontWeight: 400, color: 'var(--text-muted)' }}>{suffix}</span>
       </div>
