@@ -8,7 +8,7 @@ const SYS_ADVISOR = 'You are a Series C fundraise advisor. Be concise, specific,
 let _client: Anthropic | null = null;
 export function getAIClient(): Anthropic {
   if (!_client) {
-    _client = new Anthropic({ timeout: 120_000 });
+    _client = new Anthropic({ timeout: 55_000 });
   }
   return _client;
 }

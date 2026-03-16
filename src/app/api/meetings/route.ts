@@ -57,6 +57,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'date must be a valid YYYY-MM-DD format' }, { status: 400 });
   }
   try {
+  // Deduplication: check for identical meeting created in last 60 seconds
+  const recentMeetings = await getMeetings(investor_id as string, 5);
+  const duplicate = recentMeetings.find(m =>
+    m.date === dateStr &&
+    m.type === ((type as string) || 'intro') &&
+    m.created_at && (Date.now() - new Date(m.created_at).getTime()) < 60_000
+  );
+  if (duplicate) {
+    return NextResponse.json(duplicate, { status: 200, headers: { 'Cache-Control': 'no-store', 'X-Deduplicated': 'true' } });
+  }
+
   const meeting = await createMeeting({
     investor_id,
     investor_name,
