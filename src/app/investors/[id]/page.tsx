@@ -11,7 +11,7 @@ import {
   Gauge, ArrowUpRight, ArrowRight, ArrowDownRight, Minus, ShieldAlert, Lightbulb,
   Activity, AlertCircle, Database, ChevronDown, ChevronRight, ExternalLink,
   Flame, Phone, Mail, SendHorizonal, CheckCircle2, XCircle,
-  Pencil, Save, X,
+  Pencil, Save, X, Sparkles, Shield, ListChecks,
 } from 'lucide-react';
 import { useToast } from '@/components/toast';
 import { fmtDateShort, fmtDate } from '@/lib/format';
@@ -140,6 +140,18 @@ export default function InvestorDetailPage() {
     check_size_range: string; sector_thesis: string; notes: string;
   }>({ name: '', partner: '', tier: 1, status: 'identified', check_size_range: '', sector_thesis: '', notes: '' });
   const [composing, setComposing] = useState(false);
+  const [aiBrief, setAiBrief] = useState<{
+    firm_context: string;
+    interaction_summary: string;
+    open_objections: { objection: string; recommended_response: string; priority: string }[];
+    talking_points: string[];
+    risk_factors: string[];
+    opportunities: string[];
+    suggested_meeting_arc: string;
+    generatedAt: string;
+  } | null>(null);
+  const [briefLoading, setBriefLoading] = useState(false);
+  const [briefExpanded, setBriefExpanded] = useState(true);
   const [composeType, setComposeType] = useState<string>('follow_up');
   const [composeDraft, setComposeDraft] = useState<{ subject: string; body: string; tone: string; callToAction: string } | null>(null);
   const [prediction, setPrediction] = useState<{
@@ -300,6 +312,21 @@ export default function InvestorDetailPage() {
       toast(`Research failed: ${err}`, 'error');
     }
     setResearching(false);
+  }
+
+  async function generateAiBrief() {
+    if (briefLoading) return;
+    setBriefLoading(true);
+    try {
+      const res = await fetch(`/api/investors/${id}/brief`);
+      if (!res.ok) throw new Error('Failed to generate brief');
+      const data = await res.json();
+      setAiBrief(data);
+      setBriefExpanded(true);
+    } catch (err) {
+      toast('Couldn\'t generate AI brief — try again', 'error');
+    }
+    setBriefLoading(false);
   }
 
   async function deleteIntelItem(type: string, itemId: string) {
@@ -878,6 +905,111 @@ export default function InvestorDetailPage() {
                 <Mail className="w-3 h-3" /> Nudge</Link>
             ) : null}</div></div>
       )}
+
+      {/* AI Tactical Brief */}
+      <div className="rounded-xl overflow-hidden" style={{ border: '1px solid var(--border-subtle)' }}>
+        <button
+          onClick={() => aiBrief ? setBriefExpanded(!briefExpanded) : generateAiBrief()}
+          disabled={briefLoading}
+          className="w-full px-5 py-3 flex items-center justify-between"
+          style={{ background: aiBrief ? 'var(--accent-muted)' : 'var(--surface-1)' }}>
+          <span className="text-sm font-normal flex items-center gap-2" style={{ color: aiBrief ? 'var(--accent)' : 'var(--text-secondary)' }}>
+            {briefLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+            {briefLoading ? 'Generating tactical brief...' : aiBrief ? 'AI Tactical Brief' : 'Generate AI Tactical Brief'}
+          </span>
+          {aiBrief && <ChevronRight className={`w-4 h-4 transition-transform ${briefExpanded ? 'rotate-90' : ''}`} style={{ color: 'var(--accent)' }} />}
+        </button>
+        {aiBrief && briefExpanded && (
+          <div className="px-5 pb-5 space-y-4" style={{ background: 'var(--surface-0)' }}>
+            {/* Firm Context */}
+            <div className="pt-3">
+              <h3 className="text-xs font-normal tracking-wider mb-1.5" style={{ color: 'var(--accent)' }}>Context</h3>
+              <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{aiBrief.firm_context}</p>
+            </div>
+            {/* Interaction Summary */}
+            {aiBrief.interaction_summary && (
+              <div>
+                <h3 className="text-xs font-normal tracking-wider mb-1.5" style={{ color: 'var(--text-muted)' }}>Interaction History</h3>
+                <p className="text-sm leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>{aiBrief.interaction_summary}</p>
+              </div>
+            )}
+            {/* Talking Points */}
+            {aiBrief.talking_points.length > 0 && (
+              <div>
+                <h3 className="text-xs font-normal tracking-wider mb-1.5 flex items-center gap-1.5" style={{ color: 'var(--accent)' }}>
+                  <ListChecks className="w-3.5 h-3.5" /> Talking Points</h3>
+                <div className="space-y-1.5">
+                  {aiBrief.talking_points.map((tp, i) => (
+                    <div key={i} className="flex items-start gap-2 text-sm">
+                      <span className="shrink-0 mt-1.5 w-1.5 h-1.5 rounded-full" style={{ background: 'var(--accent)' }} />
+                      <span style={{ color: 'var(--text-secondary)' }}>{tp}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            {/* Open Objections */}
+            {aiBrief.open_objections.length > 0 && (
+              <div>
+                <h3 className="text-xs font-normal tracking-wider mb-1.5 flex items-center gap-1.5" style={{ color: 'var(--text-primary)' }}>
+                  <AlertTriangle className="w-3.5 h-3.5" /> Open Objections</h3>
+                <div className="space-y-2">
+                  {aiBrief.open_objections.map((obj, i) => (
+                    <div key={i} className="rounded-lg p-2.5" style={{ background: 'var(--surface-1)' }}>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-xs font-normal" style={{ color: 'var(--text-secondary)' }}>{obj.objection}</span>
+                        <span className="text-xs px-1.5 py-0.5 rounded" style={{
+                          background: obj.priority === 'must_address' ? 'var(--danger-muted)' : 'var(--warning-muted)',
+                          color: 'var(--text-secondary)',
+                        }}>{obj.priority.replace('_', ' ')}</span>
+                      </div>
+                      <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>{obj.recommended_response}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            {/* Risk & Opportunities grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {aiBrief.risk_factors.length > 0 && (
+                <div>
+                  <h3 className="text-xs font-normal tracking-wider mb-1.5 flex items-center gap-1.5" style={{ color: 'var(--text-primary)' }}>
+                    <Shield className="w-3.5 h-3.5" /> Risks</h3>
+                  <div className="space-y-1">
+                    {aiBrief.risk_factors.map((r, i) => (
+                      <p key={i} className="text-xs" style={{ color: 'var(--text-tertiary)' }}>{r}</p>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {aiBrief.opportunities.length > 0 && (
+                <div>
+                  <h3 className="text-xs font-normal tracking-wider mb-1.5 flex items-center gap-1.5" style={{ color: 'var(--success)' }}>
+                    <Zap className="w-3.5 h-3.5" /> Opportunities</h3>
+                  <div className="space-y-1">
+                    {aiBrief.opportunities.map((o, i) => (
+                      <p key={i} className="text-xs" style={{ color: 'var(--text-tertiary)' }}>{o}</p>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+            {/* Meeting Arc */}
+            {aiBrief.suggested_meeting_arc && (
+              <div className="pt-3" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                <h3 className="text-xs font-normal tracking-wider mb-1.5" style={{ color: 'var(--text-muted)' }}>Suggested Meeting Arc</h3>
+                <p className="text-xs italic leading-relaxed" style={{ color: 'var(--text-muted)' }}>{aiBrief.suggested_meeting_arc}</p>
+              </div>
+            )}
+            <div className="flex items-center justify-between pt-2">
+              <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Generated {new Date(aiBrief.generatedAt).toLocaleString()}</span>
+              <button onClick={generateAiBrief} disabled={briefLoading} className="btn btn-ghost btn-sm flex items-center gap-1">
+                <RefreshCw className="w-3 h-3" /> Regenerate
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
 
       {/* Pending Actions — inline follow-ups */}
       {pendingFollowupItems.length > 0 && (() => {
