@@ -22,6 +22,17 @@ import { labelAccent, labelMuted, labelSecondary, labelSmMuted, labelTertiary, s
 const textSmPrimary = { fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' } as const;
 const textSmLink = { fontSize: 'var(--font-size-sm)', fontWeight: 400 } as const;
 const metricXlPrimary = { fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' } as const;
+const metricLgPrimary = { fontSize: 'var(--font-size-lg)', fontWeight: 300, color: 'var(--text-primary)' } as const;
+const labelXsTertiary4 = { fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginBottom: '4px' } as const;
+const unitSmMuted = { fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', fontWeight: 300 } as const;
+
+function scoreColor(v: number): string {
+  return v >= 70 ? 'var(--success)' : v >= 45 ? 'var(--warning)' : 'var(--danger)';
+}
+
+function timeColor(daysOrWeeks: number, lowThresh: number, highThresh: number): string {
+  return daysOrWeeks <= lowThresh ? 'var(--danger)' : daysOrWeeks <= highThresh ? 'var(--warning)' : 'var(--text-muted)';
+}
 
 // ---------------------------------------------------------------------------
 // Types
@@ -453,7 +464,7 @@ export default function Dashboard() {
             const fuRate = totalFollowups > 0 ? Math.round(((totalFollowups - overdueCount) / totalFollowups) * 100) : 100;
             const dqScore = dataQuality?.overallCompleteness ?? (ph?.dataQualityPct ?? 0);
             const healthScore = Math.round(velScore * 0.30 + convRate * 0.25 + heatScore * 0.20 + fuRate * 0.15 + dqScore * 0.10);
-            const scoreClr = healthScore >= 70 ? 'var(--success)' : healthScore >= 45 ? 'var(--warning)' : 'var(--danger)';
+            const scoreClr = scoreColor(healthScore);
             return (
               <div className="flex items-center gap-5" style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-4) var(--space-6)' }}>
                 <div style={{ position: 'relative', width: 56, height: 56 }} title="Composite fundraise health (velocity 30%, conversion 25%, heat 20%, follow-ups 15%, data quality 10%)">
@@ -468,7 +479,7 @@ export default function Dashboard() {
                   {[{ l: 'Velocity', v: velScore, t: 'Average pipeline velocity score (0-100)' }, { l: 'Conversion', v: convRate, t: 'Term sheet + closed / total contacted, scaled' }, { l: 'Heat', v: heatScore, t: 'Weighted investor engagement temperature' }, { l: 'Follow-ups', v: fuRate, t: 'Percentage of follow-ups completed on time' }, { l: 'Data', v: dqScore, t: 'Overall data completeness across investor profiles' }].map(m => (
                     <div key={m.l} className="text-center" style={{ minWidth: 48 }} title={m.t}>
                       <div style={labelTertiary}>{m.l}</div>
-                      <div className="tabular-nums" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 300, color: m.v >= 70 ? 'var(--success)' : m.v >= 45 ? 'var(--warning)' : 'var(--danger)', marginTop: 2 }}>{m.v}</div>
+                      <div className="tabular-nums" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 300, color: scoreColor(m.v), marginTop: 2 }}>{m.v}</div>
                     </div>
                   ))}
                 </div>
@@ -525,24 +536,24 @@ export default function Dashboard() {
                     {velocity?.summary?.raise_target_days != null && velocity?.summary?.raise_days_elapsed != null && (() => {
                       const daysLeft = velocity.summary.raise_target_days - velocity.summary.raise_days_elapsed;
                       const weeksLeft = Math.ceil(daysLeft / 7);
-                      return daysLeft > 0 ? <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: weeksLeft <= 4 ? 'var(--danger)' : weeksLeft <= 8 ? 'var(--warning)' : 'var(--text-muted)' }}>{weeksLeft}w left</span> : null;
+                      return daysLeft > 0 ? <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: timeColor(weeksLeft, 4, 8) }}>{weeksLeft}w left</span> : null;
                     })()}</div>
 
                   <div className="grid grid-cols-3 gap-4">
                     <div>
-                      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginBottom: '4px' }}>
+                      <div style={labelXsTertiary4}>
                         Best case</div>
-                      <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 300, color: 'var(--text-primary)' }}>
+                      <div style={metricLgPrimary}>
                         €{Math.round(stressTest.forecast.best)}M</div></div>
                     <div>
-                      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginBottom: '4px' }}>
+                      <div style={labelXsTertiary4}>
                         Close probability</div>
-                      <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 300, color: 'var(--text-primary)' }}>
+                      <div style={metricLgPrimary}>
                         {stressTest.closeProbability}%</div></div>
                     <div>
-                      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginBottom: '4px' }}>
+                      <div style={labelXsTertiary4}>
                         Status</div>
-                      <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 300, color: 'var(--text-primary)' }}>
+                      <div style={metricLgPrimary}>
                         {stressTest.onTrack ? 'On track' : 'Needs attention'}</div></div></div></div>
               </Link>);
           })() : sectionErrors.stressTest ? (
@@ -799,7 +810,7 @@ export default function Dashboard() {
                     <div>
                       <div className="metric-value">
                         {cv.avgEnthusiasm.toFixed(1)}
-                        <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', fontWeight: 300 }}>/5</span>
+                        <span style={unitSmMuted}>/5</span>
                       </div>
                       <div className="metric-label">Avg enthusiasm</div></div></div>
 
@@ -1251,7 +1262,7 @@ function VelocityStrip({ velocity }: { velocity: VelocityResponse }) {
             <div style={labelTertiary}>Days elapsed</div>
             <div className="tabular-nums mt-0.5" style={metricXlPrimary}>
               {s.raise_days_elapsed}
-              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', fontWeight: 300 }}>/{s.raise_target_days}d</span>
+              <span style={unitSmMuted}>/{s.raise_target_days}d</span>
             </div></div>
           <div>
             <div style={labelTertiary}>Avg mtgs/week</div>
@@ -1264,7 +1275,7 @@ function VelocityStrip({ velocity }: { velocity: VelocityResponse }) {
             <div className="flex items-center gap-2 mt-0.5">
               <span className="tabular-nums" style={metricXlPrimary}>
                 {s.avg_velocity_score}
-                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', fontWeight: 300 }}>/100</span></span>
+                <span style={unitSmMuted}>/100</span></span>
               {sparkData.length > 1 && <Sparkline data={sparkData} />}</div></div>
           <div>
             <div style={labelTertiary}>
