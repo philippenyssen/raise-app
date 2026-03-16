@@ -1208,8 +1208,8 @@ export default function Dashboard() {
               <div className="flex items-center justify-between mb-3">
                 <h2 className="section-title flex items-center gap-2">
                   <Activity className="w-4 h-4" /> Recent activity</h2>
-                <Link href="/timeline" className="flex items-center gap-1" style={labelAccent}>
-                  Timeline <ArrowRight className="w-3 h-3" /></Link></div>
+                <Link href="/today" className="flex items-center gap-1" style={labelAccent}>
+                  Full view <ArrowRight className="w-3 h-3" /></Link></div>
               {sectionErrors.activity && activity.length === 0 ? (
                 <SectionError label="Activity" onRetry={() => fetchSection('activity')} />
               ) : activity.length > 0 ? (
@@ -1303,7 +1303,7 @@ export default function Dashboard() {
               actions.push({ href: '/dealflow', label: 'At-risk investors', sub: `${atRiskCount} losing momentum`, count: atRiskCount });
             }
             if (overdueTasks.length > 0) {
-              actions.push({ href: '/focus', label: 'Blocked tasks', sub: `${overdueTasks.length} overdue`, count: overdueTasks.length });
+              actions.push({ href: '/decide', label: 'Blocked tasks', sub: `${overdueTasks.length} overdue`, count: overdueTasks.length });
             }
             if (stressTest && stressTest.closeProbability < 50) {
               actions.push({ href: '/stress-test', label: 'Close at risk', sub: `${stressTest.closeProbability}% probability` });
@@ -1313,7 +1313,7 @@ export default function Dashboard() {
             }
             if (actions.length < 4) actions.push({ href: '/meetings/new', label: 'Log meeting (N)', sub: 'Capture a debrief' });
             if (actions.length < 4) actions.push({ href: '/pipeline', label: 'Pipeline', sub: 'Kanban board' });
-            if (actions.length < 4) actions.push({ href: '/intelligence', label: 'AI analysis', sub: 'Pattern detection' });
+            if (actions.length < 4) actions.push({ href: '/strategic', label: 'AI analysis', sub: 'Pattern detection' });
             if (actions.length < 4) actions.push({ href: '/investors', label: 'Manage CRM', sub: 'Update statuses' });
 
             return (

@@ -273,9 +273,9 @@ function AlertCard({ alert }: { alert: BriefingAlert }) {
       : '/pipeline')
     : alert.type === 'risk'
     ? (alertContent.includes('stall') || alertContent.includes('momentum') ? '/dealflow'
-      : alertContent.includes('objection') ? '/focus'
+      : alertContent.includes('objection') ? '/decide'
       : '/dealflow')
-    : '/focus';
+    : '/decide';
 
   const alertAction = alert.type === 'opportunity'
     ? (alertContent.includes('term sheet') ? 'Review term sheets'
@@ -637,7 +637,7 @@ export default function TodayPage() {
           <Link href="/pipeline?stage=term_sheet" className="card hover-border" style={linkCardPad}>
             <div className="metric-label">Term Sheets</div>
             <div className="metric-value" style={{ fontSize: 'var(--font-size-xl)', marginTop: 'var(--space-1)', color: data.pipelineSnapshot.termSheets > 0 ? 'var(--success)' : 'var(--text-muted)' }}>{data.pipelineSnapshot.termSheets}</div></Link>
-          <Link href="/targeting" className="card hover-border" style={linkCardPad}>
+          <Link href="/pipeline" className="card hover-border" style={linkCardPad}>
             <div className="metric-label">Committed</div>
             <div className="metric-value" style={{ fontSize: 'var(--font-size-xl)', marginTop: 'var(--space-1)', color: (data.pipelineSnapshot.committedCapitalM || 0) > 0 ? 'var(--success)' : 'var(--text-muted)' }}>
               {(data.pipelineSnapshot.committedCapitalM || 0) > 0 ? `€${data.pipelineSnapshot.committedCapitalM}M` : '—'}
@@ -733,7 +733,7 @@ export default function TodayPage() {
             <p style={emptyStateText}>No meetings scheduled today</p>
             <p style={{ ...labelTertiary, marginTop: 'var(--space-1)', lineHeight: 1.5 }}>Use the open calendar to schedule follow-ups with your highest-momentum investors, or work through overdue actions.</p>
             <div className="flex items-center justify-center gap-2" style={{ marginTop: 'var(--space-3)' }}>
-              <Link href="/focus" className="btn btn-primary btn-sm">
+              <Link href="/decide" className="btn btn-primary btn-sm">
                 Schedule high-momentum follow-ups</Link>
               <Link href="/followups" className="btn btn-secondary btn-sm">
                 Clear overdue actions</Link></div></div>
@@ -754,11 +754,11 @@ export default function TodayPage() {
           <div className="card" style={emptyStatePad}>
             <span style={emptyStateIcon}><CheckCircle className="w-8 h-8" style={stTextSecondary} /></span>
             <p style={emptyStateText}>No urgent actions right now</p>
-            <p style={{ ...labelTertiary, marginTop: 'var(--space-1)', lineHeight: 1.5 }}>Good time to advance stalled conversations or prepare materials for upcoming deep dives. Check the{' '}<Link href="/focus" style={{ color: 'var(--accent)', textDecoration: 'none' }}>focus queue</Link>{' '}for investors who need a push.</p>
+            <p style={{ ...labelTertiary, marginTop: 'var(--space-1)', lineHeight: 1.5 }}>Good time to advance stalled conversations or prepare materials for upcoming deep dives. Check the{' '}<Link href="/decide" style={{ color: 'var(--accent)', textDecoration: 'none' }}>focus queue</Link>{' '}for investors who need a push.</p>
             <div className="flex items-center justify-center gap-2" style={{ marginTop: 'var(--space-3)' }}>
               <Link href="/pipeline?sort=momentum" className="btn btn-secondary btn-sm">
                 Review stalled investors</Link>
-              <Link href="/intelligence" className="btn btn-secondary btn-sm">
+              <Link href="/competitive" className="btn btn-secondary btn-sm">
                 Refresh competitive intel</Link></div></div>
         )}</div>
 
@@ -962,7 +962,7 @@ export default function TodayPage() {
             </div>
 
             <Link
-              href="/intelligence"
+              href="/competitive"
               className="btn btn-ghost btn-sm shrink-0 investor-link"
               style={stTextSecondary}>
               See more
