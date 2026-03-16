@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { useToast } from '@/components/toast';
 import { fmtDateTime } from '@/lib/format';
@@ -100,13 +100,15 @@ function enthusiasmColor(enthusiasm: number): string {
   return 'var(--text-primary)';
 }
 
+const TIER_STYLES: Record<number, React.CSSProperties> = {
+  1: { color: 'var(--text-tertiary)', background: 'var(--warning-muted)', borderColor: 'var(--warn-30)' },
+  2: { color: 'var(--accent)', background: 'var(--accent-muted)', borderColor: 'var(--accent-muted)' },
+  3: { color: 'var(--text-secondary)', background: 'var(--white-10)', borderColor: 'var(--border-subtle)' },
+  4: { color: 'var(--text-muted)', background: 'var(--white-10)', borderColor: 'var(--border-subtle)' },
+};
+
 function tierBadgeStyle(tier: number): React.CSSProperties {
-  const styles: Record<number, React.CSSProperties> = {
-    1: { color: 'var(--text-tertiary)', background: 'var(--warning-muted)', borderColor: 'var(--warn-30)' },
-    2: { color: 'var(--accent)', background: 'var(--accent-muted)', borderColor: 'var(--accent-muted)' },
-    3: { color: 'var(--text-secondary)', background: 'var(--white-10)', borderColor: 'var(--border-subtle)' },
-    4: { color: 'var(--text-muted)', background: 'var(--white-10)', borderColor: 'var(--border-subtle)' },};
-  return styles[tier] ?? styles[3];
+  return TIER_STYLES[tier] ?? TIER_STYLES[3];
 }
 
 // ---------------------------------------------------------------------------
@@ -133,7 +135,8 @@ export default function StressTestPage() {
       } else {
         toast('Couldn\'t load stress test data — try refreshing', 'error');
       }
-    } catch {
+    } catch (e) {
+      console.warn('[STRESS_TEST]', e instanceof Error ? e.message : e);
       toast('Couldn\'t load stress test data — try refreshing', 'error');
     } finally {
       setLoading(false);
@@ -177,6 +180,12 @@ export default function StressTestPage() {
             Retry</button></div>
       </div>);
   }
+
+  const forecastByName = useMemo(() => {
+    const m = new Map<string, typeof data.investorForecasts[0]>();
+    for (const f of data.investorForecasts) m.set(f.name, f);
+    return m;
+  }, [data.investorForecasts]);
 
   const visibleInvestors = showAllInvestors
     ? data.investorForecasts
@@ -459,7 +468,7 @@ export default function StressTestPage() {
             ) : (
               <div className="space-y-1.5">
                 {data.criticalPath.minimumViableSet.map((name, i) => {
-                  const investor = data.investorForecasts.find(f => f.name === name);
+                  const investor = forecastByName.get(name);
                   return (
                     <div
                       key={i}

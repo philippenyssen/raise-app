@@ -362,11 +362,11 @@ export default function InvestorDetailPage() {
       try {
         const parsed = JSON.parse(m.objections || '[]');
         parsed.forEach((o: { text: string; severity: string; topic: string }) => { objs.push({ ...o, date: m.date }); });
-      } catch { /* skip */ }
+      } catch (e) { console.warn('[INVESTOR_OBJECTIONS]', e instanceof Error ? e.message : e); }
       try {
         const parsed = JSON.parse(m.questions_asked || '[]');
         parsed.forEach((q: { text: string; topic: string }) => { qs.push({ ...q, date: m.date }); });
-      } catch { /* skip */ }});
+      } catch (e) { console.warn('[INVESTOR_QUESTIONS]', e instanceof Error ? e.message : e); }});
     const trend = [...meetings].sort((a, b) => a.date.localeCompare(b.date)).map(m => ({ date: m.date, score: m.enthusiasm_score }));
     const latest = trend.length > 0 ? trend[trend.length - 1].score : 0;
     return { allObjections: objs, allQuestions: qs, enthusiasmTrend: trend, latestEnthusiasm: latest };

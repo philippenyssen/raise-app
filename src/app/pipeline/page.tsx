@@ -243,7 +243,8 @@ export default function PipelinePage() {
       if (!res.ok) throw new Error('Failed to update');
       invalidateCache('/api/');
       toast(`${investor.name} moved to ${STATUS_LABELS[newStatus as InvestorStatus]}`);
-    } catch {
+    } catch (e) {
+      console.warn('[PIPELINE_DROP]', e instanceof Error ? e.message : e);
       setInvestors(prev =>
         prev.map(i => i.id === id ? { ...i, status: previousStatus } : i));
       toast('Couldn\'t update status — change reverted, try again', 'error');
