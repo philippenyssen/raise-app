@@ -11,7 +11,8 @@ import {
   Columns3, BarChart3, MessageCircleWarning, Target,
   SendHorizonal, Menu, X, LogOut,
   ChevronLeft, ChevronRight, Sun, Flame,
-  Gauge, Compass,
+  Gauge, Compass, Zap, TrendingUp, Swords,
+  ClipboardList, Activity, Thermometer,
 } from 'lucide-react';
 
 interface NavItem {
@@ -32,17 +33,23 @@ const nav: NavItem[] = [
   { href: '/meetings', label: 'Meetings', icon: Calendar, section: 'EXECUTE' },
   { href: '/followups', label: 'Follow-ups', icon: SendHorizonal, section: 'EXECUTE' },
   { href: '/focus', label: 'Focus', icon: Target, section: 'EXECUTE' },
+  { href: '/acceleration', label: 'Acceleration', icon: Zap, section: 'EXECUTE' },
   { href: '/velocity', label: 'Velocity', icon: Gauge, section: 'EXECUTE' },
   // Analysis — understanding what's happening
   { href: '/strategic', label: 'Strategic', icon: Compass, section: 'ANALYZE' },
   { href: '/dealflow', label: 'Dealflow', icon: Flame, section: 'ANALYZE' },
+  { href: '/momentum', label: 'Momentum', icon: TrendingUp, section: 'ANALYZE' },
+  { href: '/deal-heat', label: 'Deal Heat', icon: Thermometer, section: 'ANALYZE' },
   { href: '/forecast', label: 'Forecast', icon: BarChart3, section: 'ANALYZE' },
+  { href: '/competitive', label: 'Competitive', icon: Swords, section: 'ANALYZE' },
   { href: '/objections', label: 'Objections', icon: MessageCircleWarning, section: 'ANALYZE' },
   { href: '/intelligence', label: 'Intelligence', icon: Globe, section: 'ANALYZE' },
   // Tools — materials and configuration
   { href: '/documents', label: 'Documents', icon: BookOpen, section: 'TOOLS' },
   { href: '/data-room', label: 'Data Room', icon: FolderOpen, section: 'TOOLS' },
+  { href: '/reports', label: 'Reports', icon: ClipboardList, section: 'TOOLS' },
   { href: '/terms', label: 'Terms', icon: FileText, section: 'TOOLS' },
+  { href: '/health', label: 'Health', icon: Activity, section: 'TOOLS' },
   { href: '/settings', label: 'Settings', icon: Settings, section: 'TOOLS' },];
 
 /* ── Sidebar-specific palette (dark navy panel on light page) ── */
