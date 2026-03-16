@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
   }
   const { filename, mime_type, base64_content } = body as { filename: string; mime_type: string; base64_content: string };
 
-  if (!base64_content) { return NextResponse.json({ text: '' }); }
+  if (!base64_content) { return NextResponse.json({ error: 'base64_content is required' }, { status: 400 }); }
 
   // Reject files over 10MB (base64 is ~33% larger than raw)
   if (typeof base64_content === 'string' && base64_content.length > 14_000_000) {

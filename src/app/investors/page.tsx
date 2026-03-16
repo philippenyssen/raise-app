@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { cachedFetch, invalidateCache } from '@/lib/cache';
@@ -223,19 +223,20 @@ export default function InvestorsPage() {
       fetchInvestors();
     } finally { setBulkUpdating(false); }}
 
-  function toggleSelect(id: string) {
+  const toggleSelect = useCallback((id: string) => {
     setSelected(prev => {
       const next = new Set(prev);
       if (next.has(id)) next.delete(id); else next.add(id);
       return next;});
-  }
+  }, []);
 
-  function toggleSelectAll() {
+  const toggleSelectAll = useCallback(() => {
     if (selected.size === filtered.length) {
       setSelected(new Set());
     } else {
       setSelected(new Set(filtered.map(i => i.id)));
-    }}
+    }
+  }, [selected.size, filtered]);
 
   if (loading) {
     return (
