@@ -372,7 +372,8 @@ export default function ObjectionsPage() {
                 <MessageCircleWarning className="w-10 h-10 mx-auto" style={{ color: 'var(--border-default)' }} />
                 <p style={stTextMuted}>No objections tracked yet.</p>
                 <p className="text-xs" style={stTextMuted}>
-                  Log meetings with AI analysis enabled to automatically capture investor objections.</p></div>
+                  Log meetings with AI analysis to automatically capture investor concerns and build your response playbook.</p>
+                <Link href="/meetings/capture" className="text-xs mt-1 inline-block" style={{ color: 'var(--accent)', textDecoration: 'none' }}>Log a meeting &rarr;</Link></div>
             ) : (
               playbook.map((group) => {
                 const color = getTopicColor(group.topic);

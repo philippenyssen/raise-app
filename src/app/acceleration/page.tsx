@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { useToast } from '@/components/toast';
 import { STATUS_LABELS, PIPELINE_STATUS_STYLES, MOMENTUM_STYLES, MOMENTUM_LABELS, TRIGGER_STYLES, TRIGGER_LABELS, CONFIDENCE_STYLES, URGENCY_STYLE } from '@/lib/constants';
@@ -369,6 +369,7 @@ export default function AccelerationPage() {
     return (
       <div className="space-y-6 page-content">
         <div className="skeleton" style={{ height: '28px', width: '250px' }} />
+        <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Analyzing pipeline for acceleration opportunities...</p>
         <div className="grid grid-cols-3 gap-3">
           {[1,2,3].map(i => (
             <div key={i} className="skeleton" style={{ height: '80px', borderRadius: 'var(--radius-xl)' }} />
@@ -395,13 +396,22 @@ export default function AccelerationPage() {
       </div>);
   }
 
-  const immediateActions = filterActions(
-    data.accelerations.filter(a => a.urgency === 'immediate'));
-  const thisWeekActions = filterActions(
-    data.accelerations.filter(a => a.urgency === '48h' || a.urgency === 'this_week'));
-  const allFiltered = filterActions(data.accelerations);
-
-  const pendingCount = data.accelerations.filter(a => !executedIds.has(a.id) && !skippedIds.has(a.id)).length;
+  const { immediateActions, thisWeekActions, allFiltered, pendingCount } = useMemo(() => {
+    const immediate: AccelerationItem[] = [];
+    const week: AccelerationItem[] = [];
+    let pending = 0;
+    for (const a of data.accelerations) {
+      if (!executedIds.has(a.id) && !skippedIds.has(a.id)) pending++;
+      if (a.urgency === 'immediate') immediate.push(a);
+      else if (a.urgency === '48h' || a.urgency === 'this_week') week.push(a);
+    }
+    return {
+      immediateActions: filterActions(immediate),
+      thisWeekActions: filterActions(week),
+      allFiltered: filterActions(data.accelerations),
+      pendingCount: pending,
+    };
+  }, [data.accelerations, activeTab, executedIds, skippedIds]);
   const executedCount = executedIds.size;
   const skippedCount = skippedIds.size;
 
@@ -566,8 +576,8 @@ export default function AccelerationPage() {
       {allFiltered.length === 0 && data.termSheetReady.length === 0 && data.atRisk.length === 0 && data.deprioritize.length === 0 && (
         <div className="rounded-xl p-8 text-center space-y-3">
           <CheckCircle className="w-8 h-8 mx-auto" style={stTextSecondary} />
-          <p style={stTextTertiary}>Pipeline is on track — no actions needed right now.</p>
-          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>Acceleration actions appear when investors stall, show high urgency, or are ready for a term sheet push.</p>
+          <p style={stTextTertiary}>No acceleration triggers detected — pipeline is healthy.</p>
+          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>Actions appear when investors stall, show high urgency, or are ready for a term sheet push. Check back after logging new meetings.</p>
         </div>
       )}
 
