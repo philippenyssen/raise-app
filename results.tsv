@@ -670,3 +670,4 @@ db4500e	100	100	0	pass	Workflow+Automation	perf: extract 6 style constants from 
 681	2026-03-16T12:37:45Z	workflow	workflow: context-aware empty state in timeline filter view	100	-	Workflow
 682	2026-03-16T12:38:56Z	copy	copy: clearer model + skills empty states	100	-	Copywriting
 683	2026-03-16T12:40:33Z	ops	ops: validate due_date in tasks POST to prevent invalid dates	100	-	Reliability+Ops
+684	2026-03-16T12:41:58Z	feature	feature: contact decay warning on deal heat cards (14d+ yellow, 21d+ red)	100	-	Competitive

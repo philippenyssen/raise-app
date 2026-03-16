@@ -233,10 +233,12 @@ export default function DealHeatPage() {
                     <div className="flex items-center gap-1" style={labelMuted}>
                       <TrendingUp className="w-3 h-3" />
                       <span>{inv.enthusiasm}/5</span></div>
-                    {inv.lastMeeting && (
-                      <div style={labelMuted}>
-                        {fmtDateShort(inv.lastMeeting)}</div>
-                    )}</div></div>
+                    {inv.lastMeeting && (() => {
+                      const daysSince = Math.floor((Date.now() - new Date(inv.lastMeeting).getTime()) / 864e5);
+                      return daysSince > 14
+                        ? <span style={{ fontSize: 'var(--font-size-xs)', color: daysSince > 21 ? 'var(--danger)' : 'var(--warning)', fontWeight: 400 }}>{daysSince}d ago</span>
+                        : <div style={labelMuted}>{fmtDateShort(inv.lastMeeting)}</div>;
+                    })()}</div></div>
               </Link>);
           })}</div>
       )}
