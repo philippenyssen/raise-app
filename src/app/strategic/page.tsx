@@ -123,6 +123,12 @@ function directionStyle(direction: string): React.CSSProperties {
   return { background: 'var(--surface-2)', color: 'var(--text-tertiary)', borderColor: 'var(--border-default)' };
 }
 
+function trendCardStyle(direction: string): React.CSSProperties {
+  const border = direction === 'improving' ? 'var(--accent-15)' : direction === 'declining' ? 'var(--accent-8)' : 'var(--border-subtle)';
+  const bg = direction === 'improving' ? 'var(--accent-4)' : direction === 'declining' ? 'var(--accent-8)' : 'var(--surface-1)';
+  return { borderRadius: 'var(--radius-md)', padding: 'var(--space-3)', border: `1px solid ${border}`, background: bg };
+}
+
 function confidenceStyle(confidence: string): React.CSSProperties {
   if (confidence === 'high') return { background: 'var(--success-muted)', color: 'var(--text-secondary)', borderColor: 'var(--accent-40)' };
   if (confidence === 'medium') return { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', borderColor: 'var(--warn-40)' };
@@ -287,9 +293,7 @@ export default function StrategicPage() {
       {/* ================================================================ */}
       {/* HEALTH TREND SPARKLINE                                           */}
       {/* ================================================================ */}
-      {data.historicalSnapshots.length >= 2 && (() => {
-        const snapDates = data.historicalSnapshots.map(s => s.date);
-        return (
+      {data.historicalSnapshots.length >= 2 && (
         <div className="card">
           <div className="flex items-center gap-2 mb-4">
             <BarChart3 className="w-4 h-4" style={stAccent} />
@@ -299,19 +303,19 @@ export default function StrategicPage() {
             <SparklineRow
               label="Readiness"
               values={data.historicalSnapshots.map(s => s.readinessScore)}
-              dates={snapDates}
+              dates={data.historicalSnapshots.map(s => s.date)}
               color="success" />
             <SparklineRow
               label="Narrative"
               values={data.historicalSnapshots.map(s => s.narrativeScore)}
-              dates={snapDates}
+              dates={data.historicalSnapshots.map(s => s.date)}
               color="purple" />
             <SparklineRow
               label="Pipeline"
               values={data.historicalSnapshots.map(s => s.pipelineScore)}
-              dates={snapDates}
-              color="accent" /></div></div>);
-      })()}
+              dates={data.historicalSnapshots.map(s => s.date)}
+              color="accent" /></div></div>
+      )}
 
       {/* ================================================================ */}
       {/* TEMPORAL TRENDS (cycle 14)                                        */}
@@ -328,18 +332,7 @@ export default function StrategicPage() {
             {data.temporalTrends.trends.map((trend) => (
               <div
                 key={trend.metric}
-                style={{
-                  borderRadius: 'var(--radius-md)',
-                  padding: 'var(--space-3)',
-                  border: `1px solid ${
-                    trend.direction === 'improving' ? 'var(--accent-15)' :
-                    trend.direction === 'declining' ? 'var(--accent-8)' :
-                    'var(--border-subtle)'
-                  }`,
-                  background:
-                    trend.direction === 'improving' ? 'var(--accent-4)' :
-                    trend.direction === 'declining' ? 'var(--accent-8)' :
-                    'var(--surface-1)', }}>
+                style={trendCardStyle(trend.direction)}>
                 <div className="metric-label" style={mbSpace1}>{trend.metric}</div>
                 <div className="flex items-center gap-1.5">
                   {trend.direction === 'improving' ? (

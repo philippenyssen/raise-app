@@ -88,6 +88,18 @@ const BANNER_TEXT_STYLES: Record<string, React.CSSProperties> = {
   red: { color: 'var(--text-primary)' },
 };
 
+function momentumColor(momentum: string): string {
+  if (momentum === 'accelerating') return 'var(--text-secondary)';
+  if (momentum === 'decelerating') return 'var(--text-tertiary)';
+  if (momentum === 'stalled') return 'var(--text-primary)';
+  return 'var(--text-muted)';
+}
+function enthusiasmColor(enthusiasm: number): string {
+  if (enthusiasm >= 4) return 'var(--text-secondary)';
+  if (enthusiasm >= 3) return 'var(--text-tertiary)';
+  return 'var(--text-primary)';
+}
+
 function tierBadgeStyle(tier: number): React.CSSProperties {
   const styles: Record<number, React.CSSProperties> = {
     1: { color: 'var(--text-tertiary)', background: 'var(--warning-muted)', borderColor: 'var(--warn-30)' },
@@ -329,19 +341,8 @@ export default function StressTestPage() {
                 const MomentumIcon = f.momentum === 'accelerating' ? TrendingUp
                   : f.momentum === 'decelerating' ? TrendingDown
                   : null;
-                const momentumStyle: React.CSSProperties = f.momentum === 'accelerating'
-                  ? { color: 'var(--text-secondary)' }
-                  : f.momentum === 'decelerating'
-                  ? { color: 'var(--text-tertiary)' }
-                  : f.momentum === 'stalled'
-                  ? { color: 'var(--text-primary)' }
-                  : { color: 'var(--text-muted)' };
-
-                const enthStyle: React.CSSProperties = f.enthusiasm >= 4
-                  ? { color: 'var(--text-secondary)' }
-                  : f.enthusiasm >= 3
-                  ? { color: 'var(--text-tertiary)' }
-                  : { color: 'var(--text-primary)' };
+                const mColor = momentumColor(f.momentum);
+                const eColor = enthusiasmColor(f.enthusiasm);
 
                 return (
                   <tr
@@ -359,12 +360,12 @@ export default function StressTestPage() {
                       <span className="text-xs" style={stTextSecondary}>{STATUS_LABELS[f.status] || f.status}</span></td>
                     <td className="px-3 py-2.5 text-center">
                       {f.enthusiasm > 0 ? (
-                        <span className="text-xs font-normal tabular-nums" style={enthStyle}>{f.enthusiasm}/5</span>
+                        <span className="text-xs font-normal tabular-nums" style={{ color: eColor }}>{f.enthusiasm}/5</span>
                       ) : (
                         <span className="text-xs" style={stTextMuted}>--</span>
                       )}</td>
                     <td className="px-3 py-2.5 text-center">
-                      <span className="text-xs flex items-center justify-center gap-1" style={momentumStyle}>
+                      <span className="text-xs flex items-center justify-center gap-1" style={{ color: mColor }}>
                         {MomentumIcon && <MomentumIcon className="w-3 h-3" />}
                         {f.momentum}</span></td>
                     <td className="px-3 py-2.5 text-right">
