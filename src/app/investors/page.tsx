@@ -216,23 +216,26 @@ export default function InvestorsPage() {
     if (bulkUpdating) return;
     setBulkUpdating(true);
     const ids = [...selected];
-    const succeeded: string[] = [];
-    const failed: string[] = [];
-    for (const id of ids) {
-      try {
-        const res = await fetch('/api/investors', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, status: newStatus }) });
-        if (res.ok) succeeded.push(id); else failed.push(id);
-      } catch { failed.push(id); }
-    }
-    if (failed.length === 0) {
-      toast(`Updated ${succeeded.length} investors to ${STATUS_LABELS[newStatus as InvestorStatus] || newStatus}`);
-      setSelected(new Set());
-    } else if (succeeded.length === 0) {
-      toast(`All ${ids.length} updates failed — check your connection and retry`, 'error');
-    } else {
-      const failedNames = failed.map(id => investors.find(i => i.id === id)?.name || id).join(', ');
-      toast(`Updated ${succeeded.length} of ${ids.length} — failed: ${failedNames}`, 'error');
-      setSelected(new Set(failed));
+    try {
+      const res = await fetch('/api/investors/batch-update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ updates: ids.map(investor_id => ({ investor_id, status: newStatus })) }),
+      });
+      const data = await res.json();
+      if (data.summary?.failed === 0) {
+        toast(`Updated ${data.summary.succeeded} investors to ${STATUS_LABELS[newStatus as InvestorStatus] || newStatus}`);
+        setSelected(new Set());
+      } else if (data.summary?.succeeded === 0) {
+        toast(`All ${ids.length} updates failed — check your connection and retry`, 'error');
+      } else {
+        const failedIds = (data.results || []).filter((r: { success: boolean }) => !r.success).map((r: { investor_id: string }) => r.investor_id);
+        const failedNames = failedIds.map((fid: string) => investors.find(i => i.id === fid)?.name || fid).join(', ');
+        toast(`Updated ${data.summary.succeeded} of ${ids.length} — failed: ${failedNames}`, 'error');
+        setSelected(new Set(failedIds));
+      }
+    } catch {
+      toast(`Batch update failed — check your connection and retry`, 'error');
     }
     fetchInvestors();
     setBulkUpdating(false);
