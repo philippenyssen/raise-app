@@ -84,6 +84,11 @@ const STAT_ICON_COLORS: Record<string, string> = {
   amber: 'var(--warning)',
   emerald: 'var(--success)',};
 
+const colHeaderLabel: React.CSSProperties = { ...stFontXs, fontWeight: 400, color: 'var(--text-primary)', letterSpacing: '0.01em' };
+const emptyColPlaceholder: React.CSSProperties = { height: '5rem', color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)', textAlign: 'center', padding: '0 var(--space-2)' };
+const quickAddInputFont: React.CSSProperties = { fontSize: 'var(--font-size-xs)' };
+const quickAddBtn: React.CSSProperties = { width: '100%', padding: 'var(--space-1)', fontSize: 'var(--font-size-xs)', background: 'none', border: 'none', cursor: 'pointer', borderRadius: 'var(--radius-sm)' };
+
 export default function PipelinePage() {
   const router = useRouter();
   const { toast } = useToast();
@@ -461,7 +466,7 @@ export default function PipelinePage() {
                 {/* Column header */}
                 <div style={{ padding: 'var(--space-2) var(--space-3)', borderTopLeftRadius: 'var(--radius-xl)', borderTopRightRadius: 'var(--radius-xl)', ...colors.header }}>
                   <div className="flex items-center justify-between">
-                    <span style={{ ...stFontXs, fontWeight: 400, color: 'var(--text-primary)', letterSpacing: '0.01em' }}>{STATUS_LABELS[status]}</span>
+                    <span style={colHeaderLabel}>{STATUS_LABELS[status]}</span>
                     <div className="flex items-center gap-1.5">
                       {cards.length > 0 && (() => { const activePct = Math.round((cards.filter(i => (Date.now() - new Date(i.updated_at).getTime()) < 7 * 864e5).length / cards.length) * 100); return <span title={`${activePct}% active in last 7 days`} style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: activePct >= 70 ? 'var(--success)' : activePct >= 40 ? 'var(--warning)' : 'var(--text-muted)' }}>{activePct}%</span>; })()}
                       <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 300, padding: 'var(--space-0) var(--space-1)', borderRadius: 'var(--radius-full)', ...colors.badge }}>{cards.length}</span>
@@ -485,17 +490,17 @@ export default function PipelinePage() {
                   {cards.length === 0 && !quickAddCol && (
                     <div
                       className="flex items-center justify-center"
-                      style={{ height: '5rem', color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)', textAlign: 'center', padding: '0 var(--space-2)' }}>
+                      style={emptyColPlaceholder}>
                       {dragId ? 'Drop here'
                         : status === 'identified' ? 'Add investors from the table view'
                         : status === 'closed' ? 'Move investors here when signed'
                         : 'Move investors from earlier stages'}</div>
                   )}
                   {quickAddCol === status ? (
-                    <input autoFocus value={quickAddName} onChange={e => setQuickAddName(e.target.value)} placeholder="Investor name..." className="input" style={{ fontSize: 'var(--font-size-xs)' }}
+                    <input autoFocus value={quickAddName} onChange={e => setQuickAddName(e.target.value)} placeholder="Investor name..." className="input" style={quickAddInputFont}
                       onKeyDown={async e => { if (e.key === 'Enter' && quickAddName.trim()) { try { const res = await fetch('/api/investors', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: quickAddName.trim(), status }) }); if (!res.ok) throw new Error('Failed'); const inv = await res.json(); setInvestors(prev => [...prev, inv]); setQuickAddName(''); setQuickAddCol(null); toast(`Added ${inv.name}`); } catch { toast('Couldn\'t add investor — try again', 'error'); } } if (e.key === 'Escape') { setQuickAddCol(null); setQuickAddName(''); } }} onBlur={() => { if (!quickAddName.trim()) { setQuickAddCol(null); setQuickAddName(''); } }} />
                   ) : (
-                    <button onClick={() => { setQuickAddCol(status); setQuickAddName(''); }} className="icon-delete" style={{ width: '100%', padding: 'var(--space-1)', fontSize: 'var(--font-size-xs)', background: 'none', border: 'none', cursor: 'pointer', borderRadius: 'var(--radius-sm)' }}>+ Add</button>
+                    <button onClick={() => { setQuickAddCol(status); setQuickAddName(''); }} className="icon-delete" style={quickAddBtn}>+ Add</button>
                   )}</div>
               </div>);
           })}</div></div>

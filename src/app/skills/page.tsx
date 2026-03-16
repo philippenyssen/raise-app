@@ -38,6 +38,7 @@ interface SkillExecution {
 
 const execRowBg: React.CSSProperties = { backgroundColor: 'var(--surface-1)' };
 const execFieldSpan: React.CSSProperties = { color: 'var(--text-muted)', minWidth: '80px' };
+const progressTrackBg: React.CSSProperties = { backgroundColor: 'var(--surface-2)' };
 
 function outcomeStyle(outcome: string): React.CSSProperties {
   const color = outcome === 'success' ? 'var(--success)' : outcome === 'partial' ? 'var(--warning)' : 'var(--danger)';
@@ -186,7 +187,7 @@ export default function SkillsPage() {
                         parse: {skill.parse_success_rate}%</span></div></div>
 
                   {/* Mini progress bar */}
-                  <div className="mt-2 h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--surface-2)' }}>
+                  <div className="mt-2 h-1.5 rounded-full overflow-hidden" style={progressTrackBg}>
                     <div
                       className="h-full rounded-full"
                       style={{
