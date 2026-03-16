@@ -12,6 +12,10 @@ import { fmtDateTime } from '@/lib/format';
 const textSmMuted = { fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' } as const;
 const textSmTertiary = { fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' } as const;
 const textSmPrimary400 = { fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400 } as const;
+const textBaseNormal = { fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' } as const;
+const cardPad4 = { padding: 'var(--space-4)' } as const;
+const textSmSecNormal = { fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', fontWeight: 400 } as const;
+const mbSpace3 = { marginBottom: 'var(--space-3)' } as const;
 
 // ── Types ─────────────────────────────────────────────────────────────
 
@@ -186,10 +190,10 @@ export default function WinLossPage() {
         ))}</div>
 
       {/* Funnel Visualization */}
-      <div className="card" style={{ padding: 'var(--space-4)' }}>
+      <div className="card" style={cardPad4}>
         <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-4)' }}>
           <span style={stAccent}><BarChart3 className="w-4 h-4" /></span>
-          <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
+          <h2 style={textBaseNormal}>
             Conversion Funnel</h2></div>
         <div className="space-y-2">
           {funnel.map((stage, i) => {
@@ -203,7 +207,7 @@ export default function WinLossPage() {
                   <div className="flex items-center gap-2">
                     <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, minWidth: '120px' }}>
                       {stage.stage}</span>
-                    <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', fontWeight: 400 }}>
+                    <span style={textSmSecNormal}>
                       {stage.count}</span></div>
                   <div className="flex items-center gap-3">
                     {i > 0 && (
@@ -246,10 +250,10 @@ export default function WinLossPage() {
         {/* Winner Profile */}
         <div
           className="card"
-          style={{ padding: 'var(--space-4)' }}>
-          <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
+          style={cardPad4}>
+          <div className="flex items-center gap-2" style={mbSpace3}>
             <span style={stTextSecondary}><CheckCircle className="w-4 h-4" /></span>
-            <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
+            <h2 style={textBaseNormal}>
               Winner Profile</h2>
             <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginLeft: 'auto' }}>
               {summary.closed} investors</span></div>
@@ -276,10 +280,10 @@ export default function WinLossPage() {
         {/* Loser Profile */}
         <div
           className="card"
-          style={{ padding: 'var(--space-4)' }}>
-          <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
+          style={cardPad4}>
+          <div className="flex items-center gap-2" style={mbSpace3}>
             <span style={stTextPrimary}><XCircle className="w-4 h-4" /></span>
-            <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
+            <h2 style={textBaseNormal}>
               Passer Profile</h2>
             <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginLeft: 'auto' }}>
               {summary.passed} investors</span></div>
@@ -306,10 +310,10 @@ export default function WinLossPage() {
       {/* Pass Reasons + Key Predictors Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Pass Reasons */}
-        <div className="card" style={{ padding: 'var(--space-4)' }}>
-          <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
+        <div className="card" style={cardPad4}>
+          <div className="flex items-center gap-2" style={mbSpace3}>
             <span style={stTextTertiary}><AlertTriangle className="w-4 h-4" /></span>
-            <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
+            <h2 style={textBaseNormal}>
               Pass Reasons</h2></div>
           {passReasons.length > 0 ? (
             <div className="space-y-2">
@@ -343,10 +347,10 @@ export default function WinLossPage() {
           )}</div>
 
         {/* Key Predictors */}
-        <div className="card" style={{ padding: 'var(--space-4)' }}>
-          <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
+        <div className="card" style={cardPad4}>
+          <div className="flex items-center gap-2" style={mbSpace3}>
             <span style={stAccent}><Target className="w-4 h-4" /></span>
-            <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
+            <h2 style={textBaseNormal}>
               Key Predictors</h2></div>
           <div className="space-y-3">
             {predictors.map((p, i) => (
@@ -372,10 +376,10 @@ export default function WinLossPage() {
 
       {/* Distinguishing Factors */}
       {patterns.distinguishingFactors.length > 0 && (
-        <div className="card" style={{ padding: 'var(--space-4)' }}>
-          <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
+        <div className="card" style={cardPad4}>
+          <div className="flex items-center gap-2" style={mbSpace3}>
             <span style={stAccent}><TrendingUp className="w-4 h-4" /></span>
-            <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
+            <h2 style={textBaseNormal}>
               Distinguishing Factors</h2>
             <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginLeft: 'auto' }}>
               Winners vs Passers</span></div>
@@ -422,10 +426,10 @@ export default function WinLossPage() {
       {/* Time Analysis + Investor Type Performance */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Time Analysis */}
-        <div className="card" style={{ padding: 'var(--space-4)' }}>
-          <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
+        <div className="card" style={cardPad4}>
+          <div className="flex items-center gap-2" style={mbSpace3}>
             <span style={stAccent}><Clock className="w-4 h-4" /></span>
-            <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
+            <h2 style={textBaseNormal}>
               Time Analysis</h2></div>
           <div className="space-y-3">
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-3)' }}>
@@ -447,7 +451,7 @@ export default function WinLossPage() {
               <div className="flex items-center justify-between">
                 <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
                   Avg Meetings (Winners)</span>
-                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', fontWeight: 400 }}>
+                <span style={textSmSecNormal}>
                   {summary.avgClosedMeetings}</span></div>
               <div className="flex items-center justify-between" style={{ marginTop: 'var(--space-1)' }}>
                 <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
@@ -457,7 +461,7 @@ export default function WinLossPage() {
               <div className="flex items-center justify-between" style={{ marginTop: 'var(--space-1)' }}>
                 <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
                   Avg Enthusiasm (Winners)</span>
-                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', fontWeight: 400 }}>
+                <span style={textSmSecNormal}>
                   {summary.avgClosedEnthusiasm}/5</span></div>
               <div className="flex items-center justify-between" style={{ marginTop: 'var(--space-1)' }}>
                 <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
@@ -466,10 +470,10 @@ export default function WinLossPage() {
                   {summary.avgPassedEnthusiasm}/5</span></div></div></div></div>
 
         {/* Investor Type Performance */}
-        <div className="card" style={{ padding: 'var(--space-4)' }}>
-          <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
+        <div className="card" style={cardPad4}>
+          <div className="flex items-center gap-2" style={mbSpace3}>
             <span style={stAccent}><Users className="w-4 h-4" /></span>
-            <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
+            <h2 style={textBaseNormal}>
               Performance by Type</h2></div>
           {typePerformance.length > 0 ? (
             <div className="space-y-2">
@@ -507,10 +511,10 @@ export default function WinLossPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Insights from patterns */}
         {patterns.insights.length > 0 && (
-          <div className="card" style={{ padding: 'var(--space-4)' }}>
-            <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
+          <div className="card" style={cardPad4}>
+            <div className="flex items-center gap-2" style={mbSpace3}>
               <span style={stAccent}><TrendingDown className="w-4 h-4" /></span>
-              <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
+              <h2 style={textBaseNormal}>
                 Pattern Insights</h2></div>
             <div className="space-y-2">
               {patterns.insights.map((insight, i) => (
@@ -527,10 +531,10 @@ export default function WinLossPage() {
         )}
 
         {/* Recommendations */}
-        <div className="card" style={{ padding: 'var(--space-4)' }}>
-          <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
+        <div className="card" style={cardPad4}>
+          <div className="flex items-center gap-2" style={mbSpace3}>
             <span style={stTextTertiary}><Lightbulb className="w-4 h-4" /></span>
-            <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' }}>
+            <h2 style={textBaseNormal}>
               Recommendations</h2></div>
           {recommendations.length > 0 ? (
             <div className="space-y-2">

@@ -15,6 +15,8 @@ import FollowupPlan from '@/components/followup-plan';
 import { useToast } from '@/components/toast';
 import { labelMuted, stAccent, stFontSm, stTextSecondary } from '@/lib/styles';
 
+const fontSmSec = { fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' } as const;
+
 const ENTHUSIASM_LABELS = ['Cold', 'Lukewarm', 'Interested', 'Excited', 'All-in'];
 
 const AI_THINKING_MESSAGES = [
@@ -195,7 +197,7 @@ function QuickCaptureInner() {
                       transition: 'all 150ms ease',
                     }} />
                   ))}</div>
-                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
+                <span style={fontSmSec}>
                   {(result.enthusiasm_score as number) || 0}/5</span></div></div>
             <div className="card">
               <p className="section-title" style={{ marginBottom: 'var(--space-2)' }}>Suggested Status</p>
@@ -212,7 +214,7 @@ function QuickCaptureInner() {
                 {questions.map((q: { text: string; topic: string }, i: number) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--space-2)' }}>
                     <span className="badge badge-zinc" style={{ flexShrink: 0, marginTop: '2px' }}>{q.topic}</span>
-                    <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>{q.text}</span></div>
+                    <span style={fontSmSec}>{q.text}</span></div>
                 ))}</div></div>
           )}
 
@@ -228,7 +230,7 @@ function QuickCaptureInner() {
                     <span className={`badge ${o.severity === 'showstopper' ? 'badge-red' : o.severity === 'significant' ? 'badge-amber' : 'badge-zinc'}`}
                       style={{ flexShrink: 0, marginTop: '2px' }}>
                       {o.severity}</span>
-                    <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>{o.text}</span></div>
+                    <span style={fontSmSec}>{o.text}</span></div>
                 ))}</div></div>
           )}
 
@@ -242,31 +244,31 @@ function QuickCaptureInner() {
                 {engagementSignals.asked_about_process !== undefined && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
                     <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: engagementSignals.asked_about_process ? 'var(--success)' : 'var(--border-default)' }} />
-                    <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>Asked about process</span>
+                    <span style={fontSmSec}>Asked about process</span>
                   </div>
                 )}
                 {engagementSignals.asked_about_timeline !== undefined && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
                     <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: engagementSignals.asked_about_timeline ? 'var(--success)' : 'var(--border-default)' }} />
-                    <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>Asked about timeline</span>
+                    <span style={fontSmSec}>Asked about timeline</span>
                   </div>
                 )}
                 {engagementSignals.requested_followup !== undefined && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
                     <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: engagementSignals.requested_followup ? 'var(--success)' : 'var(--border-default)' }} />
-                    <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>Requested follow-up</span>
+                    <span style={fontSmSec}>Requested follow-up</span>
                   </div>
                 )}
                 {engagementSignals.mentioned_competitors !== undefined && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
                     <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: engagementSignals.mentioned_competitors ? 'var(--warning)' : 'var(--border-default)' }} />
-                    <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>Mentioned competitors</span>
+                    <span style={fontSmSec}>Mentioned competitors</span>
                   </div>
                 )}
                 {engagementSignals.body_language_at_pricing && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
                     <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: engagementSignals.body_language_at_pricing === 'positive' ? 'var(--success)' : engagementSignals.body_language_at_pricing === 'negative' ? 'var(--danger)' : 'var(--warning)' }} />
-                    <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
+                    <span style={fontSmSec}>
                       Pricing reaction: {engagementSignals.body_language_at_pricing}</span></div>
                 )}</div></div>
           )}
@@ -364,15 +366,15 @@ function QuickCaptureInner() {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 'var(--space-2)' }}>
               <div>
                 <span style={labelMuted}>Partner</span>
-                <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>{selectedInvestor.partner || '—'}</p>
+                <p style={fontSmSec}>{selectedInvestor.partner || '—'}</p>
               </div>
               <div>
                 <span style={labelMuted}>Check Size</span>
-                <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>{selectedInvestor.check_size_range || '—'}</p>
+                <p style={fontSmSec}>{selectedInvestor.check_size_range || '—'}</p>
               </div>
               <div>
                 <span style={labelMuted}>Status</span>
-                <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>{selectedInvestor.status.replace(/_/g, ' ')}</p>
+                <p style={fontSmSec}>{selectedInvestor.status.replace(/_/g, ' ')}</p>
               </div></div></div>
         )}
 

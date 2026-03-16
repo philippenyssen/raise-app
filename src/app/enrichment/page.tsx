@@ -12,6 +12,8 @@ import { useToast } from '@/components/toast';
 import { fmtDateTime } from '@/lib/format';
 import { labelMuted, labelTertiary, stFontSm, stFontXs, stTextMuted } from '@/lib/styles';
 
+const flexCenterGap2 = { display: 'flex', alignItems: 'center', gap: 'var(--space-2)' } as const;
+
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
@@ -238,7 +240,7 @@ export default function EnrichmentPage() {
           background: lastResult.status === 'completed' ? 'var(--success-muted)' : lastResult.status === 'partial' ? 'var(--warning-muted)' : 'var(--danger-muted)',
           padding: 'var(--space-3) var(--space-4)',}}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+            <div style={flexCenterGap2}>
               {lastResult.status === 'completed' ? <CheckCircle2 style={{ width: '16px', height: '16px', color: 'var(--text-secondary)' }} /> :
                lastResult.status === 'partial' ? <AlertTriangle style={{ width: '16px', height: '16px', color: 'var(--text-tertiary)' }} /> :
                <XCircle style={{ width: '16px', height: '16px', color: 'var(--text-primary)' }} />}
@@ -323,7 +325,7 @@ export default function EnrichmentPage() {
                       style={{ accentColor: 'var(--accent)' }}
                       disabled={!provider.configured} />
                     <div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+                      <div style={flexCenterGap2}>
                         <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
                           {provider.name}</span>
                         <span style={{
@@ -341,7 +343,7 @@ export default function EnrichmentPage() {
                         )}</div>
                       <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '2px' }}>
                         {provider.description.slice(0, 120)}{provider.description.length > 120 ? '...' : ''}</p></div></div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+                  <div style={flexCenterGap2}>
                     <div style={{ display: 'flex', gap: 'var(--space-1)' }}>
                       {provider.fields_provided.map(f => {
                         const Icon = CATEGORY_ICONS[f] || Globe;
