@@ -654,3 +654,4 @@ db4500e	100	100	0	pass	Workflow+Automation	perf: extract 6 style constants from 
 665	2026-03-16T12:07:12Z	fix	fix: React error #310 — moved useMemo before early returns in today/focus/fomo	100	10c78e2	Performance+Stability
 666	2026-03-16T12:10:36Z	perf	perf: extract inline IIFE from pipeline kanban column headers	100	-	Product+Performance
 667	2026-03-16T12:12:55Z	ux	ux: objection topic hover feedback + pipeline active filter ring	100	-	Design+UX
+668	2026-03-16T12:14:51Z	fix	fix: stale closure in stress-test keyboard handler	100	-	Engineering
