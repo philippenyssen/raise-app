@@ -358,7 +358,8 @@ export default function TodayPage() {
       } else {
         if (!silent) toast('Couldn\'t load today\'s briefing — try refreshing', 'error');
       }
-    } catch {
+    } catch (e) {
+      console.warn('[TODAY_BRIEFING]', e instanceof Error ? e.message : e);
       if (!silent) toast('Couldn\'t load today\'s briefing — try refreshing', 'error');
     }
 
@@ -399,8 +400,8 @@ export default function TodayPage() {
           return f.status === 'pending' && dueDate && dueDate <= today;});
         setDueFollowups(due);
       }
-    } catch {
-      // Non-blocking
+    } catch (e) {
+      console.warn('[TODAY_SECONDARY]', e instanceof Error ? e.message : e);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -442,7 +443,8 @@ export default function TodayPage() {
       if (!res.ok) throw new Error('Server error');
       setDueFollowups(prev => prev.filter(f => f.id !== id));
       toast('Follow-up completed — engagement data updated', 'success');
-    } catch {
+    } catch (e) {
+      console.warn('[TODAY_COMPLETE]', e instanceof Error ? e.message : e);
       toast('Couldn\'t complete follow-up — try again', 'error');
     }
     setCompletingFollowupId(null);
@@ -458,7 +460,8 @@ export default function TodayPage() {
       if (!res.ok) throw new Error('Server error');
       setDueFollowups(prev => prev.filter(f => f.id !== id));
       toast('Follow-up skipped', 'success');
-    } catch {
+    } catch (e) {
+      console.warn('[TODAY_SKIP]', e instanceof Error ? e.message : e);
       toast('Couldn\'t skip follow-up — try again', 'error');
     }
     setCompletingFollowupId(null);

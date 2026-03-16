@@ -47,7 +47,8 @@ export default function WorkspacePage() {
       const res = await cachedFetch('/api/documents');
       if (!res.ok) throw new Error(`Failed (${res.status})`);
       setDocs(await res.json());
-    } catch {
+    } catch (e) {
+      console.warn('[WORKSPACE_FETCH]', e instanceof Error ? e.message : e);
       toast('Couldn\'t load documents — try refreshing the page', 'error');
     } finally {
       setLoading(false);
@@ -80,7 +81,8 @@ export default function WorkspacePage() {
           setSelectedDoc({ ...doc, content: '' });
           setEditedContent('');
         }
-      } catch {
+      } catch (e) {
+        console.warn('[WORKSPACE_DOC]', e instanceof Error ? e.message : e);
         setSelectedDoc({ ...doc, content: '' });
         setEditedContent('');
       }
@@ -117,7 +119,8 @@ export default function WorkspacePage() {
       setDirty(false);
       toast('Document saved');
       fetchDocs();
-    } catch {
+    } catch (e) {
+      console.warn('[WORKSPACE_SAVE]', e instanceof Error ? e.message : e);
       toast('Couldn\'t save document — try again', 'error');
     } finally {
       setSaving(false);
@@ -159,7 +162,8 @@ export default function WorkspacePage() {
           const generated = allDocs.find((d: Doc) => d.type === type);
           if (generated) selectDoc(generated);
         }}
-    } catch {
+    } catch (e) {
+      console.warn('[WORKSPACE_GENERATE]', e instanceof Error ? e.message : e);
       toast('Couldn\'t generate deliverable — check your API key and retry', 'error');
     } finally {
       setGenerating(null);
