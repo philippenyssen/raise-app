@@ -20,6 +20,10 @@ const sectionHeading = { fontSize: 'var(--font-size-base)', fontWeight: 400, col
 const filterTabBase: React.CSSProperties = { padding: 'var(--space-1) var(--space-2)', borderRadius: 'var(--radius-sm)', fontSize: 'var(--font-size-xs)', fontWeight: 400, border: 'none', cursor: 'pointer' };
 const triggerBadge = { fontSize: 'var(--font-size-xs)', padding: 'var(--space-0) var(--space-2)', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-secondary)' } as const;
 const targetBadge: React.CSSProperties = { ...stFontXs, padding: 'var(--space-0) var(--space-1)', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-tertiary)' };
+const filterTabActive: React.CSSProperties = { ...filterTabBase, background: 'var(--surface-3)', color: 'var(--text-primary)' };
+const filterTabInactive: React.CSSProperties = { ...filterTabBase, background: 'transparent', color: 'var(--text-muted)' };
+const pressureCardStyle: React.CSSProperties = { padding: 'var(--space-4)', background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)', transition: 'all 150ms ease', cursor: 'pointer' };
+const eventCardStyle: React.CSSProperties = { padding: 'var(--space-3)', background: 'var(--surface-1)', borderRadius: 'var(--radius-md)', transition: 'all 150ms ease' };
 
 // ---------------------------------------------------------------------------
 // Types
@@ -203,7 +207,7 @@ function PressureCard({ inv }: { inv: InvestorFomo }) {
   return (
     <div
       className="transition-colors hover-row"
-      style={{ padding: 'var(--space-4)', background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)', transition: 'all 150ms ease', cursor: 'pointer' }}
+      style={pressureCardStyle}
       onClick={() => setExpanded(!expanded)}>
       {/* Header row */}
       <div className="flex items-center gap-3">
@@ -293,7 +297,7 @@ function TriggerEventCard({ event }: { event: TriggerEvent }) {
   return (
     <div
       className="transition-colors hover-row"
-      style={{ padding: 'var(--space-3)', background: 'var(--surface-1)', borderRadius: 'var(--radius-md)', transition: 'all 150ms ease' }}>
+      style={eventCardStyle}>
       <div className="flex items-start gap-3">
         <span className="flex items-center justify-center shrink-0" style={{ width: '28px', height: '28px', borderRadius: 'var(--radius-sm)', ...(IMPACT_STYLES[event.impactLevel] ?? IMPACT_STYLES.low) }}>
           <Icon className="w-3.5 h-3.5" /></span>
@@ -470,7 +474,7 @@ export default function FomoPage() {
                     key={tab.key}
                     className={filterIntensity !== tab.key ? 'hover-filter-tab' : ''}
                     onClick={() => setFilterIntensity(tab.key)}
-                    style={{ ...filterTabBase, background: filterIntensity === tab.key ? 'var(--surface-3)' : 'transparent', color: filterIntensity === tab.key ? 'var(--text-primary)' : 'var(--text-muted)' }}>
+                    style={filterIntensity === tab.key ? filterTabActive : filterTabInactive}>
                     {tab.label} ({tab.count})</button>
                 ))}</div></div>
 
