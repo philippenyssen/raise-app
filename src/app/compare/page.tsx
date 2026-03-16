@@ -13,6 +13,11 @@ import Link from 'next/link';
 import { STATUS_LABELS, TYPE_LABELS, MEETING_TYPE_LABELS } from '@/lib/constants';
 import { labelMuted, labelMuted10, stAccent, stFontSm, stFontXs, stSurface1, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
+const compareCellBase: React.CSSProperties = { padding: 'var(--space-3) var(--space-4)', fontSize: 'var(--font-size-sm)', ...stTextSecondary };
+const compareThBase = { padding: 'var(--space-3) var(--space-4)', minWidth: 200 } as const;
+const stickyLabelStyle: React.CSSProperties = { padding: 'var(--space-3) var(--space-4)', ...labelMuted, fontWeight: 400, background: 'var(--surface-0)', borderRight: '1px solid var(--border-subtle)' };
+const heatCounterStyle = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '2px' } as const;
+
 const cellPad34 = { padding: 'var(--space-3) var(--space-4)' } as const;
 const meetingTypeBadge = { fontSize: 'var(--font-size-xs)', background: 'var(--surface-2)', color: 'var(--text-muted)', padding: '1px 6px', borderRadius: 'var(--radius-sm)' } as const;
 
@@ -359,7 +364,7 @@ export default function ComparePage() {
                         borderRight: '1px solid var(--border-subtle)', }}>
                       Metric</th>
                     {compareData.profiles.map(p => (
-                      <th key={p.investor.id} className="text-left" style={{ padding: 'var(--space-3) var(--space-4)', minWidth: 200 }}>
+                      <th key={p.investor.id} className="text-left" style={compareThBase}>
                         <div className="flex items-center gap-2">
                           <InvestorNameLink investor={p.investor} />
                           {p.investor.id === winnerId && (
@@ -722,7 +727,7 @@ function TableRow({ children }: { children: React.ReactNode }) {
 
 function StickyLabel({ children }: { children: React.ReactNode }) {
   return (
-    <td className="sticky left-0" style={{ padding: 'var(--space-3) var(--space-4)', ...labelMuted, fontWeight: 400, background: 'var(--surface-0)', borderRight: '1px solid var(--border-subtle)' }}>
+    <td className="sticky left-0" style={stickyLabelStyle}>
       {children}
     </td>);
 }
@@ -734,7 +739,7 @@ function CompareRow({ label, cells }: { label: string; cells: CellData[] }) {
     <tr className="table-row">
       <StickyLabel>{label}</StickyLabel>
       {cells.map((cell, i) => (
-        <td key={i} className={cell.wrap ? 'max-w-[220px]' : ''} style={{ padding: 'var(--space-3) var(--space-4)', fontSize: 'var(--font-size-sm)', ...stTextSecondary, ...cell.style }}>
+        <td key={i} className={cell.wrap ? 'max-w-[220px]' : ''} style={cell.style ? { ...compareCellBase, ...cell.style } : compareCellBase}>
           {cell.render ?? (
             <span className={cell.wrap ? 'line-clamp-3' : ''}>{cell.value}</span>
           )}</td>

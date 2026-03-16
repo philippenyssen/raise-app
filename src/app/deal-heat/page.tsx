@@ -30,6 +30,7 @@ const tierLabel: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color:
 const driverStyle: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' };
 const filterBtnBase: React.CSSProperties = { padding: 'var(--space-1) var(--space-3)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-sm)', fontWeight: 400, cursor: 'pointer', transition: 'all 150ms ease' };
 const countHidden: React.CSSProperties = { fontSize: 'var(--font-size-xs)', opacity: 0 };
+const heatCountLabel = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '2px' } as const;
 
 const HEAT_CONFIG: Record<string, { bg: string; border: string; text: string; glow: string; label: string }> = {
   hot:    { bg: 'var(--accent-8)', border: 'var(--accent-15)',  text: 'var(--text-primary)', glow: 'none', label: 'Hot' },
@@ -149,7 +150,7 @@ export default function DealHeatPage() {
                 {cfg.label}</div>
               <div style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 300, color: cfg.text, marginTop: 'var(--space-1)' }}>
                 {count}</div>
-              <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '2px' }}>
+              <div style={heatCountLabel}>
                 {count === 1 ? 'investor' : 'investors'}</div>
             </div>);
         })}</div>
