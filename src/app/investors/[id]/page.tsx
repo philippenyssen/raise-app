@@ -139,6 +139,30 @@ export default function InvestorDetailPage() {
     name: string; partner: string; tier: number; status: string;
     check_size_range: string; sector_thesis: string; notes: string;
   }>({ name: '', partner: '', tier: 1, status: 'identified', check_size_range: '', sector_thesis: '', notes: '' });
+  const [composing, setComposing] = useState(false);
+  const [composeType, setComposeType] = useState<string>('follow_up');
+  const [composeDraft, setComposeDraft] = useState<{ subject: string; body: string; tone: string; callToAction: string } | null>(null);
+
+  const handleCompose = useCallback(async (type?: string) => {
+    setComposing(true);
+    setComposeDraft(null);
+    const msgType = type || composeType;
+    setComposeType(msgType);
+    try {
+      const res = await fetch('/api/compose', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ investorId: id, messageType: msgType }),
+      });
+      if (!res.ok) throw new Error(`${res.status}`);
+      const data = await res.json();
+      setComposeDraft(data.draft);
+    } catch (e) {
+      toast('Failed to generate draft — check AI configuration', 'error');
+      console.warn('[COMPOSE]', e instanceof Error ? e.message : e);
+    }
+    setComposing(false);
+  }, [id, composeType, toast]);
 
   const fetchScore = useCallback(async () => {
     setScoreLoading(true);
@@ -514,6 +538,13 @@ export default function InvestorDetailPage() {
               color: researching ? 'var(--text-muted)' : 'var(--text-primary)', }}>
             {researching ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Researching...</> : <><RefreshCw className="w-3.5 h-3.5" /> Research</>}
           </button>
+          <button
+            onClick={() => handleCompose('follow_up')}
+            disabled={composing}
+            className="px-3 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2 btn-surface"
+            style={{ ...stSurface2, ...textPrimary }}>
+            {composing ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Composing...</> : <><SendHorizonal className="w-3.5 h-3.5" /> Compose</>}
+          </button>
           <Link
             href="/pipeline"
             className="px-3 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2 btn-surface"
@@ -564,6 +595,76 @@ export default function InvestorDetailPage() {
                   <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', lineHeight: 1.5 }}>{s}</span></div>
               ))}</div></div>);
       })()}
+
+      {/* Compose Panel */}
+      {(composeDraft || composing) && (
+        <div style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)', border: '1px solid var(--border-subtle)' }}>
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <span style={{ color: 'var(--accent)' }}><SendHorizonal className="w-4 h-4" /></span>
+              <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
+                AI Draft</h3>
+              <select
+                value={composeType}
+                onChange={e => handleCompose(e.target.value)}
+                aria-label="Message type"
+                className="input"
+                style={{ ...selectCompact, background: 'var(--surface-2)' }}>
+                <option value="follow_up">Follow-up</option>
+                <option value="meeting_request">Meeting request</option>
+                <option value="materials_share">Share materials</option>
+                <option value="objection_response">Address objection</option>
+                <option value="status_update">Status update</option>
+              </select>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => handleCompose()}
+                disabled={composing}
+                className="btn btn-secondary btn-sm flex items-center gap-1">
+                {composing ? <Loader2 className="w-3 h-3 animate-spin" /> : <RefreshCw className="w-3 h-3" />}
+                Regenerate</button>
+              <button
+                onClick={() => { setComposeDraft(null); }}
+                className="btn btn-ghost btn-sm">
+                <X className="w-3 h-3" /></button>
+            </div>
+          </div>
+
+          {composing && !composeDraft && (
+            <div className="flex items-center gap-3 py-6 justify-center">
+              <Loader2 className="w-4 h-4 animate-spin" style={{ color: 'var(--accent)' }} />
+              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
+                Generating context-aware draft...</span>
+            </div>
+          )}
+
+          {composeDraft && (
+            <div className="space-y-3">
+              <div>
+                <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-1)' }}>Subject</div>
+                <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', background: 'var(--surface-0)', borderRadius: 'var(--radius-md)', padding: 'var(--space-2) var(--space-3)' }}>
+                  {composeDraft.subject}</div>
+              </div>
+              <div>
+                <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-1)' }}>Body</div>
+                <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', background: 'var(--surface-0)', borderRadius: 'var(--radius-md)', padding: 'var(--space-3) var(--space-4)', whiteSpace: 'pre-wrap', lineHeight: 1.7 }}>
+                  {composeDraft.body}</div>
+              </div>
+              <div className="flex items-center gap-4 pt-1">
+                <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                  Tone: <span style={{ color: 'var(--text-tertiary)', fontWeight: 400 }}>{composeDraft.tone}</span></span>
+                <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                  CTA: <span style={{ color: 'var(--text-tertiary)', fontWeight: 400 }}>{composeDraft.callToAction}</span></span>
+                <button
+                  onClick={() => { navigator.clipboard.writeText(`Subject: ${composeDraft.subject}\n\n${composeDraft.body}`); toast('Copied to clipboard'); }}
+                  className="ml-auto btn btn-secondary btn-sm flex items-center gap-1">
+                  <ClipboardList className="w-3 h-3" /> Copy</button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Data Quality Banner */}
       {investor && (() => {
