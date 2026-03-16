@@ -669,6 +669,11 @@ export default function Dashboard() {
             <SectionError label="Pipeline velocity" onRetry={() => fetchSection('velocity')} />
           ) : null)}
 
+          {/* ── Detail Sections ───────────────────────────────── */}
+          {!focusMode && (bottlenecks?.summary?.totalStuck || atRisk || cp) && (
+            <div className="section-divider" />
+          )}
+
           {/* Pipeline Bottlenecks — where investors are stuck */}
           {!focusMode && bottlenecks && bottlenecks.summary.totalStuck > 0 && (
             <div style={{ ...cardPadding, borderLeft: '3px solid var(--warning)' }}>
@@ -974,7 +979,7 @@ export default function Dashboard() {
           )}
 
           {/* Hot Deals + Follow-ups */}
-          {!focusMode && <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {!focusMode && <><div className="section-divider" /><div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div style={cardPadding}>
               <div className="flex items-center justify-between mb-3">
                 <h2 className="section-title flex items-center gap-2">
@@ -1020,7 +1025,7 @@ export default function Dashboard() {
                   <p style={labelSmMuted}>No pending follow-ups</p>
                   <p style={{ ...labelMuted, marginTop: 'var(--space-1)', opacity: 0.7 }}>Follow-ups are created after meeting debriefs</p>
                 </div>
-              )}</div></div>}
+              )}</div></div></>}
 
           {/* Pipeline */}
           {!focusMode && <div style={cardPadding}>

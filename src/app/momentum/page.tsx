@@ -401,8 +401,8 @@ export default function MomentumPage() {
                   return (
                     <tr
                       key={inv.investorId}
-                      className="transition-colors"
-                      style={{ borderBottom: '1px solid var(--border-subtle)', background: isAnomaly ? 'var(--fg-20)' : undefined }}>
+                      className="table-row"
+                      style={isAnomaly ? { background: 'var(--fg-20)' } : undefined}>
                       {/* Investor name + type badge */}
                       <td
                         className="sticky left-0 backdrop-blur z-10 px-4 py-2.5"
