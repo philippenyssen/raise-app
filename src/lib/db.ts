@@ -604,6 +604,7 @@ async function ensureInitialized() {
 
   // Indexes for frequent foreign key lookups
   try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_enrichment_investor ON enrichment_records(investor_id)`); } catch { /* */ }
+  try { await db.execute(`CREATE UNIQUE INDEX IF NOT EXISTS idx_enrichment_dedup ON enrichment_records(investor_id, source_id, field_name)`); } catch { /* */ }
   try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_meetings_investor ON meetings(investor_id)`); } catch { /* */ }
   try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_followups_investor ON followup_actions(investor_id)`); } catch { /* */ }
   try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_score_snapshots_investor ON score_snapshots(investor_id)`); } catch { /* */ }
