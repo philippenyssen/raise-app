@@ -5,9 +5,9 @@ import { cachedFetch } from '@/lib/cache';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import {
-  Timer, ChevronDown, ChevronUp, ArrowRight, CheckCircle2,
+  Timer, ChevronDown, ChevronUp, ArrowRight, CheckCircle2, CheckCircle,
   AlertTriangle, MessageCircle, Shield, Crosshair, ExternalLink,
-  Loader2, Sparkles, Clock,
+  Loader2, Sparkles, Clock, TrendingUp,
 } from 'lucide-react';
 import type { Investor } from '@/lib/types';
 import PostMeetingActions from '@/components/post-meeting-actions';
@@ -308,12 +308,35 @@ function QuickCaptureInner() {
               }[]} />
           )}
 
+          {/* Next Steps Context Cascade */}
           {investorId && (
-            <Link
-              href={`/followups?investor=${investorId}`}
-              className="btn btn-secondary btn-md"
-              style={{ textDecoration: 'none', width: 'fit-content' }}>
-              view all follow-ups</Link>
+            <div className="card" style={{ background: 'var(--surface-1)', border: '1px solid var(--border-subtle)' }}>
+              <p className="section-title" style={{ marginBottom: 'var(--space-3)' }}>
+                <span style={inlineFlexGap2}>
+                  <ArrowRight className="w-3.5 h-3.5" /> Next Steps</span></p>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 'var(--space-3)' }}>
+                <Link
+                  href={`/followups?investor=${investorId}`}
+                  className="btn btn-secondary btn-sm"
+                  style={{ textDecoration: 'none', justifyContent: 'flex-start', gap: 'var(--space-2)' }}>
+                  <CheckCircle className="w-3.5 h-3.5" /> Execute follow-ups</Link>
+                <Link
+                  href={`/meetings/prep?investor=${investorId}`}
+                  className="btn btn-secondary btn-sm"
+                  style={{ textDecoration: 'none', justifyContent: 'flex-start', gap: 'var(--space-2)' }}>
+                  <Clock className="w-3.5 h-3.5" /> Prep next meeting</Link>
+                <Link
+                  href="/dealflow?sort=momentum"
+                  className="btn btn-secondary btn-sm"
+                  style={{ textDecoration: 'none', justifyContent: 'flex-start', gap: 'var(--space-2)' }}>
+                  <TrendingUp className="w-3.5 h-3.5" /> Check deal momentum</Link>
+                <Link
+                  href="/objections"
+                  className="btn btn-secondary btn-sm"
+                  style={{ textDecoration: 'none', justifyContent: 'flex-start', gap: 'var(--space-2)' }}>
+                  <AlertTriangle className="w-3.5 h-3.5" /> Review objections</Link>
+              </div>
+            </div>
           )}
 
           {/* Action buttons */}
