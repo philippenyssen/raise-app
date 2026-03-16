@@ -27,7 +27,7 @@ const tdAmount = { color: 'var(--text-secondary)', fontWeight: 400 } as const;
 const tdSmMuted = { color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' } as const;
 
 const briefViewLink = { color: 'var(--accent)', fontSize: 'var(--font-size-xs)', textDecoration: 'none' } as const;
-const briefScheduleLink: React.CSSProperties = { fontSize: 'var(--font-size-xs)', fontWeight: 400, padding: '2px 6px', borderRadius: 'var(--radius-sm)', textDecoration: 'none', background: 'var(--accent-muted)', color: 'var(--accent)' };
+const briefScheduleLink: React.CSSProperties = { fontSize: 'var(--font-size-xs)', fontWeight: 400, padding: 'var(--space-0) var(--space-1)', borderRadius: 'var(--radius-sm)', textDecoration: 'none', background: 'var(--accent-muted)', color: 'var(--accent)' };
 
 const BRIEF_TYPE_STYLES: Record<string, { background: string; color: string }> = {
   investor: { background: 'var(--accent-muted)', color: 'var(--accent)' },

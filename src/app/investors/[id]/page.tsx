@@ -179,11 +179,12 @@ export default function InvestorDetailPage() {
       if (!res.ok) throw new Error(await res.text());
       const data = await res.json();
       toast(`Enrichment complete: ${data.total_fields} fields from ${data.sources_succeeded} sources`, 'success');
-      Promise.all([fetchEnrichment(), fetchEnrichmentStatus()]);
+      await Promise.all([fetchEnrichment(), fetchEnrichmentStatus()]);
     } catch (err) {
-      toast(`Enrichment failed: ${err}`, 'error');
+      toast(`Enrichment failed: ${err instanceof Error ? err.message : err}`, 'error');
+    } finally {
+      setEnriching(false);
     }
-    setEnriching(false);
   }, [id, toast, fetchEnrichment, fetchEnrichmentStatus]);
 
   const fetchData = useCallback(async () => {

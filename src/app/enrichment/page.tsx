@@ -16,8 +16,8 @@ import { EmptyState } from '@/components/ui/empty-state';
 
 const flexCenterGap2 = { display: 'flex', alignItems: 'center', gap: 'var(--space-2)' } as const;
 const investorRowGrid: React.CSSProperties = { display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr auto', gap: 'var(--space-2)', alignItems: 'center', padding: 'var(--space-2) var(--space-4)' };
-const enrichBtnBase: React.CSSProperties = { background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid var(--accent-20)', fontSize: 'var(--font-size-xs)', padding: '4px 10px' };
-const fieldTagStyle: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '2px 8px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-tertiary)' };
+const enrichBtnBase: React.CSSProperties = { background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid var(--accent-20)', fontSize: 'var(--font-size-xs)', padding: 'var(--space-1) var(--space-2)' };
+const fieldTagStyle: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: 'var(--space-0) var(--space-2)', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-tertiary)' };
 const investorLinkStyle: React.CSSProperties = { fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, textDecoration: 'none' };
 const expandPanelStyle: React.CSSProperties = { padding: 'var(--space-3) var(--space-4)', borderTop: '1px solid var(--border-subtle)', background: 'var(--surface-1)' };
 const expandDescStyle = { ...textSmSecondary, lineHeight: 1.6 } as const;
