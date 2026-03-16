@@ -877,7 +877,7 @@ function AccelerationBadge({ status }: { status: AccelerationStatusData }) {
                 fontSize: 'var(--font-size-xs)',
                 color: 'var(--text-muted)',
                 background: 'var(--surface-2)',
-                padding: '1px 4px',
+                padding: 'var(--space-0) var(--space-1)',
                 borderRadius: 'var(--radius-sm)', }}>
               {t.replace(/_/g, ' ')}</span>
           ))}</div>

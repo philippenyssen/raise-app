@@ -300,11 +300,11 @@ export default function TermsPage() {
                           display: 'inline-block',
                           fontSize: 'var(--font-size-xs)',
                           fontWeight: 400,
-                          padding: '2px 8px',
+                          padding: 'var(--space-0) var(--space-2)',
                           borderRadius: 'var(--radius-sm)',
                           background: action.bg,
                           color: action.color,
-                          marginBottom: '4px', }}>
+                          marginBottom: 'var(--space-1)', }}>
                         {action.label}</span>
                       <div style={{ ...labelMuted, lineHeight: 1.4 }}>
                         {action.advice}</div>

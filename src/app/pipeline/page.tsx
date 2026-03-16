@@ -692,12 +692,12 @@ function enthusiasmDotBg(n: number, enthusiasm: number): string {
   return enthusiasm >= 4 ? 'var(--success)' : enthusiasm >= 3 ? 'var(--accent)' : 'var(--text-muted)';
 }
 
-const urgencyBadgeBase: React.CSSProperties = { fontSize: 'var(--font-size-xs)', fontWeight: 400, padding: '1px 5px', borderRadius: 'var(--radius-sm)' };
+const urgencyBadgeBase: React.CSSProperties = { fontSize: 'var(--font-size-xs)', fontWeight: 400, padding: 'var(--space-0) var(--space-1)', borderRadius: 'var(--radius-sm)' };
 const noteStyle: React.CSSProperties = { ...labelMuted, fontStyle: 'italic', flex: 1 };
 const lastMeetingBase: React.CSSProperties = { fontSize: 'var(--font-size-xs)', fontWeight: 400 };
 const metricLabelStyle: React.CSSProperties = { ...labelMuted, fontWeight: 400, whiteSpace: 'nowrap' };
 const metricColStyle: React.CSSProperties = { minWidth: '4rem' };
-const quickActionLink: React.CSSProperties = { ...labelMuted, padding: '2px 0', borderRadius: 'var(--radius-sm)', textDecoration: 'none' };
+const quickActionLink: React.CSSProperties = { ...labelMuted, padding: 'var(--space-0) 0', borderRadius: 'var(--radius-sm)', textDecoration: 'none' };
 const skelTile: React.CSSProperties = { height: '5rem', width: '9rem', borderRadius: 'var(--radius-lg)' };
 const skelCol: React.CSSProperties = { minWidth: '260px' };
 const skelHeader: React.CSSProperties = { height: '2.5rem', borderRadius: 'var(--radius-lg)' };
