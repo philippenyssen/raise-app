@@ -713,9 +713,22 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
 
         {loading && (
           <div className="flex justify-start">
-            <div className="flex items-center" style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-2) var(--space-4)', border: '1px solid var(--border-subtle)', gap: 'var(--space-2)' }}>
-              <Loader2 style={{ width: '14px', height: '14px', color: 'var(--accent)' }} className="animate-spin" />
-              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Generating...</span>
+            <div className="flex items-center" style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-2) var(--space-4)', border: '1px solid var(--border-subtle)', gap: 'var(--space-3)' }}>
+              <div className="flex items-center" style={{ gap: '3px' }}>
+                {[0, 1, 2].map(dot => (
+                  <span
+                    key={dot}
+                    style={{
+                      width: '6px',
+                      height: '6px',
+                      borderRadius: '50%',
+                      background: 'var(--accent)',
+                      animation: `typingBounce 1.2s ease-in-out ${dot * 0.15}s infinite`,
+                    }}
+                  />
+                ))}
+              </div>
+              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Thinking...</span>
               <button
                 onClick={stopGeneration}
                 style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', padding: '2px', display: 'flex', alignItems: 'center' }}

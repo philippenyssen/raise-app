@@ -65,6 +65,7 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
   const [clipboard, setClipboard] = useState<{ ref: string; value: string; formula?: string } | null>(null);
   const [colWidths, setColWidths] = useState<Record<number, number>>({});
   const [resizingCol, setResizingCol] = useState<{ col: number; startX: number; startWidth: number } | null>(null);
+  const [showShortcuts, setShowShortcuts] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 
@@ -298,6 +299,10 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
         e.preventDefault();
         onCellChange(selectedCell, '');
       }
+    }
+    // Show shortcuts help
+    if (e.key === '?' && !editingCell && !e.metaKey && !e.ctrlKey) {
+      setShowShortcuts(prev => !prev);
     }
   }, [editingCell, selectedCell, handleEditComplete, handleCellDoubleClick, navigateCell, onCellChange, cells, clipboard, formatValue]);
 
@@ -627,7 +632,7 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
               SUM: {selectedStats.sum.toLocaleString()} · AVG: {selectedStats.avg.toLocaleString(undefined, { maximumFractionDigits: 2 })} · COUNT: {selectedStats.count}
             </span>
           )}
-          <span>{editingCell ? 'Enter to confirm · Esc to cancel' : selectedCell ? 'Enter to edit · Arrows to navigate · Type to input · Del to clear' : 'Click a cell to start'}</span>
+          <span>{editingCell ? 'Enter to confirm · Esc to cancel' : selectedCell ? 'Enter to edit · Arrows to navigate · ? for shortcuts' : 'Click a cell to start'}</span>
         </div>
       </div>
 
@@ -673,6 +678,62 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
               {sheet.name}
             </button>
           ))}
+        </div>
+      )}
+
+      {/* Keyboard shortcuts overlay */}
+      {showShortcuts && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center"
+          style={{ background: 'rgba(0,0,0,0.4)' }}
+          onClick={() => setShowShortcuts(false)}
+        >
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{
+              background: 'var(--surface-1)',
+              borderRadius: 'var(--radius-lg)',
+              boxShadow: 'var(--shadow-xl)',
+              padding: 'var(--space-6)',
+              maxWidth: '420px',
+              width: '90%',
+            }}
+          >
+            <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-4)' }}>
+              <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>Keyboard Shortcuts</span>
+              <button onClick={() => setShowShortcuts(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', fontSize: '18px' }}>&times;</button>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', fontSize: 'var(--font-size-xs)' }}>
+              {[
+                ['Enter', 'Edit / Confirm'],
+                ['Escape', 'Cancel editing'],
+                ['Tab / Shift+Tab', 'Next / Previous cell'],
+                ['Arrow keys', 'Navigate cells'],
+                ['Type any key', 'Start editing'],
+                ['Delete', 'Clear cell'],
+                ['Cmd/Ctrl+C', 'Copy cell'],
+                ['Cmd/Ctrl+V', 'Paste cell'],
+                ['Double-click', 'Edit cell'],
+                ['Right-click', 'Context menu'],
+                ['Click+Drag', 'Select range'],
+                ['?', 'Toggle this help'],
+              ].map(([key, desc]) => (
+                <div key={key} className="flex items-center" style={{ gap: '8px' }}>
+                  <kbd style={{
+                    background: 'var(--surface-2)',
+                    padding: '2px 6px',
+                    borderRadius: '3px',
+                    fontFamily: 'monospace',
+                    fontSize: '10px',
+                    color: 'var(--text-secondary)',
+                    border: '1px solid var(--border-subtle)',
+                    whiteSpace: 'nowrap',
+                  }}>{key}</kbd>
+                  <span style={{ color: 'var(--text-muted)' }}>{desc}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       )}
     </div>);
