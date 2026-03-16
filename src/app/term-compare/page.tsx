@@ -64,7 +64,8 @@ function rateLowerIsBetter(val: number, allVals: number[]): CellRating {
 }
 
 function cellStyle(rating: CellRating): React.CSSProperties {
-  if (rating === 'bad') return { color: 'var(--text-primary)' };
+  if (rating === 'bad') return { color: 'var(--danger)', fontWeight: 400 };
+  if (rating === 'good') return { color: 'var(--success)', fontWeight: 400 };
   return { color: 'var(--text-secondary)' };
 }
 
