@@ -6,19 +6,19 @@ import {
   TrendingDown, TrendingUp, RefreshCw, Users, Target, AlertTriangle,
   CheckCircle, XCircle, ArrowDown, Clock, Lightbulb, BarChart3,
 } from 'lucide-react';
-import { cardPad4, labelMuted, stAccent, stFontSm, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, strengthColor, textSmMuted } from '@/lib/styles';
+import { cardPad4, labelMuted, stAccent, stFontSm, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, strengthColor, textSmMuted, textSmSecondary } from '@/lib/styles';
 import { fmtDateTime } from '@/lib/format';
 
 const textSmTertiary = { fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' } as const;
 const textSmPrimary400 = { fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400 } as const;
 const textBaseNormal = { fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)' } as const;
-const textSmSecNormal = { fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', fontWeight: 400 } as const;
+const textSmSecNormal = { ...textSmSecondary, fontWeight: 400 } as const;
 const mbSpace3 = { marginBottom: 'var(--space-3)' } as const;
 const funnelBarContainer: React.CSSProperties = { height: '24px', background: 'var(--surface-1)', borderRadius: 'var(--radius-sm)', overflow: 'hidden', position: 'relative' };
 const funnelStageName = { fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, minWidth: '120px' } as const;
 const mb4 = { marginBottom: '4px' } as const;
 const typeCardStyle: React.CSSProperties = { padding: 'var(--space-2) var(--space-3)', borderRadius: 'var(--radius-sm)', background: 'var(--surface-1)' };
-const insightCardStyle: React.CSSProperties = { padding: 'var(--space-2) var(--space-3)', borderRadius: 'var(--radius-sm)', background: 'var(--surface-1)', fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' };
+const insightCardStyle: React.CSSProperties = { padding: 'var(--space-2) var(--space-3)', borderRadius: 'var(--radius-sm)', background: 'var(--surface-1)', ...textSmSecondary };
 const closeRateLabel = { fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', fontWeight: 400 } as const;
 const passRateLabel = { fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', fontWeight: 400 } as const;
 
@@ -449,22 +449,22 @@ export default function WinLossPage() {
                   Median: {timing.medianDaysToPass}d</div></div></div>
             <div style={{ padding: 'var(--space-3)', borderRadius: 'var(--radius-md)', background: 'var(--surface-1)' }}>
               <div className="flex items-center justify-between">
-                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
+                <span style={textSmSecondary}>
                   Avg Meetings (Winners)</span>
                 <span style={textSmSecNormal}>
                   {summary.avgClosedMeetings}</span></div>
               <div className="flex items-center justify-between" style={{ marginTop: 'var(--space-1)' }}>
-                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
+                <span style={textSmSecondary}>
                   Avg Meetings (Passers)</span>
                 <span style={textSmPrimary400}>
                   {summary.avgPassedMeetings}</span></div>
               <div className="flex items-center justify-between" style={{ marginTop: 'var(--space-1)' }}>
-                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
+                <span style={textSmSecondary}>
                   Avg Enthusiasm (Winners)</span>
                 <span style={textSmSecNormal}>
                   {summary.avgClosedEnthusiasm}/5</span></div>
               <div className="flex items-center justify-between" style={{ marginTop: 'var(--space-1)' }}>
-                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
+                <span style={textSmSecondary}>
                   Avg Enthusiasm (Passers)</span>
                 <span style={textSmPrimary400}>
                   {summary.avgPassedEnthusiasm}/5</span></div></div></div></div>

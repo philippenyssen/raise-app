@@ -7,7 +7,7 @@ import {
   Zap, RefreshCw, AlertTriangle, TrendingUp, Users,
   ArrowRight, Clock, Activity, Target, Flame,
 } from 'lucide-react';
-import { getIntensityColor, inlineBadgeStyle, labelMuted, stAccent, stFontSm, stFontXs, stTextPrimary } from '@/lib/styles';
+import { getIntensityColor, inlineBadgeStyle, labelMuted, stAccent, stFontSm, stFontXs, stTextPrimary, textSmSecondary } from '@/lib/styles';
 import { TierBadge, EnthusiasmDots } from '@/components/shared';
 import { MS_PER_HOUR } from '@/lib/time';
 import { TYPE_LABELS_SHORT as TYPE_LABELS } from '@/lib/constants';
@@ -166,7 +166,7 @@ function IntensityMeter({ intensity, description }: { intensity: number; descrip
             transition: 'width 0.6s ease-out',
           }} /></div>
 
-      <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', lineHeight: 1.6, margin: 0 }}>
+      <p style={{ ...textSmSecondary, lineHeight: 1.6, margin: 0 }}>
         {description}</p>
     </div>);
 }
@@ -276,7 +276,7 @@ function PressureCard({ inv }: { inv: InvestorFomo }) {
             <div className="flex items-start gap-2">
               <span style={{ flexShrink: 0, marginTop: '2px' }}>
                 <Target className="w-3.5 h-3.5" style={stAccent} /></span>
-              <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', lineHeight: 1.6, margin: 0 }}>
+              <p style={{ ...textSmSecondary, lineHeight: 1.6, margin: 0 }}>
                 {inv.recommendation}</p></div></div></div>
       )}
     </div>);
@@ -331,7 +331,7 @@ function StrategyCardComponent({ card }: { card: StrategyCard }) {
           })}>
             {card.priority} priority</span></div></div>
 
-      <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', lineHeight: 1.6, margin: '0 0 var(--space-3) 0' }}>
+      <p style={{ ...textSmSecondary, lineHeight: 1.6, margin: '0 0 var(--space-3) 0' }}>
         {card.description}</p>
 
       {card.targetInvestors.length > 0 && (

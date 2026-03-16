@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import { DealHeatInvestor } from '@/lib/types';
 import { STATUS_LABELS } from '@/lib/constants';
-import { labelAccent, labelMuted, labelSecondary, labelSmMuted, labelTertiary, stAccent, stBorderTop, stSurface1, stSurface2, stTextMuted, stTextSecondary, stTextTertiary as textTertiary } from '@/lib/styles';
+import { labelAccent, labelMuted, labelSecondary, labelSmMuted, labelTertiary, stAccent, stBorderTop, stSurface1, stSurface2, stTextMuted, stTextSecondary, stTextTertiary as textTertiary, textSmSecondary } from '@/lib/styles';
 
 const textSmPrimary = { fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' } as const;
 const textSmLink = { fontSize: 'var(--font-size-sm)', fontWeight: 400 } as const;
@@ -471,7 +471,7 @@ export default function Dashboard() {
           className="text-center"
           style={{ borderRadius: 'var(--radius-xl)', padding: 'var(--space-12) var(--space-8)', background: 'var(--surface-1)' }}>
           <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 400, color: 'var(--text-primary)' }}>Initialize Your Fundraise</h2>
-          <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', maxWidth: '28rem', margin: 'var(--space-3) auto var(--space-6)' }}>
+          <p style={{ ...textSmSecondary, maxWidth: '28rem', margin: 'var(--space-3) auto var(--space-6)' }}>
             Seed the database with ASL Series C investor targets and configuration, or add investors manually.</p>
           <div className="flex justify-center" style={{ gap: 'var(--space-3)' }}>
             <button
@@ -1180,7 +1180,7 @@ function SectionError({ label, onRetry }: { label: string; onRetry: () => void }
   const [r, setR] = useState(false);
   return (
     <div className="flex items-center justify-between py-2.5 px-4 rounded-lg" style={stSurface1}>
-      <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>{label} unavailable</span>
+      <span style={textSmSecondary}>{label} unavailable</span>
       <button disabled={r} className="btn btn-secondary btn-sm"
         onClick={async () => { setR(true); await onRetry(); setR(false); }}>
         <RefreshCw className={`w-3 h-3 ${r ? 'animate-spin' : ''}`} /> {r ? 'Retrying' : 'Retry'}</button>

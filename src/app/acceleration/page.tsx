@@ -12,7 +12,7 @@ import {
   ChevronDown, Play, Ban, XCircle, Rocket, Timer, ArrowUpRight,
   TrendingDown, SkipForward,
 } from 'lucide-react';
-import { inlineBadgeStyle, labelMuted, labelMuted10, stBorderTop, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, textSmMuted, INVESTOR_TYPE_STYLES } from '@/lib/styles';
+import { inlineBadgeStyle, labelMuted, labelMuted10, stBorderTop, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, textSmMuted, textSmSecondary, INVESTOR_TYPE_STYLES } from '@/lib/styles';
 import { TierBadge, EnthusiasmDots } from '@/components/shared';
 import { relativeTime } from '@/lib/time';
 import { cachedFetch } from '@/lib/cache';
@@ -77,7 +77,7 @@ function ActionCard({
               {STATUS_LABELS[item.status] ?? item.status}</span></div>
 
           {/* Description */}
-          <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '8px' }}>
+          <p style={{ ...textSmSecondary, lineHeight: 1.6, marginBottom: '8px' }}>
             {item.description}</p>
 
           {/* Meta row */}

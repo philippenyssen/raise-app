@@ -7,7 +7,7 @@ import {
   DollarSign, Target, Calendar, Users, ChevronDown,
 } from 'lucide-react';
 import { useToast } from '@/components/toast';
-import { labelMuted, stFontSm, stFontXs, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
+import { labelMuted, stFontSm, stFontXs, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, textSmSecondary } from '@/lib/styles';
 import { cachedFetch } from '@/lib/cache';
 
 const rangeAccent = { accentColor: 'var(--accent)' } as const;
@@ -490,7 +490,7 @@ export default function SettingsPage() {
         <div className="space-y-4">
           {(Object.keys(WEIGHT_LABELS) as Array<keyof ScoringWeightsForm>).map(key => (
             <div key={key} className="flex items-center gap-4">
-              <label className="w-36 shrink-0" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>{WEIGHT_LABELS[key]}</label>
+              <label className="w-36 shrink-0" style={textSmSecondary}>{WEIGHT_LABELS[key]}</label>
               <input
                 type="range"
                 min={0}

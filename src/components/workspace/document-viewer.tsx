@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { FileText, Eye, Edit3, Save, Clock, Download } from 'lucide-react';
+import { textSmSecondary } from '@/lib/styles';
 
 interface DocumentViewerProps {
   document: {
@@ -83,7 +84,7 @@ export function DocumentViewer({ document, onContentChange, onSave, saving, dirt
           return (
             <div key={k} className="flex" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
               {cells.map((cell, j) => (
-                <div key={j} className="flex-1" style={{ padding: 'var(--space-1) var(--space-3)', fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>{renderInline(cell.trim(), `${k}-${j}`)}</div>
+                <div key={j} className="flex-1" style={{ padding: 'var(--space-1) var(--space-3)', ...textSmSecondary }}>{renderInline(cell.trim(), `${k}-${j}`)}</div>
               ))}
             </div>);
         }

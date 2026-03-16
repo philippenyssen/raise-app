@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import { fmtDateTime } from '@/lib/format';
 import { useToast } from '@/components/toast';
-import { labelAccent, labelMuted, labelMuted10, labelSecondary, stAccent, stTextMuted, stTextPrimary, stTextSecondary } from '@/lib/styles';
+import { labelAccent, labelMuted, labelMuted10, labelSecondary, stAccent, stTextMuted, stTextPrimary, stTextSecondary, textSmSecondary } from '@/lib/styles';
 import { cachedFetch } from '@/lib/cache';
 
 const filterBtnBase: React.CSSProperties = { borderRadius: 'var(--radius-sm)', fontSize: 'var(--font-size-xs)', fontWeight: 400, transition: 'all 150ms ease' };
@@ -21,7 +21,7 @@ const convictionBtnBase: React.CSSProperties = { ...filterBtnBase, padding: '0.2
 const filterTabBase: React.CSSProperties = { ...filterBtnBase, padding: '0.375rem 0.75rem' };
 import { MS_PER_HOUR, MS_PER_DAY } from '@/lib/time';
 
-const textSecSm = { fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' } as const;
+const textSecSm = textSmSecondary;
 const skelItemStyle = { height: '52px', borderRadius: 'var(--radius-md)' } as const;
 const completedOutcomeBox = { background: 'var(--surface-2)', borderRadius: 'var(--radius-sm)', padding: '0.375rem 0.5rem', fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' } as const;
 const completingFormBox = { background: 'var(--surface-2)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-3)' } as const;

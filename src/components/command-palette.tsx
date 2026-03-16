@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { cachedFetch } from '@/lib/cache';
+import { textSmSecondary } from '@/lib/styles';
 import { createPortal } from 'react-dom';
 import {
   Sun, LayoutDashboard, Columns3, Users, Calendar,
@@ -242,7 +243,7 @@ export default function CommandPalette() {
           </div>
           {helpItems.map(([key, desc]) => (
             <div key={key} className="flex items-center justify-between" style={{ padding: '6px 0', borderTop: '1px solid var(--border-subtle)' }}>
-              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>{desc}</span>
+              <span style={textSmSecondary}>{desc}</span>
               <kbd style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', background: 'var(--surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xs)', padding: '2px 6px' }}>{key}</kbd>
             </div>
           ))}

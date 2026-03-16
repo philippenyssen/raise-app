@@ -13,9 +13,9 @@ import type { Investor } from '@/lib/types';
 import PostMeetingActions from '@/components/post-meeting-actions';
 import FollowupPlan from '@/components/followup-plan';
 import { useToast } from '@/components/toast';
-import { labelMuted, stAccent, stFontSm, stTextSecondary } from '@/lib/styles';
+import { labelMuted, stAccent, stFontSm, stTextSecondary, textSmSecondary } from '@/lib/styles';
 
-const fontSmSec = { fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' } as const;
+const fontSmSec = textSmSecondary;
 const flexRowGap2 = { display: 'flex', alignItems: 'center', gap: 'var(--space-2)' } as const;
 const dotBase = { width: '8px', height: '8px', borderRadius: '50%' } as const;
 const inlineFlexGap2 = { display: 'inline-flex', alignItems: 'center', gap: 'var(--space-2)' } as const;
@@ -287,7 +287,7 @@ function QuickCaptureInner() {
               <p className="section-title">
                 <span style={inlineFlexGap2}>
                   <Shield className="w-3.5 h-3.5" /> Competitive Intelligence</span></p>
-              <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+              <p style={{ ...textSmSecondary, lineHeight: 1.6 }}>
                 {competitiveIntel}</p></div>
           )}
 

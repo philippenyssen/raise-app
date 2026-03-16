@@ -8,7 +8,7 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { FolderOpen, Upload, FileText, Table, Image, Trash2, ChevronDown, ChevronRight, Search, Eye, BarChart3, Users, AlertCircle, Send, TrendingUp } from 'lucide-react';
 import { fmtDateTime, fmtDate } from '@/lib/format';
 import { STATUS_LABELS } from '@/lib/constants';
-import { labelMuted, stAccent, stFontSm, stFontXs, stSurface2, stTextMuted, stTextSecondary, stTextTertiary } from '@/lib/styles';
+import { labelMuted, stAccent, stFontSm, stFontXs, stSurface2, stTextMuted, stTextSecondary, stTextTertiary, textSmSecondary } from '@/lib/styles';
 import { cachedFetch } from '@/lib/cache';
 
 const fontSmPrimary = { ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' } as const;
@@ -727,7 +727,7 @@ function FileRow({ file, expanded, onToggle, onDelete }: {
       {expanded && (
         <div style={{ borderTop: '1px solid var(--border-subtle)', padding: 'var(--space-3) var(--space-4)' }}>
           {file.summary && (
-            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', marginBottom: 'var(--space-3)' }}>
+            <p style={{ ...textSmSecondary, marginBottom: 'var(--space-3)' }}>
               {file.summary}</p>
           )}
           <pre style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)', whiteSpace: 'pre-wrap', maxHeight: '15rem', overflowY: 'auto', background: 'var(--surface-0)', borderRadius: 'var(--radius-md)', padding: 'var(--space-3)' }}>

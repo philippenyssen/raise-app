@@ -8,7 +8,7 @@ import { Flame, Filter, TrendingUp, Thermometer } from 'lucide-react';
 import { STATUS_LABELS, TYPE_LABELS } from '@/lib/constants';
 import { DealHeatInvestor } from '@/lib/types';
 import { fmtDateShort } from '@/lib/format';
-import { labelMuted, maxWidthCenter, stTextMuted } from '@/lib/styles';
+import { labelMuted, maxWidthCenter, stTextMuted, textSmSecondary } from '@/lib/styles';
 
 interface DealHeatData {
   investors: DealHeatInvestor[];
@@ -122,7 +122,7 @@ export default function DealHeatPage() {
           style={{ padding: 'var(--space-2) var(--space-3)', background: 'var(--surface-1)', borderRadius: 'var(--radius-md)' }}>
           <span style={stTextMuted}>
             <Thermometer className="w-4 h-4" /></span>
-          <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
+          <span style={textSmSecondary}>
             Avg Heat:</span>
           <span style={{
             fontSize: 'var(--font-size-lg)',

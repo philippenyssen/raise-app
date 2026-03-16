@@ -86,6 +86,7 @@ export const stAccent: React.CSSProperties = { color: 'var(--accent)' };
 // Font-size constants
 export const stFontXs: React.CSSProperties = { fontSize: 'var(--font-size-xs)' } as const;
 export const stFontSm: React.CSSProperties = { fontSize: 'var(--font-size-sm)' } as const;
+export const textSmSecondary = { fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' } as const;
 
 // Background constants
 export const stSurface0: React.CSSProperties = { background: 'var(--surface-0)' } as const;

@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/components/toast';
 import { fmtDateTime } from '@/lib/format';
-import { labelMuted, labelTertiary, stFontSm, stFontXs, stTextMuted, icon14, icon12 } from '@/lib/styles';
+import { labelMuted, labelTertiary, stFontSm, stFontXs, stTextMuted, icon14, icon12, textSmSecondary } from '@/lib/styles';
 
 const flexCenterGap2 = { display: 'flex', alignItems: 'center', gap: 'var(--space-2)' } as const;
 const investorRowGrid: React.CSSProperties = { display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr auto', gap: 'var(--space-2)', alignItems: 'center', padding: 'var(--space-2) var(--space-4)' };
@@ -19,7 +19,7 @@ const enrichBtnBase: React.CSSProperties = { background: 'var(--accent-muted)', 
 const fieldTagStyle: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '2px 8px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-tertiary)' };
 const investorLinkStyle: React.CSSProperties = { fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, textDecoration: 'none' };
 const expandPanelStyle: React.CSSProperties = { padding: 'var(--space-3) var(--space-4)', borderTop: '1px solid var(--border-subtle)', background: 'var(--surface-1)' };
-const expandDescStyle = { fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', lineHeight: 1.6 } as const;
+const expandDescStyle = { ...textSmSecondary, lineHeight: 1.6 } as const;
 const expandProvidesRow: React.CSSProperties = { marginTop: 'var(--space-3)', display: 'flex', flexWrap: 'wrap', gap: 'var(--space-2)' };
 const apiKeyWarn: React.CSSProperties = { marginTop: 'var(--space-3)', padding: 'var(--space-2) var(--space-3)', background: 'var(--warning-muted)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' };
 
@@ -185,7 +185,7 @@ export default function EnrichmentPage() {
     <div className="page-content" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
       {fetchError && (
         <div className="rounded-lg p-4" style={{ background: 'var(--danger-muted)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
+          <span style={textSmSecondary}>
             Enrichment data failed to load. If this persists, check Settings for API credentials.</span>
           <button onClick={fetchData} className="btn btn-secondary btn-sm">Retry</button></div>
       )}

@@ -7,7 +7,7 @@ import Link from 'next/link';
 import type { Meeting } from '@/lib/types';
 import { Search, FileSearch, Calendar, Download, ChevronDown, ChevronRight, Star, CheckCircle2, X, TrendingUp, TrendingDown, Minus, Hash } from 'lucide-react';
 import { fmtDateTime } from '@/lib/format';
-import { labelMuted, labelTertiary, stFontSm, stFontXs, stTextMuted, stTextTertiary } from '@/lib/styles';
+import { labelMuted, labelTertiary, stFontSm, stFontXs, stTextMuted, stTextTertiary, textSmSecondary } from '@/lib/styles';
 import { EmptyState } from '@/components/ui/empty-state';
 import { CopyButton } from '@/components/copy-button';
 
@@ -530,7 +530,7 @@ export default function MeetingsPage() {
 
                 {m.ai_analysis && (
                   <div className="flex items-start gap-2" style={{ marginBottom: 'var(--space-3)' }}>
-                    <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', flex: 1 }}>
+                    <p style={{ ...textSmSecondary, flex: 1 }}>
                       {m.ai_analysis}</p>
                     <CopyButton text={m.ai_analysis} label="" /></div>
                 )}
