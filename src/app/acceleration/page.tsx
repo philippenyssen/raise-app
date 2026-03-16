@@ -24,6 +24,8 @@ const tabCountActive = { padding: '2px 6px', fontSize: 'var(--font-size-xs)', ba
 const tabCountInactive = { padding: '2px 6px', fontSize: 'var(--font-size-xs)', background: 'var(--surface-2)', color: 'var(--text-muted)' } as const;
 const skeletonSm = { height: '80px', borderRadius: 'var(--radius-xl)' } as const;
 const skeletonMd = { height: '100px', borderRadius: 'var(--radius-xl)' } as const;
+const actionCardDone: React.CSSProperties = { borderRadius: 'var(--radius-lg)', padding: 'var(--space-4)', background: 'var(--fg-30)', opacity: 0.6, transition: 'all 200ms ease' };
+const actionCardActive: React.CSSProperties = { borderRadius: 'var(--radius-lg)', padding: 'var(--space-4)', background: 'var(--surface-1)', transition: 'all 200ms ease' };
 
 type FilterTab = 'all' | 'pending' | 'executed' | 'skipped';
 
@@ -53,23 +55,10 @@ function ActionCard({
   const isSkipped = skippedIds.has(item.id);
   const isDone = isExecuted || isSkipped;
 
-  const cardStyle: React.CSSProperties = isDone
-    ? {
-        borderRadius: 'var(--radius-lg)',
-        padding: 'var(--space-4)',
-        background: 'var(--fg-30)',
-        opacity: 0.6,
-        transition: 'all 200ms ease',}
-    : {
-        borderRadius: 'var(--radius-lg)',
-        padding: 'var(--space-4)',
-        background: 'var(--surface-1)',
-        transition: 'all 200ms ease',};
-
   return (
     <div
       className="transition-colors"
-      style={cardStyle}>
+      style={isDone ? actionCardDone : actionCardActive}>
       <div className="flex items-start gap-3">
         <div className="flex-1 min-w-0">
           {/* Header */}

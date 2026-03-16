@@ -26,6 +26,12 @@ const STATUS_STYLES: Record<string, { background: string; color: string }> = {
   passed: { background: 'var(--danger-muted)', color: 'var(--text-primary)' },
   dropped: { background: 'var(--surface-2)', color: 'var(--text-muted)' },};
 
+const presetBtnActive = { background: 'var(--accent)', color: 'var(--surface-0)', border: 'none' } as const;
+const presetBtnInactive = { background: 'var(--surface-2)', color: 'var(--text-secondary)', border: 'none' } as const;
+const filterChipActive = { cursor: 'pointer' as const, background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid var(--accent)' } as const;
+const filterChipInactive = { cursor: 'pointer' as const, background: 'var(--surface-2)', color: 'var(--text-muted)', border: '1px solid transparent' } as const;
+const filterSeparator = { width: 1, height: 20, background: 'var(--border-subtle)', alignSelf: 'center' as const } as const;
+
 const COMPLETENESS_FIELDS = ['partner', 'fund_size', 'check_size_range', 'sector_thesis', 'warm_path', 'ic_process', 'portfolio_conflicts'] as const;
 
 function daysSince(dateStr: string | null | undefined): number | null {
@@ -283,17 +289,17 @@ export default function InvestorsPage() {
             style={{ paddingLeft: '2.25rem' }} /></div>
         {(['active', 'passed', 'all'] as const).map(p => (
           <button key={p} onClick={() => setFilter(f => ({ ...f, statusPreset: p, status: undefined }))} className="btn btn-sm"
-            style={{ background: filter.statusPreset === p ? 'var(--accent)' : 'var(--surface-2)', color: filter.statusPreset === p ? 'var(--surface-0)' : 'var(--text-secondary)', border: 'none' }}>
+            style={filter.statusPreset === p ? presetBtnActive : presetBtnInactive}>
             {p === 'active' ? 'Active' : p === 'passed' ? 'Passed' : 'All'}</button>))}
-        <span style={{ width: 1, height: 20, background: 'var(--border-subtle)', alignSelf: 'center' }} />
+        <span style={filterSeparator} />
         {Object.entries(TYPE_LABELS).map(([k, v]) => (
           <button key={k} onClick={() => setFilter(f => ({ ...f, type: f.type === k ? undefined : k }))} className="badge btn-sm"
-            style={{ cursor: 'pointer', background: filter.type === k ? 'var(--accent-muted)' : 'var(--surface-2)', color: filter.type === k ? 'var(--accent)' : 'var(--text-muted)', border: filter.type === k ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            style={filter.type === k ? filterChipActive : filterChipInactive}>
             {v}</button>))}
-        <span style={{ width: 1, height: 20, background: 'var(--border-subtle)', alignSelf: 'center' }} />
+        <span style={filterSeparator} />
         {[1,2,3].map(t => (
           <button key={t} onClick={() => setFilter(f => ({ ...f, tier: f.tier === t ? undefined : t }))} className="badge btn-sm"
-            style={{ cursor: 'pointer', background: filter.tier === t ? 'var(--accent-muted)' : 'var(--surface-2)', color: filter.tier === t ? 'var(--accent)' : 'var(--text-muted)', border: filter.tier === t ? '1px solid var(--accent)' : '1px solid transparent' }}>
+            style={filter.tier === t ? filterChipActive : filterChipInactive}>
             T{t}</button>))}
         {(filter.tier || filter.status || filter.type || filter.statusPreset !== 'active' || searchQuery) && (
           <button onClick={() => { setFilter({ statusPreset: 'active' }); setSearchQuery(''); }} className="btn btn-ghost btn-sm">Clear</button>
