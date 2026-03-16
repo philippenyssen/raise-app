@@ -10,6 +10,7 @@ import { fmtDateTime, fmtDate } from '@/lib/format';
 import { STATUS_LABELS } from '@/lib/constants';
 import { labelMuted, labelSecondary, labelTertiary, skelCardSm, stAccent, stFontSm, stFontXs, stSurface2, stTextMuted, stTextSecondary, stTextTertiary, textSmMuted, textSmSecondary, textSmTertiary } from '@/lib/styles';
 import { cachedFetch } from '@/lib/cache';
+import { useRefreshInterval } from '@/lib/hooks/useRefreshInterval';
 
 const fontSmPrimary = { ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' } as const;
 const labelXsTertiary = labelTertiary;
@@ -88,17 +89,8 @@ export default function DataRoomPage() {
   }, []);
 
   useEffect(() => { document.title = 'Raise | Data Room'; }, []);
-  useEffect(() => {
-    let interval: ReturnType<typeof setInterval> | null = null;
-    let active = true;
-    const load = () => { if (!active) return; Promise.allSettled([fetchFiles(), fetchIntelligence()]); };
-    const stop = () => { if (interval) { clearInterval(interval); interval = null; } };
-    const start = () => { stop(); load(); interval = setInterval(load, 5 * 60 * 1000); };
-    const onVis = () => { if (document.hidden) stop(); else start(); };
-    start();
-    document.addEventListener('visibilitychange', onVis);
-    return () => { active = false; stop(); document.removeEventListener('visibilitychange', onVis); };
-  }, [fetchFiles, fetchIntelligence]);
+  const loadDataRoom = useCallback(() => { Promise.allSettled([fetchFiles(), fetchIntelligence()]); }, [fetchFiles, fetchIntelligence]);
+  useRefreshInterval(loadDataRoom, 5 * 60 * 1000);
   useEffect(() => {
     const h = (e: KeyboardEvent) => { if (e.key === 'r' && !e.metaKey && !e.ctrlKey && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement)) { e.preventDefault(); Promise.all([fetchFiles(), fetchIntelligence()]); } };
     window.addEventListener('keydown', h);

@@ -13,6 +13,7 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { CopyButton } from '@/components/copy-button';
 import { STATUS_LABELS } from '@/lib/constants';
 import { invalidateCache } from '@/lib/cache';
+import { useRefreshInterval } from '@/lib/hooks/useRefreshInterval';
 
 const labelMutedMb4 = { ...labelMuted, marginBottom: 'var(--space-1)' } as const;
 const labelBlockMutedMb4 = { ...labelMuted, display: 'block', marginBottom: 'var(--space-1)' } as const;
@@ -345,20 +346,13 @@ export default function MeetingsPage() {
     const timer = setTimeout(() => document.addEventListener('click', close), 0);
     return () => { clearTimeout(timer); document.removeEventListener('click', close); };
   }, [editingStatusId]);
-  useEffect(() => {
-    let active = true;
-    let interval: ReturnType<typeof setInterval> | null = null;
-    const load = () => cachedFetch('/api/meetings')
+  const loadMeetings = useCallback(() => {
+    cachedFetch('/api/meetings')
       .then(r => { if (!r.ok) throw new Error(`${r.status}`); return r.json(); })
-      .then(d => { if (active) { setMeetings(d); setLoadedAt(new Date().toISOString()); setLoading(false); } })
-      .catch(() => { if (active) { setMeetings([]); setLoading(false); } });
-    const stop = () => { if (interval) { clearInterval(interval); interval = null; } };
-    const start = () => { stop(); load(); interval = setInterval(load, 60_000); };
-    const onVis = () => { if (document.hidden) stop(); else start(); };
-    start();
-    document.addEventListener('visibilitychange', onVis);
-    return () => { active = false; if (interval) clearInterval(interval); document.removeEventListener('visibilitychange', onVis); };
+      .then(d => { setMeetings(d); setLoadedAt(new Date().toISOString()); setLoading(false); })
+      .catch(() => { setMeetings([]); setLoading(false); });
   }, []);
+  useRefreshInterval(loadMeetings, 60_000);
 
   useEffect(() => {
     const h = (e: KeyboardEvent) => { if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement) return; if (e.key === 'r' && !e.metaKey && !e.ctrlKey) { e.preventDefault(); cachedFetch('/api/meetings').then(r => r.json()).then(setMeetings).catch(e => console.warn('[MEETINGS_REFRESH]', e instanceof Error ? e.message : e)); } if (e.key === 'n' && !e.metaKey && !e.ctrlKey) { e.preventDefault(); router.push('/meetings/new'); } };

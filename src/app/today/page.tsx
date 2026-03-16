@@ -6,6 +6,7 @@ import { cachedFetch } from '@/lib/cache';
 import { useToast } from '@/components/toast';
 import { fmtDateFull } from '@/lib/format';
 import { MS_PER_MINUTE, MS_PER_DAY } from '@/lib/time';
+import { useRefreshInterval } from '@/lib/hooks/useRefreshInterval';
 import {
   Calendar, Clock, ArrowRight, ChevronRight, RefreshCw,
   Mail, UserPlus, FileText, AlertTriangle, Zap, TrendingUp,
@@ -436,13 +437,9 @@ export default function TodayPage() {
   }, []);
 
   useEffect(() => { document.title = 'Raise | Morning Briefing'; }, []);
+  const silentRefresh = useCallback(() => fetchBriefing(true), []);
+  useRefreshInterval(silentRefresh, 5 * MS_PER_MINUTE);
   useEffect(() => {
-    let refreshInterval: ReturnType<typeof setInterval> | null = null;
-    const stopRefresh = () => { if (refreshInterval) { clearInterval(refreshInterval); refreshInterval = null; } };
-    const startRefresh = () => { stopRefresh(); fetchBriefing(); refreshInterval = setInterval(() => fetchBriefing(true), 5 * MS_PER_MINUTE); };
-    const onVis = () => { if (document.hidden) stopRefresh(); else startRefresh(); };
-    startRefresh();
-    document.addEventListener('visibilitychange', onVis);
     const stalenessInterval = setInterval(() => {
       setStalenessMinutes(Math.floor((Date.now() - lastFetchedAt.current) / MS_PER_MINUTE));
     }, 30000);
@@ -452,9 +449,7 @@ export default function TodayPage() {
     }
     window.addEventListener('keydown', onKeyDown);
     return () => {
-      if (refreshInterval) clearInterval(refreshInterval);
       clearInterval(stalenessInterval);
-      document.removeEventListener('visibilitychange', onVis);
       window.removeEventListener('keydown', onKeyDown);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

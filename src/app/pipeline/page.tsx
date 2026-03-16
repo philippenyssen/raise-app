@@ -17,6 +17,7 @@ import { STATUS_LABELS, TYPE_LABELS } from '@/lib/constants';
 import { labelMuted, labelMuted10, stFontSm, stFontXs, stTextMuted, textSmMuted, badgeSmall } from '@/lib/styles';
 import { EmptyState } from '@/components/ui/empty-state';
 import { MS_PER_MINUTE } from '@/lib/time';
+import { useRefreshInterval } from '@/lib/hooks/useRefreshInterval';
 
 // ── Pipeline column order ────────────────────────────────────────────
 const PIPELINE_STATUSES: InvestorStatus[] = [
@@ -112,16 +113,11 @@ export default function PipelinePage() {
   const [quickAddName, setQuickAddName] = useState('');
 
   useEffect(() => { document.title = 'Raise | Investor Pipeline'; }, []);
-  useEffect(() => {
-    const load = () => { fetchInvestors(); cachedFetch('/api/at-risk').then(r => r.ok ? r.json() : null).then(d => { if (d?.scoreReversals) { const m = new Map<string, number>(); d.scoreReversals.forEach((r: { investorId: string; delta: number }) => m.set(r.investorId, r.delta)); setScoreDeltaMap(m); } }).catch(e => console.error('[PIPELINE_ATRISK]', e instanceof Error ? e.message : e)); };
-    let interval: ReturnType<typeof setInterval> | null = null;
-    const stop = () => { if (interval) { clearInterval(interval); interval = null; } };
-    const start = () => { stop(); load(); interval = setInterval(load, 5 * MS_PER_MINUTE); };
-    const onVis = () => { if (document.hidden) stop(); else start(); };
-    start();
-    document.addEventListener('visibilitychange', onVis);
-    return () => { if (interval) clearInterval(interval); document.removeEventListener('visibilitychange', onVis); };
+  const loadPipeline = useCallback(() => {
+    fetchInvestors();
+    cachedFetch('/api/at-risk').then(r => r.ok ? r.json() : null).then(d => { if (d?.scoreReversals) { const m = new Map<string, number>(); d.scoreReversals.forEach((r: { investorId: string; delta: number }) => m.set(r.investorId, r.delta)); setScoreDeltaMap(m); } }).catch(e => console.error('[PIPELINE_ATRISK]', e instanceof Error ? e.message : e));
   }, []);
+  useRefreshInterval(loadPipeline, 5 * MS_PER_MINUTE);
 
   async function fetchInvestors() {
     setLoading(true);

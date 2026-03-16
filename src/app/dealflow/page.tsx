@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { cachedFetch } from '@/lib/cache';
 import { MS_PER_DAY, MS_PER_MINUTE, relativeTime } from '@/lib/time';
+import { useRefreshInterval } from '@/lib/hooks/useRefreshInterval';
 import { STATUS_LABELS, TYPE_LABELS_SHORT as TYPE_LABELS } from '@/lib/constants';
 import { labelMuted, skelRow, stAccent, stFontXs, stSurface0, stSurface1, stTextMuted, stTextSecondary } from '@/lib/styles';
 
@@ -248,15 +249,7 @@ export default function DealflowPage() {
   }, []);
 
   useEffect(() => { document.title = 'Raise | Dealflow'; }, []);
-  useEffect(() => {
-    let interval: ReturnType<typeof setInterval> | null = null;
-    const stop = () => { if (interval) { clearInterval(interval); interval = null; } };
-    const start = () => { stop(); fetchData(); interval = setInterval(() => fetchData(), 5 * MS_PER_MINUTE); };
-    const onVis = () => { if (document.hidden) stop(); else start(); };
-    start();
-    document.addEventListener('visibilitychange', onVis);
-    return () => { if (interval) clearInterval(interval); document.removeEventListener('visibilitychange', onVis); };
-  }, [fetchData]);
+  useRefreshInterval(fetchData, 5 * MS_PER_MINUTE);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {

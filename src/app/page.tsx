@@ -7,6 +7,7 @@ import { useToast } from '@/components/toast';
 import { fmtDateShort } from '@/lib/format';
 import { cachedFetch } from '@/lib/cache';
 import { MS_PER_MINUTE, relativeTime } from '@/lib/time';
+import { useRefreshInterval } from '@/lib/hooks/useRefreshInterval';
 import {
   FileText, Sparkles, ArrowRight,
   Activity, Download, Columns3, Target, Timer,
@@ -341,15 +342,8 @@ export default function Dashboard() {
   }, [fetchSection]);
 
   useEffect(() => { document.title = 'Raise | Dashboard'; }, []);
-  useEffect(() => {
-    let interval: ReturnType<typeof setInterval> | null = null;
-    const stop = () => { if (interval) { clearInterval(interval); interval = null; } };
-    const start = () => { stop(); fetchData(); interval = setInterval(() => fetchData(true), 5 * MS_PER_MINUTE); };
-    const onVisChange = () => { if (document.hidden) stop(); else start(); };
-    start();
-    document.addEventListener('visibilitychange', onVisChange);
-    return () => { if (interval) clearInterval(interval); document.removeEventListener('visibilitychange', onVisChange); };
-  }, [fetchData]);
+  const refreshData = useCallback(() => fetchData(true), [fetchData]);
+  useRefreshInterval(refreshData, 5 * MS_PER_MINUTE);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
