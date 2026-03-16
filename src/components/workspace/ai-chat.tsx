@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { Send, Loader2, Sparkles, RotateCcw, Copy, Check, CheckCircle, XCircle } from 'lucide-react';
+import { Send, Loader2, Sparkles, RotateCcw, Copy, Check, CheckCircle, XCircle, Square } from 'lucide-react';
 import { VoiceInput } from './voice-input';
 import { textSmMuted } from '@/lib/styles';
 import { useMemo } from 'react';
@@ -204,6 +204,7 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
   const [pendingChange, setPendingChange] = useState<PendingChange | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -226,6 +227,7 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
     setLoading(true);
 
     try {
+      abortControllerRef.current = new AbortController();
       const res = await fetch('/api/workspace', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -235,7 +237,9 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
           documentContent,
           documentTitle,
           documentType,
-        }),});
+        }),
+        signal: abortControllerRef.current.signal,
+      });
 
       if (!res.ok) throw new Error('AI request failed');
 
@@ -358,6 +362,14 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
       setLoading(false);
     }
   }, [messages, loading, documentId, documentContent, documentTitle, documentType]);
+
+  const stopGeneration = useCallback(() => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
+    setLoading(false);
+  }, []);
 
   const retryLast = useCallback(() => {
     const lastUserIdx = messages.findLastIndex(m => m.role === 'user');
@@ -490,8 +502,20 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
 
         {loading && (
           <div className="flex justify-start">
-            <div style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-3) var(--space-4)', border: '1px solid var(--border-subtle)' }}>
-              <Loader2 style={{ width: '16px', height: '16px', color: 'var(--accent)' }} className="animate-spin" /></div></div>
+            <div className="flex items-center" style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-2) var(--space-4)', border: '1px solid var(--border-subtle)', gap: 'var(--space-2)' }}>
+              <Loader2 style={{ width: '14px', height: '14px', color: 'var(--accent)' }} className="animate-spin" />
+              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Generating...</span>
+              <button
+                onClick={stopGeneration}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', padding: '2px', display: 'flex', alignItems: 'center' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--danger)'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}
+                title="Stop generating"
+              >
+                <Square style={{ width: '12px', height: '12px', fill: 'currentColor' }} />
+              </button>
+            </div>
+          </div>
         )}
         <div ref={messagesEndRef} /></div>
 
@@ -550,14 +574,34 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
                 paddingRight: 'var(--space-10)',
                 opacity: loading || !documentId ? 0.5 : 1,
               }}/></div>
-          <button
-            onClick={() => sendMessage(input)}
-            disabled={!input.trim() || loading || !documentId}
-            className="btn btn-primary btn-md"
-            style={{
-              padding: 'var(--space-2)',
-              borderRadius: 'var(--radius-lg)',
-              opacity: !input.trim() || loading || !documentId ? 0.3 : 1,}}>
-            <Send style={{ width: '16px', height: '16px' }} /></button></div></div>
+          {loading ? (
+            <button
+              onClick={stopGeneration}
+              className="btn btn-md"
+              style={{
+                padding: 'var(--space-2)',
+                borderRadius: 'var(--radius-lg)',
+                background: 'var(--danger)',
+                color: 'white',
+                border: 'none',
+              }}
+              title="Stop generating"
+            >
+              <Square style={{ width: '14px', height: '14px', fill: 'currentColor' }} />
+            </button>
+          ) : (
+            <button
+              onClick={() => sendMessage(input)}
+              disabled={!input.trim() || !documentId}
+              className="btn btn-primary btn-md"
+              style={{
+                padding: 'var(--space-2)',
+                borderRadius: 'var(--radius-lg)',
+                opacity: !input.trim() || !documentId ? 0.3 : 1,
+              }}
+            >
+              <Send style={{ width: '16px', height: '16px' }} />
+            </button>
+          )}</div></div>
     </div>);
 }
