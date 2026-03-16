@@ -89,7 +89,7 @@ export default function TargetingPage() {
 
   if (error || !data) return (
     <div className="flex items-center justify-center" style={{ height: '60vh' }}>
-      <div style={{ color: 'var(--danger)', fontSize: 'var(--font-size-sm)' }}>{error || 'No data'}</div>
+      <div style={{ color: 'var(--danger)', fontSize: 'var(--font-size-sm)' }}>{error || 'Targeting data unavailable — try refreshing the page'}</div>
     </div>
   );
 

@@ -69,7 +69,7 @@ export default function ReportsPage() {
       const res = await cachedFetch(url);
       if (!res.ok) {
         const errData = await res.json().catch(e => { console.warn('[REPORTS_PARSE]', e instanceof Error ? e.message : e); return { error: 'Request failed' }; });
-        throw new Error(errData.error || 'Report generation failed — verify your API key is valid and try again');
+        throw new Error(errData.error || 'Report generation failed — check Settings → API Keys, or the service may be temporarily unavailable');
       }
 
       const html = await res.text();
@@ -77,7 +77,7 @@ export default function ReportsPage() {
       setReportType(type);
       setGeneratedAt(new Date().toLocaleString());
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Report generation failed — verify your API key is valid and try again');
+      setError(err instanceof Error ? err.message : 'Report generation failed — check Settings → API Keys, or the service may be temporarily unavailable');
     } finally {
       setLoading(null);
     }}
@@ -159,7 +159,7 @@ export default function ReportsPage() {
             aria-label="Select investor for brief"
             className="w-full px-3 py-2 rounded-lg text-sm mb-3 focus:outline-none"
             style={selectStyle}>
-            <option value="">Choose an investor to brief...</option>
+            <option value="">Investor name...</option>
             {investors.map(inv => (
               <option key={inv.id} value={inv.id}>
                 {inv.name} (Tier {inv.tier})</option>
@@ -172,7 +172,7 @@ export default function ReportsPage() {
               backgroundColor: (loading !== null || !selectedInvestor) ? 'var(--surface-2)' : 'var(--accent-muted)',
               color: (loading !== null || !selectedInvestor) ? 'var(--text-muted)' : 'var(--surface-0)', }}>
             {loading === 'investor_brief' ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-            {loading === 'investor_brief' ? 'Generating...' : selectedInvestor ? `Brief ${investorById.get(selectedInvestor)?.name || 'investor'}` : 'Select an investor'}</button></div></div>
+            {loading === 'investor_brief' ? 'Generating brief...' : selectedInvestor ? 'Generate brief' : 'Select investor above'}</button></div></div>
 
       {/* Error */}
       {error && (
