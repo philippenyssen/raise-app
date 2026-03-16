@@ -210,13 +210,13 @@ export default function BacklogPage() {
               />
             <input aria-label="Annual amount in millions" type="number" min="0" step="0.1" placeholder="Annual Amount (€M)" value={form.annual_amount} onChange={e => setForm(f => ({ ...f, annual_amount: e.target.value }))} className="input"
               />
-            <input type="number" step="0.05" min="0" max="1" placeholder="Confidence: 1.0=signed, 0.7=LOI, 0.3=pipeline" value={form.confidence} onChange={e => setForm(f => ({ ...f, confidence: e.target.value }))} className="input" title="1.0 = signed contract, 0.7 = LOI/MOU, 0.5 = verbal, 0.3 = pipeline"
+            <input aria-label="Confidence level" type="number" step="0.05" min="0" max="1" placeholder="Confidence: 1.0=signed, 0.7=LOI, 0.3=pipeline" value={form.confidence} onChange={e => setForm(f => ({ ...f, confidence: e.target.value }))} className="input" title="1.0 = signed contract, 0.7 = LOI/MOU, 0.5 = verbal, 0.3 = pipeline"
               />
-            <input type="date" placeholder="Start Date" value={form.start_date} onChange={e => setForm(f => ({ ...f, start_date: e.target.value }))} className="input"
+            <input aria-label="Contract start date" type="date" placeholder="Start Date" value={form.start_date} onChange={e => setForm(f => ({ ...f, start_date: e.target.value }))} className="input"
               />
-            <input type="date" placeholder="End Date" value={form.end_date} onChange={e => setForm(f => ({ ...f, end_date: e.target.value }))} className="input"
+            <input aria-label="Contract end date" type="date" placeholder="End Date" value={form.end_date} onChange={e => setForm(f => ({ ...f, end_date: e.target.value }))} className="input"
               />
-            <input placeholder="e.g., signed contract, LOI" value={form.source_doc} onChange={e => setForm(f => ({ ...f, source_doc: e.target.value }))} className="input" maxLength={200}
+            <input aria-label="Source document" placeholder="e.g., signed contract, LOI" value={form.source_doc} onChange={e => setForm(f => ({ ...f, source_doc: e.target.value }))} className="input" maxLength={200}
               /></div>
           <textarea placeholder="Notes" value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} className="input" rows={2} maxLength={2000}
             />

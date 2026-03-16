@@ -68,6 +68,9 @@ function cellStyle(rating: CellRating): React.CSSProperties {
   return { color: 'var(--text-secondary)' };
 }
 
+const backBtnStyle = { background: 'var(--surface-2)', color: 'var(--text-secondary)' } as const;
+const rowBorderBottom: React.CSSProperties = { borderBottom: '1px solid var(--border-subtle)' };
+
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
@@ -212,9 +215,7 @@ export default function TermComparePage() {
           <Link
             href="/terms"
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs btn-surface"
-            style={{
-              background: 'var(--surface-2)',
-              color: 'var(--text-secondary)', }}>
+            style={backBtnStyle}>
             <ArrowLeft className="w-3.5 h-3.5" />
             Terms</Link>
           <div>
@@ -422,8 +423,7 @@ export default function TermComparePage() {
                   <tr
                     key={row.label}
                     className="hover-row"
-                    style={{
-                      borderBottom: '1px solid var(--border-subtle)', }}>
+                    style={rowBorderBottom}>
                     <td className="px-4 py-2.5 text-xs font-normal" style={stTextMuted}>
                       {row.label}</td>
                     {results.results.map(r => {
