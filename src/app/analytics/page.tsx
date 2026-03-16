@@ -18,6 +18,8 @@ import {
 } from '@/lib/styles';
 import { EnthusiasmDots } from '@/components/shared';
 
+const dayLabelStyle = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' } as const;
+
 // ── Types ────────────────────────────────────────────────────────────
 
 interface AnalyticsData {
@@ -477,7 +479,7 @@ export default function AnalyticsPage() {
           <div>
             <h3 className="text-xs font-normal tracking-wider mb-3" style={stTextMuted}>Daily Activity (4 Weeks)</h3>
             <div className="grid gap-1" style={{ gridTemplateColumns: 'repeat(7, 1fr)' }}>
-              {['M','T','W','T','F','S','S'].map((d, i) => <div key={i} className="text-center" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{d}</div>)}
+              {['M','T','W','T','F','S','S'].map((d, i) => <div key={i} className="text-center" style={dayLabelStyle}>{d}</div>)}
               {velocity.dailyActivity.map((d) => {
                 const max = Math.max(...velocity.dailyActivity.map(x => x.count), 1);
                 const intensity = d.count / max;

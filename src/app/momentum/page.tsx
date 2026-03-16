@@ -14,6 +14,12 @@ import {
 } from 'lucide-react';
 
 const bgSurface2Sec = { background: 'var(--surface-2)', color: 'var(--text-secondary)' } as const;
+const barContainerH100 = { height: '100px' } as const;
+const barContainerFull = { height: '100%' } as const;
+const alertBadgeStyle = { background: 'var(--surface-2)', color: 'var(--text-muted)' } as const;
+const actionCellStyle = { background: 'transparent', color: 'var(--text-muted)' } as const;
+const heatRowBg = { background: 'var(--fg-95)' } as const;
+const anomalyBadgeStyle = { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', boxShadow: 'inset 0 0 0 1px var(--warn-40)' } as const;
 
 const TRAJECTORY_COLORS: Record<string, { bg: string; border: string; color: string }> = {
   critical_warning:  { border: 'var(--fg-50)',  bg: 'var(--fg-10)',  color: 'var(--danger)' },
@@ -297,7 +303,7 @@ export default function MomentumPage() {
               return (
                 <div key={t.week} className="flex-1 flex flex-col items-center gap-1">
                   <span className="text-xs font-mono" style={stTextSecondary}>{t.score}</span>
-                  <div className="w-full relative" style={{ height: '100px' }}>
+                  <div className="w-full relative" style={barContainerH100}>
                     <div
                       className="absolute bottom-0 w-full rounded-t transition-all duration-500"
                       style={{ height: `${Math.max(height, 3)}%`, background: trendBarBg(t.score) }} /></div>
@@ -312,7 +318,7 @@ export default function MomentumPage() {
               Trajectory Alerts
               <span
                 className="text-xs px-1.5 py-0.5 rounded"
-                style={{ background: 'var(--surface-2)', color: 'var(--text-muted)' }}>
+                style={alertBadgeStyle}>
                 {data.trajectoryAlerts.length}</span></h3>
             {data.trajectoryAlerts.map((alert, i) => {
               const c = TRAJECTORY_COLORS[alert.type] || TRAJECTORY_COLORS.early_warning;
@@ -397,7 +403,7 @@ export default function MomentumPage() {
                       {/* Investor name + type badge */}
                       <td
                         className="sticky left-0 backdrop-blur z-10 px-4 py-2.5"
-                        style={{ background: 'var(--fg-95)' }}>
+                        style={heatRowBg}>
                         <div className="flex items-center gap-2">
                           <Link
                             href={`/investors/${inv.investorId}`}
@@ -445,7 +451,7 @@ export default function MomentumPage() {
                           href={delta < -5 ? `/meetings/new?investor=${inv.investorId}` : `/investors/${inv.investorId}`}
                           title={delta < -5 ? 'Schedule meeting — momentum dropping' : 'View investor'}
                           className="inline-flex items-center justify-center w-6 h-6 rounded hover-chevron-action"
-                          style={{ background: 'transparent', color: 'var(--text-muted)' }}>
+                          style={actionCellStyle}>
                           <ChevronRight className="w-3.5 h-3.5" /></Link></td>
                     </tr>);
                 })}</tbody></table></div>
@@ -514,7 +520,7 @@ export default function MomentumPage() {
                         {cohort.weeklyAvg.map((ws) => {
                           const h = maxCohortScore > 0 ? (ws.score / maxCohortScore) * 100 : 0;
                           return (
-                            <div key={ws.week} className="flex-1 relative" style={{ height: '100%' }}>
+                            <div key={ws.week} className="flex-1 relative" style={barContainerFull}>
                               <div
                                 className="absolute bottom-0 w-full rounded-t"
                                 style={{ height: `${Math.max(h, 5)}%`, background: trendBarBg(ws.score), opacity: 0.7 }} />
@@ -539,7 +545,7 @@ export default function MomentumPage() {
               <Zap className="w-4 h-4" style={stTextTertiary} />
               <h2 className="text-sm font-normal tracking-wider" style={stTextSecondary}>Momentum Anomalies</h2>
               {data.anomalies.length > 0 && (
-                <span className="ml-auto px-2 py-0.5 rounded-full text-xs font-normal" style={{ background: 'var(--warning-muted)', color: 'var(--text-tertiary)', boxShadow: 'inset 0 0 0 1px var(--warn-40)' }}>{data.anomalies.length}</span>
+                <span className="ml-auto px-2 py-0.5 rounded-full text-xs font-normal" style={anomalyBadgeStyle}>{data.anomalies.length}</span>
               )}</div>
             {data.anomalies.length === 0 ? (
               <div className="text-center py-8">

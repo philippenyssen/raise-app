@@ -76,22 +76,21 @@ export default function ForecastPage() {
   const hasExclusions = excludedIds.size > 0;
   const whatIf = useMemo(() => {
     if (!data || !hasExclusions) return null;
-    const included = data.forecast.forecasts.filter(f => !excludedIds.has(f.investorId));
-    const committed = included.filter(f => f.currentStage === 'term_sheet' || f.currentStage === 'closed');
-    const high = included.filter(f => f.confidence === 'high');
-    const med = included.filter(f => f.confidence === 'medium');
-    const committedAmt = committed.reduce((s, i) => s + tierCapital(i.tier), 0);
-    const expectedAmt = high.reduce((s, i) => s + tierCapital(i.tier), 0) + med.reduce((s, i) => s + tierCapital(i.tier), 0) * 0.5;
-    const bestCaseAmt = included.reduce((s, i) => s + tierCapital(i.tier), 0);
-    const excludedCapital = [...excludedIds].reduce((s, id) => {
-      const inv = data.forecast.forecasts.find(f => f.investorId === id);
-      return s + (inv ? tierCapital(inv.tier) : 0);
-    }, 0);
+    let committedAmt = 0, highAmt = 0, medAmt = 0, bestCaseAmt = 0;
+    let highCount = 0, medCount = 0, lowCount = 0, excludedCapital = 0;
+    for (const f of data.forecast.forecasts) {
+      if (excludedIds.has(f.investorId)) { excludedCapital += tierCapital(f.tier); continue; }
+      const cap = tierCapital(f.tier);
+      bestCaseAmt += cap;
+      if (f.currentStage === 'term_sheet' || f.currentStage === 'closed') committedAmt += cap;
+      if (f.confidence === 'high') { highAmt += cap; highCount++; }
+      else if (f.confidence === 'medium') { medAmt += cap; medCount++; }
+      else if (f.confidence === 'low') { lowCount++; }
+    }
     return {
-      expected: committedAmt + expectedAmt, bestCase: bestCaseAmt, committed: committedAmt,
+      expected: committedAmt + highAmt + medAmt * 0.5, bestCase: bestCaseAmt, committed: committedAmt,
       excludedCapital, excludedCount: excludedIds.size,
-      high: high.length, medium: med.length,
-      low: included.filter(f => f.confidence === 'low').length,};
+      high: highCount, medium: medCount, low: lowCount,};
   }, [data, hasExclusions, excludedIds]);
 
   if (loading) {
