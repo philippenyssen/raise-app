@@ -230,7 +230,8 @@ export default function BacklogPage() {
         <EmptyState
           icon={DollarSign}
           title="No revenue commitments tracked yet"
-          description="Add signed contracts, frameworks, and LOIs to build revenue visibility for due diligence." />
+          description="Add signed contracts, frameworks, and LOIs to build revenue visibility for due diligence."
+          action={{ label: 'Add First Commitment', onClick: () => setShowAdd(true) }} />
       ) : (
         <div className="rounded-xl overflow-hidden">
           <table className="w-full text-sm" aria-label="Revenue backlog and contracts">
