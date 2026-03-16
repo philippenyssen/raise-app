@@ -348,6 +348,10 @@ export default function TodayPage() {
     investorId: string; investorName: string; readinessScore: number;
     readinessLevel: string; blockingFactors: string[];
   }[]>([]);
+  const [momentumAnomalies, setMomentumAnomalies] = useState<{
+    investorId: string; investorName: string; investorTier: number;
+    currentScore: number; deviation: number; message: string;
+  }[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [stalenessMinutes, setStalenessMinutes] = useState(0);
@@ -362,6 +366,7 @@ export default function TodayPage() {
     let pulseRes: Response | null = null;
     let fuRes: Response | null = null;
     let readyRes: Response | null = null;
+    let momRes: Response | null = null;
     try {
       const results = await Promise.all([
         cachedFetch('/api/briefing'),
@@ -369,9 +374,10 @@ export default function TodayPage() {
         cachedFetch('/api/velocity').catch(() => null),
         cachedFetch('/api/pulse').catch(() => null),
         cachedFetch('/api/followups?status=pending').catch(() => null),
-        cachedFetch('/api/readiness').catch(() => null),]);
+        cachedFetch('/api/readiness').catch(() => null),
+        cachedFetch('/api/momentum').catch(() => null),]);
       const res = results[0]!;
-      stratRes = results[1]; velRes = results[2]; pulseRes = results[3]; fuRes = results[4]; readyRes = results[5];
+      stratRes = results[1]; velRes = results[2]; pulseRes = results[3]; fuRes = results[4]; readyRes = results[5]; momRes = results[6];
       if (res.ok) {
         setData(await res.json());
         lastFetchedAt.current = Date.now();
@@ -427,6 +433,13 @@ export default function TodayPage() {
           (r.readinessLevel === 'stalled' || r.readinessLevel === 'cold') && r.tier <= 2
         ).slice(0, 5);
         setReadinessAlerts(stalled);
+      }
+      if (momRes?.ok) {
+        const momData = await momRes.json();
+        const anomalies = (momData.anomalies ?? [])
+          .filter((a: { investorTier: number; deviation: number }) => a.investorTier <= 2 && Math.abs(a.deviation) >= 15)
+          .slice(0, 3);
+        setMomentumAnomalies(anomalies);
       }
     } catch (e) {
       console.warn('[TODAY_SECONDARY]', e instanceof Error ? e.message : e);
@@ -879,6 +892,40 @@ export default function TodayPage() {
                     <p className="truncate" style={{ ...stFontXs, color: 'var(--text-tertiary)', ...mtSpace0 }}>
                       {r.blockingFactors[0]}</p>
                   )}
+                </div>
+                <span style={flexIcon}><ArrowUpRight className="w-3.5 h-3.5" style={{ color: 'var(--text-muted)' }} /></span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Momentum Anomalies — investors diverging from their cohort */}
+      {momentumAnomalies.length > 0 && (
+        <div style={{ borderRadius: 'var(--radius-lg)', padding: 'var(--space-4)', background: 'var(--surface-1)' }}>
+          <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-3)' }}>
+            <div className="flex items-center gap-2">
+              <span style={{ color: 'var(--danger)', ...flexIcon }}>
+                <AlertTriangle className="w-4 h-4" /></span>
+              <span style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>
+                Momentum anomalies</span>
+              <span style={{ ...stFontXs, color: 'var(--text-muted)' }}>
+                {momentumAnomalies.length} investor{momentumAnomalies.length !== 1 ? 's' : ''} diverging</span></div>
+            <Link href="/momentum" className="btn btn-ghost btn-sm shrink-0 investor-link" style={stTextSecondary}>
+              Momentum <span style={flexIcon}><ChevronRight className="w-3.5 h-3.5" /></span></Link></div>
+          <div style={flexColGap2}>
+            {momentumAnomalies.map(a => (
+              <Link key={a.investorId} href={`/investors/${a.investorId}`}
+                className="flex items-center gap-3 py-2 px-3 rounded-lg transition-colors hover-surface-2"
+                style={{ textDecoration: 'none' }}>
+                <span className="tabular-nums shrink-0" style={{
+                  fontSize: 'var(--font-size-sm)', fontWeight: 400,
+                  color: a.deviation < 0 ? 'var(--danger)' : 'var(--success)',
+                }}>{a.deviation > 0 ? '+' : ''}{a.deviation}</span>
+                <div className="flex-1 min-w-0">
+                  <span style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>{a.investorName}</span>
+                  <p className="truncate" style={{ ...stFontXs, color: 'var(--text-tertiary)', marginTop: '1px' }}>
+                    {a.message || `Score ${a.currentScore} — ${Math.abs(a.deviation)}pts ${a.deviation < 0 ? 'below' : 'above'} cohort`}</p>
                 </div>
                 <span style={flexIcon}><ArrowUpRight className="w-3.5 h-3.5" style={{ color: 'var(--text-muted)' }} /></span>
               </Link>

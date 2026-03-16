@@ -793,3 +793,4 @@ b4a0052	100	100	0	keep	product	Dashboard strategic overhaul: AI narrative brief 
 805	2026-03-16T19:26:50Z	Data Enrichment	enrichment bulk: add exponential backoff + circuit breaker on rate-limited providers	src/app/api/enrichment/route.ts	pass
 806	2026-03-16T19:28:48Z	Workflow & Automation	follow-up plan: make investor names clickable links to investor detail page	src/components/followup-plan.tsx	pass
 807	2026-03-16T19:30:38Z	Copywriting	copy: actionable error messages + clearer button labels + contextual placeholder on targeting/reports pages	src/app/targeting/page.tsx,src/app/reports/page.tsx	pass
+808	2026-03-16T19:33:58Z	Competitive Edge	today: surface momentum anomalies (investors diverging from cohort) in daily command center	src/app/today/page.tsx	pass
