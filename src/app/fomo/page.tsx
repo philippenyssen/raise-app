@@ -17,6 +17,8 @@ const cardSurface1 = { padding: 'var(--space-4)', background: 'var(--surface-1)'
 const textXlLight = { fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' } as const;
 const sectionHeading = { fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)', margin: '0 0 var(--space-3) 0' } as const;
 const filterTabBase: React.CSSProperties = { padding: '4px 10px', borderRadius: 'var(--radius-sm)', fontSize: 'var(--font-size-xs)', fontWeight: 400, border: 'none', cursor: 'pointer' };
+const triggerBadge = { fontSize: 'var(--font-size-xs)', padding: '2px 8px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-secondary)' } as const;
+const targetBadge: React.CSSProperties = { ...stFontXs, padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-tertiary)' };
 
 // ---------------------------------------------------------------------------
 // Types
@@ -262,12 +264,7 @@ function PressureCard({ inv }: { inv: InvestorFomo }) {
                 {inv.triggerInvestors.map(t => (
                   <span
                     key={t.name}
-                    style={{
-                      fontSize: 'var(--font-size-xs)',
-                      padding: '2px 8px',
-                      borderRadius: 'var(--radius-sm)',
-                      background: 'var(--surface-2)',
-                      color: 'var(--text-secondary)', }}>
+                    style={triggerBadge}>
                     {t.name}
                     <span style={{ color: 'var(--text-muted)', marginLeft: '4px' }}>
                       {t.statusLabel}</span></span>
@@ -342,7 +339,7 @@ function StrategyCardComponent({ card }: { card: StrategyCard }) {
           <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', letterSpacing: '0.01em' }}>Target</span>
           <div className="flex flex-wrap gap-1 mt-1">
             {card.targetInvestors.map(name => (
-              <span key={name} style={{ ...stFontXs, padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-tertiary)' }}>{name}</span>
+              <span key={name} style={targetBadge}>{name}</span>
             ))}</div></div>
       )}
     </div>);

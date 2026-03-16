@@ -24,6 +24,7 @@ const rescueBtnStyle: React.CSSProperties = { ...actionBtnBase, background: 'var
 const nudgeBtnStyle: React.CSSProperties = { ...actionBtnBase, background: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: '1px solid var(--fg-5)' };
 const projDateStyle: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', fontVariantNumeric: 'tabular-nums' };
 const iconMr4: React.CSSProperties = { marginRight: '4px' };
+const invNameStyle = { fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' } as const;
 
 interface VelocityInvestor { investor_id: string; investor_name: string; investor_type: string; investor_tier: number; status: string; enthusiasm: number; days_in_process: number; days_in_current_stage: number; projected_close_date: string; days_to_target: number; on_track: boolean; tracking_status: 'on_track' | 'behind' | 'at_risk'; bottleneck: string; velocity_score: number; meeting_count: number; meetings_per_week: number; days_since_last_meeting: number }
 interface VelocitySummary { total_active: number; on_track: number; behind: number; at_risk: number; avg_velocity_score: number; avg_days_in_process: number; raise_days_elapsed: number; raise_target_days: number }
@@ -222,7 +223,7 @@ export default function VelocityPage() {
                             style={inv.investor_tier <= 2 ? tierBadgeHigh : tierBadgeLow}>
                             {inv.investor_tier}</span>
                           <div>
-                            <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
+                            <div style={invNameStyle}>
                               {inv.investor_name}</div>
                             <div style={labelMuted}>
                               {TYPE_LABELS[inv.investor_type] || inv.investor_type}</div></div></div></Link></td>

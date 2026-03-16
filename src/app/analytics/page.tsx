@@ -19,6 +19,8 @@ import {
 import { EnthusiasmDots } from '@/components/shared';
 
 const dayLabelStyle = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' } as const;
+const objectionBadge = { fontSize: 'var(--font-size-xs)', background: 'var(--danger-muted)', color: 'var(--text-secondary)' } as const;
+const competitorBadge = { fontSize: 'var(--font-size-xs)', background: 'var(--surface-2)', color: 'var(--text-tertiary)' } as const;
 
 // ── Types ────────────────────────────────────────────────────────────
 
@@ -230,7 +232,7 @@ export default function AnalyticsPage() {
             <div className="text-xs font-normal tracking-wider mb-1" style={stTextMuted}>Top Objections</div>
             <div className="flex flex-wrap gap-2">
               {engagement.topObjections.slice(0, 5).map((o, i) => (
-                <span key={i} className="px-2 py-0.5 rounded" style={{ fontSize: 'var(--font-size-xs)', background: 'var(--danger-muted)', color: 'var(--text-secondary)' }}>
+                <span key={i} className="px-2 py-0.5 rounded" style={objectionBadge}>
                   {o.topic} ({o.count}x)</span>))}</div></div></div>)}
 
       {/* ── Bottleneck Alert ─────────────────────────────────────── */}
@@ -669,7 +671,7 @@ export default function AnalyticsPage() {
                         <span
                           key={c.name}
                           className="px-2 py-1 rounded"
-                          style={{ fontSize: 'var(--font-size-xs)', background: 'var(--surface-2)', color: 'var(--text-tertiary)' }}>
+                          style={competitorBadge}>
                           {c.name} ({c.count}x)</span>
                       ))}</div>
                   )}</div></div></div></div></div></CollapsibleSection>
