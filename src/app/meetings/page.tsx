@@ -330,6 +330,7 @@ export default function MeetingsPage() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [expandedOutcome, setExpandedOutcome] = useState<string | null>(null);
   const [loadedAt, setLoadedAt] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => { document.title = 'Raise | Meetings'; }, []);
   useEffect(() => {
@@ -337,8 +338,8 @@ export default function MeetingsPage() {
     let interval: ReturnType<typeof setInterval> | null = null;
     const load = () => cachedFetch('/api/meetings')
       .then(r => { if (!r.ok) throw new Error(`${r.status}`); return r.json(); })
-      .then(d => { if (active) { setMeetings(d); setLoadedAt(new Date().toISOString()); } })
-      .catch(() => { if (active) setMeetings([]); });
+      .then(d => { if (active) { setMeetings(d); setLoadedAt(new Date().toISOString()); setLoading(false); } })
+      .catch(() => { if (active) { setMeetings([]); setLoading(false); } });
     const start = () => { load(); interval = setInterval(load, 60_000); };
     const onVis = () => { if (document.hidden) { if (interval) { clearInterval(interval); interval = null; } } else { start(); } };
     start();
@@ -417,6 +418,13 @@ export default function MeetingsPage() {
             href="/meetings/new"
             className="btn btn-primary btn-md">
             + Log Meeting</Link></div></div>
+
+      {loading ? (
+        <div className="space-y-3">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {[1,2,3,4].map(i => <div key={i} className="skeleton" style={{ height: '3rem', borderRadius: 'var(--radius-lg)' }} />)}</div>
+          {[1,2,3].map(i => <div key={i} className="skeleton" style={{ height: '5rem', borderRadius: 'var(--radius-lg)' }} />)}</div>
+      ) : <>
 
       {/* Stats Bar */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 card-stagger">
@@ -605,5 +613,6 @@ export default function MeetingsPage() {
               </div>);
           })}</div>
       )}
+      </>}
     </div>);
 }

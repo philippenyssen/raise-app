@@ -65,6 +65,7 @@ const TYPE_STYLES: Record<InvestorType, React.CSSProperties> = {
   debt: { background: 'var(--warn-12)', color: 'var(--text-tertiary)', boxShadow: 'inset 0 0 0 1px var(--warn-30)' },
   family_office: { background: 'var(--accent-8)', color: 'var(--text-primary)', boxShadow: 'inset 0 0 0 1px var(--accent-10)' },};
 
+const compareBarStyle: React.CSSProperties = { position: 'fixed', bottom: 'var(--space-6)', left: '50%', transform: 'translateX(-50%)', background: 'var(--surface-2)', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-2) var(--space-4)', boxShadow: 'var(--shadow-lg)', zIndex: 50 };
 const filterBtnBase: React.CSSProperties = { padding: '0.5rem 0.75rem', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', fontWeight: 400, transition: 'all 150ms ease' };
 const filterBtnActive: React.CSSProperties = { ...filterBtnBase, background: 'var(--accent-muted)', color: 'var(--accent)' };
 const filterBtnInactive: React.CSSProperties = { ...filterBtnBase, background: 'var(--surface-1)', color: 'var(--text-tertiary)' };
@@ -557,7 +558,7 @@ export default function PipelinePage() {
 
       {/* ── Compare floating bar ──────────────────────────────── */}
       {compareIds.size >= 2 && (
-        <div className="flex items-center gap-3" style={{ position: 'fixed', bottom: 'var(--space-6)', left: '50%', transform: 'translateX(-50%)', background: 'var(--surface-2)', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-2) var(--space-4)', boxShadow: 'var(--shadow-lg)', zIndex: 50 }}>
+        <div className="flex items-center gap-3" style={compareBarStyle}>
           <span style={{ ...stFontSm, color: 'var(--text-secondary)' }}>{compareIds.size} selected</span>
           <select defaultValue="" onChange={async e => { if (!e.target.value) return; const s = e.target.value; try { await Promise.all(Array.from(compareIds).map(id => fetch('/api/investors', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, status: s }) }).then(r => { if (!r.ok) throw new Error('Failed'); }))); toast(`Moved ${compareIds.size} to ${STATUS_LABELS[s as InvestorStatus]}`); setCompareIds(new Set()); fetchInvestors(); } catch { toast('Could not move investors — try again', 'error'); } e.target.value = ''; }} className="input" style={{ width: 'auto', fontSize: 'var(--font-size-xs)', padding: '0.25rem 0.5rem' }}><option value="" disabled>Move to...</option>{Object.entries(STATUS_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select>
           <Link href={`/compare?ids=${Array.from(compareIds).join(',')}`} className="btn btn-primary btn-sm">Compare</Link>
