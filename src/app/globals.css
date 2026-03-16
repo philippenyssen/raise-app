@@ -453,6 +453,10 @@ body {
   transition: background 150ms ease;
 }
 
+.table-row:nth-child(even) {
+  background: color-mix(in srgb, var(--surface-1) 50%, transparent);
+}
+
 .table-row:hover {
   background: var(--surface-1);
 }

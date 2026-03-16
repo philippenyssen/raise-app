@@ -787,3 +787,4 @@ b4a0052	100	100	0	keep	product	Dashboard strategic overhaul: AI narrative brief 
 799	2026-03-16T19:14:22Z	Reliability & Ops	apiFetch: add 30s default timeout via AbortSignal to prevent indefinite hangs	src/lib/api-fetch.ts	pass
 800	2026-03-16T19:16:10Z	CEO & Strategy	decide: add inline context reason under each focus investor name (warning/stale/conviction/action)	src/app/decide/page.tsx	pass
 801	2026-03-16T19:20:12Z	Product Manager	calendar: add 'Log' meeting capture button on event cards with investor+date context	src/app/calendar/page.tsx	pass
+802	2026-03-16T19:21:43Z	Design & UX	global: add zebra striping to all .table-row tables + replace cryptic delta symbol with 'Change' label on momentum heatmap	src/app/globals.css,src/app/momentum/page.tsx	pass

@@ -383,7 +383,7 @@ export default function MomentumPage() {
                       {formatWeekLabel(w)}</th>
                   ))}
                   <th scope="col" className="px-3 py-3 font-normal text-xs text-center min-w-[60px]" style={stTextMuted}>
-                    &Delta;</th>
+                    Change</th>
                   <th scope="col" className="px-2 py-3 font-normal text-xs text-center min-w-[40px]" style={stTextMuted}></th></tr></thead>
               <tbody>
                 {data.matrix.length === 0 ? (
