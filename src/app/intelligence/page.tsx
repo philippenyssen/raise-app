@@ -9,6 +9,7 @@ import {
 import type { MarketDeal, Competitor, IntelligenceBrief } from '@/lib/types';
 import { useToast } from '@/components/toast';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
+import { EmptyState } from '@/components/ui/empty-state';
 import Link from 'next/link';
 import { stAccent, stBorderTop, stSurface1, stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 import { cachedFetch } from '@/lib/cache';
@@ -274,7 +275,7 @@ export default function IntelligencePage() {
           )}
 
           {deals.length === 0 ? (
-            <EmptyState message="Track competing fundraises to benchmark valuations, timelines, and investor overlap. Add manually or use AI Research above." />
+            <EmptyState icon={Globe} title="No market deals tracked" description="Track competing fundraises to benchmark valuations, timelines, and investor overlap. Add manually or use AI Research above." />
           ) : (
             <div className="rounded-xl overflow-hidden">
               <table className="w-full text-sm">
@@ -342,7 +343,7 @@ export default function IntelligencePage() {
           )}
 
           {competitors.length === 0 ? (
-            <EmptyState message="Monitor competitors to anticipate investor questions. Add key players or use AI Research above." />
+            <EmptyState icon={Shield} title="No competitors tracked" description="Monitor competitors to anticipate investor questions. Add key players or use AI Research above." />
           ) : (
             <div className="space-y-3">
               {competitors.map(c => {
@@ -388,7 +389,7 @@ export default function IntelligencePage() {
       {tab === 'briefs' && (
         <div className="space-y-3">
           {briefs.length === 0 ? (
-            <EmptyState message="Generate investor dossiers, market analysis, and competitive briefs. Type a company or topic in the Research bar above." />
+            <EmptyState icon={BookOpen} title="No intelligence briefs yet" description="Generate investor dossiers, market analysis, and competitive briefs. Type a company or topic in the Research bar above." />
           ) : (
             briefs.map(b => {
               const briefStyle = BRIEF_TYPE_STYLES[b.brief_type] || { background: 'var(--surface-2)', color: 'var(--text-tertiary)' };
@@ -558,16 +559,6 @@ function FormField({ name, label, placeholder, required }: { name: string; label
         placeholder={placeholder}
         required={required}
         className="input" />
-    </div>);
-}
-
-function EmptyState({ message }: { message: string }) {
-  return (
-    <div
-      className="rounded-xl p-8 text-center"
-      style={{ border: '1px dashed var(--border-default)' }}>
-      <Globe className="w-8 h-8 mx-auto mb-2" style={stTextMuted} />
-      <p className="text-sm" style={stTextMuted}>{message}</p>
     </div>);
 }
 

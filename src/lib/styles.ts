@@ -120,6 +120,7 @@ export const labelSecondary: React.CSSProperties = { fontSize: 'var(--font-size-
 export const labelAccent: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--accent)' };
 export const labelMuted: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' };
 export const labelMutedWide: React.CSSProperties = { ...labelMuted, letterSpacing: '0.08em' };
+export const labelMutedTight: React.CSSProperties = { ...labelMuted, letterSpacing: '0.01em' };
 
 // Probability color: 0.6/0.3 thresholds on 0-1 scale
 export function probColor(prob: number): string {

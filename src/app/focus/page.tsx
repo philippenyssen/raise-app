@@ -17,10 +17,10 @@ import {
   Rocket, Shield, XCircle, ChevronDown, Play, Ban, BarChart3,
   Star, Eye, Flame, Flag, MessageSquare,
 } from 'lucide-react';
-import { cardPad4, dimensionBg, dimensionColor, inlineBadgeStyle, labelMuted, labelMuted10, labelMutedWide, labelSecondary, labelTertiary, scoreBgStyle as focusScoreBgStyle, scoreColor as focusScoreColor, skelCardSm, stAccent, stBorderTop, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, INVESTOR_TYPE_STYLES } from '@/lib/styles';
+import { cardPad4, dimensionBg, dimensionColor, inlineBadgeStyle, labelMuted, labelMuted10, labelMutedTight, labelMutedWide, labelSecondary, labelTertiary, scoreBgStyle as focusScoreBgStyle, scoreColor as focusScoreColor, skelCardSm, stAccent, stBorderTop, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, INVESTOR_TYPE_STYLES } from '@/lib/styles';
 import { TierBadge, EnthusiasmDots } from '@/components/shared';
 const mt10 = { marginTop: '10px' } as const;
-const dimLabel = { ...labelMuted, fontWeight: 400, letterSpacing: '0.01em' } as const;
+const dimLabel = { ...labelMutedTight, fontWeight: 400 } as const;
 const objItemStyle = { fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', opacity: 0.85 } as const;
 
 interface FocusItem {

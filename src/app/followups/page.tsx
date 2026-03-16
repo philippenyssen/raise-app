@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import { fmtDateTime } from '@/lib/format';
 import { useToast } from '@/components/toast';
-import { cardPad4, labelAccent, labelMuted, labelMuted10, labelSecondary, stAccent, stTextMuted, stTextPrimary, stTextSecondary } from '@/lib/styles';
+import { cardPad4, labelAccent, labelMuted, labelMuted10, labelMutedTight, labelSecondary, stAccent, stTextMuted, stTextPrimary, stTextSecondary } from '@/lib/styles';
 import { cachedFetch } from '@/lib/cache';
 
 const filterBtnBase: React.CSSProperties = { borderRadius: 'var(--radius-sm)', fontSize: 'var(--font-size-xs)', fontWeight: 400, transition: 'all 150ms ease' };
@@ -584,7 +584,7 @@ function FollowupsContent() {
               {/* Subject */}
               <div style={{ marginBottom: 'var(--space-2)' }}>
                 <div className="flex items-center justify-between" style={{ marginBottom: '4px' }}>
-                  <span style={{ ...labelMuted, letterSpacing: '0.01em' }}>Subject</span>
+                  <span style={labelMutedTight}>Subject</span>
                   <button
                     onClick={() => {
                       navigator.clipboard.writeText(draft.subject);
@@ -601,7 +601,7 @@ function FollowupsContent() {
               {/* Body */}
               <div>
                 <div className="flex items-center justify-between" style={{ marginBottom: '4px' }}>
-                  <span style={{ ...labelMuted, letterSpacing: '0.01em' }}>Body</span>
+                  <span style={labelMutedTight}>Body</span>
                   <button
                     onClick={() => {
                       navigator.clipboard.writeText(draft.body);

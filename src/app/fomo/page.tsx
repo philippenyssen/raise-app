@@ -7,7 +7,7 @@ import {
   Zap, RefreshCw, AlertTriangle, TrendingUp, Users,
   ArrowRight, Clock, Activity, Target, Flame,
 } from 'lucide-react';
-import { getIntensityColor, inlineBadgeStyle, labelMuted, stAccent, stFontSm, stFontXs, stTextPrimary, textSmMuted, textSmSecondary } from '@/lib/styles';
+import { getIntensityColor, inlineBadgeStyle, labelMuted, labelMutedTight, stAccent, stFontSm, stFontXs, stTextPrimary, textSmMuted, textSmSecondary } from '@/lib/styles';
 import { TierBadge, EnthusiasmDots } from '@/components/shared';
 import { MS_PER_HOUR } from '@/lib/time';
 import { TYPE_LABELS_SHORT as TYPE_LABELS } from '@/lib/constants';
@@ -259,7 +259,7 @@ function PressureCard({ inv }: { inv: InvestorFomo }) {
           {/* Trigger investors */}
           {inv.triggerInvestors.length > 0 && (
             <div style={{ marginBottom: 'var(--space-3)' }}>
-              <span style={{ ...labelMuted, fontWeight: 400, letterSpacing: '0.01em' }}>Creating pressure</span>
+              <span style={{ ...labelMutedTight, fontWeight: 400 }}>Creating pressure</span>
               <div className="flex flex-wrap gap-1.5 mt-1.5">
                 {inv.triggerInvestors.map(t => (
                   <span
@@ -336,7 +336,7 @@ function StrategyCardComponent({ card }: { card: StrategyCard }) {
 
       {card.targetInvestors.length > 0 && (
         <div>
-          <span style={{ ...labelMuted, letterSpacing: '0.01em' }}>Target</span>
+          <span style={labelMutedTight}>Target</span>
           <div className="flex flex-wrap gap-1 mt-1">
             {card.targetInvestors.map(name => (
               <span key={name} style={targetBadge}>{name}</span>
