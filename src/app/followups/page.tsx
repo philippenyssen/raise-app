@@ -585,7 +585,7 @@ function FollowupsContent() {
 
               {/* Subject */}
               <div style={{ marginBottom: 'var(--space-2)' }}>
-                <div className="flex items-center justify-between" style={{ marginBottom: '4px' }}>
+                <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-1)' }}>
                   <span style={labelMutedTight}>Subject</span>
                   <button
                     onClick={() => {
@@ -602,7 +602,7 @@ function FollowupsContent() {
 
               {/* Body */}
               <div>
-                <div className="flex items-center justify-between" style={{ marginBottom: '4px' }}>
+                <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-1)' }}>
                   <span style={labelMutedTight}>Body</span>
                   <button
                     onClick={() => {

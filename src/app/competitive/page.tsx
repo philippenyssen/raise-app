@@ -81,21 +81,21 @@ export default function CompetitivePage() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 card-stagger">
         <div className="card-metric" style={{ padding: 'var(--space-3)' }}>
           <div className="metric-label">Total Mentions</div>
-          <div className="metric-value" style={{ marginTop: '2px' }}>{totalMentions}</div></div>
+          <div className="metric-value" style={{ marginTop: 'var(--space-0)' }}>{totalMentions}</div></div>
         <div className="card-metric" style={{ padding: 'var(--space-3)' }}>
           <div className="metric-label">Unique Competitors</div>
-          <div className="metric-value" style={{ marginTop: '2px' }}>{uniqueCompetitors}</div></div>
+          <div className="metric-value" style={{ marginTop: 'var(--space-0)' }}>{uniqueCompetitors}</div></div>
         <div className="card-metric" style={{ padding: 'var(--space-3)' }}>
           <div className="metric-label">Top Competitor</div>
-          <div className="metric-value" style={{ marginTop: '2px', fontSize: 'var(--font-size-lg)' }}>{topCompetitor}</div></div>
+          <div className="metric-value" style={{ marginTop: 'var(--space-0)', fontSize: 'var(--font-size-lg)' }}>{topCompetitor}</div></div>
         <div className="card-metric" style={{ padding: 'var(--space-3)' }}>
           <div className="metric-label">Meetings Scanned</div>
-          <div className="metric-value" style={{ marginTop: '2px' }}>{data?.total_meetings_scanned ?? 0}</div></div></div>
+          <div className="metric-value" style={{ marginTop: 'var(--space-0)' }}>{data?.total_meetings_scanned ?? 0}</div></div></div>
 
       {/* Date Filters */}
       <div className="flex flex-wrap gap-3 items-end">
         <div>
-          <label style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', display: 'block', marginBottom: '4px' }}>From</label>
+          <label style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', display: 'block', marginBottom: 'var(--space-1)' }}>From</label>
           <input
             type="date"
             value={fromDate}
@@ -103,7 +103,7 @@ export default function CompetitivePage() {
             className="input"
             style={{ width: '160px' }} /></div>
         <div>
-          <label style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', display: 'block', marginBottom: '4px' }}>To</label>
+          <label style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', display: 'block', marginBottom: 'var(--space-1)' }}>To</label>
           <input
             type="date"
             value={toDate}

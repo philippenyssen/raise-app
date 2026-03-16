@@ -110,7 +110,7 @@ export default function DealHeatPage() {
       <div className="flex items-center justify-between flex-wrap gap-4" style={{ marginBottom: 'var(--space-6)' }}>
         <div>
           <h1 className="page-title">Deal Heat Map</h1>
-          <p style={{ ...textSmMuted, marginTop: '2px' }}>
+          <p style={{ ...textSmMuted, marginTop: 'var(--space-0)' }}>
             Composite deal temperature across {counts.total} active investors</p></div>
         <div
           className="flex items-center gap-2"
@@ -200,7 +200,7 @@ export default function DealHeatPage() {
                     <div className="min-w-0 flex-1">
                       <div style={invNameStyle}>
                         {inv.name}</div>
-                      <div className="flex items-center gap-2" style={{ marginTop: '4px' }}>
+                      <div className="flex items-center gap-2" style={{ marginTop: 'var(--space-1)' }}>
                         <span style={typeBadgeStyle}>
                           {TYPE_LABELS[inv.type] || inv.type}</span>
                         <span style={labelMuted}>
