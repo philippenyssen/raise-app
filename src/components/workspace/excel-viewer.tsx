@@ -204,6 +204,26 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
   };
 
   const selectedCellData = selectedCell ? cells[selectedCell] : null;
+  const [formulaBarValue, setFormulaBarValue] = useState('');
+  const [editingFormulaBar, setEditingFormulaBar] = useState(false);
+  const formulaBarRef = useRef<HTMLInputElement>(null);
+
+  // Update formula bar when selected cell changes
+  useEffect(() => {
+    if (selectedCell) {
+      const cell = cells[selectedCell];
+      setFormulaBarValue(cell?.f || String(cell?.v ?? ''));
+    } else {
+      setFormulaBarValue('');
+    }
+  }, [selectedCell, cells]);
+
+  const handleFormulaBarSubmit = useCallback(() => {
+    if (!selectedCell || !editingFormulaBar) return;
+    const isFormula = formulaBarValue.startsWith('=');
+    onCellChange(selectedCell, formulaBarValue, isFormula ? formulaBarValue : undefined);
+    setEditingFormulaBar(false);
+  }, [selectedCell, formulaBarValue, editingFormulaBar, onCellChange]);
 
   return (
     <div
@@ -219,14 +239,25 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
           className="w-16 text-center text-xs font-mono rounded px-2 py-1 shrink-0"
           style={{ color: 'var(--text-secondary)', backgroundColor: 'var(--surface-2)' }}>
           {selectedCell || ''}</div>
-        <div className="text-xs px-1" style={{ color: 'var(--text-muted)' }}>fx</div>
-        <div
-          className="flex-1 text-sm font-mono rounded px-2 py-1 min-h-[28px]"
+        <div className="text-xs px-1" style={{ color: editingFormulaBar ? 'var(--accent)' : 'var(--text-muted)' }}>fx</div>
+        <input
+          ref={formulaBarRef}
+          value={formulaBarValue}
+          onChange={e => { setFormulaBarValue(e.target.value); setEditingFormulaBar(true); }}
+          onFocus={() => setEditingFormulaBar(true)}
+          onBlur={handleFormulaBarSubmit}
+          onKeyDown={e => {
+            if (e.key === 'Enter') { handleFormulaBarSubmit(); formulaBarRef.current?.blur(); }
+            if (e.key === 'Escape') { setEditingFormulaBar(false); const cell = selectedCell ? cells[selectedCell] : null; setFormulaBarValue(cell?.f || String(cell?.v ?? '')); }
+          }}
+          disabled={!selectedCell}
+          className="flex-1 text-sm font-mono rounded px-2 py-1 min-h-[28px] bg-transparent outline-none"
           style={{
             color: 'var(--text-secondary)',
-            backgroundColor: 'var(--surface-1)',
-            border: '1px solid var(--border-subtle)',}}>
-          {selectedCellData?.f || (selectedCellData ? String(selectedCellData.v ?? '') : '')}</div></div>
+            border: `1px solid ${editingFormulaBar ? 'var(--accent)' : 'var(--border-subtle)'}`,
+          }}
+          placeholder={selectedCell ? 'Enter value or formula...' : ''}
+        /></div>
 
       {/* Grid */}
       <div ref={gridRef} className="flex-1 overflow-auto">
