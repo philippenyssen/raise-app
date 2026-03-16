@@ -400,7 +400,12 @@ export default function InvestorsPage() {
                 <tr
                   key={inv.id}
                   className="table-row"
-                  style={{ background: isSelected ? 'var(--accent-muted)' : undefined }}>
+                  style={{ background: isSelected ? 'var(--accent-muted)' : undefined, cursor: 'pointer' }}
+                  onClick={(e) => {
+                    const target = e.target as HTMLElement;
+                    if (target.closest('input, select, button, a')) return;
+                    router.push(`/investors/${inv.id}`);
+                  }}>
                   <td style={{ width: '2.5rem', padding: 'var(--space-3) var(--space-4)' }}>
                     <input type="checkbox" checked={isSelected} onChange={() => toggleSelect(inv.id)}
                       style={{ accentColor: 'var(--accent)' }} /></td>
