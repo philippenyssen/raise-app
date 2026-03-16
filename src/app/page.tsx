@@ -922,7 +922,7 @@ export default function Dashboard() {
               ) : (
                 <div style={{ padding: 'var(--space-2) 0' }}>
                   <p style={labelSmMuted}>No active deals scored yet</p>
-                  <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 'var(--space-1)', opacity: 0.7 }}>Log meetings to generate deal heat scores</p>
+                  <p style={{ ...labelMuted, marginTop: 'var(--space-1)', opacity: 0.7 }}>Log meetings to generate deal heat scores</p>
                 </div>
               )}</div>
 
@@ -949,7 +949,7 @@ export default function Dashboard() {
               ) : (
                 <div style={{ padding: 'var(--space-2) 0' }}>
                   <p style={labelSmMuted}>No pending follow-ups</p>
-                  <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 'var(--space-1)', opacity: 0.7 }}>Follow-ups are created after meeting debriefs</p>
+                  <p style={{ ...labelMuted, marginTop: 'var(--space-1)', opacity: 0.7 }}>Follow-ups are created after meeting debriefs</p>
                 </div>
               )}</div></div>}
 
@@ -971,7 +971,7 @@ export default function Dashboard() {
                 return (
                   <div key={stage.label} className="w-full flex flex-col items-center">
                     {convPct !== null && stage.value > 0 && (
-                      <div className="tabular-nums" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 1 }}>{convPct}%</div>
+                      <div className="tabular-nums" style={{ ...labelMuted, marginBottom: 1 }}>{convPct}%</div>
                     )}
                     <div className="w-full flex items-center justify-center" style={{ maxWidth: `${widthPct}%` }}>
                       <div

@@ -87,7 +87,7 @@ export default function DealHeatPage() {
           <Flame className="w-10 h-10 mx-auto mb-3" style={{ color: 'var(--danger)' }} />
           <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', marginBottom: 'var(--space-1)' }}>
             Couldn&apos;t load deal heat data</h3>
-          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-4)' }}>
+          <p style={{ ...labelMuted, marginBottom: 'var(--space-4)' }}>
             {error || 'An unexpected error occurred'}</p>
           <button
             onClick={fetchDealHeat}

@@ -585,7 +585,7 @@ function FollowupsContent() {
               {/* Subject */}
               <div style={{ marginBottom: 'var(--space-2)' }}>
                 <div className="flex items-center justify-between" style={{ marginBottom: '4px' }}>
-                  <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', letterSpacing: '0.01em' }}>Subject</span>
+                  <span style={{ ...labelMuted, letterSpacing: '0.01em' }}>Subject</span>
                   <button
                     onClick={() => {
                       navigator.clipboard.writeText(draft.subject);
@@ -602,7 +602,7 @@ function FollowupsContent() {
               {/* Body */}
               <div>
                 <div className="flex items-center justify-between" style={{ marginBottom: '4px' }}>
-                  <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', letterSpacing: '0.01em' }}>Body</span>
+                  <span style={{ ...labelMuted, letterSpacing: '0.01em' }}>Body</span>
                   <button
                     onClick={() => {
                       navigator.clipboard.writeText(draft.body);
@@ -640,7 +640,7 @@ function FollowupsContent() {
         {/* Due date footer */}
         <div
           className="flex items-center justify-between"
-          style={{ padding: '0.5rem var(--space-4)', borderTop: isOverdue ? '1px solid var(--fg-6)' : '1px solid var(--border-subtle)', fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+          style={{ padding: '0.5rem var(--space-4)', borderTop: isOverdue ? '1px solid var(--fg-6)' : '1px solid var(--border-subtle)', ...labelMuted }}>
           {isOverdue ? (
             <span style={{ color: 'var(--text-primary)', fontWeight: 400 }}>
               {formatRelativeTime(item.due_at)} — was due {fmtDateTime(item.due_at)}</span>
@@ -739,7 +739,7 @@ function FollowupsContent() {
               <span style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>Complete follow-ups to track</span>
             )}</div>
           {bestActionType && (
-            <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 'var(--space-1)' }}>
+            <div style={{ ...labelMuted, marginTop: 'var(--space-1)' }}>
               Best: {ACTION_TYPE_CONFIG[bestActionType[0]]?.label || bestActionType[0]}</div>
           )}</div></div>
 
@@ -783,7 +783,7 @@ function FollowupsContent() {
           <AlertTriangle className="w-10 h-10 mx-auto mb-3" style={{ color: 'var(--danger)' }} />
           <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', marginBottom: 'var(--space-1)' }}>
             Failed to load follow-ups</h3>
-          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-4)' }}>
+          <p style={{ ...labelMuted, marginBottom: 'var(--space-4)' }}>
             {fetchError}</p>
           <button
             onClick={fetchFollowups}
@@ -826,7 +826,7 @@ function FollowupsContent() {
             <h2 className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 300 }}>
               <Users className="w-4 h-4" style={{ color: 'var(--chart-4)' }} />
               Follow-up Effectiveness</h2>
-            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 'var(--space-1)' }}>
+            <p style={{ ...labelMuted, marginTop: 'var(--space-1)' }}>
               Which follow-up types drive the most conviction change?</p></div>
           <div style={{ padding: 'var(--space-4)' }}>
             <div className="space-y-2">

@@ -646,7 +646,7 @@ function RecommendedDocRow({ doc, investorId, onLogAccess }: {
       <FileText className="w-3.5 h-3.5 shrink-0" style={stAccent} />
       <span className="truncate" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)' }}>
         {doc.document_title}</span>
-      <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', background: 'var(--surface-2)', padding: '0 var(--space-1)', borderRadius: 'var(--radius-sm)' }}>
+      <span style={{ ...labelMuted, background: 'var(--surface-2)', padding: '0 var(--space-1)', borderRadius: 'var(--radius-sm)' }}>
         {doc.category}</span>
       <button
         className="ml-auto shrink-0 btn btn-md share-btn"

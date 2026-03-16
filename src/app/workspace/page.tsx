@@ -26,7 +26,7 @@ const TYPE_LABELS: Record<string, string> = {
   custom: 'Custom',};
 
 const docBtnBase: React.CSSProperties = { padding: 'var(--space-1) var(--space-2)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-sm)', border: 'none', cursor: 'pointer', display: 'block', width: '100%' };
-const genBtnBase: React.CSSProperties = { padding: 'var(--space-1) var(--space-2)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', border: 'none' };
+const genBtnBase: React.CSSProperties = { padding: 'var(--space-1) var(--space-2)', borderRadius: 'var(--radius-md)', ...labelMuted, border: 'none' };
 const typeGroupLabel = { fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-muted)', padding: '0 var(--space-2)', marginBottom: 'var(--space-1)' } as const;
 
 export default function WorkspacePage() {

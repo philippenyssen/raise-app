@@ -7,12 +7,12 @@ import Link from 'next/link';
 import type { Meeting } from '@/lib/types';
 import { Search, FileSearch, Calendar, Download, ChevronDown, ChevronRight, Star, CheckCircle2, X, TrendingUp, TrendingDown, Minus, Hash } from 'lucide-react';
 import { fmtDateTime } from '@/lib/format';
-import { labelTertiary, stFontSm, stFontXs, stTextMuted, stTextTertiary } from '@/lib/styles';
+import { labelMuted, labelTertiary, stFontSm, stFontXs, stTextMuted, stTextTertiary } from '@/lib/styles';
 import { EmptyState } from '@/components/ui/empty-state';
 import { CopyButton } from '@/components/copy-button';
 
-const labelMutedMb4 = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '4px' } as const;
-const labelBlockMutedMb4 = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' } as const;
+const labelMutedMb4 = { ...labelMuted, marginBottom: '4px' } as const;
+const labelBlockMutedMb4 = { ...labelMuted, display: 'block', marginBottom: '4px' } as const;
 const ratingBtnBase: React.CSSProperties = { width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'none', border: 'none', padding: 0 };
 const meetingCountBadge = { fontSize: 'var(--font-size-xs)', padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-muted)' } as const;
 const objectionBadge: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--success-muted)', color: 'var(--text-secondary)' };
