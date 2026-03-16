@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { STATUS_LABELS, TYPE_LABELS, MEETING_TYPE_LABELS } from '@/lib/constants';
-import { cellPad, labelMuted, labelMuted10, stAccent, stFontSm, stFontXs, stSurface1, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, textSmMuted } from '@/lib/styles';
+import { cellPad, labelMuted, labelMuted10, labelMutedWide, stAccent, stFontSm, stFontXs, stSurface1, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, textSmMuted } from '@/lib/styles';
 
 const compareCellBase: React.CSSProperties = { ...cellPad, fontSize: 'var(--font-size-sm)', ...stTextSecondary };
 const compareThBase = { padding: 'var(--space-3) var(--space-4)', minWidth: 200 } as const;
@@ -714,7 +714,7 @@ function InvestorNameLink({ investor }: { investor: Investor }) {
 function SectionHeader({ label, colSpan }: { label: string; colSpan: number }) {
   return (
     <tr style={stSurface1}>
-      <td colSpan={colSpan} style={{ padding: 'var(--space-2) var(--space-4)', fontSize: 'var(--font-size-xs)', fontWeight: 400, ...stTextMuted, letterSpacing: '0.08em' }}>
+      <td colSpan={colSpan} style={{ padding: 'var(--space-2) var(--space-4)', ...labelMutedWide, fontWeight: 400 }}>
         {label}</td>
     </tr>);
 }
@@ -985,7 +985,7 @@ function VerdictCard({
         background: c.bg, }}>
       <div className="flex items-center gap-2 mb-2">
         <span style={{ color: c.iconColor }}>{icon}</span>
-        <span style={{ ...labelMuted, letterSpacing: '0.08em', fontWeight: 400 }}>
+        <span style={{ ...labelMutedWide, fontWeight: 400 }}>
           {title}</span></div>
       <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', marginBottom: 'var(--space-1)' }}>
         {verdict.name}</div>

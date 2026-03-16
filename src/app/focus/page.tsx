@@ -17,7 +17,7 @@ import {
   Rocket, Shield, XCircle, ChevronDown, Play, Ban, BarChart3,
   Star, Eye, Flame, Flag, MessageSquare,
 } from 'lucide-react';
-import { cardPad4, dimensionBg, dimensionColor, inlineBadgeStyle, labelMuted, labelMuted10, labelSecondary, labelTertiary, scoreBgStyle as focusScoreBgStyle, scoreColor as focusScoreColor, skelCardSm, stAccent, stBorderTop, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, INVESTOR_TYPE_STYLES } from '@/lib/styles';
+import { cardPad4, dimensionBg, dimensionColor, inlineBadgeStyle, labelMuted, labelMuted10, labelMutedWide, labelSecondary, labelTertiary, scoreBgStyle as focusScoreBgStyle, scoreColor as focusScoreColor, skelCardSm, stAccent, stBorderTop, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, INVESTOR_TYPE_STYLES } from '@/lib/styles';
 import { TierBadge, EnthusiasmDots } from '@/components/shared';
 const mt10 = { marginTop: '10px' } as const;
 const dimLabel = { ...labelMuted, fontWeight: 400, letterSpacing: '0.01em' } as const;
@@ -370,7 +370,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
                 className="tabular-nums"
                 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: focusScoreColor(item.focusScore) }}>
                 {item.focusScore}</span>
-              <span style={{ ...labelMuted, letterSpacing: '0.08em' }}>Focus</span></div>
+              <span style={labelMutedWide}>Focus</span></div>
             {/* Quick action buttons — always visible for top 3, on hover for rest */}
               <div className={`flex items-center gap-1${rank > 3 ? ' hover-show-actions' : ''}`} onClick={e => e.stopPropagation()}>
                 <Link
@@ -398,7 +398,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
         <div className="px-4 py-3 ml-11 space-y-3" style={stBorderTop}>
           {/* Score breakdown */}
           <div>
-            <p style={{ ...labelMuted, letterSpacing: '0.08em', marginBottom: '8px' }}>Score Breakdown</p>
+            <p style={{ ...labelMutedWide, marginBottom: '8px' }}>Score Breakdown</p>
             <div className="grid grid-cols-5 gap-2">
               {[
                 { label: 'Investor Score', value: item.components.investorScore, weight: '30%' },
@@ -416,7 +416,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
           {/* Unresolved objections */}
           {item.unresolvedObjections.length > 0 && (
             <div>
-              <p style={{ ...labelMuted, letterSpacing: '0.08em', marginBottom: '4px' }}>Unresolved Objections</p>
+              <p style={{ ...labelMutedWide, marginBottom: '4px' }}>Unresolved Objections</p>
               <div className="space-y-1">
                 {item.unresolvedObjections.map((obj) => (
                   <div key={obj} className="flex items-start gap-1.5" style={objItemStyle}>
@@ -657,7 +657,7 @@ function DeprioritizeSection({ investors }: { investors: InvestorSummary[] }) {
         style={{ background: 'transparent' }}>
         <div className="flex items-center gap-2">
           <Ban className="w-3.5 h-3.5" style={stTextMuted} />
-          <span style={{ ...labelMuted, fontWeight: 400, letterSpacing: '0.08em' }}>
+          <span style={{ ...labelMutedWide, fontWeight: 400 }}>
             Deprioritize ({investors.length})</span></div>
         <ChevronDown className={`w-4 h-4 transition-transform ${expanded ? 'rotate-180' : ''}`} style={stTextMuted} /></button>
       {expanded && (
@@ -849,7 +849,7 @@ export default function FocusPage() {
           {/* Term Sheet Ready */}
           {accelData.termSheetReady.length > 0 && (
             <div>
-              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-secondary)', letterSpacing: '0.08em' }}>
+              <h3 className="flex items-center gap-2 mb-2" style={{ ...labelMutedWide, fontWeight: 400, color: 'var(--text-secondary)' }}>
                 <CheckCircle className="w-3.5 h-3.5" /> Term Sheet Ready ({accelData.termSheetReady.length})</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 {accelData.termSheetReady.map(inv => (
@@ -860,7 +860,7 @@ export default function FocusPage() {
           {/* Immediate Actions */}
           {immediateActions.length > 0 && (
             <div>
-              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-primary)', letterSpacing: '0.08em' }}>
+              <h3 className="flex items-center gap-2 mb-2" style={{ ...labelMutedWide, fontWeight: 400, color: 'var(--text-primary)' }}>
                 <AlertTriangle className="w-3.5 h-3.5" /> Immediate ({immediateActions.length})</h3>
               <div className="space-y-2">
                 {immediateActions.map(item => (
@@ -875,7 +875,7 @@ export default function FocusPage() {
           {/* This Week Actions */}
           {thisWeekActions.length > 0 && (
             <div>
-              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-tertiary)', letterSpacing: '0.08em' }}>
+              <h3 className="flex items-center gap-2 mb-2" style={{ ...labelMutedWide, fontWeight: 400, color: 'var(--text-tertiary)' }}>
                 <Clock className="w-3.5 h-3.5" /> This Week ({thisWeekActions.length})</h3>
               <div className="space-y-2">
                 {thisWeekActions.map(item => (
@@ -890,7 +890,7 @@ export default function FocusPage() {
           {/* At Risk */}
           {accelData.atRisk.length > 0 && (
             <div>
-              <h3 className="flex items-center gap-2 mb-2" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-primary)', letterSpacing: '0.08em' }}>
+              <h3 className="flex items-center gap-2 mb-2" style={{ ...labelMutedWide, fontWeight: 400, color: 'var(--text-primary)' }}>
                 <Shield className="w-3.5 h-3.5" /> At Risk ({accelData.atRisk.length})</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 {accelData.atRisk.map(inv => (
@@ -929,7 +929,7 @@ export default function FocusPage() {
           {/* Stale Alerts */}
           {staleAlerts.length > 0 && (
             <div>
-              <h2 className="flex items-center gap-2 mb-3" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-primary)', letterSpacing: '0.08em' }}>
+              <h2 className="flex items-center gap-2 mb-3" style={{ ...labelMutedWide, fontWeight: 400, color: 'var(--text-primary)' }}>
                 <AlertTriangle className="w-4 h-4" /> Stale Alerts</h2>
               <div className="space-y-2">
                 {staleAlerts.map(item => (

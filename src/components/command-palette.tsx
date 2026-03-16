@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { cachedFetch } from '@/lib/cache';
-import { labelMuted, textSmSecondary, kbdStyle, kbdStyleCompact } from '@/lib/styles';
+import { labelMuted, labelMutedWide, textSmSecondary, kbdStyle, kbdStyleCompact } from '@/lib/styles';
 import { createPortal } from 'react-dom';
 import {
   Sun, LayoutDashboard, Columns3, Users, Calendar,
@@ -266,7 +266,7 @@ export default function CommandPalette() {
 
   function renderSectionHeader(title: string) {
     return (
-      <div style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, letterSpacing: '0.08em', color: 'var(--text-muted)', padding: '8px 16px 4px' }}>
+      <div style={{ ...labelMutedWide, fontWeight: 400, padding: '8px 16px 4px' }}>
         {title}
       </div>);
   }
