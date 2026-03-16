@@ -278,13 +278,17 @@ export async function POST(req: NextRequest) {
             }}
         }
 
-        // Auto-create portfolio records
+        // Auto-create portfolio records (fuzzy dedup by normalized name)
         if (profile.enriched_investments.length > 0) {
+          const norm = (s: string) => s.toLowerCase().replace(/[^\w]/g, '');
           const existingPortfolio = await getInvestorPortfolio(investor.id);
-          const existingCompanies = new Set(existingPortfolio.map(p => p.company.toLowerCase()));
+          const existingCompanies = new Set(existingPortfolio.map(p => norm(p.company)));
+          const created = new Set<string>();
 
           for (const inv of profile.enriched_investments.slice(0, 20)) {
-            if (inv.company && !existingCompanies.has(inv.company.toLowerCase())) {
+            const key = inv.company ? norm(inv.company) : '';
+            if (key && !existingCompanies.has(key) && !created.has(key)) {
+              created.add(key);
               await createPortfolioCo({
                 investor_id: investor.id,
                 company: inv.company,
