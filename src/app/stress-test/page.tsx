@@ -151,7 +151,7 @@ export default function StressTestPage() {
     }
   }, [toast]);
 
-  useEffect(() => { document.title = 'Raise | Stress Test'; }, []);
+  useEffect(() => { document.title = 'Raise | Process Stress Test'; }, []);
   useEffect(() => {
     fetchData();
   }, [fetchData]);

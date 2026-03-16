@@ -57,7 +57,7 @@ function getPriorityStyles(priority: string): React.CSSProperties {
   }}
 
 export default function AnalysisPage() {
-  useEffect(() => { document.title = 'Raise | AI Analysis'; }, []);
+  useEffect(() => { document.title = 'Raise | AI Pattern Analysis'; }, []);
   const { toast } = useToast();
   const [data, setData] = useState<AnalysisData | null>(null);
   const [loading, setLoading] = useState(false);

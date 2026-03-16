@@ -73,7 +73,7 @@ function cellStyle(rating: CellRating): React.CSSProperties {
 // ---------------------------------------------------------------------------
 
 export default function TermComparePage() {
-  useEffect(() => { document.title = 'Raise | Term Compare'; }, []);
+  useEffect(() => { document.title = 'Raise | Term Sheet Economics'; }, []);
 
   const { toast } = useToast();
   const [scenarios, setScenarios] = useState<TermScenario[]>([{ ...EMPTY_SCENARIO }]);
