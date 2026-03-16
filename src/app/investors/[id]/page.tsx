@@ -7,7 +7,7 @@ import type { Investor, Meeting, InvestorPartner, InvestorPortfolioCo, Intellige
 import {
   ArrowLeft, Calendar, TrendingUp, AlertTriangle,
   Clock, Target, Users, Zap, Briefcase, UserCheck, BookOpen,
-  RefreshCw, Loader2, Trash2, ClipboardList, Check, FileSearch,
+  RefreshCw, Loader2, Trash2, ClipboardList, Check,
   Gauge, ArrowUpRight, ArrowRight, ArrowDownRight, Minus, ShieldAlert, Lightbulb,
   Activity, AlertCircle, Database, ChevronDown, ChevronRight, ExternalLink,
   Flame, Phone, Mail, SendHorizonal, CheckCircle2, XCircle,
@@ -561,53 +561,35 @@ export default function InvestorDetailPage() {
                 <X className="w-3.5 h-3.5" /> Cancel</button>
             </>
           ) : (
-            <button
-              onClick={startEdit}
-              className="px-3 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2 btn-surface"
-              style={{ ...stSurface2, ...textPrimary }}>
-              <Pencil className="w-3.5 h-3.5" /> Edit</button>
-          )}
-          <Link
-            href={`/meetings/prep?investor=${id}`}
-            className="px-3 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2 btn-surface"
-            style={{ ...stSurface2, ...textPrimary }}>
-            <FileSearch className="w-3.5 h-3.5" /> Prep Meeting</Link>
-          <button
-            onClick={handleResearch}
-            disabled={researching}
-            className="px-3 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2 btn-surface"
-            style={{
-              background: 'var(--surface-2)',
-              color: researching ? 'var(--text-muted)' : 'var(--text-primary)', }}>
-            {researching ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Researching...</> : <><RefreshCw className="w-3.5 h-3.5" /> Research</>}
-          </button>
-          <button
-            onClick={() => handleCompose('follow_up')}
-            disabled={composing}
-            className="px-3 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2 btn-surface"
-            style={{ ...stSurface2, ...textPrimary }}>
-            {composing ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Composing...</> : <><SendHorizonal className="w-3.5 h-3.5" /> Compose</>}
-          </button>
-          <Link
-            href="/pipeline"
-            className="px-3 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2 btn-surface"
-            style={{ ...stSurface2, ...textPrimary }}>
-            <Target className="w-3.5 h-3.5" /> Pipeline</Link>
-          <Link
-            href={`/meetings/new?investor=${id}`}
-            className="px-4 py-2 rounded-lg text-sm font-normal transition-colors btn-accent-hover"
-            style={{ background: 'var(--accent)', color: 'var(--text-primary)' }}>
-            + Log Meeting</Link>
-          <Link
-            href={`/meetings/prep?investor=${id}`}
-            className="px-4 py-2 rounded-lg text-sm font-normal transition-colors"
-            style={{ background: 'var(--surface-2)', color: 'var(--text-secondary)', border: '1px solid var(--border-subtle)' }}>
-            Prep Meeting</Link>
-          <Link
-            href={`/followups?investor=${id}`}
-            className="px-3 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-1.5"
-            style={{ background: 'var(--surface-2)', color: 'var(--text-secondary)', border: '1px solid var(--border-subtle)' }}>
-            <SendHorizonal className="w-3.5 h-3.5" /> Follow-ups</Link></div></div>
+            <>
+              <button
+                onClick={startEdit}
+                className="px-3 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2 btn-surface"
+                style={{ ...stSurface2, ...textPrimary }}>
+                <Pencil className="w-3.5 h-3.5" /> Edit</button>
+              <Link
+                href={`/meetings/new?investor=${id}`}
+                className="px-4 py-2 rounded-lg text-sm font-normal transition-colors btn-accent-hover flex items-center gap-1.5"
+                style={{ background: 'var(--accent)', color: 'var(--text-primary)' }}>
+                <Calendar className="w-3.5 h-3.5" /> Log Meeting</Link>
+              <button
+                onClick={() => handleCompose('follow_up')}
+                disabled={composing}
+                className="px-3 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2 btn-surface"
+                style={{ ...stSurface2, ...textPrimary }}>
+                {composing ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Composing...</> : <><SendHorizonal className="w-3.5 h-3.5" /> Compose</>}
+              </button>
+              <button
+                onClick={handleResearch}
+                disabled={researching}
+                className="px-3 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2 btn-surface"
+                style={{
+                  background: 'var(--surface-2)',
+                  color: researching ? 'var(--text-muted)' : 'var(--text-primary)', }}>
+                {researching ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Researching...</> : <><RefreshCw className="w-3.5 h-3.5" /> Research</>}
+              </button>
+            </>
+          )}</div></div>
 
       {/* Quick Context Strip */}
       {investor && (
@@ -619,7 +601,7 @@ export default function InvestorDetailPage() {
           )}
           {(() => { const pending = followups.filter(f => f.status === 'pending'); if (!pending.length) return null; const next = pending.sort((a, b) => a.due_at.localeCompare(b.due_at))[0]; const d = Math.ceil((new Date(next.due_at).getTime() - Date.now()) / 864e5); return <span style={{ color: d < 0 ? 'var(--danger)' : d <= 2 ? 'var(--warning)' : 'var(--text-muted)' }}>Next follow-up: {d < 0 ? `${-d}d overdue` : d === 0 ? 'today' : `in ${d}d`}</span>; })()}
           {meetings.length > 0 && (() => { const d = Math.floor((Date.now() - new Date(meetings[0].date).getTime()) / 864e5); return d >= 7 ? <span style={{ color: d >= 14 ? 'var(--danger)' : 'var(--warning)' }}>{d}d since last contact</span> : null; })()}
-          {latestEnthusiasm > 0 && <span>Enthusiasm: {latestEnthusiasm}/10</span>}
+          {latestEnthusiasm > 0 && <span>Enthusiasm: {latestEnthusiasm}/5</span>}
         </div>
       )}
 
