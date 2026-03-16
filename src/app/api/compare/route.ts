@@ -208,7 +208,7 @@ export async function POST(req: NextRequest) {
       };});
 
     const profiles = (await Promise.all(profilePromises)).filter((p): p is InvestorCompareProfile => p !== null);
-    if (profiles.length < 2) return NextResponse.json({ error: 'Could not find enough valid investors. At least 2 required.' }, { status: 404 });
+    if (profiles.length < 2) return NextResponse.json({ error: 'Couldn\'t find enough valid investors. At least 2 required.' }, { status: 404 });
 
     return NextResponse.json({
       profiles,

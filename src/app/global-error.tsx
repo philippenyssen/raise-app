@@ -7,7 +7,7 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', gap: '24px', padding: '32px' }}>
           <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 400 }}>The page couldn&apos;t load</h2>
           <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', textAlign: 'center', maxWidth: '400px' }}>
-            {error.message || 'An unexpected error occurred. Please try again.'}
+            {error.message || 'An unexpected error occurred. Try again.'}
           </p>
           {error.digest && <p style={{ color: 'var(--text-tertiary)', fontSize: 'var(--font-size-xs)' }}>ID: {error.digest}</p>}
           <button

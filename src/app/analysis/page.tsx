@@ -72,7 +72,7 @@ export default function AnalysisPage() {
     } catch (e) {
       console.warn('[ANALYSIS]', e instanceof Error ? e.message : e);
       toast('Can\'t analyze yet — log at least 2 meetings with notes to unlock insights', 'error');
-      setData({ patterns: null, health: { health: 'red', diagnosis: 'Analysis failed. Please try again.', recommendations: [], risk_factors: [] }, objections: [], funnel: {}, meeting_count: 0, error: 'Failed to run analysis' });
+      setData({ patterns: null, health: { health: 'red', diagnosis: 'Analysis failed. Try again.', recommendations: [], risk_factors: [] }, objections: [], funnel: {}, meeting_count: 0, error: 'Failed to run analysis' });
     } finally {
       setLoading(false);
     }

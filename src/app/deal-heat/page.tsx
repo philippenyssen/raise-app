@@ -55,7 +55,7 @@ export default function DealHeatPage() {
     setError(null);
     cachedFetch('/api/deal-heat')
       .then(res => {
-        if (!res.ok) throw new Error('Could not load deal heat data — refresh to retry');
+        if (!res.ok) throw new Error('Couldn\'t load deal heat data — refresh to retry');
         return res.json();})
       .then(d => { setData(d); setLoading(false); })
       .catch(e => { setError(e.message); setLoading(false); });
@@ -88,7 +88,7 @@ export default function DealHeatPage() {
   if (error || !data) {
     return (
       <div className="flex-1 p-6 page-content" style={maxWidthCenter}>
-        <EmptyState icon={Flame} title="Couldn't load deal heat data" description={error || 'An unexpected error occurred'} action={{ label: 'Retry', onClick: fetchDealHeat }} />
+        <EmptyState icon={Flame} title="Couldn\'t load deal heat data" description={error || 'An unexpected error occurred'} action={{ label: 'Retry', onClick: fetchDealHeat }} />
       </div>);
   }
 

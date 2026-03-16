@@ -90,7 +90,7 @@ export default function HealthPage() {
 
   if (healthError) return (
     <div className="page-content">
-      <EmptyState icon={AlertTriangle} title="Could not load health data" description={healthError} action={{ label: 'Retry', onClick: fetchHealth }} />
+      <EmptyState icon={AlertTriangle} title="Couldn\'t load health data" description={healthError} action={{ label: 'Retry', onClick: fetchHealth }} />
     </div>);
 
   if (!data) return (

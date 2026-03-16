@@ -504,7 +504,7 @@ export default function TodayPage() {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-8)', maxWidth: '860px' }}>
         <h1 className="page-title">Morning Briefing</h1>
         <div className="text-center" style={{ background: 'var(--danger-muted)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-10)' }}>
-          <p style={{ ...stTextSecondary, marginBottom: 'var(--space-4)' }}>Could not load briefing data.</p>
+          <p style={{ ...stTextSecondary, marginBottom: 'var(--space-4)' }}>Couldn\'t load briefing data.</p>
           <button onClick={() => fetchBriefing()} className="btn btn-secondary btn-md">
             Retry</button></div>
       </div>);

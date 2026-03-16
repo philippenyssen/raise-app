@@ -200,7 +200,7 @@ export default function StrategicPage() {
         <h1 className="page-title">Strategic Dashboard</h1>
         <div style={{ background: 'var(--accent-8)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-8)' }} className="text-center space-y-3">
           <AlertTriangle className="w-8 h-8 mx-auto" style={stTextPrimary} />
-          <p style={stTextTertiary}>{error || 'Could not load strategic data.'}</p>
+          <p style={stTextTertiary}>{error || 'Couldn\'t load strategic data.'}</p>
           <button
             onClick={() => fetchData()}
             className="btn btn-sm btn-secondary btn-surface transition-colors">

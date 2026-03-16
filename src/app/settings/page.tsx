@@ -215,7 +215,7 @@ export default function SettingsPage() {
       setKeyTest(await res.json());
     } catch (e) {
       console.warn('[SETTINGS_KEY_TEST]', e instanceof Error ? e.message : e);
-      setKeyTest({ status: 'error', message: 'Could not reach test endpoint' });
+      setKeyTest({ status: 'error', message: 'Couldn\'t reach test endpoint' });
     } finally {
       setTesting(false);
     }}

@@ -328,7 +328,7 @@ export default function ModelPage() {
       toast(`Applied ${updates.length} cell change${updates.length !== 1 ? 's' : ''}`);
     } catch (e) {
       console.warn('[MODEL_AI_CELLS]', e instanceof Error ? e.message : e);
-      toast('Could not parse AI cell updates', 'error');
+      toast('Couldn\'t parse AI cell updates', 'error');
     }
   }, [handleCellChange, toast]);
 

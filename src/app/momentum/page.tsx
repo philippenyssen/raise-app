@@ -241,7 +241,7 @@ export default function MomentumPage() {
       <div className="flex-1 flex items-center justify-center min-h-screen" style={stSurface0}>
         <EmptyState
           icon={AlertTriangle}
-          title={error ? 'Could not load momentum data' : 'No momentum data yet'}
+          title={error ? 'Couldn\'t load momentum data' : 'No momentum data yet'}
           description={error || 'Add investors and log meetings to see momentum signals.'}
           action={{ label: 'Retry', onClick: fetchData }} />
       </div>);

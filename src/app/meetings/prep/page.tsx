@@ -178,7 +178,7 @@ function MeetingPrepContent() {
       setPortfolio(Array.isArray(pf) ? pf : []);
       setLoadingPrep(false);
     }).catch(() => {
-      toast('Could not load prep data — select a different investor or refresh', 'error');
+      toast('Couldn\'t load prep data — select a different investor or refresh', 'error');
       setLoadingPrep(false);});
   }, [selectedId, toast]);
 
@@ -195,14 +195,14 @@ function MeetingPrepContent() {
         body: JSON.stringify({ investor_id: selectedId }),});
       if (!res.ok) {
         const err = await res.json();
-        throw new Error(err.error || 'Could not generate brief — try again');
+        throw new Error(err.error || 'Couldn\'t generate brief — try again');
       }
       const brief: MeetingBrief = await res.json();
       setMeetingBrief(brief);
       setBriefExpanded(true);
       toast('Meeting brief generated');
     } catch (err) {
-      toast(err instanceof Error ? err.message : 'Could not generate brief — try again', 'error');
+      toast(err instanceof Error ? err.message : 'Couldn\'t generate brief — try again', 'error');
     } finally {
       setGeneratingBrief(false);
     }

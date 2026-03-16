@@ -126,7 +126,7 @@ export default function WinLossPage() {
     setError(null);
     cachedFetch('/api/win-loss')
       .then(r => {
-        if (!r.ok) throw new Error('Could not load win/loss data — refresh to retry');
+        if (!r.ok) throw new Error('Couldn\'t load win/loss data — refresh to retry');
         return r.json();})
       .then((d: WinLossData) => { setData(d); setLoadedAt(new Date().toISOString()); setLoading(false); })
       .catch(e => { setError(e.message); setLoading(false); });

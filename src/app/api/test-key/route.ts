@@ -83,7 +83,7 @@ export async function GET() {
     console.error('[TEST_KEY]', err instanceof Error ? err.message : err);
     return NextResponse.json({
       status: 'network_error',
-      message: `Could not reach Anthropic API: ${err instanceof Error ? err.message : 'unknown'}`,
+      message: `Couldn\'t reach Anthropic API: ${err instanceof Error ? err.message : 'unknown'}`,
       key: masked,
     });
   }

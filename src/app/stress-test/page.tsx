@@ -178,7 +178,7 @@ export default function StressTestPage() {
       <div className="space-y-8">
         <h1 className="page-title">Process Stress Test</h1>
         <div className="rounded-xl p-8 text-center space-y-3" style={{ background: 'var(--danger-muted)' }}>
-          <p style={stTextSecondary}>Could not load stress test data. If this persists, check Settings to verify your API credentials.</p>
+          <p style={stTextSecondary}>Couldn\'t load stress test data. If this persists, check Settings to verify your API credentials.</p>
           <button
             onClick={() => fetchData()}
             className="btn-surface px-4 py-2 rounded-lg text-sm"

@@ -72,7 +72,7 @@ export default function SkillsPage() {
       .then(([h, e]) => {
         setHealth(Array.isArray(h) ? h : []);
         setExecutions(Array.isArray(e) ? e : []);})
-      .catch(() => { setHealth([]); setExecutions([]); toast('Could not load skill health data — refresh to retry', 'error'); })
+      .catch(() => { setHealth([]); setExecutions([]); toast('Couldn\'t load skill health data — refresh to retry', 'error'); })
       .finally(() => setLoading(false));
   }, [toast]);
   useEffect(() => { fetchData(); }, [fetchData]);

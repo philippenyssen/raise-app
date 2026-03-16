@@ -59,7 +59,7 @@ export default function NetworkPage() {
     setError(null);
     try {
       const res = await cachedFetch('/api/network');
-      if (!res.ok) throw new Error('Could not load network data — refresh to retry');
+      if (!res.ok) throw new Error('Couldn\'t load network data — refresh to retry');
       const json = await res.json();
       setData(json);
     } catch (err) {

@@ -116,7 +116,7 @@ Rules:
       strongest_sections: string[];
     } = {
       suggestions: [],
-      overall_assessment: 'Could not analyze document.',
+      overall_assessment: 'Couldn\'t analyze document.',
       missing_sections: [],
       strongest_sections: [],};
 

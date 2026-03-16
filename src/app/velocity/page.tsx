@@ -52,7 +52,7 @@ export default function VelocityPage() {
     setError(null);
     cachedFetch('/api/velocity')
       .then(res => {
-        if (!res.ok) throw new Error('Could not load velocity data — refresh to retry');
+        if (!res.ok) throw new Error('Couldn\'t load velocity data — refresh to retry');
         return res.json();})
       .then(d => { setData(d); setLoading(false); setLoadedAt(new Date().toISOString()); })
       .catch(e => { setError(e.message); setLoading(false); });
@@ -83,7 +83,7 @@ export default function VelocityPage() {
   if (error || !data) {
     return (
       <div className="flex-1 p-6 page-content" style={maxWidthCenter}>
-        <EmptyState icon={AlertTriangle} title="Could not load velocity data" description={error || 'Refresh to retry'} action={{ label: 'Retry', onClick: fetchVelocity }} />
+        <EmptyState icon={AlertTriangle} title="Couldn\'t load velocity data" description={error || 'Refresh to retry'} action={{ label: 'Retry', onClick: fetchVelocity }} />
       </div>);
   }
 

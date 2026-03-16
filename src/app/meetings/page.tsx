@@ -161,11 +161,11 @@ function MeetingOutcomeSection({
           prep_usefulness: form.prep_usefulness,});
         setEditing(false);
       } else {
-        setSaveError('Could not save outcome — check your connection and retry');
+        setSaveError('Couldn\'t save outcome — check your connection and retry');
       }
     } catch (e) {
       console.warn('[MEETING_OUTCOME]', e instanceof Error ? e.message : e);
-      setSaveError('Could not save outcome — check your connection and retry');
+      setSaveError('Couldn\'t save outcome — check your connection and retry');
     }
     setSaving(false);
   };

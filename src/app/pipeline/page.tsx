@@ -124,7 +124,7 @@ export default function PipelinePage() {
       const res = await cachedFetch('/api/investors');
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.error || 'Could not load pipeline data — refresh to retry');
+        throw new Error(errData.error || 'Couldn\'t load pipeline data — refresh to retry');
       }
       setInvestors(await res.json());
       setLoadedAt(new Date().toISOString());
@@ -303,7 +303,7 @@ export default function PipelinePage() {
   if (fetchError && investors.length === 0) {
     return (
       <div className="page-content flex items-center justify-center" style={{ minHeight: '400px' }}>
-        <EmptyState icon={Users} title="Could not load pipeline" description={fetchError} action={{ label: 'Retry', onClick: fetchInvestors }} />
+        <EmptyState icon={Users} title="Couldn\'t load pipeline" description={fetchError} action={{ label: 'Retry', onClick: fetchInvestors }} />
       </div>);
   }
 
@@ -493,7 +493,7 @@ export default function PipelinePage() {
                   )}
                   {quickAddCol === status ? (
                     <input autoFocus value={quickAddName} onChange={e => setQuickAddName(e.target.value)} placeholder="Investor name..." className="input" style={{ fontSize: 'var(--font-size-xs)' }}
-                      onKeyDown={async e => { if (e.key === 'Enter' && quickAddName.trim()) { try { const res = await fetch('/api/investors', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: quickAddName.trim(), status }) }); if (!res.ok) throw new Error('Failed'); const inv = await res.json(); setInvestors(prev => [...prev, inv]); setQuickAddName(''); setQuickAddCol(null); toast(`Added ${inv.name}`); } catch { toast('Could not add investor — try again', 'error'); } } if (e.key === 'Escape') { setQuickAddCol(null); setQuickAddName(''); } }} onBlur={() => { if (!quickAddName.trim()) { setQuickAddCol(null); setQuickAddName(''); } }} />
+                      onKeyDown={async e => { if (e.key === 'Enter' && quickAddName.trim()) { try { const res = await fetch('/api/investors', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: quickAddName.trim(), status }) }); if (!res.ok) throw new Error('Failed'); const inv = await res.json(); setInvestors(prev => [...prev, inv]); setQuickAddName(''); setQuickAddCol(null); toast(`Added ${inv.name}`); } catch { toast('Couldn\'t add investor — try again', 'error'); } } if (e.key === 'Escape') { setQuickAddCol(null); setQuickAddName(''); } }} onBlur={() => { if (!quickAddName.trim()) { setQuickAddCol(null); setQuickAddName(''); } }} />
                   ) : (
                     <button onClick={() => { setQuickAddCol(status); setQuickAddName(''); }} className="icon-delete" style={{ width: '100%', padding: 'var(--space-1)', fontSize: 'var(--font-size-xs)', background: 'none', border: 'none', cursor: 'pointer', borderRadius: 'var(--radius-sm)' }}>+ Add</button>
                   )}</div>
@@ -563,7 +563,7 @@ export default function PipelinePage() {
       {compareIds.size >= 2 && (
         <div className="flex items-center gap-3" style={compareBarStyle}>
           <span style={{ ...stFontSm, color: 'var(--text-secondary)' }}>{compareIds.size} selected</span>
-          <select defaultValue="" onChange={async e => { if (!e.target.value) return; const s = e.target.value; try { await Promise.all(Array.from(compareIds).map(id => fetch('/api/investors', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, status: s }) }).then(r => { if (!r.ok) throw new Error('Failed'); }))); toast(`Moved ${compareIds.size} to ${STATUS_LABELS[s as InvestorStatus]}`); setCompareIds(new Set()); fetchInvestors(); } catch { toast('Could not move investors — try again', 'error'); } e.target.value = ''; }} className="input" style={{ width: 'auto', fontSize: 'var(--font-size-xs)', padding: '0.25rem 0.5rem' }}><option value="" disabled>Move to...</option>{Object.entries(STATUS_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select>
+          <select defaultValue="" onChange={async e => { if (!e.target.value) return; const s = e.target.value; try { await Promise.all(Array.from(compareIds).map(id => fetch('/api/investors', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, status: s }) }).then(r => { if (!r.ok) throw new Error('Failed'); }))); toast(`Moved ${compareIds.size} to ${STATUS_LABELS[s as InvestorStatus]}`); setCompareIds(new Set()); fetchInvestors(); } catch { toast('Couldn\'t move investors — try again', 'error'); } e.target.value = ''; }} className="input" style={{ width: 'auto', fontSize: 'var(--font-size-xs)', padding: '0.25rem 0.5rem' }}><option value="" disabled>Move to...</option>{Object.entries(STATUS_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select>
           <Link href={`/compare?ids=${Array.from(compareIds).join(',')}`} className="btn btn-primary btn-sm">Compare</Link>
           <button onClick={() => setCompareIds(new Set())} className="btn btn-secondary btn-sm">Clear</button>
         </div>

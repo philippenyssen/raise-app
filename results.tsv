@@ -515,3 +515,82 @@ bd510e1	100	100	0	pass	product+design	Extract TREND_CONFIG, OBJ_TABS, VEL_CONFIG
 01a10cb	100	100	0	pass	engineering+ai	Optimize momentum 10K+ cell styles, extract strategic trendValueBase + win-loss funnelStageName
 f8221b8	100	100	0	pass	workflow+data	Use cachedFetch in enrichment safeFetch, parallelize documents fetchDocs+fetchFlags
 a21ead4	100	100	0	pass	ops+reliability	Extract PRIORITY_COLORS, EVENT_TYPE_COLORS from render loops, glanceDivider from IIFE
+a59c056	100	100	0	✓	ai+competitive	Extract inline styles across 12 pages, velocity empty state CTA, workspace error tags
+e486258	100	100	0	✓	design+ux	Extract 7 style constants from momentum/analytics .map() loops, single-pass forecast filter O(n)
+c7fbd15	100	100	0	✓	engineering+ai	Fix O(n²) analytics heatmap, memoize win-loss/data-room, extract backlog/settings constants
+72b035a	100	100	0	✓	workflow+data	cachedFetch competitive/documents, Promise.all data-room, 4 timeline style constants
+d8fd88b	100	100	0	✓	copy+competitive	5 empty state copy improvements, cachedFetch in skills/reports/followups/documents
+51006c8	100	100	0	✓	ceo+strategy	cachedFetch meetings/prep (5 GETs), 4 style constants extracted
+c8ecc8f	100	100	0	✓	product+design	Pre-compute acceleration tab styles (4 constants), extract 2 skeleton constants
+c210bb4	100	100	0	✓	engineering+ai	Add logging to 4 silent API catches, optimize EnthusiasmDots color pre-computation
+f72762c	100	100	0	✓	workflow+data	cachedFetch in documents/objections/workspace/settings (5 remaining GET calls)
+19b0c91	100	100	0	ok	ops+reliability	Deduplicate TYPE_LABELS_SHORT across 5 page files (-30 lines)
+4af292f	100	100	0	ok	copy+competitive	Parallelize fetches, extract inline styles, pre-compute filter btn
+d2c3394	100	100	0	ok	ceo+strategy	Remove re-aliased constants, delete unused style exports (-24 lines)
+e7f80e9	100	100	0	ok	product+design	Extract filter chip + action card styles to module constants
+5eef214	100	100	0	ok	engineering+ai	Extract inline styles from .map() in stress-test, competitive
+1d0e733	100	100	0	ok	workflow+data	Extract inline styles from .map() in intelligence, health
+eb931c1	100	100	0	ok	copy+competitive	Extract compare table cell + deal-heat card loop styles
+da9a02d	100	100	0	ok	ceo+strategy	Extract inline styles from .map() in network, meetings
+2e4a649	100	100	0	ok	product+design	Extract inline styles from .map() in intelligence, strategic
+a5a45c6	100	100	0	✓	engineering+ai	Remove dead exports fmtPct and MS_PER_SECOND
+31b5cf0	100	100	0	✓	workflow+data	Extract inline styles enrichment+win-loss loops, remove dead code
+ab04c0e	100	100	0	✓	copy+competitive	Extract timeline loop styles, improve empty state copy
+a363520	100	100	0	✓	ceo+strategy	Extract repeated styles in reports (4x) and workspace (2x)
+f4c7168	100	100	0	✓	product+design	Model skeleton loading, terms style extraction + labelMuted dedup
+7dbd581	100	100	0	✓	engineering+ai	Extract badge/name styles from fomo, velocity, analytics loops
+6cef89d	100	100	0	✓	workflow+data	useCallback investor toggles, fix data-room extract 400 error
+9cd0396	100	100	0	✓	copy+competitive	Add 'n' keyboard shortcut for new investor/meeting
+ffff6d0	100	100	0	✓	product+design	Shared EmptyState component (7 pages) + term-compare keyboard shortcuts
+b74d2e6	100	100	0	✓	engineering+ai	EmptyState to 4 more pages + meetings useCallback + badge extraction
+9ed937a	100	100	0	✓	workflow+data	CSV export for velocity/backlog + EmptyState on focus/forecast/data-room
+76ab83f	100	100	0	✓	copy+competitive	Improve error messages + button labels across 4 pages
+7027d00	100	100	0	✓	ceo+strategy	CSV export on pipeline kanban board for board reporting
+321f328	100	100	0	✓	product+design	EmptyState on analysis/followups/momentum (17 pages total)
+233c742	100	100	0	ok	engineering+ai	perf: useCallback in pipeline + deduplicate inline labelMuted styles (5 files)
+6116b82	100	100	0	ok	workflow+data	perf: deduplicate 17 inline labelMuted patterns across 5 pages (followups, deal-heat, network, fomo, win-loss)
+433a8a8	100	100	0	ok	copy+competitive	perf: deduplicate 21 inline labelMuted patterns across 5 pages (settings, forecast, today, strategic, compare)
+16d6f4d	100	100	0	ok	ceo+strategy	perf: deduplicate 20 inline labelMuted patterns across 8 pages (network, focus, acceleration, velocity, dealflow, terms, stress-test, capture)
+170b137	100	100	0	ok	product+design	perf: extract static inline styles from .map() loops (focus, pipeline, followups)
+ae887ec	100	100	0	ok	engineering+ai	perf: complete labelMuted sweep — 0 inline patterns remaining (8 files, ~75 total replaced across cycles 560-565)
+9c0c24c	100	100	0	ok	workflow+data	feat: keyboard shortcut (R) on meetings prep — all 44 pages now have shortcuts
+31388dc	100	100	0	ok	copy+competitive	copy: standardize 18 retry labels across 18 files ('Try again'/'Reload forecast' → 'Retry')
+ded2928	100	100	0	pass	ceo+strategy	add aria-label to 3 icon-only buttons for accessibility
+0ae1295	100	100	0	pass	product+design	add textSmSecondary shared constant, replace ~20 inline patterns across 12 files
+3a7a91a	100	100	0	pass	engineering+ai	extract 5 skeleton style constants, replace ~20 inline patterns across 15 files
+5643075	100	100	0	pass	workflow+data	settings skeleton, term-compare EmptyState, 9x textSmMuted dedup
+c7520e3	100	100	0	pass	copy+competitive	page-subtitle consistency, 8x labelMuted dedup across 3 components
+fb6182a	100	100	0	pass	ceo+strategy	eliminate 4 duplicate local constants, add cellPad shared constant
+1f077df	100	100	0	pass	product+design	Extract kbdStyle/kbdStyleCompact constants (11 inline→shared), fix network refresh disabled+spin
+cc784ca	100	100	0	pass	engineering+ai	Eliminate 8 per-render style objects in command palette render functions (.map loops)
+8358ac8	100	100	0	pass	workflow+data	Extract labelMutedWide for section header pattern (11 inline→shared across 4 files)
+8ca1c1a	100	100	0	pass	copy+competitive	Extract labelMutedTight (9 replacements/4 files), replace intelligence custom EmptyState with shared component
+b6d0e94	100	100	0	pass	ops+reliability	Add Cache-Control no-store to 6 mutation endpoints (settings/tasks/followups)
+ddf5deb	100	100	0	pass	ceo+strategy	Fix data-room empty state (raw p→EmptyState), replace 8 double-spreads with labelMuted in settings
+8d39161	100	100	0	✓	product+design	aria-labels on 4 icon buttons + sectionHeading + labelSecondary dedup
+432d829	100	100	0	✓	engineering+ai	eliminate 14 double-spread patterns across 4 pages + textSmTertiary
+15fda63	100	100	0	✓	workflow+data	badge constant + textSmMuted dedup + forecast config extraction
+69fe6f1	100	100	0	✓	copy+competitive	5 double-spreads consolidated + timeline EmptyState standardized
+b8dde04	100	100	0	✓	ops+reliability	5 custom empty states → shared EmptyState (stress-test + enrichment + acceleration)
+078d033	100	100	0	✓	ceo+strategy	extract 4 map-loop styles forecast + labelSecondary analytics + skills EmptyState
+d3ce51d	100	100	0	✓	product+design	health error + model placeholder → shared EmptyState
+2db82d0	100	100	0	✓	engineering+ai	compare: 7 inline style dedup (textSmMuted×3 + textSmSecondary + heatCounterStyle + labelMuted)
+014a522	100	100	0	pass	workflow+data	perf(meetings): extract 8 inline style objects to module-level constants
+c08c3b1	100	100	0	pass	copy+competitive	refactor(fomo,win-loss): EmptyState + extract table cell styles
+e68c726	100	100	0	pass	ops+reliability	refactor: standardize 5 error/empty states to shared EmptyState
+e24d773	100	100	0	pass	ceo+strategy	refactor: EmptyState + badge extraction in data-room, objections, enrichment
+b614201	100	100	0	pass	product+design	perf(deal-heat): extract 5 heat card styles + 2 error state EmptyState fixes
+73fecae	100	100	0	pass	engineering+ai	perf: momentum EmptyState + forecast tier badge extraction
+98f84c6	100	100	0	pass	workflow+data	refactor(compare,objections): 4 custom empty states → EmptyState
+d029413	100	100	0	pass	copy+competitive	cleanup: remove unused stSurface0 import + extract emptyStateText
+1102ebe	100	100	0	pass	ops+reliability	perf(competitive): extract mtgContextLabel + mtgExpandedCard constants
+4ed5728	100	100	0	pass	ceo+strategy	Keyboard a11y: pipeline checkboxes tabIndex+onKeyDown, RatingDots onFocus/onBlur parity
+14f1893	100	100	0	pass	product+design	Perf: extract scenarioAmount/scenarioFooter/distBarTrack from forecast .map() loops
+a652280	100	100	0	pass	engineering+ai	Perf: merge momentumUp/Down useMemo into single meetings stats memo
+cbdc655	100	100	0	pass	workflow+data	Add loadedAt freshness timestamp to meetings page subtitle
+ecc6f85	100	100	0	pass	copy+competitive	Fix 3 document.title mismatches: analysis, stress-test, term-compare
+e393aa8	100	100	0	pass	ops+reliability	Add try/catch to data-room intelligence route + fix ErrorBoundary log tag
+d386638	100	100	0	pass	ceo+strategy	A11y: add scope=col to all 62 th elements across 14 table pages (WCAG 1.3.1)
+dd920e8	100	100	0	pass	product+design	Add loading skeleton to meetings page + extract pipeline compareBarStyle
+606b9ac	100	100	0	pass	engineering+ai	Perf: extract 6 static styles from forecast (progressBar/legend) and followups (draftBoxes)
+606	9c81b75	100	100	0	pass	workflow+data	Data freshness timestamps: focus, investors, pipeline, win-loss
