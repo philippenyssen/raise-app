@@ -293,7 +293,7 @@ export default function DataRoomPage() {
           <div className="flex gap-3">
             <input
               value={pasteFilename}
-              onChange={e => setPasteFilename(e.target.value)}
+              onChange={e => { setPasteFilename(e.target.value); setPasteCategory(inferCategory(e.target.value)); }}
               placeholder="Document name (e.g., Financial Model Notes.txt)"
               className="input flex-1"
               maxLength={500} />
