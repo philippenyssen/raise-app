@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { cachedFetch } from '@/lib/cache';
 import Link from 'next/link';
 import type { Meeting } from '@/lib/types';
@@ -323,55 +323,49 @@ export default function MeetingsPage() {
     return () => window.removeEventListener('keydown', h);
   }, []);
 
-  const filtered = meetings.filter(m => {
+  const filtered = useMemo(() => meetings.filter(m => {
     if (search && !m.investor_name.toLowerCase().includes(search.toLowerCase()) &&
         !(m.raw_notes || '').toLowerCase().includes(search.toLowerCase())) return false;
     if (typeFilter !== 'all' && m.type !== typeFilter) return false;
     if (statusFilter !== 'all' && m.status_after !== statusFilter) return false;
-    return true;});
+    return true;
+  }), [meetings, search, typeFilter, statusFilter]);
 
-  // Stats
-  const avgEnthusiasm = meetings.length > 0
-    ? (meetings.reduce((s, m) => s + m.enthusiasm_score, 0) / meetings.length).toFixed(1)
-    : '0';
-  const totalObjections = meetings.reduce((s, m) => {
-    try { return s + JSON.parse(m.objections || '[]').length; } catch { return s; }
-  }, 0);
-  const uniqueInvestors = new Set(meetings.map(m => m.investor_id)).size;
-
-  // Per-investor engagement intelligence (computed from meetings array)
-  const investorStats = meetings.reduce<Record<string, {
-    count: number;
-    trend: 'up' | 'down' | 'flat' | 'new';
-    latestEnthusiasm: number;
-    avgEnthusiasm: number;
-  }>>((acc, m) => {
-    if (!acc[m.investor_id]) {
-      acc[m.investor_id] = { count: 0, trend: 'new', latestEnthusiasm: 0, avgEnthusiasm: 0 };
+  // Stats + per-investor engagement intelligence (single memo)
+  const { avgEnthusiasm, totalObjections, uniqueInvestors, investorStats, meetingsByInvestor } = useMemo(() => {
+    const avg = meetings.length > 0 ? (meetings.reduce((s, m) => s + m.enthusiasm_score, 0) / meetings.length).toFixed(1) : '0';
+    let objCount = 0;
+    const investorIds = new Set<string>();
+    const byInvestor: Record<string, Meeting[]> = {};
+    const stats: Record<string, { count: number; trend: 'up' | 'down' | 'flat' | 'new'; latestEnthusiasm: number; avgEnthusiasm: number }> = {};
+    for (const m of meetings) {
+      try { objCount += JSON.parse(m.objections || '[]').length; } catch {}
+      investorIds.add(m.investor_id);
+      if (!byInvestor[m.investor_id]) byInvestor[m.investor_id] = [];
+      byInvestor[m.investor_id].push(m);
+      if (!stats[m.investor_id]) stats[m.investor_id] = { count: 0, trend: 'new', latestEnthusiasm: 0, avgEnthusiasm: 0 };
+      stats[m.investor_id].count++;
     }
-    acc[m.investor_id].count++;
-    return acc;
-  }, {});
+    for (const [invId, invMeetings] of Object.entries(byInvestor)) {
+      const sorted = [...invMeetings].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+      const latest = sorted[sorted.length - 1];
+      stats[invId].latestEnthusiasm = latest.enthusiasm_score;
+      stats[invId].avgEnthusiasm = sorted.reduce((s, m) => s + m.enthusiasm_score, 0) / sorted.length;
+      if (sorted.length >= 2) {
+        const prev = sorted[sorted.length - 2];
+        if (latest.enthusiasm_score > prev.enthusiasm_score) stats[invId].trend = 'up';
+        else if (latest.enthusiasm_score < prev.enthusiasm_score) stats[invId].trend = 'down';
+        else stats[invId].trend = 'flat';
+      }
+    }
+    return { avgEnthusiasm: avg, totalObjections: objCount, uniqueInvestors: investorIds.size, investorStats: stats, meetingsByInvestor: byInvestor };
+  }, [meetings]);
 
-  // Second pass: compute trends (needs chronological order)
-  const meetingsByInvestor = meetings.reduce<Record<string, Meeting[]>>((acc, m) => {
-    if (!acc[m.investor_id]) acc[m.investor_id] = [];
-    acc[m.investor_id].push(m);
-    return acc;
-  }, {});
-
-  for (const [invId, invMeetings] of Object.entries(meetingsByInvestor)) {
-    const sorted = [...invMeetings].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-    const latest = sorted[sorted.length - 1];
-    const avg = sorted.reduce((s, m) => s + m.enthusiasm_score, 0) / sorted.length;
-    investorStats[invId].latestEnthusiasm = latest.enthusiasm_score;
-    investorStats[invId].avgEnthusiasm = avg;
-    if (sorted.length >= 2) {
-      const prev = sorted[sorted.length - 2];
-      if (latest.enthusiasm_score > prev.enthusiasm_score) investorStats[invId].trend = 'up';
-      else if (latest.enthusiasm_score < prev.enthusiasm_score) investorStats[invId].trend = 'down';
-      else investorStats[invId].trend = 'flat';
-    }}
+  const { momentumUp, momentumDown } = useMemo(() => {
+    const up = Object.entries(investorStats).filter(([, s]) => s.trend === 'up').map(([id, s]) => ({ id, name: meetingsByInvestor[id]?.[0]?.investor_name || id, score: s.latestEnthusiasm })).sort((a, b) => b.score - a.score).slice(0, 3);
+    const down = Object.entries(investorStats).filter(([, s]) => s.trend === 'down').map(([id, s]) => ({ id, name: meetingsByInvestor[id]?.[0]?.investor_name || id, score: s.latestEnthusiasm })).sort((a, b) => a.score - b.score).slice(0, 3);
+    return { momentumUp: up, momentumDown: down };
+  }, [investorStats, meetingsByInvestor]);
 
   const handleOutcomeSaved = (updated: Meeting) => {
     setMeetings(prev => prev.map(m => m.id === updated.id ? updated : m));
@@ -415,16 +409,12 @@ export default function MeetingsPage() {
           <div className="metric-value" style={{ marginTop: '2px' }}>{uniqueInvestors}</div></div></div>
 
       {/* Momentum Signals */}
-      {(() => {
-        const up = Object.entries(investorStats).filter(([, s]) => s.trend === 'up').map(([id, s]) => ({ id, name: meetingsByInvestor[id]?.[0]?.investor_name || id, score: s.latestEnthusiasm })).sort((a, b) => b.score - a.score).slice(0, 3);
-        const down = Object.entries(investorStats).filter(([, s]) => s.trend === 'down').map(([id, s]) => ({ id, name: meetingsByInvestor[id]?.[0]?.investor_name || id, score: s.latestEnthusiasm })).sort((a, b) => a.score - b.score).slice(0, 3);
-        if (!up.length && !down.length) return null;
-        return (
+      {momentumUp.length > 0 || momentumDown.length > 0 ? (
           <div className="flex gap-4 text-xs" style={{ color: 'var(--text-muted)' }}>
-            {up.length > 0 && <span style={{ color: 'var(--success)' }}>Gaining momentum: {up.map(i => i.name).join(', ')}</span>}
-            {down.length > 0 && <span style={{ color: 'var(--warning)' }}>Cooling: {down.map(i => i.name).join(', ')}</span>}
-          </div>);
-      })()}
+            {momentumUp.length > 0 && <span style={{ color: 'var(--success)' }}>Gaining momentum: {momentumUp.map(i => i.name).join(', ')}</span>}
+            {momentumDown.length > 0 && <span style={{ color: 'var(--warning)' }}>Cooling: {momentumDown.map(i => i.name).join(', ')}</span>}
+          </div>
+      ) : null}
 
       {/* Filters */}
       <div className="flex flex-wrap gap-3">

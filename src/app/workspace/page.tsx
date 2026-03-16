@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import { cachedFetch } from '@/lib/cache';
 import { SplitPane } from '@/components/workspace/split-pane';
@@ -178,19 +178,21 @@ export default function WorkspacePage() {
     return () => window.removeEventListener('keydown', handler);
   }, [handleSave, handleUndo]);
 
-  // Sort docs by type order
-  const sortedDocs = [...docs].sort((a, b) => {
-    const ai = TYPE_ORDER.indexOf(a.type);
-    const bi = TYPE_ORDER.indexOf(b.type);
-    return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);});
-
-  // Group by type
-  const grouped = sortedDocs.reduce<Record<string, Doc[]>>((acc, doc) => {
-    const type = doc.type || 'custom';
-    if (!acc[type]) acc[type] = [];
-    acc[type].push(doc);
-    return acc;
-  }, {});
+  // Sort + group docs by type (memoized)
+  const { sortedDocs, grouped } = useMemo(() => {
+    const sorted = [...docs].sort((a, b) => {
+      const ai = TYPE_ORDER.indexOf(a.type);
+      const bi = TYPE_ORDER.indexOf(b.type);
+      return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+    });
+    const groups = sorted.reduce<Record<string, Doc[]>>((acc, doc) => {
+      const type = doc.type || 'custom';
+      if (!acc[type]) acc[type] = [];
+      acc[type].push(doc);
+      return acc;
+    }, {});
+    return { sortedDocs: sorted, grouped: groups };
+  }, [docs]);
 
   if (loading) {
     return (
