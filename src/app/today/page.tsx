@@ -31,6 +31,7 @@ const overdueBadge = { fontSize: 'var(--font-size-xs)', padding: '1px 5px', bord
 const overdueDanger = { fontSize: 'var(--font-size-xs)', color: 'var(--danger)', fontWeight: 400 } as const;
 const overdueDesc = { fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', marginTop: '1px' } as const;
 const overdueDoneBtn = { background: 'var(--surface-0)', color: 'var(--text-secondary)', border: '1px solid var(--border-default)', fontSize: 'var(--font-size-xs)', padding: '3px 10px' } as const;
+const emptyStateText = { ...stFontSm, color: 'var(--text-secondary)', fontWeight: 400 } as const;
 
 // ---------------------------------------------------------------------------
 // Types — match the updated /api/briefing response
@@ -665,7 +666,7 @@ export default function TodayPage() {
         ) : (
           <div className="card" style={emptyStatePad}>
             <span style={emptyStateIcon}><Calendar className="w-8 h-8" style={stTextMuted} /></span>
-            <p style={{ ...stFontSm, color: 'var(--text-secondary)', fontWeight: 400 }}>No meetings scheduled today</p>
+            <p style={emptyStateText}>No meetings scheduled today</p>
             <p style={{ ...labelTertiary, marginTop: '4px', lineHeight: 1.5 }}>Use the open calendar to schedule follow-ups with your highest-momentum investors, or work through overdue actions.</p>
             <div className="flex items-center justify-center gap-2" style={{ marginTop: 'var(--space-3)' }}>
               <Link href="/focus" className="btn btn-primary btn-sm">
@@ -688,7 +689,7 @@ export default function TodayPage() {
         ) : (
           <div className="card" style={emptyStatePad}>
             <span style={emptyStateIcon}><CheckCircle className="w-8 h-8" style={stTextSecondary} /></span>
-            <p style={{ ...stFontSm, color: 'var(--text-secondary)', fontWeight: 400 }}>No urgent actions right now</p>
+            <p style={emptyStateText}>No urgent actions right now</p>
             <p style={{ ...labelTertiary, marginTop: '4px', lineHeight: 1.5 }}>Good time to advance stalled conversations or prepare materials for upcoming deep dives. Check the{' '}<Link href="/focus" style={{ color: 'var(--accent)', textDecoration: 'none' }}>focus queue</Link>{' '}for investors who need a push.</p>
             <div className="flex items-center justify-center gap-2" style={{ marginTop: 'var(--space-3)' }}>
               <Link href="/pipeline?sort=momentum" className="btn btn-secondary btn-sm">

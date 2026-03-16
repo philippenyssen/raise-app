@@ -15,7 +15,7 @@ import {
 import { fmtDate } from '@/lib/format';
 import {
   stTextMuted, stTextTertiary, stTextSecondary, stTextPrimary, stAccent, stFontXs,
-  stSurface0, stSurface1, stSurface2, stSurface1Border, stBgSuccess, stBgDanger,
+  stSurface1, stSurface2, stSurface1Border, stBgSuccess, stBgDanger,
   stBgMuted, stAccentBg, stBorderTop, stBorderSubtle, labelMuted10, skelCardLg,
 } from '@/lib/styles';
 
