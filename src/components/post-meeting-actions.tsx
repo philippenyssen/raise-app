@@ -157,8 +157,8 @@ export default function PostMeetingActions({ data, meetingId, onActionTaken }: {
         <div className="px-5 py-3 flex items-center justify-between" style={{ backgroundColor: 'var(--surface-1)' }}>
           <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Tasks and flags are saved automatically. View all in Timeline &amp; Tasks.</span>
           <div className="flex gap-2">
-            <Link href="/timeline" className="investor-link text-xs transition-colors" style={{ color: 'var(--accent)' }}>View Tasks</Link>
-            <Link href="/documents" className="investor-link text-xs transition-colors" style={{ color: 'var(--accent)' }}>View Documents</Link>
+            <Link href="/calendar" className="investor-link text-xs transition-colors" style={{ color: 'var(--accent)' }}>View Tasks</Link>
+            <Link href="/data-room" className="investor-link text-xs transition-colors" style={{ color: 'var(--accent)' }}>View Documents</Link>
           </div></div></div>
     </div>);
 }

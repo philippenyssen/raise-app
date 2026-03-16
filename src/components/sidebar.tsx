@@ -3,8 +3,8 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { cachedFetch } from '@/lib/cache';
-import { MS_PER_MINUTE } from '@/lib/time';
+
+
 import {
   Users, CalendarDays, FileText,
   Settings, Columns3,
@@ -12,7 +12,9 @@ import {
   ChevronLeft, ChevronRight, Sun, Flame,
   Compass, Swords, MessageCircleWarning,
   FolderOpen, FileBarChart,
-  CircleDot,
+  CircleDot, TrendingUp, Newspaper,
+  Calculator, ClipboardList, Database, Sparkles,
+  PenTool, BookOpen,
 } from 'lucide-react';
 
 interface NavItem {
@@ -27,19 +29,28 @@ const nav: NavItem[] = [
   // Daily
   { href: '/today', label: 'Today', icon: Sun, section: 'DAILY' },
   { href: '/calendar', label: 'Calendar', icon: CalendarDays, section: 'DAILY' },
+  { href: '/digest', label: 'Digest', icon: Newspaper, section: 'DAILY' },
   // Pipeline
   { href: '/pipeline', label: 'Pipeline', icon: Columns3, section: 'PIPELINE' },
   { href: '/investors', label: 'Investors', icon: Users, section: 'PIPELINE' },
   { href: '/dealflow', label: 'Dealflow', icon: Flame, section: 'PIPELINE' },
   { href: '/decide', label: 'Decide', icon: CircleDot, section: 'PIPELINE' },
+  { href: '/forecast', label: 'Forecast', icon: TrendingUp, section: 'PIPELINE' },
   // Intelligence
   { href: '/strategic', label: 'Strategic', icon: Compass, section: 'INTEL' },
   { href: '/competitive', label: 'Competitive', icon: Swords, section: 'INTEL' },
   { href: '/objections', label: 'Objections', icon: MessageCircleWarning, section: 'INTEL' },
-  // Materials
-  { href: '/data-room', label: 'Data Room', icon: FolderOpen, section: 'TOOLS' },
+  // Materials — context in, documents out
+  { href: '/context', label: 'Context', icon: BookOpen, section: 'MATERIALS' },
+  { href: '/workspace', label: 'Workspace', icon: PenTool, section: 'MATERIALS' },
+  { href: '/data-room', label: 'Data Room', icon: FolderOpen, section: 'MATERIALS' },
+  // Tools
   { href: '/terms', label: 'Terms', icon: FileText, section: 'TOOLS' },
+  { href: '/deal-mechanics', label: 'Modeling', icon: Calculator, section: 'TOOLS' },
+  { href: '/model', label: 'Model', icon: Database, section: 'TOOLS' },
   { href: '/reports', label: 'Reports', icon: FileBarChart, section: 'TOOLS' },
+  { href: '/backlog', label: 'Backlog', icon: ClipboardList, section: 'TOOLS' },
+  { href: '/enrichment', label: 'Enrichment', icon: Sparkles, section: 'TOOLS' },
   { href: '/settings', label: 'Settings', icon: Settings, section: 'TOOLS' },];
 
 /* ── Sidebar-specific palette (dark navy panel on light page) ── */
@@ -55,42 +66,15 @@ const SB = {
   muted: 'var(--white-25)',
   sectionLabel: 'var(--white-30)',};
 
-const badgeCountStyle: React.CSSProperties = {
-  minWidth: '18px', height: '18px', borderRadius: 'var(--radius-xl)', background: 'var(--white-15)',
-  color: SB.textActive, fontSize: 'var(--font-size-xs)', fontWeight: 400, padding: '0 var(--space-1)', lineHeight: 1,};
+
+
 
 export function Sidebar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
-  const [overdueCount, setOverdueCount] = useState(0);
-  const [todayMeetingCount, setTodayMeetingCount] = useState(0);
-  const [docFlagCount, setDocFlagCount] = useState(0);
 
-  useEffect(() => {
-    let cancelled = false;
-    function fetchBadges() {
-      if (cancelled) return;
-      cachedFetch('/api/followups?status=pending')
-        .then(r => r.ok ? r.json() : [])
-        .then(data => {
-          if (cancelled || !Array.isArray(data)) return;
-          const today = new Date().toISOString().split('T')[0];
-          setOverdueCount(data.filter((f: { due_at: string; status: string }) => f.status === 'pending' && f.due_at?.split('T')[0] < today).length);})
-        .catch(e => console.warn('[BADGE_FOLLOWUPS]', e instanceof Error ? e.message : e));
-      cachedFetch('/api/meetings')
-        .then(r => r.ok ? r.json() : [])
-        .then(data => {
-          if (cancelled || !Array.isArray(data)) return;
-          const today = new Date().toISOString().split('T')[0];
-          setTodayMeetingCount(data.filter((m: { date: string }) => m.date?.split('T')[0] === today).length);})
-        .catch(e => console.warn('[BADGE_MEETINGS]', e instanceof Error ? e.message : e));
-      cachedFetch('/api/document-flags?status=open').then(r => r.ok ? r.json() : []).then(data => { if (!cancelled && Array.isArray(data)) setDocFlagCount(data.length); }).catch(e => console.warn('[BADGE_DOCFLAGS]', e instanceof Error ? e.message : e));
-    }
-    fetchBadges();
-    const interval = setInterval(fetchBadges, 3 * MS_PER_MINUTE);
-    return () => { cancelled = true; clearInterval(interval); };
-  }, []);
+
 
   const sections = nav.reduce<Record<string, NavItem[]>>((acc, item) => {
     const section = item.section || 'OTHER';
@@ -103,7 +87,8 @@ export function Sidebar() {
     DAILY: '',
     PIPELINE: 'Pipeline',
     INTEL: 'Intelligence',
-    TOOLS: 'Materials',};
+    MATERIALS: 'Materials',
+    TOOLS: 'Tools',};
 
   return (
     <>
@@ -243,10 +228,7 @@ export function Sidebar() {
                       )}
 
                       <span className="shrink-0 flex items-center justify-center relative" style={{ width: '16px', height: '16px', color: active ? SB.accent : 'inherit' }} aria-hidden="true">
-                        <Icon className="w-4 h-4" />
-                        {collapsed && ((item.href === '/followups' && overdueCount > 0) || (item.href === '/meetings' && todayMeetingCount > 0)) && (
-                          <span className="absolute" style={{ top: '-3px', right: '-4px', width: '7px', height: '7px', borderRadius: '50%', background: SB.accent }} />
-                        )}</span>
+                        <Icon className="w-4 h-4" /></span>
 
                       {!collapsed && (
                         <>
@@ -254,15 +236,8 @@ export function Sidebar() {
                           {item.badge === 'hot' && (
                             <span className="ml-auto shrink-0" style={{ width: '5px', height: '5px', borderRadius: '50%', background: SB.accent }} />
                           )}
-                          {item.href === '/followups' && overdueCount > 0 && (
-                            <span className="ml-auto shrink-0 flex items-center justify-center" style={badgeCountStyle}>{overdueCount > 9 ? '9+' : overdueCount}</span>
-                          )}
-                          {item.href === '/meetings' && todayMeetingCount > 0 && (
-                            <span className="ml-auto shrink-0 flex items-center justify-center" style={badgeCountStyle}>{todayMeetingCount > 9 ? '9+' : todayMeetingCount}</span>
-                          )}
-                          {item.href === '/documents' && docFlagCount > 0 && (
-                            <span className="ml-auto shrink-0 flex items-center justify-center" style={badgeCountStyle}>{docFlagCount > 9 ? '9+' : docFlagCount}</span>
-                          )}
+
+
                         </>
                       )}
 

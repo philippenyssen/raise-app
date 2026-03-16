@@ -344,7 +344,7 @@ export default function InvestorsPage() {
         <div className="flex gap-2">
           <Link href="/pipeline" className="btn btn-secondary btn-md">
             <Columns3 className="w-3.5 h-3.5" /> Kanban View</Link>
-          <Link href="/compare" className="btn btn-secondary btn-md">
+          <Link href="/decide" className="btn btn-secondary btn-md">
             <GitCompare className="w-3.5 h-3.5" /> Compare Investors</Link>
           <button onClick={() => {
             try {

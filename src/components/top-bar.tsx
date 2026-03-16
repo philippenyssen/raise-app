@@ -180,7 +180,7 @@ export function TopBar() {
                   return (
                     <Link
                       key={t.id}
-                      href="/timeline"
+                      href="/calendar"
                       onClick={() => setOpen(false)}
                       className="block rounded-md transition-colors btn-surface"
                       style={{ padding: 'var(--space-2)', fontSize: 'var(--font-size-sm)' }}>
@@ -206,7 +206,7 @@ export function TopBar() {
                 upcoming.map(t => (
                   <Link
                     key={t.id}
-                    href="/timeline"
+                    href="/calendar"
                     onClick={() => setOpen(false)}
                     className="block rounded-md transition-colors btn-surface"
                     style={{ padding: 'var(--space-2)', fontSize: 'var(--font-size-sm)' }}>
@@ -237,7 +237,7 @@ export function TopBar() {
               )}</div>
 
             <Link
-              href="/timeline"
+              href="/calendar"
               onClick={() => setOpen(false)}
               className="block text-center transition-colors btn-surface"
               style={{

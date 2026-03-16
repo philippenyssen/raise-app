@@ -477,9 +477,9 @@ export default function ModelPage() {
 
       {/* Related */}
       <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap', padding: 'var(--space-3) 0', borderTop: '1px solid var(--border-subtle)', marginTop: 'var(--space-2)' }}>
-        <Link href="/stress-test" className="btn btn-secondary btn-sm" style={{ textDecoration: 'none', fontSize: 'var(--font-size-xs)' }}>
+        <Link href="/terms" className="btn btn-secondary btn-sm" style={{ textDecoration: 'none', fontSize: 'var(--font-size-xs)' }}>
           Run stress test</Link>
-        <Link href="/term-compare" className="btn btn-secondary btn-sm" style={{ textDecoration: 'none', fontSize: 'var(--font-size-xs)' }}>
+        <Link href="/terms" className="btn btn-secondary btn-sm" style={{ textDecoration: 'none', fontSize: 'var(--font-size-xs)' }}>
           Compare terms</Link>
         <Link href="/data-room" className="btn btn-secondary btn-sm" style={{ textDecoration: 'none', fontSize: 'var(--font-size-xs)' }}>
           Data room</Link>

@@ -678,7 +678,7 @@ export default function Dashboard() {
           {stressTest ? (() => {
             const pct = Math.min(100, Math.round((stressTest.forecast.base / stressTest.target) * 100));
             return (
-              <Link href="/stress-test" style={{ textDecoration: 'none', display: 'block' }}>
+              <Link href="/terms" style={{ textDecoration: 'none', display: 'block' }}>
                 <div
                   className="transition-colors"
                   style={{
@@ -1139,7 +1139,7 @@ export default function Dashboard() {
               <div className="flex items-center justify-between mb-3">
                 <h2 className="section-title flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4" /> Upcoming follow-ups</h2>
-                <Link href="/followups" className="flex items-center gap-1" style={labelAccent}>
+                <Link href="/calendar" className="flex items-center gap-1" style={labelAccent}>
                   All follow-ups <ArrowRight className="w-3 h-3" /></Link></div>
               <div className="space-y-1.5">
                 {pendingFollowups.slice(0, 5).map((fu) => (

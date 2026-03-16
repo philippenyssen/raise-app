@@ -70,12 +70,12 @@ const PAGES: PageItem[] = [
   { label: 'Analytics', href: '/analytics', icon: Activity, section: 'pages' },];
 
 const ACTIONS: ActionItem[] = [
-  { label: 'Log a meeting', href: '/meetings/new', icon: Pencil, section: 'actions' },
-  { label: 'Quick capture', href: '/meetings/capture', icon: Mic, section: 'actions' },
-  { label: 'Pending follow-ups', href: '/followups', icon: SendHorizonal, section: 'actions' },
+  { label: 'Log a meeting', href: '/calendar', icon: Pencil, section: 'actions' },
+  { label: 'Quick capture', href: '/calendar', icon: Mic, section: 'actions' },
+  { label: 'Pending follow-ups', href: '/calendar', icon: SendHorizonal, section: 'actions' },
   { label: 'New investor', href: '/investors', icon: PlusCircle, note: 'Add from investors page', section: 'actions' },
-  { label: 'New document', href: '/documents/new', icon: FileText, section: 'actions' },
-  { label: 'Meeting prep', href: '/meetings/prep', icon: ClipboardList, section: 'actions' },];
+  { label: 'Generate document', href: '/context', icon: FileText, section: 'actions' },
+  { label: 'Edit workspace', href: '/workspace', icon: ClipboardList, section: 'actions' },];
 
 const SHORTCUTS: Record<string, string> = { '/today': '⌘T', '/meetings/new': '⌘N', '/meetings/capture': '⌘J', '/dealflow': '⌘D', '/focus': '⌘F', '/followups': '⌘L' };
 

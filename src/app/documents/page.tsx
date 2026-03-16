@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useToast } from '@/components/toast';
 import { cachedFetch } from '@/lib/cache';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
-import { FileText, Plus, Clock, Edit3, Download, ShieldCheck, AlertTriangle, CheckCircle2, XCircle, ArrowUpDown } from 'lucide-react';
+import { FileText, Plus, Clock, Edit3, Download, ShieldCheck, AlertTriangle, CheckCircle2, XCircle, ArrowUpDown, PenTool } from 'lucide-react';
 import { fmtDate } from '@/lib/format';
 import { DocSummaryRecord as Doc } from '@/lib/types';
 import { skelCardSm, stAccent, stTextMuted, stTextPrimary, stTextTertiary } from '@/lib/styles';
@@ -216,12 +216,12 @@ export default function DocumentsPage() {
               <AlertTriangle className="w-3.5 h-3.5" /> {flags.length} Flags</button>
           )}
           <Link
-            href="/documents/consistency"
+            href="/workspace"
             className="px-3 py-2 rounded-lg text-sm transition-colors flex items-center gap-2"
             style={{ backgroundColor: 'var(--surface-2)', color: 'var(--text-secondary)' }}>
             <ShieldCheck className="w-3.5 h-3.5" /> Check Alignment</Link>
           <Link
-            href="/documents/new"
+            href="/workspace"
             className="px-4 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2"
             style={{ backgroundColor: 'var(--accent)', color: 'var(--surface-0)' }}>
           <Plus className="w-4 h-4" /> New Document</Link></div></div>
@@ -272,7 +272,7 @@ export default function DocumentsPage() {
           icon={FileText}
           title="No documents yet"
           description="Create your first investment memo, presentation deck, or one-pager to get started."
-          action={{ label: 'Create your first document', href: '/documents/new' }} />
+          action={{ label: 'Generate from Context', href: '/context' }} />
       ) : (
         <div className="space-y-8">
           {Object.entries(grouped).map(([type, typeDocs]) => (
@@ -297,7 +297,7 @@ export default function DocumentsPage() {
                         backgroundColor: docFlags.length > 0
                           ? 'color-mix(in srgb, var(--warning) 3%, transparent)'
                           : undefined, }}>
-                      <Link href={`/documents/${doc.id}`} className="flex-1 min-w-0">
+                      <Link href={`/workspace?doc=${doc.type}`} className="flex-1 min-w-0">
                         <div className="flex items-center gap-3">
                           <Edit3 className="w-4 h-4 shrink-0" style={stTextMuted} />
                           <div className="min-w-0">
@@ -315,6 +315,12 @@ export default function DocumentsPage() {
                       <div className="flex items-center gap-2 shrink-0 ml-4">
                         <span className="text-xs px-2 py-0.5 rounded" style={STATUS_STYLES[doc.status] || { backgroundColor: 'var(--surface-2)', color: 'var(--text-muted)' }}>
                           {doc.status}</span>
+                        <Link
+                          href={`/workspace?doc=${doc.type}`}
+                          className="icon-dl p-1 rounded flex items-center"
+                          title="Edit in Workspace"
+                          aria-label="Edit in Workspace">
+                          <PenTool className="w-3.5 h-3.5" /></Link>
                         <button
                           onClick={() => downloadDoc(doc)}
                           className="icon-dl p-1 rounded"

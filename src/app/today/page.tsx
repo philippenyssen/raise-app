@@ -735,7 +735,7 @@ export default function TodayPage() {
             <div className="flex items-center justify-center gap-2" style={{ marginTop: 'var(--space-3)' }}>
               <Link href="/decide" className="btn btn-primary btn-sm">
                 Schedule high-momentum follow-ups</Link>
-              <Link href="/followups" className="btn btn-secondary btn-sm">
+              <Link href="/calendar" className="btn btn-secondary btn-sm">
                 Clear overdue actions</Link></div></div>
         )}</div>
 
@@ -769,7 +769,7 @@ export default function TodayPage() {
         <div>
           <div className="flex items-center justify-between">
             <div className="section-title">Follow-ups Due</div>
-            <Link href="/followups" style={{ ...labelMuted, textDecoration: 'underline' }}>
+            <Link href="/calendar" style={{ ...labelMuted, textDecoration: 'underline' }}>
               View all</Link></div>
           <div style={flexColGap2}>
             {dueTodayFollowups.map(fu => {
@@ -923,7 +923,7 @@ export default function TodayPage() {
                 Momentum anomalies</span>
               <span style={{ ...stFontXs, color: 'var(--text-muted)' }}>
                 {momentumAnomalies.length} investor{momentumAnomalies.length !== 1 ? 's' : ''} diverging</span></div>
-            <Link href="/momentum" className="btn btn-ghost btn-sm shrink-0 investor-link" style={stTextSecondary}>
+            <Link href="/dealflow" className="btn btn-ghost btn-sm shrink-0 investor-link" style={stTextSecondary}>
               Momentum <span style={flexIcon}><ChevronRight className="w-3.5 h-3.5" /></span></Link></div>
           <div style={flexColGap2}>
             {momentumAnomalies.map(a => (

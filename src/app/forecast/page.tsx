@@ -559,7 +559,7 @@ export default function ForecastPage() {
         Forecast updates in real-time based on pipeline stage, tier, enthusiasm, and historical conversion
         <span style={{ margin: '0 var(--space-2)', color: 'var(--border-default)' }}>|</span>
         <Link
-          href="/velocity"
+          href="/dealflow"
           className="flex items-center gap-1"
           style={{ color: 'var(--accent)', textDecoration: 'none' }}>
           View Velocity

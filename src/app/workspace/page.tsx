@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import dynamic from 'next/dynamic';
+import { useSearchParams } from 'next/navigation';
 import { cachedFetch } from '@/lib/cache';
 import { SplitPane } from '@/components/workspace/split-pane';
 
@@ -38,6 +39,7 @@ const newDocLinkStyle: React.CSSProperties = { padding: 'var(--space-2) var(--sp
 
 export default function WorkspacePage() {
   const { toast } = useToast();
+  const searchParams = useSearchParams();
   const [docs, setDocs] = useState<Doc[]>([]);
   const [selectedDoc, setSelectedDoc] = useState<Doc | null>(null);
   const [editedContent, setEditedContent] = useState('');
@@ -48,17 +50,19 @@ export default function WorkspacePage() {
   const [generating, setGenerating] = useState<string | null>(null);
   const [contentHistory, setContentHistory] = useState<string[]>([]);
   const [pendingDoc, setPendingDoc] = useState<Doc | null>(null);
-
-
+  const [autoSelected, setAutoSelected] = useState(false);
 
   const fetchDocs = useCallback(async () => {
     try {
       const res = await cachedFetch('/api/documents');
       if (!res.ok) throw new Error(`Failed (${res.status})`);
-      setDocs(await res.json());
+      const fetched = await res.json();
+      setDocs(fetched);
+      return fetched as Doc[];
     } catch (e) {
       console.warn('[WORKSPACE_FETCH]', e instanceof Error ? e.message : e);
       toast('Couldn\'t load documents — try refreshing the page', 'error');
+      return [] as Doc[];
     } finally {
       setLoading(false);
     }
@@ -97,6 +101,18 @@ export default function WorkspacePage() {
       }
     }
   }, []);
+
+  // Auto-select document from URL query parameter (?doc=TYPE)
+  useEffect(() => {
+    const docType = searchParams.get('doc');
+    if (docType && !autoSelected && docs.length > 0 && !selectedDoc) {
+      const match = docs.find(d => d.type === docType);
+      if (match) {
+        setAutoSelected(true);
+        doSelectDoc(match);
+      }
+    }
+  }, [docs, searchParams, autoSelected, selectedDoc, doSelectDoc]);
 
   const selectDoc = useCallback((doc: Doc) => {
     if (dirty && selectedDoc) {
@@ -297,10 +313,10 @@ export default function WorkspacePage() {
             })}</div>
           <div style={sectionDividerStyle}>
             <a
-              href="/documents/new"
+              href="/context"
               className="flex items-center gap-2 sidebar-link"
               style={newDocLinkStyle}>
-              <Plus className="w-4 h-4" /> New Document</a></div></div>
+              <Plus className="w-4 h-4" /> Generate from Context</a></div></div>
       )}
 
       {!sidebarOpen && (

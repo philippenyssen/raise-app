@@ -578,7 +578,7 @@ export default function DealflowPage() {
                 style={dfClearFilterBtn}>
                 Show all {investors.length} investors</button>
             ) : (
-              <>Signals build automatically from meetings. <Link href="/meetings/capture" style={stAccent}>Log a meeting</Link> to get started.</>
+              <>Signals build automatically from meetings. <Link href="/calendar" style={stAccent}>Log a meeting</Link> to get started.</>
             )}</p></div>
       )}
 
