@@ -127,7 +127,7 @@ export default function VelocityPage() {
             className="progress-fill"
             style={{
               width: `${raiseProgress}%`,
-              background: 'var(--accent)',
+              background: summary.raise_days_elapsed > summary.raise_target_days ? 'var(--danger)' : raiseProgress > 80 ? 'var(--warning)' : 'var(--accent)',
               borderRadius: 'var(--radius-sm)',
             }} /></div>
         <div className="flex items-center justify-between" style={{ marginTop: 'var(--space-1)' }}>
