@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import { cachedFetch } from '@/lib/cache';
 import Link from 'next/link';
 import type { Meeting } from '@/lib/types';
@@ -309,6 +310,7 @@ function MeetingOutcomeSection({
 }
 
 export default function MeetingsPage() {
+  const router = useRouter();
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
@@ -331,7 +333,7 @@ export default function MeetingsPage() {
   }, []);
 
   useEffect(() => {
-    const h = (e: KeyboardEvent) => { if (e.key === 'r' && !e.metaKey && !e.ctrlKey && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement)) { e.preventDefault(); cachedFetch('/api/meetings').then(r => r.json()).then(setMeetings).catch(() => {}); } };
+    const h = (e: KeyboardEvent) => { if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement) return; if (e.key === 'r' && !e.metaKey && !e.ctrlKey) { e.preventDefault(); cachedFetch('/api/meetings').then(r => r.json()).then(setMeetings).catch(() => {}); } if (e.key === 'n' && !e.metaKey && !e.ctrlKey) { e.preventDefault(); router.push('/meetings/new'); } };
     window.addEventListener('keydown', h);
     return () => window.removeEventListener('keydown', h);
   }, []);

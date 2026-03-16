@@ -102,7 +102,9 @@ export default function InvestorsPage() {
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && showForm) { setShowForm(false); setEditId(null); }
-      if (e.key === 'r' && !e.metaKey && !e.ctrlKey && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement)) { e.preventDefault(); fetchInvestors(); }
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement) return;
+      if (e.key === 'r' && !e.metaKey && !e.ctrlKey) { e.preventDefault(); fetchInvestors(); }
+      if (e.key === 'n' && !e.metaKey && !e.ctrlKey && !showForm) { e.preventDefault(); setEditId(null); setShowForm(true); }
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
