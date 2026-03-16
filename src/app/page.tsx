@@ -884,7 +884,7 @@ export default function Dashboard() {
                 </span></div>
 
               <div className="space-y-2">
-                {atRisk.scoreReversals.map((rev) => (
+                {atRisk.scoreReversals.filter(r => !completedFocus.has(`risk-${r.investorId}`)).map((rev) => (
                   <div
                     key={`rev-${rev.investorId}`}
                     className="flex items-start gap-3 py-2.5 px-3 rounded-lg transition-colors hover-surface-2">
@@ -901,13 +901,24 @@ export default function Dashboard() {
                           {rev.severity}</span></div>
                       <p style={labelSecondary}>
                         Score {rev.previousScore} → {rev.currentScore} ({rev.delta})</p></div>
-                    <Link
-                      href={`/investors/${rev.investorId}`}
-                      className="shrink-0 btn btn-secondary btn-sm flex items-center gap-1">
-                      Follow up <ChevronRight className="w-3 h-3" /></Link></div>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <button
+                        onClick={() => composeFocusAction(rev.investorId)}
+                        disabled={composingFocus === rev.investorId}
+                        className="px-1.5 py-0.5 rounded transition-colors btn-surface flex items-center gap-1"
+                        style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}
+                        title="AI compose follow-up">
+                        <SendHorizonal className="w-3 h-3" /> {composingFocus === rev.investorId ? '...' : 'Draft'}</button>
+                      <button
+                        onClick={() => { markFocusDone(rev.investorId, rev.investorName, `Score reversal addressed: ${rev.previousScore}→${rev.currentScore}`); setCompletedFocus(prev => new Set(prev).add(`risk-${rev.investorId}`)); }}
+                        className="px-1.5 py-0.5 rounded transition-colors btn-surface flex items-center gap-1"
+                        style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}
+                        title="Mark as addressed">
+                        <Check className="w-3 h-3" /> Done</button>
+                    </div></div>
                 ))}
 
-                {atRisk.staleInvestors.map((inv) => (
+                {atRisk.staleInvestors.filter(s => !completedFocus.has(`stale-${s.investorId}`)).map((inv) => (
                   <div
                     key={`stale-${inv.investorId}`}
                     className="flex items-start gap-3 py-2.5 px-3 rounded-lg transition-colors hover-surface-2">
@@ -928,10 +939,21 @@ export default function Dashboard() {
                         {inv.daysSinceLastMeeting !== null
                           ? `No contact in ${inv.daysSinceLastMeeting} days`
                           : inv.signal}</p></div>
-                    <Link
-                      href={`/investors/${inv.investorId}`}
-                      className="shrink-0 btn btn-secondary btn-sm flex items-center gap-1">
-                      Follow up <ChevronRight className="w-3 h-3" /></Link></div>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <button
+                        onClick={() => composeFocusAction(inv.investorId)}
+                        disabled={composingFocus === inv.investorId}
+                        className="px-1.5 py-0.5 rounded transition-colors btn-surface flex items-center gap-1"
+                        style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}
+                        title="AI compose re-engagement">
+                        <SendHorizonal className="w-3 h-3" /> {composingFocus === inv.investorId ? '...' : 'Draft'}</button>
+                      <button
+                        onClick={() => { markFocusDone(inv.investorId, inv.investorName, `Re-engaged stale investor (${inv.daysSinceLastMeeting ?? 0}d silent)`); setCompletedFocus(prev => new Set(prev).add(`stale-${inv.investorId}`)); }}
+                        className="px-1.5 py-0.5 rounded transition-colors btn-surface flex items-center gap-1"
+                        style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}
+                        title="Mark as addressed">
+                        <Check className="w-3 h-3" /> Done</button>
+                    </div></div>
                 ))}</div></div>
           )}
 
