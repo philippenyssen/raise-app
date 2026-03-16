@@ -2086,6 +2086,19 @@ function EnrichmentPanel({
   // Sort categories by number of records (largest first)
   const sortedCategories = Object.keys(grouped).sort((a, b) => grouped[b].length - grouped[a].length);
 
+  // Extract key profile fields for quick-view card
+  const findField = (field: string) => records.find(r => r.field_name === field)?.field_value;
+  const profileFields = [
+    { label: 'AUM', value: findField('aum') || findField('assets_under_management') },
+    { label: 'Fund Count', value: findField('fund_count') || findField('number_of_funds') },
+    { label: 'Thesis', value: findField('investment_thesis') || findField('thesis') || findField('strategy') },
+    { label: 'Jurisdiction', value: findField('jurisdiction') || findField('hq_country') || findField('country') },
+    { label: 'Founded', value: findField('founded') || findField('incorporation_date') || findField('year_founded') },
+    { label: 'Website', value: findField('website') || findField('website_url') },
+  ].filter(f => f.value);
+  const keyPeople = records.filter(r => r.category === 'people' && r.confidence >= 0.5).slice(0, 4);
+  const recentDeals = records.filter(r => r.category === 'portfolio' || r.field_name?.includes('investment') || r.field_name?.includes('deal')).slice(0, 3);
+
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between mb-3">
@@ -2100,6 +2113,46 @@ function EnrichmentPanel({
             color: 'var(--text-muted)',
             background: 'transparent', }}>
           <RefreshCw className="w-3 h-3" /> Refresh</button></div>
+
+      {/* Quick Profile Card */}
+      {profileFields.length > 0 && (
+        <div className="rounded-lg p-4 mb-3" style={{ background: 'var(--surface-1)', border: '1px solid var(--border-subtle)' }}>
+          <div className="text-xs font-normal mb-3" style={{ color: 'var(--text-tertiary)', letterSpacing: '0.03em' }}>PROFILE SNAPSHOT</div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-3">
+            {profileFields.map(f => (
+              <div key={f.label}>
+                <div className="text-xs" style={textMuted}>{f.label}</div>
+                <div className="text-sm truncate" style={textPrimary} title={f.value}>
+                  {f.label === 'Website' && f.value ? (
+                    <a href={f.value.startsWith('http') ? f.value : `https://${f.value}`} target="_blank" rel="noopener noreferrer" style={stAccent} onClick={e => e.stopPropagation()}>{f.value.replace(/^https?:\/\//, '').replace(/\/$/, '')}</a>
+                  ) : (f.value!.length > 80 ? f.value!.slice(0, 80) + '...' : f.value)}</div>
+              </div>
+            ))}
+          </div>
+          {keyPeople.length > 0 && (
+            <div className="pt-2" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+              <div className="text-xs mb-1.5" style={textMuted}>Key People</div>
+              <div className="flex flex-wrap gap-2">
+                {keyPeople.map(p => (
+                  <span key={p.id} className="text-xs px-2 py-1 rounded" style={{ background: 'var(--surface-2)', color: 'var(--text-secondary)' }}>
+                    {p.field_value.length > 50 ? p.field_value.slice(0, 50) + '...' : p.field_value}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+          {recentDeals.length > 0 && (
+            <div className="pt-2 mt-2" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+              <div className="text-xs mb-1.5" style={textMuted}>Recent Activity</div>
+              {recentDeals.map(d => (
+                <div key={d.id} className="text-xs mb-1" style={textSecondary}>
+                  {d.field_value.length > 100 ? d.field_value.slice(0, 100) + '...' : d.field_value}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {sortedCategories.map(cat => {
         const catRecords = grouped[cat];
