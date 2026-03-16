@@ -666,3 +666,4 @@ db4500e	100	100	0	pass	Workflow+Automation	perf: extract 6 style constants from 
 677	2026-03-16T12:31:56Z	design	design: wider gap on analytics summary cards grid	100	-	Design+UX
 678	2026-03-16T12:33:33Z	perf	perf: extract score components array to module scope in focus page	100	-	Engineering
 679	2026-03-16T12:34:44Z	intel	intel: add urgency guidance to meeting brief recommended_ask prompt	100	-	AI+Intelligence
+680	2026-03-16T12:36:22Z	enrich	enrich: skip empty/null fields + log parse failures in engine	100	-	DataEnrichment

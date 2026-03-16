@@ -192,6 +192,7 @@ export function buildEnrichedProfile(
     profile.sources_used.push(result.source_id);
 
     for (const field of result.fields) {
+      if (!field.field_value || field.field_value.trim() === '' || field.field_value === 'null') continue;
       fieldCount++;
       totalConfidence += field.confidence;
 
@@ -250,7 +251,7 @@ export function buildEnrichedProfile(
                 notable_deals: person.notable_deals || '',
                 source: result.source_id,});
             } catch {
-              // Plain text person name
+              console.warn(`[ENRICH_PARSE] ${result.source_id} partner: ${field.field_value.slice(0, 80)}`);
               profile.partners.push({
                 name: field.field_value,
                 title: '',
