@@ -11,7 +11,7 @@ import {
   Columns3,
   SendHorizonal, Menu, X, LogOut,
   ChevronLeft, ChevronRight, Sun, Flame,
-  Compass,
+  Compass, Target, Swords, MessageCircleWarning, Zap,
 } from 'lucide-react';
 
 interface NavItem {
@@ -31,8 +31,12 @@ const nav: NavItem[] = [
   // Execute — running the fundraise
   { href: '/meetings', label: 'Meetings', icon: Calendar, section: 'EXECUTE' },
   { href: '/followups', label: 'Follow-ups', icon: SendHorizonal, section: 'EXECUTE' },
-  // Analyze — consolidated intelligence
+  { href: '/focus', label: 'Focus', icon: Target, section: 'EXECUTE' },
+  // Analyze — intelligence and strategy
   { href: '/dealflow', label: 'Dealflow', icon: Flame, section: 'ANALYZE' },
+  { href: '/intelligence', label: 'Intelligence', icon: Zap, section: 'ANALYZE' },
+  { href: '/competitive', label: 'Competitive', icon: Swords, section: 'ANALYZE' },
+  { href: '/objections', label: 'Objections', icon: MessageCircleWarning, section: 'ANALYZE' },
   { href: '/strategic', label: 'Strategic', icon: Compass, section: 'ANALYZE' },
   // Workspace — materials and configuration
   { href: '/documents', label: 'Documents', icon: BookOpen, section: 'WORKSPACE' },
