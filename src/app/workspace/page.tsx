@@ -11,7 +11,7 @@ const AIChat = dynamic(() => import('@/components/workspace/ai-chat').then(m => 
 import { useToast } from '@/components/toast';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { DocSummaryRecord as Doc } from '@/lib/types';
-import { FileText, Plus, ChevronRight, Wand2, Loader2, FilePlus, FileSpreadsheet, Presentation, BarChart3 } from 'lucide-react';
+import { FileText, Plus, ChevronRight, Wand2, Loader2, FilePlus, FileSpreadsheet, Presentation, BarChart3, Search } from 'lucide-react';
 import { labelMuted, stAccent, stTextMuted } from '@/lib/styles';
 import { EmptyState } from '@/components/ui/empty-state';
 
@@ -56,6 +56,7 @@ export default function WorkspacePage() {
   const [creatingDoc, setCreatingDoc] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(false);
   const [showNewDocMenu, setShowNewDocMenu] = useState(false);
+  const [sidebarSearch, setSidebarSearch] = useState('');
   const newDocMenuRef = useRef<HTMLDivElement>(null);
   const autoSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -368,9 +369,12 @@ export default function WorkspacePage() {
     return () => window.removeEventListener('keydown', handler);
   }, [handleSave, handleUndo]);
 
-  // Sort + group docs by type (memoized)
+  // Sort + group docs by type (memoized), filtered by search
   const { sortedDocs, grouped } = useMemo(() => {
-    const sorted = [...docs].sort((a, b) => {
+    const filtered = sidebarSearch
+      ? docs.filter(d => d.title.toLowerCase().includes(sidebarSearch.toLowerCase()) || d.type.toLowerCase().includes(sidebarSearch.toLowerCase()))
+      : docs;
+    const sorted = [...filtered].sort((a, b) => {
       const ai = TYPE_ORDER.indexOf(a.type);
       const bi = TYPE_ORDER.indexOf(b.type);
       return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
@@ -382,7 +386,7 @@ export default function WorkspacePage() {
       return acc;
     }, {});
     return { sortedDocs: sorted, grouped: groups };
-  }, [docs]);
+  }, [docs, sidebarSearch]);
 
   if (loading) {
     return (
@@ -415,6 +419,20 @@ export default function WorkspacePage() {
               aria-label="Close sidebar"
               style={closeSidebarBtnStyle}>
               <ChevronRight className="w-4 h-4 rotate-180" /></button></div>
+          {docs.length > 3 && (
+            <div style={{ padding: 'var(--space-2) var(--space-2) 0' }}>
+              <div className="relative">
+                <Search className="w-3 h-3 absolute" style={{ left: '8px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                <input
+                  value={sidebarSearch}
+                  onChange={e => setSidebarSearch(e.target.value)}
+                  placeholder="Filter..."
+                  className="input w-full"
+                  style={{ fontSize: 'var(--font-size-xs)', padding: '4px 8px 4px 24px' }}
+                />
+              </div>
+            </div>
+          )}
           <div
             className="flex-1 overflow-y-auto space-y-3"
             style={{ padding: 'var(--space-2)' }}>
