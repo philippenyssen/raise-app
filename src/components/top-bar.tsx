@@ -159,10 +159,8 @@ export function TopBar() {
                       key={t.id}
                       href="/timeline"
                       onClick={() => setOpen(false)}
-                      className="block rounded-md transition-colors"
-                      style={{ padding: 'var(--space-2)', fontSize: 'var(--font-size-sm)' }}
-                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-3)'; }}
-                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
+                      className="block rounded-md transition-colors btn-surface"
+                      style={{ padding: 'var(--space-2)', fontSize: 'var(--font-size-sm)' }}>
                       <div className="flex items-center justify-between">
                         <span className="truncate" style={{ color: 'var(--text-primary)' }}>{t.title}</span>
                         <span className="shrink-0 ml-2" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)' }}>{days}d overdue</span>
@@ -187,10 +185,8 @@ export function TopBar() {
                     key={t.id}
                     href="/timeline"
                     onClick={() => setOpen(false)}
-                    className="block rounded-md transition-colors"
-                    style={{ padding: 'var(--space-2)', fontSize: 'var(--font-size-sm)' }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-3)'; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
+                    className="block rounded-md transition-colors btn-surface"
+                    style={{ padding: 'var(--space-2)', fontSize: 'var(--font-size-sm)' }}>
                     <div className="flex items-center justify-between">
                       <span className="truncate" style={{ color: 'var(--text-secondary)' }}>{t.title}</span>
                       {t.due_date && (
@@ -220,15 +216,13 @@ export function TopBar() {
             <Link
               href="/timeline"
               onClick={() => setOpen(false)}
-              className="block text-center transition-colors"
+              className="block text-center transition-colors btn-surface"
               style={{
                 padding: 'var(--space-2)',
                 fontSize: 'var(--font-size-xs)',
                 color: 'var(--accent)',
                 borderTop: '1px solid var(--border-subtle)',
-              }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-3)'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
+              }}>
               View all tasks & activity</Link></div>
         )}</div>
     </div>);

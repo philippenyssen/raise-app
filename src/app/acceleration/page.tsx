@@ -12,7 +12,8 @@ import {
   ChevronDown, Play, Ban, XCircle, Rocket, Timer, ArrowUpRight,
   TrendingDown, SkipForward,
 } from 'lucide-react';
-import { labelMuted10, stBorderTop, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, INVESTOR_TYPE_STYLES } from '@/lib/styles';
+import { inlineBadgeStyle, labelMuted10, stBorderTop, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, INVESTOR_TYPE_STYLES } from '@/lib/styles';
+import { TierBadge, EnthusiasmDots } from '@/components/shared';
 import { relativeTime } from '@/lib/time';
 import { cachedFetch } from '@/lib/cache';
 
@@ -35,40 +36,6 @@ type FilterTab = 'all' | 'pending' | 'executed' | 'skipped';
 // Helpers
 // ---------------------------------------------------------------------------
 
-function inlineBadgeStyle(styleObj: React.CSSProperties): React.CSSProperties {
-  return {
-    fontSize: 'var(--font-size-xs)',
-    padding: '2px 6px',
-    borderRadius: 'var(--radius-sm)',
-    fontWeight: 400,
-    lineHeight: 1.5,
-    whiteSpace: 'nowrap' as const,
-    ...styleObj,};
-}
-
-function EnthusiasmDots({ value }: { value: number }) {
-  return (
-    <div className="enthusiasm-dots">
-      {[1, 2, 3, 4, 5].map(i => (
-        <div
-          key={i}
-          className="enthusiasm-dot"
-          style={{
-            background: i <= value
-              ? (value >= 4 ? 'var(--success)' : value >= 3 ? 'var(--warning)' : 'var(--danger)')
-              : 'var(--border-default)',
-          }} />
-      ))}
-    </div>);
-}
-
-function TierBadge({ tier }: { tier: number }) {
-  const tierClass = tier <= 3 ? `tier-badge tier-${tier}` : 'tier-badge tier-3';
-  return (
-    <span className={tierClass}>
-      {tier}
-    </span>);
-}
 
 // ---------------------------------------------------------------------------
 // Components

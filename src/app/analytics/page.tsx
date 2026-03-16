@@ -16,6 +16,7 @@ import {
   stSurface0, stSurface1, stBorderTop,
   labelMuted10, labelSmMuted, labelTertiary, labelMuted,
 } from '@/lib/styles';
+import { EnthusiasmDots } from '@/components/shared';
 
 // ── Types ────────────────────────────────────────────────────────────
 
@@ -851,25 +852,6 @@ function SparklineChart({
     </div>);
 }
 
-function EnthusiasmDots({ score, size = 'md' }: { score: number; size?: 'sm' | 'md' }) {
-  const dotSize = size === 'sm' ? 'w-1 h-1' : 'w-1.5 h-1.5';
-  return (
-    <div className="flex gap-0.5">
-      {[1, 2, 3, 4, 5].map(n => (
-        <div
-          key={n}
-          className={`${dotSize} rounded-full`}
-          style={{
-            background: n <= score
-              ? score >= 4
-                ? 'var(--success)'
-                : score >= 3
-                ? 'var(--accent)'
-                : 'var(--text-muted)'
-              : 'var(--surface-2)', }}/>
-      ))}
-    </div>);
-}
 
 function RiskSection({
   title, subtitle, count, severity, children,

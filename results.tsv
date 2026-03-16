@@ -435,3 +435,4 @@ eac2d55	100	100	0	keep	copy+ops+workflow	eliminate 7 hover useStates from today 
 c4199df	100	100	0	keep	copy+ops	eliminate 27 hover useStates across 15 files (objections competitive deal-heat focus win-loss network timeline reports prep docs investors components)
 a9453dc	100	100	0	keep	competitive+engineering	parallelize 3 db.ts heavy loops + memoize analytics/dealflow renders
 5efbe68	100	100	0	keep	ceo+strategy	convert pipeline InvestorCard hover to CSS + dealflow export guard
+d0a8295	100	100	0	keep	product+design	a11y aria-labels on pipeline cards + eliminate last JS hover handlers

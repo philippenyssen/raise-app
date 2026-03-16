@@ -411,13 +411,11 @@ export default function Dashboard() {
                   key={t}
                   href={`/api/export?type=${t}`}
                   download
-                  className="block capitalize transition-colors"
+                  className="block capitalize transition-colors hover-surface-2"
                   style={{
                     padding: 'var(--space-2) var(--space-3)',
                     fontSize: 'var(--font-size-xs)',
-                    color: 'var(--text-secondary)', }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; (e.currentTarget as HTMLElement).style.color = 'var(--text-primary)'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; }}>
+                    color: 'var(--text-secondary)', }}>
                   {t} CSV</a>
               ))}</div></div></div></div>
 
@@ -618,10 +616,8 @@ export default function Dashboard() {
                 <Target className="w-4 h-4" /> Close the gap</h2>
               <div className="space-y-1">
                 {stressTest.gapInvestors.slice(0, 3).map(g => (
-                  <Link key={g.id} href={`/investors/${g.id}`} className="flex items-center justify-between py-1.5 transition-colors rounded px-2"
-                    style={{ fontSize: 'var(--font-size-sm)' }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
+                  <Link key={g.id} href={`/investors/${g.id}`} className="flex items-center justify-between py-1.5 transition-colors rounded px-2 hover-surface-2"
+                    style={{ fontSize: 'var(--font-size-sm)' }}>
                     <span style={{ color: 'var(--text-primary)', fontWeight: 400 }}>{g.name}</span>
                     <span style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>{g.intervention}</span>
                     <span style={{ color: 'var(--success)', fontWeight: 400, fontSize: 'var(--font-size-xs)' }}>+€{g.impactDelta}M</span>
@@ -637,8 +633,7 @@ export default function Dashboard() {
                 {watching.map(w => {
                   const daysSince = w.lastMeeting ? Math.round((Date.now() - new Date(w.lastMeeting).getTime()) / 864e5) : null;
                   return (
-                    <Link key={w.id} href={`/investors/${w.id}`} className="flex items-center gap-2 shrink-0 transition-colors" style={{ padding: 'var(--space-2) var(--space-3)', borderRadius: 'var(--radius-lg)', background: 'var(--surface-1)' }}
-                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }} onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-1)'; }}>
+                    <Link key={w.id} href={`/investors/${w.id}`} className="flex items-center gap-2 shrink-0 transition-colors hover-surface-2" style={{ padding: 'var(--space-2) var(--space-3)', borderRadius: 'var(--radius-lg)', background: 'var(--surface-1)' }}>
                       <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-primary)' }}>{w.name}</span>
                       <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{STATUS_LABELS[w.status as keyof typeof STATUS_LABELS] ?? w.status}</span>
                       {daysSince !== null && <span style={{ fontSize: 'var(--font-size-xs)', color: daysSince > 14 ? 'var(--danger)' : 'var(--text-muted)' }}>{daysSince}d</span>}
@@ -662,19 +657,15 @@ export default function Dashboard() {
                 {atRisk.scoreReversals.map((rev) => (
                   <div
                     key={`rev-${rev.investorId}`}
-                    className="flex items-start gap-3 py-2.5 px-3 rounded-lg transition-colors"
-                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
+                    className="flex items-start gap-3 py-2.5 px-3 rounded-lg transition-colors hover-surface-2">
                     <span className="mt-0.5 shrink-0" style={textTertiary}>
                       <TrendingDown className="w-4 h-4" /></span>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-0.5">
                         <Link
                           href={`/investors/${rev.investorId}`}
-                          className="transition-colors truncate"
-                          style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}
-                          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
-                          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = ''; }}>
+                          className="transition-colors truncate investor-link"
+                          style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}>
                           {rev.investorName}</Link>
                         <span style={labelTertiary}>
                           {rev.severity}</span></div>
@@ -689,9 +680,7 @@ export default function Dashboard() {
                 {atRisk.staleInvestors.map((inv) => (
                   <div
                     key={`stale-${inv.investorId}`}
-                    className="flex items-start gap-3 py-2.5 px-3 rounded-lg transition-colors"
-                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
+                    className="flex items-start gap-3 py-2.5 px-3 rounded-lg transition-colors hover-surface-2">
                     <span className="mt-0.5 shrink-0" style={textTertiary}>
                       {inv.acceleration === 'gone_silent' ? <UserMinus className="w-4 h-4" /> : <CalendarClock className="w-4 h-4" />}
                     </span>
@@ -699,10 +688,8 @@ export default function Dashboard() {
                       <div className="flex items-center gap-2 mb-0.5">
                         <Link
                           href={`/investors/${inv.investorId}`}
-                          className="transition-colors truncate"
-                          style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}
-                          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
-                          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = ''; }}>
+                          className="transition-colors truncate investor-link"
+                          style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}>
                           {inv.investorName}</Link>
                         <span style={labelTertiary}>T{inv.tier}</span>
                         <span style={labelTertiary}>
@@ -739,9 +726,7 @@ export default function Dashboard() {
                   return (
                     <div
                       key={item.investorId}
-                      className="flex items-center gap-3 py-2 px-3 rounded-lg transition-colors"
-                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}
-                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
+                      className="flex items-center gap-3 py-2 px-3 rounded-lg transition-colors hover-surface-2">
                       <span
                         className="w-6 h-6 rounded flex items-center justify-center"
                         style={{
@@ -754,10 +739,8 @@ export default function Dashboard() {
                         <div className="flex items-center gap-2">
                           <Link
                             href={`/investors/${item.investorId}`}
-                            className="truncate transition-colors"
-                            style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}
-                            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
-                            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = ''; }}>
+                            className="truncate transition-colors investor-link"
+                            style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}>
                             {item.investorName}</Link>
                           <span style={labelTertiary}>T{item.tier}</span>
                           <MomentumIcon className="w-3.5 h-3.5" style={textTertiary} /></div>
@@ -838,10 +821,8 @@ export default function Dashboard() {
                         <div key={i} className="flex items-center justify-between py-1">
                           <Link
                             href={`/investors/${alert.investorId}`}
-                            className="transition-colors"
-                            style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)' }}
-                            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
-                            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-primary)'; }}>
+                            className="transition-colors investor-link"
+                            style={{ fontSize: 'var(--font-size-xs)' }}>
                             {alert.investorName}</Link>
                           <span className="tabular-nums" style={labelSecondary}>
                             {alert.previousScore} → {alert.currentScore} ({-alert.drop})</span></div>
@@ -865,18 +846,14 @@ export default function Dashboard() {
                   return (
                     <div
                       key={accel.id}
-                      className="flex items-start gap-3 py-2.5 px-3 rounded-lg transition-colors"
-                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}
-                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
+                      className="flex items-start gap-3 py-2.5 px-3 rounded-lg transition-colors hover-surface-2">
                       <Zap className="w-4 h-4 shrink-0 mt-0.5" style={textTertiary} />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-0.5">
                           <Link
                             href={`/investors/${accel.investorId}`}
-                            className="transition-colors"
-                            style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}
-                            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
-                            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = ''; }}>
+                            className="transition-colors investor-link"
+                            style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}>
                             {accel.investorName}</Link>
                           <span style={labelTertiary}>
                             {accel.urgency === 'immediate' ? 'Now' : accel.urgency}</span>
@@ -1070,9 +1047,7 @@ export default function Dashboard() {
                     return (
                       <div
                         key={t.id}
-                        className="flex items-center justify-between py-1.5 px-2 rounded transition-colors"
-                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}
-                        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
+                        className="flex items-center justify-between py-1.5 px-2 rounded transition-colors hover-surface-2">
                         <div className="min-w-0">
                           <div className="truncate" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)' }}>{t.title}</div>
                           {t.investor_name && <div className="truncate" style={labelMuted}>{t.investor_name}</div>}</div>
@@ -1321,10 +1296,8 @@ function HotDealRow({ investor }: { investor: DealHeatInvestor }) {
         <div className="flex items-center gap-2">
           <Link
             href={`/investors/${investor.id}`}
-            className="truncate transition-colors"
-            style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = ''; }}>
+            className="truncate transition-colors investor-link"
+            style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}>
             {investor.name}</Link>
           <span style={labelTertiary}>T{investor.tier}</span></div>
         <div className="mt-0.5 flex items-center gap-2" style={labelMuted}>
@@ -1388,10 +1361,8 @@ function FollowupRow({ followup, onComplete }: { followup: FollowupItem; onCompl
         <div className="flex items-center gap-2">
           <Link
             href={`/investors/${followup.investor_id}`}
-            className="truncate transition-colors"
-            style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = ''; }}>
+            className="truncate transition-colors investor-link"
+            style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}>
             {followup.investor_name || 'Unknown'}</Link>
           <span style={labelTertiary}>
             {ACTION_LABELS[followup.action_type] || followup.action_type.replace(/_/g, ' ')}</span></div>

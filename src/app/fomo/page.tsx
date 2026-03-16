@@ -7,7 +7,8 @@ import {
   Zap, RefreshCw, AlertTriangle, TrendingUp, Users,
   ArrowRight, Clock, Activity, Target, Flame,
 } from 'lucide-react';
-import { getIntensityColor, labelMuted, stAccent, stFontSm, stFontXs, stTextPrimary } from '@/lib/styles';
+import { getIntensityColor, inlineBadgeStyle, labelMuted, stAccent, stFontSm, stFontXs, stTextPrimary } from '@/lib/styles';
+import { TierBadge, EnthusiasmDots } from '@/components/shared';
 import { MS_PER_HOUR } from '@/lib/time';
 
 import { fmtDateTime } from '@/lib/format';
@@ -101,17 +102,6 @@ const PRIORITY_STYLES: Record<string, React.CSSProperties> = {
 // Helpers
 // ---------------------------------------------------------------------------
 
-function inlineBadgeStyle(styleObj: React.CSSProperties): React.CSSProperties {
-  return {
-    fontSize: 'var(--font-size-xs)',
-    padding: '2px 6px',
-    borderRadius: 'var(--radius-sm)',
-    fontWeight: 400,
-    lineHeight: 1.5,
-    whiteSpace: 'nowrap' as const,
-    ...styleObj,};
-}
-
 function getIntensityLabel(intensity: number): string {
   if (intensity >= 70) return 'High';
   if (intensity >= 40) return 'Medium';
@@ -132,26 +122,6 @@ function formatDate(dateStr: string): string {
   return d.toLocaleDateString('en-GB', { month: 'short', day: 'numeric' });
 }
 
-function TierBadge({ tier }: { tier: number }) {
-  const tierClass = tier <= 3 ? `tier-badge tier-${tier}` : 'tier-badge tier-3';
-  return <span className={tierClass}>{tier}</span>;
-}
-
-function EnthusiasmDots({ value }: { value: number }) {
-  return (
-    <div className="enthusiasm-dots">
-      {[1, 2, 3, 4, 5].map(i => (
-        <div
-          key={i}
-          className="enthusiasm-dot"
-          style={{
-            background: i <= value
-              ? (value >= 4 ? 'var(--success)' : value >= 3 ? 'var(--warning)' : 'var(--danger)')
-              : 'var(--border-default)',
-          }} />
-      ))}
-    </div>);
-}
 
 // ---------------------------------------------------------------------------
 // Sub-components

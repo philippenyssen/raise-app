@@ -191,6 +191,18 @@ export const INVESTOR_TYPE_STYLES: Record<string, React.CSSProperties> = {
   family_office: { background: 'var(--fg-6)', color: 'var(--text-primary)' },
 };
 
+export function inlineBadgeStyle(styleObj: React.CSSProperties): React.CSSProperties {
+  return {
+    fontSize: 'var(--font-size-xs)',
+    padding: '2px 6px',
+    borderRadius: 'var(--radius-sm)',
+    fontWeight: 400,
+    lineHeight: 1.5,
+    whiteSpace: 'nowrap' as const,
+    ...styleObj,
+  };
+}
+
 // Strength/significance color: strong/moderate/weak or high/medium/low
 export function strengthColor(s: 'strong' | 'moderate' | 'weak' | 'high' | 'medium' | 'low'): string {
   if (s === 'strong' || s === 'high') return 'var(--success)';
