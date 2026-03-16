@@ -65,17 +65,6 @@ interface FocusData {
 }
 
 // ---------------------------------------------------------------------------
-// Helpers — style objects using design tokens
-// ---------------------------------------------------------------------------
-
-const TYPE_STYLES = INVESTOR_TYPE_STYLES;
-
-
-const STATUS_STYLES = PIPELINE_STATUS_STYLES;
-const MOMENTUM_STYLE = MOMENTUM_STYLES;
-
-
-// ---------------------------------------------------------------------------
 // Scoring Breakdown Component
 // ---------------------------------------------------------------------------
 
@@ -287,10 +276,10 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
                 className="investor-link"
                 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}>
                 {item.investorName}</Link>
-              <span style={inlineBadgeStyle(TYPE_STYLES[item.investorType] ?? TYPE_STYLES.vc)}>
+              <span style={inlineBadgeStyle(INVESTOR_TYPE_STYLES[item.investorType] ?? INVESTOR_TYPE_STYLES.vc)}>
                 {TYPE_LABELS[item.investorType] ?? item.investorType}</span>
               <TierBadge tier={item.investorTier} />
-              <span style={inlineBadgeStyle(STATUS_STYLES[item.status] ?? STATUS_STYLES.identified)}>
+              <span style={inlineBadgeStyle(PIPELINE_STATUS_STYLES[item.status] ?? PIPELINE_STATUS_STYLES.identified)}>
                 {STATUS_LABELS[item.status] ?? item.status}</span></div>
 
             {/* Recommended action */}
@@ -325,7 +314,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
                   : 'No meetings'}</span>
 
               {/* Momentum */}
-              <span className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', ...(MOMENTUM_STYLE[item.momentum] ?? {}) }}>
+              <span className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', ...(MOMENTUM_STYLES[item.momentum] ?? {}) }}>
                 {item.momentum === 'decelerating' || item.momentum === 'stalled'
                   ? <TrendingDown className="w-3 h-3" />
                   : <ArrowUpRight className="w-3 h-3" />
@@ -508,14 +497,14 @@ function StaleAlertCard({ item, onReengage }: { item: FocusItem; onReengage: (it
             className="investor-link"
             style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}>
             {item.investorName}</Link>
-          <span style={inlineBadgeStyle(STATUS_STYLES[item.status] ?? STATUS_STYLES.identified)}>
+          <span style={inlineBadgeStyle(PIPELINE_STATUS_STYLES[item.status] ?? PIPELINE_STATUS_STYLES.identified)}>
             {STATUS_LABELS[item.status]}</span></div>
         <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', fontWeight: 300 }}>
           {item.daysSinceLastMeeting !== null ? `${item.daysSinceLastMeeting}d` : '--'}</span></div>
       <div className="flex items-center gap-3 mb-3">
         <span style={labelMuted}>Last enthusiasm:</span>
         <EnthusiasmDots value={item.enthusiasm} />
-        <span style={{ fontSize: 'var(--font-size-xs)', ...(MOMENTUM_STYLE[item.momentum] ?? {}) }}>
+        <span style={{ fontSize: 'var(--font-size-xs)', ...(MOMENTUM_STYLES[item.momentum] ?? {}) }}>
           {MOMENTUM_LABELS[item.momentum]}</span></div>
       <button
         onClick={() => onReengage(item)}
@@ -597,12 +586,12 @@ function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
           style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}>
           {investor.investorName}</Link>
         <TierBadge tier={investor.investorTier} />
-        <span style={inlineBadgeStyle(STATUS_STYLES[investor.status] ?? STATUS_STYLES.identified)}>
+        <span style={inlineBadgeStyle(PIPELINE_STATUS_STYLES[investor.status] ?? PIPELINE_STATUS_STYLES.identified)}>
           {STATUS_LABELS[investor.status] ?? investor.status}</span></div>
       <div className="flex items-center gap-3 mb-2">
         <span style={labelMuted}>
           Score: <span style={{ color: 'var(--text-secondary)', fontWeight: 300 }}>{investor.score}</span>/100</span>
-        <span style={{ fontSize: 'var(--font-size-xs)', ...(MOMENTUM_STYLE[investor.momentum] ?? {}) }}>
+        <span style={{ fontSize: 'var(--font-size-xs)', ...(MOMENTUM_STYLES[investor.momentum] ?? {}) }}>
           {MOMENTUM_LABELS[investor.momentum]}</span>
         <EnthusiasmDots value={investor.enthusiasm} /></div>
       <p style={labelTertiary}>{investor.reason}</p>
@@ -635,7 +624,7 @@ function AtRiskCard({ investor }: { investor: InvestorSummary }) {
       <div className="flex items-center gap-3 mb-2">
         <span style={labelMuted}>
           Score: <span style={{ color: 'var(--text-primary)', fontWeight: 300 }}>{investor.score}</span>/100</span>
-        <span style={{ fontSize: 'var(--font-size-xs)', ...(MOMENTUM_STYLE[investor.momentum] ?? {}) }}>
+        <span style={{ fontSize: 'var(--font-size-xs)', ...(MOMENTUM_STYLES[investor.momentum] ?? {}) }}>
           {MOMENTUM_LABELS[investor.momentum]}</span>
         <EnthusiasmDots value={investor.enthusiasm} /></div>
       <p style={labelTertiary}>{investor.reason}</p>

@@ -25,16 +25,6 @@ const tabCountInactive = { padding: '2px 6px', fontSize: 'var(--font-size-xs)', 
 const skeletonSm = { height: '80px', borderRadius: 'var(--radius-xl)' } as const;
 const skeletonMd = { height: '100px', borderRadius: 'var(--radius-xl)' } as const;
 
-// ---------------------------------------------------------------------------
-// Constants — style objects using design tokens
-// ---------------------------------------------------------------------------
-
-const TYPE_STYLES = INVESTOR_TYPE_STYLES;
-
-
-const STATUS_STYLES = PIPELINE_STATUS_STYLES;
-const MOMENTUM_STYLE = MOMENTUM_STYLES;
-
 type FilterTab = 'all' | 'pending' | 'executed' | 'skipped';
 
 // ---------------------------------------------------------------------------
@@ -94,7 +84,7 @@ function ActionCard({
               {TRIGGER_LABELS[item.triggerType] ?? item.triggerType}</span>
             <span style={inlineBadgeStyle(CONFIDENCE_STYLES[item.confidence] ?? CONFIDENCE_STYLES.medium)}>
               {item.confidence} confidence</span>
-            <span style={inlineBadgeStyle(STATUS_STYLES[item.status] ?? STATUS_STYLES.identified)}>
+            <span style={inlineBadgeStyle(PIPELINE_STATUS_STYLES[item.status] ?? PIPELINE_STATUS_STYLES.identified)}>
               {STATUS_LABELS[item.status] ?? item.status}</span></div>
 
           {/* Description */}
@@ -171,14 +161,14 @@ function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
           style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}>
           {investor.investorName}</Link>
         <TierBadge tier={investor.investorTier} />
-        <span style={inlineBadgeStyle(TYPE_STYLES[investor.investorType] ?? TYPE_STYLES.vc)}>
+        <span style={inlineBadgeStyle(INVESTOR_TYPE_STYLES[investor.investorType] ?? INVESTOR_TYPE_STYLES.vc)}>
           {TYPE_LABELS[investor.investorType] ?? investor.investorType}</span>
-        <span style={inlineBadgeStyle(STATUS_STYLES[investor.status] ?? STATUS_STYLES.identified)}>
+        <span style={inlineBadgeStyle(PIPELINE_STATUS_STYLES[investor.status] ?? PIPELINE_STATUS_STYLES.identified)}>
           {STATUS_LABELS[investor.status] ?? investor.status}</span></div>
       <div className="flex items-center gap-3 mb-2">
         <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
           Score: <span style={{ color: 'var(--text-secondary)', fontWeight: 300 }}>{investor.score}</span>/100</span>
-        <span style={{ fontSize: 'var(--font-size-xs)', ...(MOMENTUM_STYLE[investor.momentum] ?? {}) }}>
+        <span style={{ fontSize: 'var(--font-size-xs)', ...(MOMENTUM_STYLES[investor.momentum] ?? {}) }}>
           {MOMENTUM_LABELS[investor.momentum]}</span>
         <EnthusiasmDots value={investor.enthusiasm} /></div>
       <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginBottom: '12px' }}>{investor.reason}</p>
@@ -210,12 +200,12 @@ function AtRiskCard({ investor }: { investor: InvestorSummary }) {
           style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}>
           {investor.investorName}</Link>
         <TierBadge tier={investor.investorTier} />
-        <span style={inlineBadgeStyle(TYPE_STYLES[investor.investorType] ?? TYPE_STYLES.vc)}>
+        <span style={inlineBadgeStyle(INVESTOR_TYPE_STYLES[investor.investorType] ?? INVESTOR_TYPE_STYLES.vc)}>
           {TYPE_LABELS[investor.investorType] ?? investor.investorType}</span></div>
       <div className="flex items-center gap-3 mb-2">
         <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
           Score: <span style={{ color: 'var(--text-secondary)', fontWeight: 300 }}>{investor.score}</span>/100</span>
-        <span style={{ fontSize: 'var(--font-size-xs)', ...(MOMENTUM_STYLE[investor.momentum] ?? {}) }}>
+        <span style={{ fontSize: 'var(--font-size-xs)', ...(MOMENTUM_STYLES[investor.momentum] ?? {}) }}>
           {investor.momentum === 'decelerating' || investor.momentum === 'stalled'
             ? <span className="flex items-center gap-1"><TrendingDown className="w-3 h-3 inline" />{MOMENTUM_LABELS[investor.momentum]}</span>
             : <span className="flex items-center gap-1"><ArrowUpRight className="w-3 h-3 inline" />{MOMENTUM_LABELS[investor.momentum]}</span>
