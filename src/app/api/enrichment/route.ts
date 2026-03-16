@@ -93,14 +93,15 @@ export async function GET(req: NextRequest) {
       const categoriesCovered = allCategories.filter(c => fieldsByCategory[c] && fieldsByCategory[c] > 0);
       const fieldCoverage = allCategories.length > 0 ? Math.round((categoriesCovered.length / allCategories.length) * 100) : 0;
 
-      // Avg confidence
-      const avgConfidence = records.length > 0
-        ? records.reduce((sum, r) => sum + r.confidence, 0) / records.length
-        : 0;
-
       // Stale records count
       const now = new Date().toISOString();
       const staleCount = records.filter(r => r.stale_after && r.stale_after < now).length;
+
+      // Avg confidence (fresh records only)
+      const freshRecords = records.filter(r => !r.stale_after || r.stale_after >= now);
+      const avgConfidence = freshRecords.length > 0
+        ? freshRecords.reduce((sum, r) => sum + r.confidence, 0) / freshRecords.length
+        : 0;
 
       // Last job info
       const lastJob = jobs.length > 0 ? jobs[0] : null;
