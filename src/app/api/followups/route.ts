@@ -146,22 +146,28 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
   }
   const ALLOWED_FIELDS = new Set([
-    'id', 'status', 'outcome', 'conviction_delta', 'investor_id',
+    'id', 'status', 'outcome', 'conviction_delta', 'investor_id', 'due_at',
   ]);
   const filtered: Record<string, unknown> = Object.fromEntries(
     Object.entries(body).filter(([k]) => ALLOWED_FIELDS.has(k))
   );
 
-  const { id, status, outcome, conviction_delta } = filtered as {
-    id: string; status: string; outcome: string; conviction_delta: number;
+  const { id, status, outcome, conviction_delta, due_at } = filtered as {
+    id: string; status: string; outcome: string; conviction_delta: number; due_at: string;
   };
 
   if (!id) { return NextResponse.json({ error: 'id is required' }, { status: 400 }); }
 
-  const updates: { status?: FollowupStatus; outcome?: string; conviction_delta?: number; completed_at?: string } = {};
+  const updates: { status?: FollowupStatus; outcome?: string; conviction_delta?: number; completed_at?: string; due_at?: string } = {};
   if (status) updates.status = status as FollowupStatus;
   if (outcome !== undefined) updates.outcome = outcome as string;
   if (conviction_delta !== undefined) updates.conviction_delta = conviction_delta as number;
+  if (due_at !== undefined) {
+    if (isNaN(new Date(due_at).getTime())) {
+      return NextResponse.json({ error: 'due_at must be a valid date string' }, { status: 400 });
+    }
+    updates.due_at = due_at;
+  }
   if (status === 'completed' || status === 'skipped') {
     updates.completed_at = new Date().toISOString();
   }

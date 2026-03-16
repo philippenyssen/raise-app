@@ -293,6 +293,27 @@ function FollowupsContent() {
     finally { setProcessingIds(prev => { const n = new Set(prev); n.delete(id); return n; }); }
   }
 
+  const [snoozeOpenId, setSnoozeOpenId] = useState<string | null>(null);
+
+  async function handleSnooze(id: string, days: number) {
+    if (processingIds.has(id)) return;
+    setProcessingIds(prev => new Set(prev).add(id));
+    setSnoozeOpenId(null);
+    const newDue = new Date(Date.now() + days * MS_PER_DAY).toISOString();
+    const prev = followups;
+    setFollowups(f => f.map(x => x.id === id ? { ...x, due_at: newDue, isOverdue: false, daysOverdue: null, daysUntilDue: days } : x));
+    toast(`Snoozed ${days}d`, 'success');
+    try {
+      const res = await fetch('/api/followups', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, due_at: newDue }),});
+      if (!res.ok) throw new Error('Failed');
+      fetchFollowups();
+    } catch (e) { console.warn('[FOLLOWUP_SNOOZE]', e instanceof Error ? e.message : e); toast('Couldn\'t snooze follow-up — restoring', 'error'); setFollowups(prev); }
+    finally { setProcessingIds(prev => { const n = new Set(prev); n.delete(id); return n; }); }
+  }
+
   // Categorize followups in a single pass (memoized — recomputes only when followups change)
   const now = new Date();
   const { overdue, dueToday, upcoming, later, completed } = useMemo(() => {
@@ -499,6 +520,28 @@ function FollowupsContent() {
                   title="Complete with outcome"
                   aria-label="Complete with outcome">
                   <TrendingUp className="w-4 h-4" /></button>
+                <div className="relative">
+                  <button
+                    onClick={() => setSnoozeOpenId(snoozeOpenId === item.id ? null : item.id)}
+                    disabled={processingIds.has(item.id)}
+                    className="p-1.5"
+                    style={{ borderRadius: 'var(--radius-md)', opacity: processingIds.has(item.id) ? 0.4 : 1, color: 'var(--warning)' }}
+                    title="Snooze"
+                    aria-label="Snooze follow-up">
+                    <Clock className="w-4 h-4" /></button>
+                  {snoozeOpenId === item.id && (
+                    <div style={{ position: 'absolute', right: 0, top: '100%', marginTop: '4px', zIndex: 50, background: 'var(--surface-2)', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-md)', padding: 'var(--space-1)', boxShadow: 'var(--shadow-lg)', minWidth: '120px' }}>
+                      {[{ days: 1, label: '+1 day' }, { days: 3, label: '+3 days' }, { days: 7, label: '+1 week' }].map(opt => (
+                        <button key={opt.days} onClick={() => handleSnooze(item.id, opt.days)}
+                          className="w-full text-left"
+                          style={{ display: 'block', padding: 'var(--space-1) var(--space-2)', fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', borderRadius: 'var(--radius-sm)', cursor: 'pointer', border: 'none', background: 'transparent' }}
+                          onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-3)'; e.currentTarget.style.color = 'var(--text-primary)'; }}
+                          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text-secondary)'; }}>
+                          {opt.label}</button>
+                      ))}
+                    </div>
+                  )}
+                </div>
                 <button
                   onClick={() => handleSkip(item.id)}
                   disabled={processingIds.has(item.id)}

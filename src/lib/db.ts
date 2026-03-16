@@ -2646,6 +2646,7 @@ export async function updateFollowup(id: string, updates: {
   completed_at?: string;
   executed_at?: string;
   measured_lift?: number;
+  due_at?: string;
 }): Promise<void> {
   await genericUpdate('followup_actions', id, updates as Record<string, unknown>, { autoUpdatedAt: false });
 }
