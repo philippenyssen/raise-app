@@ -79,10 +79,12 @@ function computeEngagementScore(
     if (signals.asked_about_timeline) signalPts += 4;
     if (signals.requested_followup) signalPts += 5;
     if (signals.body_language_at_pricing === 'positive') signalPts += 4;
+    else if (signals.body_language_at_pricing === 'negative') signalPts -= 3;
     if (signals.pricing_reception === 'positive') signalPts += 4;
+    else if (signals.pricing_reception === 'negative') signalPts -= 3;
     if (signals.mentioned_competitors) signalPts += 3;
   }
-  signalPts = Math.min(25, signalPts);
+  signalPts = Math.max(0, Math.min(25, signalPts));
 
   const score = clamp(countPts + recencyPts + enthPts + signalPts);
   const evidence = `${meetings.length} meetings, last ${Math.round(daysSinceLast)}d ago, avg enthusiasm ${avgEnthusiasm.toFixed(1)}/5`;
