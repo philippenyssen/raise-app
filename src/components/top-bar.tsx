@@ -78,7 +78,15 @@ export function TopBar() {
         else if (inDD > 0) setRaiseLabel(`${inDD} in DD`);
         else if (engaged > 0) setRaiseLabel(`${engaged} engaged`);
         else if (met > 0) setRaiseLabel(`${met} met`);
-        else setRaiseLabel(`${inv.filter(i => !['identified', 'passed', 'dropped'].includes(i.status)).length} in pipeline`);
+        else {
+          const active = inv.filter(i => !['identified', 'passed', 'dropped'].includes(i.status)).length;
+          if (active > 0) setRaiseLabel(`${active} in pipeline`);
+          else {
+            const identified = inv.filter(i => i.status === 'identified').length;
+            if (identified > 0) setRaiseLabel(`${identified} identified`);
+            else setRaiseLabel(`${inv.filter(i => !['passed', 'dropped'].includes(i.status)).length} in pipeline`);
+          }
+        }
       }).catch(e => console.warn('[TOPBAR_RAISE]', e instanceof Error ? e.message : e));
     } catch (e) { console.warn('[TOPBAR_FETCH]', e instanceof Error ? e.message : e); }
   }
