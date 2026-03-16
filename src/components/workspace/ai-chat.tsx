@@ -15,7 +15,31 @@ interface AIChatProps {
   onApplyChange?: (newContent: string) => void;
 }
 
-interface PendingChange { content: string; messageIdx: number; }
+interface PendingChange { content: string; messageIdx: number; summary?: string; }
+
+function computeChangeSummary(oldContent: string, newContent: string, docType?: string): string {
+  if (docType === 'model' || docType === 'spreadsheet') {
+    try {
+      const oldCells = Object.keys(JSON.parse(oldContent).cells || JSON.parse(oldContent));
+      const newCells = Object.keys(JSON.parse(newContent).cells || JSON.parse(newContent));
+      const added = newCells.filter(k => !oldCells.includes(k)).length;
+      const changed = newCells.filter(k => oldCells.includes(k)).length;
+      return `${added > 0 ? `${added} cells added` : ''}${added > 0 && changed > 0 ? ', ' : ''}${changed > 0 ? `${changed} cells updated` : ''}`;
+    } catch { return ''; }
+  }
+  const oldLen = oldContent.length;
+  const newLen = newContent.length;
+  const diff = newLen - oldLen;
+  const oldLines = oldContent.split('\n').length;
+  const newLines = newContent.split('\n').length;
+  const lineDiff = newLines - oldLines;
+  const parts: string[] = [];
+  if (diff > 0) parts.push(`+${diff} chars`);
+  else if (diff < 0) parts.push(`${diff} chars`);
+  if (lineDiff > 0) parts.push(`+${lineDiff} lines`);
+  else if (lineDiff < 0) parts.push(`${lineDiff} lines`);
+  return parts.join(', ') || 'Content updated';
+}
 
 export function AIChat({ documentId, documentContent, documentTitle, documentType, onApplyChange }: AIChatProps) {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -106,7 +130,7 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
           const updated = [...prev];
           updated[assistantIdx] = { role: 'assistant', content: cleanResponse };
           return updated;});
-        setPendingChange({ content: updatedContent, messageIdx: assistantIdx });
+        setPendingChange({ content: updatedContent, messageIdx: assistantIdx, summary: computeChangeSummary(documentContent, updatedContent, documentType) });
       } else if (cellMatch) {
         // Merge cell updates into existing spreadsheet content
         const cleanResponse = fullText.replace(/<cell_updates>[\s\S]*?<\/cell_updates>/, '').trim();
@@ -129,8 +153,8 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
               ...(update.bold ? { bold: true } : {}),
             };
           }
-          const merged = existing.cells ? { ...existing, cells } : cells;
-          setPendingChange({ content: JSON.stringify(merged, null, 2), messageIdx: assistantIdx });
+          const mergedContent = JSON.stringify(existing.cells ? { ...existing, cells } : cells, null, 2);
+          setPendingChange({ content: mergedContent, messageIdx: assistantIdx, summary: computeChangeSummary(documentContent, mergedContent, documentType) });
         } catch {
           // If parsing fails, don't apply
           console.warn('[AICHAT] Failed to parse cell_updates');
@@ -325,13 +349,20 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
             background: 'var(--accent-muted)',
             padding: 'var(--space-3) var(--space-4)',}}>
           <div className="flex items-center justify-between">
-            <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--accent)' }}>
-              {documentType === 'model' || documentType === 'spreadsheet'
-                ? 'AI has proposed cell updates — review before applying'
-                : documentType === 'presentation' || documentType === 'deck'
-                ? 'AI has proposed slide changes — review before applying'
-                : 'AI has proposed edits — review before applying'}
-            </span>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--accent)' }}>
+                {documentType === 'model' || documentType === 'spreadsheet'
+                  ? 'AI has proposed cell updates'
+                  : documentType === 'presentation' || documentType === 'deck'
+                  ? 'AI has proposed slide changes'
+                  : 'AI has proposed edits'}
+              </span>
+              {pendingChange.summary && (
+                <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                  {pendingChange.summary}
+                </span>
+              )}
+            </div>
             <div className="flex" style={{ gap: 'var(--space-2)' }}>
               <button onClick={() => setPendingChange(null)} className="btn btn-ghost btn-sm">
                 <XCircle style={{ width: '14px', height: '14px' }} /> Discard</button>
