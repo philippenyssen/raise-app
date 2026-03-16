@@ -202,6 +202,7 @@ export const cellCenter: React.CSSProperties = { ...cellPad, textAlign: 'center'
 // Card padding (shared across today, focus, acceleration, win-loss)
 export const cardPad4: React.CSSProperties = { padding: 'var(--space-4)' } as const;
 export const textSmMuted: React.CSSProperties = { fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' } as const;
+export const textSmTertiary: React.CSSProperties = { fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' } as const;
 
 // Shared badge base styles
 export const badgeSmall: React.CSSProperties = { padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-sm)', fontSize: 'var(--font-size-xs)', fontWeight: 400 } as const;

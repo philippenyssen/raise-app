@@ -14,7 +14,7 @@ import {
 import {
   stTextMuted, stTextTertiary, stTextSecondary, stTextPrimary, stFontSm,
   stSurface0, stSurface1, stBorderTop,
-  labelMuted10, labelSmMuted, labelTertiary, labelMuted,
+  labelMuted10, labelSmMuted, labelTertiary, labelMuted, textSmTertiary,
 } from '@/lib/styles';
 import { EnthusiasmDots } from '@/components/shared';
 
@@ -555,7 +555,7 @@ export default function AnalyticsPage() {
             severity={risks.concentrationRisk.isRisky ? 'medium' : 'low'}>
             <div className="space-y-3">
               {risks.concentrationRisk.isRisky && (
-                <p style={{ ...stFontSm, ...stTextTertiary }}>
+                <p style={textSmTertiary}>
                   {risks.concentrationRisk.maxConcentration}% of active pipeline is {TYPE_LABELS[risks.concentrationRisk.dominantType || ''] || risks.concentrationRisk.dominantType}.
                   Consider diversifying investor outreach.</p>
               )}

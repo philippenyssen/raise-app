@@ -8,7 +8,7 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { FolderOpen, Upload, FileText, Table, Image, Trash2, ChevronDown, ChevronRight, Search, Eye, BarChart3, Users, AlertCircle, Send, TrendingUp } from 'lucide-react';
 import { fmtDateTime, fmtDate } from '@/lib/format';
 import { STATUS_LABELS } from '@/lib/constants';
-import { labelMuted, skelCardSm, stAccent, stFontSm, stFontXs, stSurface2, stTextMuted, stTextSecondary, stTextTertiary, textSmSecondary } from '@/lib/styles';
+import { labelMuted, labelSecondary, skelCardSm, stAccent, stFontSm, stFontXs, stSurface2, stTextMuted, stTextSecondary, stTextTertiary, textSmMuted, textSmSecondary, textSmTertiary } from '@/lib/styles';
 import { cachedFetch } from '@/lib/cache';
 
 const fontSmPrimary = { ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' } as const;
@@ -246,7 +246,7 @@ export default function DataRoomPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="page-title" style={{ fontSize: 'var(--font-size-xl)' }}>Data Room</h1>
-          <p style={{ ...stTextMuted, ...stFontSm, marginTop: 'var(--space-1)' }}>{files.length} files · {totalSizeLabel} — source context for all deliverables</p>
+          <p style={{ ...textSmMuted, marginTop: 'var(--space-1)' }}>{files.length} files · {totalSizeLabel} — source context for all deliverables</p>
         </div>
         <div className="flex gap-2">
           <button
@@ -413,7 +413,7 @@ function AccessIntelligenceSection({ intelligence, files, expandedInvestor, onTo
           <span style={stTextMuted}><Eye className="w-5 h-5" /></span>
           <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 400, color: 'var(--text-primary)' }}>Access Intelligence</h2>
         </div>
-        <p style={{ ...stTextMuted, ...stFontSm }}>Track which investors have accessed which documents and get sharing recommendations</p>
+        <p style={textSmMuted}>Track which investors have accessed which documents and get sharing recommendations</p>
       </div>
 
       {/* Summary Stats */}
@@ -447,7 +447,7 @@ function AccessIntelligenceSection({ intelligence, files, expandedInvestor, onTo
               <MostRequestedRow key={doc.document_id} doc={doc} rank={idx + 1} />
             ))}</div>
         ) : (
-          <p style={{ ...stTextTertiary, ...stFontSm, textAlign: 'center', padding: 'var(--space-4) 0' }}>No access events recorded yet. Log document access to see rankings.</p>
+          <p style={{ ...textSmTertiary, textAlign: 'center', padding: 'var(--space-4) 0' }}>No access events recorded yet. Log document access to see rankings.</p>
         )}</div>
 
       {/* Per-Investor Access */}
@@ -467,7 +467,7 @@ function AccessIntelligenceSection({ intelligence, files, expandedInvestor, onTo
                 files={files} />
             ))}</div>
         ) : (
-          <p style={{ ...stTextTertiary, ...stFontSm, textAlign: 'center', padding: 'var(--space-4) 0' }}>No active investors yet. Add investors in the CRM to see access tracking.</p>
+          <p style={{ ...textSmTertiary, textAlign: 'center', padding: 'var(--space-4) 0' }}>No active investors yet. Add investors in the CRM to see access tracking.</p>
         )}</div>
 
       {/* Unreached Investors */}
@@ -532,7 +532,7 @@ function MostRequestedRow({ doc, rank }: {
       <FileText className="w-3.5 h-3.5 shrink-0" style={stTextTertiary} />
       <span className="truncate" style={{ ...stFontSm, color: 'var(--text-primary)' }}>{doc.document_title}</span>
       <span style={{ ...stFontXs, ...stTextMuted, ...stSurface2, padding: '0.125rem var(--space-2)', borderRadius: 'var(--radius-sm)' }}>{doc.category}</span>
-      <span className="ml-auto shrink-0" style={{ ...stFontXs, fontWeight: 400, ...stTextSecondary }}>{doc.access_count} {doc.access_count === 1 ? 'view' : 'views'}</span>
+      <span className="ml-auto shrink-0" style={{ ...labelSecondary, fontWeight: 400 }}>{doc.access_count} {doc.access_count === 1 ? 'view' : 'views'}</span>
     </div>);
 }
 
@@ -694,7 +694,7 @@ function AccessLogRow({ entry }: {
       <Eye className="w-3.5 h-3.5 shrink-0" style={stTextTertiary} />
       <Link href={`/investors/${entry.investor_id}`} className="investor-link" style={{ ...stFontSm, fontWeight: 400, textDecoration: 'none', minWidth: '8rem' }}>{entry.investor_name}</Link>
       <span style={labelMuted}>viewed</span>
-      <span className="truncate" style={{ ...stFontSm, ...stTextSecondary }}>{entry.document_title}</span>
+      <span className="truncate" style={textSmSecondary}>{entry.document_title}</span>
       <span className="ml-auto shrink-0" style={labelXsTertiary}>{fmtDateTime(entry.accessed_at)}</span>
     </div>);
 }

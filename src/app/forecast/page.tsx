@@ -12,7 +12,7 @@ import {
 import { STATUS_LABELS as STAGE_LABELS } from '@/lib/constants';
 import { fmtDate, fmtDateShort } from '@/lib/format';
 import { relativeTime } from '@/lib/time';
-import { cellPad, confidenceBg, confidenceColor, labelMuted, labelMuted10, labelSecondary, maxWidthCenter, cellCenter, stAccent, stFontSm, stFontXs, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
+import { cellPad, confidenceBg, confidenceColor, labelMuted, labelMuted10, labelSecondary, labelTertiary, maxWidthCenter, cellCenter, stAccent, stFontSm, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 const mbSpace3 = { marginBottom: 'var(--space-3)' } as const;
 const mbSpace6 = { marginBottom: 'var(--space-6)' } as const;
@@ -195,11 +195,11 @@ export default function ForecastPage() {
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
             <div style={{ width: '12px', height: '12px', borderRadius: '3px', background: 'var(--accent)' }} />
-            <span style={{ ...stFontXs, ...stTextTertiary }}>
+            <span style={labelTertiary}>
               Committed: {formatAmount(effectiveCommitted, currency)}</span></div>
           <div className="flex items-center gap-2">
             <div style={{ width: '12px', height: '12px', borderRadius: '3px', background: 'var(--accent-muted)' }} />
-            <span style={{ ...stFontXs, ...stTextTertiary }}>
+            <span style={labelTertiary}>
               Expected (weighted): {formatAmount(effectiveExpected, currency)}</span></div>
           {hasExclusions && whatIf && (
             <div className="flex items-center gap-2">

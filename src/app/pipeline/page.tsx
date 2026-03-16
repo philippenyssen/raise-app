@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import { fmtDate } from '@/lib/format';
 import { STATUS_LABELS, TYPE_LABELS } from '@/lib/constants';
-import { labelMuted, labelMuted10, stFontSm, stFontXs, stTextMuted, badgeSmall } from '@/lib/styles';
+import { labelMuted, labelMuted10, stFontSm, stFontXs, stTextMuted, textSmMuted, badgeSmall } from '@/lib/styles';
 import { MS_PER_MINUTE } from '@/lib/time';
 
 // ── Pipeline column order ────────────────────────────────────────────
@@ -302,7 +302,7 @@ export default function PipelinePage() {
           <Users className="w-10 h-10 mx-auto mb-3" style={{ color: 'var(--danger)' }} />
           <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', marginBottom: 'var(--space-1)' }}>
             Could not load pipeline</h3>
-          <p style={{ ...stFontXs, ...stTextMuted, marginBottom: 'var(--space-4)' }}>{fetchError}</p>
+          <p style={{ ...labelMuted, marginBottom: 'var(--space-4)' }}>{fetchError}</p>
           <button
             onClick={fetchInvestors}
             className="btn btn-secondary btn-sm">
@@ -316,7 +316,7 @@ export default function PipelinePage() {
       <div className="flex items-center justify-between flex-shrink-0">
         <div>
           <h1 className="page-title" style={{ fontSize: 'var(--font-size-xl)' }}>Investor Pipeline</h1>
-          <p className="page-subtitle" style={{ ...stFontSm, ...stTextMuted, marginTop: 'var(--space-1)' }}>Drag to move through the pipeline</p>
+          <p className="page-subtitle" style={{ ...textSmMuted, marginTop: 'var(--space-1)' }}>Drag to move through the pipeline</p>
         </div>
         <div className="flex items-center gap-2">
           <FilterButton
