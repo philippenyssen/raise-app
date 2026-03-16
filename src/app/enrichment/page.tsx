@@ -344,7 +344,7 @@ export default function EnrichmentPage() {
                         ) : (
                           <XCircle style={{ ...icon12, color: 'var(--text-muted)' }} />
                         )}</div>
-                      <p style={{ ...labelMuted, marginTop: '2px' }}>
+                      <p style={{ ...labelMuted, marginTop: 'var(--space-0)' }}>
                         {provider.description.slice(0, 120)}{provider.description.length > 120 ? '...' : ''}</p></div></div>
                   <div style={flexCenterGap2}>
                     <div style={{ display: 'flex', gap: 'var(--space-1)' }}>
@@ -402,14 +402,14 @@ export default function EnrichmentPage() {
                           href={`/investors/${job.investor_id}`}
                           style={investorLinkStyle}>
                           {job.investor_name}</Link>
-                        <div style={{ ...labelMuted, marginTop: '2px' }}>
+                        <div style={{ ...labelMuted, marginTop: 'var(--space-0)' }}>
                           {job.results_count} fields &middot; {sources.length > 0 ? `${sources.length} sources` : 'all sources'}
                         </div></div></div>
                     <div style={{ textAlign: 'right' }}>
                       <span style={labelMuted}>
                         {job.completed_at ? fmtDateTime(job.completed_at) : 'Running...'}</span>
                       {errors.length > 0 && (
-                        <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', marginTop: '2px' }}>
+                        <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', marginTop: 'var(--space-0)' }}>
                           {errors.length} error{errors.length !== 1 ? 's' : ''}</div>
                       )}</div></div>
                 </div>);})

@@ -266,7 +266,7 @@ export default function DealflowPage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="page-title">Dealflow</h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', marginTop: '2px' }}>
+          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', marginTop: 'var(--space-0)' }}>
             Investor health: heat, velocity, and momentum in one view{loadedAt && <> &middot; <span style={{ color: 'var(--text-muted)' }}>{relativeTime(loadedAt)}</span></>}</p></div>
         <div className="flex items-center gap-2">
           <button

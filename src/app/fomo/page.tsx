@@ -237,7 +237,7 @@ function PressureCard({ inv }: { inv: InvestorFomo }) {
         <div className="shrink-0 text-right">
           <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 300, color, lineHeight: 1 }}>
             {inv.intensity}</div>
-          <div style={{ ...labelMuted, marginTop: '2px' }}>
+          <div style={{ ...labelMuted, marginTop: 'var(--space-0)' }}>
             {getIntensityLabel(inv.intensity)}</div></div></div>
 
       {/* Intensity breakdown bar */}
@@ -267,7 +267,7 @@ function PressureCard({ inv }: { inv: InvestorFomo }) {
                     key={t.name}
                     style={triggerBadge}>
                     {t.name}
-                    <span style={{ color: 'var(--text-muted)', marginLeft: '4px' }}>
+                    <span style={{ color: 'var(--text-muted)', marginLeft: 'var(--space-1)' }}>
                       {t.statusLabel}</span></span>
                 ))}</div></div>
           )}
@@ -275,7 +275,7 @@ function PressureCard({ inv }: { inv: InvestorFomo }) {
           {/* Recommendation */}
           <div style={{ padding: 'var(--space-3)', background: 'var(--surface-0)', borderRadius: 'var(--radius-md)' }}>
             <div className="flex items-start gap-2">
-              <span style={{ flexShrink: 0, marginTop: '2px' }}>
+              <span style={{ flexShrink: 0, marginTop: 'var(--space-0)' }}>
                 <Target className="w-3.5 h-3.5" style={stAccent} /></span>
               <p style={{ ...textSmSecondary, lineHeight: 1.6, margin: 0 }}>
                 {inv.recommendation}</p></div></div></div>
@@ -319,7 +319,7 @@ function StrategyCardComponent({ card }: { card: StrategyCard }) {
         transition: 'all 150ms ease',
         ...PRIORITY_STYLES[card.priority], }}>
       <div className="flex items-start gap-2 mb-2">
-        <span style={{ flexShrink: 0, marginTop: '2px' }}>
+        <span style={{ flexShrink: 0, marginTop: 'var(--space-0)' }}>
           <Target className="w-4 h-4" style={{ color: card.priority === 'high' ? 'var(--danger)' : card.priority === 'medium' ? 'var(--warning)' : 'var(--text-muted)' }}
             /></span>
         <div>
@@ -327,7 +327,7 @@ function StrategyCardComponent({ card }: { card: StrategyCard }) {
           <span style={inlineBadgeStyle({
             background: card.priority === 'high' ? 'var(--danger-muted)' : card.priority === 'medium' ? 'var(--warning-muted)' : 'var(--surface-2)',
             color: card.priority === 'high' ? 'var(--danger)' : card.priority === 'medium' ? 'var(--warning)' : 'var(--text-tertiary)',
-            marginTop: '4px',
+            marginTop: 'var(--space-1)',
             display: 'inline-block',
           })}>
             {card.priority} priority</span></div></div>
@@ -434,7 +434,7 @@ export default function FomoPage() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="page-title">FOMO Dynamics</h1>
-            <p style={{ ...textSmMuted, marginTop: '4px' }}>
+            <p style={{ ...textSmMuted, marginTop: 'var(--space-1)' }}>
               Competitive pressure between investors — leverage asymmetry to accelerate the process</p></div>
           <button
             onClick={fetchData}
