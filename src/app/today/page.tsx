@@ -351,6 +351,7 @@ export default function TodayPage() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [stalenessMinutes, setStalenessMinutes] = useState(0);
+  const [showShortcuts, setShowShortcuts] = useState(false);
   const lastFetchedAt = useRef<number>(Date.now());
 
   const fetchBriefing = useCallback(async (silent = false) => {
@@ -446,6 +447,7 @@ export default function TodayPage() {
     function onKeyDown(e: KeyboardEvent) {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
       if (e.key === 'r' && !e.metaKey && !e.ctrlKey) fetchBriefing(true);
+      if (e.key === '?' && !e.metaKey && !e.ctrlKey) setShowShortcuts(p => !p);
     }
     window.addEventListener('keydown', onKeyDown);
     return () => {
@@ -910,5 +912,35 @@ export default function TodayPage() {
 
       {/* Footer spacer */}
       <div style={{ height: 'var(--space-4)' }} />
+
+      {/* Keyboard shortcut hint */}
+      <div style={{ position: 'fixed', bottom: 'var(--space-4)', right: 'var(--space-4)', fontSize: '10px', color: 'var(--text-muted)', opacity: 0.6 }}>
+        Press <kbd style={{ padding: '1px 4px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', border: '1px solid var(--border-subtle)', fontFamily: 'inherit' }}>?</kbd> for shortcuts
+      </div>
+
+      {/* Shortcuts overlay */}
+      {showShortcuts && (
+        <div
+          onClick={() => setShowShortcuts(false)}
+          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)', border: '1px solid var(--border-subtle)', maxWidth: '320px', width: '100%', boxShadow: 'var(--shadow-xl)' }}>
+            <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', marginBottom: 'var(--space-4)' }}>Keyboard shortcuts</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+              {[
+                ['r', 'Refresh briefing'],
+                ['?', 'Toggle this panel'],
+              ].map(([key, desc]) => (
+                <div key={key} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}>{desc}</span>
+                  <kbd style={{ padding: '2px 8px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', border: '1px solid var(--border-subtle)', fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', fontFamily: 'inherit' }}>{key}</kbd>
+                </div>
+              ))}
+            </div>
+            <button onClick={() => setShowShortcuts(false)} className="btn btn-secondary btn-sm" style={{ width: '100%', marginTop: 'var(--space-4)' }}>Close</button>
+          </div>
+        </div>
+      )}
     </div>);
 }
