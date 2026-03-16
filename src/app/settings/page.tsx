@@ -10,6 +10,10 @@ import { useToast } from '@/components/toast';
 import { stFontSm, stFontXs, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 import { cachedFetch } from '@/lib/cache';
 
+const rangeAccent = { accentColor: 'var(--accent)' } as const;
+const weightInputStyle = { width: '3.5rem', padding: '0.25rem 0.5rem', fontSize: 'var(--font-size-xs)', textAlign: 'right' as const } as const;
+const pctLabel = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '1rem' } as const;
+
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
@@ -495,7 +499,7 @@ export default function SettingsPage() {
                 value={scoring.data[key]}
                 onChange={e => scoring.update(key, Number(e.target.value))}
                 className="flex-1 h-1.5 cursor-pointer"
-                style={{ accentColor: 'var(--accent)' }} />
+                style={rangeAccent} />
               <div className="w-14" style={{ textAlign: 'right' }}>
                 <input
                   type="number"
@@ -504,9 +508,9 @@ export default function SettingsPage() {
                   value={scoring.data[key]}
                   onChange={e => scoring.update(key, Number(e.target.value))}
                   className="input"
-                  style={{ width: '3.5rem', padding: '0.25rem 0.5rem', fontSize: 'var(--font-size-xs)', textAlign: 'right' }} />
+                  style={weightInputStyle} />
               </div>
-              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '1rem' }}>%</span></div>
+              <span style={pctLabel}>%</span></div>
           ))}</div></div>
 
       {/* ================================================================= */}

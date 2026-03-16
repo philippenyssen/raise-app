@@ -154,7 +154,7 @@ export default function WinLossPage() {
   const { patterns, passReasons, timing, funnel, typePerformance, predictors, recommendations, summary } = data;
 
   // Funnel max for width calculation
-  const funnelMax = Math.max(...funnel.map(f => f.count), 1);
+  const funnelMax = useMemo(() => Math.max(...funnel.map(f => f.count), 1), [funnel]);
   const bestType = useMemo(() => typePerformance.filter(t => t.total >= 2).sort((a, b) => b.closeRate - a.closeRate)[0] ?? null, [typePerformance]);
 
   return (

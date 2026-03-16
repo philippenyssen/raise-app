@@ -392,8 +392,15 @@ function AccessIntelligenceSection({ intelligence, files, expandedInvestor, onTo
   onLogAccess: (investorId: string, documentId: string) => void;
 }) {
   const hasActivity = intelligence.total_access_events > 0;
-  const investorsWithAccess = intelligence.per_investor_access.filter(i => i.documents_accessed > 0);
-  const investorsWithRecommendations = intelligence.per_investor_access.filter(i => i.recommended_documents.length > 0);
+  const { investorsWithAccess, investorsWithRecommendations } = useMemo(() => {
+    const withAccess: typeof intelligence.per_investor_access = [];
+    const withRecs: typeof intelligence.per_investor_access = [];
+    for (const i of intelligence.per_investor_access) {
+      if (i.documents_accessed > 0) withAccess.push(i);
+      if (i.recommended_documents.length > 0) withRecs.push(i);
+    }
+    return { investorsWithAccess: withAccess, investorsWithRecommendations: withRecs };
+  }, [intelligence.per_investor_access]);
 
   return (
     <div className="space-y-6" style={{ marginTop: 'var(--space-8)' }}>

@@ -7,6 +7,9 @@ import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { Plus, Trash2, DollarSign, ShieldCheck, AlertTriangle, TrendingUp, FileText } from 'lucide-react';
 import { stAccent, stSurface1, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
+const skeletonRow = { height: '64px', borderRadius: 'var(--radius-lg)' } as const;
+const typeBadgeStyle = { background: 'var(--surface-2)', color: 'var(--text-secondary)' } as const;
+
 interface Commitment {
   id: string;
   customer: string;
@@ -147,7 +150,7 @@ export default function BacklogPage() {
       <div className="space-y-4 page-content">
         <div className="skeleton" style={{ height: '28px', width: '200px' }} />
         <div className="skeleton" style={{ height: '16px', width: '350px' }} />
-        {[1,2,3].map(i => <div key={i} className="skeleton" style={{ height: '64px', borderRadius: 'var(--radius-lg)' }} />)}
+        {[1,2,3].map(i => <div key={i} className="skeleton" style={skeletonRow} />)}
       </div>);
   }
 
@@ -240,7 +243,7 @@ export default function BacklogPage() {
                   <tr key={c.id} className="table-row">
                     <td className="px-4 py-3 font-normal" style={stTextPrimary}>{c.customer}</td>
                     <td className="px-4 py-3" style={stTextSecondary}>{c.program || '—'}</td>
-                    <td className="px-4 py-3"><span className="text-xs px-1.5 py-0.5 rounded" style={{ background: 'var(--surface-2)', color: 'var(--text-secondary)' }}>{TYPE_LABELS[c.contract_type] || c.contract_type}</span></td>
+                    <td className="px-4 py-3"><span className="text-xs px-1.5 py-0.5 rounded" style={typeBadgeStyle}>{TYPE_LABELS[c.contract_type] || c.contract_type}</span></td>
                     <td className="px-4 py-3 text-right font-mono" style={stTextPrimary}>{(c.amount_eur / 1e6).toFixed(0)}</td>
                     <td className="px-4 py-3 text-right font-mono" style={stTextMuted}>{c.annual_amount ? (c.annual_amount / 1e6).toFixed(0) : '—'}</td>
                     <td className="px-4 py-3 text-center"><span className="text-xs px-1.5 py-0.5 rounded font-normal" style={CONFIDENCE_COLORS[conf]}>{(c.confidence * 100).toFixed(0)}%</span></td>
