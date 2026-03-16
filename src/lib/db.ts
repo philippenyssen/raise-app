@@ -6371,14 +6371,13 @@ export async function saveEnrichmentRecords(records: {
   const staleDays = 30;
   const staleDate = new Date(Date.now() + staleDays * 86400000).toISOString();
 
-  for (const record of records) {
-    const id = crypto.randomUUID();
-    await db.execute({
-      sql: `INSERT OR REPLACE INTO enrichment_records (id, investor_id, source_id, field_name, field_value, category, confidence, source_url, fetched_at, stale_after)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      args: [id, record.investor_id, record.source_id, record.field_name, record.field_value, record.category, record.confidence, record.source_url || '', record.fetched_at, staleDate],
-    });
-  }
+  if (records.length === 0) return;
+  const stmts = records.map(record => ({
+    sql: `INSERT OR REPLACE INTO enrichment_records (id, investor_id, source_id, field_name, field_value, category, confidence, source_url, fetched_at, stale_after)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    args: [crypto.randomUUID(), record.investor_id, record.source_id, record.field_name, record.field_value, record.category, record.confidence, record.source_url || '', record.fetched_at, staleDate],
+  }));
+  await db.batch(stmts);
 }
 
 export async function getEnrichmentRecords(investorId: string): Promise<EnrichmentRecordRow[]> {
