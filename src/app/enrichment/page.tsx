@@ -13,6 +13,10 @@ import { fmtDateTime } from '@/lib/format';
 import { labelMuted, labelTertiary, stFontSm, stFontXs, stTextMuted, icon14, icon12 } from '@/lib/styles';
 
 const flexCenterGap2 = { display: 'flex', alignItems: 'center', gap: 'var(--space-2)' } as const;
+const investorRowGrid: React.CSSProperties = { display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr auto', gap: 'var(--space-2)', alignItems: 'center', padding: 'var(--space-2) var(--space-4)' };
+const enrichBtnBase: React.CSSProperties = { background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid var(--accent-20)', fontSize: 'var(--font-size-xs)', padding: '4px 10px' };
+const fieldTagStyle: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '2px 8px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-tertiary)' };
+const investorLinkStyle: React.CSSProperties = { fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, textDecoration: 'none' };
 
 // ---------------------------------------------------------------------------
 // Types
@@ -276,10 +280,10 @@ export default function EnrichmentPage() {
                   <div
                     key={inv.id}
                     className="table-row"
-                    style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr auto', gap: 'var(--space-2)', alignItems: 'center', padding: 'var(--space-2) var(--space-4)' }}>
+                    style={investorRowGrid}>
                     <Link
                       href={`/investors/${inv.id}`}
-                      style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, textDecoration: 'none' }}>
+                      style={investorLinkStyle}>
                       {inv.name}</Link>
                     <span style={labelTertiary}>{inv.type}</span>
                     <span className="tier-badge" data-tier={inv.tier} style={stFontXs}>T{inv.tier}</span>
@@ -288,13 +292,7 @@ export default function EnrichmentPage() {
                       onClick={() => enrichSingle(inv.id)}
                       disabled={enriching === inv.id || bulkEnriching}
                       className="btn btn-sm"
-                      style={{
-                        background: 'var(--accent-muted)',
-                        color: 'var(--accent)',
-                        border: '1px solid var(--accent-20)',
-                        opacity: enriching === inv.id || bulkEnriching ? 0.4 : 1,
-                        fontSize: 'var(--font-size-xs)',
-                        padding: '4px 10px', }}>
+                      style={{ ...enrichBtnBase, opacity: enriching === inv.id || bulkEnriching ? 0.4 : 1 }}>
                       {enriching === inv.id ? <Loader2 style={icon12} className="animate-spin" /> : <Play style={icon12} />}
                       {enriching === inv.id ? 'Enriching...' : 'Enrich'}</button></div>
                 ))
@@ -365,12 +363,7 @@ export default function EnrichmentPage() {
                     <div style={{ marginTop: 'var(--space-3)', display: 'flex', flexWrap: 'wrap', gap: 'var(--space-2)' }}>
                       <span style={labelMuted}>Provides:</span>
                       {provider.fields_provided.map(f => (
-                        <span key={f} style={{
-                          fontSize: 'var(--font-size-xs)',
-                          padding: '2px 8px',
-                          borderRadius: 'var(--radius-sm)',
-                          background: 'var(--surface-2)',
-                          color: 'var(--text-tertiary)',}}>
+                        <span key={f} style={fieldTagStyle}>
                           {f}</span>
                       ))}</div>
                     {provider.requires_api_key && !provider.configured && (
@@ -414,7 +407,7 @@ export default function EnrichmentPage() {
                       <div>
                         <Link
                           href={`/investors/${job.investor_id}`}
-                          style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, textDecoration: 'none' }}>
+                          style={investorLinkStyle}>
                           {job.investor_name}</Link>
                         <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '2px' }}>
                           {job.results_count} fields &middot; {sources.length > 0 ? `${sources.length} sources` : 'all sources'}

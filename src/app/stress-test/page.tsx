@@ -77,6 +77,17 @@ function probBgStyle(p: number): React.CSSProperties {
   return { background: 'var(--danger)' };
 }
 
+const BANNER_STYLES: Record<string, React.CSSProperties> = {
+  green: { background: 'var(--success-muted)' },
+  yellow: { background: 'var(--warning-muted)' },
+  red: { background: 'var(--danger-muted)' },
+};
+const BANNER_TEXT_STYLES: Record<string, React.CSSProperties> = {
+  green: { color: 'var(--text-secondary)' },
+  yellow: { color: 'var(--text-tertiary)' },
+  red: { color: 'var(--text-primary)' },
+};
+
 function tierBadgeStyle(tier: number): React.CSSProperties {
   const styles: Record<number, React.CSSProperties> = {
     1: { color: 'var(--text-tertiary)', background: 'var(--warning-muted)', borderColor: 'var(--warn-30)' },
@@ -159,14 +170,6 @@ export default function StressTestPage() {
     ? data.investorForecasts
     : data.investorForecasts.slice(0, 15);
 
-  const bannerStyles: Record<string, React.CSSProperties> = {
-    green: { background: 'var(--success-muted)' },
-    yellow: { background: 'var(--warning-muted)' },
-    red: { background: 'var(--danger-muted)' },};
-  const bannerTextStyles: Record<string, React.CSSProperties> = {
-    green: { color: 'var(--text-secondary)' },
-    yellow: { color: 'var(--text-tertiary)' },
-    red: { color: 'var(--text-primary)' },};
   const bannerIcon = {
     green: <CheckCircle2 className="w-5 h-5 shrink-0" style={stTextSecondary} />,
     yellow: <AlertTriangle className="w-5 h-5 shrink-0" style={stTextTertiary} />,
@@ -196,10 +199,10 @@ export default function StressTestPage() {
       {/* ================================================================ */}
       <div
         className="rounded-xl p-5 flex items-start gap-4"
-        style={{ ...bannerStyles[data.healthStatus] }}>
+        style={BANNER_STYLES[data.healthStatus]}>
         {bannerIcon[data.healthStatus]}
         <div className="flex-1">
-          <div className="text-lg font-normal" style={bannerTextStyles[data.healthStatus]}>
+          <div className="text-lg font-normal" style={BANNER_TEXT_STYLES[data.healthStatus]}>
             {data.healthMessage}</div>
           <div className="flex items-center gap-4 mt-2 text-sm" style={stTextSecondary}>
             <span>Target: <strong style={stTextPrimary}>EUR {formatEuro(data.target)}</strong></span>
