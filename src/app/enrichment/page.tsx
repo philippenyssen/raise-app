@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/components/toast';
 import { fmtDateTime } from '@/lib/format';
-import { labelMuted, labelTertiary, stFontSm, stFontXs, stTextMuted } from '@/lib/styles';
+import { labelMuted, labelTertiary, stFontSm, stFontXs, stTextMuted, icon14, icon12 } from '@/lib/styles';
 
 const flexCenterGap2 = { display: 'flex', alignItems: 'center', gap: 'var(--space-2)' } as const;
 
@@ -192,21 +192,21 @@ export default function EnrichmentPage() {
             disabled={bulkEnriching || investors.length === 0}
             className="btn btn-primary btn-md"
             style={{ opacity: bulkEnriching || investors.length === 0 ? 0.4 : 1 }}>
-            {bulkEnriching ? <Loader2 style={{ width: '14px', height: '14px' }} className="animate-spin" /> : <Zap style={{ width: '14px', height: '14px' }} />}
+            {bulkEnriching ? <Loader2 style={icon14} className="animate-spin" /> : <Zap style={icon14} />}
             {bulkEnriching ? 'Enriching All...' : 'Enrich All Investors'}</button></div></div>
 
       {/* Stats Row */}
       {stats && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 'var(--space-3)' }}>
-          <StatCard label="Records" value={stats.total_records.toLocaleString()} icon={<Database style={{ width: '14px', height: '14px' }} />}
+          <StatCard label="Records" value={stats.total_records.toLocaleString()} icon={<Database style={icon14} />}
             />
-          <StatCard label="Investors Enriched" value={String(stats.total_investors_enriched)} icon={<Users style={{ width: '14px', height: '14px' }} />}
+          <StatCard label="Investors Enriched" value={String(stats.total_investors_enriched)} icon={<Users style={icon14} />}
             />
-          <StatCard label="Jobs Run" value={String(stats.total_jobs)} icon={<RefreshCw style={{ width: '14px', height: '14px' }} />}
+          <StatCard label="Jobs Run" value={String(stats.total_jobs)} icon={<RefreshCw style={icon14} />}
             />
-          <StatCard label="Avg Confidence" value={`${(stats.avg_confidence * 100).toFixed(0)}%`} icon={<Shield style={{ width: '14px', height: '14px' }} />}
+          <StatCard label="Avg Confidence" value={`${(stats.avg_confidence * 100).toFixed(0)}%`} icon={<Shield style={icon14} />}
             />
-          <StatCard label="Stale Records" value={String(stats.stale_count)} icon={<AlertTriangle style={{ width: '14px', height: '14px' }} />} accent={stats.stale_count > 0 ? 'var(--warning)' : undefined}
+          <StatCard label="Stale Records" value={String(stats.stale_count)} icon={<AlertTriangle style={icon14} />} accent={stats.stale_count > 0 ? 'var(--warning)' : undefined}
             /></div>
       )}
 
@@ -227,9 +227,9 @@ export default function EnrichmentPage() {
               background: 'transparent',
               cursor: 'pointer',
               display: 'flex', alignItems: 'center', gap: 'var(--space-2)', }}>
-            {t === 'enrich' && <Search style={{ width: '14px', height: '14px' }} />}
-            {t === 'sources' && <Settings style={{ width: '14px', height: '14px' }} />}
-            {t === 'history' && <Clock style={{ width: '14px', height: '14px' }} />}
+            {t === 'enrich' && <Search style={icon14} />}
+            {t === 'sources' && <Settings style={icon14} />}
+            {t === 'history' && <Clock style={icon14} />}
             {t === 'enrich' ? 'Enrich' : t === 'sources' ? `Sources (${configuredCount}/${providers.length})` : `History (${jobs.length})`}
           </button>
         ))}</div>
@@ -249,7 +249,7 @@ export default function EnrichmentPage() {
               <span style={labelMuted}>
                 ({lastResult.duration_ms}ms)</span></div>
             <button onClick={() => setLastResult(null)} aria-label="Dismiss result" title="Dismiss" style={{ color: 'var(--text-muted)', cursor: 'pointer', background: 'none', border: 'none' }}>
-              <XCircle style={{ width: '14px', height: '14px' }} /></button></div>
+              <XCircle style={icon14} /></button></div>
           {lastResult.errors.length > 0 && (
             <div style={{ marginTop: 'var(--space-2)', fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}>
               {lastResult.errors.map((e, i) => <div key={i}>{e}</div>)}</div>
@@ -295,7 +295,7 @@ export default function EnrichmentPage() {
                         opacity: enriching === inv.id || bulkEnriching ? 0.4 : 1,
                         fontSize: 'var(--font-size-xs)',
                         padding: '4px 10px', }}>
-                      {enriching === inv.id ? <Loader2 style={{ width: '12px', height: '12px' }} className="animate-spin" /> : <Play style={{ width: '12px', height: '12px' }} />}
+                      {enriching === inv.id ? <Loader2 style={icon12} className="animate-spin" /> : <Play style={icon12} />}
                       {enriching === inv.id ? 'Enriching...' : 'Enrich'}</button></div>
                 ))
               )}</div></div></div>
@@ -337,9 +337,9 @@ export default function EnrichmentPage() {
                           border: `1px solid ${typeStyle.border}`,}}>
                           {provider.type}</span>
                         {provider.configured ? (
-                          <CheckCircle2 style={{ width: '12px', height: '12px', color: 'var(--text-secondary)' }} />
+                          <CheckCircle2 style={{ ...icon12, color: 'var(--text-secondary)' }} />
                         ) : (
-                          <XCircle style={{ width: '12px', height: '12px', color: 'var(--text-muted)' }} />
+                          <XCircle style={{ ...icon12, color: 'var(--text-muted)' }} />
                         )}</div>
                       <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '2px' }}>
                         {provider.description.slice(0, 120)}{provider.description.length > 120 ? '...' : ''}</p></div></div>
@@ -349,11 +349,11 @@ export default function EnrichmentPage() {
                         const Icon = CATEGORY_ICONS[f] || Globe;
                         return (
                           <span key={f} title={f} style={stTextMuted}>
-                            <Icon style={{ width: '12px', height: '12px' }} />
+                            <Icon style={icon12} />
                           </span>);
                       })}</div>
-                    {isExpanded ? <ChevronDown style={{ width: '14px', height: '14px', color: 'var(--text-muted)' }} /> :
-                      <ChevronRight style={{ width: '14px', height: '14px', color: 'var(--text-muted)' }} />}</div></div>
+                    {isExpanded ? <ChevronDown style={{ ...icon14, color: 'var(--text-muted)' }} /> :
+                      <ChevronRight style={{ ...icon14, color: 'var(--text-muted)' }} />}</div></div>
 
                 {isExpanded && (
                   <div style={{
@@ -407,10 +407,10 @@ export default function EnrichmentPage() {
                 <div key={job.id} className="card" style={{ padding: 'var(--space-3) var(--space-4)' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
-                      {job.status === 'completed' ? <CheckCircle2 style={{ width: '14px', height: '14px', color: 'var(--text-secondary)' }} /> :
-                       job.status === 'running' ? <Loader2 style={{ width: '14px', height: '14px', color: 'var(--accent)' }} className="animate-spin" /> :
-                       job.status === 'failed' ? <XCircle style={{ width: '14px', height: '14px', color: 'var(--text-primary)' }} /> :
-                       <AlertTriangle style={{ width: '14px', height: '14px', color: 'var(--text-tertiary)' }} />}
+                      {job.status === 'completed' ? <CheckCircle2 style={{ ...icon14, color: 'var(--text-secondary)' }} /> :
+                       job.status === 'running' ? <Loader2 style={{ ...icon14, color: 'var(--accent)' }} className="animate-spin" /> :
+                       job.status === 'failed' ? <XCircle style={{ ...icon14, color: 'var(--text-primary)' }} /> :
+                       <AlertTriangle style={{ ...icon14, color: 'var(--text-tertiary)' }} />}
                       <div>
                         <Link
                           href={`/investors/${job.investor_id}`}

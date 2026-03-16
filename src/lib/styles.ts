@@ -177,6 +177,10 @@ export function getHealthBg(rate: number): string {
   return 'var(--danger-muted)';
 }
 
+// Icon size constants
+export const icon14: React.CSSProperties = { width: '14px', height: '14px' } as const;
+export const icon12: React.CSSProperties = { width: '12px', height: '12px' } as const;
+
 // Shared badge base styles
 export const badgeSmall: React.CSSProperties = { padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-sm)', fontSize: 'var(--font-size-xs)', fontWeight: 400 } as const;
 export const badgePill: React.CSSProperties = { padding: '0.125rem 0.5rem', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', fontWeight: 300 } as const;
