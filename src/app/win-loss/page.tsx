@@ -16,6 +16,7 @@ const textBaseNormal = { fontSize: 'var(--font-size-base)', fontWeight: 400, col
 const cardPad4 = { padding: 'var(--space-4)' } as const;
 const textSmSecNormal = { fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', fontWeight: 400 } as const;
 const mbSpace3 = { marginBottom: 'var(--space-3)' } as const;
+const funnelBarContainer: React.CSSProperties = { height: '24px', background: 'var(--surface-1)', borderRadius: 'var(--radius-sm)', overflow: 'hidden', position: 'relative' };
 
 // ── Types ─────────────────────────────────────────────────────────────
 
@@ -222,13 +223,7 @@ export default function WinLossPage() {
                       <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)' }}>
                         {stage.dropOff}% drop-off</span>
                     )}</div></div>
-                <div
-                  style={{
-                    height: '24px',
-                    background: 'var(--surface-1)',
-                    borderRadius: 'var(--radius-sm)',
-                    overflow: 'hidden',
-                    position: 'relative', }}>
+                <div style={funnelBarContainer}>
                   <div
                     style={{
                       height: '100%',

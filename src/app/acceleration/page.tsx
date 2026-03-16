@@ -19,6 +19,7 @@ import { cachedFetch } from '@/lib/cache';
 
 const textSmMuted = { fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' } as const;
 const textSm400 = { fontSize: 'var(--font-size-sm)', fontWeight: 400 } as const;
+const tabBtnBase: React.CSSProperties = { padding: '8px 12px', fontSize: 'var(--font-size-sm)', fontWeight: 400, marginBottom: '-1px', background: 'transparent', border: 'none', borderBottomStyle: 'solid', borderBottomWidth: '2px', cursor: 'pointer' };
 
 // ---------------------------------------------------------------------------
 // Constants — style objects using design tokens
@@ -485,19 +486,7 @@ export default function AccelerationPage() {
             aria-selected={activeTab === tab.key}
             onClick={() => setActiveTab(tab.key)}
             className="transition-colors"
-            style={{
-              padding: '8px 12px',
-              fontSize: 'var(--font-size-sm)',
-              fontWeight: 400,
-              borderBottom: `2px solid ${activeTab === tab.key ? 'var(--accent)' : 'transparent'}`,
-              marginBottom: '-1px',
-              color: activeTab === tab.key ? 'var(--accent)' : 'var(--text-muted)',
-              background: 'transparent',
-              border: 'none',
-              borderBottomStyle: 'solid' as const,
-              borderBottomWidth: '2px',
-              borderBottomColor: activeTab === tab.key ? 'var(--accent)' : 'transparent',
-              cursor: 'pointer', }}>
+            style={{ ...tabBtnBase, color: activeTab === tab.key ? 'var(--accent)' : 'var(--text-muted)', borderBottomColor: activeTab === tab.key ? 'var(--accent)' : 'transparent' }}>
             {tab.label}
             {tab.count > 0 && (
               <span
