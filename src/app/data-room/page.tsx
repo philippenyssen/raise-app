@@ -13,8 +13,8 @@ import { cachedFetch } from '@/lib/cache';
 
 const fontSmPrimary = { ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' } as const;
 const labelXsTertiary = labelTertiary;
-const sectionHeading: React.CSSProperties = { ...stFontXs, fontWeight: 400, ...stTextSecondary, marginBottom: 'var(--space-2)' } as const;
-const badgeMuted: React.CSSProperties = { ...stFontXs, ...stTextMuted, ...stSurface2, padding: '0.125rem var(--space-2)', borderRadius: 'var(--radius-sm)' } as const;
+const sectionHeading: React.CSSProperties = { ...labelSecondary, fontWeight: 400, marginBottom: 'var(--space-2)' } as const;
+const badgeMuted: React.CSSProperties = { ...labelMuted, ...stSurface2, padding: '0.125rem var(--space-2)', borderRadius: 'var(--radius-sm)' } as const;
 
 interface DataRoomFile {
   id: string;
@@ -584,7 +584,7 @@ function InvestorAccessRow({ investor, expanded, onToggle, onLogAccess, files }:
               <h4 style={sectionHeading}>Documents Accessed</h4>
               <div className="flex flex-wrap gap-2">
                 {investor.accessed_documents.map(doc => (
-                  <span key={doc.document_id} style={{ ...stFontXs, ...stTextSecondary, background: 'var(--success-muted)', padding: '0.125rem var(--space-2)', borderRadius: 'var(--radius-sm)' }}>{doc.document_title}</span>
+                  <span key={doc.document_id} style={{ ...labelSecondary, background: 'var(--success-muted)', padding: '0.125rem var(--space-2)', borderRadius: 'var(--radius-sm)' }}>{doc.document_title}</span>
                 ))}</div></div>
           )}
 

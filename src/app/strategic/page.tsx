@@ -8,13 +8,13 @@ import {
   Minus, RefreshCw, AlertTriangle, ArrowRight, Clock,
   BarChart3, MessageCircleWarning, Zap, CheckCircle2, ExternalLink,
 } from 'lucide-react';
-import { deltaColor, gaugeColor, gaugeColor as gaugeBarColor, labelMuted, labelMuted10, labelSecondary, stAccent, stFontSm, stFontXs, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
+import { deltaColor, gaugeColor, gaugeColor as gaugeBarColor, labelMuted, labelMuted10, labelSecondary, stAccent, stFontSm, stFontXs, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, textSmTertiary } from '@/lib/styles';
 import { useToast } from '@/components/toast';
 import { relativeTime } from '@/lib/time';
 import { CopyButton } from '@/components/copy-button';
 
 const mbSpace1 = { marginBottom: 'var(--space-1)' } as const;
-const fontSmTertiary = { ...stFontSm, fontWeight: 400, ...stTextTertiary } as const;
+const fontSmTertiary = { ...textSmTertiary, fontWeight: 400 } as const;
 const trendValueBase = { fontSize: 'var(--font-size-lg)', fontWeight: 300, fontVariantNumeric: 'tabular-nums' } as const;
 const trendDeltaRow = { fontSize: 'var(--font-size-xs)' } as const;
 const trendStreakLabel = { fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginTop: '2px' } as const;

@@ -10,6 +10,7 @@ import type { Task, ActivityEvent, TaskStatus, TaskPriority, RaisePhase } from '
 import { useToast } from '@/components/toast';
 import Link from 'next/link';
 import { skelRowSm, stAccent, stTextMuted, stTextPrimary, stTextSecondary } from '@/lib/styles';
+import { EmptyState } from '@/components/ui/empty-state';
 
 const progressTrackBg = { backgroundColor: 'var(--surface-2)' } as const;
 const tabCountBadge = { backgroundColor: 'var(--surface-2)', color: 'var(--text-tertiary)' } as const;
@@ -320,10 +321,7 @@ export default function TimelinePage() {
 
           {/* Tasks grouped by phase */}
           {Object.keys(tasksByPhase).length === 0 ? (
-            <div className="rounded-xl p-8 text-center">
-              <ListTodo className="w-8 h-8 mx-auto mb-2" style={stTextMuted} />
-              <p className="text-sm" style={stTextMuted}>No tasks yet. Add manually or log a meeting — tasks are auto-generated.</p>
-            </div>
+            <EmptyState icon={ListTodo} title="No tasks yet" description="Add manually or log a meeting — tasks are auto-generated." />
           ) : (
             Object.entries(tasksByPhase).map(([phase, phaseTasks]) => (
               <div key={phase}>
@@ -392,10 +390,7 @@ export default function TimelinePage() {
       {tab === 'activity' && (
         <div className="space-y-1">
           {activity.length === 0 ? (
-            <div className="rounded-xl p-8 text-center">
-              <Activity className="w-8 h-8 mx-auto mb-2" style={stTextMuted} />
-              <p className="text-sm" style={stTextMuted}>No activity yet. Events are logged automatically as you use the platform.</p>
-            </div>
+            <EmptyState icon={Activity} title="No activity yet" description="Events are logged automatically as you use the platform." />
           ) : (
             activity.map(event => {
               return (
