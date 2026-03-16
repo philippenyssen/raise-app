@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { cachedFetch } from '@/lib/cache';
-import { labelMuted, textSmSecondary } from '@/lib/styles';
+import { labelMuted, textSmSecondary, kbdStyle, kbdStyleCompact } from '@/lib/styles';
 import { createPortal } from 'react-dom';
 import {
   Sun, LayoutDashboard, Columns3, Users, Calendar,
@@ -239,12 +239,12 @@ export default function CommandPalette() {
         <div onClick={e => e.stopPropagation()} style={{ width: '340px', background: 'var(--surface-1)', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-xl)', padding: '20px' }}>
           <div className="flex items-center justify-between" style={{ marginBottom: '16px' }}>
             <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>Keyboard Shortcuts</span>
-            <kbd style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', background: 'var(--surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xs)', padding: '2px 6px', cursor: 'pointer' }} onClick={() => setShowHelp(false)}>ESC</kbd>
+            <kbd style={{ ...kbdStyle, cursor: 'pointer' }} onClick={() => setShowHelp(false)}>ESC</kbd>
           </div>
           {helpItems.map(([key, desc]) => (
             <div key={key} className="flex items-center justify-between" style={{ padding: '6px 0', borderTop: '1px solid var(--border-subtle)' }}>
               <span style={textSmSecondary}>{desc}</span>
-              <kbd style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', background: 'var(--surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xs)', padding: '2px 6px' }}>{key}</kbd>
+              <kbd style={kbdStyle}>{key}</kbd>
             </div>
           ))}
           <div style={{ marginTop: '12px', ...labelMuted }}>Type <code style={{ background: 'var(--surface-2)', padding: '1px 4px', borderRadius: 'var(--radius-xs)' }}>investor:</code> or <code style={{ background: 'var(--surface-2)', padding: '1px 4px', borderRadius: 'var(--radius-xs)' }}>action:</code> in palette to filter</div>
@@ -279,7 +279,7 @@ export default function CommandPalette() {
         <span className="shrink-0 flex items-center justify-center" style={{ width: '16px', height: '16px', color: isActive ? 'var(--accent)' : 'var(--text-muted)' }}>
           <Icon className="w-4 h-4" /></span>
         <span style={{ fontSize: 'var(--font-size-sm)' }}>{item.label}</span>
-        {SHORTCUTS[item.href] && <kbd style={{ marginLeft: 'auto', fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', background: 'var(--surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xs)', padding: '1px 5px' }}>{SHORTCUTS[item.href]}</kbd>}
+        {SHORTCUTS[item.href] && <kbd style={{ ...kbdStyle, marginLeft: 'auto', padding: '1px 5px' }}>{SHORTCUTS[item.href]}</kbd>}
       </div>);
   }
 
@@ -336,7 +336,7 @@ export default function CommandPalette() {
         <span className="shrink-0 flex items-center justify-center" style={{ width: '16px', height: '16px', color: isActive ? 'var(--accent)' : 'var(--text-muted)' }}>
           <Icon className="w-4 h-4" /></span>
         <span style={{ fontSize: 'var(--font-size-sm)' }}>{item.label}</span>
-        {SHORTCUTS[item.href] ? <kbd style={{ marginLeft: 'auto', fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', background: 'var(--surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xs)', padding: '1px 5px' }}>{SHORTCUTS[item.href]}</kbd>
+        {SHORTCUTS[item.href] ? <kbd style={{ ...kbdStyle, marginLeft: 'auto', padding: '1px 5px' }}>{SHORTCUTS[item.href]}</kbd>
           : item.note ? <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginLeft: 'auto' }}>{item.note}</span> : null}
       </div>);
   }
@@ -377,15 +377,7 @@ export default function CommandPalette() {
               fontSize: 'var(--font-size-sm)',
               border: 'none',
             }}/>
-          <kbd
-            style={{
-              fontSize: 'var(--font-size-xs)',
-              color: 'var(--text-muted)',
-              background: 'var(--surface-2)',
-              border: '1px solid var(--border-subtle)',
-              borderRadius: 'var(--radius-md)',
-              padding: '2px 6px',}}>
-            ESC</kbd></div>
+          <kbd style={{ ...kbdStyle, borderRadius: 'var(--radius-md)' }}>ESC</kbd></div>
 
         {/* Results */}
         <div ref={listRef} className="flex-1 overflow-y-auto" style={{ padding: '4px 0' }}>
@@ -428,16 +420,16 @@ export default function CommandPalette() {
             fontSize: 'var(--font-size-xs)',
             color: 'var(--text-muted)',}}>
           <span className="flex items-center gap-1">
-            <kbd style={{ background: 'var(--surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xs)', padding: '1px 4px' }}>&uarr;&darr;</kbd>
+            <kbd style={kbdStyleCompact}>&uarr;&darr;</kbd>
             navigate</span>
           <span className="flex items-center gap-1">
-            <kbd style={{ background: 'var(--surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xs)', padding: '1px 4px' }}>&crarr;</kbd>
+            <kbd style={kbdStyleCompact}>&crarr;</kbd>
             select</span>
           <span className="flex items-center gap-1">
-            <kbd style={{ background: 'var(--surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xs)', padding: '1px 4px' }}>esc</kbd>
+            <kbd style={kbdStyleCompact}>esc</kbd>
             close</span>
           <span className="flex items-center gap-1" style={{ marginLeft: 'auto' }}>
-            <kbd style={{ background: 'var(--surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xs)', padding: '1px 4px' }}>⌘/</kbd>
+            <kbd style={kbdStyleCompact}>⌘/</kbd>
             all shortcuts</span></div></div>
     </div>,
     document.body);

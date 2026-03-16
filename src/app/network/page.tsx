@@ -140,8 +140,9 @@ export default function NetworkPage() {
           <button
             className="btn-secondary flex items-center gap-2"
             onClick={fetchData}
+            disabled={loading}
             style={stFontSm}>
-            <RefreshCw className="w-3.5 h-3.5" />
+            <RefreshCw className={`w-3.5 h-3.5${loading ? ' animate-spin' : ''}`} />
             Refresh</button></div></div>
 
       {/* Summary Stats */}

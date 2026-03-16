@@ -204,6 +204,10 @@ export const textSmMuted: React.CSSProperties = { fontSize: 'var(--font-size-sm)
 // Shared badge base styles
 export const badgeSmall: React.CSSProperties = { padding: '0.125rem 0.375rem', borderRadius: 'var(--radius-sm)', fontSize: 'var(--font-size-xs)', fontWeight: 400 } as const;
 
+// Keyboard shortcut badge styles
+export const kbdStyle: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', background: 'var(--surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xs)', padding: '2px 6px' } as const;
+export const kbdStyleCompact: React.CSSProperties = { background: 'var(--surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xs)', padding: '1px 4px' } as const;
+
 
 // Investor type badge styles (shared across pipeline, acceleration, focus pages)
 export const INVESTOR_TYPE_STYLES: Record<string, React.CSSProperties> = {
